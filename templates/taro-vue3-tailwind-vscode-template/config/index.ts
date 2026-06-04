@@ -5,7 +5,7 @@ import prodConfig from './prod'
 import NutUIResolver from '@nutui/auto-import-resolver'
 import ComponentsPlugin from 'unplugin-vue-components/webpack'
 import Components from 'unplugin-vue-components/vite'
-import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
@@ -69,7 +69,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         chain.merge({
           plugin: {
             install: {
-              plugin: UnifiedWebpackPluginV5,
+              plugin: WeappTailwindcss,
               args: [{
                 appType: 'taro',
                 injectAdditionalCssVarScope: true

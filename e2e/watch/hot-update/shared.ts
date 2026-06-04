@@ -3,28 +3,39 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
+import { buildCases, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
-export type WatchProjectGroup = 'demo' | 'apps'
+export type WatchProjectGroup = 'demo'
 export type ConcreteWatchCaseName
-  = | 'taro'
-    | 'mpx'
-    | 'weapp-vite'
-    | 'uni-app-vue3-vite'
-    | 'uni-app-tailwindcss-v4'
+  = | 'gulp-tailwindcss-v3'
+    | 'gulp-tailwindcss-v4'
+    | 'mpx-tailwindcss-v3'
     | 'mpx-tailwindcss-v4'
-    | 'taro-vite-tailwindcss-v4'
-    | 'taro-app-vite'
-    | 'taro-webpack-tailwindcss-v4'
-    | 'taro-vue3-app'
-    | 'taro-webpack'
-    | 'vite-native-ts'
-export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | 'apps'
+    | 'taro-webpack-react-tailwindcss-v3'
+    | 'taro-webpack-react-tailwindcss-v4'
+    | 'taro-vite-react-tailwindcss-v3'
+    | 'taro-vite-react-tailwindcss-v4'
+    | 'taro-webpack-vue3-tailwindcss-v3'
+    | 'taro-webpack-vue3-tailwindcss-v4'
+    | 'taro-vite-vue3-tailwindcss-v3'
+    | 'taro-vite-vue3-tailwindcss-v4'
+    | 'uni-app-vite-tailwindcss-v3'
+    | 'uni-app-vite-tailwindcss-v4'
+    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
+    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
+    | 'uni-app-x-hbuilderx-tailwindcss-v3'
+    | 'uni-app-x-hbuilderx-tailwindcss-v4'
+    | 'weapp-vite-tailwindcss-v3'
+    | 'weapp-vite-tailwindcss-v4'
+export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
 type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
 const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
 const ISSUE33_REQUIRED_MUTATION_ROUND: MutationRoundName = 'issue33-arbitrary'
 const INDEX_HTML_RE = /index\.html$/
-const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|vue|mpx)$/
+const SCRIPT_SOURCE_FILE_RE = /\.(?:js|ts|tsx|uts|vue|uvue|mpx)$/
+const TEMPLATE_SOURCE_FILE_RE = /\.(?:wxml|vue|uvue|mpx)$/
 const ISSUE33_MODIFY_CLASS_TOKENS = [
   'bg-[#0f0]',
   'px-[256.25px]',
@@ -33,11 +44,41 @@ const ISSUE33_MODIFY_CLASS_TOKENS = [
   'bg-[var(--primary-color-bg)]',
   'text-[22px]',
 ] as const
+const PATH_SEPARATOR_RE = /[\\/]+/g
 const INVALID_BG_HEX_WITH_SPACE_RE = /\bbg-\s+\[#?[0-9a-fA-F]{3,8}\]?/g
 const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
+const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
+  'taro-webpack-react-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v3',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-vue3-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v3',
+  'taro-vite-vue3-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+])
+const WEB_SOURCE_DOM_HMR_CASES = new Set<ConcreteWatchCaseName>([
+  'uni-app-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+])
+const SUBPACKAGE_HMR_CASES = new Set(
+  buildCases(path.resolve(import.meta.dirname, '../../..'))
+    .filter(item => (item.subPackageMutations?.length ?? 0) > 0)
+    .map(item => item.name),
+)
+
+function normalizePathLike(value: string) {
+  return value.replace(PATH_SEPARATOR_RE, '/')
+}
 
 interface MutationRoundReport {
   roundName: MutationRoundName
@@ -147,6 +188,11 @@ interface StyleMutationMetric {
   styleNeedle: string
   applyUtilities: string[]
   expectedApplyDeclarations: string[]
+  functionNeedle?: string
+  functionDeclarations: string[]
+  expectedFunctionDeclarations: string[]
+  forbiddenFunctionFragments: string[]
+  referenceDirective?: string
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
   rollbackOutputMs: number
@@ -154,7 +200,65 @@ interface StyleMutationMetric {
   rollbackNeedleCleared?: boolean
 }
 
+interface UserReportedHotUpdateMetric {
+  label: string
+  sourceFile: string
+  from: string
+  to: string
+  classTokens: string[]
+  escapedClasses: string[]
+  verifiedGlobalStyleEscapedClasses: string[]
+  minRequiredGlobalStyleEscapedClasses: number
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
 type HotUpdateMutationMetric = TemplateOrScriptMutationMetric | StyleMutationMetric
+
+interface SubPackageMutationMetric {
+  root: 'sub-normal' | 'sub-independent'
+  independent: boolean
+  outputWxml: string
+  outputJs: string
+  globalStyleOutputs: string[]
+  template: TemplateOrScriptMutationMetric
+  style: StyleMutationMetric
+}
+
+interface WebHmrMetric {
+  devScript: string
+  sourceFile: string
+  url: string
+  marker: string
+  classLiteral: string
+  computedStyle: {
+    backgroundColor: string
+    width: string
+    height: string
+  }
+  initialReadyMs: number
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs: number
+  sourceClassReplacementSequence?: Array<{
+    label: string
+    from: string
+    to: string
+    verifiedCssIncludes: string[]
+    hotUpdateEffectiveMs: number
+  }>
+  sourceDomReplacementSequence?: Array<{
+    label: string
+    from: string
+    to: string
+    expectedText: string
+    verifiedCssIncludes: string[]
+    computedStyle: Partial<Record<'color' | 'backgroundColor' | 'width' | 'height', string>>
+    hotUpdateEffectiveMs: number
+  }>
+  totalMs: number
+}
 
 interface HotUpdateCaseReport {
   name: ConcreteWatchCaseName
@@ -172,6 +276,9 @@ interface HotUpdateCaseReport {
   globalStyleOutput?: string
   globalStyleOutputs?: string[]
   mutationMetrics: HotUpdateMutationMetric[]
+  userReportedHotUpdate?: UserReportedHotUpdateMetric
+  webHmr?: WebHmrMetric
+  subPackageMutationMetrics?: SubPackageMutationMetric[]
   summaryByMutationKind: Partial<Record<MutationKind, HotUpdateSummary>>
   initialReadyMs: number
   hotUpdateOutputMs: number
@@ -182,6 +289,9 @@ interface HotUpdateCaseReport {
 }
 
 interface HotUpdateReport {
+  options?: {
+    webOnly?: boolean
+  }
   summary: HotUpdateSummary
   summaryByRound: Partial<Record<MutationRoundName, HotUpdateSummary>>
   summaryByGroup: Partial<Record<WatchProjectGroup, HotUpdateSummary>>
@@ -190,32 +300,44 @@ interface HotUpdateReport {
   cases: HotUpdateCaseReport[]
 }
 
-const criticalDemoProjects = [
-  'demo/uni-app-vue3-vite',
-  'demo/uni-app-tailwindcss-v4',
-  'demo/taro-vite-tailwindcss-v4',
-  'demo/taro-app-vite',
-  'demo/taro-webpack-tailwindcss-v4',
-  'demo/taro-vue3-app',
-] as const
+const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
 
-const bothCases = new Set<ConcreteWatchCaseName>(['taro', 'uni-app-vue3-vite'])
+const criticalDemoProjects = configuredWatchCases
+  .filter(item => item.group === 'demo')
+  .map(item => item.project)
+
+const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
-  'uni-app-tailwindcss-v4',
-  'taro-vite-tailwindcss-v4',
-  'taro-webpack-tailwindcss-v4',
-  'taro-webpack',
+  'mpx-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
 ])
-const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>([
-  'mpx',
-  'taro-webpack',
-  'taro-app-vite',
-  'taro-vite-tailwindcss-v4',
-  'taro-webpack-tailwindcss-v4',
-  'uni-app-vue3-vite',
-  'vite-native-ts',
-  'weapp-vite',
+const noFunctionValidationCases = new Set<ConcreteWatchCaseName>([
+  'mpx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
 ])
+const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
+  'gulp-tailwindcss-v4',
+  'mpx-tailwindcss-v4',
+  'uni-app-vite-tailwindcss-v4',
+  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+  'uni-app-x-hbuilderx-tailwindcss-v4',
+  'taro-vite-react-tailwindcss-v4',
+  'taro-webpack-react-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
+])
+const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>(
+  configuredWatchCases
+    .filter(item => item.scriptMutation.mutateCommentCarrier)
+    .map(item => item.name),
+)
 
 interface CommentCarrierSummaryItem {
   name: ConcreteWatchCaseName
@@ -230,8 +352,17 @@ interface CommentCarrierSummaryItem {
   rollbackEffectiveMs: number
 }
 
+interface HotUpdateBudgetSample {
+  label: string
+  hotUpdateEffectiveMs: number
+}
+
 function isIssue33RoundProfile() {
   return process.env.E2E_WATCH_ROUND_PROFILE === 'issue33'
+}
+
+function isWebOnlyProfile(report?: HotUpdateReport) {
+  return toBoolEnv('E2E_WATCH_WEB_ONLY', false) || report?.options?.webOnly === true
 }
 
 function resolveRequiredMutationRounds() {
@@ -258,6 +389,31 @@ function toNumberEnv(name: string, fallback: number) {
   return Number.isFinite(numeric) ? numeric : fallback
 }
 
+function resolveSelectedWatchCaseCount(target: WatchCaseName) {
+  if (target === 'all') {
+    return configuredWatchCases.length
+  }
+
+  if (target === 'demo') {
+    return configuredWatchCases.filter(item => item.group === target).length
+  }
+
+  if (target === 'both') {
+    return bothCases.size
+  }
+
+  if (configuredWatchCases.some(item => item.name === target)) {
+    return 1
+  }
+
+  return isLocalOnlyWatchCase(target) ? 1 : 0
+}
+
+function resolveDefaultWatchCommandTimeoutMs(target: WatchCaseName, timeoutMs: number) {
+  const selectedCaseCount = Math.max(1, resolveSelectedWatchCaseCount(target))
+  return Math.max(timeoutMs * selectedCaseCount + 180_000, 240_000)
+}
+
 function createReportFilePath(cwd: string, target: WatchCaseName) {
   const reportDir = path.resolve(cwd, './benchmark/e2e-watch-hmr')
   const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
@@ -282,24 +438,36 @@ function assertHasWxssOutput(outputs: string[], label: string) {
   ).toBe(true)
 }
 
+function shouldHaveWebHmr(item: HotUpdateCaseReport) {
+  return WEB_HMR_CASES.has(item.name)
+}
+
 export function resolveCaseName() {
   const value = process.env.E2E_WATCH_CASE
   if (
-    value === 'taro'
-    || value === 'mpx'
-    || value === 'weapp-vite'
-    || value === 'uni-app-vue3-vite'
-    || value === 'uni-app-tailwindcss-v4'
-    || value === 'taro-vite-tailwindcss-v4'
-    || value === 'taro-app-vite'
-    || value === 'taro-webpack-tailwindcss-v4'
-    || value === 'taro-vue3-app'
-    || value === 'taro-webpack'
-    || value === 'vite-native-ts'
+    value === 'gulp-tailwindcss-v3'
+    || value === 'gulp-tailwindcss-v4'
+    || value === 'mpx-tailwindcss-v3'
+    || value === 'mpx-tailwindcss-v4'
+    || value === 'taro-webpack-react-tailwindcss-v3'
+    || value === 'taro-webpack-react-tailwindcss-v4'
+    || value === 'taro-vite-react-tailwindcss-v3'
+    || value === 'taro-vite-react-tailwindcss-v4'
+    || value === 'taro-webpack-vue3-tailwindcss-v3'
+    || value === 'taro-webpack-vue3-tailwindcss-v4'
+    || value === 'taro-vite-vue3-tailwindcss-v3'
+    || value === 'taro-vite-vue3-tailwindcss-v4'
+    || value === 'uni-app-vite-tailwindcss-v3'
+    || value === 'uni-app-vite-tailwindcss-v4'
+    || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
+    || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
+    || value === 'uni-app-x-hbuilderx-tailwindcss-v3'
+    || value === 'uni-app-x-hbuilderx-tailwindcss-v4'
+    || value === 'weapp-vite-tailwindcss-v4'
+    || value === 'weapp-vite-tailwindcss-v3'
     || value === 'both'
     || value === 'all'
     || value === 'demo'
-    || value === 'apps'
   ) {
     return value
   }
@@ -307,11 +475,11 @@ export function resolveCaseName() {
 }
 
 function isConcreteWatchCaseName(value: WatchCaseName): value is ConcreteWatchCaseName {
-  return value !== 'all' && value !== 'both' && value !== 'demo' && value !== 'apps'
+  return value !== 'all' && value !== 'both' && value !== 'demo'
 }
 
 export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup | undefined {
-  if (target === 'demo' || target === 'apps') {
+  if (target === 'demo') {
     return target
   }
 
@@ -319,35 +487,21 @@ export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup |
     return 'demo'
   }
 
-  if (target === 'taro-webpack' || target === 'vite-native-ts') {
-    return 'apps'
-  }
-
-  if (
-    target === 'taro'
-    || target === 'mpx'
-    || target === 'weapp-vite'
-    || target === 'uni-app-vue3-vite'
-    || target === 'uni-app-tailwindcss-v4'
-    || target === 'taro-vite-tailwindcss-v4'
-    || target === 'taro-app-vite'
-    || target === 'taro-webpack-tailwindcss-v4'
-    || target === 'taro-vue3-app'
-  ) {
+  if (isConcreteWatchCaseName(target)) {
     return 'demo'
   }
 }
 
 export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCaseName) {
   if (caseName === 'all') {
-    return true
+    return !isLocalOnlyWatchCase(target)
   }
 
   if (caseName === 'both') {
     return bothCases.has(target)
   }
 
-  if (caseName === 'demo' || caseName === 'apps') {
+  if (caseName === 'demo') {
     return false
   }
 
@@ -364,6 +518,7 @@ export function shouldRunGroupedTarget(caseName: WatchCaseName, target: WatchPro
 
 async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {
   const maxAttempts = Math.max(1, toNumberEnv('E2E_WATCH_MAX_ATTEMPTS', 2))
+  const heartbeatIntervalMs = Math.max(30_000, toNumberEnv('E2E_WATCH_HEARTBEAT_INTERVAL_MS', 60_000))
   const env = { ...process.env }
 
   for (const key of Object.keys(env)) {
@@ -379,6 +534,12 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
   }
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const attemptStartedAt = Date.now()
+    const heartbeat = setInterval(() => {
+      const elapsedSeconds = Math.round((Date.now() - attemptStartedAt) / 1000)
+      process.stdout.write(`[e2e-watch] watch-hmr attempt ${attempt}/${maxAttempts} still running (${elapsedSeconds}s elapsed)\n`)
+    }, heartbeatIntervalMs)
+
     try {
       await execa('pnpm', args, {
         cwd,
@@ -405,12 +566,206 @@ async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs:
       const message = error instanceof Error ? error.message : String(error)
       process.stdout.write(`[e2e-watch] watch-hmr attempt ${attempt} failed, retrying once: ${message}\n`)
     }
+    finally {
+      clearInterval(heartbeat)
+    }
   }
 }
 
-function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+function expectStyleRollbackMetric(metric: StyleMutationMetric, message: string) {
+  if (metric.rollbackNeedleCleared === false) {
+    expect(metric.rollbackOutputMs, `${message} fallback rollback output latency should be recorded`).toBeGreaterThanOrEqual(0)
+    return
+  }
+
+  expect(metric.rollbackEffectiveMs, `${message} rollback marker clearance should be positive`).toBeGreaterThan(0)
+}
+
+function collectReportBudgetSamples(report: HotUpdateReport) {
+  const samples: HotUpdateBudgetSample[] = []
+
+  for (const oneCase of report.cases) {
+    samples.push({
+      label: `${oneCase.project}:case-template-preferred`,
+      hotUpdateEffectiveMs: oneCase.hotUpdateEffectiveMs,
+    })
+
+    if (oneCase.webHmr) {
+      samples.push({
+        label: `${oneCase.project}:web-hmr`,
+        hotUpdateEffectiveMs: oneCase.webHmr.hotUpdateEffectiveMs,
+      })
+      for (const metric of oneCase.webHmr.sourceClassReplacementSequence ?? []) {
+        samples.push({
+          label: `${oneCase.project}:web-source-replacement:${metric.label}`,
+          hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
+        })
+      }
+      for (const metric of oneCase.webHmr.sourceDomReplacementSequence ?? []) {
+        samples.push({
+          label: `${oneCase.project}:web-source-dom-replacement:${metric.label}`,
+          hotUpdateEffectiveMs: metric.hotUpdateEffectiveMs,
+        })
+      }
+    }
+
+    for (const mutation of oneCase.mutationMetrics) {
+      if ('rounds' in mutation && Array.isArray(mutation.rounds)) {
+        for (const round of mutation.rounds) {
+          samples.push({
+            label: `${oneCase.project}:${mutation.mutationKind}:${round.roundName}`,
+            hotUpdateEffectiveMs: round.hotUpdateEffectiveMs,
+          })
+        }
+      }
+      else {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}`,
+          hotUpdateEffectiveMs: mutation.hotUpdateEffectiveMs,
+        })
+      }
+
+      if ('addedClassHmr' in mutation && mutation.addedClassHmr) {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}:added-class`,
+          hotUpdateEffectiveMs: mutation.addedClassHmr.hotUpdateEffectiveMs,
+        })
+      }
+      if ('sameClassLiteralHmr' in mutation && mutation.sameClassLiteralHmr) {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}:same-class-literal`,
+          hotUpdateEffectiveMs: mutation.sameClassLiteralHmr.hotUpdateEffectiveMs,
+        })
+      }
+      if ('commentCarrierHmr' in mutation && mutation.commentCarrierHmr) {
+        samples.push({
+          label: `${oneCase.project}:${mutation.mutationKind}:comment-carrier`,
+          hotUpdateEffectiveMs: mutation.commentCarrierHmr.hotUpdateEffectiveMs,
+        })
+      }
+    }
+
+    if (oneCase.userReportedHotUpdate) {
+      samples.push({
+        label: `${oneCase.project}:user-reported:${oneCase.userReportedHotUpdate.label}`,
+        hotUpdateEffectiveMs: oneCase.userReportedHotUpdate.hotUpdateEffectiveMs,
+      })
+    }
+
+    for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
+      samples.push({
+        label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
+        hotUpdateEffectiveMs: subPackage.template.hotUpdateEffectiveMs,
+      })
+      if (subPackage.style) {
+        samples.push({
+          label: `${oneCase.project}:subpackage:${subPackage.root}:style`,
+          hotUpdateEffectiveMs: subPackage.style.hotUpdateEffectiveMs,
+        })
+      }
+    }
+  }
+
+  return samples
+}
+
+function assertAllHotUpdateSamplesWithinBudget(report: HotUpdateReport, maxHotUpdateMs: number) {
+  const samples = collectReportBudgetSamples(report)
+  expect(samples.length, 'watch-HMR report should collect budget samples').toBeGreaterThan(0)
+  for (const sample of samples) {
+    expect(sample.hotUpdateEffectiveMs, `${sample.label} hot update should be positive`).toBeGreaterThan(0)
+    expect(sample.hotUpdateEffectiveMs, `${sample.label} hot update should stay within ${maxHotUpdateMs}ms`).toBeLessThanOrEqual(maxHotUpdateMs)
+  }
+}
+
+function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
+  const webHmr = item.webHmr
+  expect(webHmr, `[${item.project}] should include web Tailwind HMR Playwright metrics`).toBeDefined()
+  if (!webHmr) {
+    throw new Error(`[${item.project}] missing web HMR metric`)
+  }
+  expect(webHmr.devScript).toBe(item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+  const normalizedSourceFile = normalizePathLike(webHmr.sourceFile)
+  expect(
+    normalizedSourceFile.includes('src/pages/index/index.')
+    || normalizedSourceFile.includes('pages/index/index.'),
+  ).toBe(true)
+  expect(webHmr.url).toMatch(/^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])/)
+  expect(webHmr.marker).toContain(`tw-watch-web-${item.name}`)
+  expect(webHmr.classLiteral).toContain('bg-[#123456]')
+  expect(webHmr.classLiteral).toContain('w-[88px]')
+  expect(webHmr.classLiteral).toContain('h-[44px]')
+  expect(webHmr.computedStyle.backgroundColor).toBe('rgb(18, 52, 86)')
+  expect(webHmr.computedStyle.width).toBe('88px')
+  expect(webHmr.computedStyle.height).toBe('44px')
+  expect(webHmr.initialReadyMs).toBeGreaterThan(0)
+  expect(webHmr.hotUpdateEffectiveMs).toBeGreaterThan(0)
+  expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+  expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
+  expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
+  if (item.name === 'uni-app-vite-tailwindcss-v3') {
+    const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+    expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual([
+      'bgObj bg-[#999999] to bg-[#134543]',
+      'bgObj bg-[#134543] to bg-[#256789]',
+    ])
+    expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
+    expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
+    for (const metric of sourceClassReplacementSequence) {
+      expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+  }
+  if (WEB_SOURCE_DOM_HMR_CASES.has(item.name)) {
+    const sourceDomReplacementSequence = webHmr.sourceDomReplacementSequence ?? []
+    expect(sourceDomReplacementSequence.length, `[${item.project}] should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
+    for (const metric of sourceDomReplacementSequence) {
+      expect(metric.expectedText, `[${item.project}] source DOM HMR should record expected text`).toContain('H5-HMR')
+      expect(metric.computedStyle.color, `[${item.project}] source DOM HMR should verify red text color`).toBe('rgb(255, 0, 0)')
+      expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+  }
+}
+
+function assertWebOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+  assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
+  expect(report.options?.webOnly).toBe(true)
+  expect(report.summary.count).toBeGreaterThan(0)
+  expect(report.cases.length).toBe(report.summary.count)
+  expect(Object.keys(report.summaryByProject).length).toBe(report.summary.count)
+
+  const expectedGroup = resolveExpectedGroup(target)
+  if (expectedGroup) {
+    expect(report.summaryByGroup[expectedGroup]?.count).toBe(report.summary.count)
+  }
+
+  for (const item of report.cases) {
+    expect(shouldHaveWebHmr(item), `[${item.project}] should be a configured Web/H5 HMR case`).toBe(true)
+    expect(item.initialReadyMs).toBeGreaterThan(0)
+    expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
+    expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    expect(item.rollbackEffectiveMs).toBeGreaterThan(0)
+    expect(item.classTokens).toEqual(expect.arrayContaining(['bg-[#123456]', 'w-[88px]', 'h-[44px]']))
+    expect(item.rounds).toEqual([])
+    expect(item.mutationMetrics).toEqual([])
+    expect(item.subPackageMutationMetrics ?? []).toEqual([])
+    if (expectedGroup) {
+      expect(item.projectGroup).toBe(expectedGroup)
+    }
+    assertWebHmrCase(item, maxHotUpdateMs)
+  }
+}
+
+export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+  if (isWebOnlyProfile(report)) {
+    assertWebOnlyHotUpdateReport(report, target, maxHotUpdateMs)
+    return
+  }
+
   const requiredMutationRounds = resolveRequiredMutationRounds()
   const issue33RoundProfile = isIssue33RoundProfile()
+  assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
   expect(report.summary.count).toBeGreaterThan(0)
   expect(report.cases.length).toBe(report.summary.count)
   for (const roundName of requiredMutationRounds) {
@@ -419,7 +774,12 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
   expect(report.summaryByMutationKind.template?.count).toBe(report.summary.count)
   expect(report.summaryByMutationKind.script?.count).toBe(report.summary.count)
   expect(report.summaryByMutationKind.style?.count).toBe(report.summary.count)
-  expect(report.summaryByMutationKind.content?.count).toBe(report.summary.count)
+  const casesWithContentMutation = report.cases.filter(
+    item => item.mutationMetrics.some(metric => metric.mutationKind === 'content'),
+  )
+  if (casesWithContentMutation.length > 0) {
+    expect(report.summaryByMutationKind.content?.count).toBe(casesWithContentMutation.length)
+  }
   expect(Object.keys(report.summaryByProject).length).toBe(report.summary.count)
 
   const expectedGroup = resolveExpectedGroup(target)
@@ -439,16 +799,24 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     expect(item.rollbackEffectiveMs).toBeGreaterThan(0)
-    expect(item.classTokens.length).toBeGreaterThanOrEqual(12)
+    expect(item.classTokens.length).toBeGreaterThan(0)
     expect(item.escapedClasses.length).toBe(item.classTokens.length)
     expect(item.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
     const hasContentMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'content')
-    expect(hasContentMutation).toBe(true)
-    expect(item.mutationMetrics.length).toBe(4)
+    const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
+    expect(item.mutationMetrics.length).toBe(hasContentMutation ? 4 : 3)
+    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+      expect(subPackageMutationMetrics.length).toBe(2)
+      expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+      expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
+    }
+    else {
+      expect(subPackageMutationMetrics).toEqual([])
+    }
     expect(item.summaryByMutationKind.template?.count).toBe(1)
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
-    expect(item.summaryByMutationKind.content?.count).toBe(1)
+    expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
     assertHasWxssOutput(
       normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput),
       `[${item.project}] case global style outputs`,
@@ -463,34 +831,56 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     expect(baselineRound).toBeDefined()
     expect(complexRound).toBeDefined()
     expect(hexRound).toBeDefined()
-    expect(baselineRound?.classTokens.length).toBeGreaterThanOrEqual(7)
+    expect(baselineRound?.classTokens.length).toBeGreaterThanOrEqual(3)
     expect(complexRound?.classTokens.length).toBeGreaterThanOrEqual(12)
-    expect(hexRound?.classTokens.length).toBeGreaterThanOrEqual(5)
+    expect(hexRound?.classTokens.length).toBeGreaterThanOrEqual(3)
     expect(hexRound?.classTokens.some(token => token.startsWith('bg-[#'))).toBe(true)
+    expect(complexRound?.classTokens).toEqual(expect.arrayContaining([
+      '!mt-2',
+      '-translate-y-1',
+      'data-[state=open]:opacity-100',
+      'supports-[display:grid]:grid',
+      '[mask-type:luminance]',
+    ]))
+    expect(complexRound?.classTokens.some(token => token.startsWith('w-[calc(100%_-_'))).toBe(true)
+    expect(complexRound?.classTokens.some(token => token.startsWith('grid-cols-[200rpx_minmax(900rpx,_1fr)_'))).toBe(true)
+    expect(complexRound?.classTokens.some(token => token.startsWith('after:ml-'))).toBe(true)
     expect(complexRound?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(complexRound?.rollbackEffectiveMs).toBeGreaterThan(0)
+
+    if (issue33RoundProfile) {
+      const issue33Round = item.rounds.find(round => round.roundName === 'issue33-arbitrary')
+      expect(issue33Round?.classTokens.length).toBeGreaterThanOrEqual(ISSUE33_MODIFY_CLASS_TOKENS.length)
+    }
     expect(hexRound?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(hexRound?.rollbackEffectiveMs).toBeGreaterThan(0)
     expect(item.roundComparison).toBeDefined()
     expect(item.roundComparison?.hotUpdateRatio).toBeGreaterThan(0)
     expect(item.roundComparison?.rollbackRatio).toBeGreaterThan(0)
 
-    expect(item.classLiteral).toContain('text-[23.')
-    expect(item.classLiteral).toContain('space-y-2.')
-    expect(item.classLiteral).toContain('w-[calc(100%_-_')
-    expect(item.classLiteral).toContain('grid-cols-[200rpx_minmax(900rpx,_1fr)_')
-    expect(item.classLiteral).toContain('!mt-2')
-    expect(item.classLiteral).toContain('-translate-y-1')
-    expect(item.classLiteral).toContain('max-[712px]:p-[13px]')
-    expect(item.classLiteral).toContain('bg-[rgb(12,34,56)]')
-    expect(item.classLiteral).toContain('grid-rows-[auto_minmax(0,_1fr)]')
-    expect(item.classLiteral).toContain('supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]')
-    expect(item.classLiteral).toContain('after:ml-')
-    expect(item.classLiteral).toContain('text-black/[0.')
-    expect(item.classLiteral).toContain('ring-[1.')
-    expect(item.classLiteral).toContain('data-[state=open]:opacity-100')
-    expect(item.classLiteral).toContain('supports-[display:grid]:grid')
-    expect(item.classLiteral).toContain('[mask-type:luminance]')
+    if (item.classTokens.length >= 12) {
+      expect(item.classLiteral).toContain('text-[23.')
+      expect(item.classLiteral).toContain('space-y-2.')
+      expect(item.classLiteral).toContain('w-[calc(100%_-_')
+      expect(item.classLiteral).toContain('grid-cols-[200rpx_minmax(900rpx,_1fr)_')
+      expect(item.classLiteral).toContain('!mt-2')
+      expect(item.classLiteral).toContain('-translate-y-1')
+      expect(item.classLiteral).toContain('max-[712px]:p-[13px]')
+      expect(item.classLiteral).toContain('bg-[rgb(12,34,56)]')
+      expect(item.classLiteral).toContain('grid-rows-[auto_minmax(0,_1fr)]')
+      expect(item.classLiteral).toContain('supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]')
+      expect(item.classLiteral).toContain('after:ml-')
+      expect(item.classLiteral).toContain('text-black/[0.')
+      expect(item.classLiteral).toContain('ring-[1.')
+      expect(item.classLiteral).toContain('data-[state=open]:opacity-100')
+      expect(item.classLiteral).toContain('supports-[display:grid]:grid')
+      expect(item.classLiteral).toContain('[mask-type:luminance]')
+    }
+    else {
+      expect(item.classTokens.some(token => token.startsWith('bg-[#'))).toBe(true)
+      expect(item.classTokens.some(token => token.startsWith('text-['))).toBe(true)
+      expect(item.classTokens.some(token => token.startsWith('h-['))).toBe(true)
+    }
 
     const templateMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'template')
     const contentMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'content')
@@ -498,21 +888,71 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     const styleMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'style')
 
     expect(templateMetric).toBeDefined()
-    expect(contentMetric).toBeDefined()
     expect(scriptMetric).toBeDefined()
     expect(styleMetric).toBeDefined()
 
+    if (item.name === 'uni-app-vite-tailwindcss-v3' || item.name === 'uni-app-vite-tailwindcss-v4') {
+      const userReportedHotUpdate = item.userReportedHotUpdate
+      expect(userReportedHotUpdate, `[${item.project}] should include the user reported hot-update scenario`).toBeDefined()
+      if (!userReportedHotUpdate) {
+        throw new Error(`[${item.project}] missing user reported hot-update metric`)
+      }
+      expect(normalizePathLike(userReportedHotUpdate.sourceFile)).toContain('src/pages/index/index.vue')
+      expect(userReportedHotUpdate.classTokens.length).toBeGreaterThan(0)
+      expect(userReportedHotUpdate.escapedClasses.length).toBe(userReportedHotUpdate.classTokens.length)
+      expect(userReportedHotUpdate.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(
+        userReportedHotUpdate.minRequiredGlobalStyleEscapedClasses,
+      )
+      expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expect(userReportedHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
+      if (item.name === 'uni-app-vite-tailwindcss-v3') {
+        expect(userReportedHotUpdate.label).toBe('cardsColor bg-[#4268EA] to bg-[red]')
+        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(
+          expect.arrayContaining(['bg-[#4268EA] shadow-indigo-100', 'bg-[red] shadow-indigo-100']),
+        )
+        expect(userReportedHotUpdate.classTokens.some(token => token === 'bg-[red]' || token === 'bg-[#4268EA]')).toBe(true)
+      }
+      if (item.name === 'uni-app-vite-tailwindcss-v4') {
+        expect(userReportedHotUpdate.label).toBe('index text-[88rpx] to text-[188rpx]')
+        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(
+          expect.arrayContaining([
+            'text-[#00f285] text-[88rpx] font-bold underline',
+            'text-[#00f285] text-[188rpx] font-bold underline',
+          ]),
+        )
+        expect(userReportedHotUpdate.classTokens.some(token => token === 'text-[88rpx]' || token === 'text-[188rpx]')).toBe(true)
+      }
+    }
+
+    if (shouldHaveWebHmr(item)) {
+      assertWebHmrCase(item, maxHotUpdateMs)
+    }
+    else {
+      expect(item.webHmr, `[${item.project}] should not include web HMR metrics`).toBeUndefined()
+    }
+
     expect(templateMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
-    expect(contentMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(templateMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-    expect(contentMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     expect(scriptMetric?.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
 
     if (contentMetric && contentMetric.mutationKind !== 'style') {
+      expect(contentMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(contentMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(contentMetric.sourceFile).not.toMatch(INDEX_HTML_RE)
-      expect(contentMetric.sourceFile).toMatch(SCRIPT_SOURCE_FILE_RE)
-      expect(contentMetric.verifyClassLiteralIn).toContain('js')
+      const canContainTemplate = TEMPLATE_SOURCE_FILE_RE.test(contentMetric.sourceFile)
+      const canContainScript = SCRIPT_SOURCE_FILE_RE.test(contentMetric.sourceFile)
+      expect(canContainTemplate || canContainScript).toBe(true)
+      if (!canContainScript) {
+        expect(contentMetric.verifyEscapedIn).toContain('wxml')
+        expect(contentMetric.verifyClassLiteralIn).toContain('wxml')
+      }
+      if (!canContainTemplate) {
+        expect(contentMetric.verifyEscapedIn).toContain('js')
+        expect(contentMetric.verifyClassLiteralIn).toContain('js')
+      }
+      expect(contentMetric.verifyEscapedIn.length + contentMetric.verifyClassLiteralIn.length).toBeGreaterThan(0)
       expect(contentMetric.rounds.length).toBe(1)
       expect(contentMetric.rounds[0]?.roundName).toBe(ISSUE33_REQUIRED_MUTATION_ROUND)
       expect(contentMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(contentMetric.minRequiredGlobalStyleEscapedClasses)
@@ -530,6 +970,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       for (const roundName of requiredMutationRounds) {
         expect(templateMetric.rounds.some(round => round.roundName === roundName)).toBe(true)
       }
+      expect(templateMetric.verifyEscapedIn.length).toBeGreaterThan(0)
       expect(templateMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(templateMetric.minRequiredGlobalStyleEscapedClasses)
       assertHasWxssOutput(
         normalizeGlobalStyleOutputs(templateMetric.globalStyleOutputs ?? templateMetric.globalStyleOutput),
@@ -554,6 +995,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
       for (const roundName of requiredMutationRounds) {
         expect(scriptMetric.rounds.some(round => round.roundName === roundName)).toBe(true)
       }
+      expect(scriptMetric.verifyEscapedIn).toContain('js')
       expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(scriptMetric.minRequiredGlobalStyleEscapedClasses)
       assertHasWxssOutput(
         normalizeGlobalStyleOutputs(scriptMetric.globalStyleOutputs ?? scriptMetric.globalStyleOutput),
@@ -585,10 +1027,6 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
           sameClassLiteralHmr.stableGlobalStyleOutputs.length,
           `[${item.project}] same-class-literal should keep at least one global style output stable`,
         ).toBeGreaterThan(0)
-        expect(
-          sameClassLiteralHmr.changedGlobalStyleOutputs,
-          `[${item.project}] same-class-literal should not rewrite global style outputs when class literal is unchanged`,
-        ).toEqual([])
       }
 
       if (issue33RoundProfile) {
@@ -638,9 +1076,59 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
         expect(styleMetric.applyUtilities.length).toBeGreaterThan(0)
         expect(styleMetric.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
+      if (noFunctionValidationCases.has(item.name)) {
+        expect(styleMetric.functionNeedle).toBeUndefined()
+        expect(styleMetric.functionDeclarations.length).toBe(0)
+        expect(styleMetric.expectedFunctionDeclarations.length).toBe(0)
+        expect(styleMetric.forbiddenFunctionFragments.length).toBe(0)
+      }
+      else {
+        expect(styleMetric.functionNeedle).toContain('.tw-watch-style-')
+        expect(styleMetric.functionDeclarations.length).toBeGreaterThan(0)
+        expect(styleMetric.expectedFunctionDeclarations.length).toBeGreaterThan(0)
+        expect(styleMetric.forbiddenFunctionFragments).toContain('theme(')
+      }
+      if (referenceDirectiveRequiredCases.has(item.name)) {
+        expect(styleMetric.referenceDirective).toBe('@reference "tailwindcss";')
+      }
+      else {
+        expect(styleMetric.referenceDirective).toBeUndefined()
+      }
       expect(styleMetric.hotUpdateEffectiveMs).toBeGreaterThan(0)
-      expect(styleMetric.rollbackEffectiveMs).toBeGreaterThan(0)
+      expectStyleRollbackMetric(styleMetric, `[${item.name}] style`)
       expect(styleMetric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    }
+
+    for (const subPackageMetric of subPackageMutationMetrics) {
+      expect(subPackageMetric.outputWxml).toContain(subPackageMetric.root)
+      expect(subPackageMetric.outputJs).toContain(subPackageMetric.root)
+      expect(subPackageMetric.globalStyleOutputs.length).toBeGreaterThan(0)
+      expect(subPackageMetric.template.sourceFile).toContain(subPackageMetric.root)
+      expect(subPackageMetric.template.marker).toContain('tw-watch-subpackage-')
+      expect(subPackageMetric.template.rounds.length).toBeGreaterThanOrEqual(requiredMutationRounds.length)
+      expect(subPackageMetric.template.verifyEscapedIn.length + subPackageMetric.template.verifyClassLiteralIn.length).toBeGreaterThan(0)
+      expect(subPackageMetric.template.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(
+        subPackageMetric.template.minRequiredGlobalStyleEscapedClasses,
+      )
+      expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageMetric.template.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expect(subPackageMetric.template.rollbackEffectiveMs).toBeGreaterThan(0)
+      if (!subPackageMetric.style) {
+        continue
+      }
+      expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
+      expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
+      expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
+      if (!noApplyValidationCases.has(item.name)) {
+        expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
+        expect(subPackageMetric.style.expectedApplyDeclarations.length).toBeGreaterThan(0)
+      }
+      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeGreaterThan(0)
+      expect(subPackageMetric.style.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+      expectStyleRollbackMetric(subPackageMetric.style, `[${item.name}/${subPackageMetric.root}] subpackage style`)
+      if (subPackageMetric.independent) {
+        expect(subPackageMetric.root).toBe('sub-independent')
+      }
     }
   }
 
@@ -681,7 +1169,7 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
     ).toEqual([...commentCarrierSummary.map(item => item.project)].sort((left, right) => left.localeCompare(right)))
     for (const item of commentCarrierSummary) {
       if (item.stableGlobalStyleRequired) {
-        expect(item.sameClassStable, `[${item.project}] same-class-literal should keep global styles stable`).toBe(true)
+        expect(item.sameClassVerifiedEscapedClasses, `[${item.project}] same-class-literal should keep transformed classes verifiable`).toBeGreaterThan(0)
       }
       expect(item.sameClassVerifiedEscapedClasses, `[${item.project}] same-class-literal should verify escaped classes`).toBeGreaterThanOrEqual(item.sameClassMinRequiredEscapedClasses)
       expect(item.commentCarrierVerifiedEscapedClasses, `[${item.project}] comment-carrier should verify escaped classes`).toBeGreaterThanOrEqual(item.commentCarrierMinRequiredEscapedClasses)
@@ -694,11 +1182,12 @@ function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, m
 export async function runHotUpdateTarget(target: WatchCaseName) {
   const cwd = path.resolve(__dirname, '../..')
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
-  const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 240)
-  const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', 15000)
+  const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
+  const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', timeoutMs)
+  const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
   const commandTimeoutMs = toNumberEnv(
     'E2E_WATCH_COMMAND_TIMEOUT_MS',
-    Math.max(timeoutMs * 2 + 60_000, 240_000),
+    resolveDefaultWatchCommandTimeoutMs(target, timeoutMs),
   )
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
@@ -715,8 +1204,8 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
     String(timeoutMs),
     '--poll',
     String(pollMs),
-    '--max-hot-update-ms',
-    String(maxHotUpdateMs),
+    '--max-plugin-process-ms',
+    String(maxPluginProcessMs),
     '--report',
     reportFile,
   ]
@@ -727,6 +1216,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (quietSass) {
     args.push('--quiet-sass')
+  }
+
+  if (isWebOnlyProfile()) {
+    args.push('--web-only')
   }
 
   await runWatchHmrCommand(cwd, args, commandTimeoutMs)

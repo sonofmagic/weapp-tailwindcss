@@ -1,14 +1,12 @@
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin } from "weapp-tailwindcss/vite";
-const { WeappTailwindcssDisabled } = require('./shared')
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 import { plugins as postcssPlugins } from './postcss.config.cjs'
 // vite 插件配置
 const vitePlugins = [
   uni(),
-  UnifiedViteWeappTailwindcssPlugin({
+  WeappTailwindcss({
     rem2rpx: true,
-    disabled: WeappTailwindcssDisabled,
     tailwindcssBasedir: __dirname,
   })
 ];

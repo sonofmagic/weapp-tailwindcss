@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'pathe'
 import prettier from 'prettier'
+import autoprefixer from 'autoprefixer'
 import { createStyleHandler } from '@/index'
 
 const WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
@@ -138,13 +139,14 @@ describe('v4', () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
-    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-tailwindcss-v4-app-origin.css'), 'utf8')
+    const code = await fs.readFile(path.resolve(__dirname, './fixtures/css/taro-vite-react-tailwindcss-v4-app-origin.css'), 'utf8')
     const { css } = await styleHandler(code, {
       isMainChunk: true,
     })
     expect(css).not.toContain('@layer')
     expect(css).not.toContain(':not(#\\#)')
     expect(css).not.toContain(':not(#n)')
+    expect(css).not.toContain('--tw-content')
     expect(await prettier.format(css, { parser: 'css' })).toMatchSnapshot()
   })
 
@@ -248,6 +250,51 @@ describe('v4', () => {
     assertLiteralBeforeVariable(css, 'border-right-width')
   })
 
+  it('removes v4 display-p3 media and keeps default font declarations', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+:host,page,.tw-root,wx-root-portal-content {
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --default-font-family: var(--font-sans);
+  --font-weight-bold: 700;
+  --color-blue-500: rgb(50, 128, 255);
+}
+@media (color-gamut: p3) {
+  .bg-blue-500_f50 {
+    background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.5);
+  }
+}
+.bg-blue-500_f50 {
+  background-color: rgb(50 128 255 / 0.5);
+  background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.5);
+}
+.font-sans {
+  font-family: var(--font-sans);
+}
+.default-font {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+`
+
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+    })
+
+    expect(css).toContain('--font-weight-bold: 700')
+    expect(css).toContain('--color-blue-500: rgb(50, 128, 255)')
+    expect(css).toContain('background-color: rgba(50, 128, 255, 0.5)')
+    expect(css).not.toContain('color-gamut')
+    expect(css).not.toContain('display-p3')
+    expect(css).toContain('ui-sans-serif')
+    expect(css).toContain('font-family: var(--font-sans)')
+    expect(css).toContain('--font-sans')
+    expect(css).toContain('--font-mono')
+    expect(css).toContain('--default-font-family')
+  })
+
   it('v4 space-y-* case 2', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
@@ -308,6 +355,28 @@ describe('v4', () => {
 }`)
     expect(css).not.toContain('@supports')
     expect(css).not.toContain('in oklab')
+  })
+
+  it('removes Tailwind CSS v4 display-p3 variable supports guard', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `:root,:host {
+  --color-blue-500: rgb(50, 128, 255);
+}
+@supports (color: color(display-p3 0 0 0%)) {
+  :root,:host {
+    --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
+  }
+}`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('--color-blue-500: rgb(50, 128, 255);')
+    expect(css).not.toContain('@supports')
+    expect(css).not.toContain('display-p3')
   })
 
   it('v4.1.1 uni-app vue 3', async () => {
@@ -528,6 +597,65 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(v2jit.css).toContain('font-size: 32rpx')
   })
 
+  it('keeps Tailwind CSS v4 border default style when only border utility is generated', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = [
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join('')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('view,text,:after,:before{--tw-border-style:solid}')
+    expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
+    expect(css).not.toContain('@property')
+  })
+
+  it('does not duplicate Tailwind CSS v4 border defaults when a default scope already exists', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = [
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      ':root,:host{--tw-border-style:solid}',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join('')
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('view,text,:after,:before{--tw-border-style:solid}')
+    expect(css.match(/--tw-border-style:solid/g)).toHaveLength(1)
+    expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--tw-border-style:solid}')
+    expect(css).not.toContain('@property')
+  })
+
+  it('recovers misparsed arbitrary rpx lengths in non-main chunks', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+.text-_b55rpx_B { color: 55rpx; }
+.border-_b10rpx_B { border-color: 10rpx; }
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: false,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('font-size: 55rpx')
+    expect(css).not.toContain('color: 55rpx')
+    expect(css).toContain('border-width: 10rpx')
+    expect(css).not.toContain('border-color: 10rpx')
+  })
+
   it('adds webkit background clip for Tailwind CSS v4 bg-clip-text', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
@@ -556,7 +684,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('background-clip: text')
   })
 
-  it('keeps Tailwind CSS v3 autoprefixer disabled by default', async () => {
+  it('adds webkit background clip for Tailwind CSS v3 by default', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
@@ -565,7 +693,147 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       majorVersion: 3,
     })
 
-    expect(css).not.toContain('-webkit-background-clip: text')
+    expect(css).toContain('-webkit-background-clip: text')
     expect(css).toContain('background-clip: text')
+  })
+
+  it('does not add legacy flexbox prefixes by default', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler([
+      '.flex-center {',
+      '  display: flex;',
+      '  flex-direction: column;',
+      '  align-items: center;',
+      '  justify-content: center;',
+      '}',
+    ].join('\n'), {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('display: -webkit-flex')
+    expect(css).not.toContain('-webkit-flex-direction')
+    expect(css).not.toContain('-webkit-align-items')
+    expect(css).not.toContain('-webkit-justify-content')
+    expect(css).toContain('display: flex')
+    expect(css).toContain('flex-direction: column')
+    expect(css).toContain('align-items: center')
+    expect(css).toContain('justify-content: center')
+  })
+
+  it('removes legacy flexbox prefixes from user postcss autoprefixer output', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      postcssOptions: {
+        plugins: [autoprefixer()],
+      },
+    })
+    const { css } = await styleHandler([
+      '.flex-center {',
+      '  display: -webkit-flex;',
+      '  display: flex;',
+      '  -webkit-flex-direction: column;',
+      '  flex-direction: column;',
+      '  -webkit-align-items: center;',
+      '  align-items: center;',
+      '  -webkit-justify-content: center;',
+      '  justify-content: center;',
+      '  -webkit-background-clip: text;',
+      '  background-clip: text;',
+      '}',
+    ].join('\n'), {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).not.toContain('display: -webkit-flex')
+    expect(css).not.toContain('-webkit-flex-direction')
+    expect(css).not.toContain('-webkit-align-items')
+    expect(css).not.toContain('-webkit-justify-content')
+    expect(css).toContain('display: flex')
+    expect(css).toContain('flex-direction: column')
+    expect(css).toContain('align-items: center')
+    expect(css).toContain('justify-content: center')
+    expect(css).toContain('-webkit-background-clip: text')
+    expect(css).toContain('background-clip: text')
+  })
+
+  it('keeps only mini-program useful webkit prefixes', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler([
+      '.demo {',
+      '  background-clip: text;',
+      '  mask-image: var(--svg);',
+      '  mask-size: 100% 100%;',
+      '  display: -webkit-box;',
+      '  -webkit-box-orient: vertical;',
+      '  -webkit-line-clamp: 2;',
+      '  -webkit-overflow-scrolling: touch;',
+      '  -webkit-text-fill-color: transparent;',
+      '  -webkit-text-stroke: 1px currentColor;',
+      '  text-decoration-line: underline;',
+      '  backdrop-filter: blur(16px);',
+      '  filter: blur(4px);',
+      '  clip-path: inset(0);',
+      '  writing-mode: vertical-rl;',
+      '  appearance: none;',
+      '  transform: translateX(1px);',
+      '  transition-property: color, text-decoration-color, transform, filter, backdrop-filter;',
+      '  transition: transform .2s;',
+      '  animation: spin 1s;',
+      '}',
+      '@keyframes spin { to { transform: rotate(1turn); } }',
+    ].join('\n'), {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('-webkit-background-clip: text')
+    expect(css).toContain('-webkit-mask-image: var(--svg)')
+    expect(css).toContain('-webkit-mask-size: 100% 100%')
+    expect(css).toContain('display: -webkit-box')
+    expect(css).toContain('-webkit-box-orient: vertical')
+    expect(css).toContain('-webkit-line-clamp: 2')
+    expect(css).toContain('-webkit-overflow-scrolling: touch')
+    expect(css).toContain('-webkit-text-fill-color: transparent')
+    expect(css).toContain('-webkit-text-stroke: 1px currentColor')
+    expect(css).not.toContain('-webkit-text-decoration-line')
+    expect(css).not.toContain('-webkit-text-decoration-color')
+    expect(css).not.toContain('-webkit-backdrop-filter')
+    expect(css).not.toContain('-webkit-filter')
+    expect(css).not.toContain('-webkit-clip-path')
+    expect(css).not.toContain('-webkit-writing-mode')
+    expect(css).not.toContain('-webkit-appearance')
+    expect(css).not.toContain('-webkit-transform')
+    expect(css).not.toContain('-webkit-animation')
+    expect(css).not.toContain('@-webkit-keyframes')
+    expect(css).not.toContain('transition-property: color, text-decoration-color, transform, filter, backdrop-filter, -webkit-text-decoration-color')
+    expect(css).not.toContain('transition: transform .2s, -webkit-transform .2s')
+  })
+
+  it('deduplicates transition-property declarations after mini-program prefix cleanup', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+    const { css } = await styleHandler([
+      '.transition {',
+      '  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;',
+      '  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);',
+      '  transition-duration: 150ms;',
+      '}',
+    ].join('\n'))
+    const transitionRule = css.match(/\.transition\s*\{[\s\S]*?\}/)?.[0] ?? ''
+
+    expect(transitionRule.match(/transition-property:/g) ?? []).toHaveLength(1)
+    expect(transitionRule).toContain('transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter')
+    expect(transitionRule).not.toContain('-webkit-text-decoration-color')
+    expect(transitionRule).not.toContain('-webkit-transform')
+    expect(transitionRule).not.toContain('-webkit-filter')
+    expect(transitionRule).not.toContain('-webkit-backdrop-filter')
   })
 })

@@ -1,19 +1,17 @@
 import type { UserDefinedOptions } from '@/types'
 
-export interface ResolvedDisabledOptions {
+export interface ResolvedPluginDisabledState {
   plugin: boolean
-  rewriteCssImports: boolean
 }
 
-export function resolveDisabledOptions(disabled: UserDefinedOptions['disabled']): ResolvedDisabledOptions {
+export function resolvePluginDisabledState(disabled: UserDefinedOptions['disabled']): ResolvedPluginDisabledState {
   if (disabled === true) {
-    return { plugin: true, rewriteCssImports: false }
+    return { plugin: true }
   }
   if (disabled === false || disabled == null) {
-    return { plugin: false, rewriteCssImports: false }
+    return { plugin: false }
   }
   return {
     plugin: disabled.plugin ?? false,
-    rewriteCssImports: disabled.rewriteCssImports ?? false,
   }
 }

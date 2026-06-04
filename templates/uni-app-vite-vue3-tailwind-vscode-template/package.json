@@ -38,7 +38,6 @@
     "weapp:login": "weapp login",
     "upload:dev": "weapp upload -p dist/dev/mp-weixin -v 1.0.0 -d \"dev version\"",
     "upload:build": "weapp upload -p dist/build/mp-weixin -v 1.0.0 -d \"release version\"",
-    "postinstall": "weapp-tw patch",
     "lint": "eslint .",
     "lint:fix": "eslint ./src --fix",
     "up:pkg": "pnpm up -rLi \"!@dcloudio/*\"",

@@ -1,5 +1,96 @@
 # website
 
+## 1.0.19-next.12
+
+### Patch Changes
+
+- 📦 **Dependencies** [`7f4c559`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7f4c559d6103e8ca92446743492fe02e09687078)
+  → `weapp-tailwindcss@5.0.0-next.38`
+
+## 1.0.19-next.11
+
+### Patch Changes
+
+- 📦 **Dependencies** [`368f2d7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/368f2d74a144ac22a88d4da8494dc32d035bf8b4)
+  → `weapp-tailwindcss@5.0.0-next.37`
+
+## 1.0.19-next.10
+
+### Patch Changes
+
+- 📦 **Dependencies** [`8035fe2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8035fe27c44dd73a31dd3e4741da438d82db2ca9)
+  → `weapp-tailwindcss@5.0.0-next.36`
+
+## 1.0.19-next.9
+
+### Patch Changes
+
+- 📦 **Dependencies** [`6ac3d23`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6ac3d23ffeb28678725f16c6cab6c67b5c9bb085)
+  → `weapp-tailwindcss@5.0.0-next.35`
+
+## 1.0.19-next.8
+
+### Patch Changes
+
+- 📦 **Dependencies** [`19bb980`](https://github.com/sonofmagic/weapp-tailwindcss/commit/19bb98018f8a35e2a5a1e17b719700ba0075f2c2)
+  → `weapp-tailwindcss@5.0.0-next.34`
+
+## 1.0.19-next.7
+
+### Patch Changes
+
+- 📦 **Dependencies** [`5c1bb9b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5c1bb9bd2b27352be80567c969da4b0ea06e0490)
+  → `weapp-tailwindcss@5.0.0-next.33`
+
+## 1.0.19-next.6
+
+### Patch Changes
+
+- 📦 **Dependencies** [`1da6bd0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1da6bd09f1ae433a553bf8fcfb4ab95ff1517bf0)
+  → `weapp-tailwindcss@5.0.0-next.32`
+
+## 1.0.19-next.5
+
+### Patch Changes
+
+- 📦 **Dependencies** [`1c1a1b0`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1c1a1b06b9d564dac166fa6ea8119b8068da3477)
+  → `weapp-tailwindcss@5.0.0-next.31`
+
+## 1.0.19-next.4
+
+### Patch Changes
+
+- 📦 **Dependencies** [`0c96ecc`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0c96ecc1d9a35215b479663e466c86267662c01f)
+  → `weapp-tailwindcss@5.0.0-next.30`
+
+## 1.0.19-next.3
+
+### Patch Changes
+
+- 📦 **Dependencies** [`4d178b9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4d178b90c44e27f0c0d1134b5139d7623fb0cb49)
+  → `weapp-tailwindcss@5.0.0-next.29`
+
+## 1.0.19-next.2
+
+### Patch Changes
+
+- 📦 **Dependencies** [`ab672a5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ab672a57c25551fede46556e341d5654a83dfde9)
+  → `weapp-tailwindcss@5.0.0-next.28`
+
+## 1.0.19-next.1
+
+### Patch Changes
+
+- 📦 **Dependencies** [`264f00c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/264f00c3d44865f1adffbe936f481ca260f1c933)
+  → `weapp-tailwindcss@5.0.0-next.27`
+
+## 1.0.19-next.0
+
+### Patch Changes
+
+- 📦 **Dependencies** [`01a0cb2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/01a0cb2f40b59e7989622f22635d0df832b439a1)
+  → `@weapp-tailwindcss/merge@2.2.1-next.0`, `@weapp-tailwindcss/cva@0.1.7-next.0`, `@weapp-tailwindcss/variants@0.2.3-next.0`
+
 ## 1.0.18
 
 ### Patch Changes

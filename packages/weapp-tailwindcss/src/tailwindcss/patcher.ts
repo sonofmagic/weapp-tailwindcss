@@ -1,5 +1,4 @@
 import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
-import type { LegacyTailwindcssPatcherOptions } from './patcher-options'
 import type { TailwindcssPatcherLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -7,11 +6,10 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import { findNearestPackageRoot } from '@/context/workspace'
+import { omitUndefined } from '@/utils/object'
 import {
-
   normalizeExtendLengthUnits,
   normalizeTailwindcssPatcherOptions,
-  toModernTailwindcssPatchOptions,
 } from './patcher-options'
 import {
   createDefaultResolvePaths,
@@ -19,6 +17,7 @@ import {
   resolveModuleFromPaths,
   resolveTailwindConfigFallback,
 } from './patcher-resolve'
+import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION } from './version'
 
 type TailwindcssExtractOptions = Parameters<TailwindcssPatcher['extract']>[0]
 type TailwindcssExtractResult = ReturnType<TailwindcssPatcher['extract']>
@@ -31,7 +30,7 @@ export interface CreateTailwindcssPatcherOptions {
   cacheDir?: string
   supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
   tailwindcss?: TailwindUserOptions
-  tailwindcssPatcherOptions?: TailwindCssPatchOptions | LegacyTailwindcssPatcherOptions
+  tailwindcssPatcherOptions?: TailwindCssPatchOptions
 }
 
 function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
@@ -45,12 +44,7 @@ function createFallbackTailwindcssPatcher(): TailwindcssPatcherLike {
 
   return {
     packageInfo,
-    async patch() {
-      return {
-        exposeContext: undefined,
-        extendLengthUnits: undefined,
-      }
-    },
+    majorVersion: DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION,
     async getClassSet() {
       return new Set<string>()
     },
@@ -120,23 +114,15 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
 
   const baseTailwindOptions = defuOverrideArray<TailwindUserOptions, Partial<TailwindUserOptions>[]>(
     (tailwindcss ?? {}) as TailwindUserOptions,
-    {
+    omitUndefined({
       cwd: normalizedBasedir,
       resolve: {
         paths: resolvePaths,
       },
-    },
+    }) as Partial<TailwindUserOptions>,
   )
 
-  if (baseTailwindOptions.version === 2) {
-    if (!baseTailwindOptions.packageName) {
-      baseTailwindOptions.packageName = '@tailwindcss/postcss7-compat'
-    }
-    if (!baseTailwindOptions.postcssPlugin) {
-      baseTailwindOptions.postcssPlugin = '@tailwindcss/postcss7-compat'
-    }
-  }
-  else if (!baseTailwindOptions.packageName) {
+  if (!baseTailwindOptions.packageName) {
     baseTailwindOptions.packageName = 'tailwindcss'
   }
 
@@ -153,21 +139,21 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     }
   }
 
-  const baseOptions: TailwindCssPatchOptions = {
+  const baseOptions: TailwindCssPatchOptions = omitUndefined({
     projectRoot: normalizedBasedir,
     cache,
     tailwindcss: baseTailwindOptions,
-    apply: {
+    apply: omitUndefined({
       exposeContext: true,
       extendLengthUnits,
-    } satisfies TailwindApplyOptions,
-  }
+    }) satisfies TailwindApplyOptions,
+  }) as TailwindCssPatchOptions
 
   const mergedOptions = defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(
     (normalizedUserOptions ?? {}) as TailwindCssPatchOptions,
     baseOptions,
   )
-  const resolvedOptions = toModernTailwindcssPatchOptions(mergedOptions) ?? {}
+  const resolvedOptions = mergedOptions
   const resolvedTailwindOptions: TailwindUserOptions | undefined = resolvedOptions.tailwindcss
 
   if (resolvedTailwindOptions) {
@@ -231,7 +217,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
     const searchPaths = resolvedOptions.tailwindcss?.resolve?.paths
     if (error instanceof Error && TAILWINDCSS_NOT_FOUND_RE.test(error.message)) {
       if (!hasLoggedMissingTailwind) {
-        logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 相关补丁。若需使用 Tailwind 能力，请安装 tailwindcss。')
+        logger.warn('Tailwind CSS 未安装，已跳过 Tailwind 运行时能力。若需使用 Tailwind 能力，请安装 tailwindcss。')
         hasLoggedMissingTailwind = true
       }
       return createFallbackTailwindcssPatcher()

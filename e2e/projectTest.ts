@@ -2,10 +2,13 @@ import type { ProjectEntry } from './shared'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
-import { execa } from 'execa'
 import path from 'pathe'
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
+import { ensureProjectBuilt } from './projectBuild'
 import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
+import { normalizeCssTextSnapshot } from './snapshotUtils'
+
+export { ensureProjectBuilt } from './projectBuild'
 
 const EPERM_RE = /EPERM/i
 const automator = new Launcher()
@@ -36,25 +39,67 @@ async function safeRm(target: string) {
   }
 }
 
-async function clearTailwindPatchCaches(root: string) {
+async function clearTailwindPatchCaches(root: string, options: { includeBuildOutputs?: boolean } = {}) {
   const workspaceRoot = path.resolve(root, '..', '..')
   const candidates = new Set<string>([
+    path.resolve(root, '.cache'),
     path.resolve(root, 'node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'node_modules/.cache/weapp-tailwindcss'),
     path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'),
     path.resolve(root, 'config/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(root, 'config/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, '.tw-patch/tailwindcss-target.json'),
     path.resolve(root, 'node_modules/.vite'),
     path.resolve(workspaceRoot, 'node_modules/.cache/tailwindcss-patch'),
+    path.resolve(workspaceRoot, 'node_modules/.cache/weapp-tailwindcss'),
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/tailwindcss-patch'),
+    path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/weapp-tailwindcss'),
   ])
+
+  if (options.includeBuildOutputs) {
+    candidates.add(path.resolve(root, 'dist'))
+    candidates.add(path.resolve(root, 'unpackage'))
+  }
 
   await Promise.all(
     Array.from(candidates, target => safeRm(target)),
   )
 }
 
+export async function clearProjectBuildState(root: string) {
+  await clearTailwindPatchCaches(root, { includeBuildOutputs: true })
+}
+
+function shouldSkipAutomator(entry: ProjectEntry) {
+  if (entry.skipOpenAutomator) {
+    return true
+  }
+  if (process.env['E2E_SKIP_OPEN_AUTOMATOR'] === '1') {
+    return true
+  }
+  if (process.env.E2E_OPEN_AUTOMATOR === '1') {
+    return false
+  }
+  return process.env.CI === 'true' || process.env.CI === '1'
+}
+
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  await expect(content).toMatchFileSnapshot(snapshotPath)
+  await expect(normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
+}
+
+function normalizeProjectSnapshotContent(fileName: string, source: string) {
+  if (/\.(?:wxss|css)$/.test(fileName)) {
+    return `${normalizeCssTextSnapshot(source)}\n`
+  }
+
+  const normalized = source
+    .replace(/\r\n/g, '\n')
+    .replace(/[ \t]+$/gm, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .trimEnd()
+  return `${normalized}\n`
 }
 
 function formatClassListSnapshot(classList: string[]) {
@@ -134,15 +179,33 @@ async function captureStablePageWxml(
   return best || latest
 }
 
+async function relaunchPageWithRetry(miniProgram: any, pageUrl: string, timeoutMs = 60_000) {
+  const deadline = Date.now() + timeoutMs
+  let lastError: unknown
+
+  while (Date.now() < deadline) {
+    try {
+      const page = await miniProgram.reLaunch(pageUrl)
+      if (page) {
+        return page
+      }
+    }
+    catch (error) {
+      lastError = error
+    }
+    await wait(1000)
+  }
+
+  throw new Error(`Failed to relaunch page for ${pageUrl}: ${String(lastError ?? 'unknown error')}`)
+}
+
 async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {
   const projectBase = path.resolve(__dirname, options.fixturesDir)
   const projectPath = path.resolve(projectBase, entry.projectPath)
   const root = path.resolve(projectBase, entry.name)
   const shouldResetPatchCaches = !entry.name.startsWith('taro-')
 
-  if (shouldResetPatchCaches) {
-    await clearTailwindPatchCaches(root)
-  }
+  await clearProjectBuildState(root)
 
   if (process.env.E2E_SKIP_BUILD !== '1') {
     await ensureProjectBuilt(root)
@@ -189,12 +252,16 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
 
-  const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile)
+  const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile, {
+    classList: extraction?.classList,
+    normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
+    normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
+  })
   for (const snapshot of cssSnapshots) {
     await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
   }
 
-  if (entry.skipOpenAutomator) {
+  if (shouldSkipAutomator(entry)) {
     await wait()
     return
   }
@@ -215,7 +282,8 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   try {
-    const page = await miniProgram.reLaunch(entry.url ?? '/pages/index/index')
+    const pageUrl = entry.url ?? '/pages/index/index'
+    const page = await relaunchPageWithRetry(miniProgram, pageUrl)
 
     if (page) {
       let wxml = await captureStablePageWxml(page)
@@ -248,79 +316,6 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   await wait()
-}
-
-const buildTasks = new Map<string, Promise<void>>()
-
-export async function ensureProjectBuilt(root: string) {
-  const existing = buildTasks.get(root)
-  if (existing) {
-    return existing
-  }
-
-  const task = (async () => {
-    let pkg: { name?: string, scripts?: Record<string, string> } | undefined
-    const pkgPath = path.resolve(root, 'package.json')
-    try {
-      const content = await fs.readFile(pkgPath, 'utf8')
-      pkg = JSON.parse(content)
-    }
-    catch {
-      return
-    }
-
-    const buildScript = pkg?.scripts?.build
-    if (!buildScript) {
-      return
-    }
-
-    const stdio = process.env.E2E_DEBUG_BUILD === '1' ? 'inherit' : 'pipe'
-    const childEnv: Record<string, string | undefined> = {
-      ...process.env,
-      // Vitest workers set NODE_ENV=test; Taro + Vite builds are not stable in that mode.
-      NODE_ENV: 'production',
-      BROWSERSLIST_ENV: 'production',
-      TARO_BUILD_STRICT: '1',
-      UNI_BUILD_STRICT: '1',
-      RUST_BACKTRACE: process.env.RUST_BACKTRACE ?? '1',
-      npm_package_json: pkgPath,
-      PNPM_PACKAGE_NAME: pkg?.name ?? process.env.PNPM_PACKAGE_NAME,
-      INIT_CWD: root,
-    }
-
-    delete childEnv.WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD
-    delete childEnv.WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD
-
-    delete childEnv.VITEST
-    for (const key of Object.keys(childEnv)) {
-      if (key.startsWith('VITEST_')) {
-        delete childEnv[key]
-      }
-    }
-
-    try {
-      await execa('pnpm', ['run', 'build'], {
-        cwd: root,
-        env: childEnv,
-        stdio,
-      })
-    }
-    catch (error) {
-      if (stdio !== 'inherit') {
-        logE2EError('[e2e] build failed in %s: %o', root, error)
-      }
-      throw error
-    }
-  })()
-
-  buildTasks.set(root, task)
-  try {
-    await task
-  }
-  catch (error) {
-    buildTasks.delete(root)
-    throw error
-  }
 }
 
 export function defineProjectTest(entry: ProjectEntry, options: ProjectTestOptions) {

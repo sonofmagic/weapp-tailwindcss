@@ -75,6 +75,17 @@ describe('babel helpers additional coverage', () => {
     expect(babel.parseCache.size).toBe(1)
   })
 
+  it('does not retain parsed ASTs when parser caching is disabled', () => {
+    const code = 'const value = 1'
+    const spy = vi.spyOn(parser, 'parse')
+    const first = babel.babelParse(code, { sourceType: 'module' as const, cache: false })
+    const second = babel.babelParse(code, { sourceType: 'module' as const, cache: false })
+
+    expect(spy).toHaveBeenCalledTimes(2)
+    expect(second).not.toBe(first)
+    expect(babel.parseCache.size).toBe(0)
+  })
+
   it('detects eval call expressions', () => {
     const ast = parse('eval("a"); other("b")', { sourceType: 'module' as const })
     const calls: NodePath<CallExpression>[] = []

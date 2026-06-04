@@ -2,18 +2,18 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { CliOptions, WatchCase, WatchSession } from '../scripts/watch-hmr-regression/types'
+import type { CliOptions, WatchCase, WatchSession } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 const createWatchSessionMock = vi.fn<() => WatchSession>()
 const runStyleMutationMock = vi.fn()
 const sleepMock = vi.fn<(ms: number) => Promise<void>>()
 
-vi.mock('../scripts/watch-hmr-regression/session', () => ({
+vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session', () => ({
   createWatchSession: () => createWatchSessionMock(),
   sleep: (ms: number) => sleepMock(ms),
 }))
 
-vi.mock('../scripts/watch-hmr-regression/mutations/style', () => ({
+vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/style', () => ({
   runStyleMutation: (...args: unknown[]) => runStyleMutationMock(...args),
 }))
 
@@ -32,10 +32,10 @@ function createOptions(): CliOptions {
 function createWatchCase(sourceFile: string): WatchCase {
   return {
     name: 'taro-webpack',
-    label: 'apps/taro-webpack-tailwindcss-v4',
-    project: 'apps/taro-webpack-tailwindcss-v4',
+    label: 'demo/taro-webpack-react-tailwindcss-v4',
+    project: 'demo/taro-webpack-react-tailwindcss-v4',
     group: 'apps',
-    cwd: '/repo/apps/taro-webpack-tailwindcss-v4',
+    cwd: '/repo/demo/taro-webpack-react-tailwindcss-v4',
     devScript: 'dev:weapp2',
     outputWxml: '/repo/dist/pages/index/index.wxml',
     outputJs: '/repo/dist/pages/index/index.js',
@@ -97,7 +97,7 @@ describe('watch-hmr style-only helpers', () => {
       rollbackNeedleCleared: true,
     })
 
-    const { runStyleOnlyCase } = await import('../scripts/watch-hmr-regression/style-only')
+    const { runStyleOnlyCase } = await import('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/style-only')
     const result = await runStyleOnlyCase(watchCase, createOptions())
 
     expect(result).toMatchObject({
@@ -126,10 +126,10 @@ describe('watch-hmr style-only helpers', () => {
     createWatchSessionMock.mockReturnValue(session)
     runStyleMutationMock.mockRejectedValue(new Error('style hot update failed'))
 
-    const { runStyleOnlyCase } = await import('../scripts/watch-hmr-regression/style-only')
+    const { runStyleOnlyCase } = await import('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/style-only')
 
     await expect(runStyleOnlyCase(watchCase, createOptions())).rejects.toThrow(
-      'style hot update failed\n[apps/taro-webpack-tailwindcss-v4] recent watch logs:\ncaptured watch logs',
+      'style hot update failed\n[demo/taro-webpack-react-tailwindcss-v4] recent watch logs:\ncaptured watch logs',
     )
     expect(session.stop).toHaveBeenCalledTimes(1)
     expect(await readFile(sourceFile, 'utf8')).toBe('.anchor {\n  color: inherit;\n}\n')

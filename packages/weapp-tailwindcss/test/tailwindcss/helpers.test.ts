@@ -157,10 +157,8 @@ describe('tailwindcss helpers', () => {
 
     expect(loggerWarnMock).toHaveBeenCalledTimes(1)
     expect(patcher.packageInfo.version).toBeUndefined()
-    await expect(patcher.patch()).resolves.toEqual({
-      exposeContext: undefined,
-      extendLengthUnits: undefined,
-    })
+    expect(patcher.majorVersion).toBe(4)
+    expect(patcher.patch).toBeUndefined()
     await expect(patcher.getClassSet()).resolves.toEqual(new Set())
     await expect(patcher.extract()).resolves.toEqual({
       classList: [],
@@ -173,6 +171,7 @@ describe('tailwindcss helpers', () => {
       skippedFiles: [],
     })
     expect(secondPatcher.packageInfo.version).toBeUndefined()
+    expect(secondPatcher.majorVersion).toBe(4)
   })
 
   it('resolves tailwindcss postcss plugin from basedir node_modules', async () => {
@@ -203,22 +202,6 @@ describe('tailwindcss helpers', () => {
     const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
     const callArgs = lastCall?.[0] as any
     expect(String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')).toContain('@tailwindcss/postcss')
-  })
-
-  it('uses postcss7 compat defaults for Tailwind CSS v2', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
-
-    createTailwindcssPatcher({
-      basedir: '/repo',
-      tailwindcss: {
-        version: 2,
-      },
-    })
-
-    const lastCall = tailwindcssPatcherMock.mock.calls.at(-1)
-    const callArgs = lastCall?.[0] as any
-    expect(callArgs.tailwindcss?.packageName).toBe('@tailwindcss/postcss7-compat')
-    expect(callArgs.tailwindcss?.postcssPlugin).toBe('@tailwindcss/postcss7-compat')
   })
 
   it('resolves postcss plugin strings after legacy patcher options merge', async () => {

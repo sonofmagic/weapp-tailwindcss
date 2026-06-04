@@ -1,0 +1,75 @@
+---
+id: v5-official-plugin-parity
+title: v5 与官方 Tailwind 插件对照
+description: 对比 weapp-tailwindcss v5 generator 与 Tailwind 官方 Vite 插件的能力映射
+sidebar_position: 7
+keywords:
+  - weapp-tailwindcss
+  - tailwindcss v4
+  - '@tailwindcss/vite'
+  - vite
+  - generator
+  - cssEntries
+---
+
+# v5 与官方 Tailwind 插件对照
+
+v5 generator 的目标不是替代 Tailwind CSS v4 的 CSS-first 语义，而是在同一份 Tailwind 输入上增加小程序专用输出能力。`target: 'web'` 应与官方 Tailwind 浏览器产物保持同源；`target: 'weapp'` 则在同一 classSet 基础上生成小程序需要且兼容的 CSS。
+
+## 一一对应矩阵
+
+| 能力 | `@tailwindcss/vite` | `weapp-tailwindcss/vite` |
+| --- | --- | --- |
+| CSS-first 入口 | `@import "tailwindcss"` | 同一入口 |
+| `@source` 扫描 | 扫描模板和脚本 | 通过 `cssEntries` 绑定入口并复用 v4 source |
+| `@theme` / `@config` | 生成 Tailwind token | 复用同一 token |
+| 候选类生成 | Scanner candidates | runtime classSet 精确命中 candidates |
+| Web 产物 | 浏览器 CSS | `target: 'web'` |
+| 小程序产物 | 不支持 | `target: 'weapp'` |
+| 失败处理 | 编译失败即失败 | 默认构建失败 |
+| 依赖追踪 / HMR | `addWatchFile` / `hotUpdate` | `cssEntries` / dependencies / HMR |
+
+## Vite 对照
+
+官方写法：
+
+```ts title="vite.config.ts"
+import tailwindcss from '@tailwindcss/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+```
+
+v5 小程序写法：
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    WeappTailwindcss({
+      rem2rpx: true,
+      cssEntries: [
+        path.resolve(__dirname, 'src/app.css'),
+      ],
+    }),
+  ],
+})
+```
+
+同一个小程序构建中不要再同时注册 `@tailwindcss/vite` 和 `WeappTailwindcss`。如果项目需要 H5 / Web 产物，可以在 Web 专用构建里继续使用官方 Tailwind 插件；如果要用 `weapp-tailwindcss` 做 Web 对照测试，则把 `generator.target` 切到 `web`。此时 generator 产物保留浏览器选择器、hover media 和原始 Tailwind 转义；小程序生产构建必须切回默认 `weapp`。
+
+## 回归测试
+
+仓库使用 `packages/weapp-tailwindcss/test/v5/official-tailwind-plugin-parity.test.ts` 覆盖这张矩阵：
+
+- 同一 CSS-first 输入在 `target: 'web'` 下，核心 utility selector 与官方 Tailwind 产物保持一致。
+- 矩阵中的 `@tailwindcss/vite` 与 Vite generator 两列必须全部有对应项。
+- Tailwind CSS 3.x / 4.x 快速开始页和 v5 迁移指南继续覆盖 uni-app Vue Vite、Taro Vite 与 Mpx 的真实 demo 配置。
+- 这些对照项也会被 `pnpm e2e:static` 间接验证，确保示例代码和产物快照一致。

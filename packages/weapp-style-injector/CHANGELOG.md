@@ -1,5 +1,25 @@
 # weapp-style-injector
 
+## 0.0.3-next.2
+
+### Patch Changes
+
+- 📦 **Dependencies** [`aaba811`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaba811cfc2ad003d3daf2cf290c9d8b770c6dfb)
+  → `@weapp-tailwindcss/shared@2.0.0-next.1`
+
+## 0.0.3-next.1
+
+### Patch Changes
+
+- 📦 **Dependencies** [`2d2acf2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2d2acf29cfee02ffb32783c8bd3c5de8d9aab9df)
+  → `@weapp-tailwindcss/shared@2.0.0-next.0`
+
+## 0.0.3-next.0
+
+### Patch Changes
+
+- 🐛 **修复 uni-app Vite 预设在 `generateBundle` 中直接写入 bundle 资产的问题，改为通过 `emitFile` 生成分包样式入口，以兼容 Vite 8/Rolldown。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+
 ## 0.0.2
 
 ### Patch Changes

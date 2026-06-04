@@ -1,6 +1,6 @@
 ---
-title: mpx (原生增强)
-description: 在 vue.config.js 中注册：
+title: Mpx
+description: Mpx 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。
 keywords:
   - 快速开始
   - 安装
@@ -19,22 +19,31 @@ keywords:
 ---
 import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx'
 
-# mpx (原生增强)
+# Mpx
 
 <ExternalClassesReminder framework="mpx" />
+
+Mpx 使用 Webpack 链路，建议显式配置 `cssEntries`，让 `weapp-tailwindcss` 稳定定位 Tailwind CSS 入口。
+
+## 注册插件
 
 在 `vue.config.js` 中注册：
 
 ```js title="vue.config.js"
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
 
 module.exports = defineConfig({
   // other options
   configureWebpack(config) {
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         rem2rpx: true,
+        appType: 'mpx',
+        cssEntries: [
+          path.resolve(__dirname, 'src/app.css'),
+        ],
       })
     )
   }
@@ -44,44 +53,41 @@ module.exports = defineConfig({
 
 ## 引入 Tailwind CSS 样式
 
-Tailwind 的底层样式需要显式导入。不同主版本的包结构略有差异：
+Tailwind CSS 生成由 `WeappTailwindcss` 接管，不要再注册 Tailwind 官方 PostCSS 生成插件。
 
-### Tailwind CSS v3.x
+### Tailwind CSS 3.x
 
-仍然可以直接引用 Tailwind 提供的底层样式文件（带 `.css` 扩展名）：
-
-```html title="src/app.mpx"
-<style lang="scss">
-  @import 'tailwindcss/base.css';
-  @import 'tailwindcss/components.css';
-  @import 'tailwindcss/utilities.css';
-</style>
+```css title="src/app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 ```
 
-### Tailwind CSS v4.x
+### Tailwind CSS 4.x
 
-v4 官方改用了全新的 CSS 包结构，推荐直接引入 `weapp-tailwindcss` 提供的聚合样式文件：
-
-```html title="src/app.mpx"
-<style lang="scss">
-  @import 'weapp-tailwindcss/index.css';
-</style>
+```css title="src/app.css"
+@import "tailwindcss";
+@source "../src";
+@source not "../dist";
+@source not "../node_modules";
 ```
 
-这样即可获得预置的 base / components / utilities，同时避免 `postcss-import` 误解析到 JS 入口导致构建报错。
+Tailwind 4 入口请放在纯 `.css` 文件里，不要直接放进 `scss`、`less`、`sass` 入口。
+
+### 在 app.mpx 中引入
+
+```html title="src/app.mpx"
+<style lang="css">
+  @import './app.css';
+</style>
+```
 
 ## mpx 中的 vscode tailwindcss 智能提示缺失设置
 
-我们知道 `tailwindcss` 最佳实践，是要结合 `vscode`/`webstorm`提示插件一起使用的。
+如果在 `mpx` 文件中写 `class` 没有智能提示，可以在 VS Code 的 `Tailwind CSS IntelliSense` 扩展设置里处理。
 
-假如你遇到了，在 `vscode` 的 `mpx` 文件中，编写 `class` 没有出智能提示的情况，可以参考以下步骤。
-
-这里我们以 `vscode` 为例:
-
-接着找到 `Tailwind CSS IntelliSense` 的 `扩展设置`
-
-在 `include languages`,手动标记 `mpx` 的类型为 `html`
+在 `include languages` 里，把 `mpx` 标记为 `html`。
 
 ![如图所示](./img/vscode-tailwindcss.png)
 
-保存设置，再去`mpx`文件里写`class`的时候，智能提示就出来啦。
+保存设置后，再到 `mpx` 文件里写 `class`，就能看到智能提示。

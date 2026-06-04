@@ -1,0 +1,3444 @@
+# demo/taro-vite-tailwindcss-v5 artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+--- /dev/null
++++ b/dist/app-origin.wxss
+@@ -0,0 +1,930 @@
++::before,
++::after {
++  --tw-content: "";
++}
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
++  --tw-scale-x: 1;
++  --tw-scale-y: 1;
++  --tw-scale-z: 1;
++  --tw-rotate-x: initial;
++  --tw-rotate-y: initial;
++  --tw-rotate-z: initial;
++  --tw-skew-x: initial;
++  --tw-skew-y: initial;
++  --tw-pan-x: initial;
++  --tw-pan-y: initial;
++  --tw-pinch-zoom: initial;
++  --tw-space-y-reverse: 0;
++  --tw-space-x-reverse: 0;
++  --tw-divide-x-reverse: 0;
++  --tw-border-style: solid;
++  --tw-divide-y-reverse: 0;
++  --tw-gradient-position: initial;
++  --tw-gradient-from: rgba(0, 0, 0, 0);
++  --tw-gradient-via: rgba(0, 0, 0, 0);
++  --tw-gradient-to: rgba(0, 0, 0, 0);
++  --tw-gradient-stops: initial;
++  --tw-gradient-via-stops: initial;
++  --tw-gradient-from-position: 0%;
++  --tw-gradient-via-position: 50%;
++  --tw-gradient-to-position: 100%;
++  --tw-ordinal: initial;
++  --tw-slashed-zero: initial;
++  --tw-numeric-figure: initial;
++  --tw-numeric-spacing: initial;
++  --tw-numeric-fraction: initial;
++  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-shadow-color: initial;
++  --tw-shadow-alpha: 100%;
++  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-inset-shadow-color: initial;
++  --tw-inset-shadow-alpha: 100%;
++  --tw-ring-color: initial;
++  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-inset-ring-color: initial;
++  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-ring-inset: initial;
++  --tw-ring-offset-width: 0rpx;
++  --tw-ring-offset-color: #fff;
++  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
++  --tw-outline-style: solid;
++  --tw-blur: initial;
++  --tw-brightness: initial;
++  --tw-contrast: initial;
++  --tw-grayscale: initial;
++  --tw-hue-rotate: initial;
++  --tw-invert: initial;
++  --tw-opacity: initial;
++  --tw-saturate: initial;
++  --tw-sepia: initial;
++  --tw-drop-shadow: initial;
++  --tw-drop-shadow-color: initial;
++  --tw-drop-shadow-alpha: 100%;
++  --tw-drop-shadow-size: initial;
++  --tw-backdrop-blur: initial;
++  --tw-backdrop-brightness: initial;
++  --tw-backdrop-contrast: initial;
++  --tw-backdrop-grayscale: initial;
++  --tw-backdrop-hue-rotate: initial;
++  --tw-backdrop-invert: initial;
++  --tw-backdrop-opacity: initial;
++  --tw-backdrop-saturate: initial;
++  --tw-backdrop-sepia: initial;
++  --tw-ease: initial;
++  --drop-shadow:
++    0 1rpx 2rpx rgba(0, 0, 0, 0.1), 0 1rpx 1rpx rgba(0, 0, 0, 0.06);
++  --blur: 8rpx;
++  --backdrop-blur: 8rpx;
++  --radius: 8rpx;
++  --color-white: #fff;
++  --color-gray-100: #f3f4f6;
++  --color-gray-200: #e5e7eb;
++  --color-gray-400: #9ca3af;
++  --color-zinc-800: #27272a;
++  --color-red-500: #ef4444;
++  --color-green-500: #22c55e;
++  --color-emerald-600: #059669;
++  --color-cyan-500: #06b6d4;
++  --color-blue-500: #3b82f6;
++  --color-fuchsia-500: #d946ef;
++  --color-rose-500: #f43f5e;
++  --font-sans:
++    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
++    Cantarell, Noto Sans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
++    "Segoe UI Symbol", "Noto Color Emoji";
++  --font-mono:
++    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
++    "Courier New", monospace;
++  --spacing: 8rpx;
++  --radius-xl: 24rpx;
++  --ease-out: cubic-bezier(0, 0, 0.2, 1);
++  --default-transition-duration: 150ms;
++  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
++  --default-font-family: var(--font-sans);
++  --default-mono-font-family: var(--font-mono);
++  --color-brand: #155dfc;
++}
++.collapse {
++  visibility: collapse;
++}
++.invisible {
++  visibility: hidden;
++}
++.visible {
++  visibility: visible;
++}
++.sr-only {
++  position: absolute;
++  width: 1rpx;
++  height: 1rpx;
++  padding: 0;
++  margin: -1rpx;
++  overflow: hidden;
++  -webkit-clip-path: inset(50%);
++  clip-path: inset(50%);
++  white-space: nowrap;
++  border-width: 0;
++}
++.not-sr-only {
++  position: static;
++  width: auto;
++  height: auto;
++  padding: 0;
++  margin: 0;
++  overflow: visible;
++  -webkit-clip-path: none;
++  clip-path: none;
++  white-space: normal;
++}
++.absolute {
++  position: absolute;
++}
++.fixed {
++  position: fixed;
++}
++.relative {
++  position: relative;
++}
++.static {
++  position: static;
++}
++.sticky {
++  position: -webkit-sticky;
++  position: sticky;
++}
++.-inset-1 {
++  top: calc(var(--spacing) * -1);
++  right: calc(var(--spacing) * -1);
++  bottom: calc(var(--spacing) * -1);
++  left: calc(var(--spacing) * -1);
++}
++.start {
++  left: var(--spacing);
++}
++.end {
++  right: var(--spacing);
++}
++.isolate {
++  isolation: isolate;
++}
++.isolation-auto {
++  isolation: auto;
++}
++.container {
++  width: 100%;
++}
++@media (min-width: 40rem) {
++  .container {
++    max-width: 1280rpx;
++  }
++}
++@media (min-width: 48rem) {
++  .container {
++    max-width: 1536rpx;
++  }
++}
++@media (min-width: 64rem) {
++  .container {
++    max-width: 2048rpx;
++  }
++}
++@media (min-width: 80rem) {
++  .container {
++    max-width: 2560rpx;
++  }
++}
++@media (min-width: 96rem) {
++  .container {
++    max-width: 3072rpx;
++  }
++}
++.block {
++  display: block;
++}
++.contents {
++  display: contents;
++}
++.flex {
++  display: -webkit-flex;
++  display: flex;
++}
++.flow-root {
++  display: flow-root;
++}
++.grid {
++  display: grid;
++}
++.hidden {
++  display: none;
++}
++.inline {
++  display: inline;
++}
++.inline-block {
++  display: inline-block;
++}
++.inline-flex {
++  display: -webkit-inline-flex;
++  display: inline-flex;
++}
++.inline-grid {
++  display: inline-grid;
++}
++.inline-table {
++  display: inline-table;
++}
++.list-item {
++  display: list-item;
++}
++.table {
++  display: table;
++}
++.table-caption {
++  display: table-caption;
++}
++.table-cell {
++  display: table-cell;
++}
++.table-column {
++  display: table-column;
++}
++.table-column-group {
++  display: table-column-group;
++}
++.table-footer-group {
++  display: table-footer-group;
++}
++.table-header-group {
++  display: table-header-group;
++}
++.table-row {
++  display: table-row;
++}
++.table-row-group {
++  display: table-row-group;
++}
++.h-14 {
++  height: calc(var(--spacing) * 14);
++}
++.h-_b300px_B {
++  height: 300rpx;
++}
++.flex-shrink {
++  -webkit-flex-shrink: 1;
++  flex-shrink: 1;
++}
++.shrink {
++  -webkit-flex-shrink: 1;
++  flex-shrink: 1;
++}
++.flex-grow {
++  -webkit-flex-grow: 1;
++  flex-grow: 1;
++}
++.grow {
++  -webkit-flex-grow: 1;
++  flex-grow: 1;
++}
++.border-collapse {
++  border-collapse: collapse;
++}
++.translate-none {
++  translate: none;
++}
++.scale-3d {
++  scale: var(--tw-scale-x) var(--tw-scale-y) var(--tw-scale-z);
++}
++.rotate-_b10deg_B {
++  rotate: 10deg;
++}
++.transform {
++  -webkit-transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,)
++    var(--tw-skew-x,) var(--tw-skew-y,);
++  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,)
++    var(--tw-skew-x,) var(--tw-skew-y,);
++}
++.touch-pinch-zoom {
++  --tw-pinch-zoom: pinch-zoom;
++  touch-action: var(--tw-pan-x,) var(--tw-pan-y,) var(--tw-pinch-zoom,);
++}
++.resize {
++  resize: both;
++}
++.flex-wrap {
++  -webkit-flex-wrap: wrap;
++  flex-wrap: wrap;
++}
++.space-y-4 > view + view,
++.space-y-4 > view + text,
++.space-y-4 > text + view,
++.space-y-4 > text + text {
++  --tw-space-y-reverse: 0;
++  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
++  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
++}
++.space-y-reverse > view + view,
++.space-y-reverse > view + text,
++.space-y-reverse > text + view,
++.space-y-reverse > text + text {
++  --tw-space-y-reverse: 1;
++}
++.space-x-reverse > view + view,
++.space-x-reverse > view + text,
++.space-x-reverse > text + view,
++.space-x-reverse > text + text {
++  --tw-space-x-reverse: 1;
++}
++.divide-x > view + view,
++.divide-x > view + text,
++.divide-x > text + view,
++.divide-x > text + text {
++  --tw-divide-x-reverse: 0;
++  border-left-style: var(--tw-border-style);
++  border-right-style: var(--tw-border-style);
++  border-right-width: calc(1rpx * var(--tw-divide-x-reverse));
++  border-left-width: calc(1rpx * (1 - var(--tw-divide-x-reverse)));
++}
++.divide-y > view + view,
++.divide-y > view + text,
++.divide-y > text + view,
++.divide-y > text + text {
++  --tw-divide-y-reverse: 0;
++  border-bottom-style: var(--tw-border-style);
++  border-top-style: var(--tw-border-style);
++  border-bottom-width: calc(1rpx * var(--tw-divide-y-reverse));
++  border-top-width: calc(1rpx * (1 - var(--tw-divide-y-reverse)));
++}
++.divide-y-reverse > view + view,
++.divide-y-reverse > view + text,
++.divide-y-reverse > text + view,
++.divide-y-reverse > text + text {
++  --tw-divide-y-reverse: 1;
++}
++.truncate {
++  overflow: hidden;
++  text-overflow: ellipsis;
++  white-space: nowrap;
++}
++.rounded {
++  border-radius: var(--radius);
++}
++.rounded-xl {
++  border-radius: var(--radius-xl);
++}
++.rounded-s {
++  border-top-left-radius: var(--radius);
++  border-bottom-left-radius: var(--radius);
++}
++.rounded-ss {
++  border-top-left-radius: var(--radius);
++}
++.rounded-e {
++  border-top-right-radius: var(--radius);
++  border-bottom-right-radius: var(--radius);
++}
++.rounded-se {
++  border-top-right-radius: var(--radius);
++}
++.rounded-ee {
++  border-bottom-right-radius: var(--radius);
++}
++.rounded-es {
++  border-bottom-left-radius: var(--radius);
++}
++.rounded-t {
++  border-top-left-radius: var(--radius);
++  border-top-right-radius: var(--radius);
++}
++.rounded-l {
++  border-top-left-radius: var(--radius);
++  border-bottom-left-radius: var(--radius);
++}
++.rounded-tl {
++  border-top-left-radius: var(--radius);
++}
++.rounded-r {
++  border-top-right-radius: var(--radius);
++  border-bottom-right-radius: var(--radius);
++}
++.rounded-tr {
++  border-top-right-radius: var(--radius);
++}
++.rounded-b {
++  border-bottom-right-radius: var(--radius);
++  border-bottom-left-radius: var(--radius);
++}
++.rounded-br {
++  border-bottom-right-radius: var(--radius);
++}
++.rounded-bl {
++  border-bottom-left-radius: var(--radius);
++}
++.border {
++  border-style: var(--tw-border-style);
++  border-width: 1rpx;
++}
++.border-_b10rpx_B {
++  border-style: var(--tw-border-style);
++  border-width: 10rpx;
++}
++.border-x {
++  border-left-style: var(--tw-border-style);
++  border-right-style: var(--tw-border-style);
++  border-left-width: 1rpx;
++  border-right-width: 1rpx;
++}
++.border-y {
++  border-top-style: var(--tw-border-style);
++  border-bottom-style: var(--tw-border-style);
++  border-top-width: 1rpx;
++  border-bottom-width: 1rpx;
++}
++.border-s {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1rpx;
++}
++.border-e {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1rpx;
++}
++.border-bs {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 1rpx;
++}
++.border-be {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1rpx;
++}
++.border-t {
++  border-top-style: var(--tw-border-style);
++  border-top-width: 1rpx;
++}
++.border-r {
++  border-right-style: var(--tw-border-style);
++  border-right-width: 1rpx;
++}
++.border-b {
++  border-bottom-style: var(--tw-border-style);
++  border-bottom-width: 1rpx;
++}
++.border-l {
++  border-left-style: var(--tw-border-style);
++  border-left-width: 1rpx;
++}
++._eborder-brand {
++  border-color: var(--color-brand) !important;
++}
++.bg-_b_h123456_B {
++  background-color: #123456;
++}
++.bg-brand {
++  background-color: var(--color-brand);
++}
++.bg-gray-100 {
++  background-color: var(--color-gray-100);
++}
++.bg-red-500 {
++  background-color: var(--color-red-500);
++}
++.bg-linear-to-r {
++  --tw-gradient-position: to right;
++}
++.bg-linear-to-r {
++  background-image: linear-gradient(var(--tw-gradient-stops));
++}
++.bg-gradient-to-b {
++  --tw-gradient-position: to bottom;
++  background-image: linear-gradient(var(--tw-gradient-stops));
++}
++.bg-gradient-to-r {
++  --tw-gradient-position: to right;
++  background-image: linear-gradient(var(--tw-gradient-stops));
++}
++.from-cyan-500 {
++  --tw-gradient-from: var(--color-cyan-500);
++  --tw-gradient-stops: var(
++    --tw-gradient-via-stops,
++    var(--tw-gradient-position),
++    var(--tw-gradient-from) var(--tw-gradient-from-position),
++    var(--tw-gradient-to) var(--tw-gradient-to-position)
++  );
++}
++.from-fuchsia-500 {
++  --tw-gradient-from: var(--color-fuchsia-500);
++  --tw-gradient-stops: var(
++    --tw-gradient-via-stops,
++    var(--tw-gradient-position),
++    var(--tw-gradient-from) var(--tw-gradient-from-position),
++    var(--tw-gradient-to) var(--tw-gradient-to-position)
++  );
++}
++.to-blue-500 {
++  --tw-gradient-to: var(--color-blue-500);
++  --tw-gradient-stops: var(
++    --tw-gradient-via-stops,
++    var(--tw-gradient-position),
++    var(--tw-gradient-from) var(--tw-gradient-from-position),
++    var(--tw-gradient-to) var(--tw-gradient-to-position)
++  );
++}
++.to-rose-500 {
++  --tw-gradient-to: var(--color-rose-500);
++  --tw-gradient-stops: var(
++    --tw-gradient-via-stops,
++    var(--tw-gradient-position),
++    var(--tw-gradient-from) var(--tw-gradient-from-position),
++    var(--tw-gradient-to) var(--tw-gradient-to-position)
++  );
++}
++.bg-repeat {
++  background-repeat: repeat;
++}
++.mask-no-clip {
++  -webkit-mask-clip: no-clip;
++  mask-clip: no-clip;
++}
++.mask-repeat {
++  -webkit-mask-repeat: repeat;
++  mask-repeat: repeat;
++}
++.p-4 {
++  padding: calc(var(--spacing) * 4);
++}
++.p-_b32rpx_B {
++  padding: 32rpx;
++}
++.text-_b32rpx_B {
++  font-size: 32rpx;
++}
++.text-_b55rpx_B {
++  font-size: 55rpx;
++}
++.text-wrap {
++  text-wrap: wrap;
++}
++.text-clip {
++  text-overflow: clip;
++}
++.text-ellipsis {
++  text-overflow: ellipsis;
++}
++.text-_b_hc31d6b_B {
++  color: #c31d6b;
++}
++.text-_b_hfff_B {
++  color: #fff;
++}
++.text-white {
++  color: var(--color-white);
++}
++.capitalize {
++  text-transform: capitalize;
++}
++.lowercase {
++  text-transform: lowercase;
++}
++.normal-case {
++  text-transform: none;
++}
++.uppercase {
++  text-transform: uppercase;
++}
++.italic {
++  font-style: italic;
++}
++.not-italic {
++  font-style: normal;
++}
++.diagonal-fractions {
++  --tw-numeric-fraction: diagonal-fractions;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.lining-nums {
++  --tw-numeric-figure: lining-nums;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.oldstyle-nums {
++  --tw-numeric-figure: oldstyle-nums;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.ordinal {
++  --tw-ordinal: ordinal;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.proportional-nums {
++  --tw-numeric-spacing: proportional-nums;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.slashed-zero {
++  --tw-slashed-zero: slashed-zero;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.stacked-fractions {
++  --tw-numeric-fraction: stacked-fractions;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.tabular-nums {
++  --tw-numeric-spacing: tabular-nums;
++  -webkit-font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-feature-settings: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++  font-variant-numeric: var(--tw-ordinal,) var(--tw-slashed-zero,)
++    var(--tw-numeric-figure,) var(--tw-numeric-spacing,)
++    var(--tw-numeric-fraction,);
++}
++.normal-nums {
++  -webkit-font-feature-settings: normal;
++  font-feature-settings: normal;
++  font-variant-numeric: normal;
++}
++.line-through {
++  -webkit-text-decoration-line: line-through;
++  text-decoration-line: line-through;
++}
++.no-underline {
++  -webkit-text-decoration-line: none;
++  text-decoration-line: none;
++}
++.overline {
++  -webkit-text-decoration-line: overline;
++  text-decoration-line: overline;
++}
++.underline {
++  -webkit-text-decoration-line: underline;
++  text-decoration-line: underline;
++}
++.antialiased {
++  -webkit-font-smoothing: antialiased;
++  -moz-osx-font-smoothing: grayscale;
++}
++.subpixel-antialiased {
++  -webkit-font-smoothing: auto;
++  -moz-osx-font-smoothing: auto;
++}
++.shadow {
++  --tw-shadow:
++    0 1rpx 3rpx 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)),
++    0 1rpx 2rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.ring {
++  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0
++    calc(3rpx + var(--tw-ring-offset-width))
++    var(--tw-ring-color, var(--color-blue-500, #3b82f6));
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.inset-ring {
++  --tw-inset-ring-shadow: inset 0 0 0 1rpx
++    var(--tw-inset-ring-color, currentcolor);
++  box-shadow:
++    var(--tw-inset-shadow), var(--tw-inset-ring-shadow),
++    var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
++}
++.outline {
++  outline-style: var(--tw-outline-style);
++  outline-width: 3rpx;
++}
++.blur {
++  --tw-blur: blur(var(--blur));
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.drop-shadow {
++  --tw-drop-shadow-size: drop-shadow(
++      0 1rpx 2rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.1))
++    )
++    drop-shadow(0 1rpx 1rpx var(--tw-drop-shadow-color, rgba(0, 0, 0, 0.06)));
++  --tw-drop-shadow: drop-shadow(var(--drop-shadow));
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.grayscale {
++  --tw-grayscale: grayscale(100%);
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.invert {
++  --tw-invert: invert(100%);
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.sepia {
++  --tw-sepia: sepia(100%);
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.filter {
++  -webkit-filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,)
++    var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,)
++    var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
++}
++.backdrop-blur {
++  --tw-backdrop-blur: blur(var(--backdrop-blur));
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,)
++    var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
++    var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
++    var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
++    var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
++    var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
++    var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
++    var(--tw-backdrop-sepia,);
++}
++.backdrop-grayscale {
++  --tw-backdrop-grayscale: grayscale(100%);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,)
++    var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
++    var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
++    var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
++    var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
++    var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
++    var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
++    var(--tw-backdrop-sepia,);
++}
++.backdrop-invert {
++  --tw-backdrop-invert: invert(100%);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,)
++    var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
++    var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
++    var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
++    var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
++    var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
++    var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
++    var(--tw-backdrop-sepia,);
++}
++.backdrop-sepia {
++  --tw-backdrop-sepia: sepia(100%);
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,)
++    var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
++    var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
++    var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
++    var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
++    var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
++    var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
++    var(--tw-backdrop-sepia,);
++}
++.backdrop-filter {
++  -webkit-backdrop-filter: var(--tw-backdrop-blur,)
++    var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,)
++    var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,)
++    var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,)
++    var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
++  backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,)
++    var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,)
++    var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,)
++    var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,)
++    var(--tw-backdrop-sepia,);
++}
++.transition {
++  transition-property:
++    color,
++    background-color,
++    border-color,
++    outline-color,
++    text-decoration-color,
++    fill,
++    stroke,
++    --tw-gradient-from,
++    --tw-gradient-via,
++    --tw-gradient-to,
++    opacity,
++    box-shadow,
++    transform,
++    translate,
++    scale,
++    rotate,
++    filter,
++    -webkit-backdrop-filter,
++    backdrop-filter,
++    display,
++    content-visibility,
++    overlay,
++    pointer-events;
++  transition-timing-function: var(
++    --tw-ease,
++    var(--default-transition-timing-function)
++  );
++  transition-duration: var(--tw-duration, var(--default-transition-duration));
++}
++.ease-out {
++  --tw-ease: var(--ease-out);
++  transition-timing-function: var(--ease-out);
++}
++.divide-x-reverse > view + view,
++.divide-x-reverse > view + text,
++.divide-x-reverse > text + view,
++.divide-x-reverse > text + text {
++  --tw-divide-x-reverse: 1;
++}
++.ring-inset {
++  --tw-ring-inset: inset;
++}
++.active_cbg-emerald-600:active {
++  background-color: var(--color-emerald-600);
++}
++@media (prefers-color-scheme: dark) {
++  .dark_cbg-green-500 {
++    background-color: var(--color-green-500);
++  }
++}
++@media (prefers-color-scheme: dark) {
++  .dark_cbg-zinc-800 {
++    background-color: var(--color-zinc-800);
++  }
++}
+
+--- /dev/null
++++ b/dist/app.js
+@@ -0,0 +1,27 @@
++"use strict";
++const e = require("./taro.js");
++require("./babelHelpers.js");
++const t = "";
++function a({ children: t }) {
++  return (
++    e.taroExports.useLaunch(() => {
++      console.log("App launched.");
++    }),
++    t
++  );
++}
++var r = {
++  pages: ["pages/index/index"],
++  window: {
++    backgroundTextStyle: "light",
++    navigationBarBackgroundColor: "#fff",
++    navigationBarTitleText: "WeChat",
++    navigationBarTextStyle: "black",
++  },
++};
++((e.taroWindowProvider.__taroAppConfig = r),
++  App(e.createReactApp(a, e.React, e.index, r)),
++  e.taroExports.initPxTransform({
++    designWidth: 750,
++    deviceRatio: { 375: 2, 640: 1.17, 750: 1, 828: 0.905 },
++  }));
+
+--- /dev/null
++++ b/dist/app.json
+@@ -0,0 +1,11 @@
++{
++  "pages": [
++    "pages/index/index"
++  ],
++  "window": {
++    "backgroundTextStyle": "light",
++    "navigationBarBackgroundColor": "#fff",
++    "navigationBarTitleText": "WeChat",
++    "navigationBarTextStyle": "black"
++  }
++}
+
+--- /dev/null
++++ b/dist/app.wxss
+@@ -0,0 +1 @@
++@import "app-origin.wxss";
+
+--- /dev/null
++++ b/dist/babelHelpers.js
+@@ -0,0 +1,419 @@
++"use strict";
++function t(e) {
++  "@babel/helpers - typeof";
++  return (
++    (t =
++      "function" == typeof Symbol && "symbol" == typeof Symbol.iterator
++        ? function (t) {
++            return typeof t;
++          }
++        : function (t) {
++            return t &&
++              "function" == typeof Symbol &&
++              t.constructor === Symbol &&
++              t !== Symbol.prototype
++              ? "symbol"
++              : typeof t;
++          }),
++    t(e)
++  );
++}
++function e(e, r) {
++  if ("object" != t(e) || !e) return e;
++  var n = e[Symbol.toPrimitive];
++  if (void 0 !== n) {
++    var o = n.call(e, r || "default");
++    if ("object" != t(o)) return o;
++    throw new TypeError("@@toPrimitive must return a primitive value.");
++  }
++  return ("string" === r ? String : Number)(e);
++}
++function r(r) {
++  var n = e(r, "string");
++  return "symbol" == t(n) ? n : n + "";
++}
++function n(t, e, n) {
++  return (
++    (e = r(e)) in t
++      ? Object.defineProperty(t, e, {
++          value: n,
++          enumerable: !0,
++          configurable: !0,
++          writable: !0,
++        })
++      : (t[e] = n),
++    t
++  );
++}
++function o(t, e) {
++  if (!(t instanceof e))
++    throw new TypeError("Cannot call a class as a function");
++}
++function u(t, e) {
++  for (var n = 0; n < e.length; n++) {
++    var o = e[n];
++    ((o.enumerable = o.enumerable || !1),
++      (o.configurable = !0),
++      "value" in o && (o.writable = !0),
++      Object.defineProperty(t, r(o.key), o));
++  }
++}
++function i(t, e, r) {
++  return (
++    e && u(t.prototype, e),
++    r && u(t, r),
++    Object.defineProperty(t, "prototype", { writable: !1 }),
++    t
++  );
++}
++function c(t) {
++  return (
++    (c = Object.setPrototypeOf
++      ? Object.getPrototypeOf.bind()
++      : function (t) {
++          return t.__proto__ || Object.getPrototypeOf(t);
++        }),
++    c(t)
++  );
++}
++function f() {
++  try {
++    var t = !Boolean.prototype.valueOf.call(
++      Reflect.construct(Boolean, [], function () {}),
++    );
++  } catch (e) {}
++  return (f = function () {
++    return !!t;
++  })();
++}
++function a(t) {
++  if (void 0 === t)
++    throw new ReferenceError(
++      "this hasn't been initialised - super() hasn't been called",
++    );
++  return t;
++}
++function l(e, r) {
++  if (r && ("object" == t(r) || "function" == typeof r)) return r;
++  if (void 0 !== r)
++    throw new TypeError(
++      "Derived constructors may only return object or undefined",
++    );
++  return a(e);
++}
++function p(t, e, r) {
++  return (
++    (e = c(e)),
++    l(t, f() ? Reflect.construct(e, r || [], c(t).constructor) : e.apply(t, r))
++  );
++}
++function y(t, e) {
++  for (; !{}.hasOwnProperty.call(t, e) && null !== (t = c(t)); );
++  return t;
++}
++function s() {
++  return (
++    (s =
++      "undefined" != typeof Reflect && Reflect.get
++        ? Reflect.get.bind()
++        : function (t, e, r) {
++            var n = y(t, e);
++            if (n) {
++              var o = Object.getOwnPropertyDescriptor(n, e);
++              return o.get ? o.get.call(arguments.length < 3 ? t : r) : o.value;
++            }
++          }),
++    s.apply(null, arguments)
++  );
++}
++function b(t, e, r, n) {
++  var o = s(c(1 & n ? t.prototype : t), e, r);
++  return 2 & n && "function" == typeof o
++    ? function (t) {
++        return o.apply(r, t);
++      }
++    : o;
++}
++function d(t, e) {
++  return (
++    (d = Object.setPrototypeOf
++      ? Object.setPrototypeOf.bind()
++      : function (t, e) {
++          return ((t.__proto__ = e), t);
++        }),
++    d(t, e)
++  );
++}
++function v(t, e) {
++  if ("function" != typeof e && null !== e)
++    throw new TypeError("Super expression must either be null or a function");
++  ((t.prototype = Object.create(e && e.prototype, {
++    constructor: { value: t, writable: !0, configurable: !0 },
++  })),
++    Object.defineProperty(t, "prototype", { writable: !1 }),
++    e && d(t, e));
++}
++function m(t, e) {
++  (null == e || e > t.length) && (e = t.length);
++  for (var r = 0, n = Array(e); r < e; r++) n[r] = t[r];
++  return n;
++}
++function h(t) {
++  if (Array.isArray(t)) return m(t);
++}
++function w(t) {
++  if (
++    ("undefined" != typeof Symbol && null != t[Symbol.iterator]) ||
++    null != t["@@iterator"]
++  )
++    return Array.from(t);
++}
++function O(t, e) {
++  if (t) {
++    if ("string" == typeof t) return m(t, e);
++    var r = {}.toString.call(t).slice(8, -1);
++    return (
++      "Object" === r && t.constructor && (r = t.constructor.name),
++      "Map" === r || "Set" === r
++        ? Array.from(t)
++        : "Arguments" === r ||
++            /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(r)
++          ? m(t, e)
++          : void 0
++    );
++  }
++}
++function g() {
++  throw new TypeError(
++    "Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.",
++  );
++}
++function j(t) {
++  return h(t) || w(t) || O(t) || g();
++}
++function _(t, e, r, o) {
++  return (
++    (_ =
++      "undefined" != typeof Reflect && Reflect.set
++        ? Reflect.set
++        : function (t, e, r, o) {
++            var u,
++              i = y(t, e);
++            if (i) {
++              if ((u = Object.getOwnPropertyDescriptor(i, e)).set)
++                return (u.set.call(o, r), !0);
++              if (!u.writable) return !1;
++            }
++            if ((u = Object.getOwnPropertyDescriptor(o, e))) {
++              if (!u.writable) return !1;
++              ((u.value = r), Object.defineProperty(o, e, u));
++            } else n(o, e, r);
++            return !0;
++          }),
++    _(t, e, r, o)
++  );
++}
++function S(t, e, r, n, o) {
++  if (!_(t, e, r, n || t) && o) throw new TypeError("failed to set property");
++  return r;
++}
++function P(t, e, r, n, o, u) {
++  return S(c(u ? t.prototype : t), e, r, n, o);
++}
++function x(t) {
++  try {
++    return -1 !== Function.toString.call(t).indexOf("[native code]");
++  } catch (e) {
++    return "function" == typeof t;
++  }
++}
++function A(t, e, r) {
++  if (f()) return Reflect.construct.apply(null, arguments);
++  var n = [null];
++  n.push.apply(n, e);
++  var o = new (t.bind.apply(t, n))();
++  return (r && d(o, r.prototype), o);
++}
++function E(t) {
++  var e = "function" == typeof Map ? new Map() : void 0;
++  return (
++    (E = function (t) {
++      if (null === t || !x(t)) return t;
++      if ("function" != typeof t)
++        throw new TypeError(
++          "Super expression must either be null or a function",
++        );
++      if (void 0 !== e) {
++        if (e.has(t)) return e.get(t);
++        e.set(t, r);
++      }
++      function r() {
++        return A(t, arguments, c(this).constructor);
++      }
++      return (
++        (r.prototype = Object.create(t.prototype, {
++          constructor: {
++            value: r,
++            enumerable: !1,
++            writable: !0,
++            configurable: !0,
++          },
++        })),
++        d(r, t)
++      );
++    }),
++    E(t)
++  );
++}
++function R(t) {
++  if (Array.isArray(t)) return t;
++}
++function T() {
++  throw new TypeError(
++    "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.",
++  );
++}
++function I(t) {
++  return R(t) || w(t) || O(t) || T();
++}
++function C(t, e) {
++  var r =
++    null == t
++      ? null
++      : ("undefined" != typeof Symbol && t[Symbol.iterator]) || t["@@iterator"];
++  if (null != r) {
++    var n,
++      o,
++      u,
++      i,
++      c = [],
++      f = !0,
++      a = !1;
++    try {
++      if (((u = (r = r.call(t)).next), 0 === e)) {
++        if (Object(r) !== r) return;
++        f = !1;
++      } else
++        for (
++          ;
++          !(f = (n = u.call(r)).done) && (c.push(n.value), c.length !== e);
++          f = !0
++        );
++    } catch (l) {
++      ((a = !0), (o = l));
++    } finally {
++      try {
++        if (!f && null != r["return"] && ((i = r["return"]()), Object(i) !== i))
++          return;
++      } finally {
++        if (a) throw o;
++      }
++    }
++    return c;
++  }
++}
++function D(t, e) {
++  return R(t) || C(t, e) || O(t, e) || T();
++}
++function M(t, e) {
++  var r =
++    ("undefined" != typeof Symbol && t[Symbol.iterator]) || t["@@iterator"];
++  if (!r) {
++    if (
++      Array.isArray(t) ||
++      (r = O(t)) ||
++      (e && t && "number" == typeof t.length)
++    ) {
++      r && (t = r);
++      var n = 0,
++        o = function () {};
++      return {
++        s: o,
++        n: function () {
++          return n >= t.length ? { done: !0 } : { done: !1, value: t[n++] };
++        },
++        e: function (t) {
++          throw t;
++        },
++        f: o,
++      };
++    }
++    throw new TypeError(
++      "Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.",
++    );
++  }
++  var u,
++    i = !0,
++    c = !1;
++  return {
++    s: function () {
++      r = r.call(t);
++    },
++    n: function () {
++      var t = r.next();
++      return ((i = t.done), t);
++    },
++    e: function (t) {
++      ((c = !0), (u = t));
++    },
++    f: function () {
++      try {
++        i || null == r["return"] || r["return"]();
++      } finally {
++        if (c) throw u;
++      }
++    },
++  };
++}
++function k(t) {
++  return t && t.__esModule && Object.prototype.hasOwnProperty.call(t, "default")
++    ? t["default"]
++    : t;
++}
++function F(t) {
++  if (t.__esModule) return t;
++  var e = t.default;
++  if ("function" == typeof e) {
++    var r = function t() {
++      return this instanceof t
++        ? Reflect.construct(e, arguments, this.constructor)
++        : e.apply(this, arguments);
++    };
++    r.prototype = e.prototype;
++  } else r = {};
++  return (
++    Object.defineProperty(r, "__esModule", { value: !0 }),
++    Object.keys(t).forEach(function (e) {
++      var n = Object.getOwnPropertyDescriptor(t, e);
++      Object.defineProperty(
++        r,
++        e,
++        n.get
++          ? n
++          : {
++              enumerable: !0,
++              get: function () {
++                return t[e];
++              },
++            },
++      );
++    }),
++    r
++  );
++}
++((exports._arrayLikeToArray = m),
++  (exports._callSuper = p),
++  (exports._classCallCheck = o),
++  (exports._createClass = i),
++  (exports._createForOfIteratorHelper = M),
++  (exports._defineProperty = n),
++  (exports._inherits = v),
++  (exports._slicedToArray = D),
++  (exports._superPropGet = b),
++  (exports._superPropSet = P),
++  (exports._toArray = I),
++  (exports._toConsumableArray = j),
++  (exports._typeof = t),
++  (exports._wrapNativeSuper = E),
++  (exports.getAugmentedNamespace = F),
++  (exports.getDefaultExportFromCjs = k));
+
+diff -- dist/base.wxml
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 54402 raw bytes, 63240 normalized bytes, hash d8eb7518d3d5
+
+--- /dev/null
++++ b/dist/comp.js
+@@ -0,0 +1,3 @@
++"use strict";
++const e = require("./taro.js");
++(require("./babelHelpers.js"), Component(e.createRecursiveComponentConfig()));
+
+--- /dev/null
++++ b/dist/comp.json
+@@ -0,0 +1,7 @@
++{
++  "component": true,
++  "styleIsolation": "apply-shared",
++  "usingComponents": {
++    "comp": "./comp"
++  }
++}
+
+--- /dev/null
++++ b/dist/comp.wxml
+@@ -0,0 +1,3 @@
++<import src="./base.wxml" />
++<wxs module="xs" src="./utils.wxs" />
++<template is="{{'tmpl_0_' + i.nn}}" data="{{i:i,c:1,l:xs.f('',i.nn)}}" />
+
+--- /dev/null
++++ b/dist/pages/index/index.js
+@@ -0,0 +1,215 @@
++"use strict";
++var e = Object.defineProperty,
++  t = Object.defineProperties,
++  r = Object.getOwnPropertyDescriptors,
++  n = Object.getOwnPropertySymbols,
++  a = Object.prototype.hasOwnProperty,
++  i = Object.prototype.propertyIsEnumerable,
++  s = (t, r, n) =>
++    r in t
++      ? e(t, r, { enumerable: !0, configurable: !0, writable: !0, value: n })
++      : (t[r] = n),
++  o = (e, t) => {
++    for (var r in t || (t = {})) a.call(t, r) && s(e, r, t[r]);
++    if (n) for (var r of n(t)) i.call(t, r) && s(e, r, t[r]);
++    return e;
++  },
++  c = (e, n) => t(e, r(n));
++const l = require("../../taro.js"),
++  u = require("../../vendors.js");
++require("../../babelHelpers.js");
++const p = (e) => e;
++function g(e) {
++  return "object" === typeof e && null !== e;
++}
++function d(e) {
++  if (e)
++    return e === u.MappingChars2String
++      ? u.MappingChars2String
++      : o(o({}, u.MappingChars2String), e);
++}
++function x(e) {
++  const { escape: t, unescape: r } = null != e ? e : {};
++  return g(t) && t.map
++    ? d(t.map)
++    : g(r) && r.map
++      ? d(r.map)
++      : u.MappingChars2String;
++}
++function f(e) {
++  var t, r;
++  const n = x(e),
++    a = null == e ? void 0 : e.escape,
++    i = null == e ? void 0 : e.unescape,
++    s = !1 !== a,
++    l = !1 !== i;
++  let f, m;
++  return (
++    s &&
++      (f = g(a)
++        ? c(o({}, a), { map: null != (t = d(a.map)) ? t : n })
++        : { map: n }),
++    l &&
++      (m = g(i)
++        ? c(o({}, i), { map: null != (r = d(i.map)) ? r : n })
++        : { map: n }),
++    {
++      escape: s ? (e) => u.escape(e, f) : p,
++      unescape: l ? (e) => u.unescape(e, m) : p,
++    }
++  );
++}
++const m = 256,
++  b = /u[0-9a-f]{3,}/i;
++function w(e) {
++  return e.includes("_") || b.test(e);
++}
++function j(e, t, r, n) {
++  const a = new Map();
++  return (...i) => {
++    let s;
++    if (
++      ((s = 1 === i.length && "string" === typeof i[0] ? i[0] : u.clsx(...i)),
++      !s)
++    )
++      return s;
++    const o = a.get(s);
++    if (void 0 !== o) return o;
++    const c = w(s) ? t.unescape(s) : s;
++    let l,
++      p = c;
++    if (r) {
++      const e = r(c);
++      "string" === typeof e ? (p = e) : ((p = e.value), (l = e.metadata));
++    }
++    const g = e(p),
++      d = n ? n(g, l) : g,
++      x = t.escape(d);
++    if (a.size >= m) {
++      const e = a.keys().next();
++      e.done || a.delete(e.value);
++    }
++    return (a.set(s, x), x);
++  };
++}
++function h(e, t, r, n) {
++  return (...a) => j(e(...a), t, r, n);
++}
++function v(e) {
++  const {
++    version: t,
++    twMerge: r,
++    twJoin: n,
++    extendTailwindMerge: a,
++    createTailwindMerge: i,
++    prepareValue: s,
++    restoreValue: o,
++  } = e;
++  return function (e) {
++    const c = f(e);
++    return {
++      version: t,
++      twMerge: j(r, c, s, o),
++      twJoin: j(n, c, s, o),
++      extendTailwindMerge: h(a, c, s, o),
++      createTailwindMerge: h(i, c, s, o),
++    };
++  };
++}
++const M = ["text", "border", "bg", "outline", "ring"],
++  y = /[.*+?^${}()|[\]\\]/g;
++function T(e) {
++  return e.replace(y, "\\$&");
++}
++function E(e = M) {
++  const t = e.map((e) => new RegExp(`${e}-\\[(\\d+(?:\\.\\d+)?)rpx\\]`, "g"));
++  function r(r) {
++    if (!r || !r.includes("rpx")) return r;
++    let n = !1;
++    const a = {},
++      i = t.reduce((t, r, i) => {
++        const s = e[i];
++        return t.replace(r, (e, t) => {
++          var r;
++          const i = `${s}-[length:${t}rpx]`;
++          return ((a[i] = (null != (r = a[i]) ? r : 0) + 1), (n = !0), i);
++        });
++      }, r);
++    return n ? { value: i, metadata: { replacements: a } } : r;
++  }
++  function n(e, t) {
++    if (!t || "object" !== typeof t || !("replacements" in t)) return e;
++    const { replacements: r } = t;
++    if (!r || "object" !== typeof r) return e;
++    let n = e;
++    for (const [a, i] of Object.entries(r)) {
++      let e = i;
++      if (!e) continue;
++      const t = a.replace("[length:", "["),
++        r = new RegExp(T(a));
++      while (e > 0 && r.test(n)) ((n = n.replace(r, t)), e--);
++    }
++    return n;
++  }
++  return { prepareValue: r, restoreValue: n };
++}
++const V = v(
++    o(
++      {
++        createTailwindMerge: u.createTailwindMerge,
++        extendTailwindMerge: u.extendTailwindMerge,
++        twJoin: u.twJoin,
++        twMerge: u.twMerge,
++        version: 3,
++      },
++      E(),
++    ),
++  ),
++  {
++    version: O,
++    twMerge: R,
++    twJoin: N,
++    extendTailwindMerge: P,
++    createTailwindMerge: C,
++  } = V(),
++  $ = "";
++function k() {
++  l.taroExports.useLoad(() => {
++    console.log("Page loaded.");
++  });
++  const e = R("bg-_b_h123456_B text-_b_hc31d6b_B", "text-white rounded-xl p-4"),
++    t = N("border-_b10rpx_B _eborder-brand", "active_cbg-emerald-600");
++  return l.jsxRuntimeExports.jsxs(l.View, {
++    className: "index space-y-4 p-_b32rpx_B",
++    children: [
++      l.jsxRuntimeExports.jsx(l.View, {
++        className: `h-_b300px_B rotate-_b10deg_B ${e}`,
++        children: "\u52a8\u6001\u6a21\u677f\u5b57\u7b26\u4e32 + twMerge",
++      }),
++      l.jsxRuntimeExports.jsx(l.Text, {
++        className: "text-_b55rpx_B text-_b_hfff_B bg-brand",
++        children: "@theme token",
++      }),
++      l.jsxRuntimeExports.jsx(l.View, {
++        className: "h-14 bg-gradient-to-r from-cyan-500 to-blue-500",
++      }),
++      l.jsxRuntimeExports.jsx(l.View, {
++        className: "h-14 bg-gradient-to-b from-fuchsia-500 to-rose-500",
++      }),
++      l.jsxRuntimeExports.jsx(l.View, {
++        className: "h-14 bg-linear-to-r from-cyan-500 to-blue-500",
++      }),
++      l.jsxRuntimeExports.jsx(l.View, {
++        className: "rounded-xl bg-_b_h123456_B p-4 text-white",
++        children: "\u9759\u6001 class + \u4efb\u610f\u503c",
++      }),
++      l.jsxRuntimeExports.jsx(l.View, {
++        className: `dark_cbg-zinc-800 bg-gray-100 text-_b32rpx_B ${t}`,
++        hoverClass: "bg-red-500 dark_cbg-green-500",
++        children: "hoverClass + dark + important + arbitrary value",
++      }),
++    ],
++  });
++}
++var J = { navigationBarTitleText: "\u9996\u9875" };
++Page(l.createPageConfig(k, "pages/index/index", { root: { cn: [] } }, J || {}));
+
+--- /dev/null
++++ b/dist/pages/index/index.json
+@@ -0,0 +1,6 @@
++{
++  "navigationBarTitleText": "首页",
++  "usingComponents": {
++    "comp": "../../comp"
++  }
++}
+
+--- /dev/null
++++ b/dist/pages/index/index.wxml
+@@ -0,0 +1,2 @@
++<import src="../../base.wxml" />
++<template is="taro_tmpl" data="{{root:root}}" />
+
+--- /dev/null
++++ b/dist/pages/index/index.wxss
+@@ -0,0 +1,3 @@
++.tw-page-style-watch-anchor {
++  color: inherit;
++}
+
+--- /dev/null
++++ b/dist/project.config.json
+@@ -0,0 +1,33 @@
++{
++  "miniprogramRoot": "./",
++  "projectname": "taro-vite-tailwindcss-v5-weapp",
++  "description": "",
++  "setting": {
++    "urlCheck": true,
++    "es6": false,
++    "enhance": false,
++    "compileHotReLoad": false,
++    "postcss": false,
++    "minified": false,
++    "babelSetting": {
++      "ignore": [],
++      "disablePlugins": [],
++      "outputPath": ""
++    },
++    "ignoreUploadUnusedFiles": true,
++    "packNpmRelationList": []
++  },
++  "appid": "wxb3d842a4a7e3440d",
++  "compileType": "miniprogram",
++  "libVersion": "3.10.3",
++  "srcMiniprogramRoot": "dist/",
++  "packOptions": {
++    "ignore": [],
++    "include": []
++  },
++  "condition": {},
++  "editorSetting": {
++    "tabIndent": "insertSpaces",
++    "tabSize": 2
++  }
++}
+
+diff -- dist/taro.js
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 226012 raw bytes, 400376 normalized bytes, hash 4afe057a18d2
+
+--- /dev/null
++++ b/dist/utils.wxs
+@@ -0,0 +1,60 @@
++module.exports = {
++  a: function (l, n, s) {
++    var a = [
++      "8",
++      "0",
++      "22",
++      "6",
++      "3",
++      "1",
++      "13",
++      "7",
++      "5",
++      "69",
++      "70",
++      "35",
++      "27",
++      "66",
++      "75",
++      "76",
++      "63",
++    ];
++    var b = ["5", "69", "70", "35", "27", "66", "75", "76", "63"];
++    if (a.indexOf(n) === -1) {
++      l = 0;
++    }
++    if (b.indexOf(n) > -1) {
++      var u = s.split(",");
++      var depth = 0;
++      for (var i = 0; i < u.length; i++) {
++        if (u[i] === n) depth++;
++      }
++      l = depth;
++    }
++    if (l >= 15) {
++      return "tmpl_15_container";
++    }
++    return "tmpl_" + l + "_" + n;
++  },
++  b: function (a, b) {
++    return a === undefined ? b : a;
++  },
++  c: function (i, prefix) {
++    var s = i.focus !== undefined ? "focus" : "blur";
++    return prefix + i.nn + "_" + s;
++  },
++  d: function (a) {
++    return a === undefined ? {} : a;
++  },
++  e: function (n) {
++    return "tmpl_" + n + "_container";
++  },
++  f: function (l, n) {
++    var b = ["5", "69", "70", "35", "27", "66", "75", "76", "63"];
++    if (b.indexOf(n) > -1) {
++      if (l) l += ",";
++      l += n;
++    }
++    return l;
++  },
++};
+
+--- /dev/null
++++ b/dist/vendors.js
+@@ -0,0 +1,1649 @@
++"use strict";
++var e = Object.defineProperty,
++  o = Object.getOwnPropertySymbols,
++  r = Object.prototype.hasOwnProperty,
++  t = Object.prototype.propertyIsEnumerable,
++  n = (o, r, t) =>
++    r in o
++      ? e(o, r, { enumerable: !0, configurable: !0, writable: !0, value: t })
++      : (o[r] = t),
++  s = (e, s) => {
++    for (var i in s || (s = {})) r.call(s, i) && n(e, i, s[i]);
++    if (o) for (var i of o(s)) t.call(s, i) && n(e, i, s[i]);
++    return e;
++  };
++function i(e) {
++  var o,
++    r,
++    t = "";
++  if ("string" == typeof e || "number" == typeof e) t += e;
++  else if ("object" == typeof e)
++    if (Array.isArray(e)) {
++      var n = e.length;
++      for (o = 0; o < n; o++)
++        e[o] && (r = i(e[o])) && (t && (t += " "), (t += r));
++    } else for (r in e) e[r] && (t && (t += " "), (t += r));
++  return t;
++}
++function l() {
++  for (var e, o, r = 0, t = "", n = arguments.length; r < n; r++)
++    (e = arguments[r]) && (o = i(e)) && (t && (t += " "), (t += o));
++  return t;
++}
++const a = [
++  ["[", "b"],
++  ["]", "B"],
++  ["(", "p"],
++  [")", "P"],
++  ["#", "h"],
++  ["!", "e"],
++  ["/", "f"],
++  ["\\", "r"],
++  [".", "d"],
++  [":", "c"],
++  ["%", "v"],
++  [",", "m"],
++  ["'", "a"],
++  ['"', "q"],
++  ["*", "x"],
++  ["&", "n"],
++  ["@", "t"],
++  ["{", "k"],
++  ["}", "K"],
++  ["+", "u"],
++  [";", "j"],
++  ["<", "l"],
++  ["~", "w"],
++  ["=", "z"],
++  [">", "g"],
++  ["?", "Q"],
++  ["^", "y"],
++  ["`", "i"],
++  ["|", "o"],
++  ["$", "s"],
++];
++function c(e) {
++  return a.reduce((o, [r, t]) => ((o[r] = `${e}${t}`), o), {});
++}
++const d = "_",
++  m = "_c",
++  p = c(m);
++Object.entries(p);
++const u = c(d);
++Object.entries(u);
++const f = 127,
++  b = "_",
++  g = "-",
++  h = u,
++  x = p;
++new Set(Object.keys(h));
++const k = new WeakMap(),
++  w = new WeakMap(),
++  v = new WeakMap();
++function y(e, o) {
++  return Object.prototype.hasOwnProperty.call(e, o);
++}
++function z(e) {
++  if (!e) return h;
++  if (e === h || e === x) return e;
++  const o = k.get(e);
++  if (o) return o;
++  if (0 === Object.keys(e).length) return (k.set(e, h), h);
++  const r = s(s({}, h), e);
++  return (k.set(e, r), r);
++}
++function j(e) {
++  return e;
++}
++function P(e) {
++  const o = {},
++    r = new Set();
++  for (const [n, s] of Object.entries(e)) ((o[s] = n), r.add(s));
++  const t = Array.from(r).sort((e, o) => o.length - e.length);
++  return { inverse: o, tokens: t };
++}
++function C(e) {
++  const o = v.get(e);
++  if (o) return o;
++  const r = P(e);
++  return (v.set(e, r), r);
++}
++function G(e, o) {
++  if (0 === o.length) return;
++  const r = w.get(e);
++  if (r) return r;
++  const t = o.reduce((e, o) => {
++    if (!o) return e;
++    const r = o[0];
++    if (!r) return e;
++    const t = e[r];
++    return (t ? t.push(o) : (e[r] = [o]), e);
++  }, {});
++  return (w.set(e, t), t);
++}
++function M(e) {
++  v.set(e, P(e));
++}
++(M(h), M(x));
++const O = 48,
++  A = 57;
++function N(e) {
++  return e >= O && e <= A;
++}
++const $ = 55296,
++  S = 56319,
++  I = 56320,
++  W = 57343,
++  _ = (() => {
++    const e = Array.from({ length: f + 1 });
++    for (const [o, r] of Object.entries(h)) e[o.codePointAt(0)] = r;
++    return e;
++  })();
++function T(e, o) {
++  const r = e.charCodeAt(o);
++  if (r < $ || r > S || o + 1 >= e.length) return { codePoint: r, size: 1 };
++  const t = e.charCodeAt(o + 1);
++  return t < I || t > W
++    ? { codePoint: r, size: 1 }
++    : { codePoint: t - I + ((r - $) << 10) + 65536, size: 2 };
++}
++function E(e, o, r) {
++  if (r) return e;
++  const t = e.codePointAt(0);
++  if (N(t)) return `${b}${e}`;
++  if (e === g) {
++    if (!o) return `${b}${e}`;
++    if (N(o.codePointAt(0))) return `${b}${e}`;
++  }
++  return e;
++}
++function q(e, o) {
++  var r;
++  const t = e.length;
++  if (0 === t) return "";
++  const n = z(null == o ? void 0 : o.map),
++    s = null != (r = null == o ? void 0 : o.ignoreHead) && r,
++    i = n === h;
++  let l,
++    a = 0,
++    c = 0;
++  while (a < t) {
++    const { codePoint: o, size: r } = T(e, a),
++      d = 0 === a;
++    let m;
++    if (o > f) m = `u_x${o.toString(16)}_`;
++    else if (i)
++      if (d) {
++        const n = _[o];
++        if (void 0 !== n) m = n;
++        else {
++          const o = a + r,
++            n = o < t ? T(e, o) : void 0,
++            i = e[a],
++            l = n ? e.slice(o, o + n.size) : void 0,
++            c = E(i, l, s);
++          c !== i && (m = c);
++        }
++      } else {
++        const e = _[o];
++        void 0 !== e && (m = e);
++      }
++    else {
++      const o = e[a],
++        i = y(n, o) ? n[o] : void 0;
++      if (void 0 !== i) m = i;
++      else if (d) {
++        const n = a + r,
++          i = n < t ? T(e, n) : void 0,
++          l = i ? e.slice(n, n + i.size) : void 0,
++          c = E(o, l, s);
++        c !== o && (m = c);
++      }
++    }
++    (void 0 !== m &&
++      (l || (l = []), c !== a && l.push(e.slice(c, a)), l.push(m), (c = a + r)),
++      (a += r));
++  }
++  return l ? (c < t && l.push(e.slice(c)), l.join("")) : e;
++}
++const H = "u_x",
++  B = "_",
++  J = 16;
++function K(e) {
++  const o = e.codePointAt(0);
++  return (o >= 48 && o <= 57) || (o >= 65 && o <= 70) || (o >= 97 && o <= 102);
++}
++function Q(e, o) {
++  if (!e.startsWith(H, o)) return;
++  let r = o + H.length;
++  while (r < e.length) {
++    const o = e[r];
++    if (!o || !K(o)) break;
++    r += 1;
++  }
++  if (r === o + H.length) return;
++  if (r >= e.length || e[r] !== B) return;
++  const t = e.slice(o + H.length, r),
++    n = Number.parseInt(t, J);
++  return Number.isNaN(n) || n <= f || n > 1114111
++    ? void 0
++    : { char: String.fromCodePoint(n), length: r - o + 1 };
++}
++const D = b.codePointAt(0),
++  F = "u".codePointAt(0),
++  L = (() => {
++    const e = {};
++    for (const [o, r] of Object.entries(h)) e[r] = o;
++    return e;
++  })();
++function R(e, o) {
++  const r = e.length,
++    t = !o && e[0] === b,
++    n = e.includes("u_x");
++  if (!t && !n) return e;
++  let s = 0,
++    i = "";
++  while (s < r) {
++    const o = e[s],
++      r = e.codePointAt(s);
++    if (r === F) {
++      const o = Q(e, s);
++      if (o) {
++        ((i += o.char), (s += o.length));
++        continue;
++      }
++    }
++    ((i += o), s++);
++  }
++  if (o || 0 === i.length || !i.startsWith(b)) return i;
++  const l = i[1];
++  if (!l) return i.slice(1);
++  let a = N(l.codePointAt(0));
++  if (!a && l === g) {
++    const e = i[2];
++    a = !e || N(e.codePointAt(0));
++  }
++  return a ? i.slice(1) : i;
++}
++function U(e, o) {
++  var r;
++  const t = e.length;
++  if (0 === t) return "";
++  const n = j(null == o ? void 0 : o.map),
++    s = null != (r = null == o ? void 0 : o.ignoreHead) && r;
++  if (!n) return R(e, s);
++  const i = n === h,
++    { inverse: l, tokens: a } = i ? { inverse: {}, tokens: [] } : C(n),
++    c = i ? void 0 : G(n, a);
++  let d,
++    m = 0,
++    p = 0;
++  while (m < t) {
++    const o = e.charCodeAt(m),
++      r = e[m];
++    let t,
++      n = 1;
++    if (void 0 === t && o === F) {
++      const o = Q(e, m);
++      o && ((t = o.char), (n = o.length));
++    }
++    if (void 0 === t)
++      if (i && o === D) {
++        const o = L[e.slice(m, m + 2)];
++        void 0 !== o && ((t = o), (n = 2));
++      } else if (c) {
++        const o = c[r];
++        if (o)
++          for (const r of o)
++            if (e.startsWith(r, m)) {
++              ((t = l[r]), (n = r.length));
++              break;
++            }
++      }
++    void 0 === t
++      ? (m += 1)
++      : (d || (d = []),
++        p !== m && d.push(e.slice(p, m)),
++        d.push(t),
++        (p = m + n),
++        (m += n));
++  }
++  const u = d ? (() => (p < t && d.push(e.slice(p)), d.join("")))() : e;
++  if (s || 0 === u.length || !u.startsWith(b)) return u;
++  const f = u[1];
++  if (!f) return u.slice(1);
++  let x = N(f.codePointAt(0));
++  if (!x && f === g) {
++    const e = u[2];
++    x = !e || N(e.codePointAt(0));
++  }
++  return x ? u.slice(1) : u;
++}
++const V = (e, o) => {
++    const r = new Array(e.length + o.length);
++    for (let t = 0; t < e.length; t++) r[t] = e[t];
++    for (let t = 0; t < o.length; t++) r[e.length + t] = o[t];
++    return r;
++  },
++  X = (e, o) => ({ classGroupId: e, validator: o }),
++  Y = (e = new Map(), o = null, r) => ({
++    nextPart: e,
++    validators: o,
++    classGroupId: r,
++  }),
++  Z = "-",
++  ee = [],
++  oe = "arbitrary..",
++  re = (e) => {
++    const o = se(e),
++      { conflictingClassGroups: r, conflictingClassGroupModifiers: t } = e,
++      n = (e) => {
++        if (e.startsWith("[") && e.endsWith("]")) return ne(e);
++        const r = e.split(Z),
++          t = "" === r[0] && r.length > 1 ? 1 : 0;
++        return te(r, t, o);
++      },
++      s = (e, o) => {
++        if (o) {
++          const o = t[e],
++            n = r[e];
++          return o ? (n ? V(n, o) : o) : n || ee;
++        }
++        return r[e] || ee;
++      };
++    return { getClassGroupId: n, getConflictingClassGroupIds: s };
++  },
++  te = (e, o, r) => {
++    const t = e.length - o;
++    if (0 === t) return r.classGroupId;
++    const n = e[o],
++      s = r.nextPart.get(n);
++    if (s) {
++      const r = te(e, o + 1, s);
++      if (r) return r;
++    }
++    const i = r.validators;
++    if (null === i) return;
++    const l = 0 === o ? e.join(Z) : e.slice(o).join(Z),
++      a = i.length;
++    for (let c = 0; c < a; c++) {
++      const e = i[c];
++      if (e.validator(l)) return e.classGroupId;
++    }
++  },
++  ne = (e) =>
++    -1 === e.slice(1, -1).indexOf(":")
++      ? void 0
++      : (() => {
++          const o = e.slice(1, -1),
++            r = o.indexOf(":"),
++            t = o.slice(0, r);
++          return t ? oe + t : void 0;
++        })(),
++  se = (e) => {
++    const { theme: o, classGroups: r } = e;
++    return ie(r, o);
++  },
++  ie = (e, o) => {
++    const r = Y();
++    for (const t in e) {
++      const n = e[t];
++      le(n, r, t, o);
++    }
++    return r;
++  },
++  le = (e, o, r, t) => {
++    const n = e.length;
++    for (let s = 0; s < n; s++) {
++      const n = e[s];
++      ae(n, o, r, t);
++    }
++  },
++  ae = (e, o, r, t) => {
++    "string" !== typeof e
++      ? "function" !== typeof e
++        ? me(e, o, r, t)
++        : de(e, o, r, t)
++      : ce(e, o, r);
++  },
++  ce = (e, o, r) => {
++    const t = "" === e ? o : pe(o, e);
++    t.classGroupId = r;
++  },
++  de = (e, o, r, t) => {
++    ue(e)
++      ? le(e(t), o, r, t)
++      : (null === o.validators && (o.validators = []),
++        o.validators.push(X(r, e)));
++  },
++  me = (e, o, r, t) => {
++    const n = Object.entries(e),
++      s = n.length;
++    for (let i = 0; i < s; i++) {
++      const [e, s] = n[i];
++      le(s, pe(o, e), r, t);
++    }
++  },
++  pe = (e, o) => {
++    let r = e;
++    const t = o.split(Z),
++      n = t.length;
++    for (let s = 0; s < n; s++) {
++      const e = t[s];
++      let o = r.nextPart.get(e);
++      (o || ((o = Y()), r.nextPart.set(e, o)), (r = o));
++    }
++    return r;
++  },
++  ue = (e) => "isThemeGetter" in e && !0 === e.isThemeGetter,
++  fe = (e) => {
++    if (e < 1) return { get: () => {}, set: () => {} };
++    let o = 0,
++      r = Object.create(null),
++      t = Object.create(null);
++    const n = (n, s) => {
++      ((r[n] = s), o++, o > e && ((o = 0), (t = r), (r = Object.create(null))));
++    };
++    return {
++      get(e) {
++        let o = r[e];
++        return void 0 !== o ? o : void 0 !== (o = t[e]) ? (n(e, o), o) : void 0;
++      },
++      set(e, o) {
++        e in r ? (r[e] = o) : n(e, o);
++      },
++    };
++  },
++  be = "!",
++  ge = ":",
++  he = [],
++  xe = (e, o, r, t, n) => ({
++    modifiers: e,
++    hasImportantModifier: o,
++    baseClassName: r,
++    maybePostfixModifierPosition: t,
++    isExternal: n,
++  }),
++  ke = (e) => {
++    const { prefix: o, experimentalParseClassName: r } = e;
++    let t = (e) => {
++      const o = [];
++      let r,
++        t = 0,
++        n = 0,
++        s = 0;
++      const i = e.length;
++      for (let m = 0; m < i; m++) {
++        const i = e[m];
++        if (0 === t && 0 === n) {
++          if (i === ge) {
++            (o.push(e.slice(s, m)), (s = m + 1));
++            continue;
++          }
++          if ("/" === i) {
++            r = m;
++            continue;
++          }
++        }
++        "[" === i ? t++ : "]" === i ? t-- : "(" === i ? n++ : ")" === i && n--;
++      }
++      const l = 0 === o.length ? e : e.slice(s);
++      let a = l,
++        c = !1;
++      l.endsWith(be)
++        ? ((a = l.slice(0, -1)), (c = !0))
++        : l.startsWith(be) && ((a = l.slice(1)), (c = !0));
++      const d = r && r > s ? r - s : void 0;
++      return xe(o, c, a, d);
++    };
++    if (o) {
++      const e = o + ge,
++        r = t;
++      t = (o) =>
++        o.startsWith(e) ? r(o.slice(e.length)) : xe(he, !1, o, void 0, !0);
++    }
++    if (r) {
++      const e = t;
++      t = (o) => r({ className: o, parseClassName: e });
++    }
++    return t;
++  },
++  we = (e) => {
++    const o = new Map();
++    return (
++      e.orderSensitiveModifiers.forEach((e, r) => {
++        o.set(e, 1e6 + r);
++      }),
++      (e) => {
++        const r = [];
++        let t = [];
++        for (let n = 0; n < e.length; n++) {
++          const s = e[n],
++            i = "[" === s[0],
++            l = o.has(s);
++          i || l
++            ? (t.length > 0 && (t.sort(), r.push(...t), (t = [])), r.push(s))
++            : t.push(s);
++        }
++        return (t.length > 0 && (t.sort(), r.push(...t)), r);
++      }
++    );
++  },
++  ve = (e) =>
++    s(
++      { cache: fe(e.cacheSize), parseClassName: ke(e), sortModifiers: we(e) },
++      re(e),
++    ),
++  ye = /\s+/,
++  ze = (e, o) => {
++    const {
++        parseClassName: r,
++        getClassGroupId: t,
++        getConflictingClassGroupIds: n,
++        sortModifiers: s,
++      } = o,
++      i = [],
++      l = e.trim().split(ye);
++    let a = "";
++    for (let c = l.length - 1; c >= 0; c -= 1) {
++      const e = l[c],
++        {
++          isExternal: o,
++          modifiers: d,
++          hasImportantModifier: m,
++          baseClassName: p,
++          maybePostfixModifierPosition: u,
++        } = r(e);
++      if (o) {
++        a = e + (a.length > 0 ? " " + a : a);
++        continue;
++      }
++      let f = !!u,
++        b = t(f ? p.substring(0, u) : p);
++      if (!b) {
++        if (!f) {
++          a = e + (a.length > 0 ? " " + a : a);
++          continue;
++        }
++        if (((b = t(p)), !b)) {
++          a = e + (a.length > 0 ? " " + a : a);
++          continue;
++        }
++        f = !1;
++      }
++      const g = 0 === d.length ? "" : 1 === d.length ? d[0] : s(d).join(":"),
++        h = m ? g + be : g,
++        x = h + b;
++      if (i.indexOf(x) > -1) continue;
++      i.push(x);
++      const k = n(b, f);
++      for (let r = 0; r < k.length; ++r) {
++        const e = k[r];
++        i.push(h + e);
++      }
++      a = e + (a.length > 0 ? " " + a : a);
++    }
++    return a;
++  },
++  je = (...e) => {
++    let o,
++      r,
++      t = 0,
++      n = "";
++    while (t < e.length)
++      (o = e[t++]) && (r = Pe(o)) && (n && (n += " "), (n += r));
++    return n;
++  },
++  Pe = (e) => {
++    if ("string" === typeof e) return e;
++    let o,
++      r = "";
++    for (let t = 0; t < e.length; t++)
++      e[t] && (o = Pe(e[t])) && (r && (r += " "), (r += o));
++    return r;
++  },
++  Ce = (e, ...o) => {
++    let r, t, n, s;
++    const i = (i) => {
++        const a = o.reduce((e, o) => o(e), e());
++        return (
++          (r = ve(a)),
++          (t = r.cache.get),
++          (n = r.cache.set),
++          (s = l),
++          l(i)
++        );
++      },
++      l = (e) => {
++        const o = t(e);
++        if (o) return o;
++        const s = ze(e, r);
++        return (n(e, s), s);
++      };
++    return ((s = i), (...e) => s(je(...e)));
++  },
++  Ge = [],
++  Me = (e) => {
++    const o = (o) => o[e] || Ge;
++    return ((o.isThemeGetter = !0), o);
++  },
++  Oe = /^\[(?:(\w[\w-]*):)?(.+)\]$/i,
++  Ae = /^\((?:(\w[\w-]*):)?(.+)\)$/i,
++  Ne = /^\d+(?:\.\d+)?\/\d+(?:\.\d+)?$/,
++  $e = /^(\d+(\.\d+)?)?(xs|sm|md|lg|xl)$/,
++  Se =
++    /\d+(%|px|r?em|[sdl]?v([hwib]|min|max)|pt|pc|in|cm|mm|cap|ch|ex|r?lh|cq(w|h|i|b|min|max))|\b(calc|min|max|clamp)\(.+\)|^0$/,
++  Ie = /^(rgba?|hsla?|hwb|(ok)?(lab|lch)|color-mix)\(.+\)$/,
++  We = /^(inset_)?-?((\d+)?\.?(\d+)[a-z]+|0)_-?((\d+)?\.?(\d+)[a-z]+|0)/,
++  _e =
++    /^(url|image|image-set|cross-fade|element|(repeating-)?(linear|radial|conic)-gradient)\(.+\)$/,
++  Te = (e) => Ne.test(e),
++  Ee = (e) => !!e && !Number.isNaN(Number(e)),
++  qe = (e) => !!e && Number.isInteger(Number(e)),
++  He = (e) => e.endsWith("%") && Ee(e.slice(0, -1)),
++  Be = (e) => $e.test(e),
++  Je = () => !0,
++  Ke = (e) => Se.test(e) && !Ie.test(e),
++  Qe = () => !1,
++  De = (e) => We.test(e),
++  Fe = (e) => _e.test(e),
++  Le = (e) => !Ue(e) && !to(e),
++  Re = (e) => po(e, go, Qe),
++  Ue = (e) => Oe.test(e),
++  Ve = (e) => po(e, ho, Ke),
++  Xe = (e) => po(e, xo, Ee),
++  Ye = (e) => po(e, wo, Je),
++  Ze = (e) => po(e, ko, Qe),
++  eo = (e) => po(e, fo, Qe),
++  oo = (e) => po(e, bo, Fe),
++  ro = (e) => po(e, vo, De),
++  to = (e) => Ae.test(e),
++  no = (e) => uo(e, ho),
++  so = (e) => uo(e, ko),
++  io = (e) => uo(e, fo),
++  lo = (e) => uo(e, go),
++  ao = (e) => uo(e, bo),
++  co = (e) => uo(e, vo, !0),
++  mo = (e) => uo(e, wo, !0),
++  po = (e, o, r) => {
++    const t = Oe.exec(e);
++    return !!t && (t[1] ? o(t[1]) : r(t[2]));
++  },
++  uo = (e, o, r = !1) => {
++    const t = Ae.exec(e);
++    return !!t && (t[1] ? o(t[1]) : r);
++  },
++  fo = (e) => "position" === e || "percentage" === e,
++  bo = (e) => "image" === e || "url" === e,
++  go = (e) => "length" === e || "size" === e || "bg-size" === e,
++  ho = (e) => "length" === e,
++  xo = (e) => "number" === e,
++  ko = (e) => "family-name" === e,
++  wo = (e) => "number" === e || "weight" === e,
++  vo = (e) => "shadow" === e,
++  yo = () => {
++    const e = Me("color"),
++      o = Me("font"),
++      r = Me("text"),
++      t = Me("font-weight"),
++      n = Me("tracking"),
++      s = Me("leading"),
++      i = Me("breakpoint"),
++      l = Me("container"),
++      a = Me("spacing"),
++      c = Me("radius"),
++      d = Me("shadow"),
++      m = Me("inset-shadow"),
++      p = Me("text-shadow"),
++      u = Me("drop-shadow"),
++      f = Me("blur"),
++      b = Me("perspective"),
++      g = Me("aspect"),
++      h = Me("ease"),
++      x = Me("animate"),
++      k = () => [
++        "auto",
++        "avoid",
++        "all",
++        "avoid-page",
++        "page",
++        "left",
++        "right",
++        "column",
++      ],
++      w = () => [
++        "center",
++        "top",
++        "bottom",
++        "left",
++        "right",
++        "top-left",
++        "left-top",
++        "top-right",
++        "right-top",
++        "bottom-right",
++        "right-bottom",
++        "bottom-left",
++        "left-bottom",
++      ],
++      v = () => [...w(), to, Ue],
++      y = () => ["auto", "hidden", "clip", "visible", "scroll"],
++      z = () => ["auto", "contain", "none"],
++      j = () => [to, Ue, a],
++      P = () => [Te, "full", "auto", ...j()],
++      C = () => [qe, "none", "subgrid", to, Ue],
++      G = () => ["auto", { span: ["full", qe, to, Ue] }, qe, to, Ue],
++      M = () => [qe, "auto", to, Ue],
++      O = () => ["auto", "min", "max", "fr", to, Ue],
++      A = () => [
++        "start",
++        "end",
++        "center",
++        "between",
++        "around",
++        "evenly",
++        "stretch",
++        "baseline",
++        "center-safe",
++        "end-safe",
++      ],
++      N = () => [
++        "start",
++        "end",
++        "center",
++        "stretch",
++        "center-safe",
++        "end-safe",
++      ],
++      $ = () => ["auto", ...j()],
++      S = () => [
++        Te,
++        "auto",
++        "full",
++        "dvw",
++        "dvh",
++        "lvw",
++        "lvh",
++        "svw",
++        "svh",
++        "min",
++        "max",
++        "fit",
++        ...j(),
++      ],
++      I = () => [
++        Te,
++        "screen",
++        "full",
++        "dvw",
++        "lvw",
++        "svw",
++        "min",
++        "max",
++        "fit",
++        ...j(),
++      ],
++      W = () => [
++        Te,
++        "screen",
++        "full",
++        "lh",
++        "dvh",
++        "lvh",
++        "svh",
++        "min",
++        "max",
++        "fit",
++        ...j(),
++      ],
++      _ = () => [e, to, Ue],
++      T = () => [...w(), io, eo, { position: [to, Ue] }],
++      E = () => ["no-repeat", { repeat: ["", "x", "y", "space", "round"] }],
++      q = () => ["auto", "cover", "contain", lo, Re, { size: [to, Ue] }],
++      H = () => [He, no, Ve],
++      B = () => ["", "none", "full", c, to, Ue],
++      J = () => ["", Ee, no, Ve],
++      K = () => ["solid", "dashed", "dotted", "double"],
++      Q = () => [
++        "normal",
++        "multiply",
++        "screen",
++        "overlay",
++        "darken",
++        "lighten",
++        "color-dodge",
++        "color-burn",
++        "hard-light",
++        "soft-light",
++        "difference",
++        "exclusion",
++        "hue",
++        "saturation",
++        "color",
++        "luminosity",
++      ],
++      D = () => [Ee, He, io, eo],
++      F = () => ["", "none", f, to, Ue],
++      L = () => ["none", Ee, to, Ue],
++      R = () => ["none", Ee, to, Ue],
++      U = () => [Ee, to, Ue],
++      V = () => [Te, "full", ...j()];
++    return {
++      cacheSize: 500,
++      theme: {
++        animate: ["spin", "ping", "pulse", "bounce"],
++        aspect: ["video"],
++        blur: [Be],
++        breakpoint: [Be],
++        color: [Je],
++        container: [Be],
++        "drop-shadow": [Be],
++        ease: ["in", "out", "in-out"],
++        font: [Le],
++        "font-weight": [
++          "thin",
++          "extralight",
++          "light",
++          "normal",
++          "medium",
++          "semibold",
++          "bold",
++          "extrabold",
++          "black",
++        ],
++        "inset-shadow": [Be],
++        leading: ["none", "tight", "snug", "normal", "relaxed", "loose"],
++        perspective: [
++          "dramatic",
++          "near",
++          "normal",
++          "midrange",
++          "distant",
++          "none",
++        ],
++        radius: [Be],
++        shadow: [Be],
++        spacing: ["px", Ee],
++        text: [Be],
++        "text-shadow": [Be],
++        tracking: ["tighter", "tight", "normal", "wide", "wider", "widest"],
++      },
++      classGroups: {
++        aspect: [{ aspect: ["auto", "square", Te, Ue, to, g] }],
++        container: ["container"],
++        columns: [{ columns: [Ee, Ue, to, l] }],
++        "break-after": [{ "break-after": k() }],
++        "break-before": [{ "break-before": k() }],
++        "break-inside": [
++          { "break-inside": ["auto", "avoid", "avoid-page", "avoid-column"] },
++        ],
++        "box-decoration": [{ "box-decoration": ["slice", "clone"] }],
++        box: [{ box: ["border", "content"] }],
++        display: [
++          "block",
++          "inline-block",
++          "inline",
++          "flex",
++          "inline-flex",
++          "table",
++          "inline-table",
++          "table-caption",
++          "table-cell",
++          "table-column",
++          "table-column-group",
++          "table-footer-group",
++          "table-header-group",
++          "table-row-group",
++          "table-row",
++          "flow-root",
++          "grid",
++          "inline-grid",
++          "contents",
++          "list-item",
++          "hidden",
++        ],
++        sr: ["sr-only", "not-sr-only"],
++        float: [{ float: ["right", "left", "none", "start", "end"] }],
++        clear: [{ clear: ["left", "right", "both", "none", "start", "end"] }],
++        isolation: ["isolate", "isolation-auto"],
++        "object-fit": [
++          { object: ["contain", "cover", "fill", "none", "scale-down"] },
++        ],
++        "object-position": [{ object: v() }],
++        overflow: [{ overflow: y() }],
++        "overflow-x": [{ "overflow-x": y() }],
++        "overflow-y": [{ "overflow-y": y() }],
++        overscroll: [{ overscroll: z() }],
++        "overscroll-x": [{ "overscroll-x": z() }],
++        "overscroll-y": [{ "overscroll-y": z() }],
++        position: ["static", "fixed", "absolute", "relative", "sticky"],
++        inset: [{ inset: P() }],
++        "inset-x": [{ "inset-x": P() }],
++        "inset-y": [{ "inset-y": P() }],
++        start: [{ "inset-s": P(), start: P() }],
++        end: [{ "inset-e": P(), end: P() }],
++        "inset-bs": [{ "inset-bs": P() }],
++        "inset-be": [{ "inset-be": P() }],
++        top: [{ top: P() }],
++        right: [{ right: P() }],
++        bottom: [{ bottom: P() }],
++        left: [{ left: P() }],
++        visibility: ["visible", "invisible", "collapse"],
++        z: [{ z: [qe, "auto", to, Ue] }],
++        basis: [{ basis: [Te, "full", "auto", l, ...j()] }],
++        "flex-direction": [
++          { flex: ["row", "row-reverse", "col", "col-reverse"] },
++        ],
++        "flex-wrap": [{ flex: ["nowrap", "wrap", "wrap-reverse"] }],
++        flex: [{ flex: [Ee, Te, "auto", "initial", "none", Ue] }],
++        grow: [{ grow: ["", Ee, to, Ue] }],
++        shrink: [{ shrink: ["", Ee, to, Ue] }],
++        order: [{ order: [qe, "first", "last", "none", to, Ue] }],
++        "grid-cols": [{ "grid-cols": C() }],
++        "col-start-end": [{ col: G() }],
++        "col-start": [{ "col-start": M() }],
++        "col-end": [{ "col-end": M() }],
++        "grid-rows": [{ "grid-rows": C() }],
++        "row-start-end": [{ row: G() }],
++        "row-start": [{ "row-start": M() }],
++        "row-end": [{ "row-end": M() }],
++        "grid-flow": [
++          { "grid-flow": ["row", "col", "dense", "row-dense", "col-dense"] },
++        ],
++        "auto-cols": [{ "auto-cols": O() }],
++        "auto-rows": [{ "auto-rows": O() }],
++        gap: [{ gap: j() }],
++        "gap-x": [{ "gap-x": j() }],
++        "gap-y": [{ "gap-y": j() }],
++        "justify-content": [{ justify: [...A(), "normal"] }],
++        "justify-items": [{ "justify-items": [...N(), "normal"] }],
++        "justify-self": [{ "justify-self": ["auto", ...N()] }],
++        "align-content": [{ content: ["normal", ...A()] }],
++        "align-items": [{ items: [...N(), { baseline: ["", "last"] }] }],
++        "align-self": [{ self: ["auto", ...N(), { baseline: ["", "last"] }] }],
++        "place-content": [{ "place-content": A() }],
++        "place-items": [{ "place-items": [...N(), "baseline"] }],
++        "place-self": [{ "place-self": ["auto", ...N()] }],
++        p: [{ p: j() }],
++        px: [{ px: j() }],
++        py: [{ py: j() }],
++        ps: [{ ps: j() }],
++        pe: [{ pe: j() }],
++        pbs: [{ pbs: j() }],
++        pbe: [{ pbe: j() }],
++        pt: [{ pt: j() }],
++        pr: [{ pr: j() }],
++        pb: [{ pb: j() }],
++        pl: [{ pl: j() }],
++        m: [{ m: $() }],
++        mx: [{ mx: $() }],
++        my: [{ my: $() }],
++        ms: [{ ms: $() }],
++        me: [{ me: $() }],
++        mbs: [{ mbs: $() }],
++        mbe: [{ mbe: $() }],
++        mt: [{ mt: $() }],
++        mr: [{ mr: $() }],
++        mb: [{ mb: $() }],
++        ml: [{ ml: $() }],
++        "space-x": [{ "space-x": j() }],
++        "space-x-reverse": ["space-x-reverse"],
++        "space-y": [{ "space-y": j() }],
++        "space-y-reverse": ["space-y-reverse"],
++        size: [{ size: S() }],
++        "inline-size": [{ inline: ["auto", ...I()] }],
++        "min-inline-size": [{ "min-inline": ["auto", ...I()] }],
++        "max-inline-size": [{ "max-inline": ["none", ...I()] }],
++        "block-size": [{ block: ["auto", ...W()] }],
++        "min-block-size": [{ "min-block": ["auto", ...W()] }],
++        "max-block-size": [{ "max-block": ["none", ...W()] }],
++        w: [{ w: [l, "screen", ...S()] }],
++        "min-w": [{ "min-w": [l, "screen", "none", ...S()] }],
++        "max-w": [
++          { "max-w": [l, "screen", "none", "prose", { screen: [i] }, ...S()] },
++        ],
++        h: [{ h: ["screen", "lh", ...S()] }],
++        "min-h": [{ "min-h": ["screen", "lh", "none", ...S()] }],
++        "max-h": [{ "max-h": ["screen", "lh", ...S()] }],
++        "font-size": [{ text: ["base", r, no, Ve] }],
++        "font-smoothing": ["antialiased", "subpixel-antialiased"],
++        "font-style": ["italic", "not-italic"],
++        "font-weight": [{ font: [t, mo, Ye] }],
++        "font-stretch": [
++          {
++            "font-stretch": [
++              "ultra-condensed",
++              "extra-condensed",
++              "condensed",
++              "semi-condensed",
++              "normal",
++              "semi-expanded",
++              "expanded",
++              "extra-expanded",
++              "ultra-expanded",
++              He,
++              Ue,
++            ],
++          },
++        ],
++        "font-family": [{ font: [so, Ze, o] }],
++        "font-features": [{ "font-features": [Ue] }],
++        "fvn-normal": ["normal-nums"],
++        "fvn-ordinal": ["ordinal"],
++        "fvn-slashed-zero": ["slashed-zero"],
++        "fvn-figure": ["lining-nums", "oldstyle-nums"],
++        "fvn-spacing": ["proportional-nums", "tabular-nums"],
++        "fvn-fraction": ["diagonal-fractions", "stacked-fractions"],
++        tracking: [{ tracking: [n, to, Ue] }],
++        "line-clamp": [{ "line-clamp": [Ee, "none", to, Xe] }],
++        leading: [{ leading: [s, ...j()] }],
++        "list-image": [{ "list-image": ["none", to, Ue] }],
++        "list-style-position": [{ list: ["inside", "outside"] }],
++        "list-style-type": [{ list: ["disc", "decimal", "none", to, Ue] }],
++        "text-alignment": [
++          { text: ["left", "center", "right", "justify", "start", "end"] },
++        ],
++        "placeholder-color": [{ placeholder: _() }],
++        "text-color": [{ text: _() }],
++        "text-decoration": [
++          "underline",
++          "overline",
++          "line-through",
++          "no-underline",
++        ],
++        "text-decoration-style": [{ decoration: [...K(), "wavy"] }],
++        "text-decoration-thickness": [
++          { decoration: [Ee, "from-font", "auto", to, Ve] },
++        ],
++        "text-decoration-color": [{ decoration: _() }],
++        "underline-offset": [{ "underline-offset": [Ee, "auto", to, Ue] }],
++        "text-transform": [
++          "uppercase",
++          "lowercase",
++          "capitalize",
++          "normal-case",
++        ],
++        "text-overflow": ["truncate", "text-ellipsis", "text-clip"],
++        "text-wrap": [{ text: ["wrap", "nowrap", "balance", "pretty"] }],
++        indent: [{ indent: j() }],
++        "vertical-align": [
++          {
++            align: [
++              "baseline",
++              "top",
++              "middle",
++              "bottom",
++              "text-top",
++              "text-bottom",
++              "sub",
++              "super",
++              to,
++              Ue,
++            ],
++          },
++        ],
++        whitespace: [
++          {
++            whitespace: [
++              "normal",
++              "nowrap",
++              "pre",
++              "pre-line",
++              "pre-wrap",
++              "break-spaces",
++            ],
++          },
++        ],
++        break: [{ break: ["normal", "words", "all", "keep"] }],
++        wrap: [{ wrap: ["break-word", "anywhere", "normal"] }],
++        hyphens: [{ hyphens: ["none", "manual", "auto"] }],
++        content: [{ content: ["none", to, Ue] }],
++        "bg-attachment": [{ bg: ["fixed", "local", "scroll"] }],
++        "bg-clip": [{ "bg-clip": ["border", "padding", "content", "text"] }],
++        "bg-origin": [{ "bg-origin": ["border", "padding", "content"] }],
++        "bg-position": [{ bg: T() }],
++        "bg-repeat": [{ bg: E() }],
++        "bg-size": [{ bg: q() }],
++        "bg-image": [
++          {
++            bg: [
++              "none",
++              {
++                linear: [
++                  { to: ["t", "tr", "r", "br", "b", "bl", "l", "tl"] },
++                  qe,
++                  to,
++                  Ue,
++                ],
++                radial: ["", to, Ue],
++                conic: [qe, to, Ue],
++              },
++              ao,
++              oo,
++            ],
++          },
++        ],
++        "bg-color": [{ bg: _() }],
++        "gradient-from-pos": [{ from: H() }],
++        "gradient-via-pos": [{ via: H() }],
++        "gradient-to-pos": [{ to: H() }],
++        "gradient-from": [{ from: _() }],
++        "gradient-via": [{ via: _() }],
++        "gradient-to": [{ to: _() }],
++        rounded: [{ rounded: B() }],
++        "rounded-s": [{ "rounded-s": B() }],
++        "rounded-e": [{ "rounded-e": B() }],
++        "rounded-t": [{ "rounded-t": B() }],
++        "rounded-r": [{ "rounded-r": B() }],
++        "rounded-b": [{ "rounded-b": B() }],
++        "rounded-l": [{ "rounded-l": B() }],
++        "rounded-ss": [{ "rounded-ss": B() }],
++        "rounded-se": [{ "rounded-se": B() }],
++        "rounded-ee": [{ "rounded-ee": B() }],
++        "rounded-es": [{ "rounded-es": B() }],
++        "rounded-tl": [{ "rounded-tl": B() }],
++        "rounded-tr": [{ "rounded-tr": B() }],
++        "rounded-br": [{ "rounded-br": B() }],
++        "rounded-bl": [{ "rounded-bl": B() }],
++        "border-w": [{ border: J() }],
++        "border-w-x": [{ "border-x": J() }],
++        "border-w-y": [{ "border-y": J() }],
++        "border-w-s": [{ "border-s": J() }],
++        "border-w-e": [{ "border-e": J() }],
++        "border-w-bs": [{ "border-bs": J() }],
++        "border-w-be": [{ "border-be": J() }],
++        "border-w-t": [{ "border-t": J() }],
++        "border-w-r": [{ "border-r": J() }],
++        "border-w-b": [{ "border-b": J() }],
++        "border-w-l": [{ "border-l": J() }],
++        "divide-x": [{ "divide-x": J() }],
++        "divide-x-reverse": ["divide-x-reverse"],
++        "divide-y": [{ "divide-y": J() }],
++        "divide-y-reverse": ["divide-y-reverse"],
++        "border-style": [{ border: [...K(), "hidden", "none"] }],
++        "divide-style": [{ divide: [...K(), "hidden", "none"] }],
++        "border-color": [{ border: _() }],
++        "border-color-x": [{ "border-x": _() }],
++        "border-color-y": [{ "border-y": _() }],
++        "border-color-s": [{ "border-s": _() }],
++        "border-color-e": [{ "border-e": _() }],
++        "border-color-bs": [{ "border-bs": _() }],
++        "border-color-be": [{ "border-be": _() }],
++        "border-color-t": [{ "border-t": _() }],
++        "border-color-r": [{ "border-r": _() }],
++        "border-color-b": [{ "border-b": _() }],
++        "border-color-l": [{ "border-l": _() }],
++        "divide-color": [{ divide: _() }],
++        "outline-style": [{ outline: [...K(), "none", "hidden"] }],
++        "outline-offset": [{ "outline-offset": [Ee, to, Ue] }],
++        "outline-w": [{ outline: ["", Ee, no, Ve] }],
++        "outline-color": [{ outline: _() }],
++        shadow: [{ shadow: ["", "none", d, co, ro] }],
++        "shadow-color": [{ shadow: _() }],
++        "inset-shadow": [{ "inset-shadow": ["none", m, co, ro] }],
++        "inset-shadow-color": [{ "inset-shadow": _() }],
++        "ring-w": [{ ring: J() }],
++        "ring-w-inset": ["ring-inset"],
++        "ring-color": [{ ring: _() }],
++        "ring-offset-w": [{ "ring-offset": [Ee, Ve] }],
++        "ring-offset-color": [{ "ring-offset": _() }],
++        "inset-ring-w": [{ "inset-ring": J() }],
++        "inset-ring-color": [{ "inset-ring": _() }],
++        "text-shadow": [{ "text-shadow": ["none", p, co, ro] }],
++        "text-shadow-color": [{ "text-shadow": _() }],
++        opacity: [{ opacity: [Ee, to, Ue] }],
++        "mix-blend": [{ "mix-blend": [...Q(), "plus-darker", "plus-lighter"] }],
++        "bg-blend": [{ "bg-blend": Q() }],
++        "mask-clip": [
++          {
++            "mask-clip": [
++              "border",
++              "padding",
++              "content",
++              "fill",
++              "stroke",
++              "view",
++            ],
++          },
++          "mask-no-clip",
++        ],
++        "mask-composite": [
++          { mask: ["add", "subtract", "intersect", "exclude"] },
++        ],
++        "mask-image-linear-pos": [{ "mask-linear": [Ee] }],
++        "mask-image-linear-from-pos": [{ "mask-linear-from": D() }],
++        "mask-image-linear-to-pos": [{ "mask-linear-to": D() }],
++        "mask-image-linear-from-color": [{ "mask-linear-from": _() }],
++        "mask-image-linear-to-color": [{ "mask-linear-to": _() }],
++        "mask-image-t-from-pos": [{ "mask-t-from": D() }],
++        "mask-image-t-to-pos": [{ "mask-t-to": D() }],
++        "mask-image-t-from-color": [{ "mask-t-from": _() }],
++        "mask-image-t-to-color": [{ "mask-t-to": _() }],
++        "mask-image-r-from-pos": [{ "mask-r-from": D() }],
++        "mask-image-r-to-pos": [{ "mask-r-to": D() }],
++        "mask-image-r-from-color": [{ "mask-r-from": _() }],
++        "mask-image-r-to-color": [{ "mask-r-to": _() }],
++        "mask-image-b-from-pos": [{ "mask-b-from": D() }],
++        "mask-image-b-to-pos": [{ "mask-b-to": D() }],
++        "mask-image-b-from-color": [{ "mask-b-from": _() }],
++        "mask-image-b-to-color": [{ "mask-b-to": _() }],
++        "mask-image-l-from-pos": [{ "mask-l-from": D() }],
++        "mask-image-l-to-pos": [{ "mask-l-to": D() }],
++        "mask-image-l-from-color": [{ "mask-l-from": _() }],
++        "mask-image-l-to-color": [{ "mask-l-to": _() }],
++        "mask-image-x-from-pos": [{ "mask-x-from": D() }],
++        "mask-image-x-to-pos": [{ "mask-x-to": D() }],
++        "mask-image-x-from-color": [{ "mask-x-from": _() }],
++        "mask-image-x-to-color": [{ "mask-x-to": _() }],
++        "mask-image-y-from-pos": [{ "mask-y-from": D() }],
++        "mask-image-y-to-pos": [{ "mask-y-to": D() }],
++        "mask-image-y-from-color": [{ "mask-y-from": _() }],
++        "mask-image-y-to-color": [{ "mask-y-to": _() }],
++        "mask-image-radial": [{ "mask-radial": [to, Ue] }],
++        "mask-image-radial-from-pos": [{ "mask-radial-from": D() }],
++        "mask-image-radial-to-pos": [{ "mask-radial-to": D() }],
++        "mask-image-radial-from-color": [{ "mask-radial-from": _() }],
++        "mask-image-radial-to-color": [{ "mask-radial-to": _() }],
++        "mask-image-radial-shape": [{ "mask-radial": ["circle", "ellipse"] }],
++        "mask-image-radial-size": [
++          {
++            "mask-radial": [
++              { closest: ["side", "corner"], farthest: ["side", "corner"] },
++            ],
++          },
++        ],
++        "mask-image-radial-pos": [{ "mask-radial-at": w() }],
++        "mask-image-conic-pos": [{ "mask-conic": [Ee] }],
++        "mask-image-conic-from-pos": [{ "mask-conic-from": D() }],
++        "mask-image-conic-to-pos": [{ "mask-conic-to": D() }],
++        "mask-image-conic-from-color": [{ "mask-conic-from": _() }],
++        "mask-image-conic-to-color": [{ "mask-conic-to": _() }],
++        "mask-mode": [{ mask: ["alpha", "luminance", "match"] }],
++        "mask-origin": [
++          {
++            "mask-origin": [
++              "border",
++              "padding",
++              "content",
++              "fill",
++              "stroke",
++              "view",
++            ],
++          },
++        ],
++        "mask-position": [{ mask: T() }],
++        "mask-repeat": [{ mask: E() }],
++        "mask-size": [{ mask: q() }],
++        "mask-type": [{ "mask-type": ["alpha", "luminance"] }],
++        "mask-image": [{ mask: ["none", to, Ue] }],
++        filter: [{ filter: ["", "none", to, Ue] }],
++        blur: [{ blur: F() }],
++        brightness: [{ brightness: [Ee, to, Ue] }],
++        contrast: [{ contrast: [Ee, to, Ue] }],
++        "drop-shadow": [{ "drop-shadow": ["", "none", u, co, ro] }],
++        "drop-shadow-color": [{ "drop-shadow": _() }],
++        grayscale: [{ grayscale: ["", Ee, to, Ue] }],
++        "hue-rotate": [{ "hue-rotate": [Ee, to, Ue] }],
++        invert: [{ invert: ["", Ee, to, Ue] }],
++        saturate: [{ saturate: [Ee, to, Ue] }],
++        sepia: [{ sepia: ["", Ee, to, Ue] }],
++        "backdrop-filter": [{ "backdrop-filter": ["", "none", to, Ue] }],
++        "backdrop-blur": [{ "backdrop-blur": F() }],
++        "backdrop-brightness": [{ "backdrop-brightness": [Ee, to, Ue] }],
++        "backdrop-contrast": [{ "backdrop-contrast": [Ee, to, Ue] }],
++        "backdrop-grayscale": [{ "backdrop-grayscale": ["", Ee, to, Ue] }],
++        "backdrop-hue-rotate": [{ "backdrop-hue-rotate": [Ee, to, Ue] }],
++        "backdrop-invert": [{ "backdrop-invert": ["", Ee, to, Ue] }],
++        "backdrop-opacity": [{ "backdrop-opacity": [Ee, to, Ue] }],
++        "backdrop-saturate": [{ "backdrop-saturate": [Ee, to, Ue] }],
++        "backdrop-sepia": [{ "backdrop-sepia": ["", Ee, to, Ue] }],
++        "border-collapse": [{ border: ["collapse", "separate"] }],
++        "border-spacing": [{ "border-spacing": j() }],
++        "border-spacing-x": [{ "border-spacing-x": j() }],
++        "border-spacing-y": [{ "border-spacing-y": j() }],
++        "table-layout": [{ table: ["auto", "fixed"] }],
++        caption: [{ caption: ["top", "bottom"] }],
++        transition: [
++          {
++            transition: [
++              "",
++              "all",
++              "colors",
++              "opacity",
++              "shadow",
++              "transform",
++              "none",
++              to,
++              Ue,
++            ],
++          },
++        ],
++        "transition-behavior": [{ transition: ["normal", "discrete"] }],
++        duration: [{ duration: [Ee, "initial", to, Ue] }],
++        ease: [{ ease: ["linear", "initial", h, to, Ue] }],
++        delay: [{ delay: [Ee, to, Ue] }],
++        animate: [{ animate: ["none", x, to, Ue] }],
++        backface: [{ backface: ["hidden", "visible"] }],
++        perspective: [{ perspective: [b, to, Ue] }],
++        "perspective-origin": [{ "perspective-origin": v() }],
++        rotate: [{ rotate: L() }],
++        "rotate-x": [{ "rotate-x": L() }],
++        "rotate-y": [{ "rotate-y": L() }],
++        "rotate-z": [{ "rotate-z": L() }],
++        scale: [{ scale: R() }],
++        "scale-x": [{ "scale-x": R() }],
++        "scale-y": [{ "scale-y": R() }],
++        "scale-z": [{ "scale-z": R() }],
++        "scale-3d": ["scale-3d"],
++        skew: [{ skew: U() }],
++        "skew-x": [{ "skew-x": U() }],
++        "skew-y": [{ "skew-y": U() }],
++        transform: [{ transform: [to, Ue, "", "none", "gpu", "cpu"] }],
++        "transform-origin": [{ origin: v() }],
++        "transform-style": [{ transform: ["3d", "flat"] }],
++        translate: [{ translate: V() }],
++        "translate-x": [{ "translate-x": V() }],
++        "translate-y": [{ "translate-y": V() }],
++        "translate-z": [{ "translate-z": V() }],
++        "translate-none": ["translate-none"],
++        accent: [{ accent: _() }],
++        appearance: [{ appearance: ["none", "auto"] }],
++        "caret-color": [{ caret: _() }],
++        "color-scheme": [
++          {
++            scheme: [
++              "normal",
++              "dark",
++              "light",
++              "light-dark",
++              "only-dark",
++              "only-light",
++            ],
++          },
++        ],
++        cursor: [
++          {
++            cursor: [
++              "auto",
++              "default",
++              "pointer",
++              "wait",
++              "text",
++              "move",
++              "help",
++              "not-allowed",
++              "none",
++              "context-menu",
++              "progress",
++              "cell",
++              "crosshair",
++              "vertical-text",
++              "alias",
++              "copy",
++              "no-drop",
++              "grab",
++              "grabbing",
++              "all-scroll",
++              "col-resize",
++              "row-resize",
++              "n-resize",
++              "e-resize",
++              "s-resize",
++              "w-resize",
++              "ne-resize",
++              "nw-resize",
++              "se-resize",
++              "sw-resize",
++              "ew-resize",
++              "ns-resize",
++              "nesw-resize",
++              "nwse-resize",
++              "zoom-in",
++              "zoom-out",
++              to,
++              Ue,
++            ],
++          },
++        ],
++        "field-sizing": [{ "field-sizing": ["fixed", "content"] }],
++        "pointer-events": [{ "pointer-events": ["auto", "none"] }],
++        resize: [{ resize: ["none", "", "y", "x"] }],
++        "scroll-behavior": [{ scroll: ["auto", "smooth"] }],
++        "scroll-m": [{ "scroll-m": j() }],
++        "scroll-mx": [{ "scroll-mx": j() }],
++        "scroll-my": [{ "scroll-my": j() }],
++        "scroll-ms": [{ "scroll-ms": j() }],
++        "scroll-me": [{ "scroll-me": j() }],
++        "scroll-mbs": [{ "scroll-mbs": j() }],
++        "scroll-mbe": [{ "scroll-mbe": j() }],
++        "scroll-mt": [{ "scroll-mt": j() }],
++        "scroll-mr": [{ "scroll-mr": j() }],
++        "scroll-mb": [{ "scroll-mb": j() }],
++        "scroll-ml": [{ "scroll-ml": j() }],
++        "scroll-p": [{ "scroll-p": j() }],
++        "scroll-px": [{ "scroll-px": j() }],
++        "scroll-py": [{ "scroll-py": j() }],
++        "scroll-ps": [{ "scroll-ps": j() }],
++        "scroll-pe": [{ "scroll-pe": j() }],
++        "scroll-pbs": [{ "scroll-pbs": j() }],
++        "scroll-pbe": [{ "scroll-pbe": j() }],
++        "scroll-pt": [{ "scroll-pt": j() }],
++        "scroll-pr": [{ "scroll-pr": j() }],
++        "scroll-pb": [{ "scroll-pb": j() }],
++        "scroll-pl": [{ "scroll-pl": j() }],
++        "snap-align": [{ snap: ["start", "end", "center", "align-none"] }],
++        "snap-stop": [{ snap: ["normal", "always"] }],
++        "snap-type": [{ snap: ["none", "x", "y", "both"] }],
++        "snap-strictness": [{ snap: ["mandatory", "proximity"] }],
++        touch: [{ touch: ["auto", "none", "manipulation"] }],
++        "touch-x": [{ "touch-pan": ["x", "left", "right"] }],
++        "touch-y": [{ "touch-pan": ["y", "up", "down"] }],
++        "touch-pz": ["touch-pinch-zoom"],
++        select: [{ select: ["none", "text", "all", "auto"] }],
++        "will-change": [
++          {
++            "will-change": ["auto", "scroll", "contents", "transform", to, Ue],
++          },
++        ],
++        fill: [{ fill: ["none", ..._()] }],
++        "stroke-w": [{ stroke: [Ee, no, Ve, Xe] }],
++        stroke: [{ stroke: ["none", ..._()] }],
++        "forced-color-adjust": [{ "forced-color-adjust": ["auto", "none"] }],
++      },
++      conflictingClassGroups: {
++        overflow: ["overflow-x", "overflow-y"],
++        overscroll: ["overscroll-x", "overscroll-y"],
++        inset: [
++          "inset-x",
++          "inset-y",
++          "inset-bs",
++          "inset-be",
++          "start",
++          "end",
++          "top",
++          "right",
++          "bottom",
++          "left",
++        ],
++        "inset-x": ["right", "left"],
++        "inset-y": ["top", "bottom"],
++        flex: ["basis", "grow", "shrink"],
++        gap: ["gap-x", "gap-y"],
++        p: ["px", "py", "ps", "pe", "pbs", "pbe", "pt", "pr", "pb", "pl"],
++        px: ["pr", "pl"],
++        py: ["pt", "pb"],
++        m: ["mx", "my", "ms", "me", "mbs", "mbe", "mt", "mr", "mb", "ml"],
++        mx: ["mr", "ml"],
++        my: ["mt", "mb"],
++        size: ["w", "h"],
++        "font-size": ["leading"],
++        "fvn-normal": [
++          "fvn-ordinal",
++          "fvn-slashed-zero",
++          "fvn-figure",
++          "fvn-spacing",
++          "fvn-fraction",
++        ],
++        "fvn-ordinal": ["fvn-normal"],
++        "fvn-slashed-zero": ["fvn-normal"],
++        "fvn-figure": ["fvn-normal"],
++        "fvn-spacing": ["fvn-normal"],
++        "fvn-fraction": ["fvn-normal"],
++        "line-clamp": ["display", "overflow"],
++        rounded: [
++          "rounded-s",
++          "rounded-e",
++          "rounded-t",
++          "rounded-r",
++          "rounded-b",
++          "rounded-l",
++          "rounded-ss",
++          "rounded-se",
++          "rounded-ee",
++          "rounded-es",
++          "rounded-tl",
++          "rounded-tr",
++          "rounded-br",
++          "rounded-bl",
++        ],
++        "rounded-s": ["rounded-ss", "rounded-es"],
++        "rounded-e": ["rounded-se", "rounded-ee"],
++        "rounded-t": ["rounded-tl", "rounded-tr"],
++        "rounded-r": ["rounded-tr", "rounded-br"],
++        "rounded-b": ["rounded-br", "rounded-bl"],
++        "rounded-l": ["rounded-tl", "rounded-bl"],
++        "border-spacing": ["border-spacing-x", "border-spacing-y"],
++        "border-w": [
++          "border-w-x",
++          "border-w-y",
++          "border-w-s",
++          "border-w-e",
++          "border-w-bs",
++          "border-w-be",
++          "border-w-t",
++          "border-w-r",
++          "border-w-b",
++          "border-w-l",
++        ],
++        "border-w-x": ["border-w-r", "border-w-l"],
++        "border-w-y": ["border-w-t", "border-w-b"],
++        "border-color": [
++          "border-color-x",
++          "border-color-y",
++          "border-color-s",
++          "border-color-e",
++          "border-color-bs",
++          "border-color-be",
++          "border-color-t",
++          "border-color-r",
++          "border-color-b",
++          "border-color-l",
++        ],
++        "border-color-x": ["border-color-r", "border-color-l"],
++        "border-color-y": ["border-color-t", "border-color-b"],
++        translate: ["translate-x", "translate-y", "translate-none"],
++        "translate-none": [
++          "translate",
++          "translate-x",
++          "translate-y",
++          "translate-z",
++        ],
++        "scroll-m": [
++          "scroll-mx",
++          "scroll-my",
++          "scroll-ms",
++          "scroll-me",
++          "scroll-mbs",
++          "scroll-mbe",
++          "scroll-mt",
++          "scroll-mr",
++          "scroll-mb",
++          "scroll-ml",
++        ],
++        "scroll-mx": ["scroll-mr", "scroll-ml"],
++        "scroll-my": ["scroll-mt", "scroll-mb"],
++        "scroll-p": [
++          "scroll-px",
++          "scroll-py",
++          "scroll-ps",
++          "scroll-pe",
++          "scroll-pbs",
++          "scroll-pbe",
++          "scroll-pt",
++          "scroll-pr",
++          "scroll-pb",
++          "scroll-pl",
++        ],
++        "scroll-px": ["scroll-pr", "scroll-pl"],
++        "scroll-py": ["scroll-pt", "scroll-pb"],
++        touch: ["touch-x", "touch-y", "touch-pz"],
++        "touch-x": ["touch"],
++        "touch-y": ["touch"],
++        "touch-pz": ["touch"],
++      },
++      conflictingClassGroupModifiers: { "font-size": ["leading"] },
++      orderSensitiveModifiers: [
++        "*",
++        "**",
++        "after",
++        "backdrop",
++        "before",
++        "details-content",
++        "file",
++        "first-letter",
++        "first-line",
++        "marker",
++        "placeholder",
++        "selection",
++      ],
++    };
++  },
++  zo = (
++    e,
++    {
++      cacheSize: o,
++      prefix: r,
++      experimentalParseClassName: t,
++      extend: n = {},
++      override: s = {},
++    },
++  ) => (
++    jo(e, "cacheSize", o),
++    jo(e, "prefix", r),
++    jo(e, "experimentalParseClassName", t),
++    Po(e.theme, s.theme),
++    Po(e.classGroups, s.classGroups),
++    Po(e.conflictingClassGroups, s.conflictingClassGroups),
++    Po(e.conflictingClassGroupModifiers, s.conflictingClassGroupModifiers),
++    jo(e, "orderSensitiveModifiers", s.orderSensitiveModifiers),
++    Co(e.theme, n.theme),
++    Co(e.classGroups, n.classGroups),
++    Co(e.conflictingClassGroups, n.conflictingClassGroups),
++    Co(e.conflictingClassGroupModifiers, n.conflictingClassGroupModifiers),
++    Go(e, n, "orderSensitiveModifiers"),
++    e
++  ),
++  jo = (e, o, r) => {
++    void 0 !== r && (e[o] = r);
++  },
++  Po = (e, o) => {
++    if (o) for (const r in o) jo(e, r, o[r]);
++  },
++  Co = (e, o) => {
++    if (o) for (const r in o) Go(e, o, r);
++  },
++  Go = (e, o, r) => {
++    const t = o[r];
++    void 0 !== t && (e[r] = e[r] ? e[r].concat(t) : t);
++  },
++  Mo = (e, ...o) =>
++    "function" === typeof e ? Ce(yo, e, ...o) : Ce(() => zo(yo(), e), ...o),
++  Oo = Ce(yo);
++((exports.MappingChars2String = u),
++  (exports.clsx = l),
++  (exports.createTailwindMerge = Ce),
++  (exports.escape = q),
++  (exports.extendTailwindMerge = Mo),
++  (exports.twJoin = je),
++  (exports.twMerge = Oo),
++  (exports.unescape = U));
+

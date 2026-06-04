@@ -57,6 +57,17 @@
         "transformed.css"
       ]
     },
+    "demo/web/*#build": {
+      "dependsOn": [
+        "^build",
+        "@weapp-tailwindcss/build-all#build"
+      ],
+      "outputs": [
+        "dist/**",
+        "dist-web/**",
+        "dist-weapp/**"
+      ]
+    },
     "apps/**#build": {
       "dependsOn": [
         "^build",
@@ -74,7 +85,8 @@
   "boundaries": {
     "implicitDependencies": [
       "apps/* -> packages/*",
-      "demo/* -> packages/*"
+      "demo/* -> packages/*",
+      "demo/web/* -> packages/*"
     ]
   }
 }

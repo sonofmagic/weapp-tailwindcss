@@ -5,9 +5,6 @@
   "author": "icebreaker <hi@sonofmagic.top>",
   "license": "MIT",
   "keywords": [],
-  "scripts": {
-    "postinstall": "weapp-tw patch"
-  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4",
     "tailwindcss": "^4.2.4",

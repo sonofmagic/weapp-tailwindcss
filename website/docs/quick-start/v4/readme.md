@@ -45,55 +45,45 @@ keywords:
 
 ## 集成选择
 
-`tailwindcss` 集成上提供了多种选择 (`cli`,`vite`,`postcss`)，这里我们主要选择 `@tailwindcss/postcss`，原因如下:
+`tailwindcss` 集成上提供了多种选择（`cli`、`vite`、`postcss`）。在 `weapp-tailwindcss@5` 的生成模式下，大部分小程序项目不再直接注册这些官方 Tailwind 构建插件，而是只注册 `weapp-tailwindcss` 自己的构建器插件：
 
-1. `@tailwindcss/postcss` 兼容性更好，开发打包器使用 `vite` 和 `webpack` 的都能用，而 `@tailwindcss/vite` 这里只有 `vite` 能用。
-2. `@tailwindcss/vite` 很容易和其他的 `vite` 插件起冲突，尤其是和 `uni-app` / `taro` 一起使用的时候，依赖注册的顺序和编译 `hook` 注册的顺序
-3. `uni-app`/`taro` 这种框架，默认都是 `cjs` 加载的，而 `@tailwindcss/vite` 只提供了 `esm` 的版本，所以集成上可能会遇到问题
-4. `tailwindcss@3.x` 是 `postcss` 插件，`@tailwindcss/postcss` 也是 `postcss` 插件，所以选择它，项目迁移升级的成本会更低。
+1. Vite 项目注册 `weapp-tailwindcss/vite` 的 `WeappTailwindcss`。
+2. Webpack 项目注册 `weapp-tailwindcss/webpack` 的 `WeappTailwindcss`。
+3. Tailwind CSS v3 和 v4 都由 `WeappTailwindcss` 读取配置并生成目标 CSS。
+4. `postcss.config.js` 里不再注册 `@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件。
 
-所以，综合考虑下来，我们主要选择 `@tailwindcss/postcss`。
+这样可以避免同一个构建里同时存在两套 Tailwind 生成链路：官方 Tailwind 插件先生成一次浏览器 CSS，`weapp-tailwindcss` 再尝试二次后处理。生成模式会直接输出小程序目标 CSS，并让模板 / JS 类名转译共享同一份 `classSet`。
 
-当然，你也完全可以使用 `uni-app vite vue3` + `@tailwindcss/vite` 这种组合。从编译速度出发, `@tailwindcss/vite` 会更快，但是可能需要一些额外的配置，行为也有可能和 `tailwindcss@3.x` 不一致。
+Mpx 也使用 `weapp-tailwindcss/webpack` 的 `WeappTailwindcss` 接管 CSS 生成、模板与 JS 转译。不要再为 Tailwind CSS 额外注册 PostCSS 生成插件。
 
-## 小程序样式引入 `weapp-tailwindcss` 不同点
+## 小程序样式入口
 
-在小程序场景下，`tailwindcss@4` 的文档示例建议直接写成 `@import "weapp-tailwindcss/index.css"`，而不是继续使用 `@import "tailwindcss"` 再依赖 `rewriteCssImports` 做二次改写。
+在 v5 生成模式下，小程序 CSS 入口直接写 `@import "tailwindcss"`，`WeappTailwindcss` 会按默认 `target: 'weapp'` 生成小程序目标 CSS。存量项目里如果还看到 `@import "weapp-tailwindcss/index.css"`，建议迁移为 Tailwind 官方 CSS-first 入口写法。
 
-### 有什么区别?
+### 为什么统一写 `@import "tailwindcss"`?
 
-`@import "weapp-tailwindcss/index.css"` 本质上会解析到 `weapp-tailwindcss` 提供的小程序适配入口。相比 `@import "tailwindcss"`，主要区别是:
-
-1. `"weapp-tailwindcss"` 没有 `"tailwindcss"` 中 `h5` `preflight` 的类(这些都是给 `h5` 用的，小程序用不到)
-2. `"weapp-tailwindcss"` 中，不使用 `tailwindcss` 默认的 `@layer` 来控制样式优先级。这是因为小程序本身不支持 `css` `@layer` 这个特性，强行启用会造成一些样式难以覆盖的问题。
+`tailwindcss@4` 的配置、主题变量和扫描范围都从 CSS 入口读取。统一使用 `@import "tailwindcss"` 可以让 Tailwind 官方 IntelliSense、`@source`、`@theme` 和 `WeappTailwindcss` 生成器读取同一份入口。小程序不支持或不适合直接保留的选择器、`@layer` 与浏览器 preflight，会在 `WeappTailwindcss` 输出小程序 CSS 时处理。
 
 ### 多端开发
 
 假如你需要进行多端的开发，那么可以使用对应框架的样式条件编译写法，比如 `uni-app`:
 
-```css
-/*  #ifdef  H5  */
-@import "tailwindcss";
-/*  #endif  */
-/*  #ifndef  H5  */
-@import "weapp-tailwindcss/index.css";
-/*  #endif  */
-```
+多端项目建议让 H5 和小程序使用各自的构建入口：H5 仍使用 Tailwind 官方 Vite/PostCSS 插件，小程序入口只注册 `WeappTailwindcss`。两端可以共享同一个包含 `@import "tailwindcss"`、`@theme` 和 `@source` 的 CSS 文件，但不要在同一个小程序构建里同时注册两套 Tailwind 生成插件。
 
 详见 https://uniapp.dcloud.net.cn/tutorial/platform.html
 
 ## css 作为配置文件
 
-由于在 `tailwindcss@4` 中，配置文件默认为一个 `css` 文件，所以你需要显式的告诉 `weapp-tailwindcss` 你的入口 `css` 文件的绝对路径。
+由于在 `tailwindcss@4` 中，配置文件默认为一个 `css` 文件，所以需要让 `weapp-tailwindcss` 能找到你的入口 `css` 文件。
 
-来让 `weapp-tailwindcss` 和 `tailwindcss` 保持一致的处理模式
+常规 Vite 项目会在构建过程中自动识别被引入的 Tailwind CSS 入口。Webpack、Gulp、自定义构建、多入口或入口未被框架引入时，再显式配置 `cssEntries`，让 `weapp-tailwindcss` 和 `tailwindcss` 保持一致的处理模式。
 
-> `cssEntries` 为一个数组，就是你写 `@import "weapp-tailwindcss/index.css";` 的那些文件，可以有多个
+> `cssEntries` 为一个数组，就是你写 `@import "tailwindcss";` 的那些 CSS 入口文件，可以有多个
 
 ```ts
 {
   cssEntries: [
-    // 就是你 @import "weapp-tailwindcss/index.css"; 那个文件
+    // Tailwind CSS 入口文件
     // 比如 tarojs
     path.resolve(__dirname, '../src/app.css')
     // 比如 uni-app (没有 app.css 需要先创建，然后让 `main` 入口文件引入)
@@ -102,17 +92,17 @@ keywords:
 }
 ```
 
-假如不添加这个，会造成 `tailwindcss` 插件生成的样式，转义不了的问题。
+在需要手动配置的场景里，如果漏掉 `cssEntries`，会造成 `tailwindcss` 生成的样式无法参与转义。
 
 :::warning 只注册到 CSS，不要注册到预处理样式文件
 `tailwindcss@4` 的入口请只放在 `.css` 文件里，例如 `app.css`。
 
-不要把 `@import "weapp-tailwindcss/index.css"`、`@tailwindcss/postcss`，或者对应的 `cssEntries` 指向 `scss`、`less`、`sass` 这类预处理样式文件，否则很容易导致最终样式生成失败，或者 `weapp-tailwindcss` 转译失效。
+不要把 `@import "tailwindcss"` 或对应的 `cssEntries` 指向 `scss`、`less`、`sass` 这类预处理样式文件，否则很容易导致最终样式生成失败，或者 `weapp-tailwindcss` 转译失效。
 
 推荐做法是：
 
 1. 新建一个纯 `css` 入口文件，例如 `src/app.css`
-2. 只在这个 `css` 文件里写 `@import "weapp-tailwindcss/index.css";`
+2. 只在这个 `css` 文件里写 `@import "tailwindcss";`
 3. 再让业务里的 `scss` / `less` 去间接引用这个 `css`，或者由主入口文件引入它
 :::
 
@@ -163,7 +153,7 @@ shamefully-hoist=true
 
 目前 `tailwindcss@4` 的 VS Code `Tailwind CSS IntelliSense` 插件，会优先从它识别到的 Tailwind 入口里推导配置与候选类名。
 
-在小程序项目里，我们现在推荐直接写 `@import "weapp-tailwindcss/index.css";`。这样运行时和转译链路更直接，但当前插件自动扫描时并不会把它稳定识别为 Tailwind 4 的显式入口，所以经常出现智能提示失效。
+在小程序项目里，现在推荐直接写 `@import "tailwindcss";`。这样既符合 Tailwind CSS 4 的 CSS-first 入口，也能让 `WeappTailwindcss` 在生成模式下输出小程序目标 CSS。
 
 相关修复可以关注这个 PR：
 
@@ -171,7 +161,7 @@ shamefully-hoist=true
 
 根据 `tailwindcss-intellisense` 当前实现，真正生效的做法是显式配置 `tailwindCSS.experimental.configFile`。对于 `tailwindcss@4`，这里传入的不是 `tailwind.config.js`，而是你的 **CSS 入口文件**。
 
-如果项目只有一个入口，直接把它指向实际在 `cssEntries` 里使用的那个 `app.css` 即可：
+如果项目只有一个入口，直接把它指向实际使用的那个 `app.css` 即可：
 
 ```json title=".vscode/settings.json"
 {
@@ -179,7 +169,7 @@ shamefully-hoist=true
 }
 ```
 
-这样配置后，扩展会直接把 `src/app.css` 当成 Tailwind 4 项目入口来加载，即使它里面写的是 `@import "weapp-tailwindcss/index.css"`，也能恢复补全、悬浮提示和诊断。
+这样配置后，扩展会直接把 `src/app.css` 当成 Tailwind 4 项目入口来加载，恢复补全、悬浮提示和诊断。
 
 如果你的项目有多个 Tailwind 入口，则改用对象写法，把每个 CSS 入口映射到对应的文件范围：
 
@@ -208,7 +198,7 @@ shamefully-hoist=true
 }
 ```
 
-这个 `main.css` 只用于 IntelliSense，不需要也不应该在实际应用入口里引入。业务真正生效的入口仍然是你的 `app.css` 里的 `@import "weapp-tailwindcss/index.css"`。
+这个 `main.css` 只用于 IntelliSense，不需要也不应该在实际应用入口里引入。业务真正生效的入口仍然是你的 `app.css` 里的 `@import "tailwindcss"`。
 
 这里必须使用 `@import "tailwindcss"`，而不是 `@import "weapp-tailwindcss/index.css"` 或 `@import "weapp-tailwindcss/theme.css"`。原因是 `tailwindcss-intellisense` 当前源码里，真正决定是否按 v4 设计系统加载的是 `packages/tailwindcss-language-server/src/util/v4/design-system.ts` 里的 `isMaybeV4()`，它只检查：
 
@@ -271,7 +261,7 @@ shamefully-hoist=true
 
 ## 如何去除 preflight 样式
 
-在引入 `@import "weapp-tailwindcss/index.css"` 时，默认会引入 `preflight` 样式。
+使用 `@import "tailwindcss"` 时，`WeappTailwindcss` 会按当前 Tailwind 主版本注入小程序可用的基础 reset。
 
 ### 什么是 preflight 样式
 
@@ -290,36 +280,32 @@ view,text,::before,::after,::backdrop {
 
 ### 解决方案
 
-`@import "weapp-tailwindcss/index.css"` 本质上由三个部分组成:
+如果你确认不需要这段基础 reset，可以在 `WeappTailwindcss` 里关闭：
 
-```css
-@import 'weapp-tailwindcss/theme.css';
-@import 'weapp-tailwindcss/preflight.css';
-@import 'weapp-tailwindcss/utilities.css';
+```ts
+WeappTailwindcss({
+  cssPreflight: false,
+})
 ```
 
-所以想要去除 `preflight` 样式，只需像下面一样写即可
+如果只是要覆盖其中一部分声明，可以传入对象覆盖默认值，例如：
 
-```diff
-- @import "weapp-tailwindcss/index.css";
-+ @import 'weapp-tailwindcss/theme.css';
-+ @import 'weapp-tailwindcss/utilities.css';
+```ts
+WeappTailwindcss({
+  cssPreflight: {
+    margin: '0',
+    padding: '0',
+  },
+})
 ```
 
 ## 使用大写单位 (h-[100PX]) 无效问题
 
-默认情况下，在 `process.env.NODE_ENV === 'production'` 的时候， `tailwindcss` 会自动进入优化模式
+默认情况下，在 `process.env.NODE_ENV === 'production'` 的时候，Tailwind CSS v4 会自动进入优化模式。
 
-它会进行 `CSS` 单位的校准，比如把大写的 `PX` 转化为小写的 `px`，你要禁用这个行为可以这样传入。
+它会进行 `CSS` 单位的校准，比如把大写的 `PX` 转化为小写的 `px`。v5 生成模式下不要通过 `@tailwindcss/postcss` 配置这个行为；如果确实需要保留大写单位，请先评估是否可以改成小程序推荐的 `rpx` / `px` 写法，或在 `WeappTailwindcss` 的生成模式配置中显式校验产物。
 
 ```js
-export default {
-  plugins: {
-    "@tailwindcss/postcss": {
-      optimize: false
-    },
-  }
-}
+WeappTailwindcss({
+})
 ```
-
-详见: [@tailwindcss/postcss](https://github.com/tailwindlabs/tailwindcss/blob/7779d3d080cae568c097e87b50e4a730f4f9592b/packages/%40tailwindcss-postcss/src/index.ts#L73C35-L73C72)

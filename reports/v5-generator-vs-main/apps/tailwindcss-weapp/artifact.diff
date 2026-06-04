@@ -1,0 +1,1225 @@
+# apps/tailwindcss-weapp artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+diff -- dist/build/mp-weixin/app.wxss
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 113236 raw bytes, 129507 normalized bytes, hash 82c27bda256d
+# current: 911560 raw bytes, 1019240 normalized bytes, hash d3dc7ffbe615
+
+--- a/dist/build/mp-weixin/components/BaseLayout.wxml
++++ b/dist/build/mp-weixin/components/BaseLayout.wxml
+@@ -2,7 +2,7 @@
+   ><config-provider
+     wx:if="{{a}}"
+     u-s="{{['d']}}"
+-    u-i="69df2556-0"
++    u-i="0ccb0d29-0"
+     bind:__l="__l"
+     u-p="{{a}}"
+     ><slot /></config-provider
+
+--- a/dist/build/mp-weixin/components/Navbar.wxml
++++ b/dist/build/mp-weixin/components/Navbar.wxml
+@@ -1,7 +1,7 @@
+ <up-navbar
+   wx:if="{{d}}"
+   u-s="{{['left','center','right']}}"
+-  u-i="1247caec-0"
++  u-i="46307744-0"
+   bind:__l="__l"
+   u-p="{{d}}"
+   ><view wx:if="{{a}}" slot="left"><slot name="left" /></view
+
+--- a/dist/build/mp-weixin/node-modules/uni-app-mp-html/components/mp-html/mp-html.wxml
++++ b/dist/build/mp-weixin/node-modules/uni-app-mp-html/components/mp-html/mp-html.wxml
+@@ -1,7 +1,7 @@
+ <view id="_root" class="{{p}}" style="{{q}}" bindtap="{{r}}"
+   ><slot wx:if="{{a}}" /><node
+     wx:else
+-    u-i="46bb77d4-0"
++    u-i="7bfb0e2c-0"
+     bind:__l="__l"
+     u-p="{{b||''}}" /><view wx:if="{{c}}" class="_tooltip_contain" style="{{e}}"
+     ><view class="_tooltip"
+
+--- a/dist/build/mp-weixin/node-modules/uni-app-mp-html/components/mp-html/node/node.js
++++ b/dist/build/mp-weixin/node-modules/uni-app-mp-html/components/mp-html/node/node.js
+@@ -27,7 +27,7 @@
+   components: {
+     myAudio: () => "../audio/audio.js",
+     myCard: () => "../card/card.js",
+-    node: () => Promise.resolve().then(() => a),
++    node: () => Promise.resolve().then(() => r),
+   },
+   mounted() {
+     this.$nextTick(() => {
+@@ -148,7 +148,7 @@
+         );
+         let o = this.$parent;
+         for (; o && "node" !== o.$options.name; ) o = o.$parent;
+-        let a = () => {
++        let r = () => {
+           o.remove(i);
+         };
+         if (this.opts[7].length - o.opts[7].length > 15) {
+@@ -156,12 +156,12 @@
+           let s = o.childs;
+           const e = parseInt(t[o.opts[7].split(".").length]),
+             i = o;
+-          a = () => {
++          r = () => {
+             i.remove(e);
+           };
+-          for (let a = o.opts[7].split(".").length; a < t.length - 2; a++)
+-            s = s[t[a]];
+-          const r = this;
++          for (let r = o.opts[7].split(".").length; r < t.length - 2; r++)
++            s = s[t[r]];
++          const a = this;
+           o = {
+             childs: s,
+             opts: [
+@@ -179,7 +179,7 @@
+               (o.includes(";" + t + ":" + i)
+                 ? (o = o.replace(";" + t + ":" + i, ";" + t + ":" + e))
+                 : (o += ";" + t + ":" + e),
+-                r.root._setData(`${this.opts[7]}.${s}.attrs.style`, o));
++                a.root._setData(`${this.opts[7]}.${s}.attrs.style`, o));
+             },
+           };
+         }
+@@ -193,32 +193,32 @@
+             this.root._mask.push(() => this.$set(this.ctrl, "e0", 0)),
+             (this.i = 0),
+             (this.cursor = this.childs[0].text.length)));
+-        const r = this.root._getItem(
++        const a = this.root._getItem(
+           o.childs[i],
+           0 !== i,
+           i !== o.childs.length - 1,
+         );
+         this.root._tooltip({
+           top: e(t),
+-          items: r,
++          items: a,
+           success: (s) => {
+-            if ("大小" === r[s]) {
++            if ("大小" === a[s]) {
+               const s = o.childs[i].attrs.style || "";
+-              let a = s.match(/;font-size:([0-9]+)px/);
+-              ((a = a ? parseInt(a[1]) : 16),
++              let r = s.match(/;font-size:([0-9]+)px/);
++              ((r = r ? parseInt(r[1]) : 16),
+                 this.root._slider({
+                   min: 10,
+                   max: 30,
+-                  value: a,
++                  value: r,
+                   top: e(t),
+                   changing: (s) => {
+-                    Math.abs(s - a) > 2 &&
+-                      (o.changeStyle("font-size", i, s + "px", a + "px"),
+-                      (a = t.detail.value));
++                    Math.abs(s - r) > 2 &&
++                      (o.changeStyle("font-size", i, s + "px", r + "px"),
++                      (r = t.detail.value));
+                   },
+                   change: (t) => {
+-                    (t !== a &&
+-                      o.changeStyle("font-size", i, t + "px", a + "px"),
++                    (t !== r &&
++                      o.changeStyle("font-size", i, t + "px", r + "px"),
+                       this.root._editVal(
+                         `${o.opts[7]}.${i}.attrs.style`,
+                         s,
+@@ -226,15 +226,15 @@
+                       ));
+                   },
+                 }));
+-            } else if ("颜色" === r[s]) {
++            } else if ("颜色" === a[s]) {
+               const s = this.root._getItem("color");
+               this.root._color({
+                 top: e(t),
+                 items: s,
+                 success: (t) => {
+                   const e = o.childs[i].attrs.style || "",
+-                    a = e.match(/;color:([^;]+)/);
+-                  (o.changeStyle("color", i, s[t], a ? a[1] : void 0),
++                    r = e.match(/;color:([^;]+)/);
++                  (o.changeStyle("color", i, s[t], r ? r[1] : void 0),
+                     this.root._editVal(
+                       `${o.opts[7]}.${i}.attrs.style`,
+                       e,
+@@ -242,28 +242,28 @@
+                     ));
+                 },
+               });
+-            } else if ("上移" === r[s] || "下移" === r[s]) {
++            } else if ("上移" === a[s] || "下移" === a[s]) {
+               const t = o.childs.slice(0),
+                 e = t[i];
+-              ("上移" === r[s]
++              ("上移" === a[s]
+                 ? ((t[i] = t[i - 1]), (t[i - 1] = e))
+                 : ((t[i] = t[i + 1]), (t[i + 1] = e)),
+                 this.root._editVal(o.opts[7], o.childs, t, !0));
+-            } else if ("删除" === r[s]) a();
++            } else if ("删除" === a[s]) r();
+             else {
+               const t = o.childs[i].attrs.style || "";
+               let e = "";
+-              const a = r[s];
++              const r = a[s];
+               let h, l;
+-              ("斜体" === a
++              ("斜体" === r
+                 ? ((h = "font-style"), (l = "italic"))
+-                : "粗体" === a
++                : "粗体" === r
+                   ? ((h = "font-weight"), (l = "bold"))
+-                  : "下划线" === a
++                  : "下划线" === r
+                     ? ((h = "text-decoration"), (l = "underline"))
+-                    : "居中" === a
++                    : "居中" === r
+                       ? ((h = "text-align"), (l = "center"))
+-                      : "缩进" === a && ((h = "text-indent"), (l = "2em")),
++                      : "缩进" === r && ((h = "text-indent"), (l = "2em")),
+                 (e = t.includes(h + ":")
+                   ? t.replace(new RegExp(h + ":[^;]+"), "")
+                   : t + ";" + h + ":" + l),
+@@ -277,15 +277,15 @@
+       if (this.opts[5]) {
+         const i = s.target.dataset.i || e,
+           o = this.childs[i],
+-          a = this.root._getItem(o);
++          r = this.root._getItem(o);
+         (this.root._maskTap(),
+           (this.root._edit = this),
+           (this.i = i),
+           this.root._tooltip({
+             top: s.currentTarget.offsetTop - 30,
+-            items: a,
++            items: r,
+             success: (s) => {
+-              switch (a[s]) {
++              switch (r[s]) {
+                 case "封面":
+                   this.root
+                     .getSrc("img", o.attrs.poster || "")
+@@ -364,8 +364,8 @@
+       if (this.opts[5]) {
+         const i = s.currentTarget.dataset.i,
+           o = this.childs[i],
+-          a = this.root._getItem(o),
+-          r = new t.Parser(this.root);
++          r = this.root._getItem(o),
++          a = new t.Parser(this.root);
+         ((this.root._edit = this),
+           (this.i = i),
+           this.root._maskTap(),
+@@ -373,38 +373,38 @@
+           this.root._mask.push(() => this.$set(this.ctrl, "e" + i, 0)),
+           this.root._tooltip({
+             top: e(s),
+-            items: a,
++            items: r,
+             success: (h) => {
+-              if ("换图" === a[h])
++              if ("换图" === r[h])
+                 this.root
+                   .getSrc("img", o.attrs.src || "")
+                   .then((t) => {
+                     this.root._editVal(
+                       this.opts[7] + "." + i + ".attrs.src",
+                       o.attrs.src,
+-                      r.getUrl(t instanceof Array ? t[0] : t),
++                      a.getUrl(t instanceof Array ? t[0] : t),
+                       !0,
+                     );
+                   })
+                   .catch(() => {});
+-              else if ("宽度" === a[h]) {
++              else if ("宽度" === r[h]) {
+                 const t = o.attrs.style || "";
+-                let a = t.match(/max-width:([0-9]+)%/);
+-                ((a = a ? parseInt(a[1]) : 100),
++                let r = t.match(/max-width:([0-9]+)%/);
++                ((r = r ? parseInt(r[1]) : 100),
+                   this.root._slider({
+                     min: 0,
+                     max: 100,
+-                    value: a,
++                    value: r,
+                     top: e(s),
+                     changing: (t) => {
+-                      Math.abs(t - a) > 5 &&
+-                        (this.changeStyle("max-width", i, t + "%", a + "%"),
+-                        (a = t));
++                      Math.abs(t - r) > 5 &&
++                        (this.changeStyle("max-width", i, t + "%", r + "%"),
++                        (r = t));
+                     },
+                     change: (s) => {
+-                      (s !== a &&
+-                        (this.changeStyle("max-width", i, s + "%", a + "%"),
+-                        (a = s)),
++                      (s !== r &&
++                        (this.changeStyle("max-width", i, s + "%", r + "%"),
++                        (r = s)),
+                         this.root._editVal(
+                           this.opts[7] + "." + i + ".attrs.style",
+                           t,
+@@ -413,7 +413,7 @@
+                     },
+                   }));
+               } else
+-                "超链接" === a[h]
++                "超链接" === r[h]
+                   ? this.root
+                       .getSrc("link", o.a ? o.a.href : "")
+                       .then((s) => {
+@@ -421,13 +421,13 @@
+                           this.root._editVal(
+                             this.opts[7] + "." + i + ".a.href",
+                             o.a.href,
+-                            r.getUrl(s),
++                            a.getUrl(s),
+                             !0,
+                           );
+                         else {
+                           const t = {
+                             name: "a",
+-                            attrs: { href: r.getUrl(s) },
++                            attrs: { href: a.getUrl(s) },
+                             children: [o],
+                           };
+                           ((o.a = t.attrs),
+@@ -441,20 +441,20 @@
+                         t.wx$1.showToast({ title: "成功" });
+                       })
+                       .catch(() => {})
+-                  : "预览图" === a[h]
++                  : "预览图" === r[h]
+                     ? this.root
+                         .getSrc("img", o.attrs["original-src"] || "")
+                         .then((s) => {
+                           (this.root._editVal(
+                             this.opts[7] + "." + i + ".attrs.original-src",
+                             o.attrs["original-src"],
+-                            r.getUrl(s instanceof Array ? s[0] : s),
++                            a.getUrl(s instanceof Array ? s[0] : s),
+                             !0,
+                           ),
+                             t.index.showToast({ title: "成功" }));
+                         })
+                         .catch(() => {})
+-                    : "删除" === a[h]
++                    : "删除" === r[h]
+                       ? this.remove(i)
+                       : (this.root._setData(
+                           this.opts[7] + "." + i + ".attrs.ignore",
+@@ -525,12 +525,12 @@
+       if (this.opts[5]) {
+         const i = s.currentTarget.dataset.i,
+           o = this.childs[i],
+-          a = this.root._getItem(o);
++          r = this.root._getItem(o);
+         this.root._tooltip({
+           top: e(s),
+-          items: a,
++          items: r,
+           success: (s) => {
+-            "更换链接" === a[s]
++            "更换链接" === r[s]
+               ? this.root
+                   .getSrc("link", o.attrs.href)
+                   .then((s) => {
+@@ -601,7 +601,7 @@
+ const o = t._export_sfc(i, [
+   [
+     "render",
+-    function (s, e, i, o, a, r) {
++    function (s, e, i, o, r, a) {
+       return {
+         a: t.f(i.childs, (s, e, o) =>
+           t.e(
+@@ -609,14 +609,14 @@
+               a:
+                 "img" === s.name &&
+                 !s.t &&
+-                ((i.opts[1] && !a.ctrl[e]) || a.ctrl[e] < 0),
++                ((i.opts[1] && !r.ctrl[e]) || r.ctrl[e] < 0),
+             },
+             "img" === s.name &&
+               !s.t &&
+-              ((i.opts[1] && !a.ctrl[e]) || a.ctrl[e] < 0)
++              ((i.opts[1] && !r.ctrl[e]) || r.ctrl[e] < 0)
+               ? {
+                   b: t.s(s.attrs.style),
+-                  c: a.ctrl[e] < 0 ? i.opts[2] : i.opts[1],
++                  c: r.ctrl[e] < 0 ? i.opts[2] : i.opts[1],
+                 }
+               : {},
+             { d: "img" === s.name && s.t },
+@@ -630,21 +630,21 @@
+                     },
+                   ],
+                   g: e,
+-                  h: t.o((...t) => r.imgTap && r.imgTap(...t), e),
++                  h: t.o((...t) => a.imgTap && a.imgTap(...t), e),
+                 }
+               : "img" === s.name
+                 ? {
+                     j: s.attrs.id || "n" + e,
+                     k: t.n("_img " + s.attrs.class),
+                     l: t.s(
+-                      (a.ctrl["e" + e] && "simple" !== i.opts[5]
++                      (r.ctrl["e" + e] && "simple" !== i.opts[5]
+                         ? "border:1px dashed black;padding:3px;"
+                         : "") +
+-                        (-1 === a.ctrl[e] ? "display:none;" : "") +
++                        (-1 === r.ctrl[e] ? "display:none;" : "") +
+                         "width:" +
+-                        (a.ctrl[e] || 1) +
++                        (r.ctrl[e] || 1) +
+                         "px;height:" +
+-                        (a.ctrl["h" + e] || 1) +
++                        (r.ctrl["h" + e] || 1) +
+                         "px;" +
+                         s.attrs.style,
+                     ),
+@@ -659,19 +659,19 @@
+                     q: !i.opts[5] && i.opts[3] && !s.attrs.ignore,
+                     r: i.opts[5] || !i.opts[3] || s.attrs.ignore,
+                     s: e,
+-                    t: t.o((...t) => r.imgLoad && r.imgLoad(...t), e),
+-                    v: t.o((...t) => r.mediaError && r.mediaError(...t), e),
+-                    w: t.o((...t) => r.imgTap && r.imgTap(...t), e),
+-                    x: t.o((...t) => r.imgLongTap && r.imgLongTap(...t), e),
++                    t: t.o((...t) => a.imgLoad && a.imgLoad(...t), e),
++                    v: t.o((...t) => a.mediaError && a.mediaError(...t), e),
++                    w: t.o((...t) => a.imgTap && a.imgTap(...t), e),
++                    x: t.o((...t) => a.imgLongTap && a.imgLongTap(...t), e),
+                   }
+-                : "text" !== s.type || a.ctrl["e" + e]
+-                  ? "text" === s.type && 1 === a.ctrl["e" + e]
++                : "text" !== s.type || r.ctrl["e" + e]
++                  ? "text" === s.type && 1 === r.ctrl["e" + e]
+                     ? t.e(
+                         { H: t.t(s.text), I: !s.text },
+                         s.text ? {} : { J: t.t(i.opts[6] || "请输入") },
+                         {
+                           K: e,
+-                          L: t.o((...t) => r.editStart && r.editStart(...t), e),
++                          L: t.o((...t) => a.editStart && a.editStart(...t), e),
+                         },
+                       )
+                     : "text" === s.type
+@@ -681,17 +681,17 @@
+                               ? ""
+                               : "border:1px dashed black;min-width:50px;width:auto;padding:5px",
+                           ),
+-                          O: 3 === a.ctrl["e" + e],
++                          O: 3 === r.ctrl["e" + e],
+                           P: s.text,
+                           Q: e,
+-                          R: t.o((...t) => r.editInput && r.editInput(...t), e),
+-                          S: t.o((...t) => r.editEnd && r.editEnd(...t), e),
++                          R: t.o((...t) => a.editInput && a.editInput(...t), e),
++                          S: t.o((...t) => a.editEnd && a.editEnd(...t), e),
+                         }
+                       : "br" === s.name
+                         ? {}
+                         : "a" === s.name
+                           ? {
+-                              V: "a11dada0-0-" + o,
++                              V: "84d10df8-0-" + o,
+                               W: t.p({
+                                 name: "span",
+                                 childs: s.children,
+@@ -713,7 +713,7 @@
+                               Z: t.s("display:inline;" + s.attrs.style),
+                               aa: e,
+                               ab: t.o(
+-                                (...t) => r.linkTap && r.linkTap(...t),
++                                (...t) => a.linkTap && a.linkTap(...t),
+                                 e,
+                               ),
+                             }
+@@ -721,7 +721,7 @@
+                             ? {
+                                 ad: !i.opts[5],
+                                 ae: t.o(
+-                                  (...t) => r.mediaTap && r.mediaTap(...t),
++                                  (...t) => a.mediaTap && a.mediaTap(...t),
+                                   e,
+                                 ),
+                                 af: s.attrs.id,
+@@ -733,11 +733,11 @@
+                                 al: s.attrs.muted,
+                                 am: s.attrs["object-fit"],
+                                 an: s.attrs.poster,
+-                                ao: s.src[a.ctrl[e] || 0],
++                                ao: s.src[r.ctrl[e] || 0],
+                                 ap: e,
+-                                aq: t.o((...t) => r.play && r.play(...t), e),
++                                aq: t.o((...t) => a.play && a.play(...t), e),
+                                 ar: t.o(
+-                                  (...t) => r.mediaError && r.mediaError(...t),
++                                  (...t) => a.mediaError && a.mediaError(...t),
+                                   e,
+                                 ),
+                               }
+@@ -747,7 +747,7 @@
+                                   { at: "li" === s.name },
+                                   "li" === s.name
+                                     ? {
+-                                        av: "a11dada0-1-" + o,
++                                        av: "84d10df8-1-" + o,
+                                         aw: t.p({
+                                           childs: s.children,
+                                           opts: [
+@@ -763,7 +763,7 @@
+                                         }),
+                                       }
+                                     : {
+-                                        ax: t.f(s.children, (s, a, r) =>
++                                        ax: t.f(s.children, (s, r, a) =>
+                                           t.e(
+                                             {
+                                               a:
+@@ -773,7 +773,7 @@
+                                             "td" === s.name || "th" === s.name
+                                               ? {
+                                                   b:
+-                                                    "a11dada0-2-" + o + "-" + r,
++                                                    "84d10df8-2-" + o + "-" + a,
+                                                   c: t.p({
+                                                     childs: s.children,
+                                                     opts: [
+@@ -788,7 +788,7 @@
+                                                         "." +
+                                                         e +
+                                                         ".children." +
+-                                                        a +
++                                                        r +
+                                                         ".children",
+                                                     ],
+                                                   }),
+@@ -807,10 +807,10 @@
+                                                           "th" === s.name
+                                                           ? {
+                                                               b:
+-                                                                "a11dada0-3-" +
++                                                                "84d10df8-3-" +
+                                                                 o +
+                                                                 "-" +
+-                                                                r +
++                                                                a +
+                                                                 "-" +
+                                                                 l,
+                                                               c: t.p({
+@@ -828,7 +828,7 @@
+                                                                     "." +
+                                                                     e +
+                                                                     ".children." +
+-                                                                    a +
++                                                                    r +
+                                                                     ".children." +
+                                                                     h +
+                                                                     ".children",
+@@ -849,10 +849,10 @@
+                                                                 s.children,
+                                                                 (s, c, n) => ({
+                                                                   a:
+-                                                                    "a11dada0-4-" +
++                                                                    "84d10df8-4-" +
+                                                                     o +
+                                                                     "-" +
+-                                                                    r +
++                                                                    a +
+                                                                     "-" +
+                                                                     l +
+                                                                     "-" +
+@@ -873,7 +873,7 @@
+                                                                         "." +
+                                                                         e +
+                                                                         ".children." +
+-                                                                        a +
++                                                                        r +
+                                                                         ".children." +
+                                                                         h +
+                                                                         ".children." +
+@@ -910,7 +910,7 @@
+                                                   ),
+                                                 },
+                                             {
+-                                              e: a,
++                                              e: r,
+                                               f: t.n(
+                                                 "_" +
+                                                   s.name +
+@@ -930,13 +930,13 @@
+                                 )
+                               : "audio" == s.name
+                                 ? {
+-                                    aC: t.o((t) => r.mediaTap(t, e), e),
++                                    aC: t.o((t) => a.mediaTap(t, e), e),
+                                     aD: t.n(s.attrs.class),
+                                     aE: t.s(s.attrs.style),
+                                     aF: e,
+-                                    aG: t.o(r.play, e),
+-                                    aH: t.o(r.mediaError, e),
+-                                    aI: "a11dada0-5-" + o,
++                                    aG: t.o(a.play, e),
++                                    aH: t.o(a.mediaError, e),
++                                    aI: "84d10df8-5-" + o,
+                                     aJ: t.p({
+                                       aid: s.attrs.id,
+                                       author: s.attrs.author,
+@@ -945,16 +945,16 @@
+                                       loop: s.attrs.loop,
+                                       name: s.attrs.name,
+                                       poster: s.attrs.poster,
+-                                      src: s.src[a.ctrl[e] || 0],
++                                      src: s.src[r.ctrl[e] || 0],
+                                     }),
+                                   }
+                                 : "card" == s.name
+                                   ? {
+-                                      aL: t.o((t) => r.mediaTap(t, e), e),
++                                      aL: t.o((t) => a.mediaTap(t, e), e),
+                                       aM: t.n(s.attrs.class),
+                                       aN: t.s(s.attrs.style),
+                                       aO: e,
+-                                      aP: "a11dada0-6-" + o,
++                                      aP: "84d10df8-6-" + o,
+                                       aQ: t.p({
+                                         mode: i.opts[5],
+                                         src: s.attrs.src,
+@@ -970,10 +970,10 @@
+                                   : i.opts[5] || s.c
+                                     ? 2 === s.c
+                                       ? {
+-                                          aY: t.f(s.children, (s, a, r) => ({
+-                                            a: a,
++                                          aY: t.f(s.children, (s, r, a) => ({
++                                            a: r,
+                                             b: t.s(s.f),
+-                                            c: "a11dada0-7-" + o + "-" + r,
++                                            c: "84d10df8-7-" + o + "-" + a,
+                                             d: t.p({
+                                               name: s.name,
+                                               attrs: s.attrs,
+@@ -990,7 +990,7 @@
+                                                   "." +
+                                                   e +
+                                                   ".children." +
+-                                                  a +
++                                                  r +
+                                                   ".children",
+                                               ],
+                                             }),
+@@ -1006,7 +1006,7 @@
+                                         }
+                                       : {
+                                           bc: t.s(s.f),
+-                                          bd: "a11dada0-8-" + o,
++                                          bd: "84d10df8-8-" + o,
+                                           be: t.p({
+                                             name: s.name,
+                                             attrs: s.attrs,
+@@ -1037,13 +1037,13 @@
+                         C: e,
+                         D: i.opts[4],
+                         E: !i.opts[5],
+-                        F: t.o((...t) => r.editStart && r.editStart(...t), e),
++                        F: t.o((...t) => a.editStart && a.editStart(...t), e),
+                       },
+                     ),
+             {
+               i: "img" === s.name,
+-              y: "text" === s.type && !a.ctrl["e" + e],
+-              G: "text" === s.type && 1 === a.ctrl["e" + e],
++              y: "text" === s.type && !r.ctrl["e" + e],
++              G: "text" === s.type && 1 === r.ctrl["e" + e],
+               M: "text" === s.type,
+               T: "br" === s.name,
+               U: "a" === s.name,
+@@ -1057,11 +1057,11 @@
+             },
+           ),
+         ),
+-        b: t.o((...t) => r.nodeTap && r.nodeTap(...t)),
++        b: t.o((...t) => a.nodeTap && a.nodeTap(...t)),
+         c: i.attrs.id,
+         d: t.n("_block _" + i.name + " " + i.attrs.class),
+         e: t.s(
+-          (a.ctrl.root && "simple" !== i.opts[5]
++          (r.ctrl.root && "simple" !== i.opts[5]
+             ? "border:1px solid black;padding:5px;display:block;"
+             : "") + i.attrs.style,
+         ),
+@@ -1070,7 +1070,7 @@
+   ],
+ ]);
+ wx.createComponent(o);
+-const a = Object.freeze(
++const r = Object.freeze(
+   Object.defineProperty({ __proto__: null }, Symbol.toStringTag, {
+     value: "Module",
+   }),
+
+--- a/dist/build/mp-weixin/node-modules/uni-app-mp-html/components/mp-html/node/node.wxss
++++ b/dist/build/mp-weixin/node-modules/uni-app-mp-html/components/mp-html/node/node.wxss
+@@ -24,6 +24,8 @@
+   padding: 1em;
+   margin: 0.5em 0;
+   overflow: auto;
++}
++.hl-pre {
+   background: #2d2d2d;
+ }
+ .hl-block-comment,
+
+--- a/dist/build/mp-weixin/node-modules/uview-plus/components/u-collapse/u-collapse.wxml
++++ b/dist/build/mp-weixin/node-modules/uview-plus/components/u-collapse/u-collapse.wxml
+@@ -1,3 +1,3 @@
+ <view class="u-collapse"
+-  ><u-line wx:if="{{a}}" u-i="8b71e792-0" bind:__l="__l"></u-line><slot
++  ><u-line wx:if="{{a}}" u-i="fe251c3a-0" bind:__l="__l"></u-line><slot
+ /></view>
+
+--- a/dist/build/mp-weixin/pages/index/detail.wxml
++++ b/dist/build/mp-weixin/pages/index/detail.wxml
+@@ -1,8 +1,8 @@
+-<base-layout u-s="{{['d']}}" u-i="6a891eb0-0" bind:__l="__l"
++<base-layout u-s="{{['d']}}" u-i="b3b5fd58-0" bind:__l="__l"
+   ><navbar
+     wx:if="{{b}}"
+     u-s="{{['center']}}"
+-    u-i="6a891eb0-1,6a891eb0-0"
++    u-i="b3b5fd58-1,b3b5fd58-0"
+     bind:__l="__l"
+     u-p="{{b}}"
+     ><view slot="center">{{a}}</view></navbar
+@@ -18,7 +18,7 @@
+               ><u-icon
+                 wx:if="{{e}}"
+                 bindclick="{{d}}"
+-                u-i="6a891eb0-2,6a891eb0-0"
++                u-i="b3b5fd58-2,b3b5fd58-0"
+                 bind:__l="__l"
+                 u-p="{{e}}" /></view></view
+           ><view class="w-8_f12"
+@@ -58,12 +58,12 @@
+     ><u-modal
+       wx:if="{{i}}"
+       bindconfirm="{{h}}"
+-      u-i="6a891eb0-3,6a891eb0-0"
++      u-i="b3b5fd58-3,b3b5fd58-0"
+       bind:__l="__l"
+       u-p="{{i}}" /><fab
+       wx:if="{{j}}"
+       u-s="{{['d']}}"
+-      u-i="6a891eb0-4,6a891eb0-0"
++      u-i="b3b5fd58-4,b3b5fd58-0"
+       bind:__l="__l"
+       u-p="{{j}}"
+       ><button
+
+--- a/dist/build/mp-weixin/pages/index/detail.wxss
++++ b/dist/build/mp-weixin/pages/index/detail.wxss
+@@ -1,3 +1,4 @@
++:host,
+ page,
+ .tw-root,
+ wx-root-portal-content {
+@@ -140,146 +141,25 @@
+   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
+   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
+ }
+-page {
+-  --up-light-main-color: var(--up-main-color, var(--u-main-color, #303133));
+-  --u-light-main-color: var(--up-main-color, var(--u-main-color, #303133));
+-  --up-light-content-color: var(
+-    --up-content-color,
+-    var(--u-content-color, #606266)
+-  );
+-  --u-light-content-color: var(
+-    --up-content-color,
+-    var(--u-content-color, #606266)
+-  );
+-  --up-light-tips-color: var(--up-tips-color, var(--u-tips-color, #909193));
+-  --u-light-tips-color: var(--up-tips-color, var(--u-tips-color, #909193));
+-  --up-light-light-color: var(--up-light-color, var(--u-light-color, #c0c4cc));
+-  --u-light-light-color: var(--up-light-color, var(--u-light-color, #c0c4cc));
+-  --up-light-border-color: var(
+-    --up-border-color,
+-    var(--u-border-color, #dadbde)
+-  );
+-  --u-light-border-color: var(
+-    --up-border-color,
+-    var(--u-border-color, #dadbde)
+-  );
+-  --up-light-bg-color: var(--up-bg-color, var(--u-bg-color, #f3f4f6));
+-  --u-light-bg-color: var(--up-bg-color, var(--u-bg-color, #f3f4f6));
+-  --up-light-disabled-color: var(
+-    --up-disabled-color,
+-    var(--u-disabled-color, #c8c9cc)
+-  );
+-  --u-light-disabled-color: var(
+-    --up-disabled-color,
+-    var(--u-disabled-color, #c8c9cc)
+-  );
+-  --up-light-primary: var(--up-primary, var(--u-primary, #3c9cff));
+-  --u-light-primary: var(--up-primary, var(--u-primary, #3c9cff));
+-  --up-light-primary-dark: var(
+-    --up-primary-dark,
+-    var(--u-primary-dark, #398ade)
+-  );
+-  --u-light-primary-dark: var(
+-    --up-primary-dark,
+-    var(--u-primary-dark, #398ade)
+-  );
+-  --up-light-primary-disabled: var(
+-    --up-primary-disabled,
+-    var(--u-primary-disabled, #9acafc)
+-  );
+-  --u-light-primary-disabled: var(
+-    --up-primary-disabled,
+-    var(--u-primary-disabled, #9acafc)
+-  );
+-  --up-light-primary-light: var(
+-    --up-primary-light,
+-    var(--u-primary-light, #ecf5ff)
+-  );
+-  --u-light-primary-light: var(
+-    --up-primary-light,
+-    var(--u-primary-light, #ecf5ff)
+-  );
+-  --up-light-warning: var(--up-warning, var(--u-warning, #f9ae3d));
+-  --u-light-warning: var(--up-warning, var(--u-warning, #f9ae3d));
+-  --up-light-warning-dark: var(
+-    --up-warning-dark,
+-    var(--u-warning-dark, #f1a532)
+-  );
+-  --u-light-warning-dark: var(
+-    --up-warning-dark,
+-    var(--u-warning-dark, #f1a532)
+-  );
+-  --up-light-warning-disabled: var(
+-    --up-warning-disabled,
+-    var(--u-warning-disabled, #f9d39b)
+-  );
+-  --u-light-warning-disabled: var(
+-    --up-warning-disabled,
+-    var(--u-warning-disabled, #f9d39b)
+-  );
+-  --up-light-warning-light: var(
+-    --up-warning-light,
+-    var(--u-warning-light, #fdf6ec)
+-  );
+-  --u-light-warning-light: var(
+-    --up-warning-light,
+-    var(--u-warning-light, #fdf6ec)
+-  );
+-  --up-light-success: var(--up-success, var(--u-success, #5ac725));
+-  --u-light-success: var(--up-success, var(--u-success, #5ac725));
+-  --up-light-success-dark: var(
+-    --up-success-dark,
+-    var(--u-success-dark, #53c21d)
+-  );
+-  --u-light-success-dark: var(
+-    --up-success-dark,
+-    var(--u-success-dark, #53c21d)
+-  );
+-  --up-light-success-disabled: var(
+-    --up-success-disabled,
+-    var(--u-success-disabled, #a9e08f)
+-  );
+-  --u-light-success-disabled: var(
+-    --up-success-disabled,
+-    var(--u-success-disabled, #a9e08f)
+-  );
+-  --up-light-success-light: var(
+-    --up-success-light,
+-    var(--u-success-light, #f5fff0)
+-  );
+-  --u-light-success-light: var(
+-    --up-success-light,
+-    var(--u-success-light, #f5fff0)
+-  );
+-  --up-light-error: var(--up-error, var(--u-error, #f56c6c));
+-  --u-light-error: var(--up-error, var(--u-error, #f56c6c));
+-  --up-light-error-dark: var(--up-error-dark, var(--u-error-dark, #e45656));
+-  --u-light-error-dark: var(--up-error-dark, var(--u-error-dark, #e45656));
+-  --up-light-error-disabled: var(
+-    --up-error-disabled,
+-    var(--u-error-disabled, #f7b2b2)
+-  );
+-  --u-light-error-disabled: var(
+-    --up-error-disabled,
+-    var(--u-error-disabled, #f7b2b2)
+-  );
+-  --up-light-error-light: var(--up-error-light, var(--u-error-light, #fef0f0));
+-  --u-light-error-light: var(--up-error-light, var(--u-error-light, #fef0f0));
+-  --up-light-info: var(--up-info, var(--u-info, #909399));
+-  --u-light-info: var(--up-info, var(--u-info, #909399));
+-  --up-light-info-dark: var(--up-info-dark, var(--u-info-dark, #767a82));
+-  --u-light-info-dark: var(--up-info-dark, var(--u-info-dark, #767a82));
+-  --up-light-info-disabled: var(
+-    --up-info-disabled,
+-    var(--u-info-disabled, #c4c6c9)
+-  );
+-  --u-light-info-disabled: var(
+-    --up-info-disabled,
+-    var(--u-info-disabled, #c4c6c9)
+-  );
+-  --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
+-  --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
++.tw-table .thead .tr {
++  border-bottom-width: 1px;
++  --tw-border-opacity: 1;
++  border-color: rgba(226, 232, 240, var(--tw-border-opacity, 1));
+ }
++.dark .tw-table .thead .tr {
++  border-color: rgba(148, 163, 184, 0.2);
++}
++.tw-table .tbody .tr {
++  border-bottom-width: 1px;
++  --tw-border-opacity: 1;
++  border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1));
++}
++.dark .tw-table .tbody .tr {
++  border-color: rgba(148, 163, 184, 0.1);
++}
++.tw-table .tr {
++  display: flex;
++}
+ body,
+ [data-up-theme="light"] {
+   --up-light-main-color: var(--up-main-color, var(--u-main-color, #303133));
+@@ -421,22 +301,32 @@
+   --up-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
+   --u-light-info-light: var(--up-info-light, var(--u-info-light, #f4f4f5));
+ }
+-.tw-table .thead .tr {
+-  border-bottom-width: 1px;
+-  --tw-border-opacity: 1;
+-  border-color: rgba(226, 232, 240, var(--tw-border-opacity, 1));
++
++.container {
++  width: 100%;
+ }
+-.dark .tw-table .thead .tr {
+-  border-color: rgba(148, 163, 184, 0.2);
++@media (min-width: 40rem) {
++  .container {
++    max-width: 1280rpx;
++  }
+ }
+-.tw-table .tbody .tr {
+-  border-bottom-width: 1px;
+-  --tw-border-opacity: 1;
+-  border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1));
++@media (min-width: 48rem) {
++  .container {
++    max-width: 1536rpx;
++  }
+ }
+-.dark .tw-table .tbody .tr {
+-  border-color: rgba(148, 163, 184, 0.1);
++@media (min-width: 64rem) {
++  .container {
++    max-width: 2048rpx;
++  }
+ }
+-.tw-table .tr {
+-  display: flex;
++@media (min-width: 80rem) {
++  .container {
++    max-width: 2560rpx;
++  }
+ }
++@media (min-width: 96rem) {
++  .container {
++    max-width: 3072rpx;
++  }
++}
+
+--- a/dist/build/mp-weixin/pages/index/index.js
++++ b/dist/build/mp-weixin/pages/index/index.js
+@@ -18,7 +18,7 @@
+ }
+ Math ||
+   (
+-    a +
++    i +
+     (() => "../../node-modules/uview-plus/components/u-cell/u-cell.js") +
+     (() =>
+       "../../node-modules/uview-plus/components/u-cell-group/u-cell-group.js") +
+@@ -35,20 +35,20 @@
+   )();
+ const l = () => "../../components/BaseLayout.js",
+   u = () => "../../components/FloatButton.js",
+-  a = () => "../../components/Navbar.js",
+-  c = e.defineComponent({
++  i = () => "../../components/Navbar.js",
++  p = e.defineComponent({
+     __name: "index",
+     setup(l) {
+       const u = s.tailwindcss.slice(1),
+-        a = n.useSystemStore(),
+-        c = e.ref(""),
+-        i = e.ref(!1),
+-        p = e.ref([]);
+-      function r() {
+-        i.value = !0;
++        i = n.useSystemStore(),
++        p = e.ref(""),
++        r = e.ref(!1),
++        a = e.ref([]);
++      function c() {
++        r.value = !0;
+       }
+       function m() {
+-        "dark" === a.theme ? a.setTheme("light") : a.setTheme("dark");
++        "dark" === i.theme ? i.setTheme("light") : i.setTheme("dark");
+       }
+       function d() {
+         e.index.navigateTo({ url: "/pages/theme/index" });
+@@ -84,15 +84,15 @@
+             }
+             if (n >= o) break;
+           }
+-          p.value = t;
++          a.value = t;
+         })(e);
+       }
+       function h() {
+-        i.value = !1;
++        r.value = !1;
+       }
+-      function b() {}
+-      const g = e.debounce(() => {
+-        c.value && c.value.length > 0 && v(c.value);
++      function g() {}
++      const b = e.debounce(() => {
++        p.value && p.value.length > 0 && v(p.value);
+       }, 200);
+       function j(o) {
+         e.index.setClipboardData({ data: o });
+@@ -104,7 +104,7 @@
+             b: e.f(e.unref(f), (o, n, t) => ({
+               a: e.f(o.children, (o, n, s) => ({
+                 a: o,
+-                b: "332ca84b-5-" + t + "-" + s + ",332ca84b-4-" + t,
++                b: "1938521f-5-" + t + "-" + s + ",1938521f-4-" + t,
+                 c: e.p({
+                   title: o,
+                   "is-link": !0,
+@@ -112,9 +112,9 @@
+                   url: `/pages/index/detail?t=${o}`,
+                 }),
+               })),
+-              b: "332ca84b-4-" + t + ",332ca84b-3-" + t,
++              b: "1938521f-4-" + t + ",1938521f-3-" + t,
+               c: o.name,
+-              d: "332ca84b-3-" + t + ",332ca84b-2",
++              d: "1938521f-3-" + t + ",1938521f-2",
+               e: e.p({ name: o.name, title: o.name }),
+             })),
+             c: e.p({ border: !1 }),
+@@ -123,14 +123,14 @@
+             f: e.o((e) => j("https://github.com/sonofmagic/weapp-tailwindcss")),
+             g: e.o(v),
+             h: e.o(v),
+-            i: e.o(e.unref(g)),
+-            j: e.o((o) => (e.isRef(c) ? (c.value = o) : null)),
+-            k: e.p({ placeholder: "请输入关键词", modelValue: e.unref(c) }),
+-            l: e.unref(p).length > 0,
++            i: e.o(e.unref(b)),
++            j: e.o((o) => (e.isRef(p) ? (p.value = o) : null)),
++            k: e.p({ placeholder: "请输入关键词", modelValue: e.unref(p) }),
++            l: e.unref(a).length > 0,
+           },
+-          e.unref(p).length > 0
++          e.unref(a).length > 0
+             ? {
+-                m: e.f(e.unref(p), (o, n, t) => ({
++                m: e.f(e.unref(a), (o, n, t) => ({
+                   a: e.t(o.parent),
+                   b: e.t(o.title),
+                   c: n,
+@@ -143,22 +143,22 @@
+                     );
+                     var t;
+                   }, n),
+-                  e: "332ca84b-8-" + t + ",332ca84b-6",
++                  e: "1938521f-8-" + t + ",1938521f-6",
+                 })),
+                 n: e.p({ "is-link": !0 }),
+               }
+             : { o: e.p({ mode: "list" }) },
+           {
+             p: e.o(h),
+-            q: e.o(b),
+-            r: e.p({ show: e.unref(i), mode: "bottom", round: 10 }),
++            q: e.o(g),
++            r: e.p({ show: e.unref(r), mode: "bottom", round: 10 }),
+             s: e.o(d),
+-            t: "dark" === e.unref(a).theme,
++            t: "dark" === e.unref(i).theme,
+           },
+-          (e.unref(a).theme, {}),
++          (e.unref(i).theme, {}),
+           {
+             v: e.o(m),
+-            w: e.o(r),
++            w: e.o(c),
+             x: e.p({
+               "store-key": "index-float-btn",
+               padding: [256, 32, 256, 32],
+@@ -167,4 +167,4 @@
+         );
+     },
+   });
+-wx.createPage(c);
++wx.createPage(p);
+
+--- a/dist/build/mp-weixin/pages/index/index.wxml
++++ b/dist/build/mp-weixin/pages/index/index.wxml
+@@ -1,5 +1,5 @@
+-<base-layout u-s="{{['d']}}" u-i="332ca84b-0" bind:__l="__l"
+-  ><navbar u-s="{{['left']}}" u-i="332ca84b-1,332ca84b-0" bind:__l="__l"
++<base-layout u-s="{{['d']}}" u-i="1938521f-0" bind:__l="__l"
++  ><navbar u-s="{{['left']}}" u-i="1938521f-1,1938521f-0" bind:__l="__l"
+     ><view class="relative flex items-center" slot="left"
+       ><view
+         class="i-logos-tailwindcss-icon mr-2 h-_b20_d57px_B w-_b34px_B shrink-0"
+@@ -10,7 +10,7 @@
+       ></view
+     ></navbar
+   ><view
+-    ><up-collapse u-s="{{['d']}}" u-i="332ca84b-2,332ca84b-0" bind:__l="__l"
++    ><up-collapse u-s="{{['d']}}" u-i="1938521f-2,1938521f-0" bind:__l="__l"
+       ><up-collapse-item
+         wx:for="{{b}}"
+         wx:for-item="nav"
+@@ -47,7 +47,7 @@
+     u-s="{{['d']}}"
+     bindclose="{{p}}"
+     bindopen="{{q}}"
+-    u-i="332ca84b-6,332ca84b-0"
++    u-i="1938521f-6,1938521f-0"
+     bind:__l="__l"
+     u-p="{{r}}"
+     ><view class="h-_b50vh_B dark_cbg-slate-900"
+@@ -57,7 +57,7 @@
+           bindsearch="{{g}}"
+           bindcustom="{{h}}"
+           bindchange="{{i}}"
+-          u-i="332ca84b-7,332ca84b-6"
++          u-i="1938521f-7,1938521f-6"
+           bind:__l="__l"
+           bindupdateModelValue="{{j}}"
+           u-p="{{k}}" /></view
+@@ -84,13 +84,13 @@
+           ><view class="pt-4"
+             ><u-empty
+               wx:if="{{o}}"
+-              u-i="332ca84b-9,332ca84b-6"
++              u-i="1938521f-9,1938521f-6"
+               bind:__l="__l"
+               u-p="{{o}}" /></view></block></scroll-view></view></u-popup
+   ><float-button
+     wx:if="{{x}}"
+     u-s="{{['d']}}"
+-    u-i="332ca84b-10,332ca84b-0"
++    u-i="1938521f-10,1938521f-0"
+     bind:__l="__l"
+     u-p="{{x}}"
+     ><view class="float-btn mb-3"
+
+--- a/dist/build/mp-weixin/pages/theme/code.wxml
++++ b/dist/build/mp-weixin/pages/theme/code.wxml
+@@ -1,3 +1,3 @@
+ <view
+-  ><mp-html wx:if="{{a}}" u-i="06a3b4ed-0" bind:__l="__l" u-p="{{a}}"
++  ><mp-html wx:if="{{a}}" u-i="16518099-0" bind:__l="__l" u-p="{{a}}"
+ /></view>
+
+--- a/dist/build/mp-weixin/pages/theme/index.js
++++ b/dist/build/mp-weixin/pages/theme/index.js
+@@ -68,7 +68,7 @@
+       c: e.f(c, (a, o, n) => ({
+         a: e.t(a),
+         b: e.o((e) => t(a), a),
+-        c: "390326fc-2-" + n + ",390326fc-0",
++        c: "6cebd354-2-" + n + ",6cebd354-0",
+         d: a,
+       })),
+       d: e.o((e) => s("a")),
+@@ -82,7 +82,7 @@
+       h: e.f(c, (a, o, n) => ({
+         a: e.t(a),
+         b: e.o((e) => t(a), a),
+-        c: "390326fc-5-" + n + ",390326fc-0",
++        c: "6cebd354-5-" + n + ",6cebd354-0",
+         d: a,
+       })),
+       i: e.o((e) => s("b")),
+
+--- a/dist/build/mp-weixin/pages/theme/index.wxml
++++ b/dist/build/mp-weixin/pages/theme/index.wxml
+@@ -2,7 +2,7 @@
+   ><theme
+     wx:if="{{k}}"
+     u-s="{{['d']}}"
+-    u-i="390326fc-0"
++    u-i="6cebd354-0"
+     bind:__l="__l"
+     u-p="{{k}}"
+     ><view class="bg-base min-h-_b50vh_B py-2 transition-colors duration-300"
+@@ -13,7 +13,7 @@
+       ><view hidden="{{!b}}"
+         ><mp-html
+           wx:if="{{a}}"
+-          u-i="390326fc-1,390326fc-0"
++          u-i="6cebd354-1,6cebd354-0"
+           bind:__l="__l"
+           u-p="{{a}}" /></view
+       ><view class="mb-2 flex justify-around"
+@@ -33,7 +33,7 @@
+         /><css-var-btn
+           u-s="{{['d']}}"
+           bindclick="{{e}}"
+-          u-i="390326fc-3,390326fc-0"
++          u-i="6cebd354-3,6cebd354-0"
+           bind:__l="__l"
+         >
+           查看tailwind.config.js
+@@ -48,7 +48,7 @@
+       ><view hidden="{{!g}}"
+         ><mp-html
+           wx:if="{{f}}"
+-          u-i="390326fc-4,390326fc-0"
++          u-i="6cebd354-4,6cebd354-0"
+           bind:__l="__l"
+           u-p="{{f}}" /></view
+       ><view class="mb-2 flex justify-around"
+@@ -68,7 +68,7 @@
+         /><variant-btn
+           u-s="{{['d']}}"
+           bindclick="{{j}}"
+-          u-i="390326fc-6,390326fc-0"
++          u-i="6cebd354-6,6cebd354-0"
+           bind:__l="__l"
+         >
+           查看tailwind.config.js
+

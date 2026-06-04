@@ -1,0 +1,53 @@
+{
+  "name": "@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4",
+  "type": "module",
+  "version": "1.0.21-next.0",
+  "private": true,
+  "description": "",
+  "author": "ice breaker <1324318532@qq.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/weapp-vite-tailwindcss-v4"
+  },
+  "bugs": {
+    "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
+  },
+  "keywords": [],
+  "main": "index.js",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 weapp-vite dev",
+    "dev:e2e-watch": "node ../../scripts/weapp-vite-e2e-watch.mjs",
+    "dev:0": "cross-env WEAPP_TW_HMR_TIMING=1 weapp-vite dev -m x",
+    "dev:1": "cross-env WEAPP_TW_HMR_TIMING=1 weapp-vite dev --mode xx",
+    "dev:open": "cross-env WEAPP_TW_HMR_TIMING=1 weapp-vite dev -o",
+    "build": "weapp-vite build",
+    "open": "weapp-vite open",
+    "npm": "weapp-vite npm",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:0": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:1": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:open": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "@weapp-tailwindcss/merge": "workspace:*",
+    "lodash": "^4.18.1"
+  },
+  "devDependencies": {
+    "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
+    "@iconify-json/lucide": "catalog:iconifyJson",
+    "@iconify-json/mdi": "catalog:iconifyJson",
+    "@weapp-tailwindcss/variants": "workspace:*",
+    "autoprefixer": "catalog:autoprefixer10",
+    "postcss": "catalog:postcss85",
+    "tailwindcss": "catalog:tailwindcss4",
+    "tailwindcss-injector": "workspace:*",
+    "weapp-tailwindcss": "workspace:*",
+    "weapp-vite": "catalog:weappVite"
+  }
+}

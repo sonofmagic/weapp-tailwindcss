@@ -1,6 +1,6 @@
 {
   "name": "weapp-tailwindcss",
-  "version": "4.12.0",
+  "version": "5.0.0-next.38",
   "description": "把 tailwindcss 原子化样式思想，带给小程序开发者们! bring tailwindcss to miniprogram developers!",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -61,11 +61,6 @@
       "import": "./dist/webpack.mjs",
       "require": "./dist/webpack.js"
     },
-    "./webpack4": {
-      "types": "./dist/webpack4.d.ts",
-      "import": "./dist/webpack4.mjs",
-      "require": "./dist/webpack4.js"
-    },
     "./core": {
       "types": "./dist/core.d.ts",
       "import": "./dist/core.mjs",
@@ -75,6 +70,16 @@
       "types": "./dist/gulp.d.ts",
       "import": "./dist/gulp.mjs",
       "require": "./dist/gulp.js"
+    },
+    "./generator": {
+      "types": "./dist/generator.d.ts",
+      "import": "./dist/generator.mjs",
+      "require": "./dist/generator.js"
+    },
+    "./postcss": {
+      "types": "./dist/postcss.d.ts",
+      "import": "./dist/postcss.mjs",
+      "require": "./dist/postcss.js"
     },
     "./defaults": {
       "types": "./dist/defaults.d.ts",
@@ -140,7 +145,6 @@
     }
   },
   "bin": {
-    "weapp-tailwindcss-webpack-plugin": "bin/weapp-tailwindcss.js",
     "weapp-tailwindcss": "bin/weapp-tailwindcss.js",
     "weapp-tw": "bin/weapp-tailwindcss.js"
   },
@@ -148,9 +152,9 @@
     "bin",
     "css",
     "dist",
+    "generator-placeholder.css",
     "index.css",
     "preflight.css",
-    "scripts/postinstall.mjs",
     "theme.css",
     "uni-app-x.css",
     "utilities.css",
@@ -160,32 +164,32 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup && node scripts/ensure-escape-dts.mjs",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown && pnpm run build:types && pnpm --filter @weapp-tailwindcss/scripts ensure-escape-dts",
+    "build:types": "tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --declarationDir dist --noEmit false && pnpm --filter @weapp-tailwindcss/scripts build:types",
     "build:tsc": "cross-env NODE_ENV=development tsc --build tsconfig.json",
     "build:cli": "cd plugins/cli && pnpm run build",
-    "build:css": "tsx scripts/build-css.ts",
-    "build:weapp-theme": "tsx scripts/build-weapp-theme.ts",
-    "test": "pnpm run cli:patch && vitest run",
+    "build:css": "pnpm --filter @weapp-tailwindcss/scripts build:css",
+    "build:weapp-theme": "pnpm --filter @weapp-tailwindcss/scripts build:weapp-theme",
+    "test": "vitest run",
     "test:dev": "vitest",
     "test:ui": "vitest --ui",
     "bench": "vitest bench --config ./vitest.config.ts",
-    "bench:vite-perf": "tsx scripts/vite-perf-bench.ts",
-    "bench:vite-perf:summary": "tsx scripts/vite-perf-summary.ts",
-    "bench:js-handlers": "tsx scripts/js-bench.ts",
-    "bench:js-diff": "tsx scripts/js-bench-diff.ts",
+    "bench:vite-perf": "pnpm --filter @weapp-tailwindcss/scripts bench:vite-perf",
+    "bench:vite-perf:summary": "pnpm --filter @weapp-tailwindcss/scripts bench:vite-perf:summary",
+    "bench:js-handlers": "pnpm --filter @weapp-tailwindcss/scripts bench:js-handlers",
+    "bench:js-diff": "pnpm --filter @weapp-tailwindcss/scripts bench:js-diff",
     "tsd": "tsd",
-    "clean": "tsx scripts/clean.ts",
-    "get-decl": "tsx scripts/get-decl.ts",
+    "clean": "pnpm --filter @weapp-tailwindcss/scripts clean:core",
+    "get-decl": "pnpm --filter @weapp-tailwindcss/scripts get-decl",
     "ls:pack": "npm pack --dry-run",
-    "cli:patch": "node bin/weapp-tailwindcss.js patch",
-    "colors": "tsx scripts/colors.ts",
-    "release": "tsx scripts/release.ts",
+    "colors": "pnpm --filter @weapp-tailwindcss/scripts colors",
+    "release": "pnpm --filter @weapp-tailwindcss/scripts release",
     "lint": "eslint .",
     "lint:fix": "eslint ./src --fix",
-    "postinstall": "node scripts/postinstall.mjs",
-    "bench:vite-dev-hmr": "tsx scripts/vite-dev-hmr-bench.ts",
-    "test:watch-hmr": "node --import tsx scripts/watch-hmr-regression/index.ts"
+    "bench:vite-dev-hmr": "pnpm --filter @weapp-tailwindcss/scripts bench:vite-dev-hmr",
+    "watch-hmr:speed-report": "pnpm --filter @weapp-tailwindcss/scripts watch-hmr:speed-report",
+    "test:watch-hmr": "pnpm --filter @weapp-tailwindcss/scripts test:watch-hmr"
   },
   "publishConfig": {
     "access": "public",
@@ -193,33 +197,30 @@
   },
   "dependencies": {
     "@ast-core/escape": "~1.0.1",
-    "@babel/parser": "~7.29.3",
-    "@babel/traverse": "~7.29.0",
-    "@babel/types": "~7.29.0",
-    "@tailwindcss-mangle/config": "^7.0.1",
-    "@vue/compiler-dom": "catalog:vue3",
-    "@vue/compiler-sfc": "catalog:vue3",
-    "@weapp-core/escape": "~7.0.0",
-    "@weapp-core/regex": "~1.0.1",
+    "@babel/parser": "~7.29.7",
+    "@babel/traverse": "~7.29.7",
+    "@babel/types": "~7.29.7",
+    "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/reset": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "cac": "6.7.14",
-    "comment-json": "^4.6.2",
+    "comment-json": "^5.0.0",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
-    "htmlparser2": "10.1.0",
-    "loader-utils": "2.0.4",
-    "local-pkg": "^1.1.2",
-    "lru-cache": "10.4.3",
+    "local-pkg": "^1.2.1",
+    "lru-cache": "11.5.1",
     "magic-string": "0.30.21",
-    "semver": "~7.7.4",
+    "micromatch": "^4.0.8",
+    "postcss-load-config": "^6.0.1",
+    "semver": "~7.8.1",
+    "tailwindcss-config": "workspace:*",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
-    "webpack-sources": "3.3.4",
-    "yaml": "^2.8.4"
+    "yaml": "^2.9.0"
   },
   "devDependencies": {
-    "fast-check": "^4.7.0"
+    "@vue/compiler-dom": "catalog:vue3",
+    "@vue/compiler-sfc": "catalog:vue3",
+    "htmlparser2": "12.0.0"
   }
 }

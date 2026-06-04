@@ -1,10 +1,12 @@
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { UniAppXComponentLocalStylesOptions, UserDefinedOptions } from '@/types'
+import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@/logger'
 import { getTailwindcssPackageInfo } from '@/tailwindcss'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { defuOverrideArray, resolveUniUtsPlatform } from '@/utils'
+import { omitUndefined } from '@/utils/object'
 import { normalizeCssEntries } from './shared'
 
 export interface UniAppXOptions {
@@ -21,9 +23,17 @@ export interface UniAppXOptions {
    */
   rem2rpx?: UserDefinedOptions['rem2rpx']
   /**
+   * Tailwind CSS v4 generator 配置。
+   */
+  generator?: UserDefinedOptions['generator']
+  /**
    * 长度单位转 px 配置。
    */
   unitsToPx?: UserDefinedOptions['unitsToPx']
+  /**
+   * 任意样式单位转换配置。
+   */
+  unitConversion?: UserDefinedOptions['unitConversion']
   /**
    * 透传原始插件配置。
    */
@@ -63,7 +73,7 @@ function resolveTailwindResolveOptions(base: string, resolve?: PackageResolvingO
   const currentPaths = Array.isArray(resolve?.paths) ? resolve.paths : []
   return {
     ...(resolve ?? {}),
-    paths: [...new Set([base, ...currentPaths])],
+    paths: [...new Set([path.join(base, 'node_modules'), base, ...currentPaths])],
   }
 }
 
@@ -99,9 +109,9 @@ function resolveInstalledTailwindDefaults(resolve?: PackageResolvingOptions) {
 }
 
 export function uniAppX(options: UniAppXOptions) {
-  logger.info(`UNI_PLATFORM: ${process.env.UNI_PLATFORM}`)
+  logger.info(`UNI_PLATFORM: ${process.env['UNI_PLATFORM']}`)
   const utsPlatform = resolveUniUtsPlatform()
-  const uniPlatform = resolveUniUtsPlatform(process.env.UNI_PLATFORM)
+  const uniPlatform = resolveUniUtsPlatform(process.env['UNI_PLATFORM'])
 
   logger.info(`UNI_UTS_PLATFORM: ${utsPlatform.raw ?? 'undefined'}`)
 
@@ -125,8 +135,11 @@ export function uniAppX(options: UniAppXOptions) {
     options.rawOptions ?? {},
     {
       uniAppX: resolvedUniAppX,
+      ...(options.generator !== undefined ? { generator: options.generator } : {}),
       rem2rpx: options.rem2rpx,
       unitsToPx: options.unitsToPx,
+      unitConversion: options.unitConversion,
+      appType: 'uni-app-x',
       tailwindcssBasedir: options.base,
       tailwindcssPatcherOptions: {
         projectRoot: options.base,
@@ -137,10 +150,10 @@ export function uniAppX(options: UniAppXOptions) {
           v3: {
             cwd: options.base,
           },
-          v4: {
+          v4: omitUndefined({
             base: options.base,
             cssEntries,
-          },
+          }),
         },
       },
       tailwindcss: {

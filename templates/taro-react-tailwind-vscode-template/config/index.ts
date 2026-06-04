@@ -1,4 +1,4 @@
-import { UnifiedWebpackPluginV5 } from "weapp-tailwindcss/webpack";
+import { WeappTailwindcss } from "weapp-tailwindcss/webpack";
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
@@ -66,7 +66,7 @@ export default defineConfig(async (merge) => {
         chain.merge({
           plugin: {
             install: {
-              plugin: UnifiedWebpackPluginV5,
+              plugin: WeappTailwindcss,
               args: [
                 {
                   appType: 'taro',

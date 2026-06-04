@@ -1,0 +1,27 @@
+# apps/react-app artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+diff -- dist/assets/index-B-aRXF0u.js
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 250639 raw bytes, 437246 normalized bytes, hash d934a4ecdc6c
+
+diff -- dist/assets/index-uM4J0RC_.js
+# normalized content differs; inline diff omitted (large-removed-file).
+# baseline: 250639 raw bytes, 437246 normalized bytes, hash c114ccc0d5fb
+# current: /dev/null
+
+--- a/dist/index.html
++++ b/dist/index.html
+@@ -5,7 +5,7 @@
+     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>react-app</title>
+-    <script type="module" crossorigin src="/assets/index-uM4J0RC_.js"></script>
++    <script type="module" crossorigin src="/assets/index-B-aRXF0u.js"></script>
+     <link rel="stylesheet" crossorigin href="/assets/index-DAL9tCJO.css" />
+   </head>
+   <body>
+

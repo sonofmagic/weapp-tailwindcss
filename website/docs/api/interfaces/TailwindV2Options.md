@@ -1,44 +1,44 @@
 ---
-title: TailwindV2Options
-description: Configuration specific to Tailwind CSS v2 patching flows.
+title: "TailwindV2Options"
+description: "Tailwind CSS v2 补丁配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - TailwindV2Options
-  - TailwindV2Options interface
-  - TailwindV2Options 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "TailwindV2Options"
+  - "TailwindV2Options 接口"
+  - "TailwindV2Options 类型定义"
+  - "TypeScript"
 ---
 
 # TailwindV2Options
 
-Configuration specific to Tailwind CSS v2 patching flows.
+Tailwind CSS v2 补丁配置。
 
 ## 属性
 
 ### config?
 
-> `optional` **config**: `string`
+> 可选 | **config**: `string`
 
-Path to a Tailwind config file when auto-detection is insufficient.
+Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 
 ***
 
 ### cwd?
 
-> `optional` **cwd**: `string`
+> 可选 | **cwd**: `string`
 
-Custom working directory used when resolving config-relative paths.
+解析 Tailwind 配置相对路径时使用的工作目录。
 
 ***
 
 ### postcssPlugin?
 
-> `optional` **postcssPlugin**: `string`
+> 可选 | **postcssPlugin**: `string`
 
-Optional PostCSS plugin name to use instead of the default.
+自定义 PostCSS 插件名称。未传入时使用默认名称。

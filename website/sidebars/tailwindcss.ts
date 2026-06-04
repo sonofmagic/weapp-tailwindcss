@@ -48,7 +48,32 @@ const tailwindcssSidebar: SidebarConfig = [
     label: '[工程] 约束、隔离与落地边界',
     collapsed: false,
     items: [
+      {
+        type: 'category',
+        label: 'Tailwind CSS 4.x 与 weapp-tailwindcss',
+        collapsed: true,
+        items: [
+          {
+            type: 'doc',
+            id: 'quick-start/v4/readme',
+            label: 'Tailwind CSS 4.x 参考',
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/v4/tutorial/index',
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/v4/tutorial/workflow',
+          },
+          {
+            type: 'doc',
+            id: 'quick-start/v4/tutorial/advanced',
+          },
+        ],
+      },
       'tailwindcss/best-practices',
+      'tailwindcss/v5-official-plugin-parity',
       'tailwindcss/style-isolation',
     ],
   },

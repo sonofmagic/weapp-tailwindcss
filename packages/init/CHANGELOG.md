@@ -1,5 +1,38 @@
 # @weapp-tailwindcss/init
 
+## 1.0.12-next.4
+
+### Patch Changes
+
+- 📦 **Dependencies** [`aaba811`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaba811cfc2ad003d3daf2cf290c9d8b770c6dfb)
+  → `@weapp-tailwindcss/shared@2.0.0-next.1`
+
+## 1.0.12-next.3
+
+### Patch Changes
+
+- 📦 **Dependencies** [`2d2acf2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2d2acf29cfee02ffb32783c8bd3c5de8d9aab9df)
+  → `@weapp-tailwindcss/logger@2.0.0-next.0`, `@weapp-tailwindcss/shared@2.0.0-next.0`
+
+## 1.0.12-next.2
+
+### Patch Changes
+
+- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+
+## 1.0.12-next.1
+
+### Patch Changes
+
+- 🐛 **移除初始化流程和核心包安装生命周期中的 `weapp-tw patch` 自动入口。当前生成模式会在构建运行时接管 Tailwind CSS 补丁与类名收集，新项目不再需要把补丁命令写入 `postinstall`；旧 CSS 后处理链路仍可手动执行 `weapp-tw patch` 或 `weapp-tw status` 排查状态。** [#853](https://github.com/sonofmagic/weapp-tailwindcss/pull/853) by @github-actions
+  - 执行 `weapp-tw patch` 时会提示 `weapp-tailwindcss@5` 生成模式不再需要该指令，也不需要配置 `postinstall` 这个 npm hook，避免新项目继续复制旧链路配置。
+
+## 1.0.12-next.0
+
+### Patch Changes
+
+- 🐛 **调整初始化生成的 PostCSS 配置：生成模式下不再注册 `tailwindcss` PostCSS 插件，只保留 `autoprefixer` 等后处理插件。** [#852](https://github.com/sonofmagic/weapp-tailwindcss/pull/852) by @github-actions
+
 ## 1.0.11
 
 ### Patch Changes

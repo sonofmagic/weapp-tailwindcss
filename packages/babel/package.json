@@ -25,8 +25,8 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
@@ -34,9 +34,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@babel/parser": "~7.29.3",
-    "@babel/traverse": "~7.29.0",
-    "@babel/types": "~7.29.0"
+    "@babel/parser": "~7.29.7",
+    "@babel/traverse": "~7.29.7",
+    "@babel/types": "~7.29.7"
   },
   "publishConfig": {
     "exports": {

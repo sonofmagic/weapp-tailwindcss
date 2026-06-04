@@ -1,20 +1,20 @@
 ---
-title: 🧩 文件匹配
-sidebar_label: 🧩 文件匹配
+title: "🧩 文件匹配"
+sidebar_label: "🧩 文件匹配"
 sidebar_position: 2
-description: 🧩 文件匹配文档，汇总 6 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。
+description: "🧩 文件匹配：6 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - 文件匹配
-  - 🧩 文件匹配
-  - 文件匹配 配置
-  - 插件参数
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "文件匹配"
+  - "🧩 文件匹配"
+  - "文件匹配 配置"
+  - "插件参数"
 ---
 
 本页收录 6 个配置项，来源于 `UserDefinedOptions`。
@@ -153,10 +153,10 @@ false
 <wxs module="inline">
 // 我是内联wxs
 // 下方的类名会被转义
-var className = "after:content-['我是className']"
-module.exports = {
-className: className
-}
+  var className = "after:content-['我是className']"
+  module.exports = {
+    className: className
+  }
 </wxs>
 <wxs src="./index.wxs" module="outside"/>
 <view><view class="{{inline.className}}"></view><view class="{{outside.className}}"></view></view>

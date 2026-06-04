@@ -31,7 +31,7 @@ pnpm install
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 模板更偏 `HBuilderX` 工作流，命令行脚本较少
 - 如果你偏好 VS Code + 命令行开发，优先考虑 `uni-app-tailwindcss-v4`
 

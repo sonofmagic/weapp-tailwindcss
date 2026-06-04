@@ -1,0 +1,34 @@
+# demo/gulp-app artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+--- a/dist/app.wxss
++++ b/dist/app.wxss
+@@ -2,10 +2,10 @@
+ ::after {
+   --tw-content: "";
+ }
+-view,
+-text,
+-::before,
+-::after {
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
+   --tw-border-spacing-x: 0;
+   --tw-border-spacing-y: 0;
+   --tw-translate-x: 0;
+@@ -58,10 +58,6 @@
+   --tw-contain-paint:  ;
+   --tw-contain-style:   
+ ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+ }
+ .i-mdi-123 {
+   display: inline-block;
+

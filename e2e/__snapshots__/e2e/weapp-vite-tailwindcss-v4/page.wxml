@@ -1,0 +1,54 @@
+<view class="feature-nav-page">
+  <view class="feature-nav-title">wevu 特性展示</view>
+  <view class="feature-nav-subtitle">选择一个特性场景进入</view>
+  <view class="feature-nav-list">
+    <navigator class="feature-nav-item" url="/pages/use-attrs/index" role="link">
+      <view class="feature-nav-item-title">useAttrs</view>
+      <view class="feature-nav-item-summary">展示 setup 中 attrs 的响应式变化</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/use-slots/index" role="link">
+      <view class="feature-nav-item-title">useSlots</view>
+      <view class="feature-nav-item-summary">展示 setup 中 slots 的键集合与兜底语义</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/use-model/index" role="link">
+      <view class="feature-nav-item-title">useModel</view>
+      <view class="feature-nav-item-summary">展示 setup 中 useModel 与 update:modelValue 事件</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/use-provide-inject/index" role="link">
+      <view class="feature-nav-item-title">provide / inject</view>
+      <view class="feature-nav-item-summary">展示跨层共享状态与交互式响应更新</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/use-provide-inject-scope/index" role="link">
+      <view class="feature-nav-item-title">provide / inject scope</view>
+      <view class="feature-nav-item-summary">复现页面级 provide 与 App 级 provide 的深层 inject 差异</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/use-store/index" role="link">
+      <view class="feature-nav-item-title">store</view>
+      <view class="feature-nav-item-summary">展示 setup/options store 与 patch/reset/订阅能力</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/subpath-entries/index" role="link">
+      <view class="feature-nav-item-title">subpath entries</view>
+      <view class="feature-nav-item-summary">展示 wevu/router|store|api|fetch 子路径入口联动</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/router-coverage/index" role="link">
+      <view class="feature-nav-item-title">router coverage</view>
+      <view class="feature-nav-item-summary">展示主包/分包/独立分包跳转与完整路由守卫日志</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/router-showcase/index" role="link">
+      <view class="feature-nav-item-title">router showcase</view>
+      <view class="feature-nav-item-summary">展示命名路由、alias、query 编解码与 hash-only/forward/go</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/router-dynamic/index" role="link">
+      <view class="feature-nav-item-title">router dynamic</view>
+      <view class="feature-nav-item-summary">展示 add/remove/clear 路由与守卫链路</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/native-uses-vue/index" role="link">
+      <view class="feature-nav-item-title">native -&gt; vue</view>
+      <view class="feature-nav-item-summary">展示原生组件通过 usingComponents 引入 Vue 组件</view>
+    </navigator>
+    <navigator class="feature-nav-item" url="/pages/router-stability/index" role="link">
+      <view class="feature-nav-item-title">router stability</view>
+      <view class="feature-nav-item-summary">展示 wx/pageRouter/router 在相对路径上的基路径差异</view>
+    </navigator>
+  </view>
+</view>

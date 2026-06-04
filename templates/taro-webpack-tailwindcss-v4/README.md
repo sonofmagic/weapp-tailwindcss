@@ -40,7 +40,7 @@ pnpm open
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 这是 webpack 方案，不同于 `taro-vite-tailwindcss-v4`
 - 适合存量项目对照或 CI 兼容回归
 

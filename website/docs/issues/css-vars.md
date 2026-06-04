@@ -1,6 +1,6 @@
 ---
 title: CSS 变量失效问题
-description: 在使用 taro 或者 uni-app 中，可能你会遇到 CSS 变量失效问题
+description: 排查 Taro、uni-app 等小程序项目中 Tailwind CSS 变量丢失导致的渐变、阴影等样式失效问题。
 keywords:
   - 常见问题
   - 故障排查
@@ -22,9 +22,9 @@ keywords:
 
 ## 问题的现象
 
-在使用 `taro` 或者 `uni-app` 中，可能你会遇到 `CSS` 变量失效问题
+在 `Taro`、`uni-app` 等小程序项目中，可能会遇到 Tailwind CSS 变量丢失的问题。
 
-具体表现，就是你在使用下列类名的时候，小程序的模拟器上，不会出来任何的背景颜色:
+常见表现是渐变类名没有效果。例如下面这些类名在模拟器里没有背景色：
 
 ```jsx
 <View className='h-14 bg-gradient-to-r from-cyan-500 to-blue-500'></View>
@@ -33,13 +33,19 @@ keywords:
 <View className='h-14 bg-gradient-to-r from-purple-500 to-pink-500'></View>
 ```
 
-## 原因以及解决方案
+## 原因与处理方式
 
-导致这个的原因，是由于全局的 `tailwindcss` 变量丢失，没有注入进 `App` 引起的。参阅[什么是 `tailwindcss` 全局变量注入区域](#什么是全局-tailwindcss-变量注入区域)。
+这些工具类依赖 Tailwind 生成的 CSS 变量。如果最终的 `app.wxss` / `app.css` 里没有变量初始化区域，渐变、阴影、ring、transform 等样式就可能失效。参阅[什么是 Tailwind CSS 变量初始化区域](#什么是-tailwind-css-变量初始化区域)。
 
-例如在 `taro` 中和 `@tarojs/plugin-html` 一起使用，就会出现这个问题，这是因为 `@tarojs/plugin-html` 把 `tailwindcss` 变量区域直接删除了。
+一个常见场景是 Taro 项目同时使用 `@tarojs/plugin-html`，构建过程中把 Tailwind 的变量初始化区域删掉了。
 
-遇到这样的问题，解决方案也很简单，只需要给插件传入 `injectAdditionalCssVarScope: true` 参数即可。
+可以先在 `WeappTailwindcss` 配置里开启：
+
+```ts
+WeappTailwindcss({
+  injectAdditionalCssVarScope: true,
+})
+```
 
 代码片段和配置详情详见[和 NutUI 一起使用](./use-with-nutui)。
 
@@ -49,11 +55,11 @@ keywords:
 
 ![小程序生效图片](./css-vars.jpg)
 
-## 什么是全局 `tailwindcss` 变量注入区域
+## 什么是 Tailwind CSS 变量初始化区域
 
-在你的 `app.wxss` 样式产物文件中（例如：`taro` 或 `uni-app` 的 `dist` 文件夹内），都有这样一块区域。
+在 `app.wxss` 样式产物文件中（例如 Taro 或 uni-app 的 `dist` 目录），通常会有一块 Tailwind 变量初始化 CSS。
 
-上面的这个问题，就是这块变量注入区域没了导致的。
+如果这块区域被删掉，依赖 CSS 变量的工具类就会出问题。
 
 ```css
 ::before,::after {
@@ -163,6 +169,6 @@ view,text,::before,::after {
 }
 ```
 
-这块区域就是你 `@tailwind base;` 展开后, `tailwindcss` 注入的全局变量块。
+这块区域是 Tailwind 入口展开后生成的变量初始化代码。Tailwind CSS 3 通常来自 `@tailwind base;`，Tailwind CSS 4 则来自 `@import "tailwindcss";` 对应的生成结果。
 
-丢失这块区域会导致 `bg-gradient-to-r` 这种依赖 `css` 变量的原子类失效。
+丢失这块区域会导致 `bg-gradient-to-r` 这类依赖 CSS 变量的工具类失效。

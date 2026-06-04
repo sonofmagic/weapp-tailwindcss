@@ -46,8 +46,8 @@ export function normalizeCssEntries(entries: string[] | undefined, anchor: strin
 }
 
 export interface GroupCssEntriesOptions {
-  preferredBaseDir?: string
-  workspaceRoot?: string
+  preferredBaseDir?: string | undefined
+  workspaceRoot?: string | undefined
 }
 
 function isSubPath(parent: string | undefined, child: string | undefined) {

@@ -678,27 +678,6 @@ wx-root-portal-content,
   --color-purple-300: rgb(216, 180, 255);
   --spacing: 0.25rem;
 }
-@supports (color: color(display-p3 0 0 0%)) {
-  page,
-  .tw-root,
-  wx-root-portal-content,
-  :host {
-    --color-cyan-500: rgb(0, 182, 212);
-    --color-blue-500: rgb(50, 128, 255);
-    --color-purple-300: rgb(216, 180, 255);
-  }
-
-  @media (color-gamut: p3) {
-    page,
-    .tw-root,
-    wx-root-portal-content,
-    :host {
-      --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-      --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-      --color-purple-300: color(display-p3 0.82939 0.70374 0.99608);
-    }
-  }
-}
 .static {
   position: static;
 }

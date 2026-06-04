@@ -1,6 +1,6 @@
 ---
-title: uni-app cli vue2 webpack
-description: 这样所有的配置便完成了！赶紧启动你的项目试试吧！
+title: uni-app CLI Vue2 Webpack
+description: uni-app CLI Vue2 Webpack 存量项目接入 weapp-tailwindcss 的配置说明。
 keywords:
   - 快速开始
   - 安装
@@ -21,7 +21,7 @@ keywords:
 ---
 import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx'
 
-# uni-app cli vue2 webpack
+# uni-app CLI Vue2 Webpack
 
 :::caution
 这条 `uni-app cli vue2 webpack` 路线已经不推荐，仓库中的对应 classic demo 也已经移除。
@@ -36,7 +36,8 @@ import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx
 :::
 
 ```js title="vue.config.js"
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
+const path = require('node:path')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 /**
  * @type {import('@vue/cli-service').ProjectOptions}
  */
@@ -45,8 +46,11 @@ const config = {
   // highlight-start
   configureWebpack: (config) => {
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
         rem2rpx: true,
+        cssEntries: [
+          path.resolve(__dirname, 'src/app.css'),
+        ],
       })
     )
   }
@@ -57,4 +61,22 @@ const config = {
 module.exports = config
 ```
 
-这样所有的配置便完成了！赶紧启动你的项目试试吧！
+`src/app.css` 按 Tailwind 版本选择入口：
+
+```css title="src/app.css"
+/* Tailwind CSS 3.x */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+```css title="src/app.css"
+/* Tailwind CSS 4.x */
+@import "tailwindcss";
+@source "./**/*.{html,js,ts,jsx,tsx,vue}";
+@source not "../dist";
+@source not "../node_modules";
+@source not "../unpackage";
+```
+
+Tailwind CSS 3.x 的扫描范围写在 `tailwind.config.js` 的 `content` 里；Tailwind CSS 4.x 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再在 PostCSS 中注册 Tailwind 官方生成插件。

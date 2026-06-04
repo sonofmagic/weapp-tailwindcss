@@ -6,9 +6,9 @@ This repository is a small `uni-app x` template intended for development in `HBu
 ## Build, Test, and Development Commands
 Use `pnpm` with Node.js `20.19+`.
 
-- `pnpm install`: installs dependencies and runs `weapp-tw patch` via `postinstall`.
+- `pnpm install`: installs dependencies. The template uses generator mode and does not need a `postinstall` patch hook.
 - `pnpm exec hbuilderx-cli --help`: verifies the local HBuilderX CLI is available.
-- `pnpm exec weapp-tw patch`: reapplies the weapp-tailwindcss patch if dependencies or generated files drift.
+- `pnpm exec weapp-tw patch`: only use manually when debugging an old CSS post-processing path.
 
 Day-to-day development is expected to happen by importing the project into `HBuilderX` and running it there.
 

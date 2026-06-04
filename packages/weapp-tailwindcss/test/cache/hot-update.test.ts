@@ -31,7 +31,7 @@ describe('Cache Hot Update', () => {
       })
 
       expect(transform).toHaveBeenCalled()
-      expect(applyResult).toHaveBeenCalledWith('transformed')
+      expect(applyResult).toHaveBeenCalledWith('transformed', { cacheHit: false })
     })
 
     it('should hit cache on second call with same key and source', async () => {
@@ -68,7 +68,7 @@ describe('Cache Hot Update', () => {
       // 应该命中缓存，不再调用 transform
       expect(transform).toHaveBeenCalledTimes(1)
       expect(onCacheHit).toHaveBeenCalled()
-      expect(applyResult).toHaveBeenCalledWith('transformed')
+      expect(applyResult).toHaveBeenCalledWith('transformed', { cacheHit: true })
     })
 
     it('should invalidate cache when source changes', async () => {
@@ -87,7 +87,7 @@ describe('Cache Hot Update', () => {
         transform,
       })
 
-      expect(applyResult).toHaveBeenCalledWith('transformed-1')
+      expect(applyResult).toHaveBeenCalledWith('transformed-1', { cacheHit: false })
 
       applyResult.mockClear()
 
@@ -102,7 +102,7 @@ describe('Cache Hot Update', () => {
 
       // 应该重新 transform
       expect(transform).toHaveBeenCalledTimes(2)
-      expect(applyResult).toHaveBeenCalledWith('transformed-2')
+      expect(applyResult).toHaveBeenCalledWith('transformed-2', { cacheHit: false })
     })
 
     it('should use different cache for different keys', async () => {
@@ -130,8 +130,8 @@ describe('Cache Hot Update', () => {
 
       expect(transform1).toHaveBeenCalledTimes(1)
       expect(transform2).toHaveBeenCalledTimes(1)
-      expect(applyResult1).toHaveBeenCalledWith('result-1')
-      expect(applyResult2).toHaveBeenCalledWith('result-2')
+      expect(applyResult1).toHaveBeenCalledWith('result-1', { cacheHit: false })
+      expect(applyResult2).toHaveBeenCalledWith('result-2', { cacheHit: false })
     })
 
     it('should handle custom hashKey', async () => {
@@ -204,7 +204,7 @@ describe('Cache Hot Update', () => {
 
       expect(readCache).toHaveBeenCalled()
       expect(onCacheHit).toHaveBeenCalled()
-      expect(applyResult).toHaveBeenCalledWith(cachedValue)
+      expect(applyResult).toHaveBeenCalledWith(cachedValue, { cacheHit: true })
       expect(transform).toHaveBeenCalledTimes(1) // 不应该再次调用 transform
     })
 
@@ -221,7 +221,7 @@ describe('Cache Hot Update', () => {
         transform,
       })
 
-      expect(applyResult).toHaveBeenCalledWith('transformed')
+      expect(applyResult).toHaveBeenCalledWith('transformed', { cacheHit: false })
     })
 
     it('BC-003: should handle cache key conflicts with MD5 hash', async () => {
@@ -240,7 +240,7 @@ describe('Cache Hot Update', () => {
         transform,
       })
 
-      expect(applyResult).toHaveBeenCalledWith('result-1')
+      expect(applyResult).toHaveBeenCalledWith('result-1', { cacheHit: false })
       applyResult.mockClear()
 
       await processCachedTask({
@@ -253,7 +253,7 @@ describe('Cache Hot Update', () => {
 
       // 由于 rawSource 不同，应该重新 transform
       expect(transform).toHaveBeenCalledTimes(2)
-      expect(applyResult).toHaveBeenCalledWith('result-2')
+      expect(applyResult).toHaveBeenCalledWith('result-2', { cacheHit: false })
     })
   })
 
@@ -272,7 +272,7 @@ describe('Cache Hot Update', () => {
       })
 
       expect(transform).toHaveBeenCalled()
-      expect(applyResult).toHaveBeenCalledWith('')
+      expect(applyResult).toHaveBeenCalledWith('', { cacheHit: false })
     })
 
     it('should handle large source content', async () => {
@@ -290,7 +290,7 @@ describe('Cache Hot Update', () => {
       })
 
       expect(transform).toHaveBeenCalled()
-      expect(applyResult).toHaveBeenCalledWith('transformed')
+      expect(applyResult).toHaveBeenCalledWith('transformed', { cacheHit: false })
     })
 
     it('should handle special characters in cache key', async () => {
@@ -352,7 +352,7 @@ describe('Cache Hot Update', () => {
       })
 
       expect(transform).toHaveBeenCalled()
-      expect(applyResult).toHaveBeenCalledWith('transformed')
+      expect(applyResult).toHaveBeenCalledWith('transformed', { cacheHit: false })
     })
   })
 
@@ -392,7 +392,7 @@ describe('Cache Hot Update', () => {
 
       // 由于缓存被清除，应该重新 transform
       expect(transform).toHaveBeenCalledTimes(2)
-      expect(applyResult).toHaveBeenCalledWith('result-2')
+      expect(applyResult).toHaveBeenCalledWith('result-2', { cacheHit: false })
     })
 
     it('BC-004: should invalidate cache on version change (simulated)', async () => {
@@ -426,7 +426,7 @@ describe('Cache Hot Update', () => {
 
       // 新的 cache 实例应该重新 transform
       expect(transform).toHaveBeenCalledTimes(2)
-      expect(applyResult).toHaveBeenCalledWith('result-2')
+      expect(applyResult).toHaveBeenCalledWith('result-2', { cacheHit: false })
     })
   })
 

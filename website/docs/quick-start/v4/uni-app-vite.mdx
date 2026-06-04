@@ -19,53 +19,41 @@ keywords:
   - taro
   - rax
 ---
-import Patch from './patch.mdx'
 import CssImportReminder from '@site/src/components/CssImportReminder'
 import UniappCliStyle from './UniappCliStyle.mdx'
 
 # uni-app cli vue3 vite
 
+:::tip
+主线接入文档已合并到 [uni-app CLI Vue3 Vite](/docs/quick-start/frameworks/uni-app-vite)。本页保留给旧链接和 Tailwind CSS 4 专项排障。
+:::
+
 ## 1. 安装
 
 ```bash npm2yarn
-npm install -D tailwindcss @tailwindcss/postcss weapp-tailwindcss
+npm install -D tailwindcss weapp-tailwindcss
 ```
-
-<Patch />
 
 ## 2. 配置 `vite.config.ts`
 
 ```ts title="vite.config.ts"
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-import tailwindcss from '@tailwindcss/postcss'
-import path from 'node:path'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
     uni(),
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       rem2rpx: true,
-      cssEntries: [
-        // 你 @import "weapp-tailwindcss/index.css"; 那个文件绝对路径
-        path.resolve(import.meta.dirname, './src/app.css'),
-      ],
     }),
   ],
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss(),
-      ],
-    },
-  },
 });
 
 ```
 
-> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
-> `cssEntries` 必须指向纯 `css` 文件。不要把 `tailwindcss@4` 注册到 `scss`、`less` 等预处理样式文件中，否则样式和转译都可能失效。
+> 常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口。只有多入口、入口未被框架引入、自动识别失败等场景，才需要手动配置 `cssEntries`。
+> Tailwind CSS 4 入口建议放在纯 `.css` 文件里，不要直接写进 `scss`、`less` 等预处理样式文件。
 
 ## 3. 添加样式
 
@@ -74,16 +62,6 @@ export default defineConfig({
 接着直接运行 `npm run dev:mp-weixin`，
 
 微信开发者工具导入这个项目，即可看到效果
-
-{/* :::warning
-这里必须创建一个额外的 `css` 文件，而不是直接在 `App.vue` 里的 `style` 标签下直接写，
-
-这是因为 `@tailwindcss/vite` 目前只转化 `.css` 文件。后续可能会支持更多格式的文件，比如 `vue` 编译的中间文件
-
-详见 http://github.com/tailwindlabs/tailwindcss/blob/main/packages/%40tailwindcss-vite/src/index.ts#L122 中的 `isCssFile` 判断
-::: */}
-
-
 
 ## 参考模板
 

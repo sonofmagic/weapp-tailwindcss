@@ -13,7 +13,6 @@ function arbOptions() {
     alwaysEscape: fc.constantFrom(undefined, false),
     wrapExpression: fc.constantFrom(undefined, false),
     moduleSpecifierReplacements: fc.constantFrom(undefined, {}),
-    staleClassNameFallback: fc.option(fc.boolean(), { nil: undefined }),
     tailwindcssMajorVersion: fc.option(fc.constantFrom(3, 4), { nil: undefined }),
     filename: fc.option(fc.string(), { nil: undefined }),
   }, { requiredKeys: [] })
@@ -32,7 +31,6 @@ function arbAnyOptions() {
       ),
       { nil: undefined },
     ),
-    staleClassNameFallback: fc.option(fc.boolean(), { nil: undefined }),
     tailwindcssMajorVersion: fc.option(fc.constantFrom(3, 4), { nil: undefined }),
     filename: fc.option(fc.string(), { nil: undefined }),
   }, { requiredKeys: [] })

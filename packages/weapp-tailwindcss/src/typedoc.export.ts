@@ -1,5 +1,10 @@
-export type { DisabledOptions } from './types/disabled-options'
-export type { UserDefinedOptions } from './types/user-defined-options'
+export type {
+  WeappTailwindcssGenerateOptions,
+  WeappTailwindcssGenerateResult,
+  WeappTailwindcssGenerator,
+  WeappTailwindcssGeneratorTarget,
+  WeappTailwindcssPostcssPluginOptions,
+} from './index'
 export type {
   ApplyOptions,
   CacheOptions,
@@ -9,9 +14,5 @@ export type {
   TailwindV2Options,
   TailwindV3Options,
   TailwindV4Options,
-} from 'tailwindcss-patch'
-
-/**
- * @deprecated 请改用 `TailwindCssPatchOptions`
- */
-export type TailwindcssPatchOptions = import('tailwindcss-patch').TailwindCssPatchOptions
+} from './types/typedoc-tailwindcss-patch'
+export type { UserDefinedOptions } from './types/user-defined-options'

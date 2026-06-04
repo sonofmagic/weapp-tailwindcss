@@ -1,7 +1,7 @@
 import os from 'node:os'
 import path from 'node:path'
 import { mkdtempSync, rmSync } from 'node:fs'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, writeFile } from 'node:fs/promises'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from '@/bundlers/vite/bundle-state'
 import { createBundleRuntimeClassSetManager } from '@/bundlers/vite/incremental-runtime-class-set'
@@ -35,17 +35,25 @@ function createPatcher(projectRoot: string) {
   } as any
 }
 
+function createV3Patcher() {
+  return {
+    majorVersion: 3,
+    patch: vi.fn(async () => ({})),
+    getClassSet: vi.fn(async () => new Set<string>()),
+    extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+    options: {},
+  } as any
+}
+
 describe('bundlers/vite incremental runtime class set', () => {
   let tempRoot = ''
-  let validationFile = ''
 
   beforeEach(() => {
     tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-runtime-set-'))
-    validationFile = path.join(tempRoot, 'runtime-candidates.html')
   })
 
   afterEach(async () => {
-    const manager = createBundleRuntimeClassSetManager({ tempRoot })
+    const manager = createBundleRuntimeClassSetManager({})
     await manager.reset()
     rmSync(tempRoot, { recursive: true, force: true })
     vi.restoreAllMocks()
@@ -56,8 +64,8 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = '/project/dist'
     const state = createBundleBuildState()
     const patcher = createPatcher('/project')
-    const extractCandidates = vi.fn(async () => {
-      const source = await readFile(validationFile, 'utf8')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
     })
     const extractRawCandidates = vi.fn(async (content: string) => {
@@ -75,7 +83,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -115,7 +122,125 @@ describe('bundlers/vite incremental runtime class set', () => {
 
     expect(secondRuntimeSet).toEqual(new Set(['bar', 'baz', 'qux']))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
-    expect(extractCandidates.mock.calls[0]?.[0]?.sources?.[0]?.pattern).toBe('runtime-candidates.html')
+    expect(extractCandidates.mock.calls[0]?.[0]?.content).toBe('qux')
+    expect(extractCandidates.mock.calls[0]?.[0]?.sources).toBeUndefined()
+  })
+
+  it('passes bare arbitrary value options through runtime extraction', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      expect(options?.bareArbitraryValues).toBe(true)
+      return String(options?.content ?? '').split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async () => [
+      { rawCandidate: 'text-var(--brand)' },
+      { rawCandidate: 'w-calc(100%-1rem)' },
+    ])
+    const manager = createBundleRuntimeClassSetManager({
+      bareArbitraryValues: true,
+      extractCandidates,
+      extractRawCandidates,
+    })
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="text-var(--brand) w-calc(100%-1rem)" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot)
+
+    expect(runtimeSet).toEqual(new Set(['text-var(--brand)', 'w-calc(100%-1rem)']))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.any(String),
+      'html',
+      { bareArbitraryValues: true },
+    )
+  })
+
+  it('extracts extensionless uni-app html assets as html content', async () => {
+    const opts = {
+      ...createOptions(),
+      htmlMatcher: (file: string) => file.endsWith('wxml'),
+    } as any
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
+      return source.split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async (_content: string, extension?: string) => {
+      return extension === 'html'
+        ? [
+            { rawCandidate: 'h-[458rpx]' },
+            { rawCandidate: 'w-[218rpx]' },
+            { rawCandidate: 'inset-x-[30%]' },
+          ]
+        : []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'packages/activ-gift/indexwxml': {
+        ...createRollupAsset('<view class="{{active ? \'h-[458rpx] w-[218rpx] inset-x-[30%]\' : \'\'}}" />'),
+        fileName: 'packages/activ-gift/indexwxml',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set([
+      'h-[458rpx]',
+      'w-[218rpx]',
+      'inset-x-[30%]',
+    ]))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.any(String),
+      'html',
+    )
+  })
+
+  it('keeps current v3 high-confidence raw candidates even when base class set is stale', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const jsSource = 'const n = "flex bg-yellow-300/30"; const bgObj = common_vendor.ref({ "bg-[#999998]": true });'
+    const extractRawCandidates = vi.fn(async (content: string, extension?: string) => {
+      if (extension === 'js' && content.includes('bg-[#999998]')) {
+        return [
+          { rawCandidate: 'flex', start: content.indexOf('flex') },
+          { rawCandidate: 'bg-[#999998]' },
+          { rawCandidate: 'bg-yellow-300/30', start: content.indexOf('bg-yellow-300/30') },
+        ]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'assets/index.js': {
+        ...createRollupChunk(jsSource),
+        fileName: 'assets/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot, {
+      baseClassSet: new Set(['bg-[#999999]']),
+    })
+
+    expect(runtimeSet).toEqual(new Set(['bg-[#999999]', 'flex', 'bg-[#999998]', 'bg-yellow-300/30']))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      jsSource,
+      'js',
+    )
   })
 
   it('removes stale candidates when runtime files disappear from the bundle', async () => {
@@ -123,8 +248,8 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = '/project/dist'
     const state = createBundleBuildState()
     const patcher = createPatcher('/project')
-    const extractCandidates = vi.fn(async () => {
-      const source = await readFile(validationFile, 'utf8')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
     })
     const extractRawCandidates = vi.fn(async (content: string) => {
@@ -139,7 +264,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -178,8 +302,8 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = '/project/dist'
     const state = createBundleBuildState()
     const patcher = createPatcher('/project')
-    const extractCandidates = vi.fn(async () => {
-      const source = await readFile(validationFile, 'utf8')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
       return source.split(/\s+/).filter(candidate => candidate === 'bar')
     })
     const extractRawCandidates = vi.fn(async (content: string) => {
@@ -197,7 +321,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -266,7 +389,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const snapshot = buildBundleSnapshot({
@@ -298,7 +420,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const snapshot = buildBundleSnapshot({
@@ -333,13 +454,12 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const snapshot = buildBundleSnapshot({
-      'common/vendor.js': {
+      'pages/index/index.js': {
         ...createRollupChunk('const cls = "w-[200rpx] h-[20upx] bg-[#123456]"'),
-        fileName: 'common/vendor.js',
+        fileName: 'pages/index/index.js',
       },
     }, opts, outDir, state)
 
@@ -349,6 +469,68 @@ describe('bundlers/vite incremental runtime class set', () => {
       'bg-[#123456]',
     ]))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
+  })
+
+  it('ignores dependency vendor chunks when collecting tailwind v4 runtime candidates', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
+      return source.split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('sr-only')) {
+        return [
+          { rawCandidate: 'sr-only' },
+          { rawCandidate: 'not-sr-only' },
+          { rawCandidate: 'sticky' },
+          { rawCandidate: 'inline-table' },
+        ]
+      }
+      if (content.includes('bg-[#123456]')) {
+        return [{ rawCandidate: 'bg-[#123456]' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+
+    const vendorChunk = createRollupChunk('const mergeConfig = { sr: ["sr-only", "not-sr-only"], position: ["sticky"], display: ["inline-table"] }')
+    vendorChunk.isEntry = false
+    vendorChunk.fileName = 'common/vendor.js'
+    vendorChunk.moduleIds = ['/project/node_modules/@weapp-tailwindcss/merge/dist/index.mjs']
+    vendorChunk.modules = {
+      '/project/node_modules/@weapp-tailwindcss/merge/dist/index.mjs': {
+        code: null,
+        originalLength: 100,
+        removedExports: [],
+        renderedExports: [],
+        renderedLength: 100,
+      },
+    }
+
+    const snapshot = buildBundleSnapshot({
+      'common/vendor.js': vendorChunk,
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[#123456]"'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set(['bg-[#123456]']))
+    expect(extractRawCandidates).toHaveBeenCalledTimes(1)
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.stringContaining('bg-[#123456]'),
+      'js',
+    )
+    expect(extractRawCandidates).not.toHaveBeenCalledWith(
+      expect.stringContaining('sr-only'),
+      expect.any(String),
+    )
   })
 
   it('resets incremental runtime state when css entry signature changes', async () => {
@@ -367,7 +549,6 @@ describe('bundlers/vite incremental runtime class set', () => {
     const manager = createBundleRuntimeClassSetManager({
       extractCandidates,
       extractRawCandidates,
-      tempRoot,
     })
 
     const firstSnapshot = buildBundleSnapshot({
@@ -396,5 +577,144 @@ describe('bundlers/vite incremental runtime class set', () => {
 
     await manager.sync(patcher, secondSnapshot)
     expect(extractCandidates).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps v3 non-source baseline classes while replacing changed source candidates', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('bg-blue-500')) {
+        return [{ rawCandidate: 'bg-blue-500' }]
+      }
+      if (content.includes('bg-[#123455]')) {
+        return [{ rawCandidate: 'bg-[#123455]' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="bg-blue-500" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    const firstRuntimeSet = await manager.sync(patcher, firstSnapshot, {
+      baseClassSet: new Set(['bg-blue-500', 'safelist-only']),
+    })
+
+    expect(firstRuntimeSet).toEqual(new Set(['safelist-only', 'bg-blue-500']))
+
+    updateBundleBuildState(state, firstSnapshot, new Map())
+
+    const secondSnapshot = buildBundleSnapshot({
+      'pages/index/index.wxml': {
+        ...createRollupAsset('<view class="bg-[#123455]" />'),
+        fileName: 'pages/index/index.wxml',
+      },
+    }, opts, outDir, state)
+
+    const secondRuntimeSet = await manager.sync(patcher, secondSnapshot)
+
+    expect(secondRuntimeSet).toEqual(new Set(['safelist-only', 'bg-[#123455]']))
+    expect(secondRuntimeSet.has('bg-blue-500')).toBe(false)
+    expect(extractRawCandidates).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses v3 baseline runtime set without scanning clean files on first incremental sync', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('bg-[red]')) {
+        return [{ rawCandidate: 'bg-[red]' }]
+      }
+      if (content.includes('vendor-token')) {
+        return [{ rawCandidate: 'vendor-token' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'common/vendor.js': {
+        ...createRollupChunk('const vendor = "vendor-token"'),
+        fileName: 'common/vendor.js',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[#4268EA]"'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['common/vendor.js', new Set<string>()],
+      ['pages/index/index.js', new Set<string>()],
+    ]))
+
+    const secondSnapshot = buildBundleSnapshot({
+      'common/vendor.js': {
+        ...createRollupChunk('const vendor = "vendor-token"'),
+        fileName: 'common/vendor.js',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "bg-[red]"'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, secondSnapshot, {
+      baseClassSet: new Set(['bg-[#4268EA]', 'bg-[red]', 'safelist-only']),
+      skipInitialFullScanWithBase: true,
+    })
+
+    expect(runtimeSet).toEqual(new Set(['bg-[#4268EA]', 'safelist-only', 'bg-[red]']))
+    expect(extractRawCandidates).toHaveBeenCalledTimes(1)
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.stringContaining('bg-[red]'),
+      'js',
+    )
+  })
+
+  it('filters v3 raw text candidates by confirmed source candidates before JS transform', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('Hello world!')) {
+        return [
+          { rawCandidate: 'bg-[red]' },
+          { rawCandidate: 'flex' },
+          { rawCandidate: 'world!' },
+        ]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const vnode = <View className="bg-[red] flex">Hello world!</View>'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot, {
+      baseClassSet: new Set(['bg-[red]', 'flex']),
+    })
+
+    expect(runtimeSet).toEqual(new Set(['bg-[red]', 'flex']))
+    expect(runtimeSet.has('world!')).toBe(false)
   })
 })

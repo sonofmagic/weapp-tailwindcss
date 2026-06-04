@@ -12,6 +12,14 @@ export const WEAPP_AUTOPREFIXER_BROWSERS = [
   'ChromeAndroid >= 37',
 ]
 
+const WEAPP_AUTOPREFIXER_DEFAULT_OPTIONS: AutoprefixerOptions = {
+  add: true,
+  flexbox: false,
+  grid: false,
+  remove: true,
+  supports: false,
+}
+
 const AUTOPREFIXER_PLUGIN_NAME = 'autoprefixer'
 
 export function isAutoprefixerPlugin(plugin: AcceptedPlugin): boolean {
@@ -27,6 +35,7 @@ export function resolveAutoprefixerPlugin(
 
   const userOptions = option === true || option === undefined ? {} : option
   return autoprefixerPlugin({
+    ...WEAPP_AUTOPREFIXER_DEFAULT_OPTIONS,
     ...userOptions,
     overrideBrowserslist: userOptions.overrideBrowserslist ?? WEAPP_AUTOPREFIXER_BROWSERS,
   })

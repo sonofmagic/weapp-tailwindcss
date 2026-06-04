@@ -5,31 +5,31 @@ export interface DoctorCheck {
   title: string
   status: DoctorCheckStatus
   message: string
-  suggestion?: string
+  suggestion?: string | undefined
 }
 
 export interface DoctorReport {
   cwd: string
   nodeVersion: string
   detected: {
-    packageManager?: string
+    packageManager?: string | undefined
     frameworks: string[]
-    tailwindcssVersion?: string
-    weappTailwindcssVersion?: string
+    tailwindcssVersion?: string | undefined
+    weappTailwindcssVersion?: string | undefined
   }
   summary: Record<DoctorCheckStatus, number>
   checks: DoctorCheck[]
 }
 
 export interface DoctorOptions {
-  cwd?: string
-  nodeVersion?: string
+  cwd?: string | undefined
+  nodeVersion?: string | undefined
 }
 
 export interface PackageJson {
-  dependencies?: Record<string, string>
-  devDependencies?: Record<string, string>
-  optionalDependencies?: Record<string, string>
-  peerDependencies?: Record<string, string>
-  packageManager?: string
+  dependencies?: Record<string, string> | undefined
+  devDependencies?: Record<string, string> | undefined
+  optionalDependencies?: Record<string, string> | undefined
+  peerDependencies?: Record<string, string> | undefined
+  packageManager?: string | undefined
 }

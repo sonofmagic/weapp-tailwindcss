@@ -2,12 +2,10 @@ import pkg from '../package.json'
 
 export const runtimeAopLoader = 'weapp-tw-runtime-aop-loader'
 
-export const ManglePluginHooks = 'ManglePluginHooks'
-
 export const WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks
   = 'WeappTailwindcssWebpackPluginOptimizeChunkAssetsHooks'
 
-export const pluginName = 'weapp-tailwindcss-webpack-plugin'
+export const pluginName = 'weapp-tailwindcss'
 
 export const vitePluginName = 'weapp-tailwindcss:adaptor'
 

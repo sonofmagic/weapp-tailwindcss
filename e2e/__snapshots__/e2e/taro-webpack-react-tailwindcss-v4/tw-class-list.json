@@ -1,0 +1,15 @@
+[
+  "before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4']",
+  "before:content-['normal_subpackage_taro-webpack-react-tailwindcss-v4']",
+  "bg-[#534312]",
+  "bg-gradient-to-r",
+  "bg-purple-800",
+  "container",
+  "from-cyan-500",
+  "h-14",
+  "static",
+  "text-[#fff]",
+  "text-[100rpx]",
+  "text-pink-200",
+  "to-blue-500"
+]

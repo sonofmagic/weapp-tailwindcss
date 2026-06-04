@@ -16,7 +16,6 @@
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
 ![gstar](https://atomgit.com/sonofmagic/weapp-tailwindcss/star/badge.svg)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
-![dm1](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
 [![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
@@ -60,12 +59,12 @@
 
 ## 版本对应
 
-目前，`weapp-tailwindcss` 的 `4.x` 版本
+目前，`weapp-tailwindcss` 的 `5.x` 版本
 
-- 支持最新版本的 `tailwindcss v4` 和 `v3` 还有 `v2 jit` 版本。
-- 支持 `webpack5`，`webpack4`, `vite` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
+- 支持最新版本的 `tailwindcss v4` 和 `v3`。
+- 支持 `webpack5`、`vite`、`rspack`、`rollup`、`rolldown` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
 
-> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。`weapp-tailwindcss@4` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> `weapp-tailwindcss@5` 面向 Tailwind CSS v3/v4 和现代构建链路，不再内置 Webpack4、PostCSS7、Tailwind CSS v2 兼容入口。`weapp-tailwindcss@5` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
 ## 环境要求
 
@@ -116,9 +115,9 @@ Skill 输出默认包含：
 
 ## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
 
-### Tailwind CSS v4 自动前缀
+### Tailwind CSS 自动前缀
 
-在 Tailwind CSS v4 场景下，`weapp-tailwindcss` 会默认对生成后的小程序 CSS 执行内置 `autoprefixer` 后处理，用于补齐小程序 WebView 需要的兼容前缀。例如 `bg-clip-text` 会输出 `-webkit-background-clip: text`，从而支持渐变文字。
+在 Tailwind CSS v3 / v4 场景下，`weapp-tailwindcss` 会默认对生成后的小程序 CSS 执行内置 `autoprefixer` 后处理，用于补齐小程序 WebView 需要的兼容前缀。例如 `bg-clip-text` 会输出 `-webkit-background-clip: text`，从而支持渐变文字。
 
 通常不再需要在业务项目的 `postcss.config.js` 中手动配置 `autoprefixer`。如果项目已经显式配置了 `autoprefixer`，内置后处理会避免重复追加。需要关闭时可配置：
 

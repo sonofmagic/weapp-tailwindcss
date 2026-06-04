@@ -1,26 +1,33 @@
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
+import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve } from '@/shared/mpx'
+import { setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
 interface SetupWebpackV5LoadersOptions {
   compiler: Compiler
   options: InternalUserDefinedOptions
-  appType?: AppType
+  appType?: AppType | undefined
   weappTailwindcssPackageDir: string
   shouldRewriteCssImports: boolean
-  runtimeLoaderPath?: string
-  runtimeCssImportRewriteLoaderPath?: string
+  runtimeLoaderPath?: string | undefined
+  registerAutoCssSource?: ((source: TailwindV4CssSource) => Promise<void> | void) | undefined
+  runtimeState: TailwindRuntimeState
   getClassSetInLoader: () => Promise<void>
+  getRuntimeSetInLoader: () => Promise<Set<string>>
+  markWebpackProcessedCssSource?: ((file: string) => void) | undefined
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
     contexts: ReadonlySet<string>
   }
+  runtimeRegistryKey?: string | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
 
@@ -32,9 +39,13 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     weappTailwindcssPackageDir,
     shouldRewriteCssImports,
     runtimeLoaderPath,
-    runtimeCssImportRewriteLoaderPath,
+    registerAutoCssSource,
+    runtimeState,
     getClassSetInLoader,
+    getRuntimeSetInLoader,
+    markWebpackProcessedCssSource,
     getRuntimeWatchDependencies,
+    runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     debug,
   } = options
   const isMpxApp = isMpx(appType)
@@ -46,8 +57,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
   const runtimeCssImportRewriteLoader = shouldRewriteCssImports
-    ? (runtimeCssImportRewriteLoaderPath
-      ?? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js'))
+    ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined
   const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
   const runtimeCssImportRewriteLoaderExists = runtimeCssImportRewriteLoader
@@ -56,17 +66,26 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeLoaderRewriteOptions = shouldRewriteCssImports
     ? {
         pkgDir: weappTailwindcssPackageDir,
-        appType,
+        compilerOptions,
+        runtimeState,
+        ...(appType === undefined ? {} : { appType }),
+        ...(registerAutoCssSource === undefined ? {} : { registerCssSource: registerAutoCssSource }),
+        getRuntimeSet: getRuntimeSetInLoader,
+        ...(markWebpackProcessedCssSource === undefined ? {} : { markGeneratedCssSource: markWebpackProcessedCssSource }),
       }
     : undefined
   const classSetLoaderOptions = {
     getClassSet: getClassSetInLoader,
     getWatchDependencies: getRuntimeWatchDependencies,
   }
+  setWebpackLoaderRuntime(runtimeRegistryKey, {
+    classSet: classSetLoaderOptions,
+    ...(runtimeLoaderRewriteOptions === undefined ? {} : { cssImportRewrite: runtimeLoaderRewriteOptions }),
+  })
   const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(appType)
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
     ? {
-        rewriteCssImports: runtimeLoaderRewriteOptions,
+        tailwindcssImportRewriteRuntimeKey: runtimeRegistryKey,
       }
     : undefined
 
@@ -77,12 +96,14 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
 
   const createRuntimeClassSetLoaderEntry = () => ({
     loader: runtimeClassSetLoader,
-    options: classSetLoaderOptions,
+    options: {
+      weappTailwindcssRuntimeKey: runtimeRegistryKey,
+    },
     ident: null,
     type: null,
   })
   const createCssImportRewriteLoaderEntry = () => {
-    if (!runtimeCssImportRewriteLoader) {
+    if (!runtimeCssImportRewriteLoader || !cssImportRewriteLoaderOptions) {
       return null
     }
     return {
@@ -106,13 +127,13 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
       const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
-      if (process.env.WEAPP_TW_LOADER_DEBUG && isCssModule) {
+      if (process.env['WEAPP_TW_LOADER_DEBUG'] && isCssModule) {
         debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
-      if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.includes('app.css')) {
+      if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.includes('app.css')) {
         debug('app.css module loaders=%o anchors=%o', loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
-      else if (process.env.WEAPP_TW_LOADER_DEBUG && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
+      else if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
         debug('css module seen: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
       if (rewriteAnchorIdx === -1 && classSetAnchorIdx === -1 && !isCssModule) {

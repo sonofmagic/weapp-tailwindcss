@@ -57,10 +57,10 @@ npm i -D gulp gulp-postcss gulp-plumber del@^6
 
 ## 安装与配置 tailwindcss
 
-- 安装 tailwindcss
+- 安装 Tailwind CSS 3.x 与 weapp-tailwindcss
 
 ```sh
-npm i -D tailwindcss@3 postcss autoprefixer
+npm i -D tailwindcss@3 weapp-tailwindcss
 ```
 
 - 初始化 tailwindcss 配置文件
@@ -69,17 +69,9 @@ npm i -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss init
 ```
 
-- 创建 `postcss.config.js` 并注册 `tailwindcss`
+- 不再创建 Tailwind 专用的 `postcss.config.js`
 
-```js
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    // 假如框架已经内置了 `autoprefixer`，可以去除下一行
-    autoprefixer: {},
-  }
-}
-```
+`weapp-tailwindcss@5` 默认由构建器插件接管 Tailwind CSS 生成。如果项目已有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
 
 - 配置 `tailwind.config.js`
 
@@ -160,7 +152,7 @@ module.exports = {
   安装插件
 
   ```sh
-  npm i -D weapp-tailwindcss-webpack-plugin
+  pnpm add -D weapp-tailwindcss
   ```
 
   配置 `gulpfile.js`，需要注意的事，在面板执行 `serve` 后，即使后来停止了任务，程序里的监听 `watch` 也不会停，使得后续再启动 `serve` 后，会有多个监听 `watch` 和多个监听处理程序 `watchHandler`，重复处理文件。所以停止后再启动 `serve`，应该关闭 `vscode` 后重新打开
@@ -171,7 +163,7 @@ module.exports = {
   const plumber = require('gulp-plumber')
   const path = require('path')
   const del = require('del')
-  const tailwindcssGulp = require('weapp-tailwindcss-webpack-plugin/gulp')
+  const tailwindcssGulp = require('weapp-tailwindcss/gulp')
 
   // 在 gulp 里使用, 先使用 postcss 转化 css, 触发 tailwindcss，然后转化 transformWxss，最后转化 transformJs, transformWxml
   const {

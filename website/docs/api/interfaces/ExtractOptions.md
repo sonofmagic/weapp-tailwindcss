@@ -1,60 +1,60 @@
 ---
-title: ExtractOptions
-description: Preferred options for extraction output behavior.
+title: "ExtractOptions"
+description: "ExtractOptions 的类型说明，列出公开属性、参数和使用边界。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - ExtractOptions
-  - ExtractOptions interface
-  - ExtractOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "ExtractOptions"
+  - "ExtractOptions 接口"
+  - "ExtractOptions 类型定义"
+  - "TypeScript"
 ---
 
 # ExtractOptions
 
-Preferred options for extraction output behavior.
+类名提取结果的输出配置。
 
 ## 属性
 
 ### write?
 
-> `optional` **write**: `boolean`
+> 可选 | **write**: `boolean`
 
-Whether to produce an output file.
+是否写出提取结果文件。
 
 ***
 
 ### file?
 
-> `optional` **file**: `string`
+> 可选 | **file**: `string`
 
-Optional absolute or relative path to the output file.
+输出文件路径，可传绝对路径或相对路径。
 
 ***
 
 ### format?
 
-> `optional` **format**: `"json" | "lines"`
+> 可选 | **format**: `"json" | "lines"`
 
-Output format, defaults to JSON when omitted.
+输出格式。未传入时使用 JSON。
 
 ***
 
 ### pretty?
 
-> `optional` **pretty**: `number | boolean`
+> 可选 | **pretty**: `number | boolean`
 
-Pretty-print spacing (truthy value enables indentation).
+JSON 格式化缩进。传入可判定为真的值会启用缩进。
 
 ***
 
 ### removeUniversalSelector?
 
-> `optional` **removeUniversalSelector**: `boolean`
+> 可选 | **removeUniversalSelector**: `boolean`
 
-Whether to strip the universal selector (`*`) from the final list.
+是否从最终列表中移除通配选择器 `*`。

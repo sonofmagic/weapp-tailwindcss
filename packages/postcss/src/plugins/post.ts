@@ -1,14 +1,16 @@
 // 后处理阶段插件：负责选择器兜底、声明去重与变量排序
-import type { Plugin, PluginCreator, Rule } from 'postcss'
+import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
+import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
-import { normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
+import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
 import { appendRuleSelector } from '../utils/selector-guard'
-import { dedupeDeclarations } from './post/decl-dedupe'
+import { dedupeDeclarations, removeRedundantTransitionPropertyFallbacks } from './post/decl-dedupe'
 import { createFallbackPlaceholderCleaner, createRootSpecificityCleaner } from './post/specificity-cleaner'
 // 可选依赖：import valueParser from 'postcss-value-parser'
 
@@ -17,6 +19,24 @@ export type PostcssWeappTailwindcssRenamePlugin = PluginCreator<IStyleHandlerOpt
 export { reorderVariableDeclarations } from './post/decl-dedupe'
 
 const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
+const LEGACY_FLEXBOX_DECLARATION_PROPS = new Set([
+  '-webkit-align-content',
+  '-webkit-align-items',
+  '-webkit-align-self',
+  '-webkit-flex',
+  '-webkit-flex-basis',
+  '-webkit-flex-direction',
+  '-webkit-flex-flow',
+  '-webkit-flex-grow',
+  '-webkit-flex-shrink',
+  '-webkit-flex-wrap',
+  '-webkit-justify-content',
+  '-webkit-order',
+])
+const LEGACY_FLEXBOX_DISPLAY_VALUES = new Set([
+  '-webkit-flex',
+  '-webkit-inline-flex',
+])
 
 function normalizeRootSelectors(value?: string | string[] | false) {
   if (value === undefined || value === false) {
@@ -45,6 +65,27 @@ function createHostSelectorAppender(options: IStyleHandlerOptions) {
   }
 }
 
+function removeLegacyFlexboxPrefix(decl: Declaration) {
+  if (decl.prop === 'display' && LEGACY_FLEXBOX_DISPLAY_VALUES.has(decl.value)) {
+    decl.remove()
+    return
+  }
+  if (LEGACY_FLEXBOX_DECLARATION_PROPS.has(decl.prop)) {
+    decl.remove()
+  }
+}
+
+function injectMissingTailwindcssV4Defaults(root: Root) {
+  const nodes = createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
+  if (nodes.length === 0) {
+    return
+  }
+  root.append({
+    selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
+    nodes,
+  })
+}
+
 // 后处理插件收敛所有规则，在退出阶段执行去重与兜底
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
@@ -58,6 +99,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   const cleanRootSpecificity = createRootSpecificityCleaner(opts)
   const cleanFallbackPlaceholder = createFallbackPlaceholderCleaner()
   const shouldAppendHostSelector = createHostSelectorAppender(opts)
+  let shouldInjectTailwindcssV4Defaults = false
 
   const enableMainChunkTransforms = opts.isMainChunk !== false
   if (enableMainChunkTransforms || cleanRootSpecificity) {
@@ -92,22 +134,47 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
     }
   }
 
-  if (enableMainChunkTransforms) {
-    p.DeclarationExit = (decl) => {
-      if (opts.majorVersion === undefined) {
-        normalizeTailwindcssRpxDeclaration(decl)
-      }
-      else {
-        normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
-      }
+  p.DeclarationExit = (decl) => {
+    if (opts.majorVersion === undefined) {
+      normalizeTailwindcssRpxDeclaration(decl)
+    }
+    else {
+      normalizeTailwindcssRpxDeclaration(decl, { majorVersion: opts.majorVersion })
+    }
+    if (enableMainChunkTransforms) {
       normalizeTailwindcssV4Declaration(decl)
+    }
+    removeLegacyFlexboxPrefix(decl)
+    if (enableMainChunkTransforms) {
+      normalizeMiniProgramPrefixedDeclaration(decl)
+    }
+  }
+
+  if (enableMainChunkTransforms) {
+    p.OnceExit = (root) => {
+      root.walkDecls((decl) => {
+        normalizeMiniProgramPrefixedDeclaration(decl)
+      })
+      root.walkRules((rule) => {
+        removeRedundantTransitionPropertyFallbacks(rule)
+      })
+      root.walkAtRules((atRule) => {
+        removeUnsupportedMiniProgramPrefixedAtRule(atRule)
+      })
+      if (shouldInjectTailwindcssV4Defaults) {
+        injectMissingTailwindcssV4Defaults(root)
+      }
     }
 
     p.AtRuleExit = (atRule) => {
+      removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       /**
        * @description 移除 property
        */
       if (opts.cssRemoveProperty && atRule.name === 'property') {
+        if (opts.majorVersion === 4 && atRule.params.trim().startsWith('--tw-')) {
+          shouldInjectTailwindcssV4Defaults = true
+        }
         atRule.remove()
       }
       /**

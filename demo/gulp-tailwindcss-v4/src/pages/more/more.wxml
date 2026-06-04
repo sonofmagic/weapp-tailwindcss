@@ -1,0 +1,11 @@
+<view class="p-4">
+  <view class="space-y-1">
+    <view class="text-lg border-b">图片CDN</view>
+    <view>在src 目录下SCSS 或WXML 文件通过 %ASSETS_IMG% 自定义变量的方式写路径。</view>
+    <view class="text-lg border-b">SASS Minxins</view>
+    <view>请查看 src/assets/scss/_minxins.scss 文件</view>
+    <view class="text-lg border-b">CSS 原子类</view>
+    <view>请查看 src/assets/scss/_utils.scss 文件</view>
+    <view>更多使用详情请前往Github 主页</view>
+  </view>
+</view>

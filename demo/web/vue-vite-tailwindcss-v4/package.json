@@ -1,0 +1,40 @@
+{
+  "name": "@weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "dev:weapp": "cross-env WEAPP_TW_TARGET=weapp vite",
+    "build": "pnpm run build:web",
+    "build:web": "vite build",
+    "build:weapp": "cross-env WEAPP_TW_TARGET=weapp vite build --outDir dist-weapp",
+    "preview": "vite preview",
+    "predev": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:weapp": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:web": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:weapp": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "vue": "catalog:vue3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "catalog:vitePluginVue6",
+    "@vue/compiler-sfc": "catalog:vue3",
+    "cross-env": "catalog:crossEnv",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "catalog:typescript59",
+    "vite": "catalog:vite8",
+    "vue-tsc": "catalog:vueTsc318",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/web/vue-vite-tailwindcss-v4"
+  }
+}

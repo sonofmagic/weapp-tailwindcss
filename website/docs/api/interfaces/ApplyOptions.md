@@ -1,44 +1,44 @@
 ---
-title: ApplyOptions
-description: Preferred options for runtime patch behavior.
+title: "ApplyOptions"
+description: "Tailwind 运行时补丁行为配置。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - ApplyOptions
-  - ApplyOptions interface
-  - ApplyOptions 类型定义
-  - TypeScript
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "ApplyOptions"
+  - "ApplyOptions 接口"
+  - "ApplyOptions 类型定义"
+  - "TypeScript"
 ---
 
 # ApplyOptions
 
-Preferred options for runtime patch behavior.
+Tailwind 运行时补丁行为配置。
 
 ## 属性
 
 ### overwrite?
 
-> `optional` **overwrite**: `boolean`
+> 可选 | **overwrite**: `boolean`
 
-Whether patched files can be overwritten on disk.
+是否允许覆盖磁盘上已经打过补丁的文件。
 
 ***
 
 ### exposeContext?
 
-> `optional` **exposeContext**: `boolean | ExposeContextOptions`
+> 可选 | **exposeContext**: `boolean | ExposeContextOptions`
 
-Whether to expose runtime Tailwind contexts (or configure how they are exposed).
+是否暴露运行时 Tailwind context，或配置具体暴露方式。
 
 ***
 
 ### extendLengthUnits?
 
-> `optional` **extendLengthUnits**: `false | ExtendLengthUnitsOptions`
+> 可选 | **extendLengthUnits**: `false | ExtendLengthUnitsOptions`
 
-Extends the length-unit patch or disables it entirely.
+扩展长度单位补丁，传入 `false` 可完全关闭。

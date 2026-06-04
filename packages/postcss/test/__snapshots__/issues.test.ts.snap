@@ -112,18 +112,6 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/631 2`]
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
 }
-
-@supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,wx-root-portal-content,:host {
-  --color-blue-500: rgb(50, 128, 255);
-}
-
-@media (color-gamut: p3) {
-page,.tw-root,wx-root-portal-content,:host {
-  --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-}
-}
-}
 view,text,:after,:before {
   box-sizing: border-box;
   border: 0 solid;
@@ -136,11 +124,6 @@ view,text,:after,:before {
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
-}
-@media (color-gamut: p3) {
-.bg-blue-500_f30 {
-  background-color: color(display-p3 0.26642 0.49122 0.98862 / 0.3);
-}
 }"
 `;
 
@@ -425,19 +408,6 @@ page,.tw-root,wx-root-portal-content,:host {
   --color-cyan-500: rgb(0, 182, 212);
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
-}
-@supports (color: color(display-p3 0 0 0%)) {
-page,.tw-root,wx-root-portal-content,:host {
-  --color-cyan-500: rgb(0, 182, 212);
-  --color-blue-500: rgb(50, 128, 255);
-}
-
-@media (color-gamut: p3) {
-page,.tw-root,wx-root-portal-content,:host {
-  --color-cyan-500: color(display-p3 0.2467 0.71003 0.84144);
-  --color-blue-500: color(display-p3 0.26642 0.49122 0.98862);
-}
-}
 }
 view,text,:after,:before {
   box-sizing: border-box;

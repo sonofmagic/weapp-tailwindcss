@@ -1,6 +1,6 @@
 ---
-title: 1. 安装与配置 tailwindcss
-description: 很荣幸，我们在 weapp-tailwindcss@3.2.0 版本开始，引入了微信小程序原生支持的能力。 (其他平台的原生小程序开发，也非常容易兼容)
+title: 1. 安装与配置 Tailwind CSS
+description: 原生微信小程序项目接入 Tailwind CSS 3 或 4 与 weapp-tailwindcss 的安装与配置步骤。
 keywords:
   - 快速开始
   - 安装
@@ -19,21 +19,15 @@ keywords:
   - rax
   - mpx
 ---
-# 1. 安装与配置 tailwindcss
+# 1. 安装与配置 Tailwind CSS
 
 ## 前言
 
-很荣幸，我们在 `weapp-tailwindcss@3.2.0` 版本开始，引入了微信小程序原生支持的能力。 (其他平台的原生小程序开发，也非常容易兼容)
-
-接下来让我们看看，如何进行使用吧！
-
-本教程演示的是，使用微信开发者工具创建的原生 `js` 小程序，以及原生 `js` `skyline` 小程序使用 `tailwindcss` 的方式
+本教程演示原生微信小程序 JS 模板接入 `weapp-tailwindcss` 的方式。Tailwind CSS 3 和 4 都可以用，重点是两件事：源码要进入 Tailwind 扫描范围，小程序目标转译交给 `weapp-tailwindcss`。
 
 ### 运行环境
 
-推荐使用 `nodejs` 版本 `^20.19.0 || >=22.12.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)。
-
-假如你安装的 `nodejs` 太新，可能会出现安装包不兼容的问题，这时候可以执行安装命令时，使用 `--ignore-engines` 参数进行 `nodejs` 版本的忽略 。
+推荐使用 Node.js `^20.19.0 || >=22.12.0`。这是当前仓库的 engines 要求，也能避开旧 Node 对现代工具链的兼容问题。Node 版本不满足时，不建议用 `--ignore-engines` 硬装，后续构建错误会更难排查。
 
 ## 创建项目
 
@@ -49,23 +43,23 @@ keywords:
 
 > 使用 JS 基础模板创建的项目，依然可以使用 `Typescript`
 
-首先安装本插件前，我们需要把 `tailwindcss` 对应的环境和配置安装好。
+先把 Tailwind CSS 的入口准备好，下一页再注册 `weapp-tailwindcss` 和 `weapp-vite`。
 
 ## 0. 初始化 `package.json`
 
-首先，假如你使用原生的 JS 模板创建的项目。
+如果使用原生 JS 模板创建项目，项目目录里通常没有 `package.json`。
 
-在创建的项目目录下，是没有 `package.json` 文件 (`原生的 TS 模板有这个文件`), 你需要执行命令:
+这时需要先执行：
 
-`npm init -y`，快速创建一个 `package.json` 文件在你的项目下
+`npm init -y`，在项目下创建 `package.json`。
 
-## 1. 使用包管理器安装 `tailwindcss`
+## 1. 选择并安装 Tailwind CSS
 
-然后执行:
+Tailwind CSS 3.x：
 
 ```bash npm2yarn
-# 安装 tailwindcss@3 版本的依赖
-npm i -D tailwindcss@3 postcss autoprefixer
+# 安装 tailwindcss@3 和 weapp-tailwindcss
+npm i -D tailwindcss@3 weapp-tailwindcss
 ```
 
 ```bash npm2yarn
@@ -73,13 +67,20 @@ npm i -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss init
 ```
 
-这样 `tailwindcss` 就被安装到你项目本地了
+Tailwind CSS 4.x：
 
-## 2. 配置 `tailwind.config.js`
+```bash npm2yarn
+# 安装 tailwindcss 和 weapp-tailwindcss
+npm i -D tailwindcss weapp-tailwindcss
+```
 
-`tailwind.config.js` 是 `tailwindcss` 的配置文件，我们可以在里面配置 `tailwindcss` 的各种行为。
+`weapp-tailwindcss` 会接管 Tailwind CSS 生成，不要再创建 Tailwind 专用的 `postcss.config.js`。如果项目已有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
 
-这里给出了一份 `JS微信小程序` 通用示例，具体要根据你自己项目的目录结构进行配置
+## 2. 配置扫描范围
+
+### Tailwind CSS 3.x
+
+`tailwind.config.js` 是 Tailwind CSS 3 的配置文件。原生小程序项目里，最重要的是把会写类名的 `wxml/js/ts` 文件加入 `content`：
 
 ```js title="tailwind.config.js"
 /** @type {import('tailwindcss').Config} */
@@ -91,42 +92,43 @@ module.exports = {
     // 不要使用下方的写法，这会导致 vite 开发时监听文件数量爆炸
     // '**/*.{js,ts,wxml}', '!node_modules/**', '!dist/**'
   ],
-  // 假如你使用 ts 模板，则可以使用下方的配置
+  // 使用 ts 模板时，可以使用下方配置
   // content: ['miniprogram/**/*.{ts,js,wxml}'],
   corePlugins: {
-    // 小程序不需要 preflight 和 container，因为这主要是给 h5 的，如果你要同时开发小程序和 h5 端，你应该使用环境变量来控制它
+    // 小程序不需要 preflight 和 container；多端项目可以按环境变量分别控制
     preflight: false,
     container: false,
   }
 }
 ```
 
-## 3. 在项目目录下创建 `postcss.config.js` 并注册 `tailwindcss`
+### Tailwind CSS 4.x
 
-内容如下:
+Tailwind CSS 4 在 CSS 入口里写扫描范围：
 
-```js title="postcss.config.js"
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  }
-}
+```css title="app.css"
+@import "tailwindcss";
+@source "./components/**/*.{wxml,js,ts}";
+@source "./pages/**/*.{wxml,js,ts}";
+@source "./app.{js,ts,json}";
+@source not "./node_modules";
+@source not "./dist";
 ```
 
-> 这个文件和 `tailwind.config.js` 平级
+Tailwind 4 的入口请放在纯 `.css` 文件里。不要直接写进 `less`、`scss`、`sass` 入口。
 
+## 3. 引入 Tailwind CSS
 
-## 4. 引入 `tailwindcss`
+在小程序项目入口样式文件中写 Tailwind 入口。Tailwind CSS 3.x 使用：
 
-在你的小程序项目入口 `app.wxss` 文件中，引入 `tailwindcss` 使它在小程序全局生效
-
-```css
+```css title="app.css"
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
 
-在 `app.wxss` 加入这一段代码之后，微信开发者工具会报错。不用担心，这是因为我们还没有完全配置好。
+Tailwind CSS 4.x 使用上方的 `@import "tailwindcss";` 和 `@source`。
 
-接下来，赶紧进入下一步，安装 `weapp-tailwindcss` 并运行吧！
+在入口 CSS 加入这一段代码后，微信开发者工具可能会先报错。这通常是因为 `weapp-tailwindcss` 插件还没有注册完成。
+
+下一步继续安装并注册 `weapp-tailwindcss`。

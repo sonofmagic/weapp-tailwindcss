@@ -1,4 +1,4 @@
-import type { AppType, UserDefinedOptions } from './types'
+import type { AppType, CssPreflightOptions, UserDefinedOptions } from './types'
 import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
 import { DEFAULT_PARSE_CACHE_MAX_ENTRIES, DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH } from './js/babel/cache-options'
 import { noop } from './utils'
@@ -38,6 +38,41 @@ const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean
 }
 
 const alwaysFalse = () => false
+
+export const TAILWIND_V3_CSS_PREFLIGHT = {
+  'box-sizing': 'border-box',
+  'border-width': '0',
+  'border-style': 'solid',
+  'border-color': 'currentColor',
+} satisfies Exclude<CssPreflightOptions, false>
+
+export const TAILWIND_V4_CSS_PREFLIGHT = {
+  'box-sizing': 'border-box',
+  'margin': '0',
+  'padding': '0',
+  'border': '0 solid',
+} satisfies Exclude<CssPreflightOptions, false>
+
+export function getDefaultCssPreflight(tailwindcssMajorVersion?: number): Exclude<CssPreflightOptions, false> {
+  return {
+    ...(tailwindcssMajorVersion === 4
+      ? TAILWIND_V4_CSS_PREFLIGHT
+      : TAILWIND_V3_CSS_PREFLIGHT),
+  }
+}
+
+export function resolveDefaultCssPreflight(
+  cssPreflight: CssPreflightOptions | undefined,
+  tailwindcssMajorVersion?: number,
+): CssPreflightOptions {
+  if (cssPreflight === false) {
+    return false
+  }
+  return {
+    ...getDefaultCssPreflight(tailwindcssMajorVersion),
+    ...(cssPreflight ?? {}),
+  }
+}
 
 function createMainCssChunkMatcher() {
   return (file: string, appType?: AppType) => {
@@ -86,12 +121,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     mainCssChunkMatcher: createMainCssChunkMatcher(),
     wxsMatcher: alwaysFalse,
     // 参考：https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
-    cssPreflight: {
-      'box-sizing': 'border-box',
-      'border-width': '0',
-      'border-style': 'solid',
-      'border-color': 'currentColor',
-    },
+    cssPreflight: getDefaultCssPreflight(3),
 
     disabled: false,
     onLoad: noop,
@@ -104,11 +134,12 @@ export function getDefaultOptions(): UserDefinedOptions {
     appType: undefined,
     arbitraryValues: {
       allowDoubleQuotes: false,
+      bareArbitraryValues: false,
     },
+    unocss: false,
     cssChildCombinatorReplaceValue: ['view', 'text'],
     inlineWxs: false,
     injectAdditionalCssVarScope: false,
-    rewriteCssImports: true,
     jsPreserveClass: (keyword) => {
       /**
        * 默认保留 keyword
@@ -118,7 +149,6 @@ export function getDefaultOptions(): UserDefinedOptions {
       }
       return false
     },
-    staleClassNameFallback: undefined,
     disabledDefaultTemplateHandler: false,
     cssSelectorReplacement: {
       root: ['page', '.tw-root', 'wx-root-portal-content'],
@@ -127,7 +157,6 @@ export function getDefaultOptions(): UserDefinedOptions {
     babelParserOptions: {
       sourceType: 'unambiguous',
       cache: true,
-      // 预计算好的 cacheKey，避免重复对选项进行 JSON.stringify
       cacheKey: 'st:unambiguous',
       cacheMaxEntries: DEFAULT_PARSE_CACHE_MAX_ENTRIES,
       cacheMaxSourceLength: DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH,
@@ -141,6 +170,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     ignoreCallExpressionIdentifiers: [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,
+    generator: {},
     tailwindcssPatcherOptions: {
       filter(className: string) {
         return !isAllowedClassName(className)

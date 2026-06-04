@@ -1,0 +1,35 @@
+<view class="h-full text-center">
+  <view class="m-_b20px_B">
+    <view class="bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B bg-_blength_c100_v_100_v_B bg-no-repeat w-screen h-_b41_d54vw_B"></view>
+    <view class="space-y-4">
+      <view class="text-_b14px_B">基于Gulp 的微信小程序前端开发工作流</view>
+      <view class="text-_b14px_B text-_b_h5ba4e5_B" data-text="https://github.com/sonofmagic/weapp-tailwindcss">https://github.com/sonofmagic/weapp-tailwindcss</view>
+      <view class="text-xs font-medium">Fork from Jeff2Ma/WeApp-Workflow</view>
+      <view>******</view>
+    </view>
+    <view class="mt-_b24px_B">
+      <view class="text-base font-bold pb-_b10px_B mb-_b20px_B text-left border-b border-_b_hEEEEEE_B">功能介绍</view>
+      <view class="pl-_b15px_B text-left block">
+        <view class="text-xs">
+          支持 tailwindcss
+          <text class="i-mdi-123"></text>
+        </view>
+        <view class="text-xs">
+          SCSS 实时编译为 WXSS
+          <text class="i-mdi-ab-testing"></text>
+        </view>
+        <view class="text-xs">
+          px 和 rem 单位转小程序单位rpx
+          <text class="i-mdi-abacus"></text>
+        </view>
+        <view class="text-xs">
+          支持 typescript
+          <text class="i-mdi-typewriter"></text>
+        </view>
+        <view class="mt-_b24px_B">mt-[24px]</view>
+        <view class="mt-_b33px_B">mt-[33px]</view>
+      </view>
+      <view class="bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B text-_b_h123456_B text-_b50px_B bg-_b_hfff_B"></view>
+    </view>
+  </view>
+</view>

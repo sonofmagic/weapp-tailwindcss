@@ -1,5 +1,39 @@
 # tailwindcss-injector
 
+## 1.0.12-next.4
+
+### Patch Changes
+
+- 📦 **Dependencies** [`aaba811`](https://github.com/sonofmagic/weapp-tailwindcss/commit/aaba811cfc2ad003d3daf2cf290c9d8b770c6dfb)
+  → `@weapp-tailwindcss/shared@2.0.0-next.1`, `tailwindcss-config@2.0.0-next.3`
+
+## 1.0.12-next.3
+
+### Patch Changes
+
+- 📦 **Dependencies** [`2d2acf2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2d2acf29cfee02ffb32783c8bd3c5de8d9aab9df)
+  → `@weapp-tailwindcss/shared@2.0.0-next.0`, `tailwindcss-config@2.0.0-next.2`
+
+## 1.0.12-next.2
+
+### Patch Changes
+
+- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [#879](https://github.com/sonofmagic/weapp-tailwindcss/pull/879) by @github-actions
+
+## 1.0.12-next.1
+
+### Patch Changes
+
+- 📦 **Dependencies** [`42906cb`](https://github.com/sonofmagic/weapp-tailwindcss/commit/42906cb2daec75c30fe6cf60c0f005cd462de888)
+  → `tailwindcss-config@1.1.6-next.1`
+
+## 1.0.12-next.0
+
+### Patch Changes
+
+- 📦 **Dependencies** [`f38313a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f38313a61c673cf3658eba0e29cf3c8c844f6798)
+  → `tailwindcss-config@1.1.6-next.0`
+
 ## 1.0.11
 
 ### Patch Changes

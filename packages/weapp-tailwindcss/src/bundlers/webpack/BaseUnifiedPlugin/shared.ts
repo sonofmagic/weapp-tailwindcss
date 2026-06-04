@@ -1,4 +1,6 @@
 import type { AppType } from '@/types'
+import path from 'node:path'
+import { isSourceStyleRequest, stripRequestQuery } from '@/bundlers/shared/style-requests'
 
 const MPX_STYLE_RESOURCE_QUERY_RE = /(?:\?|&)type=styles\b/
 
@@ -10,15 +12,7 @@ export function stripResourceQuery(resource?: string): string | undefined {
   if (typeof resource !== 'string') {
     return resource
   }
-  const queryIndex = resource.indexOf('?')
-  if (queryIndex !== -1) {
-    return resource.slice(0, queryIndex)
-  }
-  const hashIndex = resource.indexOf('#')
-  if (hashIndex !== -1) {
-    return resource.slice(0, hashIndex)
-  }
-  return resource
+  return stripRequestQuery(resource)
 }
 
 export function isCssLikeModuleResource(
@@ -31,6 +25,9 @@ export function isCssLikeModuleResource(
   }
   const normalizedResource = stripResourceQuery(resource)
   if (normalizedResource && cssMatcher(normalizedResource)) {
+    return true
+  }
+  if (isSourceStyleRequest(resource)) {
     return true
   }
   if (appType === 'mpx') {
@@ -59,6 +56,20 @@ interface ChunkLike {
 interface WebpackWatchChangeLike {
   modifiedFiles?: Set<string>
   removedFiles?: Set<string>
+}
+
+interface RuntimeWatchDependenciesLike {
+  files?: Iterable<string>
+  contexts?: Iterable<string>
+}
+
+function normalizeWatchPath(file: string) {
+  return path.resolve(file)
+}
+
+function isFileInContext(file: string, context: string) {
+  const relative = path.relative(normalizeWatchPath(context), normalizeWatchPath(file))
+  return relative.length > 0 && !relative.startsWith('..') && !path.isAbsolute(relative)
 }
 
 function toChunkFiles(files: ChunkLike['files']) {
@@ -103,7 +114,33 @@ export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {
   return hashByFile
 }
 
+export function createRuntimeAwareCssHash(
+  assetHash: string | undefined,
+  sourceHash: string,
+  runtimeSetHash: string,
+) {
+  return `${assetHash ?? sourceHash}:${runtimeSetHash}`
+}
+
 export function hasWatchChanges(compiler: WebpackWatchChangeLike) {
   return (compiler.modifiedFiles?.size ?? 0) > 0
     || (compiler.removedFiles?.size ?? 0) > 0
+}
+
+export function isWatchFileInRuntimeDependencies(
+  file: string,
+  dependencies: RuntimeWatchDependenciesLike,
+) {
+  const normalizedFile = normalizeWatchPath(file)
+  for (const dependency of dependencies.files ?? []) {
+    if (normalizeWatchPath(dependency) === normalizedFile) {
+      return true
+    }
+  }
+  for (const context of dependencies.contexts ?? []) {
+    if (isFileInContext(normalizedFile, context)) {
+      return true
+    }
+  }
+  return false
 }

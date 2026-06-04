@@ -1,9 +1,11 @@
 import type { AppType, UserDefinedOptions } from '@/types'
+import { readFileSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css'
 import { getCompilerContext } from '@/context'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise } from '@/tailwindcss/runtime'
 
 interface SourceMutationCase {
   title: string
@@ -62,7 +64,7 @@ function assertMissingAllTokens(classSet: Set<string>, classLiteral: string, lab
 async function refreshRuntimeClassSet(options: UserDefinedOptions) {
   const ctx = getCompilerContext(options)
   await ctx.refreshTailwindcssPatcher({ clearCache: true })
-  await createTailwindPatchPromise(ctx.twPatcher)
+  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
   const classSet = await collectRuntimeClassSet(ctx.twPatcher, {
     force: true,
     skipRefresh: true,
@@ -81,11 +83,10 @@ async function runMutationLifecycle(
   const modifyClassLiteral = createClassLiteral('cc22dd')
   const addMarker = `${testCase.title}-${mutationKind}-add`
   const modifyMarker = `${testCase.title}-${mutationKind}-modify`
-  const extraOptions = testCase.resolveOptions?.(testCase.projectRoot) ?? {}
   const options: UserDefinedOptions = {
     tailwindcssBasedir: testCase.projectRoot,
     appType: testCase.appType,
-    ...extraOptions,
+    ...(testCase.resolveOptions?.(testCase.projectRoot) ?? {}),
   }
 
   const writeAndCollect = async (nextSource: string) => {
@@ -137,14 +138,48 @@ const repositoryRoot = path.resolve(__dirname, '../../../..')
 
 const cases: SourceMutationCase[] = [
   {
-    title: 'demo/uni-app-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-tailwindcss-v4'),
+    title: 'demo/gulp-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/gulp-tailwindcss-v4'),
+    appType: 'native',
+    resolveOptions: root => ({
+      cssEntries: [path.resolve(root, 'src/app.css')],
+    }),
+    template: {
+      entry: 'src/pages/index/index.wxml',
+      closingTag: '</view>',
+      makeSnippet: (classLiteral, marker) => `  <view class="${classLiteral}">${marker}</view>\n`,
+    },
+    script: {
+      entry: 'src/pages/index/index.ts',
+      applyClassLiteral(source, classLiteral) {
+        return replaceExact(
+          source,
+          '    classNames: "bg-[url(\'https://xxx.com/xx.webp\')] text-[#123456] text-[50px] bg-[#fff]",',
+          `    classNames: '${classLiteral}',`,
+          'demo/gulp-tailwindcss-v4 script anchor',
+        )
+      },
+    },
+  },
+  {
+    title: 'demo/uni-app-vite-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-vite-tailwindcss-v4'),
     appType: 'uni-app-vite',
     resolveOptions: root => ({
-      cssEntries: [
-        path.resolve(root, 'src/main.css'),
-        path.resolve(root, 'src/common.css'),
-      ],
+      tailwindcss: {
+        v4: {
+          cssSources: [
+            {
+              file: path.resolve(root, 'src/main.css'),
+              css: readFileSync(path.resolve(root, 'src/main.css'), 'utf8'),
+            },
+            {
+              file: path.resolve(root, 'src/common.css'),
+              css: readFileSync(path.resolve(root, 'src/common.css'), 'utf8'),
+            },
+          ],
+        },
+      },
     }),
     template: {
       entry: 'src/pages/index/index.vue',
@@ -158,40 +193,18 @@ const cases: SourceMutationCase[] = [
           source,
           'const className = ref(\'bg-[#0000ff] text-[45rpx] text-white\')',
           `const className = ref('${classLiteral}')`,
-          'demo/uni-app-tailwindcss-v4 script anchor',
+          'demo/uni-app-vite-tailwindcss-v4 script anchor',
         )
       },
     },
   },
   {
-    title: 'demo/uni-app-x-hbuilderx-tailwindcss4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-x-hbuilderx-tailwindcss4'),
-    appType: 'uni-app-x',
-    resolveOptions: root => ({
-      uniAppX: true,
-      cssEntries: [path.resolve(root, 'main.css')],
-    }),
-    template: {
-      entry: 'pages/index/index.uvue',
-      closingTag: '</template>',
-      makeSnippet: (classLiteral, marker) => `\t<text class="${classLiteral}">${marker}</text>\n`,
-    },
-    script: {
-      entry: 'pages/index/index.uvue',
-      applyClassLiteral(source, classLiteral) {
-        return replaceExact(
-          source,
-          "\t\t\t\taaa:'text-[90px]'",
-          `\t\t\t\taaa:'${classLiteral}'`,
-          'demo/uni-app-x-hbuilderx-tailwindcss4 script anchor',
-        )
-      },
-    },
-  },
-  {
-    title: 'demo/taro-vite-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/taro-vite-tailwindcss-v4'),
+    title: 'demo/taro-vite-react-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/taro-vite-react-tailwindcss-v4'),
     appType: 'taro',
+    resolveOptions: root => ({
+      cssEntries: [path.resolve(root, 'src/app.css')],
+    }),
     template: {
       entry: 'src/pages/index/index.tsx',
       closingTag: '</View>',
@@ -204,15 +217,18 @@ const cases: SourceMutationCase[] = [
           source,
           "<Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>",
           `<Text className='${classLiteral}'>Hello world!</Text>`,
-          'demo/taro-vite-tailwindcss-v4 script anchor',
+          'demo/taro-vite-react-tailwindcss-v4 script anchor',
         )
       },
     },
   },
   {
-    title: 'demo/taro-webpack-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/taro-webpack-tailwindcss-v4'),
+    title: 'demo/taro-webpack-react-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/taro-webpack-react-tailwindcss-v4'),
     appType: 'taro',
+    resolveOptions: root => ({
+      cssEntries: [path.resolve(root, 'src/app.css')],
+    }),
     template: {
       entry: 'src/pages/index/index.tsx',
       closingTag: '</>',
@@ -225,7 +241,7 @@ const cases: SourceMutationCase[] = [
           source,
           "<View className='bg-[#534312] text-[#fff] text-[100rpx]'>",
           `<View className='${classLiteral}'>`,
-          'demo/taro-webpack-tailwindcss-v4 script anchor',
+          'demo/taro-webpack-react-tailwindcss-v4 script anchor',
         )
       },
     },
@@ -234,6 +250,9 @@ const cases: SourceMutationCase[] = [
     title: 'demo/mpx-tailwindcss-v4',
     projectRoot: path.resolve(repositoryRoot, 'demo/mpx-tailwindcss-v4'),
     appType: 'mpx',
+    resolveOptions: root => ({
+      cssEntries: [path.resolve(root, 'src/app.css')],
+    }),
     template: {
       entry: 'src/pages/index.mpx',
       closingTag: '</template>',
@@ -252,9 +271,28 @@ const cases: SourceMutationCase[] = [
     },
   },
   {
-    title: 'apps/vite-native',
-    projectRoot: path.resolve(repositoryRoot, 'apps/vite-native'),
+    title: 'demo/weapp-vite-tailwindcss-v4',
+    projectRoot: path.resolve(repositoryRoot, 'demo/weapp-vite-tailwindcss-v4'),
     appType: 'native',
+    resolveOptions: (root) => {
+      const file = path.resolve(root, 'app.scss')
+      return {
+        tailwindcss: {
+          v4: {
+            cssSources: [
+              {
+                file,
+                base: root,
+                css: normalizeTailwindSourceForGenerator(readFileSync(file, 'utf8'), {
+                  importFallback: true,
+                }),
+                dependencies: [file],
+              },
+            ],
+          },
+        },
+      }
+    },
     template: {
       entry: 'pages/index/index.wxml',
       closingTag: '</scroll-view>',
@@ -267,28 +305,7 @@ const cases: SourceMutationCase[] = [
           source,
           '    message: \'Hello MINA!\',',
           `    message: '${classLiteral}',`,
-          'apps/vite-native script anchor',
-        )
-      },
-    },
-  },
-  {
-    title: 'apps/taro-webpack-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'apps/taro-webpack-tailwindcss-v4'),
-    appType: 'taro',
-    template: {
-      entry: 'src/pages/index/index.tsx',
-      closingTag: '</>',
-      makeSnippet: (classLiteral, marker) => `      <View className="${classLiteral}">${marker}</View>\n`,
-    },
-    script: {
-      entry: 'src/pages/index/index.tsx',
-      applyClassLiteral(source, classLiteral) {
-        return replaceExact(
-          source,
-          '<View className="bg-[#2e2bcc] text-[100rpx] text-white">',
-          `<View className="${classLiteral}">`,
-          'apps/taro-webpack-tailwindcss-v4 script anchor',
+          'demo/weapp-vite-tailwindcss-v4 script anchor',
         )
       },
     },

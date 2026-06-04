@@ -45,7 +45,7 @@ pnpm open    # 打开微信开发者工具
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 输出目录为 `dist/wx`
 - 如需调整类名提取范围，请同步检查 `tailwind` 与构建配置
 

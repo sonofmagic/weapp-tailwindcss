@@ -1,8 +1,9 @@
 {
   "name": "@weapp-tailwindcss/test-helper",
+  "private": true,
   "type": "module",
-  "version": "0.0.1",
-  "description": "tsup package template",
+  "version": "0.0.2-next.1",
+  "description": "tsdown package template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
@@ -24,10 +25,13 @@
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
   },
+  "dependencies": {
+    "tailwindcss-patch": "catalog:tailwindcssPatch"
+  },
   "scripts": {
-    "dev": "unbuild --stub",
-    "build:watch": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build:watch": "tsdown --watch --sourcemap",
+    "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",

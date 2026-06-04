@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { bench, describe } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { createContext } from '@/core'
-import { collectRuntimeClassSet, createTailwindPatchPromise } from '@/tailwindcss/runtime'
+import { collectRuntimeClassSet, createTailwindRuntimeReadyPromise } from '@/tailwindcss/runtime'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,7 +27,7 @@ const warmContextPromise = prepareWarmContext()
 
 async function prepareRuntimeSet() {
   const ctx = getCompilerContext()
-  await createTailwindPatchPromise(ctx.twPatcher)
+  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
   return collectRuntimeClassSet(ctx.twPatcher, { force: true })
 }
 

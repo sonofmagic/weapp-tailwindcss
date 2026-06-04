@@ -1,6 +1,19 @@
 import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import { splitCandidateTokens } from 'tailwindcss-patch'
 
 describe('extractorSplit', () => {
+  it('uses the candidate token splitter without allowDoubleQuotes gating', () => {
+    const code = 'after:content-["*"] after:content-[\'Hello_World\'] text-red-500'
+
+    expect(splitCandidateTokens(code)).toEqual([
+      'after:content-["*"]',
+      'after:content-[\'Hello_World\']',
+      'text-red-500',
+    ])
+    expect(splitCode(code, false)).toEqual(splitCandidateTokens(code))
+    expect(splitCode(code, true)).toEqual(splitCandidateTokens(code))
+  })
+
   it('common case ', () => {
     let code = ''
     // const arr = []
@@ -22,7 +35,7 @@ describe('extractorSplit', () => {
 
     code = 'after:border-none after:content-[\'Hello_World\'] a'
     expect(extract().length).toBe(3)
-    // 不允许在自定义里面使用双引号
+    // 双引号任意值默认可识别，allowDoubleQuotes 仅保留兼容旧配置
     code = 'after:content-["*"] after:ml-0.5 after:text-red-500 b'
     expect(extract(true).length).toBe(4)
 

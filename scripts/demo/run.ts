@@ -1,11 +1,11 @@
 import type { PackageJson } from 'pkg-types'
 import process from 'node:process'
-import { getWorkspacePackages } from '@icebreakers/monorepo'
 import consola from 'consola'
 import { execaCommand } from 'execa'
 import fs from 'fs-extra'
 import { getPackageInfo } from 'local-pkg'
 import path from 'pathe'
+import { getWorkspacePackages } from 'repoctl'
 
 async function setJson(p: string, key: string, flag: any) {
   const json = (await fs.exists(p)) ? JSON.parse(await fs.readFile(p, 'utf8')) : {}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "ignoreDeprecations": "6.0",
+    "moduleResolution": "node",
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
+    "types": [
+      "jest"
+    ]
+  },
+  "exclude": [
+    "build",
+    "dist",
+    "config"
+  ]
+}

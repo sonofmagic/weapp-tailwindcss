@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   createAssetHashByChunkMap,
+  createRuntimeAwareCssHash,
   getCacheKey,
   hasLoaderEntry,
   isCssLikeModuleResource,
@@ -21,8 +22,11 @@ describe('bundlers/webpack shared helpers', () => {
 
     expect(isCssLikeModuleResource(undefined, cssMatcher)).toBe(false)
     expect(isCssLikeModuleResource('app.css?type=style', cssMatcher)).toBe(true)
+    expect(isCssLikeModuleResource('app.scss?inline', cssMatcher)).toBe(true)
+    expect(isCssLikeModuleResource('component.vue?vue&type=style&index=0&lang.scss', cssMatcher)).toBe(true)
+    expect(isCssLikeModuleResource('component.vue?vue&type=style&index=0&lang=less', cssMatcher)).toBe(true)
     expect(isCssLikeModuleResource('component.mpx?type=styles&index=0', cssMatcher, 'mpx')).toBe(true)
-    expect(isCssLikeModuleResource('component.mpx?type=styles&index=0', cssMatcher)).toBe(false)
+    expect(isCssLikeModuleResource('component.mpx?type=styles&index=0', cssMatcher)).toBe(true)
 
     expect(hasLoaderEntry([{ loader: '/virtual/runtime-loader.js?abc' }], 'runtime-loader.js')).toBe(true)
     expect(hasLoaderEntry([{ loader: '/virtual/runtime-loader.js?abc' }])).toBe(false)
@@ -64,5 +68,13 @@ describe('bundlers/webpack shared helpers', () => {
     expect(result.get('runtime.js')).toBe('runtime:hash-runtime')
     expect(result.has('noop.js')).toBe(false)
     expect(result.has('')).toBe(false)
+  })
+
+  it('includes runtime class set hash for css assets without chunk hash', () => {
+    const sourceHash = 'source:old-utilities'
+
+    expect(createRuntimeAwareCssHash('main:chunk-a', sourceHash, 'runtime:1')).toBe('main:chunk-a:runtime:1')
+    expect(createRuntimeAwareCssHash(undefined, sourceHash, 'runtime:1')).toBe('source:old-utilities:runtime:1')
+    expect(createRuntimeAwareCssHash(undefined, sourceHash, 'runtime:2')).toBe('source:old-utilities:runtime:2')
   })
 })

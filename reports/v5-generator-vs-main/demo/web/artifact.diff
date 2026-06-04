@@ -1,0 +1,6 @@
+# demo/web artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+无内容差异。

@@ -11,6 +11,17 @@
 <script type="application/json">
   {
     "pages": ["./pages/index", "./pages/component/index"],
+    "subPackages": [
+      {
+        "root": "sub-normal",
+        "pages": ["./pages/index"]
+      },
+      {
+        "root": "sub-independent",
+        "pages": ["./pages/index"],
+        "independent": true
+      }
+    ],
     "tabBar": {
       "custom": true,
       "color": "#000000",

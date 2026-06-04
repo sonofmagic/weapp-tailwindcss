@@ -33,7 +33,6 @@ describe('replaceHandleValue strict class set regressions', () => {
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['hover:bg-red-500']),
-      staleClassNameFallback: true,
       needEscaped: true,
     })
 
@@ -43,11 +42,10 @@ describe('replaceHandleValue strict class set regressions', () => {
     expect(token?.value).toContain('w-[1.5px]')
   })
 
-  it('does not run stale fallback when staleClassNameFallback is false', () => {
+  it('does not transform arbitrary values without classNameSet hits', () => {
     const literal = getStringLiteralPath('const trace = "at App.vue:4 w-[1.5px]"')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
-      staleClassNameFallback: false,
       needEscaped: true,
     })
 
@@ -59,18 +57,16 @@ describe('replaceHandleValue strict class set regressions', () => {
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
       classNameSet: new Set(['hover:bg-red-500']),
-      staleClassNameFallback: false,
       needEscaped: true,
     })
 
     expect(token?.value).toBe('hover_cbg-red-500')
   })
 
-  it('does not transform non-set candidates even with stale fallback enabled', () => {
+  it('does not transform non-set candidates', () => {
     const literal = getStringLiteralPath('const cls = "w-[1.5px]"')
     const token = replaceHandleValue(literal, {
       escapeMap: MappingChars2String,
-      staleClassNameFallback: true,
       needEscaped: true,
     })
 

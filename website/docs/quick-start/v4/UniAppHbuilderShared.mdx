@@ -1,6 +1,6 @@
 ---
 title: 初始化 package.json
-description: '现在，在你的页面里面去随意的编写样式，比如 bg-[#123456] text-[#654321], 然后运行到微信开发者工具即可'
+description: '在页面里写一段可观察的工具类，例如 bg-[#123456] text-[#654321]，再运行到微信开发者工具检查效果。'
 keywords:
   - 快速开始
   - 安装
@@ -19,7 +19,6 @@ keywords:
   - rax
   - mpx
 ---
-import Patch from './patch.mdx'
 import CssImportReminder from '@site/src/components/CssImportReminder'
 import UniappHbuilderStyle from './UniappHbuilderStyle.mdx'
 
@@ -29,51 +28,39 @@ import UniappHbuilderStyle from './UniappHbuilderStyle.mdx'
 # 初始化 package.json
 npm init
 # 安装包
-npm install -D tailwindcss @tailwindcss/postcss weapp-tailwindcss
+npm install -D tailwindcss weapp-tailwindcss
 ```
-
-<Patch />
 
 ## 2. 添加 `vite.config.ts`
 
 ```ts title="vite.config.ts"
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-import tailwindcss from '@tailwindcss/postcss'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import path from 'node:path'
 
 export default defineConfig({
   plugins: [
     uni(),
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       rem2rpx: true,
       tailwindcssBasedir: __dirname,
       cssEntries: [
-        // 你 @import "weapp-tailwindcss/index.css"; 那个文件绝对路径
+        // Tailwind CSS 入口文件绝对路径
         path.resolve(__dirname, './src/app.css'),
       ],
     }),
   ],
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss({
-          base: __dirname
-        })
-      ]
-    }
-  }
 });
 ```
 
-> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `tailwindcss` 生成的类名不会参与转译。
+> tailwindcss@4 必须配置 `cssEntries` 并且使用绝对路径，否则 `weapp-tailwindcss` 无法稳定定位 CSS 入口。
 
 ## 3. 添加样式
 
 <UniappHbuilderStyle/>
 
-现在，在你的页面里面去随意的编写样式，比如 `bg-[#123456] text-[#654321]`, 然后运行到微信开发者工具即可
+在页面里写一段可观察的工具类，例如 `bg-[#123456] text-[#654321]`，再运行到微信开发者工具检查效果。
 
 ## 布局限制
 

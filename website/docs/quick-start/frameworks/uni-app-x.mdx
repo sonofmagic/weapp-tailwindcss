@@ -1,6 +1,6 @@
 ---
-title: "\U0001F525 uni-app x"
-description: '目前 weapp-tailwindcss 从 4.2.0 版本开始，插件已经支持 uni-app-x 同时构建包括 web,小程序, 安卓,IOS,鸿蒙 五端项目'
+title: uni-app x
+description: HBuilderX uni-app x 项目接入 weapp-tailwindcss，并说明 Tailwind CSS 3 或 4 的配置方式。
 keywords:
   - 快速开始
   - 安装
@@ -17,9 +17,11 @@ keywords:
   - rax
   - mpx
 ---
-# 🔥 uni-app x
+# uni-app x
 
-目前 `weapp-tailwindcss` 从 `4.2.0` 版本开始，插件已经支持 `uni-app-x` 同时构建包括 `web`,`小程序`, `安卓`,`IOS`,`鸿蒙` 五端项目
+`uni-app x` 使用 HBuilderX 和 `@dcloudio/vite-plugin-uni`。建议配合内置的 `uniAppX` 预设使用。
+
+当前仓库的 HBuilderX 本地 E2E 覆盖了 uni-app x 的 v3/v4 小程序、Android 和 iOS 产物。App E2E 依赖本机 HBuilderX 与模拟器，只在本地执行。
 
 :::warning 能力边界
 `uvue` 原生 App 端不要依赖 `gap`、`gap-x-*`、`gap-y-*`，这些布局能力当前都不支持。
@@ -27,70 +29,58 @@ keywords:
 `space-x-*`、`space-y-*` 也不要在 `uni-app x` 中使用。请直接改用子项显式 `mt-*` / `ml-*`，或封装固定结构的间距组件。
 :::
 
-## 创建工具类
+```bash
+pnpm e2e:hbuilderx:local
+pnpm e2e:hbuilderx:local:android
+pnpm e2e:hbuilderx:local:ios
+```
 
-在项目中创建 `shared.js` 文件，用于存放一些工具函数：
+## 注册插件
 
-```js title="shared.js"
+`uniAppX` 从 `weapp-tailwindcss/presets` 导出。Tailwind CSS 4 建议显式传入 `cssEntries`；Tailwind CSS 3 如果入口能被框架稳定引入，可以不传，想保持两边一致也可以保留。
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { uniAppX } from 'weapp-tailwindcss/presets'
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss(
+      uniAppX({
+        base: __dirname,
+        cssEntries: [
+          path.resolve(__dirname, 'main.css'),
+        ],
+        rem2rpx: true,
+      }),
+    ),
+  ],
+})
+```
+
+Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不要再注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
+
+## Tailwind CSS 3.x
+
+Tailwind CSS 3 继续通过 `tailwind.config.js` 的 `content` 扫描 `uts` / `uvue` 文件。
+
+```js title="tailwind.config.js"
 const path = require('node:path')
 
 function r(...args) {
   return path.resolve(__dirname, ...args)
 }
 
-module.exports = {
-  r,
-}
-```
-
-## 注册插件
-
-创建 `vite.config.ts` 文件，注册插件：
-
-> 这里特别注意 `uniAppX` 是从 `weapp-tailwindcss/presets` 这个预设中导出的
-
-```js title="vite.config.[jt]s"
-import { defineConfig } from "vite";
-import uni from "@dcloudio/vite-plugin-uni";
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-import { r } from './shared'
-import { uniAppX } from 'weapp-tailwindcss/presets'
-import tailwindcss from 'tailwindcss'
-
-export default defineConfig({
-    plugins: [
-        uni(),
-        UnifiedViteWeappTailwindcssPlugin(
-            uniAppX({
-                base: __dirname,
-                rem2rpx: true,
-            }),
-        ),
-    ],
-    css: {
-        postcss: {
-            plugins: [
-                tailwindcss({
-                    config: r('./tailwind.config.js'),
-                }),
-            ]
-        }
-    }
-});
-```
-
-## 更改 tailwindcss 配置
-
-使用绝对路径，包括所有的提取文件
-
-```js title="tailwind.config.js"
-const { r } = require('./shared')
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     r('./pages/**/*.{uts,uvue}'),
-    r('./components/**/*.{uts,uvue}') 
+    r('./components/**/*.{uts,uvue}'),
+    `!${r('./uni_modules/**/*')}`,
   ],
   corePlugins: {
     preflight: false,
@@ -99,8 +89,44 @@ module.exports = {
 
 ```
 
-## 现成模板可以直接使用或者参考
+入口 CSS：
 
-https://github.com/icebreaker-template/uni-app-x-hbuilderx
+```css title="main.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
 
-使用方式详见项目中的 `README.md`
+## Tailwind CSS 4.x
+
+Tailwind CSS 4 使用 CSS-first 入口，`@source` 要覆盖页面、组件和可能产出类名的脚本目录：
+
+```css title="main.css"
+@import "tailwindcss" source(none);
+@source "./App.uvue";
+@source "./pages/**/*.{uts,uvue}";
+@source "./components/**/*.{uts,uvue}";
+@source "./stores/**/*.{uts,uvue}";
+@source not "./uni_modules/**/*";
+@source not "./unpackage/**/*";
+```
+
+不要把 `unpackage` 放进扫描范围，否则 HBuilderX 产物会反过来干扰开发构建。
+
+## 验证任意值类名
+
+在任意页面写一段最小用例：
+
+```html
+<view class="p-4">
+  <text class="bg-[#102938] text-[#f7fbff] w-[173px]">Tailwind CSS</text>
+</view>
+```
+
+运行到微信小程序、Android 或 iOS 后，检查元素样式是否生效。App 端文本使用 `<text>`，文本相关样式要直接写在 `<text>` 上。
+
+## 参考模板
+
+- [uni-app-x-hbuilderx 模板](https://github.com/icebreaker-template/uni-app-x-hbuilderx)
+- [仓库内 Tailwind CSS 3 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v3)
+- [仓库内 Tailwind CSS 4 demo](https://github.com/sonofmagic/weapp-tailwindcss/tree/next/demo/uni-app-x-hbuilderx-tailwindcss-v4)

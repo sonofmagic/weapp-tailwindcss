@@ -58,32 +58,43 @@ npm i
 
 ## 注册插件
 
-给 `package.json` 添加下列脚本:
-```json title="package.json"
-{
-  "scripts": {
-    "postinstall": "weapp-tw patch"
-  }
-}
-
-```
-
-然后在你的 `vite.config.ts` 里对插件进行注册:
+在你的 `vite.config.ts` 里对插件进行注册:
 
 ```ts title="vite.config.ts"
 import { defineConfig } from 'weapp-vite/config'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   // highlight-start
   plugins: [
-    uvwt({
+    WeappTailwindcss({
       rem2rpx: true,
     }),
   ],
   // highlight-end
 })
 
+```
+
+Tailwind CSS 3.x 的扫描范围由 `tailwind.config.js` 的 `content` 控制；Tailwind CSS 4.x 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再注册 Tailwind 官方生成插件，也不需要执行 `weapp-tw patch`。
+
+常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口。多入口、入口没有被 Vite 引入、自动识别失败时，再手动配置 `cssEntries`：
+
+```ts title="vite.config.ts"
+import path from 'node:path'
+import { defineConfig } from 'weapp-vite/config'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    WeappTailwindcss({
+      rem2rpx: true,
+      cssEntries: [
+        path.resolve(__dirname, 'app.css'),
+      ],
+    }),
+  ],
+})
 ```
 
 
@@ -102,7 +113,7 @@ export default defineConfig({
 
 ## 配置好的模板
 
-假如你配置不成功，你可以参考以下模板进行配置文件对比:
+如果配置不成功，可以用下面的模板对比配置文件：
 
 [weapp-vite-tailwindcss-template](https://github.com/weapp-vite/weapp-vite/tree/main/apps/weapp-vite-tailwindcss-template)
 
@@ -148,6 +159,3 @@ npx weapp-vite create my-app
 ## 想了解更多 weapp-vite
 
 更多场景和配置，请查看 [weapp-vite 文档网站](https://vite.icebreaker.top/)
-
-
-

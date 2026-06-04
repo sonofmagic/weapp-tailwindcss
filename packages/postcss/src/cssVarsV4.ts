@@ -39,6 +39,8 @@ const nodes = [
   // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L1688C38-L1688C95
   property('--tw-space-x-reverse', '0'),
   property('--tw-space-y-reverse', '0'),
+  property('--tw-scrollbar-thumb', '#0000', '<color>'),
+  property('--tw-scrollbar-track', '#0000', '<color>'),
   // 参考：https://github.com/tailwindlabs/tailwindcss/blob/main/packages/tailwindcss/src/utilities.ts#L2169C22-L2169C60
   property('--tw-border-style', 'solid'),
   property('--tw-divide-x-reverse', '0'),

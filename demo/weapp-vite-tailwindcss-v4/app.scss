@@ -1,0 +1,7 @@
+// Tailwind root entry intentionally lives in SCSS to cover preprocessor source handling.
+@import "tailwindcss";
+@config "./tailwind.config.js";
+
+page {
+  --preprocessor-entry-marker: #1d4ed8;
+}

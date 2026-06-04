@@ -1,8 +1,10 @@
 import type { RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike } from '@/types'
 import { createDebug } from '@/debug'
+import { createTailwindV4Engine, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
+import { ensureTailwindcssRuntimePatch } from './runtime-patch'
 import {
   getRuntimeClassSetCacheEntry,
-  getRuntimeClassSetSignature,
+  getRuntimeClassSetSignatureWithSources,
   invalidateRuntimeClassSet,
 } from './runtime/cache'
 
@@ -11,44 +13,35 @@ const debug = createDebug('[tailwindcss:runtime] ')
 export const refreshTailwindcssPatcherSymbol = Symbol.for('weapp-tailwindcss.refreshTailwindcssPatcher')
 
 export interface CollectRuntimeClassSetOptions {
-  force?: boolean
-  skipRefresh?: boolean
-  clearCache?: boolean
+  force?: boolean | undefined
+  skipRefresh?: boolean | undefined
+  clearCache?: boolean | undefined
 }
 
 export interface RefreshTailwindRuntimeStateOptions {
   force: boolean
-  clearCache?: boolean
+  clearCache?: boolean | undefined
 }
 
-export function createTailwindPatchPromise(
+export function createTailwindRuntimeReadyPromise(
   twPatcher: TailwindcssPatcherLike,
-  onPatched?: () => Promise<void> | void,
 ): Promise<void> {
-  return Promise.resolve(twPatcher.patch()).then(async () => {
+  return Promise.resolve().then(async () => {
+    await ensureTailwindcssRuntimePatch(twPatcher)
     invalidateRuntimeClassSet(twPatcher)
-    if (onPatched) {
-      try {
-        await onPatched()
-      }
-      catch (error) {
-        debug('failed to persist patch target after patch(): %O', error)
-      }
-    }
   })
 }
 
 export interface TailwindRuntimeState {
   twPatcher: TailwindcssPatcherLike
-  patchPromise: Promise<void>
-  refreshTailwindcssPatcher?: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
-  onPatchCompleted?: () => Promise<void> | void
+  readyPromise: Promise<void>
+  refreshTailwindcssPatcher?: ((options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>) | undefined
 }
 
 interface RuntimeClassSetStateEntry {
-  value?: Set<string>
-  promise?: Promise<Set<string>>
-  signature?: string
+  value?: Set<string> | undefined
+  promise?: Promise<Set<string>> | undefined
+  signature?: string | undefined
 }
 
 const runtimeClassSetStateCache = new WeakMap<TailwindRuntimeState, RuntimeClassSetStateEntry>()
@@ -77,7 +70,7 @@ export async function refreshTailwindRuntimeState(
   }
 
   debug('refresh runtime state start, clearCache=%s major=%s', clearCache, state.twPatcher.majorVersion ?? 'unknown')
-  await state.patchPromise
+  await state.readyPromise
 
   let refreshed = false
   if (typeof state.refreshTailwindcssPatcher === 'function') {
@@ -89,7 +82,7 @@ export async function refreshTailwindRuntimeState(
   }
 
   if (refreshed) {
-    state.patchPromise = createTailwindPatchPromise(state.twPatcher, state.onPatchCompleted)
+    state.readyPromise = createTailwindRuntimeReadyPromise(state.twPatcher)
   }
 
   debug('refresh runtime state end, refreshed=%s major=%s', refreshed, state.twPatcher.majorVersion ?? 'unknown')
@@ -97,10 +90,10 @@ export async function refreshTailwindRuntimeState(
 }
 
 export interface EnsureRuntimeClassSetOptions {
-  forceRefresh?: boolean
-  forceCollect?: boolean
-  clearCache?: boolean
-  allowEmpty?: boolean
+  forceRefresh?: boolean | undefined
+  forceCollect?: boolean | undefined
+  clearCache?: boolean | undefined
+  allowEmpty?: boolean | undefined
 }
 
 export async function ensureRuntimeClassSet(
@@ -119,10 +112,10 @@ export async function ensureRuntimeClassSet(
     })
   }
 
-  await state.patchPromise
+  await state.readyPromise
 
   const entry = getRuntimeClassSetStateEntry(state)
-  const signature = getRuntimeClassSetSignature(state.twPatcher)
+  const signature = await getRuntimeClassSetSignatureWithSources(state.twPatcher)
   const signatureChanged = entry.signature !== signature
   const shouldForceCollect = forceCollect || forceRefresh || signatureChanged
 
@@ -150,7 +143,7 @@ export async function ensureRuntimeClassSet(
       force: true,
       clearCache: true,
     })
-    await state.patchPromise
+    await state.readyPromise
     return collectRuntimeClassSet(state.twPatcher, {
       force: true,
       skipRefresh: true,
@@ -163,7 +156,7 @@ export async function ensureRuntimeClassSet(
   try {
     const runtimeSet = await task
     entry.value = runtimeSet
-    entry.signature = getRuntimeClassSetSignature(state.twPatcher)
+    entry.signature = await getRuntimeClassSetSignatureWithSources(state.twPatcher)
     return runtimeSet
   }
   finally {
@@ -214,6 +207,22 @@ function tryGetRuntimeClassSetSync(twPatcher: TailwindcssPatcherLike) {
   }
 }
 
+async function collectTailwindV4GeneratorClassSet(twPatcher: TailwindcssPatcherLike) {
+  try {
+    const source = await resolveTailwindV4SourceFromPatcher(twPatcher)
+    const generated = await createTailwindV4Engine(source).generate({
+      scanSources: true,
+      target: 'tailwind',
+    })
+    debug('runtime class set resolved via tailwindcss v4 generator source scan, size=%d', generated.classSet.size)
+    return generated.classSet
+  }
+  catch (error) {
+    debug('tailwindcss v4 generator source scan failed, continuing fallback chain: %O', error)
+    return undefined
+  }
+}
+
 async function collectRuntimeClassSet(
   twPatcher: TailwindcssPatcherLike,
   options: CollectRuntimeClassSetOptions = {},
@@ -240,7 +249,7 @@ async function collectRuntimeClassSet(
   }
 
   const entry = getRuntimeClassSetCacheEntry(activePatcher)
-  const signature = getRuntimeClassSetSignature(activePatcher)
+  const signature = await getRuntimeClassSetSignatureWithSources(activePatcher)
 
   if (!options.force) {
     if (entry.value && entry.signature === signature) {
@@ -255,6 +264,8 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
+    await ensureTailwindcssRuntimePatch(activePatcher)
+
     // force 场景先抓一份 sync 快照作为兜底，避免 extract() 在某些环境返回空集合后
     // 破坏本轮 JS/WXML 转译结果（例如构建链路中 class set 尚未落盘的瞬时状态）。
     const preExtractSyncSet = options.force
@@ -276,8 +287,12 @@ async function collectRuntimeClassSet(
           debug('runtime class set resolved via extract(), size=%d', result.classSet.size)
           return result.classSet
         }
+        if (preferExtract && activePatcher.majorVersion !== 4) {
+          debug('runtime class set resolved via empty extract() on force collect, size=0')
+          return result.classSet
+        }
         if (preferExtract) {
-          debug('runtime class set from extract() is empty on force collect, fallback to sync/async class set')
+          debug('runtime class set from extract() is empty on force collect, fallback to generator/sync/async class set')
         }
         else {
           debug('runtime class set from extract() is empty, fallback to sync/async class set')
@@ -286,6 +301,13 @@ async function collectRuntimeClassSet(
     }
     catch (error) {
       debug('extract() failed, fallback to getClassSet(): %O', error)
+    }
+
+    if (activePatcher.majorVersion === 4) {
+      const generatorClassSet = await collectTailwindV4GeneratorClassSet(activePatcher)
+      if (generatorClassSet && generatorClassSet.size > 0) {
+        return generatorClassSet
+      }
     }
 
     if (preExtractSyncSet) {

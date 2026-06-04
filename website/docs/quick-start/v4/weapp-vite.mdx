@@ -18,62 +18,52 @@ keywords:
   - rax
   - mpx
 ---
-import Patch from './patch.mdx'
 import CssImportReminder from '@site/src/components/CssImportReminder'
 import ExternalClassesReminder from '@site/fragments/ExternalClassesReminder.mdx'
 
 # Weapp-vite
+
+:::tip
+主线接入文档已合并到 [原生小程序 / weapp-vite](/docs/quick-start/native/install)。本页保留给旧链接和 Tailwind CSS 4 专项排障。
+:::
 
 <ExternalClassesReminder framework="weapp-vite" />
 
 ## 安装
 
 ```bash npm2yarn
-npm install -D tailwindcss @tailwindcss/postcss postcss weapp-tailwindcss
+npm install -D tailwindcss weapp-tailwindcss
 ```
-
-<Patch/>
 
 ## 配置
 
 更改 `vite.config.ts` 注册 `weapp-tailwindcss`
 
 ```js title="vite.config.ts"
-import path from 'node:path'
-import tailwindcss from '@tailwindcss/vite'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 
 export default defineConfig({
   plugins: [
-    UnifiedViteWeappTailwindcssPlugin({
+    WeappTailwindcss({
       rem2rpx: true,
-      cssEntries: [
-        // app.css 的路径
-        path.resolve(import.meta.dirname, './app.css'),
-      ],
     }),
   ],
 })
 ```
 
-添加 `postcss.config.js` 注册 `@tailwindcss/postcss`
-
-```js title="postcss.config.js"
-export default {
-  plugins: {
-    '@tailwindcss/postcss': {},
-  },
-}
-```
-
+`weapp-tailwindcss@5` 默认启用生成模式，不需要再注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。如果项目已有 `postcss.config.js`，可以继续保留业务自己的 PostCSS 插件，但请移除 Tailwind 官方生成插件。
+常规 weapp-vite 项目会自动识别 `app.css` 这类 Tailwind CSS 入口。只有多入口、入口没有被 Vite 引入、自动识别失败等场景，才需要手动配置 `cssEntries`。
 
 ## 添加样式
 
 在项目目录下，小程序全局的 `app.css` 中，添加以下内容：
 
 ```css title="app.css"
-@import "weapp-tailwindcss/index.css";
+@import "tailwindcss";
+@source "./src/**/*.{wxml,js,ts,vue}";
+@source "./app.{js,ts,json}";
+@source not "./dist";
 ```
 
 <CssImportReminder />

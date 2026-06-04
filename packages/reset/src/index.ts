@@ -3,6 +3,16 @@ import type { BuiltInResetName, ResetOptions, ResetPreset } from './types'
 import plugin from 'tailwindcss/plugin'
 import { createResetRule } from './normalize'
 
+export interface ResetPluginResult {
+  handler: (api: { addBase: (base: Record<string, Record<string, string>>) => void }) => void
+  config?: Record<string, unknown>
+}
+
+export interface ResetPlugin {
+  (options?: ResetOptions): ResetPluginResult
+  __isOptionsFunction: true
+}
+
 const DEFAULT_BUTTON_RESET_SELECTORS = ['button'] as const
 const DEFAULT_BUTTON_DECLARATIONS = {
   padding: '0',

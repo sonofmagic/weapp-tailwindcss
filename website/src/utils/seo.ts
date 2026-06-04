@@ -19,7 +19,7 @@ const sectionKeywords: Array<{ pattern: RegExp, keywords: string[] }> = [
     keywords: ['常见问题', '故障排查', '兼容性'],
   },
   {
-    pattern: /\/docs\/api(\/|$)|\/docs\/options(\/|$)|\/docs\/api-v2(\/|$)/,
+    pattern: /\/docs\/api(\/|$)|\/docs\/options(\/|$)/,
     keywords: ['API', '配置项', '接口文档'],
   },
   {

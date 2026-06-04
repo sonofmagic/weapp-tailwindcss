@@ -1,0 +1,29 @@
+/* stylelint-disable custom-property-pattern */
+@import "tailwindcss" source(none);
+@config "./tailwind.config.js";
+@source "../src/**/*.{vue,js,ts,jsx,tsx,html}";
+@source not "../src/uni_modules/**/*";
+
+@theme {
+  --color-neutral-1B: #1b1b1b;
+  --color-neutral-66: #666;
+  --color-neutral-99: #999;
+  --color-neutral-BB: #bbb;
+  --color-neutral-EE: #eee;
+  --color-neutral-F8: #f8f8f8;
+  --color-neutral-FF: #fff;
+  --color-midnight: #121063;
+  --color-tahiti: #3ab7bf;
+  --color-bermuda: #78dcca;
+}
+
+@layer components {
+  .layer-card-v4 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-midnight);
+  }
+}
+
+/* @source "../node_modules/tailwindcss-core-plugins-extractor/dist"; */

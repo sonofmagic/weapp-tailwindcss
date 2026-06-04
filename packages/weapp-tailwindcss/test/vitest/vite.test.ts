@@ -6,7 +6,7 @@ import * as Diff from 'diff'
 import prettier from 'prettier'
 import tailwindcss from 'tailwindcss'
 import { build } from 'vite'
-import { UnifiedViteWeappTailwindcssPlugin as uvwt } from '@/bundlers/vite/index'
+import { WeappTailwindcss as weappTw } from '@/bundlers/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
 // const isApp = process.env.UNI_PLATFORM === 'app-plus'
@@ -81,7 +81,7 @@ async function assertSnap(
       const r = await prettier.format(output[1].source.toString(), {
         parser: 'css',
       })
-      expect(r).toMatchSnapshot()
+      expect(r.replace(/[ \t]+$/gm, '')).toMatchSnapshot()
     }
     expect(/\.html$/.test(output[2].fileName)).toBe(true)
     expect(output[2].type).toBe('asset')
@@ -89,9 +89,15 @@ async function assertSnap(
       const r = await prettier.format(output[2].source.toString(), {
         parser: 'html',
       })
-      expect(r).toMatchSnapshot()
+      expect(normalizeHtmlAssetHashes(r)).toMatchSnapshot()
     }
   }
+}
+
+function normalizeHtmlAssetHashes(html: string) {
+  return html
+    .replace(/\/assets\/index-[A-Za-z0-9_-]+\.js/g, '/assets/index-[hash].js')
+    .replace(/\/assets\/index-[A-Za-z0-9_-]+\.css/g, '/assets/index-[hash].css')
 }
 
 function htmlMatcher(p: string) {
@@ -102,7 +108,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -120,7 +126,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -139,7 +145,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -152,7 +158,7 @@ describe('vite test', () => {
       }),
     )
     await assertSnap(
-      uvwt({
+      weappTw({
         htmlMatcher,
         onStart() {
           timeStart = performance.now()
@@ -170,7 +176,7 @@ describe('vite test', () => {
     let timeStart: number
     let timeTaken: number
     await assertSnap(
-      uvwt({
+      weappTw({
         disabled: true,
         htmlMatcher,
         onStart() {
@@ -186,7 +192,7 @@ describe('vite test', () => {
 
   it.skip('source map case 0', async () => {
     await assertSnap(
-      uvwt(),
+      weappTw(),
       {
         build: {
           sourcemap: true,
@@ -234,7 +240,7 @@ describe('vite test', () => {
     )
 
     await assertSnap(
-      uvwt(),
+      weappTw(),
       {
         build: {
           sourcemap: true,

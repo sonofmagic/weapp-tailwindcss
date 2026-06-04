@@ -15,7 +15,6 @@
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
-![dm1](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
 [![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
@@ -63,13 +62,13 @@ These plugins can automatically identify and accurately handle all `tailwindcss`
 
 ### Plugin Introduction
 
-The `UnifiedWebpackPluginV5` exported from `weapp-tailwindcss/webpack` is a core plugin that can be used by all frameworks that use `webpack` for packaging.
+The `WeappTailwindcss` exported from `weapp-tailwindcss/webpack` is a core plugin that can be used by all frameworks that use `webpack` for packaging.
 
-The `UnifiedViteWeappTailwindcssPlugin` exported from `weapp-tailwindcss/vite` is a dedicated plugin for `vite`, and the configuration items and usage are consistent with the `webpack` plugin.
+The `WeappTailwindcss` exported from `weapp-tailwindcss/vite` is a dedicated plugin for `vite`, and the configuration items and usage are consistent with the `webpack` plugin.
 
 And our `gulp` plugin method, can be exported from `weapp-tailwindcss/gulp`.
 
-Currently, these plugins support the latest version of the `tailwindcss v3.x.x` version and `webpack5`, `vite`, and `gulp`.
+Currently, these plugins support `tailwindcss v3.x.x` and `tailwindcss v4.x.x`, plus `webpack5`, `vite`, and `gulp`.
 
 > If you are still using the `tailwindcss@2` version, then you should use the `1.x` version of this plugin. Also, make sure your `nodejs` version `>=16`. At present, the long-term maintenance version (`even-numbered version`) below `16` has ended its life cycle. It is recommended to install the `LTS` version of `nodejs`, See [nodejs/release](<https://github.com/> nodejs/release)
 

@@ -14,9 +14,6 @@
   },
   "keywords": [],
   "main": "main.js",
-  "scripts": {
-    "postinstall": "weapp-tw patch"
-  },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",

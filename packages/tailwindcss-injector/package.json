@@ -1,8 +1,8 @@
 {
   "name": "tailwindcss-injector",
   "type": "module",
-  "version": "1.0.11",
-  "description": "tsup(esbuild) build package template",
+  "version": "1.0.12-next.4",
+  "description": "tsdown build package template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
@@ -30,8 +30,8 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
@@ -57,8 +57,8 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/shared": "workspace:*",
-    "fs-extra": "^11.3.4",
-    "htmlparser2": "^10.1.0",
+    "fs-extra": "^11.3.5",
+    "htmlparser2": "^12.0.0",
     "magic-string": "^0.30.21",
     "postcss": "catalog:postcss85",
     "tailwindcss": "catalog:tailwindcss3",

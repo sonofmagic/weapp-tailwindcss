@@ -1,0 +1,10 @@
+# demo/native-ts artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+diff -- dist/app.wxss
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 1082699 raw bytes, 1067640 normalized bytes, hash ac15c7e71b87
+# current: 1078470 raw bytes, 1064288 normalized bytes, hash c112e09a2d9e
+

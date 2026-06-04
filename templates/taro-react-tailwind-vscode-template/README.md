@@ -41,7 +41,7 @@ pnpm open
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 如使用微信开发者工具，建议关闭 IDE 自带代码热重载，避免和构建侧监听冲突
 - 其他端构建命令已保留在 `package.json` 中，可按需使用
 

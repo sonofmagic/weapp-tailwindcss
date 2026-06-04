@@ -2,48 +2,18 @@ import type { ProjectEntry } from './shared.ts'
 
 export const E2E_PROJECTS = [
   {
-    name: 'uni-app-vue3-vite',
-    projectPath: 'uni-app-vue3-vite/dist/build/mp-weixin',
-    cssFile: 'app.wxss',
-  },
-  {
-    name: 'uni-app-tailwindcss-v4',
-    projectPath: 'uni-app-tailwindcss-v4/dist/build/mp-weixin',
-    cssFile: 'app.wxss',
-  },
-  {
-    name: 'taro-app',
-    projectPath: 'taro-app',
+    name: 'gulp-tailwindcss-v3',
+    projectPath: 'gulp-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
   },
   {
-    name: 'taro-webpack-tailwindcss-v4',
-    projectPath: 'taro-webpack-tailwindcss-v4',
+    name: 'gulp-tailwindcss-v4',
+    projectPath: 'gulp-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
   },
   {
-    name: 'taro-app-vite',
-    projectPath: 'taro-app-vite',
-    cssFile: 'dist/app.wxss',
-  },
-  {
-    name: 'taro-vite-tailwindcss-v4',
-    projectPath: 'taro-vite-tailwindcss-v4',
-    cssFile: 'dist/app.wxss',
-  },
-  {
-    name: 'taro-vue3-app',
-    projectPath: 'taro-vue3-app',
-    cssFile: 'dist/app.wxss',
-  },
-  {
-    name: 'gulp-app',
-    projectPath: 'gulp-app',
-    cssFile: 'dist/app.wxss',
-  },
-  {
-    name: 'mpx-app',
-    projectPath: 'mpx-app/dist/wx',
+    name: 'mpx-tailwindcss-v3',
+    projectPath: 'mpx-tailwindcss-v3/dist/wx',
     cssFile: 'app.wxss',
     url: '/pages/index',
   },
@@ -53,47 +23,90 @@ export const E2E_PROJECTS = [
     cssFile: 'app.wxss',
     url: '/pages/index',
   },
-] satisfies ProjectEntry[]
-
-export const NATIVE_PROJECTS = [
   {
-    name: 'vite-native',
-    projectPath: 'vite-native',
+    name: 'taro-webpack-react-tailwindcss-v3',
+    projectPath: 'taro-webpack-react-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
   },
-  // skyline 有 bug 无法测试
-  // {
-  //   name: 'vite-native-skyline',
-  //   projectPath: 'vite-native-skyline',
-  //   cssFile: 'dist/app.wxss',
-  // },
   {
-    name: 'vite-native-ts',
-    projectPath: 'vite-native-ts',
+    name: 'taro-webpack-react-tailwindcss-v4',
+    projectPath: 'taro-webpack-react-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
   },
-  // {
-  //   name: 'vite-native-ts-skyline',
-  //   projectPath: 'vite-native-ts-skyline',
-  //   cssFile: 'dist/app.wxss',
-  // },
   {
-    name: 'web-postcss7-compat',
-    projectPath: 'web-postcss7-compat',
-    cssFile: 'result.css',
+    name: 'taro-vite-react-tailwindcss-v3',
+    projectPath: 'taro-vite-react-tailwindcss-v3',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-vite-react-tailwindcss-v4',
+    projectPath: 'taro-vite-react-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-webpack-vue3-tailwindcss-v3',
+    projectPath: 'taro-webpack-vue3-tailwindcss-v3',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-webpack-vue3-tailwindcss-v4',
+    projectPath: 'taro-webpack-vue3-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-vite-vue3-tailwindcss-v3',
+    projectPath: 'taro-vite-vue3-tailwindcss-v3',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'taro-vite-vue3-tailwindcss-v4',
+    projectPath: 'taro-vite-vue3-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'uni-app-vite-tailwindcss-v3',
+    projectPath: 'uni-app-vite-tailwindcss-v3/dist/build/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-vite-tailwindcss-v4',
+    projectPath: 'uni-app-vite-tailwindcss-v4/dist/build/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+    projectPath: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+    projectPath: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v3',
+    projectPath: 'uni-app-x-hbuilderx-tailwindcss-v3/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v4',
+    projectPath: 'uni-app-x-hbuilderx-tailwindcss-v4/unpackage/dist/dev/mp-weixin',
+    cssFile: 'app.wxss',
+  },
+  {
+    name: 'weapp-vite-tailwindcss-v3',
+    projectPath: 'weapp-vite-tailwindcss-v3',
+    cssFile: 'dist/app.wxss',
+  },
+  {
+    name: 'weapp-vite-tailwindcss-v4',
+    projectPath: 'weapp-vite-tailwindcss-v4',
+    cssFile: 'dist/app.wxss',
     skipOpenAutomator: true,
   },
-  // {
-  //   name: 'native-skyline',
-  //   projectPath: 'native-skyline',
-  //   cssFile: 'dist/app.wxss',
-  // },
-  // {
-  //   name: 'native-ts-skyline',
-  //   projectPath: 'native-ts-skyline',
-  //   cssFile: 'dist/app.wxss',
-  // },
 ] satisfies ProjectEntry[]
+
+export const NATIVE_PROJECTS = [] satisfies ProjectEntry[]
 
 function cloneProject(projects: ProjectEntry[], name: string): ProjectEntry {
   const project = projects.find(entry => entry.name === name)

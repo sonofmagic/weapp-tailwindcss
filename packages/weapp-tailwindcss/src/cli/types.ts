@@ -1,7 +1,5 @@
 export interface CommonCommandOptions {
   cwd?: string | boolean
-  recordTarget?: boolean | string
-  clearCache?: boolean | string
 }
 
 export interface ExtractCommandOptions extends CommonCommandOptions {

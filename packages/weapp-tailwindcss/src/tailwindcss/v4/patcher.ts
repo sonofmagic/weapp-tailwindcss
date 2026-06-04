@@ -3,7 +3,9 @@ import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
+import { readInstalledPackageMajorVersion } from '@/tailwindcss/version'
 import { defuOverrideArray } from '@/utils'
+import { omitUndefined } from '@/utils/object'
 import { createMultiTailwindcssPatcher } from './multi-patcher'
 import { overrideTailwindcssPatcherOptionsForBase } from './patcher-options'
 
@@ -55,6 +57,7 @@ export interface TailwindcssPatcherFactoryOptions {
   tailwindcssPatcherOptions?: CreateTailwindcssPatcherOptions['tailwindcssPatcherOptions']
   supportCustomLengthUnitsPatch: InternalUserDefinedOptions['supportCustomLengthUnitsPatch']
   appType: InternalUserDefinedOptions['appType']
+  bareArbitraryValues?: InternalUserDefinedOptions['arbitraryValues']['bareArbitraryValues']
 }
 
 export function createPatcherForBase(
@@ -66,9 +69,12 @@ export function createPatcherForBase(
     tailwindcss,
     tailwindcssPatcherOptions,
     supportCustomLengthUnitsPatch,
+    bareArbitraryValues,
   } = options
 
   const hasCssEntries = Boolean(cssEntries?.length)
+  const configuredV4Options = tailwindcss?.v4 ?? (tailwindcssPatcherOptions as any)?.tailwindcss?.v4
+  const hasCssSources = Boolean(configuredV4Options?.cssSources?.length)
 
   const defaultTailwindcssConfig: TailwindUserOptions = {
     cwd: baseDir,
@@ -79,11 +85,11 @@ export function createPatcherForBase(
       cwd: baseDir,
     },
     v4: hasCssEntries
-      ? { cssEntries }
-      : {
+      ? omitUndefined({ cssEntries })
+      : omitUndefined({
           base: baseDir,
           cssEntries,
-        },
+        }),
   }
 
   const mergedTailwindOptions = defuOverrideArray<TailwindUserOptions, TailwindUserOptions[]>(
@@ -117,6 +123,10 @@ export function createPatcherForBase(
     }
   }
 
+  if (bareArbitraryValues !== undefined && bareArbitraryValues !== false) {
+    mergedTailwindOptions.v4.bareArbitraryValues = bareArbitraryValues
+  }
+
   const patchedOptions = overrideTailwindcssPatcherOptionsForBase(
     tailwindcssPatcherOptions,
     baseDir,
@@ -125,29 +135,38 @@ export function createPatcherForBase(
 
   const configuredPackageName = tailwindcss?.packageName
     || (tailwindcssPatcherOptions as any)?.tailwindcss?.packageName
-    || (tailwindcssPatcherOptions as any)?.tailwind?.packageName
-    || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.packageName
   const configuredVersion = tailwindcss?.version
     || (tailwindcssPatcherOptions as any)?.tailwindcss?.version
-    || (tailwindcssPatcherOptions as any)?.tailwind?.version
-    || (tailwindcssPatcherOptions as any)?.patch?.tailwindcss?.version
     || mergedTailwindOptions.version
   const explicitTailwindVersion = resolveExplicitTailwindVersion(configuredVersion, configuredPackageName)
 
   const hasExplicitV4Signals = hasCssEntries
+    || hasCssSources
     || hasOwnV4Signal(tailwindcss)
     || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
-    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwind)
-    || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.patch?.tailwindcss)
 
-  const isV4 = explicitTailwindVersion === 3
-    ? false
-    : explicitTailwindVersion === 4
-      || (explicitTailwindVersion === undefined && (
-        mergedTailwindOptions.version === 4
-        || isTailwindcss4Package(configuredPackageName ?? mergedTailwindOptions.packageName)
-        || hasExplicitV4Signals
-      ))
+  const packageNameForVersionDetection = configuredPackageName ?? mergedTailwindOptions.packageName ?? 'tailwindcss'
+  const installedTailwindVersion = readInstalledPackageMajorVersion(packageNameForVersionDetection, baseDir)
+  const resolvedTailwindVersion = installedTailwindVersion ?? explicitTailwindVersion
+  const supportedResolvedTailwindVersion = resolvedTailwindVersion === 2 || resolvedTailwindVersion === 3 || resolvedTailwindVersion === 4
+    ? resolvedTailwindVersion
+    : undefined
+
+  const isV4 = (
+    resolvedTailwindVersion === 4 && (
+      installedTailwindVersion === 4
+      || explicitTailwindVersion === 4
+      || (hasExplicitV4Signals && isTailwindcss4Package(packageNameForVersionDetection))
+    )
+  )
+  || (
+    resolvedTailwindVersion === undefined && (
+      hasCssEntries
+      || hasCssSources
+      || hasOwnV4Signal(tailwindcss)
+      || hasOwnV4Signal((tailwindcssPatcherOptions as any)?.tailwindcss)
+    )
+  )
 
   const tailwindPackageConfigured = Boolean(configuredPackageName)
   const shouldPatchV4PostcssPackage = isV4 && !tailwindPackageConfigured
@@ -167,13 +186,16 @@ export function createPatcherForBase(
       ...mergedTailwindOptions,
       packageName,
     }
+    if (supportedResolvedTailwindVersion) {
+      tailwindOptionsForPackage.version = supportedResolvedTailwindVersion
+    }
     try {
-      patchers.push(createTailwindcssPatcher({
+      patchers.push(createTailwindcssPatcher(omitUndefined({
         basedir: baseDir,
         supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
         tailwindcss: tailwindOptionsForPackage,
         tailwindcssPatcherOptions: patchedOptions,
-      }))
+      })))
     }
     catch (error) {
       if (packageCandidateList.length > 1 && isTailwindVersionMismatchError(error)) {
@@ -189,7 +211,8 @@ export function createPatcherForBase(
     throw firstVersionMismatchError
   }
 
-  return patchers.length === 1 ? patchers[0] : createMultiTailwindcssPatcher(patchers)
+  const [singlePatcher] = patchers
+  return patchers.length === 1 && singlePatcher ? singlePatcher : createMultiTailwindcssPatcher(patchers)
 }
 
 export function tryCreateMultiTailwindcssPatcher(
@@ -203,7 +226,10 @@ export function tryCreateMultiTailwindcssPatcher(
   logger.debug('detected multiple Tailwind CSS entry bases: %O', [...groups.keys()])
   const patchers: TailwindcssPatcherLike[] = []
   for (const [baseDir, entries] of groups) {
-    patchers.push(createPatcherForBase(baseDir, entries, options))
+    const patcher = createPatcherForBase(baseDir, entries, options)
+    if (patcher) {
+      patchers.push(patcher)
+    }
   }
   return createMultiTailwindcssPatcher(patchers)
 }

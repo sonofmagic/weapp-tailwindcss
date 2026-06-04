@@ -27,7 +27,7 @@ export const PlatformHighlight: FC<PlatformHighlightProps> = ({ title, tags, lin
       <div className="mb-5 flex items-center justify-between">
         <span
           aria-hidden="true"
-          className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-200/80 to-sky-200/70 text-2xl"
+          className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-200/85 to-cyan-100/80 text-2xl"
         >
           🔥
         </span>

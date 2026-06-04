@@ -36,7 +36,9 @@ view,text,::before,::after {
       border-color: currentColor;
     }
 page,.tw-root,wx-root-portal-content,:host {
+    --color-blue-500: rgb(50, 128, 255);
     --color-zinc-800: rgb(39, 39, 42);
+    --spacing: .25rem;
   }
 view,text,:after,:before {
     box-sizing: border-box;
@@ -44,16 +46,25 @@ view,text,:after,:before {
     margin: 0;
     padding: 0;
   }
+.w-_b100px_B {
+    width: 100px;
+  }
+.p-2 {
+    padding: calc(var(--spacing) * 2);
+  }
+.p-10 {
+    padding: calc(var(--spacing) * 10);
+  }
 .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 .invert {
     --tw-invert: invert(100%);
-    filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
+            filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,) var(--tw-drop-shadow,);
   }
-.before_ccontent-_b_r_a_u_r_a_B::before {
-      --tw-content: \'+\';
+.before_ccontent-_b_a_u_a_B::before {
+      --tw-content: '+';
       content: var(--tw-content);
     }
 .before_ccontent-_b_r_ahello_r_a_B::before {

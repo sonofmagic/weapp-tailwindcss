@@ -2,15 +2,15 @@
 
 说明：Webpack 会按照 `module.loaders` / `rule.use` **从后往前**执行 loader。以下顺序均按“执行时的先后”列出，并特别标出 `postcss-loader`、`runtimeCssImportRewriteLoader`、`runtimeClassSetLoader` 所处位置。
 
-## taro-app / taro-vue3-app / taro-webpack-tailwindcss-v4
-- 路径：`demo/taro-app/node_modules/@tarojs/webpack5-runner/dist/webpack/MiniWebpackModule.js`
+## taro-webpack-react-tailwindcss-v3 / taro-webpack-react-tailwindcss-v4
+- 路径：`demo/taro-webpack-react-tailwindcss-v3/node_modules/@tarojs/webpack5-runner/dist/webpack/MiniWebpackModule.js`
 - 基础执行序：`preprocessor (sass/less/stylus) → runtimeCssImportRewriteLoader → postcss-loader → runtimeClassSetLoader → css-loader → MiniCssExtractPlugin.loader`
   - 架构中的 `MiniCssExtractPlugin.loader → css-loader → postcss-loader` 的定义位于 `getCSSLoaders`，rewrite 和 class-set 分别在它们两侧。
 
-## mpx-app / mpx-tailwindcss-v4
+## mpx-tailwindcss-v3 / mpx-tailwindcss-v4
 - 路径：
-  - Vue CLI loader 链：`demo/mpx-app/node_modules/@vue/cli-service/lib/config/css.js`
-  - Mpx 注入：`demo/mpx-app/node_modules/@mpxjs/webpack-plugin/lib/index.js`
+  - Vue CLI loader 链：`demo/mpx-tailwindcss-v3/node_modules/@vue/cli-service/lib/config/css.js`
+  - Mpx 注入：`demo/mpx-tailwindcss-v3/node_modules/@mpxjs/webpack-plugin/lib/index.js`
 - 执行序（含 Mpx 注入后）：`preprocessor → runtimeCssImportRewriteLoader → postcss-loader → runtimeClassSetLoader → css-loader (被 wxss-loader 取代) → @mpxjs/wxss/loader → @mpxjs/style-compiler → MiniCssExtractPlugin.loader`
   - rewrite 依旧在 `postcss-loader` 之前，class-set 在之后；Mpx 自身的 `wxss/style compiler` 仍保持在 css-loader 之后。
 

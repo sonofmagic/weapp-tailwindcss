@@ -94,7 +94,7 @@ describe('uni-app-x', () => {
     expect(css).not.toContain('--tw-border-spacing-x: 0;')
   })
 
-  it.each(['app-android', 'app-ios'])('keeps @tailwind base usable on %s without pseudo-element selectors', async (platform) => {
+  it.each(['app-android', 'app-ios', 'app-harmony'])('keeps @tailwind base usable on %s without pseudo-element selectors', async (platform) => {
     process.env.UNI_UTS_PLATFORM = platform
     const { styleHandler } = getCompilerContext({
       uniAppX: true,
@@ -112,7 +112,7 @@ describe('uni-app-x', () => {
     expect(css).toContain('.bg-_b_h322323_B')
   })
 
-  it.each(['app-android', 'app-ios'])('pushes required --tw-* defaults down to utility classes on %s', async (platform) => {
+  it.each(['app-android', 'app-ios', 'app-harmony'])('pushes required --tw-* defaults down to utility classes on %s', async (platform) => {
     process.env.UNI_UTS_PLATFORM = platform
     const { styleHandler } = getCompilerContext({
       uniAppX: true,

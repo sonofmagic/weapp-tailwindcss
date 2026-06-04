@@ -30,13 +30,19 @@ export const uniAppPlatform = [
 
 // 预留：staticVariants 配置占位
 export const queryKey = 'weapp-tw-platform'
+export const ifdefAtRule = 'weapp-tw-ifdef'
+export const ifndefAtRule = 'weapp-tw-ifndef'
 
-export function createMediaQuery(value: string) {
-  return `@media (${queryKey}:"${value}"){&}`
+function quoteAtRuleParam(value: string) {
+  return `"${value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`
 }
 
-export function createNegativeMediaQuery(value: string) {
-  return `@media not screen and (${queryKey}:"${value}"){&}`
+export function createConditionalAtRule(value: string) {
+  return `@${ifdefAtRule} ${quoteAtRuleParam(value)}{&}`
+}
+
+export function createNegativeConditionalAtRule(value: string) {
+  return `@${ifndefAtRule} ${quoteAtRuleParam(value)}{&}`
 }
 
 const UNESCAPED_UNDERSCORE_RE = /(?<!\\)_/g
@@ -88,4 +94,13 @@ export function matchCustomPropertyFromValue(str: string, cb: (arr: RegExpExecAr
     index++
     arr = QUERY_KEY_REGEX.exec(str)
   }
+}
+
+export function parseConditionalAtRuleParam(params: string) {
+  const value = params.trim()
+  const quoted = /^(['"])((?:\\.|(?!\1).)*)\1/.exec(value)
+  if (!quoted) {
+    return value
+  }
+  return quoted[2]?.replaceAll(/\\(["'\\])/g, '$1') ?? ''
 }

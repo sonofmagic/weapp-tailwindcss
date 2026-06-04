@@ -6,177 +6,88 @@ import type { SidebarConfig } from './types'
 const tutorialSidebar: SidebarConfig = [
   'intro',
   {
-    type: 'category',
-    label: '🔥Tailwind CSS @3.x',
-    collapsed: false,
-    items: [
-      {
-        type: 'category',
-        label: '🔥快速开始(框架类)',
-        items: [
-          {
-            type: 'doc',
-            id: 'quick-start/install',
-          },
-
-          {
-            type: 'doc',
-            id: 'quick-start/this-plugin',
-          },
-          {
-            items: [
-              {
-                type: 'category',
-                label: 'uni-app',
-                items: [
-                  {
-                    type: 'doc',
-                    label: 'CLI Vue3 Vite（推荐）',
-                    id: 'quick-start/frameworks/uni-app-vite',
-                  },
-                  {
-                    type: 'doc',
-                    label: 'HBuilderX Vue3 Vite（推荐）',
-                    id: 'quick-start/frameworks/hbuilderx',
-                  },
-                  {
-                    type: 'link',
-                    label: 'HBuilderX Vue2 Webpack（存量项目）',
-                    href: '/docs/quick-start/frameworks/hbuilderx#hbuilderx-vue2-webpack',
-                  },
-                  {
-                    type: 'doc',
-                    label: 'CLI Vue2 Webpack（存量项目）',
-                    id: 'quick-start/frameworks/uni-app',
-                  },
-                  {
-                    type: 'doc',
-                    label: 'uni-app x',
-                    id: 'quick-start/frameworks/uni-app-x',
-                  },
-                ],
-              },
-              ...['taro', 'rax', 'mpx', 'native', 'api'].map(x => `quick-start/frameworks/${x}`),
-            ],
-            label: '3. 各个框架的注册方式',
-            type: 'category',
-            collapsed: true,
-          },
-          {
-            type: 'doc',
-            id: 'quick-start/rem2rpx',
-          },
-        ],
-        collapsed: false,
-      },
-      {
-        type: 'category',
-        label: '🔥快速开始(纯原生)',
-        items: [
-          {
-            type: 'doc',
-            id: 'quick-start/native/install',
-          },
-          {
-            type: 'doc',
-            id: 'quick-start/native/install-plugin',
-          },
-          // {
-          //   type: 'doc',
-          //   id: 'quick-start/native/principle',
-          // },
-        ],
-        collapsed: false,
-      },
-    ],
+    type: 'doc',
+    id: 'quick-start/install',
+    label: '安装依赖',
   },
   {
     type: 'category',
-    label: '🧪Tailwind CSS @4.x',
+    label: '各框架注册方式',
     collapsed: false,
     items: [
       {
         type: 'category',
-        label: '各个框架的注册方式',
-        items: [
-          {
-            type: 'category',
-            label: 'uni-app',
-            collapsed: true,
-            items: [
-              {
-                type: 'doc',
-                label: 'Vite Vue3 CLI（推荐）',
-                id: 'quick-start/v4/uni-app-vite',
-              },
-              {
-                type: 'doc',
-                label: 'HBuilderX Vue3 Vite（推荐）',
-                id: 'quick-start/v4/uni-app-vite-hbuilder',
-              },
-              {
-                type: 'doc',
-                label: 'CLI Vue2 Webpack（存量项目）',
-                id: 'quick-start/v4/uni-app-webpack',
-              },
-              {
-                type: 'doc',
-                label: 'uni-app x',
-                id: 'quick-start/v4/uni-app-x',
-              },
-            ],
-          },
-          {
-            type: 'category',
-            label: 'Taro',
-            items: [
-              {
-                type: 'doc',
-                label: 'Webpack',
-                id: 'quick-start/v4/taro-webpack',
-              },
-              {
-                type: 'doc',
-                label: 'Vite',
-                id: 'quick-start/v4/taro-vite',
-              },
-            ],
-          },
-          {
-            type: 'doc',
-            id: 'quick-start/v4/weapp-vite',
-          },
-          {
-            type: 'doc',
-            id: 'quick-start/v4/mpx',
-          },
-        ],
-      },
-      {
-        type: 'doc',
-        id: 'quick-start/v4/readme',
-      },
-      {
-        type: 'category',
-        label: '进阶攻略',
+        label: 'uni-app',
         collapsed: true,
         items: [
           {
             type: 'doc',
-            id: 'quick-start/v4/tutorial/index',
+            label: 'CLI Vue3 Vite',
+            id: 'quick-start/frameworks/uni-app-vite',
           },
           {
             type: 'doc',
-            id: 'quick-start/v4/tutorial/workflow',
+            label: 'HBuilderX',
+            id: 'quick-start/frameworks/hbuilderx',
           },
           {
             type: 'doc',
-            id: 'quick-start/v4/tutorial/advanced',
+            label: 'CLI Vue2 Webpack（存量项目）',
+            id: 'quick-start/frameworks/uni-app',
+          },
+          {
+            type: 'doc',
+            label: 'uni-app x',
+            id: 'quick-start/frameworks/uni-app-x',
           },
         ],
       },
+      {
+        type: 'category',
+        label: 'Taro',
+        collapsed: true,
+        items: [
+          {
+            type: 'doc',
+            label: 'Webpack / Vite',
+            id: 'quick-start/frameworks/taro',
+          },
+        ],
+      },
+      {
+        type: 'category',
+        label: 'Weapp-vite',
+        collapsed: true,
+        items: [
+          {
+            type: 'doc',
+            label: '快速接入',
+            id: 'quick-start/native/install',
+          },
+          {
+            type: 'doc',
+            label: '打包方案说明',
+            id: 'quick-start/frameworks/native',
+          },
+        ],
+      },
+      {
+        type: 'category',
+        label: 'Mpx',
+        collapsed: true,
+        items: [
+          {
+            type: 'doc',
+            label: 'Mpx',
+            id: 'quick-start/frameworks/mpx',
+          },
+        ],
+      },
+      'quick-start/frameworks/rax',
+      'quick-start/frameworks/api',
     ],
   },
+  'quick-start/unocss',
 
   {
     type: 'category',

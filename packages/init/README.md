@@ -15,7 +15,6 @@
 
 ![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
 ![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
-![dm1](https://badgen.net/npm/dm/weapp-tailwindcss-webpack-plugin)
 ![license](https://badgen.net/npm/license/weapp-tailwindcss)
 [![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
 [![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
@@ -55,12 +54,12 @@
 
 ## 版本对应
 
-目前，`weapp-tailwindcss` 的 `4.x` 版本
+目前，`weapp-tailwindcss` 的 `5.x` 版本
 
-- 支持最新版本的 `tailwindcss v4` 和 `v3` 还有 `v2 jit` 版本。
-- 支持 `webpack5`，`webpack4`, `vite` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
+- 支持最新版本的 `tailwindcss v4` 和 `v3`。
+- 支持 `webpack5`、`vite`、`rspack`、`rollup`、`rolldown` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
 
-> 如果你还在使用 `tailwindcss@2` 版本，那你应该使用从 `weapp-tailwindcss/webpack4` 导出的本插件的 `postcss7` `webpack4` 版本。另外请确保你的 `nodejs` 版本 `>=16.6.0`。目前低于 `16` 的长期维护版本(`偶数版本`) 都已经结束了生命周期，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> `weapp-tailwindcss@5` 面向 Tailwind CSS v3/v4 和现代构建链路，不再内置 Webpack4、PostCSS7、Tailwind CSS v2 兼容入口。`weapp-tailwindcss@5` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
 ## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 

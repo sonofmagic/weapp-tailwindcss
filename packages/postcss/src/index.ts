@@ -1,4 +1,23 @@
 // 统一导出入口，供外部调用端按需引用核心能力
+export {
+  type DynamicColorMixAlphaProtection,
+  type DynamicColorMixAlphaProtectionOptions,
+  type ModernColorValueNormalization,
+  normalizeModernColorValue,
+  protectDynamicColorMixAlpha,
+} from './compat/color-mix'
+export {
+  finalizeMiniProgramCss,
+  hoistTailwindPreflightBase,
+  pruneMiniProgramGeneratedCss,
+  removeUnsupportedAtSupports,
+  removeUnsupportedCascadeLayers,
+  removeUnsupportedMiniProgramAtRules,
+} from './compat/mini-program-css'
+export {
+  normalizeMiniProgramPrefixedDeclaration,
+  removeUnsupportedMiniProgramPrefixedAtRule,
+} from './compat/mini-program-prefixes'
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {
@@ -13,3 +32,7 @@ export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cl
 export { createInjectPreflight } from './preflight'
 export { internalCssSelectorReplacer } from './shared'
 export * from './types'
+export {
+  composeRules as unitConversionComposeRules,
+  presets as unitConversionPresets,
+} from 'postcss-rule-unit-converter'

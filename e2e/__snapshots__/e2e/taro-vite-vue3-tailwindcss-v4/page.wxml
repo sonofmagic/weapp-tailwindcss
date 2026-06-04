@@ -1,0 +1,6 @@
+<view class="index" hover-class="none" hover-start-time="50" hover-stay-time="400" style="">
+  <view class="h-_b300px_B text-_b_hc31d6b_B bg-_b_h123456_B" style="">Taro Vite Vue3 Tailwind CSS v4</view>
+  <text class="text-_b55rpx_B text-_b_hfff_B bg-purple-300" space="" style=""></text>
+  <view class="h-14 bg-gradient-to-r from-cyan-500 to-blue-500" style=""></view>
+  <view class="h-14 bg-linear-to-r from-cyan-500 to-blue-500" style=""></view>
+</view>

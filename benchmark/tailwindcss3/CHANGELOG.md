@@ -1,5 +1,12 @@
 # benchmark-tailwindcss3
 
+## 0.0.10-next.0
+
+### Patch Changes
+
+- 📦 **Dependencies**
+  → `@weapp-tailwindcss/merge-v3@0.2.1-next.0`, `@weapp-tailwindcss/variants-v3@0.1.3-next.0`
+
 ## 0.0.9
 
 ### Patch Changes

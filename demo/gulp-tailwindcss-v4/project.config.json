@@ -1,0 +1,40 @@
+{
+  "miniprogramRoot": "dist/",
+  "svr": "./server",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "condition": false,
+    "packNpmManually": true,
+    "packNpmRelationList": [
+      {
+        "packageJsonPath": "./package.json",
+        "miniprogramNpmDistDir": "./dist"
+      }
+    ],
+    "minifyWXML": true
+  },
+  "appid": "wx6ffee4673b257014",
+  "projectname": "gulp-tailwindcss-v4-weapp",
+  "condition": {},
+  "compileType": "miniprogram",
+  "libVersion": "3.10.3",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "srcMiniprogramRoot": "dist/",
+  "qcloudRoot": "server/"
+}

@@ -1,0 +1,49 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Weixin",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "usingComponents": {},
+  "subPackages": [
+    {
+      "root": "packageA",
+      "name": "pack1",
+      "pages": [
+        "pages/cat",
+        "pages/dog"
+      ],
+      "entry": "index.js"
+    },
+    {
+      "root": "packageB",
+      "name": "pack2",
+      "pages": [
+        "pages/apple",
+        "pages/banana"
+      ],
+      "entry": "index.ts",
+      "independent": true
+    },
+    {
+      "root": "sub-normal",
+      "pages": [
+        "pages/index"
+      ]
+    },
+    {
+      "root": "sub-independent",
+      "pages": [
+        "pages/index"
+      ],
+      "independent": true
+    }
+  ],
+  "style": "v2",
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

@@ -1,0 +1,11 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+@source "../index.html";
+@source "./**/*.{vue,ts}";
+
+html {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}

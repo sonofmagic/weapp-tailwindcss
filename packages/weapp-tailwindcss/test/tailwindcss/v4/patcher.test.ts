@@ -200,13 +200,40 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const patcher = createPatcherForBase(baseDir, cssEntries, factoryOptions)
 
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
-    const [callA, callB] = createTailwindcssPatcher.mock.calls.map(call => call[0])
-    expect(new Set([callA.basedir, callB.basedir])).toEqual(new Set([baseDir]))
+    const [callA] = createTailwindcssPatcher.mock.calls.map(call => call[0])
+    expect(callA.basedir).toBe(baseDir)
     expect(callA.cacheDir).toBeUndefined()
     expect(callA.tailwindcss?.version).toBeUndefined()
     expect(callA.tailwindcss?.v4?.base).toBeUndefined()
     expect(callA.tailwindcss?.v4?.cssEntries).toEqual(cssEntries)
     expect(patcher.majorVersion).toBe(4)
+  })
+
+  it('passes bare arbitrary value options to tailwindcss-patch v4 options', async () => {
+    createTailwindcssPatcher.mockImplementation(options => ({
+      ...options,
+      majorVersion: 4,
+      packageInfo: { version: '4.0.0' },
+    }))
+
+    const { createPatcherForBase } = await loadModule()
+    const baseDir = '/workspace/app'
+    const cssEntries = [`${baseDir}/src/app.css`]
+
+    createPatcherForBase(baseDir, cssEntries, {
+      tailwindcss: { version: 4 },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+      bareArbitraryValues: {
+        units: ['%', 'px', 'rem'],
+      },
+    } as unknown as InternalUserDefinedOptions)
+
+    const [callA] = createTailwindcssPatcher.mock.calls.map(call => call[0])
+    expect(callA.tailwindcss?.v4?.bareArbitraryValues).toEqual({
+      units: ['%', 'px', 'rem'],
+    })
   })
 
   it('creates dual patchers for v4 when no package is configured', async () => {
@@ -231,6 +258,22 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const packageNames = createTailwindcssPatcher.mock.calls.map(call => call[0].tailwindcss?.packageName)
     expect(packageNames).toContain('@tailwindcss/postcss')
     expect(packageNames).toContain('tailwindcss')
+  })
+
+  it('prefers the installed Tailwind package version over an explicit v4 setting', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const patcher = createPatcherForBase(process.cwd(), ['/workspace/app/src/app.css'], {
+      tailwindcss: { version: 4 },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'taro',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(patcher.tailwindcss?.packageName).toBe('tailwindcss')
+    expect(patcher.tailwindcss?.version).toBe(3)
   })
 
   it('skips incompatible tailwindcss candidate when fallback v4 package succeeds', async () => {
@@ -317,7 +360,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     )
   })
 
-  it('does not inject tailwindcss version when css entries imply v4', async () => {
+  it('does not inject tailwindcss version when css entries are configured', async () => {
     createTailwindcssPatcher.mockImplementation(options => ({
       packageInfo: { name: options.tailwindcss?.packageName } as any,
       majorVersion: 4,
@@ -557,6 +600,67 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.tailwindcss?.v4?.cssEntries).toEqual(['/workspace/app/src/app.css'])
   })
 
+  it('preserves auto-detected v4 css sources when css entries are omitted', async () => {
+    createTailwindcssPatcher.mockImplementation(options => options)
+    const { createPatcherForBase } = await loadModule()
+
+    const cssSource = {
+      file: '/workspace/app/src/main.css',
+      base: '/workspace/app/src',
+      css: '@import "tailwindcss";',
+      dependencies: ['/workspace/app/src/tailwind.config.js'],
+    }
+    const patcher = createPatcherForBase('/workspace/app', undefined, {
+      tailwindcss: {
+        v4: {
+          cssSources: [cssSource],
+        },
+      },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'uni-app-vite',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(patcher.tailwindcss?.v4?.base).toBe('/workspace/app')
+    expect(patcher.tailwindcss?.v4?.cssEntries).toEqual([])
+    expect(patcher.tailwindcss?.v4?.cssSources).toEqual([cssSource])
+  })
+
+  it('treats auto-detected v4 css sources as a v4 signal when selecting patch packages', async () => {
+    createTailwindcssPatcher.mockImplementation(options => ({
+      majorVersion: options.tailwindcss.packageName === '@tailwindcss/postcss' ? 4 : 3,
+      packageName: options.tailwindcss.packageName,
+      tailwindcss: options.tailwindcss,
+    }))
+    const { createPatcherForBase } = await loadModule()
+
+    const cssSource = {
+      file: '/workspace/app/src/main.css',
+      base: '/workspace/app/src',
+      css: '@import "tailwindcss";',
+    }
+    const patcher = createPatcherForBase('/workspace/app', undefined, {
+      tailwindcss: {
+        v4: {
+          cssSources: [cssSource],
+        },
+      },
+      tailwindcssPatcherOptions: undefined,
+      supportCustomLengthUnitsPatch: true,
+      appType: 'uni-app-vite',
+    } as unknown as InternalUserDefinedOptions) as any
+
+    expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
+      tailwindcss: expect.objectContaining({
+        packageName: '@tailwindcss/postcss',
+        v4: expect.objectContaining({
+          cssSources: [cssSource],
+        }),
+      }),
+    }))
+    expect(patcher.packageName).toBe('@tailwindcss/postcss')
+  })
+
   it('recreates v4 config when user explicitly disables it', async () => {
     createTailwindcssPatcher.mockImplementation(options => options)
     const { createPatcherForBase } = await loadModule()
@@ -570,65 +674,6 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
     expect(patcher.tailwindcss?.v4?.base).toBe('/workspace/app')
     expect(patcher.tailwindcss?.v4?.cssEntries).toEqual([])
-  })
-
-  it('overrides legacy tailwindcssPatcherOptions for base', async () => {
-    createTailwindcssPatcher.mockImplementation(options => options)
-    const { createPatcherForBase } = await loadModule()
-    const baseDir = '/workspace/app'
-    const legacyOptions = {
-      patch: {
-        basedir: '/should/overwrite',
-        tailwindcss: {
-          v4: { cssEntries: ['/old'] },
-        },
-      },
-    }
-
-    const patcher = createPatcherForBase(baseDir, undefined, {
-      tailwindcss: { version: 3 },
-      tailwindcssPatcherOptions: legacyOptions as any,
-      supportCustomLengthUnitsPatch: true,
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions) as any
-
-    expect(patcher.tailwindcssPatcherOptions?.patch?.basedir).toBe(baseDir)
-    expect(patcher.tailwindcssPatcherOptions?.patch?.cwd).toBe(baseDir)
-    expect(patcher.tailwindcssPatcherOptions?.patch?.tailwindcss?.v4?.base).toBe(baseDir)
-  })
-
-  it('keeps legacy patch config untouched when tailwindcss is missing', async () => {
-    createTailwindcssPatcher.mockImplementation(options => options)
-    const { createPatcherForBase } = await loadModule()
-
-    const patcher = createPatcherForBase('/workspace/app', [], {
-      tailwindcss: undefined,
-      tailwindcssPatcherOptions: { patch: {} } as any,
-      supportCustomLengthUnitsPatch: true,
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions) as any
-
-    expect(patcher.tailwindcssPatcherOptions.patch.tailwindcss).toBeUndefined()
-  })
-
-  it('populates legacy tailwindcss v4 config when missing', async () => {
-    createTailwindcssPatcher.mockImplementation(options => options)
-    const { createPatcherForBase } = await loadModule()
-
-    const _patcher = createPatcherForBase('/workspace/app', ['/workspace/app/src/app.css'], {
-      tailwindcss: undefined,
-      tailwindcssPatcherOptions: { patch: { tailwindcss: {} } } as any,
-      supportCustomLengthUnitsPatch: true,
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions) as any
-
-    const firstCall = createTailwindcssPatcher.mock.calls[0]?.[0] ?? {}
-    const patchedV4 = firstCall.tailwindcssPatcherOptions?.patch?.tailwindcss?.v4
-    expect(patchedV4).toEqual({
-      cssEntries: ['/workspace/app/src/app.css'],
-    })
-    expect(patchedV4?.base).toBeUndefined()
-    expect(patchedV4?.cssEntries?.length).toBe(1)
   })
 
   it('preserves modern tailwindcssPatcherOptions v4 base when css entries are provided', async () => {
@@ -672,17 +717,9 @@ describe('tailwindcss/v4/patcher helpers', () => {
 
     expect(withoutTailwind.tailwindcssPatcherOptions).toEqual({})
 
-    const legacyWithoutPatch = createPatcherForBase('/workspace/app', [], {
-      tailwindcss: undefined,
-      tailwindcssPatcherOptions: { patch: undefined } as any,
-      supportCustomLengthUnitsPatch: true,
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions) as any
-
-    expect(legacyWithoutPatch.tailwindcssPatcherOptions).toEqual({ patch: undefined })
   })
 
-  it('merges multiple patchers into a single runtime', async () => {
+  it('merges multiple patchers into a single runtime without exposing patch aggregation', async () => {
     const patcherA: TailwindcssPatcherLike = {
       packageInfo: { version: '4.0.0' } as any,
       majorVersion: 4,
@@ -713,10 +750,9 @@ describe('tailwindcss/v4/patcher helpers', () => {
     const { createMultiTailwindcssPatcher } = await loadModule()
     const merged = createMultiTailwindcssPatcher([patcherA, patcherB])
 
-    const patchResult = await merged.patch()
-    expect(patcherA.patch).toHaveBeenCalled()
-    expect(patcherB.patch).toHaveBeenCalled()
-    expect(patchResult).toEqual({ exposeContext: 'ctxA', extendLengthUnits: true })
+    expect(merged.patch).toBeUndefined()
+    expect(patcherA.patch).not.toHaveBeenCalled()
+    expect(patcherB.patch).not.toHaveBeenCalled()
 
     expect([...await merged.getClassSet()]).toEqual(['a', 'b'])
     expect(merged.getClassSetSync?.()).toEqual(new Set(['a']))

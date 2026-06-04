@@ -4,6 +4,7 @@ exports[`get options > default options 1`] = `
 {
   "arbitraryValues": {
     "allowDoubleQuotes": false,
+    "bareArbitraryValues": false,
   },
   "babelParserOptions": {
     "cache": true,
@@ -20,24 +21,7 @@ exports[`get options > default options 1`] = `
     "has": [Function],
     "hasHashKey": [Function],
     "hashMap": Map {},
-    "instance": LRUCache {
-      "allowStale": false,
-      "allowStaleOnFetchAbort": false,
-      "allowStaleOnFetchRejection": false,
-      "ignoreFetchAbort": false,
-      "maxEntrySize": 0,
-      "noDeleteOnFetchRejection": false,
-      "noDeleteOnStaleGet": false,
-      "noDisposeOnSet": false,
-      "noUpdateTTL": false,
-      "sizeCalculation": undefined,
-      "ttl": 0,
-      "ttlAutopurge": false,
-      "ttlResolution": 1,
-      "updateAgeOnGet": false,
-      "updateAgeOnHas": false,
-      Symbol(Symbol.toStringTag): "LRUCache",
-    },
+    "instance": "<LRUCache>",
     "process": [Function],
     "set": [Function],
     "setHashValue": [Function],
@@ -134,6 +118,7 @@ exports[`get options > default options 1`] = `
     "}": "_K",
     "~": "_w",
   },
+  "generator": {},
   "htmlMatcher": [Function],
   "ignoreCallExpressionIdentifiers": [],
   "ignoreTaggedTemplateExpressionIdentifiers": [
@@ -153,13 +138,13 @@ exports[`get options > default options 1`] = `
   "postcssOptions": {},
   "refreshTailwindcssPatcher": [Function],
   "replaceRuntimePackages": false,
-  "rewriteCssImports": true,
   "styleHandler": [Function],
   "tailwindcssBasedir": "<cwd>",
   "tailwindcssPatcherOptions": {
     "filter": [Function],
   },
   "templateHandler": [Function],
+  "unocss": false,
   "wxsMatcher": [Function],
 }
 `;

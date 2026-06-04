@@ -1,37 +1,147 @@
 // webpack 5
+import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
-import process from 'node:process'
+import path from 'node:path'
+import micromatch from 'micromatch'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
-import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { resolveDisabledOptions } from '@/utils/disabled'
+import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
+import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
-import { applyTailwindcssCssImportRewrite } from '../shared/css-imports'
-import { hasWatchChanges } from './shared'
+import { isWatchFileInRuntimeDependencies } from './shared'
 import { setupWebpackV5ProcessAssetsHook } from './v5-assets'
 import { setupWebpackV5Loaders } from './v5-loaders'
 
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 
+type WebpackWatchOptions = Parameters<Compiler['watch']>[0]
+type WebpackWatchIgnoredItem = string | RegExp | ((file: string) => boolean)
+const outputIgnoredPredicatePath = Symbol('weapp-tailwindcss.outputIgnoredPredicatePath')
+
+type OutputIgnoredPredicate = ((file: string) => boolean) & {
+  [outputIgnoredPredicatePath]?: string
+}
+
+function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']): WebpackWatchIgnoredItem[] {
+  if (Array.isArray(ignored)) {
+    return ignored.filter((item): item is WebpackWatchIgnoredItem =>
+      typeof item === 'string' || item instanceof RegExp || typeof item === 'function',
+    )
+  }
+  if (typeof ignored === 'string' || ignored instanceof RegExp || typeof ignored === 'function') {
+    return [ignored]
+  }
+  return []
+}
+
+function createOutputIgnoredPredicate(
+  ignoredList: WebpackWatchIgnoredItem[],
+  ignoredPath: string,
+) {
+  const predicate: OutputIgnoredPredicate = (file: string) => {
+    const resolvedFile = path.resolve(file)
+    if (resolvedFile === ignoredPath || resolvedFile.startsWith(`${ignoredPath}${path.sep}`)) {
+      return true
+    }
+
+    const normalizedFile = file.replace(/\\/g, '/')
+    return ignoredList.some((item) => {
+      if (typeof item === 'string') {
+        const resolvedItem = path.resolve(item)
+        if (resolvedFile === resolvedItem || resolvedFile.startsWith(`${resolvedItem}${path.sep}`)) {
+          return true
+        }
+        return micromatch.isMatch(normalizedFile, item)
+      }
+      if (item instanceof RegExp) {
+        return item.test(normalizedFile)
+      }
+      return item(file)
+    })
+  }
+  predicate[outputIgnoredPredicatePath] = ignoredPath
+  return predicate
+}
+
+function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath: string) {
+  if (
+    typeof ignored === 'function'
+    && (ignored as OutputIgnoredPredicate)[outputIgnoredPredicatePath] === ignoredPath
+  ) {
+    return ignored
+  }
+
+  const ignoredList = normalizeIgnoredList(ignored)
+  const hasNonStringIgnoredRule = ignoredList.some(item => typeof item !== 'string')
+  if (hasNonStringIgnoredRule) {
+    return createOutputIgnoredPredicate(ignoredList, ignoredPath)
+  }
+
+  if (ignoredList.some(item => typeof item === 'string' && path.resolve(item) === ignoredPath)) {
+    return ignored
+  }
+  return [...ignoredList, ignoredPath]
+}
+
+function setupWebpackWatchOutputIgnore(compiler: Compiler) {
+  const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions) => {
+    const outputPath = compiler.outputPath || compiler.options?.output?.path
+    const outputDir = outputPath ? path.resolve(outputPath) : undefined
+    if (!outputDir) {
+      return watchOptions
+    }
+
+    if (watchOptions && typeof watchOptions === 'object') {
+      watchOptions.ignored = appendIgnoredPath(watchOptions.ignored, outputDir)
+      return watchOptions
+    }
+
+    return { ignored: appendIgnoredPath(undefined, outputDir) } as WebpackWatchOptions
+  }
+
+  compiler.options.watchOptions = appendOutputIgnoredPath(compiler.options.watchOptions)
+
+  const syncOutputIgnoredPath = () => {
+    const outputPath = compiler.outputPath || compiler.options?.output?.path
+    const outputDir = outputPath ? path.resolve(outputPath) : undefined
+    if (!outputDir) {
+      return
+    }
+
+    const watchOptions = (compiler.watching as { watchOptions?: WebpackWatchOptions } | undefined)?.watchOptions
+    if (watchOptions) {
+      appendOutputIgnoredPath(watchOptions)
+    }
+  }
+
+  compiler.hooks.watchRun?.tap(pluginName, syncOutputIgnoredPath)
+}
+
 /**
- * @name UnifiedWebpackPluginV5
+ * @name WeappTailwindcss
  * @description webpack5 核心转义插件
  * @link https://tw.icebreaker.top/docs/intro
  */
 
-export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
+export class WeappTailwindcss implements IBaseWebpackPlugin {
   options: InternalUserDefinedOptions
   appType?: AppType
+  private hasInitialTailwindCssRoots: boolean
 
   constructor(options: UserDefinedOptions = {}) {
-    this.options = getCompilerContext(options)
+    this.hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots(options)
+    this.options = getCompilerContext({
+      ...options,
+      __internalDeferMissingCssEntriesWarning: true,
+    } as UserDefinedOptions)
     this.appType = this.options.appType
   }
 
@@ -41,44 +151,36 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       disabled,
       onLoad,
       runtimeLoaderPath,
-      runtimeCssImportRewriteLoaderPath,
       twPatcher: initialTwPatcher,
       refreshTailwindcssPatcher,
     } = this.options
 
-    const disabledOptions = resolveDisabledOptions(disabled)
+    const disabledOptions = resolvePluginDisabledState(disabled)
     const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
-    const shouldRewriteCssImports = isTailwindcssV4
-      && this.options.rewriteCssImports !== false
-      && !disabledOptions.rewriteCssImports
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator)
+    const shouldRewriteCssImports = isTailwindcssV4 || generatorOptions.target === 'web'
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
-      applyTailwindcssCssImportRewrite(compiler, {
-        pkgDir: weappTailwindcssPackageDir,
-        enabled: true,
-        appType: this.appType,
-      })
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
     }
     if (disabledOptions.plugin) {
       return
     }
-    const patchRecorderState = setupPatchRecorder(initialTwPatcher, this.options.tailwindcssBasedir, {
-      source: 'runtime',
-      cwd: this.options.tailwindcssBasedir ?? process.cwd(),
-    })
+    setupWebpackWatchOutputIgnore(compiler)
+    const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
     const runtimeState = {
       twPatcher: initialTwPatcher,
-      patchPromise: patchRecorderState.patchPromise,
+      readyPromise,
       refreshTailwindcssPatcher,
-      onPatchCompleted: patchRecorderState.onPatchCompleted,
     }
 
     let runtimeSetPrepared = false
     let runtimeSetSignature: string | undefined
     let runtimeRefreshRequiredForCompilation = false
+    let watchRunObserved = false
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
+    const webpackProcessedCssSourceFiles = new Set<string>()
     let runtimeMetadataPrepared = false
 
     const updateRuntimeWatchDependencies = async () => {
@@ -91,6 +193,14 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       }
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         runtimeWatchDependencyFiles.add(entry)
+      }
+      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+        if (source.file) {
+          runtimeWatchDependencyFiles.add(source.file)
+        }
+        for (const dependency of source.dependencies ?? []) {
+          runtimeWatchDependencyFiles.add(dependency)
+        }
       }
       for (const source of tailwindOptions?.v4?.sources ?? []) {
         if (source?.base) {
@@ -128,23 +238,76 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeMetadataPrepared = true
     }
 
-    const syncRuntimeRefreshRequirement = () => {
-      runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation || hasWatchChanges(compiler as Compiler & {
+    const collectWatchChangedFiles = () => {
+      const compilerLike = compiler as Compiler & {
         modifiedFiles?: Set<string>
         removedFiles?: Set<string>
-      })
+      }
+      return new Set([
+        ...(compilerLike.modifiedFiles ?? []),
+        ...(compilerLike.removedFiles ?? []),
+      ])
+    }
+
+    const hasRuntimeDependencyChanges = (files: Iterable<string>) => {
+      for (const file of files) {
+        if (isWatchFileInRuntimeDependencies(file, {
+          contexts: runtimeWatchDependencyContexts,
+          files: runtimeWatchDependencyFiles,
+        })) {
+          return true
+        }
+      }
+      return false
+    }
+
+    const syncRuntimeRefreshRequirement = (markWatchRun = false) => {
+      if (markWatchRun) {
+        watchRunObserved = true
+      }
+      const changedFiles = collectWatchChangedFiles()
+      runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation
+        || hasRuntimeDependencyChanges(changedFiles)
     }
 
     const resetRuntimePreparation = () => {
       runtimeSetPrepared = false
-      runtimeMetadataPrepared = false
       syncRuntimeRefreshRequirement()
     }
 
-    compiler.hooks.invalid?.tap?.(pluginName, () => {
+    const registerAutoCssSource = async (source: TailwindV4CssSource) => {
+      if (
+        this.hasInitialTailwindCssRoots
+        || (runtimeState.twPatcher.majorVersion ?? 0) < 4
+        || !source.file
+      ) {
+        return
+      }
+      const changed = upsertTailwindV4CssSource(this.options, source)
+      if (!changed) {
+        return
+      }
+      runtimeSetPrepared = false
+      runtimeMetadataPrepared = false
       runtimeRefreshRequiredForCompilation = true
+      await refreshTailwindRuntimeState(runtimeState, {
+        force: true,
+        clearCache: true,
+      })
+      debug('detected tailwindcss v4 css source from webpack css module: %s', source.file)
+    }
+    const markWebpackProcessedCssSource = (file: string) => {
+      webpackProcessedCssSourceFiles.add(path.resolve(file))
+    }
+
+    compiler.hooks.invalid?.tap?.(pluginName, (fileName: string | null) => {
+      if (!fileName) {
+        return
+      }
+      runtimeRefreshRequiredForCompilation = runtimeRefreshRequiredForCompilation
+        || hasRuntimeDependencyChanges([path.resolve(fileName)])
     })
-    compiler.hooks.watchRun?.tap?.(pluginName, syncRuntimeRefreshRequirement)
+    compiler.hooks.watchRun?.tap?.(pluginName, () => syncRuntimeRefreshRequirement(true))
     if (compiler.hooks.thisCompilation?.tap) {
       compiler.hooks.thisCompilation.tap(pluginName, resetRuntimePreparation)
     }
@@ -162,13 +325,20 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeSetPrepared = true
       await ensureRuntimeClassSet(runtimeState, {
         forceRefresh,
-        forceCollect: true,
+        forceCollect: forceRefresh || !watchRunObserved,
         clearCache: forceRefresh,
         allowEmpty: true,
       })
       await ensureRuntimeMetadata(forceRefresh)
       runtimeSetSignature = signature
       runtimeRefreshRequiredForCompilation = false
+    }
+
+    async function getRuntimeSetInLoader() {
+      await getClassSetInLoader()
+      return ensureRuntimeClassSet(runtimeState, {
+        allowEmpty: true,
+      })
     }
 
     onLoad()
@@ -179,8 +349,11 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       weappTailwindcssPackageDir,
       shouldRewriteCssImports,
       runtimeLoaderPath,
-      runtimeCssImportRewriteLoaderPath,
+      registerAutoCssSource,
+      runtimeState,
       getClassSetInLoader,
+      getRuntimeSetInLoader,
+      markWebpackProcessedCssSource,
       getRuntimeWatchDependencies() {
         return {
           files: runtimeWatchDependencyFiles,
@@ -197,9 +370,15 @@ export class UnifiedWebpackPluginV5 implements IBaseWebpackPlugin {
       runtimeState,
       getRuntimeRefreshRequirement: () => runtimeRefreshRequiredForCompilation,
       refreshRuntimeMetadata: ensureRuntimeMetadata,
+      isWebpackProcessedCssAsset(file, rawSource) {
+        return webpackProcessedCssSourceFiles.has(path.resolve(file))
+          || rawSource.includes('weapp-tailwindcss webpack-generated-css')
+      },
       consumeRuntimeRefreshRequirement() {
         runtimeRefreshRequiredForCompilation = false
       },
+      isWatchMode: () => watchRunObserved || compiler.options?.watch === true,
+      runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
       debug,
     })
   }

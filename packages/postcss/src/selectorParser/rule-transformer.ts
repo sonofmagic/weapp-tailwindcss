@@ -150,13 +150,22 @@ const UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
   '::after',
   '::before',
   '::backdrop',
+  '::-ms-backdrop',
+  '::-webkit-backdrop',
+  '::file-selector-button',
+])
+
+const MINI_PROGRAM_UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
+  '::backdrop',
+  '::-ms-backdrop',
+  '::-webkit-backdrop',
   '::file-selector-button',
 ])
 
 function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector, options: IStyleHandlerOptions) {
   if (!isUniAppXEnabled(options)) {
     return selector.nodes.some(node =>
-      node.type === 'pseudo' && (node.value === '::backdrop' || node.value === '::file-selector-button'))
+      node.type === 'pseudo' && MINI_PROGRAM_UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET.has(node.value))
   }
 
   return selector.nodes.some(node => node.type === 'pseudo' && UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET.has(node.value))

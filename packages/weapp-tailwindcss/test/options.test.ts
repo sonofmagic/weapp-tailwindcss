@@ -1,6 +1,50 @@
 import path from 'node:path'
 import { getCompilerContext } from '@/context'
+import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { defu } from '@/utils'
+
+const generatorTargetEnvKeys = [
+  'UNI_PLATFORM',
+  'UNI_UTS_PLATFORM',
+  'MPX_CLI_MODE',
+  'MPX_CURRENT_TARGET_MODE',
+  'TARO_ENV',
+  'WEAPP_TW_TARGET',
+  'WEAPP_TAILWINDCSS_TARGET',
+] as const
+
+function withGeneratorTargetEnv(
+  env: Partial<Record<typeof generatorTargetEnvKeys[number], string>>,
+  callback: () => void,
+) {
+  const originalEnvValues = new Map<string, string | undefined>(
+    generatorTargetEnvKeys.map(key => [key, process.env[key]]),
+  )
+
+  for (const key of generatorTargetEnvKeys) {
+    if (env[key] === undefined) {
+      delete process.env[key]
+    }
+    else {
+      process.env[key] = env[key]
+    }
+  }
+
+  try {
+    callback()
+  }
+  finally {
+    for (const [key, value] of originalEnvValues) {
+      if (value === undefined) {
+        delete process.env[key]
+      }
+      else {
+        process.env[key] = value
+      }
+    }
+  }
+}
 
 function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>) {
   const clone = { ...options }
@@ -8,6 +52,10 @@ function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>)
   if (typeof clone.tailwindcssBasedir === 'string') {
     clone.tailwindcssBasedir = clone.tailwindcssBasedir.replace(cwd, '<cwd>')
   }
+  clone.cache = {
+    ...clone.cache,
+    instance: '<LRUCache>',
+  } as typeof clone.cache
   return clone
 }
 
@@ -19,6 +67,16 @@ describe('get options', () => {
     expect(options).toMatchSnapshot()
   })
 
+  it('default cache exposes lru compatible operations', () => {
+    const { cache } = getCompilerContext({})
+    expect(cache.instance).toMatchObject({
+      get: expect.any(Function),
+      has: expect.any(Function),
+      set: expect.any(Function),
+      delete: expect.any(Function),
+    })
+  })
+
   it('default matcher', () => {
     const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext()
     expect(cssMatcher('a.css')).toBe(true)
@@ -26,6 +84,92 @@ describe('get options', () => {
     expect(jsMatcher('node_modules/a.js')).toBe(false)
     expect(mainCssChunkMatcher('app.wxss', 'native')).toBe(true)
     expect(htmlMatcher('a.wxml')).toBe(true)
+  })
+
+  it('enables generator import fallback by default', () => {
+    expect(normalizeWeappTailwindcssGeneratorOptions(undefined).importFallback).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({}).importFallback).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: false }).importFallback).toBe(false)
+  })
+
+  it('keeps weapp as generator target without framework web env', () => {
+    withGeneratorTargetEnv({}, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('weapp')
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(true)
+    })
+  })
+
+  it('infers web generator target from uni-app, uni-app x, Mpx and Taro H5 env', () => {
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'h5' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(false)
+    })
+
+    withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'web' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+
+    withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'web-desktop' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+
+    withGeneratorTargetEnv({ MPX_CLI_MODE: 'web' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+
+    withGeneratorTargetEnv({ MPX_CURRENT_TARGET_MODE: 'web' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+
+    withGeneratorTargetEnv({ TARO_ENV: 'h5' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+  })
+
+  it('infers web generator target from plain uni-app App WebView env', () => {
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(false)
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app-plus' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+  })
+
+  it('does not infer web generator target from uni-app x and Mpx non-web env', () => {
+    withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'app-android' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-ios' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-harmony' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
+
+    withGeneratorTargetEnv({ MPX_CLI_MODE: 'mp', MPX_CURRENT_TARGET_MODE: 'wx' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
+  })
+
+  it('keeps explicit generator target before env inference', () => {
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'h5', TARO_ENV: 'h5' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'weapp' }).target).toBe('weapp')
+      expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'weapp' }).tailwindcssV3Compatibility).toBe(true)
+    })
+  })
+
+  it('honors explicit generator target env overrides', () => {
+    withGeneratorTargetEnv({ WEAPP_TW_TARGET: 'web' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'h5', WEAPP_TAILWINDCSS_TARGET: 'weapp' }, () => {
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')
+    })
   })
 
   // it.skip('glob matcher', () => {
@@ -66,6 +210,22 @@ describe('get options', () => {
     })
   })
 
+  it('uses Tailwind v4 cssPreflight defaults for tailwindcss v4 runtime', () => {
+    const config = getCompilerContext({
+      tailwindcss: {
+        packageName: 'tailwindcss4',
+      },
+    })
+    expect(config.twPatcher.majorVersion).toBe(4)
+    expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
+  })
+
+  it('uses Tailwind v3 cssPreflight defaults for tailwindcss v3 runtime', () => {
+    const config = getCompilerContext()
+    expect(config.twPatcher.majorVersion).toBe(3)
+    expect(config.cssPreflight).toStrictEqual(TAILWIND_V3_CSS_PREFLIGHT)
+  })
+
   // it('supportCustomLengthUnitsPatch boolean', () => {
   //   const o0 = getCompilerContext()
   //   expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
@@ -95,20 +255,24 @@ describe('get options', () => {
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
+    expect(arbitraryValues.bareArbitraryValues).toBe(false)
     arbitraryValues = getCompilerContext({
       arbitraryValues: {},
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(false)
+    expect(arbitraryValues.bareArbitraryValues).toBe(false)
     arbitraryValues = getCompilerContext({
       arbitraryValues: {
         allowDoubleQuotes: true,
+        bareArbitraryValues: true,
       },
     }).arbitraryValues
     expect(typeof arbitraryValues === 'object').toBe(true)
     expect(arbitraryValues.allowDoubleQuotes).toBeDefined()
     expect(arbitraryValues.allowDoubleQuotes).toBe(true)
+    expect(arbitraryValues.bareArbitraryValues).toBe(true)
   })
 
   it('customAttributes defu merge', () => {

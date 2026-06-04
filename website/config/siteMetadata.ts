@@ -1,12 +1,14 @@
-export const siteUrl = 'https://tw.icebreaker.top'
+import process from 'node:process'
+
+export const siteUrl = process.env.SITE_URL || 'https://tw.icebreaker.top'
 export const siteName = 'weapp-tailwindcss'
 export const siteLanguage = 'zh-CN'
-export const defaultMetaTitle = 'weapp-tailwindcss | Tailwind CSS 小程序与多端适配方案'
+export const defaultMetaTitle = 'weapp-tailwindcss | Tailwind CSS 小程序事实标准工具链'
 
 export const socialImageUrl = `${siteUrl}/img/logo.png`
 
 export const defaultMetaDescription
-  = 'weapp-tailwindcss 将 tailwindcss 的体验带到小程序生态，提供 webpack、vite、gulp 等插件，兼容 uni-app、taro、rax、mpx、原生小程序等框架，助力团队高效构建高质量界面。'
+  = 'weapp-tailwindcss 为小程序生态提供 Tailwind CSS v4/v3 的精确转译、构建器集成与运行时工具，覆盖 Taro、uni-app、原生小程序、Webpack、Vite 与 Gulp 场景。'
 
 export const geoMeta = {
   region: 'CN',

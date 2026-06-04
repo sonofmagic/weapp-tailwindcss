@@ -14,8 +14,8 @@ function isRaxWorkspace(appType: AppType | undefined, baseDir: string): boolean 
     }
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf8')) as Record<string, any>
     const deps = {
-      ...(pkg.dependencies ?? {}),
-      ...(pkg.devDependencies ?? {}),
+      ...(pkg['dependencies'] ?? {}),
+      ...(pkg['devDependencies'] ?? {}),
     }
     if (deps['rax-app'] || deps.rax) {
       return true
@@ -49,7 +49,7 @@ function collectRaxStyleEntries(baseDir: string): string[] {
 export function detectImplicitCssEntries(appType: AppType | undefined, baseDir: string): string[] | undefined {
   const baseCandidates = new Set<string>()
   baseCandidates.add(path.normalize(baseDir))
-  const envCandidates = [process.cwd(), process.env.INIT_CWD, process.env.PWD]
+  const envCandidates = [process.cwd(), process.env['INIT_CWD'], process.env['PWD']]
   for (const candidate of envCandidates) {
     if (candidate) {
       baseCandidates.add(path.normalize(candidate))

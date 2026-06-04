@@ -19,50 +19,95 @@ keywords:
 
 本插件主要作用于小程序环境，让开发者可以在小程序环境下可以使用 `tailwindcss` 的特性
 
-然而在 `h5` 和 `app` 中，它们本来就是 `tailwindcss` 支持的环境，所以是没有必要开启本插件的。
+从 v5 开始，`WeappTailwindcss` 在 H5/Web 构建中也可以保留启用。插件会根据框架环境变量自动把生成器目标切到 `web`，输出浏览器原生 Tailwind CSS，而不是小程序转义 CSS。
 
-所以你可以这样传入 `disabled` 选项。
+当前内置识别：
+
+- `UNI_PLATFORM=h5`
+- `UNI_PLATFORM=app`、`app-plus`（普通 uni-app App WebView）
+- `UNI_UTS_PLATFORM=h5`、`web`、`web-*`
+- `MPX_CLI_MODE=web`
+- `MPX_CURRENT_TARGET_MODE=web`
+- `TARO_ENV=h5`
+
+因此 uni-app、uni-app x、Mpx、Taro 的 H5/Web 构建不再需要 `disabled: weappTailwindcssDisabled`。普通 uni-app App WebView 也会默认走 `web` 输出族，不会生成小程序转义选择器。只有 RN、Harmony、uni-app x 原生 App 等非 WebView 产物确实不希望插件参与时，才需要显式 `disabled` 或拆成独立构建配置。
 
 ### uni-app 示例
 
 比如 `uni-app`:
 
 ```js title="vite.config.[jt]s"
-const isH5 = process.env.UNI_PLATFORM === "h5";
-// uni-app v2
-// const isApp = process.env.UNI_PLATFORM === "app-plus";
-// uni-app v3
-const isApp = process.env.UNI_PLATFORM === "app";
-// 只在小程序平台开启 weapp-tailwindcss 插件
-// highlight-next-line
-const WeappTailwindcssDisabled = isH5 || isApp;
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 
 const vitePlugins = [
   uni(),
-  uvwt({
-    // highlight-next-line
-    disabled: WeappTailwindcssDisabled
+  WeappTailwindcss({
+    rem2rpx: true
   })
 ];
 ```
 
+当 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`。如果 App 构建不希望插件参与，可以单独加：
+
+```js
+const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
+
+WeappTailwindcss({
+  disabled: isApp,
+  rem2rpx: true
+});
+```
+
+### uni-app x 示例
+
+uni-app x 的 Web 构建可直接保留插件：
+
+```js title="vite.config.[jt]s"
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
+
+const vitePlugins = [
+  uni(),
+  WeappTailwindcss({
+    rem2rpx: true
+  })
+];
+```
+
+当 `UNI_UTS_PLATFORM=h5`、`web` 或 `web-*` 时，生成器默认目标会自动切换为 `web`。`app-android`、`app-ios`、`app-harmony` 这类 uni-app x 原生 App 目标不会被误判成 Web，也不需要新增 `target: 'app'`；请使用 `uniAppX(...)` 预设或 `uniAppX` 配置处理 uvue/App 差异。
+
+### Mpx 示例
+
+Mpx 单目标构建会注入当前目标环境变量，Web 构建可直接保留插件：
+
+```js title="mpx.config.js"
+const { WeappTailwindcss } = require("weapp-tailwindcss/webpack");
+
+module.exports = {
+  configureWebpack(config) {
+    config.plugins.push(
+      new WeappTailwindcss({
+        appType: "mpx",
+        rem2rpx: true
+      })
+    );
+  }
+};
+```
+
+当 `MPX_CLI_MODE=web` 或 `MPX_CURRENT_TARGET_MODE=web` 时，生成器默认目标会自动切换为 `web`。`wx`、`ali`、`swan`、`qq`、`tt`、`dd`、`ks`、`jd` 这类小程序目标不会被误判成 Web。
+
 ### Taro 示例
 
 ```js title="config/index.ts"
-const isH5 = process.env.TARO_ENV === "h5";
-const isApp = process.env.TARO_ENV === "rn";
-// highlight-next-line
-const WeappTailwindcssDisabled = isH5 || isApp;
+import { WeappTailwindcss } from "weapp-tailwindcss/webpack";
 
 webpackChain(chain) {
   chain.merge({
     plugin: {
       install: {
-        plugin: UnifiedWebpackPluginV5,
+        plugin: WeappTailwindcss,
         args: [
           {
-            // highlight-next-line
-            disabled: WeappTailwindcssDisabled,
             rem2rpx: true
           }
         ]
@@ -72,7 +117,9 @@ webpackChain(chain) {
 },
 ```
 
-其他的框架，请自行在对应的文档中，发掘不同目标平台的环境变量判断方式。
+当 `TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`。如果 RN 构建不希望插件参与，可以保留 `disabled: process.env.TARO_ENV === "rn"`。
+
+其他框架请参考对应文档，确认目标平台使用的环境变量。
 
 ## uni-app 打包到 h5 svg icon 偏移问题
 
@@ -108,7 +155,7 @@ npm i -D postcss-preset-env
 ```js
 module.exports = {
   plugins: {
-    tailwindcss: {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
     autoprefixer: {},
     'postcss-preset-env': {
       browsers: 'chrome >= 50', // configure a compatible browser version

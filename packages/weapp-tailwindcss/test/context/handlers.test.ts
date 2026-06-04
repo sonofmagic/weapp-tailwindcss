@@ -19,12 +19,17 @@ vi.mock('@/wxml', () => ({
 type InternalUserDefinedOptions = import('@/types').InternalUserDefinedOptions
 type Px2rpxOption = InternalUserDefinedOptions['px2rpx']
 type UnitsToPxOption = InternalUserDefinedOptions['unitsToPx']
+type UnitConversionOption = InternalUserDefinedOptions['unitConversion']
 
 const customAttributesEntities: import('@/types').ICustomAttributesEntities = [
   ['view', ['class']],
 ]
 
-function createContext(px2rpx?: Px2rpxOption, unitsToPx?: UnitsToPxOption): InternalUserDefinedOptions {
+function createContext(
+  px2rpx?: Px2rpxOption,
+  unitsToPx?: UnitsToPxOption,
+  unitConversion?: UnitConversionOption,
+): InternalUserDefinedOptions {
   return {
     cssPreflight: {},
     cssPreflightRange: 'all' as const,
@@ -41,6 +46,7 @@ function createContext(px2rpx?: Px2rpxOption, unitsToPx?: UnitsToPxOption): Inte
     uniAppX: true,
     px2rpx,
     unitsToPx,
+    unitConversion,
     arbitraryValues: { allowDoubleQuotes: true },
     jsPreserveClass: vi.fn(),
     babelParserOptions: { sourceType: 'module' },
@@ -79,6 +85,7 @@ describe('createHandlersFromContext', () => {
 
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       cssCalc: true,
+      platform: ctx.platform,
       px2rpx: ctx.px2rpx,
       unitsToPx: ctx.unitsToPx,
       cssPresetEnv: ctx.cssPresetEnv,
@@ -150,6 +157,33 @@ describe('createHandlersFromContext', () => {
     }))
   })
 
+  it('forwards unitConversion to the style handler', async () => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+    const unitConversion: UnitConversionOption = {
+      platforms: {
+        weapp: {
+          rules: [
+            { from: 'px', to: 'rpx', factor: 2 },
+          ],
+        },
+      },
+    }
+
+    styleHandlerFactory.mockReturnValueOnce(vi.fn())
+    jsHandlerFactory.mockReturnValueOnce(vi.fn())
+    templateHandlerFactory.mockReturnValueOnce(vi.fn())
+
+    createHandlersFromContext(
+      createContext(undefined, undefined, unitConversion),
+      customAttributesEntities,
+      true,
+    )
+
+    expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      unitConversion,
+    }))
+  })
+
   it('forwards Tailwind major version to the style handler', async () => {
     const { createHandlersFromContext } = await import('@/context/handlers')
 
@@ -167,5 +201,69 @@ describe('createHandlersFromContext', () => {
     expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
       majorVersion: 4,
     }))
+  })
+})
+
+describe('resolveStyleOptionsFromContext', () => {
+  it('extracts shared style options without handler-only fields', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const ctx = createContext(true, false, {
+      rules: [
+        { from: 'px', to: 'rpx', factor: 2 },
+      ],
+    })
+
+    const styleOptions = resolveStyleOptionsFromContext(ctx)
+
+    expect(styleOptions).toEqual(expect.objectContaining({
+      cssPreflight: ctx.cssPreflight,
+      cssPreflightRange: ctx.cssPreflightRange,
+      cssChildCombinatorReplaceValue: ctx.cssChildCombinatorReplaceValue,
+      cssSelectorReplacement: ctx.cssSelectorReplacement,
+      rem2rpx: ctx.rem2rpx,
+      px2rpx: ctx.px2rpx,
+      unitsToPx: ctx.unitsToPx,
+      unitConversion: ctx.unitConversion,
+      cssRemoveProperty: ctx.cssRemoveProperty,
+      cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
+      cssPresetEnv: ctx.cssPresetEnv,
+      autoprefixer: ctx.autoprefixer,
+      cssCalc: ctx.cssCalc,
+      uniAppX: true,
+      platform: ctx.platform,
+    }))
+    expect(styleOptions).not.toHaveProperty('escapeMap')
+    expect(styleOptions).not.toHaveProperty('postcssOptions')
+    expect(styleOptions).not.toHaveProperty('injectAdditionalCssVarScope')
+    expect(styleOptions).not.toHaveProperty('majorVersion')
+  })
+})
+
+describe('resolveRuntimePackageReplacements', () => {
+  it('uses default runtime package replacements when enabled', async () => {
+    const { DEFAULT_RUNTIME_PACKAGE_REPLACEMENTS } = await import('@/constants')
+    const { resolveRuntimePackageReplacements } = await import('@/context/runtime-package-replacements')
+
+    expect(resolveRuntimePackageReplacements(true)).toEqual(DEFAULT_RUNTIME_PACKAGE_REPLACEMENTS)
+  })
+
+  it('normalizes custom runtime package replacements', async () => {
+    const { resolveRuntimePackageReplacements } = await import('@/context/runtime-package-replacements')
+
+    expect(resolveRuntimePackageReplacements({
+      'tailwind-merge': '@scope/tw-merge',
+      'class-variance-authority': '',
+      '': '@scope/ignored',
+    })).toEqual({
+      'tailwind-merge': '@scope/tw-merge',
+    })
+  })
+
+  it('returns undefined when runtime package replacements are empty', async () => {
+    const { resolveRuntimePackageReplacements } = await import('@/context/runtime-package-replacements')
+
+    expect(resolveRuntimePackageReplacements(false)).toBeUndefined()
+    expect(resolveRuntimePackageReplacements(undefined)).toBeUndefined()
+    expect(resolveRuntimePackageReplacements({})).toBeUndefined()
   })
 })

@@ -16,6 +16,32 @@ function readWorkflow(filename: string) {
   }
 }
 
+function readPackageJson<T extends Record<string, unknown>>(relativePath: string) {
+  return JSON.parse(fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')) as T
+}
+
+function readText(relativePath: string) {
+  return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8')
+}
+
+function readDemoPackageJsons() {
+  const demoRoot = path.join(repoRoot, 'demo')
+  return fs.readdirSync(demoRoot)
+    .map(project => ({
+      project,
+      packageJsonPath: path.join(demoRoot, project, 'package.json'),
+    }))
+    .filter(entry => fs.existsSync(entry.packageJsonPath))
+    .map(entry => ({
+      project: entry.project,
+      packageJson: JSON.parse(fs.readFileSync(entry.packageJsonPath, 'utf8')) as {
+        dependencies?: Record<string, string>
+        devDependencies?: Record<string, string>
+        scripts?: Record<string, string>
+      },
+    }))
+}
+
 function stepRuns(workflow: Record<string, any>, jobName: string) {
   const steps: Array<Record<string, unknown>> = workflow.jobs[jobName].steps
   return steps
@@ -46,18 +72,44 @@ describe('ci workflows', () => {
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
 
-    expect(workflow.on.pull_request['paths-ignore']).toEqual(expect.arrayContaining([
-      'website/**',
+    expect(workflow.on.pull_request['paths-ignore']).toEqual([
       '**/*.md',
       '.changeset/**',
-    ]))
+    ])
+    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Static')).toBe(true)
+    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Preprocessor Source')).toBe(true)
 
     expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
       'pnpm build',
+      'pnpm e2e:preprocessor',
       'pnpm test',
     ]))
+  })
+
+  it('keeps the preprocessor source demo in local e2e and CI', () => {
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+    const { workflow } = readWorkflow('ci.yml')
+
+    expect(packageJson.scripts['e2e:static']).toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
+    expect(packageJson.scripts['e2e:static:u']).toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
+    expect(packageJson.scripts['e2e:static:dev']).not.toContain('E2E_SKIP_OPEN_AUTOMATOR=1')
+    for (const scriptName of ['e2e:static', 'e2e:static:u'] as const) {
+      const script = packageJson.scripts[scriptName]
+      expect(script).toContain('--exclude e2e/multiplatform-build-output.test.ts')
+      expect(script).toContain('--exclude e2e/preprocessor-source.test.ts')
+      expect(script).toContain('--exclude e2e/framework-ci-support.test.ts')
+      expect(script).toContain('--exclude e2e/framework-ide-support.test.ts')
+      expect(script).toContain('--exclude e2e/hbuilderx-local.test.ts')
+      expect(script).toContain('--exclude e2e/taro-web-demo-hmr.test.ts')
+      expect(script).toContain('--exclude e2e/web-vite-demo-hmr.test.ts')
+      expect(script).toContain('--exclude e2e/uni-app-vite-tailwindcss-dev-h5.test.ts')
+    }
+    expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
+    expect(stepRuns(workflow, 'quality')).toContain('pnpm e2e:preprocessor')
+    expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
+    expect(readText('demo/weapp-vite-tailwindcss-v4/app.scss')).toContain('@import "tailwindcss";')
   })
 
   it('keeps workflow_dispatch compatibility coverage across OS and Node versions', () => {
@@ -78,49 +130,182 @@ describe('ci workflows', () => {
     ])
 
     const compatibilityRuns = stepRuns(workflow, 'compatibility').join('\n')
-    expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... run build')
-    expect(compatibilityRuns).toContain('test/cli/postinstall.test.ts')
+    expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
+  })
+
+  it('keeps test helper private so release jobs do not publish it', () => {
+    const packageJson = readPackageJson<{ name: string, private?: boolean }>('packages/test-helper/package.json')
+
+    expect(packageJson.name).toBe('@weapp-tailwindcss/test-helper')
+    expect(packageJson.private).toBe(true)
+  })
+
+  it('keeps release publishing on npm trusted publishing', () => {
+    const { workflow } = readWorkflow('release.yml')
+    const setupNodeStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+      return step.uses === 'actions/setup-node@v6'
+    })
+    const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+      return step.id === 'changesets'
+    })
+
+    expect(setupNodeStep.with['node-version']).toBe(24)
+    expect(workflow.permissions['id-token']).toBe('write')
+    expect(releaseStep.env.NPM_CONFIG_PROVENANCE).toBe(true)
+    expect(releaseStep.env.NPM_TOKEN).toBeUndefined()
+    expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
+  })
+
+  it('runs current vs published benchmark on every ci/cd trigger', () => {
+    const { workflow } = readWorkflow('benchmark.yml')
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+    const runs = stepRuns(workflow, 'current-vs-published').join('\n')
+
+    expect(packageJson.scripts['bench:ci']).toBe('node benchmark/version-compare/scripts/run-ci.mjs')
+    expect(workflow.on.pull_request.types).toEqual([
+      'opened',
+      'synchronize',
+      'reopened',
+      'ready_for_review',
+    ])
+    expect(workflow.on.push.branches).toEqual([
+      'main',
+      'alpha',
+      'beta',
+      'rc',
+      'next',
+    ])
+    expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
+    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(180)
+    expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
+    expect(runs).toContain('pnpm install --frozen-lockfile')
+    expect(runs).toContain('pnpm bench:ci --')
+    expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
+    expect(workflow.jobs['current-vs-published'].steps.some((step: Record<string, unknown>) => {
+      const withConfig = step.with as Record<string, unknown> | undefined
+      return step.uses === 'actions/upload-artifact@v4'
+        && withConfig?.name === 'benchmark-current-vs-published'
+    })).toBe(true)
+  })
+
+  it('keeps published benchmark fixture resolver dependencies explicit', () => {
+    const source = readText('benchmark/version-compare/scripts/run-ci.mjs')
+
+    expect(source).toContain('publishedResolverDependencyNames')
+    expect(source).toContain('pnpm\', [\'view\', normalizePackageSpec(baseline), \'dependencies\', \'--json\']')
+    expect(source).toContain('patchPublishedResolverDependencies(json, resolverDependencies)')
+    expect(source).toContain('\'@ast-core/escape\'')
+    expect(source).toContain('\'@weapp-core/escape\'')
+  })
+
+  it('keeps local e2e:ide fail-fast and exposes focused case scripts', () => {
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+
+    expect(packageJson.scripts['e2e:ide']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:skip-build']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:case']).toContain('E2E_IDE_PROBE_RETRIES=0')
+    expect(packageJson.scripts['e2e:ide:case']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_BUILD=0')
+    expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_PROBE_RETRIES=0')
+  })
+
+  it('keeps demo dev scripts printing weapp-tailwindcss timing by default', () => {
+    for (const { project, packageJson } of readDemoPackageJsons()) {
+      const scripts = packageJson.scripts ?? {}
+      const devScripts = Object.entries(scripts)
+        .filter(([name]) => name.startsWith('dev') && name !== 'dev:e2e-watch')
+
+      expect(devScripts.length, `${project} should expose dev scripts`).toBeGreaterThan(0)
+
+      for (const [name, command] of devScripts) {
+        expect(command, `${project} ${name} should enable timing output`).toContain('WEAPP_TW_HMR_TIMING=1')
+      }
+    }
+  })
+
+  it('keeps workspace demos using a fresh core build before dev and build scripts', () => {
+    const ensureScript = readText('scripts/ensure-weapp-tailwindcss-built.mjs')
+
+    expect(ensureScript).toContain('runtimeBuildTargets')
+    expect(ensureScript).toContain('collectWorkspaceRuntimeDependencyNames')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/merge-v3\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/merge\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/cva\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/variants-v3\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/variants\'')
+
+    for (const { project, packageJson } of readDemoPackageJsons()) {
+      const dependencies = {
+        ...(packageJson.dependencies ?? {}),
+        ...(packageJson.devDependencies ?? {}),
+      }
+      if (!dependencies['weapp-tailwindcss']) {
+        continue
+      }
+
+      const scripts = packageJson.scripts ?? {}
+      for (const name of Object.keys(scripts)) {
+        if (
+          (name === 'dev' || name.startsWith('dev:') || name === 'build' || name.startsWith('build:'))
+          && !name.endsWith(':e2e-watch')
+        ) {
+          expect(scripts[`pre${name}`], `${project} should refresh core dist before ${name}`)
+            .toBe('node ../../scripts/ensure-weapp-tailwindcss-built.mjs')
+        }
+      }
+    }
   })
 })
 
 describe('e2e watch workflow', () => {
-  it('triggers when core package, platform demos, scripts, or lockfiles change', () => {
+  it('triggers when core package, e2e fixtures, platform demos, scripts, or lockfiles change', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
 
     expect(workflow.on.pull_request.paths).toEqual(expect.arrayContaining([
       'packages/weapp-tailwindcss/**',
-      'e2e/watch/**',
+      'e2e/**',
+      'tools/weapp-tailwindcss-scripts/**',
       'demo/**',
-      'apps/**',
       'scripts/**',
+      '.github/scripts/**',
+      'package.json',
       'pnpm-lock.yaml',
+      'pnpm-workspace.yaml',
       '.github/workflows/e2e-watch.yml',
+      '!website/**',
+      '!**/*.md',
+      '!.changeset/**',
     ]))
   })
 
-  it('keeps PR quick-gate watch coverage on macOS and Windows', () => {
+  it('keeps PR quick-gate watch smoke coverage on macOS and Windows', () => {
     const { workflow } = readWorkflow('e2e-watch.yml')
     const rows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include
+    const cases = matrixCases(rows)
 
     expect(workflow.jobs['pr-quick-gate'].strategy['fail-fast']).toBe(false)
-    expect(matrixCases(rows)).toEqual(expect.arrayContaining([
-      'macos:22:uni:default',
-      'macos:22:mpx:default',
-      'macos:22:taro:default',
-      'macos:22:uni-app-vue3-vite:issue33',
-      'macos:22:weapp-vite:issue33',
-      'macos:22:taro-webpack:issue33',
-      'macos:22:vite-native-ts:issue33',
-      'windows:22:uni:default',
-      'windows:22:mpx:default',
-      'windows:22:taro:default',
-      'windows:22:uni-app-vue3-vite:issue33',
-      'windows:22:weapp-vite:issue33',
-      'windows:22:taro-webpack:issue33',
-      'windows:22:vite-native-ts:issue33',
+    expect(cases).toEqual(expect.arrayContaining([
+      'macos:22:uni-app-vite-tailwindcss-v3:default',
+      'macos:22:uni-app-vite-tailwindcss-v3:issue33',
+      'macos:22:taro-webpack-react-tailwindcss-v4:issue33',
+      'macos:22:taro-webpack-react-tailwindcss-v3:default',
+      'macos:22:taro-webpack-react-tailwindcss-v4:default',
+      'macos:22:taro-vite-react-tailwindcss-v3:default',
+      'macos:22:taro-vite-react-tailwindcss-v4:default',
+      'macos:22:taro-webpack-vue3-tailwindcss-v3:default',
+      'macos:22:taro-webpack-vue3-tailwindcss-v4:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v3:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v4:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:default',
+      'macos:22:mpx-tailwindcss-v4:default',
+      'windows:22:uni-app-vite-tailwindcss-v3:default',
+      'windows:22:uni-app-vite-tailwindcss-v3:issue33',
+      'windows:22:taro-webpack-react-tailwindcss-v4:issue33',
+      'windows:22:mpx-tailwindcss-v4:default',
     ]))
+    expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
   })
 
@@ -130,15 +315,243 @@ describe('e2e watch workflow', () => {
 
     expect(workflow.jobs['nightly-full-regression'].strategy['fail-fast']).toBe(false)
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
-      'macos:22:all:default',
-      'windows:22:all:default',
       'macos:22:demo:default',
-      'windows:22:demo:default',
-      'macos:22:apps:default',
-      'windows:22:apps:default',
-      'macos:24:weapp-vite:issue33',
-      'windows:24:vite-native-ts:issue33',
+      'macos:22:weapp-vite-tailwindcss-v4:issue33',
+      'macos:22:taro-vite-vue3-tailwindcss-v3:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v4:default',
+      'windows:22:weapp-vite-tailwindcss-v4:issue33',
+      'windows:22:taro-vite-vue3-tailwindcss-v4:default',
+      'windows:22:mpx-tailwindcss-v3:default',
+      'macos:24:weapp-vite-tailwindcss-v3:issue33',
+      'windows:24:weapp-vite-tailwindcss-v3:issue33',
     ]))
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
+  })
+
+  it('keeps explicit plugin processing budgets for e2e watch rows while allowing longer startup timeouts', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const prRows: Array<Record<string, unknown>> = workflow.jobs['pr-quick-gate'].strategy.matrix.include
+    const nightlyRows: Array<Record<string, unknown>> = workflow.jobs['nightly-full-regression'].strategy.matrix.include
+
+    const slowMacosWeappViteBudget = {
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'weapp-vite-tailwindcss-v3',
+      round_profile: 'issue33',
+      timeout_minutes: 60,
+      watch_timeout_ms: '600000',
+      watch_max_plugin_process_ms: '6000',
+      watch_command_timeout_ms: '1500000',
+    }
+    const slowWindowsPrBudgets = [
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'issue33',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '9000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'taro-webpack-react-tailwindcss-v4',
+        round_profile: 'issue33',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1800000',
+      },
+      {
+        watch_case: 'mpx-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '2400000',
+      },
+    ]
+    const slowMacosUniAppPrBudgets = [
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'default',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '1500000',
+      },
+      {
+        watch_case: 'uni-app-vite-tailwindcss-v3',
+        round_profile: 'issue33',
+        timeout_minutes: 60,
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '9000',
+        watch_command_timeout_ms: '1500000',
+      },
+    ]
+    const slowMacosTaroWebpackPrBudget = {
+      watch_case: 'taro-webpack-react-tailwindcss-v4',
+      round_profile: 'issue33',
+      timeout_minutes: 70,
+      watch_timeout_ms: '600000',
+      watch_command_timeout_ms: '1800000',
+    }
+    const slowNightlyBudgets = [
+      {
+        os: 'macos-latest',
+        runner_label: 'macos',
+        watch_case: 'weapp-vite-tailwindcss-v4',
+        round_profile: 'issue33',
+        timeout_minutes: 40,
+        watch_timeout_ms: '280000',
+        watch_max_plugin_process_ms: '6000',
+        watch_command_timeout_ms: '720000',
+      },
+      {
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'weapp-vite-tailwindcss-v4',
+        round_profile: 'issue33',
+        timeout_minutes: 45,
+        watch_timeout_ms: '320000',
+        watch_max_plugin_process_ms: '6000',
+        watch_command_timeout_ms: '840000',
+      },
+      {
+        os: 'windows-latest',
+        runner_label: 'windows',
+        watch_case: 'taro-vite-vue3-tailwindcss-v4',
+        round_profile: 'default',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1800000',
+      },
+    ]
+
+    for (const budget of slowMacosUniAppPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'macos-latest',
+        runner_label: 'macos',
+        ...budget,
+      }))
+    }
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      ...slowMacosTaroWebpackPrBudget,
+    }))
+    for (const budget of slowWindowsPrBudgets) {
+      expect(prRows).toContainEqual(expect.objectContaining({
+        os: 'windows-latest',
+        runner_label: 'windows',
+        ...budget,
+      }))
+    }
+    expect(nightlyRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))
+    for (const budget of slowNightlyBudgets) {
+      expect(nightlyRows).toContainEqual(expect.objectContaining(budget))
+    }
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      ...slowMacosWeappViteBudget,
+      'node-version': 24,
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'uni-app-vite-tailwindcss-v3',
+      round_profile: 'issue33',
+      timeout_minutes: 60,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '9000',
+      watch_command_timeout_ms: '1500000',
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      watch_case: 'uni-app-vite-tailwindcss-v3',
+      round_profile: 'issue33',
+      timeout_minutes: 60,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '9000',
+      watch_command_timeout_ms: '1500000',
+    }))
+    expect(nightlyRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      watch_case: 'demo',
+      round_profile: 'default',
+      timeout_minutes: 120,
+      watch_timeout_ms: '420000',
+      watch_max_plugin_process_ms: '60000',
+      watch_command_timeout_ms: '5400000',
+    }))
+    expect(nightlyRows.some(row => row.runner_label === 'windows' && row.watch_case === 'demo')).toBe(false)
+    expect(nightlyRows.some(row => row.watch_case === 'all')).toBe(false)
+  })
+
+  it('keeps the CI e2e watch plugin processing fallback budget at 6000ms', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+
+    const prRunStep = workflow.jobs['pr-quick-gate'].steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run e2e watch suite (PR quick gate)'
+    })
+    const nightlyRunStep = workflow.jobs['nightly-full-regression'].steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run e2e watch suite (nightly/full)'
+    })
+
+    expect(prRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
+    expect(prRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+    expect(nightlyRunStep.env.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+  })
+
+  it('keeps any explicit e2e watch plugin processing matrix budget within 60000ms', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const rows: Array<Record<string, unknown>> = [
+      ...workflow.jobs['pr-quick-gate'].strategy.matrix.include,
+      ...workflow.jobs['nightly-full-regression'].strategy.matrix.include,
+    ]
+
+    for (const row of rows) {
+      const budget = row.watch_max_plugin_process_ms
+      if (budget == null) {
+        continue
+      }
+      expect(Number(budget), `${row.runner_label}:${row.watch_case}:${row.round_profile}`).toBeLessThanOrEqual(60000)
+    }
+  })
+
+  it('uses node-version specific artifact names for matrix rows that share case names', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const uploadSteps = [
+      ...workflow.jobs['pr-quick-gate'].steps,
+      ...workflow.jobs['nightly-full-regression'].steps,
+    ].filter((step: Record<string, unknown>) => step.uses === 'actions/upload-artifact@v4')
+
+    expect(uploadSteps.length).toBe(4)
+    for (const step of uploadSteps) {
+      expect(step.with?.name).toContain("node${{ matrix['node-version'] || 22 }}")
+    }
+  })
+
+  it('publishes HMR speed report in every watch job summary and artifact', () => {
+    const { workflow } = readWorkflow('e2e-watch.yml')
+    const jobs = [
+      workflow.jobs['pr-quick-gate'],
+      workflow.jobs['nightly-full-regression'],
+    ]
+
+    for (const job of jobs) {
+      const runs = stepRuns({ jobs: { target: job } }, 'target').join('\n')
+      expect(runs).toContain('node .github/scripts/e2e-watch-report.cjs job-summary')
+      expect(job.steps.some((step: Record<string, unknown>) => {
+        const withConfig = step.with as Record<string, unknown> | undefined
+        return step.uses === 'actions/upload-artifact@v4'
+          && typeof withConfig?.path === 'string'
+          && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
+      })).toBe(true)
+    }
   })
 })

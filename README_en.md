@@ -66,15 +66,15 @@ These plugins can automatically identify and accurately handle all `tailwindcss`
 
 ### Plugin Introduction
 
-The `UnifiedWebpackPluginV5` exported from `weapp-tailwindcss/webpack` is a core plugin that can be used by all frameworks that use `webpack` for packaging.
+The `WeappTailwindcss` plugin exported from `weapp-tailwindcss/webpack` is the recommended Webpack entry and can be used by frameworks that expose Webpack plugin configuration.
 
-The `UnifiedViteWeappTailwindcssPlugin` exported from `weapp-tailwindcss/vite` is a dedicated plugin for `vite`, and the configuration items and usage are consistent with the `webpack` plugin.
+The `WeappTailwindcss` plugin exported from `weapp-tailwindcss/vite` is the recommended Vite entry. In common Vite projects it can infer the Tailwind CSS entry automatically, so a single-entry project usually only needs to register the plugin.
 
-And our `gulp` plugin method, can be exported from `weapp-tailwindcss/gulp`.
+The `gulp` integration is exported from `weapp-tailwindcss/gulp`.
 
-Currently, these plugins support the latest version of the `tailwindcss v3.x.x` version and `webpack5`, `vite`, and `gulp`.
+Currently, `weapp-tailwindcss@5` supports Tailwind CSS v3/v4 and modern `webpack5`, `vite`, `rspack`, `rollup`, `rolldown`, and `gulp` based build chains.
 
-> If you are still using the `tailwindcss@2` version, then you should use the `1.x` version of this plugin. `weapp-tailwindcss@4` requires Node.js `^20.19.0 || >=22.12.0`. LTS is recommended. See [nodejs/release](https://github.com/nodejs/release).
+> `weapp-tailwindcss@5` no longer ships compatibility entries for Webpack 4, PostCSS 7, or Tailwind CSS v2. It requires Node.js `^20.19.0 || >=22.12.0`. LTS is recommended. See [nodejs/release](https://github.com/nodejs/release).
 
 ## Requirements
 
@@ -147,7 +147,7 @@ If the key platform of your project is `app`, it is recommended to use the `hbui
 
 #### Native applet development template
 
-[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-app)
+[weapp-tailwindcss-gulp-template(gulp打包)](https://github.com/sonofmagic/weapp-tailwindcss/tree/main/demo/gulp-tailwindcss-v3)
 
 ### tailwindcss plugin
 

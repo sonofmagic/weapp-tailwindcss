@@ -8,7 +8,7 @@
 ## 通用原则
 
 - 修改 app 时，优先保持“可运行 + 可复现”，不要引入与验证目标无关的复杂改造。
-- 涉及 weapp 相关 app，通常依赖 `postinstall: weapp-tw patch`；调整依赖脚本时需确认 patch 链路不被破坏。
+- 涉及 weapp 相关 app，默认不再依赖 `postinstall: weapp-tw patch`；只有旧 CSS 后处理链路或排障时才手动执行 patch。
 - 当 app 仅用于复现问题时，保持最小修改面并在提交说明中写明复现目标。
 
 ## 常见命令约定

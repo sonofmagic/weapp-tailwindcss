@@ -39,8 +39,6 @@ keywords:
 
 #### 使用`hbuilderx` 进行构建和开发
 
-[uni-app-vue2-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue2-tailwind-hbuilder-template)
-
 [uni-app-vue3-tailwind-hbuilder-template](https://github.com/sonofmagic/uni-app-vue3-tailwind-hbuilder-template)
 
 ### tailwindcss plugin

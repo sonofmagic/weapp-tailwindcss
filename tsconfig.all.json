@@ -1,0 +1,174 @@
+{
+  "extends": "./tsconfig.json",
+  "references": [
+    {
+      "path": "./benchmark/app"
+    },
+    {
+      "path": "./e2e"
+    },
+    {
+      "path": "./packages-runtime/cva"
+    },
+    {
+      "path": "./packages-runtime/merge"
+    },
+    {
+      "path": "./packages-runtime/merge-v3"
+    },
+    {
+      "path": "./packages-runtime/runtime"
+    },
+    {
+      "path": "./packages-runtime/tailwind-variant-v3"
+    },
+    {
+      "path": "./packages-runtime/theme-transition"
+    },
+    {
+      "path": "./packages-runtime/typography"
+    },
+    {
+      "path": "./packages-runtime/ui"
+    },
+    {
+      "path": "./packages-runtime/variants"
+    },
+    {
+      "path": "./packages-runtime/variants-v3"
+    },
+    {
+      "path": "./packages/babel"
+    },
+    {
+      "path": "./packages/debug-uni-app-x"
+    },
+    {
+      "path": "./packages/experimental"
+    },
+    {
+      "path": "./packages/init"
+    },
+    {
+      "path": "./packages/logger"
+    },
+    {
+      "path": "./packages/postcss"
+    },
+    {
+      "path": "./packages/reset"
+    },
+    {
+      "path": "./packages/shared"
+    },
+    {
+      "path": "./packages/tailwindcss-config"
+    },
+    {
+      "path": "./packages/tailwindcss-core-plugins-extractor"
+    },
+    {
+      "path": "./packages/tailwindcss-injector"
+    },
+    {
+      "path": "./packages/test-helper"
+    },
+    {
+      "path": "./packages/weapp-style-injector"
+    },
+    {
+      "path": "./packages/weapp-tailwindcss"
+    },
+    {
+      "path": "./packages/weapp-tw"
+    },
+    {
+      "path": "./packages/weapptw"
+    },
+    {
+      "path": "./packages/wetw"
+    },
+    {
+      "path": "./templates/mpx-tailwindcss-v4"
+    },
+    {
+      "path": "./templates/taro-react-tailwind-vscode-template"
+    },
+    {
+      "path": "./templates/taro-vite-tailwindcss-v4"
+    },
+    {
+      "path": "./templates/taro-vue3-tailwind-vscode-template"
+    },
+    {
+      "path": "./templates/taro-webpack-tailwindcss-v4"
+    },
+    {
+      "path": "./templates/uni-app-tailwindcss-v4"
+    },
+    {
+      "path": "./templates/uni-app-vite-vue3-tailwind-vscode-template"
+    },
+    {
+      "path": "./templates/uni-app-vue2-tailwind-vscode-template"
+    },
+    {
+      "path": "./templates/uni-app-webpack-tailwindcss-v4"
+    },
+    {
+      "path": "./tools/weapp-tailwindcss-scripts"
+    },
+    {
+      "path": "./website"
+    },
+    {
+      "path": "./demo/gulp-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/gulp-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/mpx-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/mpx-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-webpack-react-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-webpack-react-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-vite-react-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-vite-react-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-webpack-vue3-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-webpack-vue3-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/taro-vite-vue3-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/taro-vite-vue3-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/uni-app-vite-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/uni-app-vite-tailwindcss-v4"
+    },
+    {
+      "path": "./demo/weapp-vite-tailwindcss-v3"
+    },
+    {
+      "path": "./demo/weapp-vite-tailwindcss-v4"
+    }
+  ],
+  "files": []
+}

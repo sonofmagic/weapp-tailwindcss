@@ -18,7 +18,6 @@ const putCase = createPutCase(jsCasePath)
 
 async function getClassCacheSet() {
   const ctx = getCompilerContext()
-  await ctx.twPatcher.patch()
   return ctx.twPatcher.getClassSet()
 }
 

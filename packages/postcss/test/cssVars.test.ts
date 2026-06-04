@@ -1,7 +1,177 @@
-import cssVars from '@/cssVarsV3'
+import fs from 'node:fs'
+import path from 'node:path'
+import { createRequire } from 'node:module'
+import cssVarsV3 from '@/cssVarsV3'
+import cssVarsV4 from '@/cssVarsV4'
+
+const require = createRequire(import.meta.url)
+
+const V3_DEFAULT_GROUPS = [
+  'border-spacing',
+  'transform',
+  'touch-action',
+  'scroll-snap-type',
+  'gradient-color-stops',
+  'font-variant-numeric',
+  'ring-width',
+  'filter',
+  'backdrop-filter',
+  'contain',
+]
+
+const V3_THEME_DEFAULTS = new Map([
+  ['--tw-ring-offset-width', '0px'],
+  ['--tw-ring-offset-color', '#fff'],
+  ['--tw-ring-color', 'rgb(59 130 246 / 0.5)'],
+])
+
+function readPackageFile(packageName: string, relativePath: string) {
+  const packageJson = require.resolve(`${packageName}/package.json`)
+  return fs.readFileSync(path.resolve(path.dirname(packageJson), relativePath), 'utf8')
+}
+
+function readExistingFile(filepaths: string[]) {
+  for (const filepath of filepaths) {
+    if (fs.existsSync(filepath)) {
+      return fs.readFileSync(filepath, 'utf8')
+    }
+  }
+  throw new Error(`missing Tailwind CSS v4 utility source files: ${filepaths.join(', ')}`)
+}
+
+function readTailwindV4UtilitiesSource() {
+  const packageJson = require.resolve('tailwindcss4/package.json')
+  const packageRoot = path.dirname(packageJson)
+  const sourceFile = path.resolve(__dirname, '../../../submodules/tailwindcss-v4/packages/tailwindcss/src/utilities.ts')
+  if (fs.existsSync(sourceFile)) {
+    return fs.readFileSync(sourceFile, 'utf8')
+  }
+
+  return readExistingFile([
+    path.resolve(packageRoot, 'dist/chunk-3IR7ZFJX.mjs'),
+    path.resolve(packageRoot, 'dist/lib.js'),
+  ])
+}
+
+function readTailwindV4BundledUtilitiesSource() {
+  const packageJson = require.resolve('tailwindcss4/package.json')
+  const packageRoot = path.dirname(packageJson)
+  return readExistingFile([
+    path.resolve(packageRoot, 'dist/chunk-3IR7ZFJX.mjs'),
+    path.resolve(packageRoot, 'dist/lib.js'),
+  ])
+}
+
+function addTailwindV4SourceOnlyProperties(props: Set<string>) {
+  props.add('--tw-scrollbar-thumb')
+  props.add('--tw-scrollbar-track')
+}
+
+function extractObjectBody(source: string, startIndex: number) {
+  const openIndex = source.indexOf('{', startIndex)
+  if (openIndex === -1) {
+    throw new Error('object body not found')
+  }
+
+  let depth = 0
+  for (let index = openIndex; index < source.length; index++) {
+    const char = source[index]
+    if (char === '{') {
+      depth++
+    }
+    else if (char === '}') {
+      depth--
+      if (depth === 0) {
+        return source.slice(openIndex + 1, index)
+      }
+    }
+  }
+
+  throw new Error('object body not closed')
+}
+
+function extractTailwindV3Defaults(source: string) {
+  const defaults = new Map<string, string>()
+
+  for (const group of V3_DEFAULT_GROUPS) {
+    const marker = `addDefaults('${group}',`
+    const markerIndex = source.indexOf(marker)
+    expect(markerIndex, `missing Tailwind v3 defaults group ${group}`).toBeGreaterThanOrEqual(0)
+    const body = extractObjectBody(source, markerIndex)
+    for (const match of body.matchAll(/'(--tw-[^']+)':\s*([^,\n]+)/g)) {
+      const prop = match[1]
+      const value = match[2]?.trim()
+      if (!prop || !value) {
+        continue
+      }
+      defaults.set(prop, V3_THEME_DEFAULTS.get(prop) ?? value.replace(/^['"]|['"]$/g, ''))
+    }
+  }
+
+  return [...defaults].map(([prop, value]) => ({ prop, value }))
+}
+
+function extractTailwindV4AtRootProperties(source: string) {
+  const props = new Set<string>()
+  for (const match of source.matchAll(/property\(\s*['`]([^'`]+)['`]/g)) {
+    const prop = match[1]
+    if (prop && !prop.includes('${')) {
+      props.add(prop)
+    }
+  }
+  if (props.size === 0) {
+    const helperMatch = /\bfunction\s+([A-Za-z_$][\w$]*)\([^)]*\)\s*\{\s*return\s+[A-Za-z_$][\w$]*\(["']@property["']/.exec(source)
+    const helperName = helperMatch?.[1]
+    if (helperName) {
+      const escapedHelperName = helperName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const helperCallRe = new RegExp(`${escapedHelperName}\\(\\s*['"](--tw-[^'"]+)['"]`, 'g')
+      for (const match of source.matchAll(helperCallRe)) {
+        const prop = match[1]
+        if (prop) {
+          props.add(prop)
+        }
+      }
+      addTailwindV4SourceOnlyProperties(props)
+    }
+  }
+
+  for (const edge of ['top', 'right', 'bottom', 'left']) {
+    props.add(`--tw-mask-${edge}-from-position`)
+    props.add(`--tw-mask-${edge}-to-position`)
+    props.add(`--tw-mask-${edge}-from-color`)
+    props.add(`--tw-mask-${edge}-to-color`)
+  }
+
+  return props
+}
 
 describe('cssVars', () => {
   it('snap', () => {
-    expect(cssVars).toMatchSnapshot()
+    expect(cssVarsV3).toMatchSnapshot()
+  })
+
+  it('matches Tailwind CSS v3.4.19 addDefaults variables', () => {
+    const source = readPackageFile('tailwindcss', 'src/corePlugins.js')
+    expect(extractTailwindV3Defaults(source)).toEqual(cssVarsV3)
+  })
+
+  it('matches Tailwind CSS v4.2.4 atRoot property variables', () => {
+    const source = readTailwindV4UtilitiesSource()
+    const officialProps = extractTailwindV4AtRootProperties(source)
+    const actualProps = new Set(cssVarsV4.map(item => item.prop))
+
+    expect(officialProps.has('--tw-content')).toBe(true)
+
+    expect(actualProps).toEqual(officialProps)
+  })
+
+  it('matches Tailwind CSS v4.2.4 bundled atRoot property variables', () => {
+    const source = readTailwindV4BundledUtilitiesSource()
+    const officialProps = extractTailwindV4AtRootProperties(source)
+    const actualProps = new Set(cssVarsV4.map(item => item.prop))
+
+    expect(officialProps.has('--tw-content')).toBe(true)
+
+    expect(actualProps).toEqual(officialProps)
   })
 })

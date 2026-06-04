@@ -30,7 +30,7 @@
   },
   "scripts": {
     "extract": "node scripts/main.js",
-    "build": "tsup",
+    "build": "tsdown",
     "sync": "cnpm sync tailwindcss-core-plugins-extractor"
   },
   "publishConfig": {

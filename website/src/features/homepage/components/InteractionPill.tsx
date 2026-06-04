@@ -9,24 +9,22 @@ export interface InteractionPillProps {
   icon?: ReactNode
 }
 
-export const InteractionPill: FC<InteractionPillProps> = ({ className, href, label, icon = '🚀' }) => {
+export const InteractionPill: FC<InteractionPillProps> = ({ className, href, label, icon }) => {
   return (
     <div className={[interactionPill(), className ?? ''].filter(Boolean).join(' ')}>
       <Link className={interactionPillLink()} to={href}>
-        <span className={interactionPillIcon()}>{icon}</span>
+        <span className={interactionPillIcon()}>
+          {icon ?? <i aria-hidden="true" className="icon-[mdi--arrow-right] text-[18px]"></i>}
+        </span>
         <span className={interactionPillLabel()}>{label}</span>
-        <svg
+        <i
           aria-hidden="true"
           className={`
-            size-4 transition-transform duration-300
+            icon-[mdi--chevron-right] size-4 transition-transform duration-300
             group-hover:translate-x-0.5
           `}
-          viewBox="0 0 16 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        </i>
       </Link>
     </div>
   )

@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/debug-uni-app-x",
-  "version": "0.0.4",
+  "version": "1.0.0-next.0",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
@@ -29,9 +29,9 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "unbuild --stub",
-    "build:watch": "unbuild --watch --sourcemap",
-    "build": "unbuild",
+    "dev": "tsdown --watch --sourcemap",
+    "build:watch": "tsdown --watch --sourcemap",
+    "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
     "tsd": "tsd",
@@ -39,13 +39,10 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
-  "dependencies": {
-    "defu": "6.1.7",
-    "fs-extra": "11.3.4",
-    "pathe": "2.0.3"
-  },
   "devDependencies": {
-    "unbuild": "^3.6.1",
+    "defu": "6.1.7",
+    "fs-extra": "11.3.5",
+    "pathe": "2.0.3",
     "vite": "7.2.7"
   },
   "publishConfig": {

@@ -57,7 +57,7 @@ export function logRuntimeTailwindcssVersion(baseDir?: string, rootPath?: string
   if (!markRuntimeLog('missing', baseDir, rootPath, version)) {
     return
   }
-  logger.warn(`${pc.cyanBright('Tailwind CSS')} 未安装，已跳过版本检测与补丁应用。`)
+  logger.warn(`${pc.cyanBright('Tailwind CSS')} 未安装，已跳过版本检测与运行时初始化。`)
 }
 
 export function __resetRuntimeTailwindcssLogsForTests() {

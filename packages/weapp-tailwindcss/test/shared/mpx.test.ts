@@ -1,10 +1,12 @@
 import path from 'node:path'
+import { createRequire } from 'node:module'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   ensureMpxTailwindcssAliases,
   getTailwindcssCssEntry,
   injectMpxCssRewritePreRules,
   isMpx,
+  patchMpxWebpackPluginNormalizeLib,
   patchMpxLoaderResolve,
   setupMpxTailwindcssRedirect,
 } from '@/shared/mpx'
@@ -34,22 +36,69 @@ describe('shared/mpx helpers', () => {
   })
 
   it('ensures aliases for object-style resolve config', () => {
-    const compiler: any = { options: { resolve: { alias: { keep: 'value' } } } }
+    const compiler: any = {
+      context: path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4'),
+      options: { resolve: { alias: { keep: 'value' } } },
+    }
     const entry = ensureMpxTailwindcssAliases(compiler, pkgDir)
     expect(entry).toBe(path.join(pkgDir, 'index.css'))
+    const mpxPluginDir = compiler.options.resolve.alias['@mpxjs/webpack-plugin']
     expect(compiler.options.resolve.alias.keep).toBe('value')
     expect(compiler.options.resolve.alias.tailwindcss).toBe(entry)
     expect(compiler.options.resolve.alias.tailwindcss$).toBe(entry)
+    expect(mpxPluginDir).toEqual(expect.stringContaining('@mpxjs/webpack-plugin'))
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin/lib/record-loader']).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin/lib/style-compiler/index']).toBe(path.join(mpxPluginDir, 'lib/style-compiler/index'))
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader']).toBe(path.join(mpxPluginDir, 'lib/style-compiler/strip-conditional-loader'))
+    expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin']).toBe(mpxPluginDir)
+    expect(compiler.options.resolveLoader.alias['@mpxjs/webpack-plugin/lib/record-loader']).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+  })
+
+  it('resolves mpx webpack plugin from compiler context before package context', () => {
+    const demoRoot = path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4')
+    const compiler: any = {
+      context: demoRoot,
+      options: {},
+    }
+
+    ensureMpxTailwindcssAliases(compiler, pkgDir)
+
+    expect(compiler.options.resolve.alias['@mpxjs/webpack-plugin']).toBe(
+      path.dirname(createRequire(path.join(demoRoot, 'package.json')).resolve('@mpxjs/webpack-plugin/package.json')),
+    )
+  })
+
+  it('patches mpx normalize lib requests to absolute plugin paths', () => {
+    const demoRoot = path.resolve(process.cwd(), '../../demo/mpx-tailwindcss-v4')
+    const demoRequire = createRequire(path.join(demoRoot, 'package.json'))
+    const normalize = demoRequire('@mpxjs/webpack-plugin/lib/utils/normalize') as {
+      lib: ((file: string) => string) & { __weappTwOriginal?: (file: string) => string }
+    }
+    const originalLib = normalize.lib.__weappTwOriginal ?? normalize.lib
+    normalize.lib = originalLib
+    const mpxPluginDir = path.dirname(demoRequire.resolve('@mpxjs/webpack-plugin/package.json'))
+
+    expect(patchMpxWebpackPluginNormalizeLib({ context: demoRoot, options: {} }, mpxPluginDir)).toBe(true)
+    expect(normalize.lib('record-loader')).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+    expect(normalize.lib('style-compiler/index')).toBe(path.join(mpxPluginDir, 'lib/style-compiler/index'))
+    expect(patchMpxWebpackPluginNormalizeLib({ context: demoRoot, options: {} }, mpxPluginDir)).toBe(true)
+    expect(normalize.lib('record-loader')).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
+
+    normalize.lib = originalLib
   })
 
   it('ensures aliases for array-style resolve config', () => {
     const alias: any[] = []
     const compiler: any = { options: { resolve: { alias } } }
     const entry = ensureMpxTailwindcssAliases(compiler, pkgDir)
-    expect(alias).toEqual([
+    expect(alias).toEqual(expect.arrayContaining([
+      { name: '@mpxjs/webpack-plugin/lib/record-loader', alias: expect.stringContaining(path.join('@mpxjs/webpack-plugin', 'lib/record-loader')) },
+      { name: '@mpxjs/webpack-plugin/lib/style-compiler/index', alias: expect.stringContaining(path.join('@mpxjs/webpack-plugin', 'lib/style-compiler/index')) },
+      { name: '@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader', alias: expect.stringContaining(path.join('@mpxjs/webpack-plugin', 'lib/style-compiler/strip-conditional-loader')) },
+      { name: /^@mpxjs\/webpack-plugin\//, alias: expect.stringContaining('@mpxjs/webpack-plugin') },
       { name: 'tailwindcss', alias: entry },
       { name: 'tailwindcss$', alias: entry },
-    ])
+    ]))
   })
 
   it('wraps loaderContext.resolve once and redirects tailwindcss requests', () => {
@@ -69,14 +118,19 @@ describe('shared/mpx helpers', () => {
     patchedResolve({}, 'tailwindcss/plugin', (_err: any, value: string) => {
       results.tailwindcssSubpath = value
     })
+    patchedResolve('/virtual/weapp-tailwindcss', '@mpxjs/webpack-plugin/lib/record-loader', (_err: any, value: string) => {
+      results.mpxLoader = value
+    })
     patchedResolve({}, 'lodash', (_err: any, value: string) => {
       results.other = value
     })
 
     const cssEntry = path.join(pkgDir, 'index.css')
+    const mpxPluginDir = path.dirname(createRequire(import.meta.url).resolve('@mpxjs/webpack-plugin/package.json'))
     expect(results.tailwindcss).toBe(cssEntry)
     expect(results.tailwindcssDollar).toBe(cssEntry)
     expect(results.tailwindcssSubpath).toBe(path.join(pkgDir, 'plugin'))
+    expect(results.mpxLoader).toBe(path.join(mpxPluginDir, 'lib/record-loader'))
     expect(results.other).toBe('resolved:lodash')
     expect(originalResolve).toHaveBeenCalledTimes(1)
 

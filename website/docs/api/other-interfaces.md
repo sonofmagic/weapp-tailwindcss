@@ -1,30 +1,34 @@
 ---
-title: 🗂️ 其他接口
-sidebar_label: 🗂️ 其他接口
+title: "🗂️ 其他接口"
+sidebar_label: "🗂️ 其他接口"
 sidebar_position: 2
-description: 其他接口索引页，汇总 9 个 weapp-tailwindcss 运行时接口与补充类型定义。
+description: "其他接口索引，列出 13 个 weapp-tailwindcss 运行时接口和补充类型。"
 keywords:
-  - weapp-tailwindcss
-  - API
-  - 接口文档
-  - 配置项
-  - 小程序
-  - tailwindcss
-  - 微信小程序
-  - 其他接口
-  - 运行时接口
-  - 类型定义
-  - 接口索引
+  - "weapp-tailwindcss"
+  - "API"
+  - "接口文档"
+  - "配置项"
+  - "小程序"
+  - "tailwindcss"
+  - "微信小程序"
+  - "其他接口"
+  - "运行时接口"
+  - "类型定义"
+  - "接口索引"
 ---
 
 以下接口用于补充配置或运行时能力，本页面仅提供索引。
 
-- [ApplyOptions](./interfaces/ApplyOptions.md) - Preferred options for runtime patch behavior.
-- [CacheOptions](./interfaces/CacheOptions.md) - Configures how the Tailwind class cache is stored and where it lives on disk.
-- [DisabledOptions](./interfaces/DisabledOptions.md) - 禁用插件功能的细粒度选项。
-- [ExtractOptions](./interfaces/ExtractOptions.md) - Preferred options for extraction output behavior.
-- [TailwindCssOptions](./interfaces/TailwindCssOptions.md) - High-level Tailwind patch configuration shared across versions.
-- [TailwindCssPatchOptions](./interfaces/TailwindCssPatchOptions.md) - Root configuration consumed by the Tailwind CSS patch runner.
-- [TailwindV2Options](./interfaces/TailwindV2Options.md) - Configuration specific to Tailwind CSS v2 patching flows.
-- [TailwindV3Options](./interfaces/TailwindV3Options.md) - Configuration specific to Tailwind CSS v3 patching flows.
-- [TailwindV4Options](./interfaces/TailwindV4Options.md) - Additional configuration specific to Tailwind CSS v4 extraction.
+- [ApplyOptions](./interfaces/ApplyOptions.md) - Tailwind 运行时补丁行为配置。
+- [CacheOptions](./interfaces/CacheOptions.md) - Tailwind 类名缓存配置。
+- [ExtractOptions](./interfaces/ExtractOptions.md) - 类名提取结果的输出配置。
+- [TailwindCssOptions](./interfaces/TailwindCssOptions.md) - 按 Tailwind 版本划分的补丁配置。
+- [TailwindCssPatchOptions](./interfaces/TailwindCssPatchOptions.md) - Tailwind CSS 补丁运行器的根配置。
+- [TailwindV2Options](./interfaces/TailwindV2Options.md) - Tailwind CSS v2 补丁配置。
+- [TailwindV3Options](./interfaces/TailwindV3Options.md) - Tailwind CSS v3 补丁配置。
+- [TailwindV4Options](./interfaces/TailwindV4Options.md) - Tailwind CSS v4 提取配置。
+- [WeappTailwindcssGenerateOptions](./interfaces/WeappTailwindcssGenerateOptions.md) - weapp-tailwindcss 生成器的调用配置。
+- [WeappTailwindcssGenerateResult](./interfaces/WeappTailwindcssGenerateResult.md) - weapp-tailwindcss 生成器的输出结果。
+- [WeappTailwindcssGenerator](./interfaces/WeappTailwindcssGenerator.md) - weapp-tailwindcss 统一生成器实例。
+- [WeappTailwindcssGeneratorTarget](./interfaces/WeappTailwindcssGeneratorTarget.md)
+- [WeappTailwindcssPostcssPluginOptions](./interfaces/WeappTailwindcssPostcssPluginOptions.md) - `weapp-tailwindcss` PostCSS 插件配置。

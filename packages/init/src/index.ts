@@ -41,7 +41,6 @@ export async function createContext(options: Required<CreateContextOptions>) {
 export type Context = Exclude<Awaited<ReturnType<typeof createContext>>, undefined>
 
 export async function updatePackageJson(ctx: Context) {
-  setValue(ctx.pkgJson, 'scripts.postinstall', 'weapp-tw patch')
   for (const [key, value] of Object.entries(ctx.versions)) {
     setValue(ctx.pkgJson, `devDependencies.${key}`, value)
   }
@@ -51,7 +50,7 @@ export async function updatePackageJson(ctx: Context) {
 export async function touchPostcssConfig(ctx: Context) {
   const data = `${ctx.type === 'module' ? 'export default ' : 'module.exports = '}{
   plugins: {
-    tailwindcss: {},
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
     // 假如框架已经内置了 \`autoprefixer\`，可以去除下一行
     autoprefixer: {},
   },

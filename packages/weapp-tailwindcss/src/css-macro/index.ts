@@ -1,6 +1,7 @@
 import plugin from 'tailwindcss/plugin'
 import { defu } from '../utils'
-import { createMediaQuery, createNegativeMediaQuery } from './constants'
+import { markCssMacroPlugin } from './auto'
+import { createConditionalAtRule, createNegativeConditionalAtRule } from './constants'
 
 export interface Options {
   variantsMap?: Record<string, string | { value: string, negative?: boolean }>
@@ -18,7 +19,7 @@ const defaultOptions: Required<Options> = {
   variantsMap: {},
 }
 
-const cssMacro = plugin.withOptions((options?: Options) => {
+const cssMacroFactory = plugin.withOptions((options?: Options) => {
   const { dynamic, variantsMap } = defu<Required<Options>, Options[]>(options ?? {}, defaultOptions)
 
   const staticVariants: NormalizedVariant[] = Object.entries(variantsMap).map(([name, config]) => {
@@ -40,19 +41,38 @@ const cssMacro = plugin.withOptions((options?: Options) => {
     const { matchVariant, addVariant } = api
     const supportsDynamic = typeof matchVariant === 'function'
     if (dynamic && supportsDynamic) {
-      matchVariant('ifdef', value => createMediaQuery(value))
-      matchVariant('ifndef', value => createNegativeMediaQuery(value))
+      matchVariant('ifdef', value => createConditionalAtRule(value))
+      matchVariant('ifndef', value => createNegativeConditionalAtRule(value))
     }
 
     if (typeof addVariant === 'function') {
       for (const variant of staticVariants) {
         const query = variant.negative
-          ? createNegativeMediaQuery(variant.value)
-          : createMediaQuery(variant.value)
+          ? createNegativeConditionalAtRule(variant.value)
+          : createConditionalAtRule(variant.value)
         addVariant(variant.name, query)
       }
     }
   }
 })
+
+const cssMacro = markCssMacroPlugin(((options?: Options) => {
+  return markCssMacroPlugin(cssMacroFactory(options))
+}) as typeof cssMacroFactory)
+
+const cssMacroOptionsFunction = cssMacro as typeof cssMacroFactory & {
+  __configFunction?: unknown
+  __isOptionsFunction?: boolean
+  __pluginFunction?: unknown
+}
+const cssMacroFactoryOptionsFunction = cssMacroFactory as typeof cssMacroFactory & {
+  __configFunction?: unknown
+  __isOptionsFunction?: boolean
+  __pluginFunction?: unknown
+}
+
+cssMacroOptionsFunction.__isOptionsFunction = cssMacroFactoryOptionsFunction.__isOptionsFunction
+cssMacroOptionsFunction.__pluginFunction = cssMacroFactoryOptionsFunction.__pluginFunction
+cssMacroOptionsFunction.__configFunction = cssMacroFactoryOptionsFunction.__configFunction
 
 export default cssMacro

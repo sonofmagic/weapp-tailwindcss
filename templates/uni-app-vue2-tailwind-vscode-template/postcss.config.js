@@ -19,7 +19,7 @@ const config = {
     require("autoprefixer")({
       remove: process.env.UNI_PLATFORM !== "h5",
     }),
-    require("tailwindcss")({ config: "./tailwind.config.js" }),
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
     require('weapp-tailwindcss/css-macro/postcss'),
     require("@dcloudio/vue-cli-plugin-uni/packages/postcss"),
   ],

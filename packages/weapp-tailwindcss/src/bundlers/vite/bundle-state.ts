@@ -4,6 +4,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { toAbsoluteOutputPath } from '../shared/module-graph'
 import { isJavaScriptEntry } from './bundle-entries'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
+import { isCSSRequest } from './utils'
 
 export type EntryType = 'html' | 'js' | 'css' | 'other'
 
@@ -39,6 +40,7 @@ export interface BundleBuildState {
   runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
   dependentsByLinkedFile: Map<string, Set<string>>
+  generatorCandidateSignature?: string | undefined
 }
 
 interface UpdateBundleBuildStateOptions {
@@ -53,6 +55,7 @@ export function createBundleBuildState(): BundleBuildState {
     runtimeAffectingHashByFile: new Map<string, string>(),
     linkedByEntry: new Map<string, Set<string>>(),
     dependentsByLinkedFile: new Map<string, Set<string>>(),
+    generatorCandidateSignature: undefined,
   }
 }
 
@@ -81,7 +84,7 @@ function readEntrySource(output: OutputAsset | OutputChunk) {
 }
 
 export function classifyBundleEntry(file: string, opts: InternalUserDefinedOptions): EntryType {
-  if (opts.cssMatcher(file)) {
+  if (opts.cssMatcher(file) || isCSSRequest(file)) {
     return 'css'
   }
   if (opts.htmlMatcher(file)) {

@@ -87,7 +87,19 @@ async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[], bundle: 
       continue
     }
 
-    await handler.call({} as unknown, {} as unknown, bundle, false)
+    await handler.call({
+      emitFile(emittedFile: { type: 'asset', fileName?: string, name?: string, source?: AssetSource }) {
+        if (emittedFile.type !== 'asset') {
+          return ''
+        }
+        const fileName = emittedFile.fileName ?? emittedFile.name
+        if (!fileName) {
+          return ''
+        }
+        bundle[fileName] = createAsset(emittedFile.source ?? '', fileName)
+        return fileName
+      },
+    } as unknown, {} as unknown, bundle, false)
   }
 }
 

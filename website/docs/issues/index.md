@@ -101,47 +101,36 @@ export default {
 
 ## 编译到 h5 / app 注意事项
 
-有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5`，然而 `tailwindcss` 本身就兼容 `H5` 了。此时你需要更改配置，我们以 `uni-app` 为例:
+有些用户通过 `uni-app` 等跨端框架，不止开发成各种小程序，也开发为 `H5` 或 App。从 v5 开始，H5/Web 与普通 uni-app App WebView 构建不再需要禁用 `WeappTailwindcss`：插件会根据 `UNI_PLATFORM=h5/app/app-plus` 自动把生成器目标切到 `web`，输出浏览器原生 Tailwind CSS。
 
 ```js
-const isH5 = process.env.UNI_PLATFORM === "h5";
-// vue3 版本构建到 app, UNI_PLATFORM 的值为 app
-// vue2 版本为 app-plus
-const isApp = process.env.UNI_PLATFORM === "app-plus";
-const WeappTailwindcssDisabled = isH5 || isApp;
-
-// 然后在 h5 和 app 环境下把 webpack plugin 和 postcss for weapp 给禁用掉
 // 我们以 uni-app-vue3-vite 这个 demo为例
 // vite.config.ts
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin as uvtw } from "weapp-tailwindcss-webpack-plugin/vite";
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 // vite 插件配置
-const vitePlugins = [uni(),uvtw({
-  disabled: WeappTailwindcssDisabled
+const vitePlugins = [uni(),WeappTailwindcss({
+  rem2rpx: true
 })];
 
 export default defineConfig({
   plugins: vitePlugins
 });
 
-// 同理 postcss 配置
-// 假如不起作用，请使用内联postcss
-const plugins = [require('autoprefixer')(), require('tailwindcss')()];
+// Tailwind CSS 由 WeappTailwindcss 生成模式接管。
+// 如果项目已有 PostCSS 配置，只保留 autoprefixer、业务自定义插件等非 Tailwind 插件。
+```
 
-if (!WeappTailwindcssDisabled) {
-  plugins.push(
-    require('postcss-rem-to-responsive-pixel')({
-      rootValue: 32,
-      propList: ['*'],
-      transformUnit: 'rpx'
-    })
-  );
-}
+如果是 App 构建且不希望插件参与，可以只针对 App 目标显式禁用：
 
-module.exports = {
-  plugins
-};
+```js
+const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
+
+WeappTailwindcss({
+  disabled: isApp,
+  rem2rpx: true
+});
 ```
 
 ## 报错 TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined
@@ -183,18 +172,13 @@ module.exports = {
 解决方案：
 
 ```js
-// 注意：打包成 h5 和 app 都不需要开启插件配置
-const isH5 = process.env.UNI_PLATFORM === "h5";
-// vue3 版本构建到 app, UNI_PLATFORM 的值为 app
-// vue2 版本为 app-plus
-const isApp = process.env.UNI_PLATFORM === "app-plus";
-const WeappTailwindcssDisabled = isH5 || isApp;
-const vitePlugins = [uni(), uvwt({
-  disabled: WeappTailwindcssDisabled
+import { WeappTailwindcss } from "weapp-tailwindcss/vite";
+const vitePlugins = [uni(), WeappTailwindcss({
+  rem2rpx: true
 })];
 ```
 
-即 `h5` 环境和 `app` 环境都不开启我这个插件，因为本来这 2 个环境就是 `tailwindcss` 支持的环境，没必要开启插件转义。
+即 H5 与普通 uni-app App WebView 环境继续保留插件，由生成器自动切到 `web` 目标。App 环境如果不希望插件参与，可以单独设置 `disabled: process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus"`。
 
 ## 使用 pnpm@8 插件注册失败问题
 
@@ -218,14 +202,23 @@ pnpm 8 这个版本改变了一些默认值，其中 `resolution-mode` 默认值
 
 你可以参考仓库中的 `demo/uni-app-vue3-vite` 来进行配置。
 
-## 为什么使用 taro 写 jsx，js 时候，转义不生效？
+## 为什么在 Taro JSX / JS 里写类名不生效？
 
-这是因为 [patch](/docs/quick-start/this-plugin) 方法没有生效，这个指令是用来在运行时暴露 `tailwindcss` 上下文的，只有暴露成功，我们写的 `js` 里的样式，才会变精准转义，否则就会出现在 `jsx` 里写 `className` 不生效的情况。
+在 `weapp-tailwindcss@5` 中，不再需要执行 `weapp-tw patch`。JS/JSX 里的类名能否转译，主要看这些类名是否已经进入 Tailwind 的扫描范围，并出现在构建时收集到的 `classNameSet` 中。
+
+排查顺序：
+
+- Tailwind CSS 3：检查 `tailwind.config.js` 的 `content` 是否包含对应的 `tsx/jsx/js/ts` 文件
+- Tailwind CSS 4：检查 CSS 入口里的 `@source` 是否覆盖对应源码目录
+- 检查项目是否还把官方 Tailwind PostCSS/Vite 插件和 `weapp-tailwindcss` 同时用于小程序目标；小程序生成链路应由 `weapp-tailwindcss` 接管
+- 任意值类名如果写在动态拼接字符串里，Tailwind 可能扫描不到；这种场景需要改成完整字面量，或加入 safelist / `@source`
 
 ## monorepo 项目中 arbitrary values 写法无效？
 
-这可能是由于 tailwindcss 包被提升，导致项目获取不到正确的 tailwind 上下文，有两种解决方案。
+这通常是 Tailwind 上下文定位不准，或源码没有被扫描到。可以先检查两件事：
 
-- 配置 [tailwindcssBasedir](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#tailwindcssbasedir)
+- 配置 [tailwindcssBasedir](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#tailwindcssbasedir)，让插件从正确的项目目录解析 Tailwind
 
-- 禁止 `tailwindcss` 包被提升，具体配置方法可以去查阅各包管理器的说明文档
+- Tailwind CSS 3 检查 `content`，Tailwind CSS 4 检查 `@source` / `cssEntries`
+
+如果 monorepo 的依赖提升导致不同包拿到的 Tailwind 版本不一致，再考虑限制 `tailwindcss` 包提升。具体配置取决于包管理器。

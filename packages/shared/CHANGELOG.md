@@ -1,5 +1,23 @@
 # @weapp-tailwindcss/shared
 
+## 2.0.0-next.1
+
+### Minor Changes
+
+- ✨ **新增 `splitCandidateTokens` 候选 token 分割入口，并保留 `splitCode` 作为兼容别名。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - `weapp-tailwindcss` 内部的 JS、WXML 动态表达式与 uni-app x 局部样式候选分割改为使用更明确的 `splitCandidateTokens`，继续保持 `classNameSet` 精确命中原则，避免普通字符串被误转义。
+
+### Patch Changes
+
+- 🐛 **支持单引号和双引号包裹的 `content-*` 任意值默认同时提取，并将 `arbitraryValues.allowDoubleQuotes` 保留为兼容旧配置的废弃选项。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+## 2.0.0-next.0
+
+### Major Changes
+
+- 🚀 **新增 HBuilderX 直连演示矩阵，覆盖 uni-app Vite Vue 3 与 uni-app x 的 Tailwind CSS v3/v4 场景，并提供 `hbuilderx` preset。** [#882](https://github.com/sonofmagic/weapp-tailwindcss/pull/882) by @sonofmagic
+  - 同时将已由 tsdown 打包进产物、且不需要消费者安装的实现依赖下移到 `devDependencies`。公开导出或运行期加载边界仍保留为正式依赖，例如 `tailwindcss-config` 的 `jiti`，以及 `@weapp-tailwindcss/shared` 对外导出的 `defu`、`get-value`、`set-value`。
+
 ## 1.1.3
 
 ### Patch Changes

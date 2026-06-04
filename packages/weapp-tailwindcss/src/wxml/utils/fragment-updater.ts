@@ -34,6 +34,9 @@ export function handleEachClassFragment(ms: MagicString, tokens: Token[], option
 
   if (tokens.length > 0) {
     const lastToken = tokens[tokens.length - 1]
+    if (!lastToken) {
+      return
+    }
     if (lastToken.end < ms.original.length) {
       updateWhitespaceGap(ms, lastToken.end, ms.original.length, options)
     }

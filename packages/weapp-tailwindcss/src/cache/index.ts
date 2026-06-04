@@ -14,17 +14,17 @@ export type CacheValue = sources.Source | string
 
 export interface CacheProcessResult<T extends CacheValue> {
   result: T
-  cacheValue?: CacheValue
+  cacheValue?: CacheValue | undefined
 }
 
 export interface CacheProcessOptions<T extends CacheValue> {
   key: string
-  hashKey?: HashMapKey
-  rawSource?: string | Buffer
-  hash?: string
-  resolveCache?: () => T | undefined
+  hashKey?: HashMapKey | undefined
+  rawSource?: string | Buffer | undefined
+  hash?: string | undefined
+  resolveCache?: (() => T | undefined) | undefined
   transform: () => Promise<CacheProcessResult<T> | T>
-  onCacheHit?: (value: T) => void | Promise<void>
+  onCacheHit?: ((value: T) => void | Promise<void>) | undefined
 }
 
 export interface ICreateCacheReturnType {

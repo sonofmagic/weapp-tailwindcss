@@ -1,4 +1,4 @@
-import { templateHandler } from '#test/v2/wxml'
+import { getCompilerContext } from '@/context'
 import { createGetCase, wxmlCasePath } from './util'
 
 const getCase = createGetCase(wxmlCasePath)
@@ -9,7 +9,8 @@ describe('performance', () => {
   it('long time', async () => {
     const now = Date.now()
     const source = await getCase('pref.wxml')
-    const str = templateHandler(source)
+    const { templateHandler } = getCompilerContext()
+    const str = await templateHandler(source)
 
     const ts = Date.now() - now
     expect(ts < 1000).toBe(true)

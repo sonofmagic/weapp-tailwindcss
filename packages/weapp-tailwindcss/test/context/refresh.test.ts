@@ -144,15 +144,14 @@ describe('Context Refresh Mechanism', () => {
     }
   })
 
-  it('should maintain patcher methods after refresh', async () => {
+  it('should maintain runtime extraction methods after refresh', async () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
     await ctx.refreshTailwindcssPatcher()
 
-    // 核心方法应该存在
-    expect(typeof ctx.twPatcher.patch).toBe('function')
+    // 运行时核心方法应该存在
     expect(typeof ctx.twPatcher.extract).toBe('function')
     expect(typeof ctx.twPatcher.getClassSet).toBe('function')
   })

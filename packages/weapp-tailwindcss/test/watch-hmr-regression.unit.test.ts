@@ -5,22 +5,20 @@ import { parse } from 'yaml'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   buildDemoBaseCases,
-} from '../scripts/watch-hmr-regression/cases/demo/base'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import {
   buildDemoExtendedCases,
-} from '../scripts/watch-hmr-regression/cases/demo/extended'
-import {
-  buildAppCases,
-} from '../scripts/watch-hmr-regression/cases/apps'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import {
   buildCases,
   filterCasesForPlatform,
   pickCases,
-} from '../scripts/watch-hmr-regression/cases'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import {
   buildHexScriptRoundConfigs,
   buildIssue33HighRiskRoundConfigs,
-} from '../scripts/watch-hmr-regression/cases/round-configs'
+  buildTailwindV4JsContentRoundConfigs,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/round-configs'
 import {
   resolveReportPath,
   resolveRepositoryRootLabel,
@@ -32,19 +30,34 @@ import {
   summarizeMutationMetricsByKind,
   summarizeSamples,
   writeReport,
-} from '../scripts/watch-hmr-regression/summary'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/summary'
 import {
+  buildSpeedReport,
+  collectSpeedSamplesFromReport,
+  renderSpeedReportMarkdown,
+  summarizeSpeedSamples,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/speed-report'
+import {
+  assertHotUpdateBudget,
+  assertPluginProcessBudget,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
+import {
+  createStyleMutationPayload,
   expandOutputFileEntries,
   createClassMutationScenario,
+  collectPluginProcessMetrics,
+  hasResolvedOutputFiles,
   readJoinedOutputFiles,
   waitForCompileSettled,
   waitForInitialWarmup,
+  waitForOutputsReady,
+  waitForOutputsUpdated,
   waitForOutputFilesUpdated,
-} from '../scripts/watch-hmr-regression/mutations/shared'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 import {
   ISSUE33_ADD_CLASS_TOKENS,
   ISSUE33_MODIFY_CLASS_TOKENS,
-} from '../scripts/watch-hmr-regression/mutations/tokens'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/tokens'
 import {
   alignContentEol,
   appendTrailingSnippet,
@@ -73,7 +86,8 @@ import {
   readFileWithRetry,
   waitFor,
   writeFilePreserveEol,
-} from '../scripts/watch-hmr-regression/text'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
+import { resolveChromiumLaunchOptions } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -81,12 +95,23 @@ import type {
   WatchCase,
   WatchCaseMetrics,
   WatchCaseMutationMetrics,
-} from '../scripts/watch-hmr-regression/types'
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 const payload = {
   marker: 'tw-watch-20260313',
   classLiteral: 'text-[#123456] bg-[#0f0f0f]',
   classVariableName: '__twWatchClass',
+}
+
+const pluginProcessSample = {
+  at: 1,
+  bundler: 'vite',
+  phase: 'generateBundle',
+  durationMs: 25,
+}
+
+function toSlashPath(filePath: string) {
+  return filePath.replace(/\\/g, '/')
 }
 
 function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffectiveMs: number, rollbackEffectiveMs: number): MutationRoundMetrics {
@@ -98,8 +123,12 @@ function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffe
     escapedClasses: ['text-_b_h123456_B'],
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
     hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: 25,
+    hotUpdatePluginProcessSamples: [pluginProcessSample],
     rollbackOutputMs: rollbackEffectiveMs + 10,
     rollbackEffectiveMs,
+    rollbackPluginProcessMs: 20,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs,
   }
 }
@@ -123,8 +152,12 @@ function createClassMutationMetrics(
     verifiedGlobalStyleEscapedClasses: [],
     hotUpdateOutputMs: 40,
     hotUpdateEffectiveMs: 30,
+    hotUpdatePluginProcessMs: 25,
+    hotUpdatePluginProcessSamples: [pluginProcessSample],
     rollbackOutputMs: 50,
     rollbackEffectiveMs: 35,
+    rollbackPluginProcessMs: 20,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
   }
 }
 
@@ -135,12 +168,23 @@ function createStyleMutationMetrics(): WatchCaseMutationMetrics {
     outputStyle: 'app.wxss',
     marker: 'style-marker',
     styleNeedle: '.watch-style-marker',
+    outputNeedles: ['.watch-style-marker'],
+    rollbackNeedles: ['.watch-style-marker'],
     applyUtilities: ['font-bold'],
     expectedApplyDeclarations: ['font-weight:'],
+    expectedApplyDeclarationGroups: [],
+    functionNeedle: '.watch-style-marker-theme',
+    functionDeclarations: ['padding: theme(\'spacing.2\');'],
+    expectedFunctionDeclarations: ['padding:'],
+    forbiddenFunctionFragments: ['theme('],
     hotUpdateOutputMs: 45,
     hotUpdateEffectiveMs: 32,
+    hotUpdatePluginProcessMs: 22,
+    hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 22 }],
     rollbackOutputMs: 55,
     rollbackEffectiveMs: 36,
+    rollbackPluginProcessMs: 18,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 18 }],
     rollbackNeedleCleared: true,
   }
 }
@@ -176,12 +220,17 @@ function createCase(
       createClassMutationMetrics('content', [complexRound]),
       createStyleMutationMetrics(),
     ],
+    subPackageMutationMetrics: [],
     summaryByMutationKind: {},
     initialReadyMs: 25,
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
     hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: complexRound.hotUpdatePluginProcessMs,
+    hotUpdatePluginProcessSamples: complexRound.hotUpdatePluginProcessSamples,
     rollbackOutputMs: rollbackEffectiveMs + 10,
     rollbackEffectiveMs,
+    rollbackPluginProcessMs: complexRound.rollbackPluginProcessMs,
+    rollbackPluginProcessSamples: complexRound.rollbackPluginProcessSamples,
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs + 25,
   }
 }
@@ -232,6 +281,34 @@ describe('watch-hmr regression text helpers', () => {
     ])
     expect(joined).toContain('.a{}')
     expect(joined).toContain('.b{}')
+  })
+
+  it('re-reads wildcard output files after hashed style assets change', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-glob-refresh-'))
+    tempDirs.push(tempDir)
+    const styleDir = path.join(tempDir, 'styles')
+    const pattern = path.join(styleDir, 'index*.wxss')
+    await mkdir(styleDir, { recursive: true })
+    await writeFilePreserveEol(path.join(styleDir, 'index111.wxss'), '.old{}', '.old{}')
+
+    const before = await readJoinedOutputFiles([pattern])
+    await rm(path.join(styleDir, 'index111.wxss'))
+    await writeFilePreserveEol(path.join(styleDir, 'index222.wxss'), '.fresh{}', '.fresh{}')
+    const after = await readJoinedOutputFiles([pattern])
+
+    expect(before).toContain('.old{}')
+    expect(after).not.toContain('.old{}')
+    expect(after).toContain('.fresh{}')
+  })
+
+  it('treats empty generated style files as resolved outputs', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-empty-style-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(outputFile, '', '')
+
+    await expect(hasResolvedOutputFiles([outputFile])).resolves.toBe(true)
+    await expect(readJoinedOutputFiles([outputFile])).resolves.toBe('')
   })
 
   it('waits for predicates and reports timeout failures', async () => {
@@ -299,6 +376,74 @@ describe('watch-hmr regression text helpers', () => {
     expect(attempts).toBeGreaterThanOrEqual(2)
   })
 
+  it('allows primary output update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-primary-output-update-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view class="base"></view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({})', 'Page({})')
+    const baseline = {
+      wxml: await getMtime(wxmlFile),
+      js: await getMtime(jsFile),
+    }
+    let attempts = 0
+
+    const elapsed = await waitForOutputsUpdated(
+      {
+        label: 'demo/taro-vite-vue3-tailwindcss-v4',
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      baseline,
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('allows output file update waits to pass via semantic fallback when optional exact files are missing', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-output-missing-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'custom-tab-bar.wxss')
+    let attempts = 0
+
+    const elapsed = await waitForOutputFilesUpdated(
+      {
+        label: 'demo/mpx-tailwindcss-v4',
+      } as any,
+      [outputFile],
+      new Map([[outputFile, Date.now()]]),
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
   it('waits for watch compile success to settle before advancing', async () => {
     let lastCompileSuccessAt = 0
     const phaseStartedAt = Date.now()
@@ -308,7 +453,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForCompileSettled(
       {
-        label: 'demo/taro-app-vite',
+        label: 'demo/taro-vite-react-tailwindcss-v3',
       } as any,
       {
         timeoutMs: 1_200,
@@ -340,7 +485,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForCompileSettled(
       {
-        label: 'demo/native-ts (weapp-vite)',
+        label: 'demo/weapp-vite-tailwindcss-v3',
         outputWxml: wxmlFile,
         outputJs: jsFile,
       } as any,
@@ -353,6 +498,83 @@ describe('watch-hmr regression text helpers', () => {
         lastCompileSuccessAt: () => 0,
       } as any,
       phaseStartedAt,
+    )
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+  })
+
+  it('does not treat stale pre-start outputs as initially ready', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-stale-ready-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view>stale</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ stale: true })', 'Page({})')
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const sessionStartedAt = Date.now()
+    let compileSuccessAt = 0
+    const delayedUpdate = new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        void (async () => {
+          await writeFilePreserveEol(wxmlFile, '<view>ready</view>', '<view />')
+          await writeFilePreserveEol(jsFile, 'Page({ ready: true })', 'Page({})')
+          compileSuccessAt = Date.now()
+        })().then(resolve, reject)
+      }, 20)
+    })
+
+    let elapsed = 0
+    try {
+      elapsed = await waitForOutputsReady(
+        {
+          label: 'demo/weapp-vite-tailwindcss-v3',
+          outputWxml: wxmlFile,
+          outputJs: jsFile,
+        } as any,
+        {
+          timeoutMs: 2_000,
+          pollMs: 20,
+        } as CliOptions,
+        {
+          ensureRunning() {},
+          lastCompileSuccessAt: () => compileSuccessAt,
+        } as any,
+        sessionStartedAt,
+      )
+    }
+    finally {
+      await delayedUpdate
+    }
+
+    expect(elapsed).toBeGreaterThanOrEqual(20)
+  })
+
+  it('allows non-strict initial output readiness to reuse prebuild outputs after a stable window', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-prebuild-ready-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view>prebuild</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ prebuild: true })', 'Page({})')
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const sessionStartedAt = Date.now()
+
+    const elapsed = await waitForOutputsReady(
+      {
+        label: 'demo/weapp-vite-tailwindcss-v3',
+        requireInitialCompileSuccess: false,
+        outputWxml: wxmlFile,
+        outputJs: jsFile,
+      } as any,
+      {
+        timeoutMs: 2_000,
+        pollMs: 20,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+        lastCompileSuccessAt: () => 0,
+      } as any,
+      sessionStartedAt,
     )
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
@@ -373,7 +595,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForInitialWarmup(
       {
-        label: 'demo/native-ts (weapp-vite)',
+        label: 'demo/weapp-vite-tailwindcss-v3',
         requireInitialCompileSuccess: true,
         outputWxml: wxmlFile,
         outputJs: jsFile,
@@ -414,11 +636,19 @@ describe('watch-hmr regression text helpers', () => {
     const styleSnippet = createStyleRuleSnippet({
       marker: 'watch-1234567',
       styleNeedle: '.watch-style-marker',
+      outputNeedles: ['.watch-style-marker'],
+      rollbackNeedles: ['.watch-style-marker'],
       applyUtilities: ['font-bold', 'text-center'],
       expectedApplyDeclarations: [],
+      functionNeedle: '.watch-style-marker-theme',
+      functionDeclarations: ['padding: theme(\'spacing.2\');'],
+      expectedFunctionDeclarations: [],
+      forbiddenFunctionFragments: [],
     })
 
     expect(styleSnippet).toContain('@apply font-bold text-center;')
+    expect(styleSnippet).toContain('.watch-style-marker-theme')
+    expect(styleSnippet).toContain('padding: theme(\'spacing.2\');')
     expect(styleSnippet).toContain('color: #234567;')
   })
 
@@ -495,6 +725,8 @@ const bgObj = ref({
     const styleMutated = mutateSfcStyleBlock(vueSource, {
       marker: 'watch-123456',
       styleNeedle: '.watch-style-marker',
+      outputNeedles: ['.watch-style-marker'],
+      rollbackNeedles: ['.watch-style-marker'],
       applyUtilities: ['font-bold'],
       expectedApplyDeclarations: [],
     })
@@ -523,8 +755,8 @@ describe('watch-hmr regression summary helpers', () => {
     })
 
     const cases = [
-      createCase('weapp-vite', 'demo', 30, 40),
-      createCase('vite-native-ts', 'apps', 50, 70),
+      createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40),
+      createCase('weapp-vite-tailwindcss-v4', 'demo', 50, 70),
     ]
 
     expect(summarizeMetrics(cases)).toEqual({
@@ -542,12 +774,12 @@ describe('watch-hmr regression summary helpers', () => {
       hotUpdateAvgMs: 40,
       rollbackAvgMs: 55,
     })
-    expect(summarizeMetricsByGroup(cases).demo).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
-    expect(summarizeMetricsByProject(cases)['demo-weapp-vite']).toMatchObject({ count: 1, rollbackAvgMs: 40 })
+    expect(summarizeMetricsByGroup(cases).demo).toMatchObject({ count: 2, hotUpdateAvgMs: 40 })
+    expect(summarizeMetricsByProject(cases)['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: 1, rollbackAvgMs: 40 })
   })
 
   it('summarizes mutation kinds using preferred rounds', () => {
-    const cases = [createCase('weapp-vite', 'demo', 30, 40)]
+    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
     const byCase = summarizeMutationKindAcrossCases(cases)
     const byMutation = summarizeMutationMetricsByKind(cases[0].mutationMetrics)
 
@@ -561,13 +793,14 @@ describe('watch-hmr regression summary helpers', () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-summary-'))
     tempDirs.push(tempDir)
     const reportFile = 'artifacts/watch-report.json'
-    const cases = [createCase('weapp-vite', 'demo', 30, 40)]
+    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
     const options: CliOptions = {
       caseName: 'demo',
       timeoutMs: 2_000,
       pollMs: 20,
       skipBuild: true,
       quietSass: true,
+      webOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
     }
@@ -589,12 +822,171 @@ describe('watch-hmr regression summary helpers', () => {
 
     expect(report.repositoryRoot).toBe(path.basename(tempDir))
     expect(report.options.caseName).toBe('demo')
+    expect(report.options.webOnly).toBe(false)
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
+  })
+
+  it('builds a CI-facing HMR speed report from watch JSON metrics', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-speed-'))
+    tempDirs.push(tempDir)
+    const reportFile = 'artifacts/watch-report.json'
+    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    const options: CliOptions = {
+      caseName: 'demo',
+      timeoutMs: 2_000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      reportFile,
+      maxHotUpdateMs: 100,
+    }
+
+    const stdoutSpy = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
+    try {
+      await writeReport(tempDir, options, cases)
+    }
+    finally {
+      stdoutSpy.mockRestore()
+    }
+
+    const reportPath = path.join(tempDir, reportFile)
+    const watchReport = JSON.parse(await readFile(reportPath, 'utf8'))
+    const samples = collectSpeedSamplesFromReport(watchReport, 'watch-report.json')
+    const speedReport = buildSpeedReport([{ file: reportPath, report: watchReport }], '2026-05-14T00:00:00.000Z')
+    const markdown = renderSpeedReportMarkdown(speedReport)
+
+    expect(samples.map(item => item.surface)).toEqual(expect.arrayContaining([
+      'case-template-preferred',
+      'template:complex-corpus',
+      'script:complex-corpus',
+      'style',
+      'content:complex-corpus',
+    ]))
+    expect(summarizeSpeedSamples(samples)).toMatchObject({
+      count: samples.length,
+      minMs: 30,
+      p50Ms: 30,
+      maxMs: 32,
+    })
+    expect(speedReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: samples.length })
+    expect(speedReport.bySurface.style).toMatchObject({ count: 1, avgMs: 32 })
+    expect(speedReport.slowest[0]).toMatchObject({ surface: 'style', hotUpdateMs: 32 })
+    expect(speedReport.maxHotUpdateBudgetMs).toBe(1000)
+    expect(speedReport.maxPluginProcessBudgetMs).toBe(500)
+    expect(speedReport.preferredHotUpdateTargetMs).toBe(1000)
+    expect(speedReport.withinBudgetCount).toBe(samples.length)
+    expect(speedReport.withinPluginProcessBudgetCount).toBe(samples.length)
+    expect(speedReport.withinPreferredTargetCount).toBe(samples.length)
+    expect(markdown).toContain('# e2e-watch HMR 速度报告')
+    expect(markdown).toContain('- budget: <=1000ms')
+    expect(markdown).toContain('- plugin process budget: <=500ms')
+    expect(markdown).toContain('- preferred target: <=1000ms')
+    expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
+  })
+
+  it('applies hot-update budget checks to nested HMR samples', () => {
+    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const scriptMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'script',
+    )
+    if (!scriptMetric || scriptMetric.mutationKind === 'style') {
+      throw new Error('missing script metric')
+    }
+
+    scriptMetric.addedClassHmr = {
+      markerBefore: 'before',
+      markerAfter: 'after',
+      classLiteralBefore: 'text-[#123456]',
+      classLiteralAfter: 'text-[#123456] bg-[#654321]',
+      addedClassLiteral: 'bg-[#654321]',
+      addedClassTokens: ['bg-[#654321]'],
+      addedEscapedClasses: ['bg-_b_h654321_B'],
+      verifiedAddedEscapedClasses: ['bg-_b_h654321_B'],
+      minRequiredEscapedClasses: 1,
+      hotUpdateOutputMs: 2600,
+      hotUpdateEffectiveMs: 2500,
+      hotUpdatePluginProcessMs: 25,
+      hotUpdatePluginProcessSamples: [pluginProcessSample],
+      rollbackOutputMs: 35,
+      rollbackEffectiveMs: 30,
+      rollbackPluginProcessMs: 20,
+      rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
+    }
+
+    expect(() => assertHotUpdateBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      maxHotUpdateMs: 1000,
+    })).toThrow('script:added-class hot update exceeded budget: 2500ms > 1000ms')
+  })
+
+  it('applies weapp-tailwindcss processing budget checks to nested HMR samples', () => {
+    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const scriptMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'script',
+    )
+    if (!scriptMetric || scriptMetric.mutationKind === 'style') {
+      throw new Error('missing script metric')
+    }
+    scriptMetric.rounds[0].hotUpdatePluginProcessMs = 520
+
+    expect(() => assertPluginProcessBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      maxPluginProcessMs: 500,
+    })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
+  })
+
+  it('prefers total timing samples when collecting plugin processing metrics', () => {
+    const metrics = collectPluginProcessMetrics({
+      pluginProcessSamplesSince: () => [
+        { ...pluginProcessSample, durationMs: 1200 },
+        { ...pluginProcessSample, phase: 'total', durationMs: 85, metric: 'total' },
+      ],
+    } as never, 1)
+
+    expect(metrics.totalMs).toBe(85)
+    expect(metrics.samples).toHaveLength(2)
+  })
+
+  it('lets Taro Vite cases override the plugin processing budget for restart fallback runs', () => {
+    const metrics = createCase('taro-vite-react-tailwindcss-v4', 'demo', 30, 40)
+    metrics.maxPluginProcessMs = 3000
+    const templateMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'template',
+    )
+    if (!templateMetric || templateMetric.mutationKind === 'style') {
+      throw new Error('missing template metric')
+    }
+    templateMetric.rounds[0].hotUpdatePluginProcessMs = 1500
+
+    expect(() => assertPluginProcessBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      maxPluginProcessMs: 500,
+    })).not.toThrow()
   })
 })
 
 describe('watch-hmr regression cases', () => {
+  it('runs Web/H5 browser checks in headless Chromium mode', () => {
+    expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
+  })
+
   it('defines issue33 high-risk arbitrary CRUD rounds for js literal hot updates', () => {
     const [roundConfig] = buildIssue33HighRiskRoundConfigs()
 
@@ -602,6 +994,21 @@ describe('watch-hmr regression cases', () => {
     expect(roundConfig?.name).toBe('issue33-arbitrary')
     expect(roundConfig?.buildClassTokens('seed')).toEqual([...ISSUE33_ADD_CLASS_TOKENS])
     expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
+  })
+
+  it('keeps the uni-app Vue3 Vite content mutation anchored to the bgObj page fixture', () => {
+    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
+    const contentMutation = uniAppCase?.contentMutation
+
+    expect(contentMutation).toBeDefined()
+    expect(contentMutation?.mutate(
+      [
+        'const bgObj = ref({',
+        '  \'bg-[#232322]\':true',
+        '})',
+      ].join('\n'),
+      payload,
+    )).toContain('\'text-[#123456]\':true')
   })
 
   it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {
@@ -620,8 +1027,8 @@ describe('watch-hmr regression cases', () => {
 
       const scenario = createClassMutationScenario(
         {
-          name: 'taro-webpack',
-          label: 'apps/taro-webpack-tailwindcss-v4',
+          name: 'taro-webpack-react-tailwindcss-v4',
+          label: 'demo/taro-webpack-react-tailwindcss-v4',
         } as WatchCase,
         'script',
         {
@@ -646,65 +1053,135 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('tracks taro webpack app style outputs in both page and app wxss candidates', () => {
-    const taroWebpackCase = buildAppCases('/repo').find(item => item.name === 'taro-webpack')
+  it('uses complex script round tokens for realistic dynamic class hot updates', () => {
+    const [baselineRound, complexRound, hexRound] = buildHexScriptRoundConfigs()
 
-    expect(taroWebpackCase?.name).toBe('taro-webpack')
+    expect(baselineRound?.buildClassTokens('123456').length).toBeGreaterThan(6)
+    expect(complexRound?.buildClassTokens('123456')).toEqual(expect.arrayContaining([
+      '!mt-2',
+      '-translate-y-1',
+      'data-[state=open]:opacity-100',
+      'supports-[display:grid]:grid',
+      '[mask-type:luminance]',
+    ]))
+    expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('w-[calc(100%_-_'))).toBe(true)
+    expect(complexRound?.buildClassTokens('123456').some(token => token.startsWith('grid-cols-[200rpx_minmax(900rpx,_1fr)_'))).toBe(true)
+    expect(hexRound?.buildClassTokens('12345678').some(token => token.startsWith('shadow-[0_'))).toBe(true)
+  })
+
+  it('keeps tailwind v4 js content rounds to tokens that produce css from script scanning', () => {
+    const [, complexRound] = buildTailwindV4JsContentRoundConfigs()
+    const tokens = complexRound?.buildClassTokens('123456') ?? []
+
+    expect(tokens).toEqual(expect.arrayContaining([
+      '!mt-2',
+      '-translate-y-1',
+      'data-[state=open]:opacity-100',
+      '[mask-type:luminance]',
+    ]))
+    expect(tokens).not.toEqual(expect.arrayContaining([
+      '[@supports(display:grid)]:grid',
+      'supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]',
+      '[@media(any-hover:hover){&:hover}]:opacity-100',
+      'supports-[display:grid]:grid',
+    ]))
+  })
+
+  it('uses tailwind v4 js content rounds for gulp v4 script mutations', () => {
+    const gulpV4Case = buildDemoBaseCases('/repo').find(watchCase => watchCase.name === 'gulp-tailwindcss-v4')
+    const [, complexRound] = gulpV4Case?.scriptMutation.roundConfigs ?? []
+
+    expect(complexRound?.name).toBe('complex-corpus')
+    expect(complexRound?.buildClassTokens('123456')).not.toContain('[@media(any-hover:hover){&:hover}]:opacity-100')
+  })
+
+  it('uses tailwind v4 js content rounds for mpx v4 script mutations', () => {
+    const mpxV4Case = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
+    const [, complexRound] = mpxV4Case?.scriptMutation.roundConfigs ?? []
+
+    expect(complexRound?.name).toBe('complex-corpus')
+    expect(complexRound?.buildClassTokens('123456')).not.toContain('[@media(any-hover:hover){&:hover}]:opacity-100')
+    expect(complexRound?.buildClassTokens('123456')).not.toContain('[@supports(display:grid)]:grid')
+  })
+
+  it('tracks taro webpack v4 style outputs in both page and app wxss candidates', () => {
+    const taroWebpackCase = buildDemoExtendedCases('/repo').find(item => item.name === 'taro-webpack-react-tailwindcss-v4')
+
+    expect(taroWebpackCase?.name).toBe('taro-webpack-react-tailwindcss-v4')
     expect(taroWebpackCase?.outputStyleCandidates).toEqual([
-      path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/pages/index/index.wxss'),
-      path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/app.wxss'),
     ])
     expect(taroWebpackCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'apps/taro-webpack-tailwindcss-v4/dist/app.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/taro-webpack-react-tailwindcss-v4/dist/app.wxss'),
     ])
   })
 
   it('registers the new tailwindcss v4 watch cases with expected outputs', () => {
     const extendedCases = buildDemoExtendedCases('/repo')
-    const appCases = buildAppCases('/repo')
-    const uniViteCase = extendedCases.find(item => item.name === 'uni-app-vue3-vite')
+    const baseCases = buildDemoBaseCases('/repo')
+    const uniViteCase = extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v3')
     const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
-    const viteNativeCase = appCases.find(item => item.name === 'vite-native')
-    const viteNativeSkylineCase = appCases.find(item => item.name === 'vite-native-skyline')
-    const viteNativeTsSkylineCase = appCases.find(item => item.name === 'vite-native-ts-skyline')
+    const viteNativeCase = baseCases.find(item => item.name === 'weapp-vite-tailwindcss-v4')
 
     expect(uniViteCase?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxml'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/pages/index/index.wxss'),
-      path.resolve('/repo', 'demo/uni-app-vue3-vite/dist/dev/mp-weixin/app.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ])
+    expect(uniViteCase?.maxPluginProcessMs).toBe(5000)
 
     expect(mpxV4Case?.outputWxml).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),
     )
-    expect(mpxV4Case?.globalStyleCandidates).toEqual([
+    expect(mpxV4Case?.devScript).toBe('dev:e2e-watch')
+    expect(mpxV4Case?.env).toMatchObject({
+      CHOKIDAR_INTERVAL: '50',
+      CHOKIDAR_USEPOLLING: '1',
+      WATCHPACK_POLLING: '50',
+    })
+    expect(mpxV4Case?.initialMutationDelayMs).toBe(15_000)
+    expect(mpxV4Case?.styleMutation.sourceFile).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'),
+    )
+    expect(mpxV4Case?.styleMutation.verifyOutputCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/pages/component/index.wxss'),
+    ])
+    expect(mpxV4Case?.styleMutation.validateApply).toBe(false)
+    const mpxV4SubPackage = mpxV4Case?.subPackageMutations?.find(item => item.root === 'sub-normal')
+    expect(mpxV4SubPackage?.styleMutation.validateApply).toBe(false)
+    expect(mpxV4SubPackage?.styleMutation.validateFunction).toBe(false)
+    expect(mpxV4SubPackage?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js'),
+    ])
+    expect(mpxV4SubPackage?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/styles/*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+    ])
+
+    expect(mpxV4Case?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxss'),
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
+    ])
+    expect(mpxV4Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/app.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
     ])
 
     expect(viteNativeCase?.outputJs).toBe(
-      path.resolve('/repo', 'apps/vite-native/dist/pages/index/index.js'),
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/pages/index/index.js'),
     )
     expect(viteNativeCase?.outputStyleCandidates).toEqual([
-      path.resolve('/repo', 'apps/vite-native/dist/pages/index/index.wxss'),
-      path.resolve('/repo', 'apps/vite-native/dist/app.wxss'),
-    ])
-
-    expect(viteNativeSkylineCase?.outputWxml).toBe(
-      path.resolve('/repo', 'apps/vite-native-skyline/dist/pages/index/index.wxml'),
-    )
-    expect(viteNativeSkylineCase?.outputStyleCandidates).toEqual([
-      path.resolve('/repo', 'apps/vite-native-skyline/dist/pages/index/index.wxss'),
-      path.resolve('/repo', 'apps/vite-native-skyline/dist/app.wxss'),
-    ])
-
-    expect(viteNativeTsSkylineCase?.outputJs).toBe(
-      path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/pages/index/index.js'),
-    )
-    expect(viteNativeTsSkylineCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/pages/index/index.wxss'),
-      path.resolve('/repo', 'apps/vite-native-ts-skyline/dist/app.wxss'),
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
     ])
   })
 
@@ -712,7 +1189,6 @@ describe('watch-hmr regression cases', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
       ...buildDemoExtendedCases('/repo'),
-      ...buildAppCases('/repo'),
     ].filter(watchCase => watchCase.name.includes('taro'))
 
     expect(cases.length).toBeGreaterThan(0)
@@ -722,16 +1198,38 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
-  it('covers js literal refresh content mutations for every demo and app case', () => {
+  it('keeps Taro Vite watch cases on restart fallback compatible budgets', () => {
+    const cases = buildDemoExtendedCases('/repo').filter(watchCase => watchCase.name.startsWith('taro-vite-'))
+
+    expect(cases.map(watchCase => watchCase.name).sort()).toEqual([
+      'taro-vite-react-tailwindcss-v3',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v3',
+      'taro-vite-vue3-tailwindcss-v4',
+    ])
+
+    for (const watchCase of cases) {
+      expect(watchCase.env).toHaveProperty('TARO_E2E_WATCH_NATIVE', '0')
+      expect(watchCase.maxPluginProcessMs).toBe(3000)
+      expect(watchCase.initialMutationDelayMs).toBe(15_000)
+    }
+  })
+
+  it('covers literal refresh content mutations for every demo case', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
       ...buildDemoExtendedCases('/repo'),
-      ...buildAppCases('/repo'),
     ]
+    const contentMutationOptionalCases = new Set(['gulp-tailwindcss-v3', 'gulp-tailwindcss-v4'])
 
     expect(cases.length).toBeGreaterThan(0)
 
     for (const watchCase of cases) {
+      if (contentMutationOptionalCases.has(watchCase.name)) {
+        expect(watchCase.contentMutation, `${watchCase.name} keeps template/script/style hot-update coverage`).toBeUndefined()
+        continue
+      }
+
       expect(
         watchCase.contentMutation,
         `${watchCase.name} should define content mutation for existing js class literal refresh`,
@@ -742,22 +1240,197 @@ describe('watch-hmr regression cases', () => {
         continue
       }
 
-      expect(contentMutation.verifyClassLiteralIn).toContain('js')
-      expect(contentMutation.forbidBgHexTruncationIn).toContain('js')
+      const expectedCarrier = contentMutation.sourceFile.endsWith('.wxml') ? 'wxml' : 'js'
+      expect(contentMutation.verifyClassLiteralIn).toContain(expectedCarrier)
+      expect(contentMutation.forbidBgHexTruncationIn).toContain(expectedCarrier)
       expect(contentMutation.roundConfigs?.length).toBe(1)
       expect(contentMutation.roundConfigs?.[0]?.name).toBe('issue33-arbitrary')
       expect(contentMutation.roundConfigs?.[0]?.buildClassTokens('seed')).toEqual([...ISSUE33_ADD_CLASS_TOKENS])
       expect(contentMutation.roundConfigs?.[0]?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
       expect(contentMutation.sourceFile).not.toMatch(/index\.html$/)
-      expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx)$/)
+      expect(contentMutation.sourceFile).toMatch(/\.(?:js|ts|tsx|vue|mpx|wxml)$/)
     }
   })
 
-  it('keeps script read-path HMR checks available for every demo and app case', () => {
+  it('registers watch hot-update cases for every demo project including Vue3 variants', () => {
     const cases = [
       ...buildDemoBaseCases('/repo'),
       ...buildDemoExtendedCases('/repo'),
-      ...buildAppCases('/repo'),
+    ]
+
+    expect(cases.map(watchCase => watchCase.name)).toEqual([
+      'gulp-tailwindcss-v3',
+      'gulp-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v3',
+      'taro-webpack-vue3-tailwindcss-v3',
+      'mpx-tailwindcss-v3',
+      'weapp-vite-tailwindcss-v3',
+      'weapp-vite-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v3',
+      'uni-app-vite-tailwindcss-v4',
+      'mpx-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v3',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v3',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+    ])
+  })
+
+  it('covers every Taro and uni-app Web/H5 hot-update case in watch config and PR CI', async () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+    const webCaseNames = [
+      'taro-webpack-react-tailwindcss-v3',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v3',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v3',
+      'taro-webpack-vue3-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v3',
+      'taro-vite-vue3-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v3',
+      'uni-app-vite-tailwindcss-v4',
+    ]
+    const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
+
+    for (const name of webCaseNames) {
+      const watchCase = caseMap.get(name)
+      const sourceFile = toSlashPath(watchCase?.webHmr?.sourceFile ?? '')
+      const cssEntryFile = toSlashPath(watchCase?.webHmr?.cssEntryFile ?? '')
+
+      expect(watchCase?.webHmr, `${name} should define Web/H5 HMR coverage`).toBeDefined()
+      expect(sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
+      expect(cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
+      expect(watchCase?.webHmr?.devScript).toBe(name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+    }
+
+    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
+    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
+
+    const taroWebpackPostcssConfigs = [
+      'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
+      'demo/taro-webpack-vue3-tailwindcss-v3/postcss.config.js',
+      'demo/taro-webpack-react-tailwindcss-v4/postcss.config.mjs',
+      'demo/taro-webpack-vue3-tailwindcss-v4/postcss.config.mjs',
+    ]
+    for (const configPath of taroWebpackPostcssConfigs) {
+      const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
+      expect(configSource, configPath).not.toContain('weapp-tailwindcss/postcss')
+      expect(configSource, configPath).not.toContain('@tailwindcss/postcss')
+      expect(configSource, configPath).not.toMatch(/['"]tailwindcss['"]\s*:/)
+    }
+
+    const taroWebpackConfigs = [
+      'demo/taro-webpack-react-tailwindcss-v3/config/index.ts',
+      'demo/taro-webpack-vue3-tailwindcss-v3/config/index.ts',
+      'demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
+      'demo/taro-webpack-vue3-tailwindcss-v4/config/index.ts',
+    ]
+    for (const configPath of taroWebpackConfigs) {
+      const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
+      expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
+      expect(configSource, configPath).toContain('WeappTailwindcss')
+      expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
+      expect(configSource, configPath).not.toContain('chain.watchOptions({')
+      expect(configSource, configPath).not.toContain('ignored: [distDir]')
+    }
+
+    const webpackV5PluginSource = await readFile(
+      path.resolve(__dirname, '../src/bundlers/webpack/BaseUnifiedPlugin/v5.ts'),
+      'utf8',
+    )
+    expect(webpackV5PluginSource).toContain('setupWebpackWatchOutputIgnore')
+    expect(webpackV5PluginSource).toContain('compiler.outputPath || compiler.options?.output?.path')
+
+    for (const appStyle of ['src/app.less', 'src/app.scss']) {
+      const appStyleSource = await readFile(
+        path.resolve(__dirname, '../../../demo/taro-webpack-react-tailwindcss-v3', appStyle),
+        'utf8',
+      )
+      expect(appStyleSource.trimStart(), appStyle).toMatch(/^@import 'tailwindcss\/base';/)
+    }
+
+    const taroWebpackV3Styles = [
+      'demo/taro-webpack-react-tailwindcss-v3/src/sub-normal/pages/index.css',
+      'demo/taro-webpack-react-tailwindcss-v3/src/sub-independent/pages/index.css',
+      'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less',
+      'demo/taro-webpack-vue3-tailwindcss-v3/src/sub-normal/pages/index.css',
+      'demo/taro-webpack-vue3-tailwindcss-v3/src/sub-independent/pages/index.css',
+    ]
+    for (const stylePath of taroWebpackV3Styles) {
+      const styleSource = await readFile(path.resolve(__dirname, '../../..', stylePath), 'utf8')
+      const firstNonEmptyLine = styleSource.split(/\r?\n/).find(line => line.trim() !== '')
+      const configIndex = styleSource.indexOf('@config')
+      const importIndex = styleSource.indexOf('@import')
+
+      expect(firstNonEmptyLine, stylePath).toBe('@import \'tailwindcss/base\';')
+      if (configIndex >= 0) {
+        expect(configIndex, stylePath).toBeGreaterThan(importIndex)
+      }
+    }
+
+    const workflowSource = await readFile(
+      path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
+      'utf8',
+    )
+    const workflow = parse(workflowSource) as {
+      jobs?: Record<string, {
+        strategy?: {
+          matrix?: {
+            include?: Array<Record<string, unknown>>
+          }
+        }
+      }>
+    }
+    const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
+
+    for (const name of webCaseNames) {
+      expect(
+        prMatrixEntries,
+        `${name} should run in PR quick gate on macOS`,
+      ).toContainEqual(expect.objectContaining({
+        os: 'macos-latest',
+        runner_label: 'macos',
+        watch_case: name,
+        round_profile: 'default',
+        watch_web_only: '1',
+      }))
+    }
+  })
+
+  it('covers normal and independent subpackage hot updates for every demo watch case', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+
+    for (const watchCase of cases) {
+      expect(watchCase.subPackageMutations?.map(item => item.root).sort(), watchCase.name).toEqual(['sub-independent', 'sub-normal'])
+      for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+        expect(subPackageMutation.templateMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.outputWxml, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.outputJs, watchCase.name).toContain(subPackageMutation.root)
+        expect(subPackageMutation.globalStyleCandidates.length, watchCase.name).toBeGreaterThan(0)
+        expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
+          'baseline-arbitrary',
+          'complex-corpus',
+          'hex-arbitrary',
+        ])
+      }
+      expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-independent')?.independent, watchCase.name).toBe(true)
+      expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-normal')?.independent, watchCase.name).toBe(false)
+    }
+  })
+
+  it('keeps script read-path HMR checks available for every demo case', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
     ]
 
     expect(cases.length).toBeGreaterThan(0)
@@ -772,17 +1445,101 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('uses wildcard style candidates for mpx utility outputs', () => {
-    const mpxCase = buildDemoBaseCases('/repo').find(watchCase => watchCase.name === 'mpx')
+    const mpxCase = buildDemoBaseCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v3')
     expect(mpxCase?.globalStyleCandidates).toContain(
-      path.resolve('/repo', 'demo/mpx-app/dist/wx/styles/utilities*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v3/dist/wx/styles/utilities*.wxss'),
     )
+    expect(mpxCase?.env).toMatchObject({
+      CHOKIDAR_INTERVAL: '50',
+      CHOKIDAR_USEPOLLING: '1',
+      WATCHPACK_POLLING: '50',
+    })
+  })
+
+  it('uses page style mutation for mpx v4 without unsupported @apply or theme checks', () => {
+    const mpxV4Case = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
+    expect(mpxV4Case).toBeDefined()
+
+    const payload = createStyleMutationPayload(mpxV4Case!)
+    expect(mpxV4Case?.styleMutation.sourceFile).toBe(path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'))
+    expect(mpxV4Case?.styleMutation.mutate('<style>\n</style>\n', payload)).toContain(payload.styleNeedle)
+    expect(payload.applyUtilities).toEqual([])
+    expect(payload.expectedApplyDeclarations).toEqual([])
+    expect(payload.functionNeedle).toBeUndefined()
+    expect(payload.functionDeclarations).toEqual([])
+    expect(payload.expectedFunctionDeclarations).toEqual([])
+    expect(payload.forbiddenFunctionFragments).toEqual([])
+    expect(payload.referenceDirective).toBe('@reference "tailwindcss";')
+  })
+
+  it('keeps style mutation validation policy explicit for every demo watch case', () => {
+    const applyUnsupportedCases = new Set([
+      'mpx-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
+    ])
+    const functionUnsupportedCases = new Set([
+      'mpx-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
+    ])
+    const referenceRequiredCases = new Set([
+      'gulp-tailwindcss-v4',
+      'mpx-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4',
+      'weapp-vite-tailwindcss-v4',
+    ])
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+
+    for (const watchCase of cases) {
+      const payload = createStyleMutationPayload(watchCase)
+
+      if (applyUnsupportedCases.has(watchCase.name)) {
+        expect(payload.applyUtilities, `${watchCase.name} should skip unsupported @apply validation`).toEqual([])
+        expect(payload.expectedApplyDeclarations, `${watchCase.name} should skip unsupported @apply declarations`).toEqual([])
+      }
+      else {
+        expect(payload.applyUtilities.length, `${watchCase.name} should validate @apply utilities`).toBeGreaterThan(0)
+        expect(payload.expectedApplyDeclarations.length, `${watchCase.name} should validate expanded @apply declarations`).toBeGreaterThan(0)
+      }
+
+      if (functionUnsupportedCases.has(watchCase.name)) {
+        expect(payload.functionNeedle, `${watchCase.name} should skip unsupported Tailwind function validation`).toBeUndefined()
+        expect(payload.functionDeclarations, `${watchCase.name} should not inject unsupported Tailwind functions`).toEqual([])
+        expect(payload.expectedFunctionDeclarations, `${watchCase.name} should not expect unsupported Tailwind function declarations`).toEqual([])
+        expect(payload.forbiddenFunctionFragments, `${watchCase.name} should not assert unsupported Tailwind function fragments`).toEqual([])
+      }
+      else {
+        expect(payload.functionNeedle, `${watchCase.name} should validate Tailwind function HMR`).toContain('.tw-watch-style-')
+        expect(payload.functionDeclarations.length, `${watchCase.name} should inject Tailwind function declarations`).toBeGreaterThan(0)
+        expect(payload.expectedFunctionDeclarations.length, `${watchCase.name} should validate resolved Tailwind function declarations`).toBeGreaterThan(0)
+        expect(payload.forbiddenFunctionFragments, `${watchCase.name} should forbid unresolved Tailwind functions`).toContain('theme(')
+      }
+
+      if (referenceRequiredCases.has(watchCase.name)) {
+        expect(payload.referenceDirective, `${watchCase.name} should include Tailwind v4 @reference`).toBe('@reference "tailwindcss";')
+      }
+      else {
+        expect(payload.referenceDirective, `${watchCase.name} should not need Tailwind v4 @reference`).toBeUndefined()
+      }
+    }
   })
 
   it('opts out same-class global-style stability for platform-variant watch cases', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')
-    const weappViteCase = demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')
-    const uniAppVue3ViteCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vue3-vite')
+    const weappViteCase = demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')
+    const uniAppVue3ViteCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
 
     expect(weappViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
     expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
@@ -790,12 +1547,15 @@ describe('watch-hmr regression cases', () => {
 
   it('does not require initial compile success for weapp-vite powered watch cases with unstable ready logs', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
-    const appCases = buildAppCases('/repo')
 
-    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite')?.requireInitialCompileSuccess).toBe(false)
-    expect(appCases.find(watchCase => watchCase.name === 'vite-native')?.requireInitialCompileSuccess).toBe(false)
-    expect(appCases.find(watchCase => watchCase.name === 'vite-native-ts')?.requireInitialCompileSuccess).toBe(false)
-    expect(appCases.find(watchCase => watchCase.name === 'vite-native-skyline')?.requireInitialCompileSuccess).toBe(false)
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.requireInitialCompileSuccess).toBe(false)
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(false)
+  })
+
+  it('prebuilds the weapp-vite demo before watch so dev hot updates start from complete outputs', () => {
+    const demoBaseCases = buildDemoBaseCases('/repo')
+
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.initialBuildScript).toBe('build')
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {
@@ -805,14 +1565,14 @@ describe('watch-hmr regression cases', () => {
     expect(darwinCases).toEqual(cases)
 
     const win32Cases = filterCasesForPlatform(cases, 'win32')
-    expect(win32Cases.find(watchCase => watchCase.name === 'vite-native-skyline')).toBeUndefined()
+    expect(win32Cases).toEqual(cases)
 
     const win32DemoCases = pickCases(win32Cases, 'demo')
     expect(win32DemoCases.every(watchCase => watchCase.group === 'demo')).toBe(true)
-    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vue3-vite')).toBeDefined()
+    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')).toBeDefined()
   })
 
-  it('keeps issue33 watch cases in macOS and Windows CI matrices', async () => {
+  it('keeps issue33 and Vue3 watch cases across PR smoke and nightly CI matrices', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -827,24 +1587,32 @@ describe('watch-hmr regression cases', () => {
       }>
     }
 
+    const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
+    const nightlyMatrixEntries = workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []
     const matrixEntries = [
-      ...(workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []),
-      ...(workflow.jobs?.['nightly-full-regression']?.strategy?.matrix?.include ?? []),
+      ...prMatrixEntries,
+      ...nightlyMatrixEntries,
     ]
 
     const requiredMatrixEntries = [
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vue3-vite', round_profile: 'issue33' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite', round_profile: 'issue33' },
-      { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vue3-vite', round_profile: 'issue33' },
-      { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v3', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4', round_profile: 'default' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
     ]
 
     for (const entry of requiredMatrixEntries) {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
+    expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toBe(false)
   })
 
-  it('sets a Windows-specific watch hot-update budget without relaxing macOS', async () => {
+  it('keeps watch plugin processing budget strict while retry settings stay explicit', async () => {
     const workflowSource = await readFile(
       path.resolve(__dirname, '../../../.github/workflows/e2e-watch.yml'),
       'utf8',
@@ -863,9 +1631,9 @@ describe('watch-hmr regression cases', () => {
     expect(runSteps.length).toBe(2)
     for (const step of runSteps) {
       const env = step.env as Record<string, string> | undefined
-      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe(
-        "${{ matrix.watch_max_hot_update_ms || (matrix.runner_label == 'windows' && '30000' || '15000') }}",
-      )
+      expect(env?.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
+      expect(env?.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
+      expect(env?.NODE_OPTIONS).toBe('--max-old-space-size=6144')
     }
   })
 })

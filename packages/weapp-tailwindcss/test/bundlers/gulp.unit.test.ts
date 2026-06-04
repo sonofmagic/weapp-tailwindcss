@@ -15,6 +15,7 @@ interface InternalContext {
   cache: ReturnType<typeof createCache>
   jsMatcher?: ReturnType<typeof vi.fn>
   wxsMatcher?: ReturnType<typeof vi.fn>
+  mainCssChunkMatcher: ReturnType<typeof vi.fn>
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
@@ -22,6 +23,8 @@ interface InternalContext {
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
+  tailwindcss?: any
+  refreshTailwindcssPatcher?: ReturnType<typeof vi.fn>
 }
 
 let currentContext: InternalContext
@@ -89,7 +92,9 @@ describe('bundlers/gulp createPlugins', () => {
       cache,
       jsMatcher: vi.fn((id: string) => id.endsWith('.js')),
       wxsMatcher: vi.fn((id: string) => id.endsWith('.wxs')),
+      mainCssChunkMatcher: vi.fn((name: string) => path.basename(name) === 'app.wxss'),
       twPatcher,
+      refreshTailwindcssPatcher: vi.fn(async () => twPatcher),
     }
 
     getCompilerContextMock.mockClear()
@@ -98,27 +103,28 @@ describe('bundlers/gulp createPlugins', () => {
   it('processes files and caches results across runs', async () => {
     const plugins = createPlugins()
     expect(getCompilerContextMock).toHaveBeenCalled()
-    expect(twPatcher.patch).toHaveBeenCalledTimes(1)
+    expect(twPatcher.patch).not.toHaveBeenCalled()
 
     const cssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(twPatcher.extract).not.toHaveBeenCalled()
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.extract).toHaveBeenCalledTimes(1)
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
-    expect(twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(twPatcher.extract).not.toHaveBeenCalled()
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+    expect(twPatcher.extract).toHaveBeenCalledTimes(3)
     expect(jsHandler).toHaveBeenCalledWith(
       'import "./init"; console.log("hi")',
       runtimeSet,
@@ -147,6 +153,109 @@ describe('bundlers/gulp createPlugins', () => {
     const cachedHtmlFile = createFile('/src/app.wxml', '<view class="foo"></view>')
     await runTransform(plugins.transformWxml(), cachedHtmlFile)
     expect(templateHandler).toHaveBeenCalledTimes(1)
+  })
+
+  it('refreshes gulp runtime candidates before transforming changed js sources', async () => {
+    let currentRuntimeSet = new Set(['w-[1px]'])
+    twPatcher.getClassSetSync.mockImplementation(() => currentRuntimeSet)
+    twPatcher.extract.mockImplementation(async () => ({ classSet: currentRuntimeSet }))
+    jsHandler.mockImplementation(async (_source: string, classSet?: Set<string>) => ({
+      code: classSet?.has('bar') ? 'hit:bar' : 'miss:bar',
+    }))
+
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[1px]"'))
+    currentRuntimeSet = new Set(['w-[1px]', 'w-[2px]', 'bar'])
+    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px] bar"'))
+
+    expect(processed.contents?.toString()).toBe('hit:bar')
+    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses incremental runtime candidates for tailwindcss v4 gulp js updates', async () => {
+    twPatcher.majorVersion = 4
+    const incrementalRuntimeSet = new Set<string>()
+    const incrementalRuntimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+        for (const file of snapshot.runtimeAffectingChangedByType.js) {
+          const entry = snapshot.entries.find(item => item.file === file)
+          if (!entry) {
+            continue
+          }
+          const matches = entry.source.match(/[a-z]-\[[^\]]+\]/g) ?? []
+          for (const match of matches) {
+            incrementalRuntimeSet.add(match)
+          }
+        }
+        return new Set(incrementalRuntimeSet)
+      }),
+    }
+    jsHandler.mockImplementation(async (_source: string, classSet?: Set<string>) => ({
+      code: classSet?.has('w-[2px]') ? 'hit:w-[2px]' : 'miss:w-[2px]',
+    }))
+
+    const plugins = createPlugins({
+      __internalGulpRuntimeClassSetManager: incrementalRuntimeManager,
+    } as any)
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[1px]"'))
+    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px]"'))
+
+    expect(processed.contents?.toString()).toBe('hit:w-[2px]')
+    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(2)
+    expect(twPatcher.extract).not.toHaveBeenCalled()
+  })
+
+  it('does not force collect tailwindcss v4 runtime when gulp css follows js updates', async () => {
+    twPatcher.majorVersion = 4
+    const incrementalRuntimeSet = new Set<string>()
+    const incrementalRuntimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+        for (const file of snapshot.runtimeAffectingChangedByType.js) {
+          const entry = snapshot.entries.find(item => item.file === file)
+          if (!entry) {
+            continue
+          }
+          const matches = entry.source.match(/[a-z]-\[[^\]]+\]/g) ?? []
+          for (const match of matches) {
+            incrementalRuntimeSet.add(match)
+          }
+        }
+        return new Set(incrementalRuntimeSet)
+      }),
+    }
+    const plugins = createPlugins({
+      __internalGulpRuntimeClassSetManager: incrementalRuntimeManager,
+    } as any)
+
+    await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px]"'))
+    const processed = await runTransform(plugins.transformWxss({
+      isMainChunk: true,
+    }), createFile('/src/app.wxss', '@import "./foo.css";'))
+
+    expect(processed.contents?.toString()).toBe('css:@import "./foo.css";')
+    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(1)
+    expect(twPatcher.extract).not.toHaveBeenCalled()
+  })
+
+  it('registers tailwindcss v4 cssSources from wxss files before collecting runtime classes', async () => {
+    twPatcher.majorVersion = 4
+    const plugins = createPlugins()
+
+    const source = '@source inline("w-4");'
+    const cssFile = createFile('/src/app.wxss', source)
+    await runTransform(plugins.transformWxss(), cssFile)
+
+    expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
+      {
+        file: '/src/app.wxss',
+        css: source,
+      },
+    ])
+    expect(twPatcher.extract).toHaveBeenCalled()
   })
 
   it('re-runs handlers when cache is disabled', async () => {
@@ -180,7 +289,32 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformWxss(), createFile('/src/page.wxss', '.bar { color: green; }'))
 
     expect(styleHandler).toHaveBeenCalledTimes(2)
-    expect(styleHandler.mock.calls[0]?.[1]).toBe(styleHandler.mock.calls[1]?.[1])
+    expect(styleHandler.mock.calls[0]?.[1]).toEqual({
+      isMainChunk: true,
+      majorVersion: 3,
+    })
+    expect(styleHandler.mock.calls[1]?.[1]).toEqual({
+      isMainChunk: false,
+      majorVersion: 3,
+    })
+  })
+
+  it('uses mainCssChunkMatcher to resolve css main chunk', async () => {
+    const mainCssChunkMatcher = vi.fn((name: string) => name === 'styles/index.css')
+    currentContext.mainCssChunkMatcher = mainCssChunkMatcher
+    const plugins = createPlugins()
+
+    await runTransform(
+      plugins.transformWxss(),
+      new Vinyl({
+        cwd: '/',
+        base: '/src',
+        path: '/src/styles/index.css',
+        contents: Buffer.from('.foo { color: red; }'),
+      }),
+    )
+
+    expect(mainCssChunkMatcher).toHaveBeenCalledWith('styles/index.css', undefined)
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
       majorVersion: 3,

@@ -27,6 +27,11 @@ describe('getPlugins', () => {
       px2rpx: true,
       rem2rpx: true,
       unitsToPx: true,
+      unitConversion: {
+        rules: [
+          { from: 'rpx', to: 'px', factor: 0.5 },
+        ],
+      },
       cssCalc: {
         includeCustomProperties: [TW_CUSTOM_PROP_RE],
       },
@@ -51,6 +56,7 @@ describe('getPlugins', () => {
       px2rpx: false,
       rem2rpx: false,
       unitsToPx: false,
+      unitConversion: false,
       cssCalc: false,
       postcssOptions: {
         plugins: [userPlugin],

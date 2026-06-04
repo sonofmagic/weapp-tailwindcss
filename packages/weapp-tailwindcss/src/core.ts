@@ -1,10 +1,8 @@
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, UserDefinedOptions } from './types'
-import process from 'node:process'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { getCompilerContext } from '@/context'
 import { shouldSkipJsTransform } from '@/js/precheck'
-import { setupPatchRecorder } from '@/tailwindcss/recorder'
-import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 
 type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
 
@@ -33,17 +31,13 @@ export function createContext(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
   const { templateHandler, styleHandler, jsHandler, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
 
-  const patchRecorderState = setupPatchRecorder(initialTwPatcher, opts.tailwindcssBasedir, {
-    source: 'runtime',
-    cwd: opts.tailwindcssBasedir ?? process.cwd(),
-  })
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
 
   let runtimeSet = new Set<string>()
   const runtimeState = {
     twPatcher: initialTwPatcher,
-    patchPromise: patchRecorderState.patchPromise,
+    readyPromise,
     refreshTailwindcssPatcher,
-    onPatchCompleted: patchRecorderState.onPatchCompleted,
   }
   const defaultJsHandlerOptionsCache = new Map<number, CreateJsHandlerOptions>()
 
@@ -173,7 +167,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     const result = await styleHandler(rawCss, resolveTransformWxssOptions(options))
     runtimeSet = await ensureRuntimeClassSet(runtimeState, {
       forceRefresh: true,
@@ -183,7 +177,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   async function transformJs(rawJs: string, options?: RuntimeJsTransformOptions) {
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     if (options?.runtimeSet) {
       runtimeSet = options.runtimeSet
     }
@@ -200,7 +194,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   async function transformWxml(rawWxml: string, options?: ITemplateHandlerOptions) {
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     if (!options?.runtimeSet && runtimeSet.size === 0) {
       runtimeSet = await ensureRuntimeClassSet(runtimeState, {
         forceCollect: true,

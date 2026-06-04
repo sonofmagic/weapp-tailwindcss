@@ -1,258 +1,183 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
-import type { OutputEntry } from './bundle-entries'
-import type { BundleSnapshot, EntryType } from './bundle-state'
-import type { CreateJsHandlerOptions, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
+import type { HmrTimingRecorder } from '../shared/hmr-timing'
+import type { BundleSnapshot } from './bundle-state'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { splitCode } from '@weapp-tailwindcss/shared/extractors'
+import postcss from 'postcss'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
-import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { processCachedTask } from '../shared/cache'
+import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
+import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
-import { applyLinkedResults, createBundleModuleGraphOptions } from './bundle-entries'
+import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
+import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
+import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
+import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
+import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
+import { createJsEntryResolver } from './generate-bundle/js-entries'
+import { createJsHandlerOptionsFactory, resolveUniAppXJsTransformEnabled } from './generate-bundle/js-handler-options'
+import { collectLinkedFileNames, createLinkedUpdateHelpers } from './generate-bundle/js-linking'
+import { createEmptyMetrics, formatCacheHitRate, formatMs, measureElapsed } from './generate-bundle/metrics'
+import { logBundleProcessPlan } from './generate-bundle/process-plan'
+import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
+import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
+import { isCSSRequest } from './utils'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
   runtimeState: {
     twPatcher: InternalUserDefinedOptions['twPatcher']
-    patchPromise: Promise<void>
+    readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
-  ensureBundleRuntimeClassSet: (snapshot: BundleSnapshot, forceRefresh?: boolean) => Promise<Set<string>>
+  ensureBundleRuntimeClassSet: (
+    snapshot: BundleSnapshot,
+    forceRefresh?: boolean,
+    options?: {
+      allowBaselineOnlyInitialSync?: boolean | undefined
+      baseClassSet?: Set<string> | undefined
+      transformOnly?: boolean | undefined
+    },
+  ) => Promise<Set<string>>
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
+  markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
+  isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
+  recordCssAssetResult?: (file: string, css: string) => void
+  recordViteProcessedCssAssetResult?: (file: string, css: string) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string]>
+  getSourceCandidates?: () => Set<string>
+  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
+  waitForSourceCandidateSyncs?: () => Promise<void>
+  rememberMainCssSource?: (file: string, rawSource: string, cssRuntimeSignature: string) => void
+  getRememberedMainCssSources?: () => Map<string, string>
+  getRememberedMainCssSignature?: (file: string) => string | undefined
+  setRememberedMainCssSignature?: (file: string, cssRuntimeSignature: string) => void
+  recordGeneratorCandidates?: (candidates: Set<string>) => void
+  hmrTimingRecorder?: HmrTimingRecorder
 }
 
-interface BundleMetric {
-  total: number
-  transformed: number
-  cacheHits: number
-  elapsed: number
+interface GenerateBundleThis {
+  addWatchFile?: (id: string) => void
+  emitFile?: (emittedFile: {
+    type: 'asset'
+    fileName: string
+    source: string
+  }) => string
 }
 
-interface BundleMetrics {
-  runtimeSet: number
-  html: BundleMetric
-  js: BundleMetric
-  css: BundleMetric
-}
-
-function formatDebugFileList(files: Set<string>, limit = 8) {
-  if (files.size === 0) {
-    return '-'
+function addSiblingCssFile(files: Set<string>, file: string) {
+  if (file.endsWith('.wxml')) {
+    files.add(file.replace(/\.wxml$/, '.wxss'))
   }
-  const sorted = [...files].sort()
-  if (sorted.length <= limit) {
-    return sorted.join(',')
-  }
-  return `${sorted.slice(0, limit).join(',')},...(+${sorted.length - limit})`
-}
-
-function createEmptyMetric(): BundleMetric {
-  return {
-    total: 0,
-    transformed: 0,
-    cacheHits: 0,
-    elapsed: 0,
+  else if (file.endsWith('.js')) {
+    files.add(file.replace(/\.js$/, '.wxss'))
   }
 }
 
-function createEmptyMetrics(): BundleMetrics {
-  return {
-    runtimeSet: 0,
-    html: createEmptyMetric(),
-    js: createEmptyMetric(),
-    css: createEmptyMetric(),
+function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
+  const files = new Set<string>()
+  for (const file of snapshot.runtimeAffectingChangedByType.html) {
+    addSiblingCssFile(files, file)
   }
-}
-
-function measureElapsed(start: number) {
-  return performance.now() - start
-}
-
-function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
-  return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
-}
-
-function formatCacheHitRate(metric: BundleMetric) {
-  if (metric.total === 0) {
-    return '0.00%'
+  for (const file of snapshot.runtimeAffectingChangedByType.js) {
+    addSiblingCssFile(files, file)
   }
-  return `${((metric.cacheHits / metric.total) * 100).toFixed(2)}%`
+  return files
 }
 
-function formatMs(value: number) {
-  return value.toFixed(2)
-}
-
-function summarizeStringDiff(previous: string, next: string) {
-  if (previous === next) {
-    return 'same'
-  }
-
-  const previousLength = previous.length
-  const nextLength = next.length
-  const minLength = Math.min(previousLength, nextLength)
-  let prefixLength = 0
-  while (prefixLength < minLength && previous.charCodeAt(prefixLength) === next.charCodeAt(prefixLength)) {
-    prefixLength += 1
-  }
-
-  let previousSuffixCursor = previousLength - 1
-  let nextSuffixCursor = nextLength - 1
-  while (
-    previousSuffixCursor >= prefixLength
-    && nextSuffixCursor >= prefixLength
-    && previous.charCodeAt(previousSuffixCursor) === next.charCodeAt(nextSuffixCursor)
+export function resolveReplayCssOutputFile(rootDir: string, file: string) {
+  const nextFile = path.isAbsolute(file) ? path.relative(rootDir, file) : file
+  const normalizedFile = normalizeOutputPathKey(nextFile)
+  if (
+    normalizedFile.length === 0
+    || normalizedFile === '.'
+    || normalizedFile === '..'
+    || normalizedFile.startsWith('../')
   ) {
-    previousSuffixCursor -= 1
-    nextSuffixCursor -= 1
+    return normalizeOutputPathKey(path.basename(file))
   }
-
-  const previousChangedLength = previousSuffixCursor >= prefixLength ? previousSuffixCursor - prefixLength + 1 : 0
-  const nextChangedLength = nextSuffixCursor >= prefixLength ? nextSuffixCursor - prefixLength + 1 : 0
-
-  return `changed@${prefixLength} old=${previousChangedLength} new=${nextChangedLength} len=${previousLength}->${nextLength}`
+  return normalizedFile
 }
 
-function createLinkedImpactSignature(
-  entry: string,
-  linkedImpactsByEntry: Map<string, Set<string>>,
-  sourceHashByFile: Map<string, string>,
+const SOURCE_STYLE_OUTPUT_EXT_RE = /\.(?:less|sass|scss|styl|stylus|pcss|postcss)$/i
+const SOURCE_STYLE_NON_CSS_SYNTAX_RE = /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@(?:use|forward|mixin|include|function)\b)/
+
+function resolveViteCssOutputFile(
+  file: string,
+  opts: InternalUserDefinedOptions,
+  isWebGeneratorTarget: boolean,
 ) {
-  const changedLinkedFiles = linkedImpactsByEntry.get(entry)
-  if (!changedLinkedFiles || changedLinkedFiles.size === 0) {
-    return undefined
+  if (
+    isWebGeneratorTarget
+    || opts.cssMatcher(file)
+    || !SOURCE_STYLE_OUTPUT_EXT_RE.test(file)
+    || !isCSSRequest(file)
+  ) {
+    return file
   }
-
-  const parts = [...changedLinkedFiles]
-    .sort()
-    .map((file) => {
-      const hash = sourceHashByFile.get(file) ?? 'missing'
-      return `${file}:${hash}`
-    })
-
-  return parts.join(',')
+  return file.replace(SOURCE_STYLE_OUTPUT_EXT_RE, '.wxss')
 }
 
-function createJsHashSalt(runtimeSignature: string, linkedImpactSignature?: string) {
-  if (!linkedImpactSignature) {
-    return runtimeSignature
+function canProcessViteSourceStyleAsCss(source: string, file: string) {
+  if (SOURCE_STYLE_NON_CSS_SYNTAX_RE.test(source)) {
+    return false
   }
-  return `${runtimeSignature}:linked:${linkedImpactSignature}`
-}
-
-function getSnapshotHash(snapshotMap: Map<string, string>, file: string, fallback: string) {
-  return snapshotMap.get(file) ?? fallback
-}
-
-function hasRuntimeAffectingSourceChanges(changedByType: Record<EntryType, Set<string>>) {
-  return changedByType.html.size > 0 || changedByType.js.size > 0
-}
-
-const CSS_URL_FUNCTION_RE = /url\((?:"([^"]*)"|'([^']*)'|([^)]*))\)/gi
-const CSS_PATH_INDEPENDENT_URL_RE = /^(?:[a-z][a-z\d+.-]*:|\/\/|\/|#)/i
-const CSS_IMPORT_RE = /@import\b/i
-
-function isPathIndependentCssUrl(value: string) {
-  const normalized = value.trim()
-  return normalized.length > 0 && CSS_PATH_INDEPENDENT_URL_RE.test(normalized)
-}
-
-function hasPathDependentCssUrl(rawSource: string) {
-  CSS_URL_FUNCTION_RE.lastIndex = 0
-  let match = CSS_URL_FUNCTION_RE.exec(rawSource)
-  while (match !== null) {
-    const value = match[1] ?? match[2] ?? match[3] ?? ''
-    if (!isPathIndependentCssUrl(value)) {
-      return true
-    }
-    match = CSS_URL_FUNCTION_RE.exec(rawSource)
+  try {
+    postcss.parse(source, { from: file })
+    return true
   }
-  return false
-}
-
-function createCssTransformShareScope(file: string, rawSource: string) {
-  if (CSS_IMPORT_RE.test(rawSource) || hasPathDependentCssUrl(rawSource)) {
-    return `dir:${normalizeOutputPathKey(path.dirname(file))}`
+  catch {
+    return false
   }
-  return 'global'
-}
-
-function hasOmittedKnownBundleFiles(
-  currentBundleFiles: string[],
-  previousBundleFiles: Iterable<string>,
-) {
-  const currentFileSet = new Set(currentBundleFiles)
-  for (const file of previousBundleFiles) {
-    if (!currentFileSet.has(file)) {
-      return true
-    }
-  }
-  return false
-}
-
-const MUSTACHE_EXPRESSION_RE = /\{\{[\s\S]*?\}\}/g
-const QUOTED_LITERAL_RE = /'([^']*)'|"([^"]*)"|`([^`]*)`/g
-
-function isArbitraryValueCandidate(candidate: string) {
-  return candidate.includes('[') && candidate.includes(']')
-}
-
-function collectUnescapedDynamicCandidates(
-  source: string,
-) {
-  const matches = new Set<string>()
-
-  for (const expression of source.match(MUSTACHE_EXPRESSION_RE) ?? []) {
-    QUOTED_LITERAL_RE.lastIndex = 0
-    let quoted = QUOTED_LITERAL_RE.exec(expression)
-    while (quoted !== null) {
-      const literal = quoted[1] ?? quoted[2] ?? quoted[3] ?? ''
-      for (const candidate of splitCode(literal, true)) {
-        const normalized = candidate.trim()
-        if (!normalized || !isArbitraryValueCandidate(normalized)) {
-          continue
-        }
-        matches.add(normalized)
-      }
-      quoted = QUOTED_LITERAL_RE.exec(expression)
-    }
-  }
-
-  return [...matches]
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
-  const cssHandlerOptionsCache = new Map<string, {
-    isMainChunk: boolean
-    postcssOptions: {
-      options: {
-        from: string
-      }
-    }
-    majorVersion: number | undefined
-  }>()
-
-  return async function generateBundle(_opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
+  const lastCssResultByFile = new Map<string, string>()
+  let currentOutDir: string | undefined
+  const cssHandlerOptions = createCssHandlerOptionsCache({
+    getAppType: () => context.opts.appType,
+    mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
+    getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
+    getOutputRoot: () => currentOutDir,
+  })
+  return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
+    const addWatchFile = (id: string) => this.addWatchFile?.(id)
     const {
       opts,
       runtimeState,
       ensureBundleRuntimeClassSet,
       debug,
       getResolvedConfig,
+      markCssAssetProcessed,
+      isViteProcessedCssAsset,
+      recordCssAssetResult,
+      recordViteProcessedCssAssetResult,
+      getViteProcessedCssAssetResults,
+      getSourceCandidates,
+      getSourceCandidatesForEntries,
+      waitForSourceCandidateSyncs,
+      rememberMainCssSource,
+      getRememberedMainCssSources,
+      getRememberedMainCssSignature,
+      setRememberedMainCssSignature,
+      recordGeneratorCandidates,
+      hmrTimingRecorder,
     } = context
     const {
-      appType,
       cache,
-      mainCssChunkMatcher,
       onEnd,
       onStart,
       onUpdate,
@@ -261,104 +186,163 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       jsHandler,
       uniAppX,
     } = opts
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+    const isWebGeneratorTarget = generatorOptions.target === 'web'
+    const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
+    const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
 
-    // 按文件缓存 CSS handler 的 override 对象，减少 watch/incremental 轮次的重复构造与下游 fingerprint 开销。
-    const getCssHandlerOptions = (file: string) => {
-      const majorVersion = runtimeState.twPatcher.majorVersion
-      const isMainChunk = mainCssChunkMatcher(file, appType)
-      const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${file}`
-      const cached = cssHandlerOptionsCache.get(cacheKey)
-      if (cached) {
-        return cached
-      }
-
-      const created = {
-        isMainChunk,
-        postcssOptions: {
-          options: {
-            from: file,
-          },
-        },
-        majorVersion,
-      }
-      cssHandlerOptionsCache.set(cacheKey, created)
-      return created
-    }
-
-    await runtimeState.patchPromise
+    await runtimeState.readyPromise
     debug('start')
     onStart()
+    collectViteProcessedCssAssetResults(bundle, {
+      isViteProcessedCssAsset,
+      markCssAssetProcessed,
+      recordCssAssetResult,
+      recordViteProcessedCssAssetResult,
+      debug,
+    })
+    const hmrTimingStartedAt = performance.now()
+    const timingDetails: Record<string, number> = {}
+    const recordTimingDetail = (name: string, startedAt: number) => {
+      timingDetails[name] = (timingDetails[name] ?? 0) + Math.max(0, performance.now() - startedAt)
+    }
+    const timeTask = async (name: string, task: () => Promise<void>) => {
+      const start = performance.now()
+      try {
+        await task()
+      }
+      finally {
+        recordTimingDetail(`tasks.${name}`, start)
+      }
+    }
 
     const metrics = createEmptyMetrics()
-    const forceRuntimeRefreshByEnv = process.env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH === '1'
-    const disableDirtyOptimization = process.env.WEAPP_TW_VITE_DISABLE_DIRTY === '1'
-    const disableJsPrecheck = process.env.WEAPP_TW_VITE_DISABLE_JS_PRECHECK === '1'
-    const debugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF === '1'
+    const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
+    const disableDirtyOptimization = process.env['WEAPP_TW_VITE_DISABLE_DIRTY'] === '1'
+    const disableJsPrecheck = process.env['WEAPP_TW_VITE_DISABLE_JS_PRECHECK'] === '1'
+    const debugCssDiff = process.env['WEAPP_TW_VITE_DEBUG_CSS_DIFF'] === '1'
+    const disableV3OxideSourceRuntime = process.env['WEAPP_TW_VITE_DISABLE_V3_OXIDE_RUNTIME'] === '1'
     const resolvedConfig = getResolvedConfig()
     const bundleFiles = Object.keys(bundle)
     const buildCommand = resolvedConfig?.command === 'build'
+    const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
     // uni-app vite 的 dev 流程可能以 command=build 驱动 generateBundle，
-    // 但后续轮次只回传脏文件子集；此时需要保留上一轮状态并按增量处理。
-    const useIncrementalMode = !buildCommand || hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
+    // 后续轮次可能回传完整 bundle 或脏文件子集；只要同一插件实例已有状态，
+    // 就按增量处理，避免候选变化时把未改动的分包 CSS 全量重生成。
+    const useIncrementalMode = !buildCommand
+      || hasPreviousBundleState
+      || hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
+    currentOutDir = outDir
+    const snapshotStart = performance.now()
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
-    const useBundleRuntimeClassSet = useIncrementalMode || runtimeState.twPatcher.majorVersion === 4
+    recordTimingDetail('snapshot', snapshotStart)
+    const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const processFiles = snapshot.processFiles
-    if (useIncrementalMode) {
-      debug(
-        'dirty iteration=%d html=%d[%s] js=%d[%s] css=%d[%s] other=%d[%s]',
-        state.iteration + 1,
-        snapshot.changedByType.html.size,
-        formatDebugFileList(snapshot.changedByType.html),
-        snapshot.changedByType.js.size,
-        formatDebugFileList(snapshot.changedByType.js),
-        snapshot.changedByType.css.size,
-        formatDebugFileList(snapshot.changedByType.css),
-        snapshot.changedByType.other.size,
-        formatDebugFileList(snapshot.changedByType.other),
-      )
-      debug(
-        'process iteration=%d html=%d[%s] js=%d[%s] css=%d[%s]',
-        state.iteration + 1,
-        processFiles.html.size,
-        formatDebugFileList(processFiles.html),
-        processFiles.js.size,
-        formatDebugFileList(processFiles.js),
-        processFiles.css.size,
-        formatDebugFileList(processFiles.css),
-      )
-    }
-    else {
-      debug(
-        'build mode full process html=%d[%s] js=%d[%s] css=%d[%s]',
-        processFiles.html.size,
-        formatDebugFileList(processFiles.html),
-        processFiles.js.size,
-        formatDebugFileList(processFiles.js),
-        processFiles.css.size,
-        formatDebugFileList(processFiles.css),
-      )
-    }
+    logBundleProcessPlan({
+      debug,
+      snapshot,
+      useIncrementalMode,
+      iteration: state.iteration + 1,
+    })
+    const sourceCandidateWaitStart = performance.now()
+    await waitForSourceCandidateSyncs?.()
+    recordTimingDetail('sourceCandidates.wait', sourceCandidateWaitStart)
+    const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
     const jsEntries = snapshot.jsEntries
-    const normalizedJsEntries = new Map<string, OutputEntry>()
-    for (const [id, entry] of jsEntries) {
-      normalizedJsEntries.set(normalizeOutputPathKey(id), entry)
-    }
-    const getJsEntry = (id: string) => jsEntries.get(id) ?? normalizedJsEntries.get(normalizeOutputPathKey(id))
+    const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
+    const hasCssAssetEntry = snapshot.entries.some(entry => entry.type === 'css' && entry.output.type === 'asset')
+    const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
+    const useV3OxideSourceRuntime = runtimeState.twPatcher.majorVersion === 3
+      && sourceCandidates.size > 0
+      && hasCssAssetEntry
+      && !forceRuntimeRefreshByEnv
+      && !disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
-    const runtime = useBundleRuntimeClassSet
-      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv)
-      : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
+    const transformBaseRuntime = useV3OxideSourceRuntime
+      ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+          transformOnly: true,
+        })
+      : undefined
+    const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
+      ? new Set<string>()
+      : useV3OxideSourceRuntime
+        ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+            allowBaselineOnlyInitialSync: true,
+            baseClassSet: sourceCandidates,
+          })
+        : useBundleRuntimeClassSet
+          ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+              allowBaselineOnlyInitialSync: buildCommand,
+            })
+          : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)
+    if (useV3OxideSourceRuntime) {
+      debug(
+        '[tailwindcss:v3] use oxide source candidates as runtime input, candidates=%d',
+        sourceCandidates.size,
+      )
+    }
+    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
+    const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
+    const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
+      ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
+      : collectedGeneratorCandidates
+    let generatorRuntime = collectLegacyContainerCompatCandidates(
+      sourceCandidates,
+      filteredGeneratorCandidates,
+    )
+    let transformRuntime = transformBaseRuntime ?? runtime
+    const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
+      && generatorRuntime.size > 0
+    if (shouldValidateV3GeneratorRuntime) {
+      const cssEntries = snapshot.entries.filter(entry =>
+        entry.type === 'css' && entry.output.type === 'asset')
+      const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
+      if (mainCssEntry) {
+        const validatedRuntime = await validateCandidatesByGenerator({
+          opts,
+          runtimeState,
+          candidates: generatorRuntime,
+          rawSource: mainCssEntry.source,
+          file: mainCssEntry.file,
+          cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
+          cssUserHandlerOptions: getCssUserHandlerOptions(mainCssEntry.file),
+          styleHandler,
+          debug,
+        })
+        if (validatedRuntime.size > 0) {
+          generatorRuntime = collectLegacyContainerCompatCandidates(
+            sourceCandidates,
+            validatedRuntime,
+          )
+          transformRuntime = generatorRuntime
+        }
+        else {
+          generatorRuntime = validatedRuntime
+          transformRuntime = validatedRuntime
+        }
+      }
+    }
+    const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
+    const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
+    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot)
+    recordGeneratorCandidates?.(generatorRuntime)
+    const dynamicRetryCandidates = new Set([
+      ...sourceCandidates,
+      ...generatorRuntime,
+      ...transformRuntime,
+    ])
     const defaultTemplateHandlerOptions = {
-      runtimeSet: runtime,
+      runtimeSet: transformRuntime,
     }
     metrics.runtimeSet = measureElapsed(runtimeStart)
+    timingDetails['runtime'] = metrics.runtimeSet
     if (forceRuntimeRefreshBySource) {
       debug(
         'runtimeSet forced refresh due to source changes: html=%d js=%d',
@@ -366,36 +350,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         snapshot.runtimeAffectingChangedByType.js.size,
       )
     }
-    debug('get runtimeSet, class count: %d', runtime.size)
+    debug('get runtimeSet, class count: %d, transform class count: %d', runtime.size, transformRuntime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
-
-    const handleLinkedUpdate = (fileName: string, previous: string, next: string) => {
-      onUpdate(fileName, previous, next)
-      debug('js linked handle: %s', fileName)
-    }
-    const pendingLinkedUpdates: Array<() => void> = []
-    const scheduleLinkedApply = (entry: OutputEntry, code: string) => {
-      pendingLinkedUpdates.push(() => {
-        if (entry.output.type === 'chunk') {
-          entry.output.code = code
-        }
-        else {
-          entry.output.source = code
-        }
-      })
-    }
-    const applyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
-      applyLinkedResults(linked, jsEntries, handleLinkedUpdate, scheduleLinkedApply)
-    }
-    const createHandlerOptions = (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
-      ...extra,
-      filename: absoluteFilename,
-      tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
+    const shouldProcessTailwindGeneration = !useIncrementalMode
+      || hasRuntimeAffectingChanges
+      || generatorCandidatesChanged
+      || snapshot.processFiles.css.size > 0
+    const { applyLinkedUpdates, pendingLinkedUpdates } = createLinkedUpdateHelpers({
+      jsEntries,
+      onUpdate,
+      debug,
+    })
+    const createHandlerOptions = createJsHandlerOptionsFactory({
+      getMajorVersion: () => runtimeState.twPatcher.majorVersion,
       moduleGraph: moduleGraphOptions,
-      babelParserOptions: {
-        ...(extra?.babelParserOptions ?? {}),
-        sourceFilename: absoluteFilename,
-      },
     })
 
     const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : undefined
@@ -408,11 +376,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
       if (type === 'html' && originalSource.type === 'asset') {
         metrics.html.total++
+        if (isWebGeneratorTarget) {
+          debug('html skip web target: %s', file)
+          continue
+        }
         if (!processFiles.html.has(file)) {
           continue
         }
         const rawSource = originalEntrySource
-        tasks.push(
+        tasks.push(timeTask('html', () =>
           processCachedTask<string>({
             cache,
             cacheKey: file,
@@ -429,21 +401,33 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const start = performance.now()
               let transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
               let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+              let retryRuntimeSet: Set<string> | undefined
 
               if (unresolvedDynamicCandidates.length > 0) {
+                const fullRuntimeSet = await context.ensureRuntimeClassSet(true)
+                const allowedRetryCandidates = fullRuntimeSet.size === 0
+                  ? unresolvedDynamicCandidates
+                  : unresolvedDynamicCandidates.filter(candidate => dynamicRetryCandidates.has(candidate) || fullRuntimeSet.has(candidate))
+                retryRuntimeSet = new Set([
+                  ...fullRuntimeSet,
+                  ...allowedRetryCandidates,
+                ])
+                unresolvedDynamicCandidates = unresolvedDynamicCandidates.filter(candidate => retryRuntimeSet.has(candidate))
+              }
+
+              if (retryRuntimeSet && unresolvedDynamicCandidates.length > 0) {
                 logger.warn(
-                  '检测到 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
+                  '检测到已提取 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
                   file,
                   unresolvedDynamicCandidates,
                 )
-                const fullRuntimeSet = await context.ensureRuntimeClassSet(true)
                 transformed = await templateHandler(rawSource, {
-                  runtimeSet: fullRuntimeSet,
+                  runtimeSet: retryRuntimeSet,
                 })
-                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
+                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, retryRuntimeSet)
                 if (unresolvedDynamicCandidates.length > 0) {
                   logger.warn(
-                    'WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',
+                    '已提取 WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',
                     file,
                     unresolvedDynamicCandidates,
                   )
@@ -457,8 +441,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 result: transformed,
               }
             },
-          }),
-        )
+          })))
         continue
       }
 
@@ -468,18 +451,83 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = originalEntrySource
+        const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget)
+        if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
+          delete bundle[file]
+          debug('css skip raw source style asset: %s -> %s', file, outputFile)
+          continue
+        }
+        const applyCssResult = (source: string) => {
+          if (outputFile !== file) {
+            delete bundle[file]
+            if (typeof this.emitFile === 'function') {
+              this.emitFile({
+                type: 'asset',
+                fileName: outputFile,
+                source,
+              })
+            }
+            else {
+              bundle[outputFile] = originalSource
+            }
+            originalSource.fileName = outputFile
+          }
+          originalSource.source = source
+        }
+        if (isViteProcessedCssAsset?.(originalSource, file)) {
+          const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
+          applyCssResult(nextCss)
+          markCssAssetProcessed?.(originalSource, outputFile)
+          recordCssAssetResult?.(outputFile, nextCss)
+          onUpdate(outputFile, rawSource, nextCss)
+          debug('css skip vite-processed asset: %s', outputFile)
+          continue
+        }
+        if (isWebGeneratorTarget && !shouldGenerateWebCssByGenerator) {
+          applyCssResult(rawSource)
+          markCssAssetProcessed?.(originalSource, outputFile)
+          onUpdate(outputFile, rawSource, rawSource)
+          debug('css skip web target: %s', outputFile)
+          continue
+        }
         const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
-        const cssShareScope = createCssTransformShareScope(file, rawSource)
+        const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
         const cssHandlerOptions = getCssHandlerOptions(file)
-        const cssSharedCacheKey = `${cssShareScope}:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
-        tasks.push(
+        const shouldTrackGeneratorRuntime = shouldProcessTailwindGeneration
+          && (
+            !useIncrementalMode
+            || cssHandlerOptions.isMainChunk
+            || processFiles.css.has(file)
+            || runtimeLinkedCssFiles.has(file)
+          )
+        const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
+          ? generatorCandidateSignature
+          : 'generator:stable'
+        const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
+        const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
+        if (!shouldTrackGeneratorRuntime) {
+          const lastCss = lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
+          if (lastCss != null) {
+            applyCssResult(lastCss)
+            markCssAssetProcessed?.(originalSource, outputFile)
+            metrics.css.cacheHits++
+            debug('css replay last result: %s', outputFile)
+            continue
+          }
+        }
+        tasks.push(timeTask('css', () =>
           processCachedTask<string>({
             cache,
             cacheKey: file,
-            hashKey: `${file}:css:${runtimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            hash: getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature),
+            hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
+            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${scopedGeneratorCandidateSignature}`,
             applyResult(source) {
-              originalSource.source = source
+              applyCssResult(source)
+              lastCssResultByFile.set(outputFile, source)
+              markCssAssetProcessed?.(originalSource, outputFile)
+              if (cssHandlerOptions.isMainChunk) {
+                rememberMainCssSource?.(outputFile, rawSource, cssRuntimeSignature)
+              }
             },
             onCacheHit() {
               metrics.css.cacheHits++
@@ -500,7 +548,41 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               }
               const runTransform = async () => {
                 const start = performance.now()
-                await runtimeState.patchPromise
+                await runtimeState.readyPromise
+                const previousCss = useIncrementalMode && !snapshot.changedByType.css.has(file)
+                  ? lastCssResultByFile.get(file)
+                  : undefined
+                const generated = await generateCssByGenerator({
+                  opts,
+                  runtimeState,
+                  runtime: generatorRuntime,
+                  rawSource,
+                  file,
+                  cssHandlerOptions,
+                  cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                  getSourceCandidatesForEntries,
+                  styleHandler,
+                  debug,
+                  previousCss,
+                })
+                if (generated) {
+                  registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
+                  if (debugCssDiff) {
+                    debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
+                  }
+                  debug('css generated result: %s bytes=%d', file, generated.css.length)
+                  recordCssAssetResult?.(outputFile, generated.css)
+                  metrics.css.elapsed += measureElapsed(start)
+                  metrics.css.transformed++
+                  debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, outputFile)
+                  return generated.css
+                }
+                if (isWebGeneratorTarget) {
+                  metrics.css.elapsed += measureElapsed(start)
+                  metrics.css.transformed++
+                  debug('css preserve web target: %s', outputFile)
+                  return rawSource
+                }
                 const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
                 if (debugCssDiff) {
                   debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
@@ -519,14 +601,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               }
 
               const css = await cssTask
-              onUpdate(file, rawSource, css)
-              debug('css handle: %s', file)
+              onUpdate(outputFile, rawSource, css)
+              debug('css handle: %s', outputFile)
               return {
                 result: css,
               }
             },
-          }),
-        )
+          })))
         continue
       }
 
@@ -535,6 +616,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
 
       metrics.js.total++
+      if (isWebGeneratorTarget) {
+        debug('js skip web target: %s', file)
+        continue
+      }
       const shouldTransformJs = !useIncrementalMode || processFiles.js.has(file)
       if (!shouldTransformJs) {
         // 增量轮次上游可能重写相同源码的原始 JS 产物，这里仍要走缓存回填以保持转译结果稳定。
@@ -550,59 +635,54 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
 
         jsTaskFactories.push(async () => {
-          const linkedImpactSignature = useIncrementalMode
-            ? createLinkedImpactSignature(
-                file,
-                snapshot.linkedImpactsByEntry,
-                snapshot.sourceHashByFile,
-              )
-            : undefined
-          const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
-          await processCachedTask<string>({
-            cache,
-            cacheKey: file,
-            hashKey: `${file}:js`,
-            hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
-            applyResult(source) {
-              originalSource.code = source
-            },
-            onCacheHit() {
-              metrics.js.cacheHits++
-              debug('js cache hit: %s', file)
-            },
-            async transform() {
-              const start = performance.now()
-              const rawSource = originalSource.code
-              if (!shouldTransformJs) {
-                debug('js cache replay miss, fallback transform: %s', file)
-              }
-              const handlerOptions = createHandlerOptions(absoluteFile)
-              if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
-                metrics.js.elapsed += measureElapsed(start)
-                metrics.js.transformed++
-                return {
-                  result: rawSource,
+          await timeTask('js', async () => {
+            const linkedImpactSignature = useIncrementalMode
+              ? createLinkedImpactSignature(
+                  file,
+                  snapshot.linkedImpactsByEntry,
+                  snapshot.sourceHashByFile,
+                )
+              : undefined
+            const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
+            await processCachedTask<string>({
+              cache,
+              cacheKey: file,
+              hashKey: `${file}:js`,
+              hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
+              applyResult(source) {
+                originalSource.code = source
+              },
+              onCacheHit() {
+                metrics.js.cacheHits++
+                debug('js cache hit: %s', file)
+              },
+              async transform() {
+                const start = performance.now()
+                const rawSource = originalSource.code
+                if (!shouldTransformJs) {
+                  debug('js cache replay miss, fallback transform: %s', file)
                 }
-              }
-
-              const { code, linked } = await jsHandler(rawSource, runtime, handlerOptions)
-              metrics.js.elapsed += measureElapsed(start)
-              metrics.js.transformed++
-              onUpdate(file, rawSource, code)
-              debug('js handle: %s', file)
-              if (linked) {
-                for (const id of Object.keys(linked)) {
-                  const linkedEntry = getJsEntry(id)
-                  if (linkedEntry && linkedSet) {
-                    linkedSet.add(linkedEntry.fileName)
+                const handlerOptions = createHandlerOptions(absoluteFile)
+                if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
+                  metrics.js.elapsed += measureElapsed(start)
+                  metrics.js.transformed++
+                  return {
+                    result: rawSource,
                   }
                 }
-              }
-              applyLinkedUpdates(linked)
-              return {
-                result: code,
-              }
-            },
+
+                const { code, linked } = await jsHandler(rawSource, transformRuntime, handlerOptions)
+                metrics.js.elapsed += measureElapsed(start)
+                metrics.js.transformed++
+                onUpdate(file, rawSource, code)
+                debug('js handle: %s', file)
+                collectLinkedFileNames(linked, getJsEntry, linkedSet)
+                applyLinkedUpdates(linked)
+                return {
+                  result: code,
+                }
+              },
+            })
           })
         })
       }
@@ -614,14 +694,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
         const baseApplyLinkedUpdates = applyLinkedUpdates
         const wrappedApplyLinkedUpdates = (linked?: Record<string, LinkedJsModuleResult>) => {
-          if (linked) {
-            for (const id of Object.keys(linked)) {
-              const linkedEntry = getJsEntry(id)
-              if (linkedEntry && linkedSet) {
-                linkedSet.add(linkedEntry.fileName)
-              }
-            }
-          }
+          collectLinkedFileNames(linked, getJsEntry, linkedSet)
           baseApplyLinkedUpdates(linked)
         }
 
@@ -646,55 +719,119 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             debug,
             jsHandler,
             onUpdate,
-            runtimeSet: runtime,
+            runtimeSet: transformRuntime,
             applyLinkedResults: wrappedApplyLinkedUpdates,
             uniAppX,
           },
         )
 
         jsTaskFactories.push(async () => {
-          const start = performance.now()
-          if (!shouldTransformJs) {
-            debug('js skip transform (clean, uni-app-x), replay cache: %s', file)
+          await timeTask('js', async () => {
+            const start = performance.now()
+            if (!shouldTransformJs) {
+              debug('js skip transform (clean, uni-app-x), replay cache: %s', file)
+              await factory()
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              return
+            }
+            const currentSource = originalEntrySource
+            const absoluteFile = path.resolve(outDir, file)
+            const precheckOptions = createHandlerOptions(absoluteFile, {
+              uniAppX: resolveUniAppXJsTransformEnabled(uniAppX),
+              babelParserOptions: {
+                plugins: ['typescript'],
+                sourceType: 'unambiguous',
+              },
+            })
+            if (!disableJsPrecheck && shouldSkipViteJsTransform(currentSource, precheckOptions)) {
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              return
+            }
             await factory()
             metrics.js.elapsed += measureElapsed(start)
             metrics.js.transformed++
-            return
-          }
-          const currentSource = originalEntrySource
-          const absoluteFile = path.resolve(outDir, file)
-          const precheckOptions = createHandlerOptions(absoluteFile, {
-            uniAppX: resolveUniAppXJsTransformEnabled(uniAppX),
-            babelParserOptions: {
-              plugins: ['typescript'],
-              sourceType: 'unambiguous',
-            },
           })
-          if (!disableJsPrecheck && shouldSkipViteJsTransform(currentSource, precheckOptions)) {
-            metrics.js.elapsed += measureElapsed(start)
-            metrics.js.transformed++
-            return
-          }
-          await factory()
-          metrics.js.elapsed += measureElapsed(start)
-          metrics.js.transformed++
         })
+      }
+    }
+
+    const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, generatorCandidateSignature)
+    if (useIncrementalMode) {
+      for (const [file, rawSource] of getRememberedMainCssSources?.() ?? []) {
+        if (bundleFiles.includes(file) || getRememberedMainCssSignature?.(file) === cssRuntimeSignature) {
+          continue
+        }
+        const outputFile = resolveReplayCssOutputFile(rootDir, file)
+        tasks.push(timeTask('css.replay', async () => {
+          const start = performance.now()
+          const cssHandlerOptions = getCssHandlerOptions(outputFile)
+          const generated = await generateCssByGenerator({
+            opts,
+            runtimeState,
+            runtime: generatorRuntime,
+            rawSource,
+            file: outputFile,
+            cssHandlerOptions,
+            cssUserHandlerOptions: getCssUserHandlerOptions(outputFile),
+            getSourceCandidatesForEntries,
+            styleHandler,
+            debug,
+          })
+          const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
+          setRememberedMainCssSignature?.(file, cssRuntimeSignature)
+          if (generated) {
+            registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
+            recordCssAssetResult?.(outputFile, generated.css)
+            debug('css replay generated result: %s bytes=%d', outputFile, css.length)
+          }
+          const replayAsset = createReplayCssAsset(outputFile, css)
+          if (typeof this.emitFile === 'function') {
+            this.emitFile({
+              type: 'asset',
+              fileName: outputFile,
+              source: css,
+            })
+          }
+          else {
+            bundle[outputFile] = replayAsset
+          }
+          markCssAssetProcessed?.(replayAsset, outputFile)
+          metrics.css.elapsed += measureElapsed(start)
+          metrics.css.transformed++
+          onUpdate(outputFile, rawSource, css)
+          debug('css replay handle: %s', outputFile)
+        }))
       }
     }
 
     pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
+    const tasksStart = performance.now()
     await Promise.all(tasks)
+    recordTimingDetail('tasks', tasksStart)
     for (const apply of pendingLinkedUpdates) {
       apply()
     }
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts,
+      getViteProcessedCssAssetResults,
+      markCssAssetProcessed,
+      recordCssAssetResult,
+      debug,
+      onUpdate,
+    })
 
+    const stateUpdateStart = performance.now()
     updateBundleBuildState(
       state,
       snapshot,
       useIncrementalMode ? (linkedByEntry ?? new Map<string, Set<string>>()) : new Map<string, Set<string>>(),
       { incremental: useIncrementalMode },
     )
+    state.generatorCandidateSignature = generatorCandidateSignature
+    recordTimingDetail('state.update', stateUpdateStart)
 
     debug(
       'metrics iteration=%d runtime=%sms html(total=%d transform=%d hit=%d rate=%s elapsed=%sms) js(total=%d transform=%d hit=%d rate=%s elapsed=%sms) css(total=%d transform=%d hit=%d rate=%s elapsed=%sms)',
@@ -717,6 +854,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       formatMs(metrics.css.elapsed),
     )
 
+    if (hmrTimingRecorder) {
+      hmrTimingRecorder.record('generateBundle', performance.now() - hmrTimingStartedAt, timingDetails)
+      hmrTimingRecorder.emitTotal()
+    }
     onEnd()
     debug('end')
   }

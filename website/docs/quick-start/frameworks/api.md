@@ -24,6 +24,24 @@ keywords:
 
 有时候,我们不一定会使用 `webpack/vite/gulp`，可能是直接使用 `nodejs` 去构建应用，或者封装更高阶的工具，这时候可以使用`api`去转义你的应用。
 
+:::caution
+普通项目推荐接入 `weapp-tailwindcss/vite` 或 `weapp-tailwindcss/webpack`。Node.js API 适合自研构建器、批处理脚本、Gulp 插件封装等场景。
+
+如果你只是普通 `uni-app`、`Taro`、`Mpx`、`Rax` 或原生小程序项目，请优先使用对应框架页的构建器插件。
+:::
+
+## Tailwind CSS 3.x 前置步骤
+
+API 只负责转译代码文本，不会替你自动运行完整框架构建。Tailwind CSS 3.x 项目仍然需要先让入口 CSS 完成生成：
+
+```css title="app.css"
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+`tailwind.config.js` 的 `content` 要包含实际源码，并排除 `node_modules`、`dist`、`unpackage` 等产物目录。只有 Tailwind 已经提取到的类名，后续 `transformJs` 才能精确命中并转译。
+
 ## 如何使用
 
 ```js
@@ -63,3 +81,13 @@ const classNames = ['mb-[1.5rem]']
 
 另外使用此种方式，编译缓存需要自行处理，且暂时没有类名的压缩与混淆功能
 :::
+
+## 和构建器插件的区别
+
+| 使用方式 | 适合场景 | Tailwind CSS 生成 |
+| --- | --- | --- |
+| `weapp-tailwindcss/vite` | Vite 框架和 weapp-vite | 插件接管 |
+| `weapp-tailwindcss/webpack` | Webpack 框架 | 插件接管 |
+| `weapp-tailwindcss/core` | 自研构建器或脚本 | 需要你自己串好生成顺序 |
+
+对于 Tailwind CSS 4.x，自定义构建器还需要显式处理 CSS 入口、`@source`、`cssEntries` 等信息；普通项目建议直接使用 [Tailwind CSS 4.x 各框架注册方式](/docs/quick-start/v4)。

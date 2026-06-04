@@ -32,7 +32,7 @@ pnpm install
 
 ## 模板说明
 
-- 安装依赖后会自动执行 `weapp-tw patch`
+- 生成模式不需要配置 `postinstall: "weapp-tw patch"`
 - 该模板主要面向 `HBuilderX` 使用场景，所以命令行脚本较少
 - 如果你更偏向 VS Code 工作流，优先考虑 `uni-app-vite-vue3-tailwind-vscode-template`
 

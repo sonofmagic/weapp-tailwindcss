@@ -25,10 +25,7 @@ const mocks = vi.hoisted(() => {
     refreshTailwindcssPatcher,
     tailwindcssBasedir: '/project',
   }))
-  const setupPatchRecorder = vi.fn(() => ({
-    patchPromise: Promise.resolve(),
-    onPatchCompleted: vi.fn(),
-  }))
+  const createTailwindRuntimeReadyPromise = vi.fn(() => Promise.resolve())
   const ensureRuntimeClassSet = vi.fn(async () => new Set(['runtime-[1px]']))
   const shouldSkipJsTransform = vi.fn(() => false)
 
@@ -37,7 +34,7 @@ const mocks = vi.hoisted(() => {
     getCompilerContext,
     jsHandler,
     refreshTailwindcssPatcher,
-    setupPatchRecorder,
+    createTailwindRuntimeReadyPromise,
     shouldSkipJsTransform,
     styleHandler,
     templateHandler,
@@ -49,11 +46,8 @@ vi.mock('@/context', () => ({
   getCompilerContext: mocks.getCompilerContext,
 }))
 
-vi.mock('@/tailwindcss/recorder', () => ({
-  setupPatchRecorder: mocks.setupPatchRecorder,
-}))
-
 vi.mock('@/tailwindcss/runtime', () => ({
+  createTailwindRuntimeReadyPromise: mocks.createTailwindRuntimeReadyPromise,
   ensureRuntimeClassSet: mocks.ensureRuntimeClassSet,
 }))
 
@@ -75,10 +69,7 @@ describe('core transform option resolution', () => {
 
     await ctx.transformWxss('.text { color: red; }')
 
-    expect(mocks.setupPatchRecorder).toHaveBeenCalledWith(mocks.twPatcher, '/project', {
-      source: 'runtime',
-      cwd: '/project',
-    })
+    expect(mocks.createTailwindRuntimeReadyPromise).toHaveBeenCalledWith(mocks.twPatcher)
     expect(mocks.styleHandler).toHaveBeenCalledWith('.text { color: red; }', {
       isMainChunk: true,
     })

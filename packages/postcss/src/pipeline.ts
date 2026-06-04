@@ -11,6 +11,7 @@ import { getCalcPlugin } from './plugins/getCalcPlugin'
 import { getCustomPropertyCleaner } from './plugins/getCustomPropertyCleaner'
 import { getPxTransformPlugin } from './plugins/getPxTransformPlugin'
 import { getRemTransformPlugin } from './plugins/getRemTransformPlugin'
+import { getUnitConversionPlugin } from './plugins/getUnitConversionPlugin'
 import { getUnitsToPxPlugin } from './plugins/getUnitsToPxPlugin'
 import { postcssWeappTailwindcssPostPlugin } from './plugins/post'
 import { postcssWeappTailwindcssPrePlugin } from './plugins/pre'
@@ -114,7 +115,7 @@ function shouldUseDefaultAutoprefixer(options: IStyleHandlerOptions, userPlugins
   if (options.autoprefixer === true || typeof options.autoprefixer === 'object') {
     return true
   }
-  return options.majorVersion === 4
+  return options.majorVersion === 3 || options.majorVersion === 4
 }
 
 // createPreparedNodes 直接按最终顺序生成可实例化节点，避免 definition 二次中转
@@ -148,6 +149,11 @@ function createPreparedNodes(options: IStyleHandlerOptions, signal?: FeatureSign
   const remTransformPlugin = getRemTransformPlugin(options)
   if (remTransformPlugin) {
     preparedNodes.push(createPreparedNode('normal:rem-transform', 'normal', () => remTransformPlugin))
+  }
+
+  const unitConversionPlugin = getUnitConversionPlugin(options)
+  if (unitConversionPlugin) {
+    preparedNodes.push(createPreparedNode('normal:unit-conversion', 'normal', () => unitConversionPlugin))
   }
 
   const calcPlugin = getCalcPlugin(options)

@@ -69,7 +69,7 @@ npm install -D tailwindcss @tailwindcss/vite weapp-tailwindcss
 ```ts title="vite.config.ts"
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig(async () => {
   // 这里必须这样引用，因为 uni 只提供 cjs 版本，而 @tailwindcss/vite 只提供 esm 版本
@@ -78,7 +78,7 @@ export default defineConfig(async () => {
     plugins: [
       uni(),
       tailwindcss(),
-      UnifiedViteWeappTailwindcssPlugin({ rem2rpx: true })
+      WeappTailwindcss({ rem2rpx: true })
     ],
   }
 })
@@ -91,10 +91,10 @@ export default defineConfig(async () => {
 在项目目录下创建 `main.css`，然后添加以下内容：
 
 ```css title="main.css"
-@import 'weapp-tailwindcss/index.css';
+@import 'tailwindcss';
 ```
 
-> **注意**：对于实际运行时入口，现在更推荐直接写 `@import 'weapp-tailwindcss/index.css'`，而不是继续依赖 `rewriteCssImports` 去改写 `@import 'tailwindcss'`。
+> **注意**：在 `tailwindcss@4` + `weapp-tailwindcss@5` 中，实际运行时入口推荐直接写 `@import 'tailwindcss'`。构建器会在小程序生成链路里解析到 `weapp-tailwindcss` 的目标 CSS，用户代码里不需要改成 `@import 'weapp-tailwindcss/index.css'`。
 
 接着在 `main.js` 里引用这个文件作为全局样式，然后直接运行：
 

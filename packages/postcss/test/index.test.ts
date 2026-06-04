@@ -1,22 +1,21 @@
-import tailwindcss from '@tailwindcss/postcss'
-import { postcssRemoveComment } from '@weapp-tailwindcss/test-helper'
+import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 import path from 'pathe'
-import postcss from 'postcss'
-import { createStyleHandler } from '@/index'
+import { createStyleHandler, unitConversionComposeRules, unitConversionPresets } from '@/index'
 
 function generateCss(css: string, base: string) {
-  return postcss([
-    tailwindcss({
-      base,
-    }),
-    postcssRemoveComment,
-  ])
-    .process(css, {
-      from: './index.ts',
-    })
+  return generateCss4(base, { css })
 }
 
 describe('index', () => {
+  it('exports unit conversion helpers', () => {
+    expect(unitConversionComposeRules(unitConversionPresets.pxToRpx())).toEqual([
+      expect.objectContaining({
+        from: 'px',
+        to: 'rpx',
+      }),
+    ])
+  })
+
   it('keeps :host in transformed root scope for main chunk', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
@@ -40,7 +39,7 @@ describe('index', () => {
 
   it('only utilities', async () => {
     // https://developer.mozilla.org/en-US/docs/Web/CSS/calc-keyword
-    const code = await generateCss('@import "weapp-tailwindcss";', path.resolve(__dirname, './fixtures/main'))
+    const code = await generateCss('@import "tailwindcss";', path.resolve(__dirname, './fixtures/main'))
     expect(code.css).toMatchSnapshot()
     const styleHandler = createStyleHandler({
       isMainChunk: true,

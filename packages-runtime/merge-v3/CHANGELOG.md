@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/merge-v3
 
+## 0.2.1-next.0
+
+### Patch Changes
+
+- 📦 **Dependencies** [`01a0cb2`](https://github.com/sonofmagic/weapp-tailwindcss/commit/01a0cb2f40b59e7989622f22635d0df832b439a1)
+  → `@weapp-tailwindcss/runtime@0.1.6-next.0`
+
 ## 0.2.0
 
 ### Minor Changes

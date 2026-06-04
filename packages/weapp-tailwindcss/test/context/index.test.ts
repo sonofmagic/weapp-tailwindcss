@@ -38,6 +38,27 @@ vi.mock('@/defaults', () => ({
     customAttributes: {},
     cache: undefined,
   }),
+  resolveDefaultCssPreflight: (cssPreflight: any, majorVersion?: number) => {
+    if (cssPreflight === false) {
+      return false
+    }
+    return {
+      ...(majorVersion === 4
+        ? {
+            'box-sizing': 'border-box',
+            margin: '0',
+            padding: '0',
+            border: '0 solid',
+          }
+        : {
+            'box-sizing': 'border-box',
+            'border-width': '0',
+            'border-style': 'solid',
+            'border-color': 'currentColor',
+          }),
+      ...(cssPreflight ?? {}),
+    }
+  },
 }))
 
 vi.mock('@/context/custom-attributes', () => ({
@@ -78,6 +99,64 @@ describe('getCompilerContext', () => {
     })
     expect(ctx.cssCalc).toEqual({
       includeCustomProperties: [],
+    })
+  })
+
+  it('uses Tailwind v4 preflight defaults when the runtime is v4', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext()
+
+    expect(ctx.cssPreflight).toEqual({
+      'box-sizing': 'border-box',
+      margin: '0',
+      padding: '0',
+      border: '0 solid',
+    })
+    expect((createHandlersFromContext.mock.calls[0] as any)?.[0]?.cssPreflight).toEqual(ctx.cssPreflight)
+  })
+
+  it('merges user cssPreflight overrides on top of Tailwind v4 defaults', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext({
+      cssPreflight: {
+        margin: false,
+        background: 'black',
+      },
+    })
+
+    expect(ctx.cssPreflight).toEqual({
+      'box-sizing': 'border-box',
+      margin: false,
+      padding: '0',
+      border: '0 solid',
+      background: 'black',
+    })
+  })
+
+  it('keeps Tailwind v3 preflight defaults when the runtime is v3', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '3.4.19' },
+      majorVersion: 3,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext()
+
+    expect(ctx.cssPreflight).toEqual({
+      'box-sizing': 'border-box',
+      'border-width': '0',
+      'border-style': 'solid',
+      'border-color': 'currentColor',
     })
   })
 

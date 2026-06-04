@@ -1,26 +1,27 @@
 import type { AppType } from '@/types'
 import path from 'node:path'
 
-const tailwindcssImportRE = /^tailwindcss(?:\/.*)?$/
-const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])(tailwindcss(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
+const tailwindcssImportRE = /^(?:tailwindcss|weapp-tailwindcss)(?:\/.*)?$/
+const tailwindcssCssImportStatementRE = /(@import\s+(?:url\(\s*)?)(["'])((?:tailwindcss|weapp-tailwindcss)(?:\/[^"']*)?\$?)(\2\s*\)?)/gi
 
 export interface ResolveTailwindcssImportOptions {
-  join?: (base: string, subpath: string) => string
-  appType?: AppType
+  join?: ((base: string, subpath: string) => string) | undefined
+  appType?: AppType | undefined
+  rootImport?: string | undefined
 }
 
 function normalizeTailwindcssSpecifier(specifier: string) {
-  if (specifier === 'tailwindcss$') {
-    return 'tailwindcss'
+  if (specifier === 'tailwindcss$' || specifier === 'weapp-tailwindcss$') {
+    return specifier.slice(0, -1)
   }
   return specifier
 }
 
 function getTailwindcssSubpath(specifier: string) {
-  if (specifier === 'tailwindcss') {
+  if (specifier === 'tailwindcss' || specifier === 'weapp-tailwindcss') {
     return 'index.css'
   }
-  return specifier.slice('tailwindcss/'.length)
+  return specifier.replace(/^(?:tailwindcss|weapp-tailwindcss)\//, '')
 }
 
 export function resolveTailwindcssImport(
@@ -32,8 +33,8 @@ export function resolveTailwindcssImport(
   if (!tailwindcssImportRE.test(normalized)) {
     return null
   }
-  if (normalized === 'tailwindcss') {
-    return 'weapp-tailwindcss/index.css'
+  if (normalized === 'tailwindcss' || normalized === 'weapp-tailwindcss') {
+    return options?.rootImport ?? (options?.join ?? path.join)(pkgDir, 'index.css')
   }
   const join = options?.join ?? path.join
   const subpath = getTailwindcssSubpath(normalized)

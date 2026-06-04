@@ -104,13 +104,20 @@ describe('selectorParser', () => {
   })
 
   it('ruleTransformSync keeps before after pseudo elements and removes unsupported pseudo elements', () => {
-    const root = postcss.parse('::before,::after,::backdrop{--tw-content:"";}')
+    const root = postcss.parse('::before,::after,::backdrop,::-webkit-backdrop,::-ms-backdrop{--tw-content:"";}')
     const rule = root.first as Rule
     ruleTransformSync(rule, {})
     const transformed = rule.toString()
     expect(transformed).toContain('before')
     expect(transformed).toContain('after')
     expect(transformed).not.toContain('backdrop')
+  })
+
+  it('ruleTransformSync removes pure backdrop pseudo element rules', () => {
+    const root = postcss.parse('::-webkit-backdrop,::-ms-backdrop,::backdrop{box-sizing:border-box;}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {})
+    expect(rule.parent).toBeUndefined()
   })
 
   it('ruleTransformSync removes file selector button pseudo element', () => {

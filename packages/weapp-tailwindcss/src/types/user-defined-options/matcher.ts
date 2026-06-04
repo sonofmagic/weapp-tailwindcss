@@ -6,19 +6,19 @@ export interface UserDefinedOptionsMatcherPart {
    *
    * @group 1.文件匹配
    */
-  htmlMatcher?: (name: string) => boolean
+  htmlMatcher?: ((name: string) => boolean) | undefined
   /**
    * 匹配需要处理的 `wxss` 等样式文件。
    *
    * @group 1.文件匹配
    */
-  cssMatcher?: (name: string) => boolean
+  cssMatcher?: ((name: string) => boolean) | undefined
   /**
    * 匹配需要处理的编译后 `js` 文件。
    *
    * @group 1.文件匹配
    */
-  jsMatcher?: (name: string) => boolean
+  jsMatcher?: ((name: string) => boolean) | undefined
   /**
    * 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。
    *
@@ -26,7 +26,7 @@ export interface UserDefinedOptionsMatcherPart {
    * @remarks
    * 在处理 `::before`/`::after` 等不兼容选择器时，建议手动指定文件位置。
    */
-  mainCssChunkMatcher?: (name: string, appType?: AppType) => boolean
+  mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | undefined
 
   /**
    * 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。
@@ -37,7 +37,7 @@ export interface UserDefinedOptionsMatcherPart {
    * 配置前请确保在 `tailwind.config.js` 的 `content` 中包含对应格式。
    * @default ()=>false
    */
-  wxsMatcher?: (name: string) => boolean
+  wxsMatcher?: ((name: string) => boolean) | undefined
 
   /**
    * 是否转义 `wxml` 中的内联 `wxs`。
@@ -62,5 +62,5 @@ export interface UserDefinedOptionsMatcherPart {
    * ```
    * @default false
    */
-  inlineWxs?: boolean
+  inlineWxs?: boolean | undefined
 }

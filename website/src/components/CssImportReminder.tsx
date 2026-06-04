@@ -2,7 +2,7 @@ import Admonition from '@theme/Admonition'
 import React from 'react'
 
 /**
- * 可复用组件：说明 @import 'tailwindcss' 自动转换为 @import 'weapp-tailwindcss/index.css' 的机制
+ * 可复用组件：说明生成模式下 @import 'tailwindcss' 与存量 weapp-tailwindcss 入口的关系
  *
  * 使用方法：
  * import CssImportReminder from '@site/src/components/CssImportReminder';
@@ -12,23 +12,20 @@ export default function CssImportReminder(): React.JSX.Element {
   return (
     <Admonition type="info" title="关于 @import 'tailwindcss'">
       <p>
-        默认情况下，
-        <code>weapp-tailwindcss</code>
+        生成模式下，推荐在 Tailwind CSS 4.x 入口里直接写
         {' '}
-        的
-        {' '}
-        <code>rewriteCssImports</code>
-        {' '}
-        选项会自动将
         <code>@import &apos;tailwindcss&apos;</code>
-        {' '}
-        改写为
-        {' '}
-        <code>@import &apos;weapp-tailwindcss/index.css&apos;</code>
         。
+        <code>WeappTailwindcss</code>
+        {' '}
+        会根据
+        {' '}
+        <code>target: &apos;weapp&apos;</code>
+        {' '}
+        生成小程序目标 CSS。
       </p>
       <p>
-        这意味着你可以继续在 IntelliSense 辅助入口中使用官方文档的写法
+        这也能继续复用官方文档和 IntelliSense 识别的写法
         {' '}
         <code>@import &apos;tailwindcss&apos;</code>
         ，以获得更好的
@@ -38,21 +35,28 @@ export default function CssImportReminder(): React.JSX.Element {
         支持。
       </p>
       <p>
-        如果是实际运行时入口，推荐直接写
+        存量项目中已经存在的
         {' '}
         <code>@import &apos;weapp-tailwindcss/index.css&apos;</code>
-        。
+        {' '}
+        仍然可以继续使用，适合暂时不调整 CSS 入口的 v4 项目。
       </p>
       <p>
-        如果遇到报错或样式不生效，也请优先手动改为
+        不论使用哪种入口，都请确保
         {' '}
-        <code>@import &apos;weapp-tailwindcss/index.css&apos;</code>
-        ，
-        或将
-        <code>rewriteCssImports</code>
+        <code>cssEntries</code>
         {' '}
-        设置为
-        <code>false</code>
+        指向纯
+        {' '}
+        <code>.css</code>
+        {' '}
+        文件，并且不要额外注册
+        {' '}
+        <code>@tailwindcss/postcss</code>
+        {' '}
+        或
+        {' '}
+        <code>@tailwindcss/vite</code>
         。
       </p>
     </Admonition>

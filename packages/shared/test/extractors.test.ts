@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { isValidSelector, splitCode } from '@/extractors'
+import { isValidSelector, splitCandidateTokens, splitCode } from '@/extractors'
 
 describe('splitCode extractor', () => {
+  it('keeps splitCode as a compatibility alias for splitCandidateTokens', () => {
+    const code = 'foo before:content-["bar"] after:content-[\'baz\']'
+
+    expect(splitCode(code)).toEqual(splitCandidateTokens(code))
+  })
+
   it('splits on whitespace and drops empty selectors', () => {
     expect(splitCode('  foo   bar  ')).toEqual(['foo', 'bar'])
     expect(splitCode('"   "')).toEqual([])
@@ -17,10 +23,46 @@ describe('splitCode extractor', () => {
     ])
   })
 
-  it('controls whether double quotes are treated as splitters', () => {
+  it('keeps double quotes as splitters outside arbitrary values', () => {
     const snippet = 'class="foo bar" data-test="baz"'
     expect(splitCode(snippet)).toEqual(['class=', 'foo', 'bar', 'data-test=', 'baz'])
-    expect(splitCode(snippet, true)).toEqual(['class="foo', 'bar"', 'data-test="baz"'])
+    expect(splitCode(snippet, true)).toEqual(['class=', 'foo', 'bar', 'data-test=', 'baz'])
+  })
+
+  it('preserves single and double quotes inside arbitrary values by default', () => {
+    expect(splitCode('before:content-["11111"] before:content-[\'222\']')).toEqual([
+      'before:content-["11111"]',
+      'before:content-[\'222\']',
+    ])
+    expect(splitCode('<view class="before:content-[\\"11111\\"] text-red-500">')).toEqual([
+      '<view',
+      'class=',
+      'before:content-[\\"11111\\"]',
+      'text-red-500',
+      '>',
+    ])
+    expect(splitCode('before:content-["]"] before:content-[\']\']')).toEqual([
+      'before:content-["]"]',
+      'before:content-[\']\']',
+    ])
+  })
+
+  it('does not let malformed arbitrary values swallow later splitters', () => {
+    expect(splitCode('before:content-["11111" text-red-500 class="foo bar"')).toEqual([
+      'before:content-[',
+      '11111',
+      'text-red-500',
+      'class=',
+      'foo',
+      'bar',
+    ])
+    expect(splitCode('before:content-["] text-red-500 class="foo bar"')).toEqual([
+      'before:content-["]',
+      'text-red-500',
+      'class=',
+      'foo',
+      'bar',
+    ])
   })
 })
 

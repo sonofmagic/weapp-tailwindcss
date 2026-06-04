@@ -9,23 +9,14 @@ describe('tailwindcss targets', () => {
     vi.resetModules()
   })
 
-  it('keeps provided tailwindcss basedir when css entry lives in a subfolder', async () => {
+  it('keeps provided tailwindcss basedir for css entry normalization without forcing v4 base', async () => {
     const classList = ['text-green-500']
-    type PatchResult = Awaited<ReturnType<TailwindcssPatcherLike['patch']>>
-    const patchResult: PatchResult = {
-      exposeContext: undefined,
-      extendLengthUnits: {
-        changed: false,
-        code: undefined,
-      },
-    }
 
     const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
       const stub: TailwindcssPatcherLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
         options: options as any,
-        patch: vi.fn(async () => patchResult),
         getClassSet: vi.fn(async () => new Set(classList)),
         extract: vi.fn(async () => ({
           classList: [...classList],
@@ -52,7 +43,7 @@ describe('tailwindcss targets', () => {
 
     expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
     const options = createTailwindcssPatcher.mock.calls[0][0]
-    expect(options.tailwindcss?.v4?.base).toBe(workspace)
+    expect(options.tailwindcss?.v4?.base).toBeUndefined()
     expect(options.tailwindcss?.v4?.cssEntries).toEqual([
       path.join(workspace, 'src', 'app.css'),
     ])
@@ -63,8 +54,6 @@ describe('tailwindcss targets', () => {
     const extracted = await patcher.extract({})
     expect([...extracted.classSet]).toEqual(classList)
     expect(extracted.classList).toEqual(classList)
-
-    const patched = await patcher.patch()
-    expect(patched).toEqual(patchResult)
+    expect(patcher.patch).toBeUndefined()
   })
 })

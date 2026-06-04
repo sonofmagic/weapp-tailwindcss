@@ -1,8 +1,9 @@
 import { getCss } from '#test/helpers/getTwCss'
 import { createGetCase, wxsCasePath } from '#test/util'
 // import { createTemplateHandler } from '@/wxml/index'
-import { wxsTagRegexp } from '@weapp-core/regex'
 import { getCompilerContext } from '@/context'
+
+const wxsTagRegexp = /<wxs\s*(?:[a-z][a-z-]*[a-z]*(?:\s*=\s*".*?")?)*\s*>(.*?)<\/wxs>/gs
 
 interface ExtractSourceToken {
   start: number
@@ -15,7 +16,6 @@ interface ExtractSourceToken {
 }
 async function getClassCacheSet() {
   const ctx = getCompilerContext()
-  await ctx.twPatcher.patch()
   return ctx.twPatcher.getClassSet()
 }
 const getCase = createGetCase(wxsCasePath)

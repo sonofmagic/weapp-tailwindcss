@@ -115,12 +115,6 @@ describe('templateReplacer', () => {
     expect(result).toMatchSnapshot()
   })
 
-  // it.each(testTable)('%label class with string var', ({ mangle }) => {
-  //   const testCase = 'btn a{{num}}'
-  //   const str = simpleReplacer(testCase, { classGenerator: mangle ? classGenerator : undefined })
-  //   expect(str).toBe(testCase)
-  // })
-
   it('classGenerator class with string var', () => {
     const testCase = 'btn-%1 a[p-1]{{num}}'
     // classGenerator

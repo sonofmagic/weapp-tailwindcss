@@ -1,6 +1,6 @@
 ---
 title: uni-app x 专题
-description: 面向用户的实战手册，10 分钟完成 Tailwind CSS 在 uni-app x 的跨端集成与开发。
+description: 在 HBuilderX 的 uni-app x 项目中接入 Tailwind CSS，并覆盖 Web、小程序、Android 与 iOS。
 keywords:
   - uni-app
   - 专题
@@ -52,17 +52,19 @@ import TailwindcssLogo from '../../../assets/logo.png'
 
 - 想在 uni-app x 项目里使用 Tailwind CSS 的开发者
 - 需要一套能同时覆盖 Web/小程序/Android/iOS/鸿蒙 的原子化样式方案
-- 希望以最少的改动尽快起步，并有清晰的后续扩展路线
+- 已经使用 HBuilderX 运行或发布 uni-app x 项目
 
-## 你将收获什么
+## 当前支持范围
 
-- 完整的从 0 到 1 集成流程（含运行与验证）
-- 可复用的模板项目与配置清单
-- 多端开发的实践建议与避坑说明
+`weapp-tailwindcss@5` 同时支持 Tailwind CSS 3 和 Tailwind CSS 4。uni-app x 项目建议通过 `WeappTailwindcss(uniAppX(...))` 注册插件，Tailwind 的生成和小程序/App 转译都交给 `weapp-tailwindcss`。
 
-:::info 支持范围
-当前跨端集成仅支持 `tailwindcss@3.x`。  
-`tailwindcss@4.x` 生成的 CSS 依赖诸多现代特性，`uni-app x` 暂未全部覆盖，故不建议在该场景使用 v4。
+| Tailwind 版本 | 入口方式 | 扫描方式 | 当前验证 |
+| --- | --- | --- | --- |
+| Tailwind CSS 3 | `@tailwind base;` / `components` / `utilities` | `tailwind.config.js` 的 `content` | HBuilderX 小程序、Android、iOS |
+| Tailwind CSS 4 | `@import "tailwindcss" source(none);` | CSS 入口里的 `@source` | HBuilderX 小程序、Android、iOS |
+
+:::info 本地 E2E
+HBuilderX 依赖本机安装环境，所以 Android/iOS App E2E 只在本地运行，不放进 CI/CD。仓库里对应的命令是 `pnpm e2e:hbuilderx:local:app`、`pnpm e2e:hbuilderx:local:android` 和 `pnpm e2e:hbuilderx:local:ios`。
 :::
 
 ## 最快开始
@@ -70,7 +72,7 @@ import TailwindcssLogo from '../../../assets/logo.png'
 - 想最快跑起来：点击上方「一键使用模板项目」，按 README 步骤打开 HBuilderX 运行即可
 - 想了解每一步：前往「手动集成」教程 → <Link to="/docs/uni-app-x/install">快速集成</Link>
 
-## 开发建议（从用户出发）
+## 开发建议
 
 - 推荐编辑器协作：用 VS Code 写代码，用 HBuilderX 负责运行与构建
 - 首选 Android 端调试：CSS 兼容度一般是 Web > 小程序 > App（Android/iOS/鸿蒙）。先用 Android 模拟器打通路径，跨端成本最低
@@ -113,8 +115,7 @@ VS Code 原生不识别 `uvue/uts`，建议为 Tailwind 扩展加上语言映射
 
 ### 运行方式
 
-目前 `uni-app x` 尚无 CLI，需通过 HBuilderX 进行运行与构建。  
-建议配合 Android 模拟器进行开发调试。
+uni-app x 的运行和构建仍以 HBuilderX 为准。需要命令行自动化时，可以使用 HBuilderX CLI；本仓库的本地 E2E 就是通过 `hbuilderx launch` 跑 Web、小程序和 App 目标。
 
 ## 接下来
 

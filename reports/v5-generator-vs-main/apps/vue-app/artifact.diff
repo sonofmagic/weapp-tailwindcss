@@ -1,0 +1,27 @@
+# apps/vue-app artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+diff -- dist/assets/index-BcJjhnso.js
+# normalized content differs; inline diff omitted (large-added-file).
+# baseline: /dev/null
+# current: 131796 raw bytes, 227992 normalized bytes, hash 805806cbd97b
+
+diff -- dist/assets/index-C-alYD4W.js
+# normalized content differs; inline diff omitted (large-removed-file).
+# baseline: 131712 raw bytes, 227850 normalized bytes, hash b322c5804314
+# current: /dev/null
+
+--- a/dist/index.html
++++ b/dist/index.html
+@@ -5,7 +5,7 @@
+     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+     <title>Vite + Vue + TS</title>
+-    <script type="module" crossorigin src="/assets/index-C-alYD4W.js"></script>
++    <script type="module" crossorigin src="/assets/index-BcJjhnso.js"></script>
+     <link rel="stylesheet" crossorigin href="/assets/index-BomzdsEo.css" />
+   </head>
+   <body>
+

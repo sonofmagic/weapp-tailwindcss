@@ -8,7 +8,9 @@ export default defineConfig({
   dts: true,
   clean: true,
   target: 'node18',
-  external: [
-    'tailwind-merge',
-  ],
+  deps: {
+    neverBundle: [
+      'tailwind-merge',
+    ],
+  },
 })

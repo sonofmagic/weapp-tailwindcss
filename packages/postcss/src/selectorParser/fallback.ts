@@ -17,6 +17,32 @@ const fallbackRemoveCache = new WeakMap<object, {
 const fallbackDefaultKey: object = {}
 const FALLBACK_TRANSFORM_OPTIONS = normalizeTransformOptions()
 
+function isInsidePseudo(node: psp.Node, pseudoValue: string) {
+  let parent = node.parent
+  while (parent) {
+    if (parent.type === 'pseudo' && parent.value === pseudoValue) {
+      return true
+    }
+    if (parent.type === 'selector' && parent.parent?.type !== 'pseudo') {
+      return false
+    }
+    parent = parent.parent
+  }
+  return false
+}
+
+function removeContainingSelector(node: psp.Node) {
+  let parent = node.parent
+  let containingSelector: psp.Container | undefined
+  while (parent) {
+    if (parent.type === 'selector') {
+      containingSelector = parent
+    }
+    parent = parent.parent
+  }
+  containingSelector?.remove()
+}
+
 /**
  * 获取用于小程序兼容性处理的解析器，内部会缓存实例并移除不支持的选择器。
  * 增加了选择器字符串级缓存，避免对相同选择器重复 parse。
@@ -74,19 +100,13 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
               }
             }
           }
-          else if (selector.value === ':where') {
-            for (const n of selector.nodes) {
-              for (const node of n.nodes) {
-                if (node.type === 'attribute') {
-                  node.remove()
-                }
-              }
-            }
-          }
         }
         else if (selector.type === 'attribute') {
           if (selector.attribute === 'hidden') {
             activeRule?.remove()
+          }
+          else if (isInsidePseudo(selector, ':where')) {
+            removeContainingSelector(selector)
           }
         }
       })
@@ -118,6 +138,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
         const cached = selectorCache.get(sourceSelector)
         if (cached) {
           if (cached.action === 'remove') {
+            targetRule.selector = ''
             targetRule.remove()
           }
           else if (cached.action === 'update' && cached.selector && cached.selector !== sourceSelector) {
@@ -130,6 +151,10 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
       currentRule = targetRule
       try {
         rawTransformSync(targetRule, FALLBACK_TRANSFORM_OPTIONS)
+        if (targetRule.parent && targetRule.selector.trim().length === 0) {
+          targetRule.selector = ''
+          targetRule.remove()
+        }
       }
       finally {
         currentRule = undefined
@@ -139,6 +164,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
       if (transformOptions === FALLBACK_TRANSFORM_OPTIONS) {
         const wasRemoved = targetRule.parent == null
         if (wasRemoved) {
+          targetRule.selector = ''
           writeSelectorCache(sourceSelector, { action: 'remove' })
         }
         else if (targetRule.selector === sourceSelector) {

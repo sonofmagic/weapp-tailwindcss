@@ -1,0 +1,29 @@
+<scroll-view scroll-y type="list">
+  <view class="space-y-2.5">
+    <view class="bg-[#68c828] text-[100px] text-[#123456] w-[323px] {{true?'h-[30px]':'h-[45px]'}}">
+      111
+    </view>
+    <view class="{{ active ? 'text-[55rpx]' : 'text-red-700' }}">{{ message === 'Hello world!' ? 'keep-[business]' : 'at App.vue:4' }}</view>
+    <view class="{{ ['text-red-700', active ? 'text-[55rpx]' : 'text-blue-500'].join(' ') }}">{{ ['Hello world!', 'keep-[business]', 'at App.vue:4 index.ts:120:3'].join('|') }}</view>
+    <view class="{{ active ? 'text-[55rpx]' : (message === 'Hello world!' ? 'text-red-700' : 'text-blue-500') }}">{{ message.includes('Hello world!') ? 'before content [\"not-generated\"]' : 'https://example.com/a[b]?q=Hello world!' }}</view>
+    <view data-trace="at App.vue:4 index.ts:120:3" data-expression="size > 4 ? keep-[business] : App.vue:4" data-missing="before content [&quot;not-generated&quot;]"></view>
+    <view class="bg-[#3a32d1] text-[100rpx] text-red-700 w-[323px] {{false?'h-[30px]':'h-[45px]'}}">
+      222
+    </view>
+    <view class="bg-gradient-to-b from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="bg-gradient-to-t from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="bg-gradient-to-tr from-[#2f73f1] to-[#4bcefd] w-[323px] h-[30px]"></view>
+    <view class="space-x-2.5">
+      <view class="inline-block h-10 w-[50px] bg-amber-300 border-4"></view>
+      <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
+      <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
+      <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
+    </view>
+    <view class="i-mdi-home"></view>
+    <view class="hover:border-blue-200/20">111</view>
+    <view class='size-12 bg-blue-500/30 text-pink-300'>BLUE BLOCK</view>
+    <view class="min-h-screen flex flex-col p-4 bg-zinc-50 dark:bg-zinc-900">
+      <view class="dark:hover:bg-green-300">Test</view>
+    </view>
+  </view>
+</scroll-view>

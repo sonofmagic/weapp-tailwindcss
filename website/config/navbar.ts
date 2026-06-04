@@ -33,7 +33,7 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     {
       type: 'doc',
       label: '更新与迁移',
-      docId: 'migrations/v3',
+      docId: 'migrations/v5',
     },
     {
       type: 'doc',
@@ -61,16 +61,29 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
     },
 
     {
+      type: 'dropdown',
+      label: 'v5',
+      position: 'right',
+      items: [
+        {
+          label: 'v5 当前版本',
+          href: '/',
+        },
+        {
+          label: 'v4 最新版本',
+          href: 'https://v4.tw.icebreaker.top/',
+        },
+      ],
+    },
+    {
       href: 'https://atomgit.com/sonofmagic/weapp-tailwindcss',
       label: 'AtomGit',
-      ariaLabel: 'AtomGit repository',
       className: 'navbar__atomgit-link',
       position: 'right',
     },
     {
       href: 'https://github.com/sonofmagic/weapp-tailwindcss',
       label: 'GitHub',
-      ariaLabel: 'GitHub repository',
       className: 'navbar__github-link',
       position: 'right',
     },

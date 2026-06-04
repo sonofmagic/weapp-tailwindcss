@@ -2,8 +2,14 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
     "removeComments": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "noCheck": true
   },
   "include": [
     "src/**/*",

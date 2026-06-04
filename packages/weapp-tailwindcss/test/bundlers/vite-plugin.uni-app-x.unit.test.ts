@@ -13,9 +13,9 @@ import {
 
 const TEST_TIMEOUT_MS = 30000
 
-async function loadUnifiedVitePlugin() {
+async function loadWeappTailwindcssPlugin() {
   const mod = await import('@/bundlers/vite')
-  return mod.UnifiedViteWeappTailwindcssPlugin
+  return mod.WeappTailwindcss
 }
 
 function getGenerateBundleHandler(plugin: Plugin) {
@@ -23,7 +23,7 @@ function getGenerateBundleHandler(plugin: Plugin) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
-describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
+describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
   beforeEach(() => {
     vi.resetModules()
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
@@ -31,7 +31,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   })
 
   it('provides uni-app-x specific transforms', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSet = new Set(['uvue'])
     setCurrentContext(createContext())
@@ -49,7 +49,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     currentContext.onStart = vi.fn()
     currentContext.onEnd = vi.fn()
 
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     expect(plugins).toBeDefined()
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
     const cssPrePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css:pre') as Plugin
@@ -138,7 +138,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       }),
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
       twPatcher: {
@@ -150,7 +150,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       },
     }))
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -191,7 +191,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       }),
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
       jsHandler: vi.fn((code: string) => ({ code: `asset:${code}` })),
@@ -204,7 +204,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       },
     }))
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -256,7 +256,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       }),
     }))
 
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
       jsHandler: vi.fn((code: string, _runtimeSet: Set<string>, options?: { filename?: string }) => {
@@ -279,7 +279,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       },
     }))
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
 
@@ -325,13 +325,13 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('reuses css handler override objects for repeated uni-app-x style transforms', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
     }))
     const currentContext = getCurrentContext()
 
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
     expect(cssPlugin).toBeTruthy()
 
@@ -344,7 +344,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('defaults uni-app-x plugin appType to uni-app-x when explicit appType is absent', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const mainCssChunkMatcher = vi.fn(() => true)
     setCurrentContext(createContext({
       appType: undefined,
@@ -352,7 +352,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
       mainCssChunkMatcher,
     }))
 
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
     expect(cssPlugin).toBeTruthy()
 
@@ -363,7 +363,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
       new Set(['text-[#123456]']),
@@ -394,7 +394,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     })
 
     try {
-      const plugins = UnifiedViteWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
       const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
       const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
       expect(postPlugin).toBeTruthy()
@@ -439,7 +439,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set during build watch transforms so new classes are hashed immediately', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
       new Set(['text-[#123456]']),
@@ -470,7 +470,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     })
 
     try {
-      const plugins = UnifiedViteWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
       const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
       const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
       expect(postPlugin).toBeTruthy()
@@ -515,7 +515,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on .uvue/.nvue hot updates in serve mode', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSets = [
       new Set(['text-[#123456]']),
       new Set(['text-[#234567]']),
@@ -535,7 +535,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     }))
 
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -572,7 +572,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on .uvue/.nvue watch changes in build watch mode', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSets = [
       new Set(['text-[#123456]']),
       new Set(['text-[#654321]']),
@@ -592,7 +592,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     }))
 
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -628,7 +628,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
   }, TEST_TIMEOUT_MS)
 
   it('forces runtime refresh for uni-app-x transform even for non-watch build runs', async () => {
-    const UnifiedViteWeappTailwindcssPlugin = await loadUnifiedVitePlugin()
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSets = [
       new Set(['text-[#aaaaaa]']),
@@ -649,7 +649,7 @@ describe('bundlers/vite UnifiedViteWeappTailwindcssPlugin uni-app-x', () => {
     }))
 
     const currentContext = getCurrentContext()
-    const plugins = UnifiedViteWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     const nvuePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:nvue') as Plugin
     expect(postPlugin).toBeTruthy()

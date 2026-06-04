@@ -37,7 +37,24 @@ async function updateSuite(config: SuiteConfig) {
 
   for (const project of config.projects) {
     const projectRoot = path.resolve(projectBase, project.projectPath)
+    const cssPath = path.resolve(projectRoot, project.cssFile)
+    try {
+      await fs.access(cssPath)
+    }
+    catch (error: unknown) {
+      const code = error instanceof Error && 'code' in error ? error.code : undefined
+      if (code === 'ENOENT' || code === 'EPERM') {
+        process.stdout.write(`[e2e] skipped ${config.suite}/${project.name} CSS snapshots: ${project.cssFile} not found\n`)
+        continue
+      }
+      throw error
+    }
+
     const cssSnapshots = await collectCssSnapshots(projectRoot, project.cssFile)
+    if (cssSnapshots.length === 0) {
+      process.stdout.write(`[e2e] skipped ${config.suite}/${project.name} CSS snapshots: no CSS snapshots found\n`)
+      continue
+    }
 
     for (const snapshot of cssSnapshots) {
       const snapshotPath = await resolveSnapshotFile(e2eRoot, config.suite, project.name, snapshot.fileName)

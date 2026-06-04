@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/typography",
-  "version": "0.2.7",
+  "version": "1.0.0-next.1",
   "description": "The tailwindcss typography plugin for weapp",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -50,16 +50,16 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown && node -e \"require('node:fs').copyFileSync('src/index.d.ts','dist/index.d.ts')\"",
     "test": "vitest run",
     "test:dev": "vitest",
     "tsd": "tsd",
     "release": "pnpm publish",
     "sync": "cnpm sync @weapp-tailwindcss/typography"
   },
-  "dependencies": {
-    "htmlparser2": "^10.1.0",
+  "devDependencies": {
+    "htmlparser2": "^12.0.0",
     "lodash.castarray": "^4.4.0",
     "lodash.isplainobject": "^4.0.6",
     "lodash.merge": "^4.6.2",

@@ -120,7 +120,7 @@ exports[`tailwind complex syntax output > generates wxss selectors for complex s
     }
 }
 ._b_n_cnth-child_p3_P_B_cunderline:nth-child(3) {
-    text-decoration-line: underline
+            text-decoration-line: underline
 }
 @supports(display:grid) {
     ._b_tsupports_pdisplay_cgrid_P_B_cgrid {

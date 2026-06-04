@@ -1,17 +1,15 @@
 import type { Transform } from 'node:stream'
-import type { Plugin as VitePlugin } from 'vite'
 import type { UserDefinedOptions } from 'weapp-tailwindcss/types'
+import type { WeappTailwindcssVitePlugin } from 'weapp-tailwindcss/vite'
 import { expectType } from 'tsd'
 import {
   createPlugins,
-  UnifiedViteWeappTailwindcssPlugin,
-  UnifiedWebpackPluginV5,
+  WeappTailwindcss,
 } from 'weapp-tailwindcss'
 
 const rootOptions: UserDefinedOptions = { appType: 'taro' }
 
-expectType<VitePlugin[] | undefined>(UnifiedViteWeappTailwindcssPlugin(rootOptions))
-expectType<UnifiedWebpackPluginV5>(new UnifiedWebpackPluginV5(rootOptions))
+expectType<WeappTailwindcssVitePlugin[] | undefined>(WeappTailwindcss(rootOptions))
 
 const rootGulpPlugins = createPlugins({ appType: 'native' })
 expectType<Transform>(rootGulpPlugins.transformWxss())

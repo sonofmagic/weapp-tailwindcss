@@ -1,4 +1,6 @@
 import fs from 'node:fs'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
@@ -9,7 +11,7 @@ vi.mock('@/context', () => ({
   getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
 }))
 
-const { UnifiedWebpackPluginV5 } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
+const { WeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
 
 class FakeConcatSource {
   constructor(private readonly value: string) {}
@@ -123,6 +125,17 @@ describe('bundlers/webpack v5 runtime metadata', () => {
   })
 
   it('refreshes runtime metadata during css-only invalidation for v4 output', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-webpack-v5-runtime-'))
+    const cssEntry = path.join(root, 'app.css')
+    await writeFile(cssEntry, [
+      '@theme default {',
+      '  --color-red-500: #ef4444;',
+      '}',
+      '@tailwind utilities;',
+      '.tw-watch-style-case { color: red; }',
+    ].join('\n'))
+    currentContext.twPatcher.options.tailwind.v4.cssEntries = [cssEntry]
+
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     const invalidHandlers: Array<() => void> = []
     const thisCompilationHandlers: Array<(_compilation: any) => void> = []
@@ -198,7 +211,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
       },
     }
 
-    new UnifiedWebpackPluginV5().apply(compiler as any)
+    new WeappTailwindcss().apply(compiler as any)
 
     await processAssetsCallbacks[0](createAssets(assetStore))
     expect(assetStore['index.css']).toContain('.base')
@@ -215,5 +228,6 @@ describe('bundlers/webpack v5 runtime metadata', () => {
 
     expect(currentContext.refreshTailwindcssPatcher.mock.calls.length).toBeGreaterThan(refreshCallsAfterBaseline)
     expect(assetStore['index.css']).toContain('.tw-watch-style-case')
+    await rm(root, { recursive: true, force: true })
   })
 })

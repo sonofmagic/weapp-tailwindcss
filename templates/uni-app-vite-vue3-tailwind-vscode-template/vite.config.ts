@@ -1,7 +1,6 @@
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
 import { weappTailwindcss } from 'weapp-tailwindcss/vite'
-import { weappTailwindcssDisabled } from './platform'
 import postcssPlugins from './postcss.config'
 
 // https://vitejs.dev/config/
@@ -16,7 +15,6 @@ export default defineConfig(async () => {
       uni(),
       weappTailwindcss({
         rem2rpx: true,
-        disabled: weappTailwindcssDisabled,
       }),
       AutoImport({
         imports: ['vue', 'uni-app', 'pinia'],
@@ -26,7 +24,7 @@ export default defineConfig(async () => {
         },
       }),
     ],
-    // 内联 postcss 注册 tailwindcss
+    // 内联 postcss 注册后处理插件
     css: {
       postcss: {
         plugins: postcssPlugins,

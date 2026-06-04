@@ -9,7 +9,6 @@ import {
   resolveCliCwd,
   toBoolean,
 } from './helpers/options'
-import { resolvePatchDefaultCwd } from './helpers/patch-cwd'
 
 export async function ensureDir(dir: string) {
   await mkdir(dir, { recursive: true })
@@ -18,7 +17,7 @@ export async function ensureDir(dir: string) {
 function handleCliError(error: unknown) {
   if (error instanceof Error) {
     logger.error(error.message)
-    if (error.stack && process.env.WEAPP_TW_DEBUG === '1') {
+    if (error.stack && process.env['WEAPP_TW_DEBUG'] === '1') {
       logger.error(error.stack)
     }
   }
@@ -45,6 +44,5 @@ export {
   readStringArrayOption,
   readStringOption,
   resolveCliCwd,
-  resolvePatchDefaultCwd,
   toBoolean,
 }

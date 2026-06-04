@@ -1,4 +1,4 @@
-import type { OutputAsset, OutputBundle } from 'rollup'
+import type { EmittedAsset, OutputBundle } from 'rollup'
 import type { Plugin, PluginContainer, ResolvedConfig } from 'vite'
 import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 
@@ -189,12 +189,11 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): 
           continue
         }
 
-        bundle[fileName] = {
+        this.emitFile({
           type: 'asset',
-          name: fileName,
           fileName,
           source: processedSource,
-        } as OutputAsset
+        } satisfies EmittedAsset)
       }
     },
   }

@@ -1,7 +1,7 @@
 {
   "name": "tailwindcss-config",
   "type": "module",
-  "version": "1.1.5",
+  "version": "2.0.0-next.3",
   "description": "load tailwindcss config function",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -20,8 +20,15 @@
   ],
   "sideEffects": false,
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -29,8 +36,9 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown && pnpm run build:types",
+    "build:types": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
@@ -53,7 +61,9 @@
   },
   "dependencies": {
     "@weapp-tailwindcss/shared": "workspace:*",
-    "jiti": "^2.6.1",
+    "jiti": "2.7.0"
+  },
+  "devDependencies": {
     "lilconfig": "^3.1.3"
   }
 }

@@ -7,29 +7,53 @@
     "source.fixAll.eslint": "explicit",
     "source.organizeImports": "never"
   },
+  "search.exclude": {
+    "**/submodules/**": true,
+    "**/node_modules/**": true,
+    "**/benchmark/**/node_modules/**": true
+  },
+  "files.exclude": {
+    "**/benchmark/**/node_modules/**": true,
+    "**/submodules/**": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/benchmark/**/node_modules/**": true,
+    "**/submodules/**": true,
+    "**/.weapp-vite/**": true,
+    "**/.turbo/**": true,
+    "**/.cache/**": true,
+    "**/dist/**": true,
+    "**/build/**": true
+  },
+  // 避免 TypeScript 通过 benchmark 生成依赖的 symlink 重复打开工作区包。
+  "js/ts.tsserver.watchOptions": {
+    "excludeDirectories": [
+      "**/node_modules",
+      "**/benchmark/**/node_modules",
+      "**/submodules",
+      "**/.weapp-vite",
+      "**/.turbo",
+      "**/.cache",
+      "**/dist",
+      "**/build"
+    ],
+    "excludeFiles": [
+      "**/node_modules/**/tsconfig*.json",
+      "**/benchmark/**/node_modules/**/tsconfig*.json",
+      "**/submodules/**/tsconfig*.json",
+      "**/.weapp-vite/**/tsconfig*.json"
+    ]
+  },
   // https://github.com/tailwindlabs/tailwindcss/discussions/5258
-  "css.customData": [
-    ".vscode/tailwind.json"
-  ],
+  "css.customData": [".vscode/tailwind.json"],
   "tailwindCSS.experimental.classRegex": [
     // https://github.com/lukeed/clsx?tab=readme-ov-file#tailwind-support
-    [
-      "clsx\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ],
-    [
-      "cn\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ],
+    ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     // https://cva.style/docs/getting-started/installation
-    [
-      "cva\\(([^)]*)\\)",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ],
-    [
-      "cx\\(([^)]*)\\)",
-      "(?:'|\"|`)([^']*)(?:'|\"|`)"
-    ],
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
   "tailwindCSS.classAttributes": [
@@ -126,11 +150,7 @@
   "css.validate": false,
   "less.validate": false,
   "scss.validate": false,
-  "stylelint.validate": [
-    "vue",
-    "css",
-    "scss"
-  ],
+  "stylelint.validate": ["vue", "css", "scss"],
   "terminal.integrated.env.linux": {
     "COREPACK_NPM_REGISTRY": "https://registry.npmmirror.com",
     "EDGEDRIVER_CDNURL": "https://npmmirror.com/mirrors/edgedriver",

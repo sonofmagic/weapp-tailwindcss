@@ -1,6 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
-const { UnifiedWebpackPluginV5 } = require('weapp-tailwindcss/webpack')
-const tailwindPostcss = require('@tailwindcss/postcss')
+const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const path = require('path')
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
@@ -26,9 +25,7 @@ module.exports = defineConfig({
       plugin: {
         postcssInlineConfig: {
           ignoreConfigFile: true,
-          plugins: [
-            tailwindPostcss()
-          ]
+          plugins: []
         },
         srcMode: 'wx',
         hackResolveBuildDependencies: ({ files, resolveDependencies }) => {
@@ -47,13 +44,13 @@ module.exports = defineConfig({
    * 可以将configureWebpack.snap.managedPaths修改为 []
    */
   configureWebpack(config) {
+    // Node 24 + Mpx/Webpack 5 的 filesystem cache 快照 hash 会命中 undefined 输入。
+    config.cache = false
     config.plugins.push(
-      new UnifiedWebpackPluginV5({
+      new WeappTailwindcss({
+        tailwindcssBasedir: process.cwd(),
         rem2rpx: true,
         appType: 'mpx',
-        cssEntries: [
-          path.resolve(__dirname, 'src/app.css')
-        ]
       })
     )
   },

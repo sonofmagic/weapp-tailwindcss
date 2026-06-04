@@ -4,6 +4,8 @@ import type { FeatureSignal } from './content-probe'
 import type { IStyleHandlerOptions, StyleHandler } from './types'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { LRUCache } from 'lru-cache'
+import postcss from 'postcss'
+import { protectDynamicColorMixAlpha } from './compat/color-mix'
 import { applyUniAppXBaseCompatibility } from './compat/uni-app-x'
 import { applyUniAppXUvueCompatibility } from './compat/uni-app-x-uvue'
 import { probeFeatures, signalToCacheKey } from './content-probe'
@@ -76,12 +78,16 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
 
   const handler = ((rawSource: string, opt?: Partial<IStyleHandlerOptions>) => {
     const resolvedOptions = resolver.resolve(opt)
+    const protectedColorMix = resolvedOptions.majorVersion === 4
+      ? protectDynamicColorMixAlpha(rawSource)
+      : undefined
+    const source = protectedColorMix?.css ?? rawSource
     // 当有用户插件时跳过内容探测，因为用户插件（如 tailwindcss）可能在 pre 阶段
     // 生成新的 CSS 特征（如现代颜色函数、:is() 伪类等），而 probeFeatures 只看原始输入
     let signal: FeatureSignal | undefined
     if (!hasUserPlugins) {
       try {
-        signal = probeFeatures(rawSource)
+        signal = probeFeatures(source)
       }
       catch {
         signal = undefined
@@ -91,7 +97,7 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     // 构建缓存键：选项指纹 + 信号 + 内容哈希
     const optsFp = getOptionsFingerprint(resolvedOptions)
     const signalKey = signal ? signalToCacheKey(signal) : ''
-    const contentHash = simpleHash(rawSource)
+    const contentHash = simpleHash(source)
     const cacheKey = `${optsFp}|${signalKey}|${contentHash}`
 
     const cachedResult = resultCache.get(cacheKey)
@@ -103,11 +109,21 @@ export function createStyleHandler(options?: Partial<IStyleHandlerOptions>): Sty
     const processOptions = processorCache.getProcessOptions(resolvedOptions)
 
     return processor.process(
-      rawSource,
+      source,
       processOptions,
     ).async().then((result) => {
       const baseCompatible = applyUniAppXBaseCompatibility(result, resolvedOptions)
-      const finalResult = applyUniAppXUvueCompatibility(baseCompatible, resolvedOptions)
+      let finalResult = applyUniAppXUvueCompatibility(baseCompatible, resolvedOptions)
+      if (protectedColorMix) {
+        const restoredCss = protectedColorMix.restore(finalResult.css)
+        if (restoredCss !== finalResult.css) {
+          const nextResult = finalResult.root.clone().toResult(finalResult.opts)
+          nextResult.css = restoredCss
+          nextResult.root = postcss.parse(restoredCss, finalResult.opts)
+          nextResult.messages.push(...finalResult.messages)
+          finalResult = nextResult
+        }
+      }
       // 缓存最终结果
       resultCache.set(cacheKey, finalResult)
       return finalResult

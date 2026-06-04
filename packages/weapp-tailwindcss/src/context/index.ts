@@ -2,11 +2,12 @@ import type { InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, Tail
 import { rm } from 'node:fs/promises'
 import { logger } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
-import { getDefaultOptions } from '@/defaults'
+import { getDefaultOptions, resolveDefaultCssPreflight } from '@/defaults'
 import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
 import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { applyV4CssCalcDefaults, warnMissingCssEntries } from '@/tailwindcss/v4'
+import { resolveUnocssBareArbitraryValues } from '@/unocss'
 import { defuOverrideArray } from '@/utils'
 import { withCompilerContextCache } from './compiler-context-cache'
 import { toCustomAttributesEntities } from './custom-attributes'
@@ -83,19 +84,24 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     {},
   )
 
+  ctx.arbitraryValues = resolveUnocssBareArbitraryValues(ctx.arbitraryValues, ctx.unocss)
   ctx.escapeMap = ctx.customReplaceDictionary
 
   applyLoggerLevel(ctx.logLevel)
 
-  const twPatcher = createTailwindcssPatcherFromContext(ctx)
-  logTailwindcssTarget('runtime', twPatcher, ctx.tailwindcssBasedir)
+  const twPatcher = createTailwindcssPatcherFromContext(ctx) as TailwindcssPatcherLike
+  logTailwindcssTarget(twPatcher, ctx.tailwindcssBasedir)
   logRuntimeTailwindcssVersion(
     ctx.tailwindcssBasedir,
     twPatcher.packageInfo?.rootPath,
     twPatcher.packageInfo?.version,
   )
 
-  warnMissingCssEntries(ctx, twPatcher)
+  if ((opts as any)?.__internalDeferMissingCssEntriesWarning !== true) {
+    warnMissingCssEntries(ctx, twPatcher)
+  }
+
+  ctx.cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, twPatcher.majorVersion)
 
   const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, twPatcher)
   ctx.cssCalc = cssCalcOptions
@@ -137,9 +143,9 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 }
 
 /**
- * 获取用户定义选项的内部表示，并初始化相关的处理程序和补丁。
+ * 获取用户定义选项的内部表示，并初始化相关的处理程序和 Tailwind 运行时。
  * @param opts - 用户定义的选项，可选。
- * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS和模板处理程序，以及Tailwind CSS补丁。
+ * @returns 返回一个包含内部用户定义选项的对象，包括样式、JS 和模板处理程序，以及 Tailwind CSS 运行时。
  */
 export function getCompilerContext(opts?: UserDefinedOptions): InternalUserDefinedOptions {
   return withCompilerContextCache(opts, () => createInternalCompilerContext(opts))

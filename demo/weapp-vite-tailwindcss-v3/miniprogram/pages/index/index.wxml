@@ -1,0 +1,9 @@
+<view class="p-4">
+  <view class="{{className}}">className</view>
+  <view class="{{ active ? 'bg-[red]' : 'text-red-500' }}">{{ message === 'Hello world!' ? 'keep-[business]' : 'at App.vue:4' }}</view>
+  <view class="{{ ['text-red-500', active ? 'bg-[red]' : 'text-blue-500'].join(' ') }}">{{ ['Hello world!', 'keep-[business]', 'at App.vue:4 index.ts:120:3'].join('|') }}</view>
+  <view class="{{ active ? 'bg-[red]' : (message === 'Hello world!' ? 'text-red-500' : 'text-blue-500') }}">{{ message.includes('Hello world!') ? 'before content [\"not-generated\"]' : 'https://example.com/a[b]?q=Hello world!' }}</view>
+  <view data-trace="at App.vue:4 index.ts:120:3" data-expression="size > 4 ? keep-[business] : App.vue:4" data-missing="before content [&quot;not-generated&quot;]"></view>
+  <IceButton class="bg-[#d72929]" tw-class="bg-[orange]" hover-class="bg-[green]" tw-hover-class="bg-[pink]"></IceButton>
+  <view class="dark:hover:border-green-300 dark:hover:bg-gray-600">111222</view>
+</view>

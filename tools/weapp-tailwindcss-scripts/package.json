@@ -1,0 +1,47 @@
+{
+  "name": "@weapp-tailwindcss/scripts",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build:css": "tsx src/build-css.ts",
+    "build:weapp-theme": "tsx src/build-weapp-theme.ts",
+    "build:types": "tsx src/rewrite-dts-aliases.ts && tsx src/create-entry-dts.ts",
+    "ensure-escape-dts": "tsx src/ensure-escape-dts.ts",
+    "bench:vite-perf": "tsx src/vite-perf-bench.ts",
+    "bench:vite-perf:summary": "tsx src/vite-perf-summary.ts",
+    "bench:js-handlers": "tsx src/js-bench.ts",
+    "bench:js-diff": "tsx src/js-bench-diff.ts",
+    "clean:core": "tsx src/clean.ts",
+    "get-decl": "tsx src/get-decl.ts",
+    "colors": "tsx src/colors.ts",
+    "release": "tsx src/release.ts",
+    "bench:vite-dev-hmr": "tsx src/vite-dev-hmr-bench.ts",
+    "watch-hmr:speed-report": "node ../../.github/scripts/e2e-watch-report.cjs speed-report",
+    "test:watch-hmr": "node --import tsx src/watch-hmr-regression/index.ts"
+  },
+  "dependencies": {
+    "@csstools/css-color-parser": "^4.1.1",
+    "@csstools/css-parser-algorithms": "^4.0.0",
+    "@csstools/css-tokenizer": "^4.0.0",
+    "@weapp-core/escape": "~8.0.0",
+    "colorette": "^2.0.20",
+    "del": "^8.0.1",
+    "execa": "^9.6.1",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.5",
+    "lightningcss": "^1.32.0",
+    "pathe": "^2.0.3",
+    "picocolors": "^1.1.1",
+    "postcss": "catalog:postcss85",
+    "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss4": "catalog:tailwindcss4",
+    "traverse": "^0.6.11"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:typesNode2410",
+    "playwright": "^1.60.0",
+    "tsx": "catalog:tsx",
+    "typescript": "catalog:typescript59"
+  }
+}

@@ -1,15 +1,11 @@
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
-import tailwindcss from '@tailwindcss/postcss'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import path from 'path'
-// import tailwindcss from '@tailwindcss/vite'
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
-  // const { default: tailwindcss } = await import('@tailwindcss/vite')
-
   const baseConfig: UserConfigExport<'vite'> = {
     projectName: 'myApp',
     date: '2025-2-23',
@@ -35,19 +31,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
-        //  No "exports" main defined
-        // tailwindcss(),
-        {
-          name: 'postcss-config-loader-plugin',
-          config(config) {
-            // 加载 tailwindcss
-            if (typeof config.css?.postcss === 'object') {
-              // @ts-ignore
-              config.css?.postcss.plugins?.unshift(tailwindcss())
-            }
-          },
-        },
-        UnifiedViteWeappTailwindcssPlugin({
+        WeappTailwindcss({
           rem2rpx: true,
           cssEntries: [
             path.resolve(__dirname, '../src/app.css')

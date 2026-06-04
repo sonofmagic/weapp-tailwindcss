@@ -19,12 +19,12 @@ describe('resolveTailwindcssBasedir', () => {
   })
 
   it('prefers npm_package_json directory when available', async () => {
-    process.env.npm_package_json = '/workspace/apps/vite-native-skyline/package.json'
+    process.env.npm_package_json = '/workspace/demo/weapp-vite-tailwindcss-v4/package.json'
 
     const { resolveTailwindcssBasedir } = await import('@/context/tailwindcss')
 
     // npm_package_json 为绝对路径，取其 dirname 后经 path.normalize 返回
-    expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/apps/vite-native-skyline'))
+    expect(resolveTailwindcssBasedir()).toBe(path.normalize('/workspace/demo/weapp-vite-tailwindcss-v4'))
   })
 
   it('resolves relative base against generic env anchor (prefers INIT_CWD over PWD)', async () => {
@@ -179,9 +179,9 @@ describe('createTailwindcssPatcherFromContext', () => {
       expect(basedirs.filter(b => b === workspace)).toHaveLength(2)
       expect(basedirs.filter(b => b === externalRoot)).toHaveLength(2)
 
-      await patcher.patch()
-      expect(createdPatchers[0].patch).toHaveBeenCalledTimes(1)
-      expect(createdPatchers[1].patch).toHaveBeenCalledTimes(1)
+      expect(patcher.patch).toBeUndefined()
+      expect(createdPatchers[0].patch).not.toHaveBeenCalled()
+      expect(createdPatchers[1].patch).not.toHaveBeenCalled()
 
       const classSet = await patcher.getClassSet()
       expect([...classSet]).toEqual(['foo', 'bar'])
@@ -246,7 +246,7 @@ describe('createTailwindcssPatcherFromContext', () => {
 
       expect(createTailwindcssPatcher).toHaveBeenCalledTimes(2)
       expect(new Set(calls.map(call => call.basedir))).toEqual(new Set([workspace]))
-      expect(calls[0].tailwindcss?.v4?.base).toBe(workspace)
+      expect(calls[0].tailwindcss?.v4?.base).toBeUndefined()
       expect(calls[0].tailwindcss?.v4?.cssEntries).toEqual([
         entryA,
         entryB,

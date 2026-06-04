@@ -33,8 +33,7 @@
     "dev:rn": "pnpm build:rn -- --watch",
     "dev:qq": "pnpm build:qq -- --watch",
     "dev:quickapp": "pnpm build:quickapp -- --watch",
-    "open": "weapp open -p",
-    "postinstall": "weapp-tw patch"
+    "open": "weapp open -p"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.18.6",

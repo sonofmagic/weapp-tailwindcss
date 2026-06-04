@@ -1,0 +1,469 @@
+# demo/taro-vue3-app artifact diff
+# baseline: main(v4)
+# current: next v5 generator
+# note: only core build artifacts are compared. Text artifacts are formatted/normalized before diffing; large normalized text files are summarized by hash and size.
+
+--- a/dist/app.js
++++ b/dist/app.js
+@@ -6,14 +6,14 @@
+   (wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([
+     [524],
+     {
+-      5336: function (e, t, n) {
++      5138: function (e, t, n) {
+         (n(1077), n(9411));
+         var r = n(4018),
+-          i = n(1502),
+-          o = n(7783),
+-          s = n(5325),
+-          l = n(8048),
+-          a = (n(6861), n(8021)["window"]),
++          i = n(4312),
++          o = n(4661),
++          s = n(834),
++          l = n(5223),
++          a = (n(8842), n(8021)["window"]),
+           c = n(8021)["document"],
+           u =
+             (n(8021)["requestAnimationFrame"],
+@@ -442,7 +442,7 @@
+         return e((e.s = t));
+       };
+       e.O(0, [907, 96], function () {
+-        return t(5336);
++        return t(5138);
+       });
+       e.O();
+     },
+
+--- a/dist/app.js.LICENSE.txt
++++ b/dist/app.js.LICENSE.txt
+@@ -1,5 +1,5 @@
+ /**
+-* @vue/runtime-dom v3.5.33
++* @vue/runtime-dom v3.5.34
+ * (c) 2018-present Yuxi (Evan) You and Vue contributors
+ * @license MIT
+ **/
+
+--- a/dist/app.wxss
++++ b/dist/app.wxss
+@@ -1,57 +1,11 @@
+-::-webkit-backdrop {
+-  --tw-border-spacing-x: 0;
+-  --tw-border-spacing-y: 0;
+-  --tw-translate-x: 0;
+-  --tw-translate-y: 0;
+-  --tw-rotate: 0;
+-  --tw-skew-x: 0;
+-  --tw-skew-y: 0;
+-  --tw-scale-x: 1;
+-  --tw-scale-y: 1;
+-  --tw-pan-x: ;
+-  --tw-pan-y: ;
+-  --tw-pinch-zoom: ;
+-  --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position: ;
+-  --tw-gradient-via-position: ;
+-  --tw-gradient-to-position: ;
+-  --tw-ordinal: ;
+-  --tw-slashed-zero: ;
+-  --tw-numeric-figure: ;
+-  --tw-numeric-spacing: ;
+-  --tw-numeric-fraction: ;
+-  --tw-ring-inset: ;
+-  --tw-ring-offset-width: 0rpx;
+-  --tw-ring-offset-color: #fff;
+-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+-  --tw-blur: ;
+-  --tw-brightness: ;
+-  --tw-contrast: ;
+-  --tw-grayscale: ;
+-  --tw-hue-rotate: ;
+-  --tw-invert: ;
+-  --tw-saturate: ;
+-  --tw-sepia: ;
+-  --tw-drop-shadow: ;
+-  --tw-backdrop-blur: ;
+-  --tw-backdrop-brightness: ;
+-  --tw-backdrop-contrast: ;
+-  --tw-backdrop-grayscale: ;
+-  --tw-backdrop-hue-rotate: ;
+-  --tw-backdrop-invert: ;
+-  --tw-backdrop-opacity: ;
+-  --tw-backdrop-saturate: ;
+-  --tw-backdrop-sepia: ;
+-  --tw-contain-size: ;
+-  --tw-contain-layout: ;
+-  --tw-contain-paint: ;
+-  --tw-contain-style: ;
++::before,
++::after {
++  --tw-content: "";
+ }
+-::-ms-backdrop {
++:host,
++page,
++.tw-root,
++wx-root-portal-content {
+   --tw-border-spacing-x: 0;
+   --tw-border-spacing-y: 0;
+   --tw-translate-x: 0;
+@@ -61,112 +15,49 @@
+   --tw-skew-y: 0;
+   --tw-scale-x: 1;
+   --tw-scale-y: 1;
+-  --tw-pan-x: ;
+-  --tw-pan-y: ;
+-  --tw-pinch-zoom: ;
++  --tw-pan-x:  ;
++  --tw-pan-y:  ;
++  --tw-pinch-zoom:  ;
+   --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position: ;
+-  --tw-gradient-via-position: ;
+-  --tw-gradient-to-position: ;
+-  --tw-ordinal: ;
+-  --tw-slashed-zero: ;
+-  --tw-numeric-figure: ;
+-  --tw-numeric-spacing: ;
+-  --tw-numeric-fraction: ;
+-  --tw-ring-inset: ;
++  --tw-gradient-from-position:  ;
++  --tw-gradient-via-position:  ;
++  --tw-gradient-to-position:  ;
++  --tw-ordinal:  ;
++  --tw-slashed-zero:  ;
++  --tw-numeric-figure:  ;
++  --tw-numeric-spacing:  ;
++  --tw-numeric-fraction:  ;
++  --tw-ring-inset:  ;
+   --tw-ring-offset-width: 0rpx;
+-  --tw-ring-offset-color: #fff;
+-  --tw-ring-color: rgba(59, 130, 246, 0.5);
+-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+-  --tw-blur: ;
+-  --tw-brightness: ;
+-  --tw-contrast: ;
+-  --tw-grayscale: ;
+-  --tw-hue-rotate: ;
+-  --tw-invert: ;
+-  --tw-saturate: ;
+-  --tw-sepia: ;
+-  --tw-drop-shadow: ;
+-  --tw-backdrop-blur: ;
+-  --tw-backdrop-brightness: ;
+-  --tw-backdrop-contrast: ;
+-  --tw-backdrop-grayscale: ;
+-  --tw-backdrop-hue-rotate: ;
+-  --tw-backdrop-invert: ;
+-  --tw-backdrop-opacity: ;
+-  --tw-backdrop-saturate: ;
+-  --tw-backdrop-sepia: ;
+-  --tw-contain-size: ;
+-  --tw-contain-layout: ;
+-  --tw-contain-paint: ;
+-  --tw-contain-style: ;
+-}
+-view,
+-text,
+-::after,
+-::before {
+-  --tw-border-spacing-x: 0;
+-  --tw-border-spacing-y: 0;
+-  --tw-translate-x: 0;
+-  --tw-translate-y: 0;
+-  --tw-rotate: 0;
+-  --tw-skew-x: 0;
+-  --tw-skew-y: 0;
+-  --tw-scale-x: 1;
+-  --tw-scale-y: 1;
+-  --tw-pan-x: ;
+-  --tw-pan-y: ;
+-  --tw-pinch-zoom: ;
+-  --tw-scroll-snap-strictness: proximity;
+-  --tw-gradient-from-position: ;
+-  --tw-gradient-via-position: ;
+-  --tw-gradient-to-position: ;
+-  --tw-ordinal: ;
+-  --tw-slashed-zero: ;
+-  --tw-numeric-figure: ;
+-  --tw-numeric-spacing: ;
+-  --tw-numeric-fraction: ;
+-  --tw-ring-inset: ;
+-  --tw-ring-offset-width: 0px;
+   --tw-ring-offset-color: #fff;
+   --tw-ring-color: rgba(59, 130, 246, 0.5);
+   --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+   --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+-  --tw-blur: ;
+-  --tw-brightness: ;
+-  --tw-contrast: ;
+-  --tw-grayscale: ;
+-  --tw-hue-rotate: ;
+-  --tw-invert: ;
+-  --tw-saturate: ;
+-  --tw-sepia: ;
+-  --tw-drop-shadow: ;
+-  --tw-backdrop-blur: ;
+-  --tw-backdrop-brightness: ;
+-  --tw-backdrop-contrast: ;
+-  --tw-backdrop-grayscale: ;
+-  --tw-backdrop-hue-rotate: ;
+-  --tw-backdrop-invert: ;
+-  --tw-backdrop-opacity: ;
+-  --tw-backdrop-saturate: ;
+-  --tw-backdrop-sepia: ;
+-  --tw-contain-size: ;
+-  --tw-contain-layout: ;
+-  --tw-contain-paint: ;
+-  --tw-contain-style: ;
+-  box-sizing: border-box;
+-  border-width: 0;
+-  border-style: solid;
+-  border-color: currentColor;
+-}
+-::before,
+-::after {
+-  --tw-content: "";
++  --tw-blur:  ;
++  --tw-brightness:  ;
++  --tw-contrast:  ;
++  --tw-grayscale:  ;
++  --tw-hue-rotate:  ;
++  --tw-invert:  ;
++  --tw-saturate:  ;
++  --tw-sepia:  ;
++  --tw-drop-shadow:  ;
++  --tw-backdrop-blur:  ;
++  --tw-backdrop-brightness:  ;
++  --tw-backdrop-contrast:  ;
++  --tw-backdrop-grayscale:  ;
++  --tw-backdrop-hue-rotate:  ;
++  --tw-backdrop-invert:  ;
++  --tw-backdrop-opacity:  ;
++  --tw-backdrop-saturate:  ;
++  --tw-backdrop-sepia:  ;
++  --tw-contain-size:  ;
++  --tw-contain-layout:  ;
++  --tw-contain-paint:  ;
++  --tw-contain-style:   
++;
+ }
+ .container {
+   width: 100%;
+@@ -212,9 +103,6 @@
+   display: block;
+ }
+ .flex {
+-  display: -webkit-flex;
+-  display: -ms-flexbox;
+-  display: -webkit-box;
+   display: flex;
+ }
+ .grid {
+@@ -269,18 +157,12 @@
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+ }
+ .items-center {
+-  -webkit-align-items: center;
+-  -ms-flex-align: center;
+   align-items: center;
+ }
+ .justify-center {
+-  -webkit-justify-content: center;
+-  -ms-flex-pack: center;
+   justify-content: center;
+ }
+ .justify-between {
+-  -webkit-justify-content: space-between;
+-  -ms-flex-pack: justify;
+   justify-content: space-between;
+ }
+ .space-y-_b1_d6rem_B > view + view,
+@@ -288,16 +170,16 @@
+ .space-y-_b1_d6rem_B > text + view,
+ .space-y-_b1_d6rem_B > text + text {
+   --tw-space-y-reverse: 0;
+-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
++  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
+ }
+ .divide-x-_b10px_B > view + view,
+ .divide-x-_b10px_B > view + text,
+ .divide-x-_b10px_B > text + view,
+ .divide-x-_b10px_B > text + text {
+   --tw-divide-x-reverse: 0;
+-  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
+   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
++  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
+ }
+ .divide-solid > view + view,
+ .divide-solid > view + text,
+@@ -383,10 +265,9 @@
+   --tw-bg-opacity: 0.54;
+ }
+ .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
+-  background-image: url(https://xxx.com/xx.webp);
++  background-image: url("https://xxx.com/xx.webp");
+ }
+ .bg-gradient-to-r {
+-  background-image: -webkit-linear-gradient(left, var(--tw-gradient-stops));
+   background-image: linear-gradient(to right, var(--tw-gradient-stops));
+ }
+ .from-_b_h123456_B {
+@@ -401,8 +282,8 @@
+   padding: 20rpx;
+ }
+ .py-2 {
+-  padding-bottom: 16rpx;
+   padding-top: 16rpx;
++  padding-bottom: 16rpx;
+ }
+ .text-center {
+   text-align: center;
+@@ -471,9 +352,6 @@
+     var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0
+     calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
+-  -webkit-box-shadow:
+-    var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+-    var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
+   box-shadow:
+     var(--tw-ring-offset-shadow), var(--tw-ring-shadow),
+     var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
+
+--- a/dist/comp.js
++++ b/dist/comp.js
+@@ -7,7 +7,7 @@
+       return n((n.s = t));
+     };
+     n.O(0, [907, 96], function () {
+-      return t(1579);
++      return t(510);
+     });
+     n.O();
+   },
+
+--- a/dist/pages/index/index.js
++++ b/dist/pages/index/index.js
+@@ -2,13 +2,13 @@
+ (wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([
+   [421],
+   {
+-    4322: function (e, t, n) {
++    4886: function (e, t, n) {
+       var a = n(5840),
+         r = n(663),
+         o = n(2281),
+-        i = n(5325),
+-        l = n(8048),
+-        c = n(6861),
++        i = n(834),
++        l = n(5223),
++        c = n(8842),
+         s = (0, i.pM)({
+           __name: "Loading",
+           props: {
+@@ -63,7 +63,7 @@
+             };
+           },
+         }),
+-        u = n(8464),
++        u = n(703),
+         d = n.n(u),
+         p = function (e) {
+           var t = e;
+@@ -269,7 +269,7 @@
+           )
+         );
+       }
+-      var E = n(8990);
++      var E = n(6745);
+       const W = {},
+         F = (0, E.A)(W, [["render", O]]);
+       var L = F,
+@@ -444,7 +444,7 @@
+       return e((e.s = t));
+     };
+     e.O(0, [907, 96], function () {
+-      return t(4322);
++      return t(4886);
+     });
+     e.O();
+   },
+
+diff -- dist/pages/index/index.wxss
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 104019 raw bytes, 107092 normalized bytes, hash fceef000403a
+# current: 189429 raw bytes, 192498 normalized bytes, hash c1c2a7511f47
+
+--- a/dist/pages/index/test.js
++++ b/dist/pages/index/test.js
+@@ -2,9 +2,9 @@
+ (wx["webpackJsonp"] = wx["webpackJsonp"] || []).push([
+   [603],
+   {
+-    7580: function (n, e, a) {
++    293: function (n, e, a) {
+       var r = a(5840),
+-        t = a(5325),
++        t = a(834),
+         c = {
+           class:
+             "w-1_d5 h-_bcalc_p100vh-100px_P_B bg-_b_hfafafa_B after_ccontent-_b_au_x6211_u_x77e5_u_x9053_u_x6211_u_x5fc3__mu_x6c38_u_x6052_12we_ds_a_B",
+@@ -13,7 +13,7 @@
+         return ((0, t.uX)(), (0, t.CE)("div", c, "123"));
+       }
+       var s = {},
+-        i = a(8990);
++        i = a(6745);
+       const u = (0, i.A)(s, [["render", o]]);
+       var v = u,
+         f = {},
+@@ -29,7 +29,7 @@
+       return n((n.s = e));
+     };
+     n.O(0, [907, 96], function () {
+-      return e(7580);
++      return e(293);
+     });
+     n.O();
+   },
+
+diff -- dist/taro.js
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 124966 raw bytes, 271688 normalized bytes, hash 536f13df5ec1
+# current: 124963 raw bytes, 271685 normalized bytes, hash 1ba9e13fc047
+
+diff -- dist/vendors.js
+# normalized content differs; inline diff omitted (large-normalized-text).
+# baseline: 70977 raw bytes, 143851 normalized bytes, hash 6f00983431aa
+# current: 71059 raw bytes, 144009 normalized bytes, hash dd373e62cca8
+
+--- a/dist/vendors.js.LICENSE.txt
++++ b/dist/vendors.js.LICENSE.txt
+@@ -1,11 +1,11 @@
+ /**
+-* @vue/reactivity v3.5.33
++* @vue/reactivity v3.5.34
+ * (c) 2018-present Yuxi (Evan) You and Vue contributors
+ * @license MIT
+ **/
+ 
+ /**
+-* @vue/shared v3.5.33
++* @vue/shared v3.5.34
+ * (c) 2018-present Yuxi (Evan) You and Vue contributors
+ * @license MIT
+ **/
+

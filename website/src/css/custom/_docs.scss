@@ -64,10 +64,14 @@ html.docs-wrapper .theme-doc-markdown > p,
 html.docs-wrapper .theme-doc-markdown > ul,
 html.docs-wrapper .theme-doc-markdown > ol,
 html.docs-wrapper .theme-doc-markdown > blockquote,
-html.docs-wrapper .theme-doc-markdown > .theme-admonition,
 html.docs-wrapper .theme-doc-markdown > details,
 html.docs-wrapper .theme-doc-markdown > hr {
   max-width: 82ch;
+}
+
+html.docs-wrapper .theme-doc-markdown .theme-admonition {
+  width: 100%;
+  max-width: none;
 }
 
 html.docs-wrapper .theme-doc-markdown > h1:first-child {
@@ -81,6 +85,81 @@ html.docs-wrapper .pagination-nav__link {
 
 html.docs-wrapper[data-theme='dark'] .pagination-nav__link {
   background: rgb(15 23 42 / 64%);
+}
+
+html.docs-wrapper .theme-doc-footer-edit-meta-row {
+  align-items: center;
+  gap: 0.5rem;
+}
+
+html.docs-wrapper .theme-edit-this-page {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  line-height: 1.35;
+}
+
+html.docs-wrapper .theme-edit-this-page svg {
+  flex: 0 0 auto;
+  margin-left: 0;
+}
+
+@media (width <= 760px) {
+  html.docs-wrapper .theme-doc-footer {
+    margin-top: 1.25rem;
+  }
+
+  html.docs-wrapper .pagination-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  html.docs-wrapper .pagination-nav__link {
+    grid-column: 1;
+    width: 100%;
+    min-height: 4.75rem;
+    padding: 0.95rem 1rem;
+  }
+
+  html.docs-wrapper .pagination-nav__sublabel {
+    white-space: nowrap;
+  }
+
+  html.docs-wrapper .pagination-nav__label {
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+  }
+
+  html.docs-wrapper .theme-doc-footer-edit-meta-row {
+    justify-content: center;
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  html.docs-wrapper .theme-doc-footer-edit-meta-row > .col {
+    display: flex;
+    justify-content: center;
+  }
+
+  html.docs-wrapper .theme-doc-footer-edit-meta-row > .col:empty {
+    display: none;
+  }
+
+  html.docs-wrapper .theme-edit-this-page {
+    min-height: 2.25rem;
+    border-radius: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    background: rgb(14 165 233 / 9%);
+  }
+
+  html.docs-wrapper[data-theme='dark'] .theme-edit-this-page {
+    background: rgb(34 211 238 / 12%);
+  }
 }
 
 @media (width <= 996px) {

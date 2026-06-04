@@ -1,6 +1,6 @@
 ---
 title: UniappCliStyle
-description: 在 src/app.css 中引入 tailwindcss，这个文件会作为 cssEntries 的入口：
+description: 在 src/app.css 中引入 tailwindcss，这个文件会作为 Tailwind CSS 入口：
 keywords:
   - 快速开始
   - 安装
@@ -20,10 +20,12 @@ keywords:
 import CssImportReminder from '@site/src/components/CssImportReminder'
 import UniAppUniScss from '../_UniAppUniScss.mdx'
 
-在 `src/app.css` 中引入 `weapp-tailwindcss/index.css`，这个文件会作为 `cssEntries` 的入口：
+在 `src/app.css` 中引入 Tailwind CSS，这个文件会作为 Tailwind CSS 入口：
 
 ```css title="src/app.css"
-@import "weapp-tailwindcss/index.css";
+@import "tailwindcss";
+@source not "dist";
+@source not "../src/uni_modules";
 ```
 
 <CssImportReminder />
@@ -52,7 +54,7 @@ import UniAppUniScss from '../_UniAppUniScss.mdx'
 }
 ```
 
-这个 `src/main.css` 只用于 IntelliSense，不要在 `App.vue` 里实际引入。应用运行时仍然使用 `src/app.css` 里的 `@import "weapp-tailwindcss/index.css"`。
+这个 `src/main.css` 只用于 IntelliSense，不要在 `App.vue` 里实际引入。应用运行时仍然使用 `src/app.css` 作为 Tailwind CSS 入口。
 
 ## `@source` 扫描范围排障
 

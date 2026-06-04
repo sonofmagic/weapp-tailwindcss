@@ -10,7 +10,7 @@ export interface IGenerateCssOptions {
 
 export async function generateCss(base: string, options?: IGenerateCssOptions) {
   const { css, postcssPlugins } = defu(options, {
-    css: '@import "weapp-tailwindcss";',
+    css: '@import "tailwindcss";',
     postcssPlugins: [],
   })
   const rewrittenCss = rewriteTailwindcssImportStatements(css)

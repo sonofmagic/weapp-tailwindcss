@@ -1,4 +1,4 @@
-import { variableRegExp } from '@weapp-core/regex'
+const variableRegExp = /{{(.*?)}}/gs
 
 interface ExtractSourceToken {
   start: number

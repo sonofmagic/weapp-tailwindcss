@@ -32,10 +32,10 @@ export type RequiredStyleHandlerOptions = {
   /**
    * @description 默认为 true，此时会对样式主文件，进行猜测
    */
-  isMainChunk?: boolean
-  cssPreflight?: CssPreflightOptions
-  cssInjectPreflight?: InjectPreflight
-  escapeMap?: Record<string, string>
+  isMainChunk?: boolean | undefined
+  cssPreflight?: CssPreflightOptions | undefined
+  cssInjectPreflight?: InjectPreflight | undefined
+  escapeMap?: Record<string, string> | undefined
 } & Pick<
   UserDefinedPostcssOptions,
   | 'cssPreflightRange'
@@ -45,10 +45,11 @@ export type RequiredStyleHandlerOptions = {
   | 'rem2rpx'
   | 'px2rpx'
   | 'unitsToPx'
+  | 'unitConversion'
 >
 
 export interface InternalCssSelectorReplacerOptions {
-  escapeMap?: Record<string, string>
+  escapeMap?: Record<string, string> | undefined
 }
 
 interface CssCalcOptions extends PostCssCalcOptions {
@@ -71,47 +72,66 @@ export interface UnitsToPxOptions extends Pick<
   transform?: GlobalUnitTransform | false
 }
 
+export type UnitConversionConfig = UnitConverterOptions
+
+export type UnitConversionPlatformMap = Record<string, UnitConversionConfig | false | undefined>
+
+export interface PlatformUnitConversionOptions {
+  /**
+   * 未匹配到具体平台时使用的兜底转换规则。
+   */
+  default?: UnitConversionConfig | false | undefined
+  /**
+   * 按平台名称配置转换规则，平台键会做小写归一化并兼容常见别名。
+   */
+  platforms: UnitConversionPlatformMap
+}
+
+export type UnitConversionOptions = UnitConversionConfig | PlatformUnitConversionOptions | false
+
 export type IStyleHandlerOptions = {
-  ctx?: PostcssContext
-  postcssOptions?: LoadedPostcssOptions
-  cssRemoveProperty?: boolean
-  cssRemoveHoverPseudoClass?: boolean
-  cssPresetEnv?: PresetEnvOptions
-  autoprefixer?: WeappAutoprefixerOptions
-  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[]
+  ctx?: PostcssContext | undefined
+  platform?: string | undefined
+  postcssOptions?: LoadedPostcssOptions | undefined
+  cssRemoveProperty?: boolean | undefined
+  cssRemoveHoverPseudoClass?: boolean | undefined
+  cssPresetEnv?: PresetEnvOptions | undefined
+  autoprefixer?: WeappAutoprefixerOptions | undefined
+  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
   atRules?: {
-    property?: boolean
+    property?: boolean | undefined
     // A 新增 wxss 支持 @supports 反馈详情
     // https://developers.weixin.qq.com/miniprogram/dev/devtools/uplog.html#2018.11.14
-    supports?: boolean
-    media?: boolean
-  }
-  uniAppX?: boolean
-  uniAppXCssTarget?: UniAppXCssTarget
-  uniAppXUnsupported?: UniAppXUnsupportedMode
-  majorVersion?: number
+    supports?: boolean | undefined
+    media?: boolean | undefined
+  } | undefined
+  uniAppX?: boolean | undefined
+  uniAppXCssTarget?: UniAppXCssTarget | undefined
+  uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
+  majorVersion?: number | undefined
 } & RequiredStyleHandlerOptions
 
 export interface UserDefinedPostcssOptions {
-  cssPreflight?: CssPreflightOptions
-  cssPreflightRange?: 'all'
-  cssChildCombinatorReplaceValue?: string | string[]
-  cssPresetEnv?: PresetEnvOptions
-  autoprefixer?: WeappAutoprefixerOptions
-  injectAdditionalCssVarScope?: boolean
+  cssPreflight?: CssPreflightOptions | undefined
+  cssPreflightRange?: 'all' | undefined
+  cssChildCombinatorReplaceValue?: string | string[] | undefined
+  cssPresetEnv?: PresetEnvOptions | undefined
+  autoprefixer?: WeappAutoprefixerOptions | undefined
+  injectAdditionalCssVarScope?: boolean | undefined
   cssSelectorReplacement?: {
-    root?: string | string[] | false
-    universal?: string | string[] | false
-  }
-  rem2rpx?: boolean | Rem2rpxOptions
-  px2rpx?: boolean | Px2rpxOptions
-  unitsToPx?: boolean | UnitsToPxOptions
-  postcssOptions?: LoadedPostcssOptions
-  cssRemoveHoverPseudoClass?: boolean
-  cssRemoveProperty?: boolean
-  uniAppX?: boolean
-  uniAppXCssTarget?: UniAppXCssTarget
-  uniAppXUnsupported?: UniAppXUnsupportedMode
+    root?: string | string[] | false | undefined
+    universal?: string | string[] | false | undefined
+  } | undefined
+  rem2rpx?: boolean | Rem2rpxOptions | undefined
+  px2rpx?: boolean | Px2rpxOptions | undefined
+  unitsToPx?: boolean | UnitsToPxOptions | undefined
+  unitConversion?: UnitConversionOptions | undefined
+  postcssOptions?: LoadedPostcssOptions | undefined
+  cssRemoveHoverPseudoClass?: boolean | undefined
+  cssRemoveProperty?: boolean | undefined
+  uniAppX?: boolean | undefined
+  uniAppXCssTarget?: UniAppXCssTarget | undefined
+  uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
 }
 
 export type {

@@ -2,35 +2,31 @@ import { tv } from 'tailwind-variants'
 
 export const ctaButton = tv({
   base: [
-    'relative inline-flex items-center justify-center gap-2 rounded-full px-7 py-3',
-    'font-semibold text-slate-900 dark:text-slate-900',
-    'bg-[linear-gradient(120deg,#7dd3fc_0%,#34d399_100%)]',
-    'shadow-[0_16px_30px_rgba(14,165,233,0.35),inset_0_1px_0_rgba(255,255,255,0.35)]',
-    'transition-all duration-[400ms] ease-out',
-    'hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(14,165,233,0.4),inset_0_1px_0_rgba(255,255,255,0.45)]',
-    'no-underline hover:no-underline focus-visible:no-underline visited:text-slate-900 dark:visited:text-slate-900',
-    'hover:text-slate-900 dark:hover:text-slate-900',
-    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400',
+    'relative inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 py-3',
+    'whitespace-nowrap font-semibold text-white dark:text-white',
+    'bg-[#0284c7] shadow-[0_14px_28px_rgba(2,132,199,0.24)]',
+    'transition-all duration-200 ease-out',
+    'hover:-translate-y-0.5 hover:bg-[#0369a1] hover:shadow-[0_18px_34px_rgba(2,132,199,0.28)]',
+    'active:translate-y-px active:shadow-[0_10px_22px_rgba(2,132,199,0.22)]',
+    'no-underline hover:no-underline focus-visible:no-underline visited:text-white dark:visited:text-white',
+    'hover:text-white dark:hover:text-white',
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0ea5e9]',
   ].join(' '),
 })
 
 export const interactionPill = tv({
   base: [
-    'inline-flex w-full rounded-full sm:w-auto',
-    'bg-[linear-gradient(120deg,rgba(255,255,255,0.75),rgba(226,232,240,0.5))]',
-    'shadow-[0_18px_40px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.55)]',
-    'backdrop-blur-[12px]',
-    'transition-all duration-[400ms] ease-out',
-    'hover:-translate-y-0.5 hover:shadow-[0_22px_45px_rgba(14,165,233,0.18),inset_0_1px_0_rgba(255,255,255,0.6)]',
-    'dark:bg-[linear-gradient(120deg,rgba(15,23,42,0.7),rgba(30,41,59,0.55))]',
-    'dark:shadow-[0_18px_40px_rgba(15,23,42,0.28),inset_0_1px_0_rgba(255,255,255,0.08)]',
-    'dark:hover:shadow-[0_22px_45px_rgba(14,165,233,0.28),inset_0_1px_0_rgba(255,255,255,0.14)]',
+    'inline-flex w-full rounded-full border border-slate-200 bg-white sm:w-auto',
+    'transition-all duration-200 ease-out',
+    'hover:-translate-y-0.5 hover:border-[#0ea5e9]/45',
+    'active:translate-y-px',
+    'dark:border-slate-700 dark:bg-slate-900',
   ].join(' '),
 })
 
 export const interactionPillLink = tv({
   base: [
-    'group inline-flex w-full items-center justify-between gap-2.5 px-3 py-2 sm:w-auto sm:justify-start',
+    'group inline-flex min-h-12 w-full items-center justify-between gap-2.5 px-3 py-2 sm:w-auto sm:justify-start',
     'text-[0.95rem] font-semibold tracking-[0.01em]',
     'text-slate-600 transition-colors duration-300',
     'hover:text-slate-900',
@@ -41,11 +37,10 @@ export const interactionPillLink = tv({
 export const interactionPillIcon = tv({
   base: [
     'inline-flex h-[1.9rem] w-[1.9rem] items-center justify-center rounded-full',
-    'bg-sky-500/15 text-sky-500',
+    'bg-[#0ea5e9]/10 text-[#0ea5e9]',
     'transition-[background,color] duration-300',
-    'group-hover:bg-sky-500/35 group-hover:text-white',
-    'dark:bg-sky-500/20 dark:text-sky-200',
-    'dark:group-hover:bg-sky-400/35 dark:group-hover:text-white',
+    'group-hover:bg-[#0ea5e9]/18',
+    'dark:bg-[#0ea5e9]/16 dark:text-[#38bdf8]',
   ].join(' '),
 })
 
@@ -106,67 +101,34 @@ export const featureCardSubtitle = tv({
 
 export const toolOrbit = tv({
   base: [
-    'relative grid place-items-center text-slate-700',
-    'w-[clamp(170px,22vw,200px)] h-[clamp(170px,22vw,200px)]',
-    'md:w-[clamp(190px,25vw,220px)] md:h-[clamp(190px,25vw,220px)]',
-    'my-1 md:my-2',
+    'relative grid min-h-[260px] grid-cols-2 gap-3 text-slate-700',
+    'w-full max-w-[360px] rounded-3xl border border-slate-200 bg-white p-4',
+    'shadow-[0_20px_48px_rgba(15,23,42,0.08)]',
+    'dark:border-slate-700 dark:bg-slate-900',
   ].join(' '),
-})
-
-export const toolOrbitRing = tv({
-  base: `
-    absolute inset-0 rounded-full border border-dashed border-slate-300/35
-    shadow-[inset_0_0_30px_rgba(148,163,184,0.12)]
-  `,
-  variants: {
-    variant: {
-      inner: `
-        inset-[30%] border-solid border-sky-300/35
-        shadow-[inset_0_0_40px_rgba(14,165,233,0.14)]
-        md:inset-[24%]
-      `,
-    },
-  },
 })
 
 export const toolOrbitCore = tv({
   base: [
-    'relative z-10 grid place-items-center rounded-full text-[0.8rem] font-semibold uppercase tracking-[0.15em]',
-    'w-[clamp(68px,9vw,86px)] h-[clamp(68px,9vw,86px)]',
-    'md:w-[clamp(94px,12vw,110px)] md:h-[clamp(94px,12vw,110px)]',
-    'bg-[linear-gradient(145deg,rgba(14,165,233,0.18),rgba(14,165,233,0.32))]',
-    'shadow-[0_15px_45px_rgba(14,165,233,0.25),inset_0_1px_0_rgba(255,255,255,0.45)]',
+    'absolute left-1/2 top-1/2 z-10 grid h-24 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-2xl',
+    'border border-[#0ea5e9]/30 bg-[#0ea5e9]/10 text-[0.76rem] font-semibold uppercase tracking-[0.15em]',
     'text-slate-800 dark:text-slate-100',
-    'dark:bg-[linear-gradient(145deg,rgba(14,165,233,0.28),rgba(14,165,233,0.45))]',
+    'dark:bg-[#0ea5e9]/16',
   ].join(' '),
 })
 
 export const toolOrbitItem = tv({
   base: [
-    'absolute z-10 flex flex-col items-center gap-1 rounded-2xl px-2.5 py-2 text-center',
-    'w-[clamp(60px,9vw,78px)] md:w-[clamp(66px,8vw,82px)] md:px-3 md:py-2.5',
-    'bg-white/80 shadow-[0_12px_30px_rgba(15,23,42,0.18),inset_0_1px_0_rgba(255,255,255,0.45)]',
-    'backdrop-blur-[16px]',
-    'dark:bg-slate-800/70 dark:shadow-[0_12px_30px_rgba(15,23,42,0.35),inset_0_1px_0_rgba(255,255,255,0.12)]',
+    'relative z-10 flex min-h-[104px] flex-col justify-between rounded-2xl border border-slate-200 px-3 py-3',
+    'bg-slate-50 text-left',
+    'dark:border-slate-700 dark:bg-slate-800',
   ].join(' '),
   variants: {
     placement: {
-      webpack: `
-        left-1/2 top-0 -translate-x-1/2 -translate-y-[58%]
-        sm:-translate-y-[52%]
-      `,
-      vite: `
-        right-[-4%] top-1/2 -translate-y-1/2 translate-x-[52%]
-        sm:right-[-2%] sm:translate-x-[48%]
-      `,
-      gulp: `
-        bottom-[-4%] left-1/2 -translate-x-1/2 translate-y-[50%]
-        sm:bottom-[-2%] sm:translate-y-[44%]
-      `,
-      node: `
-        left-[-4%] top-1/2 -translate-x-[52%] -translate-y-1/2
-        sm:left-[-2%] sm:-translate-x-[48%]
-      `,
+      webpack: '',
+      vite: '',
+      gulp: '',
+      node: '',
     },
   },
 })

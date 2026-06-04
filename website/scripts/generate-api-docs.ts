@@ -21,7 +21,6 @@ const apiDir = path.join(repoRoot, 'website', 'docs', 'api')
 const apiInterfacesDir = path.join(apiDir, 'interfaces')
 const apiOptionsDir = path.join(apiDir, 'options')
 const apiOtherInterfacesItemsPath = path.join(apiDir, 'other-interfaces.items.json')
-const apiV2InterfacesDir = path.join(repoRoot, 'website', 'docs', 'api-v2', 'interfaces')
 const entryPath = path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'src', 'typedoc.export.ts')
 const tsconfigPath = path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'tsconfig.typedoc.json')
 
@@ -89,12 +88,6 @@ interface InterfaceDoc {
   properties: PropertyDoc[]
 }
 
-interface ApiV2PropertyInfo {
-  description?: string
-  defaultValue?: string
-  issueLinks?: string[]
-}
-
 interface GroupMeta {
   raw: string
   order: number
@@ -103,8 +96,6 @@ interface GroupMeta {
   displayTitle: string
   slug: string
 }
-
-let apiV2Cache: Record<string, Record<string, ApiV2PropertyInfo>> = {}
 
 /** 匹配一个或多个连续空白字符 */
 const WHITESPACE_RE = /\s+/g
@@ -141,15 +132,6 @@ const BACKSLASH_RE = /\\/g
 
 /** 匹配分组标题前缀的标点和空白 */
 const GROUP_TITLE_PREFIX_RE = /^[.．、\s-]+/
-
-/** 匹配 API v2 文档中的空白分隔符 */
-const API_V2_WHITESPACE_SPLIT_RE = /\s+/
-
-/** 匹配 Markdown 三级标题分隔符 */
-const MARKDOWN_H3_SPLIT_RE = /\n### /g
-
-/** 匹配 .md 文件扩展名 */
-const MD_EXTENSION_RE = /\.md$/
 
 function isAsciiDigit(value: string): boolean {
   return value >= '0' && value <= '9'
@@ -211,6 +193,10 @@ function buildApiSeoKeywords(...values: Array<string | undefined>): string[] {
   ]).slice(0, 16)
 }
 
+function toYamlString(value: string): string {
+  return JSON.stringify(value)
+}
+
 function pushFrontmatter(
   lines: string[],
   frontmatter: {
@@ -222,35 +208,35 @@ function pushFrontmatter(
   },
 ): void {
   lines.push('---')
-  lines.push(`title: ${frontmatter.title}`)
+  lines.push(`title: ${toYamlString(frontmatter.title)}`)
   if (frontmatter.sidebarLabel) {
-    lines.push(`sidebar_label: ${frontmatter.sidebarLabel}`)
+    lines.push(`sidebar_label: ${toYamlString(frontmatter.sidebarLabel)}`)
   }
   if (typeof frontmatter.sidebarPosition === 'number') {
     lines.push(`sidebar_position: ${frontmatter.sidebarPosition}`)
   }
-  lines.push(`description: ${frontmatter.description}`)
+  lines.push(`description: ${toYamlString(frontmatter.description)}`)
   lines.push('keywords:')
   frontmatter.keywords.forEach((keyword) => {
-    lines.push(`  - ${keyword}`)
+    lines.push(`  - ${toYamlString(keyword)}`)
   })
   lines.push('---')
   lines.push('')
 }
 
 export function buildInterfaceSeoFrontmatter(doc: InterfaceDoc) {
-  const fallbackDescription = `${doc.name} 接口文档，包含属性说明、类型定义与使用边界。`
+  const fallbackDescription = `${doc.name} 的类型说明，列出公开属性、参数和使用边界。`
   const rawDescription = normalizeSeoText(doc.description || '')
   const description = rawDescription.length >= 16 ? rawDescription : fallbackDescription
   return {
     title: doc.name,
     description,
-    keywords: buildApiSeoKeywords(doc.name, `${doc.name} interface`, `${doc.name} 类型定义`, 'TypeScript'),
+    keywords: buildApiSeoKeywords(doc.name, `${doc.name} 接口`, `${doc.name} 类型定义`, 'TypeScript'),
   }
 }
 
 export function buildUserDefinedOptionsOverviewFrontmatter(doc: InterfaceDoc) {
-  const description = normalizeSeoText(doc.description || 'UserDefinedOptions 总览，按分组汇总 weapp-tailwindcss 的核心配置项与跳转入口。')
+  const description = normalizeSeoText(doc.description || 'UserDefinedOptions 配置总览，按源码分组列出可传入的插件选项。')
   return {
     title: 'UserDefinedOptions',
     sidebarLabel: 'UserDefinedOptions 总览',
@@ -261,7 +247,7 @@ export function buildUserDefinedOptionsOverviewFrontmatter(doc: InterfaceDoc) {
 }
 
 export function buildOptionsGroupSeoFrontmatter(meta: GroupMeta, itemCount: number) {
-  const description = normalizeSeoText(`${meta.sidebarLabel}文档，汇总 ${itemCount} 个 weapp-tailwindcss 配置项的用途、默认值与注意事项。`)
+  const description = normalizeSeoText(`${meta.sidebarLabel}：${itemCount} 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。`)
   return {
     title: meta.displayTitle,
     sidebarLabel: meta.sidebarLabel,
@@ -272,7 +258,7 @@ export function buildOptionsGroupSeoFrontmatter(meta: GroupMeta, itemCount: numb
 }
 
 export function buildOtherInterfacesSeoFrontmatter(count: number) {
-  const description = normalizeSeoText(`其他接口索引页，汇总 ${count} 个 weapp-tailwindcss 运行时接口与补充类型定义。`)
+  const description = normalizeSeoText(`其他接口索引，列出 ${count} 个 weapp-tailwindcss 运行时接口和补充类型。`)
   return {
     title: `${otherInterfacesEmoji} 其他接口`,
     sidebarLabel: `${otherInterfacesEmoji} 其他接口`,
@@ -283,7 +269,7 @@ export function buildOtherInterfacesSeoFrontmatter(count: number) {
 }
 
 export function buildApiIndexFrontmatter(hasInterfaces: boolean) {
-  const description = normalizeSeoText(`weapp-tailwindcss API 文档首页，汇总配置项分组${hasInterfaces ? '与接口索引' : ''}，便于快速查阅参数定义。`)
+  const description = normalizeSeoText(`weapp-tailwindcss API 首页，提供配置项分组${hasInterfaces ? '和接口索引' : ''}。`)
   return {
     title: 'weapp-tailwindcss',
     description,
@@ -362,6 +348,10 @@ function getDefinitionLink(node: Node): string | undefined {
 }
 
 function readTagText(tag: JSDocTag): string {
+  const structuredText = tag.getStructure().text
+  if (structuredText) {
+    return structuredText.trim()
+  }
   const comment = tag.getComment()
   if (!comment) {
     return ''
@@ -455,6 +445,9 @@ function collectNestedProperties(type: Type): PropertyDoc[] {
   if (!type.isObject() || getPrimaryCallSignature(type)) {
     return []
   }
+  if (type.isArray() || type.isReadonlyArray() || type.isTuple()) {
+    return []
+  }
   const nestedProperties = type.getProperties()
   if (!nestedProperties.length) {
     return []
@@ -490,7 +483,7 @@ function collectNestedProperties(type: Type): PropertyDoc[] {
   return docs.sort((a, b) => a.orderKey - b.orderKey)
 }
 
-function buildPropertyDoc(symbol: MorphSymbol, apiV2Info?: ApiV2PropertyInfo): PropertyDoc | undefined {
+function buildPropertyDoc(symbol: MorphSymbol): PropertyDoc | undefined {
   const declaration = pickPropertyDeclaration(symbol)
   if (!declaration) {
     return undefined
@@ -507,16 +500,6 @@ function buildPropertyDoc(symbol: MorphSymbol, apiV2Info?: ApiV2PropertyInfo): P
   const jsDoc = readJsDoc(declaration)
   if (jsDoc.tags.ignore || jsDoc.tags.internal) {
     return undefined
-  }
-
-  if (!jsDoc.description && apiV2Info?.description) {
-    jsDoc.description = apiV2Info.description
-  }
-  if (!jsDoc.tags.default && apiV2Info?.defaultValue) {
-    jsDoc.tags.default = [apiV2Info.defaultValue]
-  }
-  if (!jsDoc.tags.see && apiV2Info?.issueLinks?.length) {
-    jsDoc.tags.see = apiV2Info.issueLinks
   }
 
   const propertyDoc: PropertyDoc = {
@@ -555,11 +538,11 @@ function buildPropertyDoc(symbol: MorphSymbol, apiV2Info?: ApiV2PropertyInfo): P
   return propertyDoc
 }
 
-function collectProperties(type: Type, apiV2Info?: Record<string, ApiV2PropertyInfo>): PropertyDoc[] {
+function collectProperties(type: Type): PropertyDoc[] {
   const properties = type.getProperties()
   const docs: PropertyDoc[] = []
   for (const symbol of properties) {
-    const propertyDoc = buildPropertyDoc(symbol, apiV2Info?.[symbol.getName()])
+    const propertyDoc = buildPropertyDoc(symbol)
     if (propertyDoc) {
       docs.push(propertyDoc)
     }
@@ -567,13 +550,13 @@ function collectProperties(type: Type, apiV2Info?: Record<string, ApiV2PropertyI
   return docs.sort((a, b) => a.orderKey - b.orderKey)
 }
 
-function buildInterfaceDoc(name: string, decl: InterfaceDeclaration | TypeAliasDeclaration): InterfaceDoc | undefined {
+export function buildInterfaceDoc(name: string, decl: InterfaceDeclaration | TypeAliasDeclaration): InterfaceDoc | undefined {
   const jsDoc = readJsDoc(decl)
   const source = getDefinitionLink(decl)
   const group = jsDoc.tags.group?.[0]
   const type = decl.getType()
 
-  const properties = collectProperties(type, apiV2Cache[name])
+  const properties = collectProperties(type)
   if (!properties.length && Node.isTypeAliasDeclaration(decl)) {
     return {
       name,
@@ -718,7 +701,7 @@ function renderProperty(prop: PropertyDoc, level: number): string {
   lines.push(heading)
   lines.push('')
 
-  const optionalLabel = prop.optional ? '`optional` ' : ''
+  const optionalLabel = prop.optional ? '可选 | ' : ''
   lines.push(`> ${optionalLabel}**${prop.name}${prop.isFunction ? '()' : ''}**: \`${prop.typeText}\``)
   lines.push('')
 
@@ -881,7 +864,7 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
   return lines.join('\n').trimEnd()
 }
 
-function renderInterfaceDoc(doc: InterfaceDoc): string {
+export function renderInterfaceDoc(doc: InterfaceDoc): string {
   const lines: string[] = []
   pushFrontmatter(lines, buildInterfaceSeoFrontmatter(doc))
   lines.push(`# ${doc.name}`)
@@ -1047,80 +1030,7 @@ function ensureCleanDir(dirPath: string) {
   fs.mkdirSync(dirPath, { recursive: true })
 }
 
-function extractApiV2Block(section: string, marker: string): string | undefined {
-  const idx = section.indexOf(marker)
-  if (idx < 0) {
-    return undefined
-  }
-  const rest = section.slice(idx + marker.length)
-  const lines = rest.split('\n')
-  const collected: string[] = []
-  for (const line of lines) {
-    if (line.startsWith('**`')) {
-      break
-    }
-    if (line.startsWith('####') || line.startsWith('---')) {
-      break
-    }
-    collected.push(line)
-  }
-  const text = collected.join('\n').trim()
-  return text || undefined
-}
-
-function extractApiV2Links(section: string, marker: string): string[] | undefined {
-  const block = extractApiV2Block(section, marker)
-  if (!block) {
-    return undefined
-  }
-  const links = block.split(API_V2_WHITESPACE_SPLIT_RE).map(item => item.trim()).filter(Boolean)
-  return links.length ? links : undefined
-}
-
-function parseApiV2Interface(content: string): Record<string, ApiV2PropertyInfo> {
-  const map: Record<string, ApiV2PropertyInfo> = {}
-  const sections = content.split(MARKDOWN_H3_SPLIT_RE)
-  sections.shift()
-
-  for (const section of sections) {
-    const [headingLine, ...restLines] = section.split('\n')
-    const propertyName = headingLine.trim().split(' ')[0]
-    if (!propertyName) {
-      continue
-    }
-    const sectionText = restLines.join('\n')
-    map[propertyName] = {
-      description: extractApiV2Block(sectionText, '**`Description`**'),
-      defaultValue: extractApiV2Block(sectionText, '**`Default`**'),
-      issueLinks: extractApiV2Links(sectionText, '**`Issue`**'),
-    }
-  }
-
-  return map
-}
-
-function loadApiV2Interfaces(dirPath: string): Record<string, Record<string, ApiV2PropertyInfo>> {
-  if (!fs.existsSync(dirPath)) {
-    return {}
-  }
-  const entries = fs.readdirSync(dirPath)
-  const result: Record<string, Record<string, ApiV2PropertyInfo>> = {}
-
-  for (const entry of entries) {
-    if (!entry.endsWith('.md') || entry.startsWith('_')) {
-      continue
-    }
-    const name = entry.replace(MD_EXTENSION_RE, '')
-    const content = fs.readFileSync(path.join(dirPath, entry), 'utf8')
-    result[name] = parseApiV2Interface(content)
-  }
-
-  return result
-}
-
 function run(): void {
-  apiV2Cache = loadApiV2Interfaces(apiV2InterfacesDir)
-
   const project = new Project({
     tsConfigFilePath: tsconfigPath,
     skipAddingFilesFromTsConfig: false,

@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/shared",
-  "version": "1.1.3",
+  "version": "2.0.0-next.1",
   "description": "@weapp-tailwindcss/shared",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -41,8 +41,8 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
@@ -51,6 +51,11 @@
   },
   "publishConfig": {},
   "dependencies": {
+    "defu": "^6.1.7",
+    "get-value": "^4.0.1",
+    "set-value": "^4.1.0"
+  },
+  "devDependencies": {
     "pathe": "^2.0.3"
   }
 }

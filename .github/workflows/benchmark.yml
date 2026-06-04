@@ -1,0 +1,86 @@
+name: Benchmark
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - main
+      - alpha
+      - beta
+      - rc
+      - next
+  workflow_dispatch:
+    inputs:
+      baseline:
+        description: npm 发布基线；auto 会按当前包版本推断 next/beta/rc/latest
+        required: false
+        default: auto
+      build_runs:
+        description: 每个项目的 build 采样次数
+        required: false
+        default: '3'
+      hmr_runs:
+        description: 每个项目的 HMR 采样次数
+        required: false
+        default: '5'
+      only:
+        description: 可选：只跑指定项目 key，多个 key 用逗号分隔
+        required: false
+        default: ''
+
+concurrency:
+  group: benchmark-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  current-vs-published:
+    name: Current vs published weapp-tailwindcss
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      WEAPP_TW_BENCH_BASELINE: ${{ github.event.inputs.baseline || 'auto' }}
+      BENCH_BUILD_RUNS: ${{ github.event.inputs.build_runs || '3' }}
+      BENCH_HMR_RUNS: ${{ github.event.inputs.hmr_runs || '5' }}
+      BENCH_ONLY: ${{ github.event.inputs.only || '' }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run current vs published benchmark
+        run: >
+          pnpm bench:ci --
+          --build-runs "$BENCH_BUILD_RUNS"
+          --hmr-runs "$BENCH_HMR_RUNS"
+          --timeout 180000
+          --poll-interval 120
+          --only "$BENCH_ONLY"
+          --result-dir .tmp/benchmark-ci/result
+
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-current-vs-published
+          path: .tmp/benchmark-ci/result/**
+          if-no-files-found: error

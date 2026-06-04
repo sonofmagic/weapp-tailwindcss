@@ -1,12 +1,11 @@
 name: CI
 
 on:
-  # push:
-  #   branches: ['main']
+  push:
+    branches: [main, next]
   pull_request:
     types: [opened, synchronize]
     paths-ignore:
-      - 'website/**'
       - '**/*.md'
       - '.changeset/**'
   workflow_dispatch:
@@ -21,12 +20,13 @@ permissions:
 jobs:
   quality:
     name: Quality Gate (ubuntu-latest, 22)
-    timeout-minutes: 15
+    timeout-minutes: 35
     runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
 
     steps:
       - name: Check out code
@@ -56,6 +56,25 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: E2E Static
+        run: pnpm e2e:static
+
+      - name: E2E Preprocessor Source
+        run: pnpm e2e:preprocessor
+
+      - name: E2E Framework Support
+        run: pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts
+
+      - name: E2E Multiplatform Build Output
+        run: pnpm e2e:multiplatform-build
+
+      - name: E2E Multiplatform Taro Alipay Output
+        timeout-minutes: 5
+        run: pnpm e2e:multiplatform-build:taro-alipay
+
       - name: Test
         run: pnpm test
 
@@ -65,6 +84,11 @@ jobs:
           {
             echo "## CI 状态说明"
             echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
+            echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致。"
+            echo "- 现在额外包含：\`pnpm e2e:preprocessor\`，用于保证 Sass/Less 等预处理器 Tailwind 入口在真实 demo 中可构建。"
+            echo "- 现在额外包含：跨框架支持矩阵 e2e，用于保证 demo 构建入口与模板静态输出一致。"
+            echo "- 现在额外包含：\`pnpm e2e:multiplatform-build\`，用于保证 uni-app、Mpx 等多平台构建产物可生成且 Tailwind 转译结果稳定；\`pnpm e2e:multiplatform-build:taro-alipay\` 作为 Taro Alipay 专项产物验证并设置单步超时。"
+            echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
             echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
             echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
             echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"
@@ -106,18 +130,18 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build core package dependency closure
-        run: pnpm --filter weapp-tailwindcss... run build
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
 
       - name: Run core compatibility regression tests
         run: >
           pnpm --filter weapp-tailwindcss exec vitest run
-          test/cli/postinstall.test.ts
           test/bundlers/module-graph.unit.test.ts
           test/bundlers/vite-bundle-entries.unit.test.ts
           test/bundlers/vite-plugin.uni-app-x.unit.test.ts
           test/tailwindcss/patcher-resolve.test.ts
           test/tailwindcss/targets.log.test.ts
           test/watch-hmr-coverage-matrix.unit.test.ts
+          test/watch-hmr-regression.unit.test.ts
 
       - name: Compatibility Status Note
         if: always()
@@ -127,5 +151,5 @@ jobs:
             echo "- os: ${{ matrix.os }}"
             echo "- node: ${{ matrix.node-version }}"
             echo "- scenario: ${{ matrix.scenario }}"
-            echo "- 覆盖重点：CLI postinstall、Windows/跨平台路径归一、Vite bundle graph、Tailwind patch resolve、watch HMR 覆盖矩阵。"
+            echo "- 覆盖重点：Windows/跨平台路径归一、Vite bundle graph、Tailwind patch resolve、watch HMR 覆盖矩阵。"
           } >> "$GITHUB_STEP_SUMMARY"

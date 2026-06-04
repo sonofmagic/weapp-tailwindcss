@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/postcss",
-  "version": "2.2.0",
+  "version": "3.0.0-next.10",
   "description": "@weapp-tailwindcss/postcss",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -56,8 +56,9 @@
     "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "tsup --watch --sourcemap",
-    "build": "tsup",
+    "dev": "tsdown --watch --sourcemap",
+    "build": "tsdown && pnpm run build:types",
+    "build:types": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "bench": "vitest bench",
     "test:dev": "vitest",
@@ -66,13 +67,12 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@weapp-core/escape": "~7.0.0",
+    "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/postcss-calc": "^1.0.0",
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
-    "lru-cache": "10.4.3",
+    "lru-cache": "11.5.1",
     "postcss": "catalog:postcss85tilde",
-    "postcss-preset-env": "^10.6.1",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.2",
@@ -80,9 +80,13 @@
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {
+    "@csstools/css-color-parser": "^4.1.1",
+    "@csstools/css-parser-algorithms": "^4.0.0",
+    "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
-    "fast-check": "^4.7.0",
+    "fast-check": "^4.8.0",
     "postcss-calc": "^10.1.1",
-    "postcss-custom-properties": "^14.0.6"
+    "postcss-custom-properties": "^15.0.1",
+    "postcss-preset-env": "^11.3.0"
   }
 }

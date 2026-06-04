@@ -1,0 +1,143 @@
+import type { createWatchSession } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
+import type { CliOptions, WatchCase } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import process from 'node:process'
+import {
+  createStyleMutationPayload,
+  waitForCompileSettled,
+  waitForOutputFilesUpdated,
+} from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations'
+import {
+  findCssRuleBody,
+  normalizeCssDeclaration,
+  waitFor,
+  writeFilePreserveEol,
+} from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
+import {
+  collectArtifactMtimes,
+  countChangedArtifacts,
+  hasAnyNeedle,
+  readArtifacts,
+  summarizeChangedArtifacts,
+} from './frameworkIdeHotUpdateArtifacts'
+
+function readNumberEnv(name: string, fallback: number) {
+  const raw = process.env[name]
+  if (!raw) {
+    return fallback
+  }
+  const value = Number(raw)
+  return Number.isFinite(value) ? value : fallback
+}
+
+function getRollbackTimeoutMs(options: CliOptions) {
+  return Math.min(options.timeoutMs, readNumberEnv('E2E_IDE_ROLLBACK_TIMEOUT_MS', 30_000))
+}
+
+function assertStyleOutput(
+  watchCase: WatchCase,
+  content: string,
+  payload: ReturnType<typeof createStyleMutationPayload>,
+) {
+  const applyRule = findCssRuleBody(content, payload.styleNeedle)
+  if (!applyRule) {
+    throw new Error(`[${watchCase.label}] IDE style HMR output is missing style rule ${payload.styleNeedle}`)
+  }
+  const normalizedApplyRule = normalizeCssDeclaration(applyRule)
+  for (const expected of payload.expectedApplyDeclarations) {
+    if (!normalizedApplyRule.includes(normalizeCssDeclaration(expected))) {
+      throw new Error(`[${watchCase.label}] IDE style HMR @apply output is missing declaration ${expected}`)
+    }
+  }
+
+  if (!payload.functionNeedle) {
+    return
+  }
+
+  const functionRule = findCssRuleBody(content, payload.functionNeedle)
+  if (!functionRule) {
+    throw new Error(`[${watchCase.label}] IDE style HMR output is missing Tailwind function rule ${payload.functionNeedle}`)
+  }
+
+  const normalizedFunctionRule = normalizeCssDeclaration(functionRule)
+  for (const forbidden of payload.forbiddenFunctionFragments) {
+    if (functionRule.includes(forbidden)) {
+      throw new Error(`[${watchCase.label}] IDE style HMR did not resolve Tailwind function fragment ${forbidden}`)
+    }
+  }
+  for (const expected of payload.expectedFunctionDeclarations) {
+    if (!normalizedFunctionRule.includes(normalizeCssDeclaration(expected))) {
+      throw new Error(`[${watchCase.label}] IDE style HMR function output is missing declaration ${expected}`)
+    }
+  }
+}
+
+function resolveUpdatedStyleFiles(watchCase: WatchCase, baselineMtimes: Map<string, number>) {
+  return [...watchCase.outputStyleCandidates, ...watchCase.globalStyleCandidates]
+    .filter(file => file.includes('*') || baselineMtimes.has(file))
+}
+
+export async function runIdeStyleHotUpdate(
+  options: CliOptions,
+  watchCase: WatchCase,
+  session: ReturnType<typeof createWatchSession>,
+  sourceOriginal: string,
+) {
+  const sourceFile = watchCase.styleMutation.sourceFile
+  process.stdout.write(`[e2e:ide] ${watchCase.label} style HMR mutate ${sourceFile}\n`)
+  const payload = createStyleMutationPayload(watchCase)
+  const mutatedSource = watchCase.styleMutation.mutate(sourceOriginal, payload)
+  const { artifacts: baselineArtifacts, mtimes: baselineMtimes } = await collectArtifactMtimes(watchCase)
+  const mutationStartedAt = Date.now()
+
+  await writeFilePreserveEol(sourceFile, mutatedSource, sourceOriginal)
+  await waitForOutputFilesUpdated(
+    watchCase,
+    resolveUpdatedStyleFiles(watchCase, baselineMtimes),
+    baselineMtimes,
+    options,
+    session,
+    mutationStartedAt,
+    async () => hasAnyNeedle(await readArtifacts(watchCase), [payload.styleNeedle]),
+  )
+
+  let changedArtifacts: string[] = []
+  await waitFor(
+    async () => {
+      const currentArtifacts = await readArtifacts(watchCase)
+      const styleArtifacts = currentArtifacts.filter(item => item.kind === 'style' && item.content.includes(payload.styleNeedle))
+      if (styleArtifacts.length === 0 || countChangedArtifacts(baselineArtifacts, currentArtifacts) === 0) {
+        return false
+      }
+      for (const artifact of styleArtifacts) {
+        assertStyleOutput(watchCase, artifact.content, payload)
+      }
+      changedArtifacts = summarizeChangedArtifacts(baselineArtifacts, currentArtifacts)
+      return true
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] IDE style HMR output did not contain expanded @apply and theme() declarations`,
+      onTick: session.ensureRunning,
+    },
+    mutationStartedAt,
+  )
+
+  process.stdout.write(
+    `[e2e:ide] ${watchCase.label} style HMR changed artifacts=${changedArtifacts.length}: ${changedArtifacts.join(', ')}\n`,
+  )
+
+  const rollbackStartedAt = Date.now()
+  await writeFilePreserveEol(sourceFile, sourceOriginal, sourceOriginal)
+  await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
+  await waitFor(
+    async () => !hasAnyNeedle(await readArtifacts(watchCase), [payload.styleNeedle]),
+    {
+      timeoutMs: getRollbackTimeoutMs(options),
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] IDE style HMR marker was not removed after rollback: ${payload.styleNeedle}`,
+      onTick: session.ensureRunning,
+    },
+    rollbackStartedAt,
+  )
+}

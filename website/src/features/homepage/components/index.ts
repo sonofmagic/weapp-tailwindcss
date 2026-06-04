@@ -10,6 +10,8 @@ export type { FrameworkSupportItem, FrameworkSupportProps } from './FrameworkSup
 export { InteractionPill } from './InteractionPill'
 export type { InteractionPillProps } from './InteractionPill'
 
+export { PipelinePanel } from './PipelinePanel'
+
 export { PlatformHighlight } from './PlatformHighlight'
 export type { PlatformHighlightLink, PlatformHighlightProps } from './PlatformHighlight'
 

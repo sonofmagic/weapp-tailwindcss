@@ -3,81 +3,45 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 
-const versions = [
+const defaultVersions = [
   { version: '4.9.8', root: '/tmp/weapp-tailwindcss-4.9.8' },
   { version: '4.10.2', root: '/tmp/weapp-tailwindcss-4.10.2' },
 ]
 
 const projects = [
   {
-    key: 'demo-uni-app-vue3-vite',
-    project: 'demo/uni-app-vue3-vite',
+    key: 'demo-uni-app-vite-tailwindcss-v3',
+    project: 'demo/uni-app-vite-tailwindcss-v3',
     sourceFile: 'src/pages/index/index.vue',
-    outputTemplate: 'dist/dev/mp-weixin/pages/index/index.wxml',
-    devScript: 'dev',
+    outputTemplate: 'dist/build/mp-weixin/pages/index/index.wxml',
+    devScript: 'dev:e2e-watch',
     buildScript: 'build',
     injectType: 'vue',
   },
   {
-    key: 'demo-uni-app-tailwindcss-v4',
-    project: 'demo/uni-app-tailwindcss-v4',
+    key: 'demo-uni-app-vite-tailwindcss-v4',
+    project: 'demo/uni-app-vite-tailwindcss-v4',
     sourceFile: 'src/pages/index/index.vue',
-    outputTemplate: 'dist/dev/mp-weixin/pages/index/index.wxml',
-    devScript: 'dev',
+    outputTemplate: 'dist/build/mp-weixin/pages/index/index.wxml',
+    devScript: 'dev:e2e-watch',
     buildScript: 'build',
     injectType: 'vue',
   },
   {
-    key: 'apps-vite-native-ts',
-    project: 'apps/vite-native-ts',
+    key: 'demo-weapp-vite-tailwindcss-v3',
+    project: 'demo/weapp-vite-tailwindcss-v3',
     sourceFile: 'miniprogram/pages/index/index.wxml',
     outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     buildScript: 'build',
     injectType: 'wxml-class',
   },
   {
-    key: 'apps-vite-native',
-    project: 'apps/vite-native',
+    key: 'demo-weapp-vite-tailwindcss-v4',
+    project: 'demo/weapp-vite-tailwindcss-v4',
     sourceFile: 'pages/index/index.wxml',
     outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev',
-    buildScript: 'build',
-    injectType: 'wxml-class',
-  },
-  {
-    key: 'apps-vite-native-skyline',
-    project: 'apps/vite-native-skyline',
-    sourceFile: 'pages/index/index.wxml',
-    outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev',
-    buildScript: 'build',
-    injectType: 'wxml-class',
-  },
-  {
-    key: 'apps-vite-native-ts-skyline',
-    project: 'apps/vite-native-ts-skyline',
-    sourceFile: 'miniprogram/pages/index/index.wxml',
-    outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev',
-    buildScript: 'build',
-    injectType: 'wxml-class',
-  },
-  {
-    key: 'demo-native-ts',
-    project: 'demo/native-ts',
-    sourceFile: 'miniprogram/pages/index/index.wxml',
-    outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev',
-    buildScript: 'build',
-    injectType: 'wxml-class',
-  },
-  {
-    key: 'apps-weapp-wechat-zhihu',
-    project: 'apps/weapp-wechat-zhihu',
-    sourceFile: 'pages/index/index.wxml',
-    outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev',
+    devScript: 'dev:e2e-watch',
     buildScript: 'build',
     injectType: 'wxml-class',
   },
@@ -99,6 +63,28 @@ function parseString(flag, fallback) {
     return fallback
   }
   return process.argv[idx + 1] ?? fallback
+}
+
+async function parseVersions() {
+  const versionsFile = parseString('--versions-file', '')
+  if (!versionsFile) {
+    return defaultVersions
+  }
+
+  const versions = JSON.parse(await fs.readFile(path.resolve(versionsFile), 'utf8'))
+  if (!Array.isArray(versions) || versions.length < 2) {
+    throw new TypeError('--versions-file must contain at least two version roots')
+  }
+
+  return versions.map((item) => {
+    if (typeof item?.version !== 'string' || typeof item?.root !== 'string') {
+      throw new TypeError('--versions-file entries must include string version and root')
+    }
+    return {
+      version: item.version,
+      root: path.resolve(item.root),
+    }
+  })
 }
 
 function now() {
@@ -318,7 +304,7 @@ async function runHmrRounds({
   try {
     const ready = await waitFor(async () => {
       if (child.exitCode != null) {
-        throw new Error(`dev exited early code=${child.exitCode}`)
+        throw new Error(`dev exited early code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
       }
       if (!(await exists(outputPath))) {
         return false
@@ -341,7 +327,7 @@ async function runHmrRounds({
 
       const ok = await waitFor(async () => {
         if (child.exitCode != null) {
-          throw new Error(`dev exited during hmr round=${i + 1} code=${child.exitCode}`)
+          throw new Error(`dev exited during hmr round=${i + 1} code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
         }
         const text = await readText(outputPath)
         return text.includes(marker)
@@ -413,6 +399,7 @@ async function main() {
   const pollIntervalMs = parseNumber('--poll-interval', 120)
   const output = parseString('--out', 'benchmark/version-compare/data/matrix-raw.json')
   const only = parseString('--only', '')
+  const versions = await parseVersions()
 
   const options = { buildRuns, hmrRuns, timeoutMs, pollIntervalMs }
   const rows = []

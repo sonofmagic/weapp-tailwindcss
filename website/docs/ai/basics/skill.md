@@ -68,7 +68,7 @@ Skill 会要求 AI 优先完成这些关键动作：
 
 - 识别你当前框架和目标端
 - 补齐 `tailwindcss` 与 `weapp-tailwindcss` 最小可用配置
-- 明确 `postinstall` 中的 `weapp-tw patch`
+- 生成模式不再要求 `postinstall`，也不需要手动执行 `weapp-tw patch`
 - 给出“可复制命令 + 可复制配置 + 验证步骤”
 - 对 `space-y-*` / `space-x-*` 问题按固定优先级排查：先改结构，再评估 `virtualHost`，最后扩展 `cssChildCombinatorReplaceValue`
 
@@ -79,7 +79,7 @@ Skill 会要求 AI 优先完成这些关键动作：
 1. 任务分流：新项目接入、存量迁移、问题排查、写法规范沉淀
 2. 信息收集最小集：
    - 框架（`uni-app` / `taro` / `uni-app x` / 原生）
-   - 构建器（`vite` / `webpack5` / `webpack4`）
+   - 构建器（`vite` / `webpack5`）
    - 目标端（仅小程序 / 小程序 + `H5/App`）
    - Tailwind 版本（v3/v4）与包管理器（重点 `pnpm@10+`）
    - Node 版本（建议 `^20.19.0 || >=22.12.0`）

@@ -20,10 +20,10 @@ describe('bundlers/runtime classset loader', () => {
     const result = await loader.call({
       addDependency,
       addContextDependency,
-      query: {
+      getOptions: () => ({
         getClassSet,
         getWatchDependencies,
-      },
+      }),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -48,10 +48,10 @@ describe('bundlers/runtime classset loader', () => {
     const result = loader.call({
       addDependency,
       addContextDependency,
-      query: {
+      getOptions: () => ({
         getClassSet,
         getWatchDependencies,
-      },
+      }),
       resourcePath: '/workspace/src/app.css',
     } as any, source)
 
@@ -66,9 +66,97 @@ describe('bundlers/runtime classset loader', () => {
     const source = '.app {}'
 
     expect(loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)).toBe(source)
+  })
+
+  it('removes cascade layer syntax from runtime css before later webpack processors', () => {
+    const source = [
+      '@layer theme, base, components, utilities;',
+      '@layer utilities {',
+      '.text-red-500 { color: red; }',
+      '}',
+    ].join('\n')
+
+    const result = loader.call({
+      getOptions: () => ({}),
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(result).not.toContain('@layer')
+    expect(result).toContain('.text-red-500 { color: red; }')
+  })
+
+  it('removes cascade layer syntax from buffer runtime css source', () => {
+    const source = Buffer.from([
+      '@layer utilities {',
+      '.text-blue-500 { color: blue; }',
+      '}',
+    ].join('\n'))
+
+    const result = loader.call({
+      getOptions: () => ({}),
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(Buffer.isBuffer(result)).toBe(true)
+    expect(result.toString('utf8')).not.toContain('@layer')
+    expect(result.toString('utf8')).toContain('.text-blue-500 { color: blue; }')
+  })
+
+  it('preserves runtime css declaration order outside cascade layers', () => {
+    const source = [
+      '@layer utilities {',
+      '.i-mdi-abacus {',
+      '  width: 1em;',
+      '  height: 1em;',
+      '  --svg: url("data:image/svg+xml,%3Csvg%3E%3C/svg%3E");',
+      '  mask-image: var(--svg);',
+      '  background-color: currentColor;',
+      '  display: inline-block;',
+      '}',
+      '}',
+    ].join('\n')
+
+    const result = loader.call({
+      getOptions: () => ({}),
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(result.trim()).toMatchInlineSnapshot(`
+      ".i-mdi-abacus {
+        width: 1em;
+        height: 1em;
+        --svg: url("data:image/svg+xml,%3Csvg%3E%3C/svg%3E");
+        mask-image: var(--svg);
+        background-color: currentColor;
+        display: inline-block;
+      }"
+    `)
+  })
+
+  it('removes vendor-prefixed keyframes from runtime theme blocks', () => {
+    const source = [
+      '@theme default {',
+      '@-webkit-keyframes spin {',
+      '  to { transform: rotate(1turn); }',
+      '}',
+      '@keyframes spin {',
+      '  to { transform: rotate(1turn); }',
+      '}',
+      '--animate-spin: spin 1s linear infinite;',
+      '}',
+    ].join('\n')
+
+    const result = loader.call({
+      getOptions: () => ({}),
+      resourcePath: '/workspace/src/app.css',
+    } as any, source)
+
+    expect(result).not.toContain('@-webkit-keyframes')
+    expect(result).toContain('@keyframes spin')
+    expect(result).toContain('--animate-spin: spin 1s linear infinite;')
   })
 
   it('emits debug output when loader debug flag is enabled', () => {
@@ -77,7 +165,7 @@ describe('bundlers/runtime classset loader', () => {
     const source = '.app {}'
 
     expect(loader.call({
-      query: {},
+      getOptions: () => ({}),
       resourcePath: '/workspace/src/app.css',
     } as any, source)).toBe(source)
     expect(write).toHaveBeenCalledWith(expect.stringContaining('weapp-tw-runtime-classset-loader'))

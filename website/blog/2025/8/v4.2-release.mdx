@@ -77,7 +77,7 @@ npm i -D weapp-tailwindcss
  }
 ```
 
-想知道原因的同学可以查看 [**这个链接**](https://tw.icebreaker.top/docs/quick-start/this-plugin)
+当前接入方式已经合并到 [快速使用](https://tw.icebreaker.top/docs/quick-start/install)。
 
 ### 3. uni-app x 中注册 weapp-tailwindcss
 
@@ -106,7 +106,7 @@ module.exports = {
 ```js title="vite.config.ts"
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
-import { UnifiedViteWeappTailwindcssPlugin } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { r } from './shared'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 import tailwindcss from 'tailwindcss'
@@ -114,7 +114,7 @@ import tailwindcss from 'tailwindcss'
 export default defineConfig({
     plugins: [
         uni(),
-        UnifiedViteWeappTailwindcssPlugin(
+        WeappTailwindcss(
             uniAppX({
                 base: __dirname,
                 rem2rpx: true,

@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es2021"
+    ],
+    "module": "commonjs",
+    "target": "es2021",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+    "types": [
+      "miniprogram-api-typings"
+    ],
+    "paths": {
+      "@vant/weapp/*": [
+        "./miniprogram_npm/@vant/weapp/dist/*"
+      ]
+    }
+  },
+  "ts-node": {
+    "moduleTypes": {
+      "gulpfile.ts": "cjs"
+    }
+  }
+}

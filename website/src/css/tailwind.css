@@ -1,0 +1,11 @@
+@import 'tailwindcss' source(none);
+
+@config './tailwind.config.ts';
+
+@source './src/**/*.{js,jsx,ts,tsx,md,mdx}';
+@source './docs/**/*.{md,mdx}';
+@source './blog/**/*.{md,mdx}';
+@source './config/**/*.{ts,tsx}';
+@source './docusaurus.config.ts';
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

@@ -14,6 +14,16 @@
 - 提交信息遵循 Conventional Commits。
 - 所有新增或修改的 Changeset 内容必须使用中文。
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
+- Tailwind CSS v3/v4 的样式生成统一由 `weapp-tailwindcss` 接管；禁止通过 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成样式。
+- `submodules/tailwindcss-mangle/` 只允许作为本地源码参考目录，不得加入 `pnpm-workspace.yaml`、`pnpm-lock.yaml`、CI/CD checkout、发布流程或仓库 submodule 追踪；`weapp-tailwindcss` 必须消费 npm 发布版 `tailwindcss-patch`。
+
+## 多 Codex / 多代理协作
+- 同一个物理 checkout 只允许一个 Codex/代理执行写入型任务；多个 Codex 并发处理不同任务时，必须先为每个任务创建独立 `git worktree`。
+- 推荐目录形态：在仓库同级目录创建工作树，例如 `../weapp-tailwindcss-codex/<task-slug>`；不要把并发工作树放进当前仓库目录内部。
+- 每个并发任务使用独立分支名，例如 `codex/<task-slug>`；开始前先执行 `git status --short --branch`，确认当前工作树没有其他代理遗留改动。
+- 在任何编辑、格式化、测试自动修复、`git add`、`git commit`、`git rebase` 或 `git push` 前，都要重新检查 `git status --short`；如果出现自己没有产生的改动，必须停止并说明冲突来源，不得覆盖、删除或顺手纳入提交。
+- 禁止在共享 checkout 中用 `git restore`、`git checkout -- <file>`、批量格式化、代码生成或清理命令处理自己不拥有的文件；确需清理时，先确认文件归属。
+- 提交前只暂存当前任务拥有的文件；除非用户明确要求“提交所有代码”，否则禁止用 `git add -A` 混入其他代理或用户的改动。
 
 ## 仓库常用命令
 - `pnpm install`
@@ -38,7 +48,9 @@
 
 ## 关键约束索引
 - `packages/weapp-tailwindcss` 的 JS 转译必须遵循 `classNameSet` 精确命中原则，禁止启发式兜底转译。
+- demo、Web/H5、watch 与 e2e 场景都必须遵守 Tailwind CSS 由 `weapp-tailwindcss` 生成的约束，不能为修复样式或 HMR 问题注册官方 Tailwind 生成插件。
 - 运行时封装（`packages-runtime/*`）改动需重点关注 escape/unescape、merge 兼容和缓存边界。
+- Release 工作流发布 npm 必须使用 trusted publishing/OIDC：发布 job 使用 Node 24 以满足 npm CLI 的 OIDC 支持要求，保留 `permissions.id-token: write` 与 provenance，禁止在发布步骤注入 `NPM_TOKEN` 或 `NODE_AUTH_TOKEN`。
 
 ## 新增 AGENTS 触发条件
 - 目录具备独立发布或独立 `build/test` 流程。

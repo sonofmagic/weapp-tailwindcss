@@ -40,8 +40,7 @@
     "dev:qq": "pnpm build:qq -- --watch",
     "dev:jd": "pnpm build:jd -- --watch",
     "dev:harmony-hybrid": "pnpm build:harmony-hybrid -- --watch",
-    "open": "weapp open -p",
-    "postinstall": "weapp-tw patch"
+    "open": "weapp open -p"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.3",

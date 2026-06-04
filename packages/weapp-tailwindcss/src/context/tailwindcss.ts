@@ -9,6 +9,7 @@ import {
   normalizeCssEntries,
   tryCreateMultiTailwindcssPatcher,
 } from '@/tailwindcss/v4'
+import { omitUndefined } from '@/utils/object'
 import { resolveTailwindcssBasedir } from './tailwindcss/basedir'
 import { detectImplicitCssEntries } from './tailwindcss/rax'
 
@@ -20,6 +21,7 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     tailwindcssPatcherOptions,
     cssEntries: rawCssEntries,
     appType,
+    arbitraryValues,
   } = ctx
 
   const absoluteCssEntryBasedir = guessBasedirFromEntries(rawCssEntries)
@@ -35,32 +37,22 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     ctx.cssEntries = normalizedCssEntries
   }
 
-  const shouldAttachBase = Boolean(ctx.tailwindcssBasedir && normalizedCssEntries?.length)
-  const tailwindcssWithBase = shouldAttachBase && tailwindcss?.v4 !== null
-    ? {
-        ...(tailwindcss ?? {}),
-        v4: {
-          ...(tailwindcss?.v4 ?? {}),
-          base: tailwindcss?.v4?.base ?? resolvedTailwindcssBasedir,
-        },
-      }
-    : tailwindcss
-
   const patcherOptions: TailwindcssPatcherFactoryOptions = {
-    tailwindcss: tailwindcssWithBase,
+    tailwindcss,
     tailwindcssPatcherOptions,
     supportCustomLengthUnitsPatch,
     appType,
+    bareArbitraryValues: arbitraryValues?.bareArbitraryValues,
   }
 
   const workspaceRoot = findWorkspaceRoot(resolvedTailwindcssBasedir)
     ?? (absoluteCssEntryBasedir ? findWorkspaceRoot(absoluteCssEntryBasedir) : undefined)
 
   const groupedCssEntries = normalizedCssEntries
-    ? groupCssEntriesByBase(normalizedCssEntries, {
+    ? groupCssEntriesByBase(normalizedCssEntries, omitUndefined({
         preferredBaseDir: resolvedTailwindcssBasedir,
         workspaceRoot,
-      })
+      }))
     : undefined
 
   const multiPatcher = groupedCssEntries

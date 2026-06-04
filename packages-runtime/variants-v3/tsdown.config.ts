@@ -6,9 +6,11 @@ export default defineConfig({
   dts: true,
   clean: true,
   target: 'node18',
-  external: [
-    '@weapp-tailwindcss/merge-v3',
-    '@weapp-tailwindcss/runtime',
-    'tailwind-variant-v3',
-  ],
+  deps: {
+    neverBundle: [
+      '@weapp-tailwindcss/merge-v3',
+      '@weapp-tailwindcss/runtime',
+      'tailwind-variant-v3',
+    ],
+  },
 })
