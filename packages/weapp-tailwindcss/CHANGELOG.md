@@ -1,5 +1,12 @@
 # weapp-tailwindcss
 
+## 5.0.1
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS 包解析路径：当项目传入自定义 `tailwindcss.resolve.paths` 时，保留这些路径并追加默认查找路径，同时默认路径会包含 pnpm workspace 根目录的 `node_modules`。** [`8150c95`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8150c95f5ccc37754e4ccf72e6ad102bfab19d7e) by @sonofmagic
+  - 调整 Tailwind CSS v4 默认入口策略：`weapp-tailwindcss` 默认只依赖并解析 `tailwindcss` 包入口，不再为 v4 自动优先使用 `@tailwindcss/postcss`。
+
 ## 5.0.0
 
 ### Major Changes
