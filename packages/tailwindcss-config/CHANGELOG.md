@@ -1,5 +1,20 @@
 # tailwindcss-config
 
+## 2.0.0
+
+### Major Changes
+
+- 🚀 **新增 HBuilderX 直连演示矩阵，覆盖 uni-app Vite Vue 3 与 uni-app x 的 Tailwind CSS v3/v4 场景，并提供 `hbuilderx` preset。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 同时将已由 tsdown 打包进产物、且不需要消费者安装的实现依赖下移到 `devDependencies`。公开导出或运行期加载边界仍保留为正式依赖，例如 `tailwindcss-config` 的 `jiti`，以及 `@weapp-tailwindcss/shared` 对外导出的 `defu`、`get-value`、`set-value`。
+
+### Patch Changes
+
+- 🐛 **修复发布产物的 ESM 入口文件名与 `package.json` 导出声明不一致的问题，确保依赖已发布 `weapp-tailwindcss` 的 benchmark 工作区可以正确加载 Tailwind 配置工具包。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 workspace 源码入口在 CommonJS 构建环境中加载时的 ESM 相对导入解析问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+- 📦 **Dependencies** [`73a7794`](https://github.com/sonofmagic/weapp-tailwindcss/commit/73a7794d50916d2189f22bfaa9e9ab9402b30df7)
+  → `@weapp-tailwindcss/shared@2.0.0`
+
 ## 2.0.0-next.3
 
 ### Patch Changes

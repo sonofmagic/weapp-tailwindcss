@@ -2,7 +2,7 @@
   "name": "@weapp-tailwindcss/test-helper",
   "private": true,
   "type": "module",
-  "version": "0.0.2-next.1",
+  "version": "0.0.2",
   "description": "tsdown package template",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",

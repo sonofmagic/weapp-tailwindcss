@@ -1,5 +1,284 @@
 # weapp-tailwindcss
 
+## 5.0.0
+
+### Major Changes
+
+- 🚀 **新增 HBuilderX 直连演示矩阵，覆盖 uni-app Vite Vue 3 与 uni-app x 的 Tailwind CSS v3/v4 场景，并提供 `hbuilderx` preset。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 同时将已由 tsdown 打包进产物、且不需要消费者安装的实现依赖下移到 `devDependencies`。公开导出或运行期加载边界仍保留为正式依赖，例如 `tailwindcss-config` 的 `jiti`，以及 `@weapp-tailwindcss/shared` 对外导出的 `defu`、`get-value`、`set-value`。
+
+- 🚀 **移除 v4 时代“先生成浏览器 CSS 再后处理”的关闭生成器链路，同时删除 `generator` 布尔写法、`mode`、默认 `target`、PostCSS 顶层 `target`、`staleClassNameFallback`、`rewriteCssImports` 与旧 Vite 插件命名。Vite、Webpack、Gulp 与 PostCSS 入口统一由 weapp-tailwindcss 接管 Tailwind CSS 样式生成，默认直接输出小程序 CSS。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🚀 **移除 `tailwindcssPatcherOptions` 中早期的 `patch`、`tailwind`、`features`、`output` 兼容配置形态，仅保留 `tailwindcss-patch` 当前的 `TailwindCssPatchOptions` 配置结构。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 同时删除未接入主转译链路的实验性 SWC/OXC JS handler 入口，避免继续维护无消费方的 POC 代码。
+
+- 🚀 **移除 Webpack4、PostCSS7、Tailwind CSS v2 兼容链路，不再导出 `weapp-tailwindcss/webpack4`，并删除旧包名 `weapp-tailwindcss-webpack-plugin` 的 CLI 别名。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - `pluginName` 现在使用 `weapp-tailwindcss`。如果项目仍依赖 Webpack4、`@tailwindcss/postcss7-compat` 或 Tailwind CSS v2，请继续停留在旧版本。
+
+- 🚀 **统一构建器插件的公开注册名为 `WeappTailwindcss`，移除 Webpack 与 Vite 入口中的旧 `Unified*` 导出别名；同时补齐 `target: 'web'` 场景下 Tailwind CSS v4 website 模式的 CSS 生成与源码扫描行为，避免文档站接入时依赖官方 Tailwind 生成插件。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🚀 **新增 Tailwind CSS v4 生成器公共入口，并提供 PostCSS 插件入口，支持按 `weapp`、`web` 与 `tailwind` 目标生成平台产物。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - Vite 插件支持通过 `generator` 选项启用 Tailwind CSS v4 直接生成链路，`force` 模式会把生成器产物作为主 CSS 真源；PostCSS 插件支持收集本地 `@source` 指向的小程序模板源码，生成更贴近小程序运行环境的 CSS。同步迁移 Tailwind CSS v4 的 Vite 示例到标准 `@import "tailwindcss"` 入口。
+  - 新增独立 v5 生成器 demo 与使用示例文档，覆盖 uni-app Vue Vite、Taro Vite 与 Mpx，并保留原有 v4 demo 用法用于历史链路回归。
+
+### Minor Changes
+
+- ✨ **新增 `arbitraryValues.bareArbitraryValues` 配置，默认关闭。开启后会把 UnoCSS 风格裸任意值识别交给 `tailwindcss-patch` v4 引擎处理，例如 `p-10%`、`p-2.5px`、`m-4rem`，小程序侧继续按生成出的 `classNameSet` 精确转义。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 升级 `tailwindcss-patch` 到 `9.3.0`。
+
+- ✨ **优化 `css-macro` 的样式生成方式：宏变体现在不再输出伪 `@media (weapp-tw-platform:...)` 包裹，而是生成内部条件节点，并由内置转换直接产出小程序条件编译注释。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 旧的 `@media (weapp-tw-platform:...)` 宏输出仍会被 `weapp-tailwindcss/css-macro/postcss` 兼容处理，方便存量自定义 PostCSS 流程平滑迁移。
+
+- ✨ **默认启用 v5 样式生成模式，让 Vite、Webpack、Gulp 与 PostCSS 入口在未显式关闭 `generator` 时由 weapp-tailwindcss 接管 Tailwind CSS 样式生成。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- ✨ **默认开启 Tailwind CSS v4 生成模式的 `@import "weapp-tailwindcss"` 兜底识别，并新增 `generator.importFallback` 配置用于显式关闭。该能力用于框架无法完成 `@import "tailwindcss"` 转写时，仍让两种入口产出保持一致。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- ✨ **新增内置 `unitConversion` 配置，支持基于 `postcss-rule-unit-converter` 的任意样式单位转换，并可按 `weapp`、`h5`、`web`、`app` 等平台分别配置转换规则。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- ✨ **新增默认关闭的 `unocss` 兼容配置。开启后会复用 `tailwindcss-patch` 的 Tailwind CSS v4 裸任意值能力，class 字符转义继续沿用现有 `customReplaceDictionary` 链路，同时在文档站补充 UnoCSS 写法兼容章节。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- ✨ **增强 v5 生成器的 Tailwind CSS v4 source 发现能力：PostCSS 插件默认按 CSS 入口目录扫描源码并支持 `@source not` 排除，Vite 生成器路径透传 `tailwindcss.v4.sources` 配置。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 升级 `tailwindcss-patch` 到 `9.2.0`，Tailwind CSS v4 生成器默认扫描编译后的 `@source` 条目，确保 `classSet` 能收集配置文件命中的候选类名。
+
+- ✨ **为 Vite、Webpack、Webpack4 与 Gulp 入口新增推荐的 `WeappTailwindcss` 导出别名，并保留小写 `weappTailwindcss` 用法，方便各构建器使用统一插件注册名称。PostCSS 入口继续使用默认导出。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+### Patch Changes
+
+- 🐛 **修复 `babelParserOptions` 默认开启缓存时的内存膨胀问题：解析缓存键改为哈希后缀，不再直接拼接源码；同时增加缓存条数和源码长度上限，避免大项目把 AST 缓存撑爆。** [`5c1bb9b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/5c1bb9bd2b27352be80567c969da4b0ea06e0490) by @sonofmagic
+
+- 🐛 **修复生成产物时误删或漏提取用户自定义的 `@layer components { ... }` 块，导致相关样式没有写入 `app.wxss` 的问题。覆盖纯 CSS 与 Sass/Less fallback 源码中的自定义 layer。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **将小程序 CSS 清理、收尾与兼容处理集中到 `@weapp-tailwindcss/postcss`，主包仅保留兼容导出与构建器编排；同时把实验性的 Lightning CSS 样式处理迁移到 `@weapp-tailwindcss/experimental/lightningcss`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **清理 `weapp-tailwindcss` 中未接入生产链路的历史残留代码与孤立测试，并移除不再直接使用的 `cac`、`webpack-sources` 依赖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **默认继续开启 Babel AST 解析缓存，但改为使用源码 hash 生成缓存 key，并新增 `babelParserOptions.cacheMaxEntries` 与 `babelParserOptions.cacheMaxSourceLength` 限制缓存条数和可缓存源码大小，避免大型项目中完整源码 key 与大 AST 长时间驻留导致内存占用过高；仍可通过 `babelParserOptions.cache: false` 显式关闭。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **内置 `css-macro` 的 PostCSS 转换感应逻辑：当 Tailwind CSS v3 配置中注册 `weapp-tailwindcss/css-macro`，或 Tailwind CSS v4 入口 CSS 中声明 `@plugin "weapp-tailwindcss/css-macro"` 时，会自动启用条件编译注释转换，不再要求常规集成手动注册 `weapp-tailwindcss/css-macro/postcss`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 同时在生成 CSS 裁剪阶段保留由 `css-macro` 产生的 `#ifdef` / `#ifndef` / `#endif` 注释，并同步更新文档与 demo 配置。
+
+- 🐛 **修复 css-macro 在 uni-app 样式条件编译之后才生成条件注释导致错误平台分支残留的问题。现在 Tailwind CSS v3/v4 生成链路会在最终样式输出前按当前平台裁剪 `ifdef` / `ifndef` 分支，避免微信小程序产物保留 `ifndef-[MP-WEIXIN]` 样式。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **升级 ESM 化依赖后，将公开包的 Node.js 安装版本约束统一到 `^20.19.0 || >=22.12.0`，避免不支持稳定 ESM/CJS 混合加载的 Node.js 版本安装使用。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **新增 `splitCandidateTokens` 候选 token 分割入口，并保留 `splitCode` 作为兼容别名。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - `weapp-tailwindcss` 内部的 JS、WXML 动态表达式与 uni-app x 局部样式候选分割改为使用更明确的 `splitCandidateTokens`，继续保持 `classNameSet` 精确命中原则，避免普通字符串被误转义。
+
+- 🐛 **优化 demo 构建与热更新中的 Tailwind 生成链路：Vite/Gulp/Webpack 会更精确地复用源码候选、CSS source 与运行时 class set 缓存，避免 v3 空构建复用上一次非空候选、v4 source 文件变化未进入签名，以及 v3 PostCSS 过早过滤配置类导致的重复生成和漏生成。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Vite 构建器在 demo 热更新场景下的源候选缓存与 CSS 生成刷新逻辑，避免增量编译反复丢失源码候选或执行不必要的全量任务。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 同时调整 Taro Vite 与 weapp-vite demo 的 watch 验证脚本，默认使用真实原生 watch 增量流程，避免测试脚本重启构建进程或额外执行全量构建导致热更新时间被放大。
+
+- 🐛 **优化 Webpack 与 Gulp demo 的 watch 热更新路径：普通页面、组件、脚本或模板变更复用已有 Tailwind runtime class set 和依赖元数据，仅在 Tailwind 配置、CSS source 或内容依赖变化时重新刷新完整 patcher。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Tailwind CSS v4 增量生成：新增候选类时仅转换新增 CSS 片段并追加到缓存结果，避免每次热更新都重新转换完整生成 CSS。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Vite 生成模式在 uni-app watch 场景下的 Tailwind CSS 增量热更新性能，复用底层生成器的新增 CSS 片段并避免重复处理整份历史样式。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 在 Vite 增量构建中只使用 source scan 候选集时遗漏当前 bundle 新增类名的问题，避免 WXML 已转义但 WXSS 未生成对应样式。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 生成器在 uni-app Vite 热更新中重复清理 Tailwind require cache 导致 wxss 生成缓存失效、增量编译明显变慢的问题。现在 v3 生成器会复用运行时 patch 初始化结果，并在每次生成前主动重置 Tailwind v3 plugin 上下文，避免旧 class 泄漏。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Vite watch 模式下 Tailwind v4 热更新性能：缓存 source candidates 扫描结果，优先按 `@source`/CSS 入口缩小扫描范围，并复用 Tailwind v4 generator 的增量结果，避免 demo 热更新时反复全量扫描源码和重复生成 CSS。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Vite、webpack、gulp 开发构建下的热更新路径：复用已有候选集合与 runtime class set，仅在 source 配置或运行时相关内容变化时重新扫描。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Gulp 生成模式在 dev/watch 场景下模板或脚本新增类名后，主 WXSS 复用旧 classSet 缓存导致缺少新增样式的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 修复 Webpack 生成模式在仅 JS 类名集合变化时主 WXSS 可能复用旧缓存的问题，并把稳定的 demo 热更新回归纳入 `pnpm e2e:ci`。
+  - 将核心包的大体量内部开发脚本迁移到私有 workspace 项目 `@weapp-tailwindcss/scripts`，发布包内仅保留安装生命周期所需脚本。
+
+- 🐛 **修复小程序生成模式下自定义 `@layer components` 在最终主 CSS 中被追加到 utilities 后面的问题。现在 Tailwind CSS v3/v4 的小程序产物会保留 `.raw-btn`、`.btn` 等用户组件层规则，并在不保留 `@layer` 包裹的前提下把它们排到 utilities 之前。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复小程序最终样式中可能残留 `color-mix`、`oklab`、`oklch`、`lab`、`lch` 与 `display-p3` 颜色函数的问题，能确定的颜色会降级为 `rgb`/`rgba`，避免输出小程序不支持的颜色语法。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Mpx + Tailwind CSS v4 子包 CSS 中相对 `@config` 路径在构建时被错误按项目根解析的问题，保持源码相对当前文件的写法可用。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Webpack 生成模式在 MPX watch/HMR 场景下，仅脚本类名集合变化时可能复用旧 WXSS 缓存，导致脚本中新加的 Tailwind 工具类未生成样式的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 将 `demo/mpx-app` 的 script-only 新增类名回归纳入正式 watch-HMR 覆盖，并接入 `e2e:ci` 的稳定热更新门禁。
+
+- 🐛 **修复 Tailwind CSS v3/v4 在部分生成链路中把 `text-[55rpx]` 等任意值误判为颜色时，非主 CSS chunk 没有恢复为长度声明的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复核心源码在严格 TypeScript 配置下的类型问题，并清理对应 ESLint 诊断。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复生成模式的额外源码候选扫描绕过 Tailwind 扫描排除规则的问题，确保 Tailwind CSS v3 `content` 中的 `!` 排除以及 Tailwind CSS v4 `@source not` 不会被 Vite/PostCSS 补扫重新引入。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 新增 e2e-watch HMR 速度报告产物，CI 每次 watch 回归都会输出 hot update 的 avg/p50/p95/max、按项目和按场景拆分的耗时摘要，并随 artifact 上传。
+  - 补齐 Tailwind CSS v4 `@source inline(...)` 与 `@source not inline(...)` 在 Vite/PostCSS 生成模式下的候选收集支持，覆盖 brace expansion、换行参数、`source(none)`/全量排除以及内联排除文件候选等场景。
+
+- 🐛 **修复小程序 CSS 前缀清理后 `transition-property` 声明重复的问题，避免 Tailwind CSS v3 的 `.transition` 输出保留多条等价声明。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复普通 uni-app App WebView 构建的生成目标推断，`UNI_PLATFORM=app/app-plus` 默认切换为 `web` 输出族；uni-app x `UNI_UTS_PLATFORM=app-*` 原生 App 目标继续保留小程序/uvue 兼容输出，不新增 `target: 'app'`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite 小程序构建中动态模板类名转译不完整的问题，确保 `wxml` 以及其它小程序模板目标在完整 `runtimeSet` 重试后可以继续转译 `h-[458rpx]`、`w-[218rpx]`、`inset-x-[30%]` 等任意值类名，并避免 Tailwind CSS v3 `@apply` 使用 `min-w-0` 等工具类时误报 unknown utility。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 uni-app Vite + Tailwind CSS v4 热更新性能：主包占位 CSS 现在会根据已注册 CSS source 的 Tailwind source entries 与当前候选命中选择单个源，避免候选变化时把多个自动发现的 CSS source 合并生成到主包样式；同时跳过 Vue SFC 子请求对源码候选集合的覆盖，保留原始 `.vue` 文件中的完整 class 候选。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复开启 `unocss` 兼容后，`text-var(--brand)`、`w-calc(100%-1rem)`、`bg-#fff` 等 UnoCSS 风格裸任意值在 Tailwind CSS v3 / v4 生成链路中没有稳定进入候选或输出选择器无法和原始 class 对齐的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 generator 模式下 `@layer` 自定义组件和工具类仅在 CSS `@apply` 中引用时被裁剪的问题，并补齐 v3 指令与函数的回归覆盖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 在 uni-app vite build-mode dev 首次增量热更新时全量扫描输出 JS/WXML，导致候选集被 vendor 普通字符串放大、热更新极慢的问题，并将 `bgObj` 对象 key 热更新场景纳入 watch-HMR e2e 回归。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 在 Vite watch 热更新中因源码类名变化反复触发完整 runtime extract 导致 HMR 变慢的问题。v3 首轮仍保留完整 runtime 基线，后续 watch 轮次按文件增量更新源码候选类，避免已删除源码类继续污染 CSS，同时保留 safelist 等非源码基线类。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 在 uni-app H5/web 目标下的 generator 模式。Vite dev 阶段现在会识别 Sass `@use "tailwindcss/*"` 入口并提前生成 web CSS，同时保留 v4 web 跳过二次生成的行为；生产构建中 v3 web CSS 也会继续由 generator 输出，避免裸 `@apply` 或小程序转义样式进入 H5 产物。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序产物移除 `@property` 后可能丢失 `--tw-border-style` 默认值的问题，避免只有 `border` 工具类时小程序端无法得到和 Web 端一致的默认实线边框；同时按需补齐实际使用到的 v4 运行时默认变量，并合并等价的小程序元素作用域规则，避免输出重复 selector。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序产物中透明度颜色可能保留 `color-mix(in oklab, ...)` 的问题，将 `text-white/10`、`bg-sky-500/75`、`bg-sky-500/(--alpha)` 等颜色透明度写法转换为小程序可用的 `rgba(...)` 输出；同时修复 v4 增量热更新追加样式时重复注入 preflight reset 的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下小程序产物可能缺失默认 preflight reset 的问题，避免 `divide-double`、`divide-dotted` 等分割线样式在未清零边框宽度时渲染出额外边框。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下渐变运行时变量只落在主题作用域的问题，将 `--tw-gradient-*` 默认值补到小程序元素与伪元素作用域，避免 `bg-gradient-* from-* to-*` 在组件节点中失效；伪元素选择器使用小程序工具链更稳定的 `:before` / `:after` 输出。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **对齐 Tailwind CSS v4 官方 source detection 语义：Vite 生成模式的自动源码扫描默认忽略 CSS 与预处理器文件，只有显式 `@source` 注册时才会扫描这些样式文件，避免自动候选收集把样式入口误当作内容源。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 source 扫描回归，避免 PostCSS 和 Vite 生成链路误丢 `@source` 命中的文件，并过滤小程序不支持的 slash variant 候选。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite 下 Tailwind CSS v4 子包样式生成过慢的问题：子包 `wxss` 现在会优先反查对应源码侧 CSS 入口，并在命中 `source(none)` 等独立入口时隔离主包运行时候选，避免静态 icon 插件等大候选集被重复合并到子包生成流程。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind v4 generator 模式下用户样式被统一追加到生成 CSS 末尾的问题，保留 Vite/uni-app 合并后的原始 CSS source order。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Vite H5 开发模式下仅修改 Vue 脚本中的 Tailwind 任意值类名时，样式模块未稳定参与 HMR，导致新颜色类名 CSS 未生成到页面的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Vite 模式下 Tailwind CSS v4 自动 CSS 入口在临时文件被清理后可能导致 source 扫描失败的问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 `weapp-tailwindcss/vite` 插件返回类型绑定单一 Vite 版本导致的类型不兼容问题，兼容 demo 或下游项目使用不同 Vite 版本的 `defineConfig` 场景。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Vite + Tailwind CSS v4 生成时把 vendor 依赖 chunk 中的运行时配置字符串误提取为候选类的问题，并对齐裸 Tailwind v4 CSS 入口的默认 source 扫描范围。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **补充记录 Webpack watch 模式下默认忽略输出目录的修复，确保 Taro Webpack 项目不会因为插件改写 `dist` 产物而反复触发重新编译。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Mpx webpack 场景下 `@mpxjs/webpack-plugin` 子路径 loader 解析失败的问题，并补充跨框架支持矩阵的 CI 与 IDE 验证入口。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 monorepo demo 直接启动时可能复用过期 `dist` 的问题：所有依赖 `weapp-tailwindcss` 的 demo 在 `dev`/`build` 前会按需检查核心包构建产物，源码更新后自动刷新本地 `dist`，避免热更新性能优化没有被实际 demo 加载。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认颜色与 v3 不一致的问题，Tailwind CSS v3 兼容模式下恢复 v3 默认色板，并避免输出小程序不支持的 `oklch` 默认颜色。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **支持在生成模式中通过 `generator.config` 指定 Tailwind 配置文件，兼容原 Tailwind PostCSS 插件 `config` 选项的手动配置路径用法。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 生成器在插件 class cache 中过滤通配符候选时的兼容问题，补充 v3/v4 生成器对官方插件、自定义插件和 Iconify 图标插件的回归覆盖，并在 Tailwind CSS v4 小程序生成模式下将默认颜色变量替换为小程序可识别的 hex 色值。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **为 watch-HMR 回归增加 weapp-tailwindcss 插件自身处理耗时采集与 500ms 预算校验，区分构建器端到端热更新时间和插件内部处理时间，便于持续优化开发体验。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **当 `WEAPP_TW_HMR_TIMING=1` 时额外输出人可读的插件处理耗时，便于 demo 开发态观察构建和 HMR 性能。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **收敛小程序 CSS 的 `-webkit-` 前缀输出，默认仅保留 `background-clip: text`、`mask-*`、`box-orient` 等小程序场景需要的兼容写法，并移除 `text-decoration`、`filter/backdrop-filter`、`transform/animation/transition` 等浏览器冗余前缀。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **增强 Sass/Less 等预处理器样式入口的 Tailwind 指令识别与改写能力，避免将预处理器私有语法直接交给 Tailwind 解析，并补充真实 demo 与 CI 回归覆盖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite 小程序 dev 产物中 Sass/Less 预处理器入口里的自定义 `@layer components` 被漏提取的问题，确保 `@apply` 生成的 `.raw-btn`、`.btn` 以及伪元素样式会写入 `dist/dev/mp-weixin/app.wxss`，且不会残留小程序不支持的 `@layer`/`@apply`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **精简 `weapp-tw patch` 兼容链路：该命令在 v5 中改为无需执行的兼容提示，移除目标记录、workspace 批量 patch、运行时 `twPatcher.patch()` 初始化调用与手动 patch 状态检查相关逻辑，由构建运行时直接接管 Tailwind CSS 处理。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **补齐 Tailwind CSS v4 生成模式升级兼容覆盖，固定 v3/v4 默认值、preflight、space/divide 选择器与新版候选类语法在小程序目标下的输出行为。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **将 `@vue/compiler-dom` 与 `@vue/compiler-sfc` 调整为构建期依赖。uni-app x 转换所需的 Vue compiler 依赖会随 `weapp-tailwindcss` 产物内联，发布包不再要求使用者运行时额外安装这些 Vue compiler 包。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **支持单引号和双引号包裹的 `content-*` 任意值默认同时提取，并将 `arbitraryValues.allowDoubleQuotes` 保留为兼容旧配置的废弃选项。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **移除初始化流程和核心包安装生命周期中的 `weapp-tw patch` 自动入口。当前生成模式会在构建运行时接管 Tailwind CSS 补丁与类名收集，新项目不再需要把补丁命令写入 `postinstall`；旧 CSS 后处理链路仍可手动执行 `weapp-tw patch` 或 `weapp-tw status` 排查状态。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 执行 `weapp-tw patch` 时会提示 `weapp-tailwindcss@5` 生成模式不再需要该指令，也不需要配置 `postinstall` 这个 npm hook，避免新项目继续复制旧链路配置。
+
+- 🐛 **移除 webpack loader 对 `loader-utils` 的依赖，改为使用 webpack 5 loader context 的 `getOptions()` 读取配置。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **移除 `weapp-tailwindcss` 中遗留的 mangle 相关依赖、常量、测试夹具与历史快照，保留当前小程序类名转义链路。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 下 `text-[32.4rpx]` 等 rpx 长度任意值在 web 和小程序目标中泄漏内部 `length:` 类型提示的问题，保持最终选择器和类名使用原始写法。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **现在 Tailwind CSS v3 和 v4 场景都会默认开启内置 `autoprefixer` 后处理，用于补齐小程序 WebView 所需的兼容前缀；如需关闭可继续传入 `autoprefixer: false`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **Vite source candidates 收集改为复用 `tailwindcss-patch` 的源码候选提取 API，移除本地重复的字符串/`@apply` 提取逻辑，避免与 Tailwind scanner 语义分叉。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复小程序最终样式中被提到前面的 base/theme 规则顺序，确保用户样式仍然能排在这些基础规则之前，不再被 `:host/page` 和 `view/text` 重排压到后面。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **收紧 demo watch-HMR 回归验收：所有 demo 热更新样本统一按 2 秒预算校验，并在速度报告中标注 1 秒推荐目标。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复全新安装后 Tailwind CSS v3 未自动准备运行时补丁导致的 `rpx` 任意值误判、生成模式 classSet 为空，以及 Vite/JS 任意值类名未转译问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认值与 v3 不一致的问题，默认注入 Tailwind CSS v3 兼容默认值，并允许通过 `generator.tailwindcssV3Compatibility: false` 关闭。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修正 Tailwind CSS v3 项目的默认生成模式行为：`auto` 会和 Tailwind CSS v4 一样由 weapp-tailwindcss 接管 Tailwind 样式生成，并移除重复的官方 Tailwind PostCSS 链路。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 v5 默认生成模式在 Tailwind CSS v3 + uni-app Vite 小程序/quickapp 构建中遗漏 `@tailwind`/`@apply` 展开导致产物残留原始 Tailwind 指令的问题。现在 `@apply` 会作为生成入口参与 Tailwind v3 样式生成，并且生成后的兼容 CSS 追加不会把未展开的 `@apply` 规则重新写回产物。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **补充 Tailwind CSS v4 生成模式对官方 Adding custom styles 写法的回归覆盖，确保 `@theme`、任意值/属性/变体、自定义 CSS、`@utility` 函数式工具类和 `@custom-variant` 在生成模式下保持语义一致。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 colors 透明度变量在小程序样式兼容阶段被静态降级为不透明色的问题，并补充颜色工具类、`@theme` 自定义颜色与禁用默认颜色的回归覆盖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复小程序样式转换中错误保留 `[data-theme=dark]` / `[data-mode="dark"]` 这类属性选择器的问题。web 目标继续保留 Tailwind CSS v4 data attribute dark variant，小程序目标会移除依赖属性选择器的无效规则，避免生成小程序不支持的选择器或让 dark 样式无条件生效。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 data attribute 版 `@custom-variant dark` 在小程序选择器兜底清理阶段丢失属性选择器的问题，并补充默认媒体查询、`.dark` 自定义选择器和 `[data-theme=dark]` 自定义选择器的回归覆盖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **按 Tailwind CSS 主版本解析默认 `cssPreflight`，v4 运行时改用 `margin: 0`、`padding: 0` 和 `border: 0 solid`，避免继续注入 v3 的拆分边框默认值。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 `tailwindcss/preflight.css` subpath import 的处理策略：web 目标仅在显式使用 `layer(...)` 导入时保留 Preflight，小程序目标继续裁剪浏览器标签 reset，并补充对应回归测试。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 bundler 和 PostCSS 入口未启用官方 source detection 的问题，支持自动扫描、`@source`、`source(...)` / `source(none)`、`@source not`、`inline()` 与 brace expansion 等规则，同时保持 Tailwind CSS v3 生成链路不变。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **完善 Tailwind CSS v4 生成模式对 `package.json#imports` subpath imports 的支持：`@import "#..."` 会触发默认生成模式，`@config "#..."` 会保留给 Tailwind v4 按官方规则解析，并新增 `@import`、`@reference`、`@plugin`、`@config` 的真实生成回归测试。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 生成模式下 `--animate-*` 主题变量对应的 `@keyframes` 在小程序 CSS 裁剪阶段被误删的问题，并补充 `@theme` 命名空间、`inline`、`static`、自定义主题重置和主题变量引用的回归覆盖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **支持 Vite、Webpack 和 Gulp 场景下自动识别 Tailwind CSS v4 入口 CSS，未显式传入 `cssEntries` 时会捕获包含 Tailwind 根指令的样式内容，并通过 `tailwindcss-patch@9.3.3` 的 `cssSources` 刷新运行时 patcher；显式配置 `cssEntries` 或 `cssSources` 时仍保持用户配置优先。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **统一 Tailwind CSS v4 示例、测试辅助入口和构建器重写契约，推荐继续使用 `@import "tailwindcss"`，并仅将 `weapp-tailwindcss` CSS 入口保留为兼容解析路径。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3/v4 增量生成缓存只追加不删除的问题。当 HMR 中候选类集合减少时，生成器会完整重生成当前候选集合并刷新缓存，避免 Taro dev 回滚或删除 class 后旧 utilities 继续残留在 wxss 中。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Taro Webpack watch 场景下输出目录被监听后，由插件改写产物反复触发重新编译的问题。Webpack 插件现在会在 watch 模式中默认把 `outputPath` 追加到 `ignored`，避免 `dist` 写入造成自循环。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 同时整理 Taro Webpack v3 demo 的 Tailwind 样式入口顺序，避免 `postcss-import` 顺序警告干扰 watch 日志。
+
+- 🐛 **Vite 生成模式下 Tailwind CSS v3 默认优先使用 Oxide 扫描到的源码候选类作为运行时输入，并将 v3 CSS 生成从 `postcss([tailwindcss(...)])` 切换为内部直接引擎，减少开发热更新中对 v3 PostCSS 插件和 runtime patcher 提取链路的依赖。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 uni-app H5 / web 模式下 Vite 插件仍走小程序生成链路的问题。H5 会自动使用 web target，跳过小程序模板、JS、runtime class set 与 source candidate 根目录扫描，保留 Vite/Tailwind 生成的浏览器 CSS；小程序构建仍保持 class 转义和 wxss 输出。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.4.1`。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - `tailwindcss-patch@9.4.1` 的发布入口已经导出 `splitCandidateTokens`，`weapp-tailwindcss` 的 JS、Vite 产物和 uni-app x 局部样式候选 token 分割逻辑改为直接消费该 API，避免继续维护重复兼容实现。
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.4.2`，并改为统一消费 npm 发布版本，避免主仓库安装和 CI 依赖 `tailwindcss-mangle` submodule 的 workspace 链接。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.3.1`，同步消费最新补丁版本。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **Upgrade tailwindcss-patch to 9.3.7 and align Tailwind CSS v4 source option resolution with the shared patch defaults while preserving configured source entries for bundler scans.** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 自定义生成引擎在显式候选驱动的增量生成中重复扫描配置 content 的问题，避免 uni-app Vite 热更新时生成 CSS 持续膨胀并拖慢 HMR。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Tailwind CSS v3 开发热更新性能，增量生成时复用 Tailwind v3 runtime context，并缓存稳定 CSS 源的 legacy compat 转换结果，避免新增 class 时重复重建 v3 上下文和重复转换兼容 CSS。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Tailwind CSS v3 生成器在 Vite 热更新中的增量 CSS 生成路径。现在 v3 生成器在热更新场景会复用同一 source/style/target 下已生成的 CSS，只为新增候选类生成 utilities 片段，减少重复执行完整 Tailwind v3 PostCSS 生成的次数。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Tailwind CSS v4 在 Vite watch 下的热更新性能，避免已有候选集时重复扫描源码，并复用增量 CSS 生成缓存。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **调整 Vite 插件的 Tailwind CSS 生成时机，让生成后的 CSS 进入 Vite 原生 CSS/PostCSS 管道，默认尊重用户的 `postcss.config` 与 `css.postcss` 插件配置。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **增强 Vite v5 生成模式的 Tailwind 依赖追踪，在生成 CSS 时向 Vite 注册生成器依赖，覆盖 CSS 入口、配置文件和 Tailwind source 解析产物。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Vite 生成模式下 Tailwind CSS v4 的热更新性能，候选类变化时不再重生成未关联的页面和分包 CSS。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Tailwind CSS v4 在 Vite 构建中的 CSS source 匹配模型：普通主 CSS 输出也会优先通过 source candidates 精确匹配单个 cssSource，无法判定时不再对多个 cssSources 执行全量生成，减少 uni-app 等多 CSS source 项目的热更新耗时。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **Tailwind CSS v4 初始源码扫描生成完成后会同步预热增量生成缓存，避免第一次热更新因为没有基线缓存而再次触发完整 v4 生成。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **修复 Vite watch 场景下生成器候选类刷新不完整的问题，确保脚本中新增的原子类能同步生成到小程序样式产物。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - 补齐 demo 与 apps 的 watch/HMR 端到端覆盖，在模板、脚本与样式变更后同时校验小程序模板、JS 与 WXSS 产物中的转义结果。
+
+- 🐛 **在 uni-app、uni-app x、Mpx 与 Taro 的 H5/Web 构建环境中，生成器默认目标会自动切换为 Web，同时保留显式 `generator.target` 配置的优先级。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **为 Taro、uni-app 等支持 Web/H5 的 watch 回归补充 Tailwind CSS HMR 验证，并通过 Playwright 校验 Web 端样式热更新链路。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **Fix Vite web target builds so generated CSS assets are left as Vite web CSS instead of being routed back through mini-program Tailwind generation and CSS post-processing.** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+  - Also clean Tailwind v3 legacy compat CSS after repairing unclosed imported rules so raw `@tailwind` and `@apply` directives do not leak into generated mini-program CSS.
+
+- 🐛 **修复 Webpack 产物中可能残留 Tailwind CSS v4 源指令的问题，避免页面级样式里的 `@reference` 等指令直出到小程序 WXSS 后触发开发者工具编译错误。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+
+- 🐛 **优化 Webpack `processAssets` 阶段的产物写回逻辑：当转换结果与当前 asset 内容一致时，不再调用 `updateAsset`，也不触发 `onUpdate`。这可以减少同一轮 asset processing 中的重复写回，并降低 watch 场景下的无效产物变更。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+- 📦 Updated 5 dependencies [`73a7794`](https://github.com/sonofmagic/weapp-tailwindcss/commit/73a7794d50916d2189f22bfaa9e9ab9402b30df7)
+  <details><summary>Details</summary>
+
+  `tailwindcss-config@2.0.0`, `@weapp-tailwindcss/postcss@3.0.0`, `@weapp-tailwindcss/reset@0.1.1`, `@weapp-tailwindcss/shared@2.0.0`, `@weapp-tailwindcss/logger@2.0.0`
+
+  </details>
+
 ## 5.0.0-next.38
 
 ### Patch Changes

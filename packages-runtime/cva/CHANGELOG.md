@@ -1,5 +1,12 @@
 # @weapp-tailwindcss/cva
 
+## 0.1.7
+
+### Patch Changes
+
+- 📦 **Dependencies** [`73a7794`](https://github.com/sonofmagic/weapp-tailwindcss/commit/73a7794d50916d2189f22bfaa9e9ab9402b30df7)
+  → `@weapp-tailwindcss/runtime@0.1.6`
+
 ## 0.1.7-next.0
 
 ### Patch Changes
