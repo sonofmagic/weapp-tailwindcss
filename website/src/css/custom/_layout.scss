@@ -258,6 +258,104 @@ html[data-ui-homepage-frameworks-card='hidden'] .ui-homepage-frameworks-card {
     display: none;
   }
 
+  .navbar-sidebar__backdrop {
+    height: 100dvh;
+    background: rgb(15 23 42 / 48%);
+  }
+
+  .navbar-sidebar {
+    z-index: 260;
+    display: flex;
+    height: 100dvh;
+    max-height: 100dvh;
+    flex-direction: column;
+    border-right: 1px solid rgb(15 23 42 / 10%);
+    background: linear-gradient(180deg, rgb(255 255 255 / 97%), rgb(248 251 255 / 98%));
+    box-shadow: 22px 0 52px rgb(15 23 42 / 18%);
+    color: rgb(15 23 42);
+  }
+
+  [data-theme='dark'] .navbar-sidebar {
+    border-right-color: rgb(226 232 240 / 10%);
+    background: linear-gradient(180deg, rgb(13 20 34 / 98%), rgb(8 13 24 / 99%));
+    box-shadow: 22px 0 58px rgb(0 0 0 / 36%);
+    color: rgb(226 232 240);
+  }
+
+  .navbar-sidebar__brand {
+    min-height: var(--ifm-navbar-height);
+    flex-shrink: 0;
+    border-bottom: 1px solid rgb(15 23 42 / 10%);
+    background: transparent;
+  }
+
+  [data-theme='dark'] .navbar-sidebar__brand {
+    border-bottom-color: rgb(226 232 240 / 10%);
+  }
+
+  .navbar-sidebar__items {
+    height: calc(100dvh - var(--ifm-navbar-height));
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+  }
+
+  .navbar-sidebar .navbar__items {
+    max-width: none;
+    overflow: visible;
+  }
+
+  .navbar-sidebar .navbar-sidebar__item {
+    height: 100%;
+    padding: 0.65rem;
+  }
+
+  .navbar-sidebar .menu {
+    height: 100%;
+    max-height: none;
+    padding: 0.35rem;
+    overflow-y: auto;
+  }
+
+  .navbar-sidebar .menu__list {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .navbar-sidebar .menu__link,
+  .navbar-sidebar .navbar__link {
+    border-radius: 0.75rem;
+    color: rgb(30 41 59);
+    font-weight: 560;
+  }
+
+  [data-theme='dark'] .navbar-sidebar .menu__link,
+  [data-theme='dark'] .navbar-sidebar .navbar__link {
+    color: rgb(226 232 240);
+  }
+
+  .navbar-sidebar .menu__link:hover,
+  .navbar-sidebar .navbar__link:hover {
+    background: rgb(14 165 233 / 10%);
+    color: rgb(3 105 161);
+  }
+
+  [data-theme='dark'] .navbar-sidebar .menu__link:hover,
+  [data-theme='dark'] .navbar-sidebar .navbar__link:hover {
+    background: rgb(14 165 233 / 14%);
+    color: rgb(125 211 252);
+  }
+
+  .navbar-sidebar .menu__link--active:not(.menu__link--sublist) {
+    background: rgb(14 165 233 / 12%);
+    color: rgb(3 105 161);
+  }
+
+  [data-theme='dark'] .navbar-sidebar .menu__link--active:not(.menu__link--sublist) {
+    background: rgb(14 165 233 / 16%);
+    color: rgb(125 211 252);
+  }
+
   .navbar-sidebar .navbar__atomgit-link,
   .navbar-sidebar .navbar__github-link,
   .navbar-sidebar .navbar__weapp-vite-link {

@@ -7,11 +7,7 @@ const optionsSidebar: SidebarConfig = [
   {
     type: 'doc',
     id: 'api/interfaces/UserDefinedOptions',
-    label: '配置项(v3.x)',
-  },
-  {
-    type: 'doc',
-    id: 'api-v2/interfaces/UserDefinedOptions',
+    label: '配置项',
   },
 
   // {

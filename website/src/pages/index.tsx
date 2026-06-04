@@ -70,8 +70,8 @@ const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
     icon: 'icon-[mdi--numeric-4-box-outline]',
   },
   {
-    href: '/docs/api-v2',
-    label: 'API v2',
+    href: '/docs/api/interfaces/UserDefinedOptions',
+    label: '配置项',
     description: '类型、插件与配置项的完整参考。',
     icon: 'icon-[mdi--api]',
   },
@@ -286,7 +286,7 @@ function HomepageHeader() {
           <p>
             Web 保持 Tailwind 原生语义；小程序补齐选择器、单位、转义与运行时边界。团队统一入口，再按框架接入。
           </p>
-          <a href="/docs/api-v2">查看 API v2</a>
+          <a href="/docs/api/interfaces/UserDefinedOptions">查看配置项</a>
         </div>
       </section>
 

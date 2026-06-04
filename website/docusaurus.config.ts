@@ -131,7 +131,6 @@ const config: Config = {
           'docs/uni-app-x/**',
           'docs/community/templates.md',
           'docs/api/**',
-          'docs/api-v2/**',
           'docs/options/**',
           'docs/migrations/**',
           'docs/issues/**',
@@ -166,7 +165,6 @@ const config: Config = {
             includePatterns: [
               'docs/options/**',
               'docs/api/**',
-              'docs/api-v2/**',
               'docs/issues/**',
               'docs/migrations/**',
             ],

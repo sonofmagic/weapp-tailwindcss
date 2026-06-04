@@ -10,7 +10,7 @@ const footerLinks: NonNullable<ThemeConfig['footer']>['links'] = [
       },
       {
         label: '配置项',
-        to: '/docs/api/',
+        to: '/docs/api/interfaces/UserDefinedOptions',
       },
       {
         label: '常见问题',
