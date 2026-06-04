@@ -26,11 +26,39 @@ interface EntryItem {
   icon: string
 }
 
+interface RouteItem {
+  href: string
+  label: string
+  description: string
+  icon: string
+}
+
 const facts: FactItem[] = [
   { label: 'Tailwind', value: 'CSS-first / config' },
   { label: '框架', value: 'Taro / uni-app / 原生' },
   { label: '构建器', value: 'Webpack / Vite / Gulp' },
   { label: '运行时', value: 'merge / variants / cva' },
+]
+
+const routeLinks: RouteItem[] = [
+  {
+    href: '/docs/quick-start/v4',
+    label: 'v4 CSS-first',
+    description: '用 @source 与 CSS 入口接入新项目。',
+    icon: 'icon-[mdi--numeric-4-box-outline]',
+  },
+  {
+    href: '/docs/quick-start/install',
+    label: 'v3 / 存量项目',
+    description: '按 content、框架和构建器选择稳妥接入路线。',
+    icon: 'icon-[mdi--source-branch]',
+  },
+  {
+    href: '/docs/api/interfaces/UserDefinedOptions',
+    label: '配置参考',
+    description: '直接查看插件选项、默认值和类型入口。',
+    icon: 'icon-[mdi--api]',
+  },
 ]
 
 const capabilities: CapabilityItem[] = [
@@ -219,14 +247,17 @@ function HomepageHeader() {
               <strong>{fact.value}</strong>
             </div>
           ))}
-          <div className="home-facts__platforms">
-            {platformIcons.map(({ id, label, content }) => (
-              <span aria-label={label} className="home-facts__icon" key={id} role="img" title={label}>
-                <span className="sr-only">{label}</span>
-                {content}
-              </span>
+          <nav className="home-facts__routes" aria-label="接入路线">
+            {routeLinks.map(route => (
+              <a className="home-facts__route" href={route.href} key={route.href}>
+                <i aria-hidden="true" className={route.icon}></i>
+                <span>
+                  <strong>{route.label}</strong>
+                  <small>{route.description}</small>
+                </span>
+              </a>
             ))}
-          </div>
+          </nav>
           {(homepage.githubBadge || homepage.npmVersionBadge) && (
             <div className="home-facts__signals">
               {homepage.githubBadge && (

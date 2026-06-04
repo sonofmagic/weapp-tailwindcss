@@ -149,8 +149,8 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   },
   {
     key: 'platformTags',
-    label: '平台图标区',
-    description: '控制首页首屏下方的平台支持矩阵。',
+    label: '支持与接入路线区',
+    description: '控制首页首屏下方的支持矩阵与接入路线入口。',
     className: 'ui-homepage-platform-tags',
     htmlAttribute: 'data-ui-homepage-platform-tags',
   },
