@@ -390,6 +390,7 @@ export function collectCssInlineSourceCandidates(root: Root): TailwindInlineSour
 export function normalizeLegacyContentEntries(
   content: unknown,
   base: string,
+  options: { relativeBase?: string | undefined } = {},
 ): TailwindSourceEntry[] {
   if (typeof content === 'string') {
     const negated = content.startsWith('!')
@@ -400,10 +401,10 @@ export function normalizeLegacyContentEntries(
     }]
   }
   if (Array.isArray(content)) {
-    return content.flatMap(item => normalizeLegacyContentEntries(item, base))
+    return content.flatMap(item => normalizeLegacyContentEntries(item, base, options))
   }
   if (isLegacyContentObject(content)) {
-    return normalizeLegacyContentEntries(content.files, base)
+    return normalizeLegacyContentEntries(content.files, content.relative && options.relativeBase ? options.relativeBase : base, options)
   }
   return []
 }

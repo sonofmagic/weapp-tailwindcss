@@ -12,12 +12,16 @@ interface CssAssetProcessedMarker {
   (asset: OutputAsset, file?: string): void
 }
 
+interface CssAssetResultRecordOptions {
+  injectIntoMain?: boolean | undefined
+}
+
 interface CssAssetResultRecorder {
-  (file: string, css: string): void
+  (file: string, css: string, options?: CssAssetResultRecordOptions): void
 }
 
 interface CssAssetResultsGetter {
-  (): Iterable<[string, string]>
+  (): Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
 }
 
 interface CollectViteProcessedCssAssetOptions {
@@ -63,6 +67,28 @@ function appendCss(baseCss: string, css: string) {
   return `${baseCss}\n${css}`
 }
 
+function shouldInjectViteProcessedCssResult(
+  opts: InternalUserDefinedOptions,
+  targetFile: string,
+  sourceFile: string,
+  options: {
+    injectIntoMain?: boolean | undefined
+  },
+) {
+  if (options.injectIntoMain === true) {
+    return true
+  }
+  const targetFileKey = normalizeOutputPathKey(targetFile)
+  const sourceFileKey = normalizeOutputPathKey(sourceFile)
+  const sourceBaseName = sourceFileKey.replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i, '').split('/').pop()
+  return sourceFileKey !== targetFileKey
+    && (
+      opts.mainCssChunkMatcher(sourceFile, opts.appType)
+      || sourceBaseName === 'app'
+      || sourceBaseName === 'main'
+    )
+}
+
 export function collectViteProcessedCssAssetResults(
   bundle: OutputBundle,
   options: CollectViteProcessedCssAssetOptions,
@@ -95,7 +121,12 @@ export function injectViteProcessedCssIntoMainCssAssets(
   options: InjectViteProcessedCssAssetOptions,
 ) {
   const viteCssResults = [...(options.getViteProcessedCssAssetResults?.() ?? [])]
-    .filter(([, css]) => css.length > 0)
+    .map(([file, record]) => {
+      return typeof record === 'string'
+        ? { file, css: record, injectIntoMain: undefined }
+        : { file, css: record.css, injectIntoMain: record.injectIntoMain }
+    })
+    .filter(record => record.css.length > 0)
   if (viteCssResults.length === 0) {
     return 0
   }
@@ -115,15 +146,11 @@ export function injectViteProcessedCssIntoMainCssAssets(
     const mainFileKey = normalizeOutputPathKey(file)
     const originalSource = readAssetSource(output)
     let nextCss = originalSource
-    for (const [sourceFile, sourceCss] of viteCssResults) {
-      const sourceFileKey = normalizeOutputPathKey(sourceFile)
-      if (
-        sourceFileKey === mainFileKey
-        || options.opts.mainCssChunkMatcher(sourceFile, options.opts.appType)
-      ) {
+    for (const record of viteCssResults) {
+      if (!shouldInjectViteProcessedCssResult(options.opts, mainFileKey, record.file, record)) {
         continue
       }
-      const css = stripBundlerGeneratedCssMarkers(sourceCss).trim()
+      const css = stripBundlerGeneratedCssMarkers(record.css).trim()
       if (css.length === 0) {
         continue
       }

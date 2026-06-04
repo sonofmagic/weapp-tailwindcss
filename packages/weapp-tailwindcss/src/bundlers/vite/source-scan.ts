@@ -17,7 +17,11 @@ import {
   resolveCssSourceEntries,
   resolveTailwindV4CssSourceBase,
 } from '@/tailwindcss/source-scan'
-import { resolveTailwindV3SourceFromPatcher } from '@/tailwindcss/v3-engine'
+import {
+  resolveTailwindV3Source,
+  resolveTailwindV3SourceFromPatcher,
+  resolveTailwindV3SourceOptionsFromPatcher,
+} from '@/tailwindcss/v3-engine'
 import { resolveTailwindV4SourceFromPatcher, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
 import { readStaticConfigContent } from './static-config-content'
 
@@ -42,8 +46,21 @@ function parseImportSourceParam(params: string) {
   }
 }
 
+function parseCssImportSpecifier(params: string) {
+  const value = params.trim()
+  const quoted = /^(['"])(.*?)\1/.exec(value)
+  if (quoted) {
+    return quoted[2]
+  }
+  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
+  return url?.[2] ?? url?.[3]
+}
+
 function isTailwindCssImport(params: string) {
-  return /^\s*(['"])tailwindcss(?:\/[^'"]*)?\1/.test(params)
+  const specifier = parseCssImportSpecifier(params)
+  return specifier === 'tailwindcss'
+    || specifier?.startsWith('tailwindcss/')
+    || specifier?.replaceAll('\\', '/').endsWith('/tailwindcss/index.css')
 }
 
 function resolveSourceBase(base: string, sourcePath: string) {
@@ -54,20 +71,6 @@ function resolveConfigPath(base: string, configPath: string) {
   if (path.isAbsolute(configPath)) {
     return path.resolve(configPath)
   }
-
-  let current = path.resolve(base)
-  while (true) {
-    const candidate = path.resolve(current, configPath)
-    if (existsSync(candidate)) {
-      return candidate
-    }
-    const parent = path.dirname(current)
-    if (parent === current) {
-      break
-    }
-    current = parent
-  }
-
   return path.resolve(base, configPath)
 }
 
@@ -185,7 +188,9 @@ async function resolveConfigContentEntries(root: postcss.Root, base: string) {
   for (const configPath of configPaths) {
     const staticContent = readStaticConfigContent(configPath)
     if (staticContent !== undefined) {
-      entries.push(...normalizeLegacyContentEntries(staticContent, path.dirname(configPath)))
+      entries.push(...normalizeLegacyContentEntries(staticContent, path.dirname(configPath), {
+        relativeBase: path.dirname(configPath),
+      }))
       continue
     }
     try {
@@ -193,7 +198,9 @@ async function resolveConfigContentEntries(root: postcss.Root, base: string) {
         config: configPath,
         cwd: path.dirname(configPath),
       })
-      entries.push(...normalizeLegacyContentEntries(loaded?.config.content, path.dirname(configPath)))
+      entries.push(...normalizeLegacyContentEntries(loaded?.config.content, path.dirname(configPath), {
+        relativeBase: path.dirname(configPath),
+      }))
     }
     catch {
       // 依赖收集只负责补充 watch 签名，配置有效性由 Tailwind 生成阶段校验。
@@ -312,6 +319,48 @@ function collectExistingCssEntries(options: UserDefinedOptions) {
     .filter(item => existsSync(item))
 }
 
+async function resolveTailwindV3CssEntryScan(
+  options: UserDefinedOptions,
+  patcher: TailwindcssPatcherLike,
+) {
+  const cssEntries = collectExistingCssEntries(options)
+  const entries: TailwindSourceEntry[] = []
+  const dependencies = new Set<string>()
+  if (cssEntries.length === 0) {
+    return {
+      entries,
+      dependencies,
+    }
+  }
+
+  const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(patcher)
+  await Promise.all(cssEntries.map(async (cssEntry) => {
+    addSourceScanDependency(dependencies, cssEntry)
+    let css: string
+    try {
+      css = readFileSync(cssEntry, 'utf8')
+    }
+    catch {
+      return
+    }
+    const source = await resolveTailwindV3Source({
+      ...sourceOptions,
+      base: path.dirname(cssEntry),
+      css,
+    })
+    addSourceScanDependency(dependencies, source.config)
+    addSourceScanDependencies(dependencies, source.dependencies)
+    entries.push(...normalizeLegacyContentEntries(source.configObject?.content, source.cwd, {
+      relativeBase: source.config ? path.dirname(source.config) : source.cwd,
+    }))
+  }))
+
+  return {
+    entries,
+    dependencies,
+  }
+}
+
 async function pathExistsAsFile(file: string) {
   try {
     return (await stat(file)).isFile()
@@ -397,10 +446,21 @@ export async function resolveViteSourceScanEntries(
   scanOptions: ResolveViteSourceScanOptions = {},
 ): Promise<ResolvedViteSourceScan | undefined> {
   if (patcher.majorVersion === 3) {
-    const source = await resolveTailwindV3SourceFromPatcher(patcher)
-    const contentEntries = normalizeLegacyContentEntries(source.configObject?.content, source.config ? path.dirname(source.config) : source.cwd)
+    const [source, cssEntryScan] = await Promise.all([
+      resolveTailwindV3SourceFromPatcher(patcher),
+      resolveTailwindV3CssEntryScan(options, patcher),
+    ])
+    const contentEntries = [
+      ...normalizeLegacyContentEntries(source.configObject?.content, source.cwd, {
+        relativeBase: source.config ? path.dirname(source.config) : source.cwd,
+      }),
+      ...cssEntryScan.entries,
+    ]
     const dependencies = new Set<string>()
     addSourceScanDependency(dependencies, source.config)
+    for (const dependency of cssEntryScan.dependencies) {
+      dependencies.add(dependency)
+    }
     return contentEntries.length > 0
       ? createResolvedViteSourceScan({ entries: contentEntries }, dependencies)
       : undefined

@@ -660,7 +660,8 @@ exports[`vite test > vite disabled build 1`] = `
 `;
 
 exports[`vite test > vite disabled build 2`] = `
-"@tailwind base;
+"@config "../tailwind.config.js";
+@tailwind base;
 @tailwind utilities;
 "
 `;

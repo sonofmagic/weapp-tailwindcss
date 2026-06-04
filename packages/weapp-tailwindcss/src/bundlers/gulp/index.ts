@@ -18,7 +18,7 @@ import { processCachedTask } from '../shared/cache'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { emitHmrTiming } from '../shared/hmr-timing'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
-import { createSourceCandidateCollector } from '../vite/source-candidates'
+import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../vite/source-scan'
 
 const debug = createDebug()
@@ -59,6 +59,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
   let cachedGulpSourceCandidates: Set<string> | undefined
   let cachedGulpSourceCandidateSignature: string | undefined
+  const sourceCandidateExtractor = initialTwPatcher.majorVersion === 3
+    ? createTailwindV3DefaultExtractor()
+    : undefined
   const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
     = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: BundleRuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
       ?? createBundleRuntimeClassSetManager()
@@ -190,6 +193,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
     const collector = createSourceCandidateCollector({
       bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+      extractor: sourceCandidateExtractor,
     })
     await collector.scanRoot({
       entries: sourceScan?.entries,

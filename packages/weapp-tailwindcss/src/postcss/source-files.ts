@@ -53,7 +53,13 @@ async function collectConfigContentFiles(root: Root, base: string, options: Weap
       config: configPath,
       cwd: path.dirname(configPath),
     })
-    const contentEntries = normalizeLegacyContentEntries(result?.config.content, path.dirname(configPath))
+    const contentEntries = normalizeLegacyContentEntries(
+      result?.config.content,
+      options.version === 3 ? options.projectRoot ?? base : path.dirname(configPath),
+      {
+        relativeBase: path.dirname(configPath),
+      },
+    )
     files.push(...await expandTailwindSourceEntries(contentEntries))
   }
   return {
@@ -72,7 +78,13 @@ async function collectConfiguredContentEntries(root: Root, base: string, options
     config: resolvedConfigPath,
     cwd: path.dirname(resolvedConfigPath),
   })
-  return normalizeLegacyContentEntries(result?.config.content, path.dirname(resolvedConfigPath))
+  return normalizeLegacyContentEntries(
+    result?.config.content,
+    options.version === 3 ? options.projectRoot ?? base : path.dirname(resolvedConfigPath),
+    {
+      relativeBase: path.dirname(resolvedConfigPath),
+    },
+  )
 }
 
 async function collectRawCandidatesFromSourceEntries(sourceEntries: TailwindSourceEntry[]) {

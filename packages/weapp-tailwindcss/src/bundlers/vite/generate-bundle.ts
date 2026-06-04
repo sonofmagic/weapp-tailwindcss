@@ -4,12 +4,14 @@ import type { HmrTimingRecorder } from '../shared/hmr-timing'
 import type { BundleSnapshot } from './bundle-state'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
+import { existsSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcss from 'postcss'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x'
 import { processCachedTask } from '../shared/cache'
@@ -32,7 +34,7 @@ import { createReplayCssAsset, registerGeneratorDependencies } from './generate-
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
-import { isCSSRequest } from './utils'
+import { isCSSRequest, slash } from './utils'
 
 interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
@@ -55,8 +57,8 @@ interface GenerateBundleContext {
   markCssAssetProcessed?: (asset: OutputAsset, file?: string) => void
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
   recordCssAssetResult?: (file: string, css: string) => void
-  recordViteProcessedCssAssetResult?: (file: string, css: string) => void
-  getViteProcessedCssAssetResults?: () => Iterable<[string, string]>
+  recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
@@ -141,6 +143,207 @@ function canProcessViteSourceStyleAsCss(source: string, file: string) {
   catch {
     return false
   }
+}
+
+function isPackageJsonImportRequest(request: string) {
+  return request.startsWith('#')
+}
+
+function normalizeMatchedCssSourcePath(file: string | undefined) {
+  if (!file || !path.isAbsolute(file)) {
+    return undefined
+  }
+  return path.resolve(file.replace(/[?#].*$/, ''))
+}
+
+function stripStyleFileExtension(file: string) {
+  const normalized = file.replace(/[?#].*$/, '')
+  const ext = path.extname(normalized)
+  return ext ? normalized.slice(0, -ext.length) : normalized
+}
+
+function normalizeCssSourceForCompare(css: string) {
+  return css.trim()
+}
+
+function isMatchingCssSourceFile(
+  outputFile: string,
+  cssSourceFile: string,
+  outputRoot: string,
+) {
+  const normalizedOutput = stripStyleFileExtension(path.resolve(outputRoot, outputFile))
+  const normalizedSource = stripStyleFileExtension(path.resolve(cssSourceFile))
+  return normalizedOutput === normalizedSource
+}
+
+function collectStyleFileMatchBases(file: string, roots: Array<string | undefined>) {
+  const normalizedFile = file.replace(/[?#].*$/, '')
+  const bases = new Set<string>()
+  const addBase = (candidate: string) => {
+    const base = slash(stripStyleFileExtension(candidate))
+    if (base.length > 0) {
+      bases.add(base)
+    }
+  }
+  addBase(normalizedFile)
+
+  const resolvedRoots = roots
+    .filter((root): root is string => typeof root === 'string' && root.length > 0)
+    .map(root => path.resolve(root))
+  if (path.isAbsolute(normalizedFile)) {
+    for (const root of resolvedRoots) {
+      const relative = path.relative(root, normalizedFile)
+      if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) {
+        addBase(relative)
+      }
+    }
+  }
+  else {
+    for (const root of resolvedRoots) {
+      addBase(path.resolve(root, normalizedFile))
+    }
+  }
+  return bases
+}
+
+function collectParentDirectories(file: string) {
+  const directories: string[] = []
+  let current = path.dirname(path.resolve(file.replace(/[?#].*$/, '')))
+  while (true) {
+    directories.push(current)
+    const parent = path.dirname(current)
+    if (parent === current) {
+      break
+    }
+    current = parent
+  }
+  return directories
+}
+
+function hasMatchingStyleFileBase(outputFile: string, sourceFile: string, outputRoot: string, sourceRoot: string | undefined) {
+  const outputBases = collectStyleFileMatchBases(outputFile, [outputRoot])
+  const sourceBases = collectStyleFileMatchBases(sourceFile, [
+    sourceRoot,
+    ...collectParentDirectories(sourceFile),
+  ])
+  for (const outputBase of outputBases) {
+    for (const sourceBase of sourceBases) {
+      if (
+        outputBase === sourceBase
+        || outputBase.endsWith(`/${sourceBase}`)
+        || sourceBase.endsWith(`/${outputBase}`)
+      ) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {
+  const patcherCssSources = ((opts.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as NonNullable<NonNullable<InternalUserDefinedOptions['tailwindcss']>['v4']>['cssSources'] | undefined
+  return [
+    ...(opts.tailwindcss?.v4?.cssSources ?? []),
+    ...(patcherCssSources ?? []),
+  ]
+}
+
+function collectConfiguredCssEntries(opts: InternalUserDefinedOptions) {
+  const patcherCssEntries = ((opts.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssEntries ?? []) as string[] | undefined
+  return [
+    ...(opts.cssEntries ?? []),
+    ...(opts.tailwindcss?.v4?.cssEntries ?? []),
+    ...(patcherCssEntries ?? []),
+  ].filter((entry): entry is string => typeof entry === 'string' && entry.length > 0)
+}
+
+function collectCssConfigBaseCandidates(
+  source: string,
+  file: string,
+  outputRoot: string,
+  opts: InternalUserDefinedOptions,
+) {
+  const candidates: string[] = []
+  const seen = new Set<string>()
+  const addCandidate = (candidate: string | undefined) => {
+    if (!candidate) {
+      return
+    }
+    const normalized = path.resolve(candidate)
+    if (seen.has(normalized)) {
+      return
+    }
+    seen.add(normalized)
+    candidates.push(normalized)
+  }
+
+  addCandidate(path.dirname(path.resolve(outputRoot, file.replace(/[?#].*$/, ''))))
+
+  const normalizedSource = normalizeCssSourceForCompare(source)
+  const patcherProjectRoot = typeof opts.tailwindcssPatcherOptions?.projectRoot === 'string'
+    ? opts.tailwindcssPatcherOptions.projectRoot
+    : undefined
+  const sourceBaseFallback = opts.tailwindcss?.v4?.base
+    ?? patcherProjectRoot
+    ?? opts.tailwindcssBasedir
+    ?? outputRoot
+  const sourceRoot = opts.tailwindcssBasedir ?? patcherProjectRoot
+  const configuredCssEntries = collectConfiguredCssEntries(opts)
+  for (const cssEntry of configuredCssEntries) {
+    const resolvedCssEntry = path.resolve(cssEntry)
+    if (
+      configuredCssEntries.length === 1
+      || isMatchingCssSourceFile(file, resolvedCssEntry, outputRoot)
+      || hasMatchingStyleFileBase(file, resolvedCssEntry, outputRoot, sourceRoot)
+    ) {
+      addCandidate(path.dirname(resolvedCssEntry))
+    }
+  }
+  for (const cssSource of collectConfiguredTailwindV4CssSources(opts)) {
+    const cssSourceFile = normalizeMatchedCssSourcePath(cssSource.file)
+    const cssSourceCss = typeof cssSource.css === 'string'
+      ? normalizeCssSourceForCompare(cssSource.css)
+      : undefined
+    if (
+      cssSourceFile
+      && !isMatchingCssSourceFile(file, cssSourceFile, outputRoot)
+      && cssSourceCss !== normalizedSource
+    ) {
+      continue
+    }
+    addCandidate(cssSourceFile ? path.dirname(cssSourceFile) : undefined)
+    addCandidate(resolveTailwindV4CssSourceBase(cssSource, sourceBaseFallback))
+  }
+
+  return candidates
+}
+
+function normalizeRelativeCssConfigDirectives(
+  source: string,
+  file: string,
+  outputRoot: string,
+  opts: InternalUserDefinedOptions,
+) {
+  if (!source.includes('@config')) {
+    return source
+  }
+
+  const baseCandidates = collectCssConfigBaseCandidates(source, file, outputRoot, opts)
+
+  return source.replace(/@config\s+(["'])(.+?)\1\s*;?/g, (full, quote: string, request: string) => {
+    if (path.isAbsolute(request) || isPackageJsonImportRequest(request)) {
+      return full
+    }
+
+    for (const base of baseCandidates) {
+      const configFile = path.resolve(base, request)
+      if (existsSync(configFile)) {
+        return `@config ${quote}${slash(configFile)}${quote};`
+      }
+    }
+
+    return full
+  })
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
@@ -298,11 +501,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       filteredGeneratorCandidates,
     )
     let transformRuntime = transformBaseRuntime ?? runtime
+    const cssEntries = snapshot.entries.filter(entry =>
+      entry.type === 'css' && entry.output.type === 'asset')
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
       && generatorRuntime.size > 0
+      && cssEntries.length <= 1
     if (shouldValidateV3GeneratorRuntime) {
-      const cssEntries = snapshot.entries.filter(entry =>
-        entry.type === 'css' && entry.output.type === 'asset')
       const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
       if (mainCssEntry) {
         const validatedRuntime = await validateCandidatesByGenerator({
@@ -412,7 +616,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   ...fullRuntimeSet,
                   ...allowedRetryCandidates,
                 ])
-                unresolvedDynamicCandidates = unresolvedDynamicCandidates.filter(candidate => retryRuntimeSet.has(candidate))
+                unresolvedDynamicCandidates = unresolvedDynamicCandidates.filter(candidate => retryRuntimeSet?.has(candidate) === true)
               }
 
               if (retryRuntimeSet && unresolvedDynamicCandidates.length > 0) {
@@ -450,7 +654,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // uni-app dev/watch 会在每轮产物阶段重写 app.wxss。
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
-        const rawSource = originalEntrySource
+        const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, file, outDir, opts)
         const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget)
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
           delete bundle[file]

@@ -1351,7 +1351,10 @@ describe('watch-hmr regression cases', () => {
         path.resolve(__dirname, '../../../demo/taro-webpack-react-tailwindcss-v3', appStyle),
         'utf8',
       )
-      expect(appStyleSource.trimStart(), appStyle).toMatch(/^@import 'tailwindcss\/base';/)
+      expect(appStyleSource, appStyle).toContain('@import \'tailwindcss/base\';')
+      if (appStyleSource.includes('@config')) {
+        expect(appStyleSource, appStyle).toContain('../tailwind.config.js')
+      }
     }
 
     const taroWebpackV3Styles = [
@@ -1363,13 +1366,9 @@ describe('watch-hmr regression cases', () => {
     ]
     for (const stylePath of taroWebpackV3Styles) {
       const styleSource = await readFile(path.resolve(__dirname, '../../..', stylePath), 'utf8')
-      const firstNonEmptyLine = styleSource.split(/\r?\n/).find(line => line.trim() !== '')
-      const configIndex = styleSource.indexOf('@config')
-      const importIndex = styleSource.indexOf('@import')
-
-      expect(firstNonEmptyLine, stylePath).toBe('@import \'tailwindcss/base\';')
-      if (configIndex >= 0) {
-        expect(configIndex, stylePath).toBeGreaterThan(importIndex)
+      expect(styleSource, stylePath).toContain('@import \'tailwindcss/base\';')
+      if (styleSource.includes('@config')) {
+        expect(styleSource, stylePath).toContain('tailwind.config')
       }
     }
 

@@ -1,4 +1,5 @@
 @import "tailwindcss" source(none);
+@config "./tailwind.config.js";
 @source "./App.uvue";
 @source "./pages/**/*.{uts,uvue}";
 @source "./components/**/*.{uts,uvue}";

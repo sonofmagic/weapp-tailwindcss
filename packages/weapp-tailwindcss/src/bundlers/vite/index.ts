@@ -13,6 +13,7 @@ import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { createUniAppXPlugins } from '@/uni-app-x'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
@@ -33,7 +34,7 @@ import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createViteServeCssGenerationPlugins } from './serve-css-generation'
-import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
+import { createSourceCandidateCollector, createTailwindV3DefaultExtractor, isSourceCandidateRequest } from './source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { cleanUrl, slash } from './utils'
@@ -107,6 +108,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     ...options,
     __internalDeferMissingCssEntriesWarning: true,
   } as UserDefinedOptions)
+  const normalizedCssEntries = normalizeCssEntries(options.cssEntries, opts.tailwindcssBasedir ?? process.cwd())
+  if (normalizedCssEntries) {
+    opts.cssEntries ??= normalizedCssEntries
+  }
+  if (opts.cssEntries?.length) {
+    opts.tailwindcss ??= {}
+    opts.tailwindcss.v4 ??= {}
+    opts.tailwindcss.v4.cssEntries ??= opts.cssEntries
+  }
   const {
     disabled,
     customAttributes,
@@ -222,8 +232,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
   let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
+  const sourceCandidateExtractor = tailwindcssMajorVersion === 3
+    ? createTailwindV3DefaultExtractor()
+    : undefined
   const sourceCandidateCollector = createSourceCandidateCollector({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    extractor: sourceCandidateExtractor,
   })
   const sourceCandidateScanCache = new Map<string, SourceCandidateCollectorSnapshot>()
   let sourceScanEntries: TailwindSourceEntry[] | undefined
@@ -238,7 +252,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const processedCssAssetFiles = new Set<string>()
   const viteProcessedCssSourceFiles = new Set<string>()
   const viteGeneratedCssByFile = new Map<string, string>()
-  const viteProcessedCssAssetResults = new Map<string, string>()
+  const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
   const rememberedMainCssSources = new Map<string, string>()
   const rememberedMainCssSignatureByFile = new Map<string, string>()
   const tailwindRootCssModuleIds = new Set<string>()
@@ -474,8 +488,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const recordCssAssetResult = (file: string, css: string) => {
     viteGeneratedCssByFile.set(file, css)
   }
-  const recordViteProcessedCssAssetResult = (file: string, css: string) => {
-    viteProcessedCssAssetResults.set(normalizeOutputPathKey(file), css)
+  const recordViteProcessedCssAssetResult = (
+    file: string,
+    css: string,
+    options: { injectIntoMain?: boolean | undefined } = {},
+  ) => {
+    viteProcessedCssAssetResults.set(normalizeOutputPathKey(file), {
+      css,
+      injectIntoMain: options.injectIntoMain,
+    })
   }
   const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
   const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
@@ -646,7 +667,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     viteGeneratedCssByFile.set(file, generated.css)
     if (generated.css.includes('weapp-tailwindcss layer components start')) {
-      recordViteProcessedCssAssetResult(file, generated.css)
+      recordViteProcessedCssAssetResult(file, generated.css, {
+        injectIntoMain: cssHandlerOptions.isMainChunk,
+      })
     }
     markViteProcessedCssSource(file)
     rememberTailwindRootCssModule(id)

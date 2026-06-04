@@ -296,6 +296,13 @@ function extractConfigRequestFromSource(rawSource: string) {
   return undefined
 }
 
+function resolveConfigPath(base: string, configPath: string) {
+  if (path.isAbsolute(configPath) || isPackageJsonImportRequest(configPath)) {
+    return path.isAbsolute(configPath) ? configPath : undefined
+  }
+  return path.resolve(base, configPath)
+}
+
 function hasPreprocessorOnlySyntax(rawSource: string) {
   return /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@[\w-]+\s*:|@(?:mixin|include|function|use|forward)\b)/.test(rawSource)
 }
@@ -512,11 +519,7 @@ export function resolveCssEntrySource(
         const configPath = parseConfigRequest(node.params)
         if (configPath && !config) {
           configRequest = configPath
-          config = isPackageJsonImportRequest(configPath)
-            ? undefined
-            : path.isAbsolute(configPath)
-              ? configPath
-              : path.resolve(base, configPath)
+          config = resolveConfigPath(base, configPath)
         }
         if (removeConfig) {
           node.remove()
@@ -548,11 +551,7 @@ export function resolveCssEntrySource(
   catch {
     const css = extractTailwindSourceForPostcssFallback(rawSource, options)
     const configRequest = extractConfigRequestFromSource(rawSource)
-    const config = configRequest && !isPackageJsonImportRequest(configRequest)
-      ? path.isAbsolute(configRequest)
-        ? configRequest
-        : path.resolve(base, configRequest)
-      : undefined
+    const config = configRequest ? resolveConfigPath(base, configRequest) : undefined
     return css
       ? {
           css,

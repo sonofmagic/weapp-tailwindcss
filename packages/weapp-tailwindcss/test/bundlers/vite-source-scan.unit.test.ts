@@ -335,24 +335,31 @@ describe('bundlers/vite source scan', () => {
     expect(loadConfig).toHaveBeenCalledTimes(1)
   })
 
-  it('resolves Tailwind v4 @config from parent project roots for subpackage css entries', async () => {
-    const tempDir = await createTempDir('weapp-tw-vite-source-scan-parent-config')
+  it('resolves Tailwind v4 @config relative to the current css entry directory', async () => {
+    const tempDir = await createTempDir('weapp-tw-vite-source-scan-css-config')
     const cssEntry = path.join(tempDir, 'sub-normal/pages/index.css')
-    const configEntry = path.join(tempDir, 'tailwind.config.sub-normal.js')
+    const configEntry = path.join(tempDir, 'sub-normal/tailwind.config.sub-normal.js')
+    const parentConfigEntry = path.join(tempDir, 'tailwind.config.sub-normal.js')
     await mkdir(path.dirname(cssEntry), { recursive: true })
+    await mkdir(path.dirname(configEntry), { recursive: true })
     await writeFile(cssEntry, [
       '@import "tailwindcss" source(none);',
-      '@config "./tailwind.config.sub-normal.js";',
+      '@config "../tailwind.config.sub-normal.js";',
     ].join('\n'))
     await writeFile(configEntry, [
       'module.exports = {',
-      '  content: ["./sub-normal/**/*.{wxml,ts}"],',
+      '  content: ["./**/*.{wxml,ts}"],',
+      '}',
+    ].join('\n'))
+    await writeFile(parentConfigEntry, [
+      'module.exports = {',
+      '  content: ["./should-not-match/**/*.{wxml,ts}"],',
       '}',
     ].join('\n'))
 
     const loadConfig = vi.fn(async ({ config }: { config: string }) => ({
       config: {
-        content: config === configEntry ? ['./sub-normal/**/*.{wxml,ts}'] : [],
+        content: config === configEntry ? ['./**/*.{wxml,ts}'] : [],
       },
     }))
     vi.doMock('tailwindcss-config', () => ({
@@ -360,19 +367,31 @@ describe('bundlers/vite source scan', () => {
     }))
 
     const { resolveTailwindV4EntriesFromCss } = await import('@/bundlers/vite/source-scan')
-    const resolved = await resolveTailwindV4EntriesFromCss(
+    const unresolved = await resolveTailwindV4EntriesFromCss(
       [
         '@import "tailwindcss" source(none);',
         '@config "./tailwind.config.sub-normal.js";',
       ].join('\n'),
       path.dirname(cssEntry),
     )
+    const resolved = await resolveTailwindV4EntriesFromCss(
+      [
+        '@import "tailwindcss" source(none);',
+        '@config "../tailwind.config.sub-normal.js";',
+      ].join('\n'),
+      path.dirname(cssEntry),
+    )
 
-    expect(loadConfig).not.toHaveBeenCalled()
+    expect(loadConfig).toHaveBeenCalledTimes(1)
+    expect(loadConfig).toHaveBeenCalledWith({
+      config: path.join(path.dirname(cssEntry), 'tailwind.config.sub-normal.js'),
+      cwd: path.dirname(cssEntry),
+    })
+    expect(unresolved?.entries).toEqual([])
     expect(resolved?.entries).toEqual([
       {
-        base: tempDir,
-        pattern: 'sub-normal/**/*.{wxml,ts}',
+        base: path.dirname(configEntry),
+        pattern: '**/*.{wxml,ts}',
         negated: false,
       },
     ])
@@ -395,13 +414,13 @@ describe('bundlers/vite source scan', () => {
     ].join('\n'))
     await writeFile(path.join(srcDir, 'sub-normal/pages/index.css'), [
       '@import "tailwindcss" source(none);',
-      '@config "./tailwind.config.sub-normal.js";',
+      '@config "../../tailwind.config.sub-normal.js";',
     ].join('\n'))
     await writeFile(path.join(srcDir, 'tailwind.config.js'), 'module.exports = { content: [] }')
     await writeFile(path.join(srcDir, 'tailwind.config.order.js'), 'module.exports = { content: [] }')
     await writeFile(path.join(srcDir, 'tailwind.config.sub-normal.js'), [
       'module.exports = {',
-      '  content: ["./src/sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}"],',
+      '  content: ["./sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}"],',
       '}',
     ].join('\n'))
 
@@ -449,7 +468,7 @@ describe('bundlers/vite source scan', () => {
     })
     expect(resolved?.entries).toContainEqual({
       base: srcDir,
-      pattern: 'src/sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}',
+      pattern: 'sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}',
       negated: false,
     })
   })

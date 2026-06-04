@@ -338,6 +338,70 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(result?.code).not.toContain('@config')
   })
 
+  it('normalizes relative @config directives from the css module file before registration and generation', async () => {
+    const generateTailwindCss = vi.fn(async () => undefined)
+    const onTailwindRootCss = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      onTailwindRootCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    const result = await transform?.(
+      '@import "tailwindcss";\n@config "../tailwind.config.js";\n.foo { color: red; }',
+      '/project/src/app.css',
+    ) as TransformResult
+
+    expect(onTailwindRootCss).toHaveBeenCalledWith(
+      '/project/src/app.css',
+      expect.stringContaining('@config "/project/tailwind.config.js";'),
+    )
+    expect(generateTailwindCss).toHaveBeenCalledWith(
+      '/project/src/app.css',
+      expect.stringContaining('@config "/project/tailwind.config.js";'),
+      expect.anything(),
+    )
+    expect(result?.code).toContain('@import "/virtual/weapp-tailwindcss/index.css";')
+    expect(result?.code).not.toContain('@config')
+  })
+
+  it('normalizes relative @config directives from scss source files before generation', async () => {
+    const generateTailwindCss = vi.fn(async () => undefined)
+    const onTailwindRootCss = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      onTailwindRootCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    const source = [
+      '@config "../tailwind.config.js";',
+      '@tailwind base;',
+      '@tailwind components;',
+      '@tailwind utilities;',
+    ].join('\n')
+    const result = await transform?.(source, '/project/packageA/pages/cat.scss') as TransformResult
+
+    expect(onTailwindRootCss).toHaveBeenCalledWith(
+      '/project/packageA/pages/cat.scss',
+      expect.stringContaining('@config "/project/packageA/tailwind.config.js";'),
+    )
+    expect(generateTailwindCss).toHaveBeenCalledWith(
+      '/project/packageA/pages/cat.scss',
+      expect.stringContaining('@config "/project/packageA/tailwind.config.js";'),
+      expect.anything(),
+    )
+    expect(result?.code).not.toContain('@config')
+  })
+
   it('returns null for non-css transform requests', async () => {
     const [rewritePlugin] = createRewriteCssImportsPlugins({
       shouldRewrite: true,

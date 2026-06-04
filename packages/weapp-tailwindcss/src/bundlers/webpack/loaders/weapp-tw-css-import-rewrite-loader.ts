@@ -52,15 +52,7 @@ function isPackageJsonImportRequest(request: string) {
   return request.startsWith('#')
 }
 
-function toRootRelativeConfigPath(configPath: string, rootContext: string | undefined) {
-  if (!rootContext) {
-    return ensurePosix(configPath)
-  }
-  const relative = ensurePosix(path.relative(rootContext, configPath))
-  return relative.startsWith('.') ? relative : `./${relative}`
-}
-
-function normalizeCssConfigDirectives(source: string, resourcePath?: string, rootContext?: string) {
+function normalizeCssConfigDirectives(source: string, resourcePath?: string) {
   if (!resourcePath) {
     return source
   }
@@ -70,7 +62,7 @@ function normalizeCssConfigDirectives(source: string, resourcePath?: string, roo
       return full
     }
     const resolved = path.resolve(base, request)
-    return `@config ${quote}${toRootRelativeConfigPath(resolved, rootContext)}${quote};`
+    return `@config ${quote}${ensurePosix(resolved)}${quote};`
   })
 }
 
@@ -106,7 +98,7 @@ async function generateCssForWebpackPipeline(
   await runtimeState.readyPromise
   const runtime = await getRuntimeSet()
   const file = loaderContext.resourcePath
-  const normalizedSource = normalizeCssConfigDirectives(source, file, loaderContext.rootContext)
+  const normalizedSource = normalizeCssConfigDirectives(source, file)
   const cssHandlerOptions = createCssHandlerOptions(
     compilerOptions,
     runtimeState.twPatcher.majorVersion,
@@ -173,14 +165,13 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
         css: normalizeCssConfigDirectives(
           normalizeTailwindSourceForGenerator(input, { importFallback: true }),
           this.resourcePath,
-          this.rootContext,
         ),
       })
     : undefined
   const transform = () => {
     const transformed = transformCssImportRewriteSource(source, opt)
     if (typeof transformed === 'string') {
-      return normalizeCssConfigDirectives(transformed, this.resourcePath, this.rootContext)
+      return normalizeCssConfigDirectives(transformed, this.resourcePath)
     }
     return transformed
   }

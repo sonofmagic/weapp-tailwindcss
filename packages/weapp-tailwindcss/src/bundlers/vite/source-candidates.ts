@@ -1,6 +1,7 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { IArbitraryValues } from '@/types/shared'
 import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { extractSourceCandidates, resolveProjectSourceFiles } from 'tailwindcss-patch'
 import {
@@ -47,6 +48,7 @@ export interface SourceCandidateCollectorOptions {
    * 是否补充 UnoCSS 风格裸任意值候选。
    */
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
+  extractor?: ((source: string, extension: string) => Promise<Iterable<string>> | Iterable<string>) | undefined
 }
 
 const CLEAN_URL_RE = /[?#].*$/
@@ -94,6 +96,23 @@ const TAILWIND_V4_IGNORED_FILES = [
   '.env.*',
 ]
 const sourceCandidateContentCache = new Map<string, string[]>()
+const require = createRequire(import.meta.url)
+const TAILWIND_V3_HTML_TOKEN_CANDIDATES = new Set([
+  '/block',
+  '/div',
+  '/span',
+  '/template',
+  '/text',
+  '/view',
+  'class',
+  'className',
+  'div',
+  'hover-class',
+  'span',
+  'template',
+  'text',
+  'view',
+])
 
 function cleanUrl(id: string) {
   return resolveSourceScanPath(id.replace(CLEAN_URL_RE, ''))
@@ -199,8 +218,40 @@ function createSourceCandidateContentCacheKey(
   extension: string,
   source: string,
   bareArbitraryValues: IArbitraryValues['bareArbitraryValues'] | undefined,
+  extractor: SourceCandidateCollectorOptions['extractor'],
 ) {
-  return `${extension}\0${JSON.stringify(bareArbitraryValues ?? false)}\0${source}`
+  return `${extension}\0${JSON.stringify(bareArbitraryValues ?? false)}\0${extractor ? 'custom' : 'default'}\0${source}`
+}
+
+async function extractCandidates(
+  source: string,
+  extension: string,
+  options: SourceCandidateCollectorOptions,
+) {
+  if (options.extractor) {
+    return new Set(await options.extractor(source, extension))
+  }
+  return new Set(await extractSourceCandidates(source, extension, {
+    ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
+  }))
+}
+
+export function createTailwindV3DefaultExtractor() {
+  try {
+    const defaultExtractorModule = require('tailwindcss/lib/lib/defaultExtractor')
+    const resolveConfigModule = require('tailwindcss/resolveConfig')
+    const resolveConfig = resolveConfigModule.default ?? resolveConfigModule
+    const defaultExtractor = defaultExtractorModule.defaultExtractor ?? defaultExtractorModule.default ?? defaultExtractorModule
+    const extractor = defaultExtractor({
+      tailwindConfig: resolveConfig({ content: [] }),
+    })
+    return (source: string) => new Set<string>(
+      extractor(source).filter((candidate: string) => !TAILWIND_V3_HTML_TOKEN_CANDIDATES.has(candidate)),
+    )
+  }
+  catch {
+    return undefined
+  }
 }
 
 export function isSourceCandidateRequest(id: string) {
@@ -245,16 +296,14 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   async function sync(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues)
+    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
       replaceScanLayer(normalizedId, new Set(cachedCandidates))
       return
     }
 
-    const nextCandidates = new Set(await extractSourceCandidates(source, extension, {
-      bareArbitraryValues: options.bareArbitraryValues,
-    }))
+    const nextCandidates = await extractCandidates(source, extension, options)
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
     replaceScanLayer(normalizedId, nextCandidates)
@@ -262,16 +311,14 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    const contentCacheKey = createSourceCandidateContentCacheKey('css', source, options.bareArbitraryValues)
+    const contentCacheKey = createSourceCandidateContentCacheKey('css', source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
       replaceCssLayer(normalizedId, new Set(cachedCandidates))
       return
     }
 
-    const nextCandidates = new Set(await extractSourceCandidates(source, 'css', {
-      bareArbitraryValues: options.bareArbitraryValues,
-    }))
+    const nextCandidates = await extractCandidates(source, 'css', options)
     sourceCandidateContentCache.set(contentCacheKey, [...nextCandidates])
 
     replaceCssLayer(normalizedId, nextCandidates)
@@ -280,13 +327,11 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   async function merge(id: string, source: string) {
     const normalizedId = cleanUrl(id)
     const extension = resolveSourceCandidateExtension(normalizedId)
-    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues)
+    const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     const extractedCandidates = cachedCandidates
       ? new Set(cachedCandidates)
-      : new Set(await extractSourceCandidates(source, extension, {
-          bareArbitraryValues: options.bareArbitraryValues,
-        }))
+      : await extractCandidates(source, extension, options)
     if (!cachedCandidates) {
       sourceCandidateContentCache.set(contentCacheKey, [...extractedCandidates])
     }
@@ -317,7 +362,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       filter: isSourceCandidateRequest,
     })
 
-    await Promise.all(files.map(file => syncFile(file)))
+    await Promise.all(files.map(file => syncFile(resolveSourceScanPath(file))))
   }
 
   function replaceFinal(id: string, nextCandidates: Set<string>) {

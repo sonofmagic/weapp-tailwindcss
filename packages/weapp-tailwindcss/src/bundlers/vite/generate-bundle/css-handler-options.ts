@@ -1,4 +1,5 @@
 import type { InternalUserDefinedOptions, IStyleHandlerOptions } from '@/types'
+import path from 'node:path'
 
 type CssHandlerOptions = IStyleHandlerOptions & {
   postcssOptions: {
@@ -33,6 +34,7 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
     const appType = options.getAppType()
     const isMainChunk = options.mainCssChunkMatcher(file, appType)
     const outputRoot = options.getOutputRoot?.()
+    const from = outputRoot ? path.resolve(outputRoot, file) : file
     const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}`
     const cached = cssHandlerOptionsCache.get(cacheKey)
     if (cached) {
@@ -43,7 +45,7 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
       isMainChunk,
       postcssOptions: {
         options: {
-          from: file,
+          from,
         },
       },
       majorVersion,

@@ -1,10 +1,11 @@
 import type { Plugin } from 'vite'
 import type { AppType } from '@/types'
+import path from 'node:path'
 import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
 import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
-import { cleanUrl, isCSSRequest } from './utils'
+import { cleanUrl, isCSSRequest, slash } from './utils'
 
 function joinPosixPath(base: string, subpath: string) {
   if (base.endsWith('/')) {
@@ -34,6 +35,26 @@ interface RewriteCssImportsOptions {
 
 function stripTailwindConfigDirectives(code: string) {
   return code.replace(/^\s*@config\s+(?:"[^"]+"|'[^']+')[^;\n]*;\s*$/gm, '')
+}
+
+function isPackageJsonImportRequest(request: string) {
+  return request.startsWith('#')
+}
+
+function normalizeTailwindConfigDirectives(code: string, id: string) {
+  const file = cleanUrl(id)
+  if (!path.isAbsolute(file)) {
+    return code
+  }
+
+  const base = path.dirname(file)
+  return code.replace(/@config\s+(["'])(.+?)\1\s*;?/g, (full, quote: string, request: string) => {
+    if (path.isAbsolute(request) || isPackageJsonImportRequest(request)) {
+      return full
+    }
+
+    return `@config ${quote}${slash(path.resolve(base, request))}${quote};`
+  })
 }
 
 export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions): Plugin[] {
@@ -67,10 +88,13 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         if (!isCSSRequest(id)) {
           return null
         }
-        if (hasTailwindRootDirectives(code)) {
-          await options.onTailwindRootCss?.(id, code)
+        const normalizedCode = hasTailwindRootDirectives(code)
+          ? normalizeTailwindConfigDirectives(code, id)
+          : code
+        if (hasTailwindRootDirectives(normalizedCode)) {
+          await options.onTailwindRootCss?.(id, normalizedCode)
           if (options.shouldOwnTailwindGeneration) {
-            const generatedCss = await options.generateTailwindCss?.(id, code, this)
+            const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, this)
             if (generatedCss !== undefined) {
               return {
                 code: generatedCss,
@@ -83,13 +107,13 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         if (!options.shouldRewrite) {
           return null
         }
-        const rewritten = rewriteTailwindcssImportsInCode(code, weappTailwindcssDirPosix, {
+        const rewritten = rewriteTailwindcssImportsInCode(normalizedCode, weappTailwindcssDirPosix, {
           join: joinPosixPath,
           appType: resolveAppType(),
           rootImport,
         })
         const nextCode = shouldOwnTailwindGeneration
-          ? stripTailwindConfigDirectives(rewritten ?? code)
+          ? stripTailwindConfigDirectives(rewritten ?? normalizedCode)
           : rewritten
         if (!nextCode || nextCode === code) {
           return null

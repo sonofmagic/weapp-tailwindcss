@@ -362,7 +362,10 @@ function parseImportSourceParam(params: string) {
 }
 
 function isTailwindCssImport(params: string) {
-  return /^\s*(['"])tailwindcss(?:\/[^'"]*)?\1/.test(params)
+  const specifier = parseCssImportSpecifier(params)
+  return specifier === 'tailwindcss'
+    || specifier?.startsWith('tailwindcss/')
+    || specifier?.replaceAll('\\', '/').endsWith('/tailwindcss/index.css')
 }
 
 function parseCssImportSpecifier(params: string) {

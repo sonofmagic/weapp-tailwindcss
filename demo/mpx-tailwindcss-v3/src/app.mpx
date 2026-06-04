@@ -7,6 +7,7 @@ createApp({})
 </script>
 
 <style lang="scss">
+  @config "../tailwind.config.js";
   @import 'tailwindcss/base.css';
   @import 'tailwindcss/components.css';
   @import 'tailwindcss/utilities.css';

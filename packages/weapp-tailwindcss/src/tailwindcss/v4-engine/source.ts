@@ -1,5 +1,7 @@
 import type { TailwindV4SourceOptions, TailwindV4SourceOptionsWithSources } from './types'
 import type { TailwindcssPatcherLike } from '@/types'
+import { existsSync, readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
 import postcss from 'postcss'
@@ -7,8 +9,63 @@ import {
   resolveTailwindV4Source as resolvePatchTailwindV4Source,
   resolveTailwindV4SourceFromPatchOptions,
 } from 'tailwindcss-patch'
+import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
+import { resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { omitUndefined } from '@/utils/object'
+
+const require = createRequire(import.meta.url)
+
+function isCssEntryPoint(file: string | undefined) {
+  return typeof file === 'string'
+    && path.basename(file) === 'index.css'
+    && existsSync(file)
+}
+
+function resolvePackageCssEntryPoint(specifier: string) {
+  try {
+    const resolved = require.resolve(specifier)
+    if (isCssEntryPoint(resolved)) {
+      return resolved
+    }
+  }
+  catch {
+  }
+
+  const packageName = specifier.replace(/\/index\.css$/, '')
+  if (packageName !== 'tailwindcss') {
+    return undefined
+  }
+
+  try {
+    const packageJson = require.resolve(`${packageName}/package.json`)
+    const cssEntry = path.resolve(path.dirname(packageJson), 'index.css')
+    if (isCssEntryPoint(cssEntry)) {
+      return cssEntry
+    }
+  }
+  catch {
+  }
+
+  try {
+    let current = path.dirname(require.resolve('tailwindcss-patch'))
+    while (true) {
+      const cssEntry = path.resolve(current, '..', 'tailwindcss', 'index.css')
+      if (isCssEntryPoint(cssEntry)) {
+        return cssEntry
+      }
+      const parent = path.dirname(current)
+      if (parent === current) {
+        break
+      }
+      current = parent
+    }
+  }
+  catch {
+  }
+
+  return undefined
+}
 
 function isPostcssPluginImportTarget(value: string | undefined) {
   if (!value) {
@@ -112,15 +169,117 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
     if (!parsed || !importSpecifiers.has(parsed.specifier)) {
       return
     }
+    const cssEntryPoint = resolvePackageCssEntryPoint(`${parsed.specifier}/index.css`)
+    if (!cssEntryPoint) {
+      return
+    }
 
     rule.params = rule.params.replace(
       parsed.raw,
-      quoteCssImportSpecifier(`${parsed.specifier}/index.css`, parsed.quote),
+      quoteCssImportSpecifier(cssEntryPoint, parsed.quote),
     )
     changed = true
   })
 
   return changed ? root.toString() : css
+}
+
+function normalizeTailwindV4CssSources(
+  cssSources: TailwindV4SourceOptions['cssSources'],
+  packageName: string | undefined,
+) {
+  if (!cssSources?.length) {
+    return cssSources
+  }
+
+  let changed = false
+  const normalizedCssSources = cssSources.map((cssSource) => {
+    if (typeof cssSource.css !== 'string') {
+      return cssSource
+    }
+    const css = normalizeTailwindV4CssPackageImports(cssSource.css, packageName)
+    if (css === cssSource.css) {
+      return cssSource
+    }
+    changed = true
+    return {
+      ...cssSource,
+      css,
+    }
+  })
+
+  return changed ? normalizedCssSources : cssSources
+}
+
+function normalizeTailwindV4CssEntrySources(
+  cssEntries: TailwindV4SourceOptions['cssEntries'],
+  packageName: string | undefined,
+) {
+  if (!cssEntries?.length) {
+    return undefined
+  }
+
+  const remainingCssEntries: string[] = []
+  const cssSources: NonNullable<TailwindV4SourceOptions['cssSources']> = []
+  for (const cssEntry of cssEntries) {
+    const file = path.resolve(cssEntry)
+    if (!existsSync(file)) {
+      remainingCssEntries.push(cssEntry)
+      continue
+    }
+    const base = path.dirname(file)
+    const rawCss = readFileSync(file, 'utf8')
+    const entrySource = resolveCssEntrySource(rawCss, base, {
+      removeConfig: false,
+    })
+    const css = normalizeTailwindV4CssPackageImports(
+      normalizeConfigDirective(rawCss, entrySource?.config),
+      packageName,
+    )
+    cssSources.push({
+      file,
+      base,
+      css,
+      dependencies: [file],
+    })
+  }
+
+  return {
+    cssEntries: remainingCssEntries,
+    cssSources,
+  }
+}
+
+function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | undefined) {
+  if (!options) {
+    return options
+  }
+
+  const css = options.css === undefined
+    ? undefined
+    : normalizeTailwindV4CssPackageImports(options.css, options.packageName)
+  const entrySources = normalizeTailwindV4CssEntrySources(options.cssEntries, options.packageName)
+  const combinedCssSources = options.cssSources || entrySources?.cssSources
+    ? [
+        ...(options.cssSources ?? []),
+        ...(entrySources?.cssSources ?? []),
+      ]
+    : undefined
+  const cssSources = normalizeTailwindV4CssSources(
+    combinedCssSources,
+    options.packageName,
+  )
+  const cssEntries = entrySources?.cssEntries ?? options.cssEntries
+  if (css === options.css && cssSources === options.cssSources && cssEntries === options.cssEntries) {
+    return options
+  }
+
+  return {
+    ...options,
+    ...(css === undefined ? {} : { css }),
+    ...(cssEntries === undefined ? {} : { cssEntries }),
+    ...(cssSources === undefined ? {} : { cssSources }),
+  }
 }
 
 function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
@@ -199,12 +358,7 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
 }
 
 export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {
-  const normalizedOptions = options?.css === undefined
-    ? options
-    : {
-        ...options,
-        css: normalizeTailwindV4CssPackageImports(options.css, options.packageName),
-      }
+  const normalizedOptions = normalizeTailwindV4SourceOptions(options)
   return resolvePatchTailwindV4Source(normalizedOptions)
 }
 

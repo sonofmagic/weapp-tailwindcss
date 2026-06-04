@@ -22,8 +22,8 @@ interface CssFinalizerContext {
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
   recordCssAssetResult?: (file: string, css: string) => void
-  recordViteProcessedCssAssetResult?: (file: string, css: string) => void
-  getViteProcessedCssAssetResults?: () => Iterable<[string, string]>
+  recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
   getRecordedGeneratorCandidates?: () => Set<string> | undefined
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined

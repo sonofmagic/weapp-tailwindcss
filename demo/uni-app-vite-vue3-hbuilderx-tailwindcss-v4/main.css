@@ -1,4 +1,5 @@
 @import "tailwindcss" source(none);
+@config "./tailwind.config.js";
 @source "./App.vue";
 @source "./pages/**/*.{vue,js,ts}";
 @source not "./uni_modules/**/*";

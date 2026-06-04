@@ -74,13 +74,47 @@ describe('bundlers/shared css-imports', () => {
 
     expect(result).toBe([
       `@import "${pkgDir}/index.css" source(none);`,
-      '@config "./tailwind.config.sub-normal.js";',
+      '@config "/repo/demo/mpx-tailwindcss-v4/tailwind.config.sub-normal.js";',
     ].join('\n'))
     expect(registerCssSource).toHaveBeenCalledWith({
       file: '/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css',
       css: [
         '@import "tailwindcss" source(none);',
-        '@config "./tailwind.config.sub-normal.js";',
+        '@config "/repo/demo/mpx-tailwindcss-v4/tailwind.config.sub-normal.js";',
+      ].join('\n'),
+    })
+  })
+
+  it('normalizes main package relative @config paths without depending on webpack rootContext', async () => {
+    const registerCssSource = vi.fn()
+    const result = loader.call({
+      getOptions: () => ({
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType: 'mpx',
+          registerCssSource,
+        },
+      }),
+      resourcePath: '/repo/demo/mpx-tailwindcss-v4/src/app.css',
+      rootContext: '/repo/demo/mpx-tailwindcss-v4',
+    } as any,
+      [
+        '@import "tailwindcss";',
+        '@config "../tailwind.config.js";',
+      ].join('\n'),
+    )
+
+    await Promise.resolve(result)
+
+    expect(result).toBe([
+      `@import "${pkgDir}/index.css";`,
+      '@config "/repo/demo/mpx-tailwindcss-v4/tailwind.config.js";',
+    ].join('\n'))
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/repo/demo/mpx-tailwindcss-v4/src/app.css',
+      css: [
+        '@import "tailwindcss";',
+        '@config "/repo/demo/mpx-tailwindcss-v4/tailwind.config.js";',
       ].join('\n'),
     })
   })
@@ -176,7 +210,7 @@ describe('bundlers/shared css-imports', () => {
       rootContext: '/src',
     } as any, '@import "tailwindcss";\n@config "./tailwind.config.js";')
 
-    expect(result).toBe('@import "/virtual/weapp-tailwindcss/index.css";\n@config "./tailwind.config.js";')
+    expect(result).toBe('@import "/virtual/weapp-tailwindcss/index.css";\n@config "/src/tailwind.config.js";')
   })
 
   it('registers sanitized preprocessor root css sources from the webpack loader', async () => {
