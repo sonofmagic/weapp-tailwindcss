@@ -24,7 +24,7 @@ describe('mini-program generated css cleanup', () => {
   it('unwraps Tailwind source media markers in final mini-program css', () => {
     const css = finalizeMiniProgramCss([
       '@media source(none) {',
-      'view,text,:after,:before{box-sizing:border-box}',
+      'view,text,::after,::before{box-sizing:border-box}',
       '}',
       '@media (min-width: 768px) {',
       '.md\\:block{display:block}',
@@ -32,7 +32,7 @@ describe('mini-program generated css cleanup', () => {
     ].join('\n'))
 
     expect(css).not.toContain('@media source(none)')
-    expect(css).toContain('view,text,:after,:before{box-sizing:border-box}')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box}')
     expect(css).toContain('@media (min-width: 768px)')
     expect(css).toContain('.md\\:block{display:block}')
   })
@@ -72,6 +72,19 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('--color-red-500: red')
   })
 
+  it('keeps pseudo content init scoped to pseudo elements when hoisting preflight', () => {
+    const css = finalizeMiniProgramCss([
+      'view,text,::after,::before{--tw-content:"";box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}',
+      '.before\\:content-\\[\\\"x\\\"\\]::before{--tw-content:"x";content:var(--tw-content)}',
+    ].join('\n'), {
+      preservePseudoContentInit: true,
+    })
+
+    expect(css).toContain('::before,\n::after{--tw-content:\'\'')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box')
+    expect(css).not.toContain('view,text,::after,::before{--tw-content')
+  })
+
   it('removes Tailwind v4 content init when content variable is unused', () => {
     const css = finalizeMiniProgramCss([
       ':host,page,.tw-root,wx-root-portal-content {',
@@ -93,7 +106,7 @@ describe('mini-program generated css cleanup', () => {
       '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
     ].join(''))
 
-    expect(css).toContain('view,text,:after,:before{--tw-border-style:solid}')
+    expect(css).toContain('view,text,::after,::before{--tw-border-style:solid}')
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
     expect(css).not.toContain('@property')
   })
@@ -112,7 +125,7 @@ describe('mini-program generated css cleanup', () => {
       },
     })
 
-    expect(css.match(/view,text,:after,:before\{/g)).toHaveLength(1)
+    expect(css.match(/view,text,::after,::before\{/g)).toHaveLength(1)
     expect(css).toContain('border:0 solid;--tw-border-style:solid')
   })
 
@@ -129,7 +142,7 @@ describe('mini-program generated css cleanup', () => {
       },
     })
 
-    expect(css).toContain('view,text,:after,:before')
+    expect(css).toContain('view,text,::after,::before')
     expect(css).toContain('box-sizing:border-box')
     expect(css).toContain('margin:0')
     expect(css).toContain('padding:0')
@@ -142,7 +155,7 @@ describe('mini-program generated css cleanup', () => {
       cssPreflight: false,
     })
 
-    expect(css).not.toContain('view,text,:after,:before')
+    expect(css).not.toContain('view,text,::after,::before')
     expect(css).not.toContain('border:0 solid')
     expect(css).toContain('.divide-double>view+view{border-style:double}')
   })
@@ -193,7 +206,7 @@ describe('mini-program generated css cleanup', () => {
       '.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}',
     ].join(''))
 
-    expect(css).toContain('view,text,:after,:before{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:initial')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-from-position:0%')

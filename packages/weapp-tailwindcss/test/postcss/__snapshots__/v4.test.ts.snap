@@ -53,7 +53,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --font-weight-bold: 700;
   --radius-md: .375rem;
 }
-view,text,:after,:before {
+view,text,::after,::before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -1203,7 +1203,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
   --spacing: .25rem;
 }
-view,text,:after,:before {
+view,text,::after,::before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;
@@ -1504,7 +1504,7 @@ page,.tw-root,wx-root-portal-content,:host {
     --color-zinc-800: rgb(39, 39, 42);
     --spacing: .25rem;
   }
-view,text,:after,:before {
+view,text,::after,::before {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;

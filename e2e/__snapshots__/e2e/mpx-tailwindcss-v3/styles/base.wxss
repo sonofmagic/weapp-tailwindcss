@@ -1,8 +1,11 @@
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;

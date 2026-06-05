@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 12472 | 28 | false | false | false | false | true |
+| 11414 | 28 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -14,11 +14,14 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 ```css
 @import 'app-origin.wxss';
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -126,20 +129,20 @@ text,
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.before_ccontent-_b_a11111_a_B:before {
+.before_ccontent-_b_a11111_a_B::before {
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_a222_a_B:before {
+.before_ccontent-_b_a222_a_B::before {
   --tw-content: '222';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
-  --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
@@ -147,33 +150,20 @@ text,
     --tw-text-opacity: 1;
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
   }
-}
-.before_ccontent-_b_a11111_a_B:before {
-  --tw-content: '11111';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_a222_a_B:before {
-  --tw-content: '222';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
-  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
-  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
-  content: var(--tw-content);
 }
 ```
 
 ### app-origin.wxss
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -281,20 +271,20 @@ text,
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.before_ccontent-_b_a11111_a_B:before {
+.before_ccontent-_b_a11111_a_B::before {
   --tw-content: '11111';
   content: var(--tw-content);
 }
-.before_ccontent-_b_a222_a_B:before {
+.before_ccontent-_b_a222_a_B::before {
   --tw-content: '222';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
-  --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
@@ -303,35 +293,19 @@ text,
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
   }
 }
-.before_ccontent-_b_a11111_a_B:before {
-  --tw-content: '11111';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_a222_a_B:before {
-  --tw-content: '222';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
-  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
-  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
-  content: var(--tw-content);
-}
 ```
 
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -388,7 +362,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -429,14 +403,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -493,7 +467,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }

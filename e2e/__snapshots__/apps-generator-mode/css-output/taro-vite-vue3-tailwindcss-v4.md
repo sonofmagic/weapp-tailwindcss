@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 11792 | 35 | false | false | false | false | true |
+| 13082 | 35 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -16,20 +16,43 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 @import 'app-origin.wxss';
 view,
 text,
-:after,
-:before {
+::after,
+::before {
+  --tw-rotate-x: initial;
+  --tw-rotate-y: initial;
+  --tw-rotate-z: initial;
+  --tw-skew-x: initial;
+  --tw-skew-y: initial;
+  --tw-border-style: solid;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-outline-style: solid;
+  --tw-blur: initial;
+  --tw-brightness: initial;
+  --tw-contrast: initial;
+  --tw-grayscale: initial;
+  --tw-hue-rotate: initial;
+  --tw-invert: initial;
+  --tw-opacity: initial;
+  --tw-saturate: initial;
+  --tw-sepia: initial;
+  --tw-drop-shadow: initial;
+  --tw-drop-shadow-color: initial;
+  --tw-drop-shadow-alpha: 100%;
+  --tw-drop-shadow-size: initial;
+  --tw-ease: initial;
   --tw-duration: initial;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-to-position: 100%;
 }
 :host,
 page,
@@ -115,11 +138,11 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -200,20 +223,43 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
+  --tw-rotate-x: initial;
+  --tw-rotate-y: initial;
+  --tw-rotate-z: initial;
+  --tw-skew-x: initial;
+  --tw-skew-y: initial;
+  --tw-border-style: solid;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
+  --tw-outline-style: solid;
+  --tw-blur: initial;
+  --tw-brightness: initial;
+  --tw-contrast: initial;
+  --tw-grayscale: initial;
+  --tw-hue-rotate: initial;
+  --tw-invert: initial;
+  --tw-opacity: initial;
+  --tw-saturate: initial;
+  --tw-sepia: initial;
+  --tw-drop-shadow: initial;
+  --tw-drop-shadow-color: initial;
+  --tw-drop-shadow-alpha: 100%;
+  --tw-drop-shadow-size: initial;
+  --tw-ease: initial;
   --tw-duration: initial;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-to-position: 100%;
 }
 :host,
 page,
@@ -299,11 +345,11 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -384,8 +430,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
@@ -406,7 +452,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -448,8 +494,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
@@ -470,7 +516,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }

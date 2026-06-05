@@ -6,18 +6,21 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 51859 | 96 | false | false | false | false | true |
+| 52019 | 96 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -270,89 +273,89 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h0000ff_B:before {
+.before_cborder-_b_h0000ff_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(0, 0, 255, var(--tw-border-opacity, 1));
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cml-0_d5:after {
+.after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ctext-red-500:after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-.after_ccontent-_b_q_x_q_B:after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_a_x_a_B:after {
+.after_ccontent-_b_a_x_a_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_aHello_World_a_B:after {
+.after_ccontent-_b_aHello_World_a_B::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_x_B:after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }
@@ -585,89 +588,89 @@ text,
 .aaaaaaa {
   color: red;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h0000ff_B:before {
+.before_cborder-_b_h0000ff_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(0, 0, 255, var(--tw-border-opacity, 1));
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cml-0_d5:after {
+.after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ctext-red-500:after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-.after_ccontent-_b_q_x_q_B:after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_a_x_a_B:after {
+.after_ccontent-_b_a_x_a_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_aHello_World_a_B:after {
+.after_ccontent-_b_aHello_World_a_B::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_x_B:after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }
@@ -722,14 +725,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -982,89 +985,89 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h0000ff_B:before {
+.before_cborder-_b_h0000ff_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(0, 0, 255, var(--tw-border-opacity, 1));
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cml-0_d5:after {
+.after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ctext-red-500:after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-.after_ccontent-_b_q_x_q_B:after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_a_x_a_B:after {
+.after_ccontent-_b_a_x_a_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_aHello_World_a_B:after {
+.after_ccontent-_b_aHello_World_a_B::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_x_B:after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }
@@ -1092,14 +1095,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1352,89 +1355,89 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h0000ff_B:before {
+.before_cborder-_b_h0000ff_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(0, 0, 255, var(--tw-border-opacity, 1));
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cml-0_d5:after {
+.after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ctext-red-500:after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-.after_ccontent-_b_q_x_q_B:after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_a_x_a_B:after {
+.after_ccontent-_b_a_x_a_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_aHello_World_a_B:after {
+.after_ccontent-_b_aHello_World_a_B::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_x_B:after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }
@@ -1462,14 +1465,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1722,89 +1725,89 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h0000ff_B:before {
+.before_cborder-_b_h0000ff_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(0, 0, 255, var(--tw-border-opacity, 1));
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cml-0_d5:after {
+.after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ctext-red-500:after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-.after_ccontent-_b_q_x_q_B:after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_a_x_a_B:after {
+.after_ccontent-_b_a_x_a_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_aHello_World_a_B:after {
+.after_ccontent-_b_aHello_World_a_B::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_x_B:after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }
@@ -1832,14 +1835,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2092,89 +2095,89 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h0000ff_B:before {
+.before_cborder-_b_h0000ff_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(0, 0, 255, var(--tw-border-opacity, 1));
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 普通分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleB 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleC 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cml-0_d5:after {
+.after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ctext-red-500:after {
+.after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-.after_ccontent-_b_q_x_q_B:after {
+.after_ccontent-_b_q_x_q_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B:after {
+.after_ccontent-_b_qu_x7684_u_x6492_u_x7684_u_x6492__q_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_a_x_a_B:after {
+.after_ccontent-_b_a_x_a_B::after {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.after_ccontent-_b_aHello_World_a_B:after {
+.after_ccontent-_b_aHello_World_a_B::after {
   --tw-content: 'Hello World';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B:after {
+.after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B::after {
   --tw-content: '的撒的撒';
   content: var(--tw-content);
 }
-.after_ccontent-_b_x_B:after {
+.after_ccontent-_b_x_B::after {
   --tw-content: *;
   content: var(--tw-content);
 }

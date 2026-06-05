@@ -1,11 +1,11 @@
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -117,7 +117,7 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -180,7 +180,7 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }

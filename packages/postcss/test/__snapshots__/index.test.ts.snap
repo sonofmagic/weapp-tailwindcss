@@ -39,7 +39,7 @@ exports[`index > only utilities 2`] = `
   --color-blue-500: rgb(50, 128, 255);
   --spacing: .25rem;
 }
-view,text,:after,:before {
+view,text,::after,::before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

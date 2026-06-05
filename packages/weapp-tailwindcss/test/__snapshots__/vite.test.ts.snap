@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`vite > v4-vite-plugin > css 1`] = `
-"view,text,:after,:before {
+"view,text,::after,::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -107,7 +107,7 @@ console.log("bg-_b_h123456_B text-_b_h123456_B first-letter_cmarker_ctext-clip")
 `;
 
 exports[`vite > v4-vite-postcss > css 1`] = `
-"view,text,:after,:before {
+"view,text,::after,::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;

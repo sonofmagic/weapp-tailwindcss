@@ -35,7 +35,7 @@ view,text,::before,::after {
 page,.tw-root,wx-root-portal-content,:host {
   --color-zinc-800: rgb(39, 39, 42);
 }
-view,text,:after,:before {
+view,text,::after,::before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

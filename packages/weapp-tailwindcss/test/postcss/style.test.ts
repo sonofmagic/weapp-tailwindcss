@@ -421,7 +421,7 @@ describe("styleHandler", () => {
       },
       escapeMap: MappingChars2String,
     });
-    expect(normalizeEol(css)).toBe(testCase);
+    expect(normalizeEol(css)).toBe("::before,::after{--tw-:'test'}");
   });
 
   it("global variables scope matched and inject with isMainChunk false", async () => {
@@ -437,7 +437,7 @@ describe("styleHandler", () => {
       },
       escapeMap: MappingChars2String,
     });
-    expect(normalizeEol(css)).toBe(testCase);
+    expect(normalizeEol(css)).toBe("::before,::after{--tw-:'test'}");
   });
 
   it("global variables scope matched and inject and modify preflight range", async () => {
@@ -453,7 +453,7 @@ describe("styleHandler", () => {
       },
       escapeMap: MappingChars2String,
     });
-    expect(normalizeEol(css)).toBe(testCase);
+    expect(normalizeEol(css)).toBe("::before,::after{--tw-:'test'}");
   });
 
   it("global variables scope matched and inject and modify preflight range with isMainChunk false", async () => {
@@ -469,7 +469,7 @@ describe("styleHandler", () => {
       },
       escapeMap: MappingChars2String,
     });
-    expect(normalizeEol(css)).toBe(testCase);
+    expect(normalizeEol(css)).toBe("::before,::after{--tw-:'test'}");
   });
 
   it("global variables scope not matched", async () => {
@@ -483,7 +483,7 @@ describe("styleHandler", () => {
       },
       escapeMap: MappingChars2String,
     });
-    expect(normalizeEol(css)).toBe(testCase);
+    expect(normalizeEol(css)).toBe('::before,::after{color:red}');
   });
 
   it("before:content-['+']", async () => {
@@ -692,7 +692,7 @@ describe("styleHandler", () => {
     const { styleHandler } = getCompilerContext();
     const rawCode = `:is(view,text),:after.:before{color:red;}`;
     const { css } = await styleHandler(rawCode, { isMainChunk: true });
-    expect(css).toBe("view,text,:after.:before{color:red;}");
+    expect(css).toBe("view,text,::after.::before{color:red;}");
   });
 
   it("is-pseudo-class case 1", async () => {

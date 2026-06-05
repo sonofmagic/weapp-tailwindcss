@@ -6,15 +6,15 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 5548 | 16 | false | false | false | false | true |
+| 5560 | 16 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
-:after,
-:before,
+::after,
+::before,
 text,
 view {
   border: 0 solid;
@@ -63,11 +63,11 @@ wx-root-portal-content {
 .text-_b_hffffff_B {
   color: #fff;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -112,8 +112,8 @@ wx-root-portal-content {
 ### index.wxss
 
 ```css
-:after,
-:before,
+::after,
+::before,
 text,
 view {
   border: 0 solid;
@@ -162,11 +162,11 @@ wx-root-portal-content {
 .text-_b_hffffff_B {
   color: #fff;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -205,8 +205,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -252,11 +252,11 @@ wx-root-portal-content {
 .text-_b_hffffff_B {
   color: #ffffff;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }

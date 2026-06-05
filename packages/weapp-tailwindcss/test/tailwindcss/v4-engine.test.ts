@@ -179,7 +179,7 @@ describe('tailwindcss v4 engine', () => {
     })
     const css = compactCss(result.css)
 
-    expect(css).toContain('view,text,:after,:before{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:initial')
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
@@ -1167,7 +1167,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('background-color: var(--color-blue-500)')
     expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
     expect(result.incrementalCss).toContain('.text-white_f10')
-    expect(result.incrementalCss).not.toContain('view,text,:after,:before')
+    expect(result.incrementalCss).not.toContain('view,text,::after,::before')
     expect(result.css).not.toContain('color-mix')
     expect(result.css).not.toContain('oklab')
     expect(result.css).not.toContain('oklch')

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 7309 | 50 | false | false | false | false | true |
+| 7317 | 50 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -15,8 +15,8 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -241,8 +241,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -262,7 +262,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -304,8 +304,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -325,7 +325,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }

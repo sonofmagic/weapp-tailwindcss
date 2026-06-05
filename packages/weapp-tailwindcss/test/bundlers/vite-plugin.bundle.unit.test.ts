@@ -4086,7 +4086,7 @@ const cls = "w-[1.5px]"
     }
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
     const firstCss = (firstBundle['index.css'] as OutputAsset).source.toString()
-    expect(firstCss).toMatch(/view,text,:(?:before|after),:(?:before|after)/)
+    expect(firstCss).toMatch(/view,text,::(?:before|after),::(?:before|after)/)
     expect(firstCss).toContain('.border-emerald-200_f70')
     expect(firstCss).not.toContain('*,::before,::after')
     expect(firstCss).not.toContain('border-emerald-200\\/70')
@@ -4102,7 +4102,7 @@ const cls = "w-[1.5px]"
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
     const secondCss = (secondBundle['index.css'] as OutputAsset).source.toString()
-    expect(secondCss).toMatch(/view,text,:(?:before|after),:(?:before|after)/)
+    expect(secondCss).toMatch(/view,text,::(?:before|after),::(?:before|after)/)
     expect(secondCss).toContain('.border-emerald-300_f70')
     expect(secondCss).not.toContain('*,::before,::after')
     expect(secondCss).not.toContain('border-emerald-200\\/70')
@@ -4161,7 +4161,7 @@ const cls = "w-[1.5px]"
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
     const transformedCss = (secondBundle['index.css'] as OutputAsset).source.toString()
-    expect(transformedCss).toMatch(/view,text,:(?:before|after),:(?:before|after)/)
+    expect(transformedCss).toMatch(/view,text,::(?:before|after),::(?:before|after)/)
     expect(transformedCss).toContain('.border-emerald-200_f70')
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
@@ -4540,7 +4540,7 @@ const cls = "w-[1.5px]"
         generatedCandidates.add(candidate)
       }
       const createCss = (items: string[]) => items.map(candidate => `.${candidate}{}`).join('\n')
-      const preflight = 'view,text,:after,:before{box-sizing:border-box;margin:0;padding:0;border:0 solid;}'
+      const preflight = 'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;}'
       return {
         css: `${preflight}\n${createCss(candidates)}`,
         rawCss: `${preflight}\n${createCss(candidates)}`,

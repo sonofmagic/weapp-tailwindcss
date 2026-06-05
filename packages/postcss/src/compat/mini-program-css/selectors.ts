@@ -1,7 +1,7 @@
 import type postcss from 'postcss'
 
 export const MINI_PROGRAM_THEME_SCOPE_SELECTOR = ':host,page,.tw-root,wx-root-portal-content'
-export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR = 'view,text,:after,:before'
+export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR = 'view,text,::after,::before'
 
 export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS = new Set([
   'view',
@@ -100,10 +100,14 @@ export function normalizeSelector(selector: string) {
   return selector.trim().replace(/\s+/g, '')
 }
 
+export function normalizePseudoElementSelector(selector: string) {
+  return normalizeSelector(selector).replace(/^:(before|after)$/, '::$1')
+}
+
 export function getRuleSelectors(rule: postcss.Rule) {
   return rule.selector
     .split(',')
-    .map(normalizeSelector)
+    .map(normalizePseudoElementSelector)
     .filter(Boolean)
 }
 

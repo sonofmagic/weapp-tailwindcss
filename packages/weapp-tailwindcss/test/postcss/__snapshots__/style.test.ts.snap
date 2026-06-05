@@ -1,7 +1,7 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`styleHandler > .steps @icestack/ui case 0 1`] = `
-".steps .step-primary+.step-primary:before,.steps .step-primary:after {
+".steps .step-primary+.step-primary::before,.steps .step-primary::after {
       --tw-bg-opacity: 1;
       background-color: rgba(var(--ice-primary) / var(--tw-bg-opacity));
       --tw-text-opacity: 1;
@@ -194,7 +194,7 @@ exports[`styleHandler > cssPreflightRange option all 1`] = `"::before,::after{--
 
 exports[`styleHandler > cssPreflightRange option view 1`] = `"::before,::after{--tw-border-opacity: 1;}"`;
 
-exports[`styleHandler > global variables scope matched case 1`] = `":before,:after{--tw-:'test'}"`;
+exports[`styleHandler > global variables scope matched case 1`] = `"::before,::after{--tw-:'test'}"`;
 
 exports[`styleHandler > guess css var scoped 1`] = `
 "::before,::after {

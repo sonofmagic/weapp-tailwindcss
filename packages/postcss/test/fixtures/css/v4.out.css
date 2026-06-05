@@ -38,7 +38,7 @@ page,.tw-root,wx-root-portal-content,:host {
     --default-mono-font-feature-settings: var(--font-mono--font-feature-settings);
     --default-mono-font-variation-settings: var(--font-mono--font-variation-settings);
   }
-view,text,:after,:before {
+view,text,::after,::before {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;

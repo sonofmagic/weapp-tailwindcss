@@ -6,18 +6,21 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 197533 | 2825 | false | false | false | false | true |
+| 197636 | 2825 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -208,7 +211,7 @@ wx-root-portal-content {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.raw-btn:after {
+.raw-btn::after {
   content: var(--tw-content);
   border-style: none;
 }
@@ -224,7 +227,7 @@ wx-root-portal-content {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.btn:after {
+.btn::after {
   content: var(--tw-content);
   border-style: none;
 }
@@ -1268,8 +1271,8 @@ body,
   line-height: inherit;
   color: inherit;
 }
-.u-reset-button:after,
-.up-reset-button:after {
+.u-reset-button::after,
+.up-reset-button::after {
   border: none;
 }
 .u-hover-class,
@@ -5495,55 +5498,55 @@ body,
   padding-left: constant(safe-area-inset-left);
   padding-left: env(safe-area-inset-left);
 }
-.before_ccontent-_b_a_x_a_B:before {
+.before_ccontent-_b_a_x_a_B::before {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aFestivus_a_B:before {
+.before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_r_aindependent_subpackage_uni-app-vite-tailwindcss-v3_r_a_B:before {
+.before_ccontent-_b_r_aindependent_subpackage_uni-app-vite-tailwindcss-v3_r_a_B::before {
   --tw-content: \'independent subpackage uni-app-vite-tailwindcss-v3\';
   content: var(--tw-content);
 }
-.before_ccontent-_b_r_amoduleA__ru72EC_ru7ACB_ru5206_ru5305_r_a_B:before {
+.before_ccontent-_b_r_amoduleA__ru72EC_ru7ACB_ru5206_ru5305_r_a_B::before {
   --tw-content: \'moduleA \u72EC\u7ACB\u5206\u5305\';
   content: var(--tw-content);
 }
-.before_ccontent-_b_r_anormal_subpackage_uni-app-vite-tailwindcss-v3_r_a_B:before {
+.before_ccontent-_b_r_anormal_subpackage_uni-app-vite-tailwindcss-v3_r_a_B::before {
   --tw-content: \'normal subpackage uni-app-vite-tailwindcss-v3\';
   content: var(--tw-content);
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ccontent-_b_av3_apply_a_B:after {
+.after_ccontent-_b_av3_apply_a_B::after {
   --tw-content: 'v3 apply';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B:after {
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B:after {
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B:after {
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
@@ -5995,14 +5998,14 @@ body {
 ### a.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6065,19 +6068,19 @@ text,
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B:after {
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B:after {
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B:after {
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
@@ -6114,14 +6117,14 @@ text,
 ### b.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6184,19 +6187,19 @@ text,
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B:after {
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B:after {
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B:after {
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
@@ -6272,14 +6275,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6336,7 +6339,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -6377,14 +6380,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6441,7 +6444,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -6482,14 +6485,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6552,19 +6555,19 @@ text,
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B:after {
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B:after {
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B:after {
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
@@ -6622,7 +6625,7 @@ wx-root-portal-content {
   --tw-text-opacity: 1 !important;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1)) !important;
 }
-.content:before {
+.content::before {
   content: '';
   display: inline-block;
   height: 40rpx;
@@ -6670,14 +6673,14 @@ wx-root-portal-content {
 ### peer.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -7527,43 +7530,43 @@ text,
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-.before_ccontent-_b_a_x_a_B:before {
+.before_ccontent-_b_a_x_a_B::before {
   --tw-content: '*';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aFestivus_a_B:before {
+.before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before {
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
-.after_ccontent-_b_av3_apply_a_B:after {
+.after_ccontent-_b_av3_apply_a_B::after {
   --tw-content: 'v3 apply';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B:after {
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B:after {
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B:after {
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
@@ -7771,14 +7774,14 @@ text,
 ### typography.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -7924,10 +7927,10 @@ text,
   margin-bottom: 1.6em;
   padding-left: 1em;
 }
-.prose .blockquote .p:first-of-type:before {
+.prose .blockquote .p:first-of-type::before {
   content: open-quote;
 }
-.prose .blockquote .p:last-of-type:after {
+.prose .blockquote .p:last-of-type::after {
   content: close-quote;
 }
 .prose .h1 {
@@ -8005,10 +8008,10 @@ text,
   font-weight: 600;
   font-size: 0.875em;
 }
-.prose .code:before {
+.prose .code::before {
   content: '`';
 }
-.prose .code:after {
+.prose .code::after {
   content: '`';
 }
 .prose .a .code {
@@ -8060,10 +8063,10 @@ text,
   font-family: inherit;
   line-height: inherit;
 }
-.prose .pre .code:before {
+.prose .pre .code::before {
   content: none;
 }
-.prose .pre .code:after {
+.prose .pre .code::after {
   content: none;
 }
 .prose .table {
@@ -8742,7 +8745,7 @@ text,
   white-space: nowrap;
   line-height: 1;
 }
-.u-button.data-v-e43777a0:before {
+.u-button.data-v-e43777a0::before {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -8757,7 +8760,7 @@ text,
   background-color: #000;
   border-color: #000;
 }
-.u-button--active.data-v-e43777a0:before {
+.u-button--active.data-v-e43777a0::before {
   opacity: 0.15;
 }
 .u-button__icon + .u-button__text.data-v-e43777a0:not(:empty),
@@ -8956,7 +8959,7 @@ text,
   width: 100%;
   height: 100%;
 }
-.u-loading-icon__dot.data-v-882a8a56:before {
+.u-loading-icon__dot.data-v-882a8a56::before {
   display: block;
   width: 2rpx;
   height: 25%;

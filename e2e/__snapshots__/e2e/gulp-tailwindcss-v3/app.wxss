@@ -1,8 +1,11 @@
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -225,11 +228,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }

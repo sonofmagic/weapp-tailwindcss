@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 10951 | 69 | false | false | false | false | true |
+| 10963 | 69 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -19,8 +19,8 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 ### styles/app.wxss
 
 ```css
-:after,
-:before,
+::after,
+::before,
 text,
 view {
   --tw-space-y-reverse: 0;
@@ -206,19 +206,19 @@ wx-root-portal-content {
 .shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
   --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, rgba(0, 0, 0, 0.4));
 }
-.before_ccontent-_b_aFestivus_a_B:before {
+.before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage mpx-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage mpx-tailwindcss-v4';
   content: var(--tw-content);
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   --tw-border-style: none;
   border-style: none;
   content: var(--tw-content);
@@ -282,8 +282,8 @@ wx-root-portal-content {
 ### app.wxss
 
 ```css
-:after,
-:before,
+::after,
+::before,
 text,
 view {
   --tw-space-y-reverse: 0;
@@ -469,19 +469,19 @@ wx-root-portal-content {
 .shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
   --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, rgba(0, 0, 0, 0.4));
 }
-.before_ccontent-_b_aFestivus_a_B:before {
+.before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
-.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage mpx-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage mpx-tailwindcss-v4';
   content: var(--tw-content);
 }
-.after_cborder-none:after {
+.after_cborder-none::after {
   --tw-border-style: none;
   border-style: none;
   content: var(--tw-content);

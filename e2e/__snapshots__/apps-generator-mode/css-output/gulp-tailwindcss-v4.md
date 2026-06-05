@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 7544 | 30 | false | false | false | false | true |
+| 7511 | 30 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -15,12 +15,9 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 ```css
 view,
 text,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
+::after,
+::before {
+  --tw-space-y-reverse: 0;
 }
 :host,
 page,
@@ -94,11 +91,11 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -115,8 +112,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -196,11 +193,11 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -239,8 +236,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -320,11 +317,11 @@ wx-root-portal-content {
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
 }

@@ -168,7 +168,7 @@ export async function formatCss(css: string) {
 }
 
 export function normalizeFormattedCssSnapshot(source: string) {
-  return source.replace(/\n{2,}(?=(?:view|text|:after|:before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
+  return source.replace(/\n{2,}(?=(?:view|text|:{1,2}after|:{1,2}before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
 }
 
 export function normalizeCssTextSnapshot(source: string) {
@@ -280,7 +280,7 @@ const TAILWIND_V4_COLOR_RGBA_COMPAT = new Map([
 
 const WEAPP_ROOT_SELECTOR = ':host, page, .tw-root, wx-root-portal-content'
 const WEAPP_ROOT_SELECTOR_PARTS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
-const WEAPP_BASE_SELECTOR_PARTS = new Set(['view', 'text', ':after', ':before'])
+const WEAPP_BASE_SELECTOR_PARTS = new Set(['view', 'text', '::after', '::before'])
 const WEAPP_BASE_NOISE_DECLS = new Set([
   'border',
   'border-color',
@@ -514,8 +514,7 @@ function normalizeSelectorPart(selector: string) {
   return selector
     .replaceAll(':not(#\\#)', '')
     .replaceAll(':not(#n)', '')
-    .replaceAll('::before', ':before')
-    .replaceAll('::after', ':after')
+    .replace(/(?<![:\\]):(before|after)\b/g, '::$1')
     .trim()
 }
 
@@ -869,7 +868,7 @@ function removeTailwindV4RootVariableNoise(root: postcss.Root, options: CssSnaps
       })
     }
 
-    if (isSelectorSet(rule, new Set([':before', ':after']))) {
+    if (isSelectorSet(rule, new Set(['::before', '::after']))) {
       const declarations = rule.nodes?.filter((node): node is postcss.Declaration => node.type === 'decl') ?? []
       if (declarations.length === 1 && declarations[0]?.prop === '--tw-content') {
         rule.remove()
@@ -888,9 +887,7 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
   })
 
   root.walkRules((rule) => {
-    rule.selector = rule.selector
-      .replaceAll('::before', ':before')
-      .replaceAll('::after', ':after')
+    rule.selector = rule.selector.replace(/(?<![:\\]):(before|after)\b/g, '::$1')
 
     if (SCANNER_NOISE_SELECTORS.has(rule.selector)) {
       rule.remove()

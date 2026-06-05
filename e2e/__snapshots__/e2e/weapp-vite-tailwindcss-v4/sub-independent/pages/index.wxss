@@ -1,7 +1,7 @@
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -21,7 +21,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }

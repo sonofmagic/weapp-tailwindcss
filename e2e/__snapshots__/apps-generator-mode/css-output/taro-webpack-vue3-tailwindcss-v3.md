@@ -6,18 +6,21 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 13498 | 45 | false | false | false | false | true |
+| 13551 | 45 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -158,35 +161,35 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -227,14 +230,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -375,35 +378,35 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -417,14 +420,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -565,35 +568,35 @@ text,
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-.before_cabsolute:before {
+.before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-.before_cinset-0:before {
+.before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
   right: 0rpx;
   bottom: 0rpx;
   left: 0rpx;
 }
-.before_crounded-_b20rpx_B:before {
+.before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-.before_cborder-2:before {
+.before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-.before_cborder-_b_h4bd650_B:before {
+.before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }

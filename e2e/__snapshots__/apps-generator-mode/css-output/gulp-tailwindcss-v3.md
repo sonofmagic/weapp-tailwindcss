@@ -6,18 +6,21 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 16033 | 49 | false | false | false | false | true |
+| 16071 | 49 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
+::before,
+::after {
+  --tw-content: '';
+}
 view,
 text,
-:after,
-:before {
-  --tw-content: '';
+::after,
+::before {
   box-sizing: border-box;
   border-width: 0;
   border-style: solid;
@@ -240,11 +243,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -259,14 +262,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -378,7 +381,7 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -441,7 +444,7 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -482,14 +485,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -601,7 +604,7 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -664,7 +667,7 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
-.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }

@@ -1,11 +1,11 @@
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -62,7 +62,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }

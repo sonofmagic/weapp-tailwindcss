@@ -162,6 +162,11 @@ const MINI_PROGRAM_UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
   '::file-selector-button',
 ])
 
+const NORMALIZED_PSEUDO_ELEMENT_SELECTOR = new Map([
+  [':before', '::before'],
+  [':after', '::after'],
+])
+
 function shouldRemoveUnsupportedPseudoElementSelector(selector: Selector, options: IStyleHandlerOptions) {
   if (!isUniAppXEnabled(options)) {
     return selector.nodes.some(node =>
@@ -235,6 +240,12 @@ function handlePseudoNode(node: Node, index: number, context: TransformContext, 
 
   if (node.value === ':root' && context.rootReplacement) {
     node.value = context.rootReplacement
+    return
+  }
+
+  const normalizedPseudoElement = NORMALIZED_PSEUDO_ELEMENT_SELECTOR.get(node.value)
+  if (normalizedPseudoElement) {
+    node.value = normalizedPseudoElement
     return
   }
 

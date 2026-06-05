@@ -111,7 +111,7 @@ describe('bundlers/vite generateBundle css rename/re-emit regression', () => {
     expect(css).not.toContain('::backdrop')
     expect(css).not.toContain('.mt-\\[10rpx\\]')
     expect(css).toContain('.mt-_b10rpx_B')
-    expect(css).toContain('view,text,::before,::after')
+    expect(css).toMatch(/view,text,::(?:before|after),::(?:before|after)/)
   })
 
   it('transforms miniapp style assets that are renamed and re-emitted during generateBundle', async () => {
@@ -126,6 +126,6 @@ describe('bundlers/vite generateBundle css rename/re-emit regression', () => {
     expect(css).not.toContain('::backdrop')
     expect(css).not.toContain('.mt-\\[10rpx\\]')
     expect(css).toContain('.mt-_b10rpx_B')
-    expect(css).toContain('view,text,::before,::after')
+    expect(css).toMatch(/view,text,::(?:before|after),::(?:before|after)/)
   })
 })

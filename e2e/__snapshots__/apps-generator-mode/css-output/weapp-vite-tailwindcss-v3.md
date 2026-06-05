@@ -6,21 +6,21 @@ Generator CSS files: app.wxss, app.wxss, index.wxss, index.wxss, index.wxss, ind
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 49849 | 149 | false | false | false | false | true |
+| 49887 | 149 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -85,7 +85,7 @@ text,
   line-height: inherit;
   color: inherit;
 }
-.weapp-reset-button:after {
+.weapp-reset-button::after {
   border: none;
 }
 .-inset-1 {
@@ -471,11 +471,11 @@ text,
 ._bpadding_c20rpx_B {
   padding: 20rpx;
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -550,14 +550,14 @@ text,
 ### app.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -622,7 +622,7 @@ text,
   line-height: inherit;
   color: inherit;
 }
-.weapp-reset-button:after {
+.weapp-reset-button::after {
   border: none;
 }
 .-inset-1 {
@@ -1008,11 +1008,11 @@ text,
 ._bpadding_c20rpx_B {
   padding: 20rpx;
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -1211,14 +1211,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1275,7 +1275,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -1288,14 +1288,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1352,7 +1352,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -1365,14 +1365,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1437,7 +1437,7 @@ text,
   line-height: inherit;
   color: inherit;
 }
-.weapp-reset-button:after {
+.weapp-reset-button::after {
   border: none;
 }
 .-inset-1 {
@@ -1823,11 +1823,11 @@ text,
 ._bpadding_c20rpx_B {
   padding: 20rpx;
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
@@ -1906,14 +1906,14 @@ text,
 ### index.wxss
 
 ```css
-:before,
-:after {
+::before,
+::after {
   --tw-content: '';
 }
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1978,7 +1978,7 @@ text,
   line-height: inherit;
   color: inherit;
 }
-.weapp-reset-button:after {
+.weapp-reset-button::after {
   border: none;
 }
 .-inset-1 {
@@ -2364,11 +2364,11 @@ text,
 ._bpadding_c20rpx_B {
   padding: 20rpx;
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before {
+.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
 }

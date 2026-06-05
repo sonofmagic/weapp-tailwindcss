@@ -5,7 +5,6 @@ import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes } from '
 import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules } from './at-rules'
 import { isDisplayP3Declaration } from './color-gamut'
 import {
-  hasTwContentDeclaration,
   isEmptyTwContentDeclaration,
   isMiniProgramPreflightRule,
   isMiniProgramThemeVariableRule,
@@ -17,10 +16,12 @@ import {
   removeUnsupportedBrowserSelectors,
   removeUnsupportedModernColorDeclarations,
 } from './root-cleanups'
-import { getSortedRuleSelectorKey, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
+import { getRuleSelectors, getSortedRuleSelectorKey, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS, MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
 
 const HOIST_ANCHOR_COMMENT = '__weapp_tailwindcss_base_anchor__'
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
+const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
+const MINI_PROGRAM_PSEUDO_CONTENT_SELECTORS = new Set(['::before', '::after'])
 
 export interface FinalizeMiniProgramCssOptions {
   cssPreflight?: CssPreflightOptions | undefined
@@ -30,7 +31,7 @@ export interface FinalizeMiniProgramCssOptions {
 
 function createPseudoContentInitRule() {
   const rule = postcss.rule({
-    selector: '::before,\n::after',
+    selector: MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR,
   })
   rule.append({
     prop: '--tw-content',
@@ -41,14 +42,10 @@ function createPseudoContentInitRule() {
 
 export function collectPreflightRules(root: postcss.Root, options: { preservePseudoContentInit?: boolean } = {}) {
   const preflightNodes: postcss.Rule[] = []
-  let hasContentInit = false
 
   for (const node of root.nodes ?? []) {
     if (isMiniProgramPreflightRule(node)) {
       preflightNodes.push(node)
-      if (hasTwContentDeclaration(node)) {
-        hasContentInit = true
-      }
     }
   }
 
@@ -56,17 +53,32 @@ export function collectPreflightRules(root: postcss.Root, options: { preservePse
     return []
   }
 
-  const clonedPreflightRules = preflightNodes.map(node => node.clone())
-  const contentInitRules = options.preservePseudoContentInit
-    ? clonedPreflightRules.filter(rule => hasTwContentDeclaration(rule))
-    : []
-  const otherPreflightRules = clonedPreflightRules.filter(rule => !hasTwContentDeclaration(rule))
-  const preflightRules = hasContentInit
-    ? [...contentInitRules, ...otherPreflightRules]
-    : [
-        ...(options.preservePseudoContentInit ? [createPseudoContentInitRule()] : []),
-        ...otherPreflightRules,
-      ]
+  const clonedPreflightRules = preflightNodes.map((node) => {
+    const rule = node.clone()
+    rule.walkDecls('--tw-content', (decl) => {
+      if (isEmptyTwContentDeclaration(decl)) {
+        decl.remove()
+      }
+    })
+    return rule
+  })
+  for (const rule of clonedPreflightRules) {
+    const selectors = getRuleSelectors(rule)
+    const hasElementSelector = selectors.some(selector => selector === 'view' || selector === 'text')
+    const isPseudoContentScope = selectors.length > 0
+      && selectors.every(selector => MINI_PROGRAM_PSEUDO_CONTENT_SELECTORS.has(selector))
+    if (isPseudoContentScope) {
+      rule.selector = MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR
+    }
+    else if (hasElementSelector && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))) {
+      rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
+    }
+  }
+  const nonEmptyPreflightRules = clonedPreflightRules.filter(rule => (rule.nodes?.length ?? 0) > 0)
+  const preflightRules = [
+    ...(options.preservePseudoContentInit ? [createPseudoContentInitRule()] : []),
+    ...nonEmptyPreflightRules,
+  ]
   for (const node of preflightNodes) {
     node.remove()
   }

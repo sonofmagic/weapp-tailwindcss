@@ -50,7 +50,7 @@ page,.tw-root,wx-root-portal-content,:host {
   --font-weight-bold: 700;
   --radius-md: .375rem;
 }
-view,text,:after,:before {
+view,text,::after,::before {
   box-sizing: border-box;
   border: 0 solid;
   margin: 0;

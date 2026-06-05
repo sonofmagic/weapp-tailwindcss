@@ -1931,7 +1931,7 @@ describe('bundlers/shared generator css', () => {
     ].join('\n')
     const rawTailwindCss = '.flex{display:flex}'
     const weappCss = [
-      'view,text,:before,:after{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
       ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:rgb(50,128,255)}',
       '.flex{display:flex}',
     ].join('\n')
@@ -1997,9 +1997,9 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css.indexOf('.reset-button')).toBeLessThan(css.indexOf('view,text,:before,:after'))
+    expect(css.indexOf('.reset-button')).toBeLessThan(css.indexOf('view,text,::after,::before'))
     expect(css.indexOf('.reset-button')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
-    expect(css.indexOf('view,text,:before,:after')).toBeLessThan(css.indexOf('.flex'))
+    expect(css.indexOf('view,text,::after,::before')).toBeLessThan(css.indexOf('.flex'))
     expect(css.indexOf(':host,page,.tw-root,wx-root-portal-content')).toBeLessThan(css.indexOf('.flex'))
   })
 
@@ -3950,8 +3950,8 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.css).toContain('.card{color:red}')
-    expect(result?.css).toContain('view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}')
-    expect(result?.css.indexOf('.card{color:red}')).toBeLessThan(result?.css.indexOf('view,text,::before,::after{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}') ?? -1)
+    expect(result?.css).toContain('view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}')
+    expect(result?.css.indexOf('.card{color:red}')).toBeLessThan(result?.css.indexOf('view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}') ?? -1)
   })
 
   it('keeps user css before hoisted Tailwind v4 theme variables', async () => {
@@ -6349,7 +6349,7 @@ describe('bundlers/shared generator css', () => {
       '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
     ].join('\n')
     const weappCss = [
-      'view,text,:before,:after{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%}',
+      'view,text,::after,::before{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%}',
       'page,.tw-root,wx-root-portal-content,:host{--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
       '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
       '.from-amber-200{--tw-gradient-from:var(--color-amber-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
@@ -6417,7 +6417,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).toContain('view,text,:before,:after{--tw-gradient-position:initial')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:initial')
     expect(css).toContain('page,.tw-root,wx-root-portal-content')
     expect(css).toContain(':host')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')

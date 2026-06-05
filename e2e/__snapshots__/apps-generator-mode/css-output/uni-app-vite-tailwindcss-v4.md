@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 20460 | 126 | false | false | false | false | true |
+| 20472 | 126 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -15,8 +15,8 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -304,8 +304,8 @@ page {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -546,8 +546,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -567,7 +567,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -609,8 +609,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -630,7 +630,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -672,8 +672,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;

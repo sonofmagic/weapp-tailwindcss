@@ -611,7 +611,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       majorVersion: 4,
     })
 
-    expect(css).toContain('view,text,:after,:before{--tw-border-style:solid}')
+    expect(css).toContain('view,text,::after,::before{--tw-border-style:solid}')
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
     expect(css).not.toContain('@property')
   })
@@ -631,7 +631,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       majorVersion: 4,
     })
 
-    expect(css).not.toContain('view,text,:after,:before{--tw-border-style:solid}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-border-style:solid}')
     expect(css.match(/--tw-border-style:solid/g)).toHaveLength(1)
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--tw-border-style:solid}')
     expect(css).not.toContain('@property')

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 8500 | 22 | false | false | false | false | true |
+| 8662 | 22 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -16,19 +16,21 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 @import 'app-origin.wxss';
 view,
 text,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
+::after,
+::before {
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
   --tw-gradient-to: rgba(0, 0, 0, 0);
   --tw-gradient-stops: initial;
   --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
 }
 :host,
 page,
@@ -55,11 +57,11 @@ wx-root-portal-content {
 .bg-_bred_B {
   background-color: red;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -144,19 +146,21 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
+::after,
+::before {
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
   --tw-gradient-to: rgba(0, 0, 0, 0);
   --tw-gradient-stops: initial;
   --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
 }
 :host,
 page,
@@ -183,11 +187,11 @@ wx-root-portal-content {
 .bg-_bred_B {
   background-color: red;
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -280,8 +284,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
@@ -302,7 +306,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }
@@ -344,8 +348,8 @@ wx-root-portal-content {
 ```css
 view,
 text,
-:after,
-:before {
+::after,
+::before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
@@ -366,7 +370,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before {
+.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }

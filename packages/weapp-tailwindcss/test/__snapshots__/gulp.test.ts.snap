@@ -1,8 +1,10 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`gulp > common build > css 1`] = `
-"view,text,:after,:before {
-    --tw-content: "";
+"::before,
+::after {
+    --tw-content: ''}
+view,text,::after,::before {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
