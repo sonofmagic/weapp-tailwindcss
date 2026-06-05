@@ -303,6 +303,15 @@ function resolveConfigPath(base: string, configPath: string) {
   return path.resolve(base, configPath)
 }
 
+export function normalizeTailwindConfigDirectives(rawSource: string, base: string) {
+  return rawSource.replace(/@config\s+(["'])(.+?)\1\s*;?/g, (full, quote: string, request: string) => {
+    if (path.isAbsolute(request) || isPackageJsonImportRequest(request)) {
+      return full
+    }
+    return `@config ${quote}${path.resolve(base, request).replace(/\\/g, '/')}${quote};`
+  })
+}
+
 function hasPreprocessorOnlySyntax(rawSource: string) {
   return /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@[\w-]+\s*:|@(?:mixin|include|function|use|forward)\b)/.test(rawSource)
 }

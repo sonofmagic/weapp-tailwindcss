@@ -1,6 +1,6 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { InternalUserDefinedOptions } from '@/types'
-import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
+import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
@@ -29,6 +29,7 @@ interface CollectViteProcessedCssAssetOptions {
   markCssAssetProcessed?: CssAssetProcessedMarker | undefined
   recordCssAssetResult?: CssAssetResultRecorder | undefined
   recordViteProcessedCssAssetResult?: CssAssetResultRecorder | undefined
+  resolveViteProcessedCssOutputFile?: ((file: string) => string | undefined) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
 }
 
@@ -67,6 +68,51 @@ function appendCss(baseCss: string, css: string) {
   return `${baseCss}\n${css}`
 }
 
+function stripStyleExtension(file: string) {
+  return file.replace(/[?#].*$/, '').replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)$/i, '')
+}
+
+function normalizeMarkerOutputFile(
+  markerFile: string,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  return resolveViteProcessedCssOutputFile?.(markerFile) ?? markerFile
+}
+
+function isMatchingGeneratedCssMarkerFile(
+  targetFile: string,
+  markerFile: string | undefined,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  if (!markerFile) {
+    return false
+  }
+  const targetKey = normalizeOutputPathKey(stripStyleExtension(targetFile))
+  const markerKey = normalizeOutputPathKey(stripStyleExtension(normalizeMarkerOutputFile(
+    markerFile,
+    resolveViteProcessedCssOutputFile,
+  )))
+  return targetKey === markerKey
+}
+
+function resolveViteProcessedCssAssetSource(
+  file: string,
+  rawSource: string,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  const blocks = parseBundlerGeneratedCssMarkerBlocks(rawSource)
+    .filter(block => block.bundler === 'vite')
+  if (blocks.length <= 1) {
+    return stripBundlerGeneratedCssMarkers(rawSource)
+  }
+  const matchedCss = blocks
+    .filter(block => isMatchingGeneratedCssMarkerFile(file, block.file, resolveViteProcessedCssOutputFile))
+    .map(block => block.css)
+  return matchedCss.length > 0
+    ? matchedCss.join('\n')
+    : stripBundlerGeneratedCssMarkers(rawSource)
+}
+
 function shouldInjectViteProcessedCssResult(
   opts: InternalUserDefinedOptions,
   targetFile: string,
@@ -103,7 +149,11 @@ export function collectViteProcessedCssAssetResults(
       continue
     }
     const rawSource = readAssetSource(output)
-    const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
+    const nextCss = resolveViteProcessedCssAssetSource(
+      file,
+      rawSource,
+      options.resolveViteProcessedCssOutputFile,
+    )
     if (nextCss !== rawSource) {
       output.source = nextCss
     }

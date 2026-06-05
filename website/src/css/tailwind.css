@@ -1,16 +1,16 @@
 @import 'tailwindcss' source(none);
 
-@config './tailwind.config.ts';
+@config '../../tailwind.config.ts';
 
 /* Tailwind v4 默认的 rounded-full 无限半径写法会让 css-minimizer 无法解析。 */
 @theme {
   --radius-full: 9999px;
 }
 
-@source './src/**/*.{js,jsx,ts,tsx,md,mdx}';
-@source './docs/**/*.{md,mdx}';
-@source './blog/**/*.{md,mdx}';
-@source './config/**/*.{ts,tsx}';
-@source './docusaurus.config.ts';
+@source '../../src/**/*.{js,jsx,ts,tsx,md,mdx}';
+@source '../../docs/**/*.{md,mdx}';
+@source '../../blog/**/*.{md,mdx}';
+@source '../../config/**/*.{ts,tsx}';
+@source '../../docusaurus.config.ts';
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));

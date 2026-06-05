@@ -4969,6 +4969,99 @@ describe('bundlers/shared generator css', () => {
     expect([...candidates]).toEqual(['sub-only'])
   })
 
+  it('scopes Tailwind v4 generator candidates by subpackage relative source entries', async () => {
+    const root = path.resolve('/project')
+    const subCssFile = path.join(root, 'sub-normal/pages/index.css')
+    const subWxmlFile = path.join(root, 'sub-normal/pages/index.wxml')
+    const subCss = '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";\n@source "../**/*.{css,wxml,html,js,ts,jsx,tsx,vue}";'
+    const generateMock = vi.fn(async (options: any) => {
+      const candidates = [...options.candidates].sort()
+      return {
+        css: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        rawCss: candidates.map(candidate => `.${candidate}{}`).join('\n'),
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: root,
+        base: options.cssSources[0].base,
+        baseFallbacks: [],
+        css: options.cssSources[0].css,
+        dependencies: [options.cssSources[0].file],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: root,
+        base: root,
+        baseFallbacks: [],
+        css: subCss,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: root,
+        baseFallbacks: [],
+        cssSources: [
+          {
+            file: subCssFile,
+            base: path.dirname(subCssFile),
+            css: subCss,
+          },
+        ],
+      })),
+    }))
+
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+    await collector.merge(subWxmlFile, '<view class="bg-[#000000] text-[46px] h-[28px]"></view>')
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    await generateCssByGenerator({
+      opts: {
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-[#000000]', 'text-[46px]', 'h-[28px]']),
+      rawSource: subCss,
+      file: path.join(root, 'dist/sub-normal/pages/index.wxss'),
+      cssHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+        postcssOptions: {
+          options: {
+            from: subCssFile,
+          },
+        },
+        sourceOptions: {
+          outputRoot: path.join(root, 'dist'),
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: entries => collector.valuesForEntries(entries),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect([...candidates].sort()).toEqual(['bg-[#000000]', 'h-[28px]', 'text-[46px]'])
+  })
+
   it('matches Tailwind v4 cssSources by postcss input file before dist output path fallback', async () => {
     const appCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{ts,tsx}";'
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-independent/**/*.{ts,tsx}";'
@@ -6526,5 +6619,107 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('weapp-tailwindcss layer components')
     expect(css.match(/\.raw-btn\s*\{/g)).toHaveLength(1)
     expect(css.indexOf('.raw-btn')).toBeLessThan(css.indexOf('.flex'))
+  })
+
+  it('keeps vite-processed css marker blocks scoped to the matching output asset', async () => {
+    const { createBundlerGeneratedCssMarker } = await import('@/bundlers/shared/generated-css-marker')
+    const { collectViteProcessedCssAssetResults } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'sub-independent/pages/index.wxss': {
+        type: 'asset',
+        fileName: 'sub-independent/pages/index.wxss',
+        source: [
+          createBundlerGeneratedCssMarker('vite', '/project/sub-independent/pages/index.css'),
+          '.independent-only{}',
+          createBundlerGeneratedCssMarker('vite', '/project/sub-normal/pages/index.css'),
+          '.normal-only{}',
+        ].join('\n'),
+      },
+    } as any
+    const records: Array<[string, string]> = []
+
+    const collected = collectViteProcessedCssAssetResults(bundle, {
+      isViteProcessedCssAsset: () => true,
+      recordCssAssetResult: (file, css) => records.push([file, css]),
+      resolveViteProcessedCssOutputFile: file => file.replace(/^\/project\//, '').replace(/\.css$/, '.wxss'),
+    })
+
+    expect(collected).toBe(1)
+    expect(bundle['sub-independent/pages/index.wxss'].source).toContain('.independent-only')
+    expect(bundle['sub-independent/pages/index.wxss'].source).not.toContain('.normal-only')
+    expect(records).toEqual([[
+      'sub-independent/pages/index.wxss',
+      expect.stringContaining('.independent-only'),
+    ]])
+  })
+
+  it('matches Tailwind v4 cssSources by full package path when subpackages share index.css names', async () => {
+    const root = '/project'
+    const independentCss = `${root}/sub-independent/pages/index.css`
+    const normalCss = `${root}/sub-normal/pages/index.css`
+    const resolveTailwindV4Source = vi.fn(async (options: any = {}) => ({
+      projectRoot: root,
+      base: options.base ?? root,
+      baseFallbacks: [],
+      css: options.css ?? options.cssSources?.[0]?.css ?? '@import "tailwindcss";',
+      dependencies: [],
+      version: 4,
+    }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: root,
+        cwd: root,
+        base: root,
+        baseFallbacks: [root],
+        cssSources: [
+          {
+            file: independentCss,
+            base: `${root}/sub-independent/pages`,
+            css: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-independent.js";',
+          },
+          {
+            file: normalCss,
+            base: `${root}/sub-normal/pages`,
+            css: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";',
+          },
+        ],
+      })),
+    }))
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+
+    const source = await resolveGeneratorSource(
+      4,
+      {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+      },
+      '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";',
+      'sub-normal/pages/index.wxss',
+      {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: path.join(root, 'dist/sub-normal/pages/index.wxss'),
+          },
+        },
+        majorVersion: 4,
+        sourceOptions: {
+          outputRoot: path.join(root, 'dist'),
+        },
+      } as any,
+      normalizeGeneratorOptions(),
+    )
+
+    expect(source?.css).toContain('tailwind.config.sub-normal.js')
+    expect(source?.css).not.toContain('tailwind.config.sub-independent.js')
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      cssSources: [
+        expect.objectContaining({
+          file: normalCss,
+        }),
+      ],
+    }))
   })
 })

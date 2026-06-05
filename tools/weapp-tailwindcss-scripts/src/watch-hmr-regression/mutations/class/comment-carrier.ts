@@ -7,6 +7,7 @@ import type {
   WatchCase,
   WatchSession,
 } from '../../types'
+import process from 'node:process'
 import { formatPath } from '../../cli'
 import { getMtime, readFileIfExists, writeFilePreserveEol } from '../../text'
 import {
@@ -93,6 +94,9 @@ export async function runCommentCarrierMutation(
   )
 
   const hotUpdateStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=script comment-carrier phase=add dirty=${formatPath(sourcePath)}\n`,
+  )
   await writeFilePreserveEol(sourcePath, scenario.mutatedSource, sourceOriginal)
   const hotUpdateOutputMs = await waitForOutputsUpdated(
     watchCase,
@@ -134,6 +138,9 @@ export async function runCommentCarrierMutation(
   }
 
   const rollbackStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=script comment-carrier phase=delete dirty=${formatPath(sourcePath)}\n`,
+  )
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
   const rollbackOutputMs = await waitForOutputsUpdated(
     watchCase,

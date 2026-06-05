@@ -671,6 +671,7 @@ export async function generateCssByGenerator(
     const orderedExtraCss = hasMatchedCssSourceFile
       ? splitTailwindV4GeneratedCssBySourceOrder(effectiveRawSource, generated.rawCss)
       : splitRawSourceByGeneratedCssOrder(effectiveRawSource, generated.rawCss)
+    const shouldAppendMatchedCssSourceCompat = !hasMatchedCssSourceFile || orderedExtraCss !== undefined
     if (orderedExtraCss) {
       let css = stripTailwindBanner(generated.css)
       if (generated.target === 'weapp') {
@@ -709,7 +710,7 @@ export async function generateCssByGenerator(
         const userCss = await transformGeneratorUserCss(effectiveRawSource, userCssOptions)
         css = createCssSourceOrderAppend(css, userCss)
       }
-      if (generated.target === 'weapp') {
+      if (generated.target === 'weapp' && shouldAppendMatchedCssSourceCompat) {
         if (shouldFinalizeMarkedUserLayerComponentsCss(file)) {
           css = reorderMarkedUserLayerComponentsCss(css)
         }
@@ -732,6 +733,9 @@ export async function generateCssByGenerator(
           cssHandlerOptions,
           generatorStyleOptions,
         )
+      }
+      else if (generated.target === 'weapp' && shouldFinalizeMarkedUserLayerComponentsCss(file)) {
+        css = reorderMarkedUserLayerComponentsCss(css)
       }
       return {
         css: finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight),
@@ -772,7 +776,7 @@ export async function generateCssByGenerator(
       }
     }
     if (hasMatchedCssSourceFile || generated.target === 'web') {
-      if (hasMatchedCssSourceFile && generated.target === 'weapp' && !hasGeneratedCss) {
+      if (hasMatchedCssSourceFile && generated.target === 'weapp' && !hasGeneratedCss && !hasGeneratedMarkers) {
         const userCss = await transformGeneratorUserCss(effectiveRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,

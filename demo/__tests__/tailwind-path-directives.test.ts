@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 const demoRoot = fileURLToPath(new URL('..', import.meta.url))
+const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url))
+const websiteRoot = path.resolve(repositoryRoot, 'website')
 const ignoredDirectories = new Set([
   '.compare-dev-weapp',
   '.turbo',
@@ -109,6 +111,20 @@ function resolveDirectiveBase(file: string, specifier: string) {
   return staticBase.endsWith(path.sep) ? staticBase.slice(0, -1) : staticBase
 }
 
+function getPositiveSourceSpecifiers(source: string) {
+  const specifiers: string[] = []
+
+  for (const match of source.matchAll(directiveRE)) {
+    const [, kind, negativePrefix, specifier] = match
+
+    if (kind === 'source' && !negativePrefix) {
+      specifiers.push(specifier)
+    }
+  }
+
+  return specifiers
+}
+
 describe('demo Tailwind path directives', () => {
   it('keeps every Tailwind CSS entry using resolvable @config and @source directives', async () => {
     const files = await collectFiles(demoRoot)
@@ -196,6 +212,50 @@ describe('demo Tailwind path directives', () => {
           .toContain('source(none)')
         expect.soft(entry.source, `${entry.relativePath} should only source the current subpackage`)
           .toMatch(/@source\s+["']\.\.\/\*\*/)
+
+        const positiveSources = getPositiveSourceSpecifiers(entry.source)
+
+        expect.soft(positiveSources, `${entry.relativePath} should include the Tailwind CSS entry in source scanning`)
+          .toSatisfy((specifiers: string[]) => specifiers.some(specifier => specifier.includes('css')))
+      }
+    }
+  })
+})
+
+describe('website Tailwind path directives', () => {
+  it('keeps website Tailwind CSS entry using resolvable @config and @source directives', async () => {
+    const files = await collectFiles(websiteRoot)
+    const entries = []
+
+    for (const file of files.filter(file => styleFileRE.test(file))) {
+      const source = stripCssComments(await readFile(file, 'utf8'))
+
+      if (tailwindEntryRE.test(source)) {
+        entries.push({ file, source })
+      }
+    }
+
+    expect(entries.length).toBeGreaterThan(0)
+
+    for (const entry of entries) {
+      const relativePath = path.relative(repositoryRoot, entry.file)
+
+      expect.soft(entry.source, `${relativePath} should use explicit @config`).toMatch(/@config\s+["']/)
+      expect.soft(entry.source, `${relativePath} should use explicit @source`).toMatch(/@source\s+(?:not\s+)?["']/)
+
+      for (const match of entry.source.matchAll(directiveRE)) {
+        const [, kind, negativePrefix, specifier] = match
+
+        if (kind === 'source' && negativePrefix) {
+          continue
+        }
+
+        const resolvedBase = resolveDirectiveBase(entry.file, specifier)
+
+        expect.soft(
+          existsSync(resolvedBase),
+          `${relativePath} @${kind} "${specifier}" should resolve from the CSS entry directory`,
+        ).toBe(true)
       }
     }
   })

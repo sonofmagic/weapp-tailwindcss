@@ -252,6 +252,7 @@ describe('bundlers/gulp createPlugins', () => {
     expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
       {
         file: '/src/app.wxss',
+        base: '/src',
         css: source,
       },
     ])

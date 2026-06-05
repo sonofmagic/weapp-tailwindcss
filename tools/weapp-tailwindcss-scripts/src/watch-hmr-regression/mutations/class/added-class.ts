@@ -7,6 +7,7 @@ import type {
   WatchCase,
   WatchSession,
 } from '../../types'
+import process from 'node:process'
 import { replaceWxml } from '../../../core/replace-wxml'
 import {
   assertContains,
@@ -196,8 +197,21 @@ export async function runAddedClassMutation(
   }
 
   const setupStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=${mutationKind} added-class phase=setup dirty=${sourcePath}\n`,
+  )
   await writeFilePreserveEol(sourcePath, baseScenario.mutatedSource, sourceOriginal)
-  await waitForOutputsUpdated(watchCase, baselineMtime, cliOptions, session, setupStartedAt)
+  await waitForOutputsUpdated(
+    watchCase,
+    baselineMtime,
+    cliOptions,
+    session,
+    setupStartedAt,
+    async () => {
+      const outputs = await readOutputs(watchCase, globalStyleOutputs)
+      return outputs.wxml.includes(baseScenario.marker) || outputs.js.includes(baseScenario.marker)
+    },
+  )
   await waitForMarkerState(
     watchCase,
     baseScenario.marker,
@@ -218,8 +232,37 @@ export async function runAddedClassMutation(
   let verifiedAddedEscapedClasses: string[] = []
 
   const hotUpdateStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=${mutationKind} added-class phase=add dirty=${sourcePath}\n`,
+  )
   await writeFilePreserveEol(sourcePath, sourceAfterAdd, sourceOriginal)
-  const hotUpdateOutputMs = await waitForOutputsUpdated(watchCase, baselineBeforeAdd, cliOptions, session, hotUpdateStartedAt)
+  const hotUpdateOutputMs = await waitForOutputsUpdated(
+    watchCase,
+    baselineBeforeAdd,
+    cliOptions,
+    session,
+    hotUpdateStartedAt,
+    async () => {
+      const outputs = await readOutputs(watchCase, globalStyleOutputs)
+      try {
+        assertClassOutputs(
+          outputs,
+          watchCase,
+          mutationKind,
+          mutation,
+          verifyClassLiteralIn,
+          markerAfter,
+          addedClasses.addedClassTokens,
+          addedClasses.addedEscapedClasses,
+          minRequiredEscapedClasses,
+        )
+        return true
+      }
+      catch {
+        return false
+      }
+    },
+  )
   const hotUpdateEffectiveMs = await waitFor(
     async () => {
       const outputs = await readOutputs(watchCase, globalStyleOutputs)
@@ -258,8 +301,21 @@ export async function runAddedClassMutation(
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const rollbackStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=${mutationKind} added-class phase=delete dirty=${sourcePath}\n`,
+  )
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
-  const rollbackOutputMs = await waitForOutputsUpdated(watchCase, mtimeAfterAdd, cliOptions, session, rollbackStartedAt)
+  const rollbackOutputMs = await waitForOutputsUpdated(
+    watchCase,
+    mtimeAfterAdd,
+    cliOptions,
+    session,
+    rollbackStartedAt,
+    async () => {
+      const outputs = await readOutputs(watchCase, globalStyleOutputs)
+      return !outputs.wxml.includes(markerAfter) && !outputs.js.includes(markerAfter)
+    },
+  )
   const rollbackEffectiveMs = await waitForMarkerState(
     watchCase,
     markerAfter,

@@ -312,6 +312,10 @@ function collectCssSourceMatchBases(
     const base = normalizeMatchPath(getOutputFileWithoutExtension(candidate))
     if (base.length > 0) {
       bases.add(base)
+      const withoutWorkspaceSegment = base.replace(/^(?:src|dist)\//, '')
+      if (withoutWorkspaceSegment !== base && withoutWorkspaceSegment.length > 0) {
+        bases.add(withoutWorkspaceSegment)
+      }
     }
   }
   addBase(normalizedFile)
@@ -335,27 +339,12 @@ function collectCssSourceMatchBases(
 }
 
 function hasMatchingCssSourceBase(outputBases: Set<string>, sourceBases: Set<string>) {
-  const countCommonSuffixSegments = (a: string, b: string) => {
-    const aSegments = a.split('/').filter(Boolean)
-    const bSegments = b.split('/').filter(Boolean)
-    let count = 0
-    while (
-      count < aSegments.length
-      && count < bSegments.length
-      && aSegments[aSegments.length - 1 - count] === bSegments[bSegments.length - 1 - count]
-    ) {
-      count++
-    }
-    return count
-  }
-
   for (const outputBase of outputBases) {
     for (const sourceBase of sourceBases) {
       if (
         outputBase === sourceBase
         || outputBase.endsWith(`/${sourceBase}`)
         || sourceBase.endsWith(`/${outputBase}`)
-        || countCommonSuffixSegments(outputBase, sourceBase) >= 2
       ) {
         return true
       }
@@ -632,15 +621,14 @@ function countRuntimeCandidateHits(candidates: Set<string>, runtime: Set<string>
 
 async function resolveCandidateMatchedTailwindV4CssSource(
   _rawSource: string,
-  cssHandlerOptions: IStyleHandlerOptions,
+  _cssHandlerOptions: IStyleHandlerOptions,
   sourceOptions: TailwindV4SourceOptions,
   selectionOptions: GeneratorSourceSelectionOptions | undefined,
 ) {
   const cssSources = sourceOptions.cssSources
   const getSourceCandidatesForEntries = selectionOptions?.getSourceCandidatesForEntries
   if (
-    !cssHandlerOptions.isMainChunk
-    || !cssSources?.length
+    !cssSources?.length
     || !getSourceCandidatesForEntries
   ) {
     return undefined

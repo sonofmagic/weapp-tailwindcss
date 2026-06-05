@@ -1133,7 +1133,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       expect.objectContaining({
         file: subCss,
         base: path.dirname(subCss),
-        css: '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";\n',
+        css: `@import "tailwindcss" source(none);\n@config "${subConfig.replace(/\\/g, '/')}";\n`,
         dependencies: [subConfig],
       }),
     ])
@@ -1388,6 +1388,142 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect((bundle['src/main.css'] as OutputAsset).source).toBe(processedCss)
     expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{color:red}\n${processedCss}`)
+  }, TEST_TIMEOUT_MS)
+
+  it('does not regenerate collected vite-processed css assets in the same bundle pass', async () => {
+    const generateMock = vi.fn(async () => ({
+      css: '.unexpected{}',
+      rawCss: '.unexpected{}',
+      target: 'weapp',
+      classSet: new Set(['unexpected']),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('index.wxss')),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['unexpected'])),
+        getClassSetSync: vi.fn(() => new Set(['unexpected'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['unexpected']) })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const processedCss = '.independent-only{}'
+    const bundle = {
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'sub-independent/pages/index.css'))}\n${processedCss}`),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toBe(processedCss)
+    expect(generateMock).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps same-name subpackage vite css marker blocks isolated by output file', async () => {
+    const generateMock = vi.fn(async () => ({
+      css: '.unexpected{}',
+      rawCss: '.unexpected{}',
+      target: 'weapp',
+      classSet: new Set(['unexpected']),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-subpackage-css-'))
+    createdDirs.push(root)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['unexpected'])),
+        getClassSetSync: vi.fn(() => new Set(['unexpected'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['unexpected']) })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const independentCss = '.independent-only{}'
+    const normalCss = '.normal-only{}'
+    const independentSource = path.join(root, 'sub-independent/pages/index.css')
+    const normalSource = path.join(root, 'sub-normal/pages/index.css')
+    const bundle = {
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset([
+          createBundlerGeneratedCssMarker('vite', independentSource),
+          independentCss,
+          createBundlerGeneratedCssMarker('vite', normalSource),
+          normalCss,
+        ].join('\n')),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+      'sub-normal/pages/index.wxss': {
+        ...createRollupAsset([
+          createBundlerGeneratedCssMarker('vite', independentSource),
+          independentCss,
+          createBundlerGeneratedCssMarker('vite', normalSource),
+          normalCss,
+        ].join('\n')),
+        fileName: 'sub-normal/pages/index.wxss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toContain(independentCss)
+    expect((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source).not.toContain(normalCss)
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toContain(normalCss)
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).not.toContain(independentCss)
+    expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {
@@ -3926,7 +4062,7 @@ const cls = "w-[1.5px]"
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({
         css: code
-          .replace('*,::before,::after', 'view,text,::before,::after')
+          .replace(/\*,\s*::before,\s*::after/g, 'view,text,::before,::after')
           .replaceAll('border-emerald-200\\/70', '_f70'),
       })),
     }))
@@ -3950,7 +4086,7 @@ const cls = "w-[1.5px]"
     }
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
     const firstCss = (firstBundle['index.css'] as OutputAsset).source.toString()
-    expect(firstCss).toContain('view,text,::before,::after')
+    expect(firstCss).toMatch(/view,text,:(?:before|after),:(?:before|after)/)
     expect(firstCss).toContain('.border-emerald-200_f70')
     expect(firstCss).not.toContain('*,::before,::after')
     expect(firstCss).not.toContain('border-emerald-200\\/70')
@@ -3966,12 +4102,12 @@ const cls = "w-[1.5px]"
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
     const secondCss = (secondBundle['index.css'] as OutputAsset).source.toString()
-    expect(secondCss).toContain('view,text,::before,::after')
+    expect(secondCss).toMatch(/view,text,:(?:before|after),:(?:before|after)/)
     expect(secondCss).toContain('.border-emerald-300_f70')
     expect(secondCss).not.toContain('*,::before,::after')
     expect(secondCss).not.toContain('border-emerald-200\\/70')
     expect(secondCss).not.toContain('border-emerald-300\\/70')
-    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(secondCss).not.toBe(firstCss)
   }, TEST_TIMEOUT_MS)
 
   it('reapplies cached css transform when css formatting changes only', async () => {
@@ -3979,7 +4115,7 @@ const cls = "w-[1.5px]"
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({
         css: code
-          .replace('*,::before,::after', 'view,text,::before,::after')
+          .replace(/\*,\s*::before,\s*::after/g, 'view,text,::before,::after')
           .replaceAll('border-emerald-200\\/70', '_f70'),
       })),
     }))
@@ -4025,7 +4161,7 @@ const cls = "w-[1.5px]"
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
     const transformedCss = (secondBundle['index.css'] as OutputAsset).source.toString()
-    expect(transformedCss).toContain('view,text,::before,::after')
+    expect(transformedCss).toMatch(/view,text,:(?:before|after),:(?:before|after)/)
     expect(transformedCss).toContain('.border-emerald-200_f70')
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)

@@ -620,8 +620,10 @@ describe('v5 vite generator bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -721,8 +723,10 @@ describe('v5 vite generator bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -887,8 +891,10 @@ describe('v5 vite generator bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -1073,8 +1079,10 @@ describe('v5 vite generator bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -1401,8 +1409,10 @@ describe('v5 vite generator bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -1415,9 +1425,23 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
 
+    await generateBundle?.call(postPlugin, {} as any, {
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    })
+
     await writeFile(sourceFile, '<view class="bg-[#445566] text-[23.000053px]"></view>', 'utf8')
     await (sourcePlugin.watchChange as any)?.call(sourcePlugin, sourceFile, { event: 'update' })
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const cssTransform = getTransformHandler(rewritePlugin)
+    await cssTransform?.call(
+      rewritePlugin,
+      cssSource,
+      cssFile,
+    )
 
     const bundle = {
       'app.css': {
@@ -1431,7 +1455,7 @@ describe('v5 vite generator bundle', () => {
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: expect.any(Set),
     }))
-    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    const candidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
     expect(candidates.has('bg-[#445566]')).toBe(true)
     expect(candidates.has('text-[23.000053px]')).toBe(true)
     expect(candidates.has('bg-[#112233]')).toBe(false)

@@ -1,13 +1,15 @@
 import type { HmrContext, ModuleNode, Plugin, ResolvedConfig } from 'vite'
+import type { RememberedCssSource } from './generate-bundle'
 import type { SourceCandidateCollectorSnapshot } from './source-candidates'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
+import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
-import { normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -26,7 +28,7 @@ import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSourceStyleRequest } from '../shared/style-requests'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
-import { createGenerateBundleHook } from './generate-bundle'
+import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
 import { disableAndRemoveTailwindVitePlugins, getPostcssPluginName, removeTailwindPostcssPlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
 import { resolveFilteredPostcssConfig } from './postcss-config'
@@ -162,16 +164,20 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       return
     }
     const sourceFile = path.normalize(file)
-    const sourceCss = normalizeTailwindSourceForGenerator(css, { importFallback: true })
+    const sourceBase = path.dirname(sourceFile)
+    const sourceCss = normalizeTailwindSourceForGenerator(
+      normalizeTailwindConfigDirectives(css, sourceBase),
+      { importFallback: true },
+    )
     if (autoCssSourceContent.get(sourceFile) === sourceCss) {
       return
     }
     autoCssSourceContent.set(sourceFile, sourceCss)
     await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
-    const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, path.dirname(sourceFile))
+    const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, sourceBase)
     const changed = upsertTailwindV4CssSource(opts, {
       file: sourceFile,
-      base: path.dirname(sourceFile),
+      base: sourceBase,
       css: sourceCss,
       dependencies,
     })
@@ -206,8 +212,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     let changed = false
     for (const cssEntry of cssEntries) {
       const sourceFile = path.resolve(cssEntry)
+      const sourceBase = path.dirname(sourceFile)
       const sourceCss = normalizeTailwindSourceForGenerator(
-        await readFile(sourceFile, 'utf8'),
+        normalizeTailwindConfigDirectives(await readFile(sourceFile, 'utf8'), sourceBase),
         { importFallback: true },
       )
       if (autoCssSourceContent.get(sourceFile) === sourceCss) {
@@ -215,10 +222,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       }
       autoCssSourceContent.set(sourceFile, sourceCss)
       await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
-      const resolved = await resolveTailwindV4EntriesFromCssCached(sourceCss, path.dirname(sourceFile))
+      const resolved = await resolveTailwindV4EntriesFromCssCached(sourceCss, sourceBase)
       changed = upsertTailwindV4CssSource(opts, {
         file: sourceFile,
-        base: path.dirname(sourceFile),
+        base: sourceBase,
         css: sourceCss,
         dependencies: resolved?.dependencies ?? [],
       }) || changed
@@ -249,12 +256,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const pendingSourceCandidateSyncs = new Set<Promise<void>>()
   const pendingSourceCandidateSyncByFile = new Map<string, Promise<void>>()
   const processedCssAssets = new WeakSet<object>()
-  const processedCssAssetFiles = new Set<string>()
   const viteProcessedCssSourceFiles = new Set<string>()
   const viteGeneratedCssByFile = new Map<string, string>()
   const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
-  const rememberedMainCssSources = new Map<string, string>()
-  const rememberedMainCssSignatureByFile = new Map<string, string>()
+  const rememberedCssSources = new Map<string, RememberedCssSource>()
+  const rememberedCssSignatureByFile = new Map<string, string>()
   const tailwindRootCssModuleIds = new Set<string>()
   const {
     runtimeState,
@@ -274,15 +280,26 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   refreshRuntimeStateForAutoCssSources = refreshRuntimeState
   onLoad()
   const getResolvedConfig = () => resolvedConfig
-  const markCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
+  const markCssAssetProcessed = (asset: { source: unknown }, _file?: string) => {
     processedCssAssets.add(asset)
-    if (file) {
-      processedCssAssetFiles.add(normalizeOutputPathKey(file))
-    }
   }
   const isCssAssetProcessed = (asset: { source: unknown }, file?: string) => {
-    return processedCssAssets.has(asset)
-      || (file ? processedCssAssetFiles.has(normalizeOutputPathKey(file)) : false)
+    if (processedCssAssets.has(asset)) {
+      return true
+    }
+    if (!file) {
+      return false
+    }
+    const record = viteProcessedCssAssetResults.get(normalizeOutputPathKey(file))
+    if (!record) {
+      return false
+    }
+    const source = typeof asset.source === 'string'
+      ? asset.source
+      : asset.source instanceof Uint8Array
+        ? Buffer.from(asset.source).toString()
+        : String(asset.source ?? '')
+    return source === record.css
   }
   const recordGeneratorCandidates = (candidates: Set<string>) => {
     recordedGeneratorCandidates = new Set(candidates)
@@ -473,17 +490,18 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const file = cleanUrl(id)
     return !/\.(?:vue|uvue|nvue|svelte|mpx)$/i.test(file)
   }
-  const rememberMainCssSource = (file: string, rawSource: string, cssRuntimeSignature?: string) => {
-    rememberedMainCssSources.set(file, rawSource)
+  const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
+    const key = normalizeOutputPathKey(entry.outputFile)
+    rememberedCssSources.set(key, entry)
     if (cssRuntimeSignature) {
-      rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
+      rememberedCssSignatureByFile.set(key, cssRuntimeSignature)
     }
   }
-  const getRememberedMainCssSources = () => rememberedMainCssSources
-  const getRememberedMainCssSource = (file: string) => rememberedMainCssSources.get(file)
-  const getRememberedMainCssSignature = (file: string) => rememberedMainCssSignatureByFile.get(file)
-  const setRememberedMainCssSignature = (file: string, cssRuntimeSignature: string) => {
-    rememberedMainCssSignatureByFile.set(file, cssRuntimeSignature)
+  const getRememberedCssSources = () => rememberedCssSources
+  const getRememberedCssSource = (file: string) => rememberedCssSources.get(normalizeOutputPathKey(file))?.rawSource
+  const getRememberedCssSignature = (file: string) => rememberedCssSignatureByFile.get(normalizeOutputPathKey(file))
+  const setRememberedCssSignature = (file: string, cssRuntimeSignature: string) => {
+    rememberedCssSignatureByFile.set(normalizeOutputPathKey(file), cssRuntimeSignature)
   }
   const recordCssAssetResult = (file: string, css: string) => {
     viteGeneratedCssByFile.set(file, css)
@@ -662,6 +680,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!generated) {
       return undefined
     }
+    const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web')
     for (const dependency of generated.dependencies) {
       hookContext?.addWatchFile?.(dependency)
     }
@@ -674,7 +694,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     markViteProcessedCssSource(file)
     rememberTailwindRootCssModule(id)
     recordGeneratorCandidates(runtime)
-    rememberMainCssSource(file, code)
+    rememberCssSource({
+      outputFile,
+      rawSource: code,
+      sourceFile: file,
+    })
     debug('css generated for vite postcss pipeline: %s bytes=%d', file, generated.css.length)
     return `${createBundlerGeneratedCssMarker('vite', normalizeViteProcessedCssFile(file))}\n${generated.css}`
   }
@@ -701,6 +725,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     debug,
     getResolvedConfig,
     markCssAssetProcessed,
+    isCssAssetProcessed,
     isViteProcessedCssAsset,
     recordCssAssetResult,
     recordViteProcessedCssAssetResult,
@@ -708,10 +733,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getSourceCandidates,
     getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
-    rememberMainCssSource,
-    getRememberedMainCssSources,
-    getRememberedMainCssSignature,
-    setRememberedMainCssSignature,
+    rememberCssSource,
+    getRememberedCssSources,
+    getRememberedCssSignature,
+    setRememberedCssSignature,
     recordGeneratorCandidates,
     hmrTimingRecorder,
   })
@@ -731,8 +756,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getSourceCandidates,
     getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
-    rememberMainCssSource,
-    getRememberedMainCssSource,
+    rememberMainCssSource: (file, rawSource) => rememberCssSource({
+      outputFile: file,
+      rawSource,
+      sourceFile: file,
+    }),
+    getRememberedMainCssSource: getRememberedCssSource,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
@@ -768,6 +797,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           return
         }
         return hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
+          invalidateRecordedGeneratorCandidates()
           const file = cleanUrl(id)
           if (sourceScanMatcher && !sourceScanMatcher(file)) {
             sourceCandidateCollector.remove(file)
@@ -784,6 +814,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       },
       async watchChange(id, change) {
         await hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
+          if (shouldOwnTailwindGeneration && isSourceCandidateRequest(id)) {
+            invalidateRecordedGeneratorCandidates()
+          }
           if (isSourceScanDependency(id)) {
             invalidateSourceCandidateScan()
           }
@@ -799,7 +832,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         return hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
           const isSourceCandidateHotUpdate = shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
           await syncChangedSourceCandidateFile(ctx.file)
-          invalidateRecordedGeneratorCandidates()
+          if (isSourceCandidateHotUpdate) {
+            invalidateRecordedGeneratorCandidates()
+          }
           const cssModules = resolveHotTailwindCssModules(ctx)
           if (
             isSourceCandidateHotUpdate

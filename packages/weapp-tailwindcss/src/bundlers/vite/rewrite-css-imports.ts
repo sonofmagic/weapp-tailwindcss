@@ -3,9 +3,9 @@ import type { AppType } from '@/types'
 import path from 'node:path'
 import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
-import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
-import { cleanUrl, isCSSRequest, slash } from './utils'
+import { cleanUrl, isCSSRequest } from './utils'
 
 function joinPosixPath(base: string, subpath: string) {
   if (base.endsWith('/')) {
@@ -35,26 +35,6 @@ interface RewriteCssImportsOptions {
 
 function stripTailwindConfigDirectives(code: string) {
   return code.replace(/^\s*@config\s+(?:"[^"]+"|'[^']+')[^;\n]*;\s*$/gm, '')
-}
-
-function isPackageJsonImportRequest(request: string) {
-  return request.startsWith('#')
-}
-
-function normalizeTailwindConfigDirectives(code: string, id: string) {
-  const file = cleanUrl(id)
-  if (!path.isAbsolute(file)) {
-    return code
-  }
-
-  const base = path.dirname(file)
-  return code.replace(/@config\s+(["'])(.+?)\1\s*;?/g, (full, quote: string, request: string) => {
-    if (path.isAbsolute(request) || isPackageJsonImportRequest(request)) {
-      return full
-    }
-
-    return `@config ${quote}${slash(path.resolve(base, request))}${quote};`
-  })
 }
 
 export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions): Plugin[] {
@@ -88,8 +68,9 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         if (!isCSSRequest(id)) {
           return null
         }
+        const file = cleanUrl(id)
         const normalizedCode = hasTailwindRootDirectives(code)
-          ? normalizeTailwindConfigDirectives(code, id)
+          ? normalizeTailwindConfigDirectives(code, path.dirname(file))
           : code
         if (hasTailwindRootDirectives(normalizedCode)) {
           await options.onTailwindRootCss?.(id, normalizedCode)

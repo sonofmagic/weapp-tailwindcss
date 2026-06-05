@@ -77,6 +77,9 @@ export async function runSameClassLiteralMutation(
   }
 
   const hotUpdateBeforeStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=script same-class-literal phase=setup dirty=${formatPath(sourcePath)}\n`,
+  )
   await writeFilePreserveEol(sourcePath, sourceWithMarkerBefore, sourceOriginal)
   await waitForOutputsUpdated(
     watchCase,
@@ -84,6 +87,13 @@ export async function runSameClassLiteralMutation(
     cliOptions,
     session,
     hotUpdateBeforeStartedAt,
+    async () => {
+      const [wxml, js] = await Promise.all([
+        readFileIfExists(watchCase.outputWxml),
+        readFileIfExists(watchCase.outputJs),
+      ])
+      return Boolean(wxml?.includes(markerBefore) || js?.includes(markerBefore))
+    },
   )
   await waitForMarkerState(
     watchCase,
@@ -106,6 +116,9 @@ export async function runSameClassLiteralMutation(
   }
 
   const hotUpdateAfterStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=script same-class-literal phase=add dirty=${formatPath(sourcePath)}\n`,
+  )
   await writeFilePreserveEol(sourcePath, sourceWithMarkerAfter, sourceOriginal)
   const hotUpdateOutputMs = await waitForOutputsUpdated(
     watchCase,
@@ -113,6 +126,13 @@ export async function runSameClassLiteralMutation(
     cliOptions,
     session,
     hotUpdateAfterStartedAt,
+    async () => {
+      const [wxml, js] = await Promise.all([
+        readFileIfExists(watchCase.outputWxml),
+        readFileIfExists(watchCase.outputJs),
+      ])
+      return Boolean(wxml?.includes(markerAfter) || js?.includes(markerAfter))
+    },
   )
   const hotUpdateEffectiveMs = await waitForMarkerState(
     watchCase,
@@ -170,6 +190,9 @@ export async function runSameClassLiteralMutation(
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateAfterStartedAt)
 
   const rollbackStartedAt = Date.now()
+  process.stdout.write(
+    `[watch-hmr] ${watchCase.label} mutation=script same-class-literal phase=delete dirty=${formatPath(sourcePath)}\n`,
+  )
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
   const rollbackOutputMs = await waitForOutputsUpdated(
     watchCase,
@@ -177,6 +200,13 @@ export async function runSameClassLiteralMutation(
     cliOptions,
     session,
     rollbackStartedAt,
+    async () => {
+      const [wxml, js] = await Promise.all([
+        readFileIfExists(watchCase.outputWxml),
+        readFileIfExists(watchCase.outputJs),
+      ])
+      return !wxml?.includes(markerAfter) && !js?.includes(markerAfter)
+    },
   )
   const rollbackEffectiveMs = await waitForMarkerState(
     watchCase,

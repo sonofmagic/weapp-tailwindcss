@@ -3,11 +3,14 @@ import type { OutputAsset, OutputBundle, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
+import path from 'node:path'
+import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
+import { resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 
 interface CssFinalizerContext {
@@ -137,12 +140,16 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         if (resolvedConfig?.command !== 'build') {
           return
         }
+        const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+        const isWebGeneratorTarget = generatorOptions.target === 'web'
+        const rootDir = resolvedConfig.root ? path.resolve(resolvedConfig.root) : process.cwd()
 
         collectViteProcessedCssAssetResults(bundle, {
           isViteProcessedCssAsset,
           markCssAssetProcessed,
           recordCssAssetResult,
           recordViteProcessedCssAssetResult,
+          resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget),
           debug,
         })
 
@@ -176,7 +183,6 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
 
         await runtimeState.readyPromise
         await waitForSourceCandidateSyncs?.()
-        const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
         const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()
         const collectedGeneratorCandidates = new Set([
           ...runtime,
