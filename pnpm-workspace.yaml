@@ -184,11 +184,11 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.0
+    weapp-ide-cli: ^5.4.2
   weappVite:
-    weapp-vite: ^6.16.35
+    weapp-vite: ^6.16.40
   wrangler:
-    wrangler: ^4.97.0
+    wrangler: ^4.98.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
