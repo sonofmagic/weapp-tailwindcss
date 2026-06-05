@@ -7,7 +7,7 @@ import path from 'pathe'
 import { expect } from 'vitest'
 import { clearProjectBuildState } from '../projectTest'
 
-const textExtensions = /\.(?:js|json|html|css|wxss|acss|qss|ttss|wxml|axml|qml|swan|ttml|uvue)$/i
+const textExtensions = /\.(?:js|json|html|css|wxss|acss|jxss|qss|ttss|wxml|axml|qml|swan|ttml|uvue)$/i
 
 async function pathExists(file: string) {
   try {

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, i
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 52982 | 100 | false | false | false | false | true |
+| 51859 | 96 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -1827,48 +1827,6 @@ text,
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
-@media (prefers-color-scheme: dark) {
-  .dark_cbg-_b_h123456_B {
-    --tw-bg-opacity: 1;
-    background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-  }
-  .dark_cbg-green-500 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
-  }
-  .dark_cbg-zinc-800 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
-  }
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -2220,50 +2178,23 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-@media (prefers-color-scheme: dark) {
-  .dark_cbg-_b_h123456_B {
-    --tw-bg-opacity: 1;
-    background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
-  }
-  .dark_cbg-green-500 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
-  }
-  .dark_cbg-zinc-800 {
-    --tw-bg-opacity: 1;
-    background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
-  }
+.dark view.dark_cbg-_b_h123456_B,
+.dark text.dark_cbg-_b_h123456_B {
+  --tw-bg-opacity: 1;
+  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
+}
+.dark view.dark_cbg-green-500,
+.dark text.dark_cbg-green-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
+}
+.dark view.dark_cbg-zinc-800,
+.dark text.dark_cbg-zinc-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
 }
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 ```

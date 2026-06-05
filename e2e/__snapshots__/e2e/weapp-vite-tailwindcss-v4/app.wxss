@@ -2,17 +2,19 @@ view,
 text,
 :after,
 :before {
-  --tw-space-y-reverse: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
   --tw-space-x-reverse: 0;
+  --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-gradient-position: initial;
-  --tw-gradient-from: rgba(0, 0, 0, 0);
-  --tw-gradient-via: rgba(0, 0, 0, 0);
-  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
   --tw-gradient-stops: initial;
   --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
-  --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
 }
 :host,
@@ -82,16 +84,16 @@ wx-root-portal-content {
 .space-y-2_d5 > text + view,
 .space-y-2_d5 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(var(--spacing) * 2.5 * var(--tw-space-y-reverse));
+  margin-top: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-y-reverse)));
 }
 .space-x-2_d5 > view + view,
 .space-x-2_d5 > view + text,
 .space-x-2_d5 > text + view,
 .space-x-2_d5 > text + text {
   --tw-space-x-reverse: 0;
-  margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
-  margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
+  margin-right: calc(var(--spacing) * 2.5 * var(--tw-space-x-reverse));
+  margin-left: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-x-reverse)));
 }
 .border-4 {
   border-style: var(--tw-border-style);
@@ -113,15 +115,15 @@ wx-root-portal-content {
   background-color: var(--color-zinc-50);
 }
 .bg-gradient-to-b {
-  --tw-gradient-position: to bottom;
+  --tw-gradient-position: to bottom in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-t {
-  --tw-gradient-position: to top;
+  --tw-gradient-position: to top in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-tr {
-  --tw-gradient-position: to top right;
+  --tw-gradient-position: to top right in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .from-_b_h2f73f1_B {
@@ -171,59 +173,31 @@ wx-root-portal-content {
     background-color: var(--color-zinc-900);
   }
 }
-view,
-text,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-  --tw-content: '';
+.container {
+  width: 100%;
 }
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
 }
-.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
-  --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
 }
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before {
-  --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
 }
-view,
-text,
-:after,
-:before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-  --tw-content: '';
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
 }
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
 }

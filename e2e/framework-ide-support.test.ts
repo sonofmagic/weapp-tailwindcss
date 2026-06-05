@@ -36,7 +36,7 @@ function getProbeTiming(entryName: string) {
     : 0
   const hotUpdateTotalTimeoutMs = process.env['E2E_IDE_HOT_UPDATE'] === '0'
     ? 0
-    : readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', hotUpdateTimeoutMs)
+    : readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', hotUpdateTimeoutMs * 3)
   const settleTimeoutMs = readNumberEnv('E2E_IDE_SETTLE_MS', 800)
   const maxAttempts = readNumberEnv('E2E_IDE_PROBE_RETRIES', 1) + 1
   const attemptTimeoutMs = buildTimeoutMs + hotUpdateTotalTimeoutMs + timeoutMs + relaunchTimeoutMs + closeTimeoutMs + 5000

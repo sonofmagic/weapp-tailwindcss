@@ -84,6 +84,7 @@ export interface GenerateCssByGeneratorOptions {
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
   previousCss?: string | undefined
+  deferEmptyScopedCssSource?: boolean | undefined
 }
 
 export interface GenerateCssByGeneratorResult {
@@ -117,6 +118,7 @@ function mergeScopedRuntimeWithCurrentRuntime(
     currentCssCandidates?: string[] | undefined
     cssHandlerOptions: IStyleHandlerOptions
     isolateCssSource: boolean
+    matchedCssSourceFile: boolean
   },
 ) {
   if (options.isolateCssSource && options.currentCssCandidates?.length) {
@@ -125,7 +127,12 @@ function mergeScopedRuntimeWithCurrentRuntime(
       ...options.currentCssCandidates,
     ])
   }
-  if (runtime.size === 0 || !options.cssHandlerOptions.isMainChunk || options.isolateCssSource) {
+  if (
+    runtime.size === 0
+    || !options.cssHandlerOptions.isMainChunk
+    || options.matchedCssSourceFile
+    || (options.isolateCssSource && scopedRuntime.size === 0)
+  ) {
     return scopedRuntime
   }
   return new Set([
@@ -586,7 +593,7 @@ export async function generateCssByGenerator(
     )
     const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
-    const generatedResults = await Promise.all(sources.map(async (source) => {
+    const generatedResultsWithDeferred = await Promise.all(sources.map(async (source) => {
       const generator = createWeappTailwindcssGenerator(source)
       const sourceEntries = getSourceCandidatesForEntries && (majorVersion === 3 || majorVersion === 4)
         ? await resolveGeneratorSourceEntries(source, runtimeState)
@@ -595,11 +602,23 @@ export async function generateCssByGenerator(
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
       const isolateCssSource = shouldIsolateScopedCssSource(source, sourceEntries)
+      const matchedCssSourceFile = Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
+      if (
+        options.deferEmptyScopedCssSource
+        && isolateCssSource
+        && scopedRuntime?.size === 0
+        && currentCssCandidates.length === 0
+        && !cssHandlerOptions.isMainChunk
+      ) {
+        debug('defer empty scoped css source generation: %s', file)
+        return undefined
+      }
       const sourceRuntime = scopedRuntime && (scopedRuntime.size > 0 || isolateCssSource)
         ? mergeScopedRuntimeWithCurrentRuntime(scopedRuntime, runtimeWithCurrentCss, {
             currentCssCandidates,
             cssHandlerOptions,
             isolateCssSource,
+            matchedCssSourceFile,
           })
         : runtimeWithCurrentCss
       const generatorRuntime = majorVersion === 4 && generatorOptions.target === 'weapp'
@@ -620,6 +639,7 @@ export async function generateCssByGenerator(
         target: generatorOptions.target,
       })
     }))
+    const generatedResults = generatedResultsWithDeferred.filter((item): item is NonNullable<typeof item> => Boolean(item))
     const firstGenerated = generatedResults[0]
     if (!firstGenerated) {
       return undefined
@@ -785,6 +805,19 @@ export async function generateCssByGenerator(
           importFallback: generatorOptions.importFallback,
         })
         css = createCssSourceOrderAppend(css, userCss)
+      }
+      if (hasMatchedCssSourceFile && generated.target === 'weapp') {
+        css = await appendLegacyContainerCompatCss(
+          css,
+          effectiveRawSource,
+          file,
+          runtime,
+          configuredContainerCompat,
+          generated.target,
+          styleHandler,
+          cssHandlerOptions,
+          generatorStyleOptions,
+        )
       }
       if (shouldAppendWebBundleCssFallback(generated.target, {
         hasSourceDirectives,

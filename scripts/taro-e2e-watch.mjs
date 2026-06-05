@@ -13,6 +13,17 @@ const forceNativeWatch = process.env.TARO_E2E_WATCH_NATIVE === '1'
 const forcePollingWatch = process.env.TARO_E2E_WATCH_NATIVE === '0'
 const forcePollingRestart = process.env.TARO_E2E_WATCH_RESTART === '1'
 const rebuildDebounceMs = Number(process.env.TARO_E2E_REBUILD_DEBOUNCE_MS ?? 600)
+const buildRetryDelayMs = Number(process.env.TARO_E2E_BUILD_RETRY_DELAY_MS ?? 500)
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function isTaroDistCleanupRace(error) {
+  const message = `${error?.stack ?? error?.message ?? error}\n${error?.output ?? ''}`
+  return message.includes('ENOENT: no such file or directory, lstat')
+    && message.includes(`${path.sep}dist${path.sep}`)
+}
 
 async function isTaroViteProject() {
   try {
@@ -66,13 +77,24 @@ function pipeWithReady(child, resolveReady) {
 
 async function runBuild() {
   await new Promise((resolve, reject) => {
+    let output = ''
     const build = spawn(process.execPath, [taroBuildGuardPath], {
       cwd: process.cwd(),
       env: {
         ...process.env,
         TARO_BUILD_STRICT: '1',
       },
-      stdio: 'inherit',
+      stdio: ['ignore', 'pipe', 'pipe'],
+    })
+    build.stdout?.on('data', (chunk) => {
+      const text = chunk.toString()
+      output += text
+      process.stdout.write(text)
+    })
+    build.stderr?.on('data', (chunk) => {
+      const text = chunk.toString()
+      output += text
+      process.stderr.write(text)
     })
     build.on('error', reject)
     build.on('close', (code, signal) => {
@@ -80,9 +102,25 @@ async function runBuild() {
         resolve()
         return
       }
-      reject(new Error(`taro build failed: ${signal ?? code}`))
+      const error = new Error(`taro build failed: ${signal ?? code}`)
+      error.output = output
+      reject(error)
     })
   })
+}
+
+async function runBuildWithRetry() {
+  try {
+    await runBuild()
+  }
+  catch (error) {
+    if (!isTaroDistCleanupRace(error)) {
+      throw error
+    }
+    process.stderr.write('[taro-e2e-watch] Taro dist cleanup race detected, retrying build once.\n')
+    await sleep(Number.isFinite(buildRetryDelayMs) ? buildRetryDelayMs : 500)
+    await runBuild()
+  }
 }
 
 async function runEnsureBuild() {
@@ -172,7 +210,7 @@ async function main() {
   await runEnsureBuild()
   let resolveReady
   const ready = skipNativeWatch
-    ? runBuild()
+    ? runBuildWithRetry()
     : new Promise((resolve) => {
         resolveReady = resolve
       })
@@ -291,7 +329,7 @@ async function main() {
           }
           queued = false
           const beforeBuildSnapshot = lastSnapshot
-          await runBuild()
+          await runBuildWithRetry()
           const afterBuildSnapshot = await collectSnapshot()
           if (hasSnapshotChanged(beforeBuildSnapshot, afterBuildSnapshot)) {
             queued = true

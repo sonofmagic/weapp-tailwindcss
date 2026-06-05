@@ -1122,6 +1122,7 @@ describe('watch-hmr regression cases', () => {
     const extendedCases = buildDemoExtendedCases('/repo')
     const baseCases = buildDemoBaseCases('/repo')
     const uniViteCase = extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v3')
+    const uniViteV4Case = extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v4')
     const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
     const viteNativeCase = baseCases.find(item => item.name === 'weapp-vite-tailwindcss-v4')
 
@@ -1130,9 +1131,22 @@ describe('watch-hmr regression cases', () => {
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.maxPluginProcessMs).toBe(5000)
+
+    expect(uniViteV4Case?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+    ])
+    expect(uniViteV4Case?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+    ])
+    expect(uniViteV4Case?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
+    )
 
     expect(mpxV4Case?.outputWxml).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/custom-tab-bar/index.wxml'),

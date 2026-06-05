@@ -12,6 +12,7 @@ export interface CssSnapshotOptions {
   classList?: string[]
   normalizeWebpackAppSplitNoise?: boolean
   normalizeTailwindV4RootVariableNoise?: boolean
+  rootSnapshotName?: string
 }
 
 async function exists(target: string) {
@@ -997,6 +998,7 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     }
   }
 
-  await visit(rootCssPath, normalizeSnapshotName(path.basename(cssRelativePath)) ?? path.basename(cssRelativePath))
+  const rootSnapshotName = options.rootSnapshotName ?? path.basename(cssRelativePath)
+  await visit(rootCssPath, normalizeSnapshotName(rootSnapshotName) ?? rootSnapshotName)
   return snapshots
 }

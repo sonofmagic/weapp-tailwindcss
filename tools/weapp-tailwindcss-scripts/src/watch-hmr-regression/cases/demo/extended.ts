@@ -162,10 +162,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ],
     templateMutation: {
@@ -231,6 +233,14 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       version: 'v3',
       pageKind: 'vue',
       skipStyleMutation: true,
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
+          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
+        ]
+      },
     }),
     webHmr: {
       devScript: 'dev:h5',
@@ -288,9 +298,11 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     userReportedHotUpdate: {
@@ -353,6 +365,14 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       version: 'v4',
       pageKind: 'vue',
       skipStyleMutation: true,
+      globalStyleCandidates(subPackage) {
+        return [
+          path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/${subPackage}/pages/index.wxss`),
+          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
+          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
+        ]
+      },
     }),
     webHmr: {
       devScript: 'dev:h5',

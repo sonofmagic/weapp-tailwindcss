@@ -473,6 +473,125 @@ describe('bundlers/vite source scan', () => {
     })
   })
 
+  it('does not let one Tailwind v4 css entry exclude another entry source during Vite source scanning', async () => {
+    const tempDir = await createTempDir('weapp-tw-vite-source-scan-sibling-not')
+    const srcDir = path.join(tempDir, 'src')
+    await mkdir(path.join(srcDir, 'sub-normal/pages'), { recursive: true })
+    await writeFile(path.join(srcDir, 'app.css'), [
+      '@import "tailwindcss" source(none);',
+      '@source "../src/**/*.{ts,tsx,jsx,js,html}";',
+      '@source not "../src/sub-normal/**/*";',
+    ].join('\n'))
+    await writeFile(path.join(srcDir, 'sub-normal/pages/index.css'), [
+      '@import "tailwindcss" source(none);',
+      '@source "../**/*.{css,ts,tsx,jsx,js,html}";',
+    ].join('\n'))
+
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+          throw new Error('auto-discovered css roots should avoid full Tailwind v4 source fallback')
+        }),
+      }
+    })
+
+    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssPatcherLike, {
+      root: tempDir,
+      outDir: 'dist',
+    })
+
+    expect(resolved?.explicit).toBe(true)
+    expect(resolved?.entries).toContainEqual({
+      base: srcDir,
+      pattern: '**/*.{ts,tsx,jsx,js,html}',
+      negated: false,
+    })
+    expect(resolved?.entries).toContainEqual({
+      base: path.join(srcDir, 'sub-normal'),
+      pattern: '**/*.{css,ts,tsx,jsx,js,html}',
+      negated: false,
+    })
+    expect(resolved?.entries).not.toContainEqual({
+      base: path.join(srcDir, 'sub-normal'),
+      pattern: '**/*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,vue,uvue,nvue,svelte,mpx,html,wxml,axml,jxml,ksml,ttml,qml,tyml,xhsml,swan,css,wxss,acss,jxss,ttss,qss,tyss,scss,sass,less,styl,stylus}',
+      negated: true,
+    })
+  })
+
+  it('does not let one configured Tailwind v4 cssSource exclude another cssSource during Vite source scanning', async () => {
+    const tempDir = await createTempDir('weapp-tw-vite-source-scan-sibling-css-source-not')
+    const srcDir = path.join(tempDir, 'src')
+    const appCss = [
+      '@import "tailwindcss" source(none);',
+      '@source "../src/**/*.{ts,tsx,jsx,js,html}";',
+      '@source not "../src/sub-normal/**/*";',
+    ].join('\n')
+    const subCss = [
+      '@import "tailwindcss" source(none);',
+      '@source "../**/*.{css,ts,tsx,jsx,js,html}";',
+    ].join('\n')
+
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: tempDir,
+          base: tempDir,
+          baseFallbacks: [],
+          packageName: 'tailwindcss4',
+          cssSources: [
+            {
+              file: path.join(srcDir, 'app.css'),
+              base: srcDir,
+              css: appCss,
+            },
+            {
+              file: path.join(srcDir, 'sub-normal/pages/index.css'),
+              base: path.join(srcDir, 'sub-normal/pages'),
+              css: subCss,
+            },
+          ],
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+          throw new Error('configured cssSources should avoid full Tailwind v4 source fallback')
+        }),
+      }
+    })
+
+    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssPatcherLike, {
+      root: tempDir,
+      outDir: 'dist',
+    })
+
+    expect(resolved?.explicit).toBe(true)
+    expect(resolved?.entries).toContainEqual({
+      base: srcDir,
+      pattern: '**/*.{ts,tsx,jsx,js,html}',
+      negated: false,
+    })
+    expect(resolved?.entries).toContainEqual({
+      base: path.join(srcDir, 'sub-normal'),
+      pattern: '**/*.{css,ts,tsx,jsx,js,html}',
+      negated: false,
+    })
+    expect(resolved?.entries?.some(entry => entry.negated)).toBe(false)
+  })
+
   it('keeps broad Tailwind v4 fallback when the Vite root differs from the patcher project root', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
     await writeFile(path.join(tempDir, 'app.scss'), [

@@ -5,11 +5,21 @@ export const E2E_PROJECTS = [
     name: 'gulp-tailwindcss-v3',
     projectPath: 'gulp-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'gulp-tailwindcss-v4',
     projectPath: 'gulp-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'mpx-tailwindcss-v3',
@@ -67,11 +77,21 @@ export const E2E_PROJECTS = [
     name: 'uni-app-vite-tailwindcss-v3',
     projectPath: 'uni-app-vite-tailwindcss-v3/dist/build/mp-weixin',
     cssFile: 'app.wxss',
+    cssFiles: [
+      'app.wxss',
+      'sub-normal/pages/index.wxss',
+      'sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'uni-app-vite-tailwindcss-v4',
     projectPath: 'uni-app-vite-tailwindcss-v4/dist/build/mp-weixin',
     cssFile: 'app.wxss',
+    cssFiles: [
+      'app.wxss',
+      'sub-normal/pages/index.wxss',
+      'sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
@@ -97,11 +117,21 @@ export const E2E_PROJECTS = [
     name: 'weapp-vite-tailwindcss-v3',
     projectPath: 'weapp-vite-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'weapp-vite-tailwindcss-v4',
     projectPath: 'weapp-vite-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
     skipOpenAutomator: true,
   },
 ] satisfies ProjectEntry[]

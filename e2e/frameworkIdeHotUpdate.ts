@@ -63,8 +63,11 @@ function createWatchOptions(): CliOptions {
   }
 }
 
-function readHotUpdateTotalTimeoutMs(options: CliOptions) {
-  return readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', options.timeoutMs)
+function readHotUpdateTotalTimeoutMs(watchCase: WatchCase, options: CliOptions) {
+  const stageCount = shouldRunIdeStyleHotUpdate(watchCase)
+    ? 3
+    : 2
+  return readNumberEnv('E2E_IDE_HOT_UPDATE_TOTAL_TIMEOUT_MS', options.timeoutMs * stageCount)
 }
 
 async function withHotUpdateTotalTimeout<T>(
@@ -72,7 +75,7 @@ async function withHotUpdateTotalTimeout<T>(
   options: CliOptions,
   task: Promise<T>,
 ) {
-  const timeoutMs = readHotUpdateTotalTimeoutMs(options)
+  const timeoutMs = readHotUpdateTotalTimeoutMs(watchCase, options)
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
     return await Promise.race([

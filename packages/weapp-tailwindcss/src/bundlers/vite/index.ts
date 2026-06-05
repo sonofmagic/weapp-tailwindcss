@@ -498,7 +498,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
   }
   const getRememberedCssSources = () => rememberedCssSources
-  const getRememberedCssSource = (file: string) => rememberedCssSources.get(normalizeOutputPathKey(file))?.rawSource
+  const getRememberedCssSourceEntry = (file: string) => rememberedCssSources.get(normalizeOutputPathKey(file))
   const getRememberedCssSignature = (file: string) => rememberedCssSignatureByFile.get(normalizeOutputPathKey(file))
   const setRememberedCssSignature = (file: string, cssRuntimeSignature: string) => {
     rememberedCssSignatureByFile.set(normalizeOutputPathKey(file), cssRuntimeSignature)
@@ -517,6 +517,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     })
   }
   const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
+  const getViteProcessedCssAssetResult = (file: string) => viteProcessedCssAssetResults.get(normalizeOutputPathKey(file))
   const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
   const markViteProcessedCssSource = (file: string) => {
     viteProcessedCssSourceFiles.add(normalizeViteProcessedCssFile(file))
@@ -676,6 +677,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       styleHandler,
       debug,
       previousCss: viteGeneratedCssByFile.get(file),
+      deferEmptyScopedCssSource: true,
     })
     if (!generated) {
       return undefined
@@ -730,6 +732,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     recordCssAssetResult,
     recordViteProcessedCssAssetResult,
     getViteProcessedCssAssetResults,
+    getViteProcessedCssAssetResult,
     getSourceCandidates,
     getSourceCandidatesForEntries,
     waitForSourceCandidateSyncs,
@@ -761,7 +764,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       rawSource,
       sourceFile: file,
     }),
-    getRememberedMainCssSource: getRememberedCssSource,
+    getRememberedMainCssSource: getRememberedCssSourceEntry,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos

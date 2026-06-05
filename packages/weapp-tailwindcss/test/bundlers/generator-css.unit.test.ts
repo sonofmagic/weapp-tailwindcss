@@ -5062,6 +5062,92 @@ describe('bundlers/shared generator css', () => {
     expect([...candidates].sort()).toEqual(['bg-[#000000]', 'h-[28px]', 'text-[46px]'])
   })
 
+  it('defers empty scoped Tailwind v4 css sources in the Vite css pipeline', async () => {
+    const root = '/project'
+    const subCssFile = `${root}/src/sub-normal/pages/index.css`
+    const subCss = '@import "tailwindcss" source(none);\n@source "../**/*.{css,ts,tsx,jsx,js,html}";'
+    const generateMock = vi.fn(async () => ({
+      css: '.should-not-generate{}',
+      rawCss: '.should-not-generate{}',
+      target: 'weapp',
+      classSet: new Set(),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: root,
+        base: options.cssSources[0].base,
+        baseFallbacks: [],
+        css: options.cssSources[0].css,
+        dependencies: [options.cssSources[0].file],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: root,
+        base: root,
+        baseFallbacks: [],
+        css: subCss,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: root,
+        baseFallbacks: [],
+        cssSources: [
+          {
+            file: subCssFile,
+            base: `${root}/src/sub-normal/pages`,
+            css: subCss,
+          },
+        ],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(),
+      rawSource: subCss,
+      file: subCssFile,
+      cssHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+        postcssOptions: {
+          options: {
+            from: subCssFile,
+          },
+        },
+        sourceOptions: {
+          outputRoot: `${root}/dist`,
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+      deferEmptyScopedCssSource: true,
+    })
+
+    expect(result).toBeUndefined()
+    expect(generateMock).not.toHaveBeenCalled()
+  })
+
   it('matches Tailwind v4 cssSources by postcss input file before dist output path fallback', async () => {
     const appCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{ts,tsx}";'
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-independent/**/*.{ts,tsx}";'
@@ -5977,7 +6063,7 @@ describe('bundlers/shared generator css', () => {
 
   it('prefers configured Tailwind v4 css source over placeholder-expanded bundle css', async () => {
     const runtimeSet = new Set(['bg-linear-to-r'])
-    const configuredCss = '@import "tailwindcss";'
+    const configuredCss = '@import "tailwindcss";\n@config "./tailwind.config.js";'
     const rawSource = [
       ':host,page,.tw-root,wx-root-portal-content{--color-gray-200:#e5e7eb}',
       '.container{width:100%}',
@@ -6001,6 +6087,7 @@ describe('bundlers/shared generator css', () => {
       base: '/project',
       baseFallbacks: [],
       css: options.css,
+      config: '/project/src/tailwind.config.js',
       dependencies: ['src/app.css'],
     }))
 
@@ -6013,6 +6100,7 @@ describe('bundlers/shared generator css', () => {
         base: '/project',
         baseFallbacks: [],
         css: configuredCss,
+        config: '/project/src/tailwind.config.js',
         dependencies: ['src/app.css'],
       })),
       resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
@@ -6030,7 +6118,7 @@ describe('bundlers/shared generator css', () => {
     }))
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
-    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const styleHandler = vi.fn(async (code: string) => ({ css: code.includes('.container') ? '.container{width:100%}' : code }))
     const result = await generateCssByGenerator({
       opts: {
         styleHandler,
@@ -6052,6 +6140,9 @@ describe('bundlers/shared generator css', () => {
           },
         },
         majorVersion: 4,
+        sourceOptions: {
+          sourceFile: '/project/src/app.css',
+        },
       } as any,
       cssUserHandlerOptions: {
         isMainChunk: false,
@@ -6076,19 +6167,19 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).toContain('.container{width:100%}')
   })
 
-  it('isolates scoped Tailwind v4 source candidates from current bundle runtime candidates', async () => {
+  it('isolates non-main scoped Tailwind v4 source candidates from current bundle runtime candidates', async () => {
     const runtimeSet = new Set(['text-[23px]'])
     const scopedSet = new Set(['bg-[#112233]'])
     const configuredCss = [
       '@import "tailwindcss" source(none);',
-      '@source "../src/**/*.{vue,js,ts,jsx,tsx,html}";',
+      '@source "../src/sub-independent/**/*.{vue,js,ts,jsx,tsx,html}";',
     ].join('\n')
     const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
       css: [...candidates].sort().join('\n'),
       rawCss: [...candidates].sort().join('\n'),
       target: 'weapp',
       classSet: new Set(candidates),
-      dependencies: ['src/app.css'],
+      dependencies: ['src/sub-independent/pages/index.css'],
       sources: [],
       root: null,
     }))
@@ -6105,25 +6196,25 @@ describe('bundlers/shared generator css', () => {
         css: configuredCss,
         cssSources: [
           {
-            file: '/project/src/app.css',
-            base: '/project/src',
+            file: '/project/src/sub-independent/pages/index.css',
+            base: '/project/src/sub-independent',
             css: configuredCss,
           },
         ],
       })),
       resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
         projectRoot: '/project',
-        base: '/project/src',
+        base: '/project/src/sub-independent',
         baseFallbacks: [],
         css: configuredCss,
-        dependencies: ['src/app.css'],
+        dependencies: ['src/sub-independent/pages/index.css'],
       })),
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: '/project',
-        base: options.base ?? '/project/src',
+        base: options.base ?? '/project/src/sub-independent',
         baseFallbacks: [],
         css: options.css ?? configuredCss,
-        dependencies: ['src/app.css'],
+        dependencies: ['src/sub-independent/pages/index.css'],
       })),
     }))
 
@@ -6141,12 +6232,12 @@ describe('bundlers/shared generator css', () => {
       },
       runtime: runtimeSet,
       rawSource: '/*! weapp-tailwindcss generator-placeholder */',
-      file: 'app.wxss',
+      file: 'sub-independent/pages/index.wxss',
       cssHandlerOptions: {
-        isMainChunk: true,
+        isMainChunk: false,
         postcssOptions: {
           options: {
-            from: 'app.wxss',
+            from: 'sub-independent/pages/index.wxss',
           },
         },
         majorVersion: 4,
@@ -6155,7 +6246,7 @@ describe('bundlers/shared generator css', () => {
         isMainChunk: false,
         postcssOptions: {
           options: {
-            from: 'app.wxss',
+            from: 'sub-independent/pages/index.wxss',
           },
         },
         majorVersion: 4,
@@ -6650,6 +6741,36 @@ describe('bundlers/shared generator css', () => {
     expect(records).toEqual([[
       'sub-independent/pages/index.wxss',
       expect.stringContaining('.independent-only'),
+    ]])
+  })
+
+  it('marks vite-processed main css pipeline assets for main css injection', async () => {
+    const { collectViteProcessedCssAssetResults } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app-origin.wxss': {
+        type: 'asset',
+        fileName: 'app-origin.wxss',
+        source: '.script-only{}',
+      },
+    } as any
+    const records: Array<[string, string, { injectIntoMain?: boolean | undefined } | undefined]> = []
+
+    const collected = collectViteProcessedCssAssetResults(bundle, {
+      opts: {
+        appType: 'taro',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+      } as any,
+      isViteProcessedCssAsset: () => true,
+      recordViteProcessedCssAssetResult: (file, css, options) => records.push([file, css, options]),
+      resolveViteProcessedCssOutputFile: file => file.replace('app-origin.wxss', 'app.wxss'),
+    })
+
+    expect(collected).toBe(1)
+    expect(records).toEqual([[
+      'app-origin.wxss',
+      '.script-only{}',
+      { injectIntoMain: true },
     ]])
   })
 

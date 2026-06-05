@@ -120,6 +120,19 @@ function createResolvedViteSourceScan(input: ResolvedViteSourceScan, dependencie
   }
 }
 
+function createMergedCssEntrySourceScanEntries(
+  entries: TailwindSourceEntry[],
+  options: {
+    sourceCount: number
+  },
+) {
+  if (options.sourceCount <= 1) {
+    return entries
+  }
+  const positiveEntries = entries.filter(entry => !entry.negated)
+  return positiveEntries.length > 0 ? positiveEntries : entries
+}
+
 async function statConfigDependency(file: string): Promise<ConfigDependencySignature> {
   try {
     const stats = await stat(file)
@@ -505,9 +518,12 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const inlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || inlineCandidates || explicit || readableCssEntryCount > 0) {
+    const scanEntries = createMergedCssEntrySourceScanEntries(entries, {
+      sourceCount: readableCssEntryCount,
+    })
+    if (scanEntries.length > 0 || inlineCandidates || explicit || readableCssEntryCount > 0) {
       return createResolvedViteSourceScan({
-        entries: explicit ? entries : entries.length > 0 ? entries : undefined,
+        entries: explicit ? scanEntries : scanEntries.length > 0 ? scanEntries : undefined,
         explicit,
         inlineCandidates,
       }, dependencies)
@@ -547,9 +563,13 @@ export async function resolveViteSourceScanEntries(
       }
     }
     const cssSourceInlineCandidates = mergeTailwindInlineSourceCandidates(cssInlineCandidates)
-    if (entries.length > 0 || cssSourceInlineCandidates || explicit || sourceOptions.cssSources?.length || configuredCssSources.length > 0) {
+    const cssSourceCount = (sourceOptions.cssSources?.length ?? 0) + configuredCssSources.length
+    const cssSourceScanEntries = createMergedCssEntrySourceScanEntries(entries, {
+      sourceCount: cssSourceCount,
+    })
+    if (cssSourceScanEntries.length > 0 || cssSourceInlineCandidates || explicit || sourceOptions.cssSources?.length || configuredCssSources.length > 0) {
       return createResolvedViteSourceScan({
-        entries: explicit ? entries : entries.length > 0 ? entries : undefined,
+        entries: explicit ? cssSourceScanEntries : cssSourceScanEntries.length > 0 ? cssSourceScanEntries : undefined,
         explicit,
         inlineCandidates: cssSourceInlineCandidates,
       }, dependencies)

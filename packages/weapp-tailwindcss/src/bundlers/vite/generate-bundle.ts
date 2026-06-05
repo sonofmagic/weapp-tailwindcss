@@ -34,6 +34,7 @@ import { createReplayCssAsset, registerGeneratorDependencies } from './generate-
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { shouldSkipViteJsTransform } from './js-precheck'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
+import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveTailwindV4EntriesFromCssCached } from './source-scan'
 import { isCSSRequest, slash } from './utils'
 
@@ -61,6 +62,7 @@ interface GenerateBundleContext {
   recordCssAssetResult?: (file: string, css: string) => void
   recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => void
   getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
+  getViteProcessedCssAssetResult?: (file: string) => { css: string, injectIntoMain?: boolean | undefined } | undefined
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
@@ -190,6 +192,10 @@ function stripStyleFileExtension(file: string) {
   return ext ? normalized.slice(0, -ext.length) : normalized
 }
 
+function isAppOriginCssFile(file: string) {
+  return path.basename(stripStyleFileExtension(file)) === 'app-origin'
+}
+
 function normalizeCssSourceForCompare(css: string) {
   return css.trim()
 }
@@ -199,6 +205,7 @@ async function createScopedGeneratorCandidateSignature(
   sourceFile: string,
   fallbackSignature: string,
   getSourceCandidatesForEntries: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined,
+  options: { includeFallbackSignature?: boolean | undefined } = {},
 ) {
   if (!getSourceCandidatesForEntries || !rawSource.includes('@source')) {
     return fallbackSignature
@@ -210,7 +217,10 @@ async function createScopedGeneratorCandidateSignature(
   if (resolved?.entries === undefined) {
     return fallbackSignature
   }
-  return createCandidateSignature(getSourceCandidatesForEntries(resolved.entries))
+  const scopedSignature = createCandidateSignature(getSourceCandidatesForEntries(resolved.entries))
+  return options.includeFallbackSignature === true
+    ? `${scopedSignature}:${fallbackSignature}`
+    : scopedSignature
 }
 
 function isMatchingCssSourceFile(
@@ -417,6 +427,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
       getViteProcessedCssAssetResults,
+      getViteProcessedCssAssetResult,
       getSourceCandidates,
       getSourceCandidatesForEntries,
       waitForSourceCandidateSyncs,
@@ -451,6 +462,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     debug('start')
     onStart()
     collectViteProcessedCssAssetResults(bundle, {
+      opts,
       isViteProcessedCssAsset,
       markCssAssetProcessed,
       recordCssAssetResult,
@@ -482,15 +494,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const bundleFiles = Object.keys(bundle)
     const buildCommand = resolvedConfig?.command === 'build'
     const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
+    const hasOmittedKnownFiles = hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
     // uni-app vite 的 dev 流程可能以 command=build 驱动 generateBundle，
     // 后续轮次可能回传完整 bundle 或脏文件子集；只要同一插件实例已有状态，
     // 就按增量处理，避免候选变化时把未改动的分包 CSS 全量重生成。
     const useIncrementalMode = !buildCommand
       || hasPreviousBundleState
-      || hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
+      || hasOmittedKnownFiles
     currentOutDir = outDir
     const snapshotStart = performance.now()
-    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode)
+    const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode, {
+      hasOmittedKnownFiles,
+    })
     recordTimingDetail('snapshot', snapshotStart)
     const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
     const forceRuntimeRefreshBySource = useIncrementalMode
@@ -545,15 +560,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates
+    let transformRuntime = transformBaseRuntime ?? runtime
     let generatorRuntime = collectLegacyContainerCompatCandidates(
       sourceCandidates,
-      filteredGeneratorCandidates,
+      runtimeState.twPatcher.majorVersion === 3 && hasRuntimeAffectingChanges && transformBaseRuntime
+        ? new Set([
+            ...filteredGeneratorCandidates,
+            ...transformBaseRuntime,
+          ])
+        : filteredGeneratorCandidates,
     )
-    let transformRuntime = transformBaseRuntime ?? runtime
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
+      && useV3OxideSourceRuntime
       && generatorRuntime.size > 0
+      && (state.iteration === 0 || !hasRuntimeAffectingChanges)
       && cssEntries.length <= 1
     if (shouldValidateV3GeneratorRuntime) {
       const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
@@ -727,7 +749,64 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }
           originalSource.source = source
         }
-        if (isViteProcessedCssAsset?.(originalSource, file) || isCssAssetProcessed?.(originalSource, file)) {
+        if (isWebGeneratorTarget && !shouldGenerateWebCssByGenerator) {
+          applyCssResult(rawSource)
+          markCssAssetProcessed?.(originalSource, outputFile)
+          onUpdate(outputFile, rawSource, rawSource)
+          debug('css skip web target: %s', outputFile)
+          continue
+        }
+        const hasViteProcessedCssRecord = getViteProcessedCssAssetResult?.(file) != null
+        const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
+        const cssAssetProcessed = isCssAssetProcessed?.(originalSource, file) === true
+        const alreadyProcessedCssAsset = viteProcessedCssAsset || cssAssetProcessed
+        const rememberedCssSource = viteProcessedCssAsset && getRememberedCssSources != null
+          ? [...getRememberedCssSources()]
+              .map(([, remembered]) => remembered)
+              .find((remembered) => {
+                const originalFiles = [
+                  file,
+                  originalSource.originalFileName,
+                  ...(originalSource.originalFileNames ?? []),
+                ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+                return normalizeOutputPathKey(remembered.outputFile) === normalizeOutputPathKey(outputFile)
+                  || originalFiles.some(originalFile => normalizeOutputPathKey(remembered.sourceFile) === normalizeOutputPathKey(originalFile))
+              })
+          : undefined
+        const generatorRawSource = viteProcessedCssAsset
+          ? rememberedCssSource?.rawSource ?? rawSource
+          : rawSource
+        const generatorSourceFile = viteProcessedCssAsset
+          ? rememberedCssSource?.sourceFile ?? file
+          : file
+        const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+        const cssHandlerOptions = viteProcessedCssAsset
+          ? {
+              ...getCssHandlerOptions(generatorSourceFile),
+              isMainChunk: outputCssHandlerOptions.isMainChunk || isAppOriginCssFile(file),
+            }
+          : getCssHandlerOptions(file)
+        const generatorCssUserHandlerOptions = getCssUserHandlerOptions(generatorSourceFile)
+        const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file)
+          ?? createRuntimeAffectingSourceSignature(generatorRawSource, 'css')
+        const cssRuntimeAffectingHash = snapshot.runtimeAffectingHashByFile.get(file)
+          ?? cache.computeHash(cssRuntimeAffectingSignature)
+        const cssShareScope = createCssTransformShareScopeKey(opts, generatorSourceFile, generatorRawSource)
+        const shouldRegenerateAppOriginCss = viteProcessedCssAsset && isAppOriginCssFile(file)
+        const shouldTrackGeneratorRuntime = shouldProcessTailwindGeneration
+          && (
+            !useIncrementalMode
+            || cssHandlerOptions.isMainChunk
+            || processFiles.css.has(file)
+            || runtimeLinkedCssFiles.has(file)
+            || shouldRegenerateAppOriginCss
+          )
+        const canRegenerateProcessedMainCss = cssHandlerOptions.isMainChunk
+          && (
+            getViteProcessedCssAssetResult?.(file)?.injectIntoMain === true
+            || shouldRegenerateAppOriginCss
+          )
+        if (alreadyProcessedCssAsset && (!shouldTrackGeneratorRuntime || !canRegenerateProcessedMainCss)) {
           const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
@@ -736,32 +815,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           debug('css skip vite-processed asset: %s', outputFile)
           continue
         }
-        if (isWebGeneratorTarget && !shouldGenerateWebCssByGenerator) {
-          applyCssResult(rawSource)
-          markCssAssetProcessed?.(originalSource, outputFile)
-          onUpdate(outputFile, rawSource, rawSource)
-          debug('css skip web target: %s', outputFile)
-          continue
-        }
-        const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file) ?? rawSource
-        const cssShareScope = createCssTransformShareScopeKey(opts, file, rawSource)
-        const cssHandlerOptions = getCssHandlerOptions(file)
-        const shouldTrackGeneratorRuntime = shouldProcessTailwindGeneration
-          && (
-            !useIncrementalMode
-            || cssHandlerOptions.isMainChunk
-            || processFiles.css.has(file)
-            || runtimeLinkedCssFiles.has(file)
-          )
         const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
           ? generatorCandidateSignature
           : 'generator:stable'
         const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
           ? await createScopedGeneratorCandidateSignature(
-              rawSource,
-              file,
+              generatorRawSource,
+              generatorSourceFile,
               trackedGeneratorCandidateSignature,
               getSourceCandidatesForEntries,
+              {
+                includeFallbackSignature: cssHandlerOptions.isMainChunk,
+              },
             )
           : trackedGeneratorCandidateSignature
         const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
@@ -781,15 +846,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             cache,
             cacheKey: file,
             hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingSignature)}:${scopedGeneratorCandidateSignature}`,
+            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingHash)}:${scopedGeneratorCandidateSignature}`,
             applyResult(source) {
               applyCssResult(source)
               lastCssResultByFile.set(outputFile, source)
               markCssAssetProcessed?.(originalSource, outputFile)
               rememberCssSource?.({
                 outputFile,
-                rawSource,
-                sourceFile: file,
+                rawSource: generatorRawSource,
+                sourceFile: generatorSourceFile,
               }, cssRuntimeSignature)
             },
             onCacheHit() {
@@ -812,17 +877,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const runTransform = async () => {
                 const start = performance.now()
                 await runtimeState.readyPromise
-                const previousCss = useIncrementalMode && !snapshot.changedByType.css.has(file)
-                  ? lastCssResultByFile.get(file)
+                const previousCss = useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
+                  ? lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
                   : undefined
                 const generated = await generateCssByGenerator({
                   opts,
                   runtimeState,
                   runtime: generatorRuntime,
-                  rawSource,
-                  file,
+                  rawSource: generatorRawSource,
+                  file: generatorSourceFile,
                   cssHandlerOptions,
-                  cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                  cssUserHandlerOptions: generatorCssUserHandlerOptions,
                   getSourceCandidatesForEntries,
                   styleHandler,
                   debug,
@@ -831,10 +896,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 if (generated) {
                   registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
                   if (debugCssDiff) {
-                    debug('css diff %s: %s', file, summarizeStringDiff(rawSource, generated.css))
+                    debug('css diff %s: %s', generatorSourceFile, summarizeStringDiff(generatorRawSource, generated.css))
                   }
                   debug('css generated result: %s bytes=%d', file, generated.css.length)
                   recordCssAssetResult?.(outputFile, generated.css)
+                  if (viteProcessedCssAsset && cssHandlerOptions.isMainChunk) {
+                    recordViteProcessedCssAssetResult?.(file, generated.css, {
+                      injectIntoMain: true,
+                    })
+                  }
                   metrics.css.elapsed += measureElapsed(start)
                   metrics.css.transformed++
                   debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, outputFile)
@@ -1024,6 +1094,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       for (const [key, remembered] of getRememberedCssSources?.() ?? []) {
         const { outputFile: rememberedOutputFile, rawSource, sourceFile } = remembered
         const outputFile = resolveViteCssPipelineOutputFile(rememberedOutputFile, opts, rootDir, isWebGeneratorTarget)
+        const cssHandlerOptions = getCssHandlerOptions(sourceFile)
         const cssRuntimeSignature = createCssRuntimeSignature(
           runtimeSignature,
           await createScopedGeneratorCandidateSignature(
@@ -1031,6 +1102,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             sourceFile,
             generatorCandidateSignature,
             getSourceCandidatesForEntries,
+            {
+              includeFallbackSignature: cssHandlerOptions.isMainChunk,
+            },
           ),
         )
         if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || getRememberedCssSignature?.(key) === cssRuntimeSignature) {
@@ -1038,7 +1112,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         tasks.push(timeTask('css.replay', async () => {
           const start = performance.now()
-          const cssHandlerOptions = getCssHandlerOptions(sourceFile)
           const generated = await generateCssByGenerator({
             opts,
             runtimeState,
@@ -1056,6 +1129,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           if (generated) {
             registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
             recordCssAssetResult?.(outputFile, generated.css)
+            recordViteProcessedCssAssetResult?.(sourceFile, generated.css, {
+              injectIntoMain: cssHandlerOptions.isMainChunk,
+            })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }
           const replayAsset = createReplayCssAsset(outputFile, css)

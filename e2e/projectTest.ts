@@ -5,7 +5,7 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
-import { collectCssSnapshots, formatWxml, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
+import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 import { normalizeCssTextSnapshot } from './snapshotUtils'
 
 export { ensureProjectBuilt } from './projectBuild'
@@ -252,13 +252,16 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
 
-  const cssSnapshots = await collectCssSnapshots(projectPath, entry.cssFile, {
-    classList: extraction?.classList,
-    normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
-    normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
-  })
-  for (const snapshot of cssSnapshots) {
-    await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
+  for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
+    const cssSnapshots = await collectCssSnapshots(projectPath, cssEntry.cssFile, {
+      classList: extraction?.classList,
+      normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
+      normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
+      rootSnapshotName: cssEntry.snapshotName,
+    })
+    for (const snapshot of cssSnapshots) {
+      await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
+    }
   }
 
   if (shouldSkipAutomator(entry)) {

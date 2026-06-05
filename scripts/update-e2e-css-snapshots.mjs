@@ -3,6 +3,7 @@ import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import path from 'pathe'
 import { E2E_PROJECTS } from '../e2e/projectEntries.js'
+import { getProjectCssSnapshotFiles } from '../e2e/shared.js'
 import { collectCssSnapshots } from '../e2e/snapshotUtils.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -30,14 +31,38 @@ async function updateSuite(config) {
 
   for (const project of config.projects) {
     const projectRoot = path.resolve(projectBase, project.projectPath)
-    const cssSnapshots = await collectCssSnapshots(projectRoot, project.cssFile)
+    let updated = 0
 
-    for (const snapshot of cssSnapshots) {
-      const snapshotPath = await resolveSnapshotFile(e2eRoot, config.suite, project.name, snapshot.fileName)
-      await fs.writeFile(snapshotPath, snapshot.content, 'utf8')
+    for (const cssEntry of getProjectCssSnapshotFiles(project)) {
+      try {
+        await fs.access(path.resolve(projectRoot, cssEntry.cssFile))
+      }
+      catch (error) {
+        const code = error?.code
+        if (code === 'ENOENT' || code === 'EPERM') {
+          process.stdout.write(`[e2e] skipped ${config.suite}/${project.name} CSS snapshot: ${cssEntry.cssFile} not found\n`)
+          continue
+        }
+        throw error
+      }
+
+      const cssSnapshots = await collectCssSnapshots(projectRoot, cssEntry.cssFile, {
+        rootSnapshotName: cssEntry.snapshotName,
+      })
+
+      for (const snapshot of cssSnapshots) {
+        const snapshotPath = await resolveSnapshotFile(e2eRoot, config.suite, project.name, snapshot.fileName)
+        await fs.writeFile(snapshotPath, snapshot.content, 'utf8')
+        updated++
+      }
     }
 
-    process.stdout.write(`[e2e] updated ${config.suite}/${project.name} CSS snapshots\n`)
+    if (updated === 0) {
+      process.stdout.write(`[e2e] skipped ${config.suite}/${project.name} CSS snapshots: no CSS snapshots found\n`)
+      continue
+    }
+
+    process.stdout.write(`[e2e] updated ${config.suite}/${project.name} CSS snapshots (${updated})\n`)
   }
 }
 

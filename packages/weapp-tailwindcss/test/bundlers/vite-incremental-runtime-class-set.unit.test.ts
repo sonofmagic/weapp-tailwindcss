@@ -684,6 +684,64 @@ describe('bundlers/vite incremental runtime class set', () => {
     )
   })
 
+  it('keeps v3 rollback arbitrary classes from changed JS literals when raw positions are missing', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('bg-[red]')) {
+        return [
+          { rawCandidate: 'bg-[red]' },
+          { rawCandidate: 'shadow-indigo-100' },
+        ]
+      }
+      if (content.includes('bg-[#4268EA]')) {
+        return [
+          { rawCandidate: 'bg-[#4268EA]' },
+          { rawCandidate: 'shadow-indigo-100' },
+        ]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cardsColor = ["bg-[red] shadow-indigo-100"]'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['pages/index/index.js', new Set<string>()],
+    ]))
+
+    await manager.sync(patcher, firstSnapshot, {
+      baseClassSet: new Set(['bg-[red]', 'bg-[#4268EA]']),
+      skipInitialFullScanWithBase: true,
+    })
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['pages/index/index.js', new Set<string>()],
+    ]), { incremental: true })
+
+    const rollbackSnapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cardsColor = ["bg-[#4268EA] shadow-indigo-100"]'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, rollbackSnapshot, {
+      baseClassSet: new Set(['bg-[red]', 'bg-[#4268EA]']),
+    })
+
+    expect(runtimeSet.has('bg-[#4268EA]')).toBe(true)
+    expect(runtimeSet.has('shadow-indigo-100')).toBe(false)
+  })
+
   it('filters v3 raw text candidates by confirmed source candidates before JS transform', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
@@ -716,5 +774,43 @@ describe('bundlers/vite incremental runtime class set', () => {
 
     expect(runtimeSet).toEqual(new Set(['bg-[red]', 'flex']))
     expect(runtimeSet.has('world!')).toBe(false)
+  })
+
+  it('keeps v3 bracket-like business text out of the runtime class set', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createV3Patcher()
+    const jsSource = [
+      'const complexExpression = "size > 4 ? keep-[business] : App.vue:4"',
+      'const view = <View className="bg-[red] before:content-[\\"111\\"] bg-yellow-300/30">Hello world!</View>',
+    ].join('\n')
+    const extractRawCandidates = vi.fn(async (content: string) => [
+      { rawCandidate: 'keep-[business]', start: content.indexOf('keep-[business]') },
+      { rawCandidate: 'App.vue:4', start: content.indexOf('App.vue:4') },
+      { rawCandidate: 'bg-[red]', start: content.indexOf('bg-[red]') },
+      { rawCandidate: 'before:content-[\\"111\\"]', start: content.indexOf('before:content') },
+      { rawCandidate: 'bg-yellow-300/30', start: content.indexOf('bg-yellow-300/30') },
+    ])
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk(jsSource),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const runtimeSet = await manager.sync(patcher, snapshot)
+
+    expect(runtimeSet).toEqual(new Set([
+      'bg-[red]',
+      'before:content-[\\"111\\"]',
+      'bg-yellow-300/30',
+    ]))
+    expect(runtimeSet.has('keep-[business]')).toBe(false)
+    expect(runtimeSet.has('App.vue:4')).toBe(false)
   })
 })

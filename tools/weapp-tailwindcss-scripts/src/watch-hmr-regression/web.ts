@@ -476,13 +476,20 @@ export async function runWebHmr(
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
 
-  const waitForWebCompileSettled = async (phaseStartedAt: number, phase: string) => {
+  const waitForWebCompileSettled = async (
+    phaseStartedAt: number,
+    phase: string,
+    acceptWhen?: () => Promise<boolean>,
+  ) => {
     const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
     const timeoutMs = Math.min(options.timeoutMs, 30_000)
     await waitFor(
-      () => {
+      async () => {
         if (child.exitCode != null) {
           throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
+        }
+        if (acceptWhen && await acceptWhen()) {
+          return true
         }
         return lastCompileSignalAt > phaseStartedAt
           && Date.now() - lastCompileSignalAt >= stableWindowMs
@@ -562,6 +569,42 @@ export async function runWebHmr(
       await ensureInjectedMarkerElement(page, marker)
     }
 
+    let lastStyleError = ''
+    const createReloadedStyleAcceptWhen = (expectedStyle: ReturnType<typeof resolveExpectedStyle>) => {
+      let lastReloadAttemptAt = 0
+      return async () => {
+        const now = Date.now()
+        if (now - lastReloadAttemptAt < Math.max(options.pollMs * 4, 500)) {
+          return false
+        }
+        lastReloadAttemptAt = now
+        try {
+          await page.reload({
+            waitUntil: 'domcontentloaded',
+            timeout: Math.min(options.timeoutMs, 60_000),
+          })
+          await page.locator(config.readySelector ?? 'body').waitFor({
+            state: 'attached',
+            timeout: Math.min(options.timeoutMs, 60_000),
+          })
+          if (config.injectMarkerElement) {
+            await ensureInjectedMarkerElement(page, marker)
+          }
+          await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
+            state: 'attached',
+            timeout: Math.max(options.pollMs, 250),
+          })
+          const currentStyle = await getElementComputedStyle(page, marker)
+          assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
+          return true
+        }
+        catch (error) {
+          lastStyleError = error instanceof Error ? error.message : String(error)
+          return false
+        }
+      }
+    }
+
     const initialReadyMs = Date.now() - startedAt
     const hotUpdateStartedAt = Date.now()
     if (!config.injectMarkerElement) {
@@ -574,8 +617,9 @@ export async function runWebHmr(
         cssEntryOriginal,
       )
     }
+    const expectedStyle = resolveExpectedStyle(config)
     if (config.reloadAfterCssMutation) {
-      await waitForWebCompileSettled(hotUpdateStartedAt, 'hot-update')
+      await waitForWebCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
       await page.reload({
         waitUntil: 'domcontentloaded',
         timeout: Math.min(options.timeoutMs, 60_000),
@@ -585,9 +629,7 @@ export async function runWebHmr(
         timeout: Math.min(options.timeoutMs, 60_000),
       })
     }
-    const expectedStyle = resolveExpectedStyle(config)
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
-    let lastStyleError = ''
     let hotUpdateEffectiveMs = 0
     try {
       hotUpdateEffectiveMs = await waitFor(
@@ -637,7 +679,7 @@ export async function runWebHmr(
       )
     }
     if (config.reloadAfterCssMutation) {
-      await waitForWebCompileSettled(rollbackStartedAt, 'rollback')
+      await waitForWebCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
       await page.reload({
         waitUntil: 'domcontentloaded',
         timeout: Math.min(options.timeoutMs, 60_000),

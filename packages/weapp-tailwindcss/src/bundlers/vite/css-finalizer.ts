@@ -13,6 +13,11 @@ import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSour
 import { resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 
+interface RememberedMainCssSource {
+  rawSource: string
+  sourceFile: string
+}
+
 interface CssFinalizerContext {
   opts: InternalUserDefinedOptions
   runtimeState: {
@@ -32,7 +37,7 @@ interface CssFinalizerContext {
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberMainCssSource?: (file: string, rawSource: string) => void
-  getRememberedMainCssSource?: (file: string) => string | undefined
+  getRememberedMainCssSource?: (file: string) => RememberedMainCssSource | undefined
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
 }
 
@@ -145,6 +150,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const rootDir = resolvedConfig.root ? path.resolve(resolvedConfig.root) : process.cwd()
 
         collectViteProcessedCssAssetResults(bundle, {
+          opts,
           isViteProcessedCssAsset,
           markCssAssetProcessed,
           recordCssAssetResult,
@@ -160,10 +166,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return (
             output.type === 'asset'
             && opts.cssMatcher(output.fileName)
-            && (
-              !isCssAssetProcessed(output, output.fileName)
-              || shouldFinalizeProcessedCssAsset(opts, output.fileName)
-            )
+            && !isCssAssetProcessed(output, output.fileName)
           )
         }
 
@@ -212,18 +215,33 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             isMainChunk: false,
           }
           const processed = isCssAssetProcessed(output, file)
-          const generatorRawSource = processed && cssHandlerOptions.isMainChunk
-            ? getRememberedMainCssSource?.(file) ?? rawSource
-            : rawSource
+          const rememberedMainCssSource = processed && cssHandlerOptions.isMainChunk
+            ? getRememberedMainCssSource?.(file)
+            : undefined
+          const generatorRawSource = rememberedMainCssSource?.rawSource ?? rawSource
+          const generatorSourceFile = rememberedMainCssSource?.sourceFile ?? file
+          const generatorCssHandlerOptions = rememberedMainCssSource
+            ? createCssHandlerOptions(
+                opts,
+                runtimeState.twPatcher.majorVersion,
+                generatorSourceFile,
+              )
+            : cssHandlerOptions
+          const generatorCssUserHandlerOptions = rememberedMainCssSource
+            ? {
+                ...generatorCssHandlerOptions,
+                isMainChunk: false,
+              }
+            : cssUserHandlerOptions
           const generated = shouldGenerateCssByGenerator(opts, file, generatorRawSource, processed)
             ? await generateCssByGenerator({
                 opts,
                 runtimeState,
                 runtime: generatorRuntime,
                 rawSource: generatorRawSource,
-                file,
-                cssHandlerOptions,
-                cssUserHandlerOptions,
+                file: generatorSourceFile,
+                cssHandlerOptions: generatorCssHandlerOptions,
+                cssUserHandlerOptions: generatorCssUserHandlerOptions,
                 getSourceCandidatesForEntries,
                 styleHandler: opts.styleHandler,
                 debug,

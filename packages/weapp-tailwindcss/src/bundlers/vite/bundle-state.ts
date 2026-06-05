@@ -27,6 +27,7 @@ export interface BundleSnapshot {
   sourceHashByFile: Map<string, string>
   runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
+  hasOmittedKnownFiles: boolean
   changedByType: Record<EntryType, Set<string>>
   runtimeAffectingChangedByType: Record<EntryType, Set<string>>
   processFiles: ProcessFileSets
@@ -45,6 +46,10 @@ export interface BundleBuildState {
 
 interface UpdateBundleBuildStateOptions {
   incremental?: boolean
+}
+
+interface BuildBundleSnapshotOptions {
+  hasOmittedKnownFiles?: boolean | undefined
 }
 
 export function createBundleBuildState(): BundleBuildState {
@@ -126,6 +131,7 @@ export function buildBundleSnapshot(
   outDir: string,
   state: BundleBuildState,
   forceAll = false,
+  options: BuildBundleSnapshotOptions = {},
 ): BundleSnapshot {
   const sourceHashByFile = new Map<string, string>()
   const runtimeAffectingSignatureByFile = new Map<string, string>()
@@ -136,7 +142,8 @@ export function buildBundleSnapshot(
   const linkedImpactsByEntry = new Map<string, Set<string>>()
   const jsEntries = new Map<string, OutputEntry>()
   const entries: BundleStateEntry[] = []
-  const firstRun = state.linkedByEntry.size === 0
+  const firstRun = state.iteration === 0 && state.sourceHashByFile.size === 0
+  const hasOmittedKnownFiles = options.hasOmittedKnownFiles === true
 
   for (const [file, output] of Object.entries(bundle)) {
     const type = classifyBundleEntry(file, opts)
@@ -213,6 +220,7 @@ export function buildBundleSnapshot(
     sourceHashByFile,
     runtimeAffectingSignatureByFile,
     runtimeAffectingHashByFile,
+    hasOmittedKnownFiles,
     changedByType,
     runtimeAffectingChangedByType,
     processFiles,
@@ -248,6 +256,7 @@ export function buildBundleSnapshotForBuild(
     sourceHashByFile: new Map<string, string>(),
     runtimeAffectingSignatureByFile: new Map<string, string>(),
     runtimeAffectingHashByFile: new Map<string, string>(),
+    hasOmittedKnownFiles: false,
     changedByType: createChangedByType(),
     runtimeAffectingChangedByType: createChangedByType(),
     processFiles,

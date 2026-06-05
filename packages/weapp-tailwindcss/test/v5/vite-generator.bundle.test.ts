@@ -570,6 +570,88 @@ describe('v5 vite generator bundle', () => {
     })
   }, TEST_TIMEOUT_MS)
 
+  it('keeps v3 generator runtime candidates from JS hot updates when css asset is stale', async () => {
+    const generatedCssByCandidate: Record<string, string> = {
+      'bg-[red]': '.bg-_bred_B{background-color:red}',
+      'bg-[#4268EA]': '.bg-_b_h4268EA_B{background-color:#4268EA}',
+    }
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => {
+      const css = [...candidates]
+        .map(candidate => generatedCssByCandidate[candidate])
+        .filter((item): item is string => Boolean(item))
+        .join('')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: candidates,
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+          validateCandidates: vi.fn(async (candidates: Set<string>) => (
+            new Set([...candidates].filter(candidate => candidate === 'bg-[red]'))
+          )),
+        })),
+        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+          version: 3,
+          projectRoot: process.cwd(),
+          cwd: process.cwd(),
+          base: process.cwd(),
+          css: '@tailwind utilities;',
+          dependencies: [],
+          packageName: 'tailwindcss',
+          postcssPlugin: 'tailwindcss',
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(),
+      }
+    })
+
+    setCurrentContext(createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 3,
+      },
+    }))
+
+    const { postPlugin, sourcePlugin } = await resolvePostPlugin()
+    const transform = getTransformHandler(sourcePlugin)
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = (candidate: string) => ({
+      'pages/index/index.js': {
+        ...createRollupChunk(`const cardsColor = ["${candidate} shadow-indigo-100"]`),
+        fileName: 'pages/index/index.js',
+      } as OutputChunk,
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    })
+
+    await transform?.call(sourcePlugin, 'export const cls = "bg-[red]"', '/project/src/pages/index.ts')
+    const firstBundle = createBundle('bg-[red]')
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    await transform?.call(sourcePlugin, 'export const cls = "bg-[#4268EA]"', '/project/src/pages/index.ts')
+    const secondBundle = createBundle('bg-[#4268EA]')
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+    expect(secondCandidates.has('bg-[#4268EA]')).toBe(true)
+    expect((secondBundle['app.css'] as OutputAsset).source).toContain('bg-_b_h4268EA_B')
+  }, TEST_TIMEOUT_MS)
+
   it('collects v4 generator candidates from source modules instead of bundle products or sourcemaps', async () => {
     const runtimeSet = new Set(['text-red-500'])
     const rawTailwindCss = '.bg-\\[\\#112233\\]{background-color:#112233}.text-red-500{color:red}'
@@ -839,7 +921,7 @@ describe('v5 vite generator bundle', () => {
     const finalizerGenerateBundle = getGenerateBundleHandler(finalizer as Plugin)
     await finalizerGenerateBundle?.call(finalizer, {} as any, bundle)
     expect((bundle['app.css'] as OutputAsset).source).toBe(`${userCss}\n.flex{display:flex}`)
-    expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(generateMock).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('replays v4 main css when watch rebuild only rewrites non-runtime js output', async () => {

@@ -34,7 +34,7 @@ export function uniAppMiniCase(options: {
       `${outputDir}/app.json`,
       `${outputDir}/${styleFile}`,
     ],
-    styleFiles: [`${outputDir}/${styleFile}`],
+    styleFiles: [outputDir],
     textFiles: options.textFile ? [`${outputDir}/${options.textFile}`] : undefined,
     styleContains: options.styleContains,
     textContains: options.textContains,

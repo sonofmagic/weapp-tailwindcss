@@ -25,6 +25,7 @@ interface CssAssetResultsGetter {
 }
 
 interface CollectViteProcessedCssAssetOptions {
+  opts?: InternalUserDefinedOptions | undefined
   isViteProcessedCssAsset?: CssAssetMarkerMatcher | undefined
   markCssAssetProcessed?: CssAssetProcessedMarker | undefined
   recordCssAssetResult?: CssAssetResultRecorder | undefined
@@ -70,6 +71,10 @@ function appendCss(baseCss: string, css: string) {
 
 function stripStyleExtension(file: string) {
   return file.replace(/[?#].*$/, '').replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)$/i, '')
+}
+
+function isAppOriginCssFile(file: string) {
+  return stripStyleExtension(file).split('/').pop() === 'app-origin'
 }
 
 function normalizeMarkerOutputFile(
@@ -159,7 +164,18 @@ export function collectViteProcessedCssAssetResults(
     }
     options.markCssAssetProcessed?.(output, file)
     options.recordCssAssetResult?.(file, nextCss)
-    options.recordViteProcessedCssAssetResult?.(file, nextCss)
+    const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
+    const shouldReplayIntoMainCss = options.opts != null
+      && (
+        (
+          normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+          && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
+        )
+        || isAppOriginCssFile(file)
+      )
+    options.recordViteProcessedCssAssetResult?.(file, nextCss, {
+      injectIntoMain: shouldReplayIntoMainCss || undefined,
+    })
     options.debug?.('collect vite-processed css asset: %s bytes=%d', file, nextCss.length)
     collected++
   }
