@@ -1,5 +1,17 @@
 # weapp-tailwindcss
 
+## 5.0.2
+
+### Patch Changes
+
+- 🐛 **修复小程序端生成样式中的 `:before` / `:after` 输出会被规范化为单冒号，以及 Tailwind preflight 中 `--tw-content: ''` 被错误合并到 `view,text,::after,::before` 基础选择器的问题，确保伪元素内容初始化只作用于 `::before` / `::after`，并补充分包入口样式快照覆盖。** [`206093e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/206093e9878e6f4456bbd72f1a61856abc86fc88) by @sonofmagic
+
+- 🐛 **修复 webpack loader 在 Windows 下可能把 Tailwind 依赖目录注册为文件依赖的问题，避免 MPX 等 webpack watch 场景出现 invalid dependency 警告并导致热更新监听失效；同时补齐 e2e watch 失败时的预算报告输出。** [`53efe01`](https://github.com/sonofmagic/weapp-tailwindcss/commit/53efe0195655e495b61c14ad1878afc0f935b893) by @sonofmagic
+
+- 🐛 **修复 Vite web/generator 模式下自动收集的 Tailwind v4 CSS source 未按源 CSS 文件目录解析相对 `@config` 路径的问题，避免 VitePress 等项目从 Vite root 错误解析配置文件。** [`f8fe9af`](https://github.com/sonofmagic/weapp-tailwindcss/commit/f8fe9aff99a7d82a789dc421c05070f41aebdc08) by @sonofmagic
+- 📦 **Dependencies** [`206093e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/206093e9878e6f4456bbd72f1a61856abc86fc88)
+  → `@weapp-tailwindcss/postcss@3.0.1`
+
 ## 5.0.1
 
 ### Patch Changes
