@@ -1,5 +1,12 @@
 # website
 
+## 1.0.21
+
+### Patch Changes
+
+- 📦 **Dependencies** [`206093e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/206093e9878e6f4456bbd72f1a61856abc86fc88)
+  → `weapp-tailwindcss@5.0.2`
+
 ## 1.0.20
 
 ### Patch Changes
