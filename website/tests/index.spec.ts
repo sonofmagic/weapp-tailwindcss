@@ -22,12 +22,30 @@ const viewports: ViewportCase[] = [
   },
   {
     name: 'mobile',
-    use: {
-      ...devices['iPhone 12'],
-    },
+    use: mobileUse(devices['iPhone 12']),
     onlyBrowser: 'chromium',
   },
 ] as const
+
+function mobileUse(device: typeof devices['iPhone 12']): Parameters<typeof test.use>[0] {
+  const {
+    viewport,
+    userAgent,
+    deviceScaleFactor,
+    isMobile,
+    hasTouch,
+    colorScheme,
+  } = device
+
+  return {
+    viewport,
+    userAgent,
+    deviceScaleFactor,
+    isMobile,
+    hasTouch,
+    colorScheme,
+  }
+}
 
 for (const viewport of viewports) {
   test.describe(`${viewport.name} viewport`, () => {

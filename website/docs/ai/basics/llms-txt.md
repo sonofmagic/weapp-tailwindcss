@@ -135,18 +135,18 @@ pnpm install
 ```
 
 ### 开发模式
-```bash
-pnpm dev
+```bash npm2yarn
+npm run dev
 ```
 
 ### 构建
-```bash
-pnpm build
+```bash npm2yarn
+npm run build
 ```
 
 ### 测试
-```bash
-pnpm test
+```bash npm2yarn
+npm test
 ```
 
 ## 编码规范

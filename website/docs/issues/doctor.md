@@ -20,14 +20,14 @@ keywords:
 
 当项目出现样式未生成、JS 中的 class 未转义、CSS 入口没有被扫描、插件没有在目标端生效等问题时，可以先运行 `doctor` 命令收集项目配置状态。
 
-```bash
-pnpm exec weapp-tailwindcss doctor
+```bash npm2yarn
+npx weapp-tailwindcss doctor
 ```
 
 如果你不在项目根目录，可以通过 `--cwd` 指定业务项目目录：
 
-```bash
-pnpm exec weapp-tailwindcss doctor --cwd ./packages/miniprogram
+```bash npm2yarn
+npx weapp-tailwindcss doctor --cwd ./packages/miniprogram
 ```
 
 ## 检查内容
@@ -51,20 +51,20 @@ pnpm exec weapp-tailwindcss doctor --cwd ./packages/miniprogram
 
 普通输出适合人工排查：
 
-```bash
-pnpm exec weapp-tailwindcss doctor
+```bash npm2yarn
+npx weapp-tailwindcss doctor
 ```
 
 JSON 输出适合在 issue、CI 或自动化脚本中使用：
 
-```bash
-pnpm exec weapp-tailwindcss doctor --json
+```bash npm2yarn
+npx weapp-tailwindcss doctor --json
 ```
 
 严格模式会在存在 `warn` 或 `error` 时返回非零退出码，适合放在项目检查脚本中：
 
-```bash
-pnpm exec weapp-tailwindcss doctor --strict
+```bash npm2yarn
+npx weapp-tailwindcss doctor --strict
 ```
 
 ## 常见诊断结果
@@ -73,8 +73,8 @@ pnpm exec weapp-tailwindcss doctor --strict
 
 说明命令大概率没有运行在项目根目录。请切换到业务项目根目录后重试，或者使用 `--cwd` 指定目录。
 
-```bash
-pnpm exec weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
+```bash npm2yarn
+npx weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 ```
 
 ### 未检测到 tailwindcss
@@ -97,8 +97,8 @@ pnpm exec weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 
 提交 issue 时，建议附上以下信息：
 
-```bash
-pnpm exec weapp-tailwindcss doctor --json
+```bash npm2yarn
+npx weapp-tailwindcss doctor --json
 ```
 
 同时补充：

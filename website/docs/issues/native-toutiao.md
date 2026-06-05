@@ -151,8 +151,8 @@ module.exports = {
 
   安装插件
 
-  ```sh
-  pnpm add -D weapp-tailwindcss
+  ```sh npm2yarn
+  npm install -D weapp-tailwindcss
   ```
 
   配置 `gulpfile.js`，需要注意的事，在面板执行 `serve` 后，即使后来停止了任务，程序里的监听 `watch` 也不会停，使得后续再启动 `serve` 后，会有多个监听 `watch` 和多个监听处理程序 `watchHandler`，重复处理文件。所以停止后再启动 `serve`，应该关闭 `vscode` 后重新打开

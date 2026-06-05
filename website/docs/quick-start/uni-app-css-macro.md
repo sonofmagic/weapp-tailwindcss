@@ -1,221 +1,268 @@
 ---
-title: uni-app 条件编译语法糖插件
-description: '在 uni-app 里，存在一种类似宏指令的样式条件编译写法:'
+title: uni-app 条件编译 CSS 宏
+description: 在 uni-app 多端项目中使用 weapp-tailwindcss/css-macro，为 Tailwind CSS 原子类生成平台条件编译样式，并在构建阶段按目标平台裁剪分支。
 keywords:
   - 快速开始
-  - 安装
-  - 配置
   - uni-app
-  - 条件编译语法糖插件
-  - quick start
-  - uni app css macro
+  - 条件编译
+  - CSS 宏
+  - css macro
+  - ifdef
+  - ifndef
   - weapp-tailwindcss
   - tailwindcss
   - 小程序
   - 微信小程序
-  - taro
-  - rax
-  - mpx
 ---
-# uni-app 条件编译语法糖插件
+# uni-app 条件编译 CSS 宏
 
-> 版本需求 2.10.0+
+`weapp-tailwindcss/css-macro` 用来把 Tailwind CSS 变体写成 uni-app 条件编译样式。它适合多端项目里少量平台差异样式，比如“微信小程序蓝色，H5 橙色”，或者“非微信小程序隐藏某个样式分支”。
 
-## 这是什么玩意?
+从当前版本开始，常规 Vite / Webpack / Gulp 集成只需要在 Tailwind 侧声明 `weapp-tailwindcss/css-macro`。`weapp-tailwindcss` 会自动感应这个声明，内置执行宏转换，并在最终样式输出前按当前平台裁剪 `ifdef` / `ifndef` 分支。
 
-在 `uni-app` 里，存在一种类似宏指令的[样式条件编译写法](https://uniapp.dcloud.net.cn/tutorial/platform.html#%E6%A0%B7%E5%BC%8F%E7%9A%84%E6%9D%A1%E4%BB%B6%E7%BC%96%E8%AF%91):
+## 能解决什么
+
+uni-app 本身支持 CSS 条件编译：
 
 ```css
-/*  #ifdef  %PLATFORM%  */
-平台特有样式
-/*  #endif  */
+/* #ifdef MP-WEIXIN */
+.button {
+  background: #1677ff;
+}
+/* #endif */
 ```
 
-> uni-app `%PLATFORM%` 的所有取值可以参考这个[链接](https://uniapp.dcloud.net.cn/tutorial/platform.html#preprocessor)
-
-在 `weapp-tailwindcss@2.10.0+` 版本中内置了一个 `css-macro` 功能，可以让你的 `tailwindcss` 自动生成带有条件编译的样式代码，来辅助你进行多平台的适配开发，效果类似如下方式:
+写 Tailwind 原子类时，可以改成：
 
 ```html
-<!-- 默认 -->
-<view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">Web和微信小程序平台蓝色背景</view>
-<view class="ifndef-[MP-WEIXIN]:bg-red-500">非MP-WEIXIN平台红色背景</view>
-<view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">微信小程序为蓝色，不是微信小程序为红色<view>
-<!-- 自定义 -->
-<view class="wx:bg-blue-400 -wx:bg-red-400">微信小程序为蓝色，不是微信小程序为红色</view>
-<view class="tt:bg-blue-400">头条小程序蓝色</view>
+<view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">
+  微信小程序为蓝色，其他平台为红色
+</view>
 ```
 
-或者这样的条件样式代码:
+也可以写 H5 / 小程序组合条件：
 
-```css
-/*只在 H5 和 MP-WEIXIN, 背景为蓝色，否则为红色 */
-.apply-test-0 {
-  @apply ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-red-400;
-}
-/* 自定义 */
-.apply-test-1 {
-  @apply mv:bg-blue-400 -mv:bg-red-400 wx:text-blue-400 -wx:text-red-400;
-}
+```html
+<view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-gray-400">
+  H5 和微信小程序使用蓝色，其他平台使用灰色
+</view>
 ```
 
-让我们看看如何使用吧！
+或者用自定义别名减少重复：
 
-## 如何使用
+```html
+<view class="wx:bg-blue-400 -wx:bg-red-400">
+  微信小程序为蓝色，非微信小程序为红色
+</view>
+```
 
-现在只需要在 Tailwind CSS 侧声明 `weapp-tailwindcss/css-macro`。`weapp-tailwindcss` 会在生成样式时自动感应这个声明，并内置执行条件编译注释转换，不需要再额外注册 `weapp-tailwindcss/css-macro/postcss`。
+## 当前生成链路
 
-新版本的宏变体不会再通过伪 `@media (weapp-tw-platform:...)` 表达平台条件，而是由 `weapp-tailwindcss` 在生成阶段直接输出内部条件节点，再转换为 `/* #ifdef */` / `/* #ifndef */` / `/* #endif */` 注释。存量自定义 PostCSS 流程中的旧 `@media` 写法仍会被兼容处理。
+`css-macro` 现在分两步工作：
 
-### tailwind.config.js 注册
+1. Tailwind CSS 插件把 `ifdef-[...]` / `ifndef-[...]` 或自定义变体生成内部条件节点，例如 `@weapp-tw-ifdef`。
+2. `weapp-tailwindcss` 感应到宏插件后，自动追加内置 PostCSS 转换，把内部节点转成条件注释，并在已知目标平台时提前裁剪不匹配分支。
 
-首先在你的 `tailwind.config.js` 注册插件 `cssMacro`:
+这意味着：
 
-#### Tailwind CSS 3.x 配置
+- 小程序目标构建会输出已经适配小程序选择器的样式，并移除不匹配的平台分支。
+- H5 / Web 目标构建会保留 Web 选择器格式，并同样按平台裁剪。
+- 常规集成不需要手动注册 `weapp-tailwindcss/css-macro/postcss`。
+- 旧版伪 `@media (weapp-tw-platform:...)` 输出仍由 PostCSS 入口兼容处理，方便存量自定义流程迁移。
+
+## Tailwind CSS v3
+
+在 `tailwind.config.js` 中注册插件：
 
 ```js
-const cssMacro = require('weapp-tailwindcss/css-macro');
+const cssMacro = require('weapp-tailwindcss/css-macro')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  // ...
+  content: ['./src/**/*.{vue,js,ts,jsx,tsx}'],
   plugins: [
-    /* 这里可以传入配置项，默认只包括 ifdef 和 ifndef */
     cssMacro(),
   ],
-};
+}
 ```
 
-#### Tailwind CSS 4.x 配置
+然后直接使用动态变体：
 
-> v4 推荐直接在入口 CSS 中通过 `@plugin` 引入。
+```html
+<view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">
+  css-macro
+</view>
+```
+
+:::tip
+动态变体依赖 Tailwind 的 `matchVariant`。Tailwind CSS v3 项目请使用 `tailwindcss >= 3.2`。
+:::
+
+## Tailwind CSS v4
+
+在入口 CSS 中声明插件：
 
 ```css
-/* tailwind.css */
 @import "tailwindcss";
 @plugin "weapp-tailwindcss/css-macro";
-
-/* 可选：为常用平台创建语义别名 */
-@utility platform-weixin:(value) {
-  @apply ifdef-[MP-WEIXIN]:$(value);
-}
-@utility not-alipay:(value) {
-  @apply ifndef-[MP-ALIPAY]:$(value);
-}
 ```
 
-若需要自定义更多静态变体，可额外保留一个 `tailwind.config.ts` 以传入参数：
+之后可以在模板中使用同样的写法：
 
-```ts
-import cssMacro from 'weapp-tailwindcss/css-macro'
+```html
+<view class="ifdef-[H5]:bg-[#ff6611] ifndef-[MP-WEIXIN]:text-[#aa3300]">
+  H5 条件样式
+</view>
+```
 
-export default {
-  plugins: {
-    cssMacro: cssMacro({
+v4 场景下，`weapp-tailwindcss` 会扫描入口 CSS 中的 `@plugin "weapp-tailwindcss/css-macro"`，并自动启用宏转换。
+
+## 自定义平台别名
+
+如果默认的 `ifdef-[...]` / `ifndef-[...]` 太长，可以通过 `variantsMap` 定义静态别名：
+
+```js
+const cssMacro = require('weapp-tailwindcss/css-macro')
+
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  plugins: [
+    cssMacro({
       variantsMap: {
         wx: 'MP-WEIXIN',
-        '-wx': { value: 'MP-WEIXIN', negative: true },
+        '-wx': {
+          value: 'MP-WEIXIN',
+          negative: true,
+        },
+        mv: {
+          value: 'H5 || MP-WEIXIN',
+        },
+        '-mv': {
+          value: 'H5 || MP-WEIXIN',
+          negative: true,
+        },
       },
     }),
-  },
+  ],
 }
 ```
 
-> [!TIP]
-> `cssMacro` 的动态变体（`ifdef:` / `ifndef:`）依赖 Tailwind 内置的 `matchVariant`，请确保 Tailwind 版本 ≥ 3.2；在 v4 中该 API 同样可用。
+对应用法：
 
-### PostCSS 配置说明
+```html
+<view class="wx:bg-blue-400 -wx:bg-red-400">
+  微信小程序蓝色，非微信小程序红色
+</view>
+<view class="mv:text-blue-400 -mv:text-gray-500">
+  H5 或微信小程序蓝色，其它平台灰色
+</view>
+```
 
-新版本不再要求你手动注册 `weapp-tailwindcss/css-macro/postcss`。只要满足下面任一条件，`weapp-tailwindcss` 就会自动开启宏转换：
+配置项说明：
 
-| Tailwind 版本 | 感应方式 | 示例 |
-| --- | --- | --- |
-| v3 | `tailwind.config.js` 的 `plugins` 中注册 `cssMacro()` | `plugins: [cssMacro()]` |
-| v4 | CSS 入口中声明 `@plugin "weapp-tailwindcss/css-macro"` | `@plugin "weapp-tailwindcss/css-macro";` |
+| 参数 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `dynamic` | `boolean` | `true` | 是否注册 `ifdef-[...]` / `ifndef-[...]` 动态变体 |
+| `variantsMap` | `Record<string, string | { value: string, negative?: boolean }>` | `{}` | 注册静态平台别名；`negative: true` 表示生成 `#ifndef` |
 
-如果项目里还保留了旧的 PostCSS 注册项，可以直接删除：
+## 平台表达式
+
+动态变体里的平台条件会被写入 uni-app 条件编译注释：
+
+```html
+<view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400"></view>
+<view class="ifdef-[H5_||_MP-WEIXIN]:bg-blue-400"></view>
+<view class="ifndef-[MP-WEIXIN]:bg-red-500"></view>
+```
+
+未转义的 `_` 会被规范化为空格，因此 `ifdef-[H5_||_MP-WEIXIN]` 等价于 `ifdef-[H5||MP-WEIXIN]`。如果你的表达式里确实需要保留字面量下划线，可以用反斜杠转义。
+
+常见平台值包括：
+
+- `H5` / `WEB`
+- `MP-WEIXIN`
+- `MP-ALIPAY`
+- `MP-TOUTIAO`
+- `MP-QQ`
+- `MP`
+- `APP` / `APP-PLUS`
+- `QUICKAPP-WEBVIEW`
+
+完整平台值以 uni-app 官方条件编译文档为准。
+
+## 平台裁剪行为
+
+当构建链路能拿到当前平台时，`weapp-tailwindcss` 会在最终样式输出前裁剪条件分支。平台来源包括 `styleOptions.platform` 和常见环境变量：
+
+- `WEAPP_TW_TARGET`
+- `WEAPP_TAILWINDCSS_TARGET`
+- `UNI_PLATFORM`
+- `UNI_UTS_PLATFORM`
+- `TARO_ENV`
+- `MPX_CLI_MODE`
+- `MPX_CURRENT_TARGET_MODE`
+
+例如 `platform: 'mp-weixin'` 时：
+
+```html
+<view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500"></view>
+```
+
+最终只保留匹配微信小程序的 `bg-blue-500` 分支，不会把 `#ifdef MP-WEIXIN` 或 `#ifndef MP-WEIXIN` 注释残留到最终样式里。
+
+如果当前平台未知，宏仍会转换成 uni-app 条件编译注释，由后续 uni-app 构建处理。
+
+## 不再需要手动 PostCSS 配置
+
+常规项目不要再手动添加 `weapp-tailwindcss/css-macro/postcss`：
 
 ```diff
-// vite.config.ts / postcss.config.js
+// postcss.config.js / vite.config.ts
 plugins: [
 -  require('weapp-tailwindcss/css-macro/postcss'),
 ]
 ```
 
-> 提示：`weapp-tailwindcss/css-macro/postcss` 仍然作为导出入口保留，方便存量自定义 PostCSS 流程继续使用；常规 Vite / Webpack / Gulp 集成不再需要手动配置它。
-
-### 配置完成
-
-现在 Tailwind 侧配置完成后，就可以直接使用 `ifdef` 和 `ifndef` 的条件编译写法了！
-
-```html
-<!-- 默认 -->
-<view class="ifdef-[H5||MP-WEIXIN]:bg-blue-400">Web和微信小程序平台蓝色背景</view>
-<view class="ifndef-[MP-WEIXIN]:bg-red-500">非MP-WEIXIN平台红色背景</view>
-<view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">微信小程序为蓝色，不是微信小程序为红色<view>
-<!-- 自定义 -->
-<view class="wx:bg-blue-400 -wx:bg-red-400">微信小程序为蓝色，不是微信小程序为红色</view>
-<view class="tt:bg-blue-400">头条小程序蓝色</view>
-```
-
-不过你肯定会觉得这种默认写法很烦！要写很多，不要紧，我还为你提供了自定义的方式，接下来来看看配置项吧！
-
-## 配置项
-
-这里提供了一份示例，
-
-> uni-app `%PLATFORM%` 的所有取值可以参考这个[链接](https://uniapp.dcloud.net.cn/tutorial/platform.html#preprocessor)
+保留 Tailwind 侧声明即可：
 
 ```js
-const cssMacro = require('weapp-tailwindcss/css-macro');
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  // ...
-  plugins: [
-    /* 这里可以传入配置项，默认只包括 ifdef 和 ifndef */
-    cssMacro({
-      // 是否包含 ifdef 和 ifndef，默认为 true
-      // dynamic: true,
-      // 传入一个 variantsMap
-      variantsMap: {
-        // wx 对应的 %PLATFORM% 为 'MP-WEIXIN'
-        // 有了这个配置，你就可以使用 wx:bg-red-300
-        wx: 'MP-WEIXIN',
-        // -wx，语义上为非微信
-        // 那就传入一个 obj 把 negative 设置为 true
-        // 就会编译出 ifndef 的指令
-        // 有了这个配置，你就可以使用 -wx:bg-red-300
-        '-wx': {
-          value: 'MP-WEIXIN',
-          negative: true
-        },
-        mv: {
-          // 可以使用表达式
-          value: 'H5 || MP-WEIXIN'
-        },
-        '-mv': {
-          // 可以使用表达式
-          value: 'H5 || MP-WEIXIN',
-          negative: true
-        }
-      }
-    }),
-  ],
-};
+// Tailwind CSS v3
+plugins: [cssMacro()]
 ```
 
-## IDE智能提示
+```css
+/* Tailwind CSS v4 */
+@plugin "weapp-tailwindcss/css-macro";
+```
 
-只要你使用 `vscode`/`webstorm` 这类IDE，加上安装了 `tailwindcss` 的官方插件。
+`weapp-tailwindcss/css-macro/postcss` 仍然是稳定导出入口，只建议用于自定义 PostCSS 流程或迁移旧的 `@media (weapp-tw-platform:...)` 宏输出。
 
-智能提示会根据你对 `cssMacro` 这个插件的配置，直接生成出来！
+## 在 `@apply` 中使用
 
-> 假如没有下方的智能提示出现，有可能是 `tailwindcss` 插件挂了，这时候可以改好配置之后 **重启** `vscode` 以重新运行插件
+宏变体也可以放进 CSS 的 `@apply`：
 
-这里我们以上面 `配置项` 为例:
+```css
+.apply-test {
+  @apply ifdef-[H5||MP-WEIXIN]:bg-blue-400 ifndef-[H5||MP-WEIXIN]:bg-red-400;
+}
 
-### 动态提示: ifdef-[] 和 ifndef-[]
+.apply-alias {
+  @apply wx:text-blue-400 -wx:text-red-400;
+}
+```
+
+和模板 class 一样，最终会按目标平台裁剪。
+
+## IDE 智能提示
+
+安装 VS Code / WebStorm 的 Tailwind CSS 官方插件后，动态变体和你在 `variantsMap` 中配置的静态别名都可以参与补全。
+
+如果刚改完配置没有提示，先重启编辑器的 Tailwind CSS Language Server。下面是历史示例截图：
+
+### 动态提示：`ifdef-[]` 和 `ifndef-[]`
 
 ![macro-tip0](./img/macro-tip0.png)
 
-### 配置的静态提示: wx 和 -wx
+### 静态提示：`wx` 和 `-wx`
 
 ![macro-tip1](./img/macro-tip1.png)

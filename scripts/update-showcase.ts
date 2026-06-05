@@ -1,10 +1,11 @@
+import type { Dispatcher } from 'undici'
 import { Buffer } from 'node:buffer'
 import { setDefaultResultOrder } from 'node:dns'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import fs from 'fs-extra'
-import { ProxyAgent, setGlobalDispatcher } from 'undici'
+import { Agent, fetch, ProxyAgent, setGlobalDispatcher } from 'undici'
 
 setDefaultResultOrder('ipv4first')
 
@@ -222,6 +223,9 @@ const defaultProxyUrl
     ?? env.HTTP_PROXY
     ?? 'http://127.0.0.1:7890'
 const proxyUrl = proxyOption.enabled ? (proxyOption.url?.trim() || defaultProxyUrl) : null
+const imageProxyUrl = (env.SHOWCASE_PROXY?.trim() || 'http://127.0.0.1:7890')
+const directImageDispatcher = new Agent()
+let proxiedImageDispatcher: ProxyAgent | null = null
 
 if (proxyUrl && proxyOption.enabled) {
   try {
@@ -232,6 +236,13 @@ if (proxyUrl && proxyOption.enabled) {
   catch (error) {
     console.warn(`⚠️  Failed to configure proxy (${proxyUrl}):`, error)
   }
+}
+
+try {
+  proxiedImageDispatcher = new ProxyAgent(imageProxyUrl)
+}
+catch (error) {
+  console.warn(`⚠️  Failed to configure image proxy (${imageProxyUrl}):`, error)
 }
 
 const token = env.GITHUB_TOKEN ?? env.GH_TOKEN
@@ -417,11 +428,16 @@ async function fetchWithTimeout(
   url: string,
   headers: Record<string, string>,
   timeoutMs: number,
+  dispatcher?: Dispatcher,
 ): Promise<Response> {
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), timeoutMs)
   try {
-    return await fetch(url, { headers, signal: controller.signal })
+    return await fetch(url, {
+      headers,
+      signal: controller.signal,
+      dispatcher,
+    } as RequestInit & { dispatcher?: Dispatcher })
   }
   finally {
     clearTimeout(timeout)
@@ -681,7 +697,7 @@ async function downloadImage(
   entryDirName: string,
   index: number,
 ): Promise<ShowcaseImage> {
-  const response = await fetchWithTimeout(image.url, mediaHeaders, imageTimeoutMs)
+  const response = await fetchImage(image.url)
   if (!response.ok) {
     throw new Error(`Request failed: ${response.status} ${response.statusText}`)
   }
@@ -699,6 +715,20 @@ async function downloadImage(
     originUrl: image.url,
     downloaded: true,
   }
+}
+
+async function fetchImage(url: string): Promise<Response> {
+  if (proxiedImageDispatcher) {
+    try {
+      return await fetchWithTimeout(url, mediaHeaders, imageTimeoutMs, proxiedImageDispatcher)
+    }
+    catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      console.warn(`⚠️  Image proxy failed for ${url}, retrying directly: ${message}`)
+    }
+  }
+
+  return fetchWithTimeout(url, mediaHeaders, imageTimeoutMs, directImageDispatcher)
 }
 
 async function downloadImageWithRetry(
@@ -769,6 +799,23 @@ function renderEntry(entry: GeneratedEntry): string {
 function renderMdx(issue: GitHubIssue, entries: GeneratedEntry[]): string {
   const generatedAt = dateTimeFormatter.format(new Date())
   const header = `<!-- ⚠️ 该文件由 scripts/update-showcase.ts 自动生成。请运行 \`pnpm showcase:update\` 以刷新数据。 -->`
+  const frontMatter = [
+    '---',
+    'title: 优秀案例展示',
+    `description: 以下内容来自 ${issue.title}，列表顺序按照提交时间排序。`,
+    'keywords:',
+    '  - 优秀案例展示',
+    '  - showcase',
+    '  - weapp-tailwindcss',
+    '  - tailwindcss',
+    '  - 小程序',
+    '  - 微信小程序',
+    '  - uni-app',
+    '  - taro',
+    '  - rax',
+    '  - mpx',
+    '---',
+  ]
   const intro = [
     `import ShowcaseCard from '@site/src/components/docs/ShowcaseCard'`,
     '',
@@ -784,7 +831,7 @@ function renderMdx(issue: GitHubIssue, entries: GeneratedEntry[]): string {
   const cards = entries.map(renderEntry)
   const footer = ['</div>', '']
 
-  return [header, '', ...intro, ...cards, ...footer].join('\n')
+  return [...frontMatter, header, '', ...intro, ...cards, ...footer].join('\n')
 }
 
 async function main() {

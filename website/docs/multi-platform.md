@@ -318,9 +318,9 @@ svg {
 
 常用命令按项目框架选择：
 
-```bash
-pnpm dev:h5
-pnpm build:h5
-pnpm dev:mp-weixin
-pnpm build:mp-weixin
+```bash npm2yarn
+npm run dev:h5
+npm run build:h5
+npm run dev:mp-weixin
+npm run build:mp-weixin
 ```
