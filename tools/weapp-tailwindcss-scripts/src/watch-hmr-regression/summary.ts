@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { formatPath } from './cli'
+import { summarizeHmrDurations } from './hmr-durations'
 import { MUTATION_ROUND_NAMES } from './types'
 
 interface SummarySample {
@@ -162,6 +163,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
   const summaryByGroup = summarizeMetricsByGroup(metrics)
   const summaryByProject = summarizeMetricsByProject(metrics)
   const summaryByMutationKind = summarizeMutationKindAcrossCases(metrics)
+  const hmrDurations = summarizeHmrDurations(metrics)
   const reportPath = resolveReportPath(baseCwd, options.reportFile)
 
   const report: WatchReport = {
@@ -182,6 +184,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
     summaryByGroup,
     summaryByProject,
     summaryByMutationKind,
+    hmrDurations,
     cases: metrics,
   }
 

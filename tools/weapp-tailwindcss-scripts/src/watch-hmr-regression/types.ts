@@ -399,6 +399,29 @@ export interface WatchSummary {
   rollbackMinMs: number
 }
 
+export interface HmrDurationTiming {
+  surface: string
+  sourceFile?: string
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs?: number
+  hotUpdatePluginProcessMs?: number
+}
+
+export interface ProjectHmrDurationReport {
+  name: WatchCase['name']
+  label: string
+  project: string
+  projectGroup: WatchProjectGroup
+  initialReadyMs: number
+  totalMs: number
+  timings: HmrDurationTiming[]
+}
+
+export interface HmrDurationReport {
+  summaryBySurface: Record<string, WatchSummary>
+  byProject: Record<string, ProjectHmrDurationReport>
+}
+
 export interface WatchCaseMetrics {
   name: WatchCase['name']
   label: string
@@ -486,6 +509,7 @@ export interface WatchReport {
   summaryByGroup: Partial<Record<WatchProjectGroup, WatchSummary>>
   summaryByProject: Record<string, WatchSummary>
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
+  hmrDurations: HmrDurationReport
   cases: WatchCaseMetrics[]
 }
 

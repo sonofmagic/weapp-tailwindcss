@@ -288,6 +288,17 @@ interface HotUpdateCaseReport {
   totalMs: number
 }
 
+interface HmrDurationTiming {
+  surface: string
+  hotUpdateEffectiveMs: number
+  rollbackEffectiveMs?: number
+}
+
+interface ProjectHmrDurationReport {
+  project: string
+  timings: HmrDurationTiming[]
+}
+
 interface HotUpdateReport {
   options?: {
     webOnly?: boolean
@@ -297,6 +308,10 @@ interface HotUpdateReport {
   summaryByGroup: Partial<Record<WatchProjectGroup, HotUpdateSummary>>
   summaryByProject: Record<string, HotUpdateSummary>
   summaryByMutationKind: Partial<Record<MutationKind, HotUpdateSummary>>
+  hmrDurations?: {
+    summaryBySurface: Record<string, HotUpdateSummary>
+    byProject: Record<string, ProjectHmrDurationReport>
+  }
   cases: HotUpdateCaseReport[]
 }
 
@@ -728,6 +743,39 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   }
 }
 
+function assertHmrDurationReport(report: HotUpdateReport, item: HotUpdateCaseReport, maxHotUpdateMs: number) {
+  expect(report.hmrDurations, 'report should include per-demo HMR duration statistics').toBeDefined()
+  expect(report.hmrDurations?.summaryBySurface['template:preferred-round']?.count).toBeGreaterThan(0)
+  const projectDurations = report.hmrDurations?.byProject[item.project]
+  expect(projectDurations, `[${item.project}] should include HMR duration timings`).toBeDefined()
+  expect(projectDurations?.project).toBe(item.project)
+
+  const timings = projectDurations?.timings ?? []
+  expect(timings.length, `[${item.project}] should include HMR duration timing rows`).toBeGreaterThan(0)
+  const surfaces = timings.map(timing => timing.surface)
+  for (const timing of timings) {
+    expect(timing.hotUpdateEffectiveMs, `[${item.project}] ${timing.surface} hot update duration`).toBeGreaterThan(0)
+    expect(timing.hotUpdateEffectiveMs, `[${item.project}] ${timing.surface} hot update budget`).toBeLessThanOrEqual(maxHotUpdateMs)
+    if (typeof timing.rollbackEffectiveMs === 'number') {
+      expect(timing.rollbackEffectiveMs, `[${item.project}] ${timing.surface} rollback duration`).toBeGreaterThan(0)
+    }
+  }
+
+  if (item.mutationMetrics.length > 0) {
+    expect(surfaces).toContain('template:preferred-round')
+    expect(surfaces).toContain('style')
+  }
+  if (item.webHmr) {
+    expect(surfaces).toContain('web')
+  }
+  for (const subPackage of item.subPackageMutationMetrics ?? []) {
+    expect(surfaces).toContain(`subpackage:${subPackage.root}:template`)
+    if (subPackage.style) {
+      expect(surfaces).toContain(`subpackage:${subPackage.root}:style`)
+    }
+  }
+}
+
 function assertWebOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
   assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
   expect(report.options?.webOnly).toBe(true)
@@ -754,6 +802,7 @@ function assertWebOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(item.projectGroup).toBe(expectedGroup)
     }
     assertWebHmrCase(item, maxHotUpdateMs)
+    assertHmrDurationReport(report, item, maxHotUpdateMs)
   }
 }
 
@@ -817,6 +866,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(item.summaryByMutationKind.script?.count).toBe(1)
     expect(item.summaryByMutationKind.style?.count).toBe(1)
     expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
+    assertHmrDurationReport(report, item, maxHotUpdateMs)
     assertHasWxssOutput(
       normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput),
       `[${item.project}] case global style outputs`,

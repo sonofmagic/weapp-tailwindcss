@@ -1,6 +1,7 @@
 import type { WatchReport } from './types'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
+import { summarizeHmrDurations } from './hmr-durations'
 import { DEFAULT_HOT_UPDATE_BUDGET_MS, DEFAULT_PLUGIN_PROCESS_BUDGET_MS, PREFERRED_HOT_UPDATE_TARGET_MS } from './types'
 
 export interface HmrSpeedSample {
@@ -111,128 +112,23 @@ export function groupSpeedSamples(samples: HmrSpeedSample[], key: 'project' | 's
 
 export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: string): HmrSpeedSample[] {
   const samples: HmrSpeedSample[] = []
-  for (const oneCase of report.cases ?? []) {
-    const caseName = oneCase.name || oneCase.label || oneCase.project || 'unknown'
-    const project = oneCase.project || 'unknown'
-    const initialReadyMs = toFiniteNumber(oneCase.initialReadyMs)
-    pushSpeedSample(samples, {
-      caseName,
-      project,
-      surface: 'case-template-preferred',
-      sourceFile: '',
-      hotUpdateMs: oneCase.hotUpdateEffectiveMs,
-      pluginProcessMs: toFiniteNumber(oneCase.hotUpdatePluginProcessMs),
-      rollbackMs: toFiniteNumber(oneCase.rollbackEffectiveMs),
-      initialReadyMs,
-      reportFile,
-    })
-
-    for (const mutation of oneCase.mutationMetrics ?? []) {
-      const sourceFile = mutation.sourceFile || ''
-      if ('rounds' in mutation && Array.isArray(mutation.rounds)) {
-        for (const round of mutation.rounds) {
-          pushSpeedSample(samples, {
-            caseName,
-            project,
-            surface: `${mutation.mutationKind}:${round.roundName}`,
-            sourceFile,
-            hotUpdateMs: round.hotUpdateEffectiveMs,
-            pluginProcessMs: toFiniteNumber(round.hotUpdatePluginProcessMs),
-            rollbackMs: toFiniteNumber(round.rollbackEffectiveMs),
-            initialReadyMs,
-            reportFile,
-          })
-        }
-      }
-      else {
-        pushSpeedSample(samples, {
-          caseName,
-          project,
-          surface: mutation.mutationKind,
-          sourceFile,
-          hotUpdateMs: mutation.hotUpdateEffectiveMs,
-          pluginProcessMs: toFiniteNumber(mutation.hotUpdatePluginProcessMs),
-          rollbackMs: toFiniteNumber(mutation.rollbackEffectiveMs),
-          initialReadyMs,
-          reportFile,
-        })
-      }
-
-      if ('addedClassHmr' in mutation && mutation.addedClassHmr) {
-        pushSpeedSample(samples, {
-          caseName,
-          project,
-          surface: `${mutation.mutationKind}:added-class`,
-          sourceFile,
-          hotUpdateMs: mutation.addedClassHmr.hotUpdateEffectiveMs,
-          pluginProcessMs: toFiniteNumber(mutation.addedClassHmr.hotUpdatePluginProcessMs),
-          rollbackMs: toFiniteNumber(mutation.addedClassHmr.rollbackEffectiveMs),
-          initialReadyMs,
-          reportFile,
-        })
-      }
-      if ('sameClassLiteralHmr' in mutation && mutation.sameClassLiteralHmr) {
-        pushSpeedSample(samples, {
-          caseName,
-          project,
-          surface: `${mutation.mutationKind}:same-class-literal`,
-          sourceFile,
-          hotUpdateMs: mutation.sameClassLiteralHmr.hotUpdateEffectiveMs,
-          pluginProcessMs: toFiniteNumber(mutation.sameClassLiteralHmr.hotUpdatePluginProcessMs),
-          rollbackMs: toFiniteNumber(mutation.sameClassLiteralHmr.rollbackEffectiveMs),
-          initialReadyMs,
-          reportFile,
-        })
-      }
-      if ('commentCarrierHmr' in mutation && mutation.commentCarrierHmr) {
-        pushSpeedSample(samples, {
-          caseName,
-          project,
-          surface: `${mutation.mutationKind}:comment-carrier`,
-          sourceFile,
-          hotUpdateMs: mutation.commentCarrierHmr.hotUpdateEffectiveMs,
-          pluginProcessMs: toFiniteNumber(mutation.commentCarrierHmr.hotUpdatePluginProcessMs),
-          rollbackMs: toFiniteNumber(mutation.commentCarrierHmr.rollbackEffectiveMs),
-          initialReadyMs,
-          reportFile,
-        })
-      }
-    }
-
-    if (oneCase.userReportedHotUpdate) {
+  const hmrDurations = report.hmrDurations ?? summarizeHmrDurations(report.cases ?? [])
+  for (const projectReport of Object.values(hmrDurations.byProject)) {
+    const caseName = projectReport.name || projectReport.label || projectReport.project || 'unknown'
+    const project = projectReport.project || 'unknown'
+    const initialReadyMs = toFiniteNumber(projectReport.initialReadyMs)
+    for (const timing of projectReport.timings ?? []) {
       pushSpeedSample(samples, {
         caseName,
         project,
-        surface: `user-reported:${oneCase.userReportedHotUpdate.label}`,
-        sourceFile: oneCase.userReportedHotUpdate.sourceFile,
-        hotUpdateMs: oneCase.userReportedHotUpdate.hotUpdateEffectiveMs,
-        pluginProcessMs: toFiniteNumber(oneCase.userReportedHotUpdate.hotUpdatePluginProcessMs),
-        rollbackMs: toFiniteNumber(oneCase.userReportedHotUpdate.rollbackEffectiveMs),
+        surface: timing.surface,
+        sourceFile: timing.sourceFile || '',
+        hotUpdateMs: timing.hotUpdateEffectiveMs,
+        pluginProcessMs: toFiniteNumber(timing.hotUpdatePluginProcessMs),
+        rollbackMs: toFiniteNumber(timing.rollbackEffectiveMs),
         initialReadyMs,
         reportFile,
       })
-    }
-
-    for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
-      for (const [kind, mutation] of [
-        ['template', subPackage.template],
-        ['style', subPackage.style],
-      ] as const) {
-        if (!mutation) {
-          continue
-        }
-        pushSpeedSample(samples, {
-          caseName,
-          project,
-          surface: `subpackage:${subPackage.root}:${kind}`,
-          sourceFile: mutation.sourceFile,
-          hotUpdateMs: mutation.hotUpdateEffectiveMs,
-          pluginProcessMs: toFiniteNumber(mutation.hotUpdatePluginProcessMs),
-          rollbackMs: toFiniteNumber(mutation.rollbackEffectiveMs),
-          initialReadyMs,
-          reportFile,
-        })
-      }
     }
   }
   return samples

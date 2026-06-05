@@ -20,6 +20,9 @@ import {
   buildTailwindV4JsContentRoundConfigs,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/round-configs'
 import {
+  summarizeHmrDurations,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/hmr-durations'
+import {
   resolveReportPath,
   resolveRepositoryRootLabel,
   summarizeMetrics,
@@ -789,6 +792,51 @@ describe('watch-hmr regression summary helpers', () => {
     expect(byMutation.content).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
   })
 
+  it('summarizes HMR durations by demo project and surface', () => {
+    const metrics = createCase('taro-vite-vue3-tailwindcss-v4', 'demo', 30, 40)
+    metrics.webHmr = {
+      devScript: 'build:h5',
+      sourceFile: 'src/app.css',
+      url: 'http://localhost:10086/',
+      marker: 'web-marker',
+      classLiteral: 'bg-[#123456]',
+      computedStyle: {
+        backgroundColor: 'rgb(18, 52, 86)',
+        width: '88px',
+        height: '44px',
+      },
+      initialReadyMs: 20,
+      hotUpdateEffectiveMs: 18,
+      rollbackEffectiveMs: 12,
+      totalMs: 30,
+    }
+    metrics.subPackageMutationMetrics = [{
+      root: 'sub-normal',
+      independent: false,
+      outputWxml: 'dist/sub-normal/pages/index.wxml',
+      outputJs: 'dist/sub-normal/pages/index.js',
+      globalStyleOutputs: ['dist/app.wxss'],
+      template: createClassMutationMetrics('template', [createRound('complex-corpus', 42, 43)]) as any,
+      style: createStyleMutationMetrics() as any,
+    }]
+
+    const durations = summarizeHmrDurations([metrics])
+    const projectDurations = durations.byProject[metrics.project]
+
+    expect(projectDurations.timings.map(item => item.surface)).toEqual(expect.arrayContaining([
+      'template:preferred-round',
+      'template:complex-corpus',
+      'script:complex-corpus',
+      'style',
+      'content:complex-corpus',
+      'web',
+      'subpackage:sub-normal:template',
+      'subpackage:sub-normal:style',
+    ]))
+    expect(durations.summaryBySurface.web).toMatchObject({ count: 1, hotUpdateAvgMs: 18, rollbackAvgMs: 12 })
+    expect(durations.summaryBySurface['subpackage:sub-normal:template']).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 35 })
+  })
+
   it('resolves report paths and writes report files', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-summary-'))
     tempDirs.push(tempDir)
@@ -825,6 +873,14 @@ describe('watch-hmr regression summary helpers', () => {
     expect(report.options.webOnly).toBe(false)
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
+    expect(report.hmrDurations.byProject['demo-weapp-vite-tailwindcss-v3'].timings.map((item: any) => item.surface)).toEqual(expect.arrayContaining([
+      'template:preferred-round',
+      'template:complex-corpus',
+      'script:complex-corpus',
+      'style',
+      'content:complex-corpus',
+    ]))
+    expect(report.hmrDurations.summaryBySurface.style).toMatchObject({ count: 1, hotUpdateAvgMs: 32, rollbackAvgMs: 36 })
   })
 
   it('builds a CI-facing HMR speed report from watch JSON metrics', async () => {
@@ -858,7 +914,7 @@ describe('watch-hmr regression summary helpers', () => {
     const markdown = renderSpeedReportMarkdown(speedReport)
 
     expect(samples.map(item => item.surface)).toEqual(expect.arrayContaining([
-      'case-template-preferred',
+      'template:preferred-round',
       'template:complex-corpus',
       'script:complex-corpus',
       'style',
@@ -883,6 +939,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(markdown).toContain('- budget: <=1000ms')
     expect(markdown).toContain('- plugin process budget: <=500ms')
     expect(markdown).toContain('- preferred target: <=1000ms')
+    expect(markdown).toContain('| template:preferred-round | 1 | 30ms | 30ms | 30ms | 30ms | 30ms |')
     expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
   })
 

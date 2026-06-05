@@ -304,6 +304,27 @@ function groupSpeedSamples(samples, key) {
 
 function collectSpeedSamplesFromReport(report, reportFile) {
   const samples = []
+  if (report?.hmrDurations) {
+    for (const projectReport of Object.values(report.hmrDurations.byProject || {})) {
+      const caseName = projectReport.name || projectReport.label || projectReport.project || 'unknown'
+      const project = projectReport.project || 'unknown'
+      for (const timing of projectReport.timings || []) {
+        pushSpeedSample(samples, {
+          caseName,
+          project,
+          surface: timing.surface,
+          sourceFile: timing.sourceFile || '',
+          hotUpdateMs: timing.hotUpdateEffectiveMs,
+          pluginProcessMs: timing.hotUpdatePluginProcessMs,
+          rollbackMs: timing.rollbackEffectiveMs,
+          initialReadyMs: projectReport.initialReadyMs,
+          reportFile,
+        })
+      }
+    }
+    return samples
+  }
+
   for (const oneCase of report?.cases ?? []) {
     const caseName = oneCase.name || oneCase.label || oneCase.project || 'unknown'
     const project = oneCase.project || 'unknown'
