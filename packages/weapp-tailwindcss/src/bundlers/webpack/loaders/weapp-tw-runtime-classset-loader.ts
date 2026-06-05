@@ -5,6 +5,7 @@ import process from 'node:process'
 import postcss from 'postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
 import { getWebpackLoaderRuntime } from './runtime-registry'
+import { registerWebpackWatchContext, registerWebpackWatchFile } from './watch-dependencies'
 
 interface RuntimeClassSetLoaderOptions extends WebpackRuntimeClassSetLoaderOptions {
   weappTailwindcssRuntimeKey?: string
@@ -55,10 +56,10 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   const maybePromise = opt?.getClassSet?.()
   const applyWatchDependencies = (dependencies: RuntimeLoaderWatchDependencies | void) => {
     for (const file of dependencies?.files ?? []) {
-      this.addDependency?.(file)
+      registerWebpackWatchFile(this, file)
     }
     for (const context of dependencies?.contexts ?? []) {
-      this.addContextDependency?.(context)
+      registerWebpackWatchContext(this, context)
     }
   }
   const resolveWatchDependencies = () => {

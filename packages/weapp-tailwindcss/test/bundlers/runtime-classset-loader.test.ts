@@ -1,10 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
 import loader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
 
 describe('bundlers/runtime classset loader', () => {
+  const tempDirs: string[] = []
+
   afterEach(() => {
     delete process.env.WEAPP_TW_LOADER_DEBUG
     vi.restoreAllMocks()
+  })
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })))
   })
 
   it('registers watch files and contexts after runtime set preparation', async () => {
@@ -60,6 +69,43 @@ describe('bundlers/runtime classset loader', () => {
     expect(getWatchDependencies).toHaveBeenCalledTimes(1)
     expect(addDependency).toHaveBeenCalledWith('/workspace/src/index.wxml')
     expect(addContextDependency).toHaveBeenCalledWith('/workspace/src/components')
+  })
+
+  it('registers directory dependencies as webpack context dependencies', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-runtime-loader-'))
+    tempDirs.push(tempDir)
+    const existingFile = path.join(tempDir, 'tailwind.config.ts')
+    const sourceDir = path.join(tempDir, 'src')
+    const missingFile = path.join(tempDir, 'missing.html')
+    await writeFile(existingFile, 'export default {}', 'utf8')
+    await mkdir(sourceDir)
+
+    const addDependency = vi.fn()
+    const addMissingDependency = vi.fn()
+    const addContextDependency = vi.fn()
+    const getClassSet = vi.fn()
+    const getWatchDependencies = vi.fn(() => ({
+      files: [existingFile, sourceDir, missingFile],
+      contexts: [sourceDir],
+    }))
+
+    const source = '.app {}'
+    loader.call({
+      addDependency,
+      addMissingDependency,
+      addContextDependency,
+      getOptions: () => ({
+        getClassSet,
+        getWatchDependencies,
+      }),
+      resourcePath: path.join(sourceDir, 'app.css'),
+    } as any, source)
+
+    expect(addDependency).toHaveBeenCalledWith(existingFile)
+    expect(addDependency).not.toHaveBeenCalledWith(sourceDir)
+    expect(addDependency).not.toHaveBeenCalledWith(missingFile)
+    expect(addMissingDependency).toHaveBeenCalledWith(missingFile)
+    expect(addContextDependency).toHaveBeenCalledWith(sourceDir)
   })
 
   it('keeps source unchanged when loader options are absent', () => {

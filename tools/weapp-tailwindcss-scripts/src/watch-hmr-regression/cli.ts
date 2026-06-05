@@ -42,7 +42,8 @@ export function resolveOptions(): CliOptions {
     quietSass: parseBooleanFlag('--quiet-sass', argv),
     webOnly: parseBooleanFlag('--web-only', argv),
     reportFile: parseArg('--report', argv),
-    maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv)),
+    maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv))
+      ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_HOT_UPDATE_MS),
     maxPluginProcessMs: parseOptionalNumber(parseArg('--max-plugin-process-ms', argv))
       ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS)
       ?? DEFAULT_PLUGIN_PROCESS_BUDGET_MS,

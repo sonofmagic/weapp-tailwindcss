@@ -1644,6 +1644,7 @@ describe('watch-hmr regression cases', () => {
     expect(runSteps.length).toBe(2)
     for (const step of runSteps) {
       const env = step.env as Record<string, string> | undefined
+      expect(env?.E2E_WATCH_MAX_HOT_UPDATE_MS).toBe('${{ matrix.watch_max_hot_update_ms || matrix.watch_timeout_ms }}')
       expect(env?.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
       expect(env?.E2E_WATCH_MAX_ATTEMPTS).toBe("${{ matrix.watch_max_attempts || '2' }}")
       expect(env?.NODE_OPTIONS).toBe('--max-old-space-size=6144')

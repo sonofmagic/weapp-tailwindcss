@@ -57,14 +57,22 @@ export async function main() {
 
   const metrics: WatchCaseMetrics[] = []
 
-  for (const watchCase of selected) {
-    process.stdout.write(`[watch-hmr] start ${watchCase.label} (${watchCase.devScript})\n`)
-    const result = options.webOnly
-      ? await runWebOnlyCase(watchCase, options)
-      : await runCase(watchCase, options)
-    assertHotUpdateBudget(result, options)
-    assertPluginProcessBudget(result, options)
-    metrics.push(result)
+  try {
+    for (const watchCase of selected) {
+      process.stdout.write(`[watch-hmr] start ${watchCase.label} (${watchCase.devScript})\n`)
+      const result = options.webOnly
+        ? await runWebOnlyCase(watchCase, options)
+        : await runCase(watchCase, options)
+      metrics.push(result)
+      assertHotUpdateBudget(result, options)
+      assertPluginProcessBudget(result, options)
+    }
+  }
+  catch (error) {
+    if (metrics.length > 0) {
+      await writeReport(baseCwd, options, metrics)
+    }
+    throw error
   }
 
   const summary = summarizeMetrics(metrics)

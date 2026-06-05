@@ -11,6 +11,7 @@ import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css
 import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
 import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { getWebpackLoaderRuntime } from './runtime-registry'
+import { registerWebpackWatchFile } from './watch-dependencies'
 
 interface CssImportRewriteLoaderOptions extends WebpackCssImportRewriteLoaderOptions {}
 
@@ -124,7 +125,7 @@ async function generateCssForWebpackPipeline(
   }
   rewriteOptions.markGeneratedCssSource?.(file)
   for (const dependency of generated.dependencies) {
-    loaderContext.addDependency?.(dependency)
+    registerWebpackWatchFile(loaderContext, dependency)
   }
   return `${createBundlerGeneratedCssMarker('webpack', file)}\n${generated.css}`
 }

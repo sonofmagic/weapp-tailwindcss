@@ -310,8 +310,6 @@ const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcs
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
@@ -330,7 +328,9 @@ const referenceDirectiveRequiredCases = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'uni-app-x-hbuilderx-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
+  'taro-vite-vue3-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ])
 const commentCarrierRequiredCases = new Set<ConcreteWatchCaseName>(
@@ -1204,6 +1204,8 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
     String(timeoutMs),
     '--poll',
     String(pollMs),
+    '--max-hot-update-ms',
+    String(maxHotUpdateMs),
     '--max-plugin-process-ms',
     String(maxPluginProcessMs),
     '--report',
