@@ -38,7 +38,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.10.33
+    baseline-browser-mapping: ^2.10.34
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -81,12 +81,12 @@ catalogs:
   prettier371:
     prettier: ^3.8.3
   react18:
-    '@types/react': ^19.2.16
+    '@types/react': ^19.2.17
     '@types/react-dom': 18.2.7
     react: ^18.3.1
     react-dom: ^18.3.1
   react19:
-    '@types/react': ^19.2.16
+    '@types/react': ^19.2.17
     '@types/react-dom': 19.2.3
     react: ^19.2.7
     react-dom: ^19.2.7
@@ -140,7 +140,7 @@ catalogs:
   tsx:
     tsx: ^4.22.4
   typesNode2410:
-    '@types/node': ^24.12.4
+    '@types/node': ^24.13.1
   typescript59:
     typescript: ^6.0.3
   typescript59tilde:

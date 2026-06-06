@@ -1,30 +1,9 @@
 # tailwindcss-core-plugins-extractor
 
-> this version is refer to `tailwindcss@3.4.6`
+> 简体中文 | [English](./README.en.md)
 
-extract all `tailwindcss` `corePlugins`!
+这个包用于提取 Tailwind CSS core plugins 和主题相关数据，供构建工具、运行时和兼容逻辑复用。
 
-## Install
+## 官网
 
-```bash
-<npm | yarn | pnpm> i tailwindcss-core-plugins-extractor
-```
-
-## Usage
-
-```js
-// cjs
-const corePlugins = require('tailwindcss-core-plugins-extractor')
-```
-
-```js
-// esm
-import * as corePlugins from 'tailwindcss-core-plugins-extractor'
-
-// get corePlugins
-corePlugins.accentColor
-corePlugins.accessibility
-corePlugins.zIndex
-corePlugins.width
-// ....
-```
+更多接入方式、配置说明和框架示例见 [weapp-tailwindcss 官方文档](https://tw.icebreaker.top)。

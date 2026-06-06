@@ -1,152 +1,116 @@
 <p align="center">
-
-<a href="https://tw.icebreaker.top">
-
-<img src="./assets/logo.png" alt="weapp-tailwindcss-logo" width="128">
-</a>
-
-<br>
+  <a href="https://tw.icebreaker.top">
+    <img src="./assets/logo.png" alt="weapp-tailwindcss logo" width="128">
+  </a>
+</p>
 
 <h1 align="center">weapp-tailwindcss</h1>
 
+<p align="center">
+  <strong>把 Tailwind CSS 带到小程序与多端开发中。</strong>
 </p>
 
-> 简体中文(zh-cn) | [English](./README_en.md)
+<p align="center">
+  简体中文 | <a href="./README_en.md">English</a>
+</p>
 
-![star](https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss)
-![gstar](https://atomgit.com/sonofmagic/weapp-tailwindcss/star/badge.svg)
-![dm0](https://badgen.net/npm/dm/weapp-tailwindcss)
-![license](https://badgen.net/npm/license/weapp-tailwindcss)
-[![test](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/test.yml)
-[![codecov](https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt)](https://codecov.io/gh/sonofmagic/weapp-tailwindcss)
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sonofmagic/weapp-tailwindcss)
+<p align="center">
+  <a href="https://github.com/sonofmagic/weapp-tailwindcss/stargazers"><img src="https://badgen.net/github/stars/sonofmagic/weapp-tailwindcss" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/weapp-tailwindcss"><img src="https://badgen.net/npm/dm/weapp-tailwindcss" alt="npm downloads"></a>
+  <a href="https://www.npmjs.com/package/weapp-tailwindcss"><img src="https://badgen.net/npm/license/weapp-tailwindcss" alt="license"></a>
+  <a href="https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml"><img src="https://github.com/sonofmagic/weapp-tailwindcss/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI"></a>
+  <a href="https://codecov.io/gh/sonofmagic/weapp-tailwindcss"><img src="https://codecov.io/gh/sonofmagic/weapp-tailwindcss/branch/main/graph/badge.svg?token=zn05qXYznt" alt="codecov"></a>
+  <a href="https://deepwiki.com/sonofmagic/weapp-tailwindcss"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+</p>
 
-> [!NOTE]
-> 降低开发维护成本，提升开发效率的 `小程序` `tailwindcss` 全方面解决方案
->
-> `weapp-tailwindcss@4.2.x` 现已支持 `uni-app x` 同时构建 `Web`,`小程序`,`安卓`,`IOS`,`鸿蒙`，详见 [**uni-app x 专题**](https://tw.icebreaker.top/docs/uni-app-x)
+## 项目定位
 
-\[[文档地址](https://tw.icebreaker.top)\] \| \[[备用文档地址](https://ice-tw.netlify.app/)\] \| \[[加入技术交流群](https://tw.icebreaker.top/docs/community/group)\]
+`weapp-tailwindcss` 是面向小程序生态的 Tailwind CSS 适配方案。它负责把 Tailwind CSS 生成的选择器、工具类和部分 CSS 能力转换成小程序与多端框架更容易消费的形式。
 
-- [特性](#特性)
-- [版本对应](#版本对应)
-- [环境要求](#环境要求)
-- [AI Skill (For Users)](#ai-skill-for-users)
-- [安装与使用方式](#安装与使用方式)
-- [生态和解决方案](#生态和解决方案)
-- [常见问题](#常见问题)
-- [各个框架的模板](#各个框架的模板)
-- [旧版本迁移指南](#旧版本迁移指南)
-- [配置项参考](#配置项参考)
-- [Contribute](#contribute)
-  - [热更新 e2e 回归](#热更新-e2e-回归)
-- [License](#license)
-- [Star History](#star-history)
-- [Related projects](#related-projects)
-  - [weapp-vite](#weapp-vite)
+它适合这些场景：
 
-## 特性
+- 在微信小程序、支付宝小程序、抖音小程序等小程序环境中使用 Tailwind CSS。
+- 在 `uni-app` / `uni-app x`、Taro、Mpx、原生小程序、weapp-vite 等框架里复用同一套原子化样式写法。
+- 在 Tailwind CSS v3/v4 项目中处理小程序 class 转义、选择器兼容、rpx 任意值、CSS 降级和 H5/Web 输出差异。
+- 在多端项目中同时覆盖小程序、H5/Web 与 App WebView 等目标。
 
-| 不仅仅是`webpack`                                   | 主流框架与原生开发支持                          |
-| --------------------------------------------------- | ----------------------------------------------- |
-| ![wepback+vite+gulp](./assets/weapp-tw-plugins.png) | ![frameworks](./assets/weapp-tw-frameworks.png) |
+## 当前支持
 
-核心插件支持 `webpack`/`vite`/`rspack`/`rollup`/`rolldown`/`gulp` 为基底的框架类小程序开发，涵盖了市面上几乎所有的主流的开发框架。
+| 能力         | 说明                                                                          |
+| ------------ | ----------------------------------------------------------------------------- |
+| Tailwind CSS | 支持 Tailwind CSS v3 与 v4                                                    |
+| 构建工具     | 支持 Vite、Webpack 5、Rspack、Rollup、Rolldown、Gulp 与 Node API              |
+| 框架         | 支持 uni-app / uni-app x、Taro、Mpx、原生小程序、weapp-vite 等接入方式        |
+| 多端输出     | 覆盖小程序、H5/Web 与 App WebView 等平台差异                                  |
+| 运行时生态   | 提供 merge、variants、cva、runtime、typography、theme-transition、ui 等配套包 |
+| Node.js      | 需要 Node.js `^20.19.0` 或 `>=22.12.0`                                        |
 
-也支持直接从各个开发者工具中，直接创建的原生小程序应用。
+## 官方文档
 
-这些插件能够自动识别并精确处理所有 `tailwindcss` 的工具类来适配小程序环境。
+- [官网首页](https://tw.icebreaker.top)
+- [快速开始](https://tw.icebreaker.top/docs/quick-start/install)
+- [Tailwind CSS v4 接入](https://tw.icebreaker.top/docs/quick-start/v4)
+- [框架接入指南](https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite)
+- [uni-app x 专题](https://tw.icebreaker.top/docs/uni-app-x)
+- [多端配置口径](https://tw.icebreaker.top/docs/multi-platform)
+- [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
+- [常见问题](https://tw.icebreaker.top/docs/issues)
+- [备用文档地址](https://ice-tw.netlify.app/)
 
-## 版本对应
+## 核心包
 
-目前，`weapp-tailwindcss` 的 `5.x` 版本
+| 包                                | 用途                               |
+| --------------------------------- | ---------------------------------- |
+| `weapp-tailwindcss`               | 核心转译与构建器适配入口           |
+| `@weapp-tailwindcss/postcss`      | CSS AST 处理、选择器兼容与平台降级 |
+| `@weapp-tailwindcss/postcss-calc` | `calc()` 表达式安全归约            |
+| `@weapp-tailwindcss/reset`        | 小程序多框架 reset 样式资源        |
+| `tailwindcss-config`              | Tailwind CSS 配置加载              |
+| `tailwindcss-injector`            | Tailwind 指令注入与 WXML 依赖追踪  |
+| `weapp-style-injector`            | 小程序构建产物样式入口注入         |
 
-- 支持最新版本的 `tailwindcss v4` 和 `v3`。
-- 支持 `webpack5`、`vite`、`rspack`、`rollup`、`rolldown` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
+## 运行时与组件生态
 
-> `weapp-tailwindcss@5` 面向 Tailwind CSS v3/v4 和现代构建链路，不再内置 Webpack4、PostCSS7、Tailwind CSS v2 兼容入口。`weapp-tailwindcss@5` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+| 包                               | 用途                                                       |
+| -------------------------------- | ---------------------------------------------------------- |
+| `@weapp-tailwindcss/runtime`     | escape/unescape、缓存、rpx 转换等运行时基础能力            |
+| `@weapp-tailwindcss/merge`       | Tailwind Merge v3 的小程序运行时封装                       |
+| `@weapp-tailwindcss/merge-v3`    | Tailwind Merge v2 的小程序运行时封装，面向 Tailwind CSS v3 |
+| `@weapp-tailwindcss/variants`    | tailwind-variants 的小程序运行时封装                       |
+| `@weapp-tailwindcss/variants-v3` | Tailwind CSS v3 生态的 variants 封装                       |
+| `@weapp-tailwindcss/cva`         | class-variance-authority 的小程序运行时封装                |
+| `@weapp-tailwindcss/typography`  | Tailwind Typography 的小程序适配版本                       |
+| `theme-transition`               | 主题切换运行时与 Tailwind 插件                             |
+| `@weapp-tailwindcss/ui`          | 面向小程序的原子化 UI 运行时层                             |
 
-## 环境要求
+所有包的默认 `README.md` 都使用中文，并提供对应的 `README.en.md` 英文版本。
 
-- Node.js `^20.19.0` 或 `>=22.12.0`（建议 LTS）
+## AI Skill
 
-## AI Skill (For Users)
-
-如果你希望 AI 在你的业务项目中，按 `weapp-tailwindcss` 的最佳实践快速完成“小程序 + 多端”接入，可以先安装官方 Skill：
+如果希望 AI 在业务项目中按当前最佳实践接入 `weapp-tailwindcss`，可以安装官方 Skill：
 
 ```bash
 npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ```
 
-安装后可用于：
+它适合处理这些任务：
 
-- 快速生成 `uni-app` / `taro` / `uni-app x` 接入配置
-- 输出可复制的安装命令、配置文件与验证步骤
-- 处理 `rpx` 任意值、`JS` 字符串 class 不生效等常见问题
+- 新项目接入 `uni-app` / `uni-app x`、Taro 或原生小程序。
+- 判断 Tailwind CSS v3/v4 的配置差异。
+- 排查 class 不生效、rpx 任意值、JS 字符串 class、`space-x/space-y` 等问题。
+- 生成可验证、可回滚的接入步骤。
 
-Skill 的执行流程（简版）：
+更多说明见 [Skill 文档](https://tw.icebreaker.top/docs/ai/basics/skill)。
 
-1. 先分流任务类型：新接入、迁移、排障、写法规范
-2. 先补齐最小上下文：框架、构建器、目标端、Tailwind 版本、是否 `pnpm@10+`
-3. 再给出可落地方案，并强制包含回滚路径
+## 贡献
 
-Skill 输出默认包含：
+欢迎通过 issue 或 pull request 参与改进：
 
-- 结论（框架 + Tailwind 版本 + 目标端）
-- 修改文件清单
-- 可复制配置与命令（默认 `pnpm`）
-- 验证步骤与预期结果
-- 回滚方案
+- 报告可复现的问题。
+- 补充框架接入示例或文档。
+- 改进转译、兼容、运行时或测试覆盖。
 
-推荐同时阅读：
-
-- [Skill（技能系统）](https://tw.icebreaker.top/docs/ai/basics/skill)
-- [Tailwind 写法最佳实践（Skill 引用）](./skills/weapp-tailwindcss/references/tailwind-writing-best-practices.md)
-
-## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
-
-## [生态和解决方案](https://tw.icebreaker.top/docs/community/templates)
-
-## [常见问题](https://tw.icebreaker.top/docs/issues/)
-
-## [各个框架的模板](https://tw.icebreaker.top/docs/community/templates)
-
-## [旧版本迁移指南](https://tw.icebreaker.top/docs/migrations/v2)
-
-## [配置项参考](https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions)
-
-### Tailwind CSS 自动前缀
-
-在 Tailwind CSS v3 / v4 场景下，`weapp-tailwindcss` 会默认对生成后的小程序 CSS 执行内置 `autoprefixer` 后处理，用于补齐小程序 WebView 需要的兼容前缀。例如 `bg-clip-text` 会输出 `-webkit-background-clip: text`，从而支持渐变文字。
-
-通常不再需要在业务项目的 `postcss.config.js` 中手动配置 `autoprefixer`。如果项目已经显式配置了 `autoprefixer`，内置后处理会避免重复追加。需要关闭时可配置：
-
-```ts
-weappTailwindcss({
-  autoprefixer: false,
-})
-```
-
-## Contribute
-
-我们邀请你来贡献和帮助改进 `weapp-tailwindcss` 💚💚💚
-
-以下有几个方式可以参与:
-
-- 报告错误：如果您遇到任何错误或问题，请提`issue`并提供完善的错误信息和复现方式。
-- 建议：有增强 `weapp-tailwindcss` 的想法吗？请提 `issue` 来分享您的建议。
-- 文档：如果您对文档有更好的见解或者更棒的修辞方式，欢迎 `pr`。
-- 代码：任何人的代码都不是完美的，我们欢迎你通过 `pr` 给代码提供更好的质量与活力。
-
-### 热更新 e2e 回归
-
-仓库现在提供独立于构建产物快照链路的 watch 回归链路，用于验证各 demo 在真实热更新场景下的生效性与耗时：
-
-- 全量运行：`pnpm e2e:watch`
-- 单项运行：`pnpm e2e:watch:taro` / `pnpm e2e:watch:uni` / `pnpm e2e:watch:mpx` / `pnpm e2e:watch:weapp-vite`
-- 包含预构建链路：`pnpm e2e:watch:full`
-
-该链路会注入复杂 Tailwind 类组合（任意值、小数、`calc()`、伪元素变体等），并统计 `hot update` 与 `rollback` 延迟，帮助持续优化日常开发性能。
+提交前请先阅读仓库内的 `AGENTS.md` 与目标目录下的就近规则。
 
 ## License
 
@@ -155,9 +119,3 @@ weappTailwindcss({
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=sonofmagic/weapp-tailwindcss&type=Date)](https://star-history.com/#sonofmagic/weapp-tailwindcss&Date)
-
-## Related projects
-
-### weapp-vite
-
-[weapp-vite](https://vite.icebreaker.top/): 把现代化的开发模式带入小程序开发!
