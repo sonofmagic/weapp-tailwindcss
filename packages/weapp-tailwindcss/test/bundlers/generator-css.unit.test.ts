@@ -3949,9 +3949,12 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toContain('.card{color:red}')
-    expect(result?.css).toContain('view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}')
-    expect(result?.css.indexOf('.card{color:red}')).toBeLessThan(result?.css.indexOf('view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0;border-style:solid}') ?? -1)
+    const css = result?.css ?? ''
+    const preflightIndex = css.indexOf('view,text,::after,::before{')
+    expect(css).toContain('.card{color:red}')
+    expect(css).toContain('box-sizing:border-box;border-width:0;border-style:solid')
+    expect(css).toContain('--tw-border-spacing-x:0')
+    expect(css.indexOf('.card{color:red}')).toBeLessThan(preflightIndex)
   })
 
   it('keeps user css before hoisted Tailwind v4 theme variables', async () => {
@@ -6335,7 +6338,10 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).toBe('.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1}\n.custom{color:red}')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-from:#0000}')
+    expect(css).toContain('.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1}')
+    expect(css).toContain('.custom{color:red}')
+    expect(css.indexOf('.from-_b_h2f73f1_B')).toBeLessThan(css.indexOf('.custom{color:red}'))
     expect(css.match(/from-_b_h2f73f1_B/g)).toHaveLength(1)
   })
 

@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 
 import { icebreaker } from '@icebreakers/eslint-config'
+import { globalIgnores } from 'eslint/config'
 
 const cwd = fileURLToPath(new URL('.', import.meta.url))
 const tailwindConfig = fileURLToPath(new URL('tailwind.config.ts', import.meta.url))
@@ -12,7 +13,13 @@ const config = icebreaker({
   },
   react: false,
   markdown: false,
-}).prepend({
+}).prepend(
+  globalIgnores([
+    // Playwright 失败诊断产物不参与源码 lint。
+    'test-results/**',
+    '**/test-results/**',
+  ]),
+).prepend({
   ignores: [
     // Docusaurus 生成产物不参与源码 lint。
     '.docusaurus/**',

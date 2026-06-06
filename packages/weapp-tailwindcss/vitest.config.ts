@@ -21,6 +21,10 @@ export default defineConfig({
         find: /^@weapp-tailwindcss\/postcss$/,
         replacement: path.resolve(__dirname, '../postcss/src/index.ts'),
       },
+      {
+        find: /^@weapp-tailwindcss\/postcss-calc$/,
+        replacement: path.resolve(__dirname, './test/helpers/postcss-calc.cjs'),
+      },
     ],
     include: ['test/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     benchmark: {

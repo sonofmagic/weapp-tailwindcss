@@ -1,4 +1,5 @@
 import { icebreaker } from '@icebreakers/eslint-config'
+import { globalIgnores } from 'eslint/config'
 
 const config = icebreaker(
   {
@@ -19,6 +20,7 @@ const config = icebreaker(
       'packages/weapp-tailwindcss/stats/**',
       'e2e/__snapshots__/**/*',
       'templates/**',
+      'website/test-results/**',
       // 排除文档和quest文件
       '.qoder/**/*.md',
       'packages-runtime/ui/**/*.md',
@@ -87,17 +89,26 @@ const config = icebreaker(
   // },
 )
 
-export default config.append({
-  rules: {
-    'better-tailwindcss/enforce-canonical-classes': 'off',
-    'better-tailwindcss/enforce-consistent-class-order': 'off',
-    'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
-    'better-tailwindcss/no-conflicting-classes': 'off',
-    'better-tailwindcss/no-deprecated-classes': 'off',
-    'better-tailwindcss/no-duplicate-classes': 'off',
-    'better-tailwindcss/no-unknown-classes': 'off',
-    'better-tailwindcss/no-unnecessary-whitespace': 'off',
-    'e18e/ban-dependencies': 'off',
-    'ts/no-use-before-define': 'off',
-  },
-})
+export default config
+  .prepend(
+    globalIgnores([
+      '**/test-results/**',
+      'website/test-results/',
+      'website/test-results/**',
+      'website/test-results/**/*',
+    ]),
+  )
+  .append({
+    rules: {
+      'better-tailwindcss/enforce-canonical-classes': 'off',
+      'better-tailwindcss/enforce-consistent-class-order': 'off',
+      'better-tailwindcss/enforce-consistent-line-wrapping': 'off',
+      'better-tailwindcss/no-conflicting-classes': 'off',
+      'better-tailwindcss/no-deprecated-classes': 'off',
+      'better-tailwindcss/no-duplicate-classes': 'off',
+      'better-tailwindcss/no-unknown-classes': 'off',
+      'better-tailwindcss/no-unnecessary-whitespace': 'off',
+      'e18e/ban-dependencies': 'off',
+      'ts/no-use-before-define': 'off',
+    },
+  })

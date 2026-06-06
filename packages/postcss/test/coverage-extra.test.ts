@@ -144,6 +144,13 @@ describe('compat helpers', () => {
     expect(decl.value).toBe('9999px')
   })
 
+  it('removes Tailwind v4 oklab gradient suffix without leaving trailing spaces', () => {
+    const decl = new Declaration({ prop: '--tw-gradient-position', value: 'to right in oklab' })
+    const changed = normalizeTailwindcssV4Declaration(decl)
+    expect(changed).toBe(true)
+    expect(decl.value).toBe('to right')
+  })
+
   it('handles uni-app-x unsupported nodes', () => {
     const removed = stripUnsupportedNodeForUniAppX({ type: 'tag', value: 'view', remove: vi.fn() } as any, { uniAppX: true })
     expect(removed).toBe(false)

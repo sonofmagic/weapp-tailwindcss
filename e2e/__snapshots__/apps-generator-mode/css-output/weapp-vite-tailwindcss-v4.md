@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 7317 | 50 | false | false | false | false | true |
+| 7290 | 50 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -130,15 +130,15 @@ wx-root-portal-content {
   background-color: var(--color-zinc-50);
 }
 .bg-gradient-to-b {
-  --tw-gradient-position: to bottom in oklab;
+  --tw-gradient-position: to bottom;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-t {
-  --tw-gradient-position: to top in oklab;
+  --tw-gradient-position: to top;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .bg-gradient-to-tr {
-  --tw-gradient-position: to top right in oklab;
+  --tw-gradient-position: to top right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .from-_b_h2f73f1_B {

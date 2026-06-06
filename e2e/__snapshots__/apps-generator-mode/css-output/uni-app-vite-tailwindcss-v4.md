@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 20472 | 126 | false | false | false | false | true |
+| 21003 | 128 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -27,6 +27,7 @@ text,
   --tw-divide-x-reverse: 0;
   --tw-divide-y-reverse: 0;
   --tw-font-weight:;
+  --tw-leading:;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
   --tw-inset-shadow: 0 0 #0000;
@@ -46,13 +47,19 @@ wx-root-portal-content {
   --color-emerald-600: rgb(0, 150, 105);
   --color-white: #fff;
   --spacing: 8rpx;
+  --text-sm: 28rpx;
+  --text-sm--line-height: 1.42857;
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
   --color-neutral-1B: #1b1b1b;
+  --color-neutral-66: #666;
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
+}
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
 }
 .mt-6 {
   margin-top: calc(var(--spacing) * 6);
@@ -79,8 +86,14 @@ wx-root-portal-content {
 .aspect-_bcalc_p4_x3_u1_P_f3_B {
   aspect-ratio: 13/3;
 }
+.h-12 {
+  height: calc(var(--spacing) * 12);
+}
 .h-20 {
   height: calc(var(--spacing) * 20);
+}
+.w-12 {
+  width: calc(var(--spacing) * 12);
 }
 .w-20 {
   width: calc(var(--spacing) * 20);
@@ -93,6 +106,12 @@ wx-root-portal-content {
 }
 .flex-row-reverse {
   flex-direction: row-reverse;
+}
+.items-center {
+  align-items: center;
+}
+.gap-3 {
+  gap: calc(var(--spacing) * 3);
 }
 .space-y-4 > view + view,
 .space-y-4 > view + text,
@@ -178,6 +197,9 @@ wx-root-portal-content {
 .divide-_b_hd80c0c_B > text + text {
   border-color: #d80c0c;
 }
+.rounded-full {
+  border-radius: 9999px;
+}
 .rounded-xl {
   border-radius: 16rpx;
 }
@@ -219,12 +241,19 @@ wx-root-portal-content {
 .text-center {
   text-align: center;
 }
+.text-sm {
+  font-size: var(--text-sm);
+  line-height: var(--tw-leading, var(--text-sm--line-height));
+}
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: var(--font-weight-bold);
 }
 .text-_b_h00f285_B {
   color: #00f285;
+}
+.text-neutral-66 {
+  color: var(--color-neutral-66);
 }
 .text-tahiti {
   color: var(--color-tahiti);

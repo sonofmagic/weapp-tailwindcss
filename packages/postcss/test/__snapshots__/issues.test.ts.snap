@@ -419,7 +419,7 @@ view,text,::after,::before {
   height: calc(var(--spacing) * 14);
 }
 .bg-gradient-to-r {
-  --tw-gradient-position: to right ;
+  --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 .from-cyan-500 {

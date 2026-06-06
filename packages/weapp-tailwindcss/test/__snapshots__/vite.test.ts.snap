@@ -30,7 +30,7 @@ exports[`vite > v4-vite-plugin > css 1`] = `
     background-color: #123456;
   }
 .bg-gradient-to-r {
-    --tw-gradient-position: to right in oklab;
+    --tw-gradient-position: to right;
     background-image: linear-gradient(var(--tw-gradient-stops));
   }
 .from-green-400 {

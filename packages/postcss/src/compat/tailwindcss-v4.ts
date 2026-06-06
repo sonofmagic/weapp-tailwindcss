@@ -188,7 +188,7 @@ export function isTailwindcssV4DisplayP3Declaration(decl: Declaration) {
 // 对 Tailwind v4 生成的声明做兼容处理，返回是否发生变更
 export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
   if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OKLAB_SUFFIX)) {
-    decl.value = decl.value.slice(0, decl.value.length - OKLAB_SUFFIX.length)
+    decl.value = decl.value.slice(0, decl.value.length - OKLAB_SUFFIX.length).trimEnd()
     return true
   }
 
