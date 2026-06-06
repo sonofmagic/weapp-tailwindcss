@@ -1,5 +1,5 @@
 import type { PluginCreator } from 'postcss';
-import transform from './lib/transform';
+import transform from './lib/transform.ts';
 
 export interface PostCssCalcOptions {
   precision?: number | false;

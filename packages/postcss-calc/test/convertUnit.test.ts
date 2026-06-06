@@ -1,6 +1,6 @@
 'use strict';
 import { test, assert } from 'vitest';
-import convertUnit from '../src/lib/convertUnit';
+import convertUnit from '../src/lib/convertUnit.ts';
 
 type ConversionFixture = [value: number, unit: string, expected: number, targetUnit: string];
 

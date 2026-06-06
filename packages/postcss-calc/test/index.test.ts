@@ -2,8 +2,8 @@
 import { test, assert } from 'vitest';
 import postcss from 'postcss';
 
-import reduceCalc from '../src/index';
-import type { PostCssCalcOptions } from '../src/index';
+import reduceCalc from '../src/index.ts';
+import type { PostCssCalcOptions } from '../src/index.ts';
 
 const postcssOpts = { from: undefined };
 

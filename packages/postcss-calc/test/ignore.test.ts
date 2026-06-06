@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import postcss from 'postcss';
-import reduceCalc from '../src/index';
-import type { PostCssCalcOptions } from '../src/index';
+import reduceCalc from '../src/index.ts';
+import type { PostCssCalcOptions } from '../src/index.ts';
 
 const postcssOpts = { from: undefined };
 function testValue(fixture: string, expected: string, opts: PostCssCalcOptions = {}) {

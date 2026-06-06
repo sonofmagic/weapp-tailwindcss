@@ -4,6 +4,7 @@
     "lib": ["ES2021"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "types": ["node", "vitest/globals"],
     "noEmit": true,
@@ -14,5 +15,5 @@
     "skipLibCheck": true
   },
   "include": ["src", "test", "tsdown.config.mts", "vitest.config.ts"],
-  "exclude": ["src/parser.js"]
+  "exclude": ["src/parser.cjs"]
 }

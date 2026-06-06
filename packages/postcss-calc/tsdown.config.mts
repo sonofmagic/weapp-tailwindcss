@@ -9,7 +9,7 @@ export default defineConfig({
   target: ['es2021'],
   outExtensions({ format }) {
     return {
-      js: format === 'es' ? '.mjs' : '.js',
+      js: format === 'es' ? '.mjs' : '.cjs',
       dts: '.d.ts',
     };
   },

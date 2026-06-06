@@ -4,7 +4,7 @@ import type {
   ParenthesizedExpression,
   ValueExpression,
 } from '../parser';
-import convertUnit from './convertUnit';
+import convertUnit from './convertUnit.ts';
 
 function isValueType(node: CalcNode): node is ValueExpression {
   switch (node.type) {

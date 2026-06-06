@@ -1,13 +1,14 @@
-const js = require('@eslint/js');
-const eslintConfigPrettier = require('eslint-config-prettier');
+import js from '@eslint/js';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
-module.exports = [
+export default [
   {
-    ignores: ['dist/**', 'src/parser.js'],
+    ignores: ['dist/**', 'src/parser.cjs'],
   },
   js.configs.recommended,
   eslintConfigPrettier,
   {
+    files: ['**/*.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
     },

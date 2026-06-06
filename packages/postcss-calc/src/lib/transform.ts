@@ -2,10 +2,12 @@ import type { ChildNode, Container, Result } from 'postcss';
 import selectorParser from 'postcss-selector-parser';
 import valueParser from 'postcss-value-parser';
 
+import parserModule from '../parser.cjs';
 import type { CalcNode } from '../parser';
-import { parser } from '../parser.js';
-import reducer from './reducer';
-import stringifier from './stringifier';
+import reducer from './reducer.ts';
+import stringifier from './stringifier.ts';
+
+const { parser } = parserModule;
 
 export type TransformProperty = 'value' | 'params' | 'selector';
 

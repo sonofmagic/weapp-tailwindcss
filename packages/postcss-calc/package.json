@@ -1,6 +1,7 @@
 {
   "name": "@weapp-tailwindcss/postcss-calc",
   "version": "1.0.1",
+  "type": "module",
   "packageManager": "pnpm@10.33.4",
   "description": "PostCSS plugin to reduce calc()",
   "keywords": [
@@ -29,7 +30,7 @@
   ],
   "scripts": {
     "build": "pnpm run build:parser && tsdown",
-    "build:parser": "jison ./parser.jison -o src/parser.js",
+    "build:parser": "jison ./parser.jison -o src/parser.cjs",
     "build:types": "tsdown --dts-only",
     "lint": "eslint . && tsc --noEmit",
     "test": "vitest run",
@@ -66,11 +67,11 @@
       ".": {
         "types": "./dist/index.d.ts",
         "import": "./dist/index.mjs",
-        "require": "./dist/index.js"
+        "require": "./dist/index.cjs"
       },
       "./package.json": "./package.json"
     },
-    "main": "./dist/index.js",
+    "main": "./dist/index.cjs",
     "module": "./dist/index.mjs",
     "types": "./dist/index.d.ts"
   }
