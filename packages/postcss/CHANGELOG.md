@@ -1,5 +1,15 @@
 # @weapp-tailwindcss/postcss
 
+## 3.0.2
+
+### Patch Changes
+
+- 🐛 **将 `@weapp-tailwindcss/postcss-calc` 从 submodule 迁入 `packages` 作为独立 monorepo 子包，并让 `@weapp-tailwindcss/postcss` 通过 workspace 直接消费，统一安装、测试和发布链路。** [`2f41ff5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2f41ff5c5861828b3cafe0a1248c7eecd690cfb7) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 的 `rounded-full` 在小程序端生成 `calc(infinity * 1px)` 后无法稳定生效的问题，统一归一化为小程序可解析的 `9999px`。** [`84c1c02`](https://github.com/sonofmagic/weapp-tailwindcss/commit/84c1c02b66eb4d329a889fd555dae4188e35a227) by @sonofmagic
+- 📦 **Dependencies** [`2f41ff5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2f41ff5c5861828b3cafe0a1248c7eecd690cfb7)
+  → `@weapp-tailwindcss/postcss-calc@1.0.1`
+
 ## 3.0.1
 
 ### Patch Changes
