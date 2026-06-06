@@ -107,6 +107,7 @@ function finalizeMiniProgramGeneratorCss(
   }
   return finalizeMiniProgramCss(css, {
     cssPreflight: majorVersion === 4 && options.injectPreflight !== false ? cssPreflight : undefined,
+    isTailwindcssV4: majorVersion === 4,
     preservePseudoContentInit: majorVersion === 3,
   })
 }

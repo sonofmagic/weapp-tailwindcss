@@ -49,4 +49,17 @@ describe('mini-program css cleanup', () => {
     expect(css).toContain('.bg-blue-500{color:rgb(50, 128, 255)}')
     expect(css).toContain('--color-p3:rgb(50, 128, 255)')
   })
+
+  it('normalizes Tailwind v4 rounded-full infinity radius for mini-program output', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.2.4 */',
+      '.rounded-full{border-radius:calc(infinity * 1px)}',
+      '.rounded-t-full{border-top-left-radius:calc(infinity * 1px);border-top-right-radius:calc(infinity * 1px)}',
+    ].join('\n'))
+
+    expect(css).toContain('.rounded-full{border-radius:9999px}')
+    expect(css).toContain('border-top-left-radius:9999px')
+    expect(css).toContain('border-top-right-radius:9999px')
+    expect(css).not.toContain('infinity')
+  })
 })

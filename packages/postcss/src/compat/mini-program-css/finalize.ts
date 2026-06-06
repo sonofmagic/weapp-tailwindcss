@@ -1,7 +1,7 @@
 import type { CssPreflightOptions } from '../../types'
 import postcss from 'postcss'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
-import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes } from '../tailwindcss-v4'
+import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, normalizeTailwindcssV4Declaration } from '../tailwindcss-v4'
 import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules } from './at-rules'
 import { isDisplayP3Declaration } from './color-gamut'
 import {
@@ -258,6 +258,9 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   removeDisplayP3Declarations(root)
   removeUnsupportedModernColorDeclarations(root)
   root.walkDecls((decl) => {
+    if (shouldInjectTailwindcssV4Defaults) {
+      normalizeTailwindcssV4Declaration(decl)
+    }
     normalizeMiniProgramPrefixedDeclaration(decl)
   })
   root.walkAtRules((atRule) => {

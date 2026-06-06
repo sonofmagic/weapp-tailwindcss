@@ -14,6 +14,10 @@
     <view class="bg-neutral-1B">
       12345
     </view>
+    <view class="mt-4 flex items-center gap-3">
+      <view class="h-12 w-12 rounded-full bg-emerald-500"></view>
+      <text class="text-sm text-neutral-66">rounded-full</text>
+    </view>
     <view class="mt-6 rounded-xl bg-emerald-500 py-3 text-center text-white shadow-sm active:bg-emerald-600"
       @tap="goOrder">
       打开订单分包
