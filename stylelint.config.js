@@ -13,6 +13,7 @@ export default icebreaker({
     'benchmark/**',
     'demo/**',
     'e2e/__snapshots__/**',
+    'reports/**',
     'templates/**',
     'website/**',
     'packages/*/test/**',
