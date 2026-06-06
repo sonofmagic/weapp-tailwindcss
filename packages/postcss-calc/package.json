@@ -1,6 +1,6 @@
 {
   "name": "@weapp-tailwindcss/postcss-calc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@10.33.4",
   "description": "PostCSS plugin to reduce calc()",
   "keywords": [
