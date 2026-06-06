@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2
+
+### Patch Changes
+
+- 🐛 **修复 workspace 开发态直接加载 TypeScript 源码时的相对导入解析问题，并明确 ESM/CJS 运行时入口，避免 Vite demo 构建失败。** [`b2f1305`](https://github.com/sonofmagic/weapp-tailwindcss/commit/b2f13052a61ad0ecdd61118c76970b801a999af4) by @sonofmagic
+
+- 🐛 **将 postcss-calc 手写源码迁移为 TypeScript，并改用 tsdown 输出发布产物。** [`56540cf`](https://github.com/sonofmagic/weapp-tailwindcss/commit/56540cfb5b5a6e527088c3d7c68bf1c1220284c4) by @sonofmagic
+
 ## 1.0.1
 
 ### Patch Changes
