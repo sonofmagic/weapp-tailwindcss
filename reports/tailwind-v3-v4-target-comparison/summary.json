@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T06:35:49.665Z",
+  "generatedAt": "2026-06-06T06:42:19.810Z",
   "versions": {
     "weappTailwindcss": "5.0.2",
     "tailwindcssV3": "3.4.19",
@@ -1000,5 +1000,46 @@
         "hasWeappRootScope": true
       }
     }
-  ]
+  ],
+  "targetComparisons": {
+    "web": {
+      "target": "web",
+      "left": "artifacts/tailwind-v3-weapp-target-web.css",
+      "right": "artifacts/tailwind-v4-weapp-target-web.css",
+      "normalizedEqual": false,
+      "delta": {
+        "bytes": 8026,
+        "lines": 198,
+        "selectors": 46,
+        "declarations": 172,
+        "uniqueClassSelectors": -1,
+        "importantDeclarations": 0
+      },
+      "leftOnlyFeatures": {},
+      "rightOnlyFeatures": {
+        "hasTailwindV4ThemeVariables": true,
+        "hasAtProperty": true,
+        "hasLayer": true
+      }
+    },
+    "weapp": {
+      "target": "weapp",
+      "left": "artifacts/tailwind-v3-weapp-target-weapp.wxss",
+      "right": "artifacts/tailwind-v4-weapp-target-weapp.wxss",
+      "normalizedEqual": false,
+      "delta": {
+        "bytes": 5926,
+        "lines": 61,
+        "selectors": 2,
+        "declarations": 70,
+        "uniqueClassSelectors": 1,
+        "importantDeclarations": 0
+      },
+      "leftOnlyFeatures": {},
+      "rightOnlyFeatures": {
+        "hasTailwindV4ThemeVariables": true,
+        "hasWeappRootScope": true
+      }
+    }
+  }
 }
