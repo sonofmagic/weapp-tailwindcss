@@ -187,6 +187,46 @@ describe('uni-app-x vite plugins', () => {
     )
   })
 
+  it('records uni-app-x style @apply for generator css without short-circuiting style handling', async () => {
+    const styleHandler = vi.fn(async (code: string, options?: Record<string, unknown>) => ({
+      css: `css:${code}`,
+      map: {
+        toJSON: () => ({
+          version: 3,
+          file: options?.postcssOptions?.options?.from ?? '',
+          sources: [options?.postcssOptions?.options?.from ?? ''],
+          names: [],
+          mappings: '',
+          sourcesContent: [code],
+        }),
+      },
+    }))
+    const generateCss = vi.fn(async () => '.content{display:flex}')
+    const plugins = createUniAppXPlugins({
+      appType: 'uni-app-x',
+      customAttributesEntities: [],
+      disabledDefaultTemplateHandler: false,
+      isIosPlatform: false,
+      mainCssChunkMatcher: vi.fn(() => false),
+      runtimeState: { readyPromise: Promise.resolve() },
+      styleHandler,
+      generateCss,
+      jsHandler: vi.fn(),
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+    })
+    const cssPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:css')
+    expect(cssPlugin).toBeDefined()
+
+    const id = '/pages/index/index.uvue?vue&type=style&index=0&lang.scss&scoped=true'
+    const result = await cssPlugin!.transform?.('.content { @apply flex; }', id)
+
+    expect(generateCss).toHaveBeenCalledWith(id, '.content { @apply flex; }', expect.any(Object))
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler).toHaveBeenCalledWith('.content{display:flex}', expect.any(Object))
+    expect(result?.code).toBe('css:.content{display:flex}')
+  })
+
   it('runs nvue transform with runtime set and custom options', async () => {
     const runtimeSet = new Set(['alpha'])
     const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)

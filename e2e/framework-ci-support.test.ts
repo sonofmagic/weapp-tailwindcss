@@ -111,6 +111,7 @@ describeFrameworkCi('framework support matrix ci', () => {
     expect(webCases.map(item => item.name)).toEqual([
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
     for (const item of webCases) {
       expect(item.hmrSteps.length, `${item.name} should verify multi-step Web HMR`).toBeGreaterThanOrEqual(2)

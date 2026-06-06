@@ -162,7 +162,10 @@ async function resolveTailwindV4CssEntrySource(
     entrySource?.config,
     entrySource?.configRequest,
     cssEntry,
-    sourceOptions,
+    {
+      ...sourceOptions,
+      sourceFile: sourceOptions.sourceFile ?? cssEntry,
+    },
   )
   return withGeneratorSourceMetadata(
     await resolveTailwindV4Source({
@@ -767,7 +770,7 @@ function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { pack
   if (!hasTailwindApplyDirective(css) || hasTailwindRootDirectives(css)) {
     return css
   }
-  return `@reference "${sourceOptions.packageName ?? 'tailwindcss'}";\n${css}`
+  return `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);\n${css}`
 }
 
 export async function resolveGeneratorSource(
@@ -784,6 +787,12 @@ export async function resolveGeneratorSource(
     importFallback: generatorOptions?.importFallback ?? false,
     removeConfig: majorVersion === 3,
   })
+  const applyEntrySource = hasTailwindApplyDirective(rawSource)
+    ? {
+        base,
+        css: rawSource,
+      } as SourceSideCssEntrySource
+    : undefined
   if (majorVersion === 3) {
     const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
     const mergedSourceOptions = omitUndefined({
@@ -794,12 +803,6 @@ export async function resolveGeneratorSource(
       cssEntries: selectionOptions?.cssEntries,
       cssSources: createCssEntrySources(selectionOptions?.cssEntries),
     })
-    const applyEntrySource = hasTailwindApplyDirective(rawSource)
-      ? {
-          base,
-          css: rawSource,
-        } as SourceSideCssEntrySource
-      : undefined
     const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions, mergedSourceOptions)
       ? resolveSourceSideCssEntrySource(file, mergedSourceOptions, { removeConfig: true })
       : undefined
@@ -865,6 +868,19 @@ export async function resolveGeneratorSource(
   const normalizedSourceOptions = resolvedSourceOptions
     ? normalizeTailwindV4CssSourceConfigs(resolvedSourceOptions)
     : undefined
+  if (applyEntrySource && !cssHandlerOptions.isMainChunk && !hasTailwindRootDirectives(rawSource, { importFallback: generatorOptions?.importFallback ?? false })) {
+    const css = createTailwindV4ApplyReferenceSource(
+      normalizeConfigDirective(
+        prependConfigDirective(applyEntrySource.css, generatorOptions?.config),
+        undefined,
+      ),
+      normalizedSourceOptions ?? {},
+    )
+    return resolveTailwindV4Source(createSingleTailwindV4SourceOptions(normalizedSourceOptions ?? {}, {
+      base: applyEntrySource.base,
+      css,
+    }))
+  }
   const shouldPreferSourceSideEntry = shouldResolveSourceSideCssEntry(rawSource)
     || (
       Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
@@ -910,7 +926,7 @@ export async function resolveGeneratorSource(
       : preferredCssEntrySource
   }
 
-  const resolvedEntrySource = sourceSideEntrySource ?? cssEntrySource
+  const resolvedEntrySource = sourceSideEntrySource ?? cssEntrySource ?? applyEntrySource
   if (!resolvedEntrySource) {
     const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
     return generatorOptions?.config
@@ -964,7 +980,15 @@ export async function resolveGeneratorSources(
     importFallback: generatorOptions?.importFallback ?? false,
     removeConfig: majorVersion === 3,
   })
-  if (majorVersion !== 4 || (cssEntrySource && !cssHandlerOptions.isMainChunk)) {
+  if (
+    majorVersion !== 4
+    || (cssEntrySource && !cssHandlerOptions.isMainChunk)
+    || (
+      !cssHandlerOptions.isMainChunk
+      && hasTailwindApplyDirective(rawSource)
+      && !hasTailwindRootDirectives(rawSource, { importFallback: generatorOptions?.importFallback ?? false })
+    )
+  ) {
     const resolved = await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions)
     return resolved ? [resolved] : []
   }

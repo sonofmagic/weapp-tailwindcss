@@ -783,6 +783,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         mainCssChunkMatcher,
         runtimeState,
         styleHandler,
+        generateCss: generateTailwindCssForVitePipeline,
         jsHandler,
         ensureRuntimeClassSet,
         getResolvedConfig,

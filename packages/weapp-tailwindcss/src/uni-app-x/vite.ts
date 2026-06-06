@@ -11,6 +11,7 @@ import type {
   LinkedJsModuleResult,
 } from '@/types'
 import { processCachedTask } from '@/bundlers/shared/cache'
+import { hasTailwindApplyDirective, hasTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
@@ -39,6 +40,7 @@ interface CreateUniAppXPluginsOptions {
   mainCssChunkMatcher: NonNullable<InternalUserDefinedOptions['mainCssChunkMatcher']>
   runtimeState: UniAppXRuntimeState
   styleHandler: InternalUserDefinedOptions['styleHandler']
+  generateCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined) | undefined
   jsHandler: JsHandler
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
   getResolvedConfig: () => ResolvedConfig | undefined
@@ -83,6 +85,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     mainCssChunkMatcher,
     runtimeState,
     styleHandler,
+    generateCss,
     jsHandler,
     ensureRuntimeClassSet,
     getResolvedConfig,
@@ -124,9 +127,22 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     return componentLocalStyleEnabled
   }
 
-  async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query']) {
+  async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
+      const generatedCss = (
+        parsed.vue
+        && parsed.type === 'style'
+        && (
+          hasTailwindSourceDirectives(code, { importFallback: true })
+          || hasTailwindApplyDirective(code)
+        )
+      )
+        ? await generateCss?.(id, code, hookContext)
+        : undefined
+      const styleCode = typeof generatedCss === 'string' && generatedCss.trim().length > 0
+        ? generatedCss
+        : code
       const cacheKey = `${mainCssChunkMatcher(id, appType) ? '1' : '0'}:${id}`
       let styleHandlerOptions = cssHandlerOptionsCache.get(cacheKey)
       if (!styleHandlerOptions) {
@@ -149,7 +165,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         }) as NonNullable<typeof styleHandlerOptions>
         cssHandlerOptionsCache.set(cacheKey, styleHandlerOptions)
       }
-      const postcssResult = await styleHandler(code, styleHandlerOptions)
+      const postcssResult = await styleHandler(styleCode, styleHandlerOptions)
       const warnings = typeof postcssResult.warnings === 'function' ? postcssResult.warnings() : []
       for (const warning of warnings) {
         logger.warn(warning.toString())
@@ -176,7 +192,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (isIosPlatform && isPreprocessorRequest(id, lang)) {
         return
       }
-      return transformStyle(code, id, query)
+      return transformStyle(code, id, query, this)
     },
   }
 
@@ -184,7 +200,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     name: 'weapp-tailwindcss:uni-app-x:css',
     async transform(code, id) {
       await runtimeState.readyPromise
-      return transformStyle(code, id)
+      return transformStyle(code, id, undefined, this)
     },
   }
 

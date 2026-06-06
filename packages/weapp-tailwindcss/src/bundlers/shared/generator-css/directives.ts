@@ -52,6 +52,22 @@ export function parseImportRequest(params: string) {
   return match?.[2]
 }
 
+export function hasLocalCssImport(rawSource: string) {
+  let found = false
+  try {
+    postcss.parse(rawSource).walkAtRules('import', (rule) => {
+      const request = parseImportRequest(rule.params)
+      if (request?.startsWith('.') === true || request?.startsWith('/') === true) {
+        found = true
+        return false
+      }
+    })
+  }
+  catch {
+  }
+  return found
+}
+
 function parseConfigRequest(params: string) {
   const match = /^(["'])(.+)\1\s*;?$/.exec(params.trim())
   return match?.[2]

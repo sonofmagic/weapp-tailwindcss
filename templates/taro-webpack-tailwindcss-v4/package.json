@@ -87,7 +87,7 @@
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "^6.0.3",
     "weapp-ide-cli": "^5.2.8",
-    "weapp-tailwindcss": "^5.0.2",
+    "weapp-tailwindcss": "^5.0.4",
     "webpack": "5.104.1"
   },
   "pnpm": {

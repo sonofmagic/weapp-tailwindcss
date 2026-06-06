@@ -767,7 +767,7 @@ describe('bundlers/shared generator css', () => {
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
-    await generateCssByGenerator({
+    const result = await generateCssByGenerator({
       opts: {
         generator: {
           importFallback: false,
@@ -3225,7 +3225,7 @@ describe('bundlers/shared generator css', () => {
     expect(resolveCssEntrySource(rawSource, __dirname)).toBeUndefined()
   })
 
-  it('adds Tailwind v4 reference for @apply-only local css sources', async () => {
+  it('adds Tailwind v4 import source for @apply-only local css sources', async () => {
     const rawSource = [
       '.test {',
       '  @apply min-w-0;',
@@ -3271,7 +3271,7 @@ describe('bundlers/shared generator css', () => {
     )
 
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      css: `@reference "tailwindcss";\n${rawSource}`,
+      css: `@import "tailwindcss" source(none);\n${rawSource}`,
     }))
   })
 
@@ -4937,7 +4937,7 @@ describe('bundlers/shared generator css', () => {
     }))
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
-    await generateCssByGenerator({
+    const result = await generateCssByGenerator({
       opts: {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
@@ -6223,7 +6223,7 @@ describe('bundlers/shared generator css', () => {
 
     const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
-    await generateCssByGenerator({
+    const result = await generateCssByGenerator({
       opts: {
         styleHandler,
       } as any,
@@ -6261,6 +6261,115 @@ describe('bundlers/shared generator css', () => {
 
     const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
     expect(candidates).toEqual(scopedSet)
+  })
+
+  it('isolates non-main Tailwind v4 @apply-only css from app runtime candidates', async () => {
+    const runtimeSet = new Set(['bg-[#app]', 'text-[#app]'])
+    const rawSource = [
+      '@import "../../uvue.wxss";',
+      '.content {',
+      '  @apply flex items-center py-4;',
+      '}',
+      '.test {',
+      '  @apply bg-[#page] text-[#page];',
+      '}',
+    ].join('\n')
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [
+        ':host,page,.tw-root,wx-root-portal-content { --spacing: 8rpx; }',
+        '.flex { display: flex; }',
+        '.items-center { align-items: center; }',
+        '.py-4 { padding-top: 32rpx; padding-bottom: 32rpx; }',
+        '.bg-_b_hpage_B { background-color: #page; }',
+        '.content.data-v-abc { display: flex; align-items: center; padding-top: 32rpx; padding-bottom: 32rpx; }',
+        '.test.data-v-abc { background-color: #page; color: #page; }',
+        '.container { width: 100%; }',
+      ].join('\n'),
+      rawCss: [...candidates].sort().join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: ['pages/index/index.wxss'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/project',
+        base: options.base ?? '/project',
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        packageName: 'tailwindcss',
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'pages/index/index.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates).toEqual(new Set(['bg-[#page]', 'flex', 'items-center', 'py-4', 'text-[#page]']))
+    expect(result?.css).toContain('@import "../../uvue.wxss";')
+    expect(result?.css).toContain('.content.data-v-abc')
+    expect(result?.css).toContain('.test.data-v-abc')
+    expect(result?.css).toContain('--spacing')
+    expect(result?.css).not.toContain('.flex')
+    expect(result?.css).not.toContain('.items-center')
+    expect(result?.css).not.toContain('bg-[#app]')
+    expect(result?.css).not.toContain('.container')
+    expect(result?.css).not.toContain('@apply')
   })
 
   it('deduplicates forced compat css after mini-program selector escaping', async () => {

@@ -80,18 +80,19 @@ function resolveAppOutputDirCandidates(item: AppCase) {
 }
 
 function resolveAppTransformedFiles(projectRoot: string, outputRoot: string, item: AppCase) {
-  return [
-    ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)),
-    ...(item.transformedOutputFiles ?? []).map(file => path.resolve(outputRoot, file)),
-  ]
+  return [...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)), ...(item.transformedOutputFiles ?? []).map(file => path.resolve(outputRoot, file))]
 }
 
 async function readAppTransformedOutput(projectRoot: string, outputRoot: string, item: AppCase) {
-  return (await Promise.all(resolveAppTransformedFiles(projectRoot, outputRoot, item).map(async (target) => {
-    const label = path.relative(projectRoot, target) || target
-    expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少转换产物 ${label}`).toBe(true)
-    return await readUtf8(target)
-  }))).join('\n')
+  return (
+    await Promise.all(
+      resolveAppTransformedFiles(projectRoot, outputRoot, item).map(async (target) => {
+        const label = path.relative(projectRoot, target) || target
+        expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少转换产物 ${label}`).toBe(true)
+        return await readUtf8(target)
+      }),
+    )
+  ).join('\n')
 }
 
 async function readExistingAppTransformedOutput(projectRoot: string, outputRoot: string, item: AppCase) {
@@ -102,12 +103,7 @@ async function readExistingAppTransformedOutput(projectRoot: string, outputRoot:
   return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
 }
 
-async function waitForAppTransformedContent(
-  item: AppCase,
-  expected: Array<string | RegExp>,
-  timeoutMs: number,
-  ensureRunning?: () => void,
-) {
+async function waitForAppTransformedContent(item: AppCase, expected: Array<string | RegExp>, timeoutMs: number, ensureRunning?: () => void) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const startedAt = Date.now()
   let latest = ''
@@ -148,11 +144,15 @@ async function assertMiniProgramOutput(item: MiniProgramCase) {
     expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
   }
 
-  const css = (await Promise.all(item.cssFiles.map(async (file) => {
-    const target = path.resolve(outputRoot, file)
-    expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少样式产物 ${file}`).toBe(true)
-    return await readUtf8(target)
-  }))).join('\n')
+  const css = (
+    await Promise.all(
+      item.cssFiles.map(async (file) => {
+        const target = path.resolve(outputRoot, file)
+        expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少样式产物 ${file}`).toBe(true)
+        return await readUtf8(target)
+      }),
+    )
+  ).join('\n')
 
   expectContent(css, item.cssContains, item.name)
   if (item.cssNotContains) {
@@ -186,7 +186,7 @@ async function findMissingAppFiles(item: AppCase, outputRoot?: string) {
   const missing: string[] = []
 
   for (const file of item.requiredFiles) {
-    if (!await fileExists(path.resolve(root, file))) {
+    if (!(await fileExists(path.resolve(root, file)))) {
       missing.push(file)
     }
   }
@@ -212,14 +212,13 @@ async function findReadyAppOutputRoot(item: AppCase) {
 
 async function cleanAppOutput(item: AppCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const targets = [
-    ...resolveAppOutputDirCandidates(item).map(outputDir => path.resolve(projectRoot, outputDir)),
-    ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)),
-  ]
+  const targets = [...resolveAppOutputDirCandidates(item).map(outputDir => path.resolve(projectRoot, outputDir)), ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file))]
 
-  await Promise.all([...new Set(targets)].map(async (target) => {
-    await fs.rm(target, { recursive: true, force: true })
-  }))
+  await Promise.all(
+    [...new Set(targets)].map(async (target) => {
+      await fs.rm(target, { recursive: true, force: true })
+    }),
+  )
 }
 
 async function writeAppMarker(
@@ -244,27 +243,20 @@ async function writeAppMarker(
 export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const projectName = path.basename(projectRoot)
   const outputDirs = item.outputDirCandidates ?? [item.outputDir]
-  await Promise.all([...new Set(outputDirs)].map(async (outputDir) => {
-    await fs.rm(path.resolve(projectRoot, outputDir), { recursive: true, force: true })
-  }))
-  await runPnpm(
-    projectRoot,
-    ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot],
-    hbuilderxTimeoutMs,
-    {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-    },
+  await Promise.all(
+    [...new Set(outputDirs)].map(async (outputDir) => {
+      await fs.rm(path.resolve(projectRoot, outputDir), { recursive: true, force: true })
+    }),
   )
-  await runPnpm(
-    projectRoot,
-    ['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectRoot, '--compile', 'true'],
-    hbuilderxTimeoutMs,
-    {
-      HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      WEAPP_TW_HMR_TIMING: '1',
-    },
-  )
+  await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxTimeoutMs, {
+    HBUILDERX_CLI_PATH: hbuilderxCliPath,
+  })
+  await runPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectName, '--compile', 'true'], hbuilderxTimeoutMs, {
+    HBUILDERX_CLI_PATH: hbuilderxCliPath,
+    WEAPP_TW_HMR_TIMING: '1',
+  })
   await assertMiniProgramOutput(item)
 }
 
@@ -278,6 +270,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
+  const projectName = path.basename(projectRoot)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let restore: (() => Promise<void>) | undefined
   let child: ReturnType<typeof spawnPnpm> | undefined
@@ -291,23 +284,14 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       text: item.markerText,
     })
     await cleanAppOutput(item)
-    await runPnpm(
-      projectRoot,
-      ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot],
-      hbuilderxAppTimeoutMs,
-      {
-        HBUILDERX_CLI_PATH: hbuilderxCliPath,
-      },
-    )
-    child = spawnPnpm(
-      projectRoot,
-      ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...(item.launchArgs ?? [])],
-      {
-        HBUILDERX_CLI_PATH: hbuilderxCliPath,
-        WEAPP_TW_HMR_TIMING: '1',
-        ...item.launchEnv,
-      },
-    )
+    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxAppTimeoutMs, {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+    })
+    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectName, ...(item.launchArgs ?? [])], {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      WEAPP_TW_HMR_TIMING: '1',
+      ...item.launchEnv,
+    })
     const logs = collectProcessOutput(child)
     let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
     const closed = new Promise<void>((resolve) => {
@@ -362,15 +346,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
 export async function verifyWebHmr(item: WebCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const result = await runWebHmr(
-    projectRoot,
-    path.resolve(projectRoot, item.sourceFile),
-    resolveWebMarkerAnchors(item),
-    item.initialCssPath,
-    item.hmrCssPath,
-    item.initialCssContains,
-    item.hmrSteps,
-  )
+  const result = await runWebHmr(projectRoot, path.resolve(projectRoot, item.sourceFile), resolveWebMarkerAnchors(item), item.initialCssPath, item.hmrCssPath, item.initialCssContains, item.hmrSteps)
 
   expect(result.pageHtml, `${item.name} Web 首页应可访问`).toContain('<!DOCTYPE html>')
   expect(result.initialCss, `${item.name} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)

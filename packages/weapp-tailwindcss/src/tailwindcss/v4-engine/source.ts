@@ -164,7 +164,10 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
 
   const importSpecifiers = createTailwindV4CssImportSpecifierSet(packageName)
   let changed = false
-  root.walkAtRules('import', (rule) => {
+  root.walkAtRules((rule) => {
+    if (rule.name !== 'reference') {
+      return
+    }
     const parsed = parseCssImportSpecifier(rule.params)
     if (!parsed || !importSpecifiers.has(parsed.specifier)) {
       return
@@ -232,8 +235,13 @@ function normalizeTailwindV4CssEntrySources(
     const entrySource = resolveCssEntrySource(rawCss, base, {
       removeConfig: false,
     })
+    const config = entrySource?.config && existsSync(entrySource.config)
+      ? entrySource.config
+      : entrySource?.configRequest && !path.isAbsolute(entrySource.configRequest)
+        ? path.resolve(base, entrySource.configRequest)
+        : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeConfigDirective(rawCss, entrySource?.config),
+      normalizeConfigDirective(rawCss, config),
       packageName,
     )
     cssSources.push({

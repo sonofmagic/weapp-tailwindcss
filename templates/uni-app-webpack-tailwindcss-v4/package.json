@@ -109,7 +109,7 @@
     "typescript": "~6.0.3",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
     "weapp-ide-cli": "^5.2.8",
-    "weapp-tailwindcss": "^5.0.2"
+    "weapp-tailwindcss": "^5.0.4"
   },
   "browserslist": [
     "Android >= 4.4",

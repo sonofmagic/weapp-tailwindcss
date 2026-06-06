@@ -86,7 +86,7 @@ export const miniProgramCases: MiniProgramCase[] = [
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
     outputDir: 'unpackage/dist/dev/mp-weixin',
     outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss'],
+    cssFiles: ['app.wxss', 'pages/index/index.wxss'],
     requiredFiles: ['app.json', 'pages/index/index.json'],
     cssContains: ['.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
     cssNotContains: [rawTailwindDirectiveRE],
@@ -96,7 +96,7 @@ export const miniProgramCases: MiniProgramCase[] = [
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
     outputDir: 'unpackage/dist/dev/mp-weixin',
     outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss'],
+    cssFiles: ['app.wxss', 'pages/index/index.wxss'],
     requiredFiles: ['app.json', 'pages/index/index.json'],
     cssContains: ['.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
     cssNotContains: [rawTailwindDirectiveRE],
@@ -373,6 +373,32 @@ export const webCases: WebCase[] = [
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
     initialCssContains: [/background-color:\s*#123456/],
+    hmrSteps: [
+      {
+        markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerText: 'hbuilderx-web-hmr-v4-step-1',
+        cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
+      },
+      {
+        markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
+        markerText: 'hbuilderx-web-hmr-v4-step-2',
+        cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
+      },
+      {
+        markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
+        markerText: 'hbuilderx-web-hmr-v4-step-3',
+        cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
+      },
+    ],
+  },
+  {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v4',
+    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<BindClass />',
+    initialCssPath: '/main.css?direct',
+    hmrCssPath: '/main.css?direct',
+    initialCssContains: ['@layer theme', '--text-xl', '--color-white'],
     hmrSteps: [
       {
         markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',

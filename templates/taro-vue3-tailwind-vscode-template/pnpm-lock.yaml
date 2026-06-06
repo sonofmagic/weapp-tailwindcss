@@ -139,8 +139,8 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8
       weapp-tailwindcss:
-        specifier: ^5.0.2
-        version: 5.0.2(jiti@1.21.7)(postcss@8.4.47)(tailwindcss@3.4.19)
+        specifier: ^5.0.4
+        version: 5.0.4(jiti@1.21.7)(postcss@8.4.47)(tailwindcss@3.4.19)
 
 packages:
 
@@ -2526,11 +2526,17 @@ packages:
   '@vue/compiler-core@3.5.27':
     resolution: {integrity: sha512-gnSBQjZA+//qDZen+6a2EdHqJ68Z7uybrMf3SPjEGgG4dicklwDVmMC1AeIHxtLVPT7sn6sH1KOO+tS6gwOUeQ==}
 
+  '@vue/compiler-core@3.5.35':
+    resolution: {integrity: sha512-BUmHaR1J+O+CKZ9uJucdVTEr1LHsdyvv7vG3eNRhK3CczEHeMd/LtsHAuD7PbrxvI2envCY2v7HI1vC1aBRzKw==}
+
   '@vue/compiler-core@3.5.6':
     resolution: {integrity: sha512-r+gNu6K4lrvaQLQGmf+1gc41p3FO2OUJyWmNqaIITaJU6YFiV5PtQSFZt8jfztYyARwqhoCayjprC7KMvT3nRA==}
 
   '@vue/compiler-dom@3.5.27':
     resolution: {integrity: sha512-oAFea8dZgCtVVVTEC7fv3T5CbZW9BxpFzGGxC79xakTr6ooeEqmRuvQydIiDAkglZEAd09LgVf1RoDnL54fu5w==}
+
+  '@vue/compiler-dom@3.5.35':
+    resolution: {integrity: sha512-k+bprkXxuqhVajgTx5mUHuir7TwQzUKOWR40ng1ncAqQRPnrLngGGgqVEEhOnTMlc8btHYVKmrP8s5Qyg0hvYA==}
 
   '@vue/compiler-dom@3.5.6':
     resolution: {integrity: sha512-xRXqxDrIqK8v8sSScpistyYH0qYqxakpsIvqMD2e5sV/PXQ1mTwtXp4k42yHK06KXxKSmitop9e45Ui/3BrTEw==}
@@ -2538,11 +2544,17 @@ packages:
   '@vue/compiler-sfc@3.5.27':
     resolution: {integrity: sha512-sHZu9QyDPeDmN/MRoshhggVOWE5WlGFStKFwu8G52swATgSny27hJRWteKDSUUzUH+wp+bmeNbhJnEAel/auUQ==}
 
+  '@vue/compiler-sfc@3.5.35':
+    resolution: {integrity: sha512-G5VPMcXTSywXBgtFOZOnHKBxKSrwXUcvY1iaF5/hRcy7t0J6CH/d8ha9F4nzi00Fax1eLV0QHM7v4mQu68jydw==}
+
   '@vue/compiler-sfc@3.5.6':
     resolution: {integrity: sha512-pjWJ8Kj9TDHlbF5LywjVso+BIxCY5wVOLhkEXRhuCHDxPFIeX1zaFefKs8RYoHvkSMqRWt93a0f2gNJVJixHwg==}
 
   '@vue/compiler-ssr@3.5.27':
     resolution: {integrity: sha512-Sj7h+JHt512fV1cTxKlYhg7qxBvack+BGncSpH+8vnN+KN95iPIcqB5rsbblX40XorP+ilO7VIKlkuu3Xq2vjw==}
+
+  '@vue/compiler-ssr@3.5.35':
+    resolution: {integrity: sha512-rGhAeXgdM7/ffTJGXT69rCCdTmjDewnFuUZfBQQHTdcEBeWdT5HCGY60y2ytLJr9/Dsu7IntUi5z/w0h6Rjnzw==}
 
   '@vue/compiler-ssr@3.5.6':
     resolution: {integrity: sha512-VpWbaZrEOCqnmqjE83xdwegtr5qO/2OPUC6veWgvNqTJ3bYysz6vY3VqMuOijubuUYPRpG3OOKIh9TD0Stxb9A==}
@@ -2563,6 +2575,9 @@ packages:
 
   '@vue/shared@3.5.27':
     resolution: {integrity: sha512-dXr/3CgqXsJkZ0n9F3I4elY8wM9jMJpP3pvRG52r6m0tu/MsAFIe6JpXVGeNMd/D9F4hQynWT8Rfuj0bdm9kFQ==}
+
+  '@vue/shared@3.5.35':
+    resolution: {integrity: sha512-zSbjL7gRXwks2ZQLRGCajBtBXEOXW9Ddhn/HvSdrGkE2dqGnumzW8XtusRrxrE9LvqtiqDXQ+A60Hp6mvdYxfA==}
 
   '@vue/shared@3.5.6':
     resolution: {integrity: sha512-eidH0HInnL39z6wAt6SFIwBrvGOpDWsDxlw3rCgo1B+CQ1781WzQUSU3YjxgdkcJo9Q8S6LmXTkvI+cLHGkQfA==}
@@ -2586,14 +2601,14 @@ packages:
     resolution: {integrity: sha512-yINbMBjfDnTRNRzAezcehBwVy2FZ2GeSgDCfpIYXzT8HPB1mfEqlB1RjVkrZB6utx55BaWZDpd+wtBu2Q9ZvmA==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  '@weapp-tailwindcss/postcss-calc@1.0.0':
-    resolution: {integrity: sha512-dPqVfhVsj48ii0AGhkIDh9ox1KusYx4UBGe82TNxUJYc3uIJXziOZt2RWw0VeYB29+GmHOb5WwJX2dVLNoab6A==}
-    engines: {node: ^18.12 || ^20.9 || >=22.0}
+  '@weapp-tailwindcss/postcss-calc@1.0.2':
+    resolution: {integrity: sha512-QhYAFYdNX5F7XFUWMI0QiwPdHHRPVoULfQTPz+bgslRrNP9Kz7e4af2vsNmBX0Jo03nb6+fBL65Pa+1a3L9DZA==}
+    engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@3.0.1':
-    resolution: {integrity: sha512-GdMZeX2wqNdpe+0KF5ywsW7Mdc5l1kW9k1sLZPOmhVhqdAYOsPnB3aKknKoA2JFkeRJNwRWSvq3DQdn3UfE9yQ==}
+  '@weapp-tailwindcss/postcss@3.0.2':
+    resolution: {integrity: sha512-CkRUxJ6OLNQoj+D4Xq16LBZDlwgm3s50taAp4THUiSfkTtLkFZdRmh3dABQTkAaTsusYi8RBzYmwrxCNcUBSqQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   '@weapp-tailwindcss/reset@0.1.1':
@@ -3738,10 +3753,6 @@ packages:
     resolution: {integrity: sha512-LMHl3dXhTcfv8gM4kEzIUeTQ+7fpdA0l2tUf34BddXPkz2A5xJ5L/Pchd5BL6rdccM9QGvu0sWZzK1Z1t4wwyg==}
     engines: {node: '>=10.13.0'}
 
-  enhanced-resolve@5.19.0:
-    resolution: {integrity: sha512-phv3E1Xl4tQOShqSte26C7Fl84EwUdZsyOuSSk9qtAGyyQs2s3jJzComh+Abf4g187lUUAvH+H26omrqia2aGg==}
-    engines: {node: '>=10.13.0'}
-
   enhanced-resolve@5.23.0:
     resolution: {integrity: sha512-yJN/BOOLxcOW2aQgeif9mSnaUB8KtvmMMp56oA1kx1CRfBKbhZm2pJ+NBY+3eOboHxix8lfjWpHE0Ei5U8RbSA==}
     engines: {node: '>=10.13.0'}
@@ -4784,10 +4795,6 @@ packages:
 
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
-    hasBin: true
-
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
   jiti@2.7.0:
@@ -6861,10 +6868,6 @@ packages:
     resolution: {integrity: sha512-GNzQvQTOIP6RyTfE2Qxb8ZVlNmw0n88vp1szwWRimP02mnTsx3Wtn5qRdqY9w2XduFNUgvOwhNnQsjwCp+kqaQ==}
     engines: {node: '>=6'}
 
-  tapable@2.3.0:
-    resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
-    engines: {node: '>=6'}
-
   tapable@2.3.3:
     resolution: {integrity: sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A==}
     engines: {node: '>=6'}
@@ -7295,8 +7298,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  weapp-tailwindcss@5.0.2:
-    resolution: {integrity: sha512-bRhNmao2tlIvSb0IJlFD+chQjVG2mM5lYik0HKUXvnEVqS+R06kkgvqHhO3QFJaUdkJFHscOhW1kAxo4uEAsYQ==}
+  weapp-tailwindcss@5.0.4:
+    resolution: {integrity: sha512-AYju7dMsonEZB7kTOXK0hkDfHxgXUzspozBu/PnkqpkM4HsU/LdLrelQezb5TfGS0rugd91ZnolMmVOZgzE4gg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -9132,7 +9135,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       enhanced-resolve: 5.23.0
-      jiti: 2.6.1
+      jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
       source-map-js: 1.2.1
@@ -10142,6 +10145,14 @@ snapshots:
       estree-walker: 2.0.2
       source-map-js: 1.2.1
 
+  '@vue/compiler-core@3.5.35':
+    dependencies:
+      '@babel/parser': 7.29.7
+      '@vue/shared': 3.5.35
+      entities: 7.0.1
+      estree-walker: 2.0.2
+      source-map-js: 1.2.1
+
   '@vue/compiler-core@3.5.6':
     dependencies:
       '@babel/parser': 7.28.5
@@ -10154,6 +10165,11 @@ snapshots:
     dependencies:
       '@vue/compiler-core': 3.5.27
       '@vue/shared': 3.5.27
+
+  '@vue/compiler-dom@3.5.35':
+    dependencies:
+      '@vue/compiler-core': 3.5.35
+      '@vue/shared': 3.5.35
 
   '@vue/compiler-dom@3.5.6':
     dependencies:
@@ -10172,6 +10188,18 @@ snapshots:
       postcss: 8.5.6
       source-map-js: 1.2.1
 
+  '@vue/compiler-sfc@3.5.35':
+    dependencies:
+      '@babel/parser': 7.29.7
+      '@vue/compiler-core': 3.5.35
+      '@vue/compiler-dom': 3.5.35
+      '@vue/compiler-ssr': 3.5.35
+      '@vue/shared': 3.5.35
+      estree-walker: 2.0.2
+      magic-string: 0.30.21
+      postcss: 8.5.15
+      source-map-js: 1.2.1
+
   '@vue/compiler-sfc@3.5.6':
     dependencies:
       '@babel/parser': 7.28.5
@@ -10188,6 +10216,11 @@ snapshots:
     dependencies:
       '@vue/compiler-dom': 3.5.27
       '@vue/shared': 3.5.27
+
+  '@vue/compiler-ssr@3.5.35':
+    dependencies:
+      '@vue/compiler-dom': 3.5.35
+      '@vue/shared': 3.5.35
 
   '@vue/compiler-ssr@3.5.6':
     dependencies:
@@ -10218,6 +10251,8 @@ snapshots:
 
   '@vue/shared@3.5.27': {}
 
+  '@vue/shared@3.5.35': {}
+
   '@vue/shared@3.5.6': {}
 
   '@weapp-core/escape@8.0.0': {}
@@ -10236,16 +10271,16 @@ snapshots:
       '@weapp-tailwindcss/runtime': 0.1.6
       tailwind-merge: 2.6.1
 
-  '@weapp-tailwindcss/postcss-calc@1.0.0(postcss@8.5.15)':
+  '@weapp-tailwindcss/postcss-calc@1.0.2(postcss@8.5.15)':
     dependencies:
       postcss: 8.5.15
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@3.0.1':
+  '@weapp-tailwindcss/postcss@3.0.2':
     dependencies:
       '@weapp-core/escape': 8.0.0
-      '@weapp-tailwindcss/postcss-calc': 1.0.0(postcss@8.5.15)
+      '@weapp-tailwindcss/postcss-calc': 1.0.2(postcss@8.5.15)
       '@weapp-tailwindcss/shared': 2.0.0
       autoprefixer: 10.5.0(postcss@8.5.15)
       lru-cache: 11.5.1
@@ -10791,7 +10826,7 @@ snapshots:
       dotenv: 17.2.3
       exsolve: 1.0.8
       giget: 2.0.0
-      jiti: 2.6.1
+      jiti: 2.7.0
       ohash: 2.0.11
       pathe: 2.0.3
       perfect-debounce: 2.0.0
@@ -11539,11 +11574,6 @@ snapshots:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.2.1
-
-  enhanced-resolve@5.19.0:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.0
 
   enhanced-resolve@5.23.0:
     dependencies:
@@ -12807,8 +12837,6 @@ snapshots:
   jiti@1.21.6: {}
 
   jiti@1.21.7: {}
-
-  jiti@2.6.1: {}
 
   jiti@2.7.0: {}
 
@@ -14905,7 +14933,7 @@ snapshots:
   tailwindcss-config@1.1.5:
     dependencies:
       '@weapp-tailwindcss/shared': 1.1.3
-      jiti: 2.6.1
+      jiti: 2.7.0
       lilconfig: 3.1.3
 
   tailwindcss-config@2.0.0:
@@ -14915,7 +14943,7 @@ snapshots:
 
   tailwindcss-patch@9.4.2(tailwindcss@3.4.19):
     dependencies:
-      '@babel/generator': 7.29.1
+      '@babel/generator': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
@@ -14967,8 +14995,6 @@ snapshots:
   tailwindcss@4.3.0: {}
 
   tapable@2.2.1: {}
-
-  tapable@2.3.0: {}
 
   tapable@2.3.3: {}
 
@@ -15380,15 +15406,17 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  weapp-tailwindcss@5.0.2(jiti@1.21.7)(postcss@8.4.47)(tailwindcss@3.4.19):
+  weapp-tailwindcss@5.0.4(jiti@1.21.7)(postcss@8.4.47)(tailwindcss@3.4.19):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
+      '@vue/compiler-dom': 3.5.35
+      '@vue/compiler-sfc': 3.5.35
       '@weapp-core/escape': 8.0.0
       '@weapp-tailwindcss/logger': 2.0.0
-      '@weapp-tailwindcss/postcss': 3.0.1
+      '@weapp-tailwindcss/postcss': 3.0.2
       '@weapp-tailwindcss/reset': 0.1.1(tailwindcss@3.4.19)
       '@weapp-tailwindcss/shared': 2.0.0
       comment-json: 5.0.0
@@ -15497,7 +15525,7 @@ snapshots:
       acorn-import-assertions: 1.9.0(acorn@8.15.0)
       browserslist: 4.28.2
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.19.0
+      enhanced-resolve: 5.23.0
       es-module-lexer: 1.5.4
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -15508,7 +15536,7 @@ snapshots:
       mime-types: 2.1.35
       neo-async: 2.6.2
       schema-utils: 3.3.0
-      tapable: 2.3.0
+      tapable: 2.3.3
       terser-webpack-plugin: 5.3.10(@swc/core@1.3.96)(esbuild@0.21.5)(webpack@5.91.0(@swc/core@1.3.96))
       watchpack: 2.4.2
       webpack-sources: 3.3.4

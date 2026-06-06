@@ -6,6 +6,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { loadConfig } from 'tailwindcss-config'
 import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
@@ -18,6 +19,12 @@ import {
 import { resolvePostcssBase, resolvePostcssProjectRoot } from './context'
 
 const POSTCSS_SOURCE_PATTERN = createSourceScanPattern(DEFAULT_SOURCE_SCAN_EXTENSIONS)
+
+function isTailwindV4ApplyOnlyCss(root: Root, options: WeappTailwindcssPostcssPluginOptions) {
+  return options.version === 4
+    && hasTailwindApplyDirective(root.toString())
+    && !hasTailwindRootDirectives(root.toString(), { importFallback: true })
+}
 
 function getSourceExtension(file: string) {
   const extension = path.extname(file).slice(1)
@@ -115,6 +122,7 @@ export async function collectAutoTailwindCandidates(
   const projectRoot = resolvePostcssProjectRoot(result, options)
   const sourceEntries = []
   const hasSourceNone = root.toString().includes('source(none)')
+  const shouldSkipAutoScan = isTailwindV4ApplyOnlyCss(root, options)
   const inlineCandidates = collectCssInlineSourceCandidates(root)
   const configuredContentEntries = options.version === 3
     ? await collectConfiguredContentEntries(root, base, options)
@@ -123,7 +131,7 @@ export async function collectAutoTailwindCandidates(
   if (configuredContentEntries.length > 0) {
     sourceEntries.push(...configuredContentEntries)
   }
-  else if (!hasSourceNone) {
+  else if (!hasSourceNone && !shouldSkipAutoScan) {
     sourceEntries.push({
       base,
       negated: false,

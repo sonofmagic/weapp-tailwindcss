@@ -243,13 +243,17 @@ function uniAppHBuilderXPlatforms(name: string): DemoPlatformCoverage[] {
 }
 
 function uniAppXPlatforms(name: string): DemoPlatformCoverage[] {
+  const isTailwindV4 = name.endsWith('-v4')
   return [
-    local('web', {
-      evidence: 'package scripts audit',
+    local('h5', {
+      devScript: 'dev:h5',
+      evidence: isTailwindV4 ? 'hbuilderx local Web HMR case' : 'package scripts audit',
       command: `pnpm --filter @weapp-tailwindcss-demo/${name} run dev:h5`,
-      reason: '当前 uni-app x demo 未提供 H5/Web 启动脚本，矩阵显式登记为不可执行项。',
+      reason: isTailwindV4
+        ? 'uni-app x H5 需要本地浏览器 dev server 验证，默认 CI 不展开执行。'
+        : 'Tailwind v3 uni-app x H5 入口路径和 v4 不同，当前只登记可运行脚本。',
       staticCoverage: 'exempt',
-      hmrCoverage: 'exempt',
+      hmrCoverage: isTailwindV4 ? 'local' : 'exempt',
     }),
     ...['mp-weixin', 'app-android', 'app-ios'].map(platform => local(platform, {
       devScript: platform === 'mp-weixin' ? 'dev:mp-weixin' : platform === 'app-android' ? 'dev:android:emulator' : 'dev:ios:simulator',

@@ -17,6 +17,7 @@ import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { processCachedTask } from '../shared/cache'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
+import { hasTailwindApplyDirective } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -96,6 +97,20 @@ function addSiblingCssFile(files: Set<string>, file: string) {
   else if (file.endsWith('.js')) {
     files.add(file.replace(/\.js$/, '.wxss'))
   }
+}
+
+function normalizeStyleStem(file: string | undefined) {
+  if (typeof file !== 'string' || file.length === 0) {
+    return undefined
+  }
+  return normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+    .replace(/\.(?:vue|uvue|nvue|css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)$/i, '')
+}
+
+function isSameStyleStem(a: string | undefined, b: string | undefined) {
+  const aStem = normalizeStyleStem(a)
+  const bStem = normalizeStyleStem(b)
+  return aStem !== undefined && bStem !== undefined && aStem === bStem
 }
 
 function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
@@ -770,12 +785,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   ...(originalSource.originalFileNames ?? []),
                 ].filter((item): item is string => typeof item === 'string' && item.length > 0)
                 return normalizeOutputPathKey(remembered.outputFile) === normalizeOutputPathKey(outputFile)
+                  || isSameStyleStem(remembered.outputFile, outputFile)
+                  || isSameStyleStem(remembered.sourceFile, outputFile)
                   || originalFiles.some(originalFile => normalizeOutputPathKey(remembered.sourceFile) === normalizeOutputPathKey(originalFile))
               })
           : undefined
         const generatorRawSource = viteProcessedCssAsset
           ? rememberedCssSource?.rawSource ?? rawSource
           : rawSource
+        const hasRememberedApplySource = viteProcessedCssAsset
+          && rememberedCssSource != null
+          && hasTailwindApplyDirective(generatorRawSource)
         const generatorSourceFile = viteProcessedCssAsset
           ? rememberedCssSource?.sourceFile ?? file
           : file
@@ -806,7 +826,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             getViteProcessedCssAssetResult?.(file)?.injectIntoMain === true
             || shouldRegenerateAppOriginCss
           )
-        if (alreadyProcessedCssAsset && (!shouldTrackGeneratorRuntime || !canRegenerateProcessedMainCss)) {
+        if (alreadyProcessedCssAsset && !hasRememberedApplySource && (!shouldTrackGeneratorRuntime || !canRegenerateProcessedMainCss)) {
           const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)

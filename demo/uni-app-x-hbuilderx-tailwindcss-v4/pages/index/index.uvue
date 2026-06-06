@@ -72,10 +72,11 @@
 			</view>
 			<view class="test">
 				<text class="text-[#da0e3c] text-center">
-					@apply 的用法，详见 `index.vue` 的 `style` 标签块
+					@apply 多端写法示例
 				</text>
 			</view>
 		</view>
+		<view class="bg-[#102938] text-[#f7fbff] w-[173px]">hbuilderx-app-dynamic-v4-android</view>
 		<BindClass />
 	</view>
 </template>

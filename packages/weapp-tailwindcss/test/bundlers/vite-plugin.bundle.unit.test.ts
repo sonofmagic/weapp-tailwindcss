@@ -1266,6 +1266,34 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await mkdir(path.dirname(pageFile), { recursive: true })
     await writeFile(configFile, 'module.exports = { content: ["./pages/**/*.{wxml,ts}"] }\n', 'utf8')
     await writeFile(pageFile, '<view class="bg-[#010721] text-[35px] h-[29px]">ok</view>\n', 'utf8')
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: [...options.candidates].map(candidate => `.${replaceWxml(candidate)}{}`).join(''),
+      rawCss: [...options.candidates].map(candidate => `.${candidate}{}`).join(''),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      dependencies: [cssEntry, configFile],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          version: 4,
+          projectRoot: root,
+          base: root,
+          baseFallbacks: [],
+          css: '@import "tailwindcss" source(none);',
+          dependencies: [],
+        })),
+      }
+    })
 
     const context = createContext({
       twPatcher: {
@@ -1355,7 +1383,19 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code,
+        map: {
+          toJSON: () => ({
+            version: 3,
+            file: 'style.css',
+            sources: ['style.css'],
+            names: [],
+            mappings: '',
+            sourcesContent: [code],
+          }),
+        },
+      })),
     }))
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -1445,6 +1485,103 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toBe(processedCss)
     expect(generateMock).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('regenerates vite-processed uni-app-x @apply style assets from remembered source', async () => {
+    const generatedByRawSource: string[] = []
+    const generateMock = vi.fn(async (_options: { candidates: Set<string> }, source: { css: string }) => {
+      generatedByRawSource.push(source.css)
+      const css = source.css.includes('@apply')
+        ? '.content{display:flex}.test{background-color:rgba(49,237,216,.54)}'
+        : '.flex{display:flex}'
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(['flex']),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn((options: { candidates: Set<string> }) => generateMock(options, source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          version: 4,
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss" source(none);',
+          dependencies: [],
+        })),
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      appType: 'uni-app-x',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({
+        css: code,
+        map: {
+          toJSON: () => ({
+            version: 3,
+            file: 'style.css',
+            sources: ['style.css'],
+            names: [],
+            mappings: '',
+            sourcesContent: [code],
+          }),
+        },
+      })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['flex'])),
+        getClassSetSync: vi.fn(() => new Set(['flex'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['flex']) })),
+      },
+      uniAppX: true,
+    }))
+    const plugins = WeappTailwindcss()
+    const uniCssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(uniCssPlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const styleId = path.resolve(process.cwd(), 'pages/index/index.uvue?vue&type=style&index=0&lang.scss&scoped=true')
+    const applySource = '.content { @apply flex; }\n.test { @apply bg-[#31edd8]/[0.54]; }'
+    await uniCssPlugin.transform?.call(uniCssPlugin, applySource, styleId)
+
+    const processedCss = '.flex{display:flex}'
+    const bundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'pages/index/index.uvue'))}\n${processedCss}`),
+        fileName: 'pages/index/index.wxss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const wxss = String((bundle['pages/index/index.wxss'] as OutputAsset).source)
+    expect(wxss).toContain('.content{display:flex}')
+    expect(wxss).toContain('.test{background-color:rgba(49,237,216,.54)}')
+    expect(wxss).not.toContain('.flex{display:flex}')
+    expect(generatedByRawSource.some(source => source.includes('@apply flex'))).toBe(true)
   }, TEST_TIMEOUT_MS)
 
   it('keeps same-name subpackage vite css marker blocks isolated by output file', async () => {
@@ -2471,6 +2608,96 @@ const trace = "at App.vue:4"
     await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
 
     expect(resolveScanMock).toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('generates Tailwind v4 css for uni-app x H5 web target during vite build finalization', async () => {
+    const generatedCss = '.bg-\\[\\#f21903\\]{background-color:#f21903}.text-xl{font-size:1.25rem;line-height:1.75rem}'
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: generatedCss,
+      rawCss: generatedCss,
+      target: 'web',
+      classSet: new Set(options.candidates),
+      dependencies: ['/repo/uni-app-x/main.css'],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          version: 4,
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss" source(none);',
+          dependencies: [],
+        })),
+      }
+    })
+
+    const styleHandler = vi.fn(async () => {
+      throw new Error('web target should not use mini-program styleHandler')
+    })
+    setCurrentContext(createContext({
+      appType: 'uni-app-x',
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      generator: {
+        target: 'web',
+      },
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
+      styleHandler,
+      tailwindcss: {
+        v4: {
+          cssEntries: ['/repo/uni-app-x/main.css'],
+        },
+      },
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['bg-[#f21903]', 'text-xl'])),
+        getClassSetSync: vi.fn(() => new Set(['bg-[#f21903]', 'text-xl'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['bg-[#f21903]', 'text-xl']) })),
+      },
+      uniAppX: false,
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const finalizerPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer') as Plugin
+    expect(postPlugin).toBeTruthy()
+    expect(finalizerPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/h5' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'main.css': {
+        ...createRollupAsset('@import "tailwindcss" source(none);\n@source "./pages/**/*.{uts,uvue}";'),
+        fileName: 'main.css',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(finalizerPlugin)
+    const addWatchFile = vi.fn()
+    await generateBundle?.call({ ...finalizerPlugin, addWatchFile }, {} as any, bundle)
+
+    const css = (bundle['main.css'] as OutputAsset).source.toString()
+    expect(css).toBe(generatedCss)
+    expect(css).not.toContain('@import "tailwindcss"')
+    expect(css).not.toContain('@source')
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(addWatchFile).toHaveBeenCalledWith('/repo/uni-app-x/main.css')
   }, TEST_TIMEOUT_MS)
 
   it('scans source candidates during Tailwind v3 web generator buildStart', async () => {

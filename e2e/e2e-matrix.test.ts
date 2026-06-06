@@ -214,8 +214,8 @@ describe('e2e matrix', () => {
       ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app', 'app-android', 'app-ios']],
-      ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'app-android', 'app-ios']],
-      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'app-android', 'app-ios']],
+      ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
     ])
 
     for (const [name, platforms] of expectedPlatformsByName) {
@@ -241,6 +241,9 @@ describe('e2e matrix', () => {
           continue
         }
         if (entry.name.includes('hbuilderx') && entry.framework === 'uni-app') {
+          continue
+        }
+        if (entry.name.includes('hbuilderx') && entry.framework === 'uni-app-x' && platform.platform === 'h5') {
           continue
         }
         expect(targets.has(`${entry.name}:${platform.platform}`), `${entry.name} ${platform.platform} should be in MULTIPLATFORM_TARGETS`).toBe(true)

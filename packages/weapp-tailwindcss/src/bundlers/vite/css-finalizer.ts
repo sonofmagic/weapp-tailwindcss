@@ -9,7 +9,8 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
-import { generateCssByGenerator, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../shared/generator-css'
+import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
+import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 
@@ -93,19 +94,21 @@ function shouldGenerateCssByGenerator(
   processed: boolean,
 ) {
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  if (generatorOptions.target === 'web' && opts.twPatcher.majorVersion !== 3) {
+  if (hasLocalCssImport(rawSource)) {
     return false
   }
-  if (
-    hasTailwindGeneratedCssMarkers(rawSource)
-    || hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })
-  ) {
+  if (hasTailwindGeneratedCssMarkers(rawSource)) {
+    return true
+  }
+  if (hasTailwindRootDirectives(rawSource, { importFallback: generatorOptions.importFallback })) {
     return true
   }
   if (opts.twPatcher.majorVersion === 3) {
     return false
   }
-  return processed && shouldFinalizeProcessedCssAsset(opts, file)
+  return processed
+    && hasTailwindApplyDirective(rawSource)
+    && shouldFinalizeProcessedCssAsset(opts, file)
 }
 
 function shouldFinalizeProcessedCssAsset(
