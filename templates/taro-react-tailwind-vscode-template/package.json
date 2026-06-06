@@ -24,16 +24,17 @@
     "build:qq": "taro build --type qq",
     "build:jd": "taro build --type jd",
     "build:quickapp": "taro build --type quickapp",
-    "dev:weapp": "pnpm build:weapp -- --watch",
-    "dev:swan": "pnpm build:swan -- --watch",
-    "dev:alipay": "pnpm build:alipay -- --watch",
-    "dev:tt": "pnpm build:tt -- --watch",
-    "dev:h5": "pnpm build:h5 -- --watch",
-    "dev:rn": "pnpm build:rn -- --watch",
-    "dev:qq": "pnpm build:qq -- --watch",
-    "dev:jd": "pnpm build:jd -- --watch",
-    "dev:quickapp": "pnpm build:quickapp -- --watch",
-    "open": "weapp open -p ."
+    "dev:weapp": "taro build --type weapp --watch",
+    "dev:swan": "taro build --type swan --watch",
+    "dev:alipay": "taro build --type alipay --watch",
+    "dev:tt": "taro build --type tt --watch",
+    "dev:h5": "taro build --type h5 --watch",
+    "dev:rn": "taro build --type rn --watch",
+    "dev:qq": "taro build --type qq --watch",
+    "dev:jd": "taro build --type jd --watch",
+    "dev:quickapp": "taro build --type quickapp --watch",
+    "open": "weapp open -p .",
+    "up:pkg": "pnpm up -rLi"
   },
   "dependencies": {
     "@babel/runtime": "^7.28.3",
@@ -54,7 +55,7 @@
     "clsx": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "@weapp-tailwindcss/merge-v3": "^0.2.0"
+    "@weapp-tailwindcss/merge-v3": "^0.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.28.3",
@@ -82,7 +83,7 @@
     "tsconfig-paths-webpack-plugin": "^4.2.0",
     "typescript": "^6.0.3",
     "weapp-ide-cli": "^5.2.8",
-    "weapp-tailwindcss": "^4.12.0",
+    "weapp-tailwindcss": "^5.0.2",
     "webpack": "5.101.2"
   },
   "pnpm": {
@@ -91,5 +92,5 @@
       "weapp-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@10.33.2"
+  "packageManager": "pnpm@10.33.4"
 }

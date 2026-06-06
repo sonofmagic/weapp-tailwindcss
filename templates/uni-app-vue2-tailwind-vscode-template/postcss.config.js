@@ -1,5 +1,7 @@
 const path = require("path");
 const webpack = require('webpack');
+const cssMacroPostcss = require('weapp-tailwindcss/css-macro/postcss');
+const createCssMacroPostcss = cssMacroPostcss.default || cssMacroPostcss;
 
 const config = {
   parser: require("postcss-comment"),
@@ -20,7 +22,7 @@ const config = {
       remove: process.env.UNI_PLATFORM !== "h5",
     }),
     // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 tailwindcss
-    require('weapp-tailwindcss/css-macro/postcss'),
+    createCssMacroPostcss(),
     require("@dcloudio/vue-cli-plugin-uni/packages/postcss"),
   ],
 };

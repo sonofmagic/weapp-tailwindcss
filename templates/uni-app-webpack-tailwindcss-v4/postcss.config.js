@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const config = {
   parser: require('postcss-comment'),
   plugins: [
-    require('@tailwindcss/postcss')(),
+    // Tailwind CSS 由 weapp-tailwindcss 生成模式接管，这里不要再注册 @tailwindcss/postcss
     require('postcss-import')({
       resolve (id, basedir, importOptions) {
         if (id.startsWith('~@/')) {

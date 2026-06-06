@@ -1,44 +1,50 @@
 <template>
-  <view class="w-screen flex flex-col items-center">
-    <view
-      class="bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)] bg-[length:100%_100%] bg-no-repeat w-screen h-[41.54vw]">
-    </view>
-
-    <view class="after:content-['uni-app-vue2-tailwind-vscode-template'] text-sky-400"></view>
-
-
-    <view class="text-gray-900/75 mb-2 before:text-sky-500 before:content-['让我们开始神奇的_tailwindcss_开发吧！']"></view>
-    <view>
-      <view class="text-lg font-semibold">uview-ui 2 控件示例</view>
-      <view>
-        <u-button :customStyle="{ width: '200px' }" text="月落"></u-button>
-        <u-cell-group>
-          <u-cell icon="setting-fill" title="个人设置"></u-cell>
-          <u-cell icon="integral-fill" title="会员等级" value="新版本"></u-cell>
-          <u-cell value="内容">
-            <view slot="title" class="u-slot-title">
-              <text class="u-cell-text text-[#00aaaa]">单元格</text>
-            </view>
-          </u-cell>
-        </u-cell-group>
-
+  <view class="min-h-screen bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] px-[32rpx] py-[40rpx] text-slate-800">
+    <view class="rounded-[32rpx] border border-slate-100/70 bg-white/90 p-[40rpx] shadow-[0_20px_45px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">
+        Uni App Vue2 · Tailwind CSS 3
+      </view>
+      <view class="mt-[16rpx] text-[52rpx] font-semibold leading-[1.12] text-slate-900">
+        旧项目也能拥有清爽原子样式
+      </view>
+      <view class="mt-[20rpx] text-[28rpx] leading-relaxed text-slate-500">
+        保留 Vue2 与 webpack 工程习惯，同时用 weapp-tailwindcss 输出小程序可识别的工具类。
       </view>
     </view>
 
-    <view class="text-lg font-semibold">写法示例</view>
-    <view :class="classArray">classArray bg-url</view>
-    <view>
-      <view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">
-        样式的条件编译:微信小程序为蓝色，不是微信小程序为红色
+    <view class="mt-[24rpx] rounded-[32rpx] border border-slate-100/70 bg-white/85 p-[32rpx] shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">能力速览</view>
+      <view class="mt-[20rpx] flex flex-col gap-[16rpx]">
+        <view class="rounded-[24rpx] border border-sky-200/70 bg-sky-50/80 px-[24rpx] py-[20rpx] text-sky-700">
+          <view class="text-[28rpx] font-semibold">任意值与图片背景</view>
+          <view class="mt-[8rpx] text-[24rpx] opacity-80">classArray 覆盖任意颜色与图片背景。</view>
+        </view>
+        <view class="rounded-[24rpx] border border-violet-200/70 bg-violet-50/80 px-[24rpx] py-[20rpx] text-violet-700">
+          <view class="text-[28rpx] font-semibold">条件编译</view>
+          <view class="mt-[8rpx] text-[24rpx] opacity-80">ifdef / wx 前缀继续验证多端分支。</view>
+        </view>
+        <view class="rounded-[24rpx] border border-emerald-200/70 bg-emerald-50/80 px-[24rpx] py-[20rpx] text-emerald-700">
+          <view class="text-[28rpx] font-semibold">@apply 宏</view>
+          <view class="mt-[8rpx] text-[24rpx] opacity-80">scss 中组合工具类，方便沉淀团队语义类。</view>
+        </view>
       </view>
+    </view>
 
-      <view class="wx:bg-blue-500 -wx:bg-red-500">
-        <view>自定义配置的方式进行样式条件编译</view>
-        <view>相关配置见根目录下的tailwind.config.js</view>
+    <view class="mt-[24rpx] rounded-[32rpx] border border-slate-100/70 bg-white/85 p-[32rpx] shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">Playground</view>
+      <view class="mt-[20rpx] rounded-[24rpx] px-[24rpx] py-[20rpx] text-white" :class="classArray">
+        classArray + 任意值背景
       </view>
-
-      <view class="apply-class-0">@apply 条件编译方式0</view>
-      <view class="apply-class-1">@apply 条件编译方式1</view>
+      <view class="mt-[20rpx] rounded-[24rpx] border border-dashed border-slate-200 bg-slate-50/80 p-[24rpx] text-[26rpx] text-slate-600">
+        <view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500 rounded-[16rpx] px-[20rpx] py-[14rpx] text-white">
+          样式条件编译：微信小程序为蓝色，其他端为红色
+        </view>
+        <view class="wx:bg-blue-500 -wx:bg-red-500 mt-[16rpx] rounded-[16rpx] px-[20rpx] py-[14rpx] text-white">
+          自定义 wx 前缀条件编译
+        </view>
+        <view class="apply-class-0 mt-[16rpx]">@apply 条件编译方式 0</view>
+        <view class="apply-class-1 mt-[16rpx]">@apply 条件编译方式 1</view>
+      </view>
     </view>
   </view>
 </template>
@@ -63,7 +69,6 @@ export default Vue.extend({
   methods: {},
 });
 </script>
-
 
 <style lang="scss">
 .apply-class-0 {

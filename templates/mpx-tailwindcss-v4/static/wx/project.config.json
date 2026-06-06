@@ -11,7 +11,8 @@
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
-    }
+    },
+    "minifyWXML": true
   },
   "appid": "touristappid",
   "projectname": "mpx-project",

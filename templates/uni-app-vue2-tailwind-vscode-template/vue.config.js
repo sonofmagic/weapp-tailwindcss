@@ -16,7 +16,6 @@ const config = {
     // 去除ts类型检测，因为uni-app ts type 支持其实不咋好
     config.plugins.delete('fork-ts-checker')
   },
-  transpileDependencies: ['uview-ui']
   //....
 };
 

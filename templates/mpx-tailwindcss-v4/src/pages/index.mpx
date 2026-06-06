@@ -1,9 +1,35 @@
 <template>
-  <view>
-    <list></list>
-    <view class="text-[123.432rpx] text-[#654321] bg-amber-50">Hello World</view>
-  </view>
+  <view class="min-h-screen bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] px-[32rpx] py-[40rpx] text-slate-800">
+    <view class="rounded-[32rpx] border border-slate-100/70 bg-white/90 p-[40rpx] shadow-[0_20px_45px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">Mpx · Tailwind CSS 4</view>
+      <view class="mt-[16rpx] text-[52rpx] font-semibold leading-[1.12] text-slate-900">
+        小程序原子样式模板
+      </view>
+      <view class="mt-[20rpx] text-[28rpx] leading-relaxed text-slate-500">
+        使用 weapp-tailwindcss 接管 Tailwind 产物，保留任意值、组件样式和小程序端选择器转换能力。
+      </view>
+      <view class="mt-[32rpx] grid grid-cols-2 gap-[16rpx]">
+        <view class="rounded-[24rpx] border border-sky-200/70 bg-sky-50/80 px-[24rpx] py-[20rpx] text-sky-700">
+          <view class="text-[28rpx] font-semibold">极速构建</view>
+          <view class="mt-[8rpx] text-[24rpx] opacity-80">JIT class 即写即得</view>
+        </view>
+        <view class="rounded-[24rpx] border border-emerald-200/70 bg-emerald-50/80 px-[24rpx] py-[20rpx] text-emerald-700">
+          <view class="text-[28rpx] font-semibold">端侧友好</view>
+          <view class="mt-[8rpx] text-[24rpx] opacity-80">wxss 输出可预期</view>
+        </view>
+      </view>
+    </view>
 
+    <view class="mt-[24rpx] rounded-[32rpx] border border-slate-100/70 bg-white/85 p-[32rpx] shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">组件示例</view>
+      <view class="mt-[18rpx] rounded-[24rpx] border border-dashed border-slate-200 bg-slate-50/80 p-[24rpx]">
+        <list></list>
+      </view>
+      <view class="mt-[20rpx] rounded-[24rpx] bg-amber-50 px-[24rpx] py-[20rpx] text-[40rpx] font-semibold text-[#654321]">
+        Hello Mpx Tailwind
+      </view>
+    </view>
+  </view>
 </template>
 
 <script lang="ts">

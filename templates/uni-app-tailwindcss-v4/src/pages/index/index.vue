@@ -1,9 +1,9 @@
 <template>
-  <view class="min-h-screen bg-gradient-to-b from-[#0a0f1c] via-[#0f172a] to-[#0b1220] text-slate-100 pb-[40rpx]">
+  <view class="min-h-screen bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] pb-[40rpx] text-slate-800">
     <view class="px-[28rpx] py-[24rpx] space-y-[24rpx]">
       <view class="flex items-center space-x-[12rpx]">
         <image class="w-[96rpx] h-[96rpx] opacity-80" src="/static/logo.png" />
-        <view class="text-[26rpx] text-white/70">Tailwind CSS 4 · 微信小程序</view>
+        <view class="text-[26rpx] text-slate-500">Tailwind CSS 4 · 微信小程序</view>
       </view>
 
       <view>

@@ -421,6 +421,34 @@ function cleanupExistingWatchProcesses(cwd: string) {
   }
 }
 
+function createWatchSpawnEnv(extra: Record<string, string>) {
+  const env = createSpawnEnv(process.env, {
+    WEAPP_TW_WATCH_REGRESSION: '1',
+    // 回归模式优先稳定性。
+    // 宿主机上 Webpack/Taro 的 fs.watch 很容易触发 EMFILE，
+    // 这里统一切到 polling watcher，必要时仍允许外部环境覆盖。
+    WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? '50',
+    WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '50',
+    CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? '1',
+    CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '50',
+    NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
+    ...extra,
+  })
+
+  for (const key of Object.keys(env)) {
+    if (key === 'VITEST' || key.startsWith('VITEST_')) {
+      delete env[key]
+    }
+  }
+  if (env.NODE_ENV === 'test') {
+    delete env.NODE_ENV
+  }
+  if (env.BABEL_ENV === 'test') {
+    delete env.BABEL_ENV
+  }
+  return env
+}
+
 export async function runPnpmCommand(cwd: string, args: string[], label: string) {
   const lines: string[] = []
   const child = spawnPnpm(args, {
@@ -456,25 +484,23 @@ export function createWatchSession(
   options: Pick<CliOptions, 'quietSass'>,
   env: Record<string, string> = {},
 ): WatchSession {
+  return createWatchCommandSession(cwd, ['run', devScript], options, env)
+}
+
+export function createWatchCommandSession(
+  cwd: string,
+  args: string[],
+  options: Pick<CliOptions, 'quietSass'>,
+  env: Record<string, string> = {},
+): WatchSession {
   cleanupExistingWatchProcesses(cwd)
   const lines: string[] = []
   const pluginProcessSamples: PluginProcessSample[] = []
   let lastCompileSuccessAt = 0
   let compileFatalError: string | undefined
-  const child = spawnPnpm(['run', devScript], {
+  const child = spawnPnpm(args, {
     cwd,
-    env: createSpawnEnv(process.env, {
-      WEAPP_TW_WATCH_REGRESSION: '1',
-      // 回归模式优先稳定性。
-      // 宿主机上 Webpack/Taro 的 fs.watch 很容易触发 EMFILE，
-      // 这里统一切到 polling watcher，必要时仍允许外部环境覆盖。
-      WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? '50',
-      WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '50',
-      CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? '1',
-      CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '50',
-      NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
-      ...env,
-    }),
+    env: createWatchSpawnEnv(env),
     detached: process.platform !== 'win32',
     stdio: 'pipe',
   })

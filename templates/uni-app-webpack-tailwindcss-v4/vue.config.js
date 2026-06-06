@@ -10,7 +10,7 @@ const config = {
             new WeappTailwindcss({
                 rem2rpx: true,
                 cssEntries: [
-                    path.relative(__dirname, 'src/main.css')
+                    path.resolve(__dirname, 'src/main.css')
                 ]
             })
         )

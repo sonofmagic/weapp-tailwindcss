@@ -105,6 +105,12 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         chain.plugin('unplugin-vue-components').use(ComponentsPlugin({
           resolvers: [NutUIResolver({taro: true})]
         }))
+        chain.plugin('weapp-tailwindcss').use(WeappTailwindcss, [
+          {
+            appType: 'taro',
+            injectAdditionalCssVarScope: true
+          }
+        ])
       },
     },
     rn: {

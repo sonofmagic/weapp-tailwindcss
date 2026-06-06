@@ -4,6 +4,12 @@ import prodConfig from './prod'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import path from 'path'
 
+const generator = {
+  styleOptions: {
+    px2rpx: true,
+  },
+}
+
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'vite'> = {
@@ -31,8 +37,23 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
+        {
+          name: 'taro-cjs-stability',
+          enforce: 'post',
+          config() {
+            return {
+              build: {
+                commonjsOptions: {
+                  transformMixedEsModules: false,
+                },
+              },
+            }
+          },
+        },
         WeappTailwindcss({
+          tailwindcssBasedir: process.cwd(),
           rem2rpx: true,
+          generator,
           cssEntries: [
             path.resolve(__dirname, '../src/app.css')
           ]

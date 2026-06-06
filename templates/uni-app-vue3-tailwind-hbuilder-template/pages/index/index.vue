@@ -1,48 +1,51 @@
 <template>
-  <view class="content">
-    <view
-      class="bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)] bg-[length:100%_100%] bg-no-repeat w-screen h-[41.54vw]">
-    </view>
-
-    <view class="after:content-['uni-app-vite-vue3-tailwind-hbuilderx-template'] text-sky-400"></view>
-
-    <view class="text-slate-800">
-      <view class="text-primary">⚠️注意，请关闭微信开发者工具的代码热重载功能</view>
-      <view class="text-second">否则可能会出现保持之后不起作用</view>
-    </view>
-
-    <view class="text-gray-900/50 mb-2 before:content-['当前系统主题:']">
-      {{ themeRef }}
-    </view>
-    <view class="mx-auto w-[240rpx] h-[240rpx] bg-gray-200 group flex justify-center items-center"
-      hover-class="bg-gray-400 tapped">
-      <view
-        class="w-[120rpx] h-[120rpx] bg-red-400 group-[.tapped]:bg-blue-400 text-white flex justify-center items-center text-xs text-center">
-        外部触发hover里面方块会变成蓝色</view>
-    </view>
-    <view class="test">apply示例</view>
-    <view :key="v" class="h-[20px] w-[20px]" :class="v" v-for="(v, i) in cardsColor"></view>
-    <view>
-      <view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">
-        样式的条件编译:微信小程序为蓝色，不是微信小程序为红色
+  <view class="min-h-screen bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] px-[32rpx] py-[40rpx] text-slate-800">
+    <view class="rounded-[32rpx] border border-slate-100/70 bg-white/90 p-[40rpx] shadow-[0_20px_45px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">
+        Uni App Vue3 · HBuilderX
       </view>
-
-      <view class="wx:bg-blue-500 -wx:bg-red-500">
-        <view>自定义配置的方式进行样式条件编译</view>
-        <view>相关配置见根目录下的tailwind.config.js</view>
+      <view class="mt-[16rpx] text-[52rpx] font-semibold leading-[1.12] text-slate-900">
+        HBuilderX 里的多端原子样式实验室
       </view>
+      <view class="mt-[20rpx] text-[28rpx] leading-relaxed text-slate-500">
+        保留主题监听、hover-class、group 状态、@apply 和条件编译，页面风格对齐 Vite Vue3 模板。
+      </view>
+    </view>
 
-      <view class="apply-class-0">@apply 条件编译方式0</view>
-      <view class="apply-class-1">@apply 条件编译方式1</view>
+    <view class="mt-[24rpx] rounded-[32rpx] border border-slate-100/70 bg-white/85 p-[32rpx] shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">运行时状态</view>
+      <view class="mt-[20rpx] rounded-[24rpx] border border-dashed border-slate-200 bg-slate-50/80 px-[24rpx] py-[20rpx] text-[28rpx] text-slate-600">
+        当前系统主题：{{ themeRef }}
+      </view>
+      <view class="mx-auto mt-[24rpx] flex h-[240rpx] w-[240rpx] items-center justify-center rounded-[28rpx] bg-slate-100 group"
+        hover-class="bg-gray-400 tapped">
+        <view
+          class="flex h-[120rpx] w-[120rpx] items-center justify-center rounded-[20rpx] bg-red-400 text-center text-xs text-white group-[.tapped]:bg-blue-400">
+          hover 后变蓝
+        </view>
+      </view>
+    </view>
+
+    <view class="mt-[24rpx] rounded-[32rpx] border border-slate-100/70 bg-white/85 p-[32rpx] shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
+      <view class="text-[24rpx] uppercase tracking-[6rpx] text-slate-400">宏与条件编译</view>
+      <view class="mt-[20rpx] flex flex-wrap gap-[12rpx]">
+        <view :key="v" class="h-[40rpx] w-[40rpx] rounded-full shadow-lg" :class="v" v-for="v in cardsColor"></view>
+      </view>
+      <view class="test mt-[20rpx]">apply 示例</view>
+      <view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500 mt-[20rpx] rounded-[18rpx] px-[20rpx] py-[14rpx] text-white">
+        样式条件编译
+      </view>
+      <view class="wx:bg-blue-500 -wx:bg-red-500 mt-[16rpx] rounded-[18rpx] px-[20rpx] py-[14rpx] text-white">
+        自定义 wx 前缀条件编译
+      </view>
+      <view class="apply-class-0 mt-[16rpx]">@apply 条件编译方式 0</view>
+      <view class="apply-class-1 mt-[16rpx]">@apply 条件编译方式 1</view>
     </view>
   </view>
 </template>
 
-
 <script setup lang="ts">
 import { ref, onBeforeUnmount } from 'vue';
-const title = ref('测试标题');
-const flag = ref(true);
 
 const cardsColor = ref([
   'bg-[#fafa00] shadow-indigo-100',

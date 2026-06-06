@@ -95,6 +95,14 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        chain.plugin('weapp-tailwindcss').use(WeappTailwindcss, [
+          {
+            rem2rpx: true,
+            cssEntries:[
+              path.resolve(__dirname,'../src/app.css')
+            ]
+          } satisfies UserDefinedOptions
+        ])
       }
     },
     rn: {

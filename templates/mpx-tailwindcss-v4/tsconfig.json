@@ -6,6 +6,7 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "lib": [
       "esnext",
       "dom",

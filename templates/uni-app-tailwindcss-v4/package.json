@@ -55,7 +55,7 @@
     "@dcloudio/uni-mp-weixin": "3.0.0-4080720251210001",
     "@dcloudio/uni-mp-xhs": "3.0.0-4080720251210001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-4080720251210001",
-    "@weapp-tailwindcss/merge": "^2.2.0",
+    "@weapp-tailwindcss/merge": "^2.2.1",
     "vue": "^3.4.21",
     "vue-i18n": "^9.1.9"
   },
@@ -73,7 +73,7 @@
     "vite": "5.2.8",
     "vue-tsc": "^2.2.10",
     "weapp-ide-cli": "^5.2.8",
-    "weapp-tailwindcss": "^4.12.0"
+    "weapp-tailwindcss": "^5.0.2"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
@@ -82,5 +82,5 @@
       "weapp-tailwindcss"
     ]
   },
-  "packageManager": "pnpm@10.33.2"
+  "packageManager": "pnpm@10.33.4"
 }

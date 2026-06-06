@@ -7,6 +7,7 @@ const READY_RE = /Build complete|Watching for changes|ready in \d+/i
 const pnpmExecPath = process.env.npm_execpath
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
+const ignoredFiles = new Set(['auto-imports.d.ts', 'components.d.ts', 'uni-pages.d.ts'])
 const useNativeWatch = process.env.UNI_E2E_WATCH_NATIVE === '1'
 
 function createPnpmCommand(args) {
@@ -92,6 +93,9 @@ async function collectFiles(dir, output) {
     }
 
     if (entry.isFile()) {
+      if (ignoredFiles.has(entry.name)) {
+        continue
+      }
       output.push(file)
     }
   }

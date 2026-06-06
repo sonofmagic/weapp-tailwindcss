@@ -110,6 +110,12 @@ export default defineConfig(async (merge) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        chain.plugin('weapp-tailwindcss').use(WeappTailwindcss, [
+          {
+            appType: 'taro',
+            rem2rpx: true
+          }
+        ])
       }
     },
     rn: {
