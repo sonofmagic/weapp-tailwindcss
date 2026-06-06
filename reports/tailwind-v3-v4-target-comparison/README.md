@@ -1,6 +1,6 @@
 # Tailwind CSS v3/v4 与 weapp-tailwindcss target 输出对比报告
 
-生成时间：2026-06-06T06:42:19.811Z
+生成时间：2026-06-06T06:48:33.546Z
 
 ## 环境
 
@@ -82,5 +82,7 @@ weapp target weapp v3 vs v4 | 否 | 5926 | 2 | 70 | - | hasTailwindV4ThemeVariab
 - 先看 `summary.json` 获取统计矩阵。
 - 单独看 v3/v4 web 产物差异：`web-comparison.md`。
 - 单独看 v3/v4 weapp 产物差异：`weapp-comparison.md`。
+- 单独看 Tailwind CSS v3 下 web/weapp 产物差异：`tailwind-v3-web-weapp-comparison.md`。
+- 单独看 Tailwind CSS v4 下 web/weapp 产物差异：`tailwind-v4-web-weapp-comparison.md`。
 - 对类名和选择器转义，直接对比 `tailwind-v*-official.css` 与 `tailwind-v*-weapp-target-weapp.wxss`。
 - 对 web parity，直接对比 `tailwind-v*-official.css` 与 `tailwind-v*-weapp-target-web.css`。

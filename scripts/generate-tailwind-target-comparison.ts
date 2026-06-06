@@ -260,6 +260,36 @@ function createTargetVersionComparison(
   }
 }
 
+function createVersionTargetComparison(
+  artifacts: Artifact[],
+  version: 3 | 4,
+) {
+  const byKey = new Map(artifacts.map(artifact => [artifact.key, artifact]))
+  const web = byKey.get(`tailwind-v${version}-weapp-target-web`)!
+  const weapp = byKey.get(`tailwind-v${version}-weapp-target-weapp`)!
+
+  return {
+    version,
+    left: web.stats.file,
+    right: weapp.stats.file,
+    normalizedEqual: normalizeCss(web.css) === normalizeCss(weapp.css),
+    delta: {
+      bytes: weapp.stats.bytes - web.stats.bytes,
+      lines: weapp.stats.lines - web.stats.lines,
+      selectors: weapp.stats.selectors - web.stats.selectors,
+      declarations: weapp.stats.declarations - web.stats.declarations,
+      uniqueClassSelectors: weapp.stats.uniqueClassSelectors - web.stats.uniqueClassSelectors,
+      importantDeclarations: weapp.stats.importantDeclarations - web.stats.importantDeclarations,
+    },
+    leftOnlyFeatures: Object.fromEntries(
+      Object.entries(web.stats.featureFlags).filter(([feature, enabled]) => enabled && !weapp.stats.featureFlags[feature]),
+    ),
+    rightOnlyFeatures: Object.fromEntries(
+      Object.entries(weapp.stats.featureFlags).filter(([feature, enabled]) => enabled && !web.stats.featureFlags[feature]),
+    ),
+  }
+}
+
 function createMarkdown(artifacts: Artifact[], comparisons: ReturnType<typeof createComparison>) {
   const byKey = new Map(artifacts.map(artifact => [artifact.key, artifact]))
   const row = (artifact: Artifact) => [
@@ -353,6 +383,8 @@ function createMarkdown(artifacts: Artifact[], comparisons: ReturnType<typeof cr
     '- 先看 `summary.json` 获取统计矩阵。',
     '- 单独看 v3/v4 web 产物差异：`web-comparison.md`。',
     '- 单独看 v3/v4 weapp 产物差异：`weapp-comparison.md`。',
+    '- 单独看 Tailwind CSS v3 下 web/weapp 产物差异：`tailwind-v3-web-weapp-comparison.md`。',
+    '- 单独看 Tailwind CSS v4 下 web/weapp 产物差异：`tailwind-v4-web-weapp-comparison.md`。',
     '- 对类名和选择器转义，直接对比 `tailwind-v*-official.css` 与 `tailwind-v*-weapp-target-weapp.wxss`。',
     '- 对 web parity，直接对比 `tailwind-v*-official.css` 与 `tailwind-v*-weapp-target-web.css`。',
     '',
@@ -432,6 +464,80 @@ function createTargetMarkdown(
     '',
     `- 直接打开 \`${v3.stats.file}\` 与 \`${v4.stats.file}\` 做逐段 diff。`,
     '- 机器读取可用 `summary.json` 的 `targetComparisons` 字段。',
+    '',
+  ].join('\n')
+}
+
+function createVersionTargetMarkdown(
+  artifacts: Artifact[],
+  comparison: ReturnType<typeof createVersionTargetComparison>,
+) {
+  const byKey = new Map(artifacts.map(artifact => [artifact.key, artifact]))
+  const web = byKey.get(`tailwind-v${comparison.version}-weapp-target-web`)!
+  const weapp = byKey.get(`tailwind-v${comparison.version}-weapp-target-weapp`)!
+  const versionLabel = comparison.version === 3 ? 'Tailwind CSS v3' : 'Tailwind CSS v4'
+  const row = (artifact: Artifact) => [
+    artifact.label,
+    `\`${artifact.stats.file}\``,
+    artifact.stats.bytes,
+    artifact.stats.lines,
+    artifact.stats.selectors,
+    artifact.stats.declarations,
+    artifact.stats.uniqueClassSelectors,
+    Object.keys(artifact.stats.atRules).map(name => `${name}:${artifact.stats.atRules[name]}`).join(', ') || '-',
+  ].join(' | ')
+
+  return [
+    `# ${versionLabel} target: web 与 target: weapp 样式产物对比报告`,
+    '',
+    `生成时间：${new Date().toISOString()}`,
+    '',
+    '## 范围',
+    '',
+    `- 只比较 ${versionLabel} 下 \`weapp-tailwindcss/generator\` 的 \`target: web\` 和 \`target: weapp\` 产物。`,
+    `- web 产物：\`${web.stats.file}\``,
+    `- weapp 产物：\`${weapp.stats.file}\``,
+    '- 样式格式：web 为 CSS，weapp 为 WXSS。',
+    `- 候选 class 数量：${candidates.length}`,
+    `- 覆盖类别数量：${Object.keys(tailwindParityCandidateCategories).length}`,
+    '',
+    '## 产物统计',
+    '',
+    '| 产物 | 文件 | bytes | lines | selectors | declarations | unique classes | at-rules |',
+    '| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |',
+    row(web),
+    row(weapp),
+    '',
+    '## web vs weapp 直接差异',
+    '',
+    '| 归一化后完全相同 | bytes Δ | lines Δ | selectors Δ | declarations Δ | unique classes Δ | important declarations Δ |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+    [
+      comparison.normalizedEqual ? '是' : '否',
+      comparison.delta.bytes,
+      comparison.delta.lines,
+      comparison.delta.selectors,
+      comparison.delta.declarations,
+      comparison.delta.uniqueClassSelectors,
+      comparison.delta.importantDeclarations,
+    ].join(' | '),
+    '',
+    '## 特征差异',
+    '',
+    `- web 独有特征：${Object.keys(comparison.leftOnlyFeatures).join(', ') || '-'}`,
+    `- weapp 独有特征：${Object.keys(comparison.rightOnlyFeatures).join(', ') || '-'}`,
+    '',
+    '## 结论',
+    '',
+    comparison.version === 3
+      ? '- Tailwind CSS v3 下，`target: web` 与官方 v3 CSS 保持一致；`target: weapp` 会进入小程序兼容转换，主要差异体现在 preflight 标签选择器、任意值类名转义、hover/button/universal 等 Web 选择器处理。'
+      : '- Tailwind CSS v4 下，`target: web` 与官方 v4 CSS 保持一致；`target: weapp` 会移除或转换小程序不适合直接输出的 `@property/@layer` 等现代 CSS 结构，并保留 v4 weapp root/theme 变量作用域。',
+    '- 两个 target 的差异是目标运行环境差异，不代表 Tailwind class 候选缺失；候选覆盖和 web parity 由 `pnpm e2e:generator-parity` 守卫。',
+    '',
+    '## 读取建议',
+    '',
+    `- 直接打开 \`${web.stats.file}\` 与 \`${weapp.stats.file}\` 做逐段 diff。`,
+    '- 机器读取可用 `summary.json` 的 `versionTargetComparisons` 字段。',
     '',
   ].join('\n')
 }
@@ -520,6 +626,10 @@ async function main() {
     web: createTargetVersionComparison(artifacts, 'web'),
     weapp: createTargetVersionComparison(artifacts, 'weapp'),
   }
+  const versionTargetComparisons = {
+    tailwindcssV3: createVersionTargetComparison(artifacts, 3),
+    tailwindcssV4: createVersionTargetComparison(artifacts, 4),
+  }
   const summary = {
     generatedAt: new Date().toISOString(),
     versions: {
@@ -535,12 +645,15 @@ async function main() {
     })),
     comparisons,
     targetComparisons,
+    versionTargetComparisons,
   }
 
   await writeFile(path.join(reportRoot, 'summary.json'), `${JSON.stringify(summary, null, 2)}\n`)
   await writeFile(path.join(reportRoot, 'README.md'), createMarkdown(artifacts, comparisons))
   await writeFile(path.join(reportRoot, 'web-comparison.md'), createTargetMarkdown(artifacts, targetComparisons.web))
   await writeFile(path.join(reportRoot, 'weapp-comparison.md'), createTargetMarkdown(artifacts, targetComparisons.weapp))
+  await writeFile(path.join(reportRoot, 'tailwind-v3-web-weapp-comparison.md'), createVersionTargetMarkdown(artifacts, versionTargetComparisons.tailwindcssV3))
+  await writeFile(path.join(reportRoot, 'tailwind-v4-web-weapp-comparison.md'), createVersionTargetMarkdown(artifacts, versionTargetComparisons.tailwindcssV4))
   console.log(`Generated report at ${path.relative(repoRoot, reportRoot)}`)
 }
 

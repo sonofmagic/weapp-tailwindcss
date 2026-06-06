@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T06:42:19.810Z",
+  "generatedAt": "2026-06-06T06:48:33.546Z",
   "versions": {
     "weappTailwindcss": "5.0.2",
     "tailwindcssV3": "3.4.19",
@@ -1038,6 +1038,57 @@
       "leftOnlyFeatures": {},
       "rightOnlyFeatures": {
         "hasTailwindV4ThemeVariables": true,
+        "hasWeappRootScope": true
+      }
+    }
+  },
+  "versionTargetComparisons": {
+    "tailwindcssV3": {
+      "version": 3,
+      "left": "artifacts/tailwind-v3-weapp-target-web.css",
+      "right": "artifacts/tailwind-v3-weapp-target-weapp.wxss",
+      "normalizedEqual": false,
+      "delta": {
+        "bytes": -10021,
+        "lines": -458,
+        "selectors": -65,
+        "declarations": -132,
+        "uniqueClassSelectors": -11,
+        "importantDeclarations": -2
+      },
+      "leftOnlyFeatures": {
+        "hasHoverPseudo": true,
+        "hasUniversalSelector": true,
+        "hasButtonSelector": true
+      },
+      "rightOnlyFeatures": {
+        "hasWxssEscapes": true,
+        "hasViewTextPreflight": true
+      }
+    },
+    "tailwindcssV4": {
+      "version": 4,
+      "left": "artifacts/tailwind-v4-weapp-target-web.css",
+      "right": "artifacts/tailwind-v4-weapp-target-weapp.wxss",
+      "normalizedEqual": false,
+      "delta": {
+        "bytes": -12121,
+        "lines": -595,
+        "selectors": -109,
+        "declarations": -234,
+        "uniqueClassSelectors": -9,
+        "importantDeclarations": -2
+      },
+      "leftOnlyFeatures": {
+        "hasAtProperty": true,
+        "hasLayer": true,
+        "hasHoverPseudo": true,
+        "hasUniversalSelector": true,
+        "hasButtonSelector": true
+      },
+      "rightOnlyFeatures": {
+        "hasWxssEscapes": true,
+        "hasViewTextPreflight": true,
         "hasWeappRootScope": true
       }
     }
