@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.4
+
+### Patch Changes
+
+- 🐛 **将 uni-app-x 的 Vue compiler 依赖改为按需加载并从主运行时打包中外置，减少构建 warning 与普通 Vite 入口体积。** [`56540cf`](https://github.com/sonofmagic/weapp-tailwindcss/commit/56540cfb5b5a6e527088c3d7c68bf1c1220284c4) by @sonofmagic
+
 ## 5.0.3
 
 ### Patch Changes
@@ -2340,8 +2346,8 @@
 
   ```css
   @property --tw-content {
-    syntax: "*";
-    initial-value: "";
+    syntax: '*';
+    initial-value: '';
     inherits: false;
   }
   ```
