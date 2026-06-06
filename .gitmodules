@@ -4,6 +4,3 @@
 [submodule "submodules/tailwindcss-v4"]
 	path = submodules/tailwindcss-v4
 	url = https://github.com/tailwindlabs/tailwindcss.git
-[submodule "submodules/postcss-calc"]
-	path = submodules/postcss-calc
-	url = https://github.com/sonofmagic/postcss-calc

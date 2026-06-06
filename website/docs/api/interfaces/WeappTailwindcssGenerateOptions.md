@@ -45,14 +45,6 @@ Tailwind CSS v4 小程序生成模式是否注入 v3 默认值兼容层。
 
 ***
 
-### bareArbitraryValues?
-
-> 可选 | **bareArbitraryValues**: `boolean | { units?: string[]; }`
-
-是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`p-2.5px`。
-
-***
-
 ### scanSources?
 
 > 可选 | **scanSources**: `boolean | import("tailwindcss-patch").TailwindV4SourcePattern[]`
@@ -74,6 +66,14 @@ Tailwind CSS v4 小程序生成模式是否注入 v3 默认值兼容层。
 > 可选 | **sources**: `TailwindV3CandidateSource[] & import("tailwindcss-patch").TailwindV4CandidateSource[]`
 
 额外的内联候选来源。
+
+***
+
+### bareArbitraryValues?
+
+> 可选 | **bareArbitraryValues**: `((boolean | { units?: string[]; }) & (boolean | { units?: string[]; }))`
+
+是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`bg-#fff`。
 
 ***
 

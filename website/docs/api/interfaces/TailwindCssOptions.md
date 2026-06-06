@@ -72,7 +72,7 @@ Tailwind 包名。项目使用分支包时可以改这里。
 > 可选 | **paths**: `string[]`
 #### platform?
 
-> 可选 | **platform**: `"auto" | "posix" | "win32"`
+> 可选 | **platform**: `"posix" | "win32" | "auto"`
 
 ##### 默认值
 

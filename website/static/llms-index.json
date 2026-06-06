@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-05T16:25:11.415Z",
+  "generatedAt": "2026-06-06T06:00:17.910Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -1316,10 +1316,10 @@
         "# target?",
         "# styleOptions?",
         "# tailwindcssV3Compatibility?",
-        "# bareArbitraryValues?",
         "# scanSources?",
         "# candidates?",
-        "# sources?"
+        "# sources?",
+        "# bareArbitraryValues?"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/WeappTailwindcssGenerateOptions.md"
@@ -1358,7 +1358,7 @@
         "# incrementalRawCss?",
         "# classSet",
         "## size",
-        "## __@toStringTag@9861"
+        "## __@toStringTag@9916"
       ],
       "updatedAt": null,
       "source": "docs/api/interfaces/WeappTailwindcssGenerateResult.md"

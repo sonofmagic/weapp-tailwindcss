@@ -207,6 +207,8 @@ WeappTailwindcss({
 
 Tailwind CSS 4 下，如果没有显式配置 `cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。Tailwind CSS 3 默认不启用。
 
+需要注意的是，默认模式只会补充一条预计算声明，不会删除后面的原始 `calc()` 声明。这样可以保持 CSS 级联兼容，但如果目标小程序运行时会优先采用后续 `calc()`，你需要显式指定要清理的 CSS 变量。
+
 例如 Tailwind CSS 4 生成：
 
 ```css
@@ -219,7 +221,7 @@ page,
 }
 ```
 
-启用 `cssCalc` 后会补出预计算结果，并默认保留原声明：
+启用默认 `cssCalc` 后会补出预计算结果，并保留原声明：
 
 ```css
 page,
@@ -232,12 +234,20 @@ page,
 }
 ```
 
-如果你只想计算指定变量，可以传入数组或对象：
+如果你希望 `--spacing` 这类变量完全使用预计算结果，避免后续原始 `calc()` 覆盖兜底值，可以传入数组或对象：
 
 ```ts
 WeappTailwindcss({
   cssCalc: ['--spacing'],
 })
+```
+
+此时匹配 `--spacing` 的原始 `calc()` 声明会被删除，输出会变成：
+
+```css
+.h-2 {
+  height: 16rpx;
+}
 ```
 
 ```ts

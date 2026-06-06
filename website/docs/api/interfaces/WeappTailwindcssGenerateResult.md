@@ -62,9 +62,9 @@ Tailwind 原始输出 CSS。
 #### size
 
 > **size**: `number`
-#### __@toStringTag@9861
+#### __@toStringTag@9916
 
-> **__@toStringTag@9861**: `string`
+> **__@toStringTag@9916**: `string`
 
 ***
 
@@ -77,9 +77,9 @@ Tailwind 原始输出 CSS。
 #### size
 
 > **size**: `number`
-#### __@toStringTag@9861
+#### __@toStringTag@9916
 
-> **__@toStringTag@9861**: `string`
+> **__@toStringTag@9916**: `string`
 
 ***
 

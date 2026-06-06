@@ -180,7 +180,7 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @since ^4.3.0
    * @remarks
-   * 解决部分机型对 `calc` 计算不一致的问题，可传入布尔值、选项对象或自定义匹配列表（支持正则）。在启用计算后，可通过 `includeCustomProperties` 指定需要保留的变量。
+   * 解决部分机型对 `calc` 计算不一致的问题，可传入布尔值、选项对象或自定义匹配列表（支持正则）。默认只补充预计算声明，并保留原始 `calc()` 声明；需要避免后续原始声明覆盖预计算结果时，可通过 `includeCustomProperties` 指定要清理的 CSS 变量。
    * @example
    * ```css
    * // 原始输出
@@ -194,7 +194,7 @@ export interface UserDefinedOptionsImportantPart {
    * ```
    *
    * ```css
-   * // 启用 cssCalc 后
+   * // 启用 cssCalc 后，默认保留原始 calc 声明
    * .h-2 {
    *   height: 16rpx;
    *   height: calc(var(--spacing) * 2);
@@ -204,6 +204,13 @@ export interface UserDefinedOptionsImportantPart {
    * ```js
    * cssCalc: ['--spacing']
    * cssCalc: { includeCustomProperties: ['--spacing'] }
+   * ```
+   *
+   * ```css
+   * // 指定 --spacing 后，会删除匹配变量的原始 calc 声明
+   * .h-2 {
+   *   height: 16rpx;
+   * }
    * ```
    */
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
