@@ -1,13 +1,14 @@
 'use strict';
-import { test, assert } from 'vitest'
+import { test, assert } from 'vitest';
 
-const postcss = require('postcss');
+import postcss from 'postcss';
 
-const reduceCalc = require('../src/index.js');
+import reduceCalc from '../src/index';
+import type { PostCssCalcOptions } from '../src/index';
 
 const postcssOpts = { from: undefined };
 
-function testValue(fixture, expected, opts = {}) {
+function testValue(fixture: string, expected: string, opts: PostCssCalcOptions = {}) {
   fixture = `foo{bar:${fixture}}`;
   expected = `foo{bar:${expected}}`;
 
@@ -20,7 +21,7 @@ function testValue(fixture, expected, opts = {}) {
   };
 }
 
-function testThrows(fixture, expected, warning, opts = {}) {
+function testThrows(fixture: string, expected: string, warning: string, opts: PostCssCalcOptions = {}) {
   fixture = `foo{bar:${fixture}}`;
   expected = `foo{bar:${expected}}`;
 

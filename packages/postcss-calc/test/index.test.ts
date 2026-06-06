@@ -1,12 +1,13 @@
 'use strict';
-import { test, assert } from 'vitest'
-const postcss = require('postcss');
+import { test, assert } from 'vitest';
+import postcss from 'postcss';
 
-const reduceCalc = require('../src/index.js');
+import reduceCalc from '../src/index';
+import type { PostCssCalcOptions } from '../src/index';
 
 const postcssOpts = { from: undefined };
 
-function testValue(fixture, expected, opts = {}) {
+function testValue(fixture: string, expected: string, opts: PostCssCalcOptions = {}) {
   fixture = `foo{bar:${fixture}}`;
   expected = `foo{bar:${expected}}`;
 
@@ -19,7 +20,7 @@ function testValue(fixture, expected, opts = {}) {
   };
 }
 
-function testCss(fixture, expected, opts = {}) {
+function testCss(fixture: string, expected: string, opts: PostCssCalcOptions = {}) {
   return async () => {
     const result = await postcss(reduceCalc(opts)).process(
       fixture,
@@ -29,7 +30,7 @@ function testCss(fixture, expected, opts = {}) {
   };
 }
 
-function testCssDoesNotThrow(fixture, expected, opts = {}) {
+function testCssDoesNotThrow(fixture: string, expected: string, opts: PostCssCalcOptions = {}) {
   return async () => {
     const result = await postcss(reduceCalc(opts)).process(
       fixture,
@@ -41,7 +42,7 @@ function testCssDoesNotThrow(fixture, expected, opts = {}) {
   };
 }
 
-function testThrows(fixture, expected, warning, opts = {}) {
+function testThrows(fixture: string, expected: string, warning: string, opts: PostCssCalcOptions = {}) {
   fixture = `foo{bar:${fixture}}`;
   expected = `foo{bar:${expected}}`;
 
@@ -258,32 +259,27 @@ test(
   )
 );
 
-
 test(
- 'should ignore multiplication with infinity',
-testValue('calc(infinity * 1px)', 'calc(infinity*1px)')
+  'should ignore multiplication with infinity',
+  testValue('calc(infinity * 1px)', 'calc(infinity*1px)')
 );
 
 test(
- 'should ignore addition with infinity',
-testValue('calc(infinity + 1px)', 'calc(infinity + 1px)')
+  'should ignore addition with infinity',
+  testValue('calc(infinity + 1px)', 'calc(infinity + 1px)')
 );
 
 test(
- 'should ignore multiplication with pi',
-testValue('calc(1px * pi)', 'calc(1px*pi)')
+  'should ignore multiplication with pi',
+  testValue('calc(1px * pi)', 'calc(1px*pi)')
 );
 
 test(
- 'should ignore addition with pi',
-testValue('calc(43 + pi)', 'calc(43 + pi)')
+  'should ignore addition with pi',
+  testValue('calc(43 + pi)', 'calc(43 + pi)')
 );
 
-test(
- 'should preserve e',
-testValue('calc(e)', 'calc(e)')
-);
-
+test('should preserve e', testValue('calc(e)', 'calc(e)'));
 
 test(
   'should reduce calc with newline characters',
@@ -343,10 +339,7 @@ test(
   testValue('calc(100svmax - 44.5svh)', 'calc(100svmax - 44.5svh)')
 );
 
-test(
-  'should add numbers with lh units',
-  testValue('calc(1lh + 4lh)', '5lh')
-);
+test('should add numbers with lh units', testValue('calc(1lh + 4lh)', '5lh'));
 
 test(
   'should add numbers with rlh units',
@@ -1010,7 +1003,10 @@ test(
 
 test(
   'calc-size should be ignored',
-  testCssDoesNotThrow('.foo{block-size: calc-size(auto, size)}', '.foo{block-size: calc-size(auto, size)}')
+  testCssDoesNotThrow(
+    '.foo{block-size: calc-size(auto, size)}',
+    '.foo{block-size: calc-size(auto, size)}'
+  )
 );
 
 test(

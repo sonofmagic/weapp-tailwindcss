@@ -1,16 +1,19 @@
-'use strict';
+import type { ChildNode, Result } from 'postcss';
+import type { CalcNode } from '../parser';
+
 const order = {
   '*': 0,
   '/': 0,
   '+': 1,
   '-': 1,
-};
+} as const;
 
-/**
- * @param {number} value
- * @param {number | false} prec
- */
-function round(value, prec) {
+interface StringifierOptions {
+  precision: number | false;
+  warnWhenCannotResolve: boolean;
+}
+
+function round(value: number, prec: number | false): number {
   if (prec !== false) {
     const precision = Math.pow(10, prec);
     return Math.round(value * precision) / precision;
@@ -18,13 +21,7 @@ function round(value, prec) {
   return value;
 }
 
-/**
- * @param {number | false} prec
- * @param {import('../parser').CalcNode} node
- *
- * @return {string}
- */
-function stringify(node, prec) {
+function stringify(node: CalcNode, prec: number | false): string {
   switch (node.type) {
     case 'MathExpression': {
       const { left, right, operator: op } = node;
@@ -65,17 +62,14 @@ function stringify(node, prec) {
   }
 }
 
-/**
- * @param {string} calc
- * @param {import('../parser').CalcNode} node
- * @param {string} originalValue
- * @param {{precision: number | false, warnWhenCannotResolve: boolean}} options
- * @param {import("postcss").Result} result
- * @param {import("postcss").ChildNode} item
- *
- * @returns {string}
- */
-module.exports = function (calc, node, originalValue, options, result, item) {
+export default function stringifyCalc(
+  calc: string,
+  node: CalcNode,
+  originalValue: string,
+  options: StringifierOptions,
+  result: Result,
+  item: ChildNode
+): string {
   let str = stringify(node, options.precision);
 
   const shouldPrintCalc =
@@ -103,4 +97,4 @@ module.exports = function (calc, node, originalValue, options, result, item) {
     }
   }
   return str;
-};
+}

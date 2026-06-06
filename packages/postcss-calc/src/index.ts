@@ -1,19 +1,27 @@
-'use strict';
-const transform = require('./lib/transform.js');
+import type { PluginCreator } from 'postcss';
+import transform from './lib/transform';
 
-/**
- * @typedef {{precision?: number | false,
- *          preserve?: boolean,
- *          warnWhenCannotResolve?: boolean,
- *          mediaQueries?: boolean,
- *          selectors?: boolean}} PostCssCalcOptions
- */
-/**
- * @type {import('postcss').PluginCreator<PostCssCalcOptions>}
- * @param {PostCssCalcOptions} opts
- * @return {import('postcss').Plugin}
- */
-function pluginCreator(opts) {
+export interface PostCssCalcOptions {
+  precision?: number | false;
+  preserve?: boolean;
+  warnWhenCannotResolve?: boolean;
+  mediaQueries?: boolean;
+  selectors?: boolean;
+}
+
+interface NormalizedPostCssCalcOptions {
+  precision: number;
+  preserve: boolean;
+  warnWhenCannotResolve: boolean;
+  mediaQueries: boolean;
+  selectors: boolean;
+}
+
+export type PostCssCalcPluginCreator = PluginCreator<PostCssCalcOptions> & {
+  postcss: true;
+};
+
+const pluginCreator = ((opts = {}) => {
   const options = Object.assign(
     {
       precision: 5,
@@ -23,7 +31,7 @@ function pluginCreator(opts) {
       selectors: false,
     },
     opts
-  );
+  ) as NormalizedPostCssCalcOptions;
 
   return {
     postcssPlugin: 'postcss-calc',
@@ -44,8 +52,8 @@ function pluginCreator(opts) {
       });
     },
   };
-}
+}) as PostCssCalcPluginCreator;
 
 pluginCreator.postcss = true;
 
-module.exports = pluginCreator;
+export default pluginCreator;

@@ -1,20 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es2021",
-    "lib": ["es2021"],
-    "module": "commonjs",
-    "allowJs": true,
-    "checkJs": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "noEmitOnError": true,
-    "newLine": "lf",
-    "rootDir": "src",
-    "outDir": "types",
+    "target": "ES2021",
+    "lib": ["ES2021"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "types": ["node", "vitest/globals"],
+    "noEmit": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "skipLibCheck": true
   },
-  "include": ["src/*"],
+  "include": ["src", "test", "tsdown.config.mts", "vitest.config.ts"],
   "exclude": ["src/parser.js"]
 }

@@ -1,21 +1,36 @@
-'use strict';
-const selectorParser = require('postcss-selector-parser');
-const valueParser = require('postcss-value-parser');
+import type { ChildNode, Container, Result } from 'postcss';
+import selectorParser from 'postcss-selector-parser';
+import valueParser from 'postcss-value-parser';
 
-const { parser } = require('../parser.js');
+import type { CalcNode } from '../parser';
+import { parser } from '../parser.js';
+import reducer from './reducer';
+import stringifier from './stringifier';
 
-const reducer = require('./reducer.js');
-const stringifier = require('./stringifier.js');
+export type TransformProperty = 'value' | 'params' | 'selector';
 
 const MATCH_CALC = /((?:-(moz|webkit)-)?calc(?!-))/i;
 
-/**
- * @param {string} value
- * @param {{precision: number, warnWhenCannotResolve: boolean}} options
- * @param {import("postcss").Result} result
- * @param {import("postcss").ChildNode} item
- */
-function transformValue(value, options, result, item) {
+interface TransformOptions {
+  precision: number;
+  preserve: boolean;
+  warnWhenCannotResolve: boolean;
+}
+
+type TransformNode = ChildNode & {
+  value?: string;
+  params?: string;
+  selector?: string;
+  parent?: Container;
+  clone: () => TransformNode;
+};
+
+function transformValue(
+  value: string,
+  options: TransformOptions,
+  result: Result,
+  item: ChildNode
+): string {
   return valueParser(value)
     .walk((node) => {
       // skip anything which isn't a calc() function
@@ -31,8 +46,8 @@ function transformValue(value, options, result, item) {
       // or a simplified calc expression
       const reducedAst = reducer(ast, options.precision);
 
-      // stringify AST and write it back
-      /** @type {valueParser.Node} */ (node).type = 'word';
+      const wordNode = node as unknown as valueParser.WordNode;
+      wordNode.type = 'word';
       node.value = stringifier(
         node.value,
         reducedAst,
@@ -46,13 +61,13 @@ function transformValue(value, options, result, item) {
     })
     .toString();
 }
-/**
- * @param {import("postcss-selector-parser").Selectors} value
- * @param {{precision: number, warnWhenCannotResolve: boolean}} options
- * @param {import("postcss").Result} result
- * @param {import("postcss").ChildNode} item
- */
-function transformSelector(value, options, result, item) {
+
+function transformSelector(
+  value: string,
+  options: TransformOptions,
+  result: Result,
+  item: ChildNode
+): string {
   return selectorParser((selectors) => {
     selectors.walk((node) => {
       // attribute value
@@ -72,20 +87,24 @@ function transformSelector(value, options, result, item) {
   }).processSync(value);
 }
 
-/**
- * @param {any} node
- * @param {{precision: number, preserve: boolean, warnWhenCannotResolve: boolean}} options
- * @param {'value'|'params'|'selector'} property
- * @param {import("postcss").Result} result
- */
-module.exports = (node, property, options, result) => {
-  let value = node[property];
+export default function transform(
+  node: TransformNode,
+  property: TransformProperty,
+  options: TransformOptions,
+  result: Result
+): void {
+  const originalValue = node[property];
+  if (typeof originalValue !== 'string') {
+    return;
+  }
+
+  let value = originalValue;
 
   try {
     value =
       property === 'selector'
-        ? transformSelector(node[property], options, result, node)
-        : transformValue(node[property], options, result, node);
+        ? transformSelector(originalValue, options, result, node)
+        : transformValue(originalValue, options, result, node);
   } catch (error) {
     if (error instanceof Error) {
       result.warn(error.message, { node });
@@ -99,11 +118,14 @@ module.exports = (node, property, options, result) => {
   // transformed value into a cloned node which is inserted before the current
   // node, preserving the original value. Otherwise, overwrite the original
   // value.
-  if (options.preserve && node[property] !== value) {
+  if (options.preserve && originalValue !== value) {
+    if (!node.parent) {
+      return;
+    }
     const clone = node.clone();
     clone[property] = value;
     node.parent.insertBefore(node, clone);
   } else {
     node[property] = value;
   }
-};
+}

@@ -19,7 +19,14 @@ import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
 import { isUniAppXEnabled, resolveUniAppXOptions } from './options'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
-import { transformUVue } from './transform'
+
+type TransformUVue = typeof import('./transform')['transformUVue']
+let transformUVuePromise: Promise<TransformUVue> | undefined
+
+function loadTransformUVue(): Promise<TransformUVue> {
+  transformUVuePromise ??= import('./transform').then(mod => mod.transformUVue)
+  return transformUVuePromise
+}
 
 interface UniAppXRuntimeState {
   readyPromise: Promise<unknown>
@@ -201,6 +208,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const currentRuntimeSet: Set<string> = shouldForceRefresh
         ? await ensureRuntimeClassSet(true)
         : await ensureRuntimeClassSet()
+      const transformUVue = await loadTransformUVue()
       const extraOptions = customAttributesEntities.length > 0 || disabledDefaultTemplateHandler
         ? {
             customAttributesEntities,

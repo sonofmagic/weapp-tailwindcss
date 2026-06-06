@@ -1,8 +1,6 @@
-'use strict';
-/**
- * @type {{[key:string]: {[key:string]: number}}}
- */
-const conversions = {
+type ConversionMap = Record<string, Record<string, number>>;
+
+const conversions: ConversionMap = {
   // Absolute length units
   px: {
     px: 1,
@@ -14,7 +12,7 @@ const conversions = {
     pc: 16,
   },
   rpx: {
-    rpx: 1
+    rpx: 1,
   },
   cm: {
     px: 2.54 / 96,
@@ -130,26 +128,27 @@ const conversions = {
     dppx: 1,
   },
 };
-/**
- * @param {number} value
- * @param {string} sourceUnit
- * @param {string} targetUnit
- * @param {number|false} precision
- */
-function convertUnit(value, sourceUnit, targetUnit, precision) {
+
+export default function convertUnit(
+  value: number,
+  sourceUnit: string,
+  targetUnit: string,
+  precision: number | false = 5
+): number {
   const sourceUnitNormalized = sourceUnit.toLowerCase();
   const targetUnitNormalized = targetUnit.toLowerCase();
 
-  if (!conversions[targetUnitNormalized]) {
+  const targetConversions = conversions[targetUnitNormalized];
+  if (!targetConversions) {
     throw new Error('Cannot convert to ' + targetUnit);
   }
 
-  if (!conversions[targetUnitNormalized][sourceUnitNormalized]) {
+  const conversion = targetConversions[sourceUnitNormalized];
+  if (!conversion) {
     throw new Error('Cannot convert from ' + sourceUnit + ' to ' + targetUnit);
   }
 
-  const converted =
-    conversions[targetUnitNormalized][sourceUnitNormalized] * value;
+  const converted = conversion * value;
 
   if (precision !== false) {
     precision = Math.pow(10, Math.ceil(precision) || 5);
@@ -159,5 +158,3 @@ function convertUnit(value, sourceUnit, targetUnit, precision) {
 
   return converted;
 }
-
-module.exports = convertUnit;

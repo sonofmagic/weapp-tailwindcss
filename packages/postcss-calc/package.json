@@ -19,18 +19,19 @@
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
   },
-  "main": "src/index.js",
-  "types": "types/index.d.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
   "files": [
-    "src",
-    "types",
+    "dist",
     "LICENSE"
   ],
   "scripts": {
-    "build": "jison ./parser.jison -o src/parser.js && tsc",
+    "build": "pnpm run build:parser && tsdown",
     "build:parser": "jison ./parser.jison -o src/parser.js",
-    "build:types": "tsc",
-    "lint": "eslint . && tsc",
+    "build:types": "tsdown --dts-only",
+    "lint": "eslint . && tsc --noEmit",
     "test": "vitest run",
     "test:dev": "vitest",
     "release": "pnpm publish",
@@ -60,6 +61,17 @@
   },
   "publishConfig": {
     "access": "public",
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      },
+      "./package.json": "./package.json"
+    },
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts"
   }
 }

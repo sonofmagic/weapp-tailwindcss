@@ -3,7 +3,7 @@ const eslintConfigPrettier = require('eslint-config-prettier');
 
 module.exports = [
   {
-    ignores: ['src/parser.js'],
+    ignores: ['dist/**', 'src/parser.js'],
   },
   js.configs.recommended,
   eslintConfigPrettier,

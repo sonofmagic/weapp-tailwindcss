@@ -1,10 +1,11 @@
 'use strict';
-import { test, assert } from 'vitest'
+import { test, assert } from 'vitest';
+import convertUnit from '../src/lib/convertUnit';
 
-const convertUnit = require('../src/lib/convertUnit.js');
+type ConversionFixture = [value: number, unit: string, expected: number, targetUnit: string];
 
 test('valid conversions', () => {
-  const conversions = [
+  const conversions: ConversionFixture[] = [
     // source value, source unit, expected value, target unit
     [10, 'px', 10, 'px'],
     [10, 'px', 0.26458, 'cm'],
@@ -104,7 +105,7 @@ test('valid conversions', () => {
 });
 
 test('invalid conversions', () => {
-  const invalid_units = {
+  const invalid_units: Record<string, string[]> = {
     px: [
       'deg',
       'grad',
@@ -391,7 +392,7 @@ test('invalid conversions', () => {
 
 test('precision', () => {
   const precision = 10;
-  const conversions = [
+  const conversions: ConversionFixture[] = [
     // source value, source unit, expected value, target unit
     [10, 'px', 0.2645833333, 'cm'],
     [10, 'px', 2.6458333333, 'mm'],

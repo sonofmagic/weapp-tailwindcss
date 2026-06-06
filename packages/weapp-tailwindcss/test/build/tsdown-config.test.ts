@@ -34,7 +34,7 @@ describe('tsdown build layout', () => {
     expect(configs.every(config => config.clean === false)).toBe(true)
   })
 
-  it('bundles Vue compiler deps for runtime entries', () => {
+  it('keeps Vue compiler deps external to avoid runtime bundle warning noise', () => {
     const configs = createTsdownConfigs()
     const runtimeConfig = configs[0]
     const alwaysBundle = runtimeConfig.deps?.alwaysBundle
@@ -43,16 +43,10 @@ describe('tsdown build layout', () => {
     expect(typeof alwaysBundle).toBe('function')
     expect(typeof neverBundle).toBe('function')
 
-    for (const id of [
-      '@vue/compiler-core',
-      '@vue/compiler-dom',
-      '@vue/compiler-sfc',
-      '@vue/compiler-ssr',
-      '@vue/shared',
-    ]) {
-      expect(alwaysBundle?.(id)).toBe(true)
-      expect(neverBundle?.(id)).toBe(false)
-    }
+    expect(alwaysBundle?.('@vue/compiler-dom')).toBe(false)
+    expect(alwaysBundle?.('@vue/compiler-sfc')).toBe(false)
+    expect(neverBundle?.('@vue/compiler-dom')).toBe(true)
+    expect(neverBundle?.('@vue/compiler-sfc')).toBe(true)
   })
 
   it('keeps declaration builds from emitting workspace dependency dts into source folders', () => {

@@ -1,11 +1,12 @@
-'use strict';
-const convertUnit = require('./convertUnit.js');
+import type {
+  CalcNode,
+  MathExpression,
+  ParenthesizedExpression,
+  ValueExpression,
+} from '../parser';
+import convertUnit from './convertUnit';
 
-/**
- * @param {import('../parser').CalcNode} node
- * @return {node is import('../parser').ValueExpression}
- */
-function isValueType(node) {
+function isValueType(node: CalcNode): node is ValueExpression {
   switch (node.type) {
     case 'LengthValue':
     case 'AngleValue':
@@ -55,30 +56,25 @@ function isValueType(node) {
   return false;
 }
 
-/** @param {'-'|'+'} operator */
-function flip(operator) {
+function flip(operator: '-' | '+'): '-' | '+' {
   return operator === '+' ? '-' : '+';
 }
 
-/**
- * @param {string} operator
- * @returns {operator is '+'|'-'}
- */
-function isAddSubOperator(operator) {
+function isAddSubOperator(operator: string): operator is '+' | '-' {
   return operator === '+' || operator === '-';
 }
 
-/**
- * @typedef {{preOperator: '+'|'-', node: import('../parser').CalcNode}} Collectible
- */
+interface Collectible {
+  preOperator: '+' | '-';
+  node: CalcNode;
+}
 
-/**
- * @param {'+'|'-'} preOperator
- * @param {import('../parser').CalcNode} node
- * @param {Collectible[]} collected
- * @param {number} precision
- */
-function collectAddSubItems(preOperator, node, collected, precision) {
+function collectAddSubItems(
+  preOperator: '+' | '-',
+  node: CalcNode,
+  collected: Collectible[],
+  precision: number
+): void {
   if (!isAddSubOperator(preOperator)) {
     throw new Error(`invalid operator ${preOperator}`);
   }
@@ -88,10 +84,7 @@ function collectAddSubItems(preOperator, node, collected, precision) {
       if (node.value === 0) {
         return;
       }
-      // can cast because of the criterion used to find itemIndex
-      const otherValueNode = /** @type import('../parser').ValueExpression*/ (
-        collected[itemIndex].node
-      );
+      const otherValueNode = collected[itemIndex].node as ValueExpression;
       const { left: reducedNode, right: current } = convertNodesUnits(
         otherValueNode,
         node,
@@ -154,13 +147,8 @@ function collectAddSubItems(preOperator, node, collected, precision) {
   }
 }
 
-/**
- * @param {import('../parser').CalcNode} node
- * @param {number} precision
- */
-function reduceAddSubExpression(node, precision) {
-  /** @type Collectible[] */
-  const collected = [];
+function reduceAddSubExpression(node: CalcNode, precision: number): CalcNode {
+  const collected: Collectible[] = [];
   collectAddSubItems('+', node, collected, precision);
 
   const withoutZeroItem = collected.filter(
@@ -184,15 +172,14 @@ function reduceAddSubExpression(node, precision) {
   }
 
   // make sure the preOperator of the first item is +
-  if (
-    withoutZeroItem[0].preOperator === '-' &&
-    isValueType(withoutZeroItem[0].node)
-  ) {
-    withoutZeroItem[0].node.value *= -1;
-    withoutZeroItem[0].preOperator = '+';
+  const firstItem = withoutZeroItem[0];
+
+  if (firstItem.preOperator === '-' && isValueType(firstItem.node)) {
+    firstItem.node.value *= -1;
+    firstItem.preOperator = '+';
   }
 
-  let root = withoutZeroItem[0].node;
+  let root = firstItem.node;
   for (let i = 1; i < withoutZeroItem.length; i++) {
     root = {
       type: 'MathExpression',
@@ -204,10 +191,7 @@ function reduceAddSubExpression(node, precision) {
 
   return root;
 }
-/**
- * @param {import('../parser').MathExpression} node
- */
-function reduceDivisionExpression(node) {
+function reduceDivisionExpression(node: MathExpression): CalcNode {
   if (!isValueType(node.right)) {
     return node;
   }
@@ -219,14 +203,7 @@ function reduceDivisionExpression(node) {
   return applyNumberDivision(node.left, node.right.value);
 }
 
-/**
- * apply (expr) / number
- *
- * @param {import('../parser').CalcNode} node
- * @param {number} divisor
- * @return {import('../parser').CalcNode}
- */
-function applyNumberDivision(node, divisor) {
+function applyNumberDivision(node: CalcNode, divisor: number): CalcNode {
   if (divisor === 0) {
     throw new Error('Cannot divide by zero');
   }
@@ -259,10 +236,7 @@ function applyNumberDivision(node, divisor) {
     },
   };
 }
-/**
- * @param {import('../parser').MathExpression} node
- */
-function reduceMultiplicationExpression(node) {
+function reduceMultiplicationExpression(node: MathExpression): CalcNode {
   // (expr) * number
   if (node.right.type === 'Number') {
     return applyNumberMultiplication(node.left, node.right.value);
@@ -274,13 +248,10 @@ function reduceMultiplicationExpression(node) {
   return node;
 }
 
-/**
- * apply (expr) * number
- * @param {number} multiplier
- * @param {import('../parser').CalcNode} node
- * @return {import('../parser').CalcNode}
- */
-function applyNumberMultiplication(node, multiplier) {
+function applyNumberMultiplication(
+  node: CalcNode,
+  multiplier: number
+): CalcNode {
   if (isValueType(node)) {
     node.value *= multiplier;
     return node;
@@ -311,12 +282,11 @@ function applyNumberMultiplication(node, multiplier) {
   };
 }
 
-/**
- * @param {import('../parser').ValueExpression} left
- * @param {import('../parser').ValueExpression} right
- * @param {number} precision
- */
-function convertNodesUnits(left, right, precision) {
+function convertNodesUnits(
+  left: ValueExpression,
+  right: ValueExpression,
+  precision: number
+): { left: ValueExpression; right: ValueExpression } {
   switch (left.type) {
     case 'LengthValue':
     case 'AngleValue':
@@ -344,10 +314,7 @@ function convertNodesUnits(left, right, precision) {
   }
 }
 
-/**
- * @param {import('../parser').ParenthesizedExpression} node
- */
-function includesNoCssProperties(node) {
+function includesNoCssProperties(node: ParenthesizedExpression): boolean {
   return (
     node.content.type !== 'Function' &&
     (node.content.type !== 'MathExpression' ||
@@ -355,12 +322,7 @@ function includesNoCssProperties(node) {
         node.content.left.type !== 'Function'))
   );
 }
-/**
- * @param {import('../parser').CalcNode} node
- * @param {number} precision
- * @return {import('../parser').CalcNode}
- */
-function reduce(node, precision) {
+export default function reduce(node: CalcNode, precision: number): CalcNode {
   if (
     node.type === 'MathExpression' &&
     (node.left.type === 'CalcKeyword' || node.right.type === 'CalcKeyword')
@@ -392,5 +354,3 @@ function reduce(node, precision) {
 
   return node;
 }
-
-module.exports = reduce;
