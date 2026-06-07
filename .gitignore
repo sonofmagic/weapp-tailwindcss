@@ -130,6 +130,7 @@ website/tests/index.spec.ts-snapshots
 /.playwright/
 /.playwright-cli/
 /.playwright-mcp/
+e2e/.artifacts/
 .tmp/
 .codex-tmp/
 **/.weapp-vite/

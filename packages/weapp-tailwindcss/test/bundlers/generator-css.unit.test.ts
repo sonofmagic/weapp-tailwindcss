@@ -6485,6 +6485,116 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).not.toContain('@apply')
   })
 
+  it('keeps uni-app x local uvue import before lightweight border reset in isolated apply-only css', async () => {
+    const rawSource = [
+      '@import "../../uvue.wxss";',
+      '.bind {',
+      '  @apply border-[#111111] border-solid;',
+      '}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: [
+        '.border-_b_h111111_B { border-color: #111111; }',
+        '.border-solid { --tw-border-style: solid; border-style: solid; }',
+        '.bind.data-v-abc { border-color: #111111; border-style: solid; }',
+      ].join('\n'),
+      rawCss: [
+        '.border-\\[\\#111111\\] { border-color: #111111; }',
+        '.border-solid { --tw-border-style: solid; border-style: solid; }',
+        '.bind.data-v-abc { border-color: #111111; border-style: solid; }',
+      ].join('\n'),
+      target: 'weapp',
+      classSet: new Set(['border-[#111111]', 'border-solid']),
+      dependencies: ['components/BindClass.wxss'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/project',
+        base: options.base ?? '/project',
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        packageName: 'tailwindcss',
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        cssPreflight: {
+          'border-width': '0',
+          'border-style': false,
+          'border': false,
+        },
+        styleHandler,
+        uniAppX: true,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(),
+      rawSource,
+      file: 'components/BindClass.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'components/BindClass.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'components/BindClass.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain('@import "../../uvue.wxss";')
+    expect(result?.css).toMatch(/view,\s*text,[^{]*\{[^}]*border-width:\s*0/)
+    expect(result?.css).not.toContain('border: 0 solid')
+    const importIndex = result!.css.indexOf('@import "../../uvue.wxss";')
+    const resetIndex = result!.css.indexOf('border-width: 0')
+    const utilityIndex = result!.css.indexOf('.border-solid')
+    expect(importIndex).toBeLessThan(resetIndex)
+    expect(resetIndex).toBeLessThan(utilityIndex)
+    const borderSolidBody = result!.css.match(/\.border-solid\s*\{([^}]*)\}/)?.[1]
+    expect(borderSolidBody).toContain('border-style: solid')
+    expect(borderSolidBody).not.toContain('border-width')
+  })
+
   it('keeps non-apply Tailwind v4 rules beside @apply in non-main css assets', async () => {
     const runtimeSet = new Set(['bg-[#app]', 'text-[#app]'])
     const rawSource = [

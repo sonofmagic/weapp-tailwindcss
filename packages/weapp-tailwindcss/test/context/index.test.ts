@@ -143,6 +143,50 @@ describe('getCompilerContext', () => {
     })
   })
 
+  it('uses lightweight border preflight for Tailwind v4 uni-app x output', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext({
+      uniAppX: true,
+    })
+
+    expect(ctx.cssPreflight).toEqual({
+      'box-sizing': 'border-box',
+      margin: '0',
+      padding: '0',
+      border: false,
+      'border-width': '0',
+      'border-style': false,
+    })
+    expect((createHandlersFromContext.mock.calls[0] as any)?.[0]?.cssPreflight).toEqual(ctx.cssPreflight)
+  })
+
+  it('keeps explicit uni-app x border preflight overrides', async () => {
+    createTailwindcssPatcherFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext({
+      uniAppX: true,
+      cssPreflight: {
+        border: '0 solid',
+        'border-style': 'solid',
+      },
+    })
+
+    expect(ctx.cssPreflight).toMatchObject({
+      border: '0 solid',
+      'border-width': '0',
+      'border-style': 'solid',
+    })
+  })
+
   it('keeps Tailwind v3 preflight defaults when the runtime is v3', async () => {
     createTailwindcssPatcherFromContext.mockReturnValue({
       packageInfo: { version: '3.4.19' },

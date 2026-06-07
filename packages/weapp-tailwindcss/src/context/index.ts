@@ -7,6 +7,7 @@ import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/ta
 import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { applyV4CssCalcDefaults, warnMissingCssEntries } from '@/tailwindcss/v4'
+import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { resolveUnocssBareArbitraryValues } from '@/unocss'
 import { defuOverrideArray } from '@/utils'
 import { withCompilerContextCache } from './compiler-context-cache'
@@ -17,6 +18,28 @@ import { createTailwindcssPatcherFromContext } from './tailwindcss'
 
 interface ClearTailwindcssPatcherCacheOptions {
   removeDirectory?: boolean
+}
+
+function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined) {
+  const cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, majorVersion)
+  if (majorVersion !== 4 || cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
+    return cssPreflight
+  }
+  const userCssPreflight = opts?.cssPreflight && typeof opts.cssPreflight === 'object'
+    ? opts.cssPreflight
+    : undefined
+  return {
+    ...cssPreflight,
+    'border-width': userCssPreflight && 'border-width' in userCssPreflight
+      ? cssPreflight['border-width']
+      : '0',
+    'border-style': userCssPreflight && 'border-style' in userCssPreflight
+      ? cssPreflight['border-style']
+      : false,
+    'border': userCssPreflight && 'border' in userCssPreflight
+      ? cssPreflight.border
+      : false,
+  }
 }
 
 export async function clearTailwindcssPatcherCache(
@@ -101,7 +124,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     warnMissingCssEntries(ctx, twPatcher)
   }
 
-  ctx.cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, twPatcher.majorVersion)
+  ctx.cssPreflight = resolveContextCssPreflight(opts, ctx, twPatcher.majorVersion)
 
   const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, twPatcher)
   ctx.cssCalc = cssCalcOptions

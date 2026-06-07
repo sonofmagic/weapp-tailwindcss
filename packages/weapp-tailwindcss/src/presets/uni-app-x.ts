@@ -161,7 +161,9 @@ export function uniAppX(options: UniAppXOptions) {
         resolve: resolvedResolve,
       },
       cssPreflight: {
+        'border-width': '0',
         'border-style': false,
+        'border': false,
       },
       cssPresetEnv: {
         features: {

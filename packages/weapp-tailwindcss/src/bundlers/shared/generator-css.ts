@@ -10,6 +10,7 @@ import {
   normalizeWeappTailwindcssGeneratorOptions,
 } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
+import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { finalizeMiniProgramCss, removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import {
   hasTailwindApplyDirective,
@@ -111,6 +112,19 @@ function finalizeMiniProgramGeneratorCss(
     isTailwindcssV4: majorVersion === 4,
     preservePseudoContentInit: majorVersion === 3,
   })
+}
+
+function shouldInjectMiniProgramPreflightForGeneratorCss(
+  opts: InternalUserDefinedOptions,
+  options: {
+    isolateCurrentCssCandidates: boolean
+    localImports?: string | undefined
+  },
+) {
+  if (!options.isolateCurrentCssCandidates) {
+    return true
+  }
+  return isUniAppXEnabled(opts.uniAppX) && Boolean(options.localImports?.trim())
 }
 
 function mergeScopedRuntimeWithCurrentRuntime(
@@ -979,7 +993,10 @@ export async function generateCssByGenerator(
       return {
         css: restoreLocalCssImports(
           finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-            injectPreflight: !isolateCurrentCssCandidates,
+            injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+              isolateCurrentCssCandidates,
+              localImports: localImportParts?.imports,
+            }),
           }),
           localImportParts?.imports,
         ),
@@ -1061,7 +1078,10 @@ export async function generateCssByGenerator(
       return {
         css: restoreLocalCssImports(
           finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-            injectPreflight: !isolateCurrentCssCandidates,
+            injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+              isolateCurrentCssCandidates,
+              localImports: localImportParts?.imports,
+            }),
           }),
           localImportParts?.imports,
         ),
@@ -1094,7 +1114,10 @@ export async function generateCssByGenerator(
     return {
       css: restoreLocalCssImports(
         finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-          injectPreflight: !isolateCurrentCssCandidates,
+          injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+            isolateCurrentCssCandidates,
+            localImports: localImportParts?.imports,
+          }),
         }),
         localImportParts?.imports,
       ),
