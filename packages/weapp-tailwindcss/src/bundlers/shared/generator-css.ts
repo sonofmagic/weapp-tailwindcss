@@ -144,8 +144,8 @@ function mergeScopedRuntimeWithCurrentRuntime(
 }
 
 function shouldIsolateScopedCssSource(source: GeneratorResolvedSource, sourceEntries: TailwindSourceEntry[] | undefined) {
-  return sourceEntries !== undefined
-    && Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile || sourceEntries.length > 0)
+  return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
+    || (sourceEntries !== undefined && sourceEntries.length > 0)
 }
 
 function shouldIsolateCurrentTailwindV4CssCandidates(

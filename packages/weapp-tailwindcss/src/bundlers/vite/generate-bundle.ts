@@ -848,7 +848,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const hasRememberedApplySource = vitePipelineCssAsset
           && rememberedCssSource != null
           && hasTailwindApplyDirective(generatorRawSource)
-        const hasStaleViteProcessedCssSource = vitePipelineCssAsset
+        const hasStaleViteProcessedCssSource = !viteProcessedCssAsset
+          && useRememberedCssSource
           && rememberedCssSource != null
           && normalizeCssSourceForCompare(rememberedCssSource.rawSource) !== normalizeCssSourceForCompare(rawSource)
         const generatorSourceFile = vitePipelineCssAsset

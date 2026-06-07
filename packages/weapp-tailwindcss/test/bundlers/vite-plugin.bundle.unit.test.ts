@@ -18,7 +18,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
-import { resolveRememberedCssSourceForTest, resolveReplayCssOutputFile } from '@/bundlers/vite/generate-bundle'
+import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile } from '@/bundlers/vite/generate-bundle'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -1698,6 +1698,105 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source).not.toContain(normalCss)
     expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toContain(normalCss)
     expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).not.toContain(independentCss)
+    expect(generateMock).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('preserves vite-processed Tailwind v3 subpackage css instead of regenerating it from global candidates', async () => {
+    const generateMock = vi.fn(async () => ({
+      css: '.global-regenerated{}',
+      rawCss: '.global-regenerated{}',
+      target: 'weapp',
+      classSet: new Set(['global-regenerated']),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-subpackage-stale-'))
+    createdDirs.push(root)
+    const subCssFile = path.join(root, 'miniprogram/sub-normal/pages/index.css')
+    const rawSubCss = '@config "../../../tailwind.config.sub-normal.js";\n@tailwind utilities;'
+    const processedSubCss = '.bg-normal-subpackage-marker{}'
+    await writeFile(path.join(root, 'tailwind.config.js'), 'module.exports = { content: [] }\n', 'utf8')
+    const runtimeSet = new Set(['global-regenerated'])
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcssBasedir: root,
+          tailwindcss: {
+            config: path.join(root, 'tailwind.config.js'),
+          },
+        },
+      },
+    })
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
+    const rememberedCssSources = new Map([
+      ['sub-normal/pages/index.wxss', {
+        outputFile: 'sub-normal/pages/index.wxss',
+        rawSource: rawSubCss,
+        sourceFile: subCssFile,
+      }],
+    ])
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => true),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn((file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => {
+        viteProcessedCssAssetResults.set(file, { css, injectIntoMain: options?.injectIntoMain })
+      }),
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      getViteProcessedCssAssetResult: (file: string) => viteProcessedCssAssetResults.get(file),
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'sub-normal/pages/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', subCssFile)}\n${processedSubCss}`),
+        fileName: 'sub-normal/pages/index.wxss',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toBe(processedSubCss)
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
