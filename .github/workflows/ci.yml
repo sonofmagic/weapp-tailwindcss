@@ -88,7 +88,7 @@ jobs:
             echo "## CI 状态说明"
             echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
             echo "- 现在额外包含：\`pnpm e2e:generator-parity\`，用于保证 weapp-tailwindcss 的 \`target: web\` 与官方 Tailwind CSS v3/v4 输出保持一致。"
-            echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致。"
+            echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致；重型模板多端构建通过 \`pnpm e2e:templates\` 专项入口执行。"
             echo "- 现在额外包含：\`pnpm e2e:preprocessor\`，用于保证 Sass/Less 等预处理器 Tailwind 入口在真实 demo 中可构建。"
             echo "- 现在额外包含：跨框架支持矩阵 e2e，用于保证 demo 构建入口与模板静态输出一致。"
             echo "- 现在额外包含：\`pnpm e2e:multiplatform-build\`，用于保证 uni-app、Mpx 等多平台构建产物可生成且 Tailwind 转译结果稳定；\`pnpm e2e:multiplatform-build:taro-alipay\` 作为 Taro Alipay 专项产物验证并设置单步超时。"

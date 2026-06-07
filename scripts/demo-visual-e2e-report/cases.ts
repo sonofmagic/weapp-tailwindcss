@@ -79,6 +79,17 @@ async function withTimeout<T>(label: string, timeoutMs: number, task: Promise<T>
   }
 }
 
+async function captureMiniProgramScreenshot(miniProgram: any, screenshot: string, timeoutMs: number) {
+  if (typeof miniProgram?.send === 'function') {
+    const result = await miniProgram.send('App.captureScreenshot', {}, { timeout: timeoutMs })
+    if (typeof result?.data === 'string') {
+      await fs.writeFile(screenshot, result.data, 'base64')
+      return
+    }
+  }
+  await miniProgram.screenshot({ path: screenshot })
+}
+
 export async function runMiniProgramCase(
   item: { name: string, projectPath: string, url?: string, skipOpenAutomator?: boolean },
   context: RuntimeContext,
@@ -88,7 +99,7 @@ export async function runMiniProgramCase(
   const projectPath = await resolveMiniProgramProjectPath(item, context)
   const screenshot = path.join(context.artifactRoot, 'screenshots', `weapp-${item.name}.png`)
   const route = item.url ?? '/pages/index/index'
-  const caseTimeoutMs = Math.max(10_000, Math.min(context.timeoutMs, 90_000))
+  const caseTimeoutMs = Math.max(10_000, context.timeoutMs)
   const port = await findFreePort()
   let miniProgram: any
   if (item.skipOpenAutomator) {
@@ -112,7 +123,7 @@ export async function runMiniProgramCase(
     const page = await withTimeout(`${item.name} reLaunch`, caseTimeoutMs, miniProgram.reLaunch(route))
     await withTimeout(`${item.name} waitFor`, 10_000, page?.waitFor?.(1000) ?? Promise.resolve())
     process.stdout.write(`[weapp] ${item.name}: screenshot\n`)
-    await withTimeout(`${item.name} screenshot`, caseTimeoutMs, miniProgram.screenshot({ path: screenshot }))
+    await withTimeout(`${item.name} screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, screenshot, caseTimeoutMs))
     const pageEl = await page?.$('page')
     const wxml = await withTimeout(`${item.name} wxml`, 10_000, pageEl?.wxml().catch(() => '') ?? Promise.resolve(''))
     results.push({

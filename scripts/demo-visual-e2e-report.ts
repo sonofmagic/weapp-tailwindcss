@@ -11,11 +11,9 @@ import { runH5Case, runMiniProgramCase } from './demo-visual-e2e-report/cases.ts
 import { writeReport } from './demo-visual-e2e-report/report.ts'
 
 const repoRoot = path.resolve(import.meta.dirname, '..')
+const defaultArtifactRoot = 'e2e/.artifacts/demo-visual/full'
 const context: RuntimeContext = {
-  artifactRoot: path.resolve(
-    repoRoot,
-    process.env['DEMO_VISUAL_OUTPUT_DIR'] ?? `e2e/.artifacts/demo-visual/${new Date().toISOString().replaceAll(':', '-')}`,
-  ),
+  artifactRoot: path.resolve(repoRoot, defaultArtifactRoot),
   repoRoot,
   timeoutMs: Number(process.env['DEMO_VISUAL_TIMEOUT_MS'] ?? 180_000),
   viewport: { width: 390, height: 844 },
@@ -76,7 +74,6 @@ async function main() {
     return
   }
   const results: CaseResult[] = []
-  await fs.rm(context.artifactRoot, { recursive: true, force: true })
   await fs.mkdir(path.join(context.artifactRoot, 'screenshots'), { recursive: true })
   await fs.mkdir(path.join(context.artifactRoot, 'diffs'), { recursive: true })
   if (!hasArg('--weapp-only')) {
