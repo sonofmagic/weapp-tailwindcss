@@ -1,4 +1,4 @@
-import type { InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
+import type { CssPreflightOptions, InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
 import { rm } from 'node:fs/promises'
 import { logger } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
@@ -20,7 +20,7 @@ interface ClearTailwindcssPatcherCacheOptions {
   removeDirectory?: boolean
 }
 
-function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined) {
+function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined): CssPreflightOptions {
   const cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, majorVersion)
   if (majorVersion !== 4 || cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
     return cssPreflight
@@ -31,13 +31,13 @@ function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: I
   return {
     ...cssPreflight,
     'border-width': userCssPreflight && 'border-width' in userCssPreflight
-      ? cssPreflight['border-width']
+      ? (cssPreflight['border-width'] ?? false)
       : '0',
     'border-style': userCssPreflight && 'border-style' in userCssPreflight
-      ? cssPreflight['border-style']
+      ? (cssPreflight['border-style'] ?? false)
       : false,
     'border': userCssPreflight && 'border' in userCssPreflight
-      ? cssPreflight.border
+      ? (cssPreflight['border'] ?? false)
       : false,
   }
 }

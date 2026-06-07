@@ -15,9 +15,13 @@ interface H5Case {
   env?: Record<string, string | undefined>
 }
 
+function resolveScreenshotPath(context: RuntimeContext, name: string, platform: CaseResult['platform']) {
+  return path.join(context.artifactRoot, 'screenshots', name, `${platform}.png`)
+}
+
 export async function runH5Case(browser: Browser, item: H5Case, context: RuntimeContext, results: CaseResult[]) {
-  const screenshotName = `h5-${item.name.replaceAll('/', '-')}`
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
+  const screenshot = resolveScreenshotPath(context, item.name, 'h5')
   const port = await findFreePort()
   const command = createPortAwareCommand(item.command, port)
   const { child, logs } = spawnPnpm(projectRoot, command, {
@@ -30,7 +34,7 @@ export async function runH5Case(browser: Browser, item: H5Case, context: Runtime
   try {
     const url = `http://127.0.0.1:${port}/`
     const resolvedUrl = await waitForUrl(url, child, logs, context.timeoutMs)
-    const captured = await screenshotPage(browser, resolvedUrl, screenshotName, context)
+    const captured = await screenshotPage(browser, resolvedUrl, screenshot, item.name, context)
     results.push({
       name: item.name,
       platform: 'h5',
@@ -80,6 +84,7 @@ async function withTimeout<T>(label: string, timeoutMs: number, task: Promise<T>
 }
 
 async function captureMiniProgramScreenshot(miniProgram: any, screenshot: string, timeoutMs: number) {
+  await fs.mkdir(path.dirname(screenshot), { recursive: true })
   if (typeof miniProgram?.send === 'function') {
     const result = await miniProgram.send('App.captureScreenshot', {}, { timeout: timeoutMs })
     if (typeof result?.data === 'string') {
@@ -97,7 +102,7 @@ export async function runMiniProgramCase(
 ) {
   await ensureMiniProgramProjectBuilt(item, context)
   const projectPath = await resolveMiniProgramProjectPath(item, context)
-  const screenshot = path.join(context.artifactRoot, 'screenshots', `weapp-${item.name}.png`)
+  const screenshot = resolveScreenshotPath(context, item.name, 'weapp')
   const route = item.url ?? '/pages/index/index'
   const caseTimeoutMs = Math.max(10_000, context.timeoutMs)
   const port = await findFreePort()

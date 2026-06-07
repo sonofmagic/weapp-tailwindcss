@@ -129,6 +129,52 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('border:0 solid;--tw-border-style:solid')
   })
 
+  it('applies configured preflight overrides to collected Tailwind v4 base rules', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      '.border-solid{--tw-border-style:solid;border-style:solid}',
+    ].join(''), {
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: false,
+        'border-width': '0',
+        'border-style': false,
+      },
+      isTailwindcssV4: true,
+    })
+
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border-width:0')
+    expect(css).not.toContain('border:0 solid')
+    expect(css).toContain('.border-solid{--tw-border-style:solid;border-style:solid}')
+  })
+
+  it('removes Tailwind v4 source directives from final mini-program css', () => {
+    const css = finalizeMiniProgramCss([
+      '/* uni variables */',
+      '@media source(none){',
+      '/*! weapp-tailwindcss generator-placeholder */',
+      '}',
+      '@media source("./App.uvue"){}',
+      '@config "./tailwind.config.js";',
+      '@source "./App.uvue";',
+      '@source not "./unpackage/**/*";',
+      '.w-_b100px_B{width:100px}',
+    ].join('\n'), {
+      isTailwindcssV4: true,
+    })
+
+    expect(css).toContain('/* uni variables */')
+    expect(css).toContain('.w-_b100px_B{width:100px}')
+    expect(css).not.toContain('@media source(none)')
+    expect(css).not.toContain('generator-placeholder')
+    expect(css).not.toContain('@config')
+    expect(css).not.toContain('@source')
+    expect(css).not.toMatch(/^\s*\}\s*$/m)
+  })
+
   it('synthesizes configured mini-program preflight when generator css misses base reset', () => {
     const css = finalizeMiniProgramCss([
       '.divide-x-4>view+view{border-left-width:4px}',

@@ -1,6 +1,7 @@
 import type { Buffer } from 'node:buffer'
 import type { Browser, Page } from 'playwright'
 import type { RuntimeContext } from './types.ts'
+import fs from 'node:fs/promises'
 import path from 'pathe'
 import sharp from 'sharp'
 
@@ -131,9 +132,8 @@ async function hideKnownDevOverlays(page: Page) {
   })()`)
 }
 
-export async function screenshotPage(browser: Browser, url: string, name: string, context: RuntimeContext) {
+export async function screenshotPage(browser: Browser, url: string, screenshot: string, name: string, context: RuntimeContext) {
   const page = await browser.newPage({ viewport: context.viewport })
-  const screenshot = path.join(context.artifactRoot, 'screenshots', `${name}.png`)
   const diagnostics = {
     console: [] as string[],
     requests: [] as string[],
@@ -145,6 +145,7 @@ export async function screenshotPage(browser: Browser, url: string, name: string
     await page.waitForFunction(() => document.readyState !== 'loading', undefined, { timeout: 30_000 })
     await page.waitForFunction(() => (document.body?.textContent?.trim().length ?? 0) > 0, undefined, { timeout: 30_000 })
     const overlay = await hideKnownDevOverlays(page)
+    await fs.mkdir(path.dirname(screenshot), { recursive: true })
     const screenshotBuffer = await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' })
     const visual = await analyzeScreenshot(screenshotBuffer)
     assertScreenshotVisible(visual, name)

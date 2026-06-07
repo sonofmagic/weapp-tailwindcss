@@ -1,6 +1,8 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { InternalUserDefinedOptions } from '@/types'
+import postcss from 'postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
+import { removeTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
@@ -67,6 +69,44 @@ function appendCss(baseCss: string, css: string) {
     return baseCss
   }
   return `${baseCss}\n${css}`
+}
+
+function removeTailwindSourceMediaWrappers(css: string) {
+  if (!css.includes('@media source(')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkAtRules('media', (atRule) => {
+      if (!atRule.params.startsWith('source(')) {
+        return
+      }
+      if (atRule.nodes && atRule.nodes.length > 0) {
+        atRule.replaceWith(...atRule.nodes)
+      }
+      else {
+        atRule.remove()
+      }
+      changed = true
+    })
+    root.walkAtRules((atRule) => {
+      if (atRule.nodes && atRule.nodes.length === 0) {
+        atRule.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+      .replace(/@media\s+source\([^)]*\)\s*\{\s*\/\*!\s*weapp-tailwindcss generator-placeholder\s*\*\/?\s*\}/gi, '')
+      .replace(/@media\s+source\([^)]*\)\s*\{\s*\}/gi, '')
+  }
+}
+
+function removeTailwindEntryDirectivesFromCss(css: string) {
+  return removeTailwindSourceDirectives(removeTailwindSourceMediaWrappers(css))
 }
 
 function stripStyleExtension(file: string) {
@@ -211,7 +251,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const mainFileKey = normalizeOutputPathKey(file)
     const originalSource = readAssetSource(output)
-    let nextCss = originalSource
+    let nextCss = removeTailwindEntryDirectivesFromCss(originalSource)
     for (const record of viteCssResults) {
       if (!shouldInjectViteProcessedCssResult(options.opts, mainFileKey, record.file, record)) {
         continue

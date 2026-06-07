@@ -20,6 +20,7 @@ import { getRuleSelectors, getSortedRuleSelectorKey, MINI_PROGRAM_ELEMENT_SCOPE_
 
 const HOIST_ANCHOR_COMMENT = '__weapp_tailwindcss_base_anchor__'
 const TAILWIND_V4_BANNER_RE = /\/\*!\s*tailwindcss v4\./
+const GENERATOR_PLACEHOLDER_COMMENT_RE = /^\s*(?:!\s*)?weapp-tailwindcss generator-placeholder\s*$/i
 const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
 const MINI_PROGRAM_PSEUDO_CONTENT_SELECTORS = new Set(['::before', '::after'])
 
@@ -40,7 +41,39 @@ function createPseudoContentInitRule() {
   return rule
 }
 
-export function collectPreflightRules(root: postcss.Root, options: { preservePseudoContentInit?: boolean } = {}) {
+function applyConfiguredPreflightDeclarations(
+  rule: postcss.Rule,
+  cssPreflight: CssPreflightOptions | undefined,
+) {
+  if (!cssPreflight || typeof cssPreflight !== 'object') {
+    return
+  }
+
+  const configuredProps = new Set(Object.keys(cssPreflight))
+  rule.walkDecls((decl) => {
+    if (!configuredProps.has(decl.prop)) {
+      return
+    }
+    const value = cssPreflight[decl.prop]
+    if (value === false) {
+      decl.remove()
+      return
+    }
+    decl.value = value.toString()
+  })
+
+  for (const [prop, value] of Object.entries(cssPreflight)) {
+    if (value === false || rule.nodes?.some(node => node.type === 'decl' && node.prop === prop)) {
+      continue
+    }
+    rule.append({
+      prop,
+      value: value.toString(),
+    })
+  }
+}
+
+export function collectPreflightRules(root: postcss.Root, options: { preservePseudoContentInit?: boolean, cssPreflight?: CssPreflightOptions | undefined } = {}) {
   const preflightNodes: postcss.Rule[] = []
 
   for (const node of root.nodes ?? []) {
@@ -72,6 +105,7 @@ export function collectPreflightRules(root: postcss.Root, options: { preservePse
     }
     else if (hasElementSelector && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))) {
       rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
+      applyConfiguredPreflightDeclarations(rule, options.cssPreflight)
     }
   }
   const nonEmptyPreflightRules = clonedPreflightRules.filter(rule => (rule.nodes?.length ?? 0) > 0)
@@ -237,8 +271,33 @@ function mergeEquivalentHoistedRules(rules: postcss.Rule[]) {
 
 function unwrapTailwindSourceMedia(root: postcss.Root) {
   root.walkAtRules('media', (atRule) => {
-    if (atRule.params.startsWith('source(') && atRule.nodes && atRule.nodes.length > 0) {
+    if (!atRule.params.startsWith('source(')) {
+      return
+    }
+    if (atRule.nodes && atRule.nodes.length > 0) {
       atRule.replaceWith(...atRule.nodes)
+    }
+    else {
+      atRule.remove()
+    }
+  })
+}
+
+function removeTailwindGenerationDirectives(root: postcss.Root) {
+  root.walkComments((comment) => {
+    if (GENERATOR_PLACEHOLDER_COMMENT_RE.test(comment.text)) {
+      comment.remove()
+    }
+  })
+  root.walkAtRules((atRule) => {
+    if (
+      atRule.name === 'config'
+      || atRule.name === 'source'
+      || atRule.name === 'tailwind'
+      || atRule.name === 'reference'
+      || atRule.name === 'plugin'
+    ) {
+      atRule.remove()
     }
   })
 }
@@ -250,6 +309,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
     : []
   removeUnsupportedCascadeLayers(root)
   unwrapTailwindSourceMedia(root)
+  removeTailwindGenerationDirectives(root)
   root.walkAtRules('property', (atRule) => {
     atRule.remove()
   })
