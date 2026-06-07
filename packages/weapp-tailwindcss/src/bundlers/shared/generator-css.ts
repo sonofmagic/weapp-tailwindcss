@@ -825,10 +825,12 @@ export async function generateCssByGenerator(
       const generatorRuntime = majorVersion === 4 && generatorOptions.target === 'weapp'
         ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
         : sourceRuntime
+      const useIncrementalCache = (majorVersion === 3 || majorVersion === 4)
+        && !(majorVersion === 3 && isolateCssSource)
       return generator.generate({
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: generatorRuntime,
-        incrementalCache: majorVersion === 3 || majorVersion === 4,
+        incrementalCache: useIncrementalCache,
         scanSources: shouldScanTailwindV4Sources(
           majorVersion,
           generatorOptions.target,

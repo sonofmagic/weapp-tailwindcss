@@ -18,7 +18,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
-import { resolveReplayCssOutputFile } from '@/bundlers/vite/generate-bundle'
+import { resolveRememberedCssSourceForTest, resolveReplayCssOutputFile } from '@/bundlers/vite/generate-bundle'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -1377,6 +1377,43 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     createdDirs.push(root)
     expect(resolveReplayCssOutputFile(root, path.join(root, 'sub-independent', 'pages', 'index.css'))).toBe('sub-independent/pages/index.css')
     expect(resolveReplayCssOutputFile(root, '/private/tmp/elsewhere/index.css')).toBe('index.css')
+  }, TEST_TIMEOUT_MS)
+
+  it('matches remembered same-name subpackage css sources by the most specific path', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-css-'))
+    createdDirs.push(root)
+    const sources = new Map([
+      ['sub-independent/pages/index.wxss', {
+        outputFile: 'sub-independent/pages/index.wxss',
+        rawSource: 'independent',
+        sourceFile: path.join(root, 'src/sub-independent/pages/index.scss'),
+      }],
+      ['sub-normal/pages/index.wxss', {
+        outputFile: 'sub-normal/pages/index.wxss',
+        rawSource: 'normal',
+        sourceFile: path.join(root, 'src/sub-normal/pages/index.scss'),
+      }],
+    ])
+
+    const normal = resolveRememberedCssSourceForTest(
+      sources,
+      'sub-normal/pages/index.wxss',
+      'sub-normal/pages/index.wxss',
+      createRollupAsset('') as OutputAsset,
+      path.join(root, 'dist/build/mp-weixin'),
+      root,
+    )
+    const independent = resolveRememberedCssSourceForTest(
+      sources,
+      'sub-independent/pages/index.wxss',
+      'sub-independent/pages/index.wxss',
+      createRollupAsset('') as OutputAsset,
+      path.join(root, 'dist/build/mp-weixin'),
+      root,
+    )
+
+    expect(normal?.rawSource).toBe('normal')
+    expect(independent?.rawSource).toBe('independent')
   }, TEST_TIMEOUT_MS)
 
   it('injects vite postcss-processed generated css assets into the main mini-program css asset', async () => {

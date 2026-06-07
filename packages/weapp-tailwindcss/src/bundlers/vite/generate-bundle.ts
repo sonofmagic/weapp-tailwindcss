@@ -283,23 +283,41 @@ function collectParentDirectories(file: string) {
 }
 
 function hasMatchingStyleFileBase(outputFile: string, sourceFile: string, outputRoot: string, sourceRoot: string | undefined) {
+  return scoreMatchingStyleFileBase(outputFile, sourceFile, outputRoot, sourceRoot) > 0
+}
+
+function scoreMatchingStyleFileBase(outputFile: string, sourceFile: string, outputRoot: string, sourceRoot: string | undefined) {
   const outputBases = collectStyleFileMatchBases(outputFile, [outputRoot])
   const sourceBases = collectStyleFileMatchBases(sourceFile, [
     sourceRoot,
     ...collectParentDirectories(sourceFile),
   ])
+  let bestScore = 0
   for (const outputBase of outputBases) {
     for (const sourceBase of sourceBases) {
-      if (
-        outputBase === sourceBase
-        || outputBase.endsWith(`/${sourceBase}`)
-        || sourceBase.endsWith(`/${outputBase}`)
-      ) {
-        return true
+      if (outputBase === sourceBase) {
+        bestScore = Math.max(bestScore, 100000 + outputBase.length)
+      }
+      else if (outputBase.endsWith(`/${sourceBase}`)) {
+        bestScore = Math.max(bestScore, 50000 + sourceBase.length)
+      }
+      else if (sourceBase.endsWith(`/${outputBase}`)) {
+        bestScore = Math.max(bestScore, 1000 + outputBase.length)
       }
     }
   }
-  return false
+  return bestScore
+}
+
+export function resolveRememberedCssSourceForTest(
+  sources: Iterable<[string, RememberedCssSource]> | undefined,
+  outputFile: string,
+  file: string,
+  originalSource: OutputAsset,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+) {
+  return findRememberedCssSource(sources, outputFile, file, originalSource, outputRoot, sourceRoot)
 }
 
 function findRememberedCssSource(
@@ -334,10 +352,20 @@ function findRememberedCssSource(
     return outputMatched
   }
 
-  return rememberedSources.find(remembered =>
-    hasMatchingStyleFileBase(outputFile, remembered.sourceFile, outputRoot, sourceRoot)
-    || hasMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
-  )
+  const scoredMatches = rememberedSources
+    .map(remembered => ({
+      remembered,
+      score: Math.max(
+        scoreMatchingStyleFileBase(outputFile, remembered.sourceFile, outputRoot, sourceRoot),
+        scoreMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
+      ),
+    }))
+    .filter(match => match.score > 0)
+    .sort((a, b) => b.score - a.score)
+  const bestScore = scoredMatches[0]?.score
+  return bestScore && scoredMatches.filter(match => match.score === bestScore).length === 1
+    ? scoredMatches[0]?.remembered
+    : undefined
 }
 
 function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {

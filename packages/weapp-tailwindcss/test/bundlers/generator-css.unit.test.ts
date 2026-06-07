@@ -2581,6 +2581,119 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('disables Tailwind v3 incremental cache for scoped subpackage css sources', async () => {
+    const rawSource = [
+      '@tailwind utilities;',
+      '.card{color:red}',
+    ].join('\n')
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => {
+      const css = [...candidates].map(candidate => `.${candidate}{color:red}`).join('\n')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+        base: process.cwd(),
+        css: '@tailwind utilities;',
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        cwd: process.cwd(),
+        base: options.base ?? process.cwd(),
+        css: options.css,
+        dependencies: [],
+        configObject: {
+          content: ['./pages/**/*.{vue,uvue}'],
+        },
+        version: 3,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
+    const baseOptions = {
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-normal-subpackage-marker', 'bg-independent-subpackage-marker']),
+      rawSource,
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+        majorVersion: 3,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    }
+
+    const normal = await generateCssByGenerator({
+      ...baseOptions,
+      file: 'sub-normal/pages/index.wxss',
+      getSourceCandidatesForEntries: () => new Set(['bg-normal-subpackage-marker']),
+    })
+    const independent = await generateCssByGenerator({
+      ...baseOptions,
+      file: 'sub-independent/pages/index.wxss',
+      getSourceCandidatesForEntries: () => new Set(['bg-independent-subpackage-marker']),
+    })
+
+    expect(normal?.css).toContain('.bg-normal-subpackage-marker')
+    expect(normal?.css).not.toContain('.bg-independent-subpackage-marker')
+    expect(independent?.css).toContain('.bg-independent-subpackage-marker')
+    expect(independent?.css).not.toContain('.bg-normal-subpackage-marker')
+    expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(generateMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
+      candidates: new Set(['bg-normal-subpackage-marker']),
+      incrementalCache: false,
+    }))
+    expect(generateMock).toHaveBeenNthCalledWith(2, expect.objectContaining({
+      candidates: new Set(['bg-independent-subpackage-marker']),
+      incrementalCache: false,
+    }))
+  })
+
   it('generates Tailwind v3 css in auto mode when only @apply is present', async () => {
     const rawSource = [
       '.test {',
