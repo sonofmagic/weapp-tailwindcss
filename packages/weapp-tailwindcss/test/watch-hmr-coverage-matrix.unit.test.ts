@@ -313,6 +313,8 @@ describe('watch-hmr coverage matrix', () => {
     expect(mpxCase?.scriptMutation.verifyClassLiteralIn).toContain('js')
     expect(mpxCase?.globalStyleCandidates.some(item => item.includes('utilities*.wxss'))).toBe(true)
     expect(mpxCase?.minGlobalStyleEscapedClasses).toBeGreaterThanOrEqual(1)
+    expect(mpxCase?.requireInitialCompileSuccess).toBe(true)
+    expect(mpxCase?.initialMutationDelayMs).toBe(15_000)
   })
 
   it('keeps Taro Webpack Vue3 v4 style HMR wired through the page css import', () => {

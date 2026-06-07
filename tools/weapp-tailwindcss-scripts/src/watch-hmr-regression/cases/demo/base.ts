@@ -219,7 +219,10 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     // MPX watch pipeline may rewrite global style assets even when class literal is unchanged.
     // Keep same-class-literal timing coverage, but skip strict global style stability assertion.
     requireStableGlobalStyleOnSameClassLiteral: false,
-    initialMutationDelayMs: 5_000,
+    // MPX 在 Windows 上首次真实编译可能接近 20s，而已追踪的 dist 文件会提前存在。
+    // 需要等 watcher 报告编译成功后再开始变更，避免从陈旧输出进入断言。
+    requireInitialCompileSuccess: true,
+    initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v3'),
     devScript: 'dev',
     env: mpxWatchEnv,
