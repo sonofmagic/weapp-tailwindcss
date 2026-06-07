@@ -3,6 +3,7 @@ import type { ChildProcess } from 'node:child_process'
 import { spawn, spawnSync } from 'node:child_process'
 import fs from 'node:fs/promises'
 import net from 'node:net'
+import path from 'node:path'
 import process from 'node:process'
 
 const hbuilderxCliCandidates = [
@@ -14,6 +15,13 @@ const chromeExecutableCandidates = [
   process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : undefined,
 ].filter((item): item is string => Boolean(item))
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
+const androidSdkCandidates = [
+  process.env['ANDROID_HOME'],
+  process.env['ANDROID_SDK_ROOT'],
+  process.env['HOME'] ? path.join(process.env['HOME'], 'Library/Android/sdk') : undefined,
+  '/opt/android-sdk',
+  '/usr/local/share/android-sdk',
+].filter((item): item is string => Boolean(item))
 
 export const serverTimeoutMs = Number(process.env['E2E_HBUILDERX_WEB_TIMEOUT_MS'] ?? 180_000)
 export const hbuilderxTimeoutMs = Number(process.env['E2E_HBUILDERX_MP_TIMEOUT_MS'] ?? 240_000)
@@ -62,10 +70,43 @@ function runTool(command: string, args: string[]) {
   }
 }
 
-export function assertAndroidToolchain() {
+function resolveAdbCommand() {
   const adb = runTool('adb', ['version'])
+  if (adb.ok) {
+    return {
+      command: 'adb',
+      output: adb.output,
+      env: {},
+    }
+  }
 
-  if (!adb.ok) {
+  for (const sdkRoot of androidSdkCandidates) {
+    const adbPath = path.join(sdkRoot, 'platform-tools', process.platform === 'win32' ? 'adb.exe' : 'adb')
+    const candidate = runTool(adbPath, ['version'])
+    if (candidate.ok) {
+      return {
+        command: adbPath,
+        output: candidate.output,
+        env: {
+          ANDROID_HOME: process.env['ANDROID_HOME'] ?? sdkRoot,
+          ANDROID_SDK_ROOT: process.env['ANDROID_SDK_ROOT'] ?? sdkRoot,
+          PATH: `${path.dirname(adbPath)}${path.delimiter}${process.env['PATH'] ?? ''}`,
+        },
+      }
+    }
+  }
+
+  return {
+    command: 'adb',
+    output: adb.output,
+    env: undefined,
+  }
+}
+
+export function assertAndroidToolchain() {
+  const adb = resolveAdbCommand()
+
+  if (!adb.env && adb.command === 'adb') {
     throw new Error([
       '当前机器缺少 Android App E2E 所需的 adb，无法运行 HBuilderX app-android E2E。',
       `adb: ${adb.output || 'not found'}`,
@@ -73,6 +114,8 @@ export function assertAndroidToolchain() {
       '如需指定设备，请设置 E2E_HBUILDERX_ANDROID_DEVICE_ID。',
     ].join('\n'))
   }
+
+  return adb.env
 }
 
 export function assertIosSimulatorToolchain() {

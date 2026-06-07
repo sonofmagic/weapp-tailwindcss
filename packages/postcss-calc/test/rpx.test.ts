@@ -21,6 +21,20 @@ function testValue(fixture: string, expected: string, opts: PostCssCalcOptions =
   };
 }
 
+function testValueDoesNotWarn(fixture: string, expected: string, opts: PostCssCalcOptions = {}) {
+  fixture = `foo{bar:${fixture}}`;
+  expected = `foo{bar:${expected}}`;
+
+  return async () => {
+    const result = await postcss(reduceCalc(opts)).process(
+      fixture,
+      postcssOpts
+    );
+    assert.strictEqual(result.css, expected);
+    assert.strictEqual(result.warnings().length, 0);
+  };
+}
+
 function testThrows(fixture: string, expected: string, warning: string, opts: PostCssCalcOptions = {}) {
   fixture = `foo{bar:${fixture}}`;
   expected = `foo{bar:${expected}}`;
@@ -44,6 +58,14 @@ test(
 );
 
 test('should reduce simple calc (3)', testValue('calc(1rpx * 1.5)', '1.5rpx'));
+
+test(
+  'should parse rpx additions with css variables',
+  testValueDoesNotWarn(
+    'calc(1.5rpx + var(--tw-ring-offset-width))',
+    'calc(1.5rpx + var(--tw-ring-offset-width))'
+  )
+);
 
 test(
   'should keep rpx isolated from physical length conversions',

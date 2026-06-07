@@ -4571,6 +4571,15 @@ const cls = "w-[1.5px]"
         dependencies: [],
         packageName: 'tailwindcss',
       })),
+      resolveTailwindV4Source: vi.fn(async (options: { css?: string } = {}) => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css ?? '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
       resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -4653,6 +4662,217 @@ const cls = "w-[1.5px]"
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(nextCss).toContain('text-[#222222]')
     expect(nextCss).not.toContain('text-[#111111]')
+  }, TEST_TIMEOUT_MS)
+
+  it('replays remembered vite pipeline css when source rolls back without css bundle asset', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => ({
+      css: `generated:${source.css}`,
+      rawCss: `generated:${source.css}`,
+      target: 'weapp',
+      classSet: new Set<string>(),
+      rawCandidates: new Set<string>(),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+        generate: vi.fn(async () => generateMock(source)),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async (options: { css?: string } = {}) => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css ?? '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: { css?: string } = {}) => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css ?? '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
+    }))
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const runtimeSet = new Set<string>()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const sourceFile = path.resolve(process.cwd(), 'pages/index/index.css')
+    const dirtySource = '@import "tailwindcss";\n.tw-watch-style-case { @apply font-bold; }'
+    const cleanSource = '@import "tailwindcss";'
+    const createViteProcessedCssAsset = (source: string) =>
+      `${createBundlerGeneratedCssMarker('vite', sourceFile)}\n${source}`
+
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(createViteProcessedCssAsset(dirtySource)),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [sourceFile],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
+
+    const transform = getTransformHandler(rewritePlugin)
+    await transform?.call(rewritePlugin, cleanSource, sourceFile)
+
+    generateMock.mockClear()
+    const thirdBundle = {
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+    await generateBundle?.call({
+      ...postPlugin,
+      emitFile(file: { type: 'asset', fileName: string, source: string }) {
+        emitted.push(file)
+        return file.fileName
+      },
+    }, {} as any, thirdBundle)
+
+    const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
+    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(replayedCss).toContain('generated:@import "tailwindcss";')
+    expect(replayedCss).not.toContain('.tw-watch-style-case')
+  }, TEST_TIMEOUT_MS)
+
+  it('regenerates vite pipeline css when a style source rolls back with css bundle asset', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => ({
+      css: source.css.includes('.tw-watch-style-case')
+        ? '.tw-watch-style-case{font-weight:700}'
+        : '.clean-style{display:block}',
+      rawCss: source.css,
+      target: 'weapp',
+      classSet: new Set<string>(),
+      rawCandidates: new Set<string>(),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const transform = getTransformHandler(rewritePlugin)
+    const sourceFile = path.resolve(process.cwd(), 'pages/index/index.css')
+    const dirtySource = '@tailwind utilities;\n.tw-watch-style-case { @apply font-bold; }'
+    const cleanSource = '@tailwind utilities;'
+    const createViteProcessedCssAsset = (source: string) =>
+      `${createBundlerGeneratedCssMarker('vite', sourceFile)}\n${source}`
+
+    await transform?.call(rewritePlugin, dirtySource, sourceFile)
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(createViteProcessedCssAsset(dirtySource)),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [sourceFile],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
+
+    const cleanTransformResult = await transform?.call(rewritePlugin, cleanSource, sourceFile)
+    expect(String((cleanTransformResult as any)?.code)).toContain('.clean-style')
+    expect(String((cleanTransformResult as any)?.code)).not.toContain('.tw-watch-style-case')
+    const secondBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(createViteProcessedCssAsset(dirtySource)),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [sourceFile],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const rolledBackCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(rolledBackCss).toContain('.clean-style')
+    expect(rolledBackCss).not.toContain('.tw-watch-style-case')
   }, TEST_TIMEOUT_MS)
 
   it('appends incremental generator css when only runtime candidates grow', async () => {

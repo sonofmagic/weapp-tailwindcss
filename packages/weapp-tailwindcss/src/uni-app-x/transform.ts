@@ -2,12 +2,25 @@ import type { AttributeNode, DirectiveNode, ParentNode } from '@vue/compiler-dom
 import type { SourceMapInput } from 'rollup'
 import type { TransformResult } from 'vite'
 import type { CreateJsHandlerOptions, ICustomAttributesEntities, JsHandler } from '@/types'
-import { NodeTypes } from '@vue/compiler-dom'
-import { parse } from '@vue/compiler-sfc'
+import { NodeTypes, parse as parseTemplate } from '@vue/compiler-dom'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
 import { shouldEnableComponentLocalStyle, UniAppXComponentLocalStyleCollector } from './component-local-style'
+
+interface SfcBlock {
+  content: string
+  start: number
+  end: number
+  attrs: string
+}
+
+interface ParsedSfc {
+  template?: SfcBlock & { ast?: ParentNode }
+  script?: SfcBlock
+  scriptSetup?: SfcBlock
+  errors: unknown[]
+}
 
 function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   visitor(node)
@@ -20,12 +33,12 @@ function traverse(node: ParentNode, visitor: (node: ParentNode) => void): void {
   }
 }
 
-function updateStaticAttribute(ms: MagicString, prop: AttributeNode, content = prop.value?.content) {
+function updateStaticAttribute(ms: MagicString, prop: AttributeNode, offset: number, content = prop.value?.content) {
   if (!prop.value) {
     return
   }
-  const start = prop.value.loc.start.offset + 1
-  const end = prop.value.loc.end.offset - 1
+  const start = offset + prop.value.loc.start.offset + 1
+  const end = offset + prop.value.loc.end.offset - 1
   if (start < end) {
     ms.update(start, end, replaceWxml(content ?? ''))
   }
@@ -34,14 +47,15 @@ function updateStaticAttribute(ms: MagicString, prop: AttributeNode, content = p
 function updateStaticAttributeWithLocalStyle(
   ms: MagicString,
   prop: AttributeNode,
+  offset: number,
   collector: UniAppXComponentLocalStyleCollector,
   content = prop.value?.content,
 ) {
   if (!prop.value) {
     return
   }
-  const start = prop.value.loc.start.offset + 1
-  const end = prop.value.loc.end.offset - 1
+  const start = offset + prop.value.loc.start.offset + 1
+  const end = offset + prop.value.loc.end.offset - 1
   if (start < end) {
     ms.update(start, end, collector.collectAndRewriteStaticClass(content ?? ''))
   }
@@ -50,6 +64,7 @@ function updateStaticAttributeWithLocalStyle(
 function updateDirectiveExpression(
   ms: MagicString,
   prop: DirectiveNode,
+  offset: number,
   jsHandler: JsHandler,
   runtimeSet?: Set<string>,
 ) {
@@ -57,8 +72,8 @@ function updateDirectiveExpression(
     return
   }
   const expression = prop.exp.content
-  const start = prop.exp.loc.start.offset
-  const end = prop.exp.loc.end.offset
+  const start = offset + prop.exp.loc.start.offset
+  const end = offset + prop.exp.loc.end.offset
   if (start >= end) {
     return
   }
@@ -73,6 +88,7 @@ function updateDirectiveExpression(
 function updateDirectiveExpressionWithLocalStyle(
   ms: MagicString,
   prop: DirectiveNode,
+  offset: number,
   jsHandler: JsHandler,
   collector: UniAppXComponentLocalStyleCollector,
   runtimeSet?: Set<string>,
@@ -81,8 +97,8 @@ function updateDirectiveExpressionWithLocalStyle(
     return
   }
   const expression = prop.exp.content
-  const start = prop.exp.loc.start.offset
-  const end = prop.exp.loc.end.offset
+  const start = offset + prop.exp.loc.start.offset
+  const end = offset + prop.exp.loc.end.offset
   if (start >= end) {
     return
   }
@@ -127,6 +143,52 @@ const defaultCreateJsHandlerOptions: CreateJsHandlerOptions = {
   },
 }
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
+const SFC_BLOCK_RE = /<(template|script)\b([^>]*)>([\s\S]*?)<\/\1>/gi
+const SCRIPT_SETUP_RE = /(?:^|\s)setup(?:\s|=|$)/
+
+function parseSfc(code: string): ParsedSfc {
+  const descriptor: ParsedSfc = { errors: [] }
+
+  for (const match of code.matchAll(SFC_BLOCK_RE)) {
+    const type = match[1]
+    const attrs = match[2] ?? ''
+    const content = match[3] ?? ''
+    const full = match[0]
+    const blockStart = match.index ?? 0
+    const contentStart = blockStart + full.indexOf('>') + 1
+    const block: SfcBlock = {
+      content,
+      start: contentStart,
+      end: contentStart + content.length,
+      attrs,
+    }
+
+    if (type === 'template' && !descriptor.template) {
+      try {
+        descriptor.template = {
+          ...block,
+          ast: parseTemplate(content) as ParentNode,
+        }
+      }
+      catch (error) {
+        descriptor.errors.push(error)
+        descriptor.template = block
+      }
+      continue
+    }
+
+    if (type === 'script') {
+      if (SCRIPT_SETUP_RE.test(attrs)) {
+        descriptor.scriptSetup ??= block
+      }
+      else {
+        descriptor.script ??= block
+      }
+    }
+  }
+
+  return descriptor
+}
 
 export function transformUVue(
   code: string,
@@ -141,12 +203,13 @@ export function transformUVue(
   const { customAttributesEntities, disabledDefaultTemplateHandler = false } = options
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
-  const { descriptor, errors } = parse(code)
+  const descriptor = parseSfc(code)
   const localStyleCollector = options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)
     ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
     : undefined
-  if (errors.length === 0) {
+  if (descriptor.errors.length === 0) {
     if (descriptor.template?.ast) {
+      const templateOffset = descriptor.template.start
       traverse(descriptor.template.ast, (node) => {
         if (node.type !== NodeTypes.ELEMENT) {
           return
@@ -164,10 +227,10 @@ export function transformUVue(
               continue
             }
             if (shouldHandleDefault && localStyleCollector) {
-              updateStaticAttributeWithLocalStyle(ms, prop, localStyleCollector)
+              updateStaticAttributeWithLocalStyle(ms, prop, templateOffset, localStyleCollector)
             }
             else {
-              updateStaticAttribute(ms, prop)
+              updateStaticAttribute(ms, prop, templateOffset)
             }
             if (shouldHandleDefault) {
               continue
@@ -193,13 +256,14 @@ export function transformUVue(
               updateDirectiveExpressionWithLocalStyle(
                 ms,
                 prop,
+                templateOffset,
                 jsHandler,
                 localStyleCollector,
                 runtimeSet,
               )
             }
             else {
-              updateDirectiveExpression(ms, prop, jsHandler, runtimeSet)
+              updateDirectiveExpression(ms, prop, templateOffset, jsHandler, runtimeSet)
             }
           }
         }
@@ -210,8 +274,8 @@ export function transformUVue(
       localStyleCollector?.collectRuntimeClasses(descriptor.script.content)
       const { code } = jsHandler(descriptor.script.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(
-        descriptor.script.loc.start.offset,
-        descriptor.script.loc.end.offset,
+        descriptor.script.start,
+        descriptor.script.end,
         localStyleCollector ? localStyleCollector.rewriteTransformedCode(code) : code,
       )
     }
@@ -219,8 +283,8 @@ export function transformUVue(
       localStyleCollector?.collectRuntimeClasses(descriptor.scriptSetup.content)
       const { code } = jsHandler(descriptor.scriptSetup.content, runtimeSet ?? new Set(), defaultCreateJsHandlerOptions)
       ms.update(
-        descriptor.scriptSetup.loc.start.offset,
-        descriptor.scriptSetup.loc.end.offset,
+        descriptor.scriptSetup.start,
+        descriptor.scriptSetup.end,
         localStyleCollector ? localStyleCollector.rewriteTransformedCode(code) : code,
       )
     }

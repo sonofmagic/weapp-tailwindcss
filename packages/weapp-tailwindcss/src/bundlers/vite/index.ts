@@ -492,9 +492,25 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
     const key = normalizeOutputPathKey(entry.outputFile)
+    const previous = rememberedCssSources.get(key)
     rememberedCssSources.set(key, entry)
+    const normalizedSourceFile = normalizeOutputPathKey(entry.sourceFile)
+    for (const [rememberedKey, remembered] of rememberedCssSources) {
+      if (rememberedKey === key || normalizeOutputPathKey(remembered.sourceFile) !== normalizedSourceFile) {
+        continue
+      }
+      rememberedCssSources.set(rememberedKey, {
+        ...remembered,
+        rawSource: entry.rawSource,
+        sourceFile: entry.sourceFile,
+      })
+      rememberedCssSignatureByFile.delete(rememberedKey)
+    }
     if (cssRuntimeSignature) {
       rememberedCssSignatureByFile.set(key, cssRuntimeSignature)
+    }
+    else if (previous?.rawSource !== entry.rawSource || previous?.sourceFile !== entry.sourceFile) {
+      rememberedCssSignatureByFile.delete(key)
     }
   }
   const getRememberedCssSources = () => rememberedCssSources

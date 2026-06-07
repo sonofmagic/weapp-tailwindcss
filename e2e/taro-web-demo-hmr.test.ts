@@ -86,6 +86,7 @@ function createDevServer(projectRoot: string, port: number) {
     env: {
       ...process.env,
       BROWSER: 'none',
+      BROWSERSLIST_ENV: 'development',
       CHOKIDAR_INTERVAL: process.env['CHOKIDAR_INTERVAL'] ?? '50',
       CHOKIDAR_USEPOLLING: process.env['CHOKIDAR_USEPOLLING'] ?? '1',
       HOST: '127.0.0.1',

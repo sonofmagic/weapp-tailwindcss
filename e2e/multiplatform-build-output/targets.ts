@@ -1,7 +1,8 @@
 import type { MultiplatformTarget } from './types'
 
 const uniAppV3Platforms = [
-  'app',
+  'app-android',
+  'app-ios',
   'h5',
   'h5:ssr',
   'mp-alipay',
@@ -17,7 +18,8 @@ const uniAppV3Platforms = [
 ]
 
 const uniAppV4Platforms = [
-  'app',
+  'app-android',
+  'app-ios',
   'h5',
   'h5:ssr',
   'mp-alipay',
@@ -85,13 +87,19 @@ function target(options: Omit<MultiplatformTarget, 'coverage'> & {
 
 function createUniAppTargets(project: string, platforms: string[]): MultiplatformTarget[] {
   return platforms.map((platform) => {
-    const isApp = platform === 'app'
+    const isApp = platform === 'app-android' || platform === 'app-ios'
     return target({
       framework: 'uni-app',
       projectDir: `demo/${project}`,
       platform,
       coverage: isApp ? 'local' : 'default-ci',
-      ...(isApp ? { reason: 'uni-app App 产物依赖本地 App SDK，普通 CI 不默认执行。' } : {}),
+      ...(isApp
+        ? {
+            reason: platform === 'app-android'
+              ? 'Android 调试依赖本机 HBuilderX 与 Android 模拟器。'
+              : 'iOS 调试依赖 macOS Simulator 与 HBuilderX。',
+          }
+        : {}),
     })
   })
 }

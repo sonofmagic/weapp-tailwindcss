@@ -150,9 +150,7 @@ const config: UserConfigExport<'webpack5'> = {
       }
     },
     webpackChain(chain) {
-      if (isWatchRegression) {
-        chain.plugins.delete('webpackbar')
-      }
+      chain.plugins.delete('webpackbar')
       chain.merge({
         plugin: {
           install: {

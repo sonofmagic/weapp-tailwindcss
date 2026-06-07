@@ -99,20 +99,6 @@ function addSiblingCssFile(files: Set<string>, file: string) {
   }
 }
 
-function normalizeStyleStem(file: string | undefined) {
-  if (typeof file !== 'string' || file.length === 0) {
-    return undefined
-  }
-  return normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
-    .replace(/\.(?:vue|uvue|nvue|css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)$/i, '')
-}
-
-function isSameStyleStem(a: string | undefined, b: string | undefined) {
-  const aStem = normalizeStyleStem(a)
-  const bStem = normalizeStyleStem(b)
-  return aStem !== undefined && bStem !== undefined && aStem === bStem
-}
-
 function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
   const files = new Set<string>()
   for (const file of snapshot.runtimeAffectingChangedByType.html) {
@@ -215,6 +201,10 @@ function normalizeCssSourceForCompare(css: string) {
   return css.trim()
 }
 
+function createRememberedCssRuntimeSignature(cssRuntimeSignature: string, cssRuntimeAffectingHash: string) {
+  return `${cssRuntimeSignature}:${cssRuntimeAffectingHash}`
+}
+
 async function createScopedGeneratorCandidateSignature(
   rawSource: string,
   sourceFile: string,
@@ -310,6 +300,44 @@ function hasMatchingStyleFileBase(outputFile: string, sourceFile: string, output
     }
   }
   return false
+}
+
+function findRememberedCssSource(
+  sources: Iterable<[string, RememberedCssSource]> | undefined,
+  outputFile: string,
+  file: string,
+  originalSource: OutputAsset,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+) {
+  if (!sources) {
+    return undefined
+  }
+  const rememberedSources = [...sources].map(([, remembered]) => remembered)
+  const originalFiles = [
+    file,
+    originalSource.originalFileName,
+    ...(originalSource.originalFileNames ?? []),
+  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+
+  const sourceMatched = rememberedSources.find(remembered =>
+    originalFiles.some(originalFile => normalizeOutputPathKey(remembered.sourceFile) === normalizeOutputPathKey(originalFile)),
+  )
+  if (sourceMatched) {
+    return sourceMatched
+  }
+
+  const outputMatched = rememberedSources.find(remembered =>
+    normalizeOutputPathKey(remembered.outputFile) === normalizeOutputPathKey(outputFile),
+  )
+  if (outputMatched) {
+    return outputMatched
+  }
+
+  return rememberedSources.find(remembered =>
+    hasMatchingStyleFileBase(outputFile, remembered.sourceFile, outputRoot, sourceRoot)
+    || hasMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
+  )
 }
 
 function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {
@@ -775,58 +803,61 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
         const cssAssetProcessed = isCssAssetProcessed?.(originalSource, file) === true
         const alreadyProcessedCssAsset = viteProcessedCssAsset || cssAssetProcessed
-        const rememberedCssSource = viteProcessedCssAsset && getRememberedCssSources != null
-          ? [...getRememberedCssSources()]
-              .map(([, remembered]) => remembered)
-              .find((remembered) => {
-                const originalFiles = [
-                  file,
-                  originalSource.originalFileName,
-                  ...(originalSource.originalFileNames ?? []),
-                ].filter((item): item is string => typeof item === 'string' && item.length > 0)
-                return normalizeOutputPathKey(remembered.outputFile) === normalizeOutputPathKey(outputFile)
-                  || isSameStyleStem(remembered.outputFile, outputFile)
-                  || isSameStyleStem(remembered.sourceFile, outputFile)
-                  || originalFiles.some(originalFile => normalizeOutputPathKey(remembered.sourceFile) === normalizeOutputPathKey(originalFile))
-              })
-          : undefined
-        const generatorRawSource = viteProcessedCssAsset
+        const rememberedCssSource = findRememberedCssSource(
+          getRememberedCssSources?.(),
+          outputFile,
+          file,
+          originalSource,
+          outDir,
+          opts.tailwindcssBasedir,
+        )
+        const useRememberedCssSource = rememberedCssSource != null
+          && normalizeOutputPathKey(rememberedCssSource.sourceFile) !== normalizeOutputPathKey(file)
+        const vitePipelineCssAsset = viteProcessedCssAsset || useRememberedCssSource
+        const generatorRawSource = vitePipelineCssAsset
           ? rememberedCssSource?.rawSource ?? rawSource
           : rawSource
-        const hasRememberedApplySource = viteProcessedCssAsset
+        const hasRememberedApplySource = vitePipelineCssAsset
           && rememberedCssSource != null
           && hasTailwindApplyDirective(generatorRawSource)
-        const generatorSourceFile = viteProcessedCssAsset
+        const hasStaleViteProcessedCssSource = vitePipelineCssAsset
+          && rememberedCssSource != null
+          && normalizeCssSourceForCompare(rememberedCssSource.rawSource) !== normalizeCssSourceForCompare(rawSource)
+        const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? file
           : file
         const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
-        const cssHandlerOptions = viteProcessedCssAsset
+        const cssHandlerOptions = vitePipelineCssAsset
           ? {
               ...getCssHandlerOptions(generatorSourceFile),
               isMainChunk: outputCssHandlerOptions.isMainChunk || isAppOriginCssFile(file),
             }
           : getCssHandlerOptions(file)
         const generatorCssUserHandlerOptions = getCssUserHandlerOptions(generatorSourceFile)
-        const cssRuntimeAffectingSignature = snapshot.runtimeAffectingSignatureByFile.get(file)
-          ?? createRuntimeAffectingSourceSignature(generatorRawSource, 'css')
-        const cssRuntimeAffectingHash = snapshot.runtimeAffectingHashByFile.get(file)
-          ?? cache.computeHash(cssRuntimeAffectingSignature)
+        const cssRuntimeAffectingSignature = vitePipelineCssAsset
+          ? createRuntimeAffectingSourceSignature(generatorRawSource, 'css')
+          : snapshot.runtimeAffectingSignatureByFile.get(file)
+            ?? createRuntimeAffectingSourceSignature(generatorRawSource, 'css')
+        const cssRuntimeAffectingHash = vitePipelineCssAsset
+          ? cache.computeHash(cssRuntimeAffectingSignature)
+          : snapshot.runtimeAffectingHashByFile.get(file)
+            ?? cache.computeHash(cssRuntimeAffectingSignature)
         const cssShareScope = createCssTransformShareScopeKey(opts, generatorSourceFile, generatorRawSource)
         const shouldRegenerateAppOriginCss = viteProcessedCssAsset && isAppOriginCssFile(file)
-        const shouldTrackGeneratorRuntime = shouldProcessTailwindGeneration
-          && (
+        const shouldTrackGeneratorRuntime = hasStaleViteProcessedCssSource
+          || (shouldProcessTailwindGeneration && (
             !useIncrementalMode
             || cssHandlerOptions.isMainChunk
             || processFiles.css.has(file)
             || runtimeLinkedCssFiles.has(file)
             || shouldRegenerateAppOriginCss
-          )
+          ))
         const canRegenerateProcessedMainCss = cssHandlerOptions.isMainChunk
           && (
             getViteProcessedCssAssetResult?.(file)?.injectIntoMain === true
             || shouldRegenerateAppOriginCss
           )
-        if (alreadyProcessedCssAsset && !hasRememberedApplySource && (!shouldTrackGeneratorRuntime || !canRegenerateProcessedMainCss)) {
+        if (alreadyProcessedCssAsset && !hasStaleViteProcessedCssSource && !hasRememberedApplySource && (!shouldTrackGeneratorRuntime || !canRegenerateProcessedMainCss)) {
           const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
@@ -850,6 +881,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             )
           : trackedGeneratorCandidateSignature
         const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
+        const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
         const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}`
         if (!shouldTrackGeneratorRuntime) {
           const lastCss = lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
@@ -866,7 +898,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             cache,
             cacheKey: file,
             hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
-            hash: `${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, cssRuntimeAffectingHash)}:${scopedGeneratorCandidateSignature}`,
+            hash: `${cssRuntimeAffectingHash}:${scopedGeneratorCandidateSignature}`,
             applyResult(source) {
               applyCssResult(source)
               lastCssResultByFile.set(outputFile, source)
@@ -875,7 +907,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 outputFile,
                 rawSource: generatorRawSource,
                 sourceFile: generatorSourceFile,
-              }, cssRuntimeSignature)
+              }, rememberedCssRuntimeSignature)
             },
             onCacheHit() {
               metrics.css.cacheHits++
@@ -897,7 +929,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               const runTransform = async () => {
                 const start = performance.now()
                 await runtimeState.readyPromise
-                const previousCss = useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
+                const previousCss = !vitePipelineCssAsset && useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
                   ? lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
                   : undefined
                 const generated = await generateCssByGenerator({
@@ -920,7 +952,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   }
                   debug('css generated result: %s bytes=%d', file, generated.css.length)
                   recordCssAssetResult?.(outputFile, generated.css)
-                  if (viteProcessedCssAsset && cssHandlerOptions.isMainChunk) {
+                  if (vitePipelineCssAsset && cssHandlerOptions.isMainChunk) {
                     recordViteProcessedCssAssetResult?.(file, generated.css, {
                       injectIntoMain: true,
                     })
@@ -1127,7 +1159,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             },
           ),
         )
-        if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || getRememberedCssSignature?.(key) === cssRuntimeSignature) {
+        const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
+        const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
+        if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature) {
           continue
         }
         tasks.push(timeTask('css.replay', async () => {
@@ -1145,7 +1179,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             debug,
           })
           const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
-          setRememberedCssSignature?.(key, cssRuntimeSignature)
+          setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
           if (generated) {
             registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
             recordCssAssetResult?.(outputFile, generated.css)

@@ -34,7 +34,7 @@ describe('tsdown build layout', () => {
     expect(configs.every(config => config.clean === false)).toBe(true)
   })
 
-  it('keeps Vue compiler deps external to avoid runtime bundle warning noise', () => {
+  it('bundles uni-app x template compiler deps while keeping shared runtime deps external', () => {
     const configs = createTsdownConfigs()
     const runtimeConfig = configs[0]
     const alwaysBundle = runtimeConfig.deps?.alwaysBundle
@@ -43,10 +43,12 @@ describe('tsdown build layout', () => {
     expect(typeof alwaysBundle).toBe('function')
     expect(typeof neverBundle).toBe('function')
 
-    expect(alwaysBundle?.('@vue/compiler-dom')).toBe(false)
-    expect(alwaysBundle?.('@vue/compiler-sfc')).toBe(false)
-    expect(neverBundle?.('@vue/compiler-dom')).toBe(true)
-    expect(neverBundle?.('@vue/compiler-sfc')).toBe(true)
+    expect(alwaysBundle?.('@vue/compiler-dom', undefined)).toBe(true)
+    expect(alwaysBundle?.('@vue/shared', undefined)).toBe(true)
+    expect(neverBundle?.('@vue/compiler-dom')).toBe(false)
+    expect(neverBundle?.('postcss')).toBe(true)
+    expect(neverBundle?.('webpack')).toBe(true)
+    expect(runtimeConfig.deps?.onlyBundle).toBe(false)
   })
 
   it('keeps declaration builds from emitting workspace dependency dts into source folders', () => {

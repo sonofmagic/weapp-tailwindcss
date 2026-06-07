@@ -241,6 +241,7 @@ function resolveGeneratorStyleOptions(
 
 function isLocalImportRequest(request: string) {
   return request.length > 0
+    && !request.startsWith('#')
     && !request.startsWith('tailwindcss')
     && !request.startsWith('weapp-tailwindcss')
     && !request.startsWith('data:')
@@ -443,6 +444,25 @@ function collectApplyOnlySourceSelectors(source: string) {
   return selectors
 }
 
+function hasOnlyApplyBackedSourceRules(source: string) {
+  let hasApplyRule = false
+  let hasNonApplyRule = false
+  try {
+    postcss.parse(source).walkRules((rule) => {
+      if (rule.nodes?.some(node => node.type === 'atrule' && node.name === 'apply')) {
+        hasApplyRule = true
+      }
+      else {
+        hasNonApplyRule = true
+      }
+    })
+  }
+  catch {
+    return false
+  }
+  return hasApplyRule && !hasNonApplyRule
+}
+
 function filterApplyOnlyGeneratedCss(css: string, source: string) {
   const selectors = collectApplyOnlySourceSelectors(source)
   if (selectors.size === 0) {
@@ -500,6 +520,7 @@ function shouldFilterApplyOnlyGeneratedCss(
     && !options.hasGeneratedCss
     && !options.hasGeneratedMarkers
     && collectApplyOnlySourceSelectors(source).size > 0
+    && hasOnlyApplyBackedSourceRules(source)
 }
 
 async function transformGeneratorUserCss(

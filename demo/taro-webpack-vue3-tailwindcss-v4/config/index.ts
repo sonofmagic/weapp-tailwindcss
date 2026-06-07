@@ -5,6 +5,7 @@ import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
+const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
@@ -15,6 +16,10 @@ const generator = {
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
+  process.env.BROWSERSLIST_ENV = isWatchBuild
+    ? 'development'
+    : 'production'
+
   const baseConfig: UserConfigExport<'webpack5'> = {
     projectName: 'taro-webpack-vue3-tailwindcss-v4',
     date: '2025-2-23',
@@ -115,9 +120,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
         }
       },
       webpackChain(chain) {
-        if (isWatchRegression) {
-          chain.plugins.delete('webpackbar')
-        }
+        chain.plugins.delete('webpackbar')
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
         chain.merge({
           plugin: {
@@ -144,8 +147,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       }
     }
   }
-
-  process.env.BROWSERSLIST_ENV = process.env.NODE_ENV
 
   if (process.env.NODE_ENV === 'development') {
     // 本地开发构建配置（不混淆压缩）

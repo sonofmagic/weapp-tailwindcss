@@ -201,7 +201,6 @@
     "@babel/traverse": "~7.29.7",
     "@babel/types": "~7.29.7",
     "@vue/compiler-dom": "catalog:vue3",
-    "@vue/compiler-sfc": "catalog:vue3",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",

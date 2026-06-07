@@ -5,11 +5,11 @@ import prodConfig from './prod'
 import type { Plugin } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 const generator = {
+  target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
 }
-const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 console.log(process.env.TARO_ENV)
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -59,8 +59,8 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         WeappTailwindcss({
           rem2rpx: true,
           generator,
-          // 除了小程序这些，其他平台都 disabled
-          disabled: (!isWatchRegression && process.env.TARO_ENV === 'h5') || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
+          // H5 也需要处理 Tailwind 入口；其他非样式目标保持禁用。
+          disabled: process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
           injectAdditionalCssVarScope: true,
         })
       ] as Plugin[]

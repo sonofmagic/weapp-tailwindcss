@@ -70,6 +70,13 @@ function platformFromScriptName(name: string) {
   }
 }
 
+function isPlatformCovered(platforms: Set<string>, platform: string) {
+  if (platform === 'app') {
+    return platforms.has('app') || (platforms.has('app-android') && platforms.has('app-ios'))
+  }
+  return platforms.has(platform)
+}
+
 function collectDemoWeappTailwindcssConfigFiles() {
   const demoRoot = path.resolve(__dirname, '../demo')
   const files: string[] = []
@@ -146,7 +153,7 @@ describe('e2e matrix', () => {
       const missing = Object.keys(pkg.scripts ?? {})
         .map(platformFromScriptName)
         .filter((platform): platform is string => Boolean(platform))
-        .filter(platform => !platforms.has(platform))
+        .filter(platform => !isPlatformCovered(platforms, platform))
 
       expect([...new Set(missing)].sort(), `${entry.name} should declare every package platform script`).toEqual([])
     }
@@ -210,10 +217,10 @@ describe('e2e matrix', () => {
 
   it('keeps uni-app and uni-app x demo workflow coverage explicit for mini-program, web, Android and iOS', () => {
     const expectedPlatformsByName = new Map([
-      ['uni-app-vite-tailwindcss-v3', ['mp-weixin', 'h5', 'app']],
-      ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app']],
-      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app', 'app-android', 'app-ios']],
-      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app', 'app-android', 'app-ios']],
+      ['uni-app-vite-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
     ])
@@ -225,7 +232,7 @@ describe('e2e matrix', () => {
         const coverage = entry?.platforms.find(item => item.platform === platform)
         expect(coverage, `${name} should declare ${platform}`).toBeDefined()
         expect(coverage?.command.length, `${name} ${platform} should document workflow command`).toBeGreaterThan(0)
-        if (platform === 'app' || platform === 'app-android' || platform === 'app-ios') {
+        if (platform === 'app-android' || platform === 'app-ios') {
           expect(coverage?.hmrCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
           expect(coverage?.evidence, `${name} ${platform} should point at HBuilderX evidence`).toContain('hbuilderx')
         }

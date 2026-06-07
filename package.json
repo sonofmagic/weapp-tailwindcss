@@ -102,6 +102,7 @@
     "e2e:apps-generator:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
     "e2e:generator-parity": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/generator-tailwind-parity.test.ts",
     "e2e:taro:web-hmr": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/taro-web-demo-hmr.test.ts",
+    "e2e:taro:h5-build": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/taro-h5-build-smoke.test.ts",
     "e2e:web:hmr": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/web-vite-demo-hmr.test.ts",
     "e2e:hot-update": "node --import tsx ./e2e/run-hot-update.ts",
     "e2e:hot-update:dev": "pnpm e2e:hot-update",
@@ -333,6 +334,7 @@
   "pnpm": {
     "overrides": {
       "jiti": "2.7.0",
+      "postcss-calc": "link:packages/postcss-calc",
       "postcss-urlrewrite": "0.3.0"
     },
     "packageExtensions": {}

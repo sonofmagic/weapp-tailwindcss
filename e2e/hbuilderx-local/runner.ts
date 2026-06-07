@@ -261,8 +261,9 @@ export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
 }
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {
+  let androidEnv: Record<string, string> | undefined
   if (item.platform === 'app-android') {
-    assertAndroidToolchain()
+    androidEnv = assertAndroidToolchain()
   }
   if (item.platform === 'app-ios') {
     assertIosSimulatorToolchain()
@@ -286,10 +287,12 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
     await cleanAppOutput(item)
     await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxAppTimeoutMs, {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      ...androidEnv,
     })
     child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectName, ...(item.launchArgs ?? [])], {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',
+      ...androidEnv,
       ...item.launchEnv,
     })
     const logs = collectProcessOutput(child)

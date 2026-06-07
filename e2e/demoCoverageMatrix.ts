@@ -104,8 +104,8 @@ function taroWebHmrCaseName(name: string) {
 const taroVitePlatforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid']
 const taroWebpackV3Platforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'quickapp']
 const taroWebpackV4Platforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid']
-const uniAppV3Platforms = ['app', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
-const uniAppV4Platforms = ['app', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-jd', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'mp-xhs', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
+const uniAppV3Platforms = ['app-android', 'app-ios', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
+const uniAppV4Platforms = ['app-android', 'app-ios', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-jd', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'mp-xhs', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
 
 function gulpPlatforms(name: string): DemoPlatformCoverage[] {
   return [
@@ -182,13 +182,15 @@ function uniAppPlatforms(name: string, platforms: string[]): DemoPlatformCoverag
         command: `E2E_PROJECT_FILTER=${name} pnpm e2e:static && E2E_HOT_UPDATE_CASE_NAME=${name} pnpm e2e:hot-update:demo`,
       })
     }
-    if (platform === 'app') {
+    if (platform === 'app-android' || platform === 'app-ios') {
       return local(platform, {
-        buildScript,
-        devScript,
-        evidence: 'hbuilderx local App cases',
-        command: `E2E_HBUILDERX_LOCAL=1 pnpm e2e:hbuilderx:local:app -t "${name}"`,
-        reason: 'App 产物依赖本机 HBuilderX、Android 或 iOS SDK，普通 CI 不默认执行。',
+        buildScript: 'build:app',
+        devScript: 'dev:app',
+        evidence: platform === 'app-android' ? 'hbuilderx local Android case' : 'hbuilderx local iOS case',
+        command: `E2E_HBUILDERX_LOCAL=1 E2E_HBUILDERX_APP_PLATFORM=${platform} pnpm e2e:hbuilderx:local:${platform === 'app-android' ? 'android' : 'ios'} -t "${name}"`,
+        reason: platform === 'app-android'
+          ? 'Android 调试依赖本机 HBuilderX 与 Android 模拟器。'
+          : 'iOS 调试依赖 macOS Simulator 与 HBuilderX。',
       })
     }
     return automated(platform, {
@@ -243,17 +245,14 @@ function uniAppHBuilderXPlatforms(name: string): DemoPlatformCoverage[] {
 }
 
 function uniAppXPlatforms(name: string): DemoPlatformCoverage[] {
-  const isTailwindV4 = name.endsWith('-v4')
   return [
     local('h5', {
       devScript: 'dev:h5',
-      evidence: isTailwindV4 ? 'hbuilderx local Web HMR case' : 'package scripts audit',
-      command: `pnpm --filter @weapp-tailwindcss-demo/${name} run dev:h5`,
-      reason: isTailwindV4
-        ? 'uni-app x H5 需要本地浏览器 dev server 验证，默认 CI 不展开执行。'
-        : 'Tailwind v3 uni-app x H5 入口路径和 v4 不同，当前只登记可运行脚本。',
+      evidence: 'hbuilderx local Web HMR case',
+      command: `E2E_HBUILDERX_LOCAL=1 pnpm e2e:hbuilderx:local:web -t "${name}"`,
+      reason: 'uni-app x H5 需要本地浏览器 dev server 验证，默认 CI 不展开执行。',
       staticCoverage: 'exempt',
-      hmrCoverage: isTailwindV4 ? 'local' : 'exempt',
+      hmrCoverage: 'local',
     }),
     ...['mp-weixin', 'app-android', 'app-ios'].map(platform => local(platform, {
       devScript: platform === 'mp-weixin' ? 'dev:mp-weixin' : platform === 'app-android' ? 'dev:android:emulator' : 'dev:ios:simulator',

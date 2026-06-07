@@ -10,8 +10,14 @@ const generator = {
   },
 }
 
+const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
+
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
+  process.env.BROWSERSLIST_ENV = isWatchBuild
+    ? 'development'
+    : 'production'
+
   const baseConfig: UserConfigExport<'vite'> = {
     projectName: 'taro-vite-react-tailwindcss-v4',
     date: '2025-2-23',
@@ -118,8 +124,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
       }
     }
   }
-
-  process.env.BROWSERSLIST_ENV = process.env.NODE_ENV
 
   if (process.env.NODE_ENV === 'development') {
     // 本地开发构建配置（不混淆压缩）

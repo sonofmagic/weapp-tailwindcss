@@ -38,8 +38,6 @@ function externalizeRuntimeDeps(id: string) {
   return id === 'webpack'
     || id === 'tailwindcss/plugin'
     || id === 'postcss'
-    || id === '@vue/compiler-dom'
-    || id === '@vue/compiler-sfc'
     || /[\\/]node_modules[\\/]\.pnpm[\\/]postcss@/.test(id)
     || /[\\/]node_modules[\\/]postcss[\\/]/.test(id)
 }
@@ -50,6 +48,8 @@ function alwaysBundleRuntimeDeps(id: string) {
     || id === 'domutils'
     || id === 'domelementtype'
     || id === 'entities'
+    || id === '@vue/compiler-dom'
+    || id === '@vue/shared'
 }
 
 function preserveJsExports({ format }: { format: string }) {
@@ -73,6 +73,7 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         alwaysBundle: alwaysBundleRuntimeDeps,
         neverBundle: externalizeRuntimeDeps,
+        onlyBundle: false,
       },
       target: ['es2020'],
       outExtensions: preserveJsExports,
@@ -87,6 +88,7 @@ export function createTsdownConfigs(options: WatchAwareOptions = {}) {
       deps: {
         alwaysBundle: alwaysBundleRuntimeDeps,
         neverBundle: externalizeRuntimeDeps,
+        onlyBundle: false,
       },
       target: ['es2020'],
       outExtensions: preserveJsExports,

@@ -6372,6 +6372,117 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).not.toContain('@apply')
   })
 
+  it('keeps non-apply Tailwind v4 rules beside @apply in non-main css assets', async () => {
+    const runtimeSet = new Set(['bg-[#app]', 'text-[#app]'])
+    const rawSource = [
+      '@import "../../uvue.wxss";',
+      '.content {',
+      '  @apply flex items-center py-4;',
+      '}',
+      '.content-theme {',
+      '  padding: theme("spacing.2");',
+      '  margin-left: theme("spacing.3");',
+      '}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: [
+        ':host,page,.tw-root,wx-root-portal-content { --spacing: 8rpx; }',
+        '.flex { display: flex; }',
+        '.items-center { align-items: center; }',
+        '.py-4 { padding-top: 32rpx; padding-bottom: 32rpx; }',
+        '.content.data-v-abc { display: flex; align-items: center; padding-top: 32rpx; padding-bottom: 32rpx; }',
+        '.content-theme { padding: 16rpx; margin-left: 24rpx; }',
+      ].join('\n'),
+      rawCss: [
+        '.flex { display: flex; }',
+        '.items-center { align-items: center; }',
+        '.py-4 { padding-top: 32rpx; padding-bottom: 32rpx; }',
+        '.content.data-v-abc { display: flex; align-items: center; padding-top: 32rpx; padding-bottom: 32rpx; }',
+        '.content-theme { padding: 16rpx; margin-left: 24rpx; }',
+      ].join('\n'),
+      target: 'weapp',
+      classSet: new Set(['flex', 'items-center', 'py-4']),
+      dependencies: ['pages/index/index.wxss'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/project',
+        base: options.base ?? '/project',
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        packageName: 'tailwindcss',
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'pages/index/index.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'pages/index/index.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css).toContain('.content.data-v-abc')
+    expect(css).toContain('.content-theme')
+    expect(css).toContain('padding: 16rpx')
+    expect(css).toContain('margin-left: 24rpx')
+    expect(css).toContain('.flex')
+    expect(css).not.toContain('theme(')
+    expect(css).not.toContain('@apply')
+  })
+
   it('deduplicates forced compat css after mini-program selector escaping', async () => {
     const runtimeSet = new Set(['from-[#2f73f1]'])
     const rawSource = [

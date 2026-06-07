@@ -392,6 +392,32 @@ export const webCases: WebCase[] = [
     ],
   },
   {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v3',
+    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<BindClass />',
+    initialCssPath: '/App.uvue?vue&type=style&index=0&lang.scss',
+    hmrCssPath: '/App.uvue?vue&type=style&index=0&lang.scss',
+    initialCssContains: ['.w-32', '.rounded-md', /background-color:\s*rgb\(242 25 3/],
+    hmrSteps: [
+      {
+        markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
+        markerText: 'hbuilderx-web-hmr-v3-step-1',
+        cssContains: [/background-color:\s*rgb\(15 81 50/, /color:\s*rgb\(248 250 252/, /width:\s*188px/],
+      },
+      {
+        markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
+        markerText: 'hbuilderx-web-hmr-v3-step-2',
+        cssContains: [/background-color:\s*rgb\(124 45 18/, /color:\s*rgb\(236 254 255/, /height:\s*37px/, /margin-top:\s*11px/],
+      },
+      {
+        markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
+        markerText: 'hbuilderx-web-hmr-v3-step-3',
+        cssContains: [/background-color:\s*rgb\(67 56 202/, /color:\s*rgb\(254 243 199/, /width:\s*221px/, /border-radius:\s*13px/],
+      },
+    ],
+  },
+  {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
     sourceFile: 'pages/index/index.uvue',
