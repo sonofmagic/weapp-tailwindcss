@@ -6,14 +6,13 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 11340 | 30 | false | false | false | false | true |
+| 11313 | 30 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
-@import 'app-origin.wxss';
 ::before,
 ::after {
   --tw-content: '';

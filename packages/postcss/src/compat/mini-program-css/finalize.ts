@@ -254,15 +254,29 @@ export function insertHoistedRules(root: postcss.Root, rules: postcss.Rule[], an
 function mergeEquivalentHoistedRules(rules: postcss.Rule[]) {
   const mergedRules: postcss.Rule[] = []
   const ruleBySelector = new Map<string, postcss.Rule>()
+  const propsBySelector = new Map<string, Set<string>>()
 
   for (const rule of rules) {
     const key = getSortedRuleSelectorKey(rule)
     const existingRule = ruleBySelector.get(key)
     if (existingRule) {
-      existingRule.append(...(rule.nodes ?? []).map(node => node.clone()))
+      const existingProps = propsBySelector.get(key) ?? new Set<string>()
+      const nextNodes = (rule.nodes ?? []).filter((node) => {
+        if (node.type !== 'decl') {
+          return true
+        }
+        if (existingProps.has(node.prop)) {
+          return false
+        }
+        existingProps.add(node.prop)
+        return true
+      })
+      existingRule.append(...nextNodes.map(node => node.clone()))
+      propsBySelector.set(key, existingProps)
       continue
     }
     ruleBySelector.set(key, rule)
+    propsBySelector.set(key, new Set((rule.nodes ?? []).flatMap(node => node.type === 'decl' ? [node.prop] : [])))
     mergedRules.push(rule)
   }
 

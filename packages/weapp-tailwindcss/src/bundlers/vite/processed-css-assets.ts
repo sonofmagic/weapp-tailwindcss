@@ -1,8 +1,9 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { InternalUserDefinedOptions } from '@/types'
+import path from 'pathe'
 import postcss from 'postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
-import { removeTailwindSourceDirectives } from '../shared/generator-css/directives'
+import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
@@ -113,8 +114,39 @@ function stripStyleExtension(file: string) {
   return file.replace(/[?#].*$/, '').replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)$/i, '')
 }
 
-function isAppOriginCssFile(file: string) {
-  return stripStyleExtension(file).split('/').pop() === 'app-origin'
+function isStyleImportRequest(request: string | undefined) {
+  return typeof request === 'string'
+    && request.length > 0
+    && !/^(?:https?:)?\/\//i.test(request)
+    && /\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(request)
+}
+
+function resolveImportedStyleFile(targetFile: string, request: string | undefined) {
+  if (!isStyleImportRequest(request)) {
+    return
+  }
+  const cleanRequest = request.replace(/[?#].*$/, '')
+  if (cleanRequest.startsWith('/')) {
+    return normalizeOutputPathKey(cleanRequest.slice(1))
+  }
+  const targetDir = path.posix.dirname(normalizeOutputPathKey(targetFile))
+  return normalizeOutputPathKey(path.posix.join(targetDir === '.' ? '' : targetDir, cleanRequest))
+}
+
+function collectImportedStyleFiles(css: string, targetFile: string) {
+  const imports = new Set<string>()
+  try {
+    const root = postcss.parse(css)
+    root.walkAtRules('import', (atRule) => {
+      const importedFile = resolveImportedStyleFile(targetFile, parseImportRequest(atRule.params))
+      if (importedFile) {
+        imports.add(importedFile)
+      }
+    })
+  }
+  catch {
+  }
+  return imports
 }
 
 function normalizeMarkerOutputFile(
@@ -169,6 +201,9 @@ function shouldInjectViteProcessedCssResult(
   if (options.injectIntoMain === true) {
     return true
   }
+  if (options.injectIntoMain === false) {
+    return false
+  }
   const targetFileKey = normalizeOutputPathKey(targetFile)
   const sourceFileKey = normalizeOutputPathKey(sourceFile)
   const sourceBaseName = sourceFileKey.replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i, '').split('/').pop()
@@ -206,13 +241,8 @@ export function collectViteProcessedCssAssetResults(
     options.recordCssAssetResult?.(file, nextCss)
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
-      && (
-        (
-          normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
-          && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
-        )
-        || isAppOriginCssFile(file)
-      )
+      && normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+      && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {
       injectIntoMain: shouldReplayIntoMainCss || undefined,
     })
@@ -252,8 +282,12 @@ export function injectViteProcessedCssIntoMainCssAssets(
     const mainFileKey = normalizeOutputPathKey(file)
     const originalSource = readAssetSource(output)
     let nextCss = removeTailwindEntryDirectivesFromCss(originalSource)
+    const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
     for (const record of viteCssResults) {
       if (!shouldInjectViteProcessedCssResult(options.opts, mainFileKey, record.file, record)) {
+        continue
+      }
+      if (importedStyleFiles.has(normalizeOutputPathKey(record.file))) {
         continue
       }
       const css = stripBundlerGeneratedCssMarkers(record.css).trim()

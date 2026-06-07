@@ -84,7 +84,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 7511,
+      "bytes": 7583,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
@@ -5440,7 +5440,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 11340,
+      "bytes": 11313,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -5493,7 +5493,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 8662,
+      "bytes": 10647,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -5642,7 +5642,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 11414,
+      "bytes": 11387,
       "selectors": [
         ".before_ccontent-_b_a11111_a_B:before",
         ".before_ccontent-_b_a222_a_B:before",
@@ -5692,7 +5692,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 13082,
+      "bytes": 12748,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",

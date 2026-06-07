@@ -129,6 +129,50 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('border:0 solid;--tw-border-style:solid')
   })
 
+  it('keeps configured preflight on Tailwind v4 runtime variable rules for normal mini-program output', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      'view,text,::after,::before{--tw-space-y-reverse:0;--tw-border-style:solid}',
+      '.space-y-2>view+view{--tw-space-y-reverse:0;margin-top:calc(var(--spacing)*2)}',
+    ].join(''), {
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: '0 solid',
+      },
+      isTailwindcssV4: true,
+    })
+
+    expect(css).toContain('view,text,::after,::before{--tw-space-y-reverse:0;--tw-border-style:solid;box-sizing:border-box;margin:0;padding:0;border:0 solid}')
+    expect(css).toContain('.space-y-2>view+view')
+  })
+
+  it('dedupes repeated Tailwind v4 preflight declarations when hoisted rules are merged', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-gradient-position:initial}',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-border-style:solid}',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+    ].join(''), {
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: '0 solid',
+      },
+      isTailwindcssV4: true,
+    })
+
+    expect(css.match(/view,text,::after,::before\{/g)).toHaveLength(1)
+    expect(css.match(/box-sizing:border-box/g)).toHaveLength(1)
+    expect(css.match(/margin:0/g)).toHaveLength(1)
+    expect(css.match(/padding:0/g)).toHaveLength(1)
+    expect(css.match(/border:0 solid/g)).toHaveLength(1)
+    expect(css).toContain('--tw-gradient-position:initial')
+    expect(css).toContain('--tw-border-style:solid')
+  })
+
   it('applies configured preflight overrides to collected Tailwind v4 base rules', () => {
     const css = finalizeMiniProgramCss([
       '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',

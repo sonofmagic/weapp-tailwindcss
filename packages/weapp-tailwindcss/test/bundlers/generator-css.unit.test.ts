@@ -7414,6 +7414,68 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toMatch(/^\s*\}\s*$/m)
   })
 
+  it('keeps imported vite-processed css out of main css when main css already imports it', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app.wxss': {
+        type: 'asset',
+        fileName: 'app.wxss',
+        source: '@import "app-origin.wxss";',
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        appType: 'taro',
+      } as any,
+      getViteProcessedCssAssetResults: () => [[
+        'app-origin.wxss',
+        {
+          css: '.from-origin{color:red}',
+          injectIntoMain: true,
+        },
+      ]],
+    })
+
+    const css = bundle['app.wxss'].source
+    expect(injected).toBe(0)
+    expect(css).toBe('@import "app-origin.wxss";')
+    expect(css).not.toContain('.from-origin')
+  })
+
+  it('honors disabled main injection even when app-origin matches taro main css fallback', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app.wxss': {
+        type: 'asset',
+        fileName: 'app.wxss',
+        source: '.app{color:red}',
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file.startsWith('app'),
+        appType: 'taro',
+      } as any,
+      getViteProcessedCssAssetResults: () => [[
+        'app-origin.wxss',
+        {
+          css: '.from-origin{color:blue}',
+          injectIntoMain: false,
+        },
+      ]],
+    })
+
+    const css = bundle['app.wxss'].source
+    expect(injected).toBe(0)
+    expect(css).toBe('.app{color:red}')
+    expect(css).not.toContain('.from-origin')
+  })
+
   it('keeps vite-processed css marker blocks scoped to the matching output asset', async () => {
     const { createBundlerGeneratedCssMarker } = await import('@/bundlers/shared/generated-css-marker')
     const { collectViteProcessedCssAssetResults } = await import('@/bundlers/vite/processed-css-assets')
@@ -7446,7 +7508,7 @@ describe('bundlers/shared generator css', () => {
     ]])
   })
 
-  it('marks vite-processed main css pipeline assets for main css injection', async () => {
+  it('does not force app-origin vite-processed css into main css during collection', async () => {
     const { collectViteProcessedCssAssetResults } = await import('@/bundlers/vite/processed-css-assets')
     const bundle = {
       'app-origin.wxss': {
@@ -7465,14 +7527,13 @@ describe('bundlers/shared generator css', () => {
       } as any,
       isViteProcessedCssAsset: () => true,
       recordViteProcessedCssAssetResult: (file, css, options) => records.push([file, css, options]),
-      resolveViteProcessedCssOutputFile: file => file.replace('app-origin.wxss', 'app.wxss'),
     })
 
     expect(collected).toBe(1)
     expect(records).toEqual([[
       'app-origin.wxss',
       '.script-only{}',
-      { injectIntoMain: true },
+      { injectIntoMain: undefined },
     ]])
   })
 

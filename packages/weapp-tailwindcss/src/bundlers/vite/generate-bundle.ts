@@ -197,6 +197,10 @@ function isAppOriginCssFile(file: string) {
   return path.basename(stripStyleFileExtension(file)) === 'app-origin'
 }
 
+function isMainAppCssFile(file: string) {
+  return path.basename(stripStyleFileExtension(file)) === 'app'
+}
+
 function normalizeCssSourceForCompare(css: string) {
   return css.trim()
 }
@@ -353,6 +357,7 @@ function findRememberedCssSource(
   }
 
   const scoredMatches = rememberedSources
+    .filter(remembered => !(isMainAppCssFile(outputFile) && isAppOriginCssFile(remembered.outputFile)))
     .map(remembered => ({
       remembered,
       score: Math.max(
@@ -986,7 +991,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   recordCssAssetResult?.(outputFile, generated.css)
                   if (vitePipelineCssAsset && cssHandlerOptions.isMainChunk) {
                     recordViteProcessedCssAssetResult?.(file, generated.css, {
-                      injectIntoMain: true,
+                      injectIntoMain: !isAppOriginCssFile(file),
                     })
                   }
                   metrics.css.elapsed += measureElapsed(start)

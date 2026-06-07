@@ -1416,6 +1416,29 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(independent?.rawSource).toBe('independent')
   }, TEST_TIMEOUT_MS)
 
+  it('does not match app-origin remembered css source to app main css', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-app-origin-'))
+    createdDirs.push(root)
+    const sources = new Map([
+      ['app-origin.wxss', {
+        outputFile: 'app-origin.wxss',
+        rawSource: 'app-origin',
+        sourceFile: path.join(root, 'src/app.css'),
+      }],
+    ])
+
+    const matched = resolveRememberedCssSourceForTest(
+      sources,
+      'app.wxss',
+      'app.wxss',
+      createRollupAsset('') as OutputAsset,
+      path.join(root, 'dist'),
+      root,
+    )
+
+    expect(matched).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
   it('injects vite postcss-processed generated css assets into the main mini-program css asset', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
@@ -4795,10 +4818,13 @@ const cls = "w-[1.5px]"
     }
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
-    const nextCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
+    const nextAppCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
+    const nextAppOriginCss = (secondBundle['app-origin.wxss'] as OutputAsset).source.toString()
     expect(generateMock).toHaveBeenCalledTimes(1)
-    expect(nextCss).toContain('text-[#222222]')
-    expect(nextCss).not.toContain('text-[#111111]')
+    expect(nextAppCss).toContain('@import "app-origin.wxss";')
+    expect(nextAppCss).not.toContain('text-[#222222]')
+    expect(nextAppOriginCss).toContain('text-[#222222]')
+    expect(nextAppOriginCss).not.toContain('text-[#111111]')
   }, TEST_TIMEOUT_MS)
 
   it('replays remembered vite pipeline css when source rolls back without css bundle asset', async () => {
