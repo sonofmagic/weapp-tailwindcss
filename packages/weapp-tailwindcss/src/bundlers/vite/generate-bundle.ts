@@ -17,7 +17,7 @@ import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { processCachedTask } from '../shared/cache'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
-import { hasTailwindApplyDirective } from '../shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -848,9 +848,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const hasRememberedApplySource = vitePipelineCssAsset
           && rememberedCssSource != null
           && hasTailwindApplyDirective(generatorRawSource)
-        const hasStaleViteProcessedCssSource = !viteProcessedCssAsset
-          && useRememberedCssSource
+        const hasStaleViteProcessedCssSource = useRememberedCssSource
           && rememberedCssSource != null
+          && (
+            hasTailwindRootDirectives(rawSource, { importFallback: true })
+            || hasTailwindApplyDirective(rawSource)
+          )
           && normalizeCssSourceForCompare(rememberedCssSource.rawSource) !== normalizeCssSourceForCompare(rawSource)
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? file
