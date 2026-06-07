@@ -103,6 +103,32 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('not-a-tailwind-class')
   })
 
+  it('normalizes Tailwind v4 package CSS imports to stylesheet entrypoints', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-package-css-'))
+    await linkTailwindcssPackage(root)
+
+    const source = await resolveTailwindV4Source({
+      css: [
+        '@import "tailwindcss" source(none);',
+        '@reference "tailwindcss";',
+        '',
+      ].join('\n'),
+      base: root,
+      packageName: 'tailwindcss',
+    })
+    const engine = createTailwindV4Engine(source)
+    const result = await engine.generate({
+      candidates: ['w-[100px]'],
+      target: 'web',
+    })
+
+    expect(source.css).not.toContain('@import "tailwindcss"')
+    expect(source.css).not.toContain('@reference "tailwindcss"')
+    expect(source.css).toContain('/tailwindcss/index.css')
+    expect(result.classSet).toEqual(new Set(['w-[100px]']))
+    expect(result.rawCss).toContain('.w-\\[100px\\]')
+  })
+
   it('treats rpx arbitrary text values as lengths in generated mini-program css', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,

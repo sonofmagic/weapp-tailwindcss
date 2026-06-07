@@ -1,7 +1,6 @@
-<script setup lang="uts">
-	import WeappTailwindcss from '@/components/WeappTailwindcss.uvue'
-	import BindClass from '@/components/BindClass.uvue'
-	import { state, setGlobalNum } from '@/stores/counter'
+<script lang="uts">
+	import WeappTailwindcss from '../../components/WeappTailwindcss.uvue'
+	import BindClass from '../../components/BindClass.uvue'
 
 	const buttonColors = [
 		'bg-[#000]',
@@ -21,36 +20,30 @@
 		'bg-[#eee]',
 		'bg-[#fff]',
 	]
-	const title = ref('Hello')
-	const themeRef = ref<string>('')
-	const classArray = computed(() => [
-		'bg-[#aa00aa] text-[#ffffffee]',
-	])
-	const buttonClass = computed(() => {
-		return buttonColors[state.globalNum % buttonColors.length]
-	})
 
-	// #ifdef MP
-	uni.onThemeChange(({ theme } : { theme : 'dark' | 'light' }) => {
-		themeRef.value = theme
-	})
-	// #endif
-	onBeforeUnmount(() => {
-		// #ifdef MP
-		uni.offThemeChange(() => {
-			console.log('offThemeChange')
-		})
-		// #endif
-	})
-
-	onLoad(() => {
-		console.log('欢迎使用 weapp-tailwindcss 模板')
-	})
-
-	function copy(data : string) {
-		uni.setClipboardData({
-			data,
-		})
+	export default {
+		components: {
+			BindClass,
+			WeappTailwindcss,
+		},
+		data() {
+			return {
+				globalNum: 0,
+			}
+		},
+		computed: {
+			buttonClass(): string {
+				return buttonColors[this.globalNum % buttonColors.length]
+			},
+		},
+		methods: {
+			setGlobalNum(num: number) {
+				this.globalNum = num
+			},
+		},
+		onLoad() {
+			console.log('欢迎使用 weapp-tailwindcss 模板')
+		},
 	}
 </script>
 
@@ -66,8 +59,8 @@
 				圆角+背景+文本
 			</text>
 			<view class="mt-3">
-				<button class="w-64 text-white" :class="buttonClass" @click="setGlobalNum(state.globalNum+1)">
-					click here to inc {{ state.globalNum }}
+				<button class="w-64 text-white" :class="buttonClass" @click="setGlobalNum(globalNum+1)">
+					click here to inc {{ globalNum }}
 				</button>
 			</view>
 			<view class="test">

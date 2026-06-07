@@ -1,5 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
-import type { WebHmrStep } from './cases'
+import type { Page } from 'playwright'
+import type { WebHmrStep, WebRuntimeStyleAssertion } from './cases'
 
 import fs from 'node:fs/promises'
 import process from 'node:process'
@@ -22,6 +23,12 @@ import {
 
 let devProcess: ChildProcess | undefined
 
+interface WebPageDiagnostics {
+  errors: string[]
+  requests: string[]
+  warnings: string[]
+}
+
 export function getDevProcess() {
   return devProcess
 }
@@ -31,8 +38,10 @@ export function clearDevProcess() {
 }
 
 function createDevServer(projectRoot: string, port: number) {
-  const child = spawnPnpm(projectRoot, ['run', 'dev:h5'], {
+  const childEnv: Record<string, string | undefined> = {
     BROWSER: 'none',
+    BROWSERSLIST_ENV: 'development',
+    NODE_ENV: 'development',
     WEAPP_TW_HMR_TIMING: '1',
     WEAPP_TW_WATCH_REGRESSION: '1',
     VITE_WEAPP_TW_WATCH_REGRESSION: '1',
@@ -42,7 +51,15 @@ function createDevServer(projectRoot: string, port: number) {
     UNI_CLI_SERVER_PORT: String(port),
     CHOKIDAR_USEPOLLING: process.env['CHOKIDAR_USEPOLLING'] ?? '1',
     CHOKIDAR_INTERVAL: process.env['CHOKIDAR_INTERVAL'] ?? '50',
-  })
+  }
+  childEnv['VITEST'] = undefined
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith('VITEST_')) {
+      childEnv[key] = undefined
+    }
+  }
+
+  const child = spawnPnpm(projectRoot, ['run', 'dev:h5'], childEnv)
   devProcess = child
   return child
 }
@@ -105,6 +122,111 @@ async function waitForCss(url: string, entries: Array<string | RegExp>, child: C
   throw new Error(`等待 CSS 内容超时：${url}\n${latest.slice(0, 1000)}\n${logs.join('')}`)
 }
 
+function formatRuntimeStyleAssertions(assertions: WebRuntimeStyleAssertion[]) {
+  return assertions.map(assertion => `${assertion.selector}: ${Object.keys(assertion.styles).join(', ')}`).join('; ')
+}
+
+function matchRuntimeStyles(actual: Record<string, string>, assertion: WebRuntimeStyleAssertion) {
+  for (const [property, expected] of Object.entries(assertion.styles)) {
+    const value = actual[property]
+    if (typeof expected === 'string') {
+      if (value !== expected) {
+        return false
+      }
+    }
+    else if (!expected.test(value ?? '')) {
+      return false
+    }
+  }
+  return true
+}
+
+async function readRuntimeStyles(page: Page, assertion: WebRuntimeStyleAssertion) {
+  try {
+    return await page.evaluate(({ selector, properties }) => {
+      const element = document.querySelector(selector)
+      if (!element) {
+        return null
+      }
+      const computed = getComputedStyle(element)
+      return Object.fromEntries(properties.map(property => [property, computed[property as keyof CSSStyleDeclaration]?.toString() ?? '']))
+    }, {
+      properties: Object.keys(assertion.styles),
+      selector: assertion.selector,
+    })
+  }
+  catch (error) {
+    if (error instanceof Error && /Execution context was destroyed|Cannot find context with specified id/.test(error.message)) {
+      return null
+    }
+    throw error
+  }
+}
+
+async function collectPageSnapshot(page: Page) {
+  try {
+    return await page.evaluate(() => {
+      return {
+        body: document.body?.innerHTML.slice(0, 1200) ?? '',
+        readyState: document.readyState,
+        title: document.title,
+        url: location.href,
+      }
+    })
+  }
+  catch (error) {
+    return {
+      body: '',
+      readyState: 'unknown',
+      title: '',
+      url: page.url(),
+      error: error instanceof Error ? error.message : String(error),
+    }
+  }
+}
+
+async function isShellPage(page: Page) {
+  try {
+    return await page.evaluate(() => document.body?.innerHTML.includes('<!--app-html-->') ?? false)
+  }
+  catch {
+    return false
+  }
+}
+
+async function waitForRuntimeStyles(page: Page, assertions: WebRuntimeStyleAssertion[] | undefined, label: string, logs: string[], diagnostics: WebPageDiagnostics, reloadShell = false) {
+  if (!assertions?.length) {
+    return
+  }
+
+  const startedAt = Date.now()
+  let shellReloaded = false
+  let latest: Array<{ actual: Record<string, string> | null, selector: string }> = []
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    latest = []
+    let ok = true
+    for (const assertion of assertions) {
+      const actual = await readRuntimeStyles(page, assertion)
+      latest.push({ actual, selector: assertion.selector })
+      if (!actual || !matchRuntimeStyles(actual, assertion)) {
+        ok = false
+        break
+      }
+    }
+    if (ok) {
+      return
+    }
+    if (reloadShell && !shellReloaded && latest.every(item => item.actual == null) && Date.now() - startedAt > 10_000 && await isShellPage(page)) {
+      shellReloaded = true
+      await page.reload({ waitUntil: 'domcontentloaded' })
+    }
+    await wait(pollIntervalMs)
+  }
+
+  const snapshot = await collectPageSnapshot(page)
+  throw new Error(`等待 Web 运行时样式超时：${label}\nexpected=${formatRuntimeStyleAssertions(assertions)}\nactual=${JSON.stringify(latest)}\npage=${JSON.stringify(snapshot)}\npageRequests=${diagnostics.requests.join('\n')}\npageErrors=${diagnostics.errors.join('\n')}\npageWarnings=${diagnostics.warnings.join('\n')}\n${logs.join('')}`)
+}
+
 function resolveAnchor(source: string, anchors: string[]) {
   return anchors.find(anchor => source.includes(anchor))
 }
@@ -147,14 +269,16 @@ export async function runWebHmr(
   initialCssPath: string,
   hmrCssPath: string,
   initialCssContains: Array<string | RegExp>,
+  initialRuntimeStyles: WebRuntimeStyleAssertion[] | undefined,
   hmrSteps: WebHmrStep[],
 ) {
   const port = await findFreePort()
   const child = createDevServer(projectRoot, port)
   const logs = collectProcessOutput(child)
   const baseUrl = `http://127.0.0.1:${port}/`
+  const executablePath = await resolveChromeExecutable()
   const browser = await chromium.launch({
-    executablePath: await resolveChromeExecutable(),
+    ...(executablePath ? { executablePath } : {}),
     headless: true,
   })
   let restore: (() => Promise<void>) | undefined
@@ -162,13 +286,41 @@ export async function runWebHmr(
   try {
     const ready = await waitForPath(baseUrl, '/', child, logs)
     const page = await browser.newPage()
+    const diagnostics: WebPageDiagnostics = {
+      errors: [],
+      requests: [],
+      warnings: [],
+    }
+    page.on('requestfailed', (request) => {
+      diagnostics.requests.push(`failed ${request.url()} ${request.failure()?.errorText ?? ''}`.trim())
+    })
+    page.on('response', (response) => {
+      const url = response.url()
+      if (response.status() >= 400 || url.endsWith('/') || /\/main|App\.uvue|index\.uvue|main\.css|@vite\/client|pages-json-js/.test(url)) {
+        diagnostics.requests.push(`${response.status()} ${url}`)
+      }
+    })
+    page.on('console', (message) => {
+      if (message.type() === 'error') {
+        diagnostics.errors.push(message.text())
+      }
+      else if (message.type() === 'warning') {
+        diagnostics.warnings.push(message.text())
+      }
+    })
+    page.on('pageerror', (error) => {
+      diagnostics.errors.push(error.stack ?? error.message)
+    })
     await page.goto(joinUrl(ready.baseUrl, '/'), { waitUntil: 'domcontentloaded' })
+    await page.waitForFunction(() => document.readyState !== 'loading')
 
+    await waitForRuntimeStyles(page, initialRuntimeStyles, 'initial', logs, diagnostics, true)
     const initialCss = await waitForCss(joinUrl(ready.baseUrl, initialCssPath), initialCssContains, child, logs)
     restore = await mutateFile(sourceFile, markerAnchors, '')
     const hmrCss: string[] = []
     for (const [index, step] of hmrSteps.entries()) {
       await rewriteHmrMarker(sourceFile, markerAnchors, hmrSteps, index)
+      await waitForRuntimeStyles(page, step.runtimeStyles, `hmr:${step.markerText}`, logs, diagnostics)
       hmrCss.push(await waitForCss(joinUrl(ready.baseUrl, hmrCssPath), step.cssContains, child, logs))
     }
 

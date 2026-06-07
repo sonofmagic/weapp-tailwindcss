@@ -102,8 +102,13 @@ function resolveConfigDir(config: string | undefined, projectRoot: string) {
 function isBarePackageSpecifier(specifier: string) {
   return !specifier.startsWith('.')
     && !specifier.startsWith('/')
+    && !specifier.startsWith('#')
     && !specifier.includes('\\')
     && !/^[a-z][a-z\d+.-]*:/i.test(specifier)
+}
+
+function isPackageJsonImportSpecifier(specifier: string | undefined) {
+  return typeof specifier === 'string' && specifier.startsWith('#')
 }
 
 function parseCssImportSpecifier(params: string) {
@@ -165,7 +170,7 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
   const importSpecifiers = createTailwindV4CssImportSpecifierSet(packageName)
   let changed = false
   root.walkAtRules((rule) => {
-    if (rule.name !== 'reference') {
+    if (rule.name !== 'import' && rule.name !== 'reference') {
       return
     }
     const parsed = parseCssImportSpecifier(rule.params)
@@ -237,7 +242,7 @@ function normalizeTailwindV4CssEntrySources(
     })
     const config = entrySource?.config && existsSync(entrySource.config)
       ? entrySource.config
-      : entrySource?.configRequest && !path.isAbsolute(entrySource.configRequest)
+      : entrySource?.configRequest && !path.isAbsolute(entrySource.configRequest) && !isPackageJsonImportSpecifier(entrySource.configRequest)
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(

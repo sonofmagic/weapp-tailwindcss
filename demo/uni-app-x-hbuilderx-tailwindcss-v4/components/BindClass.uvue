@@ -14,9 +14,15 @@
     </text>
   </view>
 </template>
-<script setup lang="uts">
-  const flag = true
-  const extra = 'text-[93.54rpx] bg-[#d2e252]'
-  const toggled = true
-  const condition = true
+<script lang="uts">
+  export default {
+    data() {
+      return {
+        condition: true,
+        extra: 'text-[93.54rpx] bg-[#d2e252]',
+        flag: true,
+        toggled: true,
+      }
+    },
+  }
 </script>

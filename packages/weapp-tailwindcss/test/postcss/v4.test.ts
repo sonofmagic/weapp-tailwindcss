@@ -4,6 +4,8 @@ import {
   postcssRemoveComment,
 } from "@weapp-tailwindcss/test-helper";
 import fs from "fs-extra";
+import { mkdtemp } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "pathe";
 import postcss from "postcss";
 import { getCompilerContext } from "@/context";
@@ -14,6 +16,18 @@ const putCase = createPutCase(cssCasePath);
 
 type CompilerOptions = Parameters<typeof getCompilerContext>[0];
 
+const DEFAULT_CSS_CANDIDATES = [
+  "w-[100px]",
+  "p-2",
+  "p-10",
+  "shadow",
+  "invert",
+  "before:content-['+']",
+  "before:content-[\\'hello\\']",
+  "hover:bg-blue-500",
+  "dark:bg-zinc-800",
+];
+
 function getCtx(options?: CompilerOptions) {
   const postcssOptions = options?.postcssOptions ?? {};
   return getCompilerContext({
@@ -23,6 +37,14 @@ function getCtx(options?: CompilerOptions) {
       plugins: [postcssRemoveComment, ...(postcssOptions.plugins ?? [])],
     },
   });
+}
+
+function withInlineSource(rawCss: string) {
+  return `@source inline("${DEFAULT_CSS_CANDIDATES.join(" ")}");\n${rawCss}`;
+}
+
+async function createTailwindV4FixtureBase() {
+  return mkdtemp(path.join(tmpdir(), "weapp-tw-postcss-v4-"));
 }
 
 describe("tailwindcss v4", () => {
@@ -97,13 +119,14 @@ describe("tailwindcss v4", () => {
   it("weapp-tailwindcss default", async () => {
     const filepath = path.resolve(rootPath, "./index.css");
     const rawCss = await fs.readFile(filepath, "utf8");
+    const base = await createTailwindV4FixtureBase();
     const { styleHandler } = getCtx();
     const { css: hahaCss } = await postcss([
       tailwindcss({
-        base: __dirname,
+        base,
       }),
       postcssRemoveComment,
-    ]).process(rawCss, {
+    ]).process(withInlineSource(rawCss), {
       from: filepath,
     });
     expect(hahaCss).toMatchSnapshot("tailwindcss");
@@ -116,13 +139,14 @@ describe("tailwindcss v4", () => {
   it("weapp-tailwindcss default with layer", async () => {
     const filepath = path.resolve(rootPath, "./with-layer.css");
     const rawCss = await fs.readFile(filepath, "utf8");
+    const base = await createTailwindV4FixtureBase();
     const { styleHandler } = getCtx();
     const { css: hahaCss } = await postcss([
       tailwindcss({
-        base: __dirname,
+        base,
       }),
       postcssRemoveComment,
-    ]).process(rawCss, {
+    ]).process(withInlineSource(rawCss), {
       from: filepath,
     });
     expect(hahaCss).toMatchSnapshot("tailwindcss");

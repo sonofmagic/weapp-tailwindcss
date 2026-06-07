@@ -111,6 +111,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     vi.resetModules()
     vi.doUnmock('node:fs/promises')
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
+    vi.doUnmock('@/bundlers/vite/source-scan')
     vi.doUnmock('@/generator')
     resetVitePluginTestContext()
     vi.restoreAllMocks()

@@ -1,4 +1,3 @@
-@import 'app-origin.wxss';
 ::before,
 ::after {
   --tw-content: '';

@@ -1,6 +1,5 @@
-<script setup lang="uts">
-
-
+<script lang="uts">
+	export default {}
 </script>
 
 <template>
