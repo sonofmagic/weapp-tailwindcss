@@ -132,7 +132,7 @@ async function hideKnownDevOverlays(page: Page) {
   })()`)
 }
 
-export async function screenshotPage(browser: Browser, url: string, screenshot: string, name: string, context: RuntimeContext) {
+export async function prepareScreenshotPage(browser: Browser, url: string, context: RuntimeContext) {
   const page = await browser.newPage({ viewport: context.viewport })
   const diagnostics = {
     console: [] as string[],
@@ -140,17 +140,27 @@ export async function screenshotPage(browser: Browser, url: string, screenshot: 
   }
   page.on('console', message => diagnostics.console.push(`${message.type()}: ${message.text()}`))
   page.on('requestfailed', request => diagnostics.requests.push(`${request.url()} ${request.failure()?.errorText ?? ''}`.trim()))
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: Math.min(context.timeoutMs, 60_000) })
+  await page.waitForFunction(() => document.readyState !== 'loading', undefined, { timeout: 30_000 })
+  await page.waitForFunction(() => (document.body?.textContent?.trim().length ?? 0) > 0, undefined, { timeout: 30_000 })
+  return { diagnostics, page }
+}
+
+export async function capturePageScreenshot(page: Page, screenshot: string, name: string) {
+  const overlay = await hideKnownDevOverlays(page)
+  await fs.mkdir(path.dirname(screenshot), { recursive: true })
+  const screenshotBuffer = await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' })
+  const visual = await analyzeScreenshot(screenshotBuffer)
+  assertScreenshotVisible(visual, name)
+  const evidence = await collectPageEvidence(page)
+  return { evidence, overlay, screenshot, visual }
+}
+
+export async function screenshotPage(browser: Browser, url: string, screenshot: string, name: string, context: RuntimeContext) {
+  const { diagnostics, page } = await prepareScreenshotPage(browser, url, context)
   try {
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: Math.min(context.timeoutMs, 60_000) })
-    await page.waitForFunction(() => document.readyState !== 'loading', undefined, { timeout: 30_000 })
-    await page.waitForFunction(() => (document.body?.textContent?.trim().length ?? 0) > 0, undefined, { timeout: 30_000 })
-    const overlay = await hideKnownDevOverlays(page)
-    await fs.mkdir(path.dirname(screenshot), { recursive: true })
-    const screenshotBuffer = await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' })
-    const visual = await analyzeScreenshot(screenshotBuffer)
-    assertScreenshotVisible(visual, name)
-    const evidence = await collectPageEvidence(page)
-    return { diagnostics, evidence, overlay, screenshot, visual }
+    const captured = await capturePageScreenshot(page, screenshot, name)
+    return { diagnostics, ...captured }
   }
   finally {
     await page.close()

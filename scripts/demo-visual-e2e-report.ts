@@ -8,6 +8,12 @@ import { E2E_PROJECTS } from '../e2e/projectEntries.ts'
 import { taroWebHmrCases } from '../e2e/taro-web-demo-hmr-cases.ts'
 import { webViteHmrCases } from '../e2e/web-vite-demo-hmr-cases.ts'
 import { runH5Case, runMiniProgramCase } from './demo-visual-e2e-report/cases.ts'
+import {
+  createMiniProgramHmrVisualConfig,
+  createTaroHmrVisualConfig,
+  createUniH5HmrVisualConfig,
+  createWebViteHmrVisualConfig,
+} from './demo-visual-e2e-report/hmr.ts'
 import { writeReport } from './demo-visual-e2e-report/report.ts'
 
 const repoRoot = path.resolve(import.meta.dirname, '..')
@@ -30,6 +36,7 @@ const uniH5Cases = [
   name,
   projectDir: `demo/${name}`,
   command: ['run', 'dev:h5'],
+  hmr: createUniH5HmrVisualConfig(repoRoot, name),
   env: {
     CHOKIDAR_INTERVAL: '50',
     CHOKIDAR_USEPOLLING: '1',
@@ -100,6 +107,7 @@ async function main() {
             TARO_ENV: 'h5',
             WEAPP_TW_HMR_TIMING: '1',
           },
+          hmr: createTaroHmrVisualConfig(item),
         }, context, results)
       }
       for (const item of webViteHmrCases) {
@@ -111,6 +119,7 @@ async function main() {
           name,
           projectDir: item.projectDir,
           command: ['exec', 'vite', '--host', '127.0.0.1', '--strictPort'],
+          hmr: createWebViteHmrVisualConfig(item),
         }, context, results)
       }
       for (const item of uniH5Cases) {
@@ -129,7 +138,10 @@ async function main() {
       if (!matchesFilter(item.name)) {
         continue
       }
-      await runMiniProgramCase(item, context, results)
+      await runMiniProgramCase({
+        ...item,
+        hmr: createMiniProgramHmrVisualConfig(repoRoot, item.name),
+      }, context, results)
     }
   }
   await writeReport(results, context)

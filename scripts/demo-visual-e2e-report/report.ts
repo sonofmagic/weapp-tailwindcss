@@ -33,18 +33,23 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
   const comparisons = results.filter(item => item.comparison && item.platform === 'h5')
   const visualRows = results.map((item) => {
     const screenshot = item.screenshot ? renderImageLink(context, item.screenshot, `${item.platform}-${item.name}`) : ''
+    const hmrBefore = item.hmrBeforeScreenshot ? renderImageLink(context, item.hmrBeforeScreenshot, `${item.platform}-${item.name}-hmr-before`) : ''
+    const hmrAfter = item.hmrAfterScreenshot ? renderImageLink(context, item.hmrAfterScreenshot, `${item.platform}-${item.name}-hmr-after`) : ''
     const diff = item.diff ? renderImageLink(context, item.diff, `diff-${item.name}`) : ''
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
   })
   const rows = results.map((item) => {
     const screenshot = item.screenshot ? `[截图](${path.relative(context.artifactRoot, item.screenshot)})` : ''
+    const hmrBefore = item.hmrBeforeScreenshot ? `[HMR 前](${path.relative(context.artifactRoot, item.hmrBeforeScreenshot)})` : ''
+    const hmrAfter = item.hmrAfterScreenshot ? `[HMR 后](${path.relative(context.artifactRoot, item.hmrAfterScreenshot)})` : ''
     const diff = item.diff ? `[diff](${path.relative(context.artifactRoot, item.diff)})` : ''
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
   })
+  const hmrPairs = results.filter(item => item.hmrBeforeScreenshot && item.hmrAfterScreenshot)
   await fs.writeFile(reportMd, [
     '# Demo Visual E2E Report',
     '',
@@ -55,18 +60,19 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     `- H5: ${summary.h5.passed} passed, ${summary.h5.failed} failed, ${summary.h5.skipped} skipped`,
     `- WeApp: ${summary.weapp.passed} passed, ${summary.weapp.failed} failed, ${summary.weapp.skipped} skipped`,
     `- Screenshots: ${results.filter(item => item.screenshot).length}`,
+    `- HMR visual pairs: ${hmrPairs.length}`,
     `- Cross-platform comparisons: ${comparisons.length}`,
     '',
     '## Visual Matrix',
     '',
-    '| Demo | Platform | Status | Screenshot | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...visualRows,
     '',
     '## Link Matrix',
     '',
-    '| Demo | Platform | Status | Screenshot | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...rows,
     '',
   ].join('\n'))
