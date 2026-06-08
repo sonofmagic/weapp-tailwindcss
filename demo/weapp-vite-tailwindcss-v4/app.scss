@@ -1,5 +1,10 @@
 // Tailwind root entry intentionally lives in SCSS to cover preprocessor source handling.
 @import "tailwindcss";
+@plugin "@iconify/tailwind4";
+@plugin "@iconify/tailwind4" {
+  prefix: "iconify";
+  scale: 1.2;
+}
 @config "./tailwind.config.js";
 @source "./pages/**/*.{wxml,html,js,ts,jsx,tsx,vue}";
 @source not "./sub-normal/**/*";

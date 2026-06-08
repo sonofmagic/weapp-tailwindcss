@@ -437,6 +437,16 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         )
       },
     },
+    userReportedHotUpdate: {
+      label: 'wxml expression bg-[#111111] to bg-[#f40909]',
+      sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/miniprogram/pages/index/index.wxml'),
+      before: `mode === 'light'?'bg-[#111111] text-slate-800':'bg-gray-900 text-slate-200'`,
+      after: `mode === 'light'?'bg-[#f40909] text-slate-800':'bg-gray-900 text-slate-200'`,
+      beforeClassTokens: ['bg-[#111111]'],
+      afterClassTokens: ['bg-[#f40909]'],
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: ['wxml'],
+    },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/miniprogram/pages/index/index.wxml'),
       verifyEscapedIn: ['wxml'],
@@ -514,6 +524,16 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
           'weapp-vite-tailwindcss-v4 content class anchor',
         )
       },
+    },
+    userReportedHotUpdate: {
+      label: 'wxml expression bg-[#111111] to bg-[#f40909]',
+      sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.wxml'),
+      before: `mode === 'light'?'bg-[#111111] text-slate-800':'bg-gray-900 text-slate-200'`,
+      after: `mode === 'light'?'bg-[#f40909] text-slate-800':'bg-gray-900 text-slate-200'`,
+      beforeClassTokens: ['bg-[#111111]'],
+      afterClassTokens: ['bg-[#f40909]'],
+      verifyEscapedIn: ['wxml'],
+      verifyClassLiteralIn: ['wxml'],
     },
     templateMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/pages/index/index.wxml'),

@@ -39,9 +39,9 @@
     "lodash": "^4.18.1"
   },
   "devDependencies": {
-    "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/lucide": "catalog:iconifyJson",
     "@iconify-json/mdi": "catalog:iconifyJson",
+    "@iconify/tailwind4": "^1.2.3",
     "@weapp-tailwindcss/variants": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "postcss": "catalog:postcss85",

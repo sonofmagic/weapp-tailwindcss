@@ -854,6 +854,31 @@ describe('bundlers/shared generator css', () => {
     expect(source?.css).not.toContain('@include')
   })
 
+  it('keeps Tailwind v4 @plugin option blocks from preprocessor sources', async () => {
+    const { normalizeTailwindSourceForGenerator, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const rawSource = [
+      '$brand: #123456;',
+      '@import "tailwindcss";',
+      '@plugin "@iconify/tailwind4" {',
+      '  prefix: "iconify";',
+      '  scale: 1.2;',
+      '}',
+      '@source inline("iconify-[mdi--home]");',
+      '.card { color: $brand; }',
+    ].join('\n')
+    const expected = [
+      '@import "tailwindcss";',
+      '@source inline("iconify-[mdi--home]");',
+      '@plugin "@iconify/tailwind4" {',
+      '  prefix: "iconify";',
+      '  scale: 1.2;',
+      '}',
+    ].join('\n')
+
+    expect(normalizeTailwindSourceForGenerator(rawSource)).toBe(expected)
+    expect(resolveCssEntrySource(rawSource, __dirname)?.css).toBe(expected)
+  })
+
   it('normalizes registered generator sources from preprocessor syntax', async () => {
     const { normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } = await import('@/bundlers/shared/generator-css')
     const rawSource = [

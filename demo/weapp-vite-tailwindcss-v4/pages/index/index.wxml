@@ -1,5 +1,6 @@
 <scroll-view scroll-y type="list">
   <view class="space-y-2.5">
+    <view class="hidden min-h-screen {{ mode === 'light'?'bg-[#111111] text-slate-800':'bg-gray-900 text-slate-200' }} transition-colors duration-500"></view>
     <view class="bg-[#68c828] text-[100px] text-[#123456] w-[323px] {{true?'h-[30px]':'h-[45px]'}}">
       111
     </view>
@@ -19,7 +20,12 @@
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
       <view class="inline-block h-10 w-[50px] bg-amber-300"></view>
     </view>
-    <view class="i-mdi-home"></view>
+    <view class="flex items-center gap-3 text-slate-700">
+      <view class="icon-[mdi--home] size-8 text-sky-600"></view>
+      <view class="icon-[mdi--account] size-8 text-emerald-600"></view>
+      <view class="iconify-[lucide--settings] size-8 text-violet-600"></view>
+      <view class="iconify-[lucide--bell] size-8 text-rose-600"></view>
+    </view>
     <view class="hover:border-blue-200/20">111</view>
     <view class='size-12 bg-blue-500/30 text-pink-300'>BLUE BLOCK</view>
     <view class="min-h-screen flex flex-col p-4 bg-zinc-50 dark:bg-zinc-900">

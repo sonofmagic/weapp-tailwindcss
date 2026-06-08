@@ -47,6 +47,12 @@ const pluginCandidates = [
   'plugin-scrollbar',
   'plugin-size-card',
 ]
+const v4CssPluginCandidates = [
+  'daisy-btn',
+  'daisy-card',
+  'icon-[mdi--home]',
+  'iconify-[mdi--home]',
+]
 
 function compactCss(css: string) {
   return css.replace(/\s+/g, '')
@@ -91,6 +97,85 @@ async function createPluginFixture(tailwindcssRoot: string) {
     await symlink(packageDir, target, 'dir')
   }
 
+  return root
+}
+
+async function writePackageJson(root: string, packageName: string) {
+  const packageDir = path.join(root, 'node_modules', ...packageName.split('/'))
+  await mkdir(packageDir, { recursive: true })
+  await writeFile(
+    path.join(packageDir, 'package.json'),
+    JSON.stringify({
+      name: packageName,
+      version: '0.0.0-test',
+      main: './index.cjs',
+    }),
+    'utf8',
+  )
+  return packageDir
+}
+
+async function writeFakeDaisyuiPackage(root: string) {
+  const packageDir = await writePackageJson(root, 'daisyui')
+  await writeFile(
+    path.join(packageDir, 'index.cjs'),
+    [
+      'const plugin = require("tailwindcss/plugin")',
+      '',
+      'function normalizeEmpty(value) {',
+      '  return value === "" || value === 0 ? "empty" : String(value)',
+      '}',
+      '',
+      'module.exports = plugin.withOptions((options = {}) => ({ addComponents }) => {',
+      '  addComponents({',
+      '    ".daisy-btn": {',
+      '      "--daisy-root": options.root || "unset",',
+      '      "--daisy-logs": String(options.logs),',
+      '      "--daisy-prefix": normalizeEmpty(options.prefix),',
+      '      "--daisy-include": normalizeEmpty(options.include),',
+      '      "--daisy-exclude": normalizeEmpty(options.exclude),',
+      '      color: "#123456",',
+      '    },',
+      '    ".daisy-card": {',
+      '      "--daisy-themes": Array.isArray(options.themes) ? options.themes.join("|") : String(options.themes),',
+      '      "border-radius": "12px",',
+      '    },',
+      '  })',
+      '})',
+    ].join('\n'),
+    'utf8',
+  )
+}
+
+async function writeFakeIconifyTailwind4Package(root: string) {
+  const packageDir = await writePackageJson(root, '@iconify/tailwind4')
+  await writeFile(
+    path.join(packageDir, 'index.cjs'),
+    [
+      'const plugin = require("tailwindcss/plugin")',
+      '',
+      'module.exports = plugin.withOptions((options = {}) => ({ matchUtilities }) => {',
+      '  const prefix = options.prefix || "icon"',
+      '  const scale = Number(options.scale || 1)',
+      '  matchUtilities({',
+      '    [prefix]: (value) => ({',
+      '      "--svg": `"${value}"`,',
+      '      display: "inline-block",',
+      '      width: `${scale}em`,',
+      '      height: `${scale}em`,',
+      '      mask: "var(--svg) no-repeat center / 100% 100%",',
+      '    }),',
+      '  })',
+      '})',
+    ].join('\n'),
+    'utf8',
+  )
+}
+
+async function createV4CssPluginDirectiveFixture() {
+  const root = await createPluginFixture(tailwindcss4Root)
+  await writeFakeDaisyuiPackage(root)
+  await writeFakeIconifyTailwind4Package(root)
   return root
 }
 
@@ -213,6 +298,33 @@ async function createV4Source(root: string) {
   })
 }
 
+async function createV4CssPluginDirectiveSource(root: string) {
+  const css = [
+    '@import "tailwindcss" source(none);',
+    '@plugin "daisyui";',
+    '@plugin "daisyui" {',
+    '  themes: light --default, dark --prefersdark;',
+    '  root: ":root";',
+    '  include: ;',
+    '  exclude: ;',
+    '  prefix: ;',
+    '  logs: true;',
+    '}',
+    '@plugin "@iconify/tailwind4";',
+    '@plugin "@iconify/tailwind4" {',
+    '  prefix: "iconify";',
+    '  scale: 1.2;',
+    '}',
+    `@source inline("${v4CssPluginCandidates.join(' ')}");`,
+  ].join('\n')
+
+  return resolveTailwindV4Source({
+    base: root,
+    css,
+    projectRoot: root,
+  })
+}
+
 describe('tailwindcss generator plugin compatibility', () => {
   it('supports official plugins, custom plugins, and icon plugins in the v3 engine', async () => {
     const root = await createPluginFixture(tailwindcss3Root)
@@ -285,5 +397,32 @@ describe('tailwindcss generator plugin compatibility', () => {
     expect(result.css).not.toContain('ei-\\[mdi--home\\]')
     expect(result.css).not.toContain('icon-\\[mdi--home\\]')
     expect(result.css).not.toContain('@media')
+  })
+
+  it('supports CSS @plugin directives and option blocks in the v4 engine', async () => {
+    const root = await createV4CssPluginDirectiveFixture()
+    const source = await createV4CssPluginDirectiveSource(root)
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect(result.classSet).toEqual(new Set(v4CssPluginCandidates))
+    expect(result.rawCss).toContain('.daisy-btn')
+    expect(result.rawCss).toContain('.daisy-card')
+    expect(result.rawCss).toContain('--daisy-root: :root')
+    expect(result.rawCss).toContain('--daisy-logs: true')
+    expect(result.rawCss).toContain('--daisy-prefix: empty')
+    expect(result.rawCss).toContain('--daisy-include: empty')
+    expect(result.rawCss).toContain('--daisy-exclude: empty')
+    expect(result.rawCss).toContain('light --default')
+    expect(result.rawCss).toContain('dark --prefersdark')
+    expect(result.rawCss).toContain('.icon-\\[mdi--home\\]')
+    expect(result.rawCss).toContain('.iconify-\\[mdi--home\\]')
+    expect(result.rawCss).toContain('width: 1.2em')
+    expect(result.rawCss).toContain('height: 1.2em')
+    expect(result.rawCss).toContain('mask:')
+    expect(result.css).toContain('.icon-_bmdi--home_B')
+    expect(result.css).toContain('.iconify-_bmdi--home_B')
+    expect(result.css).not.toContain('@plugin')
   })
 })

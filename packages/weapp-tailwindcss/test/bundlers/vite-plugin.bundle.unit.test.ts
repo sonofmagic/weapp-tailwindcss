@@ -887,6 +887,328 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
   }, TEST_TIMEOUT_MS)
 
+  it('regenerates serve css hmr from updated wxml expression candidates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-wxml-expression-hmr-'))
+    createdDirs.push(root)
+    const pageFile = path.join(root, 'pages/index/index.wxml')
+    const appStyleFile = path.join(root, 'app.scss')
+    const cssModuleId = `${appStyleFile}?direct`
+    const seenCandidates: string[][] = []
+
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(
+      pageFile,
+      `<view class="min-h-screen {{ mode === 'light'?'bg-[#111111] text-slate-800':'bg-gray-900 text-slate-200' }} transition-colors duration-500"></view>`,
+      'utf8',
+    )
+    await writeFile(
+      appStyleFile,
+      [
+        '@import "tailwindcss";',
+        '@source "./pages/**/*.wxml";',
+      ].join('\n'),
+      'utf8',
+    )
+
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => {
+            const candidates = [...options.candidates].sort()
+            seenCandidates.push(candidates)
+            const css = candidates
+              .filter(candidate => candidate.startsWith('bg-[#'))
+              .map(candidate => `.${replaceWxml(candidate)}{background-color:${candidate.slice(4, -1)}}`)
+              .join('\n')
+            return {
+              css,
+              rawCss: css,
+              target: 'weapp',
+              classSet: new Set(options.candidates),
+              dependencies: [],
+              sources: [],
+              root: null,
+              version: 4,
+            }
+          }),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          version: 4,
+          projectRoot: root,
+          base: root,
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      tailwindcssBasedir: root,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        options: {
+          tailwindcss: {
+            cwd: root,
+            v4: {
+              base: root,
+              cssEntries: [appStyleFile],
+            },
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      tailwindcssBasedir: root,
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(cssHmrPlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const transform = getTransformHandler(cssHmrPlugin)
+    const createCssHmrModule = () => [
+      'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+      `const __vite__id = ${JSON.stringify(cssModuleId)}`,
+      `const __vite__css = ${JSON.stringify([
+        '@import "tailwindcss";',
+        '@source "./pages/**/*.wxml";',
+      ].join('\n'))}`,
+      '__vite__updateStyle(__vite__id, __vite__css)',
+    ].join('\n')
+
+    await transform?.call(cssHmrPlugin, createCssHmrModule(), cssModuleId)
+    expect(seenCandidates.at(-1)).toContain('bg-[#111111]')
+
+    await writeFile(
+      pageFile,
+      `<view class="min-h-screen {{ mode === 'light'?'bg-[#f40909] text-slate-800':'bg-gray-900 text-slate-200' }} transition-colors duration-500"></view>`,
+      'utf8',
+    )
+
+    const cssModule = {
+      id: cssModuleId,
+      url: cssModuleId,
+    } as ModuleNode
+    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: pageFile,
+      modules: [],
+      timestamp: 123456,
+      server: {
+        ws: {
+          send: vi.fn(),
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(id => id === cssModuleId ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule: vi.fn(),
+        },
+      },
+    } as HmrContext)
+
+    const result = await transform?.call(cssHmrPlugin, createCssHmrModule(), cssModuleId)
+    const resultCode = String((result as any)?.code)
+    expect(seenCandidates.at(-1)).toContain('bg-[#f40909]')
+    expect(seenCandidates.at(-1)).not.toContain('bg-[#111111]')
+    expect(resultCode).toContain(replaceWxml('bg-[#f40909]'))
+    expect(resultCode).not.toContain(replaceWxml('bg-[#111111]'))
+  }, TEST_TIMEOUT_MS)
+
+  it('regenerates watch bundle css from updated wxml expression candidates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-wxml-expression-bundle-'))
+    createdDirs.push(root)
+    const sourceRoot = path.join(root, 'src')
+    const pageFile = path.join(sourceRoot, 'pages/index/index.wxml')
+    const appStyleFile = path.join(sourceRoot, 'app.css')
+    const seenCandidates: string[][] = []
+    const runtimeSet = new Set<string>([
+      'min-h-screen',
+      'bg-[#111111]',
+      'text-slate-800',
+      'bg-gray-900',
+      'text-slate-200',
+      'transition-colors',
+      'duration-500',
+    ])
+
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(
+      pageFile,
+      `<view class="min-h-screen {{ mode === 'light'?'bg-[#111111] text-slate-800':'bg-gray-900 text-slate-200' }} transition-colors duration-500"></view>`,
+      'utf8',
+    )
+    await writeFile(
+      appStyleFile,
+      [
+        '@import "tailwindcss";',
+        '@source "./**/*.{wxml,js,ts}";',
+      ].join('\n'),
+      'utf8',
+    )
+
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => {
+            const candidates = [...options.candidates].sort()
+            seenCandidates.push(candidates)
+            const css = candidates
+              .filter(candidate => candidate.startsWith('bg-[#'))
+              .map(candidate => `.${replaceWxml(candidate)}{background-color:${candidate.slice(4, -1)}}`)
+              .join('\n')
+            return {
+              css,
+              rawCss: css,
+              target: 'weapp',
+              classSet: new Set(options.candidates),
+              dependencies: [],
+              sources: [],
+              root: null,
+              version: 4,
+            }
+          }),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          version: 4,
+          projectRoot: sourceRoot,
+          base: sourceRoot,
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+          packageName: 'tailwindcss',
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: sourceRoot,
+          base: sourceRoot,
+          baseFallbacks: [],
+          cssEntries: [appStyleFile],
+          packageName: 'tailwindcss',
+        })),
+      }
+    })
+    const jsHandler = createJsHandler({
+      escapeMap: MappingChars2String,
+      jsArbitraryValueFallback: false,
+      tailwindcssMajorVersion: 4,
+    })
+    const templateHandler = createTemplateHandler({
+      escapeMap: MappingChars2String,
+      jsHandler,
+    })
+
+    setCurrentContext(createContext({
+      cssEntries: [appStyleFile],
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      tailwindcssBasedir: sourceRoot,
+      templateHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+        options: {
+          projectRoot: sourceRoot,
+          tailwindcss: {
+            cwd: sourceRoot,
+            v4: {
+              base: sourceRoot,
+              cssEntries: [appStyleFile],
+            },
+          },
+        },
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [appStyleFile],
+      tailwindcssBasedir: sourceRoot,
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist', watch: {} },
+    } as ResolvedConfig)
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createBundle = () => ({
+      'pages/index/index.wxml': {
+        ...createRollupAsset(''),
+        fileName: 'pages/index/index.wxml',
+        source: '<view class="min-h-screen {{ mode === \'light\'?\'bg-[#111111] text-slate-800\':\'bg-gray-900 text-slate-200\' }} transition-colors duration-500"></view>',
+      },
+      'app.wxss': {
+        ...createRollupAsset([
+          '@import "tailwindcss";',
+          '@source "../src/**/*.{wxml,js,ts}";',
+        ].join('\n')),
+        fileName: 'app.wxss',
+        originalFileNames: [appStyleFile],
+      },
+    })
+
+    const firstBundle = createBundle()
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {} as any, firstBundle)
+    const firstCss = (firstBundle['app.wxss'] as OutputAsset).source.toString()
+    const firstWxml = (firstBundle['pages/index/index.wxml'] as OutputAsset).source.toString()
+    expect(seenCandidates.at(-1)).toContain('bg-[#111111]')
+    expect(firstCss).toContain(replaceWxml('bg-[#111111]'))
+    expect(firstWxml).toContain(replaceWxml('bg-[#111111]'))
+
+    await writeFile(
+      pageFile,
+      `<view class="min-h-screen {{ mode === 'light'?'bg-[#f40909] text-slate-800':'bg-gray-900 text-slate-200' }} transition-colors duration-500"></view>`,
+      'utf8',
+    )
+    runtimeSet.delete('bg-[#111111]')
+    runtimeSet.add('bg-[#f40909]')
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, pageFile, { event: 'update' })
+
+    const secondBundle = createBundle()
+    secondBundle['pages/index/index.wxml'].source = '<view class="min-h-screen {{ mode === \'light\'?\'bg-[#f40909] text-slate-800\':\'bg-gray-900 text-slate-200\' }} transition-colors duration-500"></view>'
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {} as any, secondBundle)
+    const secondCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
+    const secondWxml = (secondBundle['pages/index/index.wxml'] as OutputAsset).source.toString()
+
+    expect(seenCandidates.at(-1)).toContain('bg-[#f40909]')
+    expect(seenCandidates.at(-1)).not.toContain('bg-[#111111]')
+    expect(secondCss).toContain(replaceWxml('bg-[#f40909]'))
+    expect(secondCss).not.toContain(replaceWxml('bg-[#111111]'))
+    expect(secondWxml).toContain(replaceWxml('bg-[#f40909]'))
+    expect(secondWxml).not.toContain(replaceWxml('bg-[#111111]'))
+  }, TEST_TIMEOUT_MS)
+
   it('reloads uni vue source hot updates that only produce css hmr updates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-empty-modules-'))
     createdDirs.push(root)

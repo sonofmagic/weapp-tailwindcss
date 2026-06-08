@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import { addDynamicIconSelectors } from '@iconify/tailwind'
 import plugin from 'tailwindcss/plugin'
 
 export default <Config>{
@@ -12,6 +13,11 @@ export default <Config>{
     preflight: false,
   },
   plugins: [
+    addDynamicIconSelectors(),
+    addDynamicIconSelectors({
+      prefix: 'iconify',
+      scale: 1.2,
+    }),
     plugin(({ addComponents }) => {
       addComponents({
         '.weapp-reset-button': {

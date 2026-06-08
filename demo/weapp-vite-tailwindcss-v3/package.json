@@ -31,6 +31,9 @@
     "predev:open": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "catalog:iconifyJson",
+    "@iconify-json/mdi": "catalog:iconifyJson",
+    "@iconify/tailwind": "^1.2.0",
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/variants-v3": "workspace:*",
