@@ -33,6 +33,16 @@ function matchesRule(id: string, rule: MatchRule) {
   return rule(id)
 }
 
+function appendIgnoredPath(ignored: unknown, ignoredPath: string) {
+  if (ignored === undefined) {
+    return [ignoredPath]
+  }
+  if (Array.isArray(ignored)) {
+    return [...ignored, ignoredPath]
+  }
+  return [ignored, ignoredPath]
+}
+
 /**
  * 输出 `uni-app x` 多阶段构建产物到磁盘，便于排查 transform 与 bundle 过程。
  *
@@ -60,6 +70,7 @@ export function debugX(options?: DebugOptions): Plugin[] {
   const includes = toRules(include)
   const excludes = toRules(exclude)
   const metaWriter = new DebugMetaWriter(cwd, targetDir, onError)
+  let watchIgnoredSynced = false
 
   function n(id: string) {
     return toSafeRelativePath(id, cwd)
@@ -88,6 +99,18 @@ export function debugX(options?: DebugOptions): Plugin[] {
     return {
       name: `weapp-tailwindcss:debug:${prefix}`,
       enforce,
+      config(config) {
+        if (!isEnabled || watchIgnoredSynced) {
+          return
+        }
+        watchIgnoredSynced = true
+        config.server ??= {}
+        config.server.watch ??= {}
+        config.server.watch.ignored = appendIgnoredPath(
+          config.server.watch.ignored,
+          path.join(cwd, targetDir, '**'),
+        )
+      },
       async transform(code, id) {
         if (!shouldWrite(id, prefix)) {
           return

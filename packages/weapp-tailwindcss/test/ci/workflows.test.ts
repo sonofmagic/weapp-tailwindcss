@@ -321,7 +321,6 @@ describe('e2e watch workflow', () => {
       'macos:22:taro-vite-vue3-tailwindcss-v4:default',
       'windows:22:weapp-vite-tailwindcss-v4:issue33',
       'windows:22:taro-vite-vue3-tailwindcss-v4:default',
-      'windows:22:mpx-tailwindcss-v3:default',
       'macos:24:weapp-vite-tailwindcss-v3:issue33',
       'windows:24:weapp-vite-tailwindcss-v3:issue33',
     ]))
@@ -488,6 +487,7 @@ describe('e2e watch workflow', () => {
       watch_command_timeout_ms: '5400000',
     }))
     expect(nightlyRows.some(row => row.runner_label === 'windows' && row.watch_case === 'demo')).toBe(false)
+    expect(nightlyRows.some(row => row.runner_label === 'windows' && row.watch_case === 'mpx-tailwindcss-v3')).toBe(false)
     expect(nightlyRows.some(row => row.watch_case === 'all')).toBe(false)
   })
 

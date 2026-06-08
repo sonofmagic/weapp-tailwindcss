@@ -442,14 +442,6 @@ export const webCases: WebCase[] = [
         },
       },
       {
-        selector: '.bg-\\[\\#102938\\]',
-        styles: {
-          backgroundColor: 'rgb(16, 41, 56)',
-          color: 'rgb(247, 251, 255)',
-          width: '173px',
-        },
-      },
-      {
         selector: '.bg-\\[\\#f21903\\]',
         styles: {
           backgroundColor: 'rgb(242, 25, 3)',

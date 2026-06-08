@@ -151,28 +151,75 @@ async function collectRuntimeStyle(page: Page, selector: string) {
   })
 }
 
+async function collectRuntimePageEvidence(page: Page) {
+  return await page.evaluate(() => {
+    const pick = (selector: string) => {
+      const element = document.querySelector(selector)
+      if (!element) {
+        return null
+      }
+      const style = window.getComputedStyle(element)
+      const rect = element.getBoundingClientRect()
+      return {
+        backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
+        className: element.getAttribute('class') ?? '',
+        color: style.color.replace(/\s+/g, ' '),
+        display: style.display,
+        rect: {
+          height: Math.round(rect.height),
+          width: Math.round(rect.width),
+          x: Math.round(rect.x),
+          y: Math.round(rect.y),
+        },
+        selector,
+        text: element.textContent?.trim().slice(0, 160) ?? '',
+      }
+    }
+    return {
+      bodyText: document.body?.textContent?.trim().slice(0, 320) ?? '',
+      readyState: document.readyState,
+      samples: ['body', '#app', 'uni-page-body', '.content', '.test']
+        .map(pick)
+        .filter(Boolean),
+      url: location.href,
+    }
+  })
+}
+
 async function waitForRuntimeAssertions(page: Page, assertions: WebRuntimeStyleAssertion[] | undefined, label: string) {
   if (!assertions?.length) {
     return undefined
   }
-  return await waitFor(label, async () => {
-    const evidence: Record<string, unknown> = {}
-    for (const assertion of assertions) {
-      const count = await page.locator(assertion.selector).count()
-      if (count === 0) {
-        return undefined
-      }
-      const actual = await collectRuntimeStyle(page, assertion.selector)
-      evidence[assertion.selector] = actual
-      for (const [key, expected] of Object.entries(assertion.styles)) {
-        const actualValue = actual[key as keyof typeof actual]
-        if (typeof actualValue !== 'string' || !matchesExpectedStyle(actualValue, expected)) {
+  let latestEvidence: Record<string, unknown> | undefined
+  try {
+    return await waitFor(label, async () => {
+      const evidence: Record<string, unknown> = {}
+      for (const assertion of assertions) {
+        const count = await page.locator(assertion.selector).count()
+        if (count === 0) {
+          latestEvidence = {
+            ...evidence,
+            [assertion.selector]: { missing: true },
+          }
           return undefined
         }
+        const actual = await collectRuntimeStyle(page, assertion.selector)
+        evidence[assertion.selector] = actual
+        latestEvidence = evidence
+        for (const [key, expected] of Object.entries(assertion.styles)) {
+          const actualValue = actual[key as keyof typeof actual]
+          if (typeof actualValue !== 'string' || !matchesExpectedStyle(actualValue, expected)) {
+            return undefined
+          }
+        }
       }
-    }
-    return evidence
-  })
+      return evidence
+    })
+  }
+  catch (error) {
+    const pageEvidence = await collectRuntimePageEvidence(page).catch(() => undefined)
+    throw new Error(`${error instanceof Error ? error.message : String(error)}\nlatest=${JSON.stringify(latestEvidence)}\npage=${JSON.stringify(pageEvidence)}`)
+  }
 }
 
 async function waitForCssIncludes(url: string, expected: Array<string | RegExp>, label: string) {

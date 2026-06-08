@@ -24,6 +24,9 @@ import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.t
 
 const appMarkerRE = /\n[ \t]*<view class="[^"]+">hbuilderx-app-(?:dynamic|hmr)-[^<]+<\/view>/g
 const appReadyTimeoutMs = Number(process.env['DEMO_VISUAL_APP_READY_TIMEOUT_MS'] ?? 120_000)
+const appOutputTimeoutMs = Number(process.env['DEMO_VISUAL_APP_OUTPUT_TIMEOUT_MS'] ?? Math.min(hbuilderxAppTimeoutMs, 180_000))
+const androidScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_ANDROID_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
+const iosScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_IOS_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
 
 function resolveAppDemoName(item: AppCase) {
   return path.basename(path.resolve(item.projectDir))
@@ -179,10 +182,13 @@ async function captureAndroidScreenshot(screenshot: string, env: Record<string, 
   const result = spawnSync(adb, args, {
     encoding: 'buffer',
     env: { ...process.env, ...env },
+    killSignal: 'SIGTERM',
     maxBuffer: 20 * 1024 * 1024,
+    timeout: androidScreenshotTimeoutMs,
   })
   if (result.status !== 0 || result.stdout.length === 0) {
-    throw new Error(`Android 截图失败：${result.stderr.toString() || `exit=${result.status}`}`)
+    const timeoutMessage = result.error?.message ? ` error=${result.error.message}` : ''
+    throw new Error(`Android 截图失败：${result.stderr.toString() || `exit=${result.status} signal=${result.signal ?? 'none'}${timeoutMessage}`}`)
   }
   await fs.writeFile(screenshot, result.stdout)
 }
@@ -199,11 +205,15 @@ async function readAndroidUiHierarchy(env: Record<string, string | undefined>, d
   spawnSync(adb, [...baseArgs, 'shell', 'uiautomator', 'dump', '/sdcard/window.xml'], {
     encoding: 'utf8',
     env: { ...process.env, ...env },
+    killSignal: 'SIGTERM',
+    timeout: androidScreenshotTimeoutMs,
   })
   const result = spawnSync(adb, [...baseArgs, 'shell', 'cat', '/sdcard/window.xml'], {
     encoding: 'utf8',
     env: { ...process.env, ...env },
+    killSignal: 'SIGTERM',
     maxBuffer: 1024 * 1024,
+    timeout: androidScreenshotTimeoutMs,
   })
   return result.status === 0 ? result.stdout : ''
 }
@@ -231,9 +241,12 @@ async function captureIosScreenshot(screenshot: string, item: AppCase) {
   const target = resolveIosScreenshotTarget(item)
   const result = spawnSync('xcrun', ['simctl', 'io', target, 'screenshot', screenshot], {
     encoding: 'utf8',
+    killSignal: 'SIGTERM',
+    timeout: iosScreenshotTimeoutMs,
   })
   if (result.status !== 0) {
-    throw new Error(`iOS 截图失败：${result.stderr || result.stdout || `exit=${result.status}`}`)
+    const timeoutMessage = result.error?.message ? ` error=${result.error.message}` : ''
+    throw new Error(`iOS 截图失败：${result.stderr || result.stdout || `exit=${result.status} signal=${result.signal ?? 'none'}${timeoutMessage}`}`)
   }
 }
 
@@ -304,11 +317,14 @@ async function waitForAppScreenshotReady(
   screenshot: string,
   env: Record<string, string | undefined>,
   label: string,
+  ensureRunning: () => void,
 ) {
   const startedAt = Date.now()
   let latest: Record<string, unknown> | undefined
   while (Date.now() - startedAt < appReadyTimeoutMs) {
+    ensureRunning()
     await captureAppScreenshot(item, screenshot, env)
+    ensureRunning()
     const evidence = await collectAppScreenshotEvidence(item, screenshot, env)
     latest = evidence
     if (evidence.ready) {
@@ -321,6 +337,7 @@ async function waitForAppScreenshotReady(
 
 function createProcessExitTracker(child: ChildProcess) {
   let exit: { code: number | null, signal: NodeJS.Signals | null } | undefined
+  const startedAt = Date.now()
   const closed = new Promise<void>((resolve) => {
     child.on('close', (code, signal) => {
       exit = { code, signal }
@@ -332,6 +349,10 @@ function createProcessExitTracker(child: ChildProcess) {
     ensureRunning(logs: string[]) {
       if (exit && exit.code !== 0) {
         throw new Error(`命令失败：HBuilderX app dev exit=${exit.signal ?? exit.code}\n${logs.join('')}`)
+      }
+      if (!exit && Date.now() - startedAt > hbuilderxAppTimeoutMs) {
+        killProcessTree(child)
+        throw new Error(`命令超时：HBuilderX app dev timeout=${hbuilderxAppTimeoutMs}ms\n${logs.join('')}`)
       }
     },
   }
@@ -417,11 +438,11 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}: wait initial output\n`)
-    const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.transformedContains, hbuilderxAppTimeoutMs, ensureInitialRunning)
+    const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.transformedContains, appOutputTimeoutMs, ensureInitialRunning)
     process.stdout.write(`[app-${platform}] ${name}: initial output ${initialOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}: screenshot before\n`)
-    beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`)
+    beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning)
     await stopAppLaunch(launch)
     launch = undefined
 
@@ -430,15 +451,16 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
       className: item.hmrMarkerClass,
       text: item.hmrMarkerText,
     })
+    await wait(Number(process.env['DEMO_VISUAL_APP_HMR_RELAUNCH_DELAY_MS'] ?? 1000))
     process.stdout.write(`[app-${platform}] ${name}: launch hmr ${item.platform}\n`)
     launch = startAppLaunch(item, projectRoot, projectName, hbuilderxCliPath, toolEnv)
     const ensureHmrRunning = () => launch?.tracker.ensureRunning(launch.logs)
     process.stdout.write(`[app-${platform}] ${name}: wait hmr output\n`)
-    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureHmrRunning)
+    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, appOutputTimeoutMs, ensureHmrRunning)
     process.stdout.write(`[app-${platform}] ${name}: hmr output ${hmrOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}: screenshot after\n`)
-    afterScreenshotEvidence = await waitForAppScreenshotReady(item, hmrAfterScreenshot, toolEnv, `${item.name} HMR 后`)
+    afterScreenshotEvidence = await waitForAppScreenshotReady(item, hmrAfterScreenshot, toolEnv, `${item.name} HMR 后`, ensureHmrRunning)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
 
     results.push({

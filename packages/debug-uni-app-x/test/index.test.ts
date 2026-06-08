@@ -151,6 +151,20 @@ describe('debug-uni-app-x plugin', () => {
     )
   })
 
+  it('ignores debug output directory in Vite dev watcher', () => {
+    const cwd = path.resolve('/tmp/weapp-tailwindcss')
+    const plugins = debugX({ cwd, enabled: true })
+    const config: { server?: { watch?: { ignored?: unknown } } } = {}
+
+    plugins[0].config?.(config, { command: 'serve', mode: 'development' })
+    plugins[1].config?.(config, { command: 'serve', mode: 'development' })
+    plugins[2].config?.(config, { command: 'serve', mode: 'development' })
+
+    expect(config.server?.watch?.ignored).toEqual([
+      path.join(cwd, '.debug', '**'),
+    ])
+  })
+
   it('skips platforms only when explicitly configured', async () => {
     process.env.UNI_UTS_PLATFORM = 'app-ios'
     const cwd = path.resolve('/tmp/weapp-tailwindcss')

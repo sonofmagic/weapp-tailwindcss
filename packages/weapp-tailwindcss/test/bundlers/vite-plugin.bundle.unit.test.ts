@@ -1667,8 +1667,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       }, {} as any, bundle)
 
       expect(bundle['main.wxss']).toBeUndefined()
-      expect(bundle[outputFile]).toBeDefined()
-      expect((bundle[outputFile] as OutputAsset).fileName).toBe(outputFile)
+      expect(bundle[outputFile]).toBeUndefined()
       expect(emitted.find(file => file.fileName === outputFile)?.source).toContain('.bg-_b_h102938_B')
     }
     finally {
@@ -5234,8 +5233,7 @@ const cls = "w-[1.5px]"
     const replayedBundleCss = (replayBundle['pages/index/index.wxss'] as OutputAsset | undefined)?.source?.toString()
     expect(replayedCss).toContain('.clean-style')
     expect(replayedCss).not.toContain('.tw-watch-style-case')
-    expect(replayedBundleCss).toContain('.clean-style')
-    expect(replayedBundleCss).not.toContain('.tw-watch-style-case')
+    expect(replayedBundleCss).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
   it('refreshes remembered sfc style source from disk before replaying stale vite pipeline css', async () => {

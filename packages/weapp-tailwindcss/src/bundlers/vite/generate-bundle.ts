@@ -1252,7 +1252,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               source: css,
             })
           }
-          bundle[outputFile] = replayAsset
+          else {
+            bundle[outputFile] = replayAsset
+          }
           markCssAssetProcessed?.(replayAsset, outputFile)
           metrics.css.elapsed += measureElapsed(start)
           metrics.css.transformed++
