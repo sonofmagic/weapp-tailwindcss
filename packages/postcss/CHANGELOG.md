@@ -1,5 +1,13 @@
 # @weapp-tailwindcss/postcss
 
+## 3.0.3
+
+### Patch Changes
+
+- 🐛 **修复 uni-app x Tailwind CSS v4 场景下 `uvue.wxss` 默认 `border-width: medium` 覆盖 Tailwind preflight 后导致的异常黑边问题。** [`65f084b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/65f084ba30ad8a0b4c36ce46e567d2e1b1490b64) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序样式输出：普通小程序端保留 `box-sizing`、`margin`、`padding`、`border` preflight reset，避免 Taro Vite 的 `app-origin` 样式重复注入主样式，并去重合并后的 hoisted preflight 声明。** [`4b2ed64`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4b2ed643d8b62f1c9e7a81c77a0e583444e6f9db) by @sonofmagic
+
 ## 3.0.2
 
 ### Patch Changes
@@ -723,8 +731,8 @@
 
   ```css
   @property --tw-content {
-    syntax: "*";
-    initial-value: "";
+    syntax: '*';
+    initial-value: '';
     inherits: false;
   }
   ```

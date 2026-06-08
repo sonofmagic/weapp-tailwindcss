@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/debug-uni-app-x
 
+## 1.0.1
+
+### Patch Changes
+
+- 🐛 **修复调试产物目录被 Vite dev server 监听后反复触发热更新的问题，避免 uni-app x H5 调试时出现页面空白或 HMR 循环。** [`ead42b6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ead42b6650fc2b21c3d73033e63b22e2605a27aa) by @sonofmagic
+
 ## 1.0.0
 
 ### Major Changes
