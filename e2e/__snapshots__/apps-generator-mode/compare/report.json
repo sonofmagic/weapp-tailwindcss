@@ -5493,7 +5493,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 10647,
+      "bytes": 8128,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -5692,7 +5692,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 12748,
+      "bytes": 10270,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -8932,7 +8932,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 7290,
+      "bytes": 7386,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

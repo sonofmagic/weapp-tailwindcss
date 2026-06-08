@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 7290 | 50 | false | false | false | false | true |
+| 7386 | 50 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -17,20 +17,22 @@ view,
 text,
 ::after,
 ::before {
+  --tw-space-y-reverse: 0;
+  --tw-space-x-reverse: 0;
+  --tw-border-style: solid;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
+  --tw-gradient-stops: initial;
+  --tw-gradient-via-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-via-position: 50%;
+  --tw-gradient-to-position: 100%;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-space-x-reverse: 0;
-  --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-to: #0000;
-  --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-to-position: 100%;
 }
 :host,
 page,

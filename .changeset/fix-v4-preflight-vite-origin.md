@@ -1,3 +1,4 @@
+---
 "weapp-tailwindcss": patch
 "@weapp-tailwindcss/postcss": patch
 ---
