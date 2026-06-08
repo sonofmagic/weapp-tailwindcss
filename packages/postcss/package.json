@@ -85,7 +85,7 @@
     "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.8.0",
-    "postcss-calc": "^10.1.1",
+    "postcss-calc": "link:packages/postcss-calc",
     "postcss-custom-properties": "^15.0.1",
     "postcss-preset-env": "^11.3.0"
   }

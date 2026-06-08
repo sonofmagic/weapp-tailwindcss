@@ -127,7 +127,7 @@
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/line-clamp": "^0.4.4",
-    "@tailwindcss/typography": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.20",
     "@vue/runtime-core": "^3.5.35",
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",

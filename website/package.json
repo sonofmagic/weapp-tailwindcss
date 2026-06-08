@@ -81,7 +81,7 @@
     "@iconify/tailwind": "^1.2.0",
     "@iconify/types": "^2.0.0",
     "@playwright/test": "^1.60.0",
-    "@tailwindcss/typography": "^0.5.19",
+    "@tailwindcss/typography": "^0.5.20",
     "@types/file-saver": "^2.0.7",
     "@types/node": "catalog:typesNode2410",
     "@types/pako": "^2.0.4",

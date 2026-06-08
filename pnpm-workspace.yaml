@@ -95,7 +95,7 @@ catalogs:
   sass195:
     sass: ^1.100.0
   stylelint1625:
-    stylelint: ^17.12.0
+    stylelint: ^17.13.0
   tailwindMerge:
     tailwind-merge: ^3.6.0
   tailwindMerge2:
@@ -150,7 +150,7 @@ catalogs:
     '@typescript-eslint/parser': ^8.60.1
     typescript-eslint: ^8.59.3
   uviewPlus:
-    uview-plus: ^3.8.42
+    uview-plus: ^3.8.49
   vite4:
     vite: ^4.5.14
   vite52:
@@ -180,13 +180,13 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.3.3
+    vue-tsc: ^3.3.4
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.2
+    weapp-ide-cli: ^5.4.3
   weappVite:
-    weapp-vite: ^6.16.40
+    weapp-vite: ^6.16.42
   wrangler:
     wrangler: ^4.98.0
 
