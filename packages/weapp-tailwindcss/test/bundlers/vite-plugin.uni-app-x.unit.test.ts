@@ -407,6 +407,76 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     }
   }, TEST_TIMEOUT_MS)
 
+  it('skips uni-app x css module exports emitted by app native css transforms', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        uniAppX: { enabled: true },
+      }))
+      const currentContext = getCurrentContext()
+
+      const plugins = WeappTailwindcss()
+      const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+      expect(cssPlugin).toBeTruthy()
+
+      const cssTransform = cssPlugin.transform as any
+      const result = await cssTransform?.call(
+        cssPlugin,
+        'export default {"container":{"":{"width":"100%"}}}',
+        '/project/main.css',
+      )
+
+      expect(result).toBeUndefined()
+      expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
+  it('skips uni-app x inline style module exports emitted after preprocessing', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        uniAppX: { enabled: true },
+      }))
+      const currentContext = getCurrentContext()
+
+      const plugins = WeappTailwindcss()
+      const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+      expect(cssPlugin).toBeTruthy()
+
+      const cssTransform = cssPlugin.transform as any
+      const result = await cssTransform?.call(
+        cssPlugin,
+        'export default {"my-3":{"":{"marginTop":"24rpx","marginBottom":"24rpx"}}}',
+        '/project/App.uvue?vue&type=style&index=0&inline&lang.scss',
+      )
+
+      expect(result).toBeUndefined()
+      expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()

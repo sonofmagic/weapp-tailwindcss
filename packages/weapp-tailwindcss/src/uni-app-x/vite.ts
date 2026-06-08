@@ -54,6 +54,7 @@ const INLINE_LANG_RE = /lang\.([a-z]+)/i
 const PREPROCESSOR_EXT_RE = /\.(?:scss|sass|less|styl|stylus)(?:\?|$)/i
 const UVUE_NVUE_QUERY_RE = /\.(?:uvue|nvue)(?:\?.*)?$/
 const UVUE_NVUE_RE = /\.(?:uvue|nvue)$/
+const CSS_MODULE_EXPORT_RE = /^\s*export\s+default\s+(?:\{|\w|\[\])/
 
 function isPreprocessorRequest(id: string, lang?: string): boolean {
   const normalizedLang = lang?.toLowerCase()
@@ -74,6 +75,10 @@ function resolveUniAppXCssTarget(id: string) {
 
 function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOptions['uniAppX'] | undefined) {
   return uniAppX === undefined ? true : isUniAppXEnabled(uniAppX)
+}
+
+function isCssModuleExport(code: string) {
+  return CSS_MODULE_EXPORT_RE.test(code)
 }
 
 export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plugin[] {
@@ -130,6 +135,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
+      if (isCssModuleExport(code)) {
+        return
+      }
       const shouldGenerateCss = hasTailwindSourceDirectives(code, { importFallback: true })
         || hasTailwindApplyDirective(code)
       const generatedCss = (
