@@ -18,6 +18,8 @@
     <t-button>111</t-button>
     <van-button type="default">默认按钮</van-button>
   </view>
+
+    <view class="text-[23.000074px] space-y-2.5 w-[calc(100%_-_000074px)] grid-cols-[200rpx_minmax(900rpx,_1fr)_000074px] after:ml-[0.000074px] text-black/[0.00] ring-[1.4px] bg-[#000074] text-[20px] h-[12px]">tw-watch-mpx-tailwindcss-v3-template-baseline-arbitrary-000074-template</view>
 </template>
 
 <script lang="ts">

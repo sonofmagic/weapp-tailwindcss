@@ -3696,6 +3696,102 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('does not pass Tailwind v4 generator at-rules to mini-program user css transform', async () => {
+    const runtimeSet = new Set(['icon-[mdi--weather-sunny]'])
+    const rawTailwindCss = [
+      '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */',
+      '.icon-\\[mdi--weather-sunny\\]{display:inline-block}',
+    ].join('\n')
+    const weappCss = '.icon-_bmdi--weather-sunny_B{display:inline-block}'
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css ?? '@import "tailwindcss";',
+        dependencies: [],
+        __weappTailwindcssMeta: {
+          matchedCssSourceFile: 'app.wxss',
+        },
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: [
+        '@import "tailwindcss";',
+        '',
+        '@plugin "@iconify/tailwind4" {',
+        '  prefixes: mdi;',
+        '  icon-selector: ".i-{prefix}-{name}";',
+        '}',
+        '',
+        '@source "./**/*.{wxml,js,ts}";',
+        '.page { color: red; }',
+      ].join('\n'),
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain(weappCss)
+    expect(styleHandler).toHaveBeenCalledWith('.page { color: red; }', expect.objectContaining({
+      isMainChunk: false,
+    }))
+    expect(result?.css).not.toContain('@plugin')
+    expect(result?.css).not.toContain('@source')
+  })
+
   it('removes appended tailwind banner block when raw css cannot be split exactly', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const generatedRawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'

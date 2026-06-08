@@ -61,6 +61,9 @@ function stringifyLiveValue(value: unknown) {
 }
 
 async function readElementContent(element: any, label: string) {
+  if (!element) {
+    return ''
+  }
   const parts: string[] = []
   const reads: Array<[string, () => Promise<unknown>]> = [
     ['text', () => element.text()],
@@ -78,9 +81,10 @@ async function readElementContent(element: any, label: string) {
 }
 
 async function readSelectorContent(page: any, selector: string, limit: number) {
-  const elements: any[] = selector === 'page'
-    ? [await page.$('page').catch(() => undefined)].filter(Boolean)
+  const rawElements = selector === 'page'
+    ? [await page.$('page').catch(() => undefined)]
     : await page.$$(selector).catch(() => [])
+  const elements = Array.isArray(rawElements) ? rawElements.filter(Boolean) : []
   const parts: string[] = []
   for (const [index, element] of elements.slice(0, limit).entries()) {
     const content = await readElementContent(element, `${selector}:${index}`)

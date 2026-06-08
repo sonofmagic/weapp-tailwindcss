@@ -71,6 +71,15 @@ export {
 
 const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
+const TAILWIND_V4_GENERATOR_AT_RULES = new Set([
+  'config',
+  'custom-variant',
+  'plugin',
+  'source',
+  'theme',
+  'utility',
+  'variant',
+])
 export interface GenerateCssByGeneratorOptions {
   opts: InternalUserDefinedOptions
   runtimeState: {
@@ -206,6 +215,30 @@ function removeTailwindApplyAtRules(source: string) {
   }
 }
 
+function removeTailwindV4GeneratorAtRules(source: string) {
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkAtRules((rule) => {
+      if (!TAILWIND_V4_GENERATOR_AT_RULES.has(rule.name)) {
+        return
+      }
+      rule.remove()
+      changed = true
+    })
+    root.walk((node) => {
+      if ('nodes' in node && node.nodes?.length === 0) {
+        node.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return source
+  }
+}
+
 function shouldScanTailwindV4Sources(
   majorVersion: number | undefined,
   target: string,
@@ -277,10 +310,25 @@ function isCommentOnlyCss(source: string) {
 }
 
 function stripTailwindSourceMediaFragments(source: string) {
+  let removedSourceMediaStart = false
   return source
-    .replace(/^\s*@media\s+source\([^)]*\)\s*\{\s*$/gm, '')
-    .replace(/^\s*\}\s*(?=@(?:source|theme|config|plugin|utility|variant|custom-variant)\b)/gm, '')
-    .replace(/^\s*\}\s*\/\*\s*source\([^)]*\)\s*\*\/\s*$/gm, '')
+    .split(/\r?\n/)
+    .filter((line) => {
+      if (/^\s*@media\s+source\([^)]*\)\s*\{\s*$/.test(line)) {
+        removedSourceMediaStart = true
+        return false
+      }
+      if (/^\s*\}\s*\/\*\s*source\([^)]*\)\s*\*\/\s*$/.test(line)) {
+        return false
+      }
+      if (removedSourceMediaStart && /^\s*\}\s*$/.test(line)) {
+        removedSourceMediaStart = false
+        return false
+      }
+      return true
+    })
+    .join('\n')
+    .replace(/\}[^\S\r\n]*(?=@(?:config|source)\b)/g, '')
 }
 
 function stripLeadingTailwindSourceMediaCloseFragment(source: string) {
@@ -557,9 +605,12 @@ async function transformGeneratorUserCss(
   const repairedSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(source),
   )
-  const cleanedSource = removeTailwindSourceDirectives(repairedSource, {
-    importFallback: options.importFallback,
-  })
+  const cleanedSource = removeTailwindSourceDirectives(
+    removeTailwindV4GeneratorAtRules(repairedSource),
+    {
+      importFallback: options.importFallback,
+    },
+  )
   if (cleanedSource.trim().length === 0) {
     return ''
   }
@@ -731,6 +782,9 @@ export async function generateCssByGenerator(
   )
   const localImportParts = splitLocalCssImports(effectiveRawSource)
   const generatorRawSource = localImportParts?.source ?? effectiveRawSource
+  const userCssRawSource = majorVersion === 4
+    ? removeTailwindV4GeneratorAtRules(generatorRawSource)
+    : generatorRawSource
 
   const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
   if (cleanedLocalImportWrapper !== undefined) {
@@ -922,8 +976,8 @@ export async function generateCssByGenerator(
       : stripTailwindBanner(generated.css)
     const hasMatchedCssSourceFile = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
     const orderedExtraCss = hasMatchedCssSourceFile
-      ? splitTailwindV4GeneratedCssBySourceOrder(generatorRawSource, generated.rawCss)
-      : splitRawSourceByGeneratedCssOrder(generatorRawSource, generated.rawCss)
+      ? splitTailwindV4GeneratedCssBySourceOrder(userCssRawSource, generated.rawCss)
+      : splitRawSourceByGeneratedCssOrder(userCssRawSource, generated.rawCss)
     const shouldAppendMatchedCssSourceCompat = !hasMatchedCssSourceFile || orderedExtraCss !== undefined
     if (orderedExtraCss) {
       let css = generatedCss
@@ -960,7 +1014,7 @@ export async function generateCssByGenerator(
         hasSourceDirectives,
         hasMatchedCssSourceFile,
       })) {
-        const userCss = await transformGeneratorUserCss(generatorRawSource, userCssOptions)
+        const userCss = await transformGeneratorUserCss(userCssRawSource, userCssOptions)
         css = createCssSourceOrderAppend(css, userCss)
       }
       if (generated.target === 'weapp' && shouldAppendMatchedCssSourceCompat) {
@@ -970,7 +1024,7 @@ export async function generateCssByGenerator(
         if (!shouldFilterApplyOnlyCss) {
           css = await appendLegacyCompatCss(
             css,
-            generatorRawSource,
+            userCssRawSource,
             generated.target,
             styleHandler,
             cssHandlerOptions,
@@ -979,7 +1033,7 @@ export async function generateCssByGenerator(
           if (!isolateCurrentCssCandidates) {
             css = await appendLegacyContainerCompatCss(
               css,
-              generatorRawSource,
+              userCssRawSource,
               file,
               runtime,
               configuredContainerCompat,
@@ -1043,7 +1097,7 @@ export async function generateCssByGenerator(
     }
     if (hasMatchedCssSourceFile || generated.target === 'web') {
       if (hasMatchedCssSourceFile && generated.target === 'weapp' && !hasGeneratedCss && !hasGeneratedMarkers) {
-        const userCss = await transformGeneratorUserCss(generatorRawSource, {
+        const userCss = await transformGeneratorUserCss(userCssRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,
           cssUserHandlerOptions,
@@ -1056,7 +1110,7 @@ export async function generateCssByGenerator(
         if (!isolateCurrentCssCandidates && !shouldFilterApplyOnlyCss) {
           css = await appendLegacyContainerCompatCss(
             css,
-            generatorRawSource,
+            userCssRawSource,
             file,
             runtime,
             configuredContainerCompat,
@@ -1071,7 +1125,7 @@ export async function generateCssByGenerator(
         hasSourceDirectives,
         hasMatchedCssSourceFile,
       })) {
-        const userCss = await transformGeneratorUserCss(generatorRawSource, {
+        const userCss = await transformGeneratorUserCss(userCssRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,
           cssUserHandlerOptions,
@@ -1099,7 +1153,7 @@ export async function generateCssByGenerator(
     if (!shouldFilterApplyOnlyCss) {
       css = await appendLegacyCompatCss(
         css,
-        generatorRawSource,
+        userCssRawSource,
         generated.target,
         styleHandler,
         cssHandlerOptions,
@@ -1107,7 +1161,7 @@ export async function generateCssByGenerator(
       )
       css = await appendLegacyContainerCompatCss(
         css,
-        generatorRawSource,
+        userCssRawSource,
         file,
         runtime,
         configuredContainerCompat,

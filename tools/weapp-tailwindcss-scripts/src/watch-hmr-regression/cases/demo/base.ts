@@ -417,6 +417,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     outputJs: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/dist/pages/index/index.js'),
     outputStyleCandidates: [
       path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/dist/pages/index/index.wxss'),
+      path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/dist/app.wxss'),
     ],
     globalStyleCandidates: [
       path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/dist/app.wxss'),

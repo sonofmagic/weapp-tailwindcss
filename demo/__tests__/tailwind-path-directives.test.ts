@@ -9,6 +9,7 @@ const repositoryRoot = fileURLToPath(new URL('../..', import.meta.url))
 const websiteRoot = path.resolve(repositoryRoot, 'website')
 const ignoredDirectories = new Set([
   '.compare-dev-weapp',
+  '.debug',
   '.turbo',
   '__tests__',
   'dist',
