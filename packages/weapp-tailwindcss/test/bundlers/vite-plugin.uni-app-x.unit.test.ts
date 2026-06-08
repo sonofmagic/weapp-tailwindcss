@@ -362,6 +362,51 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(mainCssChunkMatcher).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
   }, TEST_TIMEOUT_MS)
 
+  it('transforms plain uni-app x css without writing native app output files directly', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        uniAppX: { enabled: true },
+        styleHandler: vi.fn(async (code: string) => ({
+          css: `handled:${code}`,
+          map: {
+            toJSON: () => ({
+              version: 3,
+              file: 'main.css',
+              sources: ['main.css'],
+              names: [],
+              mappings: '',
+              sourcesContent: [code],
+            }),
+          },
+        })),
+      }))
+
+      const plugins = WeappTailwindcss()
+      const cssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+      expect(cssPlugin).toBeTruthy()
+
+      const cssTransform = cssPlugin.transform as any
+      const result = await cssTransform?.call({
+        ...cssPlugin,
+        addWatchFile: vi.fn(),
+      }, '.foo { color: red; }', '/project/main.css') as TransformResult
+
+      expect(result?.code).toBe('handled:.foo { color: red; }')
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
   it('forces runtime refresh for every uni-app-x transform when serving', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()

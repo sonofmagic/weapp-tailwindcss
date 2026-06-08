@@ -3,7 +3,7 @@ import type { AppType } from '@/types'
 import path from 'node:path'
 import { vitePluginName } from '@/constants'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '../shared/css-imports'
-import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives } from '../shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
 import { cleanUrl, isCSSRequest } from './utils'
 
@@ -25,12 +25,14 @@ function isCssLikeImporter(importer?: string | null) {
 interface RewriteCssImportsOptions {
   appType?: AppType | undefined
   getAppType?: (() => AppType | undefined) | undefined
-  generateTailwindCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined) | undefined
+  generateTailwindCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }) => Promise<string | undefined> | string | undefined) | undefined
   shouldOwnTailwindGeneration?: boolean | undefined
   shouldRewrite: boolean
   rootImport?: string | undefined
   weappTailwindcssDirPosix: string
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
+  onCssSourceTransform?: ((id: string, code: string) => Promise<void> | void) | undefined
+  shouldGenerateCss?: ((id: string, code: string) => boolean) | undefined
 }
 
 function stripTailwindConfigDirectives(code: string) {
@@ -64,7 +66,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         }
         return replacement
       },
-      async transform(this: { addWatchFile?: (id: string) => void }, code, id) {
+      async transform(this: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }, code, id) {
         if (!isCSSRequest(id)) {
           return null
         }
@@ -72,15 +74,17 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         const normalizedCode = hasTailwindRootDirectives(code)
           ? normalizeTailwindConfigDirectives(code, path.dirname(file))
           : code
-        if (hasTailwindRootDirectives(normalizedCode)) {
+        await options.onCssSourceTransform?.(id, normalizedCode)
+        const hasTailwindRoot = hasTailwindRootDirectives(normalizedCode)
+        if (hasTailwindRoot) {
           await options.onTailwindRootCss?.(id, normalizedCode)
-          if (options.shouldOwnTailwindGeneration) {
-            const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, this)
-            if (generatedCss !== undefined) {
-              return {
-                code: generatedCss,
-                map: null,
-              }
+        }
+        if (options.shouldOwnTailwindGeneration && (hasTailwindRoot || options.shouldGenerateCss?.(id, normalizedCode))) {
+          const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, this)
+          if (generatedCss !== undefined) {
+            return {
+              code: generatedCss,
+              map: null,
             }
           }
         }
@@ -106,4 +110,8 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
       },
     },
   ]
+}
+
+export function hasVitePipelineTailwindGenerationDirective(code: string) {
+  return hasTailwindRootDirectives(code) || hasTailwindApplyDirective(code)
 }

@@ -8,11 +8,13 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
+import { resolveUniUtsPlatform } from '@/utils'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
+import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 
 interface RememberedMainCssSource {
   rawSource: string
@@ -77,6 +79,7 @@ function createCssHandlerOptions(
   file: string,
 ): IStyleHandlerOptions {
   return {
+    ...resolveUniAppXNativeCssHandlerOptions(opts),
     isMainChunk: opts.mainCssChunkMatcher(file, opts.appType),
     postcssOptions: {
       options: {
@@ -150,6 +153,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         }
         const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
         const isWebGeneratorTarget = generatorOptions.target === 'web'
+        const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp
         const rootDir = resolvedConfig.root ? path.resolve(resolvedConfig.root) : process.cwd()
 
         collectViteProcessedCssAssetResults(bundle, {
@@ -158,7 +162,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           markCssAssetProcessed,
           recordCssAssetResult,
           recordViteProcessedCssAssetResult,
-          resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget),
+          resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
           debug,
         })
 

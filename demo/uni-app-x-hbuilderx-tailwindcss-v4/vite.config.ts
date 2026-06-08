@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import uniModule from '@dcloudio/vite-plugin-uni'
+import { debugX } from '@weapp-tailwindcss/debug-uni-app-x'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { dirname } from 'node:path'
@@ -13,10 +14,14 @@ const weappTailwindcssPlugins = WeappTailwindcss(
     rem2rpx: true,
   }),
 ) ?? []
+const debugUniAppXPlugins = debugX({
+  cwd: projectRoot,
+})
 
 export default defineConfig({
   plugins: [
     uni(),
     ...weappTailwindcssPlugins,
+    ...debugUniAppXPlugins,
   ],
 })

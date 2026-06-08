@@ -10,7 +10,7 @@ const VITE_CSS_HMR_MODULE_RE = /\b__vite__updateStyle\s*\(/
 const VITE_CSS_CONST_RE = /\bconst\s+__vite__css\s*=\s*("(?:\\[\s\S]|[^"])*")/
 
 interface ViteServeCssGenerationOptions {
-  generateCss: (id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined
+  generateCss: (id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void, emitFile?: (emittedFile: { type: 'asset', fileName: string, source: string }) => string }) => Promise<string | undefined> | string | undefined
   getCommand: () => string | undefined
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
   shouldGenerate: () => boolean

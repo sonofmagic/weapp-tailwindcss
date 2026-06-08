@@ -1,12 +1,14 @@
-import type { CaseResult, RuntimeContext } from './demo-visual-e2e-report/types.ts'
+import type { CaseResult, RuntimeContext, VisualPlatform } from './demo-visual-e2e-report/types.ts'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
 import { chromium } from 'playwright'
+import { uniAppAppCases, uniAppXAppCases } from '../e2e/hbuilderx-local/cases.ts'
 import { resolveChromeExecutable } from '../e2e/hbuilderx-local/process.ts'
 import { E2E_PROJECTS } from '../e2e/projectEntries.ts'
 import { taroWebHmrCases } from '../e2e/taro-web-demo-hmr-cases.ts'
 import { webViteHmrCases } from '../e2e/web-vite-demo-hmr-cases.ts'
+import { runAppCase } from './demo-visual-e2e-report/app.ts'
 import { runH5Case, runMiniProgramCase } from './demo-visual-e2e-report/cases.ts'
 import {
   createMiniProgramHmrVisualConfig,
@@ -15,6 +17,7 @@ import {
   createWebViteHmrVisualConfig,
 } from './demo-visual-e2e-report/hmr.ts'
 import { writeReport } from './demo-visual-e2e-report/report.ts'
+import { resolveScreenshotsRoot } from './demo-visual-e2e-report/screenshots.ts'
 
 const repoRoot = path.resolve(import.meta.dirname, '..')
 const defaultArtifactRoot = 'e2e/.artifacts/demo-visual/full'
@@ -61,6 +64,9 @@ function printHelp() {
     'Options:',
     '  --h5-only       只采集 H5 截图',
     '  --weapp-only    只采集小程序截图',
+    '  --app-only      只采集 Android/iOS App 截图',
+    '  --android-only  只采集 Android App 截图',
+    '  --ios-only      只采集 iOS App 截图',
     '  --filter <re>   只运行名称匹配的 demo',
     '  --help          显示帮助',
     '',
@@ -75,15 +81,91 @@ function matchesFilter(name: string) {
   return new RegExp(filter).test(name)
 }
 
+function hasFilter() {
+  return Boolean(readArgValue('--filter') ?? process.env['DEMO_VISUAL_FILTER'])
+}
+
+function resolveTargetPlatforms() {
+  if (hasArg('--h5-only')) {
+    return ['h5'] satisfies VisualPlatform[]
+  }
+  if (hasArg('--weapp-only')) {
+    return ['weapp'] satisfies VisualPlatform[]
+  }
+  if (hasArg('--android-only')) {
+    return ['app-android'] satisfies VisualPlatform[]
+  }
+  if (hasArg('--ios-only')) {
+    return ['app-ios'] satisfies VisualPlatform[]
+  }
+  if (hasArg('--app-only')) {
+    return ['app-android', 'app-ios'] satisfies VisualPlatform[]
+  }
+  return ['h5', 'weapp', 'app-android', 'app-ios'] satisfies VisualPlatform[]
+}
+
+function collectTargetDemoNames(platforms: VisualPlatform[]) {
+  const names = new Set<string>()
+  if (platforms.includes('h5')) {
+    for (const item of taroWebHmrCases) {
+      names.add(item.projectDir.replace(/^demo\//, ''))
+    }
+    for (const item of webViteHmrCases) {
+      names.add(item.projectDir.replace(/^demo\//, ''))
+    }
+    for (const item of uniH5Cases) {
+      names.add(item.name)
+    }
+  }
+  if (platforms.includes('weapp')) {
+    for (const item of E2E_PROJECTS) {
+      names.add(item.name)
+    }
+  }
+  if (platforms.includes('app-android') || platforms.includes('app-ios')) {
+    for (const item of [...uniAppAppCases, ...uniAppXAppCases]) {
+      if (platforms.includes(item.platform)) {
+        names.add(path.basename(path.resolve(item.projectDir)))
+      }
+    }
+  }
+  return [...names].filter(matchesFilter)
+}
+
+async function cleanScreenshotTargets(context: RuntimeContext, platforms: VisualPlatform[], demoNames: string[]) {
+  const screenshotsRoot = resolveScreenshotsRoot(context)
+  if (platforms.length === 4 && !hasFilter()) {
+    await fs.rm(screenshotsRoot, { recursive: true, force: true })
+    await fs.mkdir(screenshotsRoot, { recursive: true })
+    return
+  }
+
+  await fs.mkdir(screenshotsRoot, { recursive: true })
+  await Promise.all(demoNames
+    .flatMap(name => platforms.flatMap((platform) => {
+      const demoRoot = path.join(screenshotsRoot, name)
+      return [
+        fs.rm(path.join(demoRoot, platform), { recursive: true, force: true }),
+        fs.rm(path.join(demoRoot, `${platform}.png`), { force: true }),
+        fs.rm(path.join(demoRoot, `${platform}-hmr-before.png`), { force: true }),
+        fs.rm(path.join(demoRoot, `${platform}-hmr-after.png`), { force: true }),
+      ]
+    })))
+}
+
 async function main() {
   if (hasArg('--help')) {
     printHelp()
     return
   }
   const results: CaseResult[] = []
-  await fs.mkdir(path.join(context.artifactRoot, 'screenshots'), { recursive: true })
+  const h5Only = hasArg('--h5-only')
+  const weappOnly = hasArg('--weapp-only')
+  const appOnly = hasArg('--app-only') || hasArg('--android-only') || hasArg('--ios-only')
+  const targetPlatforms = resolveTargetPlatforms()
+  await cleanScreenshotTargets(context, targetPlatforms, collectTargetDemoNames(targetPlatforms))
   await fs.mkdir(path.join(context.artifactRoot, 'diffs'), { recursive: true })
-  if (!hasArg('--weapp-only')) {
+  if (!weappOnly && !appOnly) {
     const executablePath = await resolveChromeExecutable()
     const browser = await chromium.launch({
       ...(executablePath ? { executablePath } : {}),
@@ -133,7 +215,7 @@ async function main() {
       await browser.close()
     }
   }
-  if (!hasArg('--h5-only')) {
+  if (!h5Only && !appOnly) {
     for (const item of E2E_PROJECTS) {
       if (!matchesFilter(item.name)) {
         continue
@@ -142,6 +224,21 @@ async function main() {
         ...item,
         hmr: createMiniProgramHmrVisualConfig(repoRoot, item.name),
       }, context, results)
+    }
+  }
+  if (!h5Only && !weappOnly) {
+    for (const item of [...uniAppAppCases, ...uniAppXAppCases]) {
+      const name = item.name.replace(/\s+(?:android|ios)$/, '')
+      if (!matchesFilter(name) && !matchesFilter(item.name)) {
+        continue
+      }
+      if (hasArg('--android-only') && item.platform !== 'app-android') {
+        continue
+      }
+      if (hasArg('--ios-only') && item.platform !== 'app-ios') {
+        continue
+      }
+      await runAppCase(item, context, results)
     }
   }
   await writeReport(results, context)

@@ -18,7 +18,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
-import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile } from '@/bundlers/vite/generate-bundle'
+import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -1379,6 +1379,26 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(resolveReplayCssOutputFile(root, '/private/tmp/elsewhere/index.css')).toBe('index.css')
   }, TEST_TIMEOUT_MS)
 
+  it('keeps css extension for uni-app x native app vite css pipeline output', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-css-output-'))
+    createdDirs.push(root)
+
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'unpackage/dist/dev/.uvue/app-android/main.css'),
+      createContext() as any,
+      root,
+      false,
+      true,
+    )).toBe('unpackage/dist/dev/.uvue/app-android/main.css')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'unpackage/dist/dev/mp-weixin/main.css'),
+      createContext() as any,
+      root,
+      false,
+      false,
+    )).toBe('unpackage/dist/dev/mp-weixin/main.wxss')
+  }, TEST_TIMEOUT_MS)
+
   it('matches remembered same-name subpackage css sources by the most specific path', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-css-'))
     createdDirs.push(root)
@@ -1489,6 +1509,176 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect((bundle['src/main.css'] as OutputAsset).source).toBe(processedCss)
     expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{color:red}\n${processedCss}`)
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps uni-app x native app vite css pipeline output as main.css during bundle processing', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      mockTailwindV4GeneratorCss('.bg-_b_h102938_B{background-color:#102938}')
+      const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-android-css-'))
+      createdDirs.push(root)
+      const cssFile = path.join(root, 'main.css')
+      const rawCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{uts,uvue}";'
+      await writeFile(cssFile, rawCss, 'utf8')
+      const runtimeSet = new Set(['bg-[#102938]'])
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        generator: {
+          target: 'weapp',
+        },
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
+        styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+        tailwindcss: {
+          v4: {
+            cssEntries: [cssFile],
+          },
+        },
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => runtimeSet),
+          getClassSetSync: vi.fn(() => runtimeSet),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        },
+        uniAppX: false,
+      }))
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
+      const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(rewritePlugin).toBeTruthy()
+      expect(postPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'unpackage/dist/dev/.uvue/app-android' },
+      } as ResolvedConfig)
+
+      const outputFile = 'main.css'
+      const transform = getTransformHandler(rewritePlugin)
+      const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+      const transformed = await transform?.call({
+        ...rewritePlugin,
+        addWatchFile: vi.fn(),
+        emitFile(file: { type: 'asset', fileName: string, source: string }) {
+          emitted.push(file)
+          return file.fileName
+        },
+      }, rawCss, cssFile)
+      const transformedCss = typeof transformed === 'object' && transformed != null && 'code' in transformed
+        ? transformed.code
+        : String(transformed ?? rawCss)
+      const bundle = {
+        [outputFile]: {
+          ...createRollupAsset(transformedCss),
+          fileName: outputFile,
+        },
+      }
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      await generateBundle?.call({ ...postPlugin, addWatchFile: vi.fn() }, {} as any, bundle)
+
+      expect(bundle['main.wxss']).toBeUndefined()
+      expect(bundle[outputFile]).toBeDefined()
+      expect((bundle[outputFile] as OutputAsset).fileName).toBe(outputFile)
+      expect(emitted.find(file => file.fileName === outputFile)?.source).toContain('.bg-_b_h102938_B')
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
+  it('replays remembered uni-app x native app main.css through bundle assets on initial app builds', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      mockTailwindV4GeneratorCss('.bg-_b_h102938_B{background-color:#102938}')
+      const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-android-replay-css-'))
+      createdDirs.push(root)
+      const cssFile = path.join(root, 'main.css')
+      const rawCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{uts,uvue}";'
+      await writeFile(cssFile, rawCss, 'utf8')
+      const runtimeSet = new Set(['bg-[#102938]'])
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        generator: {
+          target: 'weapp',
+        },
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
+        styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+        tailwindcss: {
+          v4: {
+            cssEntries: [cssFile],
+          },
+        },
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => runtimeSet),
+          getClassSetSync: vi.fn(() => runtimeSet),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        },
+        uniAppX: false,
+      }))
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
+      const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(rewritePlugin).toBeTruthy()
+      expect(postPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'build',
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'unpackage/dist/dev/.uvue/app-android' },
+      } as ResolvedConfig)
+
+      const transform = getTransformHandler(rewritePlugin)
+      await transform?.call({ ...rewritePlugin, addWatchFile: vi.fn() }, rawCss, cssFile)
+
+      const outputFile = 'main.css'
+      const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+      const bundle = {
+        'main.uts': {
+          ...createRollupChunk('import "./main.css";'),
+          fileName: 'main.uts',
+        },
+      }
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      await generateBundle?.call({
+        ...postPlugin,
+        addWatchFile: vi.fn(),
+        emitFile(file: { type: 'asset', fileName: string, source: string }) {
+          emitted.push(file)
+          return file.fileName
+        },
+      }, {} as any, bundle)
+
+      expect(bundle['main.wxss']).toBeUndefined()
+      expect(bundle[outputFile]).toBeDefined()
+      expect((bundle[outputFile] as OutputAsset).fileName).toBe(outputFile)
+      expect(emitted.find(file => file.fileName === outputFile)?.source).toContain('.bg-_b_h102938_B')
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
   }, TEST_TIMEOUT_MS)
 
   it('does not regenerate collected vite-processed css assets in the same bundle pass', async () => {
@@ -4941,20 +5131,241 @@ const cls = "w-[1.5px]"
     expect(replayedCss).not.toContain('.tw-watch-style-case')
   }, TEST_TIMEOUT_MS)
 
-  it('regenerates vite pipeline css when a style source rolls back with css bundle asset', async () => {
-    const generateMock = vi.fn(async (source: { css: string }) => ({
-      css: source.css.includes('.tw-watch-style-case')
+  it('refreshes remembered vite pipeline css with equivalent style source requests before replay', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = source.css.includes('.tw-watch-style-case')
         ? '.tw-watch-style-case{font-weight:700}'
-        : '.clean-style{display:block}',
-      rawCss: source.css,
-      target: 'weapp',
-      classSet: new Set<string>(),
-      rawCandidates: new Set<string>(),
-      dependencies: [],
-      sources: [],
-      root: null,
-      version: 3,
+        : '.clean-style{display:block}'
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
     }))
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const transform = getTransformHandler(rewritePlugin)
+    const sourceFile = path.resolve(process.cwd(), 'pages/index/index.vue')
+    const dirtyStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
+    const cleanStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss&used`
+    const dirtySource = '.tw-watch-style-case { @apply font-bold; }'
+    const cleanSource = '.clean-style { display: block; }'
+    const createViteProcessedCssAsset = (source: string) =>
+      `${createBundlerGeneratedCssMarker('vite', dirtyStyleRequest)}\n${source}`
+
+    await transform?.call(rewritePlugin, dirtySource, dirtyStyleRequest)
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(createViteProcessedCssAsset(dirtySource)),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [dirtyStyleRequest],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
+
+    const cleanTransformResult = await transform?.call(rewritePlugin, cleanSource, cleanStyleRequest)
+    expect(cleanTransformResult).toBeNull()
+
+    const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+    const replayBundle = {
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call({
+      ...postPlugin,
+      emitFile(file: { type: 'asset', fileName: string, source: string }) {
+        emitted.push(file)
+        return file.fileName
+      },
+    }, {} as any, replayBundle)
+
+    const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
+    const replayedBundleCss = (replayBundle['pages/index/index.wxss'] as OutputAsset | undefined)?.source?.toString()
+    expect(replayedCss).toContain('.clean-style')
+    expect(replayedCss).not.toContain('.tw-watch-style-case')
+    expect(replayedBundleCss).toContain('.clean-style')
+    expect(replayedBundleCss).not.toContain('.tw-watch-style-case')
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes remembered sfc style source from disk before replaying stale vite pipeline css', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = source.css.includes('.tw-watch-style-case')
+        ? '.base-style{display:flex}.tw-watch-style-case{font-weight:700}'
+        : '.base-style{display:flex}'
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-style-refresh-'))
+    createdDirs.push(root)
+    const pageDir = path.join(root, 'pages/index')
+    await mkdir(pageDir, { recursive: true })
+    const sourceFile = path.join(pageDir, 'index.vue')
+    const dirtyStyleSource = '.base-style { @apply flex; }\n.tw-watch-style-case { @apply font-bold; }'
+    const cleanStyleSource = '.base-style { @apply flex; }'
+    await writeFile(sourceFile, `<template><view /></template>\n<style lang="scss">\n${dirtyStyleSource}\n</style>\n`, 'utf8')
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const transform = getTransformHandler(rewritePlugin)
+    const styleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
+    const createViteProcessedCssAsset = (source: string) =>
+      `${createBundlerGeneratedCssMarker('vite', styleRequest)}\n${source}`
+
+    await transform?.call(rewritePlugin, dirtyStyleSource, styleRequest)
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(createViteProcessedCssAsset(dirtyStyleSource)),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [styleRequest],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
+
+    await writeFile(sourceFile, `<template><view /></template>\n<style lang="scss">\n${cleanStyleSource}\n</style>\n`, 'utf8')
+    generateMock.mockClear()
+    const secondBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(createViteProcessedCssAsset(dirtyStyleSource)),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [styleRequest],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const rolledBackCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(generateMock).toHaveBeenCalled()
+    for (const [source] of generateMock.mock.calls) {
+      expect(source.css).toContain('.base-style { @apply flex; }')
+      expect(source.css).not.toContain('.tw-watch-style-case')
+    }
+    expect(rolledBackCss).toContain('.base-style')
+    expect(rolledBackCss).not.toContain('.tw-watch-style-case')
+  }, TEST_TIMEOUT_MS)
+
+  it('regenerates vite pipeline css when a style source rolls back with css bundle asset', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = source.css.includes('.tw-watch-style-case')
+        ? '.tw-watch-style-case{font-weight:700}'
+        : '.clean-style{display:block}'
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
@@ -4997,8 +5408,8 @@ const cls = "w-[1.5px]"
     const generateBundle = getGenerateBundleHandler(postPlugin)
     const transform = getTransformHandler(rewritePlugin)
     const sourceFile = path.resolve(process.cwd(), 'pages/index/index.css')
-    const dirtySource = '@tailwind utilities;\n.tw-watch-style-case { @apply font-bold; }'
-    const cleanSource = '@tailwind utilities;'
+    const dirtySource = '.tw-watch-style-case { @apply font-bold; }'
+    const cleanSource = '.clean-style { display: block; }'
     const createViteProcessedCssAsset = (source: string) =>
       `${createBundlerGeneratedCssMarker('vite', sourceFile)}\n${source}`
 
@@ -5018,8 +5429,7 @@ const cls = "w-[1.5px]"
     expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
 
     const cleanTransformResult = await transform?.call(rewritePlugin, cleanSource, sourceFile)
-    expect(String((cleanTransformResult as any)?.code)).toContain('.clean-style')
-    expect(String((cleanTransformResult as any)?.code)).not.toContain('.tw-watch-style-case')
+    expect(cleanTransformResult).toBeNull()
     const secondBundle = {
       'pages/index/index.wxss': {
         ...createRollupAsset(createViteProcessedCssAsset(dirtySource)),

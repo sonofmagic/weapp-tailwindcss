@@ -14,7 +14,7 @@ import { processCachedTask } from '@/bundlers/shared/cache'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
-import { cleanUrl, formatPostcssSourceMap, isCSSRequest } from '@/bundlers/vite/utils'
+import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
@@ -130,13 +130,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
+      const shouldGenerateCss = hasTailwindSourceDirectives(code, { importFallback: true })
+        || hasTailwindApplyDirective(code)
       const generatedCss = (
-        parsed.vue
-        && parsed.type === 'style'
-        && (
-          hasTailwindSourceDirectives(code, { importFallback: true })
-          || hasTailwindApplyDirective(code)
-        )
+        shouldGenerateCss
       )
         ? await generateCss?.(id, code, hookContext)
         : undefined
@@ -173,7 +170,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const rawPostcssMap = postcssResult.map.toJSON()
       const postcssMap = await formatPostcssSourceMap(
         rawPostcssMap as Omit<RawSourceMap, 'version'> as ExistingRawSourceMap,
-        cleanUrl(id),
+        normalizePath(cleanUrl(id)),
       )
       return {
         code: postcssResult.css,

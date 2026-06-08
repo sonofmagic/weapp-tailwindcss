@@ -79,6 +79,15 @@ function resolveAppOutputDirCandidates(item: AppCase) {
   return item.outputDirCandidates?.length ? item.outputDirCandidates : [item.outputDir]
 }
 
+function resolveAppIntermediateOutputTargets(item: AppCase, projectRoot: string) {
+  const targets = new Set<string>()
+  if (item.platform === 'app-android' || item.platform === 'app-ios') {
+    targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.uvue/${item.platform}`))
+    targets.add(path.resolve(projectRoot, `unpackage/cache/.${item.platform}`))
+  }
+  return [...targets]
+}
+
 function resolveAppTransformedFiles(projectRoot: string, outputRoot: string, item: AppCase) {
   return [...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)), ...(item.transformedOutputFiles ?? []).map(file => path.resolve(outputRoot, file))]
 }
@@ -212,7 +221,11 @@ async function findReadyAppOutputRoot(item: AppCase) {
 
 async function cleanAppOutput(item: AppCase) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const targets = [...resolveAppOutputDirCandidates(item).map(outputDir => path.resolve(projectRoot, outputDir)), ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file))]
+  const targets = [
+    ...resolveAppOutputDirCandidates(item).map(outputDir => path.resolve(projectRoot, outputDir)),
+    ...resolveAppIntermediateOutputTargets(item, projectRoot),
+    ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)),
+  ]
 
   await Promise.all(
     [...new Set(targets)].map(async (target) => {

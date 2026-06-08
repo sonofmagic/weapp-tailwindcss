@@ -26,6 +26,7 @@
 - 修改 `src/js/**`、`src/wxml/**`、`src/context/**` 时，必须补对应回归测试。
 - 涉及 bundler 行为差异时，优先在 `test/bundlers/**` 增加最小复现用例。
 - 不要在单个 handler 内同时引入解析、匹配、替换三类职责；优先拆分为可测试小模块。
+- Vite/Webpack/Gulp 等插件链路禁止通过 `fs` 直接写入或改写输出目录；需要新增或改写产物时，必须使用 bundler 提供的 bundle asset、`emitFile`、loader result、Vinyl file/stream 等插件 API。
 
 ## 推荐验证命令
 

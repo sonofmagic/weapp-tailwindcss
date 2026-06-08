@@ -18,6 +18,7 @@ interface CssHandlerOptionsCacheOptions {
   mainCssChunkMatcher: InternalUserDefinedOptions['mainCssChunkMatcher']
   getMajorVersion: () => number | undefined
   getOutputRoot?: (() => string | undefined) | undefined
+  getExtraOptions?: ((file: string) => Partial<IStyleHandlerOptions>) | undefined
 }
 
 export interface CssHandlerOptionsCache {
@@ -35,13 +36,15 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
     const isMainChunk = options.mainCssChunkMatcher(file, appType)
     const outputRoot = options.getOutputRoot?.()
     const from = outputRoot ? path.resolve(outputRoot, file) : file
-    const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}`
+    const extraOptions = options.getExtraOptions?.(file) ?? {}
+    const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}:${JSON.stringify(extraOptions)}`
     const cached = cssHandlerOptionsCache.get(cacheKey)
     if (cached) {
       return cached
     }
 
     const created = {
+      ...extraOptions,
       isMainChunk,
       postcssOptions: {
         options: {

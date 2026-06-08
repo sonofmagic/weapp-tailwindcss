@@ -14,6 +14,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { createUniAppXAssetTask } from '@/uni-app-x/vite'
+import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
@@ -37,6 +38,7 @@ import { shouldSkipViteJsTransform } from './js-precheck'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveTailwindV4EntriesFromCssCached } from './source-scan'
+import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { isCSSRequest, slash } from './utils'
 
 interface GenerateBundleContext {
@@ -68,6 +70,7 @@ interface GenerateBundleContext {
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberCssSource?: (entry: RememberedCssSource, cssRuntimeSignature?: string) => void
+  refreshRememberedCssSource?: (entry: RememberedCssSource) => Promise<RememberedCssSource | undefined> | RememberedCssSource | undefined
   getRememberedCssSources?: () => Iterable<[string, RememberedCssSource]>
   getRememberedCssSignature?: (file: string) => string | undefined
   setRememberedCssSignature?: (file: string, cssRuntimeSignature: string) => void
@@ -150,10 +153,12 @@ export function resolveViteCssPipelineOutputFile(
   _opts: Pick<InternalUserDefinedOptions, 'cssMatcher'>,
   rootDir: string,
   isWebGeneratorTarget = false,
+  preserveCssExtension = false,
 ) {
   const normalizedFile = resolveReplayCssOutputFile(rootDir, file)
   if (
     isWebGeneratorTarget
+    || preserveCssExtension
     || MINI_PROGRAM_STYLE_OUTPUT_EXT_RE.test(normalizedFile)
     || !CSS_SOURCE_OUTPUT_EXT_RE.test(normalizedFile)
     || !isCSSRequest(normalizedFile)
@@ -488,6 +493,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => currentOutDir,
+    getExtraOptions: () => resolveUniAppXNativeCssHandlerOptions(context.opts),
   })
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const addWatchFile = (id: string) => this.addWatchFile?.(id)
@@ -508,6 +514,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getSourceCandidatesForEntries,
       waitForSourceCandidateSyncs,
       rememberCssSource,
+      refreshRememberedCssSource,
       getRememberedCssSources,
       getRememberedCssSignature,
       setRememberedCssSignature,
@@ -526,6 +533,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     } = opts
     const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
     const isWebGeneratorTarget = generatorOptions.target === 'web'
+    const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const resolvedConfig = getResolvedConfig()
@@ -543,7 +551,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
-      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget),
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
       debug,
     })
     const hmrTimingStartedAt = performance.now()
@@ -836,7 +844,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
         const cssAssetProcessed = isCssAssetProcessed?.(originalSource, file) === true
         const alreadyProcessedCssAsset = viteProcessedCssAsset || cssAssetProcessed
-        const rememberedCssSource = findRememberedCssSource(
+        let rememberedCssSource = findRememberedCssSource(
           getRememberedCssSources?.(),
           outputFile,
           file,
@@ -844,6 +852,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           outDir,
           opts.tailwindcssBasedir,
         )
+        if (rememberedCssSource != null) {
+          rememberedCssSource = await refreshRememberedCssSource?.(rememberedCssSource) ?? rememberedCssSource
+        }
         const useRememberedCssSource = rememberedCssSource != null
           && normalizeOutputPathKey(rememberedCssSource.sourceFile) !== normalizeOutputPathKey(file)
         const vitePipelineCssAsset = viteProcessedCssAsset || useRememberedCssSource
@@ -853,13 +864,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const hasRememberedApplySource = vitePipelineCssAsset
           && rememberedCssSource != null
           && hasTailwindApplyDirective(generatorRawSource)
-        const hasStaleViteProcessedCssSource = useRememberedCssSource
-          && rememberedCssSource != null
-          && (
-            hasTailwindRootDirectives(rawSource, { importFallback: true })
-            || hasTailwindApplyDirective(rawSource)
-          )
+        const hasDifferentRememberedCssSource = rememberedCssSource != null
           && normalizeCssSourceForCompare(rememberedCssSource.rawSource) !== normalizeCssSourceForCompare(rawSource)
+        const hasCurrentTailwindGenerationDirective = hasTailwindRootDirectives(rawSource, { importFallback: true })
+          || hasTailwindApplyDirective(rawSource)
+        const hasRememberedApplyDirective = rememberedCssSource != null
+          && hasTailwindApplyDirective(rememberedCssSource.rawSource)
+        const hasStaleViteProcessedCssSource = vitePipelineCssAsset
+          && hasDifferentRememberedCssSource
+          && (hasCurrentTailwindGenerationDirective || hasRememberedApplyDirective)
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? file
           : file
@@ -994,6 +1007,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       injectIntoMain: !isAppOriginCssFile(file),
                     })
                   }
+                  if (vitePipelineCssAsset) {
+                    recordViteProcessedCssAssetResult?.(outputFile, generated.css, {
+                      injectIntoMain: false,
+                    })
+                  }
                   metrics.css.elapsed += measureElapsed(start)
                   metrics.css.transformed++
                   debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, outputFile)
@@ -1005,9 +1023,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   debug('css preserve web target: %s', outputFile)
                   return rawSource
                 }
-                const { css } = await styleHandler(rawSource, getCssHandlerOptions(file))
+                const { css } = await styleHandler(generatorRawSource, cssHandlerOptions)
                 if (debugCssDiff) {
-                  debug('css diff %s: %s', file, summarizeStringDiff(rawSource, css))
+                  debug('css diff %s: %s', generatorSourceFile, summarizeStringDiff(generatorRawSource, css))
                 }
                 metrics.css.elapsed += measureElapsed(start)
                 metrics.css.transformed++
@@ -1179,11 +1197,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
     }
 
-    if (useIncrementalMode) {
-      for (const [key, remembered] of getRememberedCssSources?.() ?? []) {
+    if (useIncrementalMode || isNativeAppStyleTarget) {
+      for (const [key, rememberedEntry] of getRememberedCssSources?.() ?? []) {
+        const remembered = await refreshRememberedCssSource?.(rememberedEntry) ?? rememberedEntry
         const { outputFile: rememberedOutputFile, rawSource, sourceFile } = remembered
-        const outputFile = resolveViteCssPipelineOutputFile(rememberedOutputFile, opts, rootDir, isWebGeneratorTarget)
-        const cssHandlerOptions = getCssHandlerOptions(sourceFile)
+        const outputFile = resolveViteCssPipelineOutputFile(rememberedOutputFile, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget)
+        const cssHandlerOptions = getCssHandlerOptions(outputFile)
         const cssRuntimeSignature = createCssRuntimeSignature(
           runtimeSignature,
           await createScopedGeneratorCandidateSignature(
@@ -1210,7 +1229,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             rawSource,
             file: sourceFile,
             cssHandlerOptions,
-            cssUserHandlerOptions: getCssUserHandlerOptions(sourceFile),
+            cssUserHandlerOptions: getCssUserHandlerOptions(outputFile),
             getSourceCandidatesForEntries,
             styleHandler,
             debug,
@@ -1233,9 +1252,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               source: css,
             })
           }
-          else {
-            bundle[outputFile] = replayAsset
-          }
+          bundle[outputFile] = replayAsset
           markCssAssetProcessed?.(replayAsset, outputFile)
           metrics.css.elapsed += measureElapsed(start)
           metrics.css.transformed++

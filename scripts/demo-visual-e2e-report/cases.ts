@@ -17,6 +17,7 @@ import {
 import { createWatchSession, runPnpmCommand, sleep } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session.ts'
 import { capturePageScreenshot, prepareScreenshotPage, screenshotPage } from './browser.ts'
 import { findFreePort, killProcessTree, spawnPnpm, waitForUrl } from './process.ts'
+import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
 
 export interface H5Case {
   name: string
@@ -39,14 +40,6 @@ export interface MiniProgramCase {
   url?: string
   skipOpenAutomator?: boolean
   hmr?: MiniProgramHmrVisualConfig
-}
-
-function resolveScreenshotPath(context: RuntimeContext, name: string, platform: CaseResult['platform']) {
-  return path.join(context.artifactRoot, 'screenshots', name, `${platform}.png`)
-}
-
-function resolveHmrScreenshotPath(context: RuntimeContext, name: string, platform: CaseResult['platform'], phase: 'before' | 'after') {
-  return path.join(context.artifactRoot, 'screenshots', name, `${platform}-hmr-${phase}.png`)
 }
 
 export async function runH5Case(browser: Browser, item: H5Case, context: RuntimeContext, results: CaseResult[]) {

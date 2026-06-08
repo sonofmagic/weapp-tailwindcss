@@ -117,10 +117,14 @@ function finalizeMiniProgramGeneratorCss(
 function shouldInjectMiniProgramPreflightForGeneratorCss(
   opts: InternalUserDefinedOptions,
   options: {
+    cssHandlerOptions: IStyleHandlerOptions
     isolateCurrentCssCandidates: boolean
     localImports?: string | undefined
   },
 ) {
+  if (options.cssHandlerOptions.uniAppX === true && options.cssHandlerOptions.uniAppXCssTarget === 'uvue') {
+    return false
+  }
   if (!options.isolateCurrentCssCandidates) {
     return true
   }
@@ -994,6 +998,7 @@ export async function generateCssByGenerator(
         css: restoreLocalCssImports(
           finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
             injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+              cssHandlerOptions,
               isolateCurrentCssCandidates,
               localImports: localImportParts?.imports,
             }),
@@ -1079,6 +1084,7 @@ export async function generateCssByGenerator(
         css: restoreLocalCssImports(
           finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
             injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+              cssHandlerOptions,
               isolateCurrentCssCandidates,
               localImports: localImportParts?.imports,
             }),
@@ -1115,6 +1121,7 @@ export async function generateCssByGenerator(
       css: restoreLocalCssImports(
         finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
           injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+            cssHandlerOptions,
             isolateCurrentCssCandidates,
             localImports: localImportParts?.imports,
           }),

@@ -12,19 +12,23 @@ export function createCrossPlatformComparisons(results: CaseResult[], context: R
   }
   for (const [name, entries] of byName) {
     const h5 = entries.find(item => item.platform === 'h5' && item.screenshot)
-    const weapp = entries.find(item => item.platform === 'weapp' && item.screenshot)
-    if (!h5?.screenshot || !weapp?.screenshot) {
-      continue
+    for (const platform of ['weapp', 'app-android', 'app-ios'] as const) {
+      const target = entries.find(item => item.platform === platform && item.screenshot)
+      if (!h5?.screenshot || !target?.screenshot) {
+        continue
+      }
+      const comparisonName = `${name}-${platform}`
+      const compared = compareImages(h5.screenshot, target.screenshot, comparisonName, context)
+      h5.comparison = { target: platform, ...compared }
+      h5.diff = compared.diff
+      target.comparison = { target: 'h5', ...compared }
+      target.diff = compared.diff
     }
-    const compared = compareImages(h5.screenshot, weapp.screenshot, name, context)
-    h5.comparison = { target: 'weapp', ...compared }
-    h5.diff = compared.diff
-    weapp.comparison = { target: 'h5', ...compared }
-    weapp.diff = compared.diff
   }
 }
 
 export async function writeReport(results: CaseResult[], context: RuntimeContext) {
+  createHmrComparisons(results, context)
   createCrossPlatformComparisons(results, context)
   const reportJson = path.join(context.artifactRoot, 'report.json')
   const reportMd = path.join(context.artifactRoot, 'report.md')
@@ -35,7 +39,7 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     const screenshot = item.screenshot ? renderImageLink(context, item.screenshot, `${item.platform}-${item.name}`) : ''
     const hmrBefore = item.hmrBeforeScreenshot ? renderImageLink(context, item.hmrBeforeScreenshot, `${item.platform}-${item.name}-hmr-before`) : ''
     const hmrAfter = item.hmrAfterScreenshot ? renderImageLink(context, item.hmrAfterScreenshot, `${item.platform}-${item.name}-hmr-after`) : ''
-    const diff = item.diff ? renderImageLink(context, item.diff, `diff-${item.name}`) : ''
+    const diff = renderDiffLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
     return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
@@ -44,7 +48,7 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     const screenshot = item.screenshot ? `[截图](${path.relative(context.artifactRoot, item.screenshot)})` : ''
     const hmrBefore = item.hmrBeforeScreenshot ? `[HMR 前](${path.relative(context.artifactRoot, item.hmrBeforeScreenshot)})` : ''
     const hmrAfter = item.hmrAfterScreenshot ? `[HMR 后](${path.relative(context.artifactRoot, item.hmrAfterScreenshot)})` : ''
-    const diff = item.diff ? `[diff](${path.relative(context.artifactRoot, item.diff)})` : ''
+    const diff = renderDiffTextLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
     return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
@@ -57,8 +61,9 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     '',
     '## Summary',
     '',
-    `- H5: ${summary.h5.passed} passed, ${summary.h5.failed} failed, ${summary.h5.skipped} skipped`,
-    `- WeApp: ${summary.weapp.passed} passed, ${summary.weapp.failed} failed, ${summary.weapp.skipped} skipped`,
+    ...Object.entries(summary).map(([platform, item]) => {
+      return `- ${platform}: ${item.passed} passed, ${item.failed} failed, ${item.skipped} skipped`
+    }),
     `- Screenshots: ${results.filter(item => item.screenshot).length}`,
     `- HMR visual pairs: ${hmrPairs.length}`,
     `- Cross-platform comparisons: ${comparisons.length}`,
@@ -78,15 +83,39 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
   ].join('\n'))
 }
 
+function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
+  for (const item of results) {
+    if (!item.hmrBeforeScreenshot || !item.hmrAfterScreenshot) {
+      continue
+    }
+    const compared = compareImages(
+      item.hmrAfterScreenshot,
+      item.hmrBeforeScreenshot,
+      `${item.name}-${item.platform}-hmr`,
+      context,
+    )
+    item.hmrDiff = compared.diff
+    item.diagnostics = {
+      ...item.diagnostics,
+      hmrVisualDiff: {
+        differentPixels: compared.differentPixels,
+        ratio: compared.ratio,
+      },
+    }
+  }
+}
+
 function countResults(results: CaseResult[]) {
-  const initial = {
+  const createInitial = () => ({
     passed: 0,
     failed: 0,
     skipped: 0,
-  }
-  const summary = {
-    h5: { ...initial },
-    weapp: { ...initial },
+  })
+  const summary: Record<CaseResult['platform'], ReturnType<typeof createInitial>> = {
+    'app-android': createInitial(),
+    'app-ios': createInitial(),
+    'h5': createInitial(),
+    'weapp': createInitial(),
   }
   for (const result of results) {
     summary[result.platform][result.status] += 1
@@ -97,4 +126,20 @@ function countResults(results: CaseResult[]) {
 function renderImageLink(context: RuntimeContext, file: string, alt: string) {
   const relative = path.relative(context.artifactRoot, file)
   return `<img src="${relative}" alt="${alt}" width="180" />`
+}
+
+function renderDiffLinks(context: RuntimeContext, item: CaseResult) {
+  const links = [
+    item.hmrDiff ? renderImageLink(context, item.hmrDiff, `hmr-diff-${item.platform}-${item.name}`) : '',
+    item.diff ? renderImageLink(context, item.diff, `diff-${item.platform}-${item.name}`) : '',
+  ].filter(Boolean)
+  return links.join('<br />')
+}
+
+function renderDiffTextLinks(context: RuntimeContext, item: CaseResult) {
+  const links = [
+    item.hmrDiff ? `[HMR diff](${path.relative(context.artifactRoot, item.hmrDiff)})` : '',
+    item.diff ? `[跨端 diff](${path.relative(context.artifactRoot, item.diff)})` : '',
+  ].filter(Boolean)
+  return links.join('<br />')
 }

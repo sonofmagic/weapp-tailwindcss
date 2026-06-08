@@ -69,7 +69,6 @@
 				</text>
 			</view>
 		</view>
-		<view class="bg-[#102938] text-[#f7fbff] w-[173px]">hbuilderx-app-dynamic-v4-android</view>
 		<BindClass />
 	</view>
 </template>
