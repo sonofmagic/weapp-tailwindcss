@@ -23,6 +23,7 @@
       "disablePlugins": [],
       "outputPath": ""
     },
+    "compileHotReLoad": true,
     "packNpmManually": true,
     "minifyWXML": true
   },

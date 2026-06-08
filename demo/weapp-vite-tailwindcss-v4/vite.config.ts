@@ -22,6 +22,9 @@ export default defineConfig({
     // tailwindcss(),
     ...weappTailwindcssPlugins,
   ],
+  weapp: {
+    forwardConsole: false,
+  },
   css: {
     preprocessorOptions: {
       scss: {

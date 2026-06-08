@@ -8,6 +8,7 @@ export default defineConfig({
     }),
   ],
   weapp: {
+    forwardConsole: false,
     enhance: {
       autoImportComponents: {
         globs: ['components/**/*'],

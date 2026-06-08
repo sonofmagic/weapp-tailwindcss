@@ -23,7 +23,7 @@
       }
     ],
     "ignoreUploadUnusedFiles": true,
-    "compileHotReLoad": false,
+    "compileHotReLoad": true,
     "skylineRenderEnable": true,
     "packNpmManually": true,
     "es6": true,
