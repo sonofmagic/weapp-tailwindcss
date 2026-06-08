@@ -1,5 +1,25 @@
 # weapp-tailwindcss
 
+## 5.0.5
+
+### Patch Changes
+
+- 🐛 **修复 Vite 构建中同名分包样式源可能匹配错误的问题，并避免 Tailwind CSS v3 在隔离分包样式生成时复用增量缓存导致样式串包。** [`bdd7e90`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bdd7e900a1b6152b9c798c253b7d7a4ce8ffbce1) by @sonofmagic
+
+- 🐛 **修复 uni-app x Tailwind CSS v4 场景下 `uvue.wxss` 默认 `border-width: medium` 覆盖 Tailwind preflight 后导致的异常黑边问题。** [`65f084b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/65f084ba30ad8a0b4c36ce46e567d2e1b1490b64) by @sonofmagic
+
+- 🐛 **修复 uni-app x App 端构建中，Vite/uni 已转换为 CSS module JS 导出的样式模块再次进入样式处理链路，导致 Android/iOS 产物被二次 PostCSS 处理的问题。** [`e967204`](https://github.com/sonofmagic/weapp-tailwindcss/commit/e9672049aebb58bd8f37520b5720399bf521767f) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v4 小程序样式输出：普通小程序端保留 `box-sizing`、`margin`、`padding`、`border` preflight reset，避免 Taro Vite 的 `app-origin` 样式重复注入主样式，并去重合并后的 hoisted preflight 声明。** [`4b2ed64`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4b2ed643d8b62f1c9e7a81c77a0e583444e6f9db) by @sonofmagic
+
+- 🐛 **修复 Vite 开发构建中 CSS 源码回滚后，旧的 Vite CSS bundle asset 覆盖最新 transform 结果，导致样式没有恢复到最新内容的问题。** [`74b1605`](https://github.com/sonofmagic/weapp-tailwindcss/commit/74b1605d23e2936329629b5fb731eeaf7509c13a) by @sonofmagic
+
+- 🐛 **修复 Vite/Rolldown 产物回放 CSS 时直接写入 bundle 的兼容问题，改为优先通过 emitFile 发射资源，避免 Rolldown 忽略回放样式。** [`ead42b6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ead42b6650fc2b21c3d73033e63b22e2605a27aa) by @sonofmagic
+
+- 🐛 **修复 Vite 构建中已由 CSS 管线处理过的 Tailwind CSS v3 分包样式被再次按全局候选重新生成，导致普通分包和独立分包样式互相串入的问题。** [`d7562ae`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d7562ae1887844effb0f7b1c3c75ba7b75de17b1) by @sonofmagic
+- 📦 **Dependencies** [`65f084b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/65f084ba30ad8a0b4c36ce46e567d2e1b1490b64)
+  → `@weapp-tailwindcss/postcss@3.0.3`
+
 ## 5.0.4
 
 ### Patch Changes

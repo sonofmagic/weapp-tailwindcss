@@ -1,5 +1,16 @@
 # @weapp-tailwindcss/build-all
 
+## 0.0.31
+
+### Patch Changes
+
+- 📦 Updated 4 dependencies [`bdd7e90`](https://github.com/sonofmagic/weapp-tailwindcss/commit/bdd7e900a1b6152b9c798c253b7d7a4ce8ffbce1)
+  <details><summary>Details</summary>
+
+  `weapp-tailwindcss@5.0.5`, `@weapp-tailwindcss/debug-uni-app-x@1.0.1`, `@weapp-tailwindcss/postcss@3.0.3`, `@weapp-tailwindcss/experimental@0.0.5`
+
+  </details>
+
 ## 0.0.30
 
 ### Patch Changes
