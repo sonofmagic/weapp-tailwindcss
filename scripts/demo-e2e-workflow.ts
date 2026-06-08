@@ -53,6 +53,11 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
       args: ['e2e:ide'],
     },
     {
+      name: 'WeChat DevTools IDE HMR before/after screenshots',
+      command: 'pnpm',
+      args: ['e2e:ide:visual'],
+    },
+    {
       name: 'demo mini-program watch hot-update',
       command: 'pnpm',
       args: ['e2e:hot-update:demo'],

@@ -2,13 +2,9 @@ import type { CaseResult, RuntimeContext, VisualPlatform } from './demo-visual-e
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
-import { chromium } from 'playwright'
-import { uniAppAppCases, uniAppXAppCases } from '../e2e/hbuilderx-local/cases.ts'
-import { resolveChromeExecutable } from '../e2e/hbuilderx-local/process.ts'
 import { E2E_PROJECTS } from '../e2e/projectEntries.ts'
 import { taroWebHmrCases } from '../e2e/taro-web-demo-hmr-cases.ts'
 import { webViteHmrCases } from '../e2e/web-vite-demo-hmr-cases.ts'
-import { runAppCase } from './demo-visual-e2e-report/app.ts'
 import { runH5Case, runMiniProgramCase } from './demo-visual-e2e-report/cases.ts'
 import {
   createMiniProgramHmrVisualConfig,
@@ -57,6 +53,21 @@ function readArgValue(name: string) {
   return index >= 0 ? process.argv[index + 1] : undefined
 }
 
+function readPositionalFilter() {
+  const args = process.argv.slice(2)
+  for (let index = 0; index < args.length; index++) {
+    const arg = args[index]
+    if (arg === '--filter') {
+      index++
+      continue
+    }
+    if (!arg.startsWith('-')) {
+      return arg
+    }
+  }
+  return undefined
+}
+
 function printHelp() {
   process.stdout.write([
     'Usage: pnpm exec tsx scripts/demo-visual-e2e-report.ts [options]',
@@ -67,14 +78,22 @@ function printHelp() {
     '  --app-only      只采集 Android/iOS App 截图',
     '  --android-only  只采集 Android App 截图',
     '  --ios-only      只采集 iOS App 截图',
-    '  --filter <re>   只运行名称匹配的 demo',
+    '  --filter <re>   只运行名称匹配的 demo；也可直接传位置参数',
+    '  --fail-on-incomplete  任一 case failed/skipped 或没有匹配结果时退出失败',
     '  --help          显示帮助',
+    '',
+    'Environment:',
+    '  DEMO_VISUAL_IDE_CLEANUP=0           不在小程序 case 前后关闭微信开发者工具',
+    '  DEMO_VISUAL_IDE_LAUNCH_RETRIES=1    DevTools launch 超时后的重试次数',
+    '  DEMO_VISUAL_IDE_SETTLE_MS=800       清理 DevTools 后等待时间',
+    '  DEMO_VISUAL_IDE_SCREENSHOT_COMMAND_TIMEOUT_MS=30000  单次 DevTools 截图命令超时',
+    '  DEMO_VISUAL_HMR_OUTPUT_TIMEOUT_MS    小程序 visual HMR 初始/增量产物等待超时',
     '',
   ].join('\n'))
 }
 
 function matchesFilter(name: string) {
-  const filter = readArgValue('--filter') ?? process.env['DEMO_VISUAL_FILTER']
+  const filter = readArgValue('--filter') ?? readPositionalFilter() ?? process.env['DEMO_VISUAL_FILTER']
   if (!filter) {
     return true
   }
@@ -82,7 +101,31 @@ function matchesFilter(name: string) {
 }
 
 function hasFilter() {
-  return Boolean(readArgValue('--filter') ?? process.env['DEMO_VISUAL_FILTER'])
+  return Boolean(readArgValue('--filter') ?? readPositionalFilter() ?? process.env['DEMO_VISUAL_FILTER'])
+}
+
+function shouldFailOnIncomplete() {
+  return hasArg('--fail-on-incomplete') || process.env['DEMO_VISUAL_FAIL_ON_INCOMPLETE'] === '1'
+}
+
+function createMiniProgramCaseOrder(name: string) {
+  if (name.includes('hbuilderx')) {
+    return 3
+  }
+  if (name.startsWith('uni-app-x-')) {
+    return 2
+  }
+  if (name.startsWith('uni-app-')) {
+    return 1
+  }
+  return 0
+}
+
+function sortMiniProgramCases<T extends { name: string }>(items: readonly T[]) {
+  return [...items].sort((left, right) => {
+    const orderDiff = createMiniProgramCaseOrder(left.name) - createMiniProgramCaseOrder(right.name)
+    return orderDiff || left.name.localeCompare(right.name)
+  })
 }
 
 function resolveTargetPlatforms() {
@@ -104,7 +147,7 @@ function resolveTargetPlatforms() {
   return ['h5', 'weapp', 'app-android', 'app-ios'] satisfies VisualPlatform[]
 }
 
-function collectTargetDemoNames(platforms: VisualPlatform[]) {
+async function collectTargetDemoNames(platforms: VisualPlatform[]) {
   const names = new Set<string>()
   if (platforms.includes('h5')) {
     for (const item of taroWebHmrCases) {
@@ -123,6 +166,7 @@ function collectTargetDemoNames(platforms: VisualPlatform[]) {
     }
   }
   if (platforms.includes('app-android') || platforms.includes('app-ios')) {
+    const { uniAppAppCases, uniAppXAppCases } = await import('../e2e/hbuilderx-local/cases.ts')
     for (const item of [...uniAppAppCases, ...uniAppXAppCases]) {
       if (platforms.includes(item.platform)) {
         names.add(path.basename(path.resolve(item.projectDir)))
@@ -163,9 +207,13 @@ async function main() {
   const weappOnly = hasArg('--weapp-only')
   const appOnly = hasArg('--app-only') || hasArg('--android-only') || hasArg('--ios-only')
   const targetPlatforms = resolveTargetPlatforms()
-  await cleanScreenshotTargets(context, targetPlatforms, collectTargetDemoNames(targetPlatforms))
+  await cleanScreenshotTargets(context, targetPlatforms, await collectTargetDemoNames(targetPlatforms))
   await fs.mkdir(path.join(context.artifactRoot, 'diffs'), { recursive: true })
   if (!weappOnly && !appOnly) {
+    const [{ chromium }, { resolveChromeExecutable }] = await Promise.all([
+      import('playwright'),
+      import('../e2e/hbuilderx-local/process.ts'),
+    ])
     const executablePath = await resolveChromeExecutable()
     const browser = await chromium.launch({
       ...(executablePath ? { executablePath } : {}),
@@ -216,7 +264,7 @@ async function main() {
     }
   }
   if (!h5Only && !appOnly) {
-    for (const item of E2E_PROJECTS) {
+    for (const item of sortMiniProgramCases(E2E_PROJECTS)) {
       if (!matchesFilter(item.name)) {
         continue
       }
@@ -227,6 +275,10 @@ async function main() {
     }
   }
   if (!h5Only && !weappOnly) {
+    const [{ uniAppAppCases, uniAppXAppCases }, { runAppCase }] = await Promise.all([
+      import('../e2e/hbuilderx-local/cases.ts'),
+      import('./demo-visual-e2e-report/app.ts'),
+    ])
     for (const item of [...uniAppAppCases, ...uniAppXAppCases]) {
       const name = item.name.replace(/\s+(?:android|ios)$/, '')
       if (!matchesFilter(name) && !matchesFilter(item.name)) {
@@ -242,6 +294,19 @@ async function main() {
     }
   }
   await writeReport(results, context)
+  if (shouldFailOnIncomplete()) {
+    const incomplete = results.filter(item => item.status !== 'passed')
+    if (results.length === 0 || incomplete.length > 0) {
+      const details = incomplete
+        .map(item => `${item.name} ${item.platform} ${item.status}${item.error ? `: ${item.error}` : ''}`)
+        .join('\n')
+      throw new Error([
+        'demo visual e2e 存在未通过的 case',
+        `results=${results.length}`,
+        details,
+      ].filter(Boolean).join('\n'))
+    }
+  }
   process.stdout.write(`${JSON.stringify({ artifactRoot: context.artifactRoot, results }, null, 2)}\n`)
 }
 

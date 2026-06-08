@@ -132,7 +132,6 @@ export const E2E_PROJECTS = [
       'dist/sub-normal/pages/index.wxss',
       'dist/sub-independent/pages/index.wxss',
     ],
-    skipOpenAutomator: true,
   },
 ] satisfies ProjectEntry[]
 

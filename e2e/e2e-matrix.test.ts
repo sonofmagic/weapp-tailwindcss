@@ -13,7 +13,10 @@ import {
   HOT_UPDATE_COVERED_PROJECTS,
   HOT_UPDATE_EXEMPT_PROJECTS,
 } from './e2eMatrix'
+import { frameworkIdeWatchCaseNames } from './frameworkIdeHotUpdate'
+import { getFrameworkIdeCases } from './frameworkSupportMatrix'
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
+import { E2E_PROJECTS } from './projectEntries'
 import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
 import { webViteHmrCaseNames } from './web-vite-demo-hmr-cases'
 
@@ -174,6 +177,36 @@ describe('e2e matrix', () => {
 
   it('wires automated demo hot-update coverage to known watch cases', () => {
     expect(getAutomatedHotUpdateDemoNames()).toEqual(getDefaultHotUpdateDemoNames())
+  })
+
+  it('requires every mini-program demo to run IDE class HMR and visual HMR screenshots', () => {
+    if (process.env['E2E_PROJECT_FILTER']) {
+      return
+    }
+
+    const demoNames = DEMO_COVERAGE_MATRIX
+      .filter(item => !item.name.startsWith('web/'))
+      .map(item => item.name)
+      .sort()
+    const ideCaseNames = getFrameworkIdeCases().map(item => item.name).sort()
+    const visualCaseNames = E2E_PROJECTS.map(item => item.name).sort()
+
+    expect(ideCaseNames).toEqual(demoNames)
+    expect(visualCaseNames).toEqual(demoNames)
+    expect(Object.keys(frameworkIdeWatchCaseNames).sort()).toEqual(demoNames)
+
+    for (const item of E2E_PROJECTS) {
+      expect(item.skipOpenAutomator, `${item.name} should open in IDE visual HMR`).toBeUndefined()
+    }
+  })
+
+  it('keeps IDE visual HMR in the demo workflow and full IDE command', () => {
+    const rootPackageJson = readDemoPackageJson('package.json')
+    const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
+
+    expect(rootPackageJson.scripts?.['e2e:ide:visual']).toContain('--weapp-only --fail-on-incomplete')
+    expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:visual')
+    expect(workflow).toContain('args: [\'e2e:ide:visual\']')
   })
 
   it('wires SFC-like automated hot-update demos to template/script/style report assertions', () => {

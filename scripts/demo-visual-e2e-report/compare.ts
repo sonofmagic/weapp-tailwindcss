@@ -1,20 +1,45 @@
 import type { RuntimeContext } from './types.ts'
-import { spawnSync } from 'node:child_process'
+import fs from 'node:fs'
 import path from 'pathe'
+import pixelmatch from 'pixelmatch'
+import { PNG } from 'pngjs'
+
+function resizePng(source: PNG, width: number, height: number) {
+  if (source.width === width && source.height === height) {
+    return source
+  }
+
+  const resized = new PNG({ width, height })
+  for (let y = 0; y < height; y++) {
+    const sourceY = Math.min(source.height - 1, Math.floor((y * source.height) / height))
+    for (let x = 0; x < width; x++) {
+      const sourceX = Math.min(source.width - 1, Math.floor((x * source.width) / width))
+      const sourceIndex = (sourceY * source.width + sourceX) * 4
+      const targetIndex = (y * width + x) * 4
+      resized.data[targetIndex] = source.data[sourceIndex]
+      resized.data[targetIndex + 1] = source.data[sourceIndex + 1]
+      resized.data[targetIndex + 2] = source.data[sourceIndex + 2]
+      resized.data[targetIndex + 3] = source.data[sourceIndex + 3]
+    }
+  }
+  return resized
+}
 
 export function compareImages(actual: string, expected: string, name: string, context: RuntimeContext) {
   const diff = path.join(context.artifactRoot, 'diffs', `${name}.png`)
-  const normalizedActual = path.join(context.artifactRoot, 'diffs', `${name}-actual.png`)
-  const normalizedExpected = path.join(context.artifactRoot, 'diffs', `${name}-expected.png`)
-  spawnSync('magick', [actual, '-resize', `${context.viewport.width}x${context.viewport.height}!`, normalizedActual], { stdio: 'ignore' })
-  spawnSync('magick', [expected, '-resize', `${context.viewport.width}x${context.viewport.height}!`, normalizedExpected], { stdio: 'ignore' })
-  const compared = spawnSync('magick', ['compare', '-metric', 'AE', normalizedActual, normalizedExpected, diff], {
-    encoding: 'utf8',
+  const width = context.viewport.width
+  const height = context.viewport.height
+  const actualPng = resizePng(PNG.sync.read(fs.readFileSync(actual)), width, height)
+  const expectedPng = resizePng(PNG.sync.read(fs.readFileSync(expected)), width, height)
+  const diffPng = new PNG({ width, height })
+  const differentPixels = pixelmatch(actualPng.data, expectedPng.data, diffPng.data, width, height, {
+    threshold: 0.1,
   })
-  const differentPixels = Number((compared.stderr || compared.stdout || '0').trim()) || 0
+  fs.mkdirSync(path.dirname(diff), { recursive: true })
+  fs.writeFileSync(diff, PNG.sync.write(diffPng))
   return {
     diff,
     differentPixels,
-    ratio: Math.round((differentPixels / (context.viewport.width * context.viewport.height)) * 10000) / 10000,
+    ratio: Math.round((differentPixels / (width * height)) * 10000) / 10000,
   }
 }

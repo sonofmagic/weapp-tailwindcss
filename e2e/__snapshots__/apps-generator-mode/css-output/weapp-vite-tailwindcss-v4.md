@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 7386 | 50 | false | false | false | false | true |
+| 11106 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -29,30 +29,55 @@ text,
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
+  --tw-duration: initial;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-ease: initial;
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-slate-700: #334155;
+  --color-gray-900: #111827;
+  --color-sky-600: #0284c7;
+  --color-violet-600: #7c3aed;
+  --color-rose-600: #e11d48;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-red-700: rgb(191, 0, 15);
-  --color-amber-300: rgb(255, 210, 55);
+  --color-emerald-600: rgb(0, 150, 105);
   --color-blue-500: rgb(50, 128, 255);
-  --color-pink-300: rgb(253, 165, 213);
+  --color-slate-200: rgb(226, 232, 240);
+  --color-slate-800: rgb(29, 41, 61);
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
+  --color-red-700: rgb(191, 0, 15);
+  --color-amber-300: rgb(255, 210, 55);
+  --color-pink-300: rgb(253, 165, 213);
   --spacing: 8rpx;
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-.i-mdi-home {
+.icon-_bmdi--account_B {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4'/%3E%3C/svg%3E");
+}
+.icon-_bmdi--home_B {
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -65,11 +90,44 @@ wx-root-portal-content {
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 }
+.iconify-_blucide--bell_B {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10.268 21a2 2 0 0 0 3.464 0m-10.47-5.674A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326'/%3E%3C/svg%3E");
+}
+.iconify-_blucide--settings_B {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  background-color: currentColor;
+  -webkit-mask-image: var(--svg);
+  mask-image: var(--svg);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M9.671 4.136a2.34 2.34 0 0 1 4.659 0a2.34 2.34 0 0 0 3.319 1.915a2.34 2.34 0 0 1 2.33 4.033a2.34 2.34 0 0 0 0 3.831a2.34 2.34 0 0 1-2.33 4.033a2.34 2.34 0 0 0-3.319 1.915a2.34 2.34 0 0 1-4.659 0a2.34 2.34 0 0 0-3.32-1.915a2.34 2.34 0 0 1-2.33-4.033a2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/g%3E%3C/svg%3E");
+}
 .flex {
   display: flex;
 }
+.hidden {
+  display: none;
+}
 .inline-block {
   display: inline-block;
+}
+.size-8 {
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
 }
 .size-12 {
   width: calc(var(--spacing) * 12);
@@ -95,6 +153,12 @@ wx-root-portal-content {
 }
 .flex-col {
   flex-direction: column;
+}
+.items-center {
+  align-items: center;
+}
+.gap-3 {
+  gap: calc(var(--spacing) * 3);
 }
 .space-y-2_d5 > view + view,
 .space-y-2_d5 > view + text,
@@ -122,11 +186,17 @@ wx-root-portal-content {
 .bg-_b_h68c828_B {
   background-color: #68c828;
 }
+.bg-_b_h111111_B {
+  background-color: #111111;
+}
 .bg-amber-300 {
   background-color: var(--color-amber-300);
 }
 .bg-blue-500_f30 {
   background-color: rgba(50, 128, 255, 0.3);
+}
+.bg-gray-900 {
+  background-color: var(--color-gray-900);
 }
 .bg-zinc-50 {
   background-color: var(--color-zinc-50);
@@ -179,11 +249,41 @@ wx-root-portal-content {
 .text-blue-500 {
   color: var(--color-blue-500);
 }
+.text-emerald-600 {
+  color: var(--color-emerald-600);
+}
 .text-pink-300 {
   color: var(--color-pink-300);
 }
 .text-red-700 {
   color: var(--color-red-700);
+}
+.text-rose-600 {
+  color: var(--color-rose-600);
+}
+.text-sky-600 {
+  color: var(--color-sky-600);
+}
+.text-slate-200 {
+  color: var(--color-slate-200);
+}
+.text-slate-700 {
+  color: var(--color-slate-700);
+}
+.text-slate-800 {
+  color: var(--color-slate-800);
+}
+.text-violet-600 {
+  color: var(--color-violet-600);
+}
+.transition-colors {
+  transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+  transition-duration: var(--tw-duration, var(--default-transition-duration));
+}
+.duration-500 {
+  --tw-duration: 500ms;
+  transition-duration: 500ms;
 }
 @media (prefers-color-scheme: dark) {
   .dark_cbg-zinc-900 {

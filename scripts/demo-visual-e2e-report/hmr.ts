@@ -9,8 +9,6 @@ import process from 'node:process'
 import path from 'pathe'
 import { webCases } from '../../e2e/hbuilderx-local/cases.ts'
 import { buildCases } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/index.ts'
-import { buildHexScriptRoundConfigs } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/round-configs.ts'
-import { createClassMutationScenario } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/index.ts'
 import { writeFilePreserveEol } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text.ts'
 
 const pollIntervalMs = 150
@@ -71,6 +69,45 @@ async function mutateFile(
 
 async function readTextIfExists(file: string) {
   return await fs.readFile(file, 'utf8').catch(() => '')
+}
+
+function createMiniProgramVisualSnippet(sourceFile: string, marker: string) {
+  const classLiteral = 'bg-[#ff0000] text-[#ffffff] text-[32rpx] px-[24rpx] py-[16rpx]'
+  if (/\.(?:tsx|jsx)$/.test(sourceFile)) {
+    return {
+      classLiteral,
+      snippet: `<View className="${classLiteral}">${marker}</View>`,
+      anchors: ['<View className=\'index\'>', '<View className="index">', '<View>', '<>'],
+    }
+  }
+  return {
+    classLiteral,
+    snippet: `<view class="${classLiteral}">${marker}</view>`,
+    anchors: [
+      '<view class="space-y-2.5">',
+      '<view class="index">',
+      '<view class="p-4">',
+      '<view class="content">',
+      '<view class="flex flex-col items-center py-4">',
+      '<view class="flex flex-col">',
+      '<view class="bg-[#123456]">',
+      '<view class="bg-[#e90505] text-purple-600 tw-root">',
+      '<view>',
+    ],
+  }
+}
+
+function insertMiniProgramVisualSnippet(source: string, sourceFile: string, marker: string) {
+  const visual = createMiniProgramVisualSnippet(sourceFile, marker)
+  const anchor = visual.anchors.find(item => source.includes(item))
+  if (!anchor) {
+    throw new Error(`找不到小程序可视 HMR 插入锚点：${sourceFile}`)
+  }
+  const index = source.indexOf(anchor) + anchor.length
+  return {
+    classLiteral: visual.classLiteral,
+    source: `${source.slice(0, index)}\n${visual.snippet}${source.slice(index)}`,
+  }
 }
 
 function resolveAnchor(source: string, anchors: string[]) {
@@ -433,26 +470,20 @@ export function createMiniProgramHmrVisualConfig(repoRoot: string, name: string)
     async mutate() {
       const sourceFile = mutation.sourceFile
       const original = await fs.readFile(sourceFile, 'utf8')
+      const marker = `tw-visual-weapp-${watchCase.name}-${Date.now().toString().slice(-6)}`
       const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
         readTextIfExists(watchCase.outputWxml),
         readTextIfExists(watchCase.outputJs),
         Promise.all([...watchCase.outputStyleCandidates, ...watchCase.globalStyleCandidates].map(readTextIfExists))
           .then(items => items.join('\n')),
       ])
-      const scenario = createClassMutationScenario(
-        watchCase,
-        'template',
-        mutation,
-        original,
-        baselineWxml,
-        baselineJs,
-        baselineGlobalStyle,
-        '__twVisualWeappClass',
-        mutation.roundConfigs?.[0] ?? buildHexScriptRoundConfigs()[0]!,
-      )
-      await writeFilePreserveEol(sourceFile, scenario.mutatedSource, original)
+      if (baselineWxml.includes(marker) || baselineJs.includes(marker) || baselineGlobalStyle.includes(marker)) {
+        throw new Error(`[${watchCase.label}] 小程序可视 HMR marker 已存在：${marker}`)
+      }
+      const next = insertMiniProgramVisualSnippet(original, sourceFile, marker)
+      await writeFilePreserveEol(sourceFile, next.source, original)
       return {
-        marker: scenario.marker,
+        marker,
         restore: async () => {
           await writeFilePreserveEol(sourceFile, original, original)
         },
