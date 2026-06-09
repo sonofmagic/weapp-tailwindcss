@@ -23,8 +23,7 @@ export default function ShowcaseIndex({ issueUrl, generatedAt, items }: Showcase
         <p className="showcase-index__eyebrow">Showcase</p>
         <h2 id="showcase-index-heading">已收录 {items.length} 个小程序案例</h2>
         <p>
-          第一屏先给出目录，方便快速跳到具体项目。数据来自{' '}
-          <a href={issueUrl}>谁在使用 weapp-tailwindcss</a>，最近同步：{generatedAt}。
+          数据来自 <a href={issueUrl}>谁在使用 weapp-tailwindcss</a>，最近同步：{generatedAt}。
         </p>
         <dl className="showcase-index__stats">
           <div>
