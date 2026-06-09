@@ -214,7 +214,7 @@
     "magic-string": "0.30.21",
     "micromatch": "^4.0.8",
     "postcss-load-config": "^6.0.1",
-    "semver": "~7.8.2",
+    "semver": "~7.8.3",
     "tailwindcss-config": "workspace:*",
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "yaml": "^2.9.0"

@@ -146,8 +146,8 @@ catalogs:
   typescript59tilde:
     typescript: ^6.0.3
   typescriptEslint:
-    '@typescript-eslint/eslint-plugin': ^8.60.1
-    '@typescript-eslint/parser': ^8.60.1
+    '@typescript-eslint/eslint-plugin': ^8.61.0
+    '@typescript-eslint/parser': ^8.61.0
     typescript-eslint: ^8.59.3
   uviewPlus:
     uview-plus: ^3.8.49
@@ -184,9 +184,9 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.3
+    weapp-ide-cli: ^5.4.4
   weappVite:
-    weapp-vite: ^6.16.42
+    weapp-vite: ^6.16.43
   wrangler:
     wrangler: ^4.98.0
 
