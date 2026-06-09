@@ -315,7 +315,10 @@ describe('e2e watch workflow', () => {
 
     expect(workflow.jobs['nightly-full-regression'].strategy['fail-fast']).toBe(false)
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
-      'macos:22:demo:default',
+      'macos:22:demo-core:default',
+      'macos:22:demo-taro-react:default',
+      'macos:22:demo-taro-vue3:default',
+      'macos:22:demo-uni:default',
       'macos:22:weapp-vite-tailwindcss-v4:issue33',
       'macos:22:taro-vite-vue3-tailwindcss-v3:default',
       'macos:22:taro-vite-vue3-tailwindcss-v4:default',
@@ -428,6 +431,28 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1800000',
       },
     ]
+    const demoNightlyBudgets = [
+      {
+        watch_case: 'demo-core',
+        timeout_minutes: 55,
+        watch_command_timeout_ms: '2400000',
+      },
+      {
+        watch_case: 'demo-taro-react',
+        timeout_minutes: 70,
+        watch_command_timeout_ms: '3300000',
+      },
+      {
+        watch_case: 'demo-taro-vue3',
+        timeout_minutes: 75,
+        watch_command_timeout_ms: '3600000',
+      },
+      {
+        watch_case: 'demo-uni',
+        timeout_minutes: 45,
+        watch_command_timeout_ms: '1800000',
+      },
+    ]
 
     for (const budget of slowMacosUniAppPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
@@ -476,16 +501,17 @@ describe('e2e watch workflow', () => {
       watch_max_plugin_process_ms: '9000',
       watch_command_timeout_ms: '1500000',
     }))
-    expect(nightlyRows).toContainEqual(expect.objectContaining({
-      os: 'macos-latest',
-      runner_label: 'macos',
-      watch_case: 'demo',
-      round_profile: 'default',
-      timeout_minutes: 120,
-      watch_timeout_ms: '420000',
-      watch_max_plugin_process_ms: '60000',
-      watch_command_timeout_ms: '5400000',
-    }))
+    for (const budget of demoNightlyBudgets) {
+      expect(nightlyRows).toContainEqual(expect.objectContaining({
+        os: 'macos-latest',
+        runner_label: 'macos',
+        round_profile: 'default',
+        watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '60000',
+        ...budget,
+      }))
+    }
+    expect(nightlyRows.some(row => row.runner_label === 'macos' && row.watch_case === 'demo')).toBe(false)
     expect(nightlyRows.some(row => row.runner_label === 'windows' && row.watch_case === 'demo')).toBe(false)
     expect(nightlyRows.some(row => row.runner_label === 'windows' && row.watch_case === 'mpx-tailwindcss-v3')).toBe(false)
     expect(nightlyRows.some(row => row.watch_case === 'all')).toBe(false)
