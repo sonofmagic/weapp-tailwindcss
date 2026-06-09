@@ -348,7 +348,10 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
               cssSources.push(generatedCss)
             }
           }
-          injectUniAppXHarmonyBundleStyles(bundle, { cssSources })
+          injectUniAppXHarmonyBundleStyles(bundle, {
+            cssSources,
+            excludeComponents: shouldEnableComponentLocalStyle(),
+          })
         }
         for (const [file, item] of Object.entries(bundle)) {
           if (item.type !== 'asset' || !file.endsWith('.uvue.ts')) {

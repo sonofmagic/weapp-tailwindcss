@@ -3,17 +3,14 @@ import type { Browser, Page } from 'playwright'
 import type { RuntimeContext } from './types.ts'
 import fs from 'node:fs/promises'
 import path from 'pathe'
-import sharp from 'sharp'
+import { PNG } from 'pngjs'
 
-async function analyzeScreenshot(buffer: Buffer) {
-  const { data, info } = await sharp(buffer)
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true })
+function analyzeScreenshot(buffer: Buffer) {
+  const { data, height, width } = PNG.sync.read(buffer)
   let visiblePixels = 0
   let nonWhitePixels = 0
-  const totalPixels = info.width * info.height
-  for (let index = 0; index < data.length; index += info.channels) {
+  const totalPixels = width * height
+  for (let index = 0; index < data.length; index += 4) {
     const alpha = data[index + 3] ?? 255
     if (alpha < 8) {
       continue
@@ -27,12 +24,12 @@ async function analyzeScreenshot(buffer: Buffer) {
     }
   }
   return {
-    height: info.height,
+    height,
     nonWhitePixels,
     nonWhiteRatio: totalPixels === 0 ? 0 : nonWhitePixels / totalPixels,
     totalPixels,
     visiblePixels,
-    width: info.width,
+    width,
   }
 }
 

@@ -6,18 +6,19 @@ import { compareImages } from './compare.ts'
 export function createCrossPlatformComparisons(results: CaseResult[], context: RuntimeContext) {
   const byName = new Map<string, CaseResult[]>()
   for (const result of results) {
-    const list = byName.get(result.name) ?? []
+    const key = `${result.name}::${result.styleIsolationVariant ?? ''}`
+    const list = byName.get(key) ?? []
     list.push(result)
-    byName.set(result.name, list)
+    byName.set(key, list)
   }
-  for (const [name, entries] of byName) {
+  for (const [key, entries] of byName) {
     const h5 = entries.find(item => item.platform === 'h5' && item.screenshot)
     for (const platform of ['weapp', 'app-android', 'app-ios', 'app-harmony'] as const) {
       const target = entries.find(item => item.platform === platform && item.screenshot)
       if (!h5?.screenshot || !target?.screenshot) {
         continue
       }
-      const comparisonName = `${name}-${platform}`
+      const comparisonName = `${key.replace(/[^\w.-]+/g, '-')}-${platform}`
       const compared = compareImages(h5.screenshot, target.screenshot, comparisonName, context)
       h5.comparison = { target: platform, ...compared }
       h5.diff = compared.diff
@@ -36,13 +37,14 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
   const summary = countResults(results)
   const comparisons = results.filter(item => item.comparison && item.platform === 'h5')
   const visualRows = results.map((item) => {
-    const screenshot = item.screenshot ? renderImageLink(context, item.screenshot, `${item.platform}-${item.name}`) : ''
-    const hmrBefore = item.hmrBeforeScreenshot ? renderImageLink(context, item.hmrBeforeScreenshot, `${item.platform}-${item.name}-hmr-before`) : ''
-    const hmrAfter = item.hmrAfterScreenshot ? renderImageLink(context, item.hmrAfterScreenshot, `${item.platform}-${item.name}-hmr-after`) : ''
+    const altPrefix = [item.platform, item.name, item.styleIsolationVariant].filter(Boolean).join('-')
+    const screenshot = item.screenshot ? renderImageLink(context, item.screenshot, altPrefix) : ''
+    const hmrBefore = item.hmrBeforeScreenshot ? renderImageLink(context, item.hmrBeforeScreenshot, `${altPrefix}-hmr-before`) : ''
+    const hmrAfter = item.hmrAfterScreenshot ? renderImageLink(context, item.hmrAfterScreenshot, `${altPrefix}-hmr-after`) : ''
     const diff = renderDiffLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
   })
   const rows = results.map((item) => {
     const screenshot = item.screenshot ? `[截图](${path.relative(context.artifactRoot, item.screenshot)})` : ''
@@ -51,7 +53,7 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     const diff = renderDiffTextLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
   })
   const hmrPairs = results.filter(item => item.hmrBeforeScreenshot && item.hmrAfterScreenshot)
   await fs.writeFile(reportMd, [
@@ -70,14 +72,14 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     '',
     '## Visual Matrix',
     '',
-    '| Demo | Platform | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...visualRows,
     '',
     '## Link Matrix',
     '',
-    '| Demo | Platform | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...rows,
     '',
   ].join('\n'))
@@ -91,7 +93,7 @@ function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
     const compared = compareImages(
       item.hmrAfterScreenshot,
       item.hmrBeforeScreenshot,
-      `${item.name}-${item.platform}-hmr`,
+      [item.name, item.platform, item.styleIsolationVariant, 'hmr'].filter(Boolean).join('-'),
       context,
     )
     item.hmrDiff = compared.diff

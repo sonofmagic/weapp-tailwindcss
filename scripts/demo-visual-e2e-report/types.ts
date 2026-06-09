@@ -5,6 +5,7 @@ export type VisualPlatform = 'h5' | 'weapp' | 'app-android' | 'app-ios' | 'app-h
 export interface CaseResult {
   name: string
   platform: VisualPlatform
+  styleIsolationVariant?: string
   status: 'passed' | 'failed' | 'skipped'
   screenshot?: string
   hmrBeforeScreenshot?: string

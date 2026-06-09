@@ -1,5 +1,6 @@
 import type { ChildProcess } from 'node:child_process'
 import type { AppCase } from '../../e2e/hbuilderx-local/cases.ts'
+import type { StyleIsolationVariant } from './style-isolation.ts'
 import type { CaseResult, RuntimeContext } from './types.ts'
 import { spawnSync } from 'node:child_process'
 import fsSync from 'node:fs'
@@ -25,6 +26,13 @@ import {
 } from '../../e2e/hbuilderx-local/process.ts'
 import { finalizeHarmonyAppOutput } from './harmony-output.ts'
 import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
+import {
+  readManifest,
+  resolveStyleIsolationVariants,
+
+  writeManifest,
+  writeStyleIsolationVariantManifest,
+} from './style-isolation.ts'
 
 const appMarkerRE = /\n[ \t]*<view class="[^"]+">hbuilderx-app-(?:dynamic|hmr)-[^<]+<\/view>/g
 const appReadyTimeoutMs = Number(process.env['DEMO_VISUAL_APP_READY_TIMEOUT_MS'] ?? 120_000)
@@ -469,25 +477,35 @@ async function stopAppLaunch(launch: ReturnType<typeof startAppLaunch> | undefin
   await Promise.race([launch.tracker.closed, wait(5000)])
 }
 
-export async function runAppCase(item: AppCase, context: RuntimeContext, results: CaseResult[]) {
+async function runAppCaseVariant(
+  item: AppCase,
+  context: RuntimeContext,
+  results: CaseResult[],
+  variant: StyleIsolationVariant,
+  shared?: {
+    hbuilderxCliPath?: string
+    originalManifest?: string
+    originalSource?: string
+    toolEnv?: Record<string, string | undefined>
+  },
+) {
   const name = resolveAppDemoName(item)
   const platform = item.platform
-  const screenshot = resolveScreenshotPath(context, name, platform)
-  const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, name, platform, 'before')
-  const hmrAfterScreenshot = resolveHmrScreenshotPath(context, name, platform, 'after')
+  const screenshot = resolveScreenshotPath(context, name, platform, variant.key)
+  const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, name, platform, 'before', variant.key)
+  const hmrAfterScreenshot = resolveHmrScreenshotPath(context, name, platform, 'after', variant.key)
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
   const projectName = path.basename(projectRoot)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let launch: ReturnType<typeof startAppLaunch> | undefined
-  let restore: (() => Promise<void>) | undefined
   let beforeScreenshotEvidence: Record<string, unknown> | undefined
   let afterScreenshotEvidence: Record<string, unknown> | undefined
 
   try {
-    process.stdout.write(`[app-${platform}] ${name}: prepare\n`)
-    let toolEnv: Record<string, string | undefined> = {}
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: prepare\n`)
+    let toolEnv = shared?.toolEnv ?? {}
     if (item.platform === 'app-android') {
-      toolEnv = assertAndroidToolchain()
+      toolEnv = shared?.toolEnv ?? assertAndroidToolchain()
     }
     else if (item.platform === 'app-ios') {
       assertIosSimulatorToolchain()
@@ -496,60 +514,69 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
       assertHarmonyToolchain()
     }
 
-    const hbuilderxCliPath = await resolveHBuilderXCli()
-    const original = (await readUtf8(sourceFile)).replace(appMarkerRE, '')
-    await fs.writeFile(sourceFile, original, 'utf8')
-    restore = async () => {
-      await fs.writeFile(sourceFile, original, 'utf8')
+    const hbuilderxCliPath = shared?.hbuilderxCliPath ?? await resolveHBuilderXCli()
+    const originalSource = shared?.originalSource ?? (await readUtf8(sourceFile)).replace(appMarkerRE, '')
+    const originalManifest = shared?.originalManifest ?? await readManifest(projectRoot)
+    await fs.writeFile(sourceFile, originalSource, 'utf8')
+    await writeManifest(projectRoot, originalManifest)
+    if (variant.key) {
+      await writeStyleIsolationVariantManifest(projectRoot, variant)
     }
 
-    process.stdout.write(`[app-${platform}] ${name}: write initial marker\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write initial marker\n`)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.markerClass,
       text: item.markerText,
     })
-    process.stdout.write(`[app-${platform}] ${name}: clean output\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: clean output\n`)
     await cleanAppOutput(item, projectRoot)
 
-    process.stdout.write(`[app-${platform}] ${name}: open project ${projectRoot}\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: open project ${projectRoot}\n`)
     await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxAppTimeoutMs, {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...toolEnv,
     })
 
-    process.stdout.write(`[app-${platform}] ${name}: launch ${item.platform}\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch ${item.platform}\n`)
     launch = startAppLaunch(item, projectRoot, projectName, hbuilderxCliPath, toolEnv)
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
-    process.stdout.write(`[app-${platform}] ${name}: wait initial output\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)
     const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.transformedContains, appOutputTimeoutMs, ensureInitialRunning)
-    process.stdout.write(`[app-${platform}] ${name}: initial output ${initialOutputRoot}\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: initial output ${initialOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
-    process.stdout.write(`[app-${platform}] ${name}: screenshot before\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot before\n`)
     beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning)
     await stopAppLaunch(launch)
     launch = undefined
 
-    process.stdout.write(`[app-${platform}] ${name}: write hmr marker\n`)
+    await fs.writeFile(sourceFile, originalSource, 'utf8')
+    await writeManifest(projectRoot, originalManifest)
+    if (variant.key) {
+      await writeStyleIsolationVariantManifest(projectRoot, variant)
+    }
+
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.hmrMarkerClass,
       text: item.hmrMarkerText,
     })
     await wait(Number(process.env['DEMO_VISUAL_APP_HMR_RELAUNCH_DELAY_MS'] ?? 1000))
-    process.stdout.write(`[app-${platform}] ${name}: launch hmr ${item.platform}\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch hmr ${item.platform}\n`)
     launch = startAppLaunch(item, projectRoot, projectName, hbuilderxCliPath, toolEnv)
     const ensureHmrRunning = () => launch?.tracker.ensureRunning(launch.logs)
-    process.stdout.write(`[app-${platform}] ${name}: wait hmr output\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output\n`)
     const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, appOutputTimeoutMs, ensureHmrRunning)
-    process.stdout.write(`[app-${platform}] ${name}: hmr output ${hmrOutputRoot}\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${hmrOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
-    process.stdout.write(`[app-${platform}] ${name}: screenshot after\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after\n`)
     afterScreenshotEvidence = await waitForAppScreenshotReady(item, hmrAfterScreenshot, toolEnv, `${item.name} HMR 后`, ensureHmrRunning)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
 
     results.push({
       name,
       platform,
+      styleIsolationVariant: variant.key,
       status: 'passed',
       screenshot,
       hmrBeforeScreenshot,
@@ -567,7 +594,7 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
         launchArgs: item.launchArgs,
       },
     })
-    process.stdout.write(`[app-${platform}] ${name}: passed\n`)
+    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: passed\n`)
 
     await stopAppLaunch(launch)
     launch = undefined
@@ -576,6 +603,7 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
     results.push({
       name,
       platform,
+      styleIsolationVariant: variant.key,
       status: 'failed',
       error: error instanceof Error ? error.message : String(error),
       diagnostics: {
@@ -586,10 +614,37 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
   }
   finally {
     await stopAppLaunch(launch)
-    await restore?.().catch(() => undefined)
+    if (shared?.originalSource) {
+      await fs.writeFile(sourceFile, shared.originalSource, 'utf8').catch(() => undefined)
+    }
+    if (shared?.originalManifest) {
+      await writeManifest(projectRoot, shared.originalManifest).catch(() => undefined)
+    }
     const restoredOutput = await findReadyAppOutputRoot(item, projectRoot, item.transformedContains).catch(() => undefined)
     if (restoredOutput) {
-      process.stdout.write(`[app-${platform}] ${name}: restored output ${restoredOutput}\n`)
+      process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: restored output ${restoredOutput}\n`)
     }
+  }
+}
+
+export async function runAppCase(item: AppCase, context: RuntimeContext, results: CaseResult[]) {
+  const projectRoot = path.resolve(context.repoRoot, item.projectDir)
+  const sourceFile = path.resolve(projectRoot, item.sourceFile)
+  const originalSource = (await readUtf8(sourceFile)).replace(appMarkerRE, '')
+  const originalManifest = await readManifest(projectRoot)
+  const shared = {
+    hbuilderxCliPath: await resolveHBuilderXCli(),
+    originalManifest,
+    originalSource,
+    toolEnv: item.platform === 'app-android' ? assertAndroidToolchain() : {},
+  }
+  try {
+    for (const variant of resolveStyleIsolationVariants(item.projectDir)) {
+      await runAppCaseVariant(item, context, results, variant, shared)
+    }
+  }
+  finally {
+    await fs.writeFile(sourceFile, originalSource, 'utf8').catch(() => undefined)
+    await writeManifest(projectRoot, originalManifest).catch(() => undefined)
   }
 }

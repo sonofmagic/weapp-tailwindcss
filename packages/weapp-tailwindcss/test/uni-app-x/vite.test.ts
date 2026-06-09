@@ -537,6 +537,54 @@ describe('uni-app-x vite plugins', () => {
     }
   })
 
+  it('keeps harmony component chunks isolated when styleIsolationVersion=2 enables local styles', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-harmony-style-isolation-v2-'))
+    try {
+      await fs.writeFile(path.join(root, 'manifest.json'), `{
+  "uni-app-x": {
+    "styleIsolationVersion": "2"
+  }
+}
+`, 'utf8')
+      clearUniAppXStyleIsolationCache()
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root } as ResolvedConfig),
+        uniAppX: {
+          enabled: true,
+          componentLocalStyles: true,
+        },
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {"px-4":{"":{"paddingLeft":"32rpx","paddingRight":"32rpx"}}};'),
+        'assets/components/Logo.js': createChunk('function render(){return createElementVNode("view", { class: "px-4" })}\nconst Logo = _export_sfc(_sfc_main, [["render", render], ["__file", "components/Logo.uvue"]]);'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "px-4" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/components/Logo.js'].code).not.toContain('const _style_wt')
+      expect(bundle['assets/components/Logo.js'].code).not.toContain('"px-4":{"":{"paddingLeft":"32rpx"')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"px-4":{"":{"paddingLeft":"32rpx"')
+    }
+    finally {
+      clearUniAppXStyleIsolationCache()
+      await fs.rm(root, { recursive: true, force: true })
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
   it('hydrates harmony chunk styles from css assets and source map apply rules', async () => {
     const originalPlatform = process.env.UNI_UTS_PLATFORM
     process.env.UNI_UTS_PLATFORM = 'app-harmony'

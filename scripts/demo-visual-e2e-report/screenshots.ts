@@ -5,8 +5,12 @@ export function resolveScreenshotsRoot(context: RuntimeContext) {
   return path.join(context.artifactRoot, 'screenshots')
 }
 
-export function resolveScreenshotPath(context: RuntimeContext, name: string, platform: VisualPlatform) {
-  return path.join(resolveScreenshotsRoot(context), name, platform, 'screenshot.png')
+function resolveScreenshotDir(context: RuntimeContext, name: string, platform: VisualPlatform, variant?: string) {
+  return path.join(resolveScreenshotsRoot(context), name, platform, ...(variant ? [variant] : []))
+}
+
+export function resolveScreenshotPath(context: RuntimeContext, name: string, platform: VisualPlatform, variant?: string) {
+  return path.join(resolveScreenshotDir(context, name, platform, variant), 'screenshot.png')
 }
 
 export function resolveHmrScreenshotPath(
@@ -14,6 +18,7 @@ export function resolveHmrScreenshotPath(
   name: string,
   platform: VisualPlatform,
   phase: 'before' | 'after',
+  variant?: string,
 ) {
-  return path.join(resolveScreenshotsRoot(context), name, platform, `hmr-${phase}.png`)
+  return path.join(resolveScreenshotDir(context, name, platform, variant), `hmr-${phase}.png`)
 }

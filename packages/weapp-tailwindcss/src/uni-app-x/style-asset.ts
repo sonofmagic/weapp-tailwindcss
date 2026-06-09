@@ -10,6 +10,7 @@ const STRING_LITERAL_RE = /(['"`])((?:\\.|(?!\1)[\s\S])*?)\1/g
 const UVUE_TS_RE = /\.uvue\.ts$/
 const JS_RE = /\.js$/
 const APP_JS_RE = /(?:^|\/)App\.js$/
+const COMPONENT_JS_RE = /(?:^|\/)components\/.+\.js$/
 const HARMONY_BUNDLE_MARKER_FILES = new Set([
   'import/app-service.ets',
   'import/dynamic.ets',
@@ -28,6 +29,7 @@ type BundleItem = { type: string } | OutputAsset | OutputChunk
 
 interface HarmonyStyleInjectOptions {
   cssSources?: Iterable<string | undefined> | undefined
+  excludeComponents?: boolean | undefined
   mapSources?: Iterable<string | undefined> | undefined
 }
 
@@ -575,6 +577,9 @@ export function injectUniAppXHarmonyGlobalStyles(
   options: HarmonyStyleInjectOptions = {},
 ) {
   if (!JS_RE.test(file) || APP_JS_RE.test(file)) {
+    return code
+  }
+  if (options.excludeComponents && COMPONENT_JS_RE.test(file)) {
     return code
   }
   const appSource = getBundleSource?.('assets/App.js') ?? getBundleSource?.('App.js')

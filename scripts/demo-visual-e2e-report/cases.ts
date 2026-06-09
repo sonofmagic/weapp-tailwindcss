@@ -1,5 +1,6 @@
 import type { Browser, Page } from 'playwright'
 import type { CliOptions, WatchCase, WatchSession } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types.ts'
+import type { StyleIsolationVariant } from './style-isolation.ts'
 import type { CaseResult, MiniProgramHmrMutation, MiniProgramHmrVisualConfig, RuntimeContext } from './types.ts'
 import fs from 'node:fs/promises'
 import process from 'node:process'
@@ -18,6 +19,13 @@ import { createWatchSession, runPnpmCommand, sleep } from '../../tools/weapp-tai
 import { closeMiniProgramAndCleanup, launchMiniProgramInCleanDevTools } from './ide.ts'
 import { findFreePort, killProcessTree, spawnPnpm, waitForUrl } from './process.ts'
 import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
+import {
+  readManifest,
+  resolveStyleIsolationVariants,
+
+  writeManifest,
+  writeStyleIsolationVariantManifest,
+} from './style-isolation.ts'
 
 export interface H5Case {
   name: string
@@ -43,11 +51,38 @@ export interface MiniProgramCase {
 }
 
 export async function runH5Case(browser: Browser, item: H5Case, context: RuntimeContext, results: CaseResult[]) {
-  const { capturePageScreenshot, prepareScreenshotPage, screenshotPage } = await import('./browser.ts')
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
-  const screenshot = resolveScreenshotPath(context, item.name, 'h5')
-  const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, item.name, 'h5', 'before')
-  const hmrAfterScreenshot = resolveHmrScreenshotPath(context, item.name, 'h5', 'after')
+  const originalManifest = await readManifest(projectRoot).catch(() => undefined)
+  try {
+    for (const variant of resolveStyleIsolationVariants(item.projectDir)) {
+      if (originalManifest !== undefined) {
+        await writeManifest(projectRoot, originalManifest)
+      }
+      if (variant.key) {
+        await writeStyleIsolationVariantManifest(projectRoot, variant)
+      }
+      await runH5CaseVariant(browser, item, context, results, variant, projectRoot)
+    }
+  }
+  finally {
+    if (originalManifest !== undefined) {
+      await writeManifest(projectRoot, originalManifest).catch(() => undefined)
+    }
+  }
+}
+
+async function runH5CaseVariant(
+  browser: Browser,
+  item: H5Case,
+  context: RuntimeContext,
+  results: CaseResult[],
+  variant: StyleIsolationVariant,
+  projectRoot: string,
+) {
+  const { capturePageScreenshot, prepareScreenshotPage, screenshotPage } = await import('./browser.ts')
+  const screenshot = resolveScreenshotPath(context, item.name, 'h5', variant.key)
+  const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, item.name, 'h5', 'before', variant.key)
+  const hmrAfterScreenshot = resolveHmrScreenshotPath(context, item.name, 'h5', 'after', variant.key)
   const port = await findFreePort()
   const command = createPortAwareCommand(item.command, port)
   const { child, logs } = spawnPnpm(projectRoot, command, {
@@ -66,6 +101,7 @@ export async function runH5Case(browser: Browser, item: H5Case, context: Runtime
       results.push({
         name: item.name,
         platform: 'h5',
+        styleIsolationVariant: variant.key,
         status: 'passed',
         screenshot: captured.screenshot,
         diagnostics: captured,
@@ -84,6 +120,7 @@ export async function runH5Case(browser: Browser, item: H5Case, context: Runtime
       results.push({
         name: item.name,
         platform: 'h5',
+        styleIsolationVariant: variant.key,
         status: 'passed',
         screenshot,
         hmrBeforeScreenshot,
@@ -109,6 +146,7 @@ export async function runH5Case(browser: Browser, item: H5Case, context: Runtime
     results.push({
       name: item.name,
       platform: 'h5',
+      styleIsolationVariant: variant.key,
       status: 'failed',
       error: stringifyError(error),
     })
@@ -216,14 +254,55 @@ export async function runMiniProgramCase(
   context: RuntimeContext,
   results: CaseResult[],
 ) {
+  const projectRoot = path.resolve(context.repoRoot, 'demo', item.name)
+  const originalManifest = await readManifest(projectRoot).catch(() => undefined)
+  try {
+    for (const variant of resolveStyleIsolationVariants(item.name)) {
+      if (originalManifest !== undefined) {
+        await writeManifest(projectRoot, originalManifest)
+      }
+      if (variant.key) {
+        await writeStyleIsolationVariantManifest(projectRoot, variant)
+      }
+      if (variant.key && !item.hmr) {
+        await cleanMiniProgramVariantOutput(item, context)
+      }
+      await runMiniProgramCaseVariant(item, context, results, variant)
+    }
+  }
+  finally {
+    if (originalManifest !== undefined) {
+      await writeManifest(projectRoot, originalManifest).catch(() => undefined)
+    }
+  }
+}
+
+async function cleanMiniProgramVariantOutput(item: MiniProgramCase, context: RuntimeContext) {
+  const projectRoot = path.resolve(context.repoRoot, 'demo', item.name)
+  await Promise.all(createMiniProgramProjectPathCandidates(item, context)
+    .filter((candidate) => {
+      const relative = path.relative(projectRoot, candidate)
+      return relative.startsWith('dist/') || relative.startsWith('unpackage/')
+    })
+    .map(async (candidate) => {
+      await fs.rm(candidate, { recursive: true, force: true })
+    }))
+}
+
+async function runMiniProgramCaseVariant(
+  item: MiniProgramCase,
+  context: RuntimeContext,
+  results: CaseResult[],
+  variant: StyleIsolationVariant,
+) {
   if (item.hmr) {
-    await runMiniProgramHmrCase(item, context, results)
+    await runMiniProgramHmrCase(item, context, results, variant)
     return
   }
 
   await ensureMiniProgramProjectBuilt(item, context)
   const projectPath = await resolveMiniProgramProjectPath(item, context)
-  const screenshot = resolveScreenshotPath(context, item.name, 'weapp')
+  const screenshot = resolveScreenshotPath(context, item.name, 'weapp', variant.key)
   const route = item.url ?? '/pages/index/index'
   const caseTimeoutMs = Math.max(10_000, context.timeoutMs)
   let port = await findFreePort()
@@ -232,6 +311,7 @@ export async function runMiniProgramCase(
     results.push({
       name: item.name,
       platform: 'weapp',
+      styleIsolationVariant: variant.key,
       status: 'skipped',
       error: 'project entry 标记为 skipOpenAutomator',
       diagnostics: { projectPath, route },
@@ -252,6 +332,7 @@ export async function runMiniProgramCase(
     results.push({
       name: item.name,
       platform: 'weapp',
+      styleIsolationVariant: variant.key,
       status: 'passed',
       screenshot,
       diagnostics: {
@@ -267,6 +348,7 @@ export async function runMiniProgramCase(
     results.push({
       name: item.name,
       platform: 'weapp',
+      styleIsolationVariant: variant.key,
       status: 'failed',
       error: stringifyError(error),
       diagnostics: { projectPath, port, route },
@@ -281,11 +363,12 @@ async function runMiniProgramHmrCase(
   item: MiniProgramCase & { hmr: MiniProgramHmrVisualConfig },
   context: RuntimeContext,
   results: CaseResult[],
+  variant: StyleIsolationVariant,
 ) {
   const watchCase = item.hmr.watchCase
-  const screenshot = resolveScreenshotPath(context, item.name, 'weapp')
-  const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, item.name, 'weapp', 'before')
-  const hmrAfterScreenshot = resolveHmrScreenshotPath(context, item.name, 'weapp', 'after')
+  const screenshot = resolveScreenshotPath(context, item.name, 'weapp', variant.key)
+  const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, item.name, 'weapp', 'before', variant.key)
+  const hmrAfterScreenshot = resolveHmrScreenshotPath(context, item.name, 'weapp', 'after', variant.key)
   const route = item.url ?? '/pages/index/index'
   const caseTimeoutMs = Math.max(10_000, context.timeoutMs)
   const options = createMiniProgramHmrCliOptions(context)
@@ -299,6 +382,7 @@ async function runMiniProgramHmrCase(
     results.push({
       name: item.name,
       platform: 'weapp',
+      styleIsolationVariant: variant.key,
       status: 'skipped',
       error: 'project entry 标记为 skipOpenAutomator',
       diagnostics: { projectPath, route },
@@ -382,6 +466,7 @@ async function runMiniProgramHmrCase(
     results.push({
       name: item.name,
       platform: 'weapp',
+      styleIsolationVariant: variant.key,
       status: 'passed',
       screenshot,
       hmrBeforeScreenshot,
@@ -409,6 +494,7 @@ async function runMiniProgramHmrCase(
     results.push({
       name: item.name,
       platform: 'weapp',
+      styleIsolationVariant: variant.key,
       status: 'failed',
       error: stringifyError(error),
       diagnostics: {
