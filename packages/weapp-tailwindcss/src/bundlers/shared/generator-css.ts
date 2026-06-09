@@ -245,10 +245,16 @@ function shouldScanTailwindV4Sources(
   generatorRuntime: Set<string>,
   isolateCssSource: boolean,
 ) {
-  if (majorVersion !== 4 || isolateCssSource) {
+  if (majorVersion !== 4) {
     return false
   }
-  return target === 'web' || generatorRuntime.size === 0
+  if (target === 'web') {
+    return true
+  }
+  if (isolateCssSource) {
+    return false
+  }
+  return generatorRuntime.size === 0
 }
 
 function shouldAppendWebBundleCssFallback(

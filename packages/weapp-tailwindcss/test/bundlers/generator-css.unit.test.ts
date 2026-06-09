@@ -441,6 +441,116 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).not.toContain('.bg-_b_h07c160_B')
   })
 
+  it('scans Tailwind v4 sources for web target when the css entry is path matched', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-web-source-scan-'))
+    const cssEntry = path.join(root, 'src/css/tailwind.css')
+    const css = '@import "tailwindcss" source(none);\n@source "../../src/**/*.{tsx,mdx}";'
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(cssEntry, css, 'utf8')
+
+    const runtimeSet = new Set(['bg-[#0284c7]'])
+    const generateMock = vi.fn(async ({ candidates, scanSources, target }: { candidates: Set<string>, scanSources: boolean, target: string }) => {
+      const rawCss = [
+        '.bg-\\[\\#0284c7\\]{background-color:#0284c7}',
+        ...(scanSources
+          ? [
+              '.sr-only{position:absolute;width:1px;height:1px}',
+              '.min-h-12{min-height:calc(var(--spacing)*12)}',
+              '.rounded-full{border-radius:9999px}',
+            ]
+          : []),
+      ].join('\n')
+      return {
+        css: rawCss,
+        rawCss,
+        target,
+        classSet: new Set([
+          ...candidates,
+          ...(scanSources ? ['sr-only', 'min-h-12', 'rounded-full'] : []),
+        ]),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock({
+        resolveTailwindV4Source: vi.fn(async (options: any) => ({
+          projectRoot: root,
+          base: path.dirname(cssEntry),
+          baseFallbacks: [],
+          css: options.css,
+          dependencies: [cssEntry],
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          projectRoot: root,
+          baseFallbacks: [],
+          cssEntries: [cssEntry],
+        })),
+      }),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    try {
+      const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+      const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+      const result = await generateCssByGenerator({
+        opts: {
+          cssEntries: [cssEntry],
+          generator: {
+            target: 'web',
+            tailwindcssV3Compatibility: false,
+          },
+          styleHandler,
+        } as any,
+        runtimeState: {
+          twPatcher: {
+            majorVersion: 4,
+          } as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: runtimeSet,
+        rawSource: '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.bg-\\[\\#0284c7\\]{background-color:#0284c7}',
+        file: path.join(root, 'build/assets/css/styles.css'),
+        cssHandlerOptions: {
+          isMainChunk: true,
+          postcssOptions: {
+            options: {
+              from: path.join(root, 'build/assets/css/styles.css'),
+            },
+          },
+          majorVersion: 4,
+        } as any,
+        cssUserHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: path.join(root, 'build/assets/css/styles.css'),
+            },
+          },
+          majorVersion: 4,
+        } as any,
+        styleHandler,
+        debug: vi.fn(),
+      })
+
+      expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+        candidates: runtimeSet,
+        scanSources: true,
+        target: 'web',
+      }))
+      expect(result?.css).toContain('.sr-only{position:absolute')
+      expect(result?.css).toContain('.min-h-12')
+      expect(result?.css).toContain('.rounded-full')
+    }
+    finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('preserves plain bundled css when Tailwind v4 web target generates the main chunk', async () => {
     const runtimeSet = new Set(['inline-flex'])
     const rawSource = '.home-v5{display:flex;color:#0f172a}'
