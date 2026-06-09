@@ -811,6 +811,26 @@ function renderImageArrayProp(name: string, images: ShowcaseImage[], altFallback
   return lines
 }
 
+function renderShowcaseIndexItems(entries: GeneratedEntry[]): string[] {
+  const lines = ['  items={[']
+  for (const entry of entries) {
+    const screenshotsCount = Math.max(entry.images.length - 1, 0)
+    lines.push('    {')
+    lines.push(`      title: ${renderJsxValue(entry.name)},`)
+    lines.push(`      href: ${renderJsxValue(`#${entry.name}`)},`)
+    lines.push(`      createdAt: ${renderJsxValue(dateFormatter.format(new Date(entry.createdAt)))},`)
+    if (entry.author?.login) {
+      lines.push(`      authorLogin: ${renderJsxValue(entry.author.login)},`)
+    }
+    lines.push(`      screenshotCount: ${screenshotsCount},`)
+    lines.push(`      hasLink: ${entry.link?.url ? 'true' : 'false'},`)
+    lines.push(`      hasGithub: ${entry.github ? 'true' : 'false'},`)
+    lines.push('    },')
+  }
+  lines.push('  ]}')
+  return lines
+}
+
 function resolveImageExtension(contentType: string | null, url: string): string {
   const contentMap: Record<string, string> = {
     'image/jpeg': 'jpg',
@@ -978,12 +998,17 @@ function renderMdx(issue: GitHubIssue, entries: GeneratedEntry[]): string {
   ]
   const intro = [
     `import ShowcaseCard from '@site/src/components/docs/ShowcaseCard'`,
+    `import ShowcaseIndex from '@site/src/components/docs/ShowcaseIndex'`,
     '',
     '# 优秀案例展示',
     '',
     `以下内容来自 [${issue.title}](${issue.html_url})，列表顺序按照提交时间排序。`,
     '',
-    `> 最近同步：${generatedAt}`,
+    '<ShowcaseIndex',
+    `  issueUrl={${renderJsxValue(issue.html_url)}}`,
+    `  generatedAt={${renderJsxValue(generatedAt)}}`,
+    ...renderShowcaseIndexItems(entries),
+    '/>',
     '',
     '<div className="showcase-grid">',
   ]

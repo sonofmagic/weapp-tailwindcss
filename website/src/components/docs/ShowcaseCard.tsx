@@ -3,6 +3,8 @@ import { useEffect, useId, useState, type ReactNode } from 'react'
 type ShowcaseImage = {
   src: string
   alt?: string
+  width?: number | null
+  height?: number | null
 }
 
 type ShowcaseLink = {
@@ -36,11 +38,13 @@ function ShowcaseImageButton({
   image,
   label,
   className,
+  frameClassName,
   onOpen,
 }: {
   image: ShowcaseImage
   label: string
   className?: string
+  frameClassName?: string
   onOpen: (image: ShowcaseImage) => void
 }) {
   const alt = image.alt || label
@@ -48,7 +52,7 @@ function ShowcaseImageButton({
   return (
     <button
       type="button"
-      className="showcase-card__image-button"
+      className={`showcase-card__image-button${frameClassName ? ` ${frameClassName}` : ''}`}
       onClick={() => onOpen({ ...image, alt })}
       aria-label={`放大查看：${alt}`}
     >
@@ -141,6 +145,7 @@ export default function ShowcaseCard({
             image={primaryImage}
             label={title}
             className="showcase-card__image"
+            frameClassName="showcase-card__image-button--code"
             onOpen={setPreviewImage}
           />
         </figure>
@@ -168,6 +173,7 @@ export default function ShowcaseCard({
                     image={image}
                     label={`${title} 截图 ${index + 1}`}
                     className="showcase-card__image showcase-card__shot"
+                    frameClassName="showcase-card__image-button--shot"
                     onOpen={setPreviewImage}
                   />
                 ))}
