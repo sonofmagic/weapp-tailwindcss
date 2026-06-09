@@ -19,6 +19,12 @@
   --doc-table-row-hover: rgba(14, 165, 233, 0.06);
   --doc-table-shadow: 0 10px 30px -25px rgba(15, 23, 42, 0.25);
   --doc-table-code: rgba(14, 165, 233, 0.12);
+  --doc-content-link-color: #075985;
+  --doc-content-link-hover: #0f766e;
+  --doc-content-link-underline: rgba(14, 165, 233, 0.38);
+  --doc-content-link-underline-hover: rgba(15, 118, 110, 0.76);
+  --doc-content-link-bg: rgba(14, 165, 233, 0.08);
+  --doc-content-link-bg-hover: rgba(20, 184, 166, 0.14);
   --ifm-font-family-base:
     Inter var, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --ifm-heading-font-weight: 650;
@@ -135,6 +141,47 @@ a:hover {
   margin: 0.9rem 0;
 }
 
+.theme-doc-markdown :where(p, li, blockquote, td, dd) a:not([class]),
+.theme-doc-markdown :where(p, li, blockquote, td, dd) a[class=''],
+.markdown :where(p, li, blockquote, td, dd) a:not([class]),
+.markdown :where(p, li, blockquote, td, dd) a[class=''] {
+  border-radius: 0.2rem;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: var(--doc-content-link-color);
+  font-weight: 620;
+  text-decoration-line: underline;
+  text-decoration-color: var(--doc-content-link-underline);
+  text-decoration-thickness: 0.12em;
+  text-underline-offset: 0.2em;
+  background:
+    linear-gradient(var(--doc-content-link-bg), var(--doc-content-link-bg)) 0 100% / 100% 0.38em no-repeat,
+    linear-gradient(transparent, transparent);
+  transition:
+    background-size 0.18s ease,
+    background-color 0.18s ease,
+    color 0.18s ease,
+    text-decoration-color 0.18s ease;
+}
+
+.theme-doc-markdown :where(p, li, blockquote, td, dd) a:not([class]):hover,
+.theme-doc-markdown :where(p, li, blockquote, td, dd) a[class='']:hover,
+.markdown :where(p, li, blockquote, td, dd) a:not([class]):hover,
+.markdown :where(p, li, blockquote, td, dd) a[class='']:hover {
+  color: var(--doc-content-link-hover);
+  text-decoration-color: var(--doc-content-link-underline-hover);
+  background-size: 100% 100%;
+}
+
+.theme-doc-markdown :where(p, li, blockquote, td, dd) a:not([class]):focus-visible,
+.theme-doc-markdown :where(p, li, blockquote, td, dd) a[class='']:focus-visible,
+.markdown :where(p, li, blockquote, td, dd) a:not([class]):focus-visible,
+.markdown :where(p, li, blockquote, td, dd) a[class='']:focus-visible {
+  outline: 2px solid rgb(14 165 233 / 64%);
+  outline-offset: 0.15rem;
+  background-color: var(--doc-content-link-bg-hover);
+}
+
 .theme-doc-markdown code {
   border: 1px solid rgb(14 165 233 / 16%);
   border-radius: 0.4rem;
@@ -184,4 +231,13 @@ html[data-theme='dark'] .theme-doc-markdown code {
 html[data-theme='dark'] .theme-doc-markdown blockquote {
   color: rgb(203 213 225);
   background: rgb(15 23 42 / 55%);
+}
+
+html[data-theme='dark'] {
+  --doc-content-link-color: #7dd3fc;
+  --doc-content-link-hover: #99f6e4;
+  --doc-content-link-underline: rgba(56, 189, 248, 0.48);
+  --doc-content-link-underline-hover: rgba(153, 246, 228, 0.82);
+  --doc-content-link-bg: rgba(56, 189, 248, 0.13);
+  --doc-content-link-bg-hover: rgba(45, 212, 191, 0.18);
 }
