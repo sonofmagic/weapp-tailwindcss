@@ -3,10 +3,15 @@ import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
-import { buildCases, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
+export type DemoWatchShardName
+  = | 'demo-core'
+    | 'demo-taro-react'
+    | 'demo-taro-vue3'
+    | 'demo-uni'
 export type ConcreteWatchCaseName
   = | 'gulp-tailwindcss-v3'
     | 'gulp-tailwindcss-v4'
@@ -28,7 +33,7 @@ export type ConcreteWatchCaseName
     | 'uni-app-x-hbuilderx-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
     | 'weapp-vite-tailwindcss-v4'
-export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
+export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
 type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
 const BASE_REQUIRED_MUTATION_ROUNDS: MutationRoundName[] = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
@@ -306,6 +311,17 @@ interface HotUpdateReport {
 const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
 
 const criticalDemoProjects = configuredWatchCases.filter(item => item.group === 'demo').map(item => item.project)
+const criticalDemoProjectsByShard = Object.fromEntries(
+  Object.entries(demoWatchShardCases).map(([shardName, shardCases]) => {
+    const shardCaseNames = new Set(shardCases)
+    return [
+      shardName,
+      configuredWatchCases
+        .filter(item => shardCaseNames.has(item.name))
+        .map(item => item.project),
+    ]
+  }),
+) as Record<DemoWatchShardName, string[]>
 
 const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>(['mpx-tailwindcss-v4', 'uni-app-vite-tailwindcss-v4', 'taro-vite-react-tailwindcss-v4', 'taro-webpack-react-tailwindcss-v4', 'weapp-vite-tailwindcss-v4'])
@@ -389,6 +405,10 @@ function resolveSelectedWatchCaseCount(target: WatchCaseName) {
     return configuredWatchCases.filter(item => item.group === target).length
   }
 
+  if (isDemoWatchShardName(target)) {
+    return demoWatchShardCases[target].length
+  }
+
   if (target === 'both') {
     return bothCases.size
   }
@@ -459,6 +479,10 @@ export function resolveCaseName() {
     || value === 'both'
     || value === 'all'
     || value === 'demo'
+    || value === 'demo-core'
+    || value === 'demo-taro-react'
+    || value === 'demo-taro-vue3'
+    || value === 'demo-uni'
   ) {
     return value
   }
@@ -466,12 +490,12 @@ export function resolveCaseName() {
 }
 
 function isConcreteWatchCaseName(value: WatchCaseName): value is ConcreteWatchCaseName {
-  return value !== 'all' && value !== 'both' && value !== 'demo'
+  return value !== 'all' && value !== 'both' && value !== 'demo' && !isDemoWatchShardName(value)
 }
 
 export function resolveExpectedGroup(target: WatchCaseName): WatchProjectGroup | undefined {
-  if (target === 'demo') {
-    return target
+  if (target === 'demo' || isDemoWatchShardName(target)) {
+    return 'demo'
   }
 
   if (target === 'both') {
@@ -496,6 +520,10 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
     return false
   }
 
+  if (isDemoWatchShardName(caseName)) {
+    return false
+  }
+
   if (isConcreteWatchCaseName(caseName)) {
     return caseName === target
   }
@@ -504,7 +532,7 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
 }
 
 export function shouldRunGroupedTarget(caseName: WatchCaseName, target: WatchProjectGroup) {
-  return caseName === target
+  return caseName === target || (target === 'demo' && isDemoWatchShardName(caseName))
 }
 
 async function runWatchHmrCommand(cwd: string, args: string[], commandTimeoutMs: number) {
@@ -810,9 +838,10 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(report.summaryByGroup[expectedGroup]?.count).toBe(report.summary.count)
   }
 
-  if (target === 'demo') {
+  if (target === 'demo' || isDemoWatchShardName(target)) {
     const projects = new Set(report.cases.map(item => item.project))
-    for (const project of criticalDemoProjects) {
+    const requiredProjects = target === 'demo' ? criticalDemoProjects : criticalDemoProjectsByShard[target]
+    for (const project of requiredProjects) {
       expect(projects.has(project)).toBe(true)
     }
   }

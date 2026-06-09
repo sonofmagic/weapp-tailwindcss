@@ -1,11 +1,13 @@
 import { describe, it } from 'vitest'
+import { isDemoWatchShardName } from '../../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { resolveCaseName, runHotUpdateTarget, shouldRunGroupedTarget } from '../shared'
 
 describe('e2e watch hot-update demo group', () => {
   const caseName = resolveCaseName()
-  const target = 'demo' as const
+  const groupTarget = 'demo' as const
+  const target = isDemoWatchShardName(caseName) ? caseName : groupTarget
 
-  if (!shouldRunGroupedTarget(caseName, target)) {
+  if (!shouldRunGroupedTarget(caseName, groupTarget)) {
     it.skip('skips demo watch hot-update group for current E2E_WATCH_CASE filter', () => {})
     return
   }

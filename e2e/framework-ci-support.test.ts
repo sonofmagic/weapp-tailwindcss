@@ -1,7 +1,8 @@
+import type { ConcreteWatchCaseName } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import fs from 'node:fs'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
-import { buildCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, pickCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
 import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
@@ -39,7 +40,7 @@ describeFrameworkCi('framework support matrix ci', () => {
 
   it('covers every required demo framework support case with watch hot-update or an explicit exemption', () => {
     for (const entry of getFrameworkCiCases().filter(item => item.fixturesDir === '../demo')) {
-      const projectName = entry.project.name
+      const projectName = entry.project.name as ConcreteWatchCaseName
       expect(
         HOT_UPDATE_COVERED_PROJECTS.has(projectName) || HOT_UPDATE_EXEMPT_PROJECTS.has(projectName),
         `${entry.name} should have demo watch hot-update coverage or an explicit exemption`,
@@ -68,6 +69,19 @@ describeFrameworkCi('framework support matrix ci', () => {
         HOT_UPDATE_CI_CASES,
         `${caseName} should be included in hot-update CI`,
       ).toContain(caseName)
+    }
+  })
+
+  it('keeps nightly demo watch shards covering the default demo hot-update set', () => {
+    const cases = buildCases(path.resolve(__dirname, '..'))
+    const defaultDemoCases = pickCases(cases, 'demo').map(item => item.name)
+    const shardCases = Object.values(demoWatchShardCases).flat()
+
+    expect([...new Set(shardCases)].sort()).toEqual([...shardCases].sort())
+    expect(shardCases.sort()).toEqual(defaultDemoCases.sort())
+    for (const shardName of Object.keys(demoWatchShardCases)) {
+      const shardCaseName = shardName as keyof typeof demoWatchShardCases
+      expect(pickCases(cases, shardCaseName).map(item => item.name)).toEqual(demoWatchShardCases[shardCaseName])
     }
   })
 

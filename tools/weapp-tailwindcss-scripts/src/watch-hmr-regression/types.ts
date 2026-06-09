@@ -1,6 +1,11 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 
 export type WatchProjectGroup = 'demo'
+export type DemoWatchShardName
+  = | 'demo-core'
+    | 'demo-taro-react'
+    | 'demo-taro-vue3'
+    | 'demo-uni'
 export type ConcreteWatchCaseName
   = | 'gulp-tailwindcss-v3'
     | 'gulp-tailwindcss-v4'
@@ -22,7 +27,7 @@ export type ConcreteWatchCaseName
     | 'uni-app-x-hbuilderx-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v3'
     | 'weapp-vite-tailwindcss-v4'
-export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo'
+export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export const DEFAULT_HOT_UPDATE_BUDGET_MS = 1000
 export const PREFERRED_HOT_UPDATE_TARGET_MS = 1000
