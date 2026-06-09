@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.6
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4 入口中包含块状 `@plugin` 等生成指令时，小程序 CSS 生成阶段可能把原始指令片段透传到 wxss 转译链路并触发 `Unclosed block` 的问题。** [`0e29d78`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0e29d7851f7596e0b41086472ff00fb0fee5abd3) by @sonofmagic
+
 ## 5.0.5
 
 ### Patch Changes
