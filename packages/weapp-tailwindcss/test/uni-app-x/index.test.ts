@@ -345,6 +345,45 @@ const condition = true
     },
   )
 
+  it('injects page local styles when enabled for app-harmony pages', () => {
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    const { jsHandler } = getCompilerContext({
+      uniAppX: true,
+    })
+    const runtimeSet = new Set<string>([
+      'bg-[#123456]',
+      'text-[#ff0000]',
+      'p-4',
+    ])
+    const code = `
+<template>
+  <view class="bg-[#123456] p-4" :class="active ? 'text-[#ff0000]' : ''">hello</view>
+</template>
+<script lang="ts">
+const active = true
+</script>
+`
+    const result = transformUVue(
+      code,
+      '/src/pages/index/index.uvue',
+      jsHandler,
+      runtimeSet,
+      { enablePageLocalStyle: true },
+    )
+
+    expect(result?.code).toContain('<style scoped>')
+    const styleBlock = extractInjectedStyle(result!.code)
+    const aliasByUtility = extractAliasByUtility(styleBlock)
+    expect(aliasByUtility.get('bg-[#123456]')).toBeTruthy()
+    expect(aliasByUtility.get('p-4')).toBeTruthy()
+    expect(aliasByUtility.get('text-[#ff0000]')).toBeTruthy()
+    expect(result?.code).toContain(`class="${aliasByUtility.get('bg-[#123456]')} ${aliasByUtility.get('p-4')}"`)
+    expect(result?.code).toContain(aliasByUtility.get('text-[#ff0000]')!)
+    expect(result?.code).not.toContain(replaceWxml('bg-[#123456]'))
+    expect(styleBlock).toContain('@apply bg-[#123456];')
+    expect(styleBlock).toContain('@apply text-[#ff0000];')
+  })
+
   it('keeps custom scoped classes out of component local @apply output on app-android', async () => {
     process.env.UNI_UTS_PLATFORM = 'app-android'
     const { jsHandler } = getCompilerContext({

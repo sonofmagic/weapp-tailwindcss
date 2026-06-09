@@ -13,6 +13,8 @@ import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
+import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
+import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXBundleAssetSourceGetter, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder, isUniAppXHarmonyBundle, UNI_APP_X_STYLE_PLACEHOLDER_VERSION } from '@/uni-app-x/style-asset'
 import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
@@ -136,9 +138,11 @@ function resolveViteCssOutputFile(
   file: string,
   opts: InternalUserDefinedOptions,
   isWebGeneratorTarget: boolean,
+  preserveCssExtension = false,
 ) {
   if (
     isWebGeneratorTarget
+    || preserveCssExtension
     || opts.cssMatcher(file)
     || !SOURCE_STYLE_OUTPUT_EXT_RE.test(file)
     || !isCSSRequest(file)
@@ -533,10 +537,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     } = opts
     const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
     const isWebGeneratorTarget = generatorOptions.target === 'web'
-    const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp
+    const resolvedConfig = getResolvedConfig()
+    const uniUtsPlatform = resolveUniUtsPlatform()
+    const isNativeAppStyleTarget = uniUtsPlatform.isApp
+    const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
+    const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
-    const resolvedConfig = getResolvedConfig()
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
@@ -551,7 +558,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
-      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension),
       debug,
     })
     const hmrTimingStartedAt = performance.now()
@@ -810,7 +817,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, file, outDir, opts)
-        const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget)
+        const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension)
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
           delete bundle[file]
           debug('css skip raw source style asset: %s -> %s', file, outputFile)
@@ -1002,6 +1009,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   }
                   debug('css generated result: %s bytes=%d', file, generated.css.length)
                   recordCssAssetResult?.(outputFile, generated.css)
+                  recordViteProcessedCssAssetResult?.(outputFile, generated.css, {
+                    injectIntoMain: false,
+                  })
                   if (vitePipelineCssAsset && cssHandlerOptions.isMainChunk) {
                     recordViteProcessedCssAssetResult?.(file, generated.css, {
                       injectIntoMain: !isAppOriginCssFile(file),
@@ -1147,16 +1157,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             hashKey: `${file}:js`,
             hashSalt: createJsHashSalt(
               runtimeSignature,
-              useIncrementalMode
-                ? createLinkedImpactSignature(
-                    file,
-                    snapshot.linkedImpactsByEntry,
-                    snapshot.sourceHashByFile,
-                  )
-                : undefined,
+              [
+                UNI_APP_X_STYLE_PLACEHOLDER_VERSION,
+                useIncrementalMode
+                  ? createLinkedImpactSignature(
+                      file,
+                      snapshot.linkedImpactsByEntry,
+                      snapshot.sourceHashByFile,
+                    )
+                  : undefined,
+              ].filter(Boolean).join(':'),
             ),
             createHandlerOptions,
             debug,
+            getAssetSource: createUniAppXBundleAssetSourceGetter(bundle),
             jsHandler,
             onUpdate,
             runtimeSet: transformRuntime,
@@ -1201,7 +1215,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       for (const [key, rememberedEntry] of getRememberedCssSources?.() ?? []) {
         const remembered = await refreshRememberedCssSource?.(rememberedEntry) ?? rememberedEntry
         const { outputFile: rememberedOutputFile, rawSource, sourceFile } = remembered
-        const outputFile = resolveViteCssPipelineOutputFile(rememberedOutputFile, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget)
+        const outputFile = resolveViteCssPipelineOutputFile(rememberedOutputFile, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension)
         const cssHandlerOptions = getCssHandlerOptions(outputFile)
         const cssRuntimeSignature = createCssRuntimeSignature(
           runtimeSignature,
@@ -1272,6 +1286,56 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     for (const apply of pendingLinkedUpdates) {
       apply()
     }
+    const applyStyleSources = collectUniAppXHarmonyApplyStyleSources(bundle)
+    if (opts.appType === 'uni-app-x' || isNativeAppStyleTarget || isHarmonyAppStyleTarget || applyStyleSources.length > 0) {
+      const getAssetSource = createUniAppXBundleAssetSourceGetter(bundle)
+      const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
+        .map(([, record]) => typeof record === 'string' ? record : record.css)
+      const applyUtilities = collectUniAppXHarmonyApplyUtilities(bundle)
+      const shouldInjectHarmonyBundleStyles = isHarmonyAppStyleTarget || applyStyleSources.length > 0
+      if (shouldInjectHarmonyBundleStyles) {
+        if (applyUtilities.size > 0 && applyStyleSources.length > 0) {
+          const outputFile = 'uni-app-x-harmony-apply.css'
+          const cssHandlerOptions = getCssHandlerOptions(outputFile)
+          const generated = await generateCssByGenerator({
+            opts,
+            runtimeState,
+            runtime: new Set([
+              ...generatorRuntime,
+              ...applyUtilities,
+            ]),
+            rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
+            file: outputFile,
+            cssHandlerOptions,
+            cssUserHandlerOptions: {
+              ...cssHandlerOptions,
+              isMainChunk: false,
+            },
+            getSourceCandidatesForEntries,
+            styleHandler,
+            debug,
+          })
+          if (generated?.css) {
+            viteProcessedCssSources.push(generated.css)
+          }
+        }
+      }
+      if (shouldInjectHarmonyBundleStyles && injectUniAppXHarmonyBundleStyles(bundle, { cssSources: viteProcessedCssSources })) {
+        debug('uni-app-x harmony bundle styles inject')
+      }
+      for (const [file, item] of Object.entries(bundle)) {
+        if (item.type !== 'asset' || !file.endsWith('.uvue.ts')) {
+          continue
+        }
+        const currentSource = String(item.source)
+        const nextSource = injectUniAppXStylePlaceholder(file, currentSource, getAssetSource)
+        if (nextSource !== currentSource) {
+          item.source = nextSource
+          onUpdate(file, currentSource, nextSource)
+          debug('uni-app-x style placeholder inject: %s', file)
+        }
+      }
+    }
     injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts,
       getViteProcessedCssAssetResults,
@@ -1280,6 +1344,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       debug,
       onUpdate,
     })
+    if (applyStyleSources.length > 0) {
+      const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
+        .map(([, record]) => typeof record === 'string' ? record : record.css)
+      if (injectUniAppXHarmonyBundleStyles(bundle, { cssSources: viteProcessedCssSources })) {
+        debug('uni-app-x harmony bundle styles inject after css assets')
+      }
+    }
 
     const stateUpdateStart = performance.now()
     updateBundleBuildState(

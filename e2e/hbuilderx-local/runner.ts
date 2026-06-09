@@ -7,6 +7,7 @@ import { expect } from 'vitest'
 import { rawTailwindDirectiveRE } from './cases'
 import {
   assertAndroidToolchain,
+  assertHarmonyToolchain,
   assertIosSimulatorToolchain,
   collectProcessOutput,
   fileExists,
@@ -81,7 +82,7 @@ function resolveAppOutputDirCandidates(item: AppCase) {
 
 function resolveAppIntermediateOutputTargets(item: AppCase, projectRoot: string) {
   const targets = new Set<string>()
-  if (item.platform === 'app-android' || item.platform === 'app-ios') {
+  if (item.platform === 'app-android' || item.platform === 'app-ios' || item.platform === 'app-harmony') {
     targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.uvue/${item.platform}`))
     targets.add(path.resolve(projectRoot, `unpackage/cache/.${item.platform}`))
   }
@@ -281,6 +282,9 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
   if (item.platform === 'app-ios') {
     assertIosSimulatorToolchain()
   }
+  if (item.platform === 'app-harmony') {
+    assertHarmonyToolchain()
+  }
 
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
@@ -302,7 +306,8 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...androidEnv,
     })
-    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectName, ...(item.launchArgs ?? [])], {
+    const launchProject = item.platform === 'app-harmony' ? projectRoot : projectName
+    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', launchProject, ...(item.launchArgs ?? [])], {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',
       ...androidEnv,

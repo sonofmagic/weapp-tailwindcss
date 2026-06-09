@@ -1,6 +1,6 @@
 import type { WatchCase } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types.ts'
 
-export type VisualPlatform = 'h5' | 'weapp' | 'app-android' | 'app-ios'
+export type VisualPlatform = 'h5' | 'weapp' | 'app-android' | 'app-ios' | 'app-harmony'
 
 export interface CaseResult {
   name: string

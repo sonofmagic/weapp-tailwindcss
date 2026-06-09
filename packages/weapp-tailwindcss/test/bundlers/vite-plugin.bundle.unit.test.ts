@@ -1919,6 +1919,288 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     }
   }, TEST_TIMEOUT_MS)
 
+  it('injects harmony page chunk styles from HBuilderX app-harmony main.css bundle output', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const generateMock = vi.fn(async (_options: { candidates: Set<string> }, source: { css: string }) => {
+        const isHarmonyApplySource = source.css.includes('.wtu-1k0qd6d-4')
+        const css = isHarmonyApplySource
+          ? [
+              '.bg-_b_h102938_B { background-color: rgba(16,41,56,1); }',
+              '.text-_b_hf7fbff_B { color: rgba(247,251,255,1); }',
+              '.w-_b173px_B { width: 173px; }',
+              '.wtu-1k0qd6d-4 { background-color: rgba(16,41,56,1); }',
+              '.wtu-e9q3ep-5 { color: rgba(247,251,255,1); }',
+              '.wtu-hufz3g-6 { width: 173px; }',
+            ].join('\n')
+          : [
+              '.flex { display: flex; }',
+              '.text-white { --tw-text-opacity: 1; color: rgba(255,255,255,1); }',
+            ].join('\n')
+        return {
+          css,
+          rawCss: css,
+          target: 'weapp',
+          classSet: new Set(_options.candidates),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        }
+      })
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+            generate: vi.fn((options: { candidates: Set<string> }) => generateMock(options, source)),
+          })),
+          normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+          resolveTailwindV4Source: vi.fn(async (options: any) => ({
+            version: 4,
+            projectRoot: process.cwd(),
+            base: process.cwd(),
+            baseFallbacks: [],
+            css: options.css,
+            dependencies: [],
+          })),
+          resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+            version: 4,
+            projectRoot: process.cwd(),
+            base: process.cwd(),
+            baseFallbacks: [],
+            css: '@import "tailwindcss" source(none);',
+            dependencies: [],
+          })),
+          resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+            version: 4,
+            projectRoot: process.cwd(),
+            base: process.cwd(),
+            baseFallbacks: [],
+          })),
+        }
+      })
+      const runtimeSet = new Set(['flex', 'text-white', 'bg-[#102938]', 'text-[#f7fbff]', 'w-[173px]'])
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        generator: {
+          target: 'weapp',
+        },
+        jsHandler: vi.fn((code: string) => ({ code })),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
+        styleHandler: vi.fn(async (code: string) => ({
+          css: code,
+          map: {
+            toJSON: () => ({
+              version: 3,
+              file: '',
+              sources: [],
+              sourcesContent: [],
+              names: [],
+              mappings: '',
+            }),
+          },
+        })),
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => runtimeSet),
+          getClassSetSync: vi.fn(() => runtimeSet),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        },
+        uniAppX: true,
+      }))
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(postPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'build',
+        root: process.cwd(),
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'unpackage/dist/dev/.app-harmony' },
+      } as ResolvedConfig)
+
+      const bundle = {
+        'assets/App.js': {
+          ...createRollupChunk('const _style_0 = {};'),
+          fileName: 'assets/App.js',
+        },
+        'assets/pages/index/index.js': {
+          ...createRollupChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "flex text-white wtu-1k0qd6d-4 wtu-e9q3ep-5 wtu-hufz3g-6" }, "hbuilderx-app-dynamic-v4-harmony")}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+          fileName: 'assets/pages/index/index.js',
+        },
+        'assets/pages/index/index.js.map': {
+          ...createRollupAsset(JSON.stringify({
+            sourcesContent: [
+              '<template><view class="wtu-1k0qd6d-4 wtu-e9q3ep-5 wtu-hufz3g-6" /></template>\n<style scoped>\n.wtu-1k0qd6d-4 {\n  @apply bg-[#102938];\n}\n.wtu-e9q3ep-5 {\n  @apply text-[#f7fbff];\n}\n.wtu-hufz3g-6 {\n  @apply w-[173px];\n}\n</style>',
+            ],
+          })),
+          fileName: 'assets/pages/index/index.js.map',
+        },
+        'import/app-service.ets': {
+          ...createRollupAsset(''),
+          fileName: 'import/app-service.ets',
+        },
+        'main.css': {
+          ...createRollupAsset('export default {"container":{"":{"width":"100%"}}}'),
+          fileName: 'main.css',
+        },
+        'app.wxss': {
+          ...createRollupAsset([
+            '.flex { display: flex; }',
+            '.text-white { --tw-text-opacity: 1; color: rgba(255,255,255,1); }',
+          ].join('\n')),
+          fileName: 'app.wxss',
+        },
+        'uni_modules/oh-package.json5': {
+          ...createRollupAsset('{}'),
+          fileName: 'uni_modules/oh-package.json5',
+        },
+      }
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      await generateBundle?.call({ ...postPlugin, addWatchFile: vi.fn() }, {} as any, bundle)
+
+      const pageCode = (bundle['assets/pages/index/index.js'] as OutputChunk).code
+      expect(bundle['main.wxss']).toBeUndefined()
+      expect((bundle['main.css'] as OutputAsset).source.toString()).toContain('.flex')
+      expect(pageCode).toContain('"flex":{"":{"display":"flex"}}')
+      expect(pageCode).toContain('"text-white":{"":{"-TwTextOpacity":"1"')
+      expect(pageCode).toContain('"wtu-1k0qd6d-4":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+      expect(pageCode).toContain('"wtu-e9q3ep-5":{"":{"color":"rgba(247,251,255,1)"}}')
+      expect(pageCode).toContain('"wtu-hufz3g-6":{"":{"width":173}}')
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
+  it('generates uni-app x harmony inline apply styles during transform', async () => {
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const generateMock = vi.fn(async () => {
+        const css = '.wtu-a { background-color: rgba(16,41,56,1); }'
+        return {
+          css,
+          rawCss: css,
+          target: 'weapp',
+          classSet: new Set(['bg-[#102938]']),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        }
+      })
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          createWeappTailwindcssGenerator: vi.fn(() => ({
+            generate: generateMock,
+          })),
+          normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+          resolveTailwindV4Source: vi.fn(async (options: any) => ({
+            version: 4,
+            projectRoot: process.cwd(),
+            base: options.base ?? process.cwd(),
+            baseFallbacks: [],
+            css: options.css,
+            dependencies: [],
+          })),
+          resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+            version: 4,
+            projectRoot: process.cwd(),
+            base: process.cwd(),
+            baseFallbacks: [],
+            css: '@import "tailwindcss" source(none);',
+            dependencies: [],
+          })),
+          resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+            version: 4,
+            projectRoot: process.cwd(),
+            base: process.cwd(),
+            baseFallbacks: [],
+          })),
+        }
+      })
+      const runtimeSet = new Set(['bg-[#102938]'])
+      setCurrentContext(createContext({
+        appType: 'uni-app-x',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        generator: {
+          target: 'weapp',
+        },
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
+        styleHandler: vi.fn(async (code: string) => ({
+          css: code,
+          map: {
+            toJSON: () => ({
+              version: 3,
+              file: '',
+              sources: [],
+              sourcesContent: [],
+              names: [],
+              mappings: '',
+            }),
+          },
+        })),
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => runtimeSet),
+          getClassSetSync: vi.fn(() => runtimeSet),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        },
+        uniAppX: true,
+      }))
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()
+      const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      const uniAppXCssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
+      expect(sourcePlugin).toBeTruthy()
+      expect(postPlugin).toBeTruthy()
+      expect(uniAppXCssPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'build',
+        root: process.cwd(),
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'unpackage/dist/dev/.app-harmony' },
+      } as ResolvedConfig)
+      await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+
+      const result = await getTransformHandler(uniAppXCssPlugin)?.call(
+        { addWatchFile: vi.fn() },
+        '.wtu-a { @apply bg-[#102938]; }',
+        '/project/pages/index/index.uvue?vue&type=style&index=1&inline&lang.css',
+      )
+
+      expect(result?.code).toContain('.wtu-a')
+      expect(result?.code).toContain('background-color: rgba(16,41,56,1)')
+      expect(generateMock).toHaveBeenCalled()
+    }
+    finally {
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
   it('replays remembered uni-app x native app main.css through bundle assets on initial app builds', async () => {
     const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
     process.env.UNI_UTS_PLATFORM = 'app-android'

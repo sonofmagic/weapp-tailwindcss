@@ -8,6 +8,8 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
+import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
+import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
 import { resolveUniUtsPlatform } from '@/utils'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
@@ -121,6 +123,13 @@ function shouldFinalizeProcessedCssAsset(
   return opts.mainCssChunkMatcher(file, opts.appType)
 }
 
+function collectViteProcessedCssSources(
+  getViteProcessedCssAssetResults: CssFinalizerContext['getViteProcessedCssAssetResults'],
+) {
+  return [...(getViteProcessedCssAssetResults?.() ?? [])]
+    .map(([, record]) => typeof record === 'string' ? record : record.css)
+}
+
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
   return {
     name: 'weapp-tailwindcss:adaptor:css-finalizer',
@@ -148,12 +157,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           isViteProcessedCssAsset,
         } = context
         const resolvedConfig = getResolvedConfig()
-        if (resolvedConfig?.command !== 'build') {
-          return
-        }
         const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
         const isWebGeneratorTarget = generatorOptions.target === 'web'
-        const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp
+        const isHarmonyAppStyleTarget = isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
+        const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
+        if (resolvedConfig?.command !== 'build' && !isNativeAppStyleTarget) {
+          return
+        }
         const rootDir = resolvedConfig.root ? path.resolve(resolvedConfig.root) : process.cwd()
 
         collectViteProcessedCssAssetResults(bundle, {
@@ -165,6 +175,56 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
           debug,
         })
+
+        const createHarmonyBundleStyleSources = async (runtime: Set<string>) => {
+          const cssSources = collectViteProcessedCssSources(getViteProcessedCssAssetResults)
+          const applyUtilities = collectUniAppXHarmonyApplyUtilities(bundle)
+          const applyStyleSources = collectUniAppXHarmonyApplyStyleSources(bundle)
+          if (applyUtilities.size === 0 || applyStyleSources.length === 0) {
+            return cssSources
+          }
+          const harmonyRuntime = new Set([
+            ...runtime,
+            ...applyUtilities,
+          ])
+          const harmonyCssHandlerOptions = createCssHandlerOptions(opts, runtimeState.twPatcher.majorVersion, 'uni-app-x-harmony-apply.css')
+          const generated = await generateCssByGenerator({
+            opts,
+            runtimeState,
+            runtime: harmonyRuntime,
+            rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
+            file: 'uni-app-x-harmony-apply.css',
+            cssHandlerOptions: harmonyCssHandlerOptions,
+            cssUserHandlerOptions: {
+              ...harmonyCssHandlerOptions,
+              isMainChunk: false,
+            },
+            getSourceCandidatesForEntries,
+            styleHandler: opts.styleHandler,
+            debug,
+          })
+          if (generated?.css) {
+            cssSources.push(generated.css)
+          }
+          return cssSources
+        }
+
+        const injectHarmonyBundleStyles = async (runtime: Set<string>) => {
+          if (
+            !resolveUniUtsPlatform().isAppHarmony
+            && !isUniAppXHarmonyBundle(bundle)
+            && !isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
+            && collectUniAppXHarmonyApplyStyleSources(bundle).length === 0
+          ) {
+            return
+          }
+          const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+            cssSources: await createHarmonyBundleStyleSources(runtime),
+          })
+          if (changed) {
+            debug('uni-app-x harmony bundle styles inject')
+          }
+        }
 
         const isCssOutputAssetEntry = (
           entry: [string, OutputAsset | OutputChunk],
@@ -188,6 +248,8 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             debug,
             onUpdate: opts.onUpdate,
           })
+          const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()
+          await injectHarmonyBundleStyles(runtime)
           return
         }
 
@@ -280,6 +342,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           debug,
           onUpdate: opts.onUpdate,
         })
+        await injectHarmonyBundleStyles(generatorRuntime)
       },
     },
   }

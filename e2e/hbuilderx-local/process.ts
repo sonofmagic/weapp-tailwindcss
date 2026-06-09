@@ -22,6 +22,15 @@ const androidSdkCandidates = [
   '/opt/android-sdk',
   '/usr/local/share/android-sdk',
 ].filter((item): item is string => Boolean(item))
+const harmonyHdcCandidates = [
+  process.env['DEMO_VISUAL_HARMONY_HDC_PATH'],
+  process.env['E2E_HBUILDERX_HARMONY_HDC_PATH'],
+  process.env['HDC_PATH'],
+  'hdc',
+  process.platform === 'darwin'
+    ? '/Applications/DevEco-Studio.app/Contents/sdk/default/openharmony/toolchains/hdc'
+    : undefined,
+].filter((item): item is string => Boolean(item))
 
 export const serverTimeoutMs = Number(process.env['E2E_HBUILDERX_WEB_TIMEOUT_MS'] ?? 180_000)
 export const hbuilderxTimeoutMs = Number(process.env['E2E_HBUILDERX_MP_TIMEOUT_MS'] ?? 240_000)
@@ -140,6 +149,36 @@ export function assertIosSimulatorToolchain() {
       '如果 firstLaunchStatus 不是 ready，请先打开 Xcode 完成首次组件安装，或执行 sudo xcodebuild -runFirstLaunch。',
     ].join('\n'))
   }
+}
+
+export function resolveHdcCommand() {
+  for (const candidate of harmonyHdcCandidates) {
+    const result = runTool(candidate, ['version'])
+    if (result.ok) {
+      return candidate
+    }
+  }
+
+  throw new Error([
+    '当前机器缺少 Harmony App E2E 所需的 hdc，无法运行 HBuilderX app-harmony E2E。',
+    '请安装 DevEco Studio，或设置 DEMO_VISUAL_HARMONY_HDC_PATH=/path/to/hdc。',
+    '如需指定设备，请设置 E2E_HBUILDERX_HARMONY_DEVICE_ID 或 DEMO_VISUAL_HARMONY_DEVICE_ID。',
+  ].join('\n'))
+}
+
+export function assertHarmonyToolchain() {
+  const hdc = resolveHdcCommand()
+  const result = spawnSync(hdc, ['list', 'targets'], {
+    encoding: 'utf8',
+  })
+  if (result.status !== 0) {
+    throw new Error([
+      '当前 Harmony hdc 无法列出设备，无法运行 HBuilderX app-harmony E2E。',
+      result.stderr || result.stdout || `exit=${result.status} signal=${result.signal ?? 'none'}`,
+      '请确认 Harmony 模拟器或真机已连接。',
+    ].join('\n'))
+  }
+  return hdc
 }
 
 export async function findFreePort() {

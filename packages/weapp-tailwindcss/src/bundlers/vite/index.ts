@@ -9,7 +9,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
-import { normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -17,6 +17,7 @@ import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
+import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
 import { createUniAppXPlugins } from '@/uni-app-x/vite'
 import { resolveUniUtsPlatform } from '@/utils'
@@ -722,6 +723,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const isUniViteProject = () => {
     return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false
   }
+  const isHarmonyAppBuildTarget = () => {
+    if (resolveUniUtsPlatform().isAppHarmony) {
+      return true
+    }
+    return isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
+  }
   const sendSupplementalCssHotUpdates = (ctx: HmrContext, cssModules: ModuleNode[]) => {
     const updates = cssModules
       .filter(mod => !includesHotModule(ctx.modules, mod))
@@ -796,12 +803,18 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     await waitForSourceCandidateSyncs()
     const file = cleanUrl(id)
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
-    const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp
+    const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
+    const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
     const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
     const cssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(outputFile)
+    const shouldDeferEmptyScopedCssSource = !(
+      opts.appType === 'uni-app-x'
+      && !cssHandlerOptions.isMainChunk
+      && hasTailwindApplyDirective(code)
+    )
     const generated = await generateCssByGenerator({
       opts,
       runtimeState,
@@ -814,7 +827,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       styleHandler,
       debug,
       previousCss: viteGeneratedCssByFile.get(file),
-      deferEmptyScopedCssSource: true,
+      deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
     })
     if (!generated) {
       return undefined
@@ -823,6 +836,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, generated.css)
+    recordViteProcessedCssAssetResult(file, generated.css, {
+      injectIntoMain: false,
+    })
     if (generated.css.includes('weapp-tailwindcss layer components start')) {
       recordViteProcessedCssAssetResult(file, generated.css, {
         injectIntoMain: cssHandlerOptions.isMainChunk,
@@ -1123,12 +1139,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           }
         }, { emit: false })
       },
-      generateBundle: generateBundleHook,
+      generateBundle: {
+        order: 'post',
+        handler: generateBundleHook,
+      },
     },
-    cssFinalizerOutputPlugin,
   ]
   if (uniAppXPlugins) {
     plugins.push(...uniAppXPlugins)
   }
+  plugins.push(cssFinalizerOutputPlugin)
   return plugins
 }

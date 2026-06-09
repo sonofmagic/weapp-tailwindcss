@@ -10,15 +10,29 @@ import type {
   JsHandler,
   LinkedJsModuleResult,
 } from '@/types'
+import path from 'node:path'
+import process from 'node:process'
 import { processCachedTask } from '@/bundlers/shared/cache'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { toAbsoluteOutputPath } from '@/bundlers/shared/module-graph'
 import { parseVueRequest } from '@/bundlers/vite/query'
 import { cleanUrl, formatPostcssSourceMap, isCSSRequest, normalizePath } from '@/bundlers/vite/utils'
 import { logger } from '@/logger'
+import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { resolveUniUtsPlatform } from '@/utils'
 import { omitUndefined } from '@/utils/object'
 import { isUniAppXEnabled, resolveUniAppXOptions } from './options'
+import {
+  collectUniAppXHarmonyApplyStyleSources,
+  collectUniAppXHarmonyApplyStyleSourcesFromSource,
+  collectUniAppXHarmonyApplyUtilities,
+  collectUniAppXHarmonyApplyUtilitiesFromSources,
+  createUniAppXBundleAssetSourceGetter,
+  createUniAppXHarmonyApplyGeneratorSource,
+  injectUniAppXHarmonyBundleStyles,
+  injectUniAppXStylePlaceholder,
+  isUniAppXHarmonyBundle,
+} from './style-asset'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 
 type TransformUVue = typeof import('./transform')['transformUVue']
@@ -97,7 +111,9 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     uniAppX,
   } = options
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
-  const isIosPlatform = providedIosPlatform ?? resolveUniUtsPlatform().isAppIos
+  const utsPlatform = resolveUniUtsPlatform()
+  const isIosPlatform = providedIosPlatform ?? utsPlatform.isAppIos
+  const isHarmonyPlatform = utsPlatform.isAppHarmony
   const cssHandlerOptionsCache = new Map<string, {
     isMainChunk: boolean
     uniAppXCssTarget?: 'uvue' | undefined
@@ -114,6 +130,21 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     }
   }>()
   let componentLocalStyleEnabled: boolean | undefined
+  const harmonyApplyStyleSources = new Set<string>()
+  const harmonyApplyUtilities = new Set<string>()
+
+  function rememberHarmonyApplySource(code: string) {
+    const styleSources = collectUniAppXHarmonyApplyStyleSourcesFromSource(code)
+    if (styleSources.length === 0) {
+      return
+    }
+    for (const styleSource of styleSources) {
+      harmonyApplyStyleSources.add(styleSource)
+      for (const utility of collectUniAppXHarmonyApplyUtilitiesFromSources([styleSource])) {
+        harmonyApplyUtilities.add(utility)
+      }
+    }
+  }
 
   function shouldEnableComponentLocalStyle() {
     if (!resolvedUniAppXOptions.componentLocalStyles.enabled) {
@@ -132,6 +163,17 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     return componentLocalStyleEnabled
   }
 
+  function shouldEnableHarmonyPageLocalStyle() {
+    return isHarmonyPlatform && resolvedUniAppXOptions.componentLocalStyles.enabled
+  }
+
+  function isHarmonyBuildTarget() {
+    if (resolveUniUtsPlatform().isAppHarmony) {
+      return true
+    }
+    return isUniAppXHarmonyOutDir(getResolvedConfig()?.build?.outDir)
+  }
+
   async function transformStyle(code: string, id: string, query?: ReturnType<typeof parseVueRequest>['query'], hookContext?: { addWatchFile?: (id: string) => void }) {
     const parsed = query ?? parseVueRequest(id).query
     if (isCSSRequest(id) || (parsed.vue && parsed.type === 'style')) {
@@ -140,6 +182,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       }
       const shouldGenerateCss = hasTailwindSourceDirectives(code, { importFallback: true })
         || hasTailwindApplyDirective(code)
+      rememberHarmonyApplySource(code)
       const generatedCss = (
         shouldGenerateCss
       )
@@ -221,6 +264,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       if (!UVUE_NVUE_QUERY_RE.test(id)) {
         return
       }
+      rememberHarmonyApplySource(code)
       const resolvedConfig = getResolvedConfig()
       const isServeCommand = resolvedConfig?.command === 'serve'
       const isWatchBuild = resolvedConfig?.command === 'build' && !!resolvedConfig.build?.watch
@@ -230,20 +274,19 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
         ? await ensureRuntimeClassSet(true)
         : await ensureRuntimeClassSet()
       const transformUVue = await loadTransformUVue()
-      const extraOptions = customAttributesEntities.length > 0 || disabledDefaultTemplateHandler
-        ? {
-            customAttributesEntities,
-            disabledDefaultTemplateHandler,
-            enableComponentLocalStyle: shouldEnableComponentLocalStyle(),
-          }
-        : undefined
-      if (extraOptions) {
-        return transformUVue(code, id, jsHandler, currentRuntimeSet, extraOptions)
-      }
-      if (shouldEnableComponentLocalStyle()) {
-        return transformUVue(code, id, jsHandler, currentRuntimeSet, {
-          enableComponentLocalStyle: true,
-        })
+      const enableComponentLocalStyle = shouldEnableComponentLocalStyle()
+      const enablePageLocalStyle = shouldEnableHarmonyPageLocalStyle()
+      const shouldPassOptions = customAttributesEntities.length > 0
+        || disabledDefaultTemplateHandler
+        || enableComponentLocalStyle
+        || enablePageLocalStyle
+      if (shouldPassOptions) {
+        return transformUVue(code, id, jsHandler, currentRuntimeSet, omitUndefined({
+          ...(customAttributesEntities.length > 0 ? { customAttributesEntities } : {}),
+          ...(disabledDefaultTemplateHandler ? { disabledDefaultTemplateHandler } : {}),
+          ...(enableComponentLocalStyle ? { enableComponentLocalStyle } : {}),
+          ...(enablePageLocalStyle ? { enablePageLocalStyle } : {}),
+        }))
       }
       return transformUVue(code, id, jsHandler, currentRuntimeSet)
     },
@@ -271,9 +314,60 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     },
   }
 
+  const stylePlaceholderPlugin: Plugin = {
+    name: 'weapp-tailwindcss:uni-app-x:style-placeholder',
+    enforce: 'post',
+    generateBundle: {
+      order: 'post',
+      async handler(_options, bundle) {
+        const currentUtsPlatform = resolveUniUtsPlatform()
+        const isHarmonyBundle = isUniAppXHarmonyBundle(bundle)
+        const isHarmonyTarget = currentUtsPlatform.isAppHarmony || isHarmonyBundle || isHarmonyBuildTarget()
+        if (!currentUtsPlatform.isApp && !isHarmonyTarget) {
+          return
+        }
+        const getAssetSource = createUniAppXBundleAssetSourceGetter(bundle)
+        if (isHarmonyTarget) {
+          const cssSources: string[] = []
+          const applyStyleSources = [
+            ...harmonyApplyStyleSources,
+            ...collectUniAppXHarmonyApplyStyleSources(bundle),
+          ]
+          const applyUtilities = new Set([
+            ...harmonyApplyUtilities,
+            ...collectUniAppXHarmonyApplyUtilities(bundle),
+          ])
+          if (applyStyleSources.length > 0 && applyUtilities.size > 0) {
+            const harmonyApplyCssFile = path.resolve(getResolvedConfig()?.root ?? process.cwd(), 'uni-app-x-harmony-apply.css')
+            const generatedCss = await generateCss?.(
+              harmonyApplyCssFile,
+              createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
+              this,
+            )
+            if (typeof generatedCss === 'string' && generatedCss.trim().length > 0) {
+              cssSources.push(generatedCss)
+            }
+          }
+          injectUniAppXHarmonyBundleStyles(bundle, { cssSources })
+        }
+        for (const [file, item] of Object.entries(bundle)) {
+          if (item.type !== 'asset' || !file.endsWith('.uvue.ts')) {
+            continue
+          }
+          const currentSource = String(item.source)
+          const nextSource = injectUniAppXStylePlaceholder(file, currentSource, getAssetSource)
+          if (nextSource !== currentSource) {
+            item.source = nextSource
+          }
+        }
+      },
+    },
+  }
+
   return [
     ...cssPlugins,
     nvuePlugin,
+    stylePlaceholderPlugin,
   ]
 }
 
@@ -290,6 +384,7 @@ interface CreateUniAppXAssetTaskOptions {
   runtimeSet: Set<string>
   applyLinkedResults: ApplyLinkedResults
   uniAppX?: InternalUserDefinedOptions['uniAppX']
+  getAssetSource?: (file: string) => string | undefined
 }
 
 export function createUniAppXAssetTask(
@@ -304,6 +399,7 @@ export function createUniAppXAssetTask(
       hashKey,
       createHandlerOptions,
       debug,
+      getAssetSource,
       jsHandler,
       onUpdate,
       runtimeSet,
@@ -336,11 +432,12 @@ export function createUniAppXAssetTask(
             sourceType: 'unambiguous',
           },
         }))
-        onUpdate(file, currentSource, code)
+        const nextCode = injectUniAppXStylePlaceholder(file, code, getAssetSource)
+        onUpdate(file, currentSource, nextCode)
         debug('js handle: %s', file)
         applyLinkedResults(linked)
         return {
-          result: code,
+          result: nextCode,
         }
       },
     })

@@ -3502,7 +3502,10 @@ describe('bundlers/shared generator css', () => {
   it('adds Tailwind v4 import source for @apply-only local css sources', async () => {
     const rawSource = [
       '.test {',
-      '  @apply min-w-0;',
+      '  @apply min-w-0 bg-[#102938];',
+      '}',
+      '.title {',
+      '  @apply text-[#f7fbff] w-[173px];',
       '}',
     ].join('\n')
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
@@ -3545,7 +3548,7 @@ describe('bundlers/shared generator css', () => {
     )
 
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      css: `@import "tailwindcss" source(none);\n${rawSource}`,
+      css: `@import "tailwindcss" source(none);\n@source inline("bg-[#102938] min-w-0 text-[#f7fbff] w-[173px]");\n${rawSource}`,
     }))
   })
 
@@ -6946,6 +6949,105 @@ describe('bundlers/shared generator css', () => {
     const borderSolidBody = result!.css.match(/\.border-solid\s*\{([^}]*)\}/)?.[1]
     expect(borderSolidBody).toContain('border-style: solid')
     expect(borderSolidBody).not.toContain('border-width')
+  })
+
+  it('generates Tailwind v4 css for non-main apply-only sources', async () => {
+    const rawSource = [
+      '.wtu-a {',
+      '  @apply bg-[#102938];',
+      '}',
+      '.wtu-b {',
+      '  @apply text-[#f7fbff] w-[173px];',
+      '}',
+    ].join('\n')
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [
+        '.bg-_b_h102938_B { background-color: rgba(16,41,56,1); }',
+        '.text-_b_hf7fbff_B { color: rgba(247,251,255,1); }',
+        '.w-_b173px_B { width: 173px; }',
+        '.wtu-a { background-color: rgba(16,41,56,1); }',
+        '.wtu-b { color: rgba(247,251,255,1); width: 173px; }',
+      ].join('\n'),
+      rawCss: [...candidates].sort().join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: ['uni-app-x-harmony-apply.css'],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/project',
+        base: options.base ?? '/project',
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        packageName: 'tailwindcss',
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['bg-[#app]']),
+      rawSource,
+      file: 'uni-app-x-harmony-apply.css',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'uni-app-x-harmony-apply.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'uni-app-x-harmony-apply.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
+    expect(candidates).toEqual(new Set(['bg-[#102938]', 'text-[#f7fbff]', 'w-[173px]']))
+    expect(result?.css).toContain('.wtu-a')
+    expect(result?.css).toContain('background-color: rgba(16,41,56,1)')
+    expect(result?.css).not.toContain('bg-[#app]')
   })
 
   it('removes Tailwind v4 shorthand border reset from uni-app x mini-program generator css', async () => {

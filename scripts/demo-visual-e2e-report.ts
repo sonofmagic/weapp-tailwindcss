@@ -75,9 +75,10 @@ function printHelp() {
     'Options:',
     '  --h5-only       只采集 H5 截图',
     '  --weapp-only    只采集小程序截图',
-    '  --app-only      只采集 Android/iOS App 截图',
+    '  --app-only      只采集 Android/iOS/Harmony App 截图',
     '  --android-only  只采集 Android App 截图',
     '  --ios-only      只采集 iOS App 截图',
+    '  --harmony-only  只采集 Harmony App 截图',
     '  --filter <re>   只运行名称匹配的 demo；也可直接传位置参数',
     '  --fail-on-incomplete  任一 case failed/skipped 或没有匹配结果时退出失败',
     '  --help          显示帮助',
@@ -141,10 +142,13 @@ function resolveTargetPlatforms() {
   if (hasArg('--ios-only')) {
     return ['app-ios'] satisfies VisualPlatform[]
   }
-  if (hasArg('--app-only')) {
-    return ['app-android', 'app-ios'] satisfies VisualPlatform[]
+  if (hasArg('--harmony-only')) {
+    return ['app-harmony'] satisfies VisualPlatform[]
   }
-  return ['h5', 'weapp', 'app-android', 'app-ios'] satisfies VisualPlatform[]
+  if (hasArg('--app-only')) {
+    return ['app-android', 'app-ios', 'app-harmony'] satisfies VisualPlatform[]
+  }
+  return ['h5', 'weapp', 'app-android', 'app-ios', 'app-harmony'] satisfies VisualPlatform[]
 }
 
 async function collectTargetDemoNames(platforms: VisualPlatform[]) {
@@ -165,7 +169,7 @@ async function collectTargetDemoNames(platforms: VisualPlatform[]) {
       names.add(item.name)
     }
   }
-  if (platforms.includes('app-android') || platforms.includes('app-ios')) {
+  if (platforms.includes('app-android') || platforms.includes('app-ios') || platforms.includes('app-harmony')) {
     const { uniAppAppCases, uniAppXAppCases } = await import('../e2e/hbuilderx-local/cases.ts')
     for (const item of [...uniAppAppCases, ...uniAppXAppCases]) {
       if (platforms.includes(item.platform)) {
@@ -178,7 +182,7 @@ async function collectTargetDemoNames(platforms: VisualPlatform[]) {
 
 async function cleanScreenshotTargets(context: RuntimeContext, platforms: VisualPlatform[], demoNames: string[]) {
   const screenshotsRoot = resolveScreenshotsRoot(context)
-  if (platforms.length === 4 && !hasFilter()) {
+  if (platforms.length === 5 && !hasFilter()) {
     await fs.rm(screenshotsRoot, { recursive: true, force: true })
     await fs.mkdir(screenshotsRoot, { recursive: true })
     return
@@ -205,7 +209,7 @@ async function main() {
   const results: CaseResult[] = []
   const h5Only = hasArg('--h5-only')
   const weappOnly = hasArg('--weapp-only')
-  const appOnly = hasArg('--app-only') || hasArg('--android-only') || hasArg('--ios-only')
+  const appOnly = hasArg('--app-only') || hasArg('--android-only') || hasArg('--ios-only') || hasArg('--harmony-only')
   const targetPlatforms = resolveTargetPlatforms()
   await cleanScreenshotTargets(context, targetPlatforms, await collectTargetDemoNames(targetPlatforms))
   await fs.mkdir(path.join(context.artifactRoot, 'diffs'), { recursive: true })
@@ -288,6 +292,12 @@ async function main() {
         continue
       }
       if (hasArg('--ios-only') && item.platform !== 'app-ios') {
+        continue
+      }
+      if (hasArg('--harmony-only') && item.platform !== 'app-harmony') {
+        continue
+      }
+      if (hasArg('--app-only') && !targetPlatforms.includes(item.platform)) {
         continue
       }
       await runAppCase(item, context, results)

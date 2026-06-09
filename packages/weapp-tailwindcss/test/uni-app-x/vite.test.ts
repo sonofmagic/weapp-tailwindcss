@@ -6,6 +6,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
+import { collectUniAppXHarmonyApplyStyleSources, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder } from '@/uni-app-x/style-asset'
 import { createUniAppXAssetTask, createUniAppXPlugins } from '@/uni-app-x/vite'
 import { clearUniAppXStyleIsolationCache } from '@/uni-app-x/style-isolation'
 
@@ -34,6 +35,21 @@ function createAsset(source: string): OutputAsset {
     name: undefined,
     source,
   } as unknown as OutputAsset
+}
+
+function createChunk(code: string, extra: Record<string, unknown> = {}) {
+  return {
+    type: 'chunk',
+    fileName: 'entry.js',
+    name: 'entry',
+    code,
+    ...extra,
+  }
+}
+
+function getGenerateBundleHandler(plugin: Plugin | undefined) {
+  const hook = plugin?.generateBundle as any
+  return typeof hook === 'object' ? hook.handler : hook
 }
 
 describe('uni-app-x vite plugins', () => {
@@ -260,7 +276,6 @@ describe('uni-app-x vite plugins', () => {
       {
         customAttributesEntities,
         disabledDefaultTemplateHandler: true,
-        enableComponentLocalStyle: false,
       },
     )
     expect(transformResult).toEqual({ code: 'transformed', map: null })
@@ -326,6 +341,58 @@ describe('uni-app-x vite plugins', () => {
     }
   })
 
+  it('enables page local style transform on app-harmony without styleIsolationVersion=2', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-harmony-page-local-style-'))
+    try {
+      await fs.writeFile(path.join(root, 'manifest.json'), `{
+  "uni-app-x": {}
+}
+`, 'utf8')
+      clearUniAppXStyleIsolationCache()
+      const runtimeSet = new Set(['alpha'])
+      const ensureRuntimeClassSet = vi.fn(async () => runtimeSet)
+      const jsHandler = vi.fn()
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler,
+        ensureRuntimeClassSet,
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false }, root } as ResolvedConfig),
+        uniAppX: {
+          enabled: true,
+          componentLocalStyles: true,
+        },
+      })
+      const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+      expect(nvuePlugin).toBeDefined()
+      transformUVueMock.mockClear()
+      transformUVueMock.mockReturnValue({ code: 'transformed', map: null } as TransformResult)
+
+      await nvuePlugin!.transform?.('<template/>', '/src/pages/index/index.uvue')
+
+      expect(transformUVueMock).toHaveBeenLastCalledWith(
+        '<template/>',
+        '/src/pages/index/index.uvue',
+        jsHandler,
+        runtimeSet,
+        {
+          enablePageLocalStyle: true,
+        },
+      )
+    }
+    finally {
+      clearUniAppXStyleIsolationCache()
+      await fs.rm(root, { recursive: true, force: true })
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
   it('allows disabling component local style transform from uniAppX options', async () => {
     const root = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-822-disabled-'))
     try {
@@ -372,6 +439,553 @@ describe('uni-app-x vite plugins', () => {
       clearUniAppXStyleIsolationCache()
       await fs.rm(root, { recursive: true, force: true })
     }
+  })
+
+  it('injects uni-app-x style placeholders in the post bundle hook', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'App.uvue.ts': createAsset('const GenAppStyles = [_uM([["bg-_b_h102938_B", _pS(_uM([["backgroundColor", "rgba(16,41,56,1)"]]))]])]'),
+        'pages/index/index.uvue.ts': createAsset('_cE("view", _uM({ class: "bg-_b_h102938_B" }))\nconst GenPagesIndexIndexStyles = []'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['pages/index/index.uvue.ts'].source).toContain('const GenPagesIndexIndexStyles = [_uM([["bg-_b_h102938_B"')
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('merges app global styles into harmony page chunks in the post bundle hook', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {"flex":{"":{"display":"flex"}},"text-white":{"":{"color":"#FFFFFF"}}};'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {"wtu-a":{"":{"height":100}}};\nfunction render(){return createElementVNode("view", { class: "flex wtu-a text-white" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"height":100}}')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"flex":{"":{"display":"flex"}}')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"text-white":{"":{"color":"#FFFFFF"}}')
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('adds harmony styles option for component chunks without local styles', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {"px-4":{"":{"paddingLeft":"32rpx","paddingRight":"32rpx"}}};'),
+        'assets/components/Logo.js': createChunk('function render(){return createElementVNode("view", { class: "px-4" })}\nconst Logo = _export_sfc(_sfc_main, [["render", render], ["__file", "components/Logo.uvue"]]);'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/components/Logo.js'].code).toContain('const _style_wt = {"px-4":{"":{"paddingLeft":"32rpx","paddingRight":"32rpx"}}};')
+      expect(bundle['assets/components/Logo.js'].code).toContain('["styles", [_style_wt]], ["__file"')
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('hydrates harmony chunk styles from css assets and source map apply rules', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {};'),
+        'main.wxss': createAsset('.flex { display: flex; } .bg-_b_h102938_B { background-color: #102938; } .text-_b_hf7fbff_B { color: #f7fbff; }'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "flex wtu-a wtu-b" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+        'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+          sourcesContent: [
+            '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n</style>',
+          ],
+        })),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"flex":{"":{"display":"flex"}}')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"#102938"}}')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"#f7fbff"}}')
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('hydrates harmony chunk styles when platform env is absent but bundle is harmony', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {"bg-_b_h102938_B":{"":{"backgroundColor":"#102938"}}};'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "bg-_b_h102938_B" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+        'import/app-service.ets': createAsset(''),
+        'uni_modules/oh-package.json5': createAsset('{}'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"bg-_b_h102938_B":{"":{"backgroundColor":"#102938"}}')
+    }
+    finally {
+      if (originalPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = originalPlatform
+      }
+    }
+  })
+
+  it('generates harmony apply css in the post bundle hook before hydrating chunks', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const generateCss = vi.fn(async () => [
+        '.wtu-a { background-color: rgba(16,41,56,1); }',
+        '.wtu-b { color: rgba(247,251,255,1); }',
+        '.wtu-c { width: 173px; }',
+      ].join('\n'))
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        generateCss,
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {};'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nconst _style_1 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a wtu-b wtu-c" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0, _style_1]], ["__file", "pages/index/index.uvue"]]);'),
+        'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+          sourcesContent: [
+            '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n.wtu-c {\n  @apply w-[173px];\n}\n</style>',
+          ],
+        })),
+        'import/app-service.ets': createAsset(''),
+        'uni_modules/oh-package.json5': createAsset('{}'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(generateCss).toHaveBeenCalledWith(
+        path.resolve(process.cwd(), 'uni-app-x-harmony-apply.css'),
+        [
+          '.wtu-a {\n  @apply bg-[#102938];\n}',
+          '.wtu-b {\n  @apply text-[#f7fbff];\n}',
+          '.wtu-c {\n  @apply w-[173px];\n}',
+        ].join('\n'),
+        undefined,
+      )
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
+    }
+    finally {
+      if (originalPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = originalPlatform
+      }
+    }
+  })
+
+  it('records uvue apply sources before harmony target is known and hydrates in bundle hook', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const generateCss = vi.fn(async () => '.wtu-a { background-color: rgba(16,41,56,1); }')
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => false),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        generateCss,
+        jsHandler: vi.fn(async (code: string) => ({ code })),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { outDir: 'unpackage/dist/dev/.app-harmony', watch: false } } as ResolvedConfig),
+      })
+      const nvuePlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:nvue')
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+
+      await nvuePlugin?.transform?.call({} as any, '<template><view class="wtu-a" /></template>\n<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>', '/project/pages/index/index.uvue')
+
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {};'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(generateCss).toHaveBeenCalledWith(
+        path.resolve(process.cwd(), 'uni-app-x-harmony-apply.css'),
+        '.wtu-a {\n  @apply bg-[#102938];\n}',
+        undefined,
+      )
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+    }
+    finally {
+      if (originalPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = originalPlatform
+      }
+    }
+  })
+
+  it('detects harmony target from build outDir before harmony marker assets exist', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    delete process.env.UNI_UTS_PLATFORM
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        generateCss: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { outDir: 'unpackage/dist/dev/.app-harmony', watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {"flex":{"":{"display":"flex"}}};'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "flex" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/pages/index/index.js'].code).toContain('"flex":{"":{"display":"flex"}}')
+    }
+    finally {
+      if (originalPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = originalPlatform
+      }
+    }
+  })
+
+  it('hydrates harmony chunk styles from recorded css sources when css assets are absent', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a wtu-b wtu-c" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n.wtu-c {\n  @apply w-[173px];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.bg-_b_h102938_B { background-color: rgba(16,41,56,1); } .text-_b_hf7fbff_B { color: rgba(247,251,255,1); } .w-_b173px_B { width: 173px; }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
+  })
+
+  it('hydrates harmony local styles even when App style is empty', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nconst _style_1 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a wtu-b wtu-c" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0, _style_1]], ["__file", "pages/index/index.uvue"]]);'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n.wtu-c {\n  @apply w-[173px];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.bg-_b_h102938_B { background-color: rgba(16,41,56,1); } .text-_b_hf7fbff_B { color: rgba(247,251,255,1); } .w-_b173px_B { width: 173px; }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
+  })
+
+  it('collects harmony apply style sources from sourcemaps and uvue assets', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>',
+        ],
+      })),
+      'pages/index/index.uvue': createAsset('<template />\n<style scoped>\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n</style>'),
+    }
+
+    const sources = collectUniAppXHarmonyApplyStyleSources(bundle)
+
+    expect(sources).toContain('.wtu-a {\n  @apply bg-[#102938];\n}')
+    expect(sources).toContain('.wtu-b {\n  @apply text-[#f7fbff];\n}')
+  })
+
+  it('collects harmony apply style sources from chunk maps before sourcemap assets are emitted', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};', {
+        map: {
+          sourcesContent: [
+            '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>',
+          ],
+        },
+      }),
+    }
+
+    const sources = collectUniAppXHarmonyApplyStyleSources(bundle)
+
+    expect(sources).toContain('.wtu-a {\n  @apply bg-[#102938];\n}')
+  })
+
+  it('collects harmony apply style sources from assets sourcemaps for non-assets chunks', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'pages/index/index.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const sources = collectUniAppXHarmonyApplyStyleSources(bundle)
+
+    expect(sources).toContain('.wtu-a {\n  @apply bg-[#102938];\n}')
+  })
+
+  it('creates Tailwind v4 generator source for harmony apply styles', () => {
+    const source = createUniAppXHarmonyApplyGeneratorSource([
+      '.wtu-a {\n  @apply bg-[#102938];\n}',
+    ], ['w-[173px]', 'bg-[#102938]', 'bg-[#102938]'])
+
+    expect(source).toBe('.wtu-a {\n  @apply bg-[#102938];\n}')
+  })
+
+  it('injects uni-app-x style placeholder from sibling wxss fallback', () => {
+    const code = 'const GenPagesIndexIndexStyles = []'
+    const next = injectUniAppXStylePlaceholder(
+      'pages/index/index.uvue.ts',
+      code,
+      file => file === 'pages/index/index.wxss'
+        ? '.content { display: flex; width: 173px; }'
+        : undefined,
+    )
+
+    expect(next).toContain('const GenPagesIndexIndexStyles = [_uM([')
+    expect(next).toContain('"content"')
+    expect(next).toContain('"display", "flex"')
+    expect(next).toContain('"width", 173')
+  })
+
+  it('hydrates harmony chunk styles from escaped arbitrary utility selectors', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a wtu-b wtu-c" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n.wtu-c {\n  @apply w-[173px];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.bg-\\[\\#102938\\] { background-color: rgba(16,41,56,1); } .text-\\[\\#f7fbff\\] { color: rgba(247,251,255,1); } .w-\\[173px\\] { width: 173px; }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
+  })
+
+  it('hydrates harmony chunk styles from uni-app-x style export css sources', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a wtu-b wtu-c" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n.wtu-c {\n  @apply w-[173px];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        'export default {"bg-_b_h102938_B":{"":{"backgroundColor":"rgba(16,41,56,1)"}},"text-_b_hf7fbff_B":{"":{"color":"rgba(247,251,255,1)"}},"w-_b173px_B":{"":{"width":173}}}',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
+  })
+
+  it('hydrates harmony chunk styles from scoped apply css selectors', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<template><view class="wtu-a" /></template>\n<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.bg-\\[\\#102938\\] { background-color: rgba(16,41,56,1); } .wtu-a.data-v-abc { background-color: rgba(16,41,56,1); }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+  })
+
+  it('hydrates harmony chunk styles from chunk maps before sourcemap assets are emitted', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);', {
+        map: {
+          sourcesContent: [
+            '<template><view class="wtu-a" /></template>\n<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>',
+          ],
+        },
+      }),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.bg-\\[\\#102938\\] { background-color: rgba(16,41,56,1); }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
+  })
+
+  it('hydrates harmony chunk styles from assets sourcemaps for non-assets chunks', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "wtu-a" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+      'assets/pages/index/index.js.map': createAsset(JSON.stringify({
+        sourcesContent: [
+          '<template><view class="wtu-a" /></template>\n<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n</style>',
+        ],
+      })),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle, {
+      cssSources: [
+        '.bg-\\[\\#102938\\] { background-color: rgba(16,41,56,1); }',
+      ],
+    })
+
+    expect(changed).toBe(true)
+    expect(bundle['pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
   })
 })
 
@@ -466,5 +1080,43 @@ describe('createUniAppXAssetTask', () => {
         uniAppX: false,
       }),
     )
+  })
+
+  it('injects uni-app-x generated style placeholders from style assets', async () => {
+    const asset = createAsset('_cE("view", _uM({ class: "bg-_b_h102938_B w-_b173px_B" }))\n/*GenPagesIndexIndexStyles*/')
+    const runtimeSet = new Set(['alpha'])
+    const jsHandler = vi.fn((source: string) => ({
+      code: source,
+    }))
+    const task = createUniAppXAssetTask(
+      'pages/index/index.uvue.ts',
+      asset,
+      '/project/dist',
+      {
+        cache: createCache(),
+        createHandlerOptions: vi.fn((filename: string, extra?: CreateJsHandlerOptions) => ({
+          filename,
+          ...extra,
+        })),
+        debug: vi.fn(),
+        getAssetSource: vi.fn((file: string) => {
+          if (file === 'App.uvue.ts') {
+            return 'const GenAppStyles = [_uM([["bg-_b_h102938_B", _pS(_uM([["backgroundColor", "rgba(16,41,56,1)"]]))], ["w-_b173px_B", _pS(_uM([["width", 173]]))]])]'
+          }
+          if (file === 'pages/index/index.uvue') {
+            return 'export default {"wtu-a":{"":{"background-color":"rgba(16, 41, 56, 1)"}}}'
+          }
+        }),
+        jsHandler,
+        onUpdate: vi.fn(),
+        runtimeSet,
+        applyLinkedResults: vi.fn(),
+      },
+    )
+
+    await task()
+
+    expect(asset.source).toContain('const GenPagesIndexIndexStyles = [_uM([["bg-_b_h102938_B", _pS(_uM([["backgroundColor", "rgba(16,41,56,1)"]]))], ["w-_b173px_B", _pS(_uM([["width", 173]]))]])]')
+    expect(asset.source).not.toContain('/*GenPagesIndexIndexStyles*/')
   })
 })

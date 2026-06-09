@@ -6,7 +6,11 @@ import { NodeTypes, parse as parseTemplate } from '@vue/compiler-dom'
 import MagicString from 'magic-string'
 import { generateCode, replaceWxml } from '@/wxml'
 import { createAttributeMatcher } from '@/wxml/custom-attributes'
-import { shouldEnableComponentLocalStyle, UniAppXComponentLocalStyleCollector } from './component-local-style'
+import {
+  shouldEnableComponentLocalStyle,
+  shouldEnablePageLocalStyle,
+  UniAppXComponentLocalStyleCollector,
+} from './component-local-style'
 
 interface SfcBlock {
   content: string
@@ -117,6 +121,17 @@ interface TransformUVueOptions {
   customAttributesEntities?: ICustomAttributesEntities
   disabledDefaultTemplateHandler?: boolean
   enableComponentLocalStyle?: boolean
+  enablePageLocalStyle?: boolean
+}
+
+function shouldEnableLocalStyle(id: string, options: TransformUVueOptions) {
+  if (options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)) {
+    return true
+  }
+  if (options.enablePageLocalStyle && shouldEnablePageLocalStyle(id)) {
+    return true
+  }
+  return false
 }
 
 function shouldHandleAttribute(
@@ -204,7 +219,7 @@ export function transformUVue(
   const matchCustomAttribute = createAttributeMatcher(customAttributesEntities)
   const ms = new MagicString(code)
   const descriptor = parseSfc(code)
-  const localStyleCollector = options.enableComponentLocalStyle && shouldEnableComponentLocalStyle(id)
+  const localStyleCollector = shouldEnableLocalStyle(id, options)
     ? new UniAppXComponentLocalStyleCollector(id, runtimeSet)
     : undefined
   if (descriptor.errors.length === 0) {

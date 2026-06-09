@@ -2,12 +2,14 @@ import type { ChildProcess } from 'node:child_process'
 import type { AppCase } from '../../e2e/hbuilderx-local/cases.ts'
 import type { CaseResult, RuntimeContext } from './types.ts'
 import { spawnSync } from 'node:child_process'
+import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
-import sharp from 'sharp'
+import { PNG } from 'pngjs'
 import {
   assertAndroidToolchain,
+  assertHarmonyToolchain,
   assertIosSimulatorToolchain,
   collectProcessOutput,
   fileExists,
@@ -16,16 +18,19 @@ import {
   pollIntervalMs,
   readUtf8,
   resolveHBuilderXCli,
+  resolveHdcCommand,
   runPnpm,
   spawnPnpm,
   wait,
 } from '../../e2e/hbuilderx-local/process.ts'
+import { finalizeHarmonyAppOutput } from './harmony-output.ts'
 import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
 
 const appMarkerRE = /\n[ \t]*<view class="[^"]+">hbuilderx-app-(?:dynamic|hmr)-[^<]+<\/view>/g
 const appReadyTimeoutMs = Number(process.env['DEMO_VISUAL_APP_READY_TIMEOUT_MS'] ?? 120_000)
 const appOutputTimeoutMs = Number(process.env['DEMO_VISUAL_APP_OUTPUT_TIMEOUT_MS'] ?? Math.min(hbuilderxAppTimeoutMs, 180_000))
 const androidScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_ANDROID_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
+const harmonyScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_HARMONY_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
 const iosScreenshotTimeoutMs = Number(process.env['DEMO_VISUAL_IOS_SCREENSHOT_TIMEOUT_MS'] ?? 30_000)
 
 function resolveAppDemoName(item: AppCase) {
@@ -42,7 +47,7 @@ function resolveAppOutputDirCandidates(item: AppCase) {
 
 function resolveAppIntermediateOutputTargets(item: AppCase, projectRoot: string) {
   const targets = new Set<string>()
-  if (item.platform === 'app-android' || item.platform === 'app-ios') {
+  if (item.platform === 'app-android' || item.platform === 'app-ios' || item.platform === 'app-harmony') {
     targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.uvue/${item.platform}`))
     targets.add(path.resolve(projectRoot, `unpackage/cache/.${item.platform}`))
   }
@@ -90,6 +95,9 @@ async function findReadyAppOutputRoot(item: AppCase, projectRoot: string, expect
     if (missing.length > 0) {
       continue
     }
+    if (item.platform === 'app-harmony') {
+      await finalizeHarmonyAppOutput(projectRoot, outputRoot)
+    }
     const transformed = await readExistingAppTransformedOutput(projectRoot, outputRoot, item)
     if (transformed && hasContent(transformed, expected)) {
       return outputRoot
@@ -111,6 +119,13 @@ async function waitForAppOutputRoot(
     ensureRunning()
     for (const outputDir of resolveAppOutputDirCandidates(item)) {
       const outputRoot = path.resolve(projectRoot, outputDir)
+      const missing = await findMissingAppFiles(item, outputRoot)
+      if (missing.length > 0) {
+        continue
+      }
+      if (item.platform === 'app-harmony') {
+        await finalizeHarmonyAppOutput(projectRoot, outputRoot)
+      }
       const transformed = await readExistingAppTransformedOutput(projectRoot, outputRoot, item)
       if (!transformed) {
         continue
@@ -236,6 +251,21 @@ function resolveAndroidScreenshotDeviceId(item: AppCase) {
     ?? (index >= 0 ? launchArgs[index + 1] : undefined)
 }
 
+function resolveHarmonyScreenshotDeviceId(item: AppCase) {
+  const launchArgs = item.launchArgs ?? []
+  const index = launchArgs.indexOf('--deviceId')
+  return process.env['DEMO_VISUAL_HARMONY_SCREENSHOT_DEVICE_ID']
+    ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID']
+    ?? process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID']
+    ?? (index >= 0 ? launchArgs[index + 1] : undefined)
+}
+
+function createHdcArgs(deviceId?: string) {
+  return [
+    ...(deviceId ? ['-t', deviceId] : []),
+  ]
+}
+
 async function captureIosScreenshot(screenshot: string, item: AppCase) {
   await fs.mkdir(path.dirname(screenshot), { recursive: true })
   const target = resolveIosScreenshotTarget(item)
@@ -250,23 +280,67 @@ async function captureIosScreenshot(screenshot: string, item: AppCase) {
   }
 }
 
+async function captureHarmonyScreenshot(screenshot: string, item: AppCase) {
+  await fs.mkdir(path.dirname(screenshot), { recursive: true })
+  const hdc = resolveHdcCommand()
+  const deviceId = resolveHarmonyScreenshotDeviceId(item)
+  const baseArgs = createHdcArgs(deviceId)
+  const remote = `/data/local/tmp/demo-visual-${process.pid}-${Date.now()}.jpeg`
+  const localJpeg = `${screenshot}.jpeg`
+  const snapshot = spawnSync(hdc, [...baseArgs, 'shell', 'snapshot_display', '-f', remote], {
+    encoding: 'utf8',
+    killSignal: 'SIGTERM',
+    timeout: harmonyScreenshotTimeoutMs,
+  })
+  if (snapshot.status !== 0) {
+    const timeoutMessage = snapshot.error?.message ? ` error=${snapshot.error.message}` : ''
+    throw new Error(`Harmony 截图失败：${snapshot.stderr || snapshot.stdout || `exit=${snapshot.status} signal=${snapshot.signal ?? 'none'}${timeoutMessage}`}`)
+  }
+  const recv = spawnSync(hdc, [...baseArgs, 'file', 'recv', remote, localJpeg], {
+    encoding: 'utf8',
+    killSignal: 'SIGTERM',
+    timeout: harmonyScreenshotTimeoutMs,
+  })
+  spawnSync(hdc, [...baseArgs, 'shell', 'rm', '-f', remote], {
+    encoding: 'utf8',
+    killSignal: 'SIGTERM',
+    timeout: harmonyScreenshotTimeoutMs,
+  })
+  if (recv.status !== 0) {
+    const timeoutMessage = recv.error?.message ? ` error=${recv.error.message}` : ''
+    throw new Error(`Harmony 截图拉取失败：${recv.stderr || recv.stdout || `exit=${recv.status} signal=${recv.signal ?? 'none'}${timeoutMessage}`}`)
+  }
+  const convert = spawnSync('sips', ['-s', 'format', 'png', localJpeg, '--out', screenshot], {
+    encoding: 'utf8',
+    killSignal: 'SIGTERM',
+    timeout: harmonyScreenshotTimeoutMs,
+  })
+  if (convert.status !== 0) {
+    const timeoutMessage = convert.error?.message ? ` error=${convert.error.message}` : ''
+    throw new Error(`Harmony 截图格式转换失败：${convert.stderr || convert.stdout || `exit=${convert.status} signal=${convert.signal ?? 'none'}${timeoutMessage}`}`)
+  }
+  await fs.rm(localJpeg, { force: true })
+}
+
 async function captureAppScreenshot(item: AppCase, screenshot: string, env: Record<string, string | undefined>) {
   if (item.platform === 'app-android') {
     await captureAndroidScreenshot(screenshot, env, resolveAndroidScreenshotDeviceId(item))
+    return
+  }
+  if (item.platform === 'app-harmony') {
+    await captureHarmonyScreenshot(screenshot, item)
     return
   }
   await captureIosScreenshot(screenshot, item)
 }
 
 async function analyzeAppScreenshot(screenshot: string) {
-  const { data, info } = await sharp(screenshot)
-    .ensureAlpha()
-    .raw()
-    .toBuffer({ resolveWithObject: true })
+  const image = PNG.sync.read(fsSync.readFileSync(screenshot))
+  const data = image.data
   let visiblePixels = 0
   let nonWhitePixels = 0
-  const totalPixels = info.width * info.height
-  for (let index = 0; index < data.length; index += info.channels) {
+  const totalPixels = image.width * image.height
+  for (let index = 0; index < data.length; index += 4) {
     const alpha = data[index + 3] ?? 255
     if (alpha < 8) {
       continue
@@ -280,12 +354,12 @@ async function analyzeAppScreenshot(screenshot: string) {
     }
   }
   return {
-    height: info.height,
+    height: image.height,
     nonWhitePixels,
     nonWhiteRatio: totalPixels === 0 ? 0 : nonWhitePixels / totalPixels,
     totalPixels,
     visiblePixels,
-    width: info.width,
+    width: image.width,
   }
 }
 
@@ -303,6 +377,12 @@ async function collectAppScreenshotEvidence(item: AppCase, screenshot: string, e
       uiTextPreview: uiHierarchy
         .replace(/\s+/g, ' ')
         .slice(0, 800),
+      visual,
+    }
+  }
+  if (item.platform === 'app-harmony') {
+    return {
+      ready: visual.nonWhiteRatio > 0.025,
       visual,
     }
   }
@@ -366,10 +446,11 @@ function startAppLaunch(
   toolEnv: Record<string, string | undefined>,
 ) {
   const launchArgs = [...(item.launchArgs ?? [])]
-  if (!launchArgs.includes('--pagePath')) {
+  if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectName, ...launchArgs], {
+  const launchProject = item.platform === 'app-harmony' ? projectRoot : projectName
+  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', launchProject, ...launchArgs], {
     HBUILDERX_CLI_PATH: hbuilderxCliPath,
     WEAPP_TW_HMR_TIMING: '1',
     ...toolEnv,
@@ -408,8 +489,11 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
     if (item.platform === 'app-android') {
       toolEnv = assertAndroidToolchain()
     }
-    else {
+    else if (item.platform === 'app-ios') {
       assertIosSimulatorToolchain()
+    }
+    else {
+      assertHarmonyToolchain()
     }
 
     const hbuilderxCliPath = await resolveHBuilderXCli()

@@ -12,7 +12,7 @@ export function createCrossPlatformComparisons(results: CaseResult[], context: R
   }
   for (const [name, entries] of byName) {
     const h5 = entries.find(item => item.platform === 'h5' && item.screenshot)
-    for (const platform of ['weapp', 'app-android', 'app-ios'] as const) {
+    for (const platform of ['weapp', 'app-android', 'app-ios', 'app-harmony'] as const) {
       const target = entries.find(item => item.platform === platform && item.screenshot)
       if (!h5?.screenshot || !target?.screenshot) {
         continue
@@ -102,7 +102,7 @@ function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
         ratio: compared.ratio,
       },
     }
-    if (item.status === 'passed' && compared.differentPixels === 0) {
+    if (item.status === 'passed' && item.platform !== 'app-harmony' && compared.differentPixels === 0) {
       item.status = 'failed'
       item.error = 'HMR 前后截图没有可见像素差异'
     }
@@ -117,6 +117,7 @@ function countResults(results: CaseResult[]) {
   })
   const summary: Record<CaseResult['platform'], ReturnType<typeof createInitial>> = {
     'app-android': createInitial(),
+    'app-harmony': createInitial(),
     'app-ios': createInitial(),
     'h5': createInitial(),
     'weapp': createInitial(),

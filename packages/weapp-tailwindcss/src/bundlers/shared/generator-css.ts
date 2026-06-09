@@ -813,9 +813,11 @@ export async function generateCssByGenerator(
     importFallback: generatorOptions.importFallback,
   })
   const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(generatorRawSource)
+  const hasApplyDirectives = hasTailwindApplyDirective(generatorRawSource)
   const shouldGenerateCurrentCss = hasGeneratedCss
     || hasGeneratedMarkers
     || hasSourceDirectives
+    || (majorVersion === 4 && hasApplyDirectives)
     || cssHandlerOptions.isMainChunk
 
   if (

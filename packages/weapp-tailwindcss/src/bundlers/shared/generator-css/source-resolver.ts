@@ -7,6 +7,8 @@ import type { UndefinedOptional } from '@/utils/object'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import postcss from 'postcss'
+import { splitCandidateTokens } from 'tailwindcss-patch'
 import { resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
 import {
   resolveTailwindV3Source,
@@ -770,7 +772,29 @@ function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { pack
   if (!hasTailwindApplyDirective(css) || hasTailwindRootDirectives(css)) {
     return css
   }
-  return `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);\n${css}`
+  const utilities = collectTailwindApplyUtilities(css)
+  return [
+    `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);`,
+    utilities.length > 0 ? `@source inline(${JSON.stringify(utilities.join(' '))});` : undefined,
+    css,
+  ].filter(Boolean).join('\n')
+}
+
+function collectTailwindApplyUtilities(css: string) {
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return []
+  }
+  const utilities = new Set<string>()
+  root.walkAtRules('apply', (rule) => {
+    for (const utility of splitCandidateTokens(rule.params)) {
+      utilities.add(utility)
+    }
+  })
+  return [...utilities].sort()
 }
 
 export async function resolveGeneratorSource(

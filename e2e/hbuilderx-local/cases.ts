@@ -13,7 +13,7 @@ export interface MiniProgramCase {
   cssNotContains?: Array<string | RegExp>
 }
 
-export type AppPlatform = 'app-android' | 'app-ios'
+export type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
 export interface AppCase {
   name: string
@@ -112,6 +112,20 @@ export const miniProgramCases: MiniProgramCase[] = [
 
 const defaultAndroidLaunchArgs = ['--deviceId', process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID'] ?? 'emulator-5554']
 const defaultIosLaunchArgs = ['--iosTarget', process.env['E2E_HBUILDERX_IOS_TARGET'] ?? 'simulator']
+const defaultHarmonyLaunchArgs = ['--deviceId', process.env['E2E_HBUILDERX_HARMONY_DEVICE_ID'] ?? process.env['DEMO_VISUAL_HARMONY_DEVICE_ID'] ?? '127.0.0.1:5559']
+const harmonyInitialTransformedContains = [
+  '"flex":{"":{"display":"flex"}}',
+  '"text-white":{"":{"--tw-text-opacity":"1"',
+  '"backgroundColor":"rgba(16,41,56,1)"',
+  '"color":"rgba(247,251,255,1)"',
+  '"width":173',
+]
+const harmonyHmrTransformedContains = [
+  '"backgroundColor":"rgba(59,7,100,1)"',
+  '"color":"rgba(254,240,138,1)"',
+  '"height":41',
+  '"marginTop":19',
+]
 
 function createUniAppAppCases(options: {
   name: string
@@ -291,6 +305,35 @@ export const uniAppXAppCases: AppCase[] = [
     hmrTransformedContains: ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B', 'hbuilderx-app-hmr-v3-ios'],
   },
   {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v3 harmony',
+    platform: 'app-harmony',
+    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
+    outputDir: 'unpackage/dist/dev/.app-harmony',
+    outputDirCandidates: [
+      'unpackage/dist/dev/.app-harmony',
+      'unpackage/dist/dev/app-harmony',
+      'unpackage/cache/.app-harmony/sourcemap',
+    ],
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<BindClass />',
+    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
+    markerText: 'hbuilderx-app-dynamic-v3-harmony',
+    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
+    hmrMarkerText: 'hbuilderx-app-hmr-v3-harmony',
+    launchArgs: defaultHarmonyLaunchArgs,
+    requiredFiles: [
+      'manifest.json',
+      'app-service.js',
+      'assets/pages/index/index.js',
+    ],
+    transformedFiles: [
+      'unpackage/dist/dev/.app-harmony/app-service.js',
+      'unpackage/dist/dev/.app-harmony/assets/pages/index/index.js',
+    ],
+    transformedContains: [...harmonyInitialTransformedContains, 'hbuilderx-app-dynamic-v3-harmony'],
+    hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v3-harmony'],
+  },
+  {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 android',
     platform: 'app-android',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
@@ -334,6 +377,35 @@ export const uniAppXAppCases: AppCase[] = [
     ],
     transformedContains: ['bg-_b_h102938_B', 'text-_b_hf7fbff_B', 'w-_b173px_B', 'hbuilderx-app-dynamic-v4-ios'],
     hmrTransformedContains: ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B', 'hbuilderx-app-hmr-v4-ios'],
+  },
+  {
+    name: 'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
+    platform: 'app-harmony',
+    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
+    outputDir: 'unpackage/dist/dev/.app-harmony',
+    outputDirCandidates: [
+      'unpackage/dist/dev/.app-harmony',
+      'unpackage/dist/dev/app-harmony',
+      'unpackage/cache/.app-harmony/sourcemap',
+    ],
+    sourceFile: 'pages/index/index.uvue',
+    markerAnchor: '<BindClass />',
+    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
+    markerText: 'hbuilderx-app-dynamic-v4-harmony',
+    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
+    hmrMarkerText: 'hbuilderx-app-hmr-v4-harmony',
+    launchArgs: defaultHarmonyLaunchArgs,
+    requiredFiles: [
+      'manifest.json',
+      'app-service.js',
+      'assets/pages/index/index.js',
+    ],
+    transformedFiles: [
+      'unpackage/dist/dev/.app-harmony/app-service.js',
+      'unpackage/dist/dev/.app-harmony/assets/pages/index/index.js',
+    ],
+    transformedContains: [...harmonyInitialTransformedContains, 'hbuilderx-app-dynamic-v4-harmony'],
+    hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v4-harmony'],
   },
 ]
 
