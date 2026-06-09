@@ -39,7 +39,7 @@ pnpm build
 
 ## Showcase 数据同步
 
-`docs/showcase` 页面由 `scripts/update-showcase.ts` 生成，会从 [issue #270](https://github.com/sonofmagic/weapp-tailwindcss/issues/270) 采集最新的文本与截图/二维码。脚本会把 **所有** 附件下载到 `website/static/img/showcase/<序号.小程序名称>/` 下：页面默认把第一张图片（按评论中的顺序，约定为二维码/小程序码）直接展示，其余图片全部收起，需要点击「展开查看其余 N 张图片」后才会看到，可通过配置文件手动筛选或隐藏。只有填写了「小程序名称」字段的评论才会被收录，其余会在脚本执行时输出警告。
+`docs/showcase` 页面由 `scripts/update-showcase.ts` 生成，会从 [issue #270](https://github.com/sonofmagic/weapp-tailwindcss/issues/270) 采集最新的文本与截图/二维码。脚本会把 **所有** 附件下载到 `website/static/img/showcase/<序号.小程序名称>/` 下：页面优先把识别到的小程序码/二维码作为主图展示，其余图片全部收起到作品截图里，可通过配置文件手动筛选或隐藏。只有填写了「小程序名称」字段的评论才会被收录，其余会在脚本执行时输出警告。
 
 ```bash
 # 在仓库根目录执行
@@ -47,6 +47,8 @@ pnpm showcase:update
 ```
 
 > 建议在运行前导出 `GITHUB_TOKEN`（或 `GH_TOKEN`）以提升 GitHub API 额度。脚本会清空 `website/static/img/showcase` 后重新下载所有图片，因此请勿在该目录放置其他静态资源。你也可以在 CI/cron 中周期性执行上面的命令，让官网自动获得最新的展示内容。
+
+若本机安装了 Python 版 OpenCV contrib（例如 `opencv-contrib-python-headless`），同步脚本会调用 `scripts/scan-wechat-qrcode.py`，优先用 `cv2.wechat_qrcode_WeChatQRCode` 识别普通二维码，并用 OpenCV 图形特征检测微信小程序码。未安装 OpenCV 时脚本会自动降级为图片尺寸兜底，不会阻塞页面生成。
 
 可选环境变量：
 

@@ -1314,15 +1314,33 @@ html.docs-doc-id-showcase\/index .showcase-card__header h3::before {
 }
 
 html.docs-doc-id-showcase\/index .showcase-card__header h3 a {
-  color: inherit;
-  text-decoration: none;
+  color: var(--showcase-card-accent);
+  text-decoration-color: rgb(2 132 199 / 42%);
 }
 
 html.docs-doc-id-showcase\/index .showcase-card__anchor {
   opacity: 0;
   color: var(--showcase-card-accent) !important;
   font-size: 0.86em;
+  text-decoration: none;
+  background: none;
   transition: opacity 0.16s ease;
+}
+
+html.docs-doc-id-showcase\/index .showcase-card__meta a,
+html.docs-doc-id-showcase\/index .showcase-card__body a {
+  color: var(--showcase-card-accent);
+  font-weight: 700;
+  text-decoration-color: rgb(2 132 199 / 50%);
+  text-decoration-thickness: 0.14em;
+  text-underline-offset: 0.22em;
+}
+
+html.docs-doc-id-showcase\/index .showcase-card__meta a:hover,
+html.docs-doc-id-showcase\/index .showcase-card__body a:hover,
+html.docs-doc-id-showcase\/index .showcase-card__header h3 a:hover {
+  color: var(--showcase-card-accent-2);
+  text-decoration-color: rgb(13 148 136 / 78%);
 }
 
 html.docs-doc-id-showcase\/index .showcase-card:hover .showcase-card__anchor,

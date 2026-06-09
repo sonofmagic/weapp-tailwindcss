@@ -1,9 +1,11 @@
 import type { Dispatcher } from 'undici'
 import { Buffer } from 'node:buffer'
+import { execFile } from 'node:child_process'
 import { setDefaultResultOrder } from 'node:dns'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
+import { promisify } from 'node:util'
 import fs from 'fs-extra'
 import { Agent, fetch, ProxyAgent, setGlobalDispatcher } from 'undici'
 
@@ -88,6 +90,8 @@ const RE_EDGE_HYPHENS = /^-|-$/g
 /** resolveImageExtension：文件扩展名 */
 const RE_FILE_EXTENSION = /\.([a-z0-9]+)$/i
 
+const execFileAsync = promisify(execFile)
+
 interface GitHubIssue {
   title: string
   html_url: string
@@ -117,6 +121,10 @@ interface ShowcaseImage {
   src: string
   originUrl: string
   downloaded: boolean
+  localPath?: string
+  width?: number | null
+  height?: number | null
+  detectedMiniProgramCode?: boolean
 }
 
 interface DisplayValue {
@@ -159,6 +167,7 @@ const repoRoot = path.resolve(__dirname, '..')
 const showcaseDocsPath = path.resolve(repoRoot, 'website/docs/showcase/index.mdx')
 const showcaseImageRoot = path.resolve(repoRoot, 'website/static/img/showcase')
 const showcaseConfigPath = path.resolve(repoRoot, 'website/docs/showcase/config.json')
+const wechatQrScannerPath = path.resolve(repoRoot, 'scripts/scan-wechat-qrcode.py')
 
 const env = process.env as NodeJS.ProcessEnv & {
   SHOWCASE_REPO?: string
@@ -317,6 +326,64 @@ function matchImageSelector(image: ShowcaseImage, selector: string): boolean {
   return false
 }
 
+function readPngDimensions(buffer: Buffer): { width: number, height: number } | null {
+  if (
+    buffer.length < 24
+    || buffer[0] !== 0x89
+    || buffer[1] !== 0x50
+    || buffer[2] !== 0x4E
+    || buffer[3] !== 0x47
+  ) {
+    return null
+  }
+
+  return {
+    width: buffer.readUInt32BE(16),
+    height: buffer.readUInt32BE(20),
+  }
+}
+
+function readJpegDimensions(buffer: Buffer): { width: number, height: number } | null {
+  if (buffer.length < 4 || buffer[0] !== 0xFF || buffer[1] !== 0xD8) {
+    return null
+  }
+
+  let offset = 2
+  while (offset + 9 < buffer.length) {
+    if (buffer[offset] !== 0xFF) {
+      offset += 1
+      continue
+    }
+
+    const marker = buffer[offset + 1]
+    if (!marker || marker === 0xD9 || marker === 0xDA) {
+      break
+    }
+
+    const segmentLength = buffer.readUInt16BE(offset + 2)
+    const isSofMarker = marker >= 0xC0
+      && marker <= 0xCF
+      && marker !== 0xC4
+      && marker !== 0xC8
+      && marker !== 0xCC
+
+    if (isSofMarker) {
+      return {
+        height: buffer.readUInt16BE(offset + 5),
+        width: buffer.readUInt16BE(offset + 7),
+      }
+    }
+
+    offset += 2 + segmentLength
+  }
+
+  return null
+}
+
+function getImageDimensions(buffer: Buffer): { width: number, height: number } | null {
+  return readPngDimensions(buffer) ?? readJpegDimensions(buffer)
+}
+
 async function fetchJson<T>(url: string): Promise<T> {
   const response = await fetch(url, { headers: apiHeaders })
   if (!response.ok) {
@@ -442,6 +509,95 @@ async function fetchWithTimeout(
   finally {
     clearTimeout(timeout)
   }
+}
+
+async function detectMiniProgramCodeFromFile(filePath: string): Promise<boolean> {
+  try {
+    const result = await execFileAsync('python3', [
+      wechatQrScannerPath,
+      filePath,
+      '--json',
+      '--download-models',
+    ], {
+      maxBuffer: 1024 * 1024,
+    })
+    const stdout = result.stdout.trim()
+    if (!stdout) {
+      return false
+    }
+
+    const payload = JSON.parse(stdout) as { detected?: boolean, reason?: string }
+    return Boolean(payload.detected)
+  }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.warn(`⚠️  OpenCV WeChatQRCode 扫描失败，将回退到尺寸判断：${message}`)
+    return false
+  }
+}
+
+function isSquareLike(width: number | null | undefined, height: number | null | undefined): boolean {
+  if (!width || !height) {
+    return false
+  }
+
+  const ratio = width / height
+  return ratio >= 0.88 && ratio <= 1.12
+}
+
+function isPortraitLike(width: number | null | undefined, height: number | null | undefined): boolean {
+  if (!width || !height) {
+    return false
+  }
+
+  return width / height <= 0.82
+}
+
+async function rankShowcaseImagesByMiniProgramCode(
+  images: ShowcaseImage[],
+  entryTag: string,
+): Promise<ShowcaseImage[]> {
+  const detectedImages: ShowcaseImage[] = []
+
+  for (const image of images) {
+    if (!image.localPath) {
+      continue
+    }
+
+    image.detectedMiniProgramCode = await detectMiniProgramCodeFromFile(image.localPath)
+    if (image.detectedMiniProgramCode) {
+      detectedImages.push(image)
+    }
+  }
+
+  if (detectedImages.length) {
+    const detectedSet = new Set(detectedImages)
+    const ranked = [
+      ...images.filter(image => detectedSet.has(image)),
+      ...images.filter(image => !detectedSet.has(image)),
+    ]
+    if (ranked[0] !== images[0]) {
+      console.log(`🔎 ${entryTag} 使用 OpenCV WeChatQRCode 识别小程序码：${path.basename(ranked[0].src)}。`)
+    }
+    return ranked
+  }
+
+  const squareCandidates = images.filter(image => isSquareLike(image.width, image.height))
+  const portraitCandidates = images.filter(image => isPortraitLike(image.width, image.height))
+
+  if (squareCandidates.length === 1 && portraitCandidates.length >= 1) {
+    const squareCandidate = squareCandidates[0]
+    const ranked = [
+      squareCandidate,
+      ...images.filter(image => image !== squareCandidate),
+    ]
+    if (ranked[0] !== images[0]) {
+      console.log(`🔎 ${entryTag} 未扫描到二维码内容，按唯一方图兜底选择：${path.basename(ranked[0].src)}。`)
+    }
+    return ranked
+  }
+
+  return images
 }
 
 function normalizeLabel(label: string): 'name' | 'link' | 'github' | 'description' | null {
@@ -703,6 +859,7 @@ async function downloadImage(
   }
 
   const buffer = Buffer.from(await response.arrayBuffer())
+  const dimensions = getImageDimensions(buffer)
   const ext = resolveImageExtension(response.headers.get('content-type'), image.url)
   const safeAlt = slugifySegment(image.alt ?? `image-${index + 1}`, `image-${index + 1}`)
   const fileName = `${String(index + 1).padStart(2, '0')}-${safeAlt}.${ext}`
@@ -714,6 +871,9 @@ async function downloadImage(
     src: `/img/showcase/${entryDirName}/${fileName}`,
     originUrl: image.url,
     downloaded: true,
+    localPath: absolutePath,
+    width: dimensions?.width ?? null,
+    height: dimensions?.height ?? null,
   }
 }
 
@@ -906,6 +1066,8 @@ async function main() {
           src: fallback.url,
           originUrl: fallback.url,
           downloaded: false,
+          width: null,
+          height: null,
         })
       })
     }
@@ -949,6 +1111,10 @@ async function main() {
     if (!selectedImages.length) {
       console.warn(`⚠️  ${entryTag} 的图片选择为空，将展示全部图片。`)
       selectedImages = allImages
+    }
+
+    if (!manualSelectors?.length) {
+      selectedImages = await rankShowcaseImagesByMiniProgramCode(selectedImages, entryTag)
     }
 
     generatedEntries.push({

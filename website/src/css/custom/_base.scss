@@ -141,21 +141,21 @@ a:hover {
   margin: 0.9rem 0;
 }
 
-.theme-doc-markdown :where(p, li, blockquote, td, dd) a:not([class]),
-.theme-doc-markdown :where(p, li, blockquote, td, dd) a[class=''],
-.markdown :where(p, li, blockquote, td, dd) a:not([class]),
-.markdown :where(p, li, blockquote, td, dd) a[class=''] {
+.theme-doc-markdown a:not([class]),
+.theme-doc-markdown a[class=''],
+.markdown a:not([class]),
+.markdown a[class=''] {
   border-radius: 0.2rem;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   color: var(--doc-content-link-color);
-  font-weight: 620;
+  font-weight: 650;
   text-decoration-line: underline;
   text-decoration-color: var(--doc-content-link-underline);
   text-decoration-thickness: 0.12em;
   text-underline-offset: 0.2em;
   background:
-    linear-gradient(var(--doc-content-link-bg), var(--doc-content-link-bg)) 0 100% / 100% 0.38em no-repeat,
+    linear-gradient(var(--doc-content-link-bg), var(--doc-content-link-bg)) 0 100% / 100% 0.46em no-repeat,
     linear-gradient(transparent, transparent);
   transition:
     background-size 0.18s ease,
@@ -164,19 +164,19 @@ a:hover {
     text-decoration-color 0.18s ease;
 }
 
-.theme-doc-markdown :where(p, li, blockquote, td, dd) a:not([class]):hover,
-.theme-doc-markdown :where(p, li, blockquote, td, dd) a[class='']:hover,
-.markdown :where(p, li, blockquote, td, dd) a:not([class]):hover,
-.markdown :where(p, li, blockquote, td, dd) a[class='']:hover {
+.theme-doc-markdown a:not([class]):hover,
+.theme-doc-markdown a[class='']:hover,
+.markdown a:not([class]):hover,
+.markdown a[class='']:hover {
   color: var(--doc-content-link-hover);
   text-decoration-color: var(--doc-content-link-underline-hover);
   background-size: 100% 100%;
 }
 
-.theme-doc-markdown :where(p, li, blockquote, td, dd) a:not([class]):focus-visible,
-.theme-doc-markdown :where(p, li, blockquote, td, dd) a[class='']:focus-visible,
-.markdown :where(p, li, blockquote, td, dd) a:not([class]):focus-visible,
-.markdown :where(p, li, blockquote, td, dd) a[class='']:focus-visible {
+.theme-doc-markdown a:not([class]):focus-visible,
+.theme-doc-markdown a[class='']:focus-visible,
+.markdown a:not([class]):focus-visible,
+.markdown a[class='']:focus-visible {
   outline: 2px solid rgb(14 165 233 / 64%);
   outline-offset: 0.15rem;
   background-color: var(--doc-content-link-bg-hover);
