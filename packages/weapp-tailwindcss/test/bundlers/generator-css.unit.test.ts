@@ -455,8 +455,14 @@ describe('bundlers/shared generator css', () => {
         ...(scanSources
           ? [
               '.sr-only{position:absolute;width:1px;height:1px}',
+              '.min-h-10{min-height:calc(var(--spacing)*10)}',
               '.min-h-12{min-height:calc(var(--spacing)*12)}',
               '.rounded-full{border-radius:9999px}',
+              '.border-slate-200{border-color:var(--color-slate-200)}',
+              '.bg-white{background-color:var(--color-white)}',
+              '.px-3{padding-inline:calc(var(--spacing)*3)}',
+              '.py-2{padding-block:calc(var(--spacing)*2)}',
+              '.text-slate-700{color:var(--color-slate-700)}',
             ]
           : []),
       ].join('\n')
@@ -466,7 +472,7 @@ describe('bundlers/shared generator css', () => {
         target,
         classSet: new Set([
           ...candidates,
-          ...(scanSources ? ['sr-only', 'min-h-12', 'rounded-full'] : []),
+          ...(scanSources ? ['sr-only', 'min-h-10', 'min-h-12', 'rounded-full', 'border-slate-200', 'bg-white', 'px-3', 'py-2', 'text-slate-700'] : []),
         ]),
         dependencies: [],
         sources: [],
@@ -543,8 +549,14 @@ describe('bundlers/shared generator css', () => {
         target: 'web',
       }))
       expect(result?.css).toContain('.sr-only{position:absolute')
+      expect(result?.css).toContain('.min-h-10')
       expect(result?.css).toContain('.min-h-12')
       expect(result?.css).toContain('.rounded-full')
+      expect(result?.css).toContain('.border-slate-200')
+      expect(result?.css).toContain('.bg-white')
+      expect(result?.css).toContain('.px-3')
+      expect(result?.css).toContain('.py-2')
+      expect(result?.css).toContain('.text-slate-700')
     }
     finally {
       await rm(root, { recursive: true, force: true })

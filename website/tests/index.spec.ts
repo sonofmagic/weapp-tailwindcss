@@ -38,11 +38,13 @@ test.describe('homepage hero layout', () => {
     const platformIcons = page.locator('.home-hero__platform-icon')
     const primaryCta = page.locator('.home-hero__actions .home-cta')
     const secondaryActions = page.locator('.home-hero__actions .ui-homepage-ai-entry a, .home-hero__actions .ui-homepage-community-entry a')
+    const githubBadge = page.locator('.ui-homepage-github-badge')
 
     await expect(hero).toBeVisible()
     await expect(platformIcons).toHaveCount(5)
     await expect(primaryCta).toBeVisible()
     await expect(secondaryActions).toHaveCount(2)
+    await expect(githubBadge).toBeVisible()
 
     for (let index = 0; index < await platformIcons.count(); index += 1) {
       const box = await platformIcons.nth(index).boundingBox()
@@ -68,6 +70,46 @@ test.describe('homepage hero layout', () => {
     const primaryBox = await primaryCta.boundingBox()
     expect(primaryBox?.height).toBeGreaterThanOrEqual(44)
     expect(primaryBox?.width).toBeGreaterThan(140)
+
+    const githubBadgeStyle = await githubBadge.evaluate((element) => {
+      const style = getComputedStyle(element)
+      const rect = element.getBoundingClientRect()
+      const icon = element.querySelector('.icon-\\[mdi--github\\]')
+      const iconStyle = icon ? getComputedStyle(icon) : undefined
+      const iconRect = icon?.getBoundingClientRect()
+      return {
+        alignItems: style.alignItems,
+        backgroundColor: style.backgroundColor,
+        borderRadius: style.borderRadius,
+        borderStyle: style.borderStyle,
+        borderWidth: style.borderWidth,
+        display: style.display,
+        gap: style.gap,
+        height: rect.height,
+        iconHeight: iconRect?.height ?? 0,
+        iconMaskImage: iconStyle?.maskImage ?? '',
+        iconWidth: iconRect?.width ?? 0,
+        minHeight: style.minHeight,
+        paddingBlock: style.paddingBlock,
+        paddingInline: style.paddingInline,
+        width: rect.width,
+      }
+    })
+    expect(githubBadgeStyle.display).toBe('flex')
+    expect(githubBadgeStyle.alignItems).toBe('center')
+    expect(githubBadgeStyle.height).toBeGreaterThanOrEqual(40)
+    expect(githubBadgeStyle.width).toBeGreaterThan(120)
+    expect(githubBadgeStyle.minHeight).toBe('40px')
+    expect(githubBadgeStyle.gap).toBe('8px')
+    expect(githubBadgeStyle.borderRadius).toBe('9999px')
+    expect(githubBadgeStyle.borderWidth).toBe('1px')
+    expect(githubBadgeStyle.borderStyle).toBe('solid')
+    expect(githubBadgeStyle.backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
+    expect(githubBadgeStyle.paddingInline).toBe('12px')
+    expect(githubBadgeStyle.paddingBlock).toBe('8px')
+    expect(githubBadgeStyle.iconWidth).toBeGreaterThan(12)
+    expect(githubBadgeStyle.iconHeight).toBeGreaterThan(12)
+    expect(githubBadgeStyle.iconMaskImage).toContain('data:image/svg+xml')
 
     const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth)
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth)
