@@ -2341,6 +2341,75 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('merges covered preflight declarations when replaying vite-processed css into app.wxss', async () => {
+    const generateMock = vi.fn(async () => ({
+      css: '',
+      rawCss: '',
+      target: 'weapp',
+      classSet: new Set<string>(),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const preflightSelector = 'view,text,::after,::before'
+    const baseCss = `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-ease:initial}`
+    const processedCss = [
+      `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-content:""}`,
+      '.bg-normal-subpackage-marker{background-color:#2563eb}',
+    ].join('\n')
+    const bundle = {
+      'main.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'src/main.css'))}\n${processedCss}`),
+        fileName: 'main.wxss',
+      },
+      'app.wxss': {
+        ...createRollupAsset(baseCss),
+        fileName: 'app.wxss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+
+    expect((appCss.match(/view,text,::after,::before/g) ?? [])).toHaveLength(1)
+    expect(appCss).toContain('--tw-content:""')
+    expect(appCss).toContain('.bg-normal-subpackage-marker')
+  }, TEST_TIMEOUT_MS)
+
   it('regenerates vite-processed uni-app-x @apply style assets from remembered source', async () => {
     const generatedByRawSource: string[] = []
     const generateMock = vi.fn(async (_options: { candidates: Set<string> }, source: { css: string }) => {

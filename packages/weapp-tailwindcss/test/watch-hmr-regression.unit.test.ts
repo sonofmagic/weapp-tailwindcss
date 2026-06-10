@@ -1202,7 +1202,7 @@ describe('watch-hmr regression cases', () => {
       name: 'uni-app-vite-tailwindcss-v3',
     } as WatchCase))
 
-    expect(styleMutation?.sourceFile).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss')
+    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'))
     expect(mutated).toContain('@layer components {\n  .btn { @apply text-sm; }\n\n  .tw-watch-style-uni-app-vite-tailwindcss-v3-')
     expect(mutated?.trimEnd()).toMatch(/\}\s*$/)
   })
