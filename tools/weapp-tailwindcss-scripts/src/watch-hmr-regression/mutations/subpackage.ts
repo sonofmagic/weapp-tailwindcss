@@ -11,10 +11,11 @@ import process from 'node:process'
 import { sleep } from '../session'
 import { writeFilePreserveEol } from '../text'
 import { runClassMutation } from './class'
+import { runMainStyleHotUpdate } from './main-style'
 import { waitForOutputsReady } from './shared'
 import { runStyleMutation } from './style'
 
-function createSubPackageWatchCase(watchCase: WatchCase, mutation: SubPackageMutationConfig): WatchCase {
+export function createSubPackageWatchCase(watchCase: WatchCase, mutation: SubPackageMutationConfig): WatchCase {
   return {
     ...watchCase,
     label: `${watchCase.label}/${mutation.root}${mutation.independent ? ':independent' : ''}`,
@@ -114,6 +115,14 @@ export async function runSubPackageMutation(
     ...mutation.outputStyleCandidates,
     ...mutation.globalStyleCandidates,
   ])]
+  const mainStyleHotUpdate = await runMainStyleHotUpdate(
+    subWatchCase,
+    options,
+    session,
+    mutation.templateMutation,
+    templateSourceOriginal,
+    mutation.globalStyleCandidates,
+  )
 
   const template = await runClassMutation(
     subWatchCase,
@@ -150,6 +159,7 @@ export async function runSubPackageMutation(
     outputWxml: mutation.outputWxml,
     outputJs: mutation.outputJs,
     globalStyleOutputs,
+    mainStyleHotUpdate,
     template,
     style,
   }

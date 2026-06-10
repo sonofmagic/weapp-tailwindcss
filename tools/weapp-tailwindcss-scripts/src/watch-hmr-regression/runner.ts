@@ -13,6 +13,7 @@ import type {
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import {
+  createSubPackageWatchCase,
   runClassMutation,
   runMainStyleHotUpdate,
   runStyleMutation,
@@ -342,7 +343,9 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
 export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
   const caseStartedAt = Date.now()
   const sourcePath = watchCase.templateMutation.sourceFile
+  const sourceOriginals = new Map<string, string>()
   const sourceOriginal = await fs.readFile(sourcePath, 'utf8')
+  sourceOriginals.set(sourcePath, sourceOriginal)
 
   const sessionStartedAt = Date.now()
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
@@ -362,6 +365,30 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       watchCase.globalStyleCandidates,
     )
 
+    const subPackageMainStyleHotUpdates = []
+    for (const mutation of watchCase.subPackageMutations ?? []) {
+      const subWatchCase = createSubPackageWatchCase(watchCase, mutation)
+      const subSourcePath = mutation.templateMutation.sourceFile
+      const subSourceOriginal = sourceOriginals.get(subSourcePath)
+        ?? await fs.readFile(subSourcePath, 'utf8')
+      sourceOriginals.set(subSourcePath, subSourceOriginal)
+      subPackageMainStyleHotUpdates.push({
+        root: mutation.root,
+        independent: mutation.independent,
+        outputWxml: mutation.outputWxml,
+        outputJs: mutation.outputJs,
+        globalStyleOutputs: mutation.globalStyleCandidates,
+        mainStyleHotUpdate: await runMainStyleHotUpdate(
+          subWatchCase,
+          options,
+          session,
+          mutation.templateMutation,
+          subSourceOriginal,
+          mutation.globalStyleCandidates,
+        ),
+      })
+    }
+
     const classTokens = [mainStyleHotUpdate.toClassToken]
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
@@ -378,6 +405,7 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       globalStyleOutputs: watchCase.globalStyleCandidates,
       mutationMetrics: [],
       mainStyleHotUpdate,
+      subPackageMainStyleHotUpdates,
       subPackageMutationMetrics: [],
       summaryByMutationKind: summarizeMutationMetricsByKind([]),
       initialReadyMs,
@@ -405,10 +433,12 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
     throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
   }
   finally {
-    try {
-      await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
-    }
-    catch {
+    for (const [restorePath, original] of sourceOriginals.entries()) {
+      try {
+        await writeFilePreserveEol(restorePath, original, original)
+      }
+      catch {
+      }
     }
     await session.stop()
   }
@@ -591,7 +621,30 @@ function collectPluginProcessBudgetSamples(metrics: WatchCaseMetrics): PluginPro
     )
   }
 
+  for (const subPackage of metrics.subPackageMainStyleHotUpdates ?? []) {
+    samples.push(
+      {
+        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:hot-update`,
+        pluginProcessMs: subPackage.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:rollback`,
+        pluginProcessMs: subPackage.mainStyleHotUpdate.rollbackPluginProcessMs,
+      },
+    )
+  }
+
   for (const subPackage of metrics.subPackageMutationMetrics) {
+    samples.push(
+      {
+        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:hot-update`,
+        pluginProcessMs: subPackage.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:rollback`,
+        pluginProcessMs: subPackage.mainStyleHotUpdate.rollbackPluginProcessMs,
+      },
+    )
     samples.push(
       ...collectClassMutationPluginProcessBudgetSamples(subPackage.template).map(sample => ({
         ...sample,
@@ -655,6 +708,13 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
     })
   }
 
+  for (const subPackage of metrics.subPackageMainStyleHotUpdates ?? []) {
+    samples.push({
+      label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+      hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+    })
+  }
+
   for (const metric of metrics.webHmr?.sourceClassReplacementSequence ?? []) {
     samples.push({
       label: `web-source-replacement:${metric.label}`,
@@ -663,6 +723,10 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
   }
 
   for (const subPackage of metrics.subPackageMutationMetrics) {
+    samples.push({
+      label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+      hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+    })
     samples.push(
       ...collectClassMutationBudgetSamples(subPackage.template).map(sample => ({
         ...sample,

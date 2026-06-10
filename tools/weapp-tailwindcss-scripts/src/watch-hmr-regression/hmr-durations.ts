@@ -153,7 +153,24 @@ export function collectCaseDurationTimings(item: WatchCaseMetrics) {
     }
   }
 
+  for (const subPackage of item.subPackageMainStyleHotUpdates ?? []) {
+    pushTiming(timings, {
+      surface: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+      sourceFile: subPackage.mainStyleHotUpdate.sourceFile,
+      hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      rollbackEffectiveMs: subPackage.mainStyleHotUpdate.rollbackEffectiveMs,
+      hotUpdatePluginProcessMs: subPackage.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+    })
+  }
+
   for (const subPackage of item.subPackageMutationMetrics) {
+    pushTiming(timings, {
+      surface: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+      sourceFile: subPackage.mainStyleHotUpdate.sourceFile,
+      hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      rollbackEffectiveMs: subPackage.mainStyleHotUpdate.rollbackEffectiveMs,
+      hotUpdatePluginProcessMs: subPackage.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+    })
     pushTiming(timings, {
       surface: `subpackage:${subPackage.root}:template`,
       sourceFile: subPackage.template.sourceFile,

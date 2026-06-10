@@ -14,6 +14,14 @@ function toNumberEnv(name: string, fallback: number) {
   return Number.isFinite(numeric) ? numeric : fallback
 }
 
+function toBoolEnv(name: string, fallback: boolean) {
+  const value = process.env[name]
+  if (value == null) {
+    return fallback
+  }
+  return value === '1' || value === 'true'
+}
+
 function formatTimestamp(date = new Date()) {
   return date.toISOString().replaceAll(':', '-').replaceAll('.', '-')
 }
@@ -66,6 +74,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
+  const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const reportDir = await ensureReportDir(root)
   const reportFile = path.join(reportDir, `${formatTimestamp()}-${caseName}.json`)
   const elapsed = () => formatDuration(Date.now() - progress.startedAt)
@@ -93,6 +102,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
       reportFile,
       '--skip-build',
       '--quiet-sass',
+      ...(mainStyleOnly ? ['--main-style-only'] : []),
     ],
     {
       cwd: root,

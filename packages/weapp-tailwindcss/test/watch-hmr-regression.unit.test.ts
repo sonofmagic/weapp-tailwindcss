@@ -97,6 +97,7 @@ import { resolveChromiumLaunchOptions } from '../../../tools/weapp-tailwindcss-s
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
+  MainStyleHotUpdateMetrics,
   MutationRoundMetrics,
   WatchCase,
   WatchCaseMetrics,
@@ -114,6 +115,32 @@ const pluginProcessSample = {
   bundler: 'vite',
   phase: 'generateBundle',
   durationMs: 25,
+}
+
+function createMainStyleHotUpdateMetrics(
+  sourceFile: string,
+  hotUpdateEffectiveMs: number,
+  rollbackEffectiveMs: number,
+): MainStyleHotUpdateMetrics {
+  return {
+    label: 'text-[102.43rpx] to text-[103.43rpx]',
+    sourceFile,
+    fromClassToken: 'text-[102.43rpx]',
+    toClassToken: 'text-[103.43rpx]',
+    fromEscapedClass: 'text-_b_102_2e43rpx_B',
+    toEscapedClass: 'text-_b_103_2e43rpx_B',
+    verifiedGlobalStyleEscapedClasses: ['text-_b_103_2e43rpx_B'],
+    minRequiredGlobalStyleEscapedClasses: 1,
+    rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_102_2e43rpx_B', 'text-_b_103_2e43rpx_B'],
+    hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
+    hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: 24,
+    hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 24 }],
+    rollbackOutputMs: rollbackEffectiveMs + 10,
+    rollbackEffectiveMs,
+    rollbackPluginProcessMs: 19,
+    rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 19 }],
+  }
 }
 
 function toSlashPath(filePath: string) {
@@ -226,25 +253,7 @@ function createCase(
       createClassMutationMetrics('content', [complexRound]),
       createStyleMutationMetrics(),
     ],
-    mainStyleHotUpdate: {
-      label: 'text-[102.43rpx] to text-[103.43rpx]',
-      sourceFile: 'template.ts',
-      fromClassToken: 'text-[102.43rpx]',
-      toClassToken: 'text-[103.43rpx]',
-      fromEscapedClass: 'text-_b_102_2e43rpx_B',
-      toEscapedClass: 'text-_b_103_2e43rpx_B',
-      verifiedGlobalStyleEscapedClasses: ['text-_b_103_2e43rpx_B'],
-      minRequiredGlobalStyleEscapedClasses: 1,
-      rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_102_2e43rpx_B', 'text-_b_103_2e43rpx_B'],
-      hotUpdateOutputMs: hotUpdateEffectiveMs + 12,
-      hotUpdateEffectiveMs: hotUpdateEffectiveMs + 2,
-      hotUpdatePluginProcessMs: 24,
-      hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 24 }],
-      rollbackOutputMs: rollbackEffectiveMs + 12,
-      rollbackEffectiveMs: rollbackEffectiveMs + 2,
-      rollbackPluginProcessMs: 19,
-      rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 19 }],
-    },
+    mainStyleHotUpdate: createMainStyleHotUpdateMetrics('template.ts', hotUpdateEffectiveMs + 2, rollbackEffectiveMs + 2),
     subPackageMutationMetrics: [],
     summaryByMutationKind: {},
     initialReadyMs: 25,
@@ -864,7 +873,17 @@ describe('watch-hmr regression summary helpers', () => {
       outputWxml: 'dist/sub-normal/pages/index.wxml',
       outputJs: 'dist/sub-normal/pages/index.js',
       globalStyleOutputs: ['dist/app.wxss'],
+      mainStyleHotUpdate: createMainStyleHotUpdateMetrics('src/sub-normal/pages/index.vue', 44, 45),
       template: createClassMutationMetrics('template', [createRound('complex-corpus', 42, 43)]) as any,
+      style: createStyleMutationMetrics() as any,
+    }, {
+      root: 'sub-independent',
+      independent: true,
+      outputWxml: 'dist/sub-independent/pages/index.wxml',
+      outputJs: 'dist/sub-independent/pages/index.js',
+      globalStyleOutputs: ['dist/sub-independent/pages/index.wxss'],
+      mainStyleHotUpdate: createMainStyleHotUpdateMetrics('src/sub-independent/pages/index.vue', 46, 47),
+      template: createClassMutationMetrics('template', [createRound('complex-corpus', 48, 49)]) as any,
       style: createStyleMutationMetrics() as any,
     }]
 
@@ -878,11 +897,50 @@ describe('watch-hmr regression summary helpers', () => {
       'style',
       'content:complex-corpus',
       'web',
+      'subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]',
       'subpackage:sub-normal:template',
       'subpackage:sub-normal:style',
+      'subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]',
+      'subpackage:sub-independent:template',
+      'subpackage:sub-independent:style',
     ]))
     expect(durations.summaryBySurface.web).toMatchObject({ count: 1, hotUpdateAvgMs: 18, rollbackAvgMs: 12 })
+    expect(durations.summaryBySurface['subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 44, rollbackAvgMs: 45 })
+    expect(durations.summaryBySurface['subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 46, rollbackAvgMs: 47 })
     expect(durations.summaryBySurface['subpackage:sub-normal:template']).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 35 })
+  })
+
+  it('summarizes main-style-only HMR durations for normal and independent subpackages', () => {
+    const metrics = createCase('uni-app-vite-tailwindcss-v4', 'demo', 30, 40)
+    metrics.rounds = []
+    metrics.mutationMetrics = []
+    metrics.subPackageMutationMetrics = []
+    metrics.subPackageMainStyleHotUpdates = [{
+      root: 'sub-normal',
+      independent: false,
+      outputWxml: 'dist/dev/mp-weixin/sub-normal/pages/index.wxml',
+      outputJs: 'dist/dev/mp-weixin/sub-normal/pages/index.js',
+      globalStyleOutputs: ['dist/dev/mp-weixin/app.wxss'],
+      mainStyleHotUpdate: createMainStyleHotUpdateMetrics('src/sub-normal/pages/index.vue', 41, 42),
+    }, {
+      root: 'sub-independent',
+      independent: true,
+      outputWxml: 'dist/dev/mp-weixin/sub-independent/pages/index.wxml',
+      outputJs: 'dist/dev/mp-weixin/sub-independent/pages/index.js',
+      globalStyleOutputs: ['dist/dev/mp-weixin/sub-independent/pages/index.wxss'],
+      mainStyleHotUpdate: createMainStyleHotUpdateMetrics('src/sub-independent/pages/index.vue', 43, 44),
+    }]
+
+    const durations = summarizeHmrDurations([metrics])
+    const projectDurations = durations.byProject[metrics.project]
+
+    expect(projectDurations.timings.map(item => item.surface)).toEqual(expect.arrayContaining([
+      'main-style:text-[102.43rpx] to text-[103.43rpx]',
+      'subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]',
+      'subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]',
+    ]))
+    expect(durations.summaryBySurface['subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 41, rollbackAvgMs: 42 })
+    expect(durations.summaryBySurface['subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 43, rollbackAvgMs: 44 })
   })
 
   it('resolves report paths and writes report files', async () => {
@@ -1572,6 +1630,27 @@ describe('watch-hmr regression cases', () => {
       for (const candidate of normalizedCandidates) {
         expect(candidate, watchCase.name).not.toMatch(/\/src\/(?:main|tailwind)\.wxss$/)
         expect(candidate, watchCase.name).not.toMatch(/\/main\.css$/)
+      }
+
+      const subPackageMutations = watchCase.subPackageMutations ?? []
+      if (subPackageMutations.length > 0) {
+        expect(subPackageMutations.map(item => item.root).sort(), watchCase.name).toEqual(['sub-independent', 'sub-normal'])
+      }
+      for (const subPackageMutation of subPackageMutations) {
+        expect(subPackageMutation.templateMutation.verifyEscapedIn.length, `${watchCase.name}:${subPackageMutation.root}`).toBeGreaterThan(0)
+        expect(typeof subPackageMutation.templateMutation.mutate, `${watchCase.name}:${subPackageMutation.root}`).toBe('function')
+        const normalizedSubPackageCandidates = subPackageMutation.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/'))
+        expect(normalizedSubPackageCandidates.length, `${watchCase.name}:${subPackageMutation.root}`).toBeGreaterThan(0)
+        for (const candidate of normalizedSubPackageCandidates) {
+          expect(candidate, `${watchCase.name}:${subPackageMutation.root}`).not.toMatch(/\/src\/(?:main|tailwind)\.wxss$/)
+          expect(candidate, `${watchCase.name}:${subPackageMutation.root}`).not.toMatch(/\/main\.css$/)
+        }
+        if (subPackageMutation.root === 'sub-independent') {
+          expect(subPackageMutation.independent, watchCase.name).toBe(true)
+        }
+        else {
+          expect(subPackageMutation.independent, watchCase.name).toBe(false)
+        }
       }
     }
   })

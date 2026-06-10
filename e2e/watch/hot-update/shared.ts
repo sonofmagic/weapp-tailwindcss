@@ -232,8 +232,18 @@ interface SubPackageMutationMetric {
   outputWxml: string
   outputJs: string
   globalStyleOutputs: string[]
+  mainStyleHotUpdate: MainStyleHotUpdateMetric
   template: TemplateOrScriptMutationMetric
   style: StyleMutationMetric
+}
+
+interface SubPackageMainStyleHotUpdateMetric {
+  root: 'sub-normal' | 'sub-independent'
+  independent: boolean
+  outputWxml: string
+  outputJs: string
+  globalStyleOutputs: string[]
+  mainStyleHotUpdate: MainStyleHotUpdateMetric
 }
 
 interface WebHmrMetric {
@@ -286,6 +296,7 @@ interface HotUpdateCaseReport {
   globalStyleOutputs?: string[]
   mutationMetrics: HotUpdateMutationMetric[]
   mainStyleHotUpdate?: MainStyleHotUpdateMetric
+  subPackageMainStyleHotUpdates?: SubPackageMainStyleHotUpdateMetric[]
   userReportedHotUpdate?: UserReportedHotUpdateMetric
   webHmr?: WebHmrMetric
   subPackageMutationMetrics?: SubPackageMutationMetric[]
@@ -388,6 +399,10 @@ function isIssue33RoundProfile() {
 
 function isWebOnlyProfile(report?: HotUpdateReport) {
   return toBoolEnv('E2E_WATCH_WEB_ONLY', false) || report?.options?.webOnly === true
+}
+
+function isMainStyleOnlyProfile(report?: HotUpdateReport) {
+  return toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false) || report?.options?.mainStyleOnly === true
 }
 
 function resolveRequiredMutationRounds() {
@@ -694,7 +709,18 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
       })
     }
 
+    for (const subPackage of oneCase.subPackageMainStyleHotUpdates ?? []) {
+      samples.push({
+        label: `${oneCase.project}:subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+        hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      })
+    }
+
     for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
+      samples.push({
+        label: `${oneCase.project}:subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+        hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      })
       samples.push({
         label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
         hotUpdateEffectiveMs: subPackage.template.hotUpdateEffectiveMs,
@@ -766,7 +792,12 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
 
 function assertHmrDurationReport(report: HotUpdateReport, item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   expect(report.hmrDurations, 'report should include per-demo HMR duration statistics').toBeDefined()
-  expect(report.hmrDurations?.summaryBySurface['template:preferred-round']?.count).toBeGreaterThan(0)
+  if (isMainStyleOnlyProfile(report)) {
+    expect(report.hmrDurations?.summaryBySurface[`main-style:${item.mainStyleHotUpdate?.label}`]?.count).toBeGreaterThan(0)
+  }
+  else {
+    expect(report.hmrDurations?.summaryBySurface['template:preferred-round']?.count).toBeGreaterThan(0)
+  }
   const projectDurations = report.hmrDurations?.byProject[item.project]
   expect(projectDurations, `[${item.project}] should include HMR duration timings`).toBeDefined()
   expect(projectDurations?.project).toBe(item.project)
@@ -791,12 +822,37 @@ function assertHmrDurationReport(report: HotUpdateReport, item: HotUpdateCaseRep
   if (item.webHmr) {
     expect(surfaces).toContain('web')
   }
+  for (const subPackage of item.subPackageMainStyleHotUpdates ?? []) {
+    expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
+  }
   for (const subPackage of item.subPackageMutationMetrics ?? []) {
+    expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
     expect(surfaces).toContain(`subpackage:${subPackage.root}:template`)
     if (subPackage.style) {
       expect(surfaces).toContain(`subpackage:${subPackage.root}:style`)
     }
   }
+}
+
+function assertMainStyleHotUpdateMetric(
+  metric: MainStyleHotUpdateMetric | undefined,
+  label: string,
+  maxHotUpdateMs: number,
+) {
+  expect(metric, `${label} should include the main-style hot-update guard`).toBeDefined()
+  if (!metric) {
+    throw new Error(`${label} missing main-style hot-update guard`)
+  }
+  expect(metric.label).toBe('text-[102.43rpx] to text-[103.43rpx]')
+  expect(metric.fromClassToken).toBe('text-[102.43rpx]')
+  expect(metric.toClassToken).toBe('text-[103.43rpx]')
+  expect(metric.fromEscapedClass).toContain('102')
+  expect(metric.toEscapedClass).toContain('103')
+  expect(metric.verifiedGlobalStyleEscapedClasses).toContain(metric.toEscapedClass)
+  expect(metric.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(metric.minRequiredGlobalStyleEscapedClasses)
+  expect(metric.hotUpdateEffectiveMs).toBeGreaterThan(0)
+  expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+  expect(metric.rollbackEffectiveMs).toBeGreaterThan(0)
 }
 
 function assertWebOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
@@ -829,9 +885,53 @@ function assertWebOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 }
 
+function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
+  assertAllHotUpdateSamplesWithinBudget(report, maxHotUpdateMs)
+  expect(report.options?.mainStyleOnly).toBe(true)
+  expect(report.summary.count).toBeGreaterThan(0)
+  expect(report.cases.length).toBe(report.summary.count)
+  expect(Object.keys(report.summaryByProject).length).toBe(report.summary.count)
+
+  const expectedGroup = resolveExpectedGroup(target)
+  if (expectedGroup) {
+    expect(report.summaryByGroup[expectedGroup]?.count).toBe(report.summary.count)
+  }
+
+  for (const item of report.cases) {
+    expect(item.initialReadyMs).toBeGreaterThan(0)
+    assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs)
+    expect(item.rounds).toEqual([])
+    expect(item.mutationMetrics).toEqual([])
+    expect(item.subPackageMutationMetrics ?? []).toEqual([])
+
+    const subPackageMainStyleHotUpdates = item.subPackageMainStyleHotUpdates ?? []
+    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+      expect(subPackageMainStyleHotUpdates.length).toBe(2)
+      expect(subPackageMainStyleHotUpdates.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+      expect(subPackageMainStyleHotUpdates.some(metric => metric.independent)).toBe(true)
+    }
+    for (const subPackage of subPackageMainStyleHotUpdates) {
+      assertMainStyleHotUpdateMetric(
+        subPackage.mainStyleHotUpdate,
+        `[${item.project}:${subPackage.root}]`,
+        maxHotUpdateMs,
+      )
+    }
+
+    if (expectedGroup) {
+      expect(item.projectGroup).toBe(expectedGroup)
+    }
+    assertHmrDurationReport(report, item, maxHotUpdateMs)
+  }
+}
+
 export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCaseName, maxHotUpdateMs: number) {
   if (isWebOnlyProfile(report)) {
     assertWebOnlyHotUpdateReport(report, target, maxHotUpdateMs)
+    return
+  }
+  if (isMainStyleOnlyProfile(report)) {
+    assertMainStyleOnlyHotUpdateReport(report, target, maxHotUpdateMs)
     return
   }
 
@@ -897,21 +997,14 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
     assertHmrDurationReport(report, item, maxHotUpdateMs)
     assertHasWxssOutput(normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput), `[${item.project}] case global style outputs`)
-    const mainStyleHotUpdate = item.mainStyleHotUpdate
-    expect(mainStyleHotUpdate, `[${item.project}] should include the main-style hot-update guard`).toBeDefined()
-    if (!mainStyleHotUpdate) {
-      throw new Error(`[${item.project}] missing main-style hot-update guard`)
+    assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs)
+    for (const subPackage of subPackageMutationMetrics) {
+      assertMainStyleHotUpdateMetric(
+        subPackage.mainStyleHotUpdate,
+        `[${item.project}:${subPackage.root}]`,
+        maxHotUpdateMs,
+      )
     }
-    expect(mainStyleHotUpdate.label).toBe('text-[102.43rpx] to text-[103.43rpx]')
-    expect(mainStyleHotUpdate.fromClassToken).toBe('text-[102.43rpx]')
-    expect(mainStyleHotUpdate.toClassToken).toBe('text-[103.43rpx]')
-    expect(mainStyleHotUpdate.fromEscapedClass).toContain('102')
-    expect(mainStyleHotUpdate.toEscapedClass).toContain('103')
-    expect(mainStyleHotUpdate.verifiedGlobalStyleEscapedClasses).toContain(mainStyleHotUpdate.toEscapedClass)
-    expect(mainStyleHotUpdate.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(mainStyleHotUpdate.minRequiredGlobalStyleEscapedClasses)
-    expect(mainStyleHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
-    expect(mainStyleHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
-    expect(mainStyleHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
     if (expectedGroup) {
       expect(item.projectGroup).toBe(expectedGroup)
     }
@@ -1250,6 +1343,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(target, timeoutMs))
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
+  const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const reportFile = createReportFilePath(cwd, target)
 
   const args = [
@@ -1281,6 +1375,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (isWebOnlyProfile()) {
     args.push('--web-only')
+  }
+
+  if (mainStyleOnly) {
+    args.push('--main-style-only')
   }
 
   await runWatchHmrCommand(cwd, args, commandTimeoutMs)

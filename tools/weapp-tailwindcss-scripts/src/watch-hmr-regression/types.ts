@@ -411,8 +411,18 @@ export interface SubPackageMutationMetrics {
   outputWxml: string
   outputJs: string
   globalStyleOutputs: string[]
+  mainStyleHotUpdate: MainStyleHotUpdateMetrics
   template: ClassMutationMetrics
   style?: StyleMutationMetrics
+}
+
+export interface SubPackageMainStyleHotUpdateMetrics {
+  root: SubPackageMutationConfig['root']
+  independent: boolean
+  outputWxml: string
+  outputJs: string
+  globalStyleOutputs: string[]
+  mainStyleHotUpdate: MainStyleHotUpdateMetrics
 }
 
 export interface WatchSummary {
@@ -464,6 +474,7 @@ export interface WatchCaseMetrics {
   globalStyleOutputs: string[]
   mutationMetrics: WatchCaseMutationMetrics[]
   mainStyleHotUpdate?: MainStyleHotUpdateMetrics
+  subPackageMainStyleHotUpdates?: SubPackageMainStyleHotUpdateMetrics[]
   userReportedHotUpdate?: UserReportedHotUpdateMetrics
   webHmr?: WebHmrMetrics
   subPackageMutationMetrics: SubPackageMutationMetrics[]
