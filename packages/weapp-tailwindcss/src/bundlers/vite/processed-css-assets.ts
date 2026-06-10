@@ -72,6 +72,85 @@ function appendCss(baseCss: string, css: string) {
   return `${baseCss}\n${css}`
 }
 
+function normalizeCssForContainment(css: string) {
+  return css
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/::(before|after)\b/g, ':$1')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([{}:;,>+~()])\s*/g, '$1')
+    .replace(/;\}/g, '}')
+    .trim()
+}
+
+function collectNormalizedCssNodes(css: string) {
+  try {
+    const root = postcss.parse(css)
+    return (root.nodes ?? [])
+      .filter(node => node.type !== 'comment')
+      .map(node => normalizeCssForContainment(node.toString()))
+      .filter(Boolean)
+  }
+  catch {
+    const normalizedCss = normalizeCssForContainment(css)
+    return normalizedCss ? [normalizedCss] : []
+  }
+}
+
+function normalizeCssRuleKeyPart(value: string) {
+  return value
+    .replace(/::(before|after)\b/g, ':$1')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([>+~(),])\s*/g, '$1')
+    .trim()
+}
+
+function getRuleAtRuleChain(rule: postcss.Rule) {
+  const chain: string[] = []
+  let parent = rule.parent
+  while (parent && parent.type !== 'root') {
+    if (parent.type === 'atrule') {
+      chain.unshift(`@${parent.name} ${normalizeCssRuleKeyPart(parent.params)}`)
+    }
+    parent = parent.parent
+  }
+  return chain
+}
+
+function collectCssRuleKeys(css: string) {
+  const keys = new Set<string>()
+  try {
+    const root = postcss.parse(css)
+    root.walkRules((rule) => {
+      const selector = normalizeCssRuleKeyPart(rule.selector)
+      if (selector.length > 0) {
+        keys.add([...getRuleAtRuleChain(rule), selector].join('|'))
+      }
+    })
+  }
+  catch {
+  }
+  return keys
+}
+
+function containsCssAfterMinify(baseCss: string, css: string) {
+  if (baseCss.includes(css)) {
+    return true
+  }
+  const normalizedBaseCss = normalizeCssForContainment(baseCss)
+  const normalizedCss = normalizeCssForContainment(css)
+  if (normalizedCss.length > 0 && normalizedBaseCss.includes(normalizedCss)) {
+    return true
+  }
+  const normalizedNodes = collectNormalizedCssNodes(css)
+  if (normalizedNodes.length > 0 && normalizedNodes.every(node => normalizedBaseCss.includes(node))) {
+    return true
+  }
+  const baseRuleKeys = collectCssRuleKeys(baseCss)
+  const ruleKeys = collectCssRuleKeys(css)
+  return ruleKeys.size > 0
+    && [...ruleKeys].every(key => baseRuleKeys.has(key))
+}
+
 function removeTailwindSourceMediaWrappers(css: string) {
   if (!css.includes('@media source(')) {
     return css
@@ -299,7 +378,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
         nextCss = mergedLayerCss.css
         continue
       }
-      if (nextCss.includes(css)) {
+      if (containsCssAfterMinify(nextCss, css)) {
         continue
       }
       nextCss = appendCss(nextCss, css)

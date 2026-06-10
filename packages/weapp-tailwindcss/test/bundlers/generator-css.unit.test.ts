@@ -7790,6 +7790,63 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('.from-origin')
   })
 
+  it('keeps minified vite-processed css out of main css when build output already contains it', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app.wxss': {
+        type: 'asset',
+        fileName: 'app.wxss',
+        source: [
+          'view,text,:after,:before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+          ':host,page,.tw-root,wx-root-portal-content{--spacing:8rpx;--color-blue-500:#155dfc}',
+          '.text-_b102_d43rpx_B{font-size:102.43rpx}',
+          '.layer-card-v4{display:flex;align-items:center}',
+        ].join(''),
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        appType: 'uni-app-vite',
+      } as any,
+      getViteProcessedCssAssetResults: () => [[
+        '/src/main.css',
+        {
+          css: [
+            'view,text,::after,::before {',
+            '  box-sizing: border-box;',
+            '  margin: 0;',
+            '  padding: 0;',
+            '  border: 0 solid;',
+            '}',
+            ':host,page,.tw-root,wx-root-portal-content {',
+            '  --spacing: 8rpx;',
+            '  --color-blue-500: #155dfc;',
+            '}',
+            '/* Core plugin extractor sources are intentionally not loaded here. */',
+            '.layer-card-v4 {',
+            '  display: flex;',
+            '  align-items: center;',
+            '}',
+            '.text-_b102_d43rpx_B {',
+            '  font-size: 102.43rpx;',
+            '}',
+          ].join('\n'),
+          injectIntoMain: true,
+        },
+      ]],
+    })
+
+    const css = bundle['app.wxss'].source
+    expect(injected).toBe(0)
+    expect(css.match(/view,text,:after,:before/g)).toHaveLength(1)
+    expect(css).not.toContain('::after,::before')
+    expect(css).not.toContain('Core plugin extractor')
+    expect(css.match(/\.layer-card-v4/g)).toHaveLength(1)
+  })
+
   it('honors disabled main injection even when app-origin matches taro main css fallback', async () => {
     const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
     const bundle = {
