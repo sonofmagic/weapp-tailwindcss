@@ -18,9 +18,9 @@ import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtili
 import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
-import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
+import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
@@ -556,6 +556,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     await runtimeState.readyPromise
     debug('start')
     onStart()
+    const collectedBundlerGeneratedCssFiles = new Set(
+      Object.entries(bundle)
+        .filter(([, output]) => output.type === 'asset' && hasBundlerGeneratedCssMarker(output.source))
+        .map(([file]) => file),
+    )
     collectViteProcessedCssAssetResults(bundle, {
       opts,
       isViteProcessedCssAsset,
@@ -877,7 +882,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && hasTailwindApplyDirective(generatorRawSource)
         const hasDifferentRememberedCssSource = rememberedCssSource != null
           && normalizeCssSourceForCompare(rememberedCssSource.rawSource) !== normalizeCssSourceForCompare(rawSource)
-        const hasCurrentTailwindGenerationDirective = hasTailwindRootDirectives(rawSource, { importFallback: true })
+        const hasCurrentTailwindGenerationDirective = hasTailwindSourceDirectives(rawSource, { importFallback: true })
+          || hasTailwindRootDirectives(rawSource, { importFallback: true })
           || hasTailwindApplyDirective(rawSource)
         const hasRememberedApplyDirective = rememberedCssSource != null
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
@@ -906,19 +912,26 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssShareScope = createCssTransformShareScopeKey(opts, generatorSourceFile, generatorRawSource)
         const shouldRegenerateAppOriginCss = viteProcessedCssAsset && isAppOriginCssFile(file)
         const shouldTrackGeneratorRuntime = hasStaleViteProcessedCssSource
+          || hasCurrentTailwindGenerationDirective
           || (shouldProcessTailwindGeneration && (
             !useIncrementalMode
             || cssHandlerOptions.isMainChunk
             || processFiles.css.has(file)
             || runtimeLinkedCssFiles.has(file)
             || shouldRegenerateAppOriginCss
+            || (hasRuntimeAffectingChanges && (alreadyProcessedCssAsset || vitePipelineCssAsset))
           ))
-        const canRegenerateProcessedMainCss = cssHandlerOptions.isMainChunk
+        const shouldPreserveCollectedViteCssAsset = !shouldRegenerateAppOriginCss
           && (
-            getViteProcessedCssAssetResult?.(file)?.injectIntoMain === true
-            || shouldRegenerateAppOriginCss
+            collectedBundlerGeneratedCssFiles.has(file)
+            || hasBundlerGeneratedCssMarker(rawSource)
           )
-        if (alreadyProcessedCssAsset && !hasStaleViteProcessedCssSource && !hasRememberedApplySource && (!shouldTrackGeneratorRuntime || !canRegenerateProcessedMainCss)) {
+        if (
+          alreadyProcessedCssAsset
+          && !hasStaleViteProcessedCssSource
+          && !hasRememberedApplySource
+          && (!shouldTrackGeneratorRuntime || shouldPreserveCollectedViteCssAsset)
+        ) {
           const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
