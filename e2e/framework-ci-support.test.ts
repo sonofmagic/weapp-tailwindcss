@@ -115,7 +115,7 @@ describeFrameworkCi('framework support matrix ci', () => {
     }
   })
 
-  it('keeps HBuilderX local demo coverage explicit for mp-weixin, web, android and ios', () => {
+  it('keeps HBuilderX local demo coverage explicit for mp-weixin, web, android, ios and harmony', () => {
     expect(miniProgramCases.map(item => item.name)).toEqual([
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
@@ -150,8 +150,10 @@ describeFrameworkCi('framework support matrix ci', () => {
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 ios',
       'uni-app-x-hbuilderx-tailwindcss-v3 android',
       'uni-app-x-hbuilderx-tailwindcss-v3 ios',
+      'uni-app-x-hbuilderx-tailwindcss-v3 harmony',
       'uni-app-x-hbuilderx-tailwindcss-v4 android',
       'uni-app-x-hbuilderx-tailwindcss-v4 ios',
+      'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
     ])
     for (const item of appCases) {
       expect(item.transformedContains.length, `${item.name} should verify initial App dev output`).toBeGreaterThan(0)
