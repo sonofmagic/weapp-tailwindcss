@@ -210,7 +210,10 @@ interface UserReportedHotUpdateMetric {
 
 interface MainStyleHotUpdateMetric {
   label: string
+  mutationKind: 'template' | 'script' | 'content'
   sourceFile: string
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn: Array<'wxml' | 'js'>
   fromClassToken: string
   toClassToken: string
   fromEscapedClass: string
@@ -338,6 +341,7 @@ interface HotUpdateReport {
 }
 
 const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
+const configuredWatchCasesByName = new Map(configuredWatchCases.map(item => [item.name, item]))
 
 const criticalDemoProjects = configuredWatchCases.filter(item => item.group === 'demo').map(item => item.project)
 const criticalDemoProjectsByShard = Object.fromEntries(
@@ -838,12 +842,23 @@ function assertMainStyleHotUpdateMetric(
   metric: MainStyleHotUpdateMetric | undefined,
   label: string,
   maxHotUpdateMs: number,
+  expectedMutation?: {
+    sourceFile: string
+    verifyEscapedIn: Array<'wxml' | 'js'>
+    verifyClassLiteralIn?: Array<'wxml' | 'js'>
+  },
 ) {
   expect(metric, `${label} should include the main-style hot-update guard`).toBeDefined()
   if (!metric) {
     throw new Error(`${label} missing main-style hot-update guard`)
   }
   expect(metric.label).toBe('text-[102.43rpx] to text-[103.43rpx]')
+  expect(metric.mutationKind, `${label} main-style hot-update should edit the template carrier`).toBe('template')
+  if (expectedMutation) {
+    expect(normalizePathLike(metric.sourceFile), `${label} main-style hot-update should use configured template source`).toBe(normalizePathLike(expectedMutation.sourceFile))
+    expect(metric.verifyEscapedIn, `${label} main-style hot-update should keep template output verification`).toEqual(expectedMutation.verifyEscapedIn)
+    expect(metric.verifyClassLiteralIn, `${label} main-style hot-update should keep template literal verification`).toEqual(expectedMutation.verifyClassLiteralIn ?? [])
+  }
   expect(metric.fromClassToken).toBe('text-[102.43rpx]')
   expect(metric.toClassToken).toBe('text-[103.43rpx]')
   expect(metric.fromEscapedClass).toContain('102')
@@ -898,8 +913,9 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
   }
 
   for (const item of report.cases) {
+    const configuredWatchCase = configuredWatchCasesByName.get(item.name)
     expect(item.initialReadyMs).toBeGreaterThan(0)
-    assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs)
+    assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     expect(item.rounds).toEqual([])
     expect(item.mutationMetrics).toEqual([])
     expect(item.subPackageMutationMetrics ?? []).toEqual([])
@@ -911,10 +927,12 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
       expect(subPackageMainStyleHotUpdates.some(metric => metric.independent)).toBe(true)
     }
     for (const subPackage of subPackageMainStyleHotUpdates) {
+      const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)
       assertMainStyleHotUpdateMetric(
         subPackage.mainStyleHotUpdate,
         `[${item.project}:${subPackage.root}]`,
         maxHotUpdateMs,
+        configuredSubPackageMutation?.templateMutation,
       )
     }
 
@@ -972,6 +990,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 
   for (const item of report.cases) {
+    const configuredWatchCase = configuredWatchCasesByName.get(item.name)
     expect(item.initialReadyMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
@@ -997,12 +1016,14 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
     assertHmrDurationReport(report, item, maxHotUpdateMs)
     assertHasWxssOutput(normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput), `[${item.project}] case global style outputs`)
-    assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs)
+    assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     for (const subPackage of subPackageMutationMetrics) {
+      const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)
       assertMainStyleHotUpdateMetric(
         subPackage.mainStyleHotUpdate,
         `[${item.project}:${subPackage.root}]`,
         maxHotUpdateMs,
+        configuredSubPackageMutation?.templateMutation,
       )
     }
     if (expectedGroup) {

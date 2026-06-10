@@ -385,7 +385,10 @@ export interface UserReportedHotUpdateMetrics {
 
 export interface MainStyleHotUpdateMetrics {
   label: string
+  mutationKind: ClassMutationKind
   sourceFile: string
+  verifyEscapedIn: Array<'wxml' | 'js'>
+  verifyClassLiteralIn: Array<'wxml' | 'js'>
   fromClassToken: string
   toClassToken: string
   fromEscapedClass: string

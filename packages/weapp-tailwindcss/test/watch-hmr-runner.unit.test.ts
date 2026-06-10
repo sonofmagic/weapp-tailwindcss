@@ -13,6 +13,7 @@ import type {
 const createWatchSessionMock = vi.fn<() => WatchSession>()
 const runClassMutationMock = vi.fn()
 const runStyleMutationMock = vi.fn()
+const runMainStyleHotUpdateMock = vi.fn()
 
 vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session', () => ({
   createWatchSession: () => createWatchSessionMock(),
@@ -22,6 +23,7 @@ vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/sessi
 
 vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations', () => ({
   runClassMutation: (...args: unknown[]) => runClassMutationMock(...args),
+  runMainStyleHotUpdate: (...args: unknown[]) => runMainStyleHotUpdateMock(...args),
   runStyleMutation: (...args: unknown[]) => runStyleMutationMock(...args),
   runSubPackageMutation: vi.fn(),
   waitForInitialWarmup: vi.fn(async () => 3),
@@ -99,6 +101,7 @@ describe('watch-hmr runner', () => {
     tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-runner-'))
     createWatchSessionMock.mockReset()
     runClassMutationMock.mockReset()
+    runMainStyleHotUpdateMock.mockReset()
     runStyleMutationMock.mockReset()
   })
 
@@ -124,6 +127,28 @@ describe('watch-hmr runner', () => {
       return Promise.resolve(createClassMetric(mutationKind, sourceFile))
     })
     runStyleMutationMock.mockResolvedValue(createStyleMetric(styleFile))
+    runMainStyleHotUpdateMock.mockResolvedValue({
+      label: 'text-[102.43rpx] to text-[103.43rpx]',
+      mutationKind: 'template',
+      sourceFile,
+      verifyEscapedIn: ['js'],
+      verifyClassLiteralIn: ['js'],
+      fromClassToken: 'text-[102.43rpx]',
+      toClassToken: 'text-[103.43rpx]',
+      fromEscapedClass: 'text-_b_102_2e43rpx_B',
+      toEscapedClass: 'text-_b_103_2e43rpx_B',
+      verifiedGlobalStyleEscapedClasses: ['text-_b_103_2e43rpx_B'],
+      minRequiredGlobalStyleEscapedClasses: 1,
+      rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_103_2e43rpx_B'],
+      hotUpdateOutputMs: 10,
+      hotUpdateEffectiveMs: 12,
+      hotUpdatePluginProcessMs: 2,
+      hotUpdatePluginProcessSamples: [],
+      rollbackOutputMs: 8,
+      rollbackEffectiveMs: 9,
+      rollbackPluginProcessMs: 1,
+      rollbackPluginProcessSamples: [],
+    })
 
     const watchCase: WatchCase = {
       name: 'taro-webpack-react-tailwindcss-v4',

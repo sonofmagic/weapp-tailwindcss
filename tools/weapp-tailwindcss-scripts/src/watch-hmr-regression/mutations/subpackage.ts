@@ -119,6 +119,7 @@ export async function runSubPackageMutation(
     subWatchCase,
     options,
     session,
+    'template',
     mutation.templateMutation,
     templateSourceOriginal,
     mutation.globalStyleCandidates,

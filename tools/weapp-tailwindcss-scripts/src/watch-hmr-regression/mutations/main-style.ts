@@ -1,5 +1,6 @@
 import type {
   ClassMutationConfig,
+  ClassMutationKind,
   CliOptions,
   MainStyleHotUpdateMetrics,
   PluginProcessSample,
@@ -90,6 +91,7 @@ export async function runMainStyleHotUpdate(
   watchCase: WatchCase,
   options: CliOptions,
   session: WatchSession,
+  mutationKind: ClassMutationKind,
   mutation: ClassMutationConfig,
   sourceOriginal: string,
   globalStyleOutputs: string[],
@@ -118,7 +120,7 @@ export async function runMainStyleHotUpdate(
   const setupBaselineMtimes = await collectOutputMtimes(outputFiles)
   const setupStartedAt = Date.now()
   process.stdout.write(
-    `[watch-hmr] ${watchCase.label} main-style=${LABEL} phase=setup dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
+    `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=setup dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
   )
   await writeFilePreserveEol(sourcePath, setupSource, sourceOriginal)
   await waitForOutputFilesUpdated(
@@ -141,7 +143,7 @@ export async function runMainStyleHotUpdate(
   const hotUpdateBaselineMtimes = await collectOutputMtimes(outputFiles)
   const hotUpdateStartedAt = Date.now()
   process.stdout.write(
-    `[watch-hmr] ${watchCase.label} main-style=${LABEL} phase=hot-update dirty=${formatPath(sourcePath)} token=${TO_CLASS_TOKEN}\n`,
+    `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=hot-update dirty=${formatPath(sourcePath)} token=${TO_CLASS_TOKEN}\n`,
   )
   await writeFilePreserveEol(sourcePath, hotUpdateSource, sourceOriginal)
   const hotUpdateOutputMs = await waitForOutputFilesUpdated(
@@ -164,7 +166,7 @@ export async function runMainStyleHotUpdate(
   const rollbackBaselineMtimes = await collectOutputMtimes(outputFiles)
   const rollbackStartedAt = Date.now()
   process.stdout.write(
-    `[watch-hmr] ${watchCase.label} main-style=${LABEL} phase=rollback dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
+    `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=rollback dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
   )
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
   const rollbackOutputMs = await waitForOutputFilesUpdated(
@@ -194,7 +196,10 @@ export async function runMainStyleHotUpdate(
 
   return {
     label: LABEL,
+    mutationKind,
     sourceFile: sourcePath,
+    verifyEscapedIn: mutation.verifyEscapedIn,
+    verifyClassLiteralIn: mutation.verifyClassLiteralIn ?? [],
     fromClassToken: FROM_CLASS_TOKEN,
     toClassToken: TO_CLASS_TOKEN,
     fromEscapedClass,

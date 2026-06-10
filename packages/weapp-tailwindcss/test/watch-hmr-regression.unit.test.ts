@@ -124,7 +124,10 @@ function createMainStyleHotUpdateMetrics(
 ): MainStyleHotUpdateMetrics {
   return {
     label: 'text-[102.43rpx] to text-[103.43rpx]',
+    mutationKind: 'template',
     sourceFile,
+    verifyEscapedIn: ['wxml'],
+    verifyClassLiteralIn: [],
     fromClassToken: 'text-[102.43rpx]',
     toClassToken: 'text-[103.43rpx]',
     fromEscapedClass: 'text-_b_102_2e43rpx_B',

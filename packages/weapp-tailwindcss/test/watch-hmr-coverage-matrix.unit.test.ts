@@ -9,6 +9,10 @@ import { buildCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-h
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import { createStyleMutationPayload } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
+import type {
+  ClassMutationConfig,
+  WatchCase,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import {
   STYLE_APPLY_UNSUPPORTED_CASES,
   STYLE_FUNCTION_UNSUPPORTED_CASES,
@@ -68,6 +72,65 @@ function expectHasRoundConfig(
   ).toBe(true)
 }
 
+const templateCarrierPayload = {
+  marker: 'tw-watch-template-carrier',
+  classLiteral: 'text-[102.43rpx] font-bold',
+  classVariableName: '__twTemplateCarrierClass',
+}
+
+function toRealRepoPath(sourceFile: string) {
+  return toRepoPath(sourceFile).replace('/repo/', `${toSlashPath(repoRoot)}/`)
+}
+
+function expectTemplateCarrierMutation(
+  mutation: ClassMutationConfig,
+  message: string,
+) {
+  expectDemoSourceFile(mutation.sourceFile, message)
+
+  const normalizedSourceFile = toRepoPath(mutation.sourceFile)
+  const realSourceFile = toRealRepoPath(mutation.sourceFile)
+  expect(existsSync(realSourceFile), `${message} template source should exist: ${realSourceFile}`).toBe(true)
+
+  const source = readFileSync(realSourceFile, 'utf8')
+  const mutated = mutation.mutate(source, templateCarrierPayload)
+  expect(mutated, `${message} template mutation should change source`).not.toBe(source)
+  expect(mutated, `${message} template mutation should inject marker`).toContain(templateCarrierPayload.marker)
+  expect(mutated, `${message} template mutation should inject continuous rpx arbitrary class`).toContain(templateCarrierPayload.classLiteral)
+
+  if (/\.(?:vue|uvue|mpx)$/.test(normalizedSourceFile)) {
+    const markerIndex = mutated.indexOf(templateCarrierPayload.marker)
+    const templateStart = mutated.indexOf('<template')
+    const templateEnd = mutated.lastIndexOf('</template>')
+    expect(templateStart, `${message} should have a template block`).toBeGreaterThanOrEqual(0)
+    expect(templateEnd, `${message} should have a closing template block`).toBeGreaterThan(templateStart)
+    expect(markerIndex, `${message} main-style guard should be injected into the template block`).toBeGreaterThan(templateStart)
+    expect(markerIndex, `${message} main-style guard should stay inside the template block`).toBeLessThan(templateEnd)
+
+    const scriptStart = mutated.indexOf('<script')
+    const scriptEnd = mutated.lastIndexOf('</script>')
+    if (scriptStart !== -1 && scriptEnd !== -1) {
+      expect(
+        markerIndex > scriptStart && markerIndex < scriptEnd,
+        `${message} main-style guard should not be injected into script`,
+      ).toBe(false)
+    }
+  }
+  else if (/\.wxml$/.test(normalizedSourceFile)) {
+    expect(mutated, `${message} wxml template mutation should remain a template edit`).not.toContain('<script')
+  }
+}
+
+function collectTemplateCarrierExtension(
+  extensions: Set<string>,
+  mutation: ClassMutationConfig,
+) {
+  const extension = toRepoPath(mutation.sourceFile).match(/\.(vue|uvue|wxml|mpx)$/)?.[1]
+  if (extension) {
+    extensions.add(extension)
+  }
+}
+
 describe('watch-hmr coverage matrix', () => {
   it('keeps local-only HBuilderX demo projects explicit', () => {
     for (const project of localOnlyDemoProjects) {
@@ -123,6 +186,41 @@ describe('watch-hmr coverage matrix', () => {
         expect(watchCase.contentMutation.verifyClassLiteralIn).toContain(expectedCarrier)
       }
     }
+  })
+
+  it('keeps continuous main-style HMR guards on template carriers', () => {
+    const cases: WatchCase[] = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+    const templateCarrierExtensions = new Set<string>()
+
+    for (const watchCase of cases) {
+      collectTemplateCarrierExtension(templateCarrierExtensions, watchCase.templateMutation)
+      expectTemplateCarrierMutation(watchCase.templateMutation, `${watchCase.name} main package`)
+      expect(watchCase.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
+        'baseline-arbitrary',
+        'complex-corpus',
+        'hex-arbitrary',
+      ])
+
+      for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+        collectTemplateCarrierExtension(templateCarrierExtensions, subPackageMutation.templateMutation)
+        expectTemplateCarrierMutation(
+          subPackageMutation.templateMutation,
+          `${watchCase.name}:${subPackageMutation.root}`,
+        )
+        expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), `${watchCase.name}:${subPackageMutation.root}`).toEqual([
+          'baseline-arbitrary',
+          'complex-corpus',
+          'hex-arbitrary',
+        ])
+      }
+    }
+
+    expect(templateCarrierExtensions, 'continuous template HMR guards should cover Vue SFC, WXML, and MPX carriers').toEqual(
+      new Set(['mpx', 'vue', 'wxml']),
+    )
   })
 
   it('keeps IDE hot-update cases backed by complex development-time watch scenarios', () => {
