@@ -836,9 +836,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, generated.css)
-    recordViteProcessedCssAssetResult(file, generated.css, {
-      injectIntoMain: false,
-    })
+    // 这里保留 undefined，让 app/main 入口走主样式注入判断；明确独立的输出资产再显式传 false。
+    recordViteProcessedCssAssetResult(file, generated.css)
     if (generated.css.includes('weapp-tailwindcss layer components start')) {
       recordViteProcessedCssAssetResult(file, generated.css, {
         injectIntoMain: cssHandlerOptions.isMainChunk,

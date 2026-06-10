@@ -5423,6 +5423,15 @@ const cls = "w-[1.5px]"
         baseFallbacks: [],
         packageName: 'tailwindcss',
       })),
+      resolveTailwindV4Source: vi.fn(async (options: { base?: string, css?: string } = {}) => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: options.base ?? process.cwd(),
+        baseFallbacks: [],
+        css: options.css ?? '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
     }))
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
@@ -5618,6 +5627,122 @@ const cls = "w-[1.5px]"
     expect(nextAppCss).not.toContain('text-[#222222]')
     expect(nextAppOriginCss).toContain('text-[#222222]')
     expect(nextAppOriginCss).not.toContain('text-[#111111]')
+  }, TEST_TIMEOUT_MS)
+
+  it('injects updated vite pipeline main css into uni-app dev app.wxss', async () => {
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: [...options.candidates].sort().map(candidate => `.${replaceWxml(candidate)}{font-size:${candidate.includes('338rpx') ? '338rpx' : '88rpx'}}`).join('\n'),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      rawCandidates: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: { base?: string, css?: string } = {}) => ({
+        version: 4,
+        projectRoot: process.cwd(),
+        base: options.base ?? process.cwd(),
+        baseFallbacks: [],
+        css: options.css ?? '@import "tailwindcss";',
+        dependencies: [],
+        packageName: 'tailwindcss',
+      })),
+    }))
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const runtimeSet = new Set<string>()
+    setCurrentContext(createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const serveGeneratePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+    expect(serveGeneratePlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+      plugins: [{ name: 'vite:uni' }],
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(serveGeneratePlugin)
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const cssSourceFile = path.resolve(process.cwd(), 'src/main.css')
+    const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
+
+    runtimeSet.add('text-[88rpx]')
+    await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
+
+    runtimeSet.delete('text-[88rpx]')
+    runtimeSet.add('text-[338rpx]')
+    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+      file: path.resolve(process.cwd(), 'src/pages/index/index.vue'),
+      modules: [],
+      server: {
+        moduleGraph: {
+          getModuleById: vi.fn(),
+          getModulesByFile: vi.fn(() => []),
+          invalidateModule: vi.fn(),
+        },
+        ws: { send: vi.fn() },
+      },
+      timestamp: Date.now(),
+    } as unknown as HmrContext)
+    await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
+
+    const bundle = {
+      'src/main.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', cssSourceFile)}\n.${replaceWxml('text-[338rpx]')}{font-size:338rpx}`),
+        fileName: 'src/main.wxss',
+        originalFileNames: [cssSourceFile],
+      },
+      'app.wxss': {
+        ...createRollupAsset(''),
+        fileName: 'app.wxss',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain(replaceWxml('text-[338rpx]'))
+    expect(appCss).toContain('338rpx')
+    expect(appCss).not.toContain(replaceWxml('text-[88rpx]'))
   }, TEST_TIMEOUT_MS)
 
   it('replays remembered vite pipeline css when source rolls back without css bundle asset', async () => {
