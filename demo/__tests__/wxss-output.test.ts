@@ -8,6 +8,16 @@ const APP_WXSS_BASENAMES = [
   ['dist', 'app.wxss'],
   ['app.wxss'],
 ]
+const APP_WXSS_FILENAME = 'app.wxss'
+const IGNORED_OUTPUT_DIRS = new Set(['node_modules'])
+const TAILWIND_V4_ROOT_SELECTORS = [
+  ':host,page,.tw-root,wx-root-portal-content',
+  'page,.tw-root,wx-root-portal-content,:host',
+]
+const TAILWIND_V4_PREFLIGHT_SELECTORS = [
+  'view,text,:after,:before',
+  'view,text,:before,:after',
+]
 
 const RAW_SNIPPETS = [
   {
@@ -363,6 +373,40 @@ describe('demo wxss artifacts', () => {
 
     expect(violations, debugMessage || undefined).toEqual([])
   })
+
+  it('does not duplicate Tailwind v4 root and preflight selectors in app wxss artifacts', () => {
+    const artifacts = resolveRecursiveAppWxssArtifacts()
+
+    if (!artifacts.length) {
+      return
+    }
+
+    const violations: string[] = []
+
+    for (const file of artifacts) {
+      const normalized = normalizeSelectorCss(fs.readFileSync(file, 'utf8'))
+      const rootCount = countSelectorOccurrences(normalized, TAILWIND_V4_ROOT_SELECTORS)
+      const preflightCount = countSelectorOccurrences(normalized, TAILWIND_V4_PREFLIGHT_SELECTORS)
+
+      if (rootCount > 1 || preflightCount > 1) {
+        violations.push([
+          `${path.relative(DEMO_ROOT, file)} ->`,
+          `root=${rootCount}`,
+          `preflight=${preflightCount}`,
+        ].join(' '))
+      }
+    }
+
+    const debugMessage = violations.length
+      ? [
+        'Found duplicated Tailwind v4 root/preflight selectors in compiled demo wxss artifacts:',
+        ...violations.map(line => `  - ${line}`),
+        'Rebuild the demo and check Vite processed CSS injection dedupe.',
+      ].join('\n')
+      : ''
+
+    expect(violations, debugMessage || undefined).toEqual([])
+  })
 })
 
 function resolveAppWxssArtifacts(): string[] {
@@ -394,4 +438,63 @@ function resolveAppWxssArtifacts(): string[] {
 
 function normalizeCss(input: string): string {
   return input.replace(/\s+/g, '')
+}
+
+function resolveRecursiveAppWxssArtifacts(): string[] {
+  const artifacts: string[] = []
+  const entries = fs.readdirSync(DEMO_ROOT, { withFileTypes: true })
+
+  for (const entry of entries) {
+    if (!entry.isDirectory()) {
+      continue
+    }
+
+    if (entry.name === '__tests__' || IGNORED_OUTPUT_DIRS.has(entry.name)) {
+      continue
+    }
+
+    collectAppWxssArtifacts(path.join(DEMO_ROOT, entry.name), artifacts)
+  }
+
+  return artifacts
+}
+
+function collectAppWxssArtifacts(dir: string, artifacts: string[]) {
+  if (!fs.existsSync(dir)) {
+    return
+  }
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+  for (const entry of entries) {
+    if (IGNORED_OUTPUT_DIRS.has(entry.name)) {
+      continue
+    }
+
+    const file = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      collectAppWxssArtifacts(file, artifacts)
+      continue
+    }
+
+    if (entry.isFile() && entry.name === APP_WXSS_FILENAME) {
+      artifacts.push(file)
+    }
+  }
+}
+
+function normalizeSelectorCss(input: string): string {
+  return normalizeCss(input)
+    .replace(/::(before|after)\b/g, ':$1')
+}
+
+function countSelectorOccurrences(input: string, selectors: string[]) {
+  return selectors.reduce((count, selector) => count + countSubstring(input, selector), 0)
+}
+
+function countSubstring(input: string, substring: string) {
+  if (substring.length === 0) {
+    return 0
+  }
+
+  return input.split(substring).length - 1
 }
