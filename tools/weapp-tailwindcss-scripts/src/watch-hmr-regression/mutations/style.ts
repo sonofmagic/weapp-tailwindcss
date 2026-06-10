@@ -4,7 +4,7 @@ import process from 'node:process'
 import { formatPath } from '../cli'
 import {
   assertContains,
-  findCssRuleBody,
+  findCssRuleBodies,
   getMtime,
   normalizeCssDeclaration,
   readFileIfExists,
@@ -29,7 +29,7 @@ export async function runStyleMutation(
   const validateFunction = styleMutation.validateFunction !== false
   const outputNeedles = styleMutation.outputNeedles?.(payload) ?? payload.outputNeedles
   const rollbackNeedles = styleMutation.rollbackNeedles?.(payload) ?? payload.rollbackNeedles
-  const hasExpectedStyleRule = (content: string) => findCssRuleBody(content, payload.styleNeedle) != null
+  const hasExpectedStyleRule = (content: string) => findCssRuleBodies(content, payload.styleNeedle).length > 0
   const hasExpectedOutput = (content: string) =>
     outputNeedles.every(needle => content.includes(needle)) && hasExpectedStyleRule(content)
 
@@ -124,20 +124,23 @@ export async function runStyleMutation(
     assertContains(updatedStyle, needle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
   }
   if (validateApply && payload.expectedApplyDeclarations.length > 0) {
-    const updatedRuleBody = findCssRuleBody(updatedStyle, payload.styleNeedle)
-    if (!updatedRuleBody) {
+    const updatedRuleBodies = findCssRuleBodies(updatedStyle, payload.styleNeedle)
+    if (updatedRuleBodies.length === 0) {
       throw new Error(`[${watchCase.label}] failed to locate style rule body for ${payload.styleNeedle}`)
     }
-    const normalizedRuleBody = normalizeCssDeclaration(updatedRuleBody)
     for (const expectedDeclaration of payload.expectedApplyDeclarations) {
-      if (!normalizedRuleBody.includes(normalizeCssDeclaration(expectedDeclaration))) {
+      const normalizedExpectedDeclaration = normalizeCssDeclaration(expectedDeclaration)
+      if (!updatedRuleBodies.some(ruleBody => normalizeCssDeclaration(ruleBody).includes(normalizedExpectedDeclaration))) {
         throw new Error(
           `[${watchCase.label}] style @apply declaration missing: ${expectedDeclaration}, rule=${payload.styleNeedle}`,
         )
       }
     }
     for (const expectedDeclarationGroup of payload.expectedApplyDeclarationGroups) {
-      if (!expectedDeclarationGroup.some(expectedDeclaration => normalizedRuleBody.includes(normalizeCssDeclaration(expectedDeclaration)))) {
+      if (!expectedDeclarationGroup.some((expectedDeclaration) => {
+        const normalizedExpectedDeclaration = normalizeCssDeclaration(expectedDeclaration)
+        return updatedRuleBodies.some(ruleBody => normalizeCssDeclaration(ruleBody).includes(normalizedExpectedDeclaration))
+      })) {
         throw new Error(
           `[${watchCase.label}] style @apply declaration group missing: ${expectedDeclarationGroup.join(' or ')}, rule=${payload.styleNeedle}`,
         )
@@ -145,20 +148,20 @@ export async function runStyleMutation(
     }
   }
   if (validateFunction && payload.functionNeedle && payload.expectedFunctionDeclarations.length > 0) {
-    const updatedFunctionRuleBody = findCssRuleBody(updatedStyle, payload.functionNeedle)
-    if (!updatedFunctionRuleBody) {
+    const updatedFunctionRuleBodies = findCssRuleBodies(updatedStyle, payload.functionNeedle)
+    if (updatedFunctionRuleBodies.length === 0) {
       throw new Error(`[${watchCase.label}] failed to locate Tailwind function rule body for ${payload.functionNeedle}`)
     }
-    const normalizedFunctionRuleBody = normalizeCssDeclaration(updatedFunctionRuleBody)
     for (const forbiddenFragment of payload.forbiddenFunctionFragments) {
-      if (updatedFunctionRuleBody.includes(forbiddenFragment)) {
+      if (updatedFunctionRuleBodies.every(ruleBody => ruleBody.includes(forbiddenFragment))) {
         throw new Error(
           `[${watchCase.label}] style Tailwind function was not resolved: ${forbiddenFragment}, rule=${payload.functionNeedle}`,
         )
       }
     }
     for (const expectedDeclaration of payload.expectedFunctionDeclarations) {
-      if (!normalizedFunctionRuleBody.includes(normalizeCssDeclaration(expectedDeclaration))) {
+      const normalizedExpectedDeclaration = normalizeCssDeclaration(expectedDeclaration)
+      if (!updatedFunctionRuleBodies.some(ruleBody => normalizeCssDeclaration(ruleBody).includes(normalizedExpectedDeclaration))) {
         throw new Error(
           `[${watchCase.label}] style Tailwind function declaration missing: ${expectedDeclaration}, rule=${payload.functionNeedle}`,
         )

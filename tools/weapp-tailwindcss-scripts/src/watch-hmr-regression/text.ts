@@ -162,6 +162,11 @@ export function findCssRuleBody(source: string, selector: string) {
   return matched?.[1]
 }
 
+export function findCssRuleBodies(source: string, selector: string) {
+  const pattern = new RegExp(`${escapeRegExp(selector)}\\s*\\{([^}]*)\\}`, 'gi')
+  return [...source.matchAll(pattern)].map(match => match[1]).filter((body): body is string => body != null)
+}
+
 export function normalizeCssDeclaration(value: string) {
   return value.replace(WHITESPACE_RE, '').toLowerCase()
 }

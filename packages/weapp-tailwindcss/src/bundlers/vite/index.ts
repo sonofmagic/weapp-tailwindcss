@@ -9,7 +9,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
-import { hasTailwindApplyDirective, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -642,9 +642,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     css: string,
     options: { injectIntoMain?: boolean | undefined } = {},
   ) => {
-    viteProcessedCssAssetResults.set(normalizeOutputPathKey(file), {
+    const key = normalizeOutputPathKey(file)
+    const previous = viteProcessedCssAssetResults.get(key)
+    viteProcessedCssAssetResults.set(key, {
       css,
-      injectIntoMain: options.injectIntoMain,
+      injectIntoMain: options.injectIntoMain ?? previous?.injectIntoMain,
     })
   }
   const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
@@ -836,11 +838,14 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, generated.css)
-    // 这里保留 undefined，让 app/main 入口走主样式注入判断；明确独立的输出资产再显式传 false。
-    recordViteProcessedCssAssetResult(file, generated.css)
+    const shouldInjectGeneratedCssIntoMain = cssHandlerOptions.isMainChunk || hasTailwindRootDirectives(code) || undefined
+    // 这里保留 undefined，让 app/main 入口走主样式注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回 app.wxss。
+    recordViteProcessedCssAssetResult(file, generated.css, {
+      injectIntoMain: shouldInjectGeneratedCssIntoMain,
+    })
     if (generated.css.includes('weapp-tailwindcss layer components start')) {
       recordViteProcessedCssAssetResult(file, generated.css, {
-        injectIntoMain: cssHandlerOptions.isMainChunk,
+        injectIntoMain: shouldInjectGeneratedCssIntoMain,
       })
     }
     if (isNativeAppStyleTarget && outputFile.endsWith('.css')) {

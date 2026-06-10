@@ -210,6 +210,10 @@ function isMainAppCssFile(file: string) {
   return path.basename(stripStyleFileExtension(file)) === 'app'
 }
 
+function isTailwindEntryCssFile(file: string) {
+  return path.basename(stripStyleFileExtension(file)) === 'tailwind'
+}
+
 function normalizeCssSourceForCompare(css: string) {
   return css.trim()
 }
@@ -940,6 +944,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
           recordCssAssetResult?.(outputFile, nextCss)
+          const shouldInjectPreservedViteCssIntoMain = vitePipelineCssAsset
+            && !isAppOriginCssFile(file)
+            && (
+              cssHandlerOptions.isMainChunk
+              || hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
+              || isTailwindEntryCssFile(outputFile)
+              || undefined
+            )
+          recordViteProcessedCssAssetResult?.(outputFile, nextCss, {
+            injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectPreservedViteCssIntoMain,
+          })
           onUpdate(outputFile, rawSource, nextCss)
           debug('css skip vite-processed asset: %s', outputFile)
           continue
@@ -1030,17 +1045,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   }
                   debug('css generated result: %s bytes=%d', file, generated.css.length)
                   recordCssAssetResult?.(outputFile, generated.css)
+                  const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
+                    && !isAppOriginCssFile(file)
+                    && (
+                      cssHandlerOptions.isMainChunk
+                      || hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
+                      || isTailwindEntryCssFile(outputFile)
+                      || undefined
+                    )
                   recordViteProcessedCssAssetResult?.(outputFile, generated.css, {
-                    injectIntoMain: false,
+                    injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
                   })
                   if (vitePipelineCssAsset && cssHandlerOptions.isMainChunk) {
                     recordViteProcessedCssAssetResult?.(file, generated.css, {
                       injectIntoMain: !isAppOriginCssFile(file),
-                    })
-                  }
-                  if (vitePipelineCssAsset) {
-                    recordViteProcessedCssAssetResult?.(outputFile, generated.css, {
-                      injectIntoMain: false,
                     })
                   }
                   metrics.css.elapsed += measureElapsed(start)
@@ -1277,7 +1295,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             recordViteProcessedCssAssetResult?.(sourceFile, generated.css, {
               injectIntoMain: isAppOriginCssFile(outputFile)
                 ? false
-                : cssHandlerOptions.isMainChunk || undefined,
+                : cssHandlerOptions.isMainChunk || hasTailwindRootDirectives(rawSource, { importFallback: true }) || isTailwindEntryCssFile(outputFile) || undefined,
             })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }

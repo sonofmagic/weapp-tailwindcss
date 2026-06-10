@@ -4,7 +4,7 @@ import path from 'pathe'
 import postcss from 'postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
-import { mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
+import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 
 interface CssAssetMarkerMatcher {
@@ -116,20 +116,143 @@ function getRuleAtRuleChain(rule: postcss.Rule) {
   return chain
 }
 
-function collectCssRuleKeys(css: string) {
+function getCssRuleStructuralKey(rule: postcss.Rule) {
+  const selector = normalizeCssRuleKeyPart(rule.selector)
+  if (selector.length === 0) {
+    return undefined
+  }
+  return [
+    ...getRuleAtRuleChain(rule),
+    selector,
+  ].join('|')
+}
+
+function getCssRuleContentKey(rule: postcss.Rule) {
+  const structuralKey = getCssRuleStructuralKey(rule)
+  if (!structuralKey) {
+    return undefined
+  }
+  return [
+    structuralKey,
+    normalizeCssForContainment(rule.toString()),
+  ].join('|')
+}
+
+function collectCssRuleContentKeys(css: string) {
   const keys = new Set<string>()
   try {
     const root = postcss.parse(css)
     root.walkRules((rule) => {
-      const selector = normalizeCssRuleKeyPart(rule.selector)
-      if (selector.length > 0) {
-        keys.add([...getRuleAtRuleChain(rule), selector].join('|'))
+      const key = getCssRuleContentKey(rule)
+      if (key) {
+        keys.add(key)
       }
     })
   }
   catch {
   }
   return keys
+}
+
+function normalizeCssDeclarationKey(decl: postcss.Declaration) {
+  return [
+    decl.prop.trim(),
+    normalizeCssForContainment(decl.value),
+    decl.important ? '!important' : '',
+  ].join(':')
+}
+
+function collectCssRuleDeclarationKeys(rule: postcss.Rule) {
+  const keys = new Set<string>()
+  for (const node of rule.nodes ?? []) {
+    if (node.type === 'decl') {
+      keys.add(normalizeCssDeclarationKey(node))
+    }
+  }
+  return keys
+}
+
+function collectCssRuleDeclarationKeyMap(css: string) {
+  const map = new Map<string, Set<string>>()
+  try {
+    const root = postcss.parse(css)
+    root.walkRules((rule) => {
+      const key = getCssRuleStructuralKey(rule)
+      if (!key) {
+        return
+      }
+      const declarations = collectCssRuleDeclarationKeys(rule)
+      if (declarations.size === 0) {
+        return
+      }
+      let existing = map.get(key)
+      if (!existing) {
+        existing = new Set<string>()
+        map.set(key, existing)
+      }
+      for (const declaration of declarations) {
+        existing.add(declaration)
+      }
+    })
+  }
+  catch {
+  }
+  return map
+}
+
+function isCssRuleCoveredByDeclarations(
+  rule: postcss.Rule,
+  baseRuleDeclarationKeys: Map<string, Set<string>>,
+) {
+  const key = getCssRuleStructuralKey(rule)
+  if (!key) {
+    return false
+  }
+  const baseDeclarations = baseRuleDeclarationKeys.get(key)
+  if (!baseDeclarations) {
+    return false
+  }
+  const declarations = collectCssRuleDeclarationKeys(rule)
+  return declarations.size > 0
+    && [...declarations].every(declaration => baseDeclarations.has(declaration))
+}
+
+function removeEmptyAtRules(root: postcss.Root) {
+  root.walkAtRules((atRule) => {
+    if (atRule.nodes && atRule.nodes.length === 0) {
+      atRule.remove()
+    }
+  })
+}
+
+function filterExistingCssRules(baseCss: string, css: string) {
+  const baseRuleKeys = collectCssRuleContentKeys(baseCss)
+  if (baseRuleKeys.size === 0) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    const baseRuleDeclarationKeys = collectCssRuleDeclarationKeyMap(baseCss)
+    let changed = false
+    root.walkRules((rule) => {
+      const key = getCssRuleContentKey(rule)
+      if (
+        (key && baseRuleKeys.has(key))
+        || isCssRuleCoveredByDeclarations(rule, baseRuleDeclarationKeys)
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    if (!changed) {
+      return css
+    }
+    removeEmptyAtRules(root)
+    return root.toString().trim()
+  }
+  catch {
+    return css
+  }
 }
 
 function containsCssAfterMinify(baseCss: string, css: string) {
@@ -145,8 +268,8 @@ function containsCssAfterMinify(baseCss: string, css: string) {
   if (normalizedNodes.length > 0 && normalizedNodes.every(node => normalizedBaseCss.includes(node))) {
     return true
   }
-  const baseRuleKeys = collectCssRuleKeys(baseCss)
-  const ruleKeys = collectCssRuleKeys(css)
+  const baseRuleKeys = collectCssRuleContentKeys(baseCss)
+  const ruleKeys = collectCssRuleContentKeys(css)
   return ruleKeys.size > 0
     && [...ruleKeys].every(key => baseRuleKeys.has(key))
 }
@@ -369,19 +492,26 @@ export function injectViteProcessedCssIntoMainCssAssets(
       if (importedStyleFiles.has(normalizeOutputPathKey(record.file))) {
         continue
       }
-      const css = stripBundlerGeneratedCssMarkers(record.css).trim()
+      let css = stripBundlerGeneratedCssMarkers(record.css).trim()
       if (css.length === 0) {
         continue
       }
       const mergedLayerCss = mergeMarkedUserLayerComponentsCss(nextCss, css)
       if (mergedLayerCss.merged) {
         nextCss = mergedLayerCss.css
-        continue
+        css = extractMarkedUserLayerComponentsCss(css).rest.trim()
+        if (css.length === 0) {
+          continue
+        }
       }
       if (containsCssAfterMinify(nextCss, css)) {
         continue
       }
-      nextCss = appendCss(nextCss, css)
+      const missingCss = filterExistingCssRules(nextCss, css)
+      if (missingCss.length === 0 || containsCssAfterMinify(nextCss, missingCss)) {
+        continue
+      }
+      nextCss = appendCss(nextCss, missingCss)
     }
     if (nextCss === originalSource) {
       continue

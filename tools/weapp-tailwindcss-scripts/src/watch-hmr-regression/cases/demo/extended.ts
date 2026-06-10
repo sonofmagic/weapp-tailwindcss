@@ -7,7 +7,6 @@ import {
   insertIntoVueTemplateRoot,
   mutateScriptByDataAnchor,
   mutateScriptByDataAnchorWithCommentCarrier,
-  mutateSfcStyleBlock,
   mutateTsxScriptByReturnAnchor,
   mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueRefStringLiteral,
@@ -80,6 +79,18 @@ function mutateUniAppViteV3BgObjKey(
     throw new Error('uni-app vite v3 bgObj arbitrary bg key anchor not found')
   }
   return mutateVueScriptSetupObjectKeyByAnchor(source, anchor, payload)
+}
+
+function mutateTrailingCssLayerBlock(source: string, payload: Parameters<NonNullable<WatchCase['styleMutation']>['mutate']>[1]) {
+  const index = source.lastIndexOf('\n}')
+  if (index < 0) {
+    throw new Error('css layer closing brace not found')
+  }
+  const snippet = createStyleRuleSnippet(payload)
+    .split('\n')
+    .map(line => `  ${line}`)
+    .join('\n')
+  return `${source.slice(0, index)}\n\n${snippet}${source.slice(index)}`
 }
 
 function createSubPackageMutations(
@@ -219,9 +230,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
       mutate(source, payload) {
-        return mutateSfcStyleBlock(source, payload)
+        return mutateTrailingCssLayerBlock(source, payload)
       },
     },
     subPackageMutations: createSubPackageMutations(baseCwd, {

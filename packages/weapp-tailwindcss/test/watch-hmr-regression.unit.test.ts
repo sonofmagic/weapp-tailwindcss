@@ -73,6 +73,7 @@ import {
   createStyleRuleSnippet,
   escapeRegExp,
   findCssRuleBody,
+  findCssRuleBodies,
   getMtime,
   insertBeforeAnchor,
   insertBeforeClosingTag,
@@ -663,6 +664,10 @@ describe('watch-hmr regression text helpers', () => {
   it('handles CSS and anchor based text mutations', () => {
     expect(escapeRegExp('.foo[bar]?')).toBe('\\.foo\\[bar\\]\\?')
     expect(findCssRuleBody('.foo { color: red; }', '.foo')).toContain('color: red;')
+    expect(findCssRuleBodies('.foo { color: red; }\n.foo { font-weight: 700; }', '.foo')).toEqual([
+      ' color: red; ',
+      ' font-weight: 700; ',
+    ])
     expect(normalizeCssDeclaration(' Color : RGB(1, 2, 3) ; ')).toBe('color:rgb(1,2,3);')
 
     expect(insertBeforeClosingTag('<view>\n</view>', '</view>', '<text />')).toContain('<text />')
@@ -1181,6 +1186,25 @@ describe('watch-hmr regression cases', () => {
       ].join('\n'),
       payload,
     )).toContain('\'text-[#123456]\':true')
+  })
+
+  it('keeps the uni-app Vue3 Vite v3 style mutation on the global Tailwind layer entry', () => {
+    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
+    const styleMutation = uniAppCase?.styleMutation
+    const source = [
+      '@use "tailwindcss/base";',
+      '',
+      '@layer components {',
+      '  .btn { @apply text-sm; }',
+      '}',
+    ].join('\n')
+    const mutated = styleMutation?.mutate(source, createStyleMutationPayload({
+      name: 'uni-app-vite-tailwindcss-v3',
+    } as WatchCase))
+
+    expect(styleMutation?.sourceFile).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss')
+    expect(mutated).toContain('@layer components {\n  .btn { @apply text-sm; }\n\n  .tw-watch-style-uni-app-vite-tailwindcss-v3-')
+    expect(mutated?.trimEnd()).toMatch(/\}\s*$/)
   })
 
   it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {

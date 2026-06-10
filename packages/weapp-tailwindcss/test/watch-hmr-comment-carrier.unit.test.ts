@@ -1,6 +1,12 @@
+import type { CliOptions, MutationRoundConfig, WatchCase, WatchSession } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
+import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdtemp, rm, stat, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
+import { runCommentCarrierMutation } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/class/comment-carrier'
 import {
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateTsxScriptByReturnAnchorWithCommentCarrier,
@@ -67,6 +73,113 @@ const classArray = [
     expect(mutated).toContain(`const __twWatchScriptCommentMarker = '${payload.marker}'`)
     expect(mutated).toContain('<view hidden>{{ __twWatchScriptCommentMarker }}</view>')
     expect(mutated).not.toContain(`'${payload.classLiteral}'`)
+  })
+
+  it('waits for rollback compile settle before returning', async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), 'weapp-tw-comment-carrier-'))
+    const sourceFile = path.join(dir, 'index.vue')
+    const outputWxml = path.join(dir, 'index.wxml')
+    const outputJs = path.join(dir, 'index.js')
+    const outputWxss = path.join(dir, 'app.wxss')
+    const sourceOriginal = `<template>
+  <view class="content">
+    <view>demo</view>
+  </view>
+</template>
+
+<script setup lang="ts">
+const classArray = [
+  'text-sm',
+]
+</script>
+`
+
+    try {
+      await writeFile(sourceFile, sourceOriginal)
+      await writeFile(outputWxml, '<view>demo</view>')
+      await writeFile(outputJs, 'const demo = true')
+      await writeFile(outputWxss, '.text-sm{}')
+
+      const baseline = {
+        wxml: (await stat(outputWxml)).mtimeMs,
+        js: (await stat(outputJs)).mtimeMs,
+      }
+      const options: CliOptions = {
+        caseName: 'uni-app-vite-tailwindcss-v3',
+        timeoutMs: 2_000,
+        pollMs: 5,
+        skipBuild: true,
+        quietSass: true,
+        webOnly: false,
+        mainStyleOnly: false,
+      }
+      const watchCase = {
+        name: 'uni-app-vite-tailwindcss-v3',
+        label: 'unit/comment-carrier',
+        outputWxml,
+        outputJs,
+      } as WatchCase
+      const roundConfig: MutationRoundConfig = {
+        name: 'issue33-arbitrary',
+        buildClassTokens: seed => [`text-[#${seed.slice(0, 6).padStart(6, '0')}]`],
+      }
+      let rollbackCompileSuccessAt = 0
+      let lastCompileSuccessCalls = 0
+      const session = {
+        ensureRunning() {
+          if (!existsSync(sourceFile)) {
+            return
+          }
+          const source = readFileSync(sourceFile, 'utf8')
+          const marker = /__twWatchScriptCommentMarker = '([^']+)'/.exec(source)?.[1]
+          if (marker) {
+            writeFileSync(outputJs, `const marker = '${marker}'`)
+            return
+          }
+          if (readFileSync(outputJs, 'utf8').includes('tw-watch-')) {
+            writeFileSync(outputJs, 'const demo = true')
+            rollbackCompileSuccessAt = Date.now()
+          }
+        },
+        lastCompileSuccessAt() {
+          lastCompileSuccessCalls += 1
+          return rollbackCompileSuccessAt
+        },
+        pluginProcessSamplesSince: () => [],
+      } as unknown as WatchSession
+
+      const result = await runCommentCarrierMutation({
+        watchCase,
+        options,
+        session,
+        mutation: {
+          sourceFile,
+          verifyEscapedIn: ['js'],
+          mutate: source => source,
+          mutateCommentCarrier(source, mutationPayload) {
+            return mutateVueScriptSetupArrayByAnchorWithCommentCarrier(
+              source,
+              'const classArray = [',
+              mutationPayload,
+            )
+          },
+        },
+        sourceOriginal,
+        sourcePath: sourceFile,
+        classVariableName: '__twWatchClass',
+        globalStyleOutputs: [outputWxss],
+        minRequiredGlobalStyleEscapedClasses: 0,
+        roundConfig,
+        baselineMtime: baseline,
+      })
+
+      expect(result.commentCarrierHmr.marker).toContain('tw-watch-uni-app-vite-tailwindcss-v3-script-issue33-arbitrary')
+      expect(lastCompileSuccessCalls).toBeGreaterThan(0)
+      expect(readFileSync(sourceFile, 'utf8')).toBe(sourceOriginal)
+    }
+    finally {
+      await rm(dir, { force: true, recursive: true })
+    }
   })
 
   it('enables comment-carrier mutation for the weapp-vite demo case', () => {

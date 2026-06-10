@@ -5435,6 +5435,8 @@ const cls = "w-[1.5px]"
     }))
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
+    const forceRuntimeRefresh = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
+    process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = '1'
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
@@ -5853,8 +5855,10 @@ const cls = "w-[1.5px]"
       },
     }))
     const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     const serveGeneratePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
     expect(serveGeneratePlugin).toBeTruthy()
 
@@ -5914,6 +5918,139 @@ const cls = "w-[1.5px]"
       expect(secondAppCss).toContain(replaceWxml('text-[103.43rpx]'))
       expect(secondAppCss).toContain('103.43rpx')
       expect(secondAppCss).not.toContain(replaceWxml('text-[104.43rpx]'))
+    }
+    finally {
+      if (forceRuntimeRefresh === undefined) {
+        delete process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
+      }
+      else {
+        process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = forceRuntimeRefresh
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
+  it('replays uni-app v3 Tailwind entry css into app.wxss after rollback candidates change', async () => {
+    const preflight = 'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;}'
+    const reorderedPreflight = 'view,text,::after,::before{margin:0;border:0 solid;padding:0;box-sizing:border-box;}'
+    const wrapGeneratedCss = (utilities: string, baseCss = preflight) => `${baseCss}
+${utilities}
+/*! weapp-tailwindcss layer components start */
+.tw-watch-layer{color:red}
+/*! weapp-tailwindcss layer components end */`
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: wrapGeneratedCss([...options.candidates].sort().map(candidate => `.${replaceWxml(candidate)}{background:${candidate}}`).join('\n')),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      rawCandidates: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const runtimeSet = new Set<string>()
+    const forceRuntimeRefresh = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
+    process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = '1'
+    setCurrentContext(createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const serveGeneratePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+    expect(serveGeneratePlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+      plugins: [{ name: 'vite:uni' }],
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(serveGeneratePlugin)
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const cssSourceFile = path.resolve(process.cwd(), 'src/tailwind.scss')
+    const cssSource = '@use "tailwindcss/base";\n@use "tailwindcss/components";\n@use "tailwindcss/utilities";'
+
+    try {
+      runtimeSet.add('bg-[red]')
+      await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
+
+      const firstBundle = {
+        'pages/index/index.js': {
+          ...createRollupChunk(`const card = "${replaceWxml('bg-[red]')}"`),
+          fileName: 'pages/index/index.js',
+        },
+        'app.wxss': {
+          ...createRollupAsset(''),
+          fileName: 'app.wxss',
+        },
+      }
+      await generateBundle?.call(postPlugin, {} as any, firstBundle)
+      const firstAppCss = (firstBundle['app.wxss'] as OutputAsset).source.toString()
+      expect(firstAppCss).toContain(replaceWxml('bg-[red]'))
+
+      runtimeSet.clear()
+      runtimeSet.add('bg-[#4268EA]')
+      await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+        file: path.resolve(process.cwd(), 'src/pages/index/index.vue'),
+        modules: [],
+        server: {
+          moduleGraph: {
+            getModuleById: vi.fn(),
+            getModulesByFile: vi.fn(() => []),
+            invalidateModule: vi.fn(),
+          },
+          ws: { send: vi.fn() },
+        },
+        timestamp: Date.now(),
+      } as unknown as HmrContext)
+      const rollbackBundle = {
+        'pages/index/index.js': {
+          ...createRollupChunk(`const card = "${replaceWxml('bg-[#4268EA]')}"`),
+          fileName: 'pages/index/index.js',
+        },
+        'src/tailwind.wxss': {
+          ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', cssSourceFile)}\n${wrapGeneratedCss(`.${replaceWxml('bg-[#4268EA]')}{background:bg-[#4268EA]}`, reorderedPreflight)}`),
+          fileName: 'src/tailwind.wxss',
+          originalFileNames: [cssSourceFile],
+        },
+        'app.wxss': {
+          ...createRollupAsset(firstAppCss),
+          fileName: 'app.wxss',
+        },
+      }
+      await generateBundle?.call(postPlugin, {} as any, rollbackBundle)
+      const rollbackAppCss = (rollbackBundle['app.wxss'] as OutputAsset).source.toString()
+      expect(rollbackAppCss).toContain(replaceWxml('bg-[#4268EA]'))
+      expect(rollbackAppCss.match(/box-sizing:border-box/g) ?? []).toHaveLength(1)
     }
     finally {
       if (forceRuntimeRefresh === undefined) {

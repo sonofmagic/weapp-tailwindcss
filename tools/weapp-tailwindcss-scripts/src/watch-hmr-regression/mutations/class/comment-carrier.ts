@@ -15,6 +15,7 @@ import {
   createClassMutationScenario,
   readJoinedOutputFiles,
   waitForClassOutputBaseline,
+  waitForCompileSettled,
   waitForMarkerState,
   waitForOutputsUpdated,
 } from '../shared'
@@ -158,6 +159,7 @@ export async function runCommentCarrierMutation(
     session,
     rollbackStartedAt,
   )
+  await waitForCompileSettled(watchCase, cliOptions, session, rollbackStartedAt)
   const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   return {
