@@ -692,9 +692,9 @@ describe('v5 vite generator bundle', () => {
     setCurrentContext(createContext({
       twPatcher: {
         patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set(['bg-[#445566]', 'text-red-500'])),
-        getClassSetSync: vi.fn(() => new Set(['bg-[#445566]', 'text-red-500'])),
-        extract: vi.fn(async () => ({ classSet: new Set(['bg-[#445566]', 'text-red-500']) })),
+        getClassSet: vi.fn(async () => new Set(['text-red-500'])),
+        getClassSetSync: vi.fn(() => new Set(['text-red-500'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['text-red-500']) })),
         majorVersion: 4,
       },
     }))

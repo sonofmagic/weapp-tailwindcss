@@ -5908,7 +5908,9 @@ const cls = "w-[1.5px]"
       }
       await generateBundle?.call(postPlugin, {} as any, secondBundle)
       const secondAppCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
-      expect(generateMock).toHaveBeenCalledTimes(2)
+      expect(generateMock.mock.calls.some(call =>
+        (call[0].candidates as Set<string>).has('text-[103.43rpx]'),
+      )).toBe(true)
       expect(secondAppCss).toContain(replaceWxml('text-[103.43rpx]'))
       expect(secondAppCss).toContain('103.43rpx')
       expect(secondAppCss).not.toContain(replaceWxml('text-[104.43rpx]'))
