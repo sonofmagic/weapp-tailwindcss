@@ -31,7 +31,6 @@ import {
   createUniAppXHarmonyApplyGeneratorSource,
   injectUniAppXHarmonyBundleStyles,
   injectUniAppXStylePlaceholder,
-  isUniAppXHarmonyBundle,
 } from './style-asset'
 import { resolveUniAppXStyleIsolationEnabled } from './style-isolation'
 
@@ -321,8 +320,8 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       order: 'post',
       async handler(_options, bundle) {
         const currentUtsPlatform = resolveUniUtsPlatform()
-        const isHarmonyBundle = isUniAppXHarmonyBundle(bundle)
-        const isHarmonyTarget = currentUtsPlatform.isAppHarmony || isHarmonyBundle || isHarmonyBuildTarget()
+        const canInferHarmonyTarget = !currentUtsPlatform.normalized || currentUtsPlatform.isApp
+        const isHarmonyTarget = currentUtsPlatform.isAppHarmony || (canInferHarmonyTarget && isHarmonyBuildTarget())
         if (!currentUtsPlatform.isApp && !isHarmonyTarget) {
           return
         }

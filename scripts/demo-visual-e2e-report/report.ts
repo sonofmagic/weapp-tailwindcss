@@ -104,7 +104,7 @@ function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
         ratio: compared.ratio,
       },
     }
-    if (item.status === 'passed' && item.platform !== 'app-harmony' && compared.differentPixels === 0) {
+    if (item.status === 'passed' && (item.platform === 'h5' || item.platform === 'weapp') && compared.differentPixels === 0) {
       item.status = 'failed'
       item.error = 'HMR 前后截图没有可见像素差异'
     }

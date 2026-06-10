@@ -99,15 +99,22 @@ function createMiniProgramVisualSnippet(sourceFile: string, marker: string) {
 
 function insertMiniProgramVisualSnippet(source: string, sourceFile: string, marker: string) {
   const visual = createMiniProgramVisualSnippet(sourceFile, marker)
-  const anchor = visual.anchors.find(item => source.includes(item))
+  const cleaned = removeMiniProgramVisualSnippets(source)
+  const anchor = visual.anchors.find(item => cleaned.includes(item))
   if (!anchor) {
     throw new Error(`找不到小程序可视 HMR 插入锚点：${sourceFile}`)
   }
-  const index = source.indexOf(anchor) + anchor.length
+  const index = cleaned.indexOf(anchor) + anchor.length
   return {
     classLiteral: visual.classLiteral,
-    source: `${source.slice(0, index)}\n${visual.snippet}${source.slice(index)}`,
+    source: `${cleaned.slice(0, index)}\n${visual.snippet}${cleaned.slice(index)}`,
   }
+}
+
+function removeMiniProgramVisualSnippets(source: string) {
+  return source
+    .replace(/\n[ \t]*<view class="[^"]*">tw-visual-weapp-[^<]+<\/view>/g, '')
+    .replace(/\n[ \t]*<View className="[^"]*">tw-visual-weapp-[^<]+<\/View>/g, '')
 }
 
 function resolveAnchor(source: string, anchors: string[]) {
@@ -469,7 +476,7 @@ export function createMiniProgramHmrVisualConfig(repoRoot: string, name: string)
     watchCase,
     async mutate() {
       const sourceFile = mutation.sourceFile
-      const original = await fs.readFile(sourceFile, 'utf8')
+      const original = removeMiniProgramVisualSnippets(await fs.readFile(sourceFile, 'utf8'))
       const marker = `tw-visual-weapp-${watchCase.name}-${Date.now().toString().slice(-6)}`
       const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
         readTextIfExists(watchCase.outputWxml),
@@ -481,6 +488,7 @@ export function createMiniProgramHmrVisualConfig(repoRoot: string, name: string)
         throw new Error(`[${watchCase.label}] 小程序可视 HMR marker 已存在：${marker}`)
       }
       const next = insertMiniProgramVisualSnippet(original, sourceFile, marker)
+      await writeFilePreserveEol(sourceFile, original, original)
       await writeFilePreserveEol(sourceFile, next.source, original)
       return {
         marker,

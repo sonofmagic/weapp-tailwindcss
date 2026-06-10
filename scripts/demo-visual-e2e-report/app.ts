@@ -56,6 +56,8 @@ function resolveAppOutputDirCandidates(item: AppCase) {
 function resolveAppIntermediateOutputTargets(item: AppCase, projectRoot: string) {
   const targets = new Set<string>()
   if (item.platform === 'app-android' || item.platform === 'app-ios' || item.platform === 'app-harmony') {
+    targets.add(path.resolve(projectRoot, '.debug'))
+    targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.tsc/${item.platform}`))
     targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.uvue/${item.platform}`))
     targets.add(path.resolve(projectRoot, `unpackage/cache/.${item.platform}`))
   }
@@ -155,8 +157,24 @@ async function cleanAppOutput(item: AppCase, projectRoot: string) {
     ...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)),
   ]
   await Promise.all([...new Set(targets)].map(async (target) => {
-    await fs.rm(target, { recursive: true, force: true })
+    await rmWithRetry(target)
   }))
+}
+
+async function rmWithRetry(target: string) {
+  const attempts = 5
+  for (let index = 0; index < attempts; index++) {
+    try {
+      await fs.rm(target, { recursive: true, force: true })
+      return
+    }
+    catch (error) {
+      if (index === attempts - 1) {
+        throw error
+      }
+      await wait(500)
+    }
+  }
 }
 
 async function writeAppMarker(
@@ -457,7 +475,7 @@ function startAppLaunch(
   if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const launchProject = item.platform === 'app-harmony' ? projectRoot : projectName
+  const launchProject = item.projectDir.includes('uni-app-x-') ? projectRoot : projectName
   const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', launchProject, ...launchArgs], {
     HBUILDERX_CLI_PATH: hbuilderxCliPath,
     WEAPP_TW_HMR_TIMING: '1',
@@ -516,12 +534,18 @@ async function runAppCaseVariant(
 
     const hbuilderxCliPath = shared?.hbuilderxCliPath ?? await resolveHBuilderXCli()
     const originalSource = shared?.originalSource ?? (await readUtf8(sourceFile)).replace(appMarkerRE, '')
-    const originalManifest = shared?.originalManifest ?? await readManifest(projectRoot)
-    await fs.writeFile(sourceFile, originalSource, 'utf8')
-    await writeManifest(projectRoot, originalManifest)
-    if (variant.key) {
-      await writeStyleIsolationVariantManifest(projectRoot, variant)
+    const originalManifest = shared?.originalManifest ?? await readManifest(projectRoot).catch(() => undefined)
+    const restoreVariantManifest = async () => {
+      if (originalManifest === undefined) {
+        return
+      }
+      await writeManifest(projectRoot, originalManifest)
+      if (variant.key) {
+        await writeStyleIsolationVariantManifest(projectRoot, variant)
+      }
     }
+    await fs.writeFile(sourceFile, originalSource, 'utf8')
+    await restoreVariantManifest()
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write initial marker\n`)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
@@ -551,10 +575,7 @@ async function runAppCaseVariant(
     launch = undefined
 
     await fs.writeFile(sourceFile, originalSource, 'utf8')
-    await writeManifest(projectRoot, originalManifest)
-    if (variant.key) {
-      await writeStyleIsolationVariantManifest(projectRoot, variant)
-    }
+    await restoreVariantManifest()
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
@@ -631,7 +652,7 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   const originalSource = (await readUtf8(sourceFile)).replace(appMarkerRE, '')
-  const originalManifest = await readManifest(projectRoot)
+  const originalManifest = await readManifest(projectRoot).catch(() => undefined)
   const shared = {
     hbuilderxCliPath: await resolveHBuilderXCli(),
     originalManifest,
@@ -645,6 +666,8 @@ export async function runAppCase(item: AppCase, context: RuntimeContext, results
   }
   finally {
     await fs.writeFile(sourceFile, originalSource, 'utf8').catch(() => undefined)
-    await writeManifest(projectRoot, originalManifest).catch(() => undefined)
+    if (originalManifest !== undefined) {
+      await writeManifest(projectRoot, originalManifest).catch(() => undefined)
+    }
   }
 }

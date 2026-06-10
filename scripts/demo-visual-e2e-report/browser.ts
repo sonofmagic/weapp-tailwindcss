@@ -144,13 +144,27 @@ export async function prepareScreenshotPage(browser: Browser, url: string, conte
 }
 
 export async function capturePageScreenshot(page: Page, screenshot: string, name: string) {
-  const overlay = await hideKnownDevOverlays(page)
   await fs.mkdir(path.dirname(screenshot), { recursive: true })
-  const screenshotBuffer = await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' })
-  const visual = await analyzeScreenshot(screenshotBuffer)
-  assertScreenshotVisible(visual, name)
-  const evidence = await collectPageEvidence(page)
-  return { evidence, overlay, screenshot, visual }
+  let lastError: unknown
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      await page.waitForLoadState('domcontentloaded', { timeout: 30_000 }).catch(() => undefined)
+      const overlay = await hideKnownDevOverlays(page)
+      const screenshotBuffer = await page.screenshot({ path: screenshot, fullPage: true, animations: 'disabled' })
+      const visual = await analyzeScreenshot(screenshotBuffer)
+      assertScreenshotVisible(visual, name)
+      const evidence = await collectPageEvidence(page)
+      return { evidence, overlay, screenshot, visual }
+    }
+    catch (error) {
+      lastError = error
+      if (!isTransientPageScreenshotError(error) || attempt === 2) {
+        throw error
+      }
+      await page.waitForTimeout(500)
+    }
+  }
+  throw lastError
 }
 
 export async function screenshotPage(browser: Browser, url: string, screenshot: string, name: string, context: RuntimeContext) {
@@ -162,4 +176,9 @@ export async function screenshotPage(browser: Browser, url: string, screenshot: 
   finally {
     await page.close()
   }
+}
+
+function isTransientPageScreenshotError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error)
+  return /Execution context was destroyed|Cannot find context with specified id|Target closed|Navigation/i.test(message)
 }

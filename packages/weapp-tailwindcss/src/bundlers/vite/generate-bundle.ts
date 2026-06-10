@@ -540,7 +540,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const resolvedConfig = getResolvedConfig()
     const uniUtsPlatform = resolveUniUtsPlatform()
     const isNativeAppStyleTarget = uniUtsPlatform.isApp
-    const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
+    const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
+    const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
+      canInferHarmonyAppStyleTarget
+      && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
+    )
     const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
@@ -1287,12 +1291,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       apply()
     }
     const applyStyleSources = collectUniAppXHarmonyApplyStyleSources(bundle)
-    if (opts.appType === 'uni-app-x' || isNativeAppStyleTarget || isHarmonyAppStyleTarget || applyStyleSources.length > 0) {
+    if (opts.appType === 'uni-app-x' || isNativeAppStyleTarget || isHarmonyAppStyleTarget) {
       const getAssetSource = createUniAppXBundleAssetSourceGetter(bundle)
       const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
         .map(([, record]) => typeof record === 'string' ? record : record.css)
       const applyUtilities = collectUniAppXHarmonyApplyUtilities(bundle)
-      const shouldInjectHarmonyBundleStyles = isHarmonyAppStyleTarget || applyStyleSources.length > 0
+      const shouldInjectHarmonyBundleStyles = isHarmonyAppStyleTarget
       if (shouldInjectHarmonyBundleStyles) {
         if (applyUtilities.size > 0 && applyStyleSources.length > 0) {
           const outputFile = 'uni-app-x-harmony-apply.css'
@@ -1344,7 +1348,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       debug,
       onUpdate,
     })
-    if (applyStyleSources.length > 0) {
+    if (isHarmonyAppStyleTarget && applyStyleSources.length > 0) {
       const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
         .map(([, record]) => typeof record === 'string' ? record : record.css)
       if (injectUniAppXHarmonyBundleStyles(bundle, { cssSources: viteProcessedCssSources })) {

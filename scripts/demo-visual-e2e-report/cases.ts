@@ -264,7 +264,7 @@ export async function runMiniProgramCase(
       if (variant.key) {
         await writeStyleIsolationVariantManifest(projectRoot, variant)
       }
-      if (variant.key && !item.hmr) {
+      if (variant.key) {
         await cleanMiniProgramVariantOutput(item, context)
       }
       await runMiniProgramCaseVariant(item, context, results, variant)
@@ -285,8 +285,24 @@ async function cleanMiniProgramVariantOutput(item: MiniProgramCase, context: Run
       return relative.startsWith('dist/') || relative.startsWith('unpackage/')
     })
     .map(async (candidate) => {
-      await fs.rm(candidate, { recursive: true, force: true })
+      await rmWithRetry(candidate)
     }))
+}
+
+async function rmWithRetry(target: string) {
+  const attempts = 5
+  for (let index = 0; index < attempts; index++) {
+    try {
+      await fs.rm(target, { recursive: true, force: true })
+      return
+    }
+    catch (error) {
+      if (index === attempts - 1) {
+        throw error
+      }
+      await sleep(500)
+    }
+  }
 }
 
 async function runMiniProgramCaseVariant(

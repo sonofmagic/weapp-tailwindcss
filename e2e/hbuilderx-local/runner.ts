@@ -83,6 +83,8 @@ function resolveAppOutputDirCandidates(item: AppCase) {
 function resolveAppIntermediateOutputTargets(item: AppCase, projectRoot: string) {
   const targets = new Set<string>()
   if (item.platform === 'app-android' || item.platform === 'app-ios' || item.platform === 'app-harmony') {
+    targets.add(path.resolve(projectRoot, '.debug'))
+    targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.tsc/${item.platform}`))
     targets.add(path.resolve(projectRoot, `unpackage/dist/dev/.uvue/${item.platform}`))
     targets.add(path.resolve(projectRoot, `unpackage/cache/.${item.platform}`))
   }
@@ -230,9 +232,25 @@ async function cleanAppOutput(item: AppCase) {
 
   await Promise.all(
     [...new Set(targets)].map(async (target) => {
-      await fs.rm(target, { recursive: true, force: true })
+      await rmWithRetry(target)
     }),
   )
+}
+
+async function rmWithRetry(target: string) {
+  const attempts = 5
+  for (let index = 0; index < attempts; index++) {
+    try {
+      await fs.rm(target, { recursive: true, force: true })
+      return
+    }
+    catch (error) {
+      if (index === attempts - 1) {
+        throw error
+      }
+      await wait(500)
+    }
+  }
 }
 
 async function writeAppMarker(
@@ -306,7 +324,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...androidEnv,
     })
-    const launchProject = item.platform === 'app-harmony' ? projectRoot : projectName
+    const launchProject = item.projectDir.includes('uni-app-x-') ? projectRoot : projectName
     child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', launchProject, ...(item.launchArgs ?? [])], {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',

@@ -159,8 +159,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const resolvedConfig = getResolvedConfig()
         const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
         const isWebGeneratorTarget = generatorOptions.target === 'web'
-        const isHarmonyAppStyleTarget = isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
-        const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
+        const uniUtsPlatform = resolveUniUtsPlatform()
+        const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
+        const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
+          canInferHarmonyAppStyleTarget
+          && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
+        )
+        const isNativeAppStyleTarget = uniUtsPlatform.isApp || isHarmonyAppStyleTarget
         if (resolvedConfig?.command !== 'build' && !isNativeAppStyleTarget) {
           return
         }
@@ -210,12 +215,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         }
 
         const injectHarmonyBundleStyles = async (runtime: Set<string>) => {
-          if (
-            !resolveUniUtsPlatform().isAppHarmony
-            && !isUniAppXHarmonyBundle(bundle)
-            && !isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
-            && collectUniAppXHarmonyApplyStyleSources(bundle).length === 0
-          ) {
+          if (!isHarmonyAppStyleTarget) {
             return
           }
           const changed = injectUniAppXHarmonyBundleStyles(bundle, {

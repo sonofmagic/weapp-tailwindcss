@@ -454,7 +454,7 @@ describe('uni-app-x vite plugins', () => {
         styleHandler: vi.fn(),
         jsHandler: vi.fn(),
         ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
-        getResolvedConfig: () => ({ command: 'build', build: { watch: false } } as ResolvedConfig),
+        getResolvedConfig: () => ({ command: 'build', build: { outDir: 'unpackage/dist/dev/.app-harmony', watch: false } } as ResolvedConfig),
       })
       const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
       expect(placeholderPlugin).toBeDefined()
@@ -531,6 +531,39 @@ describe('uni-app-x vite plugins', () => {
 
       expect(bundle['assets/components/Logo.js'].code).toContain('const _style_wt = {"px-4":{"":{"paddingLeft":"32rpx","paddingRight":"32rpx"}}};')
       expect(bundle['assets/components/Logo.js'].code).toContain('["styles", [_style_wt]], ["__file"')
+    }
+    finally {
+      process.env.UNI_UTS_PLATFORM = originalPlatform
+    }
+  })
+
+  it('does not inject harmony styles into mp-weixin bundles with harmony marker files', async () => {
+    const originalPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'mp-weixin'
+    try {
+      const plugins = createUniAppXPlugins({
+        appType: 'uni-app-x',
+        customAttributesEntities: [],
+        disabledDefaultTemplateHandler: false,
+        mainCssChunkMatcher: vi.fn(() => true),
+        runtimeState: { readyPromise: Promise.resolve() },
+        styleHandler: vi.fn(),
+        jsHandler: vi.fn(),
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        getResolvedConfig: () => ({ command: 'build', build: { outDir: 'unpackage/dist/dev/.app-harmony', watch: false } } as ResolvedConfig),
+      })
+      const placeholderPlugin = plugins.find((p): p is Plugin => p.name === 'weapp-tailwindcss:uni-app-x:style-placeholder')
+      expect(placeholderPlugin).toBeDefined()
+      const bundle = {
+        'assets/App.js': createChunk('const _style_0 = {"px-4":{"":{"paddingLeft":"32rpx","paddingRight":"32rpx"}}};'),
+        'import/app-service.ets': createAsset(''),
+        'assets/components/Logo.js': createChunk('function render(){return createElementVNode("view", { class: "px-4" })}\nconst Logo = _export_sfc(_sfc_main, [["render", render], ["__file", "components/Logo.uvue"]]);'),
+      }
+
+      await getGenerateBundleHandler(placeholderPlugin)?.({} as any, bundle as any, false)
+
+      expect(bundle['assets/components/Logo.js'].code).not.toContain('const _style_wt')
+      expect(bundle['assets/components/Logo.js'].code).not.toContain('["styles", [_style_wt]]')
     }
     finally {
       process.env.UNI_UTS_PLATFORM = originalPlatform
@@ -624,9 +657,9 @@ describe('uni-app-x vite plugins', () => {
     }
   })
 
-  it('hydrates harmony chunk styles when platform env is absent but bundle is harmony', async () => {
+  it('hydrates harmony chunk styles when platform env is app-harmony', async () => {
     const originalPlatform = process.env.UNI_UTS_PLATFORM
-    delete process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
     try {
       const plugins = createUniAppXPlugins({
         appType: 'uni-app-x',
@@ -662,9 +695,9 @@ describe('uni-app-x vite plugins', () => {
     }
   })
 
-  it('generates harmony apply css in the post bundle hook before hydrating chunks', async () => {
+  it('generates harmony apply css in the post bundle hook before hydrating app-harmony chunks', async () => {
     const originalPlatform = process.env.UNI_UTS_PLATFORM
-    delete process.env.UNI_UTS_PLATFORM
+    process.env.UNI_UTS_PLATFORM = 'app-harmony'
     try {
       const generateCss = vi.fn(async () => [
         '.wtu-a { background-color: rgba(16,41,56,1); }',

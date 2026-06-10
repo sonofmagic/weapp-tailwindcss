@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process'
 import { rm } from 'node:fs/promises'
-import { basename, resolve } from 'node:path'
+import { resolve } from 'node:path'
 import process from 'node:process'
 
 function runPnpm(args, options = {}) {
@@ -39,8 +39,11 @@ function spawnPnpm(args) {
 
 async function main() {
   const projectRoot = process.cwd()
-  const projectName = basename(projectRoot)
   await rm(resolve(projectRoot, 'unpackage/dist/dev/mp-weixin'), {
+    recursive: true,
+    force: true,
+  })
+  await rm(resolve(projectRoot, '.debug'), {
     recursive: true,
     force: true,
   })
@@ -50,7 +53,7 @@ async function main() {
   })
   await runPnpm(['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot])
 
-  const child = spawnPnpm(['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectName, '--compile', 'false', '--runtime-log', 'true'])
+  const child = spawnPnpm(['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectRoot, '--compile', 'false', '--runtime-log', 'true'])
 
   for (const signal of ['SIGINT', 'SIGTERM']) {
     process.once(signal, () => {
