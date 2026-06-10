@@ -10,6 +10,26 @@ interface ViewportCase {
   use: Parameters<typeof test.use>[0]
 }
 
+function mobileUse(device: typeof devices['iPhone 12']): Parameters<typeof test.use>[0] {
+  const {
+    viewport,
+    userAgent,
+    deviceScaleFactor,
+    isMobile,
+    hasTouch,
+    colorScheme,
+  } = device
+
+  return {
+    viewport,
+    userAgent,
+    deviceScaleFactor,
+    isMobile,
+    hasTouch,
+    colorScheme,
+  }
+}
+
 const viewports: ViewportCase[] = [
   {
     name: 'desktop',
@@ -147,26 +167,6 @@ test.describe('homepage hero layout', () => {
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth + 1)
   })
 })
-
-function mobileUse(device: typeof devices['iPhone 12']): Parameters<typeof test.use>[0] {
-  const {
-    viewport,
-    userAgent,
-    deviceScaleFactor,
-    isMobile,
-    hasTouch,
-    colorScheme,
-  } = device
-
-  return {
-    viewport,
-    userAgent,
-    deviceScaleFactor,
-    isMobile,
-    hasTouch,
-    colorScheme,
-  }
-}
 
 for (const viewport of viewports) {
   test.describe(`${viewport.name} viewport`, () => {
