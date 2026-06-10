@@ -38,7 +38,6 @@ import {
   waitForCompileSettled,
   waitForMarkerState,
   waitForOutputFilesUpdated,
-  waitForOutputsUpdated,
 } from './shared'
 import {
   ISSUE33_MODIFY_CLASS_TOKENS,
@@ -254,27 +253,32 @@ async function waitForRoundOutputs(
   let lastAssertError: unknown
 
   const waitStartedAt = Date.now()
-  await waitFor(
-    async () => {
-      const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-      try {
-        matchedEscapedClasses = runAssert(outputs)
-        resolvedOutputs = outputs
-        return true
-      }
-      catch (error) {
-        lastAssertError = error
-        return false
-      }
-    },
-    {
-      timeoutMs: options.timeoutMs,
-      pollMs: options.pollMs,
-      message: `[${watchCase.label}] mutation=${mutationKind} phase=${phase} transformed class assertions did not pass in time: ${asErrorMessage(lastAssertError)}`,
-      onTick: session.ensureRunning,
-    },
-    waitStartedAt,
-  )
+  try {
+    await waitFor(
+      async () => {
+        const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+        try {
+          matchedEscapedClasses = runAssert(outputs)
+          resolvedOutputs = outputs
+          return true
+        }
+        catch (error) {
+          lastAssertError = error
+          return false
+        }
+      },
+      {
+        timeoutMs: options.timeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] mutation=${mutationKind} phase=${phase} transformed class assertions did not pass in time`,
+        onTick: session.ensureRunning,
+      },
+      waitStartedAt,
+    )
+  }
+  catch (error) {
+    throw new Error(`${asErrorMessage(error)}: ${asErrorMessage(lastAssertError)}`)
+  }
 
   if (!resolvedOutputs) {
     throw new Error(`[${watchCase.label}] mutation=${mutationKind} phase=${phase} failed to resolve outputs`)
@@ -448,9 +452,7 @@ export async function runClassMutation(
   const classVariableName = '__twWatchClass'
   const sourcePath = mutation.sourceFile
   const isContentMutation = mutationKind === 'content'
-  const mutationOutputFiles = isContentMutation
-    ? [watchCase.outputWxml, watchCase.outputJs, ...globalStyleOutputs]
-    : [watchCase.outputWxml, watchCase.outputJs]
+  const mutationOutputFiles = [watchCase.outputWxml, watchCase.outputJs, ...globalStyleOutputs]
 
   const {
     wxml: baselineWxml,
@@ -522,20 +524,23 @@ export async function runClassMutation(
     try {
       const hotUpdateStartedAt = Date.now()
       let assertedAddOutputs: RoundOutputAssertion | undefined
+      let lastAddAssertError: unknown
       process.stdout.write(
         `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=add dirty=${formatPath(sourcePath)} tokens=${classTokens.join(' | ')}\n`,
       )
       await writeFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
-      const hotUpdateOutputMs = isContentMutation
-        ? await waitForOutputFilesUpdated(
-            watchCase,
-            mutationOutputFiles,
-            baselineOutputMtimes,
-            options,
-            session,
-            hotUpdateStartedAt,
-            async () => {
-              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+      let hotUpdateOutputMs = 0
+      try {
+        hotUpdateOutputMs = await waitForOutputFilesUpdated(
+          watchCase,
+          mutationOutputFiles,
+          baselineOutputMtimes,
+          options,
+          session,
+          hotUpdateStartedAt,
+          async () => {
+            const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+            try {
               const matchedEscapedClasses = assertRoundOutputs(
                 watchCase,
                 mutationKind,
@@ -551,33 +556,17 @@ export async function runClassMutation(
               )
               assertedAddOutputs = { outputs, matchedEscapedClasses }
               return true
-            },
-          )
-        : await waitForOutputsUpdated(
-            watchCase,
-            baselineMtime,
-            options,
-            session,
-            hotUpdateStartedAt,
-            async () => {
-              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-              const matchedEscapedClasses = assertRoundOutputs(
-                watchCase,
-                mutationKind,
-                sourcePath,
-                'add',
-                mutation,
-                verifyClassLiteralIn,
-                forbidBgHexTruncationIn,
-                minRequiredGlobalStyleEscapedClasses,
-                classTokens,
-                escapedClasses,
-                outputs,
-              )
-              assertedAddOutputs = { outputs, matchedEscapedClasses }
-              return true
-            },
-          )
+            }
+            catch (error) {
+              lastAddAssertError = error
+              return false
+            }
+          },
+        )
+      }
+      catch (error) {
+        throw new Error(`${asErrorMessage(error)}: ${asErrorMessage(lastAddAssertError)}`)
+      }
       const hotUpdateEffectiveMs = isContentMutation
         ? hotUpdateOutputMs
         : await waitForMarkerState(
@@ -698,27 +687,26 @@ export async function runClassMutation(
       }
 
       try {
-        const baselineBeforeModify = {
-          wxml: await getMtime(watchCase.outputWxml),
-          js: await getMtime(watchCase.outputJs),
-        }
         const baselineOutputMtimesBeforeModify = await collectOutputMtimes(mutationOutputFiles)
         const modifyStartedAt = Date.now()
         let assertedModifyOutputs: RoundOutputAssertion | undefined
+        let lastModifyAssertError: unknown
         process.stdout.write(
           `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=modify dirty=${formatPath(sourcePath)} tokens=${modifyClassTokens.join(' | ')}\n`,
         )
         await writeFilePreserveEol(sourcePath, sourceForModify, sourceOriginal)
-        const modifyOutputMs = isContentMutation
-          ? await waitForOutputFilesUpdated(
-              watchCase,
-              mutationOutputFiles,
-              baselineOutputMtimesBeforeModify,
-              options,
-              session,
-              modifyStartedAt,
-              async () => {
-                const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+        let modifyOutputMs = 0
+        try {
+          modifyOutputMs = await waitForOutputFilesUpdated(
+            watchCase,
+            mutationOutputFiles,
+            baselineOutputMtimesBeforeModify,
+            options,
+            session,
+            modifyStartedAt,
+            async () => {
+              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+              try {
                 const matchedEscapedClasses = assertRoundOutputs(
                   watchCase,
                   mutationKind,
@@ -734,33 +722,17 @@ export async function runClassMutation(
                 )
                 assertedModifyOutputs = { outputs, matchedEscapedClasses }
                 return true
-              },
-            )
-          : await waitForOutputsUpdated(
-              watchCase,
-              baselineBeforeModify,
-              options,
-              session,
-              modifyStartedAt,
-              async () => {
-                const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-                const matchedEscapedClasses = assertRoundOutputs(
-                  watchCase,
-                  mutationKind,
-                  sourcePath,
-                  'modify',
-                  mutation,
-                  verifyClassLiteralIn,
-                  forbidBgHexTruncationIn,
-                  minRequiredGlobalStyleEscapedClasses,
-                  modifyClassTokens,
-                  modifyEscapedClasses,
-                  outputs,
-                )
-                assertedModifyOutputs = { outputs, matchedEscapedClasses }
-                return true
-              },
-            )
+              }
+              catch (error) {
+                lastModifyAssertError = error
+                return false
+              }
+            },
+          )
+        }
+        catch (error) {
+          throw new Error(`${asErrorMessage(error)}: ${asErrorMessage(lastModifyAssertError)}`)
+        }
         const modifyEffectiveMs = isContentMutation
           ? modifyOutputMs
           : await waitForMarkerState(
@@ -870,48 +842,32 @@ export async function runClassMutation(
     let rollbackPluginProcessMs = 0
     let rollbackPluginProcessSamples: PluginProcessSample[] = []
     try {
-      const updatedMtime = {
-        wxml: await getMtime(watchCase.outputWxml),
-        js: await getMtime(watchCase.outputJs),
-      }
       const updatedOutputMtimes = await collectOutputMtimes(mutationOutputFiles)
       const rollbackStartedAt = Date.now()
       process.stdout.write(
         `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=delete dirty=${formatPath(sourcePath)}\n`,
       )
       await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
-      rollbackOutputMs = isContentMutation
-        ? await waitForOutputFilesUpdated(
-            watchCase,
-            mutationOutputFiles,
-            updatedOutputMtimes,
-            options,
-            session,
-            rollbackStartedAt,
-            async () => {
-              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-              if (!outputs.wxml || !outputs.js) {
-                return false
-              }
-              return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
-            },
-          )
-        : await waitForOutputsUpdated(
-            watchCase,
-            updatedMtime,
-            options,
-            session,
-            rollbackStartedAt,
-            async () => {
-              const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
-              if (!outputs.wxml || !outputs.js) {
-                return false
-              }
-              return !outputs.wxml.includes(effectiveMarker)
-                && !outputs.js.includes(effectiveMarker)
-                && !outputs.globalStyle.includes(effectiveMarker)
-            },
-          )
+      rollbackOutputMs = await waitForOutputFilesUpdated(
+        watchCase,
+        mutationOutputFiles,
+        updatedOutputMtimes,
+        options,
+        session,
+        rollbackStartedAt,
+        async () => {
+          const outputs = await loadRoundOutputsSafe(watchCase, globalStyleOutputs)
+          if (!outputs.wxml || !outputs.js) {
+            return false
+          }
+          if (isContentMutation) {
+            return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
+          }
+          return !outputs.wxml.includes(effectiveMarker)
+            && !outputs.js.includes(effectiveMarker)
+            && !outputs.globalStyle.includes(effectiveMarker)
+        },
+      )
       rollbackEffectiveMs = isContentMutation
         ? rollbackOutputMs
         : await waitForMarkerState(

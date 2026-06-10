@@ -236,6 +236,7 @@ export async function runAddedClassMutation(
     `[watch-hmr] ${watchCase.label} mutation=${mutationKind} added-class phase=add dirty=${sourcePath}\n`,
   )
   await writeFilePreserveEol(sourcePath, sourceAfterAdd, sourceOriginal)
+  let lastAssertError: unknown
   const hotUpdateOutputMs = await waitForOutputsUpdated(
     watchCase,
     baselineBeforeAdd,
@@ -258,40 +259,50 @@ export async function runAddedClassMutation(
         )
         return true
       }
-      catch {
+      catch (error) {
+        lastAssertError = error
         return false
       }
     },
   )
-  const hotUpdateEffectiveMs = await waitFor(
-    async () => {
-      const outputs = await readOutputs(watchCase, globalStyleOutputs)
-      try {
-        verifiedAddedEscapedClasses = assertClassOutputs(
-          outputs,
-          watchCase,
-          mutationKind,
-          mutation,
-          verifyClassLiteralIn,
-          markerAfter,
-          addedClasses.addedClassTokens,
-          addedClasses.addedEscapedClasses,
-          minRequiredEscapedClasses,
-        )
-        return true
-      }
-      catch {
-        return false
-      }
-    },
-    {
-      timeoutMs: cliOptions.timeoutMs,
-      pollMs: cliOptions.pollMs,
-      message: `[${watchCase.label}] ${mutationKind} added Tailwind classes were not propagated in time`,
-      onTick: session.ensureRunning,
-    },
-    hotUpdateStartedAt,
-  )
+  let hotUpdateEffectiveMs = 0
+  try {
+    hotUpdateEffectiveMs = await waitFor(
+      async () => {
+        const outputs = await readOutputs(watchCase, globalStyleOutputs)
+        try {
+          verifiedAddedEscapedClasses = assertClassOutputs(
+            outputs,
+            watchCase,
+            mutationKind,
+            mutation,
+            verifyClassLiteralIn,
+            markerAfter,
+            addedClasses.addedClassTokens,
+            addedClasses.addedEscapedClasses,
+            minRequiredEscapedClasses,
+          )
+          return true
+        }
+        catch (error) {
+          lastAssertError = error
+          return false
+        }
+      },
+      {
+        timeoutMs: cliOptions.timeoutMs,
+        pollMs: cliOptions.pollMs,
+        message: `[${watchCase.label}] ${mutationKind} added Tailwind classes were not propagated in time`,
+        onTick: session.ensureRunning,
+      },
+      hotUpdateStartedAt,
+    )
+  }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    const assertMessage = lastAssertError instanceof Error ? lastAssertError.message : String(lastAssertError)
+    throw new Error(`${message}: ${assertMessage}`)
+  }
 
   const mtimeAfterAdd = {
     wxml: await getMtime(watchCase.outputWxml),

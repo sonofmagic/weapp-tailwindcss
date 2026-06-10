@@ -471,6 +471,69 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates).toHaveBeenCalledTimes(1)
   })
 
+  it('restores escaped v4 runtime candidates from changed output files before validation', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
+      return source.split(/\s+/).filter(candidate => [
+        'text-[102.43rpx]',
+        'text-[103.43rpx]',
+        'grid-rows-[auto_minmax(0,_1fr)]',
+        'bg-[#0000ff]',
+      ].includes(candidate))
+    })
+    const extractRawCandidates = vi.fn(async () => [])
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "text-_b102_d43rpx_B grid-rows-_bauto_minmax_p0_m_1fr_P_B bg-_b_h0000ff_B"; const keep = common_vendor.ref(1)'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const firstRuntimeSet = await manager.sync(patcher, firstSnapshot)
+
+    expect(firstRuntimeSet).toEqual(new Set([
+      'text-[102.43rpx]',
+      'grid-rows-[auto_minmax(0,_1fr)]',
+      'bg-[#0000ff]',
+    ]))
+    expect(firstRuntimeSet.has('grid-rows-[auto,minmax(0,_1fr)]')).toBe(false)
+    expect(firstRuntimeSet.has('grid-rows-[auto,inmax(0,_1fr)]')).toBe(false)
+    expect(firstRuntimeSet.has('common%endor')).toBe(false)
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.stringContaining('text-_b102_d43rpx_B'),
+      'js',
+    )
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['pages/index/index.js', new Set<string>()],
+    ]), { incremental: true })
+
+    const secondSnapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "text-_b103_d43rpx_B grid-rows-_bauto_minmax_p0_m_1fr_P_B bg-_b_h0000ff_B"; const keep = common_vendor.ref(1)'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const secondRuntimeSet = await manager.sync(patcher, secondSnapshot)
+
+    expect(secondRuntimeSet).toEqual(new Set([
+      'text-[103.43rpx]',
+      'grid-rows-[auto_minmax(0,_1fr)]',
+      'bg-[#0000ff]',
+    ]))
+    expect(secondRuntimeSet.has('text-[102.43rpx]')).toBe(false)
+  })
+
   it('ignores dependency vendor chunks when collecting tailwind v4 runtime candidates', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'

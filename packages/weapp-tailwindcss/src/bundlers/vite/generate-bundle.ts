@@ -637,6 +637,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           transformOnly: true,
         })
       : undefined
+    // Tailwind v4 的任意值在 uni-app/Taro 等上游输出里可能已经被转义。
+    // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放 app.wxss。
+    const forceV4RuntimeRefreshBySource = runtimeState.twPatcher.majorVersion === 4
+      && forceRuntimeRefreshBySource
     const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
       ? new Set<string>()
       : useV3OxideSourceRuntime
@@ -645,7 +649,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             baseClassSet: sourceCandidates,
           })
         : useBundleRuntimeClassSet
-          ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv, {
+          ? await ensureBundleRuntimeClassSet(snapshot, forceRuntimeRefreshByEnv || forceV4RuntimeRefreshBySource, {
               allowBaselineOnlyInitialSync: buildCommand,
             })
           : await context.ensureRuntimeClassSet(forceRuntimeRefreshByEnv)

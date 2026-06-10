@@ -208,6 +208,22 @@ interface UserReportedHotUpdateMetric {
   rollbackEffectiveMs: number
 }
 
+interface MainStyleHotUpdateMetric {
+  label: string
+  sourceFile: string
+  fromClassToken: string
+  toClassToken: string
+  fromEscapedClass: string
+  toEscapedClass: string
+  verifiedGlobalStyleEscapedClasses: string[]
+  minRequiredGlobalStyleEscapedClasses: number
+  rollbackVerifiedGlobalStyleRemovedClasses: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+}
+
 type HotUpdateMutationMetric = TemplateOrScriptMutationMetric | StyleMutationMetric
 
 interface SubPackageMutationMetric {
@@ -269,6 +285,7 @@ interface HotUpdateCaseReport {
   globalStyleOutput?: string
   globalStyleOutputs?: string[]
   mutationMetrics: HotUpdateMutationMetric[]
+  mainStyleHotUpdate?: MainStyleHotUpdateMetric
   userReportedHotUpdate?: UserReportedHotUpdateMetric
   webHmr?: WebHmrMetric
   subPackageMutationMetrics?: SubPackageMutationMetric[]
@@ -295,6 +312,7 @@ interface ProjectHmrDurationReport {
 interface HotUpdateReport {
   options?: {
     webOnly?: boolean
+    mainStyleOnly?: boolean
   }
   summary: HotUpdateSummary
   summaryByRound: Partial<Record<MutationRoundName, HotUpdateSummary>>
@@ -669,6 +687,13 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
       })
     }
 
+    if (oneCase.mainStyleHotUpdate) {
+      samples.push({
+        label: `${oneCase.project}:main-style:${oneCase.mainStyleHotUpdate.label}`,
+        hotUpdateEffectiveMs: oneCase.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      })
+    }
+
     for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
       samples.push({
         label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
@@ -872,6 +897,21 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     expect(item.summaryByMutationKind.content?.count ?? 0).toBe(hasContentMutation ? 1 : 0)
     assertHmrDurationReport(report, item, maxHotUpdateMs)
     assertHasWxssOutput(normalizeGlobalStyleOutputs(item.globalStyleOutputs ?? item.globalStyleOutput), `[${item.project}] case global style outputs`)
+    const mainStyleHotUpdate = item.mainStyleHotUpdate
+    expect(mainStyleHotUpdate, `[${item.project}] should include the main-style hot-update guard`).toBeDefined()
+    if (!mainStyleHotUpdate) {
+      throw new Error(`[${item.project}] missing main-style hot-update guard`)
+    }
+    expect(mainStyleHotUpdate.label).toBe('text-[102.43rpx] to text-[103.43rpx]')
+    expect(mainStyleHotUpdate.fromClassToken).toBe('text-[102.43rpx]')
+    expect(mainStyleHotUpdate.toClassToken).toBe('text-[103.43rpx]')
+    expect(mainStyleHotUpdate.fromEscapedClass).toContain('102')
+    expect(mainStyleHotUpdate.toEscapedClass).toContain('103')
+    expect(mainStyleHotUpdate.verifiedGlobalStyleEscapedClasses).toContain(mainStyleHotUpdate.toEscapedClass)
+    expect(mainStyleHotUpdate.verifiedGlobalStyleEscapedClasses.length).toBeGreaterThanOrEqual(mainStyleHotUpdate.minRequiredGlobalStyleEscapedClasses)
+    expect(mainStyleHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
+    expect(mainStyleHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
+    expect(mainStyleHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
     if (expectedGroup) {
       expect(item.projectGroup).toBe(expectedGroup)
     }

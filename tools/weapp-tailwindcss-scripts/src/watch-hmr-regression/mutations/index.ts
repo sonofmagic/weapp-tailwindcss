@@ -1,4 +1,5 @@
 export * from './class'
+export * from './main-style'
 export * from './shared'
 export * from './style'
 export * from './subpackage'

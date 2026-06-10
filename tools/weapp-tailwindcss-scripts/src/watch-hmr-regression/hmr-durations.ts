@@ -120,6 +120,16 @@ export function collectCaseDurationTimings(item: WatchCaseMetrics) {
     })
   }
 
+  if (item.mainStyleHotUpdate) {
+    pushTiming(timings, {
+      surface: `main-style:${item.mainStyleHotUpdate.label}`,
+      sourceFile: item.mainStyleHotUpdate.sourceFile,
+      hotUpdateEffectiveMs: item.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      rollbackEffectiveMs: item.mainStyleHotUpdate.rollbackEffectiveMs,
+      hotUpdatePluginProcessMs: item.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+    })
+  }
+
   if (item.webHmr) {
     pushTiming(timings, {
       surface: 'web',

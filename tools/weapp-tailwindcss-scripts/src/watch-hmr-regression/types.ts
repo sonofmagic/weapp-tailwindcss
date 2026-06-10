@@ -43,6 +43,7 @@ export interface CliOptions {
   skipBuild: boolean
   quietSass: boolean
   webOnly: boolean
+  mainStyleOnly: boolean
   reportFile?: string
   maxHotUpdateMs?: number
   maxPluginProcessMs?: number
@@ -382,6 +383,26 @@ export interface UserReportedHotUpdateMetrics {
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
 
+export interface MainStyleHotUpdateMetrics {
+  label: string
+  sourceFile: string
+  fromClassToken: string
+  toClassToken: string
+  fromEscapedClass: string
+  toEscapedClass: string
+  verifiedGlobalStyleEscapedClasses: string[]
+  minRequiredGlobalStyleEscapedClasses: number
+  rollbackVerifiedGlobalStyleRemovedClasses: string[]
+  hotUpdateOutputMs: number
+  hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
+  rollbackOutputMs: number
+  rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
+}
+
 export type WatchCaseMutationMetrics = ClassMutationMetrics | StyleMutationMetrics
 
 export interface SubPackageMutationMetrics {
@@ -442,6 +463,7 @@ export interface WatchCaseMetrics {
   verifyClassLiteralIn: Array<'wxml' | 'js'>
   globalStyleOutputs: string[]
   mutationMetrics: WatchCaseMutationMetrics[]
+  mainStyleHotUpdate?: MainStyleHotUpdateMetrics
   userReportedHotUpdate?: UserReportedHotUpdateMetrics
   webHmr?: WebHmrMetrics
   subPackageMutationMetrics: SubPackageMutationMetrics[]
@@ -506,6 +528,7 @@ export interface WatchReport {
     skipBuild: boolean
     quietSass: boolean
     webOnly: boolean
+    mainStyleOnly: boolean
     maxHotUpdateMs?: number
     maxPluginProcessMs?: number
   }

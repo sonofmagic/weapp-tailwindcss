@@ -166,8 +166,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ],
     templateMutation: {
@@ -237,7 +235,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         return [
           path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/${subPackage}/pages/index.wxss`),
           path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/${subPackage}/pages/index.wxss`),
-          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
           path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
         ]
       },
@@ -368,7 +365,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         return [
           path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/${subPackage}/pages/index.wxss`),
           path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/${subPackage}/pages/index.wxss`),
-          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
           path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
         ]
       },

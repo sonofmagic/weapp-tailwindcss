@@ -51,7 +51,6 @@ function createUniAppHBuilderXVue3Case(baseCwd: string, version: 'v3' | 'v4'): W
     ],
     globalStyleCandidates: [
       path.resolve(baseCwd, `${outputRoot}/app.wxss`),
-      path.resolve(baseCwd, `${outputRoot}/main.css`),
     ],
     contentMutation: {
       sourceFile: path.resolve(baseCwd, `demo/${projectName}/pages/index/index.vue`),
@@ -173,7 +172,6 @@ function createUniAppXHBuilderXCase(baseCwd: string, version: 'v3' | 'v4'): Watc
     globalStyleCandidates: [
       path.resolve(baseCwd, `${outputRoot}/app.wxss`),
       path.resolve(baseCwd, `${outputRoot}/pages/index/index.wxss`),
-      path.resolve(baseCwd, `${outputRoot}/main.css`),
     ],
     templateMutation: {
       sourceFile: pageSource,

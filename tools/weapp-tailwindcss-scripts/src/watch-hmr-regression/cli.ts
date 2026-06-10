@@ -12,6 +12,16 @@ function parseArg(flag: string, argv: string[]) {
   return argv[index + 1]
 }
 
+function parseFirstArg(flags: string[], argv: string[]) {
+  for (const flag of flags) {
+    const value = parseArg(flag, argv)
+    if (value != null) {
+      return value
+    }
+  }
+  return undefined
+}
+
 function parseNumber(value: string | undefined, fallback: number) {
   if (value == null) {
     return fallback
@@ -41,7 +51,8 @@ export function resolveOptions(): CliOptions {
     skipBuild: parseBooleanFlag('--skip-build', argv),
     quietSass: parseBooleanFlag('--quiet-sass', argv),
     webOnly: parseBooleanFlag('--web-only', argv),
-    reportFile: parseArg('--report', argv),
+    mainStyleOnly: parseBooleanFlag('--main-style-only', argv),
+    reportFile: parseFirstArg(['--report', '--report-file'], argv),
     maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv))
       ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_HOT_UPDATE_MS),
     maxPluginProcessMs: parseOptionalNumber(parseArg('--max-plugin-process-ms', argv))

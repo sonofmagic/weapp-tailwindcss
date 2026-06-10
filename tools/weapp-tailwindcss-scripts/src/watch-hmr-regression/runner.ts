@@ -14,6 +14,7 @@ import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import {
   runClassMutation,
+  runMainStyleHotUpdate,
   runStyleMutation,
   runSubPackageMutation,
   runUserReportedHotUpdate,
@@ -85,12 +86,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       session.ensureRunning()
     }
 
-    const styleOutputCandidates = [...new Set([
-      ...watchCase.outputStyleCandidates,
-      ...watchCase.globalStyleCandidates,
-    ])]
-
-    const globalStyleOutputs = styleOutputCandidates
+    const globalStyleOutputs = watchCase.globalStyleCandidates
 
     const templateSourceOriginal = sourceOriginals.get(watchCase.templateMutation.sourceFile)
     if (templateSourceOriginal == null) {
@@ -176,6 +172,15 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       )
     }
 
+    const mainStyleHotUpdateMetrics = await runMainStyleHotUpdate(
+      watchCase,
+      options,
+      session,
+      watchCase.templateMutation,
+      templateSourceOriginal,
+      globalStyleOutputs,
+    )
+
     const subPackageMutationMetrics = []
     for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
       subPackageMutationMetrics.push(await runSubPackageMutation(
@@ -221,6 +226,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       verifyClassLiteralIn: templateMetrics.verifyClassLiteralIn,
       globalStyleOutputs,
       mutationMetrics,
+      mainStyleHotUpdate: mainStyleHotUpdateMetrics,
       ...(userReportedHotUpdateMetrics ? { userReportedHotUpdate: userReportedHotUpdateMetrics } : {}),
       ...(webHmrMetrics ? { webHmr: webHmrMetrics } : {}),
       subPackageMutationMetrics,
@@ -330,6 +336,81 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
       catch {
       }
     }
+  }
+}
+
+export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
+  const caseStartedAt = Date.now()
+  const sourcePath = watchCase.templateMutation.sourceFile
+  const sourceOriginal = await fs.readFile(sourcePath, 'utf8')
+
+  const sessionStartedAt = Date.now()
+  const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
+    quietSass: options.quietSass,
+  }, watchCase.env)
+
+  try {
+    const outputsReadyMs = await waitForOutputsReady(watchCase, options, session, sessionStartedAt)
+    const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
+    const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
+    const mainStyleHotUpdate = await runMainStyleHotUpdate(
+      watchCase,
+      options,
+      session,
+      watchCase.templateMutation,
+      sourceOriginal,
+      watchCase.globalStyleCandidates,
+    )
+
+    const classTokens = [mainStyleHotUpdate.toClassToken]
+    const metrics: WatchCaseMetrics = {
+      name: watchCase.name,
+      label: watchCase.label,
+      project: watchCase.project,
+      projectGroup: watchCase.group,
+      marker: `main-style:${watchCase.name}`,
+      classLiteral: classTokens.join(' '),
+      classTokens,
+      escapedClasses: [mainStyleHotUpdate.toEscapedClass],
+      rounds: [],
+      verifyEscapedIn: watchCase.templateMutation.verifyEscapedIn,
+      verifyClassLiteralIn: watchCase.templateMutation.verifyClassLiteralIn ?? [],
+      globalStyleOutputs: watchCase.globalStyleCandidates,
+      mutationMetrics: [],
+      mainStyleHotUpdate,
+      subPackageMutationMetrics: [],
+      summaryByMutationKind: summarizeMutationMetricsByKind([]),
+      initialReadyMs,
+      maxPluginProcessMs: watchCase.maxPluginProcessMs,
+      hotUpdateOutputMs: mainStyleHotUpdate.hotUpdateOutputMs,
+      hotUpdateEffectiveMs: mainStyleHotUpdate.hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: mainStyleHotUpdate.hotUpdatePluginProcessMs,
+      hotUpdatePluginProcessSamples: mainStyleHotUpdate.hotUpdatePluginProcessSamples,
+      rollbackOutputMs: mainStyleHotUpdate.rollbackOutputMs,
+      rollbackEffectiveMs: mainStyleHotUpdate.rollbackEffectiveMs,
+      rollbackPluginProcessMs: mainStyleHotUpdate.rollbackPluginProcessMs,
+      rollbackPluginProcessSamples: mainStyleHotUpdate.rollbackPluginProcessSamples,
+      totalMs: Date.now() - caseStartedAt,
+    }
+
+    process.stdout.write(
+      `[watch-hmr] ${watchCase.label} main-style-only passed (main-style=${mainStyleHotUpdate.hotUpdateEffectiveMs}ms)\n`,
+    )
+
+    return metrics
+  }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    const logs = session.logs()
+    throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
+  }
+  finally {
+    try {
+      await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+    }
+    catch {
+    }
+    await session.stop()
   }
 }
 
@@ -497,6 +578,19 @@ function collectPluginProcessBudgetSamples(metrics: WatchCaseMetrics): PluginPro
     )
   }
 
+  if (metrics.mainStyleHotUpdate) {
+    samples.push(
+      {
+        label: `main-style:${metrics.mainStyleHotUpdate.label}:hot-update`,
+        pluginProcessMs: metrics.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+      },
+      {
+        label: `main-style:${metrics.mainStyleHotUpdate.label}:rollback`,
+        pluginProcessMs: metrics.mainStyleHotUpdate.rollbackPluginProcessMs,
+      },
+    )
+  }
+
   for (const subPackage of metrics.subPackageMutationMetrics) {
     samples.push(
       ...collectClassMutationPluginProcessBudgetSamples(subPackage.template).map(sample => ({
@@ -553,6 +647,14 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
       hotUpdateEffectiveMs: metrics.userReportedHotUpdate.hotUpdateEffectiveMs,
     })
   }
+
+  if (metrics.mainStyleHotUpdate) {
+    samples.push({
+      label: `main-style:${metrics.mainStyleHotUpdate.label}`,
+      hotUpdateEffectiveMs: metrics.mainStyleHotUpdate.hotUpdateEffectiveMs,
+    })
+  }
+
   for (const metric of metrics.webHmr?.sourceClassReplacementSequence ?? []) {
     samples.push({
       label: `web-source-replacement:${metric.label}`,

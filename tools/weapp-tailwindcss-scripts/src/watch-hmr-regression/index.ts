@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { buildCases, isLocalOnlyWatchCase, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
-import { assertHotUpdateBudget, assertPluginProcessBudget, logSummary, runCase, runWebOnlyCase } from './runner'
+import { assertHotUpdateBudget, assertPluginProcessBudget, logSummary, runCase, runMainStyleOnlyCase, runWebOnlyCase } from './runner'
 import { ensureLocalPackageBuild, sleep } from './session'
 import {
   summarizeMetrics,
@@ -60,9 +60,11 @@ export async function main() {
   try {
     for (const watchCase of selected) {
       process.stdout.write(`[watch-hmr] start ${watchCase.label} (${watchCase.devScript})\n`)
-      const result = options.webOnly
-        ? await runWebOnlyCase(watchCase, options)
-        : await runCase(watchCase, options)
+      const result = options.mainStyleOnly
+        ? await runMainStyleOnlyCase(watchCase, options)
+        : options.webOnly
+          ? await runWebOnlyCase(watchCase, options)
+          : await runCase(watchCase, options)
       metrics.push(result)
       assertHotUpdateBudget(result, options)
       assertPluginProcessBudget(result, options)

@@ -45,6 +45,9 @@ import {
   assertPluginProcessBudget,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
 import {
+  resolveOptions,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cli'
+import {
   createStyleMutationPayload,
   expandOutputFileEntries,
   createClassMutationScenario,
@@ -223,6 +226,25 @@ function createCase(
       createClassMutationMetrics('content', [complexRound]),
       createStyleMutationMetrics(),
     ],
+    mainStyleHotUpdate: {
+      label: 'text-[102.43rpx] to text-[103.43rpx]',
+      sourceFile: 'template.ts',
+      fromClassToken: 'text-[102.43rpx]',
+      toClassToken: 'text-[103.43rpx]',
+      fromEscapedClass: 'text-_b_102_2e43rpx_B',
+      toEscapedClass: 'text-_b_103_2e43rpx_B',
+      verifiedGlobalStyleEscapedClasses: ['text-_b_103_2e43rpx_B'],
+      minRequiredGlobalStyleEscapedClasses: 1,
+      rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_102_2e43rpx_B', 'text-_b_103_2e43rpx_B'],
+      hotUpdateOutputMs: hotUpdateEffectiveMs + 12,
+      hotUpdateEffectiveMs: hotUpdateEffectiveMs + 2,
+      hotUpdatePluginProcessMs: 24,
+      hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 24 }],
+      rollbackOutputMs: rollbackEffectiveMs + 12,
+      rollbackEffectiveMs: rollbackEffectiveMs + 2,
+      rollbackPluginProcessMs: 19,
+      rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 19 }],
+    },
     subPackageMutationMetrics: [],
     summaryByMutationKind: {},
     initialReadyMs: 25,
@@ -745,6 +767,32 @@ const bgObj = ref({
   })
 })
 
+describe('watch-hmr regression cli options', () => {
+  it('accepts --report-file as an alias of --report for main-style-only runs', () => {
+    const originalArgv = process.argv
+    process.argv = [
+      'node',
+      'watch-hmr-regression',
+      '--case',
+      'demo-uni',
+      '--main-style-only',
+      '--report-file',
+      'e2e/benchmark/e2e-watch-hmr/manual-demo-uni-main-style-only.json',
+    ]
+
+    try {
+      expect(resolveOptions()).toMatchObject({
+        caseName: 'demo-uni',
+        mainStyleOnly: true,
+        reportFile: 'e2e/benchmark/e2e-watch-hmr/manual-demo-uni-main-style-only.json',
+      })
+    }
+    finally {
+      process.argv = originalArgv
+    }
+  })
+})
+
 describe('watch-hmr regression summary helpers', () => {
   it('summarizes samples and cases', () => {
     expect(summarizeSamples([])).toEqual({
@@ -849,6 +897,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      mainStyleOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
     }
@@ -871,6 +920,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(report.repositoryRoot).toBe(path.basename(tempDir))
     expect(report.options.caseName).toBe('demo')
     expect(report.options.webOnly).toBe(false)
+    expect(report.options.mainStyleOnly).toBe(false)
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
     expect(report.hmrDurations.byProject['demo-weapp-vite-tailwindcss-v3'].timings.map((item: any) => item.surface)).toEqual(expect.arrayContaining([
@@ -895,6 +945,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      mainStyleOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
     }
@@ -979,6 +1030,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      mainStyleOnly: false,
       maxHotUpdateMs: 1000,
     })).toThrow('script:added-class hot update exceeded budget: 2500ms > 1000ms')
   })
@@ -1000,6 +1052,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      mainStyleOnly: false,
       maxPluginProcessMs: 500,
     })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
   })
@@ -1034,6 +1087,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      mainStyleOnly: false,
       maxPluginProcessMs: 500,
     })).not.toThrow()
   })
@@ -1187,8 +1241,6 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.maxPluginProcessMs).toBe(5000)
@@ -1200,7 +1252,7 @@ describe('watch-hmr regression cases', () => {
     expect(uniViteV4Case?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
-    expect(uniViteV4Case?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(
+    expect(uniViteV4Case?.subPackageMutations?.[0]?.globalStyleCandidates).not.toContain(
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
     )
 
@@ -1493,6 +1545,34 @@ describe('watch-hmr regression cases', () => {
       }
       expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-independent')?.independent, watchCase.name).toBe(true)
       expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-normal')?.independent, watchCase.name).toBe(false)
+    }
+  })
+
+  it('keeps main-style hot-update guards on final global style outputs for every demo case', () => {
+    const cases = buildCases('/repo', { includeLocalOnly: true }).filter(watchCase => watchCase.group === 'demo')
+
+    expect(cases.length).toBeGreaterThan(0)
+
+    for (const watchCase of cases) {
+      expect(watchCase.globalStyleCandidates.length, watchCase.name).toBeGreaterThan(0)
+      expect(watchCase.templateMutation.verifyEscapedIn.length, watchCase.name).toBeGreaterThan(0)
+      expect(typeof watchCase.templateMutation.mutate, watchCase.name).toBe('function')
+
+      const normalizedCandidates = watchCase.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/'))
+      if (watchCase.name.startsWith('uni-app-vite-tailwindcss-')) {
+        expect(normalizedCandidates, watchCase.name).toEqual([
+          `/repo/demo/${watchCase.name}/dist/dev/mp-weixin/app.wxss`,
+        ])
+      }
+      if (watchCase.name.startsWith('uni-app-vite-vue3-hbuilderx-tailwindcss-')) {
+        expect(normalizedCandidates, watchCase.name).toEqual([
+          `/repo/demo/${watchCase.name}/unpackage/dist/dev/mp-weixin/app.wxss`,
+        ])
+      }
+      for (const candidate of normalizedCandidates) {
+        expect(candidate, watchCase.name).not.toMatch(/\/src\/(?:main|tailwind)\.wxss$/)
+        expect(candidate, watchCase.name).not.toMatch(/\/main\.css$/)
+      }
     }
   })
 

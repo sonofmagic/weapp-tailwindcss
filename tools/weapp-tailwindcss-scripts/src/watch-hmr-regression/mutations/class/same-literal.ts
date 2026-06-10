@@ -167,7 +167,7 @@ export async function runSameClassLiteralMutation(
   // same-class-literal 复现用于覆盖“源码变更但 CSS 原文不变”的 HMR 场景。
   // 这里沿用 case 级别的全局样式命中策略：若 case 配置为 0（如 mpx），
   // 只校验热更新生效与回滚，不强制要求 global style 命中 escaped class。
-  const minRequiredEscapedClasses = minRequiredGlobalStyleEscapedClasses === 0
+  const minRequiredEscapedClasses = !stableGlobalStyleRequired || minRequiredGlobalStyleEscapedClasses === 0
     ? 0
     : Math.max(
         1,

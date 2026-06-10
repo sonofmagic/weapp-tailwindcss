@@ -38,9 +38,11 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   }
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    escapeMap: opts.escapeMap,
   })
   const transformRuntimeClassSetManager = createBundleRuntimeClassSetManager({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    escapeMap: opts.escapeMap,
   })
   let runtimeSet: Set<string> | undefined
   let runtimeSetPromise: Promise<Set<string>> | undefined

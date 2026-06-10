@@ -2,6 +2,7 @@ import type { BundleSnapshot, BundleStateEntry } from './bundle-state'
 import type { TailwindV4DesignSystem, TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
 import type { TailwindcssPatcherLike } from '@/types'
 import type { IArbitraryValues } from '@/types/shared'
+import { MappingChars2String, unescape as unescapeClassName } from '@weapp-core/escape'
 import { extractRawCandidatesWithPositions, extractValidCandidates, resolveValidTailwindV4Candidates } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -34,11 +35,15 @@ export interface BundleRuntimeClassSetSyncOptions {
 
 interface CreateBundleRuntimeClassSetManagerOptions {
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
+  escapeMap?: Record<string, string> | undefined
   extractCandidates?: ExtractValidCandidatesFn
   extractRawCandidates?: ExtractRawCandidatesFn
 }
 
 const EXTENSION_DOT_PREFIX_RE = /^\./
+const ESCAPED_CLASS_TOKEN_RE = /[\w-]+_[A-Z][\w-]*/gi
+const TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE = /[[\]:/#!.]/
+const MAX_RESTORED_CANDIDATE_VARIANTS = 512
 const VENDOR_CHUNK_BASENAME_RE = /^(?:vendor|vendors|chunk-vendors|common_vendor)(?:[.-]|$)/i
 const COMMON_VENDOR_CHUNK_RE = /^(?:common|static|assets|chunks?)\/(?:vendor|vendors|chunk-vendors|common_vendor|runtime)(?:[.-]|$)/i
 
@@ -145,6 +150,77 @@ function resolveEntryExtension(entry: BundleStateEntry) {
 
 function createCandidateValidationSource(candidates: Iterable<string>) {
   return [...new Set(candidates)].sort().join('\n')
+}
+
+function createEscapeFragments(escapeMap: Record<string, string>) {
+  return [...new Set(Object.values(escapeMap).filter(Boolean))]
+    .sort((a, b) => b.length - a.length)
+}
+
+function hasEscapeFragment(token: string, escapeFragments: string[]) {
+  return escapeFragments.some(fragment => token.includes(fragment))
+}
+
+function createAmbiguousRestoredRuntimeCandidates(
+  token: string,
+  escapeMap: Record<string, string>,
+  escapeFragments: string[],
+) {
+  if (!hasEscapeFragment(token, escapeFragments)) {
+    return []
+  }
+
+  const unescapedByFragment = new Map(
+    Object.entries(escapeMap).map(([char, fragment]) => [fragment, char]),
+  )
+  let variants = ['']
+  let index = 0
+
+  while (index < token.length) {
+    const fragment = escapeFragments.find(item => token.startsWith(item, index))
+    if (!fragment) {
+      variants = variants.map(item => item + token[index])
+      index += 1
+      continue
+    }
+
+    const nextVariants: string[] = []
+    const unescaped = unescapedByFragment.get(fragment)
+    for (const variant of variants) {
+      nextVariants.push(variant + fragment)
+      if (unescaped) {
+        nextVariants.push(variant + unescaped)
+      }
+      if (nextVariants.length >= MAX_RESTORED_CANDIDATE_VARIANTS) {
+        break
+      }
+    }
+    variants = nextVariants
+    index += fragment.length
+  }
+
+  variants.push(unescapeClassName(token, { map: escapeMap }))
+
+  return [...new Set(variants)].filter(restored => restored !== token
+    && TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE.test(restored)
+    && !/\s/.test(restored))
+}
+
+function collectEscapedRuntimeCandidates(
+  source: string,
+  escapeMap: Record<string, string>,
+  escapeFragments: string[],
+) {
+  const candidates = new Set<string>()
+  ESCAPED_CLASS_TOKEN_RE.lastIndex = 0
+  let match = ESCAPED_CLASS_TOKEN_RE.exec(source)
+  while (match) {
+    for (const restored of createAmbiguousRestoredRuntimeCandidates(match[0], escapeMap, escapeFragments)) {
+      candidates.add(restored)
+    }
+    match = ESCAPED_CLASS_TOKEN_RE.exec(source)
+  }
+  return candidates
 }
 
 function removeCandidateSet(
@@ -454,6 +530,8 @@ export function createBundleRuntimeClassSetManager(
   const customExtractCandidates = options.extractCandidates
   const extractCandidates = customExtractCandidates ?? extractValidCandidates
   const extractRawCandidates = options.extractRawCandidates ?? extractRawCandidatesWithPositions
+  const escapeMap = options.escapeMap ?? MappingChars2String
+  const escapeFragments = createEscapeFragments(escapeMap)
   let baseClassSet = new Set<string>()
   const candidateCountByClass = new Map<string, number>()
   const candidatesByFile = new Map<string, Set<string>>()
@@ -561,6 +639,11 @@ export function createBundleRuntimeClassSetManager(
         ) {
           continue
         }
+        candidates.add(candidate)
+      }
+    }
+    if (patcher.majorVersion === 4) {
+      for (const candidate of collectEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
         candidates.add(candidate)
       }
     }
