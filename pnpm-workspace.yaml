@@ -38,7 +38,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.10.34
+    baseline-browser-mapping: ^2.10.35
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -79,7 +79,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.8.3
+    prettier: ^3.8.4
   react18:
     '@types/react': ^19.2.17
     '@types/react-dom': 18.2.7
@@ -188,7 +188,7 @@ catalogs:
   weappVite:
     weapp-vite: ^6.16.43
   wrangler:
-    wrangler: ^4.98.0
+    wrangler: ^4.99.0
 
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
