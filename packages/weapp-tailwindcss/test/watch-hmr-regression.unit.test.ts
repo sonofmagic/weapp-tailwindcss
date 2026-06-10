@@ -1619,7 +1619,7 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase.templateMutation.verifyEscapedIn.length, watchCase.name).toBeGreaterThan(0)
       expect(typeof watchCase.templateMutation.mutate, watchCase.name).toBe('function')
 
-      const normalizedCandidates = watchCase.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/'))
+      const normalizedCandidates = watchCase.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/').replace(/^[A-Z]:(?=\/)/i, ''))
       if (watchCase.name.startsWith('uni-app-vite-tailwindcss-')) {
         expect(normalizedCandidates, watchCase.name).toEqual([
           `/repo/demo/${watchCase.name}/dist/dev/mp-weixin/app.wxss`,
