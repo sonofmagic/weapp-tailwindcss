@@ -302,16 +302,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
     userReportedHotUpdate: {
-      label: 'index text-[88rpx] to text-[338rpx]',
+      label: 'index text-[102.43rpx] to text-[103.43rpx]',
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue'),
-      before: 'text-[#00f285] text-[88rpx] font-bold underline',
-      after: 'text-[#00f285] text-[338rpx] font-bold underline',
-      beforeClassTokens: ['text-[88rpx]'],
-      afterClassTokens: ['text-[338rpx]'],
+      before: 'text-[#00f285] text-[102.43rpx] font-bold underline',
+      after: 'text-[#00f285] text-[103.43rpx] font-bold underline',
+      beforeClassTokens: ['text-[102.43rpx]'],
+      afterClassTokens: ['text-[103.43rpx]'],
       verifyEscapedIn: ['wxml'],
     },
     contentMutation: {
@@ -390,8 +389,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
           mutate(source) {
             return replaceWebDomSnippet(
               source,
-              `<text class="text-[#00f285] text-[338rpx] font-bold underline">{{ title }}</text>`,
-              `<text ${webDomMarkerAttr} class="text-[red] text-[338rpx] font-bold underline">H5-HMR-UNI-V4</text>`,
+              `<text class="text-[#00f285] text-[102.43rpx] font-bold underline">{{ title }}</text>`,
+              `<text ${webDomMarkerAttr} class="text-[red] text-[102.43rpx] font-bold underline">H5-HMR-UNI-V4</text>`,
             )
           },
           expectedText: 'H5-HMR-UNI-V4',

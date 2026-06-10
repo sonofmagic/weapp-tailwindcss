@@ -960,9 +960,9 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(userReportedHotUpdate.classTokens.some(token => token === 'bg-[red]' || token === 'bg-[#4268EA]')).toBe(true)
       }
       if (item.name === 'uni-app-vite-tailwindcss-v4') {
-        expect(userReportedHotUpdate.label).toBe('index text-[88rpx] to text-[338rpx]')
-        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['text-[#00f285] text-[88rpx] font-bold underline', 'text-[#00f285] text-[338rpx] font-bold underline']))
-        expect(userReportedHotUpdate.classTokens.some(token => token === 'text-[88rpx]' || token === 'text-[338rpx]')).toBe(true)
+        expect(userReportedHotUpdate.label).toBe('index text-[102.43rpx] to text-[103.43rpx]')
+        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['text-[#00f285] text-[102.43rpx] font-bold underline', 'text-[#00f285] text-[103.43rpx] font-bold underline']))
+        expect(userReportedHotUpdate.classTokens.some(token => token === 'text-[102.43rpx]' || token === 'text-[103.43rpx]')).toBe(true)
       }
     }
 

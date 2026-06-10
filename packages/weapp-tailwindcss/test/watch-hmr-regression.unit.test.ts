@@ -1198,7 +1198,6 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteV4Case?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteV4Case?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(

@@ -1271,7 +1271,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
             recordCssAssetResult?.(outputFile, generated.css)
             recordViteProcessedCssAssetResult?.(sourceFile, generated.css, {
-              injectIntoMain: cssHandlerOptions.isMainChunk,
+              injectIntoMain: isAppOriginCssFile(outputFile)
+                ? false
+                : cssHandlerOptions.isMainChunk || undefined,
             })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }

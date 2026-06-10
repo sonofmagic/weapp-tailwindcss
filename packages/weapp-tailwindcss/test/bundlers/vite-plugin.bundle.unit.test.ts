@@ -5629,9 +5629,12 @@ const cls = "w-[1.5px]"
     expect(nextAppOriginCss).not.toContain('text-[#111111]')
   }, TEST_TIMEOUT_MS)
 
-  it('injects updated vite pipeline main css into uni-app dev app.wxss', async () => {
+  it('replays updated vite pipeline main css into uni-app dev app.wxss', async () => {
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].sort().map(candidate => `.${replaceWxml(candidate)}{font-size:${candidate.includes('338rpx') ? '338rpx' : '88rpx'}}`).join('\n'),
+      css: [...options.candidates].sort().map((candidate) => {
+        const fontSize = candidate.match(/^text-\[(.+)\]$/)?.[1] ?? '0rpx'
+        return `.${replaceWxml(candidate)}{font-size:${fontSize}}`
+      }).join('\n'),
       rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
       target: 'weapp',
       classSet: new Set(options.candidates),
@@ -5673,6 +5676,8 @@ const cls = "w-[1.5px]"
     }))
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
+    const forceRuntimeRefresh = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
+    process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = '1'
     setCurrentContext(createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -5706,43 +5711,84 @@ const cls = "w-[1.5px]"
     const cssSourceFile = path.resolve(process.cwd(), 'src/main.css')
     const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
 
-    runtimeSet.add('text-[88rpx]')
-    await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
+    try {
+      runtimeSet.add('text-[102.43rpx]')
+      await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
 
-    runtimeSet.delete('text-[88rpx]')
-    runtimeSet.add('text-[338rpx]')
-    await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
-      file: path.resolve(process.cwd(), 'src/pages/index/index.vue'),
-      modules: [],
-      server: {
-        moduleGraph: {
-          getModuleById: vi.fn(),
-          getModulesByFile: vi.fn(() => []),
-          invalidateModule: vi.fn(),
+      const firstBundle = {
+        'src/main.wxss': {
+          ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', cssSourceFile)}\n.${replaceWxml('text-[102.43rpx]')}{font-size:102.43rpx}`),
+          fileName: 'src/main.wxss',
+          originalFileNames: [cssSourceFile],
         },
-        ws: { send: vi.fn() },
-      },
-      timestamp: Date.now(),
-    } as unknown as HmrContext)
-    await transform?.call({ addWatchFile: vi.fn() } as any, cssSource, cssSourceFile)
+        'app.wxss': {
+          ...createRollupAsset(''),
+          fileName: 'app.wxss',
+        },
+      }
+      await generateBundle?.call(postPlugin, {} as any, firstBundle)
+      const firstAppCss = (firstBundle['app.wxss'] as OutputAsset).source.toString()
+      expect(firstAppCss).toContain(replaceWxml('text-[102.43rpx]'))
+      expect(firstAppCss).toContain('102.43rpx')
 
-    const bundle = {
-      'src/main.wxss': {
-        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', cssSourceFile)}\n.${replaceWxml('text-[338rpx]')}{font-size:338rpx}`),
-        fileName: 'src/main.wxss',
-        originalFileNames: [cssSourceFile],
-      },
-      'app.wxss': {
-        ...createRollupAsset(''),
-        fileName: 'app.wxss',
-      },
+      runtimeSet.clear()
+      runtimeSet.add('text-[103.43rpx]')
+      await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+        file: path.resolve(process.cwd(), 'src/pages/index/index.vue'),
+        modules: [],
+        server: {
+          moduleGraph: {
+            getModuleById: vi.fn(),
+            getModulesByFile: vi.fn(() => []),
+            invalidateModule: vi.fn(),
+          },
+          ws: { send: vi.fn() },
+        },
+        timestamp: Date.now(),
+      } as unknown as HmrContext)
+
+      const secondBundle = {
+        'pages/index/index.wxml': {
+          ...createRollupAsset(`<view class="${replaceWxml('text-[103.43rpx]')}"></view>`),
+          fileName: 'pages/index/index.wxml',
+        },
+        'app.wxss': {
+          ...createRollupAsset(firstAppCss),
+          fileName: 'app.wxss',
+        },
+      }
+      await generateBundle?.call(postPlugin, {} as any, secondBundle)
+      const secondAppCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
+      expect(secondAppCss).toContain(replaceWxml('text-[103.43rpx]'))
+      expect(secondAppCss).toContain('103.43rpx')
+      expect(secondAppCss).not.toContain(replaceWxml('text-[104.43rpx]'))
+
+      runtimeSet.clear()
+      runtimeSet.add('text-[104.43rpx]')
+      const thirdBundle = {
+        'pages/index/index.wxml': {
+          ...createRollupAsset(`<view class="${replaceWxml('text-[104.43rpx]')}"></view>`),
+          fileName: 'pages/index/index.wxml',
+        },
+        'app.wxss': {
+          ...createRollupAsset(firstAppCss),
+          fileName: 'app.wxss',
+        },
+      }
+      await generateBundle?.call(postPlugin, {} as any, thirdBundle)
+      const thirdAppCss = (thirdBundle['app.wxss'] as OutputAsset).source.toString()
+      expect(thirdAppCss).toContain(replaceWxml('text-[104.43rpx]'))
+      expect(thirdAppCss).toContain('104.43rpx')
+      expect(thirdAppCss).not.toContain(replaceWxml('text-[103.43rpx]'))
     }
-    await generateBundle?.call(postPlugin, {} as any, bundle)
-
-    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
-    expect(appCss).toContain(replaceWxml('text-[338rpx]'))
-    expect(appCss).toContain('338rpx')
-    expect(appCss).not.toContain(replaceWxml('text-[88rpx]'))
+    finally {
+      if (forceRuntimeRefresh === undefined) {
+        delete process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
+      }
+      else {
+        process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = forceRuntimeRefresh
+      }
+    }
   }, TEST_TIMEOUT_MS)
 
   it('replays remembered vite pipeline css when source rolls back without css bundle asset', async () => {
