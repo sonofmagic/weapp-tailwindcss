@@ -283,7 +283,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const processedCssAssets = new WeakSet<object>()
   const viteProcessedCssSourceFiles = new Set<string>()
   const viteGeneratedCssByFile = new Map<string, string>()
-  const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
+  const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
   const rememberedCssSources = new Map<string, RememberedCssSource>()
   const rememberedCssSignatureByFile = new Map<string, string>()
   const knownSfcSources = new Map<string, string>()
@@ -700,13 +700,14 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const recordViteProcessedCssAssetResult = (
     file: string,
     css: string,
-    options: { injectIntoMain?: boolean | undefined } = {},
+    options: { injectIntoMain?: boolean | undefined, outputFile?: string | undefined } = {},
   ) => {
     const key = normalizeOutputPathKey(file)
     const previous = viteProcessedCssAssetResults.get(key)
     viteProcessedCssAssetResults.set(key, {
       css,
       injectIntoMain: options.injectIntoMain ?? previous?.injectIntoMain,
+      outputFile: options.outputFile ?? previous?.outputFile,
     })
   }
   const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
@@ -907,10 +908,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     // 这里保留 undefined，让 app/main 入口走主样式注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回 app.wxss。
     recordViteProcessedCssAssetResult(file, generated.css, {
       injectIntoMain: shouldInjectGeneratedCssIntoMain,
+      outputFile,
     })
     if (generated.css.includes('weapp-tailwindcss layer components start')) {
       recordViteProcessedCssAssetResult(file, generated.css, {
         injectIntoMain: shouldInjectGeneratedCssIntoMain,
+        outputFile,
       })
     }
     if (isNativeAppStyleTarget && outputFile.endsWith('.css')) {

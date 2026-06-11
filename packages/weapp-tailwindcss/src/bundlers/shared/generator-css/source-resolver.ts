@@ -346,38 +346,6 @@ function collectCssSourceMatchBases(
   return bases
 }
 
-function hasMatchingCssSourceBase(outputBases: Set<string>, sourceBases: Set<string>) {
-  for (const outputBase of outputBases) {
-    for (const sourceBase of sourceBases) {
-      if (
-        outputBase === sourceBase
-        || outputBase.endsWith(`/${sourceBase}`)
-        || sourceBase.endsWith(`/${outputBase}`)
-      ) {
-        return true
-      }
-    }
-  }
-  return false
-}
-
-function isMatchingTailwindV4CssSourceFile(
-  file: string,
-  cssSourceFile: string,
-  sourceOptions: SourceStyleMatchOptions,
-) {
-  const outputBases = collectCssSourceMatchBases(file, [
-    sourceOptions.outputRoot,
-    sourceOptions.projectRoot,
-    sourceOptions.cwd,
-  ])
-  const sourceBases = collectCssSourceMatchBases(cssSourceFile, [
-    sourceOptions.projectRoot,
-    sourceOptions.cwd,
-  ])
-  return hasMatchingCssSourceBase(outputBases, sourceBases)
-}
-
 function scoreTailwindV4CssSourceFileMatch(
   file: string,
   cssSourceFile: string,
@@ -543,18 +511,43 @@ async function resolveMatchingTailwindV4CssSource(
 
   const normalizedRawSource = normalizeCssSourceForCompare(rawSource)
   const sourceFile = resolvePostcssSourceFile(cssHandlerOptions)
-  const matchingSource = cssSources.find((cssSource) => {
-    if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
-      return false
-    }
-    if (sourceFile && typeof cssSource.file === 'string' && path.resolve(sourceFile) === path.resolve(cssSource.file)) {
-      return true
-    }
-    if (typeof cssSource.file === 'string' && isMatchingTailwindV4CssSourceFile(file, cssSource.file, sourceOptions)) {
-      return true
-    }
-    return normalizeCssSourceForCompare(cssSource.css) === normalizedRawSource
-  })
+  const matches = cssSources
+    .map((cssSource, index) => {
+      if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
+        return undefined
+      }
+      if (sourceFile && typeof cssSource.file === 'string' && path.resolve(sourceFile) === path.resolve(cssSource.file)) {
+        return {
+          cssSource,
+          index,
+          score: 1000000,
+        }
+      }
+      if (typeof cssSource.file === 'string') {
+        const pathScore = scoreTailwindV4CssSourceFileMatch(file, cssSource.file, sourceOptions)
+        if (pathScore > 0) {
+          return {
+            cssSource,
+            index,
+            score: pathScore,
+          }
+        }
+      }
+      if (normalizeCssSourceForCompare(cssSource.css) === normalizedRawSource) {
+        return {
+          cssSource,
+          index,
+          score: 1,
+        }
+      }
+      return undefined
+    })
+    .filter((match): match is { cssSource: TailwindV4CssSource, index: number, score: number } => Boolean(match))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+  const bestScore = matches[0]?.score
+  const matchingSource = bestScore && matches.filter(match => match.score === bestScore).length === 1
+    ? matches[0]?.cssSource
+    : undefined
   if (!matchingSource) {
     return undefined
   }

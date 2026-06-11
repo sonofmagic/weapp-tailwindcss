@@ -21,6 +21,7 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+/* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -28,30 +29,36 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
+/* tokens: container <= <source not found> */
 .container {
   width: 100%;
 }
 @media (min-width: 40rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 3072rpx;
   }

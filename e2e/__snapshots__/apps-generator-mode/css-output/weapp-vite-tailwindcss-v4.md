@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 11114 | 68 | false | false | false | false | true |
+| 12010 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -317,6 +317,39 @@ wx-root-portal-content {
   .container {
     max-width: 3072rpx;
   }
+}
+.size-8 {
+  width: calc(var(--spacing) * 8);
+  height: calc(var(--spacing) * 8);
+}
+.size-12 {
+  width: calc(var(--spacing) * 12);
+  height: calc(var(--spacing) * 12);
+}
+.h-10 {
+  height: calc(var(--spacing) * 10);
+}
+.gap-3 {
+  gap: calc(var(--spacing) * 3);
+}
+.space-y-2_d5 > view + view,
+.space-y-2_d5 > view + text,
+.space-y-2_d5 > text + view,
+.space-y-2_d5 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-bottom: calc(var(--spacing) * 2.5 * var(--tw-space-y-reverse));
+  margin-top: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-y-reverse)));
+}
+.space-x-2_d5 > view + view,
+.space-x-2_d5 > view + text,
+.space-x-2_d5 > text + view,
+.space-x-2_d5 > text + text {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(var(--spacing) * 2.5 * var(--tw-space-x-reverse));
+  margin-left: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-x-reverse)));
+}
+.p-4 {
+  padding: calc(var(--spacing) * 4);
 }
 ```
 

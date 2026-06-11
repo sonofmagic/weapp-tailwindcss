@@ -33,39 +33,51 @@ wx-root-portal-content {
   --text-base--line-height: 1.5;
   --font-weight-bold: 700;
 }
+/* tokens: -m-[20px] <= <source not found> */
 .-m-_b20px_B {
   margin: -20px;
 }
+/* tokens: mb-[-20px] <= <source not found> */
 .mb-_b-20px_B {
   margin-bottom: -20px;
 }
+/* tokens: h-[20px] <= <source not found> */
 .h-_b20px_B {
   height: 20px;
 }
+/* tokens: h-[200%] <= <source not found> */
 .h-_b200_v_B {
   height: 200%;
 }
+/* tokens: max-h-[100px] <= <source not found> */
 .max-h-_b100px_B {
   max-height: 100px;
 }
+/* tokens: min-h-[100px] <= <source not found> */
 .min-h-_b100px_B {
   min-height: 100px;
 }
+/* tokens: w-[20px] <= <source not found> */
 .w-_b20px_B {
   width: 20px;
 }
+/* tokens: w-[300rpx] <= <source not found> */
 .w-_b300rpx_B {
   width: 300rpx;
 }
+/* tokens: max-w-[300rpx] <= <source not found> */
 .max-w-_b300rpx_B {
   max-width: 300rpx;
 }
+/* tokens: min-w-[300rpx] <= <source not found> */
 .min-w-_b300rpx_B {
   min-width: 300rpx;
 }
+/* tokens: rotate-[10deg] <= <source not found> */
 .rotate-_b10deg_B {
   rotate: 10deg;
 }
+/* tokens: space-y-[1.6rem] <= <source not found> */
 .space-y-_b1_d6rem_B > text + text,
 .space-y-_b1_d6rem_B > text + view,
 .space-y-_b1_d6rem_B > view + text,
@@ -74,6 +86,7 @@ wx-root-portal-content {
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
 }
+/* tokens: divide-x-[10px] <= <source not found> */
 .divide-x-_b10px_B > text + text,
 .divide-x-_b10px_B > text + view,
 .divide-x-_b10px_B > view + text,
@@ -84,174 +97,219 @@ wx-root-portal-content {
   border-right-style: var(--tw-border-style);
   border-right-width: calc(10px * var(--tw-divide-x-reverse));
 }
+/* tokens: divide-[#010101] <= <source not found> */
 .divide-_b_h010101_B > text + text,
 .divide-_b_h010101_B > text + view,
 .divide-_b_h010101_B > view + text,
 .divide-_b_h010101_B > view + view {
   border-color: #010101;
 }
+/* tokens: border-[10px] <= <source not found> */
 .border-_b10px_B {
   border-width: 10px;
 }
+/* tokens: border-[10rpx] <= <source not found> */
 .border-_b10rpx_B {
   border-width: 10rpx;
 }
+/* tokens: border-[#098765] <= <source not found> */
 .border-_b_h098765_B {
   border-color: #098765;
 }
+/* tokens: border-[red] <= <source not found> */
 .border-_bred_B {
   border-color: red;
 }
+/* tokens: border-b-[4rpx] <= <source not found> */
 .border-b-_b4rpx_B {
   border-bottom-width: 4rpx;
 }
+/* tokens: border-t-[4px] <= <source not found> */
 .border-t-_b4px_B {
   border-top-width: 4px;
 }
+/* tokens: !bg-green-500 <= <source not found> */
 ._ebg-green-500 {
   background-color: var(--color-green-500) !important;
 }
+/* tokens: bg-[#010101] <= <source not found> */
 .bg-_b_h010101_B {
   background-color: #010101;
 }
+/* tokens: bg-[#123456] <= <source not found> */
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+/* tokens: bg-[#434344] <= <source not found> */
 .bg-_b_h434344_B {
   background-color: #434344;
 }
+/* tokens: bg-[#e90505] <= <source not found> */
 .bg-_b_he90505_B {
   background-color: #e90505;
 }
+/* tokens: bg-blue-500/50 <= <source not found> */
 .bg-blue-500_f50 {
   background-color: rgba(59, 130, 246, 0.5);
 }
+/* tokens: p-[20px] <= <source not found> */
 .p-_b20px_B {
   padding: 20px;
 }
+/* tokens: px-[34.54rpx] <= <source not found> */
 .px-_b34_d54rpx_B {
   padding-left: 34.54rpx;
   padding-right: 34.54rpx;
 }
+/* tokens: text-[20px] <= <source not found> */
 .text-_b20px_B {
   font-size: 20px;
 }
+/* tokens: text-[22px] <= <source not found> */
 .text-_b22px_B {
   font-size: 22px;
 }
+/* tokens: text-[32.4rpx] <= <source not found> */
 .text-_b32_d4rpx_B {
   font-size: 32.4rpx;
 }
+/* tokens: text-[32px] <= <source not found> */
 .text-_b32px_B {
   font-size: 32px;
 }
+/* tokens: text-[32rpx] <= <source not found> */
 .text-_b32rpx_B {
   font-size: 32rpx;
 }
+/* tokens: text-[length:var(--my-var-length)] <= <source not found> */
 .text-_blength_cvar_p--my-var-length_P_B {
   font-size: var(--my-var-length);
 }
+/* tokens: leading-[0.9] <= <source not found> */
 .leading-_b0_d9_B {
   --tw-leading: 0.9;
   line-height: 0.9;
 }
+/* tokens: !font-bold <= <source not found> */
 ._efont-bold {
   --tw-font-weight: var(--font-weight-bold) !important;
   font-weight: var(--font-weight-bold) !important;
 }
+/* tokens: !text-[#990000] <= <source not found> */
 ._etext-_b_h990000_B {
   color: #900 !important;
 }
+/* tokens: text-[#5cdc34] <= <source not found> */
 .text-_b_h5cdc34_B {
   color: #5cdc34;
 }
+/* tokens: text-[#bada55] <= <source not found> */
 .text-_b_hbada55_B {
   color: #bada55;
 }
+/* tokens: text-[#dddddd] <= <source not found> */
 .text-_b_hdddddd_B {
   color: #ddd;
 }
+/* tokens: text-[color:var(--my-var)] <= <source not found> | text-[var(--my-var)] <= <source not found> */
 .text-_bcolor_cvar_p--my-var_P_B,
 .text-_bvar_p--my-var_P_B {
   color: var(--my-var);
 }
+/* tokens: shadow-[0px_2px_11px_0px_#00000a] <= <source not found> */
 .shadow-_b0px_2px_11px_0px__h00000a_B {
   --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, #00000a);
 }
+/* tokens: shadow-[0px_2px_11px_0px_#00000a] <= <source not found> | shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] <= <source not found> */
 .shadow-_b0px_2px_11px_0px__h00000a_B,
 .shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
+/* tokens: shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] <= <source not found> */
 .shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
   --tw-shadow: 0px 2px 11px 0px var(--tw-shadow-color, rgba(0, 0, 0, 0.4));
 }
+/* tokens: before:content-['Festivus'] <= <source not found> */
 .before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_mpx-tailwindcss-v4'] <= <source not found> */
 .before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage mpx-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_mpx-tailwindcss-v4'] <= <source not found> */
 .before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage mpx-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: after:border-none <= <source not found> */
 .after_cborder-none::after {
   --tw-border-style: none;
   border-style: none;
   content: var(--tw-content);
 }
+/* tokens: active:bg-[#543210] <= <source not found> */
 .active_cbg-_b_h543210_B:active {
   background-color: #543210;
 }
+/* tokens: active:bg-[#989898] <= <source not found> */
 .active_cbg-_b_h989898_B:active {
   background-color: #989898;
 }
 @media (min-width: 96rem) {
+  /* tokens: 2xl:text-base <= <source not found> */
   ._2xl_ctext-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
-  }
+  } /* tokens: 2xl:text-[red] <= <source not found> */
   ._2xl_ctext-_bred_B {
     color: red;
   }
 }
 @media (prefers-color-scheme: dark) {
+  /* tokens: dark:bg-green-500 <= <source not found> */
   .dark_cbg-green-500 {
     background-color: var(--color-green-500);
-  }
+  } /* tokens: dark:bg-zinc-800 <= <source not found> */
   .dark_cbg-zinc-800 {
     background-color: var(--color-zinc-800);
-  }
+  } /* tokens: dark:text-yellow-400 <= <source not found> */
   .dark_ctext-yellow-400 {
     color: var(--color-yellow-400);
   }
 }
+/* tokens: container <= <source not found> */
 .container {
   width: 100%;
 }
 @media (min-width: 40rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
+  /* tokens: container <= <source not found> */
   .container {
     max-width: 3072rpx;
   }

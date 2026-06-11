@@ -8,11 +8,17 @@ export interface CssSnapshotEntry {
   content: string
 }
 
+export interface CssTokenSource {
+  token: string
+  sources: string[]
+}
+
 export interface CssSnapshotOptions {
   classList?: string[]
   normalizeWebpackAppSplitNoise?: boolean
   normalizeTailwindV4RootVariableNoise?: boolean
   rootSnapshotName?: string
+  tokenSources?: Map<string, CssTokenSource> | Record<string, CssTokenSource | string[]>
 }
 
 async function exists(target: string) {
@@ -171,10 +177,10 @@ export function normalizeFormattedCssSnapshot(source: string) {
   return source.replace(/\n{2,}(?=(?:view|text|:{1,2}after|:{1,2}before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
 }
 
-export function normalizeCssTextSnapshot(source: string) {
+export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOptions = {}) {
   const withoutBanner = stripTailwindBanner(source)
   const normalizedImports = normalizeCssImports(withoutBanner)
-  const normalizedCss = normalizeCssSnapshot(normalizedImports)
+  const normalizedCss = normalizeCssSnapshot(normalizedImports, options)
   return normalizeFormattedCssSnapshot(normalizedCss)
     .trimEnd()
     .split('\n')
@@ -881,6 +887,72 @@ function normalizeTailwindV4EmptyVarFallbackSnapshot(source: string) {
   return source.replace(/var\((--tw-[\w-]+),\)/g, 'var($1, )')
 }
 
+function getTokenSource(options: CssSnapshotOptions, token: string): CssTokenSource | undefined {
+  if (!options.tokenSources) {
+    return undefined
+  }
+  const source = options.tokenSources instanceof Map
+    ? options.tokenSources.get(token)
+    : options.tokenSources[token]
+  if (!source) {
+    return undefined
+  }
+  return Array.isArray(source) ? { token, sources: source } : source
+}
+
+function normalizeSelectorTokenCandidate(candidate: string) {
+  return candidate
+    .replace(/(?<!\\)\\:/g, ':')
+    .replace(/(?<!\\)\\\//g, '/')
+}
+
+function collectRuleSourceTokens(rule: postcss.Rule, options: CssSnapshotOptions) {
+  const tokens = new Map<string, CssTokenSource>()
+  for (const selector of rule.selectors) {
+    const classMatches = selector.matchAll(/\.((?:\\.|[^\s.#:[{>,])*)/g)
+    for (const match of classMatches) {
+      const rawCandidate = match[1]
+      if (!rawCandidate) {
+        continue
+      }
+      const candidates = [
+        normalizeSelectorTokenCandidate(rawCandidate),
+        rawCandidate,
+      ]
+      for (const candidate of candidates) {
+        const source = getTokenSource(options, candidate)
+        if (!source) {
+          continue
+        }
+        tokens.set(source.token, source)
+        break
+      }
+    }
+  }
+  return tokens
+}
+
+function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOptions) {
+  if (!options.tokenSources) {
+    return
+  }
+
+  root.walkRules((rule) => {
+    const tokens = collectRuleSourceTokens(rule, options)
+    if (tokens.size === 0 || !rule.parent) {
+      return
+    }
+
+    const lines = [...tokens.values()].map(({ token, sources }) => {
+      return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<source not found>'}`
+    })
+    const comment = postcss.comment({ text: `tokens: ${lines.join(' | ')}` })
+    comment.raws.before = rule.raws.before
+    rule.raws.before = '\n'
+    rule.parent.insertBefore(rule, comment)
+  })
+}
+
 export function normalizeCssSnapshot(source: string, _options: CssSnapshotOptions = {}) {
   const root = postcss.parse(source)
 
@@ -954,6 +1026,7 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     sortUtilityRuleRuns(root)
   }
   normalizeNodeSpacing(root)
+  annotateRuleTokenSources(root, _options)
   return isTailwindV4
     ? normalizeTailwindV4EmptyVarFallbackSnapshot(root.toString())
     : root.toString()

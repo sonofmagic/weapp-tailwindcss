@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
 import { normalizeCssSnapshot, normalizeFormattedCssSnapshot } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
@@ -189,6 +190,36 @@ describe('normalizeCssSnapshot', () => {
       '.bg-gradient-to-r {',
       '  --tw-gradient-position: to right in oklab;',
       '}',
+    ].join('\n'))
+  })
+
+  it('annotates utility rules with extracted token source files', () => {
+    expect(normalizeCssSnapshot([
+      ':host { --spacing: 8rpx; }',
+      '.h-14 { height: calc(var(--spacing) * 14); }',
+      '.bg-_b_h123456_B { background-color: #123456; }',
+    ].join('\n'), {
+      tokenSources: new Map([
+        ['h-14', { token: 'h-14', sources: ['src/pages/index/index.tsx'] }],
+        [replaceWxml('bg-[#123456]'), { token: 'bg-[#123456]', sources: ['src/pages/index/index.tsx', 'src/theme.ts'] }],
+      ]),
+    })).toBe([
+      ':host { --spacing: 8rpx; }',
+      '/* tokens: h-14 <= src/pages/index/index.tsx */',
+      '.h-14 { height: calc(var(--spacing) * 14); }',
+      '/* tokens: bg-[#123456] <= src/pages/index/index.tsx, src/theme.ts */',
+      '.bg-_b_h123456_B { background-color: #123456; }',
+    ].join('\n'))
+  })
+
+  it('marks extracted tokens without source files as missing', () => {
+    expect(normalizeCssSnapshot('.rotate-y-90 { transform: rotateY(90deg); }', {
+      tokenSources: new Map([
+        ['rotate-y-90', { token: 'rotate-y-90', sources: [] }],
+      ]),
+    })).toBe([
+      '/* tokens: rotate-y-90 <= <source not found> */',
+      '.rotate-y-90 { transform: rotateY(90deg); }',
     ].join('\n'))
   })
 

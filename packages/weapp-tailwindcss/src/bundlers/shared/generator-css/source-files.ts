@@ -33,20 +33,6 @@ function isPathWithinRoot(file: string, root: string) {
   return Boolean(relative) && !relative.startsWith('..') && !path.isAbsolute(relative)
 }
 
-function countCommonSuffixSegments(a: string, b: string) {
-  const aSegments = a.split('/').filter(Boolean)
-  const bSegments = b.split('/').filter(Boolean)
-  let count = 0
-  while (
-    count < aSegments.length
-    && count < bSegments.length
-    && aSegments[aSegments.length - 1 - count] === bSegments[bSegments.length - 1 - count]
-  ) {
-    count++
-  }
-  return count
-}
-
 function collectOutputMatchBases(
   file: string,
   sourceOptions: Pick<SourceSideCssEntryOptions, 'projectRoot' | 'cwd' | 'outputRoot'>,
@@ -116,7 +102,6 @@ function isMatchingSourceStyleFile(
         outputBase === sourceBase
         || outputBase.endsWith(`/${sourceBase}`)
         || sourceBase.endsWith(`/${outputBase}`)
-        || countCommonSuffixSegments(outputBase, sourceBase) >= 2
       ) {
         return true
       }
@@ -155,7 +140,6 @@ function scoreMatchingSourceStyleFile(
   let bestScore = 0
   for (const outputBase of outputBases) {
     for (const sourceBase of sourceBases) {
-      const commonSuffixSegments = countCommonSuffixSegments(outputBase, sourceBase)
       if (outputBase === sourceBase) {
         bestScore = Math.max(bestScore, 100000 + outputBase.length)
       }
@@ -164,9 +148,6 @@ function scoreMatchingSourceStyleFile(
       }
       else if (sourceBase.endsWith(`/${outputBase}`)) {
         bestScore = Math.max(bestScore, 1000 + outputBase.length)
-      }
-      else if (commonSuffixSegments >= 2) {
-        bestScore = Math.max(bestScore, 100 + commonSuffixSegments)
       }
     }
   }

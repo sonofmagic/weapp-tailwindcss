@@ -35,8 +35,8 @@ interface CssFinalizerContext {
   debug: (format: string, ...args: unknown[]) => void
   getResolvedConfig: () => ResolvedConfig | undefined
   recordCssAssetResult?: (file: string, css: string) => void
-  recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => void
-  getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
+  recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined, outputFile?: string | undefined }) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }]>
   getRecordedGeneratorCandidates?: () => Set<string> | undefined
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
@@ -171,15 +171,30 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         }
         const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
 
-        collectViteProcessedCssAssetResults(bundle, {
-          opts,
-          isViteProcessedCssAsset,
-          markCssAssetProcessed,
-          recordCssAssetResult,
-          recordViteProcessedCssAssetResult,
-          resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
-          debug,
-        })
+        const collectViteProcessedCssAssets = () => {
+          collectViteProcessedCssAssetResults(bundle, {
+            opts,
+            isViteProcessedCssAsset,
+            markCssAssetProcessed,
+            recordCssAssetResult,
+            recordViteProcessedCssAssetResult,
+            resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
+            debug,
+          })
+        }
+
+        const injectViteProcessedCssIntoMainCss = () => {
+          return injectViteProcessedCssIntoMainCssAssets(bundle, {
+            opts,
+            getViteProcessedCssAssetResults,
+            markCssAssetProcessed,
+            recordCssAssetResult,
+            debug,
+            onUpdate: opts.onUpdate,
+          })
+        }
+
+        collectViteProcessedCssAssets()
 
         const createHarmonyBundleStyleSources = async (runtime: Set<string>) => {
           const cssSources = collectViteProcessedCssSources(getViteProcessedCssAssetResults)
@@ -240,16 +255,10 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const entries = Object.entries(bundle).filter(isCssOutputAssetEntry)
 
         if (entries.length === 0) {
-          injectViteProcessedCssIntoMainCssAssets(bundle, {
-            opts,
-            getViteProcessedCssAssetResults,
-            markCssAssetProcessed,
-            recordCssAssetResult,
-            debug,
-            onUpdate: opts.onUpdate,
-          })
           const runtime = getRecordedGeneratorCandidates?.() ?? getSourceCandidates?.() ?? await ensureRuntimeClassSet()
           await injectHarmonyBundleStyles(runtime)
+          collectViteProcessedCssAssets()
+          injectViteProcessedCssIntoMainCss()
           return
         }
 
@@ -334,15 +343,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           opts.onUpdate(file, rawSource, nextCss)
           debug('css finalizer handle: %s', file)
         }))
-        injectViteProcessedCssIntoMainCssAssets(bundle, {
-          opts,
-          getViteProcessedCssAssetResults,
-          markCssAssetProcessed,
-          recordCssAssetResult,
-          debug,
-          onUpdate: opts.onUpdate,
-        })
         await injectHarmonyBundleStyles(generatorRuntime)
+        collectViteProcessedCssAssets()
+        injectViteProcessedCssIntoMainCss()
       },
     },
   }

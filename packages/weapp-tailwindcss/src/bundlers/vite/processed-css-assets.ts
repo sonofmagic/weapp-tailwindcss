@@ -17,6 +17,7 @@ interface CssAssetProcessedMarker {
 
 interface CssAssetResultRecordOptions {
   injectIntoMain?: boolean | undefined
+  outputFile?: string | undefined
 }
 
 interface CssAssetResultRecorder {
@@ -24,7 +25,7 @@ interface CssAssetResultRecorder {
 }
 
 interface CssAssetResultsGetter {
-  (): Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
+  (): Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }]>
 }
 
 interface CollectViteProcessedCssAssetOptions {
@@ -50,10 +51,6 @@ const CSS_OUTPUT_FILE_RE = /\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i
 
 function isCssOutputFile(file: string) {
   return CSS_OUTPUT_FILE_RE.test(file)
-}
-
-function isAppOriginCssFile(file: string) {
-  return /(?:^|\/)app-origin\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(file)
 }
 
 function isMainStyleAssetFile(file: string) {
@@ -523,27 +520,6 @@ function collectImportedStyleFiles(css: string, targetFile: string) {
   return imports
 }
 
-function removeAppOriginStyleImports(css: string, targetFile: string) {
-  if (!css.includes('@import')) {
-    return css
-  }
-  try {
-    const root = postcss.parse(css)
-    let changed = false
-    root.walkAtRules('import', (atRule) => {
-      const importedFile = resolveImportedStyleFile(targetFile, parseImportRequest(atRule.params))
-      if (importedFile && isAppOriginCssFile(importedFile)) {
-        atRule.remove()
-        changed = true
-      }
-    })
-    return changed ? root.toString().trimStart() : css
-  }
-  catch {
-    return css
-  }
-}
-
 function normalizeMarkerOutputFile(
   markerFile: string,
   resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
@@ -585,6 +561,18 @@ function resolveViteProcessedCssAssetSource(
     : stripBundlerGeneratedCssMarkers(rawSource)
 }
 
+function collectMatchingGeneratedCssMarkerFiles(
+  file: string,
+  rawSource: string,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  return parseBundlerGeneratedCssMarkerBlocks(rawSource)
+    .filter(block => block.bundler === 'vite')
+    .filter(block => isMatchingGeneratedCssMarkerFile(file, block.file, resolveViteProcessedCssOutputFile))
+    .map(block => block.file)
+    .filter((markerFile): markerFile is string => typeof markerFile === 'string' && markerFile.length > 0)
+}
+
 function shouldInjectViteProcessedCssResult(
   opts: InternalUserDefinedOptions,
   targetFile: string,
@@ -608,6 +596,59 @@ function shouldInjectViteProcessedCssResult(
       || sourceBaseName === 'app'
       || sourceBaseName === 'main'
     )
+}
+
+function isViteProcessedCssResultImported(record: { file: string, outputFile?: string | undefined }, importedStyleFiles: Set<string>) {
+  const importedFileNames = new Set([...importedStyleFiles].map(file => path.posix.basename(file)))
+  return importedStyleFiles.has(normalizeOutputPathKey(record.file))
+    || (
+      typeof record.outputFile === 'string'
+      && (
+        importedStyleFiles.has(normalizeOutputPathKey(record.outputFile))
+        || importedFileNames.has(path.posix.basename(normalizeOutputPathKey(record.outputFile)))
+      )
+    )
+}
+
+function removeCssCoveredByImportedViteResults(
+  css: string,
+  importedCssSources: string[],
+) {
+  if (importedCssSources.length === 0) {
+    return css
+  }
+  const importedCss = importedCssSources
+    .map(source => stripBundlerGeneratedCssMarkers(source).trim())
+    .filter(Boolean)
+    .join('\n')
+  if (importedCss.length === 0) {
+    return css
+  }
+  return filterExistingCssRules(importedCss, css)
+}
+
+function collectImportedBundleCssSources(bundle: OutputBundle, importedStyleFiles: Set<string>) {
+  if (importedStyleFiles.size === 0) {
+    return []
+  }
+  const importedFileNames = new Set([...importedStyleFiles].map(file => path.posix.basename(file)))
+  const importedSources: string[] = []
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = normalizeOutputPathKey(getAssetFile(bundleFile, output))
+    const imported = importedStyleFiles.has(file)
+      || (
+        !file.includes('/')
+        && importedFileNames.has(path.posix.basename(file))
+      )
+    if (!imported) {
+      continue
+    }
+    importedSources.push(readAssetSource(output))
+  }
+  return importedSources
 }
 
 export function collectViteProcessedCssAssetResults(
@@ -636,7 +677,6 @@ export function collectViteProcessedCssAssetResults(
     options.recordCssAssetResult?.(file, nextCss)
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
-      && !isAppOriginCssFile(file)
       && isMainStyleAssetFile(file)
       && (
         normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
@@ -644,7 +684,21 @@ export function collectViteProcessedCssAssetResults(
       )
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {
       injectIntoMain: shouldReplayIntoMainCss || undefined,
+      outputFile: resolvedOutputFile,
     })
+    for (const markerFile of collectMatchingGeneratedCssMarkerFiles(
+      file,
+      rawSource,
+      options.resolveViteProcessedCssOutputFile,
+    )) {
+      if (normalizeOutputPathKey(markerFile) === normalizeOutputPathKey(file)) {
+        continue
+      }
+      options.recordViteProcessedCssAssetResult?.(markerFile, nextCss, {
+        injectIntoMain: shouldReplayIntoMainCss || undefined,
+        outputFile: resolvedOutputFile,
+      })
+    }
     options.debug?.('collect vite-processed css asset: %s bytes=%d', file, nextCss.length)
     collected++
   }
@@ -659,13 +713,9 @@ export function injectViteProcessedCssIntoMainCssAssets(
     .map(([file, record]) => {
       return typeof record === 'string'
         ? { file, css: record, injectIntoMain: undefined }
-        : { file, css: record.css, injectIntoMain: record.injectIntoMain }
+        : { file, css: record.css, injectIntoMain: record.injectIntoMain, outputFile: record.outputFile }
     })
     .filter(record => record.css.length > 0)
-  if (viteCssResults.length === 0) {
-    return 0
-  }
-
   let injected = 0
   for (const [bundleFile, output] of Object.entries(bundle)) {
     if (output.type !== 'asset') {
@@ -682,14 +732,26 @@ export function injectViteProcessedCssIntoMainCssAssets(
     const originalSource = readAssetSource(output)
     let nextCss = removeTailwindEntryDirectivesFromCss(originalSource)
     const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
+    const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
+    nextCss = removeCssCoveredByImportedViteResults(
+      nextCss,
+      importedBundleCssSources,
+    )
+    const importedViteCssResults = viteCssResults.filter(record => isViteProcessedCssResultImported(record, importedStyleFiles))
+    const importedCssSources = [
+      ...importedBundleCssSources,
+      ...importedViteCssResults.map(record => record.css),
+    ]
+    nextCss = removeCssCoveredByImportedViteResults(nextCss, importedViteCssResults.map(record => record.css))
     for (const record of viteCssResults) {
       if (!shouldInjectViteProcessedCssResult(options.opts, mainFileKey, record.file, record)) {
         continue
       }
-      if (importedStyleFiles.has(normalizeOutputPathKey(record.file))) {
+      if (isViteProcessedCssResultImported(record, importedStyleFiles)) {
         continue
       }
       let css = stripBundlerGeneratedCssMarkers(record.css).trim()
+      css = removeCssCoveredByImportedViteResults(css, importedCssSources).trim()
       if (css.length === 0) {
         continue
       }
@@ -725,9 +787,6 @@ export function injectViteProcessedCssIntoMainCssAssets(
         continue
       }
       nextCss = appendCss(nextCss, missingCss)
-    }
-    if (nextCss !== originalSource) {
-      nextCss = removeAppOriginStyleImports(nextCss, file)
     }
     if (nextCss === originalSource) {
       continue

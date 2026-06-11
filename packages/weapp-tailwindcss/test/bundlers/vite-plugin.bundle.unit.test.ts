@@ -2690,7 +2690,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       isViteProcessedCssAsset: vi.fn(() => true),
       recordCssAssetResult: vi.fn(),
       recordViteProcessedCssAssetResult: vi.fn((file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => {
-        viteProcessedCssAssetResults.set(file, { css, injectIntoMain: options?.injectIntoMain })
+        const previous = viteProcessedCssAssetResults.get(file)
+        viteProcessedCssAssetResults.set(file, {
+          css,
+          injectIntoMain: options?.injectIntoMain ?? previous?.injectIntoMain,
+        })
       }),
       getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
       getViteProcessedCssAssetResult: (file: string) => viteProcessedCssAssetResults.get(file),
@@ -2987,7 +2991,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       isViteProcessedCssAsset: vi.fn(() => true),
       recordCssAssetResult: vi.fn(),
       recordViteProcessedCssAssetResult: vi.fn((file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => {
-        viteProcessedCssAssetResults.set(file, { css, injectIntoMain: options?.injectIntoMain })
+        const previous = viteProcessedCssAssetResults.get(file)
+        viteProcessedCssAssetResults.set(file, {
+          css,
+          injectIntoMain: options?.injectIntoMain ?? previous?.injectIntoMain,
+        })
       }),
       getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
       getViteProcessedCssAssetResult: (file: string) => viteProcessedCssAssetResults.get(file),
@@ -3154,7 +3162,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('does not inject app-origin vite processed css back into app.wxss', () => {
+  it('preserves app-origin import while replaying independent main css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
@@ -3182,7 +3190,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
 
     const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
-    expect(appCss).not.toContain('@import')
+    expect(appCss).toContain('@import "app-origin.wxss";')
     expect(appCss).toContain('.app-main{}')
     expect(appCss).not.toContain('.bg-normal-subpackage-marker')
   })

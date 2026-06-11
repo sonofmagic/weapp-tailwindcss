@@ -51,6 +51,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
   let cachedDefaultTemplateRuntimeSet: Set<string> | undefined
   let cachedDefaultModuleGraphOptions: JsModuleGraphOptions | undefined
+  let cachedGulpSourceCandidateGetter: ((entries: Parameters<ReturnType<typeof createSourceCandidateCollector>['valuesForEntries']>[0]) => Set<string>) | undefined
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
@@ -202,10 +203,49 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     })
     collector.syncInline(sourceScan?.inlineCandidates)
     cachedGulpSourceCandidateSignature = nextSignature
+    cachedGulpSourceCandidateGetter = entries => collector.valuesForEntries(entries)
     cachedGulpSourceCandidates = sourceScan?.entries
       ? collector.valuesForEntries(sourceScan.entries)
       : collector.values()
     return cachedGulpSourceCandidates
+  }
+
+  async function refreshGulpV4SourceCandidates(forceRefresh = false) {
+    if (runtimeState.twPatcher.majorVersion !== 4) {
+      cachedGulpSourceCandidateGetter = undefined
+      return undefined
+    }
+    const root = opts.tailwindcssBasedir ?? process.cwd()
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+      root,
+    })
+    const nextSignature = cache.computeHash(JSON.stringify({
+      root,
+      entries: sourceScan?.entries,
+      inlineCandidates: sourceScan?.inlineCandidates
+        ? {
+            included: [...sourceScan.inlineCandidates.included].sort(),
+            excluded: [...sourceScan.inlineCandidates.excluded].sort(),
+          }
+        : undefined,
+      explicit: sourceScan?.explicit ?? false,
+      dependencies: [...(sourceScan?.dependencies ?? [])].sort(),
+    }))
+    if (!forceRefresh && cachedGulpSourceCandidateSignature === nextSignature && cachedGulpSourceCandidateGetter) {
+      return cachedGulpSourceCandidateGetter
+    }
+    const collector = createSourceCandidateCollector({
+      bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    })
+    await collector.scanRoot({
+      entries: sourceScan?.entries,
+      explicit: sourceScan?.explicit,
+      root,
+    })
+    collector.syncInline(sourceScan?.inlineCandidates)
+    cachedGulpSourceCandidateSignature = nextSignature
+    cachedGulpSourceCandidateGetter = entries => collector.valuesForEntries(entries)
+    return cachedGulpSourceCandidateGetter
   }
 
   function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>) {
@@ -414,6 +454,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
       const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
       const shouldUseGenerator = runtimeState.twPatcher.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
+      const gulpV4SourceCandidates = shouldUseGenerator && runtimeState.twPatcher.majorVersion === 4
+        ? await refreshGulpV4SourceCandidates(cssSourceChanged)
+        : undefined
       let nextRuntimeSet = await refreshRuntimeSet({
         forceRefresh: cssSourceChanged,
         forceCollect: cssSourceChanged || (runtimeState.twPatcher.majorVersion !== 4 && isMainChunk),
@@ -451,6 +494,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
                 file: file.path,
                 cssHandlerOptions,
                 cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
+                getSourceCandidatesForEntries: gulpV4SourceCandidates,
                 styleHandler,
                 debug,
               })

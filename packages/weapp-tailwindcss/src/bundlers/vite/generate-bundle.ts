@@ -66,9 +66,9 @@ interface GenerateBundleContext {
   isCssAssetProcessed?: (asset: OutputAsset, file?: string) => boolean
   isViteProcessedCssAsset?: (asset: OutputAsset, file?: string) => boolean
   recordCssAssetResult?: (file: string, css: string) => void
-  recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => void
-  getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
-  getViteProcessedCssAssetResult?: (file: string) => { css: string, injectIntoMain?: boolean | undefined } | undefined
+  recordViteProcessedCssAssetResult?: (file: string, css: string, options?: { injectIntoMain?: boolean | undefined, outputFile?: string | undefined }) => void
+  getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }]>
+  getViteProcessedCssAssetResult?: (file: string) => { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined } | undefined
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
@@ -1407,6 +1407,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
           recordViteProcessedCssAssetResult?.(outputFile, nextCss, {
             injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectPreservedViteCssIntoMain,
+            outputFile,
           })
           onUpdate(outputFile, rawSource, nextCss)
           debug('css skip vite-processed asset: %s', outputFile)
@@ -1505,10 +1506,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
                   recordViteProcessedCssAssetResult?.(outputFile, generated.css, {
                     injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
+                    outputFile,
                   })
                   if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
                     recordViteProcessedCssAssetResult?.(file, generated.css, {
                       injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
+                      outputFile,
                     })
                   }
                   metrics.css.elapsed += measureElapsed(start)
@@ -1774,6 +1777,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               injectIntoMain: isAppOriginCssFile(outputFile)
                 ? false
                 : shouldInjectReplayCssIntoMain,
+              outputFile,
             })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }
@@ -1855,20 +1859,33 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
       }
     }
-    injectViteProcessedCssIntoMainCssAssets(bundle, {
-      opts,
-      getViteProcessedCssAssetResults,
-      markCssAssetProcessed,
-      recordCssAssetResult,
-      debug,
-      onUpdate,
-    })
+    const syncViteProcessedCssIntoMainCssAssets = () => {
+      collectViteProcessedCssAssetResults(bundle, {
+        opts,
+        isViteProcessedCssAsset,
+        markCssAssetProcessed,
+        recordCssAssetResult,
+        recordViteProcessedCssAssetResult,
+        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension),
+        debug,
+      })
+      return injectViteProcessedCssIntoMainCssAssets(bundle, {
+        opts,
+        getViteProcessedCssAssetResults,
+        markCssAssetProcessed,
+        recordCssAssetResult,
+        debug,
+        onUpdate,
+      })
+    }
+    syncViteProcessedCssIntoMainCssAssets()
     if (isHarmonyAppStyleTarget && applyStyleSources.length > 0) {
       const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
         .map(([, record]) => typeof record === 'string' ? record : record.css)
       if (injectUniAppXHarmonyBundleStyles(bundle, { cssSources: viteProcessedCssSources })) {
         debug('uni-app-x harmony bundle styles inject after css assets')
       }
+      syncViteProcessedCssIntoMainCssAssets()
     }
 
     const stateUpdateStart = performance.now()

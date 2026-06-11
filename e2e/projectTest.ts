@@ -1,9 +1,12 @@
 import type { ProjectEntry } from './shared'
+import type { CssTokenSource } from './snapshotUtils'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
+import fg from 'fast-glob'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
+import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
 import { ensureProjectBuilt } from './projectBuild'
 import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
 import { normalizeCssTextSnapshot } from './snapshotUtils'
@@ -46,6 +49,22 @@ const ISSUE_909_CSS_SELECTORS = new Set([
   '.rotate-y-90',
   '.rotate-z-45',
 ])
+
+const TOKEN_SOURCE_FILE_PATTERN = '**/*.{vue,tsx,jsx,ts,js,mjs,cjs,wxml,ttml,axml,swan,xml,html,css,scss,sass,less,styl,stylus,pcss,postcss,sss}'
+const TOKEN_SOURCE_IGNORE_PATTERNS = [
+  '**/.cache/**',
+  '**/.git/**',
+  '**/.tw-patch/**',
+  '**/.vite/**',
+  '**/config/**',
+  '**/dist/**',
+  '**/node_modules/**',
+  '**/postcss.config.*',
+  '**/tailwind.config.*',
+  '**/unpackage/**',
+  '**/vite.config.*',
+  '**/webpack.config.*',
+]
 
 async function safeRm(target: string) {
   try {
@@ -131,12 +150,13 @@ function normalizeIssue909CssSnapshot(source: string) {
     sections.push(rootRule)
   }
 
-  const rulePattern = /(?:^|\n)(\.[^{]+ \{[\s\S]*?\n\})/g
+  const rulePattern = /(?:^|\n)((?:\/\* tokens:[^\n]* \*\/\n)?)(\.[^{]+ \{[\s\S]*?\n\})/g
   for (const match of source.matchAll(rulePattern)) {
-    const rule = match[1]
+    const comment = match[1] ?? ''
+    const rule = match[2]
     const selector = rule?.slice(0, rule.indexOf(' {'))
     if (selector && ISSUE_909_CSS_SELECTORS.has(selector)) {
-      sections.push(rule)
+      sections.push(`${comment}${rule}`)
     }
   }
 
@@ -162,6 +182,59 @@ function normalizeProjectSnapshotContent(fileName: string, source: string) {
 
 function formatClassListSnapshot(classList: string[]) {
   return `${JSON.stringify(classList, null, 2)}\n`
+}
+
+function createTokenSourceMap(classList: string[]) {
+  const tokenSources = new Map<string, CssTokenSource>()
+  for (const token of [...classList].sort()) {
+    const source: CssTokenSource = {
+      token,
+      sources: [],
+    }
+    tokenSources.set(token, source)
+    const escaped = replaceWxml(token)
+    tokenSources.set(escaped, source)
+    tokenSources.set(escaped.replaceAll('\\', ''), source)
+  }
+  return tokenSources
+}
+
+function addTokenSource(tokenSources: Map<string, CssTokenSource>, token: string, sourceFile: string) {
+  const source = tokenSources.get(token)
+  if (!source || source.sources.includes(sourceFile)) {
+    return
+  }
+  source.sources.push(sourceFile)
+}
+
+async function collectTokenSources(projectRoot: string, classList?: string[]) {
+  if (!classList?.length) {
+    return undefined
+  }
+
+  const tokenSources = createTokenSourceMap(classList)
+  const files = await fg(TOKEN_SOURCE_FILE_PATTERN, {
+    absolute: false,
+    cwd: projectRoot,
+    ignore: TOKEN_SOURCE_IGNORE_PATTERNS,
+    onlyFiles: true,
+  })
+
+  for (const sourceFile of files.sort()) {
+    const absolutePath = path.resolve(projectRoot, sourceFile)
+    const source = await fs.readFile(absolutePath, 'utf8')
+    for (const token of classList) {
+      const escaped = replaceWxml(token)
+      if (source.includes(token) || source.includes(escaped) || source.includes(escaped.replaceAll('\\', ''))) {
+        addTokenSource(tokenSources, token, sourceFile.replace(/\\/g, '/'))
+      }
+    }
+  }
+
+  for (const source of new Set(tokenSources.values())) {
+    source.sources.sort()
+  }
+  return tokenSources
 }
 
 const SUSPICIOUS_CLASS_FRAGMENT_RE = /\b[\w-]+-\s+[a-z0-9#]/gi
@@ -309,6 +382,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
+  const tokenSources = await collectTokenSources(root, extraction?.classList)
   if (shouldCollectIssue909TransformSnapshot(entry) && extraction?.classList) {
     await expectProjectSnapshot(
       options.suite,
@@ -324,6 +398,7 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
       normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
       normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
       rootSnapshotName: cssEntry.snapshotName,
+      tokenSources,
     })
     for (const snapshot of cssSnapshots) {
       await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)

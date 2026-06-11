@@ -62,6 +62,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);

@@ -62,6 +62,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: before:content-['normal_subpackage_weapp-vite-tailwindcss-v3'] <= miniprogram/sub-normal/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
