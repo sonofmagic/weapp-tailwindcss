@@ -13,10 +13,5 @@
     "tailwindcss": "^3.4.19",
     "weapp-tailwindcss": "5.0.4"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "weapp-tailwindcss"
-    ]
-  },
-  "packageManager": "pnpm@10.33.4"
+  "packageManager": "pnpm@11.5.3"
 }

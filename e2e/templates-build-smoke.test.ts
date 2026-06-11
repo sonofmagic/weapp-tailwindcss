@@ -510,18 +510,20 @@ describe('templates build smoke', () => {
       ...pkg.devDependencies,
     }
 
-    expect(pkg.packageManager, `${item.name} should pin pnpm`).toBe('pnpm@10.33.4')
+    expect(pkg.packageManager, `${item.name} should pin pnpm`).toBe('pnpm@11.5.3')
+    expect(pkg).not.toHaveProperty('pnpm')
     expect(pkg.scripts?.['up:pkg'], `${item.name} should expose interactive package upgrade`).toMatch(/^pnpm up -rLi\b/)
     expect(await pathExists(path.resolve(root, 'pnpm-lock.yaml')), `${item.name} should include its lockfile`).toBe(true)
-    expect(await fs.readFile(path.resolve(root, 'pnpm-workspace.yaml'), 'utf8')).toContain('- .')
+    const workspace = await fs.readFile(path.resolve(root, 'pnpm-workspace.yaml'), 'utf8')
+    expect(workspace).toContain('- .')
     expect(await fs.readFile(path.resolve(root, '.npmrc'), 'utf8')).toContain('registry=https://registry.npmjs.org/')
 
     if (item.name === 'uni-app-x-hbuilderx') {
-      expect(deps['weapp-tailwindcss']).toBe('5.0.2')
+      expect(deps['weapp-tailwindcss']).toBe('5.0.4')
       expect(deps['@weapp-tailwindcss/debug-uni-app-x']).toBe('1.0.0')
     }
     else {
-      expect(deps['weapp-tailwindcss']).toBe('^5.0.2')
+      expect(deps['weapp-tailwindcss']).toBe('^5.0.4')
     }
 
     if (Object.keys(deps).some(name => name.startsWith('@dcloudio/'))) {

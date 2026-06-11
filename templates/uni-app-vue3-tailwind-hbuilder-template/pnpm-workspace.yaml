@@ -1,8 +1,5 @@
 packages:
   - .
 
-ignoredBuiltDependencies:
-  - esbuild
-
-onlyBuiltDependencies:
-  - weapp-tailwindcss
+allowBuilds:
+  "esbuild": false

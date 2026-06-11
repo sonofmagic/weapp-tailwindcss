@@ -43,7 +43,7 @@ npx skills add sonofmagic/skills --skill weapp-tailwindcss
 ### 前置环境
 
 1. `nodejs@22`
-2. `pnpm@10`
+2. `pnpm@11`
 3. `Github` 账号
 
 ### 开始

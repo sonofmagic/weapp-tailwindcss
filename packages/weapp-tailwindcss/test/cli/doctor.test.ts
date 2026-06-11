@@ -38,7 +38,7 @@ describe('createDoctorReport', () => {
   it('reports a healthy pnpm Tailwind v4 uni-app setup', async () => {
     const root = await createTempWorkspace()
     await writeJson(path.join(root, 'package.json'), {
-      packageManager: 'pnpm@10.33.0',
+      packageManager: 'pnpm@11.5.0',
       dependencies: {
         '@dcloudio/uni-app': '^3.0.0',
         '@tailwindcss/postcss': '^4.0.0',
@@ -53,7 +53,7 @@ describe('createDoctorReport', () => {
 
     const report = createDoctorReport({ cwd: root, nodeVersion: '20.19.0' })
 
-    expect(report.detected.packageManager).toBe('pnpm@10.33.0')
+    expect(report.detected.packageManager).toBe('pnpm@11.5.0')
     expect(report.detected.frameworks).toEqual(['uni-app'])
     expect(findCheck(report, 'tailwindcss').status).toBe('ok')
     expect(report.checks.find(item => item.id === 'tailwindcss-v4-postcss')).toBeUndefined()

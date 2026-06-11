@@ -90,11 +90,5 @@
     "weapp-tailwindcss": "^5.0.4",
     "webpack": "5.104.1"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@weapp-tailwindcss/merge",
-      "weapp-tailwindcss"
-    ]
-  },
-  "packageManager": "pnpm@10.33.4"
+  "packageManager": "pnpm@11.5.3"
 }

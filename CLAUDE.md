@@ -105,7 +105,7 @@ The main `weapp-tailwindcss` package exports multiple entry points for different
 ### Node.js Requirements
 - Root package requires `node >= 18.0.0`
 - Main `weapp-tailwindcss` package requires `node ^18.17.0 || >=20.5.0`
-- Package manager: pnpm@10.26.1
+- Package manager: pnpm@11.5.3
 
 ### TailwindCSS Version Support
 - Supports TailwindCSS v4, v3, and v2 JIT

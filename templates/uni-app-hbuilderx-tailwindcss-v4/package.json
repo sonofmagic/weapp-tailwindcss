@@ -10,16 +10,10 @@
     "tailwindcss": "^4.2.4",
     "weapp-tailwindcss": "^5.0.4"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "weapp-tailwindcss",
-      "@weapp-tailwindcss/merge"
-    ]
-  },
   "dependencies": {
     "@weapp-tailwindcss/merge": "^2.2.1"
   },
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.5.3",
   "scripts": {
     "up:pkg": "pnpm up -rLi"
   }

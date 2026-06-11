@@ -17,14 +17,26 @@ allowBuilds:
   '@swc/core': false
   '@tarojs/binding': false
   '@tarojs/cli': false
+  '@tailwindcss/oxide': true
+  '@weapp-tailwindcss/merge': true
   core-js: false
   core-js-pure: false
   esbuild: true
+  '@nutui/nutui-react-taro': false
+  msgpackr-extract: false
   sharp: true
   taro-hooks: false
   unrs-resolver: false
   vue-demi: false
   workerd: true
+
+pmOnFail: warn
+minimumReleaseAge: 0
+
+overrides:
+  jiti: 2.7.0
+  postcss-calc: link:packages/postcss-calc
+  postcss-urlrewrite: 0.3.0
 
 catalogs:
   autoprefixer10:
@@ -189,12 +201,3 @@ catalogs:
     weapp-vite: ^6.16.43
   wrangler:
     wrangler: ^4.99.0
-
-onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - '@tarojs/binding'
-  - '@tarojs/cli'
-  - '@weapp-tailwindcss/merge'
-  - esbuild
-  - sharp
-  - workerd

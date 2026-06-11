@@ -1,7 +1,7 @@
 {
   "name": "uni-app-vite-vue3-tailwind-vscode-template",
   "version": "0.0.0",
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.5.3",
   "scripts": {
     "dev": "uni -p mp-weixin",
     "build": "pnpm build:mp-weixin",
@@ -89,11 +89,5 @@
     "vite": "5.2.8",
     "weapp-ide-cli": "^5.2.8",
     "weapp-tailwindcss": "^5.0.4"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "weapp-tailwindcss",
-      "@weapp-tailwindcss/merge-v3"
-    ]
   }
 }

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-06T06:00:17.910Z",
+  "generatedAt": "2026-06-11T02:47:35.340Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -3282,7 +3282,7 @@
         "重大变更",
         "特性更新",
         "重构",
-        "pnpm@10.x"
+        "pnpm@11.x"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v3.md"

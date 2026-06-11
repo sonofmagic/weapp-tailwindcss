@@ -2,7 +2,7 @@
   "name": "uni-app-vue2-tailwind-vscode-template",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.5.3",
   "scripts": {
     "serve": "pnpm dev:h5",
     "build": "pnpm build:h5",
@@ -120,11 +120,5 @@
   ],
   "uni-app": {
     "scripts": {}
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "weapp-tailwindcss",
-      "@weapp-tailwindcss/merge-v3"
-    ]
   }
 }

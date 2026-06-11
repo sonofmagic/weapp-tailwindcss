@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@10.33.4",
+  "packageManager": "pnpm@11.5.3",
   "description": "把tailwindcss jit引擎，带给小程序开发者们! bring tailwindcss jit engine to miniprogram developers!",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
@@ -335,13 +335,5 @@
     "webpack-build-utils": "^0.0.7",
     "wrangler": "catalog:wrangler",
     "yaml": "^2.9.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "jiti": "2.7.0",
-      "postcss-calc": "link:packages/postcss-calc",
-      "postcss-urlrewrite": "0.3.0"
-    },
-    "packageExtensions": {}
   }
 }

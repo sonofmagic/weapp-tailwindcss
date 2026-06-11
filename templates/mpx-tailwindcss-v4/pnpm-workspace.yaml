@@ -1,10 +1,6 @@
 packages:
   - .
 
-ignoredBuiltDependencies:
-  - core-js-pure
-  - vue-demi
-
-onlyBuiltDependencies:
-  - weapp-tailwindcss
-  - '@weapp-tailwindcss/merge'
+allowBuilds:
+  "core-js-pure": false
+  "vue-demi": false
