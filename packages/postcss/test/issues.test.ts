@@ -82,6 +82,20 @@ describe('issues', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('https://github.com/sonofmagic/weapp-tailwindcss/issues/909', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/909'))
+    expect(code.css).toContain('transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);')
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code.css, {
+      isMainChunk: true,
+    })
+    expect(css).toContain('transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );')
+    expect(css).not.toContain('transform: var(--tw-rotate-x,) var(--tw-rotate-y,)')
+    expect(css).toMatchSnapshot()
+  })
+
   it('https://github.com/sonofmagic/weapp-tailwindcss/issues/715', async () => {
     const code = await generateCss(path.resolve(__dirname, './fixtures/issues/715-space-y-4'))
     expect(code.css).toMatchSnapshot()

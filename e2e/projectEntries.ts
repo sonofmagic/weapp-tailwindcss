@@ -42,6 +42,8 @@ export const E2E_PROJECTS = [
     name: 'taro-webpack-react-tailwindcss-v4',
     projectPath: 'taro-webpack-react-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    extraSnapshots: ['issue-909-transform'],
+    url: '/pages/issue-909/index',
   },
   {
     name: 'taro-vite-react-tailwindcss-v3',

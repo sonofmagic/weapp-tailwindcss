@@ -223,6 +223,29 @@ async function collectTailwindV4GeneratorClassSet(twPatcher: TailwindcssPatcherL
   }
 }
 
+async function mergeTailwindV4GeneratorClassSet(
+  twPatcher: TailwindcssPatcherLike,
+  classSet: Set<string>,
+) {
+  if (twPatcher.majorVersion !== 4) {
+    return classSet
+  }
+  const generatorClassSet = await collectTailwindV4GeneratorClassSet(twPatcher)
+  if (!generatorClassSet || generatorClassSet.size === 0) {
+    return classSet
+  }
+  return new Set([
+    ...classSet,
+    ...generatorClassSet,
+  ])
+}
+
+function canReturnExtractClassSetImmediately(
+  twPatcher: TailwindcssPatcherLike,
+) {
+  return twPatcher.majorVersion !== 4
+}
+
 async function collectRuntimeClassSet(
   twPatcher: TailwindcssPatcherLike,
   options: CollectRuntimeClassSetOptions = {},
@@ -284,8 +307,13 @@ async function collectRuntimeClassSet(
       const result = await activePatcher.extract({ write: false })
       if (result?.classSet) {
         if (result.classSet.size > 0) {
-          debug('runtime class set resolved via extract(), size=%d', result.classSet.size)
-          return result.classSet
+          if (canReturnExtractClassSetImmediately(activePatcher)) {
+            debug('runtime class set resolved via extract(), size=%d', result.classSet.size)
+            return result.classSet
+          }
+          const merged = await mergeTailwindV4GeneratorClassSet(activePatcher, result.classSet)
+          debug('runtime class set resolved via extract() + tailwindcss v4 source scan, extract=%d merged=%d', result.classSet.size, merged.size)
+          return merged
         }
         if (preferExtract && activePatcher.majorVersion !== 4) {
           debug('runtime class set resolved via empty extract() on force collect, size=0')

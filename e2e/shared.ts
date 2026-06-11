@@ -93,6 +93,7 @@ export interface ProjectEntry {
   cssFiles?: string[]
   url?: string
   skipOpenAutomator?: boolean
+  extraSnapshots?: Array<'issue-909-transform'>
 }
 
 export interface ProjectCssSnapshotFile {

@@ -27,6 +27,26 @@ interface StableWxmlOptions {
   settleMs?: number
 }
 
+const ISSUE_909_CLASS_LIST = [
+  '-rotate-y-45',
+  'h-8',
+  'rotate-x-45',
+  'rotate-y-45',
+  'rotate-y-90',
+  'rotate-z-45',
+  'w-8',
+]
+
+const ISSUE_909_CSS_SELECTORS = new Set([
+  '.h-8',
+  '.w-8',
+  '.rotate-x-45',
+  '.-rotate-y-45',
+  '.rotate-y-45',
+  '.rotate-y-90',
+  '.rotate-z-45',
+])
+
 async function safeRm(target: string) {
   try {
     await fs.rm(target, { recursive: true, force: true })
@@ -87,6 +107,44 @@ function shouldSkipAutomator(entry: ProjectEntry) {
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
   await expect(normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
+}
+
+function shouldCollectIssue909TransformSnapshot(entry: ProjectEntry) {
+  return entry.extraSnapshots?.includes('issue-909-transform') === true
+}
+
+function normalizeIssue909ClassListSnapshot(classList: string[]) {
+  const classSet = new Set(classList)
+  return ISSUE_909_CLASS_LIST.filter(className => classSet.has(className))
+}
+
+function normalizeIssue909CssSnapshot(source: string) {
+  const sections: string[] = []
+  const rootRuleMatch = source.match(/:host,\npage,\n\.tw-root,\nwx-root-portal-content \{[\s\S]*?\n\}/)
+  if (rootRuleMatch) {
+    const rootRule = rootRuleMatch[0]
+      .split('\n')
+      .filter((line) => {
+        return /^(?::host,|page,|\.tw-root,|wx-root-portal-content \{| {2}--spacing:| {2}--tw-rotate-[xyz]:| {2}--tw-skew-[xy]:|\})/.test(line)
+      })
+      .join('\n')
+    sections.push(rootRule)
+  }
+
+  const rulePattern = /(?:^|\n)(\.[^{]+ \{[\s\S]*?\n\})/g
+  for (const match of source.matchAll(rulePattern)) {
+    const rule = match[1]
+    const selector = rule?.slice(0, rule.indexOf(' {'))
+    if (selector && ISSUE_909_CSS_SELECTORS.has(selector)) {
+      sections.push(rule)
+    }
+  }
+
+  return sections.join('\n')
+}
+
+function normalizeIssue909WxmlSnapshot(source: string) {
+  return source.replace(/\s+style="[^"]*"/g, '')
 }
 
 function normalizeProjectSnapshotContent(fileName: string, source: string) {
@@ -251,6 +309,14 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
+  if (shouldCollectIssue909TransformSnapshot(entry) && extraction?.classList) {
+    await expectProjectSnapshot(
+      options.suite,
+      entry.name,
+      'issue-909-transform/tw-class-list.json',
+      formatClassListSnapshot(normalizeIssue909ClassListSnapshot(extraction.classList)),
+    )
+  }
 
   for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
     const cssSnapshots = await collectCssSnapshots(projectPath, cssEntry.cssFile, {
@@ -261,6 +327,14 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
     })
     for (const snapshot of cssSnapshots) {
       await expectProjectSnapshot(options.suite, entry.name, snapshot.fileName, snapshot.content)
+      if (shouldCollectIssue909TransformSnapshot(entry) && snapshot.fileName === 'app.wxss') {
+        await expectProjectSnapshot(
+          options.suite,
+          entry.name,
+          'issue-909-transform/app.wxss',
+          normalizeIssue909CssSnapshot(normalizeCssTextSnapshot(snapshot.content)),
+        )
+      }
     }
   }
 
@@ -309,6 +383,9 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
         }
 
         await expectProjectSnapshot(options.suite, entry.name, 'page.wxml', wxml)
+        if (shouldCollectIssue909TransformSnapshot(entry)) {
+          await expectProjectSnapshot(options.suite, entry.name, 'issue-909-transform/page.wxml', normalizeIssue909WxmlSnapshot(wxml))
+        }
       }
 
       await page.waitFor(1000)

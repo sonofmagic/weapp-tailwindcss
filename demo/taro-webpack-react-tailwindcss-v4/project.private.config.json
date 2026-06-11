@@ -4,5 +4,17 @@
   "setting": {
     "compileHotReLoad": true
   },
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "issue-909-rotate-y",
+          "pathName": "pages/issue-909/index",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  },
   "libVersion": "3.10.3"
 }

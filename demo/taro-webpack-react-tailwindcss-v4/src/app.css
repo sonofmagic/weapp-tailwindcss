@@ -1,5 +1,5 @@
 @import "tailwindcss" source(none);
 @config "../tailwind.config.js";
-@source "../src";
+@source "../src/pages/issue-909";
 @source not "../src/sub-normal";
 @source not "../src/sub-independent";

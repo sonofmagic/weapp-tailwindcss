@@ -280,10 +280,10 @@ describe('normalizeCssSnapshot', () => {
       '  outline-width: 1px;',
       '}',
       '.ring {',
-      '  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);',
+      '  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);',
       '}',
       '.ring-px {',
-      '  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);',
+      '  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);',
       '}',
     ].join('\n'))
   })
@@ -329,6 +329,28 @@ describe('normalizeCssSnapshot', () => {
       '}',
       '.text-red-500 {',
       '  color: var(--color-red-500);',
+      '}',
+    ].join('\n'))
+  })
+
+  it('keeps Tailwind CSS v4 empty var fallback spaces for WeChat DevTools', () => {
+    expect(normalizeCssSnapshot([
+      ':host {',
+      '  --spacing: 8rpx;',
+      '}',
+      '.rotate-y-90 {',
+      '  --tw-rotate-y: rotateY(90deg);',
+      '  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);',
+      '  color: var(--app-color,);',
+      '}',
+    ].join('\n'))).toBe([
+      ':host {',
+      '  --spacing: 8rpx;',
+      '}',
+      '.rotate-y-90 {',
+      '  --tw-rotate-y: rotateY(90deg);',
+      '  transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );',
+      '  color: var(--app-color,);',
       '}',
     ].join('\n'))
   })

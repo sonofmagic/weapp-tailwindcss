@@ -1,24 +1,98 @@
-<view class="bg-_b_h534312_B text-_b_hfff_B text-_b100rpx_B" style=""><text space="" style=""></text></view>
-<view class="bg-purple-800 text-pink-200" style="">11</view>
-<view class="h-14 bg-gradient-to-r from-cyan-500 to-blue-500" style=""></view>
-<button
-  app-parameter=""
-  business-id=""
-  class="nut-button nut-button-default nut-button-normal nut-button-round nut-button-round-normal"
-  form-type=""
-  hover-class="button-hover"
-  hover-start-time="20"
-  hover-stay-time="70"
-  lang=""
-  open-type=""
-  send-message-img=""
-  send-message-path=""
-  send-message-title=""
-  session-from=""
-  size="default"
-  style=""
-  type=""
-  role="button"
-  aria-disabled="false">
-  <view class="nut-button-wrap" style=""><view class="nut-button-children nut-button-normal-children nut-button-default-children" style="">Share</view></view>
-</button>
+<view class="issue-909-page" style="background: #f8fafc; min-height: 100vh; padding: 32px 24px">
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">normal</view>
+      <view style="color: #64748b; font-size: 11px">baseline</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view
+        class="issue-909-box issue-909-box-control h-8 w-8"
+        style="align-items: center; background: #10b981; color: #064e3b; display: flex; font-size: 10px; justify-content: center; line-height: 12px">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">rotate-y-90</view>
+      <view style="color: #64748b; font-size: 11px">Y axis edge-on</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-y-90 h-8 w-8 rotate-y-90"
+        style="align-items: center; background: #10b981; color: #064e3b; display: flex; font-size: 10px; justify-content: center; line-height: 12px">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">rotate-y-45</view>
+      <view style="color: #64748b; font-size: 11px">Y axis 45deg</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-y-45 h-8 w-8 rotate-y-45"
+        style="align-items: center; background: #0ea5e9; color: #075985; display: flex; font-size: 10px; justify-content: center; line-height: 12px">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">-rotate-y-45</view>
+      <view style="color: #64748b; font-size: 11px">Y axis -45deg</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view
+        class="issue-909-box issue-909-box-negative-rotate-y-45 h-8 w-8 -rotate-y-45"
+        style="align-items: center; background: #f97316; color: #7c2d12; display: flex; font-size: 10px; justify-content: center; line-height: 12px">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">rotate-x-45</view>
+      <view style="color: #64748b; font-size: 11px">X axis 45deg</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-x-45 h-8 w-8 rotate-x-45"
+        style="align-items: center; background: #8b5cf6; color: #4c1d95; display: flex; font-size: 10px; justify-content: center; line-height: 12px">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">rotate-z-45</view>
+      <view style="color: #64748b; font-size: 11px">Z axis 45deg</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-z-45 h-8 w-8 rotate-z-45"
+        style="align-items: center; background: #e11d48; color: #881337; display: flex; font-size: 10px; justify-content: center; line-height: 12px">
+        box
+      </view>
+    </view>
+  </view>
+</view>

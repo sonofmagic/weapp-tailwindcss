@@ -877,6 +877,10 @@ function removeTailwindV4RootVariableNoise(root: postcss.Root, options: CssSnaps
   })
 }
 
+function normalizeTailwindV4EmptyVarFallbackSnapshot(source: string) {
+  return source.replace(/var\((--tw-[\w-]+),\)/g, 'var($1, )')
+}
+
 export function normalizeCssSnapshot(source: string, _options: CssSnapshotOptions = {}) {
   const root = postcss.parse(source)
 
@@ -950,7 +954,9 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     sortUtilityRuleRuns(root)
   }
   normalizeNodeSpacing(root)
-  return root.toString()
+  return isTailwindV4
+    ? normalizeTailwindV4EmptyVarFallbackSnapshot(root.toString())
+    : root.toString()
 }
 
 export async function collectCssSnapshots(projectRoot: string, cssRelativePath: string, options: CssSnapshotOptions = {}): Promise<CssSnapshotEntry[]> {

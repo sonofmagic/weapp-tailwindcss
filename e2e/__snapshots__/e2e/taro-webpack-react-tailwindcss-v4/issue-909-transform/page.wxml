@@ -1,0 +1,86 @@
+<view class="issue-909-page">
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>normal</view>
+      <view>baseline</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view
+        class="issue-909-box issue-909-box-control h-8 w-8">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>rotate-y-90</view>
+      <view>Y axis edge-on</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-y-90 h-8 w-8 rotate-y-90">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>rotate-y-45</view>
+      <view>Y axis 45deg</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-y-45 h-8 w-8 rotate-y-45">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>-rotate-y-45</view>
+      <view>Y axis -45deg</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view
+        class="issue-909-box issue-909-box-negative-rotate-y-45 h-8 w-8 -rotate-y-45">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>rotate-x-45</view>
+      <view>X axis 45deg</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-x-45 h-8 w-8 rotate-x-45">
+        box
+      </view>
+    </view>
+  </view>
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>rotate-z-45</view>
+      <view>Z axis 45deg</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view
+        class="issue-909-box issue-909-box-rotate-z-45 h-8 w-8 rotate-z-45">
+        box
+      </view>
+    </view>
+  </view>
+</view>

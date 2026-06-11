@@ -1,6 +1,7 @@
 // Tailwind CSS v4 兼容性相关的辅助方法，集中复用特殊处理逻辑
 import type { AtRule, Declaration as PostcssDeclaration, Root, Rule } from 'postcss'
 import { Declaration } from 'postcss'
+import valueParser from 'postcss-value-parser'
 import cssVarsV4 from '../cssVarsV4'
 import { createCssVarNodes } from '../utils/css-vars'
 
@@ -185,8 +186,47 @@ export function isTailwindcssV4DisplayP3Declaration(decl: Declaration) {
   return DISPLAY_P3_VALUE_RE.test(decl.value)
 }
 
+function normalizeTailwindcssV4EmptyVarFallback(value: string) {
+  if (!value.includes('var(') || !value.includes('--tw-')) {
+    return value
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+      return
+    }
+
+    const firstArg = node.nodes.find(child => child.type !== 'space')
+    const lastArg = node.nodes.findLast(child => child.type !== 'space')
+    if (
+      firstArg?.type !== 'word'
+      || !firstArg.value.startsWith('--tw-')
+      || lastArg?.type !== 'div'
+      || lastArg.value !== ','
+      || node.after === ' '
+    ) {
+      return
+    }
+
+    node.after = ' '
+    changed = true
+  })
+
+  return changed ? parsed.toString() : value
+}
+
 // 对 Tailwind v4 生成的声明做兼容处理，返回是否发生变更
 export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
+  let changed = false
+  const normalizedEmptyVarFallback = normalizeTailwindcssV4EmptyVarFallback(decl.value)
+  if (normalizedEmptyVarFallback !== decl.value) {
+    decl.value = normalizedEmptyVarFallback
+    changed = true
+  }
+
   if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OKLAB_SUFFIX)) {
     decl.value = decl.value.slice(0, decl.value.length - OKLAB_SUFFIX.length).trimEnd()
     return true
@@ -218,5 +258,5 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
     }
   }
 
-  return false
+  return changed
 }
