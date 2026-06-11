@@ -5,56 +5,21 @@ import type {
   TailwindV4GenerateOptions,
   TailwindV4GenerateTarget,
   TailwindV4ResolvedSource,
-  TailwindV4SourcePattern,
 } from './types'
 import fs from 'node:fs'
-import path from 'node:path'
 import postcss from 'postcss'
 import { createTailwindV4Engine as createPatchTailwindV4Engine, extractRawCandidates } from 'tailwindcss-patch'
 import { hasCssMacroTailwindV4Directive, withCssMacroStyleOptions } from '@/css-macro/auto'
-import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
 import { loadTailwindV4DesignSystem } from './design-system'
+import { createCompatibleSource } from './generator/css-compat'
+import { normalizeRpxTextCandidates, restoreRpxTextCandidates, restoreRpxTextCssSelectors } from './generator/rpx-candidates'
+import { resolveScanSources } from './generator/scan-sources'
 import { transformTailwindV4CssByTarget } from './miniprogram'
-import { applyTailwindV3CompatibilityCss } from './tailwind-v3-compatibility'
-import { createTailwindV4DefaultColorThemeCss } from './tailwind-v4-default-colors'
-
-type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']
 
 const incrementalGenerateCache = new Map<string, TailwindV4IncrementalGenerateCacheEntry>()
 const incrementalGenerateTaskCache = new Map<string, Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>>()
-const BARE_RPX_TEXT_CANDIDATE_RE = /(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u
-const RPX_TEXT_LENGTH_SELECTOR_RE = /text-\\\[length\\:((?:\\[.+-]|[+\-.\d])+rpx)\\\]/g
-const TAILWIND_V4_DEFAULT_IGNORED_SOURCE_PATTERNS = [
-  '**/.git/**',
-  '**/.hg/**',
-  '**/.jj/**',
-  '**/.next/**',
-  '**/.parcel-cache/**',
-  '**/.pnpm-store/**',
-  '**/.svelte-kit/**',
-  '**/.svn/**',
-  '**/.turbo/**',
-  '**/.venv/**',
-  '**/.vercel/**',
-  '**/.yarn/**',
-  '**/__pycache__/**',
-  '**/node_modules/**',
-  '**/venv/**',
-  '**/*.less',
-  '**/*.lock',
-  '**/*.sass',
-  '**/*.scss',
-  '**/*.styl',
-  '**/*.log',
-  '**/package-lock.json',
-  '**/pnpm-lock.yaml',
-  '**/bun.lockb',
-  '**/.gitignore',
-  '**/.env',
-  '**/.env.*',
-]
 
 interface TailwindV4IncrementalGenerateCacheEntry {
   seenCandidates: Set<string>
@@ -81,26 +46,6 @@ interface TailwindV4IncrementalCacheSeedOptions {
   target: TailwindV4GenerateTarget
 }
 
-function findLeadingImportInsertionIndex(css: string) {
-  const importPattern = /(?:^|\n)\s*@import\b[^;]*;/g
-  let insertionIndex = 0
-  let match = importPattern.exec(css)
-  while (match !== null) {
-    insertionIndex = match.index + match[0].length
-    match = importPattern.exec(css)
-  }
-  return insertionIndex
-}
-
-function applyMiniProgramTailwindV4DefaultColorCss(css: string) {
-  const themeCss = createTailwindV4DefaultColorThemeCss()
-  const insertionIndex = findLeadingImportInsertionIndex(css)
-  if (insertionIndex === 0) {
-    return `${themeCss}\n${css}`
-  }
-  return `${css.slice(0, insertionIndex)}\n${themeCss}\n${css.slice(insertionIndex)}`
-}
-
 function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
 }
@@ -112,54 +57,6 @@ function hasRemovedCandidates(previousCandidates: Set<string>, nextCandidates: S
     }
   }
   return false
-}
-
-function normalizeRpxTextCandidate(candidate: string) {
-  return candidate.replace(BARE_RPX_TEXT_CANDIDATE_RE, '$1text-[length:$2]$3')
-}
-
-function normalizeRpxTextCandidates(candidates: Iterable<string>) {
-  const normalized = new Set<string>()
-  const restoreCandidates = new Map<string, string>()
-  for (const candidate of candidates) {
-    const normalizedCandidate = normalizeRpxTextCandidate(candidate)
-    normalized.add(normalizedCandidate)
-    if (normalizedCandidate !== candidate) {
-      restoreCandidates.set(normalizedCandidate, candidate)
-    }
-  }
-  return {
-    candidates: normalized,
-    restoreCandidates,
-  }
-}
-
-function restoreRpxTextCandidates(candidates: Iterable<string>, restoreCandidates: ReadonlyMap<string, string>) {
-  if (restoreCandidates.size === 0) {
-    return new Set(candidates)
-  }
-  return new Set([...candidates].map(candidate => restoreCandidates.get(candidate) ?? candidate))
-}
-
-function normalizeCssEscapedRpxSelectorValue(value: string) {
-  return value.replace(/\\([.+-])/g, '$1')
-}
-
-function restoreRpxTextCssSelectors(css: string, restoreCandidates: ReadonlyMap<string, string>) {
-  if (restoreCandidates.size === 0 || !css.includes('text-\\[length\\:')) {
-    return css
-  }
-  const restoredValues = new Set(
-    [...restoreCandidates.keys()]
-      .map((candidate) => {
-        const match = BARE_RPX_TEXT_CANDIDATE_RE.exec(candidate.replace('[length:', '['))
-        return match?.[2]
-      })
-      .filter((value): value is string => Boolean(value)),
-  )
-  return css.replace(RPX_TEXT_LENGTH_SELECTOR_RE, (match, value: string) => {
-    return restoredValues.has(normalizeCssEscapedRpxSelectorValue(value)) ? `text-\\[${value}\\]` : match
-  })
 }
 
 function createStableJson(value: unknown): string {
@@ -255,24 +152,6 @@ function createIncrementalDesignSystemPromise(
   return promise
 }
 
-function createCompatibleSource(
-  source: TailwindV4ResolvedSource,
-  target: TailwindV4GenerateTarget,
-  tailwindcssV3Compatibility: boolean | undefined,
-) {
-  const shouldApplyTailwindV3Compatibility = tailwindcssV3Compatibility ?? target === 'weapp'
-  const filteredSourceCss = target === 'weapp'
-    ? removeUnlayeredTailwindV4PreflightImports(source.css)
-    : source.css
-  const sourceCss = shouldApplyTailwindV3Compatibility
-    ? applyTailwindV3CompatibilityCss(filteredSourceCss)
-    : target === 'weapp'
-      ? applyMiniProgramTailwindV4DefaultColorCss(filteredSourceCss)
-      : filteredSourceCss
-  const compatibleSourceCss = removeUnsupportedThemeVendorKeyframes(sourceCss)
-  return compatibleSourceCss === source.css ? source : { ...source, css: compatibleSourceCss }
-}
-
 function resolveTargetCandidates(
   candidates: Iterable<string> | undefined,
   target: TailwindV4GenerateTarget,
@@ -348,190 +227,6 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
     root: options.generated.root,
     target: options.generated.target,
   })
-}
-
-function parseImportSourceParam(params: string) {
-  const match = /\bsource\(\s*(none|(['"])(.*?)\2)\s*\)/.exec(params)
-  if (!match) {
-    return undefined
-  }
-  return {
-    none: match[1] === 'none',
-    sourcePath: match[3],
-  }
-}
-
-function isTailwindCssImport(params: string) {
-  const specifier = parseCssImportSpecifier(params)
-  return specifier === 'tailwindcss'
-    || specifier?.startsWith('tailwindcss/')
-    || specifier?.replaceAll('\\', '/').endsWith('/tailwindcss/index.css')
-}
-
-function parseCssImportSpecifier(params: string) {
-  const value = params.trim()
-  const quoted = /^(['"])(.*?)\1/.exec(value)
-  if (quoted) {
-    return quoted[2]
-  }
-
-  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
-  return url?.[2] ?? url?.[3]
-}
-
-function isTailwindCssPreflightImport(params: string) {
-  const specifier = parseCssImportSpecifier(params)
-  return specifier === 'tailwindcss/preflight.css' || specifier === 'tailwindcss/preflight'
-}
-
-function hasImportLayerOption(params: string) {
-  return /\blayer(?:\s*\(|\s*$)/.test(params)
-}
-
-function removeUnlayeredTailwindV4PreflightImports(css: string) {
-  if (!css.includes('preflight')) {
-    return css
-  }
-
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-
-  let changed = false
-  root.walkAtRules('import', (rule) => {
-    if (isTailwindCssPreflightImport(rule.params) && !hasImportLayerOption(rule.params)) {
-      rule.remove()
-      changed = true
-    }
-  })
-
-  return changed ? root.toString() : css
-}
-
-function resolveSourceBase(base: string, sourcePath: string) {
-  return path.isAbsolute(sourcePath) ? sourcePath : path.resolve(base, sourcePath)
-}
-
-function createDefaultIgnoredScanSources(base: string) {
-  return TAILWIND_V4_DEFAULT_IGNORED_SOURCE_PATTERNS.map(pattern => ({
-    base,
-    pattern,
-    negated: true,
-  }))
-}
-
-function normalizeCssDefinedScanSources(base: string, entries: TailwindV4SourcePattern[]) {
-  return entries.length > 0 && entries.every(entry => entry.negated)
-    ? [
-        {
-          base,
-          pattern: '**/*',
-          negated: false,
-        },
-        ...entries,
-      ]
-    : entries
-}
-
-async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSource, 'base' | 'css' | 'dependencies'>): Promise<TailwindV4ResolvedScanSources | undefined> {
-  let importSourceBase: string | undefined
-  let hasSourceNone = false
-  const from = source.dependencies[0]
-  let root: postcss.Root
-  try {
-    root = postcss.parse(source.css, { from })
-  }
-  catch {
-    return undefined
-  }
-
-  root.walkAtRules((rule) => {
-    if (rule.name === 'import') {
-      if (!isTailwindCssImport(rule.params)) {
-        return
-      }
-      const sourceParam = parseImportSourceParam(rule.params)
-      if (sourceParam?.none) {
-        hasSourceNone = true
-      }
-      if (sourceParam?.sourcePath) {
-        importSourceBase = resolveSourceBase(source.base, sourceParam.sourcePath)
-      }
-    }
-  })
-
-  const sourcePatterns = await resolveCssSourceEntries(root, source.base, '**/*')
-  if (!importSourceBase) {
-    if (sourcePatterns.length > 0) {
-      return [
-        ...normalizeCssDefinedScanSources(source.base, sourcePatterns),
-        ...createDefaultIgnoredScanSources(source.base),
-      ]
-    }
-    if (hasSourceNone) {
-      return false
-    }
-    return undefined
-  }
-
-  return [
-    await resolveTailwindSourceEntry('.', importSourceBase, false, '**/*'),
-    ...sourcePatterns,
-    ...createDefaultIgnoredScanSources(importSourceBase),
-  ]
-}
-
-async function resolveScanSources(
-  source: TailwindV4ResolvedSource,
-  scanSources: TailwindV4GenerateOptions['scanSources'],
-) {
-  if (scanSources !== true) {
-    return scanSources
-  }
-  return await resolveCssDefinedScanSources(source) ?? false
-}
-
-function hasThemeParent(rule: postcss.AtRule) {
-  let parent = rule.parent as postcss.Container | undefined
-  while (parent) {
-    if (parent.type === 'atrule' && (parent as postcss.AtRule).name === 'theme') {
-      return true
-    }
-    parent = parent.parent as postcss.Container | undefined
-  }
-  return false
-}
-
-function isVendorPrefixedKeyframes(rule: postcss.AtRule) {
-  return rule.name.startsWith('-') && rule.name.endsWith('keyframes')
-}
-
-function removeUnsupportedThemeVendorKeyframes(css: string) {
-  if (!css.includes('@theme') || !css.includes('@-')) {
-    return css
-  }
-
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return css
-  }
-
-  let changed = false
-  root.walkAtRules((rule) => {
-    if (isVendorPrefixedKeyframes(rule) && hasThemeParent(rule)) {
-      rule.remove()
-      changed = true
-    }
-  })
-
-  return changed ? root.toString() : css
 }
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {

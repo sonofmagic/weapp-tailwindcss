@@ -1,6 +1,5 @@
-import type { Compiler, sources as WebpackSources } from 'webpack'
-import type { BundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
-import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
+import type { SetupWebpackV5ProcessAssetsHookOptions } from './v5-assets/helpers'
+import type { LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
@@ -12,7 +11,7 @@ import { processCachedTask } from '../../shared/cache'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../../shared/css-cleanup'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
-import { generateCssByGenerator } from '../../shared/generator-css'
+import { generateCssByGenerator, isPureLocalCssImportWrapper } from '../../shared/generator-css'
 import { removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
@@ -22,48 +21,13 @@ import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runti
 import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../../vite/source-scan'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, getCacheKey } from './shared'
+import { createWebpackAssetUpdater, createWebpackSnapshotAssets } from './v5-assets/helpers'
 
-interface SetupWebpackV5ProcessAssetsHookOptions {
-  compiler: Compiler
-  options: InternalUserDefinedOptions
-  appType?: AppType | undefined
-  runtimeState: {
-    twPatcher: InternalUserDefinedOptions['twPatcher']
-    readyPromise: Promise<void>
-  }
-  getRuntimeRefreshRequirement: () => boolean
-  refreshRuntimeMetadata: (force: boolean) => Promise<void>
-  isWebpackProcessedCssAsset?: ((file: string, rawSource: string) => boolean) | undefined
-  consumeRuntimeRefreshRequirement: () => void
-  isWatchMode?: (() => boolean) | undefined
-  runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
-  debug: (format: string, ...args: unknown[]) => void
+interface WebpackCssHandlerOptions {
+  isMainChunk: boolean
+  postcssOptions: { options: { from: string } }
+  majorVersion?: number | undefined
 }
-
-function createWebpackSnapshotAssets(assets: Record<string, { source: () => unknown }>) {
-  return Object.fromEntries(
-    Object.entries(assets).map(([file, asset]) => {
-      const source = asset.source()
-      return [
-        file,
-        {
-          fileName: file,
-          source: typeof source === 'string' ? source : source?.toString() ?? '',
-          type: 'asset',
-        },
-      ]
-    }),
-  )
-}
-
-function stringifyWebpackSource(source: unknown) {
-  if (typeof source === 'string') {
-    return source
-  }
-  return source?.toString() ?? ''
-}
-
-type WebpackSourceLike = string | WebpackSources.Source
 
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
   const {
@@ -83,24 +47,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
   const { ConcatSource } = sources
   const generatorOptions = compilerOptions.generator
   const isWebGeneratorTarget = generatorOptions?.target === 'web'
-  const cssHandlerOptionsCache = new Map<string, {
-    isMainChunk: boolean
-    postcssOptions: {
-      options: {
-        from: string
-      }
-    }
-    majorVersion?: number | undefined
-  }>()
-  const cssUserHandlerOptionsCache = new Map<string, {
-    isMainChunk: boolean
-    postcssOptions: {
-      options: {
-        from: string
-      }
-    }
-    majorVersion?: number | undefined
-  }>()
+  const cssHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
+  const cssUserHandlerOptionsCache = new Map<string, WebpackCssHandlerOptions>()
   const bundleBuildState = createBundleBuildState()
   const bundleRuntimeClassSetManager = runtimeClassSetManager ?? createBundleRuntimeClassSetManager()
   let webpackWatchRuntimeScanInitialized = false
@@ -124,32 +72,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const assetHashByChunk = createAssetHashByChunkMap(compilation.chunks as any)
-        const getCurrentAssetSource = (file: string) => {
-          const asset = compilation.getAsset(file)
-          if (!asset) {
-            return undefined
-          }
-          return stringifyWebpackSource(asset.source.source())
-        }
-        const updateAssetIfChanged = (
-          file: string,
-          source: WebpackSourceLike,
-          { notifyUpdate = true }: { notifyUpdate?: boolean } = {},
-        ) => {
-          const nextSource = typeof source === 'string'
-            ? source
-            : stringifyWebpackSource(source.source())
-          const previousSource = getCurrentAssetSource(file)
-          if (previousSource === nextSource) {
-            debug('asset unchanged, skip update: %s', file)
-            return false
-          }
-          compilation.updateAsset(file, typeof source === 'string' ? new ConcatSource(source) : source)
-          if (notifyUpdate) {
-            compilerOptions.onUpdate(file, previousSource ?? '', nextSource)
-          }
-          return true
-        }
+        const { updateAssetIfChanged } = createWebpackAssetUpdater({
+          compilation,
+          ConcatSource,
+          onUpdate: compilerOptions.onUpdate,
+          debug,
+        })
 
         const entries = Object.entries(assets)
         const compilerOutputPath = compilation.compiler?.outputPath ?? compiler.outputPath
@@ -519,6 +447,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 transform: async () => {
                   await runtimeState.readyPromise
                   const cssHandlerOptions = getCssHandlerOptions(file)
+                  if (isPureLocalCssImportWrapper(rawSource)) {
+                    return {
+                      result: new ConcatSource(removeTailwindSourceDirectives(
+                        stripBundlerGeneratedCssMarkers(rawSource),
+                        { importFallback: true },
+                      )),
+                    }
+                  }
                   const generated = await generateCssByGenerator({
                     opts: compilerOptions,
                     runtimeState,

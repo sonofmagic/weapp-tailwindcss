@@ -1,5 +1,4 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { Config } from 'tailwindcss'
 import type {
   TailwindV3CandidateSource,
   TailwindV3Engine,
@@ -7,7 +6,6 @@ import type {
   TailwindV3GenerateTarget,
   TailwindV3ResolvedSource,
 } from './types'
-import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import postcss from 'postcss'
 import {
@@ -16,12 +14,12 @@ import {
   resolveBareArbitraryValueCandidate,
 } from 'tailwindcss-patch'
 import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
-import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
-import { ensureTailwindcssRuntimePatch } from '@/tailwindcss/runtime-patch'
 import { omitUndefined } from '@/utils/object'
+import { createIncrementalGenerateCacheKey } from './generator/cache-key'
+import { createChangedContentEntries, createTailwindConfig, mergeGenerateCandidates, normalizeConfigObject } from './generator/content'
+import { createRuntimeReadyPromise } from './generator/runtime-ready'
 import { transformTailwindV3CssByTarget } from './miniprogram'
 
-const runtimeReadyPromiseCache = new Map<string, Promise<void>>()
 const incrementalGenerateCache = new Map<string, TailwindV3IncrementalGenerateCacheEntry>()
 
 interface TailwindV3Context {
@@ -59,46 +57,6 @@ interface TailwindV3IncrementalGenerateCacheEntry {
   rawCss: string
   dependencies: string[]
   target: TailwindV3GenerateTarget
-}
-
-interface LegacyContentObject {
-  files?: unknown
-  relative?: boolean
-  extract?: unknown
-  transform?: unknown
-}
-
-function isLegacyContentObject(value: unknown): value is LegacyContentObject {
-  return typeof value === 'object' && value !== null && 'files' in value
-}
-
-function createRawContentEntries(candidates: Iterable<string>, sources: TailwindV3CandidateSource[]) {
-  const entries: Array<{ raw: string, extension: string }> = []
-  const candidateContent = [...candidates].join(' ')
-  if (candidateContent.length > 0) {
-    entries.push({
-      raw: candidateContent,
-      extension: 'html',
-    })
-  }
-  for (const source of sources) {
-    entries.push({
-      raw: source.content,
-      extension: source.extension ?? 'html',
-    })
-  }
-  return entries
-}
-
-function createChangedContentEntries(candidates: Iterable<string>, sources: TailwindV3CandidateSource[]) {
-  return createRawContentEntries(candidates, sources).map(entry => ({
-    content: entry.raw,
-    extension: entry.extension,
-  }))
-}
-
-function collectCandidates(candidates: Iterable<string> | undefined) {
-  return new Set(candidates ?? [])
 }
 
 function normalizeBareArbitraryValueCandidate(
@@ -210,149 +168,6 @@ function hasRemovedCandidates(previousCandidates: Set<string>, nextCandidates: S
   return false
 }
 
-function collectApplyCandidatesFromCss(css: string) {
-  if (!css.includes('@apply')) {
-    return []
-  }
-
-  const candidates = new Set<string>()
-  try {
-    postcss.parse(css).walkAtRules('apply', (rule) => {
-      for (const candidate of rule.params.split(/\s+/)) {
-        const normalized = candidate.replace(/!important$/, '').trim()
-        if (normalized) {
-          candidates.add(normalized)
-        }
-      }
-    })
-  }
-  catch {
-    // CSS 解析失败时交给后续 Tailwind 流程报错或降级处理。
-  }
-  return [...candidates]
-}
-
-function isTailwindCandidateLayer(params: string) {
-  return params.split(/[,\s]+/).some(layer => layer === 'components' || layer === 'utilities')
-}
-
-function extractClassCandidatesFromSelector(selector: string, candidates: Set<string>) {
-  for (let index = 0; index < selector.length; index++) {
-    if (selector[index] !== '.') {
-      continue
-    }
-
-    let candidate = ''
-    let escaped = false
-    for (let tokenIndex = index + 1; tokenIndex < selector.length; tokenIndex++) {
-      const char = selector[tokenIndex]
-      if (escaped) {
-        candidate += char
-        escaped = false
-        continue
-      }
-      if (char === '\\') {
-        escaped = true
-        continue
-      }
-      if (char && /[\w-]/.test(char)) {
-        candidate += char
-        continue
-      }
-      break
-    }
-
-    if (candidate) {
-      candidates.add(candidate)
-    }
-  }
-}
-
-function collectLayerCandidatesFromCss(css: string) {
-  if (!css.includes('@layer')) {
-    return []
-  }
-
-  const candidates = new Set<string>()
-  try {
-    postcss.parse(css).walkAtRules('layer', (layer) => {
-      if (!isTailwindCandidateLayer(layer.params)) {
-        return
-      }
-      layer.walkRules((rule) => {
-        extractClassCandidatesFromSelector(rule.selector, candidates)
-      })
-    })
-  }
-  catch {
-    // CSS 解析失败时交给后续 Tailwind 流程报错或降级处理。
-  }
-  return [...candidates]
-}
-
-function mergeGenerateCandidates(source: TailwindV3ResolvedSource, options: TailwindV3GenerateOptions) {
-  return collectCandidates([
-    ...collectLayerCandidatesFromCss(source.css),
-    ...collectApplyCandidatesFromCss(source.css),
-    ...collectCandidates(options.candidates),
-  ])
-}
-
-function mergeContent(content: unknown, rawEntries: Array<{ raw: string, extension: string }>) {
-  if (isLegacyContentObject(content)) {
-    return {
-      ...content,
-      relative: content.relative ?? true,
-      files: [
-        ...([] as unknown[]).concat(content.files ?? []),
-        ...rawEntries,
-      ],
-    }
-  }
-
-  return {
-    relative: true,
-    files: [
-      ...([] as unknown[]).concat(content ?? []),
-      ...rawEntries,
-    ],
-  }
-}
-
-function normalizeConfigObject(config: Config | undefined) {
-  if (!config || typeof config !== 'object') {
-    return config
-  }
-  const maybeDefault = (config as { default?: unknown }).default
-  if (maybeDefault && typeof maybeDefault === 'object') {
-    return maybeDefault as Config
-  }
-  return config
-}
-
-function hasExplicitContentInput(options: TailwindV3GenerateOptions) {
-  return options.candidates !== undefined || options.sources !== undefined
-}
-
-function createExplicitContentConfig(rawEntries: Array<{ raw: string, extension: string }>) {
-  return {
-    relative: true,
-    files: rawEntries,
-  }
-}
-
-function createTailwindConfig(source: TailwindV3ResolvedSource, options: TailwindV3GenerateOptions) {
-  const config = {
-    ...(normalizeConfigObject(source.configObject) ?? {}),
-  } as Config
-  const candidates = mergeGenerateCandidates(source, options)
-  const rawEntries = createRawContentEntries(candidates, options.sources ?? [])
-  config.content = hasExplicitContentInput(options)
-    ? createExplicitContentConfig(rawEntries) as Config['content']
-    : mergeContent(config.content, rawEntries) as Config['content']
-  return config
-}
-
 function shouldAutoEnableCssMacro(source: TailwindV3ResolvedSource) {
   return hasCssMacroTailwindPlugin(normalizeConfigObject(source.configObject)?.plugins)
 }
@@ -394,64 +209,6 @@ function loadTailwindV3Internals(source: TailwindV3ResolvedSource): TailwindV3In
     resolveConfig: (resolveConfigModule['default'] ?? resolveConfigModule) as TailwindV3Internals['resolveConfig'],
     validateConfig: validateConfigModule['validateConfig'] as TailwindV3Internals['validateConfig'],
   }
-}
-
-function createStableJson(value: unknown): string {
-  if (value === undefined) {
-    return 'undefined'
-  }
-  if (value === null || typeof value !== 'object') {
-    return JSON.stringify(value)
-  }
-  if (Array.isArray(value)) {
-    return `[${value.map(item => createStableJson(item)).join(',')}]`
-  }
-  return `{${Object.keys(value).sort().map((key) => {
-    const record = value as Record<string, unknown>
-    return `${JSON.stringify(key)}:${createStableJson(record[key])}`
-  }).join(',')}}`
-}
-
-function createDependencyFingerprint(files: string[]) {
-  return files.map((file) => {
-    try {
-      const stat = fs.statSync(file)
-      return `${file}:${stat.size}:${stat.mtimeMs}`
-    }
-    catch {
-      return `${file}:missing`
-    }
-  }).join('|')
-}
-
-function createIncrementalGenerateCacheKey(
-  source: TailwindV3ResolvedSource,
-  target: TailwindV3GenerateTarget,
-  styleOptions: Partial<IStyleHandlerOptions> | undefined,
-  bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
-) {
-  return [
-    source.packageName,
-    source.postcssPlugin,
-    source.cwd,
-    source.config ?? 'config:missing',
-    createDependencyFingerprint(source.dependencies),
-    source.css,
-    createStableJson(normalizeConfigObject(source.configObject)?.content),
-    target,
-    createStableJson(styleOptions),
-    createStableJson(bareArbitraryValues),
-  ].join('\0')
-}
-
-function createRuntimeReadyCacheKey(source: TailwindV3ResolvedSource, rootPath: string | undefined) {
-  return [
-    source.packageName,
-    source.postcssPlugin,
-    rootPath ?? 'missing',
-    source.config ?? 'config:missing',
-    source.cwd,
-  ].join('\0')
 }
 
 function isDirectUtilitiesOnlyCss(css: string) {
@@ -500,34 +257,6 @@ function appendUtilityRules(root: postcss.Root, context: TailwindV3Context, rule
 
 function appendDirectUtilityRules(root: postcss.Root, context: TailwindV3Context) {
   appendUtilityRules(root, context, [...context.ruleCache])
-}
-
-function createRuntimeReadyPromise(source: TailwindV3ResolvedSource) {
-  const patcher = createTailwindcssPatcher({
-    basedir: source.cwd,
-    supportCustomLengthUnitsPatch: true,
-    tailwindcss: {
-      ...(source.config === undefined ? {} : { config: source.config }),
-      cwd: source.cwd,
-      packageName: source.packageName,
-      postcssPlugin: source.postcssPlugin,
-      version: 3,
-    },
-  })
-  const cacheKey = createRuntimeReadyCacheKey(source, patcher.packageInfo?.rootPath)
-  const cached = runtimeReadyPromiseCache.get(cacheKey)
-  if (cached) {
-    return cached
-  }
-
-  const task = ensureTailwindcssRuntimePatch(patcher, {
-    clearRequireCache: true,
-  }).catch((error) => {
-    runtimeReadyPromiseCache.delete(cacheKey)
-    throw error
-  })
-  runtimeReadyPromiseCache.set(cacheKey, task)
-  return task
 }
 
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {

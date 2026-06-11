@@ -1,17 +1,16 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { IArbitraryValues } from '@/types/shared'
 import { readFile } from 'node:fs/promises'
-import { createRequire } from 'node:module'
-import path from 'node:path'
-import { extractSourceCandidates, resolveProjectSourceFiles } from 'tailwindcss-patch'
-import { traverse } from '@/babel'
-import { babelParse } from '@/js/babel'
+import { extractSourceCandidates } from 'tailwindcss-patch'
 import {
   FULL_SOURCE_SCAN_EXTENSION_RE,
   isFileMatchedByTailwindSourceEntries,
   resolveSourceScanPath,
-  toPosixPath,
 } from '@/tailwindcss/source-scan'
+import { resolveSourceCandidateScanFiles } from './source-candidates/scan-root'
+import { extractScriptStringCandidates } from './source-candidates/script'
+
+export { createTailwindV3DefaultExtractor } from './source-candidates/tailwind-v3-default-extractor'
 
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
@@ -61,171 +60,10 @@ export interface SourceCandidateCollectorOptions {
 }
 
 const CLEAN_URL_RE = /[?#].*$/
-const TAILWIND_V4_IGNORED_CONTENT_DIRS = [
-  '.git',
-  '.hg',
-  '.jj',
-  '.next',
-  '.parcel-cache',
-  '.pnpm-store',
-  '.svelte-kit',
-  '.svn',
-  '.turbo',
-  '.venv',
-  '.vercel',
-  '.yarn',
-  '__pycache__',
-  'node_modules',
-  'venv',
-]
-const TAILWIND_V4_IGNORED_EXTENSIONS = [
-  'css',
-  'less',
-  'postcss',
-  'pcss',
-  'lock',
-  'sass',
-  'scss',
-  'styl',
-  'stylus',
-  'log',
-  'wxss',
-  'acss',
-  'jxss',
-  'ttss',
-  'qss',
-  'tyss',
-]
-const TAILWIND_V4_IGNORED_FILES = [
-  'package-lock.json',
-  'pnpm-lock.yaml',
-  'bun.lockb',
-  '.gitignore',
-  '.env',
-  '.env.*',
-]
 const sourceCandidateContentCache = new Map<string, string[]>()
-const require = createRequire(import.meta.url)
-const TAILWIND_V3_HTML_TOKEN_CANDIDATES = new Set([
-  '/block',
-  '/div',
-  '/span',
-  '/template',
-  '/text',
-  '/view',
-  'class',
-  'className',
-  'div',
-  'hover-class',
-  'span',
-  'template',
-  'text',
-  'view',
-])
-const SCRIPT_SOURCE_CANDIDATE_EXTENSIONS = new Set([
-  'js',
-  'jsx',
-  'mjs',
-  'cjs',
-  'ts',
-  'tsx',
-  'mts',
-  'cts',
-])
-const CLASS_LIKE_NAME_RE = /class/i
 
 function cleanUrl(id: string) {
   return resolveSourceScanPath(id.replace(CLEAN_URL_RE, ''))
-}
-
-function resolveOutDirIgnorePattern(root: string, outDir: string | undefined) {
-  if (!outDir) {
-    return
-  }
-  const relative = path.relative(root, path.resolve(root, outDir))
-  if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
-    return
-  }
-  return `${toPosixPath(relative)}/**`
-}
-
-function normalizeScanEntries(
-  root: string,
-  entries: TailwindSourceEntry[] | undefined,
-  outDirIgnore: string | undefined,
-) {
-  const hasPositiveEntry = entries?.some(entry => !entry.negated) === true
-  const scanEntries = entries?.length
-    ? hasPositiveEntry
-      ? entries
-      : [
-          {
-            base: root,
-            pattern: '**/*',
-            negated: false,
-          },
-          ...entries,
-        ]
-    : undefined
-  if (!outDirIgnore) {
-    return scanEntries
-  }
-  return [
-    ...(scanEntries ?? [{
-      base: root,
-      pattern: '**/*',
-      negated: false,
-    }]),
-    {
-      base: root,
-      pattern: outDirIgnore,
-      negated: true,
-    },
-  ]
-}
-
-function shouldApplyDefaultIgnoredSources(entries: TailwindSourceEntry[] | undefined) {
-  return entries?.length === undefined
-    ? false
-    : entries.length > 0 && entries.every(entry => entry.negated)
-}
-
-function createDefaultIgnoredSources(
-  root: string,
-  outDirIgnore: string | undefined,
-  entries: TailwindSourceEntry[] | undefined,
-  explicit: boolean | undefined,
-) {
-  const shouldUseTailwindDefaults = !explicit || shouldApplyDefaultIgnoredSources(entries)
-  const defaultIgnoredSources = shouldUseTailwindDefaults
-    ? [
-        ...TAILWIND_V4_IGNORED_CONTENT_DIRS.map(pattern => ({
-          base: root,
-          pattern: `**/${pattern}/**`,
-          negated: true,
-        })),
-        ...TAILWIND_V4_IGNORED_EXTENSIONS.map(extension => ({
-          base: root,
-          pattern: `**/*.${extension}`,
-          negated: true,
-        })),
-        ...TAILWIND_V4_IGNORED_FILES.map(pattern => ({
-          base: root,
-          pattern: `**/${pattern}`,
-          negated: true,
-        })),
-      ]
-    : []
-  return [
-    ...defaultIgnoredSources,
-    ...(outDirIgnore
-      ? [{
-          base: root,
-          pattern: outDirIgnore,
-          negated: true,
-        }]
-      : []),
-  ]
 }
 
 function resolveSourceCandidateExtension(id: string) {
@@ -258,144 +96,6 @@ async function extractCandidates(
     candidates.add(candidate)
   }
   return candidates
-}
-
-function getPropertyName(node: any) {
-  if (!node) {
-    return
-  }
-  if (node.type === 'Identifier') {
-    return node.name
-  }
-  if (node.type === 'StringLiteral') {
-    return node.value
-  }
-}
-
-function isClassLikeStringPath(path: any) {
-  const parent = path.parentPath
-  if (!parent) {
-    return false
-  }
-
-  if (parent.isVariableDeclarator?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.id) ?? '')
-  }
-
-  if (parent.isObjectProperty?.() || parent.isObjectMethod?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.key) ?? '')
-  }
-
-  if (parent.isAssignmentExpression?.()) {
-    const left = parent.node.left
-    if (left?.type === 'Identifier') {
-      return CLASS_LIKE_NAME_RE.test(left.name)
-    }
-    if (left?.type === 'MemberExpression') {
-      return CLASS_LIKE_NAME_RE.test(getPropertyName(left.property) ?? '')
-    }
-  }
-
-  if (parent.isJSXAttribute?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.name) ?? '')
-  }
-
-  return false
-}
-
-function isTemplateElementInClassLikePath(path: any) {
-  const templateLiteralPath = path.parentPath
-  if (!templateLiteralPath?.isTemplateLiteral?.()) {
-    return false
-  }
-  const parent = templateLiteralPath.parentPath
-  if (!parent) {
-    return false
-  }
-  if (parent.isVariableDeclarator?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.id) ?? '')
-  }
-  if (parent.isObjectProperty?.() || parent.isObjectMethod?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.key) ?? '')
-  }
-  if (parent.isAssignmentExpression?.()) {
-    const left = parent.node.left
-    if (left?.type === 'Identifier') {
-      return CLASS_LIKE_NAME_RE.test(left.name)
-    }
-    if (left?.type === 'MemberExpression') {
-      return CLASS_LIKE_NAME_RE.test(getPropertyName(left.property) ?? '')
-    }
-  }
-  return false
-}
-
-async function extractScriptStringCandidates(
-  source: string,
-  extension: string,
-  options: SourceCandidateCollectorOptions,
-) {
-  if (!SCRIPT_SOURCE_CANDIDATE_EXTENSIONS.has(extension)) {
-    return []
-  }
-
-  const values = new Set<string>()
-  try {
-    const ast = babelParse(source, {
-      cache: true,
-      cacheKey: `vite-source-candidates:${extension}`,
-      plugins: ['jsx', 'typescript'],
-      sourceType: 'unambiguous',
-    })
-
-    traverse(ast, {
-      noScope: true,
-      StringLiteral(path: any) {
-        if (isClassLikeStringPath(path)) {
-          values.add(path.node.value)
-        }
-      },
-      TemplateElement(path: any) {
-        if (isTemplateElementInClassLikePath(path)) {
-          values.add(path.node.value.raw)
-        }
-      },
-    } as any)
-  }
-  catch {
-    return []
-  }
-
-  const candidates = new Set<string>()
-  for (const value of values) {
-    const extractedCandidates = options.extractor
-      ? await options.extractor(value, 'html')
-      : await extractSourceCandidates(value, 'html', {
-          ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
-        })
-    for (const candidate of extractedCandidates) {
-      candidates.add(candidate)
-    }
-  }
-  return candidates
-}
-
-export function createTailwindV3DefaultExtractor() {
-  try {
-    const defaultExtractorModule = require('tailwindcss/lib/lib/defaultExtractor')
-    const resolveConfigModule = require('tailwindcss/resolveConfig')
-    const resolveConfig = resolveConfigModule.default ?? resolveConfigModule
-    const defaultExtractor = defaultExtractorModule.defaultExtractor ?? defaultExtractorModule.default ?? defaultExtractorModule
-    const extractor = defaultExtractor({
-      tailwindConfig: resolveConfig({ content: [] }),
-    })
-    return (source: string) => new Set<string>(
-      extractor(source).filter((candidate: string) => !TAILWIND_V3_HTML_TOKEN_CANDIDATES.has(candidate)),
-    )
-  }
-  catch {
-    return undefined
-  }
 }
 
 export function isSourceCandidateRequest(id: string) {
@@ -497,15 +197,12 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   }
 
   async function scanRoot({ entries, explicit, root, outDir }: ScanSourceCandidateRootOptions) {
-    const resolvedRoot = path.resolve(root)
-    const outDirIgnore = resolveOutDirIgnorePattern(resolvedRoot, outDir)
-    const scanEntries = normalizeScanEntries(resolvedRoot, entries, outDirIgnore)
-    const ignoredSources = createDefaultIgnoredSources(resolvedRoot, outDirIgnore, entries, explicit)
-    const files = await resolveProjectSourceFiles({
-      cwd: resolvedRoot,
-      ...(scanEntries === undefined ? {} : { sources: scanEntries }),
-      ...(ignoredSources.length > 0 ? { ignoredSources } : {}),
+    const files = await resolveSourceCandidateScanFiles({
+      entries,
+      explicit,
       filter: isSourceCandidateRequest,
+      outDir,
+      root,
     })
 
     await Promise.all(files.map(file => syncFile(resolveSourceScanPath(file))))

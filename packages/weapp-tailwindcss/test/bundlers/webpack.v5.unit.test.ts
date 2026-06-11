@@ -1621,6 +1621,89 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     expect(currentAssetStore['app.wxss']).toContain(staleRuntimeCss)
   })
 
+  it('does not inject mini-program preflight into main css import wrappers', async () => {
+    const runtimeSet = new Set(['w-[20px]'])
+    currentContext = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        ...createContext().twPatcher,
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      } as any,
+    })
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {
+      'app.wxss': '@import "./styles/app.wxss";',
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'app', hash: 'hash-import-wrapper', files: ['app.wxss'] }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentAssetStore['app.wxss']).toBe('@import "./styles/app.wxss";')
+    expect(currentAssetStore['app.wxss']).not.toContain('view,text,::after,::before')
+    expect(currentContext.styleHandler).not.toHaveBeenCalledWith(
+      '@import "./styles/app.wxss";',
+      expect.objectContaining({ isMainChunk: true }),
+    )
+  })
+
   it('regenerates main css when only runtime classes change', async () => {
     let runtimeSet = new Set(['bg-[#101010]'])
     let transformCount = 0

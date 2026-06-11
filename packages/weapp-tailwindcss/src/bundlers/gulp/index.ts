@@ -1,12 +1,9 @@
 import type File from 'vinyl'
-import type { BundleSnapshot, BundleStateEntry, EntryType } from '../vite/bundle-state'
 import type { BundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
 import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOptions, JsModuleGraphOptions, UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
-import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import stream from 'node:stream'
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
@@ -17,14 +14,14 @@ import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/ta
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { generateCssByGenerator } from '../shared/generator-css'
-import { emitHmrTiming } from '../shared/hmr-timing'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
 import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../vite/source-scan'
+import { createGulpModuleGraphOptions } from './module-graph'
+import { createGulpRuntimeSnapshot } from './runtime-snapshot'
+import { createVinylTransform } from './vinyl-transform'
 
 const debug = createDebug()
-
-const Transform = stream.Transform
 
 /**
  * @name weapp-tw-gulp
@@ -55,7 +52,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let cachedGulpSourceCandidateGetter: ((entries: Parameters<ReturnType<typeof createSourceCandidateCollector>['valuesForEntries']>[0]) => Set<string>) | undefined
   let cachedGulpSourceCandidateSourceGetter: ((entries: Parameters<ReturnType<typeof createSourceCandidateCollector>['sourcesForEntries']>[0]) => Map<string, Set<string>>) | undefined
 
-  const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
   let runtimeSetDirty = false
   const runtimeSourceHashByFile = new Map<string, string>()
@@ -98,52 +94,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return runtimeSet
   }
 
-  function createRuntimeSnapshot(changedFiles: Iterable<string>): BundleSnapshot {
-    const runtimeAffectingChangedByType = {
-      html: new Set<string>(),
-      js: new Set<string>(),
-      css: new Set<string>(),
-      other: new Set<string>(),
-    } satisfies Record<EntryType, Set<string>>
-    for (const file of changedFiles) {
-      const entry = runtimeSourcesByFile.get(file)
-      if (entry) {
-        runtimeAffectingChangedByType[entry.type].add(file)
-      }
-    }
-    const entries = [...runtimeSourcesByFile.entries()].map(([file, entry]) => ({
-      file,
-      output: {
-        fileName: file,
-        source: entry.source,
-        type: 'asset' as const,
-      } as BundleStateEntry['output'],
-      source: entry.source,
-      type: entry.type,
-    }))
-    return {
-      entries,
-      jsEntries: new Map(),
-      sourceHashByFile: new Map(),
-      runtimeAffectingSignatureByFile: new Map(),
-      runtimeAffectingHashByFile: new Map(),
-      hasOmittedKnownFiles: false,
-      changedByType: {
-        html: new Set<string>(),
-        js: new Set<string>(),
-        css: new Set<string>(),
-        other: new Set<string>(),
-      },
-      runtimeAffectingChangedByType,
-      processFiles: {
-        html: new Set<string>(),
-        js: new Set<string>(),
-        css: new Set<string>(),
-      },
-      linkedImpactsByEntry: new Map(),
-    }
-  }
-
   async function refreshRuntimeSetForSource(file: File, rawSource: string, type: 'html' | 'js') {
     const filename = path.resolve(file.path)
     const hash = cache.computeHash(rawSource)
@@ -158,7 +108,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
     if (runtimeState.twPatcher.majorVersion === 4 && !runtimeSetDirty) {
       try {
-        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, createRuntimeSnapshot([filename]))
+        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, createGulpRuntimeSnapshot(runtimeSourcesByFile, [filename]))
         runtimeSetInitialized = true
         return runtimeSet
       }
@@ -290,100 +240,16 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     debug('detected tailwindcss v4 css source from gulp css file: %s', file.path)
     return true
   }
-  function resolveWithExtensions(base: string): string | undefined {
-    for (const ext of MODULE_EXTENSIONS) {
-      const candidate = `${base}${ext}`
-      try {
-        if (fs.statSync(candidate).isFile()) {
-          return candidate
-        }
-      }
-      catch {
-        continue
-      }
-    }
-    return undefined
-  }
-
-  function resolveLocalModuleCandidate(base: string): string | undefined {
-    try {
-      const stat = fs.statSync(base)
-      if (stat.isFile()) {
-        return base
-      }
-      if (stat.isDirectory()) {
-        const resolvedIndex = resolveWithExtensions(path.join(base, 'index'))
-        if (resolvedIndex) {
-          return resolvedIndex
-        }
-      }
-    }
-    catch {
-      // 继续尝试按扩展名补全的逻辑
-    }
-
-    if (!path.extname(base)) {
-      return resolveWithExtensions(base)
-    }
-    return undefined
-  }
-
-  function createModuleGraphOptionsFor(): JsModuleGraphOptions {
-    return {
-      resolve(specifier, importer) {
-        if (!specifier) {
-          return undefined
-        }
-        if (!specifier.startsWith('.') && !path.isAbsolute(specifier)) {
-          return undefined
-        }
-        const normalized = path.resolve(path.dirname(importer), specifier)
-        return resolveLocalModuleCandidate(normalized)
-      },
-      load(id) {
-        try {
-          return fs.readFileSync(id, 'utf8')
-        }
-        catch {
-          return undefined
-        }
-      },
-      filter(id) {
-        const relative = path.relative(process.cwd(), id)
-        return opts.jsMatcher(relative) || opts.wxsMatcher(relative)
-      },
-    }
-  }
-
   function resolveModuleGraphOptions(moduleGraph?: JsModuleGraphOptions) {
     if (moduleGraph) {
       return moduleGraph
     }
 
     if (!cachedDefaultModuleGraphOptions) {
-      cachedDefaultModuleGraphOptions = createModuleGraphOptionsFor()
+      cachedDefaultModuleGraphOptions = createGulpModuleGraphOptions(opts)
     }
 
     return cachedDefaultModuleGraphOptions
-  }
-
-  function createVinylTransform(phase: string, handler: (file: File) => Promise<void>) {
-    return new Transform({
-      objectMode: true,
-      async transform(file: File, _encoding, callback) {
-        const hmrTimingStartedAt = performance.now()
-        try {
-          await handler(file)
-          emitHmrTiming('gulp', phase, performance.now() - hmrTimingStartedAt, {
-            file: file.relative || path.basename(file.path),
-          })
-          callback(null, file)
-        }
-        catch (error) {
-          callback(error as Error, file)
-        }
-      },
-    })
   }
 
   function resolveWxssHandlerOptions(options?: Partial<IStyleHandlerOptions>) {
