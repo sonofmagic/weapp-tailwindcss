@@ -1485,16 +1485,14 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toBe('.w-_b100px_B{width:100px}\n.container{width:100%}')
-    expect(styleHandler).toHaveBeenCalledWith(
+    expect(result?.css).toBe('.w-_b100px_B{width:100px}')
+    expect(styleHandler).not.toHaveBeenCalledWith(
       expect.stringContaining('.container{width:100%}'),
-      expect.objectContaining({
-        isMainChunk: true,
-      }),
+      expect.anything(),
     )
   })
 
-  it('appends v3 container compatibility when @config disables container in an external config file', async () => {
+  it('does not append container compatibility for weapp when @config disables container in an external config file', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const projectRoot = path.resolve(__dirname, '../fixtures/generator-css-container-config')
     const cssFile = path.join(projectRoot, 'app.wxss')
@@ -1569,11 +1567,11 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.css).toContain('.w-_b100px_B{width:100px}')
-    expect(result?.css).toContain('.container')
-    expect(result?.css).toContain('max-width: 40rpx')
+    expect(result?.css).not.toContain('.container')
+    expect(result?.css).not.toContain('max-width: 40rpx')
   })
 
-  it('appends v3 container compatibility in force fallback branch', async () => {
+  it('does not append container compatibility for weapp in force fallback branch', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '.other{color:red}.w-\\[100px\\]{width:100px}'
     const generateMock = vi.fn(async () => ({
@@ -1637,7 +1635,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.source).toBe('generator')
-    expect(result?.css).toContain('.container')
+    expect(result?.css).not.toContain('.container')
     expect(result?.css).toContain('.other{color:red}')
   })
 
@@ -6636,7 +6634,7 @@ describe('bundlers/shared generator css', () => {
       css: configuredCss,
     }))
     expect(result?.css).toContain(weappCss)
-    expect(result?.css).toContain('.container{width:100%}')
+    expect(result?.css).not.toContain('.container{width:100%}')
   })
 
   it('isolates non-main scoped Tailwind v4 source candidates from current bundle runtime candidates', async () => {

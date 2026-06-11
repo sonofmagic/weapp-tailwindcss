@@ -322,40 +322,6 @@ wx-root-portal-content {
     background-color: var(--color-zinc-900);
   }
 }
-/* tokens: container <= <tailwind generated> */
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 3072rpx;
-  }
-}
 /* tokens: size-8 <= pages/index/index.wxml */
 .size-8 {
   width: calc(var(--spacing) * 8);

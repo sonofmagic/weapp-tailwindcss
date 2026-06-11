@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 12704 | 57 | false | false | false | false | true |
+| 11519 | 56 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -255,34 +255,6 @@ wx-root-portal-content {
 .text-_b_h123456_B {
   color: #123456;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -326,34 +298,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -390,34 +334,6 @@ wx-root-portal-content {
 /* tokens: before:content-['normal_subpackage_gulp-tailwindcss-v4'] <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 ```
 

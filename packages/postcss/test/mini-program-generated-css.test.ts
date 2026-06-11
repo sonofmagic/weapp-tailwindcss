@@ -250,6 +250,44 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.divide-double>view+view{border-style:double}')
   })
 
+  it('removes Tailwind container max-width media rules from final mini-program css', () => {
+    const css = finalizeMiniProgramCss([
+      '.container{width:100%}',
+      '@media (min-width:40rem){.container{max-width:40rem}}',
+      '@media (min-width:48rem){.container{max-width:48rem}}',
+      '@media (min-width:64rem){.container{max-width:64rem}}',
+      '@media (min-width:80rem){.container{max-width:80rem}}',
+      '@media (min-width:96rem){.container{max-width:96rem}}',
+      '@media (min-width:40rem){.container{padding-left:16px;max-width:40rem}}',
+    ].join(''))
+
+    expect(css).toContain('.container{width:100%}')
+    expect(css).toContain('@media (min-width:40rem){.container{padding-left:16px;max-width:40rem}}')
+    expect(css).not.toContain('.container{max-width:40rem}')
+    expect(css).not.toContain('.container{max-width:48rem}')
+    expect(css).not.toContain('.container{max-width:64rem}')
+    expect(css).not.toContain('.container{max-width:80rem}')
+    expect(css).not.toContain('.container{max-width:96rem}')
+  })
+
+  it('removes traced Tailwind generated container width from final mini-program css', () => {
+    const css = finalizeMiniProgramCss([
+      '/* tokens: container <= <tailwind generated> */',
+      '.container{width:100%}',
+      '.user-container{width:100%}',
+    ].join('\n'))
+
+    expect(css).not.toContain('tokens: container <= <tailwind generated>')
+    expect(css).not.toContain('.container{width:100%}')
+    expect(css).toContain('.user-container{width:100%}')
+  })
+
+  it('preserves user authored container width in final mini-program css', () => {
+    const css = finalizeMiniProgramCss('.container{width:100%}')
+
+    expect(css).toContain('.container{width:100%}')
+  })
+
   it('keeps generated utilities when pruning layer-wrapped mini-program css', () => {
     const css = pruneMiniProgramGeneratedCss([
       '@layer theme, base, components, utilities;',
@@ -264,6 +302,30 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('@layer')
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--color-red-500:red}')
     expect(css).toContain('.text-red-500{color:var(--color-red-500)}')
+  })
+
+  it('removes Tailwind container max-width media rules from pruned generated css', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      '.container{width:100%}',
+      '@media (min-width:40rem){.container{max-width:40rem}}',
+      '@media (min-width:48rem){.container{max-width:48rem}}',
+      '@media (min-width:40rem){.container{padding-left:16px;max-width:40rem}}',
+    ].join(''))
+
+    expect(css).not.toContain('.container{width:100%}')
+    expect(css).toContain('@media (min-width:40rem){.container{padding-left:16px;max-width:40rem}}')
+    expect(css).not.toContain('.container{max-width:40rem}')
+    expect(css).not.toContain('.container{max-width:48rem}')
+  })
+
+  it('removes Tailwind generated container width from pruned generated css', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      '.container{width:100%}',
+      '.user-container{width:100%}',
+    ].join(''))
+
+    expect(css).not.toContain('.container{width:100%}')
+    expect(css).toContain('.user-container{width:100%}')
   })
 
   it('preserves conditional compilation comments when pruning generated css', () => {

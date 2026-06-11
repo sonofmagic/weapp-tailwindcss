@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 7082 | 22 | false | false | false | false | true |
+| 5897 | 21 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -142,34 +142,6 @@ wx-root-portal-content {
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -214,34 +186,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -277,33 +221,5 @@ wx-root-portal-content {
 }
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 ```

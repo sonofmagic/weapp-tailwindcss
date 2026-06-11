@@ -44,6 +44,25 @@ describe('bundlers/shared css source trace', () => {
     expect(traced).toContain('/* tokens: bg-[#123456] <= src/components/palette.tsx */')
   })
 
+  it('removes traced Tailwind generated container rules only', () => {
+    const opts = createOptions({ cssSourceTrace: true })
+    const tokenSources = createCssTokenSourceMap(new Map([
+      ['container', new Set()],
+    ]), opts)
+
+    const traced = annotateCssSourceTrace([
+      '.container { width: 100%; }',
+      '.container-user { width: 100%; }',
+    ].join('\n'), {
+      opts,
+      tokenSources,
+    })
+
+    expect(traced).not.toContain('tokens: container <= <tailwind generated>')
+    expect(traced).not.toContain('.container { width: 100%; }')
+    expect(traced).toContain('.container-user { width: 100%; }')
+  })
+
   it('uses token source details in cache signatures only when enabled', () => {
     const disabled = createOptions()
     const enabled = createOptions({ cssSourceTrace: true })

@@ -6,22 +6,22 @@
 
 | 项目 | 来源 | 状态 | CSS 文件 | 字节数 | 选择器数 | @supports | :hover | Tailwind banner | 原始任意值选择器 | 小程序转义任意值选择器 |
 | --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- |
-| gulp-tailwindcss-v3 | demo | 通过 | `gulp-tailwindcss-v3/dist/app.wxss` (+4) | 22777 | 49 | 否 | 否 | 否 | 否 | 是 |
-| gulp-tailwindcss-v4 | demo | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+4) | 12704 | 57 | 否 | 否 | 否 | 否 | 是 |
-| mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+23) | 198213 | 2879 | 否 | 否 | 否 | 否 | 是 |
-| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 17373 | 69 | 否 | 否 | 否 | 否 | 是 |
+| gulp-tailwindcss-v3 | demo | 通过 | `gulp-tailwindcss-v3/dist/app.wxss` (+4) | 21987 | 48 | 否 | 否 | 否 | 否 | 是 |
+| gulp-tailwindcss-v4 | demo | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+4) | 11519 | 56 | 否 | 否 | 否 | 否 | 是 |
+| mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+20) | 191111 | 2879 | 否 | 否 | 否 | 否 | 是 |
+| mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 16795 | 68 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v3 | demo | 通过 | `taro-webpack-react-tailwindcss-v3/dist/app.wxss` (+7) | 82702 | 96 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 396848 | 2472 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+4) | 10551 | 30 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 7082 | 22 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 384447 | 2470 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+4) | 9761 | 29 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5897 | 21 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 19337 | 45 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 137463 | 533 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 10063 | 27 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 6879 | 20 | 否 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+11) | 253592 | 2822 | 否 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+4) | 29975 | 126 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 130024 | 532 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 9273 | 26 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 5694 | 19 | 否 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+11) | 250432 | 2821 | 否 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+4) | 28000 | 125 | 否 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+8) | 133639 | 167 | 否 | 否 | 否 | 否 | 是 |
-| weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+4) | 17848 | 68 | 否 | 否 | 否 | 否 | 是 |
+| weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+4) | 16663 | 67 | 否 | 否 | 否 | 否 | 是 |
 
 ## 说明
 
@@ -39,16 +39,16 @@
 ### gulp-tailwindcss-v3
 
 - CSS 文件：`app.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `more.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before`, `.bg-_b_hfff_B`, `.bg-_blength_c100_v_100_v_B`, `.bg-_bred_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B`, `.bg-independent-subpackage-marker`, `.bg-no-repeat`, `.bg-normal-subpackage-marker`, `.block`, `.border-_b_hEEEEEE_B`, `.border-b`, `.container`, `.font-bold`, `.font-medium`, `.h-_b41_d54vw_B`, `.h-full`, `.i-mdi-123`, `.i-mdi-ab-testing`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before`, `.bg-_b_hfff_B`, `.bg-_blength_c100_v_100_v_B`, `.bg-_bred_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B`, `.bg-independent-subpackage-marker`, `.bg-no-repeat`, `.bg-normal-subpackage-marker`, `.block`, `.border-_b_hEEEEEE_B`, `.border-b`, `.font-bold`, `.font-medium`, `.h-_b41_d54vw_B`, `.h-full`, `.i-mdi-123`, `.i-mdi-ab-testing`, `.i-mdi-abacus`
 
 ### gulp-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `more.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before`, `.bg-_b_hfff_B`, `.bg-_blength_c100_v_100_v_B`, `.bg-_bred_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B`, `.bg-independent-subpackage-marker`, `.bg-no-repeat`, `.bg-normal-subpackage-marker`, `.block`, `.border-_b_hEEEEEE_B`, `.border-b`, `.container`, `.font-bold`, `.font-medium`, `.h-_b41_d54vw_B`, `.h-full`, `.i-mdi-123`, `.i-mdi-ab-testing`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before`, `.bg-_b_hfff_B`, `.bg-_blength_c100_v_100_v_B`, `.bg-_bred_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.bg-_burl_phttps_c_f_fpic1_dzhimg_dcom_fv2-3ee20468f54bbfefcd0027283b21aaa8_720w_djpg_P_B`, `.bg-independent-subpackage-marker`, `.bg-no-repeat`, `.bg-normal-subpackage-marker`, `.block`, `.border-_b_hEEEEEE_B`, `.border-b`, `.font-bold`, `.font-medium`, `.h-_b41_d54vw_B`, `.h-full`, `.i-mdi-123`, `.i-mdi-ab-testing`, `.i-mdi-abacus`
 
 ### mpx-tailwindcss-v3
 
-- CSS 文件：`app.wxss`, `styles/base.wxss`, `styles/components.wxss`, `styles/utilities.wxss`, `base.wxss`, `button.wxss`, `components.wxss`, `icon.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `loading.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `utilities.wxss`
+- CSS 文件：`app.wxss`, `base.wxss`, `button.wxss`, `components.wxss`, `icon.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `index.wxss`, `loading.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `styles/index.wxss`, `utilities.wxss`
 - 选择器：`.after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after`, `.after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after`, `.after_cml-0_d5:after`, `.after_ctext-red-500:after`, `.before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v3_a_B:before`, `.bg-_b_h123456_B`, `.bg-_b_h929292_B`, `.bg-_bred_B`, `.bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B`, `.h-_b43rpx_B`, `.hotspot-expanded.relative`, `.hotspot-expanded:after`, `.t-button`, `.t-button--block`, `.t-button--circle`, `.t-button--circle.t-button--size-extra-small`, `.t-button--circle.t-button--size-extra-small:after`, `.t-button--circle.t-button--size-large`, `.t-button--circle.t-button--size-large:after`
 
 ### mpx-tailwindcss-v4
@@ -69,12 +69,12 @@
 ### taro-vite-react-tailwindcss-v3
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_a222_a_B:before`, `.before_ccontent-_b_a333_a_B:before`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_q11111_q_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.bg-_bred_B`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.container`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`
+- 选择器：`.before_ccontent-_b_a222_a_B:before`, `.before_ccontent-_b_a333_a_B:before`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_q11111_q_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.bg-_bred_B`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`
 
 ### taro-vite-react-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_bred_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.container`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-page-style-watch-anchor`, `.tw-root`, `:host`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_bred_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-page-style-watch-anchor`, `.tw-root`, `:host`, `page`
 
 ### taro-webpack-vue3-tailwindcss-v3
 
@@ -89,12 +89,12 @@
 ### taro-vite-vue3-tailwindcss-v3
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_a11111_a_B:before`, `.before_ccontent-_b_a222_a_B:before`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.container`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`, `.divide-x-8 > text + view`
+- 选择器：`.before_ccontent-_b_a11111_a_B:before`, `.before_ccontent-_b_a222_a_B:before`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`, `.divide-x-8 > text + view`, `.divide-x-8 > view + text`
 
 ### taro-vite-vue3-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.container`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
 
 ### uni-app-vite-tailwindcss-v3
 
@@ -114,4 +114,4 @@
 ### weapp-vite-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `apple.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h111111_B`, `.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-t`, `.bg-gradient-to-tr`, `.bg-gray-900`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-zinc-50`, `.border-4`, `.container`, `.dark_cbg-zinc-900`, `.duration-500`, `.flex`, `.flex-col`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h111111_B`, `.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-t`, `.bg-gradient-to-tr`, `.bg-gray-900`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-zinc-50`, `.border-4`, `.dark_cbg-zinc-900`, `.duration-500`, `.flex`, `.flex-col`, `.from-_b_h2f73f1_B`

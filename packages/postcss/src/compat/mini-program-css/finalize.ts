@@ -13,6 +13,8 @@ import {
 import {
   removeDisplayP3Declarations,
   removeSpecificityPlaceholders,
+  removeTailwindContainerMaxWidthMediaRules,
+  removeTailwindContainerWidthRules,
   removeUnsupportedBrowserSelectors,
   removeUnsupportedModernColorDeclarations,
 } from './root-cleanups'
@@ -330,6 +332,8 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   removeSpecificityPlaceholders(root)
   removeUnsupportedBrowserSelectors(root)
   removeDisplayP3Declarations(root)
+  removeTailwindContainerMaxWidthMediaRules(root)
+  removeTailwindContainerWidthRules(root, { generatedOnly: true })
   removeUnsupportedModernColorDeclarations(root)
   root.walkDecls((decl) => {
     if (shouldInjectTailwindcssV4Defaults) {

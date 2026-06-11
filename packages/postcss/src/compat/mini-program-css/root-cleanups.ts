@@ -29,8 +29,12 @@ export function removeSpecificityPlaceholders(root: postcss.Root) {
   })
 }
 
+function isEffectivelyEmptyContainer(container: postcss.Container) {
+  return !container.nodes || container.nodes.every(node => node.type === 'comment')
+}
+
 function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
-  while (parent?.type === 'atrule' && (!parent.nodes || parent.nodes.length === 0)) {
+  while (parent?.type === 'atrule' && isEffectivelyEmptyContainer(parent)) {
     const nextParent = parent.parent
     parent.remove()
     parent = nextParent?.type === 'atrule' ? nextParent : undefined
@@ -76,6 +80,75 @@ export function removeDisplayP3Declarations(root: postcss.Root) {
       atRule.remove()
       removeEmptyAtRuleAncestors(parent)
     }
+  })
+}
+
+const SIMPLE_MIN_WIDTH_MEDIA_RE = /^\(\s*min-width\s*:[^)]+\)$/i
+const TAILWIND_GENERATED_TOKEN_COMMENT_RE = /^\s*tokens:\s*container\s*<=\s*<tailwind generated>\s*$/i
+
+interface RemoveTailwindContainerRulesOptions {
+  generatedOnly?: boolean
+}
+
+function isContainerMaxWidthOnlyRule(rule: postcss.Rule) {
+  if (!rule.selectors || rule.selectors.length !== 1 || rule.selectors[0] !== '.container') {
+    return false
+  }
+  const declarations = rule.nodes?.filter(node => node.type === 'decl') ?? []
+  return declarations.length === 1
+    && declarations[0]?.prop === 'max-width'
+    && (rule.nodes ?? []).every(node => node.type === 'decl' || node.type === 'comment')
+}
+
+export function removeTailwindContainerMaxWidthMediaRules(root: postcss.Root) {
+  root.walkAtRules('media', (atRule) => {
+    if (!SIMPLE_MIN_WIDTH_MEDIA_RE.test(atRule.params.trim())) {
+      return
+    }
+    atRule.walkRules((rule) => {
+      if (!isContainerMaxWidthOnlyRule(rule)) {
+        return
+      }
+      const parent = rule.parent
+      rule.remove()
+      removeEmptyAtRuleAncestors(parent)
+    })
+  })
+}
+
+function isContainerWidthOnlyRule(rule: postcss.Rule) {
+  if (!rule.selectors || rule.selectors.length !== 1 || rule.selectors[0] !== '.container') {
+    return false
+  }
+  const declarations = rule.nodes?.filter(node => node.type === 'decl') ?? []
+  return declarations.length === 1
+    && declarations[0]?.prop === 'width'
+    && declarations[0].value.trim() === '100%'
+    && (rule.nodes ?? []).every(node => node.type === 'decl' || node.type === 'comment')
+}
+
+function isTailwindGeneratedContainerRule(rule: postcss.Rule) {
+  const previous = rule.prev()
+  return previous?.type === 'comment' && TAILWIND_GENERATED_TOKEN_COMMENT_RE.test(previous.text)
+}
+
+export function removeTailwindContainerWidthRules(
+  root: postcss.Root,
+  options: RemoveTailwindContainerRulesOptions = {},
+) {
+  root.walkRules((rule) => {
+    if (!isContainerWidthOnlyRule(rule)) {
+      return
+    }
+    if (options.generatedOnly && !isTailwindGeneratedContainerRule(rule)) {
+      return
+    }
+    const parent = rule.parent
+    if (isTailwindGeneratedContainerRule(rule)) {
+      rule.prev()?.remove()
+    }
+    rule.remove()
+    removeEmptyAtRuleAncestors(parent)
   })
 }
 

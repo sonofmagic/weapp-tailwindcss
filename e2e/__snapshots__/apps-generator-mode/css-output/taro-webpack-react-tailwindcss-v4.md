@@ -6,23 +6,21 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 396848 | 2472 | false | false | false | false | true |
+| 384447 | 2470 | false | false | false | false | true |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
-@charset "UTF-8";
-::after,
-::before,
+view,
 text,
-view {
-  border: 0 solid;
-  -webkit-box-sizing: border-box;
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border: 0 solid;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate-x:;
@@ -63,12 +61,12 @@ view {
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-width: 0px;
   --tw-ring-offset-shadow: 0 0 #0000;
 }
-.tw-root,
 :host,
 page,
+.tw-root,
 wx-root-portal-content {
   --color-black: #000;
   --color-gray-800: #1f2937;
@@ -117,6 +115,231 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --nutui-brand-1: #ffebf1;
+  --nutui-brand-2: #ffd6e1;
+  --nutui-brand-3: #ffadbe;
+  --nutui-brand-4: #ff8595;
+  --nutui-brand-5: #ff5c67;
+  --nutui-brand-6: #ff0f23;
+  --nutui-brand-7: #e53029;
+  --nutui-brand-8: #cc2c21;
+  --nutui-brand-9: #992412;
+  --nutui-brand-10: #661b08;
+  --nutui-brand-11: #330f02;
+  --nutui-brand-stop-1: #ff475d;
+  --nutui-brand-stop-2: #ff0f23;
+  --nutui-golden-1: #fff4e8;
+  --nutui-golden-2: rgba(181, 105, 26, 0.02);
+  --nutui-golden-3: rgba(181, 105, 26, 0.2);
+  --nutui-golden-4: #b5691a;
+  --nutui-golden-5: #ffe7cc;
+  --nutui-golden-6: #ffd8ad;
+  --nutui-golden-7: #664100;
+  --nutui-golden-stop-1: #fff9f0;
+  --nutui-golden-stop-2: #ffe3c2;
+  --nutui-green-1: #ebfbeb;
+  --nutui-green-2: #00d900;
+  --nutui-green-3: #2aa32a;
+  --nutui-red-1: #fff0f4;
+  --nutui-red-2: #ffd6e1;
+  --nutui-red-3: #ffadbe;
+  --nutui-red-4: #ff8595;
+  --nutui-red-5: #ff5c67;
+  --nutui-red-6: #f33;
+  --nutui-red-7: #e53029;
+  --nutui-red-8: #cc2c21;
+  --nutui-red-9: #992412;
+  --nutui-red-10: #661b08;
+  --nutui-red-11: #330f02;
+  --nutui-yellow-1: #fff9e0;
+  --nutui-yellow-2: #ffbf00;
+  --nutui-yellow-3: #b26b00;
+  --nutui-blue-1: #e5f5ff;
+  --nutui-blue-2: #0073ff;
+  --nutui-secondary-1: #14cc33;
+  --nutui-gray-1: #fff;
+  --nutui-gray-2: #f5f6fa;
+  --nutui-gray-3: #f2f3f7;
+  --nutui-gray-9: #f5f6fa;
+  --nutui-gray-4: #c2c4cc;
+  --nutui-gray-5: #828794;
+  --nutui-gray-6: #3d414d;
+  --nutui-gray-7: #171a26;
+  --nutui-gray-8: #dadce0;
+  --nutui-black-1: rgba(0, 0, 0, 0);
+  --nutui-black-2: rgba(0, 0, 0, 0.02);
+  --nutui-black-3: rgba(0, 0, 0, 0.08);
+  --nutui-black-4: rgba(0, 0, 0, 0.1);
+  --nutui-black-5: rgba(0, 0, 0, 0.2);
+  --nutui-black-6: rgba(0, 0, 0, 0.3);
+  --nutui-black-7: rgba(0, 0, 0, 0.4);
+  --nutui-black-8: rgba(0, 0, 0, 0.5);
+  --nutui-black-9: rgba(0, 0, 0, 0.6);
+  --nutui-black-10: rgba(0, 0, 0, 0.7);
+  --nutui-black-11: rgba(0, 0, 0, 0.8);
+  --nutui-black-12: rgba(0, 0, 0, 0.9);
+  --nutui-black-13: #000;
+  --nutui-white-1: hsla(0, 0%, 100%, 0);
+  --nutui-white-2: hsla(0, 0%, 100%, 0.02);
+  --nutui-white-3: hsla(0, 0%, 100%, 0.05);
+  --nutui-white-4: hsla(0, 0%, 100%, 0.1);
+  --nutui-white-5: hsla(0, 0%, 100%, 0.2);
+  --nutui-white-6: hsla(0, 0%, 100%, 0.3);
+  --nutui-white-7: hsla(0, 0%, 100%, 0.4);
+  --nutui-white-8: hsla(0, 0%, 100%, 0.5);
+  --nutui-white-9: hsla(0, 0%, 100%, 0.6);
+  --nutui-white-10: hsla(0, 0%, 100%, 0.7);
+  --nutui-white-11: hsla(0, 0%, 100%, 0.8);
+  --nutui-white-12: hsla(0, 0%, 100%, 0.9);
+  --nutui-white-13: #fff;
+  --nutui-color-primary: var(--nutui-brand-6);
+  --nutui-color-primary-stop-1: var(--nutui-brand-stop-1);
+  --nutui-color-primary-stop-2: var(--nutui-brand-stop-2);
+  --nutui-color-primary-text: var(--nutui-color-background-gray-1);
+  --nutui-color-primary-pressed: var(--nutui-red-7);
+  --nutui-color-primary-disabled: var(--nutui-color-content-gray-1);
+  --nutui-color-primary-disabled-special: var(--nutui-red-3);
+  --nutui-color-primary-light: var(--nutui-brand-1);
+  --nutui-color-primary-light-pressed: var(--nutui-red-2);
+  --nutui-color-service: var(--nutui-golden-1);
+  --nutui-color-service-border-1: var(--nutui-golden-2);
+  --nutui-color-service-border-2: var(--nutui-golden-3);
+  --nutui-color-service-pressed: var(--nutui-golden-4);
+  --nutui-color-service-text: var(--nutui-golden-4);
+  --nutui-color-service-btn-bg: var(--nutui-golden-5);
+  --nutui-color-service-btn-bg-pressed: var(--nutui-golden-6);
+  --nutui-color-service-btn-text: var(--nutui-golden-7);
+  --nutui-color-service-stop-1: var(--nutui-golden-stop-1);
+  --nutui-color-service-stop-2: var(--nutui-golden-stop-2);
+  --nutui-color-success: var(--nutui-green-2);
+  --nutui-color-success-light: var(--nutui-green-1);
+  --nutui-color-success-pressed: var(--nutui-green-3);
+  --nutui-color-danger: var(--nutui-red-2);
+  --nutui-color-danger-light: var(--nutui-red-1);
+  --nutui-color-info: var(--nutui-blue-2);
+  --nutui-color-info-light: var(--nutui-blue-1);
+  --nutui-color-text-link: var(--nutui-blue-2);
+  --nutui-color-warning: var(--nutui-yellow-2);
+  --nutui-color-warning-light: var(--nutui-yellow-1);
+  --nutui-color-warning-pressed: var(--nutui-yellow-3);
+  --nutui-color-content-gray-1: var(--nutui-gray-4);
+  --nutui-color-content-gray-2: var(--nutui-gray-5);
+  --nutui-color-content-gray-3: var(--nutui-gray-6);
+  --nutui-color-content-gray-4: var(--nutui-gray-7);
+  --nutui-color-title: var(--nutui-color-content-gray-4);
+  --nutui-color-text: var(--nutui-color-content-gray-3);
+  --nutui-color-text-help: var(--nutui-color-content-gray-2);
+  --nutui-color-text-disabled: var(--nutui-color-content-gray-1);
+  --nutui-color-background-gray-1: var(--nutui-gray-1);
+  --nutui-color-background-gray-2: var(--nutui-gray-2);
+  --nutui-color-background-gray-3: var(--nutui-gray-3);
+  --nutui-color-background-gray-4: var(--nutui-gray-9);
+  --nutui-color-background: var(--nutui-color-background-gray-3);
+  --nutui-color-background-overlay: var(--nutui-color-background-gray-1);
+  --nutui-color-background-sunken: var(--nutui-color-background-gray-2);
+  --nutui-color-background-component: var(--nutui-color-background-gray-4);
+  --nutui-color-mask-gray-1: var(--nutui-black-2);
+  --nutui-color-mask-gray-2: var(--nutui-black-7);
+  --nutui-color-mask-gray-3: var(--nutui-black-10);
+  --nutui-color-mask: var(--nutui-color-mask-gray-3);
+  --nutui-color-mask-part: var(--nutui-color-mask-gray-2);
+  --nutui-color-mask-fault-toleran: var(--nutui-color-mask-gray-1);
+  --nutui-color-line-gray-1: var(--nutui-black-3);
+  --nutui-color-border: var(--nutui-color-line-gray-1);
+  --nutui-color-border-disabled: var(--nutui-color-content-gray-1);
+  --nutui-font-size-8: 16rpx;
+  --nutui-font-size-9: 18rpx;
+  --nutui-font-size-10: 20rpx;
+  --nutui-font-size-11: 22rpx;
+  --nutui-font-size-12: 24rpx;
+  --nutui-font-size-13: 26rpx;
+  --nutui-font-size-14: 28rpx;
+  --nutui-font-size-15: 30rpx;
+  --nutui-font-size-16: 32rpx;
+  --nutui-font-size-17: 34rpx;
+  --nutui-font-size-18: 36rpx;
+  --nutui-font-size-19: 38rpx;
+  --nutui-font-size-20: 40rpx;
+  --nutui-font-size-21: 42rpx;
+  --nutui-font-size-22: 44rpx;
+  --nutui-font-size-23: 46rpx;
+  --nutui-font-size-24: 48rpx;
+  --nutui-font-size-25: 50rpx;
+  --nutui-font-size-26: 52rpx;
+  --nutui-font-size-xxxs: var(--nutui-font-size-9);
+  --nutui-font-size-xxs: var(--nutui-font-size-10);
+  --nutui-font-size-xs: var(--nutui-font-size-11);
+  --nutui-font-size-s: var(--nutui-font-size-12);
+  --nutui-font-size-base: var(--nutui-font-size-14);
+  --nutui-font-size-l: var(--nutui-font-size-15);
+  --nutui-font-size-icon: var(--nutui-font-size-16);
+  --nutui-font-size-xl: var(--nutui-font-size-18);
+  --nutui-font-size-xxl: var(--nutui-font-size-24);
+  --nutui-font-size-xxxl: var(--nutui-font-size-26);
+  --nutui-font-weight-light: 300;
+  --nutui-font-weight: 400;
+  --nutui-font-weight-medium: 500;
+  --nutui-font-weight-bold: 600;
+  --nutui-line-height-base: 1.5;
+  --nutui-text-align: left;
+  --nutui-spacing-1: 2rpx;
+  --nutui-spacing-2: 4rpx;
+  --nutui-spacing-3: 6rpx;
+  --nutui-spacing-4: 8rpx;
+  --nutui-spacing-5: 10rpx;
+  --nutui-spacing-6: 12rpx;
+  --nutui-spacing-7: 14rpx;
+  --nutui-spacing-8: 16rpx;
+  --nutui-spacing-9: 18rpx;
+  --nutui-spacing-10: 20rpx;
+  --nutui-spacing-11: 22rpx;
+  --nutui-spacing-12: 24rpx;
+  --nutui-spacing-13: 26rpx;
+  --nutui-spacing-14: 28rpx;
+  --nutui-spacing-15: 30rpx;
+  --nutui-spacing-16: 32rpx;
+  --nutui-spacing-xxxs: var(--nutui-spacing-2);
+  --nutui-spacing-xxs: var(--nutui-spacing-4);
+  --nutui-spacing-xs: var(--nutui-spacing-6);
+  --nutui-spacing-s: var(--nutui-spacing-7);
+  --nutui-spacing-base: var(--nutui-spacing-8);
+  --nutui-spacing-l: var(--nutui-spacing-9);
+  --nutui-spacing-xl: var(--nutui-spacing-12);
+  --nutui-spacing-xxl: var(--nutui-spacing-16);
+  --nutui-radius-0: 0rpx;
+  --nutui-radius-1: 2rpx;
+  --nutui-radius-2: 4rpx;
+  --nutui-radius-3: 6rpx;
+  --nutui-radius-4: 8rpx;
+  --nutui-radius-5: 10rpx;
+  --nutui-radius-6: 12rpx;
+  --nutui-radius-7: 14rpx;
+  --nutui-radius-8: 16rpx;
+  --nutui-radius-9: 18rpx;
+  --nutui-radius-10: 20rpx;
+  --nutui-radius-11: 22rpx;
+  --nutui-radius-12: 24rpx;
+  --nutui-radius-13: 26rpx;
+  --nutui-radius-14: 28rpx;
+  --nutui-radius-15: 30rpx;
+  --nutui-radius-16: 32rpx;
+  --nutui-radius-17: 34rpx;
+  --nutui-radius-18: 36rpx;
+  --nutui-radius-19: 38rpx;
+  --nutui-radius-20: 40rpx;
+  --nutui-radius-21: 42rpx;
+  --nutui-radius-22: 44rpx;
+  --nutui-radius-23: 46rpx;
+  --nutui-radius-24: 48rpx;
+  --nutui-radius-xxxs: var(--nutui-radius-0);
+  --nutui-radius-xxs: var(--nutui-radius-2);
+  --nutui-radius-xs: var(--nutui-radius-4);
+  --nutui-radius-s: var(--nutui-radius-6);
+  --nutui-radius-base: var(--nutui-radius-8);
+  --nutui-radius-l: var(--nutui-radius-8);
+  --nutui-radius-xl: var(--nutui-radius-12);
+  --nutui-radius-xxl: var(--nutui-radius-14);
+  --nutui-radius-xxxl: var(--nutui-radius-16);
 }
 .visible {
   visibility: visible;
@@ -173,34 +396,6 @@ wx-root-portal-content {
 .bottom-auto {
   bottom: auto;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 .-m-_b20px_B {
   margin: -20rpx;
 }
@@ -234,7 +429,6 @@ wx-root-portal-content {
 }
 /* tokens: flex <= src/pages/issue-909/index.tsx */
 .flex {
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
@@ -242,7 +436,6 @@ wx-root-portal-content {
   display: grid;
 }
 .inline-flex {
-  display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
 }
@@ -334,7 +527,6 @@ wx-root-portal-content {
   width: 404rpx;
 }
 .w-fit {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
 }
@@ -372,40 +564,34 @@ wx-root-portal-content {
 /* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 .transform {
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
@@ -425,17 +611,14 @@ wx-root-portal-content {
   grid-template-columns: 1fr, auto;
 }
 .flex-col {
-  -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
 }
 .items-center {
-  -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
 }
 .justify-center {
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
 }
@@ -1054,7 +1237,6 @@ wx-root-portal-content {
   text-transform: uppercase;
 }
 .underline {
-  -webkit-text-decoration-line: underline;
   text-decoration-line: underline;
 }
 .opacity-50 {
@@ -1065,27 +1247,22 @@ wx-root-portal-content {
 }
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-_b0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B {
   --tw-shadow: 0 2.5rpx 7.5rpx var(--tw-shadow-color, rgba(18, 52, 86, 0.35));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-_b0_8rpx_24rpx_rgba_p0_m0_m0_m0_d12_P_B {
   --tw-shadow: 0 8rpx 24rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.12));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-md {
   --tw-shadow: 0 4rpx 6rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 2rpx 4rpx -2rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-4 {
   --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-pink-300 {
@@ -1097,30 +1274,23 @@ wx-root-portal-content {
 }
 .blur {
   --tw-blur: blur(8px);
-  -webkit-filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, )
-    var(--tw-drop-shadow, );
   filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, )
     var(--tw-drop-shadow, );
 }
 .transition {
-  -webkit-transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property:
     color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow,
     transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-  -webkit-transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
 }
 .transition-colors {
-  -webkit-transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  -webkit-transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
 }
 .duration-300 {
   --tw-duration: 300ms;
-  -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
 }
 ._b--scroll-offset_c56px_B {
@@ -1267,7 +1437,6 @@ wx-root-portal-content {
 }
 .focus_cring:focus {
   --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .focus_cring-blue-300:focus {
@@ -1357,234 +1526,6 @@ wx-root-portal-content {
   font-weight: 700;
   src: url(data:font/ttf;charset=utf-8;base64,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NDc2JDMyFxMfAQMWFxYXByYnJicBFjMyNgGNPToBtCRAn2VjYANY6Fj+s9R0cWntbHyGXF0BSNB1bI4W15EWNTsm5hcaBA7+Sjouk8kCk2e+QwNaCElI4/56hbTLI8131WkBO77isLDDHwEUDG3+5BM1R06FMxwNDvykCoQAAAAAAQCm/3sFiwXjABYAAAEhFSEVIREhESE1ITUhNSEBIQkBIQEhBVz+QgG+/kL+9f5CAb7+QgFG/osBMwFAAT0BNf6JAUgCYoX8/poBZvyF/AKF/dkCJ/17AAIA+AFOBIMEIwADAAcAABMhFSERNSEV+AOL/HUDiwQj+v4l/PwAAAAAABsBSgABAAAAAAAAADIAZgABAAAAAAABAAoAtwABAAAAAAACAAcA0gABAAAAAAADABgBDAABAAAAAAAEAAQBOwABAAAAAAAFACEBhAABAAAAAAAGAA0BwgABAAAAAAAJAAAB1gABAAAAAAAQAAUB6wABAAAAAAARAAQB+wADAAEECQAAAGQAAAADAAEECQABABwAmQADAAEECQACAA4AwgADAAEECQADADAA2gADAAEECQAEABQBJQADAAEECQAFAEIBQAADAAEECQAGABoBpgADAAEECQAJAAQB0AADAAEECQAQABIB1wADAAEECQARAAgB8QADAAEIBAAAAGQCAAADAAEIBAABABwCZgADAAEIBAACAA4ChAADAAEIBAAEABQClAADAAEIBAAHAE4CqgADAAEIBAAQABIC+gADAAEIBAARAAgDDgBDAG8AcAB5AHIAaQBnAGgAdAAoAGMAKQAgACAAQgBFAEkASgBJAE4ARwAgAEoASQBOAEcARABPAE4ARwAgAFQARQBDAEgATgBPAEwATwBHAFkAIABDAE8ALgAsACAATABUAEQAAENvcHlyaWdodChjKSAgQkVJSklORyBKSU5HRE9ORyBURUNITk9MT0dZIENPLiwgTFREAE6sThxrY57RACAAVgAyAC4AMwAgAEIAbwBsAGQAACBWMi4zIEJvbGQAAFIAZQBnAHUAbABhAHIAAFJlZ3VsYXIAADIALgAwADAAMAA7AFUASwBXAE4AOwBKAEQAWgBIAFYAMgAuADMAXwBCAG8AbABkAAAyLjAwMDtVS1dOO0pEWkhWMi4zX0JvbGQATqxOHGtjntEAVgAyAC4AM3yXT1MAAFYyLjMAAFYAZQByAHMAaQBvAG4AIAAyAC4AMAAwADAAOwBHAGwAeQBwAGgAcwAgADMALgAxAC4AMQAgACgAMwAxADMANQApAABWZXJzaW9uIDIuMDAwO0dseXBocyAzLjEuMSAoMzEzNSkAAEoARABaAEgAVgAyAC4AMwBfAEIAbwBsAGQAAEpEWkhWMi4zX0JvbGQAlnZ0PAAAAE6sThxrY57RACAAVgAyAC4AMwAAIFYyLjMAAEIAbwBsAGQAAEJvbGQAAEMAbwBwAHkAcgBpAGcAaAB0ACgAYwApACAAIABCAEUASQBKAEkATgBHACAASgBJAE4ARwBEAE8ATgBHACAAVABFAEMASABOAE8ATABPAEcAWQAgAEMATwAuACwAIABMAFQARAAATqxOHGtjntEAIABWADIALgAzACAAQgBvAGwAZAAAAFIAZQBnAHUAbABhAHIAAE6sThxrY57RAFYAMgAuADN8l09TAAAAQgB5ACAAQgBFAEkASgBJAE4ARwAgAEoASQBOAEcARABPAE4ARwAgAFQARQBDAEgATgBPAEwATwBHAFkAIABDAE8ALgAsACAATABUAEQAAE6sThxrY57RACAAVgAyAC4AMwAAAEIAbwBsAGQAAAAAAAIAAAAAAAD/NABmAAAAAAAAAAAAAAAAAAAAAAAAAAAAKwAAAAEAAgADAAQABwAIAAsADAAOAA8AEAARABIAEwAUABUAFgAXABgAGQAaABsAHAAdAB4AIACEAIUAlgC2ALcAtAC1AQIBAwEEAQUBBgEHAQgBCQEKBEV1cm8HdW5pMzAxMAd1bmkzMDExB3VuaTUxNDMHdW5pRkYwNAd1bmlGRkUwB3VuaUZGRTUJc3BhY2UuMDAxCWVxdWFsLjAwMQAAAAAAAAH//wACAAEAAAAMAAAAFgAAAAIAAQADACoAAQAEAAAAAgAAAAAAAAABAAAAAOKfK0YAAAAA5LIkawAAAADlACWL)
     format('truetype');
-}
-:root,
-page {
-  --nutui-brand-1: #ffebf1;
-  --nutui-brand-2: #ffd6e1;
-  --nutui-brand-3: #ffadbe;
-  --nutui-brand-4: #ff8595;
-  --nutui-brand-5: #ff5c67;
-  --nutui-brand-6: #ff0f23;
-  --nutui-brand-7: #e53029;
-  --nutui-brand-8: #cc2c21;
-  --nutui-brand-9: #992412;
-  --nutui-brand-10: #661b08;
-  --nutui-brand-11: #330f02;
-  --nutui-brand-stop-1: #ff475d;
-  --nutui-brand-stop-2: #ff0f23;
-  --nutui-golden-1: #fff4e8;
-  --nutui-golden-2: rgba(181, 105, 26, 0.02);
-  --nutui-golden-3: rgba(181, 105, 26, 0.2);
-  --nutui-golden-4: #b5691a;
-  --nutui-golden-5: #ffe7cc;
-  --nutui-golden-6: #ffd8ad;
-  --nutui-golden-7: #664100;
-  --nutui-golden-stop-1: #fff9f0;
-  --nutui-golden-stop-2: #ffe3c2;
-  --nutui-green-1: #ebfbeb;
-  --nutui-green-2: #00d900;
-  --nutui-green-3: #2aa32a;
-  --nutui-red-1: #fff0f4;
-  --nutui-red-2: #ffd6e1;
-  --nutui-red-3: #ffadbe;
-  --nutui-red-4: #ff8595;
-  --nutui-red-5: #ff5c67;
-  --nutui-red-6: #f33;
-  --nutui-red-7: #e53029;
-  --nutui-red-8: #cc2c21;
-  --nutui-red-9: #992412;
-  --nutui-red-10: #661b08;
-  --nutui-red-11: #330f02;
-  --nutui-yellow-1: #fff9e0;
-  --nutui-yellow-2: #ffbf00;
-  --nutui-yellow-3: #b26b00;
-  --nutui-blue-1: #e5f5ff;
-  --nutui-blue-2: #0073ff;
-  --nutui-secondary-1: #14cc33;
-  --nutui-gray-1: #fff;
-  --nutui-gray-2: #f5f6fa;
-  --nutui-gray-3: #f2f3f7;
-  --nutui-gray-9: #f5f6fa;
-  --nutui-gray-4: #c2c4cc;
-  --nutui-gray-5: #828794;
-  --nutui-gray-6: #3d414d;
-  --nutui-gray-7: #171a26;
-  --nutui-gray-8: #dadce0;
-  --nutui-black-1: rgba(0, 0, 0, 0);
-  --nutui-black-2: rgba(0, 0, 0, 0.02);
-  --nutui-black-3: rgba(0, 0, 0, 0.08);
-  --nutui-black-4: rgba(0, 0, 0, 0.1);
-  --nutui-black-5: rgba(0, 0, 0, 0.2);
-  --nutui-black-6: rgba(0, 0, 0, 0.3);
-  --nutui-black-7: rgba(0, 0, 0, 0.4);
-  --nutui-black-8: rgba(0, 0, 0, 0.5);
-  --nutui-black-9: rgba(0, 0, 0, 0.6);
-  --nutui-black-10: rgba(0, 0, 0, 0.7);
-  --nutui-black-11: rgba(0, 0, 0, 0.8);
-  --nutui-black-12: rgba(0, 0, 0, 0.9);
-  --nutui-black-13: #000;
-  --nutui-white-1: hsla(0, 0%, 100%, 0);
-  --nutui-white-2: hsla(0, 0%, 100%, 0.02);
-  --nutui-white-3: hsla(0, 0%, 100%, 0.05);
-  --nutui-white-4: hsla(0, 0%, 100%, 0.1);
-  --nutui-white-5: hsla(0, 0%, 100%, 0.2);
-  --nutui-white-6: hsla(0, 0%, 100%, 0.3);
-  --nutui-white-7: hsla(0, 0%, 100%, 0.4);
-  --nutui-white-8: hsla(0, 0%, 100%, 0.5);
-  --nutui-white-9: hsla(0, 0%, 100%, 0.6);
-  --nutui-white-10: hsla(0, 0%, 100%, 0.7);
-  --nutui-white-11: hsla(0, 0%, 100%, 0.8);
-  --nutui-white-12: hsla(0, 0%, 100%, 0.9);
-  --nutui-white-13: #fff;
-  --nutui-color-primary: var(--nutui-brand-6);
-  --nutui-color-primary-stop-1: var(--nutui-brand-stop-1);
-  --nutui-color-primary-stop-2: var(--nutui-brand-stop-2);
-  --nutui-color-primary-text: var(--nutui-color-background-gray-1);
-  --nutui-color-primary-pressed: var(--nutui-red-7);
-  --nutui-color-primary-disabled: var(--nutui-color-content-gray-1);
-  --nutui-color-primary-disabled-special: var(--nutui-red-3);
-  --nutui-color-primary-light: var(--nutui-brand-1);
-  --nutui-color-primary-light-pressed: var(--nutui-red-2);
-  --nutui-color-service: var(--nutui-golden-1);
-  --nutui-color-service-border-1: var(--nutui-golden-2);
-  --nutui-color-service-border-2: var(--nutui-golden-3);
-  --nutui-color-service-pressed: var(--nutui-golden-4);
-  --nutui-color-service-text: var(--nutui-golden-4);
-  --nutui-color-service-btn-bg: var(--nutui-golden-5);
-  --nutui-color-service-btn-bg-pressed: var(--nutui-golden-6);
-  --nutui-color-service-btn-text: var(--nutui-golden-7);
-  --nutui-color-service-stop-1: var(--nutui-golden-stop-1);
-  --nutui-color-service-stop-2: var(--nutui-golden-stop-2);
-  --nutui-color-success: var(--nutui-green-2);
-  --nutui-color-success-light: var(--nutui-green-1);
-  --nutui-color-success-pressed: var(--nutui-green-3);
-  --nutui-color-danger: var(--nutui-red-2);
-  --nutui-color-danger-light: var(--nutui-red-1);
-  --nutui-color-info: var(--nutui-blue-2);
-  --nutui-color-info-light: var(--nutui-blue-1);
-  --nutui-color-text-link: var(--nutui-blue-2);
-  --nutui-color-warning: var(--nutui-yellow-2);
-  --nutui-color-warning-light: var(--nutui-yellow-1);
-  --nutui-color-warning-pressed: var(--nutui-yellow-3);
-  --nutui-color-content-gray-1: var(--nutui-gray-4);
-  --nutui-color-content-gray-2: var(--nutui-gray-5);
-  --nutui-color-content-gray-3: var(--nutui-gray-6);
-  --nutui-color-content-gray-4: var(--nutui-gray-7);
-  --nutui-color-title: var(--nutui-color-content-gray-4);
-  --nutui-color-text: var(--nutui-color-content-gray-3);
-  --nutui-color-text-help: var(--nutui-color-content-gray-2);
-  --nutui-color-text-disabled: var(--nutui-color-content-gray-1);
-  --nutui-color-background-gray-1: var(--nutui-gray-1);
-  --nutui-color-background-gray-2: var(--nutui-gray-2);
-  --nutui-color-background-gray-3: var(--nutui-gray-3);
-  --nutui-color-background-gray-4: var(--nutui-gray-9);
-  --nutui-color-background: var(--nutui-color-background-gray-3);
-  --nutui-color-background-overlay: var(--nutui-color-background-gray-1);
-  --nutui-color-background-sunken: var(--nutui-color-background-gray-2);
-  --nutui-color-background-component: var(--nutui-color-background-gray-4);
-  --nutui-color-mask-gray-1: var(--nutui-black-2);
-  --nutui-color-mask-gray-2: var(--nutui-black-7);
-  --nutui-color-mask-gray-3: var(--nutui-black-10);
-  --nutui-color-mask: var(--nutui-color-mask-gray-3);
-  --nutui-color-mask-part: var(--nutui-color-mask-gray-2);
-  --nutui-color-mask-fault-toleran: var(--nutui-color-mask-gray-1);
-  --nutui-color-line-gray-1: var(--nutui-black-3);
-  --nutui-color-border: var(--nutui-color-line-gray-1);
-  --nutui-color-border-disabled: var(--nutui-color-content-gray-1);
-  --nutui-font-size-8: 16rpx;
-  --nutui-font-size-9: 18rpx;
-  --nutui-font-size-10: 20rpx;
-  --nutui-font-size-11: 22rpx;
-  --nutui-font-size-12: 24rpx;
-  --nutui-font-size-13: 26rpx;
-  --nutui-font-size-14: 28rpx;
-  --nutui-font-size-15: 30rpx;
-  --nutui-font-size-16: 32rpx;
-  --nutui-font-size-17: 34rpx;
-  --nutui-font-size-18: 36rpx;
-  --nutui-font-size-19: 38rpx;
-  --nutui-font-size-20: 40rpx;
-  --nutui-font-size-21: 42rpx;
-  --nutui-font-size-22: 44rpx;
-  --nutui-font-size-23: 46rpx;
-  --nutui-font-size-24: 48rpx;
-  --nutui-font-size-25: 50rpx;
-  --nutui-font-size-26: 52rpx;
-  --nutui-font-size-xxxs: var(--nutui-font-size-9);
-  --nutui-font-size-xxs: var(--nutui-font-size-10);
-  --nutui-font-size-xs: var(--nutui-font-size-11);
-  --nutui-font-size-s: var(--nutui-font-size-12);
-  --nutui-font-size-base: var(--nutui-font-size-14);
-  --nutui-font-size-l: var(--nutui-font-size-15);
-  --nutui-font-size-icon: var(--nutui-font-size-16);
-  --nutui-font-size-xl: var(--nutui-font-size-18);
-  --nutui-font-size-xxl: var(--nutui-font-size-24);
-  --nutui-font-size-xxxl: var(--nutui-font-size-26);
-  --nutui-font-weight-light: 300;
-  --nutui-font-weight: 400;
-  --nutui-font-weight-medium: 500;
-  --nutui-font-weight-bold: 600;
-  --nutui-line-height-base: 1.5;
-  --nutui-text-align: left;
-  --nutui-spacing-1: 2rpx;
-  --nutui-spacing-2: 4rpx;
-  --nutui-spacing-3: 6rpx;
-  --nutui-spacing-4: 8rpx;
-  --nutui-spacing-5: 10rpx;
-  --nutui-spacing-6: 12rpx;
-  --nutui-spacing-7: 14rpx;
-  --nutui-spacing-8: 16rpx;
-  --nutui-spacing-9: 18rpx;
-  --nutui-spacing-10: 20rpx;
-  --nutui-spacing-11: 22rpx;
-  --nutui-spacing-12: 24rpx;
-  --nutui-spacing-13: 26rpx;
-  --nutui-spacing-14: 28rpx;
-  --nutui-spacing-15: 30rpx;
-  --nutui-spacing-16: 32rpx;
-  --nutui-spacing-xxxs: var(--nutui-spacing-2);
-  --nutui-spacing-xxs: var(--nutui-spacing-4);
-  --nutui-spacing-xs: var(--nutui-spacing-6);
-  --nutui-spacing-s: var(--nutui-spacing-7);
-  --nutui-spacing-base: var(--nutui-spacing-8);
-  --nutui-spacing-l: var(--nutui-spacing-9);
-  --nutui-spacing-xl: var(--nutui-spacing-12);
-  --nutui-spacing-xxl: var(--nutui-spacing-16);
-  --nutui-radius-0: 0rpx;
-  --nutui-radius-1: 2rpx;
-  --nutui-radius-2: 4rpx;
-  --nutui-radius-3: 6rpx;
-  --nutui-radius-4: 8rpx;
-  --nutui-radius-5: 10rpx;
-  --nutui-radius-6: 12rpx;
-  --nutui-radius-7: 14rpx;
-  --nutui-radius-8: 16rpx;
-  --nutui-radius-9: 18rpx;
-  --nutui-radius-10: 20rpx;
-  --nutui-radius-11: 22rpx;
-  --nutui-radius-12: 24rpx;
-  --nutui-radius-13: 26rpx;
-  --nutui-radius-14: 28rpx;
-  --nutui-radius-15: 30rpx;
-  --nutui-radius-16: 32rpx;
-  --nutui-radius-17: 34rpx;
-  --nutui-radius-18: 36rpx;
-  --nutui-radius-19: 38rpx;
-  --nutui-radius-20: 40rpx;
-  --nutui-radius-21: 42rpx;
-  --nutui-radius-22: 44rpx;
-  --nutui-radius-23: 46rpx;
-  --nutui-radius-24: 48rpx;
-  --nutui-radius-xxxs: var(--nutui-radius-0);
-  --nutui-radius-xxs: var(--nutui-radius-2);
-  --nutui-radius-xs: var(--nutui-radius-4);
-  --nutui-radius-s: var(--nutui-radius-6);
-  --nutui-radius-base: var(--nutui-radius-8);
-  --nutui-radius-l: var(--nutui-radius-8);
-  --nutui-radius-xl: var(--nutui-radius-12);
-  --nutui-radius-xxl: var(--nutui-radius-14);
-  --nutui-radius-xxxl: var(--nutui-radius-16);
 }
 @keyframes nutFadeIn {
   0% {
@@ -2260,10 +2201,8 @@ page {
 }
 @keyframes rotation {
   0% {
-    -webkit-transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(1turn);
   }
 }
 .nut-toast {
@@ -2614,7 +2553,6 @@ page {
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
@@ -4559,7 +4497,6 @@ page {
 .nut-range-min {
   color: var(--nutui-range-color, var(--nutui-color-title, #1a1a1a));
   font-size: var(--nutui-font-size-s, 24rpx);
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
@@ -4626,7 +4563,6 @@ page {
   padding: 10rpx 0;
   position: relative;
   text-align: center;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   vertical-align: center;
@@ -4661,7 +4597,6 @@ page {
   line-height: 32rpx;
   position: absolute;
   text-align: center;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   word-break: keep-all;
@@ -4722,7 +4657,6 @@ page {
   height: 32rpx;
   position: absolute;
   transform: translateY(-22rpx);
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
@@ -5237,7 +5171,6 @@ page {
   font-size: var(--nutui-price-decimal-small-size, 24rpx);
 }
 .nut-price-line {
-  -webkit-text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
@@ -5892,7 +5825,6 @@ page {
 .nut-pickerview-roller-item {
   backface-visibility: hidden;
   -moz-backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   position: absolute;
   top: 0;
 }
@@ -6073,7 +6005,6 @@ page {
 .nut-numberkeyboard {
   background-color: var(--nutui-numberkeyboard-background-color, var(--nutui-color-background, #f2f3f5));
   padding: var(--nutui-numberkeyboard-padding, 0 0 44rpx 0);
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   width: 100%;
@@ -6728,10 +6659,8 @@ page {
 }
 @keyframes nut-loading-rotation {
   0% {
-    -webkit-transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(1turn);
   }
 }
 .nut-inputnumber {
@@ -6783,7 +6712,6 @@ page {
 }
 .nut-inputnumber-input::-webkit-inner-spin-button,
 .nut-inputnumber-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
@@ -7844,7 +7772,6 @@ page {
   height: 0;
   position: fixed;
   touch-action: none;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   width: 0;
@@ -8178,10 +8105,8 @@ page {
 .nut-countup-listitem {
   height: var(--nutui-countup-height, 64rpx);
   overflow: hidden;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 .nut-countup-listitem-number {
   background-color: var(--nutui-countup-bg-color, inherit);
@@ -9522,7 +9447,6 @@ page {
 }
 .nut-button {
   align-items: center;
-  -webkit-appearance: none;
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
@@ -9539,12 +9463,10 @@ page {
   text-align: center;
   touch-action: manipulation;
   transition: opacity 0.2s;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   width: 160rpx;
   width: auto;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   background: var(--nutui-button-default-background-color, transparent);
   border-width: var(--nutui-button-border-width, 1rpx);
   color: var(--nutui-button-default-color, var(--nutui-color-title, #1a1a1a));
@@ -10774,17 +10696,19 @@ page {
 .tw-page-style-watch-anchor {
   color: inherit;
 }
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
 page,
 .tw-root,
 wx-root-portal-content {
-  --nut-icon-height: 32rpx;
-  --nut-icon-width: 32rpx;
-  --nut-icon-line-height: 32rpx;
-  --nut-icon-color: #171a26;
-  --animate-duration: 1s;
-  --animate-delay: 0s;
-}
-page {
   --nut-icon-height: 32rpx;
   --nut-icon-width: 32rpx;
   --nut-icon-line-height: 32rpx;
@@ -10811,152 +10735,81 @@ page {
 .nut-icon-Loading1,
 .nut-icon-loading,
 .nut-icon-loading1 {
-  -webkit-animation: rotation 1s linear infinite;
   animation: rotation 1s linear infinite;
   display: inline-block;
 }
 .nut-icon-am-infinite {
-  -webkit-animation-direction: alternate;
   animation-direction: alternate;
-  -webkit-animation-iteration-count: infinite;
   animation-iteration-count: infinite;
 }
 .nut-icon-am-jump {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: nutJumpOne;
   animation-name: nutJumpOne;
-  -webkit-animation-timing-function: ease;
   animation-timing-function: ease;
 }
 .nut-icon-am-jump.nut-icon-am-infinite {
-  -webkit-animation-name: nutJump;
   animation-name: nutJump;
 }
 .nut-icon-am-rotate {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: rotation;
   animation-name: rotation;
-  -webkit-animation-timing-function: linear;
   animation-timing-function: linear;
 }
 .nut-icon-am-rotate.nut-icon-am-infinite {
-  -webkit-animation-direction: normal;
   animation-direction: normal;
 }
 .nut-icon-am-blink {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: nutBlink;
   animation-name: nutBlink;
-  -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: linear;
 }
 .nut-icon-am-breathe {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: nutBreathe;
   animation-name: nutBreathe;
-  -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
 }
 .nut-icon-am-flash {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: nutFlash;
   animation-name: nutFlash;
-  -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
 }
 .nut-icon-am-bounce {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: nutBounce;
   animation-name: nutBounce;
-  -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
 }
 .nut-icon-am-bounce.nut-icon-am-infinite {
-  -webkit-animation-direction: normal;
   animation-direction: normal;
 }
 .nut-icon-am-shake {
-  -webkit-animation-delay: var(--animate-delay);
   animation-delay: var(--animate-delay);
-  -webkit-animation-duration: var(--animate-duration);
   animation-duration: var(--animate-duration);
-  -webkit-animation-name: nutShake;
   animation-name: nutShake;
-  -webkit-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
-}
-@-webkit-keyframes rotation {
-  0% {
-    -webkit-transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(1turn);
-  }
 }
 @keyframes rotation {
   0% {
-    -webkit-transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(1turn);
-  }
-}
-@-webkit-keyframes nutJump {
-  to {
-    -webkit-transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
-    transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
   }
 }
 @keyframes nutJump {
   to {
-    -webkit-transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
     transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
-  }
-}
-@-webkit-keyframes nutJumpOne {
-  50% {
-    -webkit-transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
-    transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
-  }
-  to {
-    -webkit-transform: scaleZ(1) translateY(0);
-    transform: scaleZ(1) translateY(0);
   }
 }
 @keyframes nutJumpOne {
   50% {
-    -webkit-transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
     transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
   }
   to {
-    -webkit-transform: scaleZ(1) translateY(0);
     transform: scaleZ(1) translateY(0);
-  }
-}
-@-webkit-keyframes nutBlink {
-  0% {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 @keyframes nutBlink {
@@ -10967,37 +10820,13 @@ page {
     opacity: 1;
   }
 }
-@-webkit-keyframes nutBreathe {
-  0%,
-  to {
-    -webkit-transform: scale(1);
-    transform: scale(1);
-  }
-  50% {
-    -webkit-transform: scale(1.2);
-    transform: scale(1.2);
-  }
-}
 @keyframes nutBreathe {
   0%,
   to {
-    -webkit-transform: scale(1);
     transform: scale(1);
   }
   50% {
-    -webkit-transform: scale(1.2);
     transform: scale(1.2);
-  }
-}
-@-webkit-keyframes nutFlash {
-  0%,
-  50%,
-  to {
-    opacity: 1;
-  }
-  25%,
-  75% {
-    opacity: 0;
   }
 }
 @keyframes nutFlash {
@@ -11011,121 +10840,48 @@ page {
     opacity: 0;
   }
 }
-@-webkit-keyframes nutBounce {
-  0%,
-  20%,
-  53%,
-  to {
-    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-  }
-  40%,
-  43% {
-    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    -webkit-transform: translate3d(0, -60rpx, 0) scaleY(1.1);
-    transform: translate3d(0, -60rpx, 0) scaleY(1.1);
-  }
-  70% {
-    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    -webkit-transform: translate3d(0, -30rpx, 0) scaleY(1.05);
-    transform: translate3d(0, -30rpx, 0) scaleY(1.05);
-  }
-  80% {
-    -webkit-transform: translateZ(0) scaleY(0.95);
-    transform: translateZ(0) scaleY(0.95);
-    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-  90% {
-    -webkit-transform: translate3d(0, -8rpx, 0) scaleY(1.02);
-    transform: translate3d(0, -8rpx, 0) scaleY(1.02);
-  }
-}
 @keyframes nutBounce {
   0%,
   20%,
   53%,
   to {
-    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    -webkit-transform: translateZ(0);
     transform: translateZ(0);
   }
   40%,
   43% {
-    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    -webkit-transform: translate3d(0, -60rpx, 0) scaleY(1.1);
     transform: translate3d(0, -60rpx, 0) scaleY(1.1);
   }
   70% {
-    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
-    -webkit-transform: translate3d(0, -30rpx, 0) scaleY(1.05);
     transform: translate3d(0, -30rpx, 0) scaleY(1.05);
   }
   80% {
-    -webkit-transform: translateZ(0) scaleY(0.95);
     transform: translateZ(0) scaleY(0.95);
     transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
   90% {
-    -webkit-transform: translate3d(0, -8rpx, 0) scaleY(1.02);
     transform: translate3d(0, -8rpx, 0) scaleY(1.02);
-  }
-}
-@-webkit-keyframes nutShake {
-  0% {
-    -webkit-transform: translate(0);
-    transform: translate(0);
-  }
-  6.5% {
-    -webkit-transform: translate(-12rpx) rotateY(-9deg);
-    transform: translate(-12rpx) rotateY(-9deg);
-  }
-  18.5% {
-    -webkit-transform: translate(10rpx) rotateY(7deg);
-    transform: translate(10rpx) rotateY(7deg);
-  }
-  31.5% {
-    -webkit-transform: translate(-6rpx) rotateY(-5deg);
-    transform: translate(-6rpx) rotateY(-5deg);
-  }
-  43.5% {
-    -webkit-transform: translate(4rpx) rotateY(3deg);
-    transform: translate(4rpx) rotateY(3deg);
-  }
-  50% {
-    -webkit-transform: translate(0);
-    transform: translate(0);
   }
 }
 @keyframes nutShake {
   0% {
-    -webkit-transform: translate(0);
     transform: translate(0);
   }
   6.5% {
-    -webkit-transform: translate(-12rpx) rotateY(-9deg);
     transform: translate(-12rpx) rotateY(-9deg);
   }
   18.5% {
-    -webkit-transform: translate(10rpx) rotateY(7deg);
     transform: translate(10rpx) rotateY(7deg);
   }
   31.5% {
-    -webkit-transform: translate(-6rpx) rotateY(-5deg);
     transform: translate(-6rpx) rotateY(-5deg);
   }
   43.5% {
-    -webkit-transform: translate(4rpx) rotateY(3deg);
     transform: translate(4rpx) rotateY(3deg);
   }
   50% {
-    -webkit-transform: translate(0);
     transform: translate(0);
   }
 }
@@ -11134,15 +10890,14 @@ page {
 ### index.wxss
 
 ```css
-::after,
-::before,
+view,
 text,
-view {
-  border: 0 solid;
-  -webkit-box-sizing: border-box;
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border: 0 solid;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate-x:;
@@ -11183,12 +10938,12 @@ view {
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-width: 0px;
   --tw-ring-offset-shadow: 0 0 #0000;
 }
-.tw-root,
 :host,
 page,
+.tw-root,
 wx-root-portal-content {
   --color-black: #000;
   --color-gray-800: #1f2937;
@@ -11293,34 +11048,6 @@ wx-root-portal-content {
 .bottom-auto {
   bottom: auto;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 .-m-_b20px_B {
   margin: -20rpx;
 }
@@ -11354,7 +11081,6 @@ wx-root-portal-content {
 }
 /* tokens: flex <= src/pages/issue-909/index.tsx */
 .flex {
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
@@ -11362,7 +11088,6 @@ wx-root-portal-content {
   display: grid;
 }
 .inline-flex {
-  display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
 }
@@ -11454,7 +11179,6 @@ wx-root-portal-content {
   width: 404rpx;
 }
 .w-fit {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
 }
@@ -11492,40 +11216,34 @@ wx-root-portal-content {
 /* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 .transform {
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
@@ -11545,17 +11263,14 @@ wx-root-portal-content {
   grid-template-columns: 1fr, auto;
 }
 .flex-col {
-  -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
 }
 .items-center {
-  -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
 }
 .justify-center {
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
 }
@@ -12179,7 +11894,6 @@ wx-root-portal-content {
   text-transform: uppercase;
 }
 .underline {
-  -webkit-text-decoration-line: underline;
   text-decoration-line: underline;
 }
 .opacity-50 {
@@ -12190,27 +11904,22 @@ wx-root-portal-content {
 }
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-_b0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B {
   --tw-shadow: 0 2.5rpx 7.5rpx var(--tw-shadow-color, rgba(18, 52, 86, 0.35));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-_b0_8rpx_24rpx_rgba_p0_m0_m0_m0_d12_P_B {
   --tw-shadow: 0 8rpx 24rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.12));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-md {
   --tw-shadow: 0 4rpx 6rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 2rpx 4rpx -2rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-4 {
   --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-pink-300 {
@@ -12222,30 +11931,23 @@ wx-root-portal-content {
 }
 .blur {
   --tw-blur: blur(8px);
-  -webkit-filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, )
-    var(--tw-drop-shadow, );
   filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, )
     var(--tw-drop-shadow, );
 }
 .transition {
-  -webkit-transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property:
     color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow,
     transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-  -webkit-transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
 }
 .transition-colors {
-  -webkit-transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  -webkit-transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
 }
 .duration-300 {
   --tw-duration: 300ms;
-  -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
 }
 ._b--scroll-offset_c56px_B {
@@ -12391,7 +12093,6 @@ wx-root-portal-content {
 }
 .focus_cring:focus {
   --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .focus_cring-blue-300:focus {
@@ -12628,34 +12329,6 @@ wx-root-portal-content {
 }
 .bottom-auto {
   bottom: auto;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 .-m-_b20px_B {
   margin: -20rpx;

@@ -1,9 +1,7 @@
-@charset "UTF-8";
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
-  -webkit-box-sizing: border-box;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate-x:;
@@ -44,7 +42,7 @@ wx-root-portal-content {
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-width: 0px;
   --tw-ring-offset-shadow: 0 0 #0000;
   --color-black: #000;
   --color-gray-800: #1f2937;
@@ -93,6 +91,231 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --nutui-brand-1: #ffebf1;
+  --nutui-brand-2: #ffd6e1;
+  --nutui-brand-3: #ffadbe;
+  --nutui-brand-4: #ff8595;
+  --nutui-brand-5: #ff5c67;
+  --nutui-brand-6: #ff0f23;
+  --nutui-brand-7: #e53029;
+  --nutui-brand-8: #cc2c21;
+  --nutui-brand-9: #992412;
+  --nutui-brand-10: #661b08;
+  --nutui-brand-11: #330f02;
+  --nutui-brand-stop-1: #ff475d;
+  --nutui-brand-stop-2: #ff0f23;
+  --nutui-golden-1: #fff4e8;
+  --nutui-golden-2: rgba(181, 105, 26, 0.02);
+  --nutui-golden-3: rgba(181, 105, 26, 0.2);
+  --nutui-golden-4: #b5691a;
+  --nutui-golden-5: #ffe7cc;
+  --nutui-golden-6: #ffd8ad;
+  --nutui-golden-7: #664100;
+  --nutui-golden-stop-1: #fff9f0;
+  --nutui-golden-stop-2: #ffe3c2;
+  --nutui-green-1: #ebfbeb;
+  --nutui-green-2: #00d900;
+  --nutui-green-3: #2aa32a;
+  --nutui-red-1: #fff0f4;
+  --nutui-red-2: #ffd6e1;
+  --nutui-red-3: #ffadbe;
+  --nutui-red-4: #ff8595;
+  --nutui-red-5: #ff5c67;
+  --nutui-red-6: #f33;
+  --nutui-red-7: #e53029;
+  --nutui-red-8: #cc2c21;
+  --nutui-red-9: #992412;
+  --nutui-red-10: #661b08;
+  --nutui-red-11: #330f02;
+  --nutui-yellow-1: #fff9e0;
+  --nutui-yellow-2: #ffbf00;
+  --nutui-yellow-3: #b26b00;
+  --nutui-blue-1: #e5f5ff;
+  --nutui-blue-2: #0073ff;
+  --nutui-secondary-1: #14cc33;
+  --nutui-gray-1: #fff;
+  --nutui-gray-2: #f5f6fa;
+  --nutui-gray-3: #f2f3f7;
+  --nutui-gray-9: #f5f6fa;
+  --nutui-gray-4: #c2c4cc;
+  --nutui-gray-5: #828794;
+  --nutui-gray-6: #3d414d;
+  --nutui-gray-7: #171a26;
+  --nutui-gray-8: #dadce0;
+  --nutui-black-1: rgba(0, 0, 0, 0);
+  --nutui-black-2: rgba(0, 0, 0, 0.02);
+  --nutui-black-3: rgba(0, 0, 0, 0.08);
+  --nutui-black-4: rgba(0, 0, 0, 0.1);
+  --nutui-black-5: rgba(0, 0, 0, 0.2);
+  --nutui-black-6: rgba(0, 0, 0, 0.3);
+  --nutui-black-7: rgba(0, 0, 0, 0.4);
+  --nutui-black-8: rgba(0, 0, 0, 0.5);
+  --nutui-black-9: rgba(0, 0, 0, 0.6);
+  --nutui-black-10: rgba(0, 0, 0, 0.7);
+  --nutui-black-11: rgba(0, 0, 0, 0.8);
+  --nutui-black-12: rgba(0, 0, 0, 0.9);
+  --nutui-black-13: #000;
+  --nutui-white-1: hsla(0, 0%, 100%, 0);
+  --nutui-white-2: hsla(0, 0%, 100%, 0.02);
+  --nutui-white-3: hsla(0, 0%, 100%, 0.05);
+  --nutui-white-4: hsla(0, 0%, 100%, 0.1);
+  --nutui-white-5: hsla(0, 0%, 100%, 0.2);
+  --nutui-white-6: hsla(0, 0%, 100%, 0.3);
+  --nutui-white-7: hsla(0, 0%, 100%, 0.4);
+  --nutui-white-8: hsla(0, 0%, 100%, 0.5);
+  --nutui-white-9: hsla(0, 0%, 100%, 0.6);
+  --nutui-white-10: hsla(0, 0%, 100%, 0.7);
+  --nutui-white-11: hsla(0, 0%, 100%, 0.8);
+  --nutui-white-12: hsla(0, 0%, 100%, 0.9);
+  --nutui-white-13: #fff;
+  --nutui-color-primary: var(--nutui-brand-6);
+  --nutui-color-primary-stop-1: var(--nutui-brand-stop-1);
+  --nutui-color-primary-stop-2: var(--nutui-brand-stop-2);
+  --nutui-color-primary-text: var(--nutui-color-background-gray-1);
+  --nutui-color-primary-pressed: var(--nutui-red-7);
+  --nutui-color-primary-disabled: var(--nutui-color-content-gray-1);
+  --nutui-color-primary-disabled-special: var(--nutui-red-3);
+  --nutui-color-primary-light: var(--nutui-brand-1);
+  --nutui-color-primary-light-pressed: var(--nutui-red-2);
+  --nutui-color-service: var(--nutui-golden-1);
+  --nutui-color-service-border-1: var(--nutui-golden-2);
+  --nutui-color-service-border-2: var(--nutui-golden-3);
+  --nutui-color-service-pressed: var(--nutui-golden-4);
+  --nutui-color-service-text: var(--nutui-golden-4);
+  --nutui-color-service-btn-bg: var(--nutui-golden-5);
+  --nutui-color-service-btn-bg-pressed: var(--nutui-golden-6);
+  --nutui-color-service-btn-text: var(--nutui-golden-7);
+  --nutui-color-service-stop-1: var(--nutui-golden-stop-1);
+  --nutui-color-service-stop-2: var(--nutui-golden-stop-2);
+  --nutui-color-success: var(--nutui-green-2);
+  --nutui-color-success-light: var(--nutui-green-1);
+  --nutui-color-success-pressed: var(--nutui-green-3);
+  --nutui-color-danger: var(--nutui-red-2);
+  --nutui-color-danger-light: var(--nutui-red-1);
+  --nutui-color-info: var(--nutui-blue-2);
+  --nutui-color-info-light: var(--nutui-blue-1);
+  --nutui-color-text-link: var(--nutui-blue-2);
+  --nutui-color-warning: var(--nutui-yellow-2);
+  --nutui-color-warning-light: var(--nutui-yellow-1);
+  --nutui-color-warning-pressed: var(--nutui-yellow-3);
+  --nutui-color-content-gray-1: var(--nutui-gray-4);
+  --nutui-color-content-gray-2: var(--nutui-gray-5);
+  --nutui-color-content-gray-3: var(--nutui-gray-6);
+  --nutui-color-content-gray-4: var(--nutui-gray-7);
+  --nutui-color-title: var(--nutui-color-content-gray-4);
+  --nutui-color-text: var(--nutui-color-content-gray-3);
+  --nutui-color-text-help: var(--nutui-color-content-gray-2);
+  --nutui-color-text-disabled: var(--nutui-color-content-gray-1);
+  --nutui-color-background-gray-1: var(--nutui-gray-1);
+  --nutui-color-background-gray-2: var(--nutui-gray-2);
+  --nutui-color-background-gray-3: var(--nutui-gray-3);
+  --nutui-color-background-gray-4: var(--nutui-gray-9);
+  --nutui-color-background: var(--nutui-color-background-gray-3);
+  --nutui-color-background-overlay: var(--nutui-color-background-gray-1);
+  --nutui-color-background-sunken: var(--nutui-color-background-gray-2);
+  --nutui-color-background-component: var(--nutui-color-background-gray-4);
+  --nutui-color-mask-gray-1: var(--nutui-black-2);
+  --nutui-color-mask-gray-2: var(--nutui-black-7);
+  --nutui-color-mask-gray-3: var(--nutui-black-10);
+  --nutui-color-mask: var(--nutui-color-mask-gray-3);
+  --nutui-color-mask-part: var(--nutui-color-mask-gray-2);
+  --nutui-color-mask-fault-toleran: var(--nutui-color-mask-gray-1);
+  --nutui-color-line-gray-1: var(--nutui-black-3);
+  --nutui-color-border: var(--nutui-color-line-gray-1);
+  --nutui-color-border-disabled: var(--nutui-color-content-gray-1);
+  --nutui-font-size-8: 16rpx;
+  --nutui-font-size-9: 18rpx;
+  --nutui-font-size-10: 20rpx;
+  --nutui-font-size-11: 22rpx;
+  --nutui-font-size-12: 24rpx;
+  --nutui-font-size-13: 26rpx;
+  --nutui-font-size-14: 28rpx;
+  --nutui-font-size-15: 30rpx;
+  --nutui-font-size-16: 32rpx;
+  --nutui-font-size-17: 34rpx;
+  --nutui-font-size-18: 36rpx;
+  --nutui-font-size-19: 38rpx;
+  --nutui-font-size-20: 40rpx;
+  --nutui-font-size-21: 42rpx;
+  --nutui-font-size-22: 44rpx;
+  --nutui-font-size-23: 46rpx;
+  --nutui-font-size-24: 48rpx;
+  --nutui-font-size-25: 50rpx;
+  --nutui-font-size-26: 52rpx;
+  --nutui-font-size-xxxs: var(--nutui-font-size-9);
+  --nutui-font-size-xxs: var(--nutui-font-size-10);
+  --nutui-font-size-xs: var(--nutui-font-size-11);
+  --nutui-font-size-s: var(--nutui-font-size-12);
+  --nutui-font-size-base: var(--nutui-font-size-14);
+  --nutui-font-size-l: var(--nutui-font-size-15);
+  --nutui-font-size-icon: var(--nutui-font-size-16);
+  --nutui-font-size-xl: var(--nutui-font-size-18);
+  --nutui-font-size-xxl: var(--nutui-font-size-24);
+  --nutui-font-size-xxxl: var(--nutui-font-size-26);
+  --nutui-font-weight-light: 300;
+  --nutui-font-weight: 400;
+  --nutui-font-weight-medium: 500;
+  --nutui-font-weight-bold: 600;
+  --nutui-line-height-base: 1.5;
+  --nutui-text-align: left;
+  --nutui-spacing-1: 2rpx;
+  --nutui-spacing-2: 4rpx;
+  --nutui-spacing-3: 6rpx;
+  --nutui-spacing-4: 8rpx;
+  --nutui-spacing-5: 10rpx;
+  --nutui-spacing-6: 12rpx;
+  --nutui-spacing-7: 14rpx;
+  --nutui-spacing-8: 16rpx;
+  --nutui-spacing-9: 18rpx;
+  --nutui-spacing-10: 20rpx;
+  --nutui-spacing-11: 22rpx;
+  --nutui-spacing-12: 24rpx;
+  --nutui-spacing-13: 26rpx;
+  --nutui-spacing-14: 28rpx;
+  --nutui-spacing-15: 30rpx;
+  --nutui-spacing-16: 32rpx;
+  --nutui-spacing-xxxs: var(--nutui-spacing-2);
+  --nutui-spacing-xxs: var(--nutui-spacing-4);
+  --nutui-spacing-xs: var(--nutui-spacing-6);
+  --nutui-spacing-s: var(--nutui-spacing-7);
+  --nutui-spacing-base: var(--nutui-spacing-8);
+  --nutui-spacing-l: var(--nutui-spacing-9);
+  --nutui-spacing-xl: var(--nutui-spacing-12);
+  --nutui-spacing-xxl: var(--nutui-spacing-16);
+  --nutui-radius-0: 0rpx;
+  --nutui-radius-1: 2rpx;
+  --nutui-radius-2: 4rpx;
+  --nutui-radius-3: 6rpx;
+  --nutui-radius-4: 8rpx;
+  --nutui-radius-5: 10rpx;
+  --nutui-radius-6: 12rpx;
+  --nutui-radius-7: 14rpx;
+  --nutui-radius-8: 16rpx;
+  --nutui-radius-9: 18rpx;
+  --nutui-radius-10: 20rpx;
+  --nutui-radius-11: 22rpx;
+  --nutui-radius-12: 24rpx;
+  --nutui-radius-13: 26rpx;
+  --nutui-radius-14: 28rpx;
+  --nutui-radius-15: 30rpx;
+  --nutui-radius-16: 32rpx;
+  --nutui-radius-17: 34rpx;
+  --nutui-radius-18: 36rpx;
+  --nutui-radius-19: 38rpx;
+  --nutui-radius-20: 40rpx;
+  --nutui-radius-21: 42rpx;
+  --nutui-radius-22: 44rpx;
+  --nutui-radius-23: 46rpx;
+  --nutui-radius-24: 48rpx;
+  --nutui-radius-xxxs: var(--nutui-radius-0);
+  --nutui-radius-xxs: var(--nutui-radius-2);
+  --nutui-radius-xs: var(--nutui-radius-4);
+  --nutui-radius-s: var(--nutui-radius-6);
+  --nutui-radius-base: var(--nutui-radius-8);
+  --nutui-radius-l: var(--nutui-radius-8);
+  --nutui-radius-xl: var(--nutui-radius-12);
+  --nutui-radius-xxl: var(--nutui-radius-14);
+  --nutui-radius-xxxl: var(--nutui-radius-16);
 }
 .visible {
   visibility: visible;
@@ -150,40 +373,6 @@ wx-root-portal-content {
 .bottom-auto {
   bottom: auto;
 }
-/* tokens: container <= <tailwind generated> */
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  /* tokens: container <= <tailwind generated> */
-  .container {
-    max-width: 3072rpx;
-  }
-}
 .-m-_b20px_B {
   margin: -20rpx;
 }
@@ -217,7 +406,6 @@ wx-root-portal-content {
 }
 /* tokens: flex <= src/pages/issue-909/index.tsx */
 .flex {
-  display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
 }
@@ -225,7 +413,6 @@ wx-root-portal-content {
   display: grid;
 }
 .inline-flex {
-  display: -webkit-inline-flex;
   display: -ms-inline-flexbox;
   display: inline-flex;
 }
@@ -317,7 +504,6 @@ wx-root-portal-content {
   width: 404rpx;
 }
 .w-fit {
-  width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
 }
@@ -355,40 +541,34 @@ wx-root-portal-content {
 /* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 /* tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
 .transform {
-  -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
@@ -408,17 +588,14 @@ wx-root-portal-content {
   grid-template-columns: 1fr, auto;
 }
 .flex-col {
-  -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
 }
 .items-center {
-  -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
 }
 .justify-center {
-  -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
 }
@@ -1038,7 +1215,6 @@ wx-root-portal-content {
   text-transform: uppercase;
 }
 .underline {
-  -webkit-text-decoration-line: underline;
   text-decoration-line: underline;
 }
 .opacity-50 {
@@ -1049,27 +1225,22 @@ wx-root-portal-content {
 }
 .shadow {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-_b0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B {
   --tw-shadow: 0 2.5rpx 7.5rpx var(--tw-shadow-color, rgba(18, 52, 86, 0.35));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-_b0_8rpx_24rpx_rgba_p0_m0_m0_m0_d12_P_B {
   --tw-shadow: 0 8rpx 24rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.12));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .shadow-md {
   --tw-shadow: 0 4rpx 6rpx -1rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 2rpx 4rpx -2rpx var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-4 {
   --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6));
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .ring-pink-300 {
@@ -1081,30 +1252,23 @@ wx-root-portal-content {
 }
 .blur {
   --tw-blur: blur(8px);
-  -webkit-filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, )
-    var(--tw-drop-shadow, );
   filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, )
     var(--tw-drop-shadow, );
 }
 .transition {
-  -webkit-transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property:
     color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow,
     transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-  -webkit-transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
 }
 .transition-colors {
-  -webkit-transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-duration: var(--tw-duration, var(--default-transition-duration));
   transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
-  -webkit-transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
   transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
 }
 .duration-300 {
   --tw-duration: 300ms;
-  -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
 }
 ._b--scroll-offset_c56px_B {
@@ -1251,7 +1415,6 @@ wx-root-portal-content {
 }
 .focus_cring:focus {
   --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
-  -webkit-box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 .focus_cring-blue-300:focus {
@@ -1339,234 +1502,6 @@ wx-root-portal-content {
   font-style: normal;
   font-weight: 700;
   src: url(data:font/ttf;base64,<stable>) format('truetype');
-}
-:root,
-page {
-  --nutui-brand-1: #ffebf1;
-  --nutui-brand-2: #ffd6e1;
-  --nutui-brand-3: #ffadbe;
-  --nutui-brand-4: #ff8595;
-  --nutui-brand-5: #ff5c67;
-  --nutui-brand-6: #ff0f23;
-  --nutui-brand-7: #e53029;
-  --nutui-brand-8: #cc2c21;
-  --nutui-brand-9: #992412;
-  --nutui-brand-10: #661b08;
-  --nutui-brand-11: #330f02;
-  --nutui-brand-stop-1: #ff475d;
-  --nutui-brand-stop-2: #ff0f23;
-  --nutui-golden-1: #fff4e8;
-  --nutui-golden-2: rgba(181, 105, 26, 0.02);
-  --nutui-golden-3: rgba(181, 105, 26, 0.2);
-  --nutui-golden-4: #b5691a;
-  --nutui-golden-5: #ffe7cc;
-  --nutui-golden-6: #ffd8ad;
-  --nutui-golden-7: #664100;
-  --nutui-golden-stop-1: #fff9f0;
-  --nutui-golden-stop-2: #ffe3c2;
-  --nutui-green-1: #ebfbeb;
-  --nutui-green-2: #00d900;
-  --nutui-green-3: #2aa32a;
-  --nutui-red-1: #fff0f4;
-  --nutui-red-2: #ffd6e1;
-  --nutui-red-3: #ffadbe;
-  --nutui-red-4: #ff8595;
-  --nutui-red-5: #ff5c67;
-  --nutui-red-6: #f33;
-  --nutui-red-7: #e53029;
-  --nutui-red-8: #cc2c21;
-  --nutui-red-9: #992412;
-  --nutui-red-10: #661b08;
-  --nutui-red-11: #330f02;
-  --nutui-yellow-1: #fff9e0;
-  --nutui-yellow-2: #ffbf00;
-  --nutui-yellow-3: #b26b00;
-  --nutui-blue-1: #e5f5ff;
-  --nutui-blue-2: #0073ff;
-  --nutui-secondary-1: #14cc33;
-  --nutui-gray-1: #fff;
-  --nutui-gray-2: #f5f6fa;
-  --nutui-gray-3: #f2f3f7;
-  --nutui-gray-9: #f5f6fa;
-  --nutui-gray-4: #c2c4cc;
-  --nutui-gray-5: #828794;
-  --nutui-gray-6: #3d414d;
-  --nutui-gray-7: #171a26;
-  --nutui-gray-8: #dadce0;
-  --nutui-black-1: rgba(0, 0, 0, 0);
-  --nutui-black-2: rgba(0, 0, 0, 0.02);
-  --nutui-black-3: rgba(0, 0, 0, 0.08);
-  --nutui-black-4: rgba(0, 0, 0, 0.1);
-  --nutui-black-5: rgba(0, 0, 0, 0.2);
-  --nutui-black-6: rgba(0, 0, 0, 0.3);
-  --nutui-black-7: rgba(0, 0, 0, 0.4);
-  --nutui-black-8: rgba(0, 0, 0, 0.5);
-  --nutui-black-9: rgba(0, 0, 0, 0.6);
-  --nutui-black-10: rgba(0, 0, 0, 0.7);
-  --nutui-black-11: rgba(0, 0, 0, 0.8);
-  --nutui-black-12: rgba(0, 0, 0, 0.9);
-  --nutui-black-13: #000;
-  --nutui-white-1: hsla(0, 0%, 100%, 0);
-  --nutui-white-2: hsla(0, 0%, 100%, 0.02);
-  --nutui-white-3: hsla(0, 0%, 100%, 0.05);
-  --nutui-white-4: hsla(0, 0%, 100%, 0.1);
-  --nutui-white-5: hsla(0, 0%, 100%, 0.2);
-  --nutui-white-6: hsla(0, 0%, 100%, 0.3);
-  --nutui-white-7: hsla(0, 0%, 100%, 0.4);
-  --nutui-white-8: hsla(0, 0%, 100%, 0.5);
-  --nutui-white-9: hsla(0, 0%, 100%, 0.6);
-  --nutui-white-10: hsla(0, 0%, 100%, 0.7);
-  --nutui-white-11: hsla(0, 0%, 100%, 0.8);
-  --nutui-white-12: hsla(0, 0%, 100%, 0.9);
-  --nutui-white-13: #fff;
-  --nutui-color-primary: var(--nutui-brand-6);
-  --nutui-color-primary-stop-1: var(--nutui-brand-stop-1);
-  --nutui-color-primary-stop-2: var(--nutui-brand-stop-2);
-  --nutui-color-primary-text: var(--nutui-color-background-gray-1);
-  --nutui-color-primary-pressed: var(--nutui-red-7);
-  --nutui-color-primary-disabled: var(--nutui-color-content-gray-1);
-  --nutui-color-primary-disabled-special: var(--nutui-red-3);
-  --nutui-color-primary-light: var(--nutui-brand-1);
-  --nutui-color-primary-light-pressed: var(--nutui-red-2);
-  --nutui-color-service: var(--nutui-golden-1);
-  --nutui-color-service-border-1: var(--nutui-golden-2);
-  --nutui-color-service-border-2: var(--nutui-golden-3);
-  --nutui-color-service-pressed: var(--nutui-golden-4);
-  --nutui-color-service-text: var(--nutui-golden-4);
-  --nutui-color-service-btn-bg: var(--nutui-golden-5);
-  --nutui-color-service-btn-bg-pressed: var(--nutui-golden-6);
-  --nutui-color-service-btn-text: var(--nutui-golden-7);
-  --nutui-color-service-stop-1: var(--nutui-golden-stop-1);
-  --nutui-color-service-stop-2: var(--nutui-golden-stop-2);
-  --nutui-color-success: var(--nutui-green-2);
-  --nutui-color-success-light: var(--nutui-green-1);
-  --nutui-color-success-pressed: var(--nutui-green-3);
-  --nutui-color-danger: var(--nutui-red-2);
-  --nutui-color-danger-light: var(--nutui-red-1);
-  --nutui-color-info: var(--nutui-blue-2);
-  --nutui-color-info-light: var(--nutui-blue-1);
-  --nutui-color-text-link: var(--nutui-blue-2);
-  --nutui-color-warning: var(--nutui-yellow-2);
-  --nutui-color-warning-light: var(--nutui-yellow-1);
-  --nutui-color-warning-pressed: var(--nutui-yellow-3);
-  --nutui-color-content-gray-1: var(--nutui-gray-4);
-  --nutui-color-content-gray-2: var(--nutui-gray-5);
-  --nutui-color-content-gray-3: var(--nutui-gray-6);
-  --nutui-color-content-gray-4: var(--nutui-gray-7);
-  --nutui-color-title: var(--nutui-color-content-gray-4);
-  --nutui-color-text: var(--nutui-color-content-gray-3);
-  --nutui-color-text-help: var(--nutui-color-content-gray-2);
-  --nutui-color-text-disabled: var(--nutui-color-content-gray-1);
-  --nutui-color-background-gray-1: var(--nutui-gray-1);
-  --nutui-color-background-gray-2: var(--nutui-gray-2);
-  --nutui-color-background-gray-3: var(--nutui-gray-3);
-  --nutui-color-background-gray-4: var(--nutui-gray-9);
-  --nutui-color-background: var(--nutui-color-background-gray-3);
-  --nutui-color-background-overlay: var(--nutui-color-background-gray-1);
-  --nutui-color-background-sunken: var(--nutui-color-background-gray-2);
-  --nutui-color-background-component: var(--nutui-color-background-gray-4);
-  --nutui-color-mask-gray-1: var(--nutui-black-2);
-  --nutui-color-mask-gray-2: var(--nutui-black-7);
-  --nutui-color-mask-gray-3: var(--nutui-black-10);
-  --nutui-color-mask: var(--nutui-color-mask-gray-3);
-  --nutui-color-mask-part: var(--nutui-color-mask-gray-2);
-  --nutui-color-mask-fault-toleran: var(--nutui-color-mask-gray-1);
-  --nutui-color-line-gray-1: var(--nutui-black-3);
-  --nutui-color-border: var(--nutui-color-line-gray-1);
-  --nutui-color-border-disabled: var(--nutui-color-content-gray-1);
-  --nutui-font-size-8: 16rpx;
-  --nutui-font-size-9: 18rpx;
-  --nutui-font-size-10: 20rpx;
-  --nutui-font-size-11: 22rpx;
-  --nutui-font-size-12: 24rpx;
-  --nutui-font-size-13: 26rpx;
-  --nutui-font-size-14: 28rpx;
-  --nutui-font-size-15: 30rpx;
-  --nutui-font-size-16: 32rpx;
-  --nutui-font-size-17: 34rpx;
-  --nutui-font-size-18: 36rpx;
-  --nutui-font-size-19: 38rpx;
-  --nutui-font-size-20: 40rpx;
-  --nutui-font-size-21: 42rpx;
-  --nutui-font-size-22: 44rpx;
-  --nutui-font-size-23: 46rpx;
-  --nutui-font-size-24: 48rpx;
-  --nutui-font-size-25: 50rpx;
-  --nutui-font-size-26: 52rpx;
-  --nutui-font-size-xxxs: var(--nutui-font-size-9);
-  --nutui-font-size-xxs: var(--nutui-font-size-10);
-  --nutui-font-size-xs: var(--nutui-font-size-11);
-  --nutui-font-size-s: var(--nutui-font-size-12);
-  --nutui-font-size-base: var(--nutui-font-size-14);
-  --nutui-font-size-l: var(--nutui-font-size-15);
-  --nutui-font-size-icon: var(--nutui-font-size-16);
-  --nutui-font-size-xl: var(--nutui-font-size-18);
-  --nutui-font-size-xxl: var(--nutui-font-size-24);
-  --nutui-font-size-xxxl: var(--nutui-font-size-26);
-  --nutui-font-weight-light: 300;
-  --nutui-font-weight: 400;
-  --nutui-font-weight-medium: 500;
-  --nutui-font-weight-bold: 600;
-  --nutui-line-height-base: 1.5;
-  --nutui-text-align: left;
-  --nutui-spacing-1: 2rpx;
-  --nutui-spacing-2: 4rpx;
-  --nutui-spacing-3: 6rpx;
-  --nutui-spacing-4: 8rpx;
-  --nutui-spacing-5: 10rpx;
-  --nutui-spacing-6: 12rpx;
-  --nutui-spacing-7: 14rpx;
-  --nutui-spacing-8: 16rpx;
-  --nutui-spacing-9: 18rpx;
-  --nutui-spacing-10: 20rpx;
-  --nutui-spacing-11: 22rpx;
-  --nutui-spacing-12: 24rpx;
-  --nutui-spacing-13: 26rpx;
-  --nutui-spacing-14: 28rpx;
-  --nutui-spacing-15: 30rpx;
-  --nutui-spacing-16: 32rpx;
-  --nutui-spacing-xxxs: var(--nutui-spacing-2);
-  --nutui-spacing-xxs: var(--nutui-spacing-4);
-  --nutui-spacing-xs: var(--nutui-spacing-6);
-  --nutui-spacing-s: var(--nutui-spacing-7);
-  --nutui-spacing-base: var(--nutui-spacing-8);
-  --nutui-spacing-l: var(--nutui-spacing-9);
-  --nutui-spacing-xl: var(--nutui-spacing-12);
-  --nutui-spacing-xxl: var(--nutui-spacing-16);
-  --nutui-radius-0: 0rpx;
-  --nutui-radius-1: 2rpx;
-  --nutui-radius-2: 4rpx;
-  --nutui-radius-3: 6rpx;
-  --nutui-radius-4: 8rpx;
-  --nutui-radius-5: 10rpx;
-  --nutui-radius-6: 12rpx;
-  --nutui-radius-7: 14rpx;
-  --nutui-radius-8: 16rpx;
-  --nutui-radius-9: 18rpx;
-  --nutui-radius-10: 20rpx;
-  --nutui-radius-11: 22rpx;
-  --nutui-radius-12: 24rpx;
-  --nutui-radius-13: 26rpx;
-  --nutui-radius-14: 28rpx;
-  --nutui-radius-15: 30rpx;
-  --nutui-radius-16: 32rpx;
-  --nutui-radius-17: 34rpx;
-  --nutui-radius-18: 36rpx;
-  --nutui-radius-19: 38rpx;
-  --nutui-radius-20: 40rpx;
-  --nutui-radius-21: 42rpx;
-  --nutui-radius-22: 44rpx;
-  --nutui-radius-23: 46rpx;
-  --nutui-radius-24: 48rpx;
-  --nutui-radius-xxxs: var(--nutui-radius-0);
-  --nutui-radius-xxs: var(--nutui-radius-2);
-  --nutui-radius-xs: var(--nutui-radius-4);
-  --nutui-radius-s: var(--nutui-radius-6);
-  --nutui-radius-base: var(--nutui-radius-8);
-  --nutui-radius-l: var(--nutui-radius-8);
-  --nutui-radius-xl: var(--nutui-radius-12);
-  --nutui-radius-xxl: var(--nutui-radius-14);
-  --nutui-radius-xxxl: var(--nutui-radius-16);
 }
 .nutFade-enter-active,
 .nutFade-leave-active,
@@ -2079,10 +2014,8 @@ page {
 }
 @keyframes rotation {
   0% {
-    -webkit-transform: rotate(0deg);
   }
   to {
-    -webkit-transform: rotate(1turn);
   }
 }
 .nut-toast {
@@ -2433,7 +2366,6 @@ page {
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
@@ -4362,7 +4294,6 @@ page {
 .nut-range-min {
   color: var(--nutui-range-color, var(--nutui-color-title, #1a1a1a));
   font-size: var(--nutui-font-size-s, 24rpx);
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
@@ -4429,7 +4360,6 @@ page {
   padding: 10rpx 0;
   position: relative;
   text-align: center;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   vertical-align: center;
@@ -4464,7 +4394,6 @@ page {
   line-height: 32rpx;
   position: absolute;
   text-align: center;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   word-break: keep-all;
@@ -4525,7 +4454,6 @@ page {
   height: 32rpx;
   position: absolute;
   transform: translateY(-22rpx);
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
 }
@@ -5040,7 +4968,6 @@ page {
   font-size: var(--nutui-price-decimal-small-size, 24rpx);
 }
 .nut-price-line {
-  -webkit-text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
@@ -5695,7 +5622,6 @@ page {
 .nut-pickerview-roller-item {
   backface-visibility: hidden;
   -moz-backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
   position: absolute;
   top: 0;
 }
@@ -5854,7 +5780,6 @@ page {
 .nut-numberkeyboard {
   background-color: var(--nutui-numberkeyboard-background-color, var(--nutui-color-background, #f2f3f5));
   padding: var(--nutui-numberkeyboard-padding, 0 0 44rpx 0);
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   width: 100%;
@@ -6531,7 +6456,6 @@ page {
 }
 .nut-inputnumber-input::-webkit-inner-spin-button,
 .nut-inputnumber-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
 }
@@ -7592,7 +7516,6 @@ page {
   height: 0;
   position: fixed;
   touch-action: none;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   width: 0;
@@ -7926,10 +7849,8 @@ page {
 .nut-countup-listitem {
   height: var(--nutui-countup-height, 64rpx);
   overflow: hidden;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 .nut-countup-listitem-number {
   background-color: var(--nutui-countup-bg-color, inherit);
@@ -9270,7 +9191,6 @@ page {
 }
 .nut-button {
   align-items: center;
-  -webkit-appearance: none;
   box-sizing: border-box;
   cursor: pointer;
   display: flex;
@@ -9287,12 +9207,10 @@ page {
   text-align: center;
   touch-action: manipulation;
   transition: opacity 0.2s;
-  -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   width: 160rpx;
   width: auto;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   background: var(--nutui-button-default-background-color, transparent);
   border-width: var(--nutui-button-border-width, 1rpx);
   color: var(--nutui-button-default-color, var(--nutui-color-title, #1a1a1a));

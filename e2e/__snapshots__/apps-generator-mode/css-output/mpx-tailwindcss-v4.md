@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 17373 | 69 | false | false | false | false | true |
+| 16795 | 68 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -14,15 +14,29 @@ Generator CSS files: app.wxss, styles/app.wxss, app.wxss, index.wxss
 
 ```css
 @import './styles/app.wxss';
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 ```
 
 ### styles/app.wxss
 
 ```css
-::after,
-::before,
+/* tokens: tw-root <= src/custom-tab-bar/index.mpx */
+view,
 text,
-view {
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
@@ -35,15 +49,10 @@ view {
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-offset-shadow: 0 0 #0000;
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
-/* tokens: tw-root <= src/custom-tab-bar/index.mpx */
-.tw-root,
 :host,
 page,
+.tw-root,
 wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
@@ -299,34 +308,6 @@ wx-root-portal-content {
   } /* tokens: dark:text-yellow-400 <= src/pages/index.mpx */
   .dark_ctext-yellow-400 {
     color: var(--color-yellow-400);
-  }
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
   }
 }
 ```
@@ -334,10 +315,15 @@ wx-root-portal-content {
 ### app.wxss
 
 ```css
-::after,
-::before,
+/* tokens: tw-root <= src/custom-tab-bar/index.mpx */
+view,
 text,
-view {
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
@@ -350,15 +336,10 @@ view {
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-offset-shadow: 0 0 #0000;
-  border: 0 solid;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
 }
-/* tokens: tw-root <= src/custom-tab-bar/index.mpx */
-.tw-root,
 :host,
 page,
+.tw-root,
 wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
@@ -616,38 +597,18 @@ wx-root-portal-content {
     color: var(--color-yellow-400);
   }
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
 
 ```css
-
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
 ```

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 29975 | 126 | false | false | false | false | true |
+| 28000 | 125 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -318,34 +318,6 @@ wx-root-portal-content {
 /* tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 .layer-card-v4 {
   display: flex;
@@ -691,34 +663,6 @@ wx-root-portal-content {
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -754,34 +698,6 @@ wx-root-portal-content {
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
 ```
 
 ### index.wxss
@@ -816,34 +732,6 @@ wx-root-portal-content {
 }
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 ```
 
@@ -1058,33 +946,5 @@ wx-root-portal-content {
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }
 ```

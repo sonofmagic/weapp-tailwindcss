@@ -9,8 +9,9 @@ import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
+import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../../shared/css-cleanup'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
-import { stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
+import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { generateCssByGenerator } from '../../shared/generator-css'
 import { removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { emitHmrTiming } from '../../shared/hmr-timing'
@@ -243,11 +244,37 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           cssUserHandlerOptionsCache.set(cacheKey, created)
           return created
         }
-        const finalizeCssAssetSource = (source: string) => {
-          return removeTailwindSourceDirectives(
+        const finalizeCssAssetSource = (source: string, options: { generatedCss?: boolean } = {}) => {
+          let finalized = removeTailwindSourceDirectives(
             stripBundlerGeneratedCssMarkers(source),
             { importFallback: true },
           )
+          if (isWebGeneratorTarget || options.generatedCss !== true) {
+            return finalized
+          }
+          try {
+            finalized = pruneMiniProgramGeneratedCss(finalized, {
+              preservePreflight: runtimeState.twPatcher.majorVersion === 3,
+            })
+          }
+          catch {
+            finalized = finalizeMiniProgramCss(finalized, {
+              cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
+              isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
+              preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
+            })
+          }
+          return finalized
+        }
+        const finalizeMiniProgramUserCssAssetSource = (source: string) => {
+          if (isWebGeneratorTarget) {
+            return source
+          }
+          return finalizeMiniProgramCss(source, {
+            cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
+            isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
+            preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
+          })
         }
         const cssSourceTraceTokenSources = isCssSourceTraceEnabled(compilerOptions)
           ? await (async () => {
@@ -275,6 +302,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           opts: compilerOptions,
           tokenSources: cssSourceTraceTokenSources,
         })
+        const finalizeTracedCss = (css: string) => {
+          const traced = annotateCss(css)
+          if (isWebGeneratorTarget || !isCssSourceTraceEnabled(compilerOptions)) {
+            return traced
+          }
+          return finalizeMiniProgramUserCssAssetSource(traced)
+        }
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
@@ -432,7 +466,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
 
             const rawSource = originalSource.source().toString()
             if (isWebpackProcessedCssAsset?.(file, rawSource)) {
-              const nextCss = finalizeCssAssetSource(rawSource)
+              const nextCss = finalizeCssAssetSource(rawSource, {
+                generatedCss: hasBundlerGeneratedCssMarker(rawSource),
+              })
               tasks.push(
                 processCachedTask({
                   cache: compilerOptions.cache,
@@ -453,7 +489,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   transform: async () => {
                     debug('css skip webpack-loader-pipeline asset: %s', file)
                     return {
-                      result: new ConcatSource(annotateCss(nextCss)),
+                      result: new ConcatSource(finalizeTracedCss(nextCss)),
                     }
                   },
                 }),
@@ -494,8 +530,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })
-                  const css = annotateCss(finalizeCssAssetSource(
+                  const css = finalizeTracedCss(finalizeCssAssetSource(
                     generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css,
+                    { generatedCss: generated != null },
                   ))
                   const source = new ConcatSource(css)
 

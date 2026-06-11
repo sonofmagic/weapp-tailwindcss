@@ -181,6 +181,29 @@ function resolveLegacyCompatCssSource(rawSource: string) {
   return resolved
 }
 
+function removeMiniProgramContainerCompatCss(css: string) {
+  try {
+    const root = postcss.parse(css)
+    let removed = false
+    root.walkRules((rule) => {
+      if (rule.selectors?.length === 1 && rule.selectors[0] === '.container') {
+        rule.remove()
+        removed = true
+      }
+    })
+    root.walkAtRules((atRule) => {
+      if (atRule.nodes && atRule.nodes.length === 0) {
+        atRule.remove()
+        removed = true
+      }
+    })
+    return removed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
 function hasContainerConfigToken(rawSource: string) {
   return rawSource.includes('@config') && /\bcontainer\b/.test(rawSource)
 }
@@ -247,7 +270,13 @@ export async function appendLegacyCompatCss(
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ) {
-  const compatSource = removeGeneratedSelectorCompatCss(resolveLegacyCompatCssSource(rawSource), css)
+  const resolvedCompatSource = resolveLegacyCompatCssSource(rawSource)
+  const compatSource = removeGeneratedSelectorCompatCss(
+    generatorTarget === 'weapp'
+      ? removeMiniProgramContainerCompatCss(resolvedCompatSource)
+      : resolvedCompatSource,
+    css,
+  )
   if (compatSource.trim().length === 0) {
     return css
   }
@@ -287,6 +316,10 @@ export async function appendLegacyContainerCompatCss(
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ) {
+  if (generatorTarget === 'weapp') {
+    return css
+  }
+
   const compatSource = resolveLegacyCompatCssSource(rawSource)
   const shouldAppendContainer = runtime.has('container')
     || hasConfiguredContainerCompat(rawSource, file, cssHandlerOptions)

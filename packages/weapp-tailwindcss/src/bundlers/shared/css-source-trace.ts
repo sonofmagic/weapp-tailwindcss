@@ -28,6 +28,7 @@ export interface AnnotateCssSourceTraceOptions {
 }
 
 const CSS_SOURCE_TRACE_COMMENT_RE = /^\s*tokens:\s/
+const TAILWIND_GENERATED_CONTAINER_TRACE_COMMENT_RE = /^\s*tokens:\s*container\s*<=\s*<tailwind generated>\s*$/i
 
 function normalizeSelectorTokenCandidate(candidate: string) {
   return candidate
@@ -122,6 +123,20 @@ function collectRuleSourceTokens(rule: postcss.Rule, tokenSources: CssTokenSourc
   return tokens
 }
 
+function removeTracedTailwindGeneratedContainerRules(root: postcss.Root) {
+  root.walkRules((rule) => {
+    if (!rule.selectors || rule.selectors.length !== 1 || rule.selectors[0] !== '.container') {
+      return
+    }
+    const previous = rule.prev()
+    if (previous?.type !== 'comment' || !TAILWIND_GENERATED_CONTAINER_TRACE_COMMENT_RE.test(previous.text)) {
+      return
+    }
+    previous.remove()
+    rule.remove()
+  })
+}
+
 export function annotateCssSourceTrace(
   css: string,
   options: AnnotateCssSourceTraceOptions,
@@ -143,7 +158,7 @@ export function annotateCssSourceTrace(
         return
       }
       const lines = [...tokens.values()].map(({ token, sources }) => {
-        return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<source not found>'}`
+        return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<tailwind generated>'}`
       })
       const comment = postcss.comment({ text: `tokens: ${lines.join(' | ')}` })
       if (rule.raws.before !== undefined) {
@@ -152,6 +167,7 @@ export function annotateCssSourceTrace(
       rule.raws.before = '\n'
       rule.parent.insertBefore(rule, comment)
     })
+    removeTracedTailwindGeneratedContainerRules(root)
     return root.toString()
   }
   catch {

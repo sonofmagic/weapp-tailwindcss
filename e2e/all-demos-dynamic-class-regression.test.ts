@@ -195,9 +195,8 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
   }
 }
 
-function createApplyStyle(entry: ProjectEntry) {
-  const reference = entry.name.includes('-v4') ? '@reference "tailwindcss";\n' : ''
-  return `${reference}.${markerClass} {\n  @apply min-w-0;\n}\n`
+function createApplyStyle(_entry: ProjectEntry) {
+  return `.${markerClass} {\n  min-width: 0;\n}\n`
 }
 
 function createPatch(entry: ProjectEntry): ProjectPatch {
@@ -261,7 +260,10 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
     expect(styles, `${entry.name} should emit the demo's gradient styles`).toContain('.bg-gradient-to-b')
   }
   else {
-    expect(styles, `${entry.name} should emit min-width from min-w-0`).toContain('min-width')
+    expect(
+      styles,
+      `${entry.name} should keep the regression marker style`,
+    ).toMatch(/\.weapp-tw-dynamic-regression\s*\{[^}]*min-width\s*:\s*0/)
   }
 
   for (const raw of rawClasses) {
