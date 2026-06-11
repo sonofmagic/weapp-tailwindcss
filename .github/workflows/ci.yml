@@ -93,8 +93,9 @@ jobs:
             echo "- 现在额外包含：跨框架支持矩阵 e2e，用于保证 demo 构建入口与模板静态输出一致。"
             echo "- 现在额外包含：\`pnpm e2e:multiplatform-build\`，用于保证 uni-app、Mpx 等多平台构建产物可生成且 Tailwind 转译结果稳定；\`pnpm e2e:multiplatform-build:taro-alipay\` 作为 Taro Alipay 专项产物验证并设置单步超时。"
             echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
+            echo "- \`E2E Watch Gate\` 负责主 CI 内的轻量跨平台 watch 覆盖，当前覆盖 linux、macOS、Windows。"
             echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
-            echo "- \`pnpm e2e:watch\` 已拆分到独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
+            echo "- \`pnpm e2e:watch\` 的完整 PR/nightly 矩阵仍保留在独立工作流：\`E2E Watch\`（.github/workflows/e2e-watch.yml）。"
             echo "- website SEO 质量门禁已拆分到独立工作流：\`Website SEO Quality\`（.github/workflows/website-seo-quality.yml）。"
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -102,6 +103,144 @@ jobs:
         uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  e2e-watch:
+    name: E2E Watch Gate (${{ matrix.runner_label }}, ${{ matrix.watch_case }}, ${{ matrix.round_profile }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            runner_label: linux
+            node-version: 22
+            watch_case: uni-app-vite-tailwindcss-v3
+            round_profile: default
+            watch_save_snapshots: '1'
+            watch_web_only: '1'
+            timeout_minutes: 40
+            watch_timeout_ms: '280000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '720000'
+          - os: macos-latest
+            runner_label: macos
+            node-version: 22
+            watch_case: uni-app-vite-tailwindcss-v3
+            round_profile: default
+            watch_save_snapshots: '1'
+            watch_web_only: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '960000'
+          - os: windows-latest
+            runner_label: windows
+            node-version: 22
+            watch_case: uni-app-vite-tailwindcss-v3
+            round_profile: default
+            watch_save_snapshots: '1'
+            watch_web_only: '1'
+            timeout_minutes: 45
+            watch_timeout_ms: '420000'
+            watch_poll_ms: '40'
+            watch_command_timeout_ms: '960000'
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        shell: bash
+        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+
+      - name: Build watch suite package dependencies
+        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
+
+      - name: Prepare benchmark output directory
+        shell: bash
+        run: |
+          rm -f e2e/benchmark/e2e-watch-hmr/*.json
+          rm -rf e2e/benchmark/e2e-watch-hmr/snapshots
+          rm -rf e2e/benchmark/e2e-watch-hmr/failures
+          mkdir -p e2e/benchmark/e2e-watch-hmr/snapshots
+          mkdir -p e2e/benchmark/e2e-watch-hmr/failures
+
+      - name: Run e2e watch suite (CI cross-platform gate)
+        env:
+          E2E_WATCH_CASE: ${{ matrix.watch_case }}
+          E2E_WATCH_TIMEOUT_MS: ${{ matrix.watch_timeout_ms }}
+          E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
+          E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || matrix.watch_timeout_ms }}
+          E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '6000' }}
+          E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
+          E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
+          E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
+          E2E_WATCH_WEB_ONLY: ${{ matrix.watch_web_only || '0' }}
+          E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
+          NODE_OPTIONS: --max-old-space-size=6144
+        run: pnpm e2e:watch
+
+      - name: Generate failure diff summary
+        if: failure()
+        shell: bash
+        run: node .github/scripts/e2e-watch-report.cjs diff-summary
+
+      - name: Generate root cause attribution report
+        if: failure()
+        shell: bash
+        env:
+          WATCH_CASE: ${{ matrix.watch_case }}
+        run: node .github/scripts/e2e-watch-report.cjs root-cause-report
+
+      - name: Publish job summary
+        if: always()
+        shell: bash
+        run: node .github/scripts/e2e-watch-report.cjs job-summary
+        env:
+          SUMMARY_TITLE: e2e-watch CI cross-platform gate
+          WATCH_CASE: ${{ matrix.watch_case }}
+          ROUND_PROFILE: ${{ matrix.round_profile }}
+
+      - name: Upload e2e watch reports (always)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-watch-hmr-ci-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
+          path: |
+            e2e/benchmark/e2e-watch-hmr/*.json
+            e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
+          if-no-files-found: ignore
+          retention-days: 14
+
+      - name: Upload e2e watch failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-watch-hmr-ci-failure-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
+          path: |
+            e2e/benchmark/e2e-watch-hmr/snapshots/**
+            e2e/benchmark/e2e-watch-hmr/failures/**
+          if-no-files-found: ignore
+          retention-days: 14
 
   compatibility:
     name: Compatibility Gate (${{ matrix.os }}, ${{ matrix.node-version }}, ${{ matrix.scenario }})

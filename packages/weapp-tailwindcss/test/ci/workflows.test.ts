@@ -135,6 +135,32 @@ describe('ci workflows', () => {
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
   })
 
+  it('keeps a lightweight cross-platform e2e watch gate in CI', () => {
+    const { workflow } = readWorkflow('ci.yml')
+    const job = workflow.jobs['e2e-watch']
+    const rows: Array<Record<string, unknown>> = job.strategy.matrix.include
+    const runStep = job.steps.find((step: Record<string, unknown>) => {
+      return step.name === 'Run e2e watch suite (CI cross-platform gate)'
+    })
+
+    expect(job.strategy['fail-fast']).toBe(false)
+    expect(matrixCases(rows)).toEqual(expect.arrayContaining([
+      'linux:22:uni-app-vite-tailwindcss-v3:default',
+      'macos:22:uni-app-vite-tailwindcss-v3:default',
+      'windows:22:uni-app-vite-tailwindcss-v3:default',
+    ]))
+    expect(rows.every(row => row.watch_web_only === '1')).toBe(true)
+    expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
+    expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
+    expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
+    expect(job.steps.some((step: Record<string, unknown>) => {
+      const withConfig = step.with as Record<string, unknown> | undefined
+      return step.uses === 'actions/upload-artifact@v4'
+        && typeof withConfig?.path === 'string'
+        && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
+    })).toBe(true)
+  })
+
   it('keeps test helper private so release jobs do not publish it', () => {
     const packageJson = readPackageJson<{ name: string, private?: boolean }>('packages/test-helper/package.json')
 
