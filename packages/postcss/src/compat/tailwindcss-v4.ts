@@ -204,15 +204,28 @@ function normalizeTailwindcssV4EmptyVarFallback(value: string) {
     if (
       firstArg?.type !== 'word'
       || !firstArg.value.startsWith('--tw-')
-      || lastArg?.type !== 'div'
-      || lastArg.value !== ','
-      || node.after === ' '
     ) {
       return
     }
 
-    node.after = ' '
-    changed = true
+    // 检查是否有逗号作为最后一个参数（空默认值）
+    if (
+      lastArg?.type === 'div'
+      && lastArg.value === ','
+    ) {
+      // 在逗号后添加空格
+      const spaceNode = {
+        type: 'space',
+        value: ' ',
+      }
+      node.nodes.push(spaceNode)
+      changed = true
+    }
+    // 确保 var() 函数后有空格（如果后面还有内容）
+    if (node.after !== ' ') {
+      node.after = ' '
+      changed = true
+    }
   })
 
   return changed ? parsed.toString() : value

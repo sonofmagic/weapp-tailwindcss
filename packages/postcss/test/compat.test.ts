@@ -1,6 +1,68 @@
 import { createStyleHandler } from '@/index'
+import { normalizeTailwindcssV4EmptyVarFallback } from '@/compat/tailwindcss-v4'
 
 describe('compat', () => {
+  describe('normalizeTailwindcssV4EmptyVarFallback', () => {
+    it('should not modify strings without var(--tw-)', () => {
+      const input = 'color: red; margin: var(--custom-var);'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe(input)
+    })
+
+    it('should add space after comma in var(--tw-) with empty fallback', () => {
+      const input = 'color: var(--tw-text-color,);'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe('color: var(--tw-text-color, );')
+    })
+
+    it('should add space after var() function if there is content after without space', () => {
+      const input = 'margin: var(--tw-margin)0px;'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe('margin: var(--tw-margin) 0px;')
+    })
+
+    it('should not add extra space after var() function if there is already space', () => {
+      const input = 'margin: var(--tw-margin) 0px;'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe(input)
+    })
+
+    it('should handle transform property with multiple empty var fallbacks (Issues#625)', () => {
+      const input = 'transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe('transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );')
+    })
+
+    it('should handle multiple var() functions in one line', () => {
+      const input = 'padding: var(--tw-padding-x,) var(--tw-padding-y,);'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe('padding: var(--tw-padding-x, ) var(--tw-padding-y, );')
+    })
+
+    it('should handle complex expressions with nested functions', () => {
+      const input = 'background: linear-gradient(var(--tw-gradient-stops,),var(--tw-gradient-from) var(--tw-gradient-position,),var(--tw-gradient-to,));'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe('background: linear-gradient(var(--tw-gradient-stops, ), var(--tw-gradient-from) var(--tw-gradient-position, ), var(--tw-gradient-to, ));')
+    })
+
+    it('should leave var() with non-empty fallback unchanged', () => {
+      const input = 'color: var(--tw-text-color, blue);'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe(input)
+    })
+
+    it('should leave var() at end of line unchanged', () => {
+      const input = 'color: var(--tw-text-color);'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe(input)
+    })
+
+    it('should handle multiple declarations in one string', () => {
+      const input = 'color: var(--tw-text-color,); margin: var(--tw-margin)0px; padding: var(--tw-padding, )10px;'
+      const result = normalizeTailwindcssV4EmptyVarFallback(input)
+      expect(result).toBe('color: var(--tw-text-color, ); margin: var(--tw-margin) 0px; padding: var(--tw-padding, ) 10px;')
+    })
+  })
   it('styleHandler calc', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
