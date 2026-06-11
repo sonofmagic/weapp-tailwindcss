@@ -2,6 +2,7 @@ import postcss from 'postcss'
 import {
   isMiniProgramPreflightRule,
   isMiniProgramThemeVariableRule,
+  PREFLIGHT_RESET_PROPS,
 } from './predicates'
 import { getSortedRuleSelectorKey } from './selectors'
 
@@ -17,6 +18,38 @@ function getTopDirectiveTail(root: postcss.Root) {
     break
   }
   return tail
+}
+
+function reorderPreflightResetDeclarations(rule: postcss.Rule) {
+  const declarations = (rule.nodes ?? []).filter((node): node is postcss.Declaration => node.type === 'decl')
+  if (declarations.length <= 1) {
+    return
+  }
+
+  const resetDeclarations: postcss.Declaration[] = []
+  const otherDeclarations: postcss.Declaration[] = []
+  for (const declaration of declarations) {
+    if (PREFLIGHT_RESET_PROPS.has(declaration.prop)) {
+      resetDeclarations.push(declaration)
+    }
+    else {
+      otherDeclarations.push(declaration)
+    }
+  }
+
+  if (resetDeclarations.length === 0 || otherDeclarations.length === 0) {
+    return
+  }
+
+  const orderedDeclarations = [...resetDeclarations, ...otherDeclarations]
+  if (orderedDeclarations.every((declaration, index) => declaration === declarations[index])) {
+    return
+  }
+
+  for (const declaration of declarations) {
+    declaration.remove()
+  }
+  rule.prepend(...orderedDeclarations)
 }
 
 export function createHoistInsertionAnchor(root: postcss.Root) {
@@ -85,11 +118,13 @@ export function mergeEquivalentHoistedRules(rules: postcss.Rule[]) {
         return true
       })
       existingRule.append(...nextNodes.map(node => node.clone()))
+      reorderPreflightResetDeclarations(existingRule)
       propsBySelector.set(key, existingProps)
       continue
     }
     ruleBySelector.set(key, rule)
     propsBySelector.set(key, new Set((rule.nodes ?? []).flatMap(node => node.type === 'decl' ? [node.prop] : [])))
+    reorderPreflightResetDeclarations(rule)
     mergedRules.push(rule)
   }
 

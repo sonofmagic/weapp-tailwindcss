@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../src'
+import { createStyleHandler, finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../src'
 
 describe('mini-program generated css cleanup', () => {
   it('removes cascade layer declarations and unwraps layer blocks in final mini-program css', () => {
@@ -117,6 +117,34 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toBe('')
   })
 
+  it('keeps injected Tailwind v3 mini-program preflight before runtime variables', async () => {
+    const styleHandler = createStyleHandler({
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        'border-width': '0',
+        'border-style': 'solid',
+        'border-color': 'currentColor',
+      },
+      cssSelectorReplacement: {
+        universal: ['view', 'text'],
+      },
+    })
+    const { css } = await styleHandler('::before,::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0}')
+
+    expect(css).toContain('view,text,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor;--tw-border-spacing-x:0')
+  })
+
+  it('keeps hoisted mini-program preflight before runtime variables when merging equivalent rules', () => {
+    const css = finalizeMiniProgramCss([
+      'view,text,::after,::before{--tw-border-spacing-x:0;--tw-border-spacing-y:0}',
+      'view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}',
+    ].join('\n'), {
+      preservePseudoContentInit: true,
+    })
+
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor;--tw-border-spacing-x:0')
+  })
+
   it('removes Tailwind v4 content init when content variable is unused', () => {
     const css = finalizeMiniProgramCss([
       ':host,page,.tw-root,wx-root-portal-content {',
@@ -176,7 +204,7 @@ describe('mini-program generated css cleanup', () => {
       isTailwindcssV4: true,
     })
 
-    expect(css).toContain('view,text,::after,::before{--tw-space-y-reverse:0;--tw-border-style:solid;box-sizing:border-box;margin:0;padding:0;border:0 solid}')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-space-y-reverse:0;--tw-border-style:solid}')
     expect(css).toContain('.space-y-2>view+view')
   })
 
@@ -222,7 +250,7 @@ describe('mini-program generated css cleanup', () => {
       isTailwindcssV4: true,
     })
 
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border-width:0')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border-width:0;--tw-border-style:solid')
     expect(css).not.toContain('border:0 solid')
     expect(css).toContain('.border-solid{--tw-border-style:solid;border-style:solid}')
   })

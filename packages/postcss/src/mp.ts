@@ -130,6 +130,14 @@ function removeTailwindV4EmptyContentInit(node: Rule) {
   })
 }
 
+function injectPreflightDeclarations(node: Rule, options: IStyleHandlerOptions) {
+  const preflightDeclarations = options.cssInjectPreflight?.()
+  if (!preflightDeclarations || preflightDeclarations.length === 0) {
+    return
+  }
+  node.prepend(...preflightDeclarations)
+}
+
 function hasClassSelector(node: Rule) {
   return node.selectors.some(selector => selector.includes('.'))
 }
@@ -184,7 +192,7 @@ function resolveUniAppXVariableScopeSelectors(options: IStyleHandlerOptions) {
 
 // 在通用预处理节点中注入变量、预设声明，并标记上下文状态
 export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) {
-  const { ctx, cssInjectPreflight, injectAdditionalCssVarScope } = options
+  const { ctx, injectAdditionalCssVarScope } = options
   const uniAppXEnabled = isUniAppXEnabled(options)
   const isTailwindcss4 = isTailwindcssV4(options)
   const rootOption = options.cssSelectorReplacement?.root
@@ -237,9 +245,7 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
     if (!uniAppXEnabled && !isTailwindcss4) {
       node.before(makePseudoVarRule())
     }
-    if (typeof cssInjectPreflight === 'function') {
-      node.append(...cssInjectPreflight())
-    }
+    injectPreflightDeclarations(node, options)
   }
   if (injectAdditionalCssVarScope && (isTailwindcss4 ? testIfRootHostForV4(node) : testIfTwBackdrop(node))) {
     const nodes = isTailwindcss4
@@ -262,8 +268,6 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
     if (!uniAppXEnabled && !isTailwindcss4) {
       node.before(makePseudoVarRule())
     }
-    if (typeof cssInjectPreflight === 'function') {
-      syntheticRule.append(...cssInjectPreflight())
-    }
+    injectPreflightDeclarations(syntheticRule, options)
   }
 }
