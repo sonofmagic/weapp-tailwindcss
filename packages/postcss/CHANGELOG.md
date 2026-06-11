@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.0.4
+
+### Patch Changes
+
+- 🐛 **修复 Tailwind CSS v4.3 生成的 `var(--tw-*,)` 空 fallback 在微信开发者工具中解析异常的问题，确保 `rotate-y-90` 等 transform 工具类输出为小程序可识别的 `var(--tw-*, )`。** [`92c822e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/92c822eb29be8ad3571bb0a7fc27327e6defb19c) by @sonofmagic
+
 ## 3.0.3
 
 ### Patch Changes

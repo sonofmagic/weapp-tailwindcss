@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 5.0.7
+
+### Patch Changes
+
+- 🐛 **新增可选的 CSS token 来源追踪能力，开启后会在输出样式中标注工具类来自的源码文件，便于排查 demo 与快照中的多余样式。** [`9cf24ea`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9cf24eaabf73c368c91ecdda7f1661b8bf0945d2) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite 开发模式下 Tailwind CSS v4 热更新后主样式没有同步注入 `app.wxss` 的问题，避免 `text-[338rpx]` 等新增任意值类名在小程序端不生效。** [`7827f47`](https://github.com/sonofmagic/weapp-tailwindcss/commit/7827f4715afd4c81601de0062937e1843a48df48) by @sonofmagic
+
+- 🐛 **修复 uni-app Vite 开发模式下入口 CSS 热更新 replay 后没有同步写入 `app.wxss` 的问题，确保连续修改 `text-[102.43rpx]` 等任意值类名时小程序主样式立即更新。** [`6487443`](https://github.com/sonofmagic/weapp-tailwindcss/commit/64874439019319b9a8eabc5bceaab4445a19c0a7) by @sonofmagic
+
+- 🐛 **修复 webpack web target 下 Tailwind CSS v4 入口被路径匹配后没有继续扫描显式 `@source` 的问题，避免 `sr-only`、`rounded-full` 等只出现在源码中的工具类漏生成。** [`951092e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/951092ecb8093114112ca5c7fea26d7e95830a36) by @sonofmagic
+- 📦 **Dependencies** [`92c822e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/92c822eb29be8ad3571bb0a7fc27327e6defb19c)
+  → `@weapp-tailwindcss/postcss@3.0.4`
+
 ## 5.0.6
 
 ### Patch Changes
