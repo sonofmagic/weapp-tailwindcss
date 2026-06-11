@@ -136,6 +136,7 @@ function injectPreflightDeclarations(node: Rule, options: IStyleHandlerOptions) 
     return
   }
   node.prepend(...preflightDeclarations)
+  node.raws.semicolon = true
 }
 
 function hasClassSelector(node: Rule) {

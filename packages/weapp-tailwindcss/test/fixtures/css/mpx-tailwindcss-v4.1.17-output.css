@@ -2,6 +2,10 @@
       --tw-content: "";
 }
 view,text,::before,::after {
+      box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: currentColor;
       --tw-space-y-reverse: 0;
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
@@ -22,10 +26,6 @@ view,text,::before,::after {
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 rgba(0,0,0,0);
       --tw-content: "";
-      box-sizing: border-box;
-      border-width: 0;
-      border-style: solid;
-      border-color: currentColor;
     }
 page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: rgb(255, 101, 104);

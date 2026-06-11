@@ -5,6 +5,10 @@ exports[`tailwindcss v4 > mpx handles tailwindcss v4.1.17 css bundle 1`] = `
       --tw-content: "";
 }
 view,text,::before,::after {
+      box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: currentColor;
       --tw-space-y-reverse: 0;
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
@@ -25,10 +29,6 @@ view,text,::before,::after {
       --tw-ring-offset-color: #fff;
       --tw-ring-offset-shadow: 0 0 rgba(0,0,0,0);
       --tw-content: "";
-      box-sizing: border-box;
-      border-width: 0;
-      border-style: solid;
-      border-color: currentColor;
     }
 page,.tw-root,wx-root-portal-content,:host {
   --color-red-400: rgb(255, 101, 104);
@@ -1165,6 +1165,10 @@ exports[`tailwindcss v4 > weapp-tailwindcss default 1`] = `
       --tw-content: "";
 }
 view,text,::before,::after {
+      box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: currentColor;
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -1193,10 +1197,6 @@ view,text,::before,::after {
       --tw-drop-shadow-alpha: 100%;
       --tw-drop-shadow-size: initial;
       --tw-content: "";
-      box-sizing: border-box;
-      border-width: 0;
-      border-style: solid;
-      border-color: currentColor;
     }
 page,.tw-root,wx-root-portal-content,:host {
   --color-blue-500: rgb(50, 128, 255);
@@ -1466,6 +1466,10 @@ exports[`tailwindcss v4 > weapp-tailwindcss default with layer 1`] = `
       --tw-content: "";
 }
 view,text,::before,::after {
+      box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: currentColor;
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -1494,10 +1498,6 @@ view,text,::before,::after {
       --tw-drop-shadow-alpha: 100%;
       --tw-drop-shadow-size: initial;
       --tw-content: "";
-      box-sizing: border-box;
-      border-width: 0;
-      border-style: solid;
-      border-color: currentColor;
     }
 page,.tw-root,wx-root-portal-content,:host {
     --color-blue-500: rgb(50, 128, 255);

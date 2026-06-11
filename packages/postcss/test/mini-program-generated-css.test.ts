@@ -204,7 +204,7 @@ describe('mini-program generated css cleanup', () => {
       isTailwindcssV4: true,
     })
 
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-space-y-reverse:0;--tw-border-style:solid}')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-space-y-reverse:0;--tw-border-style:solid;}')
     expect(css).toContain('.space-y-2>view+view')
   })
 

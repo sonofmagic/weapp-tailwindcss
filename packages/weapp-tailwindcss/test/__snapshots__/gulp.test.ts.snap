@@ -3,7 +3,7 @@
 exports[`gulp > common build > css 1`] = `
 "::before,
 ::after {
-    --tw-content: ''}
+    --tw-content: '';}
 view,text,::after,::before {
     box-sizing: border-box;
     border-width: 0;
@@ -60,7 +60,7 @@ view,text,::after,::before {
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:
-}
+;}
 .m-_b20px_B {
     margin: 20px
 }

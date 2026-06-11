@@ -50,6 +50,7 @@ function reorderPreflightResetDeclarations(rule: postcss.Rule) {
     declaration.remove()
   }
   rule.prepend(...orderedDeclarations)
+  rule.raws.semicolon = true
 }
 
 export function createHoistInsertionAnchor(root: postcss.Root) {

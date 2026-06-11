@@ -19,9 +19,13 @@ exports[`styleHandler > :hover remove case 1 revert 1`] = `".b,.a:hover{color:re
 
 exports[`styleHandler > add postcss plugins case 0 1`] = `
 "::before,::after {
-    --tw-content: ""
+    --tw-content: "";
 }
 view,text,::before,::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -73,10 +77,6 @@ view,text,::before,::after {
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:  ;
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: currentColor
 }
   "
 `;
@@ -198,8 +198,12 @@ exports[`styleHandler > global variables scope matched case 1`] = `"::before,::a
 
 exports[`styleHandler > guess css var scoped 1`] = `
 "::before,::after {
-      --tw-content: ""}
+      --tw-content: "";}
 view,text,::before,::after {
+      box-sizing: border-box;
+      border-width: 0;
+      border-style: solid;
+      border-color: currentColor;
       --tw-border-spacing-x: 0;
       --tw-border-spacing-y: 0;
       --tw-translate-x: 0;
@@ -247,17 +251,17 @@ view,text,::before,::after {
       --tw-backdrop-opacity:  ;
       --tw-backdrop-saturate:  ;
       --tw-backdrop-sepia:  
-  ;
-      box-sizing: border-box;
-      border-width: 0;
-      border-style: solid;
-      border-color: currentColor}"
+  ;}"
 `;
 
 exports[`styleHandler > https://github.com/tailwindlabs/tailwindcss/pull/14625/files 1`] = `""`;
 
 exports[`styleHandler > injectAdditionalCssVarScope option true 1`] = `
 "view,text,::after,::before {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -309,19 +313,19 @@ exports[`styleHandler > injectAdditionalCssVarScope option true 1`] = `
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:  ;
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: currentColor
 }
 ::before,::after {
-    --tw-content: ""
+    --tw-content: "";
 }
 "
 `;
 
 exports[`styleHandler > injectAdditionalCssVarScope option true and replace universal 1`] = `
 "view,text,button,::after,::before {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: currentColor;
     --tw-border-spacing-x: 0;
     --tw-border-spacing-y: 0;
     --tw-translate-x: 0;
@@ -373,13 +377,9 @@ exports[`styleHandler > injectAdditionalCssVarScope option true and replace univ
     --tw-contain-layout:  ;
     --tw-contain-paint:  ;
     --tw-contain-style:  ;
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: currentColor
 }
 ::before,::after {
-    --tw-content: ""
+    --tw-content: "";
 }
 "
 `;
@@ -395,6 +395,10 @@ exports[`styleHandler > main chunk build error 1`] = `
 }
 
 view,text,::before,::after {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-translate-x: 0;
   --tw-translate-y: 0;
   --tw-rotate: 0;
@@ -437,10 +441,6 @@ view,text,::before,::after {
   --tw-backdrop-opacity: ;
   --tw-backdrop-saturate: ;
   --tw-backdrop-sepia: ;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 
 .-m-_l_20px_r_ {
@@ -628,27 +628,27 @@ exports[`styleHandler > tailwindcss v2 jit should append view selector 1`] = `":
 
 exports[`styleHandler > use with weapp-pandacss case 0  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 1  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 2  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 2.1  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 3  1`] = `
 "::before,::after{--tw-content: "";}
-view,text,::before,::after{--tw-border-opacity: 1;box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;}"
+view,text,::before,::after{box-sizing: border-box;border-width: 0;border-style: solid;border-color: currentColor;--tw-border-opacity: 1;}"
 `;
 
 exports[`styleHandler > use with weapp-pandacss case 4  1`] = `".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text{--tw-border-opacity: 1;}"`;
