@@ -75,6 +75,53 @@ function isEmptyContentInitDeclaration(decl: Declaration) {
   return decl.prop === '--tw-content' && (decl.value === '""' || decl.value === '\'\'')
 }
 
+function isPseudoContentInitSelector(selector: string) {
+  return selector === ':before' || selector === ':after' || selector === '::before' || selector === '::after'
+}
+
+function isElementContentInitSelector(selector: string) {
+  return selector === '*' || selector === 'view' || selector === 'text'
+}
+
+function isOnlyEmptyContentInitRule(node: Rule) {
+  let hasDeclaration = false
+  let onlyEmptyContentInit = true
+  node.walkDecls((decl) => {
+    hasDeclaration = true
+    if (!isEmptyContentInitDeclaration(decl)) {
+      onlyEmptyContentInit = false
+    }
+  })
+  return hasDeclaration && onlyEmptyContentInit
+}
+
+function restorePseudoContentInitScope(node: Rule) {
+  if (!isOnlyEmptyContentInitRule(node)) {
+    return false
+  }
+  let hasPseudoSelector = false
+  let hasElementSelector = false
+  for (const selector of node.selectors) {
+    if (isPseudoContentInitSelector(selector)) {
+      hasPseudoSelector = true
+    }
+    else if (isElementContentInitSelector(selector)) {
+      hasElementSelector = true
+    }
+    else {
+      return false
+    }
+  }
+  if (!hasPseudoSelector || !hasElementSelector) {
+    return false
+  }
+  assignRuleSelectors(node, ['::before', '::after'], {
+    phase: 'pre',
+    reason: 'restore-pseudo-content-init-scope',
+  })
+  return true
+}
+
 function removeTailwindV4EmptyContentInit(node: Rule) {
   node.walkDecls((decl) => {
     if (isEmptyContentInitDeclaration(decl)) {
@@ -170,6 +217,9 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   // node.selector = remakeCombinatorSelector(node.selector, options)
   if (isTailwindcss4 && !usesTailwindcssV4ContentVariable(node.root()) && (!hasClassSelector(node) || isRootThemeScopeRule(node))) {
     removeTailwindV4EmptyContentInit(node)
+  }
+  if (!isTailwindcss4 && restorePseudoContentInitScope(node)) {
+    return
   }
 
   // 变量注入和 preflight

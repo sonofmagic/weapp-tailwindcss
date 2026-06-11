@@ -2,7 +2,8 @@
 
 exports[`webpack5 plugin > common > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -341,7 +342,8 @@ exports[`webpack5 plugin > common > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common 0 > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -680,7 +682,8 @@ exports[`webpack5 plugin > common 0 > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common build twice for cache > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -1015,7 +1018,8 @@ eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst cla
 
 exports[`webpack5 plugin > common build twice for cache > assets 2`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -1358,7 +1362,8 @@ exports[`webpack5 plugin > common build twice for cache > warnings 2`] = `[]`;
 
 exports[`webpack5 plugin > common with loader > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -1697,7 +1702,8 @@ exports[`webpack5 plugin > common with loader > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common with rem2rpx > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -2421,7 +2427,8 @@ exports[`webpack5 plugin > disabled true > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > empty build > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -2640,7 +2647,8 @@ console.log(a)0"
 
 exports[`webpack5 plugin > unified common > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 
@@ -2979,7 +2987,8 @@ exports[`webpack5 plugin > unified common > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > unified prod common > assets 1`] = `
 {
-  "index.css": "view,text,::after,::before {
+  "index.css": "::before,
+::after {
   --tw-content: '';
 }
 

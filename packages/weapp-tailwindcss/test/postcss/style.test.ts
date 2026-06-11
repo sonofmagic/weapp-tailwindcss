@@ -129,6 +129,20 @@ describe("styleHandler", () => {
     expect(css).toMatchSnapshot();
   });
 
+  it("keeps Tailwind content init scoped to pseudo elements after universal replacement", async () => {
+    const testCase = "*,::before,::after{--tw-content: '';}";
+    const { css } = await styleHandler(testCase, {
+      isMainChunk: true,
+      cssInjectPreflight: () => [],
+      cssSelectorReplacement: {
+        universal: ["view", "text"],
+      },
+      escapeMap: MappingChars2String,
+    });
+
+    expect(css).toBe("::before,::after{--tw-content: '';}");
+  });
+
   it("cssPreflightRange option view", async () => {
     const testCase = "::before,::after{--tw-border-opacity: 1;}";
     const { css } = await styleHandler(testCase, {

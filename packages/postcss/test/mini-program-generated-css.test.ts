@@ -85,6 +85,38 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('view,text,::after,::before{--tw-content')
   })
 
+  it('restores element scoped Tailwind v3 content init to pseudo elements when pruning generated css', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      'view,text,::after,::before{--tw-content:\'\'}',
+      'view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0}',
+    ].join('\n'), {
+      preservePreflight: true,
+    })
+
+    expect(css).toContain('::before,\n::after{--tw-content:\'\'')
+    expect(css).toContain('view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-content')
+  })
+
+  it('keeps pseudo scoped Tailwind v3 content init before element variable scope pruning', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      '::before,::after{--tw-content:""}',
+      'view,text,::after,::before{--tw-border-spacing-x:0}',
+    ].join('\n'), {
+      preservePreflight: true,
+    })
+
+    expect(css).toContain('::before,::after{--tw-content:""}')
+    expect(css).toContain('view,text,::after,::before{--tw-border-spacing-x:0}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-content')
+  })
+
+  it('drops element scoped Tailwind v3 content init when pruning generated css without preflight', () => {
+    const css = pruneMiniProgramGeneratedCss('view,text,::after,::before{--tw-content:\'\'}')
+
+    expect(css).toBe('')
+  })
+
   it('removes Tailwind v4 content init when content variable is unused', () => {
     const css = finalizeMiniProgramCss([
       ':host,page,.tw-root,wx-root-portal-content {',

@@ -13,6 +13,7 @@ import { removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidth
 import { getRuleSelectors, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
+const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
 const CLASS_SELECTOR_RE = /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i
 
 export interface PruneMiniProgramGeneratedCssOptions {
@@ -40,6 +41,35 @@ function isMiniProgramElementVariableScopeRule(rule: postcss.Rule) {
   const selectors = getRuleSelectors(rule)
   return selectors.length > 0
     && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))
+}
+
+function isOnlyTwContentDeclarations(rule: postcss.Rule) {
+  let hasDeclaration = false
+  let onlyContentVariable = true
+  rule.walkDecls((decl) => {
+    hasDeclaration = true
+    if (decl.prop !== '--tw-content') {
+      onlyContentVariable = false
+    }
+  })
+  return hasDeclaration && onlyContentVariable
+}
+
+function isMiniProgramElementContentInitRule(rule: postcss.Rule) {
+  if (!isMiniProgramElementVariableScopeRule(rule)) {
+    return false
+  }
+  let hasElementSelector = false
+  let hasPseudoSelector = false
+  for (const selector of getRuleSelectors(rule)) {
+    if (selector === 'view' || selector === 'text') {
+      hasElementSelector = true
+    }
+    else if (selector === '::before' || selector === '::after') {
+      hasPseudoSelector = true
+    }
+  }
+  return hasElementSelector && hasPseudoSelector && isOnlyTwContentDeclarations(rule)
 }
 
 function isTailwindV4GradientRuntimeDeclaration(decl: postcss.Declaration) {
@@ -116,6 +146,22 @@ export function pruneMiniProgramGeneratedCss(
       return
     }
 
+    if (isPseudoContentInitRule(rule)) {
+      if (!shouldPreserveContentInit) {
+        rule.remove()
+      }
+      return
+    }
+
+    if (isMiniProgramElementContentInitRule(rule)) {
+      if (!shouldPreserveContentInit) {
+        rule.remove()
+        return
+      }
+      rule.selector = MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR
+      return
+    }
+
     if (isCustomPropertyRule(rule) && isMiniProgramElementVariableScopeRule(rule)) {
       rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
       return
@@ -136,13 +182,6 @@ export function pruneMiniProgramGeneratedCss(
 
     if (!shouldPreserveContentInit) {
       removeEmptyContentInitDeclarations(rule)
-    }
-
-    if (isPseudoContentInitRule(rule)) {
-      if (!shouldPreserveContentInit) {
-        rule.remove()
-      }
-      return
     }
 
     if (options.preservePreflight && isMiniProgramPreflightRule(rule)) {
