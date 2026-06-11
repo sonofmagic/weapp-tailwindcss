@@ -1,1 +1,3 @@
 @import 'app-origin.wxss';
+@media (prefers-color-scheme: dark) {
+}

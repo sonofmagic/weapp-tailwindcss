@@ -4,6 +4,7 @@ import { defineConfig } from 'weapp-vite/config'
 export default defineConfig({
   plugins: [
     WeappTailwindcss({
+      cssSourceTrace: true,
       rem2rpx: true,
     }),
   ],

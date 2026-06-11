@@ -11,6 +11,7 @@ const projectRoot = dirname(fileURLToPath(import.meta.url))
 const weappTailwindcssPlugins = WeappTailwindcss(
   uniAppX({
     base: projectRoot,
+    cssSourceTrace: true,
     rem2rpx: true,
   }),
 ) ?? []

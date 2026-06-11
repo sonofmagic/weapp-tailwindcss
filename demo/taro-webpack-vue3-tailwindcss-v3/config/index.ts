@@ -104,6 +104,7 @@ const config: UserConfigExport<'webpack5'> = {
                     bench.dump();
                   },
                   rem2rpx: true,
+                  cssSourceTrace: true,
                   generator,
                 } satisfies UserDefinedOptions
               ]
@@ -157,6 +158,7 @@ const config: UserConfigExport<'webpack5'> = {
             args: [
               {
                 tailwindcssBasedir: process.cwd(),
+                cssSourceTrace: true,
                 rem2rpx: true,
                 generator,
               } satisfies UserDefinedOptions

@@ -3,6 +3,7 @@ import { defineConfig } from 'weapp-vite/config'
 
 const weappTailwindcssPlugins = WeappTailwindcss({
   tailwindcssBasedir: process.cwd(),
+  cssSourceTrace: true,
   rem2rpx: true,
 }) ?? []
 

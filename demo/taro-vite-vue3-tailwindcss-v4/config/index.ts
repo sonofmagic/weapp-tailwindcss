@@ -61,6 +61,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         },
         WeappTailwindcss({
           tailwindcssBasedir: process.cwd(),
+          cssSourceTrace: true,
           rem2rpx: true,
           generator,
           // injectAdditionalCssVarScope: true,

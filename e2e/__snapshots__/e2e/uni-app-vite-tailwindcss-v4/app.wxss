@@ -245,14 +245,6 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
-/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
-}
-/* tokens: text-[45rpx] <= src/pages/index/index.vue */
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
 /* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .text-center {
   text-align: center;
@@ -261,6 +253,14 @@ wx-root-portal-content {
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+/* tokens: text-[45rpx] <= src/pages/index/index.vue */
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
 }
 /* tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .font-bold {

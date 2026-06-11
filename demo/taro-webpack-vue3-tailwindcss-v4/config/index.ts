@@ -82,6 +82,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   tailwindcssBasedir: process.cwd(),
+                  cssSourceTrace: true,
                   rem2rpx: true,
                   generator,
                   // before 2248
@@ -129,6 +130,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   tailwindcssBasedir: process.cwd(),
+                  cssSourceTrace: true,
                   rem2rpx: true,
                   generator,
                 } satisfies UserDefinedOptions

@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 21463 | 126 | false | false | false | false | true |
+| 29975 | 126 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -66,12 +66,15 @@ wx-root-portal-content {
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
 }
+/* tokens: mt-4 <= src/pages/index/index.vue */
 .mt-4 {
   margin-top: calc(var(--spacing) * 4);
 }
+/* tokens: mt-6 <= src/pages/index/index.vue */
 .mt-6 {
   margin-top: calc(var(--spacing) * 6);
 }
+/* tokens: i-mdi-home <= src/pages/index/index.vue */
 .i-mdi-home {
   display: inline-block;
   width: 1em;
@@ -85,42 +88,55 @@ wx-root-portal-content {
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 }
+/* tokens: flex <= src/pages/index/index.vue */
 .flex {
   display: flex;
 }
+/* tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
 .aspect-_p--my-aspect-ratio_P {
   aspect-ratio: var(--my-aspect-ratio);
 }
+/* tokens: aspect-[calc(4*3+1)/3] <= src/pages/index/index.vue */
 .aspect-_bcalc_p4_x3_u1_P_f3_B {
   aspect-ratio: 13/3;
 }
+/* tokens: h-12 <= src/pages/index/index.vue */
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-20 <= src/pages/index/index.vue */
 .h-20 {
   height: calc(var(--spacing) * 20);
 }
+/* tokens: w-12 <= src/pages/index/index.vue */
 .w-12 {
   width: calc(var(--spacing) * 12);
 }
+/* tokens: w-20 <= src/pages/index/index.vue */
 .w-20 {
   width: calc(var(--spacing) * 20);
 }
+/* tokens: flex-col <= src/pages/index/index.vue */
 .flex-col {
   flex-direction: column;
 }
+/* tokens: flex-col-reverse <= src/pages/index/index.vue */
 .flex-col-reverse {
   flex-direction: column-reverse;
 }
+/* tokens: flex-row-reverse <= src/pages/index/index.vue */
 .flex-row-reverse {
   flex-direction: row-reverse;
 }
+/* tokens: items-center <= src/pages/index/index.vue */
 .items-center {
   align-items: center;
 }
+/* tokens: gap-3 <= src/pages/index/index.vue */
 .gap-3 {
   gap: calc(var(--spacing) * 3);
 }
+/* tokens: space-y-4 <= src/pages/index/index.vue */
 .space-y-4 > view + view,
 .space-y-4 > view + text,
 .space-y-4 > text + view,
@@ -129,12 +145,14 @@ wx-root-portal-content {
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
 }
+/* tokens: space-y-reverse <= src/pages/index/index.vue */
 .space-y-reverse > view + view,
 .space-y-reverse > view + text,
 .space-y-reverse > text + view,
 .space-y-reverse > text + text {
   --tw-space-y-reverse: 1;
 }
+/* tokens: space-x-4 <= src/pages/index/index.vue */
 .space-x-4 > view + view,
 .space-x-4 > view + text,
 .space-x-4 > text + view,
@@ -143,12 +161,14 @@ wx-root-portal-content {
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
 }
+/* tokens: space-x-reverse <= src/pages/index/index.vue */
 .space-x-reverse > view + view,
 .space-x-reverse > view + text,
 .space-x-reverse > text + view,
 .space-x-reverse > text + text {
   --tw-space-x-reverse: 1;
 }
+/* tokens: divide-x-4 <= src/pages/index/index.vue */
 .divide-x-4 > view + view,
 .divide-x-4 > view + text,
 .divide-x-4 > text + view,
@@ -159,6 +179,7 @@ wx-root-portal-content {
   border-right-width: calc(4px * var(--tw-divide-x-reverse));
   border-left-width: calc(4px * (1 - var(--tw-divide-x-reverse)));
 }
+/* tokens: divide-y-4 <= src/pages/index/index.vue */
 .divide-y-4 > view + view,
 .divide-y-4 > view + text,
 .divide-y-4 > text + view,
@@ -169,12 +190,14 @@ wx-root-portal-content {
   border-bottom-width: calc(4px * var(--tw-divide-y-reverse));
   border-top-width: calc(4px * (1 - var(--tw-divide-y-reverse)));
 }
+/* tokens: divide-y-reverse <= src/pages/index/index.vue */
 .divide-y-reverse > view + view,
 .divide-y-reverse > view + text,
 .divide-y-reverse > text + view,
 .divide-y-reverse > text + text {
   --tw-divide-y-reverse: 1;
 }
+/* tokens: divide-dotted <= src/pages/index/index.vue */
 .divide-dotted > view + view,
 .divide-dotted > view + text,
 .divide-dotted > text + view,
@@ -182,6 +205,7 @@ wx-root-portal-content {
   --tw-border-style: dotted;
   border-style: dotted;
 }
+/* tokens: divide-double <= src/pages/index/index.vue */
 .divide-double > view + view,
 .divide-double > view + text,
 .divide-double > text + view,
@@ -189,74 +213,94 @@ wx-root-portal-content {
   --tw-border-style: double;
   border-style: double;
 }
+/* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
 .divide-_b_h41eb04_B > view + view,
 .divide-_b_h41eb04_B > view + text,
 .divide-_b_h41eb04_B > text + view,
 .divide-_b_h41eb04_B > text + text {
   border-color: #41eb04;
 }
+/* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
 .divide-_b_hd80c0c_B > view + view,
 .divide-_b_hd80c0c_B > view + text,
 .divide-_b_hd80c0c_B > text + view,
 .divide-_b_hd80c0c_B > text + text {
   border-color: #d80c0c;
 }
+/* tokens: rounded-full <= src/pages/index/index.vue */
 .rounded-full {
   border-radius: 9999px;
 }
+/* tokens: rounded-xl <= src/pages/index/index.vue */
 .rounded-xl {
   border-radius: 16rpx;
 }
+/* tokens: border <= src/pages/index/index.vue */
 .border {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+/* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
 .bg-_b_h0000ff_B {
   background-color: #0000ff;
 }
+/* tokens: bg-[#123498] <= src/pages/index/index.vue */
 .bg-_b_h123498_B {
   background-color: #123498;
 }
+/* tokens: bg-emerald-500 <= src/pages/index/index.vue */
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
 }
+/* tokens: p-2 <= src/pages/index/index.vue */
 .p-2 {
   padding: calc(var(--spacing) * 2);
 }
+/* tokens: py-3 <= src/pages/index/index.vue */
 .py-3 {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
-}
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
+/* tokens: text-center <= src/pages/index/index.vue */
 .text-center {
   text-align: center;
 }
+/* tokens: text-sm <= src/pages/index/index.vue */
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
 }
+/* tokens: text-[45rpx] <= src/pages/index/index.vue */
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
+/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
+}
+/* tokens: font-bold <= src/pages/index/index.vue */
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: var(--font-weight-bold);
 }
+/* tokens: text-[#00f285] <= src/pages/index/index.vue */
 .text-_b_h00f285_B {
   color: #00f285;
 }
+/* tokens: text-white <= src/pages/index/index.vue */
 .text-white {
   color: var(--color-white);
 }
+/* tokens: underline <= src/pages/index/index.vue */
 .underline {
   text-decoration-line: underline;
 }
+/* tokens: shadow-sm <= src/pages/index/index.vue */
 .shadow-sm {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
+/* tokens: divide-x-reverse <= src/pages/index/index.vue */
 .divide-x-reverse > view + view,
 .divide-x-reverse > view + text,
 .divide-x-reverse > text + view,
@@ -271,6 +315,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
@@ -308,21 +353,71 @@ wx-root-portal-content {
   gap: 8px;
   color: var(--color-midnight);
 }
+/* tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: i-mdi-home <= src/pages/index/index.vue */
+/* tokens: flex <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
+/* tokens: aspect-[calc(4*3+1)/3] <= src/pages/index/index.vue */
+/* tokens: h-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: h-20 <= src/pages/index/index.vue */
+/* tokens: w-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: w-20 <= src/pages/index/index.vue */
+/* tokens: flex-col <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: flex-col-reverse <= src/pages/index/index.vue */
+/* tokens: flex-row-reverse <= src/pages/index/index.vue */
+/* tokens: items-center <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: space-y-4 <= src/pages/index/index.vue */
+/* tokens: space-y-reverse <= src/pages/index/index.vue */
+/* tokens: space-x-4 <= src/pages/index/index.vue */
+/* tokens: space-x-reverse <= src/pages/index/index.vue */
+/* tokens: divide-x-4 <= src/pages/index/index.vue */
+/* tokens: divide-y-4 <= src/pages/index/index.vue */
+/* tokens: divide-y-reverse <= src/pages/index/index.vue */
+/* tokens: divide-dotted <= src/pages/index/index.vue */
+/* tokens: divide-double <= src/pages/index/index.vue */
+/* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
+/* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
+/* tokens: rounded-full <= src/pages/index/index.vue */
+/* tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: border <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
+/* tokens: bg-[#123498] <= src/pages/index/index.vue */
+/* tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: bg-midnight <= src/pages/index/index.vue */
 .bg-midnight {
   background-color: var(--color-midnight);
 }
+/* tokens: bg-neutral-1B <= src/pages/index/index.vue */
 .bg-neutral-1B {
   background-color: var(--color-neutral-1B);
 }
+/* tokens: fill-bermuda <= src/pages/index/index.vue */
 .fill-bermuda {
   fill: var(--color-bermuda);
 }
+/* tokens: p-2 <= src/pages/index/index.vue */
+/* tokens: py-3 <= src/pages/index/index.vue */
+/* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: text-[45rpx] <= src/pages/index/index.vue */
+/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
+/* tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: text-[#00f285] <= src/pages/index/index.vue */
+/* tokens: text-neutral-66 <= src/pages/index/index.vue */
 .text-neutral-66 {
   color: var(--color-neutral-66);
 }
+/* tokens: text-tahiti <= src/pages/index/index.vue */
 .text-tahiti {
   color: var(--color-tahiti);
 }
+/* tokens: text-white <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: underline <= src/pages/index/index.vue */
+/* tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: divide-x-reverse <= src/pages/index/index.vue */
+/* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .layer-card-v4 {
   display: flex;
   align-items: center;
@@ -337,6 +432,51 @@ wx-root-portal-content {
   color: var(--color-midnight);
 }
 /* Core plugin extractor sources are intentionally not loaded here. */
+/* tokens: mt-4 <= src/pages/index/index.vue */
+/* tokens: mt-6 <= src/pages/index/index.vue */
+/* tokens: i-mdi-home <= src/pages/index/index.vue */
+/* tokens: flex <= src/pages/index/index.vue */
+/* tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
+/* tokens: aspect-[calc(4*3+1)/3] <= src/pages/index/index.vue */
+/* tokens: h-12 <= src/pages/index/index.vue */
+/* tokens: h-20 <= src/pages/index/index.vue */
+/* tokens: w-12 <= src/pages/index/index.vue */
+/* tokens: w-20 <= src/pages/index/index.vue */
+/* tokens: flex-col <= src/pages/index/index.vue */
+/* tokens: flex-col-reverse <= src/pages/index/index.vue */
+/* tokens: flex-row-reverse <= src/pages/index/index.vue */
+/* tokens: items-center <= src/pages/index/index.vue */
+/* tokens: gap-3 <= src/pages/index/index.vue */
+/* tokens: space-y-4 <= src/pages/index/index.vue */
+/* tokens: space-y-reverse <= src/pages/index/index.vue */
+/* tokens: space-x-4 <= src/pages/index/index.vue */
+/* tokens: space-x-reverse <= src/pages/index/index.vue */
+/* tokens: divide-x-4 <= src/pages/index/index.vue */
+/* tokens: divide-y-4 <= src/pages/index/index.vue */
+/* tokens: divide-y-reverse <= src/pages/index/index.vue */
+/* tokens: divide-dotted <= src/pages/index/index.vue */
+/* tokens: divide-double <= src/pages/index/index.vue */
+/* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
+/* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
+/* tokens: rounded-full <= src/pages/index/index.vue */
+/* tokens: rounded-xl <= src/pages/index/index.vue */
+/* tokens: border <= src/pages/index/index.vue */
+/* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
+/* tokens: bg-[#123498] <= src/pages/index/index.vue */
+/* tokens: bg-emerald-500 <= src/pages/index/index.vue */
+/* tokens: p-2 <= src/pages/index/index.vue */
+/* tokens: py-3 <= src/pages/index/index.vue */
+/* tokens: text-center <= src/pages/index/index.vue */
+/* tokens: text-sm <= src/pages/index/index.vue */
+/* tokens: text-[45rpx] <= src/pages/index/index.vue */
+/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
+/* tokens: font-bold <= src/pages/index/index.vue */
+/* tokens: text-[#00f285] <= src/pages/index/index.vue */
+/* tokens: text-white <= src/pages/index/index.vue */
+/* tokens: underline <= src/pages/index/index.vue */
+/* tokens: shadow-sm <= src/pages/index/index.vue */
+/* tokens: divide-x-reverse <= src/pages/index/index.vue */
+/* tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
 ```
 
 ### home.wxss

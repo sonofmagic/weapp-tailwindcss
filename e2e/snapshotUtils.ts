@@ -937,6 +937,12 @@ function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOption
     return
   }
 
+  root.walkComments((comment) => {
+    if (/^\s*tokens:\s/.test(comment.text)) {
+      comment.remove()
+    }
+  })
+
   root.walkRules((rule) => {
     const tokens = collectRuleSourceTokens(rule, options)
     if (tokens.size === 0 || !rule.parent) {
@@ -947,7 +953,9 @@ function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOption
       return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<source not found>'}`
     })
     const comment = postcss.comment({ text: `tokens: ${lines.join(' | ')}` })
-    comment.raws.before = rule.raws.before
+    if (rule.raws.before !== undefined) {
+      comment.raws.before = rule.raws.before
+    }
     rule.raws.before = '\n'
     rule.parent.insertBefore(rule, comment)
   })

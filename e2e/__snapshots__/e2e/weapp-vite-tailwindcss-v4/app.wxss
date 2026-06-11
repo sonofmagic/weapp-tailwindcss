@@ -253,13 +253,13 @@ wx-root-portal-content {
 .text-_b100px_B {
   font-size: 100px;
 }
-/* tokens: text-[100rpx] <= pages/index/index.wxml */
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
 /* tokens: text-[55rpx] <= pages/index/index.wxml */
 .text-_b55rpx_B {
   font-size: 55rpx;
+}
+/* tokens: text-[100rpx] <= pages/index/index.wxml */
+.text-_b100rpx_B {
+  font-size: 100rpx;
 }
 /* tokens: text-[#123456] <= pages/index/index.wxml */
 .text-_b_h123456_B {
@@ -395,4 +395,6 @@ wx-root-portal-content {
 /* tokens: p-4 <= pages/index/index.wxml */
 .p-4 {
   padding: calc(var(--spacing) * 4);
+}
+@media (prefers-color-scheme: dark) {
 }

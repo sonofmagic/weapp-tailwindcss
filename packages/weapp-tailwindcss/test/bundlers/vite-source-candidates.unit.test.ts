@@ -139,6 +139,33 @@ describe('bundlers/vite source candidates', () => {
     })).toEqual(new Set(['text-[111px]']))
   })
 
+  it('returns source files for matched candidates', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = '/project'
+    const mainFile = '/project/src/pages/index.tsx'
+    const subFile = '/project/src/sub-normal/pages/index.tsx'
+    const collector = createSourceCandidateCollector()
+
+    await collector.sync(mainFile, 'export const cls = "rotate-y-90 bg-[#123456]"')
+    await collector.sync(subFile, 'export const cls = "rotate-y-90 text-[20px]"')
+
+    const sources = collector.sourcesForEntries([{
+      base: root,
+      negated: false,
+      pattern: 'src/**/*.{tsx,wxml}',
+    }], {
+      excludeEntries: [{
+        base: '/project/src/sub-normal',
+        negated: false,
+        pattern: '**/*',
+      }],
+    })
+
+    expect(sources.get('rotate-y-90')).toEqual(new Set([mainFile]))
+    expect(sources.get('bg-[#123456]')).toEqual(new Set([mainFile]))
+    expect(sources.has('text-[20px]')).toBe(false)
+  })
+
   it('merges transformed module candidates without dropping raw source candidates', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()

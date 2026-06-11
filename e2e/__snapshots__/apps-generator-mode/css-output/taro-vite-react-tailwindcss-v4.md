@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 5636 | 22 | false | false | false | false | true |
+| 7082 | 22 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -14,6 +14,19 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 ```css
 @import 'app-origin.wxss';
+/* tokens: h-14 <= src/pages/index/index.tsx */
+/* tokens: h-[300px] <= src/pages/index/index.tsx */
+/* tokens: bg-[#123456] <= src/pages/index/index.tsx */
+/* tokens: bg-[red] <= src/pages/index/index.tsx */
+/* tokens: bg-purple-300 <= src/pages/index/index.tsx */
+/* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
+/* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
+/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
+/* tokens: from-cyan-500 <= src/pages/index/index.tsx */
+/* tokens: to-blue-500 <= src/pages/index/index.tsx */
+/* tokens: text-[55rpx] <= src/pages/index/index.tsx */
+/* tokens: text-[#c31d6b] <= src/pages/index/index.tsx */
+/* tokens: text-[#fff] <= src/pages/index/index.tsx */
 ```
 
 ### app-origin.wxss
@@ -50,15 +63,19 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+/* tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
+/* tokens: h-[300px] <= src/pages/index/index.tsx */
 .h-_b300px_B {
   height: 300rpx;
 }
+/* tokens: bg-[#123456] <= src/pages/index/index.tsx */
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+/* tokens: bg-[red] <= src/pages/index/index.tsx */
 .bg-_bred_B {
   background-color: red;
 }
@@ -70,19 +87,24 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: bg-purple-300 <= src/pages/index/index.tsx */
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 .bg-linear-to-r {
   --tw-gradient-position: to right;
 }
+/* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 .bg-linear-to-r {
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -92,6 +114,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -101,12 +124,15 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: text-[55rpx] <= src/pages/index/index.tsx */
 .text-_b55rpx_B {
   font-size: 55rpx;
 }
+/* tokens: text-[#c31d6b] <= src/pages/index/index.tsx */
 .text-_b_hc31d6b_B {
   color: #c31d6b;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.tsx */
 .text-_b_hfff_B {
   color: #fff;
 }

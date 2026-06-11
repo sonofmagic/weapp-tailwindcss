@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 134220 | 533 | false | false | false | false | true |
+| 137463 | 533 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -338,6 +338,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-14 <= src/pages/index/index.vue */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -769,6 +770,7 @@ wx-root-portal-content {
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
+/* tokens: rounded-[24rpx] <= src/pages/index/index.vue */
 .rounded-_b24rpx_B {
   border-radius: 24rpx;
 }
@@ -878,6 +880,7 @@ wx-root-portal-content {
 .bg-_b_h123324_B {
   background-color: #123324;
 }
+/* tokens: bg-[#123456] <= src/pages/index/index.vue */
 .bg-_b_h123456_B {
   background-color: #123456;
 }
@@ -893,6 +896,7 @@ wx-root-portal-content {
 .bg-_b_h434354_B {
   background-color: #434354;
 }
+/* tokens: bg-[#534312] <= src/pages/index/index.vue */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -1004,6 +1008,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-purple-800 <= src/pages/index/index.vue */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -1046,6 +1051,7 @@ wx-root-portal-content {
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.vue */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -1077,6 +1083,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -1095,6 +1102,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.vue */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -1189,6 +1197,7 @@ wx-root-portal-content {
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
+/* tokens: px-[32px] <= src/pages/index/index.vue */
 .px-_b32px_B {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -1237,6 +1246,7 @@ wx-root-portal-content {
   padding-bottom: 12rpx;
   padding-top: 12rpx;
 }
+/* tokens: py-[18px] <= src/pages/index/index.vue */
 .py-_b18px_B {
   padding-bottom: 18rpx;
   padding-top: 18rpx;
@@ -1254,12 +1264,6 @@ wx-root-portal-content {
 .text-2xl {
   font-size: var(--text-2xl);
   line-height: var(--tw-leading, var(--text-2xl--line-height));
-}
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
 }
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
@@ -1322,12 +1326,6 @@ wx-root-portal-content {
 .text-_b77rpx_B {
   font-size: 77rpx;
 }
-.text-_blength_ccalc_p2_x9_d43px_P_B {
-  font-size: 18.86rpx;
-}
-.text-_blength_cvar_p--my-var-length_P_B {
-  font-size: var(--my-var-length);
-}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
@@ -1351,6 +1349,19 @@ wx-root-portal-content {
 .text-xs {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.vue */
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
+}
+.text-_blength_ccalc_p2_x9_d43px_P_B {
+  font-size: 18.86rpx;
+}
+.text-_blength_cvar_p--my-var-length_P_B {
+  font-size: var(--my-var-length);
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
@@ -1444,9 +1455,11 @@ wx-root-portal-content {
 .text-_b_hfafafa_B {
   color: #fafafa;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.vue */
 .text-_b_hfff_B {
   color: #fff;
 }
+/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   color: #fff;
 }
@@ -1474,6 +1487,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
+/* tokens: text-pink-200 <= src/pages/index/index.vue */
 .text-pink-200 {
   color: var(--color-pink-200);
 }
@@ -1712,6 +1726,7 @@ wx-root-portal-content {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
@@ -1740,6 +1755,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
@@ -2221,6 +2237,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-14 <= src/pages/index/index.vue */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -2652,6 +2669,7 @@ wx-root-portal-content {
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
+/* tokens: rounded-[24rpx] <= src/pages/index/index.vue */
 .rounded-_b24rpx_B {
   border-radius: 24rpx;
 }
@@ -2761,6 +2779,7 @@ wx-root-portal-content {
 .bg-_b_h123324_B {
   background-color: #123324;
 }
+/* tokens: bg-[#123456] <= src/pages/index/index.vue */
 .bg-_b_h123456_B {
   background-color: #123456;
 }
@@ -2776,6 +2795,7 @@ wx-root-portal-content {
 .bg-_b_h434354_B {
   background-color: #434354;
 }
+/* tokens: bg-[#534312] <= src/pages/index/index.vue */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -2878,6 +2898,7 @@ wx-root-portal-content {
 .bg-green-500 {
   background-color: var(--color-green-500);
 }
+/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
@@ -2891,6 +2912,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-purple-800 <= src/pages/index/index.vue */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -2933,6 +2955,7 @@ wx-root-portal-content {
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.vue */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -2964,6 +2987,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -2982,6 +3006,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.vue */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -3076,6 +3101,7 @@ wx-root-portal-content {
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
+/* tokens: px-[32px] <= src/pages/index/index.vue */
 .px-_b32px_B {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -3124,6 +3150,7 @@ wx-root-portal-content {
   padding-bottom: 12rpx;
   padding-top: 12rpx;
 }
+/* tokens: py-[18px] <= src/pages/index/index.vue */
 .py-_b18px_B {
   padding-bottom: 18rpx;
   padding-top: 18rpx;
@@ -3141,12 +3168,6 @@ wx-root-portal-content {
 .text-2xl {
   font-size: var(--text-2xl);
   line-height: var(--tw-leading, var(--text-2xl--line-height));
-}
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
 }
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
@@ -3209,12 +3230,6 @@ wx-root-portal-content {
 .text-_b77rpx_B {
   font-size: 77rpx;
 }
-.text-_blength_ccalc_p2_x9_d43px_P_B {
-  font-size: 18.86rpx;
-}
-.text-_blength_cvar_p--my-var-length_P_B {
-  font-size: var(--my-var-length);
-}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
@@ -3238,6 +3253,19 @@ wx-root-portal-content {
 .text-xs {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.vue */
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
+}
+.text-_blength_ccalc_p2_x9_d43px_P_B {
+  font-size: 18.86rpx;
+}
+.text-_blength_cvar_p--my-var-length_P_B {
+  font-size: var(--my-var-length);
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
@@ -3331,9 +3359,11 @@ wx-root-portal-content {
 .text-_b_hfafafa_B {
   color: #fafafa;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.vue */
 .text-_b_hfff_B {
   color: #fff;
 }
+/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   color: #fff;
 }
@@ -3361,6 +3391,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
+/* tokens: text-pink-200 <= src/pages/index/index.vue */
 .text-pink-200 {
   color: var(--color-pink-200);
 }
@@ -3599,6 +3630,7 @@ wx-root-portal-content {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
@@ -3627,6 +3659,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
@@ -4094,6 +4127,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-14 <= src/pages/index/index.vue */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -4513,6 +4547,7 @@ wx-root-portal-content {
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
+/* tokens: rounded-[24rpx] <= src/pages/index/index.vue */
 .rounded-_b24rpx_B {
   border-radius: 24rpx;
 }
@@ -4622,6 +4657,7 @@ wx-root-portal-content {
 .bg-_b_h123324_B {
   background-color: #123324;
 }
+/* tokens: bg-[#123456] <= src/pages/index/index.vue */
 .bg-_b_h123456_B {
   background-color: #123456;
 }
@@ -4637,6 +4673,7 @@ wx-root-portal-content {
 .bg-_b_h434354_B {
   background-color: #434354;
 }
+/* tokens: bg-[#534312] <= src/pages/index/index.vue */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -4739,6 +4776,7 @@ wx-root-portal-content {
 .bg-green-500 {
   background-color: var(--color-green-500);
 }
+/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v3';
   content: var(--tw-content);
@@ -4752,6 +4790,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-purple-800 <= src/pages/index/index.vue */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -4792,6 +4831,7 @@ wx-root-portal-content {
   --tw-gradient-position: to bottom;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.vue */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
@@ -4819,6 +4859,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -4837,6 +4878,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.vue */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -4931,6 +4973,7 @@ wx-root-portal-content {
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
+/* tokens: px-[32px] <= src/pages/index/index.vue */
 .px-_b32px_B {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -4979,6 +5022,7 @@ wx-root-portal-content {
   padding-top: 12rpx;
   padding-bottom: 12rpx;
 }
+/* tokens: py-[18px] <= src/pages/index/index.vue */
 .py-_b18px_B {
   padding-top: 18rpx;
   padding-bottom: 18rpx;
@@ -4996,12 +5040,6 @@ wx-root-portal-content {
 .text-2xl {
   font-size: var(--text-2xl);
   line-height: var(--tw-leading, var(--text-2xl--line-height));
-}
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
 }
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
@@ -5064,12 +5102,6 @@ wx-root-portal-content {
 .text-_b77rpx_B {
   font-size: 77rpx;
 }
-.text-_blength_ccalc_p2_x9_d43px_P_B {
-  font-size: 18.86rpx;
-}
-.text-_blength_cvar_p--my-var-length_P_B {
-  font-size: var(--my-var-length);
-}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
@@ -5093,6 +5125,19 @@ wx-root-portal-content {
 .text-xs {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.vue */
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
+}
+.text-_blength_ccalc_p2_x9_d43px_P_B {
+  font-size: 18.86rpx;
+}
+.text-_blength_cvar_p--my-var-length_P_B {
+  font-size: var(--my-var-length);
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
@@ -5186,9 +5231,11 @@ wx-root-portal-content {
 .text-_b_hfafafa_B {
   color: #fafafa;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.vue */
 .text-_b_hfff_B {
   color: #fff;
 }
+/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   color: #ffffff;
 }
@@ -5216,6 +5263,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
+/* tokens: text-pink-200 <= src/pages/index/index.vue */
 .text-pink-200 {
   color: var(--color-pink-200);
 }
@@ -5432,6 +5480,7 @@ wx-root-portal-content {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
@@ -5460,6 +5509,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);

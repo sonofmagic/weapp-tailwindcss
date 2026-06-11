@@ -57,6 +57,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           },
         },
         WeappTailwindcss({
+          cssSourceTrace: true,
           rem2rpx: true,
           generator,
           // H5 也需要处理 Tailwind 入口；其他非样式目标保持禁用。

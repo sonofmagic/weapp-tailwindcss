@@ -774,3 +774,9 @@ text,
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
 }
+@media (min-width: 640px) {
+}
+@media (min-width: 1024px) {
+}
+@media (prefers-color-scheme: dark) {
+}

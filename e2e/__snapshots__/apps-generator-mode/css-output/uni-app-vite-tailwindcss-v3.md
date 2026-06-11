@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 197096 | 2822 | false | false | false | false | true |
+| 253592 | 2822 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -183,6 +183,7 @@ wx-root-portal-content {
   --window-right: 0rpx;
   --window-magin: 0rpx;
 }
+/* tokens: i-mdi-home <= src/pages/index/index.vue */
 .i-mdi-home {
   display: inline-block;
   width: 1em;
@@ -196,6 +197,7 @@ wx-root-portal-content {
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 }
+/* tokens: visible <= src/custom-tab-bar/index.js, src/pages/index/index.vue, src/pages/index/peer.vue, src/pages/issue/case55.vue */
 .visible {
   visibility: visible;
 }
@@ -215,6 +217,7 @@ wx-root-portal-content {
   content: var(--tw-content);
   border-style: none;
 }
+/* tokens: btn <= src/pages/index/daisyui.vue */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -227,10 +230,12 @@ wx-root-portal-content {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+/* tokens: btn <= src/pages/index/daisyui.vue */
 .btn::after {
   content: var(--tw-content);
   border-style: none;
 }
+/* tokens: btn <= src/pages/index/daisyui.vue */
 .btn {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
   --tw-gradient-from: #9e58e9 var(--tw-gradient-from-position);
@@ -244,214 +249,279 @@ wx-root-portal-content {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+/* tokens: relative <= src/components/TestCase55.vue */
 .relative {
   position: relative;
 }
+/* tokens: -m-[20px] <= src/pages/index/index.vue */
 .-m-_b20px_B {
   margin: -20rpx;
 }
+/* tokens: m-[5rpx] <= src/pages/issue/case-support-rpx.vue */
 .m-_b5rpx_B {
   margin: 5rpx;
 }
+/* tokens: -mt-2 <= src/pages/index/index.vue */
 .-mt-2 {
   margin-top: -16rpx;
 }
+/* tokens: mb-[-20px] <= src/pages/index/index.vue */
 .mb-_b-20px_B {
   margin-bottom: -20rpx;
 }
+/* tokens: mt-[26.2px] <= src/pages/index/index.vue */
 .mt-_b26_d2px_B {
   margin-top: 26.2rpx;
 }
+/* tokens: mt-[96.3px] <= src/pages/index/index.vue */
 .mt-_b96_d3px_B {
   margin-top: 96.3rpx;
 }
+/* tokens: line-clamp-2 <= src/pages/issue/tailwind-children.vue */
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+/* tokens: block <= src/pages/issue/case-dynamic-class.vue */
 .block {
   display: block;
 }
+/* tokens: inline-block <= src/pages/index/peer.vue */
 .inline-block {
   display: inline-block;
 }
 .inline {
   display: inline;
 }
+/* tokens: flex <= src/pages/index/index.vue */
 .flex {
   display: flex;
 }
 .inline-flex {
   display: inline-flex;
 }
+/* tokens: table <= src/pages/issue/typography.js */
 .table {
   display: table;
 }
+/* tokens: grid <= src/pages/index/index.vue */
 .grid {
   display: grid;
 }
+/* tokens: !hidden <= src/pages/index/index.vue */
 ._ehidden {
   display: none !important;
 }
+/* tokens: h-10 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .h-10 {
   height: 80rpx;
 }
+/* tokens: h-2 <= src/pages/index/index.vue */
 .h-2 {
   height: 16rpx;
 }
+/* tokens: h-20 <= src/pages/index/peer.vue */
 .h-20 {
   height: 160rpx;
 }
+/* tokens: h-24 <= src/pages/index/daisyui.vue */
 .h-24 {
   height: 192rpx;
 }
+/* tokens: h-3 <= src/pages/index/index.vue */
 .h-3 {
   height: 24rpx;
 }
+/* tokens: h-5 <= src/pages/index/index.vue */
 .h-5 {
   height: 40rpx;
 }
+/* tokens: h-[100px] <= src/pages/index/index.vue */
 .h-_b100px_B {
   height: 100rpx;
 }
+/* tokens: h-[111px] <= src/pages/issue/case55.vue */
 .h-_b111px_B {
   height: 111rpx;
 }
+/* tokens: h-[128px] <= src/pages/issue/case55.vue */
 .h-_b128px_B {
   height: 128rpx;
 }
+/* tokens: h-[200%] <= src/pages/index/index.vue */
 .h-_b200_v_B {
   height: 200%;
 }
+/* tokens: h-[20px] <= src/pages/index/index.vue */
 .h-_b20px_B {
   height: 20rpx;
 }
+/* tokens: h-[30px] <= src/pages/index/peer.vue */
 .h-_b30px_B {
   height: 30rpx;
 }
+/* tokens: h-[42.99px] <= src/pages/index/index.vue */
 .h-_b42_d99px_B {
   height: 42.99rpx;
 }
+/* tokens: h-[50.99px] <= src/pages/index/index.vue */
 .h-_b50_d99px_B {
   height: 50.99rpx;
 }
+/* tokens: h-[52px] <= src/pages/issue/case-dynamic-class.vue */
 .h-_b52px_B {
   height: 52rpx;
 }
+/* tokens: h-[77rpx] <= src/pages/issue/case-support-rpx.vue */
 .h-_b77rpx_B {
   height: 77rpx;
 }
+/* tokens: h-[88.88px] <= src/pages/issue/case55.vue */
 .h-_b88_d88px_B {
   height: 88.88rpx;
 }
+/* tokens: h-screen <= src/pages/index/index.vue */
 .h-screen {
   height: 100vh;
 }
+/* tokens: max-h-[100px] <= src/pages/index/index.vue */
 .max-h-_b100px_B {
   max-height: 100rpx;
 }
+/* tokens: min-h-[100px] <= src/pages/index/index.vue */
 .min-h-_b100px_B {
   min-height: 100rpx;
 }
+/* tokens: w-10 <= src/pages/index/index.vue */
 .w-10 {
   width: 80rpx;
 }
+/* tokens: w-16 <= src/pages/issue/issue470.vue */
 .w-16 {
   width: 128rpx;
 }
+/* tokens: w-2 <= src/pages/index/index.vue */
 .w-2 {
   width: 16rpx;
 }
+/* tokens: w-20 <= src/pages/index/peer.vue */
 .w-20 {
   width: 160rpx;
 }
+/* tokens: w-24 <= src/pages/index/daisyui.vue */
 .w-24 {
   width: 192rpx;
 }
+/* tokens: w-32 <= src/pages/index/index.vue */
 .w-32 {
   width: 256rpx;
 }
+/* tokens: w-5 <= src/pages/index/index.vue */
 .w-5 {
   width: 40rpx;
 }
+/* tokens: w-[100px] <= src/pages/index/index.vue */
 .w-_b100px_B {
   width: 100rpx;
 }
+/* tokens: w-[20px] <= src/pages/index/index.vue */
 .w-_b20px_B {
   width: 20rpx;
 }
+/* tokens: w-[222px] <= src/pages/issue/case55.vue */
 .w-_b222px_B {
   width: 222rpx;
 }
+/* tokens: w-[242px] <= src/pages/issue/case55.vue */
 .w-_b242px_B {
   width: 242rpx;
 }
+/* tokens: w-[300rpx] <= src/pages/index/index.vue */
 .w-_b300rpx_B {
   width: 300rpx;
 }
+/* tokens: w-[323px] <= src/pages/index/peer.vue */
 .w-_b323px_B {
   width: 323rpx;
 }
+/* tokens: w-[33.33px] <= src/pages/issue/case55.vue */
 .w-_b33_d33px_B {
   width: 33.33rpx;
 }
+/* tokens: w-[43.1px] <= src/pages/index/index.vue */
 .w-_b43_d1px_B {
   width: 43.1rpx;
 }
+/* tokens: w-[50px] <= src/pages/index/peer.vue */
 .w-_b50px_B {
   width: 50rpx;
 }
+/* tokens: w-[52px] <= src/pages/issue/case-dynamic-class.vue */
 .w-_b52px_B {
   width: 52rpx;
 }
+/* tokens: w-[61.1px] <= src/pages/index/index.vue */
 .w-_b61_d1px_B {
   width: 61.1rpx;
 }
+/* tokens: w-[77rpx] <= src/pages/issue/case-support-rpx.vue */
 .w-_b77rpx_B {
   width: 77rpx;
 }
+/* tokens: w-screen <= src/pages/index/index.vue */
 .w-screen {
   width: 100vw;
 }
+/* tokens: min-w-[300rpx] <= src/pages/index/index.vue */
 .min-w-_b300rpx_B {
   min-width: 300rpx;
 }
+/* tokens: max-w-[300rpx] <= src/pages/index/index.vue */
 .max-w-_b300rpx_B {
   max-width: 300rpx;
 }
+/* tokens: origin-[100rpx_111rpx] <= src/pages/issue/case-support-rpx.vue */
 .origin-_b100rpx_111rpx_B {
   transform-origin: 100rpx 111rpx;
 }
+/* tokens: translate-y-[17rpx] <= src/pages/issue/case-support-rpx.vue */
 .translate-y-_b17rpx_B {
   --tw-translate-y: 17rpx;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y));
 }
+/* tokens: rotate-[10deg] <= src/pages/index/index.vue */
 .rotate-_b10deg_B {
   --tw-rotate: 10deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y));
 }
+/* tokens: cursor-not-allowed <= src/pages/index/peer.vue */
 .cursor-not-allowed {
   cursor: not-allowed;
 }
+/* tokens: grid-cols-3 <= src/pages/index/index.vue */
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+/* tokens: flex-col <= src/pages/index/index.vue */
 .flex-col {
   flex-direction: column;
 }
+/* tokens: items-center <= src/pages/index/index.vue */
 .items-center {
   align-items: center;
 }
+/* tokens: justify-center <= src/pages/index/index.vue */
 .justify-center {
   justify-content: center;
 }
 .gap-2 {
   gap: 16rpx;
 }
+/* tokens: space-x-2.5 <= src/pages/index/peer.vue */
 .space-x-2_d5 > view + view,
 .space-x-2_d5 > view + text,
 .space-x-2_d5 > text + view,
@@ -460,6 +530,7 @@ wx-root-portal-content {
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
 }
+/* tokens: space-y-4 <= src/pages/index/index.vue */
 .space-y-4 > view + view,
 .space-y-4 > view + text,
 .space-y-4 > text + view,
@@ -468,6 +539,7 @@ wx-root-portal-content {
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
+/* tokens: space-y-[1.6rem] <= src/pages/index/index.vue */
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
 .space-y-_b1_d6rem_B > text + view,
@@ -476,6 +548,7 @@ wx-root-portal-content {
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
+/* tokens: space-y-[11rpx] <= src/pages/issue/case-support-rpx.vue */
 .space-y-_b11rpx_B > view + view,
 .space-y-_b11rpx_B > view + text,
 .space-y-_b11rpx_B > text + view,
@@ -484,6 +557,7 @@ wx-root-portal-content {
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
+/* tokens: divide-x-[10px] <= src/pages/index/index.vue */
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
 .divide-x-_b10px_B > text + view,
@@ -492,6 +566,7 @@ wx-root-portal-content {
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
 }
+/* tokens: divide-x-[3px] <= src/pages/issue/case-support-rpx.vue */
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
 .divide-x-_b3px_B > text + view,
@@ -500,12 +575,14 @@ wx-root-portal-content {
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
 }
+/* tokens: divide-solid <= src/pages/index/index.vue */
 .divide-solid > view + view,
 .divide-solid > view + text,
 .divide-solid > text + view,
 .divide-solid > text + text {
   border-style: solid;
 }
+/* tokens: divide-[#010101] <= src/pages/index/index.vue */
 .divide-_b_h010101_B > view + view,
 .divide-_b_h010101_B > view + text,
 .divide-_b_h010101_B > text + view,
@@ -513,107 +590,137 @@ wx-root-portal-content {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
+/* tokens: divide-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .divide-_b3rpx_B > view + view,
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
   border-width: 3rpx;
 }
+/* tokens: overflow-hidden <= src/components/TestCase55.vue */
 .overflow-hidden {
   overflow: hidden;
 }
+/* tokens: rounded <= src/pages/index/daisyui.vue, src/pages/index/peer.vue */
 .rounded {
   border-radius: 8rpx;
 }
+/* tokens: rounded-[12rpx] <= src/pages/issue/case-support-rpx.vue */
 .rounded-_b12rpx_B {
   border-radius: 12rpx;
 }
+/* tokens: rounded-[40px] <= src/pages/index/index.vue */
 .rounded-_b40px_B {
   border-radius: 40rpx;
 }
+/* tokens: rounded-md <= src/pages/index/index.vue */
 .rounded-md {
   border-radius: 12rpx;
 }
+/* tokens: border <= src/pages/index/index.vue, src/pages/index/peer.vue */
+.border {
+  border-width: 1rpx;
+}
+/* tokens: border-4 <= src/pages/index/peer.vue */
+.border-4 {
+  border-width: 4rpx;
+}
+/* tokens: border-[10px] <= src/pages/index/index.vue */
+.border-_b10px_B {
+  border-width: 10rpx;
+}
+/* tokens: border-[10rpx] <= src/pages/index/index.vue */
+.border-_b10rpx_B {
+  border-width: 10rpx;
+}
+/* tokens: border-[7rpx] <= src/pages/issue/case-support-rpx.vue */
+.border-_b7rpx_B {
+  border-width: 7rpx;
+}
+/* tokens: border-b-[4rpx] <= src/pages/index/index.vue */
+.border-b-_b4rpx_B {
+  border-bottom-width: 4rpx;
+}
+/* tokens: border-t-[3rpx] <= src/pages/issue/case-support-rpx.vue */
+.border-t-_b3rpx_B {
+  border-top-width: 3rpx;
+}
+/* tokens: border-t-[4px] <= src/pages/index/index.vue */
+.border-t-_b4px_B {
+  border-top-width: 4rpx;
+}
+/* tokens: border-solid <= src/pages/index/index.vue */
+.border-solid {
+  border-style: solid;
+}
+/* tokens: border-none <= src/pages/index/index.vue */
+.border-none {
+  border-style: none;
+}
+/* tokens: !border-primary <= src/pages/index/index.vue */
 ._eborder-primary {
   --tw-border-opacity: 1 !important;
   border-color: rgba(69, 163, 250, var(--tw-border-opacity, 1)) !important;
 }
-.border {
-  border-width: 1rpx;
-}
-.border-4 {
-  border-width: 4rpx;
-}
-.border-_b10px_B {
-  border-width: 10rpx;
-}
-.border-_b10rpx_B {
-  border-width: 10rpx;
-}
-.border-_b7rpx_B {
-  border-width: 7rpx;
-}
+/* tokens: border-[#098765] <= src/pages/index/index.vue */
 .border-_b_h098765_B {
   --tw-border-opacity: 1;
   border-color: rgba(9, 135, 101, var(--tw-border-opacity, 1));
 }
+/* tokens: border-[red] <= src/pages/index/index.vue */
 .border-_bred_B {
   --tw-border-opacity: 1;
   border-color: rgba(255, 0, 0, var(--tw-border-opacity, 1));
 }
-.border-b-_b4rpx_B {
-  border-bottom-width: 4rpx;
-}
+/* tokens: border-gray-400 <= src/pages/index/peer.vue */
 .border-gray-400 {
   --tw-border-opacity: 1;
   border-color: rgba(156, 163, 175, var(--tw-border-opacity, 1));
 }
-.border-none {
-  border-style: none;
-}
-.border-opacity-_b0_d44_B {
-  --tw-border-opacity: 0.44;
-}
-.border-solid {
-  border-style: solid;
-}
-.border-t-_b3rpx_B {
-  border-top-width: 3rpx;
-}
-.border-t-_b4px_B {
-  border-top-width: 4rpx;
-}
+/* tokens: border-transparent <= src/pages/index/peer.vue */
 .border-transparent {
   border-color: transparent;
 }
+/* tokens: border-opacity-[0.44] <= src/pages/index/index.vue */
+.border-opacity-_b0_d44_B {
+  --tw-border-opacity: 0.44;
+}
+/* tokens: !bg-green-500 <= src/pages/index/index.vue */
 ._ebg-green-500 {
   --tw-bg-opacity: 1 !important;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1)) !important;
 }
+/* tokens: bg-[#123324] <= src/pages/index/peer.vue */
 .bg-_b_h123324_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 51, 36, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#123456] <= src/pages/index/index.vue, src/pages/issue/case-dynamic-class.vue */
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#3482f2] <= src/pages/index/index.vue */
 .bg-_b_h3482f2_B {
   --tw-bg-opacity: 1;
   background-color: rgba(52, 130, 242, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#410000] <= src/pages/index/index.vue */
 .bg-_b_h410000_B {
   --tw-bg-opacity: 1;
   background-color: rgba(65, 0, 0, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#4268EA] <= src/pages/index/index.vue */
 .bg-_b_h4268EA_B {
   --tw-bg-opacity: 1;
   background-color: rgba(66, 104, 234, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#434332] <= src/pages/index/peer.vue */
 .bg-_b_h434332_B {
   --tw-bg-opacity: 1;
   background-color: rgba(67, 67, 50, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#434354] <= src/pages/index/index.vue */
 .bg-_b_h434354_B {
   --tw-bg-opacity: 1;
   background-color: rgba(67, 67, 84, var(--tw-bg-opacity, 1));
@@ -622,130 +729,163 @@ wx-root-portal-content {
   --tw-bg-opacity: 1;
   background-color: rgba(101, 72, 116, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#666600] <= src/pages/index/index.vue */
 .bg-_b_h666600_B {
   --tw-bg-opacity: 1;
   background-color: rgba(102, 102, 0, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#955443] <= src/pages/issue/case55.vue */
 .bg-_b_h955443_B {
   --tw-bg-opacity: 1;
   background-color: rgba(149, 84, 67, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#987654] <= src/pages/issue/case55.vue */
 .bg-_b_h987654_B {
   --tw-bg-opacity: 1;
   background-color: rgba(152, 118, 84, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#999999] <= src/pages/index/index.vue */
 .bg-_b_h999999_B {
   --tw-bg-opacity: 1;
   background-color: rgba(153, 153, 153, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#B91C1C] <= src/pages/index/peer.vue */
 .bg-_b_hB91C1C_B {
   --tw-bg-opacity: 1;
   background-color: rgba(185, 28, 28, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#c65ece] <= src/pages/index/peer.vue */
 .bg-_b_hc65ece_B {
   --tw-bg-opacity: 1;
   background-color: rgba(198, 94, 206, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#e6e6e6] <= src/pages/index/index.vue */
 .bg-_b_he6e6e6_B {
   --tw-bg-opacity: 1;
   background-color: rgba(230, 230, 230, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[yellow] <= src/pages/issue/case55.vue */
 .bg-_byellow_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 0, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-300 <= src/pages/index/peer.vue */
 .bg-amber-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(252, 211, 77, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-500 <= src/pages/index/index.vue */
 .bg-amber-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(245, 158, 11, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-600 <= src/pages/index/peer.vue */
 .bg-amber-600 {
   --tw-bg-opacity: 1;
   background-color: rgba(217, 119, 6, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-700 <= src/pages/index/peer.vue */
 .bg-amber-700 {
   --tw-bg-opacity: 1;
   background-color: rgba(180, 83, 9, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-800 <= src/pages/index/peer.vue */
 .bg-amber-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 64, 14, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-300 <= src/pages/index/index.vue */
 .bg-blue-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(147, 197, 253, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-400 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .bg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-500 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-500/50 <= src/pages/index/index.vue */
 .bg-blue-500_f50 {
   background-color: rgba(59, 130, 246, 0.5);
 }
+/* tokens: bg-cyan-500 <= src/pages/index/index.vue */
 .bg-cyan-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(6, 182, 212, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-gray-100 <= src/pages/index/index.vue */
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(243, 244, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-gray-300 <= src/pages/index/peer.vue */
 .bg-gray-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(209, 213, 219, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-green-500 <= src/pages/index/index.vue */
 .bg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-pink-500 <= src/pages/index/index.vue */
 .bg-pink-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(236, 72, 153, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-red-400 <= src/pages/index/index.vue */
 .bg-red-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-red-500 <= src/pages/index/index.vue */
 .bg-red-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(239, 68, 68, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-red-500/50 <= src/pages/index/index.vue */
 .bg-red-500_f50 {
   background-color: rgba(239, 68, 68, 0.5);
 }
+/* tokens: bg-sky-500 <= src/pages/index/index.vue */
 .bg-sky-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(14, 165, 233, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-white <= src/pages/index/peer.vue, src/pages/issue/case55.vue */
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-opacity-[0.54] <= src/pages/index/index.vue */
 .bg-opacity-_b0_d54_B {
   --tw-bg-opacity: 0.54;
 }
+/* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index/index.vue */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
 }
+/* tokens: bg-gradient-to-b <= src/pages/index/peer.vue */
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-t <= src/pages/index/peer.vue */
 .bg-gradient-to-t {
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-tr <= src/pages/index/peer.vue */
 .bg-gradient-to-tr {
   background-image: linear-gradient(to top right, var(--tw-gradient-stops));
 }
+/* tokens: from-[#2f73f1] <= src/pages/index/peer.vue */
 .from-_b_h2f73f1_B {
   --tw-gradient-from: #2f73f1 var(--tw-gradient-from-position);
   --tw-gradient-to: rgba(47, 115, 241, 0) var(--tw-gradient-to-position);
@@ -756,73 +896,93 @@ wx-root-portal-content {
   --tw-gradient-to: rgba(158, 88, 233, 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
+/* tokens: to-[#4bcefd] <= src/pages/index/peer.vue */
 .to-_b_h4bcefd_B {
   --tw-gradient-to: #4bcefd var(--tw-gradient-to-position);
 }
 .to-blue-500 {
   --tw-gradient-to: #3b82f6 var(--tw-gradient-to-position);
 }
+/* tokens: p-3 <= src/pages/index/peer.vue */
 .p-3 {
   padding: 24rpx;
 }
+/* tokens: p-4 <= src/pages/issue/tailwind-children.vue */
 .p-4 {
   padding: 32rpx;
 }
+/* tokens: p-[20px] <= src/pages/index/index.vue */
 .p-_b20px_B {
   padding: 20rpx;
 }
+/* tokens: p-[5rpx] <= src/pages/issue/case-support-rpx.vue */
 .p-_b5rpx_B {
   padding: 5rpx;
 }
+/* tokens: px-2 <= src/pages/index/peer.vue */
 .px-2 {
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
+/* tokens: px-4 <= src/pages/index/peer.vue */
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
 }
+/* tokens: px-[32px] <= src/pages/index/peer.vue */
 .px-_b32px_B {
   padding-left: 32rpx;
   padding-right: 32rpx;
 }
+/* tokens: px-[35px] <= src/pages/index/peer.vue */
 .px-_b35px_B {
   padding-left: 35rpx;
   padding-right: 35rpx;
 }
+/* tokens: py-1 <= src/pages/index/peer.vue */
 .py-1 {
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
+/* tokens: py-2 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
 }
+/* tokens: indent-[11rpx] <= src/pages/issue/case-support-rpx.vue */
 .indent-_b11rpx_B {
   text-indent: 11rpx;
 }
+/* tokens: text-2xl <= src/pages/index/index.vue */
 .text-2xl {
   font-size: 48rpx;
   line-height: 64rpx;
 }
+/* tokens: text-[17rpx] <= src/pages/issue/case-support-rpx.vue */
 .text-_b17rpx_B {
   font-size: 17rpx;
 }
+/* tokens: text-[20px] <= src/pages/index/index.vue */
 .text-_b20px_B {
   font-size: 20rpx;
 }
+/* tokens: text-[22px] <= src/pages/index/index.vue */
 .text-_b22px_B {
   font-size: 22rpx;
 }
+/* tokens: text-[30px] <= src/pages/issue/case55.vue */
 .text-_b30px_B {
   font-size: 30rpx;
 }
+/* tokens: text-[30rpx] <= src/pages/index/index.vue */
 .text-_b30rpx_B {
   font-size: 30rpx;
 }
+/* tokens: text-[32px] <= src/pages/index/index.vue */
 .text-_b32px_B {
   font-size: 32rpx;
 }
+/* tokens: text-[32rpx] <= src/pages/index/index.vue */
 .text-_b32rpx_B {
   font-size: 32rpx;
 }
@@ -835,42 +995,54 @@ wx-root-portal-content {
 .text-_b77rpx_B {
   font-size: 77rpx;
 }
+/* tokens: text-[length:calc(2*9.43px)] <= src/pages/index/index.vue */
 .text-_blength_ccalc_p2_x9_d43px_P_B {
   font-size: calc(2 * 9.43rpx);
 }
+/* tokens: text-[length:var(--my-var-length)] <= src/pages/index/index.vue */
 .text-_blength_cvar_p--my-var-length_P_B {
   font-size: var(--my-var-length);
 }
+/* tokens: text-base <= src/pages/index/peer.vue */
 .text-base {
   font-size: 32rpx;
   line-height: 48rpx;
 }
+/* tokens: text-sm <= src/pages/index/index.vue, src/pages/index/peer.vue, src/pages/issue/tailwind-children.vue */
 .text-sm {
   font-size: 28rpx;
   line-height: 40rpx;
 }
+/* tokens: !font-bold <= src/pages/index/index.vue */
 ._efont-bold {
   font-weight: 700 !important;
 }
+/* tokens: font-bold <= src/pages/index/index.vue */
 .font-bold {
   font-weight: 700;
 }
+/* tokens: font-semibold <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .font-semibold {
   font-weight: 600;
 }
+/* tokens: uppercase <= src/pages/index/peer.vue */
 .uppercase {
   text-transform: uppercase;
 }
+/* tokens: leading-[0.9] <= src/pages/index/index.vue */
 .leading-_b0_d9_B {
   line-height: 0.9;
 }
+/* tokens: leading-[23rpx] <= src/pages/issue/case-support-rpx.vue */
 .leading-_b23rpx_B {
   line-height: 23rpx;
 }
+/* tokens: !text-[#990000] <= src/pages/index/index.vue */
 ._etext-_b_h990000_B {
   --tw-text-opacity: 1 !important;
   color: rgba(153, 0, 0, var(--tw-text-opacity, 1)) !important;
 }
+/* tokens: !text-primary <= src/pages/index/index.vue */
 ._etext-primary {
   --tw-text-opacity: 1 !important;
   color: rgba(69, 163, 250, var(--tw-text-opacity, 1)) !important;
@@ -879,10 +1051,12 @@ wx-root-portal-content {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
+/* tokens: text-[#0b138f] <= src/pages/index/peer.vue */
 .text-_b_h0b138f_B {
   --tw-text-opacity: 1;
   color: rgba(11, 19, 143, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#123456] <= src/pages/index/index.vue */
 .text-_b_h123456_B {
   --tw-text-opacity: 1;
   color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
@@ -895,42 +1069,53 @@ wx-root-portal-content {
   --tw-text-opacity: 1;
   color: rgba(171, 205, 239, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#bada55] <= src/pages/index/index.vue */
 .text-_b_hbada55_B {
   --tw-text-opacity: 1;
   color: rgba(186, 218, 85, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#dddddd] <= src/pages/index/index.vue */
 .text-_b_hdddddd_B {
   --tw-text-opacity: 1;
   color: rgba(221, 221, 221, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#fafafa] <= src/pages/index/index.vue */
 .text-_b_hfafafa_B {
   --tw-text-opacity: 1;
   color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[color:var(--my-var)] <= src/pages/index/index.vue */
 .text-_bcolor_cvar_p--my-var_P_B {
   color: var(--my-var);
 }
+/* tokens: text-[red] <= src/pages/issue/case55.vue */
 .text-_bred_B {
   --tw-text-opacity: 1;
   color: rgba(255, 0, 0, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[var(--my-var)] <= src/pages/index/index.vue */
 .text-_bvar_p--my-var_P_B {
   color: var(--my-var);
 }
+/* tokens: text-[var(--text\_sec\_light)] <= src/pages/index/index.vue */
 .text-_bvar_p--text_r_sec_r_light_P_B {
   color: var(--text_sec_light);
 }
+/* tokens: text-[var(--text_sec_light)] <= src/pages/index/index.vue */
 .text-_bvar_p--text_sec_light_P_B {
   color: var(--text sec light);
 }
+/* tokens: text-black <= src/pages/index/index.vue */
 .text-black {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 0, var(--tw-text-opacity, 1));
 }
+/* tokens: text-gray-800 <= src/pages/index/peer.vue */
 .text-gray-800 {
   --tw-text-opacity: 1;
   color: rgba(31, 41, 55, var(--tw-text-opacity, 1));
@@ -939,87 +1124,109 @@ wx-root-portal-content {
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
 }
-.text-opacity-_b0_d19_B {
-  --tw-text-opacity: 0.19;
-}
+/* tokens: text-red-400 <= src/pages/issue/issue470.vue */
 .text-red-400 {
   --tw-text-opacity: 1;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1));
 }
+/* tokens: text-red-500 <= src/pages/issue/tailwind-children.vue */
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: text-white <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .text-white {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+/* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
+.text-opacity-_b0_d19_B {
+  --tw-text-opacity: 0.19;
+}
+/* tokens: underline <= src/pages/index/index.vue */
 .underline {
   text-decoration-line: underline;
 }
+/* tokens: underline-offset-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .underline-offset-_b3rpx_B {
   text-underline-offset: 3rpx;
 }
+/* tokens: opacity-50 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .opacity-50 {
   opacity: 0.5;
 }
+/* tokens: shadow-[0px_2px_11px_0px_#00000a] <= src/pages/index/index.vue */
 .shadow-_b0px_2px_11px_0px__h00000a_B {
   --tw-shadow: 0rpx 2rpx 11rpx 0rpx #00000a;
   --tw-shadow-colored: 0rpx 2rpx 11rpx 0rpx var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
+/* tokens: shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] <= src/pages/index/index.vue */
 .shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
   --tw-shadow: 0rpx 2rpx 11rpx 0rpx rgba(0, 0, 0, 0.4);
   --tw-shadow-colored: 0rpx 2rpx 11rpx 0rpx var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
+/* tokens: shadow-amber-100 <= src/pages/index/index.vue */
 .shadow-amber-100 {
   --tw-shadow-color: #fef3c7;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-blue-100 <= src/pages/index/index.vue */
 .shadow-blue-100 {
   --tw-shadow-color: #dbeafe;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-cyan-100 <= src/pages/index/index.vue */
 .shadow-cyan-100 {
   --tw-shadow-color: #cffafe;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-green-100 <= src/pages/index/index.vue */
 .shadow-green-100 {
   --tw-shadow-color: #dcfce7;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-indigo-100 <= src/pages/index/index.vue */
 .shadow-indigo-100 {
   --tw-shadow-color: #e0e7ff;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: outline-[5rpx] <= src/pages/issue/case-support-rpx.vue */
 .outline-_b5rpx_B {
   outline-width: 5rpx;
 }
+/* tokens: outline-offset-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .outline-offset-_b3rpx_B {
   outline-offset: 3rpx;
 }
+/* tokens: ring-4 <= src/pages/index/index.vue */
 .ring-4 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
 }
+/* tokens: ring-[10rpx] <= src/pages/issue/case-support-rpx.vue */
 .ring-_b10rpx_B {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(10rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
 }
+/* tokens: ring-pink-300 <= src/pages/index/index.vue */
 .ring-pink-300 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1));
 }
+/* tokens: ring-offset-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .ring-offset-_b3rpx_B {
   --tw-ring-offset-width: 3rpx;
 }
+/* tokens: blur <= src/utils/merge.ts */
 .blur {
   --tw-blur: blur(8rpx);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: blur-[2rpx] <= src/pages/issue/case-support-rpx.vue */
 .blur-_b2rpx_B {
   --tw-blur: blur(2rpx);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
@@ -1027,11 +1234,13 @@ wx-root-portal-content {
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: backdrop-blur-[2rpx] <= src/pages/issue/case-support-rpx.vue */
 .backdrop-blur-_b2rpx_B {
   --tw-backdrop-blur: blur(2rpx);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate)
     var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
+/* tokens: transition <= src/components/TestCase55.vue */
 .transition {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -5498,10 +5707,12 @@ body,
   padding-left: constant(safe-area-inset-left);
   padding-left: env(safe-area-inset-left);
 }
+/* tokens: before:content-['*'] <= src/pages/issue/tailwind-children.vue */
 .before_ccontent-_b_a_x_a_B::before {
   --tw-content: '*';
   content: var(--tw-content);
 }
+/* tokens: before:content-['Festivus'] <= src/pages/index/index.vue */
 .before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
@@ -5518,10 +5729,12 @@ body,
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: after:border-none <= src/pages/index/index.vue */
 .after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
+/* tokens: after:content-['v3_apply'] <= src/pages/index/index.vue */
 .after_ccontent-_b_av3_apply_a_B::after {
   --tw-content: 'v3 apply';
   content: var(--tw-content);
@@ -5538,55 +5751,70 @@ body,
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
+/* tokens: odd:mb-2 <= src/pages/index/index.vue */
 .odd_cmb-2:nth-child(odd) {
   margin-bottom: 16rpx;
 }
+/* tokens: group <= src/pages/index/index.vue | published <= src/pages/index/index.vue | group-[.published]:text-green-500 <= src/pages/index/index.vue */
 .group.published .group-_b_dpublished_B_ctext-green-500 {
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
 }
+/* tokens: peer <= src/pages/index/peer.vue | peer-[.tapped]:bg-red-400 <= src/pages/index/peer.vue */
 .peer.tapped ~ .peer-_b_dtapped_B_cbg-red-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
 }
+/* tokens: child:mr-2 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cmr-2 > view:not(.not-child) {
   margin-right: 16rpx;
 }
+/* tokens: child:inline-block <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cinline-block > view:not(.not-child) {
   display: inline-block;
 }
+/* tokens: child-['.child']:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child-_b_a_dchild_a_B_ctext-red-500 > view:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: child:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_ctext-red-500 > view:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: child:mr-2 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cmr-2 > text:not(.not-child) {
   margin-right: 16rpx;
 }
+/* tokens: child:inline-block <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cinline-block > text:not(.not-child) {
   display: inline-block;
 }
+/* tokens: child-['.child']:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child-_b_a_dchild_a_B_ctext-red-500 > text:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: child:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_ctext-red-500 > text:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: heir:mr-2 <= src/pages/issue/tailwind-children.vue */
 .heir_cmr-2 view:not(.not-heir) {
   margin-right: 16rpx;
 }
+/* tokens: heir:text-red-500 <= src/pages/issue/tailwind-children.vue */
 .heir_ctext-red-500 view:not(.not-heir) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: heir:mr-2 <= src/pages/issue/tailwind-children.vue */
 .heir_cmr-2 text:not(.not-heir) {
   margin-right: 16rpx;
 }
+/* tokens: heir:text-red-500 <= src/pages/issue/tailwind-children.vue */
 .heir_ctext-red-500 text:not(.not-heir) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
@@ -5627,13 +5855,16 @@ body,
   --tw-text-opacity: 1;
   color: rgba(234, 179, 8, var(--tw-text-opacity, 1));
 }
+/* tokens: child-text:mr-2 <= src/pages/issue/tailwind-children.vue */
 .child-text_cmr-2 > text:not(.not-child-text) {
   margin-right: 16rpx;
 }
+/* tokens: child-text:text-red-500 <= src/pages/issue/tailwind-children.vue */
 .child-text_ctext-red-500 > text:not(.not-child-text) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: heir-text:text-green-500 <= src/pages/issue/tailwind-children.vue */
 .heir-text_ctext-green-500 text:not(.not-heir-text) {
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
@@ -5642,59 +5873,72 @@ body,
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: ifdef-[H5_||_MP-WEIXIN]:bg-blue-300 <= src/pages/index/index.vue */
 .ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(147, 197, 253, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifdef-[H5||MP-WEIXIN]:bg-blue-400 <= src/pages/index/index.vue */
 .ifdef-_bH5_o_oMP-WEIXIN_B_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifdef-[MP-WEIXIN]:bg-[#1167ff] <= src/pages/index/index.vue */
 .ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B {
   --tw-bg-opacity: 1;
   background-color: rgba(17, 103, 255, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifdef-[MP-WEIXIN]:bg-blue-500 <= src/pages/index/index.vue */
 .ifdef-_bMP-WEIXIN_B_cbg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifndef-[H5]:text-[#0055aa] <= src/pages/index/index.vue */
 .ifndef-_bH5_B_ctext-_b_h0055aa_B {
   --tw-text-opacity: 1;
   color: rgba(0, 85, 170, var(--tw-text-opacity, 1));
 }
+/* tokens: wx:bg-blue-400 <= src/pages/index/index.vue */
 .wx_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: mv:bg-blue-400 <= src/pages/index/index.vue */
 .mv_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: dark <= src/pages/index/index.vue | dark:bg-green-500 <= src/pages/index/index.vue */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
+/* tokens: dark <= src/pages/index/index.vue | dark:bg-zinc-800 <= src/pages/index/index.vue */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
 }
+/* tokens: dark <= src/pages/index/index.vue | dark:text-yellow-400 <= src/pages/index/index.vue */
 .dark view.dark_ctext-yellow-400,
 .dark text.dark_ctext-yellow-400 {
   --tw-text-opacity: 1;
   color: rgba(250, 204, 21, var(--tw-text-opacity, 1));
 }
 @media (min-width: 1536px) {
+  /* tokens: 2xl:text-base <= src/pages/index/index.vue */
   ._2xl_ctext-base {
     font-size: 32rpx;
     line-height: 48rpx;
   }
+  /* tokens: 2xl:text-[red] <= src/pages/index/index.vue */
   ._2xl_ctext-_bred_B {
     --tw-text-opacity: 1;
     color: rgba(255, 0, 0, var(--tw-text-opacity, 1));
   }
 }
+/* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/index/index.vue | u-count-down__text <= src/pages/index/index.vue */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
@@ -6050,24 +6294,30 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
   display: inline;
 }
+/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
 .after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
 .after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
+/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
@@ -6169,24 +6419,30 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
   display: inline;
 }
+/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
 .after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
 .after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
+/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
@@ -6327,10 +6583,12 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
 .bg-independent-subpackage-marker {
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
@@ -6432,10 +6690,12 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
 .bg-normal-subpackage-marker {
   --tw-bg-opacity: 1;
   background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
@@ -6537,24 +6797,30 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
   display: inline;
 }
+/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
 .after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
 .after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
+/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
@@ -6601,6 +6867,7 @@ wx-root-portal-content {
   --my-var: green;
   --my-var-length: 24rpx;
 }
+/* tokens: test <= src/pages/index/index.vue */
 .test {
   display: flex !important;
   height: 100rpx !important;
@@ -6613,6 +6880,7 @@ wx-root-portal-content {
   --tw-text-opacity: 1 !important;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1)) !important;
 }
+/* tokens: content <= index.html, src/pages/index/index.vue, src/pages/issue/tailwind.typography.config.js */
 .content::before {
   content: '';
   display: inline-block;
@@ -6620,10 +6888,12 @@ wx-root-portal-content {
   width: 40rpx;
   background-color: rgba(239, 68, 68, 0.5);
 }
+/* tokens: apply-class-0 <= src/pages/index/index.vue */
 .apply-class-0 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: apply-class-0 <= src/pages/index/index.vue */
 .apply-class-0 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
@@ -6725,6 +6995,7 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: i-mdi-home <= src/pages/index/index.vue */
 .i-mdi-home {
   display: inline-block;
   width: 1em;
@@ -6738,211 +7009,278 @@ text,
   mask-size: 100% 100%;
   --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
 }
+/* tokens: visible <= src/custom-tab-bar/index.js, src/pages/index/index.vue, src/pages/index/peer.vue, src/pages/issue/case55.vue */
 .visible {
   visibility: visible;
 }
+/* tokens: relative <= src/components/TestCase55.vue */
 .relative {
   position: relative;
 }
+/* tokens: -m-[20px] <= src/pages/index/index.vue */
 .-m-_b20px_B {
   margin: -20rpx;
 }
+/* tokens: m-[5rpx] <= src/pages/issue/case-support-rpx.vue */
 .m-_b5rpx_B {
   margin: 5rpx;
 }
+/* tokens: -mt-2 <= src/pages/index/index.vue */
 .-mt-2 {
   margin-top: -16rpx;
 }
+/* tokens: mb-[-20px] <= src/pages/index/index.vue */
 .mb-_b-20px_B {
   margin-bottom: -20rpx;
 }
+/* tokens: mt-[26.2px] <= src/pages/index/index.vue */
 .mt-_b26_d2px_B {
   margin-top: 26.2rpx;
 }
+/* tokens: mt-[96.3px] <= src/pages/index/index.vue */
 .mt-_b96_d3px_B {
   margin-top: 96.3rpx;
 }
+/* tokens: line-clamp-2 <= src/pages/issue/tailwind-children.vue */
 .line-clamp-2 {
   overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
+/* tokens: block <= src/pages/issue/case-dynamic-class.vue */
 .block {
   display: block;
 }
+/* tokens: inline-block <= src/pages/index/peer.vue */
 .inline-block {
   display: inline-block;
 }
+/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
   display: inline;
 }
+/* tokens: flex <= src/pages/index/index.vue */
 .flex {
   display: flex;
 }
+/* tokens: table <= src/pages/issue/typography.js */
 .table {
   display: table;
 }
+/* tokens: grid <= src/pages/index/index.vue */
 .grid {
   display: grid;
 }
+/* tokens: !hidden <= src/pages/index/index.vue */
 ._ehidden {
   display: none !important;
 }
+/* tokens: h-10 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .h-10 {
   height: 80rpx;
 }
+/* tokens: h-2 <= src/pages/index/index.vue */
 .h-2 {
   height: 16rpx;
 }
+/* tokens: h-20 <= src/pages/index/peer.vue */
 .h-20 {
   height: 160rpx;
 }
+/* tokens: h-24 <= src/pages/index/daisyui.vue */
 .h-24 {
   height: 192rpx;
 }
+/* tokens: h-3 <= src/pages/index/index.vue */
 .h-3 {
   height: 24rpx;
 }
+/* tokens: h-5 <= src/pages/index/index.vue */
 .h-5 {
   height: 40rpx;
 }
+/* tokens: h-[100px] <= src/pages/index/index.vue */
 .h-_b100px_B {
   height: 100rpx;
 }
+/* tokens: h-[111px] <= src/pages/issue/case55.vue */
 .h-_b111px_B {
   height: 111rpx;
 }
+/* tokens: h-[128px] <= src/pages/issue/case55.vue */
 .h-_b128px_B {
   height: 128rpx;
 }
+/* tokens: h-[200%] <= src/pages/index/index.vue */
 .h-_b200_v_B {
   height: 200%;
 }
+/* tokens: h-[20px] <= src/pages/index/index.vue */
 .h-_b20px_B {
   height: 20rpx;
 }
+/* tokens: h-[30px] <= src/pages/index/peer.vue */
 .h-_b30px_B {
   height: 30rpx;
 }
+/* tokens: h-[42.99px] <= src/pages/index/index.vue */
 .h-_b42_d99px_B {
   height: 42.99rpx;
 }
+/* tokens: h-[50.99px] <= src/pages/index/index.vue */
 .h-_b50_d99px_B {
   height: 50.99rpx;
 }
+/* tokens: h-[52px] <= src/pages/issue/case-dynamic-class.vue */
 .h-_b52px_B {
   height: 52rpx;
 }
+/* tokens: h-[77rpx] <= src/pages/issue/case-support-rpx.vue */
 .h-_b77rpx_B {
   height: 77rpx;
 }
+/* tokens: h-[88.88px] <= src/pages/issue/case55.vue */
 .h-_b88_d88px_B {
   height: 88.88rpx;
 }
+/* tokens: h-screen <= src/pages/index/index.vue */
 .h-screen {
   height: 100vh;
 }
+/* tokens: max-h-[100px] <= src/pages/index/index.vue */
 .max-h-_b100px_B {
   max-height: 100rpx;
 }
+/* tokens: min-h-[100px] <= src/pages/index/index.vue */
 .min-h-_b100px_B {
   min-height: 100rpx;
 }
+/* tokens: w-10 <= src/pages/index/index.vue */
 .w-10 {
   width: 80rpx;
 }
+/* tokens: w-16 <= src/pages/issue/issue470.vue */
 .w-16 {
   width: 128rpx;
 }
+/* tokens: w-2 <= src/pages/index/index.vue */
 .w-2 {
   width: 16rpx;
 }
+/* tokens: w-20 <= src/pages/index/peer.vue */
 .w-20 {
   width: 160rpx;
 }
+/* tokens: w-24 <= src/pages/index/daisyui.vue */
 .w-24 {
   width: 192rpx;
 }
+/* tokens: w-32 <= src/pages/index/index.vue */
 .w-32 {
   width: 256rpx;
 }
+/* tokens: w-5 <= src/pages/index/index.vue */
 .w-5 {
   width: 40rpx;
 }
+/* tokens: w-[100px] <= src/pages/index/index.vue */
 .w-_b100px_B {
   width: 100rpx;
 }
+/* tokens: w-[20px] <= src/pages/index/index.vue */
 .w-_b20px_B {
   width: 20rpx;
 }
+/* tokens: w-[222px] <= src/pages/issue/case55.vue */
 .w-_b222px_B {
   width: 222rpx;
 }
+/* tokens: w-[242px] <= src/pages/issue/case55.vue */
 .w-_b242px_B {
   width: 242rpx;
 }
+/* tokens: w-[300rpx] <= src/pages/index/index.vue */
 .w-_b300rpx_B {
   width: 300rpx;
 }
+/* tokens: w-[323px] <= src/pages/index/peer.vue */
 .w-_b323px_B {
   width: 323rpx;
 }
+/* tokens: w-[33.33px] <= src/pages/issue/case55.vue */
 .w-_b33_d33px_B {
   width: 33.33rpx;
 }
+/* tokens: w-[43.1px] <= src/pages/index/index.vue */
 .w-_b43_d1px_B {
   width: 43.1rpx;
 }
+/* tokens: w-[50px] <= src/pages/index/peer.vue */
 .w-_b50px_B {
   width: 50rpx;
 }
+/* tokens: w-[52px] <= src/pages/issue/case-dynamic-class.vue */
 .w-_b52px_B {
   width: 52rpx;
 }
+/* tokens: w-[61.1px] <= src/pages/index/index.vue */
 .w-_b61_d1px_B {
   width: 61.1rpx;
 }
+/* tokens: w-[77rpx] <= src/pages/issue/case-support-rpx.vue */
 .w-_b77rpx_B {
   width: 77rpx;
 }
+/* tokens: w-screen <= src/pages/index/index.vue */
 .w-screen {
   width: 100vw;
 }
+/* tokens: min-w-[300rpx] <= src/pages/index/index.vue */
 .min-w-_b300rpx_B {
   min-width: 300rpx;
 }
+/* tokens: max-w-[300rpx] <= src/pages/index/index.vue */
 .max-w-_b300rpx_B {
   max-width: 300rpx;
 }
+/* tokens: origin-[100rpx_111rpx] <= src/pages/issue/case-support-rpx.vue */
 .origin-_b100rpx_111rpx_B {
   transform-origin: 100rpx 111rpx;
 }
+/* tokens: translate-y-[17rpx] <= src/pages/issue/case-support-rpx.vue */
 .translate-y-_b17rpx_B {
   --tw-translate-y: 17rpx;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y));
 }
+/* tokens: rotate-[10deg] <= src/pages/index/index.vue */
 .rotate-_b10deg_B {
   --tw-rotate: 10deg;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
     scaleY(var(--tw-scale-y));
 }
+/* tokens: cursor-not-allowed <= src/pages/index/peer.vue */
 .cursor-not-allowed {
   cursor: not-allowed;
 }
+/* tokens: grid-cols-3 <= src/pages/index/index.vue */
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
+/* tokens: flex-col <= src/pages/index/index.vue */
 .flex-col {
   flex-direction: column;
 }
+/* tokens: items-center <= src/pages/index/index.vue */
 .items-center {
   align-items: center;
 }
+/* tokens: justify-center <= src/pages/index/index.vue */
 .justify-center {
   justify-content: center;
 }
+/* tokens: space-x-2.5 <= src/pages/index/peer.vue */
 .space-x-2_d5 > view + view,
 .space-x-2_d5 > view + text,
 .space-x-2_d5 > text + view,
@@ -6951,6 +7289,7 @@ text,
   margin-right: calc(20rpx * var(--tw-space-x-reverse));
   margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
 }
+/* tokens: space-y-4 <= src/pages/index/index.vue */
 .space-y-4 > view + view,
 .space-y-4 > view + text,
 .space-y-4 > text + view,
@@ -6959,6 +7298,7 @@ text,
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
+/* tokens: space-y-[1.6rem] <= src/pages/index/index.vue */
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
 .space-y-_b1_d6rem_B > text + view,
@@ -6967,6 +7307,7 @@ text,
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
+/* tokens: space-y-[11rpx] <= src/pages/issue/case-support-rpx.vue */
 .space-y-_b11rpx_B > view + view,
 .space-y-_b11rpx_B > view + text,
 .space-y-_b11rpx_B > text + view,
@@ -6975,6 +7316,7 @@ text,
   margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
 }
+/* tokens: divide-x-[10px] <= src/pages/index/index.vue */
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
 .divide-x-_b10px_B > text + view,
@@ -6983,6 +7325,7 @@ text,
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
 }
+/* tokens: divide-x-[3px] <= src/pages/issue/case-support-rpx.vue */
 .divide-x-_b3px_B > view + view,
 .divide-x-_b3px_B > view + text,
 .divide-x-_b3px_B > text + view,
@@ -6991,12 +7334,14 @@ text,
   border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
 }
+/* tokens: divide-solid <= src/pages/index/index.vue */
 .divide-solid > view + view,
 .divide-solid > view + text,
 .divide-solid > text + view,
 .divide-solid > text + text {
   border-style: solid;
 }
+/* tokens: divide-[#010101] <= src/pages/index/index.vue */
 .divide-_b_h010101_B > view + view,
 .divide-_b_h010101_B > view + text,
 .divide-_b_h010101_B > text + view,
@@ -7004,353 +7349,452 @@ text,
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
+/* tokens: divide-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .divide-_b3rpx_B > view + view,
 .divide-_b3rpx_B > view + text,
 .divide-_b3rpx_B > text + view,
 .divide-_b3rpx_B > text + text {
   border-width: 3rpx;
 }
+/* tokens: overflow-hidden <= src/components/TestCase55.vue */
 .overflow-hidden {
   overflow: hidden;
 }
+/* tokens: rounded <= src/pages/index/daisyui.vue, src/pages/index/peer.vue */
 .rounded {
   border-radius: 8rpx;
 }
+/* tokens: rounded-[12rpx] <= src/pages/issue/case-support-rpx.vue */
 .rounded-_b12rpx_B {
   border-radius: 12rpx;
 }
+/* tokens: rounded-[40px] <= src/pages/index/index.vue */
 .rounded-_b40px_B {
   border-radius: 40rpx;
 }
+/* tokens: rounded-md <= src/pages/index/index.vue */
 .rounded-md {
   border-radius: 12rpx;
 }
+/* tokens: border <= src/pages/index/index.vue, src/pages/index/peer.vue */
+.border {
+  border-width: 1rpx;
+}
+/* tokens: border-4 <= src/pages/index/peer.vue */
+.border-4 {
+  border-width: 4rpx;
+}
+/* tokens: border-[10px] <= src/pages/index/index.vue */
+.border-_b10px_B {
+  border-width: 10rpx;
+}
+/* tokens: border-[10rpx] <= src/pages/index/index.vue */
+.border-_b10rpx_B {
+  border-width: 10rpx;
+}
+/* tokens: border-[7rpx] <= src/pages/issue/case-support-rpx.vue */
+.border-_b7rpx_B {
+  border-width: 7rpx;
+}
+/* tokens: border-b-[4rpx] <= src/pages/index/index.vue */
+.border-b-_b4rpx_B {
+  border-bottom-width: 4rpx;
+}
+/* tokens: border-t-[3rpx] <= src/pages/issue/case-support-rpx.vue */
+.border-t-_b3rpx_B {
+  border-top-width: 3rpx;
+}
+/* tokens: border-t-[4px] <= src/pages/index/index.vue */
+.border-t-_b4px_B {
+  border-top-width: 4rpx;
+}
+/* tokens: border-solid <= src/pages/index/index.vue */
+.border-solid {
+  border-style: solid;
+}
+/* tokens: border-none <= src/pages/index/index.vue */
+.border-none {
+  border-style: none;
+}
+/* tokens: !border-primary <= src/pages/index/index.vue */
 ._eborder-primary {
   --tw-border-opacity: 1 !important;
   border-color: rgba(69, 163, 250, var(--tw-border-opacity, 1)) !important;
 }
-.border {
-  border-width: 1rpx;
-}
-.border-4 {
-  border-width: 4rpx;
-}
-.border-_b10px_B {
-  border-width: 10rpx;
-}
-.border-_b10rpx_B {
-  border-width: 10rpx;
-}
-.border-_b7rpx_B {
-  border-width: 7rpx;
-}
+/* tokens: border-[#098765] <= src/pages/index/index.vue */
 .border-_b_h098765_B {
   --tw-border-opacity: 1;
   border-color: rgba(9, 135, 101, var(--tw-border-opacity, 1));
 }
+/* tokens: border-[red] <= src/pages/index/index.vue */
 .border-_bred_B {
   --tw-border-opacity: 1;
   border-color: rgba(255, 0, 0, var(--tw-border-opacity, 1));
 }
-.border-b-_b4rpx_B {
-  border-bottom-width: 4rpx;
-}
+/* tokens: border-gray-400 <= src/pages/index/peer.vue */
 .border-gray-400 {
   --tw-border-opacity: 1;
   border-color: rgba(156, 163, 175, var(--tw-border-opacity, 1));
 }
-.border-none {
-  border-style: none;
-}
-.border-opacity-_b0_d44_B {
-  --tw-border-opacity: 0.44;
-}
-.border-solid {
-  border-style: solid;
-}
-.border-t-_b3rpx_B {
-  border-top-width: 3rpx;
-}
-.border-t-_b4px_B {
-  border-top-width: 4rpx;
-}
+/* tokens: border-transparent <= src/pages/index/peer.vue */
 .border-transparent {
   border-color: transparent;
 }
+/* tokens: border-opacity-[0.44] <= src/pages/index/index.vue */
+.border-opacity-_b0_d44_B {
+  --tw-border-opacity: 0.44;
+}
+/* tokens: !bg-green-500 <= src/pages/index/index.vue */
 ._ebg-green-500 {
   --tw-bg-opacity: 1 !important;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1)) !important;
 }
+/* tokens: bg-[#123324] <= src/pages/index/peer.vue */
 .bg-_b_h123324_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 51, 36, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#123456] <= src/pages/index/index.vue, src/pages/issue/case-dynamic-class.vue */
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#3482f2] <= src/pages/index/index.vue */
 .bg-_b_h3482f2_B {
   --tw-bg-opacity: 1;
   background-color: rgba(52, 130, 242, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#410000] <= src/pages/index/index.vue */
 .bg-_b_h410000_B {
   --tw-bg-opacity: 1;
   background-color: rgba(65, 0, 0, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#4268EA] <= src/pages/index/index.vue */
 .bg-_b_h4268EA_B {
   --tw-bg-opacity: 1;
   background-color: rgba(66, 104, 234, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#434332] <= src/pages/index/peer.vue */
 .bg-_b_h434332_B {
   --tw-bg-opacity: 1;
   background-color: rgba(67, 67, 50, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#434354] <= src/pages/index/index.vue */
 .bg-_b_h434354_B {
   --tw-bg-opacity: 1;
   background-color: rgba(67, 67, 84, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#654874] <= src/subs/demo/components/com.vue */
 .bg-_b_h654874_B {
   --tw-bg-opacity: 1;
   background-color: rgba(101, 72, 116, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#666600] <= src/pages/index/index.vue */
 .bg-_b_h666600_B {
   --tw-bg-opacity: 1;
   background-color: rgba(102, 102, 0, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#955443] <= src/pages/issue/case55.vue */
 .bg-_b_h955443_B {
   --tw-bg-opacity: 1;
   background-color: rgba(149, 84, 67, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#987654] <= src/pages/issue/case55.vue */
 .bg-_b_h987654_B {
   --tw-bg-opacity: 1;
   background-color: rgba(152, 118, 84, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#999999] <= src/pages/index/index.vue */
 .bg-_b_h999999_B {
   --tw-bg-opacity: 1;
   background-color: rgba(153, 153, 153, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#B91C1C] <= src/pages/index/peer.vue */
 .bg-_b_hB91C1C_B {
   --tw-bg-opacity: 1;
   background-color: rgba(185, 28, 28, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#c65ece] <= src/pages/index/peer.vue */
 .bg-_b_hc65ece_B {
   --tw-bg-opacity: 1;
   background-color: rgba(198, 94, 206, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[#e6e6e6] <= src/pages/index/index.vue */
 .bg-_b_he6e6e6_B {
   --tw-bg-opacity: 1;
   background-color: rgba(230, 230, 230, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-[yellow] <= src/pages/issue/case55.vue */
 .bg-_byellow_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 0, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-300 <= src/pages/index/peer.vue */
 .bg-amber-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(252, 211, 77, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-500 <= src/pages/index/index.vue */
 .bg-amber-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(245, 158, 11, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-600 <= src/pages/index/peer.vue */
 .bg-amber-600 {
   --tw-bg-opacity: 1;
   background-color: rgba(217, 119, 6, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-700 <= src/pages/index/peer.vue */
 .bg-amber-700 {
   --tw-bg-opacity: 1;
   background-color: rgba(180, 83, 9, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-amber-800 <= src/pages/index/peer.vue */
 .bg-amber-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 64, 14, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-300 <= src/pages/index/index.vue */
 .bg-blue-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(147, 197, 253, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-400 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .bg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-500 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-blue-500/50 <= src/pages/index/index.vue */
 .bg-blue-500_f50 {
   background-color: rgba(59, 130, 246, 0.5);
 }
+/* tokens: bg-cyan-500 <= src/pages/index/index.vue */
 .bg-cyan-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(6, 182, 212, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-gray-100 <= src/pages/index/index.vue */
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgba(243, 244, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-gray-300 <= src/pages/index/peer.vue */
 .bg-gray-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(209, 213, 219, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-green-500 <= src/pages/index/index.vue */
 .bg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-pink-500 <= src/pages/index/index.vue */
 .bg-pink-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(236, 72, 153, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-red-400 <= src/pages/index/index.vue */
 .bg-red-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-red-500 <= src/pages/index/index.vue */
 .bg-red-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(239, 68, 68, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-red-500/50 <= src/pages/index/index.vue */
 .bg-red-500_f50 {
   background-color: rgba(239, 68, 68, 0.5);
 }
+/* tokens: bg-sky-500 <= src/pages/index/index.vue */
 .bg-sky-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(14, 165, 233, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-white <= src/pages/index/peer.vue, src/pages/issue/case55.vue */
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
 }
+/* tokens: bg-opacity-[0.54] <= src/pages/index/index.vue */
 .bg-opacity-_b0_d54_B {
   --tw-bg-opacity: 0.54;
 }
+/* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index/index.vue */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
 }
+/* tokens: bg-gradient-to-b <= src/pages/index/peer.vue */
 .bg-gradient-to-b {
   background-image: linear-gradient(to bottom, var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-t <= src/pages/index/peer.vue */
 .bg-gradient-to-t {
   background-image: linear-gradient(to top, var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-tr <= src/pages/index/peer.vue */
 .bg-gradient-to-tr {
   background-image: linear-gradient(to top right, var(--tw-gradient-stops));
 }
+/* tokens: from-[#2f73f1] <= src/pages/index/peer.vue */
 .from-_b_h2f73f1_B {
   --tw-gradient-from: #2f73f1 var(--tw-gradient-from-position);
   --tw-gradient-to: rgba(47, 115, 241, 0) var(--tw-gradient-to-position);
   --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
 }
+/* tokens: to-[#4bcefd] <= src/pages/index/peer.vue */
 .to-_b_h4bcefd_B {
   --tw-gradient-to: #4bcefd var(--tw-gradient-to-position);
 }
+/* tokens: p-3 <= src/pages/index/peer.vue */
 .p-3 {
   padding: 24rpx;
 }
+/* tokens: p-4 <= src/pages/issue/tailwind-children.vue */
 .p-4 {
   padding: 32rpx;
 }
+/* tokens: p-[20px] <= src/pages/index/index.vue */
 .p-_b20px_B {
   padding: 20rpx;
 }
+/* tokens: p-[5rpx] <= src/pages/issue/case-support-rpx.vue */
 .p-_b5rpx_B {
   padding: 5rpx;
 }
+/* tokens: px-2 <= src/pages/index/peer.vue */
 .px-2 {
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
+/* tokens: px-4 <= src/pages/index/peer.vue */
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
 }
+/* tokens: px-[32px] <= src/pages/index/peer.vue */
 .px-_b32px_B {
   padding-left: 32rpx;
   padding-right: 32rpx;
 }
+/* tokens: px-[35px] <= src/pages/index/peer.vue */
 .px-_b35px_B {
   padding-left: 35rpx;
   padding-right: 35rpx;
 }
+/* tokens: py-1 <= src/pages/index/peer.vue */
 .py-1 {
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
+/* tokens: py-2 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
 }
+/* tokens: indent-[11rpx] <= src/pages/issue/case-support-rpx.vue */
 .indent-_b11rpx_B {
   text-indent: 11rpx;
 }
+/* tokens: text-2xl <= src/pages/index/index.vue */
 .text-2xl {
   font-size: 48rpx;
   line-height: 64rpx;
 }
+/* tokens: text-[17rpx] <= src/pages/issue/case-support-rpx.vue */
 .text-_b17rpx_B {
   font-size: 17rpx;
 }
+/* tokens: text-[20px] <= src/pages/index/index.vue */
 .text-_b20px_B {
   font-size: 20rpx;
 }
+/* tokens: text-[22px] <= src/pages/index/index.vue */
 .text-_b22px_B {
   font-size: 22rpx;
 }
+/* tokens: text-[30px] <= src/pages/issue/case55.vue */
 .text-_b30px_B {
   font-size: 30rpx;
 }
+/* tokens: text-[30rpx] <= src/pages/index/index.vue */
 .text-_b30rpx_B {
   font-size: 30rpx;
 }
+/* tokens: text-[32px] <= src/pages/index/index.vue */
 .text-_b32px_B {
   font-size: 32rpx;
 }
+/* tokens: text-[32rpx] <= src/pages/index/index.vue */
 .text-_b32rpx_B {
   font-size: 32rpx;
 }
+/* tokens: text-[44px] <= src/subs/demo/components/com.vue */
 .text-_b44px_B {
   font-size: 44rpx;
 }
+/* tokens: text-[56.5rpx] <= src/subs/demo/pages/index.vue */
 .text-_b56_d5rpx_B {
   font-size: 56.5rpx;
 }
+/* tokens: text-[77rpx] <= src/subs/demo/pages/index.vue */
 .text-_b77rpx_B {
   font-size: 77rpx;
 }
+/* tokens: text-[length:calc(2*9.43px)] <= src/pages/index/index.vue */
 .text-_blength_ccalc_p2_x9_d43px_P_B {
   font-size: calc(2 * 9.43rpx);
 }
+/* tokens: text-[length:var(--my-var-length)] <= src/pages/index/index.vue */
 .text-_blength_cvar_p--my-var-length_P_B {
   font-size: var(--my-var-length);
 }
+/* tokens: text-base <= src/pages/index/peer.vue */
 .text-base {
   font-size: 32rpx;
   line-height: 48rpx;
 }
+/* tokens: text-sm <= src/pages/index/index.vue, src/pages/index/peer.vue, src/pages/issue/tailwind-children.vue */
 .text-sm {
   font-size: 28rpx;
   line-height: 40rpx;
 }
+/* tokens: !font-bold <= src/pages/index/index.vue */
 ._efont-bold {
   font-weight: 700 !important;
 }
+/* tokens: font-bold <= src/pages/index/index.vue */
 .font-bold {
   font-weight: 700;
 }
+/* tokens: font-semibold <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .font-semibold {
   font-weight: 600;
 }
+/* tokens: uppercase <= src/pages/index/peer.vue */
 .uppercase {
   text-transform: uppercase;
 }
+/* tokens: leading-[0.9] <= src/pages/index/index.vue */
 .leading-_b0_d9_B {
   line-height: 0.9;
 }
+/* tokens: leading-[23rpx] <= src/pages/issue/case-support-rpx.vue */
 .leading-_b23rpx_B {
   line-height: 23rpx;
 }
+/* tokens: !text-[#990000] <= src/pages/index/index.vue */
 ._etext-_b_h990000_B {
   --tw-text-opacity: 1 !important;
   color: rgba(153, 0, 0, var(--tw-text-opacity, 1)) !important;
 }
+/* tokens: !text-primary <= src/pages/index/index.vue */
 ._etext-primary {
   --tw-text-opacity: 1 !important;
   color: rgba(69, 163, 250, var(--tw-text-opacity, 1)) !important;
@@ -7359,58 +7803,73 @@ text,
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
+/* tokens: text-[#0b138f] <= src/pages/index/peer.vue */
 .text-_b_h0b138f_B {
   --tw-text-opacity: 1;
   color: rgba(11, 19, 143, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#123456] <= src/pages/index/index.vue */
 .text-_b_h123456_B {
   --tw-text-opacity: 1;
   color: rgba(18, 52, 86, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#ab1932] <= src/subs/demo/pages/index.vue */
 .text-_b_hab1932_B {
   --tw-text-opacity: 1;
   color: rgba(171, 25, 50, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#abcdef] <= src/subs/demo/pages/index.vue */
 .text-_b_habcdef_B {
   --tw-text-opacity: 1;
   color: rgba(171, 205, 239, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#bada55] <= src/pages/index/index.vue */
 .text-_b_hbada55_B {
   --tw-text-opacity: 1;
   color: rgba(186, 218, 85, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#dddddd] <= src/pages/index/index.vue */
 .text-_b_hdddddd_B {
   --tw-text-opacity: 1;
   color: rgba(221, 221, 221, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#fafafa] <= src/pages/index/index.vue */
 .text-_b_hfafafa_B {
   --tw-text-opacity: 1;
   color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[color:var(--my-var)] <= src/pages/index/index.vue */
 .text-_bcolor_cvar_p--my-var_P_B {
   color: var(--my-var);
 }
+/* tokens: text-[red] <= src/pages/issue/case55.vue */
 .text-_bred_B {
   --tw-text-opacity: 1;
   color: rgba(255, 0, 0, var(--tw-text-opacity, 1));
 }
+/* tokens: text-[var(--my-var)] <= src/pages/index/index.vue */
 .text-_bvar_p--my-var_P_B {
   color: var(--my-var);
 }
+/* tokens: text-[var(--text\_sec\_light)] <= src/pages/index/index.vue */
 .text-_bvar_p--text_r_sec_r_light_P_B {
   color: var(--text_sec_light);
 }
+/* tokens: text-[var(--text_sec_light)] <= src/pages/index/index.vue */
 .text-_bvar_p--text_sec_light_P_B {
   color: var(--text sec light);
 }
+/* tokens: text-black <= src/pages/index/index.vue */
 .text-black {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 0, var(--tw-text-opacity, 1));
 }
+/* tokens: text-gray-800 <= src/pages/index/peer.vue */
 .text-gray-800 {
   --tw-text-opacity: 1;
   color: rgba(31, 41, 55, var(--tw-text-opacity, 1));
@@ -7419,194 +7878,244 @@ text,
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
 }
-.text-opacity-_b0_d19_B {
-  --tw-text-opacity: 0.19;
-}
+/* tokens: text-red-400 <= src/pages/issue/issue470.vue */
 .text-red-400 {
   --tw-text-opacity: 1;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1));
 }
+/* tokens: text-red-500 <= src/pages/issue/tailwind-children.vue */
 .text-red-500 {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: text-white <= src/pages/index/index.vue, src/pages/index/peer.vue, src/subs/demo/components/com.vue */
 .text-white {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+/* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
+.text-opacity-_b0_d19_B {
+  --tw-text-opacity: 0.19;
+}
+/* tokens: underline <= src/pages/index/index.vue */
 .underline {
   text-decoration-line: underline;
 }
+/* tokens: underline-offset-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .underline-offset-_b3rpx_B {
   text-underline-offset: 3rpx;
 }
+/* tokens: opacity-50 <= src/pages/index/index.vue, src/pages/index/peer.vue */
 .opacity-50 {
   opacity: 0.5;
 }
+/* tokens: shadow-[0px_2px_11px_0px_#00000a] <= src/pages/index/index.vue */
 .shadow-_b0px_2px_11px_0px__h00000a_B {
   --tw-shadow: 0rpx 2rpx 11rpx 0rpx #00000a;
   --tw-shadow-colored: 0rpx 2rpx 11rpx 0rpx var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
+/* tokens: shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] <= src/pages/index/index.vue */
 .shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B {
   --tw-shadow: 0rpx 2rpx 11rpx 0rpx rgba(0, 0, 0, 0.4);
   --tw-shadow-colored: 0rpx 2rpx 11rpx 0rpx var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
+/* tokens: shadow-amber-100 <= src/pages/index/index.vue */
 .shadow-amber-100 {
   --tw-shadow-color: #fef3c7;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-blue-100 <= src/pages/index/index.vue */
 .shadow-blue-100 {
   --tw-shadow-color: #dbeafe;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-cyan-100 <= src/pages/index/index.vue */
 .shadow-cyan-100 {
   --tw-shadow-color: #cffafe;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-green-100 <= src/pages/index/index.vue */
 .shadow-green-100 {
   --tw-shadow-color: #dcfce7;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: shadow-indigo-100 <= src/pages/index/index.vue */
 .shadow-indigo-100 {
   --tw-shadow-color: #e0e7ff;
   --tw-shadow: var(--tw-shadow-colored);
 }
+/* tokens: outline-[5rpx] <= src/pages/issue/case-support-rpx.vue */
 .outline-_b5rpx_B {
   outline-width: 5rpx;
 }
+/* tokens: outline-offset-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .outline-offset-_b3rpx_B {
   outline-offset: 3rpx;
 }
+/* tokens: ring-4 <= src/pages/index/index.vue */
 .ring-4 {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(4rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
 }
+/* tokens: ring-[10rpx] <= src/pages/issue/case-support-rpx.vue */
 .ring-_b10rpx_B {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(10rpx + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0, 0, 0, 0));
 }
+/* tokens: ring-pink-300 <= src/pages/index/index.vue */
 .ring-pink-300 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1));
 }
+/* tokens: ring-offset-[3rpx] <= src/pages/issue/case-support-rpx.vue */
 .ring-offset-_b3rpx_B {
   --tw-ring-offset-width: 3rpx;
 }
+/* tokens: blur <= src/utils/merge.ts */
 .blur {
   --tw-blur: blur(8rpx);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: blur-[2rpx] <= src/pages/issue/case-support-rpx.vue */
 .blur-_b2rpx_B {
   --tw-blur: blur(2rpx);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
 .filter {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
+/* tokens: backdrop-blur-[2rpx] <= src/pages/issue/case-support-rpx.vue */
 .backdrop-blur-_b2rpx_B {
   --tw-backdrop-blur: blur(2rpx);
   backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate)
     var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
+/* tokens: transition <= src/components/TestCase55.vue */
 .transition {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
+/* tokens: before:content-['*'] <= src/pages/issue/tailwind-children.vue */
 .before_ccontent-_b_a_x_a_B::before {
   --tw-content: '*';
   content: var(--tw-content);
 }
+/* tokens: before:content-['Festivus'] <= src/pages/index/index.vue */
 .before_ccontent-_b_aFestivus_a_B::before {
   --tw-content: 'Festivus';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
   --tw-content: 'moduleA 独立分包';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: after:border-none <= src/pages/index/index.vue */
 .after_cborder-none::after {
   content: var(--tw-content);
   border-style: none;
 }
+/* tokens: after:content-['v3_apply'] <= src/pages/index/index.vue */
 .after_ccontent-_b_av3_apply_a_B::after {
   --tw-content: 'v3 apply';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
 .after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
   --tw-content: '我是className';
   content: var(--tw-content);
 }
+/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
 .after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
   --tw-content: '我来自utils.filter.js';
   content: var(--tw-content);
 }
+/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
   --tw-content: \'我来自inline-wxs\';
   content: var(--tw-content);
 }
+/* tokens: odd:mb-2 <= src/pages/index/index.vue */
 .odd_cmb-2:nth-child(odd) {
   margin-bottom: 16rpx;
 }
+/* tokens: group <= src/pages/index/index.vue | published <= src/pages/index/index.vue | group-[.published]:text-green-500 <= src/pages/index/index.vue */
 .group.published .group-_b_dpublished_B_ctext-green-500 {
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
 }
+/* tokens: peer <= src/pages/index/peer.vue | peer-[.tapped]:bg-red-400 <= src/pages/index/peer.vue */
 .peer.tapped ~ .peer-_b_dtapped_B_cbg-red-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(248, 113, 113, var(--tw-bg-opacity, 1));
 }
+/* tokens: child:mr-2 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cmr-2 > view:not(.not-child) {
   margin-right: 16rpx;
 }
+/* tokens: child:inline-block <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cinline-block > view:not(.not-child) {
   display: inline-block;
 }
+/* tokens: child-['.child']:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child-_b_a_dchild_a_B_ctext-red-500 > view:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: child:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_ctext-red-500 > view:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: child:mr-2 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cmr-2 > text:not(.not-child) {
   margin-right: 16rpx;
 }
+/* tokens: child:inline-block <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_cinline-block > text:not(.not-child) {
   display: inline-block;
 }
+/* tokens: child-['.child']:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child-_b_a_dchild_a_B_ctext-red-500 > text:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: child:text-red-500 <= src/pages/issue/tailwind-children.vue | not-child) <= src/pages/issue/tailwind-children.vue */
 .child_ctext-red-500 > text:not(.not-child) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: heir:mr-2 <= src/pages/issue/tailwind-children.vue */
 .heir_cmr-2 view:not(.not-heir) {
   margin-right: 16rpx;
 }
+/* tokens: heir:text-red-500 <= src/pages/issue/tailwind-children.vue */
 .heir_ctext-red-500 view:not(.not-heir) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: heir:mr-2 <= src/pages/issue/tailwind-children.vue */
 .heir_cmr-2 text:not(.not-heir) {
   margin-right: 16rpx;
 }
+/* tokens: heir:text-red-500 <= src/pages/issue/tailwind-children.vue */
 .heir_ctext-red-500 text:not(.not-heir) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
@@ -7647,13 +8156,16 @@ text,
   --tw-text-opacity: 1;
   color: rgba(234, 179, 8, var(--tw-text-opacity, 1));
 }
+/* tokens: child-text:mr-2 <= src/pages/issue/tailwind-children.vue */
 .child-text_cmr-2 > text:not(.not-child-text) {
   margin-right: 16rpx;
 }
+/* tokens: child-text:text-red-500 <= src/pages/issue/tailwind-children.vue */
 .child-text_ctext-red-500 > text:not(.not-child-text) {
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: heir-text:text-green-500 <= src/pages/issue/tailwind-children.vue */
 .heir-text_ctext-green-500 text:not(.not-heir-text) {
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
@@ -7662,69 +8174,85 @@ text,
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
+/* tokens: ifdef-[H5_||_MP-WEIXIN]:bg-blue-300 <= src/pages/index/index.vue */
 .ifdef-_bH5__o_o_MP-WEIXIN_B_cbg-blue-300 {
   --tw-bg-opacity: 1;
   background-color: rgba(147, 197, 253, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifdef-[H5||MP-WEIXIN]:bg-blue-400 <= src/pages/index/index.vue */
 .ifdef-_bH5_o_oMP-WEIXIN_B_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifdef-[MP-WEIXIN]:bg-[#1167ff] <= src/pages/index/index.vue */
 .ifdef-_bMP-WEIXIN_B_cbg-_b_h1167ff_B {
   --tw-bg-opacity: 1;
   background-color: rgba(17, 103, 255, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifdef-[MP-WEIXIN]:bg-blue-500 <= src/pages/index/index.vue */
 .ifdef-_bMP-WEIXIN_B_cbg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
 }
+/* tokens: ifndef-[H5]:text-[#0055aa] <= src/pages/index/index.vue */
 .ifndef-_bH5_B_ctext-_b_h0055aa_B {
   --tw-text-opacity: 1;
   color: rgba(0, 85, 170, var(--tw-text-opacity, 1));
 }
+/* tokens: wx:bg-blue-400 <= src/pages/index/index.vue */
 .wx_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: mv:bg-blue-400 <= src/pages/index/index.vue */
 .mv_cbg-blue-400 {
   --tw-bg-opacity: 1;
   background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
 }
+/* tokens: dark <= src/pages/index/index.vue | dark:bg-green-500 <= src/pages/index/index.vue */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
+/* tokens: dark <= src/pages/index/index.vue | dark:bg-zinc-800 <= src/pages/index/index.vue */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
 }
+/* tokens: dark <= src/pages/index/index.vue | dark:text-yellow-400 <= src/pages/index/index.vue */
 .dark view.dark_ctext-yellow-400,
 .dark text.dark_ctext-yellow-400 {
   --tw-text-opacity: 1;
   color: rgba(250, 204, 21, var(--tw-text-opacity, 1));
 }
 @media (min-width: 1536px) {
+  /* tokens: 2xl:text-base <= src/pages/index/index.vue */
   ._2xl_ctext-base {
     font-size: 32rpx;
     line-height: 48rpx;
   }
+  /* tokens: 2xl:text-[red] <= src/pages/index/index.vue */
   ._2xl_ctext-_bred_B {
     --tw-text-opacity: 1;
     color: rgba(255, 0, 0, var(--tw-text-opacity, 1));
   }
 }
+/* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/index/index.vue | u-count-down__text <= src/pages/index/index.vue */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
   --tw-text-opacity: 1 !important;
   color: rgba(248, 113, 113, var(--tw-text-opacity, 1)) !important;
 }
+/* tokens: peer~ <= src/pages/index/peer.vue | peer-xxx <= src/pages/index/peer.vue */
 .peer ~ .peer-xxx {
   color: red;
 }
+/* tokens: xxx~ <= src/pages/index/peer.vue */
 .xxx ~ .xxx-invalid:visible {
   visibility: visible;
 }
+/* tokens: peersdraft~ <= src/pages/index/peer.vue | peer-checkedsdraftctext-sky-500 <= src/pages/index/peer.vue */
 .peersdraft ~ .peer-checkedsdraftctext-sky-500 {
   --tw-text-opacity: 1;
   color: rgb(14, 165, 233, var(--tw-text-opacity));
@@ -7826,14 +8354,17 @@ text,
   border-style: solid;
   border-color: currentColor;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose {
   color: var(--tw-prose-body);
   max-width: 65ch;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose .p {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose [class~='lead'] {
   color: var(--tw-prose-lead);
   font-size: 1.25em;
@@ -7841,69 +8372,86 @@ text,
   margin-top: 1.2em;
   margin-bottom: 1.2em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | a <= index.html, src/pages/index/peer.vue, src/pages/issue/typography.js */
 .prose .a {
   color: var(--tw-prose-links);
   text-decoration: underline;
   font-weight: 500;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | strong <= src/pages/issue/typography.js */
 .prose .strong {
   color: var(--tw-prose-bold);
   font-weight: 600;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | a <= index.html, src/pages/index/peer.vue, src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .a .strong {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .blockquote .strong {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .thead .th .strong {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose .ol {
   list-style-type: decimal;
   margin-top: 1.25em;
   margin-bottom: 1.25em;
   padding-left: 1.625em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose .ol[type='A'] {
   list-style-type: upper-alpha;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose .ol[type='a'] {
   list-style-type: lower-alpha;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose .ol[type='I'] {
   list-style-type: upper-roman;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose .ol[type='i'] {
   list-style-type: lower-roman;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose .ol[type='1'] {
   list-style-type: decimal;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js */
 .prose .ul {
   list-style-type: disc;
   margin-top: 1.25em;
   margin-bottom: 1.25em;
   padding-left: 1.625em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose .ol > .li::marker {
   font-weight: 400;
   color: var(--tw-prose-counters);
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose .ul > .li::marker {
   color: var(--tw-prose-bullets);
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .dt {
   color: var(--tw-prose-headings);
   font-weight: 600;
   margin-top: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | hr <= src/pages/issue/typography.js */
 .prose .hr {
   border-color: var(--tw-prose-hr);
   border-top-width: 1rpx;
   margin-top: 3em;
   margin-bottom: 3em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js */
 .prose .blockquote {
   font-weight: 500;
   font-style: italic;
@@ -7915,12 +8463,15 @@ text,
   margin-bottom: 1.6em;
   padding-left: 1em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose .blockquote .p:first-of-type::before {
   content: open-quote;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose .blockquote .p:last-of-type::after {
   content: close-quote;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js */
 .prose .h1 {
   color: var(--tw-prose-headings);
   font-weight: 800;
@@ -7929,10 +8480,12 @@ text,
   margin-bottom: 0.8888889em;
   line-height: 1.1111111;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .h1 .strong {
   font-weight: 900;
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js */
 .prose .h2 {
   color: var(--tw-prose-headings);
   font-weight: 700;
@@ -7941,10 +8494,12 @@ text,
   margin-bottom: 1em;
   line-height: 1.3333333;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .h2 .strong {
   font-weight: 800;
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js */
 .prose .h3 {
   color: var(--tw-prose-headings);
   font-weight: 600;
@@ -7953,10 +8508,12 @@ text,
   margin-bottom: 0.6em;
   line-height: 1.6;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .h3 .strong {
   font-weight: 700;
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h4 <= src/pages/issue/typography.js */
 .prose .h4 {
   color: var(--tw-prose-headings);
   font-weight: 600;
@@ -7964,19 +8521,23 @@ text,
   margin-bottom: 0.5em;
   line-height: 1.5;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h4 <= src/pages/issue/typography.js | strong <= src/pages/issue/typography.js */
 .prose .h4 .strong {
   font-weight: 700;
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | img <= src/pages/index/daisyui.vue, src/pages/issue/issue470.vue, src/pages/issue/typography.js */
 .prose .img {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .picture {
   display: block;
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | kbd <= src/pages/issue/typography.js */
 .prose .kbd {
   font-weight: 500;
   font-family: inherit;
@@ -7991,40 +8552,51 @@ text,
   padding-bottom: 0.1875em;
   padding-left: 0.375em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | code <= src/pages/issue/typography.js */
 .prose .code {
   color: var(--tw-prose-code);
   font-weight: 600;
   font-size: 0.875em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | code <= src/pages/issue/typography.js */
 .prose .code::before {
   content: '`';
 }
+/* tokens: prose <= src/pages/issue/typography.vue | code <= src/pages/issue/typography.js */
 .prose .code::after {
   content: '`';
 }
+/* tokens: prose <= src/pages/issue/typography.vue | a <= index.html, src/pages/index/peer.vue, src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .a .code {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .h1 .code {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .h2 .code {
   color: inherit;
   font-size: 0.875em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .h3 .code {
   color: inherit;
   font-size: 0.9em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | h4 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .h4 .code {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .blockquote .code {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .thead .th .code {
   color: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | pre <= src/pages/issue/typography.js */
 .prose .pre {
   color: var(--tw-prose-pre-code);
   background-color: var(--tw-prose-pre-bg);
@@ -8040,6 +8612,7 @@ text,
   padding-bottom: 0.8571429em;
   padding-left: 1.1428571em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | pre <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .pre .code {
   background-color: transparent;
   border-width: 0;
@@ -8051,12 +8624,15 @@ text,
   font-family: inherit;
   line-height: inherit;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | pre <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .pre .code::before {
   content: none;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | pre <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose .pre .code::after {
   content: none;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | table <= src/pages/issue/typography.js */
 .prose .table {
   width: 100%;
   table-layout: auto;
@@ -8066,10 +8642,12 @@ text,
   font-size: 0.875em;
   line-height: 1.7142857;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js */
 .prose .thead {
   border-bottom-width: 1rpx;
   border-bottom-color: var(--tw-prose-th-borders);
 }
+/* tokens: prose <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose .thead .th {
   color: var(--tw-prose-headings);
   font-weight: 600;
@@ -8078,34 +8656,42 @@ text,
   padding-bottom: 0.5714286em;
   padding-left: 0.5714286em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | tr <= src/pages/issue/typography.js */
 .prose .tbody .tr {
   border-bottom-width: 1rpx;
   border-bottom-color: var(--tw-prose-td-borders);
 }
+/* tokens: prose <= src/pages/issue/typography.vue | tr <= src/pages/issue/typography.js */
 .prose .tbody .tr:last-child {
   border-bottom-width: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose .tbody .td {
   vertical-align: baseline;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .tfoot {
   border-top-width: 1rpx;
   border-top-color: var(--tw-prose-th-borders);
 }
+/* tokens: prose <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose .tfoot .td {
   vertical-align: top;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | figure <= src/pages/issue/typography.js */
 .prose .figure > view,
 .prose .figure > text {
   margin-top: 0;
   margin-bottom: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | figcaption <= src/pages/issue/typography.js */
 .prose .figcaption {
   color: var(--tw-prose-captions);
   font-size: 0.875em;
   line-height: 1.4285714;
   margin-top: 0.8571429em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose {
   --tw-prose-body: #374151;
   --tw-prose-headings: #111827;
@@ -8146,52 +8732,67 @@ text,
   font-size: 32rpx;
   line-height: 1.75;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | img <= src/pages/index/daisyui.vue, src/pages/issue/issue470.vue, src/pages/issue/typography.js */
 .prose .picture > .img {
   margin-top: 0;
   margin-bottom: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | video <= src/pages/issue/typography.js */
 .prose .video {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | li <= src/pages/issue/typography.js */
 .prose .li {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose .ol > .li {
   padding-left: 0.375em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose .ul > .li {
   padding-left: 0.375em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose > .ul > .li .p {
   margin-top: 0.75em;
   margin-bottom: 0.75em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ul > .li > view:first-child {
   margin-top: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ul > .li > text:first-child {
   margin-top: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ul > .li > view:last-child {
   margin-bottom: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ul > .li > text:last-child {
   margin-bottom: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ol > .li > view:first-child {
   margin-top: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ol > .li > text:first-child {
   margin-top: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ol > .li > view:last-child {
   margin-bottom: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose > .ol > .li > text:last-child {
   margin-bottom: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | ol <= src/pages/issue/typography.js */
 .prose .ul .ul,
 .prose .ul .ol,
 .prose .ol .ul,
@@ -8199,36 +8800,45 @@ text,
   margin-top: 0.75em;
   margin-bottom: 0.75em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .dl {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .dd {
   margin-top: 0.5em;
   padding-left: 1.625em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .hr + view,
 .prose .hr + text {
   margin-top: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .h2 + view,
 .prose .h2 + text {
   margin-top: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .h3 + view,
 .prose .h3 + text {
   margin-top: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue */
 .prose .h4 + view,
 .prose .h4 + text {
   margin-top: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose .thead .th:first-child {
   padding-left: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose .thead .th:last-child {
   padding-right: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose .tbody .td,
 .prose .tfoot .td {
   padding-top: 0.5714286em;
@@ -8236,76 +8846,92 @@ text,
   padding-bottom: 0.5714286em;
   padding-left: 0.5714286em;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose .tbody .td:first-child,
 .prose .tfoot .td:first-child {
   padding-left: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose .tbody .td:last-child,
 .prose .tfoot .td:last-child {
   padding-right: 0;
 }
+/* tokens: prose <= src/pages/issue/typography.vue | figure <= src/pages/issue/typography.js */
 .prose .figure {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm {
   font-size: 28rpx;
   line-height: 1.7142857;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose-sm .p {
   margin-top: 1.1428571em;
   margin-bottom: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm [class~='lead'] {
   font-size: 1.2857143em;
   line-height: 1.5555556;
   margin-top: 0.8888889em;
   margin-bottom: 0.8888889em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js */
 .prose-sm .blockquote {
   margin-top: 1.3333333em;
   margin-bottom: 1.3333333em;
   padding-left: 1.1111111em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js */
 .prose-sm .h1 {
   font-size: 2.1428571em;
   margin-top: 0;
   margin-bottom: 0.8em;
   line-height: 1.2;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js */
 .prose-sm .h2 {
   font-size: 1.4285714em;
   margin-top: 1.6em;
   margin-bottom: 0.8em;
   line-height: 1.4;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js */
 .prose-sm .h3 {
   font-size: 1.2857143em;
   margin-top: 1.5555556em;
   margin-bottom: 0.4444444em;
   line-height: 1.5555556;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | h4 <= src/pages/issue/typography.js */
 .prose-sm .h4 {
   margin-top: 1.4285714em;
   margin-bottom: 0.5714286em;
   line-height: 1.4285714;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | img <= src/pages/index/daisyui.vue, src/pages/issue/issue470.vue, src/pages/issue/typography.js */
 .prose-sm .img {
   margin-top: 1.7142857em;
   margin-bottom: 1.7142857em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .picture {
   margin-top: 1.7142857em;
   margin-bottom: 1.7142857em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | img <= src/pages/index/daisyui.vue, src/pages/issue/issue470.vue, src/pages/issue/typography.js */
 .prose-sm .picture > .img {
   margin-top: 0;
   margin-bottom: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | video <= src/pages/issue/typography.js */
 .prose-sm .video {
   margin-top: 1.7142857em;
   margin-bottom: 1.7142857em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | kbd <= src/pages/issue/typography.js */
 .prose-sm .kbd {
   font-size: 0.8571429em;
   border-radius: 10rpx;
@@ -8314,15 +8940,19 @@ text,
   padding-bottom: 0.1428571em;
   padding-left: 0.3571429em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | code <= src/pages/issue/typography.js */
 .prose-sm .code {
   font-size: 0.8571429em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose-sm .h2 .code {
   font-size: 0.9em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose-sm .h3 .code {
   font-size: 0.8888889em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | pre <= src/pages/issue/typography.js */
 .prose-sm .pre {
   font-size: 0.8571429em;
   line-height: 1.6666667;
@@ -8334,54 +8964,69 @@ text,
   padding-bottom: 0.6666667em;
   padding-left: 1em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose-sm .ol {
   margin-top: 1.1428571em;
   margin-bottom: 1.1428571em;
   padding-left: 1.5714286em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js */
 .prose-sm .ul {
   margin-top: 1.1428571em;
   margin-bottom: 1.1428571em;
   padding-left: 1.5714286em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | li <= src/pages/issue/typography.js */
 .prose-sm .li {
   margin-top: 0.2857143em;
   margin-bottom: 0.2857143em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm .ol > .li {
   padding-left: 0.4285714em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm .ul > .li {
   padding-left: 0.4285714em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose-sm > .ul > .li .p {
   margin-top: 0.5714286em;
   margin-bottom: 0.5714286em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ul > .li > view:first-child {
   margin-top: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ul > .li > text:first-child {
   margin-top: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ul > .li > view:last-child {
   margin-bottom: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ul > .li > text:last-child {
   margin-bottom: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ol > .li > view:first-child {
   margin-top: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ol > .li > text:first-child {
   margin-top: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ol > .li > view:last-child {
   margin-bottom: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-sm > .ol > .li > text:last-child {
   margin-bottom: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | ol <= src/pages/issue/typography.js */
 .prose-sm .ul .ul,
 .prose-sm .ul .ol,
 .prose-sm .ol .ul,
@@ -8389,52 +9034,65 @@ text,
   margin-top: 0.5714286em;
   margin-bottom: 0.5714286em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .dl {
   margin-top: 1.1428571em;
   margin-bottom: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .dt {
   margin-top: 1.1428571em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .dd {
   margin-top: 0.2857143em;
   padding-left: 1.5714286em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | hr <= src/pages/issue/typography.js */
 .prose-sm .hr {
   margin-top: 2.8571429em;
   margin-bottom: 2.8571429em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .hr + view,
 .prose-sm .hr + text {
   margin-top: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .h2 + view,
 .prose-sm .h2 + text {
   margin-top: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .h3 + view,
 .prose-sm .h3 + text {
   margin-top: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue */
 .prose-sm .h4 + view,
 .prose-sm .h4 + text {
   margin-top: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | table <= src/pages/issue/typography.js */
 .prose-sm .table {
   font-size: 0.8571429em;
   line-height: 1.5;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose-sm .thead .th {
   padding-right: 1em;
   padding-bottom: 0.6666667em;
   padding-left: 1em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose-sm .thead .th:first-child {
   padding-left: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose-sm .thead .th:last-child {
   padding-right: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose-sm .tbody .td,
 .prose-sm .tfoot .td {
   padding-top: 0.6666667em;
@@ -8442,86 +9100,104 @@ text,
   padding-bottom: 0.6666667em;
   padding-left: 1em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose-sm .tbody .td:first-child,
 .prose-sm .tfoot .td:first-child {
   padding-left: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose-sm .tbody .td:last-child,
 .prose-sm .tfoot .td:last-child {
   padding-right: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | figure <= src/pages/issue/typography.js */
 .prose-sm .figure {
   margin-top: 1.7142857em;
   margin-bottom: 1.7142857em;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | figure <= src/pages/issue/typography.js */
 .prose-sm .figure > view,
 .prose-sm .figure > text {
   margin-top: 0;
   margin-bottom: 0;
 }
+/* tokens: prose-sm <= src/pages/issue/typography.vue | figcaption <= src/pages/issue/typography.js */
 .prose-sm .figcaption {
   font-size: 0.8571429em;
   line-height: 1.3333333;
   margin-top: 0.6666667em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl {
   font-size: 48rpx;
   line-height: 1.6666667;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose-2xl .p {
   margin-top: 1.3333333em;
   margin-bottom: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl [class~='lead'] {
   font-size: 1.25em;
   line-height: 1.4666667;
   margin-top: 1.0666667em;
   margin-bottom: 1.0666667em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | blockquote <= src/pages/issue/typography.js */
 .prose-2xl .blockquote {
   margin-top: 1.7777778em;
   margin-bottom: 1.7777778em;
   padding-left: 1.1111111em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js */
 .prose-2xl .h1 {
   font-size: 2.6666667em;
   margin-top: 0;
   margin-bottom: 0.875em;
   line-height: 1;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js */
 .prose-2xl .h2 {
   font-size: 2em;
   margin-top: 1.5em;
   margin-bottom: 0.8333333em;
   line-height: 1.0833333;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js */
 .prose-2xl .h3 {
   font-size: 1.5em;
   margin-top: 1.5555556em;
   margin-bottom: 0.6666667em;
   line-height: 1.2222222;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | h4 <= src/pages/issue/typography.js */
 .prose-2xl .h4 {
   margin-top: 1.6666667em;
   margin-bottom: 0.6666667em;
   line-height: 1.5;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | img <= src/pages/index/daisyui.vue, src/pages/issue/issue470.vue, src/pages/issue/typography.js */
 .prose-2xl .img {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .picture {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | img <= src/pages/index/daisyui.vue, src/pages/issue/issue470.vue, src/pages/issue/typography.js */
 .prose-2xl .picture > .img {
   margin-top: 0;
   margin-bottom: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | video <= src/pages/issue/typography.js */
 .prose-2xl .video {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | kbd <= src/pages/issue/typography.js */
 .prose-2xl .kbd {
   font-size: 0.8333333em;
   border-radius: 12rpx;
@@ -8530,15 +9206,19 @@ text,
   padding-bottom: 0.25em;
   padding-left: 0.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | code <= src/pages/issue/typography.js */
 .prose-2xl .code {
   font-size: 0.8333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose-2xl .h2 .code {
   font-size: 0.875em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js | code <= src/pages/issue/typography.js */
 .prose-2xl .h3 .code {
   font-size: 0.8888889em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | pre <= src/pages/issue/typography.js */
 .prose-2xl .pre {
   font-size: 0.8333333em;
   line-height: 1.8;
@@ -8550,54 +9230,69 @@ text,
   padding-bottom: 1.2em;
   padding-left: 1.6em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js */
 .prose-2xl .ol {
   margin-top: 1.3333333em;
   margin-bottom: 1.3333333em;
   padding-left: 1.5833333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js */
 .prose-2xl .ul {
   margin-top: 1.3333333em;
   margin-bottom: 1.3333333em;
   padding-left: 1.5833333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | li <= src/pages/issue/typography.js */
 .prose-2xl .li {
   margin-top: 0.5em;
   margin-bottom: 0.5em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl .ol > .li {
   padding-left: 0.4166667em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl .ul > .li {
   padding-left: 0.4166667em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js | p <= src/pages/issue/typography.js, src/utils/index.ts */
 .prose-2xl > .ul > .li .p {
   margin-top: 0.8333333em;
   margin-bottom: 0.8333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ul > .li > view:first-child {
   margin-top: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ul > .li > text:first-child {
   margin-top: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ul > .li > view:last-child {
   margin-bottom: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ul > .li > text:last-child {
   margin-bottom: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ol > .li > view:first-child {
   margin-top: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ol > .li > text:first-child {
   margin-top: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ol > .li > view:last-child {
   margin-bottom: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ol <= src/pages/issue/typography.js | li <= src/pages/issue/typography.js */
 .prose-2xl > .ol > .li > text:last-child {
   margin-bottom: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | ul <= src/pages/issue/typography.js | ol <= src/pages/issue/typography.js */
 .prose-2xl .ul .ul,
 .prose-2xl .ul .ol,
 .prose-2xl .ol .ul,
@@ -8605,52 +9300,65 @@ text,
   margin-top: 0.6666667em;
   margin-bottom: 0.6666667em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .dl {
   margin-top: 1.3333333em;
   margin-bottom: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .dt {
   margin-top: 1.3333333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .dd {
   margin-top: 0.5em;
   padding-left: 1.5833333em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | hr <= src/pages/issue/typography.js */
 .prose-2xl .hr {
   margin-top: 3em;
   margin-bottom: 3em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .hr + view,
 .prose-2xl .hr + text {
   margin-top: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .h2 + view,
 .prose-2xl .h2 + text {
   margin-top: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .h3 + view,
 .prose-2xl .h3 + text {
   margin-top: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue */
 .prose-2xl .h4 + view,
 .prose-2xl .h4 + text {
   margin-top: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | table <= src/pages/issue/typography.js */
 .prose-2xl .table {
   font-size: 0.8333333em;
   line-height: 1.4;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose-2xl .thead .th {
   padding-right: 0.6em;
   padding-bottom: 0.8em;
   padding-left: 0.6em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose-2xl .thead .th:first-child {
   padding-left: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | thead <= src/pages/issue/typography.js | th <= src/pages/issue/typography.js */
 .prose-2xl .thead .th:last-child {
   padding-right: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose-2xl .tbody .td,
 .prose-2xl .tfoot .td {
   padding-top: 0.8em;
@@ -8658,64 +9366,79 @@ text,
   padding-bottom: 0.8em;
   padding-left: 0.6em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose-2xl .tbody .td:first-child,
 .prose-2xl .tfoot .td:first-child {
   padding-left: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | td <= src/pages/index/index.vue, src/pages/issue/typography.js */
 .prose-2xl .tbody .td:last-child,
 .prose-2xl .tfoot .td:last-child {
   padding-right: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | figure <= src/pages/issue/typography.js */
 .prose-2xl .figure {
   margin-top: 2em;
   margin-bottom: 2em;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | figure <= src/pages/issue/typography.js */
 .prose-2xl .figure > view,
 .prose-2xl .figure > text {
   margin-top: 0;
   margin-bottom: 0;
 }
+/* tokens: prose-2xl <= src/pages/issue/typography.vue | figcaption <= src/pages/issue/typography.js */
 .prose-2xl .figcaption {
   font-size: 0.8333333em;
   line-height: 1.6;
   margin-top: 1em;
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .h1 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .h2 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | h3 <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .h3 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | h4 <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .h4 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | h5 <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .h5 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | h6 <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .h6 {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-headings:bg-red-100 <= src/pages/issue/typography.vue | th <= src/pages/issue/typography.js */
 .prose-headings_cbg-red-100 .th {
   --tw-bg-opacity: 1;
   background-color: rgba(254, 226, 226, var(--tw-bg-opacity, 1));
 }
+/* tokens: prose-h1:text-sky-500 <= src/pages/issue/typography.vue | h1 <= src/pages/issue/typography.js */
 .prose-h1_ctext-sky-500 .h1 {
   --tw-text-opacity: 1;
   color: rgba(14, 165, 233, var(--tw-text-opacity, 1));
 }
+/* tokens: prose-h2:text-yellow-500 <= src/pages/issue/typography.vue | h2 <= src/pages/issue/typography.js */
 .prose-h2_ctext-yellow-500 .h2 {
   --tw-text-opacity: 1;
   color: rgba(234, 179, 8, var(--tw-text-opacity, 1));
 }
+/* tokens: prose-h5:text-green-400 <= src/pages/issue/typography.vue | h5 <= src/pages/issue/typography.js */
 .prose-h5_ctext-green-400 .h5 {
   --tw-text-opacity: 1;
   color: rgba(74, 222, 128, var(--tw-text-opacity, 1));
@@ -8725,6 +9448,7 @@ text,
 ### u-button.wxss
 
 ```css
+/* tokens: u-button <= src/pages/index/index.vue */
 .u-button.data-v-e43777a0 {
   width: 100%;
   white-space: nowrap;
@@ -8733,6 +9457,7 @@ text,
   white-space: nowrap;
   line-height: 1;
 }
+/* tokens: u-button <= src/pages/index/index.vue */
 .u-button.data-v-e43777a0::before {
   position: absolute;
   top: 50%;
@@ -8770,6 +9495,7 @@ text,
 .u-button--plain.u-button--warning.data-v-e43777a0 {
   color: var(--up-warning, var(--u-warning, #f9ae3d));
 }
+/* tokens: u-button <= src/pages/index/index.vue */
 .u-button.data-v-e43777a0 {
   height: 40rpx;
   position: relative;

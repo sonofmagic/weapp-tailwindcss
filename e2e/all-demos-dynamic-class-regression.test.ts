@@ -248,6 +248,7 @@ async function readOutputFiles(entry: ProjectEntry) {
 
 function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: string, content: string }>) {
   const joined = outputs.map(output => output.content).join('\n')
+  const joinedWithoutTokenSourceComments = joined.replace(/\/\*\s*tokens:[\s\S]*?\*\//g, '')
   const styles = outputs
     .filter(output => /\.(?:wxss|acss|ttss|qss|css)$/i.test(output.name))
     .map(output => output.content)
@@ -265,7 +266,7 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
 
   for (const raw of rawClasses) {
     expect(joined, `${entry.name} should escape ${raw}`).toContain(replaceWxml(raw))
-    expect(joined, `${entry.name} should not keep raw ${raw}`).not.toContain(raw)
+    expect(joinedWithoutTokenSourceComments, `${entry.name} should not keep raw ${raw}`).not.toContain(raw)
   }
 }
 

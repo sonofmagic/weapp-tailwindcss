@@ -49,6 +49,7 @@ module.exports = defineConfig({
     config.plugins.push(
       new WeappTailwindcss({
         tailwindcssBasedir: process.cwd(),
+        cssSourceTrace: true,
         rem2rpx: true,
         appType: 'mpx',
       })

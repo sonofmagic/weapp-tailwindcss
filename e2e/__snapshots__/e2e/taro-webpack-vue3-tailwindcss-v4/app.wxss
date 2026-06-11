@@ -1257,13 +1257,6 @@ wx-root-portal-content {
   font-size: var(--text-2xl);
   line-height: var(--tw-leading, var(--text-2xl--line-height));
 }
-/* tokens: text-[100rpx] <= src/pages/index/index.vue */
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
-}
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
 }
@@ -1325,12 +1318,6 @@ wx-root-portal-content {
 .text-_b77rpx_B {
   font-size: 77rpx;
 }
-.text-_blength_ccalc_p2_x9_d43px_P_B {
-  font-size: 18.86rpx;
-}
-.text-_blength_cvar_p--my-var-length_P_B {
-  font-size: var(--my-var-length);
-}
 .text-base {
   font-size: var(--text-base);
   line-height: var(--tw-leading, var(--text-base--line-height));
@@ -1354,6 +1341,19 @@ wx-root-portal-content {
 .text-xs {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.vue */
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
+}
+.text-_blength_ccalc_p2_x9_d43px_P_B {
+  font-size: 18.86rpx;
+}
+.text-_blength_cvar_p--my-var-length_P_B {
+  font-size: var(--my-var-length);
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);

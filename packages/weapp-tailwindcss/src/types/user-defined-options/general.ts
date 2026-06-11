@@ -5,6 +5,12 @@ import type { ICreateCacheReturnType } from '../../cache'
 import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
 import type { AppType, IArbitraryValues, IUnocssCompatibilityOptions } from '../shared'
 
+export interface CssSourceTraceOptions {
+  root?: string | undefined
+}
+
+export type CssSourceTraceUserOptions = boolean | CssSourceTraceOptions
+
 export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制 Tailwind 自定义长度单位补丁。
@@ -94,6 +100,18 @@ export interface UserDefinedOptionsGeneralPart {
    * uni-app x 原生 App 目标继续通过 `uniAppX` 配置处理 uvue/App 约束，不需要配置 `target: 'app'`。
    */
   generator?: WeappTailwindcssGeneratorUserOptions | undefined
+
+  /**
+   * 在输出 CSS 中为工具类规则标注 token 来源文件。
+   *
+   * @group 3.一般配置
+   * @remarks
+   * 默认关闭。开启后会在生成的 CSS 规则前插入 `tokens: token <= source-file` 注释，
+   * 用于排查某条工具类来自哪个源码文件。可传入 `{ root }` 控制注释里的相对路径基准。
+   * 该能力面向调试与 demo 验收，生产构建通常保持关闭以减少产物体积。
+   * @default false
+   */
+  cssSourceTrace?: CssSourceTraceUserOptions | undefined
 
   /**
    * 禁用默认的 `wxml` 模板替换器。

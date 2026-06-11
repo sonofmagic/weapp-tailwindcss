@@ -18,6 +18,7 @@ export default defineConfig(async () => {
       uni(),
       WeappTailwindcss({
         tailwindcssBasedir: process.cwd(),
+        cssSourceTrace: true,
         rem2rpx: true,
       }),
     ],

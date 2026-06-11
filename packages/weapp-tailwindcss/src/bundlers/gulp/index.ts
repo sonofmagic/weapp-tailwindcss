@@ -15,6 +15,7 @@ import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tail
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../shared/cache'
+import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { emitHmrTiming } from '../shared/hmr-timing'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
@@ -52,6 +53,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let cachedDefaultTemplateRuntimeSet: Set<string> | undefined
   let cachedDefaultModuleGraphOptions: JsModuleGraphOptions | undefined
   let cachedGulpSourceCandidateGetter: ((entries: Parameters<ReturnType<typeof createSourceCandidateCollector>['valuesForEntries']>[0]) => Set<string>) | undefined
+  let cachedGulpSourceCandidateSourceGetter: ((entries: Parameters<ReturnType<typeof createSourceCandidateCollector>['sourcesForEntries']>[0]) => Map<string, Set<string>>) | undefined
 
   const MODULE_EXTENSIONS = ['.js', '.mjs', '.cjs', '.ts', '.tsx', '.jsx']
   let runtimeSetInitialized = false
@@ -204,6 +206,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     collector.syncInline(sourceScan?.inlineCandidates)
     cachedGulpSourceCandidateSignature = nextSignature
     cachedGulpSourceCandidateGetter = entries => collector.valuesForEntries(entries)
+    cachedGulpSourceCandidateSourceGetter = entries => collector.sourcesForEntries(entries)
     cachedGulpSourceCandidates = sourceScan?.entries
       ? collector.valuesForEntries(sourceScan.entries)
       : collector.values()
@@ -213,6 +216,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   async function refreshGulpV4SourceCandidates(forceRefresh = false) {
     if (runtimeState.twPatcher.majorVersion !== 4) {
       cachedGulpSourceCandidateGetter = undefined
+      cachedGulpSourceCandidateSourceGetter = undefined
       return undefined
     }
     const root = opts.tailwindcssBasedir ?? process.cwd()
@@ -245,14 +249,16 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     collector.syncInline(sourceScan?.inlineCandidates)
     cachedGulpSourceCandidateSignature = nextSignature
     cachedGulpSourceCandidateGetter = entries => collector.valuesForEntries(entries)
+    cachedGulpSourceCandidateSourceGetter = entries => collector.sourcesForEntries(entries)
     return cachedGulpSourceCandidateGetter
   }
 
-  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>) {
+  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>, sourceTraceSignature?: string) {
     return cache.computeHash([
       rawSource,
       getRuntimeClassSetSignature(runtimeState.twPatcher),
       [...nextRuntimeSet].sort().join('\n'),
+      sourceTraceSignature ?? 'css-source-trace:0',
     ].join('\n\n'))
   }
 
@@ -472,10 +478,14 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           runtimeSet = nextRuntimeSet
         }
       }
+      const sourceTraceTokenSources = cachedGulpSourceCandidateSourceGetter
+        ? createCssTokenSourceMap(cachedGulpSourceCandidateSourceGetter(undefined), opts)
+        : undefined
+      const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
-        hash: createRuntimeSetHash(rawSource, nextRuntimeSet),
+        hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature),
         applyResult(source) {
           file.contents = Buffer.from(source)
         },
@@ -499,7 +509,10 @@ export function createPlugins(options: UserDefinedOptions = {}) {
                 debug,
               })
             : undefined
-          const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
+          const css = annotateCssSourceTrace(generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css, {
+            opts,
+            tokenSources: sourceTraceTokenSources,
+          })
           debug('css handle: %s', file.path)
           return {
             result: css,

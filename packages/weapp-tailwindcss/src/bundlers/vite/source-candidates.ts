@@ -25,6 +25,7 @@ export interface SourceCandidateCollector {
   source: (id: string) => string | undefined
   values: () => Set<string>
   valuesForEntries: (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>
+  sourcesForEntries: (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>
   snapshot: () => SourceCandidateCollectorSnapshot
   restore: (snapshot: SourceCandidateCollectorSnapshot) => void
   clear: () => void
@@ -628,6 +629,39 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     return filtered
   }
 
+  function sourcesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
+    const sources = new Map<string, Set<string>>()
+    const addCandidateSource = (candidate: string, id: string | undefined) => {
+      let candidateSources = sources.get(candidate)
+      if (!candidateSources) {
+        candidateSources = new Set()
+        sources.set(candidate, candidateSources)
+      }
+      if (id) {
+        candidateSources.add(id)
+      }
+    }
+
+    for (const [id, candidates] of candidatesById) {
+      if (entries !== undefined && !isFileMatchedByTailwindSourceEntries(id, entries)) {
+        continue
+      }
+      if (options.excludeEntries?.length && isFileMatchedByTailwindSourceEntries(id, options.excludeEntries)) {
+        continue
+      }
+      for (const candidate of candidates) {
+        addCandidateSource(candidate, id)
+      }
+    }
+    for (const candidate of inlineIncludedCandidates) {
+      addCandidateSource(candidate, undefined)
+    }
+    for (const candidate of inlineExcludedCandidates) {
+      sources.delete(candidate)
+    }
+    return sources
+  }
+
   function clear() {
     candidatesById.clear()
     scanCandidatesById.clear()
@@ -702,6 +736,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     source,
     values,
     valuesForEntries,
+    sourcesForEntries,
     snapshot,
     restore,
     clear,

@@ -142,14 +142,14 @@ wx-root-portal-content {
   margin-bottom: calc(64rpx * var(--tw-space-y-reverse));
   margin-top: calc(64rpx * (1 - var(--tw-space-y-reverse)));
 }
-/* tokens: border-[#EEEEEE] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
-.border-_b_hEEEEEE_B {
-  border-color: #eeeeee;
-}
 /* tokens: border-b <= src/pages/index/index.ttml, src/pages/index/index.wxml, src/pages/more/more.ttml, src/pages/more/more.wxml */
 .border-b {
   border-bottom-style: var(--tw-border-style);
   border-bottom-width: 2rpx;
+}
+/* tokens: border-[#EEEEEE] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.border-_b_hEEEEEE_B {
+  border-color: #eeeeee;
 }
 /* tokens: bg-[#fff] <= src/pages/index/index.ts */
 .bg-_b_hfff_B {
@@ -187,19 +187,6 @@ wx-root-portal-content {
 .pl-_b15px_B {
   padding-left: 30rpx;
 }
-/* tokens: text-[14px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
-.text-_b14px_B {
-  font-size: 28rpx;
-}
-/* tokens: text-[50px] <= src/pages/index/index.ts */
-.text-_b50px_B {
-  font-size: 100rpx;
-}
-/* tokens: text-base <= src/pages/index/index.ttml, src/pages/index/index.wxml */
-.text-base {
-  font-size: var(--text-base);
-  line-height: var(--tw-leading, var(--text-base--line-height));
-}
 /* tokens: text-center <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .text-center {
   text-align: center;
@@ -207,6 +194,11 @@ wx-root-portal-content {
 /* tokens: text-left <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .text-left {
   text-align: left;
+}
+/* tokens: text-base <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.text-base {
+  font-size: var(--text-base);
+  line-height: var(--tw-leading, var(--text-base--line-height));
 }
 /* tokens: text-lg <= src/pages/more/more.ttml, src/pages/more/more.wxml */
 .text-lg {
@@ -218,6 +210,14 @@ wx-root-portal-content {
   font-size: var(--text-xs);
   line-height: var(--tw-leading, var(--text-xs--line-height));
 }
+/* tokens: text-[14px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.text-_b14px_B {
+  font-size: 28rpx;
+}
+/* tokens: text-[50px] <= src/pages/index/index.ts */
+.text-_b50px_B {
+  font-size: 100rpx;
+}
 /* tokens: font-bold <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .font-bold {
   --tw-font-weight: var(--font-weight-bold);
@@ -228,13 +228,13 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-medium);
   font-weight: var(--font-weight-medium);
 }
-/* tokens: text-[#123456] <= src/pages/index/index.ts */
-.text-_b_h123456_B {
-  color: #123456;
-}
 /* tokens: text-[#5ba4e5] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .text-_b_h5ba4e5_B {
   color: #5ba4e5;
+}
+/* tokens: text-[#123456] <= src/pages/index/index.ts */
+.text-_b_h123456_B {
+  color: #123456;
 }
 /* tokens: container <= <source not found> */
 .container {

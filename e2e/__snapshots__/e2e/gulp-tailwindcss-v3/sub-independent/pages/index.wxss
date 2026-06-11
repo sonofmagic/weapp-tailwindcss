@@ -112,14 +112,14 @@ text,
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
+/* tokens: border-b <= src/pages/index/index.ttml, src/pages/index/index.wxml, src/pages/more/more.ttml, src/pages/more/more.wxml */
+.border-b {
+  border-bottom-width: 2rpx;
+}
 /* tokens: border-[#EEEEEE] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .border-_b_hEEEEEE_B {
   --tw-border-opacity: 1;
   border-color: rgba(238, 238, 238, var(--tw-border-opacity, 1));
-}
-/* tokens: border-b <= src/pages/index/index.ttml, src/pages/index/index.wxml, src/pages/more/more.ttml, src/pages/more/more.wxml */
-.border-b {
-  border-bottom-width: 2rpx;
 }
 /* tokens: bg-[#fff] <= src/pages/index/index.ts */
 .bg-_b_hfff_B {
@@ -164,6 +164,14 @@ text,
 .pl-_b15px_B {
   padding-left: 30rpx;
 }
+/* tokens: text-left <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.text-left {
+  text-align: left;
+}
+/* tokens: text-center <= src/pages/index/index.ttml, src/pages/index/index.wxml */
+.text-center {
+  text-align: center;
+}
 /* tokens: text-[14px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .text-_b14px_B {
   font-size: 28rpx;
@@ -176,14 +184,6 @@ text,
 .text-base {
   font-size: 32rpx;
   line-height: 48rpx;
-}
-/* tokens: text-center <= src/pages/index/index.ttml, src/pages/index/index.wxml */
-.text-center {
-  text-align: center;
-}
-/* tokens: text-left <= src/pages/index/index.ttml, src/pages/index/index.wxml */
-.text-left {
-  text-align: left;
 }
 /* tokens: text-lg <= src/pages/more/more.ttml, src/pages/more/more.wxml */
 .text-lg {

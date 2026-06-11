@@ -51,6 +51,7 @@ const generator = {
 // 在 Gulp 里使用时，Tailwind CSS 生成由 transformWxss 的生成模式接管，PostCSS 只保留后处理插件
 const { transformJs, transformWxml, transformWxss } = createPlugins({
   tailwindcssBasedir: process.cwd(),
+  cssSourceTrace: true,
   rem2rpx: true,
   generator,
   tailwindcss: {

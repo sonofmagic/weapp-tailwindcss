@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 392750 | 2472 | false | false | false | false | true |
+| 396848 | 2472 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -121,9 +121,11 @@ wx-root-portal-content {
 .visible {
   visibility: visible;
 }
+/* tokens: absolute <= src/pages/issue-909/index.tsx */
 .absolute {
   position: absolute;
 }
+/* tokens: relative <= src/pages/issue-909/index.tsx */
 .relative {
   position: relative;
 }
@@ -230,6 +232,7 @@ wx-root-portal-content {
 .block {
   display: block;
 }
+/* tokens: flex <= src/pages/issue-909/index.tsx */
 .flex {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -246,6 +249,7 @@ wx-root-portal-content {
 .table {
   display: table;
 }
+/* tokens: h-8 <= src/pages/issue-909/index.tsx */
 .h-8 {
   height: calc(var(--spacing) * 8);
 }
@@ -255,6 +259,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -282,6 +287,7 @@ wx-root-portal-content {
 .min-h-screen {
   min-height: 100vh;
 }
+/* tokens: w-8 <= src/pages/issue-909/index.tsx */
 .w-8 {
   width: calc(var(--spacing) * 8);
 }
@@ -363,30 +369,35 @@ wx-root-portal-content {
 .rotate-45 {
   rotate: 45deg;
 }
+/* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
@@ -565,6 +576,7 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+/* tokens: bg-[#534312] <= src/pages/index/index.tsx */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -637,6 +649,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-purple-800 <= src/pages/index/index.tsx */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -662,6 +675,7 @@ wx-root-portal-content {
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -677,6 +691,7 @@ wx-root-portal-content {
 .bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -713,6 +728,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -884,9 +900,6 @@ wx-root-portal-content {
   padding-bottom: 62rpx;
   padding-top: 62rpx;
 }
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
 }
@@ -935,6 +948,10 @@ wx-root-portal-content {
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.tsx */
+.text-_b100rpx_B {
+  font-size: 100rpx;
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
@@ -1004,6 +1021,7 @@ wx-root-portal-content {
 .text-_b_hfa00aa_B {
   color: #fa00aa;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.tsx */
 .text-_b_hfff_B {
   color: #fff;
 }
@@ -1016,6 +1034,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
+/* tokens: text-pink-200 <= src/pages/index/index.tsx */
 .text-pink-200 {
   color: var(--color-pink-200);
 }
@@ -1163,6 +1182,7 @@ wx-root-portal-content {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
 .before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
@@ -1191,6 +1211,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-normal/pages/index.tsx */
 .before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
@@ -11220,9 +11241,11 @@ wx-root-portal-content {
 .visible {
   visibility: visible;
 }
+/* tokens: absolute <= src/pages/issue-909/index.tsx */
 .absolute {
   position: absolute;
 }
+/* tokens: relative <= src/pages/issue-909/index.tsx */
 .relative {
   position: relative;
 }
@@ -11329,6 +11352,7 @@ wx-root-portal-content {
 .block {
   display: block;
 }
+/* tokens: flex <= src/pages/issue-909/index.tsx */
 .flex {
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -11345,6 +11369,7 @@ wx-root-portal-content {
 .table {
   display: table;
 }
+/* tokens: h-8 <= src/pages/issue-909/index.tsx */
 .h-8 {
   height: calc(var(--spacing) * 8);
 }
@@ -11354,6 +11379,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -11381,6 +11407,7 @@ wx-root-portal-content {
 .min-h-screen {
   min-height: 100vh;
 }
+/* tokens: w-8 <= src/pages/issue-909/index.tsx */
 .w-8 {
   width: calc(var(--spacing) * 8);
 }
@@ -11462,30 +11489,35 @@ wx-root-portal-content {
 .rotate-45 {
   rotate: 45deg;
 }
+/* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   -ms-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
   -webkit-transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
@@ -11664,6 +11696,7 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+/* tokens: bg-[#534312] <= src/pages/index/index.tsx */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -11727,6 +11760,7 @@ wx-root-portal-content {
 .bg-indigo-400 {
   background-color: var(--color-indigo-400);
 }
+/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.tsx */
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -11740,6 +11774,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-purple-800 <= src/pages/index/index.tsx */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -11765,6 +11800,7 @@ wx-root-portal-content {
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -11780,6 +11816,7 @@ wx-root-portal-content {
 .bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -11816,6 +11853,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -11987,9 +12025,6 @@ wx-root-portal-content {
   padding-bottom: 62rpx;
   padding-top: 62rpx;
 }
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
 }
@@ -12038,6 +12073,10 @@ wx-root-portal-content {
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.tsx */
+.text-_b100rpx_B {
+  font-size: 100rpx;
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
@@ -12107,6 +12146,7 @@ wx-root-portal-content {
 .text-_b_hfa00aa_B {
   color: #fa00aa;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.tsx */
 .text-_b_hfff_B {
   color: #fff;
 }
@@ -12119,6 +12159,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
+/* tokens: text-pink-200 <= src/pages/index/index.tsx */
 .text-pink-200 {
   color: var(--color-pink-200);
 }
@@ -12266,6 +12307,7 @@ wx-root-portal-content {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -12294,6 +12336,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-normal/pages/index.tsx */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
 }
@@ -12534,9 +12577,11 @@ wx-root-portal-content {
 .visible {
   visibility: visible;
 }
+/* tokens: absolute <= src/pages/issue-909/index.tsx */
 .absolute {
   position: absolute;
 }
+/* tokens: relative <= src/pages/issue-909/index.tsx */
 .relative {
   position: relative;
 }
@@ -12643,6 +12688,7 @@ wx-root-portal-content {
 .block {
   display: block;
 }
+/* tokens: flex <= src/pages/issue-909/index.tsx */
 .flex {
   display: flex;
 }
@@ -12655,6 +12701,7 @@ wx-root-portal-content {
 .table {
   display: table;
 }
+/* tokens: h-8 <= src/pages/issue-909/index.tsx */
 .h-8 {
   height: calc(var(--spacing) * 8);
 }
@@ -12664,6 +12711,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -12691,6 +12739,7 @@ wx-root-portal-content {
 .min-h-screen {
   min-height: 100vh;
 }
+/* tokens: w-8 <= src/pages/issue-909/index.tsx */
 .w-8 {
   width: calc(var(--spacing) * 8);
 }
@@ -12770,22 +12819,27 @@ wx-root-portal-content {
 .rotate-45 {
   rotate: 45deg;
 }
+/* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
   --tw-rotate-x: rotateX(45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: -rotate-y-45 <= src/pages/issue-909/index.tsx */
 .-rotate-y-45 {
   --tw-rotate-y: rotateY(-45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-y-45 <= src/pages/issue-909/index.tsx */
 .rotate-y-45 {
   --tw-rotate-y: rotateY(45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-y-90 <= src/pages/issue-909/index.tsx */
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
 }
+/* tokens: rotate-z-45 <= src/pages/issue-909/index.tsx */
 .rotate-z-45 {
   --tw-rotate-z: rotateZ(45deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
@@ -12954,6 +13008,7 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
+/* tokens: bg-[#534312] <= src/pages/index/index.tsx */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -13014,6 +13069,7 @@ wx-root-portal-content {
 .bg-green-300 {
   background-color: var(--color-green-300);
 }
+/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.tsx */
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -13030,6 +13086,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
+/* tokens: bg-purple-800 <= src/pages/index/index.tsx */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -13054,6 +13111,7 @@ wx-root-portal-content {
 .bg-linear-to-r {
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
@@ -13067,6 +13125,7 @@ wx-root-portal-content {
 .bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://yyy.com/xx.webp');
 }
+/* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -13103,6 +13162,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: to-blue-500 <= src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -13274,9 +13334,6 @@ wx-root-portal-content {
   padding-top: 62rpx;
   padding-bottom: 62rpx;
 }
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
 }
@@ -13325,6 +13382,10 @@ wx-root-portal-content {
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.tsx */
+.text-_b100rpx_B {
+  font-size: 100rpx;
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);
@@ -13394,6 +13455,7 @@ wx-root-portal-content {
 .text-_b_hfa00aa_B {
   color: #fa00aa;
 }
+/* tokens: text-[#fff] <= src/pages/index/index.tsx */
 .text-_b_hfff_B {
   color: #fff;
 }
@@ -13406,6 +13468,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
+/* tokens: text-pink-200 <= src/pages/index/index.tsx */
 .text-pink-200 {
   color: var(--color-pink-200);
 }
@@ -13540,6 +13603,7 @@ wx-root-portal-content {
   --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
   content: var(--tw-content);
@@ -13568,6 +13632,7 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-normal/pages/index.tsx */
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }

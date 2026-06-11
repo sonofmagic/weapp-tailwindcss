@@ -884,10 +884,6 @@ wx-root-portal-content {
   padding-bottom: 62rpx;
   padding-top: 62rpx;
 }
-/* tokens: text-[100rpx] <= src/pages/index/index.tsx */
-.text-_b100rpx_B {
-  font-size: 100rpx;
-}
 .text-_b13_d5px_B {
   font-size: 13.5rpx;
 }
@@ -936,6 +932,10 @@ wx-root-portal-content {
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.tsx */
+.text-_b100rpx_B {
+  font-size: 100rpx;
 }
 .leading-6 {
   --tw-leading: calc(var(--spacing) * 6);

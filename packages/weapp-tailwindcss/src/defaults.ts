@@ -171,6 +171,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,
     generator: {},
+    cssSourceTrace: false,
     tailwindcssPatcherOptions: {
       filter(className: string) {
         return !isAllowedClassName(className)

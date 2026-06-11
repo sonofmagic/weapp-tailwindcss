@@ -600,11 +600,6 @@ wx-root-portal-content {
 .rounded-md {
   border-radius: 12rpx;
 }
-/* tokens: !border-primary <= src/pages/index/index.vue */
-._eborder-primary {
-  --tw-border-opacity: 1 !important;
-  border-color: rgba(69, 163, 250, var(--tw-border-opacity, 1)) !important;
-}
 /* tokens: border <= src/custom-tab-bar/index.wxml, src/pages/index/index.vue, src/pages/index/peer.vue, src/pages/issue/case-support-rpx.vue, src/tailwind.scss */
 .border {
   border-width: 1rpx;
@@ -625,6 +620,31 @@ wx-root-portal-content {
 .border-_b7rpx_B {
   border-width: 7rpx;
 }
+/* tokens: border-b-[4rpx] <= src/pages/index/index.vue */
+.border-b-_b4rpx_B {
+  border-bottom-width: 4rpx;
+}
+/* tokens: border-t-[3rpx] <= src/pages/issue/case-support-rpx.vue */
+.border-t-_b3rpx_B {
+  border-top-width: 3rpx;
+}
+/* tokens: border-t-[4px] <= src/pages/index/index.vue */
+.border-t-_b4px_B {
+  border-top-width: 4rpx;
+}
+/* tokens: border-solid <= src/pages/index/index.vue */
+.border-solid {
+  border-style: solid;
+}
+/* tokens: border-none <= src/pages/index/index.vue, src/tailwind.scss */
+.border-none {
+  border-style: none;
+}
+/* tokens: !border-primary <= src/pages/index/index.vue */
+._eborder-primary {
+  --tw-border-opacity: 1 !important;
+  border-color: rgba(69, 163, 250, var(--tw-border-opacity, 1)) !important;
+}
 /* tokens: border-[#098765] <= src/pages/index/index.vue */
 .border-_b_h098765_B {
   --tw-border-opacity: 1;
@@ -635,38 +655,18 @@ wx-root-portal-content {
   --tw-border-opacity: 1;
   border-color: rgba(255, 0, 0, var(--tw-border-opacity, 1));
 }
-/* tokens: border-b-[4rpx] <= src/pages/index/index.vue */
-.border-b-_b4rpx_B {
-  border-bottom-width: 4rpx;
-}
 /* tokens: border-gray-400 <= src/pages/index/peer.vue */
 .border-gray-400 {
   --tw-border-opacity: 1;
   border-color: rgba(156, 163, 175, var(--tw-border-opacity, 1));
 }
-/* tokens: border-none <= src/pages/index/index.vue, src/tailwind.scss */
-.border-none {
-  border-style: none;
+/* tokens: border-transparent <= src/pages/index/peer.vue */
+.border-transparent {
+  border-color: transparent;
 }
 /* tokens: border-opacity-[0.44] <= src/pages/index/index.vue */
 .border-opacity-_b0_d44_B {
   --tw-border-opacity: 0.44;
-}
-/* tokens: border-solid <= src/pages/index/index.vue */
-.border-solid {
-  border-style: solid;
-}
-/* tokens: border-t-[3rpx] <= src/pages/issue/case-support-rpx.vue */
-.border-t-_b3rpx_B {
-  border-top-width: 3rpx;
-}
-/* tokens: border-t-[4px] <= src/pages/index/index.vue */
-.border-t-_b4px_B {
-  border-top-width: 4rpx;
-}
-/* tokens: border-transparent <= src/pages/index/peer.vue */
-.border-transparent {
-  border-color: transparent;
 }
 /* tokens: !bg-green-500 <= src/pages/index/index.vue */
 ._ebg-green-500 {
@@ -1113,10 +1113,6 @@ wx-root-portal-content {
   --tw-text-opacity: 1;
   color: rgba(34, 197, 94, var(--tw-text-opacity, 1));
 }
-/* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
-.text-opacity-_b0_d19_B {
-  --tw-text-opacity: 0.19;
-}
 /* tokens: text-red-400 <= src/pages/index/index.vue, src/pages/issue/issue470.vue */
 .text-red-400 {
   --tw-text-opacity: 1;
@@ -1131,6 +1127,10 @@ wx-root-portal-content {
 .text-white {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
+}
+/* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
+.text-opacity-_b0_d19_B {
+  --tw-text-opacity: 0.19;
 }
 /* tokens: underline <= src/pages/index/index.vue, src/pages/issue/case-support-rpx.vue */
 .underline {

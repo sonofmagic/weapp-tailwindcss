@@ -72,6 +72,7 @@ export default defineConfig(async () => {
     plugins: [
       uni(),
       WeappTailwindcss({
+        cssSourceTrace: true,
         px2rpx: true,
         wxsMatcher() {
           return false;

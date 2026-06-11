@@ -9,6 +9,7 @@ import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
+import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { generateCssByGenerator } from '../../shared/generator-css'
 import { removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
@@ -17,6 +18,8 @@ import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/modul
 import { pushConcurrentTaskFactories } from '../../shared/run-tasks'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from '../../vite/bundle-state'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
+import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../../vite/source-candidates'
+import { resolveViteSourceScanEntries } from '../../vite/source-scan'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, getCacheKey } from './shared'
 
 interface SetupWebpackV5ProcessAssetsHookOptions {
@@ -246,6 +249,32 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             { importFallback: true },
           )
         }
+        const cssSourceTraceTokenSources = isCssSourceTraceEnabled(compilerOptions)
+          ? await (async () => {
+              const root = compilerOptions.tailwindcssBasedir ?? process.cwd()
+              const sourceScan = await resolveViteSourceScanEntries(compilerOptions, runtimeState.twPatcher, {
+                root,
+              })
+              const collector = createSourceCandidateCollector({
+                bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
+                extractor: runtimeState.twPatcher.majorVersion === 3
+                  ? createTailwindV3DefaultExtractor()
+                  : undefined,
+              })
+              await collector.scanRoot({
+                entries: sourceScan?.entries,
+                explicit: sourceScan?.explicit,
+                root,
+              })
+              collector.syncInline(sourceScan?.inlineCandidates)
+              return createCssTokenSourceMap(collector.sourcesForEntries(sourceScan?.entries), compilerOptions)
+            })()
+          : undefined
+        const cssSourceTraceSignature = createCssSourceTraceCacheSignature(cssSourceTraceTokenSources, compilerOptions)
+        const annotateCss = (css: string) => annotateCssSourceTrace(css, {
+          opts: compilerOptions,
+          tokenSources: cssSourceTraceTokenSources,
+        })
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
@@ -413,7 +442,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   hash: createRuntimeAwareCssHash(
                     assetHashByChunk.get(file),
                     compilerOptions.cache.computeHash(rawSource),
-                    runtimeSetHash,
+                    `${runtimeSetHash}:${cssSourceTraceSignature}`,
                   ),
                   applyResult(source, { cacheHit }) {
                     updateAssetIfChanged(file, source, { notifyUpdate: !cacheHit })
@@ -424,7 +453,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   transform: async () => {
                     debug('css skip webpack-loader-pipeline asset: %s', file)
                     return {
-                      result: new ConcatSource(nextCss),
+                      result: new ConcatSource(annotateCss(nextCss)),
                     }
                   },
                 }),
@@ -436,7 +465,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const runtimeAwareHash = createRuntimeAwareCssHash(
               chunkHash,
               compilerOptions.cache.computeHash(rawSource),
-              runtimeSetHash,
+              `${runtimeSetHash}:${cssSourceTraceSignature}`,
             )
             tasks.push(
               processCachedTask({
@@ -465,9 +494,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })
-                  const css = finalizeCssAssetSource(
+                  const css = annotateCss(finalizeCssAssetSource(
                     generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css,
-                  )
+                  ))
                   const source = new ConcatSource(css)
 
                   if (generated) {

@@ -53,6 +53,7 @@ module.exports = defineConfig({
         // console.log('WeappTailwindcss onEnd:', performance.now() - start, 'ms')
       },
       rem2rpx: true,
+      cssSourceTrace: true,
       appType: 'mpx'
     }))
   },

@@ -7,6 +7,7 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 const weappTailwindcssPlugins = WeappTailwindcss(
   uniAppX({
     base: __dirname,
+    cssSourceTrace: true,
     rem2rpx: true,
   }),
 ) ?? []

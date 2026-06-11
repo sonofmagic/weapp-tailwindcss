@@ -11,6 +11,7 @@ import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
 import { resolveUniUtsPlatform } from '@/utils'
+import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
@@ -40,6 +41,7 @@ interface CssFinalizerContext {
   getRecordedGeneratorCandidates?: () => Set<string> | undefined
   getSourceCandidates?: () => Set<string>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
+  getSourceCandidateSourcesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Map<string, Set<string>>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberMainCssSource?: (file: string, rawSource: string) => void
   getRememberedMainCssSource?: (file: string) => RememberedMainCssSource | undefined
@@ -151,6 +153,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           getRecordedGeneratorCandidates,
           getSourceCandidates,
           getSourceCandidatesForEntries,
+          getSourceCandidateSourcesForEntries,
           waitForSourceCandidateSyncs,
           rememberMainCssSource,
           getRememberedMainCssSource,
@@ -170,6 +173,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return
         }
         const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+        const sourceTraceTokenSources = getSourceCandidateSourcesForEntries
+          ? createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts)
+          : undefined
+        const annotateCss = (css: string) => annotateCssSourceTrace(css, {
+          opts,
+          tokenSources: sourceTraceTokenSources,
+        })
 
         const collectViteProcessedCssAssets = () => {
           collectViteProcessedCssAssetResults(bundle, {
@@ -224,7 +234,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             debug,
           })
           if (generated?.css) {
-            cssSources.push(generated.css)
+            cssSources.push(annotateCss(generated.css))
           }
           return cssSources
         }
@@ -276,7 +286,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const file = output.fileName || bundleFile
           const rawSource = output.source.toString()
           if (isViteProcessedCssAsset?.(output, file)) {
-            const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
+            const nextCss = annotateCss(stripBundlerGeneratedCssMarkers(rawSource))
             output.source = nextCss
             markCssAssetProcessed(output, file)
             recordCssAssetResult?.(file, nextCss)
@@ -325,11 +335,11 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 debug,
               })
             : undefined
-          const nextCss = generated?.css ?? (
+          const nextCss = annotateCss(generated?.css ?? (
             generatorOptions.target === 'web'
               ? rawSource
               : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
-          )
+          ))
           if (generated) {
             registerGeneratorDependencies(this, generated.dependencies)
             debug('css finalizer generated result: %s bytes=%d', file, nextCss.length)

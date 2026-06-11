@@ -108,13 +108,17 @@ wx-root-portal-content {
 .border-_b10px_B {
   border-width: 10px;
 }
-/* tokens: border-[10rpx] <= <source not found> */
-.border-_b10rpx_B {
-  border-width: 10rpx;
+/* tokens: border-t-[4px] <= <source not found> */
+.border-t-_b4px_B {
+  border-top-width: 4px;
 }
 /* tokens: border-[#098765] <= <source not found> */
 .border-_b_h098765_B {
   border-color: #098765;
+}
+/* tokens: border-[10rpx] <= <source not found> */
+.border-_b10rpx_B {
+  border-width: 10rpx;
 }
 /* tokens: border-[red] <= <source not found> */
 .border-_bred_B {
@@ -123,10 +127,6 @@ wx-root-portal-content {
 /* tokens: border-b-[4rpx] <= <source not found> */
 .border-b-_b4rpx_B {
   border-bottom-width: 4rpx;
-}
-/* tokens: border-t-[4px] <= <source not found> */
-.border-t-_b4px_B {
-  border-top-width: 4px;
 }
 /* tokens: !bg-green-500 <= <source not found> */
 ._ebg-green-500 {
@@ -169,13 +169,13 @@ wx-root-portal-content {
 .text-_b22px_B {
   font-size: 22px;
 }
-/* tokens: text-[32.4rpx] <= <source not found> */
-.text-_b32_d4rpx_B {
-  font-size: 32.4rpx;
-}
 /* tokens: text-[32px] <= <source not found> */
 .text-_b32px_B {
   font-size: 32px;
+}
+/* tokens: text-[32.4rpx] <= <source not found> */
+.text-_b32_d4rpx_B {
+  font-size: 32.4rpx;
 }
 /* tokens: text-[32rpx] <= <source not found> */
 .text-_b32rpx_B {
@@ -272,10 +272,12 @@ wx-root-portal-content {
   /* tokens: dark:bg-green-500 <= <source not found> */
   .dark_cbg-green-500 {
     background-color: var(--color-green-500);
-  } /* tokens: dark:bg-zinc-800 <= <source not found> */
+  }
+  /* tokens: dark:bg-zinc-800 <= <source not found> */
   .dark_cbg-zinc-800 {
     background-color: var(--color-zinc-800);
-  } /* tokens: dark:text-yellow-400 <= <source not found> */
+  }
+  /* tokens: dark:text-yellow-400 <= <source not found> */
   .dark_ctext-yellow-400 {
     color: var(--color-yellow-400);
   }

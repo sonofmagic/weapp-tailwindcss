@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [
     // @ts-ignore
     WeappTailwindcss({
+      cssSourceTrace: true,
       rem2rpx: true,
     })
   ],
