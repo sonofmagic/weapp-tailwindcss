@@ -373,6 +373,111 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
+  it('refreshes gulp Tailwind v4 css source candidates after wxml updates', async () => {
+    twPatcher.majorVersion = 4
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-hot-'))
+    ;(currentContext as any).tailwindcssBasedir = dir
+    ;(currentContext as any).cssSourceTrace = true
+    const srcDir = path.join(dir, 'src')
+    const appCss = path.join(srcDir, 'app.css')
+    const appWxml = path.join(srcDir, 'pages/index/index.wxml')
+    await fs.promises.mkdir(path.dirname(appWxml), { recursive: true })
+    await writeFile(appCss, [
+      '@import "tailwindcss";',
+      '@source "./pages/**/*.wxml";',
+    ].join('\n'))
+    await writeFile(appWxml, '<view class="app-before"></view>')
+
+    const incrementalRuntimeManager = {
+      reset: vi.fn(async () => undefined),
+      sync: vi.fn(async (_patcher: unknown, snapshot: { entries: Array<{ source: string }> }) => {
+        const candidates = new Set<string>()
+        for (const entry of snapshot.entries) {
+          const matches = entry.source.match(/app-(?:before|after)/g) ?? []
+          for (const match of matches) {
+            candidates.add(match)
+          }
+        }
+        return candidates
+      }),
+    }
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.resetModules()
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        target: 'weapp',
+        styleOptions: {},
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: dir,
+        base: options.base ?? options.cssSources?.[0]?.base ?? dir,
+        baseFallbacks: [],
+        css: options.css ?? options.cssSources?.[0]?.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: dir,
+        base: dir,
+        baseFallbacks: [],
+        cssSources: currentContext.tailwindcss?.v4?.cssSources ?? [],
+      })),
+    }))
+
+    try {
+      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
+      const plugins = createMockedPlugins({
+        tailwindcssBasedir: dir,
+        __internalGulpRuntimeClassSetManager: incrementalRuntimeManager,
+      } as any)
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appCss,
+        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
+      }))
+
+      await writeFile(appWxml, '<view class="app-after"></view>')
+      await runTransform(plugins.transformWxml(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appWxml,
+        contents: Buffer.from(await fs.promises.readFile(appWxml, 'utf8')),
+      }))
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appCss,
+        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
+      }))
+
+      const lastCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+      expect(lastCandidates).toEqual(new Set(['app-after']))
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
+      await rm(dir, { force: true, recursive: true })
+    }
+  })
+
   it('re-runs handlers when cache is disabled', async () => {
     currentContext.cache = createCache(false)
 

@@ -10,6 +10,7 @@ import { taroWebHmrCases } from './taro-web-demo-hmr-cases'
 const repoRoot = path.resolve(__dirname, '..')
 const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
 const textOutputRE = /\.(?:html|js|css|scss|less|sass|styl|json)$/i
+const taroH5BuildRE = /(?:taro-build-runner\.mjs build|taro build)\s+--type h5/
 
 async function readTextOutputs(outputRoot: string) {
   const files = await fg('**/*', {
@@ -47,7 +48,7 @@ describe('demo Taro H5 build smoke', () => {
       const packageJson = JSON.parse(
         await fs.readFile(path.resolve(repoRoot, item.projectDir, 'package.json'), 'utf8'),
       ) as { scripts?: Record<string, string> }
-      expect(packageJson.scripts?.['build:h5'], `${item.name} should expose build:h5`).toContain('taro build --type h5')
+      expect(packageJson.scripts?.['build:h5'], `${item.name} should expose build:h5`).toMatch(taroH5BuildRE)
     }
   })
 

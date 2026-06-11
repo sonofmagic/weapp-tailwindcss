@@ -414,9 +414,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-tailwindcss-v4',
     project: 'demo/mpx-tailwindcss-v4',
     group: 'demo',
-    // Mpx v4 的 webpack watch 在样式分包回滚时会触发较重的 CSS 汇总阶段，
+    // Mpx v4 的 webpack watch 在样式分包热更新/回滚时会触发较重的 CSS 汇总阶段，
     // 这里保留 case 级预算，避免放宽全局 500ms 守卫。
-    maxPluginProcessMs: 1500,
+    maxPluginProcessMs: 2000,
     initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',

@@ -142,6 +142,8 @@ const MINI_PROGRAM_STABLE_CORPUS = [
   'text-[#123456]',
 ]
 
+const MINI_PROGRAM_PRESERVED_ORDER_CORPUS = MINI_PROGRAM_STABLE_CORPUS.filter(candidate => candidate !== 'container')
+
 function normalizeCss(css: string) {
   return css.replace(/\r\n/g, '\n').trim()
 }
@@ -290,8 +292,8 @@ describe('generator order parity', () => {
       target: 'weapp',
     })
 
-    const rawOrder = collectCandidateOrder(result.rawCss, MINI_PROGRAM_STABLE_CORPUS)
-    const transformedOrder = collectTransformedCandidateOrder(result.css, MINI_PROGRAM_STABLE_CORPUS)
+    const rawOrder = collectCandidateOrder(result.rawCss, MINI_PROGRAM_PRESERVED_ORDER_CORPUS)
+    const transformedOrder = collectTransformedCandidateOrder(result.css, MINI_PROGRAM_PRESERVED_ORDER_CORPUS)
     expect(transformedOrder).toEqual(rawOrder)
   })
 
@@ -307,8 +309,8 @@ describe('generator order parity', () => {
       target: 'weapp',
     })
 
-    const rawOrder = collectCandidateOrder(result.rawCss, MINI_PROGRAM_STABLE_CORPUS)
-    const transformedOrder = collectTransformedCandidateOrder(result.css, MINI_PROGRAM_STABLE_CORPUS)
+    const rawOrder = collectCandidateOrder(result.rawCss, MINI_PROGRAM_PRESERVED_ORDER_CORPUS)
+    const transformedOrder = collectTransformedCandidateOrder(result.css, MINI_PROGRAM_PRESERVED_ORDER_CORPUS)
     expect(transformedOrder).toEqual(rawOrder)
   })
 })

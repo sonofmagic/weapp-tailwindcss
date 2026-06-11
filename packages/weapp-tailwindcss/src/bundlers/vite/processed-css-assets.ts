@@ -6,7 +6,7 @@ import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers }
 import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { containsCssAfterMinify, filterExistingCssRules, mergeCoveredCssRuleDeclarations, mergeMiniProgramPreflightRuleDeclarations } from './processed-css-assets/css-rules'
+import { containsCssAfterMinify, filterExistingCssRules, mergeCoveredCssRuleDeclarations, mergeMiniProgramPreflightRuleDeclarations, mergeMiniProgramThemeScopeRuleDeclarations } from './processed-css-assets/css-rules'
 
 interface CssAssetMarkerMatcher {
   (asset: OutputAsset, file?: string): boolean
@@ -409,6 +409,14 @@ export function injectViteProcessedCssIntoMainCssAssets(
       if (mergedPreflightDeclarations.changed) {
         nextCss = mergedPreflightDeclarations.baseCss
         css = mergedPreflightDeclarations.css.trim()
+        if (css.length === 0) {
+          continue
+        }
+      }
+      const mergedThemeScopeDeclarations = mergeMiniProgramThemeScopeRuleDeclarations(nextCss, css)
+      if (mergedThemeScopeDeclarations.changed) {
+        nextCss = mergedThemeScopeDeclarations.baseCss
+        css = mergedThemeScopeDeclarations.css.trim()
         if (css.length === 0) {
           continue
         }

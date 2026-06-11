@@ -174,6 +174,11 @@ function isMiniProgramPreflightRuleKey(key: string) {
   return key === 'view,text,:after,:before'
 }
 
+function isMiniProgramThemeScopeRuleKey(key: string) {
+  return key === ':host,page,.tw-root,wx-root-portal-content'
+    || key === 'page,.tw-root,wx-root-portal-content,:host'
+}
+
 export function mergeMiniProgramPreflightRuleDeclarations(baseCss: string, css: string) {
   try {
     const baseRoot = postcss.parse(baseCss)
@@ -202,6 +207,68 @@ export function mergeMiniProgramPreflightRuleDeclarations(baseCss: string, css: 
         targetRecord.keys.add(normalizeCssDeclarationKey(decl))
         targetRecord.props.add(prop)
         existingProps.add(prop)
+        changedBase = true
+      }
+      rule.remove()
+      changedCss = true
+    })
+
+    if (!changedBase && !changedCss) {
+      return { baseCss, css, changed: false }
+    }
+    removeEmptyAtRules(root)
+    return {
+      baseCss: changedBase ? baseRoot.toString() : baseCss,
+      css: changedCss ? root.toString().trim() : css,
+      changed: true,
+    }
+  }
+  catch {
+    return { baseCss, css, changed: false }
+  }
+}
+
+export function mergeMiniProgramThemeScopeRuleDeclarations(baseCss: string, css: string) {
+  try {
+    const baseRoot = postcss.parse(baseCss)
+    const root = postcss.parse(css)
+    const baseRuleRecords = collectCssRuleDeclarationRecords(baseRoot)
+    let changedBase = false
+    let changedCss = false
+
+    root.walkRules((rule) => {
+      const key = getCssRuleStructuralKey(rule)
+      if (!key || !isMiniProgramThemeScopeRuleKey(key)) {
+        return
+      }
+      const records = baseRuleRecords.get(key)
+      const targetRecord = records?.[0]
+      if (!targetRecord) {
+        return
+      }
+      const incomingDeclarations = collectCssRuleDeclarations(rule)
+      if (incomingDeclarations.length === 0) {
+        return
+      }
+      const existingKeys = new Set(records.flatMap(record => [...record.keys]))
+      const existingProps = new Set(records.flatMap(record => [...record.props]))
+      const hasConflictingOverride = incomingDeclarations.some((decl) => {
+        const prop = decl.prop.trim()
+        return existingProps.has(prop) && !existingKeys.has(normalizeCssDeclarationKey(decl))
+      })
+      if (hasConflictingOverride) {
+        return
+      }
+      for (const decl of incomingDeclarations) {
+        const declarationKey = normalizeCssDeclarationKey(decl)
+        if (existingKeys.has(declarationKey)) {
+          continue
+        }
+        targetRecord.rule.append(decl.clone())
+        targetRecord.keys.add(declarationKey)
+        targetRecord.props.add(decl.prop.trim())
+        existingKeys.add(declarationKey)
+        existingProps.add(decl.prop.trim())
         changedBase = true
       }
       rule.remove()

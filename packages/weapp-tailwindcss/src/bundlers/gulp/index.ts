@@ -65,6 +65,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: BundleRuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
       ?? createBundleRuntimeClassSetManager()
 
+  function invalidateGulpSourceCandidates() {
+    cachedGulpSourceCandidates = undefined
+    cachedGulpSourceCandidateSignature = undefined
+    cachedGulpSourceCandidateGetter = undefined
+    cachedGulpSourceCandidateSourceGetter = undefined
+  }
+
   async function refreshRuntimeSet(options: boolean | {
     forceRefresh?: boolean
     forceCollect?: boolean
@@ -103,6 +110,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       source: rawSource,
       type,
     })
+    if (changed && runtimeState.twPatcher.majorVersion === 4) {
+      invalidateGulpSourceCandidates()
+    }
     if (!changed && runtimeSetInitialized) {
       return runtimeSet
     }

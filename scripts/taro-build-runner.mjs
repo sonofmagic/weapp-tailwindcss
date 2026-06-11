@@ -5,6 +5,98 @@ const require = createRequire(import.meta.url)
 const projectRequire = createRequire(`${process.cwd()}/package.json`)
 const originalLoad = Module._load
 const webpackbarPatched = Symbol.for('weapp-tailwindcss.webpackbar-patched')
+const swcDefineConfigFallbackPatched = Symbol.for('weapp-tailwindcss.swc-define-config-fallback-patched')
+
+function isDefineConfigSwcPluginError(error) {
+  const message = String(error?.message ?? error ?? '')
+  return message.includes('swc_plugin_define_config.wasm')
+    && message.includes('PluginCorePkgDiagnostics')
+}
+
+function stripDefineConfigSwcPlugin(options) {
+  const plugins = options?.jsc?.experimental?.plugins
+  if (!Array.isArray(plugins)) {
+    return options
+  }
+
+  const nextPlugins = plugins.filter((plugin) => {
+    const pluginPath = Array.isArray(plugin) ? plugin[0] : plugin
+    return !String(pluginPath).includes('swc_plugin_define_config.wasm')
+  })
+
+  if (nextPlugins.length === plugins.length) {
+    return options
+  }
+
+  const experimental = {
+    ...options.jsc.experimental,
+    plugins: nextPlugins,
+  }
+  if (nextPlugins.length === 0) {
+    delete experimental.plugins
+  }
+
+  return {
+    ...options,
+    jsc: {
+      ...options.jsc,
+      experimental,
+    },
+  }
+}
+
+function unwrapTaroConfigMacros(code) {
+  return code.replace(/\bdefine(?:App|Page)?Config\s*\(/g, '(')
+}
+
+function patchSwcCoreDefineConfigFallback(mod) {
+  if (!mod || mod[swcDefineConfigFallbackPatched]) {
+    return mod
+  }
+
+  const originalTransformSync = mod.transformSync
+  if (typeof originalTransformSync !== 'function') {
+    return mod
+  }
+
+  mod.transformSync = function patchedTransformSync(input, optionsOrIsModule, maybeOptions, ...extraArgs) {
+    try {
+      return originalTransformSync.call(this, input, optionsOrIsModule, maybeOptions, ...extraArgs)
+    }
+    catch (error) {
+      if (!isDefineConfigSwcPluginError(error)) {
+        throw error
+      }
+
+      const options = typeof optionsOrIsModule === 'object' ? optionsOrIsModule : maybeOptions
+      const nextOptions = stripDefineConfigSwcPlugin(options)
+      if (nextOptions === options) {
+        throw error
+      }
+
+      const result = typeof optionsOrIsModule === 'object'
+        ? originalTransformSync.call(this, input, nextOptions)
+        : originalTransformSync.call(this, input, optionsOrIsModule, nextOptions)
+
+      if (typeof result?.code === 'string') {
+        return {
+          ...result,
+          code: unwrapTaroConfigMacros(result.code),
+        }
+      }
+      return result
+    }
+  }
+
+  Object.defineProperty(mod, swcDefineConfigFallbackPatched, {
+    configurable: false,
+    enumerable: false,
+    value: true,
+    writable: false,
+  })
+
+  return mod
+}
 
 function createDoctorStub() {
   const validResult = { isValid: true, messages: [] }
@@ -89,6 +181,10 @@ function patchWebpackbarModule(mod) {
 Module._load = function patchedModuleLoad(request, parent, isMain) {
   if (request === '@tarojs/plugin-doctor') {
     return createDoctorStub()
+  }
+  if (request === '@swc/core') {
+    const swcCore = originalLoad.call(this, request, parent, isMain)
+    return patchSwcCoreDefineConfigFallback(swcCore)
   }
   if (request === 'webpackbar') {
     const webpackbar = originalLoad.call(this, request, parent, isMain)

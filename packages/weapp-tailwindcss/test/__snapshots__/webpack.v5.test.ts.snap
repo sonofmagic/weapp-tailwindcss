@@ -2,8 +2,7 @@
 
 exports[`webpack5 plugin > common > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -257,34 +256,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -370,8 +341,7 @@ exports[`webpack5 plugin > common > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common 0 > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -625,34 +595,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -738,8 +680,7 @@ exports[`webpack5 plugin > common 0 > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common build twice for cache > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -993,34 +934,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -1102,8 +1015,7 @@ eval("{// import \\'./index.wxml\\'\\n// import \\'./index.css\\'\\n\\nconst cla
 
 exports[`webpack5 plugin > common build twice for cache > assets 2`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -1357,34 +1269,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -1474,8 +1358,7 @@ exports[`webpack5 plugin > common build twice for cache > warnings 2`] = `[]`;
 
 exports[`webpack5 plugin > common with loader > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -1729,34 +1612,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -1842,8 +1697,7 @@ exports[`webpack5 plugin > common with loader > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > common with rem2rpx > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -2097,34 +1951,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -2595,8 +2421,7 @@ exports[`webpack5 plugin > disabled true > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > empty build > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -2656,34 +2481,6 @@ view,text,::after,::before {
   border-width: 0;
   border-style: solid;
   border-color: #e5e7eb;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<view>e</view>",
   "wxml.js": "console.log("i'am empty !");",
@@ -2843,8 +2640,7 @@ console.log(a)0"
 
 exports[`webpack5 plugin > unified common > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -3098,34 +2894,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />
@@ -3211,8 +2979,7 @@ exports[`webpack5 plugin > unified common > warnings 1`] = `[]`;
 
 exports[`webpack5 plugin > unified prod common > assets 1`] = `
 {
-  "index.css": "::before,
-::after {
+  "index.css": "view,text,::after,::before {
   --tw-content: '';
 }
 
@@ -3466,34 +3233,6 @@ view,text,::after,::before {
 .ring-pink-300 {
     --tw-ring-opacity: 1;
     --tw-ring-color: rgba(249, 168, 212, var(--tw-ring-opacity, 1))
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 40rem;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 48rem;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 64rem;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 80rem;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 96rem;
-  }
 }",
   "index.wxml": "<!-- index.wxml -->
 <import src="../../wxml/motto/motto.wxml" />

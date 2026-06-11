@@ -19,7 +19,7 @@
     "build:swan": "taro build --type swan",
     "build:alipay": "taro build --type alipay",
     "build:tt": "taro build --type tt",
-    "build:h5": "cross-env BROWSERSLIST_ENV=production taro build --type h5",
+    "build:h5": "cross-env BROWSERSLIST_ENV=production node ../../scripts/taro-build-runner.mjs build --type h5",
     "build:rn": "taro build --type rn",
     "build:qq": "taro build --type qq",
     "build:jd": "taro build --type jd",
