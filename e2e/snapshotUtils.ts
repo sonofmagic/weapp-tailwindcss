@@ -950,7 +950,7 @@ function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOption
     }
 
     const lines = [...tokens.values()].map(({ token, sources }) => {
-      return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<source not found>'}`
+      return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<tailwind generated>'}`
     })
     const comment = postcss.comment({ text: `tokens: ${lines.join(' | ')}` })
     if (rule.raws.before !== undefined) {

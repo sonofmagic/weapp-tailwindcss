@@ -177,7 +177,7 @@ text,
 .mt-4 {
   margin-top: 32rpx;
 }
-/* tokens: block <= <source not found> */
+/* tokens: block <= <tailwind generated> */
 .block {
   display: block;
 }
@@ -546,7 +546,7 @@ text,
 .tracking-wide {
   letter-spacing: 0.025em;
 }
-/* tokens: text-[#0000ff] <= <source not found> */
+/* tokens: text-[#0000ff] <= <tailwind generated> */
 .text-_b_h0000ff_B {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));

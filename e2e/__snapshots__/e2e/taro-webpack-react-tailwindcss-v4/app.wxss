@@ -105,7 +105,7 @@ wx-root-portal-content {
 .relative {
   position: relative;
 }
-/* tokens: static <= <source not found> */
+/* tokens: static <= <tailwind generated> */
 .static {
   position: static;
 }
@@ -150,36 +150,36 @@ wx-root-portal-content {
 .bottom-auto {
   bottom: auto;
 }
-/* tokens: container <= <source not found> */
+/* tokens: container <= <tailwind generated> */
 .container {
   width: 100%;
 }
 @media (min-width: 40rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 3072rpx;
   }
@@ -242,7 +242,7 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
-/* tokens: h-14 <= <source not found> */
+/* tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
@@ -499,7 +499,7 @@ wx-root-portal-content {
 .rounded-md {
   border-radius: var(--radius-md);
 }
-/* tokens: border <= <source not found> */
+/* tokens: border <= <tailwind generated> */
 .border {
   border-style: var(--tw-border-style);
   border-width: 1rpx;
@@ -560,7 +560,7 @@ wx-root-portal-content {
 .bg-_b_h123456_B {
   background-color: #123456;
 }
-/* tokens: bg-[#534312] <= <source not found> */
+/* tokens: bg-[#534312] <= src/pages/index/index.tsx */
 .bg-_b_h534312_B {
   background-color: #534312;
 }
@@ -633,7 +633,7 @@ wx-root-portal-content {
 .bg-purple-300 {
   background-color: var(--color-purple-300);
 }
-/* tokens: bg-purple-800 <= <source not found> */
+/* tokens: bg-purple-800 <= src/pages/index/index.tsx */
 .bg-purple-800 {
   background-color: var(--color-purple-800);
 }
@@ -659,7 +659,7 @@ wx-root-portal-content {
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
-/* tokens: bg-gradient-to-r <= <source not found> */
+/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
@@ -675,7 +675,7 @@ wx-root-portal-content {
 .bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url(https://yyy.com/xx.webp);
 }
-/* tokens: from-cyan-500 <= <source not found> */
+/* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
   --tw-gradient-stops: var(
@@ -712,7 +712,7 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
-/* tokens: to-blue-500 <= <source not found> */
+/* tokens: to-blue-500 <= src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops: var(
@@ -933,7 +933,7 @@ wx-root-portal-content {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
 }
-/* tokens: text-[100rpx] <= <source not found> */
+/* tokens: text-[100rpx] <= src/pages/index/index.tsx */
 .text-_b100rpx_B {
   font-size: 100rpx;
 }
@@ -1005,7 +1005,7 @@ wx-root-portal-content {
 .text-_b_hfa00aa_B {
   color: #fa00aa;
 }
-/* tokens: text-[#fff] <= <source not found> */
+/* tokens: text-[#fff] <= src/pages/index/index.tsx */
 .text-_b_hfff_B {
   color: #fff;
 }
@@ -1018,7 +1018,7 @@ wx-root-portal-content {
 .text-gray-800 {
   color: var(--color-gray-800);
 }
-/* tokens: text-pink-200 <= <source not found> */
+/* tokens: text-pink-200 <= src/pages/index/index.tsx */
 .text-pink-200 {
   color: var(--color-pink-200);
 }

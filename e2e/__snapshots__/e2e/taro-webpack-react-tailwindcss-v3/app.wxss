@@ -62,7 +62,7 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
-/* tokens: -m-[20px] <= <source not found> */
+/* tokens: -m-[20px] <= <tailwind generated> */
 .-m-_b20px_B {
   margin: -20rpx;
 }
@@ -74,7 +74,7 @@ text,
 .h-_b100px_B {
   height: 100rpx;
 }
-/* tokens: h-[10px] <= <source not found> */
+/* tokens: h-[10px] <= <tailwind generated> */
 .h-_b10px_B {
   height: 10rpx;
 }
@@ -102,7 +102,7 @@ text,
 .w-_b200_v_B {
   width: 200%;
 }
-/* tokens: w-[20px] <= <source not found> */
+/* tokens: w-[20px] <= <tailwind generated> */
 .w-_b20px_B {
   width: 20rpx;
 }
@@ -179,7 +179,7 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(17, 34, 51, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[#3232ff] <= <source not found> */
+/* tokens: bg-[#3232ff] <= <tailwind generated> */
 .bg-_b_h3232ff_B {
   --tw-bg-opacity: 1;
   background-color: rgba(50, 50, 255, var(--tw-bg-opacity, 1));
@@ -208,7 +208,7 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[url] <= <source not found> */
+/* tokens: bg-[url] <= <tailwind generated> */
 .bg-_burl_B {
   background-color: url;
 }
@@ -224,7 +224,7 @@ text,
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
 }
-/* tokens: bg-[url('https://yyy.com/xx.webp')] <= <source not found> */
+/* tokens: bg-[url('https://yyy.com/xx.webp')] <= <tailwind generated> */
 .bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://yyy.com/xx.webp');
 }
@@ -260,7 +260,7 @@ text,
 .text-_b20px_B {
   font-size: 20rpx;
 }
-/* tokens: text-[50px] <= <source not found> */
+/* tokens: text-[50px] <= <tailwind generated> */
 .text-_b50px_B {
   font-size: 50rpx;
 }
@@ -293,12 +293,12 @@ text,
   --tw-text-opacity: 1;
   color: rgba(221, 221, 221, var(--tw-text-opacity, 1));
 }
-/* tokens: text-[#fa0000] <= <source not found> */
+/* tokens: text-[#fa0000] <= <tailwind generated> */
 .text-_b_hfa0000_B {
   --tw-text-opacity: 1;
   color: rgba(250, 0, 0, var(--tw-text-opacity, 1));
 }
-/* tokens: text-[#fa00aa] <= <source not found> */
+/* tokens: text-[#fa00aa] <= <tailwind generated> */
 .text-_b_hfa00aa_B {
   --tw-text-opacity: 1;
   color: rgba(250, 0, 170, var(--tw-text-opacity, 1));

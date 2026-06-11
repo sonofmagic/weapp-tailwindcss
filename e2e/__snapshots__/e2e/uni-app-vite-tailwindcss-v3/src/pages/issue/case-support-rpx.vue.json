@@ -1,0 +1,27 @@
+{
+  "file": "src/pages/issue/case-support-rpx.vue",
+  "count": 21,
+  "tokens": [
+    "backdrop-blur-[2rpx]",
+    "blur-[2rpx]",
+    "border-[7rpx]",
+    "border-t-[3rpx]",
+    "divide-x-[3px]",
+    "h-[77rpx]",
+    "indent-[11rpx]",
+    "leading-[23rpx]",
+    "m-[5rpx]",
+    "origin-[100rpx_111rpx]",
+    "outline-[5rpx]",
+    "outline-offset-[3rpx]",
+    "p-[5rpx]",
+    "ring-[10rpx]",
+    "ring-offset-[3rpx]",
+    "rounded-[12rpx]",
+    "space-y-[11rpx]",
+    "text-[17rpx]",
+    "translate-y-[17rpx]",
+    "underline-offset-[3rpx]",
+    "w-[77rpx]"
+  ]
+}

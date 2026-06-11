@@ -212,13 +212,13 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
-  it('marks extracted tokens without source files as missing', () => {
+  it('marks extracted tokens without source files as generated', () => {
     expect(normalizeCssSnapshot('.rotate-y-90 { transform: rotateY(90deg); }', {
       tokenSources: new Map([
         ['rotate-y-90', { token: 'rotate-y-90', sources: [] }],
       ]),
     })).toBe([
-      '/* tokens: rotate-y-90 <= <source not found> */',
+      '/* tokens: rotate-y-90 <= <tailwind generated> */',
       '.rotate-y-90 { transform: rotateY(90deg); }',
     ].join('\n'))
   })

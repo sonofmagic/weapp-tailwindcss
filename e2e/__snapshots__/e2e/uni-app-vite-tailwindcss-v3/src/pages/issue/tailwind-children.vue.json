@@ -1,0 +1,24 @@
+{
+  "file": "src/pages/issue/tailwind-children.vue",
+  "count": 18,
+  "tokens": [
+    "before:content-['*']",
+    "child-['.child']:text-red-500",
+    "child-text:mr-2",
+    "child-text:text-red-500",
+    "child:inline-block",
+    "child:mr-2",
+    "child:text-red-500",
+    "heir-text:text-green-500",
+    "heir:mr-2",
+    "heir:text-red-500",
+    "line-clamp-2",
+    "next-text:text-red-500",
+    "next-view:text-yellow-500",
+    "next:text-green-500",
+    "p-4",
+    "text-sm",
+    "twin:text-green-500",
+    "twin:text-red-500"
+  ]
+}

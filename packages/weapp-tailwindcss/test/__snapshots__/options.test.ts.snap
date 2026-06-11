@@ -51,6 +51,7 @@ exports[`get options > default options 1`] = `
       "text",
     ],
   },
+  "cssSourceTrace": false,
   "customAttributes": {},
   "customReplaceDictionary": {
     "!": "_e",

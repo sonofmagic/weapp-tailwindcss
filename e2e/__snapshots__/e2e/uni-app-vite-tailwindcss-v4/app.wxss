@@ -305,36 +305,36 @@ wx-root-portal-content {
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
-/* tokens: container <= <source not found> */
+/* tokens: container <= <tailwind generated> */
 .container {
   width: 100%;
 }
 @media (min-width: 40rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 3072rpx;
   }

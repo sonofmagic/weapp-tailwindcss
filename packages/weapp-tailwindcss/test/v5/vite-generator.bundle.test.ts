@@ -476,8 +476,12 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(compiledViteCss)
+    expect((bundle['app.css'] as OutputAsset).source).toContain('.bg-gradient-to-br')
+    expect((bundle['app.css'] as OutputAsset).source).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
+    expect((bundle['app.css'] as OutputAsset).source).not.toContain('@layer theme')
+    expect((bundle['app.css'] as OutputAsset).source).not.toContain('@theme default')
     expect(generateMock).not.toHaveBeenCalled()
+    expect(getCurrentContext().styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('uses generator mode for tailwind v3 main css without changing existing registration', async () => {

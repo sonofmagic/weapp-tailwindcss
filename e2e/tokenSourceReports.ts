@@ -1,8 +1,10 @@
+import type { TailwindSourceEntry } from '../packages/weapp-tailwindcss/src/tailwindcss/source-scan'
 import type { CssTokenSource } from './snapshotUtils'
 import fs from 'node:fs/promises'
 import fg from 'fast-glob'
 import path from 'pathe'
 import postcss from 'postcss'
+import { loadConfig } from '../packages/tailwindcss-config/src/index'
 import { createSourceCandidateCollector } from '../packages/weapp-tailwindcss/src/bundlers/vite/source-candidates'
 import { readStaticConfigContent } from '../packages/weapp-tailwindcss/src/bundlers/vite/static-config-content'
 import {
@@ -10,6 +12,7 @@ import {
   FULL_SOURCE_SCAN_PATTERN,
   normalizeLegacyContentEntries,
   resolveCssSourceEntries,
+
 } from '../packages/weapp-tailwindcss/src/tailwindcss/source-scan'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
 
@@ -55,8 +58,69 @@ function parseConfigParam(params: string) {
   return match?.[2]
 }
 
-async function collectConfigContentFiles(root: postcss.Root, base: string, projectRoot: string) {
-  const files = new Set<string>()
+async function loadConfigContent(configPath: string) {
+  const staticContent = readStaticConfigContent(configPath)
+  if (staticContent !== undefined) {
+    return staticContent
+  }
+
+  try {
+    const loaded = await loadConfig({
+      config: configPath,
+      cwd: path.dirname(configPath),
+    })
+    return loaded?.config.content
+  }
+  catch {
+    return undefined
+  }
+}
+
+function parseTailwindDirectiveRoot(css: string) {
+  try {
+    return postcss.parse(css)
+  }
+  catch {
+    const root = postcss.root()
+    for (const match of css.matchAll(/@(import|config|source|tailwind)\b([^;]*)(?:;|$)/g)) {
+      const directive = match[0].trim().replace(/;$/, '')
+      if (!directive.startsWith('@')) {
+        continue
+      }
+      const withoutAt = directive.slice(1)
+      const nameMatch = /^[\w-]+/.exec(withoutAt)
+      const name = nameMatch?.[0]
+      if (!name) {
+        continue
+      }
+      const params = withoutAt.slice(name.length).trim()
+      root.append(postcss.atRule({
+        name,
+        params,
+      }))
+    }
+    return root
+  }
+}
+
+function collectApplyTokens(source: string, classSet: Set<string>) {
+  const tokens = new Set<string>()
+  for (const match of source.matchAll(/@apply\s+([^;{}]+)/g)) {
+    const params = match[1]?.trim()
+    if (!params) {
+      continue
+    }
+    for (const token of params.split(/\s+/)) {
+      if (classSet.has(token)) {
+        tokens.add(token)
+      }
+    }
+  }
+  return tokens
+}
+
+async function collectConfigContentEntries(root: postcss.Root, base: string, projectRoot: string) {
+  const entries: TailwindSourceEntry[] = []
   const configPaths = new Set<string>()
   root.walkAtRules('config', (rule) => {
     const configPath = parseConfigParam(rule.params)
@@ -66,31 +130,25 @@ async function collectConfigContentFiles(root: postcss.Root, base: string, proje
   })
 
   for (const configPath of [...configPaths].sort()) {
-    const staticContent = readStaticConfigContent(configPath)
-    if (staticContent !== undefined) {
-      const entries = normalizeLegacyContentEntries(staticContent, path.dirname(configPath), {
+    const content = await loadConfigContent(configPath)
+    if (content !== undefined) {
+      entries.push(...normalizeLegacyContentEntries(content, path.dirname(configPath), {
         relativeBase: path.dirname(configPath),
-      })
-      for (const file of await expandTailwindSourceEntries(entries, { ignore: TOKEN_SOURCE_IGNORE_PATTERNS })) {
-        files.add(path.resolve(file))
-      }
+      }))
     }
   }
 
-  if (files.size === 0) {
+  if (entries.length === 0) {
     const fallback = path.resolve(projectRoot, 'tailwind.config.js')
-    const staticContent = readStaticConfigContent(fallback)
-    if (staticContent !== undefined) {
-      const entries = normalizeLegacyContentEntries(staticContent, projectRoot, {
+    const content = await loadConfigContent(fallback)
+    if (content !== undefined) {
+      entries.push(...normalizeLegacyContentEntries(content, projectRoot, {
         relativeBase: projectRoot,
-      })
-      for (const file of await expandTailwindSourceEntries(entries, { ignore: TOKEN_SOURCE_IGNORE_PATTERNS })) {
-        files.add(path.resolve(file))
-      }
+      }))
     }
   }
 
-  return files
+  return entries
 }
 
 async function collectCssEntrySourceFiles(projectRoot: string, cssFile: string, files: Set<string>) {
@@ -110,32 +168,23 @@ async function collectCssEntrySourceFiles(projectRoot: string, cssFile: string, 
     return
   }
 
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return
-  }
-
+  const root = parseTailwindDirectiveRoot(css)
   const base = path.dirname(cssPath)
-  const sourceEntries = await resolveCssSourceEntries(root, base, TOKEN_SOURCE_FILE_PATTERN)
-  const sourceFiles = await expandTailwindSourceEntries(sourceEntries, { ignore: TOKEN_SOURCE_IGNORE_PATTERNS })
+  const [sourceEntries, configEntries] = await Promise.all([
+    resolveCssSourceEntries(root, base, TOKEN_SOURCE_FILE_PATTERN),
+    collectConfigContentEntries(root, base, projectRoot),
+  ])
+  const sourceFiles = await expandTailwindSourceEntries([...configEntries, ...sourceEntries], { ignore: TOKEN_SOURCE_IGNORE_PATTERNS })
   for (const file of sourceFiles) {
     files.add(path.resolve(file))
   }
-
-  if (sourceFiles.length === 0) {
-    for (const file of await collectConfigContentFiles(root, base, projectRoot)) {
-      files.add(file)
-    }
-  }
+  files.add(cssPath)
 }
 
 async function collectScannedSourceFiles(projectRoot: string) {
   const resolvedProjectRoot = await fs.realpath(projectRoot).catch(() => path.resolve(projectRoot))
   const files = new Set<string>()
-  const cssEntries = await fg('**/*.{css,scss,sass,less,styl,stylus,pcss,postcss}', {
+  const cssEntries = await fg('**/*.{css,scss,sass,less,styl,stylus,pcss,postcss,vue,mpx}', {
     absolute: false,
     cwd: resolvedProjectRoot,
     ignore: TOKEN_SOURCE_IGNORE_PATTERNS,
@@ -147,8 +196,9 @@ async function collectScannedSourceFiles(projectRoot: string) {
   }
 
   if (files.size === 0) {
-    for (const file of await collectConfigContentFiles(postcss.root(), resolvedProjectRoot, resolvedProjectRoot)) {
-      files.add(file)
+    const configEntries = await collectConfigContentEntries(postcss.root(), resolvedProjectRoot, resolvedProjectRoot)
+    for (const file of await expandTailwindSourceEntries(configEntries, { ignore: TOKEN_SOURCE_IGNORE_PATTERNS })) {
+      files.add(path.resolve(file))
     }
   }
 
@@ -214,11 +264,15 @@ export async function collectTokenSourceReports(projectRoot: string, classList?:
     const candidates = collector.values()
     const tokens = [...candidates]
       .filter(token => classSet.has(token))
-      .sort()
+    for (const token of collectApplyTokens(source, classSet)) {
+      tokens.push(token)
+    }
+    tokens.sort()
+    const uniqueTokens = [...new Set(tokens)]
     sourceReports.push({
       file: normalizedSourceFile,
-      count: tokens.length,
-      tokens,
+      count: uniqueTokens.length,
+      tokens: uniqueTokens,
     })
     collector.remove(absolutePath)
   }

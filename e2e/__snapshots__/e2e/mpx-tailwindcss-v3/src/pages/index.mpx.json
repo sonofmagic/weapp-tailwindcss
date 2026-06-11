@@ -1,0 +1,15 @@
+{
+  "file": "src/pages/index.mpx",
+  "count": 9,
+  "tokens": [
+    "after:content-[\"你好啊，我很无聊\"]",
+    "after:content-['你好啊，我这是中文字符串']",
+    "after:ml-0.5",
+    "after:text-red-500",
+    "bg-[#123456]",
+    "bg-[#929292]",
+    "bg-[red]",
+    "bg-[url('https://xxx.com/xx.webp')]",
+    "h-[43rpx]"
+  ]
+}

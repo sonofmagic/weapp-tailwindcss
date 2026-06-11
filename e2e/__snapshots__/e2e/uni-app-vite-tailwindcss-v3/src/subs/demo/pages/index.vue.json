@@ -1,0 +1,10 @@
+{
+  "file": "src/subs/demo/pages/index.vue",
+  "count": 4,
+  "tokens": [
+    "text-[#ab1932]",
+    "text-[#abcdef]",
+    "text-[56.5rpx]",
+    "text-[77rpx]"
+  ]
+}

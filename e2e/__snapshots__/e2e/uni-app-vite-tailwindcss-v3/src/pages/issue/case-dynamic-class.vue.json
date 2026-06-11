@@ -1,0 +1,10 @@
+{
+  "file": "src/pages/issue/case-dynamic-class.vue",
+  "count": 4,
+  "tokens": [
+    "bg-[#123456]",
+    "block",
+    "h-[52px]",
+    "w-[52px]"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "file": "src/components/list.mpx",
+  "count": 4,
+  "tokens": [
+    "flex",
+    "flex-col",
+    "text-[#e67240]",
+    "text-[blue]"
+  ]
+}

@@ -292,17 +292,22 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const classListSnapshot = extraction?.classList ? formatClassListSnapshot(extraction.classList) : undefined
 
   let json: string
+  let classList: string[]
   if (classListSnapshot) {
     json = classListSnapshot
+    classList = extraction.classList
   }
   else {
     try {
       json = await fs.readFile(outputFilename, 'utf8')
+      const parsed = JSON.parse(json)
+      classList = Array.isArray(parsed) ? parsed : []
     }
     catch (error: any) {
       const code = error?.code
       if (code && ['ENOENT', 'EPERM'].includes(code)) {
         json = formatClassListSnapshot([])
+        classList = []
       }
       else {
         throw error
@@ -311,23 +316,23 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   await expectProjectSnapshot(options.suite, entry.name, 'tw-class-list.json', json)
-  const tokenSourceCollection = await collectTokenSourceReports(root, extraction?.classList)
+  const tokenSourceCollection = await collectTokenSourceReports(root, classList)
   const tokenSources = tokenSourceCollection?.tokenSources
   for (const report of tokenSourceCollection?.sourceReports ?? []) {
     await expectProjectSnapshot(options.suite, entry.name, `${report.file}.json`, formatTokenSourceFileReport(report))
   }
-  if (shouldCollectIssue909TransformSnapshot(entry) && extraction?.classList) {
+  if (shouldCollectIssue909TransformSnapshot(entry) && classList.length > 0) {
     await expectProjectSnapshot(
       options.suite,
       entry.name,
       'issue-909-transform/tw-class-list.json',
-      formatClassListSnapshot(normalizeIssue909ClassListSnapshot(extraction.classList)),
+      formatClassListSnapshot(normalizeIssue909ClassListSnapshot(classList)),
     )
   }
 
   for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
     const cssSnapshots = await collectCssSnapshots(projectPath, cssEntry.cssFile, {
-      classList: extraction?.classList,
+      classList,
       normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
       normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
       rootSnapshotName: cssEntry.snapshotName,

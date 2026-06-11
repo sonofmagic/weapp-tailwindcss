@@ -33,7 +33,7 @@ wx-root-portal-content {
   --text-base--line-height: 1.5;
   --font-weight-bold: 700;
 }
-/* tokens: -m-[20px] <= <source not found> */
+/* tokens: -m-[20px] <= <tailwind generated> */
 .-m-_b20px_B {
   margin: -20px;
 }
@@ -263,7 +263,7 @@ wx-root-portal-content {
   ._2xl_ctext-base {
     font-size: var(--text-base);
     line-height: var(--tw-leading, var(--text-base--line-height));
-  } /* tokens: 2xl:text-[red] <= <source not found> */
+  } /* tokens: 2xl:text-[red] <= <tailwind generated> */
   ._2xl_ctext-_bred_B {
     color: red;
   }
@@ -282,36 +282,36 @@ wx-root-portal-content {
     color: var(--color-yellow-400);
   }
 }
-/* tokens: container <= <source not found> */
+/* tokens: container <= <tailwind generated> */
 .container {
   width: 100%;
 }
 @media (min-width: 40rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 1280rpx;
   }
 }
 @media (min-width: 48rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 1536rpx;
   }
 }
 @media (min-width: 64rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 2048rpx;
   }
 }
 @media (min-width: 80rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 2560rpx;
   }
 }
 @media (min-width: 96rem) {
-  /* tokens: container <= <source not found> */
+  /* tokens: container <= <tailwind generated> */
   .container {
     max-width: 3072rpx;
   }
