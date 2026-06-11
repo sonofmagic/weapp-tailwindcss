@@ -1,0 +1,10 @@
+{
+  "file": "src/pages/more/more.wxml",
+  "count": 4,
+  "tokens": [
+    "border-b",
+    "p-4",
+    "space-y-1",
+    "text-lg"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "file": "src/pages/index/index.ttml",
+  "count": 24,
+  "tokens": [
+    "bg-[length:100%_100%]",
+    "bg-[url(https://pic1.zhimg.com/v2-3ee20468f54bbfefcd0027283b21aaa8_720w.jpg)]",
+    "bg-no-repeat",
+    "block",
+    "border-[#EEEEEE]",
+    "border-b",
+    "font-bold",
+    "font-medium",
+    "h-[41.54vw]",
+    "h-full",
+    "m-[20px]",
+    "mb-[20px]",
+    "mt-[24px]",
+    "mt-[33px]",
+    "pb-[10px]",
+    "pl-[15px]",
+    "space-y-4",
+    "text-[#5ba4e5]",
+    "text-[14px]",
+    "text-base",
+    "text-center",
+    "text-left",
+    "text-xs",
+    "w-screen"
+  ]
+}

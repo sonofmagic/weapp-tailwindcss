@@ -1,0 +1,9 @@
+{
+  "file": "src/pages/index/endClassCom.tsx",
+  "count": 3,
+  "tokens": [
+    "bg-[#654321]",
+    "h-[20px]",
+    "w-[100px]"
+  ]
+}

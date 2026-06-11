@@ -1,0 +1,7 @@
+{
+  "file": "sub-independent/pages/index.wxml",
+  "count": 1,
+  "tokens": [
+    "before:content-['independent_subpackage_weapp-vite-tailwindcss-v4']"
+  ]
+}

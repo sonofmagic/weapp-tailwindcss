@@ -1,0 +1,10 @@
+{
+  "file": "src/moduleA/pages/index.vue",
+  "count": 4,
+  "tokens": [
+    "after:content-['我是className']",
+    "after:content-[\\'我来自inline-wxs\\']",
+    "before:content-['moduleA_独立分包']",
+    "inline"
+  ]
+}

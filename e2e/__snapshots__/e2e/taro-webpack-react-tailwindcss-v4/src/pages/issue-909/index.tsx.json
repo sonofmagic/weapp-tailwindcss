@@ -1,0 +1,16 @@
+{
+  "file": "src/pages/issue-909/index.tsx",
+  "count": 10,
+  "tokens": [
+    "-rotate-y-45",
+    "absolute",
+    "flex",
+    "h-8",
+    "relative",
+    "rotate-x-45",
+    "rotate-y-45",
+    "rotate-y-90",
+    "rotate-z-45",
+    "w-8"
+  ]
+}

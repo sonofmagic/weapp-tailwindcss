@@ -1,0 +1,29 @@
+{
+  "file": "src/pages-order/pages/home/home.vue",
+  "count": 23,
+  "tokens": [
+    "active:bg-emerald-600",
+    "bg-emerald-500",
+    "bg-slate-50",
+    "bg-white",
+    "flex",
+    "flex-col",
+    "font-semibold",
+    "gap-3",
+    "min-h-screen",
+    "mt-4",
+    "p-5",
+    "px-4",
+    "py-2",
+    "py-6",
+    "rounded-xl",
+    "shadow",
+    "shadow-sm",
+    "text-[#929292]",
+    "text-center",
+    "text-lg",
+    "text-slate-900",
+    "text-sm",
+    "text-white"
+  ]
+}

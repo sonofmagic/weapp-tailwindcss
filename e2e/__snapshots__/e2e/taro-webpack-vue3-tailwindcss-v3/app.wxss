@@ -62,7 +62,7 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
-/* tokens: h-[100px] <= src/pages/index/index.scss, src/pages/index/index.vue */
+/* tokens: h-[100px] <= src/pages/index/index.vue */
 .h-_b100px_B {
   height: 100rpx;
 }
@@ -70,7 +70,7 @@ text,
 .max-h-_b100px_B {
   max-height: 100rpx;
 }
-/* tokens: w-[100px] <= src/pages/index/index.scss, src/pages/index/index.vue */
+/* tokens: w-[100px] <= src/pages/index/index.vue */
 .w-_b100px_B {
   width: 100rpx;
 }
@@ -116,11 +116,11 @@ text,
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
-/* tokens: rounded-[40px] <= src/pages/index/index.scss, src/pages/index/index.vue */
+/* tokens: rounded-[40px] <= src/pages/index/index.vue */
 .rounded-_b40px_B {
   border-radius: 40rpx;
 }
-/* tokens: bg-[#123456] <= src/pages/index/index.scss, src/pages/index/index.vue */
+/* tokens: bg-[#123456] <= src/pages/index/index.vue */
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
@@ -129,7 +129,7 @@ text,
 .bg-sky-500_f80 {
   background-color: rgba(14, 165, 233, 0.8);
 }
-/* tokens: bg-opacity-[0.54] <= src/pages/index/index.scss, src/pages/index/index.vue */
+/* tokens: bg-opacity-[0.54] <= src/pages/index/index.vue */
 .bg-opacity-_b0_d54_B {
   --tw-bg-opacity: 0.54;
 }
@@ -159,7 +159,7 @@ text,
 .leading-_b0_d9_B {
   line-height: 0.9;
 }
-/* tokens: text-[#ffffff] <= src/pages/index/index.scss, src/pages/index/index.vue */
+/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));

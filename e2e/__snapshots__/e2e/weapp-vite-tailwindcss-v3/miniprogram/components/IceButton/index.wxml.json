@@ -1,0 +1,30 @@
+{
+  "file": "miniprogram/components/IceButton/index.wxml",
+  "count": 24,
+  "tokens": [
+    "bg-[#123456]",
+    "border",
+    "dark:bg-gray-900",
+    "dark:border-gray-700",
+    "dark:divide-gray-700",
+    "dark:hover:bg-gray-800",
+    "dark:text-gray-300",
+    "divide-x",
+    "duration-200",
+    "flex",
+    "font-medium",
+    "hover:bg-gray-100",
+    "mt-4",
+    "overflow-hidden",
+    "px-4",
+    "py-2",
+    "py-6",
+    "rounded-lg",
+    "sm:px-6",
+    "sm:text-base",
+    "text-gray-600",
+    "text-sm",
+    "transition-colors",
+    "weapp-reset-button"
+  ]
+}

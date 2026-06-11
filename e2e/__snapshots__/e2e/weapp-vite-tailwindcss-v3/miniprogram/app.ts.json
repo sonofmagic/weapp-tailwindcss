@@ -1,0 +1,10 @@
+{
+  "file": "miniprogram/app.ts",
+  "count": 4,
+  "tokens": [
+    "bg-[#B91C1C]",
+    "p-3",
+    "px-2",
+    "py-1"
+  ]
+}

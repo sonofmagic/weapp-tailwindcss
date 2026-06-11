@@ -1,0 +1,17 @@
+{
+  "file": "src/pages/debug/arbitraryVariants.tsx",
+  "count": 11,
+  "tokens": [
+    "[&_.u-count-down\\_\\_text]:!text-red-400",
+    "bg-gradient-to-r",
+    "from-cyan-500",
+    "from-purple-500",
+    "from-sky-500",
+    "from-violet-500",
+    "h-14",
+    "to-blue-500",
+    "to-fuchsia-500",
+    "to-indigo-500",
+    "to-pink-500"
+  ]
+}

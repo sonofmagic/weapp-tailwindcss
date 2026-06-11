@@ -1,0 +1,7 @@
+{
+  "file": "src/moduleC/pages/index.tsx",
+  "count": 1,
+  "tokens": [
+    "before:content-['moduleC_独立分包']"
+  ]
+}

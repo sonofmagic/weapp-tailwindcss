@@ -1,0 +1,10 @@
+{
+  "file": "src/custom-tab-bar/index.mpx",
+  "count": 4,
+  "tokens": [
+    "active:bg-[#989898]",
+    "bg-[#010101]",
+    "bg-[#e90505]",
+    "text-purple-600"
+  ]
+}

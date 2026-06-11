@@ -1,0 +1,9 @@
+{
+  "file": "src/moduleA/pages/a.vue",
+  "count": 3,
+  "tokens": [
+    "after:content-[\\'我来自inline-wxs\\']",
+    "before:content-['moduleA_独立分包']",
+    "inline"
+  ]
+}

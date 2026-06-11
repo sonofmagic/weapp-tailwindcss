@@ -1,0 +1,17 @@
+{
+  "file": "src/pages/index/index.vue",
+  "count": 11,
+  "tokens": [
+    "before:content-['11111']",
+    "before:content-['222']",
+    "bg-[#89ab8d]",
+    "dark:text-[#ec4f4f]",
+    "divide-[#60d256]",
+    "divide-solid",
+    "divide-x-8",
+    "flex",
+    "flex-col",
+    "text-[#3d31a4]",
+    "text-[#438821]"
+  ]
+}

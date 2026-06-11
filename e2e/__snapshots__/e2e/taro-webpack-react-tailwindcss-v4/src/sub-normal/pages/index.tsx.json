@@ -1,0 +1,7 @@
+{
+  "file": "src/sub-normal/pages/index.tsx",
+  "count": 1,
+  "tokens": [
+    "before:content-['normal_subpackage_taro-webpack-react-tailwindcss-v4']"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "file": "src/sub-independent/pages/index.tsx",
+  "count": 1,
+  "tokens": [
+    "before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4']"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "file": "src/pages/more/more.ttml",
+  "count": 4,
+  "tokens": [
+    "border-b",
+    "p-4",
+    "space-y-[2rem]",
+    "text-lg"
+  ]
+}

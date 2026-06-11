@@ -1,0 +1,10 @@
+{
+  "file": "src/components/list.mpx",
+  "count": 4,
+  "tokens": [
+    "active:bg-[#543210]",
+    "active:bg-[#989898]",
+    "bg-[#010101]",
+    "bg-[#434344]"
+  ]
+}

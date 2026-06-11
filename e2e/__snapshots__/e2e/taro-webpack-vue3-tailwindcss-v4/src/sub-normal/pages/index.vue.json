@@ -1,0 +1,7 @@
+{
+  "file": "src/sub-normal/pages/index.vue",
+  "count": 1,
+  "tokens": [
+    "before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v4']"
+  ]
+}

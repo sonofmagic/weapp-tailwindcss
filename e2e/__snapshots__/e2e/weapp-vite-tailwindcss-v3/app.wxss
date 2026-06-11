@@ -177,19 +177,19 @@ text,
 .mt-4 {
   margin-top: 32rpx;
 }
-/* tokens: block <= miniprogram/pages/index/merge/index.wxml */
+/* tokens: block <= <source not found> */
 .block {
   display: block;
 }
-/* tokens: flex <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.scss, miniprogram/pages/index/merge/index.ts */
+/* tokens: flex <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .flex {
   display: flex;
 }
-/* tokens: inline-flex <= miniprogram/pages/index/merge/index.scss, miniprogram/pages/index/merge/index.ts */
+/* tokens: inline-flex <= miniprogram/pages/index/merge/index.ts */
 .inline-flex {
   display: inline-flex;
 }
-/* tokens: hidden <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
+/* tokens: hidden <= miniprogram/pages/index/index.wxml */
 .hidden {
   display: none;
 }
@@ -256,7 +256,7 @@ text,
 .overflow-hidden {
   overflow: hidden;
 }
-/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/merge/index.ts */
+/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
 .rounded {
   border-radius: 8rpx;
 }
@@ -268,7 +268,7 @@ text,
 .rounded-lg {
   border-radius: 16rpx;
 }
-/* tokens: border <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.scss, miniprogram/pages/index/merge/index.ts */
+/* tokens: border <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/merge/index.ts */
 .border {
   border-width: 1px;
 }
@@ -364,7 +364,7 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-gray-900 <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
+/* tokens: bg-gray-900 <= miniprogram/pages/index/index.wxml */
 .bg-gray-900 {
   --tw-bg-opacity: 1;
   background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
@@ -390,7 +390,7 @@ text,
 .p-2 {
   padding: 16rpx;
 }
-/* tokens: p-3 <= miniprogram/app.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
+/* tokens: p-3 <= miniprogram/app.ts, miniprogram/pages/index/merge/index.ts */
 .p-3 {
   padding: 24rpx;
 }
@@ -429,7 +429,7 @@ text,
   padding-left: 40rpx;
   padding-right: 40rpx;
 }
-/* tokens: px-6 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: px-6 <= miniprogram/components/IceButton/index.ts */
 .px-6 {
   padding-left: 48rpx;
   padding-right: 48rpx;
@@ -507,7 +507,7 @@ text,
 .text-_blength_c32rpx_B {
   font-size: 32rpx;
 }
-/* tokens: text-base <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: text-base <= miniprogram/components/IceButton/index.ts */
 .text-base {
   font-size: 32rpx;
   line-height: 48rpx;
@@ -546,7 +546,7 @@ text,
 .tracking-wide {
   letter-spacing: 0.025em;
 }
-/* tokens: text-[#0000ff] <= miniprogram/components/IceButton/index.ts */
+/* tokens: text-[#0000ff] <= <source not found> */
 .text-_b_h0000ff_B {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
@@ -645,7 +645,7 @@ text,
 .opacity-50 {
   opacity: 0.5;
 }
-/* tokens: outline <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: outline <= miniprogram/pages/index/merge/index.ts */
 .outline {
   outline-style: solid;
 }
