@@ -3455,6 +3455,28 @@ importers:
         specifier: catalog:tailwindcssPatch
         version: 9.4.2(magicast@0.5.3)(tailwindcss@4.3.0)
 
+  examples/tailwindcss-patch-token-style:
+    dependencies:
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.0
+      tailwindcss-patch:
+        specifier: catalog:tailwindcssPatch
+        version: 9.4.2(magicast@0.5.3)(tailwindcss@4.3.0)
+    devDependencies:
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 24.13.1
+      tsx:
+        specifier: catalog:tsx
+        version: 4.22.4
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vitest:
+        specifier: catalog:vitest
+        version: 4.1.8(@types/node@24.13.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.57.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
+
   packages-runtime/cva:
     dependencies:
       '@weapp-tailwindcss/runtime':

@@ -1,0 +1,19 @@
+{
+  "name": "@weapp-tailwindcss-example/tailwindcss-patch-token-style",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "tailwindcss": "catalog:tailwindcss4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:typesNode2410",
+    "tsx": "catalog:tsx",
+    "typescript": "catalog:typescript59",
+    "vitest": "catalog:vitest"
+  }
+}
