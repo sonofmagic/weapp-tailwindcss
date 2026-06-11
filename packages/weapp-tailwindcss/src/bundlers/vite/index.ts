@@ -9,7 +9,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -49,6 +49,7 @@ const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
 const sourceCandidateScanSnapshotCache = new Map<string, SourceCandidateCollectorSnapshot>()
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
+const SFC_COMPONENT_FILE_RE = /\.(?:vue|uvue|nvue|svelte|mpx)$/i
 
 interface SourceCandidateScanRoot {
   root: string
@@ -104,6 +105,11 @@ function createSourceCandidateScanSignature(input: SourceCandidateScanSignatureI
 function stripSourceHash(sourceFile: string) {
   const hashIndex = sourceFile.indexOf('#')
   return hashIndex === -1 ? sourceFile : sourceFile.slice(0, hashIndex)
+}
+
+function isMainStyleEntryFile(file: string) {
+  const name = path.basename(stripRequestQuery(cleanUrl(file))).replace(/\.[^.]+$/, '')
+  return name === 'app' || name === 'main'
 }
 
 function normalizeCssSourceIdentity(sourceFile: string) {
@@ -280,6 +286,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
   const rememberedCssSources = new Map<string, RememberedCssSource>()
   const rememberedCssSignatureByFile = new Map<string, string>()
+  const knownSfcSources = new Map<string, string>()
   const tailwindRootCssModuleIds = new Set<string>()
   const {
     runtimeState,
@@ -470,22 +477,23 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       return Promise.resolve()
     }
     const file = cleanUrl(id)
-    const refreshRememberedCssSourceTask = refreshRememberedCssSourceByCurrentFile(file)
     if (isSourceScanDependency(file)) {
       invalidateSourceCandidateScan()
     }
     if (sourceScanMatcher && !sourceScanMatcher(file)) {
       sourceCandidateCollector.remove(file)
       cacheCurrentSourceCandidateScan()
-      return refreshRememberedCssSourceTask
+      return refreshRememberedCssSourceByCurrentFile(file)
     }
     if (sourceScanExplicit && sourceScanEntries?.length === 0) {
       cacheCurrentSourceCandidateScan()
-      return refreshRememberedCssSourceTask
+      return refreshRememberedCssSourceByCurrentFile(file)
     }
     const existingTask = pendingSourceCandidateSyncByFile.get(file)
     if (existingTask) {
-      return Promise.all([refreshRememberedCssSourceTask, existingTask]).then(() => undefined)
+      return existingTask
+        .then(() => refreshRememberedCssSourceByCurrentFile(file))
+        .then(() => undefined)
     }
     const task = sourceCandidateCollector.syncCurrentFile(id)
       .catch((error) => {
@@ -500,7 +508,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       })
     pendingSourceCandidateSyncs.add(task)
     pendingSourceCandidateSyncByFile.set(file, task)
-    return Promise.all([refreshRememberedCssSourceTask, task]).then(() => undefined)
+    return task
+      .then(() => refreshRememberedCssSourceByCurrentFile(file))
+      .then(() => undefined)
   }
   const shouldCollectTransformedSourceCandidates = (id: string) => {
     const queryIndex = id.search(/[?#]/)
@@ -508,13 +518,42 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       return true
     }
     const file = cleanUrl(id)
-    return !/\.(?:vue|uvue|nvue|svelte|mpx)$/i.test(file)
+    return !SFC_COMPONENT_FILE_RE.test(file)
+  }
+  const hasSfcStyleBlocks = (source: string) => {
+    SFC_STYLE_BLOCK_RE.lastIndex = 0
+    return SFC_STYLE_BLOCK_RE.test(source)
+  }
+  const normalizeKnownSfcSourceKey = (file: string) => normalizeOutputPathKey(path.resolve(cleanUrl(file)))
+  const rememberKnownSfcSource = (id: string, code: string) => {
+    if (id.search(/[?#]/) >= 0) {
+      return
+    }
+    const file = cleanUrl(id)
+    if (!SFC_COMPONENT_FILE_RE.test(file)) {
+      return
+    }
+    if (!hasSfcStyleBlocks(code)) {
+      return
+    }
+    knownSfcSources.set(normalizeKnownSfcSourceKey(file), code)
+  }
+  const getKnownSfcSource = (file: string) => {
+    const scanSource = sourceCandidateCollector.source(file)
+    if (scanSource && hasSfcStyleBlocks(scanSource)) {
+      return scanSource
+    }
+    return knownSfcSources.get(normalizeKnownSfcSourceKey(file))
   }
   const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
-    const key = normalizeOutputPathKey(entry.outputFile)
+    const outputKey = normalizeOutputPathKey(entry.outputFile)
+    const normalizedSourceFile = normalizeCssSourceIdentity(entry.sourceFile)
+    const previousOutputEntry = rememberedCssSources.get(outputKey)
+    const key = previousOutputEntry != null && normalizeCssSourceIdentity(previousOutputEntry.sourceFile) !== normalizedSourceFile
+      ? `${outputKey}\0${normalizedSourceFile}`
+      : outputKey
     const previous = rememberedCssSources.get(key)
     rememberedCssSources.set(key, entry)
-    const normalizedSourceFile = normalizeCssSourceIdentity(entry.sourceFile)
     for (const [rememberedKey, remembered] of rememberedCssSources) {
       if (rememberedKey === key || normalizeCssSourceIdentity(remembered.sourceFile) !== normalizedSourceFile) {
         continue
@@ -574,6 +613,29 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     return undefined
   }
+  const extractSfcStyleSource = (source: string, index: number | undefined) => {
+    if (index !== undefined) {
+      return extractSfcStyleBlock(source, index)
+    }
+    const styleSources: string[] = []
+    SFC_STYLE_BLOCK_RE.lastIndex = 0
+    let match = SFC_STYLE_BLOCK_RE.exec(source)
+    while (match !== null) {
+      styleSources.push(match[1] ?? '')
+      match = SFC_STYLE_BLOCK_RE.exec(source)
+    }
+    return styleSources.length > 0 ? styleSources.join('\n') : undefined
+  }
+  const resolveCachedStyleSource = (sourceFile: string) => {
+    const file = cleanUrl(stripRequestQuery(sourceFile))
+    if (SFC_COMPONENT_FILE_RE.test(file)) {
+      return getKnownSfcSource(file)
+    }
+    if (isSourceStyleRequest(file)) {
+      return sourceCandidateCollector.source(file)
+    }
+    return undefined
+  }
   const refreshRememberedCssSourceByCurrentFile = async (sourceFile: string) => {
     const file = cleanUrl(sourceFile)
     const normalizedSourceFile = normalizeOutputPathKey(file)
@@ -583,24 +645,23 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (matchedRememberedSources.length === 0) {
       return
     }
-    try {
-      const source = await readFile(file, 'utf8')
-      if (/\.(?:vue|uvue|nvue|svelte|mpx)$/i.test(file)) {
-        for (const remembered of matchedRememberedSources) {
-          const { query } = parseVueRequest(remembered.sourceFile)
-          const styleSource = extractSfcStyleBlock(source, query.type === 'style' ? query.index : undefined)
-          if (styleSource !== undefined) {
-            refreshRememberedCssSourceBySourceFile(remembered.sourceFile, styleSource)
-          }
-        }
-        return
-      }
-      if (isSourceStyleRequest(file)) {
-        refreshRememberedCssSourceBySourceFile(file, source)
-      }
+    const source = resolveCachedStyleSource(file)
+    if (source == null) {
+      debug('refresh remembered css source skipped: missing cached source for %s', file)
+      return
     }
-    catch (error) {
-      debug('refresh remembered css source failed: %s %O', file, error)
+    if (SFC_COMPONENT_FILE_RE.test(file)) {
+      for (const remembered of matchedRememberedSources) {
+        const { query } = parseVueRequest(remembered.sourceFile)
+        const styleSource = extractSfcStyleSource(source, query.type === 'style' ? query.index : undefined)
+        if (styleSource !== undefined) {
+          refreshRememberedCssSourceBySourceFile(remembered.sourceFile, styleSource)
+        }
+      }
+      return
+    }
+    if (isSourceStyleRequest(file)) {
+      refreshRememberedCssSourceBySourceFile(file, source)
     }
   }
   const refreshRememberedCssSource = async (remembered: RememberedCssSource) => {
@@ -610,21 +671,20 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!rememberedKey || !path.isAbsolute(file)) {
       return undefined
     }
-    try {
-      const source = await readFile(file, 'utf8')
-      if (/\.(?:vue|uvue|nvue|svelte|mpx)$/i.test(file)) {
-        const { query } = parseVueRequest(remembered.sourceFile)
-        const styleSource = extractSfcStyleBlock(source, query.type === 'style' ? query.index : undefined)
-        return styleSource === undefined
-          ? undefined
-          : refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, styleSource)
-      }
-      if (isSourceStyleRequest(file)) {
-        return refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, source)
-      }
+    const source = resolveCachedStyleSource(file)
+    if (source == null) {
+      debug('refresh remembered css source before bundle replay skipped: missing cached source for %s', file)
+      return undefined
     }
-    catch (error) {
-      debug('refresh remembered css source before bundle replay failed: %s %O', file, error)
+    if (SFC_COMPONENT_FILE_RE.test(file)) {
+      const { query } = parseVueRequest(remembered.sourceFile)
+      const styleSource = extractSfcStyleSource(source, query.type === 'style' ? query.index : undefined)
+      return styleSource === undefined
+        ? undefined
+        : refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, styleSource)
+    }
+    if (isSourceStyleRequest(file)) {
+      return refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, source)
     }
     return undefined
   }
@@ -811,7 +871,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
-    const cssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(outputFile)
+    const outputCssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(outputFile)
+    const cssHandlerOptions = {
+      ...transformCssHandlerOptions.getCssHandlerOptions(file),
+      isMainChunk: outputCssHandlerOptions.isMainChunk || isMainStyleEntryFile(file),
+    }
     const shouldDeferEmptyScopedCssSource = !(
       opts.appType === 'uni-app-x'
       && !cssHandlerOptions.isMainChunk
@@ -824,7 +888,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       rawSource: code,
       file,
       cssHandlerOptions,
-      cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(outputFile),
+      cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(file),
       getSourceCandidatesForEntries,
       styleHandler,
       debug,
@@ -838,7 +902,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, generated.css)
-    const shouldInjectGeneratedCssIntoMain = cssHandlerOptions.isMainChunk || hasTailwindRootDirectives(code) || undefined
+    const shouldInjectGeneratedCssIntoMain = isMainStyleEntryFile(file)
+      || mainCssChunkMatcher(outputFile, opts.appType)
     // 这里保留 undefined，让 app/main 入口走主样式注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回 app.wxss。
     recordViteProcessedCssAssetResult(file, generated.css, {
       injectIntoMain: shouldInjectGeneratedCssIntoMain,
@@ -905,6 +970,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getRememberedCssSources,
     getRememberedCssSignature,
     setRememberedCssSignature,
+    getKnownSfcSource,
     recordGeneratorCandidates,
     hmrTimingRecorder,
   })
@@ -962,6 +1028,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       name: `${vitePluginName}:source-candidates`,
       enforce: 'pre',
       async transform(code, id) {
+        if (shouldOwnTailwindGeneration) {
+          rememberKnownSfcSource(id, code)
+        }
         if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
           return
         }

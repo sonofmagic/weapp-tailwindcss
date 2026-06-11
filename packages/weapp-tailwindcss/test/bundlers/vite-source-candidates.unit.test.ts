@@ -112,6 +112,33 @@ describe('bundlers/vite source candidates', () => {
     }])).toEqual(new Set(['bg-normal']))
   })
 
+  it('excludes candidates matched by source entries', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-source-exclude')
+    const mainFile = path.join(root, 'src/pages/index.wxml')
+    const subFile = path.join(root, 'src/sub-normal/pages/index.wxml')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.includes('111') ? ['text-[111px]'] : ['text-[222px]'],
+    })
+
+    await writeTempFile(mainFile, '<view class="text-[111px]"></view>')
+    await writeTempFile(subFile, '<view class="text-[222px]"></view>')
+    await collector.sync(mainFile, '<view class="text-[111px]"></view>')
+    await collector.sync(subFile, '<view class="text-[222px]"></view>')
+
+    expect(collector.valuesForEntries([{
+      base: root,
+      negated: false,
+      pattern: '**/*',
+    }], {
+      excludeEntries: [{
+        base: path.join(root, 'src/sub-normal'),
+        negated: false,
+        pattern: '**/*',
+      }],
+    })).toEqual(new Set(['text-[111px]']))
+  })
+
   it('merges transformed module candidates without dropping raw source candidates', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()
@@ -121,6 +148,27 @@ describe('bundlers/vite source candidates', () => {
     await collector.merge(id, 'export const cls = "text-[188rpx]"')
 
     expect(collector.values()).toEqual(new Set(['bg-[#112233]', 'text-[188rpx]']))
+  })
+
+  it('collects TSX class-like script string candidates without collecting unrelated strings', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+
+    await collector.sync('/project/src/pages/index.tsx', [
+      'import { View } from "@tarojs/components"',
+      'export default function Index() {',
+      '  const complexExpression = "size > 4 ? keep-[business] : App.vue:4"',
+      '  const __twWatchClass = "text-[23.000026px] space-y-2.5 w-[calc(100%_-_000026px)] bg-[#000026]"',
+      '  return <View className={__twWatchClass}>{complexExpression}</View>',
+      '}',
+    ].join('\n'))
+
+    const values = collector.values()
+    expect(values.has('text-[23.000026px]')).toBe(true)
+    expect(values.has('space-y-2.5')).toBe(true)
+    expect(values.has('w-[calc(100%_-_000026px)]')).toBe(true)
+    expect(values.has('bg-[#000026]')).toBe(true)
+    expect(values.has('keep-[business]')).toBe(false)
   })
 
   it('matches updated relative-path files against absolute @source entries', async () => {

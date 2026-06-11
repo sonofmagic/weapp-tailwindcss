@@ -22,6 +22,7 @@ export function stripBundlerGeneratedCssMarkers(source: string) {
 
 export function parseBundlerGeneratedCssMarkerBlocks(source: string): BundlerGeneratedCssMarkerBlock[] {
   const blocks: BundlerGeneratedCssMarkerBlock[] = []
+  BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE.lastIndex = 0
   let match = BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE.exec(source)
   while (match !== null) {
     const cssStart = BUNDLER_GENERATED_CSS_MARKER_CAPTURE_RE.lastIndex

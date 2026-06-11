@@ -68,7 +68,7 @@
     "predev:harmony-hybrid": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
   },
   "browserslist": [
-    "defaults and fully supports es6-module",
+    "defaults",
     "maintained node versions"
   ],
   "dependencies": {

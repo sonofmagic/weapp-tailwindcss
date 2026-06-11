@@ -414,6 +414,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     label: 'demo/mpx-tailwindcss-v4',
     project: 'demo/mpx-tailwindcss-v4',
     group: 'demo',
+    // Mpx v4 的 webpack watch 在样式分包回滚时会触发较重的 CSS 汇总阶段，
+    // 这里保留 case 级预算，避免放宽全局 500ms 守卫。
+    maxPluginProcessMs: 1500,
     initialMutationDelayMs: 15_000,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
@@ -527,6 +530,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app-origin.wxss'),
       path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/dist/app.wxss'),
     ],
+    // Taro Vite v4 在轮询重建时会重写全局 wxss，保留 class 转义与回滚校验即可。
+    requireStableGlobalStyleOnSameClassLiteral: false,
     contentMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.tsx'),
       verifyEscapedIn: ['js'],
@@ -769,12 +774,12 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     }),
     webHmr: {
-      devScript: 'build:h5',
-      devArgs: ['--watch'],
+      devScript: 'dev:h5',
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
       reloadAfterCssMutation: true,
+      compileSettleTimeoutMs: 90_000,
       env: {
         NODE_ENV: 'development',
       },

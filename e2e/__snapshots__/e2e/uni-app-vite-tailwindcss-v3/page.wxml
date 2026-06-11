@@ -102,7 +102,7 @@
   <view class="text-_blength_cvar_p--my-var-length_P_B text-_blength_cvar_p--my-var-length_P_B">text-[length:var(--my-var-length)]</view>
   <view class="text-_blength_ccalc_p2_x9_d43px_P_B text-_blength_ccalc_p2_x9_d43px_P_B">text-[length:calc(2*9.43px)]</view>
   <view class="text-_bcolor_cvar_p--my-var_P_B text-_bcolor_cvar_p--my-var_P_B">text-[color:var(--my-var)]</view>
-  <button class="_ebg-green-500 _ebg-green-500 _esr-onlytext-white _esr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
+  <button class="bg-green-500 bg-green-500 sr-onlytext-white sr-onlytext-white opacity-50 opacity-50" role="button" aria-disabled="true" disabled="">disable</button>
   <view class="test test">test</view>
   <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h4268EA_B bg-_b_h4268EA_B shadow-indigo-100 shadow-indigo-100"></view>
   <view class="h-_b20px_B h-_b20px_B w-_b20px_B w-_b20px_B bg-_b_h123456_B bg-_b_h123456_B shadow-blue-100 shadow-blue-100"></view>
@@ -112,7 +112,7 @@
   <view class="w-2 w-2 h-2 h-2 bg-_b_h123456_B bg-_b_h123456_B"></view>
   <view class="w-2 w-2 h-2 h-2 bg-blue-500_f50 bg-blue-500_f50"></view>
   <view class="flex flex items-center items-center justify-center justify-center w-screen w-screen h-screen h-screen">
-    <view class="_efont-bold _efont-bold _etext-_b_h990000_B _etext-_b_h990000_B text-2xl text-2xl underline underline">测试标题</view>
+    <view class="font-bold font-bold _etext-_b_h990000_B _etext-_b_h990000_B text-2xl text-2xl underline underline">测试标题</view>
   </view>
   <image class="logo logo h-10 h-10 w-10 w-10" src="/static/logo.png" role="img"></image>
   <view class="text-area text-area"><text class="title title h-_b200_v_B h-_b200_v_B"></text></view>

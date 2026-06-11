@@ -1,11 +1,12 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { PluginCreator } from 'postcss'
+import type { PluginCreator, Rule } from 'postcss'
 import type {
   TailwindV4CandidateSource,
   TailwindV4SourceOptions,
   WeappTailwindcssGenerateOptions,
   WeappTailwindcssGeneratorUserOptions,
 } from './generator'
+import postcss from 'postcss'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from './bundlers/shared/generator-css/directives'
 import {
   createWeappTailwindcssGenerator,
@@ -56,7 +57,7 @@ function collectApplyOnlyCssSelectors(css: string) {
   return selectors
 }
 
-function ruleMatchesApplyOnlySelector(rule: postcss.Rule, selectors: Set<string>) {
+function ruleMatchesApplyOnlySelector(rule: Rule, selectors: Set<string>) {
   const ruleSelectors = rule.selectors ?? [rule.selector]
   return ruleSelectors.some(selector => selectors.has(normalizeSelector(selector)))
 }

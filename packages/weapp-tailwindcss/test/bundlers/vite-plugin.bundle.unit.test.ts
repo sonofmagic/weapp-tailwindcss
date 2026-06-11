@@ -19,6 +19,7 @@ import {
   setCurrentContext,
 } from './vite-plugin.testkit'
 import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -1758,6 +1759,29 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(independent?.rawSource).toBe('independent')
   }, TEST_TIMEOUT_MS)
 
+  it('does not match basename-only remembered subpackage css sources to root page css', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-css-root-page-'))
+    createdDirs.push(root)
+    const sources = new Map([
+      ['src/sub-normal/pages/index.wxss', {
+        outputFile: 'src/sub-normal/pages/index.wxss',
+        rawSource: 'subpackage',
+        sourceFile: path.join(root, 'src/sub-normal/pages/index.scss'),
+      }],
+    ])
+
+    const matched = resolveRememberedCssSourceForTest(
+      sources,
+      'pages/index/index.wxss',
+      'pages/index/index.wxss',
+      createRollupAsset('') as OutputAsset,
+      path.join(root, 'dist/dev/mp-weixin'),
+      root,
+    )
+
+    expect(matched).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
   it('does not match app-origin remembered css source to app main css', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-app-origin-'))
     createdDirs.push(root)
@@ -2341,74 +2365,79 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('merges covered preflight declarations when replaying vite-processed css into app.wxss', async () => {
-    const generateMock = vi.fn(async () => ({
-      css: '',
-      rawCss: '',
-      target: 'weapp',
-      classSet: new Set<string>(),
-      dependencies: [],
-      sources: [],
-      root: null,
-    }))
-    vi.doMock('@/generator', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('@/generator')>()
-      return {
-        ...actual,
-        createWeappTailwindcssGenerator: vi.fn(() => ({
-          generate: generateMock,
-        })),
-      }
-    })
-    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    setCurrentContext(createContext({
+  it('merges covered preflight declarations when injecting vite-processed css into app.wxss', () => {
+    const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set<string>()),
-        getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 4,
-        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-      },
-    }))
-    const plugins = WeappTailwindcss()
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
-    expect(postPlugin).toBeTruthy()
-
-    await (postPlugin.configResolved as any)?.call(postPlugin, {
-      command: 'build',
-      root: process.cwd(),
-      css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
-    } as ResolvedConfig)
+    })
 
     const preflightSelector = 'view,text,::after,::before'
     const baseCss = `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-ease:initial}`
     const processedCss = [
       `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-content:""}`,
-      '.bg-normal-subpackage-marker{background-color:#2563eb}',
+      '.bg-app-marker{background-color:#2563eb}',
     ].join('\n')
     const bundle = {
-      'main.wxss': {
-        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'src/main.css'))}\n${processedCss}`),
-        fileName: 'main.wxss',
-      },
       'app.wxss': {
         ...createRollupAsset(baseCss),
         fileName: 'app.wxss',
       },
     }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>([
+      [path.resolve('/project/src/app.css'), { css: processedCss, injectIntoMain: true }],
+    ])
 
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, bundle)
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
     const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
 
     expect((appCss.match(/view,text,::after,::before/g) ?? [])).toHaveLength(1)
     expect(appCss).toContain('--tw-content:""')
-    expect(appCss).toContain('.bg-normal-subpackage-marker')
+    expect(appCss).toContain('.bg-app-marker')
   }, TEST_TIMEOUT_MS)
+
+  it('dedupes mini-program preflight when replaying vite-processed css into app.wxss', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const preflightSelector = 'view,text,::after,::before'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset([
+          `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-font-weight:initial}`,
+          '.app-main{}',
+        ].join('\n')),
+        fileName: 'app.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>([
+      ['pages/index/index.wxss', {
+        css: [
+          `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-font-weight:;--tw-content:""}`,
+          '.page-only{}',
+        ].join('\n'),
+        injectIntoMain: true,
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect((appCss.match(/view,text,::after,::before/g) ?? [])).toHaveLength(1)
+    expect(appCss).toContain('--tw-font-weight:initial')
+    expect(appCss).toContain('--tw-content:""')
+    expect(appCss).toContain('.page-only{}')
+  })
 
   it('regenerates vite-processed uni-app-x @apply style assets from remembered source', async () => {
     const generatedByRawSource: string[] = []
@@ -2684,6 +2713,479 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toBe(processedSubCss)
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
+
+  it('excludes subpackage source candidates when generating Tailwind v3 app css', async () => {
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
+      const css = [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join('')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(options.candidates),
+        rawCandidates: new Set(options.candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-main-package-scope-'))
+    createdDirs.push(root)
+    const mainSourceFile = path.join(root, 'miniprogram/pages/index.wxml')
+    const subSourceFile = path.join(root, 'miniprogram/sub-normal/pages/index.wxml')
+    const collector = createSourceCandidateCollector({
+      extractor: source => source.includes('111') ? ['text-[111px]'] : ['text-[222px]'],
+    })
+    await collector.sync(mainSourceFile, '<view class="text-[111px]"></view>')
+    await collector.sync(subSourceFile, '<view class="text-[222px]"></view>')
+    const runtimeSet = collector.values()
+    const context = createContext({
+      appType: 'weapp-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    })
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => collector.values(),
+      getSourceCandidatesForEntries: (entries, options) => collector.valuesForEntries(entries, options),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'app.json': {
+        ...createRollupAsset(JSON.stringify({
+          pages: ['pages/index'],
+          subPackages: [{ root: 'sub-normal', pages: ['pages/index'] }],
+        })),
+        fileName: 'app.json',
+      },
+      'app.wxss': {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: 'app.wxss',
+      },
+      'sub-normal/pages/index.js': {
+        ...createRollupChunk('console.log("sub")'),
+        fileName: 'sub-normal/pages/index.js',
+        moduleIds: [path.join(root, 'miniprogram/sub-normal/pages/index.ts')],
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain('.text-_b111px_B')
+    expect(appCss).toContain('font-size: 111px')
+    expect(appCss).not.toContain('.text-_b222px_B')
+    expect(appCss).not.toContain('font-size: 222px')
+  }, TEST_TIMEOUT_MS)
+
+  it('injects replayed main package vite css into app wxss without leaking subpackage css', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = source.css.includes('tw-main-watch')
+        ? '.tw-main-watch{display:block}'
+        : source.css.includes('tw-sub-watch')
+          ? '.tw-sub-watch{display:block}'
+          : ''
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 4,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-main-package-replay-'))
+    createdDirs.push(root)
+    const runtimeSet = new Set(['tw-main-watch', 'tw-sub-watch'])
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    })
+    const mainSourceFile = path.join(root, 'src/pages/index/index.vue?vue&type=style&index=0&lang.css')
+    const subSourceFile = path.join(root, 'src/sub-normal/pages/index.vue?vue&type=style&index=0&lang.css')
+    const rememberedCssSources = new Map([
+      ['pages/index/index.wxss', {
+        outputFile: 'pages/index/index.wxss',
+        rawSource: '@import "tailwindcss";\n.tw-main-watch { @apply block; }',
+        sourceFile: mainSourceFile,
+      }],
+      ['sub-normal/pages/index.wxss', {
+        outputFile: 'sub-normal/pages/index.wxss',
+        rawSource: '@import "tailwindcss";\n.tw-sub-watch { @apply block; }',
+        sourceFile: subSourceFile,
+      }],
+    ])
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn((file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => {
+        viteProcessedCssAssetResults.set(file, { css, injectIntoMain: options?.injectIntoMain })
+      }),
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      getViteProcessedCssAssetResult: (file: string) => viteProcessedCssAssetResults.get(file),
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'app.json': {
+        ...createRollupAsset(JSON.stringify({
+          pages: ['pages/index/index'],
+          subPackages: [{ root: 'sub-normal', pages: ['pages/index'] }],
+        })),
+        fileName: 'app.json',
+      },
+      'app.wxss': {
+        ...createRollupAsset('@import "./app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("main")'),
+        fileName: 'pages/index/index.js',
+      },
+      'sub-normal/pages/index.js': {
+        ...createRollupChunk('console.log("sub")'),
+        fileName: 'sub-normal/pages/index.js',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toMatch(/\.tw-main-watch\s*\{[^}]*display:\s*block/)
+    expect(appCss).not.toContain('.tw-sub-watch')
+    expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toMatch(/\.tw-main-watch\s*\{[^}]*display:\s*block/)
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source.toString()).toMatch(/\.tw-sub-watch\s*\{[^}]*display:\s*block/)
+    expect(viteProcessedCssAssetResults.get(mainSourceFile)?.injectIntoMain).toBe(true)
+    expect(viteProcessedCssAssetResults.get(subSourceFile)?.injectIntoMain).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('does not inject vite-processed main package page css into app wxss during build', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-main-page-build-css-'))
+    createdDirs.push(root)
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['tw-main-build'])),
+        getClassSetSync: vi.fn(() => new Set(['tw-main-build'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['tw-main-build']) })),
+      },
+    })
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set(['tw-main-build'])),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set(['tw-main-build'])),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/build/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => true),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn((file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => {
+        viteProcessedCssAssetResults.set(file, { css, injectIntoMain: options?.injectIntoMain })
+      }),
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      getViteProcessedCssAssetResult: (file: string) => viteProcessedCssAssetResults.get(file),
+      getSourceCandidates: () => new Set(['tw-main-build']),
+      getSourceCandidatesForEntries: () => new Set(['tw-main-build']),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'app.json': {
+        ...createRollupAsset(JSON.stringify({ pages: ['pages/index/index'] })),
+        fileName: 'app.json',
+      },
+      'app.wxss': {
+        ...createRollupAsset('@import "./app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("main")'),
+        fileName: 'pages/index/index.js',
+      },
+      'pages/index/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'src/pages/index/index.vue?vue&type=style&index=0&lang.css'))}\n.tw-main-build{display:block}`),
+        fileName: 'pages/index/index.wxss',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).not.toContain('.tw-main-build')
+    expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toBe('.tw-main-build{display:block}')
+    expect(viteProcessedCssAssetResults.get('pages/index/index.wxss')?.injectIntoMain).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('does not replay vite-processed page css into app when output resolution points to app wxss', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(''),
+        fileName: 'app.wxss',
+      },
+      'pages/index/index.css': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', '/project/src/pages/index/index.css')}\n.tw-page-build{display:block}`),
+        fileName: 'pages/index/index.css',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: context as any,
+      isViteProcessedCssAsset: vi.fn(() => true),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn((file: string, css: string, options?: { injectIntoMain?: boolean | undefined }) => {
+        viteProcessedCssAssetResults.set(file, { css, injectIntoMain: options?.injectIntoMain })
+      }),
+      resolveViteProcessedCssOutputFile: () => 'app.wxss',
+    })
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    expect((bundle['app.wxss'] as OutputAsset).source.toString()).not.toContain('.tw-page-build')
+    expect(viteProcessedCssAssetResults.get('pages/index/index.css')?.injectIntoMain).toBeUndefined()
+  })
+
+  it('does not match plain taro temporary css assets to remembered subpackage css', async () => {
+    const generateMock = vi.fn(async () => ({
+      css: '.subpackage{}',
+      rawCss: '.subpackage{}',
+      target: 'weapp',
+      classSet: new Set(['subpackage']),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-taro-temp-css-'))
+    createdDirs.push(root)
+    const subCssFile = path.join(root, 'src/sub-normal/pages/index.css')
+    const rawSubCss = '@import "tailwindcss" source(none);\n@config "../../../tailwind.config.sub-normal.js";'
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['subpackage'])),
+        getClassSetSync: vi.fn(() => new Set(['subpackage'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['subpackage']) })),
+      },
+    })
+    const rememberedCssSources = new Map([
+      ['sub-normal/pages/index.wxss', {
+        outputFile: 'sub-normal/pages/index.wxss',
+        rawSource: rawSubCss,
+        sourceFile: subCssFile,
+      }],
+    ])
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set(['subpackage'])),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set(['subpackage'])),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set(['subpackage']),
+      getSourceCandidatesForEntries: () => new Set(['subpackage']),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const rawPageCss = '.tw-page-style-watch-anchor{color:inherit}'
+    const bundle = {
+      'index.css': {
+        ...createRollupAsset(rawPageCss),
+        fileName: 'index.css',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const output = (bundle['index.wxss'] ?? bundle['index.css']) as OutputAsset
+    expect(output.source).toBe(rawPageCss)
+    expect(generateMock).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('does not inject app-origin vite processed css back into app.wxss', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('@import "app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+      'app-origin.wxss': {
+        ...createRollupAsset('.bg-normal-subpackage-marker{}'),
+        fileName: 'app-origin.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>([
+      [path.resolve('/project/src/app.css'), { css: '.app-main{}', injectIntoMain: true }],
+      ['app-origin.wxss', { css: '.bg-normal-subpackage-marker{}', injectIntoMain: false }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).not.toContain('@import')
+    expect(appCss).toContain('.app-main{}')
+    expect(appCss).not.toContain('.bg-normal-subpackage-marker')
+  })
 
   it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {
     mockTailwindV4GeneratorCss()
@@ -6188,8 +6690,10 @@ ${utilities}
     }))
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(rewritePlugin).toBeTruthy()
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -6290,8 +6794,10 @@ ${utilities}
     }))
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(rewritePlugin).toBeTruthy()
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -6351,7 +6857,7 @@ ${utilities}
     expect(replayedBundleCss).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
-  it('refreshes remembered sfc style source from disk before replaying stale vite pipeline css', async () => {
+  it('refreshes remembered sfc style source from watch cache before replaying stale vite pipeline css', async () => {
     const generateMock = vi.fn(async (source: { css: string }) => {
       const css = source.css.includes('.tw-watch-style-case')
         ? '.base-style{display:flex}.tw-watch-style-case{font-weight:700}'
@@ -6405,8 +6911,10 @@ ${utilities}
     }))
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(rewritePlugin).toBeTruthy()
+    expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -6438,6 +6946,7 @@ ${utilities}
     expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
 
     await writeFile(sourceFile, `<template><view /></template>\n<style lang="scss">\n${cleanStyleSource}\n</style>\n`, 'utf8')
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, sourceFile, { event: 'update' })
     generateMock.mockClear()
     const secondBundle = {
       'pages/index/index.wxss': {
@@ -6454,12 +6963,407 @@ ${utilities}
 
     const rolledBackCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
     expect(generateMock).toHaveBeenCalled()
-    for (const [source] of generateMock.mock.calls) {
-      expect(source.css).toContain('.base-style { @apply flex; }')
-      expect(source.css).not.toContain('.tw-watch-style-case')
-    }
+    const lastGeneratedSource = generateMock.mock.calls.at(-1)?.[0]
+    expect(lastGeneratedSource.css).toContain('.base-style { @apply flex; }')
+    expect(lastGeneratedSource.css).not.toContain('.tw-watch-style-case')
     expect(rolledBackCss).toContain('.base-style')
     expect(rolledBackCss).not.toContain('.tw-watch-style-case')
+  }, TEST_TIMEOUT_MS)
+
+  it('infers uni-app page sfc styles when inline styles skip vite css transform', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = [
+        source.css.includes('.first-style') ? '.first-style{display:block}' : '',
+        source.css.includes('.base-style') ? '.base-style{display:flex}' : '',
+        source.css.includes('.tw-watch-style-case') ? '.tw-watch-style-case{font-weight:700}' : '',
+      ].join('')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-style-infer-'))
+    createdDirs.push(root)
+    const pageDir = path.join(root, 'feature/pages/index')
+    await mkdir(pageDir, { recursive: true })
+    const sourceFile = path.join(pageDir, 'index.vue')
+    const source = [
+      '<template><view /></template>',
+      '<style lang="scss">',
+      '.first-style { @apply block; }',
+      '</style>',
+      '<style lang="scss">',
+      '.base-style { @apply flex; }',
+      '.tw-watch-style-case { @apply font-bold; }',
+      '</style>',
+    ].join('\n')
+    await writeFile(sourceFile, source, 'utf8')
+    const secondStyleRequest = `${sourceFile}?vue&type=style&index=1&lang.scss`
+
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    })
+    const rememberCssSource = vi.fn()
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource,
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map([
+        ['pages/index/index.wxss', {
+          outputFile: 'pages/index/index.wxss',
+          rawSource: '.base-style { @apply flex; }',
+          sourceFile: secondStyleRequest,
+        }],
+      ]),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      getKnownSfcSource: vi.fn(() => undefined),
+      recordGeneratorCandidates: vi.fn(),
+    })
+
+    const bundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset('.compiled-page-style{}'),
+        fileName: 'pages/index/index.wxss',
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+        facadeModuleId: sourceFile,
+        moduleIds: [sourceFile],
+      },
+    }
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+      getModuleInfo: vi.fn((id: string) => id === sourceFile ? { code: source } : null),
+    }, {} as any, bundle)
+
+    const css = (bundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(css).toContain('.first-style')
+    expect(css).toContain('.base-style')
+    expect(css).toContain('.tw-watch-style-case')
+    expect(rememberCssSource).toHaveBeenCalledWith(
+      expect.objectContaining({
+        outputFile: 'pages/index/index.wxss',
+        sourceFile,
+      }),
+      expect.any(String),
+    )
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes merged sfc style sources before regenerating stale vite pipeline css assets', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = [
+        source.css.includes('.page-root') ? '.page-root{display:block}' : '',
+        source.css.includes('.base-style') ? '.base-style{display:flex}' : '',
+        source.css.includes('.tw-watch-style-case') ? '.tw-watch-style-case{font-weight:700}' : '',
+      ].join('')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-style-merge-refresh-'))
+    createdDirs.push(root)
+    const pageDir = path.join(root, 'pages/index')
+    await mkdir(pageDir, { recursive: true })
+    const sourceFile = path.join(pageDir, 'index.vue')
+    const firstStyleSource = '.page-root { @apply block; }'
+    const cleanSecondStyleSource = '.base-style { @apply flex; }'
+    const dirtySecondStyleSource = `${cleanSecondStyleSource}\n.tw-watch-style-case { @apply font-bold; }`
+    await writeFile(
+      sourceFile,
+      `<template><view /></template>\n<style lang="scss">\n${firstStyleSource}\n</style>\n<style lang="scss">\n${cleanSecondStyleSource}\n</style>\n`,
+      'utf8',
+    )
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const transform = getTransformHandler(rewritePlugin)
+    const firstStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
+    const secondStyleRequest = `${sourceFile}?vue&type=style&index=1&lang.scss`
+    const firstTransform = await transform?.call(rewritePlugin, firstStyleSource, firstStyleRequest) as { code: string } | null | undefined
+    const secondTransform = await transform?.call(rewritePlugin, cleanSecondStyleSource, secondStyleRequest) as { code: string } | null | undefined
+    expect(firstTransform?.code).toContain('.page-root')
+    expect(secondTransform?.code).toContain('.base-style')
+    const staleMergedCss = `${firstTransform?.code ?? ''}\n${secondTransform?.code ?? ''}`
+
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(staleMergedCss),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [firstStyleRequest, secondStyleRequest],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    const firstCss = (firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(firstCss).toContain('.page-root')
+    expect(firstCss).toContain('.base-style')
+    expect(firstCss).not.toContain('.tw-watch-style-case')
+
+    await writeFile(
+      sourceFile,
+      `<template><view /></template>\n<style lang="scss">\n${firstStyleSource}\n</style>\n<style lang="scss">\n${dirtySecondStyleSource}\n</style>\n`,
+      'utf8',
+    )
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, sourceFile, { event: 'update' })
+
+    const secondBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(staleMergedCss),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [firstStyleRequest, secondStyleRequest],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const refreshedCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(refreshedCss).toContain('.page-root')
+    expect(refreshedCss).toContain('.base-style')
+    expect(refreshedCss).toContain('.tw-watch-style-case')
+  }, TEST_TIMEOUT_MS)
+
+  it('replays merged sfc style sources once when vite omits the css bundle asset', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => {
+      const css = [
+        source.css.includes('.page-root') ? '.page-root{display:block}' : '',
+        source.css.includes('.base-style') ? '.base-style{display:flex}' : '',
+        source.css.includes('.tw-watch-style-case') ? '.tw-watch-style-case{font-weight:700}' : '',
+      ].join('')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-style-merge-replay-'))
+    createdDirs.push(root)
+    const pageDir = path.join(root, 'pages/index')
+    await mkdir(pageDir, { recursive: true })
+    const sourceFile = path.join(pageDir, 'index.vue')
+    const firstStyleSource = '.page-root { @apply block; }'
+    const cleanSecondStyleSource = '.base-style { @apply flex; }'
+    const dirtySecondStyleSource = `${cleanSecondStyleSource}\n.tw-watch-style-case { @apply font-bold; }`
+    await writeFile(
+      sourceFile,
+      `<template><view /></template>\n<style lang="scss">\n${firstStyleSource}\n</style>\n<style lang="scss">\n${cleanSecondStyleSource}\n</style>\n`,
+      'utf8',
+    )
+
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    })
+    const firstStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
+    const secondStyleRequest = `${sourceFile}?vue&type=style&index=1&lang.scss`
+    const rememberedCssSources = new Map([
+      ['pages/index/index.wxss', {
+        outputFile: 'pages/index/index.wxss',
+        rawSource: firstStyleSource,
+        sourceFile: firstStyleRequest,
+      }],
+      [`pages/index/index.wxss\0${sourceFile}?type=style&index=1`, {
+        outputFile: 'pages/index/index.wxss',
+        rawSource: cleanSecondStyleSource,
+        sourceFile: secondStyleRequest,
+      }],
+    ])
+    const rememberedSignatures = new Map<string, string>()
+    const refreshRememberedCssSource = vi.fn(async (remembered: { outputFile: string, rawSource: string, sourceFile: string }) => ({
+      ...remembered,
+      rawSource: remembered.sourceFile === secondStyleRequest
+        ? dirtySecondStyleSource
+        : firstStyleSource,
+    }))
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource,
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: (file: string) => rememberedSignatures.get(file),
+      setRememberedCssSignature: (file: string, signature: string) => {
+        rememberedSignatures.set(file, signature)
+      },
+      recordGeneratorCandidates: vi.fn(),
+    })
+
+    await writeFile(
+      sourceFile,
+      `<template><view /></template>\n<style lang="scss">\n${firstStyleSource}\n</style>\n<style lang="scss">\n${dirtySecondStyleSource}\n</style>\n`,
+      'utf8',
+    )
+    const bundle = {
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+
+    expect(refreshRememberedCssSource).toHaveBeenCalledTimes(2)
+    const replayedCss = (bundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(replayedCss).toContain('.page-root')
+    expect(replayedCss).toContain('.base-style')
+    expect(replayedCss).toContain('.tw-watch-style-case')
   }, TEST_TIMEOUT_MS)
 
   it('regenerates vite pipeline css when a style source rolls back with css bundle asset', async () => {

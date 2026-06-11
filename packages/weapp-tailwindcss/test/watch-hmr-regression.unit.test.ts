@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, stat } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { parse } from 'yaml'
@@ -94,7 +94,10 @@ import {
   waitFor,
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
-import { resolveChromiumLaunchOptions } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
+import {
+  resolveChromiumLaunchOptions,
+  waitForWebPageReady,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -296,6 +299,19 @@ describe('watch-hmr regression text helpers', () => {
     expect(await readFileIfExists(path.join(tempDir, 'missing.txt'))).toBeUndefined()
     expect(await getMtime(file)).toBeGreaterThan(0)
     expect(await getMtime(path.join(tempDir, 'missing.txt'))).toBe(0)
+  })
+
+  it('keeps source file mtimes moving forward for rapid watch mutations', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-mtime-'))
+    tempDirs.push(tempDir)
+    const file = path.join(tempDir, 'sample.txt')
+
+    await writeFilePreserveEol(file, 'alpha\n', 'alpha\n')
+    const before = await stat(file)
+    await writeFilePreserveEol(file, 'beta\n', 'alpha\n')
+    const after = await stat(file)
+
+    expect(after.mtimeMs).toBeGreaterThan(before.mtimeMs)
   })
 
   it('expands wildcard output files so hashed style assets can be re-discovered', async () => {
@@ -1164,6 +1180,30 @@ describe('watch-hmr regression cases', () => {
     expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
   })
 
+  it('retries Web/H5 page readiness when the first navigation races the dev middleware', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      goto: vi.fn()
+        .mockRejectedValueOnce(new Error('wait until bundle finished'))
+        .mockResolvedValueOnce(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReady(page as any, 'http://127.0.0.1:42000/', '#app', {
+      timeoutMs: 500,
+      pollMs: 1,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.goto).toHaveBeenCalledTimes(2)
+    expect(page.locator).toHaveBeenCalledWith('#app')
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 500,
+    })
+  })
+
   it('defines issue33 high-risk arbitrary CRUD rounds for js literal hot updates', () => {
     const [roundConfig] = buildIssue33HighRiskRoundConfigs()
 
@@ -1186,6 +1226,26 @@ describe('watch-hmr regression cases', () => {
       ].join('\n'),
       payload,
     )).toContain('\'text-[#123456]\':true')
+  })
+
+  it('uses the development H5 watch script for Taro webpack React v4 web HMR', () => {
+    const taroWebpackCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')
+
+    expect(taroWebpackCase?.webHmr).toMatchObject({
+      devScript: 'dev:h5',
+    })
+    expect(taroWebpackCase?.webHmr).not.toHaveProperty('devArgs')
+  })
+
+  it('keeps Taro webpack React v4 H5 watch regression on NutUI stubs', async () => {
+    const configSource = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
+    ), 'utf8')
+
+    expect(configSource).toContain('function applyWatchRegressionAliases')
+    expect(configSource).toMatch(/mini:\s*\{[\s\S]*?webpackChain\(chain\)\s*\{[\s\S]*?applyWatchRegressionAliases\(chain\)/)
+    expect(configSource).toMatch(/h5:\s*\{[\s\S]*?webpackChain\(chain\)\s*\{[\s\S]*?applyWatchRegressionAliases\(chain\)/)
   })
 
   it('keeps the uni-app Vue3 Vite v3 style mutation on the global Tailwind layer entry', () => {
@@ -1512,7 +1572,10 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase?.webHmr, `${name} should define Web/H5 HMR coverage`).toBeDefined()
       expect(sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
       expect(cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
-      expect(watchCase?.webHmr?.devScript).toBe(name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+      const expectedDevScript = name === 'taro-webpack-react-tailwindcss-v4'
+        ? 'dev:h5'
+        : name.startsWith('taro-') ? 'build:h5' : 'dev:h5'
+      expect(watchCase?.webHmr?.devScript).toBe(expectedDevScript)
     }
 
     expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
@@ -1811,6 +1874,14 @@ describe('watch-hmr regression cases', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
 
     expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.initialBuildScript).toBe('build')
+  })
+
+  it('keeps slow Taro webpack React v4 H5 web rollback settle timeout explicit', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const taroWebpackReactV4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')
+
+    expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
+    expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(90_000)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {

@@ -631,9 +631,8 @@ export async function runClassMutation(
       effectiveHotUpdateEffectiveMs = isContentMutation
         ? hotUpdateOutputMs
         : Math.max(hotUpdateEffectiveMs, assertedAddOutputs ? hotUpdateOutputMs : addResult.effectiveMs)
-      if (!isContentMutation) {
-        await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
-      }
+      // content mutation 没有可传播 marker，也需要等待编译稳定，避免连续写同一源文件时丢失下一次变更。
+      await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
       const pluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
       effectiveHotUpdatePluginProcessMs = pluginMetrics.totalMs
       effectiveHotUpdatePluginProcessSamples = pluginMetrics.samples
@@ -801,9 +800,8 @@ export async function runClassMutation(
         effectiveHotUpdateEffectiveMs = isContentMutation
           ? modifyOutputMs
           : Math.max(modifyEffectiveMs, assertedModifyOutputs ? modifyOutputMs : modifyResult.effectiveMs)
-        if (!isContentMutation) {
-          await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
-        }
+        // content mutation 没有可传播 marker，也需要等待编译稳定，避免连续写同一源文件时丢失下一次变更。
+        await waitForCompileSettled(watchCase, options, session, modifyStartedAt)
         const pluginMetrics = collectPluginProcessMetrics(session, modifyStartedAt)
         effectiveHotUpdatePluginProcessMs = pluginMetrics.totalMs
         effectiveHotUpdatePluginProcessSamples = pluginMetrics.samples
@@ -892,9 +890,8 @@ export async function runClassMutation(
           sourcePath,
         )
       }
-      if (!isContentMutation) {
-        await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
-      }
+      // content mutation 没有可传播 marker，也需要等待编译稳定，避免连续写同一源文件时丢失下一次变更。
+      await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
       const pluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
       rollbackPluginProcessMs = pluginMetrics.totalMs
       rollbackPluginProcessSamples = pluginMetrics.samples

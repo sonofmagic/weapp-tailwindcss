@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 10270 | 35 | false | false | false | false | true |
+| 7988 | 20 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -130,12 +130,6 @@ view,
 text,
 ::after,
 ::before {
-  --tw-rotate-x: initial;
-  --tw-rotate-y: initial;
-  --tw-rotate-z: initial;
-  --tw-skew-x: initial;
-  --tw-skew-y: initial;
-  --tw-border-style: solid;
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
   --tw-gradient-via: rgba(0, 0, 0, 0);
@@ -145,26 +139,10 @@ text,
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
-  --tw-outline-style: solid;
-  --tw-blur: initial;
-  --tw-brightness: initial;
-  --tw-contrast: initial;
-  --tw-grayscale: initial;
-  --tw-hue-rotate: initial;
-  --tw-invert: initial;
-  --tw-opacity: initial;
-  --tw-saturate: initial;
-  --tw-sepia: initial;
-  --tw-drop-shadow: initial;
-  --tw-drop-shadow-color: initial;
-  --tw-drop-shadow-alpha: 100%;
-  --tw-drop-shadow-size: initial;
-  --tw-ease: initial;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-duration: initial;
 }
 :host,
 page,
@@ -176,76 +154,14 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-purple-300: rgb(216, 180, 255);
   --spacing: 8rpx;
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --default-transition-duration: 150ms;
-  --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-.visible {
-  visibility: visible;
-}
-.static {
-  position: static;
-}
-.container {
-  width: 100%;
-}
-@media (min-width: 40rem) {
-  .container {
-    max-width: 1280rpx;
-  }
-}
-@media (min-width: 48rem) {
-  .container {
-    max-width: 1536rpx;
-  }
-}
-@media (min-width: 64rem) {
-  .container {
-    max-width: 2048rpx;
-  }
-}
-@media (min-width: 80rem) {
-  .container {
-    max-width: 2560rpx;
-  }
-}
-@media (min-width: 96rem) {
-  .container {
-    max-width: 3072rpx;
-  }
-}
-.block {
-  display: block;
-}
-.flex {
-  display: flex;
-}
-.grid {
-  display: grid;
-}
-.inline {
-  display: inline;
-}
-.table {
-  display: table;
 }
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
   height: 300rpx;
-}
-.transform {
-  transform: var(--tw-rotate-x,) var(--tw-rotate-y,) var(--tw-rotate-z,) var(--tw-skew-x,) var(--tw-skew-y,);
-}
-.resize {
-  resize: both;
-}
-.border {
-  border-style: var(--tw-border-style);
-  border-width: 1rpx;
 }
 .bg-_b_h123456_B {
   background-color: #123456;
@@ -298,35 +214,39 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
-.outline {
-  outline-style: var(--tw-outline-style);
-  outline-width: 1px;
-}
-.blur {
-  --tw-blur: blur(8px);
-  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-    var(--tw-drop-shadow,);
-}
-.filter {
-  filter: var(--tw-blur,) var(--tw-brightness,) var(--tw-contrast,) var(--tw-grayscale,) var(--tw-hue-rotate,) var(--tw-invert,) var(--tw-saturate,) var(--tw-sepia,)
-    var(--tw-drop-shadow,);
-}
-.transition {
-  transition-property:
-    color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to, opacity, box-shadow,
-    transform, translate, scale, rotate, filter, backdrop-filter, display, content-visibility, overlay, pointer-events;
-  transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
-  transition-duration: var(--tw-duration, var(--default-transition-duration));
-}
-.ease-out {
-  --tw-ease: var(--ease-out);
-  transition-timing-function: var(--ease-out);
-}
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
+}
+.container {
+  width: 100%;
+}
+@media (min-width: 40rem) {
+  .container {
+    max-width: 1280rpx;
+  }
+}
+@media (min-width: 48rem) {
+  .container {
+    max-width: 1536rpx;
+  }
+}
+@media (min-width: 64rem) {
+  .container {
+    max-width: 2048rpx;
+  }
+}
+@media (min-width: 80rem) {
+  .container {
+    max-width: 2560rpx;
+  }
+}
+@media (min-width: 96rem) {
+  .container {
+    max-width: 3072rpx;
+  }
 }
 ```
 

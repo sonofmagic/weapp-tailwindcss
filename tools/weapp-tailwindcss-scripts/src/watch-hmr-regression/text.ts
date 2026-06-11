@@ -99,7 +99,19 @@ export async function writeFilePreserveEol(
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     try {
+      let previousMtime = 0
+      try {
+        previousMtime = (await fs.stat(file)).mtimeMs
+      }
+      catch {
+      }
+
       await fs.writeFile(file, alignedContent, 'utf8')
+      const currentStats = await fs.stat(file)
+      if (currentStats.mtimeMs <= previousMtime) {
+        const nextMtime = new Date(previousMtime + 10)
+        await fs.utimes(file, nextMtime, nextMtime)
+      }
       return
     }
     catch (error) {

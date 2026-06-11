@@ -1,4 +1,4 @@
-import type { Compiler } from 'webpack'
+import type { Compiler, sources as WebpackSources } from 'webpack'
 import type { BundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import type { AppType, InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
@@ -59,9 +59,7 @@ function stringifyWebpackSource(source: unknown) {
   return source?.toString() ?? ''
 }
 
-interface WebpackSourceLike {
-  source: () => unknown
-}
+type WebpackSourceLike = string | WebpackSources.Source
 
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
   const {
@@ -134,13 +132,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           source: WebpackSourceLike,
           { notifyUpdate = true }: { notifyUpdate?: boolean } = {},
         ) => {
-          const nextSource = stringifyWebpackSource(source.source())
+          const nextSource = typeof source === 'string'
+            ? source
+            : stringifyWebpackSource(source.source())
           const previousSource = getCurrentAssetSource(file)
           if (previousSource === nextSource) {
             debug('asset unchanged, skip update: %s', file)
             return false
           }
-          compilation.updateAsset(file, source)
+          compilation.updateAsset(file, typeof source === 'string' ? new ConcatSource(source) : source)
           if (notifyUpdate) {
             compilerOptions.onUpdate(file, previousSource ?? '', nextSource)
           }

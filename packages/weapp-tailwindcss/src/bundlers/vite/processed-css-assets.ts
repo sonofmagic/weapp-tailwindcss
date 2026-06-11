@@ -52,6 +52,18 @@ function isCssOutputFile(file: string) {
   return CSS_OUTPUT_FILE_RE.test(file)
 }
 
+function isAppOriginCssFile(file: string) {
+  return /(?:^|\/)app-origin\.(?:css|wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(file)
+}
+
+function isMainStyleAssetFile(file: string) {
+  const basename = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+    .replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i, '')
+    .split('/')
+    .pop()
+  return basename === 'app' || basename === 'main'
+}
+
 function getAssetFile(bundleFile: string, asset: OutputAsset) {
   return asset.fileName || bundleFile
 }
@@ -242,6 +254,59 @@ function collectCssRuleDeclarationRecords(root: postcss.Root) {
   return map
 }
 
+function isMiniProgramPreflightRuleKey(key: string) {
+  return key === 'view,text,:after,:before'
+}
+
+function mergeMiniProgramPreflightRuleDeclarations(baseCss: string, css: string) {
+  try {
+    const baseRoot = postcss.parse(baseCss)
+    const root = postcss.parse(css)
+    const baseRuleRecords = collectCssRuleDeclarationRecords(baseRoot)
+    let changedBase = false
+    let changedCss = false
+
+    root.walkRules((rule) => {
+      const key = getCssRuleStructuralKey(rule)
+      if (!key || !isMiniProgramPreflightRuleKey(key)) {
+        return
+      }
+      const records = baseRuleRecords.get(key)
+      const targetRecord = records?.[0]
+      if (!targetRecord) {
+        return
+      }
+      const existingProps = new Set(records.flatMap(record => [...record.props]))
+      for (const decl of collectCssRuleDeclarations(rule)) {
+        const prop = decl.prop.trim()
+        if (existingProps.has(prop)) {
+          continue
+        }
+        targetRecord.rule.append(decl.clone())
+        targetRecord.keys.add(normalizeCssDeclarationKey(decl))
+        targetRecord.props.add(prop)
+        existingProps.add(prop)
+        changedBase = true
+      }
+      rule.remove()
+      changedCss = true
+    })
+
+    if (!changedBase && !changedCss) {
+      return { baseCss, css, changed: false }
+    }
+    removeEmptyAtRules(root)
+    return {
+      baseCss: changedBase ? baseRoot.toString() : baseCss,
+      css: changedCss ? root.toString().trim() : css,
+      changed: true,
+    }
+  }
+  catch {
+    return { baseCss, css, changed: false }
+  }
+}
+
 function isCssRuleCoveredByDeclarations(
   rule: postcss.Rule,
   baseRuleDeclarationKeys: Map<string, Set<string>>,
@@ -296,6 +361,9 @@ function mergeCoveredCssRuleDeclarations(baseCss: string, css: string) {
       }
 
       const targetRecord = records[0]
+      if (!targetRecord) {
+        return
+      }
       for (const decl of missingDeclarations) {
         targetRecord.rule.append(decl.clone())
         targetRecord.keys.add(normalizeCssDeclarationKey(decl))
@@ -431,7 +499,7 @@ function resolveImportedStyleFile(targetFile: string, request: string | undefine
   if (!isStyleImportRequest(request)) {
     return
   }
-  const cleanRequest = request.replace(/[?#].*$/, '')
+  const cleanRequest = request!.replace(/[?#].*$/, '')
   if (cleanRequest.startsWith('/')) {
     return normalizeOutputPathKey(cleanRequest.slice(1))
   }
@@ -453,6 +521,27 @@ function collectImportedStyleFiles(css: string, targetFile: string) {
   catch {
   }
   return imports
+}
+
+function removeAppOriginStyleImports(css: string, targetFile: string) {
+  if (!css.includes('@import')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkAtRules('import', (atRule) => {
+      const importedFile = resolveImportedStyleFile(targetFile, parseImportRequest(atRule.params))
+      if (importedFile && isAppOriginCssFile(importedFile)) {
+        atRule.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString().trimStart() : css
+  }
+  catch {
+    return css
+  }
 }
 
 function normalizeMarkerOutputFile(
@@ -547,8 +636,12 @@ export function collectViteProcessedCssAssetResults(
     options.recordCssAssetResult?.(file, nextCss)
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
-      && normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
-      && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
+      && !isAppOriginCssFile(file)
+      && isMainStyleAssetFile(file)
+      && (
+        normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+        || !options.opts.mainCssChunkMatcher(file, options.opts.appType)
+      )
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {
       injectIntoMain: shouldReplayIntoMainCss || undefined,
     })
@@ -611,6 +704,14 @@ export function injectViteProcessedCssIntoMainCssAssets(
       if (containsCssAfterMinify(nextCss, css)) {
         continue
       }
+      const mergedPreflightDeclarations = mergeMiniProgramPreflightRuleDeclarations(nextCss, css)
+      if (mergedPreflightDeclarations.changed) {
+        nextCss = mergedPreflightDeclarations.baseCss
+        css = mergedPreflightDeclarations.css.trim()
+        if (css.length === 0) {
+          continue
+        }
+      }
       const mergedRuleDeclarations = mergeCoveredCssRuleDeclarations(nextCss, css)
       if (mergedRuleDeclarations.changed) {
         nextCss = mergedRuleDeclarations.baseCss
@@ -624,6 +725,9 @@ export function injectViteProcessedCssIntoMainCssAssets(
         continue
       }
       nextCss = appendCss(nextCss, missingCss)
+    }
+    if (nextCss !== originalSource) {
+      nextCss = removeAppOriginStyleImports(nextCss, file)
     }
     if (nextCss === originalSource) {
       continue

@@ -17,6 +17,7 @@
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
 - Tailwind CSS v3/v4 的样式生成统一由 `weapp-tailwindcss` 接管；禁止通过 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成样式。
 - 构建插件禁止用 `fs` 直接写入或改写构建输出目录；输出变更必须通过对应 bundler 的插件 API、bundle asset、`emitFile`、loader result 或 stream/file 对象完成，确保产物仍在同一个构建图里。
+- 修复构建器问题时必须从 bundler 的生命周期、模块图、产物图与 loader/plugin API 出发；禁止通过硬编码 `src`、`pages` 等项目布局推导源码路径，也禁止在 `generateBundle` 等后置阶段为了弥补状态缺失临时读取源码文件。需要源码内容时，应在 `load`、`transform`、`watchChange`、`handleHotUpdate` 等生命周期缓存，或使用 `ModuleInfo`、chunk metadata、loader result、source map、source-candidates 等构建图数据；确需文件系统扫描的入口发现逻辑必须集中在扫描层，并有回归测试覆盖。
 - `submodules/tailwindcss-mangle/` 只允许作为本地源码参考目录，不得加入 `pnpm-workspace.yaml`、`pnpm-lock.yaml`、CI/CD checkout、发布流程或仓库 submodule 追踪；`weapp-tailwindcss` 必须消费 npm 发布版 `tailwindcss-patch`。
 
 ## 多 Codex / 多代理协作
@@ -50,6 +51,7 @@
 
 ## 关键约束索引
 - `packages/weapp-tailwindcss` 的 JS 转译必须遵循 `classNameSet` 精确命中原则，禁止启发式兜底转译。
+- `packages/weapp-tailwindcss` 的 bundler 适配不得依赖硬编码目录或后置 `fs.readFile` 兜底来还原源码关系；源码关系必须来自构建图、插件生命周期缓存或明确的扫描层。
 - demo、Web/H5、watch 与 e2e 场景都必须遵守 Tailwind CSS 由 `weapp-tailwindcss` 生成的约束，不能为修复样式或 HMR 问题注册官方 Tailwind 生成插件。
 - 运行时封装（`packages-runtime/*`）改动需重点关注 escape/unescape、merge 兼容和缓存边界。
 - Release 工作流发布 npm 必须使用 trusted publishing/OIDC：发布 job 使用 Node 24 以满足 npm CLI 的 OIDC 支持要求，保留 `permissions.id-token: write` 与 provenance，禁止在发布步骤注入 `NPM_TOKEN` 或 `NODE_AUTH_TOKEN`。

@@ -29,7 +29,7 @@ export interface TailwindV4SourcePattern {
   negated: boolean
 }
 
-type TailwindV4PatchGenerateOptions = Omit<PatchTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources'>
+type TailwindV4PatchGenerateOptions = Omit<PatchTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources' | 'bareArbitraryValues'>
 
 /**
  * Tailwind CSS v4 生成配置。

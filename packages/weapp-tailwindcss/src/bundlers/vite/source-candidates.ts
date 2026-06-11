@@ -4,6 +4,8 @@ import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { extractSourceCandidates, resolveProjectSourceFiles } from 'tailwindcss-patch'
+import { traverse } from '@/babel'
+import { babelParse } from '@/js/babel'
 import {
   FULL_SOURCE_SCAN_EXTENSION_RE,
   isFileMatchedByTailwindSourceEntries,
@@ -20,8 +22,9 @@ export interface SourceCandidateCollector {
   scanRoot: (options: ScanSourceCandidateRootOptions) => Promise<void>
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
   remove: (id: string) => void
+  source: (id: string) => string | undefined
   values: () => Set<string>
-  valuesForEntries: (entries: TailwindSourceEntry[] | undefined) => Set<string>
+  valuesForEntries: (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>
   snapshot: () => SourceCandidateCollectorSnapshot
   restore: (snapshot: SourceCandidateCollectorSnapshot) => void
   clear: () => void
@@ -31,9 +34,14 @@ export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
   cssCandidatesById?: Array<[string, string[]]> | undefined
   scanCandidatesById?: Array<[string, string[]]> | undefined
+  sourceById?: Array<[string, string]> | undefined
   transformCandidatesById?: Array<[string, string[]]> | undefined
   inlineExcludedCandidates: string[]
   inlineIncludedCandidates: string[]
+}
+
+export interface SourceCandidateFilterOptions {
+  excludeEntries?: TailwindSourceEntry[] | undefined
 }
 
 interface ScanSourceCandidateRootOptions {
@@ -113,6 +121,17 @@ const TAILWIND_V3_HTML_TOKEN_CANDIDATES = new Set([
   'text',
   'view',
 ])
+const SCRIPT_SOURCE_CANDIDATE_EXTENSIONS = new Set([
+  'js',
+  'jsx',
+  'mjs',
+  'cjs',
+  'ts',
+  'tsx',
+  'mts',
+  'cts',
+])
+const CLASS_LIKE_NAME_RE = /class/i
 
 function cleanUrl(id: string) {
   return resolveSourceScanPath(id.replace(CLEAN_URL_RE, ''))
@@ -228,12 +247,136 @@ async function extractCandidates(
   extension: string,
   options: SourceCandidateCollectorOptions,
 ) {
-  if (options.extractor) {
-    return new Set(await options.extractor(source, extension))
+  const candidates = options.extractor
+    ? new Set(await options.extractor(source, extension))
+    : new Set(await extractSourceCandidates(source, extension, {
+        ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
+      }))
+  const scriptCandidates = await extractScriptStringCandidates(source, extension, options)
+  for (const candidate of scriptCandidates) {
+    candidates.add(candidate)
   }
-  return new Set(await extractSourceCandidates(source, extension, {
-    ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
-  }))
+  return candidates
+}
+
+function getPropertyName(node: any) {
+  if (!node) {
+    return
+  }
+  if (node.type === 'Identifier') {
+    return node.name
+  }
+  if (node.type === 'StringLiteral') {
+    return node.value
+  }
+}
+
+function isClassLikeStringPath(path: any) {
+  const parent = path.parentPath
+  if (!parent) {
+    return false
+  }
+
+  if (parent.isVariableDeclarator?.()) {
+    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.id) ?? '')
+  }
+
+  if (parent.isObjectProperty?.() || parent.isObjectMethod?.()) {
+    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.key) ?? '')
+  }
+
+  if (parent.isAssignmentExpression?.()) {
+    const left = parent.node.left
+    if (left?.type === 'Identifier') {
+      return CLASS_LIKE_NAME_RE.test(left.name)
+    }
+    if (left?.type === 'MemberExpression') {
+      return CLASS_LIKE_NAME_RE.test(getPropertyName(left.property) ?? '')
+    }
+  }
+
+  if (parent.isJSXAttribute?.()) {
+    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.name) ?? '')
+  }
+
+  return false
+}
+
+function isTemplateElementInClassLikePath(path: any) {
+  const templateLiteralPath = path.parentPath
+  if (!templateLiteralPath?.isTemplateLiteral?.()) {
+    return false
+  }
+  const parent = templateLiteralPath.parentPath
+  if (!parent) {
+    return false
+  }
+  if (parent.isVariableDeclarator?.()) {
+    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.id) ?? '')
+  }
+  if (parent.isObjectProperty?.() || parent.isObjectMethod?.()) {
+    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.key) ?? '')
+  }
+  if (parent.isAssignmentExpression?.()) {
+    const left = parent.node.left
+    if (left?.type === 'Identifier') {
+      return CLASS_LIKE_NAME_RE.test(left.name)
+    }
+    if (left?.type === 'MemberExpression') {
+      return CLASS_LIKE_NAME_RE.test(getPropertyName(left.property) ?? '')
+    }
+  }
+  return false
+}
+
+async function extractScriptStringCandidates(
+  source: string,
+  extension: string,
+  options: SourceCandidateCollectorOptions,
+) {
+  if (!SCRIPT_SOURCE_CANDIDATE_EXTENSIONS.has(extension)) {
+    return []
+  }
+
+  const values = new Set<string>()
+  try {
+    const ast = babelParse(source, {
+      cache: true,
+      cacheKey: `vite-source-candidates:${extension}`,
+      plugins: ['jsx', 'typescript'],
+      sourceType: 'unambiguous',
+    })
+
+    traverse(ast, {
+      noScope: true,
+      StringLiteral(path: any) {
+        if (isClassLikeStringPath(path)) {
+          values.add(path.node.value)
+        }
+      },
+      TemplateElement(path: any) {
+        if (isTemplateElementInClassLikePath(path)) {
+          values.add(path.node.value.raw)
+        }
+      },
+    } as any)
+  }
+  catch {
+    return []
+  }
+
+  const candidates = new Set<string>()
+  for (const value of values) {
+    const extractedCandidates = options.extractor
+      ? await options.extractor(value, 'html')
+      : await extractSourceCandidates(value, 'html', {
+          ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
+        })
+    for (const candidate of extractedCandidates) {
+      candidates.add(candidate)
+    }
+  }
+  return candidates
 }
 
 export function createTailwindV3DefaultExtractor() {
@@ -289,12 +432,14 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   const scanCandidatesById = new Map<string, Set<string>>()
   const transformCandidatesById = new Map<string, Set<string>>()
   const cssCandidatesById = new Map<string, Set<string>>()
+  const sourceById = new Map<string, string>()
   const candidateCount = new Map<string, number>()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
 
   async function sync(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    sourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
     const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
@@ -432,12 +577,17 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     scanCandidatesById.delete(normalizedId)
     transformCandidatesById.delete(normalizedId)
     cssCandidatesById.delete(normalizedId)
+    sourceById.delete(normalizedId)
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
       return
     }
     removeCandidateSet(candidateCount, previousCandidates)
     candidatesById.delete(normalizedId)
+  }
+
+  function source(id: string) {
+    return sourceById.get(cleanUrl(id))
   }
 
   function values() {
@@ -451,13 +601,18 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     return values
   }
 
-  function valuesForEntries(entries: TailwindSourceEntry[] | undefined) {
+  function valuesForEntries(entries: TailwindSourceEntry[] | undefined, options: SourceCandidateFilterOptions = {}) {
     if (entries === undefined) {
-      return values()
+      if (!options.excludeEntries?.length) {
+        return values()
+      }
     }
     const filtered = new Set<string>()
     for (const [id, candidates] of candidatesById) {
-      if (!isFileMatchedByTailwindSourceEntries(id, entries)) {
+      if (entries !== undefined && !isFileMatchedByTailwindSourceEntries(id, entries)) {
+        continue
+      }
+      if (options.excludeEntries?.length && isFileMatchedByTailwindSourceEntries(id, options.excludeEntries)) {
         continue
       }
       for (const candidate of candidates) {
@@ -478,6 +633,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     scanCandidatesById.clear()
     transformCandidatesById.clear()
     cssCandidatesById.clear()
+    sourceById.clear()
     candidateCount.clear()
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
@@ -488,6 +644,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       candidatesById: [...candidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       cssCandidatesById: [...cssCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       scanCandidatesById: [...scanCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
+      sourceById: [...sourceById.entries()],
       transformCandidatesById: [...transformCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       inlineExcludedCandidates: [...inlineExcludedCandidates],
       inlineIncludedCandidates: [...inlineIncludedCandidates],
@@ -528,6 +685,9 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       candidatesById.set(id, candidateSet)
       addCandidateSet(candidateCount, candidateSet)
     }
+    for (const [id, source] of snapshot.sourceById ?? []) {
+      sourceById.set(id, source)
+    }
   }
 
   return {
@@ -539,6 +699,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     scanRoot,
     syncInline,
     remove,
+    source,
     values,
     valuesForEntries,
     snapshot,

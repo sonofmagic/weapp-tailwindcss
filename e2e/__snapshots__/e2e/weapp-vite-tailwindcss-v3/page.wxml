@@ -1,5 +1,16 @@
 <view class="p-4">
+  <view class="hidden min-h-screen bg-gray-900 text-slate-200 transition-colors duration-500"></view>
   <view class="bg-_b_hd72929_B">className</view>
+  <view class="text-red-500">at App.vue:4</view>
+  <view></view>
+  <view class="text-blue-500">https://example.com/a[b]?q=Hello world!</view>
+  <view data-expression="size > 4 ? keep-[business] : App.vue:4" data-missing="before content [&amp;quot;not-generated&amp;quot;]" data-trace="at App.vue:4 index.ts:120:3"></view>
+  <view class="flex items-center gap-3 text-slate-700">
+    <view class="icon-_bmdi--home_B size-8 text-sky-600"></view>
+    <view class="icon-_bmdi--account_B size-8 text-emerald-600"></view>
+    <view class="iconify-_blucide--settings_B size-8 text-violet-600"></view>
+    <view class="iconify-_blucide--bell_B size-8 text-rose-600"></view>
+  </view>
   <view>
     <button
       class="weapp-reset-button index--weapp-reset-button text-_b_h0000ff_B index--text-_b_h0000ff_B px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hover_cbg-blue-500 index--hover_cbg-blue-500 focus_coutline-none index--focus_coutline-none focus_cring index--focus_cring focus_cring-blue-300 index--focus_cring-blue-300 focus_cring-opacity-80 index--focus_cring-opacity-80 bg-_borange_B index--bg-_borange_B"

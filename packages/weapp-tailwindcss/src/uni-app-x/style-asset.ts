@@ -24,7 +24,8 @@ const CLASS_SELECTOR_PREFIX_RE = /^\.((?:\\[^\n\r\f]|[\w-])+)(?=$|[.:#[])/
 
 export const UNI_APP_X_STYLE_PLACEHOLDER_VERSION = 'uni-app-x-style-placeholder-v2'
 
-type StyleValue = Record<string, Record<string, string | number>>
+type StyleDeclarations = Record<string, string | number>
+type StyleValue = Record<string, Record<string, StyleDeclarations>>
 type BundleItem = { type: string } | OutputAsset | OutputChunk
 
 interface HarmonyStyleInjectOptions {

@@ -18,6 +18,7 @@ import {
 import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { ensureTailwindcssRuntimePatch } from '@/tailwindcss/runtime-patch'
+import { omitUndefined } from '@/utils/object'
 import { transformTailwindV3CssByTarget } from './miniprogram'
 
 const runtimeReadyPromiseCache = new Map<string, Promise<void>>()
@@ -135,7 +136,7 @@ async function collectSourceBareArbitraryValueCandidates(
   }
   const candidates = new Set<string>()
   for (const source of sources ?? []) {
-    for (const candidate of await extractSourceCandidates(source.content, source.extension ?? 'html', { bareArbitraryValues })) {
+    for (const candidate of await extractSourceCandidates(source.content, source.extension ?? 'html', omitUndefined({ bareArbitraryValues }))) {
       if (resolveBareArbitraryValueCandidate(candidate, bareArbitraryValues)) {
         candidates.add(candidate)
       }

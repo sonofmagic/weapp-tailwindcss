@@ -210,6 +210,54 @@ async function collectStyleText(page: Page) {
   })
 }
 
+export async function waitForWebPageReady(
+  page: Pick<Page, 'goto' | 'locator'>,
+  url: string,
+  readySelector: string,
+  options: Pick<CliOptions, 'timeoutMs' | 'pollMs'> & {
+    ensureRunning?: () => void
+    message?: string
+  },
+  startedAt = Date.now(),
+) {
+  const attemptTimeoutMs = Math.min(
+    Math.max(options.pollMs * 10, 2_000),
+    10_000,
+    Math.max(options.timeoutMs, 1),
+  )
+  let lastError = ''
+
+  return await waitFor(
+    async () => {
+      try {
+        options.ensureRunning?.()
+        await page.goto(url, {
+          waitUntil: 'domcontentloaded',
+          timeout: attemptTimeoutMs,
+        })
+        await page.locator(readySelector).waitFor({
+          state: 'attached',
+          timeout: attemptTimeoutMs,
+        })
+        return true
+      }
+      catch (error) {
+        lastError = error instanceof Error ? error.message : String(error)
+        return false
+      }
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: options.message ?? `web page did not become ready in time: ${url}`,
+    },
+    startedAt,
+  ).catch((error) => {
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error(`${message}${lastError ? `\n${lastError}` : ''}`)
+  })
+}
+
 async function runSourceClassReplacementSequence(
   watchCase: WatchCase,
   options: CliOptions,
@@ -482,7 +530,10 @@ export async function runWebHmr(
     acceptWhen?: () => Promise<boolean>,
   ) => {
     const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
-    const timeoutMs = Math.min(options.timeoutMs, 30_000)
+    const timeoutMs = Math.min(
+      options.timeoutMs,
+      config.compileSettleTimeoutMs ?? 30_000,
+    )
     await waitFor(
       async () => {
         if (child.exitCode != null) {
@@ -554,13 +605,15 @@ export async function runWebHmr(
 
     browser = await launchBrowser()
     const page = await browser.newPage()
-    await page.goto(url, {
-      waitUntil: 'domcontentloaded',
-      timeout: Math.min(options.timeoutMs, 60_000),
-    })
-    await page.locator(config.readySelector ?? 'body').waitFor({
-      state: 'attached',
-      timeout: Math.min(options.timeoutMs, 60_000),
+    await waitForWebPageReady(page, url, config.readySelector ?? 'body', {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] web page did not become ready in time (${url})`,
+      ensureRunning() {
+        if (child.exitCode != null) {
+          throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
+        }
+      },
     })
     if ((config.initialMutationDelayMs ?? 0) > 0) {
       await sleep(config.initialMutationDelayMs!)

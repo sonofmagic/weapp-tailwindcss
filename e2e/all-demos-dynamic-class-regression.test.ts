@@ -37,6 +37,10 @@ function projectOutputRoot(entry: ProjectEntry) {
   return path.resolve(fixturesRoot, entry.projectPath, path.dirname(entry.cssFile))
 }
 
+function primaryCssFile(entry: ProjectEntry) {
+  return path.resolve(fixturesRoot, entry.projectPath, entry.cssFile)
+}
+
 async function rememberOriginal(file: string) {
   if (changedFiles.has(file)) {
     return
@@ -265,6 +269,41 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
   }
 }
 
+function normalizeSelectorPart(part: string) {
+  return part
+    .trim()
+    .replace(/:not\(#\\?#\)/g, '')
+    .replace(/^:after$/, '::after')
+    .replace(/^:before$/, '::before')
+}
+
+function countSelectorSetRules(css: string, selectorParts: string[]) {
+  const expected = new Set(selectorParts)
+  let count = 0
+  const ruleRe = /([^{}@][^{}]*)\{/g
+  let match = ruleRe.exec(css)
+  while (match) {
+    const selector = match[1]
+    const parts = selector
+      ?.split(',')
+      .map(normalizeSelectorPart)
+      .filter(Boolean)
+    if (parts && parts.length === expected.size && parts.every(part => expected.has(part))) {
+      count++
+    }
+    match = ruleRe.exec(css)
+  }
+  return count
+}
+
+function expectNoDuplicateMiniProgramPreflight(entry: ProjectEntry, appCss: string) {
+  const basePreflightCount = countSelectorSetRules(appCss, ['view', 'text', '::after', '::before'])
+  const rootPreflightCount = countSelectorSetRules(appCss, [':host', 'page', '.tw-root', 'wx-root-portal-content'])
+
+  expect(basePreflightCount, `${entry.name} should not duplicate mini-program base preflight`).toBeLessThanOrEqual(1)
+  expect(rootPreflightCount, `${entry.name} should not duplicate mini-program root preflight`).toBeLessThanOrEqual(1)
+}
+
 describe('all demo dynamic class regression', () => {
   afterEach(async () => {
     await restorePatchedFiles()
@@ -277,6 +316,7 @@ describe('all demo dynamic class regression', () => {
       await clearProjectBuildState(projectRoot(entry))
       await ensureProjectBuilt(projectRoot(entry), { force: true })
       expectBuiltRegression(entry, await readOutputFiles(entry))
+      expectNoDuplicateMiniProgramPreflight(entry, await fs.readFile(primaryCssFile(entry), 'utf8'))
     })
   }
 })

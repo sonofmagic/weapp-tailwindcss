@@ -66,6 +66,7 @@ export type GeneratorResolvedSource = TailwindResolvedSource & {
 type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> & {
   config?: string | undefined
   outputRoot?: string | undefined
+  sourceFile?: string | undefined
 }
 type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 type TailwindV4CssSourceRef = Pick<TailwindV4CssSource, 'file'>
@@ -265,6 +266,8 @@ function canResolveSourceSideCssEntry(
 
 function shouldResolveSourceSideCssEntry(rawSource: string) {
   return rawSource.includes('@apply')
+    || hasTailwindRootDirectives(rawSource, { importFallback: true })
+    || hasTailwindSourceDirectives(rawSource, { importFallback: true })
     || hasTailwindGeneratedCss(rawSource)
     || hasTailwindGeneratedCssMarkers(rawSource)
 }
@@ -712,7 +715,10 @@ async function resolveTailwindV4SourceSideEntrySource(
     resolvedEntrySource.config,
     resolvedEntrySource.configRequest,
     file,
-    resolvedSourceOptions,
+    {
+      ...resolvedSourceOptions,
+      sourceFile: resolvedEntrySource.file,
+    },
   )
   const css = createTailwindV4ApplyReferenceSource(
     normalizeConfigDirective(
@@ -1042,13 +1048,16 @@ export async function resolveGeneratorSources(
   const matchedCssEntrySource = sourceOptions
     ? await resolveMatchingTailwindV4CssEntry(rawSource, file, sourceOptions)
     : undefined
-  const matchedCssSource = await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, sourceOptions)
-  const candidateMatchedCssSource = await resolveCandidateMatchedTailwindV4CssSource(
-    rawSource,
-    cssHandlerOptions,
-    sourceOptions,
-    selectionOptions,
-  )
+  if (matchedCssEntrySource) {
+    return [
+      generatorOptions?.config
+        ? {
+            ...matchedCssEntrySource,
+            css: prependConfigDirective(matchedCssEntrySource.css, generatorOptions.config),
+          }
+        : matchedCssEntrySource,
+    ]
+  }
   const shouldPreferSourceSideEntry = shouldResolveSourceSideCssEntry(rawSource)
     || (
       Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
@@ -1063,10 +1072,17 @@ export async function resolveGeneratorSources(
     generatorOptions,
     file,
   )
-  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource
   if (sourceSideCssSource) {
     return [sourceSideCssSource]
   }
+  const matchedCssSource = await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, sourceOptions)
+  const candidateMatchedCssSource = await resolveCandidateMatchedTailwindV4CssSource(
+    rawSource,
+    cssHandlerOptions,
+    sourceOptions,
+    selectionOptions,
+  )
+  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource
   if (preferredCssEntrySource) {
     return [
       generatorOptions?.config

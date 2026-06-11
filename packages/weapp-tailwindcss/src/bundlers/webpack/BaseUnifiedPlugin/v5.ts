@@ -22,7 +22,7 @@ import { setupWebpackV5Loaders } from './v5-loaders'
 const debug = createDebug()
 export const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 
-type WebpackWatchOptions = Parameters<Compiler['watch']>[0]
+type WebpackWatchOptions = NonNullable<Parameters<Compiler['watch']>[0]>
 type WebpackWatchIgnoredItem = string | RegExp | ((file: string) => boolean)
 const outputIgnoredPredicatePath = Symbol('weapp-tailwindcss.outputIgnoredPredicatePath')
 
@@ -31,15 +31,10 @@ type OutputIgnoredPredicate = ((file: string) => boolean) & {
 }
 
 function normalizeIgnoredList(ignored: WebpackWatchOptions['ignored']): WebpackWatchIgnoredItem[] {
-  if (Array.isArray(ignored)) {
-    return ignored.filter((item): item is WebpackWatchIgnoredItem =>
-      typeof item === 'string' || item instanceof RegExp || typeof item === 'function',
-    )
-  }
-  if (typeof ignored === 'string' || ignored instanceof RegExp || typeof ignored === 'function') {
-    return [ignored]
-  }
-  return []
+  const items: unknown[] = Array.isArray(ignored) ? [...ignored] : [ignored]
+  return items.filter((item): item is WebpackWatchIgnoredItem =>
+    typeof item === 'string' || item instanceof RegExp || typeof item === 'function',
+  )
 }
 
 function createOutputIgnoredPredicate(
@@ -100,14 +95,23 @@ function setupWebpackWatchOutputIgnore(compiler: Compiler) {
     }
 
     if (watchOptions && typeof watchOptions === 'object') {
-      watchOptions.ignored = appendIgnoredPath(watchOptions.ignored, outputDir)
+      const nextIgnored = appendIgnoredPath(watchOptions.ignored, outputDir)
+      if (nextIgnored === undefined) {
+        delete watchOptions.ignored
+      }
+      else {
+        watchOptions.ignored = nextIgnored as NonNullable<WebpackWatchOptions['ignored']>
+      }
       return watchOptions
     }
 
     return { ignored: appendIgnoredPath(undefined, outputDir) } as WebpackWatchOptions
   }
 
-  compiler.options.watchOptions = appendOutputIgnoredPath(compiler.options.watchOptions)
+  const compilerWatchOptions = appendOutputIgnoredPath(compiler.options.watchOptions)
+  if (compilerWatchOptions) {
+    compiler.options.watchOptions = compilerWatchOptions
+  }
 
   const syncOutputIgnoredPath = () => {
     const outputPath = compiler.outputPath || compiler.options?.output?.path

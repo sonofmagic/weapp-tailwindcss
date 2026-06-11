@@ -185,6 +185,7 @@ export interface WebHmrConfig {
   readySelector?: string
   initialMutationDelayMs?: number
   reloadAfterCssMutation?: boolean
+  compileSettleTimeoutMs?: number
   mutate: (source: string, payload: ClassMutationPayload) => string
   env?: Record<string, string>
   classLiteral?: string

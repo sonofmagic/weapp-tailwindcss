@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxs
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 197636 | 2825 | false | false | false | false | true |
+| 197096 | 2822 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -5516,18 +5516,6 @@ body,
 }
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_r_aindependent_subpackage_uni-app-vite-tailwindcss-v3_r_a_B::before {
-  --tw-content: \'independent subpackage uni-app-vite-tailwindcss-v3\';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_r_amoduleA__ru72EC_ru7ACB_ru5206_ru5305_r_a_B::before {
-  --tw-content: \'moduleA \u72EC\u7ACB\u5206\u5305\';
-  content: var(--tw-content);
-}
-.before_ccontent-_b_r_anormal_subpackage_uni-app-vite-tailwindcss-v3_r_a_B::before {
-  --tw-content: \'normal subpackage uni-app-vite-tailwindcss-v3\';
   content: var(--tw-content);
 }
 .after_cborder-none::after {

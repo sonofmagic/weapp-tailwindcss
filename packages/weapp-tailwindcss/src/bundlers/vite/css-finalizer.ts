@@ -169,7 +169,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         if (resolvedConfig?.command !== 'build' && !isNativeAppStyleTarget) {
           return
         }
-        const rootDir = resolvedConfig.root ? path.resolve(resolvedConfig.root) : process.cwd()
+        const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
 
         collectViteProcessedCssAssetResults(bundle, {
           opts,

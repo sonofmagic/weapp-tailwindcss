@@ -11,7 +11,7 @@
   },
   "browserslist": {
     "development": [
-      "defaults and fully supports es6-module",
+      "defaults",
       "maintained node versions"
     ],
     "production": [

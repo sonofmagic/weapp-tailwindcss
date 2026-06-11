@@ -14,6 +14,19 @@ const generator = {
   },
 } satisfies UserDefinedOptions['generator']
 
+function applyWatchRegressionAliases(chain: any) {
+  if (!isWatchRegression) {
+    return
+  }
+  const nutuiStub = require.resolve('../src/watch-regression/nutui-stub.tsx')
+  const nutuiStyleStub = require.resolve('../src/watch-regression/nutui-style-stub.css')
+  chain.resolve.alias
+    .set('@nutui/nutui-react-taro$', nutuiStub)
+    .set('@nutui/icons-react-taro$', nutuiStub)
+    .set('@nutui/nutui-react-taro/dist/styles/themes/default.css$', nutuiStyleStub)
+    .set('@nutui/nutui-react-taro/dist/style.css$', nutuiStyleStub)
+}
+
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
   process.env.BROWSERSLIST_ENV = isWatchBuild
@@ -78,15 +91,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
-        if (isWatchRegression) {
-          const nutuiStub = require.resolve('../src/watch-regression/nutui-stub.tsx')
-          const nutuiStyleStub = require.resolve('../src/watch-regression/nutui-style-stub.css')
-          chain.resolve.alias
-            .set('@nutui/nutui-react-taro$', nutuiStub)
-            .set('@nutui/icons-react-taro$', nutuiStub)
-            .set('@nutui/nutui-react-taro/dist/styles/themes/default.css$', nutuiStyleStub)
-            .set('@nutui/nutui-react-taro/dist/style.css$', nutuiStyleStub)
-        }
+        applyWatchRegressionAliases(chain)
         chain.merge({
           plugin: {
             install: {
@@ -134,6 +139,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       webpackChain(chain) {
         chain.plugins.delete('webpackbar')
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
+        applyWatchRegressionAliases(chain)
         chain.merge({
           plugin: {
             install: {

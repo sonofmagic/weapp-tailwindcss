@@ -1,7 +1,9 @@
-import type { SourceEntry } from '@tailwindcss/oxide'
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { ILengthUnitsPatchOptions } from 'tailwindcss-patch'
-import type { TailwindV4CssSource } from '../tailwindcss/v4-engine'
+import type { TailwindSourceEntry as SourceEntry } from '../tailwindcss/source-scan'
+import type { TailwindV4SourceOptions } from '../tailwindcss/v4-engine'
+
+type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 
 export type CacheStrategy = 'merge' | 'overwrite'
 export type CacheDriver = 'file' | 'memory' | 'noop'

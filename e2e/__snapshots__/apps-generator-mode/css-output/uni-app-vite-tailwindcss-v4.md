@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 21012 | 128 | false | false | false | false | true |
+| 21463 | 126 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -17,23 +17,31 @@ view,
 text,
 ::after,
 ::before {
+  --tw-space-y-reverse: 0;
+  --tw-space-x-reverse: 0;
+  --tw-divide-x-reverse: 0;
+  --tw-border-style: solid;
+  --tw-divide-y-reverse: 0;
+  --tw-font-weight: initial;
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-color: initial;
+  --tw-shadow-alpha: 100%;
+  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-shadow-color: initial;
+  --tw-inset-shadow-alpha: 100%;
+  --tw-ring-color: initial;
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-inset-ring-color: initial;
+  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-inset: initial;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-space-x-reverse: 0;
-  --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
-  --tw-divide-x-reverse: 0;
-  --tw-divide-y-reverse: 0;
-  --tw-font-weight:;
   --tw-leading:;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-color: initial;
-  --tw-inset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
 page,
@@ -119,9 +127,7 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
 .space-y-reverse > view + view,
 .space-y-reverse > view + text,
@@ -135,9 +141,7 @@ wx-root-portal-content {
 .space-x-4 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
 }
 .space-x-reverse > view + view,
 .space-x-reverse > view + text,
@@ -208,22 +212,13 @@ wx-root-portal-content {
   border-width: 1px;
 }
 .bg-_b_h0000ff_B {
-  background-color: #00f;
+  background-color: #0000ff;
 }
 .bg-_b_h123498_B {
   background-color: #123498;
 }
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
-}
-.bg-midnight {
-  background-color: var(--color-midnight);
-}
-.bg-neutral-1B {
-  background-color: var(--color-neutral-1B);
-}
-.fill-bermuda {
-  fill: var(--color-bermuda);
 }
 .p-2 {
   padding: calc(var(--spacing) * 2);
@@ -252,12 +247,6 @@ wx-root-portal-content {
 .text-_b_h00f285_B {
   color: #00f285;
 }
-.text-neutral-66 {
-  color: var(--color-neutral-66);
-}
-.text-tahiti {
-  color: var(--color-tahiti);
-}
 .text-white {
   color: var(--color-white);
 }
@@ -274,14 +263,16 @@ wx-root-portal-content {
 .divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
 }
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
-}
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
 }
 .container {
   width: 100%;
@@ -311,21 +302,41 @@ wx-root-portal-content {
     max-width: 3072rpx;
   }
 }
-.reset-button {
-  display: block;
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
 }
-page {
-  --status-bar-height: 25px;
-  --top-window-height: 0px;
-  --window-top: 0px;
-  --window-bottom: 0px;
-  --window-left: 0px;
-  --window-right: 0px;
-  --window-magin: 0px;
+.bg-midnight {
+  background-color: var(--color-midnight);
 }
-[data-c-h='true'] {
-  display: none !important;
+.bg-neutral-1B {
+  background-color: var(--color-neutral-1B);
 }
+.fill-bermuda {
+  fill: var(--color-bermuda);
+}
+.text-neutral-66 {
+  color: var(--color-neutral-66);
+}
+.text-tahiti {
+  color: var(--color-tahiti);
+}
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
+}
+/* stylelint-disable custom-property-pattern */
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
+}
+/* Core plugin extractor sources are intentionally not loaded here. */
 ```
 
 ### home.wxss

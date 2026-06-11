@@ -881,7 +881,8 @@ export async function generateCssByGenerator(
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
       const isolateCssSource = shouldIsolateScopedCssSource(source, sourceEntries)
-      const matchedCssSourceFile = Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
+      const sourceMetadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+      const matchedCssSourceFile = Boolean(sourceMetadata?.matchedCssSourceFile)
       if (
         options.deferEmptyScopedCssSource
         && isolateCssSource

@@ -27,6 +27,9 @@
 - 涉及 bundler 行为差异时，优先在 `test/bundlers/**` 增加最小复现用例。
 - 不要在单个 handler 内同时引入解析、匹配、替换三类职责；优先拆分为可测试小模块。
 - Vite/Webpack/Gulp 等插件链路禁止通过 `fs` 直接写入或改写输出目录；需要新增或改写产物时，必须使用 bundler 提供的 bundle asset、`emitFile`、loader result、Vinyl file/stream 等插件 API。
+- `src/bundlers/**` 中还原源码、样式来源或输出文件关系时，禁止硬编码 `path.join(rootDir, 'src')`、`src/`、`pages/` 等项目目录假设；必须优先使用 Vite/Rollup 的 `facadeModuleId`、`moduleIds`、`modules`、`this.getModuleInfo`，Webpack 的 compilation/module graph，或 Gulp/Vinyl 的 `cwd`、`base`、`path` 等 bundler 上下文。
+- 不得在 `generateBundle`、`closeBundle` 等后置阶段新增临时 `readFile` 兜底来补缺失的源码状态；需要源码内容时，应在 `load`、`transform`、`watchChange`、`handleHotUpdate`、loader 执行阶段或 source-candidates 扫描层建立缓存。
+- 若确实必须从文件系统读取源码用于入口发现或候选扫描，读取逻辑必须集中在专门扫描层，说明为什么无法从 bundler 上下文取得，并补 `test/bundlers/**` 回归测试。
 
 ## 推荐验证命令
 

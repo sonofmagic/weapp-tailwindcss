@@ -122,7 +122,7 @@ function createExtractOptions(
     css: context.css,
     content: source,
     extension: 'html',
-    bareArbitraryValues,
+    ...(bareArbitraryValues === undefined ? {} : { bareArbitraryValues }),
   }
 }
 
@@ -569,7 +569,7 @@ export function createBundleRuntimeClassSetManager(
     unknownCandidates: Set<string>,
   ) {
     const validCandidates = resolveValidTailwindV4Candidates(designSystem, unknownCandidates, {
-      bareArbitraryValues: options.bareArbitraryValues,
+      ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
     })
 
     for (const candidate of unknownCandidates) {

@@ -2,6 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { ResolvedConfig } from 'vite'
 import type { HmrTimingRecorder } from '../shared/hmr-timing'
 import type { BundleSnapshot } from './bundle-state'
+import type { SourceCandidateFilterOptions } from './source-candidates'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions, LinkedJsModuleResult } from '@/types'
 import { existsSync } from 'node:fs'
@@ -18,7 +19,7 @@ import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtili
 import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
-import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
+import { hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
@@ -69,13 +70,14 @@ interface GenerateBundleContext {
   getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined }]>
   getViteProcessedCssAssetResult?: (file: string) => { css: string, injectIntoMain?: boolean | undefined } | undefined
   getSourceCandidates?: () => Set<string>
-  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
+  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
   rememberCssSource?: (entry: RememberedCssSource, cssRuntimeSignature?: string) => void
   refreshRememberedCssSource?: (entry: RememberedCssSource) => Promise<RememberedCssSource | undefined> | RememberedCssSource | undefined
   getRememberedCssSources?: () => Iterable<[string, RememberedCssSource]>
   getRememberedCssSignature?: (file: string) => string | undefined
   setRememberedCssSignature?: (file: string, cssRuntimeSignature: string) => void
+  getKnownSfcSource?: (file: string) => string | undefined
   recordGeneratorCandidates?: (candidates: Set<string>) => void
   hmrTimingRecorder?: HmrTimingRecorder
 }
@@ -93,6 +95,7 @@ interface GenerateBundleThis {
     fileName: string
     source: string
   }) => string
+  getModuleInfo?: (id: string) => { code: string | null } | null
 }
 
 function addSiblingCssFile(files: Set<string>, file: string) {
@@ -133,6 +136,8 @@ const SOURCE_STYLE_OUTPUT_EXT_RE = /\.(?:less|sass|scss|styl|stylus|pcss|postcss
 const CSS_SOURCE_OUTPUT_EXT_RE = /\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)$/i
 const MINI_PROGRAM_STYLE_OUTPUT_EXT_RE = /\.(?:wx|ac|jx|tt|q|ty)ss$/i
 const SOURCE_STYLE_NON_CSS_SYNTAX_RE = /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@(?:use|forward|mixin|include|function)\b)/
+const SFC_STYLE_SOURCE_EXTENSIONS = ['.vue', '.uvue', '.nvue', '.svelte', '.mpx'] as const
+const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 
 function resolveViteCssOutputFile(
   file: string,
@@ -210,12 +215,220 @@ function isMainAppCssFile(file: string) {
   return path.basename(stripStyleFileExtension(file)) === 'app'
 }
 
+function isMainStyleEntryCssFile(file: string) {
+  const basename = path.basename(stripStyleFileExtension(file))
+  return basename === 'app' || basename === 'main'
+}
+
 function isTailwindEntryCssFile(file: string) {
   return path.basename(stripStyleFileExtension(file)) === 'tailwind'
 }
 
+function readBundleAssetSource(output: OutputAsset | OutputChunk) {
+  if (output.type !== 'asset') {
+    return undefined
+  }
+  return typeof output.source === 'string'
+    ? output.source
+    : output.source.toString()
+}
+
+function normalizePackageRoot(root: string) {
+  return normalizeOutputPathKey(root).replace(/\/+$/, '')
+}
+
+function collectMiniProgramSubpackageRoots(bundle: Record<string, OutputAsset | OutputChunk>) {
+  let hasAppJson = false
+  const roots = new Set<string>()
+  for (const [file, output] of Object.entries(bundle)) {
+    const outputFile = output.fileName || file
+    if (path.basename(outputFile) !== 'app.json') {
+      continue
+    }
+    const source = readBundleAssetSource(output)
+    if (!source) {
+      continue
+    }
+    hasAppJson = true
+    try {
+      const appJson = JSON.parse(source) as {
+        subPackages?: Array<{ root?: unknown }> | undefined
+        subpackages?: Array<{ root?: unknown }> | undefined
+      }
+      const subPackages = Array.isArray(appJson.subPackages)
+        ? appJson.subPackages
+        : Array.isArray(appJson.subpackages)
+          ? appJson.subpackages
+          : []
+      for (const subPackage of subPackages) {
+        if (typeof subPackage.root !== 'string' || subPackage.root.length === 0) {
+          continue
+        }
+        roots.add(normalizePackageRoot(subPackage.root))
+      }
+    }
+    catch {
+    }
+  }
+  return hasAppJson ? roots : undefined
+}
+
+function isSubpackageOutputFile(file: string, subpackageRoots: Set<string>) {
+  const normalizedFile = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  for (const root of subpackageRoots) {
+    if (
+      root.length > 0
+      && (
+        normalizedFile === root
+        || normalizedFile.startsWith(`${root}/`)
+        || normalizedFile.endsWith(`/${root}`)
+        || normalizedFile.includes(`/${root}/`)
+      )
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 function normalizeCssSourceForCompare(css: string) {
   return css.trim()
+}
+
+function extractSfcStyleSources(source: string) {
+  const styleSources: string[] = []
+  SFC_STYLE_BLOCK_RE.lastIndex = 0
+  let match = SFC_STYLE_BLOCK_RE.exec(source)
+  while (match !== null) {
+    styleSources.push(match[1] ?? '')
+    match = SFC_STYLE_BLOCK_RE.exec(source)
+  }
+  return styleSources
+}
+
+function hasSfcStyleSources(source: string) {
+  return extractSfcStyleSources(source).length > 0
+}
+
+function hasTailwindGenerationSource(source: string) {
+  return hasTailwindSourceDirectives(source, { importFallback: true })
+    || hasTailwindRootDirectives(source, { importFallback: true })
+    || hasTailwindApplyDirective(source)
+}
+
+async function resolveSfcStyleSourceFromOutputFile(
+  outputFile: string,
+  snapshot: BundleSnapshot,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+  getSfcSource: ((file: string) => string | undefined) | undefined,
+  debug: (format: string, ...args: unknown[]) => void,
+): Promise<RememberedCssSource | undefined> {
+  const sourceFile = resolveSfcStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
+  if (!sourceFile) {
+    debug('sfc style source infer skipped: no source file for %s', outputFile)
+    return undefined
+  }
+  const source = getSfcSource?.(sourceFile)
+  if (source == null) {
+    debug('sfc style source infer skipped: missing known source for %s -> %s', outputFile, sourceFile)
+    return undefined
+  }
+  const rawSource = extractSfcStyleSources(source).join('\n')
+  if (!rawSource || !hasTailwindGenerationSource(rawSource)) {
+    debug('sfc style source infer skipped: no tailwind generation source for %s -> %s', outputFile, sourceFile)
+    return undefined
+  }
+  debug('sfc style source inferred: %s -> %s', outputFile, sourceFile)
+  return {
+    outputFile,
+    rawSource,
+    sourceFile,
+  }
+}
+
+function resolveSiblingJsChunkFile(outputFile: string) {
+  const normalizedOutputFile = outputFile.replace(/[?#].*$/, '')
+  if (MINI_PROGRAM_STYLE_OUTPUT_EXT_RE.test(normalizedOutputFile)) {
+    return normalizedOutputFile.replace(MINI_PROGRAM_STYLE_OUTPUT_EXT_RE, '.js')
+  }
+  if (CSS_SOURCE_OUTPUT_EXT_RE.test(normalizedOutputFile)) {
+    return normalizedOutputFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '.js')
+  }
+  return undefined
+}
+
+function normalizeSfcModuleId(id: string) {
+  const file = id.replace(/[?#].*$/, '')
+  if (!SFC_STYLE_SOURCE_EXTENSIONS.some(extension => file.endsWith(extension))) {
+    return undefined
+  }
+  if (!path.isAbsolute(file)) {
+    return undefined
+  }
+  return path.resolve(file)
+}
+
+function normalizeSfcSourceFileForCompare(file: string) {
+  return normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+}
+
+function collectChunkModuleIds(output: OutputChunk) {
+  const moduleIds = Array.isArray(output.moduleIds) ? output.moduleIds : []
+  return [
+    output.facadeModuleId,
+    ...moduleIds,
+    ...Object.keys(output.modules ?? {}),
+  ].filter((id, index, ids): id is string => typeof id === 'string' && id.length > 0 && ids.indexOf(id) === index)
+}
+
+function resolveSfcStyleFileFromSiblingChunk(
+  outputFile: string,
+  snapshot: BundleSnapshot,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+  debug: (format: string, ...args: unknown[]) => void,
+) {
+  const siblingJsFile = resolveSiblingJsChunkFile(outputFile)
+  if (!siblingJsFile) {
+    debug('sfc style sibling chunk skipped: no sibling js for %s', outputFile)
+    return undefined
+  }
+  const normalizedSiblingJsFile = normalizeOutputPathKey(siblingJsFile)
+  const siblingChunk = snapshot.entries.find(entry =>
+    entry.type === 'js'
+    && entry.output.type === 'chunk'
+    && normalizeOutputPathKey(entry.file) === normalizedSiblingJsFile,
+  )
+  if (!siblingChunk || siblingChunk.output.type !== 'chunk') {
+    debug('sfc style sibling chunk skipped: missing chunk for %s -> %s', outputFile, siblingJsFile)
+    return undefined
+  }
+  const sourceFiles = collectChunkModuleIds(siblingChunk.output)
+    .map(normalizeSfcModuleId)
+    .filter((file, index, files): file is string => Boolean(file) && files.indexOf(file) === index)
+  if (sourceFiles.length === 0) {
+    debug('sfc style sibling chunk skipped: no sfc modules for %s -> %s', outputFile, siblingJsFile)
+    return undefined
+  }
+  const scoredSources = sourceFiles
+    .map(sourceFile => ({
+      sourceFile,
+      score: scoreMatchingStyleFileBase(outputFile, sourceFile, outputRoot, sourceRoot),
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+  debug('sfc style sibling chunk candidates: %s -> %s %O', outputFile, siblingJsFile, scoredSources)
+  const bestScore = scoredSources[0]?.score
+  if (!bestScore) {
+    return undefined
+  }
+  const bestSources = scoredSources.filter(item => item.score === bestScore)
+  if (bestSources.length !== 1) {
+    debug('sfc style sibling chunk skipped: ambiguous best sources for %s %O', outputFile, bestSources)
+    return undefined
+  }
+  return bestSources[0]?.sourceFile
 }
 
 function createRememberedCssRuntimeSignature(cssRuntimeSignature: string, cssRuntimeAffectingHash: string) {
@@ -226,7 +439,7 @@ async function createScopedGeneratorCandidateSignature(
   rawSource: string,
   sourceFile: string,
   fallbackSignature: string,
-  getSourceCandidatesForEntries: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined,
+  getSourceCandidatesForEntries: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined,
   options: { includeFallbackSignature?: boolean | undefined } = {},
 ) {
   if (!getSourceCandidatesForEntries || !rawSource.includes('@source')) {
@@ -310,15 +523,16 @@ function scoreMatchingStyleFileBase(outputFile: string, sourceFile: string, outp
     ...collectParentDirectories(sourceFile),
   ])
   let bestScore = 0
+  const hasDirectorySegment = (value: string) => slash(value).includes('/')
   for (const outputBase of outputBases) {
     for (const sourceBase of sourceBases) {
       if (outputBase === sourceBase) {
         bestScore = Math.max(bestScore, 100000 + outputBase.length)
       }
-      else if (outputBase.endsWith(`/${sourceBase}`)) {
+      else if (hasDirectorySegment(sourceBase) && outputBase.endsWith(`/${sourceBase}`)) {
         bestScore = Math.max(bestScore, 50000 + sourceBase.length)
       }
-      else if (sourceBase.endsWith(`/${outputBase}`)) {
+      else if (hasDirectorySegment(outputBase) && sourceBase.endsWith(`/${outputBase}`)) {
         bestScore = Math.max(bestScore, 1000 + outputBase.length)
       }
     }
@@ -345,31 +559,64 @@ function findRememberedCssSource(
   outputRoot: string,
   sourceRoot: string | undefined,
 ) {
+  const matched = findRememberedCssSources(sources, outputFile, file, originalSource, outputRoot, sourceRoot)
+  return matched.length === 1 ? matched[0] : undefined
+}
+
+function findRememberedCssSources(
+  sources: Iterable<[string, RememberedCssSource]> | undefined,
+  outputFile: string,
+  file: string,
+  originalSource: OutputAsset,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+) {
   if (!sources) {
-    return undefined
+    return []
   }
   const rememberedSources = [...sources].map(([, remembered]) => remembered)
+  const source = typeof originalSource.source === 'string'
+    ? originalSource.source
+    : originalSource.source.toString()
+  const markerFiles = new Set(parseBundlerGeneratedCssMarkerBlocks(source)
+    .filter(block => block.bundler === 'vite' && typeof block.file === 'string' && block.file.length > 0)
+    .map(block => normalizeOutputPathKey(block.file!)))
+  if (markerFiles.size > 0) {
+    const markerMatched = rememberedSources.filter(remembered =>
+      markerFiles.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, ''))),
+    )
+    if (markerMatched.length > 0) {
+      return markerMatched
+    }
+  }
   const originalFiles = [
     file,
     originalSource.originalFileName,
     ...(originalSource.originalFileNames ?? []),
   ].filter((item): item is string => typeof item === 'string' && item.length > 0)
 
-  const sourceMatched = rememberedSources.find(remembered =>
+  const sourceMatched = rememberedSources.filter(remembered =>
     originalFiles.some(originalFile => normalizeOutputPathKey(remembered.sourceFile) === normalizeOutputPathKey(originalFile)),
   )
-  if (sourceMatched) {
+  if (sourceMatched.length > 0) {
     return sourceMatched
   }
 
-  const outputMatched = rememberedSources.find(remembered =>
+  const outputMatched = rememberedSources.filter(remembered =>
     normalizeOutputPathKey(remembered.outputFile) === normalizeOutputPathKey(outputFile),
   )
-  if (outputMatched) {
+  if (outputMatched.length > 0) {
     return outputMatched
   }
 
+  const shouldUseRememberedApplyFallback = !hasBundlerGeneratedCssMarker(source)
+    && !hasTailwindGenerationSource(source)
+  if (shouldUseRememberedApplyFallback && !rememberedSources.some(remembered => hasTailwindApplyDirective(remembered.rawSource))) {
+    return []
+  }
+
   const scoredMatches = rememberedSources
+    .filter(remembered => !shouldUseRememberedApplyFallback || hasTailwindApplyDirective(remembered.rawSource))
     .filter(remembered => !(isMainAppCssFile(outputFile) && isAppOriginCssFile(remembered.outputFile)))
     .map(remembered => ({
       remembered,
@@ -381,9 +628,118 @@ function findRememberedCssSource(
     .filter(match => match.score > 0)
     .sort((a, b) => b.score - a.score)
   const bestScore = scoredMatches[0]?.score
-  return bestScore && scoredMatches.filter(match => match.score === bestScore).length === 1
-    ? scoredMatches[0]?.remembered
-    : undefined
+  return bestScore
+    ? scoredMatches.filter(match => match.score === bestScore).map(match => match.remembered)
+    : []
+}
+
+function mergeRememberedCssSources(
+  sources: RememberedCssSource[],
+  outputFile: string,
+) {
+  if (sources.length <= 1) {
+    return sources[0]
+  }
+  const seen = new Set<string>()
+  const rawSources: string[] = []
+  for (const source of sources) {
+    const key = `${source.sourceFile}\0${source.rawSource}`
+    if (seen.has(key)) {
+      continue
+    }
+    seen.add(key)
+    rawSources.push(source.rawSource)
+  }
+  return {
+    outputFile,
+    rawSource: rawSources.join('\n'),
+    sourceFile: sources[0]?.sourceFile ?? outputFile,
+  }
+}
+
+function collectRememberedCssReplayGroups(
+  sources: Iterable<[string, RememberedCssSource]> | undefined,
+  opts: Pick<InternalUserDefinedOptions, 'cssMatcher'>,
+  rootDir: string,
+  isWebGeneratorTarget: boolean,
+  preserveCssExtension: boolean,
+) {
+  const groups = new Map<string, Array<{ key: string, remembered: RememberedCssSource }>>()
+  for (const [key, remembered] of sources ?? []) {
+    const outputFile = resolveViteCssPipelineOutputFile(
+      remembered.outputFile,
+      opts,
+      rootDir,
+      isWebGeneratorTarget,
+      preserveCssExtension,
+    )
+    const outputKey = normalizeOutputPathKey(outputFile)
+    const group = groups.get(outputKey) ?? []
+    group.push({ key, remembered })
+    groups.set(outputKey, group)
+  }
+  return groups
+}
+
+function resolveSubpackageSourceRootFromModuleId(moduleId: string, subpackageRoot: string) {
+  const file = slash(path.resolve(moduleId.replace(/[?#].*$/, '')))
+  const normalizedRoot = normalizePackageRoot(subpackageRoot)
+  const rootSegment = `/${normalizedRoot}/`
+  const rootIndex = file.lastIndexOf(rootSegment)
+  if (rootIndex >= 0) {
+    return file.slice(0, rootIndex + rootSegment.length - 1)
+  }
+  const rootSuffix = `/${normalizedRoot}`
+  if (file.endsWith(rootSuffix)) {
+    return file
+  }
+  return undefined
+}
+
+function collectMiniProgramSubpackageSourceEntries(
+  snapshot: BundleSnapshot,
+  subpackageRoots: Set<string>,
+  sourceBaseRoots: Array<string | undefined>,
+) {
+  const sourceRoots = new Set<string>()
+  const sourceEntries: TailwindSourceEntry[] = []
+  for (const entry of snapshot.entries) {
+    if (entry.output.type !== 'chunk' || !isSubpackageOutputFile(entry.file, subpackageRoots)) {
+      continue
+    }
+    const matchedSubpackageRoot = [...subpackageRoots].find(root => isSubpackageOutputFile(entry.file, new Set([root])))
+    if (!matchedSubpackageRoot) {
+      continue
+    }
+    for (const moduleId of collectChunkModuleIds(entry.output)) {
+      if (!path.isAbsolute(moduleId.replace(/[?#].*$/, ''))) {
+        continue
+      }
+      const sourceRoot = resolveSubpackageSourceRootFromModuleId(moduleId, matchedSubpackageRoot)
+      if (sourceRoot) {
+        sourceRoots.add(sourceRoot)
+      }
+    }
+  }
+  sourceEntries.push(...[...sourceRoots].map<TailwindSourceEntry>(sourceRoot => ({
+    base: sourceRoot,
+    negated: false,
+    pattern: '**/*',
+  })))
+  const resolvedBaseRoots = sourceBaseRoots
+    .filter((baseRoot): baseRoot is string => typeof baseRoot === 'string' && baseRoot.length > 0)
+    .map(baseRoot => path.resolve(baseRoot))
+    .filter((baseRoot, index, roots) => roots.indexOf(baseRoot) === index)
+  for (const baseRoot of resolvedBaseRoots) {
+    for (const subpackageRoot of subpackageRoots) {
+      sourceEntries.push({
+        base: baseRoot,
+        negated: false,
+        pattern: `**/${normalizePackageRoot(subpackageRoot)}/**`,
+      })
+    }
+  }
+  return sourceEntries
 }
 
 function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {
@@ -496,6 +852,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
   let currentOutDir: string | undefined
+  let currentSubpackageRoots: Set<string> | undefined
   const cssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => context.opts.appType,
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
@@ -526,9 +883,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getRememberedCssSources,
       getRememberedCssSignature,
       setRememberedCssSignature,
+      getKnownSfcSource,
       recordGeneratorCandidates,
       hmrTimingRecorder,
     } = context
+    const getBundlerSfcSource = (sourceFile: string) => {
+      const code = this.getModuleInfo?.(sourceFile)?.code
+      return typeof code === 'string' && hasSfcStyleSources(code) ? code : undefined
+    }
+    const getSfcSource = (sourceFile: string) => getBundlerSfcSource(sourceFile) ?? getKnownSfcSource?.(sourceFile)
     const {
       cache,
       onEnd,
@@ -596,6 +959,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const debugCssDiff = process.env['WEAPP_TW_VITE_DEBUG_CSS_DIFF'] === '1'
     const disableV3OxideSourceRuntime = process.env['WEAPP_TW_VITE_DISABLE_V3_OXIDE_RUNTIME'] === '1'
     const bundleFiles = Object.keys(bundle)
+    const subpackageRoots = collectMiniProgramSubpackageRoots(bundle)
+    if (subpackageRoots) {
+      currentSubpackageRoots = subpackageRoots
+    }
+    const isMainPackageStyleOutputFile = (file: string) =>
+      currentSubpackageRoots != null && !isSubpackageOutputFile(file, currentSubpackageRoots)
     const buildCommand = resolvedConfig?.command === 'build'
     const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
     const hasOmittedKnownFiles = hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
@@ -610,6 +979,50 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode, {
       hasOmittedKnownFiles,
     })
+    const subpackageSourceExcludeEntries = currentSubpackageRoots
+      ? collectMiniProgramSubpackageSourceEntries(snapshot, currentSubpackageRoots, [
+          rootDir,
+          opts.tailwindcssBasedir,
+          (opts.tailwindcssPatcherOptions as { projectRoot?: string | undefined } | undefined)?.projectRoot,
+        ])
+      : []
+    const shouldExcludeSubpackageSourceCandidates = (outputFile: string, cssHandlerOptions: { isMainChunk?: boolean | undefined }) =>
+      cssHandlerOptions.isMainChunk === true
+      && subpackageSourceExcludeEntries.length > 0
+      && isMainPackageStyleOutputFile(outputFile)
+    const createScopedSourceCandidateGetter = (
+      outputFile: string,
+      cssHandlerOptions: { isMainChunk?: boolean | undefined },
+    ) => {
+      if (!getSourceCandidatesForEntries) {
+        return undefined
+      }
+      if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
+        return getSourceCandidatesForEntries
+      }
+      return (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
+        getSourceCandidatesForEntries(entries, {
+          ...options,
+          excludeEntries: [
+            ...(options?.excludeEntries ?? []),
+            ...subpackageSourceExcludeEntries,
+          ],
+        })
+    }
+    const shouldInjectCssIntoMainFromOutput = (
+      outputFile: string,
+      sourceFile: string,
+      outputCssHandlerOptions: { isMainChunk?: boolean | undefined },
+    ) =>
+      isMainStyleEntryCssFile(sourceFile)
+      || isTailwindEntryCssFile(outputFile)
+      || (
+        useIncrementalMode
+        && (
+          outputCssHandlerOptions.isMainChunk
+          || isMainPackageStyleOutputFile(outputFile)
+        )
+      )
     recordTimingDetail('snapshot', snapshotStart)
     const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
     const forceRuntimeRefreshBySource = useIncrementalMode
@@ -625,6 +1038,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     await waitForSourceCandidateSyncs?.()
     recordTimingDetail('sourceCandidates.wait', sourceCandidateWaitStart)
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
+    const createScopedGeneratorRuntime = (
+      outputFile: string,
+      cssHandlerOptions: { isMainChunk?: boolean | undefined },
+      runtime: Set<string>,
+    ) => {
+      if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
+        return runtime
+      }
+      const filteredSourceCandidates = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)?.(undefined)
+      if (!filteredSourceCandidates) {
+        return runtime
+      }
+      return filteredSourceCandidates.size > 0 ? filteredSourceCandidates : runtime
+    }
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
@@ -868,7 +1295,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
         const cssAssetProcessed = isCssAssetProcessed?.(originalSource, file) === true
         const alreadyProcessedCssAsset = viteProcessedCssAsset || cssAssetProcessed
-        let rememberedCssSource = findRememberedCssSource(
+        let rememberedCssSources = findRememberedCssSources(
           getRememberedCssSources?.(),
           outputFile,
           file,
@@ -876,9 +1303,34 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           outDir,
           opts.tailwindcssBasedir,
         )
-        if (rememberedCssSource != null) {
-          rememberedCssSource = await refreshRememberedCssSource?.(rememberedCssSource) ?? rememberedCssSource
+        if (rememberedCssSources.length > 0) {
+          rememberedCssSources = await Promise.all(rememberedCssSources.map(async remembered =>
+            await refreshRememberedCssSource?.(remembered) ?? remembered,
+          ))
         }
+        const hasUsableRememberedTailwindSource = rememberedCssSources.some(remembered =>
+          hasTailwindGenerationSource(remembered.rawSource)
+          && normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file),
+        )
+        const inferredSfcStyleSource = await resolveSfcStyleSourceFromOutputFile(
+          outputFile,
+          snapshot,
+          outDir,
+          opts.tailwindcssBasedir,
+          getSfcSource,
+          debug,
+        )
+        if (inferredSfcStyleSource) {
+          const inferredSourceFile = normalizeSfcSourceFileForCompare(inferredSfcStyleSource.sourceFile)
+          const rememberedSourcesBelongToInferredSfc = rememberedCssSources.length > 0
+            && rememberedCssSources.every(remembered =>
+              normalizeSfcSourceFileForCompare(remembered.sourceFile) === inferredSourceFile,
+            )
+          if (!hasUsableRememberedTailwindSource || rememberedSourcesBelongToInferredSfc) {
+            rememberedCssSources = [inferredSfcStyleSource]
+          }
+        }
+        const rememberedCssSource = mergeRememberedCssSources(rememberedCssSources, outputFile)
         const useRememberedCssSource = rememberedCssSource != null
           && normalizeOutputPathKey(rememberedCssSource.sourceFile) !== normalizeOutputPathKey(file)
         const vitePipelineCssAsset = viteProcessedCssAsset || useRememberedCssSource
@@ -905,9 +1357,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssHandlerOptions = vitePipelineCssAsset
           ? {
               ...getCssHandlerOptions(generatorSourceFile),
-              isMainChunk: outputCssHandlerOptions.isMainChunk || isAppOriginCssFile(file),
+              isMainChunk: outputCssHandlerOptions.isMainChunk || isAppOriginCssFile(file) || isMainStyleEntryCssFile(generatorSourceFile),
             }
           : getCssHandlerOptions(file)
+        const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
+        const scopedGeneratorRuntime = createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime)
+        const shouldRegenerateMainPackageCssWithScopedCandidates = vitePipelineCssAsset
+          && shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)
         const generatorCssUserHandlerOptions = getCssUserHandlerOptions(generatorSourceFile)
         const cssRuntimeAffectingSignature = vitePipelineCssAsset
           ? createRuntimeAffectingSourceSignature(generatorRawSource, 'css')
@@ -920,6 +1376,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssShareScope = createCssTransformShareScopeKey(opts, generatorSourceFile, generatorRawSource)
         const shouldRegenerateAppOriginCss = viteProcessedCssAsset && isAppOriginCssFile(file)
         const shouldTrackGeneratorRuntime = hasStaleViteProcessedCssSource
+          || shouldRegenerateMainPackageCssWithScopedCandidates
           || hasCurrentTailwindGenerationDirective
           || (shouldProcessTailwindGeneration && (
             !useIncrementalMode
@@ -938,6 +1395,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           alreadyProcessedCssAsset
           && !hasStaleViteProcessedCssSource
           && !hasRememberedApplySource
+          && !shouldRegenerateMainPackageCssWithScopedCandidates
           && (!shouldTrackGeneratorRuntime || shouldPreserveCollectedViteCssAsset)
         ) {
           const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
@@ -946,12 +1404,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           recordCssAssetResult?.(outputFile, nextCss)
           const shouldInjectPreservedViteCssIntoMain = vitePipelineCssAsset
             && !isAppOriginCssFile(file)
-            && (
-              cssHandlerOptions.isMainChunk
-              || hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
-              || isTailwindEntryCssFile(outputFile)
-              || undefined
-            )
+            && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
           recordViteProcessedCssAssetResult?.(outputFile, nextCss, {
             injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectPreservedViteCssIntoMain,
           })
@@ -960,14 +1413,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           continue
         }
         const trackedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
-          ? generatorCandidateSignature
+          ? createCandidateSignature(scopedGeneratorRuntime)
           : 'generator:stable'
         const scopedGeneratorCandidateSignature = shouldTrackGeneratorRuntime
           ? await createScopedGeneratorCandidateSignature(
               generatorRawSource,
               generatorSourceFile,
               trackedGeneratorCandidateSignature,
-              getSourceCandidatesForEntries,
+              scopedSourceCandidateGetter,
               {
                 includeFallbackSignature: cssHandlerOptions.isMainChunk,
               },
@@ -996,11 +1449,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               applyCssResult(source)
               lastCssResultByFile.set(outputFile, source)
               markCssAssetProcessed?.(originalSource, outputFile)
-              rememberCssSource?.({
-                outputFile,
-                rawSource: generatorRawSource,
-                sourceFile: generatorSourceFile,
-              }, rememberedCssRuntimeSignature)
+              if (rememberedCssSources.length <= 1) {
+                rememberCssSource?.({
+                  outputFile,
+                  rawSource: generatorRawSource,
+                  sourceFile: generatorSourceFile,
+                }, rememberedCssRuntimeSignature)
+              }
             },
             onCacheHit() {
               metrics.css.cacheHits++
@@ -1028,12 +1483,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 const generated = await generateCssByGenerator({
                   opts,
                   runtimeState,
-                  runtime: generatorRuntime,
+                  runtime: scopedGeneratorRuntime,
                   rawSource: generatorRawSource,
                   file: generatorSourceFile,
                   cssHandlerOptions,
                   cssUserHandlerOptions: generatorCssUserHandlerOptions,
-                  getSourceCandidatesForEntries,
+                  getSourceCandidatesForEntries: scopedSourceCandidateGetter,
                   styleHandler,
                   debug,
                   previousCss,
@@ -1047,18 +1502,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   recordCssAssetResult?.(outputFile, generated.css)
                   const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
                     && !isAppOriginCssFile(file)
-                    && (
-                      cssHandlerOptions.isMainChunk
-                      || hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
-                      || isTailwindEntryCssFile(outputFile)
-                      || undefined
-                    )
+                    && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
                   recordViteProcessedCssAssetResult?.(outputFile, generated.css, {
                     injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
                   })
-                  if (vitePipelineCssAsset && cssHandlerOptions.isMainChunk) {
+                  if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
                     recordViteProcessedCssAssetResult?.(file, generated.css, {
-                      injectIntoMain: !isAppOriginCssFile(file),
+                      injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
                     })
                   }
                   metrics.css.elapsed += measureElapsed(start)
@@ -1251,18 +1701,40 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
 
     if (useIncrementalMode || isNativeAppStyleTarget) {
-      for (const [key, rememberedEntry] of getRememberedCssSources?.() ?? []) {
-        const remembered = await refreshRememberedCssSource?.(rememberedEntry) ?? rememberedEntry
-        const { outputFile: rememberedOutputFile, rawSource, sourceFile } = remembered
-        const outputFile = resolveViteCssPipelineOutputFile(rememberedOutputFile, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension)
-        const cssHandlerOptions = getCssHandlerOptions(outputFile)
+      const rememberedReplayGroups = collectRememberedCssReplayGroups(
+        getRememberedCssSources?.(),
+        opts,
+        rootDir,
+        isWebGeneratorTarget,
+        shouldPreserveAppCssExtension,
+      )
+      for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
+        const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({
+          key: item.key,
+          remembered: await refreshRememberedCssSource?.(item.remembered) ?? item.remembered,
+        })))
+        const rememberedCssSource = mergeRememberedCssSources(
+          refreshedRememberedGroup.map(item => item.remembered),
+          outputFile,
+        )
+        if (!rememberedCssSource) {
+          continue
+        }
+        const { rawSource, sourceFile } = rememberedCssSource
+        const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+        const cssHandlerOptions = {
+          ...getCssHandlerOptions(sourceFile),
+          isMainChunk: outputCssHandlerOptions.isMainChunk || isMainStyleEntryCssFile(sourceFile),
+        }
+        const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
+        const scopedGeneratorRuntime = createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime)
         const cssRuntimeSignature = createCssRuntimeSignature(
-          runtimeSignature,
+          createCandidateSignature(scopedGeneratorRuntime),
           await createScopedGeneratorCandidateSignature(
             rawSource,
             sourceFile,
-            generatorCandidateSignature,
-            getSourceCandidatesForEntries,
+            createCandidateSignature(scopedGeneratorRuntime),
+            scopedSourceCandidateGetter,
             {
               includeFallbackSignature: cssHandlerOptions.isMainChunk,
             },
@@ -1270,7 +1742,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         )
         const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
         const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
-        if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature) {
+        const rememberedKeys = refreshedRememberedGroup.map(item => item.key)
+        const allRememberedSignaturesFresh = rememberedKeys.length > 0
+          && rememberedKeys.every(key => getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature)
+        if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
           continue
         }
         tasks.push(timeTask('css.replay', async () => {
@@ -1278,24 +1753,27 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           const generated = await generateCssByGenerator({
             opts,
             runtimeState,
-            runtime: generatorRuntime,
+            runtime: scopedGeneratorRuntime,
             rawSource,
             file: sourceFile,
             cssHandlerOptions,
-            cssUserHandlerOptions: getCssUserHandlerOptions(outputFile),
-            getSourceCandidatesForEntries,
+            cssUserHandlerOptions: getCssUserHandlerOptions(sourceFile),
+            getSourceCandidatesForEntries: scopedSourceCandidateGetter,
             styleHandler,
             debug,
           })
           const css = generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css
-          setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
+          for (const key of rememberedKeys) {
+            setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
+          }
           if (generated) {
             registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
             recordCssAssetResult?.(outputFile, generated.css)
+            const shouldInjectReplayCssIntoMain = shouldInjectCssIntoMainFromOutput(outputFile, sourceFile, outputCssHandlerOptions)
             recordViteProcessedCssAssetResult?.(sourceFile, generated.css, {
               injectIntoMain: isAppOriginCssFile(outputFile)
                 ? false
-                : cssHandlerOptions.isMainChunk || hasTailwindRootDirectives(rawSource, { importFallback: true }) || isTailwindEntryCssFile(outputFile) || undefined,
+                : shouldInjectReplayCssIntoMain,
             })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }

@@ -151,7 +151,7 @@ export function createTailwindcssPatcher(options?: CreateTailwindcssPatcherOptio
   if (resolvedTailwindOptions) {
     const existingResolve = resolvedTailwindOptions.resolve ?? {}
     const customPaths = Array.isArray(existingResolve.paths) && existingResolve.paths.length > 0
-    const sourcePaths = customPaths ? [...existingResolve.paths, ...resolvePaths] : resolvePaths
+    const sourcePaths = customPaths ? [...(existingResolve.paths ?? []), ...resolvePaths] : resolvePaths
     resolvedTailwindOptions.resolve = {
       ...existingResolve,
       paths: [...new Set(sourcePaths)],
