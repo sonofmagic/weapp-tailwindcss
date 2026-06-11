@@ -1,4 +1,11 @@
+import type { Node, Selector } from 'postcss-selector-parser'
 import postcss from 'postcss'
+import selectorParser from 'postcss-selector-parser'
+
+const MINI_PROGRAM_PREFLIGHT_SELECTOR_KEY = 'view,text,::after,::before'
+const MINI_PROGRAM_PREFLIGHT_SELECTOR_KEYS = new Set(['view', 'text', '::after', '::before'])
+const MINI_PROGRAM_THEME_SCOPE_SELECTOR_KEY = ':host,page,.tw-root,wx-root-portal-content'
+const MINI_PROGRAM_THEME_SCOPE_SELECTOR_KEYS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
 
 function normalizeCssForContainment(css: string) {
   return css
@@ -52,6 +59,13 @@ function getCssRuleStructuralKey(rule: postcss.Rule) {
   return [
     ...getRuleAtRuleChain(rule),
     selector,
+  ].join('|')
+}
+
+function getCssRuleStructuralKeyWithSelectorKey(rule: postcss.Rule, selectorKey: string) {
+  return [
+    ...getRuleAtRuleChain(rule),
+    selectorKey,
   ].join('|')
 }
 
@@ -148,10 +162,15 @@ interface CssRuleDeclarationRecord {
   props: Set<string>
 }
 
-function collectCssRuleDeclarationRecords(root: postcss.Root) {
+type CssRuleKeyResolver = (rule: postcss.Rule) => string | undefined
+
+function collectCssRuleDeclarationRecords(
+  root: postcss.Root,
+  resolveRuleKey: CssRuleKeyResolver = getCssRuleStructuralKey,
+) {
   const map = new Map<string, CssRuleDeclarationRecord[]>()
   root.walkRules((rule) => {
-    const key = getCssRuleStructuralKey(rule)
+    const key = resolveRuleKey(rule)
     if (!key) {
       return
     }
@@ -170,26 +189,91 @@ function collectCssRuleDeclarationRecords(root: postcss.Root) {
   return map
 }
 
-function isMiniProgramPreflightRuleKey(key: string) {
-  return key === 'view,text,:after,:before'
+function normalizeSimpleMiniProgramSelectorNode(node: Node) {
+  if (node.type === 'tag') {
+    const value = node.value.toLowerCase()
+    if (value === 'view' || value === 'text' || value === 'page' || value === 'wx-root-portal-content') {
+      return value
+    }
+    return undefined
+  }
+  if (node.type === 'class') {
+    const value = node.value.toLowerCase()
+    return value === 'tw-root' ? '.tw-root' : undefined
+  }
+  if (node.type === 'pseudo') {
+    if (node.nodes && node.nodes.length > 0) {
+      return undefined
+    }
+    const value = node.value.toLowerCase()
+    if (value === ':before' || value === '::before') {
+      return '::before'
+    }
+    if (value === ':after' || value === '::after') {
+      return '::after'
+    }
+    if (value === ':host') {
+      return ':host'
+    }
+  }
+  return undefined
 }
 
-function isMiniProgramThemeScopeRuleKey(key: string) {
-  return key === ':host,page,.tw-root,wx-root-portal-content'
-    || key === 'page,.tw-root,wx-root-portal-content,:host'
+function normalizeSimpleMiniProgramSelector(selector: Selector) {
+  if (selector.nodes.length !== 1) {
+    return undefined
+  }
+  return normalizeSimpleMiniProgramSelectorNode(selector.nodes[0])
+}
+
+function collectMiniProgramSelectorSet(selector: string) {
+  try {
+    const selectorSet = new Set<string>()
+    const ast = selectorParser().astSync(selector)
+    for (const child of ast.nodes) {
+      const key = normalizeSimpleMiniProgramSelector(child)
+      if (!key || selectorSet.has(key)) {
+        return undefined
+      }
+      selectorSet.add(key)
+    }
+    return selectorSet
+  }
+  catch {
+    return undefined
+  }
+}
+
+function isSameSelectorSet(actual: Set<string> | undefined, expected: Set<string>) {
+  return actual?.size === expected.size
+    && [...expected].every(key => actual.has(key))
+}
+
+function getMiniProgramPreflightRuleStructuralKey(rule: postcss.Rule) {
+  if (!isSameSelectorSet(collectMiniProgramSelectorSet(rule.selector), MINI_PROGRAM_PREFLIGHT_SELECTOR_KEYS)) {
+    return undefined
+  }
+  return getCssRuleStructuralKeyWithSelectorKey(rule, MINI_PROGRAM_PREFLIGHT_SELECTOR_KEY)
+}
+
+function getMiniProgramThemeScopeRuleStructuralKey(rule: postcss.Rule) {
+  if (!isSameSelectorSet(collectMiniProgramSelectorSet(rule.selector), MINI_PROGRAM_THEME_SCOPE_SELECTOR_KEYS)) {
+    return undefined
+  }
+  return getCssRuleStructuralKeyWithSelectorKey(rule, MINI_PROGRAM_THEME_SCOPE_SELECTOR_KEY)
 }
 
 export function mergeMiniProgramPreflightRuleDeclarations(baseCss: string, css: string) {
   try {
     const baseRoot = postcss.parse(baseCss)
     const root = postcss.parse(css)
-    const baseRuleRecords = collectCssRuleDeclarationRecords(baseRoot)
+    const baseRuleRecords = collectCssRuleDeclarationRecords(baseRoot, getMiniProgramPreflightRuleStructuralKey)
     let changedBase = false
     let changedCss = false
 
     root.walkRules((rule) => {
-      const key = getCssRuleStructuralKey(rule)
-      if (!key || !isMiniProgramPreflightRuleKey(key)) {
+      const key = getMiniProgramPreflightRuleStructuralKey(rule)
+      if (!key) {
         return
       }
       const records = baseRuleRecords.get(key)
@@ -232,13 +316,13 @@ export function mergeMiniProgramThemeScopeRuleDeclarations(baseCss: string, css:
   try {
     const baseRoot = postcss.parse(baseCss)
     const root = postcss.parse(css)
-    const baseRuleRecords = collectCssRuleDeclarationRecords(baseRoot)
+    const baseRuleRecords = collectCssRuleDeclarationRecords(baseRoot, getMiniProgramThemeScopeRuleStructuralKey)
     let changedBase = false
     let changedCss = false
 
     root.walkRules((rule) => {
-      const key = getCssRuleStructuralKey(rule)
-      if (!key || !isMiniProgramThemeScopeRuleKey(key)) {
+      const key = getMiniProgramThemeScopeRuleStructuralKey(rule)
+      if (!key) {
         return
       }
       const records = baseRuleRecords.get(key)

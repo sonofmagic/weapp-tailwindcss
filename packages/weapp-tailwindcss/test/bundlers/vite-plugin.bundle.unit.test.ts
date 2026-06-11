@@ -2439,6 +2439,47 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(appCss).toContain('.page-only{}')
   })
 
+  it('normalizes mini-program preflight selectors by AST when replaying vite-processed css into app.wxss', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const basePreflightSelector = 'view, text, ::before, ::after'
+    const processedPreflightSelector = 'text,view,:after,:before'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset([
+          `${basePreflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid}`,
+          '.app-main{}',
+        ].join('\n')),
+        fileName: 'app.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>([
+      ['pages/index/index.wxss', {
+        css: [
+          `${processedPreflightSelector}{--tw-content:"";--tw-shadow:0 0 #000000}`,
+          '.page-only{}',
+        ].join('\n'),
+        injectIntoMain: true,
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain(basePreflightSelector)
+    expect(appCss).not.toContain(processedPreflightSelector)
+    expect(appCss).toContain('--tw-content:""')
+    expect(appCss).toContain('--tw-shadow:0 0 #000000')
+    expect(appCss).toContain('.page-only{}')
+  })
+
   it('dedupes mini-program theme scope when replaying vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
@@ -2473,6 +2514,47 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
     expect((appCss.match(/:host,page,\.tw-root,wx-root-portal-content/g) ?? [])).toHaveLength(1)
+    expect(appCss).toContain('--up-main-color:#fff')
+    expect(appCss).toContain('--primary-color-hex:#4268ea')
+    expect(appCss).toContain('.page-only{}')
+  })
+
+  it('normalizes mini-program theme scope selectors by AST when replaying vite-processed css into app.wxss', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const baseThemeSelector = 'page, .tw-root, wx-root-portal-content, :host'
+    const processedThemeSelector = ':host,wx-root-portal-content,page,.tw-root'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset([
+          `${baseThemeSelector}{--up-main-color:#fff}`,
+          '.app-main{}',
+        ].join('\n')),
+        fileName: 'app.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>([
+      ['pages/index/index.wxss', {
+        css: [
+          `${processedThemeSelector}{--primary-color-hex:#4268ea}`,
+          '.page-only{}',
+        ].join('\n'),
+        injectIntoMain: true,
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain(baseThemeSelector)
+    expect(appCss).not.toContain(processedThemeSelector)
     expect(appCss).toContain('--up-main-color:#fff')
     expect(appCss).toContain('--primary-color-hex:#4268ea')
     expect(appCss).toContain('.page-only{}')
