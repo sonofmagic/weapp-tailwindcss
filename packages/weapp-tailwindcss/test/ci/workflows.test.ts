@@ -358,7 +358,7 @@ describe('e2e watch workflow', () => {
       'macos:22:mpx-tailwindcss-v4:default',
       'windows:22:uni-app-vite-tailwindcss-v3:default',
       'windows:22:uni-app-vite-tailwindcss-v3:issue33',
-      'windows:22:taro-webpack-react-tailwindcss-v4:issue33',
+      'windows:22:taro-webpack-react-tailwindcss-v4:default',
       'windows:22:mpx-tailwindcss-v4:default',
     ]))
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
@@ -419,17 +419,19 @@ describe('e2e watch workflow', () => {
       },
       {
         watch_case: 'taro-webpack-react-tailwindcss-v4',
-        round_profile: 'issue33',
-        timeout_minutes: 70,
-        watch_timeout_ms: '600000',
-        watch_command_timeout_ms: '1800000',
+        round_profile: 'default',
+        timeout_minutes: 45,
+        watch_timeout_ms: '420000',
+        watch_command_timeout_ms: '960000',
+        watch_web_only: '1',
       },
       {
         watch_case: 'mpx-tailwindcss-v4',
         round_profile: 'default',
-        timeout_minutes: 60,
-        watch_timeout_ms: '600000',
-        watch_command_timeout_ms: '2400000',
+        timeout_minutes: 35,
+        watch_timeout_ms: '240000',
+        watch_command_timeout_ms: '600000',
+        watch_main_style_only: '1',
       },
     ]
     const slowMacosUniAppPrBudgets = [
