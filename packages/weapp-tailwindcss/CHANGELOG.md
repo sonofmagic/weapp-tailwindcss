@@ -1,5 +1,21 @@
 # weapp-tailwindcss
 
+## 5.0.8
+
+### Patch Changes
+
+- 🐛 **generator 的 Tailwind CSS v3 路径会优先复用 tailwindcss-patch 提供的 raw 生成引擎，并在旧版本依赖下保持原有回退逻辑。** [`14ea5e9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/14ea5e918d6820fb9b24fcba21d1772f6eab6f5a) by @sonofmagic
+
+- 🐛 **修复小程序 CSS 产物中仅含注释或已被清空的 `@media` 块未被移除的问题，避免微信开发者工具在 WXSS 编译时报 `unexpected token }`。同时同步 watch-HMR 的 Taro React v4 H5 脚本断言和 issue33 性能预算覆盖逻辑。** [#912](https://github.com/sonofmagic/weapp-tailwindcss/pull/912) by @sonofmagic
+
+- 🐛 **修复 Taro Webpack 开发态下 Tailwind CSS v4 入口样式的所有权判断：当 `src/app.css` 已经由 webpack loader 生成过样式时，`app.wxss` 不再重复走 Tailwind 生成链路，避免 `cssEntries` 场景中同一个工具类被输出两次。** [#912](https://github.com/sonofmagic/weapp-tailwindcss/pull/912) by @sonofmagic
+
+- 🐛 **修复 Tailwind CSS v3 生成器在临时项目或 CI 环境中无法从项目目录解析 Tailwind v3 内部模块时失败的问题。** [`63968d8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/63968d83388ba2285fa87150a2bd45b565c42a53) by @sonofmagic
+
+- 🐛 **升级 `tailwindcss-patch` 到 `9.4.3`，并让 `tailwindcss-patch` token/style 示例复用上游统一的候选提取与 v4 样式生成 API，减少本地重复编排逻辑。** [#912](https://github.com/sonofmagic/weapp-tailwindcss/pull/912) by @sonofmagic
+- 📦 **Dependencies** [`4e9d664`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4e9d66437832957a39bb1966a2c352a0e8a6e49e)
+  → `@weapp-tailwindcss/postcss@3.0.5`
+
 ## 5.0.7
 
 ### Patch Changes
