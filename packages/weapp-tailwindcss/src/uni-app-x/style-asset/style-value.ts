@@ -1,5 +1,5 @@
 import type { OutputChunk, SourceMap } from 'rollup'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { splitCandidateTokens } from 'tailwindcss-patch'
 import { replaceWxml } from '@/wxml'
 

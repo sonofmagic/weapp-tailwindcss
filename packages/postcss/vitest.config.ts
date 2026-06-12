@@ -6,6 +6,18 @@ const alias = [
     find: '@',
     replacement: path.resolve(__dirname, './src'),
   },
+  {
+    find: /^tailwindcss-config$/,
+    replacement: path.resolve(__dirname, '../tailwindcss-config/src/index.ts'),
+  },
+  {
+    find: /^@weapp-tailwindcss\/shared$/,
+    replacement: path.resolve(__dirname, '../shared/src/index.ts'),
+  },
+  {
+    find: /^@weapp-tailwindcss\/postcss-calc$/,
+    replacement: path.resolve(__dirname, '../postcss-calc/src/index.ts'),
+  },
 ]
 
 export default defineProject({

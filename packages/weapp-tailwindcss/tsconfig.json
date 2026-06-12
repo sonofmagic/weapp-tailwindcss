@@ -19,6 +19,9 @@
       "@weapp-tailwindcss/postcss/*": [
         "../postcss/src/*"
       ],
+      "@weapp-tailwindcss/postcss/css-macro/postcss": [
+        "../postcss/src/css-macro/postcss.ts"
+      ],
       "@weapp-tailwindcss/postcss/types": [
         "../postcss/src/types.ts"
       ],

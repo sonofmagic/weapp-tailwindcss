@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../css-cleanup'
 import {
   hasTailwindApplyDirective,

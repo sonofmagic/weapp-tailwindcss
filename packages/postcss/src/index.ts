@@ -18,6 +18,31 @@ export {
   normalizeMiniProgramPrefixedDeclaration,
   removeUnsupportedMiniProgramPrefixedAtRule,
 } from './compat/mini-program-prefixes'
+export {
+  compileCssMacroConditionalComments,
+  CSS_MACRO_STYLE_OPTIONS_MARKER,
+  hasCssMacroStyleOptions,
+  hasCssMacroTailwindV4Directive,
+  transformCssMacroCss,
+  withCssMacroStyleOptions,
+} from './css-macro/auto'
+export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
+export { createWeappTailwindcssPostcssPlugin } from './generator-plugin'
+export type {
+  NormalizedWeappTailwindcssPostcssGeneratorOptions,
+  TailwindCandidateSource,
+  TailwindResolvedSource,
+  TailwindV3SourceOptions,
+  TailwindV4SourceOptions,
+  WeappTailwindcssPostcssGenerateOptions,
+  WeappTailwindcssPostcssGenerateResult,
+  WeappTailwindcssPostcssGenerator,
+  WeappTailwindcssPostcssGeneratorUserOptions,
+  WeappTailwindcssPostcssPluginAdapters,
+  WeappTailwindcssPostcssPluginOptions,
+  WeappTailwindcssPostcssTailwindVersion,
+  WeappTailwindcssPostcssTarget,
+} from './generator-plugin'
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {
@@ -29,9 +54,38 @@ export {
   type StyleProcessingPipeline,
 } from './pipeline'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
+export {
+  getPostcssPluginName,
+  removeTailwindPostcssPlugins,
+  resolveFilteredPostcssConfig,
+} from './postcss-config'
+export { postcss } from './postcss-runtime'
+export type {
+  AcceptedPlugin,
+  AtRule,
+  Container,
+  Declaration,
+  Document,
+  Helpers,
+  Plugin,
+  PluginCreator,
+  Node as PostcssNode,
+  ProcessOptions,
+  Processor,
+  Result,
+  Root,
+  Rule,
+} from './postcss-runtime'
 export { createInjectPreflight } from './preflight'
 export { internalCssSelectorReplacer } from './shared'
 export * from './types'
+export {
+  containsCssAfterMinify,
+  filterExistingCssRules,
+  mergeCoveredCssRuleDeclarations,
+  mergeMiniProgramPreflightRuleDeclarations,
+  mergeMiniProgramThemeScopeRuleDeclarations,
+} from './vite-css-rules'
 export {
   composeRules as unitConversionComposeRules,
   presets as unitConversionPresets,

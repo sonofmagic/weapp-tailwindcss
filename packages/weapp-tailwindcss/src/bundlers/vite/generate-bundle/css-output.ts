@@ -1,6 +1,6 @@
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { isCSSRequest } from '../utils'
 

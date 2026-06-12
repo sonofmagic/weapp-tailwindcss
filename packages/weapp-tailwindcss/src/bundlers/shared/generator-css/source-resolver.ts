@@ -7,7 +7,7 @@ import type { UndefinedOptional } from '@/utils/object'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { splitCandidateTokens } from 'tailwindcss-patch'
 import { resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
 import {

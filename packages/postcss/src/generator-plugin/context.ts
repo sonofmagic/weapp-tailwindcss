@@ -1,6 +1,5 @@
 import type { Result, Root } from 'postcss'
-import type { WeappTailwindcssGenerateResult } from '../generator'
-import type { WeappTailwindcssPostcssPluginOptions } from '../postcss'
+import type { WeappTailwindcssPostcssGenerateResult, WeappTailwindcssPostcssPluginOptions } from './types'
 import path from 'node:path'
 import process from 'node:process'
 import postcss from 'postcss'
@@ -46,7 +45,7 @@ export function replaceRootCss(root: Root, css: string, result: Result) {
   }
 }
 
-export function addDependencyMessages(result: Result, generated: WeappTailwindcssGenerateResult) {
+export function addDependencyMessages(result: Result, generated: WeappTailwindcssPostcssGenerateResult) {
   for (const file of generated.dependencies) {
     result.messages.push({
       type: 'dependency',

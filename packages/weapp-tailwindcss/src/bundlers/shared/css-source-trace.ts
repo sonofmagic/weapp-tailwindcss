@@ -2,7 +2,7 @@ import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { replaceWxml } from '@/wxml'
 
 export interface CssTokenSource {

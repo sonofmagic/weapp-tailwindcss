@@ -3776,9 +3776,15 @@ importers:
       lru-cache:
         specifier: 11.5.1
         version: 11.5.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.15
+      postcss-load-config:
+        specifier: ^6.0.1
+        version: 6.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(yaml@2.9.0)
       postcss-pxtrans:
         specifier: ^1.0.4
         version: 1.0.4(postcss@8.5.15)
@@ -3794,6 +3800,12 @@ importers:
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
+      tailwindcss-config:
+        specifier: workspace:*
+        version: link:../tailwindcss-config
+      tailwindcss-patch:
+        specifier: catalog:tailwindcssPatch
+        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
     devDependencies:
       '@csstools/css-color-parser':
         specifier: ^4.1.1
@@ -3990,12 +4002,6 @@ importers:
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8
-      postcss-load-config:
-        specifier: ^6.0.1
-        version: 6.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(yaml@2.9.0)
-      postcss-selector-parser:
-        specifier: ^7.1.2
-        version: 7.1.2
       semver:
         specifier: ~7.8.4
         version: 7.8.4

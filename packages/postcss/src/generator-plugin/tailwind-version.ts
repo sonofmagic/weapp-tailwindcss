@@ -1,7 +1,7 @@
 import type { Result, Root } from 'postcss'
-import type { WeappTailwindcssPostcssPluginOptions } from '../postcss'
-import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION, readInstalledPackageMajorVersion } from '../tailwindcss/version'
+import type { WeappTailwindcssPostcssPluginOptions } from './types'
 import { resolvePostcssProjectRoot } from './context'
+import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION, readInstalledPackageMajorVersion } from './package-version'
 
 function hasTailwindV4CssSyntax(root: Root) {
   let hasV4Syntax = false
@@ -21,13 +21,13 @@ export function resolvePostcssTailwindVersion(
   result: Result,
   options: WeappTailwindcssPostcssPluginOptions,
 ) {
+  if (options.version) {
+    return options.version
+  }
   const packageName = options.packageName ?? 'tailwindcss'
   const installedVersion = readInstalledPackageMajorVersion(packageName, resolvePostcssProjectRoot(result, options))
   if (installedVersion) {
     return installedVersion
-  }
-  if (options.version) {
-    return options.version
   }
   if (packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')) {
     return 4
