@@ -3,4 +3,10 @@ packages:
 
 allowBuilds:
   "core-js-pure": false
+  sharp: true
   "vue-demi": false
+
+minimumReleaseAge: 0
+minimumReleaseAgeExclude:
+  - '@weapp-tailwindcss/postcss@3.0.4'
+  - weapp-tailwindcss@5.0.7

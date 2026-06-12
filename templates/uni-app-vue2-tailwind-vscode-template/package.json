@@ -72,12 +72,16 @@
     "@dcloudio/uni-stacktracey": "2.0.2-4060620250520001",
     "@dcloudio/uni-stat": "2.0.2-4060620250520001",
     "@vue/shared": "^3.0.0",
+    "@weapp-core/escape": "^8.0.0",
+    "@weapp-tailwindcss/merge-v3": "^0.2.1",
+    "@weapp-tailwindcss/runtime": "^0.1.6",
+    "clsx": "^2.1.1",
     "core-js": "^3.42.0",
     "flyio": "^0.6.2",
     "regenerator-runtime": "^0.14.1",
+    "tailwind-merge": "^2.6.1",
     "vue": "~2.6.14",
-    "vuex": "^3.2.0",
-    "@weapp-tailwindcss/merge-v3": "^0.2.1"
+    "vuex": "^3.2.0"
   },
   "devDependencies": {
     "@babel/plugin-syntax-typescript": "^7.27.1",
@@ -112,7 +116,7 @@
     "typescript": "^6.0.3",
     "vue-template-compiler": "^2.7.16",
     "weapp-ide-cli": "^5.2.8",
-    "weapp-tailwindcss": "^5.0.4"
+    "weapp-tailwindcss": "^5.0.7"
   },
   "browserslist": [
     "Android >= 4",

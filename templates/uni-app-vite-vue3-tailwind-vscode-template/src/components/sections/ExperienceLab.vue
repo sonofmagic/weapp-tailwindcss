@@ -306,6 +306,14 @@ function copy(data: string) {
 
 <style scoped lang="scss">
 .test {
-  @apply flex text-center h-[100px] w-[222.222px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[0.54] text-[#ffffff] #{!important};
+  display: flex !important;
+  height: 100px !important;
+  width: 222.222px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 40px !important;
+  background-color: rgb(18 52 86 / 0.54) !important;
+  text-align: center !important;
+  color: #ffffff !important;
 }
 </style>

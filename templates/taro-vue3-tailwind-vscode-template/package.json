@@ -54,8 +54,12 @@
     "@tarojs/runtime": "4.0.5",
     "@tarojs/shared": "4.0.5",
     "@tarojs/taro": "4.0.5",
-    "vue": "^3.5.6",
-    "@weapp-tailwindcss/merge-v3": "^0.2.1"
+    "@weapp-core/escape": "^8.0.0",
+    "@weapp-tailwindcss/merge-v3": "^0.2.1",
+    "@weapp-tailwindcss/runtime": "^0.1.6",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^2.6.1",
+    "vue": "^3.5.6"
   },
   "devDependencies": {
     "@babel/core": "^7.8.0",
@@ -82,7 +86,7 @@
     "unplugin-vue-components": "^0.27.4",
     "vite": "^5.4.5",
     "weapp-ide-cli": "^5.2.8",
-    "weapp-tailwindcss": "^5.0.4"
+    "weapp-tailwindcss": "^5.0.7"
   },
   "packageManager": "pnpm@11.5.3"
 }

@@ -67,6 +67,12 @@ const taroMiniOutputByPlatform: Record<string, OutputShape> = {
   },
 }
 
+function getImportedStyleFiles(styleFile: string): string[] {
+  const extension = path.extname(styleFile)
+  const basename = styleFile.slice(0, -extension.length)
+  return [`${basename}-origin${extension}`]
+}
+
 const uniMiniOutputByPlatform: Record<string, OutputShape> = {
   'mp-alipay': {
     styleFile: 'app.acss',
@@ -120,7 +126,7 @@ function createTaroMiniBuildCases(template: string, platforms = Object.keys(taro
         `dist/${output.styleFile}`,
         `dist/${output.pageFile}`,
       ],
-      styleFiles: [`dist/${output.styleFile}`],
+      styleFiles: [`dist/${output.styleFile}`, ...getImportedStyleFiles(`dist/${output.styleFile}`)],
       textFiles: [`dist/${output.pageFile}`],
     }
   })
@@ -519,11 +525,11 @@ describe('templates build smoke', () => {
     expect(await fs.readFile(path.resolve(root, '.npmrc'), 'utf8')).toContain('registry=https://registry.npmjs.org/')
 
     if (item.name === 'uni-app-x-hbuilderx') {
-      expect(deps['weapp-tailwindcss']).toBe('5.0.4')
-      expect(deps['@weapp-tailwindcss/debug-uni-app-x']).toBe('1.0.0')
+      expect(deps['weapp-tailwindcss']).toBe('5.0.7')
+      expect(deps['@weapp-tailwindcss/debug-uni-app-x']).toBe('1.0.1')
     }
     else {
-      expect(deps['weapp-tailwindcss']).toBe('^5.0.4')
+      expect(deps['weapp-tailwindcss']).toBe('^5.0.7')
     }
 
     if (Object.keys(deps).some(name => name.startsWith('@dcloudio/'))) {

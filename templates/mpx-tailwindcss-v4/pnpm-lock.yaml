@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@mpxjs/api-proxy':
         specifier: ^2.10.13
-        version: 2.10.17(@mpxjs/core@2.10.17)
+        version: 2.10.17(@mpxjs/core@2.10.17)(debug@4.4.3)
       '@mpxjs/core':
         specifier: ^2.10.13
         version: 2.10.17(@mpxjs/api-proxy@2.10.17)(@mpxjs/store@2.10.17)(vue-demi@0.14.10(vue@2.7.16))(vue-i18n-bridge@9.14.1(vue@2.7.16))(vue-i18n@8.28.2(vue@2.7.16))(vue@2.7.16)
@@ -26,12 +26,24 @@ importers:
       '@mpxjs/utils':
         specifier: ^2.10.13
         version: 2.10.17(@mpxjs/core@2.10.17)
+      '@weapp-core/escape':
+        specifier: ^8.0.0
+        version: 8.0.0
       '@weapp-tailwindcss/merge':
         specifier: ^2.2.1
         version: 2.2.1
+      '@weapp-tailwindcss/runtime':
+        specifier: ^0.1.6
+        version: 0.1.6
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
       pinia:
         specifier: ^2.0.14
         version: 2.3.1(typescript@6.0.3)(vue@2.7.16)
+      tailwind-merge:
+        specifier: ^3.6.0
+        version: 3.6.0
       vue:
         specifier: ^2.7.0
         version: 2.7.16
@@ -74,7 +86,7 @@ importers:
         version: 2.10.6(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(webpack@5.103.0))
       '@mpxjs/vue-cli-plugin-mpx':
         specifier: ^2.2.2
-        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(webpack@5.103.0))(@vue/compiler-sfc@3.5.35)(css-loader@6.11.0(webpack@5.103.0))(ejs@3.1.10)(lodash@4.17.21)(stylus-loader@8.1.2(stylus@0.64.0)(webpack@5.103.0))(webpack@5.103.0)
+        version: 2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(webpack@5.103.0))(@vue/compiler-sfc@3.5.35)(css-loader@6.11.0(webpack@5.103.0))(debug@4.4.3)(ejs@3.1.10)(lodash@4.17.21)(stylus-loader@8.1.2(stylus@0.64.0)(webpack@5.103.0))(webpack@5.103.0)
       '@mpxjs/vue-cli-plugin-mpx-typescript':
         specifier: ^2.2.2
         version: 2.2.5(typescript@6.0.3)(webpack@5.103.0)
@@ -115,8 +127,8 @@ importers:
         specifier: ^5.2.8
         version: 5.2.8
       weapp-tailwindcss:
-        specifier: ^5.0.4
-        version: 5.0.4(jiti@2.7.0)(postcss@8.5.6)(tailwindcss@4.2.4)
+        specifier: ^5.0.7
+        version: 5.0.7(jiti@2.7.0)(postcss@8.5.6)(tailwindcss@4.2.4)
       webpack:
         specifier: ^5.101.3
         version: 5.103.0
@@ -1617,8 +1629,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.38
 
-  '@weapp-tailwindcss/postcss@3.0.2':
-    resolution: {integrity: sha512-CkRUxJ6OLNQoj+D4Xq16LBZDlwgm3s50taAp4THUiSfkTtLkFZdRmh3dABQTkAaTsusYi8RBzYmwrxCNcUBSqQ==}
+  '@weapp-tailwindcss/postcss@3.0.4':
+    resolution: {integrity: sha512-8rva2AHBL/VyP2BEpwuzGP4r/1XKoHx1Dnvmrh2wfgoWCYVRVyXQbGqPFvBho/Yf/DYMMQ/dqtYkdL+FT2BGhg==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
   '@weapp-tailwindcss/reset@0.1.1':
@@ -3119,11 +3131,12 @@ packages:
 
   glob@10.5.0:
     resolution: {integrity: sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==}
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
@@ -3521,10 +3534,6 @@ packages:
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
-
-  jiti@2.6.1:
-    resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
-    hasBin: true
 
   jiti@2.7.0:
     resolution: {integrity: sha512-AC/7JofJvZGrrneWNaEnJeOLUx+JlGt7tNa0wZiRPT4MY1wmfKjt2+6O2p2uz2+skll8OZZmJMNqeke7kKbNgQ==}
@@ -4490,6 +4499,10 @@ packages:
     resolution: {integrity: sha512-orRsuYpJVw8LdAwqqLykBj9ecS5/cRHlI5+nvTo8LcCKmzDmqVORXtOIYEEQuL9D4BxtA1lm5isAqzQZCoQ6Eg==}
     engines: {node: '>=4'}
 
+  postcss-selector-parser@7.1.2:
+    resolution: {integrity: sha512-Wjvt4scRFouioIInHf51IFNP4ltJ2EngJM+cZPGiqbKetBfmP3vpdPV8ID2S6JS6/jdo74N8+aEYH9lQr2C6sA==}
+    engines: {node: '>=4'}
+
   postcss-styl@0.12.3:
     resolution: {integrity: sha512-8I7Cd8sxiEITIp32xBK4K/Aj1ukX6vuWnx8oY/oAH35NfQI4OZaY5nd68Yx8HeN5S49uhQ6DL0rNk0ZBu/TaLg==}
     engines: {node: ^8.10.0 || ^10.13.0 || ^11.10.1 || >=12.13.0}
@@ -4780,6 +4793,11 @@ packages:
 
   semver@7.8.2:
     resolution: {integrity: sha512-c8jsqUZm3omBOI66G90z1Dyw5z622G8oLG+omfsHBJf3CWQTlOcwOjvOG6wtiNfW6anKm/eA39LMwMtMez2TiQ==}
+    engines: {node: '>=10'}
+    hasBin: true
+
+  semver@7.8.4:
+    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -5319,6 +5337,7 @@ packages:
 
   uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    deprecated: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
     hasBin: true
 
   validate-npm-package-license@3.0.4:
@@ -5353,7 +5372,7 @@ packages:
 
   vue-i18n@8.28.2:
     resolution: {integrity: sha512-C5GZjs1tYlAqjwymaaCPDjCyGo10ajUphiwA922jKt9n7KPpqR7oM1PCwYzhB/E7+nT3wfdG3oRre5raIT1rKA==}
-    deprecated: Vue I18n v8.x has reached EOL and is no longer actively maintained. About maintenance status, see https://vue-i18n.intlify.dev/guide/maintenance.html
+    deprecated: v9 and v10 no longer supported. please migrate to v11. about maintenance status, see https://vue-i18n.intlify.dev/guide/maintenance.html
     peerDependencies:
       vue: ^2
 
@@ -5418,8 +5437,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  weapp-tailwindcss@5.0.4:
-    resolution: {integrity: sha512-AYju7dMsonEZB7kTOXK0hkDfHxgXUzspozBu/PnkqpkM4HsU/LdLrelQezb5TfGS0rugd91ZnolMmVOZgzE4gg==}
+  weapp-tailwindcss@5.0.7:
+    resolution: {integrity: sha512-2U76egnnPbClDCOz51P874MAMMHRGuDkII/B+LSIrqeTliC/3KTfi4ERxdRtCve14V7Ewx9e0HLr02WqGxbHeg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -6597,10 +6616,10 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@mpxjs/api-proxy@2.10.17(@mpxjs/core@2.10.17)':
+  '@mpxjs/api-proxy@2.10.17(@mpxjs/core@2.10.17)(debug@4.4.3)':
     dependencies:
       '@mpxjs/utils': 2.10.17(@mpxjs/core@2.10.17)
-      axios: 1.13.2
+      axios: 1.13.2(debug@4.4.3)
     transitivePeerDependencies:
       - '@mpxjs/core'
       - debug
@@ -6613,7 +6632,7 @@ snapshots:
 
   '@mpxjs/core@2.10.17(@mpxjs/api-proxy@2.10.17)(@mpxjs/store@2.10.17)(vue-demi@0.14.10(vue@2.7.16))(vue-i18n-bridge@9.14.1(vue@2.7.16))(vue-i18n@8.28.2(vue@2.7.16))(vue@2.7.16)':
     dependencies:
-      '@mpxjs/api-proxy': 2.10.17(@mpxjs/core@2.10.17)
+      '@mpxjs/api-proxy': 2.10.17(@mpxjs/core@2.10.17)(debug@4.4.3)
       '@mpxjs/store': 2.10.17(@mpxjs/core@2.10.17)
       '@mpxjs/utils': 2.10.17(@mpxjs/core@2.10.17)
       lodash: 4.17.21
@@ -6651,7 +6670,7 @@ snapshots:
 
   '@mpxjs/fetch@2.10.17(@mpxjs/core@2.10.17)':
     dependencies:
-      '@mpxjs/api-proxy': 2.10.17(@mpxjs/core@2.10.17)
+      '@mpxjs/api-proxy': 2.10.17(@mpxjs/core@2.10.17)(debug@4.4.3)
       '@mpxjs/utils': 2.10.17(@mpxjs/core@2.10.17)
       json-bigint: 1.0.0
       path-to-regexp: 6.3.0
@@ -6800,7 +6819,7 @@ snapshots:
       - typescript
       - webpack
 
-  '@mpxjs/vue-cli-plugin-mpx@2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(webpack@5.103.0))(@vue/compiler-sfc@3.5.35)(css-loader@6.11.0(webpack@5.103.0))(ejs@3.1.10)(lodash@4.17.21)(stylus-loader@8.1.2(stylus@0.64.0)(webpack@5.103.0))(webpack@5.103.0)':
+  '@mpxjs/vue-cli-plugin-mpx@2.2.5(@babel/core@7.28.5)(@mpxjs/webpack-plugin@2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(webpack@5.103.0))(@vue/compiler-sfc@3.5.35)(css-loader@6.11.0(webpack@5.103.0))(debug@4.4.3)(ejs@3.1.10)(lodash@4.17.21)(stylus-loader@8.1.2(stylus@0.64.0)(webpack@5.103.0))(webpack@5.103.0)':
     dependencies:
       '@mpxjs/cli-shared-utils': 2.2.5
       '@mpxjs/webpack-plugin': 2.10.17(@mpxjs/core@2.10.17)(postcss-less@6.0.0(postcss@8.5.6))(postcss-scss@4.0.9(postcss@8.5.6))(postcss-styl@0.12.3)(webpack@5.103.0)
@@ -7015,7 +7034,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       enhanced-resolve: 5.19.0
-      jiti: 2.6.1
+      jiti: 2.7.0
       lightningcss: 1.32.0
       magic-string: 0.30.21
       source-map-js: 1.2.1
@@ -7516,7 +7535,7 @@ snapshots:
 
   '@vue/compiler-sfc@2.7.16':
     dependencies:
-      '@babel/parser': 7.28.5
+      '@babel/parser': 7.29.7
       postcss: 8.5.6
       source-map: 0.6.1
     optionalDependencies:
@@ -7533,11 +7552,13 @@ snapshots:
       magic-string: 0.30.21
       postcss: 8.5.15
       source-map-js: 1.2.1
+    optional: true
 
   '@vue/compiler-ssr@3.5.35':
     dependencies:
       '@vue/compiler-dom': 3.5.35
       '@vue/shared': 3.5.35
+    optional: true
 
   '@vue/component-compiler-utils@3.3.0(ejs@3.1.10)(lodash@4.17.21)':
     dependencies:
@@ -7635,7 +7656,7 @@ snapshots:
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  '@weapp-tailwindcss/postcss@3.0.2':
+  '@weapp-tailwindcss/postcss@3.0.4':
     dependencies:
       '@weapp-core/escape': 8.0.0
       '@weapp-tailwindcss/postcss-calc': 1.0.2(postcss@8.5.15)
@@ -7646,7 +7667,7 @@ snapshots:
       postcss-pxtrans: 1.0.4(postcss@8.5.15)
       postcss-rem-to-responsive-pixel: 7.0.4(postcss@8.5.15)
       postcss-rule-unit-converter: 0.2.2(postcss@8.5.15)
-      postcss-selector-parser: 7.1.1
+      postcss-selector-parser: 7.1.2
       postcss-value-parser: 4.2.0
 
   '@weapp-tailwindcss/reset@0.1.1(tailwindcss@4.2.4)':
@@ -7956,7 +7977,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axios@1.13.2:
+  axios@1.13.2(debug@4.4.3):
     dependencies:
       follow-redirects: 1.15.11(debug@4.4.3)
       form-data: 4.0.5
@@ -9671,8 +9692,6 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jiti@2.6.1: {}
-
   jiti@2.7.0: {}
 
   joi@17.13.3:
@@ -10692,6 +10711,11 @@ snapshots:
       cssesc: 3.0.0
       util-deprecate: 1.0.2
 
+  postcss-selector-parser@7.1.2:
+    dependencies:
+      cssesc: 3.0.0
+      util-deprecate: 1.0.2
+
   postcss-styl@0.12.3:
     dependencies:
       debug: 4.4.3
@@ -11018,6 +11042,8 @@ snapshots:
   semver@7.7.4: {}
 
   semver@7.8.2: {}
+
+  semver@7.8.4: {}
 
   send@0.19.0:
     dependencies:
@@ -11374,13 +11400,13 @@ snapshots:
 
   stylehacks@5.1.1(postcss@8.5.6):
     dependencies:
-      browserslist: 4.28.1
+      browserslist: 4.28.2
       postcss: 8.5.6
       postcss-selector-parser: 6.1.2
 
   stylehacks@5.1.1(postcss@8.5.8):
     dependencies:
-      browserslist: 4.28.1
+      browserslist: 4.28.2
       postcss: 8.5.8
       postcss-selector-parser: 6.1.2
 
@@ -11814,17 +11840,16 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  weapp-tailwindcss@5.0.4(jiti@2.7.0)(postcss@8.5.6)(tailwindcss@4.2.4):
+  weapp-tailwindcss@5.0.7(jiti@2.7.0)(postcss@8.5.6)(tailwindcss@4.2.4):
     dependencies:
       '@ast-core/escape': 1.0.1
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
       '@vue/compiler-dom': 3.5.35
-      '@vue/compiler-sfc': 3.5.35
       '@weapp-core/escape': 8.0.0
       '@weapp-tailwindcss/logger': 2.0.0
-      '@weapp-tailwindcss/postcss': 3.0.2
+      '@weapp-tailwindcss/postcss': 3.0.4
       '@weapp-tailwindcss/reset': 0.1.1(tailwindcss@4.2.4)
       '@weapp-tailwindcss/shared': 2.0.0
       comment-json: 5.0.0
@@ -11835,7 +11860,8 @@ snapshots:
       magic-string: 0.30.21
       micromatch: 4.0.8
       postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.6)(yaml@2.9.0)
-      semver: 7.8.2
+      postcss-selector-parser: 7.1.2
+      semver: 7.8.4
       tailwindcss-config: 2.0.0
       tailwindcss-patch: 9.4.2(tailwindcss@4.2.4)
       yaml: 2.9.0

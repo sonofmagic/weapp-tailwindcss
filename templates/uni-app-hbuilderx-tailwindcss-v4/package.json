@@ -8,10 +8,14 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.4",
     "tailwindcss": "^4.2.4",
-    "weapp-tailwindcss": "^5.0.4"
+    "weapp-tailwindcss": "^5.0.7"
   },
   "dependencies": {
-    "@weapp-tailwindcss/merge": "^2.2.1"
+    "@weapp-core/escape": "^8.0.0",
+    "@weapp-tailwindcss/merge": "^2.2.1",
+    "@weapp-tailwindcss/runtime": "^0.1.6",
+    "clsx": "^2.1.1",
+    "tailwind-merge": "^3.6.0"
   },
   "packageManager": "pnpm@11.5.3",
   "scripts": {
