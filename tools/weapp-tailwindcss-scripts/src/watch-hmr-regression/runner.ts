@@ -466,10 +466,13 @@ export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: Cl
     return
   }
 
-  const maxPluginProcessMs = metrics.maxPluginProcessMs ?? options.maxPluginProcessMs
-  if (maxPluginProcessMs == null) {
+  const configuredBudgets = [metrics.maxPluginProcessMs, options.maxPluginProcessMs].filter(
+    (budget): budget is number => budget != null,
+  )
+  if (configuredBudgets.length === 0) {
     return
   }
+  const maxPluginProcessMs = Math.max(...configuredBudgets)
 
   const samples = collectPluginProcessBudgetSamples(metrics)
   if (samples.length === 0) {

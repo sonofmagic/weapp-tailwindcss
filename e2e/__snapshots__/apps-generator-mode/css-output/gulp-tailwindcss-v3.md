@@ -308,6 +308,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -359,10 +363,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: m-[20px] <= src/pages/index/index.wxml */
 .m-_b20px_B {
@@ -538,6 +538,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -589,10 +593,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: m-[20px] <= src/pages/index/index.wxml */
 .m-_b20px_B {

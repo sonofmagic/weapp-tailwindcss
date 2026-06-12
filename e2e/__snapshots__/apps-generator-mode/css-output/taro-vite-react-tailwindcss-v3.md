@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 9761 | 29 | false | false | false | false | true |
+| 9630 | 29 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -30,9 +30,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 /* tokens: before:content-['333'] <= src/pages/index/test.tsx */
 /* tokens: before:content-['independent_subpackage_taro-vite-react-tailwindcss-v3'] <= src/sub-independent/pages/index.tsx */
 /* tokens: before:content-['normal_subpackage_taro-vite-react-tailwindcss-v3'] <= src/sub-normal/pages/index.tsx */
-@media (prefers-color-scheme: dark) {
-  /* tokens: dark:text-[#ec4f4f] <= src/pages/index/index.tsx, src/pages/index/test.tsx */
-}
 ```
 
 ### app-origin.wxss
@@ -214,6 +211,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -265,10 +266,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v3';
@@ -291,6 +288,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -342,10 +343,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';

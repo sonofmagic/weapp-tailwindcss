@@ -17,13 +17,13 @@ view,
 text,
 ::after,
 ::before {
-  --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
-  --tw-font-weight: initial;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   border: 0 solid;
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-font-weight: initial;
   --tw-leading:;
 }
 :host,

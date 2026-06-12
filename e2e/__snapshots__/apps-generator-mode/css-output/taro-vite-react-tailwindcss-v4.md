@@ -36,6 +36,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
   --tw-gradient-position: initial;
   --tw-gradient-from: rgba(0, 0, 0, 0);
   --tw-gradient-via: rgba(0, 0, 0, 0);
@@ -45,10 +49,6 @@ text,
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
 }
 :host,
 page,

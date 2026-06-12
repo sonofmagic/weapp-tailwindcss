@@ -348,6 +348,21 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.container{width:100%}')
   })
 
+  it('removes empty media rules after final mini-program css cleanup', () => {
+    const css = finalizeMiniProgramCss([
+      '@media (min-width: 640px) {',
+      '.container{max-width:640px}',
+      '}',
+      '@media (prefers-color-scheme: dark) {',
+      '}',
+      '.keep{color:red}',
+    ].join('\n'))
+
+    expect(css).not.toContain('@media (min-width: 640px)')
+    expect(css).not.toContain('@media (prefers-color-scheme: dark)')
+    expect(css).toContain('.keep{color:red}')
+  })
+
   it('keeps generated utilities when pruning layer-wrapped mini-program css', () => {
     const css = pruneMiniProgramGeneratedCss([
       '@layer theme, base, components, utilities;',

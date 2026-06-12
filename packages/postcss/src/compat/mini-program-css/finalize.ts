@@ -13,6 +13,7 @@ import { createHoistInsertionAnchor, insertHoistedRules, mergeEquivalentHoistedR
 import { collectPreflightRules, createPreflightResetRule } from './preflight'
 import {
   removeDisplayP3Declarations,
+  removeEmptyAtRules,
   removeSpecificityPlaceholders,
   removeTailwindContainerMaxWidthMediaRules,
   removeTailwindContainerWidthRules,
@@ -70,6 +71,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   const themeRule = collectThemeVariableRule(root, options)
   const hoistedRules = themeRule ? [...preflightRules, themeRule] : preflightRules
   insertHoistedRules(root, mergeEquivalentHoistedRules(hoistedRules), hoistAnchor)
+  removeEmptyAtRules(root)
 }
 
 export function hoistTailwindPreflightBase(css: string) {

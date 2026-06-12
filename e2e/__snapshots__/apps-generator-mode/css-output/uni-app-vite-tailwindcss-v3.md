@@ -6210,6 +6210,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6261,10 +6265,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
@@ -6307,6 +6307,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6358,10 +6362,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
@@ -6443,6 +6443,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6494,10 +6498,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
@@ -6522,6 +6522,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6573,10 +6577,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
@@ -6601,6 +6601,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6652,10 +6656,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
 .inline {
@@ -6743,6 +6743,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -6794,10 +6798,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: i-mdi-home <= src/pages/index/index.vue */
 .i-mdi-home {
@@ -8074,6 +8074,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -8125,10 +8129,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: prose <= src/pages/issue/typography.vue */
 .prose {

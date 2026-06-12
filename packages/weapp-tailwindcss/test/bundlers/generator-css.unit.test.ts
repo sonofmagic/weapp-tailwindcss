@@ -7820,6 +7820,45 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('.from-origin')
   })
 
+  it('removes comment-only media rules after filtering imported vite-processed css', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app.wxss': {
+        type: 'asset',
+        fileName: 'app.wxss',
+        source: [
+          '@import "app-origin.wxss";',
+          '@media (prefers-color-scheme: dark) {',
+          '  /* tokens: dark:bg-zinc-900 <= pages/index/index.wxml */',
+          '  .dark_cbg-zinc-900{background-color:black}',
+          '}',
+          '.main-only{color:blue}',
+        ].join('\n'),
+      },
+      'app-origin.wxss': {
+        type: 'asset',
+        fileName: 'app-origin.wxss',
+        source: '@media (prefers-color-scheme: dark){.dark_cbg-zinc-900{background-color:black}}',
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        appType: 'weapp-vite',
+      } as any,
+      getViteProcessedCssAssetResults: () => [],
+    })
+
+    const css = bundle['app.wxss'].source
+    expect(injected).toBe(1)
+    expect(css).toContain('@import "app-origin.wxss";')
+    expect(css).toContain('.main-only{color:blue}')
+    expect(css).not.toContain('@media (prefers-color-scheme: dark)')
+    expect(css).not.toContain('dark:bg-zinc-900')
+  })
+
   it('removes main css rules already covered by imported vite-processed output assets', async () => {
     const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
     const bundle = {

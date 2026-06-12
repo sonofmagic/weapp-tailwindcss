@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app.wxss, index.wxss, index.wxss, index.wxss, ind
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 133639 | 167 | false | false | false | false | true |
+| 133437 | 167 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -787,12 +787,6 @@ text,
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
 }
-@media (min-width: 640px) {
-}
-@media (min-width: 1024px) {
-}
-@media (prefers-color-scheme: dark) {
-}
 ```
 
 ### app.wxss
@@ -806,6 +800,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -857,10 +855,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
 .icon-_bmdi--account_B {
@@ -1575,12 +1569,6 @@ text,
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
 }
-@media (min-width: 640px) {
-}
-@media (min-width: 1024px) {
-}
-@media (prefers-color-scheme: dark) {
-}
 ```
 
 ### index.wxss
@@ -1734,6 +1722,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1785,10 +1777,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: bg-normal-subpackage-marker <= miniprogram/sub-normal/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
@@ -1813,6 +1801,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1864,10 +1856,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
 .icon-_bmdi--account_B {
@@ -2600,6 +2588,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2651,10 +2643,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
 .icon-_bmdi--account_B {
@@ -3387,6 +3375,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -3438,10 +3430,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /*tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml*/
 .icon-_bmdi--account_B {
