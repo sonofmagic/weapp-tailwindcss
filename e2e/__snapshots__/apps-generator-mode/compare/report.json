@@ -167,18 +167,11 @@
       "index.wxss",
       "index.wxss",
       "loading.wxss",
-      "styles/index.wxss",
-      "styles/index.wxss",
-      "styles/index.wxss",
-      "styles/index.wxss",
-      "styles/index.wxss",
-      "styles/index.wxss",
-      "styles/index.wxss",
       "utilities.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 191111,
+      "bytes": 184668,
       "selectors": [
         ".after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after",
         ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
@@ -3073,13 +3066,12 @@
     "cssFile": "mpx-tailwindcss-v4/dist/wx/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "styles/app.wxss",
       "app.wxss",
       "index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 16689,
+      "bytes": 8489,
       "selectors": [
         ".-m-_b20px_B",
         "._2xl_ctext-_bred_B",
@@ -5784,7 +5776,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 9761,
+      "bytes": 9630,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -6500,7 +6492,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 9273,
+      "bytes": 9142,
       "selectors": [
         ".before_ccontent-_b_a11111_a_B:before",
         ".before_ccontent-_b_a222_a_B:before",
@@ -9593,7 +9585,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 133639,
+      "bytes": 133437,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -9783,7 +9775,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 16663,
+      "bytes": 16564,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

@@ -303,6 +303,27 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const markWebpackProcessedCssSource = (file: string) => {
       webpackProcessedCssSourceFiles.add(path.resolve(file))
     }
+    const isWebpackProcessedTailwindEntryAsset = (file: string) => {
+      if (
+        (runtimeState.twPatcher.majorVersion ?? 0) < 4
+        || !this.options.mainCssChunkMatcher(file, this.appType)
+        || webpackProcessedCssSourceFiles.size === 0
+      ) {
+        return false
+      }
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+      for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
+        if (webpackProcessedCssSourceFiles.has(path.resolve(entry))) {
+          return true
+        }
+      }
+      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+        if (source.file && webpackProcessedCssSourceFiles.has(path.resolve(source.file))) {
+          return true
+        }
+      }
+      return false
+    }
 
     compiler.hooks.invalid?.tap?.(pluginName, (fileName: string | null) => {
       if (!fileName) {
@@ -376,6 +397,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       refreshRuntimeMetadata: ensureRuntimeMetadata,
       isWebpackProcessedCssAsset(file, rawSource) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
+          || isWebpackProcessedTailwindEntryAsset(file)
           || rawSource.includes('weapp-tailwindcss webpack-generated-css')
       },
       consumeRuntimeRefreshRequirement() {

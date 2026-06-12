@@ -750,13 +750,20 @@ function assertAllHotUpdateSamplesWithinBudget(report: HotUpdateReport, maxHotUp
   }
 }
 
+function expectedWebHmrDevScript(item: HotUpdateCaseReport) {
+  if (item.name === 'taro-webpack-react-tailwindcss-v4') {
+    return 'dev:h5'
+  }
+  return item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5'
+}
+
 function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   const webHmr = item.webHmr
   expect(webHmr, `[${item.project}] should include web Tailwind HMR Playwright metrics`).toBeDefined()
   if (!webHmr) {
     throw new Error(`[${item.project}] missing web HMR metric`)
   }
-  expect(webHmr.devScript).toBe(item.name.startsWith('taro-') ? 'build:h5' : 'dev:h5')
+  expect(webHmr.devScript).toBe(expectedWebHmrDevScript(item))
   const normalizedSourceFile = normalizePathLike(webHmr.sourceFile)
   expect(normalizedSourceFile.includes('src/pages/index/index.') || normalizedSourceFile.includes('pages/index/index.')).toBe(true)
   expect(webHmr.url).toMatch(/^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])/)

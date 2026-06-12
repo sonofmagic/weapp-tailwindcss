@@ -458,7 +458,7 @@ export function mergeCoveredCssRuleDeclarations(baseCss: string, css: string) {
 
 function removeEmptyAtRules(root: postcss.Root) {
   root.walkAtRules((atRule) => {
-    if (atRule.nodes && atRule.nodes.length === 0) {
+    if (atRule.nodes && atRule.nodes.every(node => node.type === 'comment')) {
       atRule.remove()
     }
   })

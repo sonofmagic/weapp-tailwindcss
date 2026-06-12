@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 9761 | 29 | false | false | false | false | true |
+| 9630 | 29 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -30,9 +30,6 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 /* tokens: before:content-['333'] <= src/pages/index/test.tsx */
 /* tokens: before:content-['independent_subpackage_taro-vite-react-tailwindcss-v3'] <= src/sub-independent/pages/index.tsx */
 /* tokens: before:content-['normal_subpackage_taro-vite-react-tailwindcss-v3'] <= src/sub-normal/pages/index.tsx */
-@media (prefers-color-scheme: dark) {
-  /* tokens: dark:text-[#ec4f4f] <= src/pages/index/index.tsx, src/pages/index/test.tsx */
-}
 ```
 
 ### app-origin.wxss

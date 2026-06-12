@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app.wxss, index.wxss, index.wxss, index.wxss, ind
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 133639 | 167 | false | false | false | false | true |
+| 133437 | 167 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -786,12 +786,6 @@ text,
 /*tokens: focus:[&_view]:p-4 <= miniprogram/pages/index/merge/index.ts*/
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
-}
-@media (min-width: 640px) {
-}
-@media (min-width: 1024px) {
-}
-@media (prefers-color-scheme: dark) {
 }
 ```
 
@@ -1574,12 +1568,6 @@ text,
 /* tokens: focus:[&_view]:p-4 <= miniprogram/pages/index/merge/index.ts */
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
-}
-@media (min-width: 640px) {
-}
-@media (min-width: 1024px) {
-}
-@media (prefers-color-scheme: dark) {
 }
 ```
 

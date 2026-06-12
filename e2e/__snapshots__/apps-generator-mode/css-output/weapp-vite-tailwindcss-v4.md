@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 16663 | 67 | false | false | false | false | true |
+| 16564 | 67 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -424,9 +424,6 @@ wx-root-portal-content {
 /* tokens: text-violet-600 <= pages/index/index.wxml */
 /* tokens: transition-colors <= pages/index/index.wxml */
 /* tokens: duration-500 <= pages/index/index.wxml */
-@media (prefers-color-scheme: dark) {
-  /* tokens: dark:bg-zinc-900 <= pages/index/index.wxml */
-}
 ```
 
 ### apple.wxss

@@ -33,6 +33,14 @@ function isEffectivelyEmptyContainer(container: postcss.Container) {
   return !container.nodes || container.nodes.every(node => node.type === 'comment')
 }
 
+export function removeEmptyAtRules(root: postcss.Root) {
+  root.walkAtRules((atRule) => {
+    if (isEffectivelyEmptyContainer(atRule)) {
+      atRule.remove()
+    }
+  })
+}
+
 function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
   while (parent?.type === 'atrule' && isEffectivelyEmptyContainer(parent)) {
     const nextParent = parent.parent

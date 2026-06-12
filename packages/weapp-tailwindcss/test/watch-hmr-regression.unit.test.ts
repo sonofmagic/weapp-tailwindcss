@@ -1173,6 +1173,29 @@ describe('watch-hmr regression summary helpers', () => {
       maxPluginProcessMs: 500,
     })).not.toThrow()
   })
+
+  it('lets CLI budget override slower case-specific plugin processing budgets', () => {
+    const metrics = createCase('uni-app-vite-tailwindcss-v3', 'demo', 30, 40)
+    metrics.maxPluginProcessMs = 5000
+    const templateMetric = metrics.mutationMetrics.find(
+      mutation => mutation.mutationKind === 'template',
+    )
+    if (!templateMetric || templateMetric.mutationKind === 'style') {
+      throw new Error('missing template metric')
+    }
+    templateMetric.rounds[0].hotUpdatePluginProcessMs = 5010
+
+    expect(() => assertPluginProcessBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      mainStyleOnly: false,
+      maxPluginProcessMs: 9000,
+    })).not.toThrow()
+  })
 })
 
 describe('watch-hmr regression cases', () => {
