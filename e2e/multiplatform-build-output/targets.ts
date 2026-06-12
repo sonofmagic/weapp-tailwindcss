@@ -57,6 +57,7 @@ const taroWebpackV3Platforms = [
   'rn',
   'qq',
   'jd',
+  'harmony-hybrid',
   'quickapp',
 ]
 

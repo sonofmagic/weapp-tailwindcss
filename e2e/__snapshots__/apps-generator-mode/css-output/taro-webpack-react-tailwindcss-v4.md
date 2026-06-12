@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- |
-| 384447 | 2470 | false | false | false | false | true |
+| 384482 | 2470 | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -1510,6 +1510,9 @@ wx-root-portal-content {
 ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
   padding-bottom: calc(var(--spacing) * 4);
   padding-top: calc(var(--spacing) * 4);
+}
+view {
+  box-sizing: border-box;
 }
 @font-face {
   font-display: swap;

@@ -15,6 +15,7 @@ import {
   spawnPnpm,
 } from './session'
 import { waitFor, writeFilePreserveEol } from './text'
+import { resolveReloadAcceptAttemptTimeout, waitForWebCompileSettled } from './web-compile-settle'
 
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
@@ -524,34 +525,29 @@ export async function runWebHmr(
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
 
-  const waitForWebCompileSettled = async (
+  const waitForCompileSettled = async (
     phaseStartedAt: number,
     phase: string,
     acceptWhen?: () => Promise<boolean>,
   ) => {
-    const stableWindowMs = Math.min(Math.max(options.pollMs * 2, 600), 1500)
     const timeoutMs = Math.min(
       options.timeoutMs,
       config.compileSettleTimeoutMs ?? 30_000,
     )
-    await waitFor(
-      async () => {
+    await waitForWebCompileSettled({
+      acceptWhen,
+      getLastCompileSignalAt: () => lastCompileSignalAt,
+      label: watchCase.label,
+      phase,
+      phaseStartedAt,
+      pollMs: options.pollMs,
+      timeoutMs,
+      ensureRunning() {
         if (child.exitCode != null) {
           throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
         }
-        if (acceptWhen && await acceptWhen()) {
-          return true
-        }
-        return lastCompileSignalAt > phaseStartedAt
-          && Date.now() - lastCompileSignalAt >= stableWindowMs
       },
-      {
-        timeoutMs,
-        pollMs: options.pollMs,
-        message: `[${watchCase.label}] web ${phase} compile did not settle in time`,
-      },
-      phaseStartedAt,
-    )
+    })
   }
 
   const stop = async () => {
@@ -624,6 +620,7 @@ export async function runWebHmr(
 
     let lastStyleError = ''
     const reloadTimeoutMs = Math.min(options.timeoutMs, 120_000)
+    const reloadAcceptAttemptTimeoutMs = resolveReloadAcceptAttemptTimeout(reloadTimeoutMs, options.pollMs)
     const createReloadedStyleAcceptWhen = (expectedStyle: ReturnType<typeof resolveExpectedStyle>) => {
       let lastReloadAttemptAt = 0
       return async () => {
@@ -635,11 +632,11 @@ export async function runWebHmr(
         try {
           await page.reload({
             waitUntil: 'domcontentloaded',
-            timeout: reloadTimeoutMs,
+            timeout: reloadAcceptAttemptTimeoutMs,
           })
           await page.locator(config.readySelector ?? 'body').waitFor({
             state: 'attached',
-            timeout: reloadTimeoutMs,
+            timeout: reloadAcceptAttemptTimeoutMs,
           })
           if (config.injectMarkerElement) {
             await ensureInjectedMarkerElement(page, marker)
@@ -673,7 +670,7 @@ export async function runWebHmr(
     }
     const expectedStyle = resolveExpectedStyle(config)
     if (config.reloadAfterCssMutation) {
-      await waitForWebCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
+      await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
       await page.reload({
         waitUntil: 'domcontentloaded',
         timeout: reloadTimeoutMs,
@@ -733,7 +730,7 @@ export async function runWebHmr(
       )
     }
     if (config.reloadAfterCssMutation) {
-      await waitForWebCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
+      await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
       await page.reload({
         waitUntil: 'domcontentloaded',
         timeout: reloadTimeoutMs,

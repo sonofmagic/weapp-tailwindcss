@@ -98,6 +98,10 @@ import {
   resolveChromiumLaunchOptions,
   waitForWebPageReady,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
+import {
+  resolveReloadAcceptAttemptTimeout,
+  waitForWebCompileSettled,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web-compile-settle'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -842,6 +846,35 @@ describe('watch-hmr regression cli options', () => {
     finally {
       process.argv = originalArgv
     }
+  })
+})
+
+describe('watch-hmr web compile settle helpers', () => {
+  it('accepts a successful browser reload check without waiting for a quiet compile window', async () => {
+    const startedAt = Date.now()
+    let acceptChecks = 0
+    const elapsed = await waitForWebCompileSettled({
+      ensureRunning() {},
+      getLastCompileSignalAt: () => Date.now(),
+      label: 'demo/web',
+      phase: 'hot-update',
+      phaseStartedAt: startedAt,
+      pollMs: 1,
+      timeoutMs: 100,
+      async acceptWhen() {
+        acceptChecks += 1
+        return true
+      },
+    })
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(acceptChecks).toBe(1)
+  })
+
+  it('caps individual reload accept attempts so repeated compiling can be retried', () => {
+    expect(resolveReloadAcceptAttemptTimeout(120_000, 40)).toBe(5000)
+    expect(resolveReloadAcceptAttemptTimeout(120_000, 500)).toBe(15_000)
+    expect(resolveReloadAcceptAttemptTimeout(3000, 40)).toBe(3000)
   })
 })
 

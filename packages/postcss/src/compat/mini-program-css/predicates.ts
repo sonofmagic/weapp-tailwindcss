@@ -13,6 +13,15 @@ export const PREFLIGHT_RESET_PROPS = new Set([
 
 const PSEUDO_CONTENT_SELECTOR_RE = /^(?:::before|::after|:before|:after)(?:,(?:::before|::after|:before|:after))*$/
 const TW_CONTENT_VAR_RE = /var\(\s*--tw-content\b/
+const BROWSER_PREFLIGHT_SINGLE_ELEMENT_DECLARATIONS = new Map<string, Set<string>>([
+  ['button', new Set([
+    'appearance:button',
+    '-moz-appearance:button',
+  ])],
+  ['textarea', new Set([
+    'resize:vertical',
+  ])],
+])
 
 export function hasTailwindPreflightDeclaration(rule: postcss.Rule) {
   let hasTailwindVar = false
@@ -114,6 +123,37 @@ export function isMiniProgramPreflightRule(node: postcss.Node): node is postcss.
   return selectors.some(selector => selector === ':before' || selector === ':after' || selector === '::before' || selector === '::after')
     && selectors.some(selector => selector === 'view' || selector === 'text')
     && hasTailwindPreflightDeclaration(node)
+}
+
+export function isBrowserElementPreflightRule(node: postcss.Node): node is postcss.Rule {
+  if (node.type !== 'rule') {
+    return false
+  }
+
+  const selectors = getRuleSelectors(node)
+  if (selectors.length !== 1) {
+    return false
+  }
+
+  const declarations = BROWSER_PREFLIGHT_SINGLE_ELEMENT_DECLARATIONS.get(selectors[0])
+  if (!declarations) {
+    return false
+  }
+
+  let hasDeclaration = false
+  let allBrowserPreflightDeclarations = true
+  node.each((child) => {
+    if (child.type !== 'decl') {
+      return
+    }
+    hasDeclaration = true
+    const key = `${child.prop.toLowerCase()}:${child.value.trim().toLowerCase()}`
+    if (!declarations.has(key)) {
+      allBrowserPreflightDeclarations = false
+    }
+  })
+
+  return hasDeclaration && allBrowserPreflightDeclarations
 }
 
 export function isMiniProgramThemeVariableRule(node: postcss.Node): node is postcss.Rule {

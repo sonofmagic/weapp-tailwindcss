@@ -127,7 +127,8 @@ describe('generator tailwind parity', () => {
     expect(weapp.css).toContain('.h-_b48rpx_B')
     expect(weapp.css).toContain('border-radius: 9999px')
     expect(weapp.css).toContain('button {\n  background-color: transparent;')
-    expect(weapp.css).toContain('textarea {\n  resize: vertical;')
+    expect(weapp.css).not.toContain('textarea {\n  resize: vertical;')
+    expect(weapp.css).not.toContain('appearance: button;')
   })
 
   it('keeps Tailwind v4 web output identical to tailwindcss v4 and records weapp contrast', async () => {
