@@ -1,5 +1,13 @@
 # weapp-tailwindcss
 
+## 5.0.9
+
+### Patch Changes
+
+- 🐛 **将 `weapp-tailwindcss` 中生成型 PostCSS 插件、PostCSS 辅助扫描逻辑和 `css-macro/postcss` 转换入口迁入 `@weapp-tailwindcss/postcss`，主包保留兼容转发入口，方便后续统一维护 PostCSS 能力边界。** [#914](https://github.com/sonofmagic/weapp-tailwindcss/pull/914) by @sonofmagic
+- 📦 **Dependencies** [`d13bd91`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d13bd91f0d59118d4a2df01e8d3ec69eccb473f0)
+  → `@weapp-tailwindcss/postcss@3.0.6`
+
 ## 5.0.8
 
 ### Patch Changes
