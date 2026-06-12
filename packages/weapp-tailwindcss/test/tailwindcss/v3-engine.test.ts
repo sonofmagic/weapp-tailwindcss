@@ -621,6 +621,25 @@ describe('tailwindcss v3 engine', () => {
     expect(result.rawCss).not.toContain('@config')
   })
 
+  it('falls back when the patch fast path cannot resolve Tailwind v3 from the project cwd', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-patch-missing-'))
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: root,
+      cwd: root,
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['bg-[#123456]'],
+    })
+
+    expect(result.classSet).toEqual(new Set(['bg-[#123456]']))
+    expect(result.css).toContain('.bg-_b_h123456_B')
+    expect(result.rawCss).toContain('.bg-\\[\\#123456\\]')
+  })
+
   it('does not rescan configured content when explicit candidates drive v3 incremental generation', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',

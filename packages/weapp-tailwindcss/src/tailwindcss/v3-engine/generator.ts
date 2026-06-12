@@ -79,6 +79,20 @@ const patchRawStyleGenerator = typeof (tailwindcssPatch as { generateTailwindV3R
   ? (tailwindcssPatch as unknown as { generateTailwindV3RawStyle: TailwindV3PatchRawGenerator }).generateTailwindV3RawStyle
   : undefined
 
+function isTailwindV3PatchResolutionError(error: unknown, packageName: string) {
+  if (!error || typeof error !== 'object') {
+    return false
+  }
+
+  const code = (error as { code?: unknown }).code
+  if (code !== 'MODULE_NOT_FOUND' && code !== 'ERR_PACKAGE_PATH_NOT_EXPORTED') {
+    return false
+  }
+
+  const message = String((error as { message?: unknown }).message ?? '')
+  return message.includes(`${packageName}/lib/`)
+}
+
 function normalizeBareArbitraryValueCandidate(
   candidate: string,
   bareArbitraryValues: TailwindV3GenerateOptions['bareArbitraryValues'],
@@ -302,25 +316,12 @@ async function generateRawStyleWithPatch(
       directUtilitiesOnly: 'auto',
     })
   }
-  catch (error: unknown) {
-    if (isTailwindV3PatchModuleResolveError(error)) {
+  catch (error) {
+    if (isTailwindV3PatchResolutionError(error, generateSource.packageName)) {
       return undefined
     }
     throw error
   }
-}
-
-function isTailwindV3PatchModuleResolveError(error: unknown) {
-  if (!error || typeof error !== 'object') {
-    return false
-  }
-  const maybeError = error as {
-    code?: unknown
-    message?: unknown
-  }
-  return maybeError.code === 'MODULE_NOT_FOUND'
-    && typeof maybeError.message === 'string'
-    && maybeError.message.includes(`${'/'}lib${'/'}public${'/'}resolve-config`)
 }
 
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {
