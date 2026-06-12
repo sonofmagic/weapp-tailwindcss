@@ -173,6 +173,25 @@ function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffe
   }
 }
 
+function expectTaroGeneratorTargetConfig(configSource: string, configPath: string) {
+  expect(configSource, configPath).toContain('target:')
+  expect(configSource, configPath).toContain('\'web\'')
+  expect(configSource, configPath).toContain('\'weapp\'')
+
+  if (configSource.includes('target: isWebLikeTarget')) {
+    expect(configSource, configPath).toContain('const taroEnv = process.env.TARO_ENV')
+    expect(configSource, configPath).toContain('const isWebLikeTarget =')
+    expect(configSource, configPath).toContain('taroEnv === \'h5\'')
+    expect(configSource, configPath).toContain('taroEnv === \'harmony\'')
+    expect(configSource, configPath).toContain('taroEnv === \'harmony-hybrid\'')
+    return
+  }
+
+  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'h5\'')
+  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'harmony\'')
+  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'harmony-hybrid\'')
+}
+
 function createClassMutationMetrics(
   mutationKind: 'template' | 'script' | 'content',
   rounds: MutationRoundMetrics[],
@@ -1627,7 +1646,7 @@ describe('watch-hmr regression cases', () => {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
       expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
       expect(configSource, configPath).toContain('WeappTailwindcss')
-      expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
+      expectTaroGeneratorTargetConfig(configSource, configPath)
       expect(configSource, configPath).not.toContain('chain.watchOptions({')
       expect(configSource, configPath).not.toContain('ignored: [distDir]')
     }
