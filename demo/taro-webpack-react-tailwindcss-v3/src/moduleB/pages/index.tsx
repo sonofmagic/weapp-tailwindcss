@@ -1,5 +1,7 @@
 import { View } from '@tarojs/components'
-import './index.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 // https://taro-docs.jd.com/docs/independent-subpackage
 // https://developers.weixin.qq.com/miniprogram/dev/framework/subpackages/independent.html
 export default () => {

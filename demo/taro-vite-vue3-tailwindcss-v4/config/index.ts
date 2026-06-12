@@ -5,10 +5,15 @@ import prodConfig from './prod'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const generator = {
+  target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
+    ? 'web'
+    : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
 }
+
+const isNativeTarget = process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'jdrn'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 
@@ -28,10 +33,9 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    // plugins: ['@tarojs/plugin-html'],
+    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
     sourceRoot: 'src',
     outputRoot: 'dist',
-    // plugins: ['@tarojs/plugin-html'],
     defineConstants: {
     },
     copy: {
@@ -48,8 +52,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           name: 'taro-cjs-stability',
           enforce: 'post',
           config() {
-            // Taro mini runner defaults this to true; disabling it avoids ESM
-            // modules in node_modules being forced through CommonJS transforms.
+            // Taro mini runner 默认启用该选项，关闭后可避免 node_modules 中的 ESM 模块被强制转为 CommonJS。
             return {
               build: {
                 commonjsOptions: {
@@ -64,6 +67,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           cssSourceTrace: true,
           rem2rpx: true,
           generator,
+          disabled: isNativeTarget,
           // injectAdditionalCssVarScope: true,
         })
       ]

@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 
-import './app.css'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./app.css')
+}
 
 const app = createApp({
   mounted() {},

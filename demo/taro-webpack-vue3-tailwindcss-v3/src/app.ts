@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 
-import './app.less'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./app.less')
+}
 
 const app = createApp({
   mounted() {},
