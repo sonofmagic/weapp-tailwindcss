@@ -74,7 +74,7 @@ const taroWebpackV4Platforms = [
 
 const mpxPlatforms = ['wx', 'ali', 'swan', 'tt', 'dd']
 
-const uniAppXPlatforms = ['mp-weixin', 'app-android', 'app-ios']
+const uniAppXPlatforms = ['mp-weixin', 'app-android', 'app-ios', 'app-harmony']
 
 function target(options: Omit<MultiplatformTarget, 'coverage'> & {
   coverage?: MultiplatformTarget['coverage']
@@ -173,7 +173,7 @@ function createUniAppXTargets(project: string): MultiplatformTarget[] {
     projectDir: `demo/${project}`,
     platform,
     coverage: 'local',
-    reason: 'uni-app x 产物依赖本地 HBuilderX 与微信/Android/iOS SDK，普通 CI 不默认执行。',
+    reason: 'uni-app x 产物依赖本地 HBuilderX 与微信/Android/iOS/Harmony SDK，普通 CI 不默认执行。',
   }))
 }
 

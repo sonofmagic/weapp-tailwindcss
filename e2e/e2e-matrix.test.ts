@@ -205,8 +205,26 @@ describe('e2e matrix', () => {
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
 
     expect(rootPackageJson.scripts?.['e2e:ide:visual']).toContain('--weapp-only --fail-on-incomplete')
-    expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:visual')
-    expect(workflow).toContain('args: [\'e2e:ide:visual\']')
+    expect(rootPackageJson.scripts?.['e2e:ide:issue-909']).toContain('e2e/issue-909-ide.test.ts')
+    expect(rootPackageJson.scripts?.['e2e:ide:issue-909:skip-build']).toContain('E2E_SKIP_BUILD=1')
+    expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:issue-909 && pnpm e2e:ide:visual')
+    expect(workflow).toContain('args: [\'e2e:mp:ide\']')
+  })
+
+  it('keeps demo workflow routed through composable platform e2e groups', () => {
+    const rootPackageJson = readDemoPackageJson('package.json')
+    const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
+    const scripts = rootPackageJson.scripts ?? {}
+
+    expect(scripts['e2e:mp']).toBe('pnpm e2e:static && pnpm e2e:hot-update:demo')
+    expect(scripts['e2e:mp:ide']).toBe('pnpm e2e:ide:full')
+    expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')
+    expect(scripts['e2e:app']).toBe('pnpm e2e:android && pnpm e2e:ios && pnpm e2e:harmony')
+    expect(scripts['e2e:hbuilderx:local:harmony']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-harmony')
+
+    for (const scriptName of ['e2e:mp', 'e2e:h5', 'e2e:hbuilderx:mp', 'e2e:hbuilderx:h5', 'e2e:android', 'e2e:ios', 'e2e:harmony']) {
+      expect(workflow).toContain(`args: ['${scriptName}']`)
+    }
   })
 
   it('wires SFC-like automated hot-update demos to template/script/style report assertions', () => {
@@ -248,14 +266,14 @@ describe('e2e matrix', () => {
     }
   })
 
-  it('keeps uni-app and uni-app x demo workflow coverage explicit for mini-program, web, Android and iOS', () => {
+  it('keeps uni-app and uni-app x demo workflow coverage explicit for mini-program, web, Android, iOS and Harmony', () => {
     const expectedPlatformsByName = new Map([
       ['uni-app-vite-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
+      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
     ])
 
     for (const [name, platforms] of expectedPlatformsByName) {
@@ -265,7 +283,7 @@ describe('e2e matrix', () => {
         const coverage = entry?.platforms.find(item => item.platform === platform)
         expect(coverage, `${name} should declare ${platform}`).toBeDefined()
         expect(coverage?.command.length, `${name} ${platform} should document workflow command`).toBeGreaterThan(0)
-        if (platform === 'app-android' || platform === 'app-ios') {
+        if (platform === 'app-android' || platform === 'app-ios' || platform === 'app-harmony') {
           expect(coverage?.hmrCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
           expect(coverage?.evidence, `${name} ${platform} should point at HBuilderX evidence`).toContain('hbuilderx')
         }

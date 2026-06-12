@@ -50,27 +50,17 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
     {
       name: 'WeChat DevTools IDE + visible hot update',
       command: 'pnpm',
-      args: ['e2e:ide'],
-    },
-    {
-      name: 'WeChat DevTools IDE HMR before/after screenshots',
-      command: 'pnpm',
-      args: ['e2e:ide:visual'],
+      args: ['e2e:mp:ide'],
     },
     {
       name: 'demo mini-program watch hot-update',
       command: 'pnpm',
-      args: ['e2e:hot-update:demo'],
+      args: ['e2e:mp'],
     },
     {
-      name: 'Taro H5 browser HMR',
+      name: 'H5 browser build and HMR',
       command: 'pnpm',
-      args: ['e2e:taro:web-hmr'],
-    },
-    {
-      name: 'web Vite browser HMR',
-      command: 'pnpm',
-      args: ['e2e:web:hmr'],
+      args: ['e2e:h5'],
     },
   ]
 
@@ -79,31 +69,37 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
       {
         name: 'HBuilderX uni-app/uni-app x mp-weixin',
         command: 'pnpm',
-        args: ['e2e:hbuilderx:local:mp'],
+        args: ['e2e:hbuilderx:mp'],
         local: true,
       },
       {
-        name: 'HBuilderX uni-app Web HMR',
+        name: 'HBuilderX uni-app H5 HMR',
         command: 'pnpm',
-        args: ['e2e:hbuilderx:local:web'],
+        args: ['e2e:hbuilderx:h5'],
         local: true,
       },
       {
         name: 'HBuilderX uni-app/uni-app x Android HMR',
         command: 'pnpm',
-        args: ['e2e:hbuilderx:local:android'],
+        args: ['e2e:android'],
         local: true,
       },
       {
         name: 'HBuilderX uni-app/uni-app x iOS HMR',
         command: 'pnpm',
-        args: ['e2e:hbuilderx:local:ios'],
+        args: ['e2e:ios'],
+        local: true,
+      },
+      {
+        name: 'HBuilderX uni-app x Harmony HMR',
+        command: 'pnpm',
+        args: ['e2e:harmony'],
         local: true,
       },
     )
   }
   else {
-    process.stdout.write('[demo-e2e] skip local HBuilderX Android/iOS stages; pass --local to include them.\n')
+    process.stdout.write('[demo-e2e] skip local HBuilderX mp/H5/Android/iOS/Harmony stages; pass --local to include them.\n')
   }
 
   return steps

@@ -4,6 +4,16 @@
 
 常用验证命令：
 
+- 小程序静态 + watch/HMR：`pnpm e2e:mp`
+- 小程序 IDE 全链路：`pnpm e2e:mp:ide`
+- H5 构建 + 浏览器 HMR：`pnpm e2e:h5`
+- HBuilderX 本地全链路：`pnpm e2e:hbuilderx`
+- HBuilderX 小程序：`pnpm e2e:hbuilderx:mp`
+- HBuilderX H5：`pnpm e2e:hbuilderx:h5`
+- App 全平台本地链路：`pnpm e2e:app`
+- Android 本地链路：`pnpm e2e:android`
+- iOS 本地链路：`pnpm e2e:ios`
+- Harmony 本地链路：`pnpm e2e:harmony`
 - 总矩阵一致性：`pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts`
 - 静态小程序快照：`E2E_SKIP_OPEN_AUTOMATOR=1 pnpm e2e:static`
 - 多平台构建输出：`pnpm e2e:multiplatform-build`
@@ -18,6 +28,6 @@
 - Web 与 weapp 模式对比：`pnpm demo:web:compare`
 - HBuilderX 本地链路：`E2E_HBUILDERX_LOCAL=1 pnpm e2e:hbuilderx:local`
 
-HBuilderX / App / 模拟器相关 case 依赖本机工具链，默认不进入普通 CI。矩阵中的 `reason` 字段记录了跳过原因和对应本地命令。
+HBuilderX / App / 模拟器相关 case 依赖本机工具链，默认不进入普通 CI。矩阵中的 `reason` 字段记录了跳过原因和对应本地命令。后续组合执行时优先使用 `e2e:mp`、`e2e:h5`、`e2e:hbuilderx:*`、`e2e:android`、`e2e:ios`、`e2e:harmony` 这一层分组命令；`e2e:hbuilderx:local:*` 保留为底层兼容入口。
 `e2e:ide:visual` 会遍历 `demo/*` 的所有小程序 demo，在微信开发者工具里截取 HMR 前后画面；任一 demo 跳过、失败或没有匹配结果都会让命令失败。
 为避免连续打开多个 demo 后 DevTools 连接残留影响后续 HMR，`e2e:ide:visual` 默认在每个小程序 case 前后关闭微信开发者工具，并在 launch 超时后重试一次。需要保留已打开 IDE 调试时，可临时设置 `DEMO_VISUAL_IDE_CLEANUP=0`。

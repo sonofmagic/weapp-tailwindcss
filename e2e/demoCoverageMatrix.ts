@@ -245,6 +245,18 @@ function uniAppHBuilderXPlatforms(name: string): DemoPlatformCoverage[] {
 }
 
 function uniAppXPlatforms(name: string): DemoPlatformCoverage[] {
+  function uniAppXDevScript(platform: string) {
+    if (platform === 'mp-weixin') {
+      return 'dev:mp-weixin'
+    }
+    if (platform === 'app-android') {
+      return 'dev:android:emulator'
+    }
+    if (platform === 'app-ios') {
+      return 'dev:ios:simulator'
+    }
+  }
+
   return [
     local('h5', {
       devScript: 'dev:h5',
@@ -254,13 +266,13 @@ function uniAppXPlatforms(name: string): DemoPlatformCoverage[] {
       staticCoverage: 'exempt',
       hmrCoverage: 'local',
     }),
-    ...['mp-weixin', 'app-android', 'app-ios'].map(platform => local(platform, {
-      devScript: platform === 'mp-weixin' ? 'dev:mp-weixin' : platform === 'app-android' ? 'dev:android:emulator' : 'dev:ios:simulator',
+    ...['mp-weixin', 'app-android', 'app-ios', 'app-harmony'].map(platform => local(platform, {
+      ...(uniAppXDevScript(platform) ? { devScript: uniAppXDevScript(platform) } : {}),
       evidence: 'hbuilderx local cases',
       command: platform === 'mp-weixin'
         ? `E2E_HBUILDERX_LOCAL=1 pnpm e2e:hbuilderx:local:mp -t "${name}"`
-        : `E2E_HBUILDERX_LOCAL=1 pnpm e2e:hbuilderx:local:${platform === 'app-android' ? 'android' : 'ios'} -t "${name}"`,
-      reason: 'uni-app x 产物依赖本机 HBuilderX 与微信/Android/iOS SDK，普通 CI 不默认执行。',
+        : `E2E_HBUILDERX_LOCAL=1 pnpm e2e:hbuilderx:local:${platform === 'app-android' ? 'android' : platform === 'app-ios' ? 'ios' : 'harmony'} -t "${name}"`,
+      reason: 'uni-app x 产物依赖本机 HBuilderX 与微信/Android/iOS/Harmony SDK，普通 CI 不默认执行。',
     })),
   ]
 }

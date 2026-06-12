@@ -235,6 +235,36 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['e2e:ide:case']).toContain('vitest run --bail=1')
     expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_BUILD=0')
     expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_PROBE_RETRIES=0')
+    expect(packageJson.scripts['e2e:ide:issue-909']).toContain('e2e/issue-909-ide.test.ts')
+    expect(packageJson.scripts['e2e:ide:issue-909']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:issue-909:skip-build']).toContain('E2E_SKIP_BUILD=1')
+    expect(packageJson.scripts['e2e:ide:full']).toContain('pnpm e2e:ide:issue-909')
+  })
+
+  it('keeps e2e platform group scripts composable', () => {
+    const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
+    const scripts = packageJson.scripts
+
+    expect(scripts['e2e:mp']).toBe('pnpm e2e:static && pnpm e2e:hot-update:demo')
+    expect(scripts['e2e:mp:ide']).toBe('pnpm e2e:ide:full')
+    expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')
+    expect(scripts['e2e:app']).toBe('pnpm e2e:android && pnpm e2e:ios && pnpm e2e:harmony')
+
+    expect(scripts['e2e:hbuilderx']).toBe('pnpm e2e:hbuilderx:local')
+    expect(scripts['e2e:hbuilderx:mp']).toBe('pnpm e2e:hbuilderx:local:mp')
+    expect(scripts['e2e:hbuilderx:h5']).toBe('pnpm e2e:hbuilderx:local:web')
+    expect(scripts['e2e:hbuilderx:app']).toBe('pnpm e2e:hbuilderx:local:app')
+
+    expect(scripts['e2e:android']).toBe('pnpm e2e:hbuilderx:android')
+    expect(scripts['e2e:ios']).toBe('pnpm e2e:hbuilderx:ios')
+    expect(scripts['e2e:harmony']).toBe('pnpm e2e:hbuilderx:harmony')
+    expect(scripts['e2e:hbuilderx:android']).toBe('pnpm e2e:hbuilderx:local:android')
+    expect(scripts['e2e:hbuilderx:ios']).toBe('pnpm e2e:hbuilderx:local:ios')
+    expect(scripts['e2e:hbuilderx:harmony']).toBe('pnpm e2e:hbuilderx:local:harmony')
+
+    expect(scripts['e2e:hbuilderx:local:android']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-android')
+    expect(scripts['e2e:hbuilderx:local:ios']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-ios')
+    expect(scripts['e2e:hbuilderx:local:harmony']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-harmony')
   })
 
   it('keeps demo dev scripts printing weapp-tailwindcss timing by default', () => {

@@ -1,9 +1,11 @@
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { Launcher } from '@weapp-vite/miniprogram-automator'
+import { execa } from 'execa'
 import path from 'pathe'
 import { PNG } from 'pngjs'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { collectFrameworkIdeDiagnostics } from './frameworkIdeDiagnostics'
 import { ensureProjectBuilt } from './projectBuild'
 
 const describeIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
@@ -11,7 +13,7 @@ const projectRoot = path.resolve(__dirname, '../demo/taro-webpack-react-tailwind
 const projectPath = projectRoot
 const appWxssPath = path.resolve(projectRoot, 'dist/app.wxss')
 const pageUrl = '/pages/issue-909/index'
-const timeoutMs = Number(process.env['E2E_AUTOMATOR_TIMEOUT_MS'] ?? 30_000)
+const timeoutMs = Number(process.env['E2E_IDE_ISSUE_909_TIMEOUT_MS'] ?? process.env['E2E_AUTOMATOR_TIMEOUT_MS'] ?? 90_000)
 const artifactDir = path.resolve(__dirname, '.artifacts/issue-909')
 const transformClasses = [
   'rotate-y-90',
@@ -50,6 +52,15 @@ function expandRect(rect: Rect, padding: number): Rect {
   }
 }
 
+function scaleRect(rect: Rect, scaleX: number, scaleY: number): Rect {
+  return {
+    left: rect.left * scaleX,
+    top: rect.top * scaleY,
+    width: rect.width * scaleX,
+    height: rect.height * scaleY,
+  }
+}
+
 function countEmeraldPixels(png: PNG, rect: Rect) {
   const left = Math.max(0, Math.floor(rect.left))
   const top = Math.max(0, Math.floor(rect.top))
@@ -78,6 +89,26 @@ function toCssSelector(className: string) {
   return `.${className}{`
 }
 
+const wait = (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout))
+
+async function cleanupDevTools() {
+  if (process.platform !== 'darwin') {
+    return
+  }
+  const timeout = Number(process.env['E2E_IDE_CLEANUP_TIMEOUT_MS'] ?? 5000)
+  await execa('osascript', ['-e', 'quit app "wechatwebdevtools"'], {
+    reject: false,
+    timeout,
+  }).catch(() => undefined)
+  await execa('pkill', ['-f', '/Applications/wechatwebdevtools.app'], {
+    reject: false,
+  }).catch(() => undefined)
+  await execa('pkill', ['-f', 'wechatwebdevtools Daemon'], {
+    reject: false,
+  }).catch(() => undefined)
+  await wait(800)
+}
+
 describeIde.sequential('issue 909 IDE runtime', () => {
   let miniProgram: any
 
@@ -85,15 +116,25 @@ describeIde.sequential('issue 909 IDE runtime', () => {
     if (process.env['E2E_SKIP_BUILD'] !== '1') {
       await ensureProjectBuilt(projectRoot)
     }
-    const automator = new Launcher()
-    miniProgram = await automator.launch({
-      projectPath,
-      timeout: timeoutMs,
-    })
+    await cleanupDevTools()
+    try {
+      const automator = new Launcher()
+      miniProgram = await automator.launch({
+        projectPath,
+        timeout: timeoutMs,
+      })
+    }
+    catch (error) {
+      if (error instanceof Error) {
+        error.message = `${error.message}\n${await collectFrameworkIdeDiagnostics('issue-909')}`
+      }
+      throw error
+    }
   }, 180_000)
 
   afterAll(async () => {
     await miniProgram?.close()
+    await cleanupDevTools()
   })
 
   it('keeps Tailwind v4 empty transform fallbacks valid and visually applies 3D rotate utilities in WeChat DevTools', async () => {
@@ -129,12 +170,15 @@ describeIde.sequential('issue 909 IDE runtime', () => {
     const screenshotPath = path.resolve(artifactDir, 'transform-utilities.png')
     await captureMiniProgramScreenshot(miniProgram, screenshotPath)
     const screenshot = await readScreenshot(screenshotPath)
+    const pageSize = await page.size()
     const controlOffset = await controlNode.offset()
     const controlSize = await controlNode.size()
     const rotateOffset = await rotateNode.offset()
     const rotateSize = await rotateNode.size()
-    const controlRect = expandRect({ ...controlOffset, ...controlSize }, 4)
-    const rotateRect = expandRect({ ...rotateOffset, ...rotateSize }, 4)
+    const scaleX = screenshot.width / pageSize.width
+    const scaleY = screenshot.height / pageSize.height
+    const controlRect = expandRect(scaleRect({ ...controlOffset, ...controlSize }, scaleX, scaleY), 4)
+    const rotateRect = expandRect(scaleRect({ ...rotateOffset, ...rotateSize }, scaleX, scaleY), 4)
     const controlEmeraldPixels = countEmeraldPixels(screenshot, controlRect)
     const rotateEmeraldPixels = countEmeraldPixels(screenshot, rotateRect)
     const visibleRatio = rotateEmeraldPixels / Math.max(controlEmeraldPixels, 1)
@@ -148,6 +192,8 @@ describeIde.sequential('issue 909 IDE runtime', () => {
         demonstratedClasses: transformClasses,
         rotateEmeraldPixels,
         rotateRect,
+        scaleX,
+        scaleY,
         screenshot: screenshotPath,
         visibleRatio,
       }, null, 2)}\n`,
