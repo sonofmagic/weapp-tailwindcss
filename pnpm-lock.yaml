@@ -3782,6 +3782,9 @@ importers:
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.15
+      postcss-load-config:
+        specifier: ^6.0.1
+        version: 6.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(yaml@2.9.0)
       postcss-pxtrans:
         specifier: ^1.0.4
         version: 1.0.4(postcss@8.5.15)
@@ -3999,6 +4002,9 @@ importers:
       micromatch:
         specifier: ^4.0.8
         version: 4.0.8
+      postcss:
+        specifier: catalog:postcss85tilde
+        version: 8.5.15
       postcss-load-config:
         specifier: ^6.0.1
         version: 6.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)(yaml@2.9.0)

@@ -82,6 +82,7 @@
     "lru-cache": "11.5.1",
     "micromatch": "^4.0.8",
     "postcss": "catalog:postcss85tilde",
+    "postcss-load-config": "^6.0.1",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.2",
