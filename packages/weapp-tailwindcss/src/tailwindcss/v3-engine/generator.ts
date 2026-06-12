@@ -13,6 +13,7 @@ import {
   isBareArbitraryValuesEnabled,
   resolveBareArbitraryValueCandidate,
 } from 'tailwindcss-patch'
+import * as tailwindcssPatch from 'tailwindcss-patch'
 import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { omitUndefined } from '@/utils/object'
 import { createIncrementalGenerateCacheKey } from './generator/cache-key'
@@ -58,6 +59,25 @@ interface TailwindV3IncrementalGenerateCacheEntry {
   dependencies: string[]
   target: TailwindV3GenerateTarget
 }
+
+type TailwindV3PatchRawGenerator = (options: {
+  cwd?: string
+  packageName?: string
+  css?: string
+  candidates?: Iterable<string>
+  sources?: TailwindV3CandidateSource[]
+  config?: unknown
+  directUtilitiesOnly?: boolean | 'auto'
+}) => Promise<{
+  css: string
+  classSet: Set<string>
+  context: TailwindV3Context
+  dependencies: string[]
+}>
+
+const patchRawStyleGenerator = typeof (tailwindcssPatch as { generateTailwindV3RawStyle?: unknown }).generateTailwindV3RawStyle === 'function'
+  ? (tailwindcssPatch as unknown as { generateTailwindV3RawStyle: TailwindV3PatchRawGenerator }).generateTailwindV3RawStyle
+  : undefined
 
 function normalizeBareArbitraryValueCandidate(
   candidate: string,
@@ -259,6 +279,29 @@ function appendDirectUtilityRules(root: postcss.Root, context: TailwindV3Context
   appendUtilityRules(root, context, [...context.ruleCache])
 }
 
+async function generateRawStyleWithPatch(
+  generateSource: TailwindV3ResolvedSource,
+  candidates: Set<string>,
+  sources: TailwindV3CandidateSource[],
+) {
+  if (!patchRawStyleGenerator) {
+    return undefined
+  }
+
+  return patchRawStyleGenerator({
+    cwd: generateSource.cwd,
+    packageName: generateSource.packageName,
+    css: generateSource.css,
+    candidates,
+    sources,
+    config: createTailwindConfig(generateSource, {
+      candidates,
+      sources,
+    }),
+    directUtilitiesOnly: 'auto',
+  })
+}
+
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {
   const runtimeReadyPromise = createRuntimeReadyPromise(source)
   let tailwindInternals: TailwindV3Internals | undefined
@@ -296,32 +339,47 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       messages: [],
     }
     let context: TailwindV3Context
-    if (isDirectUtilitiesOnlyCss(generateSource.css)) {
-      context = internals.createContext(tailwindConfig, changedContent, root)
-      internals.generateRules(
-        new Set(sortCandidates([internals.notOnDemandCandidate, ...candidates])),
-        context,
+    let rawCss: string
+    let dependencies: Set<string>
+    const patchGenerated = await generateRawStyleWithPatch(generateSource, candidates, options.sources ?? [])
+    if (patchGenerated) {
+      context = patchGenerated.context
+      rawCss = restoreBareArbitraryValueCssSelectors(
+        patchGenerated.css,
+        requestedCandidates,
+        options.bareArbitraryValues,
+        internals.escapeClassName,
       )
-      root.removeAll()
-      appendDirectUtilityRules(root, context)
-      internals.resolveDefaultsAtRules(context)(root, result)
-      internals.collapseAdjacentRules(context)(root, result)
-      internals.collapseDuplicateDeclarations(context)(root, result)
+      dependencies = new Set(patchGenerated.dependencies)
     }
     else {
-      const setupContext = () => {
-        return (currentRoot: postcss.Root) => internals.createContext(tailwindConfig, changedContent, currentRoot)
+      if (isDirectUtilitiesOnlyCss(generateSource.css)) {
+        context = internals.createContext(tailwindConfig, changedContent, root)
+        internals.generateRules(
+          new Set(sortCandidates([internals.notOnDemandCandidate, ...candidates])),
+          context,
+        )
+        root.removeAll()
+        appendDirectUtilityRules(root, context)
+        internals.resolveDefaultsAtRules(context)(root, result)
+        internals.collapseAdjacentRules(context)(root, result)
+        internals.collapseDuplicateDeclarations(context)(root, result)
       }
-      context = await internals.processTailwindFeatures(setupContext)(root, result)
+      else {
+        const setupContext = () => {
+          return (currentRoot: postcss.Root) => internals.createContext(tailwindConfig, changedContent, currentRoot)
+        }
+        context = await internals.processTailwindFeatures(setupContext)(root, result)
+      }
+      rawCss = restoreBareArbitraryValueCssSelectors(
+        root.toString(),
+        requestedCandidates,
+        options.bareArbitraryValues,
+        internals.escapeClassName,
+      )
+      dependencies = collectDependencyMessages(result)
     }
-    const rawCss = restoreBareArbitraryValueCssSelectors(
-      root.toString(),
-      requestedCandidates,
-      options.bareArbitraryValues,
-      internals.escapeClassName,
-    )
     const css = await transformTailwindV3CssByTarget(rawCss, target, resolvedStyleOptions)
-    const dependencies = collectDependencyMessages(result)
     for (const dependency of generateSource.dependencies) {
       dependencies.add(dependency)
     }
