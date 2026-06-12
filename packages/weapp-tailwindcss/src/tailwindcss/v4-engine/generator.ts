@@ -7,7 +7,7 @@ import type {
   TailwindV4ResolvedSource,
 } from './types'
 import fs from 'node:fs'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { createTailwindV4Engine as createPatchTailwindV4Engine, extractRawCandidates } from 'tailwindcss-patch'
 import { hasCssMacroTailwindV4Directive, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { omitUndefined } from '@/utils/object'

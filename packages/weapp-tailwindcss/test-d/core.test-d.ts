@@ -1,4 +1,4 @@
-import type { Document, Result as PostcssResult, Root } from 'postcss'
+import type { Document, Result as PostcssResult, Root } from '@weapp-tailwindcss/postcss'
 import type { JsHandlerResult, UserDefinedOptions } from 'weapp-tailwindcss/types'
 import { expectType } from 'tsd'
 import { createContext } from 'weapp-tailwindcss/core'

@@ -4,7 +4,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import {
   resolveTailwindV4Source as resolvePatchTailwindV4Source,
   resolveTailwindV4SourceFromPatchOptions,

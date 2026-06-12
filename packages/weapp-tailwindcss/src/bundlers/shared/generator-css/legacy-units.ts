@@ -1,4 +1,4 @@
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeCompatSelectors } from './legacy-selectors'
 
 const CSS_LENGTH_UNIT_RE = /(?:^|[\s(,])[-+]?(?:\d+|\d*\.\d+)(?:px|rem)\b/i

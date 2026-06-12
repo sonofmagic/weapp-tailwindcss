@@ -1,12 +1,18 @@
 import type { OutputAsset, OutputBundle } from 'rollup'
 import type { InternalUserDefinedOptions } from '@/types'
+import {
+  containsCssAfterMinify,
+  filterExistingCssRules,
+  mergeCoveredCssRuleDeclarations,
+  mergeMiniProgramPreflightRuleDeclarations,
+  mergeMiniProgramThemeScopeRuleDeclarations,
+  postcss,
+} from '@weapp-tailwindcss/postcss'
 import path from 'pathe'
-import postcss from 'postcss'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { containsCssAfterMinify, filterExistingCssRules, mergeCoveredCssRuleDeclarations, mergeMiniProgramPreflightRuleDeclarations, mergeMiniProgramThemeScopeRuleDeclarations } from './processed-css-assets/css-rules'
 
 interface CssAssetMarkerMatcher {
   (asset: OutputAsset, file?: string): boolean

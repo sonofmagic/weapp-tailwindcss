@@ -1,4 +1,4 @@
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { replaceWxml } from '@/wxml'
 import { VITE_MARKER_RE } from './markers'
 

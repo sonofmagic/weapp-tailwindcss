@@ -1,4 +1,4 @@
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 
 const USER_LAYER_COMPONENTS_START = '/*! weapp-tailwindcss layer components start */'
 const USER_LAYER_COMPONENTS_END = '/*! weapp-tailwindcss layer components end */'

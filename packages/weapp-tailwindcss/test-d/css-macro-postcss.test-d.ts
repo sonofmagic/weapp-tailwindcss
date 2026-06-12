@@ -1,4 +1,4 @@
-import type { PluginCreator } from 'postcss'
+import type { PluginCreator } from '@weapp-tailwindcss/postcss'
 import type { Options as PostcssCssMacroOptions } from 'weapp-tailwindcss/css-macro/postcss'
 import { expectAssignable } from 'tsd'
 import postcssCssMacro from 'weapp-tailwindcss/css-macro/postcss'

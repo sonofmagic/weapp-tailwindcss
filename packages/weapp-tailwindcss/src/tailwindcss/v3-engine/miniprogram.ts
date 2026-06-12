@@ -1,7 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV3GenerateTarget } from './types'
-import { createStyleHandler } from '@weapp-tailwindcss/postcss'
-import postcss from 'postcss'
+import { createStyleHandler, postcss } from '@weapp-tailwindcss/postcss'
 import { hasCssMacroStyleOptions, transformCssMacroCss } from '@/css-macro/auto'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
 

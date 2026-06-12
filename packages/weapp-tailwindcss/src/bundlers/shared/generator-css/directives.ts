@@ -1,5 +1,5 @@
 import path from 'node:path'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import {
   extractConfigRequestFromSource,
   extractTailwindDirectiveLines,

@@ -1,4 +1,4 @@
-import type { Root } from 'postcss'
+import type { Root } from '@weapp-tailwindcss/postcss'
 
 export interface TailwindInlineSourceCandidates {
   included: Set<string>

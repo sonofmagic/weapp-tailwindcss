@@ -1,6 +1,6 @@
 import type { TailwindV4GenerateOptions, TailwindV4ResolvedSource, TailwindV4SourcePattern } from '../types'
 import path from 'node:path'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { resolveCssSourceEntries, resolveTailwindSourceEntry } from '@/tailwindcss/source-scan'
 
 type TailwindV4ResolvedScanSources = TailwindV4GenerateOptions['scanSources']

@@ -7,7 +7,7 @@ import type {
   TailwindV3ResolvedSource,
 } from './types'
 import { createRequire } from 'node:module'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import {
   extractSourceCandidates,
   isBareArbitraryValuesEnabled,

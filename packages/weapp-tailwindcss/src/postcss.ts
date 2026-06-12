@@ -1,8 +1,8 @@
 import type {
+  PluginCreator,
   WeappTailwindcssPostcssPluginAdapters,
   WeappTailwindcssPostcssPluginOptions,
 } from '@weapp-tailwindcss/postcss'
-import type { PluginCreator } from 'postcss'
 import { createWeappTailwindcssPostcssPlugin } from '@weapp-tailwindcss/postcss'
 import {
   createWeappTailwindcssGenerator,

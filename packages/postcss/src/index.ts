@@ -54,9 +54,38 @@ export {
   type StyleProcessingPipeline,
 } from './pipeline'
 export { createFallbackPlaceholderReplacer } from './plugins/post/specificity-cleaner'
+export {
+  getPostcssPluginName,
+  removeTailwindPostcssPlugins,
+  resolveFilteredPostcssConfig,
+} from './postcss-config'
+export { postcss } from './postcss-runtime'
+export type {
+  AcceptedPlugin,
+  AtRule,
+  Container,
+  Declaration,
+  Document,
+  Helpers,
+  Plugin,
+  PluginCreator,
+  Node as PostcssNode,
+  ProcessOptions,
+  Processor,
+  Result,
+  Root,
+  Rule,
+} from './postcss-runtime'
 export { createInjectPreflight } from './preflight'
 export { internalCssSelectorReplacer } from './shared'
 export * from './types'
+export {
+  containsCssAfterMinify,
+  filterExistingCssRules,
+  mergeCoveredCssRuleDeclarations,
+  mergeMiniProgramPreflightRuleDeclarations,
+  mergeMiniProgramThemeScopeRuleDeclarations,
+} from './vite-css-rules'
 export {
   composeRules as unitConversionComposeRules,
   presets as unitConversionPresets,

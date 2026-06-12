@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss'
 import type { TailwindV3CandidateSource, TailwindV3GenerateOptions, TailwindV3ResolvedSource } from '../types'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 
 interface LegacyContentObject {
   files?: unknown

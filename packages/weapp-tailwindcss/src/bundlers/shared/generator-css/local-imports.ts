@@ -1,4 +1,4 @@
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { parseImportRequest, removeTailwindSourceDirectives } from './directives'
 
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i

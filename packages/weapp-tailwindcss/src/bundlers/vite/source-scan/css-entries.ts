@@ -4,8 +4,8 @@ import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import fg from 'fast-glob'
-import postcss from 'postcss'
 import { loadConfig } from 'tailwindcss-config'
 import {
   collectCssInlineSourceCandidates,

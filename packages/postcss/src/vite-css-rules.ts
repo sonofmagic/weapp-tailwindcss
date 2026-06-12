@@ -1,6 +1,6 @@
 import type { Node, Selector } from 'postcss-selector-parser'
-import postcss from 'postcss'
 import selectorParser from 'postcss-selector-parser'
+import { postcss } from './postcss-runtime'
 
 const MINI_PROGRAM_PREFLIGHT_SELECTOR_KEY = 'view,text,::after,::before'
 const MINI_PROGRAM_PREFLIGHT_SELECTOR_KEYS = new Set(['view', 'text', '::after', '::before'])

@@ -1,5 +1,5 @@
 import type { TailwindV4GenerateTarget, TailwindV4ResolvedSource } from '../types'
-import postcss from 'postcss'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { applyTailwindV3CompatibilityCss } from '../tailwind-v3-compatibility'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
