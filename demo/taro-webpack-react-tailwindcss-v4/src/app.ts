@@ -1,8 +1,6 @@
 import type { PropsWithChildren } from 'react'
 // import '@tarojs/taro/html5.css'
-if (process.env.TARO_ENV !== 'rn') {
-  require('./app.css')
-}
+import './app.css'
 if (process.env.TARO_ENV !== 'rn') {
   require('@nutui/nutui-react-taro/dist/styles/themes/default.css')
 }

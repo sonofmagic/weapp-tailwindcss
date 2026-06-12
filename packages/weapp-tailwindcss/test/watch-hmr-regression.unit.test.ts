@@ -1651,6 +1651,21 @@ describe('watch-hmr regression cases', () => {
       expect(configSource, configPath).not.toContain('ignored: [distDir]')
     }
 
+    const taroAppStyleEntries = [
+      ['demo/taro-vite-react-tailwindcss-v3/src/app.ts', 'app.scss'],
+      ['demo/taro-vite-react-tailwindcss-v4/src/app.ts', 'app.css'],
+      ['demo/taro-vite-vue3-tailwindcss-v3/src/app.ts', 'app.scss'],
+      ['demo/taro-vite-vue3-tailwindcss-v4/src/app.ts', 'app.css'],
+      ['demo/taro-webpack-react-tailwindcss-v3/src/app.ts', 'app.less'],
+      ['demo/taro-webpack-react-tailwindcss-v4/src/app.ts', 'app.css'],
+      ['demo/taro-webpack-vue3-tailwindcss-v3/src/app.ts', 'app.less'],
+      ['demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts', 'app.css'],
+    ]
+    for (const [entryPath, styleFile] of taroAppStyleEntries) {
+      const entrySource = await readFile(path.resolve(__dirname, '../../..', entryPath), 'utf8')
+      expect(entrySource, entryPath).toContain(`import './${styleFile}'`)
+    }
+
     const webpackV5PluginSource = await readFile(
       path.resolve(__dirname, '../src/bundlers/webpack/BaseUnifiedPlugin/v5.ts'),
       'utf8',

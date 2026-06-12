@@ -1,8 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-if (process.env.TARO_ENV !== 'rn') {
-  require('./app.scss')
-}
+import './app.scss'
 
 function App({ children }: PropsWithChildren<any>) {
   // children 是将要会渲染的页面
