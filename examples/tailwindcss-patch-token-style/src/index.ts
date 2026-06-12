@@ -4,9 +4,8 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
-  createTailwindV4Engine,
-  extractSourceCandidates,
-  resolveTailwindV4Source,
+  collectTailwindStyleCandidates,
+  generateTailwindV4Style,
 } from 'tailwindcss-patch'
 
 export interface DemoSource extends Required<TailwindV4CandidateSource> {
@@ -84,38 +83,29 @@ function sortValues(values: Iterable<string>) {
 }
 
 export async function collectCandidatesFromSources(sources: DemoSource[]) {
-  const candidates = new Set<string>()
-  for (const source of sources) {
-    const extracted = await extractSourceCandidates(source.content, source.extension, {
-      bareArbitraryValues: true,
-    })
-    for (const candidate of extracted) {
-      candidates.add(candidate)
-    }
-  }
-  return candidates
+  return collectTailwindStyleCandidates({
+    bareArbitraryValues: true,
+    sources,
+  })
 }
 
 export async function generateStyleFromCandidates(
   candidates: Iterable<string>,
   projectRoot = demoProjectRoot,
 ): Promise<TokenStyleResult> {
-  const source = await resolveTailwindV4Source({
+  const result = await generateTailwindV4Style({
     projectRoot,
     cwd: projectRoot,
     css: [
       '@import "tailwindcss/theme.css" layer(theme);',
       '@import "tailwindcss/utilities.css" layer(utilities);',
     ].join('\n'),
-  })
-  const engine = createTailwindV4Engine(source)
-  const result = await engine.generate({
     bareArbitraryValues: true,
     candidates,
     scanSources: false,
   })
   return {
-    tokens: sortValues(candidates),
+    tokens: sortValues(result.tokens),
     classSet: sortValues(result.classSet),
     css: result.css,
     dependencies: result.dependencies,
