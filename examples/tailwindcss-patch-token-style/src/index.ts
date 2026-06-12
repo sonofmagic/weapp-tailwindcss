@@ -2,7 +2,7 @@ import type { TailwindV4CandidateSource } from 'tailwindcss-patch'
 import { mkdir, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
-import { pathToFileURL } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
   createTailwindV4Engine,
   extractSourceCandidates,
@@ -30,6 +30,8 @@ export interface RunDemoOptions {
   projectRoot?: string
   outputRoot?: string
 }
+
+export const demoProjectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 export const demoSources: DemoSource[] = [
   {
@@ -96,7 +98,7 @@ export async function collectCandidatesFromSources(sources: DemoSource[]) {
 
 export async function generateStyleFromCandidates(
   candidates: Iterable<string>,
-  projectRoot = process.cwd(),
+  projectRoot = demoProjectRoot,
 ): Promise<TokenStyleResult> {
   const source = await resolveTailwindV4Source({
     projectRoot,
@@ -139,7 +141,7 @@ async function writeDemoResult(result: TokenStyleResult, outputRoot = process.cw
 }
 
 export async function runDemo(options: RunDemoOptions = {}) {
-  const projectRoot = options.projectRoot ?? process.cwd()
+  const projectRoot = options.projectRoot ?? demoProjectRoot
   const outputRoot = options.outputRoot ?? projectRoot
   const candidates = await collectCandidatesFromSources(demoSources)
   const result = await generateStyleFromCandidates(candidates, projectRoot)
