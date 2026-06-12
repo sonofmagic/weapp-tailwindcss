@@ -6,6 +6,7 @@ packages:
   - benchmark/*
   - tools/*
   - e2e
+  - examples/*
   - '!tailwindcss-weapp'
   - '!**/test/**'
   - demo/*
