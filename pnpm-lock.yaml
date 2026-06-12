@@ -3776,6 +3776,9 @@ importers:
       lru-cache:
         specifier: 11.5.1
         version: 11.5.1
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
       postcss:
         specifier: catalog:postcss85tilde
         version: 8.5.15
@@ -3794,6 +3797,12 @@ importers:
       postcss-value-parser:
         specifier: ^4.2.0
         version: 4.2.0
+      tailwindcss-config:
+        specifier: workspace:*
+        version: link:../tailwindcss-config
+      tailwindcss-patch:
+        specifier: catalog:tailwindcssPatch
+        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
     devDependencies:
       '@csstools/css-color-parser':
         specifier: ^4.1.1

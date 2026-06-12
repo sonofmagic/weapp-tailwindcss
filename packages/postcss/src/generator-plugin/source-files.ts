@@ -1,12 +1,10 @@
 import type { Result, Root } from 'postcss'
-import type { TailwindV4CandidateSource } from '../generator'
-import type { WeappTailwindcssPostcssPluginOptions } from '../postcss'
-import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import type { TailwindSourceEntry } from '../source-scan'
+import type { TailwindCandidateSource, WeappTailwindcssPostcssPluginOptions } from './types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { loadConfig } from 'tailwindcss-config'
 import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '@/bundlers/shared/generator-css/directives'
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
@@ -15,15 +13,16 @@ import {
   normalizeLegacyContentEntries,
   parseConfigParam,
   resolveCssSourceEntries,
-} from '@/tailwindcss/source-scan'
+} from '../source-scan'
 import { resolvePostcssBase, resolvePostcssProjectRoot } from './context'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives } from './directives'
 
 const POSTCSS_SOURCE_PATTERN = createSourceScanPattern(DEFAULT_SOURCE_SCAN_EXTENSIONS)
 
 function isTailwindV4ApplyOnlyCss(root: Root, options: WeappTailwindcssPostcssPluginOptions) {
   return options.version === 4
     && hasTailwindApplyDirective(root.toString())
-    && !hasTailwindRootDirectives(root.toString(), { importFallback: true })
+    && !hasTailwindRootDirectives(root, { importFallback: true })
 }
 
 function getSourceExtension(file: string) {
@@ -170,7 +169,7 @@ export async function collectPostcssLocalSources(
     ...await expandTailwindSourceEntries(sourceEntries),
     ...configContentFiles.files,
   ])]
-  const sources: TailwindV4CandidateSource[] = await Promise.all(files.map(async (file) => {
+  const sources: TailwindCandidateSource[] = await Promise.all(files.map(async (file) => {
     const extension = getSourceExtension(file)
     return {
       content: await readFile(file, 'utf8'),

@@ -22,6 +22,26 @@ export default defineConfig({
         replacement: path.resolve(__dirname, '../postcss/src/index.ts'),
       },
       {
+        find: /^@weapp-tailwindcss\/postcss\/css-macro\/postcss$/,
+        replacement: path.resolve(__dirname, '../postcss/src/css-macro/postcss.ts'),
+      },
+      {
+        find: /^tailwindcss-config$/,
+        replacement: path.resolve(__dirname, '../tailwindcss-config/src/index.ts'),
+      },
+      {
+        find: /^@weapp-tailwindcss\/shared$/,
+        replacement: path.resolve(__dirname, '../shared/src/index.ts'),
+      },
+      {
+        find: /^@weapp-tailwindcss\/shared\/node$/,
+        replacement: path.resolve(__dirname, '../shared/src/node.ts'),
+      },
+      {
+        find: /^@weapp-tailwindcss\/logger$/,
+        replacement: path.resolve(__dirname, '../logger/src/index.ts'),
+      },
+      {
         find: /^@weapp-tailwindcss\/postcss-calc$/,
         replacement: path.resolve(__dirname, '../postcss-calc/src/index.ts'),
       },

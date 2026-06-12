@@ -30,6 +30,11 @@
       "import": "./dist/html-transform.mjs",
       "require": "./dist/html-transform.js"
     },
+    "./css-macro/postcss": {
+      "types": "./dist/css-macro/postcss.d.ts",
+      "import": "./dist/css-macro/postcss.mjs",
+      "require": "./dist/css-macro/postcss.js"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.js",
@@ -39,6 +44,9 @@
     "*": {
       "html-transform": [
         "./dist/html-transform.d.ts"
+      ],
+      "css-macro/postcss": [
+        "./dist/css-macro/postcss.d.ts"
       ],
       "types": [
         "./dist/types.d.ts"
@@ -72,12 +80,15 @@
     "@weapp-tailwindcss/shared": "workspace:*",
     "autoprefixer": "catalog:autoprefixer10",
     "lru-cache": "11.5.1",
+    "micromatch": "^4.0.8",
     "postcss": "catalog:postcss85tilde",
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.2",
     "postcss-selector-parser": "~7.1.2",
-    "postcss-value-parser": "^4.2.0"
+    "postcss-value-parser": "^4.2.0",
+    "tailwindcss-config": "workspace:*",
+    "tailwindcss-patch": "catalog:tailwindcssPatch"
   },
   "devDependencies": {
     "@csstools/css-color-parser": "^4.1.1",

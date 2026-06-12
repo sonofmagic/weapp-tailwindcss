@@ -18,6 +18,31 @@ export {
   normalizeMiniProgramPrefixedDeclaration,
   removeUnsupportedMiniProgramPrefixedAtRule,
 } from './compat/mini-program-prefixes'
+export {
+  compileCssMacroConditionalComments,
+  CSS_MACRO_STYLE_OPTIONS_MARKER,
+  hasCssMacroStyleOptions,
+  hasCssMacroTailwindV4Directive,
+  transformCssMacroCss,
+  withCssMacroStyleOptions,
+} from './css-macro/auto'
+export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'
+export { createWeappTailwindcssPostcssPlugin } from './generator-plugin'
+export type {
+  NormalizedWeappTailwindcssPostcssGeneratorOptions,
+  TailwindCandidateSource,
+  TailwindResolvedSource,
+  TailwindV3SourceOptions,
+  TailwindV4SourceOptions,
+  WeappTailwindcssPostcssGenerateOptions,
+  WeappTailwindcssPostcssGenerateResult,
+  WeappTailwindcssPostcssGenerator,
+  WeappTailwindcssPostcssGeneratorUserOptions,
+  WeappTailwindcssPostcssPluginAdapters,
+  WeappTailwindcssPostcssPluginOptions,
+  WeappTailwindcssPostcssTailwindVersion,
+  WeappTailwindcssPostcssTarget,
+} from './generator-plugin'
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {

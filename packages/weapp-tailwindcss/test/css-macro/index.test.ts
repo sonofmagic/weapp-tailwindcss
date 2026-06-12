@@ -1,5 +1,8 @@
 // import plugin from 'tailwindcss/plugin'
 import { getCss } from '#test/helpers/getTwCss'
+import { mkdtemp, writeFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import postcss from 'postcss'
 // import twPlugin from '../../dist/css-macro'
 import twPlugin from '@/css-macro'
@@ -8,14 +11,44 @@ import postcssPlugin from '@/css-macro/postcss'
 import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 
-const TAILWIND_V4_MACRO_CSS = `
-@plugin "weapp-tailwindcss/css-macro";
+let cssMacroPluginPath: string
+
+beforeAll(async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'weapp-tw-css-macro-'))
+  cssMacroPluginPath = path.join(dir, 'css-macro.mjs').replaceAll('\\', '/')
+  await writeFile(
+    cssMacroPluginPath,
+    [
+      'const quote = value => `"${String(value).replaceAll("\\\\", "\\\\\\\\").replaceAll("\\"", "\\\\\\"")}"`;',
+      'const conditional = (name, value) => `@${name} ${quote(value)}{&}`;',
+      'export default function cssMacro({ matchVariant, addVariant }) {',
+      '  if (typeof matchVariant === "function") {',
+      '    matchVariant("ifdef", value => conditional("weapp-tw-ifdef", value));',
+      '    matchVariant("ifndef", value => conditional("weapp-tw-ifndef", value));',
+      '  }',
+      '  if (typeof addVariant === "function") {',
+      '    for (const [name, config] of Object.entries({})) {',
+      '      const normalized = typeof config === "string" ? { value: config, negative: false } : config;',
+      '      addVariant(name, conditional(normalized.negative ? "weapp-tw-ifndef" : "weapp-tw-ifdef", normalized.value));',
+      '    }',
+      '  }',
+      '}',
+      '',
+    ].join('\n'),
+    'utf8',
+  )
+})
+
+function createTailwindV4MacroCss() {
+  return `
+@plugin "${cssMacroPluginPath}";
 @theme default {
   --color-blue-500: oklch(62.3% 0.214 259.815);
   --color-red-500: oklch(63.7% 0.237 25.331);
 }
 @tailwind utilities;
 `
+}
 
 // not screen and (weapp-tw-platform:MP-WEIXIN)
 // not screen and (weapp-tw-platform:uniVersion > 3.9)
@@ -137,7 +170,7 @@ describe('css-macro tailwindcss plugin', () => {
 
   it('auto enables postcss macro transform for tailwindcss v4 @plugin', async () => {
     const source = await resolveTailwindV4Source({
-      css: TAILWIND_V4_MACRO_CSS,
+      css: createTailwindV4MacroCss(),
       base: process.cwd(),
     })
     const engine = createTailwindV4Engine(source)
@@ -158,7 +191,7 @@ describe('css-macro tailwindcss plugin', () => {
 
   it('compiles tailwindcss v4 css-macro comments by mini-program platform before final css output', async () => {
     const source = await resolveTailwindV4Source({
-      css: TAILWIND_V4_MACRO_CSS,
+      css: createTailwindV4MacroCss(),
       base: process.cwd(),
     })
     const engine = createTailwindV4Engine(source)
@@ -183,7 +216,7 @@ describe('css-macro tailwindcss plugin', () => {
 
   it('auto enables postcss macro transform for tailwindcss v4 web target', async () => {
     const source = await resolveTailwindV4Source({
-      css: TAILWIND_V4_MACRO_CSS,
+      css: createTailwindV4MacroCss(),
       base: process.cwd(),
     })
     const engine = createTailwindV4Engine(source)
@@ -205,7 +238,7 @@ describe('css-macro tailwindcss plugin', () => {
 
   it('compiles tailwindcss v4 css-macro comments by web platform before final css output', async () => {
     const source = await resolveTailwindV4Source({
-      css: TAILWIND_V4_MACRO_CSS,
+      css: createTailwindV4MacroCss(),
       base: process.cwd(),
     })
     const engine = createTailwindV4Engine(source)
