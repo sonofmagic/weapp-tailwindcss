@@ -161,6 +161,7 @@ jobs:
             watch_case: mpx-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
+            watch_main_style_only: '1'
             timeout_minutes: 35
             watch_timeout_ms: '240000'
             watch_poll_ms: '40'
