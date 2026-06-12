@@ -288,18 +288,39 @@ async function generateRawStyleWithPatch(
     return undefined
   }
 
-  return patchRawStyleGenerator({
-    cwd: generateSource.cwd,
-    packageName: generateSource.packageName,
-    css: generateSource.css,
-    candidates,
-    sources,
-    config: createTailwindConfig(generateSource, {
+  try {
+    return await patchRawStyleGenerator({
+      cwd: generateSource.cwd,
+      packageName: generateSource.packageName,
+      css: generateSource.css,
       candidates,
       sources,
-    }),
-    directUtilitiesOnly: 'auto',
-  })
+      config: createTailwindConfig(generateSource, {
+        candidates,
+        sources,
+      }),
+      directUtilitiesOnly: 'auto',
+    })
+  }
+  catch (error: unknown) {
+    if (isTailwindV3PatchModuleResolveError(error)) {
+      return undefined
+    }
+    throw error
+  }
+}
+
+function isTailwindV3PatchModuleResolveError(error: unknown) {
+  if (!error || typeof error !== 'object') {
+    return false
+  }
+  const maybeError = error as {
+    code?: unknown
+    message?: unknown
+  }
+  return maybeError.code === 'MODULE_NOT_FOUND'
+    && typeof maybeError.message === 'string'
+    && maybeError.message.includes(`${'/'}lib${'/'}public${'/'}resolve-config`)
 }
 
 export function createTailwindV3Engine(source: TailwindV3ResolvedSource): TailwindV3Engine {
