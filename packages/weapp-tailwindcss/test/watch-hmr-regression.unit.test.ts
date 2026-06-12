@@ -96,6 +96,7 @@ import {
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
   resolveChromiumLaunchOptions,
+  waitForWebPageReloadReady,
   waitForWebPageReady,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
 import {
@@ -1272,6 +1273,30 @@ describe('watch-hmr regression cases', () => {
     })).resolves.toBeGreaterThanOrEqual(0)
 
     expect(page.goto).toHaveBeenCalledTimes(2)
+    expect(page.locator).toHaveBeenCalledWith('#app')
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 500,
+    })
+  })
+
+  it('retries Web/H5 reload readiness when webpack aborts an in-flight navigation', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      reload: vi.fn()
+        .mockRejectedValueOnce(new Error('page.reload: net::ERR_ABORTED; maybe frame was detached?'))
+        .mockResolvedValueOnce(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReloadReady(page as any, '#app', {
+      timeoutMs: 500,
+      pollMs: 1,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.reload).toHaveBeenCalledTimes(2)
     expect(page.locator).toHaveBeenCalledWith('#app')
     expect(waitForReadySelector).toHaveBeenCalledWith({
       state: 'attached',

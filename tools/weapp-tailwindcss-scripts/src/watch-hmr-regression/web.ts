@@ -259,6 +259,53 @@ export async function waitForWebPageReady(
   })
 }
 
+export async function waitForWebPageReloadReady(
+  page: Pick<Page, 'reload' | 'locator'>,
+  readySelector: string,
+  options: Pick<CliOptions, 'timeoutMs' | 'pollMs'> & {
+    ensureRunning?: () => void
+    message?: string
+  },
+  startedAt = Date.now(),
+) {
+  const attemptTimeoutMs = Math.min(
+    Math.max(options.pollMs * 100, 5_000),
+    15_000,
+    Math.max(options.timeoutMs, 1),
+  )
+  let lastError = ''
+
+  return await waitFor(
+    async () => {
+      try {
+        options.ensureRunning?.()
+        await page.reload({
+          waitUntil: 'domcontentloaded',
+          timeout: attemptTimeoutMs,
+        })
+        await page.locator(readySelector).waitFor({
+          state: 'attached',
+          timeout: attemptTimeoutMs,
+        })
+        return true
+      }
+      catch (error) {
+        lastError = error instanceof Error ? error.message : String(error)
+        return false
+      }
+    },
+    {
+      timeoutMs: options.timeoutMs,
+      pollMs: options.pollMs,
+      message: options.message ?? 'web page did not become ready after reload in time',
+    },
+    startedAt,
+  ).catch((error) => {
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error(`${message}${lastError ? `\n${lastError}` : ''}`)
+  })
+}
+
 async function runSourceClassReplacementSequence(
   watchCase: WatchCase,
   options: CliOptions,
@@ -671,13 +718,15 @@ export async function runWebHmr(
     const expectedStyle = resolveExpectedStyle(config)
     if (config.reloadAfterCssMutation) {
       await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
-      await page.reload({
-        waitUntil: 'domcontentloaded',
-        timeout: reloadTimeoutMs,
-      })
-      await page.locator(config.readySelector ?? 'body').waitFor({
-        state: 'attached',
-        timeout: reloadTimeoutMs,
+      await waitForWebPageReloadReady(page, config.readySelector ?? 'body', {
+        timeoutMs: reloadTimeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] web page did not become ready after hot-update reload`,
+        ensureRunning() {
+          if (child.exitCode != null) {
+            throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
+          }
+        },
       })
     }
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
@@ -731,13 +780,15 @@ export async function runWebHmr(
     }
     if (config.reloadAfterCssMutation) {
       await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
-      await page.reload({
-        waitUntil: 'domcontentloaded',
-        timeout: reloadTimeoutMs,
-      })
-      await page.locator(config.readySelector ?? 'body').waitFor({
-        state: 'attached',
-        timeout: reloadTimeoutMs,
+      await waitForWebPageReloadReady(page, config.readySelector ?? 'body', {
+        timeoutMs: reloadTimeoutMs,
+        pollMs: options.pollMs,
+        message: `[${watchCase.label}] web page did not become ready after rollback reload`,
+        ensureRunning() {
+          if (child.exitCode != null) {
+            throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
+          }
+        },
       })
     }
     const rollbackEffectiveMs = await waitFor(
