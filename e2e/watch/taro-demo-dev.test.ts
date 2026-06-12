@@ -20,6 +20,28 @@ const TARGETS = [
   'taro-webpack-vue3-tailwindcss-v4',
 ]
 const STABLE_AFTER_READY_MS = 8_000
+const DEFAULT_READY_TIMEOUT_MS = 180_000
+const DEFAULT_TEST_TIMEOUT_MS = 240_000
+
+function toNumberEnv(name: string, fallback: number) {
+  const value = process.env[name]
+  if (!value) {
+    return fallback
+  }
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : fallback
+}
+
+function resolveTaroDevReadyTimeoutMs() {
+  return Math.max(DEFAULT_READY_TIMEOUT_MS, toNumberEnv('E2E_WATCH_TIMEOUT_MS', DEFAULT_READY_TIMEOUT_MS))
+}
+
+function resolveTaroDevTestTimeoutMs() {
+  return Math.max(
+    DEFAULT_TEST_TIMEOUT_MS,
+    resolveTaroDevReadyTimeoutMs() + STABLE_AFTER_READY_MS + 60_000,
+  )
+}
 
 async function stopProcessTree(child: ReturnType<typeof spawnPnpm>) {
   const pid = child.pid
@@ -41,6 +63,7 @@ async function stopProcessTree(child: ReturnType<typeof spawnPnpm>) {
 }
 
 async function expectDemoDevWatchReady(project: string) {
+  const readyTimeoutMs = resolveTaroDevReadyTimeoutMs()
   const cwd = `${ROOT}/demo/${project}`
   const child = spawnPnpm(['dev'], {
     cwd,
@@ -87,7 +110,7 @@ async function expectDemoDevWatchReady(project: string) {
 
   try {
     const startedAt = Date.now()
-    while (Date.now() - startedAt < 180_000) {
+    while (Date.now() - startedAt < readyTimeoutMs) {
       if (ready) {
         break
       }
@@ -144,6 +167,6 @@ describe('e2e watch taro demo dev entry', () => {
   for (const target of targets) {
     it(`keeps ${target} pnpm dev in watch mode`, async () => {
       await expectDemoDevWatchReady(target)
-    }, 240_000)
+    }, resolveTaroDevTestTimeoutMs())
   }
 })

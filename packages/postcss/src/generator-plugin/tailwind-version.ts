@@ -21,13 +21,13 @@ export function resolvePostcssTailwindVersion(
   result: Result,
   options: WeappTailwindcssPostcssPluginOptions,
 ) {
+  if (options.version) {
+    return options.version
+  }
   const packageName = options.packageName ?? 'tailwindcss'
   const installedVersion = readInstalledPackageMajorVersion(packageName, resolvePostcssProjectRoot(result, options))
   if (installedVersion) {
     return installedVersion
-  }
-  if (options.version) {
-    return options.version
   }
   if (packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')) {
     return 4

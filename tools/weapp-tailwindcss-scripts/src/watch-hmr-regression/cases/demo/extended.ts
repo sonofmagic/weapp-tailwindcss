@@ -1061,6 +1061,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
       reloadAfterCssMutation: true,
+      compileSettleTimeoutMs: 120_000,
       env: {
         NODE_ENV: 'development',
       },

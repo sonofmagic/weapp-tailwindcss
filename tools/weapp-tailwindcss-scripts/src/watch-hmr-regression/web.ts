@@ -623,6 +623,7 @@ export async function runWebHmr(
     }
 
     let lastStyleError = ''
+    const reloadTimeoutMs = Math.min(options.timeoutMs, 120_000)
     const createReloadedStyleAcceptWhen = (expectedStyle: ReturnType<typeof resolveExpectedStyle>) => {
       let lastReloadAttemptAt = 0
       return async () => {
@@ -634,11 +635,11 @@ export async function runWebHmr(
         try {
           await page.reload({
             waitUntil: 'domcontentloaded',
-            timeout: Math.min(options.timeoutMs, 60_000),
+            timeout: reloadTimeoutMs,
           })
           await page.locator(config.readySelector ?? 'body').waitFor({
             state: 'attached',
-            timeout: Math.min(options.timeoutMs, 60_000),
+            timeout: reloadTimeoutMs,
           })
           if (config.injectMarkerElement) {
             await ensureInjectedMarkerElement(page, marker)
@@ -675,11 +676,11 @@ export async function runWebHmr(
       await waitForWebCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
       await page.reload({
         waitUntil: 'domcontentloaded',
-        timeout: Math.min(options.timeoutMs, 60_000),
+        timeout: reloadTimeoutMs,
       })
       await page.locator(config.readySelector ?? 'body').waitFor({
         state: 'attached',
-        timeout: Math.min(options.timeoutMs, 60_000),
+        timeout: reloadTimeoutMs,
       })
     }
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
@@ -735,11 +736,11 @@ export async function runWebHmr(
       await waitForWebCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
       await page.reload({
         waitUntil: 'domcontentloaded',
-        timeout: Math.min(options.timeoutMs, 60_000),
+        timeout: reloadTimeoutMs,
       })
       await page.locator(config.readySelector ?? 'body').waitFor({
         state: 'attached',
-        timeout: Math.min(options.timeoutMs, 60_000),
+        timeout: reloadTimeoutMs,
       })
     }
     const rollbackEffectiveMs = await waitFor(
