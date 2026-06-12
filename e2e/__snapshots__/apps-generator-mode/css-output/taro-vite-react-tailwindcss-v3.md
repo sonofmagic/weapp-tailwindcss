@@ -214,6 +214,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -265,10 +269,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v3';
@@ -291,6 +291,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -342,10 +346,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';

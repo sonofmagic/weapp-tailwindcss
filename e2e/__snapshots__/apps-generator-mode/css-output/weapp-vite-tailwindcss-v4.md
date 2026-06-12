@@ -17,6 +17,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
   --tw-space-y-reverse: 0;
   --tw-space-x-reverse: 0;
   --tw-border-style: solid;
@@ -30,10 +34,6 @@ text,
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
   --tw-duration: initial;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
   --tw-ease: initial;
 }
 :host,

@@ -806,6 +806,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -857,10 +861,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
 .icon-_bmdi--account_B {
@@ -1734,6 +1734,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1785,10 +1789,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: bg-normal-subpackage-marker <= miniprogram/sub-normal/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
@@ -1813,6 +1813,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -1864,10 +1868,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
 .icon-_bmdi--account_B {
@@ -2600,6 +2600,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -2651,10 +2655,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
 .icon-_bmdi--account_B {
@@ -3387,6 +3387,10 @@ view,
 text,
 ::after,
 ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
   --tw-translate-x: 0;
@@ -3438,10 +3442,6 @@ text,
   --tw-contain-layout:;
   --tw-contain-paint:;
   --tw-contain-style:;
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
 }
 /*tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml*/
 .icon-_bmdi--account_B {
