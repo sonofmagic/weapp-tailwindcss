@@ -11,6 +11,12 @@ import { projectFilter } from './shared'
 const fixturesRoot = path.resolve(__dirname, '../demo')
 const rawClasses = ['h-[458rpx]', 'w-[218rpx]', 'inset-x-[30%]'] as const
 const markerClass = 'weapp-tw-dynamic-regression'
+const nativeElementRegressionVars = [
+  '--weapp-tw-native-view-regression',
+  '--weapp-tw-native-text-regression',
+  '--weapp-tw-native-button-regression',
+  '--weapp-tw-native-input-regression',
+] as const
 const localHBuilderXProjectNames = new Set(
   DEMO_COVERAGE_MATRIX
     .filter(item => item.hbuilderxLocal)
@@ -196,7 +202,7 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
 }
 
 function createApplyStyle(_entry: ProjectEntry) {
-  return `.${markerClass} {\n  min-width: 0;\n}\n`
+  return `.${markerClass} {\n  min-width: 0;\n}\nview {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[0]}: 1;\n}\ntext {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[1]}: 1;\n}\nbutton {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[2]}: 1;\n}\ninput {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[3]}: 1;\n}\n`
 }
 
 function createPatch(entry: ProjectEntry): ProjectPatch {
@@ -264,6 +270,9 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
       styles,
       `${entry.name} should keep the regression marker style`,
     ).toMatch(/\.weapp-tw-dynamic-regression\s*\{[^}]*min-width\s*:\s*0/)
+  }
+  for (const nativeElementRegressionVar of nativeElementRegressionVars) {
+    expect(styles, `${entry.name} should preserve user-authored native element style ${nativeElementRegressionVar}`).toContain(nativeElementRegressionVar)
   }
 
   for (const raw of rawClasses) {

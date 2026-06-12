@@ -30,6 +30,16 @@ export function hasTailwindPreflightDeclaration(rule: postcss.Rule) {
   return hasTailwindVar || hasResetProp
 }
 
+function hasTailwindVariableDeclaration(rule: postcss.Rule) {
+  let hasTailwindVar = false
+  rule.walkDecls((decl) => {
+    if (decl.prop.startsWith('--tw-')) {
+      hasTailwindVar = true
+    }
+  })
+  return hasTailwindVar
+}
+
 export function hasTwContentDeclaration(rule: postcss.Rule) {
   let hasContentInit = false
   rule.walkDecls('--tw-content', () => {
@@ -91,7 +101,19 @@ export function isMiniProgramPreflightRule(node: postcss.Node): node is postcss.
   if (node.type !== 'rule') {
     return false
   }
-  return isMiniProgramPreflightSelector(getRuleSelectors(node)) && hasTailwindPreflightDeclaration(node)
+  const selectors = getRuleSelectors(node)
+  if (!isMiniProgramPreflightSelector(selectors)) {
+    return false
+  }
+  if (selectors.includes('*')) {
+    return hasTailwindPreflightDeclaration(node)
+  }
+  if (hasTailwindVariableDeclaration(node)) {
+    return true
+  }
+  return selectors.some(selector => selector === ':before' || selector === ':after' || selector === '::before' || selector === '::after')
+    && selectors.some(selector => selector === 'view' || selector === 'text')
+    && hasTailwindPreflightDeclaration(node)
 }
 
 export function isMiniProgramThemeVariableRule(node: postcss.Node): node is postcss.Rule {

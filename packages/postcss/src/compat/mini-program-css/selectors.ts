@@ -12,6 +12,16 @@ export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS = new Set([
   '::after',
 ])
 
+export const MINI_PROGRAM_NATIVE_ELEMENT_SELECTORS = new Set([
+  ...MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS,
+  'button',
+  'input',
+  'textarea',
+  'canvas',
+  'video',
+  'audio',
+])
+
 export const MINI_PROGRAM_PREFLIGHT_SELECTORS = new Set([
   '*',
   ...MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS,
@@ -96,6 +106,11 @@ const MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS = new Set([
   'video',
 ])
 
+const MINI_PROGRAM_UNSUPPORTED_BROWSER_PREFLIGHT_SELECTOR_PARTS = new Set([
+  ...MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS,
+  '::file-selector-button',
+])
+
 export function normalizeSelector(selector: string) {
   return selector.trim().replace(/\s+/g, '')
 }
@@ -118,7 +133,20 @@ export function getSortedRuleSelectorKey(rule: postcss.Rule) {
 export function isUnsupportedBrowserSelector(selector: string) {
   const normalized = normalizeSelector(selector)
   return MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS.has(normalized)
-    || MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS.has(normalized)
+    || (MINI_PROGRAM_UNSUPPORTED_BROWSER_TAG_SELECTORS.has(normalized) && !MINI_PROGRAM_NATIVE_ELEMENT_SELECTORS.has(normalized))
+}
+
+export function isUnsupportedBrowserPreflightSelector(selector: string) {
+  const normalizedParts = selector
+    .split(',')
+    .map(normalizeSelector)
+    .filter(Boolean)
+  return normalizedParts.length > 1
+    && normalizedParts.every(part => MINI_PROGRAM_UNSUPPORTED_BROWSER_PREFLIGHT_SELECTOR_PARTS.has(part))
+}
+
+export function isMiniProgramNativeElementSelector(selector: string) {
+  return MINI_PROGRAM_NATIVE_ELEMENT_SELECTORS.has(normalizePseudoElementSelector(selector))
 }
 
 export function isMiniProgramPreflightSelector(selectors: string[]) {

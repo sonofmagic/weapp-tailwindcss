@@ -1,7 +1,7 @@
 import type postcss from 'postcss'
 import { normalizeModernColorValue } from '../color-mix'
 import { isDisplayP3MediaRule } from './color-gamut'
-import { isUnsupportedBrowserSelector, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
+import { isUnsupportedBrowserPreflightSelector, isUnsupportedBrowserSelector, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
 
 export function removeSpecificityPlaceholders(root: postcss.Root) {
   root.walkRules((rule) => {
@@ -52,6 +52,13 @@ function removeEmptyAtRuleAncestors(parent: postcss.Container | undefined) {
 export function removeUnsupportedBrowserSelectors(root: postcss.Root) {
   root.walkRules((rule) => {
     if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+
+    if (isUnsupportedBrowserPreflightSelector(rule.selector)) {
+      const parent = rule.parent
+      rule.remove()
+      removeEmptyAtRuleAncestors(parent)
       return
     }
 

@@ -10,7 +10,7 @@ import {
   usesTwContentVariable,
 } from './predicates'
 import { removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
-import { getRuleSelectors, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
+import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
 const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
@@ -41,6 +41,13 @@ function isMiniProgramElementVariableScopeRule(rule: postcss.Rule) {
   const selectors = getRuleSelectors(rule)
   return selectors.length > 0
     && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))
+}
+
+function isMiniProgramNativeElementRule(rule: postcss.Rule) {
+  const selectors = getRuleSelectors(rule)
+  return selectors.length > 0
+    && selectors.every(selector => isMiniProgramNativeElementSelector(selector))
+    && !isMiniProgramPreflightRule(rule)
 }
 
 function isOnlyTwContentDeclarations(rule: postcss.Rule) {
@@ -167,6 +174,15 @@ export function pruneMiniProgramGeneratedCss(
       return
     }
 
+    if (isUnsupportedBrowserPreflightSelector(rule.selector)) {
+      rule.remove()
+      return
+    }
+
+    if (isMiniProgramNativeElementRule(rule)) {
+      return
+    }
+
     if (isMiniProgramThemeVariableRule(rule)) {
       moveTailwindV4GradientRuntimeDeclarations(rule)
       if (!rule.parent) {
@@ -184,7 +200,11 @@ export function pruneMiniProgramGeneratedCss(
       removeEmptyContentInitDeclarations(rule)
     }
 
-    if (options.preservePreflight && isMiniProgramPreflightRule(rule)) {
+    if (isMiniProgramPreflightRule(rule)) {
+      if (options.preservePreflight) {
+        return
+      }
+      rule.remove()
       return
     }
 

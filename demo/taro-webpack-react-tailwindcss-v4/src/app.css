@@ -3,3 +3,7 @@
 @source "../src/pages/issue-909";
 @source not "../src/sub-normal";
 @source not "../src/sub-independent";
+
+view {
+  box-sizing: border-box;
+}
