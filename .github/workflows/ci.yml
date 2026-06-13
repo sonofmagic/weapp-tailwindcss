@@ -48,7 +48,7 @@ jobs:
 
       - name: Security Audit
         timeout-minutes: 3
-        run: pnpm audit --audit-level=moderate
+        run: timeout 180s pnpm audit --audit-level=moderate
         continue-on-error: true
 
       - name: Lint
