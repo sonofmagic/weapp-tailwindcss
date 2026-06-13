@@ -3283,7 +3283,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 384447,
+      "bytes": 384482,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -5769,14 +5769,11 @@
     "cssFile": "taro-vite-react-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app-origin.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "app-origin.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 9630,
+      "bytes": 6041,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -5786,8 +5783,6 @@
         ".bg-_b_h89ab8d_B",
         ".bg-_b_he24826_B",
         ".bg-_bred_B",
-        ".bg-independent-subpackage-marker",
-        ".bg-normal-subpackage-marker",
         ".dark_ctext-_b_hec4f4f_B",
         ".divide-_b_h60d256_B > text + text",
         ".divide-_b_h60d256_B > text + view",
@@ -5805,8 +5800,7 @@
         ".flex-col",
         ".text-_b66rpx_B",
         ".text-_b_h3d31a4_B",
-        ".text-_b_h438821_B",
-        ".tw-page-style-watch-anchor"
+        ".text-_b_h438821_B"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -5821,14 +5815,11 @@
     "cssFile": "taro-vite-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app-origin.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "app-origin.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 5897,
+      "bytes": 4104,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -5846,7 +5837,6 @@
         ".text-_b_hc31d6b_B",
         ".text-_b_hfff_B",
         ".to-blue-500",
-        ".tw-page-style-watch-anchor",
         ".tw-root",
         ":host",
         "page",

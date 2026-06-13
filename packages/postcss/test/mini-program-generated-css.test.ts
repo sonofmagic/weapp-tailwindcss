@@ -412,10 +412,13 @@ describe('mini-program generated css cleanup', () => {
       'view,text,::after,::before{color:inherit;--user-native-scope-style:1}',
       'button{box-sizing:border-box;border-radius:4px;--user-button-style:1}',
       'input{box-sizing:border-box;color:inherit;--user-input-style:1}',
+      'textarea{box-sizing:border-box;min-height:120rpx;--user-textarea-style:1}',
       '@media (prefers-color-scheme: dark){view{box-sizing:border-box;--user-media-view-style:1}}',
       '@media (prefers-color-scheme: dark){button{box-sizing:border-box;--user-media-button-style:1}}',
       'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
       'button,input,select,optgroup,textarea,::file-selector-button{font:inherit;color:inherit}',
+      'textarea{resize:vertical}',
+      'button{appearance:button}',
       '.bg-blue-500{background-color:#3b82f6}',
     ].join('\n'))
 
@@ -426,11 +429,14 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('view,text,::after,::before{color:inherit;--user-native-scope-style:1}')
     expect(css).toContain('button{box-sizing:border-box;border-radius:4px;--user-button-style:1}')
     expect(css).toContain('input{box-sizing:border-box;color:inherit;--user-input-style:1}')
+    expect(css).toContain('textarea{box-sizing:border-box;min-height:120rpx;--user-textarea-style:1}')
     expect(css).toContain('@media (prefers-color-scheme: dark){view{box-sizing:border-box;--user-media-view-style:1}}')
     expect(css).toContain('@media (prefers-color-scheme: dark){button{box-sizing:border-box;--user-media-button-style:1}}')
     expect(css).toContain('.bg-blue-500{background-color:#3b82f6}')
     expect(css).not.toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}')
     expect(css).not.toContain('button,input,select,optgroup,textarea,::file-selector-button{font:inherit;color:inherit}')
+    expect(css).not.toContain('textarea{resize:vertical}')
+    expect(css).not.toContain('button{appearance:button}')
   })
 
   it('preserves user-authored native element rules in final mini-program css', () => {
@@ -439,10 +445,13 @@ describe('mini-program generated css cleanup', () => {
       'text{box-sizing:border-box;--user-text-style:1}',
       'button{box-sizing:border-box;border-radius:4px;--user-button-style:1}',
       'input{box-sizing:border-box;color:inherit;--user-input-style:1}',
+      'textarea{box-sizing:border-box;min-height:120rpx;--user-textarea-style:1}',
       '::after{box-sizing:border-box;--user-after-style:1}',
       '@media (prefers-color-scheme: dark){view,text{box-sizing:border-box;--user-media-native-style:1}}',
       '@media (prefers-color-scheme: dark){button{box-sizing:border-box;--user-media-button-style:1}}',
       'button,input,select,optgroup,textarea,::file-selector-button{font:inherit;color:inherit}',
+      'textarea{resize:vertical}',
+      'button{appearance:button}',
       '.bg-blue-500{background-color:#3b82f6}',
     ].join('\n'), {
       cssPreflight: {
@@ -458,12 +467,15 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('text{box-sizing:border-box;--user-text-style:1}')
     expect(css).toContain('button{box-sizing:border-box;border-radius:4px;--user-button-style:1}')
     expect(css).toContain('input{box-sizing:border-box;color:inherit;--user-input-style:1}')
+    expect(css).toContain('textarea{box-sizing:border-box;min-height:120rpx;--user-textarea-style:1}')
     expect(css).toContain('::after{box-sizing:border-box;--user-after-style:1}')
     expect(css).toContain('@media (prefers-color-scheme: dark){view,text{box-sizing:border-box;--user-media-native-style:1}}')
     expect(css).toContain('@media (prefers-color-scheme: dark){button{box-sizing:border-box;--user-media-button-style:1}}')
     expect(css).toContain('.bg-blue-500{background-color:#3b82f6}')
     expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid')
     expect(css).not.toContain('button,input,select,optgroup,textarea,::file-selector-button{font:inherit;color:inherit}')
+    expect(css).not.toContain('textarea{resize:vertical}')
+    expect(css).not.toContain('button{appearance:button}')
   })
 
   it('preserves conditional compilation comments when pruning generated css', () => {

@@ -4,7 +4,9 @@ import { View, Navigator, Button } from '@tarojs/components'
 import classNames from 'classnames'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 // import { Button } from 'antd-mobile'
-import './index.scss'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.scss')
+}
 import EndClassCom from './endClassCom'
 
 const Index = () => {

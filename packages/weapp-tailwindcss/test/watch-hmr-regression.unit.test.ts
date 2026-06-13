@@ -96,8 +96,13 @@ import {
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
   resolveChromiumLaunchOptions,
+  waitForWebPageReloadReady,
   waitForWebPageReady,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
+import {
+  resolveReloadAcceptAttemptTimeout,
+  waitForWebCompileSettled,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web-compile-settle'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -171,6 +176,25 @@ function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffe
     rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 20 }],
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs,
   }
+}
+
+function expectTaroGeneratorTargetConfig(configSource: string, configPath: string) {
+  expect(configSource, configPath).toContain('target:')
+  expect(configSource, configPath).toContain('\'web\'')
+  expect(configSource, configPath).toContain('\'weapp\'')
+
+  if (configSource.includes('target: isWebLikeTarget')) {
+    expect(configSource, configPath).toContain('const taroEnv = process.env.TARO_ENV')
+    expect(configSource, configPath).toContain('const isWebLikeTarget =')
+    expect(configSource, configPath).toContain('taroEnv === \'h5\'')
+    expect(configSource, configPath).toContain('taroEnv === \'harmony\'')
+    expect(configSource, configPath).toContain('taroEnv === \'harmony-hybrid\'')
+    return
+  }
+
+  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'h5\'')
+  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'harmony\'')
+  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'harmony-hybrid\'')
 }
 
 function createClassMutationMetrics(
@@ -826,6 +850,35 @@ describe('watch-hmr regression cli options', () => {
   })
 })
 
+describe('watch-hmr web compile settle helpers', () => {
+  it('accepts a successful browser reload check without waiting for a quiet compile window', async () => {
+    const startedAt = Date.now()
+    let acceptChecks = 0
+    const elapsed = await waitForWebCompileSettled({
+      ensureRunning() {},
+      getLastCompileSignalAt: () => Date.now(),
+      label: 'demo/web',
+      phase: 'hot-update',
+      phaseStartedAt: startedAt,
+      pollMs: 1,
+      timeoutMs: 100,
+      async acceptWhen() {
+        acceptChecks += 1
+        return true
+      },
+    })
+
+    expect(elapsed).toBeGreaterThanOrEqual(0)
+    expect(acceptChecks).toBe(1)
+  })
+
+  it('caps individual reload accept attempts so repeated compiling can be retried', () => {
+    expect(resolveReloadAcceptAttemptTimeout(120_000, 40)).toBe(5000)
+    expect(resolveReloadAcceptAttemptTimeout(120_000, 500)).toBe(15_000)
+    expect(resolveReloadAcceptAttemptTimeout(3000, 40)).toBe(3000)
+  })
+})
+
 describe('watch-hmr regression summary helpers', () => {
   it('summarizes samples and cases', () => {
     expect(summarizeSamples([])).toEqual({
@@ -1220,6 +1273,30 @@ describe('watch-hmr regression cases', () => {
     })).resolves.toBeGreaterThanOrEqual(0)
 
     expect(page.goto).toHaveBeenCalledTimes(2)
+    expect(page.locator).toHaveBeenCalledWith('#app')
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 500,
+    })
+  })
+
+  it('retries Web/H5 reload readiness when webpack aborts an in-flight navigation', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      reload: vi.fn()
+        .mockRejectedValueOnce(new Error('page.reload: net::ERR_ABORTED; maybe frame was detached?'))
+        .mockResolvedValueOnce(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReloadReady(page as any, '#app', {
+      timeoutMs: 500,
+      pollMs: 1,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.reload).toHaveBeenCalledTimes(2)
     expect(page.locator).toHaveBeenCalledWith('#app')
     expect(waitForReadySelector).toHaveBeenCalledWith({
       state: 'attached',
@@ -1627,9 +1704,24 @@ describe('watch-hmr regression cases', () => {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
       expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
       expect(configSource, configPath).toContain('WeappTailwindcss')
-      expect(configSource, configPath).toContain('target: process.env.TARO_ENV === \'h5\' ? \'web\' : \'weapp\'')
+      expectTaroGeneratorTargetConfig(configSource, configPath)
       expect(configSource, configPath).not.toContain('chain.watchOptions({')
       expect(configSource, configPath).not.toContain('ignored: [distDir]')
+    }
+
+    const taroAppStyleEntries = [
+      ['demo/taro-vite-react-tailwindcss-v3/src/app.ts', 'app.scss'],
+      ['demo/taro-vite-react-tailwindcss-v4/src/app.ts', 'app.css'],
+      ['demo/taro-vite-vue3-tailwindcss-v3/src/app.ts', 'app.scss'],
+      ['demo/taro-vite-vue3-tailwindcss-v4/src/app.ts', 'app.css'],
+      ['demo/taro-webpack-react-tailwindcss-v3/src/app.ts', 'app.less'],
+      ['demo/taro-webpack-react-tailwindcss-v4/src/app.ts', 'app.css'],
+      ['demo/taro-webpack-vue3-tailwindcss-v3/src/app.ts', 'app.less'],
+      ['demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts', 'app.css'],
+    ]
+    for (const [entryPath, styleFile] of taroAppStyleEntries) {
+      const entrySource = await readFile(path.resolve(__dirname, '../../..', entryPath), 'utf8')
+      expect(entrySource, entryPath).toContain(`import './${styleFile}'`)
     }
 
     const webpackV5PluginSource = await readFile(

@@ -11,9 +11,9 @@
 | mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+13) | 184668 | 2879 | 否 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+2) | 8489 | 68 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v3 | demo | 通过 | `taro-webpack-react-tailwindcss-v3/dist/app.wxss` (+7) | 82702 | 96 | 否 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 384447 | 2470 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+4) | 9630 | 29 | 否 | 否 | 否 | 否 | 是 |
-| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5897 | 21 | 否 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 384482 | 2470 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+1) | 6041 | 26 | 否 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+1) | 4104 | 20 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 19337 | 45 | 否 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 130024 | 532 | 否 | 否 | 否 | 否 | 是 |
 | taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 9142 | 26 | 否 | 否 | 否 | 否 | 是 |
@@ -68,13 +68,13 @@
 
 ### taro-vite-react-tailwindcss-v3
 
-- CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_a222_a_B:before`, `.before_ccontent-_b_a333_a_B:before`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_q11111_q_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.bg-_bred_B`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`
+- CSS 文件：`app.wxss`, `app-origin.wxss`
+- 选择器：`.before_ccontent-_b_a222_a_B:before`, `.before_ccontent-_b_a333_a_B:before`, `.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before`, `.before_ccontent-_b_q11111_q_B:before`, `.bg-_b_h89ab8d_B`, `.bg-_b_he24826_B`, `.bg-_bred_B`, `.dark_ctext-_b_hec4f4f_B`, `.divide-_b_h60d256_B > text + text`, `.divide-_b_h60d256_B > text + view`, `.divide-_b_h60d256_B > view + text`, `.divide-_b_h60d256_B > view + view`, `.divide-solid > text + text`, `.divide-solid > text + view`, `.divide-solid > view + text`, `.divide-solid > view + view`, `.divide-x-8 > text + text`, `.divide-x-8 > text + view`, `.divide-x-8 > view + text`
 
 ### taro-vite-react-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `app-origin.wxss`, `index.wxss`, `index.wxss`, `index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_bred_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-page-style-watch-anchor`, `.tw-root`, `:host`, `page`
+- CSS 文件：`app.wxss`, `app-origin.wxss`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_bred_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.text-_b55rpx_B`, `.text-_b_hc31d6b_B`, `.text-_b_hfff_B`, `.to-blue-500`, `.tw-root`, `:host`, `page`, `wx-root-portal-content`
 
 ### taro-webpack-vue3-tailwindcss-v3
 

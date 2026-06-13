@@ -1,4 +1,3 @@
-//import './app.scss'
 import './app.less'
 
 const App = props => {

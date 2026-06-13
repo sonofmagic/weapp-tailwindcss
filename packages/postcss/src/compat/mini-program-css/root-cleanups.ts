@@ -1,6 +1,7 @@
 import type postcss from 'postcss'
 import { normalizeModernColorValue } from '../color-mix'
 import { isDisplayP3MediaRule } from './color-gamut'
+import { isBrowserElementPreflightRule } from './predicates'
 import { isUnsupportedBrowserPreflightSelector, isUnsupportedBrowserSelector, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
 
 export function removeSpecificityPlaceholders(root: postcss.Root) {
@@ -56,6 +57,13 @@ export function removeUnsupportedBrowserSelectors(root: postcss.Root) {
     }
 
     if (isUnsupportedBrowserPreflightSelector(rule.selector)) {
+      const parent = rule.parent
+      rule.remove()
+      removeEmptyAtRuleAncestors(parent)
+      return
+    }
+
+    if (isBrowserElementPreflightRule(rule)) {
       const parent = rule.parent
       rule.remove()
       removeEmptyAtRuleAncestors(parent)

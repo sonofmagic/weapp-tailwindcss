@@ -7,9 +7,11 @@ import prodConfig from './prod'
 const require = createRequire(__filename)
 const bench = require('../../bench.cjs')('taro-react')
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
+const taroEnv = process.env.TARO_ENV
+const isWebLikeTarget = taroEnv === 'h5' || taroEnv === 'harmony' || taroEnv === 'harmony-hybrid'
 
 const generator = {
-  target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
+  target: isWebLikeTarget ? 'web' : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
@@ -35,7 +37,7 @@ const config: UserConfigExport<'webpack5'> = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: [],
+  plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
   defineConstants: {},
   copy: {
     patterns: [],
@@ -83,7 +85,7 @@ const config: UserConfigExport<'webpack5'> = {
       //   }
       // })
 
-      if (process.env.TARO_ENV === 'weapp') {
+      if (taroEnv === 'weapp') {
         // let start
         chain.merge({
           plugin: {
@@ -167,6 +169,14 @@ const config: UserConfigExport<'webpack5'> = {
           }
         }
       })
+    }
+  },
+  rn: {
+    appName: 'taroDemo',
+    postcss: {
+      cssModules: {
+        enable: false,
+      }
     }
   }
 }

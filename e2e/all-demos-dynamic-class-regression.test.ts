@@ -134,7 +134,12 @@ function createTaroReactPatch(entry: ProjectEntry): ProjectPatch {
   const root = projectRoot(entry)
   const pageFile = path.resolve(root, 'src/pages/index/index.tsx')
   const styleExt = entry.name.includes('-v4') ? 'css' : 'scss'
-  const styleFile = path.resolve(root, `src/pages/index/index.${styleExt}`)
+  const styleFile = path.resolve(
+    root,
+    entry.name.startsWith('taro-vite-react-')
+      ? `src/app.${styleExt}`
+      : `src/pages/index/index.${styleExt}`,
+  )
   const dynamicElement = `<View className={true ? '${markerClass} h-[458rpx] w-[218rpx] inset-x-[30%]' : markerClass}>dynamic regression</View>`
   return {
     entry,

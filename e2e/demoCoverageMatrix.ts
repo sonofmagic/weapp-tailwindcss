@@ -102,7 +102,7 @@ function taroWebHmrCaseName(name: string) {
 }
 
 const taroVitePlatforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid']
-const taroWebpackV3Platforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'quickapp']
+const taroWebpackV3Platforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid', 'quickapp']
 const taroWebpackV4Platforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid']
 const uniAppV3Platforms = ['app-android', 'app-ios', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
 const uniAppV4Platforms = ['app-android', 'app-ios', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-jd', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'mp-xhs', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
