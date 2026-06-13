@@ -1,5 +1,10 @@
 // Tailwind root entry intentionally lives in SCSS to cover preprocessor source handling.
 @import "tailwindcss";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
 @plugin "@iconify/tailwind4";
 @plugin "@iconify/tailwind4" {
   prefix: "iconify";

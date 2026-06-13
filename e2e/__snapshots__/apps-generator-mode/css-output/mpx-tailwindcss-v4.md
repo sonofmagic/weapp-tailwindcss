@@ -4,9 +4,9 @@ Fixture: demo
 Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 Generator CSS files: app.wxss, app.wxss, index.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 8489 | 68 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 9726 | 79 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -53,9 +53,14 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-slate-100: #f1f5f9;
+  --color-slate-900: #0f172a;
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
+  --color-zinc-50: #fafafa;
   --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
   --color-yellow-400: #facc15;
   --color-green-500: #22c55e;
   --color-blue-500: #3b82f6;
@@ -297,16 +302,43 @@ wx-root-portal-content {
     color: red;
   }
 }
+/* tokens: dark:bg-green-500 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.dark_cbg-green-500.theme-dark,
+.theme-dark .dark_cbg-green-500 {
+  background-color: var(--color-green-500);
+}
+/* tokens: dark:bg-zinc-800 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.dark_cbg-zinc-800.theme-dark,
+.theme-dark .dark_cbg-zinc-800 {
+  background-color: var(--color-zinc-800);
+}
+/* tokens: dark:bg-zinc-900 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.dark_cbg-zinc-900.theme-dark,
+.theme-dark .dark_cbg-zinc-900 {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: dark:bg-zinc-950 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.dark_cbg-zinc-950.theme-dark,
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: dark:text-yellow-400 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.dark_ctext-yellow-400.theme-dark,
+.theme-dark .dark_ctext-yellow-400 {
+  color: var(--color-yellow-400);
+}
+/* tokens: dark:text-zinc-50 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.dark_ctext-zinc-50.theme-dark,
+.theme-dark .dark_ctext-zinc-50 {
+  color: var(--color-zinc-50);
+}
 @media (prefers-color-scheme: dark) {
-  /* tokens: dark:bg-green-500 <= src/pages/index.mpx */
-  .dark_cbg-green-500 {
-    background-color: var(--color-green-500);
-  } /* tokens: dark:bg-zinc-800 <= src/pages/index.mpx */
-  .dark_cbg-zinc-800 {
-    background-color: var(--color-zinc-800);
-  } /* tokens: dark:text-yellow-400 <= src/pages/index.mpx */
-  .dark_ctext-yellow-400 {
-    color: var(--color-yellow-400);
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index.mpx */
+  .system-dark_cbg-slate-900 {
+    background-color: var(--color-slate-900);
+  } /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
+  .system-dark_ctext-slate-100 {
+    color: var(--color-slate-100);
   }
 }
 ```

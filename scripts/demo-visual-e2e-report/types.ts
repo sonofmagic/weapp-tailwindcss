@@ -8,6 +8,8 @@ export interface CaseResult {
   styleIsolationVariant?: string
   status: 'passed' | 'failed' | 'skipped'
   screenshot?: string
+  themeLightScreenshot?: string
+  themeManualDarkScreenshot?: string
   hmrBeforeScreenshot?: string
   hmrAfterScreenshot?: string
   hmrDiff?: string

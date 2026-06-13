@@ -1,0 +1,17 @@
+page {
+  background: #ffffff;
+}
+
+.probe-row {
+  padding: 24rpx;
+}
+
+.probe-box {
+  width: 220rpx;
+  height: 88rpx;
+  background: #d1d5db;
+}
+
+.where-host :where(.where-target) {
+  background: #dc2626;
+}

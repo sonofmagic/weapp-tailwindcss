@@ -17,6 +17,12 @@ const rows = [
         <p class="mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300">
           Web target is the default. Use build:weapp to compare mini-program CSS output.
         </p>
+        <div class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 theme-dark:bg-zinc-900 theme-dark:text-zinc-50 dark:bg-zinc-900 dark:text-zinc-50">
+          Vue Vite Tailwind CSS v3 system dark
+          <div class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 theme-dark:bg-zinc-950 theme-dark:text-zinc-50">
+            Vue Vite Tailwind CSS v3 manual dark
+          </div>
+        </div>
       </div>
       <div class="grid grid-cols-2 gap-[16rpx] md:grid-cols-4">
         <div

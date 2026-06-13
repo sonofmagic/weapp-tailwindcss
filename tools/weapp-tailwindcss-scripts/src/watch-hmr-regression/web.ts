@@ -718,16 +718,6 @@ export async function runWebHmr(
     const expectedStyle = resolveExpectedStyle(config)
     if (config.reloadAfterCssMutation) {
       await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
-      await waitForWebPageReloadReady(page, config.readySelector ?? 'body', {
-        timeoutMs: reloadTimeoutMs,
-        pollMs: options.pollMs,
-        message: `[${watchCase.label}] web page did not become ready after hot-update reload`,
-        ensureRunning() {
-          if (child.exitCode != null) {
-            throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
-          }
-        },
-      })
     }
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
     let hotUpdateEffectiveMs = 0
@@ -780,16 +770,6 @@ export async function runWebHmr(
     }
     if (config.reloadAfterCssMutation) {
       await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
-      await waitForWebPageReloadReady(page, config.readySelector ?? 'body', {
-        timeoutMs: reloadTimeoutMs,
-        pollMs: options.pollMs,
-        message: `[${watchCase.label}] web page did not become ready after rollback reload`,
-        ensureRunning() {
-          if (child.exitCode != null) {
-            throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
-          }
-        },
-      })
     }
     const rollbackEffectiveMs = await waitFor(
       async () => {

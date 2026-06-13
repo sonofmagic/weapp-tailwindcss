@@ -274,6 +274,7 @@ async function main() {
       }
       await runMiniProgramCase({
         ...item,
+        url: item.name.startsWith('mpx-') ? '/pages/index' : '/pages/index/index',
         hmr: createMiniProgramHmrVisualConfig(repoRoot, item.name),
       }, context, results)
     }

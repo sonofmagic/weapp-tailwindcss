@@ -1,7 +1,8 @@
-import type { Node, Pseudo, Selector } from 'postcss-selector-parser'
+import type { Container, Node, Pseudo, Selector } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../../types'
 import type { TransformContext } from './types'
 import { isUniAppXEnabled } from '../../compat/uni-app-x'
+import { internalCssSelectorReplacer } from '../../shared'
 import { transformSpacingSelector } from '../spacing'
 
 const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
@@ -19,6 +20,11 @@ const EMPTY_FUNCTIONAL_PSEUDO_CLEANUP_SET = new Set([
   ':-webkit-any',
   ':-moz-any',
   ':lang',
+])
+
+const EXPANDABLE_FUNCTIONAL_PSEUDO_SET = new Set([
+  ':is',
+  ':where',
 ])
 
 const UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
@@ -93,20 +99,167 @@ export function shouldRemoveEmptyFunctionalPseudo(node: Node): node is Pseudo {
   )
 }
 
+function replaceSelectorNode(target: Selector, index: number, replacement: Selector) {
+  const cloned = target.clone()
+  const targetNode = cloned.nodes[index]
+  if (!targetNode || targetNode.type !== 'pseudo' || targetNode.value !== ':where') {
+    return undefined
+  }
+
+  targetNode.replaceWith(...replacement.nodes.map(item => item.clone()))
+  return cloned
+}
+
+function getNodePath(root: Selector, target: Node) {
+  const path: number[] = []
+  let current: Node | undefined = target
+
+  while (current && current !== root) {
+    const parent = current.parent
+    if (!parent || !('nodes' in parent) || !Array.isArray(parent.nodes)) {
+      return undefined
+    }
+
+    const index = parent.nodes.indexOf(current)
+    if (index < 0) {
+      return undefined
+    }
+
+    path.unshift(index)
+    current = parent as Node
+  }
+
+  return current === root ? path : undefined
+}
+
+function getNodeByPath(root: Selector, path: number[]) {
+  let current: Node = root
+
+  for (const index of path) {
+    if (!('nodes' in current) || !Array.isArray(current.nodes)) {
+      return undefined
+    }
+
+    const next = current.nodes[index]
+    if (!next) {
+      return undefined
+    }
+    current = next
+  }
+
+  return current
+}
+
+function findExpandableFunctionalPseudo(selector: Selector) {
+  let target: Pseudo | undefined
+
+  selector.walkPseudos((pseudo) => {
+    if (
+      !target
+      && EXPANDABLE_FUNCTIONAL_PSEUDO_SET.has(pseudo.value)
+      && Array.isArray(pseudo.nodes)
+      && pseudo.nodes.some(item => item.type === 'selector')
+    ) {
+      target = pseudo
+    }
+  })
+
+  return target
+}
+
+function expandNestedFunctionalPseudoBranches(selector: Selector) {
+  const pending = [selector.clone()]
+  const expanded: Selector[] = []
+
+  while (pending.length > 0) {
+    const current = pending.shift()
+    if (!current) {
+      continue
+    }
+
+    const target = findExpandableFunctionalPseudo(current)
+    if (!target) {
+      expanded.push(current)
+      continue
+    }
+
+    const path = getNodePath(current, target)
+    const branches = target.nodes.filter((item): item is Selector => item.type === 'selector')
+    if (!path || branches.length === 0) {
+      target.remove()
+      pending.push(current)
+      continue
+    }
+
+    for (const branch of branches) {
+      const next = current.clone()
+      const nextTarget = getNodeByPath(next, path)
+      if (nextTarget?.type === 'pseudo') {
+        nextTarget.replaceWith(...branch.nodes.map(item => item.clone()))
+        pending.push(next)
+      }
+    }
+  }
+
+  return expanded
+}
+
+function transformExpandedSelectorClasses(selector: Selector, context: TransformContext) {
+  selector.walk((node) => {
+    if (node.type === 'class') {
+      node.value = context.selectorReplacerOptions === undefined
+        ? internalCssSelectorReplacer(node.value)
+        : internalCssSelectorReplacer(node.value, context.selectorReplacerOptions)
+    }
+  })
+}
+
+function appendExpandedWhereSelectors(parent: Selector, index: number, branches: Container<string, Node>[], context: TransformContext) {
+  const root = parent.parent
+  if (!root) {
+    return false
+  }
+
+  for (const branch of branches) {
+    const expanded = replaceSelectorNode(parent, index, branch as Selector)
+    if (expanded) {
+      transformExpandedSelectorClasses(expanded, context)
+      root.insertBefore(parent, expanded)
+    }
+  }
+  parent.remove()
+  return true
+}
+
 function flattenWherePseudo(node: Pseudo, context: TransformContext, index: number, parent: Selector | undefined) {
   if (isUniAppXEnabled(context.options)) {
     node.value = ':is'
   }
 
-  if (index === 0 && node.length === 1) {
-    const targetSelector = node.nodes?.[0]
-    if (targetSelector && targetSelector.type === 'selector' && transformSpacingSelector(targetSelector.nodes, context.options)) {
+  if (!parent || node.length === 0) {
+    return
+  }
+
+  const branches = node.nodes
+    .filter((item): item is Selector => item.type === 'selector')
+    .flatMap(expandNestedFunctionalPseudoBranches)
+  for (const branch of branches) {
+    if (transformSpacingSelector(branch.nodes, context.options)) {
       context.requiresSpacingNormalization = true
     }
-    node.replaceWith(...node.nodes)
-    if (parent && parent.type === 'selector' && parent.length === 0) {
-      parent.remove()
-    }
+  }
+
+  if (branches.length > 1 && appendExpandedWhereSelectors(parent, index, branches, context)) {
+    return
+  }
+
+  const targetSelector = branches[0]
+  if (targetSelector) {
+    node.replaceWith(...targetSelector.nodes.map(item => item.clone()))
+  }
+
+  if (parent.type === 'selector' && parent.length === 0) {
+    parent.remove()
   }
 }
 

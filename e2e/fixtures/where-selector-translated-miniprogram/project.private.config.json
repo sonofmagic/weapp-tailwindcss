@@ -1,0 +1,16 @@
+{
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "launchMode": "default",
+          "name": "pages/index/index",
+          "pathName": "pages/index/index",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "description": "项目私有配置文件。用于 :where 转译方案 IDE 选择器验证。"
+}

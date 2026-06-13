@@ -3,6 +3,12 @@
 @source "../src/pages/issue-909";
 @source not "../src/sub-normal";
 @source not "../src/sub-independent";
+@source "../src/pages/index";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
 
 view {
   box-sizing: border-box;

@@ -4,9 +4,9 @@ Fixture: demo
 Entry: gulp-tailwindcss-v4/dist/app.wxss
 Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 11519 | 56 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 14242 | 73 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -30,10 +30,16 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-slate-100: #f1f5f9;
+  --color-zinc-950: #09090b;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
+  --color-white: #fff;
+  --color-slate-900: rgb(15, 23, 43);
   --spacing: 8rpx;
   --text-xs: 24rpx;
   --text-xs--line-height: 1.33333;
@@ -49,6 +55,14 @@ wx-root-portal-content {
 /* tokens: m-[20px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .m-_b20px_B {
   margin: 40rpx;
+}
+/* tokens: mt-2 <= src/pages/index/index.wxml */
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+/* tokens: mt-4 <= src/pages/index/index.wxml */
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
 }
 /* tokens: mt-[24px] <= src/pages/index/index.ts, src/pages/index/index.ttml, src/pages/index/index.wxml */
 .mt-_b24px_B {
@@ -161,6 +175,10 @@ wx-root-portal-content {
   margin-bottom: calc(64rpx * var(--tw-space-y-reverse));
   margin-top: calc(64rpx * (1 - var(--tw-space-y-reverse)));
 }
+/* tokens: rounded <= src/pages/index/index.wxml */
+.rounded {
+  border-radius: 8rpx;
+}
 /* tokens: border-b <= src/pages/index/index.ttml, src/pages/index/index.wxml, src/pages/more/more.ttml, src/pages/more/more.wxml */
 .border-b {
   border-bottom-style: var(--tw-border-style);
@@ -177,6 +195,10 @@ wx-root-portal-content {
 /* tokens: bg-[red] <= src/pages/index/index.wxml */
 .bg-_bred_B {
   background-color: red;
+}
+/* tokens: bg-white <= src/pages/index/index.wxml */
+.bg-white {
+  background-color: var(--color-white);
 }
 /* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index/index.ts */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -197,6 +219,26 @@ wx-root-portal-content {
 /* tokens: p-4 <= src/pages/more/more.ttml, src/pages/more/more.wxml */
 .p-4 {
   padding: calc(var(--spacing) * 4);
+}
+/* tokens: px-3 <= src/pages/index/index.wxml */
+.px-3 {
+  padding-left: calc(var(--spacing) * 3);
+  padding-right: calc(var(--spacing) * 3);
+}
+/* tokens: px-4 <= src/pages/index/index.wxml */
+.px-4 {
+  padding-left: calc(var(--spacing) * 4);
+  padding-right: calc(var(--spacing) * 4);
+}
+/* tokens: py-2 <= src/pages/index/index.wxml */
+.py-2 {
+  padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
+}
+/* tokens: py-3 <= src/pages/index/index.wxml */
+.py-3 {
+  padding-top: calc(var(--spacing) * 3);
+  padding-bottom: calc(var(--spacing) * 3);
 }
 /* tokens: pb-[10px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .pb-_b10px_B {
@@ -254,6 +296,46 @@ wx-root-portal-content {
 /* tokens: text-[#123456] <= src/pages/index/index.ts */
 .text-_b_h123456_B {
   color: #123456;
+}
+/* tokens: text-slate-900 <= src/pages/index/index.wxml */
+.text-slate-900 {
+  color: var(--color-slate-900);
+}
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.wxml | theme-dark <= src/pages/index/index.wxml */
+.dark_cbg-zinc-900.theme-dark {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: theme-dark <= src/pages/index/index.wxml | dark:bg-zinc-900 <= src/pages/index/index.wxml */
+.theme-dark .dark_cbg-zinc-900 {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.wxml | theme-dark <= src/pages/index/index.wxml */
+.dark_cbg-zinc-950.theme-dark {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: theme-dark <= src/pages/index/index.wxml | dark:bg-zinc-950 <= src/pages/index/index.wxml */
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.wxml | theme-dark <= src/pages/index/index.wxml */
+.dark_ctext-zinc-50.theme-dark {
+  color: var(--color-zinc-50);
+}
+/* tokens: theme-dark <= src/pages/index/index.wxml | dark:text-zinc-50 <= src/pages/index/index.wxml */
+.theme-dark .dark_ctext-zinc-50 {
+  color: var(--color-zinc-50);
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.wxml */
+  .system-dark_cbg-slate-900 {
+    background-color: var(--color-slate-900);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.wxml */
+  .system-dark_ctext-slate-100 {
+    color: var(--color-slate-100);
+  }
 }
 ```
 

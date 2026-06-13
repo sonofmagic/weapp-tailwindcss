@@ -71,6 +71,12 @@
     <!-- <u-input /> -->
     <view class="after:border-none">当前系统主题:{{ themeRef }}</view>
     <view class="bg-gray-100 dark:bg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark:bg-green-500"></view>
+    <view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 theme-dark:bg-zinc-900 theme-dark:text-zinc-50 dark:bg-zinc-900 dark:text-zinc-50">
+      uni-app Vite Tailwind CSS v3 system dark
+      <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 theme-dark:bg-zinc-950 theme-dark:text-zinc-50">
+        uni-app Vite Tailwind CSS v3 manual dark
+      </view>
+    </view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_rgba(0,0,0,0.4)] before:content-['Festivus']"></view>
     <view class="h-5 w-5 shadow-[0px_2px_11px_0px_#00000a]"></view>
     <view class="text-[22px] dark:text-yellow-400">text-[22px]</view>

@@ -3,3 +3,8 @@
 @source "./**/*.{html,js,ts,wxml,ttml}";
 @source not "./sub-normal/**/*";
 @source not "./sub-independent/**/*";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}

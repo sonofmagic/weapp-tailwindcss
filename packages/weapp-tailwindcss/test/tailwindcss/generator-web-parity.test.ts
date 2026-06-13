@@ -88,7 +88,7 @@ describe('generator web parity', () => {
     expect(weapp.css).not.toBe(web.css)
     expect(weapp.css).toContain('view,text,::before,::after')
     expect(weapp.css).toContain('.w-_b123px_B')
-    expect(weapp.css).not.toContain('button')
+    expect(weapp.css).not.toContain('input:where')
   })
 
   it('keeps Tailwind v4 web output identical to tailwindcss v4', async () => {

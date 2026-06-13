@@ -13,6 +13,16 @@ export function resolveScreenshotPath(context: RuntimeContext, name: string, pla
   return path.join(resolveScreenshotDir(context, name, platform, variant), 'screenshot.png')
 }
 
+export function resolveThemeScreenshotPath(
+  context: RuntimeContext,
+  name: string,
+  platform: VisualPlatform,
+  mode: 'light' | 'manual-dark',
+  variant?: string,
+) {
+  return path.join(resolveScreenshotDir(context, name, platform, variant), `theme-${mode}.png`)
+}
+
 export function resolveHmrScreenshotPath(
   context: RuntimeContext,
   name: string,

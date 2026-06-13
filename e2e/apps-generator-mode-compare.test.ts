@@ -171,13 +171,25 @@ function collectSelectors(css: string) {
   return [...selectors].sort()
 }
 
+function isThemeSelector(selector: string) {
+  return /(?:^|[\s.])(?:theme-dark|system-dark|dark)_c/.test(selector) || /(?:^|[\s.])theme-dark(?:[\s.:#]|$)/.test(selector)
+}
+
 function summarizeCss(css: string): CssSummary {
+  const selectors = collectSelectors(css)
+  const themeSelectors = selectors.filter(isThemeSelector)
+  const selectorText = selectors.join('\n')
+  const themeSelectorText = themeSelectors.join('\n')
   return {
     bytes: Buffer.byteLength(css),
-    selectors: collectSelectors(css),
+    selectors,
     hasSupports: css.includes('@supports'),
     hasHoverPseudo: /:hover\b/.test(css),
     hasTailwindBanner: /tailwindcss v\d+\./.test(css),
+    hasSystemDarkModeMedia: css.includes('@media (prefers-color-scheme: dark)'),
+    hasManualDarkModeSelector: /\.theme-dark(?:\s|\.)/.test(selectorText) || /\.(?:theme-dark|dark)_c\S+\.theme-dark/.test(selectorText),
+    hasUnsupportedThemeAttributeSelector: themeSelectors.some(selector => /\[[^\]]+\]/.test(selector)),
+    hasUnsupportedThemeComplexSelector: /:(?:where|not)\(/.test(themeSelectorText),
     hasWeappEscapedArbitrarySelector: /_b[^{}]*_B/.test(css),
     hasRawArbitrarySelector: /\\\[|\\\]/.test(css),
   }
@@ -414,9 +426,9 @@ function createCssOutputSnapshot(
     `Entry: ${project.cssFile}`,
     `Generator CSS files: ${generatorResult.cssFiles.join(', ')}`,
     '',
-    '| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |',
-    '| ---: | ---: | --- | --- | --- | --- | --- |',
-    `| ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
+    '| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
+    `| ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasSystemDarkModeMedia} | ${generator.hasManualDarkModeSelector} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
     '',
     '## Generator CSS',
     '',
@@ -472,7 +484,7 @@ describe('demo generator mode output', () => {
 
     expect(snapshot.indexOf('| Bytes |')).toBeLessThan(snapshot.indexOf('## Generator CSS'))
     expect(snapshot).toContain('# fixture-app CSS Output')
-    expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false |')
+    expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false | false | false |')
     expect(snapshot).toContain('### app.wxss')
     expect(snapshot).toContain('.generator { color: blue; }')
   })
@@ -520,6 +532,10 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasSupports, `${project.name} generator css should remove unsupported @supports`).toBe(false)
       expect(item.generator.hasHoverPseudo, `${project.name} generator css should remove unsupported :hover`).toBe(false)
       expect(item.generator.hasTailwindBanner, `${project.name} generator css should not keep raw Tailwind banner`).toBe(false)
+      expect(item.generator.hasSystemDarkModeMedia, `${project.name} generator css should include system dark mode`).toBe(true)
+      expect(item.generator.hasManualDarkModeSelector, `${project.name} generator css should include manual theme-dark class mode`).toBe(true)
+      expect(item.generator.hasUnsupportedThemeAttributeSelector, `${project.name} generator css should not include theme attribute selectors`).toBe(false)
+      expect(item.generator.hasUnsupportedThemeComplexSelector, `${project.name} generator css should not include theme :where/:not selectors`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
       if (generatorResult) {
         for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {

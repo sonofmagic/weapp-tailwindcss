@@ -5,6 +5,11 @@
 @source not "../src/sub-normal/**/*";
 @source not "../src/sub-independent/**/*";
 @source not "../src/uni_modules/**/*";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
 
 @theme {
   --color-neutral-1B: #1b1b1b;

@@ -92,6 +92,82 @@ describe('selectorParser', () => {
     expect(secondRule.toString()).toMatchSnapshot()
   })
 
+  it('ruleTransformSync expands where pseudo branches to mini-program selectors', () => {
+    const root = postcss.parse('.theme-dark :where(.dark\\:bg-black,.dark\\:text-white){color:red;}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {})
+    expect(rule.toString()).toMatchSnapshot()
+  })
+
+  it.each([
+    [
+      'tailwind v3/v4 class dark selector',
+      '.dark\\:bg-black:where(.dark, .dark *){color:red;}',
+      ['.dark_cbg-black.dark', '.dark_cbg-black.dark *'],
+      [':where('],
+    ],
+    [
+      'tailwind v3/v4 attribute dark selector',
+      '.dark\\:bg-black:where([data-mode="dark"], [data-mode="dark"] *){color:red;}',
+      ['.dark_cbg-black[data-mode="dark"]', '.dark_cbg-black[data-mode="dark"] *'],
+      [':where('],
+    ],
+    [
+      'tailwind v4 space child selector',
+      ':where(.space-y-2 > :not(:last-child)){margin-top:1px;margin-bottom:2px;}',
+      ['.space-y-2>:is(view,text)+:is(view,text)'],
+      [':where(', ':not('],
+    ],
+    [
+      'tailwind v4 divide child selector',
+      ':where(.divide-x-4 > :not(:last-child)){border-left-width:4px;}',
+      ['.divide-x-4>:is(view,text)+:is(view,text)'],
+      [':where(', ':not('],
+    ],
+    [
+      'tailwind v4 button type preflight selector',
+      'button,input:where([type="button"], [type="reset"], [type="submit"]){appearance:button;}',
+      ['input[type="button"]', 'input[type="reset"]', 'input[type="submit"]'],
+      [':where('],
+    ],
+    [
+      'tailwind v4 nested select preflight selector',
+      ':where(select:is([multiple], [size])) optgroup{font-weight:700;}',
+      ['select[multiple] optgroup', 'select[size] optgroup'],
+      [':where(', ':is('],
+    ],
+    [
+      'tailwind v4 nested select option preflight selector',
+      ':where(select:is([multiple], [size])) optgroup option{padding-inline-start:20px;}',
+      ['select[multiple] optgroup option', 'select[size] optgroup option'],
+      [':where(', ':is('],
+    ],
+    [
+      'nested where selector with comma inside branch',
+      '.scope :where(:where(.alpha, .beta) > .target){color:green;}',
+      ['.scope .alpha>.target', '.scope .beta>.target'],
+      [':where('],
+    ],
+    [
+      'child plugin selector',
+      ':where(.child\\:ring-white) > :where(:not(.not-child)){box-shadow:0 0 #fff;}',
+      ['.child\\:ring-white'],
+      [':where('],
+    ],
+  ])('ruleTransformSync covers %s', (_name, source, includes, excludes) => {
+    const root = postcss.parse(source)
+    root.walkRules(rule => ruleTransformSync(rule, {
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    }))
+    const transformed = root.toString()
+    for (const expected of includes) {
+      expect(transformed).toContain(expected)
+    }
+    for (const unexpected of excludes) {
+      expect(transformed).not.toContain(unexpected)
+    }
+  })
+
   it('ruleTransformSync strips unsupported rtl language pseudo selectors', () => {
     const root = postcss.parse('.space-x-2\\.5>view+view:not(:-webkit-any(:lang(ar),:lang(he))),.space-x-2\\.5>view+view:not(:-moz-any(:lang(ar),:lang(he))),.space-x-2\\.5>view+view:-webkit-any(:lang(ar),:lang(he)),.space-x-2\\.5>view+view:-moz-any(:lang(ar),:lang(he)){margin-right:1px;}')
     const rule = root.first as Rule

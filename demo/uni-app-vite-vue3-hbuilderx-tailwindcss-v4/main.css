@@ -4,3 +4,8 @@
 @source "./pages/**/*.{vue,js,ts}";
 @source not "./uni_modules/**/*";
 @source not "./unpackage/**/*";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}

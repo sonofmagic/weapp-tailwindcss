@@ -4,9 +4,9 @@ Fixture: demo
 Entry: taro-webpack-react-tailwindcss-v3/dist/app.wxss
 Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 82702 | 96 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 97192 | 108 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -433,23 +433,76 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.tsx */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  } /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-[#123456] <= src/pages/index/index.tsx */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-green-500 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-green-500 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-800 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-800 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.dark view.dark_cbg-zinc-900,
+.dark text.dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.dark view.dark_ctext-zinc-50,
+.dark text.dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 /* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/debug/arbitraryVariants.tsx | u-count-down__text <= src/pages/debug/arbitraryVariants.tsx */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
@@ -826,23 +879,76 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.tsx */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  } /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-[#123456] <= src/pages/index/index.tsx */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-green-500 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-green-500 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-800 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-800 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.dark view.dark_cbg-zinc-900,
+.dark text.dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.dark view.dark_ctext-zinc-50,
+.dark text.dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 /* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/debug/arbitraryVariants.tsx | u-count-down__text <= src/pages/debug/arbitraryVariants.tsx */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
@@ -1305,23 +1411,77 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.tsx */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-[#123456] <= src/pages/index/index.tsx */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-green-500 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-green-500 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-800 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-800 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.dark view.dark_cbg-zinc-900,
+.dark text.dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.dark view.dark_ctext-zinc-50,
+.dark text.dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 /* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/debug/arbitraryVariants.tsx | u-count-down__text <= src/pages/debug/arbitraryVariants.tsx */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
@@ -1753,23 +1913,77 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.tsx */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-[#123456] <= src/pages/index/index.tsx */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-green-500 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-green-500 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-800 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-800 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.dark view.dark_cbg-zinc-900,
+.dark text.dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.dark view.dark_ctext-zinc-50,
+.dark text.dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 /* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/debug/arbitraryVariants.tsx | u-count-down__text <= src/pages/debug/arbitraryVariants.tsx */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
@@ -2201,23 +2415,77 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.tsx */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-[#123456] <= src/pages/index/index.tsx */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-green-500 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-green-500 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-800 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-800 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.dark view.dark_cbg-zinc-900,
+.dark text.dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.dark view.dark_ctext-zinc-50,
+.dark text.dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 /* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/debug/arbitraryVariants.tsx | u-count-down__text <= src/pages/debug/arbitraryVariants.tsx */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {
@@ -2649,23 +2917,76 @@ text,
   --tw-content: *;
   content: var(--tw-content);
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.tsx */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  } /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | theme-dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-[#123456] <= src/pages/index/index.tsx */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-green-500 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-green-500 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-green-500,
 .dark text.dark_cbg-green-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(34, 197, 94, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-800 <= src/pages/index/index.tsx */
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-800 <= src/pages/index/index.tsx */
 .dark view.dark_cbg-zinc-800,
 .dark text.dark_cbg-zinc-800 {
   --tw-bg-opacity: 1;
   background-color: rgba(39, 39, 42, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.dark view.dark_cbg-zinc-900,
+.dark text.dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.dark view.dark_ctext-zinc-50,
+.dark text.dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 /* tokens: [&_.u-count-down\_\_text]:!text-red-400 <= src/pages/debug/arbitraryVariants.tsx | u-count-down__text <= src/pages/debug/arbitraryVariants.tsx */
 ._b_n__du-count-down_r__r_text_B_c_etext-red-400 .u-count-down__text {

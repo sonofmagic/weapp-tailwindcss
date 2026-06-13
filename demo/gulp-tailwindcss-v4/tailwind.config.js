@@ -1,5 +1,6 @@
 const platform = process.env.PLATFORM ?? 'weapp'
 const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")
+const darkMode = require('../dark-mode.cjs')
 const platformMap = {
   weapp: {
     template: 'wxml',
@@ -16,6 +17,7 @@ const hit = platformMap[platform]
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [`./src/**/*.{html,js,ts${hit ? ',' + hit.template : ''}}`],
+  darkMode,
   theme: {
     extend: {}
   },

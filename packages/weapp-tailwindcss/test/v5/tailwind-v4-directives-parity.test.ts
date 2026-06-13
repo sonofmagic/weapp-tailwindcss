@@ -75,7 +75,7 @@ async function createTailwindV4DirectiveFixture() {
     '@utility tab-* {',
     '  tab-size: --value(integer);',
     '}',
-    '@custom-variant theme-midnight (&:where([data-theme="midnight"] *));',
+    '@custom-variant theme-midnight (&:where(.theme-dark, .theme-dark *));',
     '@custom-variant any-hover {',
     '  @media (any-hover: hover) {',
     '    &:hover {',
@@ -183,7 +183,7 @@ async function createTailwindV4AddingCustomStylesFixture() {
     '@utility aspect-* {',
     '  aspect-ratio: --value(--aspect-ratio-*, ratio, [ratio]);',
     '}',
-    '@custom-variant theme-midnight (&:where([data-theme="midnight"] *));',
+    '@custom-variant theme-midnight (&:where(.theme-dark, .theme-dark *));',
     '@custom-variant any-hover {',
     '  @media (any-hover: hover) {',
     '    &:hover {',
@@ -291,7 +291,8 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(result.css).toContain('tab-size: 8')
     expect(result.css).toContain('.underline')
     expect(result.css).not.toContain('focus_cunderline')
-    expect(result.css).not.toContain('.theme-midnight_cbg-brand')
+    expect(result.css).toContain('.theme-midnight_cbg-brand')
+    expect(result.css).toContain('.theme-dark')
     expect(result.css).not.toContain('[data-theme="midnight"]')
     expect(result.css).toContain('.card-shell')
     expect(result.css).toContain('border-radius: 18rpx')
@@ -299,7 +300,7 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(result.css).toContain('padding-right: 32rpx')
     expect(result.css).toContain('.ref-card')
     expect(result.css).toContain('background-color: var(--color-reference)')
-    expect(result.css).not.toContain('.variant-rule:where([data-theme="midnight"]')
+    expect(result.css).toContain('.variant-rule')
     expect(result.css).toContain('color: rgba(21, 93, 252, 0.5)')
     expect(result.css).toContain('margin: calc(var(--spacing) * 4)')
     expect(result.css).toContain('padding: 0.5rem')
@@ -502,7 +503,8 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(weappResult.css).toContain('aspect-ratio: var(--aspect-ratio-retro)')
     expect(weappResult.css).toContain('aspect-ratio: 3/4')
     expect(weappResult.css).toContain('aspect-ratio: 7/9')
-    expect(weappResult.css).not.toContain('.theme-midnight_cbg-avocado-500')
+    expect(weappResult.css).toContain('.theme-midnight_cbg-avocado-500')
+    expect(weappResult.css).toContain('.theme-dark')
     expect(weappResult.css).not.toContain('[data-theme="midnight"]')
     expect(weappResult.css).toContain('.my-element')
     expect(weappResult.css).not.toContain('@source')

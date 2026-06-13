@@ -4,6 +4,10 @@ export interface CssSummary {
   hasSupports: boolean
   hasHoverPseudo: boolean
   hasTailwindBanner: boolean
+  hasSystemDarkModeMedia: boolean
+  hasManualDarkModeSelector: boolean
+  hasUnsupportedThemeAttributeSelector: boolean
+  hasUnsupportedThemeComplexSelector: boolean
   hasWeappEscapedArbitrarySelector: boolean
   hasRawArbitrarySelector: boolean
 }
@@ -58,8 +62,8 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
     '',
     '## Summary',
     '',
-    '| Project | Fixture | Status | CSS | Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |',
-    '| --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- |',
+    '| Project | Fixture | Status | CSS | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Unsupported theme attribute selector | Unsupported theme complex selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ]
 
   for (const item of report) {
@@ -70,6 +74,10 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
           item.fixture,
           'failed',
           formatCssFiles(item),
+          '-',
+          '-',
+          '-',
+          '-',
           '-',
           '-',
           '-',
@@ -93,6 +101,10 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
         formatBoolean(item.generator.hasSupports),
         formatBoolean(item.generator.hasHoverPseudo),
         formatBoolean(item.generator.hasTailwindBanner),
+        formatBoolean(item.generator.hasSystemDarkModeMedia),
+        formatBoolean(item.generator.hasManualDarkModeSelector),
+        formatBoolean(item.generator.hasUnsupportedThemeAttributeSelector),
+        formatBoolean(item.generator.hasUnsupportedThemeComplexSelector),
         formatBoolean(item.generator.hasRawArbitrarySelector),
         formatBoolean(item.generator.hasWeappEscapedArbitrarySelector),
       ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'),
@@ -105,6 +117,7 @@ export function createMarkdownReport(report: AppsGeneratorCompareReportItem[]) {
     '',
     '- CSS column shows the entry stylesheet. `(+N)` means the report also aggregates `@import`-linked stylesheets, such as Taro `app-origin.wxss` or Mpx hashed `styles/app*.wxss`.',
     '- `@supports`, `:hover`, and Tailwind banner columns describe the generator output. They should stay `no` for mini-program compatibility.',
+    '- System dark media and manual dark selector columns confirm `prefers-color-scheme` and `.theme-dark` class examples both survive generator mode.',
     '- Selector lists show the first 20 entries to keep the report stable and readable.',
     '- Failed rows keep the first error message in the failure section so migration blockers stay visible.',
     '',
@@ -153,8 +166,8 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
     '',
     '## 汇总',
     '',
-    '| 项目 | 来源 | 状态 | CSS 文件 | 字节数 | 选择器数 | @supports | :hover | Tailwind banner | 原始任意值选择器 | 小程序转义任意值选择器 |',
-    '| --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- |',
+    '| 项目 | 来源 | 状态 | CSS 文件 | 字节数 | 选择器数 | @supports | :hover | Tailwind banner | 系统暗色媒体查询 | 手动暗色选择器 | 不兼容主题属性选择器 | 不兼容主题复杂选择器 | 原始任意值选择器 | 小程序转义任意值选择器 |',
+    '| --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ]
 
   for (const item of report) {
@@ -165,6 +178,10 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
           item.fixture,
           '失败',
           formatCssFiles(item),
+          '-',
+          '-',
+          '-',
+          '-',
           '-',
           '-',
           '-',
@@ -188,6 +205,10 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
         formatChineseBoolean(item.generator.hasSupports),
         formatChineseBoolean(item.generator.hasHoverPseudo),
         formatChineseBoolean(item.generator.hasTailwindBanner),
+        formatChineseBoolean(item.generator.hasSystemDarkModeMedia),
+        formatChineseBoolean(item.generator.hasManualDarkModeSelector),
+        formatChineseBoolean(item.generator.hasUnsupportedThemeAttributeSelector),
+        formatChineseBoolean(item.generator.hasUnsupportedThemeComplexSelector),
         formatChineseBoolean(item.generator.hasRawArbitrarySelector),
         formatChineseBoolean(item.generator.hasWeappEscapedArbitrarySelector),
       ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'),
@@ -200,6 +221,7 @@ export function createChineseMarkdownReport(report: AppsGeneratorCompareReportIt
     '',
     '- CSS 文件列展示入口样式；`(+N)` 表示报告还会聚合 `@import` 关联样式，例如 Taro 的 `app-origin.wxss` 或 Mpx 的 hash 化 `styles/app*.wxss`。',
     '- `@supports`、`:hover` 和 Tailwind banner 三列描述的是生成模式产物。面向小程序时这些值应保持为 `否`。',
+    '- 系统暗色媒体查询和手动暗色选择器两列用于确认 `prefers-color-scheme` 与 `.theme-dark` class 示例都进入生成模式产物。',
     '- 选择器列表会展示前 20 项，便于观察生成模式是否覆盖当前 demo 的有效类名。',
     '- 失败行会在失败详情中保留首个错误信息，便于持续消除迁移阻塞。',
     '',

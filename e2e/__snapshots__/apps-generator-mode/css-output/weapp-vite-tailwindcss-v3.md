@@ -4,9 +4,9 @@ Fixture: demo
 Entry: weapp-vite-tailwindcss-v3/dist/app.wxss
 Generator CSS files: app.wxss, app.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 133437 | 167 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 148281 | 181 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -188,7 +188,11 @@ text,
 .right-4 {
   right: 32rpx;
 }
-/*tokens: mt-4 <= miniprogram/components/IceButton/index.wxml*/
+/*tokens: mt-2 <= miniprogram/pages/index/index.wxml*/
+.mt-2 {
+  margin-top: 16rpx;
+}
+/*tokens: mt-4 <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml*/
 .mt-4 {
   margin-top: 32rpx;
 }
@@ -271,7 +275,7 @@ text,
 .overflow-hidden {
   overflow: hidden;
 }
-/*tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts*/
+/*tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts*/
 .rounded {
   border-radius: 8rpx;
 }
@@ -388,7 +392,7 @@ text,
 .bg-transparent {
   background-color: transparent;
 }
-/*tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts*/
+/*tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts*/
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
@@ -434,7 +438,12 @@ text,
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
-/*tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml*/
+/*tokens: px-3 <= miniprogram/pages/index/index.wxml*/
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/*tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml*/
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -468,10 +477,15 @@ text,
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
-/*tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml*/
+/*tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml*/
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
+}
+/*tokens: py-3 <= miniprogram/pages/index/index.wxml*/
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 .py-4 {
   padding-top: 32rpx;
@@ -646,6 +660,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(30, 41, 59, var(--tw-text-opacity, 1));
 }
+/*tokens: text-slate-900 <= miniprogram/pages/index/index.wxml*/
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /*tokens: text-violet-600 <= miniprogram/pages/index/index.wxml*/
 .text-violet-600 {
   --tw-text-opacity: 1;
@@ -726,6 +745,48 @@ text,
 .focus_cring-opacity-80:focus {
   --tw-ring-opacity: 0.8;
 }
+@media (prefers-color-scheme: dark) {
+  /*tokens: system-dark:bg-slate-900 <= miniprogram/pages/index/index.wxml*/
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /*tokens: system-dark:text-slate-100 <= miniprogram/pages/index/index.wxml*/
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/*tokens: theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml*/
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml*/
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml*/
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/*tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml*/
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml*/
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml*/
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
 @media (min-width: 640px) {
   /*tokens: sm:px-6 <= miniprogram/components/IceButton/index.wxml*/
   .sm_cpx-6 {
@@ -763,10 +824,20 @@ text,
     --tw-bg-opacity: 1;
     background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
   }
+  /*tokens: dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml*/
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
   /*tokens: dark:text-gray-300 <= miniprogram/components/IceButton/index.wxml*/
   .dark_ctext-gray-300 {
     --tw-text-opacity: 1;
     color: rgba(209, 213, 219, var(--tw-text-opacity, 1));
+  }
+  /*tokens: dark:text-zinc-50 <= miniprogram/pages/index/index.wxml*/
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
   }
 }
 /*tokens: [&:nth-child(3)]:py-0 <= miniprogram/pages/index/merge/index.ts*/
@@ -967,7 +1038,11 @@ text,
 .right-4 {
   right: 32rpx;
 }
-/* tokens: mt-4 <= miniprogram/components/IceButton/index.wxml */
+/* tokens: mt-2 <= miniprogram/pages/index/index.wxml */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .mt-4 {
   margin-top: 32rpx;
 }
@@ -1050,7 +1125,7 @@ text,
 .overflow-hidden {
   overflow: hidden;
 }
-/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
 .rounded {
   border-radius: 8rpx;
 }
@@ -1167,7 +1242,7 @@ text,
 .bg-transparent {
   background-color: transparent;
 }
-/* tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
@@ -1213,7 +1288,12 @@ text,
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
-/* tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: px-3 <= miniprogram/pages/index/index.wxml */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -1247,10 +1327,15 @@ text,
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
-/* tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= miniprogram/pages/index/index.wxml */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 .py-4 {
   padding-top: 32rpx;
@@ -1425,6 +1510,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(30, 41, 59, var(--tw-text-opacity, 1));
 }
+/* tokens: text-slate-900 <= miniprogram/pages/index/index.wxml */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /* tokens: text-violet-600 <= miniprogram/pages/index/index.wxml */
 .text-violet-600 {
   --tw-text-opacity: 1;
@@ -1508,6 +1598,48 @@ text,
 .focus_cring-opacity-80:focus {
   --tw-ring-opacity: 0.8;
 }
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= miniprogram/pages/index/index.wxml */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= miniprogram/pages/index/index.wxml */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
 @media (min-width: 640px) {
   /* tokens: sm:px-6 <= miniprogram/components/IceButton/index.wxml */
   .sm_cpx-6 {
@@ -1545,10 +1677,20 @@ text,
     --tw-bg-opacity: 1;
     background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
   }
+  /* tokens: dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
   /* tokens: dark:text-gray-300 <= miniprogram/components/IceButton/index.wxml */
   .dark_ctext-gray-300 {
     --tw-text-opacity: 1;
     color: rgba(209, 213, 219, var(--tw-text-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= miniprogram/pages/index/index.wxml */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
   }
 }
 /* tokens: [&:nth-child(3)]:py-0 <= miniprogram/pages/index/merge/index.ts */
@@ -1968,7 +2110,11 @@ text,
 .right-4 {
   right: 32rpx;
 }
-/* tokens: mt-4 <= miniprogram/components/IceButton/index.wxml */
+/* tokens: mt-2 <= miniprogram/pages/index/index.wxml */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .mt-4 {
   margin-top: 32rpx;
 }
@@ -2051,7 +2197,7 @@ text,
 .overflow-hidden {
   overflow: hidden;
 }
-/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
 .rounded {
   border-radius: 8rpx;
 }
@@ -2168,7 +2314,7 @@ text,
 .bg-transparent {
   background-color: transparent;
 }
-/* tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
@@ -2214,7 +2360,12 @@ text,
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
-/* tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: px-3 <= miniprogram/pages/index/index.wxml */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -2248,10 +2399,15 @@ text,
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
-/* tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= miniprogram/pages/index/index.wxml */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 .py-4 {
   padding-top: 32rpx;
@@ -2426,6 +2582,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(30, 41, 59, var(--tw-text-opacity, 1));
 }
+/* tokens: text-slate-900 <= miniprogram/pages/index/index.wxml */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /* tokens: text-violet-600 <= miniprogram/pages/index/index.wxml */
 .text-violet-600 {
   --tw-text-opacity: 1;
@@ -2509,6 +2670,48 @@ text,
 .focus_cring-opacity-80:focus {
   --tw-ring-opacity: 0.8;
 }
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= miniprogram/pages/index/index.wxml */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= miniprogram/pages/index/index.wxml */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
 @media (min-width: 640px) {
   /* tokens: sm:px-6 <= miniprogram/components/IceButton/index.wxml */
   .sm_cpx-6 {
@@ -2546,10 +2749,20 @@ text,
     --tw-bg-opacity: 1;
     background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
   }
+  /* tokens: dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
   /* tokens: dark:text-gray-300 <= miniprogram/components/IceButton/index.wxml */
   .dark_ctext-gray-300 {
     --tw-text-opacity: 1;
     color: rgba(209, 213, 219, var(--tw-text-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= miniprogram/pages/index/index.wxml */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
   }
 }
 /* tokens: [&:nth-child(3)]:py-0 <= miniprogram/pages/index/merge/index.ts */
@@ -2755,7 +2968,11 @@ text,
 .right-4 {
   right: 32rpx;
 }
-/* tokens: mt-4 <= miniprogram/components/IceButton/index.wxml */
+/* tokens: mt-2 <= miniprogram/pages/index/index.wxml */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .mt-4 {
   margin-top: 32rpx;
 }
@@ -2838,7 +3055,7 @@ text,
 .overflow-hidden {
   overflow: hidden;
 }
-/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
 .rounded {
   border-radius: 8rpx;
 }
@@ -2955,7 +3172,7 @@ text,
 .bg-transparent {
   background-color: transparent;
 }
-/* tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts */
+/* tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts */
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
@@ -3001,7 +3218,12 @@ text,
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
-/* tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: px-3 <= miniprogram/pages/index/index.wxml */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -3035,10 +3257,15 @@ text,
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
-/* tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml */
+/* tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml */
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= miniprogram/pages/index/index.wxml */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 .py-4 {
   padding-top: 32rpx;
@@ -3213,6 +3440,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(30, 41, 59, var(--tw-text-opacity, 1));
 }
+/* tokens: text-slate-900 <= miniprogram/pages/index/index.wxml */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /* tokens: text-violet-600 <= miniprogram/pages/index/index.wxml */
 .text-violet-600 {
   --tw-text-opacity: 1;
@@ -3296,6 +3528,48 @@ text,
 .focus_cring-opacity-80:focus {
   --tw-ring-opacity: 0.8;
 }
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= miniprogram/pages/index/index.wxml */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= miniprogram/pages/index/index.wxml */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
 @media (min-width: 640px) {
   /* tokens: sm:px-6 <= miniprogram/components/IceButton/index.wxml */
   .sm_cpx-6 {
@@ -3333,10 +3607,20 @@ text,
     --tw-bg-opacity: 1;
     background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
   }
+  /* tokens: dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
   /* tokens: dark:text-gray-300 <= miniprogram/components/IceButton/index.wxml */
   .dark_ctext-gray-300 {
     --tw-text-opacity: 1;
     color: rgba(209, 213, 219, var(--tw-text-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= miniprogram/pages/index/index.wxml */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
   }
 }
 /* tokens: [&:nth-child(3)]:py-0 <= miniprogram/pages/index/merge/index.ts */
@@ -3542,7 +3826,11 @@ text,
 .right-4 {
   right: 32rpx;
 }
-/*tokens: mt-4 <= miniprogram/components/IceButton/index.wxml*/
+/*tokens: mt-2 <= miniprogram/pages/index/index.wxml*/
+.mt-2 {
+  margin-top: 16rpx;
+}
+/*tokens: mt-4 <= miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml*/
 .mt-4 {
   margin-top: 32rpx;
 }
@@ -3625,7 +3913,7 @@ text,
 .overflow-hidden {
   overflow: hidden;
 }
-/*tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts*/
+/*tokens: rounded <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts*/
 .rounded {
   border-radius: 8rpx;
 }
@@ -3742,7 +4030,7 @@ text,
 .bg-transparent {
   background-color: transparent;
 }
-/*tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/merge/index.ts*/
+/*tokens: bg-white <= miniprogram/components/IceButton/index.ts, miniprogram/pages/index/index.wxml, miniprogram/pages/index/merge/index.ts*/
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
@@ -3788,7 +4076,12 @@ text,
   padding-left: 16rpx;
   padding-right: 16rpx;
 }
-/*tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml*/
+/*tokens: px-3 <= miniprogram/pages/index/index.wxml*/
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/*tokens: px-4 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml*/
 .px-4 {
   padding-left: 32rpx;
   padding-right: 32rpx;
@@ -3822,10 +4115,15 @@ text,
   padding-top: 8rpx;
   padding-bottom: 8rpx;
 }
-/*tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml*/
+/*tokens: py-2 <= miniprogram/components/IceButton/index.ts, miniprogram/components/IceButton/index.wxml, miniprogram/pages/index/index.wxml*/
 .py-2 {
   padding-top: 16rpx;
   padding-bottom: 16rpx;
+}
+/*tokens: py-3 <= miniprogram/pages/index/index.wxml*/
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 .py-4 {
   padding-top: 32rpx;
@@ -4000,6 +4298,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(30, 41, 59, var(--tw-text-opacity, 1));
 }
+/*tokens: text-slate-900 <= miniprogram/pages/index/index.wxml*/
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /*tokens: text-violet-600 <= miniprogram/pages/index/index.wxml*/
 .text-violet-600 {
   --tw-text-opacity: 1;
@@ -4083,6 +4386,48 @@ text,
 .focus_cring-opacity-80:focus {
   --tw-ring-opacity: 0.8;
 }
+@media (prefers-color-scheme: dark) {
+  /*tokens: system-dark:bg-slate-900 <= miniprogram/pages/index/index.wxml*/
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /*tokens: system-dark:text-slate-100 <= miniprogram/pages/index/index.wxml*/
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/*tokens: theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml*/
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml*/
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml | theme-dark <= miniprogram/pages/index/index.wxml*/
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/*tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml*/
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:bg-zinc-950 <= miniprogram/pages/index/index.wxml*/
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/*tokens: theme-dark <= miniprogram/pages/index/index.wxml | theme-dark:text-zinc-50 <= miniprogram/pages/index/index.wxml*/
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
 @media (min-width: 640px) {
   /*tokens: sm:px-6 <= miniprogram/components/IceButton/index.wxml*/
   .sm_cpx-6 {
@@ -4120,10 +4465,20 @@ text,
     --tw-bg-opacity: 1;
     background-color: rgba(17, 24, 39, var(--tw-bg-opacity, 1));
   }
+  /*tokens: dark:bg-zinc-900 <= miniprogram/pages/index/index.wxml*/
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
   /*tokens: dark:text-gray-300 <= miniprogram/components/IceButton/index.wxml*/
   .dark_ctext-gray-300 {
     --tw-text-opacity: 1;
     color: rgba(209, 213, 219, var(--tw-text-opacity, 1));
+  }
+  /*tokens: dark:text-zinc-50 <= miniprogram/pages/index/index.wxml*/
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
   }
 }
 /*tokens: [&:nth-child(3)]:py-0 <= miniprogram/pages/index/merge/index.ts*/

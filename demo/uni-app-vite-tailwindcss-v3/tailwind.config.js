@@ -2,6 +2,7 @@
 // const fs = require('node:fs');
 const path = require('node:path');
 const { getIconCollections, iconsPlugin } = require('@egoist/tailwindcss-icons');
+const themeVariants = require('../theme-variants.cjs');
 // fs.writeFileSync(path.resolve(__dirname, './variants.json'), JSON.stringify(variants, null, 2), {
 //   encoding: 'utf8',
 // });
@@ -27,6 +28,7 @@ module.exports = {
     },
   },
   plugins: [
+    themeVariants,
     // require('@tailwindcss/line-clamp'),
     require('@tailwindcss/container-queries'),
     require('@tailwindcss/aspect-ratio'),
