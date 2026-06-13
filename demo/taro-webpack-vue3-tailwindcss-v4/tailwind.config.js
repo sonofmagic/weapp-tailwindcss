@@ -1,3 +1,5 @@
+const darkMode = require('../dark-mode.cjs')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -5,6 +7,7 @@ module.exports = {
     '!./src/sub-normal/**/*.{wxml,html,js,ts,vue}',
     '!./src/sub-independent/**/*.{wxml,html,js,ts,vue}',
   ],
+  darkMode,
   theme: {
     extend: {},
   },

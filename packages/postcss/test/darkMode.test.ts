@@ -100,4 +100,13 @@ describe('darkMode', () => {
     const { css } = await styleHandler(code)
     expect(css).toMatchSnapshot()
   })
+
+  it(`darkMode: ['variant', ['@media ...', '&:is(.dark *)']]`, async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = await getCase('variant1.css')
+    const { css } = await styleHandler(code)
+    expect(css).toMatchSnapshot()
+  })
 })

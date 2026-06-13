@@ -39,21 +39,25 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
   const visualRows = results.map((item) => {
     const altPrefix = [item.platform, item.name, item.styleIsolationVariant].filter(Boolean).join('-')
     const screenshot = item.screenshot ? renderImageLink(context, item.screenshot, altPrefix) : ''
+    const themeLight = item.themeLightScreenshot ? renderImageLink(context, item.themeLightScreenshot, `${altPrefix}-theme-light`) : ''
+    const themeManualDark = item.themeManualDarkScreenshot ? renderImageLink(context, item.themeManualDarkScreenshot, `${altPrefix}-theme-manual-dark`) : ''
     const hmrBefore = item.hmrBeforeScreenshot ? renderImageLink(context, item.hmrBeforeScreenshot, `${altPrefix}-hmr-before`) : ''
     const hmrAfter = item.hmrAfterScreenshot ? renderImageLink(context, item.hmrAfterScreenshot, `${altPrefix}-hmr-after`) : ''
     const diff = renderDiffLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
   })
   const rows = results.map((item) => {
     const screenshot = item.screenshot ? `[截图](${path.relative(context.artifactRoot, item.screenshot)})` : ''
+    const themeLight = item.themeLightScreenshot ? `[亮色](${path.relative(context.artifactRoot, item.themeLightScreenshot)})` : ''
+    const themeManualDark = item.themeManualDarkScreenshot ? `[手动暗色](${path.relative(context.artifactRoot, item.themeManualDarkScreenshot)})` : ''
     const hmrBefore = item.hmrBeforeScreenshot ? `[HMR 前](${path.relative(context.artifactRoot, item.hmrBeforeScreenshot)})` : ''
     const hmrAfter = item.hmrAfterScreenshot ? `[HMR 后](${path.relative(context.artifactRoot, item.hmrAfterScreenshot)})` : ''
     const diff = renderDiffTextLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
   })
   const hmrPairs = results.filter(item => item.hmrBeforeScreenshot && item.hmrAfterScreenshot)
   await fs.writeFile(reportMd, [
@@ -72,14 +76,14 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     '',
     '## Visual Matrix',
     '',
-    '| Demo | Platform | Variant | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...visualRows,
     '',
     '## Link Matrix',
     '',
-    '| Demo | Platform | Variant | Status | Screenshot | HMR Before | HMR After | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...rows,
     '',
   ].join('\n'))

@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 import { addDynamicIconSelectors } from '@iconify/tailwind'
 import plugin from 'tailwindcss/plugin'
+import themeVariants from '../theme-variants.cjs'
 
 export default <Config>{
   // 这里给出了一份 uni-app /taro 通用示例，具体要根据你自己项目的目录结构进行配置
@@ -13,6 +14,7 @@ export default <Config>{
     preflight: false,
   },
   plugins: [
+    themeVariants,
     addDynamicIconSelectors(),
     addDynamicIconSelectors({
       prefix: 'iconify',

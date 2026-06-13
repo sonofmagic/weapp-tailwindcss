@@ -4,9 +4,9 @@ Fixture: demo
 Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 5897 | 21 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 10072 | 40 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -14,19 +14,34 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wx
 
 ```css
 @import 'app-origin.wxss';
+/* tokens: mt-2 <= src/pages/index/index.tsx */
+/* tokens: mt-4 <= src/pages/index/index.tsx */
 /* tokens: h-14 <= src/pages/index/index.tsx */
 /* tokens: h-[300px] <= src/pages/index/index.tsx */
+/* tokens: rounded <= src/pages/index/index.tsx */
 /* tokens: bg-[#123456] <= src/pages/index/index.tsx */
 /* tokens: bg-[red] <= src/pages/index/index.tsx */
 /* tokens: bg-purple-300 <= src/pages/index/index.tsx */
+/* tokens: bg-white <= src/pages/index/index.tsx */
 /* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 /* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 /* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 /* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 /* tokens: to-blue-500 <= src/pages/index/index.tsx */
+/* tokens: px-3 <= src/pages/index/index.tsx */
+/* tokens: px-4 <= src/pages/index/index.tsx */
+/* tokens: py-2 <= src/pages/index/index.tsx */
+/* tokens: py-3 <= src/pages/index/index.tsx */
 /* tokens: text-[55rpx] <= src/pages/index/index.tsx */
 /* tokens: text-[#c31d6b] <= src/pages/index/index.tsx */
 /* tokens: text-[#fff] <= src/pages/index/index.tsx */
+/* tokens: text-slate-900 <= src/pages/index/index.tsx */
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+/* tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+/* tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-950 <= src/pages/index/index.tsx */
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+/* tokens: theme-dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
 ```
 
 ### app-origin.wxss
@@ -54,14 +69,34 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-slate-100: #f1f5f9;
+  --color-zinc-950: #09090b;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-slate-900: rgb(15, 23, 43);
+  --color-white: #fff;
   --color-purple-300: rgb(216, 180, 255);
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
   --spacing: 8rpx;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+}
+textarea {
+  resize: vertical;
+}
+button {
+  appearance: button;
+}
+/* tokens: mt-2 <= src/pages/index/index.tsx */
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+/* tokens: mt-4 <= src/pages/index/index.tsx */
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
 }
 /* tokens: h-14 <= src/pages/index/index.tsx */
 .h-14 {
@@ -70,6 +105,10 @@ wx-root-portal-content {
 /* tokens: h-[300px] <= src/pages/index/index.tsx */
 .h-_b300px_B {
   height: 300rpx;
+}
+/* tokens: rounded <= src/pages/index/index.tsx */
+.rounded {
+  border-radius: 8rpx;
 }
 /* tokens: bg-[#123456] <= src/pages/index/index.tsx */
 .bg-_b_h123456_B {
@@ -90,6 +129,10 @@ wx-root-portal-content {
 /* tokens: bg-purple-300 <= src/pages/index/index.tsx */
 .bg-purple-300 {
   background-color: var(--color-purple-300);
+}
+/* tokens: bg-white <= src/pages/index/index.tsx */
+.bg-white {
+  background-color: var(--color-white);
 }
 /* tokens: bg-linear-to-r <= src/pages/index/index.tsx */
 .bg-linear-to-r {
@@ -124,6 +167,26 @@ wx-root-portal-content {
     var(--tw-gradient-to) var(--tw-gradient-to-position)
   );
 }
+/* tokens: px-3 <= src/pages/index/index.tsx */
+.px-3 {
+  padding-left: calc(var(--spacing) * 3);
+  padding-right: calc(var(--spacing) * 3);
+}
+/* tokens: px-4 <= src/pages/index/index.tsx */
+.px-4 {
+  padding-left: calc(var(--spacing) * 4);
+  padding-right: calc(var(--spacing) * 4);
+}
+/* tokens: py-2 <= src/pages/index/index.tsx */
+.py-2 {
+  padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
+}
+/* tokens: py-3 <= src/pages/index/index.tsx */
+.py-3 {
+  padding-top: calc(var(--spacing) * 3);
+  padding-bottom: calc(var(--spacing) * 3);
+}
 /* tokens: text-[55rpx] <= src/pages/index/index.tsx */
 .text-_b55rpx_B {
   font-size: 55rpx;
@@ -136,11 +199,75 @@ wx-root-portal-content {
 .text-_b_hfff_B {
   color: #fff;
 }
+/* tokens: text-slate-900 <= src/pages/index/index.tsx */
+.text-slate-900 {
+  color: var(--color-slate-900);
+}
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
+}
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.dark_cbg-zinc-900.theme-dark {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-900 <= src/pages/index/index.tsx */
+.theme-dark .dark_cbg-zinc-900 {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.dark_cbg-zinc-950.theme-dark {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | dark:bg-zinc-950 <= src/pages/index/index.tsx */
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.tsx | theme-dark <= src/pages/index/index.tsx */
+.dark_ctext-zinc-50.theme-dark {
+  color: var(--color-zinc-50);
+}
+/* tokens: theme-dark <= src/pages/index/index.tsx | dark:text-zinc-50 <= src/pages/index/index.tsx */
+.theme-dark .dark_ctext-zinc-50 {
+  color: var(--color-zinc-50);
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.tsx */
+  .system-dark_cbg-slate-900 {
+    background-color: var(--color-slate-900);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */
+  .system-dark_ctext-slate-100 {
+    color: var(--color-slate-100);
+  }
+}
+textarea {
+  resize: vertical;
+}
+button {
+  appearance: button;
+}
+textarea {
+  resize: vertical;
+}
+button {
+  appearance: button;
+}
+textarea {
+  resize: vertical;
+}
+button {
+  appearance: button;
+}
+.h5-textarea {
+  resize: vertical;
+}
+.h5-button {
+  appearance: button;
 }
 ```
 
@@ -179,6 +306,9 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+.h5-textarea {
+  resize: vertical;
+}
 .before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
   content: var(--tw-content);
@@ -214,6 +344,9 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+}
+.h5-textarea {
+  resize: vertical;
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';

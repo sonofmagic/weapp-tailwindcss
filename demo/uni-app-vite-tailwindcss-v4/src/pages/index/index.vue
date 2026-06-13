@@ -22,6 +22,12 @@
       @tap="goOrder">
       打开订单分包
     </view>
+    <view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 dark:bg-zinc-900 dark:text-zinc-50">
+      uni-app Vite Tailwind CSS v4 system dark
+      <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark:bg-zinc-950 dark:text-zinc-50">
+        uni-app Vite Tailwind CSS v4 manual dark
+      </view>
+    </view>
     <div class="flex space-x-4 border" :class="{
       'space-x-reverse': reverseFlag,
       'flex-row-reverse': reverseFlag

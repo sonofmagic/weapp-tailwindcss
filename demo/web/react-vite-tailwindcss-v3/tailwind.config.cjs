@@ -1,3 +1,5 @@
+const themeVariants = require('../../theme-variants.cjs')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
@@ -8,4 +10,5 @@ module.exports = {
   theme: {
     extend: {},
   },
+  plugins: [themeVariants],
 }

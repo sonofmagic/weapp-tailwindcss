@@ -4,9 +4,9 @@ Fixture: demo
 Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 28000 | 125 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 37888 | 135 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -47,24 +47,39 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-zinc-950: #09090b;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --color-emerald-500: rgb(0, 185, 129);
   --color-emerald-600: rgb(0, 150, 105);
+  --color-slate-900: rgb(15, 23, 43);
   --color-white: #fff;
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
   --spacing: 8rpx;
   --text-sm: 28rpx;
   --text-sm--line-height: 1.42857;
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+  --color-slate-100: #f1f5f9;
   --color-neutral-1B: #1b1b1b;
   --color-neutral-66: #666;
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
+}
+textarea {
+  resize: vertical;
+}
+button {
+  appearance: button;
+}
+/* tokens: mt-2 <= src/pages/index/index.vue */
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
 }
 /* tokens: mt-4 <= src/pages/index/index.vue */
 .mt-4 {
@@ -227,6 +242,10 @@ wx-root-portal-content {
 .divide-_b_hd80c0c_B > text + text {
   border-color: #d80c0c;
 }
+/* tokens: rounded <= src/pages/index/index.vue */
+.rounded {
+  border-radius: 8rpx;
+}
 /* tokens: rounded-full <= src/pages/index/index.vue */
 .rounded-full {
   border-radius: 9999px;
@@ -252,9 +271,28 @@ wx-root-portal-content {
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
 }
+/* tokens: bg-white <= src/pages/index/index.vue */
+.bg-white {
+  background-color: var(--color-white);
+}
 /* tokens: p-2 <= src/pages/index/index.vue */
 .p-2 {
   padding: calc(var(--spacing) * 2);
+}
+/* tokens: px-3 <= src/pages/index/index.vue */
+.px-3 {
+  padding-left: calc(var(--spacing) * 3);
+  padding-right: calc(var(--spacing) * 3);
+}
+/* tokens: px-4 <= src/pages/index/index.vue */
+.px-4 {
+  padding-left: calc(var(--spacing) * 4);
+  padding-right: calc(var(--spacing) * 4);
+}
+/* tokens: py-2 <= src/pages/index/index.vue */
+.py-2 {
+  padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
 }
 /* tokens: py-3 <= src/pages/index/index.vue */
 .py-3 {
@@ -286,6 +324,10 @@ wx-root-portal-content {
 /* tokens: text-[#00f285] <= src/pages/index/index.vue */
 .text-_b_h00f285_B {
   color: #00f285;
+}
+/* tokens: text-slate-900 <= src/pages/index/index.vue */
+.text-slate-900 {
+  color: var(--color-slate-900);
 }
 /* tokens: text-white <= src/pages/index/index.vue */
 .text-white {
@@ -319,12 +361,37 @@ wx-root-portal-content {
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
 }
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_cbg-zinc-900.theme-dark {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
+.theme-dark .dark_cbg-zinc-900 {
+  background-color: var(--color-zinc-900);
+}
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_cbg-zinc-950.theme-dark {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: var(--color-zinc-950);
+}
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_ctext-zinc-50.theme-dark {
+  color: var(--color-zinc-50);
+}
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
+.theme-dark .dark_ctext-zinc-50 {
+  color: var(--color-zinc-50);
+}
 .layer-card-v4 {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--color-midnight);
 }
+/* tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 /* tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 /* tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 /* tokens: i-mdi-home <= src/pages/index/index.vue */
@@ -351,6 +418,7 @@ wx-root-portal-content {
 /* tokens: divide-double <= src/pages/index/index.vue */
 /* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
 /* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
+/* tokens: rounded <= src/pages/index/index.vue */
 /* tokens: rounded-full <= src/pages/index/index.vue */
 /* tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 /* tokens: border <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
@@ -365,11 +433,15 @@ wx-root-portal-content {
 .bg-neutral-1B {
   background-color: var(--color-neutral-1B);
 }
+/* tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 /* tokens: fill-bermuda <= src/pages/index/index.vue */
 .fill-bermuda {
   fill: var(--color-bermuda);
 }
 /* tokens: p-2 <= src/pages/index/index.vue */
+/* tokens: px-3 <= src/pages/index/index.vue */
+/* tokens: px-4 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 /* tokens: py-3 <= src/pages/index/index.vue */
 /* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 /* tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
@@ -381,6 +453,7 @@ wx-root-portal-content {
 .text-neutral-66 {
   color: var(--color-neutral-66);
 }
+/* tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 /* tokens: text-tahiti <= src/pages/index/index.vue */
 .text-tahiti {
   color: var(--color-tahiti);
@@ -390,6 +463,24 @@ wx-root-portal-content {
 /* tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 /* tokens: divide-x-reverse <= src/pages/index/index.vue */
 /* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
+  .system-dark_cbg-slate-900 {
+    background-color: var(--color-slate-900);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
+  .system-dark_ctext-slate-100 {
+    color: var(--color-slate-100);
+  }
+}
 .layer-card-v4 {
   display: flex;
   align-items: center;
@@ -404,6 +495,7 @@ wx-root-portal-content {
   color: var(--color-midnight);
 }
 /* Core plugin extractor sources are intentionally not loaded here. */
+/* tokens: mt-2 <= src/pages/index/index.vue */
 /* tokens: mt-4 <= src/pages/index/index.vue */
 /* tokens: mt-6 <= src/pages/index/index.vue */
 /* tokens: i-mdi-home <= src/pages/index/index.vue */
@@ -430,13 +522,18 @@ wx-root-portal-content {
 /* tokens: divide-double <= src/pages/index/index.vue */
 /* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
 /* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
+/* tokens: rounded <= src/pages/index/index.vue */
 /* tokens: rounded-full <= src/pages/index/index.vue */
 /* tokens: rounded-xl <= src/pages/index/index.vue */
 /* tokens: border <= src/pages/index/index.vue */
 /* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
 /* tokens: bg-[#123498] <= src/pages/index/index.vue */
 /* tokens: bg-emerald-500 <= src/pages/index/index.vue */
+/* tokens: bg-white <= src/pages/index/index.vue */
 /* tokens: p-2 <= src/pages/index/index.vue */
+/* tokens: px-3 <= src/pages/index/index.vue */
+/* tokens: px-4 <= src/pages/index/index.vue */
+/* tokens: py-2 <= src/pages/index/index.vue */
 /* tokens: py-3 <= src/pages/index/index.vue */
 /* tokens: text-center <= src/pages/index/index.vue */
 /* tokens: text-sm <= src/pages/index/index.vue */
@@ -444,11 +541,83 @@ wx-root-portal-content {
 /* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
 /* tokens: font-bold <= src/pages/index/index.vue */
 /* tokens: text-[#00f285] <= src/pages/index/index.vue */
+/* tokens: text-slate-900 <= src/pages/index/index.vue */
 /* tokens: text-white <= src/pages/index/index.vue */
 /* tokens: underline <= src/pages/index/index.vue */
 /* tokens: shadow-sm <= src/pages/index/index.vue */
 /* tokens: divide-x-reverse <= src/pages/index/index.vue */
 /* tokens: active:bg-emerald-600 <= src/pages/index/index.vue */
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
+/* tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: i-mdi-home <= src/pages/index/index.vue */
+/* tokens: flex <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
+/* tokens: aspect-[calc(4*3+1)/3] <= src/pages/index/index.vue */
+/* tokens: h-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: h-20 <= src/pages/index/index.vue */
+/* tokens: w-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: w-20 <= src/pages/index/index.vue */
+/* tokens: flex-col <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: flex-col-reverse <= src/pages/index/index.vue */
+/* tokens: flex-row-reverse <= src/pages/index/index.vue */
+/* tokens: items-center <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: space-y-4 <= src/pages/index/index.vue */
+/* tokens: space-y-reverse <= src/pages/index/index.vue */
+/* tokens: space-x-4 <= src/pages/index/index.vue */
+/* tokens: space-x-reverse <= src/pages/index/index.vue */
+/* tokens: divide-x-4 <= src/pages/index/index.vue */
+/* tokens: divide-y-4 <= src/pages/index/index.vue */
+/* tokens: divide-y-reverse <= src/pages/index/index.vue */
+/* tokens: divide-dotted <= src/pages/index/index.vue */
+/* tokens: divide-double <= src/pages/index/index.vue */
+/* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
+/* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
+/* tokens: rounded <= src/pages/index/index.vue */
+/* tokens: rounded-full <= src/pages/index/index.vue */
+/* tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: border <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
+/* tokens: bg-[#123498] <= src/pages/index/index.vue */
+/* tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: bg-midnight <= src/pages/index/index.vue */
+/* tokens: bg-neutral-1B <= src/pages/index/index.vue */
+/* tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: fill-bermuda <= src/pages/index/index.vue */
+/* tokens: p-2 <= src/pages/index/index.vue */
+/* tokens: px-3 <= src/pages/index/index.vue */
+/* tokens: px-4 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: py-3 <= src/pages/index/index.vue */
+/* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: text-[45rpx] <= src/pages/index/index.vue */
+/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
+/* tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: text-[#00f285] <= src/pages/index/index.vue */
+/* tokens: text-neutral-66 <= src/pages/index/index.vue */
+/* tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: text-tahiti <= src/pages/index/index.vue */
+/* tokens: text-white <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: underline <= src/pages/index/index.vue */
+/* tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: divide-x-reverse <= src/pages/index/index.vue */
+/* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
+/* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
+/* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
+/* stylelint-disable custom-property-pattern */
+/* Core plugin extractor sources are intentionally not loaded here. */
 ```
 
 ### home.wxss
@@ -506,6 +675,9 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+}
+textarea {
+  resize: vertical;
 }
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
@@ -691,6 +863,9 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
+textarea {
+  resize: vertical;
+}
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -725,6 +900,9 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+}
+textarea {
+  resize: vertical;
 }
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
@@ -790,6 +968,9 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
+}
+textarea {
+  resize: vertical;
 }
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);

@@ -1,3 +1,5 @@
+const themeVariants = require('../theme-variants.cjs')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   // https://github.com/mrmlnc/fast-glob
@@ -12,6 +14,7 @@ module.exports = {
     extend: {},
   },
   plugins: [
+    themeVariants,
     // require('daisyui'),
   ],
   corePlugins: {

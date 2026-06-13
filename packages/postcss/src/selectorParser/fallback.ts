@@ -43,6 +43,12 @@ function removeContainingSelector(node: psp.Node) {
   containingSelector?.remove()
 }
 
+function isThemeStateAttribute(node: psp.Node) {
+  return node.type === 'attribute'
+    && typeof node.attribute === 'string'
+    && (node.attribute.startsWith('data-') || node.attribute.startsWith('aria-'))
+}
+
 /**
  * 获取用于小程序兼容性处理的解析器，内部会缓存实例并移除不支持的选择器。
  * 增加了选择器字符串级缓存，避免对相同选择器重复 parse。
@@ -105,7 +111,7 @@ export function getFallbackRemove(_rule?: Rule, options?: IStyleHandlerOptions) 
           if (selector.attribute === 'hidden') {
             activeRule?.remove()
           }
-          else if (isInsidePseudo(selector, ':where')) {
+          else if (isInsidePseudo(selector, ':where') && !isThemeStateAttribute(selector)) {
             removeContainingSelector(selector)
           }
         }

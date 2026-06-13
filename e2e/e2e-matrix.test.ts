@@ -24,6 +24,12 @@ interface DemoPackageJson {
   scripts?: Record<string, string>
 }
 
+const DEMO_THEME_MODE_REQUIRED_TOKENS = [
+  'theme-mode-demo',
+  'system-dark:',
+  'theme-dark',
+]
+
 function readDemoPackageJson(packageJson: string) {
   return JSON.parse(
     fs.readFileSync(path.resolve(__dirname, '..', packageJson), 'utf8'),
@@ -113,6 +119,31 @@ function collectDemoWeappTailwindcssConfigFiles() {
   return files.sort()
 }
 
+function readDemoSource(entry: { name: string }) {
+  const demoRoot = path.resolve(__dirname, '../demo', entry.name)
+  const ignoredDirs = new Set(['node_modules', 'dist', 'unpackage', '.vite', '.turbo'])
+  const sourceExts = new Set(['.css', '.js', '.jsx', '.mpx', '.scss', '.ts', '.tsx', '.uvue', '.vue', '.wxml'])
+  const parts: string[] = []
+
+  function walk(dir: string) {
+    for (const dirent of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (dirent.isDirectory()) {
+        if (!ignoredDirs.has(dirent.name)) {
+          walk(path.join(dir, dirent.name))
+        }
+        continue
+      }
+      if (!dirent.isFile() || !sourceExts.has(path.extname(dirent.name))) {
+        continue
+      }
+      parts.push(fs.readFileSync(path.join(dir, dirent.name), 'utf8'))
+    }
+  }
+
+  walk(demoRoot)
+  return parts.join('\n')
+}
+
 describe('e2e matrix', () => {
   it('keeps every demo package explicit in the demo coverage matrix', () => {
     expect(DEMO_COVERAGE_MATRIX.map(item => item.name).sort()).toEqual(discoverDemoPackageNames())
@@ -146,6 +177,17 @@ describe('e2e matrix', () => {
           expect(platform.reason?.length, `${entry.name} ${platform.platform} should explain local/exempt coverage`).toBeGreaterThan(0)
         }
       }
+    }
+  })
+
+  it('keeps every demo wired to system and manual dark mode examples', () => {
+    for (const entry of DEMO_COVERAGE_MATRIX) {
+      const source = readDemoSource(entry)
+      for (const token of DEMO_THEME_MODE_REQUIRED_TOKENS) {
+        expect(source, `${entry.name} should include ${token}`).toContain(token)
+      }
+      const manualDarkToken = entry.tailwindcss === 'v3' ? 'theme-dark:bg-zinc-950' : 'dark:bg-zinc-950'
+      expect(source, `${entry.name} should include manual dark variant ${manualDarkToken}`).toContain(manualDarkToken)
     }
   })
 
@@ -203,11 +245,13 @@ describe('e2e matrix', () => {
   it('keeps IDE visual HMR in the demo workflow and full IDE command', () => {
     const rootPackageJson = readDemoPackageJson('package.json')
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
+    const visualScript = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report.ts'), 'utf8')
 
     expect(rootPackageJson.scripts?.['e2e:ide:visual']).toContain('--weapp-only --fail-on-incomplete')
     expect(rootPackageJson.scripts?.['e2e:ide:issue-909']).toContain('e2e/issue-909-ide.test.ts')
     expect(rootPackageJson.scripts?.['e2e:ide:issue-909:skip-build']).toContain('E2E_SKIP_BUILD=1')
     expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:issue-909 && pnpm e2e:ide:visual')
+    expect(visualScript).toContain('url: item.name.startsWith(\'mpx-\') ? \'/pages/index\' : \'/pages/index/index\'')
     expect(workflow).toContain('args: [\'e2e:mp:ide\']')
   })
 

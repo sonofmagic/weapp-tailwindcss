@@ -4,9 +4,9 @@ Fixture: demo
 Entry: taro-vite-vue3-tailwindcss-v3/dist/app.wxss
 Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 9142 | 26 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 13391 | 45 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -14,20 +14,35 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 ```css
 @import 'app-origin.wxss';
+/* tokens: mt-2 <= src/pages/index/index.vue */
+/* tokens: mt-4 <= src/pages/index/index.vue */
 /* tokens: flex <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: flex-col <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: divide-x-8 <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: divide-solid <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: divide-[#60d256] <= src/pages/index/index.vue, src/pages/index/test.vue */
+/* tokens: rounded <= src/pages/index/index.vue */
 /* tokens: bg-[#89ab8d] <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: bg-[#e24826] <= src/pages/index/test.vue */
+/* tokens: bg-white <= src/pages/index/index.vue */
+/* tokens: px-3 <= src/pages/index/index.vue */
+/* tokens: px-4 <= src/pages/index/index.vue */
+/* tokens: py-2 <= src/pages/index/index.vue */
+/* tokens: py-3 <= src/pages/index/index.vue */
 /* tokens: text-[66rpx] <= src/pages/index/test.vue */
 /* tokens: text-[#3d31a4] <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: text-[#438821] <= src/pages/index/index.vue, src/pages/index/test.vue */
+/* tokens: text-slate-900 <= src/pages/index/index.vue */
 /* tokens: before:content-['11111'] <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: before:content-['222'] <= src/pages/index/index.vue, src/pages/index/test.vue */
 /* tokens: before:content-['independent_subpackage_taro-vite-vue3-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
 /* tokens: before:content-['normal_subpackage_taro-vite-vue3-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | theme-dark:bg-zinc-900 <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | theme-dark:bg-zinc-950 <= src/pages/index/index.vue */
+/* tokens: theme-dark <= src/pages/index/index.vue | theme-dark:text-zinc-50 <= src/pages/index/index.vue */
 ```
 
 ### app-origin.wxss
@@ -97,6 +112,14 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
+/* tokens: mt-2 <= src/pages/index/index.vue */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= src/pages/index/index.vue */
+.mt-4 {
+  margin-top: 32rpx;
+}
 /* tokens: flex <= src/pages/index/index.vue, src/pages/index/test.vue */
 .flex {
   display: flex;
@@ -129,6 +152,10 @@ text,
   --tw-divide-opacity: 1;
   border-color: rgba(96, 210, 86, var(--tw-divide-opacity, 1));
 }
+/* tokens: rounded <= src/pages/index/index.vue */
+.rounded {
+  border-radius: 8rpx;
+}
 /* tokens: bg-[#89ab8d] <= src/pages/index/index.vue, src/pages/index/test.vue */
 .bg-_b_h89ab8d_B {
   --tw-bg-opacity: 1;
@@ -138,6 +165,31 @@ text,
 .bg-_b_he24826_B {
   --tw-bg-opacity: 1;
   background-color: rgba(226, 72, 38, var(--tw-bg-opacity, 1));
+}
+/* tokens: bg-white <= src/pages/index/index.vue */
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
+/* tokens: px-3 <= src/pages/index/index.vue */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= src/pages/index/index.vue */
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+/* tokens: py-2 <= src/pages/index/index.vue */
+.py-2 {
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= src/pages/index/index.vue */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 /* tokens: text-[66rpx] <= src/pages/index/test.vue */
 .text-_b66rpx_B {
@@ -152,6 +204,11 @@ text,
 .text-_b_h438821_B {
   --tw-text-opacity: 1;
   color: rgba(67, 136, 33, var(--tw-text-opacity, 1));
+}
+/* tokens: text-slate-900 <= src/pages/index/index.vue */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
 }
 /* tokens: before:content-['11111'] <= src/pages/index/index.vue, src/pages/index/test.vue */
 .before_ccontent-_b_a11111_a_B::before {
@@ -172,10 +229,62 @@ text,
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.vue | theme-dark:bg-zinc-900 <= src/pages/index/index.vue */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.vue | theme-dark:bg-zinc-950 <= src/pages/index/index.vue */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.vue | theme-dark:text-zinc-50 <= src/pages/index/index.vue */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
   /* tokens: dark:text-[#ec4f4f] <= src/pages/index/index.vue, src/pages/index/test.vue */
   .dark_ctext-_b_hec4f4f_B {
     --tw-text-opacity: 1;
     color: rgba(236, 79, 79, var(--tw-text-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
   }
 }
 ```

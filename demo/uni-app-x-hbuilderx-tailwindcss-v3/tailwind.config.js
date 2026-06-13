@@ -1,4 +1,5 @@
 const { r } = require('./shared')
+const themeVariants = require('../theme-variants.cjs')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -10,7 +11,7 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [themeVariants],
   corePlugins: {
     preflight: false,
   },

@@ -1,4 +1,5 @@
 const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons");
+const darkMode = require('../dark-mode.cjs');
 
 /** @type {import('tailwindcss').Config} */
 console.log("✅ tailwind.config.js (主包) is being loaded");
@@ -10,6 +11,7 @@ module.exports = {
     "!./src/pages-order/**/*.{html,vue,js,ts,jsx,tsx}",
     "!./src/pages-address/**/*.{html,vue,js,ts,jsx,tsx}",
   ],
+  darkMode,
   theme: {
     extend: {
       borderRadius: {

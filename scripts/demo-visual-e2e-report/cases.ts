@@ -18,7 +18,7 @@ import {
 import { createWatchSession, runPnpmCommand, sleep } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session.ts'
 import { closeMiniProgramAndCleanup, launchMiniProgramInCleanDevTools } from './ide.ts'
 import { findFreePort, killProcessTree, spawnPnpm, waitForUrl } from './process.ts'
-import { resolveHmrScreenshotPath, resolveScreenshotPath } from './screenshots.ts'
+import { resolveHmrScreenshotPath, resolveScreenshotPath, resolveThemeScreenshotPath } from './screenshots.ts'
 import {
   readManifest,
   resolveStyleIsolationVariants,
@@ -26,6 +26,13 @@ import {
   writeManifest,
   writeStyleIsolationVariantManifest,
 } from './style-isolation.ts'
+import {
+  captureH5ManualDarkScreenshot,
+  collectH5ThemeEvidence,
+  collectMiniProgramThemeCssEvidence,
+  collectMiniProgramThemeScreenshotEvidence,
+  collectMiniProgramThemeWxmlEvidence,
+} from './theme.ts'
 
 export interface H5Case {
   name: string
@@ -45,6 +52,8 @@ export interface H5HmrVisualConfig {
 export interface MiniProgramCase {
   name: string
   projectPath: string
+  cssFile?: string
+  cssFiles?: string[]
   url?: string
   skipOpenAutomator?: boolean
   hmr?: MiniProgramHmrVisualConfig
@@ -79,8 +88,10 @@ async function runH5CaseVariant(
   variant: StyleIsolationVariant,
   projectRoot: string,
 ) {
-  const { capturePageScreenshot, prepareScreenshotPage, screenshotPage } = await import('./browser.ts')
+  const { capturePageScreenshot, prepareScreenshotPage } = await import('./browser.ts')
   const screenshot = resolveScreenshotPath(context, item.name, 'h5', variant.key)
+  const themeLightScreenshot = resolveThemeScreenshotPath(context, item.name, 'h5', 'light', variant.key)
+  const themeManualDarkScreenshot = resolveThemeScreenshotPath(context, item.name, 'h5', 'manual-dark', variant.key)
   const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, item.name, 'h5', 'before', variant.key)
   const hmrAfterScreenshot = resolveHmrScreenshotPath(context, item.name, 'h5', 'after', variant.key)
   const port = await findFreePort()
@@ -97,20 +108,39 @@ async function runH5CaseVariant(
     const url = `http://127.0.0.1:${port}/`
     const resolvedUrl = await waitForUrl(url, child, logs, context.timeoutMs)
     if (!item.hmr) {
-      const captured = await screenshotPage(browser, resolvedUrl, screenshot, item.name, context)
-      results.push({
-        name: item.name,
-        platform: 'h5',
-        styleIsolationVariant: variant.key,
-        status: 'passed',
-        screenshot: captured.screenshot,
-        diagnostics: captured,
-      })
+      const { diagnostics, page } = await prepareScreenshotPage(browser, resolvedUrl, context)
+      try {
+        const theme = await collectH5ThemeEvidence(page)
+        const captured = await capturePageScreenshot(page, screenshot, item.name)
+        await fs.copyFile(screenshot, themeLightScreenshot)
+        await captureH5ManualDarkScreenshot(page, themeManualDarkScreenshot)
+        results.push({
+          name: item.name,
+          platform: 'h5',
+          styleIsolationVariant: variant.key,
+          status: 'passed',
+          screenshot: captured.screenshot,
+          themeLightScreenshot,
+          themeManualDarkScreenshot,
+          diagnostics: {
+            ...captured,
+            console: diagnostics.console,
+            requests: diagnostics.requests,
+            theme,
+          },
+        })
+      }
+      finally {
+        await page.close()
+      }
       return
     }
 
     const { diagnostics, page } = await prepareScreenshotPage(browser, resolvedUrl, context)
     try {
+      const theme = await collectH5ThemeEvidence(page)
+      const themeLight = await capturePageScreenshot(page, themeLightScreenshot, `${item.name} theme light`)
+      await captureH5ManualDarkScreenshot(page, themeManualDarkScreenshot)
       const initialEvidence = await item.hmr.waitForReady?.(page, resolvedUrl, logs)
       const before = await capturePageScreenshot(page, hmrBeforeScreenshot, `${item.name} hmr before`)
       restoreSource = await item.hmr.mutate(projectRoot)
@@ -123,6 +153,8 @@ async function runH5CaseVariant(
         styleIsolationVariant: variant.key,
         status: 'passed',
         screenshot,
+        themeLightScreenshot,
+        themeManualDarkScreenshot,
         hmrBeforeScreenshot,
         hmrAfterScreenshot,
         diagnostics: {
@@ -135,6 +167,10 @@ async function runH5CaseVariant(
             initialEvidence,
           },
           requests: diagnostics.requests,
+          theme: {
+            ...theme,
+            lightScreenshot: themeLight,
+          },
         },
       })
     }
@@ -312,7 +348,7 @@ async function runMiniProgramCaseVariant(
   variant: StyleIsolationVariant,
 ) {
   if (item.hmr) {
-    await runMiniProgramHmrCase(item, context, results, variant)
+    await runMiniProgramHmrCase({ ...item, hmr: item.hmr }, context, results, variant)
     return
   }
 
@@ -339,22 +375,33 @@ async function runMiniProgramCaseVariant(
     miniProgram = launched.miniProgram
     port = launched.port ?? port
     process.stdout.write(`[weapp] ${item.name}: reLaunch ${route}\n`)
-    const page = await withTimeout(`${item.name} reLaunch`, caseTimeoutMs, miniProgram.reLaunch(route))
+    const page = await withTimeout<any>(`${item.name} reLaunch`, caseTimeoutMs, miniProgram.reLaunch(route))
     await withTimeout(`${item.name} waitFor`, 10_000, page?.waitFor?.(1000) ?? Promise.resolve())
     process.stdout.write(`[weapp] ${item.name}: screenshot\n`)
     await withTimeout(`${item.name} screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, screenshot, caseTimeoutMs))
+    const png = PNG.sync.read(await fs.readFile(screenshot))
     const pageEl = await page?.$('page')
     const wxml = await withTimeout(`${item.name} wxml`, 10_000, pageEl?.wxml().catch(() => '') ?? Promise.resolve(''))
+    const themeWxml = await collectMiniProgramThemeWxmlEvidence(page, typeof wxml === 'string' ? wxml : '')
+    const themeScreenshot = await collectMiniProgramThemeScreenshotEvidence(page, png)
+    const themeCss = await collectMiniProgramThemeCssEvidence(projectPath, resolveMiniProgramThemeCssFiles(item))
     results.push({
       name: item.name,
       platform: 'weapp',
       styleIsolationVariant: variant.key,
       status: 'passed',
       screenshot,
+      themeLightScreenshot: screenshot,
+      themeManualDarkScreenshot: screenshot,
       diagnostics: {
         projectPath,
         port,
         route,
+        theme: {
+          css: themeCss,
+          screenshot: themeScreenshot,
+          wxml: themeWxml,
+        },
         wxmlPreview: typeof wxml === 'string' ? wxml.slice(0, 800) : '',
       },
     })
@@ -476,15 +523,21 @@ async function runMiniProgramHmrCase(
     await withTimeout(`${item.name} waitFor after`, 10_000, afterPage?.waitFor?.(1000) ?? Promise.resolve())
     await withTimeout(`${item.name} hmr after screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, hmrAfterScreenshot, caseTimeoutMs))
     await fs.copyFile(hmrAfterScreenshot, screenshot)
+    const png = PNG.sync.read(await fs.readFile(screenshot))
 
     const pageEl = await afterPage?.$('page')
     const wxml = await withTimeout(`${item.name} wxml`, 10_000, pageEl?.wxml().catch(() => '') ?? Promise.resolve(''))
+    const themeWxml = await collectMiniProgramThemeWxmlEvidence(afterPage, typeof wxml === 'string' ? wxml : '')
+    const themeScreenshot = await collectMiniProgramThemeScreenshotEvidence(afterPage, png)
+    const themeCss = await collectMiniProgramThemeCssEvidence(projectPath, resolveMiniProgramThemeCssFiles(item))
     results.push({
       name: item.name,
       platform: 'weapp',
       styleIsolationVariant: variant.key,
       status: 'passed',
       screenshot,
+      themeLightScreenshot: screenshot,
+      themeManualDarkScreenshot: screenshot,
       hmrBeforeScreenshot,
       hmrAfterScreenshot,
       diagnostics: {
@@ -501,6 +554,11 @@ async function runMiniProgramHmrCase(
         projectPath,
         refresh: refreshDiagnostics,
         route,
+        theme: {
+          css: themeCss,
+          screenshot: themeScreenshot,
+          wxml: themeWxml,
+        },
         wxmlPreview: typeof wxml === 'string' ? wxml.slice(0, 800) : '',
       },
     })
@@ -531,11 +589,19 @@ async function runMiniProgramHmrCase(
   }
 }
 
+function resolveMiniProgramThemeCssFiles(item: MiniProgramCase) {
+  if (item.cssFiles?.length) {
+    return item.cssFiles
+  }
+  return item.cssFile ? [item.cssFile] : ['app.wxss']
+}
+
 function createMiniProgramHmrCliOptions(context: RuntimeContext): CliOptions {
   return {
     caseName: 'all',
     pollMs: Number(process.env['DEMO_VISUAL_HMR_POLL_MS'] ?? 80),
     quietSass: true,
+    mainStyleOnly: false,
     skipBuild: true,
     timeoutMs: Number(process.env['DEMO_VISUAL_HMR_OUTPUT_TIMEOUT_MS'] ?? context.timeoutMs),
     webOnly: false,
@@ -564,7 +630,7 @@ async function relaunchMiniProgramPage({
     return {
       miniProgram,
       port,
-      page: await withTimeout(`${name} reLaunch`, getDevToolsRelaunchTimeoutMs(options), miniProgram.reLaunch(route)),
+      page: await withTimeout<any>(`${name} reLaunch`, getDevToolsRelaunchTimeoutMs(options), miniProgram.reLaunch(route)),
     }
   }
   catch (error) {
@@ -578,7 +644,7 @@ async function relaunchMiniProgramPage({
     return {
       miniProgram: freshMiniProgram,
       port: launched.port ?? port,
-      page: await withTimeout(`${name} reLaunch after recover`, getDevToolsRelaunchTimeoutMs(options), freshMiniProgram.reLaunch(route)),
+      page: await withTimeout<any>(`${name} reLaunch after recover`, getDevToolsRelaunchTimeoutMs(options), freshMiniProgram.reLaunch(route)),
     }
   }
 }

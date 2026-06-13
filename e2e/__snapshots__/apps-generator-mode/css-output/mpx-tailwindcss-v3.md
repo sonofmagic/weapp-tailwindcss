@@ -4,9 +4,9 @@ Fixture: demo
 Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
 Generator CSS files: app.wxss, base.wxss, button.wxss, components.wxss, icon.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, loading.wxss, utilities.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 184668 | 2879 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 186787 | 2889 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -9189,5 +9189,59 @@ text,
 .after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
   --tw-content: '你好啊，我这是中文字符串';
   content: var(--tw-content);
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index.mpx */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index.mpx | theme-dark:bg-zinc-900 <= src/pages/index.mpx */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index.mpx | theme-dark:bg-zinc-950 <= src/pages/index.mpx */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index.mpx | theme-dark:text-zinc-50 <= src/pages/index.mpx */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: dark:bg-zinc-900 <= src/pages/index.mpx */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= src/pages/index.mpx */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+  }
 }
 ```

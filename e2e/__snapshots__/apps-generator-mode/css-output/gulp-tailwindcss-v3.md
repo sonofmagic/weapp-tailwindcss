@@ -4,9 +4,9 @@ Fixture: demo
 Entry: gulp-tailwindcss-v3/dist/app.wxss
 Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
-| Bytes | Selectors | @supports | :hover | Tailwind banner | Raw arbitrary selector | Weapp escaped arbitrary selector |
-| ---: | ---: | --- | --- | --- | --- | --- |
-| 21987 | 48 | false | false | false | false | true |
+| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| 27962 | 67 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -141,6 +141,14 @@ text,
 .mb-_b20px_B {
   margin-bottom: 40rpx;
 }
+/* tokens: mt-2 <= src/pages/index/index.wxml */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= src/pages/index/index.wxml */
+.mt-4 {
+  margin-top: 32rpx;
+}
 /* tokens: mt-[24px] <= src/pages/index/index.ts, src/pages/index/index.wxml */
 .mt-_b24px_B {
   margin-top: 48rpx;
@@ -183,6 +191,10 @@ text,
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
+/* tokens: rounded <= src/pages/index/index.wxml */
+.rounded {
+  border-radius: 8rpx;
+}
 /* tokens: border-b <= src/pages/index/index.wxml, src/pages/more/more.wxml */
 .border-b {
   border-bottom-width: 2rpx;
@@ -201,6 +213,11 @@ text,
 .bg-_bred_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+}
+/* tokens: bg-white <= src/pages/index/index.wxml */
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
 }
 /* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index/index.ts */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
@@ -221,6 +238,26 @@ text,
 /* tokens: p-4 <= src/pages/more/more.wxml */
 .p-4 {
   padding: 32rpx;
+}
+/* tokens: px-3 <= src/pages/index/index.wxml */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= src/pages/index/index.wxml */
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+/* tokens: py-2 <= src/pages/index/index.wxml */
+.py-2 {
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= src/pages/index/index.wxml */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 /* tokens: pb-[10px] <= src/pages/index/index.wxml */
 .pb-_b10px_B {
@@ -279,6 +316,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
+/* tokens: text-slate-900 <= src/pages/index/index.wxml */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /* tokens: before:content-['independent_subpackage_gulp-tailwindcss-v3'] <= src/sub-independent/pages/index.wxml */
 .before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
@@ -288,6 +330,60 @@ text,
 .before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.wxml */
+  .system-dark_cbg-slate-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.wxml */
+  .system-dark_ctext-slate-100 {
+    --tw-text-opacity: 1;
+    color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
+  }
+}
+/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.wxml | theme-dark <= src/pages/index/index.wxml */
+.theme-dark_cbg-zinc-900.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.wxml | theme-dark <= src/pages/index/index.wxml */
+.theme-dark_cbg-zinc-950.theme-dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.wxml | theme-dark <= src/pages/index/index.wxml */
+.theme-dark_ctext-zinc-50.theme-dark {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.wxml | theme-dark:bg-zinc-900 <= src/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.wxml | theme-dark:bg-zinc-950 <= src/pages/index/index.wxml */
+.theme-dark .theme-dark_cbg-zinc-950 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
+}
+/* tokens: theme-dark <= src/pages/index/index.wxml | theme-dark:text-zinc-50 <= src/pages/index/index.wxml */
+.theme-dark .theme-dark_ctext-zinc-50 {
+  --tw-text-opacity: 1;
+  color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: dark:bg-zinc-900 <= src/pages/index/index.wxml */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= src/pages/index/index.wxml */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+  }
 }
 ```
 
@@ -372,6 +468,14 @@ text,
 .mb-_b20px_B {
   margin-bottom: 40rpx;
 }
+/* tokens: mt-2 <= src/pages/index/index.wxml */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= src/pages/index/index.wxml */
+.mt-4 {
+  margin-top: 32rpx;
+}
 /* tokens: mt-[24px] <= src/pages/index/index.ts, src/pages/index/index.wxml */
 .mt-_b24px_B {
   margin-top: 48rpx;
@@ -413,6 +517,10 @@ text,
   --tw-space-y-reverse: 0;
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
+}
+/* tokens: rounded <= src/pages/index/index.wxml */
+.rounded {
+  border-radius: 8rpx;
 }
 /* tokens: border-b <= src/pages/index/index.wxml, src/pages/more/more.wxml */
 .border-b {
@@ -438,6 +546,11 @@ text,
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: bg-white <= src/pages/index/index.wxml */
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
 /* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index/index.ts */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
@@ -457,6 +570,26 @@ text,
 /* tokens: p-4 <= src/pages/more/more.wxml */
 .p-4 {
   padding: 32rpx;
+}
+/* tokens: px-3 <= src/pages/index/index.wxml */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= src/pages/index/index.wxml */
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+/* tokens: py-2 <= src/pages/index/index.wxml */
+.py-2 {
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= src/pages/index/index.wxml */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 /* tokens: pb-[10px] <= src/pages/index/index.wxml */
 .pb-_b10px_B {
@@ -515,6 +648,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
+/* tokens: text-slate-900 <= src/pages/index/index.wxml */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /* tokens: before:content-['independent_subpackage_gulp-tailwindcss-v3'] <= src/sub-independent/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
@@ -524,6 +662,18 @@ text,
 .bg-independent-subpackage-marker {
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: dark:bg-zinc-900 <= src/pages/index/index.wxml */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= src/pages/index/index.wxml */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+  }
 }
 ```
 
@@ -602,6 +752,14 @@ text,
 .mb-_b20px_B {
   margin-bottom: 40rpx;
 }
+/* tokens: mt-2 <= src/pages/index/index.wxml */
+.mt-2 {
+  margin-top: 16rpx;
+}
+/* tokens: mt-4 <= src/pages/index/index.wxml */
+.mt-4 {
+  margin-top: 32rpx;
+}
 /* tokens: mt-[24px] <= src/pages/index/index.ts, src/pages/index/index.wxml */
 .mt-_b24px_B {
   margin-top: 48rpx;
@@ -644,6 +802,10 @@ text,
   margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
 }
+/* tokens: rounded <= src/pages/index/index.wxml */
+.rounded {
+  border-radius: 8rpx;
+}
 /* tokens: border-b <= src/pages/index/index.wxml, src/pages/more/more.wxml */
 .border-b {
   border-bottom-width: 2rpx;
@@ -668,6 +830,11 @@ text,
   --tw-content: 'independent subpackage gulp-tailwindcss-v3';
   content: var(--tw-content);
 }
+/* tokens: bg-white <= src/pages/index/index.wxml */
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
 /* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index/index.ts */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
@@ -687,6 +854,26 @@ text,
 /* tokens: p-4 <= src/pages/more/more.wxml */
 .p-4 {
   padding: 32rpx;
+}
+/* tokens: px-3 <= src/pages/index/index.wxml */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+/* tokens: px-4 <= src/pages/index/index.wxml */
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+/* tokens: py-2 <= src/pages/index/index.wxml */
+.py-2 {
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+/* tokens: py-3 <= src/pages/index/index.wxml */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
 /* tokens: pb-[10px] <= src/pages/index/index.wxml */
 .pb-_b10px_B {
@@ -745,6 +932,11 @@ text,
   --tw-text-opacity: 1;
   color: rgba(91, 164, 229, var(--tw-text-opacity, 1));
 }
+/* tokens: text-slate-900 <= src/pages/index/index.wxml */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
 /* tokens: before:content-['independent_subpackage_gulp-tailwindcss-v3'] <= src/sub-independent/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v3';
@@ -754,6 +946,18 @@ text,
 .bg-normal-subpackage-marker {
   --tw-bg-opacity: 1;
   background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
+}
+@media (prefers-color-scheme: dark) {
+  /* tokens: dark:bg-zinc-900 <= src/pages/index/index.wxml */
+  .dark_cbg-zinc-900 {
+    --tw-bg-opacity: 1;
+    background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
+  }
+  /* tokens: dark:text-zinc-50 <= src/pages/index/index.wxml */
+  .dark_ctext-zinc-50 {
+    --tw-text-opacity: 1;
+    color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
+  }
 }
 ```
 

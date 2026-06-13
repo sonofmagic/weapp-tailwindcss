@@ -5,6 +5,12 @@
     <view wx:class="{{custom}}"></view>
     <view wx:class="{{custom2}}"></view>
     <view>{{ wildContent }}</view>
+    <view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 theme-dark:bg-zinc-900 theme-dark:text-zinc-50 dark:bg-zinc-900 dark:text-zinc-50">
+      Mpx Tailwind CSS v3 system dark
+      <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 theme-dark:bg-zinc-950 theme-dark:text-zinc-50">
+        Mpx Tailwind CSS v3 manual dark
+      </view>
+    </view>
     <!--支持传入对象字面量，模板会显得杂乱，此处视图的style="color:red;font-size:16px;font-weight:bold;"-->
     <view style="color:red;" wx:style="{{ {fontSize:'16px', fontWeight:'bold'} }}">
     <!--更好的方式是直接传入对象数据，此处视图的style="color:blue;font-size:14px;"-->

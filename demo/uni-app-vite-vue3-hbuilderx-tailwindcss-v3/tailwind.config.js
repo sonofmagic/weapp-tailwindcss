@@ -1,3 +1,5 @@
+import themeVariants from '../theme-variants.cjs'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -10,5 +12,5 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [themeVariants],
 }

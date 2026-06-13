@@ -41,7 +41,16 @@ exports[`darkMode > darkMode: 'selector', uni-app x 1`] = `
 }"
 `;
 
-exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `""`;
+exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `
+".dark_cbg-black:where([data-mode="dark"],[data-mode="dark"] view) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}
+.dark_cbg-black:where([data-mode="dark"],[data-mode="dark"] text) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
 
 exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], uni-app x 1`] = `
 "view.dark_cbg-black,text.dark_cbg-black {
@@ -59,6 +68,19 @@ exports[`darkMode > darkMode: ['variant', '&:not(.light *)'], 1`] = `
 
 exports[`darkMode > darkMode: ['variant', '&:not(.light *)'], uni-app x 1`] = `
 ".dark_cbg-black:not(view):not(text) {
+    --tw-bg-opacity: 1;
+    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+}"
+`;
+
+exports[`darkMode > darkMode: ['variant', ['@media ...', '&:is(.dark *)']] 1`] = `
+"@media (prefers-color-scheme: dark) {
+    .dark_cbg-black:not(view):not(text) {
+        --tw-bg-opacity: 1;
+        background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
+    }
+}
+.dark view.dark_cbg-black,.dark text.dark_cbg-black {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"

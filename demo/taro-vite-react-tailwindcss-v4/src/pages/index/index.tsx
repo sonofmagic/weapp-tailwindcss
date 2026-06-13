@@ -12,6 +12,12 @@ export default function Index() {
       <div className='h-[300px] text-[#c31d6b] bg-[#123456]'>短斤少两快点撒</div>
       <Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>
       <View className='bg-[red]'>Hello world!</View>
+      <View className='theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 dark:bg-zinc-900 dark:text-zinc-50'>
+        Taro Vite React Tailwind CSS v4 system dark
+        <View className='theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark:bg-zinc-950 dark:text-zinc-50'>
+          Taro Vite React Tailwind CSS v4 manual dark
+        </View>
+      </View>
       <View className='h-14 bg-gradient-to-r from-cyan-500 to-blue-500'></View>
       <View className='h-14 bg-linear-to-r from-cyan-500 to-blue-500'></View>
       <View
