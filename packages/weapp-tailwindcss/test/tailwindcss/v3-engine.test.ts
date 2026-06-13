@@ -118,7 +118,7 @@ describe('tailwindcss v3 engine', () => {
     expect(result.css).toContain('border-style: solid')
     expect(result.css).toContain('border-color:')
     expect(result.css).not.toContain(':host,page,.tw-root,wx-root-portal-content')
-    expect(result.css).not.toContain('button')
+    expect(result.css).not.toContain('input:where')
     expect(result.css).not.toContain('::-webkit')
     expect(result.css).toContain('view,text,::after,::before')
   })
