@@ -47,6 +47,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Security Audit
+        timeout-minutes: 3
         run: pnpm audit --audit-level=moderate
         continue-on-error: true
 
