@@ -1,5 +1,16 @@
 # @weapp-tailwindcss/postcss
 
+## 3.0.7
+
+### Patch Changes
+
+- 🐛 **修复 `:where(...)` 内嵌 `:is(...)` 或多分支 `:where(...)` 时小程序产物仍可能保留复杂伪类的问题，补充 Tailwind v4 preflight、space/divide、group/peer、child 与主题 class 选择器的单测和微信开发者工具 IDE 视觉回归。** [#918](https://github.com/sonofmagic/weapp-tailwindcss/pull/918) by @sonofmagic
+
+- 🐛 **修复 `:where(.dark, .dark *)` 等多分支选择器展开后丢失通配符后代分支的问题，确保小程序端会生成对应的 `view` / `text` 后代选择器。** [#920](https://github.com/sonofmagic/weapp-tailwindcss/pull/920) by @sonofmagic
+  - 修复 Taro demo 的 `dev:harmony` 脚本未显式开启 HMR timing 输出的问题，确保 Harmony 别名脚本与实际 watch 脚本行为一致。
+
+- 🐛 **修复生成 CSS 裁剪时误删用户手写的小程序原生元素样式的问题，避免 Taro Webpack Tailwind CSS v4 等场景下 `view`、`text`、`button`、`input` 等标签规则被移除。** [`03fd4ec`](https://github.com/sonofmagic/weapp-tailwindcss/commit/03fd4ec44be77ff9cc755bfb6e7baa9025577e1f) by @sonofmagic
+
 ## 3.0.6
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # weapp-tailwindcss
 
+## 5.0.10
+
+### Patch Changes
+
+- 🐛 **修复 `:where(.dark, .dark *)` 等多分支选择器展开后丢失通配符后代分支的问题，确保小程序端会生成对应的 `view` / `text` 后代选择器。** [#920](https://github.com/sonofmagic/weapp-tailwindcss/pull/920) by @sonofmagic
+  - 修复 Taro demo 的 `dev:harmony` 脚本未显式开启 HMR timing 输出的问题，确保 Harmony 别名脚本与实际 watch 脚本行为一致。
+
+- 🐛 **为 demo 补充亮色、系统暗色与 `.theme-dark` 手动暗色示例，并增加 H5 与小程序 IDE 视觉回归，避免手动暗色模式退回小程序不兼容的复杂选择器。** [#918](https://github.com/sonofmagic/weapp-tailwindcss/pull/918) by @sonofmagic
+
+- 🐛 **补充浅色/深色模式与 watch HMR 的回归覆盖，确保 Taro、uni-app 等场景在热更新后正确生成小程序样式。** [#919](https://github.com/sonofmagic/weapp-tailwindcss/pull/919) by @sonofmagic
+- 📦 **Dependencies** [`2d3d5ca`](https://github.com/sonofmagic/weapp-tailwindcss/commit/2d3d5ca36df873b941baddfcdb0134965bc62f94)
+  → `@weapp-tailwindcss/postcss@3.0.7`
+
 ## 5.0.9
 
 ### Patch Changes
