@@ -1,5 +1,11 @@
 # weapp-tailwindcss
 
+## 5.0.11
+
+### Patch Changes
+
+- 🐛 **修复 Vite/Rolldown 产物回放 CSS 时直接向 `bundle` 新增资源导致 HMR 报错的问题，改为优先通过 `emitFile` 发射资源，兼容 Vite 8、Rolldown 与 Rollup。** [`41c9d77`](https://github.com/sonofmagic/weapp-tailwindcss/commit/41c9d776ec9f1f787e9a5c7ae50f547ccb4dad56) by @sonofmagic
+
 ## 5.0.10
 
 ### Patch Changes
