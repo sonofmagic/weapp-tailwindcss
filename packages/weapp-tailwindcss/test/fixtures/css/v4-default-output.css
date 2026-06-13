@@ -396,6 +396,10 @@ hr {
     color: inherit;
     border-top-width: 1px;
   }
+abbr[title] {
+    text-decoration: underline;
+            text-decoration: underline dotted;
+  }
 h1,h2,h3,h4,h5,h6 {
     font-size: inherit;
     font-weight: inherit;
@@ -499,7 +503,7 @@ textarea {
 :-moz-ui-invalid {
     box-shadow: none;
   }
-button {
+button,input[type="button"],input[type="reset"],input[type="submit"] {
             appearance: button;
   }
 ::-webkit-inner-spin-button,::-webkit-outer-spin-button {

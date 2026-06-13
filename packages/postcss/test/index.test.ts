@@ -58,6 +58,11 @@ button,input:where([type="button"], [type="reset"], [type="submit"]){appearance:
 `)
 
     expect(css).toContain('.dark_cbg-black.dark')
+    expect(css).toContain('.dark_cbg-black.dark view')
+    expect(css).toContain('.dark_cbg-black.dark text')
+    expect(css).toContain('.dark_cbg-black[data-mode="dark"]')
+    expect(css).toContain('.dark_cbg-black[data-mode="dark"] view')
+    expect(css).toContain('.dark_cbg-black[data-mode="dark"] text')
     expect(css).toContain('.space-y-2>view+view')
     expect(css).toContain('.divide-x-4>view+view')
     expect(css).toContain('input[type="button"]')

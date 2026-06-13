@@ -39,7 +39,7 @@
     "dev:qq": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run build:qq -- --watch",
     "dev:jd": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run build:jd -- --watch",
     "dev:harmony-hybrid": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run build:harmony-hybrid -- --watch",
-    "dev:harmony": "pnpm run dev:harmony-hybrid",
+    "dev:harmony": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run dev:harmony-hybrid",
     "open": "weapp open -p",
     "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
     "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
