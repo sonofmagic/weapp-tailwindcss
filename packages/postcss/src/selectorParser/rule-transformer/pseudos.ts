@@ -1,7 +1,8 @@
-import type { Node, Pseudo, Selector } from 'postcss-selector-parser'
+import type { Container, Node, Pseudo, Selector } from 'postcss-selector-parser'
 import type { IStyleHandlerOptions } from '../../types'
 import type { TransformContext } from './types'
 import { isUniAppXEnabled } from '../../compat/uni-app-x'
+import { internalCssSelectorReplacer } from '../../shared'
 import { transformSpacingSelector } from '../spacing'
 
 const RTL_LANGUAGE_ANY_PSEUDO_SET = new Set([
@@ -93,20 +94,71 @@ export function shouldRemoveEmptyFunctionalPseudo(node: Node): node is Pseudo {
   )
 }
 
+function replaceSelectorNode(target: Selector, index: number, replacement: Selector) {
+  const cloned = target.clone()
+  const targetNode = cloned.nodes[index]
+  if (!targetNode || targetNode.type !== 'pseudo' || targetNode.value !== ':where') {
+    return undefined
+  }
+
+  targetNode.replaceWith(...replacement.nodes.map(item => item.clone()))
+  return cloned
+}
+
+function transformExpandedSelectorClasses(selector: Selector, context: TransformContext) {
+  selector.walk((node) => {
+    if (node.type === 'class') {
+      node.value = context.selectorReplacerOptions === undefined
+        ? internalCssSelectorReplacer(node.value)
+        : internalCssSelectorReplacer(node.value, context.selectorReplacerOptions)
+    }
+  })
+}
+
+function appendExpandedWhereSelectors(parent: Selector, index: number, branches: Container<string, Node>[], context: TransformContext) {
+  const root = parent.parent
+  if (!root) {
+    return false
+  }
+
+  for (const branch of branches) {
+    const expanded = replaceSelectorNode(parent, index, branch as Selector)
+    if (expanded) {
+      transformExpandedSelectorClasses(expanded, context)
+      root.insertBefore(parent, expanded)
+    }
+  }
+  parent.remove()
+  return true
+}
+
 function flattenWherePseudo(node: Pseudo, context: TransformContext, index: number, parent: Selector | undefined) {
   if (isUniAppXEnabled(context.options)) {
     node.value = ':is'
   }
 
-  if (index === 0 && node.length === 1) {
-    const targetSelector = node.nodes?.[0]
-    if (targetSelector && targetSelector.type === 'selector' && transformSpacingSelector(targetSelector.nodes, context.options)) {
+  if (!parent || node.length === 0) {
+    return
+  }
+
+  const branches = node.nodes.filter((item): item is Selector => item.type === 'selector')
+  for (const branch of branches) {
+    if (transformSpacingSelector(branch.nodes, context.options)) {
       context.requiresSpacingNormalization = true
     }
-    node.replaceWith(...node.nodes)
-    if (parent && parent.type === 'selector' && parent.length === 0) {
-      parent.remove()
-    }
+  }
+
+  if (branches.length > 1 && appendExpandedWhereSelectors(parent, index, branches, context)) {
+    return
+  }
+
+  const targetSelector = branches[0]
+  if (targetSelector) {
+    node.replaceWith(...targetSelector.nodes.map(item => item.clone()))
+  }
+
+  if (parent.type === 'selector' && parent.length === 0) {
+    parent.remove()
   }
 }
 

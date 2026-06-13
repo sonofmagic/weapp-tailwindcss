@@ -1,0 +1,20 @@
+{
+  "appid": "wx6ffee4673b257014",
+  "compileType": "miniprogram",
+  "condition": {},
+  "description": "用于真实微信开发者工具验证 :where 转译方案的最小项目。",
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "libVersion": "trial",
+  "miniprogramRoot": "./",
+  "projectname": "where-selector-translated-miniprogram",
+  "setting": {
+    "es6": true,
+    "ignoreUploadUnusedFiles": true,
+    "minified": false,
+    "postcss": false,
+    "minifyWXML": true
+  }
+}

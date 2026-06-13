@@ -92,6 +92,13 @@ describe('selectorParser', () => {
     expect(secondRule.toString()).toMatchSnapshot()
   })
 
+  it('ruleTransformSync expands where pseudo branches to mini-program selectors', () => {
+    const root = postcss.parse('.theme-dark :where(.dark\\:bg-black,.dark\\:text-white){color:red;}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, {})
+    expect(rule.toString()).toMatchSnapshot()
+  })
+
   it('ruleTransformSync strips unsupported rtl language pseudo selectors', () => {
     const root = postcss.parse('.space-x-2\\.5>view+view:not(:-webkit-any(:lang(ar),:lang(he))),.space-x-2\\.5>view+view:not(:-moz-any(:lang(ar),:lang(he))),.space-x-2\\.5>view+view:-webkit-any(:lang(ar),:lang(he)),.space-x-2\\.5>view+view:-moz-any(:lang(ar),:lang(he)){margin-right:1px;}')
     const rule = root.first as Rule

@@ -24,31 +24,22 @@ exports[`darkMode > darkMode: 'class', uni-app x 1`] = `
 `;
 
 exports[`darkMode > darkMode: 'selector', 1`] = `
-".dark_cbg-black:where(.dark,.dark view) {
-    --tw-bg-opacity: 1;
-    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
-}
-.dark_cbg-black:where(.dark,.dark text) {
+".dark_cbg-black.dark {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"
 `;
 
-exports[`darkMode > darkMode: 'selector', uni-app x 1`] = `
-".dark_cbg-black.dark,.dark view.dark_cbg-black,.dark text.dark_cbg-black {
+exports[`darkMode > darkMode: 'selector', uni-app x 1`] = `""`;
+
+exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `
+".dark_cbg-black[data-mode="dark"] {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"
 `;
 
-exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `""`;
-
-exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], uni-app x 1`] = `
-"view.dark_cbg-black,text.dark_cbg-black {
-    --tw-bg-opacity: 1;
-    background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
-}"
-`;
+exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], uni-app x 1`] = `""`;
 
 exports[`darkMode > darkMode: ['variant', '&:not(.light *)'], 1`] = `
 ".dark_cbg-black:not(view):not(text) {

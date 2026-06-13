@@ -50,6 +50,8 @@ jobs:
             timeout_minutes: 30
           - case_name: weapp-vite-native-ts-tailwindcss-v3
             timeout_minutes: 30
+          - case_name: where-selector
+            timeout_minutes: 15
 
     steps:
       - name: Check out code
@@ -96,6 +98,7 @@ jobs:
           pnpm --filter weapp-tailwindcss run build
 
       - name: Run WeChat DevTools visible HMR probe
+        if: matrix.case_name != 'where-selector'
         env:
           E2E_PROJECT_FILTER: ${{ github.event.inputs.project_filter || matrix.case_name }}
           E2E_IDE_PROBE_RETRIES: '2'
@@ -105,6 +108,10 @@ jobs:
           E2E_IDE_MAX_HOT_UPDATE_MS: '90000'
         run: pnpm e2e:ide
 
+      - name: Run WeChat DevTools :where selector probe
+        if: matrix.case_name == 'where-selector'
+        run: pnpm e2e:ide:where
+
       - name: Publish IDE summary
         if: always()
         shell: bash
@@ -113,5 +120,5 @@ jobs:
             echo "## E2E IDE"
             echo "- case: ${{ matrix.case_name }}"
             echo "- filter: ${{ github.event.inputs.project_filter || matrix.case_name }}"
-            echo "- 覆盖：微信开发者工具打开项目、template class HMR、JS class HMR、style @apply/theme() HMR、产物变更对比。"
+            echo "- 覆盖：微信开发者工具打开项目、template class HMR、JS class HMR、style @apply/theme() HMR、:where 选择器真实运行时探针、产物变更对比。"
           } >> "$GITHUB_STEP_SUMMARY"

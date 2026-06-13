@@ -1,0 +1,3 @@
+<view class="probe-row where-host">
+  <view class="probe-box where-target">translated where</view>
+</view>
