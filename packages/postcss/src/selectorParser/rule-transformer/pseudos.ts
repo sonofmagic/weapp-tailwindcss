@@ -204,12 +204,15 @@ function expandNestedFunctionalPseudoBranches(selector: Selector) {
   return expanded
 }
 
-function transformExpandedSelectorClasses(selector: Selector, context: TransformContext) {
+function transformExpandedSelectorNodes(selector: Selector, context: TransformContext) {
   selector.walk((node) => {
     if (node.type === 'class') {
       node.value = context.selectorReplacerOptions === undefined
         ? internalCssSelectorReplacer(node.value)
         : internalCssSelectorReplacer(node.value, context.selectorReplacerOptions)
+    }
+    else if (node.type === 'universal' && context.universalReplacement) {
+      node.value = context.universalReplacement
     }
   })
 }
@@ -223,7 +226,7 @@ function appendExpandedWhereSelectors(parent: Selector, index: number, branches:
   for (const branch of branches) {
     const expanded = replaceSelectorNode(parent, index, branch as Selector)
     if (expanded) {
-      transformExpandedSelectorClasses(expanded, context)
+      transformExpandedSelectorNodes(expanded, context)
       root.insertBefore(parent, expanded)
     }
   }
