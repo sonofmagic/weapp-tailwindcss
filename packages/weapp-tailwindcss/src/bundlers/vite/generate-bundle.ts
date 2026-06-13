@@ -196,6 +196,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         recordTimingDetail(`tasks.${name}`, start)
       }
     }
+    const emitOrReplayCssAsset = (fileName: string, source: string) => {
+      const replayAsset = createReplayCssAsset(fileName, source)
+      if (typeof this.emitFile === 'function') {
+        this.emitFile({
+          type: 'asset',
+          fileName,
+          source,
+        })
+      }
+      else {
+        bundle[fileName] = replayAsset
+      }
+      return replayAsset
+    }
 
     const metrics = createEmptyMetrics()
     const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -534,16 +548,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const applyCssResult = (source: string) => {
           if (outputFile !== file) {
             delete bundle[file]
-            if (typeof this.emitFile === 'function') {
-              this.emitFile({
-                type: 'asset',
-                fileName: outputFile,
-                source,
-              })
-            }
-            else {
-              bundle[outputFile] = createReplayCssAsset(outputFile, source)
-            }
+            emitOrReplayCssAsset(outputFile, source)
             originalSource.fileName = outputFile
           }
           originalSource.source = source
@@ -1064,15 +1069,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }
-          const replayAsset = createReplayCssAsset(outputFile, css)
-          bundle[outputFile] = replayAsset
-          if (typeof this.emitFile === 'function') {
-            this.emitFile({
-              type: 'asset',
-              fileName: outputFile,
-              source: css,
-            })
-          }
+          const replayAsset = emitOrReplayCssAsset(outputFile, css)
           markCssAssetProcessed?.(replayAsset, outputFile)
           metrics.css.elapsed += measureElapsed(start)
           metrics.css.transformed++

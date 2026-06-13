@@ -2295,7 +2295,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       }, {} as any, bundle)
 
       expect(bundle['main.wxss']).toBeUndefined()
-      expect((bundle[outputFile] as OutputAsset).source).toContain('.bg-_b_h102938_B')
+      expect(bundle[outputFile]).toBeUndefined()
       expect(emitted.find(file => file.fileName === outputFile)?.source).toContain('.bg-_b_h102938_B')
     }
     finally {
@@ -6965,12 +6965,20 @@ ${utilities}
     expect(cleanTransformResult).toBeNull()
 
     const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
-    const replayBundle = {
+    const replayBundleTarget = {
       'pages/index/index.js': {
         ...createRollupChunk('console.log("stable")'),
         fileName: 'pages/index/index.js',
       },
     }
+    const replayBundle = new Proxy(replayBundleTarget, {
+      set(target, property, value, receiver) {
+        if (property === 'pages/index/index.wxss') {
+          throw new Error('Rolldown blocks assigning generated css assets to bundle')
+        }
+        return Reflect.set(target, property, value, receiver)
+      },
+    })
     await generateBundle?.call({
       ...postPlugin,
       emitFile(file: { type: 'asset', fileName: string, source: string }) {
@@ -6980,11 +6988,9 @@ ${utilities}
     }, {} as any, replayBundle)
 
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
-    const replayedBundleCss = (replayBundle['pages/index/index.wxss'] as OutputAsset | undefined)?.source?.toString()
     expect(replayedCss).toContain('.clean-style')
     expect(replayedCss).not.toContain('.tw-watch-style-case')
-    expect(replayedBundleCss).toContain('.clean-style')
-    expect(replayedBundleCss).not.toContain('.tw-watch-style-case')
+    expect(replayBundleTarget['pages/index/index.wxss' as keyof typeof replayBundleTarget]).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
   it('refreshes remembered sfc style source from watch cache before replaying stale vite pipeline css', async () => {
