@@ -1,17 +1,29 @@
 {
   "file": "src/pages/index/index.vue",
-  "count": 11,
+  "count": 23,
   "tokens": [
     "bg-[#123456]",
     "bg-gradient-to-r",
     "bg-linear-to-r",
     "bg-purple-300",
+    "bg-white",
+    "dark:bg-zinc-900",
+    "dark:bg-zinc-950",
+    "dark:text-zinc-50",
     "from-cyan-500",
     "h-14",
     "h-[300px]",
+    "mt-2",
+    "mt-4",
+    "px-3",
+    "px-4",
+    "py-2",
+    "py-3",
+    "rounded",
     "text-[#c31d6b]",
     "text-[#fff]",
     "text-[55rpx]",
+    "text-slate-900",
     "to-blue-500"
   ]
 }
