@@ -1032,6 +1032,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      styleOnly: false,
       mainStyleOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
@@ -1080,6 +1081,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      styleOnly: false,
       mainStyleOnly: false,
       reportFile,
       maxHotUpdateMs: 100,
@@ -1165,6 +1167,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      styleOnly: false,
       mainStyleOnly: false,
       maxHotUpdateMs: 1000,
     })).toThrow('script:added-class hot update exceeded budget: 2500ms > 1000ms')
@@ -1187,6 +1190,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      styleOnly: false,
       mainStyleOnly: false,
       maxPluginProcessMs: 500,
     })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
@@ -1222,6 +1226,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      styleOnly: false,
       mainStyleOnly: false,
       maxPluginProcessMs: 500,
     })).not.toThrow()
@@ -1245,6 +1250,7 @@ describe('watch-hmr regression summary helpers', () => {
       skipBuild: true,
       quietSass: true,
       webOnly: false,
+      styleOnly: false,
       mainStyleOnly: false,
       maxPluginProcessMs: 9000,
     })).not.toThrow()
@@ -1796,7 +1802,16 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase.subPackageMutations?.map(item => item.root).sort(), watchCase.name).toEqual(['sub-independent', 'sub-normal'])
       for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
         expect(subPackageMutation.templateMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
-        expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
+        if (watchCase.name === 'taro-vite-react-tailwindcss-v3') {
+          expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toBe('/repo/demo/taro-vite-react-tailwindcss-v3/src/app.scss')
+          expect(subPackageMutation.outputStyleCandidates, watchCase.name).toEqual([
+            '/repo/demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss',
+            '/repo/demo/taro-vite-react-tailwindcss-v3/dist/app.wxss',
+          ])
+        }
+        else {
+          expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
+        }
         expect(subPackageMutation.outputWxml, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.outputJs, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.globalStyleCandidates.length, watchCase.name).toBeGreaterThan(0)

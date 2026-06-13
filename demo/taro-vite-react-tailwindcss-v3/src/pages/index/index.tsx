@@ -1,7 +1,5 @@
 import { View, Text } from '@tarojs/components'
-if (process.env.TARO_ENV !== 'rn') {
-  require('./index.scss')
-}
+import './index.scss'
 
 export default function Index() {
   return (

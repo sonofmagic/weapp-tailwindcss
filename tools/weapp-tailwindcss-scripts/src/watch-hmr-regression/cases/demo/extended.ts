@@ -102,6 +102,7 @@ function createSubPackageMutations(
     version: 'v3' | 'v4'
     pageKind: 'tsx' | 'vue' | 'mpx'
     styleExtension?: 'scss' | 'css'
+    styleSourceFile?: (subPackage: 'sub-normal' | 'sub-independent') => string
     styleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     globalStyleCandidates?: (subPackage: 'sub-normal' | 'sub-independent') => string[]
     styleMutationOptions?: Pick<NonNullable<WatchCase['subPackageMutations']>[number]['styleMutation'], 'validateApply' | 'validateFunction' | 'outputNeedles' | 'rollbackNeedles'>
@@ -117,7 +118,7 @@ function createSubPackageMutations(
     const sourceDir = path.resolve(baseCwd, `demo/${options.project}/${options.sourceRoot}/${subPackage}/pages`)
     const distDir = path.resolve(baseCwd, `demo/${options.project}/${options.distRoot}/${subPackage}/pages`)
     const pageSource = path.join(sourceDir, `index.${options.pageKind}`)
-    const styleSource = path.join(sourceDir, `index.${styleExtension}`)
+    const styleSource = options.styleSourceFile?.(subPackage) ?? path.join(sourceDir, `index.${styleExtension}`)
     const outputStyleCandidates = options.styleCandidates?.(subPackage) ?? [
       path.join(distDir, 'index.wxss'),
     ]
@@ -567,7 +568,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/pages/index/index.css'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v4/src/app.css'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -660,7 +661,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/app.scss'),
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },
@@ -671,6 +672,15 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist',
       version: 'v3',
       pageKind: 'tsx',
+      styleSourceFile() {
+        return path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/app.scss')
+      },
+      styleCandidates() {
+        return [
+          path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
+          path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
+        ]
+      },
       globalStyleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/taro-vite-react-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),

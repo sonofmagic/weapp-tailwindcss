@@ -43,6 +43,7 @@ export interface CliOptions {
   skipBuild: boolean
   quietSass: boolean
   webOnly: boolean
+  styleOnly: boolean
   mainStyleOnly: boolean
   reportFile?: string
   maxHotUpdateMs?: number

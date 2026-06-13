@@ -115,7 +115,13 @@ async function readExistingAppTransformedOutput(projectRoot: string, outputRoot:
   return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
 }
 
-async function waitForAppTransformedContent(item: AppCase, expected: Array<string | RegExp>, timeoutMs: number, ensureRunning?: () => void) {
+async function waitForAppTransformedContent(
+  item: AppCase,
+  expected: Array<string | RegExp>,
+  timeoutMs: number,
+  ensureRunning?: () => void,
+  createFailureDetails?: () => Promise<string>,
+) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const startedAt = Date.now()
   let latest = ''
@@ -136,7 +142,8 @@ async function waitForAppTransformedContent(item: AppCase, expected: Array<strin
     await wait(pollIntervalMs)
   }
 
-  throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nlatest=${latest.slice(0, 2000)}`)
+  const details = await createFailureDetails?.()
+  throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nlatest=${latest.slice(0, 2000)}${details ? `\n${details}` : ''}`)
 }
 
 async function assertMiniProgramOutput(item: MiniProgramCase) {
@@ -306,7 +313,6 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
 
   const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const projectName = path.basename(projectRoot)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let restore: (() => Promise<void>) | undefined
   let child: ReturnType<typeof spawnPnpm> | undefined
@@ -324,8 +330,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       ...androidEnv,
     })
-    const launchProject = item.projectDir.includes('uni-app-x-') ? projectRoot : projectName
-    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', launchProject, ...(item.launchArgs ?? [])], {
+    child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...(item.launchArgs ?? [])], {
       HBUILDERX_CLI_PATH: hbuilderxCliPath,
       WEAPP_TW_HMR_TIMING: '1',
       ...androidEnv,
@@ -367,7 +372,14 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
       className: item.hmrMarkerClass,
       text: item.hmrMarkerText,
     })
-    await waitForAppTransformedContent(item, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning)
+    await waitForAppTransformedContent(item, item.hmrTransformedContains, hbuilderxAppTimeoutMs, ensureLaunchRunning, async () => {
+      const source = await readUtf8(sourceFile)
+      return [
+        `source=${path.relative(projectRoot, sourceFile)}`,
+        `sourceTail=${source.slice(-1200)}`,
+        `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
+      ].join('\n')
+    })
 
     killProcessTree(child)
     await Promise.race([closed, wait(5_000)])

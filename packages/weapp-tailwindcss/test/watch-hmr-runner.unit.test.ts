@@ -37,6 +37,9 @@ function createOptions(): CliOptions {
     pollMs: 10,
     skipBuild: true,
     quietSass: true,
+    webOnly: false,
+    styleOnly: false,
+    mainStyleOnly: false,
   }
 }
 
@@ -84,12 +87,22 @@ function createStyleMetric(sourceFile: string) {
     outputStyle: 'dist/app.wxss',
     marker: 'style-marker',
     styleNeedle: '.style-marker',
+    outputNeedles: ['.style-marker'],
+    rollbackNeedles: ['.style-marker'],
     applyUtilities: [],
     expectedApplyDeclarations: [],
+    expectedApplyDeclarationGroups: [],
+    functionDeclarations: [],
+    expectedFunctionDeclarations: [],
+    forbiddenFunctionFragments: [],
     hotUpdateOutputMs: 10,
     hotUpdateEffectiveMs: 12,
+    hotUpdatePluginProcessMs: 0,
+    hotUpdatePluginProcessSamples: [],
     rollbackOutputMs: 8,
     rollbackEffectiveMs: 9,
+    rollbackPluginProcessMs: 0,
+    rollbackPluginProcessSamples: [],
     rollbackNeedleCleared: true,
   }
 }
