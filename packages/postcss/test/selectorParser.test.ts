@@ -131,6 +131,24 @@ describe('selectorParser', () => {
       [':where('],
     ],
     [
+      'tailwind v4 nested select preflight selector',
+      ':where(select:is([multiple], [size])) optgroup{font-weight:700;}',
+      ['select[multiple] optgroup', 'select[size] optgroup'],
+      [':where(', ':is('],
+    ],
+    [
+      'tailwind v4 nested select option preflight selector',
+      ':where(select:is([multiple], [size])) optgroup option{padding-inline-start:20px;}',
+      ['select[multiple] optgroup option', 'select[size] optgroup option'],
+      [':where(', ':is('],
+    ],
+    [
+      'nested where selector with comma inside branch',
+      '.scope :where(:where(.alpha, .beta) > .target){color:green;}',
+      ['.scope .alpha>.target', '.scope .beta>.target'],
+      [':where('],
+    ],
+    [
       'child plugin selector',
       ':where(.child\\:ring-white) > :where(:not(.not-child)){box-shadow:0 0 #fff;}',
       ['.child\\:ring-white'],

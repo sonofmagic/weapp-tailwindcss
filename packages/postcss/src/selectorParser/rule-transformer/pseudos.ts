@@ -22,6 +22,11 @@ const EMPTY_FUNCTIONAL_PSEUDO_CLEANUP_SET = new Set([
   ':lang',
 ])
 
+const EXPANDABLE_FUNCTIONAL_PSEUDO_SET = new Set([
+  ':is',
+  ':where',
+])
+
 const UNSUPPORTED_PSEUDO_ELEMENT_SELECTOR_SET = new Set([
   ':after',
   ':before',
@@ -105,6 +110,100 @@ function replaceSelectorNode(target: Selector, index: number, replacement: Selec
   return cloned
 }
 
+function getNodePath(root: Selector, target: Node) {
+  const path: number[] = []
+  let current: Node | undefined = target
+
+  while (current && current !== root) {
+    const parent = current.parent
+    if (!parent || !('nodes' in parent) || !Array.isArray(parent.nodes)) {
+      return undefined
+    }
+
+    const index = parent.nodes.indexOf(current)
+    if (index < 0) {
+      return undefined
+    }
+
+    path.unshift(index)
+    current = parent as Node
+  }
+
+  return current === root ? path : undefined
+}
+
+function getNodeByPath(root: Selector, path: number[]) {
+  let current: Node = root
+
+  for (const index of path) {
+    if (!('nodes' in current) || !Array.isArray(current.nodes)) {
+      return undefined
+    }
+
+    const next = current.nodes[index]
+    if (!next) {
+      return undefined
+    }
+    current = next
+  }
+
+  return current
+}
+
+function findExpandableFunctionalPseudo(selector: Selector) {
+  let target: Pseudo | undefined
+
+  selector.walkPseudos((pseudo) => {
+    if (
+      !target
+      && EXPANDABLE_FUNCTIONAL_PSEUDO_SET.has(pseudo.value)
+      && Array.isArray(pseudo.nodes)
+      && pseudo.nodes.some(item => item.type === 'selector')
+    ) {
+      target = pseudo
+    }
+  })
+
+  return target
+}
+
+function expandNestedFunctionalPseudoBranches(selector: Selector) {
+  const pending = [selector.clone()]
+  const expanded: Selector[] = []
+
+  while (pending.length > 0) {
+    const current = pending.shift()
+    if (!current) {
+      continue
+    }
+
+    const target = findExpandableFunctionalPseudo(current)
+    if (!target) {
+      expanded.push(current)
+      continue
+    }
+
+    const path = getNodePath(current, target)
+    const branches = target.nodes.filter((item): item is Selector => item.type === 'selector')
+    if (!path || branches.length === 0) {
+      target.remove()
+      pending.push(current)
+      continue
+    }
+
+    for (const branch of branches) {
+      const next = current.clone()
+      const nextTarget = getNodeByPath(next, path)
+      if (nextTarget?.type === 'pseudo') {
+        nextTarget.replaceWith(...branch.nodes.map(item => item.clone()))
+        pending.push(next)
+      }
+    }
+  }
+
+  return expanded
+}
+
 function transformExpandedSelectorClasses(selector: Selector, context: TransformContext) {
   selector.walk((node) => {
     if (node.type === 'class') {
@@ -141,7 +240,9 @@ function flattenWherePseudo(node: Pseudo, context: TransformContext, index: numb
     return
   }
 
-  const branches = node.nodes.filter((item): item is Selector => item.type === 'selector')
+  const branches = node.nodes
+    .filter((item): item is Selector => item.type === 'selector')
+    .flatMap(expandNestedFunctionalPseudoBranches)
   for (const branch of branches) {
     if (transformSpacingSelector(branch.nodes, context.options)) {
       context.requiresSpacingNormalization = true

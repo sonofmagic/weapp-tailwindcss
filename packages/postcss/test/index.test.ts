@@ -52,6 +52,8 @@ describe('index', () => {
 .group-\\[\\.destructive\\]\\:border-muted\\/40:is(:where(.group).destructive *){border-color:red;}
 .peer-disabled\\:opacity-70:is(:where(.peer):disabled ~ *){opacity:.7;}
 button,input:where([type="button"], [type="reset"], [type="submit"]){appearance:button;}
+:where(select:is([multiple], [size])) optgroup{font-weight:700;}
+:where(select:is([multiple], [size])) optgroup option{padding-inline-start:20px;}
 :where(.child\\:ring-white) > :where(:not(.not-child)){box-shadow:0 0 #fff;}
 `)
 
@@ -59,7 +61,10 @@ button,input:where([type="button"], [type="reset"], [type="submit"]){appearance:
     expect(css).toContain('.space-y-2>view+view')
     expect(css).toContain('.divide-x-4>view+view')
     expect(css).toContain('input[type="button"]')
+    expect(css).toContain('select[multiple] optgroup')
+    expect(css).toContain('select[size] optgroup option')
     expect(css).not.toMatch(/:where\([^)]*,/)
+    expect(css).not.toContain(':is(')
     expect(css).not.toContain('*')
     expect(css).not.toContain(':hover')
   })

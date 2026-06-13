@@ -215,7 +215,10 @@ describeIde.sequential('where selector IDE runtime', () => {
     const translated = await runProbe('where-selector-translated-miniprogram', 'translated-where.png', {
       groupSelector: '.group-target',
       peerSelector: '.peer-target',
+      divideSelector: '.divide-target',
       spaceSelector: '.space-target',
+      childTextSelector: '.child-text-target',
+      childViewSelector: '.child-view-target',
       themeDescendantSelector: '.theme-descendant-target',
       themeSameNodeSelector: '.theme-same-node-target',
       whereSelector: '.where-target',
@@ -232,7 +235,10 @@ describeIde.sequential('where selector IDE runtime', () => {
       translatedCommaSelectorMatched: (translated.samples?.whereSelector?.bluePixels ?? 0) > 80,
       translatedGroupSelectorMatched: (translated.samples?.groupSelector?.greenPixels ?? 0) > 200,
       translatedPeerSelectorMatched: (translated.samples?.peerSelector?.greenPixels ?? 0) > 200,
+      translatedDivideSelectorMatched: (translated.samples?.divideSelector?.greenPixels ?? 0) > 200,
       translatedSpaceSelectorMatched: (translated.samples?.spaceSelector?.greenPixels ?? 0) > 200,
+      translatedChildTextSelectorMatched: (translated.samples?.childTextSelector?.greenPixels ?? 0) > 200,
+      translatedChildViewSelectorMatched: (translated.samples?.childViewSelector?.greenPixels ?? 0) > 200,
       translatedThemeDescendantSelectorMatched: (translated.samples?.themeDescendantSelector?.greenPixels ?? 0) > 200,
       translatedThemeSameNodeSelectorMatched: (translated.samples?.themeSameNodeSelector?.greenPixels ?? 0) > 200,
     }
@@ -242,7 +248,10 @@ describeIde.sequential('where selector IDE runtime', () => {
     expect(evidence.translatedCommaSelectorMatched, `转译后的逗号普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
     expect(evidence.translatedGroupSelectorMatched, `转译后的 group 普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
     expect(evidence.translatedPeerSelectorMatched, `转译后的 peer 普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedDivideSelectorMatched, `转译后的 divide 子节点选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
     expect(evidence.translatedSpaceSelectorMatched, `转译后的 space 子节点选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedChildTextSelectorMatched, `转译后的 child text 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedChildViewSelectorMatched, `转译后的 child view 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
     expect(evidence.translatedThemeDescendantSelectorMatched, `转译后的主题后代选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
     expect(evidence.translatedThemeSameNodeSelectorMatched, `转译后的主题同节点选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
   }, 180_000)

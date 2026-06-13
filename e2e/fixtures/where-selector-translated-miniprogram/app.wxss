@@ -18,6 +18,13 @@ page {
   background: #d1d5db;
 }
 
+.probe-inline {
+  display: block;
+  width: 220rpx;
+  height: 64rpx;
+  background: #d1d5db;
+}
+
 .where-host .where-target {
   background: #16a34a;
 }
@@ -36,10 +43,22 @@ page {
   background: #16a34a;
 }
 
+.divide-host > view + view {
+  background: #16a34a;
+}
+
 .group.destructive .group-target {
   background: #16a34a;
 }
 
 .peer.disabled ~ .peer-target-row .peer-target {
+  background: #16a34a;
+}
+
+.child-host > view {
+  background: #16a34a;
+}
+
+.child-host > text {
   background: #16a34a;
 }

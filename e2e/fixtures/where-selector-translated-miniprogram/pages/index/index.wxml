@@ -11,10 +11,18 @@
   <view class="probe-child">space first</view>
   <view class="probe-child space-target">space second</view>
 </view>
+<view class="probe-row divide-host">
+  <view class="probe-child">divide first</view>
+  <view class="probe-child divide-target">divide second</view>
+</view>
 <view class="probe-row group destructive">
   <view class="probe-box group-target">group translated</view>
 </view>
 <view class="probe-row peer disabled">peer source</view>
 <view class="probe-row peer-target-row">
   <view class="probe-box peer-target">peer translated</view>
+</view>
+<view class="probe-row child-host">
+  <view class="probe-child child-view-target">child view translated</view>
+  <text class="probe-inline child-text-target">child text translated</text>
 </view>
