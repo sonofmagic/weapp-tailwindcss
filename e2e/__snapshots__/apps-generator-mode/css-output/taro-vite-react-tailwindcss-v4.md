@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, app-origin.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 10072 | 40 | false | false | false | true | true | false | true |
+| 7867 | 37 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -83,12 +83,6 @@ wx-root-portal-content {
   --spacing: 8rpx;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
 }
 /* tokens: mt-2 <= src/pages/index/index.tsx */
 .mt-2 {
@@ -244,115 +238,5 @@ button {
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
-}
-.h5-textarea {
-  resize: vertical;
-}
-.h5-button {
-  appearance: button;
-}
-```
-
-### index.wxss
-
-```css
-.tw-page-style-watch-anchor {
-  color: inherit;
-}
-```
-
-### index.wxss
-
-```css
-view,
-text,
-::after,
-::before {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-  --tw-content: '';
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-}
-.h5-textarea {
-  resize: vertical;
-}
-.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
-  content: var(--tw-content);
-}
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
-}
-```
-
-### index.wxss
-
-```css
-view,
-text,
-::after,
-::before {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-  --tw-content: '';
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-}
-.h5-textarea {
-  resize: vertical;
-}
-.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v4';
-  content: var(--tw-content);
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
 }
 ```

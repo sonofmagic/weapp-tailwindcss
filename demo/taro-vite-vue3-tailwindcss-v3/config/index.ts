@@ -4,13 +4,18 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import type { Plugin } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+const taroEnv = process.env.TARO_ENV
+const isWebLikeTarget = taroEnv === 'h5' || taroEnv === 'harmony' || taroEnv === 'harmony-hybrid'
+const isNativeTarget = taroEnv === 'rn' || taroEnv === 'jdrn'
+
 const generator = {
-  target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
+  target: isWebLikeTarget ? 'web' : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
 }
-console.log(process.env.TARO_ENV)
+console.log(taroEnv)
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'vite'> = {
@@ -25,9 +30,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
-    plugins: [
-
-    ],
+    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
     defineConstants: {
     },
     copy: {
@@ -45,8 +48,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           name: 'taro-cjs-stability',
           enforce: 'post',
           config() {
-            // Taro mini runner defaults this to true; disabling it avoids ESM
-            // modules in node_modules being forced through CommonJS transforms.
+            // Taro mini runner 默认启用该选项，关闭后可避免 node_modules 中的 ESM 模块被强制转为 CommonJS。
             return {
               build: {
                 commonjsOptions: {
@@ -60,8 +62,8 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           cssSourceTrace: true,
           rem2rpx: true,
           generator,
-          // H5 也需要处理 Tailwind 入口；其他非样式目标保持禁用。
-          disabled: process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'rn',
+          // H5 与 Harmony Hybrid 都走 Web 样式产物；RN 原生 bundle 不处理样式入口。
+          disabled: isNativeTarget,
           injectAdditionalCssVarScope: true,
         })
       ] as Plugin[]

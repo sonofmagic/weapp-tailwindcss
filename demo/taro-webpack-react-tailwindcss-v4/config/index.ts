@@ -8,7 +8,9 @@ const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 
 const generator = {
-  target: process.env.TARO_ENV === 'h5' ? 'web' : 'weapp',
+  target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
+    ? 'web'
+    : 'weapp',
   styleOptions: {
     px2rpx: true,
   },
@@ -51,7 +53,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: [],
+    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {

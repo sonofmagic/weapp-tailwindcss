@@ -106,7 +106,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 14374,
+      "bytes": 14242,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
@@ -3372,7 +3372,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 389724,
+      "bytes": 389625,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -5886,14 +5886,11 @@
     "cssFile": "taro-vite-react-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app-origin.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "app-origin.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 13879,
+      "bytes": 10290,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -5903,8 +5900,6 @@
         ".bg-_b_h89ab8d_B",
         ".bg-_b_he24826_B",
         ".bg-_bred_B",
-        ".bg-independent-subpackage-marker",
-        ".bg-normal-subpackage-marker",
         ".bg-white",
         ".dark_cbg-zinc-900",
         ".dark_ctext-_b_hec4f4f_B",
@@ -5941,8 +5936,7 @@
         ".theme-dark .theme-dark_ctext-zinc-50",
         ".theme-dark_cbg-zinc-900.theme-dark",
         ".theme-dark_cbg-zinc-950.theme-dark",
-        ".theme-dark_ctext-zinc-50.theme-dark",
-        ".tw-page-style-watch-anchor"
+        ".theme-dark_ctext-zinc-50.theme-dark"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -5961,14 +5955,11 @@
     "cssFile": "taro-vite-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app-origin.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "app-origin.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 10072,
+      "bytes": 7867,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -5986,8 +5977,6 @@
         ".from-cyan-500",
         ".h-14",
         ".h-_b300px_B",
-        ".h5-button",
-        ".h5-textarea",
         ".mt-2",
         ".mt-4",
         ".px-3",
@@ -6005,7 +5994,6 @@
         ".theme-dark .dark_cbg-zinc-950",
         ".theme-dark .dark_ctext-zinc-50",
         ".to-blue-500",
-        ".tw-page-style-watch-anchor",
         ".tw-root",
         ":host",
         "page",
@@ -6117,7 +6105,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 134554,
+      "bytes": 134455,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -6768,7 +6756,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 9869,
+      "bytes": 9457,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -6785,8 +6773,6 @@
         ".from-cyan-500",
         ".h-14",
         ".h-_b300px_B",
-        ".h5-button",
-        ".h5-textarea",
         ".mt-2",
         ".mt-4",
         ".px-3",
@@ -9705,7 +9691,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 37888,
+      "bytes": 37690,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -9871,7 +9857,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 151771,
+      "bytes": 148281,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -9891,7 +9877,6 @@
         ".bg-_b_hB91C1C_B",
         ".bg-_b_hd72929_B",
         ".bg-_b_hdc2626_B",
-        ".bg-_b_hff0000_B",
         ".bg-_bcolor_cvar_p--mystery-var_P_B",
         ".bg-_bgreen_B",
         ".bg-_borange_B",
@@ -9981,7 +9966,6 @@
         ".px-6",
         ".px-_b16rpx_B",
         ".px-_b20rpx_B",
-        ".px-_b24rpx_B",
         ".py-0",
         ".py-1",
         ".py-2",
@@ -9990,7 +9974,6 @@
         ".py-6",
         ".py-_b10rpx_B",
         ".py-_b12rpx_B",
-        ".py-_b16rpx_B",
         ".py-_b6rpx_B",
         ".py-_b8rpx_B",
         ".right-4",
@@ -10016,7 +9999,6 @@
         ".system-dark_ctext-slate-100",
         ".text-_b24rpx_B",
         ".text-_b28rpx_B",
-        ".text-_b32rpx_B",
         ".text-_b34px_B",
         ".text-_b_h0000ff_B",
         ".text-_b_h123456_B",
@@ -10025,7 +10007,6 @@
         ".text-_b_h2563eb_B",
         ".text-_b_h654321_B",
         ".text-_b_hececec_B",
-        ".text-_b_hffffff_B",
         ".text-_blength_c24rpx_B",
         ".text-_blength_c32rpx_B",
         ".text-base",
@@ -10084,7 +10065,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 20560,
+      "bytes": 20428,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",

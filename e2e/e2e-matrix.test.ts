@@ -83,6 +83,12 @@ function isPlatformCovered(platforms: Set<string>, platform: string) {
   if (platform === 'app') {
     return platforms.has('app') || (platforms.has('app-android') && platforms.has('app-ios'))
   }
+  if (platform === 'android' || platform === 'ios') {
+    return platforms.has(platform) || platforms.has('rn')
+  }
+  if (platform === 'harmony') {
+    return platforms.has(platform) || platforms.has('harmony-hybrid')
+  }
   return platforms.has(platform)
 }
 

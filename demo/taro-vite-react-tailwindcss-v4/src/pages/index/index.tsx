@@ -1,5 +1,7 @@
 import { View, Text } from '@tarojs/components'
-import './index.css'
+if (process.env.TARO_ENV !== 'rn') {
+  require('./index.css')
+}
 
 export default function Index() {
   const complexTrace = 'at App.vue:4 index.ts:120:3'

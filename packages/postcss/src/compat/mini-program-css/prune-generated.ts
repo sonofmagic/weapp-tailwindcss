@@ -2,6 +2,7 @@ import postcss from 'postcss'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
 import { removeUnsupportedCascadeLayers } from './at-rules'
 import {
+  isBrowserElementPreflightRule,
   isCustomPropertyRule,
   isEmptyTwContentDeclaration,
   isMiniProgramPreflightRule,
@@ -175,6 +176,11 @@ export function pruneMiniProgramGeneratedCss(
     }
 
     if (isUnsupportedBrowserPreflightSelector(rule.selector)) {
+      rule.remove()
+      return
+    }
+
+    if (isBrowserElementPreflightRule(rule)) {
       rule.remove()
       return
     }

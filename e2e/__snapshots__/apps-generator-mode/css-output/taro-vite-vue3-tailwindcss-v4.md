@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 9869 | 38 | false | false | false | true | true | false | true |
+| 9457 | 36 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -82,12 +82,6 @@ wx-root-portal-content {
   --spacing: 8rpx;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
 }
 /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
@@ -240,30 +234,6 @@ button {
     color: var(--color-slate-100);
   }
 }
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
-}
-.h5-textarea {
-  resize: vertical;
-}
-.h5-button {
-  appearance: button;
-}
 ```
 
 ### index.wxss
@@ -292,9 +262,6 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-.h5-textarea {
-  resize: vertical;
 }
 .before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage taro-vite-vue3-tailwindcss-v4';
@@ -331,9 +298,6 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-.h5-textarea {
-  resize: vertical;
 }
 .before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';

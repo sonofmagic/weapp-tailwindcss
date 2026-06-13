@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 37888 | 135 | false | false | false | true | true | false | true |
+| 37690 | 135 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -70,12 +70,6 @@ wx-root-portal-content {
   --color-midnight: #121063;
   --color-tahiti: #3ab7bf;
   --color-bermuda: #78dcca;
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
 }
 /* tokens: mt-2 <= src/pages/index/index.vue */
 .mt-2 {
@@ -676,9 +670,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-textarea {
-  resize: vertical;
-}
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);
 }
@@ -863,9 +854,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-textarea {
-  resize: vertical;
-}
 .before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
   content: var(--tw-content);
@@ -900,9 +888,6 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 .before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
@@ -968,9 +953,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 .mt-2 {
   margin-top: calc(var(--spacing) * 2);

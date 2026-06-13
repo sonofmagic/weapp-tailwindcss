@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 14374 | 73 | false | false | false | true | true | false | true |
+| 14242 | 73 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -51,12 +51,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
 }
 /* tokens: m-[20px] <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .m-_b20px_B {
@@ -377,9 +371,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-textarea {
-  resize: vertical;
-}
 /* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.ttml, src/sub-independent/pages/index.wxml */
 .before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage gulp-tailwindcss-v4';
@@ -416,9 +407,6 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 /* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {

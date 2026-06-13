@@ -3,7 +3,7 @@
 module.exports = {
   presets: [
     ['taro', {
-      framework: 'vue3',
+      framework: process.env.TARO_ENV === 'rn' ? 'react' : 'vue3',
       ts: true,
       compiler: 'vite',
       useBuiltIns: process.env.TARO_ENV === 'h5' ? 'usage' : false

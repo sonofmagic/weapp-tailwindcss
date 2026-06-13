@@ -5,7 +5,7 @@ module.exports = {
     [
       'taro',
       {
-        framework: 'vue3',
+        framework: process.env.TARO_ENV === 'rn' ? 'react' : 'vue3',
         ts: true
       },
     ],

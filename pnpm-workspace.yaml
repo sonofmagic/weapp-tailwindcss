@@ -143,6 +143,7 @@ catalogs:
     '@tarojs/plugin-platform-weapp': ^4.2.0
     '@tarojs/react': ^4.2.0
     '@tarojs/runtime': ^4.2.0
+    '@tarojs/router': ^4.2.0
     '@tarojs/shared': ^4.2.0
     '@tarojs/taro': ^4.2.0
     '@tarojs/taro-loader': ^4.2.0
@@ -150,6 +151,38 @@ catalogs:
     '@tarojs/webpack5-runner': ^4.2.0
     babel-preset-taro: ^4.2.0
     eslint-config-taro: ^4.2.0
+  taro4rn:
+    '@tarojs/components-rn': ^4.2.0
+    '@tarojs/rn-runner': ^4.2.0
+    '@tarojs/rn-supporter': ^4.2.0
+    '@tarojs/runtime-rn': ^4.2.0
+    '@tarojs/taro-rn': ^4.2.0
+  expo50:
+    expo: 50.0.21
+  reactNative073:
+    react-native: 0.73.11
+  reactNativeMetroConfig073:
+    '@react-native/metro-config': 0.73.5
+  reactNativePicker261:
+    '@react-native-picker/picker': 2.6.1
+  reactNativeSlider442:
+    '@react-native-community/slider': 4.4.2
+  reactNativePagerView623:
+    react-native-pager-view: 6.2.3
+  reactNativeSvg141:
+    react-native-svg: 14.1.0
+  reactNativeWebview136:
+    react-native-webview: 13.6.4
+  reactNativeDeviceInfo14:
+    react-native-device-info: ^14.0.0
+  reactNativeGestureHandler214:
+    react-native-gesture-handler: 2.14.1
+  reactNativeScreens329:
+    react-native-screens: 3.29.0
+  reactNativeRootSiblings5:
+    react-native-root-siblings: ^5.0.1
+  metroReactNativeBabelPreset077:
+    metro-react-native-babel-preset: 0.77.0
   tsx:
     tsx: ^4.22.4
   typesNode2410:

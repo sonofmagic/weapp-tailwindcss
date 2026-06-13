@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 134554 | 554 | false | false | false | true | true | false | true |
+| 134455 | 554 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -156,9 +156,6 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 .visible {
   visibility: visible;
@@ -2046,9 +2043,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-textarea {
-  resize: vertical;
-}
 .visible {
   visibility: visible;
 }
@@ -3902,9 +3896,6 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 .visible {
   visibility: visible;

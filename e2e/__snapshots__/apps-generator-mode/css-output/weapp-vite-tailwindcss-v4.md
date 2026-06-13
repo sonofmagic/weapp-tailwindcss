@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 20560 | 83 | false | false | false | true | true | false | true |
+| 20428 | 83 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -67,12 +67,6 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
-}
-button {
-  appearance: button;
 }
 /* tokens: mt-2 <= pages/index/index.wxml */
 .mt-2 {
@@ -587,9 +581,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-textarea {
-  resize: vertical;
-}
 /* tokens: bg-independent-subpackage-marker <= sub-independent/pages/index.wxml */
 .before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
@@ -626,9 +617,6 @@ wx-root-portal-content {
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 /* tokens: bg-normal-subpackage-marker <= sub-normal/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {

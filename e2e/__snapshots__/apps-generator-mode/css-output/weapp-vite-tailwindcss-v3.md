@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, app.wxss, index.wxss, index.wxss, index.wxss, ind
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 151771 | 186 | false | false | false | true | true | false | true |
+| 148281 | 181 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -344,11 +344,6 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
 }
-/*tokens: bg-[#ff0000] <= miniprogram/pages/index/index.wxml*/
-.bg-_b_hff0000_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
 /*tokens: bg-[color:var(--mystery-var)] <= miniprogram/pages/index/merge/index.ts*/
 .bg-_bcolor_cvar_p--mystery-var_P_B {
   background-color: var(--mystery-var);
@@ -473,11 +468,6 @@ text,
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
-/*tokens: px-[24rpx] <= miniprogram/pages/index/index.wxml*/
-.px-_b24rpx_B {
-  padding-left: 24rpx;
-  padding-right: 24rpx;
-}
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -516,11 +506,6 @@ text,
   padding-top: 12rpx;
   padding-bottom: 12rpx;
 }
-/*tokens: py-[16rpx] <= miniprogram/pages/index/index.wxml*/
-.py-_b16rpx_B {
-  padding-top: 16rpx;
-  padding-bottom: 16rpx;
-}
 /*tokens: py-[6rpx] <= miniprogram/pages/index/merge/index.ts*/
 .py-_b6rpx_B {
   padding-top: 6rpx;
@@ -538,10 +523,6 @@ text,
 /*tokens: text-[28rpx] <= miniprogram/pages/index/merge/index.ts*/
 .text-_b28rpx_B {
   font-size: 28rpx;
-}
-/*tokens: text-[32rpx] <= miniprogram/pages/index/index.wxml*/
-.text-_b32rpx_B {
-  font-size: 32rpx;
 }
 /*tokens: text-[34px] <= miniprogram/pages/index/merge/index.ts*/
 .text-_b34px_B {
@@ -628,11 +609,6 @@ text,
 .text-_b_hececec_B {
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
-}
-/*tokens: text-[#ffffff] <= miniprogram/pages/index/index.wxml*/
-.text-_b_hffffff_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 /*tokens: text-blue-500 <= miniprogram/pages/index/index.wxml*/
 .text-blue-500 {
@@ -1218,11 +1194,6 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[#ff0000] <= miniprogram/pages/index/index.wxml */
-.bg-_b_hff0000_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
 /* tokens: bg-[color:var(--mystery-var)] <= miniprogram/pages/index/merge/index.ts */
 .bg-_bcolor_cvar_p--mystery-var_P_B {
   background-color: var(--mystery-var);
@@ -1347,11 +1318,6 @@ text,
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
-/* tokens: px-[24rpx] <= miniprogram/pages/index/index.wxml */
-.px-_b24rpx_B {
-  padding-left: 24rpx;
-  padding-right: 24rpx;
-}
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -1390,11 +1356,6 @@ text,
   padding-top: 12rpx;
   padding-bottom: 12rpx;
 }
-/* tokens: py-[16rpx] <= miniprogram/pages/index/index.wxml */
-.py-_b16rpx_B {
-  padding-top: 16rpx;
-  padding-bottom: 16rpx;
-}
 /* tokens: py-[6rpx] <= miniprogram/pages/index/merge/index.ts */
 .py-_b6rpx_B {
   padding-top: 6rpx;
@@ -1412,10 +1373,6 @@ text,
 /* tokens: text-[28rpx] <= miniprogram/pages/index/merge/index.ts */
 .text-_b28rpx_B {
   font-size: 28rpx;
-}
-/* tokens: text-[32rpx] <= miniprogram/pages/index/index.wxml */
-.text-_b32rpx_B {
-  font-size: 32rpx;
 }
 /* tokens: text-[34px] <= miniprogram/pages/index/merge/index.ts */
 .text-_b34px_B {
@@ -1502,11 +1459,6 @@ text,
 .text-_b_hececec_B {
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
-}
-/* tokens: text-[#ffffff] <= miniprogram/pages/index/index.wxml */
-.text-_b_hffffff_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 /* tokens: text-blue-500 <= miniprogram/pages/index/index.wxml */
 .text-blue-500 {
@@ -2314,11 +2266,6 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[#ff0000] <= miniprogram/pages/index/index.wxml */
-.bg-_b_hff0000_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
 /* tokens: bg-[color:var(--mystery-var)] <= miniprogram/pages/index/merge/index.ts */
 .bg-_bcolor_cvar_p--mystery-var_P_B {
   background-color: var(--mystery-var);
@@ -2443,11 +2390,6 @@ text,
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
-/* tokens: px-[24rpx] <= miniprogram/pages/index/index.wxml */
-.px-_b24rpx_B {
-  padding-left: 24rpx;
-  padding-right: 24rpx;
-}
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -2486,11 +2428,6 @@ text,
   padding-top: 12rpx;
   padding-bottom: 12rpx;
 }
-/* tokens: py-[16rpx] <= miniprogram/pages/index/index.wxml */
-.py-_b16rpx_B {
-  padding-top: 16rpx;
-  padding-bottom: 16rpx;
-}
 /* tokens: py-[6rpx] <= miniprogram/pages/index/merge/index.ts */
 .py-_b6rpx_B {
   padding-top: 6rpx;
@@ -2508,10 +2445,6 @@ text,
 /* tokens: text-[28rpx] <= miniprogram/pages/index/merge/index.ts */
 .text-_b28rpx_B {
   font-size: 28rpx;
-}
-/* tokens: text-[32rpx] <= miniprogram/pages/index/index.wxml */
-.text-_b32rpx_B {
-  font-size: 32rpx;
 }
 /* tokens: text-[34px] <= miniprogram/pages/index/merge/index.ts */
 .text-_b34px_B {
@@ -2598,11 +2531,6 @@ text,
 .text-_b_hececec_B {
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
-}
-/* tokens: text-[#ffffff] <= miniprogram/pages/index/index.wxml */
-.text-_b_hffffff_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 /* tokens: text-blue-500 <= miniprogram/pages/index/index.wxml */
 .text-blue-500 {
@@ -3196,11 +3124,6 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[#ff0000] <= miniprogram/pages/index/index.wxml */
-.bg-_b_hff0000_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
 /* tokens: bg-[color:var(--mystery-var)] <= miniprogram/pages/index/merge/index.ts */
 .bg-_bcolor_cvar_p--mystery-var_P_B {
   background-color: var(--mystery-var);
@@ -3325,11 +3248,6 @@ text,
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
-/* tokens: px-[24rpx] <= miniprogram/pages/index/index.wxml */
-.px-_b24rpx_B {
-  padding-left: 24rpx;
-  padding-right: 24rpx;
-}
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -3368,11 +3286,6 @@ text,
   padding-top: 12rpx;
   padding-bottom: 12rpx;
 }
-/* tokens: py-[16rpx] <= miniprogram/pages/index/index.wxml */
-.py-_b16rpx_B {
-  padding-top: 16rpx;
-  padding-bottom: 16rpx;
-}
 /* tokens: py-[6rpx] <= miniprogram/pages/index/merge/index.ts */
 .py-_b6rpx_B {
   padding-top: 6rpx;
@@ -3390,10 +3303,6 @@ text,
 /* tokens: text-[28rpx] <= miniprogram/pages/index/merge/index.ts */
 .text-_b28rpx_B {
   font-size: 28rpx;
-}
-/* tokens: text-[32rpx] <= miniprogram/pages/index/index.wxml */
-.text-_b32rpx_B {
-  font-size: 32rpx;
 }
 /* tokens: text-[34px] <= miniprogram/pages/index/merge/index.ts */
 .text-_b34px_B {
@@ -3480,11 +3389,6 @@ text,
 .text-_b_hececec_B {
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
-}
-/* tokens: text-[#ffffff] <= miniprogram/pages/index/index.wxml */
-.text-_b_hffffff_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 /* tokens: text-blue-500 <= miniprogram/pages/index/index.wxml */
 .text-blue-500 {
@@ -4078,11 +3982,6 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
 }
-/*tokens: bg-[#ff0000] <= miniprogram/pages/index/index.wxml*/
-.bg-_b_hff0000_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
-}
 /*tokens: bg-[color:var(--mystery-var)] <= miniprogram/pages/index/merge/index.ts*/
 .bg-_bcolor_cvar_p--mystery-var_P_B {
   background-color: var(--mystery-var);
@@ -4207,11 +4106,6 @@ text,
   padding-left: 20rpx;
   padding-right: 20rpx;
 }
-/*tokens: px-[24rpx] <= miniprogram/pages/index/index.wxml*/
-.px-_b24rpx_B {
-  padding-left: 24rpx;
-  padding-right: 24rpx;
-}
 .py-0 {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -4250,11 +4144,6 @@ text,
   padding-top: 12rpx;
   padding-bottom: 12rpx;
 }
-/*tokens: py-[16rpx] <= miniprogram/pages/index/index.wxml*/
-.py-_b16rpx_B {
-  padding-top: 16rpx;
-  padding-bottom: 16rpx;
-}
 /*tokens: py-[6rpx] <= miniprogram/pages/index/merge/index.ts*/
 .py-_b6rpx_B {
   padding-top: 6rpx;
@@ -4272,10 +4161,6 @@ text,
 /*tokens: text-[28rpx] <= miniprogram/pages/index/merge/index.ts*/
 .text-_b28rpx_B {
   font-size: 28rpx;
-}
-/*tokens: text-[32rpx] <= miniprogram/pages/index/index.wxml*/
-.text-_b32rpx_B {
-  font-size: 32rpx;
 }
 /*tokens: text-[34px] <= miniprogram/pages/index/merge/index.ts*/
 .text-_b34px_B {
@@ -4362,11 +4247,6 @@ text,
 .text-_b_hececec_B {
   --tw-text-opacity: 1;
   color: rgba(236, 236, 236, var(--tw-text-opacity, 1));
-}
-/*tokens: text-[#ffffff] <= miniprogram/pages/index/index.wxml*/
-.text-_b_hffffff_B {
-  --tw-text-opacity: 1;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
 /*tokens: text-blue-500 <= miniprogram/pages/index/index.wxml*/
 .text-blue-500 {

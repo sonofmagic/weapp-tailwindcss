@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 389724 | 2494 | false | false | false | true | true | false | true |
+| 389625 | 2494 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -343,9 +343,6 @@ wx-root-portal-content {
   --nutui-radius-xl: var(--nutui-radius-12);
   --nutui-radius-xxl: var(--nutui-radius-14);
   --nutui-radius-xxxl: var(--nutui-radius-16);
-}
-textarea {
-  resize: vertical;
 }
 .visible {
   visibility: visible;
@@ -11071,9 +11068,6 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
-textarea {
-  resize: vertical;
-}
 .visible {
   visibility: visible;
 }
@@ -12391,9 +12385,6 @@ wx-root-portal-content {
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-}
-textarea {
-  resize: vertical;
 }
 .visible {
   visibility: visible;
