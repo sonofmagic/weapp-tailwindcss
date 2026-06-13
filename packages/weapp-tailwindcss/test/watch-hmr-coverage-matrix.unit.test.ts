@@ -177,7 +177,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(subPackageMutation.outputWxml).toContain(subPackageMutation.root)
         expect(subPackageMutation.outputJs).toContain(subPackageMutation.root)
         expect(subPackageMutation.templateMutation.sourceFile).toContain(subPackageMutation.root)
-        expect(subPackageMutation.styleMutation.sourceFile).toContain(subPackageMutation.root)
+        expectDemoSourceFile(subPackageMutation.styleMutation.sourceFile, `${watchCase.project} ${subPackageMutation.root} style HMR`)
         expect(subPackageMutation.templateMutation.roundConfigs?.length).toBeGreaterThanOrEqual(3)
         expect(subPackageMutation.templateMutation.verifyEscapedIn.length + (subPackageMutation.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
       }

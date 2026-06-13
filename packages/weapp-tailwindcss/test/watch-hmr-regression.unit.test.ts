@@ -159,6 +159,10 @@ function toSlashPath(filePath: string) {
   return filePath.replace(/\\/g, '/')
 }
 
+function toRepoPath(filePath: string) {
+  return toSlashPath(filePath).replace(/^[A-Z]:(?=\/)/i, '')
+}
+
 function createRound(roundName: MutationRoundMetrics['roundName'], hotUpdateEffectiveMs: number, rollbackEffectiveMs: number): MutationRoundMetrics {
   return {
     roundName,
@@ -1803,8 +1807,8 @@ describe('watch-hmr regression cases', () => {
       for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
         expect(subPackageMutation.templateMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
         if (watchCase.name === 'taro-vite-react-tailwindcss-v3') {
-          expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toBe('/repo/demo/taro-vite-react-tailwindcss-v3/src/app.scss')
-          expect(subPackageMutation.outputStyleCandidates, watchCase.name).toEqual([
+          expect(toRepoPath(subPackageMutation.styleMutation.sourceFile), watchCase.name).toBe('/repo/demo/taro-vite-react-tailwindcss-v3/src/app.scss')
+          expect(subPackageMutation.outputStyleCandidates.map(toRepoPath), watchCase.name).toEqual([
             '/repo/demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss',
             '/repo/demo/taro-vite-react-tailwindcss-v3/dist/app.wxss',
           ])
