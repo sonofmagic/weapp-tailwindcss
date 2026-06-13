@@ -12,6 +12,12 @@ page {
   background: #d1d5db;
 }
 
+.probe-child {
+  width: 220rpx;
+  height: 64rpx;
+  background: #d1d5db;
+}
+
 .where-host .where-target {
   background: #16a34a;
 }
@@ -19,4 +25,21 @@ page {
 .where-host .where-target,
 .where-host .where-fallback {
   border-top: 8rpx solid #2563eb;
+}
+
+.theme-target.dark,
+.dark .theme-target {
+  background: #16a34a;
+}
+
+.space-host > view + view {
+  background: #16a34a;
+}
+
+.group.destructive .group-target {
+  background: #16a34a;
+}
+
+.peer.disabled ~ .peer-target-row .peer-target {
+  background: #16a34a;
 }

@@ -26,6 +26,12 @@ interface ProbeResult {
   compileError?: string
   greenPixels: number
   redPixels: number
+  samples?: Record<string, {
+    bluePixels: number
+    greenPixels: number
+    redPixels: number
+    targetRect: Rect
+  }>
   screenshot?: string
   targetRect?: Rect
 }
@@ -124,7 +130,25 @@ function isCompileError(error: unknown) {
   return /WXSS|文件编译错误|compile|error at token|CssSyntaxError/i.test(message)
 }
 
-async function runProbe(projectName: string, screenshotName: string): Promise<ProbeResult> {
+async function collectNodePixels(page: any, screenshot: PNG, selector: string) {
+  const target = await page.$(selector)
+  expect(target, `should render ${selector}`).toBeTruthy()
+  const targetOffset = await target.offset()
+  const targetSize = await target.size()
+  const pageSize = await page.size()
+  const scaleX = screenshot.width / pageSize.width
+  const scaleY = screenshot.height / pageSize.height
+  const targetRect = expandRect(scaleRect({ ...targetOffset, ...targetSize }, scaleX, scaleY), -4)
+
+  return {
+    bluePixels: countPixels(screenshot, targetRect, isBlue),
+    greenPixels: countPixels(screenshot, targetRect, isGreen),
+    redPixels: countPixels(screenshot, targetRect, isRed),
+    targetRect,
+  }
+}
+
+async function runProbe(projectName: string, screenshotName: string, selectors: Record<string, string>): Promise<ProbeResult> {
   const projectPath = fixturePath(projectName)
   const automator = new Launcher()
   let miniProgram: any
@@ -136,24 +160,22 @@ async function runProbe(projectName: string, screenshotName: string): Promise<Pr
     })
     const page = await miniProgram.reLaunch(pageUrl)
     await page.waitFor(1000)
-    const target = await page.$('.where-target')
-    expect(target, `${projectName} should render .where-target`).toBeTruthy()
-    const targetOffset = await target.offset()
-    const targetSize = await target.size()
-    const pageSize = await page.size()
     const screenshotPath = path.resolve(artifactDir, screenshotName)
     await captureMiniProgramScreenshot(miniProgram, screenshotPath)
     const screenshot = await readScreenshot(screenshotPath)
-    const scaleX = screenshot.width / pageSize.width
-    const scaleY = screenshot.height / pageSize.height
-    const targetRect = expandRect(scaleRect({ ...targetOffset, ...targetSize }, scaleX, scaleY), -4)
+    const samples: ProbeResult['samples'] = {}
+    for (const [name, selector] of Object.entries(selectors)) {
+      samples[name] = await collectNodePixels(page, screenshot, selector)
+    }
+    const firstSample = samples[Object.keys(selectors)[0] ?? '']
 
     return {
-      bluePixels: countPixels(screenshot, targetRect, isBlue),
-      greenPixels: countPixels(screenshot, targetRect, isGreen),
-      redPixels: countPixels(screenshot, targetRect, isRed),
+      bluePixels: firstSample?.bluePixels ?? 0,
+      greenPixels: firstSample?.greenPixels ?? 0,
+      redPixels: firstSample?.redPixels ?? 0,
+      samples,
       screenshot: screenshotPath,
-      targetRect,
+      targetRect: firstSample?.targetRect,
     }
   }
   catch (error) {
@@ -187,26 +209,41 @@ describeIde.sequential('where selector IDE runtime', () => {
   })
 
   it('checks raw :where support and verifies class-selector translation in WeChat DevTools', async () => {
-    const raw = await runProbe('where-selector-raw-miniprogram', 'raw-where.png')
-    const translated = await runProbe('where-selector-translated-miniprogram', 'translated-where.png')
+    const raw = await runProbe('where-selector-raw-miniprogram', 'raw-where.png', {
+      rawWhere: '.where-target',
+    })
+    const translated = await runProbe('where-selector-translated-miniprogram', 'translated-where.png', {
+      groupSelector: '.group-target',
+      peerSelector: '.peer-target',
+      spaceSelector: '.space-target',
+      themeDescendantSelector: '.theme-descendant-target',
+      themeSameNodeSelector: '.theme-same-node-target',
+      whereSelector: '.where-target',
+    })
     const evidence = {
       raw,
       rawWhereCompiled: !raw.compileError,
       rawWhereMatched: raw.redPixels > 200,
       rawWhereMultiSelectorMatched: raw.bluePixels > 80,
       translated,
-      translatedClassSelectorMatched: translated.greenPixels > 200,
-      translatedCommaSelectorMatched: translated.bluePixels > 80,
+      translatedClassSelectorMatched: translated.samples?.whereSelector?.greenPixels
+        ? translated.samples.whereSelector.greenPixels > 200
+        : false,
+      translatedCommaSelectorMatched: (translated.samples?.whereSelector?.bluePixels ?? 0) > 80,
+      translatedGroupSelectorMatched: (translated.samples?.groupSelector?.greenPixels ?? 0) > 200,
+      translatedPeerSelectorMatched: (translated.samples?.peerSelector?.greenPixels ?? 0) > 200,
+      translatedSpaceSelectorMatched: (translated.samples?.spaceSelector?.greenPixels ?? 0) > 200,
+      translatedThemeDescendantSelectorMatched: (translated.samples?.themeDescendantSelector?.greenPixels ?? 0) > 200,
+      translatedThemeSameNodeSelectorMatched: (translated.samples?.themeSameNodeSelector?.greenPixels ?? 0) > 200,
     }
     await writeEvidence('where-selector-evidence.json', evidence)
 
-    expect(
-      evidence.translatedClassSelectorMatched,
-      `转译后的普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`,
-    ).toBe(true)
-    expect(
-      evidence.translatedCommaSelectorMatched,
-      `转译后的逗号普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`,
-    ).toBe(true)
+    expect(evidence.translatedClassSelectorMatched, `转译后的普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedCommaSelectorMatched, `转译后的逗号普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedGroupSelectorMatched, `转译后的 group 普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedPeerSelectorMatched, `转译后的 peer 普通 class 选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedSpaceSelectorMatched, `转译后的 space 子节点选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedThemeDescendantSelectorMatched, `转译后的主题后代选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
+    expect(evidence.translatedThemeSameNodeSelectorMatched, `转译后的主题同节点选择器应在 IDE 中生效: ${JSON.stringify(translated)}`).toBe(true)
   }, 180_000)
 })
