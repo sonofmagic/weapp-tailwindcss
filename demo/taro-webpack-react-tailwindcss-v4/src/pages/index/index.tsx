@@ -1,7 +1,5 @@
 import { View, Text } from '@tarojs/components'
-if (process.env.TARO_ENV !== 'rn') {
-  require('./index.css')
-}
+import './index.css'
 import { Button } from '@nutui/nutui-react-taro'
 
 export default function Index() {

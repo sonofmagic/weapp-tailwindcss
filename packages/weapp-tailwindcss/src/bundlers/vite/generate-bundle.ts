@@ -1065,15 +1065,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }
           const replayAsset = createReplayCssAsset(outputFile, css)
+          bundle[outputFile] = replayAsset
           if (typeof this.emitFile === 'function') {
             this.emitFile({
               type: 'asset',
               fileName: outputFile,
               source: css,
             })
-          }
-          else {
-            bundle[outputFile] = replayAsset
           }
           markCssAssetProcessed?.(replayAsset, outputFile)
           metrics.css.elapsed += measureElapsed(start)

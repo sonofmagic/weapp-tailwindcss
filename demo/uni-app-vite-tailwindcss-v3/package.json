@@ -101,6 +101,7 @@
     "class-variance-authority": "catalog:classVarianceAuthority",
     "clipboard": "^2.0.11",
     "dayjs": "^1.11.21",
+    "entities": "^8.0.0",
     "eventemitter3": "^5.0.4",
     "htmlparser2": "^12.0.0",
     "magic-string": "^0.30.21",

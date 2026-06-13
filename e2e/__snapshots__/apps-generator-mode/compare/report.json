@@ -5886,11 +5886,12 @@
     "cssFile": "taro-vite-react-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app-origin.wxss"
+      "app-origin.wxss",
+      "index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 10290,
+      "bytes": 10340,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -5936,7 +5937,8 @@
         ".theme-dark .theme-dark_ctext-zinc-50",
         ".theme-dark_cbg-zinc-900.theme-dark",
         ".theme-dark_cbg-zinc-950.theme-dark",
-        ".theme-dark_ctext-zinc-50.theme-dark"
+        ".theme-dark_ctext-zinc-50.theme-dark",
+        ".tw-page-style-watch-anchor"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -5955,11 +5957,12 @@
     "cssFile": "taro-vite-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app-origin.wxss"
+      "app-origin.wxss",
+      "index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 7867,
+      "bytes": 7917,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -5994,6 +5997,7 @@
         ".theme-dark .dark_cbg-zinc-950",
         ".theme-dark .dark_ctext-zinc-50",
         ".to-blue-500",
+        ".tw-page-style-watch-anchor",
         ".tw-root",
         ":host",
         "page",

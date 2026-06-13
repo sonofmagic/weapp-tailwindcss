@@ -111,6 +111,7 @@ const classArray = [
         skipBuild: true,
         quietSass: true,
         webOnly: false,
+        styleOnly: false,
         mainStyleOnly: false,
       }
       const watchCase = {

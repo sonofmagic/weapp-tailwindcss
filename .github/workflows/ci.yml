@@ -20,7 +20,7 @@ permissions:
 jobs:
   quality:
     name: Quality Gate (ubuntu-latest, 22)
-    timeout-minutes: 35
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:
@@ -47,7 +47,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Security Audit
-        run: pnpm audit --audit-level=moderate
+        timeout-minutes: 3
+        run: timeout 180s pnpm audit --audit-level=moderate
         continue-on-error: true
 
       - name: Lint

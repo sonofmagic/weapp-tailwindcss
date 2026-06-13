@@ -16,6 +16,9 @@ function createOptions(): CliOptions {
     pollMs: 10,
     skipBuild: true,
     quietSass: true,
+    webOnly: false,
+    styleOnly: false,
+    mainStyleOnly: false,
   }
 }
 

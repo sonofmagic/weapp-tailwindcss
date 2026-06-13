@@ -1,8 +1,9 @@
-import type { CliOptions, WatchCase, WatchProjectGroup, WatchSession } from './types'
+import type { CliOptions, StyleMutationMetrics, WatchCase, WatchCaseMetrics, WatchProjectGroup, WatchSession } from './types'
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { runStyleMutation } from './mutations/style'
 import { createWatchSession, sleep } from './session'
+import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 
 export interface StyleOnlyCaseMetrics {
@@ -28,13 +29,50 @@ export async function waitForStyleOnlyWarmup(
   }
 }
 
+function toStyleOnlyWatchCaseMetrics(
+  watchCase: WatchCase,
+  initialReadyMs: number,
+  totalMs: number,
+  styleMetrics: StyleMutationMetrics,
+): WatchCaseMetrics {
+  return {
+    name: watchCase.name,
+    label: watchCase.label,
+    project: watchCase.project,
+    projectGroup: watchCase.group,
+    marker: `style:${styleMetrics.marker}`,
+    classLiteral: styleMetrics.styleNeedle,
+    classTokens: [styleMetrics.styleNeedle],
+    escapedClasses: styleMetrics.outputNeedles,
+    rounds: [],
+    verifyEscapedIn: [],
+    verifyClassLiteralIn: [],
+    globalStyleOutputs: watchCase.globalStyleCandidates,
+    mutationMetrics: [styleMetrics],
+    subPackageMutationMetrics: [],
+    summaryByMutationKind: summarizeMutationMetricsByKind([styleMetrics]),
+    initialReadyMs,
+    maxPluginProcessMs: watchCase.maxPluginProcessMs,
+    hotUpdateOutputMs: styleMetrics.hotUpdateOutputMs,
+    hotUpdateEffectiveMs: styleMetrics.hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: styleMetrics.hotUpdatePluginProcessMs,
+    hotUpdatePluginProcessSamples: styleMetrics.hotUpdatePluginProcessSamples,
+    rollbackOutputMs: styleMetrics.rollbackOutputMs,
+    rollbackEffectiveMs: styleMetrics.rollbackEffectiveMs,
+    rollbackPluginProcessMs: styleMetrics.rollbackPluginProcessMs,
+    rollbackPluginProcessSamples: styleMetrics.rollbackPluginProcessSamples,
+    totalMs,
+  }
+}
+
 /**
  * 仅运行 style 变更链路，供调试 HMR 时复用现有 watch harness。
  */
 export async function runStyleOnlyCase(
   watchCase: WatchCase,
   options: CliOptions,
-): Promise<StyleOnlyCaseMetrics> {
+): Promise<StyleOnlyCaseMetrics & { watchCaseMetrics: WatchCaseMetrics }> {
+  const caseStartedAt = Date.now()
   const styleSourceOriginal = await fs.readFile(watchCase.styleMutation.sourceFile, 'utf8')
   const sessionStartedAt = Date.now()
   const session = createWatchSession(
@@ -60,6 +98,9 @@ export async function runStyleOnlyCase(
       `[watch-hmr:style] ${watchCase.label} passed (hotUpdate=${styleMetrics.hotUpdateEffectiveMs}ms, rollback=${styleMetrics.rollbackEffectiveMs}ms)\n`,
     )
 
+    const totalMs = Date.now() - caseStartedAt
+    const watchCaseMetrics = toStyleOnlyWatchCaseMetrics(watchCase, initialReadyMs, totalMs, styleMetrics)
+
     return {
       name: watchCase.name,
       label: watchCase.label,
@@ -70,6 +111,7 @@ export async function runStyleOnlyCase(
       rollbackMs: styleMetrics.rollbackEffectiveMs,
       rollbackNeedleCleared: styleMetrics.rollbackNeedleCleared,
       outputStyle: styleMetrics.outputStyle,
+      watchCaseMetrics,
     }
   }
   catch (error) {

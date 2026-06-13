@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, app-origin.wxss
+Generator CSS files: app.wxss, app-origin.wxss, index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 7867 | 37 | false | false | false | true | true | false | true |
+| 7917 | 38 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -238,5 +238,13 @@ wx-root-portal-content {
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }
+}
+```
+
+### index.wxss
+
+```css
+.tw-page-style-watch-anchor {
+  color: inherit;
 }
 ```

@@ -26,15 +26,18 @@ function createOptions(): CliOptions {
     pollMs: 10,
     skipBuild: true,
     quietSass: true,
+    webOnly: false,
+    styleOnly: true,
+    mainStyleOnly: false,
   }
 }
 
 function createWatchCase(sourceFile: string): WatchCase {
   return {
-    name: 'taro-webpack',
+    name: 'taro-webpack-react-tailwindcss-v4',
     label: 'demo/taro-webpack-react-tailwindcss-v4',
     project: 'demo/taro-webpack-react-tailwindcss-v4',
-    group: 'apps',
+    group: 'demo',
     cwd: '/repo/demo/taro-webpack-react-tailwindcss-v4',
     devScript: 'dev:weapp2',
     outputWxml: '/repo/dist/pages/index/index.wxml',
@@ -101,11 +104,16 @@ describe('watch-hmr style-only helpers', () => {
     const result = await runStyleOnlyCase(watchCase, createOptions())
 
     expect(result).toMatchObject({
-      name: 'taro-webpack',
+      name: 'taro-webpack-react-tailwindcss-v4',
       hotUpdateMs: 10,
       rollbackMs: 11,
       rollbackNeedleCleared: true,
       outputStyle: '/repo/dist/pages/index/index.wxss',
+    })
+    expect(result.watchCaseMetrics).toMatchObject({
+      name: 'taro-webpack-react-tailwindcss-v4',
+      hotUpdateEffectiveMs: 10,
+      rollbackEffectiveMs: 11,
     })
     expect(session.ensureRunning).toHaveBeenCalled()
     expect(session.stop).toHaveBeenCalledTimes(1)

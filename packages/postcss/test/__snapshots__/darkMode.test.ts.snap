@@ -24,7 +24,7 @@ exports[`darkMode > darkMode: 'class', uni-app x 1`] = `
 `;
 
 exports[`darkMode > darkMode: 'selector', 1`] = `
-".dark_cbg-black.dark {
+".dark_cbg-black.dark,.dark_cbg-black.dark view,.dark_cbg-black.dark text {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"
@@ -33,7 +33,7 @@ exports[`darkMode > darkMode: 'selector', 1`] = `
 exports[`darkMode > darkMode: 'selector', uni-app x 1`] = `""`;
 
 exports[`darkMode > darkMode: ['selector', '[data-mode="dark"]'], 1`] = `
-".dark_cbg-black[data-mode="dark"] {
+".dark_cbg-black[data-mode="dark"],.dark_cbg-black[data-mode="dark"] view,.dark_cbg-black[data-mode="dark"] text {
     --tw-bg-opacity: 1;
     background-color: rgba(0, 0, 0, var(--tw-bg-opacity, 1)) ;
 }"

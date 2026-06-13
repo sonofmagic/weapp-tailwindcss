@@ -6,6 +6,7 @@ import { buildCases, isLocalOnlyWatchCase, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
 import { assertHotUpdateBudget, assertPluginProcessBudget, logSummary, runCase, runMainStyleOnlyCase, runWebOnlyCase } from './runner'
 import { ensureLocalPackageBuild, sleep } from './session'
+import { runStyleOnlyCase } from './style-only'
 import {
   summarizeMetrics,
   summarizeMetricsByGroup,
@@ -62,9 +63,11 @@ export async function main() {
       process.stdout.write(`[watch-hmr] start ${watchCase.label} (${watchCase.devScript})\n`)
       const result = options.mainStyleOnly
         ? await runMainStyleOnlyCase(watchCase, options)
-        : options.webOnly
-          ? await runWebOnlyCase(watchCase, options)
-          : await runCase(watchCase, options)
+        : options.styleOnly
+          ? (await runStyleOnlyCase(watchCase, options)).watchCaseMetrics
+          : options.webOnly
+            ? await runWebOnlyCase(watchCase, options)
+            : await runCase(watchCase, options)
       metrics.push(result)
       assertHotUpdateBudget(result, options)
       assertPluginProcessBudget(result, options)
