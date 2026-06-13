@@ -73,6 +73,19 @@ describe('darkMode', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('保留第三方属性选择器，不把它们当成主题切换兜底删除', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(`[dir="rtl"] .nut-toast,
+.nut-rtl .nut-toast {
+  left: auto;
+  right: 0;
+}`)
+    expect(css).toContain('[dir="rtl"] .nut-toast')
+    expect(css).toContain('.nut-rtl .nut-toast')
+  })
+
   it(`darkMode: ['selector', '[data-mode="dark"]'], uni-app x`, async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,

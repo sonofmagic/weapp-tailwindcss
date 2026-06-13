@@ -24,6 +24,20 @@ describe('demo visual theme evidence', () => {
     expect(analyzeThemeCss('.t-button__content:not(:empty) { display: inline }').hasUnsupportedThemeComplexSelector).toBe(false)
   })
 
+  it('keeps third-party attribute selectors outside theme selector checks', () => {
+    const evidence = analyzeThemeCss(`.nut-rtl .nut-toast,
+[dir='rtl'] .nut-toast {
+  left: auto;
+  right: 0;
+}
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: #09090b;
+}`)
+    expect(evidence.hasManualDarkSelector).toBe(true)
+    expect(evidence.hasUnsupportedThemeAttributeSelector).toBe(false)
+    expect(evidence.hasUnsupportedThemeComplexSelector).toBe(false)
+  })
+
   it('counts dark pixels inside the sampled screenshot rectangle', () => {
     const png = new PNG({ height: 4, width: 4 })
     png.data.fill(255)
