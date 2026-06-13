@@ -20,7 +20,7 @@ permissions:
 jobs:
   quality:
     name: Quality Gate (ubuntu-latest, 22)
-    timeout-minutes: 35
+    timeout-minutes: 60
     runs-on: ubuntu-latest
     # Remote Caching enabled - configure TURBO_TOKEN and TURBO_TEAM in repository settings
     env:

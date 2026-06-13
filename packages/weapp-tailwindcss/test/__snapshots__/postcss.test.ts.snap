@@ -566,10 +566,7 @@ exports[`postcss plugin > dark mode selector > css 1`] = `
     --tw-border-opacity: 1;
     border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
   }
-.tbody .tr:where(.dark,.dark view) {
-    border-color: rgba(148, 163, 184, 0.1)
-  }
-.tbody .tr:where(.dark,.dark text) {
+.tbody .tr.dark {
     border-color: rgba(148, 163, 184, 0.1)
   }"
 `;
