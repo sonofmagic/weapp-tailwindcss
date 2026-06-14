@@ -6,9 +6,8 @@
   "license": "MIT",
   "keywords": [],
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.4",
-    "tailwindcss": "^4.2.4",
-    "weapp-tailwindcss": "^5.0.7"
+    "tailwindcss": "^4.3.1",
+    "weapp-tailwindcss": "^5.0.12"
   },
   "dependencies": {
     "@weapp-core/escape": "^8.0.0",

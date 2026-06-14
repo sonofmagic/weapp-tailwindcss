@@ -1,6 +1,7 @@
 packages:
   - .
 allowBuilds:
+  core-js-pure: false
   esbuild: true
   sharp: true
 minimumReleaseAge: 0
