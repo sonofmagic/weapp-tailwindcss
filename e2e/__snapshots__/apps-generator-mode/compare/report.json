@@ -9851,8 +9851,6 @@
     "cssFiles": [
       "app.wxss",
       "components/IceButton/index.wxss",
-      "miniprogram/app.wxss",
-      "miniprogram/sub-normal/pages/index.wxss",
       "pages/index/index.wxss",
       "pages/index/merge/index.wxss",
       "sub-independent/pages/index.wxss",
@@ -9860,7 +9858,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 119403,
+      "bytes": 35612,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",

@@ -123,7 +123,7 @@ catalogs:
     tailwindcss-4: npm:tailwindcss@^4.3.0
     tailwindcss4: npm:tailwindcss@^4.3.0
   tailwindcssPatch:
-    tailwindcss-patch: 9.4.3
+    tailwindcss-patch: 9.4.4
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
