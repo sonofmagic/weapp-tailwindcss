@@ -6,6 +6,50 @@ import { createCache } from '@/cache'
 export function createContext(overrides: Record<string, unknown> = {}) {
   const cache = createCache()
   const runtimeSet = new Set(['alpha'])
+  const testRoot = '/virtual/weapp-tailwindcss-vite-test'
+  const testTailwindcssOptions = {
+    cwd: testRoot,
+    v4: {
+      cssSources: [
+        {
+          file: `${testRoot}/app.css`,
+          base: testRoot,
+          css: '@import "tailwindcss" source(none);',
+          dependencies: [],
+        },
+      ],
+    },
+  }
+  const defaultTwPatcher = {
+    patch: vi.fn(),
+    getClassSet: vi.fn(async () => runtimeSet),
+    getClassSetSync: vi.fn(() => runtimeSet),
+    majorVersion: 3,
+    extract: vi.fn(async () => ({ classSet: runtimeSet })),
+    options: {
+      projectRoot: testRoot,
+      tailwindcss: testTailwindcssOptions,
+    },
+  }
+  const { twPatcher: overrideTwPatcher, ...restOverrides } = overrides as {
+    twPatcher?: {
+      options?: {
+        tailwindcss?: {
+          v4?: Record<string, unknown>
+        } & Record<string, unknown>
+      } & Record<string, unknown>
+    } & Record<string, unknown>
+  }
+  const mergedTwPatcherOptions = overrideTwPatcher?.options
+    ? overrideTwPatcher.options
+    : defaultTwPatcher.options
+  const mergedTwPatcher = overrideTwPatcher
+    ? {
+        ...defaultTwPatcher,
+        ...overrideTwPatcher,
+        options: mergedTwPatcherOptions,
+      }
+    : defaultTwPatcher
 
   return {
     disabled: false,
@@ -36,19 +80,13 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: () => false,
-    twPatcher: {
-      patch: vi.fn(),
-      getClassSet: vi.fn(async () => runtimeSet),
-      getClassSetSync: vi.fn(() => runtimeSet),
-      majorVersion: 3,
-      extract: vi.fn(async () => ({ classSet: runtimeSet })),
-    },
+    twPatcher: mergedTwPatcher,
     uniAppX: undefined as any,
     runtimeLoaderPath: undefined,
     mainChunkRegex: undefined,
     cssEntries: undefined,
     customReplaceDictionary: undefined,
-    ...overrides,
+    ...restOverrides,
   }
 }
 
