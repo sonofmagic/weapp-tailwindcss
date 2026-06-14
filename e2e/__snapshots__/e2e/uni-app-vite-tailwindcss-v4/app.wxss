@@ -410,5 +410,3 @@ wx-root-portal-content {
   color: var(--color-midnight);
 }
 /* Core plugin extractor sources are intentionally not loaded here. */
-/* stylelint-disable custom-property-pattern */
-/* Core plugin extractor sources are intentionally not loaded here. */

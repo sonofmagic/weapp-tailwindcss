@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, home.wxss, index.wxss, index.wxss, user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 37690 | 135 | false | false | false | true | true | false | true |
+| 32703 | 135 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -547,71 +547,6 @@ wx-root-portal-content {
 /* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
 /* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
 /* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
-/* tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-/* tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: i-mdi-home <= src/pages/index/index.vue */
-/* tokens: flex <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
-/* tokens: aspect-[calc(4*3+1)/3] <= src/pages/index/index.vue */
-/* tokens: h-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: h-20 <= src/pages/index/index.vue */
-/* tokens: w-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: w-20 <= src/pages/index/index.vue */
-/* tokens: flex-col <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: flex-col-reverse <= src/pages/index/index.vue */
-/* tokens: flex-row-reverse <= src/pages/index/index.vue */
-/* tokens: items-center <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: space-y-4 <= src/pages/index/index.vue */
-/* tokens: space-y-reverse <= src/pages/index/index.vue */
-/* tokens: space-x-4 <= src/pages/index/index.vue */
-/* tokens: space-x-reverse <= src/pages/index/index.vue */
-/* tokens: divide-x-4 <= src/pages/index/index.vue */
-/* tokens: divide-y-4 <= src/pages/index/index.vue */
-/* tokens: divide-y-reverse <= src/pages/index/index.vue */
-/* tokens: divide-dotted <= src/pages/index/index.vue */
-/* tokens: divide-double <= src/pages/index/index.vue */
-/* tokens: divide-[#41eb04] <= src/pages/index/index.vue */
-/* tokens: divide-[#d80c0c] <= src/pages/index/index.vue */
-/* tokens: rounded <= src/pages/index/index.vue */
-/* tokens: rounded-full <= src/pages/index/index.vue */
-/* tokens: rounded-xl <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: border <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
-/* tokens: bg-[#123498] <= src/pages/index/index.vue */
-/* tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-/* tokens: bg-midnight <= src/pages/index/index.vue */
-/* tokens: bg-neutral-1B <= src/pages/index/index.vue */
-/* tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: fill-bermuda <= src/pages/index/index.vue */
-/* tokens: p-2 <= src/pages/index/index.vue */
-/* tokens: px-3 <= src/pages/index/index.vue */
-/* tokens: px-4 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: py-3 <= src/pages/index/index.vue */
-/* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-/* tokens: text-sm <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: text-[45rpx] <= src/pages/index/index.vue */
-/* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
-/* tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: text-[#00f285] <= src/pages/index/index.vue */
-/* tokens: text-neutral-66 <= src/pages/index/index.vue */
-/* tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
-/* tokens: text-tahiti <= src/pages/index/index.vue */
-/* tokens: text-white <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-/* tokens: underline <= src/pages/index/index.vue */
-/* tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-/* tokens: divide-x-reverse <= src/pages/index/index.vue */
-/* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
-/* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
-/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
-/* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
-/* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
-/* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
-/* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
-/* stylelint-disable custom-property-pattern */
-/* Core plugin extractor sources are intentionally not loaded here. */
 ```
 
 ### home.wxss

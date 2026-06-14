@@ -9695,7 +9695,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 37690,
+      "bytes": 32703,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -9856,12 +9856,11 @@
       "index.wxss",
       "index.wxss",
       "index.wxss",
-      "index.wxss",
       "index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 148281,
+      "bytes": 119403,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",

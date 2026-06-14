@@ -1,6 +1,5 @@
 import type {
   PluginCreator,
-  WeappTailwindcssPostcssGenerateOptions,
   WeappTailwindcssPostcssGenerator,
   WeappTailwindcssPostcssPluginAdapters,
   WeappTailwindcssPostcssPluginOptions,
@@ -16,18 +15,7 @@ import {
 const adapters: WeappTailwindcssPostcssPluginAdapters = {
   createGenerator: (source) => {
     const generator = createWeappTailwindcssGenerator(source as Parameters<typeof createWeappTailwindcssGenerator>[0])
-    return {
-      generate: async (options?: WeappTailwindcssPostcssGenerateOptions) => {
-        const generated = await generator.generate(options as Parameters<typeof generator.generate>[0])
-        return {
-          css: generated.css,
-          rawCss: generated.rawCss,
-          target: generated.target,
-          classSet: generated.classSet,
-          dependencies: generated.dependencies,
-        }
-      },
-    } satisfies WeappTailwindcssPostcssGenerator
+    return generator as unknown as WeappTailwindcssPostcssGenerator
   },
   normalizeGeneratorOptions: options => normalizeWeappTailwindcssGeneratorOptions(options as Parameters<typeof normalizeWeappTailwindcssGeneratorOptions>[0]),
   resolveTailwindV3Source: options => resolveTailwindV3Source(options as Parameters<typeof resolveTailwindV3Source>[0]),
