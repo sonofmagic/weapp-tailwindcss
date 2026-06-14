@@ -1,3 +1,4 @@
+import type { Root } from '@weapp-tailwindcss/postcss'
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import { realpathSync } from 'node:fs'
 import { stat } from 'node:fs/promises'

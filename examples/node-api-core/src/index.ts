@@ -5,19 +5,9 @@ const tailwindConfig = new URL('../tailwind.config.cjs', import.meta.url).pathna
 
 export interface DemoResult {
   js: string
+  runtimeSetSize: number
   wxml: string
   wxss: string
-}
-
-export function createDemoRuntimeSet() {
-  return new Set([
-    'mt-[8px]',
-    'mb-[1.5rem]',
-    'space-y-2.5',
-    'text-[23.43px]',
-    'bg-[#123456]',
-    'hover:bg-[#654321]',
-  ])
 }
 
 export async function runNodeApiCoreDemo(): Promise<DemoResult> {
@@ -27,11 +17,12 @@ export async function runNodeApiCoreDemo(): Promise<DemoResult> {
       config: tailwindConfig,
     },
   })
-  const runtimeSet = createDemoRuntimeSet()
+  const runtimeSet = await ctx.getRuntimeSet({
+    forceCollect: true,
+  })
 
   const wxml = await ctx.transformWxml(
     '<view class="mt-[8px] space-y-2.5"><text class="text-[23.43px] bg-[#123456]">Node API</text></view>',
-    { runtimeSet },
   )
   const { css: wxss } = await ctx.transformWxss(
     [
@@ -44,11 +35,11 @@ export async function runNodeApiCoreDemo(): Promise<DemoResult> {
   )
   const { code: js } = await ctx.transformJs(
     'const classes = ["mb-[1.5rem]", "text-[23.43px]", "not-a-tailwind-token"]',
-    { runtimeSet },
   )
 
   return {
     js,
+    runtimeSetSize: runtimeSet.size,
     wxml,
     wxss,
   }

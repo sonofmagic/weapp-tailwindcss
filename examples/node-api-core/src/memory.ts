@@ -1,6 +1,6 @@
 import process from 'node:process'
 import { createContext } from 'weapp-tailwindcss/core'
-import { createDemoRuntimeSet } from './index'
+import { memoryClassMatrix } from './fixtures'
 
 const tailwindConfig = new URL('../tailwind.config.cjs', import.meta.url).pathname
 
@@ -33,17 +33,16 @@ function sampleMemory(iteration: number): MemorySample {
 }
 
 function createSources(iteration: number) {
-  const runtimeSet = createDemoRuntimeSet()
-  runtimeSet.add(`text-[${20 + iteration}px]`)
-  runtimeSet.add(`bg-[#${String(iteration).padStart(6, '0')}]`)
+  const [textClass, bgClass] = memoryClassMatrix[(iteration - 1) % memoryClassMatrix.length]!
+  const textSize = textClass.match(/\[(\d+)px\]/)?.[1] ?? '20'
+  const bgColor = bgClass.match(/\[#([0-9a-f]+)\]/)?.[1] ?? '000001'
 
   return {
-    js: `const classes = ["mb-[1.5rem]", "text-[${20 + iteration}px]", "bg-[#${String(iteration).padStart(6, '0')}]"]`,
-    runtimeSet,
-    wxml: `<view class="mt-[8px] text-[${20 + iteration}px] bg-[#${String(iteration).padStart(6, '0')}]"></view>`,
+    js: `const classes = ["mb-[1.5rem]", "${textClass}", "${bgClass}"]`,
+    wxml: `<view class="mt-[8px] ${textClass} ${bgClass}"></view>`,
     wxss: [
-      `.text-\\[${20 + iteration}px\\] { font-size: ${20 + iteration}px; }`,
-      `.bg-\\[\\#${String(iteration).padStart(6, '0')}\\] { background-color: #${String(iteration).padStart(6, '0')}; }`,
+      `.text-\\[${textSize}px\\] { font-size: ${textSize}px; }`,
+      `.bg-\\[\\#${bgColor}\\] { background-color: #${bgColor}; }`,
       '.mt-\\[8px\\] { margin-top: 8px; }',
     ].join('\n'),
   }
@@ -61,13 +60,16 @@ export async function runMemoryDemo(options: {
       config: tailwindConfig,
     },
   })
+  await ctx.getRuntimeSet({
+    forceCollect: true,
+  })
   const samples: MemorySample[] = []
 
   samples.push(sampleMemory(0))
   for (let iteration = 1; iteration <= iterations; iteration += 1) {
     const source = createSources(iteration)
-    await ctx.transformWxml(source.wxml, { runtimeSet: source.runtimeSet })
-    await ctx.transformJs(source.js, { runtimeSet: source.runtimeSet })
+    await ctx.transformWxml(source.wxml)
+    await ctx.transformJs(source.js)
     await ctx.transformWxss(source.wxss, { isMainChunk: true })
     if (iteration % 20 === 0) {
       samples.push(sampleMemory(iteration))

@@ -65,9 +65,28 @@ async function main(){
 main()
 ```
 
-## `runtimeSet` 的边界
+## 自动获取运行时类名集合
 
-`transformJs` 的核心原则是：只处理 Tailwind 实际生成过的运行时类名。你可以在自研构建器里显式传入 `runtimeSet`，但这个集合应该来自 `tailwindcss-patch` / Tailwind 提取结果，不能把业务 API 路径、页面路由、文件路径等普通字符串手工塞进去。
+通常不需要自己创建 `runtimeSet`。`createContext()` 会在 `transformWxss` 后更新运行时类名集合；如果你先处理 `transformJs` 或 `transformWxml`，它们在没有传入 `runtimeSet` 时也会自动从 Tailwind 提取结果里收集一次。
+
+自研构建器需要显式查看或复用这份集合时，可以直接调用 `getRuntimeSet()`：
+
+```js
+const ctx = createContext()
+
+const runtimeSet = await ctx.getRuntimeSet({
+  forceCollect: true,
+})
+
+const wxmlCode = await ctx.transformWxml(rawWxmlCode)
+const jsCode = await ctx.transformJs(rawJsCode)
+```
+
+这里的 `runtimeSet` 来自 Tailwind 的 `content` / `@source` 扫描结果。请先确保扫描范围覆盖真实源码；没有被 Tailwind 扫到的运行时字符串，Node.js API 不会靠猜测去转译。
+
+## `runtimeSet` 的高级覆盖边界
+
+`transformJs` 的核心原则是：只处理 Tailwind 实际生成过的运行时类名。`transformJs(rawJsCode, { runtimeSet })` 仍然保留给测试、自研构建器深度集成和极少数高级覆盖场景，但这个集合应该来自 `getRuntimeSet()`、`tailwindcss-patch` / Tailwind 提取结果，不能把业务 API 路径、页面路由、文件路径等普通字符串手工塞进去。
 
 例如下面的 `order/get_order_amount` 是接口路径，不是 Tailwind class：
 

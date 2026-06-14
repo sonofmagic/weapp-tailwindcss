@@ -9,6 +9,7 @@ describe('node api core example', () => {
     expect(result.wxml).toContain('mt-_b8px_B')
     expect(result.wxml).toContain('space-y-2_d5')
     expect(result.wxml).toContain('text-_b23_d43px_B')
+    expect(result.runtimeSetSize).toBeGreaterThan(0)
     expect(result.wxss).toContain('.mt-_b8px_B')
     expect(result.wxss).toContain('.text-_b23_d43px_B')
     expect(result.wxss).toContain('.bg-_b_h123456_B')

@@ -14,5 +14,6 @@ pnpm --filter @weapp-tailwindcss-example/node-api-core test
 
 - `transformWxml` 转义模板 class。
 - `transformWxss` 转义 WXSS 选择器。
-- `transformJs` 仅基于显式 `runtimeSet` 精确转义 JS 字符串。
+- `getRuntimeSet` 从 Tailwind 提取结果里自动取得运行时 class 集合。
+- `transformJs` / `transformWxml` 在不传 `runtimeSet` 时复用上下文里的自动集合。
 - 复用同一个 `createContext()` 多轮转换，验证长生命周期 Node API 使用方式不会出现明显 heap 增长。

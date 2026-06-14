@@ -5,6 +5,7 @@ import type {
   TailwindV4GenerateOptions,
   TailwindV4GenerateTarget,
   TailwindV4ResolvedSource,
+  TailwindV4SourcePattern,
 } from './types'
 import fs from 'node:fs'
 import { postcss } from '@weapp-tailwindcss/postcss'
