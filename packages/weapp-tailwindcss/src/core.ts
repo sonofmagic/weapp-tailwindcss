@@ -169,10 +169,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await runtimeState.readyPromise
     const result = await styleHandler(rawCss, resolveTransformWxssOptions(options))
-    runtimeSet = await ensureRuntimeClassSet(runtimeState, {
-      forceRefresh: true,
-      forceCollect: true,
-    })
+    runtimeSet = await ensureRuntimeClassSet(runtimeState)
     return result
   }
 

@@ -63,7 +63,7 @@ describe('core transform option resolution', () => {
     mocks.shouldSkipJsTransform.mockReturnValue(false)
   })
 
-  it('uses main chunk style defaults and refreshes the runtime set after wxss transforms', async () => {
+  it('uses main chunk style defaults and reuses runtime cache after wxss transforms', async () => {
     const { createContext } = await import('@/core')
     const ctx = createContext()
 
@@ -76,10 +76,8 @@ describe('core transform option resolution', () => {
     expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledWith(expect.objectContaining({
       twPatcher: mocks.twPatcher,
       refreshTailwindcssPatcher: mocks.refreshTailwindcssPatcher,
-    }), {
-      forceRefresh: true,
-      forceCollect: true,
-    })
+    }))
+    expect(mocks.ensureRuntimeClassSet.mock.calls[0]?.[1]).toBeUndefined()
   })
 
   it('preserves explicit main chunk style options and merges missing defaults', async () => {

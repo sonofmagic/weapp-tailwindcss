@@ -1,0 +1,19 @@
+{
+  "name": "@weapp-tailwindcss-example/node-api-core",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs && tsx src/index.ts",
+    "memory": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs && node --expose-gc --import tsx src/memory.ts",
+    "test": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs && vitest run"
+  },
+  "dependencies": {
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:typesNode2410",
+    "tsx": "catalog:tsx",
+    "typescript": "catalog:typescript59",
+    "vitest": "catalog:vitest"
+  }
+}
