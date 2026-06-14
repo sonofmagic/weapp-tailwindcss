@@ -87,6 +87,16 @@ describe('core transform functions', () => {
     expect(code).toBe(`const className = 'mb-_b1_d5rem_B'`)
   })
 
+  it('keeps API path string unchanged even when runtimeSet contains the same value', async () => {
+    const ctx = createContext()
+    const rawJs = `call_api("order/get_order_amount", {}, "POST")`
+    const runtimeSet = new Set(['order/get_order_amount'])
+
+    const { code } = await ctx.transformJs(rawJs, { runtimeSet })
+
+    expect(code).toBe(rawJs)
+  })
+
   it('should handle empty runtimeSet', async () => {
     const ctx = createContext()
     const rawWxml = '<view class="mt-[8px]" wx:if="{{ xxx.length > 0 }}">'

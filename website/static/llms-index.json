@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-11T02:47:35.340Z",
+  "generatedAt": "2026-06-14T04:00:33.539Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 168,
@@ -3714,6 +3714,7 @@
       "headings": [
         "Tailwind CSS 3.x 前置步骤",
         "如何使用",
+        "`runtimeSet` 的边界",
         "和构建器插件的区别"
       ],
       "updatedAt": null,

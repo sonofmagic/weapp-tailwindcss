@@ -65,6 +65,29 @@ async function main(){
 main()
 ```
 
+## `runtimeSet` 的边界
+
+`transformJs` 的核心原则是：只处理 Tailwind 实际生成过的运行时类名。你可以在自研构建器里显式传入 `runtimeSet`，但这个集合应该来自 `tailwindcss-patch` / Tailwind 提取结果，不能把业务 API 路径、页面路由、文件路径等普通字符串手工塞进去。
+
+例如下面的 `order/get_order_amount` 是接口路径，不是 Tailwind class：
+
+```js
+const { code } = await ctx.transformJs(
+  'call_api("order/get_order_amount", {}, "POST")',
+  {
+    runtimeSet: new Set(['order/get_order_amount']),
+  },
+)
+```
+
+如果你的自研构建流程会把普通业务字符串混进 `runtimeSet`，请先修正扫描来源；确实无法拆开时，再用 `jsPreserveClass` 兜底保护这类字符串：
+
+```js
+const ctx = createContext({
+  jsPreserveClass: keyword => /^[a-z0-9_]+(?:\/[a-z0-9_]+)+$/.test(keyword),
+})
+```
+
 :::tip
 有一点要特别注意，在使用 `ctx.transformJs` 的时候，一定要确保 `tailwindcss` 已经执行完毕了！也就是说对应的 `postcss` 执行完毕。
 
