@@ -130,7 +130,7 @@ function publishLatest(options) {
   }
 
   run('pnpm', ['build'], options)
-  run('pnpm', ['test'], options)
+  run('pnpm', ['test:release'], options)
   run('pnpm', ['changeset', 'publish'], options)
 }
 
@@ -142,7 +142,7 @@ function publishPrerelease(tag, options) {
   }
 
   run('pnpm', ['build'], options)
-  run('pnpm', ['test'], options)
+  run('pnpm', ['test:release'], options)
 
   const preState = getPreState()
   if (preState?.mode === 'pre') {

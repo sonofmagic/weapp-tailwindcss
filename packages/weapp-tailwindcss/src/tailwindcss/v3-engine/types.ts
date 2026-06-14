@@ -61,6 +61,10 @@ export interface TailwindV3SourceOptions {
    */
   config?: string | undefined
   /**
+   * 已加载的 Tailwind 配置对象。传入后会优先于磁盘配置使用。
+   */
+  configObject?: Config | undefined
+  /**
    * Tailwind 包名。使用分支包时可自定义。
    */
   packageName?: string | undefined

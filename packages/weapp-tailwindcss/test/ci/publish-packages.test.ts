@@ -25,7 +25,7 @@ describe('publish-packages release phases', () => {
 
     expect(stdout).toContain('[dry-run] pnpm changeset version')
     expect(stdout).not.toContain('[dry-run] pnpm build')
-    expect(stdout).not.toContain('[dry-run] pnpm test')
+    expect(stdout).not.toContain('[dry-run] pnpm test:release')
     expect(stdout).not.toContain('[dry-run] pnpm changeset publish')
   })
 
@@ -33,7 +33,7 @@ describe('publish-packages release phases', () => {
     const stdout = await runPublishPackages(['--dry-run', '--branch', 'main'])
 
     expect(stdout).toContain('[dry-run] pnpm build')
-    expect(stdout).toContain('[dry-run] pnpm test')
+    expect(stdout).toContain('[dry-run] pnpm test:release')
     expect(stdout).toContain('[dry-run] pnpm changeset publish')
   })
 
@@ -43,6 +43,6 @@ describe('publish-packages release phases', () => {
     expect(stdout).toContain('[dry-run] pnpm changeset pre enter beta')
     expect(stdout).toContain('[dry-run] pnpm changeset version')
     expect(stdout).not.toContain('[dry-run] pnpm build')
-    expect(stdout).not.toContain('[dry-run] pnpm test')
+    expect(stdout).not.toContain('[dry-run] pnpm test:release')
   })
 })

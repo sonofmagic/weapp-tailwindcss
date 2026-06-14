@@ -115,7 +115,7 @@ export default defineConfig(() => {
     test: {
       projects,
       coverage: {
-        enabled: true,
+        enabled: false,
         skipFull: true,
         exclude: [
           '**/dist/**',
