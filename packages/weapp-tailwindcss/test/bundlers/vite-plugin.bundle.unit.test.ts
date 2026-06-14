@@ -10,6 +10,7 @@ import { createJsHandler } from '@/js'
 import { replaceWxml } from '@/wxml'
 import { createTemplateHandler } from '@/wxml/utils'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
+import { clearTailwindV4IncrementalGenerateCacheForTest } from '@/tailwindcss/v4-engine'
 import {
   createContext,
   createRollupAsset,
@@ -85,11 +86,25 @@ function mockTailwindV4GeneratorCss(css = '/* generated */') {
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }
   })
+}
+
+function createMockGeneratorCssResult(css: string, version = 3) {
+  return {
+    css,
+    rawCss: css,
+    target: 'weapp',
+    classSet: new Set<string>(),
+    rawCandidates: new Set<string>(),
+    dependencies: [],
+    sources: [],
+    root: null,
+    version,
+  }
 }
 
 async function loadIssue814Fixture() {
@@ -115,6 +130,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     vi.doUnmock('@/bundlers/vite/source-scan')
     vi.doUnmock('@/bundlers/shared/generator-css')
     vi.doUnmock('@/generator')
+    clearTailwindV4IncrementalGenerateCacheForTest()
     resetVitePluginTestContext()
     vi.restoreAllMocks()
   })
@@ -594,7 +610,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
-      css: options.css ?? '@import "tailwindcss";',
+      css: options.css ?? '@import "tailwindcss" source(none);',
       dependencies: [],
     }))
     vi.doMock('@/generator', async (importOriginal) => {
@@ -611,7 +627,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
-          css: '@import "tailwindcss";',
+          css: '@import "tailwindcss" source(none);',
           dependencies: [],
         })),
         resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
@@ -1009,7 +1025,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           projectRoot: root,
           base: root,
           baseFallbacks: [],
-          css: '@import "tailwindcss";',
+          css: '@import "tailwindcss" source(none);',
           dependencies: [],
         })),
       }
@@ -1164,7 +1180,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           projectRoot: sourceRoot,
           base: sourceRoot,
           baseFallbacks: [],
-          css: '@import "tailwindcss";',
+          css: '@import "tailwindcss" source(none);',
           dependencies: [],
           packageName: 'tailwindcss',
         })),
@@ -2640,9 +2656,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
   it('regenerates vite-processed uni-app-x @apply style assets from remembered source', async () => {
     const generatedByRawSource: string[] = []
-    const generateMock = vi.fn(async (_options: { candidates: Set<string> }, source: { css: string }) => {
-      generatedByRawSource.push(source.css)
-      const css = source.css.includes('@apply')
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      rawSource: string
+    }) => {
+      generatedByRawSource.push(options.rawSource)
+      const css = options.rawSource.includes('@apply')
         ? '.content{display:flex}.test{background-color:rgba(49,237,216,.54)}'
         : '.flex{display:flex}'
       return {
@@ -2655,26 +2673,26 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         root: null,
       }
     })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
         ...actual,
-        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
-          generate: vi.fn((options: { candidates: Set<string> }) => generateMock(options, source)),
-        })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
-          version: 4,
-          projectRoot: process.cwd(),
-          base: process.cwd(),
-          baseFallbacks: [],
-          css: '@import "tailwindcss" source(none);',
-          dependencies: [],
-        })),
       }
     })
-    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    setCurrentContext(createContext({
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-app-x-apply-replay-'))
+    createdDirs.push(root)
+    const runtimeSet = new Set(['flex', 'bg-[#31edd8]/[0.54]'])
+    const context = createContext({
       appType: 'uni-app-x',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
@@ -2693,40 +2711,66 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       })),
       twPatcher: {
         patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set(['flex'])),
-        getClassSetSync: vi.fn(() => new Set(['flex'])),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
-        extract: vi.fn(async () => ({ classSet: new Set(['flex']) })),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
       },
       uniAppX: true,
-    }))
-    const plugins = WeappTailwindcss()
-    const uniCssPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:uni-app-x:css') as Plugin
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
-    expect(uniCssPlugin).toBeTruthy()
-    expect(postPlugin).toBeTruthy()
-
-    await (postPlugin.configResolved as any)?.call(postPlugin, {
-      command: 'serve',
-      root: process.cwd(),
-      css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
-    } as ResolvedConfig)
-
-    const styleId = path.resolve(process.cwd(), 'pages/index/index.uvue?vue&type=style&index=0&lang.scss&scoped=true')
+    })
+    const styleId = path.join(root, 'pages/index/index.uvue?vue&type=style&index=0&lang.scss&scoped=true')
     const applySource = '.content { @apply flex; }\n.test { @apply bg-[#31edd8]/[0.54]; }'
-    await uniCssPlugin.transform?.call(uniCssPlugin, applySource, styleId)
+    const rememberedCssSources = new Map([
+      ['pages/index/index.wxss', {
+        outputFile: 'pages/index/index.wxss',
+        rawSource: applySource,
+        sourceFile: styleId,
+      }],
+    ])
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => true),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
 
     const processedCss = '.flex{display:flex}'
     const bundle = {
       'pages/index/index.wxss': {
-        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.resolve(process.cwd(), 'pages/index/index.uvue'))}\n${processedCss}`),
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', styleId.replace(/[?#].*$/, ''))}\n${processedCss}`),
         fileName: 'pages/index/index.wxss',
+        originalFileNames: [styleId],
       },
     }
 
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, bundle)
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
 
     const wxss = String((bundle['pages/index/index.wxss'] as OutputAsset).source)
     expect(wxss).toContain('.content{display:flex}')
@@ -3087,10 +3131,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('injects replayed main package vite css into app wxss without leaking subpackage css', async () => {
-    const generateMock = vi.fn(async (source: { css: string }) => {
-      const css = source.css.includes('tw-main-watch')
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      rawSource: string
+    }) => {
+      const css = options.rawSource.includes('tw-main-watch')
         ? '.tw-main-watch{display:block}'
-        : source.css.includes('tw-sub-watch')
+        : options.rawSource.includes('tw-sub-watch')
           ? '.tw-sub-watch{display:block}'
           : ''
       return {
@@ -3105,16 +3151,22 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         version: 4,
       }
     })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
         ...actual,
-        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
-          generate: vi.fn(async () => generateMock(source)),
-        })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       }
     })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-main-package-replay-'))
     createdDirs.push(root)
     const runtimeSet = new Set(['tw-main-watch', 'tw-sub-watch'])
@@ -3146,7 +3198,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       }],
     ])
     const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>()
-    const generateBundle = createGenerateBundleHook({
+    const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
         twPatcher: context.twPatcher as any,
@@ -4761,7 +4813,7 @@ const trace = "at App.vue:4"
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
-      css: '@import "tailwindcss";',
+      css: '@import "tailwindcss" source(none);',
       dependencies: [],
     }))
 
@@ -4843,7 +4895,7 @@ const trace = "at App.vue:4"
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
-      css: '@import "tailwindcss";',
+      css: '@import "tailwindcss" source(none);',
       dependencies: [],
     }))
 
@@ -4928,7 +4980,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5016,7 +5068,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5099,7 +5151,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
       resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
@@ -5112,7 +5164,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5201,7 +5253,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5295,7 +5347,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5395,7 +5447,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5461,7 +5513,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5534,7 +5586,7 @@ const trace = "at App.vue:4"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
     }))
@@ -5986,9 +6038,8 @@ const cls = "rounded-[92rpx]"
   }, TEST_TIMEOUT_MS)
 
   it('keeps source-location tokens unchanged in build mode with classNameSet-only strategy', async () => {
-    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set(['text-red-500'])
-    setCurrentContext(createContext({
+    const context = createContext({
       jsHandler: createJsHandler({}),
       twPatcher: {
         patch: vi.fn(),
@@ -5997,27 +6048,47 @@ const cls = "rounded-[92rpx]"
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
       },
-    }))
-
-    const plugins = WeappTailwindcss()
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
-    expect(postPlugin).toBeTruthy()
-
-    await (postPlugin.configResolved as any)?.call(postPlugin, {
-      command: 'build',
-      root: process.cwd(),
-      css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
-    } as ResolvedConfig)
-
-    const generateBundle = getGenerateBundleHandler(postPlugin)
+    })
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root: process.cwd(),
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
     const bundle = {
       'index.js': createRollupChunk(`
 const trace = "at App.vue:4"
 const cls = "w-[1.5px]"
 `),
     }
-    await generateBundle?.call(postPlugin, {} as any, bundle)
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
 
     const transformedCode = (bundle['index.js'] as OutputChunk).code
     expect(transformedCode).toContain('at App.vue:4')
@@ -6399,7 +6470,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6414,7 +6485,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: options.base ?? process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6517,7 +6588,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6526,7 +6597,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6642,7 +6713,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6657,7 +6728,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: options.base ?? process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6804,7 +6875,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -6819,7 +6890,7 @@ const cls = "w-[1.5px]"
         projectRoot: process.cwd(),
         base: options.base ?? process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -7070,7 +7141,7 @@ ${utilities}
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -7079,7 +7150,7 @@ ${utilities}
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss";',
+        css: options.css ?? '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -7165,8 +7236,10 @@ ${utilities}
   }, TEST_TIMEOUT_MS)
 
   it('refreshes remembered vite pipeline css with equivalent style source requests before replay', async () => {
-    const generateMock = vi.fn(async (source: { css: string }) => {
-      const css = source.css.includes('.tw-watch-style-case')
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      rawSource: string
+    }) => {
+      const css = options.rawSource.includes('.tw-watch-style-case')
         ? '.tw-watch-style-case{font-weight:700}'
         : '.clean-style{display:block}'
       return {
@@ -7181,18 +7254,25 @@ ${utilities}
         version: 3,
       }
     })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
         ...actual,
-        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
-          generate: vi.fn(async () => generateMock(source)),
-        })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       }
     })
-    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    setCurrentContext(createContext({
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-equivalent-style-replay-'))
+    createdDirs.push(root)
+    const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
@@ -7206,49 +7286,57 @@ ${utilities}
           tailwindConfig: { content: [] },
         }]),
       },
-    }))
-    const plugins = WeappTailwindcss()
-    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
-    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
-    expect(rewritePlugin).toBeTruthy()
-    expect(sourcePlugin).toBeTruthy()
-    expect(postPlugin).toBeTruthy()
-
-    await (postPlugin.configResolved as any)?.call(postPlugin, {
-      command: 'serve',
-      root: process.cwd(),
-      css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
-    } as ResolvedConfig)
-
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    const transform = getTransformHandler(rewritePlugin)
-    const sourceFile = path.resolve(process.cwd(), 'pages/index/index.vue')
+    })
+    const sourceFile = path.join(root, 'pages/index/index.vue')
     const dirtyStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
     const cleanStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss&used`
     const dirtySource = '.tw-watch-style-case { @apply font-bold; }'
     const cleanSource = '.clean-style { display: block; }'
-    const createViteProcessedCssAsset = (source: string) =>
-      `${createBundlerGeneratedCssMarker('vite', dirtyStyleRequest)}\n${source}`
-
-    await transform?.call(rewritePlugin, dirtySource, dirtyStyleRequest)
-    const firstBundle = {
-      'pages/index/index.wxss': {
-        ...createRollupAsset(createViteProcessedCssAsset(dirtySource)),
-        fileName: 'pages/index/index.wxss',
-        originalFileNames: [dirtyStyleRequest],
+    const rememberedCssSources = new Map([
+      ['pages/index/index.wxss', {
+        outputFile: 'pages/index/index.wxss',
+        rawSource: dirtySource,
+        sourceFile: dirtyStyleRequest,
+      }],
+    ])
+    const refreshRememberedCssSource = vi.fn(async (remembered: { outputFile: string, rawSource: string, sourceFile: string }) => ({
+      ...remembered,
+      rawSource: cleanSource,
+      sourceFile: cleanStyleRequest,
+    }))
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
       },
-      'pages/index/index.js': {
-        ...createRollupChunk('console.log("stable")'),
-        fileName: 'pages/index/index.js',
-      },
-    }
-    await generateBundle?.call(postPlugin, {} as any, firstBundle)
-    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
-
-    const cleanTransformResult = await transform?.call(rewritePlugin, cleanSource, cleanStyleRequest)
-    expect(cleanTransformResult).toBeNull()
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource,
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
 
     const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
     const replayBundleTarget = {
@@ -7265,8 +7353,8 @@ ${utilities}
         return Reflect.set(target, property, value, receiver)
       },
     })
-    await generateBundle?.call({
-      ...postPlugin,
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
       emitFile(file: { type: 'asset', fileName: string, source: string }) {
         emitted.push(file)
         return file.fileName
@@ -7274,38 +7362,41 @@ ${utilities}
     }, {} as any, replayBundle)
 
     const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
+    expect(refreshRememberedCssSource).toHaveBeenCalledTimes(1)
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: cleanSource,
+      file: cleanStyleRequest,
+    }))
     expect(replayedCss).toContain('.clean-style')
     expect(replayedCss).not.toContain('.tw-watch-style-case')
     expect(replayBundleTarget['pages/index/index.wxss' as keyof typeof replayBundleTarget]).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
   it('refreshes remembered sfc style source from watch cache before replaying stale vite pipeline css', async () => {
-    const generateMock = vi.fn(async (source: { css: string }) => {
-      const css = source.css.includes('.tw-watch-style-case')
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      rawSource: string
+    }) => {
+      const css = options.rawSource.includes('.tw-watch-style-case')
         ? '.base-style{display:flex}.tw-watch-style-case{font-weight:700}'
         : '.base-style{display:flex}'
+      return createMockGeneratorCssResult(css)
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
       return {
-        css,
-        rawCss: css,
-        target: 'weapp',
-        classSet: new Set<string>(),
-        rawCandidates: new Set<string>(),
-        dependencies: [],
-        sources: [],
-        root: null,
-        version: 3,
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
       }
     })
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
         ...actual,
-        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
-          generate: vi.fn(async () => generateMock(source)),
-        })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       }
     })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-style-refresh-'))
     createdDirs.push(root)
     const pageDir = path.join(root, 'pages/index')
@@ -7314,9 +7405,20 @@ ${utilities}
     const dirtyStyleSource = '.base-style { @apply flex; }\n.tw-watch-style-case { @apply font-bold; }'
     const cleanStyleSource = '.base-style { @apply flex; }'
     await writeFile(sourceFile, `<template><view /></template>\n<style lang="scss">\n${dirtyStyleSource}\n</style>\n`, 'utf8')
-
-    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    setCurrentContext(createContext({
+    const styleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
+    const rememberedCssSources = new Map([
+      ['pages/index/index.wxss', {
+        outputFile: 'pages/index/index.wxss',
+        rawSource: dirtyStyleSource,
+        sourceFile: styleRequest,
+      }],
+    ])
+    let currentStyleSource = dirtyStyleSource
+    const refreshRememberedCssSource = vi.fn(async (remembered: { outputFile: string, rawSource: string, sourceFile: string }) => ({
+      ...remembered,
+      rawSource: currentStyleSource,
+    }))
+    const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
@@ -7330,29 +7432,44 @@ ${utilities}
           tailwindConfig: { content: [] },
         }]),
       },
-    }))
-    const plugins = WeappTailwindcss()
-    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
-    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
-    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
-    expect(rewritePlugin).toBeTruthy()
-    expect(sourcePlugin).toBeTruthy()
-    expect(postPlugin).toBeTruthy()
-
-    await (postPlugin.configResolved as any)?.call(postPlugin, {
-      command: 'serve',
-      root,
-      css: { postcss: { plugins: [] } },
-      build: { outDir: 'dist' },
-    } as ResolvedConfig)
-
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    const transform = getTransformHandler(rewritePlugin)
-    const styleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
+    })
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource,
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      getKnownSfcSource: vi.fn(() => `<template><view /></template>\n<style lang="scss">\n${currentStyleSource}\n</style>\n`),
+      recordGeneratorCandidates: vi.fn(),
+    })
     const createViteProcessedCssAsset = (source: string) =>
       `${createBundlerGeneratedCssMarker('vite', styleRequest)}\n${source}`
 
-    await transform?.call(rewritePlugin, dirtyStyleSource, styleRequest)
     const firstBundle = {
       'pages/index/index.wxss': {
         ...createRollupAsset(createViteProcessedCssAsset(dirtyStyleSource)),
@@ -7364,12 +7481,14 @@ ${utilities}
         fileName: 'pages/index/index.js',
       },
     }
-    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+    }, {} as any, firstBundle)
     expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.tw-watch-style-case')
 
     await writeFile(sourceFile, `<template><view /></template>\n<style lang="scss">\n${cleanStyleSource}\n</style>\n`, 'utf8')
-    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, sourceFile, { event: 'update' })
-    generateMock.mockClear()
+    currentStyleSource = cleanStyleSource
+    generateCssByGeneratorMock.mockClear()
     const secondBundle = {
       'pages/index/index.wxss': {
         ...createRollupAsset(createViteProcessedCssAsset(dirtyStyleSource)),
@@ -7381,13 +7500,16 @@ ${utilities}
         fileName: 'pages/index/index.js',
       },
     }
-    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+    }, {} as any, secondBundle)
 
     const rolledBackCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
-    expect(generateMock).toHaveBeenCalled()
-    const lastGeneratedSource = generateMock.mock.calls.at(-1)?.[0]
-    expect(lastGeneratedSource.css).toContain('.base-style { @apply flex; }')
-    expect(lastGeneratedSource.css).not.toContain('.tw-watch-style-case')
+    expect(refreshRememberedCssSource).toHaveBeenCalled()
+    expect(generateCssByGeneratorMock).toHaveBeenCalled()
+    const lastGeneratedOptions = generateCssByGeneratorMock.mock.calls.at(-1)?.[0]
+    expect(lastGeneratedOptions.rawSource).toContain('.base-style { @apply flex; }')
+    expect(lastGeneratedOptions.rawSource).not.toContain('.tw-watch-style-case')
     expect(rolledBackCss).toContain('.base-style')
     expect(rolledBackCss).not.toContain('.tw-watch-style-case')
   }, TEST_TIMEOUT_MS)
@@ -7920,7 +8042,7 @@ ${utilities}
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -8024,7 +8146,7 @@ ${utilities}
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),
@@ -8127,7 +8249,7 @@ ${utilities}
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
-        css: '@import "tailwindcss";',
+        css: '@import "tailwindcss" source(none);',
         dependencies: [],
         packageName: 'tailwindcss',
       })),

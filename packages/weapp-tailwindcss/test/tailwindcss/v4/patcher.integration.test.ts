@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises'
+import os from 'node:os'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { transformLiteralText } from '@/js'
@@ -53,23 +54,41 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
 
   it('falls back to generator source scan when patcher extract returns an empty class set', async () => {
     const workspaceRoot = path.resolve(__dirname, '../../../../..')
-    const fixtureRoot = path.resolve(workspaceRoot, 'demo/gulp-tailwindcss-v4')
+    const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v4-runtime-fallback-'))
     const cssEntry = path.resolve(fixtureRoot, 'src/app.css')
     const template = path.resolve(fixtureRoot, 'src/pages/index/index.wxml')
-    const original = await fs.readFile(template, 'utf8')
-    const next = original.replace(
-      '</view>',
-      '  <view class="text-[#aa11bb] bg-[#bb11aa]">runtime fallback</view>\n</view>',
-    )
 
     try {
-      await fs.writeFile(template, next, 'utf8')
+      await fs.mkdir(path.dirname(template), { recursive: true })
+      await fs.writeFile(
+        path.resolve(fixtureRoot, 'tailwind.config.js'),
+        [
+          'module.exports = {',
+          '  content: ["./src/**/*.{wxml,html,js,ts}"],',
+          '}',
+        ].join('\n'),
+        'utf8',
+      )
+      await fs.writeFile(
+        cssEntry,
+        [
+          '@config "../tailwind.config.js";',
+          '@import "tailwindcss";',
+          '@source "./pages/**/*.{wxml,html,js,ts}";',
+        ].join('\n'),
+        'utf8',
+      )
+      await fs.writeFile(
+        template,
+        '<view class="text-[#aa11bb] bg-[#bb11aa]">runtime fallback</view>',
+        'utf8',
+      )
       const patcher = createPatcherForBase(fixtureRoot, [cssEntry], {
         tailwindcss: {
-          packageName: 'tailwindcss',
+          packageName: 'tailwindcss4',
           version: 4,
           resolve: {
-            paths: [path.resolve(fixtureRoot, 'node_modules')],
+            paths: [path.resolve(workspaceRoot, 'node_modules')],
           },
         },
         tailwindcssPatcherOptions: undefined,
@@ -94,7 +113,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
       expect(classSet.has('bg-[#bb11aa]')).toBe(true)
     }
     finally {
-      await fs.writeFile(template, original, 'utf8')
+      await fs.rm(fixtureRoot, { force: true, recursive: true })
     }
   })
 })
