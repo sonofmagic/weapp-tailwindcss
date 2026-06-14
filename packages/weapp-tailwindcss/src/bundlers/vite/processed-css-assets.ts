@@ -296,11 +296,33 @@ function collectImportedBundleCssSources(bundle: OutputBundle, importedStyleFile
   return importedSources
 }
 
+function collectBundleAssetFiles(bundle: OutputBundle) {
+  const files = new Set<string>()
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    files.add(normalizeOutputPathKey(getAssetFile(bundleFile, output)))
+  }
+  return files
+}
+
+function isCoveredViteGeneratedSourceAsset(
+  file: string,
+  existingAssetFiles: Set<string>,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  const resolvedOutputFile = normalizeOutputPathKey(resolveViteProcessedCssOutputFile?.(file) ?? file)
+  const fileKey = normalizeOutputPathKey(file)
+  return resolvedOutputFile !== fileKey && existingAssetFiles.has(resolvedOutputFile)
+}
+
 export function collectViteProcessedCssAssetResults(
   bundle: OutputBundle,
   options: CollectViteProcessedCssAssetOptions,
 ) {
   let collected = 0
+  const existingAssetFiles = collectBundleAssetFiles(bundle)
   for (const [bundleFile, output] of Object.entries(bundle)) {
     if (output.type !== 'asset') {
       continue
@@ -310,6 +332,11 @@ export function collectViteProcessedCssAssetResults(
       continue
     }
     const rawSource = readAssetSource(output)
+    if (isCoveredViteGeneratedSourceAsset(file, existingAssetFiles, options.resolveViteProcessedCssOutputFile)) {
+      delete bundle[bundleFile]
+      options.debug?.('skip covered vite-generated source css asset: %s', file)
+      continue
+    }
     const nextCss = resolveViteProcessedCssAssetSource(
       file,
       rawSource,

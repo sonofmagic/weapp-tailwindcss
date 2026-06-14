@@ -45,6 +45,7 @@ import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailw
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { cleanUrl, slash } from './utils'
+import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
@@ -965,7 +966,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
-    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget)
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
+    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()

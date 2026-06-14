@@ -18,7 +18,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
-import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
+import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 
 const TEST_TIMEOUT_MS = 30000
@@ -1768,6 +1768,16 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     createdDirs.push(root)
     expect(resolveReplayCssOutputFile(root, path.join(root, 'sub-independent', 'pages', 'index.css'))).toBe('sub-independent/pages/index.css')
     expect(resolveReplayCssOutputFile(root, '/private/tmp/elsewhere/index.css')).toBe('index.css')
+    expect(resolveReplayCssOutputFileFromSourceRoot(root, path.join(root, 'miniprogram/app.scss'), 'miniprogram')).toBe('app.scss')
+    expect(resolveReplayCssOutputFileFromSourceRoot(root, 'miniprogram/sub-independent/pages/index.scss', './miniprogram')).toBe('sub-independent/pages/index.scss')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'miniprogram/sub-independent/pages/index.scss'),
+      createContext() as any,
+      root,
+      false,
+      false,
+      'miniprogram',
+    )).toBe('sub-independent/pages/index.wxss')
   }, TEST_TIMEOUT_MS)
 
   it('keeps css extension for uni-app x native app vite css pipeline output', async () => {
@@ -2803,6 +2813,68 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).not.toContain(independentCss)
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
+
+  it('drops source-root-prefixed vite css assets when weapp-vite emits srcRoot-relative css', () => {
+    const root = path.resolve('/project/weapp-vite-demo')
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const appCss = '.app-only{}'
+    const normalCss = '.normal-only{}'
+    const independentCss = '.independent-only{}'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/app.scss'))}\n${appCss}`),
+        fileName: 'app.wxss',
+      },
+      'miniprogram/app.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/app.scss'))}\n${appCss}`),
+        fileName: 'miniprogram/app.wxss',
+      },
+      'sub-normal/pages/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/sub-normal/pages/index.scss'))}\n${normalCss}`),
+        fileName: 'sub-normal/pages/index.wxss',
+      },
+      'miniprogram/sub-normal/pages/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/sub-normal/pages/index.scss'))}\n${normalCss}`),
+        fileName: 'miniprogram/sub-normal/pages/index.wxss',
+      },
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/sub-independent/pages/index.scss'))}\n${independentCss}`),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+      'miniprogram/sub-independent/pages/index.wxss': {
+        ...createRollupAsset([
+          createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/app.scss')),
+          appCss,
+          createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/sub-normal/pages/index.scss')),
+          normalCss,
+          createBundlerGeneratedCssMarker('vite', path.join(root, 'miniprogram/sub-independent/pages/index.scss')),
+          independentCss,
+        ].join('\n')),
+        fileName: 'miniprogram/sub-independent/pages/index.wxss',
+      },
+    }
+    const recorded = new Map<string, { css: string, outputFile?: string | undefined }>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: context as any,
+      isViteProcessedCssAsset: () => true,
+      recordViteProcessedCssAssetResult(file, css, options) {
+        recorded.set(file, { css, outputFile: options?.outputFile })
+      },
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, context as any, root, false, false, 'miniprogram'),
+    })
+
+    expect(bundle['miniprogram/app.wxss']).toBeUndefined()
+    expect(bundle['miniprogram/sub-normal/pages/index.wxss']).toBeUndefined()
+    expect(bundle['miniprogram/sub-independent/pages/index.wxss']).toBeUndefined()
+    expect((bundle['app.wxss'] as OutputAsset).source).toBe(appCss)
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toBe(normalCss)
+    expect((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source).toBe(independentCss)
+    expect(recorded.get(path.join(root, 'miniprogram/sub-independent/pages/index.scss'))?.outputFile).toBe('sub-independent/pages/index.wxss')
+  })
 
   it('preserves vite-processed Tailwind v3 subpackage css instead of regenerating it from global candidates', async () => {
     const generateMock = vi.fn(async () => ({

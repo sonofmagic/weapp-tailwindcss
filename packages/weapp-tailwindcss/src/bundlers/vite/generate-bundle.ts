@@ -46,8 +46,9 @@ import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssA
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveTailwindV4EntriesFromCssCached } from './source-scan'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
+import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
-export { resolveReplayCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+export { resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
 
@@ -304,6 +305,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
@@ -322,7 +324,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
-      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension),
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot),
       debug,
     })
     const hmrTimingStartedAt = performance.now()
@@ -1152,6 +1154,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         rootDir,
         isWebGeneratorTarget,
         shouldPreserveAppCssExtension,
+        sourceRoot,
       )
       for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
         const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({
@@ -1322,7 +1325,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         markCssAssetProcessed,
         recordCssAssetResult,
         recordViteProcessedCssAssetResult,
-        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension),
+        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot),
         debug,
       })
       return injectViteProcessedCssIntoMainCssAssets(bundle, {
@@ -1352,7 +1355,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       { incremental: useIncrementalMode },
     )
     state.generatorCandidateSignature = generatorCandidateSignature
-    if (useIncrementalMode) {
+    if (useIncrementalMode && !snapshot.hasOmittedKnownFiles) {
       cache.prune?.({
         cacheKeys: activeProcessCacheKeys,
         hashKeys: activeProcessHashKeys,

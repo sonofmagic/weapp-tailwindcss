@@ -352,6 +352,19 @@ function createReportItem(
   }
 }
 
+function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (project.name !== 'weapp-vite-tailwindcss-v3') {
+    return
+  }
+  expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed css files').not.toContain('miniprogram/app.wxss')
+  expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed subpackage css files').not.toContain('miniprogram/sub-normal/pages/index.wxss')
+  const independent = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-independent/pages/index.wxss')
+  expect(independent, 'weapp-vite v3 independent subpackage css snapshot should exist').toBeTruthy()
+  expect(independent?.content, 'independent subpackage css should keep its own candidates').toMatch(/independent[-_]subpackage/i)
+  expect(independent?.content, 'independent subpackage css should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
+  expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('text-red-500')
+}
+
 function normalizeError(error: unknown) {
   if (error && typeof error === 'object') {
     const maybeError = error as {
@@ -587,6 +600,7 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasUnsupportedThemeComplexSelector, `${project.name} generator css should not include theme :where/:not selectors`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
       if (generatorResult) {
+        expectWeappViteTailwindV3CssIsolation(project, generatorResult)
         for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
           expect(generatorResult.css, `${project.name} should include ${pattern} marker`).toMatch(pattern)
         }

@@ -24,6 +24,31 @@ export function resolveReplayCssOutputFile(rootDir: string, file: string) {
   return normalizedFile
 }
 
+function normalizeViteSourceRoot(rootDir: string, sourceRoot: string | undefined) {
+  if (typeof sourceRoot !== 'string' || sourceRoot.trim().length === 0) {
+    return undefined
+  }
+  return normalizeOutputPathKey(path.isAbsolute(sourceRoot)
+    ? path.relative(rootDir, sourceRoot)
+    : sourceRoot)
+    .replace(/\/+$/, '')
+}
+
+export function resolveReplayCssOutputFileFromSourceRoot(rootDir: string, file: string, sourceRoot: string | undefined) {
+  const outputFile = resolveReplayCssOutputFile(rootDir, file)
+  const normalizedSourceRoot = normalizeViteSourceRoot(rootDir, sourceRoot)
+  if (!normalizedSourceRoot) {
+    return outputFile
+  }
+  if (outputFile === normalizedSourceRoot) {
+    return path.posix.basename(outputFile)
+  }
+  if (outputFile.startsWith(`${normalizedSourceRoot}/`)) {
+    return outputFile.slice(normalizedSourceRoot.length + 1)
+  }
+  return outputFile
+}
+
 export function resolveViteCssOutputFile(
   file: string,
   opts: InternalUserDefinedOptions,
@@ -48,8 +73,9 @@ export function resolveViteCssPipelineOutputFile(
   rootDir: string,
   isWebGeneratorTarget = false,
   preserveCssExtension = false,
+  sourceRoot?: string | undefined,
 ) {
-  const normalizedFile = resolveReplayCssOutputFile(rootDir, file)
+  const normalizedFile = resolveReplayCssOutputFileFromSourceRoot(rootDir, file, sourceRoot)
   if (
     isWebGeneratorTarget
     || preserveCssExtension
