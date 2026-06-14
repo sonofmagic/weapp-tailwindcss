@@ -244,6 +244,29 @@ describe('ci workflows', () => {
     expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
   })
 
+  it('keeps release version phase lightweight inside changesets action', () => {
+    const { workflow } = readWorkflow('release.yml')
+    const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
+      return step.id === 'changesets'
+    })
+    const publishScript = readText('scripts/publish-packages.mjs')
+    const latestScript = publishScript.match(/function publishLatest\(options\) \{\n([\s\S]*?)\n\}/)?.[1] ?? ''
+    const prereleaseScript = publishScript.match(/function publishPrerelease\(tag, options\) \{\n([\s\S]*?)\n\}/)?.[1] ?? ''
+    const latestVersionBranch = latestScript.match(
+      /if \(options\.phase === 'version'\) \{\n([\s\S]*?)\n  \}/,
+    )?.[1] ?? ''
+    const prereleaseVersionBranch = prereleaseScript.match(
+      /if \(options\.phase === 'version'\) \{\n([\s\S]*?)\n    return\n  \}/,
+    )?.[1] ?? ''
+
+    expect(releaseStep.with.version).toBe('pnpm publish-packages -- --phase version')
+    expect(latestVersionBranch).toContain('changeset\', \'version')
+    expect(latestVersionBranch).not.toContain('pnpm\', [\'build')
+    expect(latestVersionBranch).not.toContain('pnpm\', [\'test')
+    expect(prereleaseVersionBranch).toContain('enterPreMode(tag, options)')
+    expect(prereleaseVersionBranch).toContain('changeset\', \'version')
+  })
+
   it('runs current vs published benchmark on every ci/cd trigger', () => {
     const { workflow } = readWorkflow('benchmark.yml')
     const packageJson = readPackageJson<{ scripts: Record<string, string> }>('package.json')
@@ -349,6 +372,10 @@ describe('ci workflows', () => {
 
     expect(ensureScript).toContain('runtimeBuildTargets')
     expect(ensureScript).toContain('collectWorkspaceRuntimeDependencyNames')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/shared\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/logger\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/postcss-calc\'')
+    expect(ensureScript).toContain('\'@weapp-tailwindcss/reset\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/merge-v3\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/merge\'')
     expect(ensureScript).toContain('\'@weapp-tailwindcss/cva\'')

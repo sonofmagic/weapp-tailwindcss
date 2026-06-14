@@ -98,12 +98,53 @@ const runtimeBuildTargets = [
 ]
 const buildTargets = [
   {
+    filter: '@weapp-tailwindcss/shared',
+    label: '@weapp-tailwindcss/shared',
+    packageRoot: path.join(repoRoot, 'packages/shared'),
+    stamps: [
+      'dist/index.js',
+      'dist/index.mjs',
+      'dist/node.js',
+      'dist/node.mjs',
+    ],
+  },
+  {
+    filter: '@weapp-tailwindcss/logger',
+    label: '@weapp-tailwindcss/logger',
+    packageRoot: path.join(repoRoot, 'packages/logger'),
+    stamps: [
+      'dist/index.js',
+      'dist/index.mjs',
+      'dist/index.d.ts',
+    ],
+  },
+  {
+    filter: '@weapp-tailwindcss/postcss-calc',
+    label: '@weapp-tailwindcss/postcss-calc',
+    packageRoot: path.join(repoRoot, 'packages/postcss-calc'),
+    stamps: [
+      'dist/index.cjs',
+      'dist/index.mjs',
+      'dist/index.d.ts',
+    ],
+  },
+  {
     filter: 'tailwindcss-config',
     label: 'tailwindcss-config',
     packageRoot: path.join(repoRoot, 'packages/tailwindcss-config'),
     stamps: [
       'dist/index.js',
       'dist/index.cjs',
+      'dist/index.d.ts',
+    ],
+  },
+  {
+    filter: '@weapp-tailwindcss/reset',
+    label: '@weapp-tailwindcss/reset',
+    packageRoot: path.join(repoRoot, 'packages/reset'),
+    stamps: [
+      'dist/index.cjs',
+      'dist/index.mjs',
       'dist/index.d.ts',
     ],
   },
