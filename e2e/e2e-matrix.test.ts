@@ -15,6 +15,7 @@ import {
 } from './e2eMatrix'
 import { frameworkIdeWatchCaseNames } from './frameworkIdeHotUpdate'
 import { getFrameworkIdeCases } from './frameworkSupportMatrix'
+import { MULTIPLATFORM_BUILD_OUTPUT_CASES } from './multiplatform-build-output/cases'
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
 import { E2E_PROJECTS } from './projectEntries'
 import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
@@ -383,6 +384,17 @@ describe('e2e matrix', () => {
         expect(targets.has(`${entry.name}:${platform.platform}`), `${entry.name} ${platform.platform} should be in MULTIPLATFORM_TARGETS`).toBe(true)
       }
     }
+  })
+
+  it('keeps non-WeChat mini-program style outputs in Taro and uni-app build regressions', () => {
+    const cases = new Set(MULTIPLATFORM_BUILD_OUTPUT_CASES.map(item => `${item.projectDir.replace('demo/', '')}:${item.platform}`))
+    expect(cases.has('uni-app-vite-tailwindcss-v3:mp-alipay')).toBe(true)
+    expect(cases.has('uni-app-vite-tailwindcss-v3:mp-toutiao')).toBe(true)
+    expect(cases.has('uni-app-vite-tailwindcss-v4:mp-alipay')).toBe(true)
+    expect(cases.has('uni-app-vite-tailwindcss-v4:mp-jd')).toBe(true)
+    expect(cases.has('uni-app-vite-tailwindcss-v4:mp-toutiao')).toBe(true)
+    expect(cases.has('taro-vite-react-tailwindcss-v4:tt')).toBe(true)
+    expect(cases.has('taro-vite-vue3-tailwindcss-v4:tt')).toBe(true)
   })
 
   it('covers every static e2e project with hot-update or an explicit exemption', () => {

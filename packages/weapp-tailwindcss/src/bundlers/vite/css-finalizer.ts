@@ -15,7 +15,7 @@ import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-s
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
-import { resolveViteCssPipelineOutputFile } from './generate-bundle'
+import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { resolveWeappViteSourceRoot } from './weapp-vite-config'
@@ -190,7 +190,9 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             markCssAssetProcessed,
             recordCssAssetResult,
             recordViteProcessedCssAssetResult,
-            resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot),
+            resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot, resolveMiniProgramStyleOutputExtension({
+              files: Object.keys(bundle),
+            }), Object.keys(bundle)),
             debug,
           })
         }

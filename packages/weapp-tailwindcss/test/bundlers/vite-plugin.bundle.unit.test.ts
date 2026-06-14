@@ -19,7 +19,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
-import { createGenerateBundleHook, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
+import { createGenerateBundleHook, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 
 const TEST_TIMEOUT_MS = 30000
@@ -1797,7 +1797,44 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       false,
       false,
       'miniprogram',
+      '.wxss',
     )).toBe('sub-independent/pages/index.wxss')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'miniprogram/pages/index.scss'),
+      createContext() as any,
+      root,
+      false,
+      false,
+      'miniprogram',
+      '.acss',
+    )).toBe('pages/index.acss')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'miniprogram/pages/index.scss'),
+      createContext() as any,
+      root,
+      false,
+      false,
+      'miniprogram',
+      '.ttss',
+    )).toBe('pages/index.ttss')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'miniprogram/pages/index.scss'),
+      createContext() as any,
+      root,
+      false,
+      false,
+      'miniprogram',
+    )).toBe('pages/index.css')
+    expect(resolveMiniProgramStyleOutputExtension({
+      files: ['app.acss', 'pages/index/index.acss'],
+    })).toBe('.acss')
+    expect(resolveMiniProgramStyleOutputExtension({
+      files: ['app.acss', 'pages/index/index.ttss'],
+      stem: 'pages/index/index',
+    })).toBe('.ttss')
+    expect(resolveMiniProgramStyleOutputExtension({
+      files: ['app.acss', 'pages/index/index.ttss'],
+    })).toBe('.css')
   }, TEST_TIMEOUT_MS)
 
   it('keeps css extension for uni-app x native app vite css pipeline output', async () => {
@@ -7474,6 +7511,84 @@ ${utilities}
       'pages/index/index.acss': {
         ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
         fileName: 'pages/index/index.acss',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    expect(generateMock).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes runtime-linked toutiao ttss when only ttml changes', async () => {
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: [...options.candidates].sort().map(candidate => `.${replaceWxml(candidate)}{}`).join('\n'),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      rawCandidates: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const runtimeSet = new Set<string>()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.ttss'),
+      htmlMatcher: (file: string) => file.endsWith('.ttml'),
+      mainCssChunkMatcher: vi.fn(() => false),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(runtimeSet)),
+        getClassSetSync: vi.fn(() => new Set(runtimeSet)),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-toutiao' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    runtimeSet.add('text-[20rpx]')
+    const firstBundle = {
+      'pages/index/index.ttml': {
+        ...createRollupAsset(`<view class="${replaceWxml('text-[20rpx]')}"></view>`),
+        fileName: 'pages/index/index.ttml',
+      },
+      'pages/index/index.ttss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'pages/index/index.ttss',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+
+    runtimeSet.clear()
+    runtimeSet.add('text-[123rpx]')
+    const secondBundle = {
+      'pages/index/index.ttml': {
+        ...createRollupAsset(`<view class="${replaceWxml('text-[123rpx]')}"></view>`),
+        fileName: 'pages/index/index.ttml',
+      },
+      'pages/index/index.ttss': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'pages/index/index.ttss',
       },
     }
     await generateBundle?.call(postPlugin, {} as any, secondBundle)

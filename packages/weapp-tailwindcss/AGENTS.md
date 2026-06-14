@@ -30,6 +30,8 @@
 - `src/bundlers/**` 中还原源码、样式来源或输出文件关系时，禁止硬编码 `path.join(rootDir, 'src')`、`src/`、`pages/` 等项目目录假设；必须优先使用 Vite/Rollup 的 `facadeModuleId`、`moduleIds`、`modules`、`this.getModuleInfo`，Webpack 的 compilation/module graph，或 Gulp/Vinyl 的 `cwd`、`base`、`path` 等 bundler 上下文。
 - 不得在 `generateBundle`、`closeBundle` 等后置阶段新增临时 `readFile` 兜底来补缺失的源码状态；需要源码内容时，应在 `load`、`transform`、`watchChange`、`handleHotUpdate`、loader 执行阶段或 source-candidates 扫描层建立缓存。
 - 若确实必须从文件系统读取源码用于入口发现或候选扫描，读取逻辑必须集中在专门扫描层，说明为什么无法从 bundler 上下文取得，并补 `test/bundlers/**` 回归测试。
+- 多小程序样式输出不能把微信作为默认特例：禁止在 bundler 适配层硬编码 `.wxss` 兜底，也禁止维护平台名到样式后缀的映射表；样式后缀必须优先来自当前 bundle/loader/Vinyl 产物的真实文件名或框架已经给出的输出文件关系，推断不到时保持通用 `.css`。
+- 不要用 `app`、`main`、`app-origin` 等文件名作为 Tailwind 入口或主样式的硬编码语义特例；需要判断主样式时必须走构建图、用户 matcher 或已有产物关系，并用非微信小程序后缀回归测试覆盖。
 
 ## 推荐验证命令
 

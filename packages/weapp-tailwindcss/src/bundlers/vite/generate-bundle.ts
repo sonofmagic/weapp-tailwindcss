@@ -28,7 +28,7 @@ import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } f
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
-import { canProcessViteSourceStyleAsCss, MINI_PROGRAM_STYLE_OUTPUT_EXT_RE, normalizeCssSourceForCompare, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+import { canProcessViteSourceStyleAsCss, MINI_PROGRAM_STYLE_OUTPUT_EXT_RE, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
 import { createJsEntryResolver } from './generate-bundle/js-entries'
@@ -48,7 +48,7 @@ import { resolveTailwindV4EntriesFromCssCached } from './source-scan'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
-export { resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+export { resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
 
@@ -64,16 +64,16 @@ function resolveViteCssTaskConcurrency(useIncrementalMode: boolean) {
 
 const MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE = /\.(?:wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan)$/i
 
-function addSiblingCssFile(files: Set<string>, file: string, extensionByStem: Map<string, string>) {
+function addSiblingCssFile(files: Set<string>, file: string, extensionByStem: Map<string, string>, fallbackExtension: string) {
   const cleanFile = file.replace(/[?#].*$/, '')
   const templateMatch = cleanFile.match(MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE)
   if (templateMatch?.[0]) {
     const stem = file.slice(0, -templateMatch[0].length)
-    files.add(`${stem}${extensionByStem.get(stem) ?? '.wxss'}`)
+    files.add(`${stem}${extensionByStem.get(stem) ?? fallbackExtension}`)
   }
   else if (file.endsWith('.js')) {
     const stem = file.slice(0, -'.js'.length)
-    files.add(`${stem}${extensionByStem.get(stem) ?? '.wxss'}`)
+    files.add(`${stem}${extensionByStem.get(stem) ?? fallbackExtension}`)
   }
 }
 
@@ -89,13 +89,13 @@ function collectCssExtensionByStem(files: string[]) {
   return extensionByStem
 }
 
-function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot, extensionByStem: Map<string, string>) {
+function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot, extensionByStem: Map<string, string>, fallbackExtension: string) {
   const files = new Set<string>()
   for (const file of snapshot.runtimeAffectingChangedByType.html) {
-    addSiblingCssFile(files, file, extensionByStem)
+    addSiblingCssFile(files, file, extensionByStem, fallbackExtension)
   }
   for (const file of snapshot.runtimeAffectingChangedByType.js) {
-    addSiblingCssFile(files, file, extensionByStem)
+    addSiblingCssFile(files, file, extensionByStem, fallbackExtension)
   }
   return files
 }
@@ -327,6 +327,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
+    const defaultStyleOutputExtension = resolveMiniProgramStyleOutputExtension({
+      files: Object.keys(bundle),
+    })
 
     await runtimeState.readyPromise
     debug('start')
@@ -342,7 +345,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
-      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot),
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, Object.keys(bundle)),
       debug,
     })
     const hmrTimingStartedAt = performance.now()
@@ -507,7 +510,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         })
       : undefined
     // Tailwind v4 的任意值在 uni-app/Taro 等上游输出里可能已经被转义。
-    // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放 app.wxss。
+    // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放主样式产物。
     const forceV4RuntimeRefreshBySource = runtimeState.twPatcher.majorVersion === 4
       && forceRuntimeRefreshBySource
     const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
@@ -580,7 +583,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
     const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
     const cssExtensionByStem = collectCssExtensionByStem(bundleFiles)
-    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem)
+    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem, defaultStyleOutputExtension)
     for (const file of runtimeLinkedCssFiles) {
       if (snapshot.sourceHashByFile.has(file)) {
         processFiles.css.add(file)
@@ -711,11 +714,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
       if (type === 'css' && originalSource.type === 'asset') {
         metrics.css.total++
-        // uni-app dev/watch 会在每轮产物阶段重写 app.wxss。
+        // uni-app dev/watch 会在每轮产物阶段重写主样式产物。
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, file, outDir, opts)
-        const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension)
+        const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
           delete bundle[file]
@@ -1206,6 +1209,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         isWebGeneratorTarget,
         shouldPreserveAppCssExtension,
         sourceRoot,
+        defaultStyleOutputExtension,
       )
       for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
         const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({
@@ -1376,7 +1380,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         markCssAssetProcessed,
         recordCssAssetResult,
         recordViteProcessedCssAssetResult,
-        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot),
+        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles),
         debug,
       })
       return injectViteProcessedCssIntoMainCssAssets(bundle, {

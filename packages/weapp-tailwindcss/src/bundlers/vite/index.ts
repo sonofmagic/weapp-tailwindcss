@@ -1002,7 +1002,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     viteGeneratedCssByFile.set(file, tracedCss)
     const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
-    // 这里保留 undefined，让 app/main 入口走主样式注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回 app.wxss。
+    // 这里保留 undefined，让主样式入口走注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回主样式产物。
     recordViteProcessedCssAssetResult(file, tracedCss, {
       injectIntoMain: shouldInjectGeneratedCssIntoMain,
       outputFile,

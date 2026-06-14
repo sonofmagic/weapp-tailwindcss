@@ -139,6 +139,7 @@ export function collectRememberedCssReplayGroups(
   isWebGeneratorTarget: boolean,
   preserveCssExtension: boolean,
   sourceRoot?: string | undefined,
+  styleOutputExtension?: string | undefined,
 ) {
   const groups = new Map<string, Array<{ key: string, remembered: RememberedCssSource }>>()
   for (const [key, remembered] of sources ?? []) {
@@ -149,6 +150,7 @@ export function collectRememberedCssReplayGroups(
       isWebGeneratorTarget,
       preserveCssExtension,
       sourceRoot,
+      styleOutputExtension,
     )
     const outputKey = normalizeOutputPathKey(outputFile)
     const group = groups.get(outputKey) ?? []
