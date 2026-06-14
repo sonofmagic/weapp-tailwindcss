@@ -55,7 +55,7 @@ jobs:
         run: pnpm lint
 
       - name: Build
-        run: pnpm build
+        run: pnpm build:ci
 
       - name: Test
         run: pnpm test:release
@@ -107,7 +107,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build
+        run: pnpm build:ci
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
@@ -153,7 +153,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build
+        run: pnpm build:ci
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
@@ -199,7 +199,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build
+        run: pnpm build:ci
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
@@ -276,7 +276,7 @@ jobs:
         run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
 
       - name: Build watch suite package dependencies
-        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
+        run: pnpm build:ci
 
       - name: Prepare benchmark output directory
         shell: bash
@@ -376,7 +376,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build core package dependency closure
-        run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
+        run: pnpm build:ci
 
       - name: Run core compatibility regression tests
         run: >

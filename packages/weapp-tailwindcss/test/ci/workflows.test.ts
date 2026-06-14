@@ -87,23 +87,33 @@ describe('ci workflows', () => {
     expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
-      'pnpm build',
+      'pnpm build:ci',
       'pnpm test:release',
     ]))
   })
 
   it('keeps heavyweight e2e checks parallel to the quality gate', () => {
     const { workflow } = readWorkflow('ci.yml')
+    const qualityRuns = stepRuns(workflow, 'quality')
     const staticRuns = stepRuns(workflow, 'e2e-static')
+    const focusedRuns = stepRuns(workflow, 'e2e-focused')
+    const multiplatformRuns = stepRuns(workflow, 'e2e-multiplatform')
     const focusedRows: Array<Record<string, unknown>> = workflow.jobs['e2e-focused'].strategy.matrix.include
     const multiplatformRows: Array<Record<string, unknown>> = workflow.jobs['e2e-multiplatform'].strategy.matrix.include
 
+    expect(qualityRuns).not.toContain('pnpm build')
+    expect(staticRuns).not.toContain('pnpm build')
+    expect(focusedRuns).not.toContain('pnpm build')
+    expect(multiplatformRuns).not.toContain('pnpm build')
+    expect(qualityRuns).toContain('pnpm build:ci')
     expect(workflow.jobs['e2e-static']['timeout-minutes']).toBe(25)
     expect(staticRuns).toEqual(expect.arrayContaining([
-      'pnpm build',
+      'pnpm build:ci',
       'pnpm exec playwright install chromium',
       'pnpm e2e:static',
     ]))
+    expect(focusedRuns).toContain('pnpm build:ci')
+    expect(multiplatformRuns).toContain('pnpm build:ci')
 
     expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(focusedRows)).toEqual([
@@ -174,7 +184,7 @@ describe('ci workflows', () => {
     ])
 
     const compatibilityRuns = stepRuns(workflow, 'compatibility').join('\n')
-    expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build')
+    expect(compatibilityRuns).toContain('pnpm build:ci')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
   })
@@ -248,8 +258,11 @@ describe('ci workflows', () => {
       'next',
     ])
     expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
-    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(180)
+    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(45)
     expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
+    expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(workflow.jobs['current-vs-published'].env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain('demo-weapp-vite-tailwindcss-v3')
     expect(runs).toContain('pnpm install --frozen-lockfile')
     expect(runs).toContain('pnpm bench:ci --')
     expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
