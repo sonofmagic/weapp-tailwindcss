@@ -2,7 +2,7 @@
 
 Fixture: demo
 Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
-Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/tdesign-miniprogram029196fc/miniprogram_dist/button/button.wxss, components/tdesign-miniprogram029196fc/miniprogram_dist/icon/icon.wxss, components/tdesign-miniprogram029196fc/miniprogram_dist/loading/loading.wxss, components/vant/weappda3e1e6c/lib/button/index.wxss, components/vant/weappda3e1e6c/lib/icon/index.wxss, components/vant/weappda3e1e6c/lib/info/index.wxss, components/vant/weappda3e1e6c/lib/loading/index.wxss, styles/base3f288b8e.wxss, styles/components525161be.wxss, styles/index3f743595.wxss, styles/index9a27da9c.wxss, styles/utilitiesf949ffa8.wxss
+Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-miniprogram/miniprogram_dist/button/button.wxss, components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss, components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss, components/vant/weapp/lib/button/index.wxss, components/vant/weapp/lib/icon/index.wxss, components/vant/weapp/lib/info/index.wxss, components/vant/weapp/lib/loading/index.wxss, styles/base.wxss, styles/components.wxss, styles/index.1.wxss, styles/index.2.wxss, styles/utilities.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
@@ -13,19 +13,19 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 1 | 0 | false | false | false | false | false | false | false |
-| `components/listb90661b8/index.wxss` | 1 | 0 | false | false | false | false | false | false | false |
-| `components/tdesign-miniprogram029196fc/miniprogram_dist/button/button.wxss` | 24946 | 139 | false | false | false | false | false | false | false |
-| `components/tdesign-miniprogram029196fc/miniprogram_dist/icon/icon.wxss` | 128577 | 2354 | false | false | false | false | false | false | false |
-| `components/tdesign-miniprogram029196fc/miniprogram_dist/loading/loading.wxss` | 4283 | 33 | false | false | false | false | false | false | false |
-| `components/vant/weappda3e1e6c/lib/button/index.wxss` | 4072 | 32 | false | false | false | false | false | false | false |
-| `components/vant/weappda3e1e6c/lib/icon/index.wxss` | 13902 | 264 | false | false | false | false | false | false | false |
-| `components/vant/weappda3e1e6c/lib/info/index.wxss` | 903 | 2 | false | false | false | false | false | false | false |
-| `components/vant/weappda3e1e6c/lib/loading/index.wxss` | 2473 | 25 | false | false | false | false | false | false | false |
-| `styles/base3f288b8e.wxss` | 1458 | 0 | false | false | false | false | false | false | false |
-| `styles/components525161be.wxss` | 1 | 0 | false | false | false | false | false | false | false |
-| `styles/index3f743595.wxss` | 208 | 2 | false | false | false | false | false | false | false |
-| `styles/index9a27da9c.wxss` | 1380 | 18 | false | false | false | false | false | false | false |
-| `styles/utilitiesf949ffa8.wxss` | 4584 | 23 | false | false | false | true | true | false | true |
+| `components/list/index.wxss` | 1 | 0 | false | false | false | false | false | false | false |
+| `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` | 24946 | 139 | false | false | false | false | false | false | false |
+| `components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss` | 128577 | 2354 | false | false | false | false | false | false | false |
+| `components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss` | 4283 | 33 | false | false | false | false | false | false | false |
+| `components/vant/weapp/lib/button/index.wxss` | 4072 | 32 | false | false | false | false | false | false | false |
+| `components/vant/weapp/lib/icon/index.wxss` | 13902 | 264 | false | false | false | false | false | false | false |
+| `components/vant/weapp/lib/info/index.wxss` | 903 | 2 | false | false | false | false | false | false | false |
+| `components/vant/weapp/lib/loading/index.wxss` | 2473 | 25 | false | false | false | false | false | false | false |
+| `styles/base.wxss` | 1458 | 0 | false | false | false | false | false | false | false |
+| `styles/components.wxss` | 1 | 0 | false | false | false | false | false | false | false |
+| `styles/index.1.wxss` | 208 | 2 | false | false | false | false | false | false | false |
+| `styles/index.2.wxss` | 1380 | 18 | false | false | false | false | false | false | false |
+| `styles/utilities.wxss` | 4584 | 23 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -35,13 +35,13 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 
 ```
 
-### components/listb90661b8/index.wxss
+### components/list/index.wxss
 
 ```css
 
 ```
 
-### components/tdesign-miniprogram029196fc/miniprogram_dist/button/button.wxss
+### components/tdesign-miniprogram/miniprogram_dist/button/button.wxss
 
 ```css
 .t-button--size-extra-small {
@@ -562,7 +562,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### components/tdesign-miniprogram029196fc/miniprogram_dist/icon/icon.wxss
+### components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss
 
 ```css
 @font-face {
@@ -7650,7 +7650,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### components/tdesign-miniprogram029196fc/miniprogram_dist/loading/loading.wxss
+### components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss
 
 ```css
 .t-loading {
@@ -7858,7 +7858,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### components/vant/weappda3e1e6c/lib/button/index.wxss
+### components/vant/weapp/lib/button/index.wxss
 
 ```css
 /* tokens: van-button <= src/pages/index.mpx */
@@ -8007,7 +8007,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### components/vant/weappda3e1e6c/lib/icon/index.wxss
+### components/vant/weapp/lib/icon/index.wxss
 
 ```css
 .van-icon {
@@ -8821,7 +8821,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### components/vant/weappda3e1e6c/lib/info/index.wxss
+### components/vant/weapp/lib/info/index.wxss
 
 ```css
 .van-info {
@@ -8855,7 +8855,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### components/vant/weappda3e1e6c/lib/loading/index.wxss
+### components/vant/weapp/lib/loading/index.wxss
 
 ```css
 :host {
@@ -8975,7 +8975,7 @@ Generator CSS files: app.wxss, components/listb90661b8/index.wxss, components/td
 }
 ```
 
-### styles/base3f288b8e.wxss
+### styles/base.wxss
 
 ```css
 ::before,
@@ -9044,13 +9044,13 @@ text,
 }
 ```
 
-### styles/components525161be.wxss
+### styles/components.wxss
 
 ```css
 
 ```
 
-### styles/index3f743595.wxss
+### styles/index.1.wxss
 
 ```css
 .hotspot-expanded.relative {
@@ -9068,7 +9068,7 @@ text,
 }
 ```
 
-### styles/index9a27da9c.wxss
+### styles/index.2.wxss
 
 ```css
 .van-ellipsis {
@@ -9142,7 +9142,7 @@ text,
 }
 ```
 
-### styles/utilitiesf949ffa8.wxss
+### styles/utilities.wxss
 
 ```css
 /* tokens: h-[43rpx] <= src/pages/index.mpx */

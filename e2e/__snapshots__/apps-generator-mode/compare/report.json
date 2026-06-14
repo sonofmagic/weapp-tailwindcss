@@ -199,19 +199,19 @@
     "cssFile": "mpx-tailwindcss-v3/dist/wx/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "components/listb90661b8/index.wxss",
-      "components/tdesign-miniprogram029196fc/miniprogram_dist/button/button.wxss",
-      "components/tdesign-miniprogram029196fc/miniprogram_dist/icon/icon.wxss",
-      "components/tdesign-miniprogram029196fc/miniprogram_dist/loading/loading.wxss",
-      "components/vant/weappda3e1e6c/lib/button/index.wxss",
-      "components/vant/weappda3e1e6c/lib/icon/index.wxss",
-      "components/vant/weappda3e1e6c/lib/info/index.wxss",
-      "components/vant/weappda3e1e6c/lib/loading/index.wxss",
-      "styles/base3f288b8e.wxss",
-      "styles/components525161be.wxss",
-      "styles/index3f743595.wxss",
-      "styles/index9a27da9c.wxss",
-      "styles/utilitiesf949ffa8.wxss"
+      "components/list/index.wxss",
+      "components/tdesign-miniprogram/miniprogram_dist/button/button.wxss",
+      "components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss",
+      "components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss",
+      "components/vant/weapp/lib/button/index.wxss",
+      "components/vant/weapp/lib/icon/index.wxss",
+      "components/vant/weapp/lib/info/index.wxss",
+      "components/vant/weapp/lib/loading/index.wxss",
+      "styles/base.wxss",
+      "styles/components.wxss",
+      "styles/index.1.wxss",
+      "styles/index.2.wxss",
+      "styles/utilities.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -3125,7 +3125,7 @@
     "cssFiles": [
       "app.wxss",
       "pages/component/index.wxss",
-      "styles/app3b4a1ac6.wxss"
+      "styles/app.wxss"
     ],
     "status": "passed",
     "generator": {

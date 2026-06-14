@@ -332,7 +332,63 @@ function compareCssSnapshotEntry(
   a: { fileName: string, content: string },
   b: { fileName: string, content: string },
 ) {
-  return compareText(a.fileName, b.fileName) || compareText(a.content, b.content)
+  return compareText(normalizeSnapshotName(a.fileName) ?? a.fileName, normalizeSnapshotName(b.fileName) ?? b.fileName)
+    || compareText(a.content, b.content)
+    || compareText(a.fileName, b.fileName)
+}
+
+function withDuplicateCssFileSuffix(fileName: string, index: number) {
+  const extension = path.extname(fileName)
+  if (!extension) {
+    return `${fileName}.${index}`
+  }
+  return `${fileName.slice(0, -extension.length)}.${index}${extension}`
+}
+
+function createStableCssSnapshots(
+  generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
+  fallbackFileName: string,
+) {
+  const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots
+    : [{ fileName: generatorResult.cssFiles[0] ?? fallbackFileName, content: generatorResult.css }]
+  const entries = cssSnapshots.map((snapshot, index) => ({
+    index,
+    snapshot,
+    fileName: normalizeSnapshotName(snapshot.fileName) ?? snapshot.fileName,
+  }))
+  const groups = new Map<string, typeof entries>()
+  for (const entry of entries) {
+    const group = groups.get(entry.fileName)
+    if (group) {
+      group.push(entry)
+    }
+    else {
+      groups.set(entry.fileName, [entry])
+    }
+  }
+  const stableFileNames = new Map<number, string>()
+
+  for (const [fileName, group] of groups) {
+    if (group.length === 1) {
+      stableFileNames.set(group[0].index, fileName)
+      continue
+    }
+
+    const sortedGroup = [...group].sort((a, b) => (
+      compareText(a.snapshot.content, b.snapshot.content)
+      || compareText(a.snapshot.fileName, b.snapshot.fileName)
+    ))
+    sortedGroup.forEach((entry, index) => {
+      stableFileNames.set(entry.index, withDuplicateCssFileSuffix(fileName, index + 1))
+    })
+  }
+
+  return entries
+    .map(({ index, snapshot }) => ({
+      ...snapshot,
+      fileName: stableFileNames.get(index) ?? snapshot.fileName,
+    }))
 }
 
 function createReportItem(
@@ -341,12 +397,13 @@ function createReportItem(
 ): CompareReportItem {
   const generatorCss = normalizeCssForSummary(generatorResult.css)
   const generator = summarizeCss(generatorCss)
+  const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
 
   return {
     name: project.name,
     fixture: 'demo',
     cssFile: project.cssFile,
-    cssFiles: generatorResult.cssFiles.length > 0 ? generatorResult.cssFiles : [project.cssFile],
+    cssFiles: cssSnapshots.length > 0 ? cssSnapshots.map(snapshot => snapshot.fileName) : [project.cssFile],
     status: 'passed',
     generator,
   }
@@ -444,16 +501,14 @@ function createCssOutputSnapshot(
 ) {
   const generatorCss = normalizeCssSnapshot(generatorResult.css)
   const generator = summarizeCss(`${generatorCss}\n`)
-  const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
-    ? generatorResult.cssSnapshots
-    : [{ fileName: generatorResult.cssFiles[0] ?? project.cssFile, content: generatorResult.css }]
-  const cssSummaryRows = cssSnapshots.flatMap((snapshot) => {
+  const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
+  const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
     const summary = summarizeCss(`${normalizeCssSnapshot(snapshot.content)}\n`)
     return [
       `| \`${snapshot.fileName}\` | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
     ]
   })
-  const cssSections = cssSnapshots.flatMap(snapshot => [
+  const cssSections = stableCssSnapshots.flatMap(snapshot => [
     `### ${snapshot.fileName}`,
     '',
     '```css',
@@ -466,7 +521,7 @@ function createCssOutputSnapshot(
     '',
     'Fixture: demo',
     `Entry: ${project.cssFile}`,
-    `Generator CSS files: ${generatorResult.cssFiles.join(', ')}`,
+    `Generator CSS files: ${stableCssSnapshots.map(snapshot => snapshot.fileName).join(', ')}`,
     '',
     '| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',

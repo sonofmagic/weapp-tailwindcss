@@ -2,7 +2,7 @@
 
 Fixture: demo
 Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
-Generator CSS files: app.wxss, pages/component/index.wxss, styles/app3b4a1ac6.wxss
+Generator CSS files: app.wxss, pages/component/index.wxss, styles/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
@@ -14,7 +14,7 @@ Generator CSS files: app.wxss, pages/component/index.wxss, styles/app3b4a1ac6.wx
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 106 | 0 | false | false | false | false | false | false | false |
 | `pages/component/index.wxss` | 106 | 0 | false | false | false | false | false | false | false |
-| `styles/app3b4a1ac6.wxss` | 9514 | 79 | false | false | false | true | true | false | true |
+| `styles/app.wxss` | 9514 | 79 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -46,7 +46,7 @@ text,
 }
 ```
 
-### styles/app3b4a1ac6.wxss
+### styles/app.wxss
 
 ```css
 /* tokens: tw-root <= src/custom-tab-bar/index.mpx */

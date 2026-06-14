@@ -11,6 +11,11 @@
     <view class="iconify-_blucide--settings_B size-8 text-violet-600"></view>
     <view class="iconify-_blucide--bell_B size-8 text-rose-600"></view>
   </view>
+  <view
+    class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 theme-dark_cbg-zinc-900 theme-dark_ctext-zinc-50 dark_cbg-zinc-900 dark_ctext-zinc-50">
+    Weapp Vite Tailwind CSS v3 system dark
+    <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 theme-dark_cbg-zinc-950 theme-dark_ctext-zinc-50">Weapp Vite Tailwind CSS v3 manual dark</view>
+  </view>
   <view>
     <button
       class="weapp-reset-button index--weapp-reset-button text-_b_h0000ff_B index--text-_b_h0000ff_B px-6 index--px-6 py-2 index--py-2 font-medium index--font-medium tracking-wide index--tracking-wide capitalize index--capitalize transition-colors index--transition-colors duration-300 index--duration-300 transform index--transform rounded-lg index--rounded-lg hover_cbg-blue-500 index--hover_cbg-blue-500 focus_coutline-none index--focus_coutline-none focus_cring index--focus_cring focus_cring-blue-300 index--focus_cring-blue-300 focus_cring-opacity-80 index--focus_cring-opacity-80 bg-_borange_B index--bg-_borange_B"
