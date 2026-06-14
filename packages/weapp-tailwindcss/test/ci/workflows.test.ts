@@ -408,7 +408,6 @@ describe('e2e watch workflow', () => {
     expect(cases).toEqual(expect.arrayContaining([
       'macos:22:uni-app-vite-tailwindcss-v3:default',
       'macos:22:uni-app-vite-tailwindcss-v3:issue33',
-      'macos:22:taro-webpack-react-tailwindcss-v4:issue33',
       'macos:22:taro-webpack-react-tailwindcss-v3:default',
       'macos:22:taro-webpack-react-tailwindcss-v4:default',
       'macos:22:taro-vite-react-tailwindcss-v3:default',
@@ -425,6 +424,7 @@ describe('e2e watch workflow', () => {
       'windows:22:mpx-tailwindcss-v4:default',
     ]))
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
+    expect(cases).not.toContain('macos:22:taro-webpack-react-tailwindcss-v4:issue33')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
   })
 
@@ -439,6 +439,7 @@ describe('e2e watch workflow', () => {
       'macos:22:demo-taro-vue3:default',
       'macos:22:demo-uni:default',
       'macos:22:weapp-vite-tailwindcss-v4:issue33',
+      'macos:22:taro-webpack-react-tailwindcss-v4:issue33',
       'macos:22:taro-vite-vue3-tailwindcss-v3:default',
       'macos:22:taro-vite-vue3-tailwindcss-v4:default',
       'windows:22:weapp-vite-tailwindcss-v4:issue33',
@@ -514,13 +515,6 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
-    const slowMacosTaroWebpackPrBudget = {
-      watch_case: 'taro-webpack-react-tailwindcss-v4',
-      round_profile: 'issue33',
-      timeout_minutes: 70,
-      watch_timeout_ms: '600000',
-      watch_command_timeout_ms: '1800000',
-    }
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -531,6 +525,15 @@ describe('e2e watch workflow', () => {
         watch_timeout_ms: '280000',
         watch_max_plugin_process_ms: '6000',
         watch_command_timeout_ms: '720000',
+      },
+      {
+        os: 'macos-latest',
+        runner_label: 'macos',
+        watch_case: 'taro-webpack-react-tailwindcss-v4',
+        round_profile: 'issue33',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1800000',
       },
       {
         os: 'windows-latest',
@@ -582,11 +585,6 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
-    expect(prRows).toContainEqual(expect.objectContaining({
-      os: 'macos-latest',
-      runner_label: 'macos',
-      ...slowMacosTaroWebpackPrBudget,
-    }))
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'windows-latest',
