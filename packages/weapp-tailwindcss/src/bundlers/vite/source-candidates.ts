@@ -1,7 +1,9 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { IArbitraryValues } from '@/types/shared'
 import { readFile } from 'node:fs/promises'
+import { LRUCache } from 'lru-cache'
 import { extractSourceCandidates } from 'tailwindcss-patch'
+import { md5Hash } from '@/cache/md5'
 import {
   FULL_SOURCE_SCAN_EXTENSION_RE,
   isFileMatchedByTailwindSourceEntries,
@@ -60,7 +62,10 @@ export interface SourceCandidateCollectorOptions {
 }
 
 const CLEAN_URL_RE = /[?#].*$/
-const sourceCandidateContentCache = new Map<string, string[]>()
+const SOURCE_CANDIDATE_CONTENT_CACHE_MAX = 128
+const sourceCandidateContentCache = new LRUCache<string, string[]>({
+  max: SOURCE_CANDIDATE_CONTENT_CACHE_MAX,
+})
 
 function cleanUrl(id: string) {
   return resolveSourceScanPath(id.replace(CLEAN_URL_RE, ''))
@@ -78,7 +83,7 @@ function createSourceCandidateContentCacheKey(
   bareArbitraryValues: IArbitraryValues['bareArbitraryValues'] | undefined,
   extractor: SourceCandidateCollectorOptions['extractor'],
 ) {
-  return `${extension}\0${JSON.stringify(bareArbitraryValues ?? false)}\0${extractor ? 'custom' : 'default'}\0${source}`
+  return `${extension}\0${JSON.stringify(bareArbitraryValues ?? false)}\0${extractor ? 'custom' : 'default'}\0${md5Hash(source)}`
 }
 
 async function extractCandidates(
@@ -438,4 +443,16 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     restore,
     clear,
   }
+}
+
+export function getSourceCandidateContentCacheStatsForTest() {
+  return {
+    max: SOURCE_CANDIDATE_CONTENT_CACHE_MAX,
+    size: sourceCandidateContentCache.size,
+    keys: [...sourceCandidateContentCache.keys()],
+  }
+}
+
+export function clearSourceCandidateContentCacheForTest() {
+  sourceCandidateContentCache.clear()
 }

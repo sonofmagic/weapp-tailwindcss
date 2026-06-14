@@ -8,6 +8,7 @@ import type {
 } from './types'
 import { createRequire } from 'node:module'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { LRUCache } from 'lru-cache'
 import {
   extractSourceCandidates,
   isBareArbitraryValuesEnabled,
@@ -21,7 +22,12 @@ import { createChangedContentEntries, createTailwindConfig, mergeGenerateCandida
 import { createRuntimeReadyPromise } from './generator/runtime-ready'
 import { transformTailwindV3CssByTarget } from './miniprogram'
 
-const incrementalGenerateCache = new Map<string, TailwindV3IncrementalGenerateCacheEntry>()
+const INCREMENTAL_GENERATE_CACHE_MAX = 8
+const INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX = 128
+const INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX = 256 * 1024
+const incrementalGenerateCache = new LRUCache<string, TailwindV3IncrementalGenerateCacheEntry>({
+  max: INCREMENTAL_GENERATE_CACHE_MAX,
+})
 
 interface TailwindV3Context {
   classCache: Map<string, unknown>
@@ -57,6 +63,12 @@ interface TailwindV3IncrementalGenerateCacheEntry {
   css: string
   rawCss: string
   dependencies: string[]
+  resultsByCandidates: LRUCache<string, {
+    classSet: Set<string>
+    css: string
+    rawCss: string
+    dependencies: string[]
+  }>
   target: TailwindV3GenerateTarget
 }
 
@@ -279,6 +291,92 @@ function sortCandidates(candidates: Iterable<string>) {
   })
 }
 
+function createRequestedCandidatesCacheKey(candidates: Iterable<string>) {
+  return sortCandidates(candidates).join('\n')
+}
+
+function createIncrementalResultsCache() {
+  return new LRUCache<string, {
+    classSet: Set<string>
+    css: string
+    rawCss: string
+    dependencies: string[]
+  }>({
+    max: 16,
+  })
+}
+
+function replaceIncrementalEntry(
+  entry: TailwindV3IncrementalGenerateCacheEntry,
+  candidates: Set<string>,
+  generated: Awaited<ReturnType<TailwindV3Engine['generate']>> & { context?: TailwindV3Context | undefined },
+) {
+  if (!generated.context) {
+    return
+  }
+  entry.context = generated.context
+  entry.seenCandidates = new Set(candidates)
+  entry.classSet = new Set(generated.classSet)
+  entry.css = generated.css
+  entry.rawCss = generated.rawCss
+  entry.dependencies = generated.dependencies
+  entry.resultsByCandidates.clear()
+}
+
+function seedIncrementalResult(
+  entry: TailwindV3IncrementalGenerateCacheEntry,
+  candidates: Set<string>,
+  result: {
+    classSet: Set<string>
+    css: string
+    rawCss: string
+    dependencies: string[]
+  },
+) {
+  entry.resultsByCandidates.set(createRequestedCandidatesCacheKey(candidates), {
+    classSet: new Set(result.classSet),
+    css: result.css,
+    rawCss: result.rawCss,
+    dependencies: result.dependencies,
+  })
+}
+
+function createGenerateResultFromCache(
+  cached: TailwindV3IncrementalGenerateCacheEntry,
+  result: {
+    classSet: Set<string>
+    css: string
+    rawCss: string
+    dependencies: string[]
+  },
+  candidates: Set<string>,
+) {
+  return {
+    css: result.css,
+    rawCss: result.rawCss,
+    incrementalCss: '',
+    incrementalRawCss: '',
+    classSet: new Set(result.classSet),
+    rawCandidates: new Set(candidates),
+    dependencies: result.dependencies,
+    sources: [],
+    root: null,
+    target: cached.target,
+    version: 3 as const,
+  }
+}
+
+function shouldRebuildIncrementalEntry(
+  cached: TailwindV3IncrementalGenerateCacheEntry,
+  requestedCandidates: Set<string>,
+  missingCandidates: string[],
+) {
+  return cached.seenCandidates.size + missingCandidates.length > INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+    || cached.css.length > INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+    || cached.rawCss.length > INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+    || requestedCandidates.size > INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+}
+
 function appendUtilityRules(root: postcss.Root, context: TailwindV3Context, rules: Array<[unknown, postcss.Node]>) {
   const sortedRules = context.offsets.sort(rules)
   for (const [sort, rule] of sortedRules) {
@@ -475,33 +573,27 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     if (cached) {
       if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
         const generated = await generateOnce(source, options)
-        incrementalGenerateCache.set(cacheKey, {
-          context: generated.context,
-          seenCandidates: new Set(requestedCandidates),
-          classSet: new Set(generated.classSet),
-          css: generated.css,
-          rawCss: generated.rawCss,
-          dependencies: generated.dependencies,
-          target: generated.target,
-        })
+        replaceIncrementalEntry(cached, requestedCandidates, generated)
+        seedIncrementalResult(cached, requestedCandidates, generated)
         return generated
+      }
+
+      const requestedCacheKey = createRequestedCandidatesCacheKey(requestedCandidates)
+      const cachedResult = cached.resultsByCandidates.get(requestedCacheKey)
+      if (cachedResult) {
+        return createGenerateResultFromCache(cached, cachedResult, requestedCandidates)
       }
 
       const missingCandidates = [...requestedCandidates].filter(candidate => !cached.seenCandidates.has(candidate))
       if (missingCandidates.length === 0) {
-        return {
-          css: cached.css,
-          rawCss: cached.rawCss,
-          incrementalCss: '',
-          incrementalRawCss: '',
-          classSet: new Set(cached.classSet),
-          rawCandidates: new Set(cached.seenCandidates),
-          dependencies: cached.dependencies,
-          sources: [],
-          root: null,
-          target: cached.target,
-          version: 3 as const,
-        }
+        seedIncrementalResult(cached, requestedCandidates, cached)
+        return createGenerateResultFromCache(cached, cached, requestedCandidates)
+      }
+      if (shouldRebuildIncrementalEntry(cached, requestedCandidates, missingCandidates)) {
+        const generated = await generateOnce(source, options)
+        replaceIncrementalEntry(cached, requestedCandidates, generated)
+        seedIncrementalResult(cached, requestedCandidates, generated)
+        return generated
       }
 
       const generated = await generateIncrementalMissingUtilities(
@@ -520,7 +612,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       cached.css = [cached.css, generated.css].filter(Boolean).join('\n')
       cached.rawCss = [cached.rawCss, generated.rawCss].filter(Boolean).join('\n')
       cached.dependencies = [...new Set([...cached.dependencies, ...generated.dependencies])]
-      return {
+      const result = {
         css: cached.css,
         rawCss: cached.rawCss,
         incrementalCss: generated.css,
@@ -533,18 +625,24 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
         target: cached.target,
         version: 3 as const,
       }
+      seedIncrementalResult(cached, requestedCandidates, result)
+      return result
     }
 
     const generated = await generateOnce(source, options)
-    incrementalGenerateCache.set(cacheKey, {
+    const resultsByCandidates = createIncrementalResultsCache()
+    const entry: TailwindV3IncrementalGenerateCacheEntry = {
       context: generated.context,
       seenCandidates: new Set(requestedCandidates),
       classSet: new Set(generated.classSet),
       css: generated.css,
       rawCss: generated.rawCss,
       dependencies: generated.dependencies,
+      resultsByCandidates,
       target: generated.target,
-    })
+    }
+    seedIncrementalResult(entry, requestedCandidates, generated)
+    incrementalGenerateCache.set(cacheKey, entry)
     return generated
   }
 
@@ -566,4 +664,28 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     },
     generate,
   }
+}
+
+export function getTailwindV3IncrementalGenerateCacheStats() {
+  return {
+    max: INCREMENTAL_GENERATE_CACHE_MAX,
+    entryCandidatesMax: INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX,
+    entryCssBytesMax: INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX,
+    size: incrementalGenerateCache.size,
+    entries: [...incrementalGenerateCache.entries()].map(([key, entry]) => ({
+      key,
+      candidates: entry.seenCandidates.size,
+      classSet: entry.classSet.size,
+      cssBytes: entry.css.length,
+      rawCssBytes: entry.rawCss.length,
+      exactResults: entry.resultsByCandidates.size,
+    })),
+    keys: [...incrementalGenerateCache.keys()],
+  }
+}
+
+export const getTailwindV3IncrementalGenerateCacheStatsForTest = getTailwindV3IncrementalGenerateCacheStats
+
+export function clearTailwindV3IncrementalGenerateCacheForTest() {
+  incrementalGenerateCache.clear()
 }

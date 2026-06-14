@@ -1,5 +1,6 @@
 import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css/types'
+import process from 'node:process'
 import { extractSourceCandidates } from 'tailwindcss-patch'
 import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -13,6 +14,7 @@ import { createCssAppend, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarker
 import { resolveGeneratorSourceEntries, resolveGeneratorSources } from './generator-css/source-resolver'
 import { extractGeneratedCssForUserLayerSelectors, filterApplyOnlyGeneratedCss, hasUserCssLayerBlocks, removeTailwindV4GeneratorAtRules, shouldFilterApplyOnlyGeneratedCss, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
+import { runWithConcurrency } from './run-tasks'
 
 export {
   hasTailwindSourceDirectives,
@@ -52,6 +54,14 @@ export type {
 export {
   validateCandidatesByGenerator,
 } from './generator-css/validate'
+
+function resolveGeneratorSourceConcurrency() {
+  const configured = Number.parseInt(process.env['WEAPP_TW_GENERATOR_SOURCE_CONCURRENCY'] ?? '', 10)
+  if (Number.isFinite(configured) && configured > 0) {
+    return configured
+  }
+  return 1
+}
 
 export async function generateCssByGenerator(
   options: GenerateCssByGeneratorOptions,
@@ -163,7 +173,8 @@ export async function generateCssByGenerator(
     )
     const generatorStyleOptions = resolveGeneratorStyleOptions(opts, cssHandlerOptions, generatorOptions.styleOptions)
     const configuredContainerCompat = hasConfiguredContainerCompatSources(sources)
-    const generatedResultsWithDeferred = await Promise.all(sources.map(async (source) => {
+    const sourceConcurrency = resolveGeneratorSourceConcurrency()
+    const generatedResultsWithDeferred = await runWithConcurrency(sources.map(source => async () => {
       const generator = createWeappTailwindcssGenerator(source)
       const sourceEntries = getSourceCandidatesForEntries && (majorVersion === 3 || majorVersion === 4)
         ? await resolveGeneratorSourceEntries(source, runtimeState)
@@ -213,7 +224,7 @@ export async function generateCssByGenerator(
         tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,
       })
-    }))
+    }), sourceConcurrency)
     const generatedResults = generatedResultsWithDeferred.filter((item): item is NonNullable<typeof item> => Boolean(item))
     const generated = mergeGeneratorResults(generatedResults)
     if (!generated) {

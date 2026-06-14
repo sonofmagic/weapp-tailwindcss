@@ -1,4 +1,9 @@
-export { createTailwindV3Engine } from './generator'
+export {
+  clearTailwindV3IncrementalGenerateCacheForTest,
+  createTailwindV3Engine,
+  getTailwindV3IncrementalGenerateCacheStats,
+  getTailwindV3IncrementalGenerateCacheStatsForTest,
+} from './generator'
 export { transformTailwindV3CssByTarget, transformTailwindV3CssToWeapp } from './miniprogram'
 export {
   resolveTailwindV3Source,

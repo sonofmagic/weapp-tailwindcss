@@ -6,7 +6,7 @@ import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import { resolveTailwindV4SourceFromPatchOptions } from 'tailwindcss-patch'
 import { afterEach, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
-import { createTailwindV4Engine, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
+import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
 const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
@@ -79,6 +79,7 @@ async function linkTailwindcssPackage(root: string) {
 
 describe('tailwindcss v4 engine', () => {
   afterEach(() => {
+    clearTailwindV4IncrementalGenerateCacheForTest()
     vi.restoreAllMocks()
   })
 
@@ -101,6 +102,52 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('.w-_b100px_B')
     expect(result.css).toContain('width: 100px')
     expect(result.css).not.toContain('not-a-tailwind-class')
+  })
+
+  it('bounds v4 incremental generation caches across changing sources', async () => {
+    clearTailwindV4IncrementalGenerateCacheForTest()
+    const initialStats = getTailwindV4IncrementalGenerateCacheStatsForTest()
+
+    for (let index = 0; index < initialStats.max + 4; index += 1) {
+      const source = await resolveTailwindV4Source({
+        css: `${MINIMAL_THEME_CSS}\n/* cache-source-${index} */`,
+        base: process.cwd(),
+      })
+      const engine = createTailwindV4Engine(source)
+      await engine.generate({
+        candidates: [`text-[${index}px]`],
+        incrementalCache: true,
+      })
+    }
+
+    const stats = getTailwindV4IncrementalGenerateCacheStatsForTest()
+    expect(stats.size).toBeLessThanOrEqual(stats.max)
+    expect(stats.taskSize).toBeLessThanOrEqual(stats.taskMax)
+  })
+
+  it('bounds v4 incremental cache entries across long HMR-style candidate growth', async () => {
+    clearTailwindV4IncrementalGenerateCacheForTest()
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+    const stats = getTailwindV4IncrementalGenerateCacheStatsForTest()
+    const stableCandidates = ['bg-red-500']
+
+    for (let index = 0; index < stats.entryCandidatesMax + 12; index += 1) {
+      await engine.generate({
+        candidates: [...stableCandidates, `text-[${index}px]`],
+        incrementalCache: true,
+        scanSources: false,
+      })
+    }
+
+    const nextStats = getTailwindV4IncrementalGenerateCacheStatsForTest()
+    expect(nextStats.entries).toHaveLength(1)
+    expect(nextStats.entries[0]?.candidates).toBe(stableCandidates.length + 1)
+    expect(nextStats.entries[0]?.candidates).toBeLessThanOrEqual(stats.entryCandidatesMax)
+    expect(nextStats.entries[0]?.cssBytes).toBeLessThanOrEqual(stats.entryCssBytesMax)
   })
 
   it('normalizes Tailwind v4 package CSS imports to stylesheet entrypoints', async () => {

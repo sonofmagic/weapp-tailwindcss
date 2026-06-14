@@ -113,6 +113,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     vi.doUnmock('node:fs/promises')
     vi.doUnmock('@/bundlers/vite/incremental-runtime-class-set')
     vi.doUnmock('@/bundlers/vite/source-scan')
+    vi.doUnmock('@/bundlers/shared/generator-css')
     vi.doUnmock('@/generator')
     resetVitePluginTestContext()
     vi.restoreAllMocks()
@@ -217,6 +218,73 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+  }, TEST_TIMEOUT_MS)
+
+  it('limits incremental vite css bundle tasks to avoid HMR memory spikes', async () => {
+    const previousConcurrency = process.env['WEAPP_TW_VITE_CSS_CONCURRENCY']
+    delete process.env['WEAPP_TW_VITE_CSS_CONCURRENCY']
+
+    try {
+      let active = 0
+      let maxActive = 0
+      const context = createContext({
+        styleHandler: vi.fn(async (code: string) => {
+          active += 1
+          maxActive = Math.max(maxActive, active)
+          await new Promise(resolve => setTimeout(resolve, 5))
+          active -= 1
+          return { css: `css:${code}` }
+        }),
+      })
+      const generateBundle = createGenerateBundleHook({
+        opts: context as any,
+        runtimeState: {
+          twPatcher: context.twPatcher as any,
+          readyPromise: Promise.resolve(),
+        },
+        ensureRuntimeClassSet: vi.fn(async () => new Set(['alpha'])),
+        ensureBundleRuntimeClassSet: vi.fn(async () => new Set(['alpha'])),
+        debug: vi.fn(),
+        getResolvedConfig: vi.fn(() => ({
+          command: 'build',
+          root: process.cwd(),
+          build: {
+            outDir: process.cwd(),
+            watch: {},
+          },
+          css: { postcss: { plugins: [] } },
+        } as any)),
+      })
+      const bundle = {
+        'a.css': { ...createRollupAsset('.a{color:red}'), fileName: 'a.css' },
+        'b.css': { ...createRollupAsset('.b{color:red}'), fileName: 'b.css' },
+        'c.css': { ...createRollupAsset('.c{color:red}'), fileName: 'c.css' },
+      }
+
+      await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+      active = 0
+      maxActive = 0
+      context.styleHandler.mockClear()
+
+      const incrementalBundle = {
+        'a.css': { ...createRollupAsset('.a{color:blue}'), fileName: 'a.css' },
+        'b.css': { ...createRollupAsset('.b{color:blue}'), fileName: 'b.css' },
+        'c.css': { ...createRollupAsset('.c{color:blue}'), fileName: 'c.css' },
+      }
+
+      await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, incrementalBundle)
+
+      expect(context.styleHandler).toHaveBeenCalledTimes(3)
+      expect(maxActive).toBe(1)
+    }
+    finally {
+      if (previousConcurrency === undefined) {
+        delete process.env['WEAPP_TW_VITE_CSS_CONCURRENCY']
+      }
+      else {
+        process.env['WEAPP_TW_VITE_CSS_CONCURRENCY'] = previousConcurrency
+      }
+    }
   }, TEST_TIMEOUT_MS)
 
   it('uses oxide source candidates as the default Tailwind v3 runtime input in Vite generator mode', async () => {
@@ -3072,6 +3140,152 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source.toString()).toMatch(/\.tw-sub-watch\s*\{[^}]*display:\s*block/)
     expect(viteProcessedCssAssetResults.get(mainSourceFile)?.injectIntoMain).toBe(true)
     expect(viteProcessedCssAssetResults.get(subSourceFile)?.injectIntoMain).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('passes previous css to unchanged remembered vite css replay', async () => {
+    const generateCalls: Array<{
+      rawSource: string
+      previousCss?: string | undefined
+    }> = []
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      previousCss?: string | undefined
+      rawSource: string
+    }) => {
+      generateCalls.push({
+        rawSource: options.rawSource,
+        previousCss: options.previousCss,
+      })
+      const css = options.previousCss
+        ? `${options.previousCss}\n.tw-replay-next{display:flex}`
+        : '.tw-replay-base{display:block}'
+      return {
+        css,
+        rawCss: css,
+        incrementalCss: options.previousCss ? '.tw-replay-next{display:flex}' : undefined,
+        incrementalRawCss: options.previousCss ? '.tw-replay-next{display:flex}' : undefined,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        rawCandidates: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 4,
+      }
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-replay-previous-css-'))
+    createdDirs.push(root)
+    const runtimeSet = new Set(['tw-replay-base', 'tw-replay-next'])
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    })
+    const sourceFile = path.join(root, 'src/pages/index/index.vue?vue&type=style&index=0&lang.css')
+    const rawSource = '@import "tailwindcss";\n.tw-replay-base { @apply block; }'
+    const rememberedSignatures = new Map<string, string>()
+    const rememberedCssSources = new Map([
+      ['pages/index/index.wxss', {
+        outputFile: 'pages/index/index.wxss',
+        rawSource,
+        sourceFile,
+      }],
+    ])
+    const pruneViteCssCaches = vi.fn()
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      getRememberedCssSignature: (file: string) => rememberedSignatures.get(file),
+      setRememberedCssSignature: (file: string, signature: string) => {
+        rememberedSignatures.set(file, signature)
+      },
+      recordGeneratorCandidates: vi.fn(),
+      pruneViteCssCaches,
+    })
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(rawSource),
+        fileName: 'pages/index/index.wxss',
+      },
+    }
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, firstBundle)
+    const firstCss = (firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    const secondBundle = {
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, secondBundle)
+
+    expect(generateCalls).toHaveLength(2)
+    expect(generateCalls[0]?.previousCss).toBeUndefined()
+    expect(generateCalls[1]?.previousCss).toBe(firstCss)
+    expect(pruneViteCssCaches).toHaveBeenLastCalledWith({
+      activeFiles: expect.objectContaining({
+        has: expect.any(Function),
+      }),
+      activeKnownSfcFiles: expect.objectContaining({
+        has: expect.any(Function),
+      }),
+    })
+    const lastPruneOptions = pruneViteCssCaches.mock.calls.at(-1)?.[0]
+    expect(lastPruneOptions.activeFiles.has('pages/index/index.js')).toBe(true)
+    expect(lastPruneOptions.activeFiles.has('pages/index/index.wxss')).toBe(true)
+    expect(lastPruneOptions.activeFiles.has(sourceFile)).toBe(true)
+    expect((secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toBe(
+      `${firstCss}\n.tw-replay-next{display:flex}`,
+    )
   }, TEST_TIMEOUT_MS)
 
   it('does not inject vite-processed main package page css into app wxss during build', async () => {

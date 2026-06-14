@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { buildCases, isLocalOnlyWatchCase, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
-import { assertHotUpdateBudget, assertPluginProcessBudget, logSummary, runCase, runMainStyleOnlyCase, runWebOnlyCase } from './runner'
+import { assertHotUpdateBudget, assertMemoryBudget, assertPluginProcessBudget, logSummary, runCase, runMainStyleOnlyCase, runWebOnlyCase } from './runner'
 import { ensureLocalPackageBuild, sleep } from './session'
 import { runStyleOnlyCase } from './style-only'
 import {
@@ -71,6 +71,7 @@ export async function main() {
       metrics.push(result)
       assertHotUpdateBudget(result, options)
       assertPluginProcessBudget(result, options)
+      assertMemoryBudget(result, options)
     }
   }
   catch (error) {

@@ -50,6 +50,32 @@ describe('cache', () => {
     expect(s?.source().toString()).toBe('3')
   })
 
+  it('prunes inactive cache entries and hash values', () => {
+    ctx.set('active-cache', '1')
+    ctx.set('stale-cache', '2')
+    ctx.setHashValue('active-hash', {
+      changed: false,
+      hash: '1',
+    })
+    ctx.setHashValue('stale-hash', {
+      changed: false,
+      hash: '2',
+    })
+
+    ctx.prune?.({
+      cacheKeys: ['active-cache'],
+      hashKeys: ['active-hash'],
+    })
+
+    expect(ctx.get('active-cache')).toBe('1')
+    expect(ctx.get('stale-cache')).toBeUndefined()
+    expect(ctx.getHashValue('active-hash')).toEqual({
+      changed: false,
+      hash: '1',
+    })
+    expect(ctx.getHashValue('stale-hash')).toBeUndefined()
+  })
+
   it('cache calcHashValueChanged updates change flag', () => {
     ctx.calcHashValueChanged('1', '1')
     let v = ctx.getHashValue('1')

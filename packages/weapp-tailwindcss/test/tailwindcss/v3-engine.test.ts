@@ -1,7 +1,7 @@
 import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import { createTailwindV3Engine, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
+import { clearTailwindV3IncrementalGenerateCacheForTest, createTailwindV3Engine, getTailwindV3IncrementalGenerateCacheStatsForTest, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
 import { TailwindcssPatcher } from 'tailwindcss-patch'
 import plugin from 'tailwindcss/plugin'
 
@@ -54,6 +54,10 @@ function compactCss(css: string) {
 }
 
 describe('tailwindcss v3 engine', () => {
+  afterEach(() => {
+    clearTailwindV3IncrementalGenerateCacheForTest()
+  })
+
   it('reuses runtime patch setup for repeated engines with the same source', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
@@ -277,6 +281,52 @@ describe('tailwindcss v3 engine', () => {
     expect(second.rawCandidates).toEqual(new Set(['w-10px', 'bg-#fff', 'text-var(--brand)']))
   })
 
+  it('bounds v3 incremental generation cache across changing sources', async () => {
+    clearTailwindV3IncrementalGenerateCacheForTest()
+    const initialStats = getTailwindV3IncrementalGenerateCacheStatsForTest()
+
+    for (let index = 0; index < initialStats.max + 4; index += 1) {
+      const source = await resolveTailwindV3Source({
+        css: `@tailwind utilities;\n/* cache-source-${index} */`,
+        base: process.cwd(),
+        config: undefined,
+      })
+      const engine = createTailwindV3Engine(source)
+      await engine.generate({
+        candidates: [`text-[${index}px]`],
+        incrementalCache: true,
+      })
+    }
+
+    const stats = getTailwindV3IncrementalGenerateCacheStatsForTest()
+    expect(stats.size).toBeLessThanOrEqual(stats.max)
+  })
+
+  it('bounds v3 incremental cache entries across long HMR-style candidate growth', async () => {
+    clearTailwindV3IncrementalGenerateCacheForTest()
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+    const stats = getTailwindV3IncrementalGenerateCacheStatsForTest()
+    const stableCandidates = ['bg-blue-500']
+
+    for (let index = 0; index < stats.entryCandidatesMax + 12; index += 1) {
+      await engine.generate({
+        candidates: [...stableCandidates, `text-[${index}px]`],
+        incrementalCache: true,
+      })
+    }
+
+    const nextStats = getTailwindV3IncrementalGenerateCacheStatsForTest()
+    expect(nextStats.entries).toHaveLength(1)
+    expect(nextStats.entries[0]?.candidates).toBe(stableCandidates.length + 1)
+    expect(nextStats.entries[0]?.candidates).toBeLessThanOrEqual(stats.entryCandidatesMax)
+    expect(nextStats.entries[0]?.cssBytes).toBeLessThanOrEqual(stats.entryCssBytesMax)
+  })
+
   it('expands divide child combinators for view and text in mini-program output', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
@@ -466,6 +516,62 @@ describe('tailwindcss v3 engine', () => {
     expect(second.incrementalRawCss).toBeUndefined()
     expect(second.classSet).toEqual(new Set(['bg-blue-500']))
     expect(second.rawCandidates).toEqual(new Set(['bg-blue-500']))
+  })
+
+  it('replays exact v3 incremental results when utilities roll back', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const first = await engine.generate({
+      candidates: ['bg-blue-500'],
+      incrementalCache: true,
+    })
+    const second = await engine.generate({
+      candidates: ['bg-blue-500', 'bg-[#123455]'],
+      incrementalCache: true,
+    })
+    const rollback = await engine.generate({
+      candidates: ['bg-blue-500'],
+      incrementalCache: true,
+    })
+
+    expect(second.css).toContain('.bg-_b_h123455_B')
+    expect(rollback.css).toBe(first.css)
+    expect(rollback.rawCss).toBe(first.rawCss)
+    expect(rollback.css).not.toContain('.bg-_b_h123455_B')
+    expect(rollback.rawCandidates).toEqual(new Set(['bg-blue-500']))
+  })
+
+  it('shrinks the v3 incremental context after utilities roll back', async () => {
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    await engine.generate({
+      candidates: ['bg-blue-500', 'bg-[#123455]'],
+      incrementalCache: true,
+    })
+    const rollback = await engine.generate({
+      candidates: ['bg-blue-500'],
+      incrementalCache: true,
+    })
+    const next = await engine.generate({
+      candidates: ['bg-blue-500', 'bg-[#654321]'],
+      incrementalCache: true,
+    })
+
+    expect(rollback.css).not.toContain('.bg-_b_h123455_B')
+    expect(next.css).toContain('.bg-blue-500')
+    expect(next.css).toContain('.bg-_b_h654321_B')
+    expect(next.css).not.toContain('.bg-_b_h123455_B')
+    expect(next.rawCandidates).toEqual(new Set(['bg-blue-500', 'bg-[#654321]']))
   })
 
   it('keeps custom component classes referenced by @apply in v3 generator output', async () => {

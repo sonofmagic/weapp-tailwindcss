@@ -19,6 +19,8 @@ async function writeTempFile(file: string, content: string) {
 
 describe('bundlers/vite source candidates', () => {
   afterEach(async () => {
+    const mod = await import('@/bundlers/vite/source-candidates')
+    mod.clearSourceCandidateContentCacheForTest()
     vi.resetModules()
     vi.restoreAllMocks()
     await Promise.all(
@@ -35,6 +37,27 @@ describe('bundlers/vite source candidates', () => {
     await collector.sync('/project/sub/pages/index.wxml', source)
 
     expect(collector.values()).toEqual(new Set(['text-[23px]', 'bg-[#123456]']))
+  })
+
+  it('bounds extracted candidate cache without retaining full hmr source text in keys', async () => {
+    const {
+      clearSourceCandidateContentCacheForTest,
+      createSourceCandidateCollector,
+      getSourceCandidateContentCacheStatsForTest,
+    } = await import('@/bundlers/vite/source-candidates')
+    clearSourceCandidateContentCacheForTest()
+    const collector = createSourceCandidateCollector()
+
+    for (let index = 0; index < 160; index++) {
+      await collector.sync(
+        `/project/pages/index-${index}.vue`,
+        `<template><view class="bg-[#${String(index).padStart(6, '0')}]">unique-hmr-source-${index}</view></template>`,
+      )
+    }
+
+    const stats = getSourceCandidateContentCacheStatsForTest()
+    expect(stats.size).toBeLessThanOrEqual(stats.max)
+    expect(stats.keys.some(key => key.includes('unique-hmr-source'))).toBe(false)
   })
 
   it('collects complex arbitrary source candidates with the lightweight HMR extractor', async () => {

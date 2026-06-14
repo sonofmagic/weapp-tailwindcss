@@ -1,5 +1,5 @@
 import type { Buffer } from 'node:buffer'
-import type { CliOptions, PluginProcessSample, WatchSession } from './types'
+import type { CliOptions, HmrMemoryDebugSample, MemoryUsageSample, PluginProcessSample, WatchSession } from './types'
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -166,6 +166,7 @@ function parsePluginProcessSample(line: string): Omit<PluginProcessSample, 'at'>
       ...(typeof payload.file === 'string' ? { file: payload.file } : {}),
       ...(payload.metric === 'hook' || payload.metric === 'total' ? { metric: payload.metric } : {}),
       ...(typeof payload.wallMs === 'number' && Number.isFinite(payload.wallMs) ? { wallMs: Math.max(0, Math.round(payload.wallMs)) } : {}),
+      details: payload as Record<string, unknown>,
     }
   }
   catch {
@@ -325,6 +326,97 @@ function listDescendantPidsOnPosix(rootPid: number) {
   return descendants
 }
 
+function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample, 'at'> | undefined {
+  const result = spawnSync('ps', ['-Ao', 'pid=,ppid=,rss='], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+  })
+
+  if (result.status !== 0 || typeof result.stdout !== 'string') {
+    return undefined
+  }
+
+  const rows: Array<{ pid: number, ppid: number, rssKb: number }> = []
+  for (const line of result.stdout.split(NEWLINE_SPLIT_RE)) {
+    const normalized = line.trim()
+    if (!normalized) {
+      continue
+    }
+
+    const [pidText, ppidText, rssText] = normalized.split(WHITESPACE_RE)
+    const pid = Number(pidText)
+    const ppid = Number(ppidText)
+    const rssKb = Number(rssText)
+    if (!Number.isInteger(pid) || !Number.isInteger(ppid) || !Number.isFinite(rssKb)) {
+      continue
+    }
+    rows.push({ pid, ppid, rssKb })
+  }
+
+  const childrenByParent = new Map<number, Array<{ pid: number, ppid: number, rssKb: number }>>()
+  const byPid = new Map<number, { pid: number, ppid: number, rssKb: number }>()
+  for (const row of rows) {
+    byPid.set(row.pid, row)
+    const siblings = childrenByParent.get(row.ppid)
+    if (siblings) {
+      siblings.push(row)
+    }
+    else {
+      childrenByParent.set(row.ppid, [row])
+    }
+  }
+
+  const tracked = new Map<number, { pid: number, ppid: number, rssKb: number }>()
+  const root = byPid.get(rootPid)
+  if (root) {
+    tracked.set(root.pid, root)
+  }
+
+  const stack = [...(childrenByParent.get(rootPid) ?? [])]
+  while (stack.length > 0) {
+    const current = stack.pop()
+    if (current == null || tracked.has(current.pid)) {
+      continue
+    }
+    tracked.set(current.pid, current)
+    const children = childrenByParent.get(current.pid)
+    if (children?.length) {
+      stack.push(...children)
+    }
+  }
+
+  if (tracked.size === 0) {
+    return undefined
+  }
+
+  let totalRssKb = 0
+  let maxProcessRssKb = 0
+  for (const row of tracked.values()) {
+    totalRssKb += row.rssKb
+    maxProcessRssKb = Math.max(maxProcessRssKb, row.rssKb)
+  }
+
+  return {
+    rssMb: Math.round(totalRssKb / 1024),
+    maxProcessRssMb: Math.round(maxProcessRssKb / 1024),
+    processCount: tracked.size,
+  }
+}
+
+function sampleProcessTreeMemory(rootPid: number | undefined): MemoryUsageSample | undefined {
+  if (rootPid == null || process.platform === 'win32') {
+    return undefined
+  }
+  const sample = sampleProcessTreeMemoryOnPosix(rootPid)
+  if (!sample) {
+    return undefined
+  }
+  return {
+    at: Date.now(),
+    ...sample,
+  }
+}
+
 export function killProcessTreeOnPosix(pid: number, signal: NodeJS.Signals) {
   const descendants = listDescendantPidsOnPosix(pid)
 
@@ -427,11 +519,11 @@ function createWatchSpawnEnv(extra: Record<string, string>) {
     // 回归模式优先稳定性。
     // 宿主机上 Webpack/Taro 的 fs.watch 很容易触发 EMFILE，
     // 这里统一切到 polling watcher，必要时仍允许外部环境覆盖。
-    WATCHPACK_POLLING: process.env.WATCHPACK_POLLING ?? '50',
-    WATCHPACK_POLLING_INTERVAL: process.env.WATCHPACK_POLLING_INTERVAL ?? '50',
-    CHOKIDAR_USEPOLLING: process.env.CHOKIDAR_USEPOLLING ?? '1',
-    CHOKIDAR_INTERVAL: process.env.CHOKIDAR_INTERVAL ?? '50',
-    NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
+    WATCHPACK_POLLING: process.env['WATCHPACK_POLLING'] ?? '50',
+    WATCHPACK_POLLING_INTERVAL: process.env['WATCHPACK_POLLING_INTERVAL'] ?? '50',
+    CHOKIDAR_USEPOLLING: process.env['CHOKIDAR_USEPOLLING'] ?? '1',
+    CHOKIDAR_INTERVAL: process.env['CHOKIDAR_INTERVAL'] ?? '50',
+    NODE_OPTIONS: process.env['NODE_OPTIONS'] ?? '--max-old-space-size=8192',
     ...extra,
   })
 
@@ -440,11 +532,11 @@ function createWatchSpawnEnv(extra: Record<string, string>) {
       delete env[key]
     }
   }
-  if (env.NODE_ENV === 'test') {
-    delete env.NODE_ENV
+  if (env['NODE_ENV'] === 'test') {
+    delete env['NODE_ENV']
   }
-  if (env.BABEL_ENV === 'test') {
-    delete env.BABEL_ENV
+  if (env['BABEL_ENV'] === 'test') {
+    delete env['BABEL_ENV']
   }
   return env
 }
@@ -496,6 +588,8 @@ export function createWatchCommandSession(
   cleanupExistingWatchProcesses(cwd)
   const lines: string[] = []
   const pluginProcessSamples: PluginProcessSample[] = []
+  const memoryDebugSamples: HmrMemoryDebugSample[] = []
+  const memorySamples: MemoryUsageSample[] = []
   let lastCompileSuccessAt = 0
   let compileFatalError: string | undefined
   const child = spawnPnpm(args, {
@@ -504,6 +598,19 @@ export function createWatchCommandSession(
     detached: process.platform !== 'win32',
     stdio: 'pipe',
   })
+  const recordMemorySample = () => {
+    const sample = sampleProcessTreeMemory(child.pid)
+    if (!sample) {
+      return
+    }
+    memorySamples.push(sample)
+    if (memorySamples.length > 1000) {
+      memorySamples.shift()
+    }
+  }
+  const memoryTimer = setInterval(recordMemorySample, 1000)
+  memoryTimer.unref?.()
+  recordMemorySample()
 
   const killWatchProcess = (signal: NodeJS.Signals) => {
     const childPid = child.pid
@@ -569,10 +676,24 @@ export function createWatchCommandSession(
       }
       const pluginSample = parsePluginProcessSample(line)
       if (pluginSample) {
+        const at = Date.now()
         pluginProcessSamples.push({
-          at: Date.now(),
+          at,
           ...pluginSample,
         })
+        const memoryDebug = pluginSample.details?.['memoryDebug']
+        if (memoryDebug && typeof memoryDebug === 'object' && !Array.isArray(memoryDebug)) {
+          memoryDebugSamples.push({
+            at,
+            bundler: pluginSample.bundler,
+            phase: pluginSample.phase,
+            durationMs: pluginSample.durationMs,
+            data: memoryDebug as Record<string, unknown>,
+          })
+          if (memoryDebugSamples.length > 1000) {
+            memoryDebugSamples.shift()
+          }
+        }
         if (pluginProcessSamples.length > 1000) {
           pluginProcessSamples.shift()
         }
@@ -609,6 +730,8 @@ export function createWatchCommandSession(
     }
 
     collecting = false
+    clearInterval(memoryTimer)
+    recordMemorySample()
     child.stdout.off('data', collect)
     child.stderr.off('data', collect)
 
@@ -634,6 +757,8 @@ export function createWatchCommandSession(
     ensureRunning,
     lastCompileSuccessAt: () => lastCompileSuccessAt,
     logs: () => lines.join('\n'),
+    memorySamplesSince: startedAt => memorySamples.filter(sample => sample.at >= startedAt),
+    memoryDebugSamplesSince: startedAt => memoryDebugSamples.filter(sample => sample.at >= startedAt),
     pluginProcessSamplesSince: startedAt => pluginProcessSamples.filter(sample => sample.at >= startedAt),
     stop,
   }

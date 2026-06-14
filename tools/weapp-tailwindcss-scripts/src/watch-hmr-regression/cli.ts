@@ -59,6 +59,10 @@ export function resolveOptions(): CliOptions {
     maxPluginProcessMs: parseOptionalNumber(parseArg('--max-plugin-process-ms', argv))
       ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS)
       ?? DEFAULT_PLUGIN_PROCESS_BUDGET_MS,
+    maxMemoryRssDeltaMb: parseOptionalNumber(parseArg('--max-memory-rss-delta-mb', argv))
+      ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB),
+    maxMemoryHeapUsedMb: parseOptionalNumber(parseArg('--max-memory-heap-used-mb', argv))
+      ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_MEMORY_HEAP_USED_MB),
   }
 }
 
