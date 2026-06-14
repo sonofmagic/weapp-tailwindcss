@@ -41,9 +41,14 @@ import {
   summarizeSpeedSamples,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/speed-report'
 import {
+  assertMemoryBudget,
   assertHotUpdateBudget,
   assertPluginProcessBudget,
+  summarizeMemorySamples,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
+import {
+  parsePluginProcessSample,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import {
   resolveOptions,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cli'
@@ -301,6 +306,12 @@ function createCase(
     rollbackPluginProcessMs: complexRound.rollbackPluginProcessMs,
     rollbackPluginProcessSamples: complexRound.rollbackPluginProcessSamples,
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs + 25,
+    memorySamples: [
+      { at: 1, rssMb: 100, maxProcessRssMb: 90, processCount: 2 },
+      { at: 2, rssMb: 132, maxProcessRssMb: 118, processCount: 2 },
+    ],
+    memoryPeakRssMb: 132,
+    memoryRssDeltaMb: 32,
   }
 }
 
@@ -883,6 +894,30 @@ describe('watch-hmr web compile settle helpers', () => {
   })
 })
 
+describe('watch-hmr regression session helpers', () => {
+  it('parses prefixed plugin timing lines with top-level memory debug payloads', () => {
+    const sample = parsePluginProcessSample('[web-watch] [weapp-tailwindcss:hmr] {"bundler":"webpack","phase":"processAssets","durationMs":18.6,"memoryDebug":{"process":{"heapUsedMb":406,"rssMb":1094},"processCache":{"instance":0,"hashMap":8}}}')
+
+    expect(sample).toMatchObject({
+      bundler: 'webpack',
+      phase: 'processAssets',
+      durationMs: 19,
+      details: {
+        memoryDebug: {
+          process: {
+            heapUsedMb: 406,
+            rssMb: 1094,
+          },
+          processCache: {
+            instance: 0,
+            hashMap: 8,
+          },
+        },
+      },
+    })
+  })
+})
+
 describe('watch-hmr regression summary helpers', () => {
   it('summarizes samples and cases', () => {
     expect(summarizeSamples([])).toEqual({
@@ -1198,6 +1233,71 @@ describe('watch-hmr regression summary helpers', () => {
       mainStyleOnly: false,
       maxPluginProcessMs: 500,
     })).toThrow('template:complex-corpus:hot-update weapp-tailwindcss processing exceeded budget: 520ms > 500ms')
+  })
+
+  it('summarizes and guards watch process memory growth', () => {
+    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    metrics.memorySamples = [
+      { at: 1, rssMb: 640, maxProcessRssMb: 620, processCount: 2 },
+      { at: 2, rssMb: 702, maxProcessRssMb: 680, processCount: 2 },
+      { at: 3, rssMb: 690, maxProcessRssMb: 668, processCount: 2 },
+    ]
+    const summary = summarizeMemorySamples(metrics.memorySamples)
+    metrics.memoryPeakRssMb = summary.peakRssMb
+    metrics.memoryRssDeltaMb = summary.rssDeltaMb
+
+    expect(summary).toEqual({ peakRssMb: 702, rssDeltaMb: 62 })
+    expect(() => assertMemoryBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      styleOnly: false,
+      mainStyleOnly: false,
+      maxMemoryRssDeltaMb: 50,
+    })).toThrow('memory RSS delta exceeded budget: 62MB > 50MB')
+  })
+
+  it('guards plugin process heap usage when memory debug samples are available', () => {
+    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    metrics.memoryDebugSamples = [
+      {
+        at: 1,
+        bundler: 'vite',
+        phase: 'generateBundle',
+        durationMs: 100,
+        data: {
+          process: {
+            heapUsedMb: 640,
+            rssMb: 720,
+          },
+        },
+      },
+    ]
+
+    expect(() => assertMemoryBudget(metrics, {
+      caseName: 'demo',
+      timeoutMs: 2000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      styleOnly: false,
+      mainStyleOnly: false,
+      maxMemoryHeapUsedMb: 512,
+    })).toThrow('vite:generateBundle heap used exceeded budget: 640MB > 512MB')
+  })
+
+  it('uses the first active process tree sample as memory growth baseline', () => {
+    const summary = summarizeMemorySamples([
+      { at: 1, rssMb: 1, maxProcessRssMb: 1, processCount: 1 },
+      { at: 2, rssMb: 684, maxProcessRssMb: 640, processCount: 3 },
+      { at: 3, rssMb: 742, maxProcessRssMb: 698, processCount: 3 },
+    ])
+
+    expect(summary).toEqual({ peakRssMb: 742, rssDeltaMb: 58 })
   })
 
   it('prefers total timing samples when collecting plugin processing metrics', () => {

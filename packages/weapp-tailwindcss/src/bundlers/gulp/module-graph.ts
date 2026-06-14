@@ -65,7 +65,7 @@ export function createGulpModuleGraphOptions(opts: UserDefinedOptions): JsModule
     },
     filter(id) {
       const relative = path.relative(process.cwd(), id)
-      return opts.jsMatcher(relative) || opts.wxsMatcher(relative)
+      return opts.jsMatcher?.(relative) === true || opts.wxsMatcher?.(relative) === true
     },
   }
 }

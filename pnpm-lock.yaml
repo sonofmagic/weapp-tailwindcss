@@ -214,8 +214,8 @@ catalogs:
       version: 4.3.0
   tailwindcssPatch:
     tailwindcss-patch:
-      specifier: 9.4.3
-      version: 9.4.3
+      specifier: 9.4.4
+      version: 9.4.4
   tailwindcssRem:
     tailwindcss-rem2px-preset:
       specifier: ^1.0.3
@@ -1126,7 +1126,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -1268,7 +1268,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       tsx:
         specifier: catalog:tsx
         version: 4.22.4
@@ -1416,7 +1416,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -1540,7 +1540,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3
@@ -1989,7 +1989,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       terser:
         specifier: ^5.48.0
         version: 5.48.0
@@ -2447,7 +2447,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       terser:
         specifier: ^5.48.0
         version: 5.48.0
@@ -2655,7 +2655,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -2866,7 +2866,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -3074,7 +3074,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -3291,7 +3291,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -3623,7 +3623,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3
@@ -4052,7 +4052,26 @@ importers:
         version: 3.8.4
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+
+  examples/node-api-core:
+    dependencies:
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+    devDependencies:
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 24.13.1
+      tsx:
+        specifier: catalog:tsx
+        version: 4.22.4
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vitest:
+        specifier: catalog:vitest
+        version: 4.1.8(@types/node@24.13.1)(@vitest/coverage-v8@4.1.8)(@vitest/ui@4.1.8)(jsdom@29.1.1)(vite@8.0.16(@types/node@24.13.1)(esbuild@0.28.0)(jiti@2.7.0)(less@4.6.4)(sass-embedded@1.100.0)(sass@1.100.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))
 
   examples/tailwindcss-patch-token-style:
     dependencies:
@@ -4061,7 +4080,7 @@ importers:
         version: 4.3.0
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.0)
     devDependencies:
       '@types/node':
         specifier: catalog:typesNode2410
@@ -4404,7 +4423,7 @@ importers:
         version: link:../tailwindcss-config
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
     devDependencies:
       '@csstools/css-color-parser':
         specifier: ^4.1.1
@@ -4537,7 +4556,7 @@ importers:
     dependencies:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
 
   packages/weapp-style-injector:
     dependencies:
@@ -4609,7 +4628,7 @@ importers:
         version: link:../tailwindcss-config
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.3(magicast@0.5.3)(tailwindcss@4.3.0)
+        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
       yaml:
         specifier: ^2.9.0
         version: 2.9.0
@@ -13492,8 +13511,17 @@ packages:
   '@tailwindcss/node@4.3.0':
     resolution: {integrity: sha512-aFb4gUhFOgdh9AXo4IzBEOzBkkAxm9VigwDJnMIYv3lcfXCJVesNfbEaBl4BNgVRyid92AmdviqwBUBRKSeY3g==}
 
+  '@tailwindcss/node@4.3.1':
+    resolution: {integrity: sha512-6NDaqRoAMSXD1mr/RXu0HBvNE9a2n5tHPsxu9XHLws8o4Twes5rBM2205SUUiJ9goAtadrN6xTGX0UDEwp/N4A==}
+
   '@tailwindcss/oxide-android-arm64@4.3.0':
     resolution: {integrity: sha512-TJPiq67tKlLuObP6RkwvVGDoxCMBVtDgKkLfa/uyj7/FyxvQwHS+UOnVrXXgbEsfUaMgiVvC4KbJnRr26ho4Ng==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [android]
+
+  '@tailwindcss/oxide-android-arm64@4.3.1':
+    resolution: {integrity: sha512-SVlyf61g374l5cHyg8x9kf5xmLcOaxvOTsbsqDnSsDJaKOEFZ7GCvi84VAVGpxojYOs1+3K6M0UjXfqPU8vmOQ==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [android]
@@ -13504,8 +13532,20 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@tailwindcss/oxide-darwin-arm64@4.3.1':
+    resolution: {integrity: sha512-hVnWLwv+e/l7c4WKyVtHVrIPvYdqWHjRB3MDIqARynzFtnQg85kmQEFCbV9Ja0VVx4xXTIiDWY60Y7iz/iNoDA==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@tailwindcss/oxide-darwin-x64@4.3.0':
     resolution: {integrity: sha512-N6CUmu4a6bKVADfw77p+iw6Yd9Q3OBhe0veaDX+QazfuVYlQsHfDgxBrsjQ/IW+zywL8mTrNd0SdJT/zgtvMdA==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@tailwindcss/oxide-darwin-x64@4.3.1':
+    resolution: {integrity: sha512-Cf7abu0WVgbhU7ANgPUnSAvm7nCvMweusHb8FnaHlLfv/Caq4GYaEZg7ZImzzmjx4lIAfuS8q+eLIS7A7IzxIg==}
     engines: {node: '>= 20'}
     cpu: [x64]
     os: [darwin]
@@ -13516,14 +13556,33 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
+  '@tailwindcss/oxide-freebsd-x64@4.3.1':
+    resolution: {integrity: sha512-ZZqzX2Y+GXtXXfqSfpJhDm60OoZfvLHLCgm+J7NVqgHHJjG/m9ugZI77RwTsVd4fnBJuCFP6Ae6kTJb71UdS8g==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [freebsd]
+
   '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.0':
     resolution: {integrity: sha512-R06HdNi7A7OEoMsf6d4tjZ71RCWnZQPHj2mnotSFURjNLdBC+cIgXQ7l81CqeoiQftjf6OOblxXMInMgN2VzMA==}
     engines: {node: '>= 20'}
     cpu: [arm]
     os: [linux]
 
+  '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.1':
+    resolution: {integrity: sha512-/Ah/xik0LaMYfv9DZ0S/t4pBlBNYOcqtRwusjgovHkvT8ixueWCLyJjsaF5kQIckjb4IT8Q6K6p/iPmZMixYgg==}
+    engines: {node: '>= 20'}
+    cpu: [arm]
+    os: [linux]
+
   '@tailwindcss/oxide-linux-arm64-gnu@4.3.0':
     resolution: {integrity: sha512-qTJHELX8jetjhRQHCLilkVLmybpzNQAtaI/gaoVoidn/ufbNDbAo8KlK2J+yPoc8wQxvDxCmh/5lr8nC1+lTbg==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@tailwindcss/oxide-linux-arm64-gnu@4.3.1':
+    resolution: {integrity: sha512-gqdFoVJlw444GvpnheZLHmvTzSxI/cOUUh2KSNejQjTcYkW062SVD+En0rUgD+QV91bz1XGIGtt1HJd48xUGbQ==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [linux]
@@ -13536,6 +13595,13 @@ packages:
     os: [linux]
     libc: [musl]
 
+  '@tailwindcss/oxide-linux-arm64-musl@4.3.1':
+    resolution: {integrity: sha512-Bwv9KwOvE0VKa86xPFif9b9c3Y1NxOV1P0gLti/IYaWEsQYZXDlxfGEtA8mdDZ7SG3wyNXAWYT5SIn3giL57oA==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
   '@tailwindcss/oxide-linux-x64-gnu@4.3.0':
     resolution: {integrity: sha512-DRNdQRpSGzRGfARVuVkxvM8Q12nh19l4BF/G7zGA1oe+9wcC6saFBHTISrpIcKzhiXtSrlSrluCfvMuledoCTQ==}
     engines: {node: '>= 20'}
@@ -13543,8 +13609,22 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@tailwindcss/oxide-linux-x64-gnu@4.3.1':
+    resolution: {integrity: sha512-Ymi8O8T15HYQdOUWUtTI6ldN0neHP85FC+Qz32xTcZ7iJXtem/x8ITev0o1e9e5rkqj4lONZfTRLvkmin1+tKg==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
   '@tailwindcss/oxide-linux-x64-musl@4.3.0':
     resolution: {integrity: sha512-Z0IADbDo8bh6I7h2IQMx601AdXBLfFpEdUotft86evd/8ZPflZe9COPO8Q1vw+pfLWIUo9zN/JGZvwuAJqduqg==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@tailwindcss/oxide-linux-x64-musl@4.3.1':
+    resolution: {integrity: sha512-M+P/91qJ6uILLw4k2G93GMDRAXj61SMvFQYt39AqvUqYgExXpLL5aepfns7sj4HiAQeolirQF9E0lzRvdf4zPQ==}
     engines: {node: '>= 20'}
     cpu: [x64]
     os: [linux]
@@ -13562,8 +13642,26 @@ packages:
       - '@emnapi/wasi-threads'
       - tslib
 
+  '@tailwindcss/oxide-wasm32-wasi@4.3.1':
+    resolution: {integrity: sha512-zsM8uOeqvVGHsAXsJxsT28ttosFahLJKCLOTUBqRAtKnVgGSRitds9T432QiT8b77Yga7JIBkulIRRlJPtYhRA==}
+    engines: {node: '>=14.0.0'}
+    cpu: [wasm32]
+    bundledDependencies:
+      - '@napi-rs/wasm-runtime'
+      - '@emnapi/core'
+      - '@emnapi/runtime'
+      - '@tybys/wasm-util'
+      - '@emnapi/wasi-threads'
+      - tslib
+
   '@tailwindcss/oxide-win32-arm64-msvc@4.3.0':
     resolution: {integrity: sha512-Pe+RPVTi1T+qymuuRpcdvwSVZjnll/f7n8gBxMMh3xLTctMDKqpdfGimbMyioqtLhUYZxdJ9wGNhV7MKHvgZsQ==}
+    engines: {node: '>= 20'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@tailwindcss/oxide-win32-arm64-msvc@4.3.1':
+    resolution: {integrity: sha512-aiNvSq9BsVk8V513lDKlrCFAgf8qBMPZTpgEhInL+NwQqs97mYmupVMrPrgBBSL8Pv/0zXu9MrMF9rMun1ZeNg==}
     engines: {node: '>= 20'}
     cpu: [arm64]
     os: [win32]
@@ -13574,8 +13672,18 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@tailwindcss/oxide-win32-x64-msvc@4.3.1':
+    resolution: {integrity: sha512-xDEyu1rg290472FEGaKHnzyDyh5QH+AlWvsU5hMoMtPpzmKlRI0jaYKCgSHDYtaQWZOYbMaduSyCwFwY4n1HmA==}
+    engines: {node: '>= 20'}
+    cpu: [x64]
+    os: [win32]
+
   '@tailwindcss/oxide@4.3.0':
     resolution: {integrity: sha512-F7HZGBeN9I0/AuuJS5PwcD8xayx5ri5GhjYUDBEVYUkexyA/giwbDNjRVrxSezE3T250OU2K/wp/ltWx3UOefg==}
+    engines: {node: '>= 20'}
+
+  '@tailwindcss/oxide@4.3.1':
+    resolution: {integrity: sha512-yVPyo8RNkabVr3O2EhHEE0Rewu7YKzc1DhIqfL46LKveFrmu9XbDazNOJY7/GRuvw1h6u3utWnR29H/p5JPlgA==}
     engines: {node: '>= 20'}
 
   '@tailwindcss/postcss@4.3.0':
@@ -19094,6 +19202,10 @@ packages:
 
   enhanced-resolve@5.21.3:
     resolution: {integrity: sha512-QyL119InA+XXEkNLNTPCXPugSvOfhwv0JOlGNzvxs0hZaiHLNvXSpudUWsOlsXGWJh8G6ckCScEkVHfX3kw/2Q==}
+    engines: {node: '>=10.13.0'}
+
+  enhanced-resolve@5.21.6:
+    resolution: {integrity: sha512-aNnGCvbJ/RIyWo1IuhNdVjnNF+EjH9wpzpNHt+ci/m9He9LJvUN8wrCcXjp9cWsGNAuvSpVFTx/vraAFQ8qGjQ==}
     engines: {node: '>=10.13.0'}
 
   enhanced-resolve@5.22.0:
@@ -28917,8 +29029,8 @@ packages:
     resolution: {integrity: sha512-9v4u+G+FFDgAHAD1Km2MuHr82EG30d24l7cY9wSo8hQkeb9A384fuKI23hhbEHwAYhPKdROl6wTtoNpTDRHYFQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  tailwindcss-patch@9.4.3:
-    resolution: {integrity: sha512-K759BY1Df9BnqFQOOsikOAgXtmWMYyQq4R90pT7+bMH9u43HZRe73b3uP1Dyrq9NKeLvo/MknAKgPu/tnyDseQ==}
+  tailwindcss-patch@9.4.4:
+    resolution: {integrity: sha512-TLsIJq4158+qVJqPRh/Z6hUv55gL4gFNZ3yA1x2Xn+DsOvNv+R8/H9yB3qCedsJeZS8ItZ22qASaKYyh7d1dYw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -28945,6 +29057,9 @@ packages:
 
   tailwindcss@4.3.0:
     resolution: {integrity: sha512-y6nxMGB1nMW9R6k96e5gdIFzcfL/gTJRNaqGes1YvkLnPVXzWgbqFF2yLC0T8G774n24cx3Pe8XrKoniCOAH+Q==}
+
+  tailwindcss@4.3.1:
+    resolution: {integrity: sha512-hk+TB1m+K8CYNrP6rjQaq/Y+4Zylwpa87mLYBKCunwnnQ9p+fHb7kmSfGqyEJoxF/O6CDyABWVFEafNSYKll+Q==}
 
   tapable@2.3.0:
     resolution: {integrity: sha512-g9ljZiwki/LfxmQADO3dEY1CbpmXT5Hm2fJ+QaGKwSXUylMybePR7/67YW7jOrrvjEgL1Fmz5kzyAjWVWLlucg==}
@@ -42510,40 +42625,86 @@ snapshots:
       source-map-js: 1.2.1
       tailwindcss: 4.3.0
 
+  '@tailwindcss/node@4.3.1':
+    dependencies:
+      '@jridgewell/remapping': 2.3.5
+      enhanced-resolve: 5.21.6
+      jiti: 2.7.0
+      lightningcss: 1.32.0
+      magic-string: 0.30.21
+      source-map-js: 1.2.1
+      tailwindcss: 4.3.1
+
   '@tailwindcss/oxide-android-arm64@4.3.0':
+    optional: true
+
+  '@tailwindcss/oxide-android-arm64@4.3.1':
     optional: true
 
   '@tailwindcss/oxide-darwin-arm64@4.3.0':
     optional: true
 
+  '@tailwindcss/oxide-darwin-arm64@4.3.1':
+    optional: true
+
   '@tailwindcss/oxide-darwin-x64@4.3.0':
+    optional: true
+
+  '@tailwindcss/oxide-darwin-x64@4.3.1':
     optional: true
 
   '@tailwindcss/oxide-freebsd-x64@4.3.0':
     optional: true
 
+  '@tailwindcss/oxide-freebsd-x64@4.3.1':
+    optional: true
+
   '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.0':
+    optional: true
+
+  '@tailwindcss/oxide-linux-arm-gnueabihf@4.3.1':
     optional: true
 
   '@tailwindcss/oxide-linux-arm64-gnu@4.3.0':
     optional: true
 
+  '@tailwindcss/oxide-linux-arm64-gnu@4.3.1':
+    optional: true
+
   '@tailwindcss/oxide-linux-arm64-musl@4.3.0':
+    optional: true
+
+  '@tailwindcss/oxide-linux-arm64-musl@4.3.1':
     optional: true
 
   '@tailwindcss/oxide-linux-x64-gnu@4.3.0':
     optional: true
 
+  '@tailwindcss/oxide-linux-x64-gnu@4.3.1':
+    optional: true
+
   '@tailwindcss/oxide-linux-x64-musl@4.3.0':
+    optional: true
+
+  '@tailwindcss/oxide-linux-x64-musl@4.3.1':
     optional: true
 
   '@tailwindcss/oxide-wasm32-wasi@4.3.0':
     optional: true
 
+  '@tailwindcss/oxide-wasm32-wasi@4.3.1':
+    optional: true
+
   '@tailwindcss/oxide-win32-arm64-msvc@4.3.0':
     optional: true
 
+  '@tailwindcss/oxide-win32-arm64-msvc@4.3.1':
+    optional: true
+
   '@tailwindcss/oxide-win32-x64-msvc@4.3.0':
+    optional: true
+
+  '@tailwindcss/oxide-win32-x64-msvc@4.3.1':
     optional: true
 
   '@tailwindcss/oxide@4.3.0':
@@ -42560,6 +42721,21 @@ snapshots:
       '@tailwindcss/oxide-wasm32-wasi': 4.3.0
       '@tailwindcss/oxide-win32-arm64-msvc': 4.3.0
       '@tailwindcss/oxide-win32-x64-msvc': 4.3.0
+
+  '@tailwindcss/oxide@4.3.1':
+    optionalDependencies:
+      '@tailwindcss/oxide-android-arm64': 4.3.1
+      '@tailwindcss/oxide-darwin-arm64': 4.3.1
+      '@tailwindcss/oxide-darwin-x64': 4.3.1
+      '@tailwindcss/oxide-freebsd-x64': 4.3.1
+      '@tailwindcss/oxide-linux-arm-gnueabihf': 4.3.1
+      '@tailwindcss/oxide-linux-arm64-gnu': 4.3.1
+      '@tailwindcss/oxide-linux-arm64-musl': 4.3.1
+      '@tailwindcss/oxide-linux-x64-gnu': 4.3.1
+      '@tailwindcss/oxide-linux-x64-musl': 4.3.1
+      '@tailwindcss/oxide-wasm32-wasi': 4.3.1
+      '@tailwindcss/oxide-win32-arm64-msvc': 4.3.1
+      '@tailwindcss/oxide-win32-x64-msvc': 4.3.1
 
   '@tailwindcss/postcss@4.3.0':
     dependencies:
@@ -44598,7 +44774,7 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/bonjour@3.5.13':
     dependencies:
@@ -44618,7 +44794,7 @@ snapshots:
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/content-disposition@0.5.9': {}
 
@@ -44792,7 +44968,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.1.0':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -44827,7 +45003,7 @@ snapshots:
 
   '@types/glob-stream@8.0.3':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
       '@types/picomatch': 4.0.2
       '@types/streamx': 2.9.5
 
@@ -44957,7 +45133,7 @@ snapshots:
 
   '@types/jsonfile@6.1.4':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/katex@0.16.8': {}
 
@@ -44988,7 +45164,7 @@ snapshots:
 
   '@types/loader-runner@2.2.8':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/loader-utils@2.0.6':
     dependencies:
@@ -45031,7 +45207,7 @@ snapshots:
 
   '@types/node-fetch@2.6.13':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
       form-data: 4.0.5
 
   '@types/node-forge@1.3.14':
@@ -45070,7 +45246,7 @@ snapshots:
 
   '@types/npmlog@7.0.0':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/pako@2.0.4': {}
 
@@ -45155,7 +45331,7 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/serve-index@1.9.4':
     dependencies:
@@ -45170,7 +45346,7 @@ snapshots:
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/set-value@4.0.3': {}
 
@@ -45184,19 +45360,19 @@ snapshots:
 
   '@types/ssri@7.1.5':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/stack-utils@2.0.3': {}
 
   '@types/streamx@2.9.5':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/tapable@1.0.12': {}
 
   '@types/through2@2.0.41':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
 
   '@types/tough-cookie@4.0.5': {}
 
@@ -45212,7 +45388,7 @@ snapshots:
 
   '@types/undertaker@1.2.12':
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
       '@types/undertaker-registry': 1.0.4
       async-done: 1.3.2
 
@@ -50756,6 +50932,11 @@ snapshots:
       graceful-fs: 4.2.11
       tapable: 2.3.3
 
+  enhanced-resolve@5.21.6:
+    dependencies:
+      graceful-fs: 4.2.11
+      tapable: 2.3.3
+
   enhanced-resolve@5.22.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -52099,7 +52280,7 @@ snapshots:
 
   eval@0.1.8:
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
       require-like: 0.1.2
 
   event-pubsub@4.3.0: {}
@@ -55804,7 +55985,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 24.13.1
+      '@types/node': 25.9.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -63860,15 +64041,15 @@ snapshots:
       '@weapp-tailwindcss/shared': 2.0.0
       jiti: 2.7.0
 
-  tailwindcss-patch@9.4.3(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0)):
+  tailwindcss-patch@9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
       '@babel/generator': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
       '@tailwindcss-mangle/config': 7.0.2(magicast@0.5.3)
-      '@tailwindcss/node': 4.3.0
-      '@tailwindcss/oxide': 4.3.0
+      '@tailwindcss/node': 4.3.1
+      '@tailwindcss/oxide': 4.3.1
       cac: 6.7.14
       consola: 3.4.2
       fs-extra: 11.3.5
@@ -63884,15 +64065,15 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@9.4.3(magicast@0.5.3)(tailwindcss@4.3.0):
+  tailwindcss-patch@9.4.4(magicast@0.5.3)(tailwindcss@4.3.0):
     dependencies:
       '@babel/generator': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
       '@tailwindcss-mangle/config': 7.0.2(magicast@0.5.3)
-      '@tailwindcss/node': 4.3.0
-      '@tailwindcss/oxide': 4.3.0
+      '@tailwindcss/node': 4.3.1
+      '@tailwindcss/oxide': 4.3.1
       cac: 6.7.14
       consola: 3.4.2
       fs-extra: 11.3.5
@@ -63904,6 +64085,30 @@ snapshots:
       tailwindcss-config: 2.0.0
     optionalDependencies:
       tailwindcss: 4.3.0
+    transitivePeerDependencies:
+      - magicast
+      - supports-color
+
+  tailwindcss-patch@9.4.4(magicast@0.5.3)(tailwindcss@4.3.1):
+    dependencies:
+      '@babel/generator': 7.29.7
+      '@babel/parser': 7.29.7
+      '@babel/traverse': 7.29.7
+      '@babel/types': 7.29.7
+      '@tailwindcss-mangle/config': 7.0.2(magicast@0.5.3)
+      '@tailwindcss/node': 4.3.1
+      '@tailwindcss/oxide': 4.3.1
+      cac: 6.7.14
+      consola: 3.4.2
+      fs-extra: 11.3.5
+      local-pkg: 1.2.1
+      micromatch: 4.0.8
+      pathe: 2.0.3
+      postcss: 8.5.15
+      semver: 7.8.4
+      tailwindcss-config: 2.0.0
+    optionalDependencies:
+      tailwindcss: 4.3.1
     transitivePeerDependencies:
       - magicast
       - supports-color
@@ -63945,6 +64150,8 @@ snapshots:
   tailwindcss@4.2.2: {}
 
   tailwindcss@4.3.0: {}
+
+  tailwindcss@4.3.1: {}
 
   tapable@2.3.0: {}
 

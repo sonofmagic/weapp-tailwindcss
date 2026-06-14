@@ -32,7 +32,12 @@ interface CreateProjectReportOptions {
 interface GeneratorBuildResult {
   css: string
   cssFiles: string[]
-  cssSnapshots: Array<{ fileName: string, content: string }>
+  cssSnapshots: GeneratorCssSnapshot[]
+}
+
+interface GeneratorCssSnapshot {
+  fileName: string
+  content: string
 }
 
 const SUBPACKAGE_MARKER_PATTERNS = [
@@ -277,28 +282,46 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
       || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
   })
   const outputRoot = path.dirname(path.resolve(projectRoot, cssPath))
+  const entryRelativePath = normalizeOutputCssFileName(path.relative(outputRoot, path.resolve(projectRoot, cssPath)))
   const allCssFiles = await fg(MINI_PROGRAM_CSS_PATTERN, {
     absolute: false,
     cwd: outputRoot,
     onlyFiles: true,
   })
-  const entryFileNames = new Set(entrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
+  const normalizedEntrySnapshots = entrySnapshots.map((snapshot, index): GeneratorCssSnapshot => ({
+    ...snapshot,
+    fileName: index === 0 ? entryRelativePath : normalizeOutputCssFileName(snapshot.fileName),
+  }))
+  const entryFileNames = new Set(normalizedEntrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
   const extraSnapshots = await Promise.all(
     allCssFiles
       .sort(compareCssOutputFile)
       .filter(file => !entryFileNames.has(path.normalize(file)))
-      .map(file => collectCssSnapshots(outputRoot, file, {
-        classList,
-        normalizeTailwindV4RootVariableNoise:
-          projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
-          || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
-      })),
+      .map(async (file) => {
+        const snapshots = await collectCssSnapshots(outputRoot, file, {
+          classList,
+          rootSnapshotName: normalizeOutputCssFileName(file),
+          normalizeTailwindV4RootVariableNoise:
+            projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
+            || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
+        })
+        return snapshots.map((snapshot, index): GeneratorCssSnapshot => ({
+          ...snapshot,
+          fileName: index === 0
+            ? normalizeOutputCssFileName(file)
+            : normalizeOutputCssFileName(snapshot.fileName),
+        }))
+      }),
   )
 
   return [
-    ...entrySnapshots,
+    ...normalizedEntrySnapshots,
     ...extraSnapshots.flat().sort(compareCssSnapshotEntry),
   ]
+}
+
+function normalizeOutputCssFileName(fileName: string) {
+  return fileName.replace(/\\/g, '/')
 }
 
 function compareCssOutputFile(a: string, b: string) {
@@ -309,7 +332,63 @@ function compareCssSnapshotEntry(
   a: { fileName: string, content: string },
   b: { fileName: string, content: string },
 ) {
-  return compareText(a.fileName, b.fileName) || compareText(a.content, b.content)
+  return compareText(normalizeSnapshotName(a.fileName) ?? a.fileName, normalizeSnapshotName(b.fileName) ?? b.fileName)
+    || compareText(a.content, b.content)
+    || compareText(a.fileName, b.fileName)
+}
+
+function withDuplicateCssFileSuffix(fileName: string, index: number) {
+  const extension = path.extname(fileName)
+  if (!extension) {
+    return `${fileName}.${index}`
+  }
+  return `${fileName.slice(0, -extension.length)}.${index}${extension}`
+}
+
+function createStableCssSnapshots(
+  generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
+  fallbackFileName: string,
+) {
+  const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots
+    : [{ fileName: generatorResult.cssFiles[0] ?? fallbackFileName, content: generatorResult.css }]
+  const entries = cssSnapshots.map((snapshot, index) => ({
+    index,
+    snapshot,
+    fileName: normalizeSnapshotName(snapshot.fileName) ?? snapshot.fileName,
+  }))
+  const groups = new Map<string, typeof entries>()
+  for (const entry of entries) {
+    const group = groups.get(entry.fileName)
+    if (group) {
+      group.push(entry)
+    }
+    else {
+      groups.set(entry.fileName, [entry])
+    }
+  }
+  const stableFileNames = new Map<number, string>()
+
+  for (const [fileName, group] of groups) {
+    if (group.length === 1) {
+      stableFileNames.set(group[0].index, fileName)
+      continue
+    }
+
+    const sortedGroup = [...group].sort((a, b) => (
+      compareText(a.snapshot.content, b.snapshot.content)
+      || compareText(a.snapshot.fileName, b.snapshot.fileName)
+    ))
+    sortedGroup.forEach((entry, index) => {
+      stableFileNames.set(entry.index, withDuplicateCssFileSuffix(fileName, index + 1))
+    })
+  }
+
+  return entries
+    .map(({ index, snapshot }) => ({
+      ...snapshot,
+      fileName: stableFileNames.get(index) ?? snapshot.fileName,
+    }))
 }
 
 function createReportItem(
@@ -318,15 +397,29 @@ function createReportItem(
 ): CompareReportItem {
   const generatorCss = normalizeCssForSummary(generatorResult.css)
   const generator = summarizeCss(generatorCss)
+  const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
 
   return {
     name: project.name,
     fixture: 'demo',
     cssFile: project.cssFile,
-    cssFiles: generatorResult.cssFiles.length > 0 ? generatorResult.cssFiles : [project.cssFile],
+    cssFiles: cssSnapshots.length > 0 ? cssSnapshots.map(snapshot => snapshot.fileName) : [project.cssFile],
     status: 'passed',
     generator,
   }
+}
+
+function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (project.name !== 'weapp-vite-tailwindcss-v3') {
+    return
+  }
+  expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed css files').not.toContain('miniprogram/app.wxss')
+  expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed subpackage css files').not.toContain('miniprogram/sub-normal/pages/index.wxss')
+  const independent = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-independent/pages/index.wxss')
+  expect(independent, 'weapp-vite v3 independent subpackage css snapshot should exist').toBeTruthy()
+  expect(independent?.content, 'independent subpackage css should keep its own candidates').toMatch(/independent[-_]subpackage/i)
+  expect(independent?.content, 'independent subpackage css should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
+  expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('text-red-500')
 }
 
 function normalizeError(error: unknown) {
@@ -408,10 +501,14 @@ function createCssOutputSnapshot(
 ) {
   const generatorCss = normalizeCssSnapshot(generatorResult.css)
   const generator = summarizeCss(`${generatorCss}\n`)
-  const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
-    ? generatorResult.cssSnapshots
-    : [{ fileName: generatorResult.cssFiles[0] ?? project.cssFile, content: generatorResult.css }]
-  const cssSections = cssSnapshots.flatMap(snapshot => [
+  const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
+  const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
+    const summary = summarizeCss(`${normalizeCssSnapshot(snapshot.content)}\n`)
+    return [
+      `| \`${snapshot.fileName}\` | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
+    ]
+  })
+  const cssSections = stableCssSnapshots.flatMap(snapshot => [
     `### ${snapshot.fileName}`,
     '',
     '```css',
@@ -424,11 +521,17 @@ function createCssOutputSnapshot(
     '',
     'Fixture: demo',
     `Entry: ${project.cssFile}`,
-    `Generator CSS files: ${generatorResult.cssFiles.join(', ')}`,
+    `Generator CSS files: ${stableCssSnapshots.map(snapshot => snapshot.fileName).join(', ')}`,
     '',
     '| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
     `| ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasSystemDarkModeMedia} | ${generator.hasManualDarkModeSelector} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
+    '',
+    '## Generator CSS Summary',
+    '',
+    '| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
+    ...cssSummaryRows,
     '',
     '## Generator CSS',
     '',
@@ -479,13 +582,27 @@ describe('demo generator mode output', () => {
       cssPath: 'dist/app.wxss',
     }, {
       css: '.generator { color: blue; }\n.shared { display: block; }\n',
-      cssFiles: ['app.wxss'],
+      cssFiles: ['app.wxss', 'pages/index/index.wxss'],
+      cssSnapshots: [
+        { fileName: 'app.wxss', content: '.generator { color: blue; }\n' },
+        { fileName: 'pages/index/index.wxss', content: '.shared { display: block; }\n' },
+      ],
     })
 
-    expect(snapshot.indexOf('| Bytes |')).toBeLessThan(snapshot.indexOf('## Generator CSS'))
+    const generatorCssIndex = snapshot.indexOf('\n## Generator CSS\n')
+    const cssTableIndex = snapshot.indexOf('| File | Bytes |')
+    const firstCssBlockIndex = snapshot.indexOf('### app.wxss')
+
+    expect(snapshot.indexOf('| Bytes |')).toBeLessThan(generatorCssIndex)
+    expect(cssTableIndex).toBeLessThan(generatorCssIndex)
+    expect(generatorCssIndex).toBeLessThan(firstCssBlockIndex)
     expect(snapshot).toContain('# fixture-app CSS Output')
     expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false | false | false |')
+    expect(snapshot).toContain('Generator CSS files: app.wxss, pages/index/index.wxss')
+    expect(snapshot).toContain('| `app.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
+    expect(snapshot).toContain('| `pages/index/index.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
     expect(snapshot).toContain('### app.wxss')
+    expect(snapshot).toContain('### pages/index/index.wxss')
     expect(snapshot).toContain('.generator { color: blue; }')
   })
 
@@ -538,6 +655,7 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasUnsupportedThemeComplexSelector, `${project.name} generator css should not include theme :where/:not selectors`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
       if (generatorResult) {
+        expectWeappViteTailwindV3CssIsolation(project, generatorResult)
         for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
           expect(generatorResult.css, `${project.name} should include ${pattern} marker`).toMatch(pattern)
         }

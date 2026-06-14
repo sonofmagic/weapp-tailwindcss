@@ -5,9 +5,11 @@ import type {
   TailwindV4GenerateOptions,
   TailwindV4GenerateTarget,
   TailwindV4ResolvedSource,
+  TailwindV4SourcePattern,
 } from './types'
 import fs from 'node:fs'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { LRUCache } from 'lru-cache'
 import { createTailwindV4Engine as createPatchTailwindV4Engine, extractRawCandidates } from 'tailwindcss-patch'
 import { hasCssMacroTailwindV4Directive, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { omitUndefined } from '@/utils/object'
@@ -18,8 +20,16 @@ import { normalizeRpxTextCandidates, restoreRpxTextCandidates, restoreRpxTextCss
 import { resolveScanSources } from './generator/scan-sources'
 import { transformTailwindV4CssByTarget } from './miniprogram'
 
-const incrementalGenerateCache = new Map<string, TailwindV4IncrementalGenerateCacheEntry>()
-const incrementalGenerateTaskCache = new Map<string, Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>>()
+const INCREMENTAL_GENERATE_CACHE_MAX = 8
+const INCREMENTAL_GENERATE_TASK_CACHE_MAX = 32
+const INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX = 128
+const INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX = 256 * 1024
+const incrementalGenerateCache = new LRUCache<string, TailwindV4IncrementalGenerateCacheEntry>({
+  max: INCREMENTAL_GENERATE_CACHE_MAX,
+})
+const incrementalGenerateTaskCache = new LRUCache<string, Promise<Awaited<ReturnType<TailwindV4Engine['generate']>>>>({
+  max: INCREMENTAL_GENERATE_TASK_CACHE_MAX,
+})
 
 interface TailwindV4IncrementalGenerateCacheEntry {
   seenCandidates: Set<string>
@@ -206,6 +216,17 @@ function mergeCustomPropertyValues(target: Map<string, string>, css: string) {
   }
 }
 
+function shouldRebuildIncrementalEntry(
+  cached: TailwindV4IncrementalGenerateCacheEntry,
+  requestedCandidates: Set<string>,
+  missingCandidates: string[],
+) {
+  return cached.seenCandidates.size + missingCandidates.length > INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+    || cached.css.length > INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+    || cached.rawCss.length > INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+    || requestedCandidates.size > INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+}
+
 function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOptions) {
   const cacheKey = createIncrementalGenerateCacheKey(
     options.compatibleSource,
@@ -338,6 +359,21 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         }
       }
 
+      if (shouldRebuildIncrementalEntry(cached, requestedCandidates, missingCandidates)) {
+        return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
+          const generated = await generateOnce(source, options)
+          seedIncrementalGenerateCache({
+            compatibleSource,
+            generated,
+            requestedCandidates,
+            styleOptions,
+            tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
+            target,
+          })
+          return generated
+        })
+      }
+
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
         const designSystem = await cached.designSystemPromise
         const normalizedMissing = normalizeRpxTextCandidates(missingCandidates)
@@ -411,4 +447,31 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     validateCandidates: createPatchTailwindV4Engine(source).validateCandidates,
     generate,
   }
+}
+
+export function getTailwindV4IncrementalGenerateCacheStats() {
+  return {
+    max: INCREMENTAL_GENERATE_CACHE_MAX,
+    entryCandidatesMax: INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX,
+    entryCssBytesMax: INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX,
+    size: incrementalGenerateCache.size,
+    taskMax: INCREMENTAL_GENERATE_TASK_CACHE_MAX,
+    taskSize: incrementalGenerateTaskCache.size,
+    entries: [...incrementalGenerateCache.entries()].map(([key, entry]) => ({
+      key,
+      candidates: entry.seenCandidates.size,
+      classSet: entry.classSet.size,
+      cssBytes: entry.css.length,
+      rawCssBytes: entry.rawCss.length,
+    })),
+    keys: [...incrementalGenerateCache.keys()],
+    taskKeys: [...incrementalGenerateTaskCache.keys()],
+  }
+}
+
+export const getTailwindV4IncrementalGenerateCacheStatsForTest = getTailwindV4IncrementalGenerateCacheStats
+
+export function clearTailwindV4IncrementalGenerateCacheForTest() {
+  incrementalGenerateCache.clear()
+  incrementalGenerateTaskCache.clear()
 }

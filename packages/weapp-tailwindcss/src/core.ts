@@ -6,6 +6,17 @@ import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tail
 
 type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
 
+export interface GetRuntimeSetOptions {
+  /** 强制刷新 Tailwind patcher 状态后再收集 */
+  forceRefresh?: boolean | undefined
+  /** 强制重新提取运行时类名集合 */
+  forceCollect?: boolean | undefined
+  /** 刷新时同步清理 Tailwind 运行时缓存 */
+  clearCache?: boolean | undefined
+  /** 允许返回空集合，默认会在空集合时再尝试刷新一次 */
+  allowEmpty?: boolean | undefined
+}
+
 const DEFAULT_MAIN_CHUNK_STYLE_OPTIONS = Object.freeze({
   isMainChunk: true,
 }) satisfies Readonly<Partial<IStyleHandlerOptions>>
@@ -169,11 +180,14 @@ export function createContext(options: UserDefinedOptions = {}) {
   async function transformWxss(rawCss: string, options?: Partial<IStyleHandlerOptions>) {
     await runtimeState.readyPromise
     const result = await styleHandler(rawCss, resolveTransformWxssOptions(options))
-    runtimeSet = await ensureRuntimeClassSet(runtimeState, {
-      forceRefresh: true,
-      forceCollect: true,
-    })
+    runtimeSet = await ensureRuntimeClassSet(runtimeState)
     return result
+  }
+
+  async function getRuntimeSet(options?: GetRuntimeSetOptions) {
+    await runtimeState.readyPromise
+    runtimeSet = await ensureRuntimeClassSet(runtimeState, options)
+    return runtimeSet
   }
 
   async function transformJs(rawJs: string, options?: RuntimeJsTransformOptions) {
@@ -204,6 +218,7 @@ export function createContext(options: UserDefinedOptions = {}) {
   }
 
   return {
+    getRuntimeSet,
     transformWxss,
     transformWxml,
     transformJs,

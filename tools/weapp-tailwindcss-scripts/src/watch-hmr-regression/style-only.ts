@@ -2,6 +2,7 @@ import type { CliOptions, StyleMutationMetrics, WatchCase, WatchCaseMetrics, Wat
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { runStyleMutation } from './mutations/style'
+import { summarizeMemorySamples } from './runner'
 import { createWatchSession, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
@@ -34,7 +35,10 @@ function toStyleOnlyWatchCaseMetrics(
   initialReadyMs: number,
   totalMs: number,
   styleMetrics: StyleMutationMetrics,
+  memorySamples = [] as WatchCaseMetrics['memorySamples'],
+  memoryDebugSamples = [] as NonNullable<WatchCaseMetrics['memoryDebugSamples']>,
 ): WatchCaseMetrics {
+  const memoryStats = summarizeMemorySamples(memorySamples)
   return {
     name: watchCase.name,
     label: watchCase.label,
@@ -52,7 +56,7 @@ function toStyleOnlyWatchCaseMetrics(
     subPackageMutationMetrics: [],
     summaryByMutationKind: summarizeMutationMetricsByKind([styleMetrics]),
     initialReadyMs,
-    maxPluginProcessMs: watchCase.maxPluginProcessMs,
+    ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
     hotUpdateOutputMs: styleMetrics.hotUpdateOutputMs,
     hotUpdateEffectiveMs: styleMetrics.hotUpdateEffectiveMs,
     hotUpdatePluginProcessMs: styleMetrics.hotUpdatePluginProcessMs,
@@ -62,6 +66,10 @@ function toStyleOnlyWatchCaseMetrics(
     rollbackPluginProcessMs: styleMetrics.rollbackPluginProcessMs,
     rollbackPluginProcessSamples: styleMetrics.rollbackPluginProcessSamples,
     totalMs,
+    memorySamples,
+    ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+    memoryPeakRssMb: memoryStats.peakRssMb,
+    memoryRssDeltaMb: memoryStats.rssDeltaMb,
   }
 }
 
@@ -99,7 +107,14 @@ export async function runStyleOnlyCase(
     )
 
     const totalMs = Date.now() - caseStartedAt
-    const watchCaseMetrics = toStyleOnlyWatchCaseMetrics(watchCase, initialReadyMs, totalMs, styleMetrics)
+    const watchCaseMetrics = toStyleOnlyWatchCaseMetrics(
+      watchCase,
+      initialReadyMs,
+      totalMs,
+      styleMetrics,
+      session.memorySamplesSince(sessionStartedAt),
+      session.memoryDebugSamplesSince(sessionStartedAt),
+    )
 
     return {
       name: watchCase.name,

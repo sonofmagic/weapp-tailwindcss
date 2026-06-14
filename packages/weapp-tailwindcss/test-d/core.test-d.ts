@@ -4,6 +4,7 @@ import { expectType } from 'tsd'
 import { createContext } from 'weapp-tailwindcss/core'
 
 const context = createContext({ appType: 'taro' })
+expectType<Promise<Set<string>>>(context.getRuntimeSet())
 expectType<Promise<PostcssResult<Root | Document>>>(context.transformWxss(''))
 expectType<Promise<JsHandlerResult>>(context.transformJs('const foo = 1'))
 expectType<Promise<string>>(context.transformWxml('<view class="foo"></view>'))

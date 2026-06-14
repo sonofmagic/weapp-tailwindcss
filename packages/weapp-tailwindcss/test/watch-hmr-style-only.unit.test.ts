@@ -82,6 +82,25 @@ describe('watch-hmr style-only helpers', () => {
       ensureRunning: vi.fn(),
       lastCompileSuccessAt: vi.fn(() => 0),
       logs: vi.fn(() => 'watch logs'),
+      memorySamplesSince: vi.fn(() => [
+        { at: 1, rssMb: 200, maxProcessRssMb: 180, processCount: 2 },
+        { at: 2, rssMb: 218, maxProcessRssMb: 196, processCount: 2 },
+      ]),
+      memoryDebugSamplesSince: vi.fn(() => [
+        {
+          at: 2,
+          bundler: 'vite',
+          phase: 'generateBundle',
+          durationMs: 10,
+          data: {
+            process: {
+              heapUsedMb: 72,
+              rssMb: 218,
+            },
+          },
+        },
+      ]),
+      pluginProcessSamplesSince: vi.fn(() => []),
       stop: vi.fn(async () => {}),
     }
     createWatchSessionMock.mockReturnValue(session)
@@ -93,10 +112,18 @@ describe('watch-hmr style-only helpers', () => {
       styleNeedle: '.style-marker',
       applyUtilities: [],
       expectedApplyDeclarations: [],
+      expectedApplyDeclarationGroups: [],
+      functionDeclarations: [],
+      expectedFunctionDeclarations: [],
+      forbiddenFunctionFragments: [],
       hotUpdateOutputMs: 12,
       hotUpdateEffectiveMs: 10,
+      hotUpdatePluginProcessMs: 0,
+      hotUpdatePluginProcessSamples: [],
       rollbackOutputMs: 15,
       rollbackEffectiveMs: 11,
+      rollbackPluginProcessMs: 0,
+      rollbackPluginProcessSamples: [],
       rollbackNeedleCleared: true,
     })
 
@@ -114,6 +141,16 @@ describe('watch-hmr style-only helpers', () => {
       name: 'taro-webpack-react-tailwindcss-v4',
       hotUpdateEffectiveMs: 10,
       rollbackEffectiveMs: 11,
+      memoryDebugSamples: [
+        {
+          data: {
+            process: {
+              heapUsedMb: 72,
+              rssMb: 218,
+            },
+          },
+        },
+      ],
     })
     expect(session.ensureRunning).toHaveBeenCalled()
     expect(session.stop).toHaveBeenCalledTimes(1)
@@ -129,6 +166,9 @@ describe('watch-hmr style-only helpers', () => {
       ensureRunning: vi.fn(),
       lastCompileSuccessAt: vi.fn(() => 0),
       logs: vi.fn(() => 'captured watch logs'),
+      memorySamplesSince: vi.fn(() => []),
+      memoryDebugSamplesSince: vi.fn(() => []),
+      pluginProcessSamplesSince: vi.fn(() => []),
       stop: vi.fn(async () => {}),
     }
     createWatchSessionMock.mockReturnValue(session)

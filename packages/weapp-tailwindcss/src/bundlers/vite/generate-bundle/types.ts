@@ -42,6 +42,11 @@ export interface GenerateBundleContext {
   setRememberedCssSignature?: (file: string, cssRuntimeSignature: string) => void
   getKnownSfcSource?: (file: string) => string | undefined
   recordGeneratorCandidates?: (candidates: Set<string>) => void
+  pruneViteCssCaches?: (options: {
+    activeFiles: Set<string>
+    activeKnownSfcFiles?: Set<string> | undefined
+  }) => void
+  getViteCssCacheStats?: () => Record<string, unknown>
   hmrTimingRecorder?: HmrTimingRecorder
 }
 

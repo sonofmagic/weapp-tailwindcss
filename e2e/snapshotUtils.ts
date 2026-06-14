@@ -39,6 +39,7 @@ export function sanitizeImportRequest(request: string): string {
 
 const PATH_SEPARATOR_RE = /[/\\]+/
 const HASH_IN_FILENAME_RE = /[.-]?[a-f0-9]{8}(?=\.[^.]+$)/i
+const HASH_IN_PATH_SEGMENT_RE = /[.-]?[a-f0-9]{8}$/i
 
 export function stripHashFromFilename(name: string): string {
   const segments = name.split(PATH_SEPARATOR_RE)
@@ -51,12 +52,19 @@ export function stripHashFromFilename(name: string): string {
   return normalizedSegments.join(path.sep)
 }
 
+export function stripHashFromPathSegment(name: string): string {
+  return stripHashFromFilename(name)
+    .split(PATH_SEPARATOR_RE)
+    .map(segment => segment.replace(HASH_IN_PATH_SEGMENT_RE, ''))
+    .join(path.sep)
+}
+
 export function normalizeSnapshotName(name: string): string | undefined {
   const segments = name.split(PATH_SEPARATOR_RE).filter(segment => segment.length > 0 && segment !== '.')
   if (segments.length === 0) {
     return undefined
   }
-  const normalizedSegments = segments.map(stripHashFromFilename)
+  const normalizedSegments = segments.map(stripHashFromPathSegment)
   return normalizedSegments.join(path.sep)
 }
 

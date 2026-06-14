@@ -2,11 +2,20 @@
 
 Fixture: demo
 Entry: taro-vite-vue3-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, app-origin.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 9457 | 36 | false | false | false | true | true | false | true |
+
+## Generator CSS Summary
+
+| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 1761 | 0 | false | false | false | false | false | false | false |
+| `app-origin.wxss` | 5957 | 36 | false | false | false | true | true | false | true |
+| `sub-independent/pages/index.wxss` | 935 | 6 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 920 | 6 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -236,7 +245,7 @@ wx-root-portal-content {
 }
 ```
 
-### index.wxss
+### sub-independent/pages/index.wxss
 
 ```css
 view,
@@ -272,7 +281,7 @@ wx-root-portal-content {
 }
 ```
 
-### index.wxss
+### sub-normal/pages/index.wxss
 
 ```css
 view,

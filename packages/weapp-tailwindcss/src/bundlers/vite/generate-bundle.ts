@@ -9,6 +9,8 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
+import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXBundleAssetSourceGetter, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder, isUniAppXHarmonyBundle, UNI_APP_X_STYLE_PLACEHOLDER_VERSION } from '@/uni-app-x/style-asset'
@@ -20,7 +22,7 @@ import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '.
 import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { pushConcurrentTaskFactories } from '../shared/run-tasks'
+import { pushConcurrentTaskFactories, runWithConcurrency } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
@@ -44,10 +46,21 @@ import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssA
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveTailwindV4EntriesFromCssCached } from './source-scan'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
+import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
-export { resolveReplayCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+export { resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
+
+const VITE_LAST_CSS_RESULT_CACHE_MAX = 64
+
+function resolveViteCssTaskConcurrency(useIncrementalMode: boolean) {
+  const configured = Number.parseInt(process.env['WEAPP_TW_VITE_CSS_CONCURRENCY'] ?? '', 10)
+  if (Number.isFinite(configured) && configured > 0) {
+    return configured
+  }
+  return useIncrementalMode ? 1 : 2
+}
 
 function addSiblingCssFile(files: Set<string>, file: string) {
   if (file.endsWith('.wxml')) {
@@ -67,6 +80,134 @@ function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
     addSiblingCssFile(files, file)
   }
   return files
+}
+
+function normalizeViteCssCacheKey(file: string) {
+  return normalizeOutputPathKey(file)
+}
+
+function rememberLastCssResult(
+  resultByFile: Map<string, string>,
+  sourceHashByFile: Map<string, string>,
+  file: string,
+  css: string,
+  sourceHash: string,
+) {
+  const key = normalizeViteCssCacheKey(file)
+  resultByFile.delete(key)
+  sourceHashByFile.delete(key)
+  resultByFile.set(key, css)
+  sourceHashByFile.set(key, sourceHash)
+  while (resultByFile.size > VITE_LAST_CSS_RESULT_CACHE_MAX) {
+    const oldestKey = resultByFile.keys().next().value
+    if (typeof oldestKey !== 'string') {
+      break
+    }
+    resultByFile.delete(oldestKey)
+    sourceHashByFile.delete(oldestKey)
+  }
+}
+
+function getLastCssResult(resultByFile: Map<string, string>, ...files: Array<string | undefined>) {
+  for (const file of files) {
+    if (!file) {
+      continue
+    }
+    const key = normalizeViteCssCacheKey(file)
+    const css = resultByFile.get(key)
+    if (css == null) {
+      continue
+    }
+    resultByFile.delete(key)
+    resultByFile.set(key, css)
+    return css
+  }
+  return undefined
+}
+
+function getLastCssSourceHash(sourceHashByFile: Map<string, string>, file: string) {
+  return sourceHashByFile.get(normalizeViteCssCacheKey(file))
+}
+
+function pruneLastCssResults(
+  resultByFile: Map<string, string>,
+  sourceHashByFile: Map<string, string>,
+  activeFiles: Set<string>,
+) {
+  for (const key of resultByFile.keys()) {
+    if (activeFiles.has(key)) {
+      continue
+    }
+    resultByFile.delete(key)
+    sourceHashByFile.delete(key)
+  }
+}
+
+function toMb(bytes: number) {
+  return Math.round(bytes / 1024 / 1024)
+}
+
+function summarizeStringMapCache(map: Map<string, string>) {
+  let bytes = 0
+  for (const value of map.values()) {
+    bytes += value.length
+  }
+  return {
+    bytes,
+    mb: toMb(bytes),
+    size: map.size,
+  }
+}
+
+function resolveViteMemoryDebugStats(context: {
+  activeProcessCacheKeys: Set<string>
+  activeProcessHashKeys: Set<string | number>
+  cache: GenerateBundleContext['opts']['cache']
+  generatorRuntimeSize: number
+  getViteCssCacheStats?: (() => Record<string, unknown>) | undefined
+  lastCssResultByFile: Map<string, string>
+  phase: string
+  runtimeSize: number
+  sourceCandidatesSize: number
+  transformRuntimeSize: number
+  useIncrementalMode: boolean
+}) {
+  if (process.env['WEAPP_TW_HMR_MEMORY_DEBUG'] !== '1') {
+    return undefined
+  }
+
+  const memory = process.memoryUsage()
+  return {
+    phase: context.phase,
+    mode: context.useIncrementalMode ? 'incremental' : 'full',
+    process: {
+      rssMb: toMb(memory.rss),
+      heapTotalMb: toMb(memory.heapTotal),
+      heapUsedMb: toMb(memory.heapUsed),
+      externalMb: toMb(memory.external),
+      arrayBuffersMb: toMb(memory.arrayBuffers),
+    },
+    runtime: {
+      sourceCandidates: context.sourceCandidatesSize,
+      runtime: context.runtimeSize,
+      transformRuntime: context.transformRuntimeSize,
+      generatorRuntime: context.generatorRuntimeSize,
+    },
+    processCache: {
+      instance: context.cache.instance.size,
+      hashMap: context.cache.hashMap.size,
+      activeCacheKeys: context.activeProcessCacheKeys.size,
+      activeHashKeys: context.activeProcessHashKeys.size,
+    },
+    viteCss: {
+      ...context.getViteCssCacheStats?.(),
+      lastCssResultByFile: summarizeStringMapCache(context.lastCssResultByFile),
+    },
+    tailwind: {
+      v3: getTailwindV3IncrementalGenerateCacheStats(),
+      v4: getTailwindV4IncrementalGenerateCacheStats(),
+    },
+  }
 }
 
 async function createScopedGeneratorCandidateSignature(
@@ -95,6 +236,7 @@ async function createScopedGeneratorCandidateSignature(
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
   const lastCssResultByFile = new Map<string, string>()
+  const lastCssSourceHashByFile = new Map<string, string>()
   let currentOutDir: string | undefined
   let currentSubpackageRoots: Set<string> | undefined
   const cssHandlerOptions = createCssHandlerOptionsCache({
@@ -130,6 +272,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       setRememberedCssSignature,
       getKnownSfcSource,
       recordGeneratorCandidates,
+      pruneViteCssCaches,
+      getViteCssCacheStats,
       hmrTimingRecorder,
     } = context
     const getBundlerSfcSource = (sourceFile: string) => {
@@ -161,6 +305,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
@@ -179,7 +324,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       markCssAssetProcessed,
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
-      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension),
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot),
       debug,
     })
     const hmrTimingStartedAt = performance.now()
@@ -218,6 +363,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const debugCssDiff = process.env['WEAPP_TW_VITE_DEBUG_CSS_DIFF'] === '1'
     const disableV3OxideSourceRuntime = process.env['WEAPP_TW_VITE_DISABLE_V3_OXIDE_RUNTIME'] === '1'
     const bundleFiles = Object.keys(bundle)
+    const activeViteCssCacheFiles = new Set(bundleFiles.map(normalizeViteCssCacheKey))
     const subpackageRoots = collectMiniProgramSubpackageRoots(bundle)
     if (subpackageRoots) {
       currentSubpackageRoots = subpackageRoots
@@ -456,7 +602,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
 
     const linkedByEntry = useIncrementalMode ? new Map<string, Set<string>>() : undefined
     const sharedCssResultCache = new Map<string, Promise<string>>()
+    const activeProcessCacheKeys = new Set<string>()
+    const activeProcessHashKeys = new Set<string | number>()
+    const rememberProcessCacheKey = (cacheKey: string, hashKey: string | number = cacheKey) => {
+      activeProcessCacheKeys.add(cacheKey)
+      activeProcessHashKeys.add(hashKey)
+    }
     const tasks: Promise<void>[] = []
+    const cssTaskFactories: Array<() => Promise<void>> = []
     const jsTaskFactories: Array<() => Promise<void>> = []
 
     for (const entry of snapshot.entries) {
@@ -472,11 +625,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           continue
         }
         const rawSource = originalEntrySource
+        const cacheKey = file
+        const hashKey = `${file}:html:${runtimeSignature}`
+        rememberProcessCacheKey(cacheKey, hashKey)
         tasks.push(timeTask('html', () =>
           processCachedTask<string>({
             cache,
-            cacheKey: file,
-            hashKey: `${file}:html:${runtimeSignature}`,
+            cacheKey,
+            hashKey,
             hash: getSnapshotHash(snapshot.sourceHashByFile, file, rawSource),
             applyResult(source) {
               originalSource.source = source
@@ -540,6 +696,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, file, outDir, opts)
         const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension)
+        activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
           delete bundle[file]
           debug('css skip raw source style asset: %s -> %s', file, outputFile)
@@ -708,8 +865,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
         const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
         const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}:${sourceTraceSignature}`
+        const cssCacheKey = file
+        const cssHashKey = `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`
         if (!shouldTrackGeneratorRuntime) {
-          const lastCss = lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
+          const lastCss = getLastCssResult(lastCssResultByFile, outputFile, file)
           if (lastCss != null) {
             applyCssResult(lastCss)
             markCssAssetProcessed?.(originalSource, outputFile)
@@ -718,15 +877,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             continue
           }
         }
-        tasks.push(timeTask('css', () =>
+        rememberProcessCacheKey(cssCacheKey, cssHashKey)
+        cssTaskFactories.push(() => timeTask('css', () =>
           processCachedTask<string>({
             cache,
-            cacheKey: file,
-            hashKey: `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`,
+            cacheKey: cssCacheKey,
+            hashKey: cssHashKey,
             hash: `${cssRuntimeAffectingHash}:${scopedGeneratorCandidateSignature}:${sourceTraceSignature}`,
             applyResult(source) {
               applyCssResult(source)
-              lastCssResultByFile.set(outputFile, source)
+              rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, source, cssRuntimeAffectingHash)
               markCssAssetProcessed?.(originalSource, outputFile)
               if (rememberedCssSources.length <= 1) {
                 rememberCssSource?.({
@@ -757,7 +917,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 const start = performance.now()
                 await runtimeState.readyPromise
                 const previousCss = !vitePipelineCssAsset && useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
-                  ? lastCssResultByFile.get(outputFile) ?? lastCssResultByFile.get(file)
+                  ? getLastCssResult(lastCssResultByFile, outputFile, file)
                   : undefined
                 const generated = await generateCssByGenerator({
                   opts,
@@ -866,10 +1026,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 )
               : undefined
             const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
+            const hashKey = `${file}:js`
+            rememberProcessCacheKey(file, hashKey)
             await processCachedTask<string>({
               cache,
               cacheKey: file,
-              hashKey: `${file}:js`,
+              hashKey,
               hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
               applyResult(source) {
                 originalSource.code = source
@@ -920,13 +1082,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           baseApplyLinkedUpdates(linked)
         }
 
+        const uniAppXJsHashKey = `${file}:js`
+        rememberProcessCacheKey(file, uniAppXJsHashKey)
         const factory = createUniAppXAssetTask(
           file,
           originalSource,
           outDir,
           {
             cache,
-            hashKey: `${file}:js`,
+            hashKey: uniAppXJsHashKey,
             hashSalt: createJsHashSalt(
               runtimeSignature,
               [
@@ -990,6 +1154,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         rootDir,
         isWebGeneratorTarget,
         shouldPreserveAppCssExtension,
+        sourceRoot,
       )
       for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
         const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({
@@ -1004,6 +1169,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           continue
         }
         const { rawSource, sourceFile } = rememberedCssSource
+        activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
+        activeViteCssCacheFiles.add(normalizeViteCssCacheKey(sourceFile))
         const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
         const cssHandlerOptions = {
           ...getCssHandlerOptions(sourceFile),
@@ -1033,13 +1200,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         )
         const cssRuntimeAffectingHash = cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'css'))
         const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
+        const previousCss = useIncrementalMode && getLastCssSourceHash(lastCssSourceHashByFile, outputFile) === cssRuntimeAffectingHash
+          ? getLastCssResult(lastCssResultByFile, outputFile)
+          : undefined
         const rememberedKeys = refreshedRememberedGroup.map(item => item.key)
         const allRememberedSignaturesFresh = rememberedKeys.length > 0
           && rememberedKeys.every(key => getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature)
         if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
           continue
         }
-        tasks.push(timeTask('css.replay', async () => {
+        cssTaskFactories.push(() => timeTask('css.replay', async () => {
           const start = performance.now()
           const generated = await generateCssByGenerator({
             opts,
@@ -1052,8 +1222,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             getSourceCandidatesForEntries: scopedSourceCandidateGetter,
             styleHandler,
             debug,
+            previousCss,
           })
           const css = annotateCss(generated?.css ?? (await styleHandler(rawSource, cssHandlerOptions)).css)
+          rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, css, cssRuntimeAffectingHash)
           for (const key of rememberedKeys) {
             setRememberedCssSignature?.(key, rememberedCssRuntimeSignature)
           }
@@ -1080,6 +1252,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
 
     pushConcurrentTaskFactories(tasks, jsTaskFactories)
+    if (cssTaskFactories.length > 0) {
+      const cssConcurrency = resolveViteCssTaskConcurrency(useIncrementalMode)
+      tasks.push(runWithConcurrency(cssTaskFactories, cssConcurrency).then(() => undefined))
+    }
 
     const tasksStart = performance.now()
     await Promise.all(tasks)
@@ -1149,7 +1325,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         markCssAssetProcessed,
         recordCssAssetResult,
         recordViteProcessedCssAssetResult,
-        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension),
+        resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot),
         debug,
       })
       return injectViteProcessedCssIntoMainCssAssets(bundle, {
@@ -1179,6 +1355,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       { incremental: useIncrementalMode },
     )
     state.generatorCandidateSignature = generatorCandidateSignature
+    if (useIncrementalMode && !snapshot.hasOmittedKnownFiles) {
+      cache.prune?.({
+        cacheKeys: activeProcessCacheKeys,
+        hashKeys: activeProcessHashKeys,
+      })
+    }
+    pruneLastCssResults(lastCssResultByFile, lastCssSourceHashByFile, activeViteCssCacheFiles)
+    pruneViteCssCaches?.({
+      activeFiles: activeViteCssCacheFiles,
+      activeKnownSfcFiles: new Set([
+        ...snapshot.sourceHashByFile.keys(),
+        ...snapshot.entries.map(entry => entry.file),
+      ]),
+    })
     recordTimingDetail('state.update', stateUpdateStart)
 
     debug(
@@ -1203,7 +1393,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     )
 
     if (hmrTimingRecorder) {
-      hmrTimingRecorder.record('generateBundle', performance.now() - hmrTimingStartedAt, timingDetails)
+      hmrTimingRecorder.record('generateBundle', performance.now() - hmrTimingStartedAt, {
+        ...timingDetails,
+        memoryDebug: resolveViteMemoryDebugStats({
+          activeProcessCacheKeys,
+          activeProcessHashKeys,
+          cache,
+          generatorRuntimeSize: generatorRuntime.size,
+          getViteCssCacheStats,
+          lastCssResultByFile,
+          phase: 'generateBundle',
+          runtimeSize: runtime.size,
+          sourceCandidatesSize: sourceCandidates.size,
+          transformRuntimeSize: transformRuntime.size,
+          useIncrementalMode,
+        }),
+      })
       hmrTimingRecorder.emitTotal()
     }
     onEnd()

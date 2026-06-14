@@ -48,6 +48,8 @@ export interface CliOptions {
   reportFile?: string
   maxHotUpdateMs?: number
   maxPluginProcessMs?: number
+  maxMemoryRssDeltaMb?: number
+  maxMemoryHeapUsedMb?: number
 }
 
 export interface PluginProcessSample {
@@ -58,6 +60,22 @@ export interface PluginProcessSample {
   file?: string
   metric?: 'hook' | 'total'
   wallMs?: number
+  details?: Record<string, unknown>
+}
+
+export interface HmrMemoryDebugSample {
+  at: number
+  bundler: string
+  phase: string
+  durationMs: number
+  data: Record<string, unknown>
+}
+
+export interface MemoryUsageSample {
+  at: number
+  rssMb: number
+  maxProcessRssMb: number
+  processCount: number
 }
 
 export interface ClassMutationPayload {
@@ -222,6 +240,8 @@ export interface WatchSession {
   lastCompileSuccessAt: () => number
   logs: () => string
   stop: () => Promise<void>
+  memorySamplesSince: (startedAt: number) => MemoryUsageSample[]
+  memoryDebugSamplesSince: (startedAt: number) => HmrMemoryDebugSample[]
   pluginProcessSamplesSince: (startedAt: number) => PluginProcessSample[]
 }
 
@@ -495,6 +515,10 @@ export interface WatchCaseMetrics {
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   totalMs: number
+  memorySamples: MemoryUsageSample[]
+  memoryDebugSamples?: HmrMemoryDebugSample[]
+  memoryPeakRssMb: number
+  memoryRssDeltaMb: number
 }
 
 export interface WebHmrMetrics {
@@ -513,6 +537,8 @@ export interface WebHmrMetrics {
   rollbackEffectiveMs: number
   sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
   sourceDomReplacementSequence?: WebHmrSourceDomReplacementMetrics[]
+  memorySamples: MemoryUsageSample[]
+  memoryDebugSamples?: HmrMemoryDebugSample[]
   totalMs: number
 }
 
@@ -544,9 +570,12 @@ export interface WatchReport {
     skipBuild: boolean
     quietSass: boolean
     webOnly: boolean
+    styleOnly: boolean
     mainStyleOnly: boolean
     maxHotUpdateMs?: number
     maxPluginProcessMs?: number
+    maxMemoryRssDeltaMb?: number
+    maxMemoryHeapUsedMb?: number
   }
   summary: WatchSummary
   summaryByRound: Partial<Record<MutationRoundName, WatchSummary>>

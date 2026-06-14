@@ -10,6 +10,8 @@ import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
+import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
@@ -22,6 +24,95 @@ import { createGulpRuntimeSnapshot } from './runtime-snapshot'
 import { createVinylTransform } from './vinyl-transform'
 
 const debug = createDebug()
+const GULP_RUNTIME_SOURCE_CACHE_MAX = 256
+const GULP_PROCESS_CACHE_MAX = 512
+
+function toMb(bytes: number) {
+  return Math.round(bytes / 1024 / 1024)
+}
+
+function touchMapEntry<Key, Value>(map: Map<Key, Value>, key: Key, value: Value) {
+  map.delete(key)
+  map.set(key, value)
+}
+
+function pruneGulpRuntimeSourceCaches(
+  sourceHashByFile: Map<string, string>,
+  sourcesByFile: Map<string, { source: string, type: 'html' | 'js' }>,
+) {
+  while (sourcesByFile.size > GULP_RUNTIME_SOURCE_CACHE_MAX) {
+    const oldestKey = sourcesByFile.keys().next().value
+    if (typeof oldestKey !== 'string') {
+      break
+    }
+    sourcesByFile.delete(oldestKey)
+    sourceHashByFile.delete(oldestKey)
+  }
+}
+
+function rememberGulpProcessCacheKey(cacheKeys: Set<string>, key: string) {
+  cacheKeys.delete(key)
+  cacheKeys.add(key)
+  while (cacheKeys.size > GULP_PROCESS_CACHE_MAX) {
+    const oldestKey = cacheKeys.keys().next().value
+    if (typeof oldestKey !== 'string') {
+      break
+    }
+    cacheKeys.delete(oldestKey)
+  }
+}
+
+function pruneGulpProcessCache(cache: ReturnType<typeof getCompilerContext>['cache'], cacheKeys: Set<string>) {
+  cache.prune?.({
+    cacheKeys,
+    hashKeys: cacheKeys,
+  })
+}
+
+function resolveGulpMemoryDebugStats(context: {
+  cache: ReturnType<typeof getCompilerContext>['cache']
+  defaultStyleHandlerOptionsCache: Map<number | 'unknown', Partial<IStyleHandlerOptions>>
+  gulpProcessCacheKeys: Set<string>
+  phase: string
+  runtimeSet: Set<string>
+  runtimeSourceHashByFile: Map<string, string>
+  runtimeSourcesByFile: Map<string, { source: string, type: 'html' | 'js' }>
+}) {
+  if (process.env['WEAPP_TW_HMR_MEMORY_DEBUG'] !== '1') {
+    return undefined
+  }
+
+  const memory = process.memoryUsage()
+  return {
+    phase: context.phase,
+    process: {
+      rssMb: toMb(memory.rss),
+      heapTotalMb: toMb(memory.heapTotal),
+      heapUsedMb: toMb(memory.heapUsed),
+      externalMb: toMb(memory.external),
+      arrayBuffersMb: toMb(memory.arrayBuffers),
+    },
+    runtime: {
+      runtimeSet: context.runtimeSet.size,
+      runtimeSourceHashByFile: context.runtimeSourceHashByFile.size,
+      runtimeSourcesByFile: context.runtimeSourcesByFile.size,
+      maxRuntimeSources: GULP_RUNTIME_SOURCE_CACHE_MAX,
+    },
+    processCache: {
+      instance: context.cache.instance.size,
+      hashMap: context.cache.hashMap.size,
+      activeCacheKeys: context.gulpProcessCacheKeys.size,
+      maxCacheKeys: GULP_PROCESS_CACHE_MAX,
+    },
+    gulpOptions: {
+      defaultStyleHandlerOptions: context.defaultStyleHandlerOptionsCache.size,
+    },
+    tailwind: {
+      v3: getTailwindV3IncrementalGenerateCacheStats(),
+      v4: getTailwindV4IncrementalGenerateCacheStats(),
+    },
+  }
+}
 
 /**
  * @name weapp-tw-gulp
@@ -58,6 +149,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
   let cachedGulpSourceCandidates: Set<string> | undefined
   let cachedGulpSourceCandidateSignature: string | undefined
+  const gulpProcessCacheKeys = new Set<string>()
   const sourceCandidateExtractor = initialTwPatcher.majorVersion === 3
     ? createTailwindV3DefaultExtractor()
     : undefined
@@ -105,11 +197,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     const filename = path.resolve(file.path)
     const hash = cache.computeHash(rawSource)
     const changed = runtimeSourceHashByFile.get(filename) !== hash
+    runtimeSourceHashByFile.delete(filename)
     runtimeSourceHashByFile.set(filename, hash)
-    runtimeSourcesByFile.set(filename, {
+    touchMapEntry(runtimeSourcesByFile, filename, {
       source: rawSource,
       type,
     })
+    pruneGulpRuntimeSourceCaches(runtimeSourceHashByFile, runtimeSourcesByFile)
     if (changed && runtimeState.twPatcher.majorVersion === 4) {
       invalidateGulpSourceCandidates()
     }
@@ -327,6 +421,20 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
   }
 
+  function resolveGulpTransformTimingDetails(phase: string) {
+    return {
+      memoryDebug: resolveGulpMemoryDebugStats({
+        cache,
+        defaultStyleHandlerOptionsCache,
+        gulpProcessCacheKeys,
+        phase,
+        runtimeSet,
+        runtimeSourceHashByFile,
+        runtimeSourcesByFile,
+      }),
+    }
+  }
+
   const transformWxss = (options: Partial<IStyleHandlerOptions> = {}) =>
     createVinylTransform('css', async (file) => {
       if (!file.contents) {
@@ -395,7 +503,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           }
         },
       })
-    })
+      rememberGulpProcessCacheKey(gulpProcessCacheKeys, file.path)
+      pruneGulpProcessCache(cache, gulpProcessCacheKeys)
+    }, () => resolveGulpTransformTimingDetails('css'))
 
   const transformJs = (options: Partial<CreateJsHandlerOptions> = {}) =>
     createVinylTransform('js', async (file) => {
@@ -445,7 +555,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           }
         },
       })
-    })
+      rememberGulpProcessCacheKey(gulpProcessCacheKeys, file.path)
+      pruneGulpProcessCache(cache, gulpProcessCacheKeys)
+    }, () => resolveGulpTransformTimingDetails('js'))
 
   const transformWxml = (options: Partial<ITemplateHandlerOptions> = {}) =>
     createVinylTransform('html', async (file) => {
@@ -474,7 +586,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           }
         },
       })
-    })
+      rememberGulpProcessCacheKey(gulpProcessCacheKeys, file.path)
+      pruneGulpProcessCache(cache, gulpProcessCacheKeys)
+    }, () => resolveGulpTransformTimingDetails('html'))
 
   return {
     transformWxss,

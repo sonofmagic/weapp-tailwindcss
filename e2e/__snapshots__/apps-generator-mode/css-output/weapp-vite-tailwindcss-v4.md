@@ -2,11 +2,21 @@
 
 Fixture: demo
 Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, apple.wxss, index.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, packageB/pages/apple.wxss, pages/index/index.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 20428 | 83 | false | false | false | true | true | false | true |
+
+## Generator CSS Summary
+
+| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 18276 | 77 | false | false | false | true | true | false | true |
+| `packageB/pages/apple.wxss` | 1 | 0 | false | false | false | false | false | false | false |
+| `pages/index/index.wxss` | 115 | 2 | false | false | false | false | false | false | false |
+| `sub-independent/pages/index.wxss` | 1094 | 6 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 1059 | 6 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -537,13 +547,13 @@ wx-root-portal-content {
 /* tokens: theme-dark <= pages/index/index.wxml | dark:text-zinc-50 <= pages/index/index.wxml */
 ```
 
-### apple.wxss
+### packageB/pages/apple.wxss
 
 ```css
 
 ```
 
-### index.wxss
+### pages/index/index.wxss
 
 ```css
 /* stylelint-disable-next-line import-notation */
@@ -555,7 +565,7 @@ wx-root-portal-content {
 }
 ```
 
-### index.wxss
+### sub-independent/pages/index.wxss
 
 ```css
 view,
@@ -592,7 +602,7 @@ wx-root-portal-content {
 }
 ```
 
-### index.wxss
+### sub-normal/pages/index.wxss
 
 ```css
 view,

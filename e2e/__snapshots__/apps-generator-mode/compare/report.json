@@ -5,10 +5,10 @@
     "cssFile": "gulp-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "more.wxss"
+      "pages/index/index.wxss",
+      "pages/more/more.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -99,10 +99,10 @@
     "cssFile": "gulp-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "more.wxss"
+      "pages/index/index.wxss",
+      "pages/more/more.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -199,19 +199,19 @@
     "cssFile": "mpx-tailwindcss-v3/dist/wx/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "base.wxss",
-      "button.wxss",
-      "components.wxss",
-      "icon.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "loading.wxss",
-      "utilities.wxss"
+      "components/list/index.wxss",
+      "components/tdesign-miniprogram/miniprogram_dist/button/button.wxss",
+      "components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss",
+      "components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss",
+      "components/vant/weapp/lib/button/index.wxss",
+      "components/vant/weapp/lib/icon/index.wxss",
+      "components/vant/weapp/lib/info/index.wxss",
+      "components/vant/weapp/lib/loading/index.wxss",
+      "styles/base.wxss",
+      "styles/components.wxss",
+      "styles/index.1.wxss",
+      "styles/index.2.wxss",
+      "styles/utilities.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -3124,8 +3124,8 @@
     "cssFile": "mpx-tailwindcss-v4/dist/wx/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app.wxss",
-      "index.wxss"
+      "pages/component/index.wxss",
+      "styles/app.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -3228,13 +3228,13 @@
     "cssFile": "taro-webpack-react-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "moduleA/pages/index.wxss",
+      "moduleB/pages/index.wxss",
+      "moduleC/pages/index.wxss",
+      "pages/debug/index.wxss",
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -3366,9 +3366,9 @@
     "cssFile": "taro-webpack-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -5887,7 +5887,7 @@
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
-      "index.wxss"
+      "pages/index/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -5958,7 +5958,7 @@
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
-      "index.wxss"
+      "pages/index/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -6020,9 +6020,9 @@
     "cssFile": "taro-webpack-vue3-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -6103,9 +6103,9 @@
     "cssFile": "taro-webpack-vue3-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -6684,8 +6684,8 @@
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
-      "index.wxss",
-      "index.wxss"
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -6755,8 +6755,8 @@
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
-      "index.wxss",
-      "index.wxss"
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -6816,17 +6816,17 @@
     "cssFile": "uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "a.wxss",
-      "b.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "peer.wxss",
-      "typography.wxss",
-      "u-button.wxss",
-      "u-loading-icon.wxss"
+      "custom-tab-bar/index.wxss",
+      "moduleA/pages/a.wxss",
+      "moduleA/pages/b.wxss",
+      "moduleA/pages/index.wxss",
+      "node-modules/uview-plus/components/u-button/u-button.wxss",
+      "node-modules/uview-plus/components/u-loading-icon/u-loading-icon.wxss",
+      "pages/index/index.wxss",
+      "pages/index/peer.wxss",
+      "pages/issue/typography.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
@@ -9688,14 +9688,14 @@
     "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "home.wxss",
-      "index.wxss",
-      "index.wxss",
-      "user.wxss"
+      "pages-order/pages/home/home.wxss",
+      "pages-order/pages/user/user.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 37690,
+      "bytes": 32703,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -9850,18 +9850,15 @@
     "cssFile": "weapp-vite-tailwindcss-v3/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "app.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "components/IceButton/index.wxss",
+      "pages/index/index.wxss",
+      "pages/index/merge/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 148281,
+      "bytes": 35612,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -10062,10 +10059,10 @@
     "cssFile": "weapp-vite-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
-      "apple.wxss",
-      "index.wxss",
-      "index.wxss",
-      "index.wxss"
+      "packageB/pages/apple.wxss",
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {

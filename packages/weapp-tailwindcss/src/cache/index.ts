@@ -38,6 +38,10 @@ export interface ICreateCacheReturnType {
   set: <V extends CacheValue = sources.Source>(key: string, value: V) => LRUCache<string, CacheValue>
   has: (key: string) => boolean
   calcHashValueChanged: (key: HashMapKey, hash: string) => ICreateCacheReturnType
+  prune?: (options: {
+    cacheKeys?: Iterable<string> | undefined
+    hashKeys?: Iterable<HashMapKey> | undefined
+  }) => void
   process: <T extends CacheValue>(options: CacheProcessOptions<T>) => Promise<T>
 }
 
@@ -91,6 +95,24 @@ function createCache(options?: boolean): ICreateCacheReturnType {
         })
       }
       return cache
+    },
+    prune(options) {
+      if (options.cacheKeys) {
+        const cacheKeys = new Set(options.cacheKeys)
+        for (const key of instance.keys()) {
+          if (!cacheKeys.has(key)) {
+            instance.delete(key)
+          }
+        }
+      }
+      if (options.hashKeys) {
+        const hashKeys = new Set(options.hashKeys)
+        for (const key of hashMap.keys()) {
+          if (!hashKeys.has(key)) {
+            hashMap.delete(key)
+          }
+        }
+      }
     },
     has(key) {
       return instance.has(key)

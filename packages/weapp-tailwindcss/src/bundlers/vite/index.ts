@@ -10,6 +10,7 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { getPostcssPluginName, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
+import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
@@ -44,11 +45,17 @@ import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailw
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { cleanUrl, slash } from './utils'
+import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 const debug = createDebug()
 const weappTailwindcssPackageDir = resolvePackageDir('weapp-tailwindcss')
 const weappTailwindcssDirPosix = slash(weappTailwindcssPackageDir)
-const sourceCandidateScanSnapshotCache = new Map<string, SourceCandidateCollectorSnapshot>()
+const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
+const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
+  max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
+})
+const VITE_REMEMBERED_CSS_CACHE_MAX = 96
+const VITE_KNOWN_SFC_SOURCE_CACHE_MAX = 128
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 const SFC_COMPONENT_FILE_RE = /\.(?:vue|uvue|nvue|svelte|mpx)$/i
 
@@ -121,6 +128,30 @@ function normalizeCssSourceIdentity(sourceFile: string) {
     return `${normalizedFile}?type=style&index=${query.index ?? 0}`
   }
   return normalizeOutputPathKey(stripRequestQuery(cleanSourceFile))
+}
+
+function touchMapEntry<Key, Value>(map: Map<Key, Value>, key: Key, value: Value) {
+  map.delete(key)
+  map.set(key, value)
+}
+
+function pruneMapToMaxSize<Key, Value>(
+  map: Map<Key, Value>,
+  maxSize: number,
+  onDelete?: (key: Key) => void,
+) {
+  while (map.size > maxSize) {
+    const key = map.keys().next().value
+    if (key === undefined) {
+      break
+    }
+    map.delete(key)
+    onDelete?.(key)
+  }
+}
+
+function normalizeVitePersistentCacheKey(file: string) {
+  return normalizeOutputPathKey(file)
 }
 
 /**
@@ -272,7 +303,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
     extractor: sourceCandidateExtractor,
   })
-  const sourceCandidateScanCache = new Map<string, SourceCandidateCollectorSnapshot>()
+  const sourceCandidateScanCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
+    max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
+  })
   let sourceScanEntries: TailwindSourceEntry[] | undefined
   let sourceScanMatcher: ((file: string) => boolean) | undefined
   let sourceScanDependencies = new Set<string>()
@@ -539,14 +572,20 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!hasSfcStyleBlocks(code)) {
       return
     }
-    knownSfcSources.set(normalizeKnownSfcSourceKey(file), code)
+    touchMapEntry(knownSfcSources, normalizeKnownSfcSourceKey(file), code)
+    pruneMapToMaxSize(knownSfcSources, VITE_KNOWN_SFC_SOURCE_CACHE_MAX)
   }
   const getKnownSfcSource = (file: string) => {
     const scanSource = sourceCandidateCollector.source(file)
     if (scanSource && hasSfcStyleBlocks(scanSource)) {
       return scanSource
     }
-    return knownSfcSources.get(normalizeKnownSfcSourceKey(file))
+    const key = normalizeKnownSfcSourceKey(file)
+    const source = knownSfcSources.get(key)
+    if (source != null) {
+      touchMapEntry(knownSfcSources, key, source)
+    }
+    return source
   }
   const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
     const outputKey = normalizeOutputPathKey(entry.outputFile)
@@ -556,12 +595,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       ? `${outputKey}\0${normalizedSourceFile}`
       : outputKey
     const previous = rememberedCssSources.get(key)
-    rememberedCssSources.set(key, entry)
+    touchMapEntry(rememberedCssSources, key, entry)
     for (const [rememberedKey, remembered] of rememberedCssSources) {
       if (rememberedKey === key || normalizeCssSourceIdentity(remembered.sourceFile) !== normalizedSourceFile) {
         continue
       }
-      rememberedCssSources.set(rememberedKey, {
+      touchMapEntry(rememberedCssSources, rememberedKey, {
         ...remembered,
         rawSource: entry.rawSource,
         sourceFile: entry.sourceFile,
@@ -574,6 +613,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     else if (previous?.rawSource !== entry.rawSource || previous?.sourceFile !== entry.sourceFile) {
       rememberedCssSignatureByFile.delete(key)
     }
+    pruneMapToMaxSize(rememberedCssSources, VITE_REMEMBERED_CSS_CACHE_MAX, (rememberedKey) => {
+      rememberedCssSignatureByFile.delete(String(rememberedKey))
+    })
   }
   const refreshRememberedCssSourceEntry = (
     rememberedKey: string,
@@ -589,7 +631,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       rawSource,
       sourceFile,
     }
-    rememberedCssSources.set(rememberedKey, nextRemembered)
+    touchMapEntry(rememberedCssSources, rememberedKey, nextRemembered)
     rememberedCssSignatureByFile.delete(rememberedKey)
     return nextRemembered
   }
@@ -698,23 +740,76 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     rememberedCssSignatureByFile.set(normalizeOutputPathKey(file), cssRuntimeSignature)
   }
   const recordCssAssetResult = (file: string, css: string) => {
-    viteGeneratedCssByFile.set(file, css)
+    touchMapEntry(viteGeneratedCssByFile, normalizeVitePersistentCacheKey(file), css)
   }
   const recordViteProcessedCssAssetResult = (
     file: string,
     css: string,
     options: { injectIntoMain?: boolean | undefined, outputFile?: string | undefined } = {},
   ) => {
-    const key = normalizeOutputPathKey(file)
+    const key = normalizeVitePersistentCacheKey(file)
     const previous = viteProcessedCssAssetResults.get(key)
-    viteProcessedCssAssetResults.set(key, {
+    touchMapEntry(viteProcessedCssAssetResults, key, {
       css,
       injectIntoMain: options.injectIntoMain ?? previous?.injectIntoMain,
       outputFile: options.outputFile ?? previous?.outputFile,
     })
   }
   const getViteProcessedCssAssetResults = () => viteProcessedCssAssetResults.entries()
-  const getViteProcessedCssAssetResult = (file: string) => viteProcessedCssAssetResults.get(normalizeOutputPathKey(file))
+  const getViteProcessedCssAssetResult = (file: string) => viteProcessedCssAssetResults.get(normalizeVitePersistentCacheKey(file))
+  const getViteCssCacheStats = () => ({
+    viteGeneratedCssByFile: viteGeneratedCssByFile.size,
+    viteProcessedCssAssetResults: viteProcessedCssAssetResults.size,
+    rememberedCssSources: rememberedCssSources.size,
+    rememberedCssSignatureByFile: rememberedCssSignatureByFile.size,
+    knownSfcSources: knownSfcSources.size,
+    sourceCandidateScanCache: sourceCandidateScanCache.size,
+    pendingSourceCandidateSyncs: pendingSourceCandidateSyncs.size,
+    pendingSourceCandidateSyncByFile: pendingSourceCandidateSyncByFile.size,
+  })
+  const pruneViteCssCaches = (options: {
+    activeFiles: Set<string>
+    activeKnownSfcFiles?: Set<string> | undefined
+  }) => {
+    const activeFiles = new Set([...options.activeFiles].map(normalizeVitePersistentCacheKey))
+    for (const key of viteGeneratedCssByFile.keys()) {
+      if (!activeFiles.has(key)) {
+        viteGeneratedCssByFile.delete(key)
+      }
+    }
+    for (const [key, record] of viteProcessedCssAssetResults) {
+      const outputKey = typeof record.outputFile === 'string'
+        ? normalizeVitePersistentCacheKey(record.outputFile)
+        : undefined
+      if (!activeFiles.has(key) && (outputKey == null || !activeFiles.has(outputKey))) {
+        viteProcessedCssAssetResults.delete(key)
+      }
+    }
+    for (const [key, remembered] of rememberedCssSources) {
+      const outputKey = normalizeVitePersistentCacheKey(remembered.outputFile)
+      const sourceKey = normalizeVitePersistentCacheKey(remembered.sourceFile)
+      if (!activeFiles.has(key) && !activeFiles.has(outputKey) && !activeFiles.has(sourceKey)) {
+        rememberedCssSources.delete(key)
+        rememberedCssSignatureByFile.delete(key)
+      }
+    }
+    if (options.activeKnownSfcFiles) {
+      const activeKnownSfcFiles = new Set(
+        [...options.activeKnownSfcFiles]
+          .map(file => normalizeKnownSfcSourceKey(file))
+          .filter(file => SFC_COMPONENT_FILE_RE.test(file)),
+      )
+      for (const key of knownSfcSources.keys()) {
+        if (!activeKnownSfcFiles.has(key)) {
+          knownSfcSources.delete(key)
+        }
+      }
+    }
+    pruneMapToMaxSize(rememberedCssSources, VITE_REMEMBERED_CSS_CACHE_MAX, (rememberedKey) => {
+      rememberedCssSignatureByFile.delete(String(rememberedKey))
+    })
+    pruneMapToMaxSize(knownSfcSources, VITE_KNOWN_SFC_SOURCE_CACHE_MAX)
+  }
   const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
   const markViteProcessedCssSource = (file: string) => {
     viteProcessedCssSourceFiles.add(normalizeViteProcessedCssFile(file))
@@ -871,7 +966,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
-    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget)
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
+    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
@@ -983,6 +1079,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     setRememberedCssSignature,
     getKnownSfcSource,
     recordGeneratorCandidates,
+    pruneViteCssCaches,
+    getViteCssCacheStats,
     hmrTimingRecorder,
   })
   const cssFinalizerOutputPlugin = createViteCssFinalizerOutputPlugin({

@@ -18,6 +18,7 @@ import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives
 import { resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
+import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 interface RememberedMainCssSource {
   rawSource: string
@@ -173,6 +174,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           return
         }
         const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
+        const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
         const sourceTraceTokenSources = getSourceCandidateSourcesForEntries
           ? createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts)
           : undefined
@@ -188,7 +190,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             markCssAssetProcessed,
             recordCssAssetResult,
             recordViteProcessedCssAssetResult,
-            resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget),
+            resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot),
             debug,
           })
         }

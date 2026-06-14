@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
-import { normalizeCssSnapshot, normalizeFormattedCssSnapshot } from './snapshotUtils'
+import { normalizeCssSnapshot, normalizeFormattedCssSnapshot, normalizeSnapshotName } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
+  it('normalizes generated css file hashes in path segments', () => {
+    expect(normalizeSnapshotName('components/listb90661b8/index.wxss')).toBe('components/list/index.wxss')
+    expect(normalizeSnapshotName('components/vant/weappda3e1e6c/lib/button/index.wxss')).toBe('components/vant/weapp/lib/button/index.wxss')
+    expect(normalizeSnapshotName('styles/base3f288b8e.wxss')).toBe('styles/base.wxss')
+  })
+
   it('normalizes formatted base selector spacing across platforms', () => {
     expect(normalizeFormattedCssSnapshot([
       '.bg-independent-subpackage-marker {',

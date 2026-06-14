@@ -4426,8 +4426,14 @@ describe('bundlers/shared generator css', () => {
 
   it('generates Tailwind v4 css entries independently in force mode', async () => {
     const runtimeSet = new Set(['bg-emerald-500', 'bg-slate-50'])
+    let activeGenerates = 0
+    let maxActiveGenerates = 0
     const generateMock = vi.fn(async () => {
       const callIndex = generateMock.mock.calls.length
+      activeGenerates++
+      maxActiveGenerates = Math.max(maxActiveGenerates, activeGenerates)
+      await Promise.resolve()
+      activeGenerates--
       return callIndex === 1
         ? {
             css: '.bg-emerald-500{background-color:rgb(0,185,129)}',
@@ -4531,6 +4537,7 @@ describe('bundlers/shared generator css', () => {
     }))
     expect(createGeneratorMock).toHaveBeenCalledTimes(2)
     expect(generateMock).toHaveBeenCalledTimes(2)
+    expect(maxActiveGenerates).toBe(1)
     expect(result?.css).toContain('.bg-emerald-500{background-color:rgb(0,185,129)}')
     expect(result?.css).toContain('.bg-slate-50{background-color:rgb(248,250,252)}')
   })

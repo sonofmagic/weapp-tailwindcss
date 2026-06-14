@@ -6,6 +6,8 @@ import { pluginName } from '@/constants'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
+import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
+import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../../shared/css-cleanup'
@@ -27,6 +29,88 @@ interface WebpackCssHandlerOptions {
   isMainChunk: boolean
   postcssOptions: { options: { from: string } }
   majorVersion?: number | undefined
+}
+
+const WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX = 128
+
+function toMb(bytes: number) {
+  return Math.round(bytes / 1024 / 1024)
+}
+
+function pruneMapToMaxSize<Key, Value>(map: Map<Key, Value>, maxSize: number) {
+  while (map.size > maxSize) {
+    const oldestKey = map.keys().next().value
+    if (oldestKey === undefined) {
+      break
+    }
+    map.delete(oldestKey)
+  }
+}
+
+function pruneWebpackCssHandlerOptionCaches(
+  cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>,
+  cssUserHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>,
+  activeCssFiles: Set<string>,
+) {
+  const activeSuffixes = [...activeCssFiles].map(file => `:${file}`)
+  for (const key of cssHandlerOptionsCache.keys()) {
+    if (!activeSuffixes.some(suffix => key.endsWith(suffix))) {
+      cssHandlerOptionsCache.delete(key)
+    }
+  }
+  for (const key of cssUserHandlerOptionsCache.keys()) {
+    if (!activeSuffixes.some(suffix => key.endsWith(suffix))) {
+      cssUserHandlerOptionsCache.delete(key)
+    }
+  }
+  pruneMapToMaxSize(cssHandlerOptionsCache, WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX)
+  pruneMapToMaxSize(cssUserHandlerOptionsCache, WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX)
+}
+
+function resolveWebpackMemoryDebugStats(context: {
+  activeAssetFiles: number
+  activeCssFiles: number
+  activeProcessCacheKeys: Set<string>
+  activeProcessHashKeys: Set<string | number>
+  cache: SetupWebpackV5ProcessAssetsHookOptions['options']['cache']
+  cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>
+  cssUserHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>
+  phase: string
+}) {
+  if (process.env['WEAPP_TW_HMR_MEMORY_DEBUG'] !== '1') {
+    return undefined
+  }
+
+  const memory = process.memoryUsage()
+  return {
+    phase: context.phase,
+    process: {
+      rssMb: toMb(memory.rss),
+      heapTotalMb: toMb(memory.heapTotal),
+      heapUsedMb: toMb(memory.heapUsed),
+      externalMb: toMb(memory.external),
+      arrayBuffersMb: toMb(memory.arrayBuffers),
+    },
+    assets: {
+      active: context.activeAssetFiles,
+      activeCss: context.activeCssFiles,
+    },
+    processCache: {
+      instance: context.cache.instance.size,
+      hashMap: context.cache.hashMap.size,
+      activeCacheKeys: context.activeProcessCacheKeys.size,
+      activeHashKeys: context.activeProcessHashKeys.size,
+    },
+    webpackCss: {
+      handlerOptions: context.cssHandlerOptionsCache.size,
+      userHandlerOptions: context.cssUserHandlerOptionsCache.size,
+      maxHandlerOptions: WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX,
+    },
+    tailwind: {
+      v3: getTailwindV3IncrementalGenerateCacheStats(),
+      v4: getTailwindV4IncrementalGenerateCacheStats(),
+    },
+  }
 }
 
 export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAssetsHookOptions) {
@@ -136,6 +220,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const groupedEntries = getGroupedEntries(entries, compilerOptions)
+        const activeProcessCacheKeys = new Set<string>()
+        const activeProcessHashKeys = new Set<string | number>()
+        const rememberProcessCacheKey = (cacheKey: string, hashKey: string | number = cacheKey) => {
+          activeProcessCacheKeys.add(cacheKey)
+          activeProcessHashKeys.add(hashKey)
+        }
+        for (const chunk of compilation.chunks) {
+          if (chunk.id) {
+            activeProcessHashKeys.add(chunk.id)
+          }
+        }
         const getCssHandlerOptions = (file: string) => {
           const majorVersion = runtimeState.twPatcher.majorVersion
           const isMainChunk = compilerOptions.mainCssChunkMatcher(file, appType)
@@ -301,12 +396,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const rawSource = originalSource.source().toString()
 
             const cacheKey = file
+            const hashKey = `${file}:asset`
+            rememberProcessCacheKey(cacheKey, hashKey)
             const chunkHash = assetHashByChunk.get(file)
             tasks.push(
               processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
-                hashKey: `${file}:asset`,
+                hashKey,
                 rawSource,
                 hash: chunkHash,
                 applyResult(source, { cacheHit }) {
@@ -338,6 +435,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             if (!asset) {
               continue
             }
+            const hashKey = `${file}:asset`
+            rememberProcessCacheKey(cacheKey, hashKey)
             const absoluteFile = toAbsoluteOutputPath(file, outputDir)
             const initialSource = asset.source.source()
             const initialRawSource = typeof initialSource === 'string' ? initialSource : initialSource.toString()
@@ -346,7 +445,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               await processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
-                hashKey: `${file}:asset`,
+                hashKey,
                 rawSource: initialRawSource,
                 hash: chunkHash,
                 applyResult(source, { cacheHit }) {
@@ -397,11 +496,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               const nextCss = finalizeCssAssetSource(rawSource, {
                 generatedCss: hasBundlerGeneratedCssMarker(rawSource),
               })
+              const hashKey = `${file}:asset`
+              rememberProcessCacheKey(file, hashKey)
               tasks.push(
                 processCachedTask({
                   cache: compilerOptions.cache,
                   cacheKey: file,
-                  hashKey: `${file}:asset`,
+                  hashKey,
                   rawSource,
                   hash: createRuntimeAwareCssHash(
                     assetHashByChunk.get(file),
@@ -425,6 +526,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               continue
             }
             const cacheKey = file
+            const hashKey = `${file}:asset`
+            rememberProcessCacheKey(cacheKey, hashKey)
             const chunkHash = assetHashByChunk.get(file)
             const runtimeAwareHash = createRuntimeAwareCssHash(
               chunkHash,
@@ -435,7 +538,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               processCachedTask({
                 cache: compilerOptions.cache,
                 cacheKey,
-                hashKey: `${file}:asset`,
+                hashKey,
                 rawSource,
                 hash: runtimeAwareHash,
                 applyResult(source, { cacheHit }) {
@@ -490,8 +593,29 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         pushConcurrentTaskFactories(tasks, jsTaskFactories)
 
         await Promise.all(tasks)
+        compilerOptions.cache.prune?.({
+          cacheKeys: activeProcessCacheKeys,
+          hashKeys: activeProcessHashKeys,
+        })
+        const activeCssFiles = new Set(groupedEntries.css?.map(([file]) => file) ?? [])
+        pruneWebpackCssHandlerOptionCaches(
+          cssHandlerOptionsCache,
+          cssUserHandlerOptionsCache,
+          activeCssFiles,
+        )
         debug('end')
-        emitHmrTiming('webpack', 'processAssets', performance.now() - hmrTimingStartedAt)
+        emitHmrTiming('webpack', 'processAssets', performance.now() - hmrTimingStartedAt, {
+          memoryDebug: resolveWebpackMemoryDebugStats({
+            activeAssetFiles: entries.length,
+            activeCssFiles: activeCssFiles.size,
+            activeProcessCacheKeys,
+            activeProcessHashKeys,
+            cache: compilerOptions.cache,
+            cssHandlerOptionsCache,
+            cssUserHandlerOptionsCache,
+            phase: 'processAssets',
+          }),
+        })
         compilerOptions.onEnd()
       },
     )

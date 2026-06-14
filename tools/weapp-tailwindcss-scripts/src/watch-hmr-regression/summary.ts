@@ -94,7 +94,7 @@ export function summarizeMetricsByProject(cases: WatchCaseMetrics[]) {
     if (!grouped[item.project]) {
       grouped[item.project] = []
     }
-    grouped[item.project].push(item)
+    grouped[item.project]!.push(item)
   }
 
   const summaryByProject: Record<string, WatchSummary> = {}
@@ -180,6 +180,8 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
       mainStyleOnly: options.mainStyleOnly,
       maxHotUpdateMs: options.maxHotUpdateMs,
       maxPluginProcessMs: options.maxPluginProcessMs,
+      maxMemoryRssDeltaMb: options.maxMemoryRssDeltaMb,
+      maxMemoryHeapUsedMb: options.maxMemoryHeapUsedMb,
     },
     summary,
     summaryByRound,

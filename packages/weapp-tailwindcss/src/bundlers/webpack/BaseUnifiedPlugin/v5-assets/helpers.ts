@@ -21,6 +21,11 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
 
 export type WebpackSourceLike = string | WebpackSources.Source
 
+interface WebpackAssetCompilationLike {
+  getAsset: (file: string) => { source: { source: () => unknown } } | undefined
+  updateAsset: Compiler['webpack']['Compilation']['prototype']['updateAsset']
+}
+
 export function createWebpackSnapshotAssets(assets: Record<string, { source: () => unknown }>) {
   return Object.fromEntries(
     Object.entries(assets).map(([file, asset]) => {
@@ -45,10 +50,7 @@ export function stringifyWebpackSource(source: unknown) {
 }
 
 export function createWebpackAssetUpdater(options: {
-  compilation: {
-    getAsset: (file: string) => { source: { source: () => unknown } } | undefined
-    updateAsset: (file: string, source: WebpackSourceLike) => void
-  }
+  compilation: WebpackAssetCompilationLike
   ConcatSource: new (source: string) => WebpackSources.Source
   onUpdate: (file: string, previousSource: string, nextSource: string) => void
   debug: (format: string, ...args: unknown[]) => void

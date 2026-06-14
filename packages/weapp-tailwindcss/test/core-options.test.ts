@@ -63,7 +63,7 @@ describe('core transform option resolution', () => {
     mocks.shouldSkipJsTransform.mockReturnValue(false)
   })
 
-  it('uses main chunk style defaults and refreshes the runtime set after wxss transforms', async () => {
+  it('uses main chunk style defaults and reuses runtime cache after wxss transforms', async () => {
     const { createContext } = await import('@/core')
     const ctx = createContext()
 
@@ -76,10 +76,8 @@ describe('core transform option resolution', () => {
     expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledWith(expect.objectContaining({
       twPatcher: mocks.twPatcher,
       refreshTailwindcssPatcher: mocks.refreshTailwindcssPatcher,
-    }), {
-      forceRefresh: true,
-      forceCollect: true,
-    })
+    }))
+    expect(mocks.ensureRuntimeClassSet.mock.calls[0]?.[1]).toBeUndefined()
   })
 
   it('preserves explicit main chunk style options and merges missing defaults', async () => {
@@ -115,6 +113,42 @@ describe('core transform option resolution', () => {
     expect(firstOptions).toEqual({ tailwindcssMajorVersion: 4 })
     expect(secondOptions).toBe(firstOptions)
     expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledTimes(1)
+  })
+
+  it('exposes and reuses the collected runtime set', async () => {
+    const { createContext } = await import('@/core')
+    const ctx = createContext()
+    const collected = new Set(['runtime-[2px]'])
+    mocks.ensureRuntimeClassSet.mockResolvedValue(collected)
+
+    const runtimeSet = await ctx.getRuntimeSet({
+      forceCollect: true,
+    })
+    await ctx.transformJs('const cls = "runtime-[2px]"')
+
+    expect(runtimeSet).toBe(collected)
+    expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledTimes(1)
+    expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledWith(expect.any(Object), {
+      forceCollect: true,
+    })
+    expect(mocks.jsHandler).toHaveBeenCalledWith('const cls = "runtime-[2px]"', collected, {
+      tailwindcssMajorVersion: 4,
+    })
+  })
+
+  it('lets transformWxml reuse the runtime set collected by getRuntimeSet', async () => {
+    const { createContext } = await import('@/core')
+    const ctx = createContext()
+    const collected = new Set(['runtime-[2px]'])
+    mocks.ensureRuntimeClassSet.mockResolvedValue(collected)
+
+    await ctx.getRuntimeSet()
+    await ctx.transformWxml('<view class="runtime-[2px]" />')
+
+    expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledTimes(1)
+    expect(mocks.templateHandler.mock.calls[0]?.[1]).toMatchObject({
+      runtimeSet: collected,
+    })
   })
 
   it('strips runtimeSet from js options while preserving handler overrides', async () => {

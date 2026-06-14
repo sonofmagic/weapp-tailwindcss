@@ -228,7 +228,7 @@ export function createHighConfidenceLiteralRanges(source: string, matches: Extra
     if (typeof candidate !== 'string' || !isHighConfidenceV3Candidate(candidate)) {
       continue
     }
-    const fallbackStart = match.start ?? source.indexOf(candidate)
+    const fallbackStart = match?.start ?? source.indexOf(candidate)
     const range = resolveQuotedLiteralRange(source, fallbackStart)
     if (range) {
       ranges.push(range)

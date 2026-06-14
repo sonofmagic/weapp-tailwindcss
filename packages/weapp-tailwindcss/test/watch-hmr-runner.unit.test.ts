@@ -132,7 +132,26 @@ describe('watch-hmr runner', () => {
       ensureRunning: vi.fn(),
       lastCompileSuccessAt: vi.fn(() => 0),
       logs: vi.fn(() => 'watch logs'),
+      memorySamplesSince: vi.fn(() => [
+        { at: 1, rssMb: 100, maxProcessRssMb: 90, processCount: 2 },
+        { at: 2, rssMb: 125, maxProcessRssMb: 110, processCount: 2 },
+      ]),
+      memoryDebugSamplesSince: vi.fn(() => [
+        {
+          at: 2,
+          bundler: 'vite',
+          phase: 'generateBundle',
+          durationMs: 10,
+          data: {
+            process: {
+              heapUsedMb: 64,
+              rssMb: 125,
+            },
+          },
+        },
+      ]),
       stop: vi.fn(async () => {}),
+      pluginProcessSamplesSince: vi.fn(() => []),
     }
     createWatchSessionMock.mockReturnValue(session)
     runClassMutationMock.mockImplementation((...args: unknown[]) => {
@@ -212,6 +231,12 @@ describe('watch-hmr runner', () => {
       'style',
       'content',
     ])
+    expect(result.memoryDebugSamples?.[0]?.data).toMatchObject({
+      process: {
+        heapUsedMb: 64,
+        rssMb: 125,
+      },
+    })
     expect(session.stop).toHaveBeenCalledTimes(1)
   })
 })

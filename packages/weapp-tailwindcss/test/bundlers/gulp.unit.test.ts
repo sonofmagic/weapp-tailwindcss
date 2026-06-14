@@ -6,7 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import Vinyl from 'vinyl'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPlugins } from '@/bundlers/gulp'
 import { createCache } from '@/cache'
 
@@ -100,6 +100,12 @@ describe('bundlers/gulp createPlugins', () => {
     }
 
     getCompilerContextMock.mockClear()
+  })
+
+  afterEach(() => {
+    delete process.env.WEAPP_TW_HMR_MEMORY_DEBUG
+    delete process.env.WEAPP_TW_WATCH_REGRESSION
+    vi.restoreAllMocks()
   })
 
   it('processes files and caches results across runs', async () => {
@@ -610,6 +616,52 @@ describe('bundlers/gulp createPlugins', () => {
     const secondOptions = jsHandler.mock.calls[1]?.[2]
 
     expect(firstOptions?.moduleGraph).toBe(secondOptions?.moduleGraph)
+  })
+
+  it('bounds gulp watch caches across many changed vinyl files', async () => {
+    const plugins = createPlugins()
+
+    for (let index = 0; index < 620; index += 1) {
+      const file = createFile(`/src/pages/page-${index}.js`, `const cls = "w-[${index}px]"`)
+      await runTransform(plugins.transformJs(), file)
+    }
+
+    expect(currentContext.cache.instance.size).toBeLessThanOrEqual(512)
+    expect(currentContext.cache.hashMap.size).toBeLessThanOrEqual(512)
+    expect(currentContext.cache.has('/src/pages/page-0.js')).toBe(false)
+    expect(currentContext.cache.has('/src/pages/page-619.js')).toBe(true)
+  })
+
+  it('emits gulp memory debug stats for watch regression guards', async () => {
+    process.env.WEAPP_TW_WATCH_REGRESSION = '1'
+    process.env.WEAPP_TW_HMR_MEMORY_DEBUG = '1'
+    const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    const plugins = createPlugins()
+
+    await runTransform(plugins.transformJs(), createFile('/src/pages/index.js', 'const cls = "foo"'))
+
+    const payloadLine = write.mock.calls
+      .map(([chunk]) => String(chunk))
+      .find(line => line.startsWith('[weapp-tailwindcss:hmr] '))
+    expect(payloadLine).toBeTruthy()
+    const payload = JSON.parse(payloadLine!.replace('[weapp-tailwindcss:hmr] ', ''))
+    expect(payload.memoryDebug).toMatchObject({
+      phase: 'js',
+      runtime: {
+        runtimeSet: 1,
+        runtimeSourceHashByFile: 1,
+        runtimeSourcesByFile: 1,
+        maxRuntimeSources: 256,
+      },
+      processCache: {
+        activeCacheKeys: 1,
+        maxCacheKeys: 512,
+      },
+      gulpOptions: {
+        defaultStyleHandlerOptions: 0,
+      },
+    })
+    expect(payload.memoryDebug.process.heapUsedMb).toEqual(expect.any(Number))
   })
 
   it('passes through empty vinyl files without invoking handlers', async () => {

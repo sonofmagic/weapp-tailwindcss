@@ -1,6 +1,7 @@
 import type {
   ClassMutationMetrics,
   CliOptions,
+  MemoryUsageSample,
   MutationKind,
   MutationRoundName,
   StyleMutationMetrics,
@@ -36,6 +37,16 @@ interface HotUpdateBudgetSample {
 interface PluginProcessBudgetSample {
   label: string
   pluginProcessMs: number
+}
+
+interface MemoryBudgetSample {
+  label: string
+  memoryRssDeltaMb: number
+}
+
+interface HeapBudgetSample {
+  label: string
+  heapUsedMb: number
 }
 
 function resolveCaseSourceFiles(watchCase: WatchCase) {
@@ -212,6 +223,15 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ...(styleMetrics ? [styleMetrics] : []),
       ...(contentMetrics ? [contentMetrics] : []),
     ]
+    const memorySamples = [
+      ...session.memorySamplesSince(sessionStartedAt),
+      ...(webHmrMetrics?.memorySamples ?? []),
+    ]
+    const memoryDebugSamples = [
+      ...session.memoryDebugSamplesSince(sessionStartedAt),
+      ...(webHmrMetrics?.memoryDebugSamples ?? []),
+    ]
+    const memoryStats = summarizeMemorySamples(memorySamples)
 
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
@@ -223,7 +243,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       classTokens: preferredRound.classTokens,
       escapedClasses: preferredRound.escapedClasses,
       rounds: templateMetrics.rounds,
-      roundComparison: templateMetrics.roundComparison,
+      ...(templateMetrics.roundComparison ? { roundComparison: templateMetrics.roundComparison } : {}),
       verifyEscapedIn: templateMetrics.verifyEscapedIn,
       verifyClassLiteralIn: templateMetrics.verifyClassLiteralIn,
       globalStyleOutputs,
@@ -234,7 +254,7 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       subPackageMutationMetrics,
       summaryByMutationKind: summarizeMutationMetricsByKind(mutationMetrics),
       initialReadyMs,
-      maxPluginProcessMs: watchCase.maxPluginProcessMs,
+      ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
       hotUpdateOutputMs: preferredRound.hotUpdateOutputMs,
       hotUpdateEffectiveMs: preferredRound.hotUpdateEffectiveMs,
       hotUpdatePluginProcessMs: preferredRound.hotUpdatePluginProcessMs,
@@ -244,6 +264,10 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       rollbackPluginProcessMs: preferredRound.rollbackPluginProcessMs,
       rollbackPluginProcessSamples: preferredRound.rollbackPluginProcessSamples,
       totalMs: Date.now() - caseStartedAt,
+      memorySamples,
+      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+      memoryPeakRssMb: memoryStats.peakRssMb,
+      memoryRssDeltaMb: memoryStats.rssDeltaMb,
     }
 
     process.stdout.write(
@@ -294,6 +318,9 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
     }
 
     const classTokens = webHmrMetrics.classLiteral.split(/\s+/).filter(Boolean)
+    const memorySamples = webHmrMetrics.memorySamples
+    const memoryDebugSamples = webHmrMetrics.memoryDebugSamples ?? []
+    const memoryStats = summarizeMemorySamples(memorySamples)
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
@@ -312,7 +339,7 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
       subPackageMutationMetrics: [],
       summaryByMutationKind: summarizeMutationMetricsByKind([]),
       initialReadyMs: webHmrMetrics.initialReadyMs,
-      maxPluginProcessMs: watchCase.maxPluginProcessMs,
+      ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
       hotUpdateOutputMs: webHmrMetrics.hotUpdateEffectiveMs,
       hotUpdateEffectiveMs: webHmrMetrics.hotUpdateEffectiveMs,
       hotUpdatePluginProcessMs: 0,
@@ -322,6 +349,10 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
       rollbackPluginProcessMs: 0,
       rollbackPluginProcessSamples: [],
       totalMs: Date.now() - caseStartedAt,
+      memorySamples,
+      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+      memoryPeakRssMb: memoryStats.peakRssMb,
+      memoryRssDeltaMb: memoryStats.rssDeltaMb,
     }
 
     process.stdout.write(
@@ -393,6 +424,9 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
     }
 
     const classTokens = [mainStyleHotUpdate.toClassToken]
+    const memorySamples = session.memorySamplesSince(sessionStartedAt)
+    const memoryDebugSamples = session.memoryDebugSamplesSince(sessionStartedAt)
+    const memoryStats = summarizeMemorySamples(memorySamples)
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
@@ -412,7 +446,7 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       subPackageMutationMetrics: [],
       summaryByMutationKind: summarizeMutationMetricsByKind([]),
       initialReadyMs,
-      maxPluginProcessMs: watchCase.maxPluginProcessMs,
+      ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
       hotUpdateOutputMs: mainStyleHotUpdate.hotUpdateOutputMs,
       hotUpdateEffectiveMs: mainStyleHotUpdate.hotUpdateEffectiveMs,
       hotUpdatePluginProcessMs: mainStyleHotUpdate.hotUpdatePluginProcessMs,
@@ -422,6 +456,10 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       rollbackPluginProcessMs: mainStyleHotUpdate.rollbackPluginProcessMs,
       rollbackPluginProcessSamples: mainStyleHotUpdate.rollbackPluginProcessSamples,
       totalMs: Date.now() - caseStartedAt,
+      memorySamples,
+      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+      memoryPeakRssMb: memoryStats.peakRssMb,
+      memoryRssDeltaMb: memoryStats.rssDeltaMb,
     }
 
     process.stdout.write(
@@ -483,6 +521,67 @@ export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: Cl
     if (sample.pluginProcessMs > maxPluginProcessMs) {
       throw new Error(
         `[${metrics.label}] ${sample.label} weapp-tailwindcss processing exceeded budget: ${sample.pluginProcessMs}ms > ${maxPluginProcessMs}ms`,
+      )
+    }
+  }
+}
+
+export function summarizeMemorySamples(samples: MemoryUsageSample[]) {
+  if (samples.length === 0) {
+    return {
+      peakRssMb: 0,
+      rssDeltaMb: 0,
+    }
+  }
+  const first = samples.find(sample => sample.processCount > 1 && sample.rssMb >= 128) ?? samples[0]!
+  const peakRssMb = Math.max(...samples.map(sample => sample.rssMb))
+  return {
+    peakRssMb,
+    rssDeltaMb: Math.max(0, peakRssMb - first.rssMb),
+  }
+}
+
+export function assertMemoryBudget(metrics: WatchCaseMetrics, options: CliOptions) {
+  const maxMemoryRssDeltaMb = options.maxMemoryRssDeltaMb
+  if (maxMemoryRssDeltaMb != null && maxMemoryRssDeltaMb > 0) {
+    const samples: MemoryBudgetSample[] = [{
+      label: 'case',
+      memoryRssDeltaMb: metrics.memoryRssDeltaMb,
+    }]
+
+    for (const sample of samples) {
+      if (sample.memoryRssDeltaMb > maxMemoryRssDeltaMb) {
+        throw new Error(
+          `[${metrics.label}] ${sample.label} memory RSS delta exceeded budget: ${sample.memoryRssDeltaMb}MB > ${maxMemoryRssDeltaMb}MB`,
+        )
+      }
+    }
+  }
+
+  const maxMemoryHeapUsedMb = options.maxMemoryHeapUsedMb
+  if (maxMemoryHeapUsedMb == null || maxMemoryHeapUsedMb <= 0) {
+    return
+  }
+
+  const heapSamples: HeapBudgetSample[] = (metrics.memoryDebugSamples ?? []).flatMap((sample) => {
+    const processStats = sample.data.process
+    if (!processStats || typeof processStats !== 'object' || Array.isArray(processStats)) {
+      return []
+    }
+    const heapUsedMb = (processStats as { heapUsedMb?: unknown }).heapUsedMb
+    if (typeof heapUsedMb !== 'number' || !Number.isFinite(heapUsedMb)) {
+      return []
+    }
+    return [{
+      label: `${sample.bundler}:${sample.phase}`,
+      heapUsedMb,
+    }]
+  })
+
+  for (const sample of heapSamples) {
+    if (sample.heapUsedMb > maxMemoryHeapUsedMb) {
+      throw new Error(
+        `[${metrics.label}] ${sample.label} heap used exceeded budget: ${sample.heapUsedMb}MB > ${maxMemoryHeapUsedMb}MB`,
       )
     }
   }
