@@ -98,6 +98,7 @@ describe('ci workflows', () => {
     const staticRuns = stepRuns(workflow, 'e2e-static')
     const focusedRuns = stepRuns(workflow, 'e2e-focused')
     const multiplatformRuns = stepRuns(workflow, 'e2e-multiplatform')
+    const staticJob = workflow.jobs['e2e-static']
     const focusedRows: Array<Record<string, unknown>> = workflow.jobs['e2e-focused'].strategy.matrix.include
     const multiplatformRows: Array<Record<string, unknown>> = workflow.jobs['e2e-multiplatform'].strategy.matrix.include
 
@@ -106,11 +107,14 @@ describe('ci workflows', () => {
     expect(focusedRuns).not.toContain('pnpm build')
     expect(multiplatformRuns).not.toContain('pnpm build')
     expect(qualityRuns).toContain('pnpm build:ci')
-    expect(workflow.jobs['e2e-static']['timeout-minutes']).toBe(25)
+    expect(staticJob['timeout-minutes']).toBe(15)
+    expect(staticJob.strategy['fail-fast']).toBe(false)
+    expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
+    expect(staticJob.strategy.matrix.shard_total).toEqual([3])
     expect(staticRuns).toEqual(expect.arrayContaining([
       'pnpm build:ci',
       'pnpm exec playwright install chromium',
-      'pnpm e2e:static',
+      'pnpm e2e:static -- --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
     ]))
     expect(focusedRuns).toContain('pnpm build:ci')
     expect(multiplatformRuns).toContain('pnpm build:ci')

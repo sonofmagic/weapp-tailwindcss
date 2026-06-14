@@ -80,9 +80,14 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   e2e-static:
-    name: E2E Static Gate (ubuntu-latest, 22)
-    timeout-minutes: 25
+    name: E2E Static Gate (${{ matrix.shard }}/${{ matrix.shard_total }}, ubuntu-latest, 22)
+    timeout-minutes: 15
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+        shard_total: [3]
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -113,7 +118,7 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: E2E Static
-        run: pnpm e2e:static
+        run: pnpm e2e:static -- --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
 
   e2e-focused:
     name: E2E Focused Gate (${{ matrix.case_name }})
