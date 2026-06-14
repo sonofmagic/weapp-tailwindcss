@@ -113,7 +113,7 @@ export const tailwindParityCandidateCategories = {
     'text-left',
     'text-center',
     'text-sm',
-    'text-[22rpx]',
+    'text-[length:22rpx]',
     'text-[#123456]',
     'text-[length:var(--font-size)]',
     'text-[color:var(--brand-color)]',

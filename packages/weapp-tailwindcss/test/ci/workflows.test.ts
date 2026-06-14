@@ -68,6 +68,10 @@ function matrixCases(rows: Array<Record<string, unknown>>) {
   })
 }
 
+function matrixCaseNames(rows: Array<Record<string, unknown>>) {
+  return rows.map(row => row.case_name)
+}
+
 describe('ci workflows', () => {
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
@@ -76,16 +80,70 @@ describe('ci workflows', () => {
       '**/*.md',
       '.changeset/**',
     ])
-    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Static')).toBe(true)
-    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Preprocessor Source')).toBe(true)
+    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => {
+      return typeof step.name === 'string' && step.name.startsWith('E2E ')
+    })).toBe(false)
 
     expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
-      'pnpm build',
-      'pnpm e2e:preprocessor',
-      'pnpm test',
+      'pnpm build:ci',
+      'pnpm test:release',
     ]))
+  })
+
+  it('keeps heavyweight e2e checks parallel to the quality gate', () => {
+    const { workflow } = readWorkflow('ci.yml')
+    const qualityRuns = stepRuns(workflow, 'quality')
+    const staticRuns = stepRuns(workflow, 'e2e-static')
+    const focusedRuns = stepRuns(workflow, 'e2e-focused')
+    const multiplatformRuns = stepRuns(workflow, 'e2e-multiplatform')
+    const staticJob = workflow.jobs['e2e-static']
+    const focusedRows: Array<Record<string, unknown>> = workflow.jobs['e2e-focused'].strategy.matrix.include
+    const multiplatformRows: Array<Record<string, unknown>> = workflow.jobs['e2e-multiplatform'].strategy.matrix.include
+
+    expect(qualityRuns).not.toContain('pnpm build')
+    expect(staticRuns).not.toContain('pnpm build')
+    expect(focusedRuns).not.toContain('pnpm build')
+    expect(multiplatformRuns).not.toContain('pnpm build')
+    expect(qualityRuns).toContain('pnpm build:ci')
+    expect(staticJob['timeout-minutes']).toBe(15)
+    expect(staticJob.strategy['fail-fast']).toBe(false)
+    expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
+    expect(staticJob.strategy.matrix.shard_total).toEqual([3])
+    expect(staticRuns).toEqual(expect.arrayContaining([
+      'pnpm build:ci',
+      'pnpm exec playwright install chromium',
+      'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
+    ]))
+    expect(focusedRuns).toContain('pnpm build:ci')
+    expect(multiplatformRuns).toContain('pnpm build:ci')
+
+    expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
+    expect(matrixCaseNames(focusedRows)).toEqual([
+      'generator-web-parity',
+      'preprocessor-source',
+      'framework-support',
+      'taro-h5-build',
+    ])
+    expect(focusedRows.map(row => row.command)).toEqual([
+      'pnpm e2e:generator-parity',
+      'pnpm e2e:preprocessor',
+      'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
+      'pnpm e2e:taro:h5-build',
+    ])
+    expect(stepRuns(workflow, 'e2e-focused')).toContain('${{ matrix.command }}')
+
+    expect(workflow.jobs['e2e-multiplatform'].strategy['fail-fast']).toBe(false)
+    expect(matrixCaseNames(multiplatformRows)).toEqual([
+      'build-output',
+      'taro-alipay-output',
+    ])
+    expect(multiplatformRows.map(row => row.command)).toEqual([
+      'pnpm e2e:multiplatform-build',
+      'pnpm e2e:multiplatform-build:taro-alipay',
+    ])
+    expect(stepRuns(workflow, 'e2e-multiplatform')).toContain('${{ matrix.command }}')
   })
 
   it('keeps the preprocessor source demo in local e2e and CI', () => {
@@ -107,7 +165,9 @@ describe('ci workflows', () => {
       expect(script).toContain('--exclude e2e/uni-app-vite-tailwindcss-dev-h5.test.ts')
     }
     expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
-    expect(stepRuns(workflow, 'quality')).toContain('pnpm e2e:preprocessor')
+    expect(workflow.jobs['e2e-focused'].strategy.matrix.include).toEqual(expect.arrayContaining([
+      expect.objectContaining({ command: 'pnpm e2e:preprocessor' }),
+    ]))
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
     expect(readText('demo/weapp-vite-tailwindcss-v4/app.scss')).toContain('@import "tailwindcss";')
   })
@@ -130,7 +190,7 @@ describe('ci workflows', () => {
     ])
 
     const compatibilityRuns = stepRuns(workflow, 'compatibility').join('\n')
-    expect(compatibilityRuns).toContain('pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build')
+    expect(compatibilityRuns).toContain('pnpm build:ci')
     expect(compatibilityRuns).toContain('test/bundlers/vite-plugin.uni-app-x.unit.test.ts')
     expect(compatibilityRuns).toContain('test/watch-hmr-coverage-matrix.unit.test.ts')
   })
@@ -227,8 +287,11 @@ describe('ci workflows', () => {
       'next',
     ])
     expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
-    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(180)
+    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(45)
     expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
+    expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(workflow.jobs['current-vs-published'].env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '1'")
+    expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain('demo-weapp-vite-tailwindcss-v3')
     expect(runs).toContain('pnpm install --frozen-lockfile')
     expect(runs).toContain('pnpm bench:ci --')
     expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
@@ -372,7 +435,6 @@ describe('e2e watch workflow', () => {
     expect(cases).toEqual(expect.arrayContaining([
       'macos:22:uni-app-vite-tailwindcss-v3:default',
       'macos:22:uni-app-vite-tailwindcss-v3:issue33',
-      'macos:22:taro-webpack-react-tailwindcss-v4:issue33',
       'macos:22:taro-webpack-react-tailwindcss-v3:default',
       'macos:22:taro-webpack-react-tailwindcss-v4:default',
       'macos:22:taro-vite-react-tailwindcss-v3:default',
@@ -389,6 +451,7 @@ describe('e2e watch workflow', () => {
       'windows:22:mpx-tailwindcss-v4:default',
     ]))
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
+    expect(cases).not.toContain('macos:22:taro-webpack-react-tailwindcss-v4:issue33')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
   })
 
@@ -403,6 +466,7 @@ describe('e2e watch workflow', () => {
       'macos:22:demo-taro-vue3:default',
       'macos:22:demo-uni:default',
       'macos:22:weapp-vite-tailwindcss-v4:issue33',
+      'macos:22:taro-webpack-react-tailwindcss-v4:issue33',
       'macos:22:taro-vite-vue3-tailwindcss-v3:default',
       'macos:22:taro-vite-vue3-tailwindcss-v4:default',
       'windows:22:weapp-vite-tailwindcss-v4:issue33',
@@ -478,13 +542,6 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
-    const slowMacosTaroWebpackPrBudget = {
-      watch_case: 'taro-webpack-react-tailwindcss-v4',
-      round_profile: 'issue33',
-      timeout_minutes: 70,
-      watch_timeout_ms: '600000',
-      watch_command_timeout_ms: '1800000',
-    }
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -495,6 +552,15 @@ describe('e2e watch workflow', () => {
         watch_timeout_ms: '280000',
         watch_max_plugin_process_ms: '6000',
         watch_command_timeout_ms: '720000',
+      },
+      {
+        os: 'macos-latest',
+        runner_label: 'macos',
+        watch_case: 'taro-webpack-react-tailwindcss-v4',
+        round_profile: 'issue33',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_command_timeout_ms: '1800000',
       },
       {
         os: 'windows-latest',
@@ -546,11 +612,6 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
-    expect(prRows).toContainEqual(expect.objectContaining({
-      os: 'macos-latest',
-      runner_label: 'macos',
-      ...slowMacosTaroWebpackPrBudget,
-    }))
     for (const budget of slowWindowsPrBudgets) {
       expect(prRows).toContainEqual(expect.objectContaining({
         os: 'windows-latest',
@@ -632,6 +693,13 @@ describe('e2e watch workflow', () => {
       }
       expect(Number(budget), `${row.runner_label}:${row.watch_case}:${row.round_profile}`).toBeLessThanOrEqual(60000)
     }
+  })
+
+  it('keeps PR web-only watch rows away from the extra taro dev-entry smoke', () => {
+    const source = fs.readFileSync(path.resolve(repoRoot, 'e2e/watch/taro-demo-dev.test.ts'), 'utf8')
+
+    expect(source).toContain('E2E_WATCH_WEB_ONLY')
+    expect(source).toContain('skips taro webpack pnpm dev smoke for web-only watch profile')
   })
 
   it('uses node-version specific artifact names for matrix rows that share case names', () => {

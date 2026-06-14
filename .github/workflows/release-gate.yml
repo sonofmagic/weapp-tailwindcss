@@ -72,4 +72,4 @@ jobs:
         run: pnpm build
 
       - name: Test release artifacts
-        run: pnpm test
+        run: pnpm test:release

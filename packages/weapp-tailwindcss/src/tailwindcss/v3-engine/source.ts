@@ -82,6 +82,7 @@ export async function resolveTailwindV3Source(
   const cssConfig = resolveCssConfig(options.css, base)
   const config = resolveOptionalPath(options.config, base) ?? cssConfig.config
   const cwd = options.cwd ?? (config ? path.dirname(config) : projectRoot)
+  const explicitConfigObject = normalizeLoadedConfig(options.configObject)
   const loaded = await loadConfig(omitUndefined({
     config,
     cwd,
@@ -94,7 +95,7 @@ export async function resolveTailwindV3Source(
     base,
     css: cssConfig.css ?? options.css ?? DEFAULT_TAILWIND_V3_CSS,
     config: loaded?.filepath ?? config,
-    configObject: normalizeLoadedConfig(loaded?.config as Config | undefined),
+    configObject: explicitConfigObject ?? normalizeLoadedConfig(loaded?.config as Config | undefined),
     dependencies: loaded?.filepath ? [loaded.filepath] : [],
     packageName: options.packageName ?? 'tailwindcss',
     postcssPlugin: options.postcssPlugin ?? options.packageName ?? 'tailwindcss',

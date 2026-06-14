@@ -35,6 +35,7 @@ export interface TailwindV3SourceOptions {
   base?: string | undefined
   css?: string | undefined
   config?: string | undefined
+  configObject?: unknown
   packageName?: string | undefined
   postcssPlugin?: string | undefined
 }
