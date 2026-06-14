@@ -7,3 +7,5 @@
 修复 weapp-vite 配置 `srcRoot` 后，Vite CSS pipeline 会额外生成 `miniprogram/app.wxss`、`miniprogram/sub-normal/pages/index.wxss` 等源码根前缀产物的问题，并避免独立分包样式被主包或普通分包候选污染。
 
 升级 `tailwindcss-patch` 到 `9.4.4`，并重新生成 generator mode 的 CSS 输出对比快照，确保升级后的构建报告仍保持独立 CSS 文件边界。
+
+修复 `resolveTailwindV3Source({ configObject })` 没有真正使用内联配置的问题，避免 Node.js API 和 generator parity 场景在不同工作目录下误读磁盘 Tailwind 配置。

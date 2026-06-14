@@ -99,7 +99,7 @@ describe('generator tailwind parity', () => {
       css: TAILWIND_V3_CSS,
       base: process.cwd(),
       configObject: config,
-    } as Parameters<typeof resolveTailwindV3Source>[0] & { configObject: typeof config })
+    })
     const engine = createWeappTailwindcssGenerator(source)
     const web = await engine.generate({
       candidates: tailwindParityCandidates,

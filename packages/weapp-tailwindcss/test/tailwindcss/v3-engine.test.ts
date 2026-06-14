@@ -58,6 +58,35 @@ describe('tailwindcss v3 engine', () => {
     clearTailwindV3IncrementalGenerateCacheForTest()
   })
 
+  it('prefers inline configObject over loaded Tailwind config files', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-source-config-'))
+    const configFile = path.join(root, 'tailwind.config.cjs')
+    await writeFile(configFile, [
+      'module.exports = {',
+      '  content: [{ raw: "text-red-500", extension: "html" }],',
+      '}',
+      '',
+    ].join('\n'))
+    const inlineConfig = {
+      content: [{
+        raw: 'text-green-500',
+        extension: 'html',
+      }],
+    }
+
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: root,
+      cwd: root,
+      config: configFile,
+      configObject: inlineConfig,
+    })
+
+    expect(source.config).toBe(configFile)
+    expect(source.configObject).toBe(inlineConfig)
+    expect(source.configObject?.content).toEqual(inlineConfig.content)
+  })
+
   it('reuses runtime patch setup for repeated engines with the same source', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
