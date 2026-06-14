@@ -10,15 +10,21 @@ import { projectFilter } from './shared'
 
 const fixturesRoot = path.resolve(__dirname, '../demo')
 const rawClasses = ['h-[458rpx]', 'w-[218rpx]', 'inset-x-[30%]'] as const
-const rawClassStyleExpectations: Record<typeof rawClasses[number], RegExp[]> = {
+const scriptOnlyClasses = ['mt-[461rpx]', 'text-[39rpx]', 'bg-[#13579b]'] as const
+const rawClassStyleExpectations: Record<typeof rawClasses[number] | typeof scriptOnlyClasses[number], RegExp[]> = {
   'h-[458rpx]': [/height\s*:\s*458rpx/i],
   'w-[218rpx]': [/width\s*:\s*218rpx/i],
   'inset-x-[30%]': [
     /left\s*:\s*30%/i,
     /right\s*:\s*30%/i,
   ],
+  'mt-[461rpx]': [/margin-top\s*:\s*461rpx/i],
+  'text-[39rpx]': [/font-size\s*:\s*39rpx/i],
+  'bg-[#13579b]': [/background-color\s*:\s*(?:#13579b|rgba\(19,\s*87,\s*155\b)/i],
 }
 const markerClass = 'weapp-tw-dynamic-regression'
+const scriptOnlyMarkerClass = 'weapp-tw-js-regression'
+const scriptOnlyClassValue = `${scriptOnlyMarkerClass} ${scriptOnlyClasses.join(' ')}`
 const nativeElementRegressionVars = [
   '--weapp-tw-native-view-regression',
   '--weapp-tw-native-text-regression',
@@ -101,6 +107,9 @@ function createNativePatch(entry: ProjectEntry): ProjectPatch {
       ? '<view class="space-y-2.5">'
       : '<view class="{{contentStyle}}">'
   const inserted = `${pageMarker}\n  <view class="${markerClass} {{true?'h-[458rpx] w-[218rpx] inset-x-[30%]':''}}">dynamic regression</view>`
+  const scriptFile = entry.name.startsWith('weapp-vite')
+    ? path.resolve(root, weappViteSourceRoot, 'pages/index/index.ts')
+    : path.resolve(root, 'src/pages/index/index.ts')
 
   return {
     entry,
@@ -112,6 +121,14 @@ function createNativePatch(entry: ProjectEntry): ProjectPatch {
       {
         file: styleFile,
         transform: source => `${createApplyStyle(entry)}${source}`,
+      },
+      {
+        file: pageFile,
+        transform: source => source.replace('</view>', `  <view class="{{scriptOnlyClassName}}">script-only regression</view>\n</view>`),
+      },
+      {
+        file: scriptFile,
+        transform: source => source.replace(/data:\s*\{/, `data: {\n    scriptOnlyClassName: '${scriptOnlyClassValue}',`),
       },
     ],
   }
@@ -132,6 +149,23 @@ function createMpxPatch(entry: ProjectEntry): ProjectPatch {
       },
       {
         file: pageFile,
+        transform: source => source.replace(pageMarker, `${pageMarker}\n    <view class="${scriptOnlyMarkerClass}" wx:class="{{scriptOnlyClassName}}">script-only regression</view>`),
+      },
+      {
+        file: pageFile,
+        transform: (source) => {
+          const withConst = source.replace(
+            'createPage({',
+            `const scriptOnlyClassName = '${scriptOnlyClassValue}'\n\ncreatePage({`,
+          )
+          if (/data:\s*\{/.test(withConst)) {
+            return withConst.replace(/data:\s*\{/, 'data: {\n    scriptOnlyClassName,')
+          }
+          return withConst.replace('createPage({', 'createPage({\n  data: {\n    scriptOnlyClassName,\n  },')
+        },
+      },
+      {
+        file: pageFile,
         transform: source => source.replace('</template>', `</template>\n\n<style>\n${createApplyStyle(entry)}</style>`),
       },
     ],
@@ -149,16 +183,24 @@ function createTaroReactPatch(entry: ProjectEntry): ProjectPatch {
       : `src/pages/index/index.${styleExt}`,
   )
   const dynamicElement = `<View className={true ? '${markerClass} h-[458rpx] w-[218rpx] inset-x-[30%]' : markerClass}>dynamic regression</View>`
+  const scriptOnlyElement = `<View className={scriptOnlyClassName}>script-only regression</View>`
   return {
     entry,
     targets: [
       {
         file: pageFile,
+        transform: source => source.replace(
+          /export default function Index\(\) \{\n|const Index = \(\) => \{\n/,
+          match => `${match}  const scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
+        ),
+      },
+      {
+        file: pageFile,
         transform: (source) => {
           if (source.includes('return (\n    <>')) {
-            return source.replace('return (\n    <>', `return (\n    <>\n      ${dynamicElement}`)
+            return source.replace('return (\n    <>', `return (\n    <>\n      ${scriptOnlyElement}\n      ${dynamicElement}`)
           }
-          return source.replace(/(<View(?:\s+className=['"][^'"]*['"])?\s*>)/, `$1\n      ${dynamicElement}`)
+          return source.replace(/(<View(?:\s+className=['"][^'"]*['"])?\s*>)/, `$1\n      ${scriptOnlyElement}\n      ${dynamicElement}`)
         },
       },
       {
@@ -179,7 +221,14 @@ function createTaroVuePatch(entry: ProjectEntry): ProjectPatch {
         file: pageFile,
         transform: source => source.replace(
           /(<view(?:\s+class="[^"]*")?\s*>)/,
-          `$1\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`,
+          `$1\n    <view :class="scriptOnlyClassName">script-only regression</view>\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`,
+        ),
+      },
+      {
+        file: pageFile,
+        transform: source => source.replace(
+          /<script setup lang="ts">\n/,
+          `<script setup lang="ts">\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
         ),
       },
       {
@@ -197,8 +246,8 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
     ? '<view class="flex flex-col">'
     : '<view class="content"'
   const rootReplacement = entry.name.includes('-v4')
-    ? `<view class="flex flex-col">\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`
-    : `<view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>\n  <view class="content"`
+    ? `<view class="flex flex-col">\n    <view :class="scriptOnlyClassName">script-only regression</view>\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`
+    : `<view :class="scriptOnlyClassName">script-only regression</view>\n  <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>\n  <view class="content"`
   return {
     entry,
     targets: [
@@ -209,6 +258,13 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
       {
         file: pageFile,
         transform: source => source.replace('</script>', `</script>\n\n<style>\n${createApplyStyle(entry)}</style>`),
+      },
+      {
+        file: pageFile,
+        transform: source => source.replace(
+          /<script setup lang="ts">\n/,
+          `<script setup lang="ts">\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
+        ),
       },
     ],
   }
@@ -271,6 +327,10 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
     .filter(output => /\.(?:wxss|acss|ttss|qss|css)$/i.test(output.name))
     .map(output => output.content)
     .join('\n')
+  const scripts = outputs
+    .filter(output => /\.js$/i.test(output.name))
+    .map(output => output.content)
+    .join('\n')
 
   expect(joined, `${entry.name} should include regression marker`).toContain(markerClass)
 
@@ -295,6 +355,18 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
     expect(styles, `${entry.name} should emit CSS selector for ${raw}`).toContain(escaped)
     for (const expectation of rawClassStyleExpectations[raw]) {
       expect(styles, `${entry.name} should emit generated CSS declaration for ${raw}`).toMatch(expectation)
+    }
+  }
+
+  expect(joined, `${entry.name} should include script-only regression marker`).toContain(scriptOnlyMarkerClass)
+  for (const raw of scriptOnlyClasses) {
+    const escaped = replaceWxml(raw)
+    expect(joined, `${entry.name} should escape script-only ${raw}`).toContain(escaped)
+    expect(scripts, `${entry.name} should transform script-only ${raw} in JS output`).toContain(escaped)
+    expect(joinedWithoutTokenSourceComments, `${entry.name} should not keep raw script-only ${raw}`).not.toContain(raw)
+    expect(styles, `${entry.name} should emit CSS selector for script-only ${raw}`).toContain(escaped)
+    for (const expectation of rawClassStyleExpectations[raw]) {
+      expect(styles, `${entry.name} should emit generated CSS declaration for script-only ${raw}`).toMatch(expectation)
     }
   }
 }

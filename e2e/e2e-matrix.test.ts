@@ -263,6 +263,13 @@ describe('e2e matrix', () => {
     expect(regressionCaseNames).toEqual(expectedNames)
   })
 
+  it('keeps dynamic regression coverage for script-origin class strings', () => {
+    const source = fs.readFileSync(path.resolve(__dirname, './all-demos-dynamic-class-regression.test.ts'), 'utf8')
+    expect(source).toContain('scriptOnlyClasses')
+    expect(source).toContain('scriptOnlyClassName')
+    expect(source).toContain('should transform script-only')
+  })
+
   it('keeps IDE visual HMR in the demo workflow and full IDE command', () => {
     const rootPackageJson = readDemoPackageJson('package.json')
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
