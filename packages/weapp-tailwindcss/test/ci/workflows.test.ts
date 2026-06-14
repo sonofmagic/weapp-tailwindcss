@@ -84,7 +84,7 @@ describe('ci workflows', () => {
       'pnpm lint',
       'pnpm build',
       'pnpm e2e:preprocessor',
-      'pnpm test',
+      'pnpm test:release',
     ]))
   })
 

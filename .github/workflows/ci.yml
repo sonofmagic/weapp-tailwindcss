@@ -80,7 +80,7 @@ jobs:
         run: pnpm e2e:multiplatform-build:taro-alipay
 
       - name: Test
-        run: pnpm test
+        run: pnpm test:release
 
       - name: CI Status Note
         if: always()

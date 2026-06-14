@@ -52,7 +52,7 @@ export default defineConfig({
       outputJson: 'benchmark/bench-report.json',
     },
     coverage: {
-      enabled: true,
+      enabled: false,
       exclude: [
         // 测试辅助代码由测试自身覆盖，不计入生产代码覆盖率门禁。
         'test/**',

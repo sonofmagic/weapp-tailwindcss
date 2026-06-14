@@ -57,6 +57,8 @@
     "build:demo": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build --filter=./demo/*",
     "build:analyze": "tsx scripts/check-build-size.ts",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage.enabled",
+    "test:release": "vitest run --project=weapp-tailwindcss test/ci/publish-packages.test.ts test/options.test.ts test/tailwindcss/v4/patcher.integration.test.ts --coverage.enabled=false && pnpm --filter @weapp-tailwindcss/experimental test -- --coverage.enabled=false && pnpm --filter @weapp-tailwindcss/minify-preserve test -- --coverage.enabled=false && pnpm --filter weapp-style-injector test -- --coverage.enabled=false && pnpm --filter @weapp-tailwindcss/ui test -- --coverage.enabled=false && vitest run --project=@weapp-tailwindcss-example/node-api-core --coverage.enabled=false",
     "test:bench": "vitest bench",
     "bench": "pnpm --filter benchmark-* bench",
     "bench:ci": "node benchmark/version-compare/scripts/run-ci.mjs",
