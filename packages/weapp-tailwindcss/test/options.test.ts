@@ -52,10 +52,7 @@ function sanitizeSnapshotOptions(options: ReturnType<typeof getCompilerContext>)
   if (typeof clone.tailwindcssBasedir === 'string') {
     clone.tailwindcssBasedir = clone.tailwindcssBasedir.replace(cwd, '<cwd>')
   }
-  clone.cache = {
-    ...clone.cache,
-    instance: '<LRUCache>',
-  } as typeof clone.cache
+  clone.cache = '<cache>' as unknown as typeof clone.cache
   return clone
 }
 
