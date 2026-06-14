@@ -537,6 +537,8 @@ export interface WebHmrMetrics {
   rollbackEffectiveMs: number
   sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
   sourceDomReplacementSequence?: WebHmrSourceDomReplacementMetrics[]
+  memorySamples: MemoryUsageSample[]
+  memoryDebugSamples?: HmrMemoryDebugSample[]
   totalMs: number
 }
 

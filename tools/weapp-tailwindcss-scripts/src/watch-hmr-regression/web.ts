@@ -1,6 +1,6 @@
 import type { Buffer } from 'node:buffer'
 import type { Browser, Page } from 'playwright'
-import type { CliOptions, WatchCase, WebHmrConfig, WebHmrMetrics, WebHmrSourceClassReplacementMetrics } from './types'
+import type { CliOptions, HmrMemoryDebugSample, MemoryUsageSample, WatchCase, WebHmrConfig, WebHmrMetrics, WebHmrSourceClassReplacementMetrics } from './types'
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import process from 'node:process'
@@ -11,6 +11,8 @@ import {
   killProcessTreeOnPosix,
   killProcessTreeOnWindows,
   normalizeLogLine,
+  parsePluginProcessSample,
+  sampleProcessTreeMemory,
   sleep,
   spawnPnpm,
 } from './session'
@@ -524,6 +526,8 @@ export async function runWebHmr(
   let url = `http://127.0.0.1:${port}/`
   let readyAt = 0
   let lastCompileSignalAt = 0
+  const memoryDebugSamples: HmrMemoryDebugSample[] = []
+  const memorySamples: MemoryUsageSample[] = []
   const child = spawnPnpm(['run', config.devScript, ...(config.devArgs ?? [])], {
     cwd: watchCase.cwd,
     env: createSpawnEnv(process.env, {
@@ -547,6 +551,20 @@ export async function runWebHmr(
     stdio: 'pipe',
   })
 
+  const recordMemorySample = () => {
+    const sample = sampleProcessTreeMemory(child.pid)
+    if (!sample) {
+      return
+    }
+    memorySamples.push(sample)
+    if (memorySamples.length > 1000) {
+      memorySamples.shift()
+    }
+  }
+  const memoryTimer = setInterval(recordMemorySample, 1000)
+  memoryTimer.unref?.()
+  recordMemorySample()
+
   const collectLine = createLineCollector('web-watch', lines, 240, {
     quietSass: options.quietSass,
   })
@@ -565,6 +583,20 @@ export async function runWebHmr(
       if (/ready in \d+|compiled successfully|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|local:/i.test(normalized)) {
         readyAt = Date.now()
         lastCompileSignalAt = readyAt
+      }
+      const pluginSample = parsePluginProcessSample(line)
+      const memoryDebug = pluginSample?.details?.['memoryDebug']
+      if (pluginSample && memoryDebug && typeof memoryDebug === 'object' && !Array.isArray(memoryDebug)) {
+        memoryDebugSamples.push({
+          at: Date.now(),
+          bundler: pluginSample.bundler,
+          phase: pluginSample.phase,
+          durationMs: pluginSample.durationMs,
+          data: memoryDebug as Record<string, unknown>,
+        })
+        if (memoryDebugSamples.length > 1000) {
+          memoryDebugSamples.shift()
+        }
       }
     }
     collectLine(chunk)
@@ -837,6 +869,8 @@ export async function runWebHmr(
       rollbackEffectiveMs,
       ...(sourceClassReplacementSequence ? { sourceClassReplacementSequence } : {}),
       ...(sourceDomReplacementSequence ? { sourceDomReplacementSequence } : {}),
+      memorySamples,
+      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
       totalMs: Date.now() - startedAt,
     }
   }
@@ -854,6 +888,7 @@ export async function runWebHmr(
     catch {
     }
     await browser?.close().catch(() => {})
+    clearInterval(memoryTimer)
     await stop()
   }
 }

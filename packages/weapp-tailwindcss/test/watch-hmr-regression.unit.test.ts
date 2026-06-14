@@ -47,6 +47,9 @@ import {
   summarizeMemorySamples,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
 import {
+  parsePluginProcessSample,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
+import {
   resolveOptions,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cli'
 import {
@@ -888,6 +891,30 @@ describe('watch-hmr web compile settle helpers', () => {
     expect(resolveReloadAcceptAttemptTimeout(120_000, 40)).toBe(5000)
     expect(resolveReloadAcceptAttemptTimeout(120_000, 500)).toBe(15_000)
     expect(resolveReloadAcceptAttemptTimeout(3000, 40)).toBe(3000)
+  })
+})
+
+describe('watch-hmr regression session helpers', () => {
+  it('parses prefixed plugin timing lines with top-level memory debug payloads', () => {
+    const sample = parsePluginProcessSample('[web-watch] [weapp-tailwindcss:hmr] {"bundler":"webpack","phase":"processAssets","durationMs":18.6,"memoryDebug":{"process":{"heapUsedMb":406,"rssMb":1094},"processCache":{"instance":0,"hashMap":8}}}')
+
+    expect(sample).toMatchObject({
+      bundler: 'webpack',
+      phase: 'processAssets',
+      durationMs: 19,
+      details: {
+        memoryDebug: {
+          process: {
+            heapUsedMb: 406,
+            rssMb: 1094,
+          },
+          processCache: {
+            instance: 0,
+            hashMap: 8,
+          },
+        },
+      },
+    })
   })
 })
 

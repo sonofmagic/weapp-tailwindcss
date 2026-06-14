@@ -223,8 +223,14 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ...(styleMetrics ? [styleMetrics] : []),
       ...(contentMetrics ? [contentMetrics] : []),
     ]
-    const memorySamples = session.memorySamplesSince(sessionStartedAt)
-    const memoryDebugSamples = session.memoryDebugSamplesSince(sessionStartedAt)
+    const memorySamples = [
+      ...session.memorySamplesSince(sessionStartedAt),
+      ...(webHmrMetrics?.memorySamples ?? []),
+    ]
+    const memoryDebugSamples = [
+      ...session.memoryDebugSamplesSince(sessionStartedAt),
+      ...(webHmrMetrics?.memoryDebugSamples ?? []),
+    ]
     const memoryStats = summarizeMemorySamples(memorySamples)
 
     const metrics: WatchCaseMetrics = {
@@ -312,6 +318,9 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
     }
 
     const classTokens = webHmrMetrics.classLiteral.split(/\s+/).filter(Boolean)
+    const memorySamples = webHmrMetrics.memorySamples
+    const memoryDebugSamples = webHmrMetrics.memoryDebugSamples ?? []
+    const memoryStats = summarizeMemorySamples(memorySamples)
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
@@ -340,10 +349,10 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
       rollbackPluginProcessMs: 0,
       rollbackPluginProcessSamples: [],
       totalMs: Date.now() - caseStartedAt,
-      memorySamples: [],
-      memoryDebugSamples: [],
-      memoryPeakRssMb: 0,
-      memoryRssDeltaMb: 0,
+      memorySamples,
+      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+      memoryPeakRssMb: memoryStats.peakRssMb,
+      memoryRssDeltaMb: memoryStats.rssDeltaMb,
     }
 
     process.stdout.write(

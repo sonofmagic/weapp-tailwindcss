@@ -140,10 +140,11 @@ export function normalizeLogLine(line: string) {
   return stripAnsiControlSequences(line).replace(ZERO_WIDTH_SPACE_RE, '').trim()
 }
 
-function parsePluginProcessSample(line: string): Omit<PluginProcessSample, 'at'> | undefined {
+export function parsePluginProcessSample(line: string): Omit<PluginProcessSample, 'at'> | undefined {
   const normalized = normalizeLogLine(line)
-  const payloadText = normalized.startsWith(HMR_TIMING_PREFIX)
-    ? normalized.slice(HMR_TIMING_PREFIX.length).trim()
+  const payloadStart = normalized.indexOf(HMR_TIMING_PREFIX)
+  const payloadText = payloadStart >= 0
+    ? normalized.slice(payloadStart + HMR_TIMING_PREFIX.length).trim()
     : undefined
   if (!payloadText) {
     return undefined
@@ -403,7 +404,7 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
   }
 }
 
-function sampleProcessTreeMemory(rootPid: number | undefined): MemoryUsageSample | undefined {
+export function sampleProcessTreeMemory(rootPid: number | undefined): MemoryUsageSample | undefined {
   if (rootPid == null || process.platform === 'win32') {
     return undefined
   }

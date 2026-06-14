@@ -5,7 +5,11 @@ import { emitHmrTiming } from '../shared/hmr-timing'
 
 const Transform = stream.Transform
 
-export function createVinylTransform(phase: string, handler: (file: File) => Promise<void>) {
+export function createVinylTransform(
+  phase: string,
+  handler: (file: File) => Promise<void>,
+  getTimingDetails?: ((file: File) => Record<string, unknown> | undefined) | undefined,
+) {
   return new Transform({
     objectMode: true,
     async transform(file: File, _encoding, callback) {
@@ -14,6 +18,7 @@ export function createVinylTransform(phase: string, handler: (file: File) => Pro
         await handler(file)
         emitHmrTiming('gulp', phase, performance.now() - hmrTimingStartedAt, {
           file: file.relative || path.basename(file.path),
+          ...getTimingDetails?.(file),
         })
         callback(null, file)
       }

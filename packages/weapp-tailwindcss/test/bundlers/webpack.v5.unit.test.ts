@@ -180,6 +180,8 @@ describe('bundlers/webpack WeappTailwindcss', () => {
   })
 
   afterEach(() => {
+    delete process.env.WEAPP_TW_HMR_MEMORY_DEBUG
+    delete process.env.WEAPP_TW_WATCH_REGRESSION
     existsSyncSpy.mockRestore()
     vi.doUnmock('@/generator')
     vi.resetModules()
@@ -615,6 +617,189 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
     expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+  })
+
+  it('prunes stale webpack process cache entries between watch compilations', async () => {
+    currentContext = createContext()
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {}
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1', files: ['old.wxml', 'old.js', 'old.css'] }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+
+    currentAssetStore = {
+      'old.wxml': '<view class="foo"></view>',
+      'old.js': 'const cls = "foo"',
+      'old.css': '.foo { color: red; }',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+    expect(currentContext.cache.has('old.wxml')).toBe(true)
+    expect(currentContext.cache.has('old.js')).toBe(true)
+    expect(currentContext.cache.has('old.css')).toBe(true)
+
+    compilation.chunks = [{ id: 'main', hash: 'hash-2', files: ['fresh.css'] }]
+    currentAssetStore = {
+      'fresh.css': '.fresh { color: green; }',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(currentContext.cache.has('old.wxml')).toBe(false)
+    expect(currentContext.cache.has('old.js')).toBe(false)
+    expect(currentContext.cache.has('old.css')).toBe(false)
+    expect(currentContext.cache.has('fresh.css')).toBe(true)
+    expect(currentContext.cache.hashMap.has('old.wxml:asset')).toBe(false)
+    expect(currentContext.cache.hashMap.has('old.js:asset')).toBe(false)
+    expect(currentContext.cache.hashMap.has('old.css:asset')).toBe(false)
+    expect(currentContext.cache.hashMap.has('fresh.css:asset')).toBe(true)
+  })
+
+  it('emits webpack memory debug stats for watch regression guards', async () => {
+    process.env.WEAPP_TW_WATCH_REGRESSION = '1'
+    process.env.WEAPP_TW_HMR_MEMORY_DEBUG = '1'
+    currentContext = createContext()
+    const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {
+      'index.wxml': '<view class="foo"></view>',
+      'index.js': 'const cls = "foo"',
+      'index.css': '.foo { color: red; }',
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-1', files: Object.keys(currentAssetStore) }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    try {
+      new WeappTailwindcss().apply(compiler as any)
+      await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+      const payloadLine = write.mock.calls
+        .map(([chunk]) => String(chunk))
+        .find(line => line.startsWith('[weapp-tailwindcss:hmr] '))
+      expect(payloadLine).toBeTruthy()
+      const payload = JSON.parse(payloadLine!.replace('[weapp-tailwindcss:hmr] ', ''))
+      expect(payload.memoryDebug).toMatchObject({
+        phase: 'processAssets',
+        assets: {
+          active: 3,
+          activeCss: 1,
+        },
+        processCache: {
+          activeCacheKeys: 3,
+          activeHashKeys: 4,
+        },
+        webpackCss: {
+          handlerOptions: 1,
+          userHandlerOptions: 1,
+          maxHandlerOptions: 128,
+        },
+      })
+      expect(payload.memoryDebug.process.heapUsedMb).toEqual(expect.any(Number))
+    }
+    finally {
+      write.mockRestore()
+    }
   })
 
   it('skips webpack asset updates when processAssets output is unchanged', async () => {
