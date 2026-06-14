@@ -3,6 +3,7 @@ import { defineProject } from 'vitest/config'
 
 export default defineProject({
   test: {
+    setupFiles: ['./test/setup/esbuild-cleanup.ts'],
     alias: [
       {
         find: '@',
