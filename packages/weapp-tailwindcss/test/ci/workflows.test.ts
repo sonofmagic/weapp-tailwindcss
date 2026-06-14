@@ -68,6 +68,10 @@ function matrixCases(rows: Array<Record<string, unknown>>) {
   })
 }
 
+function matrixCaseNames(rows: Array<Record<string, unknown>>) {
+  return rows.map(row => row.case_name)
+}
+
 describe('ci workflows', () => {
   it('keeps the core CI quality gate on package changes', () => {
     const { workflow } = readWorkflow('ci.yml')
@@ -76,16 +80,54 @@ describe('ci workflows', () => {
       '**/*.md',
       '.changeset/**',
     ])
-    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Static')).toBe(true)
-    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => step.name === 'E2E Preprocessor Source')).toBe(true)
+    expect(workflow.jobs.quality.steps.some((step: Record<string, unknown>) => {
+      return typeof step.name === 'string' && step.name.startsWith('E2E ')
+    })).toBe(false)
 
     expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
       'pnpm build',
-      'pnpm e2e:preprocessor',
       'pnpm test:release',
     ]))
+  })
+
+  it('keeps heavyweight e2e checks parallel to the quality gate', () => {
+    const { workflow } = readWorkflow('ci.yml')
+    const staticRuns = stepRuns(workflow, 'e2e-static')
+    const focusedRows: Array<Record<string, unknown>> = workflow.jobs['e2e-focused'].strategy.matrix.include
+    const multiplatformRows: Array<Record<string, unknown>> = workflow.jobs['e2e-multiplatform'].strategy.matrix.include
+
+    expect(workflow.jobs['e2e-static']['timeout-minutes']).toBe(25)
+    expect(staticRuns).toEqual(expect.arrayContaining([
+      'pnpm build',
+      'pnpm exec playwright install chromium',
+      'pnpm e2e:static',
+    ]))
+
+    expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
+    expect(matrixCaseNames(focusedRows)).toEqual([
+      'generator-web-parity',
+      'preprocessor-source',
+      'framework-support',
+    ])
+    expect(focusedRows.map(row => row.command)).toEqual([
+      'pnpm e2e:generator-parity',
+      'pnpm e2e:preprocessor',
+      'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
+    ])
+    expect(stepRuns(workflow, 'e2e-focused')).toContain('${{ matrix.command }}')
+
+    expect(workflow.jobs['e2e-multiplatform'].strategy['fail-fast']).toBe(false)
+    expect(matrixCaseNames(multiplatformRows)).toEqual([
+      'build-output',
+      'taro-alipay-output',
+    ])
+    expect(multiplatformRows.map(row => row.command)).toEqual([
+      'pnpm e2e:multiplatform-build',
+      'pnpm e2e:multiplatform-build:taro-alipay',
+    ])
+    expect(stepRuns(workflow, 'e2e-multiplatform')).toContain('${{ matrix.command }}')
   })
 
   it('keeps the preprocessor source demo in local e2e and CI', () => {
@@ -107,7 +149,9 @@ describe('ci workflows', () => {
       expect(script).toContain('--exclude e2e/uni-app-vite-tailwindcss-dev-h5.test.ts')
     }
     expect(packageJson.scripts['e2e:preprocessor']).toBe('vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts')
-    expect(stepRuns(workflow, 'quality')).toContain('pnpm e2e:preprocessor')
+    expect(workflow.jobs['e2e-focused'].strategy.matrix.include).toEqual(expect.arrayContaining([
+      expect.objectContaining({ command: 'pnpm e2e:preprocessor' }),
+    ]))
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
     expect(readText('demo/weapp-vite-tailwindcss-v4/app.scss')).toContain('@import "tailwindcss";')
   })

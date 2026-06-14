@@ -57,28 +57,6 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium
-
-      - name: E2E Generator Web Parity
-        run: pnpm e2e:generator-parity
-
-      - name: E2E Static
-        run: pnpm e2e:static
-
-      - name: E2E Preprocessor Source
-        run: pnpm e2e:preprocessor
-
-      - name: E2E Framework Support
-        run: pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts
-
-      - name: E2E Multiplatform Build Output
-        run: pnpm e2e:multiplatform-build
-
-      - name: E2E Multiplatform Taro Alipay Output
-        timeout-minutes: 5
-        run: pnpm e2e:multiplatform-build:taro-alipay
-
       - name: Test
         run: pnpm test:release
 
@@ -88,11 +66,7 @@ jobs:
           {
             echo "## CI 状态说明"
             echo "- 本工作流负责：lint、build、unit/integration tests、coverage 上传。"
-            echo "- 现在额外包含：\`pnpm e2e:generator-parity\`，用于保证 weapp-tailwindcss 的 \`target: web\` 与官方 Tailwind CSS v3/v4 输出保持一致。"
-            echo "- 现在额外包含：\`pnpm e2e:static\`，用于保证 v5 生成示例和静态快照与 CI 一致；重型模板多端构建通过 \`pnpm e2e:templates\` 专项入口执行。"
-            echo "- 现在额外包含：\`pnpm e2e:preprocessor\`，用于保证 Sass/Less 等预处理器 Tailwind 入口在真实 demo 中可构建。"
-            echo "- 现在额外包含：跨框架支持矩阵 e2e，用于保证 demo 构建入口与模板静态输出一致。"
-            echo "- 现在额外包含：\`pnpm e2e:multiplatform-build\`，用于保证 uni-app、Mpx 等多平台构建产物可生成且 Tailwind 转译结果稳定；\`pnpm e2e:multiplatform-build:taro-alipay\` 作为 Taro Alipay 专项产物验证并设置单步超时。"
+            echo "- 静态、专项、多平台 e2e 已拆分为并行 job，避免 Quality Gate 在单一 job 中串行等待全部 e2e。"
             echo "- \`pnpm e2e:ci\` 仍保留本地/专项使用，其中 hot-update/watch 覆盖由独立工作流承载。"
             echo "- \`E2E Watch Gate\` 负责主 CI 内的轻量跨平台 watch 覆盖，当前覆盖 linux、macOS、Windows。"
             echo "- \`Compatibility Gate\` 负责跨系统/多 Node 的核心回归，避免把全仓 lint/build 在每个矩阵里重复执行。"
@@ -104,6 +78,134 @@ jobs:
         uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  e2e-static:
+    name: E2E Static Gate (ubuntu-latest, 22)
+    timeout-minutes: 25
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: E2E Static
+        run: pnpm e2e:static
+
+  e2e-focused:
+    name: E2E Focused Gate (${{ matrix.case_name }})
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_name: generator-web-parity
+            command: pnpm e2e:generator-parity
+          - case_name: preprocessor-source
+            command: pnpm e2e:preprocessor
+          - case_name: framework-support
+            command: pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: Run focused e2e
+        run: ${{ matrix.command }}
+
+  e2e-multiplatform:
+    name: E2E Multiplatform Gate (${{ matrix.case_name }})
+    timeout-minutes: ${{ matrix.timeout_minutes }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - case_name: build-output
+            timeout_minutes: 25
+            command: pnpm e2e:multiplatform-build
+          - case_name: taro-alipay-output
+            timeout_minutes: 10
+            command: pnpm e2e:multiplatform-build:taro-alipay
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+      E2E_SKIP_OPEN_AUTOMATOR: '1'
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install chromium
+
+      - name: Run multiplatform e2e
+        run: ${{ matrix.command }}
 
   e2e-watch:
     name: E2E Watch Gate (${{ matrix.runner_label }}, ${{ matrix.watch_case }}, ${{ matrix.round_profile }})
