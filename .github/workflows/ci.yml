@@ -118,7 +118,7 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: E2E Static
-        run: pnpm e2e:static -- --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
+        run: pnpm e2e:static --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
 
   e2e-focused:
     name: E2E Focused Gate (${{ matrix.case_name }})

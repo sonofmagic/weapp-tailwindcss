@@ -114,7 +114,7 @@ describe('ci workflows', () => {
     expect(staticRuns).toEqual(expect.arrayContaining([
       'pnpm build:ci',
       'pnpm exec playwright install chromium',
-      'pnpm e2e:static -- --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
+      'pnpm e2e:static --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
     ]))
     expect(focusedRuns).toContain('pnpm build:ci')
     expect(multiplatformRuns).toContain('pnpm build:ci')
