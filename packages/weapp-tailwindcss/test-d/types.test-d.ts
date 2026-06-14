@@ -69,7 +69,7 @@ const matchers: UserDefinedOptions = {
   htmlMatcher: name => name.endsWith('.wxml'),
   jsMatcher: name => name.endsWith('.js'),
   wxsMatcher: name => name.endsWith('.wxs'),
-  mainCssChunkMatcher: (name, appType) => {
+  mainCssChunk: (name, appType) => {
     expectType<string>(name)
     expectType<AppType | undefined>(appType)
     return appType !== 'native'

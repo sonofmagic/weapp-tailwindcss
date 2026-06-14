@@ -301,10 +301,14 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       originalFileNames: [] as string[],
     }) satisfies OutputAsset
     const generateBundle = getGenerateBundleHandler(postPlugin)
+    const createChunk = (code: string) => ({
+      ...createRollupChunk(code),
+      fileName: 'chunk.js',
+    }) as OutputChunk
 
     const firstBundle = {
       'index.asset.js': createAsset(),
-      'chunk.js': createRollupChunk('export const dep = "text-[#111111]"'),
+      'chunk.js': createChunk('export const dep = "text-[#111111]"'),
     }
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
     expect((firstBundle['chunk.js'] as OutputChunk).code).toBe('linked:const cls = "text-[#424242]"')
@@ -313,7 +317,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const secondBundle = {
       'index.asset.js': createAsset(),
-      'chunk.js': createRollupChunk('export const dep = "text-[#222222]"'),
+      'chunk.js': createChunk('export const dep = "text-[#222222]"'),
     }
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
@@ -345,11 +349,11 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
   it('defaults uni-app-x plugin appType to uni-app-x when explicit appType is absent', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    const mainCssChunkMatcher = vi.fn(() => true)
+    const mainCssChunk = vi.fn(() => true)
     setCurrentContext(createContext({
       appType: undefined,
       uniAppX: { enabled: true },
-      mainCssChunkMatcher,
+      mainCssChunk,
     }))
 
     const plugins = WeappTailwindcss()
@@ -359,7 +363,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const cssTransform = cssPlugin.transform as any
     await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
 
-    expect(mainCssChunkMatcher).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
+    expect(mainCssChunk).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
   }, TEST_TIMEOUT_MS)
 
   it('transforms plain uni-app x css without writing native app output files directly', async () => {

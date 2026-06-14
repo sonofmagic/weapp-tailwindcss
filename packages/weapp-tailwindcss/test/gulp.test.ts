@@ -67,7 +67,7 @@ describe('gulp', () => {
   it('common build', async () => {
     await matchSnap(createPlugins({
       tailwindcssBasedir: gulpCasePath,
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
     }))
@@ -93,7 +93,7 @@ module.exports = {
       process.chdir(tempRoot)
       const plugins = createPlugins({
         tailwindcssBasedir: tempRoot,
-        mainCssChunkMatcher(name) {
+        mainCssChunk(name) {
           return path.basename(name) === 'index.css'
         },
       })
@@ -142,7 +142,7 @@ module.exports = {
       process.chdir(tempRoot)
       const plugins = createPlugins({
         tailwindcssBasedir: tempRoot,
-        mainCssChunkMatcher(name) {
+        mainCssChunk(name) {
           return path.basename(name) === 'index.css'
         },
       })

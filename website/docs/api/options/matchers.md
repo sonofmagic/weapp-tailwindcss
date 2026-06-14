@@ -26,7 +26,7 @@ keywords:
 | [htmlMatcher](#htmlmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的 `wxml` 等模板文件。 |
 | [cssMatcher](#cssmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的 `wxss` 等样式文件。 |
 | [jsMatcher](#jsmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的编译后 `js` 文件。 |
-| [mainCssChunkMatcher](#maincsschunkmatcher) | <code>(name: string, appType?: AppType) => boolean</code> | — | 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。 |
+| [mainCssChunk](#maincsschunk) | <code>(name: string, appType?: AppType) => boolean</code> | — | 声明负责承载 Tailwind CSS 全局变量作用域的 CSS Bundle。 |
 | [wxsMatcher](#wxsmatcher) | <code>(name: string) => boolean</code> | <code>()=>false</code> | 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。 |
 | [inlineWxs](#inlinewxs) | <code>boolean</code> | <code>false</code> | 是否转义 `wxml` 中的内联 `wxs`。 |
 
@@ -80,15 +80,16 @@ keywords:
 
 `boolean`
 
-### mainCssChunkMatcher
+### mainCssChunk
 
 > 可选 | 类型: `(name: string, appType?: AppType) => boolean`
 
-匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。
+声明负责承载 Tailwind CSS 全局变量作用域的 CSS Bundle。
 
 #### 备注
 
-在处理 `::before`/`::after` 等不兼容选择器时，建议手动指定文件位置。
+默认不根据框架、平台或文件名推断主样式。需要主样式语义时，应由用户按当前构建图中的真实产物名显式返回 `true`。
+可结合 `appType`、环境变量或框架配置自行区分不同端。
 
 #### 参数
 

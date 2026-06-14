@@ -12,7 +12,7 @@ describe('defaults getDefaultOptions', () => {
     const { getDefaultOptions } = await import('@/defaults')
     const options = getDefaultOptions()
 
-    const matcher = options.mainCssChunkMatcher!
+    const matcher = options.mainCssChunk!
 
     for (const appType of ['uni-app', 'uni-app-vite', 'uni-app-x', 'taro', 'mpx', 'rax', 'remax', 'native', 'weapp-vite', 'kbone'] as const) {
       expect(matcher('app.css', appType)).toBe(false)

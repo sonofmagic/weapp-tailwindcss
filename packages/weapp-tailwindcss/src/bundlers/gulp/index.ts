@@ -393,7 +393,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     }
     return {
       ...resolved,
-      isMainChunk: opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType),
+      isMainChunk: opts.mainCssChunk(resolveGulpMatcherName(file), opts.appType),
     }
   }
 
@@ -442,7 +442,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       }
       const rawSource = file.contents.toString()
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
-      const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
+      const isMainChunk = opts.mainCssChunk(resolveGulpMatcherName(file), opts.appType)
       const shouldUseGenerator = runtimeState.twPatcher.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
       const gulpV4SourceCandidates = shouldUseGenerator && runtimeState.twPatcher.majorVersion === 4
         ? await refreshGulpV4SourceCandidates(cssSourceChanged)

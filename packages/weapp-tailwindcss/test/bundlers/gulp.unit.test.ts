@@ -17,7 +17,7 @@ interface InternalContext {
   cache: ReturnType<typeof createCache>
   jsMatcher?: ReturnType<typeof vi.fn>
   wxsMatcher?: ReturnType<typeof vi.fn>
-  mainCssChunkMatcher: ReturnType<typeof vi.fn>
+  mainCssChunk: ReturnType<typeof vi.fn>
   twPatcher: {
     patch: ReturnType<typeof vi.fn>
     getClassSet: ReturnType<typeof vi.fn>
@@ -94,7 +94,7 @@ describe('bundlers/gulp createPlugins', () => {
       cache,
       jsMatcher: vi.fn((id: string) => id.endsWith('.js')),
       wxsMatcher: vi.fn((id: string) => id.endsWith('.wxs')),
-      mainCssChunkMatcher: vi.fn((name: string) => path.basename(name) === 'app.wxss'),
+      mainCssChunk: vi.fn((name: string) => path.basename(name) === 'app.wxss'),
       twPatcher,
       refreshTailwindcssPatcher: vi.fn(async () => twPatcher),
     }
@@ -525,9 +525,9 @@ describe('bundlers/gulp createPlugins', () => {
     })
   })
 
-  it('uses mainCssChunkMatcher to resolve css main chunk', async () => {
-    const mainCssChunkMatcher = vi.fn((name: string) => name === 'styles/index.css')
-    currentContext.mainCssChunkMatcher = mainCssChunkMatcher
+  it('uses mainCssChunk to resolve css main chunk', async () => {
+    const mainCssChunk = vi.fn((name: string) => name === 'styles/index.css')
+    currentContext.mainCssChunk = mainCssChunk
     const plugins = createPlugins()
 
     await runTransform(
@@ -540,7 +540,7 @@ describe('bundlers/gulp createPlugins', () => {
       }),
     )
 
-    expect(mainCssChunkMatcher).toHaveBeenCalledWith('styles/index.css', undefined)
+    expect(mainCssChunk).toHaveBeenCalledWith('styles/index.css', undefined)
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
       majorVersion: 3,

@@ -50,7 +50,7 @@ interface CreateUniAppXPluginsOptions {
   appType: AppType
   customAttributesEntities: ICustomAttributesEntities
   disabledDefaultTemplateHandler: boolean
-  mainCssChunkMatcher: NonNullable<InternalUserDefinedOptions['mainCssChunkMatcher']>
+  mainCssChunk: NonNullable<InternalUserDefinedOptions['mainCssChunk']>
   runtimeState: UniAppXRuntimeState
   styleHandler: InternalUserDefinedOptions['styleHandler']
   generateCss?: ((id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => Promise<string | undefined> | string | undefined) | undefined
@@ -100,7 +100,7 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
     customAttributesEntities,
     disabledDefaultTemplateHandler,
     isIosPlatform: providedIosPlatform,
-    mainCssChunkMatcher,
+    mainCssChunk,
     runtimeState,
     styleHandler,
     generateCss,
@@ -190,11 +190,11 @@ export function createUniAppXPlugins(options: CreateUniAppXPluginsOptions): Plug
       const styleCode = typeof generatedCss === 'string' && generatedCss.trim().length > 0
         ? generatedCss
         : code
-      const cacheKey = `${mainCssChunkMatcher(id, appType) ? '1' : '0'}:${id}`
+      const cacheKey = `${mainCssChunk(id, appType) ? '1' : '0'}:${id}`
       let styleHandlerOptions = cssHandlerOptionsCache.get(cacheKey)
       if (!styleHandlerOptions) {
         styleHandlerOptions = omitUndefined({
-          isMainChunk: mainCssChunkMatcher(id, appType),
+          isMainChunk: mainCssChunk(id, appType),
           uniAppXCssTarget: resolveUniAppXCssTarget(id),
           uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
           postcssOptions: {

@@ -306,7 +306,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const isWebpackProcessedTailwindEntryAsset = (file: string) => {
       if (
         (runtimeState.twPatcher.majorVersion ?? 0) < 4
-        || !this.options.mainCssChunkMatcher(file, this.appType)
+        || !this.options.mainCssChunk(file, this.appType)
         || webpackProcessedCssSourceFiles.size === 0
       ) {
         return false

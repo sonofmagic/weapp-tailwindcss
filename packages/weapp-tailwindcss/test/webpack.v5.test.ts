@@ -168,7 +168,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       customReplaceDictionary: MappingChars2String,
@@ -192,7 +192,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       customReplaceDictionary: MappingChars2String,
@@ -217,7 +217,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       customReplaceDictionary: MappingChars2String,
@@ -247,7 +247,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
   //   let timeStart: number
   //   let timeTaken: number
   //   new WeappTailwindcss({
-  //     mainCssChunkMatcher(name) {
+  //     mainCssChunk(name) {
   //       return path.basename(name) === 'index.css'
   //     },
   //     customReplaceDictionary: 'simple',
@@ -271,7 +271,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       customReplaceDictionary: MappingChars2String,
@@ -296,7 +296,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name: any) {
+      mainCssChunk(name: any) {
         return path.basename(name) === 'index.css'
       },
       onStart() {
@@ -320,7 +320,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       onStart() {
@@ -343,7 +343,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       onStart() {
@@ -366,7 +366,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       onStart() {
@@ -389,7 +389,7 @@ describe.skipIf(!ci.isCI && os.platform() === 'win32')('webpack5 plugin', () => 
     let timeStart: number
     let timeTaken: number
     new WeappTailwindcss({
-      mainCssChunkMatcher(name) {
+      mainCssChunk(name) {
         return path.basename(name) === 'index.css'
       },
       disabled: true,

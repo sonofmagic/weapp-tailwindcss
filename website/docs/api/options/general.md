@@ -66,7 +66,7 @@ TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `
 
 #### 备注
 
-用于辅助定位主要的 CSS bundle，以便默认的 `mainCssChunkMatcher` 做出更准确的匹配，未传入时将尝试自动猜测变量注入位置。
+声明框架类型，并作为第二个参数传入用户配置的 `mainCssChunk(name, appType)`。插件默认不会根据 `appType`、文件名或平台后缀推断主样式位置。
 
 ### arbitraryValues
 

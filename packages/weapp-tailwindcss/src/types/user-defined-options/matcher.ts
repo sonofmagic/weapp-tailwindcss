@@ -20,13 +20,14 @@ export interface UserDefinedOptionsMatcherPart {
    */
   jsMatcher?: ((name: string) => boolean) | undefined
   /**
-   * 匹配负责注入 Tailwind CSS 变量作用域的 CSS Bundle。
+   * 声明负责承载 Tailwind CSS 全局变量作用域的 CSS Bundle。
    *
    * @group 1.文件匹配
    * @remarks
-   * 在处理 `::before`/`::after` 等不兼容选择器时，建议手动指定文件位置。
+   * 默认不根据框架、平台或文件名推断主样式。需要主样式语义时，应由用户按当前构建图中的真实产物名显式返回 `true`。
+   * 可结合 `appType`、环境变量或框架配置自行区分不同端。
    */
-  mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | undefined
+  mainCssChunk?: ((name: string, appType?: AppType) => boolean) | undefined
 
   /**
    * 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。

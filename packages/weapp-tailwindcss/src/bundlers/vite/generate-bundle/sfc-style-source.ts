@@ -4,7 +4,7 @@ import type { RememberedCssSource } from './types'
 import path from 'node:path'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { CSS_SOURCE_OUTPUT_EXT_RE, MINI_PROGRAM_STYLE_OUTPUT_EXT_RE } from './css-output'
+import { CSS_SOURCE_OUTPUT_EXT_RE } from './css-output'
 import { scoreMatchingStyleFileBase } from './style-matching'
 
 const SFC_STYLE_SOURCE_EXTENSIONS = ['.vue', '.uvue', '.nvue', '.svelte', '.mpx'] as const
@@ -36,10 +36,11 @@ export async function resolveSfcStyleSourceFromOutputFile(
   snapshot: BundleSnapshot,
   outputRoot: string,
   sourceRoot: string | undefined,
+  cssMatcher: ((file: string) => boolean) | undefined,
   getSfcSource: ((file: string) => string | undefined) | undefined,
   debug: (format: string, ...args: unknown[]) => void,
 ): Promise<RememberedCssSource | undefined> {
-  const sourceFile = resolveSfcStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
+  const sourceFile = resolveSfcStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, cssMatcher, debug)
   if (!sourceFile) {
     debug('sfc style source infer skipped: no source file for %s', outputFile)
     return undefined
@@ -86,10 +87,11 @@ function normalizeSourceStyleModuleId(id: string) {
   return path.resolve(file)
 }
 
-function resolveSiblingJsChunkFile(outputFile: string) {
+function resolveSiblingJsChunkFile(outputFile: string, cssMatcher: ((file: string) => boolean) | undefined) {
   const normalizedOutputFile = outputFile.replace(/[?#].*$/, '')
-  if (MINI_PROGRAM_STYLE_OUTPUT_EXT_RE.test(normalizedOutputFile)) {
-    return normalizedOutputFile.replace(MINI_PROGRAM_STYLE_OUTPUT_EXT_RE, '.js')
+  if (cssMatcher?.(normalizedOutputFile)) {
+    const extension = path.extname(normalizedOutputFile)
+    return extension ? `${normalizedOutputFile.slice(0, -extension.length)}.js` : undefined
   }
   if (CSS_SOURCE_OUTPUT_EXT_RE.test(normalizedOutputFile)) {
     return normalizedOutputFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '.js')
@@ -113,9 +115,10 @@ function resolveSfcStyleFileFromSiblingChunk(
   snapshot: BundleSnapshot,
   outputRoot: string,
   sourceRoot: string | undefined,
+  cssMatcher: ((file: string) => boolean) | undefined,
   debug: (format: string, ...args: unknown[]) => void,
 ) {
-  const siblingJsFile = resolveSiblingJsChunkFile(outputFile)
+  const siblingJsFile = resolveSiblingJsChunkFile(outputFile, cssMatcher)
   if (!siblingJsFile) {
     debug('sfc style sibling chunk skipped: no sibling js for %s', outputFile)
     return undefined

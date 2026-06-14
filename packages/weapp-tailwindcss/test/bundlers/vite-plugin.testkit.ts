@@ -73,7 +73,7 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     })),
     // 保持 jsHandler 为同步实现，以符合 JsHandler 的类型签名
     jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
-    mainCssChunkMatcher: vi.fn(() => true),
+    mainCssChunk: vi.fn(() => true),
     appType: 'uni-app',
     cache,
     cssMatcher: (file: string) => file.endsWith('.css'),

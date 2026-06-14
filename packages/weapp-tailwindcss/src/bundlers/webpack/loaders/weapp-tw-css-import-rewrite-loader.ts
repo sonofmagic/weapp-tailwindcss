@@ -74,7 +74,7 @@ function createCssHandlerOptions(
   appType?: AppType,
 ) {
   return {
-    isMainChunk: options.mainCssChunkMatcher(file, appType),
+    isMainChunk: options.mainCssChunk(file, appType),
     postcssOptions: {
       options: {
         from: file,

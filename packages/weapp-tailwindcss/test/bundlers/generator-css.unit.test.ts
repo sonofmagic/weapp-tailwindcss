@@ -7805,7 +7805,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'uni-app-vite',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -7852,7 +7852,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'uni-app-x',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -7888,7 +7888,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.acss'),
-        mainCssChunkMatcher: () => false,
+        mainCssChunk: () => false,
         appType: 'uni-app-vite',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -7946,7 +7946,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.acss'),
-        mainCssChunkMatcher: () => false,
+        mainCssChunk: () => false,
         appType: 'uni-app-vite',
       } as any,
       getViteProcessedCssAssetResults: () => records.entries(),
@@ -7971,7 +7971,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'taro',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -8002,7 +8002,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'taro',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -8046,7 +8046,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'weapp-vite',
       } as any,
       getViteProcessedCssAssetResults: () => [],
@@ -8077,7 +8077,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'taro',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -8118,7 +8118,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'taro',
       } as any,
       getViteProcessedCssAssetResults: () => [
@@ -8176,7 +8176,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'taro',
       } as any,
       getViteProcessedCssAssetResults: () => [],
@@ -8207,7 +8207,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
         appType: 'uni-app-vite',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -8259,7 +8259,7 @@ describe('bundlers/shared generator css', () => {
     const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file.startsWith('app'),
+        mainCssChunk: (file: string) => file.startsWith('app'),
         appType: 'taro',
       } as any,
       getViteProcessedCssAssetResults: () => [[
@@ -8324,7 +8324,7 @@ describe('bundlers/shared generator css', () => {
       opts: {
         appType: 'taro',
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
       } as any,
       isViteProcessedCssAsset: () => true,
       recordViteProcessedCssAssetResult: (file, css, options) => records.push([file, css, options]),
@@ -8357,7 +8357,7 @@ describe('bundlers/shared generator css', () => {
       opts: {
         appType: 'taro',
         cssMatcher: (file: string) => file.endsWith('.wxss'),
-        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        mainCssChunk: (file: string) => file === 'app.wxss',
       } as any,
       isViteProcessedCssAsset: () => true,
       recordViteProcessedCssAssetResult: (file, css, options) => records.push([file, css, options]),

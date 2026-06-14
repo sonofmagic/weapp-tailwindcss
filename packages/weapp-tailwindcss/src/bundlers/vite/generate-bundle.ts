@@ -1,19 +1,14 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
-import type { BundleSnapshot } from './bundle-state'
 import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundle/types'
-import type { SourceCandidateFilterOptions } from './source-candidates'
-import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
-import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
-import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXBundleAssetSourceGetter, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder, isUniAppXHarmonyBundle, UNI_APP_X_STYLE_PLACEHOLDER_VERSION } from '@/uni-app-x/style-asset'
+import { createUniAppXBundleAssetSourceGetter, injectUniAppXHarmonyBundleStyles, isUniAppXHarmonyBundle, UNI_APP_X_STYLE_PLACEHOLDER_VERSION } from '@/uni-app-x/style-asset'
 import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
@@ -25,265 +20,39 @@ import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories, runWithConcurrency } from '../shared/run-tasks'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
+import { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-file-names'
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
-import { canProcessViteSourceStyleAsCss, MINI_PROGRAM_STYLE_OUTPUT_EXT_RE, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+import { canProcessViteSourceStyleAsCss, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
 import { createJsEntryResolver } from './generate-bundle/js-entries'
 import { createJsHandlerOptionsFactory, resolveUniAppXJsTransformEnabled } from './generate-bundle/js-handler-options'
 import { collectLinkedFileNames, createLinkedUpdateHelpers } from './generate-bundle/js-linking'
+import { resolveViteMemoryDebugStats } from './generate-bundle/memory-debug'
 import { createEmptyMetrics, formatCacheHitRate, formatMs, measureElapsed } from './generate-bundle/metrics'
 import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRememberedCssSources } from './generate-bundle/remembered-css'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
+import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
+import { createScopedGeneratorCandidateSignature, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
 import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
-import { collectMiniProgramSubpackageRoots, collectMiniProgramSubpackageSourceEntries, isSubpackageOutputFile } from './generate-bundle/subpackages'
+import { createSubpackageSourceCandidateScope } from './generate-bundle/source-candidate-scope'
+import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './generate-bundle/subpackages'
+import { handleUniAppXPostCssTasks } from './generate-bundle/uni-app-x-postprocess'
+import { getLastCssResult, getLastCssSourceHash, normalizeViteCssCacheKey, pruneLastCssResults, rememberLastCssResult, resolveViteCssTaskConcurrency } from './generate-bundle/vite-css-cache'
 import { shouldSkipViteJsTransform } from './js-precheck'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
-import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCssCached } from './source-scan'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
 
+export { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-file-names'
 export { resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
-
-const VITE_LAST_CSS_RESULT_CACHE_MAX = 64
-
-function resolveViteCssTaskConcurrency(useIncrementalMode: boolean) {
-  const configured = Number.parseInt(process.env['WEAPP_TW_VITE_CSS_CONCURRENCY'] ?? '', 10)
-  if (Number.isFinite(configured) && configured > 0) {
-    return configured
-  }
-  return useIncrementalMode ? 1 : 2
-}
-
-const MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE = /\.(?:wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan)$/i
-const JS_STYLE_IMPORT_RE = /\b(?:import|require)\s*(?:\(\s*)?["']([^"']+\.(?:css|less|sass|scss|styl|stylus|pcss|postcss))(?:[?#][^"']*)?["']/g
-
-function addSiblingCssFile(files: Set<string>, file: string, extensionByStem: Map<string, string>, fallbackExtension: string) {
-  const cleanFile = file.replace(/[?#].*$/, '')
-  const templateMatch = cleanFile.match(MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE)
-  if (templateMatch?.[0]) {
-    const stem = file.slice(0, -templateMatch[0].length)
-    files.add(`${stem}${extensionByStem.get(stem) ?? fallbackExtension}`)
-  }
-  else if (file.endsWith('.js')) {
-    const stem = file.slice(0, -'.js'.length)
-    files.add(`${stem}${extensionByStem.get(stem) ?? fallbackExtension}`)
-  }
-}
-
-function collectCssExtensionByStem(files: string[]) {
-  const extensionByStem = new Map<string, string>()
-  for (const file of files) {
-    const match = file.replace(/[?#].*$/, '').match(MINI_PROGRAM_STYLE_OUTPUT_EXT_RE)
-    if (!match?.[0]) {
-      continue
-    }
-    extensionByStem.set(file.slice(0, -match[0].length), match[0])
-  }
-  return extensionByStem
-}
-
-function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot, extensionByStem: Map<string, string>, fallbackExtension: string) {
-  const files = new Set<string>()
-  for (const file of snapshot.runtimeAffectingChangedByType.html) {
-    addSiblingCssFile(files, file, extensionByStem, fallbackExtension)
-  }
-  for (const file of snapshot.runtimeAffectingChangedByType.js) {
-    addSiblingCssFile(files, file, extensionByStem, fallbackExtension)
-  }
-  return files
-}
-
-function collectJsImportedCssFiles(snapshot: BundleSnapshot) {
-  const files = new Set<string>()
-  for (const entry of snapshot.entries) {
-    if (entry.type !== 'js' || entry.output.type !== 'chunk') {
-      continue
-    }
-    JS_STYLE_IMPORT_RE.lastIndex = 0
-    let match = JS_STYLE_IMPORT_RE.exec(entry.source)
-    while (match !== null) {
-      const request = match[1]
-      if (request?.startsWith('.')) {
-        files.add(normalizeOutputPathKey(path.posix.join(path.posix.dirname(entry.file), request)))
-      }
-      match = JS_STYLE_IMPORT_RE.exec(entry.source)
-    }
-  }
-  return files
-}
-
-function normalizeViteCssCacheKey(file: string) {
-  return normalizeOutputPathKey(file)
-}
-
-function rememberLastCssResult(
-  resultByFile: Map<string, string>,
-  sourceHashByFile: Map<string, string>,
-  file: string,
-  css: string,
-  sourceHash: string,
-) {
-  const key = normalizeViteCssCacheKey(file)
-  resultByFile.delete(key)
-  sourceHashByFile.delete(key)
-  resultByFile.set(key, css)
-  sourceHashByFile.set(key, sourceHash)
-  while (resultByFile.size > VITE_LAST_CSS_RESULT_CACHE_MAX) {
-    const oldestKey = resultByFile.keys().next().value
-    if (typeof oldestKey !== 'string') {
-      break
-    }
-    resultByFile.delete(oldestKey)
-    sourceHashByFile.delete(oldestKey)
-  }
-}
-
-function getLastCssResult(resultByFile: Map<string, string>, ...files: Array<string | undefined>) {
-  for (const file of files) {
-    if (!file) {
-      continue
-    }
-    const key = normalizeViteCssCacheKey(file)
-    const css = resultByFile.get(key)
-    if (css == null) {
-      continue
-    }
-    resultByFile.delete(key)
-    resultByFile.set(key, css)
-    return css
-  }
-  return undefined
-}
-
-function getLastCssSourceHash(sourceHashByFile: Map<string, string>, file: string) {
-  return sourceHashByFile.get(normalizeViteCssCacheKey(file))
-}
-
-function pruneLastCssResults(
-  resultByFile: Map<string, string>,
-  sourceHashByFile: Map<string, string>,
-  activeFiles: Set<string>,
-) {
-  for (const key of resultByFile.keys()) {
-    if (activeFiles.has(key)) {
-      continue
-    }
-    resultByFile.delete(key)
-    sourceHashByFile.delete(key)
-  }
-}
-
-function toMb(bytes: number) {
-  return Math.round(bytes / 1024 / 1024)
-}
-
-function summarizeStringMapCache(map: Map<string, string>) {
-  let bytes = 0
-  for (const value of map.values()) {
-    bytes += value.length
-  }
-  return {
-    bytes,
-    mb: toMb(bytes),
-    size: map.size,
-  }
-}
-
-export function normalizeBundleFileNameKeysForTest(bundle: Record<string, OutputAsset | OutputChunk>) {
-  for (const [file, output] of Object.entries(bundle)) {
-    if (!output.fileName || output.fileName === file) {
-      continue
-    }
-    const existing = bundle[output.fileName]
-    if (existing != null && existing !== output) {
-      continue
-    }
-    bundle[output.fileName] = output
-    delete bundle[file]
-  }
-}
-
-function resolveViteMemoryDebugStats(context: {
-  activeProcessCacheKeys: Set<string>
-  activeProcessHashKeys: Set<string | number>
-  cache: GenerateBundleContext['opts']['cache']
-  generatorRuntimeSize: number
-  getViteCssCacheStats?: (() => Record<string, unknown>) | undefined
-  lastCssResultByFile: Map<string, string>
-  phase: string
-  runtimeSize: number
-  sourceCandidatesSize: number
-  transformRuntimeSize: number
-  useIncrementalMode: boolean
-}) {
-  if (process.env['WEAPP_TW_HMR_MEMORY_DEBUG'] !== '1') {
-    return undefined
-  }
-
-  const memory = process.memoryUsage()
-  return {
-    phase: context.phase,
-    mode: context.useIncrementalMode ? 'incremental' : 'full',
-    process: {
-      rssMb: toMb(memory.rss),
-      heapTotalMb: toMb(memory.heapTotal),
-      heapUsedMb: toMb(memory.heapUsed),
-      externalMb: toMb(memory.external),
-      arrayBuffersMb: toMb(memory.arrayBuffers),
-    },
-    runtime: {
-      sourceCandidates: context.sourceCandidatesSize,
-      runtime: context.runtimeSize,
-      transformRuntime: context.transformRuntimeSize,
-      generatorRuntime: context.generatorRuntimeSize,
-    },
-    processCache: {
-      instance: context.cache.instance.size,
-      hashMap: context.cache.hashMap.size,
-      activeCacheKeys: context.activeProcessCacheKeys.size,
-      activeHashKeys: context.activeProcessHashKeys.size,
-    },
-    viteCss: {
-      ...context.getViteCssCacheStats?.(),
-      lastCssResultByFile: summarizeStringMapCache(context.lastCssResultByFile),
-    },
-    tailwind: {
-      v3: getTailwindV3IncrementalGenerateCacheStats(),
-      v4: getTailwindV4IncrementalGenerateCacheStats(),
-    },
-  }
-}
-
-async function createScopedGeneratorCandidateSignature(
-  rawSource: string,
-  sourceFile: string,
-  fallbackSignature: string,
-  getSourceCandidatesForEntries: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined,
-  options: { includeFallbackSignature?: boolean | undefined, majorVersion?: number | undefined } = {},
-) {
-  if (!getSourceCandidatesForEntries || (!rawSource.includes('@source') && !rawSource.includes('@config'))) {
-    return fallbackSignature
-  }
-  const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
-  const resolved = options.majorVersion === 3
-    ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
-    : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-  if (resolved?.entries === undefined) {
-    return fallbackSignature
-  }
-  const scopedSignature = createCandidateSignature(getSourceCandidatesForEntries(resolved.entries))
-  return options.includeFallbackSignature === true
-    ? `${scopedSignature}:${fallbackSignature}`
-    : scopedSignature
-}
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
@@ -293,7 +62,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   let currentSubpackageRoots: Set<string> | undefined
   const cssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => context.opts.appType,
-    mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
+    mainCssChunk: context.opts.mainCssChunk,
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => currentOutDir,
     getExtraOptions: file => ({
@@ -422,8 +191,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     if (subpackageRoots) {
       currentSubpackageRoots = subpackageRoots
     }
-    const isMainPackageStyleOutputFile = (file: string) =>
-      currentSubpackageRoots != null && !isSubpackageOutputFile(file, currentSubpackageRoots)
     const buildCommand = resolvedConfig?.command === 'build'
     const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
     const hasOmittedKnownFiles = hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
@@ -438,99 +205,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const snapshot = buildBundleSnapshot(bundle, opts, outDir, state, disableDirtyOptimization || !useIncrementalMode, {
       hasOmittedKnownFiles,
     })
-    const subpackageSourceExcludeEntries = currentSubpackageRoots
-      ? collectMiniProgramSubpackageSourceEntries(snapshot, currentSubpackageRoots, [
-          rootDir,
-          opts.tailwindcssBasedir,
-          (opts.tailwindcssPatcherOptions as { projectRoot?: string | undefined } | undefined)?.projectRoot,
-        ])
-      : []
-    const resolveSubpackageOutputSourceEntries = (outputFile: string): TailwindSourceEntry[] | undefined => {
-      if (!currentSubpackageRoots) {
-        return undefined
-      }
-      const matchedRoots = [...currentSubpackageRoots].filter(root => isSubpackageOutputFile(outputFile, new Set([root])))
-      if (matchedRoots.length !== 1) {
-        return undefined
-      }
-      const root = matchedRoots[0]
-      if (!root) {
-        return undefined
-      }
-      return sourceRoot
-        ? [{
-            base: sourceRoot,
-            negated: false,
-            pattern: `${root}/**/*`,
-          }]
-        : [{
-            base: rootDir,
-            negated: false,
-            pattern: `**/${root}/**/*`,
-          }]
-    }
-    const shouldExcludeSubpackageSourceCandidates = (outputFile: string, cssHandlerOptions: { isMainChunk?: boolean | undefined }) =>
-      cssHandlerOptions.isMainChunk === true
-      && subpackageSourceExcludeEntries.length > 0
-      && isMainPackageStyleOutputFile(outputFile)
-    const createScopedSourceCandidateGetter = (
-      outputFile: string,
-      cssHandlerOptions: { isMainChunk?: boolean | undefined },
-    ) => {
-      if (!getSourceCandidatesForEntries) {
-        return undefined
-      }
-      const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
-      if (subpackageEntries) {
-        return (_entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
-          getSourceCandidatesForEntries(subpackageEntries, options)
-      }
-      if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
-        return getSourceCandidatesForEntries
-      }
-      return (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
-        getSourceCandidatesForEntries(entries, {
-          ...options,
-          excludeEntries: [
-            ...(options?.excludeEntries ?? []),
-            ...subpackageSourceExcludeEntries,
-          ],
-        })
-    }
-    const createScopedSourceCandidateSourceGetter = (
-      outputFile: string,
-      cssHandlerOptions: { isMainChunk?: boolean | undefined },
-    ) => {
-      if (!getSourceCandidateSourcesForEntries) {
-        return undefined
-      }
-      const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
-      if (subpackageEntries) {
-        return (_entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
-          getSourceCandidateSourcesForEntries(subpackageEntries, options)
-      }
-      if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
-        return getSourceCandidateSourcesForEntries
-      }
-      return (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
-        getSourceCandidateSourcesForEntries(entries, {
-          ...options,
-          excludeEntries: [
-            ...(options?.excludeEntries ?? []),
-            ...subpackageSourceExcludeEntries,
-          ],
-        })
-    }
-    const shouldInjectCssIntoMainFromOutput = (
-      outputFile: string,
-      _sourceFile: string,
-      outputCssHandlerOptions: { isMainChunk?: boolean | undefined },
-    ) =>
-      outputCssHandlerOptions.isMainChunk === true
-      || (
-        useIncrementalMode
-        && isMainPackageStyleOutputFile(outputFile)
-      )
+    const {
+      createScopedSourceCandidateGetter,
+      createScopedSourceCandidateSourceGetter,
+      shouldExcludeSubpackageSourceCandidates,
+      shouldInjectCssIntoMainFromOutput,
+    } = createSubpackageSourceCandidateScope({
+      getSourceCandidateSourcesForEntries,
+      getSourceCandidatesForEntries,
+      projectRoot: (opts.tailwindcssPatcherOptions as { projectRoot?: string | undefined } | undefined)?.projectRoot,
+      rootDir,
+      snapshot,
+      sourceRoot,
+      subpackageRoots: currentSubpackageRoots,
+      tailwindcssBasedir: opts.tailwindcssBasedir,
+      useIncrementalMode,
+    })
     recordTimingDetail('snapshot', snapshotStart)
     const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
     const forceRuntimeRefreshBySource = useIncrementalMode
@@ -546,34 +236,23 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     await waitForSourceCandidateSyncs?.()
     recordTimingDetail('sourceCandidates.wait', sourceCandidateWaitStart)
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
-    const createScopedGeneratorRuntime = async (
+    const createScopedGeneratorRuntime = (
       outputFile: string,
       cssHandlerOptions: { isMainChunk?: boolean | undefined },
       runtime: Set<string>,
       rawSource?: string | undefined,
       sourceFile?: string | undefined,
-    ) => {
-      if (getSourceCandidatesForEntries && rawSource && sourceFile) {
-        const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
-        const resolved = runtimeState.twPatcher.majorVersion === 3
-          ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
-          : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-        if (resolved?.entries !== undefined) {
-          const scopedRuntime = getSourceCandidatesForEntries(resolved.entries)
-          if (scopedRuntime.size > 0) {
-            return scopedRuntime
-          }
-        }
-      }
-      if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
-        return runtime
-      }
-      const filteredSourceCandidates = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)?.(undefined)
-      if (!filteredSourceCandidates) {
-        return runtime
-      }
-      return filteredSourceCandidates.size > 0 ? filteredSourceCandidates : runtime
-    }
+    ) => resolveScopedGeneratorRuntime({
+      cssHandlerOptions,
+      fallbackRuntime: runtime,
+      getSourceCandidatesForEntries,
+      majorVersion: runtimeState.twPatcher.majorVersion,
+      outputFile,
+      rawSource,
+      shouldExcludeSubpackageSourceCandidates,
+      sourceFile,
+      scopedSourceCandidateGetter: createScopedSourceCandidateGetter(outputFile, cssHandlerOptions),
+    })
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
@@ -663,7 +342,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
     const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
-    const cssExtensionByStem = collectCssExtensionByStem(bundleFiles)
+    const cssExtensionByStem = collectCssExtensionByStem(bundleFiles, opts.cssMatcher)
     const jsImportedCssFiles = collectJsImportedCssFiles(snapshot)
     const runtimeLinkedCssFiles = new Set([
       ...collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem, defaultStyleOutputExtension),
@@ -874,6 +553,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           snapshot,
           outDir,
           opts.tailwindcssBasedir,
+          opts.cssMatcher,
           getSfcSource,
           debug,
         )
@@ -1435,61 +1115,21 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     for (const apply of pendingLinkedUpdates) {
       apply()
     }
-    const applyStyleSources = collectUniAppXHarmonyApplyStyleSources(bundle)
-    if (opts.appType === 'uni-app-x' || isNativeAppStyleTarget || isHarmonyAppStyleTarget) {
-      const getAssetSource = createUniAppXBundleAssetSourceGetter(bundle)
-      const viteProcessedCssSources = [...(getViteProcessedCssAssetResults?.() ?? [])]
-        .map(([, record]) => typeof record === 'string' ? record : record.css)
-      const applyUtilities = collectUniAppXHarmonyApplyUtilities(bundle)
-      const shouldInjectHarmonyBundleStyles = isHarmonyAppStyleTarget
-      if (shouldInjectHarmonyBundleStyles) {
-        if (applyUtilities.size > 0 && applyStyleSources.length > 0) {
-          const outputFile = 'uni-app-x-harmony-apply.css'
-          const cssHandlerOptions = getCssHandlerOptions(outputFile)
-          const generated = await generateCssByGenerator({
-            opts,
-            runtimeState,
-            runtime: new Set([
-              ...generatorRuntime,
-              ...applyUtilities,
-            ]),
-            rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
-            file: outputFile,
-            cssHandlerOptions,
-            cssUserHandlerOptions: {
-              ...cssHandlerOptions,
-              isMainChunk: false,
-            },
-            getSourceCandidatesForEntries,
-            styleHandler,
-            debug,
-          })
-          if (generated?.css) {
-            viteProcessedCssSources.push(annotateCssSourceTrace(generated.css, {
-              opts,
-              tokenSources: getSourceCandidateSourcesForEntries
-                ? createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts)
-                : undefined,
-            }))
-          }
-        }
-      }
-      if (shouldInjectHarmonyBundleStyles && injectUniAppXHarmonyBundleStyles(bundle, { cssSources: viteProcessedCssSources })) {
-        debug('uni-app-x harmony bundle styles inject')
-      }
-      for (const [file, item] of Object.entries(bundle)) {
-        if (item.type !== 'asset' || !file.endsWith('.uvue.ts')) {
-          continue
-        }
-        const currentSource = String(item.source)
-        const nextSource = injectUniAppXStylePlaceholder(file, currentSource, getAssetSource)
-        if (nextSource !== currentSource) {
-          item.source = nextSource
-          onUpdate(file, currentSource, nextSource)
-          debug('uni-app-x style placeholder inject: %s', file)
-        }
-      }
-    }
+    const applyStyleSources = await handleUniAppXPostCssTasks({
+      bundle,
+      debug,
+      generatorRuntime,
+      getCssHandlerOptions,
+      getSourceCandidateSourcesForEntries,
+      getSourceCandidatesForEntries,
+      getViteProcessedCssAssetResults,
+      isHarmonyAppStyleTarget,
+      isNativeAppStyleTarget,
+      onUpdate,
+      opts,
+      runtimeState,
+      styleHandler,
+    })
     const syncViteProcessedCssIntoMainCssAssets = () => {
       collectViteProcessedCssAssetResults(bundle, {
         opts,

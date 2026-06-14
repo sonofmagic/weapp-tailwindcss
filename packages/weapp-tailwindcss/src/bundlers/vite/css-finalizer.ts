@@ -85,7 +85,7 @@ function createCssHandlerOptions(
 ): IStyleHandlerOptions {
   return {
     ...resolveUniAppXNativeCssHandlerOptions(opts),
-    isMainChunk: opts.mainCssChunkMatcher(file, opts.appType),
+    isMainChunk: opts.mainCssChunk(file, opts.appType),
     postcssOptions: {
       options: {
         from: file,
@@ -123,7 +123,7 @@ function shouldFinalizeProcessedCssAsset(
   opts: InternalUserDefinedOptions,
   file: string,
 ) {
-  return opts.mainCssChunkMatcher(file, opts.appType)
+  return opts.mainCssChunk(file, opts.appType)
 }
 
 function collectViteProcessedCssSources(

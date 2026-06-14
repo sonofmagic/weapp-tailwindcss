@@ -76,8 +76,8 @@ chain.merge({
       args: [{
         // 方法1: 不要传 appType
         // 注释掉 appType : 'taro'
-        // 或者方法2: 让所有css chunk 都是 main chunk
-        // mainCssChunkMatcher: ()=> true
+        // 或者方法2: 显式让所有 css chunk 都是 main chunk
+        // mainCssChunk: ()=> true
         // 2 种选其一即可
       }]
     }

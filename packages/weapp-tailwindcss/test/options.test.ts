@@ -75,11 +75,11 @@ describe('get options', () => {
   })
 
   it('default matcher', () => {
-    const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext()
+    const { cssMatcher, jsMatcher, mainCssChunk, htmlMatcher } = getCompilerContext()
     expect(cssMatcher('a.css')).toBe(true)
     expect(jsMatcher('a.js')).toBe(true)
     expect(jsMatcher('node_modules/a.js')).toBe(false)
-    expect(mainCssChunkMatcher('app.wxss', 'native')).toBe(false)
+    expect(mainCssChunk('app.wxss', 'native')).toBe(false)
     expect(htmlMatcher('a.wxml')).toBe(true)
   })
 
@@ -170,15 +170,15 @@ describe('get options', () => {
   })
 
   // it.skip('glob matcher', () => {
-  //   const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext({
+  //   const { cssMatcher, jsMatcher, mainCssChunk, htmlMatcher } = getCompilerContext({
   //     cssMatcher: '*.xxss',
   //     jsMatcher: '*.abcd',
-  //     mainCssChunkMatcher: '*.main',
+  //     mainCssChunk: '*.main',
   //     htmlMatcher: ['*.wxmm', '*.plmm']
   //   })
   //   expect(cssMatcher('a.xxss')).toBe(true)
   //   expect(jsMatcher('a.abcd')).toBe(true)
-  //   expect(mainCssChunkMatcher('app.main', 'native')).toBe(true)
+  //   expect(mainCssChunk('app.main', 'native')).toBe(true)
   //   expect(htmlMatcher('a.wxmm')).toBe(true)
   //   expect(htmlMatcher('a.plmm')).toBe(true)
   // })
