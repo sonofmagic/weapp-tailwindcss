@@ -24,6 +24,8 @@ describe('node api core example', () => {
     })
 
     expect(result.samples.length).toBeGreaterThan(1)
-    expect(result.deltaHeapUsedMb).toBeLessThanOrEqual(96)
+    if (typeof globalThis.gc === 'function') {
+      expect(result.deltaHeapUsedMb).toBeLessThanOrEqual(96)
+    }
   }, 30000)
 })

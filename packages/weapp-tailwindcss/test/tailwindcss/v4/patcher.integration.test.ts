@@ -69,7 +69,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
           packageName: 'tailwindcss',
           version: 4,
           resolve: {
-            paths: [path.resolve(workspaceRoot, 'node_modules')],
+            paths: [path.resolve(fixtureRoot, 'node_modules')],
           },
         },
         tailwindcssPatcherOptions: undefined,
