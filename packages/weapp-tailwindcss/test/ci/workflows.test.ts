@@ -114,7 +114,7 @@ describe('ci workflows', () => {
     expect(staticRuns).toEqual(expect.arrayContaining([
       'pnpm build:ci',
       'pnpm exec playwright install chromium',
-      'pnpm e2e:static --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
+      'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
     ]))
     expect(focusedRuns).toContain('pnpm build:ci')
     expect(multiplatformRuns).toContain('pnpm build:ci')
@@ -124,11 +124,13 @@ describe('ci workflows', () => {
       'generator-web-parity',
       'preprocessor-source',
       'framework-support',
+      'taro-h5-build',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
       'pnpm e2e:preprocessor',
       'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
+      'pnpm e2e:taro:h5-build',
     ])
     expect(stepRuns(workflow, 'e2e-focused')).toContain('${{ matrix.command }}')
 

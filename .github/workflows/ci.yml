@@ -118,7 +118,7 @@ jobs:
         run: pnpm exec playwright install chromium
 
       - name: E2E Static
-        run: pnpm e2e:static --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
+        run: pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
 
   e2e-focused:
     name: E2E Focused Gate (${{ matrix.case_name }})
@@ -134,6 +134,8 @@ jobs:
             command: pnpm e2e:preprocessor
           - case_name: framework-support
             command: pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts
+          - case_name: taro-h5-build
+            command: pnpm e2e:taro:h5-build
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
