@@ -2,11 +2,20 @@
 
 Fixture: demo
 Entry: taro-vite-vue3-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, app-origin.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, app-origin.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 13391 | 45 | false | false | false | true | true | false | true |
+
+## Generator CSS Summary
+
+| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 2312 | 0 | false | false | false | false | false | false | false |
+| `app-origin.wxss` | 7544 | 43 | false | false | false | true | true | false | true |
+| `sub-independent/pages/index.wxss` | 1775 | 2 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 1760 | 2 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -289,7 +298,7 @@ text,
 }
 ```
 
-### index.wxss
+### sub-independent/pages/index.wxss
 
 ```css
 ::before,
@@ -366,7 +375,7 @@ text,
 }
 ```
 
-### index.wxss
+### sub-normal/pages/index.wxss
 
 ```css
 ::before,

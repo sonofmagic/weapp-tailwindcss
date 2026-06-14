@@ -32,7 +32,12 @@ interface CreateProjectReportOptions {
 interface GeneratorBuildResult {
   css: string
   cssFiles: string[]
-  cssSnapshots: Array<{ fileName: string, content: string }>
+  cssSnapshots: GeneratorCssSnapshot[]
+}
+
+interface GeneratorCssSnapshot {
+  fileName: string
+  content: string
 }
 
 const SUBPACKAGE_MARKER_PATTERNS = [
@@ -277,28 +282,46 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
       || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
   })
   const outputRoot = path.dirname(path.resolve(projectRoot, cssPath))
+  const entryRelativePath = normalizeOutputCssFileName(path.relative(outputRoot, path.resolve(projectRoot, cssPath)))
   const allCssFiles = await fg(MINI_PROGRAM_CSS_PATTERN, {
     absolute: false,
     cwd: outputRoot,
     onlyFiles: true,
   })
-  const entryFileNames = new Set(entrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
+  const normalizedEntrySnapshots = entrySnapshots.map((snapshot, index): GeneratorCssSnapshot => ({
+    ...snapshot,
+    fileName: index === 0 ? entryRelativePath : normalizeOutputCssFileName(snapshot.fileName),
+  }))
+  const entryFileNames = new Set(normalizedEntrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
   const extraSnapshots = await Promise.all(
     allCssFiles
       .sort(compareCssOutputFile)
       .filter(file => !entryFileNames.has(path.normalize(file)))
-      .map(file => collectCssSnapshots(outputRoot, file, {
-        classList,
-        normalizeTailwindV4RootVariableNoise:
-          projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
-          || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
-      })),
+      .map(async (file) => {
+        const snapshots = await collectCssSnapshots(outputRoot, file, {
+          classList,
+          rootSnapshotName: normalizeOutputCssFileName(file),
+          normalizeTailwindV4RootVariableNoise:
+            projectRoot.endsWith(`${path.sep}taro-vite-react-tailwindcss-v4`)
+            || projectRoot.endsWith(`${path.sep}taro-vite-vue3-tailwindcss-v4`),
+        })
+        return snapshots.map((snapshot, index): GeneratorCssSnapshot => ({
+          ...snapshot,
+          fileName: index === 0
+            ? normalizeOutputCssFileName(file)
+            : normalizeOutputCssFileName(snapshot.fileName),
+        }))
+      }),
   )
 
   return [
-    ...entrySnapshots,
+    ...normalizedEntrySnapshots,
     ...extraSnapshots.flat().sort(compareCssSnapshotEntry),
   ]
+}
+
+function normalizeOutputCssFileName(fileName: string) {
+  return fileName.replace(/\\/g, '/')
 }
 
 function compareCssOutputFile(a: string, b: string) {
@@ -411,6 +434,12 @@ function createCssOutputSnapshot(
   const cssSnapshots = generatorResult.cssSnapshots && generatorResult.cssSnapshots.length > 0
     ? generatorResult.cssSnapshots
     : [{ fileName: generatorResult.cssFiles[0] ?? project.cssFile, content: generatorResult.css }]
+  const cssSummaryRows = cssSnapshots.flatMap((snapshot) => {
+    const summary = summarizeCss(`${normalizeCssSnapshot(snapshot.content)}\n`)
+    return [
+      `| \`${snapshot.fileName}\` | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
+    ]
+  })
   const cssSections = cssSnapshots.flatMap(snapshot => [
     `### ${snapshot.fileName}`,
     '',
@@ -429,6 +458,12 @@ function createCssOutputSnapshot(
     '| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
     `| ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasSystemDarkModeMedia} | ${generator.hasManualDarkModeSelector} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
+    '',
+    '## Generator CSS Summary',
+    '',
+    '| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
+    ...cssSummaryRows,
     '',
     '## Generator CSS',
     '',
@@ -479,13 +514,27 @@ describe('demo generator mode output', () => {
       cssPath: 'dist/app.wxss',
     }, {
       css: '.generator { color: blue; }\n.shared { display: block; }\n',
-      cssFiles: ['app.wxss'],
+      cssFiles: ['app.wxss', 'pages/index/index.wxss'],
+      cssSnapshots: [
+        { fileName: 'app.wxss', content: '.generator { color: blue; }\n' },
+        { fileName: 'pages/index/index.wxss', content: '.shared { display: block; }\n' },
+      ],
     })
 
-    expect(snapshot.indexOf('| Bytes |')).toBeLessThan(snapshot.indexOf('## Generator CSS'))
+    const generatorCssIndex = snapshot.indexOf('\n## Generator CSS\n')
+    const cssTableIndex = snapshot.indexOf('| File | Bytes |')
+    const firstCssBlockIndex = snapshot.indexOf('### app.wxss')
+
+    expect(snapshot.indexOf('| Bytes |')).toBeLessThan(generatorCssIndex)
+    expect(cssTableIndex).toBeLessThan(generatorCssIndex)
+    expect(generatorCssIndex).toBeLessThan(firstCssBlockIndex)
     expect(snapshot).toContain('# fixture-app CSS Output')
     expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false | false | false |')
+    expect(snapshot).toContain('Generator CSS files: app.wxss, pages/index/index.wxss')
+    expect(snapshot).toContain('| `app.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
+    expect(snapshot).toContain('| `pages/index/index.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
     expect(snapshot).toContain('### app.wxss')
+    expect(snapshot).toContain('### pages/index/index.wxss')
     expect(snapshot).toContain('.generator { color: blue; }')
   })
 

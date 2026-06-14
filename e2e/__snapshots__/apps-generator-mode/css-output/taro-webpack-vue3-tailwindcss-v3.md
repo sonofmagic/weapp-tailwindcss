@@ -2,11 +2,20 @@
 
 Fixture: demo
 Entry: taro-webpack-vue3-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss
+Generator CSS files: app.wxss, pages/index/index.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 26365 | 57 | false | false | false | true | true | false | true |
+
+## Generator CSS Summary
+
+| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 8545 | 52 | false | false | false | true | true | false | true |
+| `pages/index/index.wxss` | 728 | 5 | false | false | false | false | false | false | false |
+| `sub-independent/pages/index.wxss` | 8547 | 52 | false | false | false | true | true | false | true |
+| `sub-normal/pages/index.wxss` | 8545 | 52 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -283,7 +292,7 @@ text,
 }
 ```
 
-### index.wxss
+### pages/index/index.wxss
 
 ```css
 /* tokens: test <= src/pages/index/index.vue */
@@ -314,7 +323,7 @@ text,
 }
 ```
 
-### index.wxss
+### sub-independent/pages/index.wxss
 
 ```css
 ::before,
@@ -588,7 +597,7 @@ text,
 }
 ```
 
-### index.wxss
+### sub-normal/pages/index.wxss
 
 ```css
 ::before,

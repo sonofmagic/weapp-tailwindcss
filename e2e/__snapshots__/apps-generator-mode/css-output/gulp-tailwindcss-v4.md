@@ -2,11 +2,21 @@
 
 Fixture: demo
 Entry: gulp-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, index.wxss, index.wxss, index.wxss, more.wxss
+Generator CSS files: app.wxss, pages/index/index.wxss, pages/more/more.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 14242 | 73 | false | false | false | true | true | false | true |
+
+## Generator CSS Summary
+
+| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 11888 | 67 | false | false | false | true | true | false | true |
+| `pages/index/index.wxss` | 1 | 0 | false | false | false | false | false | false | false |
+| `pages/more/more.wxss` | 195 | 2 | false | false | false | false | false | false | false |
+| `sub-independent/pages/index.wxss` | 1160 | 6 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 1115 | 6 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -339,13 +349,29 @@ wx-root-portal-content {
 }
 ```
 
-### index.wxss
+### pages/index/index.wxss
 
 ```css
 
 ```
 
-### index.wxss
+### pages/more/more.wxss
+
+```css
+.more__pre {
+  white-space: pre;
+  text-align: left;
+  overflow: auto;
+  border: 2rpx solid #ebebeb;
+  background-color: #f9f9f9;
+  padding-left: 10rpx;
+}
+.more__pre text {
+  font-size: 24rpx;
+}
+```
+
+### sub-independent/pages/index.wxss
 
 ```css
 view,
@@ -382,7 +408,7 @@ wx-root-portal-content {
 }
 ```
 
-### index.wxss
+### sub-normal/pages/index.wxss
 
 ```css
 view,
@@ -416,21 +442,5 @@ wx-root-portal-content {
 /* tokens: before:content-['normal_subpackage_gulp-tailwindcss-v4'] <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
-}
-```
-
-### more.wxss
-
-```css
-.more__pre {
-  white-space: pre;
-  text-align: left;
-  overflow: auto;
-  border: 2rpx solid #ebebeb;
-  background-color: #f9f9f9;
-  padding-left: 10rpx;
-}
-.more__pre text {
-  font-size: 24rpx;
 }
 ```

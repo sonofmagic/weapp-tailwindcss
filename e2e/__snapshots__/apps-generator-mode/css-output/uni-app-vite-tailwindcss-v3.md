@@ -2,11 +2,28 @@
 
 Fixture: demo
 Entry: uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss
-Generator CSS files: app.wxss, a.wxss, b.wxss, index.wxss, index.wxss, index.wxss, index.wxss, index.wxss, peer.wxss, typography.wxss, u-button.wxss, u-loading-icon.wxss
+Generator CSS files: app.wxss, custom-tab-bar/index.wxss, moduleA/pages/a.wxss, moduleA/pages/b.wxss, moduleA/pages/index.wxss, node-modules/uview-plus/components/u-button/u-button.wxss, node-modules/uview-plus/components/u-loading-icon/u-loading-icon.wxss, pages/index/index.wxss, pages/index/peer.wxss, pages/issue/typography.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 256258 | 2838 | false | false | false | true | true | false | true |
+
+## Generator CSS Summary
+
+| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
+| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 146644 | 2547 | false | false | false | true | true | false | true |
+| `custom-tab-bar/index.wxss` | 582 | 5 | false | false | false | false | false | false | false |
+| `moduleA/pages/a.wxss` | 2881 | 6 | false | false | false | false | false | false | true |
+| `moduleA/pages/b.wxss` | 2881 | 6 | false | false | false | false | false | false | true |
+| `moduleA/pages/index.wxss` | 2881 | 6 | false | false | false | false | false | false | true |
+| `node-modules/uview-plus/components/u-button/u-button.wxss` | 4093 | 27 | false | false | false | false | false | false | false |
+| `node-modules/uview-plus/components/u-loading-icon/u-loading-icon.wxss` | 4091 | 26 | false | false | false | false | false | false | false |
+| `pages/index/index.wxss` | 1194 | 7 | false | false | false | false | false | false | false |
+| `pages/index/peer.wxss` | 46098 | 317 | false | false | false | true | true | false | true |
+| `pages/issue/typography.wxss` | 40988 | 225 | false | false | false | false | false | false | false |
+| `sub-independent/pages/index.wxss` | 1980 | 2 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 1945 | 2 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -6276,201 +6293,7 @@ body {
 }
 ```
 
-### a.wxss
-
-```css
-::before,
-::after {
-  --tw-content: '';
-}
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:;
-  --tw-pan-y:;
-  --tw-pinch-zoom:;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:;
-  --tw-gradient-via-position:;
-  --tw-gradient-to-position:;
-  --tw-ordinal:;
-  --tw-slashed-zero:;
-  --tw-numeric-figure:;
-  --tw-numeric-spacing:;
-  --tw-numeric-fraction:;
-  --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:;
-  --tw-brightness:;
-  --tw-contrast:;
-  --tw-grayscale:;
-  --tw-hue-rotate:;
-  --tw-invert:;
-  --tw-saturate:;
-  --tw-sepia:;
-  --tw-drop-shadow:;
-  --tw-backdrop-blur:;
-  --tw-backdrop-brightness:;
-  --tw-backdrop-contrast:;
-  --tw-backdrop-grayscale:;
-  --tw-backdrop-hue-rotate:;
-  --tw-backdrop-invert:;
-  --tw-backdrop-opacity:;
-  --tw-backdrop-saturate:;
-  --tw-backdrop-sepia:;
-  --tw-contain-size:;
-  --tw-contain-layout:;
-  --tw-contain-paint:;
-  --tw-contain-style:;
-}
-/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
-.inline {
-  display: inline;
-}
-/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
-  --tw-content: 'moduleA 独立分包';
-  content: var(--tw-content);
-}
-/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
-  --tw-content: '我是className';
-  content: var(--tw-content);
-}
-/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
-  --tw-content: '我来自utils.filter.js';
-  content: var(--tw-content);
-}
-/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
-  --tw-content: \'我来自inline-wxs\';
-  content: var(--tw-content);
-}
-```
-
-### b.wxss
-
-```css
-::before,
-::after {
-  --tw-content: '';
-}
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:;
-  --tw-pan-y:;
-  --tw-pinch-zoom:;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:;
-  --tw-gradient-via-position:;
-  --tw-gradient-to-position:;
-  --tw-ordinal:;
-  --tw-slashed-zero:;
-  --tw-numeric-figure:;
-  --tw-numeric-spacing:;
-  --tw-numeric-fraction:;
-  --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:;
-  --tw-brightness:;
-  --tw-contrast:;
-  --tw-grayscale:;
-  --tw-hue-rotate:;
-  --tw-invert:;
-  --tw-saturate:;
-  --tw-sepia:;
-  --tw-drop-shadow:;
-  --tw-backdrop-blur:;
-  --tw-backdrop-brightness:;
-  --tw-backdrop-contrast:;
-  --tw-backdrop-grayscale:;
-  --tw-backdrop-hue-rotate:;
-  --tw-backdrop-invert:;
-  --tw-backdrop-opacity:;
-  --tw-backdrop-saturate:;
-  --tw-backdrop-sepia:;
-  --tw-contain-size:;
-  --tw-contain-layout:;
-  --tw-contain-paint:;
-  --tw-contain-style:;
-}
-/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
-.inline {
-  display: inline;
-}
-/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
-/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
-.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
-  --tw-content: 'moduleA 独立分包';
-  content: var(--tw-content);
-}
-/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
-.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
-  --tw-content: '我是className';
-  content: var(--tw-content);
-}
-/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
-.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
-  --tw-content: '我来自utils.filter.js';
-  content: var(--tw-content);
-}
-/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
-.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
-  --tw-content: \'我来自inline-wxs\';
-  content: var(--tw-content);
-}
-```
-
-### index.wxss
+### custom-tab-bar/index.wxss
 
 ```css
 .tab-bar {
@@ -6509,165 +6332,7 @@ text,
 }
 ```
 
-### index.wxss
-
-```css
-::before,
-::after {
-  --tw-content: '';
-}
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:;
-  --tw-pan-y:;
-  --tw-pinch-zoom:;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:;
-  --tw-gradient-via-position:;
-  --tw-gradient-to-position:;
-  --tw-ordinal:;
-  --tw-slashed-zero:;
-  --tw-numeric-figure:;
-  --tw-numeric-spacing:;
-  --tw-numeric-fraction:;
-  --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:;
-  --tw-brightness:;
-  --tw-contrast:;
-  --tw-grayscale:;
-  --tw-hue-rotate:;
-  --tw-invert:;
-  --tw-saturate:;
-  --tw-sepia:;
-  --tw-drop-shadow:;
-  --tw-backdrop-blur:;
-  --tw-backdrop-brightness:;
-  --tw-backdrop-contrast:;
-  --tw-backdrop-grayscale:;
-  --tw-backdrop-hue-rotate:;
-  --tw-backdrop-invert:;
-  --tw-backdrop-opacity:;
-  --tw-backdrop-saturate:;
-  --tw-backdrop-sepia:;
-  --tw-contain-size:;
-  --tw-contain-layout:;
-  --tw-contain-paint:;
-  --tw-contain-style:;
-}
-/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
-  content: var(--tw-content);
-}
-/* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
-.bg-independent-subpackage-marker {
-  --tw-bg-opacity: 1;
-  background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
-}
-```
-
-### index.wxss
-
-```css
-::before,
-::after {
-  --tw-content: '';
-}
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:;
-  --tw-pan-y:;
-  --tw-pinch-zoom:;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:;
-  --tw-gradient-via-position:;
-  --tw-gradient-to-position:;
-  --tw-ordinal:;
-  --tw-slashed-zero:;
-  --tw-numeric-figure:;
-  --tw-numeric-spacing:;
-  --tw-numeric-fraction:;
-  --tw-ring-inset:;
-  --tw-ring-offset-width: 0rpx;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:;
-  --tw-brightness:;
-  --tw-contrast:;
-  --tw-grayscale:;
-  --tw-hue-rotate:;
-  --tw-invert:;
-  --tw-saturate:;
-  --tw-sepia:;
-  --tw-drop-shadow:;
-  --tw-backdrop-blur:;
-  --tw-backdrop-brightness:;
-  --tw-backdrop-contrast:;
-  --tw-backdrop-grayscale:;
-  --tw-backdrop-hue-rotate:;
-  --tw-backdrop-invert:;
-  --tw-backdrop-opacity:;
-  --tw-backdrop-saturate:;
-  --tw-backdrop-sepia:;
-  --tw-contain-size:;
-  --tw-contain-layout:;
-  --tw-contain-paint:;
-  --tw-contain-style:;
-}
-/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
-  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
-  content: var(--tw-content);
-}
-/* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
-.bg-normal-subpackage-marker {
-  --tw-bg-opacity: 1;
-  background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
-}
-```
-
-### index.wxss
+### moduleA/pages/a.wxss
 
 ```css
 ::before,
@@ -6764,7 +6429,520 @@ text,
 }
 ```
 
-### index.wxss
+### moduleA/pages/b.wxss
+
+```css
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
+}
+/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.inline {
+  display: inline;
+}
+/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
+  --tw-content: 'moduleA 独立分包';
+  content: var(--tw-content);
+}
+/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
+  --tw-content: '我是className';
+  content: var(--tw-content);
+}
+/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
+  --tw-content: '我来自utils.filter.js';
+  content: var(--tw-content);
+}
+/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
+  --tw-content: \'我来自inline-wxs\';
+  content: var(--tw-content);
+}
+```
+
+### moduleA/pages/index.wxss
+
+```css
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
+}
+/* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.inline {
+  display: inline;
+}
+/* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+/* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
+  --tw-content: 'moduleA 独立分包';
+  content: var(--tw-content);
+}
+/* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
+  --tw-content: '我是className';
+  content: var(--tw-content);
+}
+/* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
+  --tw-content: '我来自utils.filter.js';
+  content: var(--tw-content);
+}
+/* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
+  --tw-content: \'我来自inline-wxs\';
+  content: var(--tw-content);
+}
+```
+
+### node-modules/uview-plus/components/u-button/u-button.wxss
+
+```css
+/* tokens: u-button <= src/pages/index/index.vue */
+.u-button.data-v-e43777a0 {
+  width: 100%;
+  white-space: nowrap;
+}
+.u-button__text.data-v-e43777a0 {
+  white-space: nowrap;
+  line-height: 1;
+}
+/* tokens: u-button <= src/pages/index/index.vue */
+.u-button.data-v-e43777a0::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: inherit;
+  border-radius: inherit;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  content: ' ';
+  background-color: #000;
+  border-color: #000;
+}
+.u-button--active.data-v-e43777a0::before {
+  opacity: 0.15;
+}
+.u-button__icon + .u-button__text.data-v-e43777a0:not(:empty),
+.u-button__loading-text.data-v-e43777a0 {
+  margin-left: 4rpx;
+}
+.u-button--plain.u-button--primary.data-v-e43777a0 {
+  color: var(--up-primary, var(--u-primary, #3c9cff));
+}
+.u-button--plain.u-button--info.data-v-e43777a0 {
+  color: var(--up-info, var(--u-info, #909399));
+}
+.u-button--plain.u-button--success.data-v-e43777a0 {
+  color: var(--up-success, var(--u-success, #5ac725));
+}
+.u-button--plain.u-button--error.data-v-e43777a0 {
+  color: var(--up-error, var(--u-error, #f56c6c));
+}
+.u-button--plain.u-button--warning.data-v-e43777a0 {
+  color: var(--up-warning, var(--u-warning, #f9ae3d));
+}
+/* tokens: u-button <= src/pages/index/index.vue */
+.u-button.data-v-e43777a0 {
+  height: 40rpx;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+}
+.u-button__text.data-v-e43777a0 {
+  font-size: 15rpx;
+}
+.u-button__loading-text.data-v-e43777a0 {
+  font-size: 15rpx;
+  margin-left: 4rpx;
+}
+.u-button--large.data-v-e43777a0 {
+  width: 100%;
+  height: 50rpx;
+  padding: 0 15rpx;
+}
+.u-button--normal.data-v-e43777a0 {
+  padding: 0 12rpx;
+  font-size: 14rpx;
+}
+.u-button--small.data-v-e43777a0 {
+  min-width: 60rpx;
+  height: 30rpx;
+  padding: 0rpx 8rpx;
+  font-size: 12rpx;
+}
+.u-button--mini.data-v-e43777a0 {
+  height: 22rpx;
+  font-size: 10rpx;
+  min-width: 50rpx;
+  padding: 0rpx 8rpx;
+}
+.u-button--disabled.data-v-e43777a0 {
+  opacity: 0.5;
+}
+.u-button--info.data-v-e43777a0 {
+  color: var(--up-main-color, var(--u-main-color, #303133));
+  background-color: var(--up-button-info-background-color, var(--up-card-bg-color, #fff));
+  border-color: var(--up-border-color, var(--u-border-color, #dadbde));
+  border-width: 1rpx;
+  border-style: solid;
+}
+.u-button--success.data-v-e43777a0 {
+  color: #fff;
+  background-color: var(--up-success, var(--u-success, #5ac725));
+  border-color: var(--up-success, var(--u-success, #5ac725));
+  border-width: 1rpx;
+  border-style: solid;
+}
+.u-button--primary.data-v-e43777a0 {
+  color: #fff;
+  background-color: var(--up-primary, var(--u-primary, #3c9cff));
+  border-color: var(--up-primary, var(--u-primary, #3c9cff));
+  border-width: 1rpx;
+  border-style: solid;
+}
+.u-button--error.data-v-e43777a0 {
+  color: #fff;
+  background-color: var(--up-error, var(--u-error, #f56c6c));
+  border-color: var(--up-error, var(--u-error, #f56c6c));
+  border-width: 1rpx;
+  border-style: solid;
+}
+.u-button--warning.data-v-e43777a0 {
+  color: #fff;
+  background-color: var(--up-warning, var(--u-warning, #f9ae3d));
+  border-color: var(--up-warning, var(--u-warning, #f9ae3d));
+  border-width: 1rpx;
+  border-style: solid;
+}
+.u-button--block.data-v-e43777a0 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.u-button--circle.data-v-e43777a0 {
+  border-top-right-radius: 100rpx;
+  border-top-left-radius: 100rpx;
+  border-bottom-left-radius: 100rpx;
+  border-bottom-right-radius: 100rpx;
+}
+.u-button--square.data-v-e43777a0 {
+  border-bottom-left-radius: 3rpx;
+  border-bottom-right-radius: 3rpx;
+  border-top-left-radius: 3rpx;
+  border-top-right-radius: 3rpx;
+}
+.u-button__icon.data-v-e43777a0 {
+  min-width: 1em;
+  line-height: inherit !important;
+  vertical-align: top;
+}
+.u-button--plain.data-v-e43777a0 {
+  background-color: var(--up-button-plain-background-color, var(--up-card-bg-color, #fff));
+}
+.u-button--hairline.data-v-e43777a0 {
+  border-width: 0.5rpx !important;
+}
+```
+
+### node-modules/uview-plus/components/u-loading-icon/u-loading-icon.wxss
+
+```css
+.u-loading-icon.data-v-882a8a56 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  color: #c8c9cc;
+}
+.u-loading-icon__text.data-v-882a8a56 {
+  margin-left: 4rpx;
+  color: var(--up-content-color, var(--u-content-color, #606266));
+  font-size: 14rpx;
+  line-height: 20rpx;
+}
+.u-loading-icon__spinner.data-v-882a8a56 {
+  width: 30rpx;
+  height: 30rpx;
+  position: relative;
+  box-sizing: border-box;
+  max-width: 100%;
+  max-height: 100%;
+  -webkit-animation: u-rotate-882a8a56 1s linear infinite;
+  animation: u-rotate-882a8a56 1s linear infinite;
+}
+.u-loading-icon__spinner--semicircle.data-v-882a8a56 {
+  border-width: 2rpx;
+  border-color: transparent;
+  border-top-right-radius: 100rpx;
+  border-top-left-radius: 100rpx;
+  border-bottom-left-radius: 100rpx;
+  border-bottom-right-radius: 100rpx;
+  border-style: solid;
+}
+.u-loading-icon__spinner--circle.data-v-882a8a56 {
+  border-top-right-radius: 100rpx;
+  border-top-left-radius: 100rpx;
+  border-bottom-left-radius: 100rpx;
+  border-bottom-right-radius: 100rpx;
+  border-width: 2rpx;
+  border-top-color: #e5e5e5;
+  border-right-color: #e5e5e5;
+  border-bottom-color: #e5e5e5;
+  border-left-color: #e5e5e5;
+  border-style: solid;
+}
+.u-loading-icon--vertical.data-v-882a8a56 {
+  flex-direction: column;
+}
+.data-v-882a8a56:host {
+  font-size: 0rpx;
+  line-height: 1;
+}
+.u-loading-icon__spinner--spinner.data-v-882a8a56 {
+  -webkit-animation-timing-function: steps(12);
+  animation-timing-function: steps(12);
+}
+.u-loading-icon__text.data-v-882a8a56:empty {
+  display: none;
+}
+.u-loading-icon--vertical .u-loading-icon__text.data-v-882a8a56 {
+  margin: 6rpx 0 0;
+  color: var(--up-content-color, var(--u-content-color, #606266));
+}
+.u-loading-icon__dot.data-v-882a8a56 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.u-loading-icon__dot.data-v-882a8a56::before {
+  display: block;
+  width: 2rpx;
+  height: 25%;
+  margin: 0 auto;
+  background-color: currentColor;
+  border-radius: 40%;
+  content: ' ';
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(1) {
+  -webkit-transform: rotate(30deg);
+  transform: rotate(30deg);
+  opacity: 1;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(2) {
+  -webkit-transform: rotate(60deg);
+  transform: rotate(60deg);
+  opacity: 0.9375;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(3) {
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  opacity: 0.875;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(4) {
+  -webkit-transform: rotate(120deg);
+  transform: rotate(120deg);
+  opacity: 0.8125;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(5) {
+  -webkit-transform: rotate(150deg);
+  transform: rotate(150deg);
+  opacity: 0.75;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(6) {
+  -webkit-transform: rotate(180deg);
+  transform: rotate(180deg);
+  opacity: 0.6875;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(7) {
+  -webkit-transform: rotate(210deg);
+  transform: rotate(210deg);
+  opacity: 0.625;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(8) {
+  -webkit-transform: rotate(240deg);
+  transform: rotate(240deg);
+  opacity: 0.5625;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(9) {
+  -webkit-transform: rotate(270deg);
+  transform: rotate(270deg);
+  opacity: 0.5;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(10) {
+  -webkit-transform: rotate(300deg);
+  transform: rotate(300deg);
+  opacity: 0.4375;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(11) {
+  -webkit-transform: rotate(330deg);
+  transform: rotate(330deg);
+  opacity: 0.375;
+}
+.u-loading-icon__dot.data-v-882a8a56:nth-of-type(12) {
+  -webkit-transform: rotate(360deg);
+  transform: rotate(360deg);
+  opacity: 0.3125;
+}
+@-webkit-keyframes u-rotate-882a8a56 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+@keyframes u-rotate-882a8a56 {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(1turn);
+    transform: rotate(1turn);
+  }
+}
+```
+
+### pages/index/index.wxss
 
 ```css
 :host,
@@ -6809,7 +6987,7 @@ wx-root-portal-content {
 }
 ```
 
-### peer.wxss
+### pages/index/peer.wxss
 
 ```css
 ::before,
@@ -8217,7 +8395,7 @@ text,
 }
 ```
 
-### typography.wxss
+### pages/issue/typography.wxss
 
 ```css
 ::before,
@@ -9375,321 +9553,160 @@ text,
 }
 ```
 
-### u-button.wxss
+### sub-independent/pages/index.wxss
 
 ```css
-/* tokens: u-button <= src/pages/index/index.vue */
-.u-button.data-v-e43777a0 {
-  width: 100%;
-  white-space: nowrap;
+::before,
+::after {
+  --tw-content: '';
 }
-.u-button__text.data-v-e43777a0 {
-  white-space: nowrap;
-  line-height: 1;
-}
-/* tokens: u-button <= src/pages/index/index.vue */
-.u-button.data-v-e43777a0::before {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  border: inherit;
-  border-radius: inherit;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  opacity: 0;
-  content: ' ';
-  background-color: #000;
-  border-color: #000;
-}
-.u-button--active.data-v-e43777a0::before {
-  opacity: 0.15;
-}
-.u-button__icon + .u-button__text.data-v-e43777a0:not(:empty),
-.u-button__loading-text.data-v-e43777a0 {
-  margin-left: 4rpx;
-}
-.u-button--plain.u-button--primary.data-v-e43777a0 {
-  color: var(--up-primary, var(--u-primary, #3c9cff));
-}
-.u-button--plain.u-button--info.data-v-e43777a0 {
-  color: var(--up-info, var(--u-info, #909399));
-}
-.u-button--plain.u-button--success.data-v-e43777a0 {
-  color: var(--up-success, var(--u-success, #5ac725));
-}
-.u-button--plain.u-button--error.data-v-e43777a0 {
-  color: var(--up-error, var(--u-error, #f56c6c));
-}
-.u-button--plain.u-button--warning.data-v-e43777a0 {
-  color: var(--up-warning, var(--u-warning, #f9ae3d));
-}
-/* tokens: u-button <= src/pages/index/index.vue */
-.u-button.data-v-e43777a0 {
-  height: 40rpx;
-  position: relative;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  flex-direction: row;
+view,
+text,
+::after,
+::before {
   box-sizing: border-box;
-}
-.u-button__text.data-v-e43777a0 {
-  font-size: 15rpx;
-}
-.u-button__loading-text.data-v-e43777a0 {
-  font-size: 15rpx;
-  margin-left: 4rpx;
-}
-.u-button--large.data-v-e43777a0 {
-  width: 100%;
-  height: 50rpx;
-  padding: 0 15rpx;
-}
-.u-button--normal.data-v-e43777a0 {
-  padding: 0 12rpx;
-  font-size: 14rpx;
-}
-.u-button--small.data-v-e43777a0 {
-  min-width: 60rpx;
-  height: 30rpx;
-  padding: 0rpx 8rpx;
-  font-size: 12rpx;
-}
-.u-button--mini.data-v-e43777a0 {
-  height: 22rpx;
-  font-size: 10rpx;
-  min-width: 50rpx;
-  padding: 0rpx 8rpx;
-}
-.u-button--disabled.data-v-e43777a0 {
-  opacity: 0.5;
-}
-.u-button--info.data-v-e43777a0 {
-  color: var(--up-main-color, var(--u-main-color, #303133));
-  background-color: var(--up-button-info-background-color, var(--up-card-bg-color, #fff));
-  border-color: var(--up-border-color, var(--u-border-color, #dadbde));
-  border-width: 1rpx;
+  border-width: 0;
   border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
 }
-.u-button--success.data-v-e43777a0 {
-  color: #fff;
-  background-color: var(--up-success, var(--u-success, #5ac725));
-  border-color: var(--up-success, var(--u-success, #5ac725));
-  border-width: 1rpx;
-  border-style: solid;
+/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v3';
+  content: var(--tw-content);
 }
-.u-button--primary.data-v-e43777a0 {
-  color: #fff;
-  background-color: var(--up-primary, var(--u-primary, #3c9cff));
-  border-color: var(--up-primary, var(--u-primary, #3c9cff));
-  border-width: 1rpx;
-  border-style: solid;
-}
-.u-button--error.data-v-e43777a0 {
-  color: #fff;
-  background-color: var(--up-error, var(--u-error, #f56c6c));
-  border-color: var(--up-error, var(--u-error, #f56c6c));
-  border-width: 1rpx;
-  border-style: solid;
-}
-.u-button--warning.data-v-e43777a0 {
-  color: #fff;
-  background-color: var(--up-warning, var(--u-warning, #f9ae3d));
-  border-color: var(--up-warning, var(--u-warning, #f9ae3d));
-  border-width: 1rpx;
-  border-style: solid;
-}
-.u-button--block.data-v-e43777a0 {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-.u-button--circle.data-v-e43777a0 {
-  border-top-right-radius: 100rpx;
-  border-top-left-radius: 100rpx;
-  border-bottom-left-radius: 100rpx;
-  border-bottom-right-radius: 100rpx;
-}
-.u-button--square.data-v-e43777a0 {
-  border-bottom-left-radius: 3rpx;
-  border-bottom-right-radius: 3rpx;
-  border-top-left-radius: 3rpx;
-  border-top-right-radius: 3rpx;
-}
-.u-button__icon.data-v-e43777a0 {
-  min-width: 1em;
-  line-height: inherit !important;
-  vertical-align: top;
-}
-.u-button--plain.data-v-e43777a0 {
-  background-color: var(--up-button-plain-background-color, var(--up-card-bg-color, #fff));
-}
-.u-button--hairline.data-v-e43777a0 {
-  border-width: 0.5rpx !important;
+/* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
+.bg-independent-subpackage-marker {
+  --tw-bg-opacity: 1;
+  background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
 }
 ```
 
-### u-loading-icon.wxss
+### sub-normal/pages/index.wxss
 
 ```css
-.u-loading-icon.data-v-882a8a56 {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  color: #c8c9cc;
+::before,
+::after {
+  --tw-content: '';
 }
-.u-loading-icon__text.data-v-882a8a56 {
-  margin-left: 4rpx;
-  color: var(--up-content-color, var(--u-content-color, #606266));
-  font-size: 14rpx;
-  line-height: 20rpx;
-}
-.u-loading-icon__spinner.data-v-882a8a56 {
-  width: 30rpx;
-  height: 30rpx;
-  position: relative;
+view,
+text,
+::after,
+::before {
   box-sizing: border-box;
-  max-width: 100%;
-  max-height: 100%;
-  -webkit-animation: u-rotate-882a8a56 1s linear infinite;
-  animation: u-rotate-882a8a56 1s linear infinite;
-}
-.u-loading-icon__spinner--semicircle.data-v-882a8a56 {
-  border-width: 2rpx;
-  border-color: transparent;
-  border-top-right-radius: 100rpx;
-  border-top-left-radius: 100rpx;
-  border-bottom-left-radius: 100rpx;
-  border-bottom-right-radius: 100rpx;
+  border-width: 0;
   border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
 }
-.u-loading-icon__spinner--circle.data-v-882a8a56 {
-  border-top-right-radius: 100rpx;
-  border-top-left-radius: 100rpx;
-  border-bottom-left-radius: 100rpx;
-  border-bottom-right-radius: 100rpx;
-  border-width: 2rpx;
-  border-top-color: #e5e5e5;
-  border-right-color: #e5e5e5;
-  border-bottom-color: #e5e5e5;
-  border-left-color: #e5e5e5;
-  border-style: solid;
+/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v3';
+  content: var(--tw-content);
 }
-.u-loading-icon--vertical.data-v-882a8a56 {
-  flex-direction: column;
-}
-.data-v-882a8a56:host {
-  font-size: 0rpx;
-  line-height: 1;
-}
-.u-loading-icon__spinner--spinner.data-v-882a8a56 {
-  -webkit-animation-timing-function: steps(12);
-  animation-timing-function: steps(12);
-}
-.u-loading-icon__text.data-v-882a8a56:empty {
-  display: none;
-}
-.u-loading-icon--vertical .u-loading-icon__text.data-v-882a8a56 {
-  margin: 6rpx 0 0;
-  color: var(--up-content-color, var(--u-content-color, #606266));
-}
-.u-loading-icon__dot.data-v-882a8a56 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-.u-loading-icon__dot.data-v-882a8a56::before {
-  display: block;
-  width: 2rpx;
-  height: 25%;
-  margin: 0 auto;
-  background-color: currentColor;
-  border-radius: 40%;
-  content: ' ';
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(1) {
-  -webkit-transform: rotate(30deg);
-  transform: rotate(30deg);
-  opacity: 1;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(2) {
-  -webkit-transform: rotate(60deg);
-  transform: rotate(60deg);
-  opacity: 0.9375;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(3) {
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
-  opacity: 0.875;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(4) {
-  -webkit-transform: rotate(120deg);
-  transform: rotate(120deg);
-  opacity: 0.8125;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(5) {
-  -webkit-transform: rotate(150deg);
-  transform: rotate(150deg);
-  opacity: 0.75;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(6) {
-  -webkit-transform: rotate(180deg);
-  transform: rotate(180deg);
-  opacity: 0.6875;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(7) {
-  -webkit-transform: rotate(210deg);
-  transform: rotate(210deg);
-  opacity: 0.625;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(8) {
-  -webkit-transform: rotate(240deg);
-  transform: rotate(240deg);
-  opacity: 0.5625;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(9) {
-  -webkit-transform: rotate(270deg);
-  transform: rotate(270deg);
-  opacity: 0.5;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(10) {
-  -webkit-transform: rotate(300deg);
-  transform: rotate(300deg);
-  opacity: 0.4375;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(11) {
-  -webkit-transform: rotate(330deg);
-  transform: rotate(330deg);
-  opacity: 0.375;
-}
-.u-loading-icon__dot.data-v-882a8a56:nth-of-type(12) {
-  -webkit-transform: rotate(360deg);
-  transform: rotate(360deg);
-  opacity: 0.3125;
-}
-@-webkit-keyframes u-rotate-882a8a56 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(1turn);
-    transform: rotate(1turn);
-  }
-}
-@keyframes u-rotate-882a8a56 {
-  0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(1turn);
-    transform: rotate(1turn);
-  }
+/* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
+.bg-normal-subpackage-marker {
+  --tw-bg-opacity: 1;
+  background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
 }
 ```
