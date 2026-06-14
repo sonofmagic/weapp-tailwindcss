@@ -11,7 +11,18 @@ import { projectFilter } from './shared'
 const fixturesRoot = path.resolve(__dirname, '../demo')
 const rawClasses = ['h-[458rpx]', 'w-[218rpx]', 'inset-x-[30%]'] as const
 const scriptOnlyClasses = ['mt-[461rpx]', 'text-[39rpx]', 'bg-[#13579b]'] as const
-const rawClassStyleExpectations: Record<typeof rawClasses[number] | typeof scriptOnlyClasses[number], RegExp[]> = {
+const habitClasses = [
+  'rounded-[17rpx]',
+  'border-[#2468ac]',
+  'px-[19rpx]',
+  'py-[23rpx]',
+  'opacity-[0.73]',
+  'shadow-[0_8rpx_16rpx_rgba(1,2,3,0.4)]',
+  'gap-[13rpx]',
+  'leading-[55rpx]',
+  'text-[length:41rpx]',
+] as const
+const rawClassStyleExpectations: Record<typeof rawClasses[number] | typeof scriptOnlyClasses[number] | typeof habitClasses[number], RegExp[]> = {
   'h-[458rpx]': [/height\s*:\s*458rpx/i],
   'w-[218rpx]': [/width\s*:\s*218rpx/i],
   'inset-x-[30%]': [
@@ -21,10 +32,34 @@ const rawClassStyleExpectations: Record<typeof rawClasses[number] | typeof scrip
   'mt-[461rpx]': [/margin-top\s*:\s*461rpx/i],
   'text-[39rpx]': [/font-size\s*:\s*39rpx/i],
   'bg-[#13579b]': [/background-color\s*:\s*(?:#13579b|rgba\(19,\s*87,\s*155\b)/i],
+  'rounded-[17rpx]': [/border-radius\s*:\s*17rpx/i],
+  'border-[#2468ac]': [/border-color\s*:\s*(?:#2468ac|rgba\(36,\s*104,\s*172\b)/i],
+  'px-[19rpx]': [
+    /padding-left\s*:\s*19rpx/i,
+    /padding-right\s*:\s*19rpx/i,
+  ],
+  'py-[23rpx]': [
+    /padding-top\s*:\s*23rpx/i,
+    /padding-bottom\s*:\s*23rpx/i,
+  ],
+  'opacity-[0.73]': [/opacity\s*:\s*(?:0\.73|\.73)/i],
+  'shadow-[0_8rpx_16rpx_rgba(1,2,3,0.4)]': [/--tw-shadow\s*:\s*0 8rpx 16rpx[^;]*rgba\(1,\s*2,\s*3,\s*(?:0\.4|\.4)\)/i],
+  'gap-[13rpx]': [/gap\s*:\s*13rpx/i],
+  'leading-[55rpx]': [/line-height\s*:\s*55rpx/i],
+  'text-[length:41rpx]': [/font-size\s*:\s*41rpx/i],
 }
 const markerClass = 'weapp-tw-dynamic-regression'
 const scriptOnlyMarkerClass = 'weapp-tw-js-regression'
+const habitMarkerClass = 'weapp-tw-habit-regression'
 const scriptOnlyClassValue = `${scriptOnlyMarkerClass} ${scriptOnlyClasses.join(' ')}`
+const habitBaseClassValue = `${habitMarkerClass} ${habitClasses[0]} ${habitClasses[1]}`
+const habitArrayClassValue = `${habitClasses[2]} ${habitClasses[3]}`
+const habitObjectClassValue = habitClasses[4]
+const habitTemplateClassValue = habitClasses[5]
+const habitConditionalClassValue = habitClasses[6]
+const habitObjectDisabledClassValue = habitClasses[7]
+const habitObjectEnabledClassValue = habitClasses[8]
+const habitClassExpression = `['${habitBaseClassValue}', '${habitArrayClassValue}', true && '${habitConditionalClassValue}', { '${habitObjectClassValue}': true, '${habitObjectDisabledClassValue}': false, '${habitObjectEnabledClassValue}': true }, true ? \`${habitTemplateClassValue}\` : ''].map(item => typeof item === 'string' ? item : Object.entries(item).filter(([, enabled]) => enabled).map(([key]) => key).join(' ')).filter(Boolean).join(' ')`
 const nativeElementRegressionVars = [
   '--weapp-tw-native-view-regression',
   '--weapp-tw-native-text-regression',
@@ -124,11 +159,14 @@ function createNativePatch(entry: ProjectEntry): ProjectPatch {
       },
       {
         file: pageFile,
-        transform: source => source.replace('</view>', `  <view class="{{scriptOnlyClassName}}">script-only regression</view>\n</view>`),
+        transform: source => source.replace('</view>', `  <view class="{{scriptOnlyClassName}}">script-only regression</view>\n  <view class="{{habitClassName}}">habit regression</view>\n</view>`),
       },
       {
         file: scriptFile,
-        transform: source => source.replace(/data:\s*\{/, `data: {\n    scriptOnlyClassName: '${scriptOnlyClassValue}',`),
+        transform: source => source.replace(
+          /data:\s*\{/,
+          `data: {\n    scriptOnlyClassName: '${scriptOnlyClassValue}',\n    habitClassName: ${habitClassExpression},`,
+        ),
       },
     ],
   }
@@ -153,15 +191,19 @@ function createMpxPatch(entry: ProjectEntry): ProjectPatch {
       },
       {
         file: pageFile,
+        transform: source => source.replace(pageMarker, `${pageMarker}\n    <view wx:class="{{habitClassName}}">habit regression</view>`),
+      },
+      {
+        file: pageFile,
         transform: (source) => {
           const withConst = source.replace(
             'createPage({',
-            `const scriptOnlyClassName = '${scriptOnlyClassValue}'\n\ncreatePage({`,
+            `const habitClassName = ${habitClassExpression}\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n\ncreatePage({`,
           )
           if (/data:\s*\{/.test(withConst)) {
-            return withConst.replace(/data:\s*\{/, 'data: {\n    scriptOnlyClassName,')
+            return withConst.replace(/data:\s*\{/, 'data: {\n    habitClassName,\n    scriptOnlyClassName,')
           }
-          return withConst.replace('createPage({', 'createPage({\n  data: {\n    scriptOnlyClassName,\n  },')
+          return withConst.replace('createPage({', 'createPage({\n  data: {\n    habitClassName,\n    scriptOnlyClassName,\n  },')
         },
       },
       {
@@ -184,6 +226,7 @@ function createTaroReactPatch(entry: ProjectEntry): ProjectPatch {
   )
   const dynamicElement = `<View className={true ? '${markerClass} h-[458rpx] w-[218rpx] inset-x-[30%]' : markerClass}>dynamic regression</View>`
   const scriptOnlyElement = `<View className={scriptOnlyClassName}>script-only regression</View>`
+  const habitElement = `<View className={habitClassName}>habit regression</View>`
   return {
     entry,
     targets: [
@@ -191,16 +234,16 @@ function createTaroReactPatch(entry: ProjectEntry): ProjectPatch {
         file: pageFile,
         transform: source => source.replace(
           /export default function Index\(\) \{\n|const Index = \(\) => \{\n/,
-          match => `${match}  const scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
+          match => `${match}  const habitClassName = ${habitClassExpression}\n  const scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
         ),
       },
       {
         file: pageFile,
         transform: (source) => {
           if (source.includes('return (\n    <>')) {
-            return source.replace('return (\n    <>', `return (\n    <>\n      ${scriptOnlyElement}\n      ${dynamicElement}`)
+            return source.replace('return (\n    <>', `return (\n    <>\n      ${habitElement}\n      ${scriptOnlyElement}\n      ${dynamicElement}`)
           }
-          return source.replace(/(<View(?:\s+className=['"][^'"]*['"])?\s*>)/, `$1\n      ${scriptOnlyElement}\n      ${dynamicElement}`)
+          return source.replace(/(<View(?:\s+className=['"][^'"]*['"])?\s*>)/, `$1\n      ${habitElement}\n      ${scriptOnlyElement}\n      ${dynamicElement}`)
         },
       },
       {
@@ -221,14 +264,14 @@ function createTaroVuePatch(entry: ProjectEntry): ProjectPatch {
         file: pageFile,
         transform: source => source.replace(
           /(<view(?:\s+class="[^"]*")?\s*>)/,
-          `$1\n    <view :class="scriptOnlyClassName">script-only regression</view>\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`,
+          `$1\n    <view :class="habitClassName">habit regression</view>\n    <view :class="scriptOnlyClassName">script-only regression</view>\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`,
         ),
       },
       {
         file: pageFile,
         transform: source => source.replace(
           /<script setup lang="ts">\n/,
-          `<script setup lang="ts">\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
+          `<script setup lang="ts">\nconst habitClassName = ${habitClassExpression}\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
         ),
       },
       {
@@ -246,8 +289,8 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
     ? '<view class="flex flex-col">'
     : '<view class="content"'
   const rootReplacement = entry.name.includes('-v4')
-    ? `<view class="flex flex-col">\n    <view :class="scriptOnlyClassName">script-only regression</view>\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`
-    : `<view :class="scriptOnlyClassName">script-only regression</view>\n  <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>\n  <view class="content"`
+    ? `<view class="flex flex-col">\n    <view :class="habitClassName">habit regression</view>\n    <view :class="scriptOnlyClassName">script-only regression</view>\n    <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>`
+    : `<view :class="habitClassName">habit regression</view>\n  <view :class="scriptOnlyClassName">script-only regression</view>\n  <view class="${markerClass}" :class="true ? 'h-[458rpx] w-[218rpx] inset-x-[30%]' : ''">dynamic regression</view>\n  <view class="content"`
   return {
     entry,
     targets: [
@@ -263,7 +306,7 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
         file: pageFile,
         transform: source => source.replace(
           /<script setup lang="ts">\n/,
-          `<script setup lang="ts">\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
+          `<script setup lang="ts">\nconst habitClassName = ${habitClassExpression}\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
         ),
       },
     ],
@@ -367,6 +410,18 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
     expect(styles, `${entry.name} should emit CSS selector for script-only ${raw}`).toContain(escaped)
     for (const expectation of rawClassStyleExpectations[raw]) {
       expect(styles, `${entry.name} should emit generated CSS declaration for script-only ${raw}`).toMatch(expectation)
+    }
+  }
+
+  expect(joined, `${entry.name} should include habit regression marker`).toContain(habitMarkerClass)
+  for (const raw of habitClasses) {
+    const escaped = replaceWxml(raw)
+    expect(joined, `${entry.name} should escape habit ${raw}`).toContain(escaped)
+    expect(scripts, `${entry.name} should transform habit ${raw} in JS output`).toContain(escaped)
+    expect(joinedWithoutTokenSourceComments, `${entry.name} should not keep raw habit ${raw}`).not.toContain(raw)
+    expect(styles, `${entry.name} should emit CSS selector for habit ${raw}`).toContain(escaped)
+    for (const expectation of rawClassStyleExpectations[raw]) {
+      expect(styles, `${entry.name} should emit generated CSS declaration for habit ${raw}`).toMatch(expectation)
     }
   }
 }

@@ -268,6 +268,9 @@ describe('e2e matrix', () => {
     expect(source).toContain('scriptOnlyClasses')
     expect(source).toContain('scriptOnlyClassName')
     expect(source).toContain('should transform script-only')
+    expect(source).toContain('habitClasses')
+    expect(source).toContain('habitClassName')
+    expect(source).toContain('should transform habit')
   })
 
   it('keeps IDE visual HMR in the demo workflow and full IDE command', () => {
