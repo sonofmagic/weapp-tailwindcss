@@ -38,6 +38,7 @@ const requiredCoverageSamples = [
   'rounded-full',
   'w-[123px]',
   'h-[48rpx]',
+  'text-[length:22rpx]',
   'w-[var(--panel-width)]',
   'text-[color:var(--brand-color)]',
   'bg-[color:var(--surface-color)]',
@@ -106,7 +107,7 @@ describe('generator tailwind parity', () => {
       target: 'web',
     })
     const weapp = await engine.generate({
-      candidates: tailwindParityCandidates,
+      candidates: [...tailwindParityCandidates, 'text-[22rpx]'],
       styleOptions: {
         cssPreflight: {
           'box-sizing': 'border-box',
@@ -125,6 +126,9 @@ describe('generator tailwind parity', () => {
     expect(weapp.css).toContain('view,text,::before,::after')
     expect(weapp.css).toContain('.w-_b123px_B')
     expect(weapp.css).toContain('.h-_b48rpx_B')
+    expect(weapp.css).toContain('.text-_b22rpx_B')
+    expect(weapp.css).toContain('font-size: 22rpx')
+    expect(weapp.css).not.toContain('color: 22rpx')
     expect(weapp.css).toContain('border-radius: 9999px')
     expect(weapp.css).toContain('view,text,::before,::after {\n  box-sizing: border-box;')
     expect(weapp.css).not.toContain('button {\n  background-color: transparent;')
