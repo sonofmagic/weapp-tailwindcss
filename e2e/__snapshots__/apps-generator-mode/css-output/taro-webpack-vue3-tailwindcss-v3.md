@@ -6,16 +6,16 @@ Generator CSS files: app.wxss, pages/index/index.wxss, sub-independent/pages/ind
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 26365 | 57 | false | false | false | true | true | false | true |
+| 26369 | 57 | false | false | false | true | true | false | true |
 
 ## Generator CSS Summary
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 8545 | 52 | false | false | false | true | true | false | true |
+| `app.wxss` | 8547 | 52 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 728 | 5 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 8547 | 52 | false | false | false | true | true | false | true |
-| `sub-normal/pages/index.wxss` | 8545 | 52 | false | false | false | true | true | false | true |
+| `sub-normal/pages/index.wxss` | 8547 | 52 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -236,7 +236,8 @@ text,
   .system-dark_cbg-slate-900 {
     --tw-bg-opacity: 1;
     background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
-  } /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark_ctext-slate-100 {
     --tw-text-opacity: 1;
     color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
@@ -814,7 +815,8 @@ text,
   .system-dark_cbg-slate-900 {
     --tw-bg-opacity: 1;
     background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
-  } /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark_ctext-slate-100 {
     --tw-text-opacity: 1;
     color: rgba(241, 245, 249, var(--tw-text-opacity, 1));

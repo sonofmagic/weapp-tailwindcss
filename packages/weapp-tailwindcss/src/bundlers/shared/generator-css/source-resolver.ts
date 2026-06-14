@@ -921,10 +921,13 @@ export async function resolveGeneratorSource(
   const candidateMatchedCssSource = normalizedSourceOptions && !matchedCssEntrySource
     ? await resolveCandidateMatchedTailwindV4CssSource(rawSource, cssHandlerOptions, normalizedSourceOptions, selectionOptions)
     : undefined
+  const singleConfiguredCssSource = normalizedSourceOptions?.cssSources?.length === 1
+    ? await resolveSingleTailwindV4CssSource(normalizedSourceOptions.cssSources[0]!, normalizedSourceOptions, { matched: true })
+    : undefined
   const configuredCssSource = normalizedSourceOptions
     && hasConfiguredTailwindV4CssSource(normalizedSourceOptions)
     && hasTailwindGeneratedCssMarkers(rawSource)
-    ? matchedCssSource ?? candidateMatchedCssSource ?? await resolveTailwindV4Source(normalizedSourceOptions)
+    ? matchedCssSource ?? candidateMatchedCssSource ?? singleConfiguredCssSource ?? await resolveTailwindV4Source(normalizedSourceOptions)
     : undefined
   if (configuredCssSource) {
     return generatorOptions?.config
@@ -939,7 +942,7 @@ export async function resolveGeneratorSource(
     && normalizedSourceOptions.cssEntries?.length === 1
     ? await resolveTailwindV4CssEntrySource(normalizedSourceOptions.cssEntries[0]!, normalizedSourceOptions)
     : undefined
-  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource ?? mainCssEntrySource
+  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource ?? mainCssEntrySource ?? singleConfiguredCssSource
   if (preferredCssEntrySource) {
     return generatorOptions?.config
       ? {

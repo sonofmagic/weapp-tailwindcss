@@ -24,6 +24,7 @@ export interface SourceCandidateCollector {
   syncInline: (inlineCandidates: TailwindInlineSourceCandidates | undefined) => void
   remove: (id: string) => void
   source: (id: string) => string | undefined
+  sources: () => IterableIterator<[string, string]>
   values: () => Set<string>
   valuesForEntries: (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>
   sourcesForEntries: (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>
@@ -177,6 +178,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   async function merge(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    sourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
     const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
@@ -291,6 +293,10 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   function source(id: string) {
     return sourceById.get(cleanUrl(id))
+  }
+
+  function sources() {
+    return sourceById.entries()
   }
 
   function values() {
@@ -436,6 +442,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     syncInline,
     remove,
     source,
+    sources,
     values,
     valuesForEntries,
     sourcesForEntries,

@@ -32,6 +32,8 @@ export interface GenerateBundleContext {
   getViteProcessedCssAssetResults?: () => Iterable<[string, string | { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }]>
   getViteProcessedCssAssetResult?: (file: string) => { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined } | undefined
   getSourceCandidates?: () => Set<string>
+  getSourceCandidateSource?: (file: string) => string | undefined
+  getSourceCandidateSources?: () => Iterable<[string, string]>
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined
   getSourceCandidateSourcesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>

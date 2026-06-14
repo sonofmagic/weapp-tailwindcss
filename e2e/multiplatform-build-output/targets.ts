@@ -146,15 +146,18 @@ function createUniAppHBuilderXTargets(project: string): MultiplatformTarget[] {
 
 function createTaroTargets(project: string, platforms: string[]): MultiplatformTarget[] {
   return platforms.map((platform) => {
+    const isTaroViteMiniCi = project.startsWith('taro-vite-') && (platform === 'alipay' || platform === 'tt')
     const isCiScript = project === 'taro-webpack-react-tailwindcss-v4' && platform === 'alipay'
     return target({
       framework: 'taro',
       projectDir: `demo/${project}`,
       platform,
-      coverage: isCiScript ? 'ci-script' : 'local',
-      reason: isCiScript
-        ? '通过 pnpm e2e:multiplatform-build:taro-alipay 做专项构建与只读断言；本地 Taro runner 可能因系统依赖挂起。'
-        : '当前 Taro 目标在本仓 demo 中存在 runner 兼容、平台 SDK 或产物残留问题，登记为全平台 local 候选。',
+      coverage: isTaroViteMiniCi ? 'default-ci' : isCiScript ? 'ci-script' : 'local',
+      reason: isTaroViteMiniCi
+        ? 'Taro Vite alipay/tt 作为非微信小程序核心产物回归，覆盖 .acss/.ttss 与 Vite bundle asset 关系。'
+        : isCiScript
+          ? '通过 pnpm e2e:multiplatform-build:taro-alipay 做专项构建与只读断言；本地 Taro runner 可能因系统依赖挂起。'
+          : '当前 Taro 目标在本仓 demo 中存在 runner 兼容、平台 SDK 或产物残留问题，登记为全平台 local 候选。',
     })
   })
 }

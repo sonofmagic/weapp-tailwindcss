@@ -63,6 +63,32 @@ describe('bundlers/shared css source trace', () => {
     expect(traced).toContain('.container-user { width: 100%; }')
   })
 
+  it('keeps traced comments on their own line inside nested rules', () => {
+    const opts = createOptions({ cssSourceTrace: true })
+    const tokenSources = createCssTokenSourceMap(new Map([
+      ['system-dark:bg-slate-900', new Set(['/repo/demo/src/pages/index.tsx'])],
+      ['system-dark:text-slate-100', new Set(['/repo/demo/src/pages/index.tsx'])],
+    ]), opts)
+
+    const traced = annotateCssSourceTrace([
+      '@media (prefers-color-scheme: dark) {',
+      '  .system-dark_cbg-slate-900 {',
+      '    background-color: #0f172a;',
+      '  }',
+      '  .system-dark_ctext-slate-100 {',
+      '    color: #f1f5f9;',
+      '  }',
+      '}',
+    ].join('\n'), {
+      opts,
+      tokenSources,
+    })
+
+    expect(traced).toContain('}\n  /* tokens: system-dark:text-slate-100 <= src/pages/index.tsx */\n')
+    expect(traced).toContain('.system-dark_ctext-slate-100')
+    expect(traced).not.toContain('} /* tokens:')
+  })
+
   it('uses token source details in cache signatures only when enabled', () => {
     const disabled = createOptions()
     const enabled = createOptions({ cssSourceTrace: true })

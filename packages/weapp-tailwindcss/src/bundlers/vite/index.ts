@@ -11,7 +11,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { getPostcssPluginName, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
 import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
 import { LRUCache } from 'lru-cache'
-import { hasTailwindApplyDirective, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -207,7 +207,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (
       tailwindcssMajorVersion < 4
       || !shouldOwnTailwindGeneration
-      || hasInitialTailwindCssRoots
     ) {
       return
     }
@@ -744,9 +743,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   ) => {
     const key = normalizeVitePersistentCacheKey(file)
     const previous = viteProcessedCssAssetResults.get(key)
+    const injectIntoMain = previous?.injectIntoMain === true
+      ? true
+      : options.injectIntoMain ?? previous?.injectIntoMain
     touchMapEntry(viteProcessedCssAssetResults, key, {
       css,
-      injectIntoMain: options.injectIntoMain ?? previous?.injectIntoMain,
+      injectIntoMain,
       outputFile: options.outputFile ?? previous?.outputFile,
     })
   }
@@ -961,7 +963,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
-    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
     const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
@@ -1002,6 +1004,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     viteGeneratedCssByFile.set(file, tracedCss)
     const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
+      || (
+        hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback })
+        && !normalizeOutputPathKey(outputFile).includes('/')
+      )
     // 这里保留 undefined，让主样式入口走注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回主样式产物。
     recordViteProcessedCssAssetResult(file, tracedCss, {
       injectIntoMain: shouldInjectGeneratedCssIntoMain,
@@ -1063,6 +1069,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getViteProcessedCssAssetResults,
     getViteProcessedCssAssetResult,
     getSourceCandidates,
+    getSourceCandidateSource: file => sourceCandidateCollector.source(file),
+    getSourceCandidateSources: () => sourceCandidateCollector.sources(),
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,

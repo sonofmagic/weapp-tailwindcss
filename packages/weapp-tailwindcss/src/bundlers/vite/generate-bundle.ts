@@ -38,15 +38,15 @@ import { createEmptyMetrics, formatCacheHitRate, formatMs, measureElapsed } from
 import { logBundleProcessPlan } from './generate-bundle/process-plan'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRememberedCssSources } from './generate-bundle/remembered-css'
 import { createReplayCssAsset, registerGeneratorDependencies } from './generate-bundle/rollup-assets'
-import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
+import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
 import { createCandidateSignature, createJsHashSalt, createLinkedImpactSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { collectMiniProgramSubpackageRoots, collectMiniProgramSubpackageSourceEntries, isSubpackageOutputFile } from './generate-bundle/subpackages'
 import { shouldSkipViteJsTransform } from './js-precheck'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
-import { resolveTailwindV4EntriesFromCssCached } from './source-scan'
+import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCssCached } from './source-scan'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
-import { resolveWeappViteSourceRoot } from './weapp-vite-config'
+import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 export { resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
@@ -63,6 +63,7 @@ function resolveViteCssTaskConcurrency(useIncrementalMode: boolean) {
 }
 
 const MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE = /\.(?:wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan)$/i
+const JS_STYLE_IMPORT_RE = /\b(?:import|require)\s*(?:\(\s*)?["']([^"']+\.(?:css|less|sass|scss|styl|stylus|pcss|postcss))(?:[?#][^"']*)?["']/g
 
 function addSiblingCssFile(files: Set<string>, file: string, extensionByStem: Map<string, string>, fallbackExtension: string) {
   const cleanFile = file.replace(/[?#].*$/, '')
@@ -96,6 +97,25 @@ function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot, extensionByStem:
   }
   for (const file of snapshot.runtimeAffectingChangedByType.js) {
     addSiblingCssFile(files, file, extensionByStem, fallbackExtension)
+  }
+  return files
+}
+
+function collectJsImportedCssFiles(snapshot: BundleSnapshot) {
+  const files = new Set<string>()
+  for (const entry of snapshot.entries) {
+    if (entry.type !== 'js' || entry.output.type !== 'chunk') {
+      continue
+    }
+    JS_STYLE_IMPORT_RE.lastIndex = 0
+    let match = JS_STYLE_IMPORT_RE.exec(entry.source)
+    while (match !== null) {
+      const request = match[1]
+      if (request?.startsWith('.')) {
+        files.add(normalizeOutputPathKey(path.posix.join(path.posix.dirname(entry.file), request)))
+      }
+      match = JS_STYLE_IMPORT_RE.exec(entry.source)
+    }
   }
   return files
 }
@@ -177,6 +197,20 @@ function summarizeStringMapCache(map: Map<string, string>) {
   }
 }
 
+export function normalizeBundleFileNameKeysForTest(bundle: Record<string, OutputAsset | OutputChunk>) {
+  for (const [file, output] of Object.entries(bundle)) {
+    if (!output.fileName || output.fileName === file) {
+      continue
+    }
+    const existing = bundle[output.fileName]
+    if (existing != null && existing !== output) {
+      continue
+    }
+    bundle[output.fileName] = output
+    delete bundle[file]
+  }
+}
+
 function resolveViteMemoryDebugStats(context: {
   activeProcessCacheKeys: Set<string>
   activeProcessHashKeys: Set<string | number>
@@ -233,15 +267,15 @@ async function createScopedGeneratorCandidateSignature(
   sourceFile: string,
   fallbackSignature: string,
   getSourceCandidatesForEntries: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined,
-  options: { includeFallbackSignature?: boolean | undefined } = {},
+  options: { includeFallbackSignature?: boolean | undefined, majorVersion?: number | undefined } = {},
 ) {
-  if (!getSourceCandidatesForEntries || !rawSource.includes('@source')) {
+  if (!getSourceCandidatesForEntries || (!rawSource.includes('@source') && !rawSource.includes('@config'))) {
     return fallbackSignature
   }
-  const resolved = await resolveTailwindV4EntriesFromCssCached(
-    rawSource,
-    path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, ''))),
-  )
+  const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
+  const resolved = options.majorVersion === 3
+    ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
+    : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
   if (resolved?.entries === undefined) {
     return fallbackSignature
   }
@@ -262,7 +296,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => currentOutDir,
-    getExtraOptions: () => resolveUniAppXNativeCssHandlerOptions(context.opts),
+    getExtraOptions: file => ({
+      ...resolveUniAppXNativeCssHandlerOptions(context.opts),
+      ...(currentSubpackageRoots && isSubpackageOutputFile(file, currentSubpackageRoots)
+        ? { isMainChunk: false }
+        : {}),
+    }),
   })
   return async function generateBundle(this: GenerateBundleThis, _opt: unknown, bundle: Record<string, OutputAsset | OutputChunk>) {
     const addWatchFile = (id: string) => this.addWatchFile?.(id)
@@ -280,6 +319,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getViteProcessedCssAssetResults,
       getViteProcessedCssAssetResult,
       getSourceCandidates,
+      getSourceCandidateSource,
+      getSourceCandidateSources,
       getSourceCandidatesForEntries,
       getSourceCandidateSourcesForEntries,
       waitForSourceCandidateSyncs,
@@ -323,7 +364,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
-    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig)
+    const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
+      ?? resolveSourceRootFromBundleGraph(resolvedConfig, bundle)
     const outDir = resolvedConfig?.build?.outDir
       ? path.resolve(rootDir, resolvedConfig.build.outDir)
       : rootDir
@@ -364,16 +406,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const emitOrReplayCssAsset = (fileName: string, source: string) => {
       const replayAsset = createReplayCssAsset(fileName, source)
-      if (typeof this.emitFile === 'function') {
-        this.emitFile({
-          type: 'asset',
-          fileName,
-          source,
-        })
-      }
-      else {
-        bundle[fileName] = replayAsset
-      }
+      bundle[fileName] = replayAsset
       return replayAsset
     }
 
@@ -412,6 +445,30 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           (opts.tailwindcssPatcherOptions as { projectRoot?: string | undefined } | undefined)?.projectRoot,
         ])
       : []
+    const resolveSubpackageOutputSourceEntries = (outputFile: string): TailwindSourceEntry[] | undefined => {
+      if (!currentSubpackageRoots) {
+        return undefined
+      }
+      const matchedRoots = [...currentSubpackageRoots].filter(root => isSubpackageOutputFile(outputFile, new Set([root])))
+      if (matchedRoots.length !== 1) {
+        return undefined
+      }
+      const root = matchedRoots[0]
+      if (!root) {
+        return undefined
+      }
+      return sourceRoot
+        ? [{
+            base: sourceRoot,
+            negated: false,
+            pattern: `${root}/**/*`,
+          }]
+        : [{
+            base: rootDir,
+            negated: false,
+            pattern: `**/${root}/**/*`,
+          }]
+    }
     const shouldExcludeSubpackageSourceCandidates = (outputFile: string, cssHandlerOptions: { isMainChunk?: boolean | undefined }) =>
       cssHandlerOptions.isMainChunk === true
       && subpackageSourceExcludeEntries.length > 0
@@ -422,6 +479,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     ) => {
       if (!getSourceCandidatesForEntries) {
         return undefined
+      }
+      const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
+      if (subpackageEntries) {
+        return (_entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
+          getSourceCandidatesForEntries(subpackageEntries, options)
       }
       if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
         return getSourceCandidatesForEntries
@@ -441,6 +503,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     ) => {
       if (!getSourceCandidateSourcesForEntries) {
         return undefined
+      }
+      const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
+      if (subpackageEntries) {
+        return (_entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
+          getSourceCandidateSourcesForEntries(subpackageEntries, options)
       }
       if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
         return getSourceCandidateSourcesForEntries
@@ -479,11 +546,25 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     await waitForSourceCandidateSyncs?.()
     recordTimingDetail('sourceCandidates.wait', sourceCandidateWaitStart)
     const sourceCandidates = getSourceCandidates?.() ?? new Set<string>()
-    const createScopedGeneratorRuntime = (
+    const createScopedGeneratorRuntime = async (
       outputFile: string,
       cssHandlerOptions: { isMainChunk?: boolean | undefined },
       runtime: Set<string>,
+      rawSource?: string | undefined,
+      sourceFile?: string | undefined,
     ) => {
+      if (getSourceCandidatesForEntries && rawSource && sourceFile) {
+        const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
+        const resolved = runtimeState.twPatcher.majorVersion === 3
+          ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
+          : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
+        if (resolved?.entries !== undefined) {
+          const scopedRuntime = getSourceCandidatesForEntries(resolved.entries)
+          if (scopedRuntime.size > 0) {
+            return scopedRuntime
+          }
+        }
+      }
       if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
         return runtime
       }
@@ -583,11 +664,37 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
     const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
     const cssExtensionByStem = collectCssExtensionByStem(bundleFiles)
-    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem, defaultStyleOutputExtension)
+    const jsImportedCssFiles = collectJsImportedCssFiles(snapshot)
+    const runtimeLinkedCssFiles = new Set([
+      ...collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem, defaultStyleOutputExtension),
+      ...jsImportedCssFiles,
+    ])
     for (const file of runtimeLinkedCssFiles) {
       if (snapshot.sourceHashByFile.has(file)) {
         processFiles.css.add(file)
+        continue
       }
+      const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension)
+      const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
+        outputFile,
+        snapshot,
+        outDir,
+        sourceRoot,
+        getSourceCandidateSource,
+        jsImportedCssFiles.has(file) ? getSourceCandidateSources : undefined,
+        debug,
+      )
+      const rawSource = inferredSourceStyle?.rawSource
+        ?? getSourceCandidateSource?.(path.resolve(outDir, file))
+        ?? getSourceCandidateSource?.(file)
+      if (rawSource === undefined || !hasTailwindGenerationSource(rawSource)) {
+        continue
+      }
+      rememberCssSource?.({
+        outputFile,
+        rawSource,
+        sourceFile: inferredSourceStyle?.sourceFile ?? path.resolve(outDir, file),
+      })
     }
     recordGeneratorCandidates?.(generatorRuntime)
     const dynamicRetryCandidates = new Set([
@@ -721,15 +828,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
-          delete bundle[file]
+          originalSource.source = ''
           debug('css skip raw source style asset: %s -> %s', file, outputFile)
           continue
         }
         const applyCssResult = (source: string) => {
           if (outputFile !== file) {
-            delete bundle[file]
+            originalSource.source = ''
             emitOrReplayCssAsset(outputFile, source)
-            originalSource.fileName = outputFile
+            originalSource.source = ''
+            return
           }
           originalSource.source = source
         }
@@ -818,7 +926,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
           : undefined
         const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
-        const scopedGeneratorRuntime = createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime)
+        const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
         const annotateCss = (css: string) => annotateCssSourceTrace(css, {
           opts,
           tokenSources: sourceTraceTokenSources,
@@ -906,6 +1014,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               scopedSourceCandidateGetter,
               {
                 includeFallbackSignature: cssHandlerOptions.isMainChunk,
+                majorVersion: runtimeState.twPatcher.majorVersion,
               },
             )
           : trackedGeneratorCandidateSignature
@@ -1201,7 +1310,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
     }
 
-    if (useIncrementalMode || isNativeAppStyleTarget) {
+    if (shouldProcessTailwindGeneration || useIncrementalMode || isNativeAppStyleTarget) {
       const rememberedReplayGroups = collectRememberedCssReplayGroups(
         getRememberedCssSources?.(),
         opts,
@@ -1240,7 +1349,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           opts,
           tokenSources: sourceTraceTokenSources,
         })
-        const scopedGeneratorRuntime = createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime)
+        const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, rawSource, sourceFile)
         const cssRuntimeSignature = createCssRuntimeSignature(
           createCandidateSignature(scopedGeneratorRuntime),
           await createScopedGeneratorCandidateSignature(
@@ -1250,6 +1359,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             scopedSourceCandidateGetter,
             {
               includeFallbackSignature: cssHandlerOptions.isMainChunk,
+              majorVersion: runtimeState.twPatcher.majorVersion,
             },
           ),
         )
@@ -1262,6 +1372,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const allRememberedSignaturesFresh = rememberedKeys.length > 0
           && rememberedKeys.every(key => getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature)
         if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
+          continue
+        }
+        const shouldEmitRememberedReplayCssAsset = isNativeAppStyleTarget
+        const shouldRecordRememberedReplayCss = useIncrementalMode || isNativeAppStyleTarget
+        if (!shouldRecordRememberedReplayCss) {
           continue
         }
         cssTaskFactories.push(() => timeTask('css.replay', async () => {
@@ -1296,8 +1411,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             })
             debug('css replay generated result: %s bytes=%d', outputFile, css.length)
           }
-          const replayAsset = emitOrReplayCssAsset(outputFile, css)
-          markCssAssetProcessed?.(replayAsset, outputFile)
+          if (shouldEmitRememberedReplayCssAsset) {
+            const replayAsset = emitOrReplayCssAsset(outputFile, css)
+            markCssAssetProcessed?.(replayAsset, outputFile)
+          }
           metrics.css.elapsed += measureElapsed(start)
           metrics.css.transformed++
           onUpdate(outputFile, rawSource, css)
@@ -1388,6 +1505,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         getViteProcessedCssAssetResults,
         markCssAssetProcessed,
         recordCssAssetResult,
+        shouldRemoveInjectedSourceAsset: (_targetFile, record) => {
+          if (typeof record.outputFile !== 'string') {
+            return false
+          }
+          const recordFileKey = normalizeOutputPathKey(record.file)
+          const outputFileKey = normalizeOutputPathKey(record.outputFile)
+          return recordFileKey !== outputFileKey
+        },
         debug,
         onUpdate,
       })
@@ -1401,6 +1526,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       }
       syncViteProcessedCssIntoMainCssAssets()
     }
+    normalizeBundleFileNameKeysForTest(bundle)
 
     const stateUpdateStart = performance.now()
     updateBundleBuildState(

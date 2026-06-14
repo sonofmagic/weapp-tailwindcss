@@ -22,6 +22,7 @@ import { addSourceScanDependencies, addSourceScanDependency } from './source-sca
 
 export {
   discoverTailwindV4CssEntries,
+  resolveTailwindConfigEntriesFromCssCached,
   resolveTailwindV4EntriesFromCss,
   resolveTailwindV4EntriesFromCssCached,
   resolveViteTailwindV4CssDependencies,

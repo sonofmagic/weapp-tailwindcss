@@ -317,7 +317,7 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
   return [
     ...normalizedEntrySnapshots,
     ...extraSnapshots.flat().sort(compareCssSnapshotEntry),
-  ]
+  ].filter(snapshot => snapshot.content.trim().length > 0)
 }
 
 function normalizeOutputCssFileName(fileName: string) {
@@ -420,6 +420,18 @@ function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generato
   expect(independent?.content, 'independent subpackage css should keep its own candidates').toMatch(/independent[-_]subpackage/i)
   expect(independent?.content, 'independent subpackage css should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
   expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('text-red-500')
+}
+
+function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (!project.cssFile.includes('sub-normal') && !generatorResult.cssFiles.some(file => file.includes('sub-normal'))) {
+    return
+  }
+  const css = generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots.map(snapshot => snapshot.content).join('\n')
+    : generatorResult.css
+  for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
+    expect(css, `${project.name} generated css outputs should include ${pattern} marker`).toMatch(pattern)
+  }
 }
 
 function normalizeError(error: unknown) {
@@ -656,9 +668,7 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
       if (generatorResult) {
         expectWeappViteTailwindV3CssIsolation(project, generatorResult)
-        for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
-          expect(generatorResult.css, `${project.name} should include ${pattern} marker`).toMatch(pattern)
-        }
+        expectSubpackageMarkersInGeneratedCss(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }
     }

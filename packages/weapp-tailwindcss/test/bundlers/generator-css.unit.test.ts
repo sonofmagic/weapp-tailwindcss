@@ -71,6 +71,117 @@ describe('bundlers/shared generator css', () => {
     vi.resetModules()
   })
 
+  it('unwraps Tailwind v4 user layer blocks for mini-program generator user css', async () => {
+    const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+
+    const css = await transformGeneratorUserCss([
+      '@layer components {',
+      '  .layer-card-v4 {',
+      '    display: flex;',
+      '    color: var(--color-midnight);',
+      '  }',
+      '}',
+    ].join('\n'), {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      importFallback: true,
+    })
+
+    expect(css).not.toContain('@layer')
+    expect(css).toContain('.layer-card-v4')
+    expect(css).toContain('display: flex')
+    expect(css).toContain('color: var(--color-midnight)')
+  })
+
+  it('keeps matched Tailwind v4 css source user layers when generated css markers exist', async () => {
+    const rawSource = [
+      '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+      '@layer theme {',
+      '  :host,page,.tw-root,wx-root-portal-content { --color-midnight: #121063; }',
+      '}',
+      '.flex{display:flex}',
+      '@layer components {',
+      '  .layer-card-v4 {',
+      '    display: flex;',
+      '    color: var(--color-midnight);',
+      '  }',
+      '}',
+    ].join('\n')
+
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: [
+            '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+            ':host,page,.tw-root,wx-root-portal-content{--color-midnight:#121063}',
+            '.flex{display:flex}',
+          ].join('\n'),
+          rawCss: rawSource,
+          target: 'weapp',
+          classSet: new Set(['flex']),
+          dependencies: [],
+          sources: [
+            {
+              __weappTailwindcssMeta: {
+                matchedCssSourceFile: true,
+              },
+            },
+          ],
+          root: null,
+        })),
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        cssPreflight: 'view',
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['flex']),
+      rawSource,
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    const css = result?.css ?? ''
+    expect(css).not.toContain('@layer')
+    expect(css).toContain('.layer-card-v4')
+    expect(css).toMatch(/display:\s*flex/)
+    expect(css).toMatch(/color:\s*var\(--color-midnight\)/)
+  })
+
   it('generates mini-program css and skips legacy style handler for matching Tailwind v4 output', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
@@ -7762,6 +7873,89 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('@config')
     expect(css).not.toContain('@source')
     expect(css).not.toMatch(/^\s*\}\s*$/m)
+  })
+
+  it('injects explicit vite-processed css into a css asset even when main matcher does not name it', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'bundle.acss': {
+        type: 'asset',
+        fileName: 'bundle.acss',
+        source: '.existing{display:block}',
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.acss'),
+        mainCssChunkMatcher: () => false,
+        appType: 'uni-app-vite',
+      } as any,
+      getViteProcessedCssAssetResults: () => [[
+        '/project/src/main.css',
+        {
+          css: '.layer-card-v4{display:flex;color:var(--color-midnight)}',
+          injectIntoMain: true,
+          outputFile: 'main.acss',
+        },
+      ]],
+    })
+
+    const css = bundle['bundle.acss'].source
+    expect(injected).toBe(1)
+    expect(css).toContain('.existing{display:block}')
+    expect(css).toContain('.layer-card-v4')
+    expect(css).toContain('color:var(--color-midnight)')
+  })
+
+  it('keeps root vite css replay enabled when a later same-output record disables self injection', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const records = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
+    const record = (file: string, css: string, options: { injectIntoMain?: boolean | undefined, outputFile?: string | undefined }) => {
+      const previous = records.get(file)
+      records.set(file, {
+        css,
+        injectIntoMain: previous?.injectIntoMain === true
+          ? true
+          : options.injectIntoMain ?? previous?.injectIntoMain,
+        outputFile: options.outputFile ?? previous?.outputFile,
+      })
+    }
+    record('/project/src/main.css', '.layer-card-v4{display:flex}', {
+      injectIntoMain: true,
+      outputFile: 'main.acss',
+    })
+    record('main.acss', '.layer-card-v4{display:flex}', {
+      injectIntoMain: false,
+      outputFile: 'main.acss',
+    })
+
+    const bundle = {
+      'app.acss': {
+        type: 'asset',
+        fileName: 'app.acss',
+        source: '.app-shell{display:block}',
+      },
+      'main.acss': {
+        type: 'asset',
+        fileName: 'main.acss',
+        source: '.layer-card-v4{display:flex}',
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.acss'),
+        mainCssChunkMatcher: () => false,
+        appType: 'uni-app-vite',
+      } as any,
+      getViteProcessedCssAssetResults: () => records.entries(),
+    })
+
+    const css = bundle['app.acss'].source
+    expect(injected).toBe(1)
+    expect(css).toContain('.app-shell')
+    expect(css).toContain('.layer-card-v4')
   })
 
   it('keeps imported vite-processed css out of main css when main css already imports it', async () => {

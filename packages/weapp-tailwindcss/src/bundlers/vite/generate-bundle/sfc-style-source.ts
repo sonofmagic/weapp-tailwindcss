@@ -75,6 +75,17 @@ export function collectChunkModuleIds(output: OutputChunk) {
   ].filter((id, index, ids): id is string => typeof id === 'string' && id.length > 0 && ids.indexOf(id) === index)
 }
 
+function normalizeSourceStyleModuleId(id: string) {
+  const file = id.replace(/[?#].*$/, '')
+  if (!CSS_SOURCE_OUTPUT_EXT_RE.test(file)) {
+    return undefined
+  }
+  if (!path.isAbsolute(file)) {
+    return undefined
+  }
+  return path.resolve(file)
+}
+
 function resolveSiblingJsChunkFile(outputFile: string) {
   const normalizedOutputFile = outputFile.replace(/[?#].*$/, '')
   if (MINI_PROGRAM_STYLE_OUTPUT_EXT_RE.test(normalizedOutputFile)) {
@@ -144,4 +155,96 @@ function resolveSfcStyleFileFromSiblingChunk(
     return undefined
   }
   return bestSources[0]?.sourceFile
+}
+
+function resolveSourceStyleFileFromSiblingChunk(
+  outputFile: string,
+  snapshot: BundleSnapshot,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+  debug: (format: string, ...args: unknown[]) => void,
+) {
+  const siblingJsFile = resolveSiblingJsChunkFile(outputFile)
+  if (!siblingJsFile) {
+    debug('source style sibling chunk skipped: no sibling js for %s', outputFile)
+    return undefined
+  }
+  const normalizedSiblingJsFile = normalizeOutputPathKey(siblingJsFile)
+  const siblingChunk = snapshot.entries.find(entry =>
+    entry.type === 'js'
+    && entry.output.type === 'chunk'
+    && normalizeOutputPathKey(entry.file) === normalizedSiblingJsFile,
+  )
+  if (!siblingChunk || siblingChunk.output.type !== 'chunk') {
+    debug('source style sibling chunk skipped: missing chunk for %s -> %s', outputFile, siblingJsFile)
+    return undefined
+  }
+  const sourceFiles = collectChunkModuleIds(siblingChunk.output)
+    .map(normalizeSourceStyleModuleId)
+    .filter((file, index, files): file is string => Boolean(file) && files.indexOf(file) === index)
+  if (sourceFiles.length === 0) {
+    debug('source style sibling chunk skipped: no source style modules for %s -> %s', outputFile, siblingJsFile)
+    return undefined
+  }
+  const scoredSources = sourceFiles
+    .map(sourceFile => ({
+      sourceFile,
+      score: scoreMatchingStyleFileBase(outputFile, sourceFile, outputRoot, sourceRoot),
+    }))
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+  debug('source style sibling chunk candidates: %s -> %s %O', outputFile, siblingJsFile, scoredSources)
+  const bestScore = scoredSources[0]?.score
+  if (!bestScore) {
+    return undefined
+  }
+  const bestSources = scoredSources.filter(item => item.score === bestScore)
+  if (bestSources.length !== 1) {
+    debug('source style sibling chunk skipped: ambiguous best sources for %s %O', outputFile, bestSources)
+    return undefined
+  }
+  return bestSources[0]?.sourceFile
+}
+
+export function resolveSourceStyleSourceFromOutputFile(
+  outputFile: string,
+  snapshot: BundleSnapshot,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+  getSourceStyleSource: ((file: string) => string | undefined) | undefined,
+  getSourceStyleSources: (() => Iterable<[string, string]>) | undefined,
+  debug: (format: string, ...args: unknown[]) => void,
+): RememberedCssSource | undefined {
+  let sourceFile = resolveSourceStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
+  let rawSource = sourceFile ? getSourceStyleSource?.(sourceFile) : undefined
+  if (!rawSource || !hasTailwindGenerationSource(rawSource)) {
+    const scoredSources = [...(getSourceStyleSources?.() ?? [])]
+      .filter(([file, source]) => CSS_SOURCE_OUTPUT_EXT_RE.test(file) && hasTailwindGenerationSource(source))
+      .map(([file, source]) => ({
+        file,
+        source,
+        score: scoreMatchingStyleFileBase(outputFile, file, outputRoot, sourceRoot),
+      }))
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+    const bestScore = scoredSources[0]?.score
+    const bestSources = bestScore ? scoredSources.filter(item => item.score === bestScore) : []
+    if (bestSources.length === 1) {
+      sourceFile = bestSources[0].file
+      rawSource = bestSources[0].source
+      debug('source style source inferred from cache: %s -> %s', outputFile, sourceFile)
+    }
+  }
+  if (!sourceFile || !rawSource) {
+    return undefined
+  }
+  if (!hasTailwindGenerationSource(rawSource)) {
+    debug('source style source infer skipped: no tailwind generation source for %s -> %s', outputFile, sourceFile)
+    return undefined
+  }
+  return {
+    outputFile,
+    rawSource,
+    sourceFile,
+  }
 }

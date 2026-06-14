@@ -19,7 +19,7 @@ import {
   resetVitePluginTestContext,
   setCurrentContext,
 } from './vite-plugin.testkit'
-import { createGenerateBundleHook, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
+import { createGenerateBundleHook, normalizeBundleFileNameKeysForTest, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 
 const TEST_TIMEOUT_MS = 30000
@@ -302,6 +302,56 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       }
     }
   }, TEST_TIMEOUT_MS)
+
+  it('normalizes generated bundle keys to their Rollup fileName before downstream asset hooks', () => {
+    const movedAsset = {
+      ...createRollupAsset('.button{color:red}'),
+      fileName: 'components/button.acss',
+    }
+    const bundle = {
+      'src/components/button.css': movedAsset,
+      'pages/index.js': {
+        ...createRollupChunk('console.log("index")'),
+        fileName: 'pages/index.js',
+      },
+    }
+
+    normalizeBundleFileNameKeysForTest(bundle)
+
+    expect(bundle['src/components/button.css']).toBeUndefined()
+    expect(bundle['components/button.acss']).toBe(movedAsset)
+
+    const assets: Record<string, { source: () => string }> = {}
+    for (const name in bundle) {
+      const chunk = bundle[name]
+      const source = chunk.type === 'asset' ? chunk.source : chunk.code
+      assets[chunk.fileName] = {
+        source: () => String(source),
+      }
+    }
+    const assetsProxy = new Proxy(assets, {
+      set(target, p, newValue: { source: () => string }) {
+        if (typeof p !== 'string') {
+          return false
+        }
+        target[p] = newValue
+        const chunk = bundle[p]
+        if (chunk.type === 'asset') {
+          chunk.source = newValue.source()
+        }
+        else {
+          chunk.code = newValue.source()
+        }
+        return true
+      },
+    })
+
+    assetsProxy['components/button.acss'] = {
+      source: () => '.button{color:blue}',
+    }
+
+    expect((bundle['components/button.acss'] as OutputAsset).source).toBe('.button{color:blue}')
+  })
 
   it('uses oxide source candidates as the default Tailwind v3 runtime input in Vite generator mode', async () => {
     const validateCandidatesMock = vi.fn(async (candidates: Set<string>) => {
@@ -1988,8 +2038,57 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['src/main.css'] as OutputAsset).source).toBe(processedCss)
+    expect((bundle['src/main.css'] as OutputAsset).source).toBe('')
     expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{color:red}\n${processedCss}`)
+  }, TEST_TIMEOUT_MS)
+
+  it('normalizes source-root prefixed vite css pipeline assets from bundle graph modules', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-source-root-graph-'))
+    createdDirs.push(root)
+    await mkdir(path.join(root, 'src/pages/index'), { recursive: true })
+    await writeFile(path.join(root, 'src/pages/index/index.tsx'), 'export default {}', 'utf8')
+    await writeFile(path.join(root, 'src/app.css'), '@import "tailwindcss";', 'utf8')
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const processedCss = '.graph-source-root{}'
+    const bundle = {
+      'pages/index/index.js': {
+        ...createRollupChunk(''),
+        fileName: 'pages/index/index.js',
+        moduleIds: [path.join(root, 'src/pages/index/index.tsx')],
+      },
+      'src/app.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', path.join(root, 'src/app.css'))}\n${processedCss}`),
+        fileName: 'src/app.wxss',
+        originalFileNames: [path.join(root, 'src/app.css')],
+      },
+      'app.wxss': {
+        ...createRollupAsset('.app{}'),
+        fileName: 'app.wxss',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect((bundle['src/app.wxss'] as OutputAsset).source).toBe('')
+    expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{}\n${processedCss}`)
   }, TEST_TIMEOUT_MS)
 
   it('keeps uni-app x native app vite css pipeline output as main.css during bundle processing', async () => {
@@ -3693,6 +3792,42 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(appCss).toContain('@import "app-origin.wxss";')
     expect(appCss).toContain('.app-main{}')
     expect(appCss).not.toContain('.bg-normal-subpackage-marker')
+  })
+
+  it('does not replay explicit root vite css into subpackage page styles', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.app-root{}'),
+        fileName: 'app.wxss',
+      },
+      'sub-normal/pages/index.wxss': {
+        ...createRollupAsset('.bg-normal-subpackage-marker{}'),
+        fileName: 'sub-normal/pages/index.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>([
+      [path.resolve('/project/src/main.css'), {
+        css: '.tw-entry-rule{}',
+        injectIntoMain: true,
+        outputFile: 'app.wxss',
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    const subpackageCss = (bundle['sub-normal/pages/index.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain('.tw-entry-rule{}')
+    expect(subpackageCss).toBe('.bg-normal-subpackage-marker{}')
   })
 
   it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {

@@ -1,6 +1,6 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import { postcss, removeUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedMiniProgramAtRules } from '../css-cleanup'
 import {
   hasTailwindApplyDirective,
@@ -72,6 +72,20 @@ function isCommentOnlyCss(source: string) {
   }
   catch {
     return false
+  }
+}
+
+function unwrapMiniProgramCascadeLayers(source: string) {
+  if (!source.includes('@layer')) {
+    return source
+  }
+  try {
+    const root = postcss.parse(source)
+    removeUnsupportedCascadeLayers(root)
+    return root.toString()
+  }
+  catch {
+    return source
   }
 }
 
@@ -354,7 +368,7 @@ export async function transformGeneratorUserCss(
   const sanitizedSource = removeTailwindSourceDirectives(
     stripUnmatchedTailwindSourceMediaCloseFragments(
       stripTailwindSourceMediaFragments(options.generatorTarget === 'weapp'
-        ? removeUnsupportedMiniProgramAtRules(cleanedSource)
+        ? removeUnsupportedMiniProgramAtRules(unwrapMiniProgramCascadeLayers(cleanedSource))
         : cleanedSource),
     ),
     {

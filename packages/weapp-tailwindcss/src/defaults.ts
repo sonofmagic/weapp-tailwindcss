@@ -7,17 +7,6 @@ const CSS_FILE_PATTERN = /.+\.(?:wx|ac|jx|tt|q|c|ty)ss$/
 const HTML_FILE_PATTERN = /.+\.(?:(?:wx|ax|jx|ks|tt|q|ty|xhs)ml|swan)$/
 const JS_FILE_PATTERN = /.+\.[cm]?js?$/
 
-const BACKSLASH_RE = /\\/g
-
-function normalizePath(p: string) {
-  return p.replace(BACKSLASH_RE, '/')
-}
-
-const MPX_STYLES_DIR_PATTERN = /(?:^|\/)styles\/.*\.(?:wx|ac|jx|tt|q|c|ty)ss$/i
-
-const KBONE_MAIN_CSS_RE = /^(?:common\/)?miniprogram-app/
-const IMPLICIT_MAIN_CSS_RE = /^(?:app|common\/main|bundle)(?:\.|\/|$)/
-
 const alwaysFalse = () => false
 
 export const TAILWIND_V3_CSS_PREFLIGHT = {
@@ -55,15 +44,6 @@ export function resolveDefaultCssPreflight(
   }
 }
 
-function createMainCssChunkMatcher() {
-  return (file: string) => {
-    const normalized = normalizePath(file)
-    return IMPLICIT_MAIN_CSS_RE.test(normalized)
-      || MPX_STYLES_DIR_PATTERN.test(normalized)
-      || KBONE_MAIN_CSS_RE.test(normalized)
-  }
-}
-
 export function getDefaultOptions(): UserDefinedOptions {
   return {
     /**
@@ -95,7 +75,7 @@ export function getDefaultOptions(): UserDefinedOptions {
       // 排除 jsx、tsx、ts 等情况
       return JS_FILE_PATTERN.test(file)
     },
-    mainCssChunkMatcher: createMainCssChunkMatcher(),
+    mainCssChunkMatcher: alwaysFalse,
     wxsMatcher: alwaysFalse,
     // 参考：https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
     cssPreflight: getDefaultCssPreflight(3),

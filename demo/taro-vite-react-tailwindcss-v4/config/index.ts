@@ -2,6 +2,7 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 
 import devConfig from './dev'
 import prodConfig from './prod'
+import type { Plugin } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const generator = {
@@ -16,6 +17,23 @@ const generator = {
 const isNativeTarget = process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'jdrn'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
+
+function taroAlipayBrowserslistAssetPlugin(): Plugin {
+  return {
+    name: 'taro-alipay-browserslist-asset',
+    enforce: 'pre',
+    generateBundle(_options, bundle) {
+      if (process.env.TARO_ENV !== 'alipay') {
+        return
+      }
+      bundle['.browserslistrc'] = {
+        type: 'asset',
+        fileName: '.browserslistrc',
+        source: 'defaults and fully supports es6-module',
+      }
+    },
+  }
+}
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
@@ -48,6 +66,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
+        taroAlipayBrowserslistAssetPlugin(),
         {
           name: 'taro-cjs-stability',
           enforce: 'post',

@@ -8,29 +8,29 @@ describe('defaults getDefaultOptions', () => {
     expect(options.ignoreCallExpressionIdentifiers).toEqual([])
   })
 
-  it('matches legacy main css chunks without app type specific hard-coding', async () => {
+  it('does not guess main css chunks by file name by default', async () => {
     const { getDefaultOptions } = await import('@/defaults')
     const options = getDefaultOptions()
 
     const matcher = options.mainCssChunkMatcher!
 
     for (const appType of ['uni-app', 'uni-app-vite', 'uni-app-x', 'taro', 'mpx', 'rax', 'remax', 'native', 'weapp-vite', 'kbone'] as const) {
-      expect(matcher('app.css', appType)).toBe(true)
-      expect(matcher('common/main.css', appType)).toBe(true)
-      expect(matcher('bundle.css', appType)).toBe(true)
-      expect(matcher('miniprogram-app.css', appType)).toBe(true)
-      expect(matcher('common/miniprogram-app.css', appType)).toBe(true)
-      expect(matcher('styles/app364cd4a4.wxss', appType)).toBe(true)
-      expect(matcher('styles/sub/a.wxss', appType)).toBe(true)
-      expect(matcher('wx/styles/app364cd4a4.wxss', appType)).toBe(true)
+      expect(matcher('app.css', appType)).toBe(false)
+      expect(matcher('common/main.css', appType)).toBe(false)
+      expect(matcher('bundle.css', appType)).toBe(false)
+      expect(matcher('miniprogram-app.css', appType)).toBe(false)
+      expect(matcher('common/miniprogram-app.css', appType)).toBe(false)
+      expect(matcher('styles/app364cd4a4.wxss', appType)).toBe(false)
+      expect(matcher('styles/sub/a.wxss', appType)).toBe(false)
+      expect(matcher('wx/styles/app364cd4a4.wxss', appType)).toBe(false)
       expect(matcher('main.css', appType)).toBe(false)
       expect(matcher('other.css', appType)).toBe(false)
     }
 
-    expect(matcher('app.wxss')).toBe(true)
-    expect(matcher('common/main.wxss')).toBe(true)
-    expect(matcher('bundle.wxss')).toBe(true)
-    expect(matcher('styles/app364cd4a4.wxss')).toBe(true)
+    expect(matcher('app.wxss')).toBe(false)
+    expect(matcher('common/main.wxss')).toBe(false)
+    expect(matcher('bundle.wxss')).toBe(false)
+    expect(matcher('styles/app364cd4a4.wxss')).toBe(false)
     expect(matcher('pages/index/index.wxss')).toBe(false)
     expect(matcher('anything.css', 'unknown-type' as any)).toBe(false)
   })

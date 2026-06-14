@@ -3,6 +3,14 @@
     <view class="text-_b_h438821_B dark_ctext-_b_hec4f4f_B before_ccontent-_b_q11111_q_B" style="">Hello world!</view>
     <view class="text-_b_h3d31a4_B before_ccontent-_b_a222_a_B" style="">Hello world!</view>
   </view>
+  <view
+    class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 theme-dark_cbg-zinc-900 theme-dark_ctext-zinc-50 dark_cbg-zinc-900 dark_ctext-zinc-50"
+    style="">
+    Taro Vite React Tailwind CSS v3 system dark
+    <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 theme-dark_cbg-zinc-950 theme-dark_ctext-zinc-50" style="">
+      Taro Vite React Tailwind CSS v3 manual dark
+    </view>
+  </view>
   <view class="bg-_b_h89ab8d_B flex divide-x-8 divide-solid divide-_b_h60d256_B" style="">
     <view class="text-_b_h438821_B dark_ctext-_b_hec4f4f_B before_ccontent-_b_q11111_q_B" style="">Hello world!</view>
     <view class="text-_b_h3d31a4_B before_ccontent-_b_a222_a_B" style="">Hello world!</view>

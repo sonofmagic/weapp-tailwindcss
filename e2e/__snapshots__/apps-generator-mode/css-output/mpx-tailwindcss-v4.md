@@ -6,7 +6,7 @@ Generator CSS files: app.wxss, pages/component/index.wxss, styles/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 9726 | 79 | false | false | false | true | true | false | true |
+| 9728 | 79 | false | false | false | true | true | false | true |
 
 ## Generator CSS Summary
 
@@ -14,7 +14,7 @@ Generator CSS files: app.wxss, pages/component/index.wxss, styles/app.wxss
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 106 | 0 | false | false | false | false | false | false | false |
 | `pages/component/index.wxss` | 106 | 0 | false | false | false | false | false | false | false |
-| `styles/app.wxss` | 9514 | 79 | false | false | false | true | true | false | true |
+| `styles/app.wxss` | 9516 | 79 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -358,7 +358,8 @@ wx-root-portal-content {
   /* tokens: system-dark:bg-slate-900 <= src/pages/index.mpx */
   .system-dark_cbg-slate-900 {
     background-color: var(--color-slate-900);
-  } /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
+  }
+  /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }

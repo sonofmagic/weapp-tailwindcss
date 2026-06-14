@@ -182,7 +182,14 @@ export async function formatCss(css: string) {
 }
 
 export function normalizeFormattedCssSnapshot(source: string) {
-  return source.replace(/\n{2,}(?=(?:view|text|:{1,2}after|:{1,2}before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
+  return source
+    .replace(/\}\s+(\/\*\s*tokens?:)/g, '}\n$1')
+    .replace(/^ *(\/\*\s*tokens?:)/gm, ' $1')
+    .replace(/\n{2,}(?=(?:view|text|:{1,2}after|:{1,2}before|:host|page|\.tw-root|wx-root-portal-content)[\s,{])/g, '\n')
+}
+
+function normalizeTokenCommentIndent(source: string) {
+  return source.replace(/^ *(\/\*\s*tokens?:)/gm, ' $1')
 }
 
 export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOptions = {}) {
@@ -192,6 +199,7 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
   return normalizeFormattedCssSnapshot(normalizedCss)
     .trimEnd()
     .split('\n')
+    .map(line => normalizeTokenCommentIndent(line))
     .map(line => line.trimEnd())
     .join('\n')
 }
@@ -344,6 +352,11 @@ const TAILWIND_V4_DEFAULT_COLOR_ORDER = new Map([
   '--color-purple-800',
   '--color-pink-200',
 ].map((prop, index) => [prop, index]))
+
+const DEDUPED_CSS_SNAPSHOT_COMMENTS = new Set([
+  'Core plugin extractor sources are intentionally not loaded here.',
+  'stylelint-disable custom-property-pattern',
+])
 
 function isTailwindV4Css(root: postcss.Root) {
   let matched = false
@@ -940,6 +953,13 @@ function collectRuleSourceTokens(rule: postcss.Rule, options: CssSnapshotOptions
   return tokens
 }
 
+function normalizeTraceCommentBefore(value: string | undefined) {
+  if (!value) {
+    return ''
+  }
+  return value.includes('\n') ? value : '\n'
+}
+
 function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOptions) {
   if (!options.tokenSources) {
     return
@@ -961,9 +981,7 @@ function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOption
       return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<tailwind generated>'}`
     })
     const comment = postcss.comment({ text: `tokens: ${lines.join(' | ')}` })
-    if (rule.raws.before !== undefined) {
-      comment.raws.before = rule.raws.before
-    }
+    comment.raws.before = normalizeTraceCommentBefore(rule.raws.before)
     rule.raws.before = '\n'
     rule.parent.insertBefore(rule, comment)
   })
@@ -976,6 +994,18 @@ export function normalizeCssSnapshot(source: string, _options: CssSnapshotOption
     if (/^\$vite\$:\d+$/.test(comment.text.trim())) {
       comment.remove()
     }
+  })
+  const seenComments = new Set<string>()
+  root.walkComments((comment) => {
+    const text = comment.text.trim()
+    if (!DEDUPED_CSS_SNAPSHOT_COMMENTS.has(text)) {
+      return
+    }
+    if (seenComments.has(text)) {
+      comment.remove()
+      return
+    }
+    seenComments.add(text)
   })
 
   root.walkRules((rule) => {
@@ -1069,7 +1099,7 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     const withoutBanner = stripTailwindBanner(source)
     const normalizedImports = normalizeCssImports(withoutBanner)
     const normalizedCss = normalizeCssSnapshot(normalizedImports, options)
-    const formatted = normalizeFormattedCssSnapshot(await formatCss(normalizedCss))
+    const formatted = normalizeTokenCommentIndent(normalizeFormattedCssSnapshot(await formatCss(normalizedCss)))
 
     snapshots.push({
       fileName: snapshotName,

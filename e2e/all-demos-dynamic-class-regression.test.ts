@@ -83,6 +83,7 @@ interface ProjectPatch {
 }
 
 const changedFiles = new Map<string, string>()
+const changedProjectRoots = new Set<string>()
 
 function projectRoot(entry: ProjectEntry) {
   return path.resolve(fixturesRoot, entry.name)
@@ -125,6 +126,12 @@ async function patchFile(target: PatchTarget) {
 async function restorePatchedFiles() {
   await Promise.all([...changedFiles].map(([file, source]) => writeFileAtomic(file, source)))
   changedFiles.clear()
+}
+
+async function cleanupPatchedProjects() {
+  const roots = [...changedProjectRoots]
+  changedProjectRoots.clear()
+  await Promise.all(roots.map(root => clearProjectBuildState(root)))
 }
 
 function createNativePatch(entry: ProjectEntry): ProjectPatch {
@@ -464,16 +471,25 @@ function expectNoDuplicateMiniProgramPreflight(entry: ProjectEntry, appCss: stri
 describe('all demo dynamic class regression', () => {
   afterEach(async () => {
     await restorePatchedFiles()
+    await cleanupPatchedProjects()
   })
 
   for (const entry of projectFilter(E2E_PROJECTS.filter(item => !localHBuilderXProjectNames.has(item.name)))) {
     it(entry.name, async () => {
       const patch = createPatch(entry)
+      const root = projectRoot(entry)
+      changedProjectRoots.add(root)
       await applyPatch(patch)
-      await clearProjectBuildState(projectRoot(entry))
-      await ensureProjectBuilt(projectRoot(entry), { force: true })
-      expectBuiltRegression(entry, await readOutputFiles(entry))
-      expectNoDuplicateMiniProgramPreflight(entry, await fs.readFile(primaryCssFile(entry), 'utf8'))
+      await clearProjectBuildState(root)
+      try {
+        await ensureProjectBuilt(root, { force: true })
+        expectBuiltRegression(entry, await readOutputFiles(entry))
+        expectNoDuplicateMiniProgramPreflight(entry, await fs.readFile(primaryCssFile(entry), 'utf8'))
+      }
+      finally {
+        await restorePatchedFiles()
+        await cleanupPatchedProjects()
+      }
     })
   }
 })

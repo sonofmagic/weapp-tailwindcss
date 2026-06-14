@@ -79,7 +79,7 @@ describe('get options', () => {
     expect(cssMatcher('a.css')).toBe(true)
     expect(jsMatcher('a.js')).toBe(true)
     expect(jsMatcher('node_modules/a.js')).toBe(false)
-    expect(mainCssChunkMatcher('app.wxss', 'native')).toBe(true)
+    expect(mainCssChunkMatcher('app.wxss', 'native')).toBe(false)
     expect(htmlMatcher('a.wxml')).toBe(true)
   })
 

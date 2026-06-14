@@ -137,6 +137,10 @@ function removeTracedTailwindGeneratedContainerRules(root: postcss.Root) {
   })
 }
 
+function normalizeTraceCommentBefore(value: string | undefined) {
+  return value?.includes('\n') ? value : '\n'
+}
+
 export function annotateCssSourceTrace(
   css: string,
   options: AnnotateCssSourceTraceOptions,
@@ -161,9 +165,7 @@ export function annotateCssSourceTrace(
         return `${token} <= ${sources.length > 0 ? sources.join(', ') : '<tailwind generated>'}`
       })
       const comment = postcss.comment({ text: `tokens: ${lines.join(' | ')}` })
-      if (rule.raws.before !== undefined) {
-        comment.raws.before = rule.raws.before
-      }
+      comment.raws.before = normalizeTraceCommentBefore(rule.raws.before)
       rule.raws.before = '\n'
       rule.parent.insertBefore(rule, comment)
     })

@@ -47,6 +47,29 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('normalizes token comments that are formatted after a closing brace', () => {
+    expect(normalizeFormattedCssSnapshot([
+      '@media (prefers-color-scheme: dark) {',
+      '  .system-dark_cbg-slate-900 {',
+      '    background-color: #0f172a;',
+      '  } /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */',
+      '  .system-dark_ctext-slate-100 {',
+      '    color: #f1f5f9;',
+      '  }',
+      '}',
+    ].join('\n'))).toBe([
+      '@media (prefers-color-scheme: dark) {',
+      '  .system-dark_cbg-slate-900 {',
+      '    background-color: #0f172a;',
+      '  }',
+      ' /* tokens: system-dark:text-slate-100 <= src/pages/index/index.tsx */',
+      '  .system-dark_ctext-slate-100 {',
+      '    color: #f1f5f9;',
+      '  }',
+      '}',
+    ].join('\n'))
+  })
+
   it('removes scanner noise utilities without a class list', () => {
     expect(normalizeCssSnapshot([
       ':host { --color-red-500: red; --spacing: 8rpx; }',
@@ -196,6 +219,20 @@ describe('normalizeCssSnapshot', () => {
       '.bg-gradient-to-r {',
       '  --tw-gradient-position: to right in oklab;',
       '}',
+    ].join('\n'))
+  })
+
+  it('dedupes known Tailwind CSS v4 snapshot comments', () => {
+    expect(normalizeCssSnapshot([
+      '/* Core plugin extractor sources are intentionally not loaded here. */',
+      '/* stylelint-disable custom-property-pattern */',
+      '.layer-card-v4 { display: flex; }',
+      '/* Core plugin extractor sources are intentionally not loaded here. */',
+      '/* stylelint-disable custom-property-pattern */',
+    ].join('\n'))).toBe([
+      '/* Core plugin extractor sources are intentionally not loaded here. */',
+      '/* stylelint-disable custom-property-pattern */',
+      '.layer-card-v4 { display: flex; }',
     ].join('\n'))
   })
 

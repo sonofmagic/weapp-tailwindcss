@@ -289,8 +289,13 @@ export async function generateCssByGenerator(
       const beforeUserCss = await transformGeneratorUserCss(orderedExtraCss.before, userCssOptions)
       const afterLayerUserCss = await transformGeneratorUserCss(afterLayerParts.layer, userCssOptions)
       const afterUserCss = await transformGeneratorUserCss(afterLayerParts.rest, userCssOptions)
+      const fallbackLayerUserCss = generated.target === 'weapp'
+        && afterLayerParts.layer.trim().length === 0
+        && hasUserCssLayerBlocks(userCssRawSource)
+        ? await transformGeneratorUserCss(splitUserCssLayerBlocks(userCssRawSource).layer, userCssOptions)
+        : ''
       const orderedAfterLayerUserCss = generated.target === 'weapp'
-        ? wrapUserLayerComponentsCss(afterLayerUserCss)
+        ? wrapUserLayerComponentsCss(createCssSourceOrderAppend(afterLayerUserCss, fallbackLayerUserCss))
         : afterLayerUserCss
       css = createCssSourceOrderAppend(
         createCssSourceOrderAppend(
@@ -394,6 +399,21 @@ export async function generateCssByGenerator(
           importFallback: generatorOptions.importFallback,
         })
         css = createCssSourceOrderAppend(css, userCss)
+      }
+      else if (hasMatchedCssSourceFile && generated.target === 'weapp' && hasUserCssLayerBlocks(userCssRawSource)) {
+        const layerUserCss = await transformGeneratorUserCss(splitUserCssLayerBlocks(userCssRawSource).layer, {
+          generatorTarget: generated.target,
+          generatorStyleOptions,
+          cssUserHandlerOptions,
+          styleHandler,
+          importFallback: generatorOptions.importFallback,
+        })
+        if (layerUserCss.trim().length > 0) {
+          css = createCssSourceOrderAppend(css, wrapUserLayerComponentsCss(layerUserCss))
+          if (shouldFinalizeMarkedUserLayerComponentsCss(file)) {
+            css = reorderMarkedUserLayerComponentsCss(css)
+          }
+        }
       }
       if (hasMatchedCssSourceFile && generated.target === 'weapp') {
         if (!isolateCurrentCssCandidates && !shouldFilterApplyOnlyCss) {

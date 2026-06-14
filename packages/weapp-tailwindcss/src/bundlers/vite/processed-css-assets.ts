@@ -50,6 +50,7 @@ interface InjectViteProcessedCssAssetOptions {
   getViteProcessedCssAssetResults?: CssAssetResultsGetter | undefined
   markCssAssetProcessed?: CssAssetProcessedMarker | undefined
   recordCssAssetResult?: CssAssetResultRecorder | undefined
+  shouldRemoveInjectedSourceAsset?: ((file: string, record: { file: string, css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }) => boolean) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
   onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
 }
@@ -68,6 +69,10 @@ function readAssetSource(asset: OutputAsset) {
   return typeof asset.source === 'string'
     ? asset.source
     : asset.source.toString()
+}
+
+function clearAssetSource(asset: OutputAsset) {
+  asset.source = ''
 }
 
 function appendCss(baseCss: string, css: string) {
@@ -220,7 +225,11 @@ function shouldInjectViteProcessedCssResult(
   },
 ) {
   if (options.injectIntoMain === true) {
-    return true
+    return isRootStyleOutputFile(targetFile)
+      || (
+        typeof options.outputFile === 'string'
+        && normalizeOutputPathKey(options.outputFile) === normalizeOutputPathKey(targetFile)
+      )
   }
   if (options.injectIntoMain === false) {
     return false
@@ -236,6 +245,40 @@ function shouldInjectViteProcessedCssResult(
         && opts.mainCssChunkMatcher(options.outputFile, opts.appType)
       )
     )
+}
+
+function isRootStyleOutputFile(file: string) {
+  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  return isCssOutputFile(normalized) && !normalized.includes('/')
+}
+
+function shouldUseCssAssetAsMainInjectionTarget(
+  opts: InternalUserDefinedOptions,
+  file: string,
+  records: Array<{ injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>,
+) {
+  const fileKey = normalizeOutputPathKey(file)
+  const explicitTargetMatched = records.some((record) => {
+    if (record.injectIntoMain !== true) {
+      return false
+    }
+    return isRootStyleOutputFile(file)
+      || (
+        typeof record.outputFile === 'string'
+        && normalizeOutputPathKey(record.outputFile) === fileKey
+      )
+  })
+  if (explicitTargetMatched) {
+    return true
+  }
+  if (records.some(record => record.injectIntoMain === true)) {
+    return false
+  }
+  if (opts.mainCssChunkMatcher(file, opts.appType)) {
+    return true
+  }
+  return isRootStyleOutputFile(file)
+    && records.some(record => record.injectIntoMain === true)
 }
 
 function isViteProcessedCssResultImported(record: { file: string, outputFile?: string | undefined }, importedStyleFiles: Set<string>) {
@@ -327,11 +370,6 @@ export function collectViteProcessedCssAssetResults(
       continue
     }
     const rawSource = readAssetSource(output)
-    if (isCoveredViteGeneratedSourceAsset(file, existingAssetFiles, options.resolveViteProcessedCssOutputFile)) {
-      delete bundle[bundleFile]
-      options.debug?.('skip covered vite-generated source css asset: %s', file)
-      continue
-    }
     const nextCss = resolveViteProcessedCssAssetSource(
       file,
       rawSource,
@@ -373,10 +411,21 @@ export function collectViteProcessedCssAssetResults(
         injectIntoMain: shouldReplayIntoMainCss || undefined,
         outputFile: resolvedOutputFile,
       })
-      options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, nextCss, {
-        injectIntoMain: shouldReplayIntoMainCss || undefined,
-        outputFile: resolvedOutputFile,
-      })
+      if (
+        normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(markerFile)
+        && normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+      ) {
+        options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, nextCss, {
+          injectIntoMain: shouldReplayIntoMainCss || undefined,
+          outputFile: resolvedOutputFile,
+        })
+      }
+    }
+    if (isCoveredViteGeneratedSourceAsset(file, existingAssetFiles, options.resolveViteProcessedCssOutputFile)) {
+      clearAssetSource(output)
+      options.debug?.('skip covered vite-generated source css asset: %s', file)
+      collected++
+      continue
     }
     options.debug?.('collect vite-processed css asset: %s bytes=%d', file, nextCss.length)
     collected++
@@ -403,7 +452,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
     const file = getAssetFile(bundleFile, output)
     if (
       !options.opts.cssMatcher(file)
-      || !options.opts.mainCssChunkMatcher(file, options.opts.appType)
+      || !shouldUseCssAssetAsMainInjectionTarget(options.opts, file, viteCssResults)
     ) {
       continue
     }
@@ -483,6 +532,25 @@ export function injectViteProcessedCssIntoMainCssAssets(
     options.recordCssAssetResult?.(file, nextCss)
     options.onUpdate?.(file, originalSource, nextCss)
     options.debug?.('inject vite-processed css into main css asset: %s bytes=%d', file, nextCss.length)
+    for (const record of viteCssResults) {
+      if (!options.shouldRemoveInjectedSourceAsset?.(file, record)) {
+        continue
+      }
+      const recordFileKey = normalizeOutputPathKey(record.file)
+      for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
+        if (candidateOutput.type !== 'asset') {
+          continue
+        }
+        const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
+        const isRecordFile = candidateKey === recordFileKey
+        const isProcessedSource = readAssetSource(candidateOutput).trim() === record.css.trim()
+        if ((!isRecordFile && !isProcessedSource) || candidateKey === normalizeOutputPathKey(file)) {
+          continue
+        }
+        clearAssetSource(candidateOutput)
+        options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, file)
+      }
+    }
     injected++
   }
   return injected

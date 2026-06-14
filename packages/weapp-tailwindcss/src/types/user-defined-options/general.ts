@@ -27,7 +27,7 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    * @remarks
-   * 用于辅助定位主要的 CSS bundle，以便默认的 `mainCssChunkMatcher` 做出更准确的匹配，未传入时将尝试自动猜测变量注入位置。
+   * 用于区分框架运行环境。Vite 产物样式关系会优先从构建图和真实 bundle 文件中推导，不应依赖固定的主样式文件名。
    */
   appType?: AppType | undefined
 

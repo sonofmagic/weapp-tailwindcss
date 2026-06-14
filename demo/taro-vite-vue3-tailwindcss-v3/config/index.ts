@@ -16,6 +16,24 @@ const generator = {
   },
 }
 console.log(taroEnv)
+
+function taroAlipayBrowserslistAssetPlugin(): Plugin {
+  return {
+    name: 'taro-alipay-browserslist-asset',
+    enforce: 'pre',
+    generateBundle(_options, bundle) {
+      if (process.env.TARO_ENV !== 'alipay') {
+        return
+      }
+      bundle['.browserslistrc'] = {
+        type: 'asset',
+        fileName: '.browserslistrc',
+        source: 'defaults and fully supports es6-module',
+      }
+    },
+  }
+}
+
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'vite'>(async (merge, { command, mode }) => {
   const baseConfig: UserConfigExport<'vite'> = {
@@ -44,6 +62,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     compiler: {
       type: 'vite',
       vitePlugins: [
+        taroAlipayBrowserslistAssetPlugin(),
         {
           name: 'taro-cjs-stability',
           enforce: 'post',

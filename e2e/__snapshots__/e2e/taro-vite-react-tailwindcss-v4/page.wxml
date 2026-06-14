@@ -1,5 +1,14 @@
 <view class="index" style="">
   <text class="text-_b55rpx_B text-_b_hfff_B bg-purple-300" space="" style=""></text>
+  <view class="bg-_bred_B" style="">Hello world!</view>
+  <view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 dark_cbg-zinc-900 dark_ctext-zinc-50" style="">
+    Taro Vite React Tailwind CSS v4 system dark
+    <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark_cbg-zinc-950 dark_ctext-zinc-50" style="">Taro Vite React Tailwind CSS v4 manual dark</view>
+  </view>
   <view class="h-14 bg-gradient-to-r from-cyan-500 to-blue-500" style=""></view>
   <view class="h-14 bg-linear-to-r from-cyan-500 to-blue-500" style=""></view>
+  <view style="">at App.vue:4 index.ts:120:3</view>
+  <view style="">size &gt; 4 ? keep-[business] : App.vue:4</view>
+  <view style="">before content ["not-generated"]</view>
+  <view style="">https://example.com/a[b]?q=Hello world!</view>
 </view>

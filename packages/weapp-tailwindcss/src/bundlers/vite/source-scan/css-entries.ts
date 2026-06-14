@@ -24,6 +24,7 @@ import { addSourceScanDependencies, addSourceScanDependency } from './dependenci
 const VITE_SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
 const VITE_TAILWIND_CSS_ENTRY_PATTERN = '**/*.{css,less,sass,scss,styl,stylus,pcss,postcss}'
 const tailwindV4CssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
+const tailwindConfigCssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
 
 interface ConfigDependencySignature {
   file: string
@@ -354,6 +355,40 @@ export async function resolveTailwindV4EntriesFromCssCached(css: string, base: s
   }
   const task = resolveTailwindV4EntriesFromCss(css, base)
   tailwindV4CssEntriesCache.set(cacheKey, task)
+  return task
+}
+
+export async function resolveTailwindConfigEntriesFromCssCached(css: string, base: string) {
+  let root: postcss.Root
+  try {
+    root = postcss.parse(css)
+  }
+  catch {
+    return undefined
+  }
+  const dependencies = await collectConfigDependencySignatures(root, base)
+  if (dependencies.length === 0) {
+    return undefined
+  }
+  const cacheKey = createCssEntriesCacheKey(css, base, dependencies)
+  const cached = tailwindConfigCssEntriesCache.get(cacheKey)
+  if (cached) {
+    return cached
+  }
+  const task = resolveConfigContentEntries(root, base).then((resolved) => {
+    return resolved.entries.length > 0
+      ? {
+          entries: resolved.entries,
+          explicit: true,
+          inlineCandidates: {
+            excluded: new Set<string>(),
+            included: new Set<string>(),
+          },
+          dependencies: resolved.dependencies,
+        }
+      : undefined
+  })
+  tailwindConfigCssEntriesCache.set(cacheKey, task)
   return task
 }
 

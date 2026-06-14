@@ -2,11 +2,11 @@
 
 Fixture: demo
 Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, packageB/pages/apple.wxss, pages/index/index.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
+Generator CSS files: app.wxss, packageB/pages/apple.wxss, pages/index/index.wxss, sub-independent/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 20428 | 83 | false | false | false | true | true | false | true |
+| 19427 | 81 | false | false | false | true | true | false | true |
 
 ## Generator CSS Summary
 
@@ -16,7 +16,6 @@ Generator CSS files: app.wxss, packageB/pages/apple.wxss, pages/index/index.wxss
 | `packageB/pages/apple.wxss` | 1 | 0 | false | false | false | false | false | false | false |
 | `pages/index/index.wxss` | 115 | 2 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1094 | 6 | false | false | false | false | false | false | true |
-| `sub-normal/pages/index.wxss` | 1059 | 6 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -599,42 +598,5 @@ wx-root-portal-content {
 /* tokens: before:content-['independent_subpackage_weapp-vite-tailwindcss-v4'] <= sub-independent/pages/index.wxml */
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
-}
-```
-
-### sub-normal/pages/index.wxss
-
-```css
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-  --tw-content: '';
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --font-sans:
-    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
-}
-/* tokens: bg-normal-subpackage-marker <= sub-normal/pages/index.wxml */
-.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
-  content: var(--tw-content);
-}
-/* tokens: before:content-['normal_subpackage_weapp-vite-tailwindcss-v4'] <= sub-normal/pages/index.wxml */
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
 }
 ```

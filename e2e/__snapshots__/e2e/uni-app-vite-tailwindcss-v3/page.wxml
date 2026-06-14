@@ -95,6 +95,14 @@
   <view class="after_cborder-none after_cborder-none">当前系统主题:light</view>
   <view class="bg-gray-100 bg-gray-100 dark_cbg-zinc-800 dark_cbg-zinc-800 h-10 h-10 w-10 w-10" hover-class="bg-red-500 dark_cbg-green-500"></view>
   <view
+    class="theme-mode-demo theme-mode-demo mt-4 mt-4 rounded rounded bg-white bg-white px-4 px-4 py-3 py-3 text-slate-900 text-slate-900 system-dark_cbg-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 system-dark_ctext-slate-100 theme-dark_cbg-zinc-900 theme-dark_cbg-zinc-900 theme-dark_ctext-zinc-50 theme-dark_ctext-zinc-50 dark_cbg-zinc-900 dark_cbg-zinc-900 dark_ctext-zinc-50 dark_ctext-zinc-50">
+    uni-app Vite Tailwind CSS v3 system dark
+    <view
+      class="theme-dark theme-dark mt-2 mt-2 rounded rounded bg-white bg-white px-3 px-3 py-2 py-2 text-slate-900 text-slate-900 theme-dark_cbg-zinc-950 theme-dark_cbg-zinc-950 theme-dark_ctext-zinc-50 theme-dark_ctext-zinc-50">
+      uni-app Vite Tailwind CSS v3 manual dark
+    </view>
+  </view>
+  <view
     class="h-5 h-5 w-5 w-5 shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B shadow-_b0px_2px_11px_0px_rgba_p0_m0_m0_m0_d4_P_B before_ccontent-_b_aFestivus_a_B before_ccontent-_b_aFestivus_a_B"></view>
   <view class="h-5 h-5 w-5 w-5 shadow-_b0px_2px_11px_0px__h00000a_B shadow-_b0px_2px_11px_0px__h00000a_B"></view>
   <view class="text-_b22px_B text-_b22px_B dark_ctext-yellow-400 dark_ctext-yellow-400">text-[22px]</view>
