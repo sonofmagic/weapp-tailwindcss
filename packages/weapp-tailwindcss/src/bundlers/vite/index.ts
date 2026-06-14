@@ -115,11 +115,6 @@ function stripSourceHash(sourceFile: string) {
   return hashIndex === -1 ? sourceFile : sourceFile.slice(0, hashIndex)
 }
 
-function isMainStyleEntryFile(file: string) {
-  const name = path.basename(stripRequestQuery(cleanUrl(file))).replace(/\.[^.]+$/, '')
-  return name === 'app' || name === 'main'
-}
-
 function normalizeCssSourceIdentity(sourceFile: string) {
   const cleanSourceFile = stripSourceHash(sourceFile)
   const { filename, query } = parseVueRequest(cleanSourceFile)
@@ -974,7 +969,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const outputCssHandlerOptions = transformCssHandlerOptions.getCssHandlerOptions(outputFile)
     const cssHandlerOptions = {
       ...transformCssHandlerOptions.getCssHandlerOptions(file),
-      isMainChunk: outputCssHandlerOptions.isMainChunk || isMainStyleEntryFile(file),
+      isMainChunk: outputCssHandlerOptions.isMainChunk,
     }
     const shouldDeferEmptyScopedCssSource = !(
       opts.appType === 'uni-app-x'
@@ -1006,8 +1001,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, tracedCss)
-    const shouldInjectGeneratedCssIntoMain = isMainStyleEntryFile(file)
-      || mainCssChunkMatcher(outputFile, opts.appType)
+    const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
     // 这里保留 undefined，让 app/main 入口走主样式注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回 app.wxss。
     recordViteProcessedCssAssetResult(file, tracedCss, {
       injectIntoMain: shouldInjectGeneratedCssIntoMain,

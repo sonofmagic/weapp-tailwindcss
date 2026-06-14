@@ -28,7 +28,7 @@ import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } f
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
-import { canProcessViteSourceStyleAsCss, isAppOriginCssFile, isMainStyleEntryCssFile, isTailwindEntryCssFile, normalizeCssSourceForCompare, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+import { canProcessViteSourceStyleAsCss, MINI_PROGRAM_STYLE_OUTPUT_EXT_RE, normalizeCssSourceForCompare, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
 import { createJsEntryResolver } from './generate-bundle/js-entries'
@@ -62,22 +62,40 @@ function resolveViteCssTaskConcurrency(useIncrementalMode: boolean) {
   return useIncrementalMode ? 1 : 2
 }
 
-function addSiblingCssFile(files: Set<string>, file: string) {
-  if (file.endsWith('.wxml')) {
-    files.add(file.replace(/\.wxml$/, '.wxss'))
+const MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE = /\.(?:wxml|axml|jxml|ksml|ttml|qml|tyml|xhsml|swan)$/i
+
+function addSiblingCssFile(files: Set<string>, file: string, extensionByStem: Map<string, string>) {
+  const cleanFile = file.replace(/[?#].*$/, '')
+  const templateMatch = cleanFile.match(MINI_PROGRAM_TEMPLATE_OUTPUT_EXT_RE)
+  if (templateMatch?.[0]) {
+    const stem = file.slice(0, -templateMatch[0].length)
+    files.add(`${stem}${extensionByStem.get(stem) ?? '.wxss'}`)
   }
   else if (file.endsWith('.js')) {
-    files.add(file.replace(/\.js$/, '.wxss'))
+    const stem = file.slice(0, -'.js'.length)
+    files.add(`${stem}${extensionByStem.get(stem) ?? '.wxss'}`)
   }
 }
 
-function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot) {
+function collectCssExtensionByStem(files: string[]) {
+  const extensionByStem = new Map<string, string>()
+  for (const file of files) {
+    const match = file.replace(/[?#].*$/, '').match(MINI_PROGRAM_STYLE_OUTPUT_EXT_RE)
+    if (!match?.[0]) {
+      continue
+    }
+    extensionByStem.set(file.slice(0, -match[0].length), match[0])
+  }
+  return extensionByStem
+}
+
+function collectRuntimeLinkedCssFiles(snapshot: BundleSnapshot, extensionByStem: Map<string, string>) {
   const files = new Set<string>()
   for (const file of snapshot.runtimeAffectingChangedByType.html) {
-    addSiblingCssFile(files, file)
+    addSiblingCssFile(files, file, extensionByStem)
   }
   for (const file of snapshot.runtimeAffectingChangedByType.js) {
-    addSiblingCssFile(files, file)
+    addSiblingCssFile(files, file, extensionByStem)
   }
   return files
 }
@@ -435,17 +453,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const shouldInjectCssIntoMainFromOutput = (
       outputFile: string,
-      sourceFile: string,
+      _sourceFile: string,
       outputCssHandlerOptions: { isMainChunk?: boolean | undefined },
     ) =>
-      isMainStyleEntryCssFile(sourceFile)
-      || isTailwindEntryCssFile(outputFile)
+      outputCssHandlerOptions.isMainChunk === true
       || (
         useIncrementalMode
-        && (
-          outputCssHandlerOptions.isMainChunk
-          || isMainPackageStyleOutputFile(outputFile)
-        )
+        && isMainPackageStyleOutputFile(outputFile)
       )
     recordTimingDetail('snapshot', snapshotStart)
     const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
@@ -565,7 +579,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const generatorCandidateSignature = createCandidateSignature(generatorRuntime)
     const generatorCandidatesChanged = state.generatorCandidateSignature !== generatorCandidateSignature
-    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot)
+    const cssExtensionByStem = collectCssExtensionByStem(bundleFiles)
+    const runtimeLinkedCssFiles = collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem)
+    for (const file of runtimeLinkedCssFiles) {
+      if (snapshot.sourceHashByFile.has(file)) {
+        processFiles.css.add(file)
+      }
+    }
     recordGeneratorCandidates?.(generatorRuntime)
     const dynamicRetryCandidates = new Set([
       ...sourceCandidates,
@@ -758,7 +778,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         const rememberedCssSource = mergeRememberedCssSources(rememberedCssSources, outputFile)
         const useRememberedCssSource = rememberedCssSource != null
-          && normalizeOutputPathKey(rememberedCssSource.sourceFile) !== normalizeOutputPathKey(file)
+          && (
+            normalizeOutputPathKey(rememberedCssSource.sourceFile) !== normalizeOutputPathKey(file)
+            || (!hasTailwindGenerationSource(rawSource) && hasTailwindGenerationSource(rememberedCssSource.rawSource))
+          )
         const vitePipelineCssAsset = viteProcessedCssAsset || useRememberedCssSource
         const generatorRawSource = vitePipelineCssAsset
           ? rememberedCssSource?.rawSource ?? rawSource
@@ -783,7 +806,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssHandlerOptions = vitePipelineCssAsset
           ? {
               ...getCssHandlerOptions(generatorSourceFile),
-              isMainChunk: outputCssHandlerOptions.isMainChunk || isAppOriginCssFile(file) || isMainStyleEntryCssFile(generatorSourceFile),
+              isMainChunk: outputCssHandlerOptions.isMainChunk,
             }
           : getCssHandlerOptions(file)
         const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
@@ -809,7 +832,25 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           : snapshot.runtimeAffectingHashByFile.get(file)
             ?? cache.computeHash(cssRuntimeAffectingSignature)
         const cssShareScope = createCssTransformShareScopeKey(opts, generatorSourceFile, generatorRawSource)
-        const shouldRegenerateAppOriginCss = viteProcessedCssAsset && isAppOriginCssFile(file)
+        const shouldRegenerateCollectedViteCss = viteProcessedCssAsset
+          && useIncrementalMode
+          && state.generatorCandidateSignature !== undefined
+          && generatorCandidatesChanged
+          && (
+            hasTailwindGenerationSource(generatorRawSource)
+            || hasBundlerGeneratedCssMarker(rawSource)
+            || (
+              rememberedCssSource != null
+              && hasTailwindGenerationSource(rememberedCssSource.rawSource)
+            )
+          )
+        const shouldRefreshViteProcessedCssByCandidates = viteProcessedCssAsset
+          && useIncrementalMode
+          && state.generatorCandidateSignature !== undefined
+          && generatorCandidatesChanged
+        const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
+          && outputCssHandlerOptions.isMainChunk !== true
+          && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
         const shouldTrackGeneratorRuntime = hasStaleViteProcessedCssSource
           || shouldRegenerateMainPackageCssWithScopedCandidates
           || hasCurrentTailwindGenerationDirective
@@ -818,16 +859,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             || cssHandlerOptions.isMainChunk
             || processFiles.css.has(file)
             || runtimeLinkedCssFiles.has(file)
-            || shouldRegenerateAppOriginCss
+            || runtimeLinkedCssFiles.has(outputFile)
+            || shouldRegenerateCollectedViteCss
             || (hasRuntimeAffectingChanges && (alreadyProcessedCssAsset || vitePipelineCssAsset))
           ))
-        const shouldPreserveCollectedViteCssAsset = !shouldRegenerateAppOriginCss
+        const shouldPreserveCollectedViteCssAsset = !shouldRegenerateCollectedViteCss
+          && (
+            state.generatorCandidateSignature === undefined
+            || !generatorCandidatesChanged
+          )
           && (
             collectedBundlerGeneratedCssFiles.has(file)
             || hasBundlerGeneratedCssMarker(rawSource)
           )
         if (
           alreadyProcessedCssAsset
+          && !shouldRefreshViteProcessedCssByCandidates
           && !hasStaleViteProcessedCssSource
           && !hasRememberedApplySource
           && !shouldRegenerateMainPackageCssWithScopedCandidates
@@ -837,11 +884,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
           recordCssAssetResult?.(outputFile, nextCss)
-          const shouldInjectPreservedViteCssIntoMain = vitePipelineCssAsset
-            && !isAppOriginCssFile(file)
-            && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
           recordViteProcessedCssAssetResult?.(outputFile, nextCss, {
-            injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectPreservedViteCssIntoMain,
+            injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
             outputFile,
           })
           onUpdate(outputFile, rawSource, nextCss)
@@ -867,7 +911,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}:${sourceTraceSignature}`
         const cssCacheKey = file
         const cssHashKey = `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`
-        if (!shouldTrackGeneratorRuntime) {
+        const cssLinkedImpactSignature = runtimeLinkedCssFiles.has(file) || runtimeLinkedCssFiles.has(outputFile)
+          ? [
+              ...[...snapshot.runtimeAffectingChangedByType.html]
+                .sort()
+                .map(changedFile => snapshot.runtimeAffectingSignatureByFile.get(changedFile) ?? ''),
+              ...[...snapshot.runtimeAffectingChangedByType.js]
+                .sort()
+                .map(changedFile => snapshot.runtimeAffectingSignatureByFile.get(changedFile) ?? ''),
+            ].join(':')
+          : ''
+        if (!shouldTrackGeneratorRuntime && !runtimeLinkedCssFiles.has(file) && !runtimeLinkedCssFiles.has(outputFile)) {
           const lastCss = getLastCssResult(lastCssResultByFile, outputFile, file)
           if (lastCss != null) {
             applyCssResult(lastCss)
@@ -883,7 +937,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             cache,
             cacheKey: cssCacheKey,
             hashKey: cssHashKey,
-            hash: `${cssRuntimeAffectingHash}:${scopedGeneratorCandidateSignature}:${sourceTraceSignature}`,
+            hash: `${cssRuntimeAffectingHash}:${scopedGeneratorCandidateSignature}:${sourceTraceSignature}:${cssLinkedImpactSignature}`,
             applyResult(source) {
               applyCssResult(source)
               rememberLastCssResult(lastCssResultByFile, lastCssSourceHashByFile, outputFile, source, cssRuntimeAffectingHash)
@@ -940,16 +994,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   }
                   debug('css generated result: %s bytes=%d', file, tracedCss.length)
                   recordCssAssetResult?.(outputFile, tracedCss)
-                  const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
-                    && !isAppOriginCssFile(file)
-                    && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
                   recordViteProcessedCssAssetResult?.(outputFile, tracedCss, {
-                    injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
+                    injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
                     outputFile,
                   })
                   if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
                     recordViteProcessedCssAssetResult?.(file, tracedCss, {
-                      injectIntoMain: isAppOriginCssFile(file) ? false : shouldInjectVitePipelineCssIntoMain,
+                      injectIntoMain: shouldInjectVitePipelineCssIntoMain,
                       outputFile,
                     })
                   }
@@ -1174,7 +1225,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
         const cssHandlerOptions = {
           ...getCssHandlerOptions(sourceFile),
-          isMainChunk: outputCssHandlerOptions.isMainChunk || isMainStyleEntryCssFile(sourceFile),
+          isMainChunk: outputCssHandlerOptions.isMainChunk,
         }
         const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
         const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
@@ -1234,7 +1285,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             recordCssAssetResult?.(outputFile, css)
             const shouldInjectReplayCssIntoMain = shouldInjectCssIntoMainFromOutput(outputFile, sourceFile, outputCssHandlerOptions)
             recordViteProcessedCssAssetResult?.(sourceFile, css, {
-              injectIntoMain: isAppOriginCssFile(outputFile)
+              injectIntoMain: outputCssHandlerOptions.isMainChunk
                 ? false
                 : shouldInjectReplayCssIntoMain,
               outputFile,

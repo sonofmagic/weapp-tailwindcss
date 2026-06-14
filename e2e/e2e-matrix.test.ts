@@ -248,6 +248,21 @@ describe('e2e matrix', () => {
     }
   })
 
+  it('keeps every automated mini-program demo in the dynamic arbitrary-value CSS regression', () => {
+    const regressionCaseNames = E2E_PROJECTS
+      .filter(item => !item.name.includes('hbuilderx'))
+      .map(item => item.name)
+      .sort()
+    const expectedNames = DEMO_COVERAGE_MATRIX
+      .filter(item => item.platforms.some(platform => platform.staticCoverage === 'automated'))
+      .filter(item => !item.hbuilderxLocal)
+      .filter(item => !item.name.startsWith('web/'))
+      .map(item => item.name)
+      .sort()
+
+    expect(regressionCaseNames).toEqual(expectedNames)
+  })
+
   it('keeps IDE visual HMR in the demo workflow and full IDE command', () => {
     const rootPackageJson = readDemoPackageJson('package.json')
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')

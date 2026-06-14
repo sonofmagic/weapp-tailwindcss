@@ -135,6 +135,26 @@ describe('bundlers/vite source candidates', () => {
     }])).toEqual(new Set(['bg-normal']))
   })
 
+  it('refreshes Tailwind v3 Vue arbitrary candidates after a source update', async () => {
+    const { createSourceCandidateCollector, createTailwindV3DefaultExtractor } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-v3-vue-hmr-candidates')
+    const file = path.join(root, 'src/components/sections/CapabilityShowcase.vue')
+    const collector = createSourceCandidateCollector({
+      extractor: createTailwindV3DefaultExtractor(),
+    })
+
+    await writeTempFile(file, '<template><view class="text-2xl font-semibold"></view></template>')
+    await collector.syncCurrentFile(file)
+    expect(collector.values().has('text-2xl')).toBe(true)
+    expect(collector.values().has('text-[123rpx]')).toBe(false)
+
+    await writeTempFile(file, '<template><view class="text-[123rpx] font-semibold"></view></template>')
+    await collector.syncCurrentFile(file)
+
+    expect(collector.values().has('text-2xl')).toBe(false)
+    expect(collector.values().has('text-[123rpx]')).toBe(true)
+  })
+
   it('excludes candidates matched by source entries', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-source-exclude')

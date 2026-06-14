@@ -110,20 +110,3 @@ export function stripStyleFileExtension(file: string) {
   const ext = path.extname(normalized)
   return ext ? normalized.slice(0, -ext.length) : normalized
 }
-
-export function isAppOriginCssFile(file: string) {
-  return path.basename(stripStyleFileExtension(file)) === 'app-origin'
-}
-
-export function isMainAppCssFile(file: string) {
-  return path.basename(stripStyleFileExtension(file)) === 'app'
-}
-
-export function isMainStyleEntryCssFile(file: string) {
-  const basename = path.basename(stripStyleFileExtension(file))
-  return basename === 'app' || basename === 'main'
-}
-
-export function isTailwindEntryCssFile(file: string) {
-  return path.basename(stripStyleFileExtension(file)) === 'tailwind'
-}

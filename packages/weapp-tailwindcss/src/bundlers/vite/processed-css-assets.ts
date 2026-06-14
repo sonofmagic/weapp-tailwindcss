@@ -60,14 +60,6 @@ function isCssOutputFile(file: string) {
   return CSS_OUTPUT_FILE_RE.test(file)
 }
 
-function isMainStyleAssetFile(file: string) {
-  const basename = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
-    .replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i, '')
-    .split('/')
-    .pop()
-  return basename === 'app' || basename === 'main'
-}
-
 function getAssetFile(bundleFile: string, asset: OutputAsset) {
   return asset.fileName || bundleFile
 }
@@ -224,6 +216,7 @@ function shouldInjectViteProcessedCssResult(
   sourceFile: string,
   options: {
     injectIntoMain?: boolean | undefined
+    outputFile?: string | undefined
   },
 ) {
   if (options.injectIntoMain === true) {
@@ -234,12 +227,14 @@ function shouldInjectViteProcessedCssResult(
   }
   const targetFileKey = normalizeOutputPathKey(targetFile)
   const sourceFileKey = normalizeOutputPathKey(sourceFile)
-  const sourceBaseName = sourceFileKey.replace(/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i, '').split('/').pop()
   return sourceFileKey !== targetFileKey
     && (
       opts.mainCssChunkMatcher(sourceFile, opts.appType)
-      || sourceBaseName === 'app'
-      || sourceBaseName === 'main'
+      || (
+        typeof options.outputFile === 'string'
+        && normalizeOutputPathKey(options.outputFile) !== targetFileKey
+        && opts.mainCssChunkMatcher(options.outputFile, opts.appType)
+      )
     )
 }
 
@@ -349,15 +344,23 @@ export function collectViteProcessedCssAssetResults(
     options.recordCssAssetResult?.(file, nextCss)
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
-      && isMainStyleAssetFile(file)
       && (
-        normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
-        || !options.opts.mainCssChunkMatcher(file, options.opts.appType)
+        options.opts.mainCssChunkMatcher(file, options.opts.appType)
+        || (
+          normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+          && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
+        )
       )
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {
       injectIntoMain: shouldReplayIntoMainCss || undefined,
       outputFile: resolvedOutputFile,
     })
+    if (normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)) {
+      options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, nextCss, {
+        injectIntoMain: shouldReplayIntoMainCss || undefined,
+        outputFile: resolvedOutputFile,
+      })
+    }
     for (const markerFile of collectMatchingGeneratedCssMarkerFiles(
       file,
       rawSource,
@@ -367,6 +370,10 @@ export function collectViteProcessedCssAssetResults(
         continue
       }
       options.recordViteProcessedCssAssetResult?.(markerFile, nextCss, {
+        injectIntoMain: shouldReplayIntoMainCss || undefined,
+        outputFile: resolvedOutputFile,
+      })
+      options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, nextCss, {
         injectIntoMain: shouldReplayIntoMainCss || undefined,
         outputFile: resolvedOutputFile,
       })

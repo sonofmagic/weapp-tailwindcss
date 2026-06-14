@@ -190,7 +190,7 @@ export function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwind
 }
 
 export function shouldUseGeneratorForCurrentCss(
-  majorVersion: number | undefined,
+  _majorVersion: number | undefined,
   cssHandlerOptions: IStyleHandlerOptions,
   options: {
     hasGeneratedCss: boolean
@@ -203,7 +203,7 @@ export function shouldUseGeneratorForCurrentCss(
   return options.hasGeneratedCss
     || options.hasGeneratedMarkers
     || options.hasSourceDirectives
-    || (majorVersion === 4 && hasApplyDirectives)
+    || hasApplyDirectives
     || cssHandlerOptions.isMainChunk
 }
 

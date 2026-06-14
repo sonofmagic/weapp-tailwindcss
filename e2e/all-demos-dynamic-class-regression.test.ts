@@ -10,6 +10,14 @@ import { projectFilter } from './shared'
 
 const fixturesRoot = path.resolve(__dirname, '../demo')
 const rawClasses = ['h-[458rpx]', 'w-[218rpx]', 'inset-x-[30%]'] as const
+const rawClassStyleExpectations: Record<typeof rawClasses[number], RegExp[]> = {
+  'h-[458rpx]': [/height\s*:\s*458rpx/i],
+  'w-[218rpx]': [/width\s*:\s*218rpx/i],
+  'inset-x-[30%]': [
+    /left\s*:\s*30%/i,
+    /right\s*:\s*30%/i,
+  ],
+}
 const markerClass = 'weapp-tw-dynamic-regression'
 const nativeElementRegressionVars = [
   '--weapp-tw-native-view-regression',
@@ -281,8 +289,13 @@ function expectBuiltRegression(entry: ProjectEntry, outputs: Array<{ name: strin
   }
 
   for (const raw of rawClasses) {
+    const escaped = replaceWxml(raw)
     expect(joined, `${entry.name} should escape ${raw}`).toContain(replaceWxml(raw))
     expect(joinedWithoutTokenSourceComments, `${entry.name} should not keep raw ${raw}`).not.toContain(raw)
+    expect(styles, `${entry.name} should emit CSS selector for ${raw}`).toContain(escaped)
+    for (const expectation of rawClassStyleExpectations[raw]) {
+      expect(styles, `${entry.name} should emit generated CSS declaration for ${raw}`).toMatch(expectation)
+    }
   }
 }
 

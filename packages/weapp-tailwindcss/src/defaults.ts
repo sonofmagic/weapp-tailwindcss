@@ -1,4 +1,4 @@
-import type { AppType, CssPreflightOptions, UserDefinedOptions } from './types'
+import type { CssPreflightOptions, UserDefinedOptions } from './types'
 import { isAllowedClassName, MappingChars2String } from '@weapp-core/escape'
 import { DEFAULT_PARSE_CACHE_MAX_ENTRIES, DEFAULT_PARSE_CACHE_MAX_SOURCE_LENGTH } from './js/babel/cache-options'
 import { noop } from './utils'
@@ -17,25 +17,6 @@ const MPX_STYLES_DIR_PATTERN = /(?:^|\/)styles\/.*\.(?:wx|ac|jx|tt|q|c|ty)ss$/i
 
 const KBONE_MAIN_CSS_RE = /^(?:common\/)?miniprogram-app/
 const IMPLICIT_MAIN_CSS_RE = /^(?:app|common\/main|bundle)(?:\.|\/|$)/
-
-const MAIN_CSS_CHUNK_MATCHERS: Partial<Record<AppType, (file: string) => boolean>> = {
-  'uni-app': file => file.startsWith('common/main') || file.startsWith('app'),
-  'uni-app-vite': file => file.startsWith('app') || file.startsWith('common/main'),
-  'uni-app-x': file => file.startsWith('app') || file.startsWith('common/main'),
-  'mpx': (file) => {
-    const normalized = normalizePath(file)
-    if (normalized.startsWith('app')) {
-      return true
-    }
-    return MPX_STYLES_DIR_PATTERN.test(normalized)
-  },
-  'taro': file => file.startsWith('app'),
-  'remax': file => file.startsWith('app'),
-  'rax': file => file.startsWith('bundle'),
-  'native': file => file.startsWith('app'),
-  'weapp-vite': file => file.startsWith('app'),
-  'kbone': file => KBONE_MAIN_CSS_RE.test(file),
-}
 
 const alwaysFalse = () => false
 
@@ -75,15 +56,11 @@ export function resolveDefaultCssPreflight(
 }
 
 function createMainCssChunkMatcher() {
-  return (file: string, appType?: AppType) => {
-    if (!appType) {
-      const normalized = normalizePath(file)
-      return IMPLICIT_MAIN_CSS_RE.test(normalized)
-        || MPX_STYLES_DIR_PATTERN.test(normalized)
-        || KBONE_MAIN_CSS_RE.test(normalized)
-    }
-    const matcher = MAIN_CSS_CHUNK_MATCHERS[appType]
-    return matcher ? matcher(file) : true
+  return (file: string) => {
+    const normalized = normalizePath(file)
+    return IMPLICIT_MAIN_CSS_RE.test(normalized)
+      || MPX_STYLES_DIR_PATTERN.test(normalized)
+      || KBONE_MAIN_CSS_RE.test(normalized)
   }
 }
 

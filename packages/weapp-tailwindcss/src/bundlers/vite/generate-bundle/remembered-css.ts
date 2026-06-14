@@ -4,7 +4,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import { hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks } from '../../shared/generated-css-marker'
 import { hasTailwindApplyDirective } from '../../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { isAppOriginCssFile, isMainAppCssFile, resolveViteCssPipelineOutputFile } from './css-output'
+import { resolveViteCssPipelineOutputFile } from './css-output'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 import { scoreMatchingStyleFileBase } from './style-matching'
 
@@ -35,6 +35,10 @@ function findRememberedCssSource(
   return matched.length === 1 ? matched[0] : undefined
 }
 
+function normalizeRememberedSourceIdentity(file: string) {
+  return normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+}
+
 export function findRememberedCssSources(
   sources: Iterable<[string, RememberedCssSource]> | undefined,
   outputFile: string,
@@ -55,7 +59,7 @@ export function findRememberedCssSources(
     .map(block => normalizeOutputPathKey(block.file!)))
   if (markerFiles.size > 0) {
     const markerMatched = rememberedSources.filter(remembered =>
-      markerFiles.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, ''))),
+      markerFiles.has(normalizeRememberedSourceIdentity(remembered.sourceFile)),
     )
     if (markerMatched.length > 0) {
       return markerMatched
@@ -68,7 +72,7 @@ export function findRememberedCssSources(
   ].filter((item): item is string => typeof item === 'string' && item.length > 0)
 
   const sourceMatched = rememberedSources.filter(remembered =>
-    originalFiles.some(originalFile => normalizeOutputPathKey(remembered.sourceFile) === normalizeOutputPathKey(originalFile)),
+    originalFiles.some(originalFile => normalizeRememberedSourceIdentity(remembered.sourceFile) === normalizeRememberedSourceIdentity(originalFile)),
   )
   if (sourceMatched.length > 0) {
     return sourceMatched
@@ -89,7 +93,6 @@ export function findRememberedCssSources(
 
   const scoredMatches = rememberedSources
     .filter(remembered => !shouldUseRememberedApplyFallback || hasTailwindApplyDirective(remembered.rawSource))
-    .filter(remembered => !(isMainAppCssFile(outputFile) && isAppOriginCssFile(remembered.outputFile)))
     .map(remembered => ({
       remembered,
       score: Math.max(
