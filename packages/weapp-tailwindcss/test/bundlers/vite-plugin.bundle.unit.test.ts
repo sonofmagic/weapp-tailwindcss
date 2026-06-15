@@ -1627,8 +1627,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await mkdir(path.dirname(appPage), { recursive: true })
     await writeFile(appCss, '@config "./tailwind.config.js";\n@tailwind utilities;\n', 'utf8')
     await writeFile(subCss, '@config "../../tailwind.config.js";\n@tailwind utilities;\n', 'utf8')
-    await writeFile(appConfig, 'module.exports = { content: ["./src/pages/**/*.{wxml,js,ts}"] }\n', 'utf8')
-    await writeFile(subConfig, 'module.exports = { content: ["./src/subpackages/normal/**/*.{wxml,js,ts}"] }\n', 'utf8')
+    await writeFile(appConfig, 'module.exports = { content: ["./pages/**/*.{wxml,js,ts}"] }\n', 'utf8')
+    await writeFile(subConfig, 'module.exports = { content: ["./**/*.{wxml,js,ts}"] }\n', 'utf8')
     await writeFile(appPage, '<view class="bg-main"></view>\n', 'utf8')
     await writeFile(subPage, '<view class="bg-normal"></view>\n', 'utf8')
 
@@ -1700,10 +1700,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       'app.css': {
         ...createRollupAsset('@config "./tailwind.config.js";\n@tailwind utilities;'),
         fileName: 'app.css',
+        originalFileNames: [appCss],
       },
       'subpackages/normal/pages/entry/index.css': {
         ...createRollupAsset('@config "../../tailwind.config.js";\n@tailwind utilities;'),
         fileName: 'subpackages/normal/pages/entry/index.css',
+        originalFileNames: [subCss],
       },
     }
     const generateBundle = getGenerateBundleHandler(postPlugin)
@@ -1796,6 +1798,301 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(String(bundle['app.css'].source)).toContain('.text-_b35px_B')
     expect(String(bundle['app.css'].source)).toContain('.h-_b29px_B')
   })
+
+  it('generates Tailwind v3 css entries from their own @config content in main-package directories', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-main-multi-config-'))
+    createdDirs.push(root)
+    const featureACss = path.join(root, 'src/features/a/index.css')
+    const featureBCss = path.join(root, 'src/features/b/index.css')
+    const featureAConfig = path.join(root, 'src/features/a/tailwind.config.cjs')
+    const featureBConfig = path.join(root, 'src/features/b/tailwind.config.cjs')
+    const featureAPage = path.join(root, 'src/features/a/index.wxml')
+    const featureBPage = path.join(root, 'src/features/b/index.wxml')
+    await mkdir(path.dirname(featureAPage), { recursive: true })
+    await mkdir(path.dirname(featureBPage), { recursive: true })
+    await writeFile(featureAConfig, 'module.exports = { content: ["./**/*.{wxml,js,ts}"] }\n', 'utf8')
+    await writeFile(featureBConfig, 'module.exports = { content: ["./**/*.{wxml,js,ts}"] }\n', 'utf8')
+    await writeFile(featureAPage, '<view class="bg-feature-a"></view>\n', 'utf8')
+    await writeFile(featureBPage, '<view class="bg-feature-b"></view>\n', 'utf8')
+    await writeFile(featureACss, '@config "./tailwind.config.cjs";\n@tailwind utilities;\n', 'utf8')
+    await writeFile(featureBCss, '@config "./tailwind.config.cjs";\n@tailwind utilities;\n', 'utf8')
+
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const runtimeSet = new Set(['bg-feature-a', 'bg-feature-b', 'bg-global'])
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcssBasedir: root,
+          tailwindcss: {
+            config: featureAConfig,
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [featureACss, featureBCss],
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
+
+    const bundle = {
+      'src/features/a/index.css': {
+        ...createRollupAsset('@config "./tailwind.config.cjs";\n@tailwind utilities;'),
+        fileName: 'src/features/a/index.css',
+        originalFileNames: [featureACss],
+      },
+      'src/features/b/index.css': {
+        ...createRollupAsset('@config "./tailwind.config.cjs";\n@tailwind utilities;'),
+        fileName: 'src/features/b/index.css',
+        originalFileNames: [featureBCss],
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
+
+    const featureAOutput = String(bundle['src/features/a/index.css'].source)
+    const featureBOutput = String(bundle['src/features/b/index.css'].source)
+    expect(featureAOutput).toContain('.bg-feature-a{}')
+    expect(featureAOutput).not.toContain('.bg-feature-b{}')
+    expect(featureAOutput).not.toContain('.bg-global{}')
+    expect(featureBOutput).toContain('.bg-feature-b{}')
+    expect(featureBOutput).not.toContain('.bg-feature-a{}')
+    expect(featureBOutput).not.toContain('.bg-global{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('generates Tailwind v4 css entries from their own @source and @config content in main-package directories', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-main-multi-source-'))
+    createdDirs.push(root)
+    const featureACss = path.join(root, 'src/features/a/index.css')
+    const featureBCss = path.join(root, 'src/features/b/index.css')
+    const featureBConfig = path.join(root, 'src/features/b/tailwind.config.cjs')
+    const featureAPage = path.join(root, 'src/features/a/index.wxml')
+    const featureBPage = path.join(root, 'src/features/b/index.wxml')
+    await mkdir(path.dirname(featureAPage), { recursive: true })
+    await mkdir(path.dirname(featureBPage), { recursive: true })
+    await writeFile(featureAPage, '<view class="bg-feature-a"></view>\n', 'utf8')
+    await writeFile(featureBConfig, 'module.exports = { content: ["./**/*.{wxml,js,ts}"] }\n', 'utf8')
+    await writeFile(featureBPage, '<view class="bg-feature-b"></view>\n', 'utf8')
+    await writeFile(featureACss, '@import "tailwindcss" source(none);\n@source "./**/*.{wxml,js,ts}";\n', 'utf8')
+    await writeFile(featureBCss, '@import "tailwindcss" source(none);\n@config "./tailwind.config.cjs";\n', 'utf8')
+
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 4,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          version: 4,
+          projectRoot: root,
+          base: root,
+          baseFallbacks: [],
+          css: '@import "tailwindcss" source(none);',
+          dependencies: [],
+          packageName: 'tailwindcss',
+        })),
+        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          version: 4,
+          projectRoot: root,
+          base: root,
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
+        })),
+        resolveTailwindV4Source: vi.fn(async (options: { base?: string, css?: string } = {}) => ({
+          version: 4,
+          projectRoot: root,
+          base: options.base ?? root,
+          baseFallbacks: [],
+          css: options.css ?? '@import "tailwindcss" source(none);',
+          dependencies: [],
+          packageName: 'tailwindcss',
+        })),
+      }
+    })
+
+    const runtimeSet = new Set(['bg-feature-a', 'bg-feature-b', 'bg-global'])
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          tailwindcss: {
+            v4: {
+              projectRoot: root,
+            },
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [featureACss, featureBCss],
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
+
+    const bundle = {
+      'src/features/a/index.css': {
+        ...createRollupAsset('@import "tailwindcss" source(none);\n@source "./**/*.{wxml,js,ts}";'),
+        fileName: 'src/features/a/index.css',
+        originalFileNames: [featureACss],
+      },
+      'src/features/b/index.css': {
+        ...createRollupAsset('@import "tailwindcss" source(none);\n@config "./tailwind.config.cjs";'),
+        fileName: 'src/features/b/index.css',
+        originalFileNames: [featureBCss],
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
+
+    const featureAOutput = String(bundle['src/features/a/index.css'].source)
+    const featureBOutput = String(bundle['src/features/b/index.css'].source)
+    expect(featureAOutput).toContain('.bg-feature-a{}')
+    expect(featureAOutput).not.toContain('.bg-feature-b{}')
+    expect(featureAOutput).not.toContain('.bg-global{}')
+    expect(featureBOutput).toContain('.bg-feature-b{}')
+    expect(featureBOutput).not.toContain('.bg-feature-a{}')
+    expect(featureBOutput).not.toContain('.bg-global{}')
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps explicit Tailwind v3 @config with empty content from falling back to global candidates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-empty-config-'))
+    createdDirs.push(root)
+    const cssEntry = path.join(root, 'src/empty/index.css')
+    const configFile = path.join(root, 'src/empty/tailwind.config.cjs')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(configFile, 'module.exports = { content: [] }\n', 'utf8')
+    await writeFile(cssEntry, '@config "./tailwind.config.cjs";\n@tailwind utilities;\n', 'utf8')
+
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
+      css: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join(''),
+      target: 'weapp',
+      classSet: new Set(options.candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    const runtimeSet = new Set(['bg-global'])
+    const context = createContext({
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcssBasedir: root,
+          tailwindcss: {
+            config: configFile,
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: [cssEntry],
+    })
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+    await sourcePlugin.buildStart?.call(sourcePlugin as any, {} as any)
+
+    const bundle = {
+      'src/empty/index.css': {
+        ...createRollupAsset('@config "./tailwind.config.cjs";\n@tailwind utilities;'),
+        fileName: 'src/empty/index.css',
+        originalFileNames: [cssEntry],
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
+
+    expect(generateMock).toHaveBeenCalled()
+    expect([...generateMock.mock.calls.at(-1)![0].candidates]).toEqual([])
+    expect(String(bundle['src/empty/index.css'].source)).not.toContain('.bg-global{}')
+  }, TEST_TIMEOUT_MS)
 
   it('updates auto tailwindcss v4 css source content on repeated vite css transforms', async () => {
     mockTailwindV4GeneratorCss()

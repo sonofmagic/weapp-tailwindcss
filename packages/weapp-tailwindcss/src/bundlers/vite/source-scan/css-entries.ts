@@ -86,6 +86,14 @@ function createCssEntriesCacheKey(css: string, base: string, dependencies: Confi
   })
 }
 
+function createDependencyExcludeEntries(files: Iterable<string>): TailwindSourceEntry[] {
+  return [...files].map(file => ({
+    base: path.dirname(file),
+    negated: true,
+    pattern: path.basename(file),
+  }))
+}
+
 async function statConfigDependency(file: string): Promise<ConfigDependencySignature> {
   try {
     const stats = await stat(file)
@@ -309,6 +317,12 @@ export async function resolveTailwindV3CssEntryScan(
     catch {
       return
     }
+    const cssConfigEntries = await resolveTailwindConfigEntriesFromCssCached(css, path.dirname(cssEntry))
+    if (cssConfigEntries) {
+      addSourceScanDependencies(dependencies, cssConfigEntries.dependencies)
+      entries.push(...cssConfigEntries.entries)
+      return
+    }
     const source = await resolveTailwindV3Source({
       ...sourceOptions,
       base: path.dirname(cssEntry),
@@ -376,17 +390,18 @@ export async function resolveTailwindConfigEntriesFromCssCached(css: string, bas
     return cached
   }
   const task = resolveConfigContentEntries(root, base).then((resolved) => {
-    return resolved.entries.length > 0
-      ? {
-          entries: resolved.entries,
-          explicit: true,
-          inlineCandidates: {
-            excluded: new Set<string>(),
-            included: new Set<string>(),
-          },
-          dependencies: resolved.dependencies,
-        }
-      : undefined
+    return {
+      entries: [
+        ...resolved.entries,
+        ...createDependencyExcludeEntries(resolved.dependencies),
+      ],
+      explicit: true,
+      inlineCandidates: {
+        excluded: new Set<string>(),
+        included: new Set<string>(),
+      },
+      dependencies: resolved.dependencies,
+    }
   })
   tailwindConfigCssEntriesCache.set(cacheKey, task)
   return task

@@ -9,7 +9,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { splitCandidateTokens } from 'tailwindcss-patch'
-import { resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
+import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
 import {
   resolveTailwindV3Source,
   resolveTailwindV3SourceFromPatcher,
@@ -867,9 +867,15 @@ export async function resolveGeneratorSource(
       ...(config ? { config } : {}),
     })
     const sourceWithMetadata = withTailwindV3SourceMetadata(source)
+    const cssEntrySourceEntries = await resolveTailwindConfigEntriesFromCssCached(
+      rawSource,
+      resolvedEntrySource.base,
+    )
+    const sourceMetadata = (sourceWithMetadata as GeneratorResolvedSource).__weappTailwindcssMeta
     return withGeneratorSourceMetadata(sourceWithMetadata, {
-      ...(sourceWithMetadata as GeneratorResolvedSource).__weappTailwindcssMeta,
+      ...sourceMetadata,
       matchedCssSourceFile: (resolvedEntrySource as SourceSideCssEntrySource).file,
+      sourceEntries: cssEntrySourceEntries?.entries ?? sourceMetadata?.sourceEntries,
     })
   }
 
@@ -1158,6 +1164,14 @@ export async function resolveGeneratorSourceEntries(source: TailwindResolvedSour
     sourceMetadata?.sourceCss ?? source.css,
     sourceMetadata?.sourceBase ?? source.base,
   )
+  if (
+    resolved?.entries.length === 0
+    && !resolved.inlineCandidates.included.size
+    && !resolved.inlineCandidates.excluded.size
+    && !resolved.dependencies.length
+  ) {
+    return undefined
+  }
   if (resolved?.entries.length || (!resolved?.explicit && !sourceMetadata?.matchedCssSourceFile) || !runtimeState) {
     return resolved?.entries
   }

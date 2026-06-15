@@ -316,6 +316,9 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
         return values()
       }
     }
+    if (entries?.length === 0) {
+      return new Set(inlineIncludedCandidates)
+    }
     const filtered = new Set<string>()
     for (const [id, candidates] of candidatesById) {
       if (entries !== undefined && !isFileMatchedByTailwindSourceEntries(id, entries)) {
@@ -348,6 +351,16 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       if (id) {
         candidateSources.add(id)
       }
+    }
+
+    if (entries?.length === 0) {
+      for (const candidate of inlineIncludedCandidates) {
+        addCandidateSource(candidate, undefined)
+      }
+      for (const candidate of inlineExcludedCandidates) {
+        sources.delete(candidate)
+      }
+      return sources
     }
 
     for (const [id, candidates] of candidatesById) {

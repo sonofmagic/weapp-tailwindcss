@@ -4,6 +4,10 @@ import path from 'node:path'
 import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCssCached } from '../source-scan'
 import { createCandidateSignature } from './signatures'
 
+function hasOwnSourceDirectives(rawSource: string) {
+  return rawSource.includes('@source') || rawSource.includes('@config')
+}
+
 export async function createScopedGeneratorCandidateSignature(
   rawSource: string,
   sourceFile: string,
@@ -11,7 +15,7 @@ export async function createScopedGeneratorCandidateSignature(
   getSourceCandidatesForEntries: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined,
   options: { includeFallbackSignature?: boolean | undefined, majorVersion?: number | undefined } = {},
 ) {
-  if (!getSourceCandidatesForEntries || (!rawSource.includes('@source') && !rawSource.includes('@config'))) {
+  if (!getSourceCandidatesForEntries || !hasOwnSourceDirectives(rawSource)) {
     return fallbackSignature
   }
   const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
@@ -54,11 +58,8 @@ export async function createScopedGeneratorRuntime(options: {
     const resolved = majorVersion === 3
       ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
       : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-    if (resolved?.entries !== undefined) {
-      const scopedRuntime = getSourceCandidatesForEntries(resolved.entries)
-      if (scopedRuntime.size > 0) {
-        return scopedRuntime
-      }
+    if (resolved?.entries !== undefined && (resolved.entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
+      return getSourceCandidatesForEntries(resolved.entries)
     }
   }
   if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {

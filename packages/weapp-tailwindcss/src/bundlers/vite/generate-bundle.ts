@@ -178,6 +178,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       bundle[fileName] = replayAsset
       return replayAsset
     }
+    const resolveAssetSourceFile = (asset: OutputAsset, fallbackFile: string) => {
+      const candidates = [
+        asset.originalFileName,
+        ...(asset.originalFileNames ?? []),
+      ].filter((item): item is string => typeof item === 'string' && item.length > 0)
+      return candidates[0] ?? fallbackFile
+    }
 
     const metrics = createEmptyMetrics()
     const forceRuntimeRefreshByEnv = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
@@ -503,7 +510,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // uni-app dev/watch 会在每轮产物阶段重写主样式产物。
         // 即便本轮 CSS 原文 hash 未变化，也必须回填缓存中的转译结果，
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
-        const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, file, outDir, opts)
+        const assetSourceFile = resolveAssetSourceFile(originalSource, file)
+        const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, assetSourceFile, outDir, opts)
         const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
@@ -591,8 +599,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && hasDifferentRememberedCssSource
           && (hasCurrentTailwindGenerationDirective || hasRememberedApplyDirective)
         const generatorSourceFile = vitePipelineCssAsset
-          ? rememberedCssSource?.sourceFile ?? file
-          : file
+          ? rememberedCssSource?.sourceFile ?? assetSourceFile
+          : assetSourceFile
         const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
         const cssHandlerOptions = vitePipelineCssAsset
           ? {
