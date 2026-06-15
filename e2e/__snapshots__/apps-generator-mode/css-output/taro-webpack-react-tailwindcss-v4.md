@@ -5,7 +5,7 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 389725 | 2494 | false | false | false | true | true | false | true |
+| 389122 | 2494 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,10 +20,10 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 321299 | 2466 | false | false | false | true | true | false | true |
+| `app.wxss` | 321098 | 2466 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 4044 | 38 | false | false | false | false | false | false | false |
-| `sub-independent/pages/index.wxss` | 31673 | 339 | false | false | false | true | false | false | true |
-| `sub-normal/pages/index.wxss` | 32709 | 339 | false | false | false | true | false | false | true |
+| `sub-independent/pages/index.wxss` | 31472 | 339 | false | false | false | true | false | false | true |
+| `sub-normal/pages/index.wxss` | 32508 | 339 | false | false | false | true | false | false | true |
 
 ## Generator CSS
 
@@ -424,7 +424,7 @@ wx-root-portal-content {
   margin-right: auto;
 }
 ._emt-0 {
-  margin-top: calc(var(--spacing) * 0) !important;
+  margin-top: 0 !important;
 }
 .-mt-1_d5 {
   margin-top: calc(var(--spacing) * -1.5);
@@ -1003,7 +1003,7 @@ wx-root-portal-content {
   padding: calc(var(--spacing) * 0.5);
 }
 .p-1 {
-  padding: calc(var(--spacing) * 1);
+  padding: var(--spacing);
 }
 .p-2 {
   padding: calc(var(--spacing) * 2);
@@ -1084,8 +1084,8 @@ wx-root-portal-content {
   padding-right: 95rpx;
 }
 .py-1 {
-  padding-bottom: calc(var(--spacing) * 1);
-  padding-top: calc(var(--spacing) * 1);
+  padding-bottom: var(--spacing);
+  padding-top: var(--spacing);
 }
 .py-1_d5 {
   padding-bottom: calc(var(--spacing) * 1.5);
@@ -1347,15 +1347,15 @@ wx-root-portal-content {
   position: absolute;
 }
 .before_cinset-0::before {
-  bottom: calc(var(--spacing) * 0);
+  bottom: 0;
   content: var(--tw-content);
-  left: calc(var(--spacing) * 0);
-  right: calc(var(--spacing) * 0);
-  top: calc(var(--spacing) * 0);
+  left: 0;
+  right: 0;
+  top: 0;
 }
 .before_cmr-1::before {
   content: var(--tw-content);
-  margin-right: calc(var(--spacing) * 1);
+  margin-right: var(--spacing);
 }
 .before_crounded-_b20rpx_B::before {
   border-radius: 20rpx;
@@ -1591,8 +1591,8 @@ wx-root-portal-content {
   padding: calc(var(--spacing) * 4);
 }
 ._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3) {
-  padding-bottom: calc(var(--spacing) * 0);
-  padding-top: calc(var(--spacing) * 0);
+  padding-bottom: 0;
+  padding-top: 0;
 }
 ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
   padding-bottom: calc(var(--spacing) * 4);
@@ -11148,7 +11148,7 @@ wx-root-portal-content {
   margin-right: auto;
 }
 ._emt-0 {
-  margin-top: calc(var(--spacing) * 0) !important;
+  margin-top: 0 !important;
 }
 .-mt-1_d5 {
   margin-top: calc(var(--spacing) * -1.5);
@@ -11717,7 +11717,7 @@ wx-root-portal-content {
   padding: calc(var(--spacing) * 0.5);
 }
 .p-1 {
-  padding: calc(var(--spacing) * 1);
+  padding: var(--spacing);
 }
 .p-2 {
   padding: calc(var(--spacing) * 2);
@@ -11798,8 +11798,8 @@ wx-root-portal-content {
   padding-right: 95rpx;
 }
 .py-1 {
-  padding-top: calc(var(--spacing) * 1);
-  padding-bottom: calc(var(--spacing) * 1);
+  padding-top: var(--spacing);
+  padding-bottom: var(--spacing);
 }
 .py-1_d5 {
   padding-top: calc(var(--spacing) * 1.5);
@@ -12062,14 +12062,14 @@ wx-root-portal-content {
 }
 .before_cinset-0::before {
   content: var(--tw-content);
-  top: calc(var(--spacing) * 0);
-  right: calc(var(--spacing) * 0);
-  bottom: calc(var(--spacing) * 0);
-  left: calc(var(--spacing) * 0);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 .before_cmr-1::before {
   content: var(--tw-content);
-  margin-right: calc(var(--spacing) * 1);
+  margin-right: var(--spacing);
 }
 .before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
@@ -12271,8 +12271,8 @@ wx-root-portal-content {
   padding: calc(var(--spacing) * 4);
 }
 ._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3) {
-  padding-top: calc(var(--spacing) * 0);
-  padding-bottom: calc(var(--spacing) * 0);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
   padding-top: calc(var(--spacing) * 4);
@@ -12451,7 +12451,7 @@ wx-root-portal-content {
   margin-right: auto;
 }
 ._emt-0 {
-  margin-top: calc(var(--spacing) * 0) !important;
+  margin-top: 0 !important;
 }
 .-mt-1_d5 {
   margin-top: calc(var(--spacing) * -1.5);
@@ -13035,7 +13035,7 @@ wx-root-portal-content {
   padding: calc(var(--spacing) * 0.5);
 }
 .p-1 {
-  padding: calc(var(--spacing) * 1);
+  padding: var(--spacing);
 }
 .p-2 {
   padding: calc(var(--spacing) * 2);
@@ -13116,8 +13116,8 @@ wx-root-portal-content {
   padding-right: 95rpx;
 }
 .py-1 {
-  padding-bottom: calc(var(--spacing) * 1);
-  padding-top: calc(var(--spacing) * 1);
+  padding-bottom: var(--spacing);
+  padding-top: var(--spacing);
 }
 .py-1_d5 {
   padding-bottom: calc(var(--spacing) * 1.5);
@@ -13379,15 +13379,15 @@ wx-root-portal-content {
   position: absolute;
 }
 .before_cinset-0::before {
-  bottom: calc(var(--spacing) * 0);
+  bottom: 0;
   content: var(--tw-content);
-  left: calc(var(--spacing) * 0);
-  right: calc(var(--spacing) * 0);
-  top: calc(var(--spacing) * 0);
+  left: 0;
+  right: 0;
+  top: 0;
 }
 .before_cmr-1::before {
   content: var(--tw-content);
-  margin-right: calc(var(--spacing) * 1);
+  margin-right: var(--spacing);
 }
 .before_crounded-_b20rpx_B::before {
   border-radius: 20rpx;
@@ -13589,8 +13589,8 @@ wx-root-portal-content {
   padding: calc(var(--spacing) * 4);
 }
 ._b_n_cnth-child_p3_P_B_cpy-0:nth-child(3) {
-  padding-bottom: calc(var(--spacing) * 0);
-  padding-top: calc(var(--spacing) * 0);
+  padding-bottom: 0;
+  padding-top: 0;
 }
 ._b_n_cnth-child_p3_P_B_cpy-4:nth-child(3) {
   padding-bottom: calc(var(--spacing) * 4);

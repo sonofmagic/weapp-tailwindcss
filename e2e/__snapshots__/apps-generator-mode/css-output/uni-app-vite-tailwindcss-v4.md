@@ -5,7 +5,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 31537 | 137 | false | false | false | true | true | false | true |
+| 31517 | 137 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -22,8 +22,8 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 19384 | 108 | false | false | false | true | true | false | true |
-| `pages-order/pages/home/home.wxss` | 5044 | 51 | false | false | false | false | false | false | true |
-| `pages-order/pages/user/user.wxss` | 5044 | 51 | false | false | false | false | false | false | true |
+| `pages-order/pages/home/home.wxss` | 5034 | 51 | false | false | false | false | false | false | true |
+| `pages-order/pages/user/user.wxss` | 5034 | 51 | false | false | false | false | false | false | true |
 | `sub-independent/pages/index.wxss` | 1108 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1073 | 6 | false | false | false | false | false | false | true |
 
@@ -621,7 +621,7 @@ wx-root-portal-content {
   justify-content: center;
 }
 .gap-1 {
-  gap: calc(var(--spacing) * 1);
+  gap: var(--spacing);
 }
 .gap-3 {
   gap: calc(var(--spacing) * 3);
@@ -835,7 +835,7 @@ wx-root-portal-content {
   justify-content: center;
 }
 .gap-1 {
-  gap: calc(var(--spacing) * 1);
+  gap: var(--spacing);
 }
 .gap-3 {
   gap: calc(var(--spacing) * 3);

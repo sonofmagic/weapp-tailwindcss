@@ -45,7 +45,7 @@ import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './gen
 import { handleUniAppXPostCssTasks } from './generate-bundle/uni-app-x-postprocess'
 import { getLastCssResult, getLastCssSourceHash, normalizeViteCssCacheKey, pruneLastCssResults, rememberLastCssResult, resolveViteCssTaskConcurrency } from './generate-bundle/vite-css-cache'
 import { shouldSkipViteJsTransform } from './js-precheck'
-import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets, isCssImportOnlyBundleAsset } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
@@ -606,7 +606,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }
         }
         const rememberedCssSource = mergeRememberedCssSources(rememberedCssSources, outputFile)
-        const useRememberedCssSource = rememberedCssSource != null
+        const shouldKeepImportedCssShell = isCssImportOnlyBundleAsset(bundle, file, rawSource)
+        const useRememberedCssSource = !shouldKeepImportedCssShell
+          && rememberedCssSource != null
           && (
             normalizeOutputPathKey(rememberedCssSource.sourceFile) !== normalizeOutputPathKey(file)
             || (!hasTailwindGenerationSource(rawSource) && hasTailwindGenerationSource(rememberedCssSource.rawSource))
@@ -623,6 +625,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const hasCurrentTailwindGenerationDirective = hasTailwindSourceDirectives(rawSource, { importFallback: true })
           || hasTailwindRootDirectives(rawSource, { importFallback: true })
           || hasTailwindApplyDirective(rawSource)
+        if (shouldKeepImportedCssShell && !hasCurrentTailwindGenerationDirective) {
+          applyCssResult(rawSource)
+          markCssAssetProcessed?.(originalSource, outputFile)
+          recordCssAssetResult?.(outputFile, rawSource)
+          onUpdate(outputFile, rawSource, rawSource)
+          debug('css preserve imported shell asset: %s', outputFile)
+          continue
+        }
         const hasRememberedApplyDirective = rememberedCssSource != null
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
         const hasRememberedTailwindGenerationSource = rememberedCssSource != null

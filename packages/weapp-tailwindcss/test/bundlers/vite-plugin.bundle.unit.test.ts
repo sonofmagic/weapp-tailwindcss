@@ -4537,6 +4537,88 @@ module.exports = {
     expect(viteProcessedCssAssetResults.get('pages/index/index.css')?.injectIntoMain).toBeUndefined()
   })
 
+  it('keeps imported taro vite app css shell when app-origin already carries the generated css', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-taro-app-origin-shell-'))
+    createdDirs.push(root)
+    const sourceFile = path.join(root, 'src/app.css')
+    const records = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
+    const generateBundle = createGenerateBundleHook({
+      opts: createContext({
+        appType: 'taro',
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
+          getClassSetSync: vi.fn(() => new Set(['tw-app-entry'])),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: new Set(['tw-app-entry']) })),
+        },
+      }) as any,
+      runtimeState: {
+        twPatcher: { majorVersion: 4 } as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
+      ensureBundleRuntimeClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn((asset: OutputAsset, file: string) =>
+        file === 'app-origin.wxss' && asset.source.toString().includes('weapp-tailwindcss generated css')),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult(file, css, options) {
+        records.set(file, {
+          css,
+          injectIntoMain: options?.injectIntoMain,
+          outputFile: options?.outputFile,
+        })
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      getViteProcessedCssAssetResult: file => records.get(file),
+      getSourceCandidates: () => new Set(['tw-app-entry']),
+      getSourceCandidateSource: file => file === sourceFile ? '@import "tailwindcss" source(none);' : undefined,
+      getSourceCandidatesForEntries: () => new Set(['tw-app-entry']),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map([
+        ['app-origin.wxss', {
+          outputFile: 'app-origin.wxss',
+          rawSource: '@import "tailwindcss" source(none);',
+          sourceFile,
+        }],
+      ]),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'app-origin.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', sourceFile)}\n.tw-app-entry{display:flex}`),
+        fileName: 'app-origin.wxss',
+        originalFileNames: [sourceFile],
+      },
+      'app.wxss': {
+        ...createRollupAsset('@import "app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    expect((bundle['app.wxss'] as OutputAsset).source.toString()).toBe('@import "app-origin.wxss";')
+    expect((bundle['app-origin.wxss'] as OutputAsset).source.toString()).not.toContain('weapp-tailwindcss generated css')
+  }, TEST_TIMEOUT_MS)
+
   it('does not match plain taro temporary css assets to remembered subpackage css', async () => {
     const generateMock = vi.fn(async () => ({
       css: '.subpackage{}',

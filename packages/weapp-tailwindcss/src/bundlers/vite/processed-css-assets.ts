@@ -345,6 +345,36 @@ function collectBundleAssetFiles(bundle: OutputBundle) {
   return files
 }
 
+export function isCssImportOnlyBundleAsset(
+  bundle: OutputBundle,
+  file: string,
+  css: string,
+) {
+  const importedStyleFiles = collectImportedStyleFiles(css, file)
+  if (importedStyleFiles.size === 0) {
+    return false
+  }
+  let hasNonImportNode = false
+  try {
+    const root = postcss.parse(css)
+    root.each((node) => {
+      if (node.type === 'comment') {
+        return
+      }
+      if (node.type !== 'atrule' || node.name !== 'import') {
+        hasNonImportNode = true
+      }
+    })
+  }
+  catch {
+    return false
+  }
+  if (hasNonImportNode) {
+    return false
+  }
+  return collectImportedBundleCssSources(bundle, importedStyleFiles).length > 0
+}
+
 function isCoveredViteGeneratedSourceAsset(
   file: string,
   existingAssetFiles: Set<string>,
@@ -386,6 +416,10 @@ export function collectViteProcessedCssAssetResults(
         options.opts.mainCssChunkMatcher(file, options.opts.appType)
         || (
           normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+          && (
+            isRootStyleOutputFile(file)
+            || path.posix.basename(normalizeOutputPathKey(file.replace(/[?#].*$/, ''))) === path.posix.basename(normalizeOutputPathKey(resolvedOutputFile.replace(/[?#].*$/, '')))
+          )
           && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
         )
       )
