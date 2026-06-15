@@ -1,6 +1,7 @@
 // webpack 5
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
+import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import micromatch from 'micromatch'
@@ -185,6 +186,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
     const webpackProcessedCssSourceFiles = new Set<string>()
+    const webpackCssSources = new Map<string, string | undefined>()
     let runtimeMetadataPrepared = false
 
     const updateRuntimeWatchDependencies = async () => {
@@ -303,6 +305,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const markWebpackProcessedCssSource = (file: string) => {
       webpackProcessedCssSourceFiles.add(path.resolve(file))
     }
+    const registerWebpackCssSourceFile = (source: WebpackCssSourceRegistration) => {
+      webpackCssSources.set(path.resolve(source.file), source.css)
+    }
     const isWebpackProcessedTailwindEntryAsset = (file: string) => {
       if (
         (runtimeState.twPatcher.majorVersion ?? 0) < 4
@@ -379,6 +384,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       getClassSetInLoader,
       getRuntimeSetInLoader,
       markWebpackProcessedCssSource,
+      registerWebpackCssSourceFile,
       getRuntimeWatchDependencies() {
         return {
           files: runtimeWatchDependencyFiles,
@@ -405,6 +411,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       },
       isWatchMode: () => watchRunObserved || compiler.options?.watch === true,
       runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
+      getWebpackCssSources: () => webpackCssSources,
       debug,
     })
   }

@@ -1,3 +1,4 @@
+import type { SourceCandidateCollector } from '../../vite/source-candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions } from './v5-assets/helpers'
 import type { LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
@@ -29,9 +30,21 @@ interface WebpackCssHandlerOptions {
   isMainChunk: boolean
   postcssOptions: { options: { from: string } }
   majorVersion?: number | undefined
+  sourceOptions?: {
+    outputRoot?: string | undefined
+    sourceCss?: string | undefined
+    sourceFile?: string | undefined
+  } | undefined
 }
 
 const WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX = 128
+
+interface WebpackSourceCandidateCache {
+  candidates: Set<string>
+  getSourceCandidatesForEntries: SourceCandidateCollector['valuesForEntries']
+  signature: string
+  tokenSources: ReturnType<SourceCandidateCollector['sourcesForEntries']>
+}
 
 function toMb(bytes: number) {
   return Math.round(bytes / 1024 / 1024)
@@ -65,6 +78,89 @@ function pruneWebpackCssHandlerOptionCaches(
   }
   pruneMapToMaxSize(cssHandlerOptionsCache, WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX)
   pruneMapToMaxSize(cssUserHandlerOptionsCache, WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX)
+}
+
+function stripStyleExtension(file: string) {
+  const normalized = file.replace(/[?#].*$/, '')
+  const ext = path.extname(normalized)
+  return ext ? normalized.slice(0, -ext.length) : normalized
+}
+
+function normalizeMatchPath(file: string) {
+  return file.split(path.sep).join('/')
+}
+
+function isPathWithinRoot(file: string, root: string) {
+  const relative = path.relative(root, file)
+  return Boolean(relative) && !relative.startsWith('..') && !path.isAbsolute(relative)
+}
+
+function collectWebpackCssMatchBases(
+  file: string,
+  roots: Array<string | undefined>,
+) {
+  const normalizedFile = file.replace(/[?#].*$/, '')
+  const bases = new Set<string>()
+  const addBase = (candidate: string) => {
+    const stripped = normalizeMatchPath(stripStyleExtension(candidate))
+    if (stripped.length > 0) {
+      bases.add(stripped)
+      const withoutWorkspaceSegment = stripped.replace(/^(?:src|dist)\//, '')
+      if (withoutWorkspaceSegment !== stripped && withoutWorkspaceSegment.length > 0) {
+        bases.add(withoutWorkspaceSegment)
+      }
+    }
+  }
+
+  addBase(normalizedFile)
+  const resolvedRoots = roots
+    .filter((root): root is string => typeof root === 'string' && root.length > 0)
+    .map(root => path.resolve(root))
+  if (path.isAbsolute(normalizedFile)) {
+    for (const root of resolvedRoots) {
+      if (isPathWithinRoot(normalizedFile, root)) {
+        addBase(path.relative(root, normalizedFile))
+      }
+    }
+  }
+  else {
+    for (const root of resolvedRoots) {
+      addBase(path.resolve(root, normalizedFile))
+    }
+  }
+  return bases
+}
+
+function scoreWebpackCssSourceFileMatch(
+  outputFile: string,
+  sourceFile: string,
+  options: {
+    outputRoot: string
+    projectRoot?: string | undefined
+  },
+) {
+  const outputBases = collectWebpackCssMatchBases(outputFile, [
+    options.outputRoot,
+    options.projectRoot,
+  ])
+  const sourceBases = collectWebpackCssMatchBases(sourceFile, [
+    options.projectRoot,
+  ])
+  let bestScore = 0
+  for (const outputBase of outputBases) {
+    for (const sourceBase of sourceBases) {
+      if (outputBase === sourceBase) {
+        bestScore = Math.max(bestScore, 100000 + outputBase.length)
+      }
+      else if (outputBase.endsWith(`/${sourceBase}`)) {
+        bestScore = Math.max(bestScore, 50000 + sourceBase.length)
+      }
+      else if (sourceBase.endsWith(`/${outputBase}`)) {
+        bestScore = Math.max(bestScore, 1000 + outputBase.length)
+      }
+    }
+  }
+  return bestScore
 }
 
 function resolveWebpackMemoryDebugStats(context: {
@@ -125,6 +221,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     consumeRuntimeRefreshRequirement,
     isWatchMode,
     runtimeClassSetManager,
+    getWebpackCssSources,
     debug,
   } = options
   const { Compilation, sources } = compiler.webpack
@@ -231,10 +328,36 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             activeProcessHashKeys.add(chunk.id)
           }
         }
+        const cssSources = new Map(
+          [...(getWebpackCssSources?.() ?? [])]
+            .map(([file, css]) => [path.resolve(file), css] as const),
+        )
+        const cssSourceFiles = [...cssSources.keys()]
+          .sort()
+        const resolveWebpackCssSourceFile = (file: string) => {
+          if (cssSourceFiles.length === 0) {
+            return undefined
+          }
+          const matches = cssSourceFiles
+            .map(sourceFile => ({
+              sourceFile,
+              score: scoreWebpackCssSourceFileMatch(file, sourceFile, {
+                outputRoot: outputDir,
+                projectRoot: compilerOptions.tailwindcssBasedir,
+              }),
+            }))
+            .filter(match => match.score > 0)
+            .sort((a, b) => b.score - a.score)
+          const bestScore = matches[0]?.score ?? 0
+          const bestMatches = matches.filter(match => match.score === bestScore)
+          return bestMatches.length === 1 ? bestMatches[0]?.sourceFile : undefined
+        }
         const getCssHandlerOptions = (file: string) => {
           const majorVersion = runtimeState.twPatcher.majorVersion
           const isMainChunk = compilerOptions.mainCssChunkMatcher(file, appType)
-          const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${file}`
+          const sourceFile = resolveWebpackCssSourceFile(file)
+          const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
+          const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${sourceFile ?? 'asset'}:${file}`
           const cached = cssHandlerOptionsCache.get(cacheKey)
           if (cached) {
             return cached
@@ -244,8 +367,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             isMainChunk,
             postcssOptions: {
               options: {
-                from: file,
+                from: sourceFile ?? file,
               },
+            },
+            sourceOptions: {
+              outputRoot: outputDir,
+              ...(sourceCss === undefined ? {} : { sourceCss }),
+              ...(sourceFile === undefined ? {} : { sourceFile }),
             },
             ...(majorVersion === undefined ? {} : { majorVersion }),
           }
@@ -266,6 +394,60 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           cssUserHandlerOptionsCache.set(cacheKey, created)
           return created
+        }
+        const refreshWebpackSourceCandidates = async (): Promise<WebpackSourceCandidateCache | undefined> => {
+          const majorVersion = runtimeState.twPatcher.majorVersion
+          if (majorVersion !== 3 && majorVersion !== 4) {
+            return undefined
+          }
+          const root = compilerOptions.tailwindcssBasedir ?? process.cwd()
+          let sourceScan: Awaited<ReturnType<typeof resolveViteSourceScanEntries>>
+          try {
+            sourceScan = await resolveViteSourceScanEntries(compilerOptions, runtimeState.twPatcher, {
+              root,
+              outDir: outputDir,
+            })
+          }
+          catch (error) {
+            debug('webpack source candidate scan skipped: %O', error)
+            return undefined
+          }
+          const collector = createSourceCandidateCollector({
+            bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
+            extractor: majorVersion === 3
+              ? createTailwindV3DefaultExtractor()
+              : undefined,
+          })
+          await collector.scanRoot({
+            entries: sourceScan?.entries,
+            explicit: sourceScan?.explicit,
+            root,
+            outDir: outputDir,
+          })
+          collector.syncInline(sourceScan?.inlineCandidates)
+          const candidates = sourceScan?.entries
+            ? collector.valuesForEntries(sourceScan.entries)
+            : collector.values()
+          const signature = compilerOptions.cache.computeHash(JSON.stringify({
+            root,
+            outDir: outputDir,
+            entries: sourceScan?.entries,
+            explicit: sourceScan?.explicit ?? false,
+            inlineCandidates: sourceScan?.inlineCandidates
+              ? {
+                  included: [...sourceScan.inlineCandidates.included].sort(),
+                  excluded: [...sourceScan.inlineCandidates.excluded].sort(),
+                }
+              : undefined,
+            dependencies: [...(sourceScan?.dependencies ?? [])].sort(),
+            candidates: [...candidates].sort(),
+          }))
+          return {
+            candidates,
+            getSourceCandidatesForEntries: (entries, options) => collector.valuesForEntries(entries, options),
+            signature,
+            tokenSources: collector.sourcesForEntries(sourceScan?.entries),
+          }
         }
         const finalizeCssAssetSource = (source: string, options: { generatedCss?: boolean } = {}) => {
           let finalized = removeTailwindSourceDirectives(
@@ -299,26 +481,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
           })
         }
-        const cssSourceTraceTokenSources = isCssSourceTraceEnabled(compilerOptions)
-          ? await (async () => {
-              const root = compilerOptions.tailwindcssBasedir ?? process.cwd()
-              const sourceScan = await resolveViteSourceScanEntries(compilerOptions, runtimeState.twPatcher, {
-                root,
-              })
-              const collector = createSourceCandidateCollector({
-                bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
-                extractor: runtimeState.twPatcher.majorVersion === 3
-                  ? createTailwindV3DefaultExtractor()
-                  : undefined,
-              })
-              await collector.scanRoot({
-                entries: sourceScan?.entries,
-                explicit: sourceScan?.explicit,
-                root,
-              })
-              collector.syncInline(sourceScan?.inlineCandidates)
-              return createCssTokenSourceMap(collector.sourcesForEntries(sourceScan?.entries), compilerOptions)
-            })()
+        const webpackSourceCandidates = await refreshWebpackSourceCandidates()
+        const cssSourceTraceTokenSources = isCssSourceTraceEnabled(compilerOptions) && webpackSourceCandidates
+          ? createCssTokenSourceMap(webpackSourceCandidates.tokenSources, compilerOptions)
           : undefined
         const cssSourceTraceSignature = createCssSourceTraceCacheSignature(cssSourceTraceTokenSources, compilerOptions)
         const annotateCss = (css: string) => annotateCssSourceTrace(css, {
@@ -532,7 +697,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const runtimeAwareHash = createRuntimeAwareCssHash(
               chunkHash,
               compilerOptions.cache.computeHash(rawSource),
-              `${runtimeSetHash}:${cssSourceTraceSignature}`,
+              `${runtimeSetHash}:${webpackSourceCandidates?.signature ?? 'source-candidates:0'}:${cssSourceTraceSignature}`,
             )
             tasks.push(
               processCachedTask({
@@ -566,6 +731,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     file,
                     cssHandlerOptions,
                     cssUserHandlerOptions: getCssUserHandlerOptions(file),
+                    getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })

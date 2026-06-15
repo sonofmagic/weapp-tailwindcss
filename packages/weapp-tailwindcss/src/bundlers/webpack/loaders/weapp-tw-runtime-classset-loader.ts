@@ -1,6 +1,7 @@
 import type webpack from 'webpack'
 import type { RuntimeLoaderWatchDependencies, WebpackRuntimeClassSetLoaderOptions } from './runtime-registry'
 import { Buffer } from 'node:buffer'
+import { readFileSync } from 'node:fs'
 import process from 'node:process'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
@@ -44,6 +45,15 @@ function removeUnsupportedThemeKeyframes(root: postcss.Root) {
   })
 }
 
+function resolveOriginalCssSource(file: string, source: string | Buffer) {
+  try {
+    return readFileSync(file, 'utf8')
+  }
+  catch {
+    return Buffer.isBuffer(source) ? source.toString('utf8') : source
+  }
+}
+
 const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClassSetLoaderOptions> = function (
   this: webpack.LoaderContext<RuntimeClassSetLoaderOptions>,
   source: string | Buffer,
@@ -52,7 +62,14 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
     process.stdout.write(`[weapp-tw-runtime-classset-loader] executing for ${this.resourcePath}\n`)
   }
   const rawOptions = this.getOptions()
-  const opt = getWebpackLoaderRuntime(rawOptions?.weappTailwindcssRuntimeKey)?.classSet ?? rawOptions
+  const runtime = getWebpackLoaderRuntime(rawOptions?.weappTailwindcssRuntimeKey)
+  const opt = runtime?.classSet ?? rawOptions
+  if (this.resourcePath) {
+    opt?.registerCssSourceFile?.({
+      file: this.resourcePath,
+      css: resolveOriginalCssSource(this.resourcePath, source),
+    })
+  }
   const maybePromise = opt?.getClassSet?.()
   const applyWatchDependencies = (dependencies: RuntimeLoaderWatchDependencies | void) => {
     for (const file of dependencies?.files ?? []) {

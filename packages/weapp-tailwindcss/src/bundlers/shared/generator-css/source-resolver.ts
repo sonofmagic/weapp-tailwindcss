@@ -90,6 +90,7 @@ function resolveCssHandlerSourceOptions(cssHandlerOptions: IStyleHandlerOptions)
     sourceOptions?: {
       outputRoot?: string | undefined
       sourceFile?: string | undefined
+      sourceCss?: string | undefined
       cssSources?: TailwindV4CssSource[] | undefined
       cssEntries?: string[] | undefined
     } | undefined
@@ -282,7 +283,7 @@ function shouldPreferResolvedSourceSideEntry(
   sourceSideEntrySource: SourceSideCssEntrySource | undefined,
 ) {
   return Boolean(sourceSideEntrySource?.config)
-    && Boolean(cssEntrySource?.configRequest)
+    && (Boolean(cssEntrySource?.configRequest) || !cssEntrySource?.config)
     && (!cssEntrySource?.config || !existsSync(cssEntrySource.config))
 }
 
@@ -872,9 +873,10 @@ export async function resolveGeneratorSource(
       resolvedEntrySource.base,
     )
     const sourceMetadata = (sourceWithMetadata as GeneratorResolvedSource).__weappTailwindcssMeta
+    const matchedSourceFile = (resolvedEntrySource as SourceSideCssEntrySource).file ?? sourceSideEntrySource?.file
     return withGeneratorSourceMetadata(sourceWithMetadata, {
       ...sourceMetadata,
-      matchedCssSourceFile: (resolvedEntrySource as SourceSideCssEntrySource).file,
+      matchedCssSourceFile: matchedSourceFile,
       sourceEntries: cssEntrySourceEntries?.entries ?? sourceMetadata?.sourceEntries,
     })
   }

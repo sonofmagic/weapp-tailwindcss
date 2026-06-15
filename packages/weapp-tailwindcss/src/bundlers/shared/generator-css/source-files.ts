@@ -12,6 +12,7 @@ export interface SourceSideCssEntryOptions {
   cwd?: string | undefined
   outputRoot?: string | undefined
   sourceFile?: string | undefined
+  sourceCss?: string | undefined
   cssSources?: Array<{
     file?: string | undefined
   }> | undefined
@@ -232,7 +233,7 @@ function extractStyleDirectiveSources(source: string) {
   let match = SFC_STYLE_BLOCK_RE.exec(source)
   while (match !== null) {
     const styleSource = match[1] ?? ''
-    if (hasTailwindSourceDirectives(styleSource)) {
+    if (hasTailwindSourceDirectives(styleSource, { importFallback: true })) {
       styleSources.push(styleSource)
     }
     match = SFC_STYLE_BLOCK_RE.exec(source)
@@ -240,7 +241,7 @@ function extractStyleDirectiveSources(source: string) {
   if (styleSources.length > 0) {
     return styleSources
   }
-  return hasTailwindSourceDirectives(source) ? [source] : []
+  return hasTailwindSourceDirectives(source, { importFallback: true }) ? [source] : []
 }
 
 export interface SourceSideCssEntrySource {
@@ -257,11 +258,17 @@ export function resolveSourceSideCssEntrySource(
   resolveOptions: { removeConfig?: boolean } = {},
 ): SourceSideCssEntrySource | undefined {
   for (const sourceFile of createSourceStylePathCandidates(file, sourceOptions)) {
-    if (!existsSync(sourceFile)) {
-      continue
-    }
     try {
-      const source = readFileSync(sourceFile, 'utf8')
+      const source = sourceOptions.sourceFile
+        && path.resolve(sourceOptions.sourceFile) === path.resolve(sourceFile)
+        && typeof sourceOptions.sourceCss === 'string'
+        ? sourceOptions.sourceCss
+        : existsSync(sourceFile)
+          ? readFileSync(sourceFile, 'utf8')
+          : undefined
+      if (source === undefined) {
+        continue
+      }
       for (const styleSource of extractStyleDirectiveSources(source)) {
         const cssEntrySource = resolveCssEntrySource(styleSource, path.dirname(sourceFile), resolveOptions)
         if (cssEntrySource) {

@@ -117,6 +117,35 @@ describe('bundlers/runtime classset loader', () => {
     } as any, source)).toBe(source)
   })
 
+  it('registers original resource css instead of transformed loader input', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-runtime-loader-'))
+    tempDirs.push(tempDir)
+    const sourceFile = path.join(tempDir, 'src/sub-normal/pages/index.css')
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    const originalSource = [
+      '@import "tailwindcss/base";',
+      '@import "tailwindcss/components";',
+      '@import "tailwindcss/utilities";',
+      '@config "../../../tailwind.config.sub-normal.js";',
+    ].join('\n')
+    await writeFile(sourceFile, originalSource, 'utf8')
+    const transformedSource = '@tailwind base;@tailwind components;@tailwind utilities;@config "../../../tailwind.config.sub-normal.js";'
+    const registerCssSourceFile = vi.fn()
+
+    const result = loader.call({
+      getOptions: () => ({
+        registerCssSourceFile,
+      }),
+      resourcePath: sourceFile,
+    } as any, transformedSource)
+
+    expect(result).toBe(transformedSource)
+    expect(registerCssSourceFile).toHaveBeenCalledWith({
+      file: sourceFile,
+      css: originalSource,
+    })
+  })
+
   it('removes cascade layer syntax from runtime css before later webpack processors', () => {
     const source = [
       '@layer theme, base, components, utilities;',

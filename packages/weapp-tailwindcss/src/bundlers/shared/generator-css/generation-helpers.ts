@@ -97,7 +97,7 @@ export function shouldIsolateScopedCssSource(
   sourceEntries: TailwindSourceEntry[] | undefined,
 ) {
   return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
-    || ((majorVersion === 3 || majorVersion === 4) && sourceEntries !== undefined)
+    || (majorVersion === 4 && sourceEntries !== undefined)
 }
 
 export function shouldIsolateCurrentTailwindV4CssCandidates(

@@ -16,6 +16,7 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   consumeRuntimeRefreshRequirement: () => void
   isWatchMode?: (() => boolean) | undefined
   runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
+  getWebpackCssSources?: (() => Iterable<[string, string | undefined]>) | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
 

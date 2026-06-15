@@ -1,5 +1,6 @@
 import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import type { Compiler } from 'webpack'
+import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
@@ -23,6 +24,7 @@ interface SetupWebpackV5LoadersOptions {
   getClassSetInLoader: () => Promise<void>
   getRuntimeSetInLoader: () => Promise<Set<string>>
   markWebpackProcessedCssSource?: ((file: string) => void) | undefined
+  registerWebpackCssSourceFile?: ((source: WebpackCssSourceRegistration) => void) | undefined
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
     contexts: ReadonlySet<string>
@@ -44,6 +46,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     getClassSetInLoader,
     getRuntimeSetInLoader,
     markWebpackProcessedCssSource,
+    registerWebpackCssSourceFile,
     getRuntimeWatchDependencies,
     runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
     debug,
@@ -77,6 +80,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const classSetLoaderOptions = {
     getClassSet: getClassSetInLoader,
     getWatchDependencies: getRuntimeWatchDependencies,
+    ...(registerWebpackCssSourceFile === undefined ? {} : { registerCssSourceFile: registerWebpackCssSourceFile }),
   }
   setWebpackLoaderRuntime(runtimeRegistryKey, {
     classSet: classSetLoaderOptions,

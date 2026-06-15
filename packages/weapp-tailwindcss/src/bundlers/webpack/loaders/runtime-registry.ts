@@ -5,11 +5,17 @@ import type { AppType, InternalUserDefinedOptions } from '@/types'
 export interface WebpackRuntimeClassSetLoaderOptions {
   getClassSet?: () => void | Promise<void>
   getWatchDependencies?: () => RuntimeLoaderWatchDependencies | Promise<RuntimeLoaderWatchDependencies | void> | void
+  registerCssSourceFile?: (source: WebpackCssSourceRegistration) => void
 }
 
 export interface RuntimeLoaderWatchDependencies {
   files?: Iterable<string>
   contexts?: Iterable<string>
+}
+
+export interface WebpackCssSourceRegistration {
+  css?: string | undefined
+  file: string
 }
 
 export interface WebpackCssImportRewriteRuntimeOptions {
