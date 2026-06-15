@@ -233,7 +233,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const getCssHandlerOptions = (file: string) => {
           const majorVersion = runtimeState.twPatcher.majorVersion
-          const isMainChunk = compilerOptions.mainCssChunk(file, appType)
+          const isMainChunk = compilerOptions.mainCssChunkMatcher(file, appType)
           const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${file}`
           const cached = cssHandlerOptionsCache.get(cacheKey)
           if (cached) {

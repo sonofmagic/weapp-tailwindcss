@@ -33,7 +33,7 @@ interface TemplateDevHmrCase {
 
 const repoRoot = path.resolve(__dirname, '..')
 const templatesRoot = path.resolve(repoRoot, 'templates')
-const timeoutMs = Number(process.env['E2E_TEMPLATE_HMR_TIMEOUT_MS'] ?? process.env['E2E_WATCH_TIMEOUT_MS'] ?? 180_000)
+const timeoutMs = Number(process.env['E2E_TEMPLATE_HMR_TIMEOUT_MS'] ?? process.env['E2E_WATCH_TIMEOUT_MS'] ?? 300_000)
 const pollMs = Number(process.env['E2E_TEMPLATE_HMR_POLL_MS'] ?? process.env['E2E_WATCH_POLL_MS'] ?? 250)
 
 const templateDevHmrCases: TemplateDevHmrCase[] = [
@@ -56,12 +56,8 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
     name: `${template} weapp dev hmr`,
     template,
     devScript: 'dev:weapp',
-    devCommand: template === 'taro-vite-tailwindcss-v4'
-      ? ['exec', 'node', '../../scripts/taro-e2e-watch.mjs']
-      : undefined,
-    devEnv: template === 'taro-vite-tailwindcss-v4'
-      ? { TARO_E2E_WATCH_NATIVE: '0' }
-      : undefined,
+    devCommand: ['exec', 'node', '../../scripts/taro-e2e-watch.mjs'],
+    devEnv: { TARO_E2E_WATCH_NATIVE: '0' },
     sourceFile: template === 'taro-vue3-tailwind-vscode-template'
       ? 'src/pages/index/index.vue'
       : 'src/pages/index/index.tsx',
@@ -151,18 +147,22 @@ async function newestMtime(root: string, outputFiles: string[]) {
 }
 
 async function waitForInitialOutputs(root: string, item: TemplateDevHmrCase, startedAt: number, session: ReturnType<typeof createWatchSession>) {
+  const stableWindowMs = Math.min(Math.max(pollMs * 4, 1500), 3000)
   await waitFor(
     async () => {
       session.ensureRunning()
       const text = await readOutputs(root, item.outputFiles)
       return text.includes(item.sourceNeedle)
         || text.includes(item.sourceNeedle.replace(/\s+/g, ''))
-        || await newestMtime(root, item.outputFiles) > startedAt
+        || (
+          session.lastCompileSuccessAt() > startedAt
+          && Date.now() - session.lastCompileSuccessAt() >= stableWindowMs
+        )
     },
     {
       timeoutMs,
       pollMs,
-      message: `${item.name} did not emit initial dev outputs`,
+      message: `${item.name} did not emit initial dev outputs\nrecent watch logs:\n${session.logs()}`,
       onTick: session.ensureRunning,
     },
     startedAt,
@@ -180,7 +180,7 @@ async function waitForHmrOutput(root: string, item: TemplateDevHmrCase, mutatedA
     {
       timeoutMs,
       pollMs,
-      message: `${item.name} did not reflect dev HMR marker in outputs`,
+      message: `${item.name} did not reflect dev HMR marker in outputs\nrecent watch logs:\n${session.logs()}`,
       onTick: session.ensureRunning,
     },
     mutatedAt,

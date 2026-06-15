@@ -2,11 +2,26 @@
 
 Fixture: demo
 Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
-Generator CSS files: components/tdesign-miniprogram/miniprogram_dist/button/button.wxss, components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss, components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss, components/vant/weapp/lib/button/index.wxss, components/vant/weapp/lib/icon/index.wxss, components/vant/weapp/lib/info/index.wxss, components/vant/weapp/lib/loading/index.wxss, styles/base.wxss, styles/index.1.wxss, styles/index.2.wxss, styles/utilities.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 186807 | 2889 | false | false | false | true | true | false | true |
+
+## Generator CSS Files
+
+| # | File |
+| ---: | --- |
+| 1 | `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` |
+| 2 | `components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss` |
+| 3 | `components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss` |
+| 4 | `components/vant/weapp/lib/button/index.wxss` |
+| 5 | `components/vant/weapp/lib/icon/index.wxss` |
+| 6 | `components/vant/weapp/lib/info/index.wxss` |
+| 7 | `components/vant/weapp/lib/loading/index.wxss` |
+| 8 | `styles/base.wxss` |
+| 9 | `styles/index.1.wxss` |
+| 10 | `styles/index.2.wxss` |
+| 11 | `styles/utilities.wxss` |
 
 ## Generator CSS Summary
 

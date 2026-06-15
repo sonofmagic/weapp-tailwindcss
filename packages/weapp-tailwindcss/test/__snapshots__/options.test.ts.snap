@@ -119,7 +119,7 @@ exports[`get options > default options 1`] = `
   "jsMatcher": [Function],
   "jsPreserveClass": [Function],
   "logLevel": "info",
-  "mainCssChunk": [Function],
+  "mainCssChunkMatcher": [Function],
   "onEnd": [Function],
   "onLoad": [Function],
   "onStart": [Function],

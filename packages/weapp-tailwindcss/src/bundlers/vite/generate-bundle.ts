@@ -63,7 +63,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   let currentSubpackageRoots: Set<string> | undefined
   const cssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => context.opts.appType,
-    mainCssChunk: context.opts.mainCssChunk,
+    mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => currentOutDir,
     getExtraOptions: file => ({
@@ -625,9 +625,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           || hasTailwindApplyDirective(rawSource)
         const hasRememberedApplyDirective = rememberedCssSource != null
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
+        const hasRememberedTailwindGenerationSource = rememberedCssSource != null
+          && hasTailwindGenerationSource(rememberedCssSource.rawSource)
         const hasStaleViteProcessedCssSource = vitePipelineCssAsset
           && hasDifferentRememberedCssSource
-          && (hasCurrentTailwindGenerationDirective || hasRememberedApplyDirective)
+          && (
+            hasCurrentTailwindGenerationDirective
+            || hasRememberedApplyDirective
+            || (
+              runtimeState.twPatcher.majorVersion === 4
+              && hasRememberedTailwindGenerationSource
+            )
+          )
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? assetSourceFile
           : assetSourceFile

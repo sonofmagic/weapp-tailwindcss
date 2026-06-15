@@ -292,11 +292,11 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
     ...snapshot,
     fileName: index === 0 ? entryRelativePath : normalizeOutputCssFileName(snapshot.fileName),
   }))
-  const entryFileNames = new Set(normalizedEntrySnapshots.map(snapshot => path.normalize(snapshot.fileName)))
+  const entryFileNames = new Set(normalizedEntrySnapshots.map(snapshot => normalizeCssSnapshotFileKey(snapshot.fileName)))
   const extraSnapshots = await Promise.all(
     allCssFiles
       .sort(compareCssOutputFile)
-      .filter(file => !entryFileNames.has(path.normalize(file)))
+      .filter(file => !entryFileNames.has(normalizeCssSnapshotFileKey(file)))
       .map(async (file) => {
         const snapshots = await collectCssSnapshots(outputRoot, file, {
           classList,
@@ -322,6 +322,10 @@ async function collectOutputCssSnapshots(projectRoot: string, cssPath: string, c
 
 function normalizeOutputCssFileName(fileName: string) {
   return fileName.replace(/\\/g, '/')
+}
+
+function normalizeCssSnapshotFileKey(fileName: string) {
+  return path.normalize(normalizeSnapshotName(normalizeOutputCssFileName(fileName)) ?? normalizeOutputCssFileName(fileName))
 }
 
 function compareCssOutputFile(a: string, b: string) {
@@ -520,6 +524,7 @@ function createCssOutputSnapshot(
       `| \`${snapshot.fileName}\` | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
     ]
   })
+  const cssFileRows = stableCssSnapshots.map((snapshot, index) => `| ${index + 1} | \`${snapshot.fileName}\` |`)
   const cssSections = stableCssSnapshots.flatMap(snapshot => [
     `### ${snapshot.fileName}`,
     '',
@@ -533,11 +538,16 @@ function createCssOutputSnapshot(
     '',
     'Fixture: demo',
     `Entry: ${project.cssFile}`,
-    `Generator CSS files: ${stableCssSnapshots.map(snapshot => snapshot.fileName).join(', ')}`,
     '',
     '| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
     `| ${generator.bytes} | ${generator.selectors.length} | ${generator.hasSupports} | ${generator.hasHoverPseudo} | ${generator.hasTailwindBanner} | ${generator.hasSystemDarkModeMedia} | ${generator.hasManualDarkModeSelector} | ${generator.hasRawArbitrarySelector} | ${generator.hasWeappEscapedArbitrarySelector} |`,
+    '',
+    '## Generator CSS Files',
+    '',
+    '| # | File |',
+    '| ---: | --- |',
+    ...cssFileRows,
     '',
     '## Generator CSS Summary',
     '',
@@ -610,12 +620,35 @@ describe('demo generator mode output', () => {
     expect(generatorCssIndex).toBeLessThan(firstCssBlockIndex)
     expect(snapshot).toContain('# fixture-app CSS Output')
     expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false | false | false |')
-    expect(snapshot).toContain('Generator CSS files: app.wxss, pages/index/index.wxss')
+    expect(snapshot).not.toContain('Generator CSS files:')
+    expect(snapshot).toContain('## Generator CSS Files')
+    expect(snapshot).toContain('| # | File |')
+    expect(snapshot).toContain('| 1 | `app.wxss` |')
+    expect(snapshot).toContain('| 2 | `pages/index/index.wxss` |')
     expect(snapshot).toContain('| `app.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
     expect(snapshot).toContain('| `pages/index/index.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
     expect(snapshot).toContain('### app.wxss')
     expect(snapshot).toContain('### pages/index/index.wxss')
     expect(snapshot).toContain('.generator { color: blue; }')
+  })
+
+  it('dedupes imported hashed css files from generator output snapshots', async () => {
+    const root = await fs.mkdtemp(path.join(process.cwd(), '.tmp-mpx-css-snapshots-'))
+    const outputRoot = path.join(root, 'dist/wx')
+    await fs.mkdir(path.join(outputRoot, 'styles'), { recursive: true })
+    await fs.writeFile(path.join(outputRoot, 'app.wxss'), '@import "./styles/app3b4a1ac6.wxss";\n')
+    await fs.writeFile(path.join(outputRoot, 'styles/app3b4a1ac6.wxss'), '.from-mpx{color:red}\n')
+
+    try {
+      const snapshots = await collectOutputCssSnapshots(root, 'dist/wx/app.wxss')
+      expect(snapshots.map(snapshot => snapshot.fileName)).toEqual([
+        'app.wxss',
+        'styles/app.wxss',
+      ])
+    }
+    finally {
+      await fs.rm(root, { force: true, recursive: true })
+    }
   })
 
   it('normalizes hashed css output file order for snapshots', () => {

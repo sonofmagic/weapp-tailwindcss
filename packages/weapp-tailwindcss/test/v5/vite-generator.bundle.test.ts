@@ -885,7 +885,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      mainCssChunk: vi.fn(file => file === 'app.css'),
+      mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         patch: vi.fn(),
@@ -964,7 +964,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      mainCssChunk: vi.fn(file => file === 'app.css'),
+      mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -1050,7 +1050,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      mainCssChunk: vi.fn(file => file === 'app.css'),
+      mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),

@@ -703,7 +703,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: (_file: string) => true,
+      mainCssChunkMatcher: (_file: string) => true,
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(['w-4'])),
@@ -1261,7 +1261,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssEntries: [appStyleFile],
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       tailwindcssBasedir: sourceRoot,
       templateHandler,
       twPatcher: {
@@ -2445,7 +2445,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss' || file === 'src/main.css'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/main.css'),
       styleHandler: vi.fn(async (code: string) => ({
         css: code,
         map: {
@@ -2503,7 +2503,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
     }))
     const plugins = WeappTailwindcss()
@@ -2559,7 +2559,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         generator: {
           target: 'weapp',
         },
-        mainCssChunk: vi.fn((file: string) => file === 'main.css'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
         styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
         tailwindcss: {
           v4: {
@@ -2698,7 +2698,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           target: 'weapp',
         },
         jsHandler: vi.fn((code: string) => ({ code })),
-        mainCssChunk: vi.fn((file: string) => file === 'main.css'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
         styleHandler: vi.fn(async (code: string) => ({
           css: code,
           map: {
@@ -2849,7 +2849,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         generator: {
           target: 'weapp',
         },
-        mainCssChunk: vi.fn((file: string) => file === 'main.css'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
         styleHandler: vi.fn(async (code: string) => ({
           css: code,
           map: {
@@ -2927,7 +2927,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         generator: {
           target: 'weapp',
         },
-        mainCssChunk: vi.fn((file: string) => file === 'main.css'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
         styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
         tailwindcss: {
           v4: {
@@ -3015,7 +3015,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file.endsWith('index.wxss')),
+      mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('index.wxss')),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(['unexpected'])),
@@ -3053,7 +3053,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('merges covered preflight declarations when injecting vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
 
     const preflightSelector = 'view,text,::after,::before'
@@ -3088,7 +3088,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('dedupes mini-program preflight when replaying vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const preflightSelector = 'view,text,::after,::before'
     const bundle = {
@@ -3127,7 +3127,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('normalizes mini-program preflight selectors by AST when replaying vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const basePreflightSelector = 'view, text, ::before, ::after'
     const processedPreflightSelector = 'text,view,:after,:before'
@@ -3168,7 +3168,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('dedupes mini-program theme scope when replaying vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const themeSelector = ':host,page,.tw-root,wx-root-portal-content'
     const bundle = {
@@ -3207,7 +3207,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('normalizes mini-program theme scope selectors by AST when replaying vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const baseThemeSelector = 'page, .tw-root, wx-root-portal-content, :host'
     const processedThemeSelector = ':host,wx-root-portal-content,page,.tw-root'
@@ -3286,7 +3286,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       appType: 'uni-app-x',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({
         css: code,
         map: {
@@ -3394,7 +3394,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(['unexpected'])),
@@ -3453,7 +3453,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const root = path.resolve('/project/weapp-vite-demo')
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const appCss = '.app-only{}'
     const normalCss = '.normal-only{}'
@@ -3541,7 +3541,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const runtimeSet = new Set(['global-regenerated'])
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => runtimeSet),
@@ -3614,6 +3614,129 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('regenerates vite-processed Tailwind v4 subpackage css from remembered non-wechat source css', async () => {
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      file: string
+      rawSource: string
+    }) => {
+      const css = options.file.includes('sub-independent')
+        ? '.bg-independent-subpackage-marker{}.before_ccontent-_b_aindependent_a_B::before{}'
+        : '.bg-normal-subpackage-marker{}.before_ccontent-_b_anormal_a_B::before{}'
+      return createMockGeneratorCssResult(css, 4)
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-non-wechat-subpackage-'))
+    createdDirs.push(root)
+    const independentSourceFile = path.join(root, 'src/sub-independent/pages/index.css')
+    const normalSourceFile = path.join(root, 'src/sub-normal/pages/index.css')
+    const independentRawSource = '@import "tailwindcss" source(none);\n@config "../../../tailwind.config.sub-independent.js";'
+    const normalRawSource = '@import "tailwindcss" source(none);\n@config "../../../tailwind.config.sub-normal.js";'
+    const rememberedCssSources = new Map([
+      ['sub-independent/pages/index.acss', {
+        outputFile: 'sub-independent/pages/index.acss',
+        rawSource: independentRawSource,
+        sourceFile: independentSourceFile,
+      }],
+      ['sub-normal/pages/index.acss', {
+        outputFile: 'sub-normal/pages/index.acss',
+        rawSource: normalRawSource,
+        sourceFile: normalSourceFile,
+      }],
+    ])
+    const runtimeSet = new Set([
+      'bg-independent-subpackage-marker',
+      'before:content-[\'independent\']',
+      'bg-normal-subpackage-marker',
+      'before:content-[\'normal\']',
+    ])
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.acss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.acss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    })
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'serve',
+        plugins: [],
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/build/mp-alipay' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => true),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => rememberedCssSources,
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'sub-independent/pages/index.acss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', independentSourceFile)}\n.vite-placeholder{}`),
+        fileName: 'sub-independent/pages/index.acss',
+      },
+      'sub-normal/pages/index.acss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', normalSourceFile)}\n.vite-placeholder{}`),
+        fileName: 'sub-normal/pages/index.acss',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const independentCss = String((bundle['sub-independent/pages/index.acss'] as OutputAsset).source)
+    const normalCss = String((bundle['sub-normal/pages/index.acss'] as OutputAsset).source)
+    expect(independentCss).toContain('.bg-independent-subpackage-marker')
+    expect(independentCss).toContain('.before_ccontent-_b_aindependent_a_B')
+    expect(independentCss).not.toContain('.bg-normal-subpackage-marker')
+    expect(normalCss).toContain('.bg-normal-subpackage-marker')
+    expect(normalCss).toContain('.before_ccontent-_b_anormal_a_B')
+    expect(normalCss).not.toContain('.bg-independent-subpackage-marker')
+    expect(generateCssByGeneratorMock).toHaveBeenCalledTimes(2)
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      file: independentSourceFile,
+      rawSource: independentRawSource,
+    }))
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      file: normalSourceFile,
+      rawSource: normalRawSource,
+    }))
+  }, TEST_TIMEOUT_MS)
+
   it('excludes subpackage source candidates when generating Tailwind v3 app css', async () => {
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
       const css = [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join('')
@@ -3653,7 +3776,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       appType: 'weapp-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         patch: vi.fn(),
@@ -3764,7 +3887,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         patch: vi.fn(),
@@ -3909,7 +4032,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         patch: vi.fn(),
@@ -4009,7 +4132,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         patch: vi.fn(),
@@ -4088,7 +4211,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('does not replay vite-processed page css into app when output resolution points to app wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const bundle = {
       'app.wxss': {
@@ -4150,7 +4273,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const rawSubCss = '@import "tailwindcss" source(none);\n@config "../../../tailwind.config.sub-normal.js";'
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         patch: vi.fn(),
@@ -4215,7 +4338,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('preserves app-origin import while replaying independent main css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const bundle = {
       'app.wxss': {
@@ -4248,7 +4371,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('does not replay explicit root vite css into subpackage page styles', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
     })
     const bundle = {
       'app.wxss': {
@@ -5270,7 +5393,7 @@ const trace = "at App.vue:4"
       generator: {
         target: 'web',
       },
-      mainCssChunk: vi.fn((file: string) => file === 'main.css'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'main.css'),
       styleHandler,
       tailwindcss: {
         v4: {
@@ -7040,7 +7163,7 @@ const cls = "w-[1.5px]"
       styleHandler: vi.fn(async (code: string) => ({
         css: `shared:${code}`,
       })),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       cssMatcher: (file: string) => file.endsWith('.wxss'),
     }))
     const currentContext = getCurrentContext()
@@ -7127,7 +7250,7 @@ const cls = "w-[1.5px]"
     process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = '1'
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
       twPatcher: {
         patch: vi.fn(),
@@ -7243,7 +7366,7 @@ const cls = "w-[1.5px]"
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
       twPatcher: {
         patch: vi.fn(),
@@ -7371,7 +7494,7 @@ const cls = "w-[1.5px]"
     setCurrentContext(createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
@@ -7540,7 +7663,7 @@ const cls = "w-[1.5px]"
     setCurrentContext(createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
@@ -7660,7 +7783,7 @@ ${utilities}
     setCurrentContext(createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
@@ -7821,7 +7944,7 @@ ${utilities}
     setCurrentContext(createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'shell.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'shell.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(currentCandidates)),
@@ -7941,7 +8064,7 @@ ${utilities}
     const context = createContext({
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(currentCandidates)),
@@ -8053,7 +8176,7 @@ ${utilities}
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.acss'),
       htmlMatcher: (file: string) => file.endsWith('.axml'),
-      mainCssChunk: vi.fn(() => false),
+      mainCssChunkMatcher: vi.fn(() => false),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
@@ -8131,7 +8254,7 @@ ${utilities}
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.ttss'),
       htmlMatcher: (file: string) => file.endsWith('.ttml'),
-      mainCssChunk: vi.fn(() => false),
+      mainCssChunkMatcher: vi.fn(() => false),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
@@ -8228,7 +8351,7 @@ ${utilities}
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
@@ -8337,7 +8460,7 @@ ${utilities}
     createdDirs.push(root)
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set<string>()),
@@ -8483,7 +8606,7 @@ ${utilities}
     }))
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set<string>()),
@@ -8626,7 +8749,7 @@ ${utilities}
 
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set<string>()),
@@ -8757,7 +8880,7 @@ ${utilities}
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set<string>()),
@@ -8883,7 +9006,7 @@ ${utilities}
 
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set<string>()),
@@ -9003,7 +9126,7 @@ ${utilities}
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       twPatcher: {
         patch: vi.fn(),
         getClassSet: vi.fn(async () => new Set<string>()),
@@ -9120,7 +9243,7 @@ ${utilities}
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
       twPatcher: {
         patch: vi.fn(),
@@ -9224,7 +9347,7 @@ ${utilities}
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
       twPatcher: {
         patch: vi.fn(),
@@ -9327,7 +9450,7 @@ ${utilities}
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
       twPatcher: {
         patch: vi.fn(),
@@ -9386,7 +9509,7 @@ ${utilities}
     const { createCssTransformShareScopeKey } = await import('@/bundlers/vite/generate-bundle/css-share-scope')
     const generatedCss = '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */\n.bg-\\[red\\]{color:red}'
     const opts = createContext({
-      mainCssChunk: vi.fn(() => false),
+      mainCssChunkMatcher: vi.fn(() => false),
     }) as any
 
     expect(createCssTransformShareScopeKey(opts, 'pages/a.wxss', generatedCss)).toBe('source:pages/a.wxss')
@@ -9459,7 +9582,7 @@ ${utilities}
     setCurrentContext(createContext({
       appType: undefined,
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      mainCssChunk: vi.fn(() => true),
+      mainCssChunkMatcher: vi.fn(() => true),
       cssMatcher: (file: string) => file.endsWith('.wxss'),
     }))
     const currentContext = getCurrentContext()
@@ -9487,7 +9610,7 @@ ${utilities}
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect(currentContext.mainCssChunk).toHaveBeenCalledWith('app.wxss', 'taro')
+    expect(currentContext.mainCssChunkMatcher).toHaveBeenCalledWith('app.wxss', 'taro')
   })
 
   it('does not infer mini-program appType for web generator target', async () => {
@@ -9507,7 +9630,7 @@ ${utilities}
         target: 'web',
       },
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      mainCssChunk: vi.fn(() => true),
+      mainCssChunkMatcher: vi.fn(() => true),
       cssMatcher: (file: string) => file.endsWith('.css'),
     }))
     const currentContext = getCurrentContext()
@@ -9544,7 +9667,7 @@ ${utilities}
       setCurrentContext(createContext({
         appType: undefined,
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
-        mainCssChunk: vi.fn(() => true),
+        mainCssChunkMatcher: vi.fn(() => true),
         cssMatcher: (file: string) => file.endsWith('.css'),
       }))
       const currentContext = getCurrentContext()

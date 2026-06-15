@@ -161,7 +161,7 @@ export interface InternalUserDefinedOptions extends InternalUserDefinedOptionsBa
 
 export type InternalPostcssOptions = Pick<
   UserDefinedOptions,
-  'cssMatcher' | 'mainCssChunk' | 'cssPreflight' | 'cssPreflightRange' | 'disabled'
+  'cssMatcher' | 'mainCssChunkMatcher' | 'cssPreflight' | 'cssPreflightRange' | 'disabled'
 >
 
 export interface IBaseWebpackPlugin {

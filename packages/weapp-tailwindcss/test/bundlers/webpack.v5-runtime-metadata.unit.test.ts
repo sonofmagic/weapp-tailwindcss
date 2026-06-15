@@ -50,7 +50,7 @@ interface TestContext {
       }
     }
   }
-  mainCssChunk: ReturnType<typeof vi.fn>
+  mainCssChunkMatcher: ReturnType<typeof vi.fn>
   cssMatcher: (file: string) => boolean
   htmlMatcher: (file: string) => boolean
   jsMatcher: (file: string) => boolean
@@ -89,7 +89,7 @@ function createContext(): TestContext {
         },
       },
     },
-    mainCssChunk: vi.fn(() => true),
+    mainCssChunkMatcher: vi.fn(() => true),
     cssMatcher: (file: string) => file.endsWith('.css'),
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),

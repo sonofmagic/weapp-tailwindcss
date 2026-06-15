@@ -238,11 +238,11 @@ function shouldInjectViteProcessedCssResult(
   const sourceFileKey = normalizeOutputPathKey(sourceFile)
   return sourceFileKey !== targetFileKey
     && (
-      opts.mainCssChunk(sourceFile, opts.appType)
+      opts.mainCssChunkMatcher(sourceFile, opts.appType)
       || (
         typeof options.outputFile === 'string'
         && normalizeOutputPathKey(options.outputFile) !== targetFileKey
-        && opts.mainCssChunk(options.outputFile, opts.appType)
+        && opts.mainCssChunkMatcher(options.outputFile, opts.appType)
       )
     )
 }
@@ -274,7 +274,7 @@ function shouldUseCssAssetAsMainInjectionTarget(
   if (records.some(record => record.injectIntoMain === true)) {
     return false
   }
-  if (opts.mainCssChunk(file, opts.appType)) {
+  if (opts.mainCssChunkMatcher(file, opts.appType)) {
     return true
   }
   return isRootStyleOutputFile(file)
@@ -383,10 +383,10 @@ export function collectViteProcessedCssAssetResults(
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
       && (
-        options.opts.mainCssChunk(file, options.opts.appType)
+        options.opts.mainCssChunkMatcher(file, options.opts.appType)
         || (
           normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
-          && options.opts.mainCssChunk(resolvedOutputFile, options.opts.appType)
+          && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
         )
       )
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {

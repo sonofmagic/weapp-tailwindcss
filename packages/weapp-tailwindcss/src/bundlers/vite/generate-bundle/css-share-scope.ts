@@ -43,7 +43,7 @@ export function createCssTransformShareScopeKey(
   file: string,
   rawSource: string,
 ) {
-  if (opts.mainCssChunk(file, opts.appType)) {
+  if (opts.mainCssChunkMatcher(file, opts.appType)) {
     return `main:${normalizeOutputPathKey(file)}`
   }
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)

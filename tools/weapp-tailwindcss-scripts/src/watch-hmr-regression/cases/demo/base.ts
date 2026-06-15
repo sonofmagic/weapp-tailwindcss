@@ -310,7 +310,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
     label: 'demo/gulp-tailwindcss-v3',
     project: 'demo/gulp-tailwindcss-v3',
     group: 'demo',
-    requireInitialCompileSuccess: false,
+    requireInitialCompileSuccess: true,
     initialMutationDelayMs: 5_000,
     cwd: path.resolve(baseCwd, 'demo/gulp-tailwindcss-v3'),
     devScript: 'dev',

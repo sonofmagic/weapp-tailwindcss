@@ -349,11 +349,11 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
   it('defaults uni-app-x plugin appType to uni-app-x when explicit appType is absent', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    const mainCssChunk = vi.fn(() => true)
+    const mainCssChunkMatcher = vi.fn(() => true)
     setCurrentContext(createContext({
       appType: undefined,
       uniAppX: { enabled: true },
-      mainCssChunk,
+      mainCssChunkMatcher,
     }))
 
     const plugins = WeappTailwindcss()
@@ -363,7 +363,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const cssTransform = cssPlugin.transform as any
     await cssTransform?.call(cssPlugin, '.foo { color: red; }', 'App.uvue?vue&type=style&index=0')
 
-    expect(mainCssChunk).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
+    expect(mainCssChunkMatcher).toHaveBeenCalledWith('App.uvue?vue&type=style&index=0', 'uni-app-x')
   }, TEST_TIMEOUT_MS)
 
   it('transforms plain uni-app x css without writing native app output files directly', async () => {

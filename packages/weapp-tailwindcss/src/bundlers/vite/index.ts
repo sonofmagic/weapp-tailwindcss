@@ -175,7 +175,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     disabled,
     customAttributes,
     onLoad,
-    mainCssChunk,
+    mainCssChunkMatcher,
     styleHandler,
     jsHandler,
     twPatcher: initialTwPatcher,
@@ -939,7 +939,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const transformCssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => opts.appType,
-    mainCssChunk,
+    mainCssChunkMatcher,
     getMajorVersion: () => runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => resolvedConfig?.build?.outDir
       ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir)
@@ -1003,7 +1003,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       hookContext?.addWatchFile?.(dependency)
     }
     viteGeneratedCssByFile.set(file, tracedCss)
-    const shouldInjectGeneratedCssIntoMain = mainCssChunk(outputFile, opts.appType)
+    const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
       || (
         hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback })
         && !normalizeOutputPathKey(outputFile).includes('/')
@@ -1123,7 +1123,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         customAttributesEntities,
         disabledDefaultTemplateHandler,
         isIosPlatform,
-        mainCssChunk,
+        mainCssChunkMatcher,
         runtimeState,
         styleHandler,
         generateCss: generateTailwindCssForVitePipeline,

@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
@@ -75,12 +76,22 @@ describe('get options', () => {
   })
 
   it('default matcher', () => {
-    const { cssMatcher, jsMatcher, mainCssChunk, htmlMatcher } = getCompilerContext()
+    const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext()
     expect(cssMatcher('a.css')).toBe(true)
     expect(jsMatcher('a.js')).toBe(true)
     expect(jsMatcher('node_modules/a.js')).toBe(false)
-    expect(mainCssChunk('app.wxss', 'native')).toBe(false)
+    expect(mainCssChunkMatcher('app.wxss', 'native')).toBe(false)
     expect(htmlMatcher('a.wxml')).toBe(true)
+  })
+
+  it('uses mainCssChunkMatcher as the public main css matcher', () => {
+    const mainCssChunkMatcher = vi.fn((name: string, appType) => name === 'shell.acss' && appType === 'taro')
+    const options = getCompilerContext({
+      mainCssChunkMatcher,
+    })
+
+    expect(options.mainCssChunkMatcher('shell.acss', 'taro')).toBe(true)
+    expect(mainCssChunkMatcher).toHaveBeenCalledWith('shell.acss', 'taro')
   })
 
   it('enables generator import fallback by default', () => {
@@ -170,15 +181,15 @@ describe('get options', () => {
   })
 
   // it.skip('glob matcher', () => {
-  //   const { cssMatcher, jsMatcher, mainCssChunk, htmlMatcher } = getCompilerContext({
+  //   const { cssMatcher, jsMatcher, mainCssChunkMatcher, htmlMatcher } = getCompilerContext({
   //     cssMatcher: '*.xxss',
   //     jsMatcher: '*.abcd',
-  //     mainCssChunk: '*.main',
+  //     mainCssChunkMatcher: '*.main',
   //     htmlMatcher: ['*.wxmm', '*.plmm']
   //   })
   //   expect(cssMatcher('a.xxss')).toBe(true)
   //   expect(jsMatcher('a.abcd')).toBe(true)
-  //   expect(mainCssChunk('app.main', 'native')).toBe(true)
+  //   expect(mainCssChunkMatcher('app.main', 'native')).toBe(true)
   //   expect(htmlMatcher('a.wxmm')).toBe(true)
   //   expect(htmlMatcher('a.plmm')).toBe(true)
   // })

@@ -191,19 +191,43 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
   throw new Error(`${item.name} Web HMR DOM 未更新：${lastError}\nbody=${body}`)
 }
 
+async function cleanupWithTimeout(name: string, task: () => Promise<void> | void, timeoutMs = 5_000) {
+  let timeout: NodeJS.Timeout | undefined
+  try {
+    await Promise.race([
+      Promise.resolve().then(task),
+      new Promise<void>((_, reject) => {
+        timeout = setTimeout(() => {
+          reject(new Error(`${name} cleanup timed out after ${timeoutMs}ms`))
+        }, timeoutMs)
+        timeout.unref?.()
+      }),
+    ])
+  }
+  finally {
+    if (timeout) {
+      clearTimeout(timeout)
+    }
+  }
+}
+
+async function cleanupBestEffort(name: string, task: () => Promise<void> | void, timeoutMs = 5_000) {
+  await cleanupWithTimeout(name, task, timeoutMs).catch(() => undefined)
+}
+
 describe('demo/web Vite source HMR', () => {
   afterEach(async () => {
     if (restoreSource) {
-      await restoreSource()
+      await cleanupWithTimeout('restore source', restoreSource)
       restoreSource = undefined
-    }
-    if (browser) {
-      await browser.close()
-      browser = undefined
     }
     if (devProcess) {
       killProcessTree(devProcess)
       devProcess = undefined
+    }
+    if (browser) {
+      await cleanupBestEffort('close browser', () => browser?.close())
+      browser = undefined
     }
   }, 30_000)
 

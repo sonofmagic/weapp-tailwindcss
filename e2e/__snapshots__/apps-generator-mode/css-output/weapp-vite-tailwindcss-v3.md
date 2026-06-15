@@ -2,11 +2,21 @@
 
 Fixture: demo
 Entry: weapp-vite-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, components/IceButton/index.wxss, pages/index/index.wxss, pages/index/merge/index.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 35298 | 181 | false | false | false | true | true | false | true |
+
+## Generator CSS Files
+
+| # | File |
+| ---: | --- |
+| 1 | `app.wxss` |
+| 2 | `components/IceButton/index.wxss` |
+| 3 | `pages/index/index.wxss` |
+| 4 | `pages/index/merge/index.wxss` |
+| 5 | `sub-independent/pages/index.wxss` |
+| 6 | `sub-normal/pages/index.wxss` |
 
 ## Generator CSS Summary
 

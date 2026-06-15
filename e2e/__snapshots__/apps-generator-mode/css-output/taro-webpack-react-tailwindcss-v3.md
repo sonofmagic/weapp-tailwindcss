@@ -2,11 +2,22 @@
 
 Fixture: demo
 Entry: taro-webpack-react-tailwindcss-v3/dist/app.wxss
-Generator CSS files: app.wxss, moduleB/pages/index.wxss, moduleC/pages/index.wxss, pages/debug/index.wxss, pages/index/index.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 97706 | 108 | false | false | false | true | true | false | true |
+
+## Generator CSS Files
+
+| # | File |
+| ---: | --- |
+| 1 | `app.wxss` |
+| 2 | `moduleB/pages/index.wxss` |
+| 3 | `moduleC/pages/index.wxss` |
+| 4 | `pages/debug/index.wxss` |
+| 5 | `pages/index/index.wxss` |
+| 6 | `sub-independent/pages/index.wxss` |
+| 7 | `sub-normal/pages/index.wxss` |
 
 ## Generator CSS Summary
 

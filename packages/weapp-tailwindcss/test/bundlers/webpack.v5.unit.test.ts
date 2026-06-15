@@ -58,7 +58,7 @@ interface TestContext {
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
-  mainCssChunk: ReturnType<typeof vi.fn>
+  mainCssChunkMatcher: ReturnType<typeof vi.fn>
   cssMatcher: (file: string) => boolean
   htmlMatcher: (file: string) => boolean
   jsMatcher: (file: string) => boolean
@@ -102,7 +102,7 @@ function createContext(overrides: Partial<TestContext> = {}): TestContext {
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 3,
     },
-    mainCssChunk: vi.fn(() => true),
+    mainCssChunkMatcher: vi.fn(() => true),
     cssMatcher: (file: string) => file.endsWith('.css'),
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),
@@ -1403,7 +1403,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     const generatedClass = replaceWxml('text-[40px]')
     currentContext = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         ...createContext().twPatcher,
@@ -1493,7 +1493,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     const generatedClass = replaceWxml('text-[40px]')
     currentContext = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `handled:${code}` })),
       twPatcher: {
         ...createContext().twPatcher,
@@ -1825,7 +1825,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
 
   it('does not prune non-main css chunks during v4 runtime processing', async () => {
     currentContext = createContext({
-      mainCssChunk: vi.fn(() => false),
+      mainCssChunkMatcher: vi.fn(() => false),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         ...createContext().twPatcher,
@@ -1911,7 +1911,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     ].join('\n')
     const staleRuntimeCss = '._b_hstale_B { color: blue; }'
     currentContext = createContext({
-      mainCssChunk: vi.fn(() => true),
+      mainCssChunkMatcher: vi.fn(() => true),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         ...createContext().twPatcher,
@@ -1999,7 +1999,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     const runtimeSet = new Set(['w-[20px]'])
     currentContext = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunk: vi.fn((file: string) => file === 'app.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       twPatcher: {
         ...createContext().twPatcher,
@@ -2083,7 +2083,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     let transformCount = 0
     const cssInput = '.runtime-anchor { color: red; }'
     currentContext = createContext({
-      mainCssChunk: vi.fn(() => true),
+      mainCssChunkMatcher: vi.fn(() => true),
       styleHandler: vi.fn(async () => {
         transformCount += 1
         return { css: `runtime:${transformCount}` }

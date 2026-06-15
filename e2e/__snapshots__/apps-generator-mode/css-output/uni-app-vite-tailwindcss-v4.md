@@ -2,11 +2,18 @@
 
 Fixture: demo
 Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
-Generator CSS files: app.wxss, pages-order/pages/home/home.wxss, pages-order/pages/user/user.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 29472 | 133 | false | false | false | true | true | false | true |
+
+## Generator CSS Files
+
+| # | File |
+| ---: | --- |
+| 1 | `app.wxss` |
+| 2 | `pages-order/pages/home/home.wxss` |
+| 3 | `pages-order/pages/user/user.wxss` |
 
 ## Generator CSS Summary
 

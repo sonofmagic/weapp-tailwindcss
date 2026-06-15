@@ -27,7 +27,7 @@ export interface UserDefinedOptionsMatcherPart {
    * 默认不根据框架、平台或文件名推断主样式。需要主样式语义时，应由用户按当前构建图中的真实产物名显式返回 `true`。
    * 可结合 `appType`、环境变量或框架配置自行区分不同端。
    */
-  mainCssChunk?: ((name: string, appType?: AppType) => boolean) | undefined
+  mainCssChunkMatcher?: ((name: string, appType?: AppType) => boolean) | undefined
 
   /**
    * 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。

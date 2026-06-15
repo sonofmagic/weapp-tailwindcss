@@ -2,11 +2,19 @@
 
 Fixture: demo
 Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, packageB/pages/apple.wxss, pages/index/index.wxss, sub-independent/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 19427 | 81 | false | false | false | true | true | false | true |
+
+## Generator CSS Files
+
+| # | File |
+| ---: | --- |
+| 1 | `app.wxss` |
+| 2 | `packageB/pages/apple.wxss` |
+| 3 | `pages/index/index.wxss` |
+| 4 | `sub-independent/pages/index.wxss` |
 
 ## Generator CSS Summary
 

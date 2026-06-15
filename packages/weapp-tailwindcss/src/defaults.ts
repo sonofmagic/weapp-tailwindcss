@@ -75,7 +75,7 @@ export function getDefaultOptions(): UserDefinedOptions {
       // 排除 jsx、tsx、ts 等情况
       return JS_FILE_PATTERN.test(file)
     },
-    mainCssChunk: alwaysFalse,
+    mainCssChunkMatcher: alwaysFalse,
     wxsMatcher: alwaysFalse,
     // 参考：https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
     cssPreflight: getDefaultCssPreflight(3),

@@ -2,11 +2,19 @@
 
 Fixture: demo
 Entry: gulp-tailwindcss-v4/dist/app.wxss
-Generator CSS files: app.wxss, pages/more/more.wxss, sub-independent/pages/index.wxss, sub-normal/pages/index.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | 14578 | 73 | false | false | false | true | true | false | true |
+
+## Generator CSS Files
+
+| # | File |
+| ---: | --- |
+| 1 | `app.wxss` |
+| 2 | `pages/more/more.wxss` |
+| 3 | `sub-independent/pages/index.wxss` |
+| 4 | `sub-normal/pages/index.wxss` |
 
 ## Generator CSS Summary
 

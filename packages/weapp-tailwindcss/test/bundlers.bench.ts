@@ -95,7 +95,7 @@ function createWebpackCompiler(mode: Configuration['mode']): Compiler {
     },
     plugins: [
       new WeappTailwindcss({
-        mainCssChunk: name => name.endsWith('index.css'),
+        mainCssChunkMatcher: name => name.endsWith('index.css'),
         customReplaceDictionary: MappingChars2String,
       }),
     ],
@@ -129,7 +129,7 @@ async function runWebpackBuild(mode: Configuration['mode']) {
 async function runVitePluginPipeline() {
   const plugins = WeappTailwindcss({
     tailwindcssBasedir: viteFixtureRoot,
-    mainCssChunk: name => name.endsWith('index.css'),
+    mainCssChunkMatcher: name => name.endsWith('index.css'),
   }) ?? []
 
   const rewritePlugin = plugins.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
