@@ -163,6 +163,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
+    sourceById.set(normalizedId, source)
     const contentCacheKey = createSourceCandidateContentCacheKey('css', source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {

@@ -627,6 +627,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
         const hasRememberedTailwindGenerationSource = rememberedCssSource != null
           && hasTailwindGenerationSource(rememberedCssSource.rawSource)
+        const hasSameOutputRememberedTailwindGenerationSource = hasRememberedTailwindGenerationSource
+          && rememberedCssSource != null
+          && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
         const hasStaleViteProcessedCssSource = vitePipelineCssAsset
           && hasDifferentRememberedCssSource
           && (
@@ -692,6 +695,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const shouldTrackGeneratorRuntime = hasStaleViteProcessedCssSource
           || shouldRegenerateMainPackageCssWithScopedCandidates
           || hasCurrentTailwindGenerationDirective
+          || hasSameOutputRememberedTailwindGenerationSource
           || (shouldProcessTailwindGeneration && (
             !useIncrementalMode
             || cssHandlerOptions.isMainChunk
@@ -1194,7 +1198,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         markCssAssetProcessed,
         recordCssAssetResult,
         shouldRemoveInjectedSourceAsset: (_targetFile, record) => {
-          if (typeof record.outputFile !== 'string') {
+          if (record.injectIntoMain !== true || typeof record.outputFile !== 'string') {
             return false
           }
           const recordFileKey = normalizeOutputPathKey(record.file)

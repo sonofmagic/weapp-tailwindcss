@@ -2,7 +2,6 @@ import type { OutputAsset } from 'rollup'
 import type { RememberedCssSource } from './types'
 import type { InternalUserDefinedOptions } from '@/types'
 import { hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks } from '../../shared/generated-css-marker'
-import { hasTailwindApplyDirective } from '../../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { resolveViteCssPipelineOutputFile } from './css-output'
 import { hasTailwindGenerationSource } from './sfc-style-source'
@@ -87,19 +86,11 @@ export function findRememberedCssSources(
 
   const shouldUseRememberedFallback = !hasBundlerGeneratedCssMarker(source)
     && !hasTailwindGenerationSource(source)
-  if (shouldUseRememberedFallback && !rememberedSources.some(remembered =>
-    hasTailwindApplyDirective(remembered.rawSource)
-    || hasTailwindGenerationSource(remembered.rawSource),
-  )) {
+  if (shouldUseRememberedFallback) {
     return []
   }
 
   const scoredMatches = rememberedSources
-    .filter(remembered =>
-      !shouldUseRememberedFallback
-      || hasTailwindApplyDirective(remembered.rawSource)
-      || hasTailwindGenerationSource(remembered.rawSource),
-    )
     .map(remembered => ({
       remembered,
       score: Math.max(

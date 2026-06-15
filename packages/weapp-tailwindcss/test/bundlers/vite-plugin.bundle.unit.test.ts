@@ -3688,6 +3688,181 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('regenerates Tailwind v3 subpackage css from external SFC style source when output asset is empty', async () => {
+    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
+      const css = [...options.candidates].sort().map((candidate) => {
+        if (candidate === 'bg-normal-subpackage-marker') {
+          return '.bg-normal-subpackage-marker{background-color:#2563eb}'
+        }
+        if (candidate === 'bg-independent-subpackage-marker') {
+          return '.bg-independent-subpackage-marker{background-color:#dc2626}'
+        }
+        if (candidate.includes('normal_subpackage')) {
+          return '.before_ccontent-normal::before{--tw-content:"normal"}'
+        }
+        if (candidate.includes('independent_subpackage')) {
+          return '.before_ccontent-independent::before{--tw-content:"independent"}'
+        }
+        return `.${candidate}{display:block}`
+      }).join('')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(options.candidates),
+        rawCandidates: new Set(options.candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+        version: 3,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-empty-subpackage-css-'))
+    createdDirs.push(root)
+    await mkdir(path.join(root, 'src/sub-normal/pages'), { recursive: true })
+    await mkdir(path.join(root, 'src/sub-independent/pages'), { recursive: true })
+    await writeFile(path.join(root, 'tailwind.config.sub-normal.js'), `
+module.exports = {
+  content: ['./src/sub-normal/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}'],
+  theme: { extend: { colors: { 'normal-subpackage-marker': '#2563eb' } } },
+  corePlugins: { preflight: false, container: false },
+}
+`, 'utf8')
+    await writeFile(path.join(root, 'tailwind.config.sub-independent.js'), `
+module.exports = {
+  content: ['./src/sub-independent/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}'],
+  theme: { extend: { colors: { 'independent-subpackage-marker': '#dc2626' } } },
+  corePlugins: { preflight: false, container: false },
+}
+`, 'utf8')
+    const normalVueFile = path.join(root, 'src/sub-normal/pages/index.vue')
+    const independentVueFile = path.join(root, 'src/sub-independent/pages/index.vue')
+    const normalScssFile = path.join(root, 'src/sub-normal/pages/index.scss')
+    const independentScssFile = path.join(root, 'src/sub-independent/pages/index.scss')
+    const normalScss = '@config "../../../tailwind.config.sub-normal.js";\n@import "tailwindcss/utilities";'
+    const independentScss = '@config "../../../tailwind.config.sub-independent.js";\n@import "tailwindcss/utilities";'
+    await writeFile(normalVueFile, '<view class="bg-normal-subpackage-marker before:content-[\'normal_subpackage_uni-app-vite-tailwindcss-v3\']"></view>', 'utf8')
+    await writeFile(independentVueFile, '<view class="bg-independent-subpackage-marker before:content-[\'independent_subpackage_uni-app-vite-tailwindcss-v3\']"></view>', 'utf8')
+    await writeFile(normalScssFile, normalScss, 'utf8')
+    await writeFile(independentScssFile, independentScss, 'utf8')
+    const collector = createSourceCandidateCollector()
+    await collector.syncFile(normalVueFile)
+    await collector.syncFile(independentVueFile)
+    await collector.syncCss(normalScssFile, normalScss)
+    await collector.syncCss(independentScssFile, independentScss)
+    const runtimeSet = collector.values()
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        options: {
+          projectRoot: root,
+          tailwindcssBasedir: root,
+          tailwindcss: {
+            config: path.join(root, 'tailwind.config.sub-normal.js'),
+          },
+        },
+      },
+    })
+    const generateBundle = createGenerateBundleHookWithMock({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root,
+        weapp: { srcRoot: 'src' },
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/build/mp-weixin' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => collector.values(),
+      getSourceCandidateSource: file => collector.source(file),
+      getSourceCandidateSources: () => collector.sources(),
+      getSourceCandidatesForEntries: (entries, options) => collector.valuesForEntries(entries, options),
+      getSourceCandidateSourcesForEntries: (entries, options) => collector.sourcesForEntries(entries, options),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+    const bundle = {
+      'app.json': {
+        ...createRollupAsset(JSON.stringify({
+          pages: ['pages/index'],
+          subPackages: [
+            { root: 'sub-normal', pages: ['pages/index'] },
+            { root: 'sub-independent', pages: ['pages/index'] },
+          ],
+        })),
+        fileName: 'app.json',
+      },
+      'sub-normal/pages/index.js': {
+        ...createRollupChunk('console.log("normal")'),
+        fileName: 'sub-normal/pages/index.js',
+        moduleIds: [normalVueFile],
+      },
+      'sub-independent/pages/index.js': {
+        ...createRollupChunk('console.log("independent")'),
+        fileName: 'sub-independent/pages/index.js',
+        moduleIds: [independentVueFile],
+      },
+      'sub-normal/pages/index.wxss': {
+        ...createRollupAsset(''),
+        fileName: 'sub-normal/pages/index.wxss',
+      },
+      'sub-independent/pages/index.wxss': {
+        ...createRollupAsset(''),
+        fileName: 'sub-independent/pages/index.wxss',
+      },
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    const normalCss = String((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source)
+    const independentCss = String((bundle['sub-independent/pages/index.wxss'] as OutputAsset).source)
+    expect(normalCss).toContain('.bg-normal-subpackage-marker')
+    expect(normalCss).toContain('.before_ccontent-normal')
+    expect(normalCss).not.toContain('.bg-independent-subpackage-marker')
+    expect(normalCss).not.toContain('.before_ccontent-independent')
+    expect(independentCss).toContain('.bg-independent-subpackage-marker')
+    expect(independentCss).toContain('.before_ccontent-independent')
+    expect(independentCss).not.toContain('.bg-normal-subpackage-marker')
+    expect(independentCss).not.toContain('.before_ccontent-normal')
+    expect(generateMock).toHaveBeenCalledTimes(2)
+  }, TEST_TIMEOUT_MS)
+
   it('regenerates vite-processed Tailwind v4 subpackage css from remembered non-wechat source css', async () => {
     const generateCssByGeneratorMock = vi.fn(async (options: {
       file: string
@@ -4476,6 +4651,51 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const subpackageCss = (bundle['sub-normal/pages/index.wxss'] as OutputAsset).source.toString()
     expect(appCss).toContain('.tw-entry-rule{}')
     expect(subpackageCss).toBe('.bg-normal-subpackage-marker{}')
+  })
+
+  it('keeps non-main vite-processed subpackage css assets when app css is injected', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const subpackageCss = '.bg-normal-subpackage-marker{}'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.app-root{}'),
+        fileName: 'app.wxss',
+      },
+      'sub-normal/pages/index.wxss': {
+        ...createRollupAsset(subpackageCss),
+        fileName: 'sub-normal/pages/index.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>([
+      ['sub-normal/pages/index.wxss', {
+        css: subpackageCss,
+        outputFile: 'sub-normal/pages/index.wxss',
+      }],
+      [path.resolve('/project/src/main.css'), {
+        css: '.app-entry{}',
+        injectIntoMain: true,
+        outputFile: 'app.wxss',
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+      shouldRemoveInjectedSourceAsset: (_targetFile, record) => {
+        if (record.injectIntoMain !== true || typeof record.outputFile !== 'string') {
+          return false
+        }
+        return record.file.replace(/\\/g, '/') !== record.outputFile.replace(/\\/g, '/')
+      },
+    })
+
+    expect((bundle['app.wxss'] as OutputAsset).source.toString()).toContain('.app-entry{}')
+    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toBe(subpackageCss)
   })
 
   it('keeps explicit cssEntries when vite css transforms see tailwindcss roots', async () => {

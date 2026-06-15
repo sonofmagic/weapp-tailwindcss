@@ -66,8 +66,15 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
     }
     const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
     if (subpackageEntries) {
-      return (_entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) =>
-        options.getSourceCandidatesForEntries?.(subpackageEntries, filterOptions) ?? new Set<string>()
+      return (entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) => {
+        if (entries !== undefined) {
+          const scopedCandidates = options.getSourceCandidatesForEntries?.(entries, filterOptions) ?? new Set<string>()
+          if (scopedCandidates.size > 0 || entries.length === 0) {
+            return scopedCandidates
+          }
+        }
+        return options.getSourceCandidatesForEntries?.(subpackageEntries, filterOptions) ?? new Set<string>()
+      }
     }
     if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
       return options.getSourceCandidatesForEntries
@@ -91,8 +98,15 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
     }
     const subpackageEntries = resolveSubpackageOutputSourceEntries(outputFile)
     if (subpackageEntries) {
-      return (_entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) =>
-        options.getSourceCandidateSourcesForEntries?.(subpackageEntries, filterOptions) ?? new Map<string, Set<string>>()
+      return (entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) => {
+        if (entries !== undefined) {
+          const scopedSources = options.getSourceCandidateSourcesForEntries?.(entries, filterOptions) ?? new Map<string, Set<string>>()
+          if (scopedSources.size > 0 || entries.length === 0) {
+            return scopedSources
+          }
+        }
+        return options.getSourceCandidateSourcesForEntries?.(subpackageEntries, filterOptions) ?? new Map<string, Set<string>>()
+      }
     }
     if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
       return options.getSourceCandidateSourcesForEntries
