@@ -1,3 +1,4 @@
+export * from './framework'
 export { createWeappTailwindcssGenerator } from './generator'
 export type * from './generator'
 export { createPlugins } from './gulp'

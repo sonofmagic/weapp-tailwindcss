@@ -86,6 +86,11 @@
       "import": "./dist/defaults.mjs",
       "require": "./dist/defaults.js"
     },
+    "./framework": {
+      "types": "./dist/framework.d.ts",
+      "import": "./dist/framework.mjs",
+      "require": "./dist/framework.js"
+    },
     "./presets": {
       "types": "./dist/presets.d.ts",
       "import": "./dist/presets.mjs",

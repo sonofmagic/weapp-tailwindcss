@@ -74,6 +74,20 @@ describe('resolveImplicitAppTypeFromViteRoot', () => {
     expect(resolveImplicitAppTypeFromViteRoot(rootDir)).toBe('uni-app-x')
   })
 
+  it('detects uni-app-x from package dependencies', async () => {
+    const rootDir = await createProjectRoot({
+      dependencies: {
+        '@dcloudio/uni-app': '^3.0.0',
+      },
+      devDependencies: {
+        '@dcloudio/uni-uts-v1': '^3.0.0',
+        '@dcloudio/vite-plugin-uni': '^3.0.0',
+      },
+    })
+
+    expect(resolveImplicitAppTypeFromViteRoot(rootDir)).toBe('uni-app-x')
+  })
+
   it('detects mpx from root markers', async () => {
     const rootDir = await createProjectRoot({}, ['src/app.mpx'])
 

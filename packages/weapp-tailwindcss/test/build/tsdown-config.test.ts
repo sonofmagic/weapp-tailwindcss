@@ -14,6 +14,7 @@ describe('tsdown build layout', () => {
 
     expect(runtimeConfig.entry).toEqual(runtimeEntries)
     expect(runtimeConfig.entry).not.toHaveProperty('cli')
+    expect(runtimeConfig.entry).toHaveProperty('framework')
     expect(runtimeConfig.entry).toHaveProperty('generator')
     expect(runtimeConfig.entry).toHaveProperty('postcss')
 

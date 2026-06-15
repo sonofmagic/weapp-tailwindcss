@@ -12,6 +12,7 @@ export const runtimeEntries = {
   'vite': 'src/vite.ts',
   'postcss': 'src/postcss.ts',
   'defaults': 'src/defaults.ts',
+  'framework': 'src/framework/index.ts',
   'css-macro': 'src/css-macro/index.ts',
   'css-macro/postcss': 'src/css-macro/postcss.ts',
   'core': 'src/core.ts',
