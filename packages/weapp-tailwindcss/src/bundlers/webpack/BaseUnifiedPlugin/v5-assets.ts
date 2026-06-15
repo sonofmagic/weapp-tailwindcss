@@ -80,6 +80,13 @@ function pruneWebpackCssHandlerOptionCaches(
   pruneMapToMaxSize(cssUserHandlerOptionsCache, WEBPACK_CSS_HANDLER_OPTIONS_CACHE_MAX)
 }
 
+function resolveWebpackGeneratorRawSource(
+  rawSource: string,
+  cssHandlerOptions: WebpackCssHandlerOptions,
+) {
+  return cssHandlerOptions.sourceOptions?.sourceCss ?? rawSource
+}
+
 function stripStyleExtension(file: string) {
   const normalized = file.replace(/[?#].*$/, '')
   const ext = path.extname(normalized)
@@ -727,7 +734,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     opts: compilerOptions,
                     runtimeState,
                     runtime: runtimeSet,
-                    rawSource,
+                    rawSource: resolveWebpackGeneratorRawSource(rawSource, cssHandlerOptions),
                     file,
                     cssHandlerOptions,
                     cssUserHandlerOptions: getCssUserHandlerOptions(file),
@@ -735,9 +742,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })
-                  const css = finalizeTracedCss(finalizeCssAssetSource(
-                    generated?.css ?? (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css,
-                    { generatedCss: generated != null },
+                  const css = finalizeTracedCss(generated?.css ?? finalizeCssAssetSource(
+                    (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css,
+                    { generatedCss: false },
                   ))
                   const source = new ConcatSource(css)
 

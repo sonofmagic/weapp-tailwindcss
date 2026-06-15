@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createCache } from '@/cache'
+import { upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 
 let currentContext: TestContext
 const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => currentContext)
@@ -229,5 +230,32 @@ describe('bundlers/webpack v5 runtime metadata', () => {
     expect(currentContext.refreshTailwindcssPatcher.mock.calls.length).toBeGreaterThan(refreshCallsAfterBaseline)
     expect(assetStore['index.css']).toContain('.tw-watch-style-case')
     await rm(root, { recursive: true, force: true })
+  })
+
+  it('upserts webpack auto css sources even when tailwind v4 roots already exist', () => {
+    const options = {
+      tailwindcss: {
+        v4: {
+          cssEntries: ['/virtual/app.css'],
+          cssSources: [
+            {
+              file: '/virtual/app.css',
+              css: '@import "tailwindcss";',
+            },
+          ],
+        },
+      },
+    } as any
+
+    const changed = upsertTailwindV4CssSource(options as any, {
+      file: '/virtual/sub/pages/index.css',
+      css: '@import "tailwindcss";\n@source "./sub/**/*.{ts,tsx}";',
+    })
+
+    expect(changed).toBe(true)
+    expect(options.tailwindcss?.v4?.cssSources?.map((source: any) => source.file)).toEqual([
+      '/virtual/app.css',
+      '/virtual/sub/pages/index.css',
+    ])
   })
 })

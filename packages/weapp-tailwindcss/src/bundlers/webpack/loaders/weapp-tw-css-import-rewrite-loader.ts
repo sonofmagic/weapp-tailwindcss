@@ -98,6 +98,9 @@ async function generateCssForWebpackPipeline(
   }
   await runtimeState.readyPromise
   const runtime = await getRuntimeSet()
+  if (compilerOptions.generator?.target !== 'web') {
+    return undefined
+  }
   const file = loaderContext.resourcePath
   const normalizedSource = normalizeCssConfigDirectives(source, file)
   const cssHandlerOptions = createCssHandlerOptions(

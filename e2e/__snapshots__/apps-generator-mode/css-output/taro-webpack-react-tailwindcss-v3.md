@@ -5,7 +5,7 @@ Entry: taro-webpack-react-tailwindcss-v3/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 54071 | 164 | false | false | false | true | true | false | true |
+| 53666 | 164 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -27,7 +27,7 @@ Entry: taro-webpack-react-tailwindcss-v3/dist/app.wxss
 | `moduleB/pages/index.wxss` | 1693 | 1 | false | false | false | false | false | false | true |
 | `moduleC/pages/index.wxss` | 1693 | 1 | false | false | false | false | false | false | true |
 | `pages/debug/index.wxss` | 22278 | 157 | false | false | false | true | true | false | true |
-| `pages/index/index.wxss` | 732 | 5 | false | false | false | false | false | false | false |
+| `pages/index/index.wxss` | 327 | 5 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 2000 | 2 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1965 | 2 | false | false | false | false | false | false | true |
 
@@ -1597,16 +1597,6 @@ text,
 ```css
  /* tokens: test <= src/pages/index/index.tsx */
 .test {
-  display: flex !important;
-  height: 100rpx !important;
-  width: 100rpx !important;
-  align-items: center !important;
-  justify-content: center !important;
-  border-radius: 40rpx !important;
-  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1)) !important;
-  --tw-bg-opacity: 0.54 !important;
-  --tw-text-opacity: 1 !important;
-  color: rgba(255, 255, 255, var(--tw-text-opacity, 1)) !important;
 }
  /* tokens: aspect-w-16 <= src/pages/index/index.tsx */
 .aspect-w-16 > view,

@@ -386,14 +386,40 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return relative.replaceAll(path.sep, '/')
   }
 
-  function resolveWxssFileHandlerOptions(file: File, options?: Partial<IStyleHandlerOptions>) {
+  function resolveWxssFileHandlerOptions(file: File, rawSource: string, options?: Partial<IStyleHandlerOptions>) {
     const resolved = resolveWxssHandlerOptions(options)
+    const sourceFile = file.path ? path.resolve(file.path) : undefined
+    const sourceOptions = sourceFile
+      ? {
+          outputRoot: path.resolve(file.cwd ?? process.cwd()),
+          sourceCss: rawSource,
+          sourceFile,
+        }
+      : undefined
     if (resolved.isMainChunk !== undefined) {
-      return resolved
+      return {
+        ...resolved,
+        postcssOptions: {
+          ...resolved.postcssOptions,
+          options: {
+            ...resolved.postcssOptions?.options,
+            ...(sourceFile ? { from: sourceFile } : {}),
+          },
+        },
+        ...(sourceOptions ? { sourceOptions } : {}),
+      }
     }
     return {
       ...resolved,
       isMainChunk: opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType),
+      postcssOptions: {
+        ...resolved.postcssOptions,
+        options: {
+          ...resolved.postcssOptions?.options,
+          ...(sourceFile ? { from: sourceFile } : {}),
+        },
+      },
+      ...(sourceOptions ? { sourceOptions } : {}),
     }
   }
 
@@ -480,7 +506,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         },
         async transform() {
           await runtimeState.readyPromise
-          const cssHandlerOptions = resolveWxssFileHandlerOptions(file, options)
+          const cssHandlerOptions = resolveWxssFileHandlerOptions(file, rawSource, options)
           const generated = shouldUseGenerator
             ? await generateCssByGenerator({
                 opts,

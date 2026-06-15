@@ -645,10 +645,30 @@ describe('bundlers/gulp createPlugins', () => {
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
       majorVersion: 3,
+      postcssOptions: {
+        options: {
+          from: '/src/app.wxss',
+        },
+      },
+      sourceOptions: {
+        outputRoot: '/',
+        sourceCss: '.foo { color: blue; }',
+        sourceFile: '/src/app.wxss',
+      },
     })
     expect(styleHandler.mock.calls[1]?.[1]).toEqual({
       isMainChunk: false,
       majorVersion: 3,
+      postcssOptions: {
+        options: {
+          from: '/src/page.wxss',
+        },
+      },
+      sourceOptions: {
+        outputRoot: '/',
+        sourceCss: '.bar { color: green; }',
+        sourceFile: '/src/page.wxss',
+      },
     })
   })
 
@@ -671,6 +691,16 @@ describe('bundlers/gulp createPlugins', () => {
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
       majorVersion: 3,
+      postcssOptions: {
+        options: {
+          from: '/src/styles/index.css',
+        },
+      },
+      sourceOptions: {
+        outputRoot: '/',
+        sourceCss: '.foo { color: red; }',
+        sourceFile: '/src/styles/index.css',
+      },
     })
   })
 

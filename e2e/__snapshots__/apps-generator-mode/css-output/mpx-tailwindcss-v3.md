@@ -5,7 +5,7 @@ Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 186807 | 2889 | false | false | false | true | true | false | true |
+| 187902 | 2900 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -37,7 +37,7 @@ Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
 | `styles/base.wxss` | 1458 | 0 | false | false | false | false | false | false | false |
 | `styles/index.1.wxss` | 208 | 2 | false | false | false | false | false | false | false |
 | `styles/index.2.wxss` | 1380 | 18 | false | false | false | false | false | false | false |
-| `styles/utilities.wxss` | 4599 | 23 | false | false | false | true | true | false | true |
+| `styles/utilities.wxss` | 5694 | 34 | false | false | false | true | true | false | true |
 
 ## Generator CSS
 
@@ -9139,9 +9139,29 @@ text,
 ### styles/utilities.wxss
 
 ```css
+ /* tokens: mt-2 <= src/pages/index.mpx */
+.mt-2 {
+  margin-top: 16rpx;
+}
+ /* tokens: mt-4 <= src/pages/index.mpx */
+.mt-4 {
+  margin-top: 32rpx;
+}
+ /* tokens: flex <= src/components/list.mpx */
+.flex {
+  display: flex;
+}
  /* tokens: h-[43rpx] <= src/pages/index.mpx */
 .h-_b43rpx_B {
   height: 43rpx;
+}
+ /* tokens: flex-col <= src/components/list.mpx */
+.flex-col {
+  flex-direction: column;
+}
+ /* tokens: rounded <= src/pages/index.mpx */
+.rounded {
+  border-radius: 8rpx;
 }
  /* tokens: bg-[#123456] <= src/pages/index.mpx */
 .bg-_b_h123456_B {
@@ -9158,9 +9178,34 @@ text,
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
+ /* tokens: bg-white <= src/pages/index.mpx */
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
  /* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index.mpx */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
+}
+ /* tokens: px-3 <= src/pages/index.mpx */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+ /* tokens: px-4 <= src/pages/index.mpx */
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+ /* tokens: py-2 <= src/pages/index.mpx */
+.py-2 {
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+ /* tokens: py-3 <= src/pages/index.mpx */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
  /* tokens: text-[#e67240] <= src/components/list.mpx */
 .text-_b_he67240_B {
@@ -9171,6 +9216,11 @@ text,
 .text-_bblue_B {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
+}
+ /* tokens: text-slate-900 <= src/pages/index.mpx */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
 }
  /* tokens: before:content-['independent_subpackage_mpx-tailwindcss-v3'] <= src/sub-independent/pages/index.mpx */
 .before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v3_a_B::before {

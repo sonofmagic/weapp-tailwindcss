@@ -283,8 +283,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
 
     const registerAutoCssSource = async (source: TailwindV4CssSource) => {
       if (
-        this.hasInitialTailwindCssRoots
-        || (runtimeState.twPatcher.majorVersion ?? 0) < 4
+        (runtimeState.twPatcher.majorVersion ?? 0) < 4
         || !source.file
       ) {
         return
