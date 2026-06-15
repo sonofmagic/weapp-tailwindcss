@@ -175,7 +175,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const emitOrReplayCssAsset = (fileName: string, source: string) => {
       const replayAsset = createReplayCssAsset(fileName, source)
-      bundle[fileName] = replayAsset
+      if (this.emitFile) {
+        this.emitFile({
+          type: 'asset',
+          fileName,
+          source,
+        })
+      }
+      else {
+        bundle[fileName] = replayAsset
+      }
       return replayAsset
     }
     const resolveAssetSourceFile = (asset: OutputAsset, fallbackFile: string) => {
@@ -1062,8 +1071,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
           continue
         }
-        const shouldEmitRememberedReplayCssAsset = isNativeAppStyleTarget
         const shouldRecordRememberedReplayCss = useIncrementalMode || isNativeAppStyleTarget
+        const shouldEmitRememberedReplayCssAsset = shouldRecordRememberedReplayCss
         if (!shouldRecordRememberedReplayCss) {
           continue
         }

@@ -27,6 +27,10 @@ const viteCases = [
   { major: 8, specifier: 'vite8' },
 ] as const
 
+function wait(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 async function createFixtureRoot() {
   const tmpRoot = path.join(process.cwd(), 'test/.tmp-vite-hmr-matrix')
   await mkdir(tmpRoot, { recursive: true })
@@ -119,6 +123,20 @@ async function readBuiltStyle(distDir: string) {
   throw new Error(`未找到 Vite watch 生成的样式文件: ${distDir}`)
 }
 
+async function waitForBuiltStyle(distDir: string) {
+  let lastError: unknown
+  for (let attempt = 0; attempt < 40; attempt++) {
+    try {
+      return await readBuiltStyle(distDir)
+    }
+    catch (error) {
+      lastError = error
+      await wait(50)
+    }
+  }
+  throw lastError
+}
+
 async function runWatchHmrReplayCase(viteSpecifier: string) {
   const vite = await import(viteSpecifier) as ViteBuildModule
   const { cssFile, root } = await createFixtureRoot()
@@ -164,7 +182,7 @@ async function runWatchHmrReplayCase(viteSpecifier: string) {
 
   try {
     await waitForWatchEnd(watcher)
-    const firstCss = await readBuiltStyle(distDir)
+    const firstCss = await waitForBuiltStyle(distDir)
     expect(firstCss).toContain('.mt-_b10rpx_B')
 
     const rebuild = waitForWatchEnd(watcher)
@@ -172,7 +190,7 @@ async function runWatchHmrReplayCase(viteSpecifier: string) {
     await writeFile(cssFile, createTailwindCss('pt-[12rpx]'))
     await rebuild
 
-    const secondCss = await readBuiltStyle(distDir)
+    const secondCss = await waitForBuiltStyle(distDir)
     expect(secondCss).toContain('.pt-_b12rpx_B')
     expect(secondCss).not.toContain('.pt-\\[12rpx\\]')
   }
