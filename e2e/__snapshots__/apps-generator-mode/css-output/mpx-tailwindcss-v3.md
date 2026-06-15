@@ -2,44 +2,29 @@
 
 Fixture: demo
 Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
-Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-miniprogram/miniprogram_dist/button/button.wxss, components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss, components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss, components/vant/weapp/lib/button/index.wxss, components/vant/weapp/lib/icon/index.wxss, components/vant/weapp/lib/info/index.wxss, components/vant/weapp/lib/loading/index.wxss, styles/base.wxss, styles/components.wxss, styles/index.1.wxss, styles/index.2.wxss, styles/utilities.wxss
+Generator CSS files: components/tdesign-miniprogram/miniprogram_dist/button/button.wxss, components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss, components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss, components/vant/weapp/lib/button/index.wxss, components/vant/weapp/lib/icon/index.wxss, components/vant/weapp/lib/info/index.wxss, components/vant/weapp/lib/loading/index.wxss, styles/base.wxss, styles/index.1.wxss, styles/index.2.wxss, styles/utilities.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 186787 | 2889 | false | false | false | true | true | false | true |
+| 186807 | 2889 | false | false | false | true | true | false | true |
 
 ## Generator CSS Summary
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 1 | 0 | false | false | false | false | false | false | false |
-| `components/list/index.wxss` | 1 | 0 | false | false | false | false | false | false | false |
-| `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` | 24946 | 139 | false | false | false | false | false | false | false |
+| `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` | 24949 | 139 | false | false | false | false | false | false | false |
 | `components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss` | 128577 | 2354 | false | false | false | false | false | false | false |
 | `components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss` | 4283 | 33 | false | false | false | false | false | false | false |
-| `components/vant/weapp/lib/button/index.wxss` | 4072 | 32 | false | false | false | false | false | false | false |
+| `components/vant/weapp/lib/button/index.wxss` | 4075 | 32 | false | false | false | false | false | false | false |
 | `components/vant/weapp/lib/icon/index.wxss` | 13902 | 264 | false | false | false | false | false | false | false |
 | `components/vant/weapp/lib/info/index.wxss` | 903 | 2 | false | false | false | false | false | false | false |
 | `components/vant/weapp/lib/loading/index.wxss` | 2473 | 25 | false | false | false | false | false | false | false |
 | `styles/base.wxss` | 1458 | 0 | false | false | false | false | false | false | false |
-| `styles/components.wxss` | 1 | 0 | false | false | false | false | false | false | false |
 | `styles/index.1.wxss` | 208 | 2 | false | false | false | false | false | false | false |
 | `styles/index.2.wxss` | 1380 | 18 | false | false | false | false | false | false | false |
-| `styles/utilities.wxss` | 4584 | 23 | false | false | false | true | true | false | true |
+| `styles/utilities.wxss` | 4599 | 23 | false | false | false | true | true | false | true |
 
 ## Generator CSS
-
-### app.wxss
-
-```css
-
-```
-
-### components/list/index.wxss
-
-```css
-
-```
 
 ### components/tdesign-miniprogram/miniprogram_dist/button/button.wxss
 
@@ -184,7 +169,7 @@ Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-mi
 .t-button--danger.t-button--disabled::after {
   border-color: var(--td-button-danger-disabled-border-color, var(--td-error-color-3, #ffb9b0));
 }
-/* tokens: t-button <= src/pages/index.mpx */
+ /* tokens: t-button <= src/pages/index.mpx */
 .t-button {
   align-items: center;
   background-image: none;
@@ -207,7 +192,7 @@ Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-mi
   vertical-align: top;
   white-space: nowrap;
 }
-/* tokens: t-button <= src/pages/index.mpx */
+ /* tokens: t-button <= src/pages/index.mpx */
 .t-button::after {
   border-radius: calc(var(--td-button-border-radius, var(--td-radius-default, 12rpx)) * 2);
 }
@@ -556,7 +541,7 @@ Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-mi
   display: flex;
   justify-content: center;
 }
-/* tokens: t-button <= src/pages/index.mpx */
+ /* tokens: t-button <= src/pages/index.mpx */
 .t-button.t-button--hover::after {
   z-index: -1;
 }
@@ -7861,7 +7846,7 @@ Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-mi
 ### components/vant/weapp/lib/button/index.wxss
 
 ```css
-/* tokens: van-button <= src/pages/index.mpx */
+ /* tokens: van-button <= src/pages/index.mpx */
 .van-button {
   align-items: center;
   border-radius: var(--button-border-radius, 2px);
@@ -7877,7 +7862,7 @@ Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-mi
   transition: opacity 0.2s;
   vertical-align: middle;
 }
-/* tokens: van-button <= src/pages/index.mpx */
+ /* tokens: van-button <= src/pages/index.mpx */
 .van-button::before {
   background-color: #000;
   border: inherit;
@@ -7892,7 +7877,7 @@ Generator CSS files: app.wxss, components/list/index.wxss, components/tdesign-mi
   transform: translate(-50%, -50%);
   width: 100%;
 }
-/* tokens: van-button <= src/pages/index.mpx */
+ /* tokens: van-button <= src/pages/index.mpx */
 .van-button::after {
   border-width: 0;
 }
@@ -9044,12 +9029,6 @@ text,
 }
 ```
 
-### styles/components.wxss
-
-```css
-
-```
-
 ### styles/index.1.wxss
 
 ```css
@@ -9145,119 +9124,119 @@ text,
 ### styles/utilities.wxss
 
 ```css
-/* tokens: h-[43rpx] <= src/pages/index.mpx */
+ /* tokens: h-[43rpx] <= src/pages/index.mpx */
 .h-_b43rpx_B {
   height: 43rpx;
 }
-/* tokens: bg-[#123456] <= src/pages/index.mpx */
+ /* tokens: bg-[#123456] <= src/pages/index.mpx */
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[#929292] <= src/pages/index.mpx */
+ /* tokens: bg-[#929292] <= src/pages/index.mpx */
 .bg-_b_h929292_B {
   --tw-bg-opacity: 1;
   background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[red] <= src/pages/index.mpx */
+ /* tokens: bg-[red] <= src/pages/index.mpx */
 .bg-_bred_B {
   --tw-bg-opacity: 1;
   background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index.mpx */
+ /* tokens: bg-[url('https://xxx.com/xx.webp')] <= src/pages/index.mpx */
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url('https://xxx.com/xx.webp');
 }
-/* tokens: text-[#e67240] <= src/components/list.mpx */
+ /* tokens: text-[#e67240] <= src/components/list.mpx */
 .text-_b_he67240_B {
   --tw-text-opacity: 1;
   color: rgba(230, 114, 64, var(--tw-text-opacity, 1));
 }
-/* tokens: text-[blue] <= src/components/list.mpx */
+ /* tokens: text-[blue] <= src/components/list.mpx */
 .text-_bblue_B {
   --tw-text-opacity: 1;
   color: rgba(0, 0, 255, var(--tw-text-opacity, 1));
 }
-/* tokens: before:content-['independent_subpackage_mpx-tailwindcss-v3'] <= src/sub-independent/pages/index.mpx */
+ /* tokens: before:content-['independent_subpackage_mpx-tailwindcss-v3'] <= src/sub-independent/pages/index.mpx */
 .before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage mpx-tailwindcss-v3';
   content: var(--tw-content);
 }
-/* tokens: before:content-['normal_subpackage_mpx-tailwindcss-v3'] <= src/sub-normal/pages/index.mpx */
+ /* tokens: before:content-['normal_subpackage_mpx-tailwindcss-v3'] <= src/sub-normal/pages/index.mpx */
 .before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage mpx-tailwindcss-v3';
   content: var(--tw-content);
 }
-/* tokens: after:ml-0.5 <= src/pages/index.mpx */
+ /* tokens: after:ml-0.5 <= src/pages/index.mpx */
 .after_cml-0_d5::after {
   content: var(--tw-content);
   margin-left: 4rpx;
 }
-/* tokens: after:text-red-500 <= src/pages/index.mpx */
+ /* tokens: after:text-red-500 <= src/pages/index.mpx */
 .after_ctext-red-500::after {
   content: var(--tw-content);
   --tw-text-opacity: 1;
   color: rgba(239, 68, 68, var(--tw-text-opacity, 1));
 }
-/* tokens: after:content-["你好啊，我很无聊"] <= src/pages/index.mpx */
+ /* tokens: after:content-["你好啊，我很无聊"] <= src/pages/index.mpx */
 .after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B::after {
   --tw-content: '你好啊，我很无聊';
   content: var(--tw-content);
 }
-/* tokens: after:content-['你好啊，我这是中文字符串'] <= src/pages/index.mpx */
+ /* tokens: after:content-['你好啊，我这是中文字符串'] <= src/pages/index.mpx */
 .after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B::after {
   --tw-content: '你好啊，我这是中文字符串';
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
-  /* tokens: system-dark:bg-slate-900 <= src/pages/index.mpx */
+ /* tokens: system-dark:bg-slate-900 <= src/pages/index.mpx */
   .system-dark_cbg-slate-900 {
     --tw-bg-opacity: 1;
     background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
   }
-  /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
+ /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
   .system-dark_ctext-slate-100 {
     --tw-text-opacity: 1;
     color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
   }
 }
-/* tokens: theme-dark:bg-zinc-900 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+ /* tokens: theme-dark:bg-zinc-900 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
 .theme-dark_cbg-zinc-900.theme-dark {
   --tw-bg-opacity: 1;
   background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark:bg-zinc-950 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+ /* tokens: theme-dark:bg-zinc-950 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
 .theme-dark_cbg-zinc-950.theme-dark {
   --tw-bg-opacity: 1;
   background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark:text-zinc-50 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
+ /* tokens: theme-dark:text-zinc-50 <= src/pages/index.mpx | theme-dark <= src/pages/index.mpx */
 .theme-dark_ctext-zinc-50.theme-dark {
   --tw-text-opacity: 1;
   color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
-/* tokens: theme-dark <= src/pages/index.mpx | theme-dark:bg-zinc-900 <= src/pages/index.mpx */
+ /* tokens: theme-dark <= src/pages/index.mpx | theme-dark:bg-zinc-900 <= src/pages/index.mpx */
 .theme-dark .theme-dark_cbg-zinc-900 {
   --tw-bg-opacity: 1;
   background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark <= src/pages/index.mpx | theme-dark:bg-zinc-950 <= src/pages/index.mpx */
+ /* tokens: theme-dark <= src/pages/index.mpx | theme-dark:bg-zinc-950 <= src/pages/index.mpx */
 .theme-dark .theme-dark_cbg-zinc-950 {
   --tw-bg-opacity: 1;
   background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark <= src/pages/index.mpx | theme-dark:text-zinc-50 <= src/pages/index.mpx */
+ /* tokens: theme-dark <= src/pages/index.mpx | theme-dark:text-zinc-50 <= src/pages/index.mpx */
 .theme-dark .theme-dark_ctext-zinc-50 {
   --tw-text-opacity: 1;
   color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
 @media (prefers-color-scheme: dark) {
-  /* tokens: dark:bg-zinc-900 <= src/pages/index.mpx */
+ /* tokens: dark:bg-zinc-900 <= src/pages/index.mpx */
   .dark_cbg-zinc-900 {
     --tw-bg-opacity: 1;
     background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
   }
-  /* tokens: dark:text-zinc-50 <= src/pages/index.mpx */
+ /* tokens: dark:text-zinc-50 <= src/pages/index.mpx */
   .dark_ctext-zinc-50 {
     --tw-text-opacity: 1;
     color: rgba(250, 250, 250, var(--tw-text-opacity, 1));

@@ -452,7 +452,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         forceCollect: cssSourceChanged || (runtimeState.twPatcher.majorVersion !== 4 && isMainChunk),
         clearCache: cssSourceChanged,
       })
-      if (runtimeState.twPatcher.majorVersion === 3 && isMainChunk && shouldUseGenerator) {
+      if (runtimeState.twPatcher.majorVersion === 3 && shouldUseGenerator) {
         const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged)
         if (sourceCandidates.size > 0) {
           nextRuntimeSet = new Set([

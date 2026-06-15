@@ -182,7 +182,7 @@ export async function generateCssByGenerator(
       const scopedRuntime = sourceEntries
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
-      const isolateCssSource = shouldIsolateScopedCssSource(source, sourceEntries)
+      const isolateCssSource = shouldIsolateScopedCssSource(majorVersion, source, sourceEntries)
       const sourceMetadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
       const matchedCssSourceFile = Boolean(sourceMetadata?.matchedCssSourceFile)
       if (
@@ -202,6 +202,7 @@ export async function generateCssByGenerator(
               currentCssCandidates,
               cssHandlerOptions,
               isolateCssSource,
+              majorVersion,
               matchedCssSourceFile,
             })
         : runtimeWithCurrentCss

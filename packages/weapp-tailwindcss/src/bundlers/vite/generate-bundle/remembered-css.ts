@@ -85,14 +85,21 @@ export function findRememberedCssSources(
     return outputMatched
   }
 
-  const shouldUseRememberedApplyFallback = !hasBundlerGeneratedCssMarker(source)
+  const shouldUseRememberedFallback = !hasBundlerGeneratedCssMarker(source)
     && !hasTailwindGenerationSource(source)
-  if (shouldUseRememberedApplyFallback && !rememberedSources.some(remembered => hasTailwindApplyDirective(remembered.rawSource))) {
+  if (shouldUseRememberedFallback && !rememberedSources.some(remembered =>
+    hasTailwindApplyDirective(remembered.rawSource)
+    || hasTailwindGenerationSource(remembered.rawSource),
+  )) {
     return []
   }
 
   const scoredMatches = rememberedSources
-    .filter(remembered => !shouldUseRememberedApplyFallback || hasTailwindApplyDirective(remembered.rawSource))
+    .filter(remembered =>
+      !shouldUseRememberedFallback
+      || hasTailwindApplyDirective(remembered.rawSource)
+      || hasTailwindGenerationSource(remembered.rawSource),
+    )
     .map(remembered => ({
       remembered,
       score: Math.max(
@@ -140,6 +147,7 @@ export function collectRememberedCssReplayGroups(
   preserveCssExtension: boolean,
   sourceRoot?: string | undefined,
   styleOutputExtension?: string | undefined,
+  styleOutputFiles?: Iterable<string> | undefined,
 ) {
   const groups = new Map<string, Array<{ key: string, remembered: RememberedCssSource }>>()
   for (const [key, remembered] of sources ?? []) {
@@ -151,6 +159,7 @@ export function collectRememberedCssReplayGroups(
       preserveCssExtension,
       sourceRoot,
       styleOutputExtension,
+      styleOutputFiles,
     )
     const outputKey = normalizeOutputPathKey(outputFile)
     const group = groups.get(outputKey) ?? []

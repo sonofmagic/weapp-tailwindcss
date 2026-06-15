@@ -58,9 +58,17 @@ export function mergeScopedRuntimeWithCurrentRuntime(
     currentCssCandidates?: string[] | undefined
     cssHandlerOptions: IStyleHandlerOptions
     isolateCssSource: boolean
+    majorVersion?: number | undefined
     matchedCssSourceFile: boolean
   },
 ) {
+  if (options.majorVersion === 3) {
+    return new Set([
+      ...scopedRuntime,
+      ...runtime,
+      ...(options.currentCssCandidates ?? []),
+    ])
+  }
   if (options.isolateCssSource) {
     return new Set([
       ...scopedRuntime,
@@ -80,9 +88,13 @@ export function mergeScopedRuntimeWithCurrentRuntime(
   ])
 }
 
-export function shouldIsolateScopedCssSource(source: GeneratorResolvedSource, sourceEntries: TailwindSourceEntry[] | undefined) {
+export function shouldIsolateScopedCssSource(
+  majorVersion: number | undefined,
+  source: GeneratorResolvedSource,
+  sourceEntries: TailwindSourceEntry[] | undefined,
+) {
   return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
-    || sourceEntries !== undefined
+    || (majorVersion === 4 && sourceEntries !== undefined)
 }
 
 export function shouldIsolateCurrentTailwindV4CssCandidates(

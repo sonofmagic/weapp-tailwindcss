@@ -22,6 +22,7 @@ import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState, updateBundleBuildState } from './bundle-state'
 import { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-file-names'
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
+import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/configured-css-sources'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
 import { canProcessViteSourceStyleAsCss, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
@@ -203,6 +204,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const disableV3OxideSourceRuntime = process.env['WEAPP_TW_VITE_DISABLE_V3_OXIDE_RUNTIME'] === '1'
     const bundleFiles = Object.keys(bundle)
     const activeViteCssCacheFiles = new Set(bundleFiles.map(normalizeViteCssCacheKey))
+    const configuredTailwindV4CssSourceEntries = collectConfiguredTailwindV4CssSourceEntries(opts, opts.tailwindcssBasedir ?? rootDir)
     const subpackageRoots = collectMiniProgramSubpackageRoots(bundle)
     if (subpackageRoots) {
       currentSubpackageRoots = subpackageRoots
@@ -369,7 +371,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         processFiles.css.add(file)
         continue
       }
-      const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension)
+      const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles)
       const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
         outputFile,
         snapshot,
@@ -377,6 +379,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         sourceRoot,
         getSourceCandidateSource,
         jsImportedCssFiles.has(file) ? getSourceCandidateSources : undefined,
+        configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
         debug,
       )
       const rawSource = inferredSourceStyle?.rawSource
@@ -582,6 +585,24 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             )
           if (!hasUsableRememberedTailwindSource || rememberedSourcesBelongToInferredSfc) {
             rememberedCssSources = [inferredSfcStyleSource]
+          }
+        }
+        const hasTailwindRememberedSource = rememberedCssSources.some(remembered =>
+          hasTailwindGenerationSource(remembered.rawSource),
+        )
+        if (!hasTailwindRememberedSource) {
+          const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
+            outputFile,
+            snapshot,
+            outDir,
+            sourceRoot,
+            getSourceCandidateSource,
+            getSourceCandidateSources,
+            configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
+            debug,
+          )
+          if (inferredSourceStyle) {
+            rememberedCssSources = [inferredSourceStyle]
           }
         }
         const rememberedCssSource = mergeRememberedCssSources(rememberedCssSources, outputFile)
@@ -1016,6 +1037,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         shouldPreserveAppCssExtension,
         sourceRoot,
         defaultStyleOutputExtension,
+        bundleFiles,
       )
       for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
         const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({

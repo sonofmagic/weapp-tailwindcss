@@ -3,6 +3,7 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
 import { slash } from '../utils'
+import { collectConfiguredTailwindV4CssSources } from './configured-css-sources'
 import { normalizeCssSourceForCompare } from './css-output'
 import { hasMatchingStyleFileBase, isMatchingCssSourceFile } from './style-matching'
 
@@ -15,14 +16,6 @@ function normalizeMatchedCssSourcePath(file: string | undefined) {
     return undefined
   }
   return path.resolve(file.replace(/[?#].*$/, ''))
-}
-
-function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {
-  const patcherCssSources = ((opts.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as NonNullable<NonNullable<InternalUserDefinedOptions['tailwindcss']>['v4']>['cssSources'] | undefined
-  return [
-    ...(opts.tailwindcss?.v4?.cssSources ?? []),
-    ...(patcherCssSources ?? []),
-  ]
 }
 
 function collectConfiguredCssEntries(opts: InternalUserDefinedOptions) {

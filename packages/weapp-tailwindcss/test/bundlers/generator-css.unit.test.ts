@@ -2851,7 +2851,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('disables Tailwind v3 incremental cache for scoped subpackage css sources', async () => {
+  it('keeps Tailwind v3 scoped subpackage css sources on the full runtime set', async () => {
     const rawSource = [
       '@tailwind utilities;',
       '.card{color:red}',
@@ -2950,17 +2950,17 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(normal?.css).toContain('.bg-normal-subpackage-marker')
-    expect(normal?.css).not.toContain('.bg-independent-subpackage-marker')
+    expect(normal?.css).toContain('.bg-independent-subpackage-marker')
     expect(independent?.css).toContain('.bg-independent-subpackage-marker')
-    expect(independent?.css).not.toContain('.bg-normal-subpackage-marker')
+    expect(independent?.css).toContain('.bg-normal-subpackage-marker')
     expect(generateMock).toHaveBeenCalledTimes(2)
     expect(generateMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
-      candidates: new Set(['bg-normal-subpackage-marker']),
-      incrementalCache: false,
+      candidates: new Set(['bg-normal-subpackage-marker', 'bg-independent-subpackage-marker']),
+      incrementalCache: true,
     }))
     expect(generateMock).toHaveBeenNthCalledWith(2, expect.objectContaining({
-      candidates: new Set(['bg-independent-subpackage-marker']),
-      incrementalCache: false,
+      candidates: new Set(['bg-independent-subpackage-marker', 'bg-normal-subpackage-marker']),
+      incrementalCache: true,
     }))
   })
 
@@ -6111,6 +6111,84 @@ describe('bundlers/shared generator css', () => {
     const generateOptions = generateMock.mock.calls[0]?.[0]
     expect(generateOptions.candidates).toEqual(new Set())
     expect(generateOptions.scanSources).toBe(false)
+  })
+
+  it('keeps Tailwind v3 @config css entries on the full runtime set', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-config-runtime-'))
+    const cssFile = path.join(root, 'src/app.wxss')
+    const configFile = path.join(root, 'tailwind.config.js')
+    await mkdir(path.dirname(cssFile), { recursive: true })
+    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{wxml,ts}"] }')
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().join('\n'),
+      rawCss: [...candidates].sort().join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: root,
+        base: options.base,
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+        config: options.config,
+        sources: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: root,
+        baseFallbacks: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+      } as any,
+      runtimeState: {
+        twPatcher: {
+          majorVersion: 3,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['i-mdi-ab-testing', 'mt-2']),
+      rawSource: [
+        '@config "../tailwind.config.js";',
+        '@tailwind base;',
+        '@tailwind components;',
+        '@tailwind utilities;',
+      ].join('\n'),
+      file: cssFile,
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: cssFile,
+          },
+        },
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: true,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set(['mt-2'])),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    const generateOptions = generateMock.mock.calls[0]?.[0]
+    expect(generateOptions.candidates).toEqual(new Set(['i-mdi-ab-testing', 'mt-2']))
   })
 
   it('isolates Tailwind v4 generated subpackage css matched from source-side css entry', async () => {

@@ -20,7 +20,10 @@ import {
   setCurrentContext,
 } from './vite-plugin.testkit'
 import { createGenerateBundleHook, normalizeBundleFileNameKeysForTest, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
+import { collectRememberedCssReplayGroups } from '@/bundlers/vite/generate-bundle/remembered-css'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
+import { collectConfiguredTailwindV4CssSourceEntries } from '@/bundlers/vite/generate-bundle/configured-css-sources'
+import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -2172,6 +2175,36 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       false,
       'miniprogram',
     )).toBe('pages/index.css')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'miniprogram/sub-independent/pages/index.css'),
+      createContext({
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+      }) as any,
+      root,
+      false,
+      false,
+      'miniprogram',
+      undefined,
+      [
+        'sub-independent/pages/index.wxss',
+        'sub-normal/pages/index.wxss',
+      ],
+    )).toBe('sub-independent/pages/index.wxss')
+    expect(resolveViteCssPipelineOutputFile(
+      path.join(root, 'miniprogram/sub-normal/pages/index.css'),
+      createContext({
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+      }) as any,
+      root,
+      false,
+      false,
+      'miniprogram',
+      undefined,
+      [
+        'sub-independent/pages/index.wxss',
+        'sub-normal/pages/index.wxss',
+      ],
+    )).toBe('sub-normal/pages/index.wxss')
     expect(resolveMiniProgramStyleOutputExtension({
       cssMatcher: file => file.endsWith('.acss') || file.endsWith('.ttss') || file.endsWith('.mss'),
       files: ['app.acss', 'pages/index/index.acss'],
@@ -2260,6 +2293,106 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect(normal?.rawSource).toBe('normal')
     expect(independent?.rawSource).toBe('independent')
+  }, TEST_TIMEOUT_MS)
+
+  it('normalizes remembered css replay groups to existing mini-program style outputs', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-replay-'))
+    createdDirs.push(root)
+    const groups = collectRememberedCssReplayGroups(
+      new Map([
+        ['app.css', {
+          outputFile: 'app.css',
+          rawSource: '@tailwind utilities;',
+          sourceFile: path.join(root, 'src/app.css'),
+        }],
+        ['sub-independent/pages/index.css', {
+          outputFile: 'sub-independent/pages/index.css',
+          rawSource: '@tailwind utilities;',
+          sourceFile: path.join(root, 'src/sub-independent/pages/index.css'),
+        }],
+      ]),
+      createContext({
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+      }) as any,
+      root,
+      false,
+      false,
+      'src',
+      undefined,
+      [
+        'app.wxss',
+        'sub-independent/pages/index.wxss',
+      ],
+    )
+
+    expect([...groups.keys()].sort()).toEqual([
+      'app.wxss',
+      'sub-independent/pages/index.wxss',
+    ])
+    expect([...groups.keys()].some(file => file.endsWith('.css'))).toBe(false)
+  }, TEST_TIMEOUT_MS)
+
+  it('matches empty emitted style assets back to remembered Tailwind css sources', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-tailwind-css-'))
+    createdDirs.push(root)
+    const sources = new Map([
+      ['sub-independent/pages/index.wxss', {
+        outputFile: 'sub-independent/pages/index.wxss',
+        rawSource: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-independent.js";',
+        sourceFile: path.join(root, 'sub-independent/pages/index.css'),
+      }],
+      ['sub-normal/pages/index.wxss', {
+        outputFile: 'sub-normal/pages/index.wxss',
+        rawSource: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";',
+        sourceFile: path.join(root, 'sub-normal/pages/index.css'),
+      }],
+    ])
+
+    const independent = resolveRememberedCssSourceForTest(
+      sources,
+      'sub-independent/pages/index.wxss',
+      'sub-independent/pages/index.wxss',
+      createRollupAsset('') as OutputAsset,
+      path.join(root, 'dist'),
+      root,
+    )
+
+    expect(independent?.rawSource).toContain('tailwind.config.sub-independent.js')
+    expect(independent?.rawSource).not.toContain('tailwind.config.sub-normal.js')
+  }, TEST_TIMEOUT_MS)
+
+  it('matches empty emitted style assets back to configured Tailwind v4 css sources', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-configured-tailwind-css-'))
+    createdDirs.push(root)
+    const entries = collectConfiguredTailwindV4CssSourceEntries(createContext({
+      tailwindcss: {
+        v4: {
+          cssSources: [
+            {
+              file: path.join(root, 'src/sub-independent/pages/index.css'),
+              css: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-independent.js";',
+            },
+            {
+              file: path.join(root, 'src/sub-normal/pages/index.css'),
+              css: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";',
+            },
+          ],
+        },
+      },
+    }) as any, root)
+    const independent = resolveSourceStyleSourceFromOutputFile(
+      'sub-independent/pages/index.wxss',
+      { entries: [] } as any,
+      path.join(root, 'dist'),
+      root,
+      undefined,
+      undefined,
+      entries.map(entry => [entry.file, entry.source] as [string, string]),
+      () => {},
+    )
+
+    expect(independent?.rawSource).toContain('tailwind.config.sub-independent.js')
+    expect(independent?.rawSource).not.toContain('tailwind.config.sub-normal.js')
   }, TEST_TIMEOUT_MS)
 
   it('does not match basename-only remembered subpackage css sources to root page css', async () => {

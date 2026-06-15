@@ -216,12 +216,16 @@ export function resolveSourceStyleSourceFromOutputFile(
   sourceRoot: string | undefined,
   getSourceStyleSource: ((file: string) => string | undefined) | undefined,
   getSourceStyleSources: (() => Iterable<[string, string]>) | undefined,
+  configuredSourceEntries: Iterable<[string, string]> | undefined,
   debug: (format: string, ...args: unknown[]) => void,
 ): RememberedCssSource | undefined {
   let sourceFile = resolveSourceStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
   let rawSource = sourceFile ? getSourceStyleSource?.(sourceFile) : undefined
   if (!rawSource || !hasTailwindGenerationSource(rawSource)) {
-    const scoredSources = [...(getSourceStyleSources?.() ?? [])]
+    const scoredSources = [
+      ...(getSourceStyleSources?.() ?? []),
+      ...(configuredSourceEntries ?? []),
+    ]
       .filter(([file, source]) => CSS_SOURCE_OUTPUT_EXT_RE.test(file) && hasTailwindGenerationSource(source))
       .map(([file, source]) => ({
         file,

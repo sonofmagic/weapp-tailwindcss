@@ -144,6 +144,14 @@ export function resolveViteCssPipelineOutputFile(
   styleOutputFiles?: Iterable<string> | undefined,
 ) {
   const normalizedFile = resolveReplayCssOutputFileFromSourceRoot(rootDir, file, sourceRoot)
+  const cleanFile = normalizedFile.replace(/[?#].*$/, '')
+  const stem = cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
+  const matchedStyleExtension = !isWebGeneratorTarget && !preserveCssExtension
+    ? resolveStyleOutputExtensionFromFiles(styleOutputFiles, opts.cssMatcher, stem)
+    : undefined
+  if (matchedStyleExtension && CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile) && isCSSRequest(normalizedFile)) {
+    return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, matchedStyleExtension)
+  }
   if (
     isWebGeneratorTarget
     || preserveCssExtension
@@ -153,7 +161,6 @@ export function resolveViteCssPipelineOutputFile(
   ) {
     return normalizedFile
   }
-  const stem = normalizedFile.replace(/[?#].*$/, '').replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
   return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, resolveMiniProgramStyleOutputExtension({
     cssMatcher: opts.cssMatcher,
     fallback: styleOutputExtension,
