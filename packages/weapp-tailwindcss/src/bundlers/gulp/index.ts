@@ -444,9 +444,10 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
       const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
       const shouldUseGenerator = runtimeState.twPatcher.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
-      const gulpV4SourceCandidates = shouldUseGenerator && runtimeState.twPatcher.majorVersion === 4
-        ? await refreshGulpV4SourceCandidates(cssSourceChanged)
-        : undefined
+      let gulpSourceCandidateGetter: typeof cachedGulpSourceCandidateGetter
+      if (shouldUseGenerator && runtimeState.twPatcher.majorVersion === 4) {
+        gulpSourceCandidateGetter = await refreshGulpV4SourceCandidates(cssSourceChanged)
+      }
       let nextRuntimeSet = await refreshRuntimeSet({
         forceRefresh: cssSourceChanged,
         forceCollect: cssSourceChanged || (runtimeState.twPatcher.majorVersion !== 4 && isMainChunk),
@@ -454,6 +455,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       })
       if (runtimeState.twPatcher.majorVersion === 3 && shouldUseGenerator) {
         const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged)
+        gulpSourceCandidateGetter = cachedGulpSourceCandidateGetter
         if (sourceCandidates.size > 0) {
           nextRuntimeSet = new Set([
             ...nextRuntimeSet,
@@ -488,7 +490,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
                 file: file.path,
                 cssHandlerOptions,
                 cssUserHandlerOptions: resolveWxssUserHandlerOptions(options),
-                getSourceCandidatesForEntries: gulpV4SourceCandidates,
+                getSourceCandidatesForEntries: gulpSourceCandidateGetter,
                 styleHandler,
                 debug,
               })

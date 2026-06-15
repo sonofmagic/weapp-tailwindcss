@@ -426,6 +426,22 @@ function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generato
   expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('text-red-500')
 }
 
+function expectGulpTailwindV3SubpackageCssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (project.name !== 'gulp-tailwindcss-v3') {
+    return
+  }
+  const independent = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-independent/pages/index.wxss')
+  const normal = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-normal/pages/index.wxss')
+  expect(independent, 'gulp v3 independent subpackage css snapshot should exist').toBeTruthy()
+  expect(normal, 'gulp v3 normal subpackage css snapshot should exist').toBeTruthy()
+  expect(independent?.content, 'independent subpackage css should keep its own candidates').toMatch(/independent[-_]subpackage/i)
+  expect(independent?.content, 'independent subpackage css should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
+  expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('space-y-1')
+  expect(normal?.content, 'normal subpackage css should keep its own candidates').toMatch(/normal[-_]subpackage/i)
+  expect(normal?.content, 'normal subpackage css should not include independent subpackage candidates').not.toMatch(/independent[-_]subpackage/i)
+  expect(normal?.content, 'normal subpackage css should not include main package candidates').not.toContain('space-y-1')
+}
+
 function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generatorResult: GeneratorBuildResult) {
   if (!project.cssFile.includes('sub-normal') && !generatorResult.cssFiles.some(file => file.includes('sub-normal'))) {
     return
@@ -701,6 +717,7 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
       if (generatorResult) {
         expectWeappViteTailwindV3CssIsolation(project, generatorResult)
+        expectGulpTailwindV3SubpackageCssIsolation(project, generatorResult)
         expectSubpackageMarkersInGeneratedCss(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }

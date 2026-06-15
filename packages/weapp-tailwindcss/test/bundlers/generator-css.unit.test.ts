@@ -2851,7 +2851,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('keeps Tailwind v3 scoped subpackage css sources on the full runtime set', async () => {
+  it('keeps Tailwind v3 scoped subpackage css sources isolated from the full runtime set', async () => {
     const rawSource = [
       '@tailwind utilities;',
       '.card{color:red}',
@@ -2950,17 +2950,17 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(normal?.css).toContain('.bg-normal-subpackage-marker')
-    expect(normal?.css).toContain('.bg-independent-subpackage-marker')
+    expect(normal?.css).not.toContain('.bg-independent-subpackage-marker')
     expect(independent?.css).toContain('.bg-independent-subpackage-marker')
-    expect(independent?.css).toContain('.bg-normal-subpackage-marker')
+    expect(independent?.css).not.toContain('.bg-normal-subpackage-marker')
     expect(generateMock).toHaveBeenCalledTimes(2)
     expect(generateMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
-      candidates: new Set(['bg-normal-subpackage-marker', 'bg-independent-subpackage-marker']),
-      incrementalCache: true,
+      candidates: new Set(['bg-normal-subpackage-marker']),
+      incrementalCache: false,
     }))
     expect(generateMock).toHaveBeenNthCalledWith(2, expect.objectContaining({
-      candidates: new Set(['bg-independent-subpackage-marker', 'bg-normal-subpackage-marker']),
-      incrementalCache: true,
+      candidates: new Set(['bg-independent-subpackage-marker']),
+      incrementalCache: false,
     }))
   })
 

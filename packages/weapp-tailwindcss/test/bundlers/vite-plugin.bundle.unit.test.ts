@@ -3050,6 +3050,80 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('records repeated remembered css sources without looping over touched map entries', async () => {
+    const generateMock = vi.fn(async (source: { css: string }) => ({
+      css: source.css,
+      rawCss: source.css,
+      target: 'weapp',
+      classSet: new Set<string>(),
+      rawCandidates: new Set<string>(),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
+          generate: vi.fn(async () => generateMock(source)),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remember-loop-'))
+    createdDirs.push(root)
+    const sourceFile = path.join(root, 'pages/index/index.scss')
+    const sourceCss = '@tailwind utilities;\n.text-red-500{}'
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(rewritePlugin)
+    await transform?.call(rewritePlugin, sourceCss, `${sourceFile}?direct`)
+    await transform?.call(rewritePlugin, sourceCss, sourceFile)
+
+    const bundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(sourceCss),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [sourceFile],
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(generateMock).toHaveBeenCalled()
+    expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.text-red-500')
+  }, TEST_TIMEOUT_MS)
+
   it('merges covered preflight declarations when injecting vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),

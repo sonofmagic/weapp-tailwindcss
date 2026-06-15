@@ -379,6 +379,133 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
+  it('scopes gulp Tailwind v3 subpackage css generation to each config content entry', async () => {
+    twPatcher.majorVersion = 3
+    runtimeSet = new Set(['app-only', 'normal-only', 'independent-only'])
+    twPatcher.getClassSetSync.mockImplementation(() => runtimeSet)
+    twPatcher.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
+
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v3-'))
+    ;(currentContext as any).tailwindcssBasedir = dir
+    const srcDir = path.join(dir, 'src')
+    const appCss = path.join(srcDir, 'app.scss')
+    const normalCss = path.join(srcDir, 'sub-normal/pages/index.scss')
+    const independentCss = path.join(srcDir, 'sub-independent/pages/index.scss')
+    const appWxml = path.join(srcDir, 'pages/index/index.wxml')
+    const normalWxml = path.join(srcDir, 'sub-normal/pages/index.wxml')
+    const independentWxml = path.join(srcDir, 'sub-independent/pages/index.wxml')
+    await fs.promises.mkdir(path.dirname(appWxml), { recursive: true })
+    await fs.promises.mkdir(path.dirname(normalCss), { recursive: true })
+    await fs.promises.mkdir(path.dirname(independentCss), { recursive: true })
+    await writeFile(path.join(dir, 'tailwind.config.js'), 'module.exports = { content: ["./src/pages/**/*.{wxml,ts}"] }')
+    await writeFile(path.join(dir, 'tailwind.config.sub-normal.js'), 'module.exports = { content: ["./src/sub-normal/**/*.{wxml,ts}"] }')
+    await writeFile(path.join(dir, 'tailwind.config.sub-independent.js'), 'module.exports = { content: ["./src/sub-independent/**/*.{wxml,ts}"] }')
+    await writeFile(appCss, [
+      '@config "../tailwind.config.js";',
+      '@tailwind utilities;',
+    ].join('\n'))
+    await writeFile(normalCss, [
+      '@config "../../../tailwind.config.sub-normal.js";',
+      '@tailwind utilities;',
+    ].join('\n'))
+    await writeFile(independentCss, [
+      '@config "../../../tailwind.config.sub-independent.js";',
+      '@tailwind utilities;',
+    ].join('\n'))
+    await writeFile(appWxml, '<view class="app-only"></view>')
+    await writeFile(normalWxml, '<view class="normal-only"></view>')
+    await writeFile(independentWxml, '<view class="independent-only"></view>')
+
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.resetModules()
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        target: 'weapp',
+        styleOptions: {},
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: dir,
+        cwd: dir,
+        base: options.base ?? dir,
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        configObject: {
+          content: options.config?.includes('sub-normal')
+            ? ['./src/sub-normal/**/*.{wxml,ts}']
+            : options.config?.includes('sub-independent')
+              ? ['./src/sub-independent/**/*.{wxml,ts}']
+              : ['./src/pages/**/*.{wxml,ts}'],
+        },
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: dir,
+        cwd: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: '@tailwind utilities;',
+        dependencies: [],
+        configObject: {
+          content: ['./src/**/*.{wxml,ts}'],
+        },
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: dir,
+        cwd: dir,
+        baseFallbacks: [],
+      })),
+    }))
+
+    try {
+      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
+      const plugins = createMockedPlugins({
+        tailwindcssBasedir: dir,
+      })
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appCss,
+        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
+      }))
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: normalCss,
+        contents: Buffer.from(await fs.promises.readFile(normalCss, 'utf8')),
+      }))
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: independentCss,
+        contents: Buffer.from(await fs.promises.readFile(independentCss, 'utf8')),
+      }))
+
+      const [appCall, normalCall, independentCall] = generateMock.mock.calls.map(call => call[0]?.candidates as Set<string>)
+      expect(appCall).toEqual(new Set(['app-only']))
+      expect(normalCall).toEqual(new Set(['normal-only']))
+      expect(independentCall).toEqual(new Set(['independent-only']))
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
+      await rm(dir, { force: true, recursive: true })
+    }
+  })
+
   it('refreshes gulp Tailwind v4 css source candidates after wxml updates', async () => {
     twPatcher.majorVersion = 4
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-hot-'))

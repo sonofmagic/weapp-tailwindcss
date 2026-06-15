@@ -590,10 +590,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       : outputKey
     const previous = rememberedCssSources.get(key)
     touchMapEntry(rememberedCssSources, key, entry)
-    for (const [rememberedKey, remembered] of rememberedCssSources) {
-      if (rememberedKey === key || normalizeCssSourceIdentity(remembered.sourceFile) !== normalizedSourceFile) {
-        continue
-      }
+    const relatedRememberedEntries = [...rememberedCssSources].filter(([rememberedKey, remembered]) =>
+      rememberedKey !== key && normalizeCssSourceIdentity(remembered.sourceFile) === normalizedSourceFile,
+    )
+    for (const [rememberedKey, remembered] of relatedRememberedEntries) {
       touchMapEntry(rememberedCssSources, rememberedKey, {
         ...remembered,
         rawSource: entry.rawSource,
@@ -631,10 +631,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const refreshRememberedCssSourceBySourceFile = (sourceFile: string, rawSource: string) => {
     const normalizedSourceFile = normalizeCssSourceIdentity(sourceFile)
-    for (const [rememberedKey, remembered] of rememberedCssSources) {
-      if (normalizeCssSourceIdentity(remembered.sourceFile) !== normalizedSourceFile) {
-        continue
-      }
+    const relatedRememberedEntries = [...rememberedCssSources].filter(([, remembered]) =>
+      normalizeCssSourceIdentity(remembered.sourceFile) === normalizedSourceFile,
+    )
+    for (const [rememberedKey, remembered] of relatedRememberedEntries) {
       refreshRememberedCssSourceEntry(rememberedKey, remembered, sourceFile, rawSource)
     }
   }

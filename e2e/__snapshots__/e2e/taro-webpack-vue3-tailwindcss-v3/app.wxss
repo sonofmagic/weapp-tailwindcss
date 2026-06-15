@@ -62,31 +62,31 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
-/* tokens: h-[100px] <= src/pages/index/index.vue */
+ /* tokens: h-[100px] <= src/pages/index/index.vue */
 .h-_b100px_B {
   height: 100rpx;
 }
-/* tokens: max-h-[100px] <= src/pages/index/index.vue */
+ /* tokens: max-h-[100px] <= src/pages/index/index.vue */
 .max-h-_b100px_B {
   max-height: 100rpx;
 }
-/* tokens: w-[100px] <= src/pages/index/index.vue */
+ /* tokens: w-[100px] <= src/pages/index/index.vue */
 .w-_b100px_B {
   width: 100rpx;
 }
-/* tokens: w-[200%] <= src/pages/index/index.vue */
+ /* tokens: w-[200%] <= src/pages/index/index.vue */
 .w-_b200_v_B {
   width: 200%;
 }
-/* tokens: w-[300rpx] <= src/pages/index/index.vue */
+ /* tokens: w-[300rpx] <= src/pages/index/index.vue */
 .w-_b300rpx_B {
   width: 300rpx;
 }
-/* tokens: min-w-[300rpx] <= src/pages/index/index.vue */
+ /* tokens: min-w-[300rpx] <= src/pages/index/index.vue */
 .min-w-_b300rpx_B {
   min-width: 300rpx;
 }
-/* tokens: space-y-[1.6rem] <= src/pages/index/index.vue */
+ /* tokens: space-y-[1.6rem] <= src/pages/index/index.vue */
 .space-y-_b1_d6rem_B > view + view,
 .space-y-_b1_d6rem_B > view + text,
 .space-y-_b1_d6rem_B > text + view,
@@ -95,7 +95,7 @@ text,
   margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
 }
-/* tokens: divide-x-[10px] <= src/pages/index/index.vue */
+ /* tokens: divide-x-[10px] <= src/pages/index/index.vue */
 .divide-x-_b10px_B > view + view,
 .divide-x-_b10px_B > view + text,
 .divide-x-_b10px_B > text + view,
@@ -104,7 +104,7 @@ text,
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
 }
-/* tokens: divide-[#010101] <= src/pages/index/index.vue */
+ /* tokens: divide-[#010101] <= src/pages/index/index.vue */
 .divide-_b_h010101_B > view + view,
 .divide-_b_h010101_B > view + text,
 .divide-_b_h010101_B > text + view,
@@ -112,68 +112,68 @@ text,
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
 }
-/* tokens: rounded-[20rpx] <= src/pages/index/index.vue */
+ /* tokens: rounded-[20rpx] <= src/pages/index/index.vue */
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
-/* tokens: rounded-[40px] <= src/pages/index/index.vue */
+ /* tokens: rounded-[40px] <= src/pages/index/index.vue */
 .rounded-_b40px_B {
   border-radius: 40rpx;
 }
-/* tokens: bg-[#123456] <= src/pages/index/index.vue */
+ /* tokens: bg-[#123456] <= src/pages/index/index.vue */
 .bg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: bg-sky-500/80 <= src/pages/index/index.vue */
+ /* tokens: bg-sky-500/80 <= src/pages/index/index.vue */
 .bg-sky-500_f80 {
   background-color: rgba(14, 165, 233, 0.8);
 }
-/* tokens: bg-opacity-[0.54] <= src/pages/index/index.vue */
+ /* tokens: bg-opacity-[0.54] <= src/pages/index/index.vue */
 .bg-opacity-_b0_d54_B {
   --tw-bg-opacity: 0.54;
 }
-/* tokens: p-[20px] <= src/pages/index/index.vue */
+ /* tokens: p-[20px] <= src/pages/index/index.vue */
 .p-_b20px_B {
   padding: 20rpx;
 }
-/* tokens: px-[95px] <= src/pages/index/index.vue */
+ /* tokens: px-[95px] <= src/pages/index/index.vue */
 .px-_b95px_B {
   padding-left: 95rpx;
   padding-right: 95rpx;
 }
-/* tokens: py-[62px] <= src/pages/index/index.vue */
+ /* tokens: py-[62px] <= src/pages/index/index.vue */
 .py-_b62px_B {
   padding-top: 62rpx;
   padding-bottom: 62rpx;
 }
-/* tokens: text-[16px] <= src/pages/index/index.vue */
+ /* tokens: text-[16px] <= src/pages/index/index.vue */
 .text-_b16px_B {
   font-size: 16rpx;
 }
-/* tokens: text-[20px] <= src/pages/index/index.vue */
+ /* tokens: text-[20px] <= src/pages/index/index.vue */
 .text-_b20px_B {
   font-size: 20rpx;
 }
-/* tokens: leading-[0.9] <= src/pages/index/index.vue */
+ /* tokens: leading-[0.9] <= src/pages/index/index.vue */
 .leading-_b0_d9_B {
   line-height: 0.9;
 }
-/* tokens: text-[#ffffff] <= src/pages/index/index.vue */
+ /* tokens: text-[#ffffff] <= src/pages/index/index.vue */
 .text-_b_hffffff_B {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
-/* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
+ /* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
 }
-/* tokens: before:absolute <= src/pages/index/index.vue */
+ /* tokens: before:absolute <= src/pages/index/index.vue */
 .before_cabsolute::before {
   content: var(--tw-content);
   position: absolute;
 }
-/* tokens: before:inset-0 <= src/pages/index/index.vue */
+ /* tokens: before:inset-0 <= src/pages/index/index.vue */
 .before_cinset-0::before {
   content: var(--tw-content);
   top: 0rpx;
@@ -181,87 +181,87 @@ text,
   bottom: 0rpx;
   left: 0rpx;
 }
-/* tokens: before:rounded-[20rpx] <= src/pages/index/index.vue */
+ /* tokens: before:rounded-[20rpx] <= src/pages/index/index.vue */
 .before_crounded-_b20rpx_B::before {
   content: var(--tw-content);
   border-radius: 20rpx;
 }
-/* tokens: before:border-2 <= src/pages/index/index.vue */
+ /* tokens: before:border-2 <= src/pages/index/index.vue */
 .before_cborder-2::before {
   content: var(--tw-content);
   border-width: 2rpx;
 }
-/* tokens: before:border-[#4bd650] <= src/pages/index/index.vue */
+ /* tokens: before:border-[#4bd650] <= src/pages/index/index.vue */
 .before_cborder-_b_h4bd650_B::before {
   content: var(--tw-content);
   --tw-border-opacity: 1;
   border-color: rgba(75, 214, 80, var(--tw-border-opacity, 1));
 }
-/* tokens: before:content-['independent_subpackage_taro-webpack-vue3-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
+ /* tokens: before:content-['independent_subpackage_taro-webpack-vue3-tailwindcss-v3'] <= src/sub-independent/pages/index.vue */
 .before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-/* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
+ /* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
 @media (prefers-color-scheme: dark) {
-  /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
+ /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
   .system-dark_cbg-slate-900 {
     --tw-bg-opacity: 1;
     background-color: rgba(15, 23, 42, var(--tw-bg-opacity, 1));
   }
-  /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
+ /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
   .system-dark_ctext-slate-100 {
     --tw-text-opacity: 1;
     color: rgba(241, 245, 249, var(--tw-text-opacity, 1));
   }
 }
-/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.vue */
+ /* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.vue */
 .theme-dark_cbg-zinc-900.theme-dark {
   --tw-bg-opacity: 1;
   background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.vue */
+ /* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.vue */
 .theme-dark_cbg-zinc-950.theme-dark {
   --tw-bg-opacity: 1;
   background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.vue */
+ /* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.vue */
 .theme-dark_ctext-zinc-50.theme-dark {
   --tw-text-opacity: 1;
   color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
-/* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.vue */
+ /* tokens: theme-dark:bg-zinc-900 <= src/pages/index/index.vue */
 .theme-dark .theme-dark_cbg-zinc-900 {
   --tw-bg-opacity: 1;
   background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.vue */
+ /* tokens: theme-dark:bg-zinc-950 <= src/pages/index/index.vue */
 .theme-dark .theme-dark_cbg-zinc-950 {
   --tw-bg-opacity: 1;
   background-color: rgba(9, 9, 11, var(--tw-bg-opacity, 1));
 }
-/* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.vue */
+ /* tokens: theme-dark:text-zinc-50 <= src/pages/index/index.vue */
 .theme-dark .theme-dark_ctext-zinc-50 {
   --tw-text-opacity: 1;
   color: rgba(250, 250, 250, var(--tw-text-opacity, 1));
 }
-/* tokens: dark:bg-[#123456] <= src/pages/index/index.vue */
+ /* tokens: dark:bg-[#123456] <= src/pages/index/index.vue */
 .dark view.dark_cbg-_b_h123456_B,
 .dark text.dark_cbg-_b_h123456_B {
   --tw-bg-opacity: 1;
   background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
+ /* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
 .dark view.dark_cbg-zinc-900,
 .dark text.dark_cbg-zinc-900 {
   --tw-bg-opacity: 1;
   background-color: rgba(24, 24, 27, var(--tw-bg-opacity, 1));
 }
-/* tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
+ /* tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
 .dark view.dark_ctext-zinc-50,
 .dark text.dark_ctext-zinc-50 {
   --tw-text-opacity: 1;

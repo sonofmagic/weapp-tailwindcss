@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, resolveHotUpdateTargets } from './e2eMatrix'
+import { writeHmrFullRunReport } from './hmrReport'
 
 function toNumberEnv(name: string, fallback: number) {
   const value = process.env[name]
@@ -128,6 +129,8 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
   process.stdout.write(
     `[e2e-hot-update] ${formatProgress(progress.current, progress.total)} passed ${caseName} remaining=${progress.total - progress.current} elapsed=${elapsed()} -> ${reportFile}\n`,
   )
+
+  return reportFile
 }
 
 async function main() {
@@ -146,19 +149,34 @@ async function main() {
     .filter(target => target.caseNames.length > 0)
   const totalCases = runnableTargets.reduce((total, target) => total + target.caseNames.length, 0)
   let completedCases = 0
+  const reports: Array<{ caseName: string, reportFile: string }> = []
 
   process.stdout.write(`[e2e-hot-update] ${formatProgress(0, totalCases)} total=${totalCases}\n`)
 
   for (const target of runnableTargets) {
     process.stdout.write(`[e2e-hot-update] target ${target.name}: ${target.caseNames.join(', ')}\n`)
     for (const caseName of target.caseNames) {
-      await runConcreteCase(root, caseName, {
+      const reportFile = await runConcreteCase(root, caseName, {
         current: completedCases + 1,
         startedAt,
         total: totalCases,
       })
+      reports.push({ caseName, reportFile })
       completedCases += 1
     }
+  }
+
+  if (reports.length > 0) {
+    const reportDir = await ensureReportDir(root)
+    const fullRunReportFile = path.join(reportDir, `hmr-full-report-${formatTimestamp(new Date(startedAt))}.json`)
+    await writeHmrFullRunReport({
+      generatedAt: new Date(startedAt).toISOString(),
+      repositoryRoot: root,
+      targetNames: runnableTargets.map(target => target.name),
+      reports,
+      outputFile: fullRunReportFile,
+    })
+    process.stdout.write(`[e2e-hot-update] hmr full report saved: ${fullRunReportFile}\n`)
   }
 
   process.stdout.write(`[e2e-hot-update] ${formatProgress(completedCases, totalCases)} all cases passed elapsed=${formatDuration(Date.now() - startedAt)}\n`)

@@ -1255,6 +1255,7 @@ wx-root-portal-content {
 }
  /* tokens: transition <= <tailwind generated> */
 .transition {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow;
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
@@ -1268,8 +1269,7 @@ page,
 .tw-root,
 wx-root-portal-content,
 page,
-body,
-:host {
+body {
   --up-main-color: var(--up-light-main-color, #303133);
   --up-content-color: var(--up-light-content-color, #606266);
   --up-tips-color: var(--up-light-tips-color, #909193);
@@ -1316,8 +1316,7 @@ body,
   .tw-root,
   wx-root-portal-content,
   page,
-  body,
-  :host {
+  body {
     --up-main-color: #f5f5f5;
     --up-content-color: #d1d5db;
     --up-tips-color: #9ca3af;
@@ -6021,8 +6020,7 @@ body,
   .tw-root,
   wx-root-portal-content,
   page,
-  body,
-  :host {
+  body {
     --up-main-color: #f5f5f5;
     --up-content-color: #d1d5db;
     --up-tips-color: #9ca3af;
@@ -6269,65 +6267,4 @@ body {
 }
 [data-c-h='true'] {
   display: none !important;
-}
- /* tokens: space-x-2.5 <= src/pages/index/peer.vue */
-.space-x-2_d5 > view + view,
-.space-x-2_d5 > view + text,
-.space-x-2_d5 > text + view,
-.space-x-2_d5 > text + text {
-  --tw-space-x-reverse: 0;
-  margin-right: calc(20rpx * var(--tw-space-x-reverse));
-  margin-left: calc(20rpx * (1 - var(--tw-space-x-reverse)));
-}
- /* tokens: space-y-4 <= src/pages/index/index.vue */
-.space-y-4 > view + view,
-.space-y-4 > view + text,
-.space-y-4 > text + view,
-.space-y-4 > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(32rpx * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(32rpx * var(--tw-space-y-reverse));
-}
- /* tokens: space-y-[1.6rem] <= src/pages/index/index.vue */
-.space-y-_b1_d6rem_B > view + view,
-.space-y-_b1_d6rem_B > view + text,
-.space-y-_b1_d6rem_B > text + view,
-.space-y-_b1_d6rem_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(51.2rpx * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(51.2rpx * var(--tw-space-y-reverse));
-}
- /* tokens: space-y-[11rpx] <= src/pages/issue/case-support-rpx.vue */
-.space-y-_b11rpx_B > view + view,
-.space-y-_b11rpx_B > view + text,
-.space-y-_b11rpx_B > text + view,
-.space-y-_b11rpx_B > text + text {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(11rpx * (1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(11rpx * var(--tw-space-y-reverse));
-}
- /* tokens: divide-x-[10px] <= src/pages/index/index.vue */
-.divide-x-_b10px_B > view + view,
-.divide-x-_b10px_B > view + text,
-.divide-x-_b10px_B > text + view,
-.divide-x-_b10px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
-  border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
-}
- /* tokens: divide-x-[3px] <= src/pages/issue/case-support-rpx.vue */
-.divide-x-_b3px_B > view + view,
-.divide-x-_b3px_B > view + text,
-.divide-x-_b3px_B > text + view,
-.divide-x-_b3px_B > text + text {
-  --tw-divide-x-reverse: 0;
-  border-right-width: calc(3rpx * var(--tw-divide-x-reverse));
-  border-left-width: calc(3rpx * (1 - var(--tw-divide-x-reverse)));
-}
- /* tokens: transition <= <tailwind generated> */
-.transition {
-  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
 }

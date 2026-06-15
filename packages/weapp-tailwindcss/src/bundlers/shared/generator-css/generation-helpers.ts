@@ -62,7 +62,10 @@ export function mergeScopedRuntimeWithCurrentRuntime(
     matchedCssSourceFile: boolean
   },
 ) {
-  if (options.majorVersion === 3) {
+  if (
+    options.majorVersion === 3
+    && (!options.isolateCssSource || options.cssHandlerOptions.isMainChunk)
+  ) {
     return new Set([
       ...scopedRuntime,
       ...runtime,
@@ -94,7 +97,7 @@ export function shouldIsolateScopedCssSource(
   sourceEntries: TailwindSourceEntry[] | undefined,
 ) {
   return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
-    || (majorVersion === 4 && sourceEntries !== undefined)
+    || ((majorVersion === 3 || majorVersion === 4) && sourceEntries !== undefined)
 }
 
 export function shouldIsolateCurrentTailwindV4CssCandidates(
