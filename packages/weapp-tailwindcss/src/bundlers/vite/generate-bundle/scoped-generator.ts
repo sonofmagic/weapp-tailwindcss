@@ -59,15 +59,16 @@ export async function createScopedGeneratorRuntime(options: {
       ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
       : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
     if (resolved?.entries !== undefined && (resolved.entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
-      return getSourceCandidatesForEntries(resolved.entries)
+      return scopedSourceCandidateGetter?.(resolved.entries)
+        ?? getSourceCandidatesForEntries(resolved.entries)
     }
+  }
+  const scopedCandidates = scopedSourceCandidateGetter?.(undefined)
+  if (scopedCandidates) {
+    return scopedCandidates
   }
   if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
     return fallbackRuntime
   }
-  const filteredSourceCandidates = scopedSourceCandidateGetter?.(undefined)
-  if (!filteredSourceCandidates) {
-    return fallbackRuntime
-  }
-  return filteredSourceCandidates.size > 0 ? filteredSourceCandidates : fallbackRuntime
+  return fallbackRuntime
 }

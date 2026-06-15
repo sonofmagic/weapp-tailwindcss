@@ -5,7 +5,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 29472 | 133 | false | false | false | true | true | false | true |
+| 31537 | 137 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -14,6 +14,8 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 | 1 | `app.wxss` |
 | 2 | `pages-order/pages/home/home.wxss` |
 | 3 | `pages-order/pages/user/user.wxss` |
+| 4 | `sub-independent/pages/index.wxss` |
+| 5 | `sub-normal/pages/index.wxss` |
 
 ## Generator CSS Summary
 
@@ -22,6 +24,8 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 | `app.wxss` | 19384 | 108 | false | false | false | true | true | false | true |
 | `pages-order/pages/home/home.wxss` | 5044 | 51 | false | false | false | false | false | false | true |
 | `pages-order/pages/user/user.wxss` | 5044 | 51 | false | false | false | false | false | false | true |
+| `sub-independent/pages/index.wxss` | 1108 | 6 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 1073 | 6 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -946,5 +950,79 @@ wx-root-portal-content {
 }
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
+}
+```
+
+### sub-independent/pages/index.wxss
+
+```css
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+  --tw-content: '';
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+ /* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
+.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+ /* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+```
+
+### sub-normal/pages/index.wxss
+
+```css
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+  --tw-content: '';
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-gray-200: #e5e7eb;
+  --color-gray-400: #9ca3af;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+ /* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
+.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
+  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
+  content: var(--tw-content);
+}
+ /* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
 }
 ```

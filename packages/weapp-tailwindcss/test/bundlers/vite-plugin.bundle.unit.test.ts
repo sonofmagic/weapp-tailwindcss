@@ -21,6 +21,7 @@ import {
 } from './vite-plugin.testkit'
 import { createGenerateBundleHook, normalizeBundleFileNameKeysForTest, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile } from '@/bundlers/vite/generate-bundle'
 import { collectRememberedCssReplayGroups } from '@/bundlers/vite/generate-bundle/remembered-css'
+import { createSubpackageSourceCandidateScope } from '@/bundlers/vite/generate-bundle/source-candidate-scope'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 import { collectConfiguredTailwindV4CssSourceEntries } from '@/bundlers/vite/generate-bundle/configured-css-sources'
 import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
@@ -2359,6 +2360,47 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect(independent?.rawSource).toContain('tailwind.config.sub-independent.js')
     expect(independent?.rawSource).not.toContain('tailwind.config.sub-normal.js')
+  }, TEST_TIMEOUT_MS)
+
+  it('intersects broad Tailwind v3 config entries with subpackage output scope', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-subpackage-scope-'))
+    createdDirs.push(root)
+    const sourceRoot = path.join(root, 'miniprogram')
+    const broadEntries = [{
+      base: root,
+      negated: false,
+      pattern: './miniprogram/**/*.{wxml,ts}',
+    }]
+    const getSourceCandidatesForEntries = vi.fn((entries) => {
+      const pattern = entries?.[0]?.pattern
+      if (pattern === 'sub-independent/**/*') {
+        return new Set(['bg-independent-subpackage-marker'])
+      }
+      return new Set([
+        'text-red-500',
+        'bg-normal-subpackage-marker',
+        'bg-independent-subpackage-marker',
+      ])
+    })
+    const getSourceCandidateSourcesForEntries = vi.fn((entries) => {
+      const candidates = getSourceCandidatesForEntries(entries)
+      return new Map([...candidates].map(candidate => [candidate, new Set([candidate])]))
+    })
+    const scope = createSubpackageSourceCandidateScope({
+      getSourceCandidatesForEntries,
+      getSourceCandidateSourcesForEntries,
+      rootDir: root,
+      snapshot: { entries: [] } as any,
+      sourceRoot,
+      subpackageRoots: new Set(['sub-independent']),
+      useIncrementalMode: false,
+    })
+
+    const scopedGetter = scope.createScopedSourceCandidateGetter('sub-independent/pages/index.wxss', { isMainChunk: false })
+    const scopedSourceGetter = scope.createScopedSourceCandidateSourceGetter('sub-independent/pages/index.wxss', { isMainChunk: false })
+
+    expect(scopedGetter?.(broadEntries)).toEqual(new Set(['bg-independent-subpackage-marker']))
+    expect([...(scopedSourceGetter?.(broadEntries).keys() ?? [])]).toEqual(['bg-independent-subpackage-marker'])
   }, TEST_TIMEOUT_MS)
 
   it('matches empty emitted style assets back to configured Tailwind v4 css sources', async () => {

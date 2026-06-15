@@ -15,6 +15,33 @@ interface CreateSubpackageSourceCandidateScopeOptions {
   useIncrementalMode: boolean
 }
 
+function intersectCandidateSets(left: Set<string>, right: Set<string>) {
+  if (left.size === 0 || right.size === 0) {
+    return new Set<string>()
+  }
+  const [small, large] = left.size <= right.size ? [left, right] : [right, left]
+  const matched = new Set<string>()
+  for (const candidate of small) {
+    if (large.has(candidate)) {
+      matched.add(candidate)
+    }
+  }
+  return matched
+}
+
+function intersectCandidateSourceMaps(left: Map<string, Set<string>>, right: Map<string, Set<string>>) {
+  if (left.size === 0 || right.size === 0) {
+    return new Map<string, Set<string>>()
+  }
+  const matched = new Map<string, Set<string>>()
+  for (const [candidate, sources] of left) {
+    if (right.has(candidate)) {
+      matched.set(candidate, sources)
+    }
+  }
+  return matched
+}
+
 export function createSubpackageSourceCandidateScope(options: CreateSubpackageSourceCandidateScopeOptions) {
   const subpackageSourceExcludeEntries = options.subpackageRoots
     ? collectMiniProgramSubpackageSourceEntries(options.snapshot, options.subpackageRoots, [
@@ -69,7 +96,15 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
       return (entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) => {
         if (entries !== undefined) {
           const scopedCandidates = options.getSourceCandidatesForEntries?.(entries, filterOptions) ?? new Set<string>()
-          if (scopedCandidates.size > 0 || entries.length === 0) {
+          if (entries.length === 0) {
+            return scopedCandidates
+          }
+          const subpackageCandidates = options.getSourceCandidatesForEntries?.(subpackageEntries, filterOptions) ?? new Set<string>()
+          const matchedCandidates = intersectCandidateSets(scopedCandidates, subpackageCandidates)
+          if (matchedCandidates.size > 0 || subpackageCandidates.size > 0) {
+            return matchedCandidates
+          }
+          if (scopedCandidates.size > 0) {
             return scopedCandidates
           }
         }
@@ -101,7 +136,15 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
       return (entries: TailwindSourceEntry[] | undefined, filterOptions?: SourceCandidateFilterOptions) => {
         if (entries !== undefined) {
           const scopedSources = options.getSourceCandidateSourcesForEntries?.(entries, filterOptions) ?? new Map<string, Set<string>>()
-          if (scopedSources.size > 0 || entries.length === 0) {
+          if (entries.length === 0) {
+            return scopedSources
+          }
+          const subpackageSources = options.getSourceCandidateSourcesForEntries?.(subpackageEntries, filterOptions) ?? new Map<string, Set<string>>()
+          const matchedSources = intersectCandidateSourceMaps(scopedSources, subpackageSources)
+          if (matchedSources.size > 0 || subpackageSources.size > 0) {
+            return matchedSources
+          }
+          if (scopedSources.size > 0) {
             return scopedSources
           }
         }

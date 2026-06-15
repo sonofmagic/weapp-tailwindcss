@@ -64,7 +64,7 @@ export function mergeScopedRuntimeWithCurrentRuntime(
 ) {
   if (
     options.majorVersion === 3
-    && (!options.isolateCssSource || options.cssHandlerOptions.isMainChunk)
+    && !options.isolateCssSource
   ) {
     return new Set([
       ...scopedRuntime,
