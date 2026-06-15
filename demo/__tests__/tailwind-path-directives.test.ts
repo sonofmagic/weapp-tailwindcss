@@ -20,6 +20,7 @@ const ignoredDirectories = new Set([
 const styleFileRE = /\.(?:css|scss|less|mpx|vue|uvue)$/
 const tailwindEntryRE = /@(tailwind\s+(?:base|components|utilities)|import\s+["']tailwindcss(?:\/|["']))/
 const directiveRE = /@(config|source)\s+(not\s+)?["']([^"']+)["']/g
+const subpackageRoots = ['sub-normal', 'sub-independent'] as const
 
 function stripCssComments(source: string) {
   let output = ''
@@ -126,6 +127,64 @@ function getPositiveSourceSpecifiers(source: string) {
   return specifiers
 }
 
+function isAllowedSubpackageSourceSpecifier(relativePath: string, specifier: string) {
+  if (!relativePath.includes('/sub-') && !relativePath.includes('/module')) {
+    return true
+  }
+
+  if (specifier.startsWith('../**/*')) {
+    return true
+  }
+
+  return !specifier.includes('../..')
+}
+
+function isWebDemoProject(project: string) {
+  return project.startsWith('web/')
+}
+
+function getDemoProjectFromDemoRelativePath(relativePath: string) {
+  const parts = relativePath.split(path.sep)
+  return parts[0] === 'web' ? parts.slice(0, 2).join('/') : parts[0]
+}
+
+function hasFile(files: string[], project: string, file: string) {
+  return files.includes(path.join(demoRoot, project, file))
+}
+
+function hasAnyFile(files: string[], project: string, candidates: string[]) {
+  return candidates.some(file => hasFile(files, project, file))
+}
+
+function hasSubpackagePage(files: string[], project: string, root: typeof subpackageRoots[number]) {
+  const prefix = path.join(demoRoot, project, root, 'pages', 'index')
+  const srcPrefix = path.join(demoRoot, project, 'src', root, 'pages', 'index')
+  const miniprogramPrefix = path.join(demoRoot, project, 'miniprogram', root, 'pages', 'index')
+
+  return files.some(file => (
+    file.startsWith(prefix)
+    || file.startsWith(srcPrefix)
+    || file.startsWith(miniprogramPrefix)
+  ))
+}
+
+function getSubpackageConfigCandidates(root: typeof subpackageRoots[number]) {
+  const suffix = root === 'sub-normal' ? 'sub-normal' : 'sub-independent'
+  return [
+    `tailwind.config.${suffix}.js`,
+    `tailwind.config.${suffix}.cjs`,
+    `tailwind.config.${suffix}.mjs`,
+    `tailwind.config.${suffix}.ts`,
+  ]
+}
+
+function projectDeclaresSubpackage(source: string, root: typeof subpackageRoots[number]) {
+  return source.includes(`"root": "${root}"`)
+    || source.includes(`'root': '${root}'`)
+    || source.includes(`root: '${root}'`)
+    || source.includes(`root: "${root}"`)
+}
+
 describe('demo Tailwind path directives', () => {
   it('keeps every Tailwind CSS entry using resolvable @config and @source directives', async () => {
     const files = await collectFiles(demoRoot)
@@ -211,14 +270,76 @@ describe('demo Tailwind path directives', () => {
       if (entry.relativePath.includes('tailwindcss-v4/')) {
         expect.soft(entry.source, `${entry.relativePath} should use source(none)`)
           .toContain('source(none)')
-        expect.soft(entry.source, `${entry.relativePath} should only source the current subpackage`)
-          .toMatch(/@source\s+["']\.\.\/\*\*/)
+        const subpackageRoot = subpackageRoots.find(root => entry.relativePath.includes(`/${root}/`))
+        if (subpackageRoot) {
+          expect.soft(entry.source, `${entry.relativePath} should source the current subpackage root`)
+            .toContain(subpackageRoot)
+        }
 
         const positiveSources = getPositiveSourceSpecifiers(entry.source)
+        expect.soft(
+          positiveSources.every(specifier => isAllowedSubpackageSourceSpecifier(entry.relativePath, specifier)),
+          `${entry.relativePath} should not scan beyond its own subpackage root`,
+        ).toBe(true)
 
         expect.soft(positiveSources, `${entry.relativePath} should include the Tailwind CSS entry in source scanning`)
           .toSatisfy((specifiers: string[]) => specifiers.some(specifier => specifier.includes('css')))
       }
+    }
+  })
+
+  it('keeps every mini-program demo covering normal and independent subpackage styles', async () => {
+    const files = await collectFiles(demoRoot)
+    const packageJsonFiles = files.filter(file => path.basename(file) === 'package.json')
+    const demoProjects = packageJsonFiles
+      .map(file => getDemoProjectFromDemoRelativePath(path.relative(demoRoot, file)))
+      .filter(project => !isWebDemoProject(project))
+      .sort()
+
+    expect(demoProjects.length).toBeGreaterThan(0)
+
+    for (const project of demoProjects) {
+      for (const root of subpackageRoots) {
+        expect.soft(
+          hasSubpackagePage(files, project, root),
+          `${project} should include a ${root} page for subpackage style isolation`,
+        ).toBe(true)
+        expect.soft(
+          hasAnyFile(files, project, getSubpackageConfigCandidates(root)),
+          `${project} should include an independent Tailwind config for ${root}`,
+        ).toBe(true)
+      }
+
+      const appConfigCandidates = [
+        'app.json',
+        'app.json.ts',
+        'pages.json',
+        'src/app.json',
+        'src/app.mpx',
+        'src/app.config.ts',
+        'src/pages.json',
+        'miniprogram/app.json.ts',
+      ]
+      const appConfig = appConfigCandidates
+        .map(file => path.join(demoRoot, project, file))
+        .find(file => existsSync(file))
+
+      expect.soft(appConfig, `${project} should have an app/page config declaring subpackages`).toBeTruthy()
+      if (!appConfig) {
+        continue
+      }
+
+      const source = await readFile(appConfig, 'utf8')
+      for (const root of subpackageRoots) {
+        expect.soft(
+          projectDeclaresSubpackage(source, root),
+          `${project} should declare ${root} in its app/page config`,
+        ).toBe(true)
+      }
+      expect.soft(
+        source.includes('independent'),
+        `${project} should include an independent subpackage declaration`,
+      ).toBe(true)
     }
   })
 })

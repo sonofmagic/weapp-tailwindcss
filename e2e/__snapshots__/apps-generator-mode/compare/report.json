@@ -5881,11 +5881,13 @@
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
-      "pages/index/index.wxss"
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 5416,
+      "bytes": 8955,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -5895,6 +5897,8 @@
         ".bg-_b_h89ab8d_B",
         ".bg-_b_he24826_B",
         ".bg-_bred_B",
+        ".bg-independent-subpackage-marker",
+        ".bg-normal-subpackage-marker",
         ".bg-white",
         ".dark_cbg-zinc-900",
         ".dark_ctext-_b_hec4f4f_B",
@@ -5952,16 +5956,22 @@
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
-      "pages/index/index.wxss"
+      "pages/index/index.wxss",
+      "sub-independent/pages/index.wxss",
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 9100,
+      "bytes": 10843,
       "selectors": [
+        ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".bg-_b_h123456_B",
         ".bg-_bred_B",
         ".bg-gradient-to-r",
+        ".bg-independent-subpackage-marker",
         ".bg-linear-to-r",
+        ".bg-normal-subpackage-marker",
         ".bg-purple-300",
         ".bg-white",
         ".dark_cbg-zinc-900.theme-dark",

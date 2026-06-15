@@ -1,7 +1,7 @@
-import themeVariants from '../theme-variants.cjs'
+const themeVariants = require('../theme-variants.cjs')
 
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     './index.html',
     './App.vue',

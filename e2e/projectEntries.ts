@@ -37,11 +37,21 @@ export const E2E_PROJECTS = [
     name: 'taro-webpack-react-tailwindcss-v3',
     projectPath: 'taro-webpack-react-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'taro-webpack-react-tailwindcss-v4',
     projectPath: 'taro-webpack-react-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
     extraSnapshots: ['issue-909-transform'],
     url: '/pages/issue-909/index',
   },
@@ -49,31 +59,61 @@ export const E2E_PROJECTS = [
     name: 'taro-vite-react-tailwindcss-v3',
     projectPath: 'taro-vite-react-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'taro-vite-react-tailwindcss-v4',
     projectPath: 'taro-vite-react-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'taro-webpack-vue3-tailwindcss-v3',
     projectPath: 'taro-webpack-vue3-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'taro-webpack-vue3-tailwindcss-v4',
     projectPath: 'taro-webpack-vue3-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'taro-vite-vue3-tailwindcss-v3',
     projectPath: 'taro-vite-vue3-tailwindcss-v3',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'taro-vite-vue3-tailwindcss-v4',
     projectPath: 'taro-vite-vue3-tailwindcss-v4',
     cssFile: 'dist/app.wxss',
+    cssFiles: [
+      'dist/app.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      'dist/sub-independent/pages/index.wxss',
+    ],
   },
   {
     name: 'uni-app-vite-tailwindcss-v3',

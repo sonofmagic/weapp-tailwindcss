@@ -21,6 +21,7 @@ interface CompareProject {
   rootDir: string
   cssFile: string
   cssPath: string
+  requiredCssFiles: string[]
 }
 
 interface CreateProjectReportOptions {
@@ -44,6 +45,7 @@ const SUBPACKAGE_MARKER_PATTERNS = [
   /normal[-_]subpackage/i,
   /independent[-_]subpackage/i,
 ]
+const SUBPACKAGE_ROOTS = ['sub-normal', 'sub-independent'] as const
 const localHBuilderXProjectNames = new Set(
   DEMO_COVERAGE_MATRIX
     .filter(item => item.hbuilderxLocal)
@@ -206,6 +208,12 @@ function createCompareProject(entry: ProjectEntry, fixturesDir: '../demo'): Comp
   const cssPath = outputCssPath.startsWith(rootPrefix)
     ? outputCssPath.slice(rootPrefix.length)
     : entry.cssFile
+  const requiredCssFiles = (entry.cssFiles ?? [entry.cssFile]).map((file) => {
+    const outputFilePath = path.join(entry.projectPath, file)
+    return outputFilePath.startsWith(rootPrefix)
+      ? outputFilePath.slice(rootPrefix.length)
+      : file
+  })
 
   return {
     name: entry.name,
@@ -213,6 +221,7 @@ function createCompareProject(entry: ProjectEntry, fixturesDir: '../demo'): Comp
     rootDir: entry.name,
     cssFile: outputCssPath,
     cssPath,
+    requiredCssFiles,
   }
 }
 
@@ -226,6 +235,7 @@ async function cleanProject(root: string) {
     fs.rm(path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'), { recursive: true, force: true }),
     fs.rm(path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'), { recursive: true, force: true }),
     fs.rm(path.resolve(root, '.tw-patch/tailwindcss-target.json'), { force: true }),
+    fs.rm(path.resolve(root, '.tw-patch/tw-class-list.json'), { force: true }),
   ])
   await clearProjectBuildState(root)
 }
@@ -454,6 +464,31 @@ function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generato
   }
 }
 
+function expectSubpackageCssFiles(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  const requiredSubpackageCssFiles = project.requiredCssFiles
+    .map(file => file.replace(/\\/g, '/'))
+    .filter(file => SUBPACKAGE_ROOTS.some(root => file.includes(root)))
+    .map((file) => {
+      const outputRoot = normalizeOutputCssFileName(path.dirname(project.cssPath))
+      if (outputRoot && outputRoot !== '.' && file.startsWith(`${outputRoot}/`)) {
+        return file.slice(outputRoot.length + 1)
+      }
+      return file
+    })
+    .map(normalizeOutputCssFileName)
+
+  if (requiredSubpackageCssFiles.length === 0) {
+    return
+  }
+
+  for (const requiredCssFile of requiredSubpackageCssFiles) {
+    expect(
+      generatorResult.cssFiles,
+      `${project.name} should emit required subpackage css output ${requiredCssFile}`,
+    ).toContain(requiredCssFile)
+  }
+}
+
 function normalizeError(error: unknown) {
   if (error && typeof error === 'object') {
     const maybeError = error as {
@@ -618,6 +653,7 @@ describe('demo generator mode output', () => {
       rootDir: 'fixture-app',
       cssFile: 'fixture-app/dist/app.wxss',
       cssPath: 'dist/app.wxss',
+      requiredCssFiles: ['fixture-app/dist/app.wxss'],
     }, {
       css: '.generator { color: blue; }\n.shared { display: block; }\n',
       cssFiles: ['app.wxss', 'pages/index/index.wxss'],
@@ -718,6 +754,7 @@ describe('demo generator mode output', () => {
       if (generatorResult) {
         expectWeappViteTailwindV3CssIsolation(project, generatorResult)
         expectGulpTailwindV3SubpackageCssIsolation(project, generatorResult)
+        expectSubpackageCssFiles(project, generatorResult)
         expectSubpackageMarkersInGeneratedCss(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }

@@ -5,7 +5,7 @@ Entry: taro-vite-react-tailwindcss-v3/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 5416 | 46 | false | false | false | true | true | false | true |
+| 8955 | 48 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -14,6 +14,8 @@ Entry: taro-vite-react-tailwindcss-v3/dist/app.wxss
 | 1 | `app.wxss` |
 | 2 | `app-origin.wxss` |
 | 3 | `pages/index/index.wxss` |
+| 4 | `sub-independent/pages/index.wxss` |
+| 5 | `sub-normal/pages/index.wxss` |
 
 ## Generator CSS Summary
 
@@ -22,6 +24,8 @@ Entry: taro-vite-react-tailwindcss-v3/dist/app.wxss
 | `app.wxss` | 27 | 0 | false | false | false | false | false | false | false |
 | `app-origin.wxss` | 5339 | 45 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 50 | 1 | false | false | false | false | false | false | false |
+| `sub-independent/pages/index.wxss` | 1777 | 2 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | 1762 | 2 | false | false | false | false | false | false | true |
 
 ## Generator CSS
 
@@ -256,5 +260,159 @@ text,
 ```css
 .tw-page-style-watch-anchor {
   color: inherit;
+}
+```
+
+### sub-independent/pages/index.wxss
+
+```css
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
+}
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.bg-independent-subpackage-marker {
+  --tw-bg-opacity: 1;
+  background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
+}
+```
+
+### sub-normal/pages/index.wxss
+
+```css
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
+}
+.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-vite-react-tailwindcss-v3';
+  content: var(--tw-content);
+}
+.bg-normal-subpackage-marker {
+  --tw-bg-opacity: 1;
+  background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
 }
 ```
