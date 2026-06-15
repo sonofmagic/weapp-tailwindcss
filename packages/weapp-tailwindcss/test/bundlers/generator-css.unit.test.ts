@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -6261,6 +6261,8 @@ describe('bundlers/shared generator css', () => {
           majorVersion: 4,
           sourceOptions: {
             outputRoot: path.join(root, 'dist/dev/mp-weixin'),
+            sourceFile: cssFile,
+            sourceCss: await readFile(cssFile, 'utf8'),
           },
           postcssOptions: {
             options: {

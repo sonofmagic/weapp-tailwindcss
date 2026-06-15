@@ -1,7 +1,7 @@
-import type { HmrContext, ModuleNode, Plugin, ResolvedConfig } from 'vite'
-import type { RememberedCssSource } from './generate-bundle'
+import type { Plugin, ResolvedConfig } from 'vite'
+import type { SourceCandidateScanRoot } from './source-candidate-scan-signature'
 import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } from './source-candidates'
-import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
 import { readFile } from 'node:fs/promises'
@@ -30,16 +30,19 @@ import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '.
 import { generateCssByGenerator } from '../shared/generator-css'
 import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { isSourceStyleRequest, stripRequestQuery } from '../shared/style-requests'
+import { isSourceStyleRequest } from '../shared/style-requests'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
+import { createViteCssMemory, shouldCollectTransformedSourceCandidates } from './css-memory'
 import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
+import { hasSelfAcceptingNonStyleHotModule, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from './hot-css-modules'
+import { touchMapEntry } from './map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
-import { parseVueRequest } from './query'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createViteServeCssGenerationPlugins } from './serve-css-generation'
+import { createSourceCandidateScanSignature } from './source-candidate-scan-signature'
 import { createSourceCandidateCollector, createTailwindV3DefaultExtractor, isSourceCandidateRequest } from './source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
@@ -54,95 +57,10 @@ const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
 const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
   max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
 })
-const VITE_REMEMBERED_CSS_CACHE_MAX = 96
-const VITE_KNOWN_SFC_SOURCE_CACHE_MAX = 128
-const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
-const SFC_COMPONENT_FILE_RE = /\.(?:vue|uvue|nvue|svelte|mpx)$/i
-
-interface SourceCandidateScanRoot {
-  root: string
-  entries?: TailwindSourceEntry[] | undefined
-  explicit?: boolean | undefined
-}
-
-interface SourceCandidateScanSignatureInput {
-  inlineCandidates?: TailwindInlineSourceCandidates | undefined
-  outDir?: string | undefined
-  roots: SourceCandidateScanRoot[]
-  scanAllSources?: boolean | undefined
-}
 
 export interface WeappTailwindcssVitePlugin {
   name: string
   [hook: string]: any
-}
-
-function normalizeSignaturePath(value: string) {
-  return slash(path.resolve(value))
-}
-
-function serializeInlineCandidates(inlineCandidates: TailwindInlineSourceCandidates | undefined) {
-  return {
-    excluded: [...(inlineCandidates?.excluded ?? [])].sort(),
-    included: [...(inlineCandidates?.included ?? [])].sort(),
-  }
-}
-
-function serializeSourceEntries(entries: TailwindSourceEntry[] | undefined) {
-  return (entries ?? [])
-    .map(entry => ({
-      base: normalizeSignaturePath(entry.base),
-      negated: entry.negated,
-      pattern: entry.pattern,
-    }))
-    .sort((a, b) => `${a.base}\0${a.pattern}\0${a.negated}`.localeCompare(`${b.base}\0${b.pattern}\0${b.negated}`))
-}
-
-function createSourceCandidateScanSignature(input: SourceCandidateScanSignatureInput) {
-  return JSON.stringify({
-    inlineCandidates: serializeInlineCandidates(input.inlineCandidates),
-    outDir: input.outDir ? normalizeSignaturePath(input.outDir) : undefined,
-    roots: input.roots.map(root => ({
-      entries: serializeSourceEntries(root.entries),
-      root: normalizeSignaturePath(root.root),
-    })),
-    scanAllSources: input.scanAllSources ?? false,
-  })
-}
-
-function stripSourceHash(sourceFile: string) {
-  const hashIndex = sourceFile.indexOf('#')
-  return hashIndex === -1 ? sourceFile : sourceFile.slice(0, hashIndex)
-}
-
-function normalizeCssSourceIdentity(sourceFile: string) {
-  const cleanSourceFile = stripSourceHash(sourceFile)
-  const { filename, query } = parseVueRequest(cleanSourceFile)
-  const normalizedFile = normalizeOutputPathKey(filename)
-  if (query.type === 'style') {
-    return `${normalizedFile}?type=style&index=${query.index ?? 0}`
-  }
-  return normalizeOutputPathKey(stripRequestQuery(cleanSourceFile))
-}
-
-function touchMapEntry<Key, Value>(map: Map<Key, Value>, key: Key, value: Value) {
-  map.delete(key)
-  map.set(key, value)
-}
-
-function pruneMapToMaxSize<Key, Value>(
-  map: Map<Key, Value>,
-  maxSize: number,
-  onDelete?: (key: Key) => void,
-) {
-  while (map.size > maxSize) {
-    const key = map.keys().next().value
-    if (key === undefined) {
-      break
-    }
-    map.delete(key)
-    onDelete?.(key)
-  }
 }
 
 function normalizeVitePersistentCacheKey(file: string) {
@@ -312,9 +230,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const viteProcessedCssSourceFiles = new Set<string>()
   const viteGeneratedCssByFile = new Map<string, string>()
   const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
-  const rememberedCssSources = new Map<string, RememberedCssSource>()
-  const rememberedCssSignatureByFile = new Map<string, string>()
-  const knownSfcSources = new Map<string, string>()
+  const cssMemory = createViteCssMemory({
+    debug,
+    getSourceCandidateSource: file => sourceCandidateCollector.source(file),
+  })
   const tailwindRootCssModuleIds = new Set<string>()
   const {
     runtimeState,
@@ -513,16 +432,16 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (sourceScanMatcher && !sourceScanMatcher(file)) {
       sourceCandidateCollector.remove(file)
       cacheCurrentSourceCandidateScan()
-      return refreshRememberedCssSourceByCurrentFile(file)
+      return cssMemory.refreshRememberedCssSourceByCurrentFile(file)
     }
     if (sourceScanExplicit && sourceScanEntries?.length === 0) {
       cacheCurrentSourceCandidateScan()
-      return refreshRememberedCssSourceByCurrentFile(file)
+      return cssMemory.refreshRememberedCssSourceByCurrentFile(file)
     }
     const existingTask = pendingSourceCandidateSyncByFile.get(file)
     if (existingTask) {
       return existingTask
-        .then(() => refreshRememberedCssSourceByCurrentFile(file))
+        .then(() => cssMemory.refreshRememberedCssSourceByCurrentFile(file))
         .then(() => undefined)
     }
     const task = sourceCandidateCollector.syncCurrentFile(id)
@@ -539,199 +458,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     pendingSourceCandidateSyncs.add(task)
     pendingSourceCandidateSyncByFile.set(file, task)
     return task
-      .then(() => refreshRememberedCssSourceByCurrentFile(file))
+      .then(() => cssMemory.refreshRememberedCssSourceByCurrentFile(file))
       .then(() => undefined)
-  }
-  const shouldCollectTransformedSourceCandidates = (id: string) => {
-    const queryIndex = id.search(/[?#]/)
-    if (queryIndex < 0) {
-      return true
-    }
-    const file = cleanUrl(id)
-    return !SFC_COMPONENT_FILE_RE.test(file)
-  }
-  const hasSfcStyleBlocks = (source: string) => {
-    SFC_STYLE_BLOCK_RE.lastIndex = 0
-    return SFC_STYLE_BLOCK_RE.test(source)
-  }
-  const normalizeKnownSfcSourceKey = (file: string) => normalizeOutputPathKey(path.resolve(cleanUrl(file)))
-  const rememberKnownSfcSource = (id: string, code: string) => {
-    if (id.search(/[?#]/) >= 0) {
-      return
-    }
-    const file = cleanUrl(id)
-    if (!SFC_COMPONENT_FILE_RE.test(file)) {
-      return
-    }
-    if (!hasSfcStyleBlocks(code)) {
-      return
-    }
-    touchMapEntry(knownSfcSources, normalizeKnownSfcSourceKey(file), code)
-    pruneMapToMaxSize(knownSfcSources, VITE_KNOWN_SFC_SOURCE_CACHE_MAX)
-  }
-  const getKnownSfcSource = (file: string) => {
-    const scanSource = sourceCandidateCollector.source(file)
-    if (scanSource && hasSfcStyleBlocks(scanSource)) {
-      return scanSource
-    }
-    const key = normalizeKnownSfcSourceKey(file)
-    const source = knownSfcSources.get(key)
-    if (source != null) {
-      touchMapEntry(knownSfcSources, key, source)
-    }
-    return source
-  }
-  const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
-    const outputKey = normalizeOutputPathKey(entry.outputFile)
-    const normalizedSourceFile = normalizeCssSourceIdentity(entry.sourceFile)
-    const previousOutputEntry = rememberedCssSources.get(outputKey)
-    const key = previousOutputEntry != null && normalizeCssSourceIdentity(previousOutputEntry.sourceFile) !== normalizedSourceFile
-      ? `${outputKey}\0${normalizedSourceFile}`
-      : outputKey
-    const previous = rememberedCssSources.get(key)
-    touchMapEntry(rememberedCssSources, key, entry)
-    const relatedRememberedEntries = [...rememberedCssSources].filter(([rememberedKey, remembered]) =>
-      rememberedKey !== key && normalizeCssSourceIdentity(remembered.sourceFile) === normalizedSourceFile,
-    )
-    for (const [rememberedKey, remembered] of relatedRememberedEntries) {
-      touchMapEntry(rememberedCssSources, rememberedKey, {
-        ...remembered,
-        rawSource: entry.rawSource,
-        sourceFile: entry.sourceFile,
-      })
-      rememberedCssSignatureByFile.delete(rememberedKey)
-    }
-    if (cssRuntimeSignature) {
-      rememberedCssSignatureByFile.set(key, cssRuntimeSignature)
-    }
-    else if (previous?.rawSource !== entry.rawSource || previous?.sourceFile !== entry.sourceFile) {
-      rememberedCssSignatureByFile.delete(key)
-    }
-    pruneMapToMaxSize(rememberedCssSources, VITE_REMEMBERED_CSS_CACHE_MAX, (rememberedKey) => {
-      rememberedCssSignatureByFile.delete(String(rememberedKey))
-    })
-  }
-  const refreshRememberedCssSourceEntry = (
-    rememberedKey: string,
-    remembered: RememberedCssSource,
-    sourceFile: string,
-    rawSource: string,
-  ) => {
-    if (remembered.rawSource === rawSource && remembered.sourceFile === sourceFile) {
-      return remembered
-    }
-    const nextRemembered = {
-      ...remembered,
-      rawSource,
-      sourceFile,
-    }
-    touchMapEntry(rememberedCssSources, rememberedKey, nextRemembered)
-    rememberedCssSignatureByFile.delete(rememberedKey)
-    return nextRemembered
-  }
-  const refreshRememberedCssSourceBySourceFile = (sourceFile: string, rawSource: string) => {
-    const normalizedSourceFile = normalizeCssSourceIdentity(sourceFile)
-    const relatedRememberedEntries = [...rememberedCssSources].filter(([, remembered]) =>
-      normalizeCssSourceIdentity(remembered.sourceFile) === normalizedSourceFile,
-    )
-    for (const [rememberedKey, remembered] of relatedRememberedEntries) {
-      refreshRememberedCssSourceEntry(rememberedKey, remembered, sourceFile, rawSource)
-    }
-  }
-  const extractSfcStyleBlock = (source: string, index: number | undefined) => {
-    const targetIndex = index ?? 0
-    SFC_STYLE_BLOCK_RE.lastIndex = 0
-    let currentIndex = 0
-    let match = SFC_STYLE_BLOCK_RE.exec(source)
-    while (match !== null) {
-      if (currentIndex === targetIndex) {
-        return match[1] ?? ''
-      }
-      currentIndex++
-      match = SFC_STYLE_BLOCK_RE.exec(source)
-    }
-    return undefined
-  }
-  const extractSfcStyleSource = (source: string, index: number | undefined) => {
-    if (index !== undefined) {
-      return extractSfcStyleBlock(source, index)
-    }
-    const styleSources: string[] = []
-    SFC_STYLE_BLOCK_RE.lastIndex = 0
-    let match = SFC_STYLE_BLOCK_RE.exec(source)
-    while (match !== null) {
-      styleSources.push(match[1] ?? '')
-      match = SFC_STYLE_BLOCK_RE.exec(source)
-    }
-    return styleSources.length > 0 ? styleSources.join('\n') : undefined
-  }
-  const resolveCachedStyleSource = (sourceFile: string) => {
-    const file = cleanUrl(stripRequestQuery(sourceFile))
-    if (SFC_COMPONENT_FILE_RE.test(file)) {
-      return getKnownSfcSource(file)
-    }
-    if (isSourceStyleRequest(file)) {
-      return sourceCandidateCollector.source(file)
-    }
-    return undefined
-  }
-  const refreshRememberedCssSourceByCurrentFile = async (sourceFile: string) => {
-    const file = cleanUrl(sourceFile)
-    const normalizedSourceFile = normalizeOutputPathKey(file)
-    const matchedRememberedSources = [...rememberedCssSources.values()].filter(remembered =>
-      normalizeOutputPathKey(stripRequestQuery(cleanUrl(remembered.sourceFile))) === normalizedSourceFile,
-    )
-    if (matchedRememberedSources.length === 0) {
-      return
-    }
-    const source = resolveCachedStyleSource(file)
-    if (source == null) {
-      debug('refresh remembered css source skipped: missing cached source for %s', file)
-      return
-    }
-    if (SFC_COMPONENT_FILE_RE.test(file)) {
-      for (const remembered of matchedRememberedSources) {
-        const { query } = parseVueRequest(remembered.sourceFile)
-        const styleSource = extractSfcStyleSource(source, query.type === 'style' ? query.index : undefined)
-        if (styleSource !== undefined) {
-          refreshRememberedCssSourceBySourceFile(remembered.sourceFile, styleSource)
-        }
-      }
-      return
-    }
-    if (isSourceStyleRequest(file)) {
-      refreshRememberedCssSourceBySourceFile(file, source)
-    }
-  }
-  const refreshRememberedCssSource = async (remembered: RememberedCssSource) => {
-    const file = cleanUrl(stripRequestQuery(remembered.sourceFile))
-    const rememberedKey = [...rememberedCssSources.entries()]
-      .find(([, entry]) => entry === remembered)?.[0]
-    if (!rememberedKey || !path.isAbsolute(file)) {
-      return undefined
-    }
-    const source = resolveCachedStyleSource(file)
-    if (source == null) {
-      debug('refresh remembered css source before bundle replay skipped: missing cached source for %s', file)
-      return undefined
-    }
-    if (SFC_COMPONENT_FILE_RE.test(file)) {
-      const { query } = parseVueRequest(remembered.sourceFile)
-      const styleSource = extractSfcStyleSource(source, query.type === 'style' ? query.index : undefined)
-      return styleSource === undefined
-        ? undefined
-        : refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, styleSource)
-    }
-    if (isSourceStyleRequest(file)) {
-      return refreshRememberedCssSourceEntry(rememberedKey, remembered, remembered.sourceFile, source)
-    }
-    return undefined
-  }
-  const getRememberedCssSources = () => rememberedCssSources
-  const getRememberedCssSourceEntry = (file: string) => rememberedCssSources.get(normalizeOutputPathKey(file))
-  const getRememberedCssSignature = (file: string) => rememberedCssSignatureByFile.get(normalizeOutputPathKey(file))
-  const setRememberedCssSignature = (file: string, cssRuntimeSignature: string) => {
-    rememberedCssSignatureByFile.set(normalizeOutputPathKey(file), cssRuntimeSignature)
   }
   const recordCssAssetResult = (file: string, css: string) => {
     touchMapEntry(viteGeneratedCssByFile, normalizeVitePersistentCacheKey(file), css)
@@ -757,9 +485,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const getViteCssCacheStats = () => ({
     viteGeneratedCssByFile: viteGeneratedCssByFile.size,
     viteProcessedCssAssetResults: viteProcessedCssAssetResults.size,
-    rememberedCssSources: rememberedCssSources.size,
-    rememberedCssSignatureByFile: rememberedCssSignatureByFile.size,
-    knownSfcSources: knownSfcSources.size,
+    ...cssMemory.getStats(),
     sourceCandidateScanCache: sourceCandidateScanCache.size,
     pendingSourceCandidateSyncs: pendingSourceCandidateSyncs.size,
     pendingSourceCandidateSyncByFile: pendingSourceCandidateSyncByFile.size,
@@ -782,30 +508,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         viteProcessedCssAssetResults.delete(key)
       }
     }
-    for (const [key, remembered] of rememberedCssSources) {
-      const outputKey = normalizeVitePersistentCacheKey(remembered.outputFile)
-      const sourceKey = normalizeVitePersistentCacheKey(remembered.sourceFile)
-      if (!activeFiles.has(key) && !activeFiles.has(outputKey) && !activeFiles.has(sourceKey)) {
-        rememberedCssSources.delete(key)
-        rememberedCssSignatureByFile.delete(key)
-      }
-    }
-    if (options.activeKnownSfcFiles) {
-      const activeKnownSfcFiles = new Set(
-        [...options.activeKnownSfcFiles]
-          .map(file => normalizeKnownSfcSourceKey(file))
-          .filter(file => SFC_COMPONENT_FILE_RE.test(file)),
-      )
-      for (const key of knownSfcSources.keys()) {
-        if (!activeKnownSfcFiles.has(key)) {
-          knownSfcSources.delete(key)
-        }
-      }
-    }
-    pruneMapToMaxSize(rememberedCssSources, VITE_REMEMBERED_CSS_CACHE_MAX, (rememberedKey) => {
-      rememberedCssSignatureByFile.delete(String(rememberedKey))
-    })
-    pruneMapToMaxSize(knownSfcSources, VITE_KNOWN_SFC_SOURCE_CACHE_MAX)
+    cssMemory.prune(options)
   }
   const normalizeViteProcessedCssFile = (file: string) => path.resolve(cleanUrl(file))
   const markViteProcessedCssSource = (file: string) => {
@@ -818,66 +521,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     tailwindRootCssModuleIds.add(id)
     tailwindRootCssModuleIds.add(cleanUrl(id))
   }
-  const resolveHotTailwindCssModules = (ctx: HmrContext) => {
-    const modules: ModuleNode[] = []
-    const seenModules = new Set<ModuleNode>()
-    const collectModule = (mod: ModuleNode | undefined) => {
-      if (mod == null || seenModules.has(mod)) {
-        return
-      }
-      const modId = mod.id ?? mod.url
-      if (!isSourceStyleRequest(modId)) {
-        return
-      }
-      seenModules.add(mod)
-      ctx.server.moduleGraph.invalidateModule(mod)
-      modules.push(mod)
-    }
-    for (const id of tailwindRootCssModuleIds) {
-      const candidates = [
-        ctx.server.moduleGraph.getModuleById(id),
-        ctx.server.moduleGraph.getModuleById(cleanUrl(id)),
-        ...(ctx.server.moduleGraph.getModulesByFile(id) ?? []),
-        ...(ctx.server.moduleGraph.getModulesByFile(cleanUrl(id)) ?? []),
-      ]
-      for (const mod of candidates) {
-        collectModule(mod)
-      }
-    }
-    return modules
-  }
-  const resolveModuleHotUrl = (mod: ModuleNode) => {
-    if (typeof mod.url === 'string' && mod.url.length > 0) {
-      return mod.url
-    }
-    if (typeof mod.id === 'string' && mod.id.startsWith('/')) {
-      return mod.id
-    }
-    return undefined
-  }
-  const includesHotModule = (modules: ModuleNode[], target: ModuleNode) => {
-    const targetUrl = resolveModuleHotUrl(target)
-    const targetId = target.id
-    return modules.some((mod) => {
-      if (mod === target) {
-        return true
-      }
-      return (
-        targetUrl !== undefined
-        && resolveModuleHotUrl(mod) === targetUrl
-      ) || (
-        typeof targetId === 'string'
-        && targetId.length > 0
-        && mod.id === targetId
-      )
-    })
-  }
-  const hasSelfAcceptingNonStyleHotModule = (modules: ModuleNode[]) => {
-    return modules.some((mod) => {
-      const modId = mod.id ?? mod.url
-      return !isSourceStyleRequest(modId) && mod.isSelfAccepting === true
-    })
-  }
   const isUniViteProject = () => {
     return resolvedConfig?.plugins?.some(plugin => plugin.name.includes('uni')) ?? false
   }
@@ -886,41 +529,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       return true
     }
     return isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir)
-  }
-  const sendSupplementalCssHotUpdates = (ctx: HmrContext, cssModules: ModuleNode[]) => {
-    const updates = cssModules
-      .filter(mod => !includesHotModule(ctx.modules, mod))
-      .map((mod) => {
-        const hotUrl = resolveModuleHotUrl(mod)
-        if (!hotUrl) {
-          return undefined
-        }
-        return {
-          type: 'js-update' as const,
-          timestamp: ctx.timestamp,
-          path: hotUrl,
-          acceptedPath: hotUrl,
-          explicitImportRequired: false,
-          isWithinCircularImport: false,
-        }
-      })
-      .filter((update): update is NonNullable<typeof update> => update !== undefined)
-    if (updates.length === 0) {
-      return
-    }
-    queueMicrotask(() => {
-      ctx.server.ws?.send?.({
-        type: 'update',
-        updates,
-      })
-    })
-  }
-  const sendFullReloadForUnresolvedHotUpdate = (ctx: HmrContext) => {
-    ctx.server.ws?.send?.({
-      type: 'full-reload',
-      path: '*',
-      triggeredBy: ctx.file,
-    })
   }
   const matchesViteProcessedCssSource = (candidate: string) => {
     const normalized = normalizeViteProcessedCssFile(candidate)
@@ -1029,7 +637,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     markViteProcessedCssSource(file)
     rememberTailwindRootCssModule(id)
     recordGeneratorCandidates(runtime)
-    rememberCssSource({
+    cssMemory.rememberCssSource({
       outputFile,
       rawSource: code,
       sourceFile: id,
@@ -1044,7 +652,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       ? `${weappTailwindcssDirPosix}/generator-placeholder.css`
       : undefined,
     onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
-    onCssSourceTransform: (id, code) => refreshRememberedCssSourceBySourceFile(id, code),
+    onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code),
     shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code),
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
@@ -1074,12 +682,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,
-    rememberCssSource,
-    refreshRememberedCssSource,
-    getRememberedCssSources,
-    getRememberedCssSignature,
-    setRememberedCssSignature,
-    getKnownSfcSource,
+    rememberCssSource: cssMemory.rememberCssSource,
+    refreshRememberedCssSource: cssMemory.refreshRememberedCssSource,
+    getRememberedCssSources: cssMemory.getRememberedCssSources,
+    getRememberedCssSignature: cssMemory.getRememberedCssSignature,
+    setRememberedCssSignature: cssMemory.setRememberedCssSignature,
+    getKnownSfcSource: cssMemory.getKnownSfcSource,
     recordGeneratorCandidates,
     pruneViteCssCaches,
     getViteCssCacheStats,
@@ -1102,12 +710,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,
-    rememberMainCssSource: (file, rawSource) => rememberCssSource({
+    rememberMainCssSource: (file, rawSource) => cssMemory.rememberCssSource({
       outputFile: file,
       rawSource,
       sourceFile: file,
     }),
-    getRememberedMainCssSource: getRememberedCssSourceEntry,
+    getRememberedMainCssSource: cssMemory.getRememberedCssSourceEntry,
   })
   const utsPlatform = resolveUniUtsPlatform()
   const isIosPlatform = utsPlatform.isAppIos
@@ -1141,7 +749,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       enforce: 'pre',
       async transform(code, id) {
         if (shouldOwnTailwindGeneration) {
-          rememberKnownSfcSource(id, code)
+          cssMemory.rememberKnownSfcSource(id, code)
         }
         if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
           return
@@ -1185,7 +793,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           if (isSourceCandidateHotUpdate) {
             invalidateRecordedGeneratorCandidates()
           }
-          const cssModules = resolveHotTailwindCssModules(ctx)
+          const cssModules = resolveHotTailwindCssModules(ctx, tailwindRootCssModuleIds)
           if (
             isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)

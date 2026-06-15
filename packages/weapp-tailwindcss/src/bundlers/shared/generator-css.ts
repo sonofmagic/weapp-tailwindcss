@@ -182,7 +182,10 @@ export async function generateCssByGenerator(
       const scopedRuntime = sourceEntries
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
-      const isolateCssSource = shouldIsolateScopedCssSource(majorVersion, source, sourceEntries)
+      const isolateCssSource = shouldIsolateScopedCssSource(majorVersion, source, sourceEntries, {
+        cssHandlerOptions,
+        target: generatorOptions.target,
+      })
       const sourceMetadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
       const matchedCssSourceFile = Boolean(sourceMetadata?.matchedCssSourceFile)
       if (
@@ -195,10 +198,10 @@ export async function generateCssByGenerator(
         debug('defer empty scoped css source generation: %s', file)
         return undefined
       }
-      const sourceRuntime = scopedRuntime && (scopedRuntime.size > 0 || isolateCssSource)
+      const sourceRuntime = (scopedRuntime && (scopedRuntime.size > 0 || isolateCssSource)) || isolateCssSource
         ? isolateCurrentCssCandidates
           ? runtimeWithCurrentCss
-          : mergeScopedRuntimeWithCurrentRuntime(scopedRuntime, runtimeWithCurrentCss, {
+          : mergeScopedRuntimeWithCurrentRuntime(scopedRuntime ?? new Set(), runtimeWithCurrentCss, {
               currentCssCandidates,
               cssHandlerOptions,
               isolateCssSource,

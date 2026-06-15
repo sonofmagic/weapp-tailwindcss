@@ -1,14 +1,19 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { SourceSideCssEntryOptions, SourceSideCssEntrySource } from './source-files'
+import type { SourceSideCssEntrySource } from './source-files'
+import type {
+  GeneratorResolvedSource,
+  GeneratorSourceRuntimeState,
+  GeneratorSourceSelectionOptions,
+  SourceStyleMatchOptions,
+  TailwindV4CssSource,
+  TailwindV4CssSourceRef,
+  TailwindV4SourceOptions,
+} from './source-resolver/types'
 import type { NormalizedWeappTailwindcssGeneratorOptions, TailwindResolvedSource } from '@/generator'
-import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import type { InternalUserDefinedOptions } from '@/types'
 import type { UndefinedOptional } from '@/utils/object'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { splitCandidateTokens } from 'tailwindcss-patch'
 import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
 import {
   resolveTailwindV3Source,
@@ -37,65 +42,25 @@ import {
 import {
   hasTailwindGeneratedCss,
   hasTailwindGeneratedCssMarkers,
-  stripGeneratorPlaceholderMarkers,
-  stripTailwindBanners,
 } from './markers'
 import { resolveSourceSideCssEntrySource } from './source-files'
+import { createTailwindV4ApplyReferenceSource } from './source-resolver/apply-reference'
+import { resolveExistingConfigPath } from './source-resolver/config'
+import { getOutputFileStem, normalizeCssSourceForCompare, scoreTailwindV4CssSourceFileMatch } from './source-resolver/matching'
+import {
+  withGeneratorSourceMetadata,
+  withMatchedSourceSideMetadata,
+} from './source-resolver/metadata'
+import {
+  resolveCssHandlerSourceOptions,
+  resolveCssSourceBase,
+  resolvePostcssFromOption,
+  resolvePostcssSourceFile,
+} from './source-resolver/postcss-source'
 
-interface GeneratorSourceRuntimeState {
-  twPatcher: InternalUserDefinedOptions['twPatcher']
-}
-
-interface GeneratorSourceSelectionOptions {
-  runtime?: Set<string> | undefined
-  getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
-  cssEntries?: string[] | undefined
-}
-
-export interface GeneratorSourceMetadata {
-  matchedCssSourceFile?: string | undefined
-  sourceEntries?: TailwindSourceEntry[] | undefined
-  sourceBase?: string | undefined
-  sourceCss?: string | undefined
-}
-
-export type GeneratorResolvedSource = TailwindResolvedSource & {
-  __weappTailwindcssMeta?: GeneratorSourceMetadata | undefined
-}
-
-type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> & {
-  config?: string | undefined
-  outputRoot?: string | undefined
-  sourceFile?: string | undefined
-}
-type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
-type TailwindV4CssSourceRef = Pick<TailwindV4CssSource, 'file'>
-interface SourceStyleMatchOptions extends SourceSideCssEntryOptions {}
-
-function resolvePostcssFromOption(cssHandlerOptions: IStyleHandlerOptions) {
-  const from = cssHandlerOptions.postcssOptions?.options?.from
-  return typeof from === 'string' && from.length > 0 ? from : undefined
-}
-
-function resolvePostcssSourceFile(cssHandlerOptions: IStyleHandlerOptions) {
-  const from = resolvePostcssFromOption(cssHandlerOptions)
-  if (!from || !path.isAbsolute(from)) {
-    return undefined
-  }
-  return from.replace(/[?#].*$/, '')
-}
-
-function resolveCssHandlerSourceOptions(cssHandlerOptions: IStyleHandlerOptions) {
-  return (cssHandlerOptions as {
-    sourceOptions?: {
-      outputRoot?: string | undefined
-      sourceFile?: string | undefined
-      sourceCss?: string | undefined
-      cssSources?: TailwindV4CssSource[] | undefined
-      cssEntries?: string[] | undefined
-    } | undefined
-  }).sourceOptions
-}
+export type { GeneratorResolvedSource, GeneratorSourceMetadata } from './source-resolver/metadata'
+export { resolveCssSourceBase } from './source-resolver/postcss-source'
+export type { GeneratorSourceRuntimeState, GeneratorSourceSelectionOptions } from './source-resolver/types'
 
 function createCssEntrySources(cssEntries: string[] | undefined) {
   return cssEntries
@@ -186,71 +151,6 @@ async function resolveTailwindV4CssEntrySource(
   )
 }
 
-export function resolveCssSourceBase(file: string, cssHandlerOptions: IStyleHandlerOptions) {
-  const from = resolvePostcssFromOption(cssHandlerOptions)
-  const baseFile = from ?? file
-  const normalized = baseFile.replace(/[?#].*$/, '')
-  return path.dirname(path.resolve(normalized))
-}
-
-function resolveExistingConfigPath(
-  config: string | undefined,
-  configRequest: string | undefined,
-  file: string,
-  sourceOptions: {
-    projectRoot?: string | undefined
-    cwd?: string | undefined
-    config?: string | undefined
-    sourceFile?: string | undefined
-    outputRoot?: string | undefined
-  },
-) {
-  if (config && existsSync(config)) {
-    return config
-  }
-  if (!configRequest || path.isAbsolute(configRequest)) {
-    return sourceOptions.config
-  }
-
-  const outputDir = path.dirname(file.replace(/[?#].*$/, ''))
-  const sourceDir = sourceOptions.sourceFile
-    ? path.dirname(sourceOptions.sourceFile.replace(/[?#].*$/, ''))
-    : undefined
-  const baseCandidates = [
-    sourceDir,
-    path.isAbsolute(outputDir) ? outputDir : undefined,
-    sourceOptions.projectRoot,
-    sourceOptions.cwd,
-  ].filter((item): item is string => typeof item === 'string' && item.length > 0)
-  const seenCandidates = new Set<string>()
-  const configCandidates: string[] = []
-  const addConfigCandidate = (candidate: string | undefined) => {
-    if (!candidate) {
-      return
-    }
-    const normalized = path.resolve(candidate)
-    if (seenCandidates.has(normalized)) {
-      return
-    }
-    seenCandidates.add(normalized)
-    configCandidates.push(normalized)
-  }
-
-  for (const base of baseCandidates) {
-    addConfigCandidate(path.resolve(base, configRequest))
-    if (!path.isAbsolute(outputDir)) {
-      addConfigCandidate(path.resolve(base, outputDir, configRequest))
-    }
-  }
-
-  for (const candidate of configCandidates) {
-    if (existsSync(candidate)) {
-      return candidate
-    }
-  }
-  return sourceOptions.config
-}
-
 function canResolveSourceSideCssEntry(
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
@@ -285,97 +185,6 @@ function shouldPreferResolvedSourceSideEntry(
   return Boolean(sourceSideEntrySource?.config)
     && (Boolean(cssEntrySource?.configRequest) || !cssEntrySource?.config)
     && (!cssEntrySource?.config || !existsSync(cssEntrySource.config))
-}
-
-function normalizeCssSourceForCompare(css: string) {
-  return stripGeneratorPlaceholderMarkers(stripTailwindBanners(css)).trim()
-}
-
-function getOutputFileStem(file: string) {
-  const normalized = file.replace(/[?#].*$/, '')
-  return path.basename(normalized, path.extname(normalized))
-}
-
-function getOutputFileWithoutExtension(file: string) {
-  const normalized = file.replace(/[?#].*$/, '')
-  const ext = path.extname(normalized)
-  return ext ? normalized.slice(0, -ext.length) : normalized
-}
-
-function normalizeMatchPath(file: string) {
-  return file.split(path.sep).join('/')
-}
-
-function isPathWithinRoot(file: string, root: string) {
-  const relative = path.relative(root, file)
-  return Boolean(relative) && !relative.startsWith('..') && !path.isAbsolute(relative)
-}
-
-function collectCssSourceMatchBases(
-  file: string,
-  roots: Array<string | undefined>,
-) {
-  const normalizedFile = file.replace(/[?#].*$/, '')
-  const bases = new Set<string>()
-  const addBase = (candidate: string) => {
-    const base = normalizeMatchPath(getOutputFileWithoutExtension(candidate))
-    if (base.length > 0) {
-      bases.add(base)
-      const withoutWorkspaceSegment = base.replace(/^(?:src|dist)\//, '')
-      if (withoutWorkspaceSegment !== base && withoutWorkspaceSegment.length > 0) {
-        bases.add(withoutWorkspaceSegment)
-      }
-    }
-  }
-  addBase(normalizedFile)
-
-  const resolvedRoots = roots
-    .filter((root): root is string => typeof root === 'string' && root.length > 0)
-    .map(root => path.resolve(root))
-  if (path.isAbsolute(normalizedFile)) {
-    for (const root of resolvedRoots) {
-      if (isPathWithinRoot(normalizedFile, root)) {
-        addBase(path.relative(root, normalizedFile))
-      }
-    }
-  }
-  else {
-    for (const root of resolvedRoots) {
-      addBase(path.resolve(root, normalizedFile))
-    }
-  }
-  return bases
-}
-
-function scoreTailwindV4CssSourceFileMatch(
-  file: string,
-  cssSourceFile: string,
-  sourceOptions: SourceStyleMatchOptions,
-) {
-  const outputBases = collectCssSourceMatchBases(file, [
-    sourceOptions.outputRoot,
-    sourceOptions.projectRoot,
-    sourceOptions.cwd,
-  ])
-  const sourceBases = collectCssSourceMatchBases(cssSourceFile, [
-    sourceOptions.projectRoot,
-    sourceOptions.cwd,
-  ])
-  let bestScore = 0
-  for (const outputBase of outputBases) {
-    for (const sourceBase of sourceBases) {
-      if (outputBase === sourceBase) {
-        bestScore = Math.max(bestScore, 100000 + outputBase.length)
-      }
-      else if (outputBase.endsWith(`/${sourceBase}`)) {
-        bestScore = Math.max(bestScore, 50000 + sourceBase.length)
-      }
-      else if (sourceBase.endsWith(`/${outputBase}`)) {
-        bestScore = Math.max(bestScore, 1000 + outputBase.length)
-      }
-    }
-  }
-  return bestScore
 }
 
 function resolveMatchingTailwindV4CssEntry(
@@ -728,16 +537,6 @@ async function resolveTailwindV4SourceSideEntrySource(
   return withMatchedSourceSideMetadata(source, resolvedEntrySource)
 }
 
-function withGeneratorSourceMetadata(
-  source: TailwindResolvedSource,
-  metadata: GeneratorSourceMetadata,
-): GeneratorResolvedSource {
-  return {
-    ...source,
-    __weappTailwindcssMeta: metadata,
-  }
-}
-
 function resolveTailwindV3SourceEntries(source: TailwindResolvedSource) {
   if (!('version' in source) || source.version !== 3) {
     return undefined
@@ -753,48 +552,6 @@ function withTailwindV3SourceMetadata(source: TailwindResolvedSource) {
   return sourceEntries
     ? withGeneratorSourceMetadata(source, { sourceEntries })
     : source
-}
-
-function withMatchedSourceSideMetadata(
-  source: TailwindResolvedSource,
-  resolvedEntrySource: SourceSideCssEntrySource,
-) {
-  return resolvedEntrySource.file
-    ? withGeneratorSourceMetadata(source, {
-        matchedCssSourceFile: resolvedEntrySource.file,
-        sourceBase: resolvedEntrySource.base,
-        sourceCss: resolvedEntrySource.css,
-      })
-    : source
-}
-
-function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { packageName?: string }) {
-  if (!hasTailwindApplyDirective(css) || hasTailwindRootDirectives(css)) {
-    return css
-  }
-  const utilities = collectTailwindApplyUtilities(css)
-  return [
-    `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);`,
-    utilities.length > 0 ? `@source inline(${JSON.stringify(utilities.join(' '))});` : undefined,
-    css,
-  ].filter(Boolean).join('\n')
-}
-
-function collectTailwindApplyUtilities(css: string) {
-  let root: postcss.Root
-  try {
-    root = postcss.parse(css)
-  }
-  catch {
-    return []
-  }
-  const utilities = new Set<string>()
-  root.walkAtRules('apply', (rule) => {
-    for (const utility of splitCandidateTokens(rule.params)) {
-      utilities.add(utility)
-    }
-  })
-  return [...utilities].sort()
 }
 
 export async function resolveGeneratorSource(
@@ -885,7 +642,7 @@ export async function resolveGeneratorSource(
   const resolvedSourceOptions: TailwindV4SourceOptions | undefined = sourceOptions
     ? omitUndefined<TailwindV4SourceOptions>({
         ...sourceOptions,
-        sourceFile: resolvePostcssSourceFile(cssHandlerOptions),
+        sourceFile: sourceOptions.sourceFile ?? resolvePostcssSourceFile(cssHandlerOptions),
         ...resolveCssHandlerSourceOptions(cssHandlerOptions),
         cssEntries: selectionOptions?.cssEntries ?? sourceOptions.cssEntries,
         cssSources: mergeCssSources(
@@ -917,7 +674,9 @@ export async function resolveGeneratorSource(
       Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
       && (sourceOptions?.cssEntries?.length ?? 0) <= 1
     )
-  const sourceSideEntrySource = normalizedSourceOptions && shouldPreferSourceSideEntry && canResolveSourceSideCssEntry(file, cssHandlerOptions, normalizedSourceOptions)
+  const sourceSideEntrySource = normalizedSourceOptions
+    && (shouldPreferSourceSideEntry || normalizedSourceOptions.sourceFile !== undefined)
+    && canResolveSourceSideCssEntry(file, cssHandlerOptions, normalizedSourceOptions)
     ? resolveSourceSideCssEntrySource(file, normalizedSourceOptions as SourceStyleMatchOptions, { removeConfig: false })
     : undefined
   const matchedCssEntrySource = normalizedSourceOptions
@@ -1062,12 +821,7 @@ export async function resolveGeneratorSources(
         : matchedCssEntrySource,
     ]
   }
-  const shouldPreferSourceSideEntry = shouldResolveSourceSideCssEntry(rawSource)
-    || (
-      Boolean(cssEntrySource?.css.includes('weapp-tailwindcss generator-placeholder'))
-      && (sourceOptions.cssEntries?.length ?? 0) <= 1
-    )
-  const sourceSideEntrySource = shouldPreferSourceSideEntry && canResolveSourceSideCssEntry(file, cssHandlerOptions, sourceOptions)
+  const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions, sourceOptions)
     ? resolveSourceSideCssEntrySource(file, sourceOptions as SourceStyleMatchOptions, { removeConfig: false })
     : undefined
   const sourceSideCssSource = await resolveTailwindV4SourceSideEntrySource(
@@ -1172,6 +926,9 @@ export async function resolveGeneratorSourceEntries(source: TailwindResolvedSour
     && !resolved.inlineCandidates.excluded.size
     && !resolved.dependencies.length
   ) {
+    if (sourceMetadata?.matchedCssSourceFile) {
+      return []
+    }
     return undefined
   }
   if (resolved?.entries.length || (!resolved?.explicit && !sourceMetadata?.matchedCssSourceFile) || !runtimeState) {
