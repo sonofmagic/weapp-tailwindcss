@@ -1,0 +1,211 @@
+import nodeFs from 'node:fs'
+import nodeOs from 'node:os'
+import nodePath from 'node:path'
+import { mkdir as nodeMkdir, mkdtemp as nodeMkdtemp, rm as nodeRm, writeFile as nodeWriteFile } from 'node:fs/promises'
+import { afterEach, beforeEach, vi } from 'vitest'
+import { createBundlerGeneratedCssMarker as createBundlerGeneratedCssMarkerImpl } from '@/bundlers/shared/generated-css-marker'
+import { WeappTailwindcss as WeappTailwindcssImpl } from '@/bundlers/webpack/BaseUnifiedPlugin/v5'
+import { getWebpackLoaderRuntime as getWebpackLoaderRuntimeImpl } from '@/bundlers/webpack/loaders/runtime-registry'
+import { createCache } from '@/cache'
+import { createJsHandler as createJsHandlerImpl } from '@/js'
+import { replaceWxml as replaceWxmlImpl } from '@/wxml'
+
+export const fs = nodeFs
+export const os = nodeOs
+export const path = nodePath
+export const mkdir = nodeMkdir
+export const mkdtemp = nodeMkdtemp
+export const rm = nodeRm
+export const writeFile = nodeWriteFile
+export const createBundlerGeneratedCssMarker = createBundlerGeneratedCssMarkerImpl
+export const WeappTailwindcss = WeappTailwindcssImpl
+export const getWebpackLoaderRuntime = getWebpackLoaderRuntimeImpl
+export const createJsHandler = createJsHandlerImpl
+export const replaceWxml = replaceWxmlImpl
+
+export const testState: {
+  currentContext: TestContext
+  existsSyncSpy?: ReturnType<typeof vi.spyOn>
+} = {} as any
+
+export const getCompilerContextMock = vi.fn<(options?: unknown) => TestContext>(() => testState.currentContext)
+vi.mock('@/context', () => ({
+  getCompilerContext: (options?: unknown) => getCompilerContextMock(options),
+}))
+
+export class FakeConcatSource {
+  constructor(private readonly value: string) {}
+
+  source() {
+    return this.value
+  }
+
+  toString() {
+    return this.value
+  }
+}
+
+export interface LoaderModule {
+  loaders: Array<{ loader: string, options?: Record<string, any> }>
+  resource?: string
+}
+
+export const CSS_IMPORT_REWRITE_LOADER_PATH = path.resolve(
+  __dirname,
+  '../../../src/bundlers/webpack/BaseUnifiedPlugin/weapp-tw-css-import-rewrite-loader.js',
+)
+
+export function isCssImportRewriteLoader(entry: { loader?: string }) {
+  return entry.loader?.includes('weapp-tw-css-import-rewrite-loader.js') ?? false
+}
+
+interface TestContext {
+  disabled: boolean
+  generator?: unknown
+  onLoad: ReturnType<typeof vi.fn>
+  onStart: ReturnType<typeof vi.fn>
+  onEnd: ReturnType<typeof vi.fn>
+  onUpdate: ReturnType<typeof vi.fn>
+  refreshTailwindcssPatcher: ReturnType<typeof vi.fn>
+  templateHandler: ReturnType<typeof vi.fn>
+  styleHandler: ReturnType<typeof vi.fn>
+  jsHandler: ReturnType<typeof vi.fn>
+  cache: ReturnType<typeof createCache>
+  twPatcher: {
+    patch: ReturnType<typeof vi.fn>
+    getClassSet: ReturnType<typeof vi.fn>
+    getClassSetSync: ReturnType<typeof vi.fn>
+    extract: ReturnType<typeof vi.fn>
+    majorVersion: number
+    options?: unknown
+    collectContentTokens?: ReturnType<typeof vi.fn>
+  }
+  mainCssChunkMatcher: ReturnType<typeof vi.fn>
+  cssMatcher: (file: string) => boolean
+  htmlMatcher: (file: string) => boolean
+  jsMatcher: (file: string) => boolean
+  wxsMatcher: (file: string) => boolean
+  runtimeLoaderPath: string
+  appType?: string
+  tailwindcss?: any
+}
+
+export function createAssetsFromStore(store: Record<string, string>) {
+  return Object.fromEntries(
+    Object.keys(store).map(file => [
+      file,
+      {
+        source: () => store[file],
+      },
+    ]),
+  )
+}
+
+export function createContext(overrides: Partial<TestContext> = {}): TestContext {
+  const cache = createCache()
+  const runtimeSet = new Set(['beta'])
+
+  return {
+    disabled: false,
+    onLoad: vi.fn(),
+    onStart: vi.fn(),
+    onEnd: vi.fn(),
+    onUpdate: vi.fn(),
+    refreshTailwindcssPatcher: vi.fn(async () => testState.currentContext.twPatcher),
+    templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
+    styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+    jsHandler: vi.fn(async (code: string) => ({ code: `js:${code}` })),
+    cache,
+    twPatcher: {
+      patch: vi.fn(),
+      getClassSet: vi.fn(async () => runtimeSet),
+      getClassSetSync: vi.fn(() => runtimeSet),
+      extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      majorVersion: 3,
+    },
+    mainCssChunkMatcher: vi.fn(() => true),
+    cssMatcher: (file: string) => file.endsWith('.css'),
+    htmlMatcher: (file: string) => file.endsWith('.wxml'),
+    jsMatcher: (file: string) => file.endsWith('.js'),
+    wxsMatcher: (_file: string) => false,
+    runtimeLoaderPath: '/virtual/weapp-tw-runtime-classset-loader.js',
+    appType: overrides.appType,
+    ...overrides,
+  }
+}
+
+export function createCompilerWithLoaderTracking() {
+  let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+  const compilation = {
+    compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+    chunks: [],
+    hooks: {
+      processAssets: {
+        tapPromise: vi.fn(),
+      },
+    },
+    updateAsset: vi.fn(),
+    getAsset: vi.fn(),
+  }
+  const compiler = {
+    webpack: {
+      Compilation: {
+        PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+      },
+      sources: {
+        ConcatSource: FakeConcatSource,
+      },
+      NormalModule: {
+        getCompilationHooks: vi.fn(() => ({
+          loader: {
+            tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+              loaderHandler = handler
+            },
+          },
+        })),
+      },
+    },
+    hooks: {
+      normalModuleFactory: {
+        tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+          handler({
+            hooks: {
+              beforeResolve: {
+                tap: vi.fn(),
+              },
+            },
+          })
+        }),
+      },
+      compilation: {
+        tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+          handler(compilation)
+        }),
+      },
+    },
+  }
+
+  return {
+    compiler,
+    compilation,
+    getLoaderHandler: () => loaderHandler,
+  }
+}
+
+export function setupWebpackV5UnitTest() {
+  beforeEach(() => {
+    testState.currentContext = createContext()
+    getCompilerContextMock.mockClear()
+    testState.existsSyncSpy = vi.spyOn(nodeFs as any, 'existsSync')
+    testState.existsSyncSpy.mockReturnValue(true)
+  })
+
+  afterEach(() => {
+    delete process.env.WEAPP_TW_HMR_MEMORY_DEBUG
+    delete process.env.WEAPP_TW_WATCH_REGRESSION
+    testState.existsSyncSpy?.mockRestore()
+    testState.existsSyncSpy = undefined
+    vi.doUnmock('@/generator')
+    vi.resetModules()
+  })
+}
