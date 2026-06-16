@@ -326,10 +326,12 @@ describe('ci workflows', () => {
     expect(packageJson.scripts['e2e:ide:case']).toContain('vitest run --bail=1')
     expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_BUILD=0')
     expect(packageJson.scripts['e2e:ide:case:skip-build']).toContain('E2E_IDE_PROBE_RETRIES=0')
-    expect(packageJson.scripts['e2e:ide:issue-909']).toContain('e2e/issue-909-ide.test.ts')
-    expect(packageJson.scripts['e2e:ide:issue-909']).toContain('vitest run --bail=1')
-    expect(packageJson.scripts['e2e:ide:issue-909:skip-build']).toContain('E2E_SKIP_BUILD=1')
-    expect(packageJson.scripts['e2e:ide:full']).toContain('pnpm e2e:ide:issue-909')
+    expect(packageJson.scripts['e2e:ide:issues-909-916-928']).toContain('e2e/issue-909-ide.test.ts')
+    expect(packageJson.scripts['e2e:ide:issues-909-916-928']).toContain('vitest run --bail=1')
+    expect(packageJson.scripts['e2e:ide:issues-909-916-928:skip-build']).toContain('E2E_SKIP_BUILD=1')
+    expect(packageJson.scripts['e2e:ide:issue-909']).toBe('pnpm e2e:ide:issues-909-916-928')
+    expect(packageJson.scripts['e2e:ide:issue-909:skip-build']).toBe('pnpm e2e:ide:issues-909-916-928:skip-build')
+    expect(packageJson.scripts['e2e:ide:full']).toContain('pnpm e2e:ide:issues-909-916-928')
   })
 
   it('keeps e2e platform group scripts composable', () => {

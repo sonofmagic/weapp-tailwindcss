@@ -1,6 +1,6 @@
 // Tailwind CSS v4 兼容性相关的辅助方法，集中复用特殊处理逻辑
 import type { AtRule, Declaration as PostcssDeclaration, Root, Rule } from 'postcss'
-import { Declaration } from 'postcss'
+import { rule as createRule, Declaration } from 'postcss'
 import valueParser from 'postcss-value-parser'
 import cssVarsV4 from '../cssVarsV4'
 import { createCssVarNodes } from '../utils/css-vars'
@@ -19,12 +19,24 @@ const LINEAR_GRADIENT_LAB_RE = /background-image\s*:\s*linear-gradient\(\s*in\s+
 const DISPLAY_P3_COLOR_RE = /color\s*:\s*color\(\s*display-p3\s+0\s+0\s+0%\s*\)/
 const DISPLAY_P3_VALUE_RE = /color\(\s*display-p3\b/i
 const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
+const GRADIENT_STOPS_BACKGROUND_RE = /^linear-gradient\(\s*var\(\s*--tw-gradient-stops\s*\)\s*\)$/i
+const SIMPLE_CLASS_SELECTOR_RE = /^\.([_a-z\u00A0-\uFFFF\\-][\w\u00A0-\uFFFF\\-]*)$/i
+const COLOR_VAR_RE = /^var\(\s*(--color-[\w-]+)\s*\)$/i
+const GRADIENT_DIRECTION_CLASS_RE = /^(?:bg-linear-to-|bg-gradient-to-)/
 
 // 用于 normalizeTailwindcssV4Declaration 的正则
 const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi
 const SCIENTIFIC_NOTATION_RE = /e/i
 const TW_VAR_FUNCTION_RE = /var\(\s*(--tw-[\w-]+)\b/g
 const TW_CONTENT_VAR_RE = /var\(\s*--tw-content\b/
+const TW_GRADIENT_POSITION_PROPS = new Set([
+  '--tw-gradient-from-position',
+  '--tw-gradient-via-position',
+  '--tw-gradient-to-position',
+])
+const UNSUPPORTED_CUSTOM_PROPERTY_DEFAULT_PROPS = new Set([
+  '--tw-gradient-via-stops',
+])
 const DEFAULT_VARIABLE_SCOPE_SELECTORS = new Set([
   '*',
   ':root',
@@ -93,7 +105,7 @@ export function usesTailwindcssV4ContentVariable(root: Root) {
 // Tailwind v4 的变量默认值只为当前 CSS 实际使用到的变量补齐，避免 v3/v4 全量变量串入
 export function createUsedCssVarsV4Nodes(usedProps: ReadonlySet<string>) {
   return cssVarsV4
-    .filter(def => usedProps.has(def.prop))
+    .filter(def => usedProps.has(def.prop) && !UNSUPPORTED_CUSTOM_PROPERTY_DEFAULT_PROPS.has(def.prop))
     .map(def => new Declaration({
       prop: def.prop,
       value: def.value,
@@ -149,11 +161,193 @@ function collectScopedTailwindcssV4DefaultVariables(root: Root) {
 export function createMissingCssVarsV4Nodes(root: Root, usedProps: ReadonlySet<string>) {
   const scopedProps = collectScopedTailwindcssV4DefaultVariables(root)
   return cssVarsV4
-    .filter(def => usedProps.has(def.prop) && !scopedProps.has(def.prop))
+    .filter(def => usedProps.has(def.prop) && !scopedProps.has(def.prop) && !UNSUPPORTED_CUSTOM_PROPERTY_DEFAULT_PROPS.has(def.prop))
     .map(def => new Declaration({
       prop: def.prop,
       value: def.value,
     }))
+}
+
+function collectTailwindcssV4ThemeVariables(root: Root) {
+  const variables = new Map<string, string>()
+  root.walkRules((rule) => {
+    if (!testIfRootHostForV4(rule) && !rule.selector.includes('page') && !rule.selector.includes('.tw-root')) {
+      return
+    }
+    rule.walkDecls((decl) => {
+      if (decl.prop.startsWith('--color-')) {
+        variables.set(decl.prop, decl.value)
+      }
+    })
+  })
+  return variables
+}
+
+function resolveTailwindcssV4GradientColor(value: string, themeVariables: ReadonlyMap<string, string>) {
+  const trimmed = value.trim()
+  const match = COLOR_VAR_RE.exec(trimmed)
+  if (!match) {
+    return trimmed
+  }
+  return themeVariables.get(match[1]!) ?? trimmed
+}
+
+function getSingleClassSelector(selector: string) {
+  const match = SIMPLE_CLASS_SELECTOR_RE.exec(selector.trim())
+  return match ? match[1] : undefined
+}
+
+function normalizeDeclarationValue(value: string) {
+  return value.replace(/\s+/g, ' ').trim()
+}
+
+function isTailwindcssV4GradientDirectionRule(rule: Rule) {
+  const classSelector = getSingleClassSelector(rule.selector)
+  if (!classSelector || !GRADIENT_DIRECTION_CLASS_RE.test(classSelector)) {
+    return false
+  }
+  return rule.nodes.some((node) => {
+    return node.type === 'decl'
+      && (
+        node.prop === '--tw-gradient-position'
+        || (node.prop === 'background-image' && node.value.includes('linear-gradient('))
+      )
+  })
+}
+
+function reorderTailwindcssV4GradientDirectionRule(rule: Rule) {
+  const gradientPositionDecls: PostcssDeclaration[] = []
+  const gradientBackgroundDecls: PostcssDeclaration[] = []
+  for (const node of rule.nodes) {
+    if (node.type !== 'decl') {
+      continue
+    }
+    if (node.prop === '--tw-gradient-position') {
+      gradientPositionDecls.push(node)
+    }
+    else if (node.prop === 'background-image' && node.value.includes('linear-gradient(')) {
+      gradientBackgroundDecls.push(node)
+    }
+  }
+  if (gradientPositionDecls.length === 0 || gradientBackgroundDecls.length === 0) {
+    return
+  }
+
+  const anchor = rule.nodes.find((node) => {
+    return node.type === 'decl'
+      && (
+        node.prop === '--tw-gradient-position'
+        || (node.prop === 'background-image' && node.value.includes('linear-gradient('))
+      )
+  })
+  if (!anchor) {
+    return
+  }
+
+  const ordered = [...gradientPositionDecls, ...gradientBackgroundDecls]
+  const orderedClones = ordered.map(decl => decl.clone())
+  anchor.replaceWith(...orderedClones)
+  for (const decl of ordered) {
+    if (decl.parent) {
+      decl.remove()
+    }
+  }
+}
+
+// Tailwind v4 会把渐变方向和 background-image 拆到普通规则 / @supports 规则里，小程序端需要收敛为一条规则。
+export function mergeTailwindcssV4GradientDirectionRules(root: Root) {
+  const seen = new Map<string, Rule>()
+
+  root.walkRules((rule) => {
+    if (!isTailwindcssV4GradientDirectionRule(rule)) {
+      return
+    }
+    const selector = rule.selector.trim()
+    const previous = seen.get(selector)
+    if (!previous || previous.parent !== rule.parent) {
+      seen.set(selector, rule)
+      return
+    }
+
+    for (const node of [...rule.nodes]) {
+      if (node.type !== 'decl') {
+        continue
+      }
+      if (node.prop !== '--tw-gradient-position' && node.prop !== 'background-image') {
+        continue
+      }
+      previous.append(node.clone())
+    }
+    reorderTailwindcssV4GradientDirectionRule(previous)
+    rule.remove()
+  })
+}
+
+// 微信开发者工具对 linear-gradient 内嵌多层 CSS 变量支持不完整，这里为实际生成的 v4 渐变组合补字面量兜底。
+export function appendTailwindcssV4MiniProgramGradientRules(root: Root) {
+  const themeVariables = collectTailwindcssV4ThemeVariables(root)
+  const directions: Array<{ classSelector: string, position: string }> = []
+  const fromColors: Array<{ classSelector: string, color: string }> = []
+  const toColors: Array<{ classSelector: string, color: string }> = []
+  const existingBackgroundImages = new Map<string, Set<string>>()
+
+  root.walkRules((rule) => {
+    const classSelector = getSingleClassSelector(rule.selector)
+    rule.walkDecls('background-image', (decl) => {
+      const selector = rule.selector.trim()
+      const values = existingBackgroundImages.get(selector)
+      if (values) {
+        values.add(normalizeDeclarationValue(decl.value))
+      }
+      else {
+        existingBackgroundImages.set(selector, new Set([normalizeDeclarationValue(decl.value)]))
+      }
+    })
+    if (classSelector) {
+      rule.walkDecls((decl) => {
+        if (decl.prop === '--tw-gradient-position') {
+          directions.push({ classSelector, position: decl.value })
+        }
+        else if (decl.prop === '--tw-gradient-from') {
+          fromColors.push({
+            classSelector,
+            color: resolveTailwindcssV4GradientColor(decl.value, themeVariables),
+          })
+        }
+        else if (decl.prop === '--tw-gradient-to') {
+          toColors.push({
+            classSelector,
+            color: resolveTailwindcssV4GradientColor(decl.value, themeVariables),
+          })
+        }
+      })
+    }
+  })
+
+  for (const direction of directions) {
+    for (const from of fromColors) {
+      for (const to of toColors) {
+        const selector = `.${direction.classSelector}.${from.classSelector}.${to.classSelector}`
+        const value = `linear-gradient(${direction.position}, ${from.color} 0%, ${to.color} 100%)`
+        if (existingBackgroundImages.get(selector)?.has(normalizeDeclarationValue(value))) {
+          continue
+        }
+        existingBackgroundImages.set(selector, new Set([
+          ...(existingBackgroundImages.get(selector) ?? []),
+          normalizeDeclarationValue(value),
+        ]))
+        root.append(createRule({
+          selector,
+          nodes: [
+            new Declaration({
+              prop: 'background-image',
+              value,
+            }),
+          ],
+        }))
+      }
+    }
+  }
 }
 
 // Tailwind v4 的现代检查语句需要特殊处理以恢复具体规则
@@ -218,12 +412,127 @@ function normalizeTailwindcssV4EmptyVarFallback(value: string) {
   return changed ? parsed.toString() : value
 }
 
+function normalizeTailwindcssV4GradientPositionFallback(value: string) {
+  if (!value.includes('var(') || !value.includes('--tw-gradient-')) {
+    return value
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+      return
+    }
+
+    const args = node.nodes.filter(child => child.type !== 'space')
+    const firstArg = args[0]
+    if (
+      firstArg?.type !== 'word'
+      || !TW_GRADIENT_POSITION_PROPS.has(firstArg.value)
+      || args.some(child => child.type === 'div' && child.value === ',')
+    ) {
+      return
+    }
+
+    node.nodes.push({ type: 'div', value: ',', before: '', after: ' ' })
+    changed = true
+  })
+
+  return changed ? parsed.toString() : value
+}
+
+function normalizeTailwindcssV4GradientStopsFallback(value: string) {
+  if (!value.includes('var(') || !value.includes('--tw-gradient-via-stops')) {
+    return value
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+
+  function normalizeNodes(nodes: valueParser.Node[]) {
+    for (let index = 0; index < nodes.length; index++) {
+      const node = nodes[index]
+      if (!node) {
+        continue
+      }
+      if (node.type === 'function' && node.value.toLowerCase() !== 'var') {
+        normalizeNodes(node.nodes)
+        continue
+      }
+      if (node.type !== 'function') {
+        continue
+      }
+
+      const args = node.nodes.filter(child => child.type !== 'space')
+      const firstArg = args[0]
+      if (
+        firstArg?.type !== 'word'
+        || firstArg.value !== '--tw-gradient-via-stops'
+      ) {
+        normalizeNodes(node.nodes)
+        continue
+      }
+
+      const firstCommaIndex = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
+      if (firstCommaIndex < 0) {
+        continue
+      }
+
+      const fallbackNodes = node.nodes.slice(firstCommaIndex + 1)
+      const splitIndex = fallbackNodes.findIndex(child => child.type === 'div' && child.value === ',')
+      if (splitIndex < 0) {
+        continue
+      }
+
+      const viaFallbackNodes = fallbackNodes.slice(0, splitIndex)
+      const stopNodes = fallbackNodes.slice(splitIndex)
+      const nextVarNode = {
+        ...node,
+        nodes: [
+          { type: 'word', value: '--tw-gradient-via-stops' },
+          { type: 'div', value: ',', before: '', after: ' ' },
+          ...viaFallbackNodes,
+        ],
+        sourceEndIndex: undefined,
+        sourceIndex: undefined,
+      }
+      nodes.splice(index, 1, nextVarNode, ...stopNodes)
+      changed = true
+      index += stopNodes.length
+    }
+  }
+
+  normalizeNodes(parsed.nodes)
+
+  return changed ? parsed.toString() : value
+}
+
 // 对 Tailwind v4 生成的声明做兼容处理，返回是否发生变更
 export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
   let changed = false
+  if (decl.prop === '--tw-gradient-via-stops' && decl.value.trim() === 'initial') {
+    decl.remove()
+    return true
+  }
+  if (decl.prop === 'background-image' && GRADIENT_STOPS_BACKGROUND_RE.test(decl.value)) {
+    decl.value = 'linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))'
+    return true
+  }
+
   const normalizedEmptyVarFallback = normalizeTailwindcssV4EmptyVarFallback(decl.value)
   if (normalizedEmptyVarFallback !== decl.value) {
     decl.value = normalizedEmptyVarFallback
+    changed = true
+  }
+  const normalizedGradientPositionFallback = normalizeTailwindcssV4GradientPositionFallback(decl.value)
+  if (normalizedGradientPositionFallback !== decl.value) {
+    decl.value = normalizedGradientPositionFallback
+    changed = true
+  }
+  const normalizedGradientStopsFallback = normalizeTailwindcssV4GradientStopsFallback(decl.value)
+  if (normalizedGradientStopsFallback !== decl.value) {
+    decl.value = normalizedGradientStopsFallback
     changed = true
   }
 

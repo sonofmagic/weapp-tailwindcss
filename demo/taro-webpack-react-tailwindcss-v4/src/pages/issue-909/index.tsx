@@ -64,6 +64,20 @@ function Sample({ children, description, title }: { children: ReactNode, descrip
   )
 }
 
+function Issue916BoxSizingSample() {
+  return (
+    <View
+      className='issue-916-native-selector-box'
+      style={{
+        background: '#fbbf24',
+        border: '10px solid #78350f',
+        height: '80px',
+        width: '80px',
+      }}
+    />
+  )
+}
+
 export default function Issue909() {
   return (
     <View
@@ -169,6 +183,9 @@ export default function Issue909() {
         >
           box
         </View>
+      </Sample>
+      <Sample description='native selector' title='issue #916'>
+        <Issue916BoxSizingSample />
       </Sample>
     </View>
   )

@@ -1,7 +1,7 @@
 import type { Plugin } from 'postcss'
 import postcss, { Declaration, Rule } from 'postcss'
 import { describe, expect, it, vi } from 'vitest'
-import { normalizeTailwindcssV4Declaration } from '@/compat/tailwindcss-v4'
+import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '@/compat/tailwindcss-v4'
 import { protectDynamicColorMixAlpha } from '@/compat/color-mix'
 import { stripUnsupportedNodeForUniAppX } from '@/compat/uni-app-x'
 import { fingerprintOptions } from '@/fingerprint'
@@ -149,6 +149,88 @@ describe('compat helpers', () => {
     const changed = normalizeTailwindcssV4Declaration(decl)
     expect(changed).toBe(true)
     expect(decl.value).toBe('to right')
+  })
+
+  it('adds empty fallbacks to Tailwind v4 gradient position variables', () => {
+    const decl = new Declaration({
+      prop: '--tw-gradient-stops',
+      value: 'var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))',
+    })
+    const changed = normalizeTailwindcssV4Declaration(decl)
+
+    expect(changed).toBe(true)
+    expect(decl.value).toBe('var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, )')
+  })
+
+  it('does not inject Tailwind v4 gradient via stops as ordinary mini-program defaults', () => {
+    const root = postcss.parse('.from-cyan-500{--tw-gradient-stops:var(--tw-gradient-via-stops,var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to))}')
+    const nodes = createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
+    const props = nodes.map(node => node.prop)
+
+    expect(props).toContain('--tw-gradient-stops')
+    expect(props).not.toContain('--tw-gradient-via-stops')
+  })
+
+  it('removes Tailwind v4 initial gradient via stops for mini-program fallback support', () => {
+    const decl = new Declaration({ prop: '--tw-gradient-via-stops', value: 'initial' })
+    const changed = normalizeTailwindcssV4Declaration(decl)
+
+    expect(changed).toBe(true)
+    expect(decl.parent).toBeUndefined()
+  })
+
+  it('expands Tailwind v4 gradient stop background for mini-program runtime', () => {
+    const decl = new Declaration({ prop: 'background-image', value: 'linear-gradient(var(--tw-gradient-stops))' })
+    const changed = normalizeTailwindcssV4Declaration(decl)
+
+    expect(changed).toBe(true)
+    expect(decl.value).toBe('linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))')
+  })
+
+  it('merges split Tailwind v4 gradient direction rules after oklab downgrade', () => {
+    const root = postcss.parse(`
+      .bg-linear-to-r {
+        background-image: linear-gradient(var(--tw-gradient-stops));
+      }
+      .bg-linear-to-r {
+        --tw-gradient-position: to right in oklab;
+      }
+    `)
+    root.walkDecls((decl) => {
+      normalizeTailwindcssV4Declaration(decl)
+    })
+    mergeTailwindcssV4GradientDirectionRules(root)
+
+    const css = root.toString()
+    expect(css.match(/\.bg-linear-to-r\s*\{/g)).toHaveLength(1)
+    expect(css).toContain('--tw-gradient-position: to right;')
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position),')
+    expect(css).not.toContain('in oklab')
+  })
+
+  it('does not append duplicate literal Tailwind v4 mini-program gradient rules', () => {
+    const root = postcss.parse(`
+      page {
+        --color-cyan-500: rgb(0, 182, 212);
+        --color-blue-500: rgb(50, 128, 255);
+      }
+      .bg-linear-to-r {
+        --tw-gradient-position: to right;
+      }
+      .from-cyan-500 {
+        --tw-gradient-from: var(--color-cyan-500);
+      }
+      .to-blue-500 {
+        --tw-gradient-to: var(--color-blue-500);
+      }
+      .bg-linear-to-r.from-cyan-500.to-blue-500 {
+        background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%);
+      }
+    `)
+
+    appendTailwindcssV4MiniProgramGradientRules(root)
+
+    expect(root.toString().match(/\.bg-linear-to-r\.from-cyan-500\.to-blue-500\s*\{/g)).toHaveLength(1)
   })
 
   it('handles uni-app-x unsupported nodes', () => {

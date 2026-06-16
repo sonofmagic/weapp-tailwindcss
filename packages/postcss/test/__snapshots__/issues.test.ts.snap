@@ -399,7 +399,6 @@ view,text,::before,::after {
       --tw-gradient-via: rgba(0,0,0,0);
       --tw-gradient-to: rgba(0,0,0,0);
       --tw-gradient-stops: initial;
-      --tw-gradient-via-stops: initial;
       --tw-gradient-from-position: 0%;
       --tw-gradient-via-position: 50%;
       --tw-gradient-to-position: 100%;
@@ -420,15 +419,18 @@ view,text,::after,::before {
 }
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
 }
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
-  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+}
+.bg-gradient-to-r.from-cyan-500.to-blue-500 {
+      background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%);
 }"
 `;
 
@@ -938,6 +940,54 @@ view,text,::after,::before {
 .rotate-y-90 {
   --tw-rotate-y: rotateY(90deg);
   transform: var(--tw-rotate-x, ) var(--tw-rotate-y, ) var(--tw-rotate-z, ) var(--tw-skew-x, ) var(--tw-skew-y, );
+}"
+`;
+
+exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/928 1`] = `
+"::before,::after {
+      --tw-content: "";
+}
+view,text,::before,::after {
+      --tw-gradient-position: initial;
+      --tw-gradient-from: rgba(0,0,0,0);
+      --tw-gradient-via: rgba(0,0,0,0);
+      --tw-gradient-to: rgba(0,0,0,0);
+      --tw-gradient-stops: initial;
+      --tw-gradient-from-position: 0%;
+      --tw-gradient-via-position: 50%;
+      --tw-gradient-to-position: 100%;
+    }
+page,.tw-root,wx-root-portal-content,:host {
+  --color-cyan-500: rgb(0, 182, 212);
+  --color-blue-500: rgb(50, 128, 255);
+  --spacing: .25rem;
+}
+view,text,::after,::before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.h-0_d5 {
+  height: calc(var(--spacing) * 0.5);
+}
+.w-10 {
+  width: calc(var(--spacing) * 10);
+}
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+}
+.bg-linear-to-r.from-cyan-500.to-blue-500 {
+      background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%);
 }"
 `;
 

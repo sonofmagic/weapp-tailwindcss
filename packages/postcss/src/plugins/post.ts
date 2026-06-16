@@ -5,7 +5,7 @@ import { defu } from '@weapp-tailwindcss/shared'
 import { MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
-import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
+import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
 import { shouldRemoveEmptyRuleForUniAppX } from '../compat/uni-app-x'
 import { postcssPlugin } from '../constants'
 import { getFallbackRemove } from '../selectorParser'
@@ -86,6 +86,16 @@ function injectMissingTailwindcssV4Defaults(root: Root) {
   })
 }
 
+function hasTailwindcssV4GradientRuntime(root: Root) {
+  let found = false
+  root.walkDecls((decl) => {
+    if (decl.prop === '--tw-gradient-position' || decl.prop === '--tw-gradient-from' || decl.prop === '--tw-gradient-to') {
+      found = true
+    }
+  })
+  return found
+}
+
 // 后处理插件收敛所有规则，在退出阶段执行去重与兜底
 const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
   options,
@@ -158,6 +168,10 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       root.walkRules((rule) => {
         removeRedundantTransitionPropertyFallbacks(rule)
       })
+      if (opts.majorVersion === 4 || hasTailwindcssV4GradientRuntime(root)) {
+        mergeTailwindcssV4GradientDirectionRules(root)
+        appendTailwindcssV4MiniProgramGradientRules(root)
+      }
       root.walkAtRules((atRule) => {
         removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       })

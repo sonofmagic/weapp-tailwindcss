@@ -96,6 +96,32 @@ describe('issues', () => {
     expect(css).toMatchSnapshot()
   })
 
+  it('https://github.com/sonofmagic/weapp-tailwindcss/issues/928', async () => {
+    const code = await generateCss(path.resolve(__dirname, './fixtures/issues/928'))
+    expect(code.css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
+    expect(code.css).toContain('var(--tw-gradient-from) var(--tw-gradient-from-position)')
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const { css } = await styleHandler(code.css, {
+      isMainChunk: true,
+    })
+
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));')
+    expect(css).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).toContain('background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%)')
+    expect(css).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*linear-gradient/)
+    expect(css).toContain('--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)),')
+    expect(css).toContain('var(--tw-gradient-from) var(--tw-gradient-from-position, )')
+    expect(css).toContain('var(--tw-gradient-to) var(--tw-gradient-to-position, )')
+    expect(css).not.toContain('to right in oklab')
+    expect(css).not.toContain('--tw-gradient-via-stops: initial')
+    expect(css).not.toContain('var(--tw-gradient-via-stops, var(--tw-gradient-position),')
+    expect(css).not.toContain('var(--tw-gradient-from) var(--tw-gradient-from-position),')
+    expect(css).not.toContain('var(--tw-gradient-to) var(--tw-gradient-to-position))')
+    expect(css).toMatchSnapshot()
+  })
+
   it('https://github.com/sonofmagic/weapp-tailwindcss/issues/715', async () => {
     const code = await generateCss(path.resolve(__dirname, './fixtures/issues/715-space-y-4'))
     expect(code.css).toMatchSnapshot()

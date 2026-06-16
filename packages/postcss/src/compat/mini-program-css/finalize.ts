@@ -1,7 +1,7 @@
 import type { FinalizeMiniProgramCssOptions } from './finalize-options'
 import postcss from 'postcss'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../mini-program-prefixes'
-import { collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, normalizeTailwindcssV4Declaration } from '../tailwindcss-v4'
+import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '../tailwindcss-v4'
 import { removeUnsupportedCascadeLayers, removeUnsupportedMiniProgramAtRules } from './at-rules'
 import {
   hasTailwindcssV4Signal,
@@ -53,6 +53,10 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   root.walkAtRules((atRule) => {
     removeUnsupportedMiniProgramPrefixedAtRule(atRule)
   })
+  if (shouldInjectTailwindcssV4Defaults) {
+    mergeTailwindcssV4GradientDirectionRules(root)
+    appendTailwindcssV4MiniProgramGradientRules(root)
+  }
 
   const hoistAnchor = createHoistInsertionAnchor(root)
   const preflightRules = collectPreflightRules(root, options)

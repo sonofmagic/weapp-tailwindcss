@@ -11,6 +11,7 @@
 - 代码默认 TypeScript + ESM，缩进 2 空格。
 - 文件超过约 300 行优先按目录拆分（如 `feature/a.ts`），避免 `feature.a.ts`。
 - 测试默认 Vitest；修复缺陷或改行为必须补回归测试。
+- 新增或调整 demo、issue 复现页、样式输出回归用例时，必须重新生成对应项目的 e2e static 快照/产物基线，并在验证记录中说明对应项目与命令；禁止只改源码或 IDE 用例而遗漏 static 基线。
 - 本项目禁止使用 Prettier 做格式化；不要运行 `prettier`、`pnpm format` 或其它会调用 Prettier 的格式化命令。
 - 提交信息遵循 Conventional Commits。
 - 所有新增或修改的 Changeset 内容必须使用中文。
