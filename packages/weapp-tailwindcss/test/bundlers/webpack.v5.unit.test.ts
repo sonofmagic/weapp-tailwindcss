@@ -3731,7 +3731,7 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     expect(wxsUpdates[1][1].toString()).toBe(`js:${wxs}`)
   })
 
-  it('skips html and js class transforms for web generator target', async () => {
+  it('skips html, js and final css transforms for web generator target', async () => {
     currentContext = createContext({
       generator: {
         target: 'web',
@@ -3808,16 +3808,26 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
+    const mergedCss = [
+      '.navbar__brand { color: var(--ifm-navbar-link-color); }',
+      '.home-hero { display: grid; }',
+      '.home-v5 .home-facts { gap: 1rem; }',
+      '.rounded-full { border-radius: calc(infinity * 1px); }',
+    ].join('\n')
     currentAssetStore = {
       'index.html': '<div class="bg-[#07c160]"></div>',
       'index.js': 'const cls = "bg-[#07c160]"',
+      'index.css': mergedCss,
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
     expect(currentContext.templateHandler).not.toHaveBeenCalled()
     expect(currentContext.jsHandler).not.toHaveBeenCalled()
+    expect(currentContext.styleHandler).not.toHaveBeenCalled()
     expect(updateAsset.mock.calls.some(([file]) => file === 'index.html')).toBe(false)
     expect(updateAsset.mock.calls.some(([file]) => file === 'index.js')).toBe(false)
+    expect(updateAsset.mock.calls.some(([file]) => file === 'index.css')).toBe(false)
+    expect(currentAssetStore['index.css']).toBe(mergedCss)
   })
 
   it('propagates linked js asset updates', async () => {
@@ -4017,5 +4027,6 @@ describe('bundlers/webpack WeappTailwindcss', () => {
     }
     loaderHandler?.({}, v3WebModule)
     expect(v3WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
+    expect(v3WebModule.loaders.some(entry => entry.loader === ctxV3Web.runtimeLoaderPath)).toBe(false)
   })
 })

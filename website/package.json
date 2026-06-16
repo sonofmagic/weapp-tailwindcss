@@ -16,7 +16,7 @@
   },
   "scripts": {
     "docusaurus": "cross-env NO_UPDATE_NOTIFIER=1 docusaurus",
-    "dev": "node scripts/dev-public.mjs",
+    "dev": "pnpm run build:deps && node scripts/dev-public.mjs",
     "dev:type": "cross-env NO_UPDATE_NOTIFIER=1 TYPEDOC_WATCH=true docusaurus start --port 4000",
     "build": "pnpm run build:deps && node scripts/clear-webpack-cache.mjs && node scripts/generate-geo-index.mjs && node scripts/seo-quality-report.mjs && cross-env NO_UPDATE_NOTIFIER=1 docusaurus build",
     "build:deps": "node scripts/build-deps.mjs",

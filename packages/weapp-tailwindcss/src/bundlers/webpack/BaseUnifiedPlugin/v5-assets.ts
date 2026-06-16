@@ -714,6 +714,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               )
               continue
             }
+            if (isWebGeneratorTarget) {
+              continue
+            }
             const cacheKey = file
             const hashKey = `${file}:asset`
             rememberProcessCacheKey(cacheKey, hashKey)

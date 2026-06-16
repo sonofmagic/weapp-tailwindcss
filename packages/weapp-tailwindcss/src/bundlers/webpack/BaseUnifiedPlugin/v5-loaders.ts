@@ -59,6 +59,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
 
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
+  const shouldInjectRuntimeClassSetLoader = compilerOptions.generator?.target !== 'web'
   const runtimeCssImportRewriteLoader = shouldRewriteCssImports
     ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined
@@ -172,7 +173,11 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
           rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
         }
       }
-      if (runtimeClassSetLoaderExists && !hasLoaderEntry(loaderEntries, runtimeClassSetLoader)) {
+      if (
+        shouldInjectRuntimeClassSetLoader
+        && runtimeClassSetLoaderExists
+        && !hasLoaderEntry(loaderEntries, runtimeClassSetLoader)
+      ) {
         const classSetLoaderEntry = createRuntimeClassSetLoaderEntry()
         const anchorIndex = findClassSetAnchor(loaderEntries)
         if (anchorIndex === -1) {
