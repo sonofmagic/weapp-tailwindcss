@@ -11,7 +11,6 @@ text,
   --tw-gradient-from: #0000;
   --tw-gradient-to: #0000;
   --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
   --tw-gradient-to-position: 100%;
 }
@@ -66,40 +65,28 @@ wx-root-portal-content {
 .bg-white {
   background-color: var(--color-white);
 }
- /* tokens: bg-linear-to-r <= src/pages/index/index.vue */
-.bg-linear-to-r {
-  --tw-gradient-position: to right;
-}
- /* tokens: bg-linear-to-r <= src/pages/index/index.vue */
-.bg-linear-to-r {
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
-  background-image: linear-gradient(var(--tw-gradient-stops));
-}
- /* tokens: bg-gradient-to-r <= src/pages/index/index.vue */
+ /* tokens: bg-linear-to-r <= src/pages/index/index.vue | bg-gradient-to-r <= src/pages/index/index.vue */
+.bg-linear-to-r,
 .bg-gradient-to-r {
-  --tw-gradient-position: to right in oklab;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
-  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-position: to right;
+  background-image: -webkit-linear-gradient(
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position, ),
+    var(--tw-gradient-to) var(--tw-gradient-to-position, )
+  );
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
 }
  /* tokens: from-cyan-500 <= src/pages/index/index.vue */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
  /* tokens: to-blue-500 <= src/pages/index/index.vue */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
  /* tokens: px-3 <= src/pages/index/index.vue */
 .px-3 {
@@ -161,4 +148,11 @@ wx-root-portal-content {
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }
+}
+ /* tokens: bg-linear-to-r <= src/pages/index/index.vue | from-cyan-500 <= src/pages/index/index.vue | to-blue-500 <= src/pages/index/index.vue | bg-gradient-to-r <= src/pages/index/index.vue */
+.bg-linear-to-r.from-cyan-500.to-blue-500,
+.bg-gradient-to-r.from-cyan-500.to-blue-500 {
+  background-image: -webkit-gradient(linear, left top, right top, from(#06b6d4), to(#3b82f6));
+  background-image: -webkit-linear-gradient(left, #06b6d4 0%, #3b82f6 100%);
+  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
 }

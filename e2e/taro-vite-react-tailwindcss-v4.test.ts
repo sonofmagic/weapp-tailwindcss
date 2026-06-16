@@ -52,8 +52,8 @@ describe('e2e', () => {
 
     expect(css).toContain('.bg-linear-to-r')
     expect(css).not.toMatch(/^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m)
-    expect(css).toMatch(/--tw-gradient-position:\s*to right\s*(?:;\s*)?\}/)
-    expect(css).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)\s*(?:;\s*)?\}/)
+    expect(css).toMatch(/--tw-gradient-position:\s*to right\s*;/)
+    expect(css).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-position\),/)
     expect(css).not.toContain('@supports (background-image: linear-gradient(in lab, red, red))')
     expect(linearBlocks).not.toContain('in oklab')
   })

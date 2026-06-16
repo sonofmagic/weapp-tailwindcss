@@ -5,7 +5,7 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 9032 | 45 | false | false | false | true | true | false | true |
+| 10279 | 49 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 6775 | 40 | false | false | false | true | true | false | true |
+| `app.wxss` | 8022 | 44 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 156 | 1 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1126 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1091 | 6 | false | false | false | false | false | false | true |
@@ -47,7 +47,6 @@ text,
   --tw-gradient-from: #0000;
   --tw-gradient-to: #0000;
   --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
   --tw-gradient-to-position: 100%;
 }
@@ -87,7 +86,7 @@ wx-root-portal-content {
 .mt-4 {
   margin-top: calc(var(--spacing) * 4);
 }
- /* tokens: flex <= src/pages/issue-909/index.tsx */
+ /* tokens: flex <= src/pages/issue-909/index.tsx, src/pages/issue-928/index.tsx */
 .flex {
   display: flex;
 }
@@ -95,13 +94,17 @@ wx-root-portal-content {
 .h-8 {
   height: calc(var(--spacing) * 8);
 }
- /* tokens: h-14 <= src/pages/index/index.tsx */
+ /* tokens: h-14 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .h-14 {
   height: calc(var(--spacing) * 14);
 }
  /* tokens: w-8 <= src/pages/issue-909/index.tsx */
 .w-8 {
   width: calc(var(--spacing) * 8);
+}
+ /* tokens: w-24 <= src/pages/issue-928/index.tsx */
+.w-24 {
+  width: calc(var(--spacing) * 24);
 }
  /* tokens: rotate-x-45 <= src/pages/issue-909/index.tsx */
 .rotate-x-45 {
@@ -144,30 +147,27 @@ wx-root-portal-content {
 .bg-white {
   background-color: var(--color-white);
 }
+ /* tokens: bg-linear-to-r <= src/pages/issue-928/index.tsx */
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
+}
  /* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
-  background-image: linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
 }
- /* tokens: from-cyan-500 <= src/pages/index/index.tsx */
+ /* tokens: from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
- /* tokens: to-blue-500 <= src/pages/index/index.tsx */
+ /* tokens: to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
  /* tokens: px-3 <= src/pages/index/index.tsx */
 .px-3 {
@@ -243,6 +243,14 @@ wx-root-portal-content {
 }
 view {
   box-sizing: border-box;
+}
+ /* tokens: bg-linear-to-r <= src/pages/issue-928/index.tsx | from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx | to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
+.bg-linear-to-r.from-cyan-500.to-blue-500 {
+  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
+}
+ /* tokens: bg-gradient-to-r <= src/pages/index/index.tsx | from-cyan-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx | to-blue-500 <= src/pages/index/index.tsx, src/pages/issue-928/index.tsx */
+.bg-gradient-to-r.from-cyan-500.to-blue-500 {
+  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
 }
 ```
 

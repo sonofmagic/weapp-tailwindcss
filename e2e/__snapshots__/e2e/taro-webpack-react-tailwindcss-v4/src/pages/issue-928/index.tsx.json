@@ -1,0 +1,12 @@
+{
+  "file": "src/pages/issue-928/index.tsx",
+  "count": 6,
+  "tokens": [
+    "bg-linear-to-r",
+    "flex",
+    "from-cyan-500",
+    "h-14",
+    "to-blue-500",
+    "w-24"
+  ]
+}

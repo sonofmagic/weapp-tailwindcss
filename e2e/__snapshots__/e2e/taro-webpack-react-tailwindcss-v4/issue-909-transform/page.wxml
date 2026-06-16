@@ -83,4 +83,15 @@
       </view>
     </view>
   </view>
+  <view class="issue-909-sample">
+    <view class="issue-909-label">
+      <view>issue #916</view>
+      <view>native selector</view>
+    </view>
+    <view
+      class="issue-909-stage">
+      <view class="issue-909-reference"></view>
+      <view class="issue-916-native-selector-box"></view>
+    </view>
+  </view>
 </view>

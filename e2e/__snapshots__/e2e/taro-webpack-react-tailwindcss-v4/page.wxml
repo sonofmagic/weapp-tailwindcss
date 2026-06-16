@@ -95,4 +95,16 @@
       </view>
     </view>
   </view>
+  <view class="issue-909-sample" style="align-items: center; display: flex; flex-direction: row; margin-bottom: 28px">
+    <view class="issue-909-label" style="color: #334155; font-size: 13px; line-height: 18px; width: 112px">
+      <view style="">issue #916</view>
+      <view style="color: #64748b; font-size: 11px">native selector</view>
+    </view>
+    <view
+      class="issue-909-stage"
+      style="align-items: center; background: #ffffff; border: 1px solid #cbd5e1; display: flex; height: 64px; justify-content: center; position: relative; width: 104px">
+      <view class="issue-909-reference" style="border: 1px dashed #94a3b8; height: 32px; position: absolute; width: 32px"></view>
+      <view class="issue-916-native-selector-box" style="background: #fbbf24; border: 10px solid #78350f; height: 80px; width: 80px"></view>
+    </view>
+  </view>
 </view>

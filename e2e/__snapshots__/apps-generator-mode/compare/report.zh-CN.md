@@ -11,17 +11,17 @@
 | mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+10) | 187902 | 2900 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+4) | 46584 | 126 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v3 | demo | 通过 | `taro-webpack-react-tailwindcss-v3/dist/app.wxss` (+6) | 54343 | 164 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 9032 | 45 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 10279 | 49 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+4) | 8955 | 48 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5393 | 38 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5721 | 40 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 16350 | 84 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 7868 | 40 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 8197 | 41 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 8703 | 45 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 5298 | 36 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 5626 | 38 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+11) | 211296 | 2838 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+4) | 31517 | 137 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+3) | 47472 | 181 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+3) | 20762 | 83 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+3) | 22304 | 86 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 
 ## 说明
 
@@ -65,7 +65,7 @@
 ### taro-webpack-react-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.-rotate-y-45`, `.absolute`, `.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.flex`, `.from-cyan-500`, `.h-14`, `.h-8`, `.mt-2`, `.mt-4`, `.px-3`
+- 选择器：`.-rotate-y-45`, `.absolute`, `.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-gradient-to-r.from-cyan-500.to-blue-500`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-linear-to-r.from-cyan-500.to-blue-500`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.flex`, `.from-cyan-500`, `.h-14`, `.h-8`
 
 ### taro-vite-react-tailwindcss-v3
 
@@ -75,7 +75,7 @@
 ### taro-vite-react-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_bred_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.mt-2`, `.mt-4`, `.px-3`, `.px-4`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_bred_B`, `.bg-gradient-to-r`, `.bg-gradient-to-r.from-cyan-500.to-blue-500`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-linear-to-r.from-cyan-500.to-blue-500`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.mt-2`, `.mt-4`
 
 ### taro-webpack-vue3-tailwindcss-v3
 
@@ -85,7 +85,7 @@
 ### taro-webpack-vue3-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.mt-2`, `.mt-4`, `.px-3`, `.px-4`, `.px-_b32px_B`, `.py-2`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-gradient-to-r.from-cyan-500.to-blue-500`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.mt-2`, `.mt-4`, `.px-3`, `.px-4`, `.px-_b32px_B`
 
 ### taro-vite-vue3-tailwindcss-v3
 
@@ -95,7 +95,7 @@
 ### taro-vite-vue3-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `app-origin.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.mt-2`, `.mt-4`, `.px-3`, `.px-4`, `.py-2`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-gradient-to-r`, `.bg-gradient-to-r.from-cyan-500.to-blue-500`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-linear-to-r.from-cyan-500.to-blue-500`, `.bg-normal-subpackage-marker`, `.bg-purple-300`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.h-_b300px_B`, `.mt-2`, `.mt-4`, `.px-3`
 
 ### uni-app-vite-tailwindcss-v3
 
@@ -115,4 +115,4 @@
 ### weapp-vite-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h111111_B`, `.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-t`, `.bg-gradient-to-tr`, `.bg-gray-900`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-white`, `.bg-zinc-50`, `.border-4`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.duration-500`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h111111_B`, `.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-b.from-_b_h2f73f1_B.to-_b_h4bcefd_B`, `.bg-gradient-to-t`, `.bg-gradient-to-t.from-_b_h2f73f1_B.to-_b_h4bcefd_B`, `.bg-gradient-to-tr`, `.bg-gradient-to-tr.from-_b_h2f73f1_B.to-_b_h4bcefd_B`, `.bg-gray-900`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-white`, `.bg-zinc-50`, `.border-4`, `.dark_cbg-zinc-900.theme-dark`

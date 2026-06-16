@@ -5,7 +5,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 5393 | 38 | false | false | false | true | true | false | true |
+| 5721 | 40 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -22,7 +22,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 27 | 0 | false | false | false | false | false | false | false |
-| `app-origin.wxss` | 3573 | 33 | false | false | false | true | true | false | true |
+| `app-origin.wxss` | 3901 | 35 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 50 | 1 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 937 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 922 | 6 | false | false | false | false | false | false | true |
@@ -51,7 +51,6 @@ text,
   --tw-gradient-from: #0000;
   --tw-gradient-to: #0000;
   --tw-gradient-stops: initial;
-  --tw-gradient-via-stops: initial;
   --tw-gradient-from-position: 0%;
   --tw-gradient-to-position: 100%;
 }
@@ -101,35 +100,25 @@ wx-root-portal-content {
 .bg-white {
   background-color: var(--color-white);
 }
-.bg-linear-to-r {
-  --tw-gradient-position: to right;
-}
-.bg-linear-to-r {
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
-  background-image: linear-gradient(var(--tw-gradient-stops));
-}
+.bg-linear-to-r,
 .bg-gradient-to-r {
-  --tw-gradient-position: to right in oklab;
-  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
-  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-position: to right;
+  background-image: -webkit-linear-gradient(
+    var(--tw-gradient-position),
+    var(--tw-gradient-from) var(--tw-gradient-from-position, ),
+    var(--tw-gradient-to) var(--tw-gradient-to-position, )
+  );
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
 }
 .from-cyan-500 {
   --tw-gradient-from: var(--color-cyan-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
-  --tw-gradient-stops: var(
-    --tw-gradient-via-stops,
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position),
-    var(--tw-gradient-to) var(--tw-gradient-to-position)
-  );
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
 .px-3 {
   padding-left: calc(var(--spacing) * 3);
@@ -180,6 +169,12 @@ wx-root-portal-content {
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }
+}
+.bg-linear-to-r.from-cyan-500.to-blue-500,
+.bg-gradient-to-r.from-cyan-500.to-blue-500 {
+  background-image: -webkit-gradient(linear, left top, right top, from(#06b6d4), to(#3b82f6));
+  background-image: -webkit-linear-gradient(left, #06b6d4 0%, #3b82f6 100%);
+  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
 }
 ```
 
