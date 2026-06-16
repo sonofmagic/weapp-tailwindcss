@@ -2,6 +2,7 @@ import type webpack from 'webpack'
 import type { RuntimeLoaderWatchDependencies, WebpackRuntimeClassSetLoaderOptions } from './runtime-registry'
 import { Buffer } from 'node:buffer'
 import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import process from 'node:process'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
@@ -46,12 +47,26 @@ function removeUnsupportedThemeKeyframes(root: postcss.Root) {
 }
 
 function resolveOriginalCssSource(file: string, source: string | Buffer) {
+  if (!isPlainCssResource(file)) {
+    return Buffer.isBuffer(source) ? source.toString('utf8') : source
+  }
   try {
     return readFileSync(file, 'utf8')
   }
   catch {
     return Buffer.isBuffer(source) ? source.toString('utf8') : source
   }
+}
+
+function isPlainCssResource(file: string) {
+  return new Set([
+    '.acss',
+    '.css',
+    '.jxss',
+    '.qss',
+    '.ttss',
+    '.wxss',
+  ]).has(path.extname(file.replace(/[?#].*$/, '')).toLowerCase())
 }
 
 const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClassSetLoaderOptions> = function (

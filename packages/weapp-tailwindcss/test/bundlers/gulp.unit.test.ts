@@ -611,6 +611,112 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
+  it('refreshes gulp Tailwind v3 css source candidates after wxml updates', async () => {
+    twPatcher.majorVersion = 3
+    runtimeSet = new Set(['app-before', 'app-after'])
+    twPatcher.getClassSetSync.mockImplementation(() => runtimeSet)
+    twPatcher.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
+
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v3-hot-'))
+    ;(currentContext as any).tailwindcssBasedir = dir
+    currentContext.mainCssChunkMatcher = vi.fn(() => false)
+    const srcDir = path.join(dir, 'src')
+    const appCss = path.join(srcDir, 'app.css')
+    const appWxml = path.join(srcDir, 'pages/index/index.wxml')
+    await fs.promises.mkdir(path.dirname(appWxml), { recursive: true })
+    await writeFile(path.join(dir, 'tailwind.config.js'), 'module.exports = { content: ["./src/pages/**/*.wxml"] }')
+    await writeFile(appCss, [
+      '@config "../tailwind.config.js";',
+      '@tailwind utilities;',
+    ].join('\n'))
+    await writeFile(appWxml, '<view class="app-before"></view>')
+
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.resetModules()
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        target: 'weapp',
+        styleOptions: {},
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: dir,
+        cwd: dir,
+        base: options.base ?? dir,
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        configObject: {
+          content: ['./src/pages/**/*.wxml'],
+        },
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: dir,
+        cwd: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: '@tailwind utilities;',
+        dependencies: [],
+        configObject: {
+          content: ['./src/pages/**/*.wxml'],
+        },
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: dir,
+        cwd: dir,
+        baseFallbacks: [],
+      })),
+    }))
+
+    try {
+      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
+      const plugins = createMockedPlugins({
+        tailwindcssBasedir: dir,
+      })
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appCss,
+        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
+      }))
+
+      await writeFile(appWxml, '<view class="app-after"></view>')
+      await runTransform(plugins.transformWxml(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appWxml,
+        contents: Buffer.from(await fs.promises.readFile(appWxml, 'utf8')),
+      }))
+      await runTransform(plugins.transformWxss(), new Vinyl({
+        cwd: dir,
+        base: srcDir,
+        path: appCss,
+        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
+      }))
+
+      const lastCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+      expect(lastCandidates).toEqual(new Set(['app-after']))
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
+      await rm(dir, { force: true, recursive: true })
+    }
+  })
+
   it('re-runs handlers when cache is disabled', async () => {
     currentContext.cache = createCache(false)
 

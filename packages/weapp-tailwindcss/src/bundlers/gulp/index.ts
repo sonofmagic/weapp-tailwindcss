@@ -204,7 +204,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       type,
     })
     pruneGulpRuntimeSourceCaches(runtimeSourceHashByFile, runtimeSourcesByFile)
-    if (changed && runtimeState.twPatcher.majorVersion === 4) {
+    if (changed) {
       invalidateGulpSourceCandidates()
     }
     if (!changed && runtimeSetInitialized) {
@@ -307,12 +307,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return cachedGulpSourceCandidateGetter
   }
 
-  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>, sourceTraceSignature?: string) {
+  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>, sourceTraceSignature?: string, sourceCandidateSignature?: string) {
     return cache.computeHash([
       rawSource,
       getRuntimeClassSetSignature(runtimeState.twPatcher),
       [...nextRuntimeSet].sort().join('\n'),
       sourceTraceSignature ?? 'css-source-trace:0',
+      sourceCandidateSignature ?? 'gulp-source-candidates:0',
     ].join('\n\n'))
   }
 
@@ -494,10 +495,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         ? createCssTokenSourceMap(cachedGulpSourceCandidateSourceGetter(undefined), opts)
         : undefined
       const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
+      const sourceCandidateSignature = cachedGulpSourceCandidateGetter
+        ? `gulp-source-candidates:1:${[...cachedGulpSourceCandidateGetter(undefined)].sort().join('\n')}`
+        : undefined
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
-        hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature),
+        hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature, sourceCandidateSignature),
         applyResult(source) {
           file.contents = Buffer.from(source)
         },

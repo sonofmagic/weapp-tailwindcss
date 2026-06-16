@@ -146,6 +146,29 @@ describe('bundlers/runtime classset loader', () => {
     })
   })
 
+  it('registers loader css input for preprocessor resources', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-runtime-loader-'))
+    tempDirs.push(tempDir)
+    const sourceFile = path.join(tempDir, 'src/pages/index.scss')
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(sourceFile, '.test { @apply text-[#fff] #{!important}; }', 'utf8')
+    const loaderCssInput = '.test { @apply text-[#fff] !important; }'
+    const registerCssSourceFile = vi.fn()
+
+    const result = loader.call({
+      getOptions: () => ({
+        registerCssSourceFile,
+      }),
+      resourcePath: sourceFile,
+    } as any, loaderCssInput)
+
+    expect(result).toBe(loaderCssInput)
+    expect(registerCssSourceFile).toHaveBeenCalledWith({
+      file: sourceFile,
+      css: loaderCssInput,
+    })
+  })
+
   it('removes cascade layer syntax from runtime css before later webpack processors', () => {
     const source = [
       '@layer theme, base, components, utilities;',

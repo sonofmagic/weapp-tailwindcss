@@ -364,7 +364,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           const isMainChunk = compilerOptions.mainCssChunkMatcher(file, appType)
           const sourceFile = resolveWebpackCssSourceFile(file)
           const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
-          const cacheKey = `${majorVersion ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${sourceFile ?? 'asset'}:${file}`
+          const cacheKey = [
+            majorVersion ?? 'unknown',
+            isMainChunk ? '1' : '0',
+            sourceFile ?? 'asset',
+            sourceCss === undefined ? 'source:0' : compilerOptions.cache.computeHash(sourceCss),
+            file,
+          ].join(':')
           const cached = cssHandlerOptionsCache.get(cacheKey)
           if (cached) {
             return cached
@@ -389,7 +395,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const getCssUserHandlerOptions = (file: string) => {
           const majorVersion = runtimeState.twPatcher.majorVersion
-          const cacheKey = `${majorVersion ?? 'unknown'}:${file}`
+          const sourceFile = resolveWebpackCssSourceFile(file)
+          const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
+          const cacheKey = [
+            majorVersion ?? 'unknown',
+            sourceFile ?? 'asset',
+            sourceCss === undefined ? 'source:0' : compilerOptions.cache.computeHash(sourceCss),
+            file,
+          ].join(':')
           const cached = cssUserHandlerOptionsCache.get(cacheKey)
           if (cached) {
             return cached
@@ -705,10 +718,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const hashKey = `${file}:asset`
             rememberProcessCacheKey(cacheKey, hashKey)
             const chunkHash = assetHashByChunk.get(file)
+            const cssSourceHash = (() => {
+              const sourceFile = resolveWebpackCssSourceFile(file)
+              const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
+              return sourceCss === undefined
+                ? 'webpack-css-source:0'
+                : `webpack-css-source:1:${compilerOptions.cache.computeHash(sourceCss)}`
+            })()
             const runtimeAwareHash = createRuntimeAwareCssHash(
               chunkHash,
               compilerOptions.cache.computeHash(rawSource),
-              `${runtimeSetHash}:${webpackSourceCandidates?.signature ?? 'source-candidates:0'}:${cssSourceTraceSignature}`,
+              `${runtimeSetHash}:${webpackSourceCandidates?.signature ?? 'source-candidates:0'}:${cssSourceTraceSignature}:${cssSourceHash}`,
             )
             tasks.push(
               processCachedTask({
@@ -726,6 +746,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 transform: async () => {
                   await runtimeState.readyPromise
                   const cssHandlerOptions = getCssHandlerOptions(file)
+                  const generatorRawSource = resolveWebpackGeneratorRawSource(rawSource, cssHandlerOptions)
                   if (isPureLocalCssImportWrapper(rawSource)) {
                     return {
                       result: new ConcatSource(removeTailwindSourceDirectives(
@@ -738,7 +759,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     opts: compilerOptions,
                     runtimeState,
                     runtime: runtimeSet,
-                    rawSource: resolveWebpackGeneratorRawSource(rawSource, cssHandlerOptions),
+                    rawSource: generatorRawSource,
                     file,
                     cssHandlerOptions,
                     cssUserHandlerOptions: getCssUserHandlerOptions(file),
@@ -747,7 +768,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     debug,
                   })
                   const css = finalizeTracedCss(generated?.css ?? finalizeCssAssetSource(
-                    (await compilerOptions.styleHandler(rawSource, cssHandlerOptions)).css,
+                    (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
                     { generatedCss: false },
                   ))
                   const source = new ConcatSource(css)
