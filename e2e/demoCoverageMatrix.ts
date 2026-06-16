@@ -213,6 +213,13 @@ function uniAppHBuilderXPlatforms(name: string): DemoPlatformCoverage[] {
       staticCoverage: 'automated',
       hmrCoverage: 'local',
     }),
+    ...(['mp-alipay', 'mp-baidu', 'mp-toutiao'] as const).map(platform => local(platform, {
+      evidence: 'hbuilderx local non-WeChat mini-program case',
+      command: `E2E_HBUILDERX_LOCAL=1 E2E_HBUILDERX_MP_PLATFORM=${platform} pnpm e2e:hbuilderx:local:demo:${platform} -t "${name}"`,
+      reason: 'HBuilderX 非微信小程序编译依赖本机 IDE，已登记为本地回归 case，不进入普通 CI。',
+      staticCoverage: 'local',
+      hmrCoverage: 'exempt',
+    })),
     local('h5', {
       buildScript: 'build:h5',
       devScript: 'dev:h5',

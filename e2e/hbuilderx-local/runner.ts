@@ -146,21 +146,37 @@ async function waitForAppTransformedContent(
   throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nlatest=${latest.slice(0, 2000)}${details ? `\n${details}` : ''}`)
 }
 
-async function assertMiniProgramOutput(item: MiniProgramCase) {
+async function assertMiniProgramOutput(
+  item: MiniProgramCase,
+  ensureRunning?: () => void,
+  createFailureDetails?: () => string,
+) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   let outputRoot = path.resolve(projectRoot, item.outputDir)
-  for (const outputDir of item.outputDirCandidates ?? [item.outputDir]) {
-    const candidateRoot = path.resolve(projectRoot, outputDir)
-    const ready = await Promise.all(item.requiredFiles.map(file => fileExists(path.resolve(candidateRoot, file))))
-    if (ready.every(Boolean)) {
-      outputRoot = candidateRoot
+
+  const startedAt = Date.now()
+  while (Date.now() - startedAt < hbuilderxTimeoutMs) {
+    ensureRunning?.()
+    for (const outputDir of item.outputDirCandidates ?? [item.outputDir]) {
+      const candidateRoot = path.resolve(projectRoot, outputDir)
+      const ready = await Promise.all(item.requiredFiles.map(file => fileExists(path.resolve(candidateRoot, file))))
+      if (ready.every(Boolean)) {
+        outputRoot = candidateRoot
+        break
+      }
+    }
+    if ((await Promise.all(item.requiredFiles.map(file => fileExists(path.resolve(outputRoot, file))))).every(Boolean)) {
       break
     }
+    await wait(pollIntervalMs)
   }
 
   for (const file of item.requiredFiles) {
     const target = path.resolve(outputRoot, file)
-    expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
+    expect(
+      await waitForFile(target, hbuilderxTimeoutMs),
+      `${item.name} 缺少产物 ${file}${createFailureDetails ? `\n${createFailureDetails()}` : ''}`,
+    ).toBe(true)
   }
 
   const css = (
@@ -174,6 +190,13 @@ async function assertMiniProgramOutput(item: MiniProgramCase) {
   ).join('\n')
 
   expectContent(css, item.cssContains, item.name)
+  if (item.outputContains) {
+    for (const [file, entries] of Object.entries(item.outputContains)) {
+      const target = path.resolve(outputRoot, file)
+      expect(await waitForFile(target, hbuilderxTimeoutMs), `${item.name} 缺少产物 ${file}`).toBe(true)
+      expectContent(await readUtf8(target), entries, `${item.name} ${file}`)
+    }
+  }
   if (item.cssNotContains) {
     for (const entry of item.cssNotContains) {
       if (typeof entry === 'string') {
@@ -280,23 +303,47 @@ async function writeAppMarker(
 }
 
 export async function compileMiniProgramWithHBuilderX(item: MiniProgramCase) {
-  const hbuilderxCliPath = await resolveHBuilderXCli()
   const projectRoot = path.resolve(repoRoot, item.projectDir)
-  const projectName = path.basename(projectRoot)
   const outputDirs = item.outputDirCandidates ?? [item.outputDir]
+  let child: ReturnType<typeof spawnPnpm> | undefined
+  let logs: string[] = []
+
   await Promise.all(
     [...new Set(outputDirs)].map(async (outputDir) => {
       await fs.rm(path.resolve(projectRoot, outputDir), { recursive: true, force: true })
     }),
   )
-  await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxTimeoutMs, {
-    HBUILDERX_CLI_PATH: hbuilderxCliPath,
-  })
-  await runPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', 'mp-weixin', '--project', projectName, '--compile', 'true'], hbuilderxTimeoutMs, {
-    HBUILDERX_CLI_PATH: hbuilderxCliPath,
-    WEAPP_TW_HMR_TIMING: '1',
-  })
-  await assertMiniProgramOutput(item)
+
+  if (item.platform !== 'mp-weixin') {
+    const hbuilderxCliPath = await resolveHBuilderXCli()
+    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'project', 'open', '--path', projectRoot], hbuilderxTimeoutMs, {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+    })
+    await runPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, '--compile', 'true'], hbuilderxTimeoutMs, {
+      HBUILDERX_CLI_PATH: hbuilderxCliPath,
+      WEAPP_TW_HMR_TIMING: '1',
+    })
+    await assertMiniProgramOutput(item)
+    return
+  }
+
+  try {
+    child = spawnPnpm(projectRoot, ['run', 'dev:mp-weixin'], {
+      HBUILDERX_CLI_PATH: await resolveHBuilderXCli(),
+      WEAPP_TW_HMR_TIMING: '1',
+    })
+    logs = collectProcessOutput(child)
+    await assertMiniProgramOutput(item, () => {
+      if (child?.exitCode != null) {
+        throw new Error(`${item.name} dev:mp-weixin 提前退出，exit=${child.exitCode}\n${logs.join('')}`)
+      }
+    }, () => logs.join(''))
+  }
+  finally {
+    if (child) {
+      killProcessTree(child)
+    }
+  }
 }
 
 export async function verifyAppHmrWithHBuilderX(item: AppCase) {

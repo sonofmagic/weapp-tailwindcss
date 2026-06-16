@@ -4,6 +4,7 @@ export const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply
 
 export interface MiniProgramCase {
   name: string
+  platform: MiniProgramPlatform
   projectDir: string
   outputDir: string
   outputDirCandidates?: string[]
@@ -11,8 +12,11 @@ export interface MiniProgramCase {
   requiredFiles: string[]
   cssContains: Array<string | RegExp>
   cssNotContains?: Array<string | RegExp>
+  outputContains?: Record<string, Array<string | RegExp>>
+  workflow: HBuilderXWorkflowCoverage
 }
 
+export type MiniProgramPlatform = 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-weixin'
 export type AppPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 
 export interface AppCase {
@@ -48,7 +52,35 @@ export interface WebCase {
   initialCssContains: Array<string | RegExp>
   initialRuntimeStyles?: WebRuntimeStyleAssertion[]
   hmrSteps: WebHmrStep[]
+  workflow: HBuilderXWorkflowCoverage
 }
+
+export interface HBuilderXWorkflowCoverage {
+  staticTemplateClass: boolean
+  dynamicClassBinding: boolean
+  userAuthoredStyle: boolean
+  thirdPartyOrExternalComponentStyle: boolean
+  subpackageStyle: boolean
+  webHmr: boolean
+}
+
+const uniAppHBuilderXWorkflow = {
+  dynamicClassBinding: false,
+  staticTemplateClass: true,
+  subpackageStyle: true,
+  thirdPartyOrExternalComponentStyle: false,
+  userAuthoredStyle: false,
+  webHmr: true,
+} satisfies HBuilderXWorkflowCoverage
+
+const uniAppXHBuilderXWorkflow = {
+  dynamicClassBinding: true,
+  staticTemplateClass: true,
+  subpackageStyle: true,
+  thirdPartyOrExternalComponentStyle: true,
+  userAuthoredStyle: true,
+  webHmr: true,
+} satisfies HBuilderXWorkflowCoverage
 
 export interface WebHmrStep {
   markerClass: string
@@ -67,47 +99,154 @@ const hbuilderxMiniProgramOutputDirCandidates = [
   'dist/dev/mp-weixin',
 ]
 
+const uniAppHBuilderXMiniProgramPlatforms = [
+  'mp-weixin',
+  'mp-alipay',
+  'mp-baidu',
+  'mp-toutiao',
+] satisfies MiniProgramPlatform[]
+
+const miniProgramPlatformFiles = {
+  'mp-alipay': {
+    cssFiles: ['app.acss', 'sub-normal/pages/index.acss', 'sub-independent/pages/index.acss'],
+    outputDir: 'unpackage/dist/dev/mp-alipay',
+    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    templateFiles: {
+      independent: 'sub-independent/pages/index.axml',
+      normal: 'sub-normal/pages/index.axml',
+    },
+  },
+  'mp-baidu': {
+    cssFiles: ['app.css', 'sub-normal/pages/index.css', 'sub-independent/pages/index.css'],
+    outputDir: 'unpackage/dist/dev/mp-baidu',
+    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    templateFiles: {
+      independent: 'sub-independent/pages/index.swan',
+      normal: 'sub-normal/pages/index.swan',
+    },
+  },
+  'mp-toutiao': {
+    cssFiles: ['app.ttss', 'sub-normal/pages/index.ttss', 'sub-independent/pages/index.ttss'],
+    outputDir: 'unpackage/dist/dev/mp-toutiao',
+    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    templateFiles: {
+      independent: 'sub-independent/pages/index.ttml',
+      normal: 'sub-normal/pages/index.ttml',
+    },
+  },
+  'mp-weixin': {
+    cssFiles: ['app.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
+    outputDir: 'unpackage/dist/dev/mp-weixin',
+    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    templateFiles: {
+      independent: 'sub-independent/pages/index.wxml',
+      normal: 'sub-normal/pages/index.wxml',
+    },
+  },
+} satisfies Record<MiniProgramPlatform, {
+  cssFiles: string[]
+  outputDir: string
+  requiredFiles: string[]
+  templateFiles: {
+    independent: string
+    normal: string
+  }
+}>
+
+function createMiniProgramOutputDirCandidates(platform: MiniProgramPlatform) {
+  return [
+    `unpackage/dist/dev/${platform}`,
+    `dist/dev/${platform}`,
+  ]
+}
+
+function withMiniProgramPlatformName(name: string, platform: MiniProgramPlatform) {
+  return platform === 'mp-weixin' ? name : `${name} ${platform}`
+}
+
+function createUniAppHBuilderXMiniProgramCase(options: {
+  name: string
+  platform: MiniProgramPlatform
+  projectDir: string
+  tailwindcss: 'v3' | 'v4'
+}): MiniProgramCase {
+  const platformFiles = miniProgramPlatformFiles[options.platform]
+  const isTailwindV4 = options.tailwindcss === 'v4'
+  return {
+    name: withMiniProgramPlatformName(options.name, options.platform),
+    platform: options.platform,
+    projectDir: options.projectDir,
+    outputDir: platformFiles.outputDir,
+    outputDirCandidates: createMiniProgramOutputDirCandidates(options.platform),
+    cssFiles: platformFiles.cssFiles,
+    requiredFiles: platformFiles.requiredFiles,
+    cssContains: isTailwindV4
+      ? ['.bg-_b_h123456_B', 'background-color: #123456', /normal[-_]subpackage/i, /independent[-_]subpackage/i]
+      : ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/, /normal[-_]subpackage/i, /independent[-_]subpackage/i],
+    cssNotContains: [rawTailwindDirectiveRE],
+    outputContains: {
+      'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
+      [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
+      [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
+    },
+    workflow: uniAppHBuilderXWorkflow,
+  }
+}
+
+function createUniAppHBuilderXMiniProgramCases(options: {
+  name: string
+  projectDir: string
+  tailwindcss: 'v3' | 'v4'
+}) {
+  return uniAppHBuilderXMiniProgramPlatforms.map(platform => createUniAppHBuilderXMiniProgramCase({
+    ...options,
+    platform,
+  }))
+}
+
+function createUniAppXHBuilderXMiniProgramCase(options: {
+  name: string
+  projectDir: string
+}): MiniProgramCase {
+  const platformFiles = miniProgramPlatformFiles['mp-weixin']
+  return {
+    name: options.name,
+    platform: 'mp-weixin',
+    projectDir: options.projectDir,
+    outputDir: platformFiles.outputDir,
+    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
+    cssFiles: ['app.wxss', 'uvue.wxss', 'pages/index/index.wxss', 'components/BindClass.wxss', 'components/WeappTailwindcss.wxss', ...platformFiles.cssFiles.slice(1)],
+    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    cssContains: ['.bg-_b_h87add3_B', '.bg-_b_hd2e252_B', '.text-_b93_d54rpx_B', '.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64'],
+    cssNotContains: [rawTailwindDirectiveRE],
+    outputContains: {
+      'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
+      [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
+      [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
+    },
+    workflow: uniAppXHBuilderXWorkflow,
+  }
+}
+
 export const miniProgramCases: MiniProgramCase[] = [
-  {
+  ...createUniAppHBuilderXMiniProgramCases({
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    outputDir: 'unpackage/dist/dev/mp-weixin',
-    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
-    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
-    cssContains: ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/, /normal[-_]subpackage/i, /independent[-_]subpackage/i],
-    cssNotContains: [rawTailwindDirectiveRE],
-  },
-  {
+    tailwindcss: 'v3',
+  }),
+  ...createUniAppHBuilderXMiniProgramCases({
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-    outputDir: 'unpackage/dist/dev/mp-weixin',
-    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
-    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
-    cssContains: ['.bg-_b_h123456_B', 'background-color: #123456', /normal[-_]subpackage/i, /independent[-_]subpackage/i],
-    cssNotContains: [rawTailwindDirectiveRE],
-  },
-  {
+    tailwindcss: 'v4',
+  }),
+  createUniAppXHBuilderXMiniProgramCase({
     name: 'uni-app-x-hbuilderx-tailwindcss-v3',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
-    outputDir: 'unpackage/dist/dev/mp-weixin',
-    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss', 'pages/index/index.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
-    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
-    cssContains: ['.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64', /normal[-_]subpackage/i, /independent[-_]subpackage/i],
-    cssNotContains: [rawTailwindDirectiveRE],
-  },
-  {
+  }),
+  createUniAppXHBuilderXMiniProgramCase({
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v4',
-    outputDir: 'unpackage/dist/dev/mp-weixin',
-    outputDirCandidates: hbuilderxMiniProgramOutputDirCandidates,
-    cssFiles: ['app.wxss', 'pages/index/index.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
-    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
-    cssContains: ['.bg-_b_hf21903_B', '.text-_b_hda0e3c_B', '.w-64', /normal[-_]subpackage/i, /independent[-_]subpackage/i],
-    cssNotContains: [rawTailwindDirectiveRE],
-  },
+  }),
 ]
 
 const defaultAndroidLaunchArgs = ['--deviceId', process.env['E2E_HBUILDERX_ANDROID_DEVICE_ID'] ?? 'emulator-5554']
@@ -443,6 +582,7 @@ export const webCases: WebCase[] = [
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
     initialCssContains: [/background-color:\s*rgb\(18 52 86/],
+    workflow: uniAppHBuilderXWorkflow,
     hmrSteps: [
       {
         markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
@@ -473,6 +613,7 @@ export const webCases: WebCase[] = [
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
     initialCssContains: [/background-color:\s*#123456/],
+    workflow: uniAppHBuilderXWorkflow,
     hmrSteps: [
       {
         markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
@@ -499,6 +640,7 @@ export const webCases: WebCase[] = [
     initialCssPath: '/App.uvue?vue&type=style&index=0&lang.scss',
     hmrCssPath: '/App.uvue?vue&type=style&index=0&lang.scss',
     initialCssContains: ['.w-32', '.rounded-md', /background-color:\s*rgb\(242 25 3/],
+    workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {
         markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
@@ -525,6 +667,7 @@ export const webCases: WebCase[] = [
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
     initialCssContains: ['@layer theme', '--text-xl', '--color-white'],
+    workflow: uniAppXHBuilderXWorkflow,
     initialRuntimeStyles: [
       {
         selector: '.content',

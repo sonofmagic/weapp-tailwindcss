@@ -115,13 +115,35 @@ describeFrameworkCi('framework support matrix ci', () => {
     }
   })
 
-  it('keeps HBuilderX local demo coverage explicit for mp-weixin, web, android, ios and harmony', () => {
+  it('keeps HBuilderX local demo coverage explicit for mini-program, web, android, ios and harmony', () => {
     expect(miniProgramCases.map(item => item.name)).toEqual([
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-alipay',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-baidu',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-toutiao',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-baidu',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-toutiao',
       'uni-app-x-hbuilderx-tailwindcss-v3',
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
+    for (const name of ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4']) {
+      expect(
+        miniProgramCases
+          .filter(item => item.projectDir.endsWith(name))
+          .map(item => item.platform),
+        `${name} should cover HBuilderX non-WeChat mini-program output locally`,
+      ).toEqual(['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao'])
+    }
+    for (const name of ['uni-app-x-hbuilderx-tailwindcss-v3', 'uni-app-x-hbuilderx-tailwindcss-v4']) {
+      expect(
+        miniProgramCases
+          .filter(item => item.projectDir.endsWith(name))
+          .map(item => item.platform),
+        `${name} should stay on mp-weixin because HBuilderX rejects uni-app x non-WeChat mini-program compile`,
+      ).toEqual(['mp-weixin'])
+    }
     expect(webCases.map(item => item.name)).toEqual([
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',

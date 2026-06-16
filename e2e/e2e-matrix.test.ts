@@ -298,6 +298,19 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')
     expect(scripts['e2e:app']).toBe('pnpm e2e:android && pnpm e2e:ios && pnpm e2e:harmony')
     expect(scripts['e2e:hbuilderx:local:harmony']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-harmony')
+    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_LOCAL=1')
+    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v3,uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v3,uni-app-x-hbuilderx-tailwindcss-v4')
+    expect(scripts['e2e:hbuilderx:local:demo:mp']).toContain('E2E_HBUILDERX_CASE_GROUP=mp')
+    expect(scripts['e2e:hbuilderx:local:demo:mp-extra']).toBe('pnpm e2e:hbuilderx:local:demo:mp-alipay && pnpm e2e:hbuilderx:local:demo:mp-baidu && pnpm e2e:hbuilderx:local:demo:mp-toutiao')
+    expect(scripts['e2e:hbuilderx:local:demo:mp-alipay']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-alipay')
+    expect(scripts['e2e:hbuilderx:local:demo:mp-baidu']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-baidu')
+    expect(scripts['e2e:hbuilderx:local:demo:mp-toutiao']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-toutiao')
+    expect(scripts['e2e:hbuilderx:local:mp-alipay']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-alipay')
+    expect(scripts['e2e:hbuilderx:local:mp-baidu']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-baidu')
+    expect(scripts['e2e:hbuilderx:local:mp-toutiao']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-toutiao')
+    expect(scripts['e2e:hbuilderx:local:demo:web']).toContain('E2E_HBUILDERX_CASE_GROUP=web')
+    expect(scripts['e2e:ci']).not.toContain('e2e:hbuilderx:local:demo')
+    expect(scripts['e2e:ci']).not.toContain('e2e:hbuilderx:local:demo:mp-extra')
 
     for (const scriptName of ['e2e:mp', 'e2e:h5', 'e2e:hbuilderx:mp', 'e2e:hbuilderx:h5', 'e2e:android', 'e2e:ios', 'e2e:harmony']) {
       expect(workflow).toContain(`args: ['${scriptName}']`)
@@ -347,8 +360,8 @@ describe('e2e matrix', () => {
     const expectedPlatformsByName = new Map([
       ['uni-app-vite-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
       ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
       ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
     ])
@@ -363,6 +376,10 @@ describe('e2e matrix', () => {
         if (platform === 'app-android' || platform === 'app-ios' || platform === 'app-harmony') {
           expect(coverage?.hmrCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
           expect(coverage?.evidence, `${name} ${platform} should point at HBuilderX evidence`).toContain('hbuilderx')
+        }
+        if (name.includes('hbuilderx') && (platform === 'mp-alipay' || platform === 'mp-baidu' || platform === 'mp-toutiao')) {
+          expect(coverage?.staticCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
+          expect(coverage?.command, `${name} ${platform} should point at platform-filtered HBuilderX case`).toContain(`E2E_HBUILDERX_MP_PLATFORM=${platform}`)
         }
       }
     }
