@@ -125,12 +125,14 @@ describe('ci workflows', () => {
       'preprocessor-source',
       'framework-support',
       'taro-h5-build',
+      'web-css-preservation',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
       'pnpm e2e:preprocessor',
       'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
       'pnpm e2e:taro:h5-build',
+      'pnpm e2e:web-css-preservation',
     ])
     expect(stepRuns(workflow, 'e2e-focused')).toContain('${{ matrix.command }}')
 

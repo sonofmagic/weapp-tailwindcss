@@ -127,6 +127,7 @@
     "e2e:generator-parity": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/generator-tailwind-parity.test.ts",
     "e2e:taro:web-hmr": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/taro-web-demo-hmr.test.ts",
     "e2e:taro:h5-build": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/taro-h5-build-smoke.test.ts",
+    "e2e:web-css-preservation": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/web-css-preservation.test.ts",
     "e2e:web:hmr": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/web-vite-demo-hmr.test.ts",
     "e2e:hot-update": "node --import tsx ./e2e/run-hot-update.ts",
     "e2e:hot-update:dev": "pnpm e2e:hot-update",

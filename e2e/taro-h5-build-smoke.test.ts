@@ -8,9 +8,24 @@ import { clearProjectBuildState } from './projectTest'
 import { taroWebHmrCases } from './taro-web-demo-hmr-cases'
 
 const repoRoot = path.resolve(__dirname, '..')
-const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
+const rawTailwindEntryDirectiveRE = /@(import\s+["']tailwindcss|tailwind|theme|source)\b/
 const textOutputRE = /\.(?:html|js|css|scss|less|sass|styl|json)$/i
+const cssOutputRE = /\.css$/i
 const taroH5BuildRE = /(?:taro-build-runner\.mjs build|taro build)\s+--type h5/
+const generatedCssRE = /\.(?:flex|grid|rounded|theme-mode-demo)\b|\.h-\\\[300px\\\]|\.bg-\\\[|\.text-\\\[/
+const taroRuntimeCssRE = /\.taro-app-wrap\b|html,body\{width:100%;height:100%\}|body\{font-family:-apple-system-font/
+const ordinaryProjectCssREByName = new Map<string, RegExp>([
+  ['taro vite react Tailwind v3', /\.tw-page-style-watch-anchor\b/],
+  ['taro vite react Tailwind v4', /\.tw-page-style-watch-anchor\b/],
+  ['taro webpack react Tailwind v3', /\.(?:aspect-w-16|xxx)\b/],
+  ['taro webpack react Tailwind v4', /\.tw-page-style-watch-anchor\b/],
+  ['taro webpack vue3 Tailwind v3', /\.(?:aspect-w-16|xxx)\b/],
+  ['taro webpack vue3 Tailwind v4', /\.tw-page-style-watch-anchor\b/],
+])
+
+function shouldAssertTaroRuntimeCss(name: string) {
+  return name.includes('vite')
+}
 
 async function readTextOutputs(outputRoot: string) {
   const files = await fg('**/*', {
@@ -21,6 +36,21 @@ async function readTextOutputs(outputRoot: string) {
   const chunks: string[] = []
   for (const file of files.sort()) {
     if (textOutputRE.test(file)) {
+      chunks.push(await fs.readFile(file, 'utf8'))
+    }
+  }
+  return chunks.join('\n')
+}
+
+async function readCssOutputs(outputRoot: string) {
+  const files = await fg('**/*.css', {
+    absolute: true,
+    cwd: outputRoot,
+    onlyFiles: true,
+  })
+  const chunks: string[] = []
+  for (const file of files.sort()) {
+    if (cssOutputRE.test(file)) {
       chunks.push(await fs.readFile(file, 'utf8'))
     }
   }
@@ -60,6 +90,18 @@ describe('demo Taro H5 build smoke', () => {
 
     const output = await readTextOutputs(outputRoot)
     expect(output.length, `${item.name} should emit readable H5 output`).toBeGreaterThan(0)
-    expect(output, `${item.name} should not leave raw Tailwind directives in H5 output`).not.toMatch(rawTailwindDirectiveRE)
+
+    const css = await readCssOutputs(outputRoot)
+    expect(css.length, `${item.name} should emit H5 css output`).toBeGreaterThan(0)
+    expect(css, `${item.name} should not leave raw Tailwind entry directives in H5 CSS`).not.toMatch(rawTailwindEntryDirectiveRE)
+    expect(css, `${item.name} should include generated Tailwind CSS`).toMatch(generatedCssRE)
+    if (shouldAssertTaroRuntimeCss(item.name)) {
+      expect(css, `${item.name} should preserve Taro H5 runtime CSS`).toMatch(taroRuntimeCssRE)
+    }
+
+    const ordinaryProjectCssRE = ordinaryProjectCssREByName.get(item.name)
+    if (ordinaryProjectCssRE) {
+      expect(css, `${item.name} should preserve ordinary project CSS`).toMatch(ordinaryProjectCssRE)
+    }
   }, 1_200_000)
 })

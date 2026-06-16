@@ -7018,6 +7018,85 @@ const trace = "at App.vue:4"
     expect(styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('keeps Vite build web css without dropping ordinary bundled rules', async () => {
+    const runtimeSet = new Set(['hover:bg-blue-500'])
+    const rawTailwindCss = '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */\n.hover\\:bg-blue-500:hover{color:blue}'
+    const userCss = '\nhtml{font-family:Inter,ui-sans-serif}.site-card{display:grid;color:#0f172a}'
+    const webCss = '.hover\\:bg-blue-500:hover{color:blue}'
+    const generateMock = vi.fn(async () => ({
+      css: webCss,
+      rawCss: rawTailwindCss,
+      target: 'web',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => runtimeSet),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+    }))
+
+    const styleHandler = vi.fn(async (code: string) => ({ css: `mini:${code}` }))
+    setCurrentContext(createContext({
+      generator: {
+        target: 'web',
+      },
+      styleHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'assets/index.css': {
+        ...createRollupAsset(`${rawTailwindCss}${userCss}`),
+        fileName: 'assets/index.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const source = (bundle['assets/index.css'] as OutputAsset).source.toString()
+    expect(source).toContain('.hover\\:bg-blue-500:hover{color:blue}')
+    expect(source).toContain('html{font-family:Inter,ui-sans-serif}')
+    expect(source).toContain('.site-card{display:grid;color:#0f172a}')
+    expect(styleHandler).not.toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
   it('does not share css transform results for identical assets with relative urls', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
