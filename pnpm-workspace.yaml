@@ -120,8 +120,8 @@ catalogs:
     '@tailwindcss/postcss': ^4.3.1
     '@tailwindcss/vite': ^4.3.1
     tailwindcss: ^4.3.1
-    tailwindcss-4: npm:tailwindcss@^4.3.0
-    tailwindcss4: npm:tailwindcss@^4.3.0
+    tailwindcss-4: npm:tailwindcss@^4.3.1
+    tailwindcss4: npm:tailwindcss@^4.3.1
   tailwindcssPatch:
     tailwindcss-patch: 9.4.4
   tailwindcssRem:
