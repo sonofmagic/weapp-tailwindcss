@@ -2087,6 +2087,40 @@ describe('watch-hmr regression cases', () => {
     }
   })
 
+  it('keeps user-authored style files in automated dev HMR coverage', () => {
+    const cases = [
+      ...buildDemoBaseCases('/repo'),
+      ...buildDemoExtendedCases('/repo'),
+    ]
+
+    const styleSources = new Map(cases.map(watchCase => [
+      watchCase.name,
+      toRepoPath(watchCase.styleMutation.sourceFile),
+    ]))
+
+    expect(styleSources.get('uni-app-vite-tailwindcss-v3')).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss')
+    expect(styleSources.get('uni-app-vite-tailwindcss-v4')).toBe('/repo/demo/uni-app-vite-tailwindcss-v4/src/main.css')
+    expect(styleSources.get('mpx-tailwindcss-v3')).toBe('/repo/demo/mpx-tailwindcss-v3/src/app.mpx')
+    expect(styleSources.get('mpx-tailwindcss-v4')).toBe('/repo/demo/mpx-tailwindcss-v4/src/pages/component/index.mpx')
+    expect(styleSources.get('taro-webpack-react-tailwindcss-v4')).toBe('/repo/demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.css')
+
+    for (const watchCase of cases) {
+      const source = toRepoPath(watchCase.styleMutation.sourceFile)
+      expect(
+        source,
+        `${watchCase.name} should mutate a source style file during dev HMR`,
+      ).toMatch(/\/demo\/[^/]+\/(?:src|copy-miniprogram|fixture-miniprogram|miniprogram|pages)\/.+\.(?:css|scss|less|mpx|vue)$/)
+      expect(
+        source,
+        `${watchCase.name} should not mutate generated style output during dev HMR`,
+      ).not.toMatch(/\/(?:dist|unpackage)\//)
+      expect(
+        watchCase.styleMutation.verifyOutputCandidates ?? watchCase.outputStyleCandidates,
+        `${watchCase.name} should verify style HMR output candidates`,
+      ).not.toEqual([])
+    }
+  })
+
   it('opts out same-class global-style stability for platform-variant watch cases', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')

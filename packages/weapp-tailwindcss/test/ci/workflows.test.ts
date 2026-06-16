@@ -126,6 +126,7 @@ describe('ci workflows', () => {
       'framework-support',
       'taro-h5-build',
       'web-css-preservation',
+      'demo-user-workflow',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
@@ -133,6 +134,7 @@ describe('ci workflows', () => {
       'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
       'pnpm e2e:taro:h5-build',
       'pnpm e2e:web-css-preservation',
+      'pnpm e2e:demo-user-workflow',
     ])
     expect(stepRuns(workflow, 'e2e-focused')).toContain('${{ matrix.command }}')
 
@@ -158,6 +160,7 @@ describe('ci workflows', () => {
     for (const scriptName of ['e2e:static', 'e2e:static:u'] as const) {
       const script = packageJson.scripts[scriptName]
       expect(script).toContain('--exclude e2e/multiplatform-build-output.test.ts')
+      expect(script).toContain('--exclude e2e/demo-user-workflow-output.test.ts')
       expect(script).toContain('--exclude e2e/preprocessor-source.test.ts')
       expect(script).toContain('--exclude e2e/framework-ci-support.test.ts')
       expect(script).toContain('--exclude e2e/framework-ide-support.test.ts')

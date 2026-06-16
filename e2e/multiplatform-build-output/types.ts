@@ -1,6 +1,6 @@
 export type BuildOutputCaseStatus = 'ci' | 'local'
 
-export type MultiplatformFramework = 'uni-app' | 'uni-app-x' | 'taro' | 'mpx'
+export type MultiplatformFramework = 'uni-app' | 'uni-app-x' | 'taro' | 'mpx' | 'gulp'
 
 export interface BuildOutputCase {
   name: string

@@ -138,6 +138,8 @@ jobs:
             command: pnpm e2e:taro:h5-build
           - case_name: web-css-preservation
             command: pnpm e2e:web-css-preservation
+          - case_name: demo-user-workflow
+            command: pnpm e2e:demo-user-workflow
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
