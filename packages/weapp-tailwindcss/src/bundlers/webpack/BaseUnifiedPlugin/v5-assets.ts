@@ -487,6 +487,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
               isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
               preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
+              tailwindcssV4GradientFallback: compilerOptions.tailwindcssV4GradientFallback,
             })
           }
           return finalized
@@ -499,6 +500,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
             isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
             preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
+            tailwindcssV4GradientFallback: compilerOptions.tailwindcssV4GradientFallback,
           })
         }
         const shouldRefreshWebpackSourceCandidates = groupedEntries.css?.length

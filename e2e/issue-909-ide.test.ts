@@ -16,6 +16,7 @@ const issue909PageUrl = '/pages/issue-909/index'
 const issue928PageUrl = '/pages/issue-928/index'
 const timeoutMs = Number(process.env['E2E_IDE_ISSUE_909_TIMEOUT_MS'] ?? process.env['E2E_AUTOMATOR_TIMEOUT_MS'] ?? 90_000)
 const artifactDir = path.resolve(__dirname, '.artifacts/issue-909')
+const isTailwindcssV4GradientFallbackEnabled = process.env['WEAPP_TW_V4_GRADIENT_FALLBACK'] !== '0'
 const transformClasses = [
   'rotate-y-90',
   'rotate-y-45',
@@ -213,20 +214,31 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
     expect(appWxss).toMatch(/(?:^|\n)view\s*\{[\s\S]*?box-sizing:\s*border-box;[\s\S]*?\n\}/)
     expect(appWxss).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-position\),\s*var\(--tw-gradient-from\) var\(--tw-gradient-from-position, \),\s*var\(--tw-gradient-to\) var\(--tw-gradient-to-position, \)\)/)
     expect(appWxss).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*linear-gradient/)
-    expect(appWxss).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
-    expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
-    expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
-    expect(appWxss).toContain('background-image: linear-gradient(to right, var(--issue-928-from), var(--issue-928-via), var(--issue-928-to))')
-    expect(appWxss).toContain('background-image: linear-gradient(to top right, #06b6d4 10%, #a855f7 30%, #3b82f6 90%)')
-    expect(appWxss).toContain('background-image: linear-gradient(65deg, #34d399, #fde047, #f43f5e)')
-    expect(appWxss).toContain('background-image: radial-gradient(#06b6d4, #a855f7, #3b82f6)')
-    expect(appWxss).toContain('background-image: radial-gradient(at 50% 75%, #06b6d4, #a855f7, #3b82f6)')
-    expect(appWxss).toContain('background-image: conic-gradient(#06b6d4, #a855f7, #3b82f6)')
-    expect(appWxss).toContain('background-image: conic-gradient(from 180deg, #06b6d4, #a855f7, #3b82f6)')
-    expect(appWxss).toContain('background-image: conic-gradient(from -180deg, #06b6d4, #a855f7, #3b82f6)')
-    expect(appWxss).toContain('background-image: linear-gradient(25deg,#ef4444 5%,#eab308 60%,#22c55e 90%,#14b8a6)')
+    if (isTailwindcssV4GradientFallbackEnabled) {
+      expect(appWxss).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+      expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+      expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: linear-gradient(to right, var(--issue-928-from), var(--issue-928-via), var(--issue-928-to))')
+      expect(appWxss).toContain('background-image: linear-gradient(to top right, #06b6d4 10%, #a855f7 30%, #3b82f6 90%)')
+      expect(appWxss).toContain('background-image: linear-gradient(65deg, #34d399, #fde047, #f43f5e)')
+      expect(appWxss).toContain('background-image: radial-gradient(#06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: radial-gradient(at 50% 75%, #06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: conic-gradient(#06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: conic-gradient(from 180deg, #06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: conic-gradient(from -180deg, #06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: linear-gradient(25deg,#ef4444 5%,#eab308 60%,#22c55e 90%,#14b8a6)')
+      expect(appWxss).toContain('background-image: conic-gradient(from 45deg at 50% 50%,#ef4444,#eab308,#22c55e)')
+    }
+    else {
+      expect(appWxss).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+      expect(appWxss).not.toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+      expect(appWxss).not.toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).not.toContain('background-image: radial-gradient(#06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).not.toContain('background-image: conic-gradient(#06b6d4, #a855f7, #3b82f6)')
+      expect(appWxss).toContain('background-image: linear-gradient(var(--tw-gradient-stops,25deg,#ef4444 5%,#eab308 60%,#22c55e 90%,#14b8a6))')
+      expect(appWxss).toContain('background-image: conic-gradient(var(--tw-gradient-stops,from 45deg at 50% 50%,#ef4444,#eab308,#22c55e))')
+    }
     expect(appWxss).toContain('background-image: linear-gradient(to right,#06b6d4,#3b82f6)')
-    expect(appWxss).toContain('background-image: conic-gradient(from 45deg at 50% 50%,#ef4444,#eab308,#22c55e)')
     expect(appWxss, 'issue 928 should keep mini-program parseable gradient via fallback')
       .toContain('--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)),')
     expect(appWxss, 'issue 928 should keep from-position fallback in gradient stops')

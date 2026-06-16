@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'pathe'
 import prettier from 'prettier'
 import autoprefixer from 'autoprefixer'
-import { createStyleHandler } from '@/index'
+import { createStyleHandler, finalizeMiniProgramCss } from '@/index'
 
 const WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
 const MARGIN_TRIM_RE = /margin-trim\s*:\s*inline/
@@ -469,6 +469,67 @@ describe('v4', () => {
     expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
     expect(css).toContain('.bg-linear-to-r.from-_p--issue-928-from_P.via-_p--issue-928-via_P.to-_p--issue-928-to_P')
     expect(css).toContain('background-image: linear-gradient(to right, var(--issue-928-from), var(--issue-928-via), var(--issue-928-to))')
+  })
+
+  it('keeps Tailwind CSS v4 gradient variable syntax when literal fallbacks are disabled', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+      tailwindcssV4GradientFallback: false,
+    })
+    const code = `
+:root,:host {
+  --color-cyan-500: #06b6d4;
+  --color-blue-500: #3b82f6;
+}
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))')
+    expect(css).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).not.toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+  })
+
+  it('keeps finalized Tailwind CSS v4 gradient variable syntax when literal fallbacks are disabled', () => {
+    const css = finalizeMiniProgramCss(`
+:root,:host {
+  --color-cyan-500: #06b6d4;
+  --color-blue-500: #3b82f6;
+}
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+`, {
+      isTailwindcssV4: true,
+      tailwindcssV4GradientFallback: false,
+    })
+
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))')
+    expect(css).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).not.toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
   })
 
   it('removes Tailwind CSS v4 display-p3 variable supports guard', async () => {

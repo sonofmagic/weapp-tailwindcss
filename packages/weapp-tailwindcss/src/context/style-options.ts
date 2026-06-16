@@ -15,6 +15,7 @@ export function resolveStyleOptionsFromContext(
     rem2rpx: ctx.rem2rpx,
     cssRemoveProperty: ctx.cssRemoveProperty,
     cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
+    tailwindcssV4GradientFallback: ctx.tailwindcssV4GradientFallback,
     cssPresetEnv: ctx.cssPresetEnv,
     autoprefixer: ctx.autoprefixer,
     cssCalc: ctx.cssCalc,

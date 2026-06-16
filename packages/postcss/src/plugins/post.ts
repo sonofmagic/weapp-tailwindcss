@@ -170,7 +170,9 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       })
       if (opts.majorVersion === 4 || hasTailwindcssV4GradientRuntime(root)) {
         mergeTailwindcssV4GradientDirectionRules(root)
-        appendTailwindcssV4MiniProgramGradientRules(root)
+        if (opts.tailwindcssV4GradientFallback !== false) {
+          appendTailwindcssV4MiniProgramGradientRules(root)
+        }
       }
       root.walkAtRules((atRule) => {
         removeUnsupportedMiniProgramPrefixedAtRule(atRule)

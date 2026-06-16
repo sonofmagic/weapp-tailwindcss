@@ -95,6 +95,7 @@ export type IStyleHandlerOptions = {
   postcssOptions?: LoadedPostcssOptions | undefined
   cssRemoveProperty?: boolean | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
+  tailwindcssV4GradientFallback?: boolean | undefined
   cssPresetEnv?: PresetEnvOptions | undefined
   autoprefixer?: WeappAutoprefixerOptions | undefined
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
@@ -129,6 +130,7 @@ export interface UserDefinedPostcssOptions {
   postcssOptions?: LoadedPostcssOptions | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
   cssRemoveProperty?: boolean | undefined
+  tailwindcssV4GradientFallback?: boolean | undefined
   uniAppX?: boolean | undefined
   uniAppXCssTarget?: UniAppXCssTarget | undefined
   uniAppXUnsupported?: UniAppXUnsupportedMode | undefined

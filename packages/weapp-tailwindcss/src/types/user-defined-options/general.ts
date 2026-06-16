@@ -210,6 +210,19 @@ export interface UserDefinedOptionsGeneralPart {
   cssRemoveProperty?: boolean | undefined
 
   /**
+   * 是否为 Tailwind CSS v4 渐变工具类生成小程序字面量兜底。
+   *
+   * @since ^4.3.4
+   * @group 3.一般配置
+   * @remarks
+   * Tailwind CSS v4 默认通过 `--tw-gradient-*` 变量组合渐变。部分小程序运行时对嵌套变量渐变支持不完整，
+   * 默认会额外生成可直接解析的 `linear-gradient(...)` / `radial-gradient(...)` / `conic-gradient(...)` 组合规则。
+   * 如果目标平台已经能正确渲染变量写法，或者需要严格保留 Tailwind 原始变量输出，可设置为 `false`。
+   * @default true
+   */
+  tailwindcssV4GradientFallback?: boolean | undefined
+
+  /**
    * 自定义 patcher 参数。
    *
    * @group 3.一般配置

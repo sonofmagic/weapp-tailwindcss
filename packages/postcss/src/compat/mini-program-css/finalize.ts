@@ -55,7 +55,9 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   })
   if (shouldInjectTailwindcssV4Defaults) {
     mergeTailwindcssV4GradientDirectionRules(root)
-    appendTailwindcssV4MiniProgramGradientRules(root)
+    if (options.tailwindcssV4GradientFallback !== false) {
+      appendTailwindcssV4MiniProgramGradientRules(root)
+    }
   }
 
   const hoistAnchor = createHoistInsertionAnchor(root)
