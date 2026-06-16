@@ -283,7 +283,13 @@ function createTaroVuePatch(entry: ProjectEntry): ProjectPatch {
       },
       {
         file: pageFile,
-        transform: source => `${source}\n<style>\n${createApplyStyle(entry)}</style>\n`,
+        transform: (source) => {
+          const styleBlockStart = /<style(?:\s[^>]*)?>\n/.exec(source)
+          if (!styleBlockStart) {
+            return `${source}\n<style>\n${createApplyStyle(entry)}</style>\n`
+          }
+          return source.replace(styleBlockStart[0], `${styleBlockStart[0]}${createApplyStyle(entry)}`)
+        },
       },
     ],
   }

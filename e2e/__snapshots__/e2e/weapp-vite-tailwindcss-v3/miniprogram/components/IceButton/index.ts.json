@@ -1,6 +1,6 @@
 {
   "file": "miniprogram/components/IceButton/index.ts",
-  "count": 35,
+  "count": 36,
   "tokens": [
     "bg-blue-500",
     "bg-blue-600",
@@ -28,6 +28,7 @@
     "py-2",
     "rounded",
     "rounded-lg",
+    "text-[#0000ff]",
     "text-base",
     "text-gray-800",
     "text-sm",

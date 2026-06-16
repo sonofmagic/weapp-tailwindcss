@@ -6,32 +6,25 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-space-y-reverse: 0;
   --tw-space-x-reverse: 0;
-  --tw-divide-x-reverse: 0;
+  --tw-space-y-reverse: 0;
   --tw-border-style: solid;
+  --tw-divide-x-reverse: 0;
   --tw-divide-y-reverse: 0;
-  --tw-font-weight: initial;
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-color: initial;
-  --tw-shadow-alpha: 100%;
-  --tw-inset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-shadow-color: initial;
-  --tw-inset-shadow-alpha: 100%;
-  --tw-ring-color: initial;
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-inset-ring-color: initial;
-  --tw-inset-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-inset: initial;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-font-weight:;
   --tw-leading:;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-color: initial;
+  --tw-inset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-inset-ring-shadow: 0 0 #0000;
+  --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --color-slate-100: #f1f5f9;
   --color-zinc-950: #09090b;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
@@ -49,7 +42,6 @@ wx-root-portal-content {
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
-  --color-slate-100: #f1f5f9;
   --color-neutral-1B: #1b1b1b;
   --color-neutral-66: #666;
   --color-midnight: #121063;
@@ -136,7 +128,9 @@ wx-root-portal-content {
 .space-y-4 > text + text {
   --tw-space-y-reverse: 0;
   margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
+  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
   margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-reverse <= src/pages/index/index.vue */
 .space-y-reverse > view + view,
@@ -152,7 +146,9 @@ wx-root-portal-content {
 .space-x-4 > text + text {
   --tw-space-x-reverse: 0;
   margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
+  margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
   margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
+  margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
 }
  /* tokens: space-x-reverse <= src/pages/index/index.vue */
 .space-x-reverse > view + view,
@@ -239,7 +235,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
 .bg-_b_h0000ff_B {
-  background-color: #0000ff;
+  background-color: #00f;
 }
  /* tokens: bg-[#123498] <= src/pages/index/index.vue */
 .bg-_b_h123498_B {
@@ -249,9 +245,18 @@ wx-root-portal-content {
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
 }
+.bg-midnight {
+  background-color: var(--color-midnight);
+}
+.bg-neutral-1B {
+  background-color: var(--color-neutral-1B);
+}
  /* tokens: bg-white <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .bg-white {
   background-color: var(--color-white);
+}
+.fill-bermuda {
+  fill: var(--color-bermuda);
 }
  /* tokens: p-2 <= src/pages/index/index.vue */
 .p-2 {
@@ -277,6 +282,14 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
+ /* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
+.text-_b102_d43rpx_B {
+  font-size: 102.43rpx;
+}
+ /* tokens: text-[45rpx] <= src/pages/index/index.vue */
+.text-_b45rpx_B {
+  font-size: 45rpx;
+}
  /* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .text-center {
   text-align: center;
@@ -285,14 +298,6 @@ wx-root-portal-content {
 .text-sm {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
-}
- /* tokens: text-[45rpx] <= src/pages/index/index.vue */
-.text-_b45rpx_B {
-  font-size: 45rpx;
-}
- /* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
-.text-_b102_d43rpx_B {
-  font-size: 102.43rpx;
 }
  /* tokens: font-bold <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .font-bold {
@@ -303,9 +308,15 @@ wx-root-portal-content {
 .text-_b_h00f285_B {
   color: #00f285;
 }
+.text-neutral-66 {
+  color: var(--color-neutral-66);
+}
  /* tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .text-slate-900 {
   color: var(--color-slate-900);
+}
+.text-tahiti {
+  color: var(--color-tahiti);
 }
  /* tokens: text-white <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .text-white {
@@ -327,19 +338,54 @@ wx-root-portal-content {
 .divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
 }
- /* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
-}
- /* tokens: before:content-['normal_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
-.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage uni-app-vite-tailwindcss-v4';
-  content: var(--tw-content);
-}
  /* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .active_cbg-emerald-600:active {
   background-color: var(--color-emerald-600);
+}
+ /* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
+.dark_cbg-zinc-900.theme-dark,
+.theme-dark .dark_cbg-zinc-900 {
+  background-color: var(--color-zinc-900);
+}
+ /* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue */
+.dark_cbg-zinc-950.theme-dark,
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: var(--color-zinc-950);
+}
+ /* tokens: dark:text-zinc-50 <= src/pages/index/index.vue */
+.dark_ctext-zinc-50.theme-dark,
+.theme-dark .dark_ctext-zinc-50 {
+  color: var(--color-zinc-50);
+}
+.layer-card-v4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-midnight);
+}
+.reset-button {
+  display: block;
+}
+page {
+  --status-bar-height: 25px;
+  --top-window-height: 0px;
+  --window-top: 0px;
+  --window-bottom: 0px;
+  --window-left: 0px;
+  --window-right: 0px;
+  --window-magin: 0px;
+}
+[data-c-h='true'] {
+  display: none !important;
+}
+ /* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
+.bg-_b_h0000ff_B {
+  background-color: #0000ff;
+}
+ /* tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+.shadow-sm {
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
  /* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue */
 .dark_cbg-zinc-900.theme-dark {
@@ -365,49 +411,6 @@ wx-root-portal-content {
 .theme-dark .dark_ctext-zinc-50 {
   color: var(--color-zinc-50);
 }
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
-}
- /* tokens: space-y-4 <= src/pages/index/index.vue */
-.space-y-4 > view + view,
-.space-y-4 > view + text,
-.space-y-4 > text + view,
-.space-y-4 > text + text {
-  --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 4) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 4 * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 4) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 4 * (1 - var(--tw-space-y-reverse)));
-}
- /* tokens: space-x-4 <= src/pages/index/index.vue */
-.space-x-4 > view + view,
-.space-x-4 > view + text,
-.space-x-4 > text + view,
-.space-x-4 > text + text {
-  --tw-space-x-reverse: 0;
-  margin-right: calc((var(--spacing) * 4) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 4 * var(--tw-space-x-reverse));
-  margin-left: calc((var(--spacing) * 4) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 4 * (1 - var(--tw-space-x-reverse)));
-}
-.bg-midnight {
-  background-color: var(--color-midnight);
-}
-.bg-neutral-1B {
-  background-color: var(--color-neutral-1B);
-}
-.fill-bermuda {
-  fill: var(--color-bermuda);
-}
-.text-neutral-66 {
-  color: var(--color-neutral-66);
-}
-.text-tahiti {
-  color: var(--color-tahiti);
-}
 @media (prefers-color-scheme: dark) {
   .system-dark_cbg-slate-900 {
     background-color: var(--color-slate-900);
@@ -418,17 +421,5 @@ wx-root-portal-content {
     color: var(--color-slate-100);
   }
 }
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
-}
 /* stylelint-disable custom-property-pattern */
-.layer-card-v4 {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-midnight);
-}
 /* Core plugin extractor sources are intentionally not loaded here. */

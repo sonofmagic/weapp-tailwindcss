@@ -5,7 +5,7 @@ Entry: taro-webpack-vue3-tailwindcss-v3/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 15673 | 84 | false | false | false | true | true | false | true |
+| 16350 | 84 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -21,7 +21,7 @@ Entry: taro-webpack-vue3-tailwindcss-v3/dist/app.wxss
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 11387 | 77 | false | false | false | true | true | false | true |
-| `pages/index/index.wxss` | 327 | 5 | false | false | false | false | false | false | false |
+| `pages/index/index.wxss` | 1004 | 5 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1997 | 2 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1962 | 2 | false | false | false | false | false | false | true |
 
@@ -408,6 +408,16 @@ text,
 ```css
  /* tokens: test <= src/pages/index/index.vue */
 .test {
+  display: flex !important;
+  height: 100rpx !important;
+  width: 100rpx !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 40rpx !important;
+  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1)) !important;
+  --tw-bg-opacity: 0.54 !important;
+  --tw-text-opacity: 1 !important;
+  color: rgba(255, 255, 255, var(--tw-text-opacity, 1)) !important;
 }
  /* tokens: aspect-w-16 <= src/pages/index/index.vue */
 .aspect-w-16 > view,
@@ -420,7 +430,20 @@ text,
 }
  /* tokens: b <= src/pages/index/index.vue */
 .b {
-  color: #ff0;
+  color: yellow;
+}
+ /* tokens: aspect-w-16 <= src/pages/index/index.vue */
+.aspect-w-16 > view,
+.aspect-w-16 > text {
+  color: red;
+}
+ /* tokens: a <= src/index.html, src/pages/index/index.vue */
+.a {
+  color: green;
+}
+ /* tokens: b <= src/pages/index/index.vue */
+.b {
+  color: yellow;
 }
 ```
 

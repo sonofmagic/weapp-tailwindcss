@@ -62,6 +62,30 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
+ /* tokens: relative <= src/pages/index/index.vue */
+.relative {
+  position: relative;
+}
+ /* tokens: mt-2 <= src/pages/index/index.vue */
+.mt-2 {
+  margin-top: 16rpx;
+}
+ /* tokens: mt-4 <= src/pages/index/index.vue */
+.mt-4 {
+  margin-top: 32rpx;
+}
+ /* tokens: flex <= src/pages/index/index.vue */
+.flex {
+  display: flex;
+}
+ /* tokens: grid <= src/pages/index/index.vue */
+.grid {
+  display: grid;
+}
+ /* tokens: h-12 <= src/pages/index/index.vue */
+.h-12 {
+  height: 96rpx;
+}
  /* tokens: h-[100px] <= src/pages/index/index.vue */
 .h-_b100px_B {
   height: 100rpx;
@@ -69,6 +93,10 @@ text,
  /* tokens: max-h-[100px] <= src/pages/index/index.vue */
 .max-h-_b100px_B {
   max-height: 100rpx;
+}
+ /* tokens: w-12 <= src/pages/index/index.vue */
+.w-12 {
+  width: 96rpx;
 }
  /* tokens: w-[100px] <= src/pages/index/index.vue */
 .w-_b100px_B {
@@ -85,6 +113,28 @@ text,
  /* tokens: min-w-[300rpx] <= src/pages/index/index.vue */
 .min-w-_b300rpx_B {
   min-width: 300rpx;
+}
+ /* tokens: rotate-45 <= src/pages/index/index.vue */
+.rotate-45 {
+  --tw-rotate: 45deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x))
+    scaleY(var(--tw-scale-y));
+}
+ /* tokens: resize <= src/index.html */
+.resize {
+  resize: both;
+}
+ /* tokens: grid-cols-3 <= src/pages/index/index.vue */
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+ /* tokens: items-center <= src/pages/index/index.vue */
+.items-center {
+  align-items: center;
+}
+ /* tokens: justify-center <= src/pages/index/index.vue */
+.justify-center {
+  justify-content: center;
 }
  /* tokens: space-y-[1.6rem] <= src/pages/index/index.vue */
 .space-y-_b1_d6rem_B > view + view,
@@ -104,6 +154,13 @@ text,
   border-right-width: calc(10rpx * var(--tw-divide-x-reverse));
   border-left-width: calc(10rpx * (1 - var(--tw-divide-x-reverse)));
 }
+ /* tokens: divide-solid <= src/pages/index/index.vue */
+.divide-solid > view + view,
+.divide-solid > view + text,
+.divide-solid > text + view,
+.divide-solid > text + text {
+  border-style: solid;
+}
  /* tokens: divide-[#010101] <= src/pages/index/index.vue */
 .divide-_b_h010101_B > view + view,
 .divide-_b_h010101_B > view + text,
@@ -111,6 +168,10 @@ text,
 .divide-_b_h010101_B > text + text {
   --tw-divide-opacity: 1;
   border-color: rgba(1, 1, 1, var(--tw-divide-opacity, 1));
+}
+ /* tokens: rounded <= src/pages/index/index.vue */
+.rounded {
+  border-radius: 8rpx;
 }
  /* tokens: rounded-[20rpx] <= src/pages/index/index.vue */
 .rounded-_b20rpx_B {
@@ -129,6 +190,11 @@ text,
 .bg-sky-500_f80 {
   background-color: rgba(14, 165, 233, 0.8);
 }
+ /* tokens: bg-white <= src/pages/index/index.vue */
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity, 1));
+}
  /* tokens: bg-opacity-[0.54] <= src/pages/index/index.vue */
 .bg-opacity-_b0_d54_B {
   --tw-bg-opacity: 0.54;
@@ -137,10 +203,30 @@ text,
 .p-_b20px_B {
   padding: 20rpx;
 }
+ /* tokens: px-3 <= src/pages/index/index.vue */
+.px-3 {
+  padding-left: 24rpx;
+  padding-right: 24rpx;
+}
+ /* tokens: px-4 <= src/pages/index/index.vue */
+.px-4 {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
  /* tokens: px-[95px] <= src/pages/index/index.vue */
 .px-_b95px_B {
   padding-left: 95rpx;
   padding-right: 95rpx;
+}
+ /* tokens: py-2 <= src/pages/index/index.vue */
+.py-2 {
+  padding-top: 16rpx;
+  padding-bottom: 16rpx;
+}
+ /* tokens: py-3 <= src/pages/index/index.vue */
+.py-3 {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
 }
  /* tokens: py-[62px] <= src/pages/index/index.vue */
 .py-_b62px_B {
@@ -164,9 +250,25 @@ text,
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+ /* tokens: text-black <= src/pages/index/index.vue */
+.text-black {
+  --tw-text-opacity: 1;
+  color: rgba(0, 0, 0, var(--tw-text-opacity, 1));
+}
+ /* tokens: text-slate-900 <= src/pages/index/index.vue */
+.text-slate-900 {
+  --tw-text-opacity: 1;
+  color: rgba(15, 23, 42, var(--tw-text-opacity, 1));
+}
  /* tokens: text-opacity-[0.19] <= src/pages/index/index.vue */
 .text-opacity-_b0_d19_B {
   --tw-text-opacity: 0.19;
+}
+ /* tokens: shadow-md <= src/pages/index/index.vue */
+.shadow-md {
+  --tw-shadow: 0 4rpx 6rpx -1rpx rgba(0, 0, 0, 0.1), 0 2rpx 4rpx -2rpx rgba(0, 0, 0, 0.1);
+  --tw-shadow-colored: 0 4rpx 6rpx -1rpx var(--tw-shadow-color), 0 2rpx 4rpx -2rpx var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-ring-shadow, 0 0 rgba(0, 0, 0, 0)), var(--tw-shadow);
 }
  /* tokens: before:absolute <= src/pages/index/index.vue */
 .before_cabsolute::before {

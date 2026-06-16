@@ -1233,7 +1233,7 @@ wx-root-portal-content {
 .ring-offset-_b3rpx_B {
   --tw-ring-offset-width: 3rpx;
 }
- /* tokens: blur <= <tailwind generated> */
+ /* tokens: blur <= src/utils/merge.ts */
 .blur {
   --tw-blur: blur(8rpx);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);

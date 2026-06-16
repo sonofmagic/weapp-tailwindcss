@@ -62,12 +62,12 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
- /* tokens: before:content-['independent_subpackage_gulp-tailwindcss-v3'] <= src/sub-independent/pages/index.wxml */
-.before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B::before {
-  --tw-content: 'independent subpackage gulp-tailwindcss-v3';
+ /* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v3'] <= src/sub-normal/pages/index.vue */
+.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B::before {
+  --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v3';
   content: var(--tw-content);
 }
-.bg-independent-subpackage-marker {
+.bg-normal-subpackage-marker {
   --tw-bg-opacity: 1;
-  background-color: rgba(220, 38, 38, var(--tw-bg-opacity, 1));
+  background-color: rgba(37, 99, 235, var(--tw-bg-opacity, 1));
 }

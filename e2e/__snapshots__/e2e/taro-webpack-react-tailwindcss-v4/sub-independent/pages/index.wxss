@@ -21,9 +21,9 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: before:content-['independent_subpackage_uni-app-vite-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
-.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B::before {
-  --tw-content: 'independent subpackage uni-app-vite-tailwindcss-v4';
+ /* tokens: before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
   content: var(--tw-content);
 }
 .bg-independent-subpackage-marker {

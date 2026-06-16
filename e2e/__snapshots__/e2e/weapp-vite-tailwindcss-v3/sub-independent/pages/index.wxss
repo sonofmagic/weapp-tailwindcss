@@ -62,7 +62,7 @@ text,
   --tw-contain-paint:;
   --tw-contain-style:;
 }
-/* tokens: before:content-['independent_subpackage_weapp-vite-tailwindcss-v3'] <= miniprogram/sub-independent/pages/index.wxml */
+ /* tokens: before:content-['independent_subpackage_weapp-vite-tailwindcss-v3'] <= miniprogram/sub-independent/pages/index.wxml */
 .before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v3';
   content: var(--tw-content);
