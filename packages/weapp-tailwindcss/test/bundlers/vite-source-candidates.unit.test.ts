@@ -220,7 +220,7 @@ describe('bundlers/vite source candidates', () => {
     expect(collector.values()).toEqual(new Set(['bg-[#112233]', 'text-[188rpx]']))
   })
 
-  it('collects TSX class-like script string candidates without collecting unrelated strings', async () => {
+  it('collects TSX script string and template candidates from AST literals', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()
 
@@ -229,7 +229,8 @@ describe('bundlers/vite source candidates', () => {
       'export default function Index() {',
       '  const complexExpression = "size > 4 ? keep-[business] : App.vue:4"',
       '  const __twWatchClass = "text-[23.000026px] space-y-2.5 w-[calc(100%_-_000026px)] bg-[#000026]"',
-      '  return <View className={__twWatchClass}>{complexExpression}</View>',
+      '  const templateClass = `mt-[22rpx] ${active ? "px-[8px]" : "py-[4px]"} rounded-[999px]`',
+      '  return <View className={__twWatchClass}>{templateClass}{complexExpression}</View>',
       '}',
     ].join('\n'))
 
@@ -238,7 +239,10 @@ describe('bundlers/vite source candidates', () => {
     expect(values.has('space-y-2.5')).toBe(true)
     expect(values.has('w-[calc(100%_-_000026px)]')).toBe(true)
     expect(values.has('bg-[#000026]')).toBe(true)
-    expect(values.has('keep-[business]')).toBe(false)
+    expect(values.has('mt-[22rpx]')).toBe(true)
+    expect(values.has('px-[8px]')).toBe(true)
+    expect(values.has('py-[4px]')).toBe(true)
+    expect(values.has('rounded-[999px]')).toBe(true)
   })
 
   it('matches updated relative-path files against absolute @source entries', async () => {

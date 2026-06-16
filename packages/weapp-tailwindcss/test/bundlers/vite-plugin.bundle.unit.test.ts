@@ -28,6 +28,12 @@ import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
+const VITE_UNIT_CASES = [
+  { major: 4, specifier: 'vite4' },
+  { major: 5, specifier: 'vite5' },
+  { major: 7, specifier: 'vite7' },
+  { major: 8, specifier: 'vite8' },
+] as const
 const MINIMAL_TAILWIND_V4_CSS = `
 @theme default {
   --spacing: 0.25rem;
@@ -4441,13 +4447,24 @@ module.exports = {
       },
     }
 
-    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+    const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+      emitFile(file: { type: 'asset', fileName: string, source: string }) {
+        emitted.push(file)
+        return file.fileName
+      },
+    }, {}, bundle)
 
     const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    const mainPageCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
+    const subPageCss = emitted.find(file => file.fileName === 'sub-normal/pages/index.wxss')?.source
     expect(appCss).toMatch(/\.tw-main-watch\s*\{[^}]*display:\s*block/)
     expect(appCss).not.toContain('.tw-sub-watch')
-    expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toBe('')
-    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source.toString()).toMatch(/\.tw-sub-watch\s*\{[^}]*display:\s*block/)
+    expect(bundle['pages/index/index.wxss' as keyof typeof bundle]).toBeUndefined()
+    expect(mainPageCss).toMatch(/\.tw-main-watch\s*\{[^}]*display:\s*block/)
+    expect(mainPageCss).not.toContain('.tw-sub-watch')
+    expect(subPageCss).toMatch(/\.tw-sub-watch\s*\{[^}]*display:\s*block/)
     expect(viteProcessedCssAssetResults.get(mainSourceFile)?.injectIntoMain).toBe(true)
     expect(viteProcessedCssAssetResults.get(subSourceFile)?.injectIntoMain).toBe(false)
   }, TEST_TIMEOUT_MS)
@@ -4576,7 +4593,14 @@ module.exports = {
       },
     }
 
-    await generateBundle.call({ addWatchFile: vi.fn() }, {}, secondBundle)
+    const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+      emitFile(file: { type: 'asset', fileName: string, source: string }) {
+        emitted.push(file)
+        return file.fileName
+      },
+    }, {}, secondBundle)
 
     expect(generateCalls).toHaveLength(2)
     expect(generateCalls[0]?.previousCss).toBeUndefined()
@@ -4593,7 +4617,7 @@ module.exports = {
     expect(lastPruneOptions.activeFiles.has('pages/index/index.js')).toBe(true)
     expect(lastPruneOptions.activeFiles.has('pages/index/index.wxss')).toBe(true)
     expect(lastPruneOptions.activeFiles.has(sourceFile)).toBe(true)
-    expect((secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toBe(
+    expect(emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source).toBe(
       `${firstCss}\n.tw-replay-next{display:flex}`,
     )
   }, TEST_TIMEOUT_MS)
@@ -5714,11 +5738,19 @@ const trace = "at App.vue:4"
     }
 
     const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, bundle)
+    const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+    await generateBundle?.call({
+      ...postPlugin,
+      emitFile(file: { type: 'asset', fileName: string, source: string }) {
+        emitted.push(file)
+        return file.fileName
+      },
+    }, {} as any, bundle)
 
+    const emittedWxss = emitted.find(file => file.fileName === 'sub-normal/pages/index.wxss')
     expect(bundle['sub-normal/pages/index.scss']).toBeUndefined()
-    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).fileName).toBe('sub-normal/pages/index.wxss')
-    expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source).toBe(`css:${rawScssAssetCss}`)
+    expect(emittedWxss?.fileName).toBe('sub-normal/pages/index.wxss')
+    expect(emittedWxss?.source).toBe(`css:${rawScssAssetCss}`)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(currentContext.onUpdate).toHaveBeenCalledWith(
       'sub-normal/pages/index.wxss',
@@ -9157,6 +9189,129 @@ ${utilities}
     expect(replayBundleTarget['pages/index/index.wxss' as keyof typeof replayBundleTarget]).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
+  it.each(VITE_UNIT_CASES)(
+    'replays remembered css through emitFile without bundle assignment for Vite $major',
+    async ({ major, specifier }) => {
+      const vite = await import(specifier) as { version?: string }
+      expect(vite.version?.startsWith(`${major}.`)).toBe(true)
+
+      const generateCssByGeneratorMock = vi.fn(async (options: {
+        rawSource: string
+      }) => createMockGeneratorCssResult(`/* vite ${major} */\n${options.rawSource}`))
+      vi.resetModules()
+      vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+        return {
+          ...actual,
+          generateCssByGenerator: generateCssByGeneratorMock,
+        }
+      })
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        }
+      })
+      const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
+      const root = await mkdtemp(path.join(os.tmpdir(), `weapp-tw-vite-${major}-emitfile-`))
+      createdDirs.push(root)
+      const context = createContext({
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => new Set<string>()),
+          getClassSetSync: vi.fn(() => new Set<string>()),
+          majorVersion: 3,
+          extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+          getContexts: vi.fn(() => [{
+            userConfig: { content: [] },
+            tailwindConfig: { content: [] },
+          }]),
+        },
+      })
+      const rawSource = '.matrix-style { display: block; }'
+      const outputFile = `pages/vite-${major}/index.wxss`
+      const rememberedCssSources = new Map([
+        [outputFile, {
+          outputFile,
+          rawSource,
+          sourceFile: path.join(root, `pages/vite-${major}/index.css`),
+        }],
+      ])
+      const generateBundle = createGenerateBundleHookWithMock({
+        opts: context as any,
+        runtimeState: {
+          twPatcher: context.twPatcher as any,
+          readyPromise: Promise.resolve(),
+        },
+        ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        ensureBundleRuntimeClassSet: vi.fn(async () => new Set<string>()),
+        debug: vi.fn(),
+        getResolvedConfig: () => ({
+          command: 'serve',
+          plugins: [],
+          root,
+          css: { postcss: { plugins: [] } },
+          build: { outDir: 'dist/dev/mp-weixin' },
+        } as unknown as ResolvedConfig),
+        markCssAssetProcessed: vi.fn(),
+        isCssAssetProcessed: vi.fn(() => false),
+        isViteProcessedCssAsset: vi.fn(() => false),
+        recordCssAssetResult: vi.fn(),
+        recordViteProcessedCssAssetResult: vi.fn(),
+        getViteProcessedCssAssetResults: () => [],
+        getViteProcessedCssAssetResult: () => undefined,
+        getSourceCandidates: () => new Set<string>(),
+        getSourceCandidatesForEntries: () => new Set<string>(),
+        waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+        rememberCssSource: vi.fn(),
+        getRememberedCssSources: () => rememberedCssSources,
+        getRememberedCssSignature: () => undefined,
+        setRememberedCssSignature: vi.fn(),
+        recordGeneratorCandidates: vi.fn(),
+      })
+
+      const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+      const replayBundleTarget = {
+        [`pages/vite-${major}/index.js`]: {
+          ...createRollupChunk('console.log("stable")'),
+          fileName: `pages/vite-${major}/index.js`,
+        },
+      }
+      const replayBundle = new Proxy(replayBundleTarget, {
+        set() {
+          throw new Error(`Vite ${major} unit case forbids assigning generated css assets to bundle`)
+        },
+        defineProperty() {
+          throw new Error(`Vite ${major} unit case forbids defining generated css assets on bundle`)
+        },
+      })
+
+      await generateBundle.call({
+        addWatchFile: vi.fn(),
+        emitFile(file: { type: 'asset', fileName: string, source: string }) {
+          emitted.push(file)
+          return file.fileName
+        },
+      }, {} as any, replayBundle)
+
+      expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+        rawSource,
+      }))
+      expect(emitted).toEqual([
+        {
+          type: 'asset',
+          fileName: outputFile,
+          source: expect.stringContaining(`/* vite ${major} */`),
+        },
+      ])
+      expect(Object.prototype.hasOwnProperty.call(replayBundleTarget, outputFile)).toBe(false)
+    },
+    TEST_TIMEOUT_MS,
+  )
+
   it('refreshes remembered sfc style source from watch cache before replaying stale vite pipeline css', async () => {
     const generateCssByGeneratorMock = vi.fn(async (options: {
       rawSource: string
@@ -9686,10 +9841,17 @@ ${utilities}
         fileName: 'pages/index/index.js',
       },
     }
-    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+    const emitted: Array<{ type: 'asset', fileName: string, source: string }> = []
+    await generateBundle.call({
+      addWatchFile: vi.fn(),
+      emitFile(file: { type: 'asset', fileName: string, source: string }) {
+        emitted.push(file)
+        return file.fileName
+      },
+    }, {} as any, bundle)
 
     expect(refreshRememberedCssSource).toHaveBeenCalledTimes(2)
-    const replayedCss = (bundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source ?? ''
     expect(replayedCss).toContain('.page-root')
     expect(replayedCss).toContain('.base-style')
     expect(replayedCss).toContain('.tw-watch-style-case')

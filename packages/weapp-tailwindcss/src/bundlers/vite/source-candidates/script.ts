@@ -13,81 +13,10 @@ const SCRIPT_SOURCE_CANDIDATE_EXTENSIONS = new Set([
   'mts',
   'cts',
 ])
-const CLASS_LIKE_NAME_RE = /class/i
 
 interface ScriptCandidateExtractionOptions {
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
   extractor?: ((source: string, extension: string) => Promise<Iterable<string>> | Iterable<string>) | undefined
-}
-
-function getPropertyName(node: any) {
-  if (!node) {
-    return
-  }
-  if (node.type === 'Identifier') {
-    return node.name
-  }
-  if (node.type === 'StringLiteral') {
-    return node.value
-  }
-}
-
-function isClassLikeStringPath(path: any) {
-  const parent = path.parentPath
-  if (!parent) {
-    return false
-  }
-
-  if (parent.isVariableDeclarator?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.id) ?? '')
-  }
-
-  if (parent.isObjectProperty?.() || parent.isObjectMethod?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.key) ?? '')
-  }
-
-  if (parent.isAssignmentExpression?.()) {
-    const left = parent.node.left
-    if (left?.type === 'Identifier') {
-      return CLASS_LIKE_NAME_RE.test(left.name)
-    }
-    if (left?.type === 'MemberExpression') {
-      return CLASS_LIKE_NAME_RE.test(getPropertyName(left.property) ?? '')
-    }
-  }
-
-  if (parent.isJSXAttribute?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.name) ?? '')
-  }
-
-  return false
-}
-
-function isTemplateElementInClassLikePath(path: any) {
-  const templateLiteralPath = path.parentPath
-  if (!templateLiteralPath?.isTemplateLiteral?.()) {
-    return false
-  }
-  const parent = templateLiteralPath.parentPath
-  if (!parent) {
-    return false
-  }
-  if (parent.isVariableDeclarator?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.id) ?? '')
-  }
-  if (parent.isObjectProperty?.() || parent.isObjectMethod?.()) {
-    return CLASS_LIKE_NAME_RE.test(getPropertyName(parent.node.key) ?? '')
-  }
-  if (parent.isAssignmentExpression?.()) {
-    const left = parent.node.left
-    if (left?.type === 'Identifier') {
-      return CLASS_LIKE_NAME_RE.test(left.name)
-    }
-    if (left?.type === 'MemberExpression') {
-      return CLASS_LIKE_NAME_RE.test(getPropertyName(left.property) ?? '')
-    }
-  }
-  return false
 }
 
 export async function extractScriptStringCandidates(
@@ -111,14 +40,10 @@ export async function extractScriptStringCandidates(
     traverse(ast, {
       noScope: true,
       StringLiteral(path: any) {
-        if (isClassLikeStringPath(path)) {
-          values.add(path.node.value)
-        }
+        values.add(path.node.value)
       },
       TemplateElement(path: any) {
-        if (isTemplateElementInClassLikePath(path)) {
-          values.add(path.node.value.raw)
-        }
+        values.add(path.node.value.raw)
       },
     } as any)
   }

@@ -172,7 +172,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       timingDetails[name] = (timingDetails[name] ?? 0) + Math.max(0, performance.now() - startedAt)
     }
     const timeTask = createBundleTaskTimer(recordTimingDetail)
-    const emitOrReplayCssAsset = createCssAssetEmitter(this, bundle)
+    const emitOrReplayCssAsset = createCssAssetEmitter(this)
 
     const metrics = createEmptyMetrics()
     const envFlags = resolveGenerateBundleEnvFlags()
@@ -300,6 +300,29 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
+    if (runtimeState.twPatcher.majorVersion === 4 && sourceCandidates.size > 0 && jsEntries.size > 0) {
+      const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
+      if (mainCssEntry) {
+        const validatedSourceRuntime = await validateCandidatesByGenerator({
+          opts,
+          runtimeState,
+          candidates: filteredGeneratorCandidates,
+          rawSource: mainCssEntry.source,
+          file: mainCssEntry.file,
+          cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
+          cssUserHandlerOptions: getCssUserHandlerOptions(mainCssEntry.file),
+          styleHandler,
+          debug,
+          skipGenerateFallback: true,
+        })
+        if (validatedSourceRuntime.size > 0) {
+          transformRuntime = new Set([
+            ...transformRuntime,
+            ...validatedSourceRuntime,
+          ])
+        }
+      }
+    }
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
       && useV3OxideSourceRuntime
       && generatorRuntime.size > 0

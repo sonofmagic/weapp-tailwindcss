@@ -9,6 +9,7 @@ const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
 
 export interface ValidateCandidatesByGeneratorOptions extends Omit<GenerateCssByGeneratorOptions, 'runtime'> {
   candidates: Set<string>
+  skipGenerateFallback?: boolean | undefined
 }
 
 export async function validateCandidatesByGenerator(
@@ -22,6 +23,7 @@ export async function validateCandidatesByGenerator(
     opts,
     rawSource,
     runtimeState,
+    skipGenerateFallback,
   } = options
   const majorVersion = runtimeState.twPatcher.majorVersion
   if (!SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0) || candidates.size === 0) {
@@ -50,6 +52,9 @@ export async function validateCandidatesByGenerator(
       if (typeof generator.validateCandidates === 'function') {
         return generator.validateCandidates(candidates)
       }
+    }
+    if (skipGenerateFallback) {
+      return new Set<string>()
     }
     const generated = await generator.generate({
       bareArbitraryValues: generatorOptions.bareArbitraryValues,

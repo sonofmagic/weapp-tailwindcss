@@ -1,10 +1,9 @@
-import type { OutputAsset, OutputChunk } from 'rollup'
+import type { OutputAsset } from 'rollup'
 import type { GenerateBundleThis } from './types'
 import { createReplayCssAsset } from './rollup-assets'
 
 export function createCssAssetEmitter(
   context: Pick<GenerateBundleThis, 'emitFile'>,
-  bundle: Record<string, OutputAsset | OutputChunk>,
 ) {
   return (fileName: string, source: string) => {
     const replayAsset = createReplayCssAsset(fileName, source)
@@ -16,7 +15,6 @@ export function createCssAssetEmitter(
       })
       return replayAsset
     }
-    bundle[fileName] = replayAsset
     return replayAsset
   }
 }

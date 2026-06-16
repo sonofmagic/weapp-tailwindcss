@@ -1,9 +1,12 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin, ResolvedConfig } from 'vite'
+import { MappingChars2String } from '@weapp-core/escape'
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createJsHandler } from '@/js'
+import { replaceWxml } from '@/wxml'
 import {
   createContext,
   createRollupAsset,
@@ -159,6 +162,127 @@ describe('v5 vite generator bundle', () => {
     expect(candidates.has('inline-table')).toBe(false)
     expect((bundle['app.css'] as OutputAsset).source).toContain('bg-[#123456]')
     expect((bundle['app.css'] as OutputAsset).source).not.toContain('sr-only')
+  }, TEST_TIMEOUT_MS)
+
+  it('transforms generated Tailwind candidates in JS string literals and template strings only', async () => {
+    const generatedCandidates = new Set([
+      'bg-[#123456]',
+      'text-[17px]',
+      'w-[calc(100%_-_12px)]',
+      'hover:bg-red-500',
+      'mt-[22rpx]',
+      'px-[8px]',
+      'py-[4px]',
+    ])
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...generatedCandidates]
+        .map(candidate => `.${replaceWxml(candidate)}{}`)
+        .join('\n'),
+      rawCss: [...generatedCandidates]
+        .map(candidate => `.${candidate.replaceAll(':', '\\:')}{}`)
+        .join('\n'),
+      target: 'weapp',
+      classSet: new Set([...candidates].filter(candidate => generatedCandidates.has(candidate))),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => new Set<string>()),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+          validateCandidates: vi.fn(async (candidates: Set<string>) => (
+            new Set([...candidates].filter(candidate => generatedCandidates.has(candidate)))
+          )),
+        })),
+        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
+      }
+    })
+
+    const jsHandler = createJsHandler({
+      escapeMap: MappingChars2String,
+      jsArbitraryValueFallback: false,
+      tailwindcssMajorVersion: 4,
+    })
+    setCurrentContext(createContext({
+      jsHandler,
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
+      },
+    }))
+
+    const source = [
+      'export const literal = "bg-[#123456] text-[17px] bg-[#654321]"',
+      'export const noExpressionTemplate = `w-[calc(100%_-_12px)] hover:bg-red-500 shadow-blue-100`',
+      'export const withExpressionTemplate = `mt-[22rpx] ${active ? "px-[8px]" : "py-[4px]"} rounded-[999px]`',
+      'export const array = ["bg-[#123456]", `text-[17px]`, "at App.vue:4"]',
+      'export const object = { ok: "hover:bg-red-500", business: "biz-token-[alpha]" }',
+    ].join('\n')
+
+    const { postPlugin, sourcePlugin } = await resolvePostPlugin()
+    const transform = getTransformHandler(sourcePlugin)
+    await transform?.call(sourcePlugin, source, '/project/src/pages/index.ts')
+
+    const bundle = {
+      'pages/index/index.js': {
+        ...createRollupChunk(source.replaceAll('export const', 'const')),
+        fileName: 'pages/index/index.js',
+      } as OutputChunk,
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+      },
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const candidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
+    expect(candidates.has('bg-[#123456]')).toBe(true)
+    expect(candidates.has('text-[17px]')).toBe(true)
+    expect(candidates.has('w-[calc(100%_-_12px)]')).toBe(true)
+    expect(candidates.has('hover:bg-red-500')).toBe(true)
+    expect(candidates.has('mt-[22rpx]')).toBe(true)
+    expect(candidates.has('px-[8px]')).toBe(true)
+    expect(candidates.has('py-[4px]')).toBe(true)
+
+    const code = (bundle['pages/index/index.js'] as OutputChunk).code
+    expect(code).toContain(replaceWxml('bg-[#123456]'))
+    expect(code).toContain(replaceWxml('text-[17px]'))
+    expect(code).toContain(replaceWxml('w-[calc(100%_-_12px)]'))
+    expect(code).toContain(replaceWxml('hover:bg-red-500'))
+    expect(code).toContain(replaceWxml('mt-[22rpx]'))
+    expect(code).toContain(replaceWxml('px-[8px]'))
+    expect(code).toContain(replaceWxml('py-[4px]'))
+    expect(code).toContain('bg-[#654321]')
+    expect(code).toContain('shadow-blue-100')
+    expect(code).toContain('rounded-[999px]')
+    expect(code).toContain('at App.vue:4')
+    expect(code).toContain('biz-token-[alpha]')
+    expect(code).not.toContain(replaceWxml('bg-[#654321]'))
+    expect(code).not.toContain(replaceWxml('rounded-[999px]'))
   }, TEST_TIMEOUT_MS)
 
   it('can force generator output for tailwind v4 main css without relying on the tailwind banner', async () => {
