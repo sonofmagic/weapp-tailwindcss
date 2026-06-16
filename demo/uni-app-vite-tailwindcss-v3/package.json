@@ -111,7 +111,7 @@
     "tailwind-merge-v2": "npm:tailwind-merge@^2.6.1",
     "uview-plus": "catalog:uviewPlus",
     "vk-uview-ui": "^1.5.2",
-    "vue": "^3.5.35",
+    "vue": "^3.5.38",
     "vue-i18n": "^9.1.9",
     "vuex": "^4.1.0"
   },
@@ -129,7 +129,7 @@
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.20",
-    "@vue/runtime-core": "^3.5.35",
+    "@vue/runtime-core": "^3.5.38",
     "@weapp-tailwindcss/cva": "workspace:*",
     "@weapp-tailwindcss/merge-v3": "workspace:*",
     "@weapp-tailwindcss/typography": "workspace:*",

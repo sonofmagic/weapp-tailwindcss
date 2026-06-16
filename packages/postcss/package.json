@@ -86,19 +86,19 @@
     "postcss-pxtrans": "^1.0.4",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
     "postcss-rule-unit-converter": "^0.2.2",
-    "postcss-selector-parser": "~7.1.2",
+    "postcss-selector-parser": "~7.1.4",
     "postcss-value-parser": "^4.2.0",
     "tailwindcss-config": "workspace:*",
     "tailwindcss-patch": "catalog:tailwindcssPatch"
   },
   "devDependencies": {
-    "@csstools/css-color-parser": "^4.1.1",
+    "@csstools/css-color-parser": "^4.1.7",
     "@csstools/css-parser-algorithms": "^4.0.0",
     "@csstools/css-tokenizer": "^4.0.0",
     "@csstools/postcss-is-pseudo-class": "^6.0.0",
     "fast-check": "^4.8.0",
     "postcss-calc": "link:packages/postcss-calc",
     "postcss-custom-properties": "^15.0.1",
-    "postcss-preset-env": "^11.3.0"
+    "postcss-preset-env": "^11.3.1"
   }
 }

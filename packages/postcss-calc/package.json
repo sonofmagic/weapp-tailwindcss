@@ -62,7 +62,7 @@
     "vitest": "catalog:vitest"
   },
   "dependencies": {
-    "postcss-selector-parser": "^7.1.2",
+    "postcss-selector-parser": "^7.1.4",
     "postcss-value-parser": "^4.2.0"
   },
   "peerDependencies": {

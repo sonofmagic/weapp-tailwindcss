@@ -136,7 +136,7 @@
     "eslint-config-taro": "catalog:taro4",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-vue": "^10.9.2",
-    "less": "^4.6.4",
+    "less": "^4.6.6",
     "metro-react-native-babel-preset": "catalog:metroReactNativeBabelPreset077",
     "postcss": "catalog:postcss85",
     "postcss-rem-to-responsive-pixel": "catalog:postcssRem",
