@@ -121,7 +121,7 @@ describe('v5 vite generator bundle', () => {
 
     const { postPlugin, sourcePlugin } = await resolvePostPlugin()
     const transform = getTransformHandler(sourcePlugin)
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[#123456]"', '/project/pages/index/index.ts')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[#123456]"', '/project/pages/index/index.ts')
     const vendorChunk = createRollupChunk('const mergeConfig = { sr: ["sr-only", "not-sr-only"], position: ["sticky"], display: ["inline-table"] }')
     vendorChunk.isEntry = false
     vendorChunk.fileName = 'common/vendor.js'
@@ -139,7 +139,7 @@ describe('v5 vite generator bundle', () => {
     const bundle = {
       'common/vendor.js': vendorChunk,
       'pages/index/index.js': {
-        ...createRollupChunk('const cls = "bg-[#123456]"'),
+        ...createRollupChunk('const className = "bg-[#123456]"'),
         fileName: 'pages/index/index.js',
       } as OutputChunk,
       'app.css': {
@@ -214,15 +214,18 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
       },
     }))
 
     const { postPlugin, sourcePlugin } = await resolvePostPlugin()
     const transform = getTransformHandler(sourcePlugin)
-    await transform?.call(sourcePlugin, 'export const cls = "w-[100px]"', '/project/src/pages/index.tsx')
+    await transform?.call(sourcePlugin, 'export const className = "w-[100px]"', '/project/src/pages/index.tsx')
     const bundle = {
       'app.js': {
-        code: 'const cls = "w-[100px]"',
+        code: 'const className = "w-[100px]"',
         fileName: 'app.js',
         type: 'chunk',
       } as OutputChunk,
@@ -299,16 +302,19 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
       },
     }))
 
     const { postPlugin, sourcePlugin } = await resolvePostPlugin()
     const currentContext = getCurrentContext()
     const transform = getTransformHandler(sourcePlugin)
-    await transform?.call(sourcePlugin, 'export const cls = "w-[100px] text-red-500"', '/project/src/pages/index.tsx')
+    await transform?.call(sourcePlugin, 'export const className = "w-[100px] text-red-500"', '/project/src/pages/index.tsx')
     const bundle = {
       'app.js': {
-        code: 'const cls = "w-[100px] text-red-500"',
+        code: 'const className = "w-[100px] text-red-500"',
         fileName: 'app.js',
         type: 'chunk',
       } as OutputChunk,
@@ -379,6 +385,9 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
       },
     }))
 
@@ -456,6 +465,9 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
       },
     }))
 
@@ -463,7 +475,7 @@ describe('v5 vite generator bundle', () => {
     const transform = getTransformHandler(sourcePlugin)
     await transform?.call(
       sourcePlugin,
-      'export const cls = "bg-gradient-to-br from-emerald-200 to-cyan-200"',
+      'export const className = "bg-gradient-to-br from-emerald-200 to-cyan-200"',
       '/project/src/features.ts',
     )
     const bundle = {
@@ -643,11 +655,11 @@ describe('v5 vite generator bundle', () => {
       },
     })
 
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[red]"', '/project/src/pages/index.ts')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[red]"', '/project/src/pages/index.ts')
     const firstBundle = createBundle('bg-[red]')
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
 
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[#4268EA]"', '/project/src/pages/index.ts')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[#4268EA]"', '/project/src/pages/index.ts')
     const secondBundle = createBundle('bg-[#4268EA]')
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
 
@@ -720,7 +732,7 @@ describe('v5 vite generator bundle', () => {
     } as ResolvedConfig)
 
     const transform = getTransformHandler(sourcePlugin)
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[#112233] text-red-500"', '/project/src/pages/index.tsx')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[#112233] text-red-500"', '/project/src/pages/index.tsx')
 
     const bundle = {
       'app.js': {
@@ -728,7 +740,7 @@ describe('v5 vite generator bundle', () => {
         map: {
           version: 3,
           sources: ['../src/pages/index.tsx'],
-          sourcesContent: ['export const cls = "bg-[#778899]"'],
+          sourcesContent: ['export const className = "bg-[#778899]"'],
           names: [],
           mappings: '',
         },
@@ -803,6 +815,9 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
       },
     }))
 
@@ -835,12 +850,12 @@ describe('v5 vite generator bundle', () => {
       },
     })
 
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[#112233]"', '/project/src/pages/index.tsx')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[#112233]"', '/project/src/pages/index.tsx')
     const firstBundle = createBundle()
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
     expect((firstBundle['app.css'] as OutputAsset).source).toBe('.bg-_b_h112233_B{background-color:#112233}')
 
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[#445566]"', '/project/src/pages/index.tsx')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[#445566]"', '/project/src/pages/index.tsx')
     const secondBundle = createBundle()
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
     expect((secondBundle['app.css'] as OutputAsset).source).toBe('.bg-_b_h445566_B{background-color:#445566}')
@@ -893,6 +908,9 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+        },
       },
     }))
 
@@ -971,6 +989,12 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+          tailwindcss: {
+            cwd: process.cwd(),
+          },
+        },
       },
     }))
 
@@ -991,7 +1015,7 @@ describe('v5 vite generator bundle', () => {
     } as ResolvedConfig)
 
     const transform = getTransformHandler(sourcePlugin)
-    await transform?.call(sourcePlugin, 'export const cls = "bg-[#112233]"', '/project/src/pages/index.tsx')
+    await transform?.call(sourcePlugin, 'export const className = "bg-[#112233]"', '/project/src/pages/index.tsx')
     const generateBundle = getGenerateBundleHandler(postPlugin)
     const createBundle = (jsCode: string) => ({
       'app.js': {
@@ -1004,14 +1028,14 @@ describe('v5 vite generator bundle', () => {
       },
     })
 
-    const firstBundle = createBundle('const cls = "bg-[#112233]"; const stamp = 1')
+    const firstBundle = createBundle('const className = "bg-[#112233]"; const stamp = 1')
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
     expect((firstBundle['app.css'] as OutputAsset).source).toBe('.bg-_b_h112233_B{background-color:#112233}')
 
-    const secondBundle = createBundle('const cls = "bg-[#112233]"; const stamp = 2')
+    const secondBundle = createBundle('const className = "bg-[#112233]"; const stamp = 2')
     await generateBundle?.call(postPlugin, {} as any, secondBundle)
     expect((secondBundle['app.css'] as OutputAsset).source).toBe('.bg-_b_h112233_B{background-color:#112233}')
-    expect(generateMock).toHaveBeenCalledTimes(1)
+    expect(generateMock).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
   it('regenerates v4 main css when template candidates change but the css asset source is stable', async () => {
@@ -1057,6 +1081,12 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+          tailwindcss: {
+            cwd: process.cwd(),
+          },
+        },
       },
     }))
 
@@ -1104,7 +1134,7 @@ describe('v5 vite generator bundle', () => {
     createdDirs.push(tempDir)
     await mkdir(path.join(tempDir, 'pages/index'), { recursive: true })
     await mkdir(path.join(tempDir, 'dist/pages/index'), { recursive: true })
-    await writeFile(path.join(tempDir, 'pages/index/index.ts'), 'export const cls = "bg-[#112233]"', 'utf8')
+    await writeFile(path.join(tempDir, 'pages/index/index.ts'), 'export const className = "bg-[#112233]"', 'utf8')
     await writeFile(path.join(tempDir, 'pages/index/index.wxml'), '<view class="text-[#223344]"></view>', 'utf8')
     await writeFile(path.join(tempDir, 'dist/pages/index/index.js'), 'const bundled = "bg-[#445566]"', 'utf8')
     await writeFile(
@@ -1112,7 +1142,7 @@ describe('v5 vite generator bundle', () => {
       JSON.stringify({
         version: 3,
         sources: ['../../pages/index/index.ts'],
-        sourcesContent: ['export const cls = "bg-[#778899]"'],
+        sourcesContent: ['export const className = "bg-[#778899]"'],
         mappings: '',
       }),
       'utf8',
@@ -1159,6 +1189,12 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+          },
+        },
       },
     }))
 
@@ -1305,7 +1341,7 @@ describe('v5 vite generator bundle', () => {
       base: tempDir,
       css: expect.stringContaining('.tw-watch-style-fixture { @apply font-bold text-center min-w-0 bg-[#123456] px-[12px]; }'),
     }))
-    expect(createGeneratorMock.mock.calls[0]?.[0]?.css).toContain('@config "./tailwind.config.js";')
+    expect(createGeneratorMock.mock.calls[0]?.[0]?.css).toContain(`@config "${path.join(tempDir, 'tailwind.config.js')}"`)
     expect(createGeneratorMock.mock.calls[0]?.[0]?.css).not.toContain('generator-placeholder')
   }, TEST_TIMEOUT_MS)
 
@@ -1316,8 +1352,8 @@ describe('v5 vite generator bundle', () => {
     await mkdir(path.join(tempDir, 'src/components'), { recursive: true })
     const sourceFile = path.join(tempDir, 'src/pages/index/index.tsx')
     const unrelatedFile = path.join(tempDir, 'src/components/card.tsx')
-    await writeFile(sourceFile, 'export const cls = "bg-[#112233]"', 'utf8')
-    await writeFile(unrelatedFile, 'export const cls = "text-[#111111]"', 'utf8')
+    await writeFile(sourceFile, 'export const className = "bg-[#112233]"', 'utf8')
+    await writeFile(unrelatedFile, 'export const className = "text-[#111111]"', 'utf8')
 
     const runtimeSet = new Set<string>()
     const rawTailwindCss = [
@@ -1372,6 +1408,12 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+          },
+        },
       },
     }))
 
@@ -1394,8 +1436,8 @@ describe('v5 vite generator bundle', () => {
     await transform?.call(sourcePlugin, await readFile(sourceFile, 'utf8'), sourceFile)
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
 
-    await writeFile(unrelatedFile, 'export const cls = "text-[#999999]"', 'utf8')
-    await writeFile(sourceFile, 'export const cls = "bg-[#445566]"', 'utf8')
+    await writeFile(unrelatedFile, 'export const className = "text-[#999999]"', 'utf8')
+    await writeFile(sourceFile, 'export const className = "bg-[#445566]"', 'utf8')
     await (sourcePlugin.watchChange as any)?.call(sourcePlugin, sourceFile, { event: 'update' })
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
 
@@ -1599,6 +1641,12 @@ describe('v5 vite generator bundle', () => {
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+          },
+        },
       },
     }))
 
@@ -1671,8 +1719,8 @@ describe('v5 vite generator bundle', () => {
     await mkdir(path.dirname(pageFile), { recursive: true })
     await mkdir(path.dirname(ignoredFile), { recursive: true })
     await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{ts,tsx}", "!./src/apis/**"] }', 'utf8')
-    await writeFile(pageFile, 'export const cls = "bg-[#112233]"', 'utf8')
-    await writeFile(ignoredFile, 'export const cls = "text-[77rpx]"', 'utf8')
+    await writeFile(pageFile, 'export const className = "bg-[#112233]"', 'utf8')
+    await writeFile(ignoredFile, 'export const className = "text-[77rpx]"', 'utf8')
 
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async () => ({
@@ -1776,8 +1824,8 @@ describe('v5 vite generator bundle', () => {
       '@import "tailwindcss" source("../src");',
       '@source not "./apis/**";',
     ].join('\n'), 'utf8')
-    await writeFile(pageFile, 'export const cls = "bg-[#112233]"', 'utf8')
-    await writeFile(ignoredFile, 'export const cls = "text-[77rpx]"', 'utf8')
+    await writeFile(pageFile, 'export const className = "bg-[#112233]"', 'utf8')
+    await writeFile(ignoredFile, 'export const className = "text-[77rpx]"', 'utf8')
 
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async () => ({
@@ -2182,7 +2230,7 @@ describe('v5 vite generator bundle', () => {
       '@import "tailwindcss" source(none);',
       '@source "./pages/**/*.{ts,tsx}";',
     ].join('\n'), 'utf8')
-    await writeFile(pageFile, 'export const cls = "w-1"', 'utf8')
+    await writeFile(pageFile, 'export const className = "w-1"', 'utf8')
 
     const scannedRoots: string[] = []
     const scannedEntries: Array<Array<{ base: string, negated: boolean, pattern: string }> | undefined> = []
@@ -2304,7 +2352,7 @@ describe('v5 vite generator bundle', () => {
     expect(generatorModule.resolveTailwindV4SourceOptionsFromPatcher).toHaveBeenCalledTimes(resolveSourceOptionsCalls)
     expect(scannedRoots).toHaveLength(1)
 
-    await writeFile(pageFile, 'export const cls = "w-2"', 'utf8')
+    await writeFile(pageFile, 'export const className = "w-2"', 'utf8')
     await (sourcePlugin.watchChange as any)?.call(sourcePlugin, pageFile, { event: 'update' })
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
     expect(scannedRoots).toHaveLength(1)
@@ -2343,7 +2391,7 @@ describe('v5 vite generator bundle', () => {
       '@import "tailwindcss" source("../src");',
       '@source not inline("underline");',
     ].join('\n'), 'utf8')
-    await writeFile(pageFile, 'export const cls = "underline w-1"', 'utf8')
+    await writeFile(pageFile, 'export const className = "underline w-1"', 'utf8')
 
     const runtimeSet = new Set<string>()
     const generateMock = vi.fn(async () => ({

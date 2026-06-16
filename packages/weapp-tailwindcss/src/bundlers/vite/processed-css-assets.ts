@@ -303,6 +303,7 @@ export function removeCssCoveredByRootStyleAssets(
   options: {
     cssMatcher: (file: string) => boolean
     debug?: ((format: string, ...args: unknown[]) => void) | undefined
+    isViteProcessedCssAsset?: CssAssetMarkerMatcher | undefined
     onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
     recordCssAssetResult?: CssAssetResultRecorder | undefined
     subpackageRoots?: Set<string> | undefined
@@ -317,6 +318,7 @@ export function removeCssCoveredByRootStyleAssets(
     if (
       !options.cssMatcher(file)
       || isRootStyleOutputFile(file)
+      || options.isViteProcessedCssAsset?.(output, file) === true
       || (
         options.subpackageRoots != null
         && isSubpackageOutputFile(file, options.subpackageRoots)
@@ -590,7 +592,7 @@ export function collectViteProcessedCssAssetResults(
       }
     }
     if (isCoveredViteGeneratedSourceAsset(file, existingAssetFiles, options.resolveViteProcessedCssOutputFile)) {
-      clearAssetSource(output)
+      delete bundle[bundleFile]
       options.debug?.('skip covered vite-generated source css asset: %s', file)
       collected++
       continue

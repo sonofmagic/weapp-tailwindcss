@@ -480,7 +480,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
         clearCache: cssSourceChanged,
       })
       if (runtimeState.twPatcher.majorVersion === 3 && shouldUseGenerator) {
-        const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged)
+        const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged || isMainChunk)
         gulpSourceCandidateGetter = cachedGulpSourceCandidateGetter
         if (sourceCandidates.size > 0) {
           nextRuntimeSet = new Set([

@@ -3,6 +3,7 @@ import type { TailwindResolvedSource } from '@/generator'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 
 export interface GeneratorSourceMetadata {
+  isolateCssSource?: boolean | undefined
   matchedCssSourceFile?: string | undefined
   sourceEntries?: TailwindSourceEntry[] | undefined
   sourceBase?: string | undefined
@@ -29,6 +30,7 @@ export function withMatchedSourceSideMetadata(
 ) {
   return resolvedEntrySource.file
     ? withGeneratorSourceMetadata(source, {
+        isolateCssSource: true,
         matchedCssSourceFile: resolvedEntrySource.file,
         sourceBase: resolvedEntrySource.base,
         sourceCss: resolvedEntrySource.css,

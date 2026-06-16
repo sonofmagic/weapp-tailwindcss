@@ -23,7 +23,7 @@ import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/c
 import { createCssAssetEmitter, resolveAssetSourceFile } from './generate-bundle/css-assets'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
-import { canProcessViteSourceStyleAsCss, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+import { canProcessViteSourceStyleAsCss, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile, SOURCE_STYLE_OUTPUT_EXT_RE } from './generate-bundle/css-output'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
 import { resolveGenerateBundleEnvFlags } from './generate-bundle/env-flags'
@@ -294,6 +294,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           ])
         : filteredGeneratorCandidates,
     )
+    if (runtimeState.twPatcher.majorVersion === 3 && generatorRuntime.size === 0) {
+      generatorRuntime = await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
+      transformRuntime = generatorRuntime
+    }
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
     const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
@@ -321,10 +325,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             validatedRuntime,
           )
           transformRuntime = generatorRuntime
-        }
-        else {
-          generatorRuntime = validatedRuntime
-          transformRuntime = validatedRuntime
         }
       }
     }
@@ -497,15 +497,19 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
-          originalSource.source = ''
+          delete bundle[file]
           debug('css skip raw source style asset: %s -> %s', file, outputFile)
           continue
         }
         const applyCssResult = (source: string) => {
           if (outputFile !== file) {
-            originalSource.source = ''
             emitOrReplayCssAsset(outputFile, source)
-            originalSource.source = ''
+            if (!viteProcessedCssAsset && SOURCE_STYLE_OUTPUT_EXT_RE.test(file)) {
+              delete bundle[file]
+            }
+            else {
+              originalSource.source = ''
+            }
             return
           }
           originalSource.source = source

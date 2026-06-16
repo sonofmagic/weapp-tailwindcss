@@ -64,7 +64,13 @@ export async function createScopedGeneratorRuntime(options: {
     }
   }
   const scopedCandidates = scopedSourceCandidateGetter?.(undefined)
-  if (scopedCandidates) {
+  if (
+    scopedCandidates
+    && (
+      scopedCandidates.size > 0
+      || shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)
+    )
+  ) {
     return scopedCandidates
   }
   if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {

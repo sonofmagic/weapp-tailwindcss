@@ -1,4 +1,5 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { TailwindV4CssSource } from './source-resolver/types'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
@@ -13,6 +14,7 @@ export interface GenerateCssByGeneratorOptions {
   file: string
   cssHandlerOptions: IStyleHandlerOptions
   cssUserHandlerOptions: IStyleHandlerOptions
+  cssSources?: TailwindV4CssSource[] | undefined
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void

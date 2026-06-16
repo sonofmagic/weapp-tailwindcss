@@ -114,6 +114,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     cssEntries: opts.cssEntries ?? options.cssEntries,
   })
   const autoCssSourceContent = new Map<string, string>()
+  const transientAutoCssSources = new Map<string, { file: string, base: string, css: string, dependencies: string[] }>()
   let refreshRuntimeStateForAutoCssSources: ((force: boolean) => Promise<void>) | undefined
   let autoCssSourcesRefresh: Promise<void> | undefined
   let autoCssSourcesDiscovered = false
@@ -143,7 +144,19 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     autoCssSourceContent.set(sourceFile, sourceCss)
     await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
+    const transientSource = {
+      file: sourceFile,
+      base: sourceBase,
+      css: sourceCss,
+      dependencies: [] as string[],
+    }
+    if (hasInitialTailwindCssRoots) {
+      transientAutoCssSources.set(sourceFile, transientSource)
+      return
+    }
     const dependencies = await resolveViteTailwindV4CssDependencies(sourceCss, sourceBase)
+    transientSource.dependencies = dependencies
+    transientAutoCssSources.set(sourceFile, transientSource)
     const changed = upsertTailwindV4CssSource(opts, {
       file: sourceFile,
       base: sourceBase,
@@ -304,7 +317,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         root,
       }]
     }
-    if (sourceScanExplicit) {
+    if (sourceScanExplicit && entries !== undefined) {
       return []
     }
     const roots: SourceCandidateScanRoot[] = [
@@ -406,7 +419,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       sourceCandidateScanInvalidated = false
       return
     }
-    sourceCandidateCollector.clear()
+    if (isWatchLikeBuild()) {
+      sourceCandidateCollector.resetScan()
+    }
+    else {
+      sourceCandidateCollector.clearScan()
+    }
     sourceCandidateCollector.syncInline(sourceScan?.inlineCandidates)
     await scanSourceCandidateRoots(roots, outDir)
     sourceCandidateScanSignature = nextScanSignature
@@ -431,10 +449,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     if (sourceScanMatcher && !sourceScanMatcher(file)) {
       sourceCandidateCollector.remove(file)
-      cacheCurrentSourceCandidateScan()
-      return cssMemory.refreshRememberedCssSourceByCurrentFile(file)
-    }
-    if (sourceScanExplicit && sourceScanEntries?.length === 0) {
       cacheCurrentSourceCandidateScan()
       return cssMemory.refreshRememberedCssSourceByCurrentFile(file)
     }
@@ -584,7 +598,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       ...transformCssHandlerOptions.getCssHandlerOptions(file),
       isMainChunk: outputCssHandlerOptions.isMainChunk,
     }
-    const shouldDeferEmptyScopedCssSource = !(
+    const transientCssSource = transientAutoCssSources.get(file)
+    const shouldDeferEmptyScopedCssSource = transientCssSource == null && !(
       opts.appType === 'uni-app-x'
       && !cssHandlerOptions.isMainChunk
       && hasTailwindApplyDirective(code)
@@ -597,6 +612,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       file,
       cssHandlerOptions,
       cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(file),
+      cssSources: transientCssSource
+        ? [transientCssSource]
+        : undefined,
       getSourceCandidatesForEntries,
       styleHandler,
       debug,
@@ -762,10 +780,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           const file = cleanUrl(id)
           if (sourceScanMatcher && !sourceScanMatcher(file)) {
             sourceCandidateCollector.remove(file)
-            cacheCurrentSourceCandidateScan()
-            return
-          }
-          if (sourceScanExplicit && sourceScanEntries?.length === 0) {
             cacheCurrentSourceCandidateScan()
             return
           }

@@ -9,6 +9,7 @@ export const CSS_SOURCE_OUTPUT_EXT_RE = /\.(?:css|less|sass|scss|styl|stylus|pcs
 
 const SOURCE_STYLE_NON_CSS_SYNTAX_RE = /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@(?:use|forward|mixin|include|function)\b)/
 const FALLBACK_STYLE_OUTPUT_EXTENSION = '.css'
+const COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS = ['.wxss', '.acss', '.ttss', '.qss', '.jxss', '.tyss']
 
 function normalizeStyleOutputExtension(value: string | undefined) {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -56,14 +57,25 @@ function resolveStyleOutputExtensionFromFiles(
   return extension
 }
 
+function resolveStyleOutputExtensionFromMatcher(
+  cssMatcher: ((file: string) => boolean) | undefined,
+  stem: string | undefined,
+) {
+  if (!cssMatcher || !stem) {
+    return undefined
+  }
+  return COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS.find(extension => cssMatcher(`${stem}${extension}`))
+}
+
 export function resolveMiniProgramStyleOutputExtension(options: {
   cssMatcher?: ((file: string) => boolean) | undefined
   fallback?: string | undefined
   files?: Iterable<string> | undefined
   stem?: string | undefined
 } = {}) {
-  return normalizeStyleOutputExtension(options.fallback)
-    ?? resolveStyleOutputExtensionFromFiles(options.files, options.cssMatcher, options.stem)
+  return resolveStyleOutputExtensionFromFiles(options.files, options.cssMatcher, options.stem)
+    ?? resolveStyleOutputExtensionFromMatcher(options.cssMatcher, options.stem)
+    ?? normalizeStyleOutputExtension(options.fallback)
     ?? resolveStyleOutputExtensionFromFiles(options.files, options.cssMatcher)
     ?? FALLBACK_STYLE_OUTPUT_EXTENSION
 }
@@ -161,12 +173,11 @@ export function resolveViteCssPipelineOutputFile(
   ) {
     return normalizedFile
   }
-  return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, resolveMiniProgramStyleOutputExtension({
-    cssMatcher: opts.cssMatcher,
-    fallback: styleOutputExtension,
-    files: styleOutputFiles,
-    stem,
-  }))
+  const fallbackExtension = normalizeStyleOutputExtension(styleOutputExtension)
+  if (!fallbackExtension && !SOURCE_STYLE_OUTPUT_EXT_RE.test(normalizedFile)) {
+    return normalizedFile
+  }
+  return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, fallbackExtension ?? FALLBACK_STYLE_OUTPUT_EXTENSION)
 }
 
 export function canProcessViteSourceStyleAsCss(source: string, file: string) {

@@ -42,7 +42,7 @@ view,text,::after,::before {
 }
 .w-1 {
   width: 8rpx;
-  width: calc(var(--spacing)*1);
+  width: var(--spacing);
 }"
 `;
 
@@ -57,8 +57,8 @@ view,text,::after,::before {
   padding: 0;
 }
 .w-1 {
-  width: calc(.25rem * 1);
-  width: calc(var(--spacing) * 1);
+  width: .25rem;
+  width: var(--spacing);
 }"
 `;
 
@@ -81,8 +81,8 @@ view,text,::after,::before {
   padding: 0;
 }
 .w-1 {
-  width: 0.25rem;
-  width: calc(var(--spacing)*1);
+  width: .25rem;
+  width: var(--spacing);
 }"
 `;
 
@@ -97,8 +97,8 @@ view,text,::after,::before {
   padding: 0;
 }
 .w-1 {
-  width: 0.25rem;
-  width: calc(var(--spacing)*1);
+  width: .25rem;
+  width: var(--spacing);
 }"
 `;
 
@@ -113,8 +113,8 @@ view,text,::after,::before {
   padding: 0;
 }
 .w-1 {
-  width: 0.25rem;
-  width: calc(var(--spacing)*1);
+  width: .25rem;
+  width: var(--spacing);
 }"
 `;
 
@@ -129,6 +129,6 @@ exports[`calc > 默认的情况 1`] = `
   padding: 0;
 }
 .w-1 {
-  width: calc(var(--spacing) * 1);
+  width: var(--spacing);
 }"
 `;

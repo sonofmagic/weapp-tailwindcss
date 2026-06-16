@@ -187,6 +187,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   removeCssCoveredByRootStyleAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,
+    isViteProcessedCssAsset,
     onUpdate,
     recordCssAssetResult,
     subpackageRoots: collectMiniProgramSubpackageRoots(bundle),

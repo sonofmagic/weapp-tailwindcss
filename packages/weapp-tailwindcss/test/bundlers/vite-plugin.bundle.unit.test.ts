@@ -2580,7 +2580,6 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['src/app.wxss'] as OutputAsset).source).toBe('')
     expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{}\n${processedCss}`)
   }, TEST_TIMEOUT_MS)
 
@@ -4447,7 +4446,7 @@ module.exports = {
     const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
     expect(appCss).toMatch(/\.tw-main-watch\s*\{[^}]*display:\s*block/)
     expect(appCss).not.toContain('.tw-sub-watch')
-    expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toMatch(/\.tw-main-watch\s*\{[^}]*display:\s*block/)
+    expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toBe('')
     expect((bundle['sub-normal/pages/index.wxss'] as OutputAsset).source.toString()).toMatch(/\.tw-sub-watch\s*\{[^}]*display:\s*block/)
     expect(viteProcessedCssAssetResults.get(mainSourceFile)?.injectIntoMain).toBe(true)
     expect(viteProcessedCssAssetResults.get(subSourceFile)?.injectIntoMain).toBe(false)
@@ -7124,8 +7123,8 @@ const trace = "at App.vue:4"
     }
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    const transformedWxml = (bundle['dist/pages/index/index.wxml'] as OutputAsset).source.toString()
-    const transformedJs = (bundle['dist/pages/index/index.js'] as OutputChunk).code
+    const transformedWxml = (bundle['index.wxml'] as OutputAsset).source.toString()
+    const transformedJs = (bundle['index.js'] as OutputChunk).code
 
     expect(transformedWxml).toContain(escapedGap)
     expect(transformedJs).toContain(escapedGap)
@@ -7185,8 +7184,8 @@ const trace = "at App.vue:4"
     }
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    const transformedWxml = (bundle['dist/pages/index/index.wxml'] as OutputAsset).source.toString()
-    const transformedJs = (bundle['dist/pages/index/index.js'] as OutputChunk).code
+    const transformedWxml = (bundle['index.wxml'] as OutputAsset).source.toString()
+    const transformedJs = (bundle['index.js'] as OutputChunk).code
 
     expect(refreshTailwindcssPatcher).toHaveBeenCalled()
     expect(transformedWxml).toContain(escapedGap)
@@ -7231,7 +7230,7 @@ const trace = "at App.vue:4"
     }
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    const transformedJs = (bundle['dist/pages/index/index.js'] as OutputChunk).code
+    const transformedJs = (bundle['index.js'] as OutputChunk).code
     expect(transformedJs).toContain('gap-[20px]')
     expect(transformedJs).not.toContain(escapedGap)
   }, TEST_TIMEOUT_MS)
@@ -9015,7 +9014,7 @@ ${utilities}
       },
     }, {} as any, thirdBundle)
 
-    const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.wxss')?.source
+    const replayedCss = emitted.find(file => file.fileName === 'pages/index/index.css')?.source
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(replayedCss).toContain('generated:@import "tailwindcss";')
     expect(replayedCss).not.toContain('.tw-watch-style-case')

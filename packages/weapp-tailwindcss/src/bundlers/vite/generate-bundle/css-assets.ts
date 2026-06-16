@@ -14,10 +14,9 @@ export function createCssAssetEmitter(
         fileName,
         source,
       })
+      return replayAsset
     }
-    else {
-      bundle[fileName] = replayAsset
-    }
+    bundle[fileName] = replayAsset
     return replayAsset
   }
 }

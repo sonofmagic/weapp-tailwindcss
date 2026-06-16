@@ -796,8 +796,8 @@ export async function resolveGeneratorSources(
       ...resolveCssHandlerSourceOptions(cssHandlerOptions),
       cssEntries,
       cssSources: mergeCssSources(
-        sourceOptionsFromPatcher.cssSources,
-        sourceOptionsFromPatcher.cssSources?.length
+        mergeCssSources(sourceOptionsFromPatcher.cssSources, selectionOptions?.cssSources),
+        sourceOptionsFromPatcher.cssSources?.length || selectionOptions?.cssSources?.length
           ? undefined
           : createCssEntrySources(cssEntries) as TailwindV4CssSource[] | undefined,
       ),

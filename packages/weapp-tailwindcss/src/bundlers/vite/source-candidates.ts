@@ -30,6 +30,8 @@ export interface SourceCandidateCollector {
   sourcesForEntries: (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>
   snapshot: () => SourceCandidateCollectorSnapshot
   restore: (snapshot: SourceCandidateCollectorSnapshot) => void
+  clearScan: () => void
+  resetScan: () => void
   clear: () => void
 }
 
@@ -195,12 +197,25 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   async function syncFile(id: string) {
     const normalizedId = cleanUrl(id)
-    await sync(normalizedId, await readFile(normalizedId, 'utf8'))
+    try {
+      await sync(normalizedId, await readFile(normalizedId, 'utf8'))
+    }
+    catch (error) {
+      const code = typeof error === 'object' && error !== null && 'code' in error
+        ? (error as { code?: unknown }).code
+        : undefined
+      if (code === 'ENOENT') {
+        remove(normalizedId)
+        return
+      }
+      throw error
+    }
   }
 
   async function syncCurrentFile(id: string) {
     const normalizedId = cleanUrl(id)
     transformCandidatesById.delete(normalizedId)
+    cssCandidatesById.delete(normalizedId)
     await syncFile(normalizedId)
   }
 
@@ -212,7 +227,6 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       outDir,
       root,
     })
-
     await Promise.all(files.map(file => syncFile(resolveSourceScanPath(file))))
   }
 
@@ -395,6 +409,20 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     inlineExcludedCandidates.clear()
   }
 
+  function clearScan() {
+    for (const id of scanCandidatesById.keys()) {
+      scanCandidatesById.delete(id)
+      recompute(id)
+    }
+    inlineIncludedCandidates.clear()
+    inlineExcludedCandidates.clear()
+  }
+
+  function resetScan() {
+    inlineIncludedCandidates.clear()
+    inlineExcludedCandidates.clear()
+  }
+
   function snapshot(): SourceCandidateCollectorSnapshot {
     return {
       candidatesById: [...candidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
@@ -433,16 +461,16 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       }
       cssCandidatesById.set(id, candidateSet)
     }
-    for (const [id, candidates] of snapshot.candidatesById) {
-      const candidateSet = new Set(candidates)
-      if (candidateSet.size === 0) {
-        continue
-      }
-      candidatesById.set(id, candidateSet)
-      addCandidateSet(candidateCount, candidateSet)
-    }
     for (const [id, source] of snapshot.sourceById ?? []) {
       sourceById.set(id, source)
+    }
+    const ids = new Set([
+      ...scanCandidatesById.keys(),
+      ...transformCandidatesById.keys(),
+      ...cssCandidatesById.keys(),
+    ])
+    for (const id of ids) {
+      recompute(id)
     }
   }
 
@@ -462,6 +490,8 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     sourcesForEntries,
     snapshot,
     restore,
+    clearScan,
+    resetScan,
     clear,
   }
 }

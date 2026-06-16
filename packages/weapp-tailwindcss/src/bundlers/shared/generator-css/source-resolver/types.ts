@@ -11,6 +11,7 @@ export interface GeneratorSourceSelectionOptions {
   runtime?: Set<string> | undefined
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   cssEntries?: string[] | undefined
+  cssSources?: TailwindV4CssSource[] | undefined
 }
 
 export type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> & {

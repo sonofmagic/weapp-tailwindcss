@@ -74,7 +74,10 @@ export function mergeScopedRuntimeWithCurrentRuntime(
   }
   if (options.isolateCssSource) {
     if (options.matchedCssSourceFile) {
-      return scopedRuntime
+      return new Set([
+        ...scopedRuntime,
+        ...(options.currentCssCandidates ?? []),
+      ])
     }
     return new Set([
       ...scopedRuntime,
@@ -105,8 +108,16 @@ export function shouldIsolateScopedCssSource(
   if (options.target !== 'weapp') {
     return false
   }
-  return Boolean(source.__weappTailwindcssMeta?.matchedCssSourceFile)
-    || ((majorVersion === 3 || majorVersion === 4) && sourceEntries !== undefined && options.cssHandlerOptions?.isMainChunk !== true)
+  if (source.__weappTailwindcssMeta?.isolateCssSource) {
+    return true
+  }
+  if (source.__weappTailwindcssMeta?.matchedCssSourceFile && (sourceEntries?.length ?? 0) > 0) {
+    return true
+  }
+  if (sourceEntries?.length === 0) {
+    return false
+  }
+  return (majorVersion === 3 || majorVersion === 4) && sourceEntries !== undefined && options.cssHandlerOptions?.isMainChunk !== true
 }
 
 export function shouldIsolateCurrentTailwindV4CssCandidates(

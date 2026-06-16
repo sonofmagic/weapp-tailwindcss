@@ -488,7 +488,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
           })
         }
-        const webpackSourceCandidates = await refreshWebpackSourceCandidates()
+        const shouldRefreshWebpackSourceCandidates = groupedEntries.css?.length
+          || isCssSourceTraceEnabled(compilerOptions)
+        const webpackSourceCandidates = shouldRefreshWebpackSourceCandidates
+          ? await refreshWebpackSourceCandidates()
+          : undefined
         const cssSourceTraceTokenSources = isCssSourceTraceEnabled(compilerOptions) && webpackSourceCandidates
           ? createCssTokenSourceMap(webpackSourceCandidates.tokenSources, compilerOptions)
           : undefined

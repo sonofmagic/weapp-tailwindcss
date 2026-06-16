@@ -2,7 +2,6 @@ import type { Plugin } from 'vite'
 import { vitePluginName } from '@/constants'
 import { hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { isSourceStyleRequest } from '../shared/style-requests'
-import { isCSSRequest } from './utils'
 
 const SPECIAL_QUERY_RE = /[?&](?:worker|sharedworker|raw|url)\b/
 const COMMON_JS_PROXY_RE = /\?commonjs-proxy/
@@ -62,7 +61,7 @@ function isViteServeStyleRequest(id: string, command: string | undefined) {
 
 function isViteServeCssRootRequest(id: string, command: string | undefined) {
   return command === 'serve'
-    && isCSSRequest(id)
+    && isSourceStyleRequest(id)
     && !SPECIAL_QUERY_RE.test(id)
     && !COMMON_JS_PROXY_RE.test(id)
 }

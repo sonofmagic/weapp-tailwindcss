@@ -167,6 +167,7 @@ export async function generateCssByGenerator(
       generatorOptions,
       {
         cssEntries: opts.cssEntries,
+        cssSources: options.cssSources,
         getSourceCandidatesForEntries,
         runtime: runtimeWithCurrentCss,
       },
@@ -179,7 +180,7 @@ export async function generateCssByGenerator(
       const sourceEntries = getSourceCandidatesForEntries && (majorVersion === 3 || majorVersion === 4)
         ? await resolveGeneratorSourceEntries(source, runtimeState)
         : undefined
-      const scopedRuntime = sourceEntries
+      const scopedRuntime = sourceEntries && sourceEntries.length > 0
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
       const isolateCssSource = shouldIsolateScopedCssSource(majorVersion, source, sourceEntries, {

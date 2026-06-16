@@ -201,7 +201,11 @@ export async function resolveViteSourceScanEntries(
     const resolved = await resolveTailwindV4EntriesFromCssCached(source.css, source.base)
     return resolved
       ? createResolvedViteSourceScan(
-          createResolvedV4CssScanInput(resolved.entries, resolved.inlineCandidates, resolved.explicit),
+          createResolvedV4CssScanInput(
+            resolved.entries.length > 0 ? resolved.entries : [],
+            resolved.inlineCandidates,
+            resolved.entries.length > 0 ? resolved.explicit : false,
+          ),
           new Set([...dependencies, ...resolved.dependencies]),
         )
       : undefined
@@ -211,5 +215,8 @@ export async function resolveViteSourceScanEntries(
 }
 
 export function createViteSourceScanMatcher(entries: TailwindSourceEntry[] | undefined) {
+  if (entries?.length === 0) {
+    return undefined
+  }
   return createTailwindSourceEntryMatcher(entries)
 }
