@@ -6,11 +6,12 @@ import { injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { runWithConcurrency } from '../../shared/run-tasks'
 import { updateBundleBuildState } from '../bundle-state'
-import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '../processed-css-assets'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets, removeCssCoveredByRootStyleAssets } from '../processed-css-assets'
 import { normalizeBundleFileNameKeysForTest } from './bundle-file-names'
 import { resolveViteCssPipelineOutputFile } from './css-output'
 import { resolveViteMemoryDebugStats } from './memory-debug'
 import { formatCacheHitRate, formatMs } from './metrics'
+import { collectMiniProgramSubpackageRoots } from './subpackages'
 import { handleUniAppXPostCssTasks } from './uni-app-x-postprocess'
 import { pruneLastCssResults, resolveViteCssTaskConcurrency } from './vite-css-cache'
 
@@ -153,6 +154,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
       resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles),
+      subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
       debug,
     })
     return injectViteProcessedCssIntoMainCssAssets(bundle, {
@@ -182,6 +184,13 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     syncViteProcessedCssIntoMainCssAssets()
   }
   normalizeBundleFileNameKeysForTest(bundle)
+  removeCssCoveredByRootStyleAssets(bundle, {
+    cssMatcher: opts.cssMatcher,
+    debug,
+    onUpdate,
+    recordCssAssetResult,
+    subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
+  })
 
   const stateUpdateStart = performance.now()
   updateBundleBuildState(

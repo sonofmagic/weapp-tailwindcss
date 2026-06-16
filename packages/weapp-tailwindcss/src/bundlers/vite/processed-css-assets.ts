@@ -13,6 +13,7 @@ import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers }
 import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
+import { isSubpackageOutputFile } from './generate-bundle/subpackages'
 
 interface CssAssetMarkerMatcher {
   (asset: OutputAsset, file?: string): boolean
@@ -42,6 +43,7 @@ interface CollectViteProcessedCssAssetOptions {
   recordCssAssetResult?: CssAssetResultRecorder | undefined
   recordViteProcessedCssAssetResult?: CssAssetResultRecorder | undefined
   resolveViteProcessedCssOutputFile?: ((file: string) => string | undefined) | undefined
+  subpackageRoots?: Set<string> | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
 }
 
@@ -213,6 +215,127 @@ function collectMatchingGeneratedCssMarkerFiles(
     .filter(block => isMatchingGeneratedCssMarkerFile(file, block.file, resolveViteProcessedCssOutputFile))
     .map(block => block.file)
     .filter((markerFile): markerFile is string => typeof markerFile === 'string' && markerFile.length > 0)
+}
+
+function collectRootStyleBundleCssSources(bundle: OutputBundle, excludedFile: string) {
+  const sources: string[] = []
+  const excludedFileKey = normalizeOutputPathKey(excludedFile)
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = normalizeOutputPathKey(getAssetFile(bundleFile, output))
+    if (file === excludedFileKey || !isRootStyleOutputFile(file)) {
+      continue
+    }
+    const source = stripBundlerGeneratedCssMarkers(readAssetSource(output)).trim()
+    if (source.length > 0) {
+      sources.push(source)
+    }
+  }
+  return sources
+}
+
+function collectSingleViteGeneratedCssMarkerFile(rawSource: string) {
+  const blocks = parseBundlerGeneratedCssMarkerBlocks(rawSource)
+    .filter(block => block.bundler === 'vite')
+  if (blocks.length !== 1) {
+    return undefined
+  }
+  const file = blocks[0]?.file
+  return typeof file === 'string' && file.length > 0 ? file : undefined
+}
+
+function shouldFilterRootGeneratedCssMarkerForScopedAsset(
+  targetFile: string,
+  markerFile: string,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  const resolvedTargetFile = normalizeMarkerOutputFile(targetFile, resolveViteProcessedCssOutputFile)
+  const resolvedMarkerFile = normalizeMarkerOutputFile(markerFile, resolveViteProcessedCssOutputFile)
+  if (
+    !isRootStyleOutputFile(resolvedMarkerFile)
+    || isRootStyleOutputFile(resolvedTargetFile)
+  ) {
+    return false
+  }
+  return !isMatchingGeneratedCssMarkerFile(targetFile, markerFile, resolveViteProcessedCssOutputFile)
+}
+
+function removeCssCoveredByRootStyleBundleSources(
+  bundle: OutputBundle,
+  file: string,
+  css: string,
+) {
+  return removeDanglingCssSourceTraceComments(removeCssCoveredByImportedViteResults(
+    css,
+    collectRootStyleBundleCssSources(bundle, file),
+  ))
+}
+
+function removeDanglingCssSourceTraceComments(css: string) {
+  if (!css.includes('/* tokens:')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.each((node) => {
+      if (node.type !== 'comment' || !node.text.trim().startsWith('tokens:')) {
+        return
+      }
+      const next = node.next()
+      if (next?.type === 'rule' || next?.type === 'atrule') {
+        return
+      }
+      node.remove()
+      changed = true
+    })
+    return changed ? root.toString().trim() : css
+  }
+  catch {
+    return css
+  }
+}
+
+export function removeCssCoveredByRootStyleAssets(
+  bundle: OutputBundle,
+  options: {
+    cssMatcher: (file: string) => boolean
+    debug?: ((format: string, ...args: unknown[]) => void) | undefined
+    onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
+    recordCssAssetResult?: CssAssetResultRecorder | undefined
+    subpackageRoots?: Set<string> | undefined
+  },
+) {
+  let updated = 0
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = getAssetFile(bundleFile, output)
+    if (
+      !options.cssMatcher(file)
+      || isRootStyleOutputFile(file)
+      || (
+        options.subpackageRoots != null
+        && isSubpackageOutputFile(file, options.subpackageRoots)
+      )
+    ) {
+      continue
+    }
+    const rawSource = readAssetSource(output)
+    const nextCss = removeCssCoveredByRootStyleBundleSources(bundle, file, rawSource)
+    if (nextCss === rawSource) {
+      continue
+    }
+    output.source = nextCss
+    options.recordCssAssetResult?.(file, nextCss)
+    options.onUpdate?.(file, rawSource, nextCss)
+    options.debug?.('remove root-covered css rules from scoped asset: %s bytes=%d', file, nextCss.length)
+    updated++
+  }
+  return updated
 }
 
 function shouldInjectViteProcessedCssResult(
@@ -400,11 +523,22 @@ export function collectViteProcessedCssAssetResults(
       continue
     }
     const rawSource = readAssetSource(output)
-    const nextCss = resolveViteProcessedCssAssetSource(
+    let nextCss = resolveViteProcessedCssAssetSource(
       file,
       rawSource,
       options.resolveViteProcessedCssOutputFile,
     )
+    const singleMarkerFile = collectSingleViteGeneratedCssMarkerFile(rawSource)
+    if (
+      singleMarkerFile
+      && (
+        options.subpackageRoots == null
+        || !isSubpackageOutputFile(file, options.subpackageRoots)
+      )
+      && shouldFilterRootGeneratedCssMarkerForScopedAsset(file, singleMarkerFile, options.resolveViteProcessedCssOutputFile)
+    ) {
+      nextCss = removeCssCoveredByRootStyleBundleSources(bundle, file, nextCss)
+    }
     if (nextCss !== rawSource) {
       output.source = nextCss
     }

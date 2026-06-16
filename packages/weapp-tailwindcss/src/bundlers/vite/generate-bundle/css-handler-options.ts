@@ -1,5 +1,6 @@
 import type { InternalUserDefinedOptions, IStyleHandlerOptions } from '@/types'
 import path from 'node:path'
+import { normalizeOutputPathKey } from '../../shared/module-graph'
 
 type CssHandlerOptions = IStyleHandlerOptions & {
   postcssOptions: {
@@ -26,6 +27,13 @@ export interface CssHandlerOptionsCache {
   getCssUserHandlerOptions: (file: string) => CssHandlerOptions
 }
 
+export function resolveViteCssHandlerExtraOptions(file: string) {
+  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  return normalized.includes('/')
+    ? { isMainChunk: false }
+    : {}
+}
+
 export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOptions): CssHandlerOptionsCache {
   const cssHandlerOptionsCache = new Map<string, CssHandlerOptions>()
   const cssUserHandlerOptionsCache = new Map<string, CssHandlerOptions>()
@@ -44,8 +52,8 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
     }
 
     const created = {
-      ...extraOptions,
       isMainChunk,
+      ...extraOptions,
       postcssOptions: {
         options: {
           from,

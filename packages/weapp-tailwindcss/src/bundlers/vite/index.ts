@@ -34,7 +34,7 @@ import { isSourceStyleRequest } from '../shared/style-requests'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createViteCssMemory, shouldCollectTransformedSourceCandidates } from './css-memory'
 import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from './generate-bundle'
-import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
+import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
 import { hasSelfAcceptingNonStyleHotModule, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from './hot-css-modules'
 import { touchMapEntry } from './map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
@@ -552,7 +552,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getOutputRoot: () => resolvedConfig?.build?.outDir
       ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir)
       : resolvedConfig?.root,
-    getExtraOptions: () => resolveUniAppXNativeCssHandlerOptions(opts),
+    getExtraOptions: file => ({
+      ...resolveViteCssHandlerExtraOptions(file),
+      ...resolveUniAppXNativeCssHandlerOptions(opts),
+    }),
   })
   const generateTailwindCssForVitePipeline = async (
     id: string,

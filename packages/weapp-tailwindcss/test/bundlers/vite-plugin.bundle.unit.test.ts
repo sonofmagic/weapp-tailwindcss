@@ -3166,6 +3166,188 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.text-red-500')
   }, TEST_TIMEOUT_MS)
 
+  it('does not reuse a mismatched vite-generated app css marker for page css assets', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-page-css-marker-'))
+    createdDirs.push(root)
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['text-red-500'])),
+        getClassSetSync: vi.fn(() => new Set(['text-red-500'])),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set(['text-red-500']) })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      weapp: { srcRoot: 'src' },
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/mp-weixin' },
+    } as ResolvedConfig)
+
+    const appSourceFile = path.join(root, 'src/tailwind.scss')
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('.app-global-only{color:red}'),
+        fileName: 'app.wxss',
+      },
+      'pages/index/peer.wxss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', appSourceFile)}
+.app-global-only{color:red}
+.peer-local-only{color:blue}`),
+        fileName: 'pages/index/peer.wxss',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const peerCss = String((bundle['pages/index/peer.wxss'] as OutputAsset).source)
+    expect(peerCss).not.toContain('.app-global-only')
+    expect(peerCss).toContain('.peer-local-only')
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps subpackage css assets even when app.wxss contains the same rules', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-subpackage-root-covered-'))
+    createdDirs.push(root)
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['module-a-marker'])),
+        getClassSetSync: vi.fn(() => new Set(['module-a-marker'])),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set(['module-a-marker']) })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/mp-weixin' },
+    } as ResolvedConfig)
+
+    const moduleCss = '.module-a-marker{color:red}'
+    const bundle = {
+      'app.json': {
+        ...createRollupAsset(JSON.stringify({
+          pages: ['pages/index/index'],
+          subPackages: [
+            {
+              root: 'moduleA',
+              pages: ['pages/index'],
+            },
+          ],
+        })),
+        fileName: 'app.json',
+      },
+      'app.wxss': {
+        ...createRollupAsset(moduleCss),
+        fileName: 'app.wxss',
+      },
+      'moduleA/pages/index.wxss': {
+        ...createRollupAsset(moduleCss),
+        fileName: 'moduleA/pages/index.wxss',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const subpackageCss = String((bundle['moduleA/pages/index.wxss'] as OutputAsset).source)
+    expect(subpackageCss).toContain(moduleCss)
+    expect(subpackageCss).not.toHaveLength(0)
+  }, TEST_TIMEOUT_MS)
+
+  it('does not treat non-root page css as main css when matcher is broad', async () => {
+    const generateMock = vi.fn(async () => ({
+      css: '.unexpected-global{}',
+      rawCss: '.unexpected-global{}',
+      target: 'weapp',
+      classSet: new Set(['unexpected-global']),
+      dependencies: [],
+      sources: [],
+      root: null,
+      version: 3,
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('.wxss')),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set(['unexpected-global'])),
+        getClassSetSync: vi.fn(() => new Set(['unexpected-global'])),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set(['unexpected-global']) })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: [] },
+          tailwindConfig: { content: [] },
+        }]),
+      },
+    }))
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('@tailwind utilities;'),
+        fileName: 'app.wxss',
+      },
+      'pages/index/peer.wxss': {
+        ...createRollupAsset('.peer-local-only{color:red}'),
+        fileName: 'pages/index/peer.wxss',
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    const peerCss = String((bundle['pages/index/peer.wxss'] as OutputAsset).source)
+    expect(peerCss).toContain('.peer-local-only')
+    expect(peerCss).not.toContain('.unexpected-global')
+  }, TEST_TIMEOUT_MS)
+
   it('merges covered preflight declarations when injecting vite-processed css into app.wxss', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),

@@ -5,7 +5,7 @@ Entry: gulp-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 14421 | 73 | false | false | false | true | true | false | true |
+| 14578 | 73 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: gulp-tailwindcss-v4/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 12063 | 67 | false | false | false | true | true | false | true |
+| `app.wxss` | 12220 | 67 | false | false | false | true | true | false | true |
 | `pages/more/more.wxss` | 195 | 2 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1162 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1117 | 6 | false | false | false | false | false | false | true |
@@ -171,8 +171,10 @@ wx-root-portal-content {
 .space-y-1 > text + view,
 .space-y-1 > text + text {
   --tw-space-y-reverse: 0;
-  margin-bottom: calc(var(--spacing) * var(--tw-space-y-reverse));
-  margin-top: calc(var(--spacing) * (1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc((var(--spacing) * 1) * var(--tw-space-y-reverse));
+  margin-bottom: calc(var(--spacing) * 1 * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 1) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 1 * (1 - var(--tw-space-y-reverse)));
 }
  /* tokens: space-y-4 <= src/pages/index/index.ttml, src/pages/index/index.wxml */
 .space-y-4 > view + view,

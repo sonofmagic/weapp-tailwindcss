@@ -22,7 +22,7 @@ import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidat
 import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/configured-css-sources'
 import { createCssAssetEmitter, resolveAssetSourceFile } from './generate-bundle/css-assets'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
-import { createCssHandlerOptionsCache } from './generate-bundle/css-handler-options'
+import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
 import { canProcessViteSourceStyleAsCss, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
@@ -67,6 +67,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
     getOutputRoot: () => currentOutDir,
     getExtraOptions: file => ({
+      ...resolveViteCssHandlerExtraOptions(file),
       ...resolveUniAppXNativeCssHandlerOptions(context.opts),
       ...(currentSubpackageRoots && isSubpackageOutputFile(file, currentSubpackageRoots)
         ? { isMainChunk: false }
@@ -151,6 +152,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         .filter(([, output]) => output.type === 'asset' && hasBundlerGeneratedCssMarker(output.source))
         .map(([file]) => file),
     )
+    const subpackageRoots = collectMiniProgramSubpackageRoots(bundle)
+    if (subpackageRoots) {
+      currentSubpackageRoots = subpackageRoots
+    }
     collectViteProcessedCssAssetResults(bundle, {
       opts,
       isViteProcessedCssAsset,
@@ -158,6 +163,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       recordCssAssetResult,
       recordViteProcessedCssAssetResult,
       resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, Object.keys(bundle)),
+      subpackageRoots: currentSubpackageRoots,
       debug,
     })
     const hmrTimingStartedAt = performance.now()
@@ -173,10 +179,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const bundleFiles = Object.keys(bundle)
     const activeViteCssCacheFiles = new Set(bundleFiles.map(normalizeViteCssCacheKey))
     const configuredTailwindV4CssSourceEntries = collectConfiguredTailwindV4CssSourceEntries(opts, opts.tailwindcssBasedir ?? rootDir)
-    const subpackageRoots = collectMiniProgramSubpackageRoots(bundle)
-    if (subpackageRoots) {
-      currentSubpackageRoots = subpackageRoots
-    }
     const buildCommand = resolvedConfig?.command === 'build'
     const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
     const hasOmittedKnownFiles = hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
