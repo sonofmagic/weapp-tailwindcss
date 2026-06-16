@@ -157,6 +157,6 @@ wx-root-portal-content {
 .bg-linear-to-r.from-cyan-500.to-blue-500,
 .bg-gradient-to-r.from-cyan-500.to-blue-500 {
   background-image: -webkit-gradient(linear, left top, right top, from(#06b6d4), to(#3b82f6));
-  background-image: -webkit-linear-gradient(left, #06b6d4 0%, #3b82f6 100%);
-  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
+  background-image: -webkit-linear-gradient(left, #06b6d4, #3b82f6);
+  background-image: linear-gradient(to right, #06b6d4, #3b82f6);
 }

@@ -430,7 +430,7 @@ view,text,::after,::before {
   --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
 .bg-gradient-to-r.from-cyan-500.to-blue-500 {
-      background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%);
+      background-image: linear-gradient(to right, rgb(0, 182, 212), rgb(50, 128, 255));
 }"
 `;
 
@@ -987,7 +987,7 @@ view,text,::after,::before {
   --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
 }
 .bg-linear-to-r.from-cyan-500.to-blue-500 {
-      background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%);
+      background-image: linear-gradient(to right, rgb(0, 182, 212), rgb(50, 128, 255));
 }"
 `;
 

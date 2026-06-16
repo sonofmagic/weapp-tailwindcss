@@ -20,9 +20,11 @@ const DISPLAY_P3_COLOR_RE = /color\s*:\s*color\(\s*display-p3\s+0\s+0\s+0%\s*\)/
 const DISPLAY_P3_VALUE_RE = /color\(\s*display-p3\b/i
 const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
 const GRADIENT_STOPS_BACKGROUND_RE = /^linear-gradient\(\s*var\(\s*--tw-gradient-stops\s*\)\s*\)$/i
+const GRADIENT_BACKGROUND_RE = /^(linear|radial|conic)-gradient\(/i
+const GRADIENT_STOPS_VAR_RE = /^(?:linear|radial|conic)-gradient\(\s*var\(\s*--tw-gradient-stops\b/i
 const SIMPLE_CLASS_SELECTOR_RE = /^\.([_a-z\u00A0-\uFFFF\\-][\w\u00A0-\uFFFF\\-]*)$/i
 const COLOR_VAR_RE = /^var\(\s*(--color-[\w-]+)\s*\)$/i
-const GRADIENT_DIRECTION_CLASS_RE = /^(?:bg-linear-to-|bg-gradient-to-)/
+const GRADIENT_DIRECTION_CLASS_RE = /^(?:-?bg-linear|bg-gradient-to-|-?bg-conic|bg-radial)/
 
 // 用于 normalizeTailwindcssV4Declaration 的正则
 const RADIUS_VALUE_RE = /\b([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?)\s*(r?px)\b/gi
@@ -201,6 +203,39 @@ function normalizeDeclarationValue(value: string) {
   return value.replace(/\s+/g, ' ').trim()
 }
 
+function normalizeTailwindcssV4GradientPosition(value: string) {
+  return value
+    .replace(/calc\(\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|grad|rad|turn))\s*\*\s*-1\s*\)/gi, '-$1')
+    .replace(/\s+in\s+(?:oklab|oklch|hsl|srgb)(?:\s+(?:longer|shorter|increasing|decreasing)\s+hue)?\s*$/i, '')
+    .replace(/\s+(?:longer|shorter|increasing|decreasing)\s*$/i, '')
+    .trim()
+}
+
+function appendStopPosition(color: string, position?: string) {
+  const normalizedPosition = position?.trim()
+  return normalizedPosition ? `${color} ${normalizedPosition}` : color
+}
+
+function getGradientStopsFallback(value: string) {
+  if (!value.includes('var(') || !value.includes('--tw-gradient-stops')) {
+    return undefined
+  }
+  const parsed = valueParser(value)
+  let fallback: string | undefined
+  parsed.walk((node) => {
+    if (fallback || node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+      return
+    }
+    const firstCommaIndex = node.nodes.findIndex(child => child.type === 'div' && child.value === ',')
+    const firstArg = node.nodes.find(child => child.type !== 'space')
+    if (firstArg?.type !== 'word' || firstArg.value !== '--tw-gradient-stops' || firstCommaIndex < 0) {
+      return
+    }
+    fallback = valueParser.stringify(node.nodes.slice(firstCommaIndex + 1)).trim()
+  })
+  return fallback
+}
+
 function isTailwindcssV4GradientDirectionRule(rule: Rule) {
   const classSelector = getSingleClassSelector(rule.selector)
   if (!classSelector || !GRADIENT_DIRECTION_CLASS_RE.test(classSelector)) {
@@ -283,16 +318,58 @@ export function mergeTailwindcssV4GradientDirectionRules(root: Root) {
   })
 }
 
-// 微信开发者工具对 linear-gradient 内嵌多层 CSS 变量支持不完整，这里为实际生成的 v4 渐变组合补字面量兜底。
+interface GradientBaseRule {
+  classSelector: string
+  order: number
+  position: string
+  type: 'conic' | 'linear' | 'radial'
+}
+
+interface GradientColorRule {
+  classSelector: string
+  color: string
+  order: number
+  position?: string
+}
+
+function createTailwindcssV4MiniProgramGradientValue(
+  gradient: GradientBaseRule,
+  from: GradientColorRule,
+  to: GradientColorRule,
+  via?: GradientColorRule,
+) {
+  const stops = [
+    gradient.position,
+    appendStopPosition(from.color, from.position),
+  ]
+  if (via) {
+    stops.push(appendStopPosition(via.color, via.position))
+  }
+  stops.push(appendStopPosition(to.color, to.position))
+  return `${gradient.type}-gradient(${stops.filter(Boolean).join(', ')})`
+}
+
+// 微信开发者工具对 gradient 内嵌多层 CSS 变量支持不完整，这里为实际生成的 v4 渐变组合补字面量兜底。
 export function appendTailwindcssV4MiniProgramGradientRules(root: Root) {
   const themeVariables = collectTailwindcssV4ThemeVariables(root)
-  const directions: Array<{ classSelector: string, position: string }> = []
-  const fromColors: Array<{ classSelector: string, color: string }> = []
-  const toColors: Array<{ classSelector: string, color: string }> = []
+  const gradients: GradientBaseRule[] = []
+  const fromColors = new Map<string, GradientColorRule>()
+  const viaColors = new Map<string, GradientColorRule>()
+  const toColors = new Map<string, GradientColorRule>()
+  const fromPositions: Array<{ classSelector: string, position: string }> = []
+  const viaPositions: Array<{ classSelector: string, position: string }> = []
+  const toPositions: Array<{ classSelector: string, position: string }> = []
+  const directBackgroundImages: Array<{ selector: string, value: string }> = []
   const existingBackgroundImages = new Map<string, Set<string>>()
+  const ruleOrder = new Map<string, number>()
+  let order = 0
 
   root.walkRules((rule) => {
     const classSelector = getSingleClassSelector(rule.selector)
+    const currentOrder = order++
+    if (classSelector) {
+      ruleOrder.set(classSelector, currentOrder)
+    }
     rule.walkDecls('background-image', (decl) => {
       const selector = rule.selector.trim()
       const values = existingBackgroundImages.get(selector)
@@ -304,49 +381,159 @@ export function appendTailwindcssV4MiniProgramGradientRules(root: Root) {
       }
     })
     if (classSelector) {
-      rule.walkDecls((decl) => {
-        if (decl.prop === '--tw-gradient-position') {
-          directions.push({ classSelector, position: decl.value })
+      const gradientPositionDecl = rule.nodes.find((node): node is PostcssDeclaration => {
+        return node.type === 'decl' && node.prop === '--tw-gradient-position'
+      })
+      const gradientBackgroundDecl = rule.nodes.find((node): node is PostcssDeclaration => {
+        return node.type === 'decl' && node.prop === 'background-image' && GRADIENT_BACKGROUND_RE.test(node.value)
+      })
+      if (gradientPositionDecl && gradientBackgroundDecl) {
+        const gradientType = GRADIENT_BACKGROUND_RE.exec(gradientBackgroundDecl.value)?.[1] as GradientBaseRule['type'] | undefined
+        if (gradientType) {
+          gradients.push({
+            classSelector,
+            order: currentOrder,
+            position: normalizeTailwindcssV4GradientPosition(gradientPositionDecl.value),
+            type: gradientType,
+          })
+          const fallback = GRADIENT_STOPS_VAR_RE.test(gradientBackgroundDecl.value)
+            ? getGradientStopsFallback(gradientBackgroundDecl.value)
+            : undefined
+          if (fallback) {
+            directBackgroundImages.push({
+              selector: rule.selector.trim(),
+              value: `${gradientType}-gradient(${fallback})`,
+            })
+          }
         }
-        else if (decl.prop === '--tw-gradient-from') {
-          fromColors.push({
+      }
+      rule.walkDecls((decl) => {
+        if (decl.prop === '--tw-gradient-from') {
+          fromColors.set(classSelector, {
             classSelector,
             color: resolveTailwindcssV4GradientColor(decl.value, themeVariables),
+            order: currentOrder,
           })
+        }
+        else if (decl.prop === '--tw-gradient-from-position') {
+          fromPositions.push({ classSelector, position: decl.value })
+        }
+        else if (decl.prop === '--tw-gradient-via') {
+          viaColors.set(classSelector, {
+            classSelector,
+            color: resolveTailwindcssV4GradientColor(decl.value, themeVariables),
+            order: currentOrder,
+          })
+        }
+        else if (decl.prop === '--tw-gradient-via-position') {
+          viaPositions.push({ classSelector, position: decl.value })
         }
         else if (decl.prop === '--tw-gradient-to') {
-          toColors.push({
+          toColors.set(classSelector, {
             classSelector,
             color: resolveTailwindcssV4GradientColor(decl.value, themeVariables),
+            order: currentOrder,
           })
+        }
+        else if (decl.prop === '--tw-gradient-to-position') {
+          toPositions.push({ classSelector, position: decl.value })
         }
       })
     }
   })
 
-  for (const direction of directions) {
-    for (const from of fromColors) {
-      for (const to of toColors) {
-        const selector = `.${direction.classSelector}.${from.classSelector}.${to.classSelector}`
-        const value = `linear-gradient(${direction.position}, ${from.color} 0%, ${to.color} 100%)`
-        if (existingBackgroundImages.get(selector)?.has(normalizeDeclarationValue(value))) {
-          continue
+  const fromVariants: GradientColorRule[] = []
+  const viaVariants: GradientColorRule[] = []
+  const toVariants: GradientColorRule[] = []
+  const positionedFromVariants: GradientColorRule[] = []
+  const positionedViaVariants: GradientColorRule[] = []
+  const positionedToVariants: GradientColorRule[] = []
+  for (const color of fromColors.values()) {
+    fromVariants.push(color)
+    for (const position of fromPositions) {
+      positionedFromVariants.push({
+        ...color,
+        classSelector: `${color.classSelector}.${position.classSelector}`,
+        order: Math.max(color.order, ruleOrder.get(position.classSelector) ?? color.order),
+        position: position.position,
+      })
+    }
+  }
+  for (const color of viaColors.values()) {
+    viaVariants.push(color)
+    for (const position of viaPositions) {
+      positionedViaVariants.push({
+        ...color,
+        classSelector: `${color.classSelector}.${position.classSelector}`,
+        order: Math.max(color.order, ruleOrder.get(position.classSelector) ?? color.order),
+        position: position.position,
+      })
+    }
+  }
+  for (const color of toColors.values()) {
+    toVariants.push(color)
+    for (const position of toPositions) {
+      positionedToVariants.push({
+        ...color,
+        classSelector: `${color.classSelector}.${position.classSelector}`,
+        order: Math.max(color.order, ruleOrder.get(position.classSelector) ?? color.order),
+        position: position.position,
+      })
+    }
+  }
+
+  function appendGradientRule(selector: string, value: string) {
+    const normalizedValue = normalizeDeclarationValue(value)
+    if (existingBackgroundImages.get(selector)?.has(normalizedValue)) {
+      return
+    }
+    existingBackgroundImages.set(selector, new Set([
+      ...(existingBackgroundImages.get(selector) ?? []),
+      normalizedValue,
+    ]))
+    root.append(createRule({
+      selector,
+      nodes: [
+        new Declaration({
+          prop: 'background-image',
+          value,
+        }),
+      ],
+    }))
+  }
+
+  for (const { selector, value } of directBackgroundImages) {
+    appendGradientRule(selector, value)
+  }
+
+  function appendGradientCombinations(
+    gradient: GradientBaseRule,
+    fromRules: GradientColorRule[],
+    viaRules: GradientColorRule[],
+    toRules: GradientColorRule[],
+  ) {
+    for (const from of fromRules) {
+      for (const to of toRules) {
+        appendGradientRule(
+          `.${gradient.classSelector}.${from.classSelector}.${to.classSelector}`,
+          createTailwindcssV4MiniProgramGradientValue(gradient, from, to),
+        )
+        for (const via of viaRules) {
+          appendGradientRule(
+            `.${gradient.classSelector}.${from.classSelector}.${via.classSelector}.${to.classSelector}`,
+            createTailwindcssV4MiniProgramGradientValue(gradient, from, to, via),
+          )
         }
-        existingBackgroundImages.set(selector, new Set([
-          ...(existingBackgroundImages.get(selector) ?? []),
-          normalizeDeclarationValue(value),
-        ]))
-        root.append(createRule({
-          selector,
-          nodes: [
-            new Declaration({
-              prop: 'background-image',
-              value,
-            }),
-          ],
-        }))
       }
     }
+  }
+
+  for (const gradient of gradients) {
+    if (gradient.position.includes(',') || /^var\(/i.test(gradient.position)) {
+      continue
+    }
+    appendGradientCombinations(gradient, fromVariants, viaVariants, toVariants)
+    appendGradientCombinations(gradient, positionedFromVariants, positionedViaVariants, positionedToVariants)
   }
 }
 

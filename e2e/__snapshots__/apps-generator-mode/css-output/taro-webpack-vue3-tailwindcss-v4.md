@@ -5,7 +5,7 @@ Entry: taro-webpack-vue3-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 8197 | 41 | false | false | false | true | true | false | true |
+| 8189 | 41 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: taro-webpack-vue3-tailwindcss-v4/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 5946 | 36 | false | false | false | true | true | false | true |
+| `app.wxss` | 5938 | 36 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 156 | 1 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1123 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1088 | 6 | false | false | false | false | false | false | true |
@@ -206,7 +206,7 @@ wx-root-portal-content {
 }
  /* tokens: bg-gradient-to-r <= src/pages/index/index.vue | from-cyan-500 <= src/pages/index/index.vue | to-blue-500 <= src/pages/index/index.vue */
 .bg-gradient-to-r.from-cyan-500.to-blue-500 {
-  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
+  background-image: linear-gradient(to right, #06b6d4, #3b82f6);
 }
 ```
 

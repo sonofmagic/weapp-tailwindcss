@@ -109,7 +109,7 @@ describe('issues', () => {
 
     expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));')
     expect(css).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
-    expect(css).toContain('background-image: linear-gradient(to right, rgb(0, 182, 212) 0%, rgb(50, 128, 255) 100%)')
+    expect(css).toContain('background-image: linear-gradient(to right, rgb(0, 182, 212), rgb(50, 128, 255))')
     expect(css).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*linear-gradient/)
     expect(css).toContain('--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)),')
     expect(css).toContain('var(--tw-gradient-from) var(--tw-gradient-from-position, )')

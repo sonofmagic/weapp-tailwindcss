@@ -389,15 +389,15 @@ wx-root-portal-content {
 }
  /* tokens: bg-gradient-to-b <= pages/index/index.wxml | from-[#2f73f1] <= pages/index/index.wxml | to-[#4bcefd] <= pages/index/index.wxml */
 .bg-gradient-to-b.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-  background-image: linear-gradient(to bottom, #2f73f1 0%, #4bcefd 100%);
+  background-image: linear-gradient(to bottom, #2f73f1, #4bcefd);
 }
  /* tokens: bg-gradient-to-t <= pages/index/index.wxml | from-[#2f73f1] <= pages/index/index.wxml | to-[#4bcefd] <= pages/index/index.wxml */
 .bg-gradient-to-t.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-  background-image: linear-gradient(to top, #2f73f1 0%, #4bcefd 100%);
+  background-image: linear-gradient(to top, #2f73f1, #4bcefd);
 }
  /* tokens: bg-gradient-to-tr <= pages/index/index.wxml | from-[#2f73f1] <= pages/index/index.wxml | to-[#4bcefd] <= pages/index/index.wxml */
 .bg-gradient-to-tr.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-  background-image: linear-gradient(to top right, #2f73f1 0%, #4bcefd 100%);
+  background-image: linear-gradient(to top right, #2f73f1, #4bcefd);
 }
  /* tokens: mt-2 <= pages/index/index.wxml */
 .mt-2 {

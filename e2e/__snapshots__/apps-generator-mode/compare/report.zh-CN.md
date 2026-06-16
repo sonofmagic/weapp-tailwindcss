@@ -11,17 +11,17 @@
 | mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+10) | 187902 | 2900 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+4) | 46584 | 126 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v3 | demo | 通过 | `taro-webpack-react-tailwindcss-v3/dist/app.wxss` (+6) | 54343 | 164 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 10279 | 49 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 1303016 | 2964 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+4) | 8955 | 48 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5721 | 40 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5705 | 40 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 16350 | 84 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 8197 | 41 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-vue3-tailwindcss-v4 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 8189 | 41 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-vue3-tailwindcss-v3 | demo | 通过 | `taro-vite-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 8703 | 45 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 5626 | 38 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-vite-vue3-tailwindcss-v4 | demo | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 5610 | 38 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v3 | demo | 通过 | `uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss` (+11) | 211296 | 2838 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | uni-app-vite-tailwindcss-v4 | demo | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+4) | 31517 | 137 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | weapp-vite-tailwindcss-v3 | demo | 通过 | `weapp-vite-tailwindcss-v3/dist/app.wxss` (+3) | 47472 | 181 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+3) | 22304 | 86 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| weapp-vite-tailwindcss-v4 | demo | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+3) | 22280 | 86 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 
 ## 说明
 
@@ -65,7 +65,7 @@
 ### taro-webpack-react-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.-rotate-y-45`, `.absolute`, `.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-gradient-to-r.from-cyan-500.to-blue-500`, `.bg-independent-subpackage-marker`, `.bg-linear-to-r`, `.bg-linear-to-r.from-cyan-500.to-blue-500`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.flex`, `.from-cyan-500`, `.h-14`, `.h-8`
+- 选择器：`.-bg-conic-180`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.to-_b_h3b82f6_B.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.to-_p--issue-928-to_P.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.to-blue-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.to-rose-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-_p--issue-928-via_P.via-30_v.to-_b_h3b82f6_B.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-_p--issue-928-via_P.via-30_v.to-_p--issue-928-to_P.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-_p--issue-928-via_P.via-30_v.to-blue-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-_p--issue-928-via_P.via-30_v.to-rose-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-purple-500.via-30_v.to-_b_h3b82f6_B.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-purple-500.via-30_v.to-_p--issue-928-to_P.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-purple-500.via-30_v.to-blue-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-purple-500.via-30_v.to-rose-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-yellow-300.via-30_v.to-_b_h3b82f6_B.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-yellow-300.via-30_v.to-_p--issue-928-to_P.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-yellow-300.via-30_v.to-blue-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.from-10_v.via-yellow-300.via-30_v.to-rose-500.to-90_v`, `.-bg-conic-180.from-_b_h06b6d4_B.to-_b_h3b82f6_B`, `.-bg-conic-180.from-_b_h06b6d4_B.to-_p--issue-928-to_P`, `.-bg-conic-180.from-_b_h06b6d4_B.to-blue-500`
 
 ### taro-vite-react-tailwindcss-v3
 

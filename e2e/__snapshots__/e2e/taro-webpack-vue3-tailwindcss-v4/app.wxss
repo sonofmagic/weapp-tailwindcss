@@ -172,5 +172,5 @@ wx-root-portal-content {
 }
  /* tokens: bg-gradient-to-r <= src/pages/index/index.vue | from-cyan-500 <= src/pages/index/index.vue | to-blue-500 <= src/pages/index/index.vue */
 .bg-gradient-to-r.from-cyan-500.to-blue-500 {
-  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
+  background-image: linear-gradient(to right, #06b6d4, #3b82f6);
 }

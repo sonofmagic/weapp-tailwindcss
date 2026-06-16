@@ -25,7 +25,13 @@ const transformClasses = [
 ]
 const gradientClasses = [
   'bg-linear-to-r',
+  'bg-linear-to-tr',
+  'bg-linear-65',
+  'bg-radial',
+  'bg-conic',
+  'bg-conic-180',
   'from-cyan-500',
+  'via-purple-500',
   'to-blue-500',
 ]
 const coveredIssues = [
@@ -93,6 +99,24 @@ function countBluePixels(png: PNG, rect: Rect) {
 function countCyanPixels(png: PNG, rect: Rect) {
   return countPixels(png, rect, ({ alpha, blue, green, red }) => {
     return alpha > 180 && green > 130 && blue > 130 && green > red + 35
+  })
+}
+
+function countPurplePixels(png: PNG, rect: Rect) {
+  return countPixels(png, rect, ({ alpha, blue, green, red }) => {
+    return alpha > 180 && red > 120 && blue > 120 && blue > green + 30
+  })
+}
+
+function countRedPixels(png: PNG, rect: Rect) {
+  return countPixels(png, rect, ({ alpha, blue, green, red }) => {
+    return alpha > 180 && red > 150 && red > green + 40 && red > blue + 30
+  })
+}
+
+function countYellowPixels(png: PNG, rect: Rect) {
+  return countPixels(png, rect, ({ alpha, blue, green, red }) => {
+    return alpha > 180 && red > 180 && green > 150 && blue < 130
   })
 }
 
@@ -190,7 +214,19 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
     expect(appWxss).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-position\),\s*var\(--tw-gradient-from\) var\(--tw-gradient-from-position, \),\s*var\(--tw-gradient-to\) var\(--tw-gradient-to-position, \)\)/)
     expect(appWxss).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*linear-gradient/)
     expect(appWxss).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
-    expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%)')
+    expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+    expect(appWxss).toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
+    expect(appWxss).toContain('background-image: linear-gradient(to right, var(--issue-928-from), var(--issue-928-via), var(--issue-928-to))')
+    expect(appWxss).toContain('background-image: linear-gradient(to top right, #06b6d4 10%, #a855f7 30%, #3b82f6 90%)')
+    expect(appWxss).toContain('background-image: linear-gradient(65deg, #34d399, #fde047, #f43f5e)')
+    expect(appWxss).toContain('background-image: radial-gradient(#06b6d4, #a855f7, #3b82f6)')
+    expect(appWxss).toContain('background-image: radial-gradient(at 50% 75%, #06b6d4, #a855f7, #3b82f6)')
+    expect(appWxss).toContain('background-image: conic-gradient(#06b6d4, #a855f7, #3b82f6)')
+    expect(appWxss).toContain('background-image: conic-gradient(from 180deg, #06b6d4, #a855f7, #3b82f6)')
+    expect(appWxss).toContain('background-image: conic-gradient(from -180deg, #06b6d4, #a855f7, #3b82f6)')
+    expect(appWxss).toContain('background-image: linear-gradient(25deg,#ef4444 5%,#eab308 60%,#22c55e 90%,#14b8a6)')
+    expect(appWxss).toContain('background-image: linear-gradient(to right,#06b6d4,#3b82f6)')
+    expect(appWxss).toContain('background-image: conic-gradient(from 45deg at 50% 50%,#ef4444,#eab308,#22c55e)')
     expect(appWxss, 'issue 928 should keep mini-program parseable gradient via fallback')
       .toContain('--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)),')
     expect(appWxss, 'issue 928 should keep from-position fallback in gradient stops')
@@ -278,8 +314,32 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
     const gradientPage = await miniProgram.reLaunch(issue928PageUrl)
     await gradientPage.waitFor(1000)
     const gradientNode = await gradientPage.$('.issue-928-gradient')
+    const viaGradientNode = await gradientPage.$('.issue-928-linear-via')
+    const stopArbitraryGradientNode = await gradientPage.$('.issue-928-stop-arbitrary')
+    const stopVarGradientNode = await gradientPage.$('.issue-928-stop-var')
+    const radialGradientNode = await gradientPage.$('.issue-928-radial-custom')
+    const conicGradientNode = await gradientPage.$('.issue-928-conic-angle')
+    const arbitraryGradientNode = await gradientPage.$('.issue-928-linear-custom')
+    const arbitraryImageGradientNode = await gradientPage.$('.issue-928-arbitrary-image')
+    const imageVarGradientNode = await gradientPage.$('.issue-928-image-var')
     expect(gradientNode).toBeTruthy()
+    expect(viaGradientNode).toBeTruthy()
+    expect(stopArbitraryGradientNode).toBeTruthy()
+    expect(stopVarGradientNode).toBeTruthy()
+    expect(radialGradientNode).toBeTruthy()
+    expect(conicGradientNode).toBeTruthy()
+    expect(arbitraryGradientNode).toBeTruthy()
+    expect(arbitraryImageGradientNode).toBeTruthy()
+    expect(imageVarGradientNode).toBeTruthy()
     await expect(gradientNode.attribute('class')).resolves.toContain('bg-linear-to-r')
+    await expect(viaGradientNode.attribute('class')).resolves.toContain('via-purple-500')
+    await expect(stopArbitraryGradientNode.attribute('class')).resolves.toContain('from-')
+    await expect(stopVarGradientNode.attribute('class')).resolves.toContain('from-')
+    await expect(radialGradientNode.attribute('class')).resolves.toContain('bg-radial')
+    await expect(conicGradientNode.attribute('class')).resolves.toContain('bg-conic-180')
+    await expect(arbitraryGradientNode.attribute('class')).resolves.toContain('bg-linear-')
+    await expect(arbitraryImageGradientNode.attribute('class')).resolves.toContain('bg-')
+    await expect(imageVarGradientNode.attribute('class')).resolves.toContain('bg-')
 
     const gradientScreenshotPath = path.resolve(artifactDir, 'issue-928-gradient.png')
     await captureMiniProgramScreenshot(miniProgram, gradientScreenshotPath)
@@ -290,12 +350,34 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
     const gradientScaleX = gradientScreenshot.width / gradientPageSize.width
     const gradientScaleY = gradientScreenshot.height / gradientPageSize.height
     const gradientRect = expandRect(scaleRect({ ...gradientOffset, ...gradientSize }, gradientScaleX, gradientScaleY), 2)
+    const viaGradientRect = expandRect(scaleRect({ ...await viaGradientNode.offset(), ...await viaGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
+    const stopVarGradientRect = expandRect(scaleRect({ ...await stopVarGradientNode.offset(), ...await stopVarGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
+    const radialGradientRect = expandRect(scaleRect({ ...await radialGradientNode.offset(), ...await radialGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
+    const conicGradientRect = expandRect(scaleRect({ ...await conicGradientNode.offset(), ...await conicGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
+    const arbitraryGradientRect = expandRect(scaleRect({ ...await arbitraryGradientNode.offset(), ...await arbitraryGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
+    const arbitraryImageGradientRect = expandRect(scaleRect({ ...await arbitraryImageGradientNode.offset(), ...await arbitraryImageGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
+    const imageVarGradientRect = expandRect(scaleRect({ ...await imageVarGradientNode.offset(), ...await imageVarGradientNode.size() }, gradientScaleX, gradientScaleY), 2)
     const gradientBluePixels = countBluePixels(gradientScreenshot, gradientRect)
     const gradientCyanPixels = countCyanPixels(gradientScreenshot, gradientRect)
+    const viaGradientPurplePixels = countPurplePixels(gradientScreenshot, viaGradientRect)
+    const stopVarGradientPurplePixels = countPurplePixels(gradientScreenshot, stopVarGradientRect)
+    const radialGradientPurplePixels = countPurplePixels(gradientScreenshot, radialGradientRect)
+    const conicGradientPurplePixels = countPurplePixels(gradientScreenshot, conicGradientRect)
+    const arbitraryGradientRedPixels = countRedPixels(gradientScreenshot, arbitraryGradientRect)
+    const arbitraryGradientYellowPixels = countYellowPixels(gradientScreenshot, arbitraryGradientRect)
+    const arbitraryImageGradientBluePixels = countBluePixels(gradientScreenshot, arbitraryImageGradientRect)
+    const imageVarGradientBluePixels = countBluePixels(gradientScreenshot, imageVarGradientRect)
 
     await fs.writeFile(
       path.resolve(artifactDir, 'issue-928-gradient-visual.json'),
       `${JSON.stringify({
+        arbitraryGradientRedPixels,
+        arbitraryGradientRect,
+        arbitraryGradientYellowPixels,
+        arbitraryImageGradientBluePixels,
+        arbitraryImageGradientRect,
+        conicGradientPurplePixels,
+        conicGradientRect,
         coveredIssues: coveredIssues.slice(2),
         gradientBluePixels,
         gradientClasses,
@@ -303,11 +385,27 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
         gradientRect,
         gradientScaleX,
         gradientScaleY,
+        imageVarGradientBluePixels,
+        imageVarGradientRect,
+        radialGradientPurplePixels,
+        radialGradientRect,
         screenshot: gradientScreenshotPath,
+        stopVarGradientPurplePixels,
+        stopVarGradientRect,
+        viaGradientPurplePixels,
+        viaGradientRect,
       }, null, 2)}\n`,
     )
 
     expect(gradientCyanPixels).toBeGreaterThan(100)
     expect(gradientBluePixels).toBeGreaterThan(100)
+    expect(viaGradientPurplePixels).toBeGreaterThan(100)
+    expect(stopVarGradientPurplePixels).toBeGreaterThan(100)
+    expect(radialGradientPurplePixels).toBeGreaterThan(100)
+    expect(conicGradientPurplePixels).toBeGreaterThan(100)
+    expect(arbitraryGradientRedPixels).toBeGreaterThan(100)
+    expect(arbitraryGradientYellowPixels).toBeGreaterThan(100)
+    expect(arbitraryImageGradientBluePixels).toBeGreaterThan(100)
+    expect(imageVarGradientBluePixels).toBeGreaterThan(100)
   }, 120_000)
 })

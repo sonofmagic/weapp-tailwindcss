@@ -5,7 +5,7 @@ Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 22304 | 86 | false | false | false | true | true | false | true |
+| 22280 | 86 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 20148 | 80 | false | false | false | true | true | false | true |
+| `app.wxss` | 20124 | 80 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 115 | 2 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1096 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1061 | 6 | false | false | false | false | false | false | true |
@@ -427,15 +427,15 @@ wx-root-portal-content {
 }
  /* tokens: bg-gradient-to-b <= pages/index/index.wxml | from-[#2f73f1] <= pages/index/index.wxml | to-[#4bcefd] <= pages/index/index.wxml */
 .bg-gradient-to-b.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-  background-image: linear-gradient(to bottom, #2f73f1 0%, #4bcefd 100%);
+  background-image: linear-gradient(to bottom, #2f73f1, #4bcefd);
 }
  /* tokens: bg-gradient-to-t <= pages/index/index.wxml | from-[#2f73f1] <= pages/index/index.wxml | to-[#4bcefd] <= pages/index/index.wxml */
 .bg-gradient-to-t.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-  background-image: linear-gradient(to top, #2f73f1 0%, #4bcefd 100%);
+  background-image: linear-gradient(to top, #2f73f1, #4bcefd);
 }
  /* tokens: bg-gradient-to-tr <= pages/index/index.wxml | from-[#2f73f1] <= pages/index/index.wxml | to-[#4bcefd] <= pages/index/index.wxml */
 .bg-gradient-to-tr.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-  background-image: linear-gradient(to top right, #2f73f1 0%, #4bcefd 100%);
+  background-image: linear-gradient(to top right, #2f73f1, #4bcefd);
 }
  /* tokens: mt-2 <= pages/index/index.wxml */
 .mt-2 {

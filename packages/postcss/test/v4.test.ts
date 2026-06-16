@@ -349,12 +349,126 @@ describe('v4', () => {
 
     expect(css).toBe(`.bg-linear-to-r {
   --tw-gradient-position: to right;
-}
-.bg-linear-to-r {
-  background-image: linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
 }`)
     expect(css).not.toContain('@supports')
     expect(css).not.toContain('in oklab')
+  })
+
+  it('adds mini-program literal fallbacks for Tailwind CSS v4 gradient background images', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+:root,:host {
+  --color-cyan-500: #06b6d4;
+  --color-blue-500: #3b82f6;
+  --color-purple-500: #a855f7;
+}
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-linear-65 {
+  --tw-gradient-position: 65deg;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.-bg-linear-65 {
+  --tw-gradient-position: calc(65deg * -1);
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-linear-to-r\\/shorter {
+  --tw-gradient-position: to right in oklch shorter hue;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-radial {
+  --tw-gradient-position: in oklab;
+  background-image: radial-gradient(var(--tw-gradient-stops));
+}
+.bg-radial-\\[at_50\\%_75\\%\\] {
+  --tw-gradient-position: at 50% 75%;
+  background-image: radial-gradient(var(--tw-gradient-stops, at 50% 75%));
+}
+.bg-conic-180 {
+  --tw-gradient-position: from 180deg in oklab;
+  background-image: conic-gradient(var(--tw-gradient-stops));
+}
+.-bg-conic-180 {
+  --tw-gradient-position: from calc(180deg * -1) in oklab;
+  background-image: conic-gradient(var(--tw-gradient-stops));
+}
+.bg-conic-\\[from_45deg_at_50\\%_50\\%\\,red\\,yellow\\,lime\\] {
+  --tw-gradient-position: from 45deg at 50% 50%, red, yellow, lime;
+  background-image: conic-gradient(var(--tw-gradient-stops, from 45deg at 50% 50%, red, yellow, lime));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-\\[\\#06b6d4\\] {
+  --tw-gradient-from: #06b6d4;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-\\(--issue-928-from\\) {
+  --tw-gradient-from: var(--issue-928-from);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.from-10\\% {
+  --tw-gradient-from-position: 10%;
+}
+.via-purple-500 {
+  --tw-gradient-via: var(--color-purple-500);
+  --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+}
+.via-\\[\\#a855f7\\] {
+  --tw-gradient-via: #a855f7;
+  --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+}
+.via-\\(--issue-928-via\\) {
+  --tw-gradient-via: var(--issue-928-via);
+  --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+}
+.via-30\\% {
+  --tw-gradient-via-position: 30%;
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-\\[\\#3b82f6\\] {
+  --tw-gradient-to: #3b82f6;
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-\\(--issue-928-to\\) {
+  --tw-gradient-to: var(--issue-928-to);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-90\\% {
+  --tw-gradient-to-position: 90%;
+}
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+    expect(css).toContain('.bg-linear-to-r.from-cyan-500.from-10_v.via-purple-500.via-30_v.to-blue-500.to-90_v')
+    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4 10%, #a855f7 30%, #3b82f6 90%)')
+    expect(css).toContain('background-image: linear-gradient(65deg, #06b6d4, #3b82f6)')
+    expect(css).toContain('background-image: linear-gradient(-65deg, #06b6d4, #3b82f6)')
+    expect(css).toContain('background-image: radial-gradient(#06b6d4, #3b82f6)')
+    expect(css).toContain('background-image: conic-gradient(from 180deg, #06b6d4, #3b82f6)')
+    expect(css).toContain('background-image: conic-gradient(from -180deg, #06b6d4, #3b82f6)')
+    expect(css).toContain('background-image: radial-gradient(at 50% 75%)')
+    expect(css).toContain('background-image: conic-gradient(from 45deg at 50% 50%, red, yellow, lime)')
+    expect(css).toContain('.bg-linear-to-r_fshorter.from-cyan-500.to-blue-500')
+    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+    expect(css).toContain('.bg-linear-to-r.from-_b_h06b6d4_B.via-_b_ha855f7_B.to-_b_h3b82f6_B')
+    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
+    expect(css).toContain('.bg-linear-to-r.from-_p--issue-928-from_P.via-_p--issue-928-via_P.to-_p--issue-928-to_P')
+    expect(css).toContain('background-image: linear-gradient(to right, var(--issue-928-from), var(--issue-928-via), var(--issue-928-to))')
   })
 
   it('removes Tailwind CSS v4 display-p3 variable supports guard', async () => {

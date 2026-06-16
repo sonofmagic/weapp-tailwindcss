@@ -5,7 +5,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 5721 | 40 | false | false | false | true | true | false | true |
+| 5705 | 40 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -22,7 +22,7 @@ Entry: taro-vite-react-tailwindcss-v4/dist/app.wxss
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | 27 | 0 | false | false | false | false | false | false | false |
-| `app-origin.wxss` | 3901 | 35 | false | false | false | true | true | false | true |
+| `app-origin.wxss` | 3885 | 35 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 50 | 1 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 937 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 922 | 6 | false | false | false | false | false | false | true |
@@ -173,8 +173,8 @@ wx-root-portal-content {
 .bg-linear-to-r.from-cyan-500.to-blue-500,
 .bg-gradient-to-r.from-cyan-500.to-blue-500 {
   background-image: -webkit-gradient(linear, left top, right top, from(#06b6d4), to(#3b82f6));
-  background-image: -webkit-linear-gradient(left, #06b6d4 0%, #3b82f6 100%);
-  background-image: linear-gradient(to right, #06b6d4 0%, #3b82f6 100%);
+  background-image: -webkit-linear-gradient(left, #06b6d4, #3b82f6);
+  background-image: linear-gradient(to right, #06b6d4, #3b82f6);
 }
 ```
 
