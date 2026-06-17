@@ -307,6 +307,23 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const registerWebpackCssSourceFile = (source: WebpackCssSourceRegistration) => {
       webpackCssSources.set(path.resolve(source.file), source.css)
     }
+    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>) => {
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+      const configuredSourceFiles = new Set<string>()
+      for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
+        configuredSourceFiles.add(path.resolve(entry))
+      }
+      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+        if (source.file) {
+          configuredSourceFiles.add(path.resolve(source.file))
+        }
+      }
+      for (const file of webpackCssSources.keys()) {
+        if (!activeSourceFiles.has(file) && !configuredSourceFiles.has(file)) {
+          webpackCssSources.delete(file)
+        }
+      }
+    }
     const isWebpackProcessedTailwindEntryAsset = (file: string) => {
       if (
         (runtimeState.twPatcher.majorVersion ?? 0) < 4
@@ -400,6 +417,10 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       runtimeState,
       getRuntimeRefreshRequirement: () => runtimeRefreshRequiredForCompilation,
       refreshRuntimeMetadata: ensureRuntimeMetadata,
+      isKnownWebpackProcessedCssAsset(file) {
+        return webpackProcessedCssSourceFiles.has(path.resolve(file))
+          || isWebpackProcessedTailwindEntryAsset(file)
+      },
       isWebpackProcessedCssAsset(file, rawSource) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
           || isWebpackProcessedTailwindEntryAsset(file)
@@ -409,8 +430,10 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
         runtimeRefreshRequiredForCompilation = false
       },
       isWatchMode: () => watchRunObserved || compiler.options?.watch === true,
+      getWatchChangedFiles: collectWatchChangedFiles,
       runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
       getWebpackCssSources: () => webpackCssSources,
+      pruneWebpackCssSources,
       debug,
     })
   }

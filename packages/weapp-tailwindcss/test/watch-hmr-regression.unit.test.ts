@@ -681,6 +681,57 @@ describe('watch-hmr regression text helpers', () => {
     expect(elapsed).toBeGreaterThanOrEqual(0)
   })
 
+  it('does not treat post-start partial outputs as ready when compile success is mandatory', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-strict-partial-ready-'))
+    tempDirs.push(tempDir)
+    const wxmlFile = path.join(tempDir, 'index.wxml')
+    const jsFile = path.join(tempDir, 'index.js')
+    await writeFilePreserveEol(wxmlFile, '<view>stale</view>', '<view />')
+    await writeFilePreserveEol(jsFile, 'Page({ stale: true })', 'Page({})')
+    await new Promise(resolve => setTimeout(resolve, 20))
+    const sessionStartedAt = Date.now()
+    let compileSuccessAt = 0
+    const delayedCompile = new Promise<void>((resolve, reject) => {
+      setTimeout(() => {
+        void (async () => {
+          await writeFilePreserveEol(wxmlFile, '<view>partial</view>', '<view />')
+          await writeFilePreserveEol(jsFile, 'Page({ partial: true })', 'Page({})')
+        })().then(() => {
+          setTimeout(() => {
+            compileSuccessAt = Date.now()
+            resolve()
+          }, 80)
+        }, reject)
+      }, 20)
+    })
+
+    let elapsed = 0
+    try {
+      elapsed = await waitForOutputsReady(
+        {
+          label: 'demo/taro-webpack-react-tailwindcss-v4',
+          requireInitialCompileSuccess: true,
+          outputWxml: wxmlFile,
+          outputJs: jsFile,
+        } as any,
+        {
+          timeoutMs: 2_000,
+          pollMs: 20,
+        } as CliOptions,
+        {
+          ensureRunning() {},
+          lastCompileSuccessAt: () => compileSuccessAt,
+        } as any,
+        sessionStartedAt,
+      )
+    }
+    finally {
+      await delayedCompile
+    }
+
+    expect(elapsed).toBeGreaterThanOrEqual(100)
+  })
+
   it('requires a stable post-start output update during warmup when compile success is mandatory', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-warmup-'))
     tempDirs.push(tempDir)
@@ -2182,6 +2233,13 @@ describe('watch-hmr regression cases', () => {
 
     expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.requireInitialCompileSuccess).toBe(false)
     expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(false)
+  })
+
+  it('requires initial compile success for Taro webpack v4 watch cases before HMR mutation', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+
+    expect(demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(true)
+    expect(demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(true)
   })
 
   it('prebuilds the weapp-vite demo before watch so dev hot updates start from complete outputs', () => {

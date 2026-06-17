@@ -47,7 +47,7 @@ function createHtmlRuntimeAffectingSignature(source: string) {
 function createJsRuntimeAffectingSignature(source: string) {
   try {
     const ast = babelParse(source, {
-      cache: true,
+      cache: false,
       cacheKey: 'vite-runtime-affecting:unambiguous',
       plugins: ['jsx', 'typescript'],
       sourceType: 'unambiguous',

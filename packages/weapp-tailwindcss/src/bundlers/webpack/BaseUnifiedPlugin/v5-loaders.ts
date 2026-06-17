@@ -8,7 +8,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve } from '@/shared/mpx'
-import { setWebpackLoaderRuntime } from '../loaders/runtime-registry'
+import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
 
@@ -87,6 +87,11 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     classSet: classSetLoaderOptions,
     ...(runtimeLoaderRewriteOptions === undefined ? {} : { cssImportRewrite: runtimeLoaderRewriteOptions }),
   })
+  const cleanupWebpackLoaderRuntime = () => {
+    deleteWebpackLoaderRuntime(runtimeRegistryKey)
+  }
+  compiler.hooks.watchClose?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
+  compiler.hooks.shutdown?.tap?.(pluginName, cleanupWebpackLoaderRuntime)
   const { findRewriteAnchor, findClassSetAnchor } = createLoaderAnchorFinders(appType)
   const cssImportRewriteLoaderOptions = runtimeLoaderRewriteOptions
     ? {

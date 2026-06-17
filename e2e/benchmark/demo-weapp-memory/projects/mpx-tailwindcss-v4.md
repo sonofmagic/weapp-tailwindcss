@@ -5,18 +5,17 @@
 - tailwindcss: v4
 - source_shape: mpx-sfc
 - platform: weapp
-- status: failed
+- status: passed
 
 ## 阶段汇总
 
 | stage | status | samples | baseline RSS | peak RSS | RSS delta | max process RSS | peak processes | duration | command |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| build | passed | 6 | 329MB | 1168MB | 839MB | 996MB | 2 | 5s | `pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v4 run build` |
-| hmr | failed | 1368 | 797MB | 4563MB | 3766MB | 4185MB | 10 | 22m48s | `pnpm e2e:hot-update:demo` |
+| build | passed | 7 | 183MB | 1389MB | 1206MB | 1206MB | 2 | 6s | `pnpm --filter @weapp-tailwindcss-demo/mpx-tailwindcss-v4 run build` |
+| hmr | passed | 151 | 743MB | 3421MB | 2678MB | 2833MB | 11 | 2m30s | `pnpm e2e:hot-update:demo` |
 
 ## 优化建议
 
-- HMR 峰值已经接近或超过 4GB，建议增加连续热更新轮次后的 heap snapshot，对比 Tailwind runtime、CSS AST、ModuleInfo/loader result 缓存留存。
 - 本 demo 的 HMR RSS 增长高于 build，优先审计 watchChange/handleHotUpdate 缓存释放、runtime class set 增量刷新和构建器模块图引用。
 - 优先用当前报告里的 peak RSS / RSS delta 锁定阶段：build 峰值高先查首轮 Tailwind 候选扫描与构建器产物缓存，HMR delta 高先查 watch 生命周期缓存是否持续增长。
 - 打开 WEAPP_TW_HMR_MEMORY_DEBUG=1 后，对照 HMR raw report 中的 memory debug / plugin process samples，优先定位 heapUsedMb 或单个插件阶段 RSS 峰值最高的 bundler phase。

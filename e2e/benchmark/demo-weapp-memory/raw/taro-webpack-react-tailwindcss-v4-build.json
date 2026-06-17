@@ -1,0 +1,138 @@
+{
+  "generatedAt": "2026-06-17T16:14:51.182Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 15,
+    "baselineRssMb": 610,
+    "peakRssMb": 1459,
+    "rssDeltaMb": 849,
+    "peakMaxProcessRssMb": 1204,
+    "peakProcessCount": 7,
+    "firstAt": 1781712876971,
+    "lastAt": 1781712890987,
+    "durationMs": 14016,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "taro-webpack-react-tailwindcss-v4 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4",
+        "run",
+        "build:weapp"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T16:14:36.951Z",
+      "endedAt": "2026-06-17T16:14:51.182Z",
+      "local": false,
+      "summary": {
+        "count": 15,
+        "baselineRssMb": 610,
+        "peakRssMb": 1459,
+        "rssDeltaMb": 849,
+        "peakMaxProcessRssMb": 1204,
+        "peakProcessCount": 7,
+        "firstAt": 1781712876971,
+        "lastAt": 1781712890987,
+        "durationMs": 14016
+      },
+      "samples": [
+        {
+          "at": 1781712876971,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781712877975,
+          "rssMb": 610,
+          "maxProcessRssMb": 186,
+          "processCount": 5
+        },
+        {
+          "at": 1781712878975,
+          "rssMb": 924,
+          "maxProcessRssMb": 335,
+          "processCount": 7
+        },
+        {
+          "at": 1781712879976,
+          "rssMb": 764,
+          "maxProcessRssMb": 185,
+          "processCount": 7
+        },
+        {
+          "at": 1781712880976,
+          "rssMb": 270,
+          "maxProcessRssMb": 185,
+          "processCount": 3
+        },
+        {
+          "at": 1781712881978,
+          "rssMb": 433,
+          "maxProcessRssMb": 200,
+          "processCount": 3
+        },
+        {
+          "at": 1781712882977,
+          "rssMb": 637,
+          "maxProcessRssMb": 382,
+          "processCount": 4
+        },
+        {
+          "at": 1781712883978,
+          "rssMb": 756,
+          "maxProcessRssMb": 501,
+          "processCount": 4
+        },
+        {
+          "at": 1781712884980,
+          "rssMb": 911,
+          "maxProcessRssMb": 655,
+          "processCount": 4
+        },
+        {
+          "at": 1781712885981,
+          "rssMb": 1103,
+          "maxProcessRssMb": 848,
+          "processCount": 4
+        },
+        {
+          "at": 1781712886984,
+          "rssMb": 1253,
+          "maxProcessRssMb": 998,
+          "processCount": 4
+        },
+        {
+          "at": 1781712887984,
+          "rssMb": 1351,
+          "maxProcessRssMb": 1095,
+          "processCount": 4
+        },
+        {
+          "at": 1781712888988,
+          "rssMb": 1388,
+          "maxProcessRssMb": 1132,
+          "processCount": 4
+        },
+        {
+          "at": 1781712889987,
+          "rssMb": 1459,
+          "maxProcessRssMb": 1204,
+          "processCount": 4
+        },
+        {
+          "at": 1781712890987,
+          "rssMb": 1410,
+          "maxProcessRssMb": 1154,
+          "processCount": 4
+        }
+      ]
+    }
+  ]
+}

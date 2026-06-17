@@ -290,10 +290,10 @@ export function createBundleRuntimeClassSetManager(
     const rawCandidatesByFile = new Map<string, Set<string>>()
     const unknownCandidates = new Set<string>()
 
-    await Promise.all(changedRuntimeFiles.map(async (file) => {
+    for (const file of changedRuntimeFiles) {
       const entry = runtimeEntriesByFile.get(file)
       if (!entry) {
-        return
+        continue
       }
       const candidates = await extractEntryRawCandidates(entry, patcher, nextBaseClassSet)
       rawCandidatesByFile.set(file, candidates)
@@ -302,7 +302,7 @@ export function createBundleRuntimeClassSetManager(
           unknownCandidates.add(candidate)
         }
       }
-    }))
+    }
 
     await validateUnknownCandidates(patcher, unknownCandidates)
 

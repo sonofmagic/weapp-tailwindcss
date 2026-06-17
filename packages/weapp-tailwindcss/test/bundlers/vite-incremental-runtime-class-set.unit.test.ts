@@ -471,6 +471,62 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates).toHaveBeenCalledTimes(1)
   })
 
+  it('extracts changed runtime files sequentially to avoid hmr peak memory spikes', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const patcher = createPatcher('/project')
+    const events: string[] = []
+    let releaseFirst: (() => void) | undefined
+    const firstExtraction = new Promise<void>((resolve) => {
+      releaseFirst = resolve
+    })
+    const extractCandidates = vi.fn(async (options) => {
+      const source = options?.content ?? ''
+      return source.split(/\s+/).filter(Boolean)
+    })
+    const extractRawCandidates = vi.fn(async (content: string) => {
+      if (content.includes('"foo"')) {
+        events.push('first:start')
+        await firstExtraction
+        events.push('first:end')
+        return [{ rawCandidate: 'foo' }]
+      }
+      if (content.includes('"bar"')) {
+        events.push('second:start')
+        return [{ rawCandidate: 'bar' }]
+      }
+      return []
+    })
+    const manager = createBundleRuntimeClassSetManager({
+      extractCandidates,
+      extractRawCandidates,
+    })
+
+    const snapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "foo"'),
+        fileName: 'pages/index/index.js',
+      },
+      'pages/list/index.js': {
+        ...createRollupChunk('const cls = "bar"'),
+        fileName: 'pages/list/index.js',
+      },
+    }, opts, outDir, state)
+
+    const syncPromise = manager.sync(patcher, snapshot)
+    await vi.waitFor(() => {
+      expect(events).toEqual(['first:start'])
+    })
+    expect(extractRawCandidates).toHaveBeenCalledTimes(1)
+
+    releaseFirst?.()
+
+    await expect(syncPromise).resolves.toEqual(new Set(['foo', 'bar']))
+    expect(events).toEqual(['first:start', 'first:end', 'second:start'])
+    expect(extractRawCandidates).toHaveBeenCalledTimes(2)
+  })
+
   it('restores escaped v4 runtime candidates from changed output files before validation', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'

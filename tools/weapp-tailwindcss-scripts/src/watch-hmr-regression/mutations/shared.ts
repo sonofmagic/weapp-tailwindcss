@@ -103,16 +103,21 @@ export async function waitForOutputsReady(
         return false
       }
 
+      const requireInitialCompileSuccess = watchCase.requireInitialCompileSuccess === true
+      const lastCompileSuccessAt = session.lastCompileSuccessAt()
+      if (requireInitialCompileSuccess) {
+        return lastCompileSuccessAt > sessionStartedAt
+          && Date.now() - lastCompileSuccessAt >= stableWindowMs
+      }
+
       if (Math.max(wxmlMtime, jsMtime) > sessionStartedAt) {
         return true
       }
 
-      const requireInitialCompileSuccess = watchCase.requireInitialCompileSuccess === true
       if (!requireInitialCompileSuccess && wxmlMtime > 0 && jsMtime > 0 && Date.now() - sessionStartedAt >= stableWindowMs) {
         return true
       }
 
-      const lastCompileSuccessAt = session.lastCompileSuccessAt()
       return lastCompileSuccessAt > sessionStartedAt
         && Date.now() - lastCompileSuccessAt >= stableWindowMs
     },

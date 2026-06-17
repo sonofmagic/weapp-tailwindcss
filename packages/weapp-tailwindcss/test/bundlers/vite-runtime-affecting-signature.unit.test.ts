@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createRuntimeAffectingSourceSignature } from '@/bundlers/vite/runtime-affecting-signature'
+import { parseCache } from '@/js/babel'
 
 describe('bundlers/vite runtime-affecting signature', () => {
   it('keeps html comment content in runtime-affecting signature', () => {
@@ -30,6 +31,37 @@ describe('bundlers/vite runtime-affecting signature', () => {
     expect(first).not.toBe(second)
     expect(first).toContain('c: text-[#123456] ')
     expect(second).toContain('c: text-[#654321] ')
+  })
+
+  it('does not retain runtime js signature parses in the global parser cache', () => {
+    parseCache.clear()
+
+    createRuntimeAffectingSourceSignature('const cls = "card"', 'js')
+    createRuntimeAffectingSourceSignature('const cls = "card next"', 'js')
+
+    expect(parseCache.size).toBe(0)
+  })
+
+  it('uses a lightweight js text signature without depending on quote style', () => {
+    const first = createRuntimeAffectingSourceSignature('const cls = "text-[#123456]"', 'js')
+    const second = createRuntimeAffectingSourceSignature('const cls = \'text-[#123456]\'', 'js')
+
+    expect(first).toBe(second)
+  })
+
+  it('keeps template expression string content in js signature', () => {
+    const first = createRuntimeAffectingSourceSignature(
+      'const cls = `card ${active ? "text-[#123456]" : "text-[#111111]"}`',
+      'js',
+    )
+    const second = createRuntimeAffectingSourceSignature(
+      'const cls = `card ${active ? "text-[#654321]" : "text-[#111111]"}`',
+      'js',
+    )
+
+    expect(first).not.toBe(second)
+    expect(first).toContain('s:text-[#123456]')
+    expect(second).toContain('s:text-[#654321]')
   })
 
   it('ignores formatting-only html/js noise in runtime-affecting signature', () => {
