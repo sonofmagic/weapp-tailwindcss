@@ -21,24 +21,75 @@ interface ClearTailwindcssPatcherCacheOptions {
 }
 
 function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined): CssPreflightOptions {
-  const cssPreflight = resolveDefaultCssPreflight(opts?.cssPreflight, majorVersion)
+  const userCssPreflight = opts?.cssOptions?.cssPreflight ?? opts?.cssPreflight
+  const cssPreflight = resolveDefaultCssPreflight(userCssPreflight, majorVersion)
   if (majorVersion !== 4 || cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
     return cssPreflight
   }
-  const userCssPreflight = opts?.cssPreflight && typeof opts.cssPreflight === 'object'
-    ? opts.cssPreflight
+  const userCssPreflightObject = userCssPreflight && typeof userCssPreflight === 'object'
+    ? userCssPreflight
     : undefined
   return {
     ...cssPreflight,
-    'border-width': userCssPreflight && 'border-width' in userCssPreflight
+    'border-width': userCssPreflightObject && 'border-width' in userCssPreflightObject
       ? (cssPreflight['border-width'] ?? false)
       : '0',
-    'border-style': userCssPreflight && 'border-style' in userCssPreflight
+    'border-style': userCssPreflightObject && 'border-style' in userCssPreflightObject
       ? (cssPreflight['border-style'] ?? false)
       : false,
-    'border': userCssPreflight && 'border' in userCssPreflight
+    'border': userCssPreflightObject && 'border' in userCssPreflightObject
       ? (cssPreflight['border'] ?? false)
       : false,
+  }
+}
+
+function syncCssOptionsToLegacyFields(ctx: InternalUserDefinedOptions) {
+  if (!ctx.cssOptions) {
+    return
+  }
+  const cssOptions = ctx.cssOptions
+  ctx.cssPreflight = cssOptions.cssPreflight ?? ctx.cssPreflight
+  ctx.cssPreflightRange = cssOptions.cssPreflightRange ?? ctx.cssPreflightRange
+  ctx.cssChildCombinatorReplaceValue = cssOptions.cssChildCombinatorReplaceValue ?? ctx.cssChildCombinatorReplaceValue
+  ctx.cssSelectorReplacement = cssOptions.cssSelectorReplacement ?? ctx.cssSelectorReplacement
+  ctx.rem2rpx = cssOptions.rem2rpx ?? ctx.rem2rpx
+  ctx.cssRemoveProperty = cssOptions.cssRemoveProperty ?? ctx.cssRemoveProperty
+  ctx.cssRemoveHoverPseudoClass = cssOptions.cssRemoveHoverPseudoClass ?? ctx.cssRemoveHoverPseudoClass
+  ctx.tailwindcssV4GradientFallback = cssOptions.tailwindcssV4GradientFallback ?? ctx.tailwindcssV4GradientFallback
+  ctx.cssPresetEnv = cssOptions.cssPresetEnv ?? ctx.cssPresetEnv
+  ctx.atRules = cssOptions.atRules ?? ctx.atRules
+  ctx.autoprefixer = cssOptions.autoprefixer ?? ctx.autoprefixer
+  ctx.cssCalc = cssOptions.cssCalc ?? ctx.cssCalc
+  ctx.platform = cssOptions.platform ?? ctx.platform
+  ctx.px2rpx = cssOptions.px2rpx ?? ctx.px2rpx
+  ctx.unitsToPx = cssOptions.unitsToPx ?? ctx.unitsToPx
+  ctx.unitConversion = cssOptions.unitConversion ?? ctx.unitConversion
+  ctx.injectAdditionalCssVarScope = cssOptions.injectAdditionalCssVarScope ?? ctx.injectAdditionalCssVarScope
+}
+
+function syncLegacyFieldsToCssOptions(ctx: InternalUserDefinedOptions) {
+  if (!ctx.cssOptions) {
+    return
+  }
+  ctx.cssOptions = {
+    ...(ctx.cssOptions ?? {}),
+    cssPreflight: ctx.cssPreflight,
+    cssPreflightRange: ctx.cssPreflightRange,
+    cssChildCombinatorReplaceValue: ctx.cssChildCombinatorReplaceValue,
+    cssSelectorReplacement: ctx.cssSelectorReplacement,
+    rem2rpx: ctx.rem2rpx,
+    cssRemoveProperty: ctx.cssRemoveProperty,
+    cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
+    tailwindcssV4GradientFallback: ctx.tailwindcssV4GradientFallback,
+    cssPresetEnv: ctx.cssPresetEnv,
+    atRules: ctx.atRules,
+    autoprefixer: ctx.autoprefixer,
+    cssCalc: ctx.cssCalc,
+    platform: ctx.platform,
+    px2rpx: ctx.px2rpx,
+    unitsToPx: ctx.unitsToPx,
+    unitConversion: ctx.unitConversion,
+    injectAdditionalCssVarScope: ctx.injectAdditionalCssVarScope,
   }
 }
 
@@ -109,6 +160,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 
   ctx.arbitraryValues = resolveUnocssBareArbitraryValues(ctx.arbitraryValues, ctx.unocss)
   ctx.escapeMap = ctx.customReplaceDictionary
+  syncCssOptionsToLegacyFields(ctx)
 
   applyLoggerLevel(ctx.logLevel)
 
@@ -128,6 +180,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 
   const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, twPatcher)
   ctx.cssCalc = cssCalcOptions
+  syncLegacyFieldsToCssOptions(ctx)
 
   const customAttributesEntities = toCustomAttributesEntities(ctx.customAttributes)
 

@@ -6,32 +6,45 @@ export function resolveStyleOptionsFromContext(
   ctx: InternalUserDefinedOptions,
 ): Partial<IStyleHandlerOptions> {
   const resolvedUniAppXOptions = resolveUniAppXOptions(ctx.uniAppX)
-  const tailwindcssV4GradientFallback = ctx.cssOptions?.tailwindcssV4GradientFallback
-    ?? ctx.tailwindcssV4GradientFallback
-  const cssOptions = ctx.cssOptions === undefined && tailwindcssV4GradientFallback === undefined
-    ? undefined
-    : {
-        ...(ctx.cssOptions ?? {}),
-        tailwindcssV4GradientFallback,
-      }
+  const hasCssOptions = ctx.cssOptions !== undefined
+  const cssOptions = {
+    cssPreflight: ctx.cssOptions?.cssPreflight ?? ctx.cssPreflight,
+    cssPreflightRange: ctx.cssOptions?.cssPreflightRange ?? ctx.cssPreflightRange,
+    cssChildCombinatorReplaceValue: ctx.cssOptions?.cssChildCombinatorReplaceValue ?? ctx.cssChildCombinatorReplaceValue,
+    cssSelectorReplacement: ctx.cssOptions?.cssSelectorReplacement ?? ctx.cssSelectorReplacement,
+    rem2rpx: ctx.cssOptions?.rem2rpx ?? ctx.rem2rpx,
+    cssRemoveProperty: ctx.cssOptions?.cssRemoveProperty ?? ctx.cssRemoveProperty,
+    cssRemoveHoverPseudoClass: ctx.cssOptions?.cssRemoveHoverPseudoClass ?? ctx.cssRemoveHoverPseudoClass,
+    tailwindcssV4GradientFallback: ctx.cssOptions?.tailwindcssV4GradientFallback ?? ctx.tailwindcssV4GradientFallback,
+    cssPresetEnv: ctx.cssOptions?.cssPresetEnv ?? ctx.cssPresetEnv,
+    atRules: ctx.cssOptions?.atRules ?? ctx.atRules,
+    autoprefixer: ctx.cssOptions?.autoprefixer ?? ctx.autoprefixer,
+    cssCalc: ctx.cssOptions?.cssCalc ?? ctx.cssCalc,
+    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    px2rpx: ctx.cssOptions?.px2rpx ?? ctx.px2rpx,
+    unitsToPx: ctx.cssOptions?.unitsToPx ?? ctx.unitsToPx,
+    unitConversion: ctx.cssOptions?.unitConversion ?? ctx.unitConversion,
+    injectAdditionalCssVarScope: ctx.cssOptions?.injectAdditionalCssVarScope ?? ctx.injectAdditionalCssVarScope,
+  } satisfies NonNullable<IStyleHandlerOptions['cssOptions']>
 
   return {
-    cssPreflight: ctx.cssPreflight,
-    cssPreflightRange: ctx.cssPreflightRange,
-    cssChildCombinatorReplaceValue: ctx.cssChildCombinatorReplaceValue,
-    cssSelectorReplacement: ctx.cssSelectorReplacement,
-    rem2rpx: ctx.rem2rpx,
-    cssOptions,
-    cssRemoveProperty: ctx.cssRemoveProperty,
-    cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
-    tailwindcssV4GradientFallback,
-    cssPresetEnv: ctx.cssPresetEnv,
-    autoprefixer: ctx.autoprefixer,
-    cssCalc: ctx.cssCalc,
+    cssPreflight: cssOptions.cssPreflight,
+    cssPreflightRange: cssOptions.cssPreflightRange,
+    cssChildCombinatorReplaceValue: cssOptions.cssChildCombinatorReplaceValue,
+    cssSelectorReplacement: cssOptions.cssSelectorReplacement,
+    rem2rpx: cssOptions.rem2rpx,
+    ...(hasCssOptions ? { cssOptions } : {}),
+    cssRemoveProperty: cssOptions.cssRemoveProperty,
+    cssRemoveHoverPseudoClass: cssOptions.cssRemoveHoverPseudoClass,
+    tailwindcssV4GradientFallback: cssOptions.tailwindcssV4GradientFallback,
+    cssPresetEnv: cssOptions.cssPresetEnv,
+    atRules: cssOptions.atRules,
+    autoprefixer: cssOptions.autoprefixer,
+    cssCalc: cssOptions.cssCalc,
     uniAppX: resolvedUniAppXOptions.enabled,
-    platform: ctx.platform,
-    px2rpx: ctx.px2rpx,
-    unitsToPx: ctx.unitsToPx,
-    unitConversion: ctx.unitConversion,
+    platform: cssOptions.platform,
+    px2rpx: cssOptions.px2rpx,
+    unitsToPx: cssOptions.unitsToPx,
+    unitConversion: cssOptions.unitConversion,
   }
 }

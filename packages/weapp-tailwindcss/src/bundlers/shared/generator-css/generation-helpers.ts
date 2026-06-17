@@ -181,13 +181,13 @@ export function resolveGeneratorStyleOptions(
   cssHandlerOptions: IStyleHandlerOptions,
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ): Partial<IStyleHandlerOptions> {
+  const resolvedStyleOptions = resolveStyleOptionsFromContext(opts)
   const preflightStyleOptions: Partial<IStyleHandlerOptions> = {
-    cssPreflight: opts.cssPreflight,
-    cssPreflightRange: opts.cssPreflightRange,
+    cssPreflight: resolvedStyleOptions.cssPreflight,
+    cssPreflightRange: resolvedStyleOptions.cssPreflightRange,
   }
   return {
-    ...resolveStyleOptionsFromContext(opts),
-    atRules: opts.atRules,
+    ...resolvedStyleOptions,
     uniAppXCssTarget: opts.uniAppXCssTarget,
     uniAppXUnsupported: opts.uniAppXUnsupported,
     ...cssHandlerOptions,

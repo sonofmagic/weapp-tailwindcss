@@ -86,18 +86,34 @@ describe('options resolver', () => {
     })
   })
 
-  it('normalizes cssOptions gradient fallback and keeps top-level compatibility', () => {
+  it('normalizes cssOptions and keeps top-level compatibility', () => {
     const resolver = createOptionsResolver({
       ...createBaseOptions(),
+      cssRemoveProperty: true,
       tailwindcssV4GradientFallback: true,
     })
 
     expect(resolver.resolve().tailwindcssV4GradientFallback).toBe(true)
-    expect(resolver.resolve({
+    const resolvedNested = resolver.resolve({
       cssOptions: {
+        cssRemoveProperty: false,
+        rem2rpx: true,
+        cssChildCombinatorReplaceValue: 'view',
         tailwindcssV4GradientFallback: false,
       },
-    }).tailwindcssV4GradientFallback).toBe(false)
+    })
+    expect(resolvedNested).toMatchObject({
+      cssRemoveProperty: false,
+      rem2rpx: true,
+      cssChildCombinatorReplaceValue: 'view',
+      tailwindcssV4GradientFallback: false,
+    })
+    expect(resolvedNested.cssOptions).toMatchObject({
+      cssRemoveProperty: false,
+      rem2rpx: true,
+      cssChildCombinatorReplaceValue: 'view',
+      tailwindcssV4GradientFallback: false,
+    })
     expect(resolver.resolve({
       tailwindcssV4GradientFallback: false,
     }).tailwindcssV4GradientFallback).toBe(false)
@@ -113,14 +129,18 @@ describe('options resolver', () => {
     const resolver = createOptionsResolver({
       ...createBaseOptions(),
       cssOptions: {
+        cssRemoveProperty: true,
         tailwindcssV4GradientFallback: true,
       },
     })
 
     const resolved = resolver.resolve({
+      cssRemoveProperty: false,
       tailwindcssV4GradientFallback: false,
     })
 
+    expect(resolved.cssRemoveProperty).toBe(false)
+    expect(resolved.cssOptions?.cssRemoveProperty).toBe(false)
     expect(resolved.tailwindcssV4GradientFallback).toBe(false)
     expect(resolved.cssOptions?.tailwindcssV4GradientFallback).toBe(false)
   })

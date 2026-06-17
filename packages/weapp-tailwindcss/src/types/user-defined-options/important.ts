@@ -163,6 +163,7 @@ export interface UserDefinedOptionsImportantPart {
    *   background: 'black',
    * }
    * ```
+   * @deprecated 请使用 `cssOptions.cssPreflight`。
    */
   cssPreflight?: CssPreflightOptions | undefined
   /**
@@ -172,6 +173,7 @@ export interface UserDefinedOptionsImportantPart {
    * @see https://github.com/sonofmagic/weapp-tailwindcss/pull/62
    * @remarks
    * 仅 `view`、`text` 及其伪元素会受影响。设置为 `'all'` 可以覆盖所有元素，此时需自行处理与宿主默认样式的冲突。
+   * @deprecated 请使用 `cssOptions.cssPreflightRange`。
    */
   cssPreflightRange?: 'all' | undefined
   /**
@@ -212,6 +214,7 @@ export interface UserDefinedOptionsImportantPart {
    *   height: 16rpx;
    * }
    * ```
+   * @deprecated 请使用 `cssOptions.cssCalc`。
    */
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
 
@@ -223,12 +226,14 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * 当构建链路（例如 `@tarojs/plugin-html`）移除了包含 `*` 的选择器时，可启用该选项重新写入变量作用域，以避免渐变等功能失效。
    * @default false
+   * @deprecated 请使用 `cssOptions.injectAdditionalCssVarScope`。
    */
   injectAdditionalCssVarScope?: boolean | undefined
   /**
    * 控制 CSS 选择器的替换规则。
    *
    * @group 0.重要配置
+   * @deprecated 请使用 `cssOptions.cssSelectorReplacement`。
    */
   cssSelectorReplacement?: {
     /**
@@ -265,6 +270,7 @@ export interface UserDefinedOptionsImportantPart {
    *   transformUnit: 'rpx',
    * }
    * ```
+   * @deprecated 请使用 `cssOptions.rem2rpx`。
    */
   rem2rpx?: boolean | Rem2rpxOptions | undefined
   /**
@@ -274,6 +280,7 @@ export interface UserDefinedOptionsImportantPart {
    * @since ^4.3.0
    * @remarks
    * 传入 `true` 启用默认映射（`1px = 1rpx`），或通过对象自定义更多行为。
+   * @deprecated 请使用 `cssOptions.px2rpx`。
    */
   px2rpx?: boolean | Px2rpxOptions | undefined
 
@@ -284,6 +291,7 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * 传入 `true` 启用默认映射（postcss-units-to-px 默认单位表），或通过对象自定义行为。
    * 默认关闭。
+   * @deprecated 请使用 `cssOptions.unitsToPx`。
    */
   unitsToPx?: boolean | UnitsToPxOptions | undefined
 
@@ -293,6 +301,7 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @remarks
    * 主要供 `unitConversion.platforms` 精确选择平台规则。未传入时会从常见构建环境变量推断。
+   * @deprecated 请使用 `cssOptions.platform`。
    */
   platform?: IStyleHandlerOptions['platform'] | undefined
 
@@ -327,6 +336,7 @@ export interface UserDefinedOptionsImportantPart {
    *   },
    * })
    * ```
+   * @deprecated 请使用 `cssOptions.unitConversion`。
    */
   unitConversion?: UnitConversionOptions | undefined
 
@@ -337,6 +347,7 @@ export interface UserDefinedOptionsImportantPart {
    * @group 0.重要配置
    * @see https://preset-env.cssdb.org/
    * @see https://github.com/csstools/postcss-plugins/tree/main/plugin-packs/postcss-preset-env#readme
+   * @deprecated 请使用 `cssOptions.cssPresetEnv`。
    */
   cssPresetEnv?: PresetEnvOptions | undefined
 
@@ -344,6 +355,7 @@ export interface UserDefinedOptionsImportantPart {
    * 控制构建端保留或移除的 CSS at-rule。
    *
    * @internal
+   * @deprecated 请使用 `cssOptions.atRules`。
    */
   atRules?: IStyleHandlerOptions['atRules'] | undefined
 
@@ -362,6 +374,7 @@ export interface UserDefinedOptionsImportantPart {
    *   autoprefixer: false,
    * })
    * ```
+   * @deprecated 请使用 `cssOptions.autoprefixer`。
    */
   autoprefixer?: WeappAutoprefixerOptions | undefined
 

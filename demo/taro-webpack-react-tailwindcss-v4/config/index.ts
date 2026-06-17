@@ -9,6 +9,7 @@ const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('
 const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK === '1'
 const cssOptions = {
   tailwindcssV4GradientFallback,
+  px2rpx: true,
 } satisfies UserDefinedOptions['cssOptions']
 
 const generator = {
@@ -16,7 +17,6 @@ const generator = {
     ? 'web'
     : 'weapp',
   styleOptions: {
-    px2rpx: true,
     cssOptions,
   },
 } satisfies UserDefinedOptions['generator']
@@ -107,7 +107,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
-                  rem2rpx: true,
                   cssOptions,
                   generator,
                   // before 2248
@@ -157,7 +156,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
-                  rem2rpx: true,
                   cssOptions,
                   generator,
                 } satisfies UserDefinedOptions

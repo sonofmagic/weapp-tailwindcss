@@ -89,7 +89,36 @@ export interface PlatformUnitConversionOptions {
 
 export type UnitConversionOptions = UnitConversionConfig | PlatformUnitConversionOptions | false
 
+export interface CssSelectorReplacement {
+  root?: string | string[] | false | undefined
+  universal?: string | string[] | false | undefined
+}
+
+export interface CssAtRules {
+  property?: boolean | undefined
+  // A 新增 wxss 支持 @supports 反馈详情
+  // https://developers.weixin.qq.com/miniprogram/dev/devtools/uplog.html#2018.11.14
+  supports?: boolean | undefined
+  media?: boolean | undefined
+}
+
 export interface CssOptions {
+  cssPreflight?: CssPreflightOptions | undefined
+  cssPreflightRange?: 'all' | undefined
+  cssChildCombinatorReplaceValue?: string | string[] | undefined
+  cssPresetEnv?: PresetEnvOptions | undefined
+  autoprefixer?: WeappAutoprefixerOptions | undefined
+  atRules?: CssAtRules | undefined
+  injectAdditionalCssVarScope?: boolean | undefined
+  cssSelectorReplacement?: CssSelectorReplacement | undefined
+  rem2rpx?: boolean | Rem2rpxOptions | undefined
+  px2rpx?: boolean | Px2rpxOptions | undefined
+  unitsToPx?: boolean | UnitsToPxOptions | undefined
+  unitConversion?: UnitConversionOptions | undefined
+  platform?: string | undefined
+  cssRemoveHoverPseudoClass?: boolean | undefined
+  cssRemoveProperty?: boolean | undefined
+  cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
   /**
    * 是否显式追加 Tailwind CSS v4 渐变字面量组合兜底。
    */
@@ -98,25 +127,40 @@ export interface CssOptions {
 
 export type IStyleHandlerOptions = {
   ctx?: PostcssContext | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.platform`。
+   */
   platform?: string | undefined
   postcssOptions?: LoadedPostcssOptions | undefined
   cssOptions?: CssOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssRemoveProperty`。
+   */
   cssRemoveProperty?: boolean | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
+   */
   cssRemoveHoverPseudoClass?: boolean | undefined
   /**
    * @deprecated 请使用 `cssOptions.tailwindcssV4GradientFallback`。
    */
   tailwindcssV4GradientFallback?: boolean | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssPresetEnv`。
+   */
   cssPresetEnv?: PresetEnvOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.atRules`。
+   */
+  atRules?: CssAtRules | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.autoprefixer`。
+   */
   autoprefixer?: WeappAutoprefixerOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssCalc`。
+   */
   cssCalc?: boolean | CssCalcOptions | (string | RegExp)[] | undefined
-  atRules?: {
-    property?: boolean | undefined
-    // A 新增 wxss 支持 @supports 反馈详情
-    // https://developers.weixin.qq.com/miniprogram/dev/devtools/uplog.html#2018.11.14
-    supports?: boolean | undefined
-    media?: boolean | undefined
-  } | undefined
   uniAppX?: boolean | undefined
   uniAppXCssTarget?: UniAppXCssTarget | undefined
   uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
@@ -124,25 +168,66 @@ export type IStyleHandlerOptions = {
 } & RequiredStyleHandlerOptions
 
 export interface UserDefinedPostcssOptions {
+  /**
+   * @deprecated 请使用 `cssOptions.cssPreflight`。
+   */
   cssPreflight?: CssPreflightOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssPreflightRange`。
+   */
   cssPreflightRange?: 'all' | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssChildCombinatorReplaceValue`。
+   */
   cssChildCombinatorReplaceValue?: string | string[] | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssPresetEnv`。
+   */
   cssPresetEnv?: PresetEnvOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.autoprefixer`。
+   */
   autoprefixer?: WeappAutoprefixerOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.injectAdditionalCssVarScope`。
+   */
   injectAdditionalCssVarScope?: boolean | undefined
-  cssSelectorReplacement?: {
-    root?: string | string[] | false | undefined
-    universal?: string | string[] | false | undefined
-  } | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssSelectorReplacement`。
+   */
+  cssSelectorReplacement?: CssSelectorReplacement | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.rem2rpx`。
+   */
   rem2rpx?: boolean | Rem2rpxOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.px2rpx`。
+   */
   px2rpx?: boolean | Px2rpxOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.unitsToPx`。
+   */
   unitsToPx?: boolean | UnitsToPxOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.unitConversion`。
+   */
   unitConversion?: UnitConversionOptions | undefined
   postcssOptions?: LoadedPostcssOptions | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
+   */
   cssRemoveHoverPseudoClass?: boolean | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.cssRemoveProperty`。
+   */
   cssRemoveProperty?: boolean | undefined
   /**
    * CSS 生成与兼容后处理的微调配置。
+   *
+   * `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
+   * `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
+   * `unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+   * 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
    */
   cssOptions?: CssOptions | undefined
   /**

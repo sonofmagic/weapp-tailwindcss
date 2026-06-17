@@ -4,6 +4,25 @@ import { fingerprintOptions } from './fingerprint'
 
 const BASE_CACHE_KEY = 'base'
 const SIMPLE_OVERRIDE_UNSET = '__unset__'
+const CSS_OPTION_KEYS = [
+  'cssPreflight',
+  'cssPreflightRange',
+  'cssChildCombinatorReplaceValue',
+  'cssPresetEnv',
+  'autoprefixer',
+  'injectAdditionalCssVarScope',
+  'cssSelectorReplacement',
+  'rem2rpx',
+  'px2rpx',
+  'unitsToPx',
+  'unitConversion',
+  'platform',
+  'cssRemoveHoverPseudoClass',
+  'cssRemoveProperty',
+  'cssCalc',
+  'atRules',
+  'tailwindcssV4GradientFallback',
+] as const
 
 function getSimpleOverrideCacheKey(options: Partial<IStyleHandlerOptions>) {
   let isMainChunk = SIMPLE_OVERRIDE_UNSET
@@ -152,22 +171,35 @@ function hasOverrides(options?: Partial<IStyleHandlerOptions>): options is Parti
   return Boolean(options && Object.keys(options).length > 0)
 }
 
-export function normalizeCssOptions<T extends Partial<IStyleHandlerOptions>>(options: T): T {
-  const tailwindcssV4GradientFallback = options.cssOptions?.tailwindcssV4GradientFallback
-    ?? options.tailwindcssV4GradientFallback
-  if (
-    tailwindcssV4GradientFallback === options.tailwindcssV4GradientFallback
-    && tailwindcssV4GradientFallback === options.cssOptions?.tailwindcssV4GradientFallback
-  ) {
+export function normalizeCssOptions<T extends Partial<IStyleHandlerOptions>>(options: T, mirrorTopLevel = false): T {
+  let changed = false
+  const normalized = { ...options }
+  const hasCssOptions = options.cssOptions !== undefined
+  const cssOptions = { ...(options.cssOptions ?? {}) }
+  for (const key of CSS_OPTION_KEYS) {
+    const hasNestedValue = hasCssOptions && key in options.cssOptions!
+    const hasTopLevelValue = key in options
+    if (!hasNestedValue && !hasTopLevelValue) {
+      continue
+    }
+    const nestedValue = hasNestedValue ? options.cssOptions?.[key] : undefined
+    const topLevelValue = hasTopLevelValue ? options[key] : undefined
+    const value = hasNestedValue ? nestedValue : topLevelValue
+    if (value !== topLevelValue) {
+      normalized[key] = value as never
+      changed = true
+    }
+    if ((hasCssOptions || mirrorTopLevel) && value !== nestedValue) {
+      cssOptions[key] = value as never
+      changed = true
+    }
+  }
+  if (!changed) {
     return options
   }
   return {
-    ...options,
-    cssOptions: {
-      ...(options.cssOptions ?? {}),
-      tailwindcssV4GradientFallback,
-    },
-    tailwindcssV4GradientFallback,
+    ...normalized,
+    ...(hasCssOptions || mirrorTopLevel ? { cssOptions } : {}),
   }
 }
 
@@ -194,7 +226,7 @@ export function createOptionsResolver(baseOptions: IStyleHandlerOptions): Option
     }
 
     if (emptyOverrideRefs.has(overrides)) {
-      return baseOptions
+      return normalizedBaseOptions
     }
 
     if (!hasOverrides(overrides)) {
@@ -218,7 +250,7 @@ export function createOptionsResolver(baseOptions: IStyleHandlerOptions): Option
       IStyleHandlerOptions,
       Partial<IStyleHandlerOptions>[]
     >(
-      normalizeCssOptions({ ...overrides }) as IStyleHandlerOptions,
+      normalizeCssOptions({ ...overrides }, true) as IStyleHandlerOptions,
       normalizedBaseOptions,
     )
     const normalized = normalizeCssOptions(merged)

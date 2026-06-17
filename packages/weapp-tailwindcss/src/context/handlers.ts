@@ -29,6 +29,8 @@ export function createHandlersFromContext(
   } = ctx
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
   const styleOptions = resolveStyleOptionsFromContext(ctx)
+  const resolvedInjectAdditionalCssVarScope = styleOptions.cssOptions?.injectAdditionalCssVarScope
+    ?? injectAdditionalCssVarScope
   const uniAppXEnabled = styleOptions.uniAppX === true
 
   const moduleSpecifierReplacements = resolveRuntimePackageReplacements(replaceRuntimePackages)
@@ -36,7 +38,7 @@ export function createHandlersFromContext(
   const styleHandler = createStyleHandler({
     ...styleOptions,
     escapeMap,
-    injectAdditionalCssVarScope,
+    injectAdditionalCssVarScope: resolvedInjectAdditionalCssVarScope,
     postcssOptions,
     uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
     cssCalc: cssCalcOptions,

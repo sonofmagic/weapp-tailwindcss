@@ -177,6 +177,7 @@ export interface UserDefinedOptionsGeneralPart {
    * .space-y-4>view,text,button,input ~ view,text,button,input{}
    * ```
    * @default 'view + view'
+   * @deprecated 请使用 `cssOptions.cssChildCombinatorReplaceValue`。
    */
   cssChildCombinatorReplaceValue?: string | string[] | undefined
 
@@ -195,6 +196,10 @@ export interface UserDefinedOptionsGeneralPart {
    * @group 3.一般配置
    * @remarks
    * 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
+   * `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、
+   * `atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、
+   * `unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc`
+   * 与 `tailwindcssV4GradientFallback` 都推荐放在这里。
    */
   cssOptions?: CssOptions | undefined
 
@@ -207,6 +212,7 @@ export interface UserDefinedOptionsGeneralPart {
    * @remarks
    * 小程序不支持 `:hover`，需要使用组件的 `hover-class`，因此默认删除相关节点。
    * @default `true`
+   * @deprecated 请使用 `cssOptions.cssRemoveHoverPseudoClass`。
    */
   cssRemoveHoverPseudoClass?: boolean | undefined
   /**
@@ -217,6 +223,7 @@ export interface UserDefinedOptionsGeneralPart {
    * @remarks
    * 微信小程序可识别 `@property`，但支付宝暂不支持，默认移除以避免构建失败。
    * @default `true`
+   * @deprecated 请使用 `cssOptions.cssRemoveProperty`。
    */
   cssRemoveProperty?: boolean | undefined
 

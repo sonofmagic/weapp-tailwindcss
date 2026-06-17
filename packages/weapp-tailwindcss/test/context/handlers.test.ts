@@ -93,6 +93,7 @@ describe('createHandlersFromContext', () => {
       unitsToPx: ctx.unitsToPx,
       cssPresetEnv: ctx.cssPresetEnv,
       autoprefixer: false,
+      injectAdditionalCssVarScope: true,
       uniAppXUnsupported: 'warn',
     }))
 
@@ -205,6 +206,27 @@ describe('createHandlersFromContext', () => {
       majorVersion: 4,
     }))
   })
+
+  it('forwards injectAdditionalCssVarScope from cssOptions', async () => {
+    const { createHandlersFromContext } = await import('@/context/handlers')
+    const ctx = {
+      ...createContext(),
+      injectAdditionalCssVarScope: false,
+      cssOptions: {
+        injectAdditionalCssVarScope: true,
+      },
+    } as unknown as InternalUserDefinedOptions
+
+    styleHandlerFactory.mockReturnValueOnce(vi.fn())
+    jsHandlerFactory.mockReturnValueOnce(vi.fn())
+    templateHandlerFactory.mockReturnValueOnce(vi.fn())
+
+    createHandlersFromContext(ctx, customAttributesEntities, true)
+
+    expect(styleHandlerFactory).toHaveBeenCalledWith(expect.objectContaining({
+      injectAdditionalCssVarScope: true,
+    }))
+  })
 })
 
 describe('resolveStyleOptionsFromContext', () => {
@@ -227,7 +249,22 @@ describe('resolveStyleOptionsFromContext', () => {
       px2rpx: ctx.px2rpx,
       unitsToPx: ctx.unitsToPx,
       unitConversion: ctx.unitConversion,
-      cssOptions: ctx.cssOptions,
+      cssOptions: expect.objectContaining({
+        ...ctx.cssOptions,
+        cssPreflight: ctx.cssPreflight,
+        cssPreflightRange: ctx.cssPreflightRange,
+        cssChildCombinatorReplaceValue: ctx.cssChildCombinatorReplaceValue,
+        cssSelectorReplacement: ctx.cssSelectorReplacement,
+        rem2rpx: ctx.rem2rpx,
+        px2rpx: ctx.px2rpx,
+        unitsToPx: ctx.unitsToPx,
+        unitConversion: ctx.unitConversion,
+        cssRemoveProperty: ctx.cssRemoveProperty,
+        cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
+        cssPresetEnv: ctx.cssPresetEnv,
+        autoprefixer: ctx.autoprefixer,
+        cssCalc: ctx.cssCalc,
+      }),
       cssRemoveProperty: ctx.cssRemoveProperty,
       cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
       cssPresetEnv: ctx.cssPresetEnv,
@@ -242,17 +279,24 @@ describe('resolveStyleOptionsFromContext', () => {
     expect(styleOptions).not.toHaveProperty('majorVersion')
   })
 
-  it('prefers cssOptions over top-level Tailwind CSS v4 gradient fallback', async () => {
+  it('prefers cssOptions over top-level CSS options', async () => {
     const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
     const ctx = {
       ...createContext(),
+      cssRemoveProperty: true,
+      rem2rpx: false,
       cssOptions: {
+        cssRemoveProperty: false,
+        rem2rpx: true,
         tailwindcssV4GradientFallback: false,
       },
       tailwindcssV4GradientFallback: true,
     } as unknown as InternalUserDefinedOptions
 
-    expect(resolveStyleOptionsFromContext(ctx).tailwindcssV4GradientFallback).toBe(false)
+    const styleOptions = resolveStyleOptionsFromContext(ctx)
+    expect(styleOptions.cssRemoveProperty).toBe(false)
+    expect(styleOptions.rem2rpx).toBe(true)
+    expect(styleOptions.tailwindcssV4GradientFallback).toBe(false)
   })
 
   it('keeps top-level Tailwind CSS v4 gradient fallback compatibility', async () => {
@@ -264,6 +308,22 @@ describe('resolveStyleOptionsFromContext', () => {
     } as unknown as InternalUserDefinedOptions
 
     expect(resolveStyleOptionsFromContext(ctx).tailwindcssV4GradientFallback).toBe(true)
+  })
+
+  it('does not synthesize cssOptions when compatibility fields are used directly', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const ctx = {
+      ...createContext(),
+      cssOptions: undefined,
+      cssRemoveProperty: false,
+      rem2rpx: true,
+    } as unknown as InternalUserDefinedOptions
+
+    const styleOptions = resolveStyleOptionsFromContext(ctx)
+
+    expect(styleOptions.cssRemoveProperty).toBe(false)
+    expect(styleOptions.rem2rpx).toBe(true)
+    expect(styleOptions).not.toHaveProperty('cssOptions')
   })
 })
 
