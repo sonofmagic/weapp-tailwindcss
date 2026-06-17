@@ -342,23 +342,19 @@ describe('v4', () => {
   }
   background-image: linear-gradient(var(--tw-gradient-stops));
 }`
-    const { css } = await styleHandler(code, {
-      isMainChunk: true,
-      majorVersion: 4,
+    const css = finalizeMiniProgramCss(code, {
+      isTailwindcssV4: true,
     })
 
-    expect(css).toBe(`.bg-linear-to-r {
+    expect(css).toContain(`.bg-linear-to-r {
   --tw-gradient-position: to right;
-  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
+  background-image: linear-gradient(var(--tw-gradient-stops));
 }`)
     expect(css).not.toContain('@supports')
     expect(css).not.toContain('in oklab')
   })
 
-  it('adds mini-program literal fallbacks for Tailwind CSS v4 gradient background images', async () => {
-    const styleHandler = createStyleHandler({
-      isMainChunk: true,
-    })
+  it('keeps Tailwind CSS v4 background-image gradients variable-driven by default', async () => {
     const code = `
 :root,:host {
   --color-cyan-500: #06b6d4;
@@ -447,34 +443,29 @@ describe('v4', () => {
   --tw-gradient-to-position: 90%;
 }
 `
-    const { css } = await styleHandler(code, {
-      isMainChunk: true,
-      majorVersion: 4,
+    const css = finalizeMiniProgramCss(code, {
+      isTailwindcssV4: true,
     })
 
-    expect(css).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
-    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
-    expect(css).toContain('.bg-linear-to-r.from-cyan-500.from-10_v.via-purple-500.via-30_v.to-blue-500.to-90_v')
-    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4 10%, #a855f7 30%, #3b82f6 90%)')
-    expect(css).toContain('background-image: linear-gradient(65deg, #06b6d4, #3b82f6)')
-    expect(css).toContain('background-image: linear-gradient(-65deg, #06b6d4, #3b82f6)')
-    expect(css).toContain('background-image: radial-gradient(#06b6d4, #3b82f6)')
-    expect(css).toContain('background-image: conic-gradient(from 180deg, #06b6d4, #3b82f6)')
-    expect(css).toContain('background-image: conic-gradient(from -180deg, #06b6d4, #3b82f6)')
-    expect(css).toContain('background-image: radial-gradient(at 50% 75%)')
-    expect(css).toContain('background-image: conic-gradient(from 45deg at 50% 50%, red, yellow, lime)')
-    expect(css).toContain('.bg-linear-to-r_fshorter.from-cyan-500.to-blue-500')
-    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
-    expect(css).toContain('.bg-linear-to-r.from-_b_h06b6d4_B.via-_b_ha855f7_B.to-_b_h3b82f6_B')
-    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #a855f7, #3b82f6)')
-    expect(css).toContain('.bg-linear-to-r.from-_p--issue-928-from_P.via-_p--issue-928-via_P.to-_p--issue-928-to_P')
-    expect(css).toContain('background-image: linear-gradient(to right, var(--issue-928-from), var(--issue-928-via), var(--issue-928-to))')
+    expect(css).toContain('.bg-linear-to-r {')
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
+    expect(css).toContain('.bg-radial {')
+    expect(css).toContain('--tw-gradient-position: at center;')
+    expect(css).toContain('background-image: radial-gradient(var(--tw-gradient-stops));')
+    expect(css).toContain('.bg-conic-180 {')
+    expect(css).toContain('background-image: conic-gradient(var(--tw-gradient-stops));')
+    expect(css).toContain('background-image: radial-gradient(var(--tw-gradient-stops, at 50% 75%));')
+    expect(css).toContain('background-image: conic-gradient(var(--tw-gradient-stops, from 45deg at 50% 50%, red, yellow, lime));')
+    expect(css).toContain('--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );')
+    expect(css).toContain('--tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-via) var(--tw-gradient-via-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );')
+    expect(css).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).not.toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
   })
 
-  it('keeps Tailwind CSS v4 gradient variable syntax when literal fallbacks are disabled', async () => {
+  it('adds mini-program literal fallbacks for Tailwind CSS v4 gradient background images when enabled', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
-      tailwindcssV4GradientFallback: false,
+      tailwindcssV4GradientFallback: true,
     })
     const code = `
 :root,:host {
@@ -499,12 +490,43 @@ describe('v4', () => {
       majorVersion: 4,
     })
 
-    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))')
+    expect(css).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
+  })
+
+  it('keeps Tailwind CSS v4 gradient variable syntax by default', async () => {
+    const styleHandler = createStyleHandler({
+      isMainChunk: true,
+    })
+    const code = `
+:root,:host {
+  --color-cyan-500: #06b6d4;
+  --color-blue-500: #3b82f6;
+}
+.bg-linear-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+}
+`
+    const { css } = await styleHandler(code, {
+      isMainChunk: true,
+      majorVersion: 4,
+    })
+
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
     expect(css).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
     expect(css).not.toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
   })
 
-  it('keeps finalized Tailwind CSS v4 gradient variable syntax when literal fallbacks are disabled', () => {
+  it('keeps finalized Tailwind CSS v4 gradient variable syntax by default', () => {
     const css = finalizeMiniProgramCss(`
 :root,:host {
   --color-cyan-500: #06b6d4;
@@ -524,10 +546,9 @@ describe('v4', () => {
 }
 `, {
       isTailwindcssV4: true,
-      tailwindcssV4GradientFallback: false,
     })
 
-    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))')
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
     expect(css).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
     expect(css).not.toContain('background-image: linear-gradient(to right, #06b6d4, #3b82f6)')
   })

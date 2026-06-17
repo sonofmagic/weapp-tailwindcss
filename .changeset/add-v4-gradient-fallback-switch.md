@@ -3,6 +3,6 @@
 "@weapp-tailwindcss/postcss": patch
 ---
 
-新增 `tailwindcssV4GradientFallback` 配置项，用于控制 Tailwind CSS v4 渐变工具类是否额外生成小程序可直接解析的字面量兜底规则。
+调整 Tailwind CSS v4 渐变工具类的小程序兼容策略，默认保留 `--tw-gradient-*` CSS 变量链路，覆盖 `background-image` 文档中的 linear、radial、conic、任意值、自定义属性、stop 颜色与位置等组合。
 
-默认仍保持开启，以确保微信小程序中 `via-*`、变量 stop、radial、conic 等渐变组合能稳定渲染；如目标运行时已经完整支持 Tailwind CSS v4 的变量渐变写法，可显式设置为 `false` 保留变量输出。
+`tailwindcssV4GradientFallback` 现在改为显式设置 `true` 时才追加旧版字面量组合兜底，避免默认产物膨胀并让 v4 渐变行为更接近 Tailwind 官方输出。

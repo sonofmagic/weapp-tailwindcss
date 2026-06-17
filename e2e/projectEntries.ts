@@ -42,6 +42,7 @@ export const E2E_PROJECTS = [
       'dist/sub-normal/pages/index.wxss',
       'dist/sub-independent/pages/index.wxss',
     ],
+    url: '/pages/issue-928/index',
   },
   {
     name: 'taro-webpack-react-tailwindcss-v4',

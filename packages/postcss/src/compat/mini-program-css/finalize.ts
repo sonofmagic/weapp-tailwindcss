@@ -55,7 +55,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   })
   if (shouldInjectTailwindcssV4Defaults) {
     mergeTailwindcssV4GradientDirectionRules(root)
-    if (options.tailwindcssV4GradientFallback !== false) {
+    if (options.tailwindcssV4GradientFallback === true) {
       appendTailwindcssV4MiniProgramGradientRules(root)
     }
   }

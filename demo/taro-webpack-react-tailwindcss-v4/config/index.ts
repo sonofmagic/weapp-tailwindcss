@@ -6,7 +6,7 @@ import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
-const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK !== '0'
+const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK === '1'
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'

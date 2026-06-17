@@ -130,6 +130,9 @@ export interface UserDefinedPostcssOptions {
   postcssOptions?: LoadedPostcssOptions | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
   cssRemoveProperty?: boolean | undefined
+  /**
+   * 是否显式追加 Tailwind CSS v4 渐变字面量组合兜底。
+   */
   tailwindcssV4GradientFallback?: boolean | undefined
   uniAppX?: boolean | undefined
   uniAppXCssTarget?: UniAppXCssTarget | undefined

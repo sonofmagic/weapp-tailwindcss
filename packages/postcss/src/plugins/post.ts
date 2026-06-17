@@ -170,7 +170,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
       })
       if (opts.majorVersion === 4 || hasTailwindcssV4GradientRuntime(root)) {
         mergeTailwindcssV4GradientDirectionRules(root)
-        if (opts.tailwindcssV4GradientFallback !== false) {
+        if (opts.tailwindcssV4GradientFallback === true) {
           appendTailwindcssV4MiniProgramGradientRules(root)
         }
       }

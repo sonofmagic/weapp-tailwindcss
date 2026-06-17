@@ -135,17 +135,17 @@ view,text,::after,::before {
 
 .bg-gradient-to-b {
   --tw-gradient-position: to bottom;
-  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))
+  background-image: linear-gradient(var(--tw-gradient-stops))
 }
 
 .bg-gradient-to-t {
   --tw-gradient-position: to top;
-  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))
+  background-image: linear-gradient(var(--tw-gradient-stops))
 }
 
 .bg-gradient-to-tr {
   --tw-gradient-position: to top right;
-  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))
+  background-image: linear-gradient(var(--tw-gradient-stops))
 }
 
 .from-_b_h2f73f1_B {
@@ -175,12 +175,3 @@ view,text,::after,::before {
 }
 
 /*$vite$:1*/
-
-.bg-gradient-to-b.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-      background-image: linear-gradient(to bottom, #2f73f1, #4bcefd)}
-
-.bg-gradient-to-t.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-      background-image: linear-gradient(to top, #2f73f1, #4bcefd)}
-
-.bg-gradient-to-tr.from-_b_h2f73f1_B.to-_b_h4bcefd_B {
-      background-image: linear-gradient(to top right, #2f73f1, #4bcefd)}

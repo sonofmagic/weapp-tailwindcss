@@ -19,7 +19,6 @@ const LINEAR_GRADIENT_LAB_RE = /background-image\s*:\s*linear-gradient\(\s*in\s+
 const DISPLAY_P3_COLOR_RE = /color\s*:\s*color\(\s*display-p3\s+0\s+0\s+0%\s*\)/
 const DISPLAY_P3_VALUE_RE = /color\(\s*display-p3\b/i
 const COLOR_GAMUT_P3_RE = /\(\s*color-gamut\s*:\s*p3\s*\)/i
-const GRADIENT_STOPS_BACKGROUND_RE = /^linear-gradient\(\s*var\(\s*--tw-gradient-stops\s*\)\s*\)$/i
 const GRADIENT_BACKGROUND_RE = /^(linear|radial|conic)-gradient\(/i
 const GRADIENT_STOPS_VAR_RE = /^(?:linear|radial|conic)-gradient\(\s*var\(\s*--tw-gradient-stops\b/i
 const SIMPLE_CLASS_SELECTOR_RE = /^\.([_a-z\u00A0-\uFFFF\\-][\w\u00A0-\uFFFF\\-]*)$/i
@@ -206,9 +205,30 @@ function normalizeDeclarationValue(value: string) {
 function normalizeTailwindcssV4GradientPosition(value: string) {
   return value
     .replace(/calc\(\s*([+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:deg|grad|rad|turn))\s*\*\s*-1\s*\)/gi, '-$1')
+    .replace(/^in\s+(?:oklab|oklch|hsl|srgb)(?:\s+(?:longer|shorter|increasing|decreasing)\s+hue)?$/i, '')
     .replace(/\s+in\s+(?:oklab|oklch|hsl|srgb)(?:\s+(?:longer|shorter|increasing|decreasing)\s+hue)?\s*$/i, '')
     .replace(/\s+(?:longer|shorter|increasing|decreasing)\s*$/i, '')
     .trim()
+}
+
+function normalizeTailwindcssV4GradientDirectionDeclaration(rule: Rule, decl: Declaration) {
+  const normalized = normalizeTailwindcssV4GradientPosition(decl.value)
+  if (normalized) {
+    return normalized
+  }
+  const backgroundImageDecl = rule.nodes.find((node): node is PostcssDeclaration => {
+    return node.type === 'decl' && node.prop === 'background-image'
+  })
+  if (!backgroundImageDecl) {
+    return normalized
+  }
+  if (/^radial-gradient\(/i.test(backgroundImageDecl.value)) {
+    return 'at center'
+  }
+  if (/^conic-gradient\(/i.test(backgroundImageDecl.value)) {
+    return 'from 0deg'
+  }
+  return normalized
 }
 
 function appendStopPosition(color: string, position?: string) {
@@ -393,7 +413,7 @@ export function appendTailwindcssV4MiniProgramGradientRules(root: Root) {
           gradients.push({
             classSelector,
             order: currentOrder,
-            position: normalizeTailwindcssV4GradientPosition(gradientPositionDecl.value),
+            position: normalizeTailwindcssV4GradientDirectionDeclaration(rule, gradientPositionDecl),
             type: gradientType,
           })
           const fallback = GRADIENT_STOPS_VAR_RE.test(gradientBackgroundDecl.value)
@@ -702,11 +722,6 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
     decl.remove()
     return true
   }
-  if (decl.prop === 'background-image' && GRADIENT_STOPS_BACKGROUND_RE.test(decl.value)) {
-    decl.value = 'linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))'
-    return true
-  }
-
   const normalizedEmptyVarFallback = normalizeTailwindcssV4EmptyVarFallback(decl.value)
   if (normalizedEmptyVarFallback !== decl.value) {
     decl.value = normalizedEmptyVarFallback
@@ -724,7 +739,10 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
   }
 
   if (decl.prop === '--tw-gradient-position' && decl.value.endsWith(OKLAB_SUFFIX)) {
-    decl.value = decl.value.slice(0, decl.value.length - OKLAB_SUFFIX.length).trimEnd()
+    const nextValue = decl.parent?.type === 'rule'
+      ? normalizeTailwindcssV4GradientDirectionDeclaration(decl.parent, decl)
+      : normalizeTailwindcssV4GradientPosition(decl.value)
+    decl.value = nextValue
     return true
   }
 

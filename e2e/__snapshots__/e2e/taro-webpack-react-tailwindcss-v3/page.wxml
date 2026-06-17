@@ -1,73 +1,33 @@
-<view class="relative h-12 w-12 before_cabsolute before_cinset-0 before_cborder-2 before_cborder-_b_h4bd650_B rounded-_b20rpx_B before_crounded-_b20rpx_B" style=""></view>
-<view class="relative h-12 w-12 before_cabsolute before_cinset-0 before_cborder-2 before_cborder-_b_h0000ff_B before_crounded-_b20rpx_B rounded-_b20rpx_B" style=""></view>
-<navigator
-  app-id=""
-  delta="1"
-  extra-data="null"
-  hover-class="navigator-hover"
-  hover-start-time="50"
-  hover-stay-time="600"
-  open-type="navigate"
-  path=""
-  style=""
-  target="self"
-  url="/moduleA/pages/index"
-  version="version"
-  role="link">
-  普通分包
-</navigator>
-<navigator
-  app-id=""
-  delta="1"
-  extra-data="null"
-  hover-class="navigator-hover"
-  hover-start-time="50"
-  hover-stay-time="600"
-  open-type="navigate"
-  path=""
-  style=""
-  target="self"
-  url="/moduleB/pages/index"
-  version="version"
-  role="link">
-  独立分包
-</navigator>
-<view style="">****</view>
-<view class="w-full bg-indigo-400 bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B bg-bottom bg-contain bg-no-repeat" style="">bg-_burl_B</view>
-<view
-  class="text-_b50px_B bg-_b_h3232ff_B h-_b10px_B w-_b20px_B text-_b_hfa00aa_B text-_b_hfa0000_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B"
-  style="">
-  11
-</view>
-<view class="shadow-md" style="">shadow-md</view>
-<view class="form-box py-_b62px_B rotate-45 px-_b95px_B bg-sky-500_f80 dark_cbg-_b_h123456_B" style="">py-_b62px_B px-_b95px_B</view>
-<view hover-class="none" hover-start-time="50" hover-stay-time="400" style=""></view>
-<view class="bg-_b_h654321_B w-_b100px_B h-_b20px_B" style="">123</view>
-<view class="text-_b_h564564_B" style="">emptyImageClass</view>
-<view class="text-_b_h66ffff_B" style="">btnClassName</view>
-<view class="after_cborder-none after_ccontent-_b_aHello_World_a_B a" style="">after_cborder-none</view>
-<view class="after content- after_cml-0_d5 after_ctext-red-500 b" style="">yellow</view>
-<view class="after content- after_cml-0_d5 after_ctext-red-500" style="">事实上</view>
-<view class="after_ccontent-_b_au_x7684_u_x6492_u_x7684_u_x6492__a_B after_cml-0_d5 after_ctext-red-500" style="">事实上</view>
-<view class="after_ccontent-_b_x_B after_cml-0_d5 after_ctext-red-500 aspect-w-16" style="">
-  <view class="_etext-_b_h555_B" style="">aspect</view>
-  <view class="bg-_b_hfaf_B" style="">w</view>
-  <view class="bg-_b_h123_B" style="">16</view>
-</view>
-<view class="bg-gray-100 dark_cbg-zinc-800 h-10 w-10" hover-class="bg-red-500 dark_cbg-green-500" hover-start-time="50" hover-stay-time="400" style=""></view>
-<view class="bg-_b_h123456_B" style="">className</view>
-<view class="p-_b20px_B -mt-2 mb-_b-20px_B" style="">p-_b20px_B -mt-2 mb-_b-20px_B margin的jit 可不能这么写 -m-_b20px_B</view>
-<view class="space-y-_b1_d6rem_B text-_b16px_B w-_b200_v_B" style="">
-  <view class="w-_b300rpx_B text-black text-opacity-_b0_d19_B" style="">w-_b300rpx_B text-black text-opacity-_b0_d19_B</view>
-  <view class="min-w-_b300rpx_B max-h-_b100px_B text-_b20px_B leading-_b0_d9_B" style="">min-w-_b300rpx_B max-h-_b100px_B text-_b20px_B leading-_b0_d9_B</view>
-  <view class="max-w-_b300rpx_B min-h-_b100px_B text-_b_hdddddd_B" style="">max-w-_b300rpx_B min-h-_b100px_B text-_b_hdddddd_B</view>
-  <view class="flex items-center justify-center h-_b100px_B w-_b100px_B rounded-_b40px_B bg-_b_h123456_B bg-opacity-_b0_d54_B text-_b_hffffff_B" style="">Hello</view>
-  <view class="border-_b10px_B border-_b_h098765_B border-solid border-opacity-_b0_d44_B" style="">border-_b10px_B border-_b_h098765_B border-solid border-opacity-_b0_d44_B</view>
-  <view class="grid grid-cols-3 divide-x-_b10px_B divide-_b_h010101_B divide-solid" style="">
-    <view style="">1</view>
-    <view style="">2</view>
-    <view style="">3</view>
+<view class="issue-928-v3-page" style="background: #f8fafc; min-height: 100vh; padding: 32px 24px">
+  <view class="issue-928-v3-title" style="color: #0f172a; font-size: 16px; font-weight: 600; line-height: 24px; margin-bottom: 16px">issue #928 v3</view>
+  <view class="issue-928-v3-grid" style="display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px">
+    <view
+      class="issue-928-v3-gradient issue-928-v3-gradient-to-r h-14 w-28 bg-gradient-to-r from-cyan-500 to-blue-500"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-linear-via h-14 w-28 bg-gradient-to-tr from-cyan-500 from-10_v via-purple-500 via-30_v to-blue-500 to-90_v"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-stop-arbitrary h-14 w-28 bg-gradient-to-r from-_b_h06b6d4_B via-purple-500 to-_b_h3b82f6_B"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-linear-b h-14 w-28 bg-gradient-to-b from-emerald-400 via-yellow-300 to-rose-500"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-linear-br h-14 w-28 bg-gradient-to-br from-red-500 via-yellow-300 to-emerald-500"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-arbitrary-image h-14 w-28 bg-_bimage_clinear-gradient_pto_right_m_h06b6d4_m_h3b82f6_P_B"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-arbitrary-radial h-14 w-28 bg-_bradial-gradient_pcircle_at_50_v_50_v_m_h06b6d4_m_ha855f7_m_h3b82f6_P_B"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
+    <view
+      class="issue-928-v3-arbitrary-conic h-14 w-28 bg-_bconic-gradient_pfrom_180deg_m_h06b6d4_m_ha855f7_m_h3b82f6_P_B"
+      style="border: 1px solid #0f172a; border-radius: 6px; height: 56px; width: 112px"></view>
   </view>
-  <view class="w-32 py-2 rounded-md font-semibold text-white bg-pink-500 ring-4 ring-pink-300" style="">Default</view>
+  <view class="issue-928-v3-reference-row" style="display: flex; flex-direction: row; margin-top: 16px">
+    <view class="issue-928-v3-cyan-reference" style="background: #06b6d4; height: 28px; margin-right: 8px; width: 56px"></view>
+    <view class="issue-928-v3-blue-reference" style="background: #3b82f6; height: 28px; width: 56px"></view>
+  </view>
 </view>
-<view class="test" style="">test</view>

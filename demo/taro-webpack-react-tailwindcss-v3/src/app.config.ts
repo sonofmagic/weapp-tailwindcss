@@ -19,6 +19,7 @@ export default {
       ]
     : [
         'pages/index/index',
+        'pages/issue-928/index',
         'pages/debug/index',
         'pages/debug/other',
         'pages/debug/before',

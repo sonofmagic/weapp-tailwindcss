@@ -183,8 +183,8 @@ describe('compat helpers', () => {
     const decl = new Declaration({ prop: 'background-image', value: 'linear-gradient(var(--tw-gradient-stops))' })
     const changed = normalizeTailwindcssV4Declaration(decl)
 
-    expect(changed).toBe(true)
-    expect(decl.value).toBe('linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ))')
+    expect(changed).toBe(false)
+    expect(decl.value).toBe('linear-gradient(var(--tw-gradient-stops))')
   })
 
   it('merges split Tailwind v4 gradient direction rules after oklab downgrade', () => {
@@ -204,7 +204,7 @@ describe('compat helpers', () => {
     const css = root.toString()
     expect(css.match(/\.bg-linear-to-r\s*\{/g)).toHaveLength(1)
     expect(css).toContain('--tw-gradient-position: to right;')
-    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position),')
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
     expect(css).not.toContain('in oklab')
   })
 
