@@ -108,6 +108,9 @@ const advancedOptions: UserDefinedOptions = {
   cache: true,
   babelParserOptions: { sourceType: 'module' },
   cssChildCombinatorReplaceValue: ['view + view', 'text + text'],
+  cssOptions: {
+    tailwindcssV4GradientFallback: true,
+  },
   cssRemoveHoverPseudoClass: true,
   cssRemoveProperty: false,
   logLevel: 'warn',

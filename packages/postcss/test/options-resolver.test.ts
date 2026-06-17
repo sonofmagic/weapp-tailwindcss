@@ -86,6 +86,45 @@ describe('options resolver', () => {
     })
   })
 
+  it('normalizes cssOptions gradient fallback and keeps top-level compatibility', () => {
+    const resolver = createOptionsResolver({
+      ...createBaseOptions(),
+      tailwindcssV4GradientFallback: true,
+    })
+
+    expect(resolver.resolve().tailwindcssV4GradientFallback).toBe(true)
+    expect(resolver.resolve({
+      cssOptions: {
+        tailwindcssV4GradientFallback: false,
+      },
+    }).tailwindcssV4GradientFallback).toBe(false)
+    expect(resolver.resolve({
+      tailwindcssV4GradientFallback: false,
+    }).tailwindcssV4GradientFallback).toBe(false)
+    expect(resolver.resolve({
+      cssOptions: {
+        tailwindcssV4GradientFallback: true,
+      },
+      tailwindcssV4GradientFallback: false,
+    }).tailwindcssV4GradientFallback).toBe(true)
+  })
+
+  it('lets top-level compatibility overrides replace base cssOptions', () => {
+    const resolver = createOptionsResolver({
+      ...createBaseOptions(),
+      cssOptions: {
+        tailwindcssV4GradientFallback: true,
+      },
+    })
+
+    const resolved = resolver.resolve({
+      tailwindcssV4GradientFallback: false,
+    })
+
+    expect(resolved.tailwindcssV4GradientFallback).toBe(false)
+    expect(resolved.cssOptions?.tailwindcssV4GradientFallback).toBe(false)
+  })
+
   it('keeps nested override references reactive to in-place mutations', () => {
     const resolver = createOptionsResolver(createBaseOptions())
     const override = {

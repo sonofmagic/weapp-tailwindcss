@@ -4,6 +4,7 @@ import type { LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
+import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -470,6 +471,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const finalizeCssAssetSource = (source: string, options: { generatedCss?: boolean } = {}) => {
+          const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
           let finalized = removeTailwindSourceDirectives(
             stripBundlerGeneratedCssMarkers(source),
             { importFallback: true },
@@ -487,12 +489,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
               isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
               preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
-              tailwindcssV4GradientFallback: compilerOptions.tailwindcssV4GradientFallback,
+              tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
             })
           }
           return finalized
         }
         const finalizeMiniProgramUserCssAssetSource = (source: string) => {
+          const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
           if (isWebGeneratorTarget) {
             return source
           }
@@ -500,7 +503,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
             isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
             preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
-            tailwindcssV4GradientFallback: compilerOptions.tailwindcssV4GradientFallback,
+            tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
           })
         }
         const shouldRefreshWebpackSourceCandidates = groupedEntries.css?.length

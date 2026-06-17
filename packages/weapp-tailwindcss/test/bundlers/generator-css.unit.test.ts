@@ -7627,6 +7627,25 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('.to-orange-200{--tw-gradient-to:var(--color-orange-200)')
   })
 
+  it('uses cssOptions for Tailwind v4 gradient fallback in generator finalization', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = finalizeMiniProgramGeneratorCss([
+      ':root,:host{--color-cyan-500:#06b6d4;--color-blue-500:#3b82f6}',
+      '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
+      '.from-cyan-500{--tw-gradient-from:var(--color-cyan-500);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
+      '.to-blue-500{--tw-gradient-to:var(--color-blue-500);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
+    ].join('\n'), 'weapp', 4, {}, {
+      styleOptions: {
+        cssOptions: {
+          tailwindcssV4GradientFallback: true,
+        },
+      },
+    })
+
+    expect(css).toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
+    expect(css).toContain('background-image:linear-gradient(to right, #06b6d4, #3b82f6)')
+  })
+
   it('drops split Tailwind source media fragments before transforming user css', async () => {
     const runtimeSet = new Set(['text-red-500'])
     const rawTailwindCss = '.text-red-500{color:red}'

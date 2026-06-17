@@ -39,6 +39,9 @@ function createContext(
     cssSelectorReplacement: { root: '.app', universal: false },
     rem2rpx: false,
     postcssOptions: {},
+    cssOptions: {
+      tailwindcssV4GradientFallback: false,
+    },
     cssRemoveProperty: true,
     cssRemoveHoverPseudoClass: false,
     cssPresetEnv: { stage: 0 },
@@ -224,6 +227,7 @@ describe('resolveStyleOptionsFromContext', () => {
       px2rpx: ctx.px2rpx,
       unitsToPx: ctx.unitsToPx,
       unitConversion: ctx.unitConversion,
+      cssOptions: ctx.cssOptions,
       cssRemoveProperty: ctx.cssRemoveProperty,
       cssRemoveHoverPseudoClass: ctx.cssRemoveHoverPseudoClass,
       cssPresetEnv: ctx.cssPresetEnv,
@@ -236,6 +240,30 @@ describe('resolveStyleOptionsFromContext', () => {
     expect(styleOptions).not.toHaveProperty('postcssOptions')
     expect(styleOptions).not.toHaveProperty('injectAdditionalCssVarScope')
     expect(styleOptions).not.toHaveProperty('majorVersion')
+  })
+
+  it('prefers cssOptions over top-level Tailwind CSS v4 gradient fallback', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const ctx = {
+      ...createContext(),
+      cssOptions: {
+        tailwindcssV4GradientFallback: false,
+      },
+      tailwindcssV4GradientFallback: true,
+    } as unknown as InternalUserDefinedOptions
+
+    expect(resolveStyleOptionsFromContext(ctx).tailwindcssV4GradientFallback).toBe(false)
+  })
+
+  it('keeps top-level Tailwind CSS v4 gradient fallback compatibility', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const ctx = {
+      ...createContext(),
+      cssOptions: undefined,
+      tailwindcssV4GradientFallback: true,
+    } as unknown as InternalUserDefinedOptions
+
+    expect(resolveStyleOptionsFromContext(ctx).tailwindcssV4GradientFallback).toBe(true)
   })
 })
 

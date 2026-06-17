@@ -152,20 +152,40 @@ function hasOverrides(options?: Partial<IStyleHandlerOptions>): options is Parti
   return Boolean(options && Object.keys(options).length > 0)
 }
 
+export function normalizeCssOptions<T extends Partial<IStyleHandlerOptions>>(options: T): T {
+  const tailwindcssV4GradientFallback = options.cssOptions?.tailwindcssV4GradientFallback
+    ?? options.tailwindcssV4GradientFallback
+  if (
+    tailwindcssV4GradientFallback === options.tailwindcssV4GradientFallback
+    && tailwindcssV4GradientFallback === options.cssOptions?.tailwindcssV4GradientFallback
+  ) {
+    return options
+  }
+  return {
+    ...options,
+    cssOptions: {
+      ...(options.cssOptions ?? {}),
+      tailwindcssV4GradientFallback,
+    },
+    tailwindcssV4GradientFallback,
+  }
+}
+
 export interface OptionsResolver {
   resolve: (overrides?: Partial<IStyleHandlerOptions>) => IStyleHandlerOptions
 }
 
 export function createOptionsResolver(baseOptions: IStyleHandlerOptions): OptionsResolver {
+  const normalizedBaseOptions = normalizeCssOptions(baseOptions)
   const cacheByKey = new Map<string, IStyleHandlerOptions>()
   const cacheByRef = new WeakMap<Partial<IStyleHandlerOptions>, IStyleHandlerOptions>()
   const cacheKeyByRef = new WeakMap<Partial<IStyleHandlerOptions>, string>()
   const emptyOverrideRefs = new WeakSet<Partial<IStyleHandlerOptions>>()
-  cacheByKey.set(BASE_CACHE_KEY, baseOptions)
+  cacheByKey.set(BASE_CACHE_KEY, normalizedBaseOptions)
 
   const resolve = (overrides?: Partial<IStyleHandlerOptions>) => {
     if (!overrides) {
-      return baseOptions
+      return normalizedBaseOptions
     }
 
     const refCached = cacheByRef.get(overrides)
@@ -179,7 +199,7 @@ export function createOptionsResolver(baseOptions: IStyleHandlerOptions): Option
 
     if (!hasOverrides(overrides)) {
       emptyOverrideRefs.add(overrides)
-      return baseOptions
+      return normalizedBaseOptions
     }
 
     let key = cacheKeyByRef.get(overrides)
@@ -198,12 +218,13 @@ export function createOptionsResolver(baseOptions: IStyleHandlerOptions): Option
       IStyleHandlerOptions,
       Partial<IStyleHandlerOptions>[]
     >(
-      { ...overrides } as IStyleHandlerOptions,
-      baseOptions,
+      normalizeCssOptions({ ...overrides }) as IStyleHandlerOptions,
+      normalizedBaseOptions,
     )
-    cacheByKey.set(key, merged)
-    cacheByRef.set(overrides, merged)
-    return merged
+    const normalized = normalizeCssOptions(merged)
+    cacheByKey.set(key, normalized)
+    cacheByRef.set(overrides, normalized)
+    return normalized
   }
 
   return {

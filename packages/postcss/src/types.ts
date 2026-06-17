@@ -89,12 +89,23 @@ export interface PlatformUnitConversionOptions {
 
 export type UnitConversionOptions = UnitConversionConfig | PlatformUnitConversionOptions | false
 
+export interface CssOptions {
+  /**
+   * 是否显式追加 Tailwind CSS v4 渐变字面量组合兜底。
+   */
+  tailwindcssV4GradientFallback?: boolean | undefined
+}
+
 export type IStyleHandlerOptions = {
   ctx?: PostcssContext | undefined
   platform?: string | undefined
   postcssOptions?: LoadedPostcssOptions | undefined
+  cssOptions?: CssOptions | undefined
   cssRemoveProperty?: boolean | undefined
   cssRemoveHoverPseudoClass?: boolean | undefined
+  /**
+   * @deprecated 请使用 `cssOptions.tailwindcssV4GradientFallback`。
+   */
   tailwindcssV4GradientFallback?: boolean | undefined
   cssPresetEnv?: PresetEnvOptions | undefined
   autoprefixer?: WeappAutoprefixerOptions | undefined
@@ -131,7 +142,13 @@ export interface UserDefinedPostcssOptions {
   cssRemoveHoverPseudoClass?: boolean | undefined
   cssRemoveProperty?: boolean | undefined
   /**
+   * CSS 生成与兼容后处理的微调配置。
+   */
+  cssOptions?: CssOptions | undefined
+  /**
    * 是否显式追加 Tailwind CSS v4 渐变字面量组合兜底。
+   *
+   * @deprecated 请使用 `cssOptions.tailwindcssV4GradientFallback`。
    */
   tailwindcssV4GradientFallback?: boolean | undefined
   uniAppX?: boolean | undefined

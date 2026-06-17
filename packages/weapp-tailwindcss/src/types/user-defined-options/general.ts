@@ -1,5 +1,5 @@
 import type { ParserOptions } from '@babel/parser'
-import type { LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
+import type { CssOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../../cache'
 import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
@@ -187,6 +187,17 @@ export interface UserDefinedOptionsGeneralPart {
    * @group 3.一般配置
    */
   postcssOptions?: LoadedPostcssOptions | undefined
+
+  /**
+   * CSS 生成与兼容后处理的微调配置。
+   *
+   * @since ^4.3.4
+   * @group 3.一般配置
+   * @remarks
+   * 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
+   */
+  cssOptions?: CssOptions | undefined
+
   /**
    * 是否移除 CSS 中的 `:hover` 选择器。
    *
@@ -219,6 +230,7 @@ export interface UserDefinedOptionsGeneralPart {
    * 默认保留 CSS 变量实现，以完整支持 `from-*`、`via-*`、`to-*`、位置、任意值与自定义属性组合。
    * 如果目标平台需要旧版字面量组合兜底，可显式设置为 `true`。
    * @default false
+   * @deprecated 请使用 `cssOptions.tailwindcssV4GradientFallback`。
    */
   tailwindcssV4GradientFallback?: boolean | undefined
 

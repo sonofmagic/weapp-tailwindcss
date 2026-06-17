@@ -7,6 +7,9 @@ import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK === '1'
+const cssOptions = {
+  tailwindcssV4GradientFallback,
+} satisfies UserDefinedOptions['cssOptions']
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
@@ -14,7 +17,7 @@ const generator = {
     : 'weapp',
   styleOptions: {
     px2rpx: true,
-    tailwindcssV4GradientFallback,
+    cssOptions,
   },
 } satisfies UserDefinedOptions['generator']
 
@@ -105,7 +108,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
                   rem2rpx: true,
-                  tailwindcssV4GradientFallback,
+                  cssOptions,
                   generator,
                   // before 2248
                   // after 309
@@ -155,7 +158,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
                   rem2rpx: true,
-                  tailwindcssV4GradientFallback,
+                  cssOptions,
                   generator,
                 } satisfies UserDefinedOptions
               ]

@@ -248,7 +248,7 @@ export async function generateCssByGenerator(
       const css = incrementalCss.trim().length > 0
         ? createCssAppend(options.previousCss, finalizeMiniProgramGeneratorCss(incrementalCss, generated.target, majorVersion, opts.cssPreflight, {
             injectPreflight: false,
-            tailwindcssV4GradientFallback: opts.tailwindcssV4GradientFallback,
+            styleOptions: generatorStyleOptions,
           }))
         : options.previousCss
       return {
@@ -358,7 +358,7 @@ export async function generateCssByGenerator(
               isolateCurrentCssCandidates,
               localImports: localImportParts?.imports,
             }),
-            tailwindcssV4GradientFallback: opts.tailwindcssV4GradientFallback,
+            styleOptions: generatorStyleOptions,
           }),
           localImportParts?.imports,
         ),
@@ -460,7 +460,7 @@ export async function generateCssByGenerator(
               isolateCurrentCssCandidates,
               localImports: localImportParts?.imports,
             }),
-            tailwindcssV4GradientFallback: opts.tailwindcssV4GradientFallback,
+            styleOptions: generatorStyleOptions,
           }),
           localImportParts?.imports,
         ),
@@ -498,7 +498,7 @@ export async function generateCssByGenerator(
             isolateCurrentCssCandidates,
             localImports: localImportParts?.imports,
           }),
-          tailwindcssV4GradientFallback: opts.tailwindcssV4GradientFallback,
+          styleOptions: generatorStyleOptions,
         }),
         localImportParts?.imports,
       ),

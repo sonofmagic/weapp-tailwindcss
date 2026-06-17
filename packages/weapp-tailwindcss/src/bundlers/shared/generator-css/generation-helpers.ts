@@ -22,7 +22,7 @@ export function finalizeMiniProgramGeneratorCss(
   target: string,
   majorVersion: number | undefined,
   cssPreflight: InternalUserDefinedOptions['cssPreflight'],
-  options: { injectPreflight?: boolean, tailwindcssV4GradientFallback?: boolean | undefined } = {},
+  options: { injectPreflight?: boolean, styleOptions?: Partial<IStyleHandlerOptions> | undefined } = {},
 ) {
   if (target !== 'weapp') {
     return css
@@ -31,7 +31,8 @@ export function finalizeMiniProgramGeneratorCss(
     cssPreflight: majorVersion === 4 && options.injectPreflight !== false ? cssPreflight : undefined,
     isTailwindcssV4: majorVersion === 4,
     preservePseudoContentInit: majorVersion === 3,
-    tailwindcssV4GradientFallback: options.tailwindcssV4GradientFallback,
+    tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
+      ?? options.styleOptions?.tailwindcssV4GradientFallback,
   })
 }
 

@@ -465,7 +465,9 @@ describe('v4', () => {
   it('adds mini-program literal fallbacks for Tailwind CSS v4 gradient background images when enabled', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
-      tailwindcssV4GradientFallback: true,
+      cssOptions: {
+        tailwindcssV4GradientFallback: true,
+      },
     })
     const code = `
 :root,:host {
