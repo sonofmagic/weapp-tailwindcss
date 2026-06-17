@@ -11,6 +11,34 @@ const VITE_KNOWN_SFC_SOURCE_CACHE_MAX = 128
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
 const SFC_COMPONENT_FILE_RE = /\.(?:vue|uvue|nvue|svelte|mpx)$/i
 
+function toMb(bytes: number) {
+  return Math.round(bytes / 1024 / 1024)
+}
+
+function summarizeStringMapCache(map: Map<string, string>) {
+  let bytes = 0
+  for (const value of map.values()) {
+    bytes += value.length
+  }
+  return {
+    bytes,
+    mb: toMb(bytes),
+    size: map.size,
+  }
+}
+
+function summarizeRememberedCssSources(map: Map<string, RememberedCssSource>) {
+  let bytes = 0
+  for (const value of map.values()) {
+    bytes += value.rawSource.length
+  }
+  return {
+    bytes,
+    mb: toMb(bytes),
+    size: map.size,
+  }
+}
+
 function stripSourceHash(sourceFile: string) {
   const hashIndex = sourceFile.indexOf('#')
   return hashIndex === -1 ? sourceFile : sourceFile.slice(0, hashIndex)
@@ -272,8 +300,10 @@ export function createViteCssMemory(options: {
     getRememberedCssSources: () => rememberedCssSources,
     getStats: () => ({
       rememberedCssSources: rememberedCssSources.size,
+      rememberedCssSourcesRaw: summarizeRememberedCssSources(rememberedCssSources),
       rememberedCssSignatureByFile: rememberedCssSignatureByFile.size,
       knownSfcSources: knownSfcSources.size,
+      knownSfcSourcesRaw: summarizeStringMapCache(knownSfcSources),
     }),
     rememberCssSource,
     rememberKnownSfcSource,

@@ -356,6 +356,26 @@ describe('tailwindcss v3 engine', () => {
     expect(nextStats.entries[0]?.cssBytes).toBeLessThanOrEqual(stats.entryCssBytesMax)
   })
 
+  it('does not admit oversized v3 incremental cache entries', async () => {
+    clearTailwindV3IncrementalGenerateCacheForTest()
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+    const stats = getTailwindV3IncrementalGenerateCacheStatsForTest()
+    const candidates = Array.from({ length: stats.entryCandidatesMax + 1 }, (_, index) => `text-[${index}px]`)
+
+    const result = await engine.generate({
+      candidates,
+      incrementalCache: true,
+    })
+
+    expect(result.classSet.size).toBeGreaterThan(0)
+    expect(getTailwindV3IncrementalGenerateCacheStatsForTest().size).toBe(0)
+  })
+
   it('expands divide child combinators for view and text in mini-program output', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
