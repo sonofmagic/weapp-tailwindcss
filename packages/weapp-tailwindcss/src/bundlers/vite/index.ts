@@ -67,6 +67,34 @@ function normalizeVitePersistentCacheKey(file: string) {
   return normalizeOutputPathKey(file)
 }
 
+function toMb(bytes: number) {
+  return Math.round(bytes / 1024 / 1024)
+}
+
+function summarizeStringCache(map: Map<string, string>) {
+  let bytes = 0
+  for (const value of map.values()) {
+    bytes += value.length
+  }
+  return {
+    bytes,
+    mb: toMb(bytes),
+    size: map.size,
+  }
+}
+
+function summarizeViteProcessedCssResults(map: Map<string, { css: string }>) {
+  let bytes = 0
+  for (const record of map.values()) {
+    bytes += record.css.length
+  }
+  return {
+    bytes,
+    mb: toMb(bytes),
+    size: map.size,
+  }
+}
+
 /**
  * @name WeappTailwindcss
  * @description uni-app vite / uni-app-x 版本插件
@@ -499,7 +527,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const getViteProcessedCssAssetResult = (file: string) => viteProcessedCssAssetResults.get(normalizeVitePersistentCacheKey(file))
   const getViteCssCacheStats = () => ({
     viteGeneratedCssByFile: viteGeneratedCssByFile.size,
+    viteGeneratedCssByFileRaw: summarizeStringCache(viteGeneratedCssByFile),
     viteProcessedCssAssetResults: viteProcessedCssAssetResults.size,
+    viteProcessedCssAssetResultsRaw: summarizeViteProcessedCssResults(viteProcessedCssAssetResults),
     ...cssMemory.getStats(),
     sourceCandidateScanCache: sourceCandidateScanCache.size,
     pendingSourceCandidateSyncs: pendingSourceCandidateSyncs.size,

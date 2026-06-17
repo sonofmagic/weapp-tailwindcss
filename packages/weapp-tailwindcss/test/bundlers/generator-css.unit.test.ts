@@ -2956,11 +2956,11 @@ describe('bundlers/shared generator css', () => {
     expect(generateMock).toHaveBeenCalledTimes(2)
     expect(generateMock).toHaveBeenNthCalledWith(1, expect.objectContaining({
       candidates: new Set(['bg-normal-subpackage-marker']),
-      incrementalCache: false,
+      incrementalCache: true,
     }))
     expect(generateMock).toHaveBeenNthCalledWith(2, expect.objectContaining({
       candidates: new Set(['bg-independent-subpackage-marker']),
-      incrementalCache: false,
+      incrementalCache: true,
     }))
   })
 

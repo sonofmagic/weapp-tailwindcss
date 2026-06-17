@@ -150,6 +150,26 @@ describe('tailwindcss v4 engine', () => {
     expect(nextStats.entries[0]?.cssBytes).toBeLessThanOrEqual(stats.entryCssBytesMax)
   })
 
+  it('does not admit oversized v4 incremental cache entries', async () => {
+    clearTailwindV4IncrementalGenerateCacheForTest()
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+    const stats = getTailwindV4IncrementalGenerateCacheStatsForTest()
+    const candidates = Array.from({ length: stats.entryCandidatesMax + 1 }, (_, index) => `text-[${index}px]`)
+
+    const result = await engine.generate({
+      candidates,
+      incrementalCache: true,
+      scanSources: false,
+    })
+
+    expect(result.classSet.size).toBeGreaterThan(0)
+    expect(getTailwindV4IncrementalGenerateCacheStatsForTest().size).toBe(0)
+  })
+
   it('normalizes Tailwind v4 package CSS imports to stylesheet entrypoints', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-package-css-'))
     await linkTailwindcssPackage(root)

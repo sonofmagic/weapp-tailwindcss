@@ -216,6 +216,22 @@ function mergeCustomPropertyValues(target: Map<string, string>, css: string) {
   }
 }
 
+function createStableTextSignature(input: string) {
+  let hash = 2166136261
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(36)
+}
+
+function summarizeIncrementalCacheKey(key: string) {
+  return {
+    keyHash: createStableTextSignature(key),
+    keyBytes: key.length,
+  }
+}
+
 function shouldRebuildIncrementalEntry(
   cached: TailwindV4IncrementalGenerateCacheEntry,
   requestedCandidates: Set<string>,
@@ -227,7 +243,23 @@ function shouldRebuildIncrementalEntry(
     || requestedCandidates.size > INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
 }
 
+function shouldAdmitIncrementalEntry(
+  requestedCandidates: Set<string>,
+  generated: {
+    css: string
+    rawCss: string
+  },
+) {
+  return requestedCandidates.size <= INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+    && generated.css.length <= INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+    && generated.rawCss.length <= INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+}
+
 function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOptions) {
+  if (!shouldAdmitIncrementalEntry(options.requestedCandidates, options.generated)) {
+    return false
+  }
+
   const cacheKey = createIncrementalGenerateCacheKey(
     options.compatibleSource,
     options.target,
@@ -248,6 +280,7 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
     root: options.generated.root,
     target: options.generated.target,
   })
+  return true
 }
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
@@ -314,7 +347,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     if (options.scanSources === true) {
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
         const generated = await generateOnce(source, options)
-        seedIncrementalGenerateCache({
+        const admitted = seedIncrementalGenerateCache({
           compatibleSource,
           generated,
           requestedCandidates,
@@ -322,6 +355,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
           target,
         })
+        if (!admitted) {
+          incrementalGenerateCache.delete(cacheKey)
+        }
         return generated
       })
     }
@@ -331,7 +367,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
         return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
           const generated = await generateOnce(source, options)
-          seedIncrementalGenerateCache({
+          const admitted = seedIncrementalGenerateCache({
             compatibleSource,
             generated,
             requestedCandidates,
@@ -339,6 +375,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
             tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
             target,
           })
+          if (!admitted) {
+            incrementalGenerateCache.delete(cacheKey)
+          }
           return generated
         })
       }
@@ -362,7 +401,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       if (shouldRebuildIncrementalEntry(cached, requestedCandidates, missingCandidates)) {
         return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
           const generated = await generateOnce(source, options)
-          seedIncrementalGenerateCache({
+          const admitted = seedIncrementalGenerateCache({
             compatibleSource,
             generated,
             requestedCandidates,
@@ -370,6 +409,9 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
             tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
             target,
           })
+          if (!admitted) {
+            incrementalGenerateCache.delete(cacheKey)
+          }
           return generated
         })
       }
@@ -458,14 +500,14 @@ export function getTailwindV4IncrementalGenerateCacheStats() {
     taskMax: INCREMENTAL_GENERATE_TASK_CACHE_MAX,
     taskSize: incrementalGenerateTaskCache.size,
     entries: [...incrementalGenerateCache.entries()].map(([key, entry]) => ({
-      key,
+      ...summarizeIncrementalCacheKey(key),
       candidates: entry.seenCandidates.size,
       classSet: entry.classSet.size,
       cssBytes: entry.css.length,
       rawCssBytes: entry.rawCss.length,
     })),
-    keys: [...incrementalGenerateCache.keys()],
-    taskKeys: [...incrementalGenerateTaskCache.keys()],
+    keys: [...incrementalGenerateCache.keys()].map(summarizeIncrementalCacheKey),
+    taskKeys: [...incrementalGenerateTaskCache.keys()].map(summarizeIncrementalCacheKey),
   }
 }
 

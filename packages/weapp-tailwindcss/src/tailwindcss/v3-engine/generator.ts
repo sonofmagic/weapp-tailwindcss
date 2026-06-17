@@ -295,6 +295,22 @@ function createRequestedCandidatesCacheKey(candidates: Iterable<string>) {
   return sortCandidates(candidates).join('\n')
 }
 
+function createStableTextSignature(input: string) {
+  let hash = 2166136261
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(36)
+}
+
+function summarizeIncrementalCacheKey(key: string) {
+  return {
+    keyHash: createStableTextSignature(key),
+    keyBytes: key.length,
+  }
+}
+
 function createIncrementalResultsCache() {
   return new LRUCache<string, {
     classSet: Set<string>
@@ -375,6 +391,18 @@ function shouldRebuildIncrementalEntry(
     || cached.css.length > INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
     || cached.rawCss.length > INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
     || requestedCandidates.size > INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+}
+
+function shouldAdmitIncrementalEntry(
+  requestedCandidates: Set<string>,
+  generated: {
+    css: string
+    rawCss: string
+  },
+) {
+  return requestedCandidates.size <= INCREMENTAL_GENERATE_ENTRY_CANDIDATES_MAX
+    && generated.css.length <= INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
+    && generated.rawCss.length <= INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX
 }
 
 function appendUtilityRules(root: postcss.Root, context: TailwindV3Context, rules: Array<[unknown, postcss.Node]>) {
@@ -573,8 +601,13 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     if (cached) {
       if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
         const generated = await generateOnce(source, options)
-        replaceIncrementalEntry(cached, requestedCandidates, generated)
-        seedIncrementalResult(cached, requestedCandidates, generated)
+        if (shouldAdmitIncrementalEntry(requestedCandidates, generated)) {
+          replaceIncrementalEntry(cached, requestedCandidates, generated)
+          seedIncrementalResult(cached, requestedCandidates, generated)
+        }
+        else {
+          incrementalGenerateCache.delete(cacheKey)
+        }
         return generated
       }
 
@@ -591,8 +624,13 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       }
       if (shouldRebuildIncrementalEntry(cached, requestedCandidates, missingCandidates)) {
         const generated = await generateOnce(source, options)
-        replaceIncrementalEntry(cached, requestedCandidates, generated)
-        seedIncrementalResult(cached, requestedCandidates, generated)
+        if (shouldAdmitIncrementalEntry(requestedCandidates, generated)) {
+          replaceIncrementalEntry(cached, requestedCandidates, generated)
+          seedIncrementalResult(cached, requestedCandidates, generated)
+        }
+        else {
+          incrementalGenerateCache.delete(cacheKey)
+        }
         return generated
       }
 
@@ -630,6 +668,10 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     }
 
     const generated = await generateOnce(source, options)
+    if (!shouldAdmitIncrementalEntry(requestedCandidates, generated)) {
+      incrementalGenerateCache.delete(cacheKey)
+      return generated
+    }
     const resultsByCandidates = createIncrementalResultsCache()
     const entry: TailwindV3IncrementalGenerateCacheEntry = {
       context: generated.context,
@@ -673,14 +715,14 @@ export function getTailwindV3IncrementalGenerateCacheStats() {
     entryCssBytesMax: INCREMENTAL_GENERATE_ENTRY_CSS_BYTES_MAX,
     size: incrementalGenerateCache.size,
     entries: [...incrementalGenerateCache.entries()].map(([key, entry]) => ({
-      key,
+      ...summarizeIncrementalCacheKey(key),
       candidates: entry.seenCandidates.size,
       classSet: entry.classSet.size,
       cssBytes: entry.css.length,
       rawCssBytes: entry.rawCss.length,
       exactResults: entry.resultsByCandidates.size,
     })),
-    keys: [...incrementalGenerateCache.keys()],
+    keys: [...incrementalGenerateCache.keys()].map(summarizeIncrementalCacheKey),
   }
 }
 
