@@ -619,36 +619,6 @@ function normalizeTailwindcssV4EmptyVarFallback(value: string) {
   return changed ? parsed.toString() : value
 }
 
-function normalizeTailwindcssV4GradientPositionFallback(value: string) {
-  if (!value.includes('var(') || !value.includes('--tw-gradient-')) {
-    return value
-  }
-
-  const parsed = valueParser(value)
-  let changed = false
-
-  parsed.walk((node) => {
-    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
-      return
-    }
-
-    const args = node.nodes.filter(child => child.type !== 'space')
-    const firstArg = args[0]
-    if (
-      firstArg?.type !== 'word'
-      || !TW_GRADIENT_POSITION_PROPS.has(firstArg.value)
-      || args.some(child => child.type === 'div' && child.value === ',')
-    ) {
-      return
-    }
-
-    node.nodes.push({ type: 'div', value: ',', before: '', after: ' ' })
-    changed = true
-  })
-
-  return changed ? parsed.toString() : value
-}
-
 function normalizeTailwindcssV4GradientStopsFallback(value: string) {
   if (!value.includes('var(') || !value.includes('--tw-gradient-via-stops')) {
     return value
@@ -715,6 +685,51 @@ function normalizeTailwindcssV4GradientStopsFallback(value: string) {
   return changed ? parsed.toString() : value
 }
 
+function normalizeTailwindcssV4GradientPositionFallback(value: string) {
+  if (!value.includes('var(') || !value.includes('--tw-gradient-')) {
+    return value
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+      return
+    }
+
+    const args = node.nodes.filter(child => child.type !== 'space')
+    const firstArg = args[0]
+    if (
+      firstArg?.type !== 'word'
+      || !TW_GRADIENT_POSITION_PROPS.has(firstArg.value)
+    ) {
+      return
+    }
+    const commaIndex = args.findIndex(child => child.type === 'div' && child.value === ',')
+    const comma = commaIndex === -1 ? undefined : args[commaIndex]
+    if (comma) {
+      const hasFallback = args.slice(commaIndex + 1).some(child => child.type !== 'space')
+      if (!hasFallback && node.after !== ' ') {
+        node.after = ' '
+        changed = true
+      }
+      return
+    }
+
+    node.nodes.push({
+      type: 'div',
+      value: ',',
+      before: '',
+      after: '',
+    })
+    node.after = ' '
+    changed = true
+  })
+
+  return changed ? parsed.toString() : value
+}
+
 // 对 Tailwind v4 生成的声明做兼容处理，返回是否发生变更
 export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
   let changed = false
@@ -727,14 +742,14 @@ export function normalizeTailwindcssV4Declaration(decl: Declaration): boolean {
     decl.value = normalizedEmptyVarFallback
     changed = true
   }
-  const normalizedGradientPositionFallback = normalizeTailwindcssV4GradientPositionFallback(decl.value)
-  if (normalizedGradientPositionFallback !== decl.value) {
-    decl.value = normalizedGradientPositionFallback
-    changed = true
-  }
   const normalizedGradientStopsFallback = normalizeTailwindcssV4GradientStopsFallback(decl.value)
   if (normalizedGradientStopsFallback !== decl.value) {
     decl.value = normalizedGradientStopsFallback
+    changed = true
+  }
+  const normalizedGradientPositionFallback = normalizeTailwindcssV4GradientPositionFallback(decl.value)
+  if (normalizedGradientPositionFallback !== decl.value) {
+    decl.value = normalizedGradientPositionFallback
     changed = true
   }
 

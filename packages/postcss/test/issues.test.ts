@@ -100,6 +100,7 @@ describe('issues', () => {
     const code = await generateCss(path.resolve(__dirname, './fixtures/issues/928'))
     expect(code.css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
     expect(code.css).toContain('var(--tw-gradient-from) var(--tw-gradient-from-position)')
+    expect(code.css).not.toContain('var(--tw-gradient-from-position,)')
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
@@ -112,6 +113,12 @@ describe('issues', () => {
     expect(css).not.toContain('.bg-linear-to-r.from-cyan-500.to-blue-500')
     expect(css).toMatch(/\.bg-linear-to-r\s*\{\s*--tw-gradient-position:\s*to right;\s*background-image:\s*linear-gradient/)
     expect(css).toContain('--tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position)),')
+    expect(css).toContain('var(--tw-gradient-from) var(--tw-gradient-from-position, )')
+    expect(css).toContain('var(--tw-gradient-to) var(--tw-gradient-to-position, )')
+    expect(css).not.toContain('var(--tw-gradient-from-position,),')
+    expect(css).not.toContain('var(--tw-gradient-to-position,),')
+    expect(css).not.toContain('var(--tw-gradient-from-position),')
+    expect(css).not.toContain('var(--tw-gradient-to-position);')
     expect(css).not.toContain('to right in oklab')
     expect(css).not.toContain('--tw-gradient-via-stops: initial')
     expect(css).toMatchSnapshot()

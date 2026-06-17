@@ -151,7 +151,7 @@ describe('compat helpers', () => {
     expect(decl.value).toBe('to right')
   })
 
-  it('adds empty fallbacks to Tailwind v4 gradient position variables', () => {
+  it('adds comma-space empty fallbacks to Tailwind v4 gradient position variables', () => {
     const decl = new Declaration({
       prop: '--tw-gradient-stops',
       value: 'var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position))',
@@ -160,6 +160,33 @@ describe('compat helpers', () => {
 
     expect(changed).toBe(true)
     expect(decl.value).toBe('var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, )')
+    expect(decl.value).not.toContain('var(--tw-gradient-from-position),')
+    expect(decl.value).not.toContain('var(--tw-gradient-to-position),')
+  })
+
+  it('normalizes comma-only Tailwind v4 gradient empty fallbacks to comma-space fallbacks', () => {
+    const decl = new Declaration({
+      prop: '--tw-gradient-stops',
+      value: 'var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,)',
+    })
+    const changed = normalizeTailwindcssV4Declaration(decl)
+
+    expect(changed).toBe(true)
+    expect(decl.value).toContain('var(--tw-gradient-from-position, )')
+    expect(decl.value).toContain('var(--tw-gradient-to-position, )')
+    expect(decl.value).not.toContain('var(--tw-gradient-from-position),')
+    expect(decl.value).not.toContain('var(--tw-gradient-to-position);')
+  })
+
+  it('keeps explicit Tailwind v4 gradient position fallbacks unchanged', () => {
+    const decl = new Declaration({
+      prop: '--tw-gradient-stops',
+      value: 'var(--tw-gradient-from) var(--tw-gradient-from-position, 10%), var(--tw-gradient-to) var(--tw-gradient-to-position, 90%)',
+    })
+    const changed = normalizeTailwindcssV4Declaration(decl)
+
+    expect(changed).toBe(false)
+    expect(decl.value).toBe('var(--tw-gradient-from) var(--tw-gradient-from-position, 10%), var(--tw-gradient-to) var(--tw-gradient-to-position, 90%)')
   })
 
   it('does not inject Tailwind v4 gradient via stops as ordinary mini-program defaults', () => {

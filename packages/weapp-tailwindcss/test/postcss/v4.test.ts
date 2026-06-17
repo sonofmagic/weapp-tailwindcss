@@ -98,8 +98,6 @@ describe("tailwindcss v4", () => {
       [
         `${selector} {`,
         "  --tw-gradient-position: to right;",
-        "}",
-        `${selector} {`,
         "  background-image: linear-gradient(var(--tw-gradient-stops));",
         "}",
       ].join("\n"),

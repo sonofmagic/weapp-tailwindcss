@@ -87,6 +87,18 @@ const samples = [
     className: 'issue-928-image-var h-14 w-28 bg-(image:--issue-928-image)',
   },
   {
+    className: 'issue-928-direct-empty-fallback',
+    style: {
+      backgroundImage: 'linear-gradient(to right, #06b6d4 var(--issue-928-missing-from-position, ), #3b82f6 var(--issue-928-missing-to-position, ))',
+    },
+  },
+  {
+    className: 'issue-928-direct-empty-fallback-no-space',
+    style: {
+      backgroundImage: 'linear-gradient(to right, #06b6d4 var(--issue-928-missing-from-position,), #3b82f6 var(--issue-928-missing-to-position,))',
+    },
+  },
+  {
     className: 'issue-928-none h-14 w-28 bg-none',
     style: {
       backgroundColor: '#e2e8f0',
