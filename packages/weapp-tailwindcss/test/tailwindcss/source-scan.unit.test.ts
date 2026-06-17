@@ -3,6 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   collectCssInlineSourceCandidates,
   expandTailwindSourceEntries,
+  isFileMatchedByTailwindSourceEntries,
+  resolveCssSourceEntries,
   resolveSourceScanPath,
   resolveTailwindSourceEntry,
 } from '@/tailwindcss/source-scan'
@@ -37,6 +39,18 @@ describe('tailwindcss source scan', () => {
       negated: true,
       pattern: '**/*',
     })
+  })
+
+  it('matches Tailwind v4 source entries while honoring negated generated ts globs', async () => {
+    const root = path.resolve('/project')
+    const entries = await resolveCssSourceEntries(postcss.parse([
+      '@import "tailwindcss" source(none);',
+      '@source "./src/**/*.{ts,wxml}";',
+      '@source not "./src/generated/**/*.ts";',
+    ].join('\n')), root, '**/*')
+
+    expect(isFileMatchedByTailwindSourceEntries(path.join(root, 'src/pages/index.ts'), entries)).toBe(true)
+    expect(isFileMatchedByTailwindSourceEntries(path.join(root, 'src/generated/openapi-client.ts'), entries)).toBe(false)
   })
 
   it('keeps empty brace parts for Tailwind v4 inline source variants', () => {

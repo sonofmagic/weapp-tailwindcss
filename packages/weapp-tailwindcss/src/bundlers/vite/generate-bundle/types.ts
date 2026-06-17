@@ -34,6 +34,8 @@ export interface GenerateBundleContext {
   getSourceCandidates?: () => Set<string>
   getSourceCandidateSource?: (file: string) => string | undefined
   getSourceCandidateSources?: () => Iterable<[string, string]>
+  getSourceScanEntries?: () => TailwindSourceEntry[] | undefined
+  isWatchLikeBuild?: () => boolean
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined
   getSourceCandidateSourcesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>) | undefined
   waitForSourceCandidateSyncs?: () => Promise<void>
