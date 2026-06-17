@@ -211,11 +211,18 @@ const classArray = [
     expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
-  it('enables comment-carrier mutation for the taro-webpack-react-tailwindcss-v4 demo case', () => {
+  it('disables comment-carrier mutation for the taro-webpack-react-tailwindcss-v4 demo case', () => {
     const cases = buildDemoExtendedCases('/virtual/workspace')
     const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-react-tailwindcss-v4')
 
-    expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeUndefined()
+  })
+
+  it('disables comment-carrier mutation for the taro-webpack-vue3-tailwindcss-v4 demo case', () => {
+    const cases = buildDemoExtendedCases('/virtual/workspace')
+    const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-vue3-tailwindcss-v4')
+
+    expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeUndefined()
   })
 
   it('enables comment-carrier mutation for the uni-app vite and mpx demo cases', () => {

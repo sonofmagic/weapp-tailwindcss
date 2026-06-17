@@ -469,7 +469,10 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       },
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/miniprogram/pages/index/index.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/miniprogram/app.scss'),
+      verifyOutputCandidates: [
+        path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v3/dist/app.wxss'),
+      ],
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },

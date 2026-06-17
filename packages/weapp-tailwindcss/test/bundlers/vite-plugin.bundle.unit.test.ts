@@ -9187,7 +9187,7 @@ ${utilities}
     const dirtyStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss`
     const cleanStyleRequest = `${sourceFile}?vue&type=style&index=0&lang.scss&used`
     const dirtySource = '.tw-watch-style-case { @apply font-bold; }'
-    const cleanSource = '.clean-style { display: block; }'
+    const cleanSource = '.clean-style { @apply block; }'
     const rememberedCssSources = new Map([
       ['pages/index/index.wxss', {
         outputFile: 'pages/index/index.wxss',
@@ -9266,6 +9266,116 @@ ${utilities}
     expect(replayedCss).toContain('.clean-style')
     expect(replayedCss).not.toContain('.tw-watch-style-case')
     expect(replayBundleTarget['pages/index/index.wxss' as keyof typeof replayBundleTarget]).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes remembered scss sources outside tailwind content scan on watch change', async () => {
+    const generateCssByGeneratorMock = vi.fn(async (options: {
+      rawSource: string
+    }) => {
+      const css = options.rawSource.includes('.tw-watch-style-case')
+        ? '.tw-watch-style-case{font-weight:700}'
+        : '.clean-style{display:block}'
+      return createMockGeneratorCssResult(css)
+    })
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateCssByGeneratorMock,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-scss-watch-refresh-'))
+    createdDirs.push(root)
+    const pageDir = path.join(root, 'miniprogram/pages/index')
+    await mkdir(pageDir, { recursive: true })
+    const sourceFile = path.join(pageDir, 'index.scss')
+    const cleanSource = '.clean-style { @apply block; }'
+    const dirtySource = '.tw-watch-style-case { @apply font-bold; }'
+    await writeFile(sourceFile, cleanSource, 'utf8')
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      twPatcher: {
+        patch: vi.fn(),
+        getClassSet: vi.fn(async () => new Set<string>()),
+        getClassSetSync: vi.fn(() => new Set<string>()),
+        majorVersion: 3,
+        extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        getContexts: vi.fn(() => [{
+          userConfig: { content: ['./miniprogram/**/*.{wxml,js,ts}'] },
+          tailwindConfig: { content: ['./miniprogram/**/*.{wxml,js,ts}'] },
+        }]),
+      },
+    })
+    setCurrentContext(context)
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(rewritePlugin).toBeTruthy()
+    expect(sourcePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const transform = getTransformHandler(rewritePlugin)
+    const firstTransform = await transform?.call(rewritePlugin, cleanSource, sourceFile) as { code: string } | null | undefined
+    expect(firstTransform?.code).toContain('.clean-style')
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    const firstBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(firstTransform?.code ?? cleanSource),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [sourceFile],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.clean-style')
+    expect((firstBundle['pages/index/index.wxss'] as OutputAsset).source.toString()).not.toContain('.tw-watch-style-case')
+
+    await writeFile(sourceFile, dirtySource, 'utf8')
+    await (sourcePlugin.watchChange as any)?.call(sourcePlugin, sourceFile, { event: 'update' })
+
+    generateCssByGeneratorMock.mockClear()
+    const secondBundle = {
+      'pages/index/index.wxss': {
+        ...createRollupAsset(firstTransform?.code ?? cleanSource),
+        fileName: 'pages/index/index.wxss',
+        originalFileNames: [sourceFile],
+      },
+      'pages/index/index.js': {
+        ...createRollupChunk('console.log("stable")'),
+        fileName: 'pages/index/index.js',
+      },
+    }
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+
+    const refreshedCss = (secondBundle['pages/index/index.wxss'] as OutputAsset).source.toString()
+    expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: dirtySource,
+      file: sourceFile,
+    }))
+    expect(refreshedCss).toContain('.tw-watch-style-case')
+    expect(refreshedCss).not.toContain('.clean-style')
   }, TEST_TIMEOUT_MS)
 
   it.each(VITE_UNIT_CASES)(
