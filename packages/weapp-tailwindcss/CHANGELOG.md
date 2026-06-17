@@ -1,5 +1,32 @@
 # weapp-tailwindcss
 
+## 5.0.13
+
+### Patch Changes
+
+- 🐛 **新增 `weapp-tailwindcss/framework` 工具入口，用于判断当前项目是 MPX、Taro、uni-app、uni-app x、uni-app Vite 还是 weapp-vite。检测逻辑支持 package.json、manifest.json、HBuilderX 运行目录以及 `UNI_PLATFORM`、`UNI_UTS_PLATFORM`、`TARO_ENV`、`MPX_CLI_MODE` 等环境变量。** [`cc966fa`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cc966fa07dee0adce865d484a4ecb132b5c8c0ef) by @sonofmagic
+  - Vite 插件的自动 `appType` 推断现在复用同一套检测逻辑，并补充 uni-app x 依赖标记识别。
+
+- 🐛 **调整 Tailwind CSS v4 渐变工具类的小程序兼容策略，默认保留 `--tw-gradient-*` CSS 变量链路，覆盖 `background-image` 文档中的 linear、radial、conic、任意值、自定义属性、stop 颜色与位置等组合。** [`d3487a1`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d3487a1b669bb194cdbfa0cd7a412e970b01632d) by @sonofmagic
+  - 新增 `cssOptions` 作为统一的 CSS 生成与兼容后处理微调配置入口，`cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、`atRules`、`injectAdditionalCssVarScope`、`cssSelectorReplacement`、`rem2rpx`、`px2rpx`、`unitsToPx`、`unitConversion`、`platform`、`cssRemoveHoverPseudoClass`、`cssRemoveProperty`、`cssCalc` 与 `tailwindcssV4GradientFallback` 等配置都可以放入该分组。顶层旧字段仍保留兼容并标记为 deprecated；其中 `cssOptions.tailwindcssV4GradientFallback` 显式设置为 `true` 时才追加旧版字面量组合兜底，避免默认产物膨胀并让 v4 渐变行为更接近 Tailwind 官方输出。
+
+- 🐛 **修复 Tailwind CSS v4 渐变位置变量在小程序中的空 fallback 兼容问题。`--tw-gradient-from-position`、`--tw-gradient-via-position` 与 `--tw-gradient-to-position` 会统一输出为带逗号和空格的空 fallback，避免 `var(--tw-gradient-*-position,)` 或缺少 fallback 时导致渐变在微信小程序运行时渲染异常；显式 fallback 仍保持原样。** [`8501c4b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8501c4b2243da8cb0f6fe2d33b22acd84a17d108) by @sonofmagic
+
+- 🐛 **修复 Vite 开发模式下模板类名热更新后，已由 Vite 处理过的 Tailwind CSS 产物可能复用旧样式的问题。现在组件模板新增 `text-[123rpx]` 等任意值类名时，WXML 转译结果和生成的 `wxss/acss` 等样式会同步刷新。** [`81fed5b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/81fed5b83c141372fe7c90061fbdac2cb6478855) by @sonofmagic
+  - 同时调整 Vite 样式入口判断，减少对 `app`、`main`、`tailwind`、`app-origin` 等文件名的硬编码依赖，改为优先依据构建图、已记住的 CSS 源、候选集变化和实际输出关系处理。
+
+- 🐛 **修复 Vite 构建与热更新中 Tailwind CSS 输出文件关系推断问题。样式输出后缀改为优先来自构建产物图和真实 bundle 文件名，不再依赖微信小程序 `.wxss` 兜底、平台后缀映射表或 `app`/`main`/`app-origin` 这类固定主样式文件名语义；同时补充分包、JS/TS/JSX/Vue 来源与 Taro/uni-app 非微信小程序构建回归。** [`78a2a06`](https://github.com/sonofmagic/weapp-tailwindcss/commit/78a2a06c3338fd998d1f9381ad5e33026fa0c413) by @sonofmagic
+
+- 🐛 **修复 Vite 场景下页面样式可能重复包含 `app.wxss` 全局规则的问题，并保留分包页面自身的样式产物。** [`6ffaf0a`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6ffaf0af83670190d8cfe5bc3d22a6034622d783) by @sonofmagic
+
+- 🐛 **修复 Vite 生成模式下 Tailwind CSS v4 分包样式入口在支付宝、京东、抖音等非微信小程序端可能被当作已处理 CSS 跳过，导致分包样式产物为空或缺少 `@config` / `@source` 生成结果的问题。** [`61f92ae`](https://github.com/sonofmagic/weapp-tailwindcss/commit/61f92ae4a921b78f8f955bbf094a5ac404195eee) by @sonofmagic
+
+- 🐛 **修复 Webpack Web 目标下最终 CSS 产物被重新处理后覆盖的问题，避免 Docusaurus、Infima 或业务 SCSS 样式在生产构建中丢失。** [`a9c60f7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a9c60f72848b32dbbe6803ef193c8575b5284b30) by @sonofmagic
+
+- 🐛 **统一使用 `mainCssChunkMatcher(name, appType)` 作为主样式匹配配置，移除 `mainCssChunk` 配置入口。默认行为仍然不根据 `app`、`main`、平台后缀或框架类型推断主样式，避免在多小程序、H5、iOS、Android、鸿蒙等输出中产生框架耦合。** [`61f92ae`](https://github.com/sonofmagic/weapp-tailwindcss/commit/61f92ae4a921b78f8f955bbf094a5ac404195eee) by @sonofmagic
+- 📦 **Dependencies** [`d3487a1`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d3487a1b669bb194cdbfa0cd7a412e970b01632d)
+  → `@weapp-tailwindcss/postcss@3.0.8`
+
 ## 5.0.12
 
 ### Patch Changes
