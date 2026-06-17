@@ -2,6 +2,7 @@ export interface TaroWebHmrCase {
   name: string
   projectDir: string
   sourceFile: string
+  cssEntryFile?: string
   assertion: 'css' | 'dom'
   appConfigProbe: boolean
   cssPaths?: string[]
@@ -15,6 +16,7 @@ function reactCase(options: {
   name: string
   projectDir: string
   sourceFile?: string
+  cssEntryFile?: string
   markerAttr: string
   markerText: string
   anchors: string[]
@@ -32,6 +34,7 @@ function vueCase(options: {
   name: string
   projectDir: string
   sourceFile?: string
+  cssEntryFile?: string
   markerAttr: string
   markerText: string
   anchors: string[]
@@ -89,6 +92,7 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
   reactCase({
     name: 'taro webpack react Tailwind v3',
     projectDir: 'demo/taro-webpack-react-tailwindcss-v3',
+    cssEntryFile: 'src/app.less',
     markerAttr: 'webpack-react-v3',
     markerText: 'TARO-WEB-HMR-WEBPACK-REACT-V3',
     anchors: [
@@ -98,6 +102,7 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
   reactCase({
     name: 'taro webpack react Tailwind v4',
     projectDir: 'demo/taro-webpack-react-tailwindcss-v4',
+    cssEntryFile: 'src/app.css',
     markerAttr: 'webpack-react-v4',
     markerText: 'TARO-WEB-HMR-WEBPACK-REACT-V4',
     anchors: [
@@ -107,6 +112,7 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
   vueCase({
     name: 'taro webpack vue3 Tailwind v3',
     projectDir: 'demo/taro-webpack-vue3-tailwindcss-v3',
+    cssEntryFile: 'src/app.less',
     markerAttr: 'webpack-vue3-v3',
     markerText: 'TARO-WEB-HMR-WEBPACK-VUE3-V3',
     anchors: [
@@ -118,6 +124,7 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
   vueCase({
     name: 'taro webpack vue3 Tailwind v4',
     projectDir: 'demo/taro-webpack-vue3-tailwindcss-v4',
+    cssEntryFile: 'src/app.css',
     markerAttr: 'webpack-vue3-v4',
     markerText: 'TARO-WEB-HMR-WEBPACK-VUE3-V4',
     anchors: [

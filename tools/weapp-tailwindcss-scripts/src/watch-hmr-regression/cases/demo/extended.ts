@@ -8,7 +8,6 @@ import {
   mutateScriptByDataAnchor,
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateTsxScriptByReturnAnchor,
-  mutateTsxScriptByReturnAnchorWithCommentCarrier,
   mutateVueRefStringLiteral,
   mutateVueScriptSetupArrayByAnchor,
   mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
@@ -760,9 +759,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return mutateTsxScriptByReturnAnchor(source, payload)
       },
-      mutateCommentCarrier(source, payload) {
-        return mutateTsxScriptByReturnAnchorWithCommentCarrier(source, payload)
-      },
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.css'),
@@ -1031,16 +1027,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       roundConfigs: buildHexScriptRoundConfigs(),
       mutate(source, payload) {
         return mutateVueScriptWithTemplateConsumer(source, payload)
-      },
-      mutateCommentCarrier(source, payload) {
-        return insertIntoVueTemplateRoot(
-          insertBeforeClosingTag(
-            source,
-            '</script>',
-            `/* ${payload.classLiteral} */\nconst __twWatchScriptCommentMarker = '${payload.marker}'`,
-          ),
-          '    <view hidden>{{ __twWatchScriptCommentMarker }}</view>',
-        )
       },
     },
     styleMutation: {

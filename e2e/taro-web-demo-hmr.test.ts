@@ -20,10 +20,12 @@ import { taroWebHmrCases } from './taro-web-demo-hmr-cases'
 
 const repoRoot = path.resolve(__dirname, '..')
 const serverTimeoutMs = Number(process.env['E2E_TARO_WEB_HMR_TIMEOUT_MS'] ?? 240_000)
+const caseTimeoutMs = serverTimeoutMs + 90_000
 
 let devProcess: ChildProcess | undefined
 let browser: Browser | undefined
 let restoreSource: (() => Promise<void>) | undefined
+let restoreCssEntry: (() => Promise<void>) | undefined
 let currentLogs: string[] = []
 
 function rememberLog(line: string) {
@@ -34,12 +36,12 @@ function rememberLog(line: string) {
 }
 
 async function restoreCurrentSource() {
-  if (!restoreSource) {
-    return
-  }
-  const restore = restoreSource
+  const restoreCallbacks = [restoreSource, restoreCssEntry].filter((item): item is () => Promise<void> => Boolean(item))
   restoreSource = undefined
-  await restore()
+  restoreCssEntry = undefined
+  for (const restore of restoreCallbacks.reverse()) {
+    await restore()
+  }
 }
 
 function killProcessTree(child: ChildProcess) {
@@ -155,46 +157,102 @@ async function mutateSource(item: TaroWebHmrCase, sourceFile: string) {
   }
 }
 
+async function mutateCssEntry(item: TaroWebHmrCase, cssEntryFile: string) {
+  const original = await fs.readFile(cssEntryFile, 'utf8')
+  const next = `${original.trimEnd()}\n[data-taro-web-hmr="${item.markerAttr}"] { @apply text-[#ff0000]; }\n`
+  if (next === original) {
+    throw new Error(`${item.name} Taro Web HMR CSS 入口替换没有产生变化`)
+  }
+  await fs.writeFile(cssEntryFile, next, 'utf8')
+  restoreCssEntry = async () => {
+    await fs.writeFile(cssEntryFile, original, 'utf8')
+  }
+}
+
 function hasTaroConfigTransientError() {
   return currentLogs.some(line => line.includes('app.config.ts') && line.includes('require is not defined'))
+}
+
+async function readMarkerState(page: Page, item: TaroWebHmrCase) {
+  const locator = page.locator(`[data-taro-web-hmr="${item.markerAttr}"]`)
+  const count = await locator.count()
+  if (count === 0) {
+    return {
+      ok: false,
+      reason: 'marker not found',
+    }
+  }
+
+  const actual = await locator.first().evaluate((element) => {
+    const style = window.getComputedStyle(element)
+    return {
+      color: style.color.replace(/\s+/g, ' '),
+      text: element.textContent?.trim() ?? '',
+    }
+  }, undefined, { timeout: 1000 })
+
+  return {
+    actual,
+    ok: actual.text === item.markerText && actual.color === 'rgb(255, 0, 0)',
+    reason: JSON.stringify(actual),
+  }
+}
+
+async function waitForReloadedDom(page: Page, item: TaroWebHmrCase, baseUrl: string, child: ChildProcess, logs: string[], timeoutMs = 60_000) {
+  let lastError = ''
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < Math.min(serverTimeoutMs, timeoutMs)) {
+    try {
+      await waitForReadyUrl(child, logs, baseUrl, item)
+      await gotoReadyPage(page, baseUrl, child, logs)
+      const state = await readMarkerState(page, item)
+      if (state.ok) {
+        return
+      }
+      lastError = state.reason
+    }
+    catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+    await wait(pollIntervalMs)
+  }
+
+  const body = await page.locator('body').textContent().catch(error => String(error))
+  throw new Error(`${item.name} Taro Web live reload 后 DOM 未更新：${lastError}\nbody=${body}\nlogs=${currentLogs.join('\n')}`)
 }
 
 async function waitForDomHmr(page: Page, item: TaroWebHmrCase, baseUrl: string, child: ChildProcess, logs: string[]) {
   let lastError = ''
   let reloadAttempts = 0
   const startedAt = Date.now()
+  const softTimeoutMs = item.cssEntryFile ? Math.min(serverTimeoutMs, 30_000) : serverTimeoutMs
 
-  while (Date.now() - startedAt < serverTimeoutMs) {
+  while (Date.now() - startedAt < softTimeoutMs) {
     try {
-      const locator = page.locator(`[data-taro-web-hmr="${item.markerAttr}"]`)
-      const count = await locator.count()
-      if (count === 0) {
-        lastError = 'marker not found'
+      const state = await readMarkerState(page, item)
+      if (state.ok) {
+        return
+      }
+      lastError = state.reason
+      if (state.reason === 'marker not found') {
         if (reloadAttempts < 3 && hasTaroConfigTransientError()) {
           reloadAttempts += 1
           currentLogs = []
           await waitForReadyUrl(child, logs, baseUrl, item)
           await gotoReadyPage(page, baseUrl, child, logs)
         }
-        await wait(pollIntervalMs)
-        continue
       }
-      const actual = await locator.first().evaluate((element) => {
-        const style = window.getComputedStyle(element)
-        return {
-          color: style.color.replace(/\s+/g, ' '),
-          text: element.textContent?.trim() ?? '',
-        }
-      }, undefined, { timeout: 1000 })
-      if (actual.text === item.markerText && actual.color === 'rgb(255, 0, 0)') {
-        return
-      }
-      lastError = JSON.stringify(actual)
     }
     catch (error) {
       lastError = error instanceof Error ? error.message : String(error)
     }
     await wait(pollIntervalMs)
+  }
+
+  if (item.cssEntryFile) {
+    await waitForReloadedDom(page, item, baseUrl, child, logs, Math.min(serverTimeoutMs - (Date.now() - startedAt), 180_000))
+    return
   }
 
   const body = await page.locator('body').textContent().catch(error => String(error))
@@ -278,6 +336,7 @@ describe('demo Taro H5 source HMR', () => {
   it.each(taroWebHmrCases)('updates marker text and arbitrary text color for $name', async (item) => {
     const projectRoot = path.resolve(repoRoot, item.projectDir)
     const sourceFile = path.resolve(projectRoot, item.sourceFile)
+    const cssEntryFile = item.cssEntryFile ? path.resolve(projectRoot, item.cssEntryFile) : undefined
     const port = await findFreePort()
     await cleanViteCache(projectRoot)
     const child = createDevServer(projectRoot, port)
@@ -295,11 +354,14 @@ describe('demo Taro H5 source HMR', () => {
     await gotoReadyPage(page, baseUrl, child, logs)
 
     await mutateSource(item, sourceFile)
+    if (cssEntryFile) {
+      await mutateCssEntry(item, cssEntryFile)
+    }
     if (item.assertion === 'css') {
       await waitForCssHmr(item, baseUrl, child, logs)
     }
     else {
       await waitForDomHmr(page, item, baseUrl, child, logs)
     }
-  }, serverTimeoutMs + 30_000)
+  }, caseTimeoutMs)
 })

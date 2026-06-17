@@ -478,6 +478,20 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (sourceScanMatcher && !sourceScanMatcher(file)) {
       sourceCandidateCollector.remove(file)
       cacheCurrentSourceCandidateScan()
+      if (isSourceStyleRequest(file)) {
+        return readFile(file, 'utf8')
+          .then(source => cssMemory.refreshRememberedCssSourceBySourceFile(file, source))
+          .catch((error) => {
+            const code = typeof error === 'object' && error !== null && 'code' in error
+              ? (error as { code?: unknown }).code
+              : undefined
+            if (code !== 'ENOENT') {
+              debug('remembered css source watch refresh failed: %s %O', file, error)
+            }
+          })
+          .then(() => cssMemory.refreshRememberedCssSourceByCurrentFile(file))
+          .then(() => undefined)
+      }
       return cssMemory.refreshRememberedCssSourceByCurrentFile(file)
     }
     const existingTask = pendingSourceCandidateSyncByFile.get(file)
