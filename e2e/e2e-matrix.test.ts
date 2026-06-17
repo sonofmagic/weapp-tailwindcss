@@ -292,8 +292,11 @@ describe('e2e matrix', () => {
   it('keeps demo workflow routed through composable platform e2e groups', () => {
     const rootPackageJson = readDemoPackageJson('package.json')
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
+    const memoryReport = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-memory.ts'), 'utf8')
+    const weappMemoryReport = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-weapp-memory-report.ts'), 'utf8')
     const scripts = rootPackageJson.scripts ?? {}
 
+    expect(scripts['e2e:demo:weapp-memory']).toBe('tsx scripts/demo-weapp-memory-report.ts --continue-on-error')
     expect(scripts['e2e:mp']).toBe('pnpm e2e:static && pnpm e2e:hot-update:demo')
     expect(scripts['e2e:mp:ide']).toBe('pnpm e2e:ide:full')
     expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')
@@ -312,6 +315,14 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:hbuilderx:local:demo:web']).toContain('E2E_HBUILDERX_CASE_GROUP=web')
     expect(scripts['e2e:ci']).not.toContain('e2e:hbuilderx:local:demo')
     expect(scripts['e2e:ci']).not.toContain('e2e:hbuilderx:local:demo:mp-extra')
+    expect(workflow).toContain('writeDemoE2eMemoryReport')
+    expect(workflow).toContain('sampleProcessTree')
+    expect(memoryReport).toContain('e2e/benchmark/demo-e2e-memory')
+    expect(weappMemoryReport).toContain('buildScriptCommand')
+    expect(weappMemoryReport).toContain('--filter')
+    expect(weappMemoryReport).toContain('E2E_HOT_UPDATE_CASE_NAME')
+    expect(weappMemoryReport).toContain('优化建议')
+    expect(weappMemoryReport).toContain('WEAPP_TW_HMR_MEMORY_DEBUG')
 
     for (const scriptName of ['e2e:mp', 'e2e:h5', 'e2e:hbuilderx:mp', 'e2e:hbuilderx:h5', 'e2e:android', 'e2e:ios', 'e2e:harmony']) {
       expect(workflow).toContain(`args: ['${scriptName}']`)

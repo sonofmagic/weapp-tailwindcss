@@ -1,5 +1,14 @@
+import type { DemoE2eMemorySample, DemoE2eMemoryStepReport } from './demo-e2e-memory'
 import { spawn } from 'node:child_process'
+import path from 'node:path'
 import process from 'node:process'
+import {
+  createDemoE2eMemoryReport,
+
+  sampleProcessTree,
+  summarizeMemorySamples,
+  writeDemoE2eMemoryReport,
+} from './demo-e2e-memory'
 
 interface WorkflowStep {
   name: string
@@ -20,6 +29,8 @@ function formatStep(step: WorkflowStep, index: number, total: number) {
 
 async function runStep(step: WorkflowStep, index: number, total: number) {
   process.stdout.write(formatStep(step, index, total))
+  const startedAt = Date.now()
+  const samples: DemoE2eMemorySample[] = []
   const child = spawn(step.command, step.args, {
     cwd: process.cwd(),
     env: {
@@ -30,14 +41,59 @@ async function runStep(step: WorkflowStep, index: number, total: number) {
     stdio: 'inherit',
   })
 
-  const exitCode = await new Promise<number>((resolve, reject) => {
-    child.on('error', reject)
-    child.on('close', code => resolve(code ?? 1))
+  const record = () => {
+    const sample = sampleProcessTree(child.pid)
+    if (sample) {
+      samples.push(sample)
+    }
+  }
+  const timer = setInterval(record, 1000)
+  timer.unref?.()
+  record()
+
+  let spawnError: unknown
+  const exitCode = await new Promise<number>((resolve) => {
+    let settled = false
+    child.on('error', (error) => {
+      spawnError = error
+      if (!settled) {
+        settled = true
+        resolve(1)
+      }
+    })
+    child.on('close', (code) => {
+      if (!settled) {
+        settled = true
+        resolve(code ?? 1)
+      }
+    })
   })
+  clearInterval(timer)
+  record()
+
+  const report: DemoE2eMemoryStepReport = {
+    name: step.name,
+    command: [step.command, ...step.args],
+    exitCode,
+    startedAt: new Date(startedAt).toISOString(),
+    endedAt: new Date().toISOString(),
+    local: step.local === true,
+    summary: summarizeMemorySamples(samples),
+    samples,
+  }
+
+  process.stdout.write(
+    `[demo-e2e] ${step.name} memory: peakRSS=${report.summary.peakRssMb}MB rssDelta=${report.summary.rssDeltaMb}MB samples=${report.summary.count}\n`,
+  )
 
   if (exitCode !== 0) {
-    throw new Error(`[demo-e2e] ${step.name} failed with exit=${exitCode}`)
+    const reason = spawnError instanceof Error ? `: ${spawnError.message}` : ''
+    const error = new Error(`[demo-e2e] ${step.name} failed with exit=${exitCode}${reason}`)
+    Object.assign(error, { stepReport: report })
+    throw error
   }
+
+  return report
 }
 
 function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
@@ -106,9 +162,34 @@ function createWorkflowSteps(includeLocal: boolean): WorkflowStep[] {
 }
 
 async function main() {
-  const steps = createWorkflowSteps(hasFlag('--local'))
+  const includeLocal = hasFlag('--local')
+  const steps = createWorkflowSteps(includeLocal)
+  const stepReports: DemoE2eMemoryStepReport[] = []
+  let exitCode = 0
+  const writeReport = async () => {
+    const report = createDemoE2eMemoryReport({
+      repositoryRoot: process.cwd(),
+      includeLocal,
+      exitCode,
+      steps: stepReports,
+    })
+    const result = await writeDemoE2eMemoryReport({ report })
+    process.stdout.write(`[demo-e2e] memory report: ${path.relative(process.cwd(), result.markdownFile)}\n`)
+  }
   for (const [index, step] of steps.entries()) {
-    await runStep(step, index + 1, steps.length)
+    try {
+      stepReports.push(await runStep(step, index + 1, steps.length))
+      await writeReport()
+    }
+    catch (error) {
+      const stepReport = (error as { stepReport?: DemoE2eMemoryStepReport }).stepReport
+      if (stepReport) {
+        stepReports.push(stepReport)
+      }
+      exitCode = 1
+      await writeReport()
+      throw error
+    }
   }
   process.stdout.write('[demo-e2e] workflow passed\n')
 }

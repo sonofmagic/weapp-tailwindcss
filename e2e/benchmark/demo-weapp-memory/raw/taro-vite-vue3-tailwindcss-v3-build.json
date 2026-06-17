@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-06-17T12:14:06.419Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 1,
+    "baselineRssMb": 0,
+    "peakRssMb": 0,
+    "rssDeltaMb": 0,
+    "peakMaxProcessRssMb": 0,
+    "peakProcessCount": 1,
+    "firstAt": 1781698446108,
+    "lastAt": 1781698446108,
+    "durationMs": 0,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "taro-vite-vue3-tailwindcss-v3 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v3",
+        "run",
+        "build:weapp"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T12:14:06.088Z",
+      "endedAt": "2026-06-17T12:14:06.419Z",
+      "local": false,
+      "summary": {
+        "count": 1,
+        "baselineRssMb": 0,
+        "peakRssMb": 0,
+        "rssDeltaMb": 0,
+        "peakMaxProcessRssMb": 0,
+        "peakProcessCount": 1,
+        "firstAt": 1781698446108,
+        "lastAt": 1781698446108,
+        "durationMs": 0
+      },
+      "samples": [
+        {
+          "at": 1781698446108,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "generatedAt": "2026-06-17T11:40:19.190Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 6,
+    "baselineRssMb": 329,
+    "peakRssMb": 1168,
+    "rssDeltaMb": 839,
+    "peakMaxProcessRssMb": 996,
+    "peakProcessCount": 2,
+    "firstAt": 1781696413442,
+    "lastAt": 1781696418447,
+    "durationMs": 5005,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "mpx-tailwindcss-v4 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/mpx-tailwindcss-v4",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T11:40:13.420Z",
+      "endedAt": "2026-06-17T11:40:19.190Z",
+      "local": false,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 329,
+        "peakRssMb": 1168,
+        "rssDeltaMb": 839,
+        "peakMaxProcessRssMb": 996,
+        "peakProcessCount": 2,
+        "firstAt": 1781696413442,
+        "lastAt": 1781696418447,
+        "durationMs": 5005
+      },
+      "samples": [
+        {
+          "at": 1781696413442,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781696414444,
+          "rssMb": 329,
+          "maxProcessRssMb": 172,
+          "processCount": 2
+        },
+        {
+          "at": 1781696415446,
+          "rssMb": 575,
+          "maxProcessRssMb": 402,
+          "processCount": 2
+        },
+        {
+          "at": 1781696416447,
+          "rssMb": 709,
+          "maxProcessRssMb": 537,
+          "processCount": 2
+        },
+        {
+          "at": 1781696417446,
+          "rssMb": 858,
+          "maxProcessRssMb": 686,
+          "processCount": 2
+        },
+        {
+          "at": 1781696418447,
+          "rssMb": 1168,
+          "maxProcessRssMb": 996,
+          "processCount": 2
+        }
+      ]
+    }
+  ]
+}

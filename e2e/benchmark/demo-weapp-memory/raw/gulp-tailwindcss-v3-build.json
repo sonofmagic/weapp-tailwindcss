@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-06-17T11:36:49.757Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 3,
+    "baselineRssMb": 438,
+    "peakRssMb": 577,
+    "rssDeltaMb": 139,
+    "peakMaxProcessRssMb": 405,
+    "peakProcessCount": 2,
+    "firstAt": 1781696207503,
+    "lastAt": 1781696209508,
+    "durationMs": 2005,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "gulp-tailwindcss-v3 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/gulp-tailwindcss-v3",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T11:36:47.484Z",
+      "endedAt": "2026-06-17T11:36:49.756Z",
+      "local": false,
+      "summary": {
+        "count": 3,
+        "baselineRssMb": 438,
+        "peakRssMb": 577,
+        "rssDeltaMb": 139,
+        "peakMaxProcessRssMb": 405,
+        "peakProcessCount": 2,
+        "firstAt": 1781696207503,
+        "lastAt": 1781696209508,
+        "durationMs": 2005
+      },
+      "samples": [
+        {
+          "at": 1781696207503,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781696208506,
+          "rssMb": 438,
+          "maxProcessRssMb": 267,
+          "processCount": 2
+        },
+        {
+          "at": 1781696209508,
+          "rssMb": 577,
+          "maxProcessRssMb": 405,
+          "processCount": 2
+        }
+      ]
+    }
+  ]
+}

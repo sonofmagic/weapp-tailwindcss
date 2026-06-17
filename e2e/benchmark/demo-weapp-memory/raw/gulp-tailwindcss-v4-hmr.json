@@ -1,0 +1,345 @@
+{
+  "generatedAt": "2026-06-17T11:38:32.104Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 50,
+    "baselineRssMb": 888,
+    "peakRssMb": 1926,
+    "rssDeltaMb": 1038,
+    "peakMaxProcessRssMb": 979,
+    "peakProcessCount": 10,
+    "firstAt": 1781696262296,
+    "lastAt": 1781696311383,
+    "durationMs": 49087,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "gulp-tailwindcss-v4 hmr",
+      "command": [
+        "pnpm",
+        "e2e:hot-update:demo"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T11:37:42.278Z",
+      "endedAt": "2026-06-17T11:38:32.104Z",
+      "local": false,
+      "summary": {
+        "count": 50,
+        "baselineRssMb": 888,
+        "peakRssMb": 1926,
+        "rssDeltaMb": 1038,
+        "peakMaxProcessRssMb": 979,
+        "peakProcessCount": 10,
+        "firstAt": 1781696262296,
+        "lastAt": 1781696311383,
+        "durationMs": 49087
+      },
+      "samples": [
+        {
+          "at": 1781696262296,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781696263302,
+          "rssMb": 888,
+          "maxProcessRssMb": 171,
+          "processCount": 7
+        },
+        {
+          "at": 1781696264323,
+          "rssMb": 1126,
+          "maxProcessRssMb": 180,
+          "processCount": 9
+        },
+        {
+          "at": 1781696265303,
+          "rssMb": 1449,
+          "maxProcessRssMb": 274,
+          "processCount": 10
+        },
+        {
+          "at": 1781696266306,
+          "rssMb": 1585,
+          "maxProcessRssMb": 405,
+          "processCount": 10
+        },
+        {
+          "at": 1781696267330,
+          "rssMb": 1591,
+          "maxProcessRssMb": 411,
+          "processCount": 10
+        },
+        {
+          "at": 1781696268330,
+          "rssMb": 1586,
+          "maxProcessRssMb": 411,
+          "processCount": 10
+        },
+        {
+          "at": 1781696269332,
+          "rssMb": 1586,
+          "maxProcessRssMb": 411,
+          "processCount": 10
+        },
+        {
+          "at": 1781696270316,
+          "rssMb": 1586,
+          "maxProcessRssMb": 411,
+          "processCount": 10
+        },
+        {
+          "at": 1781696271329,
+          "rssMb": 1505,
+          "maxProcessRssMb": 411,
+          "processCount": 10
+        },
+        {
+          "at": 1781696272328,
+          "rssMb": 1478,
+          "maxProcessRssMb": 411,
+          "processCount": 10
+        },
+        {
+          "at": 1781696273337,
+          "rssMb": 1471,
+          "maxProcessRssMb": 404,
+          "processCount": 10
+        },
+        {
+          "at": 1781696274325,
+          "rssMb": 1477,
+          "maxProcessRssMb": 410,
+          "processCount": 10
+        },
+        {
+          "at": 1781696275317,
+          "rssMb": 1479,
+          "maxProcessRssMb": 410,
+          "processCount": 10
+        },
+        {
+          "at": 1781696276340,
+          "rssMb": 1480,
+          "maxProcessRssMb": 410,
+          "processCount": 10
+        },
+        {
+          "at": 1781696277342,
+          "rssMb": 1480,
+          "maxProcessRssMb": 410,
+          "processCount": 10
+        },
+        {
+          "at": 1781696278324,
+          "rssMb": 1420,
+          "maxProcessRssMb": 410,
+          "processCount": 10
+        },
+        {
+          "at": 1781696279328,
+          "rssMb": 1408,
+          "maxProcessRssMb": 462,
+          "processCount": 10
+        },
+        {
+          "at": 1781696280328,
+          "rssMb": 1413,
+          "maxProcessRssMb": 467,
+          "processCount": 10
+        },
+        {
+          "at": 1781696281342,
+          "rssMb": 1440,
+          "maxProcessRssMb": 494,
+          "processCount": 10
+        },
+        {
+          "at": 1781696282347,
+          "rssMb": 1495,
+          "maxProcessRssMb": 549,
+          "processCount": 10
+        },
+        {
+          "at": 1781696283330,
+          "rssMb": 1599,
+          "maxProcessRssMb": 653,
+          "processCount": 10
+        },
+        {
+          "at": 1781696284337,
+          "rssMb": 1655,
+          "maxProcessRssMb": 709,
+          "processCount": 10
+        },
+        {
+          "at": 1781696285332,
+          "rssMb": 1763,
+          "maxProcessRssMb": 816,
+          "processCount": 10
+        },
+        {
+          "at": 1781696286335,
+          "rssMb": 1867,
+          "maxProcessRssMb": 920,
+          "processCount": 10
+        },
+        {
+          "at": 1781696287344,
+          "rssMb": 1926,
+          "maxProcessRssMb": 979,
+          "processCount": 10
+        },
+        {
+          "at": 1781696288341,
+          "rssMb": 1914,
+          "maxProcessRssMb": 967,
+          "processCount": 10
+        },
+        {
+          "at": 1781696289349,
+          "rssMb": 1915,
+          "maxProcessRssMb": 968,
+          "processCount": 10
+        },
+        {
+          "at": 1781696290346,
+          "rssMb": 1916,
+          "maxProcessRssMb": 968,
+          "processCount": 10
+        },
+        {
+          "at": 1781696291361,
+          "rssMb": 1916,
+          "maxProcessRssMb": 969,
+          "processCount": 10
+        },
+        {
+          "at": 1781696292364,
+          "rssMb": 1917,
+          "maxProcessRssMb": 970,
+          "processCount": 10
+        },
+        {
+          "at": 1781696293366,
+          "rssMb": 1918,
+          "maxProcessRssMb": 970,
+          "processCount": 10
+        },
+        {
+          "at": 1781696294345,
+          "rssMb": 1919,
+          "maxProcessRssMb": 971,
+          "processCount": 10
+        },
+        {
+          "at": 1781696295353,
+          "rssMb": 1919,
+          "maxProcessRssMb": 972,
+          "processCount": 10
+        },
+        {
+          "at": 1781696296361,
+          "rssMb": 1887,
+          "maxProcessRssMb": 972,
+          "processCount": 10
+        },
+        {
+          "at": 1781696297349,
+          "rssMb": 1889,
+          "maxProcessRssMb": 973,
+          "processCount": 10
+        },
+        {
+          "at": 1781696298374,
+          "rssMb": 1889,
+          "maxProcessRssMb": 973,
+          "processCount": 10
+        },
+        {
+          "at": 1781696299371,
+          "rssMb": 1866,
+          "maxProcessRssMb": 962,
+          "processCount": 10
+        },
+        {
+          "at": 1781696300359,
+          "rssMb": 1868,
+          "maxProcessRssMb": 963,
+          "processCount": 10
+        },
+        {
+          "at": 1781696301360,
+          "rssMb": 1870,
+          "maxProcessRssMb": 966,
+          "processCount": 10
+        },
+        {
+          "at": 1781696302362,
+          "rssMb": 1871,
+          "maxProcessRssMb": 967,
+          "processCount": 10
+        },
+        {
+          "at": 1781696303382,
+          "rssMb": 1873,
+          "maxProcessRssMb": 968,
+          "processCount": 10
+        },
+        {
+          "at": 1781696304371,
+          "rssMb": 1875,
+          "maxProcessRssMb": 969,
+          "processCount": 10
+        },
+        {
+          "at": 1781696305373,
+          "rssMb": 1876,
+          "maxProcessRssMb": 970,
+          "processCount": 10
+        },
+        {
+          "at": 1781696306381,
+          "rssMb": 1877,
+          "maxProcessRssMb": 971,
+          "processCount": 10
+        },
+        {
+          "at": 1781696307377,
+          "rssMb": 1878,
+          "maxProcessRssMb": 971,
+          "processCount": 10
+        },
+        {
+          "at": 1781696308388,
+          "rssMb": 1878,
+          "maxProcessRssMb": 972,
+          "processCount": 10
+        },
+        {
+          "at": 1781696309377,
+          "rssMb": 1758,
+          "maxProcessRssMb": 851,
+          "processCount": 10
+        },
+        {
+          "at": 1781696310382,
+          "rssMb": 1741,
+          "maxProcessRssMb": 834,
+          "processCount": 10
+        },
+        {
+          "at": 1781696311383,
+          "rssMb": 1743,
+          "maxProcessRssMb": 837,
+          "processCount": 10
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-06-17T12:15:47.760Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 4,
+    "baselineRssMb": 481,
+    "peakRssMb": 933,
+    "rssDeltaMb": 452,
+    "peakMaxProcessRssMb": 653,
+    "peakProcessCount": 5,
+    "firstAt": 1781698544148,
+    "lastAt": 1781698547153,
+    "durationMs": 3005,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "taro-vite-react-tailwindcss-v4 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v4",
+        "run",
+        "build:weapp"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T12:15:44.128Z",
+      "endedAt": "2026-06-17T12:15:47.760Z",
+      "local": false,
+      "summary": {
+        "count": 4,
+        "baselineRssMb": 481,
+        "peakRssMb": 933,
+        "rssDeltaMb": 452,
+        "peakMaxProcessRssMb": 653,
+        "peakProcessCount": 5,
+        "firstAt": 1781698544148,
+        "lastAt": 1781698547153,
+        "durationMs": 3005
+      },
+      "samples": [
+        {
+          "at": 1781698544148,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781698545151,
+          "rssMb": 481,
+          "maxProcessRssMb": 239,
+          "processCount": 4
+        },
+        {
+          "at": 1781698546151,
+          "rssMb": 657,
+          "maxProcessRssMb": 392,
+          "processCount": 5
+        },
+        {
+          "at": 1781698547153,
+          "rssMb": 933,
+          "maxProcessRssMb": 653,
+          "processCount": 5
+        }
+      ]
+    }
+  ]
+}
