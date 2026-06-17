@@ -1,8 +1,8 @@
 import type { CliOptions, StyleMutationMetrics, WatchCase, WatchCaseMetrics, WatchProjectGroup, WatchSession } from './types'
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
+import { summarizeMemoryDebugSamples, summarizeMemorySamples } from './memory-report'
 import { runStyleMutation } from './mutations/style'
-import { summarizeMemorySamples } from './runner'
 import { createWatchSession, sleep } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
@@ -38,7 +38,8 @@ function toStyleOnlyWatchCaseMetrics(
   memorySamples = [] as WatchCaseMetrics['memorySamples'],
   memoryDebugSamples = [] as NonNullable<WatchCaseMetrics['memoryDebugSamples']>,
 ): WatchCaseMetrics {
-  const memoryStats = summarizeMemorySamples(memorySamples)
+  const memorySummary = summarizeMemorySamples(memorySamples)
+  const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
   return {
     name: watchCase.name,
     label: watchCase.label,
@@ -68,8 +69,10 @@ function toStyleOnlyWatchCaseMetrics(
     totalMs,
     memorySamples,
     ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
-    memoryPeakRssMb: memoryStats.peakRssMb,
-    memoryRssDeltaMb: memoryStats.rssDeltaMb,
+    memorySummary,
+    memoryDebugSummary,
+    memoryPeakRssMb: memorySummary.peakRssMb,
+    memoryRssDeltaMb: memorySummary.rssDeltaMb,
   }
 }
 

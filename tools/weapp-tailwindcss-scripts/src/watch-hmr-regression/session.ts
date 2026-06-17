@@ -404,11 +404,75 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
   }
 }
 
-export function sampleProcessTreeMemory(rootPid: number | undefined): MemoryUsageSample | undefined {
-  if (rootPid == null || process.platform === 'win32') {
+function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSample, 'at'> | undefined {
+  const script = [
+    '$root = [int]$args[0]',
+    '$processes = Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize',
+    '$children = @{}',
+    'foreach ($process in $processes) {',
+    '  $parent = [int]$process.ParentProcessId',
+    '  if (-not $children.ContainsKey($parent)) { $children[$parent] = @() }',
+    '  $children[$parent] += $process',
+    '}',
+    '$tracked = @{}',
+    '$stack = New-Object System.Collections.ArrayList',
+    '$rootProcess = $processes | Where-Object { [int]$_.ProcessId -eq $root } | Select-Object -First 1',
+    'if ($null -ne $rootProcess) { $tracked[[int]$rootProcess.ProcessId] = $rootProcess }',
+    'if ($children.ContainsKey($root)) { foreach ($child in $children[$root]) { [void]$stack.Add($child) } }',
+    'while ($stack.Count -gt 0) {',
+    '  $current = $stack[$stack.Count - 1]',
+    '  $stack.RemoveAt($stack.Count - 1)',
+    '  $pid = [int]$current.ProcessId',
+    '  if ($tracked.ContainsKey($pid)) { continue }',
+    '  $tracked[$pid] = $current',
+    '  if ($children.ContainsKey($pid)) { foreach ($child in $children[$pid]) { [void]$stack.Add($child) } }',
+    '}',
+    '$total = 0',
+    '$max = 0',
+    'foreach ($process in $tracked.Values) {',
+    '  $workingSet = if ($null -eq $process.WorkingSetSize) { 0 } else { [double]$process.WorkingSetSize }',
+    '  $total += $workingSet',
+    '  if ($workingSet -gt $max) { $max = $workingSet }',
+    '}',
+    '[Console]::Out.WriteLine((@{ rssMb = [int][Math]::Round($total / 1MB); maxProcessRssMb = [int][Math]::Round($max / 1MB); processCount = [int]$tracked.Count } | ConvertTo-Json -Compress))',
+  ].join('; ')
+  const result = spawnSync('powershell', ['-NoProfile', '-Command', script, String(rootPid)], {
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'ignore'],
+    windowsHide: true,
+  })
+
+  if (result.status !== 0 || typeof result.stdout !== 'string') {
     return undefined
   }
-  const sample = sampleProcessTreeMemoryOnPosix(rootPid)
+
+  try {
+    const parsed = JSON.parse(result.stdout.trim()) as Partial<Omit<MemoryUsageSample, 'at'>>
+    if (
+      typeof parsed.rssMb !== 'number'
+      || typeof parsed.maxProcessRssMb !== 'number'
+      || typeof parsed.processCount !== 'number'
+    ) {
+      return undefined
+    }
+    return {
+      rssMb: parsed.rssMb,
+      maxProcessRssMb: parsed.maxProcessRssMb,
+      processCount: parsed.processCount,
+    }
+  }
+  catch {
+    return undefined
+  }
+}
+
+export function sampleProcessTreeMemory(rootPid: number | undefined): MemoryUsageSample | undefined {
+  if (rootPid == null) {
+    return undefined
+  }
+  const sample = process.platform === 'win32'
+    ? sampleProcessTreeMemoryOnWindows(rootPid)
+    : sampleProcessTreeMemoryOnPosix(rootPid)
   if (!sample) {
     return undefined
   }

@@ -241,12 +241,16 @@ jobs:
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || matrix.watch_timeout_ms }}
           E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '6000' }}
+          E2E_WATCH_MAX_MEMORY_RSS_MB: ${{ matrix.watch_max_memory_rss_mb || '5632' }}
+          E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB: ${{ matrix.watch_max_memory_rss_delta_mb || '4608' }}
+          E2E_WATCH_MAX_MEMORY_HEAP_USED_MB: ${{ matrix.watch_max_memory_heap_used_mb || '4096' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_WEB_ONLY: ${{ matrix.watch_web_only || '0' }}
           E2E_WATCH_MAIN_STYLE_ONLY: ${{ matrix.watch_main_style_only || '0' }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
+          WEAPP_TW_HMR_MEMORY_DEBUG: '1'
           NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:watch
 
@@ -279,6 +283,7 @@ jobs:
           path: |
             e2e/benchmark/e2e-watch-hmr/*.json
             e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
+            e2e/benchmark/e2e-watch-hmr/hmr-memory-report.md
           if-no-files-found: ignore
           retention-days: 14
 
@@ -501,10 +506,14 @@ jobs:
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || matrix.watch_timeout_ms }}
           E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '6000' }}
+          E2E_WATCH_MAX_MEMORY_RSS_MB: ${{ matrix.watch_max_memory_rss_mb || '5632' }}
+          E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB: ${{ matrix.watch_max_memory_rss_delta_mb || '4608' }}
+          E2E_WATCH_MAX_MEMORY_HEAP_USED_MB: ${{ matrix.watch_max_memory_heap_used_mb || '4096' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
+          WEAPP_TW_HMR_MEMORY_DEBUG: '1'
           NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:watch
 
@@ -537,6 +546,7 @@ jobs:
           path: |
             e2e/benchmark/e2e-watch-hmr/*.json
             e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
+            e2e/benchmark/e2e-watch-hmr/hmr-memory-report.md
           if-no-files-found: ignore
           retention-days: 14
 

@@ -39,6 +39,17 @@ export interface HmrFullRunProjectReport {
   initialReadyMs: number
   totalMs: number
   summary: HmrTimingSummary
+  memory?: {
+    sampleCount: number
+    debugSampleCount: number
+    baselineRssMb: number
+    peakRssMb: number
+    rssDeltaMb: number
+    peakMaxProcessRssMb: number
+    peakProcessCount: number
+    peakHeapUsedMb: number
+    peakDebugRssMb: number
+  }
   timings: HmrTimingSample[]
 }
 
@@ -56,6 +67,24 @@ export interface HmrFullRunReport {
     platforms: Record<string, HmrTimingSummary>
   }>
   byPlatform: Record<string, HmrTimingSummary>
+  memory: {
+    projectCount: number
+    sampleCount: number
+    debugSampleCount: number
+    peakRssMb: number
+    maxRssDeltaMb: number
+    peakHeapUsedMb: number
+    byApp: Record<string, {
+      peakRssMb: number
+      maxRssDeltaMb: number
+      peakHeapUsedMb: number
+    }>
+    byPlatform: Record<string, {
+      peakRssMb: number
+      maxRssDeltaMb: number
+      peakHeapUsedMb: number
+    }>
+  }
   cases: HmrFullRunProjectReport[]
 }
 
@@ -140,6 +169,10 @@ function toTimingSamples(report: ProjectHmrDurationReport) {
   return samples
 }
 
+function resolveProjectMemory(report: WatchReport, project: string) {
+  return report.memoryReport?.byProject?.[project]
+}
+
 function groupSummary<T>(items: T[], getKey: (item: T) => string, getSamples: (item: T) => HmrTimingSample[]) {
   const groups = new Map<string, HmrTimingSample[]>()
   for (const item of items) {
@@ -177,6 +210,47 @@ function buildByApp(cases: HmrFullRunProjectReport[]) {
   )
 }
 
+function groupMemory<T>(items: T[], getKey: (item: T) => string, getMemory: (item: T) => HmrFullRunProjectReport['memory']) {
+  const groups = new Map<string, NonNullable<HmrFullRunProjectReport['memory']>[]>()
+  for (const item of items) {
+    const memory = getMemory(item)
+    if (!memory) {
+      continue
+    }
+    const key = getKey(item) || 'unknown'
+    const samples = groups.get(key) ?? []
+    samples.push(memory)
+    groups.set(key, samples)
+  }
+
+  return Object.fromEntries(
+    [...groups.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([key, samples]) => [key, {
+        peakRssMb: Math.max(0, ...samples.map(sample => sample.peakRssMb)),
+        maxRssDeltaMb: Math.max(0, ...samples.map(sample => sample.rssDeltaMb)),
+        peakHeapUsedMb: Math.max(0, ...samples.map(sample => sample.peakHeapUsedMb)),
+      }]),
+  )
+}
+
+function buildMemorySummary(cases: HmrFullRunProjectReport[]) {
+  const memorySamples = cases
+    .map(item => item.memory)
+    .filter((item): item is NonNullable<HmrFullRunProjectReport['memory']> => Boolean(item))
+
+  return {
+    projectCount: memorySamples.length,
+    sampleCount: memorySamples.reduce((total, item) => total + item.sampleCount, 0),
+    debugSampleCount: memorySamples.reduce((total, item) => total + item.debugSampleCount, 0),
+    peakRssMb: Math.max(0, ...memorySamples.map(item => item.peakRssMb)),
+    maxRssDeltaMb: Math.max(0, ...memorySamples.map(item => item.rssDeltaMb)),
+    peakHeapUsedMb: Math.max(0, ...memorySamples.map(item => item.peakHeapUsedMb)),
+    byApp: groupMemory(cases, item => item.project, item => item.memory),
+    byPlatform: groupMemory(cases, item => item.platform, item => item.memory),
+  }
+}
+
 export async function buildHmrFullRunReport(options: {
   generatedAt: string
   repositoryRoot: string
@@ -193,6 +267,7 @@ export async function buildHmrFullRunReport(options: {
       const project = projectReport.project || item.caseName
       const entry = entriesByName.get(project) ?? entriesByName.get(item.caseName)
       const timings = toTimingSamples(projectReport)
+      const memory = resolveProjectMemory(report, project)
       cases.push({
         caseName: item.caseName,
         project,
@@ -203,6 +278,21 @@ export async function buildHmrFullRunReport(options: {
         initialReadyMs: projectReport.initialReadyMs,
         totalMs: projectReport.totalMs,
         summary: summarizeHmrTimingSamples(timings),
+        ...(memory
+          ? {
+              memory: {
+                sampleCount: memory.sampleCount,
+                debugSampleCount: memory.debugSampleCount,
+                baselineRssMb: memory.baselineRssMb,
+                peakRssMb: memory.peakRssMb,
+                rssDeltaMb: memory.rssDeltaMb,
+                peakMaxProcessRssMb: memory.peakMaxProcessRssMb,
+                peakProcessCount: memory.peakProcessCount,
+                peakHeapUsedMb: memory.peakHeapUsedMb,
+                peakDebugRssMb: memory.peakDebugRssMb,
+              },
+            }
+          : {}),
         timings,
       })
     }
@@ -220,6 +310,7 @@ export async function buildHmrFullRunReport(options: {
     summary: summarizeHmrTimingSamples(allTimings),
     byApp: buildByApp(cases),
     byPlatform: groupSummary(cases, item => item.platform, item => item.timings),
+    memory: buildMemorySummary(cases),
     cases,
   }
 }

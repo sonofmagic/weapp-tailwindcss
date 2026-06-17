@@ -40,6 +40,8 @@ const SNAPSHOTS_DIR = path.join(ROOT_DIR, 'snapshots')
 const FAILURES_DIR = path.join(ROOT_DIR, 'failures')
 const SPEED_REPORT_JSON = path.join(ROOT_DIR, 'hmr-speed-report.json')
 const SPEED_REPORT_MD = path.join(ROOT_DIR, 'hmr-speed-report.md')
+const MEMORY_REPORT_JSON = path.join(ROOT_DIR, 'hmr-memory-report.json')
+const MEMORY_REPORT_MD = path.join(ROOT_DIR, 'hmr-memory-report.md')
 
 function ensureFailuresDir() {
   fs.mkdirSync(FAILURES_DIR, { recursive: true })
@@ -287,6 +289,27 @@ function summarizeSpeedSamples(samples) {
   }
 }
 
+function summarizeMemorySamples(samples) {
+  if (samples.length === 0) {
+    return {
+      count: 0,
+      peakRssMb: 0,
+      maxRssDeltaMb: 0,
+      peakHeapUsedMb: 0,
+      sampleCount: 0,
+      debugSampleCount: 0,
+    }
+  }
+  return {
+    count: samples.length,
+    peakRssMb: Math.max(...samples.map(item => item.peakRssMb || 0)),
+    maxRssDeltaMb: Math.max(...samples.map(item => item.rssDeltaMb || 0)),
+    peakHeapUsedMb: Math.max(...samples.map(item => item.peakHeapUsedMb || 0)),
+    sampleCount: samples.reduce((total, item) => total + (item.sampleCount || 0), 0),
+    debugSampleCount: samples.reduce((total, item) => total + (item.debugSampleCount || 0), 0),
+  }
+}
+
 function groupSpeedSamples(samples, key) {
   const grouped = new Map()
   for (const sample of samples) {
@@ -300,6 +323,44 @@ function groupSpeedSamples(samples, key) {
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([name, groupSamples]) => [name, summarizeSpeedSamples(groupSamples)]),
   )
+}
+
+function groupMemorySamples(samples, key) {
+  const grouped = new Map()
+  for (const sample of samples) {
+    const groupKey = sample[key] || 'unknown'
+    const list = grouped.get(groupKey) || []
+    list.push(sample)
+    grouped.set(groupKey, list)
+  }
+  return Object.fromEntries(
+    [...grouped.entries()]
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([name, groupSamples]) => [name, summarizeMemorySamples(groupSamples)]),
+  )
+}
+
+function pushMemorySample(samples, item) {
+  const peakRssMb = toFiniteNumber(item.peakRssMb)
+  const rssDeltaMb = toFiniteNumber(item.rssDeltaMb)
+  if (peakRssMb == null && rssDeltaMb == null) {
+    return
+  }
+  samples.push({
+    caseName: item.caseName || 'unknown',
+    project: item.project || 'unknown',
+    platform: item.platform || 'unknown',
+    reportFile: item.reportFile || '',
+    sampleCount: toFiniteNumber(item.sampleCount) || 0,
+    debugSampleCount: toFiniteNumber(item.debugSampleCount) || 0,
+    baselineRssMb: toFiniteNumber(item.baselineRssMb) || 0,
+    peakRssMb: peakRssMb || 0,
+    rssDeltaMb: rssDeltaMb || 0,
+    peakMaxProcessRssMb: toFiniteNumber(item.peakMaxProcessRssMb) || 0,
+    peakProcessCount: toFiniteNumber(item.peakProcessCount) || 0,
+    peakHeapUsedMb: toFiniteNumber(item.peakHeapUsedMb) || 0,
+    peakDebugRssMb: toFiniteNumber(item.peakDebugRssMb) || 0,
+  })
 }
 
 function collectSpeedSamplesFromReport(report, reportFile) {
@@ -413,9 +474,64 @@ function collectSpeedSamplesFromReport(report, reportFile) {
   return samples
 }
 
+function collectMemorySamplesFromReport(report, reportFile) {
+  const samples = []
+  if (report?.memory?.byApp || report?.memoryReport?.byProject) {
+    const byProject = report.memoryReport?.byProject || {}
+    for (const oneCase of report.cases || []) {
+      const memory = oneCase.memory || byProject[oneCase.project]
+      if (!memory) {
+        continue
+      }
+      pushMemorySample(samples, {
+        caseName: oneCase.caseName || oneCase.name || oneCase.label || oneCase.project,
+        project: oneCase.project,
+        platform: oneCase.platform,
+        reportFile,
+        ...memory,
+      })
+    }
+    for (const projectMemory of Object.values(byProject)) {
+      const exists = samples.some(item => item.project === projectMemory.project)
+      if (exists) {
+        continue
+      }
+      pushMemorySample(samples, {
+        caseName: projectMemory.name || projectMemory.label || projectMemory.project,
+        project: projectMemory.project,
+        platform: 'unknown',
+        reportFile,
+        ...projectMemory,
+      })
+    }
+    return samples
+  }
+
+  for (const oneCase of report?.cases ?? []) {
+    pushMemorySample(samples, {
+      caseName: oneCase.name || oneCase.label || oneCase.project || 'unknown',
+      project: oneCase.project || 'unknown',
+      platform: 'unknown',
+      reportFile,
+      sampleCount: Array.isArray(oneCase.memorySamples) ? oneCase.memorySamples.length : 0,
+      debugSampleCount: Array.isArray(oneCase.memoryDebugSamples) ? oneCase.memoryDebugSamples.length : 0,
+      baselineRssMb: oneCase.memorySummary?.baselineRssMb,
+      peakRssMb: oneCase.memorySummary?.peakRssMb ?? oneCase.memoryPeakRssMb,
+      rssDeltaMb: oneCase.memorySummary?.rssDeltaMb ?? oneCase.memoryRssDeltaMb,
+      peakMaxProcessRssMb: oneCase.memorySummary?.peakMaxProcessRssMb,
+      peakProcessCount: oneCase.memorySummary?.peakProcessCount,
+      peakHeapUsedMb: oneCase.memoryDebugSummary?.peakHeapUsedMb,
+      peakDebugRssMb: oneCase.memoryDebugSummary?.peakRssMb,
+    })
+  }
+  return samples
+}
+
 function readWatchReports() {
   const reportFiles = listFilesSafe(ROOT_DIR, name =>
-    name.endsWith('.json') && name !== path.basename(SPEED_REPORT_JSON))
+    name.endsWith('.json')
+    && name !== path.basename(SPEED_REPORT_JSON)
+    && name !== path.basename(MEMORY_REPORT_JSON))
     .sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs)
   const reports = []
   for (const file of reportFiles) {
@@ -457,6 +573,30 @@ function buildSpeedReport() {
   }
 }
 
+function buildMemoryReport() {
+  const reports = readWatchReports()
+  const samples = reports.flatMap(item =>
+    collectMemorySamplesFromReport(item.report, path.basename(item.file)))
+  const peakProjects = [...samples]
+    .sort((a, b) => b.peakRssMb - a.peakRssMb)
+    .slice(0, 10)
+  const growthProjects = [...samples]
+    .sort((a, b) => b.rssDeltaMb - a.rssDeltaMb)
+    .slice(0, 10)
+
+  return {
+    generatedAt: new Date().toISOString(),
+    reportCount: reports.length,
+    sampleCount: samples.length,
+    summary: summarizeMemorySamples(samples),
+    byProject: groupMemorySamples(samples, 'project'),
+    byPlatform: groupMemorySamples(samples, 'platform'),
+    peakProjects,
+    growthProjects,
+    sourceReports: reports.map(item => path.basename(item.file)),
+  }
+}
+
 function renderSummaryTable(grouped) {
   const lines = [
     '| name | count | avg | p50 | p95 | min | max |',
@@ -465,6 +605,19 @@ function renderSummaryTable(grouped) {
   for (const [name, summary] of Object.entries(grouped)) {
     lines.push(
       `| ${name} | ${summary.count} | ${summary.avgMs}ms | ${summary.p50Ms}ms | ${summary.p95Ms}ms | ${summary.minMs}ms | ${summary.maxMs}ms |`,
+    )
+  }
+  return lines
+}
+
+function renderMemorySummaryTable(grouped) {
+  const lines = [
+    '| name | count | peak RSS | max RSS delta | peak heap | samples | debug samples |',
+    '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
+  ]
+  for (const [name, summary] of Object.entries(grouped)) {
+    lines.push(
+      `| ${name} | ${summary.count} | ${summary.peakRssMb}MB | ${summary.maxRssDeltaMb}MB | ${summary.peakHeapUsedMb}MB | ${summary.sampleCount} | ${summary.debugSampleCount} |`,
     )
   }
   return lines
@@ -508,12 +661,66 @@ function renderSpeedReportMarkdown(report) {
   return `${lines.join('\n')}\n`
 }
 
+function renderMemoryReportMarkdown(report) {
+  const lines = []
+  lines.push('# e2e-watch HMR 内存报告')
+  lines.push('')
+  lines.push(`- generated_at: ${report.generatedAt}`)
+  lines.push(`- source reports: ${report.reportCount}`)
+  lines.push(`- projects: ${report.sampleCount}`)
+  lines.push(`- process RSS peak: ${report.summary.peakRssMb}MB`)
+  lines.push(`- process RSS max delta: ${report.summary.maxRssDeltaMb}MB`)
+  lines.push(`- plugin heap peak: ${report.summary.peakHeapUsedMb}MB`)
+  lines.push(`- process samples: ${report.summary.sampleCount}`)
+  lines.push(`- plugin debug samples: ${report.summary.debugSampleCount}`)
+  lines.push('')
+  lines.push('## 按项目')
+  lines.push(...renderMemorySummaryTable(report.byProject))
+  lines.push('')
+  lines.push('## 按平台')
+  lines.push(...renderMemorySummaryTable(report.byPlatform))
+  lines.push('')
+  lines.push('## RSS 峰值最高样本')
+  if (report.peakProjects.length === 0) {
+    lines.push('- no samples')
+  }
+  else {
+    for (const sample of report.peakProjects) {
+      lines.push(
+        `- ${sample.peakRssMb}MB | delta=${sample.rssDeltaMb}MB | heap=${sample.peakHeapUsedMb}MB | ${sample.platform} | ${sample.project} | ${sample.reportFile}`,
+      )
+    }
+  }
+  lines.push('')
+  lines.push('## RSS 增长最高样本')
+  if (report.growthProjects.length === 0) {
+    lines.push('- no samples')
+  }
+  else {
+    for (const sample of report.growthProjects) {
+      lines.push(
+        `- delta=${sample.rssDeltaMb}MB | peak=${sample.peakRssMb}MB | heap=${sample.peakHeapUsedMb}MB | ${sample.platform} | ${sample.project} | ${sample.reportFile}`,
+      )
+    }
+  }
+  return `${lines.join('\n')}\n`
+}
+
 function generateSpeedReport() {
   fs.mkdirSync(ROOT_DIR, { recursive: true })
   const report = buildSpeedReport()
   fs.writeFileSync(SPEED_REPORT_JSON, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
   fs.writeFileSync(SPEED_REPORT_MD, renderSpeedReportMarkdown(report), 'utf8')
   process.stdout.write(`[e2e-watch] hmr speed report written: ${SPEED_REPORT_MD}\n`)
+  return report
+}
+
+function generateMemoryReport() {
+  fs.mkdirSync(ROOT_DIR, { recursive: true })
+  const report = buildMemoryReport()
+  fs.writeFileSync(MEMORY_REPORT_JSON, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
+  fs.writeFileSync(MEMORY_REPORT_MD, renderMemoryReportMarkdown(report), 'utf8')
+  process.stdout.write(`[e2e-watch] hmr memory report written: ${MEMORY_REPORT_MD}\n`)
   return report
 }
 
@@ -921,6 +1128,7 @@ function publishJobSummary() {
   const title = process.env.SUMMARY_TITLE || 'e2e-watch'
   const rootCauseReportPath = path.join(FAILURES_DIR, 'root-cause-report.md')
   const speedReport = generateSpeedReport()
+  const memoryReport = generateMemoryReport()
 
   const reportFiles = listFilesSafe(ROOT_DIR, name => name.endsWith('.json'))
   reportFiles.sort((a, b) => fs.statSync(a).mtimeMs - fs.statSync(b).mtimeMs)
@@ -969,6 +1177,12 @@ function publishJobSummary() {
   lines.push(
     `- HMR speed report: ${fs.existsSync(SPEED_REPORT_MD) ? '[hmr-speed-report.md](./e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md)' : 'not-found'}`,
   )
+  lines.push(
+    `- HMR memory: peak RSS=${memoryReport.summary.peakRssMb}MB, max RSS delta=${memoryReport.summary.maxRssDeltaMb}MB, peak heap=${memoryReport.summary.peakHeapUsedMb}MB`,
+  )
+  lines.push(
+    `- HMR memory report: ${fs.existsSync(MEMORY_REPORT_MD) ? '[hmr-memory-report.md](./e2e/benchmark/e2e-watch-hmr/hmr-memory-report.md)' : 'not-found'}`,
+  )
 
   fs.appendFileSync(summaryPath, `${lines.join('\n')}\n`, 'utf8')
 }
@@ -989,6 +1203,10 @@ function main() {
   }
   if (command === 'speed-report') {
     generateSpeedReport()
+    return
+  }
+  if (command === 'memory-report') {
+    generateMemoryReport()
     return
   }
   throw new Error(`unknown command: ${command || '(empty)'}`)

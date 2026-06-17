@@ -75,6 +75,9 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
+  const maxMemoryRssMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_MB', 0)
+  const maxMemoryRssDeltaMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB', 0)
+  const maxMemoryHeapUsedMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_HEAP_USED_MB', 0)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const reportDir = await ensureReportDir(root)
   const reportFile = path.join(reportDir, `${formatTimestamp()}-${caseName}.json`)
@@ -104,9 +107,16 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
       '--skip-build',
       '--quiet-sass',
       ...(mainStyleOnly ? ['--main-style-only'] : []),
+      ...(maxMemoryRssMb > 0 ? ['--max-memory-rss-mb', String(maxMemoryRssMb)] : []),
+      ...(maxMemoryRssDeltaMb > 0 ? ['--max-memory-rss-delta-mb', String(maxMemoryRssDeltaMb)] : []),
+      ...(maxMemoryHeapUsedMb > 0 ? ['--max-memory-heap-used-mb', String(maxMemoryHeapUsedMb)] : []),
     ],
     {
       cwd: root,
+      env: {
+        ...process.env,
+        WEAPP_TW_HMR_MEMORY_DEBUG: process.env.WEAPP_TW_HMR_MEMORY_DEBUG ?? '1',
+      },
       stdio: 'inherit',
       shell: process.platform === 'win32',
     },

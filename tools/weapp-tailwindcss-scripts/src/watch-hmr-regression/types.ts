@@ -48,6 +48,7 @@ export interface CliOptions {
   reportFile?: string
   maxHotUpdateMs?: number
   maxPluginProcessMs?: number
+  maxMemoryRssMb?: number
   maxMemoryRssDeltaMb?: number
   maxMemoryHeapUsedMb?: number
 }
@@ -76,6 +77,29 @@ export interface MemoryUsageSample {
   rssMb: number
   maxProcessRssMb: number
   processCount: number
+}
+
+export interface MemoryUsageSummary {
+  count: number
+  baselineRssMb: number
+  peakRssMb: number
+  rssDeltaMb: number
+  peakMaxProcessRssMb: number
+  peakProcessCount: number
+  firstAt?: number
+  lastAt?: number
+  durationMs: number
+}
+
+export interface HmrMemoryDebugSummary {
+  count: number
+  peakHeapUsedMb: number
+  peakRssMb: number
+  byBundlerPhase: Record<string, {
+    count: number
+    peakHeapUsedMb: number
+    peakRssMb: number
+  }>
 }
 
 export interface ClassMutationPayload {
@@ -517,6 +541,8 @@ export interface WatchCaseMetrics {
   totalMs: number
   memorySamples: MemoryUsageSample[]
   memoryDebugSamples?: HmrMemoryDebugSample[]
+  memorySummary: MemoryUsageSummary
+  memoryDebugSummary: HmrMemoryDebugSummary
   memoryPeakRssMb: number
   memoryRssDeltaMb: number
 }
@@ -574,6 +600,7 @@ export interface WatchReport {
     mainStyleOnly: boolean
     maxHotUpdateMs?: number
     maxPluginProcessMs?: number
+    maxMemoryRssMb?: number
     maxMemoryRssDeltaMb?: number
     maxMemoryHeapUsedMb?: number
   }
@@ -583,7 +610,38 @@ export interface WatchReport {
   summaryByProject: Record<string, WatchSummary>
   summaryByMutationKind: Partial<Record<MutationKind, WatchSummary>>
   hmrDurations: HmrDurationReport
+  memoryReport: HmrMemoryReport
   cases: WatchCaseMetrics[]
+}
+
+export interface HmrMemoryProjectReport {
+  name: WatchCase['name']
+  label: string
+  project: string
+  projectGroup: WatchProjectGroup
+  initialReadyMs: number
+  totalMs: number
+  sampleCount: number
+  debugSampleCount: number
+  baselineRssMb: number
+  peakRssMb: number
+  rssDeltaMb: number
+  peakMaxProcessRssMb: number
+  peakProcessCount: number
+  peakHeapUsedMb: number
+  peakDebugRssMb: number
+}
+
+export interface HmrMemoryReport {
+  summary: {
+    projectCount: number
+    sampleCount: number
+    debugSampleCount: number
+    peakRssMb: number
+    maxRssDeltaMb: number
+    peakHeapUsedMb: number
+  }
+  byProject: Record<string, HmrMemoryProjectReport>
 }
 
 export const DEFAULT_STYLE_APPLY_VALIDATION: StyleApplyValidation = {

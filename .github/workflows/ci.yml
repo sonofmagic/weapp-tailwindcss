@@ -55,10 +55,10 @@ jobs:
         run: pnpm lint
 
       - name: Build
-        run: pnpm build:ci
+        run: pnpm ci:memory --label quality-build --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Test
-        run: pnpm test:release
+        run: pnpm ci:memory --label quality-test-release --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm test:release
 
       - name: CI Status Note
         if: always()
@@ -78,6 +78,15 @@ jobs:
         uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload CI memory reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-memory-quality-${{ github.run_id }}
+          path: e2e/benchmark/ci-memory/**
+          if-no-files-found: ignore
+          retention-days: 14
 
   e2e-static:
     name: E2E Static Gate (${{ matrix.shard }}/${{ matrix.shard_total }}, ubuntu-latest, 22)
@@ -112,13 +121,22 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build:ci
+        run: pnpm ci:memory --label e2e-static-build-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
 
       - name: E2E Static
-        run: pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
+        run: pnpm ci:memory --label e2e-static-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
+
+      - name: Upload CI memory reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-memory-e2e-static-${{ matrix.shard }}-${{ github.run_id }}
+          path: e2e/benchmark/ci-memory/**
+          if-no-files-found: ignore
+          retention-days: 14
 
   e2e-focused:
     name: E2E Focused Gate (${{ matrix.case_name }})
@@ -164,13 +182,22 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build:ci
+        run: pnpm ci:memory --label e2e-focused-build-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
 
       - name: Run focused e2e
-        run: ${{ matrix.command }}
+        run: pnpm ci:memory --label e2e-focused-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- ${{ matrix.command }}
+
+      - name: Upload CI memory reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-memory-e2e-focused-${{ matrix.case_name }}-${{ github.run_id }}
+          path: e2e/benchmark/ci-memory/**
+          if-no-files-found: ignore
+          retention-days: 14
 
   e2e-multiplatform:
     name: E2E Multiplatform Gate (${{ matrix.case_name }})
@@ -210,13 +237,22 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm build:ci
+        run: pnpm ci:memory --label e2e-multiplatform-build-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium
 
       - name: Run multiplatform e2e
-        run: ${{ matrix.command }}
+        run: pnpm ci:memory --label e2e-multiplatform-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- ${{ matrix.command }}
+
+      - name: Upload CI memory reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-memory-e2e-multiplatform-${{ matrix.case_name }}-${{ github.run_id }}
+          path: e2e/benchmark/ci-memory/**
+          if-no-files-found: ignore
+          retention-days: 14
 
   e2e-watch:
     name: E2E Watch Gate (${{ matrix.runner_label }}, ${{ matrix.watch_case }}, ${{ matrix.round_profile }})
@@ -305,11 +341,15 @@ jobs:
           E2E_WATCH_POLL_MS: ${{ matrix.watch_poll_ms }}
           E2E_WATCH_MAX_HOT_UPDATE_MS: ${{ matrix.watch_max_hot_update_ms || matrix.watch_timeout_ms }}
           E2E_WATCH_MAX_PLUGIN_PROCESS_MS: ${{ matrix.watch_max_plugin_process_ms || '6000' }}
+          E2E_WATCH_MAX_MEMORY_RSS_MB: ${{ matrix.watch_max_memory_rss_mb || '5632' }}
+          E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB: ${{ matrix.watch_max_memory_rss_delta_mb || '4608' }}
+          E2E_WATCH_MAX_MEMORY_HEAP_USED_MB: ${{ matrix.watch_max_memory_heap_used_mb || '4096' }}
           E2E_WATCH_COMMAND_TIMEOUT_MS: ${{ matrix.watch_command_timeout_ms }}
           E2E_WATCH_MAX_ATTEMPTS: ${{ matrix.watch_max_attempts || '2' }}
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_WEB_ONLY: ${{ matrix.watch_web_only || '0' }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
+          WEAPP_TW_HMR_MEMORY_DEBUG: '1'
           NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:watch
 
@@ -342,6 +382,7 @@ jobs:
           path: |
             e2e/benchmark/e2e-watch-hmr/*.json
             e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
+            e2e/benchmark/e2e-watch-hmr/hmr-memory-report.md
           if-no-files-found: ignore
           retention-days: 14
 

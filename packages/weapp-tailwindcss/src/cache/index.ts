@@ -42,6 +42,7 @@ export interface ICreateCacheReturnType {
     cacheKeys?: Iterable<string> | undefined
     hashKeys?: Iterable<HashMapKey> | undefined
   }) => void
+  pruneHashKeys?: (hashKeys: Iterable<HashMapKey>) => void
   process: <T extends CacheValue>(options: CacheProcessOptions<T>) => Promise<T>
 }
 
@@ -96,6 +97,14 @@ function createCache(options?: boolean): ICreateCacheReturnType {
       }
       return cache
     },
+    pruneHashKeys(hashKeys) {
+      const activeHashKeys = new Set(hashKeys)
+      for (const key of hashMap.keys()) {
+        if (!activeHashKeys.has(key)) {
+          hashMap.delete(key)
+        }
+      }
+    },
     prune(options) {
       if (options.cacheKeys) {
         const cacheKeys = new Set(options.cacheKeys)
@@ -106,12 +115,7 @@ function createCache(options?: boolean): ICreateCacheReturnType {
         }
       }
       if (options.hashKeys) {
-        const hashKeys = new Set(options.hashKeys)
-        for (const key of hashMap.keys()) {
-          if (!hashKeys.has(key)) {
-            hashMap.delete(key)
-          }
-        }
+        cache.pruneHashKeys?.(options.hashKeys)
       }
     },
     has(key) {

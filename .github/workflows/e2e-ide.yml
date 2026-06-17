@@ -106,10 +106,18 @@ jobs:
           E2E_WATCH_TIMEOUT_MS: '300000'
           E2E_WATCH_POLL_MS: '300'
           E2E_IDE_MAX_HOT_UPDATE_MS: '90000'
+          E2E_WATCH_MAX_MEMORY_RSS_MB: '5632'
+          E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB: '4608'
+          E2E_WATCH_MAX_MEMORY_HEAP_USED_MB: '4096'
+          WEAPP_TW_HMR_MEMORY_DEBUG: '1'
+          NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:ide
 
       - name: Run WeChat DevTools :where selector probe
         if: matrix.case_name == 'where-selector'
+        env:
+          WEAPP_TW_HMR_MEMORY_DEBUG: '1'
+          NODE_OPTIONS: --max-old-space-size=6144
         run: pnpm e2e:ide:where
 
       - name: Publish IDE summary
@@ -121,4 +129,16 @@ jobs:
             echo "- case: ${{ matrix.case_name }}"
             echo "- filter: ${{ github.event.inputs.project_filter || matrix.case_name }}"
             echo "- 覆盖：微信开发者工具打开项目、template class HMR、JS class HMR、style @apply/theme() HMR、:where 选择器真实运行时探针、产物变更对比。"
+            echo "- 内存：启用 WEAPP_TW_HMR_MEMORY_DEBUG，HMR watch 链路记录进程树 RSS、插件阶段 heap/RSS，并使用 5632MB RSS / 4608MB RSS 增长 / 4096MB heap 守卫。"
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload IDE HMR reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-ide-hmr-memory-${{ matrix.case_name }}-${{ github.run_id }}
+          path: |
+            e2e/benchmark/e2e-watch-hmr/*.json
+            e2e/benchmark/e2e-watch-hmr/hmr-memory-report.md
+          if-no-files-found: ignore
+          retention-days: 14

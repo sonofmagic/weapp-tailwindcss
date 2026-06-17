@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { formatPath } from './cli'
 import { summarizeHmrDurations } from './hmr-durations'
+import { summarizeHmrMemoryReport } from './memory-report'
 import { MUTATION_ROUND_NAMES } from './types'
 
 interface SummarySample {
@@ -164,6 +165,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
   const summaryByProject = summarizeMetricsByProject(metrics)
   const summaryByMutationKind = summarizeMutationKindAcrossCases(metrics)
   const hmrDurations = summarizeHmrDurations(metrics)
+  const memoryReport = summarizeHmrMemoryReport(metrics)
   const reportPath = resolveReportPath(baseCwd, options.reportFile)
 
   const report: WatchReport = {
@@ -180,6 +182,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
       mainStyleOnly: options.mainStyleOnly,
       maxHotUpdateMs: options.maxHotUpdateMs,
       maxPluginProcessMs: options.maxPluginProcessMs,
+      maxMemoryRssMb: options.maxMemoryRssMb,
       maxMemoryRssDeltaMb: options.maxMemoryRssDeltaMb,
       maxMemoryHeapUsedMb: options.maxMemoryHeapUsedMb,
     },
@@ -189,6 +192,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
     summaryByProject,
     summaryByMutationKind,
     hmrDurations,
+    memoryReport,
     cases: metrics,
   }
 

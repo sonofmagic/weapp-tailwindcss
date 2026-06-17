@@ -1,7 +1,6 @@
 import type {
   ClassMutationMetrics,
   CliOptions,
-  MemoryUsageSample,
   MutationKind,
   MutationRoundName,
   StyleMutationMetrics,
@@ -13,6 +12,7 @@ import type {
 } from './types'
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
+import { summarizeMemoryDebugSamples, summarizeMemorySamples } from './memory-report'
 import {
   createSubPackageWatchCase,
   runClassMutation,
@@ -29,6 +29,8 @@ import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 import { runWebHmr } from './web'
 
+export { summarizeMemorySamples } from './memory-report'
+
 interface HotUpdateBudgetSample {
   label: string
   hotUpdateEffectiveMs: number
@@ -41,6 +43,7 @@ interface PluginProcessBudgetSample {
 
 interface MemoryBudgetSample {
   label: string
+  memoryRssMb?: number
   memoryRssDeltaMb: number
 }
 
@@ -231,7 +234,8 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       ...session.memoryDebugSamplesSince(sessionStartedAt),
       ...(webHmrMetrics?.memoryDebugSamples ?? []),
     ]
-    const memoryStats = summarizeMemorySamples(memorySamples)
+    const memorySummary = summarizeMemorySamples(memorySamples)
+    const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
 
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
@@ -266,8 +270,10 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       totalMs: Date.now() - caseStartedAt,
       memorySamples,
       ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
-      memoryPeakRssMb: memoryStats.peakRssMb,
-      memoryRssDeltaMb: memoryStats.rssDeltaMb,
+      memorySummary,
+      memoryDebugSummary,
+      memoryPeakRssMb: memorySummary.peakRssMb,
+      memoryRssDeltaMb: memorySummary.rssDeltaMb,
     }
 
     process.stdout.write(
@@ -320,7 +326,8 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
     const classTokens = webHmrMetrics.classLiteral.split(/\s+/).filter(Boolean)
     const memorySamples = webHmrMetrics.memorySamples
     const memoryDebugSamples = webHmrMetrics.memoryDebugSamples ?? []
-    const memoryStats = summarizeMemorySamples(memorySamples)
+    const memorySummary = summarizeMemorySamples(memorySamples)
+    const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
@@ -351,8 +358,10 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
       totalMs: Date.now() - caseStartedAt,
       memorySamples,
       ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
-      memoryPeakRssMb: memoryStats.peakRssMb,
-      memoryRssDeltaMb: memoryStats.rssDeltaMb,
+      memorySummary,
+      memoryDebugSummary,
+      memoryPeakRssMb: memorySummary.peakRssMb,
+      memoryRssDeltaMb: memorySummary.rssDeltaMb,
     }
 
     process.stdout.write(
@@ -426,7 +435,8 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
     const classTokens = [mainStyleHotUpdate.toClassToken]
     const memorySamples = session.memorySamplesSince(sessionStartedAt)
     const memoryDebugSamples = session.memoryDebugSamplesSince(sessionStartedAt)
-    const memoryStats = summarizeMemorySamples(memorySamples)
+    const memorySummary = summarizeMemorySamples(memorySamples)
+    const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
     const metrics: WatchCaseMetrics = {
       name: watchCase.name,
       label: watchCase.label,
@@ -458,8 +468,10 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       totalMs: Date.now() - caseStartedAt,
       memorySamples,
       ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
-      memoryPeakRssMb: memoryStats.peakRssMb,
-      memoryRssDeltaMb: memoryStats.rssDeltaMb,
+      memorySummary,
+      memoryDebugSummary,
+      memoryPeakRssMb: memorySummary.peakRssMb,
+      memoryRssDeltaMb: memorySummary.rssDeltaMb,
     }
 
     process.stdout.write(
@@ -526,27 +538,30 @@ export function assertPluginProcessBudget(metrics: WatchCaseMetrics, options: Cl
   }
 }
 
-export function summarizeMemorySamples(samples: MemoryUsageSample[]) {
-  if (samples.length === 0) {
-    return {
-      peakRssMb: 0,
-      rssDeltaMb: 0,
+export function assertMemoryBudget(metrics: WatchCaseMetrics, options: CliOptions) {
+  const maxMemoryRssMb = options.maxMemoryRssMb
+  if (maxMemoryRssMb != null && maxMemoryRssMb > 0) {
+    const samples: MemoryBudgetSample[] = [{
+      label: 'case',
+      memoryRssMb: metrics.memorySummary.peakRssMb,
+      memoryRssDeltaMb: metrics.memorySummary.rssDeltaMb,
+    }]
+
+    for (const sample of samples) {
+      if ((sample.memoryRssMb ?? 0) > maxMemoryRssMb) {
+        throw new Error(
+          `[${metrics.label}] ${sample.label} memory RSS peak exceeded budget: ${sample.memoryRssMb}MB > ${maxMemoryRssMb}MB`,
+        )
+      }
     }
   }
-  const first = samples.find(sample => sample.processCount > 1 && sample.rssMb >= 128) ?? samples[0]!
-  const peakRssMb = Math.max(...samples.map(sample => sample.rssMb))
-  return {
-    peakRssMb,
-    rssDeltaMb: Math.max(0, peakRssMb - first.rssMb),
-  }
-}
 
-export function assertMemoryBudget(metrics: WatchCaseMetrics, options: CliOptions) {
   const maxMemoryRssDeltaMb = options.maxMemoryRssDeltaMb
   if (maxMemoryRssDeltaMb != null && maxMemoryRssDeltaMb > 0) {
     const samples: MemoryBudgetSample[] = [{
       label: 'case',
-      memoryRssDeltaMb: metrics.memoryRssDeltaMb,
+      memoryRssMb: metrics.memorySummary.peakRssMb,
+      memoryRssDeltaMb: metrics.memorySummary.rssDeltaMb,
     }]
 
     for (const sample of samples) {
@@ -563,20 +578,12 @@ export function assertMemoryBudget(metrics: WatchCaseMetrics, options: CliOption
     return
   }
 
-  const heapSamples: HeapBudgetSample[] = (metrics.memoryDebugSamples ?? []).flatMap((sample) => {
-    const processStats = sample.data.process
-    if (!processStats || typeof processStats !== 'object' || Array.isArray(processStats)) {
-      return []
-    }
-    const heapUsedMb = (processStats as { heapUsedMb?: unknown }).heapUsedMb
-    if (typeof heapUsedMb !== 'number' || !Number.isFinite(heapUsedMb)) {
-      return []
-    }
-    return [{
-      label: `${sample.bundler}:${sample.phase}`,
-      heapUsedMb,
-    }]
-  })
+  const heapSamples: HeapBudgetSample[] = Object
+    .entries(metrics.memoryDebugSummary.byBundlerPhase)
+    .map(([label, summary]) => ({
+      label,
+      heapUsedMb: summary.peakHeapUsedMb,
+    }))
 
   for (const sample of heapSamples) {
     if (sample.heapUsedMb > maxMemoryHeapUsedMb) {
