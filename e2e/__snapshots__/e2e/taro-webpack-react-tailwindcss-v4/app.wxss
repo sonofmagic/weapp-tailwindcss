@@ -39,7 +39,7 @@ wx-root-portal-content {
   --color-pink-200: #fbcfe8;
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
-  --spacing: 8rpx;
+  --spacing: 0.25rem;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }

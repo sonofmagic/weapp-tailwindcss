@@ -73,12 +73,8 @@ wx-root-portal-content {
 .bg-linear-to-r,
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
-  background-image: -webkit-linear-gradient(
-    var(--tw-gradient-position),
-    var(--tw-gradient-from) var(--tw-gradient-from-position, ),
-    var(--tw-gradient-to) var(--tw-gradient-to-position, )
-  );
-  background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, ));
+  background-image: -webkit-linear-gradient(var(--tw-gradient-stops));
+  background-image: linear-gradient(var(--tw-gradient-stops));
 }
  /* tokens: from-cyan-500 <= src/pages/index/index.tsx */
 .from-cyan-500 {
@@ -152,11 +148,4 @@ wx-root-portal-content {
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
   }
-}
- /* tokens: bg-linear-to-r <= src/pages/index/index.tsx | from-cyan-500 <= src/pages/index/index.tsx | to-blue-500 <= src/pages/index/index.tsx | bg-gradient-to-r <= src/pages/index/index.tsx */
-.bg-linear-to-r.from-cyan-500.to-blue-500,
-.bg-gradient-to-r.from-cyan-500.to-blue-500 {
-  background-image: -webkit-gradient(linear, left top, right top, from(#06b6d4), to(#3b82f6));
-  background-image: -webkit-linear-gradient(left, #06b6d4, #3b82f6);
-  background-image: linear-gradient(to right, #06b6d4, #3b82f6);
 }

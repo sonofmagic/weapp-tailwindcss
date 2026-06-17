@@ -38,7 +38,7 @@ describe('e2e', () => {
     expect(pageJs).not.toContain('not-generated_q_B')
   })
 
-  it('removes Tailwind CSS v4 bg-linear-to-r lab supports guard', async () => {
+  it('keeps Tailwind CSS v4 bg-linear-to-r variable gradient without lab supports guard', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)
     const projectPath = path.resolve(projectBase, project.projectPath)
@@ -53,7 +53,7 @@ describe('e2e', () => {
     expect(css).toContain('.bg-linear-to-r')
     expect(css).not.toMatch(/^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m)
     expect(css).toMatch(/--tw-gradient-position:\s*to right\s*;/)
-    expect(css).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-position\),/)
+    expect(css).toMatch(/background-image:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/)
     expect(css).not.toContain('@supports (background-image: linear-gradient(in lab, red, red))')
     expect(linearBlocks).not.toContain('in oklab')
   })

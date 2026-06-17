@@ -2,7 +2,7 @@
 page,
 .tw-root,
 wx-root-portal-content {
-  --spacing: 8rpx;
+  --spacing: 0.25rem;
 }
 .h-8 {
   height: calc(var(--spacing) * 8);
