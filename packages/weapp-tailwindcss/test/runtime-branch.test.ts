@@ -1,5 +1,20 @@
 import { describe, expect, it } from 'vitest'
 import { resolveRuntimeBranch, shouldUseMiniProgramCssBranch, shouldUseNativeAppCssBranch } from '@/runtime-branch'
+import { createMiniProgramRuntimeBranch } from '@/runtime-branch/mini-program'
+import { createNativeAppRuntimeBranch } from '@/runtime-branch/native-app'
+import { createTailwindRuntimeBranch } from '@/runtime-branch/tailwind'
+import { createWebRuntimeBranch } from '@/runtime-branch/web'
+import { resolveUniUtsPlatform } from '@/utils'
+
+function createBranchBase(overrides: Parameters<typeof resolveRuntimeBranch>[0]) {
+  return {
+    context: overrides,
+    tailwindcssVersion: overrides.tailwindcssMajorVersion === 4 ? 4 as const : 3 as const,
+    uniUtsPlatform: typeof overrides.uniUtsPlatform === 'object' && overrides.uniUtsPlatform !== null
+      ? overrides.uniUtsPlatform
+      : resolveUniUtsPlatform(overrides.uniUtsPlatform),
+  }
+}
 
 describe('resolveRuntimeBranch', () => {
   it.each([
@@ -96,5 +111,58 @@ describe('resolveRuntimeBranch', () => {
 
     expect(branch.platformFamily).toBe('mini-program')
     expect(branch.platform).toBe('mp-alipay')
+  })
+})
+
+describe('runtime branch files', () => {
+  it('creates web branch from the dedicated web file', () => {
+    expect(createWebRuntimeBranch(createBranchBase({
+      generatorTarget: 'web',
+      tailwindcssMajorVersion: 4,
+      uniUtsPlatform: 'h5',
+    }))).toMatchObject({
+      platformFamily: 'web',
+      isWeb: true,
+      platform: 'h5',
+    })
+  })
+
+  it('creates mini-program branch from the dedicated mini-program file', () => {
+    expect(createMiniProgramRuntimeBranch(createBranchBase({
+      generatorTarget: 'weapp',
+      tailwindcssMajorVersion: 3,
+      uniUtsPlatform: 'mp-weixin',
+    }))).toMatchObject({
+      platformFamily: 'mini-program',
+      isMiniProgram: true,
+      platform: 'mp-weixin',
+    })
+  })
+
+  it('creates native app branch from the dedicated native-app file', () => {
+    expect(createNativeAppRuntimeBranch(createBranchBase({
+      appType: 'uni-app-x',
+      generatorTarget: 'weapp',
+      tailwindcssMajorVersion: 4,
+      uniAppX: true,
+      uniUtsPlatform: 'app-harmony',
+    }))).toMatchObject({
+      platformFamily: 'native-app',
+      isNativeApp: true,
+      nativeAppPlatform: 'harmony',
+      platform: 'app-harmony',
+    })
+  })
+
+  it('creates tailwind passthrough branch from the dedicated tailwind file', () => {
+    expect(createTailwindRuntimeBranch(createBranchBase({
+      generatorTarget: 'tailwind',
+      platform: 'mp-weixin',
+      tailwindcssMajorVersion: 4,
+    }))).toMatchObject({
+      platformFamily: 'tailwind',
+      isTailwindV4: true,
+      platform: 'mp-weixin',
+    })
   })
 })
