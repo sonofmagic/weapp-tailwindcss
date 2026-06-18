@@ -80,23 +80,37 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
       linkedByEntry.set(file, linkedSet)
     }
 
+    const linkedImpactSignature = useIncrementalMode
+      ? createLinkedImpactSignature(
+          file,
+          snapshot.linkedImpactsByEntry,
+          snapshot.sourceHashByFile,
+        )
+      : undefined
+    const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
+    const hashKey = `${file}:js`
+    const sourceHash = getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)
+    const processHash = `${sourceHash}:${hashSalt}`
+    rememberProcessCacheKey(file, hashKey)
+
+    if (useIncrementalMode && !shouldTransformJs) {
+      const cachedHash = cache.getHashValue(hashKey)
+      const cachedCode = cachedHash?.hash === processHash ? cache.get<string>(file) : undefined
+      if (cachedCode !== undefined) {
+        originalSource.code = cachedCode
+        metrics.js.cacheHits++
+        debug('js direct replay hit: %s', file)
+        return
+      }
+    }
+
     jsTaskFactories.push(async () => {
       await timeTask('js', async () => {
-        const linkedImpactSignature = useIncrementalMode
-          ? createLinkedImpactSignature(
-              file,
-              snapshot.linkedImpactsByEntry,
-              snapshot.sourceHashByFile,
-            )
-          : undefined
-        const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
-        const hashKey = `${file}:js`
-        rememberProcessCacheKey(file, hashKey)
         await processCachedTask<string>({
           cache,
           cacheKey: file,
           hashKey,
-          hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)}:${hashSalt}`,
+          hash: processHash,
           applyResult(source) {
             originalSource.code = source
           },
