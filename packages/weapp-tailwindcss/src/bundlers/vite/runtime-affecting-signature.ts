@@ -9,6 +9,8 @@ const CSS_BLOCK_COMMENT_RE = /\/\*[\s\S]*?\*\//g
 const CSS_AROUND_PUNCTUATION_RE = /\s*([{}:;,>+~()])\s*/g
 const CSS_TRAILING_DECLARATION_SEMICOLON_RE = /;\}/g
 const CSS_WHITESPACE_RE = /\s+/g
+const JS_RUNTIME_AFFECTING_TEXT_HINT_RE = /["'`/]/
+const JS_INCOMPLETE_TRAILING_OPERATOR_RE = /(?:=>|[=+\-*%&|^!~?:,.({[\]])\s*$/
 
 function createHtmlRuntimeAffectingSignature(source: string) {
   try {
@@ -45,6 +47,13 @@ function createHtmlRuntimeAffectingSignature(source: string) {
 }
 
 function createJsRuntimeAffectingSignature(source: string) {
+  if (
+    !JS_RUNTIME_AFFECTING_TEXT_HINT_RE.test(source)
+    && !JS_INCOMPLETE_TRAILING_OPERATOR_RE.test(source)
+  ) {
+    return ''
+  }
+
   try {
     const ast = babelParse(source, {
       cache: false,
