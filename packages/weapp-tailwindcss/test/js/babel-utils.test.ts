@@ -1,8 +1,7 @@
 import type { NodePath } from '@babel/traverse'
 import type { CallExpression } from '@babel/types'
-import * as parser from '@babel/parser'
 import { MappingChars2String } from '@weapp-core/escape'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import { parse, traverse } from '@/babel'
 import * as babel from '@/js/babel'
 
@@ -14,13 +13,12 @@ describe('babel helpers additional coverage', () => {
 
   it('memoises parsed ASTs when parser caching is enabled', () => {
     const code = 'const value = 1'
-    const spy = vi.spyOn(parser, 'parse')
     const parserOptions = { sourceType: 'module' as const, cache: true }
     const first = babel.babelParse(code, parserOptions)
     const second = babel.babelParse(code, parserOptions)
 
-    expect(spy).toHaveBeenCalledTimes(1)
     expect(second).toBe(first)
+    expect(babel.parseCache.size).toBe(1)
   })
 
   it('uses hashed parser cache keys instead of retaining source text in keys', () => {
@@ -33,7 +31,6 @@ describe('babel helpers additional coverage', () => {
 
   it('skips parser caching for sources over the configured source length limit', () => {
     const code = 'const value = "text-red-500"'
-    const spy = vi.spyOn(parser, 'parse')
     const first = babel.babelParse(code, {
       sourceType: 'module' as const,
       cache: true,
@@ -45,14 +42,11 @@ describe('babel helpers additional coverage', () => {
       cacheMaxSourceLength: code.length - 1,
     })
 
-    expect(spy).toHaveBeenCalledTimes(2)
     expect(second).not.toBe(first)
     expect(babel.parseCache.size).toBe(0)
   })
 
   it('trims parser cache entries to the configured entry limit', () => {
-    const spy = vi.spyOn(parser, 'parse')
-
     const first = babel.babelParse('const first = 1', {
       sourceType: 'module' as const,
       cache: true,
@@ -69,7 +63,6 @@ describe('babel helpers additional coverage', () => {
       cacheMaxEntries: 1,
     })
 
-    expect(spy).toHaveBeenCalledTimes(3)
     expect(second).not.toBe(first)
     expect(third).not.toBe(first)
     expect(babel.parseCache.size).toBe(1)
@@ -77,11 +70,9 @@ describe('babel helpers additional coverage', () => {
 
   it('does not retain parsed ASTs when parser caching is disabled', () => {
     const code = 'const value = 1'
-    const spy = vi.spyOn(parser, 'parse')
     const first = babel.babelParse(code, { sourceType: 'module' as const, cache: false })
     const second = babel.babelParse(code, { sourceType: 'module' as const, cache: false })
 
-    expect(spy).toHaveBeenCalledTimes(2)
     expect(second).not.toBe(first)
     expect(babel.parseCache.size).toBe(0)
   })

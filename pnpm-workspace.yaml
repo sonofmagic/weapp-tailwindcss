@@ -44,12 +44,18 @@ catalogs:
     autoprefixer: ^10.5.0
   babelCore7285:
     '@babel/core': ^7.29.7
+  babelCore8:
+    '@babel/core': ^8.0.1
   babelPresetReact7285:
     '@babel/preset-react': ^7.29.7
+  babelPresetReact8:
+    '@babel/preset-react': ^8.0.1
   babelRuntime7284:
     '@babel/runtime': ^7.29.7
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
+  babelRuntime8:
+    '@babel/runtime': ^8.0.0
   baselineBrowserMapping:
     baseline-browser-mapping: ^2.10.37
   classVarianceAuthority:

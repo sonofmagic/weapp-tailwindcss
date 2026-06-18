@@ -42,7 +42,7 @@
     "gulp-plugin"
   ],
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": "^22.18.0 || >=24.11.0"
   },
   "scripts": {
     "build": "cross-env WEAPP_TW_SKIP_INTERACTIVE_TARO_BUILD=1 WEAPP_TW_SKIP_INTERACTIVE_UNI_BUILD=1 turbo run build",
@@ -215,8 +215,8 @@
   },
   "devDependencies": {
     "@ampproject/remapping": "^2.3.0",
-    "@babel/core": "catalog:babelCore7285",
-    "@babel/generator": "~7.29.7",
+    "@babel/core": "catalog:babelCore8",
+    "@babel/generator": "^8.0.0",
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@commitlint/cli": "^21.0.2",
