@@ -7,11 +7,12 @@
 //
 // Notes:
 // - SWC requires @swc/core.
-// - OXC requires @oxc-parser/node or @oxc-parser/wasm (one is enough).
+// - OXC uses the experimental JS fast path when oxc-parser is available.
 // - We focus on transform hot-path. For fairness and determinism, we run with:
 //   { alwaysEscape: true, needEscaped: true, generateMap: false }
 //   so the handlers do roughly the same amount of work regardless of classNameSet.
 import type { IJsHandlerOptions, JsHandlerResult } from 'weapp-tailwindcss/src/types'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { performance } from 'node:perf_hooks'
 import process from 'node:process'
@@ -20,12 +21,31 @@ import { MappingChars2String } from '@weapp-core/escape'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import pc from 'picocolors'
-import { getDefaultOptions } from 'weapp-tailwindcss/src/defaults'
+import { resolveCorePackagePath } from './paths'
 
 // Resolve repo root independenty of CWD.
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const repoRoot = path.resolve(__dirname, '../../..')
+const require = createRequire(import.meta.url)
+
+function registerCoreAlias() {
+  const Module = require('node:module') as typeof import('node:module') & {
+    _resolveFilename?: (request: string, parent: unknown, isMain: boolean, options?: unknown) => string
+  }
+  const original = Module._resolveFilename
+  if (!original) {
+    return
+  }
+  Module._resolveFilename = function resolveFilename(request, parent, isMain, options) {
+    if (request.startsWith('@/')) {
+      return original.call(this, resolveCorePackagePath('src', request.slice(2)), parent, isMain, options)
+    }
+    return original.call(this, request, parent, isMain, options)
+  }
+}
+
+registerCoreAlias()
 
 type EngineId = 'babel' | 'swc' | 'oxc'
 
@@ -86,7 +106,6 @@ async function loadFiles(globPattern: string | string[]) {
 }
 
 function makeBaseOptions(): IJsHandlerOptions {
-  const defaults = getDefaultOptions()
   return {
     // Ensure the three engines do comparable work
     alwaysEscape: true,
@@ -94,10 +113,12 @@ function makeBaseOptions(): IJsHandlerOptions {
     generateMap: false,
     unescapeUnicode: true,
     escapeMap: MappingChars2String,
-    ignoreTaggedTemplateExpressionIdentifiers: defaults.ignoreTaggedTemplateExpressionIdentifiers,
+    experimentalJsFastPath: 'oxc',
     // Keep eval/require/module specifier replacements in POC path disabled by default here.
     // They can be added per-case using extra options if desired.
-    babelParserOptions: defaults.babelParserOptions,
+    babelParserOptions: {
+      sourceType: 'unambiguous',
+    },
   }
 }
 
@@ -114,7 +135,7 @@ function useSwc() {
 }
 
 function useOxc() {
-  const { oxcJsHandler } = require('weapp-tailwindcss/src/experimental/oxc') as typeof import('weapp-tailwindcss/src/experimental/oxc')
+  const { oxcJsHandler } = require('weapp-tailwindcss/src/js/fast-path/oxc') as typeof import('weapp-tailwindcss/src/js/fast-path/oxc')
   return oxcJsHandler
 }
 
@@ -126,6 +147,7 @@ async function runEngine(
   warmup: number,
 ) {
   let handler: (code: string, opts: IJsHandlerOptions) => JsHandlerResult
+  let fallbackHandler: ((code: string, opts: IJsHandlerOptions) => JsHandlerResult) | undefined
   if (id === 'babel') {
     handler = useBabel()
   }
@@ -134,6 +156,7 @@ async function runEngine(
   }
   else if (id === 'oxc') {
     handler = useOxc()
+    fallbackHandler = useBabel()
   }
   else {
     throw new Error(`unknown engine: ${id}`)
@@ -153,11 +176,16 @@ async function runEngine(
 
   // Measure
   const perRunDurations: number[] = []
+  let fallbackCount = 0
   const t0 = now()
   for (let r = 0; r < iter; r++) {
     const rStart = now()
     for (const f of files) {
-      const res = handler(f.code, options)
+      let res = handler(f.code, options)
+      if ((!res || typeof res.code !== 'string') && fallbackHandler) {
+        fallbackCount++
+        res = fallbackHandler(f.code, options)
+      }
       if (!res || typeof res.code !== 'string') {
         throw new Error(`${id} returned invalid result for ${f.id}`)
       }
@@ -171,7 +199,7 @@ async function runEngine(
   const p95 = percentile(perRunDurations, 95)
   const filesPerSec = (files.length * iter) / (total / 1000)
 
-  return { total, med, p95, filesPerSec, runs: iter, files: files.length }
+  return { total, med, p95, filesPerSec, fallbackCount, runs: iter, files: files.length }
 }
 
 async function main() {
@@ -193,12 +221,15 @@ async function main() {
   for (const id of args.engines) {
     try {
       const result = await runEngine(id, files, baseOpts, args.iter, args.warmup)
-      const { total, med, p95, filesPerSec, runs, files: fcount } = result
+      const { total, med, p95, filesPerSec, fallbackCount, runs, files: fcount } = result
       console.log(pc.bold(`${id}`))
       console.log(`  total: ${toFixed2(total)} ms  (${runs} runs × ${fcount} files)`)
       console.log(`  median per-run: ${toFixed2(med)} ms`)
       console.log(`  p95 per-run:    ${toFixed2(p95)} ms`)
       console.log(`  throughput:     ${toFixed2(filesPerSec)} files/s`)
+      if (fallbackCount > 0) {
+        console.log(`  fallback:       ${fallbackCount} files`)
+      }
       console.log('')
     }
     catch (err: any) {

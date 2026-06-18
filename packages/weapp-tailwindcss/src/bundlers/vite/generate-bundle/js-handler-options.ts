@@ -13,6 +13,7 @@ export function resolveUniAppXJsTransformEnabled(uniAppX: InternalUserDefinedOpt
 export function createJsHandlerOptionsFactory(options: JsHandlerOptionsFactoryOptions) {
   return (absoluteFilename: string, extra?: CreateJsHandlerOptions): CreateJsHandlerOptions => ({
     ...extra,
+    generateMap: false,
     filename: absoluteFilename,
     tailwindcssMajorVersion: options.getMajorVersion(),
     moduleGraph: options.moduleGraph,

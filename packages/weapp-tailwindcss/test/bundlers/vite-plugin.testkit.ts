@@ -41,7 +41,13 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     } & Record<string, unknown>
   }
   const mergedTwPatcherOptions = overrideTwPatcher?.options
-    ? overrideTwPatcher.options
+    ? {
+        ...defaultTwPatcher.options,
+        ...overrideTwPatcher.options,
+        ...(overrideTwPatcher.options.tailwindcss === undefined
+          ? {}
+          : { tailwindcss: overrideTwPatcher.options.tailwindcss }),
+      }
     : defaultTwPatcher.options
   const mergedTwPatcher = overrideTwPatcher
     ? {

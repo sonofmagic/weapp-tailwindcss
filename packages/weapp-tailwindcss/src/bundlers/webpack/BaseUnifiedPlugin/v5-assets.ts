@@ -238,6 +238,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     runtimeClassSetManager,
     getWebpackCssSources,
     pruneWebpackCssSources,
+    prepareWebpackCssSources,
     debug,
   } = options
   const { Compilation, sources } = compiler.webpack
@@ -343,6 +344,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           activeProcessCacheKeys.add(cacheKey)
           activeProcessHashKeys.add(hashKey)
         }
+        const registeredWebpackCssSourceFiles = prepareWebpackCssSources?.() ?? new Set<string>()
         for (const chunk of compilation.chunks) {
           if (chunk.id) {
             activeProcessHashKeys.add(chunk.id)
@@ -554,6 +556,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
+        let runtimeAffectingSourceHash = 'runtime-affecting:0'
         if (watchMode && runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
           const snapshot = buildWebpackBundleSnapshot(assets as any, compilerOptions, bundleBuildState)
           if (!webpackWatchRuntimeScanInitialized) {
@@ -563,6 +566,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               }
             }
           }
+          runtimeAffectingSourceHash = compilerOptions.cache.computeHash([
+            ...(groupedEntries.html ?? []).map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
+            ...(groupedEntries.js ?? []).map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
+          ].sort().join('\n\n'))
           try {
             runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
           }
@@ -710,6 +717,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     : currentSourceValue?.toString() ?? ''
                   const handlerOptions = {
                     tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
+                    generateMap: false,
                     filename: absoluteFile,
                     moduleGraph: moduleGraphOptions,
                     babelParserOptions: {
@@ -761,7 +769,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   hash: createRuntimeAwareCssHash(
                     chunkHash,
                     sourceHash,
-                    `${runtimeSetHash}:${cssSourceTraceSignature}`,
+                    `${runtimeSetHash}:${runtimeAffectingSourceHash}:${cssSourceTraceSignature}`,
                   ),
                   applyResult(source, { cacheHit }) {
                     updateAssetIfChanged(file, source, {
@@ -793,6 +801,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const cacheKey = file
             const hashKey = `${file}:asset`
             rememberProcessCacheKey(cacheKey, hashKey)
+            const cssHandlerOptionsForHash = getCssHandlerOptions(file)
+            const cssChunkHash = watchMode
+              && runtimeState.twPatcher.majorVersion === 4
+              && cssHandlerOptionsForHash.isMainChunk
+              ? undefined
+              : chunkHash
             const cssSourceHash = (() => {
               const sourceFile = resolveWebpackCssSourceFile(file)
               const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
@@ -801,9 +815,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 : `webpack-css-source:1:${compilerOptions.cache.computeHash(sourceCss)}`
             })()
             const runtimeAwareHash = createRuntimeAwareCssHash(
-              chunkHash,
+              cssChunkHash,
               compilerOptions.cache.computeHash(currentRawSource),
-              `${runtimeSetHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}:${cssSourceHash}`,
+              `${runtimeSetHash}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}:${cssSourceHash}`,
             )
             await enqueueTask(async () => {
               await processCachedTask({
@@ -883,7 +897,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           activeCssFiles,
         )
         if (activeCssFiles.size > 0) {
-          pruneWebpackCssSources?.(activeWebpackCssSourceFiles)
+          pruneWebpackCssSources?.(new Set([
+            ...registeredWebpackCssSourceFiles,
+            ...activeWebpackCssSourceFiles,
+          ]))
         }
         debug('end')
         emitHmrTiming('webpack', 'processAssets', performance.now() - hmrTimingStartedAt, {

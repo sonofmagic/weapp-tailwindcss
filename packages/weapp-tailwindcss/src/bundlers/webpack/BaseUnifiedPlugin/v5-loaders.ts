@@ -24,6 +24,7 @@ interface SetupWebpackV5LoadersOptions {
   getClassSetInLoader: () => Promise<void>
   getRuntimeSetInLoader: () => Promise<Set<string>>
   markWebpackProcessedCssSource?: ((file: string) => void) | undefined
+  markWebpackCssSourceModule?: ((file: string) => void) | undefined
   registerWebpackCssSourceFile?: ((source: WebpackCssSourceRegistration) => void) | undefined
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
@@ -46,6 +47,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     getClassSetInLoader,
     getRuntimeSetInLoader,
     markWebpackProcessedCssSource,
+    markWebpackCssSourceModule,
     registerWebpackCssSourceFile,
     getRuntimeWatchDependencies,
     runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -137,6 +139,9 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       let rewriteAnchorIdx = findRewriteAnchor(loaderEntries)
       const classSetAnchorIdx = findClassSetAnchor(loaderEntries)
       const isCssModule = isCssLikeModuleResource(module.resource, compilerOptions.cssMatcher, appType)
+      if (isCssModule && typeof module.resource === 'string') {
+        markWebpackCssSourceModule?.(module.resource)
+      }
       if (process.env['WEAPP_TW_LOADER_DEBUG'] && isCssModule) {
         debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }

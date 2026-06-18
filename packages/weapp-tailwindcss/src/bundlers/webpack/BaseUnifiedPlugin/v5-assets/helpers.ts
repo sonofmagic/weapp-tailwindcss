@@ -23,6 +23,7 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
   getWebpackCssSources?: (() => Iterable<[string, string | undefined]>) | undefined
   pruneWebpackCssSources?: ((activeSourceFiles: ReadonlySet<string>) => void) | undefined
+  prepareWebpackCssSources?: (() => ReadonlySet<string>) | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
 

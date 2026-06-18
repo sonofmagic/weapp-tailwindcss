@@ -7,6 +7,7 @@
 //   pnpm --filter weapp-tailwindcss bench:js-diff -- --compare=.bench/baseline.json
 //   pnpm --filter weapp-tailwindcss bench:js-diff -- --glob="packages/weapp-tailwindcss/test/fixtures/js/**/*.js"
 import type { IJsHandlerOptions, JsHandlerResult } from 'weapp-tailwindcss/src/types'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import { performance } from 'node:perf_hooks'
 import process from 'node:process'
@@ -15,7 +16,7 @@ import { MappingChars2String } from '@weapp-core/escape'
 import fg from 'fast-glob'
 import fs from 'fs-extra'
 import pc from 'picocolors'
-import { getDefaultOptions } from 'weapp-tailwindcss/src/defaults'
+import { resolveCorePackagePath } from './paths'
 
 type EngineId = 'babel' | 'swc' | 'oxc'
 
@@ -57,6 +58,25 @@ interface BenchSnapshot {
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const repoRoot = path.resolve(__dirname, '../../..')
+const require = createRequire(import.meta.url)
+
+function registerCoreAlias() {
+  const Module = require('node:module') as typeof import('node:module') & {
+    _resolveFilename?: (request: string, parent: unknown, isMain: boolean, options?: unknown) => string
+  }
+  const original = Module._resolveFilename
+  if (!original) {
+    return
+  }
+  Module._resolveFilename = function resolveFilename(request, parent, isMain, options) {
+    if (request.startsWith('@/')) {
+      return original.call(this, resolveCorePackagePath('src', request.slice(2)), parent, isMain, options)
+    }
+    return original.call(this, request, parent, isMain, options)
+  }
+}
+
+registerCoreAlias()
 
 function parseArgs(): RunOptions {
   const args = process.argv.slice(2)
@@ -105,15 +125,16 @@ async function loadFiles(globPattern: string | string[]) {
 }
 
 function makeBaseOptions(): IJsHandlerOptions {
-  const defaults = getDefaultOptions()
   return {
     alwaysEscape: true,
     needEscaped: true,
     generateMap: false,
     unescapeUnicode: true,
     escapeMap: MappingChars2String,
-    ignoreTaggedTemplateExpressionIdentifiers: defaults.ignoreTaggedTemplateExpressionIdentifiers,
-    babelParserOptions: defaults.babelParserOptions,
+    experimentalJsFastPath: 'oxc',
+    babelParserOptions: {
+      sourceType: 'unambiguous',
+    },
   }
 }
 
@@ -128,7 +149,7 @@ function useSwc() {
 }
 
 function useOxc() {
-  const { oxcJsHandler } = require('weapp-tailwindcss/src/experimental/oxc') as typeof import('weapp-tailwindcss/src/experimental/oxc')
+  const { oxcJsHandler } = require('weapp-tailwindcss/src/js/fast-path/oxc') as typeof import('weapp-tailwindcss/src/js/fast-path/oxc')
   return oxcJsHandler
 }
 
@@ -166,6 +187,9 @@ async function benchPerFile(
   warmup: number,
 ) {
   const handler: (code: string, opts: IJsHandlerOptions) => JsHandlerResult = getHandler(id)
+  const fallbackHandler: ((code: string, opts: IJsHandlerOptions) => JsHandlerResult) | undefined = id === 'oxc'
+    ? useBabel()
+    : undefined
   const results: PerFileResult[] = []
 
   for (const f of files) {
@@ -181,7 +205,10 @@ async function benchPerFile(
     const samples: number[] = []
     for (let i = 0; i < iter; i++) {
       const t0 = now()
-      const res = handler(f.code, options)
+      let res = handler(f.code, options)
+      if ((!res || typeof res.code !== 'string') && fallbackHandler) {
+        res = fallbackHandler(f.code, options)
+      }
       if (!res || typeof res.code !== 'string') {
         throw new Error(`${id} returned invalid result for ${f.id}`)
       }

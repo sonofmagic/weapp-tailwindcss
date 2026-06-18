@@ -10,7 +10,7 @@ import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, fina
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
 import { inheritLegacyUnitConvertedDeclarations } from './generator-css/legacy-units'
 import { cleanLocalCssImportWrapperTailwindDirectives, isPureLocalCssImportWrapper, restoreLocalCssImports, splitLocalCssImports } from './generator-css/local-imports'
-import { createCssAppend, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, splitTailwindV4GeneratedCssBySourceOrder, stripTailwindBanner } from './generator-css/markers'
+import { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindV4GeneratedCssBySourceOrder, stripTailwindBanner } from './generator-css/markers'
 import { resolveGeneratorSourceEntries, resolveGeneratorSources } from './generator-css/source-resolver'
 import { extractGeneratedCssForUserLayerSelectors, filterApplyOnlyGeneratedCss, hasUserCssLayerBlocks, removeTailwindV4GeneratorAtRules, shouldFilterApplyOnlyGeneratedCss, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
@@ -95,6 +95,9 @@ export async function generateCssByGenerator(
   const userCssRawSource = majorVersion === 4
     ? removeTailwindV4GeneratorAtRules(generatorRawSource)
     : generatorRawSource
+  const userCssOrderSource = GENERATOR_PLACEHOLDER_MARKER_RE.test(generatorRawSource)
+    ? generatorRawSource
+    : userCssRawSource
 
   const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
   if (cleanedLocalImportWrapper !== undefined) {
@@ -271,9 +274,10 @@ export async function generateCssByGenerator(
       ? filterApplyOnlyGeneratedCss(stripTailwindBanner(generated.css), generatorRawSource)
       : stripTailwindBanner(generated.css)
     const hasMatchedCssSourceFile = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
-    const orderedExtraCss = hasMatchedCssSourceFile
-      ? splitTailwindV4GeneratedCssBySourceOrder(userCssRawSource, generated.rawCss)
-      : splitRawSourceByGeneratedCssOrder(userCssRawSource, generated.rawCss)
+    const placeholderOrderedExtraCss = splitGeneratorPlaceholderCssBySourceOrder(userCssOrderSource, generated.rawCss)
+    const orderedExtraCss = placeholderOrderedExtraCss ?? (hasMatchedCssSourceFile
+      ? splitTailwindV4GeneratedCssBySourceOrder(userCssOrderSource, generated.rawCss)
+      : splitRawSourceByGeneratedCssOrder(userCssOrderSource, generated.rawCss))
     const shouldAppendMatchedCssSourceCompat = !hasMatchedCssSourceFile || orderedExtraCss !== undefined
     if (orderedExtraCss) {
       let css = generatedCss

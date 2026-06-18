@@ -207,9 +207,6 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       hashKeys: activeProcessHashKeys,
     })
   }
-  else if (useIncrementalMode) {
-    cache.pruneHashKeys?.(activeProcessHashKeys)
-  }
   pruneLastCssResults(lastCssResultByFile, lastCssSourceHashByFile, activeViteCssCacheFiles)
   pruneViteCssCaches?.({
     activeFiles: activeViteCssCacheFiles,

@@ -164,6 +164,17 @@ export interface UserDefinedOptionsGeneralPart {
   }) | undefined
 
   /**
+   * 实验性 JS 转译快路径。
+   *
+   * @group 3.一般配置
+   * @experimental
+   * @remarks
+   * 当前仅在调用侧关闭 source map，且没有模块图、模块替换、ignore 调用/标签模板语义时尝试 OXC。
+   * OXC npm 包本身要求 Node `^20.19.0 || >=22.12.0`，Node 18 环境会自动回退到 Babel。
+   */
+  experimentalJsFastPath?: boolean | 'oxc' | undefined
+
+  /**
    * 自定义 Tailwind 子组合器的替换值。
    *
    * @group 3.一般配置

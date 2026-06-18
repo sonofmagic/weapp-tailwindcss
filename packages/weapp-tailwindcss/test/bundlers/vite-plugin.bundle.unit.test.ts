@@ -8072,6 +8072,26 @@ const cls = "w-[1.5px]"
         packageName: 'tailwindcss',
       })),
     }))
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: vi.fn(async (options: { runtime: Set<string> }) => {
+          const result = await generateMock({ candidates: options.runtime })
+          return {
+            css: result.css,
+            rawCss: result.rawCss,
+            target: result.target,
+            classSet: result.classSet,
+            rawCandidates: result.rawCandidates,
+            dependencies: result.dependencies,
+            sources: result.sources,
+            root: result.root,
+            version: result.version,
+          }
+        }),
+      }
+    })
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const runtimeSet = new Set<string>()
     setCurrentContext(createContext({
@@ -8153,51 +8173,33 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('replays updated vite pipeline main css into uni-app dev app.wxss', async () => {
-    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].sort().map((candidate) => {
+    const localCandidates = (candidates: Set<string>) =>
+      new Set([...candidates].filter(candidate => /^text-\[\d+\.\d+rpx\]$/.test(candidate)))
+    const generateMock = vi.fn(async (options: { runtime: Set<string> }) => ({
+      css: [...localCandidates(options.runtime)].sort().map((candidate) => {
         const fontSize = candidate.match(/^text-\[(.+)\]$/)?.[1] ?? '0rpx'
         return `.${replaceWxml(candidate)}{font-size:${fontSize}}`
       }).join('\n'),
-      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...localCandidates(options.runtime)].sort().map(candidate => `.${candidate}{}`).join('\n'),
       target: 'weapp',
-      classSet: new Set(options.candidates),
-      rawCandidates: new Set(options.candidates),
+      classSet: localCandidates(options.runtime),
+      rawCandidates: localCandidates(options.runtime),
       dependencies: [],
       sources: [],
       root: null,
       version: 4,
     }))
-    vi.doMock('@/generator', () => ({
-      createWeappTailwindcssGenerator: vi.fn(() => ({
-        generate: generateMock,
-      })),
-      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
-        version: 4,
-        projectRoot: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@import "tailwindcss" source(none);',
-        dependencies: [],
-        packageName: 'tailwindcss',
-      })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        packageName: 'tailwindcss',
-      })),
-      resolveTailwindV4Source: vi.fn(async (options: { base?: string, css?: string } = {}) => ({
-        version: 4,
-        projectRoot: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss" source(none);',
-        dependencies: [],
-        packageName: 'tailwindcss',
-      })),
-    }))
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateMock,
+      }
+    })
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-wxss-replay-'))
+    createdDirs.push(root)
     const runtimeSet = new Set<string>()
     const forceRuntimeRefresh = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
     process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] = '1'
@@ -8223,14 +8225,14 @@ const cls = "w-[1.5px]"
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
-      root: process.cwd(),
+      root,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist/dev/mp-weixin' },
       plugins: [{ name: 'vite:uni' }],
     } as ResolvedConfig)
     await (serveGeneratePlugin.configResolved as any)?.call(serveGeneratePlugin, {
       command: 'serve',
-      root: process.cwd(),
+      root,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist/dev/mp-weixin' },
       plugins: [{ name: 'vite:uni' }],
@@ -8238,7 +8240,7 @@ const cls = "w-[1.5px]"
 
     const transform = getTransformHandler(serveGeneratePlugin)
     const generateBundle = getGenerateBundleHandler(postPlugin)
-    const cssSourceFile = path.resolve(process.cwd(), 'src/main.css')
+    const cssSourceFile = path.resolve(root, 'src/main.css')
     const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
 
     try {
@@ -8322,51 +8324,33 @@ const cls = "w-[1.5px]"
   }, TEST_TIMEOUT_MS)
 
   it('refreshes uni-app dev app.wxss from script-only escaped v4 hmr candidates without force refresh env', async () => {
-    const generateMock = vi.fn(async (options: { candidates: Set<string> }) => ({
-      css: [...options.candidates].sort().map((candidate) => {
+    const localCandidates = (candidates: Set<string>) =>
+      new Set([...candidates].filter(candidate => /^text-\[\d+\.\d+rpx\]$/.test(candidate)))
+    const generateMock = vi.fn(async (options: { runtime: Set<string> }) => ({
+      css: [...localCandidates(options.runtime)].sort().map((candidate) => {
         const fontSize = candidate.match(/^text-\[(.+)\]$/)?.[1] ?? '0rpx'
         return `.${replaceWxml(candidate)}{font-size:${fontSize}}`
       }).join('\n'),
-      rawCss: [...options.candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...localCandidates(options.runtime)].sort().map(candidate => `.${candidate}{}`).join('\n'),
       target: 'weapp',
-      classSet: new Set(options.candidates),
-      rawCandidates: new Set(options.candidates),
+      classSet: localCandidates(options.runtime),
+      rawCandidates: localCandidates(options.runtime),
       dependencies: [],
       sources: [],
       root: null,
       version: 4,
     }))
-    vi.doMock('@/generator', () => ({
-      createWeappTailwindcssGenerator: vi.fn(() => ({
-        generate: generateMock,
-      })),
-      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
-        version: 4,
-        projectRoot: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@import "tailwindcss" source(none);',
-        dependencies: [],
-        packageName: 'tailwindcss',
-      })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        packageName: 'tailwindcss',
-      })),
-      resolveTailwindV4Source: vi.fn(async (options: { base?: string, css?: string } = {}) => ({
-        version: 4,
-        projectRoot: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css ?? '@import "tailwindcss" source(none);',
-        dependencies: [],
-        packageName: 'tailwindcss',
-      })),
-    }))
+    vi.resetModules()
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/bundlers/shared/generator-css')>()
+      return {
+        ...actual,
+        generateCssByGenerator: generateMock,
+      }
+    })
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-wxss-script-replay-'))
+    createdDirs.push(root)
     const runtimeSet = new Set<string>()
     const forceRuntimeRefresh = process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
     delete process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH']
@@ -8392,7 +8376,7 @@ const cls = "w-[1.5px]"
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
-      root: process.cwd(),
+      root,
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist/dev/mp-weixin' },
       plugins: [{ name: 'vite:uni' }],
@@ -8400,7 +8384,7 @@ const cls = "w-[1.5px]"
 
     const transform = getTransformHandler(serveGeneratePlugin)
     const generateBundle = getGenerateBundleHandler(postPlugin)
-    const cssSourceFile = path.resolve(process.cwd(), 'src/main.css')
+    const cssSourceFile = path.resolve(root, 'src/main.css')
     const cssSource = '@import "tailwindcss" source(none);\n@source "../src/**/*.{vue,js,ts}";'
 
     try {
@@ -8441,7 +8425,7 @@ const cls = "w-[1.5px]"
       await generateBundle?.call(postPlugin, {} as any, secondBundle)
       const secondAppCss = (secondBundle['app.wxss'] as OutputAsset).source.toString()
       expect(generateMock.mock.calls.some(call =>
-        (call[0].candidates as Set<string>).has('text-[103.43rpx]'),
+        (call[0].runtime as Set<string>).has('text-[103.43rpx]'),
       )).toBe(true)
       expect(secondAppCss).toContain(replaceWxml('text-[103.43rpx]'))
       expect(secondAppCss).toContain('103.43rpx')

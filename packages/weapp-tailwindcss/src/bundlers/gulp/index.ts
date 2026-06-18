@@ -551,6 +551,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const moduleGraph = resolveModuleGraphOptions(options.moduleGraph)
       const handlerOptions: CreateJsHandlerOptions = {
         ...options,
+        generateMap: false,
         filename,
         moduleGraph,
         babelParserOptions: {
