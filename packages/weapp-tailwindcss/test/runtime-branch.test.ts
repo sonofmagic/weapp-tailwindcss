@@ -1,10 +1,43 @@
 import { describe, expect, it } from 'vitest'
 import { resolveRuntimeBranch, shouldUseMiniProgramCssBranch, shouldUseNativeAppCssBranch } from '@/runtime-branch'
+import { generatorTargetEnvKeys, inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { createMiniProgramRuntimeBranch } from '@/runtime-branch/mini-program'
 import { createNativeAppRuntimeBranch } from '@/runtime-branch/native-app'
 import { createTailwindRuntimeBranch } from '@/runtime-branch/tailwind'
 import { createWebRuntimeBranch } from '@/runtime-branch/web'
 import { resolveUniUtsPlatform } from '@/utils'
+
+function withGeneratorTargetEnv(
+  env: Partial<Record<typeof generatorTargetEnvKeys[number], string>>,
+  callback: () => void,
+) {
+  const originalEnvValues = new Map<string, string | undefined>(
+    generatorTargetEnvKeys.map(key => [key, process.env[key]]),
+  )
+
+  for (const key of generatorTargetEnvKeys) {
+    if (env[key] === undefined) {
+      delete process.env[key]
+    }
+    else {
+      process.env[key] = env[key]
+    }
+  }
+
+  try {
+    callback()
+  }
+  finally {
+    for (const [key, value] of originalEnvValues) {
+      if (value === undefined) {
+        delete process.env[key]
+      }
+      else {
+        process.env[key] = value
+      }
+    }
+  }
+}
 
 function createBranchBase(overrides: Parameters<typeof resolveRuntimeBranch>[0]) {
   return {
@@ -111,6 +144,50 @@ describe('resolveRuntimeBranch', () => {
 
     expect(branch.platformFamily).toBe('mini-program')
     expect(branch.platform).toBe('mp-alipay')
+  })
+})
+
+describe('inferGeneratorTargetFromEnv', () => {
+  it('keeps mini-program as the fallback branch target', () => {
+    withGeneratorTargetEnv({}, () => {
+      expect(inferGeneratorTargetFromEnv()).toBe('weapp')
+    })
+  })
+
+  it.each([
+    [{ UNI_PLATFORM: 'h5' }, 'uni-app H5'],
+    [{ UNI_UTS_PLATFORM: 'web' }, 'uni-app x Web'],
+    [{ UNI_UTS_PLATFORM: 'web-desktop' }, 'uni-app x desktop Web'],
+    [{ MPX_CLI_MODE: 'web' }, 'Mpx Web'],
+    [{ MPX_CURRENT_TARGET_MODE: 'web' }, 'Mpx target Web'],
+    [{ TARO_ENV: 'h5' }, 'Taro H5'],
+    [{ UNI_PLATFORM: 'app' }, 'uni-app App WebView'],
+    [{ UNI_PLATFORM: 'app-plus' }, 'uni-app app-plus WebView'],
+  ] as const)('infers web branch target from %s', (env) => {
+    withGeneratorTargetEnv(env, () => {
+      expect(inferGeneratorTargetFromEnv()).toBe('web')
+    })
+  })
+
+  it.each([
+    [{ UNI_UTS_PLATFORM: 'app-android' }, 'uni-app x Android'],
+    [{ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-ios' }, 'uni-app x iOS'],
+    [{ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-harmony' }, 'uni-app x Harmony'],
+    [{ MPX_CLI_MODE: 'mp', MPX_CURRENT_TARGET_MODE: 'wx' }, 'Mpx mini-program'],
+  ] as const)('keeps %s on the mini-program/native-app output family', (env) => {
+    withGeneratorTargetEnv(env, () => {
+      expect(inferGeneratorTargetFromEnv()).toBe('weapp')
+    })
+  })
+
+  it('honors explicit branch target env before framework env', () => {
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'h5', TARO_ENV: 'h5', WEAPP_TW_TARGET: 'weapp' }, () => {
+      expect(inferGeneratorTargetFromEnv()).toBe('weapp')
+    })
+
+    withGeneratorTargetEnv({ WEAPP_TAILWINDCSS_TARGET: 'tailwind' }, () => {
+      expect(inferGeneratorTargetFromEnv()).toBe('tailwind')
+    })
   })
 })
 

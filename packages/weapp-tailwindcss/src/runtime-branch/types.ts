@@ -1,5 +1,4 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
-import type { WeappTailwindcssGeneratorTarget } from '@/generator'
 import type { AppType } from '@/types/shared'
 import type { UniUtsPlatformInfo } from '@/utils'
 
@@ -8,6 +7,8 @@ export type TailwindcssBranchVersion = 3 | 4
 export type RuntimePlatformFamily = 'web' | 'mini-program' | 'native-app' | 'tailwind'
 
 export type NativeAppPlatform = 'android' | 'ios' | 'harmony' | 'unknown'
+
+export type WeappTailwindcssGeneratorTarget = 'weapp' | 'web' | 'tailwind'
 
 export interface RuntimeBranchContext {
   appType?: AppType | undefined

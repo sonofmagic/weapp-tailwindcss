@@ -420,6 +420,9 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
     if (originalCwd !== root) {
       process.chdir(root)
     }
+    if (twPatcher.majorVersion < 4) {
+      await twPatcher.patch()
+    }
     const result = await twPatcher.extract({ write: false })
     return {
       classList: result?.classList,

@@ -3,17 +3,8 @@ import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { generatorTargetEnvKeys } from '@/runtime-branch/generator-target-env'
 import { defu } from '@/utils'
-
-const generatorTargetEnvKeys = [
-  'UNI_PLATFORM',
-  'UNI_UTS_PLATFORM',
-  'MPX_CLI_MODE',
-  'MPX_CURRENT_TARGET_MODE',
-  'TARO_ENV',
-  'WEAPP_TW_TARGET',
-  'WEAPP_TAILWINDCSS_TARGET',
-] as const
 
 function withGeneratorTargetEnv(
   env: Partial<Record<typeof generatorTargetEnvKeys[number], string>>,
