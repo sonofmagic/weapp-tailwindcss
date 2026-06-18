@@ -187,6 +187,10 @@ function normalizePath(root: string, target: string) {
   return path.isAbsolute(target) ? target : path.resolve(root, target)
 }
 
+function getWorkspaceRoot(root: string) {
+  return path.resolve(root, '..', '..')
+}
+
 function resolveTailwindInfo(root: string, options: NormalizedPatchOptions): TailwindInfo | null {
   const packageName = typeof options.packageName === 'string' && options.packageName.length > 0 ? options.packageName : 'tailwindcss'
   const requireFromRoot = createRequire(path.join(root, 'package.json'))
@@ -235,6 +239,9 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
       ...(resolved.tailwindcss?.resolve?.paths ?? []),
       ...(resolved.tailwind?.resolve?.paths ?? []),
       root,
+      path.resolve(root, 'node_modules'),
+      getWorkspaceRoot(root),
+      path.resolve(getWorkspaceRoot(root), 'node_modules'),
     ].map(entry => normalizePath(root, entry)),
   )
 
@@ -332,6 +339,14 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
     }
   }
   delete (resolved as Record<string, unknown>).tailwind
+
+  resolved.apply = {
+    ...(resolved.apply ?? {}),
+    extendLengthUnits: resolved.apply?.extendLengthUnits ?? {
+      units: ['rpx'],
+      overwrite: true,
+    },
+  }
 
   return resolved
 }
@@ -469,7 +484,14 @@ async function runTwPatch(root: string): Promise<void> {
   }
 
   logE2EDebug('[e2e] Tailwind patch options for %s: %o', root, runtime.patchOptions.tailwindcss)
-  await runWithProjectPackageEnv(root, runtime, () => twPatcher.patch().then(() => undefined))
+  await runWithProjectPackageEnv(root, runtime, async () => {
+    await twPatcher.patch()
+    const status = await twPatcher.getPatchStatus()
+    const lengthUnitStatus = status.entries.find(entry => entry.name === 'extendLengthUnits')
+    if (lengthUnitStatus?.status !== 'applied') {
+      throw new Error(`[e2e] Tailwind v3 rpx length-unit patch was not applied for ${root}: ${JSON.stringify(status, null, 2)}`)
+    }
+  })
 }
 
 async function runTwExtract(root: string): Promise<ExtractionResult | undefined> {
