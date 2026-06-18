@@ -165,10 +165,16 @@ export async function runMainStyleHotUpdate(
 
   const rollbackBaselineMtimes = await collectOutputMtimes(outputFiles)
   const rollbackStartedAt = Date.now()
+  const rollbackMarker = `tw-watch-main-style-rollback-${watchCase.name}-${Date.now()}`
+  const rollbackSource = mutation.mutate(sourceOriginal, {
+    marker: rollbackMarker,
+    classLiteral: '',
+    classVariableName: '__twMainStyleClass',
+  })
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=rollback dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
   )
-  await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+  await writeFilePreserveEol(sourcePath, rollbackSource, sourceOriginal)
   const rollbackOutputMs = await waitForOutputFilesUpdated(
     watchCase,
     outputFiles,
@@ -182,6 +188,12 @@ export async function runMainStyleHotUpdate(
       const removedEscapedClasses = sourceOriginalHasFromClass
         ? [toEscapedClass]
         : [fromEscapedClass, toEscapedClass]
+      const rollbackMarkerPresent = rollbackSource === sourceOriginal
+        || outputs.wxml.includes(rollbackMarker)
+        || outputs.js.includes(rollbackMarker)
+      if (!rollbackMarkerPresent) {
+        return false
+      }
       const removedFromCodeOutputs = !outputs.wxml.includes(marker) && !outputs.js.includes(marker)
       if (removedFromCodeOutputs) {
         rollbackVerifiedGlobalStyleRemovedClasses = removedEscapedClasses.filter(escapedClass => !outputs.globalStyle.includes(escapedClass))

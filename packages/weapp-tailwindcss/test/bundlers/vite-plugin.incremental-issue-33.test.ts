@@ -300,6 +300,76 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     expect(jsHandler).toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
+  it('does not reuse stale html transform when rollback source matches an older raw hash', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const htmlFile = 'dist/pages/index/index.wxml'
+    const rawToken = 'bg-[#101010]'
+    const escapedToken = replaceWxml(rawToken)
+    const emptyRuntimeSet = new Set<string>()
+    const filledRuntimeSet = new Set([rawToken])
+    let runtimeSet = emptyRuntimeSet
+
+    const templateHandler = vi.fn(async (code: string) => {
+      let result = code
+      for (const token of runtimeSet) {
+        result = result.replaceAll(token, replaceWxml(token))
+      }
+      return result
+    })
+
+    setCurrentContext(createContext({
+      templateHandler,
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 3,
+      },
+    }))
+
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawToken}">before</view>`),
+        fileName: htmlFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle[htmlFile] as OutputAsset).source.toString()).toContain(rawToken)
+
+    runtimeSet = filledRuntimeSet
+    const secondBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawToken}">after</view>`),
+        fileName: htmlFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    expect((secondBundle[htmlFile] as OutputAsset).source.toString()).toContain(escapedToken)
+
+    const rollbackBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawToken}">before</view>`),
+        fileName: htmlFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, rollbackBundle)
+    expect((rollbackBundle[htmlFile] as OutputAsset).source.toString()).toContain(escapedToken)
+    expect(templateHandler).toHaveBeenCalledTimes(3)
+  }, TEST_TIMEOUT_MS)
+
   it('refreshes runtime class set on build-command watch iterations for changed vue object class keys', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'dist/pages/index/index.wxml'

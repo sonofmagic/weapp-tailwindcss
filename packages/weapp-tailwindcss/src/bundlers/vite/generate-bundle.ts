@@ -470,7 +470,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             cache,
             cacheKey,
             hashKey,
-            hash: getSnapshotHash(snapshot.sourceHashByFile, file, rawSource),
+            hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, rawSource)}:${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, rawSource)}:${transformRuntimeSignature}`,
             applyResult(source) {
               originalSource.source = source
             },
