@@ -11,8 +11,8 @@
 
 | stage | status | samples | baseline RSS | peak RSS | RSS delta | max process RSS | peak processes | duration | command |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| build | passed | 3 | 420MB | 530MB | 110MB | 358MB | 2 | 2s | `pnpm --filter @weapp-tailwindcss-demo/gulp-tailwindcss-v4 run build` |
-| hmr | passed | 50 | 888MB | 1926MB | 1038MB | 979MB | 10 | 49s | `pnpm e2e:hot-update:demo` |
+| build | passed | 4 | 184MB | 601MB | 417MB | 397MB | 3 | 3s | `pnpm --filter @weapp-tailwindcss-demo/gulp-tailwindcss-v4 run build` |
+| hmr | passed | 53 | 595MB | 1475MB | 880MB | 815MB | 10 | 52s | `pnpm e2e:hot-update:demo` |
 
 ## 优化建议
 

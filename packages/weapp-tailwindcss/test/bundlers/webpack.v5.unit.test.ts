@@ -1,6 +1,8 @@
 import './webpack.v5.unit/watch.cases'
 import './webpack.v5.unit/process-cache-basic.cases'
 import './webpack.v5.unit/process-cache-debug.cases'
+import './webpack.v5.unit/source-candidate-cache.test'
+import './webpack.v5.unit/webpack-snapshot.helpers.test'
 import './webpack.v5.unit/generated-css-loader.cases'
 import './webpack.v5.unit/generated-css-subpackage.cases'
 import './webpack.v5.unit/generated-css-cleanup.cases'

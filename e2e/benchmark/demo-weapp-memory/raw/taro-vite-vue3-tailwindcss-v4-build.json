@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-06-17T13:09:24.492Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 4,
+    "baselineRssMb": 443,
+    "peakRssMb": 971,
+    "rssDeltaMb": 528,
+    "peakMaxProcessRssMb": 701,
+    "peakProcessCount": 5,
+    "firstAt": 1781701760731,
+    "lastAt": 1781701763736,
+    "durationMs": 3005,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "taro-vite-vue3-tailwindcss-v4 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v4",
+        "run",
+        "build:weapp"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T13:09:20.710Z",
+      "endedAt": "2026-06-17T13:09:24.492Z",
+      "local": false,
+      "summary": {
+        "count": 4,
+        "baselineRssMb": 443,
+        "peakRssMb": 971,
+        "rssDeltaMb": 528,
+        "peakMaxProcessRssMb": 701,
+        "peakProcessCount": 5,
+        "firstAt": 1781701760731,
+        "lastAt": 1781701763736,
+        "durationMs": 3005
+      },
+      "samples": [
+        {
+          "at": 1781701760731,
+          "rssMb": 1,
+          "maxProcessRssMb": 1,
+          "processCount": 1
+        },
+        {
+          "at": 1781701761735,
+          "rssMb": 443,
+          "maxProcessRssMb": 213,
+          "processCount": 3
+        },
+        {
+          "at": 1781701762734,
+          "rssMb": 822,
+          "maxProcessRssMb": 552,
+          "processCount": 5
+        },
+        {
+          "at": 1781701763736,
+          "rssMb": 971,
+          "maxProcessRssMb": 701,
+          "processCount": 5
+        }
+      ]
+    }
+  ]
+}

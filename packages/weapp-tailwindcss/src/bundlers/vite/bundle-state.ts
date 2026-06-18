@@ -37,6 +37,10 @@ export interface BundleSnapshot {
 export interface BundleBuildState {
   iteration: number
   sourceHashByFile: Map<string, string>
+  /**
+   * 仅为快照结构兼容保留。长期 build state 不保存完整 runtime 签名，
+   * 避免 watch/HMR 中把大段源码派生字符串常驻内存。
+   */
   runtimeAffectingSignatureByFile: Map<string, string>
   runtimeAffectingHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>>
@@ -153,18 +157,15 @@ export function buildBundleSnapshot(
 
     const previousHash = state.sourceHashByFile.get(file)
     const changed = previousHash == null || previousHash !== hash
-    const previousRuntimeAffectingSignature = state.runtimeAffectingSignatureByFile.get(file)
     const previousRuntimeAffectingHash = state.runtimeAffectingHashByFile.get(file)
-    const canReuseRuntimeAffectingSignature = !changed
-      && previousRuntimeAffectingSignature != null
-      && previousRuntimeAffectingHash != null
-    const runtimeAffectingSignature = canReuseRuntimeAffectingSignature
-      ? previousRuntimeAffectingSignature
-      : createRuntimeAffectingSourceSignature(source, type)
-    const runtimeAffectingHash = canReuseRuntimeAffectingSignature
+    const canReuseRuntimeAffectingHash = !changed && previousRuntimeAffectingHash != null
+    const runtimeAffectingHash = canReuseRuntimeAffectingHash
       ? previousRuntimeAffectingHash
-      : opts.cache.computeHash(runtimeAffectingSignature)
-    runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
+      : (() => {
+          const runtimeAffectingSignature = createRuntimeAffectingSourceSignature(source, type)
+          runtimeAffectingSignatureByFile.set(file, runtimeAffectingSignature)
+          return opts.cache.computeHash(runtimeAffectingSignature)
+        })()
     runtimeAffectingHashByFile.set(file, runtimeAffectingHash)
 
     if (changed) {
@@ -279,6 +280,27 @@ function invertLinkedByEntry(linkedByEntry: Map<string, Set<string>>) {
   return dependentsByLinkedFile
 }
 
+function replaceMapEntries<Key, Value>(
+  target: Map<Key, Value>,
+  source: Map<Key, Value>,
+) {
+  target.clear()
+  for (const [key, value] of source) {
+    target.set(key, value)
+  }
+  return target
+}
+
+function mergeMapEntries<Key, Value>(
+  target: Map<Key, Value>,
+  source: Map<Key, Value>,
+) {
+  for (const [key, value] of source) {
+    target.set(key, value)
+  }
+  return target
+}
+
 export function updateBundleBuildState(
   state: BundleBuildState,
   snapshot: BundleSnapshot,
@@ -288,25 +310,14 @@ export function updateBundleBuildState(
   const incremental = options.incremental === true
   state.iteration += 1
   state.sourceHashByFile = incremental
-    ? new Map([
-        ...state.sourceHashByFile,
-        ...snapshot.sourceHashByFile,
-      ])
-    : snapshot.sourceHashByFile
-  state.runtimeAffectingSignatureByFile = incremental
-    ? new Map([...state.runtimeAffectingSignatureByFile, ...snapshot.runtimeAffectingSignatureByFile])
-    : snapshot.runtimeAffectingSignatureByFile
+    ? mergeMapEntries(state.sourceHashByFile, snapshot.sourceHashByFile)
+    : replaceMapEntries(state.sourceHashByFile, snapshot.sourceHashByFile)
+  state.runtimeAffectingSignatureByFile.clear()
   state.runtimeAffectingHashByFile = incremental
-    ? new Map([
-        ...state.runtimeAffectingHashByFile,
-        ...snapshot.runtimeAffectingHashByFile,
-      ])
-    : snapshot.runtimeAffectingHashByFile
+    ? mergeMapEntries(state.runtimeAffectingHashByFile, snapshot.runtimeAffectingHashByFile)
+    : replaceMapEntries(state.runtimeAffectingHashByFile, snapshot.runtimeAffectingHashByFile)
   state.linkedByEntry = incremental
-    ? new Map([
-        ...state.linkedByEntry,
-        ...linkedByEntry,
-      ])
-    : linkedByEntry
+    ? mergeMapEntries(state.linkedByEntry, linkedByEntry)
+    : replaceMapEntries(state.linkedByEntry, linkedByEntry)
   state.dependentsByLinkedFile = invertLinkedByEntry(state.linkedByEntry)
 }

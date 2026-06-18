@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
-import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
+import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
   it('forwards tailwindcssImportRewrite options when tailwindcss v4 detected', () => {
@@ -103,6 +103,27 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     expect(serializedRequest).not.toContain('customReplaceDictionary')
     expect(serializedRequest).not.toContain('"_e"')
     expect(serializedRequest).not.toContain('!')
+  })
+
+  it('cleans webpack loader runtime registry when watch closes', () => {
+    testState.currentContext.twPatcher.majorVersion = 4
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    new WeappTailwindcss().apply(compiler as any)
+
+    const cleanupRuntime = [...compiler.hooks.watchClose.tap.mock.calls][0]?.[1]
+    expect(cleanupRuntime).toEqual(expect.any(Function))
+
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
+    expect(getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)).toBeDefined()
+
+    cleanupRuntime?.()
+
+    expect(getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)).toBeUndefined()
   })
 
 })

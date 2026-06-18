@@ -1,7 +1,7 @@
 import type { DemoCoverageEntry } from '../e2e/demoCoverageMatrix'
-import type { DemoE2eMemorySample, DemoE2eMemoryStepReport, DemoE2eMemorySummary } from './demo-e2e-memory'
+import type { DemoE2eMemoryReport, DemoE2eMemorySample, DemoE2eMemoryStepReport, DemoE2eMemorySummary } from './demo-e2e-memory'
 import { spawn } from 'node:child_process'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { DEMO_COVERAGE_MATRIX } from '../e2e/demoCoverageMatrix'
@@ -96,6 +96,10 @@ function shouldIncludeLocal() {
 
 function shouldMergeExisting() {
   return hasFlag('--merge-existing') || process.env['DEMO_WEAPP_MEMORY_MERGE_EXISTING'] === '1'
+}
+
+function shouldRebuildFromRaw() {
+  return hasFlag('--from-raw') || process.env['DEMO_WEAPP_MEMORY_FROM_RAW'] === '1'
 }
 
 function parseStageFilter() {
@@ -339,6 +343,60 @@ export function resolveProjectStatus(stages: StageReport[]): ProjectReport['stat
     return 'partial'
   }
   return 'passed'
+}
+
+async function readRawStageReport(item: WeappMemoryCase, stage: 'build' | 'hmr', outDir: string): Promise<StageReport | undefined> {
+  const rawFile = path.join(outDir, 'raw', `${item.name}-${stage}.json`)
+  try {
+    const rawReport = JSON.parse(await readFile(rawFile, 'utf8')) as DemoE2eMemoryReport
+    const step = rawReport.steps[0]
+    return {
+      stage,
+      status: rawReport.exitCode === 0 ? 'passed' : 'failed',
+      command: step?.command ?? [],
+      summary: step?.summary ?? rawReport.summary,
+      samples: step?.samples ?? [],
+      startedAt: step?.startedAt,
+      endedAt: step?.endedAt,
+      exitCode: rawReport.exitCode,
+      reportFile: path.relative(process.cwd(), rawFile),
+    }
+  }
+  catch {
+    return undefined
+  }
+}
+
+function createMissingRawStage(item: WeappMemoryCase, stage: 'build' | 'hmr'): StageReport {
+  if (item.builder.includes('hbuilderx')) {
+    return createSkippedStage(stage, item.reason ?? `该微信小程序端 ${stage} 依赖本机 HBuilderX；传入 --include-local 可尝试执行。`)
+  }
+  if (stage === 'build' && !item.automatedStatic) {
+    return createSkippedStage(stage, item.reason ?? '该微信小程序端构建在覆盖矩阵中不是 automated；传入 --include-local 可尝试本机依赖链路。')
+  }
+  if (stage === 'hmr' && !item.automatedHmr) {
+    return createSkippedStage(stage, item.reason ?? '该微信小程序端 HMR 在覆盖矩阵中不是 automated；传入 --include-local 可尝试本机依赖链路。')
+  }
+  return createSkippedStage(stage, `未找到 raw/${item.name}-${stage}.json；请运行对应 ${stage} 阶段后再执行 --from-raw 重建汇总。`)
+}
+
+async function createProjectFromRawReports(item: WeappMemoryCase, outDir: string): Promise<ProjectReport> {
+  const stages = await Promise.all((['build', 'hmr'] as const).map(async (stage) => {
+    return await readRawStageReport(item, stage, outDir) ?? createMissingRawStage(item, stage)
+  }))
+  const project: ProjectReport = {
+    name: item.name,
+    framework: item.framework,
+    builder: item.builder,
+    tailwindcss: item.tailwindcss,
+    sourceShape: item.sourceShape,
+    platform: item.platform,
+    status: resolveProjectStatus(stages),
+    stages,
+    recommendations: [],
+  }
+  project.recommendations = createMemoryRecommendations(project)
+  return project
 }
 
 async function runProject(item: WeappMemoryCase, outDir: string): Promise<ProjectReport> {
@@ -586,6 +644,21 @@ async function main() {
     throw new Error('No weapp demo cases matched.')
   }
   await mkdir(outDir, { recursive: true })
+
+  if (shouldRebuildFromRaw()) {
+    const reports = await Promise.all(cases.map(item => createProjectFromRawReports(item, outDir)))
+    const { indexFile } = await writeReports({
+      generatedAt: new Date().toISOString(),
+      repositoryRoot: process.cwd(),
+      cases: reports,
+      summary: summarizeReport(reports),
+    }, outDir)
+    process.stdout.write(`[demo-weapp-memory] report rebuilt from raw files: ${path.relative(process.cwd(), indexFile)}\n`)
+    if (reports.some(report => report.status === 'failed')) {
+      process.exitCode = 1
+    }
+    return
+  }
 
   const reports: ProjectReport[] = []
   let hasFailure = false

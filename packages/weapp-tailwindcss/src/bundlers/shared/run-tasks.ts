@@ -1,3 +1,5 @@
+import process from 'node:process'
+
 export async function runWithConcurrency<T>(
   factories: Array<() => Promise<T>>,
   limit = Math.min(4, Math.max(1, factories.length)),
@@ -39,6 +41,14 @@ export async function runWithConcurrency<T>(
 
   await Promise.all(executing)
   return results
+}
+
+export function resolveTaskConcurrency(defaultLimit = 1) {
+  const configured = Number.parseInt(process.env['WEAPP_TW_TASK_CONCURRENCY'] ?? '', 10)
+  if (Number.isFinite(configured) && configured > 0) {
+    return configured
+  }
+  return defaultLimit
 }
 
 export function pushConcurrentTaskFactories(

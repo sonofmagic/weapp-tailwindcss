@@ -182,6 +182,12 @@ export function createCompilerWithLoaderTracking() {
           handler(compilation)
         }),
       },
+      watchClose: {
+        tap: vi.fn(),
+      },
+      shutdown: {
+        tap: vi.fn(),
+      },
     },
   }
 

@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-06-17T11:40:19.190Z",
-  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "generatedAt": "2026-06-17T12:52:52.581Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
   "includeLocal": false,
   "exitCode": 0,
   "summary": {
-    "count": 6,
-    "baselineRssMb": 329,
-    "peakRssMb": 1168,
-    "rssDeltaMb": 839,
-    "peakMaxProcessRssMb": 996,
+    "count": 7,
+    "baselineRssMb": 183,
+    "peakRssMb": 1389,
+    "rssDeltaMb": 1206,
+    "peakMaxProcessRssMb": 1206,
     "peakProcessCount": 2,
-    "firstAt": 1781696413442,
-    "lastAt": 1781696418447,
-    "durationMs": 5005,
+    "firstAt": 1781700766118,
+    "lastAt": 1781700772123,
+    "durationMs": 6005,
     "stepCount": 1,
     "failedStepCount": 0
   },
@@ -27,55 +27,61 @@
         "build"
       ],
       "exitCode": 0,
-      "startedAt": "2026-06-17T11:40:13.420Z",
-      "endedAt": "2026-06-17T11:40:19.190Z",
+      "startedAt": "2026-06-17T12:52:46.096Z",
+      "endedAt": "2026-06-17T12:52:52.581Z",
       "local": false,
       "summary": {
-        "count": 6,
-        "baselineRssMb": 329,
-        "peakRssMb": 1168,
-        "rssDeltaMb": 839,
-        "peakMaxProcessRssMb": 996,
+        "count": 7,
+        "baselineRssMb": 183,
+        "peakRssMb": 1389,
+        "rssDeltaMb": 1206,
+        "peakMaxProcessRssMb": 1206,
         "peakProcessCount": 2,
-        "firstAt": 1781696413442,
-        "lastAt": 1781696418447,
-        "durationMs": 5005
+        "firstAt": 1781700766118,
+        "lastAt": 1781700772123,
+        "durationMs": 6005
       },
       "samples": [
         {
-          "at": 1781696413442,
+          "at": 1781700766118,
           "rssMb": 0,
           "maxProcessRssMb": 0,
           "processCount": 1
         },
         {
-          "at": 1781696414444,
-          "rssMb": 329,
-          "maxProcessRssMb": 172,
+          "at": 1781700767126,
+          "rssMb": 183,
+          "maxProcessRssMb": 183,
           "processCount": 2
         },
         {
-          "at": 1781696415446,
-          "rssMb": 575,
-          "maxProcessRssMb": 402,
+          "at": 1781700768119,
+          "rssMb": 375,
+          "maxProcessRssMb": 192,
           "processCount": 2
         },
         {
-          "at": 1781696416447,
-          "rssMb": 709,
-          "maxProcessRssMb": 537,
+          "at": 1781700769119,
+          "rssMb": 692,
+          "maxProcessRssMb": 510,
           "processCount": 2
         },
         {
-          "at": 1781696417446,
-          "rssMb": 858,
-          "maxProcessRssMb": 686,
+          "at": 1781700770119,
+          "rssMb": 839,
+          "maxProcessRssMb": 656,
           "processCount": 2
         },
         {
-          "at": 1781696418447,
-          "rssMb": 1168,
-          "maxProcessRssMb": 996,
+          "at": 1781700771121,
+          "rssMb": 951,
+          "maxProcessRssMb": 768,
+          "processCount": 2
+        },
+        {
+          "at": 1781700772123,
+          "rssMb": 1389,
+          "maxProcessRssMb": 1206,
           "processCount": 2
         }
       ]

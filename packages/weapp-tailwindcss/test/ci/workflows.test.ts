@@ -520,6 +520,7 @@ describe('e2e watch workflow', () => {
         round_profile: 'default',
         timeout_minutes: 60,
         watch_timeout_ms: '420000',
+        watch_max_plugin_process_ms: '9000',
         watch_command_timeout_ms: '1500000',
       },
       {

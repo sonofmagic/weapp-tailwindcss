@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-06-17T11:37:42.278Z",
-  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss",
+  "generatedAt": "2026-06-17T12:50:09.646Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
   "includeLocal": false,
   "exitCode": 0,
   "summary": {
-    "count": 3,
-    "baselineRssMb": 420,
-    "peakRssMb": 530,
-    "rssDeltaMb": 110,
-    "peakMaxProcessRssMb": 358,
-    "peakProcessCount": 2,
-    "firstAt": 1781696260052,
-    "lastAt": 1781696262059,
-    "durationMs": 2007,
+    "count": 4,
+    "baselineRssMb": 184,
+    "peakRssMb": 601,
+    "rssDeltaMb": 417,
+    "peakMaxProcessRssMb": 397,
+    "peakProcessCount": 3,
+    "firstAt": 1781700605784,
+    "lastAt": 1781700608789,
+    "durationMs": 3005,
     "stepCount": 1,
     "failedStepCount": 0
   },
@@ -27,38 +27,44 @@
         "build"
       ],
       "exitCode": 0,
-      "startedAt": "2026-06-17T11:37:40.034Z",
-      "endedAt": "2026-06-17T11:37:42.278Z",
+      "startedAt": "2026-06-17T12:50:05.759Z",
+      "endedAt": "2026-06-17T12:50:09.646Z",
       "local": false,
       "summary": {
-        "count": 3,
-        "baselineRssMb": 420,
-        "peakRssMb": 530,
-        "rssDeltaMb": 110,
-        "peakMaxProcessRssMb": 358,
-        "peakProcessCount": 2,
-        "firstAt": 1781696260052,
-        "lastAt": 1781696262059,
-        "durationMs": 2007
+        "count": 4,
+        "baselineRssMb": 184,
+        "peakRssMb": 601,
+        "rssDeltaMb": 417,
+        "peakMaxProcessRssMb": 397,
+        "peakProcessCount": 3,
+        "firstAt": 1781700605784,
+        "lastAt": 1781700608789,
+        "durationMs": 3005
       },
       "samples": [
         {
-          "at": 1781696260052,
-          "rssMb": 0,
-          "maxProcessRssMb": 0,
+          "at": 1781700605784,
+          "rssMb": 1,
+          "maxProcessRssMb": 1,
           "processCount": 1
         },
         {
-          "at": 1781696261057,
-          "rssMb": 420,
-          "maxProcessRssMb": 249,
+          "at": 1781700606786,
+          "rssMb": 184,
+          "maxProcessRssMb": 184,
           "processCount": 2
         },
         {
-          "at": 1781696262059,
-          "rssMb": 530,
-          "maxProcessRssMb": 358,
-          "processCount": 2
+          "at": 1781700607786,
+          "rssMb": 385,
+          "maxProcessRssMb": 184,
+          "processCount": 3
+        },
+        {
+          "at": 1781700608789,
+          "rssMb": 601,
+          "maxProcessRssMb": 397,
+          "processCount": 3
         }
       ]
     }

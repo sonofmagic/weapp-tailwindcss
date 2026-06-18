@@ -1,0 +1,90 @@
+{
+  "generatedAt": "2026-06-17T16:26:31.364Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 7,
+    "baselineRssMb": 402,
+    "peakRssMb": 1310,
+    "rssDeltaMb": 908,
+    "peakMaxProcessRssMb": 1060,
+    "peakProcessCount": 4,
+    "firstAt": 1781713584437,
+    "lastAt": 1781713590442,
+    "durationMs": 6005,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "taro-webpack-vue3-tailwindcss-v4 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/taro-webpack-vue3-tailwindcss-v4",
+        "run",
+        "build:weapp"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T16:26:24.416Z",
+      "endedAt": "2026-06-17T16:26:31.364Z",
+      "local": false,
+      "summary": {
+        "count": 7,
+        "baselineRssMb": 402,
+        "peakRssMb": 1310,
+        "rssDeltaMb": 908,
+        "peakMaxProcessRssMb": 1060,
+        "peakProcessCount": 4,
+        "firstAt": 1781713584437,
+        "lastAt": 1781713590442,
+        "durationMs": 6005
+      },
+      "samples": [
+        {
+          "at": 1781713584437,
+          "rssMb": 1,
+          "maxProcessRssMb": 1,
+          "processCount": 1
+        },
+        {
+          "at": 1781713585440,
+          "rssMb": 402,
+          "maxProcessRssMb": 181,
+          "processCount": 3
+        },
+        {
+          "at": 1781713586441,
+          "rssMb": 731,
+          "maxProcessRssMb": 481,
+          "processCount": 4
+        },
+        {
+          "at": 1781713587440,
+          "rssMb": 848,
+          "maxProcessRssMb": 598,
+          "processCount": 4
+        },
+        {
+          "at": 1781713588441,
+          "rssMb": 952,
+          "maxProcessRssMb": 702,
+          "processCount": 4
+        },
+        {
+          "at": 1781713589441,
+          "rssMb": 1159,
+          "maxProcessRssMb": 909,
+          "processCount": 4
+        },
+        {
+          "at": 1781713590442,
+          "rssMb": 1310,
+          "maxProcessRssMb": 1060,
+          "processCount": 4
+        }
+      ]
+    }
+  ]
+}

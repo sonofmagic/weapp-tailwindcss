@@ -11,8 +11,8 @@
 
 | stage | status | samples | baseline RSS | peak RSS | RSS delta | max process RSS | peak processes | duration | command |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| build | passed | 4 | 481MB | 933MB | 452MB | 653MB | 5 | 3s | `pnpm --filter @weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v4 run build:weapp` |
-| hmr | passed | 337 | 780MB | 1712MB | 932MB | 1070MB | 18 | 5m36s | `pnpm e2e:hot-update:demo` |
+| build | passed | 4 | 444MB | 935MB | 491MB | 663MB | 5 | 3s | `pnpm --filter @weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v4 run build:weapp` |
+| hmr | passed | 276 | 590MB | 2186MB | 1596MB | 1239MB | 18 | 4m36s | `pnpm e2e:hot-update:demo` |
 
 ## 优化建议
 

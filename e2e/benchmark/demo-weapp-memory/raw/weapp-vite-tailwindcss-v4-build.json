@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-06-17T16:36:15.216Z",
+  "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
+  "includeLocal": false,
+  "exitCode": 0,
+  "summary": {
+    "count": 4,
+    "baselineRssMb": 182,
+    "peakRssMb": 667,
+    "rssDeltaMb": 485,
+    "peakMaxProcessRssMb": 465,
+    "peakProcessCount": 3,
+    "firstAt": 1781714171743,
+    "lastAt": 1781714174749,
+    "durationMs": 3006,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "weapp-vite-tailwindcss-v4 build",
+      "command": [
+        "pnpm",
+        "--filter",
+        "@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-17T16:36:11.725Z",
+      "endedAt": "2026-06-17T16:36:15.216Z",
+      "local": false,
+      "summary": {
+        "count": 4,
+        "baselineRssMb": 182,
+        "peakRssMb": 667,
+        "rssDeltaMb": 485,
+        "peakMaxProcessRssMb": 465,
+        "peakProcessCount": 3,
+        "firstAt": 1781714171743,
+        "lastAt": 1781714174749,
+        "durationMs": 3006
+      },
+      "samples": [
+        {
+          "at": 1781714171743,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781714172755,
+          "rssMb": 182,
+          "maxProcessRssMb": 182,
+          "processCount": 2
+        },
+        {
+          "at": 1781714173747,
+          "rssMb": 480,
+          "maxProcessRssMb": 298,
+          "processCount": 2
+        },
+        {
+          "at": 1781714174749,
+          "rssMb": 667,
+          "maxProcessRssMb": 465,
+          "processCount": 3
+        }
+      ]
+    }
+  ]
+}
