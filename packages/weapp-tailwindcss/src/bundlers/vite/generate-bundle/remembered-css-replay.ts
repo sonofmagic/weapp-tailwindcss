@@ -124,6 +124,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       key: item.key,
       remembered: await refreshRememberedCssSource?.(item.remembered) ?? item.remembered,
     })))
+    const rememberedKeys = refreshedRememberedGroup.map(item => item.key)
     const rememberedCssSource = mergeRememberedCssSources(
       refreshedRememberedGroup.map(item => item.remembered),
       outputFile,
@@ -141,13 +142,6 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
     const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
-    const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
-      ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
-      : undefined
-    const annotateCss = (css: string) => annotateCssSourceTrace(css, {
-      opts,
-      tokenSources: sourceTraceTokenSources,
-    })
     const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, rawSource, sourceFile)
     const cssRuntimeSignature = createCssRuntimeSignature(
       createCandidateSignature(scopedGeneratorRuntime),
@@ -167,12 +161,18 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     const previousCss = useIncrementalMode && getLastCssSourceHash(lastCssSourceHashByFile, outputFile) === cssRuntimeAffectingHash
       ? getLastCssResult(lastCssResultByFile, outputFile)
       : undefined
-    const rememberedKeys = refreshedRememberedGroup.map(item => item.key)
     const allRememberedSignaturesFresh = rememberedKeys.length > 0
       && rememberedKeys.every(key => getRememberedCssSignature?.(key) === rememberedCssRuntimeSignature)
     if (bundleFiles.includes(outputFile) || bundleFiles.includes(sourceFile) || allRememberedSignaturesFresh) {
       continue
     }
+    const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
+      ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
+      : undefined
+    const annotateCss = (css: string) => annotateCssSourceTrace(css, {
+      opts,
+      tokenSources: sourceTraceTokenSources,
+    })
     const shouldRecordRememberedReplayCss = useIncrementalMode || isNativeAppStyleTarget
     const shouldEmitRememberedReplayCssAsset = shouldRecordRememberedReplayCss
     if (!shouldRecordRememberedReplayCss) {
