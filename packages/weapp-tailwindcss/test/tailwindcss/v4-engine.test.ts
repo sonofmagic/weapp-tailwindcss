@@ -937,6 +937,84 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).not.toContain('.bg-green-500')
   })
 
+  it('scans from the project cwd for bare Tailwind v4 imports resolved through cssEntries', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-default-cwd-'))
+    const cssDir = path.join(root, 'src', 'styles')
+    const pagesDir = path.join(root, 'pages')
+    await linkTailwindcssPackage(root)
+    await mkdir(cssDir, { recursive: true })
+    await mkdir(pagesDir, { recursive: true })
+    await mkdir(path.join(root, 'node_modules', 'ignored-pkg'), { recursive: true })
+    await writeFile(path.join(pagesDir, 'index.html'), '<view class="bg-red-500 w-4"></view>', 'utf8')
+    await writeFile(path.join(cssDir, 'local.html'), '<view class="bg-blue-500"></view>', 'utf8')
+    await writeFile(path.join(root, 'node_modules', 'ignored-pkg', 'index.js'), 'export const cls = "bg-green-500"', 'utf8')
+    await writeFile(path.join(root, 'pnpm-lock.yaml'), 'lockfileVersion: "9.0"\npackages:\n  text-red-500: {}\n', 'utf8')
+    const cssEntry = path.join(cssDir, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-500: oklch(63.7% 0.237 25.331);
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+        --color-green-500: oklch(72.3% 0.219 149.579);
+        --spacing: 0.25rem;
+      }
+      @import "tailwindcss";
+      @tailwind utilities;
+    `, 'utf8')
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      cssEntries: [cssEntry],
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect(source.base).toBe(cssDir)
+    expect(result.classSet).toEqual(new Set(['bg-blue-500', 'bg-red-500', 'w-4']))
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).toContain('.w-4')
+    expect(result.rawCss).not.toContain('.bg-green-500')
+    expect(result.rawCss).not.toContain('.text-red-500')
+  })
+
+  it('refreshes bare import scanning when cssEntries source files change', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-cssentries-hmr-'))
+    const cssDir = path.join(root, 'src', 'styles')
+    const pagesDir = path.join(root, 'pages')
+    await linkTailwindcssPackage(root)
+    await mkdir(cssDir, { recursive: true })
+    await mkdir(pagesDir, { recursive: true })
+    const page = path.join(pagesDir, 'index.html')
+    await writeFile(page, '<view class="bg-red-500"></view>', 'utf8')
+    const cssEntry = path.join(cssDir, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-500: oklch(63.7% 0.237 25.331);
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+      }
+      @import "tailwindcss";
+      @tailwind utilities;
+    `, 'utf8')
+
+    const generate = async () => {
+      const source = await resolveTailwindV4Source({
+        projectRoot: root,
+        cssEntries: [cssEntry],
+      })
+      return createTailwindV4Engine(source).generate({ incrementalCache: true })
+    }
+
+    const initial = await generate()
+    await writeFile(page, '<view class="bg-blue-500"></view>', 'utf8')
+    const updated = await generate()
+
+    expect(initial.dependencies).toContain(cssEntry)
+    expect(updated.dependencies).toContain(cssEntry)
+    expect(initial.classSet).toEqual(new Set(['bg-red-500']))
+    expect(updated.classSet).toEqual(new Set(['bg-blue-500']))
+    expect(updated.rawCss).toContain('.bg-blue-500')
+    expect(updated.rawCss).not.toContain('.bg-red-500')
+  })
+
   it('uses the Tailwind v4 import source base for automatic source detection', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-source-base-'))
     const srcDir = path.join(root, 'src')
