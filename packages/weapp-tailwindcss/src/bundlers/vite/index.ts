@@ -129,15 +129,19 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     mainCssChunkMatcher,
     styleHandler,
     jsHandler,
-    twPatcher: initialTwPatcher,
+    tailwindRuntime,
+    twPatcher,
+    refreshTailwindcssRuntime,
     refreshTailwindcssPatcher,
     uniAppX,
     disabledDefaultTemplateHandler,
   } = opts
+  const initialTailwindRuntime = tailwindRuntime ?? twPatcher
+  const refreshTailwindRuntime = refreshTailwindcssRuntime ?? refreshTailwindcssPatcher
   const uniAppXEnabled = isUniAppXEnabled(uniAppX)
 
   const disabledOptions = resolvePluginDisabledState(disabled)
-  const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
+  const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
@@ -294,8 +298,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     ensureBundleRuntimeClassSet,
   } = createViteRuntimeClassSet({
     opts,
-    initialTwPatcher,
-    refreshTailwindcssPatcher,
+    initialTailwindRuntime,
+    refreshTailwindcssRuntime: refreshTailwindRuntime,
     uniAppXEnabled,
     customAttributesEntities,
     disabledDefaultTemplateHandler,

@@ -123,24 +123,26 @@ describe('createTailwindcssPatcherFromContext', () => {
 
     vi.resetModules()
     vi.doMock('@/tailwindcss/patcher', () => {
+      const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
+        calls.push(options)
+        const classes = classSets[createdPatchers.length] ?? []
+        const stub: TailwindcssPatcherLike = {
+          packageInfo: { version: '4.1.0' } as any,
+          majorVersion: 4,
+          options: options as any,
+          patch: vi.fn(async () => ({})),
+          getClassSet: vi.fn(async () => new Set(classes)),
+          extract: vi.fn(async () => ({
+            classList: classes,
+            classSet: new Set(classes),
+          })),
+        }
+        createdPatchers.push(stub)
+        return stub
+      })
       return {
-        createTailwindcssPatcher: vi.fn((options: CreateTailwindcssPatcherOptions) => {
-          calls.push(options)
-          const classes = classSets[createdPatchers.length] ?? []
-          const stub: TailwindcssPatcherLike = {
-            packageInfo: { version: '4.1.0' } as any,
-            majorVersion: 4,
-            options: options as any,
-            patch: vi.fn(async () => ({})),
-            getClassSet: vi.fn(async () => new Set(classes)),
-            extract: vi.fn(async () => ({
-              classList: classes,
-              classSet: new Set(classes),
-            })),
-          }
-          createdPatchers.push(stub)
-          return stub
-        }),
+        createTailwindcssPatcher,
+        createTailwindcssRuntime: createTailwindcssPatcher,
       }
     })
 
@@ -218,7 +220,10 @@ describe('createTailwindcssPatcherFromContext', () => {
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/patcher', () => ({
+      createTailwindcssPatcher,
+      createTailwindcssRuntime: createTailwindcssPatcher,
+    }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
     const workspaceTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-single-'))
@@ -281,7 +286,10 @@ describe('createTailwindcssPatcherFromContext', () => {
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/patcher', () => ({
+      createTailwindcssPatcher,
+      createTailwindcssRuntime: createTailwindcssPatcher,
+    }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
     const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-rax-'))
@@ -335,7 +343,10 @@ describe('createTailwindcssPatcherFromContext', () => {
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/patcher', () => ({
+      createTailwindcssPatcher,
+      createTailwindcssRuntime: createTailwindcssPatcher,
+    }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
     const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-rax-auto-'))

@@ -73,6 +73,8 @@ export interface TailwindcssPatcherLike {
   options?: TailwindCssPatchOptions | undefined
 }
 
+export interface TailwindcssRuntimeLike extends TailwindcssPatcherLike {}
+
 export type BabelParserOptions = ParserOptions & {
   cache?: boolean | undefined
   cacheKey?: string | undefined
@@ -83,6 +85,8 @@ export type BabelParserOptions = ParserOptions & {
 export interface RefreshTailwindcssPatcherOptions {
   clearCache?: boolean | undefined
 }
+
+export interface RefreshTailwindcssRuntimeOptions extends RefreshTailwindcssPatcherOptions {}
 
 export interface IJsHandlerOptions {
   escapeMap?: Record<string, string> | undefined
@@ -160,7 +164,15 @@ export interface InternalUserDefinedOptions extends InternalUserDefinedOptionsBa
   escapeMap: Record<string, string>
   customReplaceDictionary: Record<string, string>
   cache: ICreateCacheReturnType
+  tailwindRuntime: TailwindcssRuntimeLike
+  refreshTailwindcssRuntime: (options?: RefreshTailwindcssRuntimeOptions) => Promise<TailwindcssRuntimeLike>
+  /**
+   * @deprecated 请使用 `tailwindRuntime`。
+   */
   twPatcher: TailwindcssPatcherLike
+  /**
+   * @deprecated 请使用 `refreshTailwindcssRuntime`。
+   */
   refreshTailwindcssPatcher: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
 }
 

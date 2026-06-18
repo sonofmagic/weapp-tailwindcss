@@ -61,6 +61,10 @@ describe('get options', () => {
   it('default options', () => {
     const options = sanitizeSnapshotOptions(getCompilerContext({}))
     // @ts-ignore
+    delete options.tailwindRuntime
+    // @ts-ignore
+    delete options.refreshTailwindcssRuntime
+    // @ts-ignore
     delete options.twPatcher
     expect(options).toMatchSnapshot()
   })

@@ -7,7 +7,7 @@ import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tail
 type RuntimeJsTransformOptions = { runtimeSet?: Set<string> } & CreateJsHandlerOptions
 
 export interface GetRuntimeSetOptions {
-  /** 强制刷新 Tailwind patcher 状态后再收集 */
+  /** 强制刷新 Tailwind 运行时状态后再收集 */
   forceRefresh?: boolean | undefined
   /** 强制重新提取运行时类名集合 */
   forceCollect?: boolean | undefined
@@ -40,19 +40,23 @@ function resolveTransformWxssOptions(options?: Partial<IStyleHandlerOptions>) {
  */
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
-  const { templateHandler, styleHandler, jsHandler, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler } = opts
+  const initialTailwindRuntime = opts.tailwindRuntime ?? opts.twPatcher
+  const refreshTailwindcssRuntime = opts.refreshTailwindcssRuntime ?? opts.refreshTailwindcssPatcher
 
-  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
 
   let runtimeSet = new Set<string>()
   const runtimeState = {
-    twPatcher: initialTwPatcher,
+    tailwindRuntime: initialTailwindRuntime,
+    twPatcher: initialTailwindRuntime,
     readyPromise,
-    refreshTailwindcssPatcher,
+    refreshTailwindcssRuntime,
+    refreshTailwindcssPatcher: refreshTailwindcssRuntime,
   }
   const defaultJsHandlerOptionsCache = new Map<number, CreateJsHandlerOptions>()
 
-  function getDefaultJsHandlerOptions(majorVersion = runtimeState.twPatcher.majorVersion) {
+  function getDefaultJsHandlerOptions(majorVersion = runtimeState.tailwindRuntime.majorVersion) {
     if (typeof majorVersion !== 'number') {
       return undefined
     }
@@ -76,7 +80,7 @@ export function createContext(options: UserDefinedOptions = {}) {
       return options
     }
 
-    const majorVersion = runtimeState.twPatcher.majorVersion
+    const majorVersion = runtimeState.tailwindRuntime.majorVersion
     if (typeof majorVersion !== 'number') {
       return options
     }

@@ -16,6 +16,7 @@ vi.mock('@weapp-tailwindcss/logger', () => ({
 
 vi.mock('@/tailwindcss/patcher', () => ({
   createTailwindcssPatcher,
+  createTailwindcssRuntime: createTailwindcssPatcher,
 }))
 
 vi.mock('@/context/workspace', () => ({
@@ -741,7 +742,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(extracted.filename).toBe('a.css')
     expect(extracted.classList).toEqual(['a', 'b'])
     expect([...extracted.classSet]).toEqual(['a', 'b'])
-    expect((merged as any)[Symbol.for('weapp-tailwindcss.runtimeSignaturePatchers')]).toEqual([patcherA, patcherB])
+    expect((merged as any)[Symbol.for('weapp-tailwindcss.runtimeSignatureRuntimes')]).toEqual([patcherA, patcherB])
   })
 
   it('returns the original patcher when only one is provided', async () => {

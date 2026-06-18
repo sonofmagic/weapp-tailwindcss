@@ -1,28 +1,27 @@
-import type { TailwindcssPatcherLike } from '@/types'
-import { runtimeSignaturePatchersSymbol } from '@/tailwindcss/runtime/cache'
+import type { TailwindcssPatcherLike, TailwindcssRuntimeLike } from '@/types'
+import { runtimeSignatureRuntimesSymbol } from '@/tailwindcss/runtime/cache'
 import { omitUndefined } from '@/utils/object'
 
-export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]): TailwindcssPatcherLike {
-  if (patchers.length <= 1) {
-    const [patcher] = patchers
-    if (!patcher) {
-      throw new Error('createMultiTailwindcssPatcher requires at least one patcher.')
+export function createMultiTailwindcssRuntime(runtimes: TailwindcssRuntimeLike[]): TailwindcssRuntimeLike {
+  if (runtimes.length <= 1) {
+    const [runtime] = runtimes
+    if (!runtime) {
+      throw new Error('createMultiTailwindcssRuntime requires at least one runtime.')
     }
-    return patcher
+    return runtime
   }
 
-  const first = patchers[0]!
-  const firstWithoutPatch = { ...first }
-  delete firstWithoutPatch.patch
-  const multiPatcher: TailwindcssPatcherLike = {
+  const first = runtimes[0]!
+  const { patch: _patch, ...firstWithoutPatch } = first as TailwindcssRuntimeLike & { patch?: unknown }
+  const multiRuntime: TailwindcssRuntimeLike = {
     ...firstWithoutPatch,
     packageInfo: first?.packageInfo,
     majorVersion: first?.majorVersion,
     options: first?.options,
     async getClassSet() {
       const aggregated = new Set<string>()
-      for (const patcher of patchers) {
-        const current = await patcher.getClassSet()
+      for (const runtime of runtimes) {
+        const current = await runtime.getClassSet()
         for (const className of current) {
           aggregated.add(className)
         }
@@ -33,8 +32,8 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
       const aggregatedSet = new Set<string>()
       const aggregatedList: string[] = []
       let filename: string | undefined
-      for (const patcher of patchers) {
-        const result = await patcher.extract(options)
+      for (const runtime of runtimes) {
+        const result = await runtime.extract(options)
         if (!result) {
           continue
         }
@@ -59,15 +58,15 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
         classList: aggregatedList,
         classSet: aggregatedSet,
         filename,
-      }) as Awaited<ReturnType<TailwindcssPatcherLike['extract']>>
+      }) as Awaited<ReturnType<TailwindcssRuntimeLike['extract']>>
     },
   }
 
-  if (patchers.every(patcher => typeof patcher.getClassSetSync === 'function')) {
-    multiPatcher.getClassSetSync = () => {
+  if (runtimes.every(runtime => typeof runtime.getClassSetSync === 'function')) {
+    multiRuntime.getClassSetSync = () => {
       const aggregated = new Set<string>()
-      for (const patcher of patchers) {
-        const current = patcher.getClassSetSync?.()
+      for (const runtime of runtimes) {
+        const current = runtime.getClassSetSync?.()
         if (!current) {
           continue
         }
@@ -79,10 +78,15 @@ export function createMultiTailwindcssPatcher(patchers: TailwindcssPatcherLike[]
     }
   }
 
-  Object.defineProperty(multiPatcher, runtimeSignaturePatchersSymbol, {
-    value: [...patchers],
+  Object.defineProperty(multiRuntime, runtimeSignatureRuntimesSymbol, {
+    value: [...runtimes],
     configurable: true,
   })
 
-  return multiPatcher
+  return multiRuntime
 }
+
+/**
+ * @deprecated 请使用 `createMultiTailwindcssRuntime`。
+ */
+export const createMultiTailwindcssPatcher = createMultiTailwindcssRuntime as (patchers: TailwindcssPatcherLike[]) => TailwindcssPatcherLike

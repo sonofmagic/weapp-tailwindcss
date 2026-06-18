@@ -126,15 +126,19 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     __internalDeferMissingCssEntriesWarning: true,
   } as UserDefinedOptions)
 
-  const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, cache } = opts
+  const initialTailwindRuntime = opts.tailwindRuntime ?? opts.twPatcher
+  const refreshTailwindcssRuntime = opts.refreshTailwindcssRuntime ?? opts.refreshTailwindcssPatcher
 
-  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
 
   let runtimeSet = new Set<string>()
   const runtimeState = {
-    twPatcher: initialTwPatcher,
+    tailwindRuntime: initialTailwindRuntime,
+    twPatcher: initialTailwindRuntime,
     readyPromise,
-    refreshTailwindcssPatcher,
+    refreshTailwindcssRuntime,
+    refreshTailwindcssPatcher: refreshTailwindcssRuntime,
   }
   const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
@@ -150,7 +154,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let cachedGulpSourceCandidates: Set<string> | undefined
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
-  const sourceCandidateExtractor = initialTwPatcher.majorVersion === 3
+  const sourceCandidateExtractor = initialTailwindRuntime.majorVersion === 3
     ? createTailwindV3DefaultExtractor()
     : undefined
   const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager

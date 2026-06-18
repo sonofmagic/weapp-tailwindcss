@@ -71,6 +71,7 @@ vi.mock('@/context/handlers', () => ({
 
 vi.mock('@/context/tailwindcss', () => ({
   createTailwindcssPatcherFromContext,
+  createTailwindcssRuntimeFromContext: createTailwindcssPatcherFromContext,
 }))
 
 describe('getCompilerContext', () => {
@@ -355,7 +356,7 @@ describe('clearTailwindcssPatcherCache', () => {
     } as never)).resolves.toBeUndefined()
 
     expect(logger.debug).toHaveBeenCalledWith(
-      'failed to clear tailwindcss patcher cache via clearCache(): %O',
+      'failed to clear tailwindcss runtime cache via clearCache(): %O',
       expect.any(Error),
     )
   })

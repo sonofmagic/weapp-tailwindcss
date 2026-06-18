@@ -64,22 +64,28 @@ describe('tailwindcss helpers', () => {
     expect(getPackageInfoMock).toHaveBeenCalledWith('tailwindcss', { paths: ['/repo'] })
   })
 
-  it('creates tailwindcss patcher with resolved cache directory', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+  it('creates tailwindcss runtime with resolved cache directory', async () => {
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       basedir: '/repo',
       cacheDir: 'cache',
       supportCustomLengthUnitsPatch: false,
     }) as any
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(callArgs.cache).toMatchObject({ dir: path.resolve('/repo', 'cache') })
     expect(callArgs.cache?.driver).toBe('memory')
     expect(callArgs.apply?.extendLengthUnits).toBe(false)
     // 源码使用 path.resolve(basedir) 得到平台原生路径
     expect(callArgs.projectRoot).toBe(path.resolve('/repo'))
     expect(Array.isArray(callArgs.tailwindcss?.resolve?.paths)).toBe(true)
+  })
+
+  it('keeps createTailwindcssPatcher as a compatibility alias', async () => {
+    const { createTailwindcssPatcher, createTailwindcssRuntime } = await import('@/tailwindcss')
+
+    expect(createTailwindcssPatcher).toBe(createTailwindcssRuntime)
   })
 
   it('honours absolute cache directories', async () => {

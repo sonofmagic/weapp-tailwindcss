@@ -156,12 +156,16 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       disabled,
       onLoad,
       runtimeLoaderPath,
-      twPatcher: initialTwPatcher,
+      tailwindRuntime,
+      twPatcher,
+      refreshTailwindcssRuntime,
       refreshTailwindcssPatcher,
     } = this.options
+    const initialTailwindRuntime = tailwindRuntime ?? twPatcher
+    const refreshTailwindRuntime = refreshTailwindcssRuntime ?? refreshTailwindcssPatcher
 
     const disabledOptions = resolvePluginDisabledState(disabled)
-    const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
+    const isTailwindcssV4 = (initialTailwindRuntime.majorVersion ?? 0) >= 4
     const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator)
     const shouldRewriteCssImports = isTailwindcssV4 || generatorOptions.target === 'web'
     const isMpxApp = isMpx(this.appType)
@@ -172,11 +176,13 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       return
     }
     setupWebpackWatchOutputIgnore(compiler)
-    const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
+    const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
     const runtimeState = {
-      twPatcher: initialTwPatcher,
+      tailwindRuntime: initialTailwindRuntime,
+      twPatcher: initialTailwindRuntime,
       readyPromise,
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime: refreshTailwindRuntime,
+      refreshTailwindcssPatcher: refreshTailwindRuntime,
     }
 
     let runtimeSetPrepared = false

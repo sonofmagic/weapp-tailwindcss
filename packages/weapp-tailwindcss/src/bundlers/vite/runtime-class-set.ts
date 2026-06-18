@@ -12,8 +12,8 @@ import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-
 
 interface CreateViteRuntimeClassSetOptions {
   opts: InternalUserDefinedOptions
-  initialTwPatcher: InternalUserDefinedOptions['twPatcher']
-  refreshTailwindcssPatcher: InternalUserDefinedOptions['refreshTailwindcssPatcher']
+  initialTailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
+  refreshTailwindcssRuntime: InternalUserDefinedOptions['refreshTailwindcssRuntime']
   uniAppXEnabled: boolean
   customAttributesEntities: unknown
   disabledDefaultTemplateHandler: boolean
@@ -23,18 +23,20 @@ interface CreateViteRuntimeClassSetOptions {
 export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOptions) {
   const {
     opts,
-    initialTwPatcher,
-    refreshTailwindcssPatcher,
+    initialTailwindRuntime,
+    refreshTailwindcssRuntime,
     uniAppXEnabled,
     customAttributesEntities,
     disabledDefaultTemplateHandler,
     debug,
   } = options
-  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
   const runtimeState = {
-    twPatcher: initialTwPatcher,
+    tailwindRuntime: initialTailwindRuntime,
+    twPatcher: initialTailwindRuntime,
     readyPromise,
-    refreshTailwindcssPatcher,
+    refreshTailwindcssRuntime,
+    refreshTailwindcssPatcher: refreshTailwindcssRuntime,
   }
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,

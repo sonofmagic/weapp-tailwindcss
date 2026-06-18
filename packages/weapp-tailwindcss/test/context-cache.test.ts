@@ -34,7 +34,9 @@ describe('compiler context cache', () => {
     })
 
     expect(ctxA).toBe(ctxB)
+    expect(ctxA.tailwindRuntime).toBe(ctxB.tailwindRuntime)
     expect(ctxA.twPatcher).toBe(ctxB.twPatcher)
+    expect(ctxA.twPatcher).toBe(ctxA.tailwindRuntime)
   })
 
   it('creates new context when options differ', () => {

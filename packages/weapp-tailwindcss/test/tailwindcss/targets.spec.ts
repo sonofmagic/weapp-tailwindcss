@@ -26,7 +26,10 @@ describe('tailwindcss targets', () => {
       return stub
     })
 
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/patcher', () => ({
+      createTailwindcssPatcher,
+      createTailwindcssRuntime: createTailwindcssPatcher,
+    }))
 
     const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
     const workspace = path.resolve('/workspace/project')
