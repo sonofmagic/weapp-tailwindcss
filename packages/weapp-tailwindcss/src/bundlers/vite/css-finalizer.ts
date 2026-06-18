@@ -7,6 +7,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, isUniAppXHarmonyBundle } from '@/uni-app-x/style-asset'
@@ -97,11 +98,17 @@ function createCssHandlerOptions(
 
 function shouldGenerateCssByGenerator(
   opts: InternalUserDefinedOptions,
+  majorVersion: number | undefined,
   file: string,
   rawSource: string,
   processed: boolean,
 ) {
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+    appType: opts.appType,
+    platform: opts.cssOptions?.platform ?? opts.platform,
+    tailwindcssMajorVersion: majorVersion,
+    uniAppX: opts.uniAppX,
+  })
   if (hasLocalCssImport(rawSource)) {
     return false
   }
@@ -161,9 +168,22 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           isViteProcessedCssAsset,
         } = context
         const resolvedConfig = getResolvedConfig()
-        const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-        const isWebGeneratorTarget = generatorOptions.target === 'web'
         const uniUtsPlatform = resolveUniUtsPlatform()
+        const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+          appType: opts.appType,
+          platform: opts.cssOptions?.platform ?? opts.platform,
+          tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+          uniAppX: opts.uniAppX,
+          uniUtsPlatform,
+        })
+        const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+          appType: opts.appType,
+          platform: opts.cssOptions?.platform ?? opts.platform,
+          tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+          uniAppX: opts.uniAppX,
+          uniUtsPlatform,
+        })
+        const isWebGeneratorTarget = generatorBranch.isWeb
         const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
         const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
           canInferHarmonyAppStyleTarget
@@ -284,7 +304,8 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           ...runtime,
           ...(getSourceCandidates?.() ?? []),
         ])
-        const generatorRuntime = runtimeState.tailwindRuntime.majorVersion === 4 && generatorOptions.target === 'weapp'
+        const generatorRuntime = runtimeState.tailwindRuntime.majorVersion === 4
+          && shouldUseMiniProgramCssBranch(generatorBranch)
           ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
           : collectedGeneratorCandidates
         await Promise.all(entries.map(async ([bundleFile, output]) => {
@@ -326,7 +347,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
                 isMainChunk: false,
               }
             : cssUserHandlerOptions
-          const generated = shouldGenerateCssByGenerator(opts, file, generatorRawSource, processed)
+          const generated = shouldGenerateCssByGenerator(opts, runtimeState.tailwindRuntime.majorVersion, file, generatorRawSource, processed)
             ? await generateCssByGenerator({
                 opts,
                 runtimeState,
@@ -341,7 +362,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               })
             : undefined
           const nextCss = annotateCss(generated?.css ?? (
-            generatorOptions.target === 'web'
+            generatorBranch.isWeb
               ? rawSource
               : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
           ))

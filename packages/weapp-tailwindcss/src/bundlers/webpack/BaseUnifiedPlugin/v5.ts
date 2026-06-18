@@ -9,6 +9,7 @@ import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
@@ -164,8 +165,19 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
 
     const disabledOptions = resolvePluginDisabledState(disabled)
     const isTailwindcssV4 = (initialTailwindRuntime.majorVersion ?? 0) >= 4
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator)
-    const shouldRewriteCssImports = isTailwindcssV4 || generatorOptions.target === 'web'
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator, {
+      appType: this.options.appType,
+      platform: this.options.cssOptions?.platform ?? this.options.platform,
+      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
+      uniAppX: this.options.uniAppX,
+    })
+    const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+      appType: this.options.appType,
+      platform: this.options.cssOptions?.platform ?? this.options.platform,
+      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
+      uniAppX: this.options.uniAppX,
+    })
+    const shouldRewriteCssImports = isTailwindcssV4 || generatorBranch.isWeb
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)

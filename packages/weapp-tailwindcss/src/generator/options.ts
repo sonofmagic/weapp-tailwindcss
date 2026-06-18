@@ -1,7 +1,9 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { WeappTailwindcssGeneratorTarget } from './types'
+import type { RuntimeBranch, RuntimeBranchContext } from '@/runtime-branch'
 import type { IArbitraryValues } from '@/types/shared'
 import process from 'node:process'
+import { resolveRuntimeBranch } from '@/runtime-branch'
 
 const explicitGeneratorTargetEnvKeys = [
   'WEAPP_TW_TARGET',
@@ -109,6 +111,7 @@ export type WeappTailwindcssGeneratorUserOptions = WeappTailwindcssGeneratorOpti
 
 export interface NormalizedWeappTailwindcssGeneratorOptions {
   target: WeappTailwindcssGeneratorTarget
+  branch: RuntimeBranch
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   importFallback: boolean
@@ -118,24 +121,31 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
 
 export function normalizeWeappTailwindcssGeneratorOptions(
   options: WeappTailwindcssGeneratorUserOptions | undefined,
+  context: Omit<RuntimeBranchContext, 'generatorTarget'> = {},
 ): NormalizedWeappTailwindcssGeneratorOptions {
   const target = options?.target ?? inferGeneratorTargetFromEnv()
+  const branch = resolveRuntimeBranch({
+    ...context,
+    generatorTarget: target,
+  })
 
   if (options == null) {
     return {
       target,
+      branch,
       importFallback: true,
-      tailwindcssV3Compatibility: target === 'weapp',
+      tailwindcssV3Compatibility: branch.platformFamily !== 'web' && branch.platformFamily !== 'tailwind',
       bareArbitraryValues: undefined,
     }
   }
 
   return {
     target,
+    branch,
     config: options.config,
     styleOptions: options.styleOptions,
     importFallback: options.importFallback ?? true,
-    tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? target === 'weapp',
+    tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? (branch.platformFamily !== 'web' && branch.platformFamily !== 'tailwind'),
     bareArbitraryValues: options.bareArbitraryValues,
   }
 }

@@ -18,6 +18,7 @@ import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -142,8 +143,19 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  const shouldInferAppType = !hasExplicitAppType && generatorOptions.target !== 'web'
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+    appType: opts.appType,
+    platform: opts.cssOptions?.platform ?? opts.platform,
+    tailwindcssMajorVersion,
+    uniAppX,
+  })
+  const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+    appType: opts.appType,
+    platform: opts.cssOptions?.platform ?? opts.platform,
+    tailwindcssMajorVersion,
+    uniAppX,
+  })
+  const shouldInferAppType = !hasExplicitAppType && !generatorBranch.isWeb
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
     cssEntries: opts.cssEntries ?? options.cssEntries,
@@ -646,7 +658,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
-    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget, sourceRoot)
+    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()

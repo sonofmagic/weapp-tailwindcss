@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -121,10 +122,23 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       jsHandler,
       uniAppX,
     } = opts
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-    const isWebGeneratorTarget = generatorOptions.target === 'web'
     const resolvedConfig = getResolvedConfig()
     const uniUtsPlatform = resolveUniUtsPlatform()
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+      appType: opts.appType,
+      platform: opts.cssOptions?.platform ?? opts.platform,
+      tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+      uniAppX,
+      uniUtsPlatform,
+    })
+    const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+      appType: opts.appType,
+      platform: opts.cssOptions?.platform ?? opts.platform,
+      tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+      uniAppX,
+      uniUtsPlatform,
+    })
+    const isWebGeneratorTarget = generatorBranch.isWeb
     const isNativeAppStyleTarget = uniUtsPlatform.isApp
     const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
     const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
@@ -279,7 +293,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         sourceCandidates.size,
       )
     }
-    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.tailwindRuntime.majorVersion === 4 && generatorOptions.target === 'weapp'
+    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.tailwindRuntime.majorVersion === 4
+      && shouldUseMiniProgramCssBranch(generatorBranch)
     const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)

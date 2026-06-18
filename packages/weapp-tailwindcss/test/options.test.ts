@@ -167,6 +167,40 @@ describe('get options', () => {
     })
   })
 
+  it('resolves generator runtime branch from Tailwind version and platform context', () => {
+    const miniProgramOptions = normalizeWeappTailwindcssGeneratorOptions({}, {
+      tailwindcssMajorVersion: 3,
+      uniUtsPlatform: 'mp-alipay',
+    })
+    expect(miniProgramOptions.branch).toMatchObject({
+      tailwindcssVersion: 3,
+      platformFamily: 'mini-program',
+      platform: 'mp-alipay',
+    })
+
+    const nativeOptions = normalizeWeappTailwindcssGeneratorOptions({}, {
+      appType: 'uni-app-x',
+      tailwindcssMajorVersion: 4,
+      uniAppX: true,
+      uniUtsPlatform: 'app-ios',
+    })
+    expect(nativeOptions.branch).toMatchObject({
+      tailwindcssVersion: 4,
+      platformFamily: 'native-app',
+      nativeAppPlatform: 'ios',
+      platform: 'app-ios',
+    })
+
+    const webOptions = normalizeWeappTailwindcssGeneratorOptions({ target: 'web' }, {
+      tailwindcssMajorVersion: 4,
+      uniUtsPlatform: 'h5',
+    })
+    expect(webOptions.branch).toMatchObject({
+      tailwindcssVersion: 4,
+      platformFamily: 'web',
+    })
+  })
+
   it('keeps explicit generator target before env inference', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'h5', TARO_ENV: 'h5' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'weapp' }).target).toBe('weapp')
