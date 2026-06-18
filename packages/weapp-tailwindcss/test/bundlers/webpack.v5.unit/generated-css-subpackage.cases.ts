@@ -85,7 +85,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: dir,
         cwd: dir,
         base: dir,
@@ -97,7 +97,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: dir,
         cwd: dir,
         baseFallbacks: [],
@@ -303,7 +303,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: dir,
         cwd: dir,
         base: dir,
@@ -315,7 +315,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: dir,
         cwd: dir,
         baseFallbacks: [],
@@ -329,8 +329,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
         tailwindcssBasedir: dir,
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
           getClassSetSync: vi.fn(() => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
           extract: vi.fn(async () => ({ classSet: new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only']) })),

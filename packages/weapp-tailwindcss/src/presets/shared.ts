@@ -54,7 +54,7 @@ export function createBasePreset(options: BasePresetOptions = {}) {
   const preset: Partial<UserDefinedOptions> = {
     tailwindcssBasedir: baseDir,
     tailwindcss: tailwindConfig,
-    tailwindcssPatcherOptions: {
+    tailwindcssRuntimeOptions: {
       projectRoot: baseDir,
       tailwindcss: patchTailwindConfig,
     },

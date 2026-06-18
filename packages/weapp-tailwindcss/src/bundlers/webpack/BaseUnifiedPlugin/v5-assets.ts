@@ -7,8 +7,8 @@ import process from 'node:process'
 import { pluginName } from '@/constants'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { shouldSkipJsTransform } from '@/js/precheck'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
@@ -363,10 +363,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const cssSourceFiles = [...cssSources.keys()]
           .sort()
         const configuredMainCssSourceFiles = (() => {
-          if ((runtimeState.twPatcher.majorVersion ?? 0) < 4) {
+          if ((runtimeState.tailwindRuntime.majorVersion ?? 0) < 4) {
             return []
           }
-          const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+          const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
           return [
             ...(tailwindOptions?.v4?.cssEntries ?? []),
             ...(tailwindOptions?.v4?.cssSources ?? []).map(source => source.file),
@@ -414,7 +414,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           return sourceFile
         }
         const getCssHandlerOptions = (file: string) => {
-          const majorVersion = runtimeState.twPatcher.majorVersion
+          const majorVersion = runtimeState.tailwindRuntime.majorVersion
           const isMainChunk = compilerOptions.mainCssChunkMatcher(file, appType)
           const sourceFile = resolveWebpackCssSourceFile(file)
           const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
@@ -448,7 +448,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           return created
         }
         const getCssUserHandlerOptions = (file: string) => {
-          const majorVersion = runtimeState.twPatcher.majorVersion
+          const majorVersion = runtimeState.tailwindRuntime.majorVersion
           const sourceFile = resolveWebpackCssSourceFile(file)
           const sourceCss = sourceFile ? cssSources.get(sourceFile) : undefined
           const cacheKey = [
@@ -470,14 +470,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           return created
         }
         const refreshWebpackSourceCandidates = async (): Promise<WebpackSourceCandidateCache | undefined> => {
-          const majorVersion = runtimeState.twPatcher.majorVersion
+          const majorVersion = runtimeState.tailwindRuntime.majorVersion
           if (majorVersion !== 3 && majorVersion !== 4) {
             return undefined
           }
           const root = compilerOptions.tailwindcssBasedir ?? process.cwd()
           let sourceScan: Awaited<ReturnType<typeof resolveViteSourceScanEntries>>
           try {
-            sourceScan = await resolveViteSourceScanEntries(compilerOptions, runtimeState.twPatcher, {
+            sourceScan = await resolveViteSourceScanEntries(compilerOptions, runtimeState.tailwindRuntime, {
               root,
               outDir: outputDir,
             })
@@ -511,14 +511,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           try {
             finalized = pruneMiniProgramGeneratedCss(finalized, {
-              preservePreflight: runtimeState.twPatcher.majorVersion === 3,
+              preservePreflight: runtimeState.tailwindRuntime.majorVersion === 3,
             })
           }
           catch {
             finalized = finalizeMiniProgramCss(finalized, {
-              cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
-              isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
-              preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
+              cssPreflight: runtimeState.tailwindRuntime.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
+              isTailwindcssV4: runtimeState.tailwindRuntime.majorVersion === 4,
+              preservePseudoContentInit: runtimeState.tailwindRuntime.majorVersion === 3,
               tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
             })
           }
@@ -530,9 +530,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             return source
           }
           return finalizeMiniProgramCss(source, {
-            cssPreflight: runtimeState.twPatcher.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
-            isTailwindcssV4: runtimeState.twPatcher.majorVersion === 4,
-            preservePseudoContentInit: runtimeState.twPatcher.majorVersion === 3,
+            cssPreflight: runtimeState.tailwindRuntime.majorVersion === 4 ? compilerOptions.cssPreflight : undefined,
+            isTailwindcssV4: runtimeState.tailwindRuntime.majorVersion === 4,
+            preservePseudoContentInit: runtimeState.tailwindRuntime.majorVersion === 3,
             tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
           })
         }
@@ -560,9 +560,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           return finalizeMiniProgramUserCssAssetSource(traced)
         }
         const forceRuntimeRefresh = getRuntimeRefreshRequirement()
-        debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.twPatcher.majorVersion ?? 'unknown')
+        debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.tailwindRuntime.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
-        if (watchMode && runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
+        if (watchMode && runtimeState.tailwindRuntime.majorVersion === 4 && !forceRuntimeRefresh) {
           const snapshot = buildWebpackBundleSnapshot(assets as any, compilerOptions, bundleBuildState)
           if (!webpackWatchRuntimeScanInitialized) {
             for (const entry of snapshot.entries) {
@@ -572,7 +572,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             }
           }
           try {
-            runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
+            runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
           }
           catch (error) {
             debug('webpack incremental runtime set sync failed, fallback to full collect: %O', error)
@@ -617,7 +617,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const runtimeSetHash = compilerOptions.cache.computeHash([
-          getRuntimeClassSetSignature(runtimeState.twPatcher),
+          getRuntimeClassSetSignature(runtimeState.tailwindRuntime),
           [...runtimeSet].sort().join('\n'),
           [...transformRuntimeSet].sort().join('\n'),
         ].join('\n\n'))
@@ -727,7 +727,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ? currentSourceValue
                     : currentSourceValue?.toString() ?? ''
                   const handlerOptions = {
-                    tailwindcssMajorVersion: runtimeState.twPatcher.majorVersion,
+                    tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
                     filename: absoluteFile,
                     moduleGraph: moduleGraphOptions,
                     babelParserOptions: {
@@ -870,7 +870,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const source = new ConcatSource(css)
 
                   if (generated) {
-                    debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, file)
+                    debug('css handle via tailwind v%s engine(%s): %s', runtimeState.tailwindRuntime.majorVersion, generated.target, file)
                   }
                   else {
                     debug('css handle: %s', file)

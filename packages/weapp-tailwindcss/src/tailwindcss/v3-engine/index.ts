@@ -7,8 +7,8 @@ export {
 export { transformTailwindV3CssByTarget, transformTailwindV3CssToWeapp } from './miniprogram'
 export {
   resolveTailwindV3Source,
-  resolveTailwindV3SourceFromPatcher,
-  resolveTailwindV3SourceOptionsFromPatcher,
+  resolveTailwindV3SourceFromRuntime,
+  resolveTailwindV3SourceOptionsFromRuntime,
 } from './source'
 export type {
   TailwindV3CandidateSource,

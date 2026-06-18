@@ -64,8 +64,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -143,8 +142,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -179,9 +177,9 @@ describe('bundlers/vite incremental issue #33 regression', () => {
 
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
-    currentContext.twPatcher.getClassSet.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.getClassSet.mockClear()
 
     const secondBundle = {
       [htmlFile]: {
@@ -200,9 +198,9 @@ describe('bundlers/vite incremental issue #33 regression', () => {
 
     expectEscaped((secondBundle[htmlFile] as OutputAsset).source.toString(), rawTemplateToken)
     expectEscaped((secondBundle[jsFile] as OutputChunk).code, rawScriptToken)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSet).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('keeps script/template arbitrary values correct across add-modify-delete in incremental runs', async () => {
@@ -228,8 +226,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -299,7 +296,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(jsAfterDelete).not.toContain(replaceWxml(token))
     }
 
-    expect(getCurrentContext().twPatcher.extract).toHaveBeenCalled()
+    expect(getCurrentContext().tailwindRuntime.extract).toHaveBeenCalled()
     expect(jsHandler).toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
@@ -321,8 +318,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       jsHandler: vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classNameSet, options as any),
       ),
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -371,7 +367,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     const transformedCode = (secondBundle[jsFile] as OutputChunk).code
     expect(transformedCode).toContain(replaceWxml('bg-[#999998]'))
     expect(transformedCode).not.toContain('bg-[#999998]')
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('keeps high-risk arbitrary object class keys escaped across build-command watch iterations', async () => {
@@ -404,8 +400,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       jsHandler: vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classNameSet, options as any),
       ),
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -457,6 +452,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(transformedCode).not.toContain(stage.raw)
     }
 
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 })

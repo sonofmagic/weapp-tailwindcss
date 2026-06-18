@@ -1,11 +1,11 @@
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { runtimeSignaturePatchersSymbol } from '@/tailwindcss/runtime/cache'
+import { runtimeSignatureRuntimesSymbol } from '@/tailwindcss/runtime/cache'
 
-function createMockPatcher(
+function createMockRuntime(
   configPath = '/tmp/tailwind.config.js',
   options?: {
     cssEntries?: string[]
@@ -14,7 +14,7 @@ function createMockPatcher(
     packageVersion?: string
     packageRootPath?: string
   },
-): TailwindcssPatcherLike {
+): TailwindcssRuntimeLike {
   const cssEntries = options?.cssEntries ?? []
   return {
     packageInfo: {
@@ -40,7 +40,6 @@ function createMockPatcher(
         },
       },
     } as any,
-    patch: vi.fn().mockResolvedValue(undefined),
     extract: vi.fn().mockResolvedValue({ classSet: new Set<string>() }),
     getClassSet: vi.fn().mockResolvedValue(new Set<string>()),
   }
@@ -71,12 +70,12 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const patcher = createMockPatcher('/tmp/tailwind.config.js', {
+    const runtime = createMockRuntime('/tmp/tailwind.config.js', {
       cssEntries: ['/tmp/project/src/app.css'],
     })
 
-    const first = getRuntimeClassSetSignature(patcher)
-    const second = getRuntimeClassSetSignature(patcher)
+    const first = getRuntimeClassSetSignature(runtime)
+    const second = getRuntimeClassSetSignature(runtime)
 
     expect(first).toContain('/tmp/tailwind.config.js:10:1000')
     expect(first).toContain('/tmp/project/src/app.css:20:2000')
@@ -100,13 +99,13 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const patcher = createMockPatcher('/tmp/tailwind.config.js', {
+    const runtime = createMockRuntime('/tmp/tailwind.config.js', {
       cssEntries: ['/tmp/project/src/app.css'],
     })
 
-    const first = getRuntimeClassSetSignature(patcher)
+    const first = getRuntimeClassSetSignature(runtime)
     await vi.runAllTimersAsync()
-    const second = getRuntimeClassSetSignature(patcher)
+    const second = getRuntimeClassSetSignature(runtime)
 
     expect(first).toContain('/tmp/tailwind.config.js:10:1000')
     expect(second).toContain('/tmp/tailwind.config.js:12:2000')
@@ -134,13 +133,13 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature, invalidateRuntimeClassSet } = await import('@/tailwindcss/runtime/cache')
-    const patcher = createMockPatcher('/tmp/tailwind.config.js', {
+    const runtime = createMockRuntime('/tmp/tailwind.config.js', {
       cssEntries: ['/tmp/project/src/app.css'],
     })
 
-    const first = getRuntimeClassSetSignature(patcher)
-    invalidateRuntimeClassSet(patcher)
-    const second = getRuntimeClassSetSignature(patcher)
+    const first = getRuntimeClassSetSignature(runtime)
+    invalidateRuntimeClassSet(runtime)
+    const second = getRuntimeClassSetSignature(runtime)
 
     expect(first).toContain('/tmp/tailwind.config.js:10:1000')
     expect(first).toContain('/tmp/project/src/app.css:20:2000')
@@ -165,10 +164,10 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const first = createMockPatcher('/tmp/tailwind.config.js', {
+    const first = createMockRuntime('/tmp/tailwind.config.js', {
       cssEntries: ['/tmp/project/src/app.css'],
     })
-    const second = createMockPatcher('/tmp/tailwind.config.js', {
+    const second = createMockRuntime('/tmp/tailwind.config.js', {
       cssEntries: ['/tmp/project/src/extra.css'],
     })
 
@@ -182,7 +181,7 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const first = createMockPatcher('/tmp/tailwind.config.js', {
+    const first = createMockRuntime('/tmp/tailwind.config.js', {
       cssSources: [
         {
           file: '/tmp/project/src/app.css',
@@ -190,7 +189,7 @@ describe('tailwindcss runtime cache signature', () => {
         },
       ],
     })
-    const second = createMockPatcher('/tmp/tailwind.config.js', {
+    const second = createMockRuntime('/tmp/tailwind.config.js', {
       cssSources: [
         {
           file: '/tmp/project/src/app.css',
@@ -217,7 +216,7 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const patcher = createMockPatcher('/tmp/tailwind.config.js', {
+    const runtime = createMockRuntime('/tmp/tailwind.config.js', {
       cssSources: [
         {
           file: '/tmp/project/src/app.css',
@@ -227,7 +226,7 @@ describe('tailwindcss runtime cache signature', () => {
       ],
     })
 
-    const signature = getRuntimeClassSetSignature(patcher)
+    const signature = getRuntimeClassSetSignature(runtime)
 
     expect(signature).toContain('/tmp/project/src/app.css:20:2000')
     expect(signature).toContain('/tmp/project/src/theme.css:30:3000')
@@ -240,17 +239,17 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const first = createMockPatcher('/tmp/tailwind.config.js', {
+    const first = createMockRuntime('/tmp/tailwind.config.js', {
       packageVersion: '4.0.0',
     })
-    const second = createMockPatcher('/tmp/tailwind.config.js', {
+    const second = createMockRuntime('/tmp/tailwind.config.js', {
       packageVersion: '4.1.0',
     })
 
     expect(getRuntimeClassSetSignature(first)).not.toBe(getRuntimeClassSetSignature(second))
   })
 
-  it('composes signatures for multi patchers so multiple bases do not share one cache key', async () => {
+  it('composes signatures for multi runtimes so multiple bases do not share one cache key', async () => {
     const statSync = vi.fn((filePath: string) => {
       if (filePath.includes('app-a')) {
         return { size: 11, mtimeMs: 1100 }
@@ -265,20 +264,20 @@ describe('tailwindcss runtime cache signature', () => {
     }))
 
     const { getRuntimeClassSetSignature } = await import('@/tailwindcss/runtime/cache')
-    const patcherA = createMockPatcher('/tmp/app-a/tailwind.config.js', {
+    const runtimeA = createMockRuntime('/tmp/app-a/tailwind.config.js', {
       cssEntries: ['/tmp/app-a/src/app.css'],
       projectRoot: '/tmp/app-a',
       packageRootPath: '/tmp/app-a/node_modules/tailwindcss',
     })
-    const patcherB = createMockPatcher('/tmp/app-b/tailwind.config.js', {
+    const runtimeB = createMockRuntime('/tmp/app-b/tailwind.config.js', {
       cssEntries: ['/tmp/app-b/src/app.css'],
       projectRoot: '/tmp/app-b',
       packageRootPath: '/tmp/app-b/node_modules/tailwindcss',
     })
     const multi = {
-      ...patcherA,
-      [runtimeSignaturePatchersSymbol]: [patcherA, patcherB],
-    } as TailwindcssPatcherLike
+      ...runtimeA,
+      [runtimeSignatureRuntimesSymbol]: [runtimeA, runtimeB],
+    } as TailwindcssRuntimeLike
 
     const signature = getRuntimeClassSetSignature(multi)
 
@@ -302,15 +301,15 @@ describe('tailwindcss runtime cache signature', () => {
 
     try {
       const { getRuntimeClassSetSignatureWithSources } = await import('@/tailwindcss/runtime/cache')
-      const patcher = createMockPatcher(path.join(tempRoot, 'tailwind.config.js'), {
+      const runtime = createMockRuntime(path.join(tempRoot, 'tailwind.config.js'), {
         cssEntries: [cssEntry],
         projectRoot: tempRoot,
       })
 
-      const first = await getRuntimeClassSetSignatureWithSources(patcher)
+      const first = await getRuntimeClassSetSignatureWithSources(runtime)
       await new Promise(resolve => setTimeout(resolve, 5))
       await writeFile(template, '<view class="text-sm"></view>', 'utf8')
-      const second = await getRuntimeClassSetSignatureWithSources(patcher)
+      const second = await getRuntimeClassSetSignatureWithSources(runtime)
 
       expect(first).toContain(template)
       expect(second).toContain(template)

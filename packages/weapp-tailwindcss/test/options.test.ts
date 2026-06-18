@@ -65,7 +65,7 @@ describe('get options', () => {
     // @ts-ignore
     delete options.refreshTailwindcssRuntime
     // @ts-ignore
-    delete options.twPatcher
+    delete options.tailwindRuntime
     expect(options).toMatchSnapshot()
   })
 
@@ -228,37 +228,37 @@ describe('get options', () => {
         packageName: 'tailwindcss4',
       },
     })
-    expect(config.twPatcher.majorVersion).toBe(4)
+    expect(config.tailwindRuntime.majorVersion).toBe(4)
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
   })
 
   it('uses Tailwind v3 cssPreflight defaults for tailwindcss v3 runtime', () => {
     const config = getCompilerContext()
-    expect(config.twPatcher.majorVersion).toBe(3)
+    expect(config.tailwindRuntime.majorVersion).toBe(3)
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V3_CSS_PREFLIGHT)
   })
 
-  // it('supportCustomLengthUnitsPatch boolean', () => {
+  // it('supportCustomLengthUnits boolean', () => {
   //   const o0 = getCompilerContext()
-  //   expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+  //   expect(o0.supportCustomLengthUnits).toEqual(defaultOptions.supportCustomLengthUnits)
   //   const o1 = getCompilerContext({
-  //     supportCustomLengthUnitsPatch: true
+  //     supportCustomLengthUnits: true
   //   })
-  //   expect(o1.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+  //   expect(o1.supportCustomLengthUnits).toEqual(defaultOptions.supportCustomLengthUnits)
   //   const o2 = getCompilerContext({
-  //     supportCustomLengthUnitsPatch: false
+  //     supportCustomLengthUnits: false
   //   })
-  //   expect(o2.supportCustomLengthUnitsPatch).toEqual(false)
+  //   expect(o2.supportCustomLengthUnits).toEqual(false)
   //   const o0o = getCompilerContext({
-  //     supportCustomLengthUnitsPatch: {
+  //     supportCustomLengthUnits: {
   //       units: ['upx', 'xxem']
   //     }
   //   })
-  //   expect(typeof o0o.supportCustomLengthUnitsPatch === 'object').toBe(true)
-  //   expect(o0o.supportCustomLengthUnitsPatch).toEqual({
+  //   expect(typeof o0o.supportCustomLengthUnits === 'object').toBe(true)
+  //   expect(o0o.supportCustomLengthUnits).toEqual({
   //     units: ['upx', 'xxem', 'rpx'],
   //     // @ts-ignore
-  //     dangerousOptions: defaultOptions.supportCustomLengthUnitsPatch.dangerousOptions
+  //     dangerousOptions: defaultOptions.supportCustomLengthUnits.dangerousOptions
   //   })
   // })
 
@@ -303,15 +303,15 @@ describe('get options', () => {
     let config = getCompilerContext({
 
     })
-    let cacheOptions = config.twPatcher.options?.cache
+    let cacheOptions = config.tailwindRuntime.options?.cache
     expect(cacheOptions?.enabled).toBe(true)
-    // TailwindcssPatcher 内部可能将路径转为 posix 格式，统一用 path.normalize 比较
+    // TailwindcssRuntime 内部可能将路径转为 posix 格式，统一用 path.normalize 比较
     const expectedDefaultCacheDir = path.join(process.cwd(), 'node_modules', '.cache', '@tailwindcss-mangle', 'engine')
     expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(expectedDefaultCacheDir))
     config = getCompilerContext({
       appType: 'mpx',
     })
-    cacheOptions = config.twPatcher.options?.cache
+    cacheOptions = config.tailwindRuntime.options?.cache
     expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(path.join(process.cwd(), 'node_modules', '.cache', '@tailwindcss-mangle', 'engine')))
   })
 

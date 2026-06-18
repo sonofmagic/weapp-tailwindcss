@@ -4,7 +4,7 @@ import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, create
 describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
   setupWebpackV5UnitTest()
   it('prepares runtime metadata from the injected loader and tolerates token collection failures', async () => {
-    testState.currentContext.twPatcher.options = {
+    testState.currentContext.tailwindRuntime.options = {
       tailwindcss: {
         config: '/workspace/tailwind.config.ts',
         v4: {
@@ -16,7 +16,7 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
         },
       },
     } as any
-    testState.currentContext.twPatcher.collectContentTokens = vi.fn(async () => {
+    testState.currentContext.tailwindRuntime.collectContentTokens = vi.fn(async () => {
       throw new Error('collect failed')
     })
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -37,8 +37,8 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
     await loaderRuntime?.classSet?.getClassSet?.()
     await loaderRuntime?.classSet?.getClassSet?.()
 
-    expect(testState.currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
-    expect(testState.currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.tailwindRuntime.collectContentTokens).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
 
     const dependencies = loaderRuntime?.classSet?.getWatchDependencies?.()
     expect([...dependencies.files]).toEqual([
@@ -49,7 +49,7 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
   })
 
   it('registers tailwindcss v4 cssSources from the injected css rewrite loader', async () => {
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
@@ -73,7 +73,7 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
         css: '@import "tailwindcss";\n@source inline("w-4");',
       },
     ])
-    expect(testState.currentContext.refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
   })
 
   it('does not generate duplicated utilities when webpack loader output reaches processAssets', async () => {
@@ -82,8 +82,8 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        ...createContext().twPatcher,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
         getClassSet: vi.fn(async () => new Set(['text-[40px]'])),
         getClassSetSync: vi.fn(() => new Set(['text-[40px]'])),
         extract: vi.fn(async () => ({ classSet: new Set(['text-[40px]']) })),

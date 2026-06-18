@@ -1,11 +1,9 @@
 import type {
-  RefreshTailwindcssPatcherOptions,
   RefreshTailwindcssRuntimeOptions,
-  TailwindcssPatcherLike,
   TailwindcssRuntimeLike,
 } from '@/types'
 import { createDebug } from '@/debug'
-import { createTailwindV4Engine, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
+import { createTailwindV4Engine, resolveTailwindV4SourceFromRuntime } from '@/tailwindcss/v4-engine'
 import {
   getRuntimeClassSetCacheEntry,
   getRuntimeClassSetSignatureWithSources,
@@ -15,10 +13,6 @@ import {
 const debug = createDebug('[tailwindcss:runtime] ')
 
 export const refreshTailwindcssRuntimeSymbol = Symbol.for('weapp-tailwindcss.refreshTailwindcssRuntime')
-/**
- * @deprecated 请使用 `refreshTailwindcssRuntimeSymbol`。
- */
-export const refreshTailwindcssPatcherSymbol = refreshTailwindcssRuntimeSymbol
 
 export interface CollectRuntimeClassSetOptions {
   force?: boolean | undefined
@@ -40,17 +34,9 @@ export function createTailwindRuntimeReadyPromise(
 }
 
 export interface TailwindRuntimeState {
-  tailwindRuntime?: TailwindcssRuntimeLike | undefined
+  tailwindRuntime: TailwindcssRuntimeLike
   readyPromise: Promise<void>
   refreshTailwindcssRuntime?: ((options?: RefreshTailwindcssRuntimeOptions) => Promise<TailwindcssRuntimeLike>) | undefined
-  /**
-   * @deprecated 请使用 `tailwindRuntime`。
-   */
-  twPatcher: TailwindcssPatcherLike
-  /**
-   * @deprecated 请使用 `refreshTailwindcssRuntime`。
-   */
-  refreshTailwindcssPatcher?: ((options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>) | undefined
 }
 
 interface RuntimeClassSetStateEntry {
@@ -71,16 +57,15 @@ function getRuntimeClassSetStateEntry(state: TailwindRuntimeState) {
 }
 
 function getTailwindRuntime(state: TailwindRuntimeState) {
-  return state.twPatcher ?? state.tailwindRuntime
+  return state.tailwindRuntime
 }
 
 function setTailwindRuntime(state: TailwindRuntimeState, runtime: TailwindcssRuntimeLike) {
   state.tailwindRuntime = runtime
-  state.twPatcher = runtime
 }
 
 function getRefreshTailwindRuntime(state: TailwindRuntimeState) {
-  return state.refreshTailwindcssRuntime ?? state.refreshTailwindcssPatcher
+  return state.refreshTailwindcssRuntime
 }
 
 export async function refreshTailwindRuntimeState(
@@ -243,7 +228,7 @@ async function collectTailwindV4GeneratorClassSet(tailwindRuntime: TailwindcssRu
   }
 
   try {
-    const source = await resolveTailwindV4SourceFromPatcher(tailwindRuntime)
+    const source = await resolveTailwindV4SourceFromRuntime(tailwindRuntime)
     const generated = await createTailwindV4Engine(source).generate({
       scanSources: true,
       target: 'tailwind',

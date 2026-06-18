@@ -4,13 +4,13 @@ import type { TailwindV4SourceOptions } from './v4-engine'
 
 type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 
-export interface ILengthUnitsPatchOptions {
+export interface LengthUnitsRuntimeOptions {
   units?: string[] | undefined
   rem2rpx?: boolean | undefined
   [key: string]: unknown
 }
 
-export interface ExtendLengthUnitsOptions extends Partial<ILengthUnitsPatchOptions> {
+export interface ExtendLengthUnitsOptions extends Partial<LengthUnitsRuntimeOptions> {
   enabled?: boolean | undefined
 }
 
@@ -74,7 +74,7 @@ export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
   v4?: TailwindV4Options | undefined
 }
 
-export interface TailwindCssPatchOptions {
+export interface TailwindCssRuntimeOptions {
   projectRoot?: string | undefined
   tailwindcss?: TailwindCssOptions | undefined
   apply?: ApplyOptions | undefined

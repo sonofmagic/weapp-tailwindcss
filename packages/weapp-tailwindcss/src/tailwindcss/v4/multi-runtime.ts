@@ -1,4 +1,4 @@
-import type { TailwindcssPatcherLike, TailwindcssRuntimeLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { runtimeSignatureRuntimesSymbol } from '@/tailwindcss/runtime/cache'
 import { omitUndefined } from '@/utils/object'
 
@@ -12,9 +12,8 @@ export function createMultiTailwindcssRuntime(runtimes: TailwindcssRuntimeLike[]
   }
 
   const first = runtimes[0]!
-  const { patch: _patch, ...firstWithoutPatch } = first as TailwindcssRuntimeLike & { patch?: unknown }
   const multiRuntime: TailwindcssRuntimeLike = {
-    ...firstWithoutPatch,
+    ...first,
     packageInfo: first?.packageInfo,
     majorVersion: first?.majorVersion,
     options: first?.options,
@@ -85,8 +84,3 @@ export function createMultiTailwindcssRuntime(runtimes: TailwindcssRuntimeLike[]
 
   return multiRuntime
 }
-
-/**
- * @deprecated 请使用 `createMultiTailwindcssRuntime`。
- */
-export const createMultiTailwindcssPatcher = createMultiTailwindcssRuntime as (patchers: TailwindcssPatcherLike[]) => TailwindcssPatcherLike

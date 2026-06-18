@@ -91,7 +91,7 @@ function mockTailwindV4GeneratorCss(css = '/* generated */') {
         })),
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -163,7 +163,6 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(sourcePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
     expect(currentContext.onLoad).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
 
     const config = {
       plugins: [
@@ -211,8 +210,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
@@ -242,8 +241,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('limits incremental vite css bundle tasks to avoid HMR memory spikes', async () => {
@@ -265,7 +264,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       const generateBundle = createGenerateBundleHook({
         opts: context as any,
         runtimeState: {
-          twPatcher: context.twPatcher as any,
+          tailwindRuntime: context.tailwindRuntime as any,
           readyPromise: Promise.resolve(),
         },
         ensureRuntimeClassSet: vi.fn(async () => new Set(['alpha'])),
@@ -395,7 +394,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         packageName: 'tailwindcss',
         postcssPlugin: 'tailwindcss',
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         version: 3,
         projectRoot: process.cwd(),
         cwd: process.cwd(),
@@ -407,7 +406,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         packageName: 'tailwindcss',
         postcssPlugin: 'tailwindcss',
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
         packageName: 'tailwindcss',
@@ -415,12 +414,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       })),
     }))
 
-    const runtimeSet = new Set(['from-patcher'])
+    const runtimeSet = new Set(['from-runtime'])
     const currentContext = createContext({
       templateHandler: vi.fn(async () => '<view></view>'),
       jsHandler: vi.fn((code: string) => ({ code })),
-      twPatcher: {
-        patch: vi.fn(async () => undefined),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -468,9 +466,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect(validateCandidatesMock).toHaveBeenCalledTimes(1)
     expect([...(validateCandidatesMock.mock.calls[0]?.[0] as Set<string>)]).toEqual(
       expect.arrayContaining(['bg-[red]', 'not-a-tailwind-class']),
@@ -531,7 +529,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       },
     })
     setCurrentContext(currentContext)
-    currentContext.twPatcher.majorVersion = 4
+    currentContext.tailwindRuntime.majorVersion = 4
 
     const plugins = WeappTailwindcss({
       generator: {
@@ -571,19 +569,18 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const css = '@import "tailwindcss" source(none);\n@config "./tailwind.config.js";'
     await mkdir(path.dirname(entry), { recursive: true })
     await writeFile(configFile, 'module.exports = { content: ["./**/*.wxml"] }\n', 'utf8')
-    const refreshTailwindcssPatcher = vi.fn()
+    const refreshTailwindcssRuntime = vi.fn()
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['w-4'])),
         getClassSetSync: vi.fn(() => new Set(['w-4'])),
         majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['w-4']) })),
       },
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime,
     })
-    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    refreshTailwindcssRuntime.mockImplementation(async () => context.tailwindRuntime)
     setCurrentContext(context)
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
@@ -607,7 +604,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         dependencies: [configFile],
       },
     ])
-    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
     expect(String((result as any)?.code)).toContain('/* generated */')
   })
 
@@ -622,8 +619,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.css'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['w-4'])),
         getClassSetSync: vi.fn(() => new Set(['w-4'])),
         majorVersion: 4,
@@ -684,7 +680,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
         resolveTailwindV4Source,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           version: 4,
           projectRoot: process.cwd(),
           base: process.cwd(),
@@ -692,7 +688,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           css: '@import "tailwindcss" source(none);',
           dependencies: [],
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           version: 4,
           projectRoot: process.cwd(),
           baseFallbacks: [],
@@ -711,8 +707,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: (_file: string) => true,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['w-4'])),
         getClassSetSync: vi.fn(() => new Set(['w-4'])),
         majorVersion: 4,
@@ -775,8 +770,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const runtimeSet = new Set(['flex', 'bg-[#123456]'])
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -871,8 +865,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       generator: {
         target,
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['font-bold'])),
         getClassSetSync: vi.fn(() => new Set(['font-bold'])),
         majorVersion: 4,
@@ -948,8 +941,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       styleHandler: vi.fn(async () => {
         throw new Error('web target should not use mini-program styleHandler')
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['bg-[#134543]'])),
         getClassSetSync: vi.fn(() => new Set(['bg-[#134543]'])),
         majorVersion: 3,
@@ -1082,7 +1074,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           }),
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           version: 4,
           projectRoot: root,
           base: root,
@@ -1095,8 +1087,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     setCurrentContext(createContext({
       tailwindcssBasedir: root,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 4,
@@ -1237,7 +1228,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           }),
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           version: 4,
           projectRoot: sourceRoot,
           base: sourceRoot,
@@ -1246,7 +1237,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           dependencies: [],
           packageName: 'tailwindcss',
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: sourceRoot,
           base: sourceRoot,
           baseFallbacks: [],
@@ -1271,8 +1262,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       tailwindcssBasedir: sourceRoot,
       templateHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -1386,8 +1376,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       generator: {
         target: 'web',
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['text-[#00ff00]'])),
         getClassSetSync: vi.fn(() => new Set(['text-[#00ff00]'])),
         majorVersion: 3,
@@ -1490,8 +1479,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const runtimeSet = new Set(['flex', 'bg-midnight'])
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
@@ -1556,10 +1544,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await writeFile(subConfig, 'module.exports = { content: ["./**/*.{ts,tsx}"] }\n', 'utf8')
     await writeFile(subPage, 'export default () => <View className="text-[37px]" />\n', 'utf8')
 
-    const refreshTailwindcssPatcher = vi.fn()
+    const refreshTailwindcssRuntime = vi.fn()
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set()),
         getClassSetSync: vi.fn(() => new Set()),
         majorVersion: 4,
@@ -1572,9 +1559,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           },
         },
       },
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime,
     })
-    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    refreshTailwindcssRuntime.mockImplementation(async () => context.tailwindRuntime)
     setCurrentContext(context)
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
@@ -1592,7 +1579,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist', watch: {} },
     } as ResolvedConfig)
-    refreshTailwindcssPatcher.mockClear()
+    refreshTailwindcssRuntime.mockClear()
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
 
     expect(context.tailwindcss?.v4?.cssSources).toEqual([
@@ -1609,7 +1596,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         dependencies: [subConfig],
       }),
     ])
-    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
 
     const bundle = {
       'app.css': {
@@ -1675,8 +1662,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const runtimeSet = new Set(['bg-main', 'bg-normal'])
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -1758,7 +1744,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           generate: generateMock,
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           version: 4,
           projectRoot: root,
           base: root,
@@ -1770,8 +1756,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
 
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set()),
         getClassSetSync: vi.fn(() => new Set()),
         majorVersion: 4,
@@ -1850,8 +1835,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const runtimeSet = new Set(['bg-feature-a', 'bg-feature-b', 'bg-global'])
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -1940,7 +1924,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           generate: generateMock,
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           version: 4,
           projectRoot: root,
           base: root,
@@ -1949,7 +1933,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           dependencies: [],
           packageName: 'tailwindcss',
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           version: 4,
           projectRoot: root,
           base: root,
@@ -1970,8 +1954,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const runtimeSet = new Set(['bg-feature-a', 'bg-feature-b', 'bg-global'])
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
@@ -2058,8 +2041,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     const runtimeSet = new Set(['bg-global'])
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -2107,18 +2089,17 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   it('updates auto tailwindcss v4 css source content on repeated vite css transforms', async () => {
     mockTailwindV4GeneratorCss()
     const entry = path.join(os.tmpdir(), 'weapp-tw-vite-auto-entry-update.css')
-    const refreshTailwindcssPatcher = vi.fn()
+    const refreshTailwindcssRuntime = vi.fn()
     const context = createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['w-4'])),
         getClassSetSync: vi.fn(() => new Set(['w-4'])),
         majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['w-4']) })),
       },
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime,
     })
-    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    refreshTailwindcssRuntime.mockImplementation(async () => context.tailwindRuntime)
     setCurrentContext(context)
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
@@ -2137,7 +2118,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         dependencies: [],
       },
     ])
-    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(2)
+    expect(refreshTailwindcssRuntime).toHaveBeenCalledTimes(2)
   })
 
   it('normalizes replayed vite css asset output file names', async () => {
@@ -2613,8 +2594,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             cssEntries: [cssFile],
           },
         },
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => runtimeSet),
           getClassSetSync: vi.fn(() => runtimeSet),
           majorVersion: 4,
@@ -2721,7 +2701,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             css: options.css,
             dependencies: [],
           })),
-          resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
             version: 4,
             projectRoot: process.cwd(),
             base: process.cwd(),
@@ -2729,7 +2709,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             css: '@import "tailwindcss" source(none);',
             dependencies: [],
           })),
-          resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
             version: 4,
             projectRoot: process.cwd(),
             base: process.cwd(),
@@ -2759,8 +2739,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             }),
           },
         })),
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => runtimeSet),
           getClassSetSync: vi.fn(() => runtimeSet),
           majorVersion: 4,
@@ -2873,7 +2852,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             css: options.css,
             dependencies: [],
           })),
-          resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+          resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
             version: 4,
             projectRoot: process.cwd(),
             base: process.cwd(),
@@ -2881,7 +2860,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             css: '@import "tailwindcss" source(none);',
             dependencies: [],
           })),
-          resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+          resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
             version: 4,
             projectRoot: process.cwd(),
             base: process.cwd(),
@@ -2910,8 +2889,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             }),
           },
         })),
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => runtimeSet),
           getClassSetSync: vi.fn(() => runtimeSet),
           majorVersion: 4,
@@ -2981,8 +2959,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
             cssEntries: [cssFile],
           },
         },
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => runtimeSet),
           getClassSetSync: vi.fn(() => runtimeSet),
           majorVersion: 4,
@@ -3063,8 +3040,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('index.wxss')),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['unexpected'])),
         getClassSetSync: vi.fn(() => new Set(['unexpected'])),
         majorVersion: 4,
@@ -3128,8 +3104,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -3178,8 +3153,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['text-red-500'])),
         getClassSetSync: vi.fn(() => new Set(['text-red-500'])),
         majorVersion: 3,
@@ -3232,8 +3206,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['module-a-marker'])),
         getClassSetSync: vi.fn(() => new Set(['module-a-marker'])),
         majorVersion: 3,
@@ -3311,8 +3284,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('.wxss')),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['unexpected-global'])),
         getClassSetSync: vi.fn(() => new Set(['unexpected-global'])),
         majorVersion: 3,
@@ -3603,8 +3575,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           }),
         },
       })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
@@ -3624,7 +3595,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -3698,8 +3669,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['unexpected'])),
         getClassSetSync: vi.fn(() => new Set(['unexpected'])),
         majorVersion: 4,
@@ -3845,8 +3815,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -3871,7 +3840,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -3997,8 +3966,7 @@ module.exports = {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -4015,7 +3983,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -4145,8 +4113,7 @@ module.exports = {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.acss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.acss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
@@ -4156,7 +4123,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -4256,8 +4223,7 @@ module.exports = {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 3,
@@ -4267,7 +4233,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -4367,8 +4333,7 @@ module.exports = {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
@@ -4393,7 +4358,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -4523,8 +4488,7 @@ module.exports = {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         majorVersion: 4,
@@ -4545,7 +4509,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -4630,8 +4594,7 @@ module.exports = {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['tw-main-build'])),
         getClassSetSync: vi.fn(() => new Set(['tw-main-build'])),
         majorVersion: 4,
@@ -4642,7 +4605,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set(['tw-main-build'])),
@@ -4753,8 +4716,7 @@ module.exports = {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
           getClassSetSync: vi.fn(() => new Set(['tw-app-entry'])),
           majorVersion: 4,
@@ -4762,7 +4724,7 @@ module.exports = {
         },
       }) as any,
       runtimeState: {
-        twPatcher: { majorVersion: 4 } as any,
+        tailwindRuntime: { majorVersion: 4 } as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set(['tw-app-entry'])),
@@ -4853,8 +4815,7 @@ module.exports = {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['subpackage'])),
         getClassSetSync: vi.fn(() => new Set(['subpackage'])),
         majorVersion: 4,
@@ -4871,7 +4832,7 @@ module.exports = {
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set(['subpackage'])),
@@ -5031,19 +4992,18 @@ module.exports = {
     mockTailwindV4GeneratorCss()
     const explicitEntry = path.join(os.tmpdir(), 'weapp-tw-explicit-entry.css')
     const detectedEntry = path.join(os.tmpdir(), 'weapp-tw-detected-entry.css')
-    const refreshTailwindcssPatcher = vi.fn()
+    const refreshTailwindcssRuntime = vi.fn()
     const context = createContext({
       cssEntries: [explicitEntry],
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['w-4'])),
         getClassSetSync: vi.fn(() => new Set(['w-4'])),
         majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['w-4']) })),
       },
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime,
     })
-    refreshTailwindcssPatcher.mockImplementation(async () => context.twPatcher)
+    refreshTailwindcssRuntime.mockImplementation(async () => context.tailwindRuntime)
     setCurrentContext(context)
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
@@ -5055,7 +5015,7 @@ module.exports = {
 
     expect(context.cssEntries).toEqual([explicitEntry])
     expect(context.tailwindcss?.v4?.cssSources).toBeUndefined()
-    expect(refreshTailwindcssPatcher).not.toHaveBeenCalled()
+    expect(refreshTailwindcssRuntime).not.toHaveBeenCalled()
   })
 
   it('removes Tailwind v3 official PostCSS plugins in default auto mode', async () => {
@@ -5066,7 +5026,7 @@ module.exports = {
       },
     })
     setCurrentContext(currentContext)
-    currentContext.twPatcher.majorVersion = 3
+    currentContext.tailwindRuntime.majorVersion = 3
 
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -5133,7 +5093,7 @@ module.exports = {
           generate: generateMock,
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           cwd: process.cwd(),
           css: '@tailwind utilities;',
@@ -5152,8 +5112,7 @@ module.exports = {
       styleHandler: vi.fn(async () => {
         throw new Error('web target should not use mini-program styleHandler')
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -5246,8 +5205,7 @@ module.exports = {
       templateHandler: vi.fn(async (code: string) => code),
       jsHandler: createJsHandler({
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -5289,8 +5247,8 @@ const trace = "at App.vue:4"
     expect(transformedCode).toContain(replaceWxml('bg-[#213435]'))
     expect(transformedCode).not.toContain('rounded-[92rpx]')
     expect(transformedCode).not.toContain('bg-[#213435]')
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
   it('updates v3 watch runtime classes incrementally without full extract on source candidate changes', async () => {
@@ -5318,8 +5276,7 @@ const trace = "at App.vue:4"
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       templateHandler,
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set([baselineClass, firstClass])),
         getClassSetSync: vi.fn(() => new Set([baselineClass, firstClass])),
         extract: extractMock,
@@ -5423,8 +5380,7 @@ const trace = "at App.vue:4"
     setCurrentContext(createContext({
       templateHandler,
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => fallbackRuntimeSet),
         getClassSetSync: vi.fn(() => fallbackRuntimeSet),
         extract: vi.fn(async () => ({ classSet: fallbackRuntimeSet })),
@@ -5478,8 +5434,7 @@ const trace = "at App.vue:4"
 
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => code),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -5537,8 +5492,7 @@ const trace = "at App.vue:4"
           tailwindcssMajorVersion: 4,
         }),
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => fullRuntimeSet),
         getClassSetSync: vi.fn(() => fullRuntimeSet),
         extract: vi.fn(async () => ({ classSet: fullRuntimeSet })),
@@ -5594,8 +5548,7 @@ const trace = "at App.vue:4"
       jsHandler: createJsHandler({
         jsArbitraryValueFallback: false,
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -5621,9 +5574,9 @@ const trace = "at App.vue:4"
       'index.js': createRollupChunk('const cls = "card"\n/* text-[#123456] */'),
     })
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
-    currentContext.twPatcher.getClassSet.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.getClassSet.mockClear()
     runtimeIndex = 1
 
     await generateBundle?.call(postPlugin, {} as any, {
@@ -5631,9 +5584,9 @@ const trace = "at App.vue:4"
       'index.js': createRollupChunk('const cls = "card"\n/* text-[#654321] */'),
     })
 
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSet).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('reuses css handler override objects for the same asset across incremental runs', async () => {
@@ -5865,11 +5818,10 @@ const trace = "at App.vue:4"
       },
       htmlMatcher: (file: string) => file.endsWith('.html'),
       jsMatcher: (file: string) => file.endsWith('.js'),
-      twPatcher: {
-        patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set(['from-patcher'])),
-        getClassSetSync: vi.fn(() => new Set(['from-patcher'])),
-        extract: vi.fn(async () => ({ classSet: new Set(['from-patcher']) })),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set(['from-runtime'])),
+        getClassSetSync: vi.fn(() => new Set(['from-runtime'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['from-runtime']) })),
         majorVersion: 4,
       },
     })
@@ -5909,9 +5861,9 @@ const trace = "at App.vue:4"
 
     expect(syncMock).not.toHaveBeenCalled()
     expect(resetMock).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect((bundle['index.html'] as OutputAsset).source).toBe(html)
     expect((bundle['assets/index.css'] as OutputAsset).source).toBe(css)
   }, TEST_TIMEOUT_MS)
@@ -5956,11 +5908,10 @@ const trace = "at App.vue:4"
       generator: {
         target: 'web',
       },
-      twPatcher: {
-        patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set(['from-patcher'])),
-        getClassSetSync: vi.fn(() => new Set(['from-patcher'])),
-        extract: vi.fn(async () => ({ classSet: new Set(['from-patcher']) })),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set(['from-runtime'])),
+        getClassSetSync: vi.fn(() => new Set(['from-runtime'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['from-runtime']) })),
         majorVersion: 4,
       },
     }))
@@ -6004,7 +5955,7 @@ const trace = "at App.vue:4"
           generate: generateMock,
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           version: 4,
           projectRoot: process.cwd(),
           base: process.cwd(),
@@ -6031,8 +5982,7 @@ const trace = "at App.vue:4"
           cssEntries: ['/repo/uni-app-x/main.css'],
         },
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['bg-[#f21903]', 'text-xl'])),
         getClassSetSync: vi.fn(() => new Set(['bg-[#f21903]', 'text-xl'])),
         majorVersion: 4,
@@ -6096,11 +6046,10 @@ const trace = "at App.vue:4"
       generator: {
         target: 'web',
       },
-      twPatcher: {
-        patch: vi.fn(),
-        getClassSet: vi.fn(async () => new Set(['from-patcher'])),
-        getClassSetSync: vi.fn(() => new Set(['from-patcher'])),
-        extract: vi.fn(async () => ({ classSet: new Set(['from-patcher']) })),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set(['from-runtime'])),
+        getClassSetSync: vi.fn(() => new Set(['from-runtime'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['from-runtime']) })),
         majorVersion: 3,
       },
     }))
@@ -6211,13 +6160,12 @@ const trace = "at App.vue:4"
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: createEngineMock,
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: resolveSourceMock,
+      resolveTailwindV4SourceFromRuntime: resolveSourceMock,
     }))
 
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6293,13 +6241,12 @@ const trace = "at App.vue:4"
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: createEngineMock,
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: resolveSourceMock,
+      resolveTailwindV4SourceFromRuntime: resolveSourceMock,
     }))
 
     setCurrentContext(createContext({
       styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6361,7 +6308,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6373,8 +6320,7 @@ const trace = "at App.vue:4"
     const styleHandler = vi.fn(async (code: string) => ({ css: `css:${code}` }))
     setCurrentContext(createContext({
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6449,7 +6395,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6461,8 +6407,7 @@ const trace = "at App.vue:4"
     const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
     setCurrentContext(createContext({
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6532,14 +6477,14 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6555,8 +6500,7 @@ const trace = "at App.vue:4"
     }))
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6634,7 +6578,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6644,8 +6588,7 @@ const trace = "at App.vue:4"
     }))
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6728,7 +6671,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6741,8 +6684,7 @@ const trace = "at App.vue:4"
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6828,7 +6770,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6840,8 +6782,7 @@ const trace = "at App.vue:4"
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     setCurrentContext(createContext({
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6894,7 +6835,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6908,8 +6849,7 @@ const trace = "at App.vue:4"
       generator: {
       },
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -6967,7 +6907,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6982,8 +6922,7 @@ const trace = "at App.vue:4"
         target: 'web',
       },
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -7044,7 +6983,7 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7059,8 +6998,7 @@ const trace = "at App.vue:4"
         target: 'web',
       },
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -7207,8 +7145,7 @@ const trace = "at App.vue:4"
       templateHandler: vi.fn(async (code: string) => code.replaceAll('gap-[20px]', escapedGap)),
       jsHandler: createJsHandler({
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -7251,30 +7188,28 @@ const trace = "at App.vue:4"
     const emptySet = new Set<string>()
     const issueSet = new Set(['flex', 'gap-[20px]'])
 
-    const initialPatcher = {
-      patch: vi.fn(async () => {}),
+    const initialRuntime = {
       getClassSet: vi.fn(async () => emptySet),
       getClassSetSync: vi.fn(() => emptySet),
       extract: vi.fn(async () => ({ classSet: emptySet })),
       majorVersion: 4,
     }
-    const refreshedPatcher = {
-      patch: vi.fn(async () => {}),
+    const refreshedRuntime = {
       getClassSet: vi.fn(async () => issueSet),
       getClassSetSync: vi.fn(() => issueSet),
       extract: vi.fn(async () => ({ classSet: issueSet })),
       majorVersion: 4,
     }
-    const refreshTailwindcssPatcher = vi.fn(async () => refreshedPatcher)
+    const refreshTailwindcssRuntime = vi.fn(async () => refreshedRuntime)
 
     setCurrentContext(createContext({
       tailwindcssBasedir: workspaceRoot,
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime,
       templateHandler: vi.fn(async (code: string) => code.replaceAll('gap-[20px]', escapedGap)),
       jsHandler: createJsHandler({
         jsArbitraryValueFallback: false,
       }),
-      twPatcher: initialPatcher,
+      tailwindRuntime: initialRuntime,
     }))
 
     const plugins = WeappTailwindcss()
@@ -7298,7 +7233,7 @@ const trace = "at App.vue:4"
     const transformedWxml = (bundle['index.wxml'] as OutputAsset).source.toString()
     const transformedJs = (bundle['index.js'] as OutputChunk).code
 
-    expect(refreshTailwindcssPatcher).toHaveBeenCalled()
+    expect(refreshTailwindcssRuntime).toHaveBeenCalled()
     expect(transformedWxml).toContain(escapedGap)
     expect(transformedJs).toContain(escapedGap)
     expect(transformedJs).not.toContain('gap-[20px]')
@@ -7314,8 +7249,7 @@ const trace = "at App.vue:4"
       jsHandler: createJsHandler({
         jsPreserveClass: keyword => keyword === 'gap-[20px]',
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -7351,20 +7285,18 @@ const trace = "at App.vue:4"
     const workspaceRoot = path.resolve(process.cwd())
     const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
     const runtimeSet = new Set(['flex', 'gap-[20px]'])
-    const refreshedPatcher = {
-      patch: vi.fn(async () => {}),
+    const refreshedRuntime = {
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
     }
-    const refreshTailwindcssPatcher = vi.fn(async () => refreshedPatcher)
+    const refreshTailwindcssRuntime = vi.fn(async () => refreshedRuntime)
 
     setCurrentContext(createContext({
       tailwindcssBasedir: workspaceRoot,
-      refreshTailwindcssPatcher,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      refreshTailwindcssRuntime,
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -7384,7 +7316,7 @@ const trace = "at App.vue:4"
     } as ResolvedConfig)
 
     expect(getCurrentContext().tailwindcssBasedir).toBe(appRoot)
-    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('prefers the nearest tailwind config root when vite root points to a source subdirectory', async () => {
@@ -7392,13 +7324,12 @@ const trace = "at App.vue:4"
     const workspaceRoot = path.resolve(__dirname, '../../..')
     const fixtureRoot = path.resolve(__dirname, '../fixtures/vite')
     const viteRoot = path.join(fixtureRoot, 'src')
-    const refreshTailwindcssPatcher = vi.fn(async () => getCurrentContext().twPatcher)
+    const refreshTailwindcssRuntime = vi.fn(async () => getCurrentContext().tailwindRuntime)
 
     setCurrentContext(createContext({
       tailwindcssBasedir: workspaceRoot,
-      refreshTailwindcssPatcher,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      refreshTailwindcssRuntime,
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -7418,20 +7349,19 @@ const trace = "at App.vue:4"
     } as ResolvedConfig)
 
     expect(getCurrentContext().tailwindcssBasedir).toBe(fixtureRoot)
-    expect(refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('keeps explicit tailwindcss basedir unchanged on configResolved', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const workspaceRoot = path.resolve(process.cwd())
     const appRoot = path.resolve(workspaceRoot, 'apps/issue-814-tw4')
-    const refreshTailwindcssPatcher = vi.fn(async () => getCurrentContext().twPatcher)
+    const refreshTailwindcssRuntime = vi.fn(async () => getCurrentContext().tailwindRuntime)
 
     setCurrentContext(createContext({
       tailwindcssBasedir: workspaceRoot,
-      refreshTailwindcssPatcher,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      refreshTailwindcssRuntime,
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -7453,7 +7383,7 @@ const trace = "at App.vue:4"
     } as ResolvedConfig)
 
     expect(getCurrentContext().tailwindcssBasedir).toBe(workspaceRoot)
-    expect(refreshTailwindcssPatcher).not.toHaveBeenCalled()
+    expect(refreshTailwindcssRuntime).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('keeps non-set business literals unchanged in serve mode while preserving classNameSet-only strategy', async () => {
@@ -7464,8 +7394,7 @@ const trace = "at App.vue:4"
       jsHandler: createJsHandler({
         jsPreserveClass: (keyword: string) => keyword.startsWith('biz-token'),
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -7505,8 +7434,7 @@ const cls = "rounded-[92rpx]"
     const runtimeSet = new Set(['text-red-500'])
     const context = createContext({
       jsHandler: createJsHandler({}),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -7516,7 +7444,7 @@ const cls = "rounded-[92rpx]"
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
@@ -7929,7 +7857,7 @@ const cls = "w-[1.5px]"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -7938,7 +7866,7 @@ const cls = "w-[1.5px]"
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7962,8 +7890,7 @@ const cls = "w-[1.5px]"
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -8047,7 +7974,7 @@ const cls = "w-[1.5px]"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async (options: { css?: string } = {}) => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async (options: { css?: string } = {}) => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -8065,7 +7992,7 @@ const cls = "w-[1.5px]"
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -8078,8 +8005,7 @@ const cls = "w-[1.5px]"
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -8172,7 +8098,7 @@ const cls = "w-[1.5px]"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -8181,7 +8107,7 @@ const cls = "w-[1.5px]"
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -8205,8 +8131,7 @@ const cls = "w-[1.5px]"
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -8341,7 +8266,7 @@ const cls = "w-[1.5px]"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -8350,7 +8275,7 @@ const cls = "w-[1.5px]"
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -8374,8 +8299,7 @@ const cls = "w-[1.5px]"
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -8494,8 +8418,7 @@ ${utilities}
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/tailwind.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 3,
@@ -8620,7 +8543,7 @@ ${utilities}
           generate: vi.fn(async () => generateMock(source)),
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
           version: 3,
           projectRoot: process.cwd(),
           cwd: process.cwd(),
@@ -8655,8 +8578,7 @@ ${utilities}
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'shell.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(currentCandidates)),
         getClassSetSync: vi.fn(() => new Set(currentCandidates)),
         majorVersion: 3,
@@ -8775,8 +8697,7 @@ ${utilities}
       appType: 'uni-app-vite',
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(currentCandidates)),
         getClassSetSync: vi.fn(() => new Set(currentCandidates)),
         majorVersion: 3,
@@ -8799,7 +8720,7 @@ ${utilities}
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => currentCandidates),
@@ -8887,8 +8808,7 @@ ${utilities}
       cssMatcher: (file: string) => file.endsWith('.acss'),
       htmlMatcher: (file: string) => file.endsWith('.axml'),
       mainCssChunkMatcher: vi.fn(() => false),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 3,
@@ -8965,8 +8885,7 @@ ${utilities}
       cssMatcher: (file: string) => file.endsWith('.ttss'),
       htmlMatcher: (file: string) => file.endsWith('.ttml'),
       mainCssChunkMatcher: vi.fn(() => false),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 3,
@@ -9032,7 +8951,7 @@ ${utilities}
         generate: vi.fn(async () => generateMock(source)),
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async (options: { css?: string } = {}) => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async (options: { css?: string } = {}) => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -9050,7 +8969,7 @@ ${utilities}
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -9062,8 +8981,7 @@ ${utilities}
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -9171,8 +9089,7 @@ ${utilities}
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -9203,7 +9120,7 @@ ${utilities}
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
@@ -9304,8 +9221,7 @@ ${utilities}
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -9408,8 +9324,7 @@ ${utilities}
       const context = createContext({
         cssMatcher: (file: string) => file.endsWith('.wxss'),
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-        twPatcher: {
-          patch: vi.fn(),
+        tailwindRuntime: {
           getClassSet: vi.fn(async () => new Set<string>()),
           getClassSetSync: vi.fn(() => new Set<string>()),
           majorVersion: 3,
@@ -9432,7 +9347,7 @@ ${utilities}
       const generateBundle = createGenerateBundleHookWithMock({
         opts: context as any,
         runtimeState: {
-          twPatcher: context.twPatcher as any,
+          tailwindRuntime: context.tailwindRuntime as any,
           readyPromise: Promise.resolve(),
         },
         ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
@@ -9550,8 +9465,7 @@ ${utilities}
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -9565,7 +9479,7 @@ ${utilities}
     const generateBundle = createGenerateBundleHookWithMock({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
@@ -9693,8 +9607,7 @@ ${utilities}
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -9709,7 +9622,7 @@ ${utilities}
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
@@ -9824,8 +9737,7 @@ ${utilities}
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -9950,8 +9862,7 @@ ${utilities}
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -9986,7 +9897,7 @@ ${utilities}
     const generateBundle = createGenerateBundleHook({
       opts: context as any,
       runtimeState: {
-        twPatcher: context.twPatcher as any,
+        tailwindRuntime: context.tailwindRuntime as any,
         readyPromise: Promise.resolve(),
       },
       ensureRuntimeClassSet: vi.fn(async () => new Set<string>()),
@@ -10077,8 +9988,7 @@ ${utilities}
     setCurrentContext(createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         majorVersion: 3,
@@ -10173,7 +10083,7 @@ ${utilities}
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -10182,7 +10092,7 @@ ${utilities}
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -10195,8 +10105,7 @@ ${utilities}
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -10277,7 +10186,7 @@ ${utilities}
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -10286,7 +10195,7 @@ ${utilities}
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -10299,8 +10208,7 @@ ${utilities}
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -10380,7 +10288,7 @@ ${utilities}
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         version: 4,
         projectRoot: process.cwd(),
         base: process.cwd(),
@@ -10389,7 +10297,7 @@ ${utilities}
         dependencies: [],
         packageName: 'tailwindcss',
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -10402,8 +10310,7 @@ ${utilities}
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `style:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
         majorVersion: 4,
@@ -10775,15 +10682,13 @@ ${utilities}
     const jsHandlerMock = vi.fn((code: string, classNameSet?: Set<string>, options?: CreateJsHandlerOptions) =>
       realJsHandler(code, classNameSet, options),
     )
-    const patchMock = vi.fn(async () => {})
     const getClassSetMock = vi.fn(async () => runtimeSet)
     const getClassSetSyncMock = vi.fn(() => runtimeSet)
     const extractMock = vi.fn(async () => ({ classSet: runtimeSet }))
 
     setCurrentContext(createContext({
       jsHandler: jsHandlerMock as any,
-      twPatcher: {
-        patch: patchMock,
+      tailwindRuntime: {
         getClassSet: getClassSetMock,
         getClassSetSync: getClassSetSyncMock,
         extract: extractMock,
@@ -10805,7 +10710,6 @@ const fallback = "bg-[#434332] px-[32px]"
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect(patchMock).not.toHaveBeenCalled()
     expect(extractMock).toHaveBeenCalledTimes(1)
     expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
     expect(getClassSetMock).not.toHaveBeenCalled()

@@ -2,22 +2,22 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type * as UniAppXModule from '@/uni-app-x'
 import { vi } from 'vitest'
 import { createCache } from '@/cache'
-import { refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
+import { refreshTailwindcssRuntimeSymbol } from '@/tailwindcss/runtime'
 
-function createRefreshablePatcher(
-  twPatcher: Record<string, any>,
+function createRefreshableRuntime(
+  tailwindRuntime: Record<string, any>,
   getTailwindcssBasedir: () => string | undefined,
 ) {
-  const refreshTailwindcssPatcher = vi.fn(async () => {
+  const refreshTailwindcssRuntime = vi.fn(async () => {
     const basedir = getTailwindcssBasedir()
     if (basedir) {
-      twPatcher.options ??= {}
-      twPatcher.options.projectRoot = basedir
-      twPatcher.options.tailwindcss ??= {}
-      twPatcher.options.tailwindcss.cwd = basedir
-      twPatcher.options.tailwindcss.v4 ??= {}
-      twPatcher.options.tailwindcss.v4.base ??= basedir
-      twPatcher.options.tailwindcss.v4.cssSources ??= [
+      tailwindRuntime.options ??= {}
+      tailwindRuntime.options.projectRoot = basedir
+      tailwindRuntime.options.tailwindcss ??= {}
+      tailwindRuntime.options.tailwindcss.cwd = basedir
+      tailwindRuntime.options.tailwindcss.v4 ??= {}
+      tailwindRuntime.options.tailwindcss.v4.base ??= basedir
+      tailwindRuntime.options.tailwindcss.v4.cssSources ??= [
         {
           file: `${basedir}/app.css`,
           base: basedir,
@@ -26,14 +26,14 @@ function createRefreshablePatcher(
         },
       ]
     }
-    return twPatcher
+    return tailwindRuntime
   })
-  twPatcher.refreshTailwindcssPatcher = refreshTailwindcssPatcher
-  Object.defineProperty(twPatcher, refreshTailwindcssPatcherSymbol, {
-    value: refreshTailwindcssPatcher,
+  tailwindRuntime.refreshTailwindcssRuntime = refreshTailwindcssRuntime
+  Object.defineProperty(tailwindRuntime, refreshTailwindcssRuntimeSymbol, {
+    value: refreshTailwindcssRuntime,
     configurable: true,
   })
-  return refreshTailwindcssPatcher
+  return refreshTailwindcssRuntime
 }
 
 export function createContext(overrides: Record<string, unknown> = {}) {
@@ -53,8 +53,7 @@ export function createContext(overrides: Record<string, unknown> = {}) {
       ],
     },
   }
-  const defaultTwPatcher = {
-    patch: vi.fn(),
+  const defaultTailwindRuntime = {
     getClassSet: vi.fn(async () => runtimeSet),
     getClassSetSync: vi.fn(() => runtimeSet),
     majorVersion: 3,
@@ -64,8 +63,8 @@ export function createContext(overrides: Record<string, unknown> = {}) {
       tailwindcss: testTailwindcssOptions,
     },
   }
-  const { twPatcher: overrideTwPatcher, ...restOverrides } = overrides as {
-    twPatcher?: {
+  const { tailwindRuntime: overrideTailwindRuntime, ...restOverrides } = overrides as {
+    tailwindRuntime?: {
       options?: {
         tailwindcss?: {
           v4?: Record<string, unknown>
@@ -73,18 +72,18 @@ export function createContext(overrides: Record<string, unknown> = {}) {
       } & Record<string, unknown>
     } & Record<string, unknown>
   }
-  const mergedTwPatcherOptions = overrideTwPatcher?.options
-    ? overrideTwPatcher.options
-    : defaultTwPatcher.options
-  const mergedTwPatcher = overrideTwPatcher
+  const mergedTailwindRuntimeOptions = overrideTailwindRuntime?.options
+    ? overrideTailwindRuntime.options
+    : defaultTailwindRuntime.options
+  const mergedTailwindRuntime = overrideTailwindRuntime
     ? {
-        ...defaultTwPatcher,
-        ...overrideTwPatcher,
-        options: mergedTwPatcherOptions,
+        ...defaultTailwindRuntime,
+        ...overrideTailwindRuntime,
+        options: mergedTailwindRuntimeOptions,
       }
-    : defaultTwPatcher
+    : defaultTailwindRuntime
   let context: Record<string, any>
-  const refreshTailwindcssPatcher = createRefreshablePatcher(mergedTwPatcher, () => context?.tailwindcssBasedir)
+  const refreshTailwindcssRuntime = createRefreshableRuntime(mergedTailwindRuntime, () => context?.tailwindcssBasedir)
 
   context = {
     disabled: false,
@@ -115,8 +114,8 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     htmlMatcher: (file: string) => file.endsWith('.wxml'),
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: () => false,
-    twPatcher: mergedTwPatcher,
-    refreshTailwindcssPatcher,
+    tailwindRuntime: mergedTailwindRuntime,
+    refreshTailwindcssRuntime,
     uniAppX: undefined as any,
     runtimeLoaderPath: undefined,
     mainChunkRegex: undefined,

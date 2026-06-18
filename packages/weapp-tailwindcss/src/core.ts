@@ -41,18 +41,16 @@ function resolveTransformWxssOptions(options?: Partial<IStyleHandlerOptions>) {
 export function createContext(options: UserDefinedOptions = {}) {
   const opts = getCompilerContext(options)
   const { templateHandler, styleHandler, jsHandler } = opts
-  const initialTailwindRuntime = opts.tailwindRuntime ?? opts.twPatcher
-  const refreshTailwindcssRuntime = opts.refreshTailwindcssRuntime ?? opts.refreshTailwindcssPatcher
+  const initialTailwindRuntime = opts.tailwindRuntime
+  const refreshTailwindcssRuntime = opts.refreshTailwindcssRuntime
 
   const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
 
   let runtimeSet = new Set<string>()
   const runtimeState = {
     tailwindRuntime: initialTailwindRuntime,
-    twPatcher: initialTailwindRuntime,
     readyPromise,
     refreshTailwindcssRuntime,
-    refreshTailwindcssPatcher: refreshTailwindcssRuntime,
   }
   const defaultJsHandlerOptionsCache = new Map<number, CreateJsHandlerOptions>()
 

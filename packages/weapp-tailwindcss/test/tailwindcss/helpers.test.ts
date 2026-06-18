@@ -70,7 +70,7 @@ describe('tailwindcss helpers', () => {
     const runtime = createTailwindcssRuntime({
       basedir: '/repo',
       cacheDir: 'cache',
-      supportCustomLengthUnitsPatch: false,
+      supportCustomLengthUnits: false,
     }) as any
 
     const callArgs = runtime.options as any
@@ -82,126 +82,120 @@ describe('tailwindcss helpers', () => {
     expect(Array.isArray(callArgs.tailwindcss?.resolve?.paths)).toBe(true)
   })
 
-  it('keeps createTailwindcssPatcher as a compatibility alias', async () => {
-    const { createTailwindcssPatcher, createTailwindcssRuntime } = await import('@/tailwindcss')
-
-    expect(createTailwindcssPatcher).toBe(createTailwindcssRuntime)
-  })
-
   it('honours absolute cache directories', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       cacheDir: '/global/cache',
     })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(callArgs.cache).toEqual({ dir: '/global/cache', driver: 'memory', enabled: true })
   })
 
   it('enables extendLengthUnits patch by default', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher()
+    const runtime = createTailwindcssRuntime()
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(callArgs.apply?.extendLengthUnits).toEqual({ enabled: true })
   })
 
   it('falls back to cwd when basedir is not provided', async () => {
     const cwdSpy = vi.spyOn(process, 'cwd').mockReturnValue('/workspace')
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({ cacheDir: '.cache' })
+    const runtime = createTailwindcssRuntime({ cacheDir: '.cache' })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(callArgs.cache).toEqual({ dir: path.resolve('/workspace', '.cache'), driver: 'memory', enabled: true })
     cwdSpy.mockRestore()
   })
 
   it('defaults cache directory to package root node_modules cache', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
     const repoRoot = path.resolve(__dirname, '../../../..')
     const basedir = path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'src')
 
-    const patcher = createTailwindcssPatcher({ basedir })
+    const runtime = createTailwindcssRuntime({ basedir })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(callArgs.cache?.dir).toBe(
       path.join(repoRoot, 'packages', 'weapp-tailwindcss', 'node_modules', '.cache', '@tailwindcss-mangle', 'engine'),
     )
   })
 
   it('creates inert metadata when tailwindcss package is missing', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       tailwindcss: {
         packageName: 'missing-tailwindcss',
       },
     })
 
     expect(loggerWarnMock).not.toHaveBeenCalled()
-    expect(patcher.packageInfo.version).toBeUndefined()
-    expect(patcher.packageInfo.name).toBe('missing-tailwindcss')
-    expect(patcher.majorVersion).toBe(4)
-    expect(patcher.getClassSet).toBeDefined()
-    expect(patcher.extract).toBeDefined()
+    expect(runtime.packageInfo.version).toBeUndefined()
+    expect(runtime.packageInfo.name).toBe('missing-tailwindcss')
+    expect(runtime.majorVersion).toBe(4)
+    expect(runtime.getClassSet).toBeDefined()
+    expect(runtime.extract).toBeDefined()
   })
 
   it('resolves tailwindcss postcss plugin from basedir node_modules', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
     const repoRoot = path.resolve(__dirname, '../../../..')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       basedir: repoRoot,
     })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(callArgs.tailwindcss?.postcssPlugin).toBeDefined()
     expect(typeof callArgs.tailwindcss?.postcssPlugin).toBe('string')
     expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
   })
 
   it('uses tailwindcss package as postcss plugin when packageName points to v4 package without explicit version', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       basedir: '/repo',
       tailwindcss: {
         packageName: '@tailwindcss/postcss',
       },
     })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     const postcssPlugin = String(callArgs.tailwindcss?.postcssPlugin).replaceAll('\\', '/')
     expect(postcssPlugin).toContain('/tailwindcss/')
     expect(postcssPlugin).not.toContain('@tailwindcss/postcss')
   })
 
-  it('resolves postcss plugin strings after legacy patcher options merge', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+  it('resolves postcss plugin strings after runtime options merge', async () => {
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       basedir: path.resolve(__dirname, '../../../..'),
-      tailwindcssPatcherOptions: {
+      tailwindcssRuntimeOptions: {
         tailwindcss: {
           postcssPlugin: 'tailwindcss',
         },
       },
     })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     expect(path.isAbsolute(callArgs.tailwindcss?.postcssPlugin)).toBe(true)
   })
 
   it('keeps custom resolve paths while appending default lookup paths', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
     const repoRoot = path.resolve(__dirname, '../../../..')
     const appRoot = path.join(repoRoot, 'templates', 'demo')
     const customNodeModules = path.join(appRoot, 'node_modules')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       basedir: appRoot,
       tailwindcss: {
         packageName: '@tailwindcss/postcss',
@@ -211,7 +205,7 @@ describe('tailwindcss helpers', () => {
       },
     })
 
-    const callArgs = patcher.options as any
+    const callArgs = runtime.options as any
     const resolvePaths = callArgs.tailwindcss?.resolve?.paths ?? []
     expect(resolvePaths[0]).toBe(customNodeModules)
     expect(resolvePaths).toContain(path.join(repoRoot, 'node_modules'))
@@ -222,13 +216,13 @@ describe('tailwindcss helpers', () => {
 
   it('falls back to default tailwind config when project has none', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-no-config-'))
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
     try {
-      const patcher = createTailwindcssPatcher({
+      const runtime = createTailwindcssRuntime({
         basedir: tempDir,
       })
-      const callArgs = patcher.options as any
+      const callArgs = runtime.options as any
       expect(callArgs.tailwindcss?.config).toBeDefined()
       expect(typeof callArgs.tailwindcss?.config).toBe('string')
       expect(path.isAbsolute(callArgs.tailwindcss?.config)).toBe(true)
@@ -240,18 +234,18 @@ describe('tailwindcss helpers', () => {
 
   it('sets cwd from discovered tailwind config when cwd is not provided', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-config-cwd-'))
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
     try {
       await writeFile(path.join(tempDir, 'tailwind.config.js'), 'export default {}')
-      const patcher = createTailwindcssPatcher({
+      const runtime = createTailwindcssRuntime({
         tailwindcss: {
           resolve: {
             paths: [path.join(tempDir, 'node_modules')],
           },
         },
       })
-      const callArgs = patcher.options as any
+      const callArgs = runtime.options as any
       expect(callArgs.tailwindcss?.config).toBe(path.join(tempDir, 'tailwind.config.js'))
       expect(callArgs.tailwindcss?.cwd).toBe(tempDir)
     }
@@ -261,15 +255,15 @@ describe('tailwindcss helpers', () => {
   })
 
   it('keeps missing package names in resolved options', async () => {
-    const { createTailwindcssPatcher } = await import('@/tailwindcss')
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
-    const patcher = createTailwindcssPatcher({
+    const runtime = createTailwindcssRuntime({
       tailwindcss: {
         packageName: 'missing-tailwindcss',
       },
     })
 
-    expect(patcher.options?.tailwindcss?.packageName).toBe('missing-tailwindcss')
+    expect(runtime.options?.tailwindcss?.packageName).toBe('missing-tailwindcss')
     expect(loggerErrorMock).not.toHaveBeenCalled()
   })
 })

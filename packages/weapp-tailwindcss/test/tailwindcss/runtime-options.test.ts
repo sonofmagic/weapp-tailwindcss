@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import {
   normalizeExtendLengthUnits,
-  normalizeTailwindcssPatcherOptions,
+  normalizeTailwindcssRuntimeOptions,
   resolveTailwindcssOptions,
-} from '@/tailwindcss/patcher-options'
+} from '@/tailwindcss/runtime-options'
 
-describe('tailwindcss patcher option normalization', () => {
+describe('tailwindcss runtime option normalization', () => {
   it('returns undefined for absent option objects', () => {
     expect(resolveTailwindcssOptions()).toBeUndefined()
-    expect(normalizeTailwindcssPatcherOptions()).toBeUndefined()
+    expect(normalizeTailwindcssRuntimeOptions()).toBeUndefined()
   })
 
   it('normalizes extendLengthUnits feature values', () => {
@@ -72,6 +72,6 @@ describe('tailwindcss patcher option normalization', () => {
       },
     }
 
-    expect(normalizeTailwindcssPatcherOptions(options)).toBe(options)
+    expect(normalizeTailwindcssRuntimeOptions(options)).toBe(options)
   })
 })

@@ -4,9 +4,9 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { afterEach, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
-import type { TailwindCssPatchOptions } from '@/tailwindcss/patcher-types'
-import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
-import { resolveTailwindV4SourceFromPatchOptions } from '@/tailwindcss/v4-engine/source'
+import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
+import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromRuntime, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
+import { resolveTailwindV4SourceFromRuntimeOptions } from '@/tailwindcss/v4-engine/source'
 
 const require = createRequire(import.meta.url)
 const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
@@ -1081,7 +1081,7 @@ describe('tailwindcss v4 engine', () => {
           cssEntries: ['/workspace/app/src/app.css'],
         },
       },
-    } satisfies TailwindCssPatchOptions
+    } satisfies TailwindCssRuntimeOptions
     const explicitPatchOptions = {
       projectRoot: '/workspace/app',
       tailwindcss: {
@@ -1092,8 +1092,8 @@ describe('tailwindcss v4 engine', () => {
           cssEntries: ['/workspace/app/src/app.css'],
         },
       },
-    } satisfies TailwindCssPatchOptions
-    const implicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+    } satisfies TailwindCssRuntimeOptions
+    const implicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
         tailwind: {
@@ -1107,7 +1107,7 @@ describe('tailwindcss v4 engine', () => {
       },
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
-    const explicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+    const explicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
         tailwind: {
@@ -1122,12 +1122,12 @@ describe('tailwindcss v4 engine', () => {
       },
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
-    const rawExplicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+    const rawExplicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: explicitPatchOptions,
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
-    const implicitPatchSource = await resolveTailwindV4SourceFromPatchOptions(implicitPatchOptions)
-    const explicitPatchSource = await resolveTailwindV4SourceFromPatchOptions(explicitPatchOptions)
+    const implicitPatchSource = await resolveTailwindV4SourceFromRuntimeOptions(implicitPatchOptions)
+    const explicitPatchSource = await resolveTailwindV4SourceFromRuntimeOptions(explicitPatchOptions)
 
     expect(implicitBaseOptions.base).toBeUndefined()
     expect(explicitBaseOptions.base).toBe('/custom/base')
@@ -1158,7 +1158,7 @@ describe('tailwindcss v4 engine', () => {
         negated: true,
       },
     ]
-    const options = resolveTailwindV4SourceOptionsFromPatcher({
+    const options = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
         tailwind: {

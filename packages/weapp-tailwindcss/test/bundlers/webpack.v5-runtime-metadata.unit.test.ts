@@ -31,13 +31,12 @@ interface TestContext {
   onStart: ReturnType<typeof vi.fn>
   onEnd: ReturnType<typeof vi.fn>
   onUpdate: ReturnType<typeof vi.fn>
-  refreshTailwindcssPatcher: ReturnType<typeof vi.fn>
+  refreshTailwindcssRuntime: ReturnType<typeof vi.fn>
   templateHandler: ReturnType<typeof vi.fn>
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
   cache: ReturnType<typeof createCache>
-  twPatcher: {
-    patch: ReturnType<typeof vi.fn>
+  tailwindRuntime: {
     getClassSet: ReturnType<typeof vi.fn>
     getClassSetSync: ReturnType<typeof vi.fn>
     extract: ReturnType<typeof vi.fn>
@@ -70,13 +69,12 @@ function createContext(): TestContext {
     onStart: vi.fn(),
     onEnd: vi.fn(),
     onUpdate: vi.fn(),
-    refreshTailwindcssPatcher: vi.fn(async () => currentContext.twPatcher),
+    refreshTailwindcssRuntime: vi.fn(async () => currentContext.tailwindRuntime),
     templateHandler: vi.fn(async (code: string) => code),
     styleHandler: vi.fn(async (code: string) => ({ css: code })),
     jsHandler: vi.fn(async (code: string) => ({ code })),
     cache: createCache(),
-    twPatcher: {
-      patch: vi.fn(),
+    tailwindRuntime: {
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -135,7 +133,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
       '@tailwind utilities;',
       '.tw-watch-style-case { color: red; }',
     ].join('\n'))
-    currentContext.twPatcher.options.tailwind.v4.cssEntries = [cssEntry]
+    currentContext.tailwindRuntime.options.tailwind.v4.cssEntries = [cssEntry]
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     const invalidHandlers: Array<() => void> = []
@@ -216,7 +214,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
 
     await processAssetsCallbacks[0](createAssets(assetStore))
     expect(assetStore['index.css']).toContain('.base')
-    const refreshCallsAfterBaseline = currentContext.refreshTailwindcssPatcher.mock.calls.length
+    const refreshCallsAfterBaseline = currentContext.refreshTailwindcssRuntime.mock.calls.length
 
     assetStore = {
       'index.css': '.base { color: black; }\n.tw-watch-style-case { color: red; }',
@@ -227,7 +225,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
 
     await processAssetsCallbacks[0](createAssets(assetStore))
 
-    expect(currentContext.refreshTailwindcssPatcher.mock.calls.length).toBeGreaterThan(refreshCallsAfterBaseline)
+    expect(currentContext.refreshTailwindcssRuntime.mock.calls.length).toBeGreaterThan(refreshCallsAfterBaseline)
     expect(assetStore['index.css']).toContain('.tw-watch-style-case')
     await rm(root, { recursive: true, force: true })
   })

@@ -16,7 +16,7 @@ import { createHandlersFromContext } from './handlers'
 import { applyLoggerLevel } from './logger'
 import { createTailwindcssRuntimeFromContext } from './tailwindcss'
 
-interface ClearTailwindcssPatcherCacheOptions {
+interface ClearTailwindcssRuntimeCacheOptions {
   removeDirectory?: boolean
 }
 
@@ -93,9 +93,9 @@ function syncLegacyFieldsToCssOptions(ctx: InternalUserDefinedOptions) {
   }
 }
 
-export async function clearTailwindcssPatcherCache(
+export async function clearTailwindcssRuntimeCache(
   tailwindRuntime: TailwindcssRuntimeLike | undefined,
-  options?: ClearTailwindcssPatcherCacheOptions,
+  options?: ClearTailwindcssRuntimeCacheOptions,
 ) {
   if (!tailwindRuntime) {
     return
@@ -126,7 +126,7 @@ export async function clearTailwindcssPatcherCache(
   if (normalizedCacheOptions?.path) {
     cachePaths.set(normalizedCacheOptions.path, false)
   }
-  // 以非侵入方式访问私有的缓存目录路径，避免依赖 TailwindcssPatcher 内部类型。
+  // 以非侵入方式访问私有的缓存目录路径，避免依赖 Tailwind 运行时内部类型。
   const privateCachePath: string | undefined = (tailwindRuntime as any)?.cacheStore?.options?.path
   if (privateCachePath) {
     cachePaths.set(privateCachePath, false)
@@ -197,23 +197,20 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 
   ctx.cache = initializeCache(ctx.cache)
   ctx.tailwindRuntime = tailwindRuntime
-  ctx.twPatcher = tailwindRuntime
   const refreshTailwindcssRuntime = async (
     options?: RefreshTailwindcssRuntimeOptions,
   ): Promise<TailwindcssRuntimeLike> => {
     const previousRuntime = ctx.tailwindRuntime
     if (options?.clearCache !== false) {
-      await clearTailwindcssPatcherCache(previousRuntime)
+      await clearTailwindcssRuntimeCache(previousRuntime)
     }
     invalidateRuntimeClassSet(previousRuntime)
     const nextRuntime = createTailwindcssRuntimeFromContext(ctx)
     Object.assign(previousRuntime, nextRuntime)
     ctx.tailwindRuntime = previousRuntime
-    ctx.twPatcher = previousRuntime
     return previousRuntime
   }
   ctx.refreshTailwindcssRuntime = refreshTailwindcssRuntime
-  ctx.refreshTailwindcssPatcher = refreshTailwindcssRuntime
   Object.defineProperty(ctx.tailwindRuntime, refreshTailwindcssRuntimeSymbol, {
     value: refreshTailwindcssRuntime,
     configurable: true,

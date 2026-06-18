@@ -160,7 +160,7 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
     }
 
     const ctxV4 = createContext()
-    ctxV4.twPatcher.majorVersion = 4
+    ctxV4.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockImplementationOnce(() => ctxV4)
     let plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
@@ -172,7 +172,7 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
     expect(v4Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
 
     const ctxV3 = createContext()
-    ctxV3.twPatcher.majorVersion = 3
+    ctxV3.tailwindRuntime.majorVersion = 3
     getCompilerContextMock.mockImplementationOnce(() => ctxV3)
     loaderHandler = undefined
     plugin = new WeappTailwindcss()
@@ -189,7 +189,7 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
         target: 'web',
       },
     })
-    ctxV3Web.twPatcher.majorVersion = 3
+    ctxV3Web.tailwindRuntime.majorVersion = 3
     getCompilerContextMock.mockImplementationOnce(() => ctxV3Web)
     loaderHandler = undefined
     plugin = new WeappTailwindcss()

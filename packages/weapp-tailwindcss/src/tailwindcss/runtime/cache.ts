@@ -3,7 +3,7 @@ import { existsSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 interface RuntimeClassSetCacheEntry {
@@ -18,10 +18,6 @@ const runtimeTrackedSourceFilesCache = new Map<string, string[]>()
 let runtimeFileSignatureCacheClearTimer: ReturnType<typeof setTimeout> | undefined
 
 export const runtimeSignatureRuntimesSymbol = Symbol.for('weapp-tailwindcss.runtimeSignatureRuntimes')
-/**
- * @deprecated 请使用 `runtimeSignatureRuntimesSymbol`。
- */
-export const runtimeSignaturePatchersSymbol = runtimeSignatureRuntimesSymbol
 
 function getCacheEntry(tailwindRuntime: TailwindcssRuntimeLike) {
   let entry = runtimeClassSetCache.get(tailwindRuntime)

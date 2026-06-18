@@ -175,7 +175,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       } as any,
       runtimeState: {
         readyPromise: Promise.resolve(),
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
           options: {},
         } as any,

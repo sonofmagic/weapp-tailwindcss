@@ -1,7 +1,7 @@
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { findNearestPackageRoot } from '@/context/workspace'
-import { findTailwindConfig } from '@/tailwindcss/patcher-resolve'
+import { findTailwindConfig } from '@/tailwindcss/runtime-resolve'
 
 const PACKAGE_JSON_FILE = 'package.json'
 

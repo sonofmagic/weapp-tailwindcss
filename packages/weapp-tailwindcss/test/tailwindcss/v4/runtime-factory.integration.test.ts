@@ -4,9 +4,9 @@ import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { transformLiteralText } from '@/js'
 import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
-import { createPatcherForBase } from '@/tailwindcss/v4'
+import { createTailwindcssRuntimeForBase } from '@/tailwindcss/v4'
 
-describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
+describe('tailwindcss/v4 runtime integration with @config + cssEntries', () => {
   it('preserves entry base, collects class set, and escapes runtime literals', async () => {
     const workspaceRoot = path.resolve(__dirname, '../../../../..')
     const fixtureRoot = path.resolve(__dirname, '../../fixtures/tailwind-v4-config-import')
@@ -22,7 +22,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
     catch {}
     await fs.symlink(tailwindcss4Path, fixtureTailwindcss, 'dir')
 
-    const patcher = createPatcherForBase(fixtureRoot, [cssEntry], {
+    const runtime = createTailwindcssRuntimeForBase(fixtureRoot, [cssEntry], {
       tailwindcss: {
         packageName: 'tailwindcss4',
         version: 4,
@@ -30,14 +30,14 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
           paths: [path.resolve(workspaceRoot, 'node_modules')],
         },
       },
-      tailwindcssPatcherOptions: undefined,
-      supportCustomLengthUnitsPatch: true,
+      tailwindcssRuntimeOptions: undefined,
+      supportCustomLengthUnits: true,
       appType: 'taro',
     } as any)
 
-    await patcher.extract({ write: false })
+    await runtime.extract({ write: false })
 
-    const classSet = await collectRuntimeClassSet(patcher, { force: true })
+    const classSet = await collectRuntimeClassSet(runtime, { force: true })
 
     expect(classSet.has('px-[48rpx]')).toBe(true)
 
@@ -52,7 +52,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
     expect(transformed).not.toContain('px-[48rpx]')
   })
 
-  it('falls back to generator source scan when patcher extract returns an empty class set', async () => {
+  it('falls back to generator source scan when runtime extract returns an empty class set', async () => {
     const workspaceRoot = path.resolve(__dirname, '../../../../..')
     const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v4-runtime-fallback-'))
     const cssEntry = path.resolve(fixtureRoot, 'src/app.css')
@@ -83,7 +83,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
         '<view class="text-[#aa11bb] bg-[#bb11aa]">runtime fallback</view>',
         'utf8',
       )
-      const patcher = createPatcherForBase(fixtureRoot, [cssEntry], {
+      const runtime = createTailwindcssRuntimeForBase(fixtureRoot, [cssEntry], {
         tailwindcss: {
           packageName: 'tailwindcss4',
           version: 4,
@@ -91,12 +91,12 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
             paths: [path.resolve(workspaceRoot, 'node_modules')],
           },
         },
-        tailwindcssPatcherOptions: undefined,
-        supportCustomLengthUnitsPatch: true,
+        tailwindcssRuntimeOptions: undefined,
+        supportCustomLengthUnits: true,
         appType: 'native',
       } as any)
-      const originalExtract = patcher.extract.bind(patcher)
-      patcher.extract = async (options) => {
+      const originalExtract = runtime.extract.bind(runtime)
+      runtime.extract = async (options) => {
         await originalExtract(options)
         return {
           classList: [],
@@ -104,7 +104,7 @@ describe('tailwindcss/v4 patcher integration with @config + cssEntries', () => {
         } as Awaited<ReturnType<typeof originalExtract>>
       }
 
-      const classSet = await collectRuntimeClassSet(patcher, {
+      const classSet = await collectRuntimeClassSet(runtime, {
         clearCache: true,
         force: true,
       })

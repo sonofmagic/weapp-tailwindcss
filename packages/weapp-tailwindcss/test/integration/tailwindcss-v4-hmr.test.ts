@@ -63,9 +63,9 @@ function assertMissingAllTokens(classSet: Set<string>, classLiteral: string, lab
 
 async function refreshRuntimeClassSet(options: UserDefinedOptions) {
   const ctx = getCompilerContext(options)
-  await ctx.refreshTailwindcssPatcher({ clearCache: true })
-  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
-  const classSet = await collectRuntimeClassSet(ctx.twPatcher, {
+  await ctx.refreshTailwindcssRuntime({ clearCache: true })
+  await createTailwindRuntimeReadyPromise(ctx.tailwindRuntime)
+  const classSet = await collectRuntimeClassSet(ctx.tailwindRuntime, {
     force: true,
     skipRefresh: true,
   })

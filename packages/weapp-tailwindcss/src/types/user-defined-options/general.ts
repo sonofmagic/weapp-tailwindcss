@@ -3,7 +3,7 @@ import type { CssOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcs
 import type { ICreateCacheReturnType } from '../../cache'
 import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
 import type { AppType, IArbitraryValues, IUnocssCompatibilityOptions } from '../shared'
-import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from '@/tailwindcss/patcher-types'
+import type { LengthUnitsRuntimeOptions, TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 
 export interface CssSourceTraceOptions {
   root?: string | undefined
@@ -13,14 +13,14 @@ export type CssSourceTraceUserOptions = boolean | CssSourceTraceOptions
 
 export interface UserDefinedOptionsGeneralPart {
   /**
-   * 控制 Tailwind 自定义长度单位补丁。
+   * 控制 Tailwind 自定义长度单位支持。
    *
    * @group 3.一般配置
    * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/110
    * @remarks
    * TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启，并由构建运行时自动接管。
    */
-  supportCustomLengthUnitsPatch?: ILengthUnitsPatchOptions | boolean | undefined
+  supportCustomLengthUnits?: LengthUnitsRuntimeOptions | boolean | undefined
 
   /**
    * 声明所使用的框架类型。
@@ -242,11 +242,11 @@ export interface UserDefinedOptionsGeneralPart {
   tailwindcssV4GradientFallback?: boolean | undefined
 
   /**
-   * 自定义 patcher 参数。
+   * 自定义 Tailwind CSS 运行时参数。
    *
    * @group 3.一般配置
    */
-  tailwindcssPatcherOptions?: TailwindCssPatchOptions | undefined
+  tailwindcssRuntimeOptions?: TailwindCssRuntimeOptions | undefined
   /**
    * 控制命令行日志输出级别。
    *

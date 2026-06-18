@@ -1,5 +1,5 @@
 import type { TailwindV4SourceOptions, TailwindV4SourceOptionsWithSources } from './types'
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
@@ -10,7 +10,7 @@ import {
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { omitUndefined } from '@/utils/object'
 
 const require = createRequire(import.meta.url)
@@ -78,8 +78,8 @@ function uniqueDefined(values: Array<string | undefined>) {
   return [...new Set(values.filter((value): value is string => typeof value === 'string' && value.length > 0))]
 }
 
-function getProjectRoot(patcher: TailwindcssPatcherLike) {
-  return patcher.options?.projectRoot ?? process.cwd()
+function getProjectRoot(runtime: TailwindcssRuntimeLike) {
+  return runtime.options?.projectRoot ?? process.cwd()
 }
 
 function resolveBase(value: string | undefined, fallback: string) {
@@ -322,8 +322,8 @@ function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | und
   }
 }
 
-function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
+function resolveTailwindCssImportTarget(runtime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(runtime.options)
   const configuredPackageName = tailwindOptions?.packageName
   if (
     typeof configuredPackageName === 'string'
@@ -333,7 +333,7 @@ function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
     return configuredPackageName
   }
 
-  const packageName = patcher.packageInfo?.name
+  const packageName = runtime.packageInfo?.name
   if (
     typeof packageName === 'string'
     && packageName.length > 0
@@ -345,23 +345,23 @@ function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
   return 'tailwindcss'
 }
 
-function readTailwindV4Options(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-  return tailwindOptions?.v4 ?? (patcher.options as any)?.tailwind?.v4
+function readTailwindV4Options(runtime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(runtime.options)
+  return tailwindOptions?.v4 ?? (runtime.options as any)?.tailwind?.v4
 }
 
-function isRawTailwindcssPatchOptions(options: TailwindcssPatcherLike['options']) {
+function isRawTailwindcssPatchOptions(options: TailwindcssRuntimeLike['options']) {
   return Boolean(options && 'tailwindcss' in options)
 }
 
-function resolveEngineTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): TailwindV4SourceOptions {
-  if (patcher.options) {
-    const projectRoot = getProjectRoot(patcher)
-    const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-    const tailwindV4Options = readTailwindV4Options(patcher)
+function resolveEngineTailwindV4SourceOptions(runtime: TailwindcssRuntimeLike): TailwindV4SourceOptions {
+  if (runtime.options) {
+    const projectRoot = getProjectRoot(runtime)
+    const tailwindOptions = resolveTailwindcssOptions(runtime.options)
+    const tailwindV4Options = readTailwindV4Options(runtime)
     const cwd = resolveBase(tailwindOptions?.cwd, projectRoot)
     const configuredBase = (tailwindV4Options as { configuredBase?: string } | undefined)?.configuredBase
-      ?? (isRawTailwindcssPatchOptions(patcher.options) ? tailwindV4Options?.base : undefined)
+      ?? (isRawTailwindcssPatchOptions(runtime.options) ? tailwindV4Options?.base : undefined)
     const configDir = resolveConfigDir(tailwindOptions?.config, projectRoot)
     const baseFallbacks = uniqueDefined([
       configuredBase,
@@ -377,22 +377,22 @@ function resolveEngineTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): 
       ...(tailwindV4Options?.css === undefined ? {} : { css: tailwindV4Options.css }),
       ...(tailwindV4Options?.cssSources === undefined ? {} : { cssSources: tailwindV4Options.cssSources }),
       ...(tailwindV4Options?.cssEntries === undefined ? {} : { cssEntries: tailwindV4Options.cssEntries }),
-      packageName: resolveTailwindCssImportTarget(patcher),
+      packageName: resolveTailwindCssImportTarget(runtime),
     }
   }
 
   return {
-    projectRoot: getProjectRoot(patcher),
-    packageName: resolveTailwindCssImportTarget(patcher),
+    projectRoot: getProjectRoot(runtime),
+    packageName: resolveTailwindCssImportTarget(runtime),
   }
 }
 
-export function resolveTailwindV4SourceOptionsFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export function resolveTailwindV4SourceOptionsFromRuntime(
+  runtime: TailwindcssRuntimeLike,
 ): TailwindV4SourceOptionsWithSources {
-  const tailwindV4Options = readTailwindV4Options(patcher)
+  const tailwindV4Options = readTailwindV4Options(runtime)
   return omitUndefined({
-    ...resolveEngineTailwindV4SourceOptions(patcher),
+    ...resolveEngineTailwindV4SourceOptions(runtime),
     sources: tailwindV4Options?.sources,
   }) as TailwindV4SourceOptionsWithSources
 }
@@ -402,7 +402,7 @@ export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {
   return resolveEngineTailwindV4Source(normalizedOptions)
 }
 
-export function resolveTailwindV4SourceFromPatchOptions(options?: {
+export function resolveTailwindV4SourceFromRuntimeOptions(options?: {
   projectRoot?: string
   tailwindcss?: {
     cwd?: string
@@ -422,8 +422,8 @@ export function resolveTailwindV4SourceFromPatchOptions(options?: {
   })
 }
 
-export async function resolveTailwindV4SourceFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export async function resolveTailwindV4SourceFromRuntime(
+  runtime: TailwindcssRuntimeLike,
 ) {
-  return resolveTailwindV4Source(resolveTailwindV4SourceOptionsFromPatcher(patcher))
+  return resolveTailwindV4Source(resolveTailwindV4SourceOptionsFromRuntime(runtime))
 }

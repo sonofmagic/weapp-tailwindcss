@@ -3,18 +3,18 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 const styleHandler = vi.fn(async () => ({ css: '', map: undefined }))
 const templateHandler = vi.fn()
 const jsHandler = vi.fn()
-const refreshTailwindcssPatcher = vi.fn()
+const refreshTailwindcssRuntime = vi.fn()
 const ensureRuntimeClassSet = vi.fn(async () => new Set<string>())
 const createTailwindRuntimeReadyPromise = vi.fn(() => Promise.resolve())
 const getCompilerContext = vi.fn(() => ({
   templateHandler,
   styleHandler,
   jsHandler,
-  twPatcher: {
+  tailwindRuntime: {
     majorVersion: 4,
   },
   tailwindcssBasedir: '/tmp',
-  refreshTailwindcssPatcher,
+  refreshTailwindcssRuntime,
 }))
 
 vi.mock('@/context', () => ({
@@ -33,7 +33,7 @@ describe('core transformWxss option reuse', () => {
     styleHandler.mockClear()
     templateHandler.mockClear()
     jsHandler.mockClear()
-    refreshTailwindcssPatcher.mockClear()
+    refreshTailwindcssRuntime.mockClear()
     ensureRuntimeClassSet.mockClear()
     createTailwindRuntimeReadyPromise.mockClear()
     getCompilerContext.mockClear()
@@ -98,7 +98,7 @@ describe('core transformWxml option reuse', () => {
     styleHandler.mockClear()
     templateHandler.mockClear()
     jsHandler.mockClear()
-    refreshTailwindcssPatcher.mockClear()
+    refreshTailwindcssRuntime.mockClear()
     ensureRuntimeClassSet.mockClear()
     createTailwindRuntimeReadyPromise.mockClear()
     getCompilerContext.mockClear()
@@ -166,7 +166,7 @@ describe('core transformJs option reuse', () => {
     styleHandler.mockClear()
     templateHandler.mockClear()
     jsHandler.mockClear()
-    refreshTailwindcssPatcher.mockClear()
+    refreshTailwindcssRuntime.mockClear()
     ensureRuntimeClassSet.mockClear()
     createTailwindRuntimeReadyPromise.mockClear()
     getCompilerContext.mockClear()

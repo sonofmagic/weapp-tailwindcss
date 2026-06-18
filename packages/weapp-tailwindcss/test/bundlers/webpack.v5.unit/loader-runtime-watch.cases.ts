@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, path, testState, WeappTailwindcss } from './shared'
 describe('bundlers/webpack WeappTailwindcss / loader runtime watch invalidation', () => {
   setupWebpackV5UnitTest()
-  it('does not refresh runtime patcher for watch invalidation without runtime dependency changes', async () => {
+  it('does not refresh runtime for watch invalidation without runtime dependency changes', async () => {
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     const invalidHandlers: Array<(fileName?: string) => void> = []
     const thisCompilationHandlers: Array<(_compilation: any) => void> = []
@@ -82,7 +82,7 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime watch invalidation'
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(testState.currentContext.refreshTailwindcssPatcher).not.toHaveBeenCalled()
+    expect(testState.currentContext.refreshTailwindcssRuntime).not.toHaveBeenCalled()
 
     invalidHandlers[0]?.('/workspace/src/pages/index.ts')
     thisCompilationHandlers[0]?.(compilation)
@@ -92,11 +92,11 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime watch invalidation'
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(testState.currentContext.refreshTailwindcssPatcher).not.toHaveBeenCalled()
+    expect(testState.currentContext.refreshTailwindcssRuntime).not.toHaveBeenCalled()
   })
 
-  it('refreshes runtime patcher when webpack watch invalidates runtime dependencies', async () => {
-    testState.currentContext.twPatcher.options = {
+  it('refreshes runtime when webpack watch invalidates runtime dependencies', async () => {
+    testState.currentContext.tailwindRuntime.options = {
       tailwindcss: {
         config: '/workspace/tailwind.config.js',
       },
@@ -185,7 +185,7 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime watch invalidation'
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(testState.currentContext.refreshTailwindcssPatcher).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.refreshTailwindcssRuntime).toHaveBeenCalledTimes(1)
   })
 
 })

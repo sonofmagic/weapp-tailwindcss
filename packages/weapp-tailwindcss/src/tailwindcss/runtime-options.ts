@@ -1,18 +1,18 @@
-import type { ExtendLengthUnitsOptions, ILengthUnitsPatchOptions, TailwindCssPatchOptions } from './patcher-types'
+import type { ExtendLengthUnitsOptions, LengthUnitsRuntimeOptions, TailwindCssRuntimeOptions } from './runtime-types'
 import { resolveBooleanObjectOption } from '@/utils/options'
 
-type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
-type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
+type TailwindUserOptions = NonNullable<TailwindCssRuntimeOptions['tailwindcss']>
+type TailwindApplyOptions = NonNullable<TailwindCssRuntimeOptions['apply']>
 type TailwindExtendLengthUnitsOption = TailwindApplyOptions['extendLengthUnits']
 
 export function resolveTailwindcssOptions(
-  options?: TailwindCssPatchOptions,
+  options?: TailwindCssRuntimeOptions,
 ): TailwindUserOptions | undefined {
   return options?.tailwindcss ?? (options as { tailwind?: TailwindUserOptions } | undefined)?.tailwind
 }
 
 export function normalizeExtendLengthUnits(
-  value: boolean | ILengthUnitsPatchOptions | undefined,
+  value: boolean | LengthUnitsRuntimeOptions | undefined,
 ): TailwindExtendLengthUnitsOption | undefined {
   if (value === undefined) {
     return undefined
@@ -24,8 +24,8 @@ export function normalizeExtendLengthUnits(
     : resolved
 }
 
-export function normalizeTailwindcssPatcherOptions(
-  options?: TailwindCssPatchOptions,
-): TailwindCssPatchOptions | undefined {
+export function normalizeTailwindcssRuntimeOptions(
+  options?: TailwindCssRuntimeOptions,
+): TailwindCssRuntimeOptions | undefined {
   return options
 }

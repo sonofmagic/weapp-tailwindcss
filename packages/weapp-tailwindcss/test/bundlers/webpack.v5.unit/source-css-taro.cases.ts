@@ -9,8 +9,8 @@ describe('bundlers/webpack WeappTailwindcss / registered source css taro main', 
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: `handled:${code}` })),
-      twPatcher: {
-        ...createContext().twPatcher,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
         getClassSet: vi.fn(async () => new Set(['text-[40px]'])),
         getClassSetSync: vi.fn(() => new Set(['text-[40px]'])),
         extract: vi.fn(async () => ({ classSet: new Set(['text-[40px]']) })),

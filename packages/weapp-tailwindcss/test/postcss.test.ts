@@ -9,7 +9,7 @@ import { getCss } from './helpers/getTwCss'
 
 async function getClassCacheSet() {
   const ctx = getCompilerContext()
-  return ctx.twPatcher.getClassSet()
+  return ctx.tailwindRuntime.getClassSet()
 }
 
 describe('postcss plugin', () => {

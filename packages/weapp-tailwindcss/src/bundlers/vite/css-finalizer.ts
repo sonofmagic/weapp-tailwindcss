@@ -28,7 +28,7 @@ interface RememberedMainCssSource {
 interface CssFinalizerContext {
   opts: InternalUserDefinedOptions
   runtimeState: {
-    twPatcher: InternalUserDefinedOptions['twPatcher']
+    tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
     readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>
@@ -111,7 +111,7 @@ function shouldGenerateCssByGenerator(
   if (hasTailwindRootDirectives(rawSource, { importFallback: generatorOptions.importFallback })) {
     return true
   }
-  if (opts.twPatcher.majorVersion === 3) {
+  if (opts.tailwindRuntime.majorVersion === 3) {
     return false
   }
   return processed
@@ -222,7 +222,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             ...runtime,
             ...applyUtilities,
           ])
-          const harmonyCssHandlerOptions = createCssHandlerOptions(opts, runtimeState.twPatcher.majorVersion, 'uni-app-x-harmony-apply.css')
+          const harmonyCssHandlerOptions = createCssHandlerOptions(opts, runtimeState.tailwindRuntime.majorVersion, 'uni-app-x-harmony-apply.css')
           const generated = await generateCssByGenerator({
             opts,
             runtimeState,
@@ -284,7 +284,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           ...runtime,
           ...(getSourceCandidates?.() ?? []),
         ])
-        const generatorRuntime = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
+        const generatorRuntime = runtimeState.tailwindRuntime.majorVersion === 4 && generatorOptions.target === 'weapp'
           ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
           : collectedGeneratorCandidates
         await Promise.all(entries.map(async ([bundleFile, output]) => {
@@ -300,7 +300,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           }
           const cssHandlerOptions = createCssHandlerOptions(
             opts,
-            runtimeState.twPatcher.majorVersion,
+            runtimeState.tailwindRuntime.majorVersion,
             file,
           )
           const cssUserHandlerOptions = {
@@ -316,7 +316,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const generatorCssHandlerOptions = rememberedMainCssSource
             ? createCssHandlerOptions(
                 opts,
-                runtimeState.twPatcher.majorVersion,
+                runtimeState.tailwindRuntime.majorVersion,
                 generatorSourceFile,
               )
             : cssHandlerOptions

@@ -1,20 +1,20 @@
-import type { TailwindCssPatchOptions } from '../patcher-types'
-import type { CreateTailwindcssRuntimeOptions } from '@/tailwindcss/patcher'
-import type { InternalUserDefinedOptions, TailwindcssPatcherLike, TailwindcssRuntimeLike } from '@/types'
+import type { TailwindCssRuntimeOptions } from '../runtime-types'
+import type { CreateTailwindcssRuntimeOptions } from '@/tailwindcss/runtime-factory'
+import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { logger } from '@weapp-tailwindcss/logger'
-import { createTailwindcssRuntime } from '@/tailwindcss/patcher'
+import { createTailwindcssRuntime } from '@/tailwindcss/runtime-factory'
 import { readInstalledPackageMajorVersion } from '@/tailwindcss/version'
 import { defuOverrideArray } from '@/utils'
 import { omitUndefined } from '@/utils/object'
-import { createMultiTailwindcssRuntime } from './multi-patcher'
-import { overrideTailwindcssPatcherOptionsForBase } from './patcher-options'
+import { createMultiTailwindcssRuntime } from './multi-runtime'
+import { overrideTailwindcssRuntimeOptionsForBase } from './runtime-options'
 
 export { groupCssEntriesByBase, guessBasedirFromEntries, normalizeCssEntries } from './css-entries'
-export { createMultiTailwindcssPatcher, createMultiTailwindcssRuntime } from './multi-patcher'
+export { createMultiTailwindcssRuntime } from './multi-runtime'
 
-type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
+type TailwindUserOptions = NonNullable<TailwindCssRuntimeOptions['tailwindcss']>
 
 function isTailwindcss4Package(packageName: string | undefined) {
   return Boolean(
@@ -54,10 +54,10 @@ function readPackageNameFromBaseDir(baseDir: string) {
   }
 }
 
-export interface TailwindcssPatcherFactoryOptions {
+export interface TailwindcssRuntimeFactoryOptions {
   tailwindcss?: TailwindUserOptions
-  tailwindcssPatcherOptions?: CreateTailwindcssRuntimeOptions['tailwindcssPatcherOptions']
-  supportCustomLengthUnitsPatch: InternalUserDefinedOptions['supportCustomLengthUnitsPatch']
+  tailwindcssRuntimeOptions?: CreateTailwindcssRuntimeOptions['tailwindcssRuntimeOptions']
+  supportCustomLengthUnits: InternalUserDefinedOptions['supportCustomLengthUnits']
   appType: InternalUserDefinedOptions['appType']
   bareArbitraryValues?: InternalUserDefinedOptions['arbitraryValues']['bareArbitraryValues']
 }
@@ -65,12 +65,12 @@ export interface TailwindcssPatcherFactoryOptions {
 export function createTailwindcssRuntimeForBase(
   baseDir: string,
   cssEntries: string[] | undefined,
-  options: TailwindcssPatcherFactoryOptions,
+  options: TailwindcssRuntimeFactoryOptions,
 ) {
   const {
     tailwindcss,
-    tailwindcssPatcherOptions,
-    supportCustomLengthUnitsPatch,
+    tailwindcssRuntimeOptions,
+    supportCustomLengthUnits,
     bareArbitraryValues,
   } = options
 
@@ -126,16 +126,16 @@ export function createTailwindcssRuntimeForBase(
     mergedTailwindOptions.v4.bareArbitraryValues = bareArbitraryValues
   }
 
-  const patchedOptions = overrideTailwindcssPatcherOptionsForBase(
-    tailwindcssPatcherOptions,
+  const patchedOptions = overrideTailwindcssRuntimeOptionsForBase(
+    tailwindcssRuntimeOptions,
     baseDir,
     cssEntries ?? [],
   )
 
   const configuredPackageName = tailwindcss?.packageName
-    || (tailwindcssPatcherOptions as any)?.tailwindcss?.packageName
+    || (tailwindcssRuntimeOptions as any)?.tailwindcss?.packageName
   const configuredVersion = tailwindcss?.version
-    || (tailwindcssPatcherOptions as any)?.tailwindcss?.version
+    || (tailwindcssRuntimeOptions as any)?.tailwindcss?.version
     || mergedTailwindOptions.version
   const explicitTailwindVersion = resolveExplicitTailwindVersion(configuredVersion, configuredPackageName)
 
@@ -159,20 +159,15 @@ export function createTailwindcssRuntimeForBase(
 
   return createTailwindcssRuntime(omitUndefined({
     basedir: baseDir,
-    supportCustomLengthUnitsPatch: supportCustomLengthUnitsPatch ?? true,
+    supportCustomLengthUnits: supportCustomLengthUnits ?? true,
     tailwindcss: tailwindOptionsForPackage,
-    tailwindcssPatcherOptions: patchedOptions,
+    tailwindcssRuntimeOptions: patchedOptions,
   }))
 }
 
-/**
- * @deprecated 请使用 `createTailwindcssRuntimeForBase`。
- */
-export const createPatcherForBase = createTailwindcssRuntimeForBase
-
 export function tryCreateMultiTailwindcssRuntime(
   groups: Map<string, string[]>,
-  options: TailwindcssPatcherFactoryOptions,
+  options: TailwindcssRuntimeFactoryOptions,
 ) {
   if (groups.size <= 1) {
     return undefined
@@ -188,11 +183,3 @@ export function tryCreateMultiTailwindcssRuntime(
   }
   return createMultiTailwindcssRuntime(runtimes)
 }
-
-/**
- * @deprecated 请使用 `tryCreateMultiTailwindcssRuntime`。
- */
-export const tryCreateMultiTailwindcssPatcher = tryCreateMultiTailwindcssRuntime as (
-  groups: Map<string, string[]>,
-  options: TailwindcssPatcherFactoryOptions,
-) => TailwindcssPatcherLike | undefined

@@ -297,9 +297,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -635,9 +635,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -973,9 +973,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1307,9 +1307,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1649,9 +1649,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -1987,9 +1987,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -2930,9 +2930,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "/*
  * ATTENTION: The "eval" devtool has been used (maybe by default in mode: "development").
@@ -3268,9 +3268,9 @@ view,text,::after,::before {
     </view>
   </view>
   <view class="test">test</view>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-_b20px_B'?'p-_b20px_B':'m-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'?'icon-home-selected':'icon-home'}} {{b}} {{a==='cc'}} w-_b20px_B {{flag=='p-[20px]'?'p-_b20px_B':'m-_b20px_B'}}"></view>
   <button class="bg-sky-700 px-4 py-2 text-white hover_cbg-sky-800 sm_cpx-8 sm_cpy-3">...</button>
-  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-_b20px_B'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
+  <view class="border-0 icon h-10 w-10 mx-auto {{active=='home'? 'icon-home-selected' : 'icon-home'}} {{b}} {{ a==='cc' }} w-_b20px_B {{flag=='p-[20px]'? 'p-_b20px_B' : 'm-_b20px_B'}}"></view>
 </view>",
   "wxml.js": "const className="w-_b100px_B h-_b100px_B bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B";document.body.append(\`<div class="\${className}">className</div>\`);const el=document.createElement();el.classList.add("w-_b99px_B","h-_b99px_B","bg-_burl_p_ahttps_c_f_fyyy_dcom_fxx_dwebp_a_P_B"),document.body.appendChild(el);",
 }

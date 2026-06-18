@@ -1,19 +1,19 @@
 import type { TailwindResolvedSource, WeappTailwindcssGenerator } from './types'
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import {
   createTailwindV3Engine,
   resolveTailwindV3Source,
-  resolveTailwindV3SourceFromPatcher,
-  resolveTailwindV3SourceOptionsFromPatcher,
+  resolveTailwindV3SourceFromRuntime,
+  resolveTailwindV3SourceOptionsFromRuntime,
   transformTailwindV3CssByTarget,
   transformTailwindV3CssToWeapp,
 } from '@/tailwindcss/v3-engine'
 import {
   createTailwindV4Engine,
   resolveTailwindV4Source,
-  resolveTailwindV4SourceFromPatcher,
-  resolveTailwindV4SourceFromPatchOptions,
-  resolveTailwindV4SourceOptionsFromPatcher,
+  resolveTailwindV4SourceFromRuntime,
+  resolveTailwindV4SourceFromRuntimeOptions,
+  resolveTailwindV4SourceOptionsFromRuntime,
   transformTailwindV4CssByTarget,
   transformTailwindV4CssToWeapp,
 } from '@/tailwindcss/v4-engine'
@@ -28,18 +28,18 @@ export function createWeappTailwindcssGenerator(source: TailwindResolvedSource):
     : createTailwindV4Engine(source)
 }
 
-export async function resolveTailwindSourceFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export async function resolveTailwindSourceFromRuntime(
+  tailwindRuntime: TailwindcssRuntimeLike,
 ): Promise<TailwindResolvedSource> {
-  return patcher.majorVersion === 3
-    ? resolveTailwindV3SourceFromPatcher(patcher)
-    : resolveTailwindV4SourceFromPatcher(patcher)
+  return tailwindRuntime.majorVersion === 3
+    ? resolveTailwindV3SourceFromRuntime(tailwindRuntime)
+    : resolveTailwindV4SourceFromRuntime(tailwindRuntime)
 }
 
-export async function createWeappTailwindcssGeneratorFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export async function createWeappTailwindcssGeneratorFromRuntime(
+  tailwindRuntime: TailwindcssRuntimeLike,
 ) {
-  return createWeappTailwindcssGenerator(await resolveTailwindSourceFromPatcher(patcher))
+  return createWeappTailwindcssGenerator(await resolveTailwindSourceFromRuntime(tailwindRuntime))
 }
 
 export {
@@ -48,12 +48,12 @@ export {
 
 export {
   resolveTailwindV3Source,
-  resolveTailwindV3SourceFromPatcher,
-  resolveTailwindV3SourceOptionsFromPatcher,
+  resolveTailwindV3SourceFromRuntime,
+  resolveTailwindV3SourceOptionsFromRuntime,
   resolveTailwindV4Source,
-  resolveTailwindV4SourceFromPatcher,
-  resolveTailwindV4SourceFromPatchOptions,
-  resolveTailwindV4SourceOptionsFromPatcher,
+  resolveTailwindV4SourceFromRuntime,
+  resolveTailwindV4SourceFromRuntimeOptions,
+  resolveTailwindV4SourceOptionsFromRuntime,
   transformTailwindV3CssByTarget,
   transformTailwindV3CssToWeapp,
   transformTailwindV4CssByTarget,

@@ -1,4 +1,4 @@
-import type { TailwindcssPatcherFactoryOptions } from '@/tailwindcss/v4'
+import type { TailwindcssRuntimeFactoryOptions } from '@/tailwindcss/v4'
 import type { InternalUserDefinedOptions } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { findWorkspaceRoot } from '@/context/workspace'
@@ -16,9 +16,9 @@ import { detectImplicitCssEntries } from './tailwindcss/rax'
 export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOptions) {
   const {
     tailwindcssBasedir,
-    supportCustomLengthUnitsPatch,
+    supportCustomLengthUnits,
     tailwindcss,
-    tailwindcssPatcherOptions,
+    tailwindcssRuntimeOptions,
     cssEntries: rawCssEntries,
     appType,
     arbitraryValues,
@@ -37,10 +37,10 @@ export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOpti
     ctx.cssEntries = normalizedCssEntries
   }
 
-  const runtimeOptions: TailwindcssPatcherFactoryOptions = {
+  const runtimeOptions: TailwindcssRuntimeFactoryOptions = {
     tailwindcss,
-    tailwindcssPatcherOptions,
-    supportCustomLengthUnitsPatch,
+    tailwindcssRuntimeOptions,
+    supportCustomLengthUnits,
     appType,
     bareArbitraryValues: arbitraryValues?.bareArbitraryValues,
   }
@@ -79,10 +79,5 @@ export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOpti
     runtimeOptions,
   )
 }
-
-/**
- * @deprecated 请使用 `createTailwindcssRuntimeFromContext`。
- */
-export const createTailwindcssPatcherFromContext = createTailwindcssRuntimeFromContext
 
 export { resolveTailwindcssBasedir }

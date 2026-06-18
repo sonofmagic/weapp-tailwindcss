@@ -10,7 +10,7 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   options: InternalUserDefinedOptions
   appType?: AppType | undefined
   runtimeState: {
-    twPatcher: InternalUserDefinedOptions['twPatcher']
+    tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
     readyPromise: Promise<void>
   }
   getRuntimeRefreshRequirement: () => boolean

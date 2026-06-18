@@ -1,12 +1,12 @@
 import type { BundleSnapshot } from './bundle-state'
 import type { InternalUserDefinedOptions } from '@/types'
 import process from 'node:process'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import {
   collectRuntimeClassSet,
   createTailwindRuntimeReadyPromise,
   refreshTailwindRuntimeState,
 } from '@/tailwindcss/runtime'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { createBundleRuntimeClassSetManager } from './incremental-runtime-class-set'
 
@@ -33,10 +33,8 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
   const runtimeState = {
     tailwindRuntime: initialTailwindRuntime,
-    twPatcher: initialTailwindRuntime,
     readyPromise,
     refreshTailwindcssRuntime,
-    refreshTailwindcssPatcher: refreshTailwindcssRuntime,
   }
   const bundleRuntimeClassSetManager = createBundleRuntimeClassSetManager({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
@@ -52,8 +50,8 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   let runtimeRefreshOptionsKey: string | undefined
 
   function resolveRuntimeRefreshOptions() {
-    const configPath = resolveTailwindcssOptions(runtimeState.twPatcher.options)?.config
-    const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
+    const configPath = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)?.config
+    const signature = getRuntimeClassSetSignature(runtimeState.tailwindRuntime)
     const optionsKey = JSON.stringify({
       appType: opts.appType,
       uniAppX: uniAppXEnabled,
@@ -97,7 +95,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
 
     if (forceRuntimeRefresh || !runtimeSetPromise) {
       const invalidation = resolveRuntimeRefreshOptions()
-      const task = collectRuntimeClassSet(runtimeState.twPatcher, {
+      const task = collectRuntimeClassSet(runtimeState.tailwindRuntime, {
         force: forceRuntimeRefresh || invalidation.changed,
         skipRefresh: forceRuntimeRefresh,
         clearCache: forceRuntimeRefresh || invalidation.changed,
@@ -128,23 +126,23 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   ) {
     const forceRuntimeRefresh = forceRefresh || process.env['WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH'] === '1'
     const invalidation = resolveRuntimeRefreshOptions()
-    const shouldRefreshPatcher = forceRuntimeRefresh || invalidation.changed
+    const shouldRefreshRuntime = forceRuntimeRefresh || invalidation.changed
     const forceCollectBySource = snapshot.runtimeAffectingChangedByType.html.size > 0
       || snapshot.runtimeAffectingChangedByType.js.size > 0
 
-    await refreshRuntimeState(shouldRefreshPatcher)
+    await refreshRuntimeState(shouldRefreshRuntime)
     await runtimeState.readyPromise
 
-    if (shouldRefreshPatcher) {
+    if (shouldRefreshRuntime) {
       runtimeSet = undefined
       runtimeSetPromise = undefined
       await bundleRuntimeClassSetManager.reset()
       await transformRuntimeClassSetManager.reset()
     }
 
-    if (runtimeState.twPatcher.majorVersion === 4 && !forceRuntimeRefresh) {
+    if (runtimeState.tailwindRuntime.majorVersion === 4 && !forceRuntimeRefresh) {
       try {
-        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
+        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
         runtimeSet = nextRuntimeSet
         return nextRuntimeSet
       }
@@ -154,10 +152,10 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       }
     }
 
-    if (runtimeState.twPatcher.majorVersion === 3 && !forceRuntimeRefresh) {
+    if (runtimeState.tailwindRuntime.majorVersion === 3 && !forceRuntimeRefresh) {
       if (options.transformOnly) {
         try {
-          return await transformRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot)
+          return await transformRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
         }
         catch (error) {
           debug('incremental transform runtime set sync failed, fallback to full collect: %O', error)
@@ -167,14 +165,14 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
 
       try {
         let baseClassSet = options.baseClassSet
-        if (!baseClassSet && (!runtimeSet || shouldRefreshPatcher)) {
-          baseClassSet = await collectRuntimeClassSet(runtimeState.twPatcher, {
+        if (!baseClassSet && (!runtimeSet || shouldRefreshRuntime)) {
+          baseClassSet = await collectRuntimeClassSet(runtimeState.tailwindRuntime, {
             force: true,
-            skipRefresh: shouldRefreshPatcher,
-            clearCache: shouldRefreshPatcher,
+            skipRefresh: shouldRefreshRuntime,
+            clearCache: shouldRefreshRuntime,
           })
         }
-        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, snapshot, {
+        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
           baseClassSet: baseClassSet ?? (
             options.allowBaselineOnlyInitialSync === true ? runtimeSet : undefined
           ),
@@ -193,7 +191,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       return runtimeSet
     }
 
-    const task = collectRuntimeClassSet(runtimeState.twPatcher, {
+    const task = collectRuntimeClassSet(runtimeState.tailwindRuntime, {
       force: forceRuntimeRefresh || invalidation.changed || forceCollectBySource,
       skipRefresh: forceRuntimeRefresh,
       clearCache: forceRuntimeRefresh || invalidation.changed,

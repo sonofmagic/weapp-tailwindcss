@@ -1,6 +1,6 @@
 import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
+import type { TailwindcssRuntimeLike, UserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
@@ -16,7 +16,7 @@ import {
 } from '@/tailwindcss/source-scan'
 import {
   resolveTailwindV3Source,
-  resolveTailwindV3SourceOptionsFromPatcher,
+  resolveTailwindV3SourceOptionsFromRuntime,
 } from '@/tailwindcss/v3-engine'
 import { readStaticConfigContent } from '../static-config-content'
 import { addSourceScanDependencies, addSourceScanDependency } from './dependencies'
@@ -286,7 +286,7 @@ export function collectExistingCssEntries(options: UserDefinedOptions) {
   return [
     ...(options.cssEntries ?? []),
     ...(options.tailwindcss?.v4?.cssEntries ?? []),
-    ...((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssEntries ?? []),
+    ...((options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssEntries ?? []),
   ]
     .filter((item): item is string => typeof item === 'string' && item.length > 0)
     .map(item => path.resolve(item))
@@ -295,7 +295,7 @@ export function collectExistingCssEntries(options: UserDefinedOptions) {
 
 export async function resolveTailwindV3CssEntryScan(
   options: UserDefinedOptions,
-  patcher: TailwindcssPatcherLike,
+  runtime: TailwindcssRuntimeLike,
 ) {
   const cssEntries = collectExistingCssEntries(options)
   const entries: TailwindSourceEntry[] = []
@@ -307,7 +307,7 @@ export async function resolveTailwindV3CssEntryScan(
     }
   }
 
-  const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(patcher)
+  const sourceOptions = resolveTailwindV3SourceOptionsFromRuntime(runtime)
   await Promise.all(cssEntries.map(async (cssEntry) => {
     addSourceScanDependency(dependencies, cssEntry)
     let css: string
@@ -451,6 +451,6 @@ export async function discoverTailwindV4CssEntries(root: string, outDir: string 
 export function collectConfiguredCssSources(options: UserDefinedOptions) {
   return [
     ...(options.tailwindcss?.v4?.cssSources ?? []),
-    ...(((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]),
+    ...(((options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]),
   ]
 }

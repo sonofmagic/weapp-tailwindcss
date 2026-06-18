@@ -7,13 +7,13 @@ import {
   findTailwindConfig,
   resolveModuleFromPaths,
   resolveTailwindConfigFallback,
-} from '@/tailwindcss/patcher-resolve'
+} from '@/tailwindcss/runtime-resolve'
 
-describe('tailwindcss patcher resolve helpers', () => {
+describe('tailwindcss runtime resolve helpers', () => {
   let tempRoot = ''
 
   beforeEach(async () => {
-    tempRoot = await mkdtemp(path.join(os.tmpdir(), 'wtw-patcher-resolve-'))
+    tempRoot = await mkdtemp(path.join(os.tmpdir(), 'wtw-runtime-resolve-'))
   })
 
   afterEach(async () => {

@@ -141,7 +141,7 @@ export function uniAppX(options: UniAppXOptions) {
       unitConversion: options.unitConversion,
       appType: 'uni-app-x',
       tailwindcssBasedir: options.base,
-      tailwindcssPatcherOptions: {
+      tailwindcssRuntimeOptions: {
         projectRoot: options.base,
         tailwindcss: {
           ...(installedTailwindDefaults ?? {}),

@@ -130,14 +130,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     styleHandler,
     jsHandler,
     tailwindRuntime,
-    twPatcher,
     refreshTailwindcssRuntime,
-    refreshTailwindcssPatcher,
     uniAppX,
     disabledDefaultTemplateHandler,
   } = opts
-  const initialTailwindRuntime = tailwindRuntime ?? twPatcher
-  const refreshTailwindRuntime = refreshTailwindcssRuntime ?? refreshTailwindcssPatcher
+  const initialTailwindRuntime = tailwindRuntime
+  const refreshTailwindRuntime = refreshTailwindcssRuntime
   const uniAppXEnabled = isUniAppXEnabled(uniAppX)
 
   const disabledOptions = resolvePluginDisabledState(disabled)
@@ -429,7 +427,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const root = resolvedConfig?.root ?? process.cwd()
     const outDir = resolvedConfig?.build?.outDir
-    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
       outDir,
       root,
     })
@@ -621,7 +619,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const transformCssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => opts.appType,
     mainCssChunkMatcher,
-    getMajorVersion: () => runtimeState.twPatcher.majorVersion,
+    getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion,
     getOutputRoot: () => resolvedConfig?.build?.outDir
       ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir)
       : resolvedConfig?.root,

@@ -1,10 +1,10 @@
 import type {
-  ILengthUnitsPatchOptions,
+  LengthUnitsRuntimeOptions,
   TailwindContentTokenReport,
   TailwindcssExtractOptions,
   TailwindcssExtractResult,
-  TailwindCssPatchOptions,
-} from './patcher-types'
+  TailwindCssRuntimeOptions,
+} from './runtime-types'
 import type { TailwindcssRuntimeLike } from '@/types'
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
@@ -19,34 +19,32 @@ import { omitUndefined } from '@/utils/object'
 import { extractCandidatesFromSource } from './candidates'
 import {
   normalizeExtendLengthUnits,
-  normalizeTailwindcssPatcherOptions,
-} from './patcher-options'
+  normalizeTailwindcssRuntimeOptions,
+} from './runtime-options'
 import {
   createDefaultResolvePaths,
   findTailwindConfig,
   resolveModuleFromPaths,
   resolveTailwindConfigFallback,
-} from './patcher-resolve'
+} from './runtime-resolve'
 import { expandTailwindSourceEntries, resolveTailwindSourceEntry } from './source-scan'
-import { resolveTailwindV3SourceFromPatcher } from './v3-engine'
-import { resolveTailwindV4SourceFromPatcher } from './v4-engine'
+import { resolveTailwindV3SourceFromRuntime } from './v3-engine'
+import { resolveTailwindV4SourceFromRuntime } from './v4-engine'
 import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION } from './version'
 
 const require = createRequire(import.meta.url)
 
-type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
-type TailwindCacheOptions = Exclude<NonNullable<TailwindCssPatchOptions['cache']>, boolean>
-type TailwindApplyOptions = NonNullable<TailwindCssPatchOptions['apply']>
+type TailwindUserOptions = NonNullable<TailwindCssRuntimeOptions['tailwindcss']>
+type TailwindCacheOptions = Exclude<NonNullable<TailwindCssRuntimeOptions['cache']>, boolean>
+type TailwindApplyOptions = NonNullable<TailwindCssRuntimeOptions['apply']>
 
 export interface CreateTailwindcssRuntimeOptions {
   basedir?: string
   cacheDir?: string
-  supportCustomLengthUnitsPatch?: boolean | ILengthUnitsPatchOptions
+  supportCustomLengthUnits?: boolean | LengthUnitsRuntimeOptions
   tailwindcss?: TailwindUserOptions
-  tailwindcssPatcherOptions?: TailwindCssPatchOptions
+  tailwindcssRuntimeOptions?: TailwindCssRuntimeOptions
 }
-
-export interface CreateTailwindcssPatcherOptions extends CreateTailwindcssRuntimeOptions {}
 
 function createPackageInfo(tailwindOptions: TailwindUserOptions | undefined): TailwindcssRuntimeLike['packageInfo'] {
   const packageName = tailwindOptions?.packageName ?? 'tailwindcss'
@@ -131,7 +129,7 @@ function resolveMajorVersion(tailwindOptions: TailwindUserOptions | undefined, p
   return DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION
 }
 
-function createFallbackTailwindcssRuntime(options?: TailwindCssPatchOptions): TailwindcssRuntimeLike {
+function createFallbackTailwindcssRuntime(options?: TailwindCssRuntimeOptions): TailwindcssRuntimeLike {
   const packageInfo = createPackageInfo(options?.tailwindcss)
 
   return {
@@ -292,7 +290,7 @@ async function readStaticTailwindV3Content(config: string | undefined) {
   return values
 }
 
-function createEngineTailwindcssRuntime(options: TailwindCssPatchOptions): TailwindcssRuntimeLike {
+function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): TailwindcssRuntimeLike {
   const tailwindOptions = options.tailwindcss
   const packageInfo = createPackageInfo(tailwindOptions)
   const majorVersion = resolveMajorVersion(tailwindOptions, packageInfo)
@@ -307,7 +305,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssPatchOptions): Tailw
   }
 
   async function collectTailwindV3CandidateSources() {
-    const source = await resolveTailwindV3SourceFromPatcher(runtime).catch(async () => {
+    const source = await resolveTailwindV3SourceFromRuntime(runtime).catch(async () => {
       const cwd = tailwindOptions?.v3?.cwd ?? tailwindOptions?.cwd ?? options.projectRoot ?? process.cwd()
       const config = tailwindOptions?.v3?.config ?? tailwindOptions?.config
       return {
@@ -406,7 +404,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssPatchOptions): Tailw
   }
 
   async function collectTailwindV4CssCandidates(candidates: Set<string>) {
-    const source = await resolveTailwindV4SourceFromPatcher(runtime)
+    const source = await resolveTailwindV4SourceFromRuntime(runtime)
     const cssList = [
       source.css,
       ...(source.cssSources ?? []).map(cssSource => cssSource.css).filter((css): css is string => typeof css === 'string'),
@@ -433,7 +431,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssPatchOptions): Tailw
 
   async function collectContentTokens(): Promise<TailwindContentTokenReport> {
     if (majorVersion === 4) {
-      const source = await resolveTailwindV4SourceFromPatcher(runtime)
+      const source = await resolveTailwindV4SourceFromRuntime(runtime)
       const report = await extractProjectCandidatesWithPositions({
         base: source.base,
         baseFallbacks: source.baseFallbacks,
@@ -506,7 +504,7 @@ const TAILWINDCSS_NOT_FOUND_RE = /tailwindcss not found/i
 const UNABLE_TO_LOCATE_TAILWINDCSS_RE = /unable to locate tailwind css package/i
 
 export function createTailwindcssRuntime(options?: CreateTailwindcssRuntimeOptions): TailwindcssRuntimeLike {
-  const { basedir, cacheDir, supportCustomLengthUnitsPatch, tailwindcss, tailwindcssPatcherOptions } = options || {}
+  const { basedir, cacheDir, supportCustomLengthUnits, tailwindcss, tailwindcssRuntimeOptions } = options || {}
   const cache: TailwindCacheOptions = {
     enabled: true,
     driver: 'memory',
@@ -537,9 +535,9 @@ export function createTailwindcssRuntime(options?: CreateTailwindcssRuntimeOptio
 
   const resolvePaths = createDefaultResolvePaths(cache.cwd ?? normalizedBasedir ?? process.cwd())
 
-  const normalizedUserOptions = normalizeTailwindcssPatcherOptions(tailwindcssPatcherOptions)
+  const normalizedUserOptions = normalizeTailwindcssRuntimeOptions(tailwindcssRuntimeOptions)
 
-  const extendLengthUnits = normalizeExtendLengthUnits(supportCustomLengthUnitsPatch ?? true)
+  const extendLengthUnits = normalizeExtendLengthUnits(supportCustomLengthUnits ?? true)
 
   const baseTailwindOptions = defuOverrideArray<TailwindUserOptions, Partial<TailwindUserOptions>[]>(
     (tailwindcss ?? {}) as TailwindUserOptions,
@@ -567,7 +565,7 @@ export function createTailwindcssRuntime(options?: CreateTailwindcssRuntimeOptio
     }
   }
 
-  const baseOptions: TailwindCssPatchOptions = omitUndefined({
+  const baseOptions: TailwindCssRuntimeOptions = omitUndefined({
     projectRoot: normalizedBasedir,
     cache,
     tailwindcss: baseTailwindOptions,
@@ -575,10 +573,10 @@ export function createTailwindcssRuntime(options?: CreateTailwindcssRuntimeOptio
       exposeContext: true,
       extendLengthUnits,
     }) satisfies TailwindApplyOptions,
-  }) as TailwindCssPatchOptions
+  }) as TailwindCssRuntimeOptions
 
-  const mergedOptions = defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(
-    (normalizedUserOptions ?? {}) as TailwindCssPatchOptions,
+  const mergedOptions = defuOverrideArray<TailwindCssRuntimeOptions, TailwindCssRuntimeOptions[]>(
+    (normalizedUserOptions ?? {}) as TailwindCssRuntimeOptions,
     baseOptions,
   )
   const resolvedOptions = mergedOptions
@@ -656,8 +654,3 @@ export function createTailwindcssRuntime(options?: CreateTailwindcssRuntimeOptio
     throw error
   }
 }
-
-/**
- * @deprecated 请使用 `createTailwindcssRuntime`。
- */
-export const createTailwindcssPatcher = createTailwindcssRuntime

@@ -1,10 +1,10 @@
-import type { TailwindCssPatchOptions } from '../patcher-types'
+import type { TailwindCssRuntimeOptions } from '../runtime-types'
 
-export function overrideTailwindcssPatcherOptionsForBase(
-  options: TailwindCssPatchOptions | undefined,
+export function overrideTailwindcssRuntimeOptionsForBase(
+  options: TailwindCssRuntimeOptions | undefined,
   baseDir: string,
   cssEntries: string[],
-): TailwindCssPatchOptions | undefined {
+): TailwindCssRuntimeOptions | undefined {
   const hasCssEntries = cssEntries.length > 0
 
   if (!options) {

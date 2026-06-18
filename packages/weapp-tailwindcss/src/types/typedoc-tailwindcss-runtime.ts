@@ -1,7 +1,7 @@
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { TailwindSourceEntry as SourceEntry } from '../tailwindcss/source-scan'
 import type { TailwindV4SourceOptions } from '../tailwindcss/v4-engine'
-import type { ILengthUnitsPatchOptions } from '@/tailwindcss/patcher-types'
+import type { LengthUnitsRuntimeOptions } from '@/tailwindcss/runtime-types'
 
 type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 
@@ -75,17 +75,17 @@ export interface ExposeContextOptions {
 }
 
 /**
- * 扩展内置长度单位补丁的默认值。
+ * 扩展内置长度单位支持的默认值。
  */
-export interface ExtendLengthUnitsOptions extends Partial<ILengthUnitsPatchOptions> {
+export interface ExtendLengthUnitsOptions extends Partial<LengthUnitsRuntimeOptions> {
   /**
-   * 是否启用长度单位补丁。
+   * 是否启用长度单位支持。
    */
   enabled?: boolean
 }
 
 /**
- * Tailwind 运行时补丁行为配置。
+ * Tailwind 运行时行为配置。
  */
 export interface ApplyOptions {
   /**
@@ -97,7 +97,7 @@ export interface ApplyOptions {
    */
   exposeContext?: boolean | ExposeContextOptions
   /**
-   * 扩展长度单位补丁，传入 `false` 可完全关闭。
+   * 扩展长度单位支持，传入 `false` 可完全关闭。
    */
   extendLengthUnits?: false | ExtendLengthUnitsOptions
 }
@@ -195,7 +195,7 @@ export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
 /**
  * Tailwind CSS 补丁运行器的根配置。
  */
-export interface TailwindCssPatchOptions {
+export interface TailwindCssRuntimeOptions {
   /**
    * 解析 Tailwind 资源时使用的项目根目录。默认是 `process.cwd()`。
    */

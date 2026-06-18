@@ -82,7 +82,7 @@ export async function generateCssByGenerator(
     ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
   }
-  const majorVersion = runtimeState.twPatcher.majorVersion
+  const majorVersion = runtimeState.tailwindRuntime.majorVersion
   const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(
       normalizeTailwindSourceDirectives(rawSource, {

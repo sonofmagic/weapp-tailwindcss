@@ -1,12 +1,12 @@
 /**
  * Context 刷新机制测试
- * 测试 getCompilerContext 中的 refreshTailwindcssPatcher 函数
- * 覆盖缓存清理、Patcher 更新、Symbol 标记注册
+ * 测试 getCompilerContext 中的 refreshTailwindcssRuntime 函数
+ * 覆盖缓存清理、运行时更新、Symbol 标记注册
  */
 import type { UserDefinedOptions } from '@/types'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
-import { refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
+import { refreshTailwindcssRuntimeSymbol } from '@/tailwindcss/runtime'
 
 describe('Context Refresh Mechanism', () => {
   beforeEach(() => {
@@ -17,38 +17,38 @@ describe('Context Refresh Mechanism', () => {
     vi.restoreAllMocks()
   })
 
-  it('should register refreshTailwindcssPatcher function on context', () => {
+  it('should register refreshTailwindcssRuntime function on context', () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
-    expect(ctx.refreshTailwindcssPatcher).toBeDefined()
-    expect(typeof ctx.refreshTailwindcssPatcher).toBe('function')
+    expect(ctx.refreshTailwindcssRuntime).toBeDefined()
+    expect(typeof ctx.refreshTailwindcssRuntime).toBe('function')
   })
 
-  it('should register refreshTailwindcssPatcher symbol on twPatcher', () => {
+  it('should register refreshTailwindcssRuntime symbol on tailwindRuntime', () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
-    expect(ctx.twPatcher[refreshTailwindcssPatcherSymbol]).toBeDefined()
-    expect(typeof ctx.twPatcher[refreshTailwindcssPatcherSymbol]).toBe('function')
+    expect(ctx.tailwindRuntime[refreshTailwindcssRuntimeSymbol]).toBeDefined()
+    expect(typeof ctx.tailwindRuntime[refreshTailwindcssRuntimeSymbol]).toBe('function')
   })
 
-  it('should refresh patcher and clear cache by default', async () => {
+  it('should refresh runtime and clear cache by default', async () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
-    const originalPatcher = ctx.twPatcher
+    const originalRuntime = ctx.tailwindRuntime
 
-    // 刷新 patcher
-    const refreshed = await ctx.refreshTailwindcssPatcher()
+    // 刷新运行时
+    const refreshed = await ctx.refreshTailwindcssRuntime()
 
     // 应该返回同一个对象（引用）
-    expect(refreshed).toBe(originalPatcher)
+    expect(refreshed).toBe(originalRuntime)
     // 但内部属性应该被更新
-    expect(ctx.twPatcher).toBe(originalPatcher)
+    expect(ctx.tailwindRuntime).toBe(originalRuntime)
   })
 
   it('should not clear cache when clearCache is false', async () => {
@@ -56,26 +56,26 @@ describe('Context Refresh Mechanism', () => {
       appType: 'taro',
     })
 
-    // 刷新 patcher 但不清除缓存
-    const refreshed = await ctx.refreshTailwindcssPatcher({ clearCache: false })
+    // 刷新运行时 但不清除缓存
+    const refreshed = await ctx.refreshTailwindcssRuntime({ clearCache: false })
 
     expect(refreshed).toBeDefined()
-    expect(ctx.twPatcher).toBe(refreshed)
+    expect(ctx.tailwindRuntime).toBe(refreshed)
   })
 
-  it('should update twPatcher reference after refresh', async () => {
+  it('should update tailwindRuntime reference after refresh', async () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
-    const beforeMajorVersion = ctx.twPatcher.majorVersion
-    const beforePackageName = ctx.twPatcher.packageInfo?.name
+    const beforeMajorVersion = ctx.tailwindRuntime.majorVersion
+    const beforePackageName = ctx.tailwindRuntime.packageInfo?.name
 
-    await ctx.refreshTailwindcssPatcher()
+    await ctx.refreshTailwindcssRuntime()
 
     // 基本属性应该保持一致（因为配置没变）
-    expect(ctx.twPatcher.majorVersion).toBe(beforeMajorVersion)
-    expect(ctx.twPatcher.packageInfo?.name).toBe(beforePackageName)
+    expect(ctx.tailwindRuntime.majorVersion).toBe(beforeMajorVersion)
+    expect(ctx.tailwindRuntime.packageInfo?.name).toBe(beforePackageName)
   })
 
   it('should work with different app types', async () => {
@@ -83,15 +83,15 @@ describe('Context Refresh Mechanism', () => {
 
     for (const appType of appTypes) {
       const ctx = getCompilerContext({ appType })
-      const refreshed = await ctx.refreshTailwindcssPatcher()
+      const refreshed = await ctx.refreshTailwindcssRuntime()
 
       expect(refreshed).toBeDefined()
-      expect(ctx.twPatcher).toBe(refreshed)
+      expect(ctx.tailwindRuntime).toBe(refreshed)
     }
   })
 
-  it.skip('should preserve custom patcher options after refresh', async () => {
-    // 由于 patcher 实现的特殊性，filter 函数可能被重新创建
+  it.skip('should preserve custom runtime options after refresh', async () => {
+    // 由于 runtime 实现的特殊性，filter 函数可能被重新创建
     // 这个测试需要在真实场景中验证
   })
 
@@ -100,14 +100,14 @@ describe('Context Refresh Mechanism', () => {
       appType: 'taro',
     })
 
-    const patcher1 = await ctx.refreshTailwindcssPatcher()
-    const patcher2 = await ctx.refreshTailwindcssPatcher()
-    const patcher3 = await ctx.refreshTailwindcssPatcher()
+    const runtime1 = await ctx.refreshTailwindcssRuntime()
+    const runtime2 = await ctx.refreshTailwindcssRuntime()
+    const runtime3 = await ctx.refreshTailwindcssRuntime()
 
     // 所有刷新应该返回同一个对象引用
-    expect(patcher1).toBe(patcher2)
-    expect(patcher2).toBe(patcher3)
-    expect(ctx.twPatcher).toBe(patcher3)
+    expect(runtime1).toBe(runtime2)
+    expect(runtime2).toBe(runtime3)
+    expect(ctx.tailwindRuntime).toBe(runtime3)
   })
 
   it('should work with TailwindCSS v3', async () => {
@@ -116,11 +116,11 @@ describe('Context Refresh Mechanism', () => {
       // 假设环境中安装的是 v3
     })
 
-    const refreshed = await ctx.refreshTailwindcssPatcher()
+    const refreshed = await ctx.refreshTailwindcssRuntime()
 
     expect(refreshed).toBeDefined()
     // 如果是 v3，majorVersion 应该是 3
-    if (ctx.twPatcher.majorVersion === 3) {
+    if (ctx.tailwindRuntime.majorVersion === 3) {
       expect(refreshed.majorVersion).toBe(3)
     }
   })
@@ -131,11 +131,11 @@ describe('Context Refresh Mechanism', () => {
       // 假设环境中安装的是 v4
     })
 
-    const refreshed = await ctx.refreshTailwindcssPatcher()
+    const refreshed = await ctx.refreshTailwindcssRuntime()
 
     expect(refreshed).toBeDefined()
     // 如果是 v4，majorVersion 应该是 4
-    if (ctx.twPatcher.majorVersion === 4) {
+    if (ctx.tailwindRuntime.majorVersion === 4) {
       expect(refreshed.majorVersion).toBe(4)
     }
   })
@@ -145,24 +145,24 @@ describe('Context Refresh Mechanism', () => {
       appType: 'taro',
     })
 
-    await ctx.refreshTailwindcssPatcher()
+    await ctx.refreshTailwindcssRuntime()
 
     // 运行时核心方法应该存在
-    expect(typeof ctx.twPatcher.extract).toBe('function')
-    expect(typeof ctx.twPatcher.getClassSet).toBe('function')
+    expect(typeof ctx.tailwindRuntime.extract).toBe('function')
+    expect(typeof ctx.tailwindRuntime.getClassSet).toBe('function')
   })
 
-  it('should update patcher with new configuration', async () => {
+  it('should update runtime with new configuration', async () => {
     const ctx = getCompilerContext({
       appType: 'taro',
       tailwindcssBasedir: process.cwd(),
     })
 
-    const beforeRefresh = ctx.twPatcher.options?.cwd
+    const beforeRefresh = ctx.tailwindRuntime.options?.cwd
 
-    await ctx.refreshTailwindcssPatcher()
+    await ctx.refreshTailwindcssRuntime()
 
-    const afterRefresh = ctx.twPatcher.options?.cwd
+    const afterRefresh = ctx.tailwindRuntime.options?.cwd
 
     // 配置路径应该保持一致
     expect(afterRefresh).toBe(beforeRefresh)
@@ -170,7 +170,7 @@ describe('Context Refresh Mechanism', () => {
 })
 
 describe('Context Refresh Error Handling', () => {
-  it('should handle refresh when patcher creation fails', async () => {
+  it('should handle refresh when runtime creation fails', async () => {
     // 这个测试验证异常情况下的行为
     const ctx = getCompilerContext({
       appType: 'taro',
@@ -178,8 +178,8 @@ describe('Context Refresh Error Handling', () => {
     })
 
     // 即使路径不存在，refresh 也应该能够执行
-    // （实际行为取决于 createTailwindcssPatcherFromContext 的实现）
-    await expect(ctx.refreshTailwindcssPatcher()).resolves.toBeDefined()
+    // （实际行为取决于 createTailwindcssRuntimeFromContext 的实现）
+    await expect(ctx.refreshTailwindcssRuntime()).resolves.toBeDefined()
   })
 
   it('should handle refresh with invalid options', async () => {
@@ -188,17 +188,17 @@ describe('Context Refresh Error Handling', () => {
     })
 
     // 传入空对象应该正常工作
-    await expect(ctx.refreshTailwindcssPatcher({})).resolves.toBeDefined()
+    await expect(ctx.refreshTailwindcssRuntime({})).resolves.toBeDefined()
   })
 })
 
 describe('Symbol Registration', () => {
-  it('should make refreshTailwindcssPatcher accessible via symbol', async () => {
+  it('should make refreshTailwindcssRuntime accessible via symbol', async () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
-    const symbolFn = ctx.twPatcher[refreshTailwindcssPatcherSymbol]
+    const symbolFn = ctx.tailwindRuntime[refreshTailwindcssRuntimeSymbol]
 
     expect(symbolFn).toBeDefined()
     expect(typeof symbolFn).toBe('function')
@@ -208,16 +208,16 @@ describe('Symbol Registration', () => {
     expect(result).toBeDefined()
   })
 
-  it('symbol function should return updated patcher', async () => {
+  it('symbol function should return updated runtime', async () => {
     const ctx = getCompilerContext({
       appType: 'taro',
     })
 
-    const symbolFn = ctx.twPatcher[refreshTailwindcssPatcherSymbol]
+    const symbolFn = ctx.tailwindRuntime[refreshTailwindcssRuntimeSymbol]
 
     if (symbolFn) {
       const result = await symbolFn()
-      expect(result).toBe(ctx.twPatcher)
+      expect(result).toBe(ctx.tailwindRuntime)
     }
   })
 
@@ -227,8 +227,8 @@ describe('Symbol Registration', () => {
     })
 
     const descriptor = Object.getOwnPropertyDescriptor(
-      ctx.twPatcher,
-      refreshTailwindcssPatcherSymbol,
+      ctx.tailwindRuntime,
+      refreshTailwindcssRuntimeSymbol,
     )
 
     expect(descriptor).toBeDefined()

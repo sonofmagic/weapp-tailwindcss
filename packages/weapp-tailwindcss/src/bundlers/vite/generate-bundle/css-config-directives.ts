@@ -19,11 +19,11 @@ function normalizeMatchedCssSourcePath(file: string | undefined) {
 }
 
 function collectConfiguredCssEntries(opts: InternalUserDefinedOptions) {
-  const patcherCssEntries = ((opts.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssEntries ?? []) as string[] | undefined
+  const runtimeCssEntries = ((opts.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssEntries ?? []) as string[] | undefined
   return [
     ...(opts.cssEntries ?? []),
     ...(opts.tailwindcss?.v4?.cssEntries ?? []),
-    ...(patcherCssEntries ?? []),
+    ...(runtimeCssEntries ?? []),
   ].filter((entry): entry is string => typeof entry === 'string' && entry.length > 0)
 }
 
@@ -50,14 +50,14 @@ function collectCssConfigBaseCandidates(
   addCandidate(path.dirname(path.resolve(outputRoot, file.replace(/[?#].*$/, ''))))
 
   const normalizedSource = normalizeCssSourceForCompare(source)
-  const patcherProjectRoot = typeof opts.tailwindcssPatcherOptions?.projectRoot === 'string'
-    ? opts.tailwindcssPatcherOptions.projectRoot
+  const runtimeProjectRoot = typeof opts.tailwindcssRuntimeOptions?.projectRoot === 'string'
+    ? opts.tailwindcssRuntimeOptions.projectRoot
     : undefined
   const sourceBaseFallback = opts.tailwindcss?.v4?.base
-    ?? patcherProjectRoot
+    ?? runtimeProjectRoot
     ?? opts.tailwindcssBasedir
     ?? outputRoot
-  const sourceRoot = opts.tailwindcssBasedir ?? patcherProjectRoot
+  const sourceRoot = opts.tailwindcssBasedir ?? runtimeProjectRoot
   const configuredCssEntries = collectConfiguredCssEntries(opts)
   for (const cssEntry of configuredCssEntries) {
     const resolvedCssEntry = path.resolve(cssEntry)
