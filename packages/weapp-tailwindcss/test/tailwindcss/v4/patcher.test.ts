@@ -209,7 +209,7 @@ describe('tailwindcss/v4/patcher helpers', () => {
     expect(patcher.majorVersion).toBe(4)
   })
 
-  it('passes bare arbitrary value options to tailwindcss-patch v4 options', async () => {
+  it('passes bare arbitrary value options to v4 engine options', async () => {
     createTailwindcssPatcher.mockImplementation(options => ({
       ...options,
       majorVersion: 4,

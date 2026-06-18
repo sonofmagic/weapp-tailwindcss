@@ -50,6 +50,14 @@ interface WebpackSourceCandidateCache {
   tokenSources: ReturnType<SourceCandidateCollector['sourcesForEntries']>
 }
 
+function isRuntimeTransformCandidate(candidate: string) {
+  return candidate.length > 0
+    && !candidate.includes('=')
+    && !candidate.includes('<')
+    && !candidate.includes('>')
+    && !candidate.includes('${')
+}
+
 function toMb(bytes: number) {
   return Math.round(bytes / 1024 / 1024)
 }
@@ -599,14 +607,24 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         await refreshRuntimeMetadata(forceRuntimeRefresh)
         consumeRuntimeRefreshRequirement()
+        const transformRuntimeSet = new Set(runtimeSet)
+        const webpackSourceCandidateSet = webpackSourceCandidates?.getSourceCandidatesForEntries(undefined)
+        if (webpackSourceCandidateSet?.size) {
+          for (const candidate of webpackSourceCandidateSet) {
+            if (isRuntimeTransformCandidate(candidate)) {
+              transformRuntimeSet.add(candidate)
+            }
+          }
+        }
         const runtimeSetHash = compilerOptions.cache.computeHash([
           getRuntimeClassSetSignature(runtimeState.twPatcher),
           [...runtimeSet].sort().join('\n'),
+          [...transformRuntimeSet].sort().join('\n'),
         ].join('\n\n'))
         const defaultTemplateHandlerOptions = {
-          runtimeSet,
+          runtimeSet: transformRuntimeSet,
         }
-        debug('get runtimeSet, class count: %d', runtimeSet.size)
+        debug('get runtimeSet, class count: %d, transform class count: %d', runtimeSet.size, transformRuntimeSet.size)
         const tasks: Promise<void>[] = []
         const taskFactories: Array<() => Promise<void>> = []
         const enqueueTask = async (
@@ -718,11 +736,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   }
                   if (shouldSkipJsTransform(currentSource, {
                     ...handlerOptions,
-                    classNameSet: runtimeSet,
+                    classNameSet: transformRuntimeSet,
                   })) {
                     return { result: new ConcatSource(currentSource) }
                   }
-                  const { code, linked } = await compilerOptions.jsHandler(currentSource, runtimeSet, handlerOptions)
+                  const { code, linked } = await compilerOptions.jsHandler(currentSource, transformRuntimeSet, handlerOptions)
                   const source = new ConcatSource(code)
                   debug('js handle: %s', file)
                   applyLinkedResults(linked)
@@ -883,7 +901,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           activeCssFiles,
         )
         if (activeCssFiles.size > 0) {
-          pruneWebpackCssSources?.(activeWebpackCssSourceFiles)
+          pruneWebpackCssSources?.(activeWebpackCssSourceFiles, { watchMode })
         }
         debug('end')
         emitHmrTiming('webpack', 'processAssets', performance.now() - hmrTimingStartedAt, {

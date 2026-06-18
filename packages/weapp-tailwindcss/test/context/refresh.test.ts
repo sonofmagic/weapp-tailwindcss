@@ -41,10 +41,6 @@ describe('Context Refresh Mechanism', () => {
     })
 
     const originalPatcher = ctx.twPatcher
-    const _originalPatchFn = originalPatcher.patch
-
-    // 模拟 patch 方法
-    vi.spyOn(ctx.twPatcher, 'patch').mockResolvedValue(undefined)
 
     // 刷新 patcher
     const refreshed = await ctx.refreshTailwindcssPatcher()

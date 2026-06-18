@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'

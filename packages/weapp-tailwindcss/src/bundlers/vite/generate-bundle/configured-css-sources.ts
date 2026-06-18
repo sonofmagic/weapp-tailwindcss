@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'

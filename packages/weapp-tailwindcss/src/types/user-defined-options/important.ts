@@ -10,8 +10,8 @@ import type {
   UnitsToPxOptions,
   WeappAutoprefixerOptions,
 } from '@weapp-tailwindcss/postcss/types'
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICustomAttributes } from '../shared'
+import type { TailwindCssPatchOptions } from '@/tailwindcss/patcher-types'
 
 export interface UniAppXComponentLocalStylesOptions {
   /**

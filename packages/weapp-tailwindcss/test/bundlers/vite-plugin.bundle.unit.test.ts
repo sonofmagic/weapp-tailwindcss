@@ -10780,15 +10780,16 @@ ${utilities}
     const getClassSetSyncMock = vi.fn(() => runtimeSet)
     const extractMock = vi.fn(async () => ({ classSet: runtimeSet }))
 
-    const currentContext = getCurrentContext()
-    currentContext.jsHandler = jsHandlerMock as any
-    currentContext.twPatcher = {
-      patch: patchMock,
-      getClassSet: getClassSetMock,
-      getClassSetSync: getClassSetSyncMock,
-      extract: extractMock,
-      majorVersion: 4,
-    }
+    setCurrentContext(createContext({
+      jsHandler: jsHandlerMock as any,
+      twPatcher: {
+        patch: patchMock,
+        getClassSet: getClassSetMock,
+        getClassSetSync: getClassSetSyncMock,
+        extract: extractMock,
+        majorVersion: 4,
+      },
+    }))
 
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
@@ -10809,6 +10810,7 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(getClassSetSyncMock).toHaveBeenCalledTimes(1)
     expect(getClassSetMock).not.toHaveBeenCalled()
     expect(jsHandlerMock).toHaveBeenCalledTimes(1)
+    expect(jsHandlerMock.mock.calls[0]?.[1]).toEqual(runtimeSet)
 
     const code = (bundle['index.js'] as OutputChunk).code
     expect(code).toContain('bg-_b_h123324_B px-_b35px_B')

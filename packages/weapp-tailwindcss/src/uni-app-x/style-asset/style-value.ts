@@ -1,6 +1,6 @@
 import type { OutputChunk, SourceMap } from 'rollup'
+import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
-import { splitCandidateTokens } from 'tailwindcss-patch'
 import { replaceWxml } from '@/wxml'
 
 const GEN_APP_STYLES_RE = /const\s+GenAppStyles\s*=\s*\[_uM\(\[([\s\S]*?)\]\)\]/

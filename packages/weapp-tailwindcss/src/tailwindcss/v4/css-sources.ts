@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { omitUndefined } from '@/utils/object'

@@ -1,4 +1,4 @@
-import { splitCandidateTokens } from 'tailwindcss-patch'
+import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 
 const MUSTACHE_EXPRESSION_RE = /\{\{[\s\S]*?\}\}/g
 const QUOTED_LITERAL_RE = /'([^']*)'|"([^"]*)"|`([^`]*)`/g

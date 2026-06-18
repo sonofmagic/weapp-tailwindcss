@@ -4,6 +4,7 @@ import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } f
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
+import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -57,6 +58,10 @@ const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
 const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
   max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
 })
+
+function isMissingInternalCssSource(file: string) {
+  return !existsSync(file) && path.resolve(file).startsWith(`${weappTailwindcssPackageDir}${path.sep}`)
+}
 
 export interface WeappTailwindcssVitePlugin {
   name: string
@@ -147,6 +152,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   let autoCssSourcesRefresh: Promise<void> | undefined
   let autoCssSourcesDiscovered = false
   const syncTailwindCssSourceCandidates = async (id: string, css: string) => {
+    if (tailwindcssMajorVersion === 4 && isMissingInternalCssSource(cleanUrl(id))) {
+      return
+    }
     await sourceCandidateCollector.syncCss(id, css)
     cacheCurrentSourceCandidateScan()
   }
@@ -159,6 +167,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const file = cleanUrl(id)
     if (!path.isAbsolute(file)) {
+      return
+    }
+    if (isMissingInternalCssSource(file)) {
       return
     }
     const sourceFile = path.normalize(file)

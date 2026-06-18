@@ -1,7 +1,7 @@
 import type { PackageResolvingOptions } from 'local-pkg'
-import type { ILengthUnitsPatchOptions } from 'tailwindcss-patch'
 import type { TailwindSourceEntry as SourceEntry } from '../tailwindcss/source-scan'
 import type { TailwindV4SourceOptions } from '../tailwindcss/v4-engine'
+import type { ILengthUnitsPatchOptions } from '@/tailwindcss/patcher-types'
 
 type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
 

@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 

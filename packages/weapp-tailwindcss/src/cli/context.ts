@@ -1,4 +1,4 @@
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssPatchOptions } from '@/tailwindcss/patcher-types'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'

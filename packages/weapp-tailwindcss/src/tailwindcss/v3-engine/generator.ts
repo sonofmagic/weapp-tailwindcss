@@ -7,14 +7,14 @@ import type {
   TailwindV3ResolvedSource,
 } from './types'
 import { createRequire } from 'node:module'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { LRUCache } from 'lru-cache'
 import {
   extractSourceCandidates,
   isBareArbitraryValuesEnabled,
   resolveBareArbitraryValueCandidate,
-} from 'tailwindcss-patch'
-import * as tailwindcssPatch from 'tailwindcss-patch'
+} from '@tailwindcss-mangle/engine'
+import * as tailwindcssEngine from '@tailwindcss-mangle/engine'
+import { postcss } from '@weapp-tailwindcss/postcss'
+import { LRUCache } from 'lru-cache'
 import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { omitUndefined } from '@/utils/object'
 import { createIncrementalGenerateCacheKey } from './generator/cache-key'
@@ -87,8 +87,8 @@ type TailwindV3PatchRawGenerator = (options: {
   dependencies: string[]
 }>
 
-const patchRawStyleGenerator = typeof (tailwindcssPatch as { generateTailwindV3RawStyle?: unknown }).generateTailwindV3RawStyle === 'function'
-  ? (tailwindcssPatch as unknown as { generateTailwindV3RawStyle: TailwindV3PatchRawGenerator }).generateTailwindV3RawStyle
+const patchRawStyleGenerator = typeof (tailwindcssEngine as { generateTailwindV3RawStyle?: unknown }).generateTailwindV3RawStyle === 'function'
+  ? (tailwindcssEngine as unknown as { generateTailwindV3RawStyle: TailwindV3PatchRawGenerator }).generateTailwindV3RawStyle
   : undefined
 
 function isTailwindV3PatchResolutionError(error: unknown, packageName: string) {

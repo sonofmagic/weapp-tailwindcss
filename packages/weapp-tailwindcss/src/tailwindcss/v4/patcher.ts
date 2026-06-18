@@ -1,6 +1,8 @@
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssPatchOptions } from '../patcher-types'
 import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
 import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import { existsSync, readFileSync } from 'node:fs'
+import path from 'node:path'
 import { logger } from '@weapp-tailwindcss/logger'
 import { createTailwindcssPatcher } from '@/tailwindcss/patcher'
 import { readInstalledPackageMajorVersion } from '@/tailwindcss/version'
@@ -34,6 +36,22 @@ function resolveExplicitTailwindVersion(
   }
 
   return undefined
+}
+
+function readPackageNameFromBaseDir(baseDir: string) {
+  try {
+    if (!existsSync(path.join(baseDir, 'index.css'))) {
+      return undefined
+    }
+    const packageJson = JSON.parse(readFileSync(path.join(baseDir, 'package.json'), 'utf8')) as { name?: unknown }
+    const name = packageJson.name
+    return typeof name === 'string' && (name === 'tailwindcss' || name.includes('tailwindcss4'))
+      ? name
+      : undefined
+  }
+  catch {
+    return undefined
+  }
 }
 
 export interface TailwindcssPatcherFactoryOptions {
@@ -79,7 +97,7 @@ export function createPatcherForBase(
     defaultTailwindcssConfig,
   )
 
-  if (!mergedTailwindOptions.v4) {
+  if (!mergedTailwindOptions.v4 || typeof mergedTailwindOptions.v4 !== 'object') {
     mergedTailwindOptions.v4 = hasCssEntries
       ? { cssEntries: cssEntries ?? [] }
       : {
@@ -88,10 +106,6 @@ export function createPatcherForBase(
         }
   }
   else {
-    if (!hasCssEntries && !mergedTailwindOptions.v4.base) {
-      mergedTailwindOptions.v4.base = baseDir
-    }
-
     if (hasCssEntries) {
       if (cssEntries?.length) {
         mergedTailwindOptions.v4.cssEntries = cssEntries
@@ -101,6 +115,9 @@ export function createPatcherForBase(
       }
     }
     else if (!mergedTailwindOptions.v4.cssEntries) {
+      if (!mergedTailwindOptions.v4.base) {
+        mergedTailwindOptions.v4.base = baseDir
+      }
       mergedTailwindOptions.v4.cssEntries = cssEntries ?? []
     }
   }
@@ -131,7 +148,10 @@ export function createPatcherForBase(
 
   const tailwindOptionsForPackage: TailwindUserOptions = {
     ...mergedTailwindOptions,
-    packageName: mergedTailwindOptions.packageName ?? configuredPackageName ?? 'tailwindcss',
+    packageName: configuredPackageName
+      ?? mergedTailwindOptions.packageName
+      ?? readPackageNameFromBaseDir(baseDir)
+      ?? 'tailwindcss',
   }
   if (supportedResolvedTailwindVersion) {
     tailwindOptionsForPackage.version = supportedResolvedTailwindVersion

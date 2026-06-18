@@ -302,13 +302,13 @@ describe('get options', () => {
     let cacheOptions = config.twPatcher.options?.cache
     expect(cacheOptions?.enabled).toBe(true)
     // TailwindcssPatcher 内部可能将路径转为 posix 格式，统一用 path.normalize 比较
-    const expectedDefaultCacheDir = path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch')
+    const expectedDefaultCacheDir = path.join(process.cwd(), 'node_modules', '.cache', '@tailwindcss-mangle', 'engine')
     expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(expectedDefaultCacheDir))
     config = getCompilerContext({
       appType: 'mpx',
     })
     cacheOptions = config.twPatcher.options?.cache
-    expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch')))
+    expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(path.join(process.cwd(), 'node_modules', '.cache', '@tailwindcss-mangle', 'engine')))
   })
 
   describe('px2rpx options', () => {

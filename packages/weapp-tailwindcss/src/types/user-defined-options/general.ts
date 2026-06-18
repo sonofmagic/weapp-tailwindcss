@@ -1,9 +1,9 @@
 import type { ParserOptions } from '@babel/parser'
 import type { CssOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
-import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../../cache'
 import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
 import type { AppType, IArbitraryValues, IUnocssCompatibilityOptions } from '../shared'
+import type { ILengthUnitsPatchOptions, TailwindCssPatchOptions } from '@/tailwindcss/patcher-types'
 
 export interface CssSourceTraceOptions {
   root?: string | undefined

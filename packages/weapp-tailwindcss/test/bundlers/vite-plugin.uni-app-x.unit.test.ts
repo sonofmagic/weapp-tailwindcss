@@ -34,10 +34,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSet = new Set(['uvue'])
-    setCurrentContext(createContext())
-    const currentContext = getCurrentContext()
-    currentContext.uniAppX = { enabled: true }
-    currentContext.twPatcher = {
+    const twPatcher = {
       patch: vi.fn(),
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => {
@@ -46,6 +43,11 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
     }
+    setCurrentContext(createContext({
+      uniAppX: { enabled: true },
+      twPatcher,
+    }))
+    const currentContext = getCurrentContext()
     currentContext.onStart = vi.fn()
     currentContext.onEnd = vi.fn()
 
@@ -71,6 +73,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     const nvueTransform = nvuePlugin.transform as any
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
+    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
     expect(nvueResult).toEqual({ code: 'uvue:App.nvue:console.log("x")' })
 

@@ -1,7 +1,6 @@
 import type { RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike } from '@/types'
 import { createDebug } from '@/debug'
 import { createTailwindV4Engine, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
-import { ensureTailwindcssRuntimePatch } from './runtime-patch'
 import {
   getRuntimeClassSetCacheEntry,
   getRuntimeClassSetSignatureWithSources,
@@ -27,7 +26,6 @@ export function createTailwindRuntimeReadyPromise(
   twPatcher: TailwindcssPatcherLike,
 ): Promise<void> {
   return Promise.resolve().then(async () => {
-    await ensureTailwindcssRuntimePatch(twPatcher)
     invalidateRuntimeClassSet(twPatcher)
   })
 }
@@ -208,6 +206,10 @@ function tryGetRuntimeClassSetSync(twPatcher: TailwindcssPatcherLike) {
 }
 
 async function collectTailwindV4GeneratorClassSet(twPatcher: TailwindcssPatcherLike) {
+  if (typeof twPatcher.collectContentTokens !== 'function') {
+    return undefined
+  }
+
   try {
     const source = await resolveTailwindV4SourceFromPatcher(twPatcher)
     const generated = await createTailwindV4Engine(source).generate({
@@ -230,7 +232,7 @@ async function mergeTailwindV4GeneratorClassSet(
   if (twPatcher.majorVersion !== 4) {
     return classSet
   }
-  const generatorClassSet = await collectTailwindV4GeneratorClassSet(twPatcher)
+  const generatorClassSet = await collectTailwindV4GeneratorClassSet(twPatcher).catch(() => undefined)
   if (!generatorClassSet || generatorClassSet.size === 0) {
     return classSet
   }
@@ -287,13 +289,14 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
-    await ensureTailwindcssRuntimePatch(activePatcher)
-
     // force 场景先抓一份 sync 快照作为兜底，避免 extract() 在某些环境返回空集合后
     // 破坏本轮 JS/WXML 转译结果（例如构建链路中 class set 尚未落盘的瞬时状态）。
-    const preExtractSyncSet = options.force
+    const preExtractSyncSetCandidate = options.force
       ? tryGetRuntimeClassSetSync(activePatcher)
       : undefined
+    const preExtractSyncSet = activePatcher.majorVersion === 4
+      ? undefined
+      : preExtractSyncSetCandidate
     if (preExtractSyncSet) {
       debug('runtime class set snapshot via getClassSetSync() before extract(), size=%d', preExtractSyncSet.size)
     }

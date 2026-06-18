@@ -1,4 +1,4 @@
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssPatchOptions } from '../patcher-types'
 
 export function overrideTailwindcssPatcherOptionsForBase(
   options: TailwindCssPatchOptions | undefined,

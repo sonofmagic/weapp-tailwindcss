@@ -1,5 +1,5 @@
 // webpack 5
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
 import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
@@ -307,18 +307,21 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const registerWebpackCssSourceFile = (source: WebpackCssSourceRegistration) => {
       webpackCssSources.set(path.resolve(source.file), source.css)
     }
-    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>) => {
+    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, options: { watchMode?: boolean | undefined } = {}) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
-      if ((runtimeState.twPatcher.majorVersion ?? 0) < 4) {
+      const isTailwindcssV4 = (runtimeState.twPatcher.majorVersion ?? 0) >= 4
+      if (!isTailwindcssV4 && options.watchMode !== true) {
         return
       }
       const configuredSourceFiles = new Set<string>()
-      for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
-        configuredSourceFiles.add(path.resolve(entry))
-      }
-      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
-        if (source.file) {
-          configuredSourceFiles.add(path.resolve(source.file))
+      if (isTailwindcssV4) {
+        for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
+          configuredSourceFiles.add(path.resolve(entry))
+        }
+        for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+          if (source.file) {
+            configuredSourceFiles.add(path.resolve(source.file))
+          }
         }
       }
       for (const file of webpackCssSources.keys()) {

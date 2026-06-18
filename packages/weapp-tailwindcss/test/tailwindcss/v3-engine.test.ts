@@ -2,7 +2,6 @@ import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { clearTailwindV3IncrementalGenerateCacheForTest, createTailwindV3Engine, getTailwindV3IncrementalGenerateCacheStatsForTest, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
-import { TailwindcssPatcher } from 'tailwindcss-patch'
 import plugin from 'tailwindcss/plugin'
 
 const UNOCSS_DEFAULT_STYLE_CANDIDATES = [
@@ -87,26 +86,20 @@ describe('tailwindcss v3 engine', () => {
     expect(source.configObject?.content).toEqual(inlineConfig.content)
   })
 
-  it('reuses runtime patch setup for repeated engines with the same source', async () => {
+  it('generates repeated engines without patching Tailwind runtime', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
       base: path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3'),
       config: undefined,
     })
-    const patchSpy = vi.spyOn(TailwindcssPatcher.prototype, 'patch')
-
     const first = createTailwindV3Engine(source)
     const second = createTailwindV3Engine(source)
 
-    try {
-      await first.generate({ candidates: ['bg-blue-500'] })
-      await second.generate({ candidates: ['bg-[#123455]'] })
+    const firstResult = await first.generate({ candidates: ['bg-blue-500'] })
+    const secondResult = await second.generate({ candidates: ['bg-[#123455]'] })
 
-      expect(patchSpy).toHaveBeenCalledTimes(1)
-    }
-    finally {
-      patchSpy.mockRestore()
-    }
+    expect(firstResult.classSet).toEqual(new Set(['bg-blue-500']))
+    expect(secondResult.classSet).toEqual(new Set(['bg-[#123455]']))
   })
 
   it('generates without loading the Tailwind v3 PostCSS plugin entry', async () => {

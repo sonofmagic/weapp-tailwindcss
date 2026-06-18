@@ -407,6 +407,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     }
     debug('get runtimeSet, class count: %d, transform class count: %d', runtime.size, transformRuntime.size)
     const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
+    const transformRuntimeSignature = createCandidateSignature(transformRuntime)
     const shouldProcessTailwindGeneration = !useIncrementalMode
       || hasRuntimeAffectingChanges
       || generatorCandidatesChanged
@@ -447,7 +448,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         const rawSource = originalEntrySource
         const cacheKey = file
-        const hashKey = `${file}:html:${runtimeSignature}`
+        const hashKey = `${file}:html:${transformRuntimeSignature}`
         rememberProcessCacheKey(cacheKey, hashKey)
         tasks.push(timeTask('html', () =>
           processCachedTask<string>({

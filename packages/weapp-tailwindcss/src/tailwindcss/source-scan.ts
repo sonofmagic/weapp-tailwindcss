@@ -1,10 +1,10 @@
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Root } from '@weapp-tailwindcss/postcss'
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
 import { realpathSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
+import { resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
 import micromatch from 'micromatch'
-import { resolveProjectSourceFiles } from 'tailwindcss-patch'
 
 export interface TailwindSourceEntry {
   base: string
@@ -241,6 +241,19 @@ export async function resolveTailwindSourceEntry(
       base: absoluteSource,
       negated,
       pattern: normalizeGlobPattern(defaultPattern),
+    }
+  }
+
+  if (path.isAbsolute(sourcePath) && hasGlobMagic(sourcePath)) {
+    const { prefix, rest } = splitStaticGlobPrefix(sourcePath)
+    const root = path.parse(sourcePath).root
+    const normalizedPrefix = prefix[0] === '' ? prefix.slice(1) : prefix
+    if (rest.length > 0) {
+      return {
+        base: path.resolve(root, ...normalizedPrefix),
+        negated,
+        pattern: normalizeGlobPattern(rest.join('/')),
+      }
     }
   }
 

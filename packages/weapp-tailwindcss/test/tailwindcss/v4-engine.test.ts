@@ -2,11 +2,11 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
-import { resolveTailwindV4SourceFromPatchOptions } from 'tailwindcss-patch'
 import { afterEach, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
+import type { TailwindCssPatchOptions } from '@/tailwindcss/patcher-types'
 import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
+import { resolveTailwindV4SourceFromPatchOptions } from '@/tailwindcss/v4-engine/source'
 
 const require = createRequire(import.meta.url)
 const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
@@ -475,8 +475,8 @@ describe('tailwindcss v4 engine', () => {
         root: null,
       }
     })
-    vi.doMock('tailwindcss-patch', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('tailwindcss-patch')>()
+    vi.doMock('@tailwindcss-mangle/engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@tailwindcss-mangle/engine')>()
       return {
         ...actual,
         createTailwindV4Engine: vi.fn(() => ({
@@ -1071,7 +1071,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).not.toContain('@reference')
   })
 
-  it('keeps cssEntries source options aligned with tailwindcss-patch defaults', async () => {
+  it('keeps cssEntries source options aligned with engine defaults', async () => {
     const implicitPatchOptions = {
       projectRoot: '/workspace/app',
       tailwindcss: {

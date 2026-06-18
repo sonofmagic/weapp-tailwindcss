@@ -1,7 +1,6 @@
 import type { ParseError, ParserOptions } from '@babel/parser'
 import type { CssPreflightOptions, Document, IStyleHandlerOptions, Result as PostcssResult, Root } from '@weapp-tailwindcss/postcss'
 import type { SourceMap } from 'magic-string'
-import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../cache'
 import type { ItemOrItemArray } from './base'
 import type { AppType, IArbitraryValues, ICustomAttributesEntities } from './shared'
@@ -10,12 +9,19 @@ import type {
   UniAppXOptions as UniAppXUserDefinedOptions,
   UserDefinedOptions,
 } from './user-defined-options'
-
-type AsyncableMethod<T> = T extends (...args: infer A) => infer R
-  ? (...args: A) => Promise<Awaited<R>> | Awaited<R>
-  : never
+import type {
+  ILengthUnitsPatchOptions,
+  TailwindContentTokenReport,
+  TailwindcssExtractOptions,
+  TailwindcssExtractResult,
+  TailwindCssOptions,
+  TailwindCssPatchOptions,
+  TailwindPackageInfo,
+} from '@/tailwindcss/patcher-types'
 
 export type {
+  TailwindCssOptions,
+  TailwindCssPatchOptions,
   UniAppXComponentLocalStylesOptions,
   UniAppXUserDefinedOptions,
   UserDefinedOptions,
@@ -58,14 +64,13 @@ export interface JsHandlerResult {
 }
 
 export interface TailwindcssPatcherLike {
-  packageInfo: TailwindcssPatcher['packageInfo']
-  majorVersion?: TailwindcssPatcher['majorVersion'] | undefined
-  patch?: TailwindcssPatcher['patch'] | undefined
-  getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
-  getClassSetSync?: TailwindcssPatcher['getClassSetSync'] | undefined
-  extract: TailwindcssPatcher['extract']
-  collectContentTokens?: TailwindcssPatcher['collectContentTokens'] | undefined
-  options?: TailwindcssPatcher['options'] | undefined
+  packageInfo: TailwindPackageInfo
+  majorVersion?: number | undefined
+  getClassSet: () => Promise<Set<string>> | Set<string>
+  getClassSetSync?: (() => Set<string>) | undefined
+  extract: (options?: TailwindcssExtractOptions) => Promise<TailwindcssExtractResult> | TailwindcssExtractResult
+  collectContentTokens?: (() => Promise<TailwindContentTokenReport> | TailwindContentTokenReport) | undefined
+  options?: TailwindCssPatchOptions | undefined
 }
 
 export type BabelParserOptions = ParserOptions & {

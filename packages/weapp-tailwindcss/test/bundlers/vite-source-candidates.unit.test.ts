@@ -258,7 +258,7 @@ describe('bundlers/vite source candidates', () => {
     }])).toEqual(new Set(['bg-[#000020]', 'text-[23.000020px]']))
   })
 
-  it.each(['vue', 'uvue', 'nvue'])('collects %s template and script source candidates through tailwindcss-patch', async (extension) => {
+  it.each(['vue', 'uvue', 'nvue'])('collects %s template and script source candidates through the engine scanner', async (extension) => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()
 

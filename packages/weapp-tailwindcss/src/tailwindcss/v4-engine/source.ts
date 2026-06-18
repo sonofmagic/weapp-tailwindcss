@@ -4,13 +4,12 @@ import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
-import { postcss } from '@weapp-tailwindcss/postcss'
 import {
-  resolveTailwindV4Source as resolvePatchTailwindV4Source,
-  resolveTailwindV4SourceFromPatchOptions,
-} from 'tailwindcss-patch'
+  resolveTailwindV4Source as resolveEngineTailwindV4Source,
+} from '@tailwindcss-mangle/engine'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
-import { resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
+import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { omitUndefined } from '@/utils/object'
 
@@ -48,7 +47,7 @@ function resolvePackageCssEntryPoint(specifier: string) {
   }
 
   try {
-    let current = path.dirname(require.resolve('tailwindcss-patch'))
+    let current = path.dirname(require.resolve('@tailwindcss-mangle/engine'))
     while (true) {
       const cssEntry = path.resolve(current, '..', 'tailwindcss', 'index.css')
       if (isCssEntryPoint(cssEntry)) {
@@ -195,6 +194,7 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
 function normalizeTailwindV4CssSources(
   cssSources: TailwindV4SourceOptions['cssSources'],
   packageName: string | undefined,
+  projectRoot: string | undefined,
 ) {
   if (!cssSources?.length) {
     return cssSources
@@ -202,17 +202,43 @@ function normalizeTailwindV4CssSources(
 
   let changed = false
   const normalizedCssSources = cssSources.map((cssSource) => {
+    const file = typeof cssSource.file === 'string' && cssSource.file.length > 0
+      ? path.isAbsolute(cssSource.file)
+        ? path.resolve(cssSource.file)
+        : path.resolve(projectRoot ?? process.cwd(), cssSource.file)
+      : undefined
+    const base = typeof cssSource.base === 'string' && cssSource.base.length > 0
+      ? path.isAbsolute(cssSource.base)
+        ? path.resolve(cssSource.base)
+        : path.resolve(projectRoot ?? process.cwd(), cssSource.base)
+      : file
+        ? path.dirname(file)
+        : undefined
     if (typeof cssSource.css !== 'string') {
-      return cssSource
+      if (file === cssSource.file && base === cssSource.base) {
+        return cssSource
+      }
+      changed = true
+      return {
+        ...cssSource,
+        ...(base === undefined ? {} : { base }),
+        ...(file === undefined ? {} : { file }),
+      }
     }
-    const css = normalizeTailwindV4CssPackageImports(cssSource.css, packageName)
-    if (css === cssSource.css) {
+    const configBase = base ?? projectRoot ?? process.cwd()
+    const css = normalizeTailwindV4CssPackageImports(
+      normalizeTailwindConfigDirectives(cssSource.css, configBase),
+      packageName,
+    )
+    if (css === cssSource.css && file === cssSource.file && base === cssSource.base) {
       return cssSource
     }
     changed = true
     return {
       ...cssSource,
       css,
+      ...(base === undefined ? {} : { base }),
+      ...(file === undefined ? {} : { file }),
     }
   })
 
@@ -281,6 +307,7 @@ function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | und
   const cssSources = normalizeTailwindV4CssSources(
     combinedCssSources,
     options.packageName,
+    options.projectRoot,
   )
   const cssEntries = entrySources?.cssEntries ?? options.cssEntries
   if (css === options.css && cssSources === options.cssSources && cssEntries === options.cssEntries) {
@@ -327,7 +354,7 @@ function isRawTailwindcssPatchOptions(options: TailwindcssPatcherLike['options']
   return Boolean(options && 'tailwindcss' in options)
 }
 
-function resolvePatchTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): TailwindV4SourceOptions {
+function resolveEngineTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): TailwindV4SourceOptions {
   if (patcher.options) {
     const projectRoot = getProjectRoot(patcher)
     const tailwindOptions = resolveTailwindcssOptions(patcher.options)
@@ -365,14 +392,34 @@ export function resolveTailwindV4SourceOptionsFromPatcher(
 ): TailwindV4SourceOptionsWithSources {
   const tailwindV4Options = readTailwindV4Options(patcher)
   return omitUndefined({
-    ...resolvePatchTailwindV4SourceOptions(patcher),
+    ...resolveEngineTailwindV4SourceOptions(patcher),
     sources: tailwindV4Options?.sources,
   }) as TailwindV4SourceOptionsWithSources
 }
 
 export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {
   const normalizedOptions = normalizeTailwindV4SourceOptions(options)
-  return resolvePatchTailwindV4Source(normalizedOptions)
+  return resolveEngineTailwindV4Source(normalizedOptions)
+}
+
+export function resolveTailwindV4SourceFromPatchOptions(options?: {
+  projectRoot?: string
+  tailwindcss?: {
+    cwd?: string
+    packageName?: string
+    config?: string
+    v4?: TailwindV4SourceOptions
+  }
+}) {
+  const projectRoot = options?.projectRoot ?? process.cwd()
+  const tailwindOptions = options?.tailwindcss
+  const v4Options = tailwindOptions?.v4
+  return resolveTailwindV4Source({
+    projectRoot,
+    cwd: resolveBase(tailwindOptions?.cwd, projectRoot),
+    packageName: tailwindOptions?.packageName ?? 'tailwindcss',
+    ...(v4Options ?? {}),
+  })
 }
 
 export async function resolveTailwindV4SourceFromPatcher(
@@ -380,5 +427,3 @@ export async function resolveTailwindV4SourceFromPatcher(
 ) {
   return resolveTailwindV4Source(resolveTailwindV4SourceOptionsFromPatcher(patcher))
 }
-
-export { resolveTailwindV4SourceFromPatchOptions }

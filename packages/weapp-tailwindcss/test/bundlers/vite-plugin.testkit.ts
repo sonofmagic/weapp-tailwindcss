@@ -2,6 +2,39 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type * as UniAppXModule from '@/uni-app-x'
 import { vi } from 'vitest'
 import { createCache } from '@/cache'
+import { refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
+
+function createRefreshablePatcher(
+  twPatcher: Record<string, any>,
+  getTailwindcssBasedir: () => string | undefined,
+) {
+  const refreshTailwindcssPatcher = vi.fn(async () => {
+    const basedir = getTailwindcssBasedir()
+    if (basedir) {
+      twPatcher.options ??= {}
+      twPatcher.options.projectRoot = basedir
+      twPatcher.options.tailwindcss ??= {}
+      twPatcher.options.tailwindcss.cwd = basedir
+      twPatcher.options.tailwindcss.v4 ??= {}
+      twPatcher.options.tailwindcss.v4.base ??= basedir
+      twPatcher.options.tailwindcss.v4.cssSources ??= [
+        {
+          file: `${basedir}/app.css`,
+          base: basedir,
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        },
+      ]
+    }
+    return twPatcher
+  })
+  twPatcher.refreshTailwindcssPatcher = refreshTailwindcssPatcher
+  Object.defineProperty(twPatcher, refreshTailwindcssPatcherSymbol, {
+    value: refreshTailwindcssPatcher,
+    configurable: true,
+  })
+  return refreshTailwindcssPatcher
+}
 
 export function createContext(overrides: Record<string, unknown> = {}) {
   const cache = createCache()
@@ -50,8 +83,10 @@ export function createContext(overrides: Record<string, unknown> = {}) {
         options: mergedTwPatcherOptions,
       }
     : defaultTwPatcher
+  let context: Record<string, any>
+  const refreshTailwindcssPatcher = createRefreshablePatcher(mergedTwPatcher, () => context?.tailwindcssBasedir)
 
-  return {
+  context = {
     disabled: false,
     onLoad: vi.fn(),
     onStart: vi.fn(),
@@ -81,6 +116,7 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     jsMatcher: (file: string) => file.endsWith('.js'),
     wxsMatcher: () => false,
     twPatcher: mergedTwPatcher,
+    refreshTailwindcssPatcher,
     uniAppX: undefined as any,
     runtimeLoaderPath: undefined,
     mainChunkRegex: undefined,
@@ -88,6 +124,7 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     customReplaceDictionary: undefined,
     ...restOverrides,
   }
+  return context
 }
 
 export type InternalContext = ReturnType<typeof createContext>

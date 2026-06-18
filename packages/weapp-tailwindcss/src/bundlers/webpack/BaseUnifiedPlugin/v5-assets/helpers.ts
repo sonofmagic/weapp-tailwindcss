@@ -22,7 +22,7 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   getWatchChangedFiles?: (() => Iterable<string>) | undefined
   runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
   getWebpackCssSources?: (() => Iterable<[string, string | undefined]>) | undefined
-  pruneWebpackCssSources?: ((activeSourceFiles: ReadonlySet<string>) => void) | undefined
+  pruneWebpackCssSources?: ((activeSourceFiles: ReadonlySet<string>, options?: { watchMode?: boolean | undefined }) => void) | undefined
   debug: (format: string, ...args: unknown[]) => void
 }
 

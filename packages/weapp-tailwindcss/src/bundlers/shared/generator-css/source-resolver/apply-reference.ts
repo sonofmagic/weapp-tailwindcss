@@ -1,6 +1,6 @@
 import type { Root } from 'postcss'
+import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
-import { splitCandidateTokens } from 'tailwindcss-patch'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../directives'
 
 export function createTailwindV4ApplyReferenceSource(css: string, sourceOptions: { packageName?: string }) {

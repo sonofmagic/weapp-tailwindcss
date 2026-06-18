@@ -1,4 +1,4 @@
-import type { ExtendLengthUnitsOptions, ILengthUnitsPatchOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
+import type { ExtendLengthUnitsOptions, ILengthUnitsPatchOptions, TailwindCssPatchOptions } from './patcher-types'
 import { resolveBooleanObjectOption } from '@/utils/options'
 
 type TailwindUserOptions = NonNullable<TailwindCssPatchOptions['tailwindcss']>
