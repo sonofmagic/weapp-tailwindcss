@@ -236,4 +236,216 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
     }
   })
 
+  it('does not merge main runtime candidates into webpack Tailwind v3 subpackage css', async () => {
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-subpackage-runtime-'))
+    const srcDir = path.join(dir, 'src')
+    const subNormalCss = path.join(srcDir, 'sub-normal/pages/index.css')
+    const appCss = path.join(srcDir, 'app.css')
+    const appWxml = path.join(srcDir, 'pages/index/index.wxml')
+    const subNormalWxml = path.join(srcDir, 'sub-normal/pages/index.wxml')
+    await fs.promises.mkdir(path.dirname(appWxml), { recursive: true })
+    await fs.promises.mkdir(path.dirname(subNormalWxml), { recursive: true })
+    await writeFile(path.join(dir, 'tailwind.config.js'), 'module.exports = { content: ["./src/pages/**/*.{wxml,ts}"] }')
+    await writeFile(path.join(dir, 'tailwind.config.sub-normal.js'), [
+      'module.exports = {',
+      '  content: ["./src/sub-normal/**/*.{wxml,ts}"],',
+      '  theme: { extend: { colors: { "normal-subpackage-marker": "#2563eb" } } },',
+      '}',
+    ].join('\n'))
+    await writeFile(subNormalCss, [
+      '@import "tailwindcss/base";',
+      '@import "tailwindcss/components";',
+      '@import "tailwindcss/utilities";',
+      '@config "../../../tailwind.config.sub-normal.js";',
+    ].join('\n'))
+    await writeFile(appCss, [
+      '@import "tailwindcss/base";',
+      '@import "tailwindcss/components";',
+      '@import "tailwindcss/utilities";',
+      '@config "../tailwind.config.js";',
+    ].join('\n'))
+    await writeFile(appWxml, '<view class="main-only"></view>')
+    await writeFile(subNormalWxml, '<view class="bg-normal-subpackage-marker sub-only"></view>')
+
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.resetModules()
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn((source: any) => ({
+        generate: (options: any) => generateMock({
+          ...options,
+          source,
+        }),
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        target: 'weapp',
+        styleOptions: {},
+      })),
+      resolveTailwindV3Source: vi.fn(async (options: any) => ({
+        projectRoot: dir,
+        cwd: dir,
+        base: options.base ?? dir,
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        configObject: {
+          content: options.config?.includes('sub-normal')
+            ? ['./src/sub-normal/**/*.{wxml,ts}']
+            : ['./src/pages/**/*.{wxml,ts}'],
+        },
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        projectRoot: dir,
+        cwd: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: '@tailwind utilities;',
+        configObject: {
+          content: ['./src/**/*.{wxml,ts}'],
+        },
+        dependencies: [],
+        version: 3,
+      })),
+      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+        projectRoot: dir,
+        cwd: dir,
+        baseFallbacks: [],
+      })),
+    }))
+
+    try {
+      const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
+      testState.currentContext = createContext({
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        tailwindcssBasedir: dir,
+        twPatcher: {
+          patch: vi.fn(),
+          getClassSet: vi.fn(async () => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
+          getClassSetSync: vi.fn(() => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
+          extract: vi.fn(async () => ({ classSet: new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only']) })),
+          majorVersion: 3,
+        },
+      } as any)
+
+      const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+      let assetStore: Record<string, string> = {
+        'app.wxss': '@tailwind utilities;',
+      }
+      const compilation = {
+        compiler: { outputPath: path.join(dir, 'dist') },
+        chunks: [{ id: 'sub-normal', hash: 'hash-1', files: Object.keys(assetStore) }],
+        hooks: {
+          processAssets: {
+            tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+              processAssetsCallbacks.push(handler)
+            },
+          },
+        },
+        updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+          assetStore[file] = source.toString()
+        }),
+        getAsset(file: string) {
+          const content = assetStore[file]
+          if (content === undefined) {
+            return undefined
+          }
+          return {
+            source: {
+              source: () => content,
+            },
+          }
+        },
+      }
+      const compiler = {
+        outputPath: path.join(dir, 'dist'),
+        options: {},
+        webpack: {
+          Compilation: {
+            PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+          },
+          sources: {
+            ConcatSource: FakeConcatSource,
+          },
+          NormalModule: {
+            getCompilationHooks: vi.fn(() => ({
+              loader: {
+                tap: vi.fn(),
+              },
+            })),
+          },
+        },
+        hooks: {
+          normalModuleFactory: {
+            tap: vi.fn((_name: string, handler: (factory: any) => void) => {
+              handler({
+                hooks: {
+                  beforeResolve: {
+                    tap: vi.fn(),
+                  },
+                },
+              })
+            }),
+          },
+          compilation: {
+            tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+              handler(compilation)
+            }),
+          },
+        },
+      }
+
+      new MockedWeappTailwindcss().apply(compiler as any)
+      const loaderHook = compiler.webpack.NormalModule.getCompilationHooks.mock.results[0]?.value?.loader?.tap.mock.calls[0]?.[1]
+      const appModule: LoaderModule = {
+        resource: appCss,
+        loaders: [{ loader: '/path/postcss-loader.js' }],
+      }
+      const subNormalModule: LoaderModule = {
+        resource: subNormalCss,
+        loaders: [{ loader: '/path/postcss-loader.js' }],
+      }
+      loaderHook?.({}, appModule)
+      loaderHook?.({}, subNormalModule)
+      for (const [module, cssFile] of [
+        [appModule, appCss],
+        [subNormalModule, subNormalCss],
+      ] as const) {
+        const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
+        const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
+        loaderRuntime?.classSet?.registerCssSourceFile?.({
+          file: cssFile,
+          css: await fs.promises.readFile(cssFile, 'utf8'),
+        })
+      }
+      await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+      assetStore = {
+        'sub-normal/pages/index.wxss': '@tailwind utilities;',
+      }
+      await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+
+      expect(generateMock.mock.calls).toHaveLength(2)
+      expect(generateMock.mock.calls[0]?.[0]?.candidates).toEqual(new Set(['main-only']))
+      expect(generateMock.mock.calls[1]?.[0]?.candidates).toEqual(new Set(['bg-normal-subpackage-marker', 'sub-only']))
+      expect(assetStore['sub-normal/pages/index.wxss']).toContain('.bg-normal-subpackage-marker')
+      expect(assetStore['sub-normal/pages/index.wxss']).toContain('.sub-only')
+      expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('.main-only')
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
+      await rm(dir, { force: true, recursive: true })
+    }
+  })
+
 })

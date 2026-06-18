@@ -309,6 +309,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     }
     const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+      if ((runtimeState.twPatcher.majorVersion ?? 0) < 4) {
+        return
+      }
       const configuredSourceFiles = new Set<string>()
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         configuredSourceFiles.add(path.resolve(entry))
