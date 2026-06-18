@@ -621,6 +621,40 @@ describe('Runtime Hot Update', () => {
       expect(refreshTailwindcssPatcher).toHaveBeenCalledWith({ clearCache: true })
       expect(refreshedPatcher.patch).not.toHaveBeenCalled()
     })
+
+    it('prefers refreshed legacy runtime when both runtime aliases exist', async () => {
+      const staleSet = new Set(['stale'])
+      const refreshedSet = new Set(['text-[32rpx]'])
+      const staleRuntime: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: staleSet }),
+        getClassSet: vi.fn().mockResolvedValue(staleSet),
+      }
+      const refreshedRuntime: TailwindcssPatcherLike = {
+        packageInfo: { version: '4.0.0' } as any,
+        majorVersion: 4,
+        options: undefined,
+        patch: vi.fn().mockResolvedValue(undefined),
+        extract: vi.fn().mockResolvedValue({ classSet: refreshedSet }),
+        getClassSet: vi.fn().mockResolvedValue(refreshedSet),
+      }
+      const state: TailwindRuntimeState = {
+        tailwindRuntime: staleRuntime,
+        twPatcher: refreshedRuntime,
+        readyPromise: Promise.resolve(),
+      }
+
+      const result = await ensureRuntimeClassSet(state, {
+        forceCollect: true,
+      })
+
+      expect(result).toBe(refreshedSet)
+      expect(staleRuntime.extract).not.toHaveBeenCalled()
+      expect(refreshedRuntime.extract).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe('config signature change detection', () => {

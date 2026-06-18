@@ -71,7 +71,7 @@ function getRuntimeClassSetStateEntry(state: TailwindRuntimeState) {
 }
 
 function getTailwindRuntime(state: TailwindRuntimeState) {
-  return state.tailwindRuntime ?? state.twPatcher
+  return state.twPatcher ?? state.tailwindRuntime
 }
 
 function setTailwindRuntime(state: TailwindRuntimeState, runtime: TailwindcssRuntimeLike) {

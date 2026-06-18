@@ -31,6 +31,30 @@ function hasIgnoreComment(node: StringLiteral | TemplateElement) {
   return false
 }
 
+function isConditionTestLiteral(path: NodePath<StringLiteral | TemplateElement>) {
+  let current: NodePath | null = path
+
+  while (current?.parentPath) {
+    const parent = current.parentPath
+    if (parent.isConditionalExpression()) {
+      return parent.node.test === current.node
+    }
+    if (
+      parent.isBinaryExpression()
+      || parent.isCallExpression()
+      || parent.isLogicalExpression()
+      || parent.isMemberExpression()
+      || parent.isUnaryExpression()
+    ) {
+      current = parent
+      continue
+    }
+    return false
+  }
+
+  return false
+}
+
 function extractLiteralValue(
   path: NodePath<StringLiteral | TemplateElement>,
   { unescapeUnicode }: Pick<IJsHandlerOptions, 'unescapeUnicode'>,
@@ -145,6 +169,10 @@ export function replaceHandleValue(
   }
 
   if (hasIgnoreComment(path.node)) {
+    return undefined
+  }
+
+  if (isConditionTestLiteral(path)) {
     return undefined
   }
 
