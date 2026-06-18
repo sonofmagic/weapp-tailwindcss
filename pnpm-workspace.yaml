@@ -123,7 +123,7 @@ catalogs:
     tailwindcss-4: npm:tailwindcss@^4.3.1
     tailwindcss4: npm:tailwindcss@^4.3.1
   tailwindcssPatch:
-    tailwindcss-patch: 9.4.4
+    tailwindcss-patch: 9.5.0
   tailwindcssMangleEngine:
     '@tailwindcss-mangle/engine': 0.1.0
   tailwindcssRem:

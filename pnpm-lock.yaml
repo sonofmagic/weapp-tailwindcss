@@ -218,8 +218,8 @@ catalogs:
       version: 0.1.0
   tailwindcssPatch:
     tailwindcss-patch:
-      specifier: 9.4.4
-      version: 9.4.4
+      specifier: 9.5.0
+      version: 9.5.0
   tailwindcssRem:
     tailwindcss-rem2px-preset:
       specifier: ^1.0.3
@@ -1130,7 +1130,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -1272,7 +1272,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       tsx:
         specifier: catalog:tsx
         version: 4.22.4
@@ -1420,7 +1420,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -1544,7 +1544,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3
@@ -1993,7 +1993,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       terser:
         specifier: ^5.48.0
         version: 5.48.0
@@ -2451,7 +2451,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       terser:
         specifier: ^5.48.0
         version: 5.48.0
@@ -2659,7 +2659,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -2870,7 +2870,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -3078,7 +3078,7 @@ importers:
         version: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       tailwindcss-rem2px-preset:
         specifier: catalog:tailwindcssRem
         version: 1.0.3(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
@@ -3295,7 +3295,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       tsconfig-paths-webpack-plugin:
         specifier: ^4.1.0
         version: 4.2.0
@@ -3627,7 +3627,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3
@@ -4056,7 +4056,7 @@ importers:
         version: 3.8.4
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
 
   examples/node-api-core:
     dependencies:
@@ -4084,7 +4084,7 @@ importers:
         version: 4.3.1
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
     devDependencies:
       '@types/node':
         specifier: catalog:typesNode2410
@@ -4427,7 +4427,7 @@ importers:
         version: link:../tailwindcss-config
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
     devDependencies:
       '@csstools/css-color-parser':
         specifier: ^4.1.7
@@ -4560,7 +4560,7 @@ importers:
     dependencies:
       tailwindcss-patch:
         specifier: catalog:tailwindcssPatch
-        version: 9.4.4(magicast@0.5.3)(tailwindcss@4.3.1)
+        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
 
   packages/weapp-style-injector:
     dependencies:
@@ -28975,9 +28975,9 @@ packages:
     resolution: {integrity: sha512-9v4u+G+FFDgAHAD1Km2MuHr82EG30d24l7cY9wSo8hQkeb9A384fuKI23hhbEHwAYhPKdROl6wTtoNpTDRHYFQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
 
-  tailwindcss-patch@9.4.4:
-    resolution: {integrity: sha512-TLsIJq4158+qVJqPRh/Z6hUv55gL4gFNZ3yA1x2Xn+DsOvNv+R8/H9yB3qCedsJeZS8ItZ22qASaKYyh7d1dYw==}
-    engines: {node: '>=18.0.0'}
+  tailwindcss-patch@9.5.0:
+    resolution: {integrity: sha512-bCONP8qcBcsj/olK02bOIUmO04CSgeKS1qZSdOHKWTOPOdvZDryWYSeyTeT0z1UAQf43uYeON4+/o2SCsJ18dw==}
+    engines: {node: '>=22.13.0'}
     hasBin: true
     peerDependencies:
       tailwindcss: '>=2.0.0'
@@ -42677,6 +42677,16 @@ snapshots:
       pathe: 2.0.3
     transitivePeerDependencies:
       - magicast
+
+  '@tailwindcss-mangle/engine@0.1.0(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))':
+    dependencies:
+      '@tailwindcss/node': 4.3.1
+      '@tailwindcss/oxide': 4.3.1
+      micromatch: 4.0.8
+      pathe: 2.0.3
+      postcss: 8.5.15
+    optionalDependencies:
+      tailwindcss: 3.4.19(tsx@4.22.4)(yaml@2.9.0)
 
   '@tailwindcss-mangle/engine@0.1.0(tailwindcss@4.3.1)':
     dependencies:
@@ -64099,20 +64109,18 @@ snapshots:
       '@weapp-tailwindcss/shared': 2.0.0
       jiti: 2.7.0
 
-  tailwindcss-patch@9.4.4(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0)):
+  tailwindcss-patch@9.5.0(magicast@0.5.3)(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
       '@babel/generator': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
       '@tailwindcss-mangle/config': 7.0.2(magicast@0.5.3)
-      '@tailwindcss/node': 4.3.1
-      '@tailwindcss/oxide': 4.3.1
+      '@tailwindcss-mangle/engine': 0.1.0(tailwindcss@3.4.19(tsx@4.22.4)(yaml@2.9.0))
       cac: 6.7.14
       consola: 3.4.2
       fs-extra: 11.3.5
       local-pkg: 1.2.1
-      micromatch: 4.0.8
       pathe: 2.0.3
       postcss: 8.5.15
       semver: 7.8.4
@@ -64123,20 +64131,18 @@ snapshots:
       - magicast
       - supports-color
 
-  tailwindcss-patch@9.4.4(magicast@0.5.3)(tailwindcss@4.3.1):
+  tailwindcss-patch@9.5.0(magicast@0.5.3)(tailwindcss@4.3.1):
     dependencies:
       '@babel/generator': 7.29.7
       '@babel/parser': 7.29.7
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
       '@tailwindcss-mangle/config': 7.0.2(magicast@0.5.3)
-      '@tailwindcss/node': 4.3.1
-      '@tailwindcss/oxide': 4.3.1
+      '@tailwindcss-mangle/engine': 0.1.0(tailwindcss@4.3.1)
       cac: 6.7.14
       consola: 3.4.2
       fs-extra: 11.3.5
       local-pkg: 1.2.1
-      micromatch: 4.0.8
       pathe: 2.0.3
       postcss: 8.5.15
       semver: 7.8.4
