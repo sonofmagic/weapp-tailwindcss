@@ -17,6 +17,7 @@
 - 所有新增或修改的 Changeset 内容必须使用中文。
 - JSDoc 注释必须使用中文；新增行内注释默认中文（术语可保留英文）。
 - Tailwind CSS v3/v4 的样式生成统一由 `weapp-tailwindcss` 接管；禁止通过 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成样式。
+- HBuilderX / uni-app x 链路必须避免引入会被 CJS 同步 `require()` 的 Tailwind 纯 ESM 官方插件依赖；Tailwind v4 相关能力应继续经 `weapp-tailwindcss/vite`、`tailwindcss-patch` 的动态加载链路接入，禁止用 `@tailwindcss/vite` 等 ESM-only 插件替代或兜底。
 - 构建插件禁止用 `fs` 直接写入或改写构建输出目录；输出变更必须通过对应 bundler 的插件 API、bundle asset、`emitFile`、loader result 或 stream/file 对象完成，确保产物仍在同一个构建图里。
 - 修复构建器问题时必须从 bundler 的生命周期、模块图、产物图与 loader/plugin API 出发；禁止通过硬编码 `src`、`pages` 等项目布局推导源码路径，也禁止在 `generateBundle` 等后置阶段为了弥补状态缺失临时读取源码文件。需要源码内容时，应在 `load`、`transform`、`watchChange`、`handleHotUpdate` 等生命周期缓存，或使用 `ModuleInfo`、chunk metadata、loader result、source map、source-candidates 等构建图数据；确需文件系统扫描的入口发现逻辑必须集中在扫描层，并有回归测试覆盖。
 - `submodules/tailwindcss-mangle/` 只允许作为本地源码参考目录，不得加入 `pnpm-workspace.yaml`、`pnpm-lock.yaml`、CI/CD checkout、发布流程或仓库 submodule 追踪；`weapp-tailwindcss` 必须消费 npm 发布版 `tailwindcss-patch`。
