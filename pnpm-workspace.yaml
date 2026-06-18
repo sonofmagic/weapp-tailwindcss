@@ -51,7 +51,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.10.37
+    baseline-browser-mapping: ^2.10.38
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -234,4 +234,4 @@ catalogs:
   weappVite:
     weapp-vite: ^6.16.47
   wrangler:
-    wrangler: ^4.100.0
+    wrangler: ^4.101.0
