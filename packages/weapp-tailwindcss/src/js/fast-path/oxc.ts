@@ -1,5 +1,6 @@
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
 import { createRequire } from 'node:module'
+import process from 'node:process'
 import { jsStringEscape } from '@ast-core/escape'
 import MagicString from 'magic-string'
 import { shouldEnableArbitraryValueFallback } from '../../shared/classname-transform'
@@ -41,16 +42,47 @@ type OxcNode = LiteralNode | TemplateElementNode | {
   [key: string]: unknown
 }
 
-interface ReplacementToken {
-  start: number
-  end: number
-  value: string
+interface ReplacementContext {
+  ms?: MagicString
 }
 
 const require = createRequire(import.meta.url)
+const NODE_STRUCTURAL_KEYS = new Set([
+  'type',
+  'start',
+  'end',
+  'loc',
+  'range',
+  'raw',
+  'regex',
+  'comments',
+  'errors',
+])
 let oxcParser: OxcParser | false | undefined
 
+export function isOxcParserRuntimeSupported(version = process.versions.node) {
+  const match = /^(\d+)\.(\d+)(?:\.|$)/.exec(version)
+  if (!match) {
+    return false
+  }
+  const major = Number(match[1])
+  const minor = Number(match[2])
+  if (major === 20) {
+    return minor >= 19
+  }
+  if (major === 21) {
+    return false
+  }
+  if (major === 22) {
+    return minor >= 12
+  }
+  return major > 22
+}
+
 function loadOxcParser(): OxcParser | undefined {
+  if (!isOxcParserRuntimeSupported()) {
+    return undefined
+  }
   if (oxcParser === false) {
     return undefined
   }
@@ -123,49 +155,52 @@ function isRangeValid(start: unknown, end: unknown) {
   return typeof start === 'number' && typeof end === 'number' && start < end
 }
 
-function addStringLiteralToken(node: LiteralNode, options: IJsHandlerOptions, tokens: ReplacementToken[]) {
+function getMagicString(rawSource: string, context: ReplacementContext) {
+  if (!context.ms) {
+    context.ms = new MagicString(rawSource)
+  }
+  return context.ms
+}
+
+function addStringLiteralReplacement(
+  rawSource: string,
+  node: LiteralNode,
+  transformOptions: IJsHandlerOptions,
+  context: ReplacementContext,
+) {
   if (typeof node.value !== 'string' || typeof node.raw !== 'string' || node.regex || !isRangeValid(node.start, node.end)) {
-    return
+    return false
   }
 
-  const transformed = transformLiteralText(node.value, {
-    ...options,
-    needEscaped: true,
-  })
+  const transformed = transformLiteralText(node.value, transformOptions)
   if (!transformed) {
-    return
+    return false
   }
 
   const start = node.start! + 1
   const end = node.end! - 1
-  if (start >= end || transformed === node.raw.slice(1, -1)) {
-    return
+  if (start >= end || transformed === rawSource.slice(start, end)) {
+    return false
   }
 
-  tokens.push({
-    start,
-    end,
-    value: jsStringEscape(transformed),
-  })
+  getMagicString(rawSource, context).update(start, end, jsStringEscape(transformed))
+  return true
 }
 
-function addTemplateElementToken(
+function addTemplateElementReplacement(
   rawSource: string,
   node: TemplateElementNode,
-  options: IJsHandlerOptions,
-  tokens: ReplacementToken[],
+  transformOptions: IJsHandlerOptions,
+  context: ReplacementContext,
 ) {
   const raw = node.value?.raw
   if (typeof raw !== 'string' || !isRangeValid(node.start, node.end)) {
-    return
+    return false
   }
 
-  const transformed = transformLiteralText(raw, {
-    ...options,
-    needEscaped: false,
-  })
+  const transformed = transformLiteralText(raw, transformOptions)
   if (!transformed || transformed === raw) {
-    return
+    return false
   }
 
   const first = rawSource[node.start!]
@@ -173,43 +208,52 @@ function addTemplateElementToken(
   const start = node.start! + (first === '`' || first === '}' ? 1 : 0)
   const end = node.end! - (last === '`' ? 1 : last === '{' ? 2 : 0)
   if (start >= end) {
-    return
+    return false
   }
 
-  tokens.push({
-    start,
-    end,
-    value: transformed,
-  })
+  getMagicString(rawSource, context).update(start, end, transformed)
+  return true
 }
 
-function collectReplacementTokens(
+function applyReplacements(
   rawSource: string,
   node: unknown,
-  options: IJsHandlerOptions,
-  tokens: ReplacementToken[],
+  stringLiteralOptions: IJsHandlerOptions,
+  templateLiteralOptions: IJsHandlerOptions,
+  context: ReplacementContext,
 ) {
   if (!isNode(node)) {
-    return
+    return false
   }
 
+  let changed = false
   if (node.type === 'Literal') {
-    addStringLiteralToken(node as LiteralNode, options, tokens)
+    changed = addStringLiteralReplacement(rawSource, node as LiteralNode, stringLiteralOptions, context)
   }
   else if (node.type === 'TemplateElement') {
-    addTemplateElementToken(rawSource, node as TemplateElementNode, options, tokens)
+    changed = addTemplateElementReplacement(rawSource, node as TemplateElementNode, templateLiteralOptions, context)
   }
 
-  for (const value of Object.values(node)) {
+  for (const key in node) {
+    if (NODE_STRUCTURAL_KEYS.has(key)) {
+      continue
+    }
+    const value = node[key]
     if (Array.isArray(value)) {
       for (const item of value) {
-        collectReplacementTokens(rawSource, item, options, tokens)
+        if (item && typeof item === 'object') {
+          changed = applyReplacements(rawSource, item, stringLiteralOptions, templateLiteralOptions, context) || changed
+        }
       }
       continue
     }
 
-    collectReplacementTokens(rawSource, value, options, tokens)
+    if (value && typeof value === 'object') {
+      changed = applyReplacements(rawSource, value, stringLiteralOptions, templateLiteralOptions, context) || changed
+    }
   }
+
+  return changed
 }
 
 export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsHandlerResult | undefined {
@@ -240,21 +284,26 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
     return undefined
   }
 
-  const tokens: ReplacementToken[] = []
-  collectReplacementTokens(rawSource, result.program, options, tokens)
-  if (tokens.length === 0) {
+  const stringLiteralOptions = options.needEscaped === true
+    ? options
+    : {
+        ...options,
+        needEscaped: true,
+      }
+  const templateLiteralOptions = options.needEscaped === false
+    ? options
+    : {
+        ...options,
+        needEscaped: false,
+      }
+  const replacementContext: ReplacementContext = {}
+  if (!applyReplacements(rawSource, result.program, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
     return {
       code: rawSource,
     }
   }
 
-  const ms = new MagicString(rawSource)
-  tokens.sort((a, b) => b.start - a.start)
-  for (const token of tokens) {
-    ms.update(token.start, token.end, token.value)
-  }
-
   return {
-    code: ms.toString(),
+    code: replacementContext.ms!.toString(),
   }
 }

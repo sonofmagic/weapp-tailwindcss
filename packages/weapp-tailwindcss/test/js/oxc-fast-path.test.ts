@@ -2,7 +2,7 @@ import { MappingChars2String } from '@weapp-core/escape'
 import { describe, expect, it, vi } from 'vitest'
 import { createJsHandler } from '@/js'
 import { jsHandler } from '@/js/babel'
-import { canUseOxcJsFastPath, oxcJsHandler } from '@/js/fast-path/oxc'
+import { canUseOxcJsFastPath, isOxcParserRuntimeSupported, oxcJsHandler } from '@/js/fast-path/oxc'
 
 function createOptions() {
   return {
@@ -21,6 +21,16 @@ function createOptions() {
 }
 
 describe('OXC JS fast path', () => {
+  it('keeps OXC behind the runtime versions supported by oxc-parser', () => {
+    expect(isOxcParserRuntimeSupported('18.20.8')).toBe(false)
+    expect(isOxcParserRuntimeSupported('20.18.1')).toBe(false)
+    expect(isOxcParserRuntimeSupported('20.19.0')).toBe(true)
+    expect(isOxcParserRuntimeSupported('21.7.3')).toBe(false)
+    expect(isOxcParserRuntimeSupported('22.11.0')).toBe(false)
+    expect(isOxcParserRuntimeSupported('22.12.0')).toBe(true)
+    expect(isOxcParserRuntimeSupported('24.0.0')).toBe(true)
+  })
+
   it('matches Babel output for string, template and JSX literals', () => {
     const options = createOptions()
     const source = [
@@ -111,6 +121,30 @@ describe('OXC JS fast path', () => {
     })
 
     expect(handler(source, new Set()).code).toBe(fallbackHandler(source, new Set()).code)
+  })
+
+  it('falls back to Babel on Node versions unsupported by oxc-parser', async () => {
+    vi.resetModules()
+    vi.doMock('@/js/babel', () => ({
+      jsHandler: vi.fn(() => ({ code: 'babel-fallback' })),
+    }))
+    vi.spyOn(process.versions, 'node', 'get').mockReturnValue('18.20.8')
+
+    const { createJsHandler: createMockedJsHandler } = await import('@/js')
+    const { jsHandler: mockedBabelHandler } = await import('@/js/babel')
+    const handler = createMockedJsHandler({
+      escapeMap: MappingChars2String,
+      alwaysEscape: true,
+      generateMap: false,
+      experimentalJsFastPath: 'oxc',
+    })
+
+    const result = handler('const cls = "w-[100px]"', new Set())
+
+    expect(result.code).toBe('babel-fallback')
+    expect(mockedBabelHandler).toHaveBeenCalledTimes(1)
+    vi.restoreAllMocks()
+    vi.doUnmock('@/js/babel')
   })
 
   it('does not call Babel when the OXC fast path succeeds', async () => {

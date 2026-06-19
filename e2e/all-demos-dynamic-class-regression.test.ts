@@ -1,4 +1,5 @@
 import type { ProjectEntry } from './shared'
+import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'pathe'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -264,6 +265,28 @@ function createTaroReactPatch(entry: ProjectEntry): ProjectPatch {
 function createTaroVuePatch(entry: ProjectEntry): ProjectPatch {
   const root = projectRoot(entry)
   const pageFile = path.resolve(root, 'src/pages/index/index.vue')
+  const externalStyleFile = path.resolve(root, 'src/pages/index/index.css')
+  const source = fsSync.readFileSync(pageFile, 'utf8')
+  const hasExternalStyle = source.includes('import \'./index.css\'') || source.includes('import "./index.css"')
+  const styleTargets: PatchTarget[] = hasExternalStyle
+    ? [
+        {
+          file: externalStyleFile,
+          transform: source => `${createApplyStyle(entry)}${source}`,
+        },
+      ]
+    : [
+        {
+          file: pageFile,
+          transform: (source) => {
+            const styleBlockStart = /<style(?:\s[^>]*)?>\n/.exec(source)
+            if (!styleBlockStart) {
+              return `${source}\n<style>\n${createApplyStyle(entry)}</style>\n`
+            }
+            return source.replace(styleBlockStart[0], `${styleBlockStart[0]}${createApplyStyle(entry)}`)
+          },
+        },
+      ]
   return {
     entry,
     targets: [
@@ -281,16 +304,7 @@ function createTaroVuePatch(entry: ProjectEntry): ProjectPatch {
           `<script setup lang="ts">\nconst habitClassName = ${habitClassExpression}\nconst scriptOnlyClassName = '${scriptOnlyClassValue}'\n`,
         ),
       },
-      {
-        file: pageFile,
-        transform: (source) => {
-          const styleBlockStart = /<style(?:\s[^>]*)?>\n/.exec(source)
-          if (!styleBlockStart) {
-            return `${source}\n<style>\n${createApplyStyle(entry)}</style>\n`
-          }
-          return source.replace(styleBlockStart[0], `${styleBlockStart[0]}${createApplyStyle(entry)}`)
-        },
-      },
+      ...styleTargets,
     ],
   }
 }

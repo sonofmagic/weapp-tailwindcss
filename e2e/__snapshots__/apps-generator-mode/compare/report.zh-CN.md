@@ -11,7 +11,7 @@
 | mpx-tailwindcss-v3 | demo | 通过 | `mpx-tailwindcss-v3/dist/wx/app.wxss` (+10) | 187902 | 2900 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | mpx-tailwindcss-v4 | demo | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+4) | 46584 | 126 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-react-tailwindcss-v3 | demo | 通过 | `taro-webpack-react-tailwindcss-v3/dist/app.wxss` (+6) | 61811 | 183 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 22610 | 119 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 18471 | 84 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-react-tailwindcss-v3 | demo | 通过 | `taro-vite-react-tailwindcss-v3/dist/app.wxss` (+4) | 8955 | 48 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-react-tailwindcss-v4 | demo | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 5131 | 38 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-webpack-vue3-tailwindcss-v3 | demo | 通过 | `taro-webpack-vue3-tailwindcss-v3/dist/app.wxss` (+3) | 16350 | 84 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
