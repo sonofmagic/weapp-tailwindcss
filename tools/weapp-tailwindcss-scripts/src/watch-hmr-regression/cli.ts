@@ -31,7 +31,7 @@ function parseNumber(value: string | undefined, fallback: number) {
 }
 
 function parseOptionalNumber(value: string | undefined) {
-  if (value == null) {
+  if (value == null || value.trim() === '') {
     return undefined
   }
   const numeric = Number(value)

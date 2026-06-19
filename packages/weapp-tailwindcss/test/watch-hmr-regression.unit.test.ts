@@ -1020,6 +1020,36 @@ describe('watch-hmr regression cli options', () => {
       process.argv = originalArgv
     }
   })
+
+  it('ignores empty numeric environment variables from workflow matrix defaults', () => {
+    const originalArgv = process.argv
+    const originalLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
+    process.argv = [
+      'node',
+      'watch-hmr-regression',
+      '--case',
+      'mpx-tailwindcss-v4',
+      '--main-style-only',
+    ]
+    process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT = ''
+
+    try {
+      expect(resolveOptions()).toMatchObject({
+        caseName: 'mpx-tailwindcss-v4',
+        mainStyleOnly: true,
+        mainStyleSubPackageLimit: undefined,
+      })
+    }
+    finally {
+      process.argv = originalArgv
+      if (originalLimit == null) {
+        delete process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
+      }
+      else {
+        process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT = originalLimit
+      }
+    }
+  })
 })
 
 describe('watch-hmr web compile settle helpers', () => {
