@@ -37,6 +37,7 @@ describe('demo e2e memory report', () => {
     expect(script).toContain('uni\\.js[\\s\\S]+-p\\s+mp-weixin')
     expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch')
     expect(script).toContain('$command.Contains($repositoryRoot)')
+    expect(script).not.toContain('@(;')
   })
 
   it('creates a workflow-level memory report and markdown table by step', () => {

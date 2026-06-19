@@ -1353,6 +1353,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(script).toContain('uni\\.js[\\s\\S]+-p\\s+mp-weixin')
     expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch')
     expect(script).toContain('$command.Contains($repositoryRoot)')
+    expect(script).not.toContain('@(;')
   })
 
   it('builds a CI-facing HMR speed report from watch JSON metrics', async () => {
