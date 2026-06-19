@@ -486,6 +486,16 @@ describe('normalizeCssSnapshot', () => {
       '  --spacing: 8rpx;',
       '  --tw-gradient-position: initial;',
       '}',
+      'view, text, ::after, ::before {',
+      '  box-sizing: border-box;',
+      '  border-width: 0;',
+      '}',
+      'view, text, ::after, ::before {',
+      '  border: 0 solid;',
+      '  box-sizing: border-box;',
+      '  margin: 0;',
+      '  padding: 0;',
+      '}',
     ].join('\n'))
   })
 
@@ -565,5 +575,34 @@ describe('normalizeCssSnapshot', () => {
       '  background-color: #2563eb;',
       '}',
     ].join('\n'))
+  })
+
+  it('keeps mini-program preflight reset when normalizing Taro webpack app split noise', () => {
+    const css = normalizeCssSnapshot([
+      '@font-face { font-family: "JDZH-Regular"; src: url(data:font/ttf;base64,abc) format("truetype"); }',
+      'view, text, ::after, ::before {',
+      '  box-sizing: border-box;',
+      '  margin: 0;',
+      '  padding: 0;',
+      '  border: 0 solid;',
+      '  --tw-rotate-x:;',
+      '  --tw-gradient-position: initial;',
+      '}',
+      ':host, page, .tw-root, wx-root-portal-content {',
+      '  --spacing: 8rpx;',
+      '}',
+    ].join('\n'), {
+      normalizeWebpackAppSplitNoise: true,
+    })
+
+    expect(css).toContain('view, text, ::after, ::before {')
+    expect(css).toContain('box-sizing: border-box;')
+    expect(css).toContain('margin: 0;')
+    expect(css).toContain('padding: 0;')
+    expect(css).toContain('border: 0 solid;')
+    expect(css).toContain(':host, page, .tw-root, wx-root-portal-content {')
+    expect(css).toContain('--tw-rotate-x:;')
+    expect(css).toContain('--tw-gradient-position: initial;')
+    expect(css).toContain('--spacing: 8rpx;')
   })
 })

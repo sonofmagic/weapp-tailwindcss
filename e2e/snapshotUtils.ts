@@ -595,24 +595,37 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
       return
     }
 
-    let hasTailwindVariables = false
-    rule.walkDecls((decl) => {
+    const variableDecls: postcss.Declaration[] = []
+    for (const node of [...(rule.nodes ?? [])]) {
+      if (node.type !== 'decl') {
+        continue
+      }
+      const decl = node
       if (decl.prop.startsWith('--tw-')) {
-        hasTailwindVariables = true
-        return
+        variableDecls.push(decl.clone())
+        decl.remove()
+        continue
       }
       if (WEAPP_BASE_NOISE_DECLS.has(decl.prop)) {
-        decl.remove()
+        continue
       }
-    })
+    }
 
     if (!rule.nodes || rule.nodes.length === 0) {
       rule.remove()
-      return
     }
 
-    if (hasTailwindVariables) {
-      rule.selector = WEAPP_ROOT_SELECTOR
+    if (variableDecls.length > 0) {
+      const variableRule = postcss.rule({
+        selector: WEAPP_ROOT_SELECTOR,
+        nodes: variableDecls,
+      })
+      if (rule.parent) {
+        rule.parent.insertAfter(rule, variableRule)
+      }
+      else {
+        root.append(variableRule)
+      }
     }
   })
 
