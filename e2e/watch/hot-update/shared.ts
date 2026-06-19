@@ -327,6 +327,7 @@ interface HotUpdateReport {
   options?: {
     webOnly?: boolean
     mainStyleOnly?: boolean
+    mainStyleSubPackageLimit?: number
   }
   summary: HotUpdateSummary
   summaryByRound: Partial<Record<MutationRoundName, HotUpdateSummary>>
@@ -929,9 +930,13 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
 
     const subPackageMainStyleHotUpdates = item.subPackageMainStyleHotUpdates ?? []
     if (SUBPACKAGE_HMR_CASES.has(item.name)) {
-      expect(subPackageMainStyleHotUpdates.length).toBe(2)
-      expect(subPackageMainStyleHotUpdates.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
-      expect(subPackageMainStyleHotUpdates.some(metric => metric.independent)).toBe(true)
+      const subPackageLimit = report.options?.mainStyleSubPackageLimit
+      const expectedSubPackageCount = subPackageLimit == null ? 2 : Math.min(2, Math.max(0, subPackageLimit))
+      expect(subPackageMainStyleHotUpdates.length).toBe(expectedSubPackageCount)
+      if (subPackageLimit == null) {
+        expect(subPackageMainStyleHotUpdates.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+        expect(subPackageMainStyleHotUpdates.some(metric => metric.independent)).toBe(true)
+      }
     }
     for (const subPackage of subPackageMainStyleHotUpdates) {
       const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)
