@@ -22,7 +22,7 @@ import {
   readJoinedOutputFiles,
   waitForClassOutputBaseline,
   waitForCompileSettled,
-  waitForOutputFilesUpdated,
+  waitForOutputFilesUpdatedWithDiagnostics,
 } from './shared'
 
 const FROM_CLASS_TOKEN = 'text-[102.43rpx]'
@@ -123,7 +123,7 @@ export async function runMainStyleHotUpdate(
     `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=setup dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
   )
   await writeFilePreserveEol(sourcePath, setupSource, sourceOriginal)
-  await waitForOutputFilesUpdated(
+  await waitForOutputFilesUpdatedWithDiagnostics(
     watchCase,
     outputFiles,
     setupBaselineMtimes,
@@ -146,7 +146,7 @@ export async function runMainStyleHotUpdate(
     `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=hot-update dirty=${formatPath(sourcePath)} token=${TO_CLASS_TOKEN}\n`,
   )
   await writeFilePreserveEol(sourcePath, hotUpdateSource, sourceOriginal)
-  const hotUpdateOutputMs = await waitForOutputFilesUpdated(
+  const hotUpdateOutputDiagnostics = await waitForOutputFilesUpdatedWithDiagnostics(
     watchCase,
     outputFiles,
     hotUpdateBaselineMtimes,
@@ -159,6 +159,7 @@ export async function runMainStyleHotUpdate(
       return true
     },
   )
+  const hotUpdateOutputMs = hotUpdateOutputDiagnostics.elapsedMs
   const hotUpdateEffectiveMs = hotUpdateOutputMs
   await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
@@ -175,7 +176,7 @@ export async function runMainStyleHotUpdate(
     `[watch-hmr] ${watchCase.label} main-style=${LABEL} carrier=${mutationKind} phase=rollback dirty=${formatPath(sourcePath)} token=${FROM_CLASS_TOKEN}\n`,
   )
   await writeFilePreserveEol(sourcePath, rollbackSource, sourceOriginal)
-  const rollbackOutputMs = await waitForOutputFilesUpdated(
+  const rollbackOutputDiagnostics = await waitForOutputFilesUpdatedWithDiagnostics(
     watchCase,
     outputFiles,
     rollbackBaselineMtimes,
@@ -202,6 +203,7 @@ export async function runMainStyleHotUpdate(
       return false
     },
   )
+  const rollbackOutputMs = rollbackOutputDiagnostics.elapsedMs
   const rollbackEffectiveMs = rollbackOutputMs
   await waitForCompileSettled(watchCase, options, session, rollbackStartedAt)
   const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
@@ -221,10 +223,12 @@ export async function runMainStyleHotUpdate(
     rollbackVerifiedGlobalStyleRemovedClasses,
     hotUpdateOutputMs,
     hotUpdateEffectiveMs,
+    hotUpdateOutputDiagnostics,
     hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,
     hotUpdatePluginProcessSamples: hotUpdatePluginMetrics.samples as PluginProcessSample[],
     rollbackOutputMs,
     rollbackEffectiveMs,
+    rollbackOutputDiagnostics,
     rollbackPluginProcessMs: rollbackPluginMetrics.totalMs,
     rollbackPluginProcessSamples: rollbackPluginMetrics.samples as PluginProcessSample[],
   }

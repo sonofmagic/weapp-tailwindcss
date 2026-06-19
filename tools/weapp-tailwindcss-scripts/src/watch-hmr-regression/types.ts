@@ -326,6 +326,18 @@ export interface OutputMtime {
   js: number
 }
 
+export interface OutputWaitDiagnostics {
+  trigger: 'exact-mtime' | 'glob-mtime' | 'semantic'
+  elapsedMs: number
+  fileCount: number
+  resolvedFileCount: number
+  exactFileUpdated: boolean
+  globFileUpdated: boolean
+  semanticAccepted: boolean
+  missingExactFiles: string[]
+  updatedFiles: string[]
+}
+
 export interface MutationRoundMetrics {
   roundName: MutationRoundName
   marker: string
@@ -334,10 +346,12 @@ export interface MutationRoundMetrics {
   escapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   totalMs: number
@@ -368,10 +382,12 @@ export interface ClassMutationMetrics {
   verifiedGlobalStyleEscapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   addedClassHmr?: AddedClassHmrMetrics
@@ -391,10 +407,12 @@ export interface AddedClassHmrMetrics {
   minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -411,10 +429,12 @@ export interface SameClassLiteralHmrMetrics {
   changedGlobalStyleOutputs: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -427,10 +447,12 @@ export interface CommentCarrierHmrMetrics {
   minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -453,10 +475,12 @@ export interface StyleMutationMetrics {
   referenceDirective?: string
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   rollbackNeedleCleared: boolean
@@ -473,10 +497,12 @@ export interface UserReportedHotUpdateMetrics {
   minRequiredGlobalStyleEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -496,10 +522,12 @@ export interface MainStyleHotUpdateMetrics {
   rollbackVerifiedGlobalStyleRemovedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -542,6 +570,8 @@ export interface HmrDurationTiming {
   hotUpdateEffectiveMs: number
   rollbackEffectiveMs?: number
   hotUpdatePluginProcessMs?: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
 }
 
 export interface ProjectHmrDurationReport {

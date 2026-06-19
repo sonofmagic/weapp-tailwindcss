@@ -624,6 +624,38 @@ export async function runWebHmr(
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
 
+  let stopped = false
+  const cleanupProcessResources = () => {
+    if (stopped) {
+      return
+    }
+    stopped = true
+    clearInterval(memoryTimer)
+    recordMemorySample()
+    child.stdout.off('data', collect)
+    child.stderr.off('data', collect)
+    try {
+      child.stdin.end()
+    }
+    catch {
+    }
+    try {
+      child.stdin.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stdout.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stderr.destroy()
+    }
+    catch {
+    }
+  }
+
   const waitForCompileSettled = async (
     phaseStartedAt: number,
     phase: string,
@@ -633,8 +665,7 @@ export async function runWebHmr(
       options.timeoutMs,
       config.compileSettleTimeoutMs ?? 30_000,
     )
-    await waitForWebCompileSettled({
-      acceptWhen,
+    const settleOptions = {
       getLastCompileSignalAt: () => lastCompileSignalAt,
       label: watchCase.label,
       phase,
@@ -646,11 +677,16 @@ export async function runWebHmr(
           throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
         }
       },
-    })
+    }
+    if (acceptWhen) {
+      Object.assign(settleOptions, { acceptWhen })
+    }
+    await waitForWebCompileSettled(settleOptions)
   }
 
   const stop = async () => {
     if (child.exitCode != null) {
+      cleanupProcessResources()
       return
     }
     const kill = (signal: NodeJS.Signals) => {
@@ -677,6 +713,7 @@ export async function runWebHmr(
     if (child.exitCode == null) {
       kill('SIGKILL')
     }
+    cleanupProcessResources()
   }
 
   let browser: Browser | undefined
@@ -914,7 +951,6 @@ export async function runWebHmr(
     catch {
     }
     await browser?.close().catch(() => {})
-    clearInterval(memoryTimer)
     await stop()
   }
 }

@@ -67,6 +67,7 @@ import {
   waitForOutputsReady,
   waitForOutputsUpdated,
   waitForOutputFilesUpdated,
+  waitForOutputFilesUpdatedWithDiagnostics,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 import {
   ISSUE33_ADD_CLASS_TOKENS,
@@ -154,10 +155,32 @@ function createMainStyleHotUpdateMetrics(
     rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_102_2e43rpx_B', 'text-_b_103_2e43rpx_B'],
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
     hotUpdateEffectiveMs,
+    hotUpdateOutputDiagnostics: {
+      trigger: 'semantic',
+      elapsedMs: hotUpdateEffectiveMs + 10,
+      fileCount: 3,
+      resolvedFileCount: 2,
+      exactFileUpdated: true,
+      globFileUpdated: false,
+      semanticAccepted: true,
+      missingExactFiles: [],
+      updatedFiles: ['dist/app.wxss'],
+    },
     hotUpdatePluginProcessMs: 24,
     hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 24 }],
     rollbackOutputMs: rollbackEffectiveMs + 10,
     rollbackEffectiveMs,
+    rollbackOutputDiagnostics: {
+      trigger: 'semantic',
+      elapsedMs: rollbackEffectiveMs + 10,
+      fileCount: 3,
+      resolvedFileCount: 2,
+      exactFileUpdated: true,
+      globFileUpdated: false,
+      semanticAccepted: true,
+      missingExactFiles: [],
+      updatedFiles: ['dist/app.wxss'],
+    },
     rollbackPluginProcessMs: 19,
     rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 19 }],
   }
@@ -507,6 +530,45 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('reports output wait diagnostics for semantic fallback updates', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-output-diagnostics-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(outputFile, '.base{}', '.base{}')
+    const baselineMtime = await getMtime(outputFile)
+    let attempts = 0
+
+    const diagnostics = await waitForOutputFilesUpdatedWithDiagnostics(
+      {
+        label: 'demo/mpx-tailwindcss-v4',
+      } as any,
+      [outputFile, path.join(tempDir, 'missing.wxss')],
+      new Map([[outputFile, baselineMtime]]),
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(diagnostics).toMatchObject({
+      trigger: 'semantic',
+      fileCount: 2,
+      exactFileUpdated: false,
+      semanticAccepted: true,
+      missingExactFiles: [path.join(tempDir, 'missing.wxss')],
+      updatedFiles: [],
+    })
+    expect(diagnostics.elapsedMs).toBeGreaterThanOrEqual(0)
   })
 
   it('allows primary output update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
@@ -1111,6 +1173,10 @@ describe('watch-hmr regression summary helpers', () => {
       'subpackage:sub-independent:template',
       'subpackage:sub-independent:style',
     ]))
+    expect(projectDurations.timings.find(item => item.surface === 'main-style:text-[102.43rpx] to text-[103.43rpx]')?.hotUpdateOutputDiagnostics).toMatchObject({
+      trigger: 'semantic',
+      semanticAccepted: true,
+    })
     expect(durations.summaryBySurface.web).toMatchObject({ count: 1, hotUpdateAvgMs: 18, rollbackAvgMs: 12 })
     expect(durations.summaryBySurface['subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 44, rollbackAvgMs: 45 })
     expect(durations.summaryBySurface['subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 46, rollbackAvgMs: 47 })
@@ -1276,6 +1342,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(markdown).toContain('- budget: <=1000ms')
     expect(markdown).toContain('- plugin process budget: <=500ms')
     expect(markdown).toContain('- preferred target: <=1000ms')
+    expect(markdown).toContain('output=semantic')
     expect(markdown).toContain('| template:preferred-round | 1 | 30ms | 30ms | 30ms | 30ms | 30ms |')
     expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
   })

@@ -1,4 +1,4 @@
-import type { WatchReport } from './types'
+import type { OutputWaitDiagnostics, WatchReport } from './types'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import { summarizeHmrDurations } from './hmr-durations'
@@ -12,6 +12,7 @@ export interface HmrSpeedSample {
   hotUpdateMs: number
   pluginProcessMs?: number
   rollbackMs?: number
+  outputDiagnostics?: OutputWaitDiagnostics
   initialReadyMs?: number
   reportFile: string
 }
@@ -52,10 +53,27 @@ function pushSpeedSample(samples: HmrSpeedSample[], sample: Omit<HmrSpeedSample,
   if (hotUpdateMs == null) {
     return
   }
-  samples.push({
-    ...sample,
+  const next: HmrSpeedSample = {
+    caseName: sample.caseName,
+    project: sample.project,
+    surface: sample.surface,
+    sourceFile: sample.sourceFile,
     hotUpdateMs,
-  })
+    reportFile: sample.reportFile,
+  }
+  if (typeof sample.pluginProcessMs === 'number') {
+    next.pluginProcessMs = sample.pluginProcessMs
+  }
+  if (typeof sample.rollbackMs === 'number') {
+    next.rollbackMs = sample.rollbackMs
+  }
+  if (sample.outputDiagnostics) {
+    next.outputDiagnostics = sample.outputDiagnostics
+  }
+  if (typeof sample.initialReadyMs === 'number') {
+    next.initialReadyMs = sample.initialReadyMs
+  }
+  samples.push(next)
 }
 
 function percentile(sortedValues: number[], ratio: number) {
@@ -63,7 +81,7 @@ function percentile(sortedValues: number[], ratio: number) {
     return 0
   }
   const index = Math.ceil(sortedValues.length * ratio) - 1
-  return sortedValues[Math.min(Math.max(index, 0), sortedValues.length - 1)]
+  return sortedValues[Math.min(Math.max(index, 0), sortedValues.length - 1)] ?? 0
 }
 
 export function summarizeSpeedSamples(samples: Array<Pick<HmrSpeedSample, 'hotUpdateMs'>>): HmrSpeedSummary {
@@ -84,11 +102,13 @@ export function summarizeSpeedSamples(samples: Array<Pick<HmrSpeedSample, 'hotUp
   }
 
   const sum = values.reduce((total, value) => total + value, 0)
+  const minMs = values[0] ?? 0
+  const maxMs = values.at(-1) ?? 0
   return {
     count: values.length,
     avgMs: Math.round(sum / values.length),
-    minMs: values[0],
-    maxMs: values.at(-1)!,
+    minMs,
+    maxMs,
     p50Ms: percentile(values, 0.5),
     p95Ms: percentile(values, 0.95),
   }
@@ -118,17 +138,29 @@ export function collectSpeedSamplesFromReport(report: WatchReport, reportFile: s
     const project = projectReport.project || 'unknown'
     const initialReadyMs = toFiniteNumber(projectReport.initialReadyMs)
     for (const timing of projectReport.timings ?? []) {
-      pushSpeedSample(samples, {
+      const sample: Omit<HmrSpeedSample, 'hotUpdateMs'> & { hotUpdateMs: unknown } = {
         caseName,
         project,
         surface: timing.surface,
         sourceFile: timing.sourceFile || '',
         hotUpdateMs: timing.hotUpdateEffectiveMs,
-        pluginProcessMs: toFiniteNumber(timing.hotUpdatePluginProcessMs),
-        rollbackMs: toFiniteNumber(timing.rollbackEffectiveMs),
-        initialReadyMs,
         reportFile,
-      })
+      }
+      const pluginProcessMs = toFiniteNumber(timing.hotUpdatePluginProcessMs)
+      const rollbackMs = toFiniteNumber(timing.rollbackEffectiveMs)
+      if (typeof pluginProcessMs === 'number') {
+        sample.pluginProcessMs = pluginProcessMs
+      }
+      if (typeof rollbackMs === 'number') {
+        sample.rollbackMs = rollbackMs
+      }
+      if (timing.hotUpdateOutputDiagnostics) {
+        sample.outputDiagnostics = timing.hotUpdateOutputDiagnostics
+      }
+      if (typeof initialReadyMs === 'number') {
+        sample.initialReadyMs = initialReadyMs
+      }
+      pushSpeedSample(samples, sample)
     }
   }
   return samples
@@ -139,7 +171,7 @@ export function buildSpeedReport(entries: Array<{ file: string, report: WatchRep
     collectSpeedSamplesFromReport(entry.report, path.basename(entry.file)))
   const initialReadySamples = samples
     .map(item => item.initialReadyMs)
-    .filter(Number.isFinite)
+    .filter((value): value is number => typeof value === 'number' && Number.isFinite(value))
     .map(value => ({ hotUpdateMs: value }))
 
   return {
@@ -189,7 +221,7 @@ export function renderSpeedReportMarkdown(report: HmrSpeedReport) {
   }
   else {
     for (const sample of report.slowest) {
-      lines.push(`- ${sample.hotUpdateMs}ms hot-update, ${sample.pluginProcessMs ?? 0}ms plugin | ${sample.project} | ${sample.surface} | ${sample.sourceFile || 'n/a'} | ${sample.reportFile}`)
+      lines.push(`- ${sample.hotUpdateMs}ms hot-update, ${sample.pluginProcessMs ?? 0}ms plugin${formatOutputDiagnostics(sample.outputDiagnostics)} | ${sample.project} | ${sample.surface} | ${sample.sourceFile || 'n/a'} | ${sample.reportFile}`)
     }
   }
 
@@ -198,6 +230,15 @@ export function renderSpeedReportMarkdown(report: HmrSpeedReport) {
   lines.push('- Tailwind v3/v4 官方 Vite/Webpack 插件在 watch 生命周期复用 compiler、scanner 与 candidates 集合。')
   lines.push('- 本仓库 HMR 回归沿用同一思路：启动一次开发 watcher，在同一 session 内连续验证 template/script/style/content/subpackage 变更，并记录增量输出与实际生效耗时。')
   return `${lines.join('\n')}\n`
+}
+
+function formatOutputDiagnostics(diagnostics: OutputWaitDiagnostics | undefined) {
+  if (!diagnostics) {
+    return ''
+  }
+  const updated = diagnostics.updatedFiles.length
+  const missing = diagnostics.missingExactFiles.length
+  return `, output=${diagnostics.trigger}, resolved=${diagnostics.resolvedFileCount}/${diagnostics.fileCount}, updated=${updated}, missing=${missing}`
 }
 
 function renderSummaryTable(grouped: Record<string, HmrSpeedSummary>) {

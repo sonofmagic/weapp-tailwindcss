@@ -1,5 +1,5 @@
-import type { Buffer } from 'node:buffer'
-import type { CliOptions, HmrMemoryDebugSample, MemoryUsageSample, PluginProcessSample, WatchSession } from './types'
+import type { CliOptions, HmrMemoryDebugSample, MemoryProcessSample, MemoryUsageSample, PluginProcessSample, WatchSession } from './types'
+import { Buffer } from 'node:buffer'
 import { spawn, spawnSync } from 'node:child_process'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -334,6 +334,13 @@ interface ProcessTreeRow {
   command?: string
 }
 
+interface WindowsProcessTreeRow {
+  pid: number
+  ppid: number
+  workingSetBytes: number
+  command?: string
+}
+
 function readPsToken(value: string, start: number) {
   let index = start
   while (index < value.length && value.charCodeAt(index) <= 32) {
@@ -457,9 +464,10 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
 }
 
 function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSample, 'at'> | undefined {
+  const escapedRootPid = JSON.stringify(rootPid)
   const script = [
-    '$root = [int]$args[0]',
-    '$processes = Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize',
+    `$root = [int]${escapedRootPid}`,
+    '$processes = @(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize,CommandLine)',
     '$children = @{}',
     'foreach ($process in $processes) {',
     '  $parent = [int]$process.ParentProcessId',
@@ -486,10 +494,11 @@ function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSamp
     '  $total += $workingSet',
     '  if ($workingSet -gt $max) { $max = $workingSet }',
     '}',
-    '$top = @($tracked.Values | Sort-Object -Property WorkingSetSize -Descending | Select-Object -First 8 | ForEach-Object { $workingSet = if ($null -eq $_.WorkingSetSize) { 0 } else { [double]$_.WorkingSetSize }; @{ pid = [int]$_.ProcessId; ppid = [int]$_.ParentProcessId; rssMb = [int][Math]::Round($workingSet / 1MB) } })',
+    '$top = @($tracked.Values | Sort-Object -Property WorkingSetSize -Descending | Select-Object -First 8 | ForEach-Object { $workingSet = if ($null -eq $_.WorkingSetSize) { 0 } else { [double]$_.WorkingSetSize }; $command = if ($null -eq $_.CommandLine) { "" } else { [string]$_.CommandLine }; @{ pid = [int]$_.ProcessId; ppid = [int]$_.ParentProcessId; rssMb = [int][Math]::Round($workingSet / 1MB); command = $command.Substring(0, [Math]::Min(240, $command.Length)) } })',
     '[Console]::Out.WriteLine((@{ rssMb = [int][Math]::Round($total / 1MB); maxProcessRssMb = [int][Math]::Round($max / 1MB); processCount = [int]$tracked.Count; topProcesses = $top } | ConvertTo-Json -Compress -Depth 4))',
   ].join('; ')
-  const result = spawnSync('powershell', ['-NoProfile', '-Command', script, String(rootPid)], {
+  const encodedCommand = Buffer.from(script, 'utf16le').toString('base64')
+  const result = spawnSync('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', encodedCommand], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
     windowsHide: true,
@@ -508,16 +517,46 @@ function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSamp
     ) {
       return undefined
     }
-    return {
+    const topProcesses = normalizeWindowsTopProcesses(parsed.topProcesses)
+    const sample: Omit<MemoryUsageSample, 'at'> = {
       rssMb: parsed.rssMb,
       maxProcessRssMb: parsed.maxProcessRssMb,
       processCount: parsed.processCount,
-      ...(Array.isArray(parsed.topProcesses) ? { topProcesses: parsed.topProcesses as MemoryUsageSample['topProcesses'] } : {}),
     }
+    if (topProcesses.length > 0) {
+      sample.topProcesses = topProcesses
+    }
+    return sample
   }
   catch {
     return undefined
   }
+}
+
+function normalizeWindowsTopProcesses(value: unknown): MemoryProcessSample[] {
+  const rows = Array.isArray(value)
+    ? value
+    : value && typeof value === 'object'
+      ? [value]
+      : []
+  return rows
+    .map((row) => {
+      const item = row as Partial<WindowsProcessTreeRow & MemoryProcessSample>
+      if (
+        typeof item.pid !== 'number'
+        || typeof item.ppid !== 'number'
+        || typeof item.rssMb !== 'number'
+      ) {
+        return undefined
+      }
+      return {
+        pid: item.pid,
+        ppid: item.ppid,
+        rssMb: item.rssMb,
+        ...(typeof item.command === 'string' && item.command ? { command: item.command } : {}),
+      }
+    })
+    .filter((item): item is MemoryProcessSample => item != null)
 }
 
 export function sampleProcessTreeMemory(rootPid: number | undefined): MemoryUsageSample | undefined {
@@ -822,6 +861,19 @@ export function createWatchCommandSession(
     rawCollect(chunk)
   }
 
+  let stopped = false
+  const cleanupSessionResources = () => {
+    if (stopped) {
+      return
+    }
+    stopped = true
+    collecting = false
+    clearInterval(memoryTimer)
+    recordMemorySample()
+    child.stdout.off('data', collect)
+    child.stderr.off('data', collect)
+  }
+
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
 
@@ -844,15 +896,12 @@ export function createWatchCommandSession(
     }
 
     if (child.exitCode != null) {
+      cleanupSessionResources()
       closePipes()
       return
     }
 
-    collecting = false
-    clearInterval(memoryTimer)
-    recordMemorySample()
-    child.stdout.off('data', collect)
-    child.stderr.off('data', collect)
+    cleanupSessionResources()
 
     killWatchProcess('SIGINT')
     if (await waitForExit(3000)) {
