@@ -711,8 +711,34 @@ export async function runPnpmCommand(cwd: string, args: string[], label: string)
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
 
+  const closePipes = () => {
+    try {
+      child.stdin.end()
+    }
+    catch {
+    }
+    try {
+      child.stdin.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stdout.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stderr.destroy()
+    }
+    catch {
+    }
+  }
+
   const exitCode = await new Promise<number>((resolve) => {
-    child.on('close', (code) => {
+    child.once('close', (code) => {
+      child.stdout.off('data', collect)
+      child.stderr.off('data', collect)
+      closePipes()
       resolve(code ?? 1)
     })
   })
