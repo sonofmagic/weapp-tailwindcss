@@ -198,6 +198,8 @@ function resolveWebpackMemoryDebugStats(context: {
   }
 
   const memory = process.memoryUsage()
+  const processCacheInstanceSize = context.cache.instance.size
+  const processCacheHashMapSize = context.cache.hashMap.size
   return {
     phase: context.phase,
     process: {
@@ -212,10 +214,14 @@ function resolveWebpackMemoryDebugStats(context: {
       activeCss: context.activeCssFiles,
     },
     processCache: {
-      instance: context.cache.instance.size,
-      hashMap: context.cache.hashMap.size,
+      instance: processCacheInstanceSize,
+      hashMap: processCacheHashMapSize,
       activeCacheKeys: context.activeProcessCacheKeys.size,
       activeHashKeys: context.activeProcessHashKeys.size,
+      staleCacheKeys: Math.max(0, processCacheInstanceSize - context.activeProcessCacheKeys.size),
+      staleHashKeys: Math.max(0, processCacheHashMapSize - context.activeProcessHashKeys.size),
+      pruned: true,
+      pruneSkipped: false,
     },
     webpackCss: {
       handlerOptions: context.cssHandlerOptionsCache.size,

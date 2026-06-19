@@ -10815,4 +10815,72 @@ const fallback = "bg-[#434332] px-[32px]"
     const assetUpdates = currentContext.onUpdate.mock.calls.filter(([file]) => file === 'asset.js')
     expect(assetUpdates.some(([, , updated]) => updated === 'linked:asset')).toBe(true)
   }, TEST_TIMEOUT_MS)
+
+  it('prunes process cache during omitted-file incremental bundle updates', async () => {
+    process.env.WEAPP_TW_WATCH_REGRESSION = '1'
+    process.env.WEAPP_TW_HMR_MEMORY_DEBUG = '1'
+    const write = vi.spyOn(process.stdout, 'write').mockImplementation(() => true)
+    try {
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      setCurrentContext(createContext({
+        templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
+        jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
+        styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+      }))
+      const currentContext = getCurrentContext()
+      const plugins = WeappTailwindcss()
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(postPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root: process.cwd(),
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as ResolvedConfig)
+
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      const firstBundle = {
+        'index.wxml': createRollupAsset('<view class="alpha"></view>'),
+        'index.js': createRollupChunk('const cls = "alpha"'),
+        'index.css': {
+          ...createRollupAsset('.alpha { color: red; }'),
+          fileName: 'index.css',
+        },
+      }
+      await generateBundle?.call(postPlugin, {} as any, firstBundle)
+      expect(currentContext.cache.hashMap.size).toBeGreaterThan(1)
+
+      await generateBundle?.call(postPlugin, {} as any, {
+        'index.js': createRollupChunk('const cls = "alpha beta"'),
+      })
+
+      expect([...currentContext.cache.hashMap.keys()]).toEqual(['index.js:js'])
+      expect([...currentContext.cache.instance.keys()]).toEqual(['index.js'])
+
+      const payloads = write.mock.calls
+        .map(([chunk]) => String(chunk))
+        .filter(line => line.startsWith('[weapp-tailwindcss:hmr] '))
+        .map(line => JSON.parse(line.replace('[weapp-tailwindcss:hmr] ', '')))
+        .filter(payload => payload.phase === 'generateBundle')
+      expect(payloads.at(-1)?.memoryDebug).toMatchObject({
+        bundle: {
+          hasOmittedKnownFiles: true,
+        },
+        processCache: {
+          activeCacheKeys: 1,
+          activeHashKeys: 1,
+          staleCacheKeys: 0,
+          staleHashKeys: 0,
+          pruned: true,
+          pruneSkipped: false,
+        },
+      })
+    }
+    finally {
+      write.mockRestore()
+      delete process.env.WEAPP_TW_WATCH_REGRESSION
+      delete process.env.WEAPP_TW_HMR_MEMORY_DEBUG
+    }
+  }, TEST_TIMEOUT_MS)
 })

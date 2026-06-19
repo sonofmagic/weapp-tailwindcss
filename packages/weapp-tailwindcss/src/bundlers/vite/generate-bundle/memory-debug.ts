@@ -25,8 +25,11 @@ export function resolveViteMemoryDebugStats(context: {
   cache: GenerateBundleContext['opts']['cache']
   generatorRuntimeSize: number
   getViteCssCacheStats?: (() => Record<string, unknown>) | undefined
+  hasOmittedKnownFiles: boolean
   lastCssResultByFile: Map<string, string>
   phase: string
+  processCachePruned: boolean
+  processCachePruneSkipReason?: string | undefined
   runtimeSize: number
   sourceCandidatesSize: number
   transformRuntimeSize: number
@@ -37,9 +40,14 @@ export function resolveViteMemoryDebugStats(context: {
   }
 
   const memory = process.memoryUsage()
+  const processCacheInstanceSize = context.cache.instance.size
+  const processCacheHashMapSize = context.cache.hashMap.size
   return {
     phase: context.phase,
     mode: context.useIncrementalMode ? 'incremental' : 'full',
+    bundle: {
+      hasOmittedKnownFiles: context.hasOmittedKnownFiles,
+    },
     process: {
       rssMb: toMb(memory.rss),
       heapTotalMb: toMb(memory.heapTotal),
@@ -54,10 +62,15 @@ export function resolveViteMemoryDebugStats(context: {
       generatorRuntime: context.generatorRuntimeSize,
     },
     processCache: {
-      instance: context.cache.instance.size,
-      hashMap: context.cache.hashMap.size,
+      instance: processCacheInstanceSize,
+      hashMap: processCacheHashMapSize,
       activeCacheKeys: context.activeProcessCacheKeys.size,
       activeHashKeys: context.activeProcessHashKeys.size,
+      staleCacheKeys: Math.max(0, processCacheInstanceSize - context.activeProcessCacheKeys.size),
+      staleHashKeys: Math.max(0, processCacheHashMapSize - context.activeProcessHashKeys.size),
+      pruned: context.processCachePruned,
+      pruneSkipped: !context.processCachePruned,
+      ...(context.processCachePruneSkipReason ? { pruneSkipReason: context.processCachePruneSkipReason } : {}),
     },
     viteCss: {
       ...context.getViteCssCacheStats?.(),

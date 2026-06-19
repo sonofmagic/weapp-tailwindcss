@@ -92,8 +92,53 @@ describe('hmr full run report', () => {
               rssDeltaMb: 724,
               peakMaxProcessRssMb: 512,
               peakProcessCount: 8,
+              uniqueProcessCount: 14,
               peakHeapUsedMb: 420,
               peakDebugRssMb: 900,
+              peakSample: {
+                at: 1,
+                rssMb: 1024,
+                maxProcessRssMb: 512,
+                processCount: 8,
+                topProcesses: [
+                  {
+                    pid: 100,
+                    ppid: 1,
+                    rssMb: 512,
+                    command: 'node taro build --watch',
+                  },
+                ],
+              },
+              topHeapPhases: [
+                {
+                  phase: 'webpack:processAssets',
+                  count: 2,
+                  peakHeapUsedMb: 420,
+                  peakRssMb: 900,
+                },
+              ],
+              topStaleCachePhases: [
+                {
+                  phase: 'webpack:processAssets',
+                  count: 2,
+                  peakStaleCacheKeys: 4,
+                  peakStaleHashKeys: 7,
+                  pruneSkippedCount: 1,
+                  omittedKnownFilesCount: 1,
+                },
+              ],
+              topDurationPhases: [
+                {
+                  phase: 'webpack:processAssets',
+                  count: 2,
+                  peakDurationMs: 52000,
+                  peakDurationActiveCss: 0,
+                  peakDurationStaleCacheKeys: 0,
+                  peakDurationStaleHashKeys: 0,
+                  peakDurationPruneSkipped: false,
+                  peakDurationOmittedKnownFiles: false,
+                },
+              ],
             },
           },
         },
@@ -107,8 +152,17 @@ describe('hmr full run report', () => {
       })
 
       expect(report.cases[0]?.notes).toContain('端到端 HMR 明显高于插件处理耗时，主要口径包含框架 dev server 编译、产物写入、浏览器/运行时可见等待。')
+      expect(report.cases[0]?.notes).toContain('webpack processAssets 超长样本没有活跃 CSS asset 且 cache stale 为 0，通常是 webpack-dev-middleware/框架整轮编译等待被计入插件 phase。')
       expect(report.cases[0]?.memory?.peakHeapUsedMb).toBe(420)
+      expect(report.cases[0]?.memory?.uniqueProcessCount).toBe(14)
+      expect(report.cases[0]?.memory?.peakSample?.topProcesses?.[0]?.command).toBe('node taro build --watch')
+      expect(report.cases[0]?.memory?.topDurationPhases?.[0]?.peakDurationActiveCss).toBe(0)
       expect(renderHmrFullRunMarkdown(report)).toContain('plugin process: samples=1')
+      expect(renderHmrFullRunMarkdown(report)).toContain('webpack:processAssets')
+      expect(renderHmrFullRunMarkdown(report)).toContain('52000ms')
+      expect(renderHmrFullRunMarkdown(report)).toContain('node taro build --watch')
+      expect(renderHmrFullRunMarkdown(report)).toContain('4/7')
+      expect(renderHmrFullRunMarkdown(report)).toContain('| taro-webpack-react-tailwindcss-v4 | weapp | 1024MB | 8 | 14 | 512MB |')
     }
     finally {
       await rm(root, { force: true, recursive: true })

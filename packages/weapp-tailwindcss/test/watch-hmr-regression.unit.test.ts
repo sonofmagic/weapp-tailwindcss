@@ -274,10 +274,41 @@ function createCase(
   const complexRound = createRound('complex-corpus', hotUpdateEffectiveMs, rollbackEffectiveMs)
   const memorySamples = [
     { at: 1, rssMb: 100, maxProcessRssMb: 90, processCount: 2 },
-    { at: 2, rssMb: 132, maxProcessRssMb: 118, processCount: 2 },
+    {
+      at: 2,
+      rssMb: 132,
+      maxProcessRssMb: 118,
+      processCount: 2,
+      topProcesses: [
+        { pid: 10, ppid: 1, rssMb: 118, command: 'node demo-watch' },
+        { pid: 11, ppid: 10, rssMb: 14, command: 'worker' },
+      ],
+    },
+  ]
+  const memoryDebugSamples = [
+    {
+      at: 2,
+      bundler: 'vite',
+      phase: 'generateBundle',
+      durationMs: 22,
+      data: {
+        bundle: {
+          hasOmittedKnownFiles: true,
+        },
+        process: {
+          heapUsedMb: 64,
+          rssMb: 132,
+        },
+        processCache: {
+          staleCacheKeys: 1,
+          staleHashKeys: 2,
+          pruneSkipped: true,
+        },
+      },
+    },
   ]
   const memorySummary = summarizeMemorySamples(memorySamples)
-  const memoryDebugSummary = summarizeMemoryDebugSamples([])
+  const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
   return {
     name,
     label: `${name} label`,
@@ -316,6 +347,7 @@ function createCase(
     rollbackPluginProcessSamples: complexRound.rollbackPluginProcessSamples,
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs + 25,
     memorySamples,
+    memoryDebugSamples,
     memorySummary,
     memoryDebugSummary,
     memoryPeakRssMb: memorySummary.peakRssMb,
@@ -1175,6 +1207,14 @@ describe('watch-hmr regression summary helpers', () => {
       peakRssMb: 132,
       rssDeltaMb: 0,
       peakProcessCount: 2,
+      uniqueProcessCount: 2,
+      peakSample: {
+        rssMb: 132,
+      },
+    })
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3'].peakSample.topProcesses[0]).toMatchObject({
+      rssMb: 118,
+      command: 'node demo-watch',
     })
   })
 
@@ -1316,7 +1356,7 @@ describe('watch-hmr regression summary helpers', () => {
     metrics.memoryPeakRssMb = summary.peakRssMb
     metrics.memoryRssDeltaMb = summary.rssDeltaMb
 
-    expect(summary).toMatchObject({ baselineRssMb: 640, peakRssMb: 702, rssDeltaMb: 62, peakProcessCount: 2 })
+    expect(summary).toMatchObject({ baselineRssMb: 640, peakRssMb: 702, rssDeltaMb: 62, peakProcessCount: 2, uniqueProcessCount: 0 })
     metrics.memorySummary = summary
     metrics.memoryPeakRssMb = summary.peakRssMb
     metrics.memoryRssDeltaMb = summary.rssDeltaMb
@@ -1365,14 +1405,57 @@ describe('watch-hmr regression summary helpers', () => {
         phase: 'generateBundle',
         durationMs: 100,
         data: {
+          bundle: {
+            hasOmittedKnownFiles: true,
+          },
           process: {
             heapUsedMb: 640,
             rssMb: 720,
+          },
+          processCache: {
+            staleCacheKeys: 3,
+            staleHashKeys: 11,
+            pruneSkipped: true,
           },
         },
       },
     ]
     metrics.memoryDebugSummary = summarizeMemoryDebugSamples(metrics.memoryDebugSamples)
+
+    expect(metrics.memoryDebugSummary.topHeapPhases).toEqual([
+      {
+        phase: 'vite:generateBundle',
+        count: 1,
+        peakHeapUsedMb: 640,
+        peakRssMb: 720,
+        peakStaleCacheKeys: 3,
+        peakStaleHashKeys: 11,
+        pruneSkippedCount: 1,
+        omittedKnownFilesCount: 1,
+      },
+    ])
+    expect(metrics.memoryDebugSummary.topStaleCachePhases).toEqual([
+      {
+        phase: 'vite:generateBundle',
+        count: 1,
+        peakStaleCacheKeys: 3,
+        peakStaleHashKeys: 11,
+        pruneSkippedCount: 1,
+        omittedKnownFilesCount: 1,
+      },
+    ])
+    expect(metrics.memoryDebugSummary.topDurationPhases).toEqual([
+      {
+        phase: 'vite:generateBundle',
+        count: 1,
+        peakDurationMs: 100,
+        peakDurationActiveCss: 0,
+        peakDurationStaleCacheKeys: 3,
+        peakDurationStaleHashKeys: 11,
+        peakDurationPruneSkipped: true,
+        peakDurationOmittedKnownFiles: true,
+      },
+    ])
 
     expect(() => assertMemoryBudget(metrics, {
       caseName: 'demo',
@@ -1394,7 +1477,7 @@ describe('watch-hmr regression summary helpers', () => {
       { at: 3, rssMb: 742, maxProcessRssMb: 698, processCount: 3 },
     ])
 
-    expect(summary).toMatchObject({ baselineRssMb: 684, peakRssMb: 742, rssDeltaMb: 58, peakProcessCount: 3 })
+    expect(summary).toMatchObject({ baselineRssMb: 684, peakRssMb: 742, rssDeltaMb: 58, peakProcessCount: 3, uniqueProcessCount: 0 })
   })
 
   it('prefers total timing samples when collecting plugin processing metrics', () => {

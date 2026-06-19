@@ -327,8 +327,55 @@ function listDescendantPidsOnPosix(rootPid: number) {
   return descendants
 }
 
+interface ProcessTreeRow {
+  pid: number
+  ppid: number
+  rssKb: number
+  command?: string
+}
+
+function readPsToken(value: string, start: number) {
+  let index = start
+  while (index < value.length && value.charCodeAt(index) <= 32) {
+    index += 1
+  }
+  const tokenStart = index
+  while (index < value.length && value.charCodeAt(index) > 32) {
+    index += 1
+  }
+  if (tokenStart === index) {
+    return undefined
+  }
+  return {
+    token: value.slice(tokenStart, index),
+    nextIndex: index,
+  }
+}
+
+function parseProcessTreeRowLine(value: string): ProcessTreeRow | undefined {
+  const pidColumn = readPsToken(value, 0)
+  const ppidColumn = pidColumn ? readPsToken(value, pidColumn.nextIndex) : undefined
+  const rssColumn = ppidColumn ? readPsToken(value, ppidColumn.nextIndex) : undefined
+  if (!pidColumn || !ppidColumn || !rssColumn) {
+    return undefined
+  }
+  const pid = Number(pidColumn.token)
+  const ppid = Number(ppidColumn.token)
+  const rssKb = Number(rssColumn.token)
+  if (!Number.isInteger(pid) || !Number.isInteger(ppid) || !Number.isFinite(rssKb)) {
+    return undefined
+  }
+  const command = value.slice(rssColumn.nextIndex).trim()
+  return {
+    pid,
+    ppid,
+    rssKb,
+    ...(command ? { command: command.slice(0, 240) } : {}),
+  }
+}
+
 function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample, 'at'> | undefined {
-  const result = spawnSync('ps', ['-Ao', 'pid=,ppid=,rss='], {
+  const result = spawnSync('ps', ['-Ao', 'pid=,ppid=,rss=,command='], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
   })
@@ -337,25 +384,21 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
     return undefined
   }
 
-  const rows: Array<{ pid: number, ppid: number, rssKb: number }> = []
+  const rows: ProcessTreeRow[] = []
   for (const line of result.stdout.split(NEWLINE_SPLIT_RE)) {
     const normalized = line.trim()
     if (!normalized) {
       continue
     }
 
-    const [pidText, ppidText, rssText] = normalized.split(WHITESPACE_RE)
-    const pid = Number(pidText)
-    const ppid = Number(ppidText)
-    const rssKb = Number(rssText)
-    if (!Number.isInteger(pid) || !Number.isInteger(ppid) || !Number.isFinite(rssKb)) {
-      continue
+    const row = parseProcessTreeRowLine(normalized)
+    if (row) {
+      rows.push(row)
     }
-    rows.push({ pid, ppid, rssKb })
   }
 
-  const childrenByParent = new Map<number, Array<{ pid: number, ppid: number, rssKb: number }>>()
-  const byPid = new Map<number, { pid: number, ppid: number, rssKb: number }>()
+  const childrenByParent = new Map<number, ProcessTreeRow[]>()
+  const byPid = new Map<number, ProcessTreeRow>()
   for (const row of rows) {
     byPid.set(row.pid, row)
     const siblings = childrenByParent.get(row.ppid)
@@ -367,7 +410,7 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
     }
   }
 
-  const tracked = new Map<number, { pid: number, ppid: number, rssKb: number }>()
+  const tracked = new Map<number, ProcessTreeRow>()
   const root = byPid.get(rootPid)
   if (root) {
     tracked.set(root.pid, root)
@@ -401,6 +444,15 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
     rssMb: Math.round(totalRssKb / 1024),
     maxProcessRssMb: Math.round(maxProcessRssKb / 1024),
     processCount: tracked.size,
+    topProcesses: [...tracked.values()]
+      .sort((a, b) => b.rssKb - a.rssKb)
+      .slice(0, 8)
+      .map(row => ({
+        pid: row.pid,
+        ppid: row.ppid,
+        rssMb: Math.round(row.rssKb / 1024),
+        ...(row.command ? { command: row.command } : {}),
+      })),
   }
 }
 
@@ -434,7 +486,8 @@ function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSamp
     '  $total += $workingSet',
     '  if ($workingSet -gt $max) { $max = $workingSet }',
     '}',
-    '[Console]::Out.WriteLine((@{ rssMb = [int][Math]::Round($total / 1MB); maxProcessRssMb = [int][Math]::Round($max / 1MB); processCount = [int]$tracked.Count } | ConvertTo-Json -Compress))',
+    '$top = @($tracked.Values | Sort-Object -Property WorkingSetSize -Descending | Select-Object -First 8 | ForEach-Object { $workingSet = if ($null -eq $_.WorkingSetSize) { 0 } else { [double]$_.WorkingSetSize }; @{ pid = [int]$_.ProcessId; ppid = [int]$_.ParentProcessId; rssMb = [int][Math]::Round($workingSet / 1MB) } })',
+    '[Console]::Out.WriteLine((@{ rssMb = [int][Math]::Round($total / 1MB); maxProcessRssMb = [int][Math]::Round($max / 1MB); processCount = [int]$tracked.Count; topProcesses = $top } | ConvertTo-Json -Compress -Depth 4))',
   ].join('; ')
   const result = spawnSync('powershell', ['-NoProfile', '-Command', script, String(rootPid)], {
     encoding: 'utf8',
@@ -459,6 +512,7 @@ function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSamp
       rssMb: parsed.rssMb,
       maxProcessRssMb: parsed.maxProcessRssMb,
       processCount: parsed.processCount,
+      ...(Array.isArray(parsed.topProcesses) ? { topProcesses: parsed.topProcesses as MemoryUsageSample['topProcesses'] } : {}),
     }
   }
   catch {

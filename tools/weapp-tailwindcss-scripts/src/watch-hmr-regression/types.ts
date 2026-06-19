@@ -72,11 +72,27 @@ export interface HmrMemoryDebugSample {
   data: Record<string, unknown>
 }
 
+export interface MemoryProcessSample {
+  pid: number
+  ppid: number
+  rssMb: number
+  command?: string
+}
+
 export interface MemoryUsageSample {
   at: number
   rssMb: number
   maxProcessRssMb: number
   processCount: number
+  topProcesses?: MemoryProcessSample[]
+}
+
+export interface MemoryPeakSample {
+  at: number
+  rssMb: number
+  maxProcessRssMb: number
+  processCount: number
+  topProcesses?: MemoryProcessSample[]
 }
 
 export interface MemoryUsageSummary {
@@ -86,19 +102,55 @@ export interface MemoryUsageSummary {
   rssDeltaMb: number
   peakMaxProcessRssMb: number
   peakProcessCount: number
+  uniqueProcessCount: number
   firstAt?: number
   lastAt?: number
   durationMs: number
+  peakSample?: MemoryPeakSample
 }
 
 export interface HmrMemoryDebugSummary {
   count: number
   peakHeapUsedMb: number
   peakRssMb: number
+  peakStaleCacheKeys: number
+  peakStaleHashKeys: number
   byBundlerPhase: Record<string, {
     count: number
     peakHeapUsedMb: number
     peakRssMb: number
+    peakStaleCacheKeys: number
+    peakStaleHashKeys: number
+    pruneSkippedCount: number
+    omittedKnownFilesCount: number
+  }>
+  topHeapPhases: Array<{
+    phase: string
+    count: number
+    peakHeapUsedMb: number
+    peakRssMb: number
+    peakStaleCacheKeys: number
+    peakStaleHashKeys: number
+    pruneSkippedCount: number
+    omittedKnownFilesCount: number
+  }>
+  topStaleCachePhases: Array<{
+    phase: string
+    count: number
+    peakStaleCacheKeys: number
+    peakStaleHashKeys: number
+    pruneSkippedCount: number
+    omittedKnownFilesCount: number
+  }>
+  topDurationPhases: Array<{
+    phase: string
+    count: number
+    peakDurationMs: number
+    peakDurationActiveCss: number
+    peakDurationStaleCacheKeys: number
+    peakDurationStaleHashKeys: number
+    peakDurationPruneSkipped: boolean
+    peakDurationOmittedKnownFiles: boolean
   }>
 }
 
@@ -632,8 +684,13 @@ export interface HmrMemoryProjectReport {
   rssDeltaMb: number
   peakMaxProcessRssMb: number
   peakProcessCount: number
+  uniqueProcessCount: number
   peakHeapUsedMb: number
   peakDebugRssMb: number
+  peakSample?: MemoryPeakSample
+  topHeapPhases: HmrMemoryDebugSummary['topHeapPhases']
+  topStaleCachePhases: HmrMemoryDebugSummary['topStaleCachePhases']
+  topDurationPhases: HmrMemoryDebugSummary['topDurationPhases']
 }
 
 export interface HmrMemoryReport {

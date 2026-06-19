@@ -85,6 +85,10 @@ describe('bundlers/webpack WeappTailwindcss / process cache debug and unchanged 
         processCache: {
           activeCacheKeys: 3,
           activeHashKeys: 4,
+          staleCacheKeys: 0,
+          staleHashKeys: 0,
+          pruned: true,
+          pruneSkipped: false,
         },
         webpackCss: {
           handlerOptions: 1,
