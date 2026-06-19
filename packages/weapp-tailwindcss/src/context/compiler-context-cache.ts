@@ -8,6 +8,8 @@ import { md5Hash } from '@/cache/md5'
 const PAREN_CONTENT_RE = /\(([^)]+)\)/u
 const AT_LOCATION_RE = /at\s+(\S.*)$/u
 const TRAILING_LINE_COL_RE = /:\d+(?::\d+)?$/u
+const DEFAULT_COMPILER_CONTEXT_CACHE_MAX = 32
+const DEFAULT_COMPILER_CONTEXT_KEY_CACHE_MAX = DEFAULT_COMPILER_CONTEXT_CACHE_MAX * 2
 
 type NormalizedOptionsPrimitive = string | number | boolean | null
 interface NormalizedOptionsArray extends Array<NormalizedOptionsValue> {}
@@ -28,6 +30,29 @@ const compilerContextCache: Map<string, InternalUserDefinedOptions> = globalCach
   ?? (globalCacheHolder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__ = new Map())
 const compilerContextKeyCacheByOptions = new WeakMap<UserDefinedOptions, Map<string, string | undefined>>()
 const compilerContextKeyCacheWithoutOptions = new Map<string, string | undefined>()
+
+function resolveCompilerContextCacheMax(defaultValue: number) {
+  const raw = Number.parseInt(process.env['WEAPP_TW_COMPILER_CONTEXT_CACHE_MAX'] ?? '', 10)
+  if (!Number.isFinite(raw) || raw <= 0) {
+    return defaultValue
+  }
+  return Math.floor(raw)
+}
+
+function touchMapValue<Value>(map: Map<string, Value>, key: string, value: Value) {
+  map.delete(key)
+  map.set(key, value)
+}
+
+function pruneMapToMaxSize<Value>(map: Map<string, Value>, maxSize: number) {
+  while (map.size > maxSize) {
+    const firstKey = map.keys().next().value
+    if (firstKey === undefined) {
+      break
+    }
+    map.delete(firstKey)
+  }
+}
 
 function withCircularGuard<T extends object>(
   value: T,
@@ -326,7 +351,8 @@ export function createCompilerContextCacheKey(opts?: UserDefinedOptions): string
     // 即便 options 字面量完全一致，也要避免跨项目命中同一 compiler context。
     const normalized = normalizeOptionsValue(getRuntimeCacheScopeValue(opts))
     const cacheKey = md5Hash(serializeNormalizedValue(normalized))
-    keyStore.set(runtimeCacheScopeKey, cacheKey)
+    touchMapValue(keyStore, runtimeCacheScopeKey, cacheKey)
+    pruneMapToMaxSize(keyStore, resolveCompilerContextCacheMax(DEFAULT_COMPILER_CONTEXT_KEY_CACHE_MAX))
     return cacheKey
   }
   catch (error) {
@@ -343,13 +369,15 @@ export function withCompilerContextCache(
   if (cacheKey) {
     const cached = compilerContextCache.get(cacheKey)
     if (cached) {
+      touchMapValue(compilerContextCache, cacheKey, cached)
       return cached
     }
   }
 
   const ctx = factory()
   if (cacheKey) {
-    compilerContextCache.set(cacheKey, ctx)
+    touchMapValue(compilerContextCache, cacheKey, ctx)
+    pruneMapToMaxSize(compilerContextCache, resolveCompilerContextCacheMax(DEFAULT_COMPILER_CONTEXT_CACHE_MAX))
   }
   return ctx
 }

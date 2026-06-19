@@ -181,9 +181,14 @@ interface TailwindInfo {
 }
 
 const extractionTasks = new Map<string, Promise<ExtractionResult | undefined>>()
+const patchTasks = new Map<string, Promise<void>>()
 
 function normalizePath(root: string, target: string) {
   return path.isAbsolute(target) ? target : path.resolve(root, target)
+}
+
+function getWorkspaceRoot(root: string) {
+  return path.resolve(root, '..', '..')
 }
 
 function resolveTailwindInfo(root: string, options: NormalizedPatchOptions): TailwindInfo | null {
@@ -234,6 +239,9 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
       ...(resolved.tailwindcss?.resolve?.paths ?? []),
       ...(resolved.tailwind?.resolve?.paths ?? []),
       root,
+      path.resolve(root, 'node_modules'),
+      getWorkspaceRoot(root),
+      path.resolve(getWorkspaceRoot(root), 'node_modules'),
     ].map(entry => normalizePath(root, entry)),
   )
 
@@ -332,6 +340,14 @@ function normalizePatchOptions(root: string, patchOptions: unknown): NormalizedP
   }
   delete (resolved as Record<string, unknown>).tailwind
 
+  resolved.apply = {
+    ...(resolved.apply ?? {}),
+    extendLengthUnits: resolved.apply?.extendLengthUnits ?? {
+      units: ['rpx'],
+      overwrite: true,
+    },
+  }
+
   return resolved
 }
 
@@ -352,7 +368,17 @@ async function readClassListFromFile(filename: string | undefined) {
   }
 }
 
-async function runTwExtract(root: string): Promise<ExtractionResult | undefined> {
+interface ResolvedPatchRuntime {
+  effectiveOutput: {
+    filename?: string
+    loose?: boolean
+  }
+  packageJsonPath: string
+  packageName?: string | undefined
+  patchOptions: NormalizedPatchOptions
+}
+
+async function resolvePatchRuntime(root: string): Promise<ResolvedPatchRuntime | undefined> {
   const { config } = await getConfig(root)
   if (!config) {
     return undefined
@@ -371,16 +397,6 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
   const fallbackOutputFilename = path.resolve(root, '.tw-patch/tw-class-list.json')
   const effectiveOutput = outputOptions ?? { filename: fallbackOutputFilename }
 
-  if (process.env.E2E_FORCE_EXTRACT !== 'true') {
-    const cachedClassList = await readClassListFromFile(effectiveOutput?.filename)
-    if (cachedClassList) {
-      return {
-        classList: cachedClassList,
-        output: effectiveOutput,
-      }
-    }
-  }
-
   const packageJsonPath = path.resolve(root, 'package.json')
   let packageName: string | undefined
   try {
@@ -391,40 +407,45 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
     packageName = undefined
   }
 
+  return {
+    effectiveOutput,
+    packageJsonPath,
+    packageName,
+    patchOptions,
+  }
+}
+
+async function runWithProjectPackageEnv<T>(
+  root: string,
+  runtime: Pick<ResolvedPatchRuntime, 'packageJsonPath' | 'packageName'>,
+  callback: () => Promise<T>,
+): Promise<T> {
   const previousEnv = {
     npm_package_json: process.env.npm_package_json,
     PNPM_PACKAGE_NAME: process.env.PNPM_PACKAGE_NAME,
     INIT_CWD: process.env.INIT_CWD,
   }
 
-  if (await fs.exists(packageJsonPath)) {
-    process.env.npm_package_json = packageJsonPath
+  if (await fs.exists(runtime.packageJsonPath)) {
+    process.env.npm_package_json = runtime.packageJsonPath
   }
   else {
     delete process.env.npm_package_json
   }
-  if (packageName) {
-    process.env.PNPM_PACKAGE_NAME = packageName
+  if (runtime.packageName) {
+    process.env.PNPM_PACKAGE_NAME = runtime.packageName
   }
   else {
     delete process.env.PNPM_PACKAGE_NAME
   }
   process.env.INIT_CWD = root
 
-  const twPatcher = new TailwindcssPatcher(patchOptions)
-
-  logE2EDebug('[e2e] Tailwind patch options for %s: %o', root, patchOptions.tailwindcss)
-
   const originalCwd = process.cwd()
   try {
     if (originalCwd !== root) {
       process.chdir(root)
     }
-    const result = await twPatcher.extract({ write: false })
-    return {
-      classList: result?.classList,
-      output: effectiveOutput,
-    }
+    return await callback()
   }
   finally {
     if (previousEnv.npm_package_json !== undefined) {
@@ -449,6 +470,67 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
       process.chdir(originalCwd)
     }
   }
+}
+
+async function runTwPatch(root: string): Promise<void> {
+  const runtime = await resolvePatchRuntime(root)
+  if (!runtime) {
+    return
+  }
+
+  const twPatcher = new TailwindcssPatcher(runtime.patchOptions)
+  if (twPatcher.majorVersion >= 4) {
+    return
+  }
+
+  logE2EDebug('[e2e] Tailwind patch options for %s: %o', root, runtime.patchOptions.tailwindcss)
+  await runWithProjectPackageEnv(root, runtime, async () => {
+    await twPatcher.patch()
+    const status = await twPatcher.getPatchStatus()
+    const lengthUnitStatus = status.entries.find(entry => entry.name === 'extendLengthUnits')
+    if (lengthUnitStatus?.status !== 'applied') {
+      throw new Error(`[e2e] Tailwind v3 rpx length-unit patch was not applied for ${root}: ${JSON.stringify(status, null, 2)}`)
+    }
+  })
+}
+
+async function runTwExtract(root: string): Promise<ExtractionResult | undefined> {
+  const runtime = await resolvePatchRuntime(root)
+  if (!runtime) {
+    return undefined
+  }
+
+  if (process.env.E2E_FORCE_EXTRACT !== 'true') {
+    const cachedClassList = await readClassListFromFile(runtime.effectiveOutput?.filename)
+    if (cachedClassList) {
+      return {
+        classList: cachedClassList,
+        output: runtime.effectiveOutput,
+      }
+    }
+  }
+
+  await twPatch(root)
+
+  const twPatcher = new TailwindcssPatcher(runtime.patchOptions)
+  logE2EDebug('[e2e] Tailwind patch options for %s: %o', root, runtime.patchOptions.tailwindcss)
+
+  return runWithProjectPackageEnv(root, runtime, async () => {
+    const result = await twPatcher.extract({ write: false })
+    return {
+      classList: result?.classList,
+      output: runtime.effectiveOutput,
+    }
+  })
+}
+
+export function twPatch(root: string) {
+  let task = patchTasks.get(root)
+  if (!task) {
+    task = runTwPatch(root)
+    patchTasks.set(root, task)
+  }
+  return task
 }
 
 export function twExtract(root: string) {

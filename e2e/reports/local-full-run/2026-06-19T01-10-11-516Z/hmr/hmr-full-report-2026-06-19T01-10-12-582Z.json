@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-06-19T01:10:12.582Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "targetNames": [
+    "demo"
+  ],
+  "totalCases": 1,
+  "reportCount": 1,
+  "projectCount": 1,
+  "timingCount": 4,
+  "summary": {
+    "count": 4,
+    "avgMs": 2238,
+    "minMs": 2043,
+    "maxMs": 2433,
+    "p50Ms": 2043,
+    "p95Ms": 2433
+  },
+  "pluginProcessSummary": {
+    "count": 4,
+    "avgMs": 213,
+    "minMs": 193,
+    "maxMs": 231,
+    "p50Ms": 196,
+    "p95Ms": 231
+  },
+  "byApp": {
+    "demo/mpx-tailwindcss-v4": {
+      "project": "demo/mpx-tailwindcss-v4",
+      "platforms": {
+        "wx": {
+          "count": 4,
+          "avgMs": 2238,
+          "minMs": 2043,
+          "maxMs": 2433,
+          "p50Ms": 2043,
+          "p95Ms": 2433
+        }
+      }
+    }
+  },
+  "byPlatform": {
+    "wx": {
+      "count": 4,
+      "avgMs": 2238,
+      "minMs": 2043,
+      "maxMs": 2433,
+      "p50Ms": 2043,
+      "p95Ms": 2433
+    }
+  },
+  "memory": {
+    "projectCount": 1,
+    "sampleCount": 28,
+    "debugSampleCount": 11,
+    "peakRssMb": 2318,
+    "maxRssDeltaMb": 1904,
+    "peakHeapUsedMb": 1809,
+    "byApp": {
+      "demo/mpx-tailwindcss-v4": {
+        "peakRssMb": 2318,
+        "maxRssDeltaMb": 1904,
+        "peakHeapUsedMb": 1809
+      }
+    },
+    "byPlatform": {
+      "wx": {
+        "peakRssMb": 2318,
+        "maxRssDeltaMb": 1904,
+        "peakHeapUsedMb": 1809
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseName": "mpx-tailwindcss-v4",
+      "project": "demo/mpx-tailwindcss-v4",
+      "label": "demo/mpx-tailwindcss-v4",
+      "platform": "wx",
+      "framework": "mpx",
+      "builder": "webpack5",
+      "tailwindcss": "v4",
+      "sourceShape": "mpx-sfc",
+      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T01-10-12-583Z-mpx-tailwindcss-v4.json",
+      "initialReadyMs": 5292,
+      "totalMs": 27960,
+      "summary": {
+        "count": 4,
+        "avgMs": 2238,
+        "minMs": 2043,
+        "maxMs": 2433,
+        "p50Ms": 2043,
+        "p95Ms": 2433
+      },
+      "pluginProcessSummary": {
+        "count": 4,
+        "avgMs": 213,
+        "minMs": 193,
+        "maxMs": 231,
+        "p50Ms": 196,
+        "p95Ms": 231
+      },
+      "memory": {
+        "sampleCount": 28,
+        "debugSampleCount": 11,
+        "baselineRssMb": 414,
+        "peakRssMb": 2318,
+        "rssDeltaMb": 1904,
+        "peakMaxProcessRssMb": 2112,
+        "peakProcessCount": 3,
+        "peakHeapUsedMb": 1809,
+        "peakDebugRssMb": 2127
+      },
+      "notes": [],
+      "timings": [
+        {
+          "surface": "template:preferred-round",
+          "hotUpdateEffectiveMs": 2433,
+          "rollbackEffectiveMs": 1477,
+          "hotUpdatePluginProcessMs": 231
+        },
+        {
+          "surface": "main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/mpx-tailwindcss-v4/src/custom-tab-bar/index.mpx",
+          "hotUpdateEffectiveMs": 2433,
+          "rollbackEffectiveMs": 1477,
+          "hotUpdatePluginProcessMs": 231
+        },
+        {
+          "surface": "subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.mpx",
+          "hotUpdateEffectiveMs": 2043,
+          "rollbackEffectiveMs": 2047,
+          "hotUpdatePluginProcessMs": 196
+        },
+        {
+          "surface": "subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/mpx-tailwindcss-v4/src/sub-independent/pages/index.mpx",
+          "hotUpdateEffectiveMs": 2043,
+          "rollbackEffectiveMs": 2049,
+          "hotUpdatePluginProcessMs": 193
+        }
+      ]
+    }
+  ]
+}

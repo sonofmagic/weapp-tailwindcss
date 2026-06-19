@@ -1,4 +1,3 @@
-import { getCss } from '#test/helpers/getTwCss'
 import scssParser from 'postcss-scss'
 
 import { createContext } from '@/core'
@@ -18,9 +17,10 @@ describe('core', () => {
     }`)
     expect(cssMap).toMatchSnapshot()
     const content = `const className = 'mb-[1.5rem]'`
-    await getCss(content)
 
-    const { code, map } = await ctx.transformJs(content)
+    const { code, map } = await ctx.transformJs(content, {
+      runtimeSet: new Set(['mb-[1.5rem]']),
+    })
     expect(code).toBe(`const className = 'mb-_b1_d5rem_B'`)
     expect(map).toMatchSnapshot()
   })
@@ -39,7 +39,6 @@ describe('core', () => {
     }`)
     expect(cssMap).toMatchSnapshot()
     const content = `const className = 'mb-[1.5rem]'`
-    await getCss(content)
     const runtimeSet = new Set<string>()
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
     expect(code).toBe(`const className = 'mb-[1.5rem]'`)
@@ -60,7 +59,6 @@ describe('core', () => {
     })
     expect(wxss).toBe(`/* xx*/`)
     const content = `const className = 'mb-[1.5rem]'`
-    await getCss(content)
     const runtimeSet = new Set<string>()
     const { code, map } = await ctx.transformJs(content, { runtimeSet })
     expect(code).toBe(`const className = 'mb-[1.5rem]'`)

@@ -9,7 +9,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
     const incrementalRuntimeSet = new Set<string>()
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
-      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+      sync: vi.fn(async (_runtime: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
         for (const file of snapshot.runtimeAffectingChangedByType.js) {
           const entry = snapshot.entries.find(item => item.file === file)
           if (!entry) {
@@ -27,8 +27,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
       jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classSet, options as any)),
       __internalWebpackRuntimeClassSetManager: incrementalRuntimeManager,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -142,7 +141,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
     expect(currentAssetStore['index.js']).toContain(replaceWxml('bg-[#202020]'))
     expect(currentAssetStore['index.js']).not.toContain('bg-[#202020]')
     expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(2)
-    expect(testState.currentContext.twPatcher.extract).not.toHaveBeenCalled()
+    expect(testState.currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
   })
 
 })

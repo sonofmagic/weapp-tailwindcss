@@ -129,7 +129,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     replaceRuntimePackages: false,
     generator: {},
     cssSourceTrace: false,
-    tailwindcssPatcherOptions: {
+    tailwindcssRuntimeOptions: {
       filter(className: string) {
         return !isAllowedClassName(className)
       },

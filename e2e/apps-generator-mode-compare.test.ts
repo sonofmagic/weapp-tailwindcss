@@ -12,7 +12,7 @@ import { createChineseMarkdownReport, createMarkdownReport } from './apps-genera
 import { DEMO_COVERAGE_MATRIX } from './demoCoverageMatrix'
 import { E2E_PROJECTS } from './projectEntries'
 import { clearProjectBuildState } from './projectTest'
-import { collectCssSnapshots, resolveSnapshotFile } from './shared'
+import { collectCssSnapshots, resolveSnapshotFile, twPatch } from './shared'
 import { normalizeCssTextSnapshot, normalizeSnapshotName } from './snapshotUtils'
 
 interface CompareProject {
@@ -245,6 +245,7 @@ async function buildProject(project: CompareProject) {
   const root = path.resolve(projectBase, project.rootDir)
   const projectRoot = path.resolve(projectBase, project.rootDir)
   await cleanProject(root)
+  await twPatch(root)
 
   await execa('pnpm', ['run', 'build'], {
     cwd: root,

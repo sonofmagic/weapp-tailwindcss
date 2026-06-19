@@ -11,9 +11,9 @@ export {
 export { transformTailwindV4CssByTarget, transformTailwindV4CssToWeapp } from './miniprogram'
 export {
   resolveTailwindV4Source,
-  resolveTailwindV4SourceFromPatcher,
-  resolveTailwindV4SourceFromPatchOptions,
-  resolveTailwindV4SourceOptionsFromPatcher,
+  resolveTailwindV4SourceFromRuntime,
+  resolveTailwindV4SourceFromRuntimeOptions,
+  resolveTailwindV4SourceOptionsFromRuntime,
 } from './source'
 export type {
   TailwindV4CandidateSource,

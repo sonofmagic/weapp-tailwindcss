@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
@@ -9,10 +9,10 @@ export interface ConfiguredCssSourceEntry {
 }
 
 export function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {
-  const patcherCssSources = ((opts.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]
+  const runtimeCssSources = ((opts.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]
   return [
     ...(opts.tailwindcss?.v4?.cssSources ?? []),
-    ...patcherCssSources,
+    ...runtimeCssSources,
   ]
 }
 

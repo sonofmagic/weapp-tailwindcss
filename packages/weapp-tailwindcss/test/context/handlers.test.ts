@@ -270,7 +270,7 @@ describe('resolveStyleOptionsFromContext', () => {
       cssPresetEnv: ctx.cssPresetEnv,
       autoprefixer: ctx.autoprefixer,
       cssCalc: ctx.cssCalc,
-      uniAppX: true,
+      uniAppX: false,
       platform: ctx.platform,
     }))
     expect(styleOptions).not.toHaveProperty('escapeMap')
@@ -324,6 +324,34 @@ describe('resolveStyleOptionsFromContext', () => {
     expect(styleOptions.cssRemoveProperty).toBe(false)
     expect(styleOptions.rem2rpx).toBe(true)
     expect(styleOptions).not.toHaveProperty('cssOptions')
+  })
+
+  it('enables uni-app x native style options only for native app branches', async () => {
+    const { resolveStyleOptionsFromContext } = await import('@/context/style-options')
+    const originalUniUtsPlatform = process.env.UNI_UTS_PLATFORM
+    const ctx = {
+      ...createContext(),
+      appType: 'uni-app-x',
+      uniAppX: true,
+    } as unknown as InternalUserDefinedOptions
+
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      const styleOptions = resolveStyleOptionsFromContext(ctx, 4)
+
+      expect(styleOptions).toEqual(expect.objectContaining({
+        platform: 'app-android',
+        uniAppX: true,
+      }))
+    }
+    finally {
+      if (originalUniUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = originalUniUtsPlatform
+      }
+    }
   })
 })
 

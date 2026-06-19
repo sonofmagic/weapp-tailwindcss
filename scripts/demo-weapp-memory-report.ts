@@ -205,6 +205,10 @@ function commandText(command: string[]) {
   return command.map(part => part.includes(' ') ? JSON.stringify(part) : part).join(' ')
 }
 
+function escapeTableCell(value: string) {
+  return value.replaceAll('|', '\\|')
+}
+
 async function runMeasuredCommand(options: {
   name: string
   stage: 'build' | 'hmr'
@@ -333,11 +337,15 @@ export function createMemoryRecommendations(project: ProjectReport) {
 }
 
 export function resolveProjectStatus(stages: StageReport[]): ProjectReport['status'] {
-  if (stages.every(stage => stage.status === 'skipped')) {
+  const measuredStages = stages.filter(stage => stage.status !== 'skipped')
+  if (measuredStages.length === 0) {
     return 'skipped'
   }
-  if (stages.some(stage => stage.status === 'failed')) {
+  if (measuredStages.some(stage => stage.status === 'failed')) {
     return 'failed'
+  }
+  if (measuredStages.every(stage => stage.status === 'passed')) {
+    return 'passed'
   }
   if (stages.some(stage => stage.status === 'skipped')) {
     return 'partial'
@@ -519,8 +527,8 @@ export function renderProjectMarkdown(project: ProjectReport) {
     '',
     '## 阶段汇总',
     '',
-    '| stage | status | samples | baseline RSS | peak RSS | RSS delta | max process RSS | peak processes | duration | command |',
-    '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
+    '| stage | status | samples | baseline RSS | peak RSS | RSS delta | max process RSS | peak processes | seen processes | duration | command |',
+    '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
   ]
   for (const stage of project.stages) {
     lines.push([
@@ -532,9 +540,30 @@ export function renderProjectMarkdown(project: ProjectReport) {
       `${stage.summary.rssDeltaMb}MB`,
       `${stage.summary.peakMaxProcessRssMb}MB`,
       String(stage.summary.peakProcessCount),
+      String(stage.summary.uniqueProcessCount),
       formatDuration(stage.summary.durationMs),
       stage.command.length ? `\`${commandText(stage.command)}\`` : (stage.reason ?? ''),
     ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'))
+  }
+  lines.push('', '## 峰值进程', '')
+  lines.push('| stage | peak RSS | peak processes | seen processes | top process RSS | command |')
+  lines.push('| --- | ---: | ---: | ---: | ---: | --- |')
+  for (const stage of project.stages) {
+    const topProcesses = stage.summary.peakSample?.topProcesses ?? []
+    if (topProcesses.length === 0) {
+      lines.push(`| ${stage.stage} | ${stage.summary.peakRssMb}MB | ${stage.summary.peakProcessCount} | ${stage.summary.uniqueProcessCount} | - | - |`)
+      continue
+    }
+    for (const processSample of topProcesses.slice(0, 5)) {
+      lines.push([
+        stage.stage,
+        `${stage.summary.peakRssMb}MB`,
+        String(stage.summary.peakProcessCount),
+        String(stage.summary.uniqueProcessCount),
+        `${processSample.rssMb}MB`,
+        processSample.command ? `\`${escapeTableCell(processSample.command)}\`` : `pid=${processSample.pid}`,
+      ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'))
+    }
   }
   lines.push('', '## 优化建议', '')
   for (const recommendation of project.recommendations) {

@@ -1,4 +1,4 @@
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
@@ -20,10 +20,10 @@ function formatRelativeToBase(targetPath: string, baseDir?: string) {
 }
 
 export function logTailwindcssTarget(
-  patcher: TailwindcssPatcherLike | undefined,
+  tailwindRuntime: TailwindcssRuntimeLike | undefined,
   baseDir?: string,
 ) {
-  const packageInfo = patcher?.packageInfo
+  const packageInfo = tailwindRuntime?.packageInfo
   const label = 'Weapp-tailwindcss'
   if (!packageInfo?.rootPath) {
     logger.warn(

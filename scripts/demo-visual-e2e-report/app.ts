@@ -467,7 +467,6 @@ function createProcessExitTracker(child: ChildProcess) {
 function startAppLaunch(
   item: AppCase,
   projectRoot: string,
-  projectName: string,
   hbuilderxCliPath: string,
   toolEnv: Record<string, string | undefined>,
 ) {
@@ -475,8 +474,7 @@ function startAppLaunch(
   if (item.platform !== 'app-harmony' && !launchArgs.includes('--pagePath')) {
     launchArgs.push('--pagePath', 'pages/index/index')
   }
-  const launchProject = item.projectDir.includes('uni-app-x-') ? projectRoot : projectName
-  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', launchProject, ...launchArgs], {
+  const child = spawnPnpm(projectRoot, ['exec', 'hbuilderx', 'launch', item.platform, '--project', projectRoot, ...launchArgs], {
     HBUILDERX_CLI_PATH: hbuilderxCliPath,
     WEAPP_TW_HMR_TIMING: '1',
     ...toolEnv,
@@ -513,7 +511,6 @@ async function runAppCaseVariant(
   const hmrBeforeScreenshot = resolveHmrScreenshotPath(context, name, platform, 'before', variant.key)
   const hmrAfterScreenshot = resolveHmrScreenshotPath(context, name, platform, 'after', variant.key)
   const projectRoot = path.resolve(context.repoRoot, item.projectDir)
-  const projectName = path.basename(projectRoot)
   const sourceFile = path.resolve(projectRoot, item.sourceFile)
   let launch: ReturnType<typeof startAppLaunch> | undefined
   let beforeScreenshotEvidence: Record<string, unknown> | undefined
@@ -562,7 +559,7 @@ async function runAppCaseVariant(
     })
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, projectName, hbuilderxCliPath, toolEnv)
+    launch = startAppLaunch(item, projectRoot, hbuilderxCliPath, toolEnv)
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)
@@ -584,7 +581,7 @@ async function runAppCaseVariant(
     })
     await wait(Number(process.env['DEMO_VISUAL_APP_HMR_RELAUNCH_DELAY_MS'] ?? 1000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch hmr ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, projectName, hbuilderxCliPath, toolEnv)
+    launch = startAppLaunch(item, projectRoot, hbuilderxCliPath, toolEnv)
     const ensureHmrRunning = () => launch?.tracker.ensureRunning(launch.logs)
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output\n`)
     const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, appOutputTimeoutMs, ensureHmrRunning)

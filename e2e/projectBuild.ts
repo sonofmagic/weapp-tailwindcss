@@ -3,6 +3,7 @@ import process from 'node:process'
 import { format as formatMessage } from 'node:util'
 import { execa } from 'execa'
 import path from 'pathe'
+import { twPatch } from './shared'
 
 const buildTasks = new Map<string, Promise<void>>()
 const hbuilderxCliCandidates = [
@@ -261,6 +262,8 @@ export async function ensureProjectBuilt(root: string, options: EnsureProjectBui
     if (!buildScript) {
       return
     }
+
+    await twPatch(root)
 
     const stdio = process.env['E2E_DEBUG_BUILD'] === '1' ? 'inherit' : 'pipe'
     const childEnv: Record<string, string | undefined> = {

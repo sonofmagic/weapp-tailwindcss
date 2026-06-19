@@ -99,7 +99,7 @@ describe('uni-app-x preset', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions(result.generator).target).toBe('weapp')
   })
 
-  it('records installed tailwind major version into patcher options', async () => {
+  it('records installed tailwind major version into runtime options', async () => {
     env.clearBaseEnv()
     getTailwindcssPackageInfoMock.mockReturnValue({
       version: '3.4.19',
@@ -111,7 +111,7 @@ describe('uni-app-x preset', () => {
       resolve: { paths: ['/repo/uni-app-x'] },
     })
 
-    expect(result.tailwindcssPatcherOptions?.tailwindcss).toMatchObject({
+    expect(result.tailwindcssRuntimeOptions?.tailwindcss).toMatchObject({
       version: 3,
       packageName: 'tailwindcss',
       postcssPlugin: 'tailwindcss',
@@ -140,7 +140,7 @@ describe('uni-app-x preset', () => {
       base: '/repo/uni-app-x',
     })
 
-    expect(result.tailwindcssPatcherOptions?.tailwindcss).toMatchObject({
+    expect(result.tailwindcssRuntimeOptions?.tailwindcss).toMatchObject({
       version: 4,
       packageName: 'tailwindcss',
       postcssPlugin: '@tailwindcss/postcss',
@@ -160,7 +160,7 @@ describe('uni-app-x preset', () => {
     const unparsable = uniAppX({
       base: '/repo/uni-app-x',
     })
-    expect(unparsable.tailwindcssPatcherOptions?.tailwindcss?.version).toBeUndefined()
+    expect(unparsable.tailwindcssRuntimeOptions?.tailwindcss?.version).toBeUndefined()
     expect(unparsable.tailwindcss?.version).toBeUndefined()
 
     getTailwindcssPackageInfoMock.mockReturnValueOnce({
@@ -169,7 +169,7 @@ describe('uni-app-x preset', () => {
     const unsupported = uniAppX({
       base: '/repo/uni-app-x',
     })
-    expect(unsupported.tailwindcssPatcherOptions?.tailwindcss?.version).toBeUndefined()
+    expect(unsupported.tailwindcssRuntimeOptions?.tailwindcss?.version).toBeUndefined()
     expect(unsupported.tailwindcss?.version).toBeUndefined()
   })
 

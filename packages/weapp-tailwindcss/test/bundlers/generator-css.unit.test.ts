@@ -29,7 +29,7 @@ function createDefaultGeneratorMock(overrides: Record<string, any> = {}) {
       sources: [],
       version: 3,
     })),
-    resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+    resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
@@ -38,7 +38,7 @@ function createDefaultGeneratorMock(overrides: Record<string, any> = {}) {
       sources: [],
       version: 3,
     })),
-    resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+    resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
       projectRoot: process.cwd(),
       baseFallbacks: [],
     })),
@@ -49,14 +49,14 @@ function createDefaultGeneratorMock(overrides: Record<string, any> = {}) {
       css: options.css ?? '@import "tailwindcss";',
       dependencies: options.cssEntries ?? [],
     })),
-    resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+    resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
       css: '@import "tailwindcss";',
       dependencies: [],
     })),
-    resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+    resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
       projectRoot: process.cwd(),
       baseFallbacks: [],
     })),
@@ -145,7 +145,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -208,14 +208,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
       })),
@@ -228,7 +228,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -298,7 +298,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -404,7 +404,7 @@ describe('bundlers/shared generator css', () => {
           styleHandler,
         } as any,
         runtimeState: {
-          twPatcher: {
+          tailwindRuntime: {
             majorVersion: item.majorVersion,
           } as any,
           readyPromise: Promise.resolve(),
@@ -511,7 +511,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -600,7 +600,7 @@ describe('bundlers/shared generator css', () => {
           css: options.css,
           dependencies: [cssEntry],
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: root,
           baseFallbacks: [],
           cssEntries: [cssEntry],
@@ -624,7 +624,7 @@ describe('bundlers/shared generator css', () => {
           styleHandler,
         } as any,
         runtimeState: {
-          twPatcher: {
+          tailwindRuntime: {
             majorVersion: 4,
           } as any,
           readyPromise: Promise.resolve(),
@@ -706,7 +706,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -780,7 +780,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -846,7 +846,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -922,7 +922,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -971,7 +971,7 @@ describe('bundlers/shared generator css', () => {
       css: options.css,
       dependencies: [],
     }))
-    const resolveTailwindV4SourceFromPatcher = vi.fn(async () => ({
+    const resolveTailwindV4SourceFromRuntime = vi.fn(async () => ({
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
@@ -991,7 +991,7 @@ describe('bundlers/shared generator css', () => {
     vi.doMock('@/generator', () => ({
       ...createDefaultGeneratorMock({
         resolveTailwindV4Source,
-        resolveTailwindV4SourceFromPatcher,
+        resolveTailwindV4SourceFromRuntime,
       }),
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
@@ -1008,7 +1008,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1036,7 +1036,7 @@ describe('bundlers/shared generator css', () => {
     expect(resolveTailwindV4Source).not.toHaveBeenCalledWith(expect.objectContaining({
       css: rawSource,
     }))
-    expect(resolveTailwindV4SourceFromPatcher).toHaveBeenCalled()
+    expect(resolveTailwindV4SourceFromRuntime).toHaveBeenCalled()
   })
 
   it('normalizes duplicate fallback imports before resolving Tailwind v4 source', async () => {
@@ -1312,7 +1312,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1383,7 +1383,7 @@ describe('bundlers/shared generator css', () => {
     vi.doMock('@/generator', () => ({
       ...createDefaultGeneratorMock({
         resolveTailwindV4Source,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: process.cwd(),
           baseFallbacks: [],
           cssSources,
@@ -1401,7 +1401,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1437,7 +1437,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('uses Tailwind v4 generation mode from the fallback patcher major version', async () => {
+  it('uses Tailwind v4 generation mode from the fallback runtime major version', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '@import "tailwindcss";'
     const generateMock = vi.fn(async () => ({
@@ -1449,7 +1449,7 @@ describe('bundlers/shared generator css', () => {
       sources: [],
       root: null,
     }))
-    const resolveTailwindV4SourceFromPatcher = vi.fn(async () => ({
+    const resolveTailwindV4SourceFromRuntime = vi.fn(async () => ({
       projectRoot: process.cwd(),
       base: process.cwd(),
       baseFallbacks: [],
@@ -1466,10 +1466,10 @@ describe('bundlers/shared generator css', () => {
 
     vi.doMock('@/generator', () => ({
       ...createDefaultGeneratorMock({
-        resolveTailwindV3SourceFromPatcher: vi.fn(async () => {
+        resolveTailwindV3SourceFromRuntime: vi.fn(async () => {
           throw new Error('should not resolve Tailwind v3 source')
         }),
-        resolveTailwindV4SourceFromPatcher,
+        resolveTailwindV4SourceFromRuntime,
         resolveTailwindV4Source,
       }),
       createWeappTailwindcssGenerator: vi.fn(() => ({
@@ -1484,7 +1484,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1511,7 +1511,7 @@ describe('bundlers/shared generator css', () => {
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
       css: rawSource,
     }))
-    expect(resolveTailwindV4SourceFromPatcher).not.toHaveBeenCalled()
+    expect(resolveTailwindV4SourceFromRuntime).not.toHaveBeenCalled()
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       incrementalCache: true,
       scanSources: false,
@@ -1544,14 +1544,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
       })),
@@ -1566,7 +1566,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1633,7 +1633,7 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot,
         cwd: projectRoot,
         baseFallbacks: [],
@@ -1647,7 +1647,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1699,7 +1699,7 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: vi.fn(() => ({
         generate: generateMock,
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -1715,7 +1715,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1775,14 +1775,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
       })),
@@ -1812,7 +1812,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1894,14 +1894,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
       })),
@@ -1914,7 +1914,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -1976,7 +1976,7 @@ describe('bundlers/shared generator css', () => {
         dependencies: [],
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -1992,7 +1992,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2054,7 +2054,7 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2070,7 +2070,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2126,7 +2126,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2140,7 +2140,7 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2156,7 +2156,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2220,7 +2220,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2236,7 +2236,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2299,7 +2299,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2315,7 +2315,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2372,7 +2372,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2388,7 +2388,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2453,14 +2453,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
       })),
@@ -2473,7 +2473,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2548,7 +2548,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2591,7 +2591,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2654,7 +2654,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2710,7 +2710,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -2726,7 +2726,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2783,13 +2783,13 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         css: '@tailwind utilities;',
         dependencies: [],
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
       })),
@@ -2811,7 +2811,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -2874,7 +2874,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
         base: process.cwd(),
@@ -2882,7 +2882,7 @@ describe('bundlers/shared generator css', () => {
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
       })),
@@ -2909,7 +2909,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3004,14 +3004,14 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         css: '@tailwind utilities;',
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
       })),
@@ -3028,7 +3028,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3093,10 +3093,10 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => {
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => {
         throw new Error('should use explicit generator config')
       }),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
       })),
@@ -3113,7 +3113,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3194,14 +3194,14 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         css: '@tailwind utilities;',
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
       })),
@@ -3224,7 +3224,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3297,7 +3297,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
           options: {
             projectRoot: process.cwd(),
@@ -3376,7 +3376,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
           options: {
             projectRoot: process.cwd(),
@@ -3456,7 +3456,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
           options: {
             projectRoot: process.cwd(),
@@ -3627,7 +3627,7 @@ describe('bundlers/shared generator css', () => {
     vi.doMock('@/generator', () => ({
       ...createDefaultGeneratorMock({
         resolveTailwindV4Source,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: process.cwd(),
           packageName: 'tailwindcss',
         })),
@@ -3638,7 +3638,7 @@ describe('bundlers/shared generator css', () => {
     await resolveGeneratorSource(
       4,
       {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
           options: {},
         } as any,
@@ -3676,7 +3676,7 @@ describe('bundlers/shared generator css', () => {
       dependencies: [],
       version: 3,
     }))
-    const resolveTailwindV3SourceFromPatcher = vi.fn(async () => ({
+    const resolveTailwindV3SourceFromRuntime = vi.fn(async () => ({
       projectRoot: process.cwd(),
       base: process.cwd(),
       css: '@tailwind base;\n@tailwind components;\n@tailwind utilities;',
@@ -3699,8 +3699,8 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV3Source,
-      resolveTailwindV3SourceFromPatcher,
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceFromRuntime,
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         cwd: process.cwd(),
       })),
@@ -3713,7 +3713,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3744,7 +3744,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.css).toContain('.w-_b100px_B{width:100px}')
-    expect(resolveTailwindV3SourceFromPatcher).toHaveBeenCalledTimes(1)
+    expect(resolveTailwindV3SourceFromRuntime).toHaveBeenCalledTimes(1)
     expect(resolveTailwindV3Source).not.toHaveBeenCalled()
   })
 
@@ -3766,7 +3766,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -3782,7 +3782,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3834,7 +3834,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         css: '@tailwind utilities;',
@@ -3849,7 +3849,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3903,7 +3903,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -3919,7 +3919,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -3987,7 +3987,7 @@ describe('bundlers/shared generator css', () => {
           matchedCssSourceFile: 'app.wxss',
         },
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4003,7 +4003,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4071,7 +4071,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4087,7 +4087,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4153,7 +4153,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4169,7 +4169,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4228,7 +4228,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4244,7 +4244,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4303,7 +4303,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4319,7 +4319,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4385,7 +4385,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4401,7 +4401,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4475,7 +4475,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -4491,7 +4491,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4581,14 +4581,14 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: createGeneratorMock,
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: resolveTailwindV4SourceMock,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         baseFallbacks: [],
         cssEntries: ['main.css', 'common.css'],
@@ -4602,7 +4602,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
           options: {
             tailwindcss: {
@@ -4716,14 +4716,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot,
         base: projectRoot,
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot,
         baseFallbacks: [],
         cssEntries: [
@@ -4740,7 +4740,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4815,14 +4815,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssEntries: ['/project/src/main.css', '/project/src/common.css'],
@@ -4836,7 +4836,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4899,14 +4899,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssEntries: ['/project/app.scss', '/project/sub-normal/pages/index.css'],
@@ -4931,7 +4931,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -4999,14 +4999,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssEntries: [
@@ -5023,7 +5023,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5093,14 +5093,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5125,7 +5125,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5200,14 +5200,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5231,7 +5231,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5284,7 +5284,7 @@ describe('bundlers/shared generator css', () => {
     const mainCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,ts}";'
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub/**/*.{vue,ts}";'
     const resolveTailwindV4Source = vi.fn()
-    const resolveTailwindV4SourceFromPatcher = vi.fn(async () => ({
+    const resolveTailwindV4SourceFromRuntime = vi.fn(async () => ({
       projectRoot: '/project',
       base: '/project',
       baseFallbacks: [],
@@ -5307,8 +5307,8 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher,
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceFromRuntime,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5332,7 +5332,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5367,7 +5367,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(resolveTailwindV4Source).not.toHaveBeenCalled()
-    expect(resolveTailwindV4SourceFromPatcher).toHaveBeenCalledTimes(1)
+    expect(resolveTailwindV4SourceFromRuntime).toHaveBeenCalledTimes(1)
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
   })
@@ -5400,14 +5400,14 @@ describe('bundlers/shared generator css', () => {
         css: options.cssSources[0].css,
         dependencies: [options.cssSources[0].file],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: appCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5431,7 +5431,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5491,14 +5491,14 @@ describe('bundlers/shared generator css', () => {
         css: options.cssSources[0].css,
         dependencies: [options.cssSources[0].file],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: subCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
         cssSources: [
@@ -5521,7 +5521,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5580,14 +5580,14 @@ describe('bundlers/shared generator css', () => {
         css: options.cssSources[0].css,
         dependencies: [options.cssSources[0].file],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: subCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
         cssSources: [
@@ -5606,7 +5606,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5669,14 +5669,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: appCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5700,7 +5700,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5765,14 +5765,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project/src',
         baseFallbacks: [],
         css: appCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5796,7 +5796,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -5858,14 +5858,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: appCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
         cssSources: [
@@ -5892,7 +5892,7 @@ describe('bundlers/shared generator css', () => {
           styleHandler: vi.fn(async (code: string) => ({ css: code })),
         } as any,
         runtimeState: {
-          twPatcher: {
+          tailwindRuntime: {
             majorVersion: 4,
           } as any,
           readyPromise: Promise.resolve(),
@@ -5956,14 +5956,14 @@ describe('bundlers/shared generator css', () => {
         css: options.cssSources[0].css,
         dependencies: [options.cssSources[0].file],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project/src',
         baseFallbacks: [],
         css: appCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -5987,7 +5987,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6046,14 +6046,14 @@ describe('bundlers/shared generator css', () => {
         css: resolvedSubCss,
         dependencies: [options.cssSources[0].file],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project/src',
         baseFallbacks: [],
         css: appCss,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssSources: [
@@ -6078,7 +6078,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6144,7 +6144,7 @@ describe('bundlers/shared generator css', () => {
         sources: [],
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
       })),
@@ -6158,7 +6158,7 @@ describe('bundlers/shared generator css', () => {
         },
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6225,14 +6225,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);\n@source "./src/**/*.{vue,ts}";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
       })),
@@ -6245,7 +6245,7 @@ describe('bundlers/shared generator css', () => {
           styleHandler: vi.fn(async (code: string) => ({ css: code })),
         } as any,
         runtimeState: {
-          twPatcher: {
+          tailwindRuntime: {
             majorVersion: 4,
           } as any,
           readyPromise: Promise.resolve(),
@@ -6328,14 +6328,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);\n@source "./src/**/*.{vue,ts}";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
         cssSources: [
@@ -6360,7 +6360,7 @@ describe('bundlers/shared generator css', () => {
           styleHandler: vi.fn(async (code: string) => ({ css: code })),
         } as any,
         runtimeState: {
-          twPatcher: {
+          tailwindRuntime: {
             majorVersion: 4,
           } as any,
           readyPromise: Promise.resolve(),
@@ -6435,14 +6435,14 @@ describe('bundlers/shared generator css', () => {
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
         cssEntries: ['/project/src/main.css', '/project/src/common.css'],
@@ -6455,7 +6455,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6510,7 +6510,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6526,7 +6526,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6579,7 +6579,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6595,7 +6595,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6652,7 +6652,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6666,7 +6666,7 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -6682,7 +6682,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6763,7 +6763,7 @@ describe('bundlers/shared generator css', () => {
       createWeappTailwindcssGenerator: createGeneratorMock,
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -6771,7 +6771,7 @@ describe('bundlers/shared generator css', () => {
         config: '/project/src/tailwind.config.js',
         dependencies: ['src/app.css'],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -6792,7 +6792,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6857,7 +6857,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -6870,7 +6870,7 @@ describe('bundlers/shared generator css', () => {
           },
         ],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project/src/sub-independent',
         baseFallbacks: [],
@@ -6893,7 +6893,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -6970,14 +6970,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -6993,7 +6993,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7074,14 +7074,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -7103,7 +7103,7 @@ describe('bundlers/shared generator css', () => {
         uniAppX: true,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7185,14 +7185,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -7208,7 +7208,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7276,14 +7276,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -7308,7 +7308,7 @@ describe('bundlers/shared generator css', () => {
         uniAppX: true,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7392,14 +7392,14 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         base: '/project',
         baseFallbacks: [],
@@ -7415,7 +7415,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7480,7 +7480,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7500,7 +7500,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7569,7 +7569,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7585,7 +7585,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7672,7 +7672,7 @@ describe('bundlers/shared generator css', () => {
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7688,7 +7688,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7752,7 +7752,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7768,7 +7768,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -7824,7 +7824,7 @@ describe('bundlers/shared generator css', () => {
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
@@ -7840,7 +7840,7 @@ describe('bundlers/shared generator css', () => {
         styleHandler,
       } as any,
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
         readyPromise: Promise.resolve(),
@@ -8492,7 +8492,7 @@ describe('bundlers/shared generator css', () => {
     }))
     vi.doMock('@/generator', () => createDefaultGeneratorMock({
       resolveTailwindV4Source,
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         cwd: root,
         base: root,
@@ -8516,7 +8516,7 @@ describe('bundlers/shared generator css', () => {
     const source = await resolveGeneratorSource(
       4,
       {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 4,
         } as any,
       },

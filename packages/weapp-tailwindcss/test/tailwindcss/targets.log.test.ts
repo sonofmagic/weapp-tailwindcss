@@ -38,15 +38,15 @@ describe('logTailwindcssTarget', () => {
     const { logTailwindcssTarget } = await import('@/tailwindcss/targets')
     __resetRuntimeTailwindcssLogsForTests()
 
-    const patcher = {
+    const runtime = {
       packageInfo: {
         rootPath: '/repo/node_modules/tailwindcss',
         version: '3.4.19',
       },
     } as any
 
-    logTailwindcssTarget(patcher, '/repo')
-    logTailwindcssTarget(patcher, '/repo')
+    logTailwindcssTarget(runtime, '/repo')
+    logTailwindcssTarget(runtime, '/repo')
 
     expect(mockLogger.info).toHaveBeenCalledTimes(1)
   })

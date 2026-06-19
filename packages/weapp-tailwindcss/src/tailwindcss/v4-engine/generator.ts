@@ -8,9 +8,9 @@ import type {
   TailwindV4SourcePattern,
 } from './types'
 import fs from 'node:fs'
+import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandidates } from '@tailwindcss-mangle/engine'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
-import { createTailwindV4Engine as createPatchTailwindV4Engine, extractRawCandidates } from 'tailwindcss-patch'
 import { hasCssMacroTailwindV4Directive, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
@@ -297,7 +297,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     } = options
     const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
     const compatibleSource = createCompatibleSource(generateSource, target, tailwindcssV3Compatibility)
-    const engine = createPatchTailwindV4Engine(compatibleSource)
+    const engine = createEngineTailwindV4Engine(compatibleSource)
     const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
     const filesystemCandidates = Array.isArray(resolvedScanSources)
       ? new Set(await extractRawCandidates(resolvedScanSources, {
@@ -485,8 +485,8 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
   return {
     source,
-    loadDesignSystem: createPatchTailwindV4Engine(source).loadDesignSystem,
-    validateCandidates: createPatchTailwindV4Engine(source).validateCandidates,
+    loadDesignSystem: createEngineTailwindV4Engine(source).loadDesignSystem,
+    validateCandidates: createEngineTailwindV4Engine(source).validateCandidates,
     generate,
   }
 }

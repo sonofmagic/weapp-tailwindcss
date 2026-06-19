@@ -45,6 +45,7 @@ export interface CliOptions {
   webOnly: boolean
   styleOnly: boolean
   mainStyleOnly: boolean
+  mainStyleSubPackageLimit?: number
   reportFile?: string
   maxHotUpdateMs?: number
   maxPluginProcessMs?: number
@@ -72,11 +73,27 @@ export interface HmrMemoryDebugSample {
   data: Record<string, unknown>
 }
 
+export interface MemoryProcessSample {
+  pid: number
+  ppid: number
+  rssMb: number
+  command?: string
+}
+
 export interface MemoryUsageSample {
   at: number
   rssMb: number
   maxProcessRssMb: number
   processCount: number
+  topProcesses?: MemoryProcessSample[]
+}
+
+export interface MemoryPeakSample {
+  at: number
+  rssMb: number
+  maxProcessRssMb: number
+  processCount: number
+  topProcesses?: MemoryProcessSample[]
 }
 
 export interface MemoryUsageSummary {
@@ -86,19 +103,55 @@ export interface MemoryUsageSummary {
   rssDeltaMb: number
   peakMaxProcessRssMb: number
   peakProcessCount: number
+  uniqueProcessCount: number
   firstAt?: number
   lastAt?: number
   durationMs: number
+  peakSample?: MemoryPeakSample
 }
 
 export interface HmrMemoryDebugSummary {
   count: number
   peakHeapUsedMb: number
   peakRssMb: number
+  peakStaleCacheKeys: number
+  peakStaleHashKeys: number
   byBundlerPhase: Record<string, {
     count: number
     peakHeapUsedMb: number
     peakRssMb: number
+    peakStaleCacheKeys: number
+    peakStaleHashKeys: number
+    pruneSkippedCount: number
+    omittedKnownFilesCount: number
+  }>
+  topHeapPhases: Array<{
+    phase: string
+    count: number
+    peakHeapUsedMb: number
+    peakRssMb: number
+    peakStaleCacheKeys: number
+    peakStaleHashKeys: number
+    pruneSkippedCount: number
+    omittedKnownFilesCount: number
+  }>
+  topStaleCachePhases: Array<{
+    phase: string
+    count: number
+    peakStaleCacheKeys: number
+    peakStaleHashKeys: number
+    pruneSkippedCount: number
+    omittedKnownFilesCount: number
+  }>
+  topDurationPhases: Array<{
+    phase: string
+    count: number
+    peakDurationMs: number
+    peakDurationActiveCss: number
+    peakDurationStaleCacheKeys: number
+    peakDurationStaleHashKeys: number
+    peakDurationPruneSkipped: boolean
+    peakDurationOmittedKnownFiles: boolean
   }>
 }
 
@@ -274,6 +327,18 @@ export interface OutputMtime {
   js: number
 }
 
+export interface OutputWaitDiagnostics {
+  trigger: 'exact-mtime' | 'glob-mtime' | 'semantic'
+  elapsedMs: number
+  fileCount: number
+  resolvedFileCount: number
+  exactFileUpdated: boolean
+  globFileUpdated: boolean
+  semanticAccepted: boolean
+  missingExactFiles: string[]
+  updatedFiles: string[]
+}
+
 export interface MutationRoundMetrics {
   roundName: MutationRoundName
   marker: string
@@ -282,10 +347,12 @@ export interface MutationRoundMetrics {
   escapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   totalMs: number
@@ -316,10 +383,12 @@ export interface ClassMutationMetrics {
   verifiedGlobalStyleEscapedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   addedClassHmr?: AddedClassHmrMetrics
@@ -339,10 +408,12 @@ export interface AddedClassHmrMetrics {
   minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -359,10 +430,12 @@ export interface SameClassLiteralHmrMetrics {
   changedGlobalStyleOutputs: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -375,10 +448,12 @@ export interface CommentCarrierHmrMetrics {
   minRequiredEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -401,10 +476,12 @@ export interface StyleMutationMetrics {
   referenceDirective?: string
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
   rollbackNeedleCleared: boolean
@@ -421,10 +498,12 @@ export interface UserReportedHotUpdateMetrics {
   minRequiredGlobalStyleEscapedClasses: number
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -444,10 +523,12 @@ export interface MainStyleHotUpdateMetrics {
   rollbackVerifiedGlobalStyleRemovedClasses: string[]
   hotUpdateOutputMs: number
   hotUpdateEffectiveMs: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
   hotUpdatePluginProcessMs: number
   hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackOutputMs: number
   rollbackEffectiveMs: number
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
   rollbackPluginProcessMs: number
   rollbackPluginProcessSamples: PluginProcessSample[]
 }
@@ -490,6 +571,8 @@ export interface HmrDurationTiming {
   hotUpdateEffectiveMs: number
   rollbackEffectiveMs?: number
   hotUpdatePluginProcessMs?: number
+  hotUpdateOutputDiagnostics?: OutputWaitDiagnostics
+  rollbackOutputDiagnostics?: OutputWaitDiagnostics
 }
 
 export interface ProjectHmrDurationReport {
@@ -560,7 +643,11 @@ export interface WebHmrMetrics {
   }
   initialReadyMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
   sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
   sourceDomReplacementSequence?: WebHmrSourceDomReplacementMetrics[]
   memorySamples: MemoryUsageSample[]
@@ -598,6 +685,7 @@ export interface WatchReport {
     webOnly: boolean
     styleOnly: boolean
     mainStyleOnly: boolean
+    mainStyleSubPackageLimit?: number
     maxHotUpdateMs?: number
     maxPluginProcessMs?: number
     maxMemoryRssMb?: number
@@ -628,8 +716,13 @@ export interface HmrMemoryProjectReport {
   rssDeltaMb: number
   peakMaxProcessRssMb: number
   peakProcessCount: number
+  uniqueProcessCount: number
   peakHeapUsedMb: number
   peakDebugRssMb: number
+  peakSample?: MemoryPeakSample
+  topHeapPhases: HmrMemoryDebugSummary['topHeapPhases']
+  topStaleCachePhases: HmrMemoryDebugSummary['topStaleCachePhases']
+  topDurationPhases: HmrMemoryDebugSummary['topDurationPhases']
 }
 
 export interface HmrMemoryReport {

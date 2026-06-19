@@ -6,8 +6,8 @@ describe('bundlers/webpack WeappTailwindcss / runtime css main chunks', () => {
     testState.currentContext = createContext({
       mainCssChunkMatcher: vi.fn(() => false),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        ...createContext().twPatcher,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
         majorVersion: 4,
         options: {
           tailwindcss: {
@@ -92,8 +92,8 @@ describe('bundlers/webpack WeappTailwindcss / runtime css main chunks', () => {
     testState.currentContext = createContext({
       mainCssChunkMatcher: vi.fn(() => true),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        ...createContext().twPatcher,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -180,8 +180,8 @@ describe('bundlers/webpack WeappTailwindcss / runtime css main chunks', () => {
       cssMatcher: (file: string) => file.endsWith('.wxss'),
       mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        ...createContext().twPatcher,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),

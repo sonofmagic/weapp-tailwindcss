@@ -9,7 +9,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 export interface GenerateBundleContext {
   opts: InternalUserDefinedOptions
   runtimeState: {
-    twPatcher: InternalUserDefinedOptions['twPatcher']
+    tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
     readyPromise: Promise<void>
   }
   ensureRuntimeClassSet: (force?: boolean) => Promise<Set<string>>

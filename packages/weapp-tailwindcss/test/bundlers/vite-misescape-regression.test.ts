@@ -177,6 +177,7 @@ const view = (
 <view class="{{ active ? '${runtimeClass}' : (message.includes('Hello world!') ? 'text-red-500' : 'text-blue-500') }}">
   {{ ({ trace: 'at App.vue:4 index.ts:120:3', raw: 'before:content-["not-generated"]' }).trace }}
 </view>
+<view class="{{ active ? '${runtimeClass}' : (message === 'Hello world!' ? 'text-red-500' : 'text-blue-500') }}"></view>
 <view class="{{ ['text-red-500', active ? '${runtimeClass}' : 'text-blue-500'].join(' ') }}">
   {{ message === 'Hello world!' && url === 'https://example.com/a[b]?q=Hello world!' ? 'calc(100% - 16px)' : 'size > 4 ? keep-[business] : App.vue:4' }}
 </view>
@@ -184,7 +185,15 @@ const view = (
 <view data-json='JSON.stringify({ class: "keep-[business]" })' data-content='before:content-["not-generated"]'></view>
 `
 
-    const result = await templateHandler(wxml, { runtimeSet: new Set([runtimeClass]) })
+    const pollutedRuntimeSet = new Set([
+      runtimeClass,
+      'Hello',
+      'world!',
+      'keep-[business]',
+      'App.vue:4',
+      'before:content-["not-generated"]',
+    ])
+    const result = await templateHandler(wxml, { runtimeSet: pollutedRuntimeSet })
 
     expect(result).toContain(`class="${replaceWxml(runtimeClass, { escapeMap: MappingChars2String })}"`)
     expect(result).toContain(`active ? '${replaceWxml(runtimeClass, { escapeMap: MappingChars2String })}'`)

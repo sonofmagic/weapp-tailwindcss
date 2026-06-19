@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { omitUndefined } from '@/utils/object'
@@ -20,13 +20,13 @@ export function hasCssSourcesValue(value: unknown) {
 }
 
 export function hasConfiguredTailwindV4CssRoots(
-  options: Pick<UserDefinedOptions, 'cssEntries' | 'tailwindcss' | 'tailwindcssPatcherOptions'>,
+  options: Pick<UserDefinedOptions, 'cssEntries' | 'tailwindcss' | 'tailwindcssRuntimeOptions'>,
 ) {
   return hasCssEntriesValue(options.cssEntries)
     || hasCssEntriesValue(options.tailwindcss?.v4?.cssEntries)
-    || hasCssEntriesValue((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssEntries)
+    || hasCssEntriesValue((options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssEntries)
     || hasCssSourcesValue(options.tailwindcss?.v4?.cssSources)
-    || hasCssSourcesValue((options.tailwindcssPatcherOptions as any)?.tailwindcss?.v4?.cssSources)
+    || hasCssSourcesValue((options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssSources)
 }
 
 function normalizeCssSourceFile(file: string | undefined) {

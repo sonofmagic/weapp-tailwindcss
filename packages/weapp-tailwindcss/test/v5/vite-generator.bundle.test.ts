@@ -93,7 +93,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -104,8 +104,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -204,7 +203,7 @@ describe('v5 vite generator bundle', () => {
             new Set([...candidates].filter(candidate => generatedCandidates.has(candidate)))
           )),
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -221,8 +220,7 @@ describe('v5 vite generator bundle', () => {
     })
     setCurrentContext(createContext({
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -313,7 +311,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -332,8 +330,7 @@ describe('v5 vite generator bundle', () => {
         },
       },
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -409,7 +406,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -420,8 +417,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -489,7 +485,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -503,8 +499,7 @@ describe('v5 vite generator bundle', () => {
       generator: {
         target: 'web',
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -566,7 +561,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -583,8 +578,7 @@ describe('v5 vite generator bundle', () => {
       styleHandler: vi.fn(async () => {
         throw new Error('web target should not post-process compiled css')
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -660,8 +654,8 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV3SourceFromPatcher: resolveV3SourceMock,
-        resolveTailwindV4SourceFromPatcher: resolveV4SourceMock,
+        resolveTailwindV3SourceFromRuntime: resolveV3SourceMock,
+        resolveTailwindV4SourceFromRuntime: resolveV4SourceMock,
       }
     })
 
@@ -670,8 +664,7 @@ describe('v5 vite generator bundle', () => {
       generator: {
       },
       styleHandler,
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -741,7 +734,7 @@ describe('v5 vite generator bundle', () => {
             new Set([...candidates].filter(candidate => candidate === 'bg-[red]'))
           )),
         })),
-        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
           version: 3,
           projectRoot: process.cwd(),
           cwd: process.cwd(),
@@ -751,13 +744,12 @@ describe('v5 vite generator bundle', () => {
           packageName: 'tailwindcss',
           postcssPlugin: 'tailwindcss',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(),
+        resolveTailwindV4SourceFromRuntime: vi.fn(),
       }
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -819,7 +811,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -830,8 +822,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['text-red-500'])),
         getClassSetSync: vi.fn(() => new Set(['text-red-500'])),
         extract: vi.fn(async () => ({ classSet: new Set(['text-red-500']) })),
@@ -922,7 +913,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -933,8 +924,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1013,7 +1003,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -1026,8 +1016,7 @@ describe('v5 vite generator bundle', () => {
     setCurrentContext(createContext({
       mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1095,7 +1084,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -1107,8 +1096,7 @@ describe('v5 vite generator bundle', () => {
 
     setCurrentContext(createContext({
       mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1187,7 +1175,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: process.cwd(),
           base: process.cwd(),
           baseFallbacks: [],
@@ -1199,8 +1187,7 @@ describe('v5 vite generator bundle', () => {
 
     setCurrentContext(createContext({
       mainCssChunkMatcher: vi.fn(file => file === 'app.css'),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1296,7 +1283,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -1307,8 +1294,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1397,7 +1383,7 @@ describe('v5 vite generator bundle', () => {
       return {
         ...actual,
         createWeappTailwindcssGenerator: createGeneratorMock,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -1408,8 +1394,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1515,7 +1500,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -1526,8 +1511,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1630,7 +1614,7 @@ describe('v5 vite generator bundle', () => {
           css: options.css ?? (options.cssEntries?.[0] === cssFile ? cssSource : ''),
           dependencies: options.cssEntries ?? [],
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -1640,8 +1624,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1745,7 +1728,7 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -1759,8 +1742,7 @@ describe('v5 vite generator bundle', () => {
       generator: {
         target: 'web',
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1872,7 +1854,7 @@ describe('v5 vite generator bundle', () => {
           generate: generateMock,
           validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
         })),
-        resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
           version: 3,
           projectRoot: tempDir,
           cwd: tempDir,
@@ -1890,8 +1872,7 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -1975,14 +1956,14 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: path.dirname(cssEntry),
           baseFallbacks: [],
@@ -2001,8 +1982,7 @@ describe('v5 vite generator bundle', () => {
           cssEntries: [cssEntry],
         },
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -2083,14 +2063,14 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: path.dirname(cssEntry),
           baseFallbacks: [],
@@ -2109,8 +2089,7 @@ describe('v5 vite generator bundle', () => {
           cssEntries: [cssEntry],
         },
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -2180,7 +2159,7 @@ describe('v5 vite generator bundle', () => {
       const actual = await importOriginal<typeof import('@/generator')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -2199,8 +2178,7 @@ describe('v5 vite generator bundle', () => {
           cssEntries: [cssEntry],
         },
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
@@ -2268,14 +2246,14 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: path.dirname(cssEntry),
           baseFallbacks: [],
@@ -2294,8 +2272,7 @@ describe('v5 vite generator bundle', () => {
           cssEntries: [cssEntry],
         },
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -2412,8 +2389,8 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: resolveSourceOptionsMock,
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+        resolveTailwindV4SourceOptionsFromRuntime: resolveSourceOptionsMock,
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           return {
             projectRoot: tempDir,
             base: tempDir,
@@ -2430,8 +2407,7 @@ describe('v5 vite generator bundle', () => {
         version: 4,
         packageName: 'tailwindcss4',
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -2470,10 +2446,10 @@ describe('v5 vite generator bundle', () => {
     ])
 
     const generatorModule = await import('@/generator')
-    const resolveSourceOptionsCalls = vi.mocked(generatorModule.resolveTailwindV4SourceOptionsFromPatcher).mock.calls.length
+    const resolveSourceOptionsCalls = vi.mocked(generatorModule.resolveTailwindV4SourceOptionsFromRuntime).mock.calls.length
     await getTransformHandler(sourcePlugin)?.call(sourcePlugin, await readFile(cssEntry, 'utf8'), cssEntry)
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
-    expect(generatorModule.resolveTailwindV4SourceOptionsFromPatcher).toHaveBeenCalledTimes(resolveSourceOptionsCalls)
+    expect(generatorModule.resolveTailwindV4SourceOptionsFromRuntime).toHaveBeenCalledTimes(resolveSourceOptionsCalls)
     expect(scannedRoots).toHaveLength(1)
 
     await writeFile(pageFile, 'export const className = "w-2"', 'utf8')
@@ -2541,14 +2517,14 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           cssEntries: [cssEntry],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: tempDir,
           base: path.dirname(cssEntry),
           baseFallbacks: [],
@@ -2567,8 +2543,7 @@ describe('v5 vite generator bundle', () => {
           cssEntries: [cssEntry],
         },
       },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),

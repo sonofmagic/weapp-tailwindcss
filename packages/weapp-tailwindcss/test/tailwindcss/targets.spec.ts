@@ -1,19 +1,19 @@
-import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
-import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import type { CreateTailwindcssRuntimeOptions } from '@/tailwindcss/runtime-factory'
+import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 describe('tailwindcss targets', () => {
   afterEach(() => {
-    vi.doUnmock('@/tailwindcss/patcher')
+    vi.doUnmock('@/tailwindcss/runtime-factory')
     vi.resetModules()
   })
 
   it('keeps provided tailwindcss basedir for css entry normalization without forcing v4 base', async () => {
     const classList = ['text-green-500']
 
-    const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
-      const stub: TailwindcssPatcherLike = {
+    const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
+      const stub: TailwindcssRuntimeLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
         options: options as any,
@@ -26,23 +26,25 @@ describe('tailwindcss targets', () => {
       return stub
     })
 
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/runtime-factory', () => ({
+      createTailwindcssRuntime,
+    }))
 
-    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const { createTailwindcssRuntimeFromContext } = await import('@/context/tailwindcss')
     const workspace = path.resolve('/workspace/project')
     const ctx = {
       tailwindcssBasedir: workspace,
-      supportCustomLengthUnitsPatch: undefined,
+      supportCustomLengthUnits: undefined,
       tailwindcss: undefined,
-      tailwindcssPatcherOptions: undefined,
+      tailwindcssRuntimeOptions: undefined,
       cssEntries: ['src/app.css'],
       appType: 'taro',
     } as unknown as InternalUserDefinedOptions
 
-    const patcher = createTailwindcssPatcherFromContext(ctx)
+    const runtime = createTailwindcssRuntimeFromContext(ctx)
 
-    expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
-    const options = createTailwindcssPatcher.mock.calls[0][0]
+    expect(createTailwindcssRuntime).toHaveBeenCalledTimes(1)
+    const options = createTailwindcssRuntime.mock.calls[0][0]
     expect(options.tailwindcss?.packageName).toBe('tailwindcss')
     expect(options.tailwindcss?.v4?.base).toBeUndefined()
     expect(options.tailwindcss?.v4?.cssEntries).toEqual([
@@ -52,9 +54,8 @@ describe('tailwindcss targets', () => {
       path.join(workspace, 'src', 'app.css'),
     ])
 
-    const extracted = await patcher.extract({})
+    const extracted = await runtime.extract({})
     expect([...extracted.classSet]).toEqual(classList)
     expect(extracted.classList).toEqual(classList)
-    expect(patcher.patch).toBeUndefined()
   })
 })

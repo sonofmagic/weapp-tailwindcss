@@ -25,7 +25,7 @@ export async function validateCandidatesByGenerator(
     runtimeState,
     skipGenerateFallback,
   } = options
-  const majorVersion = runtimeState.twPatcher.majorVersion
+  const majorVersion = runtimeState.tailwindRuntime.majorVersion
   if (!SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0) || candidates.size === 0) {
     return new Set<string>()
   }

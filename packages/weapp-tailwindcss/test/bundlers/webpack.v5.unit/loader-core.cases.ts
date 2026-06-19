@@ -53,7 +53,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
         },
       },
     }
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const module: LoaderModule = {
@@ -84,7 +84,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
         '/': '_f',
       },
     } as any)
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     new WeappTailwindcss().apply(compiler as any)
@@ -106,7 +106,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   })
 
   it('cleans webpack loader runtime registry when watch closes', () => {
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     new WeappTailwindcss().apply(compiler as any)
 

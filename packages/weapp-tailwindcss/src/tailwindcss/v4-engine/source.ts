@@ -1,17 +1,16 @@
 import type { TailwindV4SourceOptions, TailwindV4SourceOptionsWithSources } from './types'
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
-import { postcss } from '@weapp-tailwindcss/postcss'
 import {
-  resolveTailwindV4Source as resolvePatchTailwindV4Source,
-  resolveTailwindV4SourceFromPatchOptions,
-} from 'tailwindcss-patch'
+  resolveTailwindV4Source as resolveEngineTailwindV4Source,
+} from '@tailwindcss-mangle/engine'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
-import { resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { omitUndefined } from '@/utils/object'
 
 const require = createRequire(import.meta.url)
@@ -48,7 +47,7 @@ function resolvePackageCssEntryPoint(specifier: string) {
   }
 
   try {
-    let current = path.dirname(require.resolve('tailwindcss-patch'))
+    let current = path.dirname(require.resolve('@tailwindcss-mangle/engine'))
     while (true) {
       const cssEntry = path.resolve(current, '..', 'tailwindcss', 'index.css')
       if (isCssEntryPoint(cssEntry)) {
@@ -79,8 +78,8 @@ function uniqueDefined(values: Array<string | undefined>) {
   return [...new Set(values.filter((value): value is string => typeof value === 'string' && value.length > 0))]
 }
 
-function getProjectRoot(patcher: TailwindcssPatcherLike) {
-  return patcher.options?.projectRoot ?? process.cwd()
+function getProjectRoot(runtime: TailwindcssRuntimeLike) {
+  return runtime.options?.projectRoot ?? process.cwd()
 }
 
 function resolveBase(value: string | undefined, fallback: string) {
@@ -195,6 +194,7 @@ function normalizeTailwindV4CssPackageImports(css: string, packageName: string |
 function normalizeTailwindV4CssSources(
   cssSources: TailwindV4SourceOptions['cssSources'],
   packageName: string | undefined,
+  projectRoot: string | undefined,
 ) {
   if (!cssSources?.length) {
     return cssSources
@@ -202,17 +202,43 @@ function normalizeTailwindV4CssSources(
 
   let changed = false
   const normalizedCssSources = cssSources.map((cssSource) => {
+    const file = typeof cssSource.file === 'string' && cssSource.file.length > 0
+      ? path.isAbsolute(cssSource.file)
+        ? path.resolve(cssSource.file)
+        : path.resolve(projectRoot ?? process.cwd(), cssSource.file)
+      : undefined
+    const base = typeof cssSource.base === 'string' && cssSource.base.length > 0
+      ? path.isAbsolute(cssSource.base)
+        ? path.resolve(cssSource.base)
+        : path.resolve(projectRoot ?? process.cwd(), cssSource.base)
+      : file
+        ? path.dirname(file)
+        : undefined
     if (typeof cssSource.css !== 'string') {
-      return cssSource
+      if (file === cssSource.file && base === cssSource.base) {
+        return cssSource
+      }
+      changed = true
+      return {
+        ...cssSource,
+        ...(base === undefined ? {} : { base }),
+        ...(file === undefined ? {} : { file }),
+      }
     }
-    const css = normalizeTailwindV4CssPackageImports(cssSource.css, packageName)
-    if (css === cssSource.css) {
+    const configBase = base ?? projectRoot ?? process.cwd()
+    const css = normalizeTailwindV4CssPackageImports(
+      normalizeTailwindConfigDirectives(cssSource.css, configBase),
+      packageName,
+    )
+    if (css === cssSource.css && file === cssSource.file && base === cssSource.base) {
       return cssSource
     }
     changed = true
     return {
       ...cssSource,
       css,
+      ...(base === undefined ? {} : { base }),
+      ...(file === undefined ? {} : { file }),
     }
   })
 
@@ -281,6 +307,7 @@ function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | und
   const cssSources = normalizeTailwindV4CssSources(
     combinedCssSources,
     options.packageName,
+    options.projectRoot,
   )
   const cssEntries = entrySources?.cssEntries ?? options.cssEntries
   if (css === options.css && cssSources === options.cssSources && cssEntries === options.cssEntries) {
@@ -295,8 +322,8 @@ function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | und
   }
 }
 
-function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
+function resolveTailwindCssImportTarget(runtime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(runtime.options)
   const configuredPackageName = tailwindOptions?.packageName
   if (
     typeof configuredPackageName === 'string'
@@ -306,7 +333,7 @@ function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
     return configuredPackageName
   }
 
-  const packageName = patcher.packageInfo?.name
+  const packageName = runtime.packageInfo?.name
   if (
     typeof packageName === 'string'
     && packageName.length > 0
@@ -318,23 +345,23 @@ function resolveTailwindCssImportTarget(patcher: TailwindcssPatcherLike) {
   return 'tailwindcss'
 }
 
-function readTailwindV4Options(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-  return tailwindOptions?.v4 ?? (patcher.options as any)?.tailwind?.v4
+function readTailwindV4Options(runtime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(runtime.options)
+  return tailwindOptions?.v4 ?? (runtime.options as any)?.tailwind?.v4
 }
 
-function isRawTailwindcssPatchOptions(options: TailwindcssPatcherLike['options']) {
+function isRawTailwindcssPatchOptions(options: TailwindcssRuntimeLike['options']) {
   return Boolean(options && 'tailwindcss' in options)
 }
 
-function resolvePatchTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): TailwindV4SourceOptions {
-  if (patcher.options) {
-    const projectRoot = getProjectRoot(patcher)
-    const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-    const tailwindV4Options = readTailwindV4Options(patcher)
+function resolveEngineTailwindV4SourceOptions(runtime: TailwindcssRuntimeLike): TailwindV4SourceOptions {
+  if (runtime.options) {
+    const projectRoot = getProjectRoot(runtime)
+    const tailwindOptions = resolveTailwindcssOptions(runtime.options)
+    const tailwindV4Options = readTailwindV4Options(runtime)
     const cwd = resolveBase(tailwindOptions?.cwd, projectRoot)
     const configuredBase = (tailwindV4Options as { configuredBase?: string } | undefined)?.configuredBase
-      ?? (isRawTailwindcssPatchOptions(patcher.options) ? tailwindV4Options?.base : undefined)
+      ?? (isRawTailwindcssPatchOptions(runtime.options) ? tailwindV4Options?.base : undefined)
     const configDir = resolveConfigDir(tailwindOptions?.config, projectRoot)
     const baseFallbacks = uniqueDefined([
       configuredBase,
@@ -350,35 +377,53 @@ function resolvePatchTailwindV4SourceOptions(patcher: TailwindcssPatcherLike): T
       ...(tailwindV4Options?.css === undefined ? {} : { css: tailwindV4Options.css }),
       ...(tailwindV4Options?.cssSources === undefined ? {} : { cssSources: tailwindV4Options.cssSources }),
       ...(tailwindV4Options?.cssEntries === undefined ? {} : { cssEntries: tailwindV4Options.cssEntries }),
-      packageName: resolveTailwindCssImportTarget(patcher),
+      packageName: resolveTailwindCssImportTarget(runtime),
     }
   }
 
   return {
-    projectRoot: getProjectRoot(patcher),
-    packageName: resolveTailwindCssImportTarget(patcher),
+    projectRoot: getProjectRoot(runtime),
+    packageName: resolveTailwindCssImportTarget(runtime),
   }
 }
 
-export function resolveTailwindV4SourceOptionsFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export function resolveTailwindV4SourceOptionsFromRuntime(
+  runtime: TailwindcssRuntimeLike,
 ): TailwindV4SourceOptionsWithSources {
-  const tailwindV4Options = readTailwindV4Options(patcher)
+  const tailwindV4Options = readTailwindV4Options(runtime)
   return omitUndefined({
-    ...resolvePatchTailwindV4SourceOptions(patcher),
+    ...resolveEngineTailwindV4SourceOptions(runtime),
     sources: tailwindV4Options?.sources,
   }) as TailwindV4SourceOptionsWithSources
 }
 
 export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {
   const normalizedOptions = normalizeTailwindV4SourceOptions(options)
-  return resolvePatchTailwindV4Source(normalizedOptions)
+  return resolveEngineTailwindV4Source(normalizedOptions)
 }
 
-export async function resolveTailwindV4SourceFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export function resolveTailwindV4SourceFromRuntimeOptions(options?: {
+  projectRoot?: string
+  tailwindcss?: {
+    cwd?: string
+    packageName?: string
+    config?: string
+    v4?: TailwindV4SourceOptions
+  }
+}) {
+  const projectRoot = options?.projectRoot ?? process.cwd()
+  const tailwindOptions = options?.tailwindcss
+  const v4Options = tailwindOptions?.v4
+  return resolveTailwindV4Source({
+    projectRoot,
+    cwd: resolveBase(tailwindOptions?.cwd, projectRoot),
+    packageName: tailwindOptions?.packageName ?? 'tailwindcss',
+    ...(v4Options ?? {}),
+  })
+}
+
+export async function resolveTailwindV4SourceFromRuntime(
+  runtime: TailwindcssRuntimeLike,
 ) {
-  return resolveTailwindV4Source(resolveTailwindV4SourceOptionsFromPatcher(patcher))
+  return resolveTailwindV4Source(resolveTailwindV4SourceOptionsFromRuntime(runtime))
 }
-
-export { resolveTailwindV4SourceFromPatchOptions }

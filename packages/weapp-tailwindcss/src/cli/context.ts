@@ -1,18 +1,18 @@
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
+import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { getCompilerContext } from '@/context'
 import { defuOverrideArray } from '@/utils'
 
-function mergeTailwindcssPatcherOptions(
-  overrides: TailwindCssPatchOptions,
-  current: TailwindCssPatchOptions | undefined,
-): TailwindCssPatchOptions {
+function mergeTailwindcssRuntimeOptions(
+  overrides: TailwindCssRuntimeOptions,
+  current: TailwindCssRuntimeOptions | undefined,
+): TailwindCssRuntimeOptions {
   if (!current) {
     return overrides
   }
-  return defuOverrideArray<TailwindCssPatchOptions, TailwindCssPatchOptions[]>(overrides, current)
+  return defuOverrideArray<TailwindCssRuntimeOptions, TailwindCssRuntimeOptions[]>(overrides, current)
 }
 
 export function createCliContext(
@@ -27,9 +27,9 @@ export function createCliContext(
     if (!userOptions.tailwindcssBasedir) {
       userOptions.tailwindcssBasedir = resolvedCwd
     }
-    const cwdOptions: TailwindCssPatchOptions = { projectRoot: resolvedCwd }
-    const current = userOptions.tailwindcssPatcherOptions
-    userOptions.tailwindcssPatcherOptions = mergeTailwindcssPatcherOptions(
+    const cwdOptions: TailwindCssRuntimeOptions = { projectRoot: resolvedCwd }
+    const current = userOptions.tailwindcssRuntimeOptions
+    userOptions.tailwindcssRuntimeOptions = mergeTailwindcssRuntimeOptions(
       cwdOptions,
       current,
     )

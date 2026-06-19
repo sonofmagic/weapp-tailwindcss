@@ -205,6 +205,7 @@
     "@babel/parser": "~7.29.7",
     "@babel/traverse": "~7.29.7",
     "@babel/types": "~7.29.7",
+    "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@vue/compiler-dom": "catalog:vue3",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/logger": "workspace:*",
@@ -220,7 +221,6 @@
     "micromatch": "^4.0.8",
     "semver": "~7.8.4",
     "tailwindcss-config": "workspace:*",
-    "tailwindcss-patch": "catalog:tailwindcssPatch",
     "yaml": "^2.9.0"
   },
   "devDependencies": {

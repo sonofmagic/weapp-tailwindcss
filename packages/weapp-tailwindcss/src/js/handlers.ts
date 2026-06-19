@@ -4,7 +4,7 @@ import type { ClassNameTransformResult } from '../shared/classname-transform'
 import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
 import { jsStringEscape } from '@ast-core/escape'
-import { splitCandidateTokens } from 'tailwindcss-patch'
+import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { createDebug } from '@/debug'
 import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
@@ -26,6 +26,30 @@ function hasIgnoreComment(node: StringLiteral | TemplateElement) {
     if (value.includes(WEAPP_TW_IGNORE_MARKER) && value.includes(IGNORE_MARKER)) {
       return true
     }
+  }
+
+  return false
+}
+
+function isConditionTestLiteral(path: NodePath<StringLiteral | TemplateElement>) {
+  let current: NodePath | null = path
+
+  while (current?.parentPath) {
+    const parent = current.parentPath
+    if (parent.isConditionalExpression()) {
+      return parent.node.test === current.node
+    }
+    if (
+      parent.isBinaryExpression()
+      || parent.isCallExpression()
+      || parent.isLogicalExpression()
+      || parent.isMemberExpression()
+      || parent.isUnaryExpression()
+    ) {
+      current = parent
+      continue
+    }
+    return false
   }
 
   return false
@@ -145,6 +169,10 @@ export function replaceHandleValue(
   }
 
   if (hasIgnoreComment(path.node)) {
+    return undefined
+  }
+
+  if (isConditionTestLiteral(path)) {
     return undefined
   }
 

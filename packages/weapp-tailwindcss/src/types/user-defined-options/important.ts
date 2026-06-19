@@ -10,8 +10,8 @@ import type {
   UnitsToPxOptions,
   WeappAutoprefixerOptions,
 } from '@weapp-tailwindcss/postcss/types'
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type { ICustomAttributes } from '../shared'
+import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 
 export interface UniAppXComponentLocalStylesOptions {
   /**
@@ -384,7 +384,7 @@ export interface UserDefinedOptionsImportantPart {
    * @since ^4.0.0
    * @group 0.重要配置
    */
-  tailwindcss?: TailwindCssPatchOptions['tailwindcss'] | undefined
+  tailwindcss?: TailwindCssRuntimeOptions['tailwindcss'] | undefined
 
   /**
    * 指定 tailwindcss@4 的入口 CSS。

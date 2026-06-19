@@ -1,7 +1,7 @@
 import type { NodePath } from '@babel/traverse'
 import type { StringLiteral, TemplateElement } from '@babel/types'
+import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import MagicString from 'magic-string'
-import { splitCandidateTokens } from 'tailwindcss-patch'
 import { analyzeSource, babelParse } from '@/js/babel'
 import { isClassContextLiteralPath } from '@/js/class-context'
 import { JsTokenUpdater } from '@/js/JsTokenUpdater'

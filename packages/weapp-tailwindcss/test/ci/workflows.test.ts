@@ -549,6 +549,7 @@ describe('e2e watch workflow', () => {
         watch_timeout_ms: '240000',
         watch_command_timeout_ms: '600000',
         watch_main_style_only: '1',
+        watch_main_style_subpackage_limit: '0',
       },
     ]
     const slowMacosUniAppPrBudgets = [

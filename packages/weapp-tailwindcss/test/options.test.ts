@@ -3,17 +3,8 @@ import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
 import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { generatorTargetEnvKeys } from '@/runtime-branch/generator-target-env'
 import { defu } from '@/utils'
-
-const generatorTargetEnvKeys = [
-  'UNI_PLATFORM',
-  'UNI_UTS_PLATFORM',
-  'MPX_CLI_MODE',
-  'MPX_CURRENT_TARGET_MODE',
-  'TARO_ENV',
-  'WEAPP_TW_TARGET',
-  'WEAPP_TAILWINDCSS_TARGET',
-] as const
 
 function withGeneratorTargetEnv(
   env: Partial<Record<typeof generatorTargetEnvKeys[number], string>>,
@@ -61,7 +52,11 @@ describe('get options', () => {
   it('default options', () => {
     const options = sanitizeSnapshotOptions(getCompilerContext({}))
     // @ts-ignore
-    delete options.twPatcher
+    delete options.tailwindRuntime
+    // @ts-ignore
+    delete options.refreshTailwindcssRuntime
+    // @ts-ignore
+    delete options.tailwindRuntime
     expect(options).toMatchSnapshot()
   })
 
@@ -163,6 +158,40 @@ describe('get options', () => {
     })
   })
 
+  it('resolves generator runtime branch from Tailwind version and platform context', () => {
+    const miniProgramOptions = normalizeWeappTailwindcssGeneratorOptions({}, {
+      tailwindcssMajorVersion: 3,
+      uniUtsPlatform: 'mp-alipay',
+    })
+    expect(miniProgramOptions.branch).toMatchObject({
+      tailwindcssVersion: 3,
+      platformFamily: 'mini-program',
+      platform: 'mp-alipay',
+    })
+
+    const nativeOptions = normalizeWeappTailwindcssGeneratorOptions({}, {
+      appType: 'uni-app-x',
+      tailwindcssMajorVersion: 4,
+      uniAppX: true,
+      uniUtsPlatform: 'app-ios',
+    })
+    expect(nativeOptions.branch).toMatchObject({
+      tailwindcssVersion: 4,
+      platformFamily: 'native-app',
+      nativeAppPlatform: 'ios',
+      platform: 'app-ios',
+    })
+
+    const webOptions = normalizeWeappTailwindcssGeneratorOptions({ target: 'web' }, {
+      tailwindcssMajorVersion: 4,
+      uniUtsPlatform: 'h5',
+    })
+    expect(webOptions.branch).toMatchObject({
+      tailwindcssVersion: 4,
+      platformFamily: 'web',
+    })
+  })
+
   it('keeps explicit generator target before env inference', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'h5', TARO_ENV: 'h5' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'weapp' }).target).toBe('weapp')
@@ -224,37 +253,37 @@ describe('get options', () => {
         packageName: 'tailwindcss4',
       },
     })
-    expect(config.twPatcher.majorVersion).toBe(4)
+    expect(config.tailwindRuntime.majorVersion).toBe(4)
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
   })
 
   it('uses Tailwind v3 cssPreflight defaults for tailwindcss v3 runtime', () => {
     const config = getCompilerContext()
-    expect(config.twPatcher.majorVersion).toBe(3)
+    expect(config.tailwindRuntime.majorVersion).toBe(3)
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V3_CSS_PREFLIGHT)
   })
 
-  // it('supportCustomLengthUnitsPatch boolean', () => {
+  // it('supportCustomLengthUnits boolean', () => {
   //   const o0 = getCompilerContext()
-  //   expect(o0.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+  //   expect(o0.supportCustomLengthUnits).toEqual(defaultOptions.supportCustomLengthUnits)
   //   const o1 = getCompilerContext({
-  //     supportCustomLengthUnitsPatch: true
+  //     supportCustomLengthUnits: true
   //   })
-  //   expect(o1.supportCustomLengthUnitsPatch).toEqual(defaultOptions.supportCustomLengthUnitsPatch)
+  //   expect(o1.supportCustomLengthUnits).toEqual(defaultOptions.supportCustomLengthUnits)
   //   const o2 = getCompilerContext({
-  //     supportCustomLengthUnitsPatch: false
+  //     supportCustomLengthUnits: false
   //   })
-  //   expect(o2.supportCustomLengthUnitsPatch).toEqual(false)
+  //   expect(o2.supportCustomLengthUnits).toEqual(false)
   //   const o0o = getCompilerContext({
-  //     supportCustomLengthUnitsPatch: {
+  //     supportCustomLengthUnits: {
   //       units: ['upx', 'xxem']
   //     }
   //   })
-  //   expect(typeof o0o.supportCustomLengthUnitsPatch === 'object').toBe(true)
-  //   expect(o0o.supportCustomLengthUnitsPatch).toEqual({
+  //   expect(typeof o0o.supportCustomLengthUnits === 'object').toBe(true)
+  //   expect(o0o.supportCustomLengthUnits).toEqual({
   //     units: ['upx', 'xxem', 'rpx'],
   //     // @ts-ignore
-  //     dangerousOptions: defaultOptions.supportCustomLengthUnitsPatch.dangerousOptions
+  //     dangerousOptions: defaultOptions.supportCustomLengthUnits.dangerousOptions
   //   })
   // })
 
@@ -299,16 +328,16 @@ describe('get options', () => {
     let config = getCompilerContext({
 
     })
-    let cacheOptions = config.twPatcher.options?.cache
+    let cacheOptions = config.tailwindRuntime.options?.cache
     expect(cacheOptions?.enabled).toBe(true)
-    // TailwindcssPatcher 内部可能将路径转为 posix 格式，统一用 path.normalize 比较
-    const expectedDefaultCacheDir = path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch')
+    // TailwindcssRuntime 内部可能将路径转为 posix 格式，统一用 path.normalize 比较
+    const expectedDefaultCacheDir = path.join(process.cwd(), 'node_modules', '.cache', '@tailwindcss-mangle', 'engine')
     expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(expectedDefaultCacheDir))
     config = getCompilerContext({
       appType: 'mpx',
     })
-    cacheOptions = config.twPatcher.options?.cache
-    expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(path.join(process.cwd(), 'node_modules', '.cache', 'tailwindcss-patch')))
+    cacheOptions = config.tailwindRuntime.options?.cache
+    expect(path.normalize(String(cacheOptions?.dir))).toBe(path.normalize(path.join(process.cwd(), 'node_modules', '.cache', '@tailwindcss-mangle', 'engine')))
   })
 
   describe('px2rpx options', () => {

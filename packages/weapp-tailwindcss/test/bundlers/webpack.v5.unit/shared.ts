@@ -66,13 +66,12 @@ interface TestContext {
   onStart: ReturnType<typeof vi.fn>
   onEnd: ReturnType<typeof vi.fn>
   onUpdate: ReturnType<typeof vi.fn>
-  refreshTailwindcssPatcher: ReturnType<typeof vi.fn>
+  refreshTailwindcssRuntime: ReturnType<typeof vi.fn>
   templateHandler: ReturnType<typeof vi.fn>
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
   cache: ReturnType<typeof createCache>
-  twPatcher: {
-    patch: ReturnType<typeof vi.fn>
+  tailwindRuntime: {
     getClassSet: ReturnType<typeof vi.fn>
     getClassSetSync: ReturnType<typeof vi.fn>
     extract: ReturnType<typeof vi.fn>
@@ -111,13 +110,12 @@ export function createContext(overrides: Partial<TestContext> = {}): TestContext
     onStart: vi.fn(),
     onEnd: vi.fn(),
     onUpdate: vi.fn(),
-    refreshTailwindcssPatcher: vi.fn(async () => testState.currentContext.twPatcher),
+    refreshTailwindcssRuntime: vi.fn(async () => testState.currentContext.tailwindRuntime),
     templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
     styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
     jsHandler: vi.fn(async (code: string) => ({ code: `js:${code}` })),
     cache,
-    twPatcher: {
-      patch: vi.fn(),
+    tailwindRuntime: {
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),

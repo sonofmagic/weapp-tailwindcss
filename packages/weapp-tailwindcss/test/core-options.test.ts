@@ -13,16 +13,16 @@ const mocks = vi.hoisted(() => {
     options,
   }))
   const templateHandler = vi.fn(async (source: string, options: unknown) => `wxml:${source}`)
-  const refreshTailwindcssPatcher = vi.fn()
-  const twPatcher = {
+  const refreshTailwindcssRuntime = vi.fn()
+  const tailwindRuntime = {
     majorVersion: 4 as number | undefined,
   }
   const getCompilerContext = vi.fn(() => ({
     templateHandler,
     styleHandler,
     jsHandler,
-    twPatcher,
-    refreshTailwindcssPatcher,
+    tailwindRuntime,
+    refreshTailwindcssRuntime,
     tailwindcssBasedir: '/project',
   }))
   const createTailwindRuntimeReadyPromise = vi.fn(() => Promise.resolve())
@@ -33,12 +33,12 @@ const mocks = vi.hoisted(() => {
     ensureRuntimeClassSet,
     getCompilerContext,
     jsHandler,
-    refreshTailwindcssPatcher,
+    refreshTailwindcssRuntime,
     createTailwindRuntimeReadyPromise,
     shouldSkipJsTransform,
     styleHandler,
     templateHandler,
-    twPatcher,
+    tailwindRuntime,
   }
 })
 
@@ -58,7 +58,7 @@ vi.mock('@/js/precheck', () => ({
 describe('core transform option resolution', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mocks.twPatcher.majorVersion = 4
+    mocks.tailwindRuntime.majorVersion = 4
     mocks.ensureRuntimeClassSet.mockResolvedValue(new Set(['runtime-[1px]']))
     mocks.shouldSkipJsTransform.mockReturnValue(false)
   })
@@ -69,13 +69,13 @@ describe('core transform option resolution', () => {
 
     await ctx.transformWxss('.text { color: red; }')
 
-    expect(mocks.createTailwindRuntimeReadyPromise).toHaveBeenCalledWith(mocks.twPatcher)
+    expect(mocks.createTailwindRuntimeReadyPromise).toHaveBeenCalledWith(mocks.tailwindRuntime)
     expect(mocks.styleHandler).toHaveBeenCalledWith('.text { color: red; }', {
       isMainChunk: true,
     })
     expect(mocks.ensureRuntimeClassSet).toHaveBeenCalledWith(expect.objectContaining({
-      twPatcher: mocks.twPatcher,
-      refreshTailwindcssPatcher: mocks.refreshTailwindcssPatcher,
+      tailwindRuntime: mocks.tailwindRuntime,
+      refreshTailwindcssRuntime: mocks.refreshTailwindcssRuntime,
     }))
     expect(mocks.ensureRuntimeClassSet.mock.calls[0]?.[1]).toBeUndefined()
   })
@@ -262,9 +262,9 @@ describe('core transform option resolution', () => {
     expect(options.customAttributesEntities).toEqual([])
   })
 
-  it('leaves handler options untouched when the runtime patcher has no numeric major version', async () => {
+  it('leaves handler options untouched when the runtime has no numeric major version', async () => {
     const { createContext } = await import('@/core')
-    mocks.twPatcher.majorVersion = undefined
+    mocks.tailwindRuntime.majorVersion = undefined
     const ctx = createContext()
     const options = {
       generateMap: false,

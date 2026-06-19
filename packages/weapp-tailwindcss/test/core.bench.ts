@@ -27,8 +27,8 @@ const warmContextPromise = prepareWarmContext()
 
 async function prepareRuntimeSet() {
   const ctx = getCompilerContext()
-  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
-  return collectRuntimeClassSet(ctx.twPatcher, { force: true })
+  await createTailwindRuntimeReadyPromise(ctx.tailwindRuntime)
+  return collectRuntimeClassSet(ctx.tailwindRuntime, { force: true })
 }
 
 async function prepareWarmContext() {

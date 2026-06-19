@@ -1,5 +1,5 @@
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import type { TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
+import type { TailwindcssRuntimeLike, UserDefinedOptions } from '@/types'
 import { readFileSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
@@ -8,8 +8,8 @@ import {
   normalizeLegacyContentEntries,
   resolveTailwindV4CssSourceBase,
 } from '@/tailwindcss/source-scan'
-import { resolveTailwindV3SourceFromPatcher } from '@/tailwindcss/v3-engine'
-import { resolveTailwindV4SourceFromPatcher, resolveTailwindV4SourceOptionsFromPatcher } from '@/tailwindcss/v4-engine'
+import { resolveTailwindV3SourceFromRuntime } from '@/tailwindcss/v3-engine'
+import { resolveTailwindV4SourceFromRuntime, resolveTailwindV4SourceOptionsFromRuntime } from '@/tailwindcss/v4-engine'
 import {
   collectConfiguredCssSources,
   collectExistingCssEntries,
@@ -76,13 +76,13 @@ function createResolvedV4CssScanInput(
 
 export async function resolveViteSourceScanEntries(
   options: UserDefinedOptions,
-  patcher: TailwindcssPatcherLike,
+  runtime: TailwindcssRuntimeLike,
   scanOptions: ResolveViteSourceScanOptions = {},
 ): Promise<ResolvedViteSourceScan | undefined> {
-  if (patcher.majorVersion === 3) {
+  if (runtime.majorVersion === 3) {
     const [source, cssEntryScan] = await Promise.all([
-      resolveTailwindV3SourceFromPatcher(patcher),
-      resolveTailwindV3CssEntryScan(options, patcher),
+      resolveTailwindV3SourceFromRuntime(runtime),
+      resolveTailwindV3CssEntryScan(options, runtime),
     ])
     const contentEntries = [
       ...normalizeLegacyContentEntries(source.configObject?.content, source.cwd, {
@@ -100,8 +100,8 @@ export async function resolveViteSourceScanEntries(
       : undefined
   }
 
-  if (patcher.majorVersion === 4) {
-    const sourceOptions = resolveTailwindV4SourceOptionsFromPatcher(patcher)
+  if (runtime.majorVersion === 4) {
+    const sourceOptions = resolveTailwindV4SourceOptionsFromRuntime(runtime)
     const cssEntries = collectExistingCssEntries(options)
     if (cssEntries.length === 0 && !sourceOptions.css && !sourceOptions.cssSources?.length) {
       const scanRoot = scanOptions.root
@@ -195,7 +195,7 @@ export async function resolveViteSourceScanEntries(
       }, dependencies)
     }
 
-    const source = await resolveTailwindV4SourceFromPatcher(patcher)
+    const source = await resolveTailwindV4SourceFromRuntime(runtime)
     addSourceScanDependency(dependencies, (source as { file?: string }).file)
     addSourceScanDependencies(dependencies, (source as { dependencies?: string[] }).dependencies)
     const resolved = await resolveTailwindV4EntriesFromCssCached(source.css, source.base)

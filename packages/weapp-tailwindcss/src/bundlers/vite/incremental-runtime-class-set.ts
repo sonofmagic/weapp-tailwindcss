@@ -1,12 +1,12 @@
 import type { BundleSnapshot, BundleStateEntry } from './bundle-state'
 import type { TailwindV4DesignSystem, TailwindV4ResolvedSource } from '@/tailwindcss/v4-engine'
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import type { IArbitraryValues } from '@/types/shared'
+import { extractRawCandidatesWithPositions, extractValidCandidates, resolveValidTailwindV4Candidates } from '@tailwindcss-mangle/engine'
 import { MappingChars2String } from '@weapp-core/escape'
-import { extractRawCandidatesWithPositions, extractValidCandidates, resolveValidTailwindV4Candidates } from 'tailwindcss-patch'
 import { createDebug } from '@/debug'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromPatcher } from '@/tailwindcss/v4-engine'
+import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime } from '@/tailwindcss/v4-engine'
 import { collectChangedRuntimeFiles, createRuntimeEntries, resolveEntryExtension } from './incremental-runtime-class-set/entries'
 import { collectEscapedRuntimeCandidates, createEscapeFragments } from './incremental-runtime-class-set/escaped-candidates'
 import { createHighConfidenceLiteralRanges, isRawCandidateAllowedForV3 } from './incremental-runtime-class-set/v3-candidates'
@@ -27,7 +27,7 @@ type ExtractRawCandidatesFn = (
 ) => Promise<ExtractRawCandidateResult>
 
 export interface BundleRuntimeClassSetManager {
-  sync: (patcher: TailwindcssPatcherLike, snapshot: BundleSnapshot, options?: BundleRuntimeClassSetSyncOptions) => Promise<Set<string>>
+  sync: (runtime: TailwindcssRuntimeLike, snapshot: BundleSnapshot, options?: BundleRuntimeClassSetSyncOptions) => Promise<Set<string>>
   reset: () => Promise<void>
 }
 
@@ -137,9 +137,9 @@ export function createBundleRuntimeClassSetManager(
     designSystemPromise = undefined
   }
 
-  async function resolveValidationContextCached(patcher: TailwindcssPatcherLike) {
+  async function resolveValidationContextCached(runtime: TailwindcssRuntimeLike) {
     if (!validationContext) {
-      validationContext = await resolveTailwindV4SourceFromPatcher(patcher)
+      validationContext = await resolveTailwindV4SourceFromRuntime(runtime)
     }
     return validationContext
   }
@@ -165,21 +165,21 @@ export function createBundleRuntimeClassSetManager(
   }
 
   async function validateUnknownCandidates(
-    patcher: TailwindcssPatcherLike,
+    runtime: TailwindcssRuntimeLike,
     unknownCandidates: Set<string>,
   ) {
     if (unknownCandidates.size === 0) {
       return
     }
 
-    if (patcher.majorVersion === 3 && !customExtractCandidates) {
+    if (runtime.majorVersion === 3 && !customExtractCandidates) {
       for (const candidate of unknownCandidates) {
         candidateValidityCache.set(candidate, true)
       }
       return
     }
 
-    const context = await resolveValidationContextCached(patcher)
+    const context = await resolveValidationContextCached(runtime)
     if (!customExtractCandidates) {
       try {
         const designSystem = await loadDesignSystem(context)
@@ -203,7 +203,7 @@ export function createBundleRuntimeClassSetManager(
 
   async function extractEntryRawCandidates(
     entry: BundleStateEntry,
-    patcher: TailwindcssPatcherLike,
+    runtime: TailwindcssRuntimeLike,
     knownSourceCandidates?: Set<string>,
   ) {
     const extension = resolveEntryExtension(entry)
@@ -212,7 +212,7 @@ export function createBundleRuntimeClassSetManager(
       : await extractRawCandidates(entry.source, extension, {
           bareArbitraryValues: options.bareArbitraryValues,
         })
-    const highConfidenceLiteralRanges = patcher.majorVersion === 3 && !customExtractCandidates
+    const highConfidenceLiteralRanges = runtime.majorVersion === 3 && !customExtractCandidates
       ? createHighConfidenceLiteralRanges(entry.source, matches)
       : []
     const candidates = new Set<string>()
@@ -220,7 +220,7 @@ export function createBundleRuntimeClassSetManager(
       const candidate = match?.rawCandidate
       if (typeof candidate === 'string' && candidate.length > 0) {
         if (
-          patcher.majorVersion === 3
+          runtime.majorVersion === 3
           && !customExtractCandidates
           && !isRawCandidateAllowedForV3(entry.source, candidate, match.start, extension, knownSourceCandidates, highConfidenceLiteralRanges)
         ) {
@@ -229,7 +229,7 @@ export function createBundleRuntimeClassSetManager(
         candidates.add(candidate)
       }
     }
-    if (patcher.majorVersion === 4) {
+    if (runtime.majorVersion === 4) {
       for (const candidate of collectEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
         candidates.add(candidate)
       }
@@ -238,11 +238,11 @@ export function createBundleRuntimeClassSetManager(
   }
 
   async function sync(
-    patcher: TailwindcssPatcherLike,
+    runtime: TailwindcssRuntimeLike,
     snapshot: BundleSnapshot,
     options: BundleRuntimeClassSetSyncOptions = {},
   ) {
-    const nextSignature = getRuntimeClassSetSignature(patcher) ?? 'runtime:missing'
+    const nextSignature = getRuntimeClassSetSignature(runtime) ?? 'runtime:missing'
     const runtimeEntries = createRuntimeEntries(snapshot)
     const runtimeEntriesByFile = new Map(runtimeEntries.map(entry => [entry.file, entry]))
     const currentRuntimeFiles = new Set(runtimeEntriesByFile.keys())
@@ -295,7 +295,7 @@ export function createBundleRuntimeClassSetManager(
       if (!entry) {
         continue
       }
-      const candidates = await extractEntryRawCandidates(entry, patcher, nextBaseClassSet)
+      const candidates = await extractEntryRawCandidates(entry, runtime, nextBaseClassSet)
       rawCandidatesByFile.set(file, candidates)
       for (const candidate of candidates) {
         if (!candidateValidityCache.has(candidate)) {
@@ -304,7 +304,7 @@ export function createBundleRuntimeClassSetManager(
       }
     }
 
-    await validateUnknownCandidates(patcher, unknownCandidates)
+    await validateUnknownCandidates(runtime, unknownCandidates)
 
     let rawCandidateCount = 0
 

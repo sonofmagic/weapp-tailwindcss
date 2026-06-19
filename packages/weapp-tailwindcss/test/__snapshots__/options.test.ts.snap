@@ -125,11 +125,10 @@ exports[`get options > default options 1`] = `
   "onStart": [Function],
   "onUpdate": [Function],
   "postcssOptions": {},
-  "refreshTailwindcssPatcher": [Function],
   "replaceRuntimePackages": false,
   "styleHandler": [Function],
   "tailwindcssBasedir": "<cwd>",
-  "tailwindcssPatcherOptions": {
+  "tailwindcssRuntimeOptions": {
     "filter": [Function],
   },
   "templateHandler": [Function],

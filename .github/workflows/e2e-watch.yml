@@ -193,6 +193,7 @@ jobs:
             round_profile: default
             watch_save_snapshots: '1'
             watch_main_style_only: '1'
+            watch_main_style_subpackage_limit: '0'
             timeout_minutes: 35
             watch_timeout_ms: '240000'
             watch_poll_ms: '40'
@@ -250,6 +251,7 @@ jobs:
           E2E_WATCH_ROUND_PROFILE: ${{ matrix.round_profile }}
           E2E_WATCH_WEB_ONLY: ${{ matrix.watch_web_only || '0' }}
           E2E_WATCH_MAIN_STYLE_ONLY: ${{ matrix.watch_main_style_only || '0' }}
+          E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT: ${{ matrix.watch_main_style_subpackage_limit || '' }}
           E2E_WATCH_SAVE_SNAPSHOTS: ${{ matrix.watch_save_snapshots }}
           WEAPP_TW_HMR_MEMORY_DEBUG: '1'
           NODE_OPTIONS: --max-old-space-size=6144

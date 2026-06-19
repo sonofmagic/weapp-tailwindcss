@@ -89,9 +89,14 @@ function normalizeCssDefinedScanSources(base: string, entries: TailwindV4SourceP
     : entries
 }
 
-async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSource, 'base' | 'css' | 'dependencies'>): Promise<TailwindV4ResolvedScanSources | undefined> {
+function resolveDefaultSourceBase(source: Pick<TailwindV4ResolvedSource, 'base'> & Partial<Pick<TailwindV4ResolvedSource, 'projectRoot' | 'cwd'>>) {
+  return source.projectRoot ?? source.cwd ?? source.base
+}
+
+async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSource, 'base' | 'css' | 'dependencies'> & Partial<Pick<TailwindV4ResolvedSource, 'projectRoot' | 'cwd'>>): Promise<TailwindV4ResolvedScanSources | undefined> {
   let importSourceBase: string | undefined
   let hasSourceNone = false
+  let hasTailwindImport = false
   const from = source.dependencies[0]
   let root: postcss.Root
   try {
@@ -106,6 +111,7 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
       if (!isTailwindCssImport(rule.params)) {
         return
       }
+      hasTailwindImport = true
       const sourceParam = parseImportSourceParam(rule.params)
       if (sourceParam?.none) {
         hasSourceNone = true
@@ -126,6 +132,13 @@ async function resolveCssDefinedScanSources(source: Pick<TailwindV4ResolvedSourc
     }
     if (hasSourceNone) {
       return false
+    }
+    if (hasTailwindImport) {
+      const defaultBase = resolveDefaultSourceBase(source)
+      return [
+        await resolveTailwindSourceEntry('.', defaultBase, false, '**/*'),
+        ...createDefaultIgnoredScanSources(defaultBase),
+      ]
     }
     return undefined
   }

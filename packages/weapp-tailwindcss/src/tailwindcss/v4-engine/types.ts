@@ -1,13 +1,13 @@
-import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type {
-  TailwindV4Engine as PatchTailwindV4Engine,
-  TailwindV4GenerateOptions as PatchTailwindV4GenerateOptions,
-  TailwindV4GenerateResult as PatchTailwindV4GenerateResult,
+  TailwindV4Engine as EngineTailwindV4Engine,
+  TailwindV4GenerateOptions as EngineTailwindV4GenerateOptions,
+  TailwindV4GenerateResult as EngineTailwindV4GenerateResult,
   TailwindV4CandidateSource,
   TailwindV4DesignSystem,
   TailwindV4ResolvedSource,
   TailwindV4SourceOptions,
-} from 'tailwindcss-patch'
+} from '@tailwindcss-mangle/engine'
+import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 
 export type TailwindV4GenerateTarget = 'weapp' | 'web' | 'tailwind'
 
@@ -29,12 +29,12 @@ export interface TailwindV4SourcePattern {
   negated: boolean
 }
 
-type TailwindV4PatchGenerateOptions = Omit<PatchTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources' | 'bareArbitraryValues'>
+type TailwindV4EngineGenerateOptions = Omit<EngineTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources' | 'bareArbitraryValues'>
 
 /**
  * Tailwind CSS v4 生成配置。
  */
-export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOptions {
+export interface TailwindV4GenerateOptions extends TailwindV4EngineGenerateOptions {
   /**
    * 是否启用增量生成缓存。
    */
@@ -42,7 +42,7 @@ export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOption
   /**
    * 是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`p-2.5px`。
    */
-  bareArbitraryValues?: PatchTailwindV4GenerateOptions['bareArbitraryValues'] | undefined
+  bareArbitraryValues?: EngineTailwindV4GenerateOptions['bareArbitraryValues'] | undefined
   /**
    * 生成目标。
    */
@@ -58,7 +58,7 @@ export interface TailwindV4GenerateOptions extends TailwindV4PatchGenerateOption
   /**
    * 是否扫描文件系统中的源码入口。
    */
-  scanSources?: PatchTailwindV4GenerateOptions['scanSources'] | undefined
+  scanSources?: EngineTailwindV4GenerateOptions['scanSources'] | undefined
 }
 
 /**
@@ -74,7 +74,7 @@ export interface TailwindV4SourceOptionsWithSources extends TailwindV4SourceOpti
 /**
  * Tailwind CSS v4 生成结果。
  */
-export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateResult, 'css'> {
+export interface TailwindV4GenerateResult extends Omit<EngineTailwindV4GenerateResult, 'css'> {
   /**
    * 转换后的 CSS。
    */
@@ -100,7 +100,7 @@ export interface TailwindV4GenerateResult extends Omit<PatchTailwindV4GenerateRe
 /**
  * Tailwind CSS v4 生成引擎。
  */
-export interface TailwindV4Engine extends Omit<PatchTailwindV4Engine, 'generate'> {
+export interface TailwindV4Engine extends Omit<EngineTailwindV4Engine, 'generate'> {
   /**
    * 解析后的 Tailwind v4 source。
    */

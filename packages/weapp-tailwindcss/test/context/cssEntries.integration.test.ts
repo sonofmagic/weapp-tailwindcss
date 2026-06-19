@@ -78,10 +78,10 @@ describe('cssEntries integration', () => {
         cssEntries: [cssEntry],
       })
 
-      expect(ctx.twPatcher.majorVersion).toBe(4)
-      expect(ctx.twPatcher.packageInfo?.name).toBe('tailwindcss')
+      expect(ctx.tailwindRuntime.majorVersion).toBe(4)
+      expect(ctx.tailwindRuntime.packageInfo?.name).toBe('tailwindcss')
 
-      const runtimeSet = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      const runtimeSet = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
       expect(runtimeSet.size).toBeGreaterThan(0)
       expect(runtimeSet.has('bg-[#00aa55]')).toBe(true)
       const source = 'const cls = \'bg-[#00aa55]\''
@@ -111,7 +111,7 @@ describe('cssEntries integration', () => {
       appType: 'uni-app-vite',
     })
 
-    const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+    const baseline = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
     expect(baseline.has('bg-[#123456]')).toBe(true)
     expect(baseline.has('bg-[#4545AB]')).toBe(false)
     expect(baseline.has('bg-[#4545ab]')).toBe(false)
@@ -119,9 +119,9 @@ describe('cssEntries integration', () => {
     await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
 
     try {
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
 
-      const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      const refreshed = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
       expect(refreshed.has('bg-[#4545AB]') || refreshed.has('bg-[#4545ab]')).toBe(true)
 
       const source = `import { ref } from 'vue'\nconst cardsColor = ref(['${nextToken}'])`
@@ -131,7 +131,7 @@ describe('cssEntries integration', () => {
     }
     finally {
       await fs.writeFile(sourceFile, original, 'utf8')
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
     }
   })
 
@@ -150,16 +150,16 @@ describe('cssEntries integration', () => {
       appType: 'uni-app-vite',
     })
 
-    const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+    const baseline = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
     expect(baseline.has('bg-[#999999]')).toBe(true)
     expect(baseline.has('bg-[#f00]')).toBe(false)
 
     await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
 
     try {
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
 
-      const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      const refreshed = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
       expect(refreshed.has('bg-[#f00]')).toBe(true)
 
       const source = 'import { ref } from \'vue\'\nconst bgObj = ref({ \'bg-[#f00]\': true })'
@@ -169,7 +169,7 @@ describe('cssEntries integration', () => {
     }
     finally {
       await fs.writeFile(sourceFile, original, 'utf8')
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
     }
   })
 
@@ -187,9 +187,9 @@ describe('cssEntries integration', () => {
     await fs.writeFile(sourceFile, appendScriptLiteralProbe(original, HIGH_RISK_ARBITRARY_ADD_TOKENS), 'utf8')
 
     try {
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
 
-      const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      const baseline = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
       for (const token of HIGH_RISK_ARBITRARY_ADD_TOKENS) {
         expect(baseline.has(token), `baseline should collect ${token}`).toBe(true)
       }
@@ -202,9 +202,9 @@ describe('cssEntries integration', () => {
       }
 
       await fs.writeFile(sourceFile, appendScriptLiteralProbe(original, HIGH_RISK_ARBITRARY_MODIFY_TOKENS), 'utf8')
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
 
-      const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+      const refreshed = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
       for (const token of HIGH_RISK_ARBITRARY_MODIFY_TOKENS) {
         expect(refreshed.has(token), `refreshed should collect ${token}`).toBe(true)
       }
@@ -218,7 +218,7 @@ describe('cssEntries integration', () => {
     }
     finally {
       await fs.writeFile(sourceFile, original, 'utf8')
-      await ctx.refreshTailwindcssPatcher({ clearCache: true })
+      await ctx.refreshTailwindcssRuntime({ clearCache: true })
     }
   })
 })

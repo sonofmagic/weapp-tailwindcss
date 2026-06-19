@@ -1,11 +1,26 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { InternalUserDefinedOptions } from '@/types'
+import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 
 export function resolveStyleOptionsFromContext(
   ctx: InternalUserDefinedOptions,
+  tailwindcssMajorVersion?: number,
 ): Partial<IStyleHandlerOptions> {
   const resolvedUniAppXOptions = resolveUniAppXOptions(ctx.uniAppX)
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(ctx.generator, {
+    appType: ctx.appType,
+    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    tailwindcssMajorVersion,
+    uniAppX: resolvedUniAppXOptions,
+  })
+  const branch = resolveGeneratorRuntimeBranch(generatorOptions, {
+    appType: ctx.appType,
+    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    tailwindcssMajorVersion,
+    uniAppX: resolvedUniAppXOptions,
+  })
   const hasCssOptions = ctx.cssOptions !== undefined
   const cssOptions = {
     cssPreflight: ctx.cssOptions?.cssPreflight ?? ctx.cssPreflight,
@@ -20,7 +35,7 @@ export function resolveStyleOptionsFromContext(
     atRules: ctx.cssOptions?.atRules ?? ctx.atRules,
     autoprefixer: ctx.cssOptions?.autoprefixer ?? ctx.autoprefixer,
     cssCalc: ctx.cssOptions?.cssCalc ?? ctx.cssCalc,
-    platform: ctx.cssOptions?.platform ?? ctx.platform,
+    platform: branch.platform ?? ctx.cssOptions?.platform ?? ctx.platform,
     px2rpx: ctx.cssOptions?.px2rpx ?? ctx.px2rpx,
     unitsToPx: ctx.cssOptions?.unitsToPx ?? ctx.unitsToPx,
     unitConversion: ctx.cssOptions?.unitConversion ?? ctx.unitConversion,
@@ -41,7 +56,7 @@ export function resolveStyleOptionsFromContext(
     atRules: cssOptions.atRules,
     autoprefixer: cssOptions.autoprefixer,
     cssCalc: cssOptions.cssCalc,
-    uniAppX: resolvedUniAppXOptions.enabled,
+    uniAppX: branch.isNativeApp,
     platform: cssOptions.platform,
     px2rpx: cssOptions.px2rpx,
     unitsToPx: cssOptions.unitsToPx,

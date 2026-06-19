@@ -1,9 +1,9 @@
-import type { CssPreflightOptions, InternalUserDefinedOptions, RefreshTailwindcssPatcherOptions, TailwindcssPatcherLike, UserDefinedOptions } from '@/types'
+import type { CssPreflightOptions, InternalUserDefinedOptions, RefreshTailwindcssRuntimeOptions, TailwindcssRuntimeLike, UserDefinedOptions } from '@/types'
 import { rm } from 'node:fs/promises'
 import { logger } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions, resolveDefaultCssPreflight } from '@/defaults'
-import { invalidateRuntimeClassSet, refreshTailwindcssPatcherSymbol } from '@/tailwindcss/runtime'
+import { invalidateRuntimeClassSet, refreshTailwindcssRuntimeSymbol } from '@/tailwindcss/runtime'
 import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
 import { applyV4CssCalcDefaults, warnMissingCssEntries } from '@/tailwindcss/v4'
@@ -14,9 +14,9 @@ import { withCompilerContextCache } from './compiler-context-cache'
 import { toCustomAttributesEntities } from './custom-attributes'
 import { createHandlersFromContext } from './handlers'
 import { applyLoggerLevel } from './logger'
-import { createTailwindcssPatcherFromContext } from './tailwindcss'
+import { createTailwindcssRuntimeFromContext } from './tailwindcss'
 
-interface ClearTailwindcssPatcherCacheOptions {
+interface ClearTailwindcssRuntimeCacheOptions {
   removeDirectory?: boolean
 }
 
@@ -93,14 +93,14 @@ function syncLegacyFieldsToCssOptions(ctx: InternalUserDefinedOptions) {
   }
 }
 
-export async function clearTailwindcssPatcherCache(
-  patcher: TailwindcssPatcherLike | undefined,
-  options?: ClearTailwindcssPatcherCacheOptions,
+export async function clearTailwindcssRuntimeCache(
+  tailwindRuntime: TailwindcssRuntimeLike | undefined,
+  options?: ClearTailwindcssRuntimeCacheOptions,
 ) {
-  if (!patcher) {
+  if (!tailwindRuntime) {
     return
   }
-  const cacheOptions = patcher.options?.cache
+  const cacheOptions = tailwindRuntime.options?.cache
   if (
     cacheOptions == null
     || (typeof cacheOptions === 'object' && cacheOptions.enabled === false)
@@ -108,12 +108,12 @@ export async function clearTailwindcssPatcherCache(
     return
   }
 
-  if (typeof (patcher as any).clearCache === 'function') {
+  if (typeof (tailwindRuntime as any).clearCache === 'function') {
     try {
-      await (patcher as any).clearCache({ scope: 'all' })
+      await (tailwindRuntime as any).clearCache({ scope: 'all' })
     }
     catch (error) {
-      logger.debug('failed to clear tailwindcss patcher cache via clearCache(): %O', error)
+      logger.debug('failed to clear tailwindcss runtime cache via clearCache(): %O', error)
     }
   }
 
@@ -126,8 +126,8 @@ export async function clearTailwindcssPatcherCache(
   if (normalizedCacheOptions?.path) {
     cachePaths.set(normalizedCacheOptions.path, false)
   }
-  // 以非侵入方式访问私有的缓存目录路径，避免依赖 TailwindcssPatcher 内部类型。
-  const privateCachePath: string | undefined = (patcher as any)?.cacheStore?.options?.path
+  // 以非侵入方式访问私有的缓存目录路径，避免依赖 Tailwind 运行时内部类型。
+  const privateCachePath: string | undefined = (tailwindRuntime as any)?.cacheStore?.options?.path
   if (privateCachePath) {
     cachePaths.set(privateCachePath, false)
   }
@@ -146,7 +146,7 @@ export async function clearTailwindcssPatcherCache(
       if (err?.code === 'ENOENT') {
         continue
       }
-      logger.debug('failed to clear tailwindcss patcher cache: %s %O', cachePath, err)
+      logger.debug('failed to clear tailwindcss runtime cache: %s %O', cachePath, err)
     }
   }
 }
@@ -164,21 +164,21 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
 
   applyLoggerLevel(ctx.logLevel)
 
-  const twPatcher = createTailwindcssPatcherFromContext(ctx) as TailwindcssPatcherLike
-  logTailwindcssTarget(twPatcher, ctx.tailwindcssBasedir)
+  const tailwindRuntime = createTailwindcssRuntimeFromContext(ctx) as TailwindcssRuntimeLike
+  logTailwindcssTarget(tailwindRuntime, ctx.tailwindcssBasedir)
   logRuntimeTailwindcssVersion(
     ctx.tailwindcssBasedir,
-    twPatcher.packageInfo?.rootPath,
-    twPatcher.packageInfo?.version,
+    tailwindRuntime.packageInfo?.rootPath,
+    tailwindRuntime.packageInfo?.version,
   )
 
   if ((opts as any)?.__internalDeferMissingCssEntriesWarning !== true) {
-    warnMissingCssEntries(ctx, twPatcher)
+    warnMissingCssEntries(ctx, tailwindRuntime)
   }
 
-  ctx.cssPreflight = resolveContextCssPreflight(opts, ctx, twPatcher.majorVersion)
+  ctx.cssPreflight = resolveContextCssPreflight(opts, ctx, tailwindRuntime.majorVersion)
 
-  const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, twPatcher)
+  const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, tailwindRuntime)
   ctx.cssCalc = cssCalcOptions
   syncLegacyFieldsToCssOptions(ctx)
 
@@ -188,7 +188,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
     ctx,
     customAttributesEntities,
     cssCalcOptions,
-    twPatcher.majorVersion,
+    tailwindRuntime.majorVersion,
   )
 
   ctx.styleHandler = styleHandler
@@ -196,23 +196,23 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   ctx.templateHandler = templateHandler
 
   ctx.cache = initializeCache(ctx.cache)
-  ctx.twPatcher = twPatcher
-  const refreshTailwindcssPatcher = async (
-    options?: RefreshTailwindcssPatcherOptions,
-  ): Promise<TailwindcssPatcherLike> => {
-    const previousPatcher = ctx.twPatcher
+  ctx.tailwindRuntime = tailwindRuntime
+  const refreshTailwindcssRuntime = async (
+    options?: RefreshTailwindcssRuntimeOptions,
+  ): Promise<TailwindcssRuntimeLike> => {
+    const previousRuntime = ctx.tailwindRuntime
     if (options?.clearCache !== false) {
-      await clearTailwindcssPatcherCache(previousPatcher)
+      await clearTailwindcssRuntimeCache(previousRuntime)
     }
-    invalidateRuntimeClassSet(previousPatcher)
-    const nextPatcher = createTailwindcssPatcherFromContext(ctx)
-    Object.assign(previousPatcher, nextPatcher)
-    ctx.twPatcher = previousPatcher
-    return previousPatcher
+    invalidateRuntimeClassSet(previousRuntime)
+    const nextRuntime = createTailwindcssRuntimeFromContext(ctx)
+    Object.assign(previousRuntime, nextRuntime)
+    ctx.tailwindRuntime = previousRuntime
+    return previousRuntime
   }
-  ctx.refreshTailwindcssPatcher = refreshTailwindcssPatcher
-  Object.defineProperty(ctx.twPatcher, refreshTailwindcssPatcherSymbol, {
-    value: refreshTailwindcssPatcher,
+  ctx.refreshTailwindcssRuntime = refreshTailwindcssRuntime
+  Object.defineProperty(ctx.tailwindRuntime, refreshTailwindcssRuntimeSymbol, {
+    value: refreshTailwindcssRuntime,
     configurable: true,
   })
   return ctx

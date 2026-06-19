@@ -9,14 +9,12 @@ describe('bundlers/webpack WeappTailwindcss / runtime css metadata', () => {
 
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
-
-    expect(testState.currentContext.twPatcher.patch).not.toHaveBeenCalled()
     expect(testState.currentContext.onLoad).not.toHaveBeenCalled()
     expect(compiler.webpack.NormalModule.getCompilationHooks).not.toHaveBeenCalled()
   })
 
   it('adds content token report entries and sources to runtime watch dependencies', async () => {
-    testState.currentContext.twPatcher.options = {
+    testState.currentContext.tailwindRuntime.options = {
       tailwindcss: {
         config: '/workspace/tailwind.config.ts',
         v4: {
@@ -28,7 +26,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime css metadata', () => {
         },
       },
     } as any
-    testState.currentContext.twPatcher.collectContentTokens = vi.fn(async () => ({
+    testState.currentContext.tailwindRuntime.collectContentTokens = vi.fn(async () => ({
       entries: [
         { file: '/workspace/src/pages/home.wxml' },
         {},
@@ -52,7 +50,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime css metadata', () => {
     const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
     await loaderRuntime?.classSet?.getClassSet?.()
 
-    expect(testState.currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.tailwindRuntime.collectContentTokens).toHaveBeenCalledTimes(1)
     const dependencies = loaderRuntime?.classSet?.getWatchDependencies?.()
     expect([...dependencies.files]).toEqual([
       '/workspace/tailwind.config.ts',
@@ -66,10 +64,10 @@ describe('bundlers/webpack WeappTailwindcss / runtime css metadata', () => {
   })
 
   it('reuses webpack runtime metadata across unrelated watch compilations', async () => {
-    testState.currentContext.twPatcher.majorVersion = 4
-    testState.currentContext.twPatcher.getClassSet = vi.fn(async () => new Set(['w-[2px]']))
-    testState.currentContext.twPatcher.getClassSetSync = vi.fn(() => new Set(['w-[2px]']))
-    testState.currentContext.twPatcher.collectContentTokens = vi.fn(async () => ({
+    testState.currentContext.tailwindRuntime.majorVersion = 4
+    testState.currentContext.tailwindRuntime.getClassSet = vi.fn(async () => new Set(['w-[2px]']))
+    testState.currentContext.tailwindRuntime.getClassSetSync = vi.fn(() => new Set(['w-[2px]']))
+    testState.currentContext.tailwindRuntime.collectContentTokens = vi.fn(async () => ({
       entries: [
         { file: '/workspace/src/pages/home.wxml' },
       ],
@@ -160,7 +158,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime css metadata', () => {
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(testState.currentContext.twPatcher.collectContentTokens).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.tailwindRuntime.collectContentTokens).toHaveBeenCalledTimes(1)
   })
 
   it('reuses css handler override objects for repeated asset updates', async () => {

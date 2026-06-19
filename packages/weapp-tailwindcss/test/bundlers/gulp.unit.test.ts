@@ -18,15 +18,14 @@ interface InternalContext {
   jsMatcher?: ReturnType<typeof vi.fn>
   wxsMatcher?: ReturnType<typeof vi.fn>
   mainCssChunkMatcher: ReturnType<typeof vi.fn>
-  twPatcher: {
-    patch: ReturnType<typeof vi.fn>
+  tailwindRuntime: {
     getClassSet: ReturnType<typeof vi.fn>
     getClassSetSync: ReturnType<typeof vi.fn>
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
   }
   tailwindcss?: any
-  refreshTailwindcssPatcher?: ReturnType<typeof vi.fn>
+  refreshTailwindcssRuntime?: ReturnType<typeof vi.fn>
 }
 
 let currentContext: InternalContext
@@ -68,7 +67,7 @@ describe('bundlers/gulp createPlugins', () => {
   let templateHandler: ReturnType<typeof vi.fn>
   let jsHandler: ReturnType<typeof vi.fn>
   let runtimeSet: Set<string>
-  let twPatcher: any
+  let tailwindRuntime: any
 
   beforeEach(() => {
     const cache = createCache()
@@ -79,8 +78,7 @@ describe('bundlers/gulp createPlugins', () => {
     }))
     templateHandler = vi.fn(async (source: string) => `tpl:${source}`)
     jsHandler = vi.fn(async (source: string) => ({ code: `js:${source}` }))
-    twPatcher = {
-      patch: vi.fn(),
+    tailwindRuntime = {
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -95,8 +93,8 @@ describe('bundlers/gulp createPlugins', () => {
       jsMatcher: vi.fn((id: string) => id.endsWith('.js')),
       wxsMatcher: vi.fn((id: string) => id.endsWith('.wxs')),
       mainCssChunkMatcher: vi.fn((name: string) => path.basename(name) === 'app.wxss'),
-      twPatcher,
-      refreshTailwindcssPatcher: vi.fn(async () => twPatcher),
+      tailwindRuntime,
+      refreshTailwindcssRuntime: vi.fn(async () => tailwindRuntime),
     }
 
     getCompilerContextMock.mockClear()
@@ -111,28 +109,27 @@ describe('bundlers/gulp createPlugins', () => {
   it('processes files and caches results across runs', async () => {
     const plugins = createPlugins()
     expect(getCompilerContextMock).toHaveBeenCalled()
-    expect(twPatcher.patch).not.toHaveBeenCalled()
 
     const cssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
-    expect(twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(1)
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
-    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
-    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(2)
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
-    expect(twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
-    expect(twPatcher.extract).toHaveBeenCalledTimes(3)
+    expect(tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(3)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(3)
     expect(jsHandler).toHaveBeenCalledWith(
       'import "./init"; console.log("hi")',
       runtimeSet,
@@ -165,8 +162,8 @@ describe('bundlers/gulp createPlugins', () => {
 
   it('refreshes gulp runtime candidates before transforming changed js sources', async () => {
     let currentRuntimeSet = new Set(['w-[1px]'])
-    twPatcher.getClassSetSync.mockImplementation(() => currentRuntimeSet)
-    twPatcher.extract.mockImplementation(async () => ({ classSet: currentRuntimeSet }))
+    tailwindRuntime.getClassSetSync.mockImplementation(() => currentRuntimeSet)
+    tailwindRuntime.extract.mockImplementation(async () => ({ classSet: currentRuntimeSet }))
     jsHandler.mockImplementation(async (_source: string, classSet?: Set<string>) => ({
       code: classSet?.has('bar') ? 'hit:bar' : 'miss:bar',
     }))
@@ -178,15 +175,15 @@ describe('bundlers/gulp createPlugins', () => {
     const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px] bar"'))
 
     expect(processed.contents?.toString()).toBe('hit:bar')
-    expect(twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(2)
   })
 
   it('uses incremental runtime candidates for tailwindcss v4 gulp js updates', async () => {
-    twPatcher.majorVersion = 4
+    tailwindRuntime.majorVersion = 4
     const incrementalRuntimeSet = new Set<string>()
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
-      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+      sync: vi.fn(async (_runtime: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
         for (const file of snapshot.runtimeAffectingChangedByType.js) {
           const entry = snapshot.entries.find(item => item.file === file)
           if (!entry) {
@@ -213,15 +210,15 @@ describe('bundlers/gulp createPlugins', () => {
 
     expect(processed.contents?.toString()).toBe('hit:w-[2px]')
     expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(2)
-    expect(twPatcher.extract).not.toHaveBeenCalled()
+    expect(tailwindRuntime.extract).not.toHaveBeenCalled()
   })
 
   it('does not force collect tailwindcss v4 runtime when gulp css follows js updates', async () => {
-    twPatcher.majorVersion = 4
+    tailwindRuntime.majorVersion = 4
     const incrementalRuntimeSet = new Set<string>()
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
-      sync: vi.fn(async (_patcher: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
+      sync: vi.fn(async (_runtime: unknown, snapshot: { runtimeAffectingChangedByType: { js: Set<string> }, entries: Array<{ file: string, source: string }> }) => {
         for (const file of snapshot.runtimeAffectingChangedByType.js) {
           const entry = snapshot.entries.find(item => item.file === file)
           if (!entry) {
@@ -246,11 +243,11 @@ describe('bundlers/gulp createPlugins', () => {
 
     expect(processed.contents?.toString()).toBe('css:@import "./foo.css";')
     expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(1)
-    expect(twPatcher.extract).not.toHaveBeenCalled()
+    expect(tailwindRuntime.extract).not.toHaveBeenCalled()
   })
 
   it('registers tailwindcss v4 cssSources from wxss files before collecting runtime classes', async () => {
-    twPatcher.majorVersion = 4
+    tailwindRuntime.majorVersion = 4
     const plugins = createPlugins()
 
     const source = '@source inline("w-4");'
@@ -264,14 +261,14 @@ describe('bundlers/gulp createPlugins', () => {
         css: source,
       },
     ])
-    expect(twPatcher.extract).toHaveBeenCalled()
+    expect(tailwindRuntime.extract).toHaveBeenCalled()
   })
 
   it('scopes gulp Tailwind v4 css generation to each css root @source entries', async () => {
-    twPatcher.majorVersion = 4
+    tailwindRuntime.majorVersion = 4
     runtimeSet = new Set(['app-only', 'normal-only', 'independent-only'])
-    twPatcher.getClassSetSync.mockImplementation(() => runtimeSet)
-    twPatcher.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
+    tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
+    tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
 
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-'))
     ;(currentContext as any).tailwindcssBasedir = dir
@@ -328,14 +325,14 @@ describe('bundlers/gulp createPlugins', () => {
         css: options.css ?? options.cssSources?.[0]?.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: dir,
         base: dir,
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: dir,
         base: dir,
         baseFallbacks: [],
@@ -380,10 +377,10 @@ describe('bundlers/gulp createPlugins', () => {
   })
 
   it('scopes gulp Tailwind v3 subpackage css generation to each config content entry', async () => {
-    twPatcher.majorVersion = 3
+    tailwindRuntime.majorVersion = 3
     runtimeSet = new Set(['app-only', 'normal-only', 'independent-only'])
-    twPatcher.getClassSetSync.mockImplementation(() => runtimeSet)
-    twPatcher.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
+    tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
+    tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
 
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v3-'))
     ;(currentContext as any).tailwindcssBasedir = dir
@@ -451,7 +448,7 @@ describe('bundlers/gulp createPlugins', () => {
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: dir,
         cwd: dir,
         base: dir,
@@ -463,7 +460,7 @@ describe('bundlers/gulp createPlugins', () => {
         },
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: dir,
         cwd: dir,
         baseFallbacks: [],
@@ -507,7 +504,7 @@ describe('bundlers/gulp createPlugins', () => {
   })
 
   it('refreshes gulp Tailwind v4 css source candidates after wxml updates', async () => {
-    twPatcher.majorVersion = 4
+    tailwindRuntime.majorVersion = 4
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-hot-'))
     ;(currentContext as any).tailwindcssBasedir = dir
     ;(currentContext as any).cssSourceTrace = true
@@ -523,7 +520,7 @@ describe('bundlers/gulp createPlugins', () => {
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
-      sync: vi.fn(async (_patcher: unknown, snapshot: { entries: Array<{ source: string }> }) => {
+      sync: vi.fn(async (_runtime: unknown, snapshot: { entries: Array<{ source: string }> }) => {
         const candidates = new Set<string>()
         for (const entry of snapshot.entries) {
           const matches = entry.source.match(/app-(?:before|after)/g) ?? []
@@ -559,14 +556,14 @@ describe('bundlers/gulp createPlugins', () => {
         css: options.css ?? options.cssSources?.[0]?.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: dir,
         base: dir,
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: dir,
         base: dir,
         baseFallbacks: [],
@@ -612,10 +609,10 @@ describe('bundlers/gulp createPlugins', () => {
   })
 
   it('refreshes gulp Tailwind v3 css source candidates after wxml updates', async () => {
-    twPatcher.majorVersion = 3
+    tailwindRuntime.majorVersion = 3
     runtimeSet = new Set(['app-before', 'app-after'])
-    twPatcher.getClassSetSync.mockImplementation(() => runtimeSet)
-    twPatcher.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
+    tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
+    tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
 
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v3-hot-'))
     ;(currentContext as any).tailwindcssBasedir = dir
@@ -662,7 +659,7 @@ describe('bundlers/gulp createPlugins', () => {
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: dir,
         cwd: dir,
         base: dir,
@@ -674,7 +671,7 @@ describe('bundlers/gulp createPlugins', () => {
         },
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: dir,
         cwd: dir,
         baseFallbacks: [],

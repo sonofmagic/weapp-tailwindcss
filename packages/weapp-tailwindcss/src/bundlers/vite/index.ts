@@ -4,6 +4,7 @@ import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } f
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
+import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -17,6 +18,7 @@ import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -57,6 +59,10 @@ const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
 const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
   max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
 })
+
+function isMissingInternalCssSource(file: string) {
+  return !existsSync(file) && path.resolve(file).startsWith(`${weappTailwindcssPackageDir}${path.sep}`)
+}
 
 export interface WeappTailwindcssVitePlugin {
   name: string
@@ -124,19 +130,32 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     mainCssChunkMatcher,
     styleHandler,
     jsHandler,
-    twPatcher: initialTwPatcher,
-    refreshTailwindcssPatcher,
+    tailwindRuntime,
+    refreshTailwindcssRuntime,
     uniAppX,
     disabledDefaultTemplateHandler,
   } = opts
+  const initialTailwindRuntime = tailwindRuntime
+  const refreshTailwindRuntime = refreshTailwindcssRuntime
   const uniAppXEnabled = isUniAppXEnabled(uniAppX)
 
   const disabledOptions = resolvePluginDisabledState(disabled)
-  const tailwindcssMajorVersion = initialTwPatcher.majorVersion ?? 0
+  const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
-  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-  const shouldInferAppType = !hasExplicitAppType && generatorOptions.target !== 'web'
+  const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+    appType: opts.appType,
+    platform: opts.cssOptions?.platform ?? opts.platform,
+    tailwindcssMajorVersion,
+    uniAppX,
+  })
+  const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+    appType: opts.appType,
+    platform: opts.cssOptions?.platform ?? opts.platform,
+    tailwindcssMajorVersion,
+    uniAppX,
+  })
+  const shouldInferAppType = !hasExplicitAppType && !generatorBranch.isWeb
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
     cssEntries: opts.cssEntries ?? options.cssEntries,
@@ -147,6 +166,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   let autoCssSourcesRefresh: Promise<void> | undefined
   let autoCssSourcesDiscovered = false
   const syncTailwindCssSourceCandidates = async (id: string, css: string) => {
+    if (tailwindcssMajorVersion === 4 && isMissingInternalCssSource(cleanUrl(id))) {
+      return
+    }
     await sourceCandidateCollector.syncCss(id, css)
     cacheCurrentSourceCandidateScan()
   }
@@ -159,6 +181,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const file = cleanUrl(id)
     if (!path.isAbsolute(file)) {
+      return
+    }
+    if (isMissingInternalCssSource(file)) {
       return
     }
     const sourceFile = path.normalize(file)
@@ -283,8 +308,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     ensureBundleRuntimeClassSet,
   } = createViteRuntimeClassSet({
     opts,
-    initialTwPatcher,
-    refreshTailwindcssPatcher,
+    initialTailwindRuntime,
+    refreshTailwindcssRuntime: refreshTailwindRuntime,
     uniAppXEnabled,
     customAttributesEntities,
     disabledDefaultTemplateHandler,
@@ -414,7 +439,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const root = resolvedConfig?.root ?? process.cwd()
     const outDir = resolvedConfig?.build?.outDir
-    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
       outDir,
       root,
     })
@@ -606,7 +631,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const transformCssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => opts.appType,
     mainCssChunkMatcher,
-    getMajorVersion: () => runtimeState.twPatcher.majorVersion,
+    getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion,
     getOutputRoot: () => resolvedConfig?.build?.outDir
       ? path.resolve(resolvedConfig.root, resolvedConfig.build.outDir)
       : resolvedConfig?.root,
@@ -633,7 +658,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
-    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorOptions.target === 'web', isNativeAppStyleTarget, sourceRoot)
+    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()

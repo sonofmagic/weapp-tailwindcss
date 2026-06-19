@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, resolveHotUpdateTargets } from './e2eMatrix'
-import { writeHmrFullRunReport } from './hmrReport'
+import { writeHmrFullRunMarkdown, writeHmrFullRunReport } from './hmrReport'
 
 function toNumberEnv(name: string, fallback: number) {
   const value = process.env[name]
@@ -79,6 +79,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
   const maxMemoryRssDeltaMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB', 0)
   const maxMemoryHeapUsedMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_HEAP_USED_MB', 0)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
+  const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportDir = await ensureReportDir(root)
   const reportFile = path.join(reportDir, `${formatTimestamp()}-${caseName}.json`)
   const elapsed = () => formatDuration(Date.now() - progress.startedAt)
@@ -107,6 +108,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
       '--skip-build',
       '--quiet-sass',
       ...(mainStyleOnly ? ['--main-style-only'] : []),
+      ...(mainStyleSubPackageLimit ? ['--main-style-subpackage-limit', mainStyleSubPackageLimit] : []),
       ...(maxMemoryRssMb > 0 ? ['--max-memory-rss-mb', String(maxMemoryRssMb)] : []),
       ...(maxMemoryRssDeltaMb > 0 ? ['--max-memory-rss-delta-mb', String(maxMemoryRssDeltaMb)] : []),
       ...(maxMemoryHeapUsedMb > 0 ? ['--max-memory-heap-used-mb', String(maxMemoryHeapUsedMb)] : []),
@@ -179,14 +181,20 @@ async function main() {
   if (reports.length > 0) {
     const reportDir = await ensureReportDir(root)
     const fullRunReportFile = path.join(reportDir, `hmr-full-report-${formatTimestamp(new Date(startedAt))}.json`)
-    await writeHmrFullRunReport({
+    const fullRunReport = await writeHmrFullRunReport({
       generatedAt: new Date(startedAt).toISOString(),
       repositoryRoot: root,
       targetNames: runnableTargets.map(target => target.name),
       reports,
       outputFile: fullRunReportFile,
     })
+    const fullRunMarkdownFile = fullRunReportFile.replace(/\.json$/, '.md')
+    await writeHmrFullRunMarkdown({
+      report: fullRunReport,
+      outputFile: fullRunMarkdownFile,
+    })
     process.stdout.write(`[e2e-hot-update] hmr full report saved: ${fullRunReportFile}\n`)
+    process.stdout.write(`[e2e-hot-update] hmr full markdown saved: ${fullRunMarkdownFile}\n`)
   }
 
   process.stdout.write(`[e2e-hot-update] ${formatProgress(completedCases, totalCases)} all cases passed elapsed=${formatDuration(Date.now() - startedAt)}\n`)

@@ -51,7 +51,7 @@ export function createCssTransformShareScopeKey(
     hasTailwindGeneratedCssMarkers(rawSource)
     || hasTailwindSourceDirectives(rawSource, { importFallback: generatorOptions.importFallback })
     || (
-      opts.twPatcher.majorVersion === 3
+      opts.tailwindRuntime.majorVersion === 3
       && (opts.cssEntries?.length ?? 0) > 1
       && rawSource.includes('@tailwind')
     )

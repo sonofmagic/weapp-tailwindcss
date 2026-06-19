@@ -1,5 +1,5 @@
 // webpack 5
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
 import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
@@ -9,9 +9,10 @@ import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
@@ -156,14 +157,27 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       disabled,
       onLoad,
       runtimeLoaderPath,
-      twPatcher: initialTwPatcher,
-      refreshTailwindcssPatcher,
+      tailwindRuntime,
+      refreshTailwindcssRuntime,
     } = this.options
+    const initialTailwindRuntime = tailwindRuntime
+    const refreshTailwindRuntime = refreshTailwindcssRuntime
 
     const disabledOptions = resolvePluginDisabledState(disabled)
-    const isTailwindcssV4 = (initialTwPatcher.majorVersion ?? 0) >= 4
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator)
-    const shouldRewriteCssImports = isTailwindcssV4 || generatorOptions.target === 'web'
+    const isTailwindcssV4 = (initialTailwindRuntime.majorVersion ?? 0) >= 4
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator, {
+      appType: this.options.appType,
+      platform: this.options.cssOptions?.platform ?? this.options.platform,
+      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
+      uniAppX: this.options.uniAppX,
+    })
+    const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+      appType: this.options.appType,
+      platform: this.options.cssOptions?.platform ?? this.options.platform,
+      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
+      uniAppX: this.options.uniAppX,
+    })
+    const shouldRewriteCssImports = isTailwindcssV4 || generatorBranch.isWeb
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
@@ -172,11 +186,11 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       return
     }
     setupWebpackWatchOutputIgnore(compiler)
-    const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
+    const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
     const runtimeState = {
-      twPatcher: initialTwPatcher,
+      tailwindRuntime: initialTailwindRuntime,
       readyPromise,
-      refreshTailwindcssPatcher,
+      refreshTailwindcssRuntime: refreshTailwindRuntime,
     }
 
     let runtimeSetPrepared = false
@@ -195,7 +209,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       runtimeWatchDependencyFiles.clear()
       runtimeWatchDependencyContexts.clear()
 
-      const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       if (tailwindOptions?.config) {
         runtimeWatchDependencyFiles.add(tailwindOptions.config)
       }
@@ -216,12 +230,12 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
         }
       }
 
-      if (typeof runtimeState.twPatcher.collectContentTokens !== 'function') {
+      if (typeof runtimeState.tailwindRuntime.collectContentTokens !== 'function') {
         return
       }
 
       try {
-        const report = await runtimeState.twPatcher.collectContentTokens()
+        const report = await runtimeState.tailwindRuntime.collectContentTokens()
         for (const entry of report.entries ?? []) {
           if (entry.file) {
             runtimeWatchDependencyFiles.add(entry.file)
@@ -285,7 +299,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
 
     const registerAutoCssSource = async (source: TailwindV4CssSource) => {
       if (
-        (runtimeState.twPatcher.majorVersion ?? 0) < 4
+        (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
         || !source.file
       ) {
         return
@@ -314,15 +328,21 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       webpackCssSources.set(file, source.css)
       currentWebpackCssSourceFiles.add(file)
     }
-    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>) => {
-      const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
-      const configuredSourceFiles = new Set<string>()
-      for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
-        configuredSourceFiles.add(path.resolve(entry))
+    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, options: { watchMode?: boolean | undefined } = {}) => {
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
+      const isTailwindcssV4 = (runtimeState.tailwindRuntime.majorVersion ?? 0) >= 4
+      if (!isTailwindcssV4 && options.watchMode !== true) {
+        return
       }
-      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
-        if (source.file) {
-          configuredSourceFiles.add(path.resolve(source.file))
+      const configuredSourceFiles = new Set<string>()
+      if (isTailwindcssV4) {
+        for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
+          configuredSourceFiles.add(path.resolve(entry))
+        }
+        for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+          if (source.file) {
+            configuredSourceFiles.add(path.resolve(source.file))
+          }
         }
       }
       for (const file of webpackCssSources.keys()) {
@@ -332,7 +352,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       }
     }
     const prepareWebpackCssSources = () => {
-      const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       const configuredSourceFiles = new Set<string>()
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         configuredSourceFiles.add(path.resolve(entry))
@@ -353,13 +373,13 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     }
     const isWebpackProcessedTailwindEntryAsset = (file: string) => {
       if (
-        (runtimeState.twPatcher.majorVersion ?? 0) < 4
+        (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
         || !this.options.mainCssChunkMatcher(file, this.appType)
         || webpackProcessedCssSourceFiles.size === 0
       ) {
         return false
       }
-      const tailwindOptions = resolveTailwindcssOptions(runtimeState.twPatcher.options)
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         if (webpackProcessedCssSourceFiles.has(path.resolve(entry))) {
           return true
@@ -392,7 +412,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       if (runtimeSetPrepared) {
         return
       }
-      const signature = getRuntimeClassSetSignature(runtimeState.twPatcher)
+      const signature = getRuntimeClassSetSignature(runtimeState.tailwindRuntime)
       const forceRefresh = runtimeRefreshRequiredForCompilation || signature !== runtimeSetSignature
       debug('runtime loader ensure class set forceRefresh=%s watchDirty=%s signatureChanged=%s', forceRefresh, runtimeRefreshRequiredForCompilation, signature !== runtimeSetSignature)
       runtimeSetPrepared = true

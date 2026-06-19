@@ -29,7 +29,7 @@ export function createHandlersFromContext(
     replaceRuntimePackages,
   } = ctx
   const resolvedUniAppXOptions = resolveUniAppXOptions(uniAppX)
-  const styleOptions = resolveStyleOptionsFromContext(ctx)
+  const styleOptions = resolveStyleOptionsFromContext(ctx, tailwindcssMajorVersion)
   const resolvedInjectAdditionalCssVarScope = styleOptions.cssOptions?.injectAdditionalCssVarScope
     ?? injectAdditionalCssVarScope
   const uniAppXEnabled = styleOptions.uniAppX === true

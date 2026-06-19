@@ -1,5 +1,4 @@
 import App from './App.uvue'
-import './main.css'
 
 import { createSSRApp } from 'vue'
 export function createApp() {

@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2026-06-19T01:10:42.347Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "targetNames": [
+    "demo"
+  ],
+  "totalCases": 1,
+  "reportCount": 1,
+  "projectCount": 1,
+  "timingCount": 4,
+  "summary": {
+    "count": 4,
+    "avgMs": 6029,
+    "minMs": 5999,
+    "maxMs": 6041,
+    "p50Ms": 6034,
+    "p95Ms": 6041
+  },
+  "pluginProcessSummary": {
+    "count": 4,
+    "avgMs": 554,
+    "minMs": 502,
+    "maxMs": 576,
+    "p50Ms": 560,
+    "p95Ms": 576
+  },
+  "byApp": {
+    "demo/taro-webpack-react-tailwindcss-v4": {
+      "project": "demo/taro-webpack-react-tailwindcss-v4",
+      "platforms": {
+        "weapp": {
+          "count": 4,
+          "avgMs": 6029,
+          "minMs": 5999,
+          "maxMs": 6041,
+          "p50Ms": 6034,
+          "p95Ms": 6041
+        }
+      }
+    }
+  },
+  "byPlatform": {
+    "weapp": {
+      "count": 4,
+      "avgMs": 6029,
+      "minMs": 5999,
+      "maxMs": 6041,
+      "p50Ms": 6034,
+      "p95Ms": 6041
+    }
+  },
+  "memory": {
+    "projectCount": 1,
+    "sampleCount": 67,
+    "debugSampleCount": 90,
+    "peakRssMb": 1309,
+    "maxRssDeltaMb": 845,
+    "peakHeapUsedMb": 558,
+    "byApp": {
+      "demo/taro-webpack-react-tailwindcss-v4": {
+        "peakRssMb": 1309,
+        "maxRssDeltaMb": 845,
+        "peakHeapUsedMb": 558
+      }
+    },
+    "byPlatform": {
+      "weapp": {
+        "peakRssMb": 1309,
+        "maxRssDeltaMb": 845,
+        "peakHeapUsedMb": 558
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseName": "taro-webpack-react-tailwindcss-v4",
+      "project": "demo/taro-webpack-react-tailwindcss-v4",
+      "label": "demo/taro-webpack-react-tailwindcss-v4",
+      "platform": "weapp",
+      "framework": "taro-react",
+      "builder": "webpack5",
+      "tailwindcss": "v4",
+      "sourceShape": "tsx",
+      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T01-10-42-350Z-taro-webpack-react-tailwindcss-v4.json",
+      "initialReadyMs": 6433,
+      "totalMs": 66326,
+      "summary": {
+        "count": 4,
+        "avgMs": 6029,
+        "minMs": 5999,
+        "maxMs": 6041,
+        "p50Ms": 6034,
+        "p95Ms": 6041
+      },
+      "pluginProcessSummary": {
+        "count": 4,
+        "avgMs": 554,
+        "minMs": 502,
+        "maxMs": 576,
+        "p50Ms": 560,
+        "p95Ms": 576
+      },
+      "memory": {
+        "sampleCount": 67,
+        "debugSampleCount": 90,
+        "baselineRssMb": 464,
+        "peakRssMb": 1309,
+        "rssDeltaMb": 845,
+        "peakMaxProcessRssMb": 1022,
+        "peakProcessCount": 5,
+        "peakHeapUsedMb": 558,
+        "peakDebugRssMb": 998
+      },
+      "notes": [
+        "端到端 HMR 明显高于插件处理耗时，主要口径包含框架 dev server 编译、产物写入、浏览器/运行时可见等待。"
+      ],
+      "timings": [
+        {
+          "surface": "template:preferred-round",
+          "hotUpdateEffectiveMs": 6041,
+          "rollbackEffectiveMs": 5914,
+          "hotUpdatePluginProcessMs": 576
+        },
+        {
+          "surface": "main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx",
+          "hotUpdateEffectiveMs": 6041,
+          "rollbackEffectiveMs": 5914,
+          "hotUpdatePluginProcessMs": 576
+        },
+        {
+          "surface": "subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.tsx",
+          "hotUpdateEffectiveMs": 6034,
+          "rollbackEffectiveMs": 5884,
+          "hotUpdatePluginProcessMs": 560
+        },
+        {
+          "surface": "subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/taro-webpack-react-tailwindcss-v4/src/sub-independent/pages/index.tsx",
+          "hotUpdateEffectiveMs": 5999,
+          "rollbackEffectiveMs": 5969,
+          "hotUpdatePluginProcessMs": 502
+        }
+      ]
+    }
+  ]
+}

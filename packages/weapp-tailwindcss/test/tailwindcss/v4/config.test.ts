@@ -1,4 +1,4 @@
-import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const logger = {
@@ -12,9 +12,9 @@ vi.mock('@weapp-tailwindcss/logger', () => ({
 function createCtx(overrides: Partial<InternalUserDefinedOptions> = {}): InternalUserDefinedOptions {
   return {
     tailwindcssBasedir: process.cwd(),
-    supportCustomLengthUnitsPatch: true,
+    supportCustomLengthUnits: true,
     tailwindcss: undefined,
-    tailwindcssPatcherOptions: undefined,
+    tailwindcssRuntimeOptions: undefined,
     cssEntries: undefined,
     appType: 'taro',
     customReplaceDictionary: {},
@@ -25,10 +25,10 @@ function createCtx(overrides: Partial<InternalUserDefinedOptions> = {}): Interna
   } as InternalUserDefinedOptions
 }
 
-function createPatcher(majorVersion?: number): TailwindcssPatcherLike {
+function createRuntime(majorVersion?: number): TailwindcssRuntimeLike {
   return {
     majorVersion,
-  } as unknown as TailwindcssPatcherLike
+  } as unknown as TailwindcssRuntimeLike
 }
 
 async function loadModule() {
@@ -43,29 +43,29 @@ describe('tailwindcss/v4/config', () => {
 
   it('warns once when tailwindcss@4 has no cssEntries', async () => {
     const ctx = createCtx()
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
 
     const { warnMissingCssEntries } = await loadModule()
-    warnMissingCssEntries(ctx, patcher)
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).toHaveBeenCalledTimes(1)
     expect(logger.warn.mock.calls[0][0]).toContain('cssEntries')
   })
 
-  it('skips warning for non-v4 patchers', async () => {
+  it('skips warning for non-v4 runtimes', async () => {
     const ctx = createCtx()
-    const patcher = createPatcher(3)
+    const runtime = createRuntime(3)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
   it('skips warning when cssEntries are provided via options', async () => {
     const ctx = createCtx({
-      tailwindcssPatcherOptions: {
+      tailwindcssRuntimeOptions: {
         tailwindcss: {
           v4: {
             cssEntries: ['/abs/app.css'],
@@ -73,10 +73,10 @@ describe('tailwindcss/v4/config', () => {
         },
       },
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
 
     const { warnMissingCssEntries } = await loadModule()
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
@@ -89,10 +89,10 @@ describe('tailwindcss/v4/config', () => {
         },
       },
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
@@ -110,24 +110,24 @@ describe('tailwindcss/v4/config', () => {
         },
       },
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
-  it('warns when modern patcher options omit cssEntries', async () => {
+  it('warns when modern runtime options omit cssEntries', async () => {
     const ctx = createCtx({
-      tailwindcssPatcherOptions: {
+      tailwindcssRuntimeOptions: {
         tailwindcss: {},
       },
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).toHaveBeenCalledTimes(1)
   })
@@ -136,17 +136,17 @@ describe('tailwindcss/v4/config', () => {
     const ctx = createCtx({
       cssEntries: ['/ctx/root.css'],
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
-  it('skips warning when cssEntries are provided via modern tailwind patcher options', async () => {
+  it('skips warning when cssEntries are provided via modern tailwind runtime options', async () => {
     const ctx = createCtx({
-      tailwindcssPatcherOptions: {
+      tailwindcssRuntimeOptions: {
         tailwindcss: {
           v4: {
             cssEntries: ['/modern/path.css'],
@@ -154,17 +154,17 @@ describe('tailwindcss/v4/config', () => {
         },
       },
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
-  it('skips warning when cssSources are provided via modern tailwind patcher options', async () => {
+  it('skips warning when cssSources are provided via modern tailwind runtime options', async () => {
     const ctx = createCtx({
-      tailwindcssPatcherOptions: {
+      tailwindcssRuntimeOptions: {
         tailwindcss: {
           v4: {
             cssSources: [
@@ -177,32 +177,32 @@ describe('tailwindcss/v4/config', () => {
         },
       },
     })
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, patcher)
+    warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
   it('applies cssCalc defaults when tailwindcss@4 is detected', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults } = await loadModule()
 
-    const result = applyV4CssCalcDefaults(undefined, patcher)
+    const result = applyV4CssCalcDefaults(undefined, runtime)
 
     expect(result).toEqual({ includeCustomProperties: [] })
   })
 
   it('merges missing custom properties when defaults are provided', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
 
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.push('--spacing')
     try {
       const result = applyV4CssCalcDefaults({
         includeCustomProperties: ['--gap'],
-      }, patcher) as { includeCustomProperties: string[] }
+      }, runtime) as { includeCustomProperties: string[] }
 
       expect(result.includeCustomProperties).toEqual(['--gap', '--spacing'])
     }
@@ -212,14 +212,14 @@ describe('tailwindcss/v4/config', () => {
   })
 
   it('fills includeCustomProperties when provided value is an object without array', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.push(/^--foo$/)
 
     try {
       const result = applyV4CssCalcDefaults({
         precision: 4,
-      } as any, patcher) as { includeCustomProperties: RegExp[] }
+      } as any, runtime) as { includeCustomProperties: RegExp[] }
 
       expect(result.includeCustomProperties).toEqual([/^--foo$/])
     }
@@ -229,23 +229,23 @@ describe('tailwindcss/v4/config', () => {
   })
 
   it('keeps object cssCalc untouched when defaults are empty', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.length = 0
 
     const cssCalc = { includeCustomProperties: ['--keep'] }
-    expect(applyV4CssCalcDefaults(cssCalc as any, patcher)).toBe(cssCalc)
+    expect(applyV4CssCalcDefaults(cssCalc as any, runtime)).toBe(cssCalc)
   })
 
   it('respects regex and string matching when merging defaults', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.push('match-me', /^--bar$/)
 
     try {
       const result = applyV4CssCalcDefaults({
         includeCustomProperties: [/match-me/, '--bar'],
-      }, patcher) as { includeCustomProperties: (string | RegExp)[] }
+      }, runtime) as { includeCustomProperties: (string | RegExp)[] }
 
       expect(result.includeCustomProperties).toEqual([/match-me/, '--bar'])
     }
@@ -254,36 +254,36 @@ describe('tailwindcss/v4/config', () => {
     }
   })
 
-  it('returns original cssCalc when patcher is not v4', async () => {
-    const patcher = createPatcher(3)
+  it('returns original cssCalc when runtime is not v4', async () => {
+    const runtime = createRuntime(3)
     const { applyV4CssCalcDefaults } = await loadModule()
 
-    expect(applyV4CssCalcDefaults(false, patcher)).toBe(false)
+    expect(applyV4CssCalcDefaults(false, runtime)).toBe(false)
   })
 
   it('returns user provided cssCalc string when tailwindcss@4', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults } = await loadModule()
 
-    expect(applyV4CssCalcDefaults('inline-calc' as any, patcher)).toBe('inline-calc')
+    expect(applyV4CssCalcDefaults('inline-calc' as any, runtime)).toBe('inline-calc')
   })
 
   it('keeps array cssCalc unchanged when no defaults exist', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults } = await loadModule()
 
     const cssCalc = ['--gap']
-    expect(applyV4CssCalcDefaults(cssCalc as any, patcher)).toBe(cssCalc)
+    expect(applyV4CssCalcDefaults(cssCalc as any, runtime)).toBe(cssCalc)
   })
 
   it('merges defaults for array cssCalc entries', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.push('token-array')
 
     try {
       const cssCalc = [/token-array/]
-      expect(applyV4CssCalcDefaults(cssCalc as any, patcher)).toEqual(cssCalc)
+      expect(applyV4CssCalcDefaults(cssCalc as any, runtime)).toEqual(cssCalc)
     }
     finally {
       DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.length = 0
@@ -291,12 +291,12 @@ describe('tailwindcss/v4/config', () => {
   })
 
   it('appends missing defaults for array cssCalc entries', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.push('append-me')
 
     try {
-      const result = applyV4CssCalcDefaults([] as any, patcher) as string[]
+      const result = applyV4CssCalcDefaults([] as any, runtime) as string[]
       expect(result).toEqual(['append-me'])
     }
     finally {
@@ -316,13 +316,13 @@ describe('tailwindcss/v4/config', () => {
   })
 
   it('avoids duplicating regex defaults when already provided', async () => {
-    const patcher = createPatcher(4)
+    const runtime = createRuntime(4)
     const { applyV4CssCalcDefaults, DEFAULT_CSS_CALC_CUSTOM_PROPERTIES } = await loadModule()
     DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.push(/token-regex/i)
 
     try {
       const cssCalc = [/token-regex/i]
-      expect(applyV4CssCalcDefaults(cssCalc as any, patcher)).toBe(cssCalc)
+      expect(applyV4CssCalcDefaults(cssCalc as any, runtime)).toBe(cssCalc)
     }
     finally {
       DEFAULT_CSS_CALC_CUSTOM_PROPERTIES.length = 0

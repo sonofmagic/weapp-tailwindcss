@@ -78,7 +78,7 @@ describe('bundlers/vite remembered css replay', () => {
       refreshRememberedCssSource: vi.fn(),
       rootDir: '/repo',
       runtimeState: {
-        twPatcher: {
+        tailwindRuntime: {
           majorVersion: 3,
         },
         readyPromise: Promise.resolve(),

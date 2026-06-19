@@ -7,14 +7,14 @@ import type {
   TailwindV3ResolvedSource,
 } from './types'
 import { createRequire } from 'node:module'
-import { postcss } from '@weapp-tailwindcss/postcss'
-import { LRUCache } from 'lru-cache'
 import {
   extractSourceCandidates,
   isBareArbitraryValuesEnabled,
   resolveBareArbitraryValueCandidate,
-} from 'tailwindcss-patch'
-import * as tailwindcssPatch from 'tailwindcss-patch'
+} from '@tailwindcss-mangle/engine'
+import * as tailwindcssEngine from '@tailwindcss-mangle/engine'
+import { postcss } from '@weapp-tailwindcss/postcss'
+import { LRUCache } from 'lru-cache'
 import { hasCssMacroTailwindPlugin, withCssMacroStyleOptions } from '@/css-macro/auto'
 import { omitUndefined } from '@/utils/object'
 import { createIncrementalGenerateCacheKey } from './generator/cache-key'
@@ -83,12 +83,12 @@ type TailwindV3PatchRawGenerator = (options: {
 }) => Promise<{
   css: string
   classSet: Set<string>
-  context: TailwindV3Context
+  context?: TailwindV3Context | undefined
   dependencies: string[]
 }>
 
-const patchRawStyleGenerator = typeof (tailwindcssPatch as { generateTailwindV3RawStyle?: unknown }).generateTailwindV3RawStyle === 'function'
-  ? (tailwindcssPatch as unknown as { generateTailwindV3RawStyle: TailwindV3PatchRawGenerator }).generateTailwindV3RawStyle
+const patchRawStyleGenerator = typeof (tailwindcssEngine as { generateTailwindV3RawStyle?: unknown }).generateTailwindV3RawStyle === 'function'
+  ? (tailwindcssEngine as unknown as { generateTailwindV3RawStyle: TailwindV3PatchRawGenerator }).generateTailwindV3RawStyle
   : undefined
 
 function isTailwindV3PatchResolutionError(error: unknown, packageName: string) {
@@ -205,6 +205,17 @@ function collectGeneratedCandidates(
   return classSet
 }
 
+function collectGeneratedCandidatesFromRules(
+  candidates: Iterable<string>,
+  rules: Array<[unknown, postcss.Node]>,
+  restoreCandidates: ReadonlyMap<string, string>,
+) {
+  if (rules.length === 0) {
+    return new Set<string>()
+  }
+  return new Set([...candidates].map(candidate => restoreCandidates.get(candidate) ?? candidate))
+}
+
 function hasRemovedCandidates(previousCandidates: Set<string>, nextCandidates: Set<string>) {
   for (const candidate of previousCandidates) {
     if (!nextCandidates.has(candidate)) {
@@ -261,9 +272,12 @@ function isDirectUtilitiesOnlyCss(css: string) {
   return css.replace(/\s+/g, '') === '@tailwindutilities;'
 }
 
-function collectClassSet(context: TailwindV3Context) {
+function collectClassSet(context: TailwindV3Context | undefined, fallbackClassSet?: Set<string> | undefined) {
+  if (fallbackClassSet) {
+    return new Set(fallbackClassSet)
+  }
   const classSet = new Set<string>()
-  for (const candidate of context.classCache.keys()) {
+  for (const candidate of context?.classCache?.keys() ?? []) {
     if (String(candidate) !== '*') {
       classSet.add(candidate)
     }
@@ -486,12 +500,14 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       css: '',
       messages: [],
     }
-    let context: TailwindV3Context
+    let context: TailwindV3Context | undefined
     let rawCss: string
     let dependencies: Set<string>
+    let generatedClassSet: Set<string> | undefined
     const patchGenerated = await generateRawStyleWithPatch(generateSource, candidates, options.sources ?? [])
     if (patchGenerated) {
       context = patchGenerated.context
+      generatedClassSet = patchGenerated.classSet
       rawCss = restoreBareArbitraryValueCssSelectors(
         patchGenerated.css,
         requestedCandidates,
@@ -531,7 +547,7 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     for (const dependency of generateSource.dependencies) {
       dependencies.add(dependency)
     }
-    const classSet = restoreBareArbitraryValueClassSet(collectClassSet(context), requestedCandidates, options.bareArbitraryValues)
+    const classSet = restoreBareArbitraryValueClassSet(collectClassSet(context, generatedClassSet), requestedCandidates, options.bareArbitraryValues)
 
     return {
       css,
@@ -579,7 +595,9 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
     return {
       css,
       rawCss,
-      classSet: collectGeneratedCandidates(context, sortedCandidates, normalizedCandidates.restoreCandidates),
+      classSet: context.classCache
+        ? collectGeneratedCandidates(context, sortedCandidates, normalizedCandidates.restoreCandidates)
+        : collectGeneratedCandidatesFromRules(sortedCandidates, rules, normalizedCandidates.restoreCandidates),
       dependencies: collectDependencyMessages(result),
     }
   }
@@ -602,6 +620,10 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       if (hasRemovedCandidates(cached.seenCandidates, requestedCandidates)) {
         const generated = await generateOnce(source, options)
         if (shouldAdmitIncrementalEntry(requestedCandidates, generated)) {
+          if (!generated.context) {
+            incrementalGenerateCache.delete(cacheKey)
+            return generated
+          }
           replaceIncrementalEntry(cached, requestedCandidates, generated)
           seedIncrementalResult(cached, requestedCandidates, generated)
         }
@@ -625,6 +647,10 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
       if (shouldRebuildIncrementalEntry(cached, requestedCandidates, missingCandidates)) {
         const generated = await generateOnce(source, options)
         if (shouldAdmitIncrementalEntry(requestedCandidates, generated)) {
+          if (!generated.context) {
+            incrementalGenerateCache.delete(cacheKey)
+            return generated
+          }
           replaceIncrementalEntry(cached, requestedCandidates, generated)
           seedIncrementalResult(cached, requestedCandidates, generated)
         }
@@ -669,6 +695,10 @@ export function createTailwindV3Engine(source: TailwindV3ResolvedSource): Tailwi
 
     const generated = await generateOnce(source, options)
     if (!shouldAdmitIncrementalEntry(requestedCandidates, generated)) {
+      incrementalGenerateCache.delete(cacheKey)
+      return generated
+    }
+    if (!generated.context) {
       incrementalGenerateCache.delete(cacheKey)
       return generated
     }
