@@ -50,6 +50,7 @@ import {
   summarizeMemorySamples,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/memory-report'
 import {
+  createWindowsProcessTreeMemoryScript,
   parsePluginProcessSample,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import {
@@ -1282,6 +1283,76 @@ describe('watch-hmr regression summary helpers', () => {
       rssMb: 118,
       command: 'node demo-watch',
     })
+  })
+
+  it('uses plugin debug RSS when process tree sampling under-reports detached Windows watchers', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-debug-rss-'))
+    tempDirs.push(tempDir)
+    const reportFile = 'watch-report.json'
+    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    cases[0]!.memoryDebugSamples = [
+      {
+        at: 2,
+        bundler: 'vite',
+        phase: 'generateBundle',
+        durationMs: 22,
+        data: {
+          process: {
+            heapUsedMb: 512,
+            rssMb: 2048,
+          },
+          processCache: {
+            staleCacheKeys: 0,
+            staleHashKeys: 0,
+          },
+        },
+      },
+    ]
+    cases[0]!.memoryDebugSummary = summarizeMemoryDebugSamples(cases[0]!.memoryDebugSamples)
+    const options: CliOptions = {
+      caseName: 'demo',
+      timeoutMs: 2_000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      styleOnly: false,
+      mainStyleOnly: false,
+      reportFile,
+    }
+
+    const stdoutSpy = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
+    try {
+      await writeReport(tempDir, options, cases)
+    }
+    finally {
+      stdoutSpy.mockRestore()
+    }
+
+    const report = JSON.parse(await readFile(path.join(tempDir, reportFile), 'utf8'))
+    expect(report.memoryReport.summary).toMatchObject({
+      peakRssMb: 2048,
+      maxRssDeltaMb: 1916,
+      peakHeapUsedMb: 512,
+    })
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({
+      baselineRssMb: 132,
+      peakRssMb: 2048,
+      peakMaxProcessRssMb: 2048,
+      rssDeltaMb: 1916,
+      peakDebugRssMb: 2048,
+      peakHeapUsedMb: 512,
+    })
+  })
+
+  it('samples repository-scoped detached Windows watcher processes in HMR reports', () => {
+    const script = createWindowsProcessTreeMemoryScript(42, String.raw`C:\repo\weapp-tailwindcss`)
+
+    expect(script).toContain(String.raw`$repositoryRoot = 'C:\repo\weapp-tailwindcss'`)
+    expect(script).toContain('CommandLine')
+    expect(script).toContain('uni\\.js[\\s\\S]+-p\\s+mp-weixin')
+    expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch')
+    expect(script).toContain('$command.Contains($repositoryRoot)')
   })
 
   it('builds a CI-facing HMR speed report from watch JSON metrics', async () => {

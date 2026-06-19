@@ -463,10 +463,22 @@ function sampleProcessTreeMemoryOnPosix(rootPid: number): Omit<MemoryUsageSample
   }
 }
 
-function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSample, 'at'> | undefined {
+export function createWindowsProcessTreeMemoryScript(rootPid: number, cwd = process.cwd()) {
   const escapedRootPid = JSON.stringify(rootPid)
-  const script = [
+  return [
     `$root = [int]${escapedRootPid}`,
+    `$repositoryRoot = '${cwd.replaceAll('\'', '\'\'')}'`,
+    '$watchCommandPatterns = @(',
+    '  "weapp-vite(?:\\.js)?\\s+dev",',
+    '  "taro-build-guard\\.mjs\\s+--watch",',
+    '  "taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch",',
+    '  "run-mpx-cli-service\\.js\\s+serve",',
+    '  "webpack(?:\\.js)?\\s+--watch",',
+    '  "gulp[\\s\\S]+gulpfile\\.ts",',
+    '  "\\bpnpm\\b[\\s\\S]+build:weapp[\\s\\S]+--watch",',
+    '  "hbuilderx[\\s\\S]+launch[\\s\\S]+mp-weixin",',
+    '  "uni\\.js[\\s\\S]+-p\\s+mp-weixin"',
+    ')',
     '$processes = @(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize,CommandLine)',
     '$children = @{}',
     'foreach ($process in $processes) {',
@@ -487,6 +499,13 @@ function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSamp
     '  $tracked[$pid] = $current',
     '  if ($children.ContainsKey($pid)) { foreach ($child in $children[$pid]) { [void]$stack.Add($child) } }',
     '}',
+    'foreach ($process in $processes) {',
+    '  $command = if ($null -eq $process.CommandLine) { "" } else { [string]$process.CommandLine }',
+    '  if ($command.Length -eq 0 -or -not $command.Contains($repositoryRoot)) { continue }',
+    '  foreach ($pattern in $watchCommandPatterns) {',
+    '    if ($command -match $pattern) { $tracked[[int]$process.ProcessId] = $process; break }',
+    '  }',
+    '}',
     '$total = 0',
     '$max = 0',
     'foreach ($process in $tracked.Values) {',
@@ -497,6 +516,10 @@ function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSamp
     '$top = @($tracked.Values | Sort-Object -Property WorkingSetSize -Descending | Select-Object -First 8 | ForEach-Object { $workingSet = if ($null -eq $_.WorkingSetSize) { 0 } else { [double]$_.WorkingSetSize }; $command = if ($null -eq $_.CommandLine) { "" } else { [string]$_.CommandLine }; @{ pid = [int]$_.ProcessId; ppid = [int]$_.ParentProcessId; rssMb = [int][Math]::Round($workingSet / 1MB); command = $command.Substring(0, [Math]::Min(240, $command.Length)) } })',
     '[Console]::Out.WriteLine((@{ rssMb = [int][Math]::Round($total / 1MB); maxProcessRssMb = [int][Math]::Round($max / 1MB); processCount = [int]$tracked.Count; topProcesses = $top } | ConvertTo-Json -Compress -Depth 4))',
   ].join('; ')
+}
+
+function sampleProcessTreeMemoryOnWindows(rootPid: number): Omit<MemoryUsageSample, 'at'> | undefined {
+  const script = createWindowsProcessTreeMemoryScript(rootPid)
   const encodedCommand = Buffer.from(script, 'utf16le').toString('base64')
   const result = spawnSync('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', encodedCommand], {
     encoding: 'utf8',

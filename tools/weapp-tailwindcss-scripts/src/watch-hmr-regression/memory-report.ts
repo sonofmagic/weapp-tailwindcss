@@ -224,6 +224,8 @@ export function summarizeMemoryDebugSamples(samples: HmrMemoryDebugSample[]): Hm
 }
 
 function createProjectMemoryReport(item: WatchCaseMetrics): HmrMemoryProjectReport {
+  const peakRssMb = Math.max(item.memorySummary.peakRssMb, item.memoryDebugSummary.peakRssMb)
+  const peakMaxProcessRssMb = Math.max(item.memorySummary.peakMaxProcessRssMb, item.memoryDebugSummary.peakRssMb)
   return {
     name: item.name,
     label: item.label,
@@ -234,9 +236,9 @@ function createProjectMemoryReport(item: WatchCaseMetrics): HmrMemoryProjectRepo
     sampleCount: item.memorySummary.count,
     debugSampleCount: item.memoryDebugSummary.count,
     baselineRssMb: item.memorySummary.baselineRssMb,
-    peakRssMb: item.memorySummary.peakRssMb,
-    rssDeltaMb: item.memorySummary.rssDeltaMb,
-    peakMaxProcessRssMb: item.memorySummary.peakMaxProcessRssMb,
+    peakRssMb,
+    rssDeltaMb: Math.max(0, peakRssMb - item.memorySummary.baselineRssMb),
+    peakMaxProcessRssMb,
     peakProcessCount: item.memorySummary.peakProcessCount,
     uniqueProcessCount: item.memorySummary.uniqueProcessCount,
     peakHeapUsedMb: item.memoryDebugSummary.peakHeapUsedMb,

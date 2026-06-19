@@ -176,10 +176,22 @@ function samplePosix(rootPid: number): DemoE2eMemorySample | undefined {
   }
 }
 
-function sampleWindows(rootPid: number): DemoE2eMemorySample | undefined {
-  const script = [
-    '$root = [int]$args[0]',
-    '$processes = Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize',
+export function createWindowsProcessTreeMemoryScript(rootPid: number, cwd = process.cwd()) {
+  return [
+    `$root = [int]${JSON.stringify(rootPid)}`,
+    `$repositoryRoot = '${cwd.replaceAll('\'', '\'\'')}'`,
+    '$watchCommandPatterns = @(',
+    '  "weapp-vite(?:\\.js)?\\s+dev",',
+    '  "taro-build-guard\\.mjs\\s+--watch",',
+    '  "taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch",',
+    '  "run-mpx-cli-service\\.js\\s+serve",',
+    '  "webpack(?:\\.js)?\\s+--watch",',
+    '  "gulp[\\s\\S]+gulpfile\\.ts",',
+    '  "\\bpnpm\\b[\\s\\S]+build:weapp[\\s\\S]+--watch",',
+    '  "hbuilderx[\\s\\S]+launch[\\s\\S]+mp-weixin",',
+    '  "uni\\.js[\\s\\S]+-p\\s+mp-weixin"',
+    ')',
+    '$processes = @(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize,CommandLine)',
     '$children = @{}',
     'foreach ($process in $processes) { $parent = [int]$process.ParentProcessId; if (-not $children.ContainsKey($parent)) { $children[$parent] = @() }; $children[$parent] += $process }',
     '$tracked = @{}',
@@ -188,12 +200,23 @@ function sampleWindows(rootPid: number): DemoE2eMemorySample | undefined {
     'if ($null -ne $rootProcess) { $tracked[[int]$rootProcess.ProcessId] = $rootProcess }',
     'if ($children.ContainsKey($root)) { foreach ($child in $children[$root]) { [void]$stack.Add($child) } }',
     'while ($stack.Count -gt 0) { $current = $stack[$stack.Count - 1]; $stack.RemoveAt($stack.Count - 1); $pid = [int]$current.ProcessId; if ($tracked.ContainsKey($pid)) { continue }; $tracked[$pid] = $current; if ($children.ContainsKey($pid)) { foreach ($child in $children[$pid]) { [void]$stack.Add($child) } } }',
+    'foreach ($process in $processes) {',
+    '  $command = if ($null -eq $process.CommandLine) { "" } else { [string]$process.CommandLine }',
+    '  if ($command.Length -eq 0 -or -not $command.Contains($repositoryRoot)) { continue }',
+    '  foreach ($pattern in $watchCommandPatterns) {',
+    '    if ($command -match $pattern) { $tracked[[int]$process.ProcessId] = $process; break }',
+    '  }',
+    '}',
     '$total = 0; $max = 0',
     'foreach ($process in $tracked.Values) { $workingSet = if ($null -eq $process.WorkingSetSize) { 0 } else { [double]$process.WorkingSetSize }; $total += $workingSet; if ($workingSet -gt $max) { $max = $workingSet } }',
-    '$top = @($tracked.Values | Sort-Object -Property WorkingSetSize -Descending | Select-Object -First 8 | ForEach-Object { $workingSet = if ($null -eq $_.WorkingSetSize) { 0 } else { [double]$_.WorkingSetSize }; @{ pid = [int]$_.ProcessId; ppid = [int]$_.ParentProcessId; rssMb = [int][Math]::Round($workingSet / 1MB) } })',
+    '$top = @($tracked.Values | Sort-Object -Property WorkingSetSize -Descending | Select-Object -First 8 | ForEach-Object { $workingSet = if ($null -eq $_.WorkingSetSize) { 0 } else { [double]$_.WorkingSetSize }; $command = if ($null -eq $_.CommandLine) { "" } else { [string]$_.CommandLine }; @{ pid = [int]$_.ProcessId; ppid = [int]$_.ParentProcessId; rssMb = [int][Math]::Round($workingSet / 1MB); command = $command.Substring(0, [Math]::Min(240, $command.Length)) } })',
     '[Console]::Out.WriteLine((@{ rssMb = [int][Math]::Round($total / 1MB); maxProcessRssMb = [int][Math]::Round($max / 1MB); processCount = [int]$tracked.Count; topProcesses = $top } | ConvertTo-Json -Compress -Depth 4))',
   ].join('; ')
-  const result = spawnSync('powershell', ['-NoProfile', '-Command', script, String(rootPid)], {
+}
+
+function sampleWindows(rootPid: number): DemoE2eMemorySample | undefined {
+  const script = createWindowsProcessTreeMemoryScript(rootPid)
+  const result = spawnSync('powershell', ['-NoProfile', '-Command', script], {
     encoding: 'utf8',
     stdio: ['ignore', 'pipe', 'ignore'],
     windowsHide: true,
