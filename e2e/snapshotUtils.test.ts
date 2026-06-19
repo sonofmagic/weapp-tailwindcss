@@ -484,9 +484,9 @@ describe('normalizeCssSnapshot', () => {
       '}',
       ':host, page, .tw-root, wx-root-portal-content {',
       '  --spacing: 8rpx;',
-      '  --tw-gradient-position: initial;',
       '}',
       'view, text, ::after, ::before {',
+      '  --tw-gradient-position: initial;',
       '  box-sizing: border-box;',
       '  border-width: 0;',
       '}',
@@ -600,9 +600,11 @@ describe('normalizeCssSnapshot', () => {
     expect(css).toContain('margin: 0;')
     expect(css).toContain('padding: 0;')
     expect(css).toContain('border: 0 solid;')
-    expect(css).toContain(':host, page, .tw-root, wx-root-portal-content {')
     expect(css).toContain('--tw-rotate-x:;')
     expect(css).toContain('--tw-gradient-position: initial;')
+    expect(css).toContain(':host, page, .tw-root, wx-root-portal-content {')
     expect(css).toContain('--spacing: 8rpx;')
+    expect(css.indexOf('view, text, ::after, ::before {')).toBeLessThan(css.indexOf('--tw-rotate-x:;'))
+    expect(css.indexOf('--tw-gradient-position: initial;')).toBeLessThan(css.indexOf(':host, page, .tw-root, wx-root-portal-content {'))
   })
 })

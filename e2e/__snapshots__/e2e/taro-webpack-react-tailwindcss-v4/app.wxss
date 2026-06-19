@@ -6,11 +6,6 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
   --tw-rotate-x:;
   --tw-rotate-y:;
   --tw-rotate-z:;
@@ -24,6 +19,11 @@ wx-root-portal-content {
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --color-slate-100: #f1f5f9;
   --color-zinc-950: #09090b;
   --color-yellow-300: #fde047;

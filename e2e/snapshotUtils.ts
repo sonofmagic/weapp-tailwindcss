@@ -302,16 +302,6 @@ const TAILWIND_V4_COLOR_RGBA_COMPAT = new Map([
 
 const WEAPP_ROOT_SELECTOR = ':host, page, .tw-root, wx-root-portal-content'
 const WEAPP_ROOT_SELECTOR_PARTS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
-const WEAPP_BASE_SELECTOR_PARTS = new Set(['view', 'text', '::after', '::before'])
-const WEAPP_BASE_NOISE_DECLS = new Set([
-  'border',
-  'border-color',
-  'border-style',
-  'border-width',
-  'box-sizing',
-  'margin',
-  'padding',
-])
 
 const WEBPACK_APP_SPLIT_NOISE_KEYFRAMES = new Set(['float-pop', 'jump'])
 const WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES = new Set(['JDZH-Regular', 'JDZH-Bold'])
@@ -586,45 +576,6 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
         rule.walkDecls('src', (decl) => {
           decl.value = 'url(data:font/ttf;base64,<stable>) format("truetype")'
         })
-      }
-    }
-  })
-
-  root.walkRules((rule) => {
-    if (!isSelectorSet(rule, WEAPP_BASE_SELECTOR_PARTS)) {
-      return
-    }
-
-    const variableDecls: postcss.Declaration[] = []
-    for (const node of [...(rule.nodes ?? [])]) {
-      if (node.type !== 'decl') {
-        continue
-      }
-      const decl = node
-      if (decl.prop.startsWith('--tw-')) {
-        variableDecls.push(decl.clone())
-        decl.remove()
-        continue
-      }
-      if (WEAPP_BASE_NOISE_DECLS.has(decl.prop)) {
-        continue
-      }
-    }
-
-    if (!rule.nodes || rule.nodes.length === 0) {
-      rule.remove()
-    }
-
-    if (variableDecls.length > 0) {
-      const variableRule = postcss.rule({
-        selector: WEAPP_ROOT_SELECTOR,
-        nodes: variableDecls,
-      })
-      if (rule.parent) {
-        rule.parent.insertAfter(rule, variableRule)
-      }
-      else {
-        root.append(variableRule)
       }
     }
   })

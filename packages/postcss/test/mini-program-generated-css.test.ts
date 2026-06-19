@@ -208,6 +208,30 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.space-y-2>view+view')
   })
 
+  it('merges Tailwind v4 property defaults into existing preflight in style handler output', async () => {
+    const styleHandler = createStyleHandler({
+      cssPreflight: {
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: '0 solid',
+      },
+      cssRemoveProperty: true,
+      majorVersion: 4,
+    })
+    const { css } = await styleHandler([
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+      '.rotate-x{transform:var(--tw-rotate-x)var(--tw-rotate-y)}',
+      '@property --tw-rotate-x{syntax:"*";inherits:false;initial-value:}',
+      '@property --tw-rotate-y{syntax:"*";inherits:false;initial-value:}',
+    ].join(''))
+
+    expect(css.match(/view,text,::after,::before\{/g)).toHaveLength(1)
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-rotate-x:;--tw-rotate-y:;}')
+    expect(css).toContain('.rotate-x{transform:var(--tw-rotate-x)var(--tw-rotate-y)}')
+    expect(css).not.toContain('@property')
+  })
+
   it('dedupes repeated Tailwind v4 preflight declarations when hoisted rules are merged', () => {
     const css = finalizeMiniProgramCss([
       '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
