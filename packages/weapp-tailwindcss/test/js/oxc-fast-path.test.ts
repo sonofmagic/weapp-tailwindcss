@@ -48,6 +48,23 @@ describe('OXC JS fast path', () => {
     expect(fast?.code).toContain('px-_b12px_B')
   })
 
+  it('walks nested TSX nodes with oxc-walker and keeps Babel output parity', () => {
+    const options = createOptions()
+    const source = [
+      'type Item = { className: string }',
+      'const items: Item[] = [{ className: "w-[100px]" }, { className: `h-[20px] ${value} mt-2` }]',
+      'const view = <view data-state={{ active: "bg-[red]" }} className={items[0]!.className} />',
+    ].join('\n')
+
+    const fast = oxcJsHandler(source, options)
+    const babel = jsHandler(source, options)
+
+    expect(fast?.code).toBe(babel.code)
+    expect(fast?.code).toContain('w-_b100px_B')
+    expect(fast?.code).toContain('h-_b20px_B')
+    expect(fast?.code).toContain('bg-_bred_B')
+  })
+
   it('keeps non-class strings unchanged under classNameSet precision', () => {
     const source = 'const message = "not a class"; const cls = "w-[100px]"'
     const options = {
@@ -128,6 +145,12 @@ describe('OXC JS fast path', () => {
     vi.doMock('@/js/babel', () => ({
       jsHandler: vi.fn(() => ({ code: 'babel-fallback' })),
     }))
+    vi.doMock('oxc-parser', () => {
+      throw new Error('Node 18 must not load oxc-parser')
+    })
+    vi.doMock('oxc-walker', () => {
+      throw new Error('Node 18 must not load oxc-walker')
+    })
     vi.spyOn(process.versions, 'node', 'get').mockReturnValue('18.20.8')
 
     const { createJsHandler: createMockedJsHandler } = await import('@/js')
@@ -145,6 +168,8 @@ describe('OXC JS fast path', () => {
     expect(mockedBabelHandler).toHaveBeenCalledTimes(1)
     vi.restoreAllMocks()
     vi.doUnmock('@/js/babel')
+    vi.doUnmock('oxc-parser')
+    vi.doUnmock('oxc-walker')
   })
 
   it('does not call Babel when the OXC fast path succeeds', async () => {

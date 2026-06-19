@@ -1,3 +1,4 @@
+import type { Node, Program, StringLiteral, TemplateElement } from '@oxc-project/types'
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
 import { createRequire } from 'node:module'
 import process from 'node:process'
@@ -7,7 +8,7 @@ import { shouldEnableArbitraryValueFallback } from '../../shared/classname-trans
 import { transformLiteralText } from '../literal-transform'
 
 interface OxcParseResult {
-  program?: unknown
+  program?: Program
   errors?: unknown[]
 }
 
@@ -19,27 +20,13 @@ interface OxcParser {
   ) => OxcParseResult
 }
 
-interface LiteralNode {
-  type: 'Literal'
-  value?: unknown
-  raw?: string
-  regex?: unknown
-  start?: number
-  end?: number
-}
-
-interface TemplateElementNode {
-  type: 'TemplateElement'
-  value?: {
-    raw?: string
-  }
-  start?: number
-  end?: number
-}
-
-type OxcNode = LiteralNode | TemplateElementNode | {
-  type?: string
-  [key: string]: unknown
+interface OxcWalker {
+  walk: (
+    input: Program | Node,
+    options: {
+      enter?: (this: { skip: () => void }, node: Node) => void
+    },
+  ) => Node | null
 }
 
 interface ReplacementContext {
@@ -47,18 +34,8 @@ interface ReplacementContext {
 }
 
 const require = createRequire(import.meta.url)
-const NODE_STRUCTURAL_KEYS = new Set([
-  'type',
-  'start',
-  'end',
-  'loc',
-  'range',
-  'raw',
-  'regex',
-  'comments',
-  'errors',
-])
 let oxcParser: OxcParser | false | undefined
+let oxcWalker: OxcWalker | false | undefined
 
 export function isOxcParserRuntimeSupported(version = process.versions.node) {
   const match = /^(\d+)\.(\d+)(?:\.|$)/.exec(version)
@@ -99,6 +76,28 @@ function loadOxcParser(): OxcParser | undefined {
   }
 
   return oxcParser
+}
+
+function loadOxcWalker(): OxcWalker | undefined {
+  if (!isOxcParserRuntimeSupported()) {
+    return undefined
+  }
+  if (oxcWalker === false) {
+    return undefined
+  }
+  if (oxcWalker) {
+    return oxcWalker
+  }
+
+  try {
+    oxcWalker = require('oxc-walker') as OxcWalker
+  }
+  catch {
+    oxcWalker = false
+    return undefined
+  }
+
+  return oxcWalker
 }
 
 function hasValues<T>(values: T[] | undefined): values is T[] {
@@ -147,10 +146,6 @@ function getParserSourceType(sourceType: unknown) {
   return sourceType === 'script' || sourceType === 'module' ? sourceType : 'module'
 }
 
-function isNode(value: unknown): value is OxcNode {
-  return Boolean(value && typeof value === 'object' && typeof (value as OxcNode).type === 'string')
-}
-
 function isRangeValid(start: unknown, end: unknown) {
   return typeof start === 'number' && typeof end === 'number' && start < end
 }
@@ -164,11 +159,11 @@ function getMagicString(rawSource: string, context: ReplacementContext) {
 
 function addStringLiteralReplacement(
   rawSource: string,
-  node: LiteralNode,
+  node: StringLiteral,
   transformOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
-  if (typeof node.value !== 'string' || typeof node.raw !== 'string' || node.regex || !isRangeValid(node.start, node.end)) {
+  if (typeof node.value !== 'string' || typeof node.raw !== 'string' || !isRangeValid(node.start, node.end)) {
     return false
   }
 
@@ -189,7 +184,7 @@ function addStringLiteralReplacement(
 
 function addTemplateElementReplacement(
   rawSource: string,
-  node: TemplateElementNode,
+  node: TemplateElement,
   transformOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
@@ -217,41 +212,25 @@ function addTemplateElementReplacement(
 
 function applyReplacements(
   rawSource: string,
-  node: unknown,
+  program: Program,
+  walker: OxcWalker,
   stringLiteralOptions: IJsHandlerOptions,
   templateLiteralOptions: IJsHandlerOptions,
   context: ReplacementContext,
 ) {
-  if (!isNode(node)) {
-    return false
-  }
-
   let changed = false
-  if (node.type === 'Literal') {
-    changed = addStringLiteralReplacement(rawSource, node as LiteralNode, stringLiteralOptions, context)
-  }
-  else if (node.type === 'TemplateElement') {
-    changed = addTemplateElementReplacement(rawSource, node as TemplateElementNode, templateLiteralOptions, context)
-  }
-
-  for (const key in node) {
-    if (NODE_STRUCTURAL_KEYS.has(key)) {
-      continue
-    }
-    const value = node[key]
-    if (Array.isArray(value)) {
-      for (const item of value) {
-        if (item && typeof item === 'object') {
-          changed = applyReplacements(rawSource, item, stringLiteralOptions, templateLiteralOptions, context) || changed
-        }
+  walker.walk(program, {
+    enter(node) {
+      if (node.type === 'Literal') {
+        changed = addStringLiteralReplacement(rawSource, node as StringLiteral, stringLiteralOptions, context) || changed
+        return
       }
-      continue
-    }
-
-    if (value && typeof value === 'object') {
-      changed = applyReplacements(rawSource, value, stringLiteralOptions, templateLiteralOptions, context) || changed
-    }
-  }
+      if (node.type === 'TemplateElement') {
+        changed = addTemplateElementReplacement(rawSource, node, templateLiteralOptions, context) || changed
+        this.skip()
+      }
+    },
+  })
 
   return changed
 }
@@ -265,7 +244,8 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
   }
 
   const parser = loadOxcParser()
-  if (!parser) {
+  const walker = loadOxcWalker()
+  if (!parser || !walker) {
     return undefined
   }
 
@@ -297,7 +277,7 @@ export function oxcJsHandler(rawSource: string, options: IJsHandlerOptions): JsH
         needEscaped: false,
       }
   const replacementContext: ReplacementContext = {}
-  if (!applyReplacements(rawSource, result.program, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
+  if (!applyReplacements(rawSource, result.program, walker, stringLiteralOptions, templateLiteralOptions, replacementContext)) {
     return {
       code: rawSource,
     }

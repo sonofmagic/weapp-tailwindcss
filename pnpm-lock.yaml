@@ -467,6 +467,9 @@ importers:
       '@iconify-json/svg-spinners':
         specifier: catalog:iconifyJson
         version: 1.2.4
+      '@oxc-project/types':
+        specifier: ^0.135.0
+        version: 0.135.0
       '@swc/core':
         specifier: ^1.15.41
         version: 1.15.41(@swc/helpers@0.5.19)
@@ -743,6 +746,9 @@ importers:
       oxc-parser:
         specifier: ^0.135.0
         version: 0.135.0
+      oxc-walker:
+        specifier: ^1.0.0
+        version: 1.0.0(oxc-parser@0.135.0)(rolldown@1.1.0)
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -59126,6 +59132,13 @@ snapshots:
       '@oxc-resolver/binding-wasm32-wasi': 11.20.0
       '@oxc-resolver/binding-win32-arm64-msvc': 11.20.0
       '@oxc-resolver/binding-win32-x64-msvc': 11.20.0
+
+  oxc-walker@1.0.0(oxc-parser@0.135.0)(rolldown@1.1.0):
+    dependencies:
+      magic-regexp: 0.11.0
+    optionalDependencies:
+      oxc-parser: 0.135.0
+      rolldown: 1.1.0
 
   oxc-walker@1.0.0(oxc-parser@0.136.0)(rolldown@1.1.1):
     dependencies:
