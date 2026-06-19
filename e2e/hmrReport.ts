@@ -39,6 +39,7 @@ export interface HmrFullRunProjectReport {
   initialReadyMs: number
   totalMs: number
   summary: HmrTimingSummary
+  pluginProcessSummary: HmrTimingSummary
   memory?: {
     sampleCount: number
     debugSampleCount: number
@@ -50,6 +51,7 @@ export interface HmrFullRunProjectReport {
     peakHeapUsedMb: number
     peakDebugRssMb: number
   }
+  notes: string[]
   timings: HmrTimingSample[]
 }
 
@@ -62,6 +64,7 @@ export interface HmrFullRunReport {
   projectCount: number
   timingCount: number
   summary: HmrTimingSummary
+  pluginProcessSummary: HmrTimingSummary
   byApp: Record<string, {
     project: string
     platforms: Record<string, HmrTimingSummary>
@@ -90,6 +93,14 @@ export interface HmrFullRunReport {
 
 function toFiniteNumber(value: unknown) {
   return typeof value === 'number' && Number.isFinite(value) ? value : undefined
+}
+
+function formatMs(value: number) {
+  return `${Math.round(value)}ms`
+}
+
+function formatMb(value: number) {
+  return `${Math.round(value)}MB`
 }
 
 function percentile(sortedValues: number[], ratio: number) {
@@ -167,6 +178,38 @@ function toTimingSamples(report: ProjectHmrDurationReport) {
     })
   }
   return samples
+}
+
+function toPluginProcessSummary(timings: HmrTimingSample[]) {
+  return summarizeHmrTimingSamples(
+    timings
+      .map(item => item.hotUpdatePluginProcessMs)
+      .filter((item): item is number => typeof item === 'number' && Number.isFinite(item))
+      .map(hotUpdateEffectiveMs => ({ hotUpdateEffectiveMs })),
+  )
+}
+
+function createProjectNotes(options: {
+  summary: HmrTimingSummary
+  pluginProcessSummary: HmrTimingSummary
+  memory?: HmrFullRunProjectReport['memory']
+}) {
+  const notes: string[] = []
+  const pluginMax = options.pluginProcessSummary.maxMs
+  const e2eMax = options.summary.maxMs
+  if (pluginMax > 0 && e2eMax >= Math.max(pluginMax * 5, 5000)) {
+    notes.push('端到端 HMR 明显高于插件处理耗时，主要口径包含框架 dev server 编译、产物写入、浏览器/运行时可见等待。')
+  }
+  if (options.pluginProcessSummary.count === 0) {
+    notes.push('未采集到插件处理耗时样本；该场景可能没有输出 [weapp-tailwindcss:hmr] timing，或当前 HMR 验证路径不经过插件 timing 汇总。')
+  }
+  if (!options.memory || options.memory.debugSampleCount === 0) {
+    notes.push('未采集到 plugin heap 样本；需要 WEAPP_TW_HMR_MEMORY_DEBUG=1 且插件日志携带 memoryDebug。')
+  }
+  else if (options.memory.peakHeapUsedMb === 0) {
+    notes.push('采集到了 memoryDebug 样本，但样本内没有有效 process.heapUsedMb。')
+  }
+  return notes
 }
 
 function resolveProjectMemory(report: WatchReport, project: string) {
@@ -268,6 +311,21 @@ export async function buildHmrFullRunReport(options: {
       const entry = entriesByName.get(project) ?? entriesByName.get(item.caseName)
       const timings = toTimingSamples(projectReport)
       const memory = resolveProjectMemory(report, project)
+      const projectMemory = memory
+        ? {
+            sampleCount: memory.sampleCount,
+            debugSampleCount: memory.debugSampleCount,
+            baselineRssMb: memory.baselineRssMb,
+            peakRssMb: memory.peakRssMb,
+            rssDeltaMb: memory.rssDeltaMb,
+            peakMaxProcessRssMb: memory.peakMaxProcessRssMb,
+            peakProcessCount: memory.peakProcessCount,
+            peakHeapUsedMb: memory.peakHeapUsedMb,
+            peakDebugRssMb: memory.peakDebugRssMb,
+          }
+        : undefined
+      const summary = summarizeHmrTimingSamples(timings)
+      const pluginProcessSummary = toPluginProcessSummary(timings)
       cases.push({
         caseName: item.caseName,
         project,
@@ -277,22 +335,12 @@ export async function buildHmrFullRunReport(options: {
         reportFile: path.relative(options.repositoryRoot, item.reportFile).split(path.sep).join('/'),
         initialReadyMs: projectReport.initialReadyMs,
         totalMs: projectReport.totalMs,
-        summary: summarizeHmrTimingSamples(timings),
-        ...(memory
-          ? {
-              memory: {
-                sampleCount: memory.sampleCount,
-                debugSampleCount: memory.debugSampleCount,
-                baselineRssMb: memory.baselineRssMb,
-                peakRssMb: memory.peakRssMb,
-                rssDeltaMb: memory.rssDeltaMb,
-                peakMaxProcessRssMb: memory.peakMaxProcessRssMb,
-                peakProcessCount: memory.peakProcessCount,
-                peakHeapUsedMb: memory.peakHeapUsedMb,
-                peakDebugRssMb: memory.peakDebugRssMb,
-              },
-            }
+        summary,
+        pluginProcessSummary,
+        ...(projectMemory
+          ? { memory: projectMemory }
           : {}),
+        notes: createProjectNotes({ summary, pluginProcessSummary, memory: projectMemory }),
         timings,
       })
     }
@@ -308,6 +356,7 @@ export async function buildHmrFullRunReport(options: {
     projectCount: cases.length,
     timingCount: allTimings.length,
     summary: summarizeHmrTimingSamples(allTimings),
+    pluginProcessSummary: toPluginProcessSummary(allTimings),
     byApp: buildByApp(cases),
     byPlatform: groupSummary(cases, item => item.platform, item => item.timings),
     memory: buildMemorySummary(cases),
@@ -325,4 +374,82 @@ export async function writeHmrFullRunReport(options: {
   const report = await buildHmrFullRunReport(options)
   await writeFile(options.outputFile, `${JSON.stringify(report, null, 2)}\n`, 'utf8')
   return report
+}
+
+export function renderHmrFullRunMarkdown(report: HmrFullRunReport) {
+  const lines = [
+    '# HMR 全量运行报告',
+    '',
+    `- generated_at: ${report.generatedAt}`,
+    `- repository_root: \`${report.repositoryRoot}\``,
+    `- targets: ${report.targetNames.join(', ') || '-'}`,
+    `- cases: ${report.projectCount}`,
+    `- timing samples: ${report.timingCount}`,
+    `- e2e HMR: avg=${formatMs(report.summary.avgMs)}, p50=${formatMs(report.summary.p50Ms)}, p95=${formatMs(report.summary.p95Ms)}, max=${formatMs(report.summary.maxMs)}`,
+    `- plugin process: samples=${report.pluginProcessSummary.count}, avg=${formatMs(report.pluginProcessSummary.avgMs)}, p95=${formatMs(report.pluginProcessSummary.p95Ms)}, max=${formatMs(report.pluginProcessSummary.maxMs)}`,
+    `- memory: projects=${report.memory.projectCount}, RSS peak=${formatMb(report.memory.peakRssMb)}, RSS delta=${formatMb(report.memory.maxRssDeltaMb)}, plugin heap peak=${formatMb(report.memory.peakHeapUsedMb)}, debug samples=${report.memory.debugSampleCount}`,
+    '',
+    '## Case 汇总',
+    '',
+    '| case | platform | e2e avg | e2e p95 | e2e max | plugin samples | plugin max | RSS peak | RSS delta | heap peak | notes |',
+    '| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |',
+  ]
+
+  for (const item of report.cases) {
+    lines.push([
+      item.project,
+      item.platform,
+      formatMs(item.summary.avgMs),
+      formatMs(item.summary.p95Ms),
+      formatMs(item.summary.maxMs),
+      String(item.pluginProcessSummary.count),
+      formatMs(item.pluginProcessSummary.maxMs),
+      formatMb(item.memory?.peakRssMb ?? 0),
+      formatMb(item.memory?.rssDeltaMb ?? 0),
+      formatMb(item.memory?.peakHeapUsedMb ?? 0),
+      item.notes.join('<br>') || '-',
+    ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'))
+  }
+
+  lines.push('', '## 最慢样本', '')
+  const slowest = report.cases
+    .flatMap(item => item.timings.map(timing => ({ item, timing })))
+    .sort((a, b) => b.timing.hotUpdateEffectiveMs - a.timing.hotUpdateEffectiveMs)
+    .slice(0, 20)
+  if (slowest.length === 0) {
+    lines.push('- no samples')
+  }
+  else {
+    lines.push('| case | platform | surface | e2e HMR | plugin process | rollback | source |')
+    lines.push('| --- | --- | --- | ---: | ---: | ---: | --- |')
+    for (const { item, timing } of slowest) {
+      lines.push([
+        item.project,
+        item.platform,
+        timing.surface,
+        formatMs(timing.hotUpdateEffectiveMs),
+        timing.hotUpdatePluginProcessMs == null ? '-' : formatMs(timing.hotUpdatePluginProcessMs),
+        timing.rollbackEffectiveMs == null ? '-' : formatMs(timing.rollbackEffectiveMs),
+        timing.sourceFile ?? '-',
+      ].join(' | ').replace(/^/, '| ').replace(/$/, ' |'))
+    }
+  }
+
+  lines.push(
+    '',
+    '## 口径说明',
+    '',
+    '- e2e HMR 是从写入源文件到测试断言观察到产物/浏览器/运行时生效的端到端耗时。',
+    '- plugin process 只统计 `[weapp-tailwindcss:hmr]` timing 日志里的插件处理耗时；缺失时说明该链路未输出插件 timing，不代表插件耗时为 0。',
+    '- plugin heap peak 依赖 `WEAPP_TW_HMR_MEMORY_DEBUG=1` 和插件日志里的 `memoryDebug.process.heapUsedMb`。',
+    '',
+  )
+  return `${lines.join('\n')}\n`
+}
+
+export async function writeHmrFullRunMarkdown(options: {
+  report: HmrFullRunReport
+  outputFile: string
+}) {
+  await writeFile(options.outputFile, renderHmrFullRunMarkdown(options.report), 'utf8')
 }

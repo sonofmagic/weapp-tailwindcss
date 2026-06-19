@@ -333,11 +333,15 @@ export function createMemoryRecommendations(project: ProjectReport) {
 }
 
 export function resolveProjectStatus(stages: StageReport[]): ProjectReport['status'] {
-  if (stages.every(stage => stage.status === 'skipped')) {
+  const measuredStages = stages.filter(stage => stage.status !== 'skipped')
+  if (measuredStages.length === 0) {
     return 'skipped'
   }
-  if (stages.some(stage => stage.status === 'failed')) {
+  if (measuredStages.some(stage => stage.status === 'failed')) {
     return 'failed'
+  }
+  if (measuredStages.every(stage => stage.status === 'passed')) {
+    return 'passed'
   }
   if (stages.some(stage => stage.status === 'skipped')) {
     return 'partial'

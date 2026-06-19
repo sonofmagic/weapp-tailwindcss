@@ -560,7 +560,11 @@ export interface WebHmrMetrics {
   }
   initialReadyMs: number
   hotUpdateEffectiveMs: number
+  hotUpdatePluginProcessMs: number
+  hotUpdatePluginProcessSamples: PluginProcessSample[]
   rollbackEffectiveMs: number
+  rollbackPluginProcessMs: number
+  rollbackPluginProcessSamples: PluginProcessSample[]
   sourceClassReplacementSequence?: WebHmrSourceClassReplacementMetrics[]
   sourceDomReplacementSequence?: WebHmrSourceDomReplacementMetrics[]
   memorySamples: MemoryUsageSample[]

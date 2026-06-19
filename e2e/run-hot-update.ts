@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, resolveHotUpdateTargets } from './e2eMatrix'
-import { writeHmrFullRunReport } from './hmrReport'
+import { writeHmrFullRunMarkdown, writeHmrFullRunReport } from './hmrReport'
 
 function toNumberEnv(name: string, fallback: number) {
   const value = process.env[name]
@@ -179,14 +179,20 @@ async function main() {
   if (reports.length > 0) {
     const reportDir = await ensureReportDir(root)
     const fullRunReportFile = path.join(reportDir, `hmr-full-report-${formatTimestamp(new Date(startedAt))}.json`)
-    await writeHmrFullRunReport({
+    const fullRunReport = await writeHmrFullRunReport({
       generatedAt: new Date(startedAt).toISOString(),
       repositoryRoot: root,
       targetNames: runnableTargets.map(target => target.name),
       reports,
       outputFile: fullRunReportFile,
     })
+    const fullRunMarkdownFile = fullRunReportFile.replace(/\.json$/, '.md')
+    await writeHmrFullRunMarkdown({
+      report: fullRunReport,
+      outputFile: fullRunMarkdownFile,
+    })
     process.stdout.write(`[e2e-hot-update] hmr full report saved: ${fullRunReportFile}\n`)
+    process.stdout.write(`[e2e-hot-update] hmr full markdown saved: ${fullRunMarkdownFile}\n`)
   }
 
   process.stdout.write(`[e2e-hot-update] ${formatProgress(completedCases, totalCases)} all cases passed elapsed=${formatDuration(Date.now() - startedAt)}\n`)

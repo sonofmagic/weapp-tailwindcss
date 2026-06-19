@@ -136,6 +136,7 @@ export function collectCaseDurationTimings(item: WatchCaseMetrics) {
       sourceFile: item.webHmr.sourceFile,
       hotUpdateEffectiveMs: item.webHmr.hotUpdateEffectiveMs,
       rollbackEffectiveMs: item.webHmr.rollbackEffectiveMs,
+      hotUpdatePluginProcessMs: item.webHmr.hotUpdatePluginProcessMs,
     })
     for (const sequence of item.webHmr.sourceClassReplacementSequence ?? []) {
       pushTiming(timings, {

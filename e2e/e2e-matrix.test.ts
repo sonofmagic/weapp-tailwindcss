@@ -294,9 +294,11 @@ describe('e2e matrix', () => {
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
     const memoryReport = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-memory.ts'), 'utf8')
     const weappMemoryReport = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-weapp-memory-report.ts'), 'utf8')
+    const localFullReport = fs.readFileSync(path.resolve(__dirname, '../scripts/local-full-platform-report.ts'), 'utf8')
     const scripts = rootPackageJson.scripts ?? {}
 
     expect(scripts['e2e:demo:weapp-memory']).toBe('tsx scripts/demo-weapp-memory-report.ts --continue-on-error')
+    expect(scripts['e2e:local:full-report']).toBe('tsx scripts/local-full-platform-report.ts')
     expect(scripts['e2e:mp']).toBe('pnpm e2e:static && pnpm e2e:hot-update:demo')
     expect(scripts['e2e:mp:ide']).toBe('pnpm e2e:ide:full')
     expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')
@@ -326,6 +328,10 @@ describe('e2e matrix', () => {
     expect(weappMemoryReport).toContain('E2E_HOT_UPDATE_CASE_NAME')
     expect(weappMemoryReport).toContain('优化建议')
     expect(weappMemoryReport).toContain('WEAPP_TW_HMR_MEMORY_DEBUG')
+    expect(weappMemoryReport).toContain('const measuredStages = stages.filter(stage => stage.status !== \'skipped\')')
+    expect(localFullReport).toContain('e2e/reports/local-full-run')
+    expect(localFullReport).toContain('hmr-full-report-')
+    expect(localFullReport).toContain('visual-weapp-h5-app')
 
     for (const scriptName of ['e2e:mp', 'e2e:h5', 'e2e:hbuilderx:mp', 'e2e:hbuilderx:h5', 'e2e:android', 'e2e:ios', 'e2e:harmony']) {
       expect(workflow).toContain(`args: ['${scriptName}']`)

@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-06-19T01:13:34.164Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "targetNames": [
+    "demo"
+  ],
+  "totalCases": 1,
+  "reportCount": 1,
+  "projectCount": 1,
+  "timingCount": 4,
+  "summary": {
+    "count": 4,
+    "avgMs": 521,
+    "minMs": 432,
+    "maxMs": 555,
+    "p50Ms": 549,
+    "p95Ms": 555
+  },
+  "pluginProcessSummary": {
+    "count": 4,
+    "avgMs": 275,
+    "minMs": 259,
+    "maxMs": 308,
+    "p50Ms": 259,
+    "p95Ms": 308
+  },
+  "byApp": {
+    "demo/weapp-vite-tailwindcss-v4": {
+      "project": "demo/weapp-vite-tailwindcss-v4",
+      "platforms": {
+        "weapp": {
+          "count": 4,
+          "avgMs": 521,
+          "minMs": 432,
+          "maxMs": 555,
+          "p50Ms": 549,
+          "p95Ms": 555
+        }
+      }
+    }
+  },
+  "byPlatform": {
+    "weapp": {
+      "count": 4,
+      "avgMs": 521,
+      "minMs": 432,
+      "maxMs": 555,
+      "p50Ms": 549,
+      "p95Ms": 555
+    }
+  },
+  "memory": {
+    "projectCount": 1,
+    "sampleCount": 15,
+    "debugSampleCount": 12,
+    "peakRssMb": 1254,
+    "maxRssDeltaMb": 695,
+    "peakHeapUsedMb": 564,
+    "byApp": {
+      "demo/weapp-vite-tailwindcss-v4": {
+        "peakRssMb": 1254,
+        "maxRssDeltaMb": 695,
+        "peakHeapUsedMb": 564
+      }
+    },
+    "byPlatform": {
+      "weapp": {
+        "peakRssMb": 1254,
+        "maxRssDeltaMb": 695,
+        "peakHeapUsedMb": 564
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseName": "weapp-vite-tailwindcss-v4",
+      "project": "demo/weapp-vite-tailwindcss-v4",
+      "label": "demo/weapp-vite-tailwindcss-v4",
+      "platform": "weapp",
+      "framework": "weapp-vite",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "sourceShape": "native",
+      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T01-13-34-166Z-weapp-vite-tailwindcss-v4.json",
+      "initialReadyMs": 3889,
+      "totalMs": 14577,
+      "summary": {
+        "count": 4,
+        "avgMs": 521,
+        "minMs": 432,
+        "maxMs": 555,
+        "p50Ms": 549,
+        "p95Ms": 555
+      },
+      "pluginProcessSummary": {
+        "count": 4,
+        "avgMs": 275,
+        "minMs": 259,
+        "maxMs": 308,
+        "p50Ms": 259,
+        "p95Ms": 308
+      },
+      "memory": {
+        "sampleCount": 15,
+        "debugSampleCount": 12,
+        "baselineRssMb": 559,
+        "peakRssMb": 1254,
+        "rssDeltaMb": 695,
+        "peakMaxProcessRssMb": 884,
+        "peakProcessCount": 5,
+        "peakHeapUsedMb": 564,
+        "peakDebugRssMb": 881
+      },
+      "notes": [],
+      "timings": [
+        {
+          "surface": "template:preferred-round",
+          "hotUpdateEffectiveMs": 549,
+          "rollbackEffectiveMs": 494,
+          "hotUpdatePluginProcessMs": 259
+        },
+        {
+          "surface": "main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/weapp-vite-tailwindcss-v4/pages/index/index.wxml",
+          "hotUpdateEffectiveMs": 549,
+          "rollbackEffectiveMs": 494,
+          "hotUpdatePluginProcessMs": 259
+        },
+        {
+          "surface": "subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/weapp-vite-tailwindcss-v4/sub-normal/pages/index.wxml",
+          "hotUpdateEffectiveMs": 555,
+          "rollbackEffectiveMs": 560,
+          "hotUpdatePluginProcessMs": 308
+        },
+        {
+          "surface": "subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/weapp-vite-tailwindcss-v4/sub-independent/pages/index.wxml",
+          "hotUpdateEffectiveMs": 432,
+          "rollbackEffectiveMs": 465,
+          "hotUpdatePluginProcessMs": 275
+        }
+      ]
+    }
+  ]
+}
