@@ -1372,6 +1372,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
+  const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportFile = createReportFilePath(cwd, target)
 
   const args = [
@@ -1407,6 +1408,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (mainStyleOnly) {
     args.push('--main-style-only')
+  }
+
+  if (mainStyleSubPackageLimit) {
+    args.push('--main-style-subpackage-limit', mainStyleSubPackageLimit)
   }
 
   await runWatchHmrCommand(cwd, args, commandTimeoutMs)

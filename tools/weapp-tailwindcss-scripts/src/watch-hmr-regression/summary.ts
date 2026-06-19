@@ -180,6 +180,7 @@ export async function writeReport(baseCwd: string, options: CliOptions, metrics:
       webOnly: options.webOnly,
       styleOnly: options.styleOnly,
       mainStyleOnly: options.mainStyleOnly,
+      mainStyleSubPackageLimit: options.mainStyleSubPackageLimit,
       maxHotUpdateMs: options.maxHotUpdateMs,
       maxPluginProcessMs: options.maxPluginProcessMs,
       maxMemoryRssMb: options.maxMemoryRssMb,

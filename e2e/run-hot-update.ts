@@ -79,6 +79,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
   const maxMemoryRssDeltaMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB', 0)
   const maxMemoryHeapUsedMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_HEAP_USED_MB', 0)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
+  const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportDir = await ensureReportDir(root)
   const reportFile = path.join(reportDir, `${formatTimestamp()}-${caseName}.json`)
   const elapsed = () => formatDuration(Date.now() - progress.startedAt)
@@ -107,6 +108,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
       '--skip-build',
       '--quiet-sass',
       ...(mainStyleOnly ? ['--main-style-only'] : []),
+      ...(mainStyleSubPackageLimit ? ['--main-style-subpackage-limit', mainStyleSubPackageLimit] : []),
       ...(maxMemoryRssMb > 0 ? ['--max-memory-rss-mb', String(maxMemoryRssMb)] : []),
       ...(maxMemoryRssDeltaMb > 0 ? ['--max-memory-rss-delta-mb', String(maxMemoryRssDeltaMb)] : []),
       ...(maxMemoryHeapUsedMb > 0 ? ['--max-memory-heap-used-mb', String(maxMemoryHeapUsedMb)] : []),

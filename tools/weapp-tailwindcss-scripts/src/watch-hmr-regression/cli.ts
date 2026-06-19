@@ -53,6 +53,8 @@ export function resolveOptions(): CliOptions {
     webOnly: parseBooleanFlag('--web-only', argv),
     styleOnly: parseBooleanFlag('--style-only', argv),
     mainStyleOnly: parseBooleanFlag('--main-style-only', argv),
+    mainStyleSubPackageLimit: parseOptionalNumber(parseArg('--main-style-subpackage-limit', argv))
+      ?? parseOptionalNumber(process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT),
     reportFile: parseFirstArg(['--report', '--report-file'], argv),
     maxHotUpdateMs: parseOptionalNumber(parseArg('--max-hot-update-ms', argv))
       ?? parseOptionalNumber(process.env.E2E_WATCH_MAX_HOT_UPDATE_MS),

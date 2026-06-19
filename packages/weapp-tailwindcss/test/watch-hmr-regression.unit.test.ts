@@ -1002,6 +1002,8 @@ describe('watch-hmr regression cli options', () => {
       '--case',
       'demo-uni',
       '--main-style-only',
+      '--main-style-subpackage-limit',
+      '1',
       '--report-file',
       'e2e/benchmark/e2e-watch-hmr/manual-demo-uni-main-style-only.json',
     ]
@@ -1010,6 +1012,7 @@ describe('watch-hmr regression cli options', () => {
       expect(resolveOptions()).toMatchObject({
         caseName: 'demo-uni',
         mainStyleOnly: true,
+        mainStyleSubPackageLimit: 1,
         reportFile: 'e2e/benchmark/e2e-watch-hmr/manual-demo-uni-main-style-only.json',
       })
     }

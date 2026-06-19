@@ -4,7 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { buildCases, isLocalOnlyWatchCase, pickCases } from './cases'
 import { formatPath, resolveBaseCwd, resolveOptions } from './cli'
-import { assertHotUpdateBudget, assertMemoryBudget, assertPluginProcessBudget, logSummary, runCase, runMainStyleOnlyCase, runWebOnlyCase } from './runner'
+import { assertHotUpdateBudget, assertMemoryBudget, assertPluginProcessBudget, logSummary, runCase, runMainStyleOnlyCase, runWebOnlyCase, WatchHmrPartialMetricsError } from './runner'
 import { ensureLocalPackageBuild, sleep } from './session'
 import { runStyleOnlyCase } from './style-only'
 import {
@@ -75,6 +75,9 @@ export async function main() {
     }
   }
   catch (error) {
+    if (error instanceof WatchHmrPartialMetricsError) {
+      metrics.push(error.metrics)
+    }
     if (metrics.length > 0) {
       await writeReport(baseCwd, options, metrics)
     }

@@ -45,6 +45,7 @@ export interface CliOptions {
   webOnly: boolean
   styleOnly: boolean
   mainStyleOnly: boolean
+  mainStyleSubPackageLimit?: number
   reportFile?: string
   maxHotUpdateMs?: number
   maxPluginProcessMs?: number
@@ -684,6 +685,7 @@ export interface WatchReport {
     webOnly: boolean
     styleOnly: boolean
     mainStyleOnly: boolean
+    mainStyleSubPackageLimit?: number
     maxHotUpdateMs?: number
     maxPluginProcessMs?: number
     maxMemoryRssMb?: number
