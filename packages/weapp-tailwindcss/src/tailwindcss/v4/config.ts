@@ -1,4 +1,4 @@
-import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeStringListOption } from '@/utils/options'
 import { hasConfiguredTailwindV4CssRoots } from './css-sources'
@@ -84,9 +84,9 @@ function hasConfiguredCssEntries(ctx: InternalUserDefinedOptions) {
     return true
   }
 
-  const patcherOptions = ctx.tailwindcssPatcherOptions as any
-  if (patcherOptions) {
-    if (normalizeCssEntriesConfig(patcherOptions.tailwindcss?.v4?.cssEntries)) {
+  const runtimeOptions = ctx.tailwindcssRuntimeOptions as any
+  if (runtimeOptions) {
+    if (normalizeCssEntriesConfig(runtimeOptions.tailwindcss?.v4?.cssEntries)) {
       return true
     }
   }
@@ -98,13 +98,13 @@ let hasWarnedMissingCssEntries = false
 
 export function warnMissingCssEntries(
   ctx: InternalUserDefinedOptions,
-  patcher: TailwindcssPatcherLike | undefined,
+  tailwindRuntime: TailwindcssRuntimeLike | undefined,
 ) {
   if (hasWarnedMissingCssEntries) {
     return
   }
 
-  if (patcher?.majorVersion !== 4) {
+  if (tailwindRuntime?.majorVersion !== 4) {
     return
   }
 
@@ -120,11 +120,11 @@ export function warnMissingCssEntries(
 
 export function applyV4CssCalcDefaults(
   cssCalc: InternalUserDefinedOptions['cssCalc'],
-  patcher: TailwindcssPatcherLike | undefined,
+  tailwindRuntime: TailwindcssRuntimeLike | undefined,
 ): InternalUserDefinedOptions['cssCalc'] {
-  const cssCalcOptions = cssCalc ?? patcher?.majorVersion === 4
+  const cssCalcOptions = cssCalc ?? tailwindRuntime?.majorVersion === 4
 
-  if (patcher?.majorVersion === 4 && cssCalcOptions) {
+  if (tailwindRuntime?.majorVersion === 4 && cssCalcOptions) {
     return ensureDefaultsIncluded(cssCalcOptions)
   }
 

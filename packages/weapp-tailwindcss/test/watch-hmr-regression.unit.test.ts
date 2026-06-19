@@ -50,6 +50,7 @@ import {
   summarizeMemorySamples,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/memory-report'
 import {
+  createWindowsProcessTreeMemoryScript,
   parsePluginProcessSample,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import {
@@ -67,6 +68,7 @@ import {
   waitForOutputsReady,
   waitForOutputsUpdated,
   waitForOutputFilesUpdated,
+  waitForOutputFilesUpdatedWithDiagnostics,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
 import {
   ISSUE33_ADD_CLASS_TOKENS,
@@ -154,10 +156,32 @@ function createMainStyleHotUpdateMetrics(
     rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_102_2e43rpx_B', 'text-_b_103_2e43rpx_B'],
     hotUpdateOutputMs: hotUpdateEffectiveMs + 10,
     hotUpdateEffectiveMs,
+    hotUpdateOutputDiagnostics: {
+      trigger: 'semantic',
+      elapsedMs: hotUpdateEffectiveMs + 10,
+      fileCount: 3,
+      resolvedFileCount: 2,
+      exactFileUpdated: true,
+      globFileUpdated: false,
+      semanticAccepted: true,
+      missingExactFiles: [],
+      updatedFiles: ['dist/app.wxss'],
+    },
     hotUpdatePluginProcessMs: 24,
     hotUpdatePluginProcessSamples: [{ ...pluginProcessSample, durationMs: 24 }],
     rollbackOutputMs: rollbackEffectiveMs + 10,
     rollbackEffectiveMs,
+    rollbackOutputDiagnostics: {
+      trigger: 'semantic',
+      elapsedMs: rollbackEffectiveMs + 10,
+      fileCount: 3,
+      resolvedFileCount: 2,
+      exactFileUpdated: true,
+      globFileUpdated: false,
+      semanticAccepted: true,
+      missingExactFiles: [],
+      updatedFiles: ['dist/app.wxss'],
+    },
     rollbackPluginProcessMs: 19,
     rollbackPluginProcessSamples: [{ ...pluginProcessSample, durationMs: 19 }],
   }
@@ -274,10 +298,41 @@ function createCase(
   const complexRound = createRound('complex-corpus', hotUpdateEffectiveMs, rollbackEffectiveMs)
   const memorySamples = [
     { at: 1, rssMb: 100, maxProcessRssMb: 90, processCount: 2 },
-    { at: 2, rssMb: 132, maxProcessRssMb: 118, processCount: 2 },
+    {
+      at: 2,
+      rssMb: 132,
+      maxProcessRssMb: 118,
+      processCount: 2,
+      topProcesses: [
+        { pid: 10, ppid: 1, rssMb: 118, command: 'node demo-watch' },
+        { pid: 11, ppid: 10, rssMb: 14, command: 'worker' },
+      ],
+    },
+  ]
+  const memoryDebugSamples = [
+    {
+      at: 2,
+      bundler: 'vite',
+      phase: 'generateBundle',
+      durationMs: 22,
+      data: {
+        bundle: {
+          hasOmittedKnownFiles: true,
+        },
+        process: {
+          heapUsedMb: 64,
+          rssMb: 132,
+        },
+        processCache: {
+          staleCacheKeys: 1,
+          staleHashKeys: 2,
+          pruneSkipped: true,
+        },
+      },
+    },
   ]
   const memorySummary = summarizeMemorySamples(memorySamples)
-  const memoryDebugSummary = summarizeMemoryDebugSamples([])
+  const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
   return {
     name,
     label: `${name} label`,
@@ -316,6 +371,7 @@ function createCase(
     rollbackPluginProcessSamples: complexRound.rollbackPluginProcessSamples,
     totalMs: hotUpdateEffectiveMs + rollbackEffectiveMs + 25,
     memorySamples,
+    memoryDebugSamples,
     memorySummary,
     memoryDebugSummary,
     memoryPeakRssMb: memorySummary.peakRssMb,
@@ -475,6 +531,45 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(attempts).toBeGreaterThanOrEqual(2)
+  })
+
+  it('reports output wait diagnostics for semantic fallback updates', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-output-diagnostics-'))
+    tempDirs.push(tempDir)
+    const outputFile = path.join(tempDir, 'app.wxss')
+    await writeFilePreserveEol(outputFile, '.base{}', '.base{}')
+    const baselineMtime = await getMtime(outputFile)
+    let attempts = 0
+
+    const diagnostics = await waitForOutputFilesUpdatedWithDiagnostics(
+      {
+        label: 'demo/mpx-tailwindcss-v4',
+      } as any,
+      [outputFile, path.join(tempDir, 'missing.wxss')],
+      new Map([[outputFile, baselineMtime]]),
+      {
+        timeoutMs: 100,
+        pollMs: 1,
+      } as CliOptions,
+      {
+        ensureRunning() {},
+      } as any,
+      Date.now(),
+      async () => {
+        attempts += 1
+        return attempts >= 2
+      },
+    )
+
+    expect(diagnostics).toMatchObject({
+      trigger: 'semantic',
+      fileCount: 2,
+      exactFileUpdated: false,
+      semanticAccepted: true,
+      missingExactFiles: [path.join(tempDir, 'missing.wxss')],
+      updatedFiles: [],
+    })
+    expect(diagnostics.elapsedMs).toBeGreaterThanOrEqual(0)
   })
 
   it('allows primary output update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
@@ -907,6 +1002,8 @@ describe('watch-hmr regression cli options', () => {
       '--case',
       'demo-uni',
       '--main-style-only',
+      '--main-style-subpackage-limit',
+      '1',
       '--report-file',
       'e2e/benchmark/e2e-watch-hmr/manual-demo-uni-main-style-only.json',
     ]
@@ -915,11 +1012,42 @@ describe('watch-hmr regression cli options', () => {
       expect(resolveOptions()).toMatchObject({
         caseName: 'demo-uni',
         mainStyleOnly: true,
+        mainStyleSubPackageLimit: 1,
         reportFile: 'e2e/benchmark/e2e-watch-hmr/manual-demo-uni-main-style-only.json',
       })
     }
     finally {
       process.argv = originalArgv
+    }
+  })
+
+  it('ignores empty numeric environment variables from workflow matrix defaults', () => {
+    const originalArgv = process.argv
+    const originalLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
+    process.argv = [
+      'node',
+      'watch-hmr-regression',
+      '--case',
+      'mpx-tailwindcss-v4',
+      '--main-style-only',
+    ]
+    process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT = ''
+
+    try {
+      expect(resolveOptions()).toMatchObject({
+        caseName: 'mpx-tailwindcss-v4',
+        mainStyleOnly: true,
+        mainStyleSubPackageLimit: undefined,
+      })
+    }
+    finally {
+      process.argv = originalArgv
+      if (originalLimit == null) {
+        delete process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
+      }
+      else {
+        process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT = originalLimit
+      }
     }
   })
 })
@@ -1079,6 +1207,10 @@ describe('watch-hmr regression summary helpers', () => {
       'subpackage:sub-independent:template',
       'subpackage:sub-independent:style',
     ]))
+    expect(projectDurations.timings.find(item => item.surface === 'main-style:text-[102.43rpx] to text-[103.43rpx]')?.hotUpdateOutputDiagnostics).toMatchObject({
+      trigger: 'semantic',
+      semanticAccepted: true,
+    })
     expect(durations.summaryBySurface.web).toMatchObject({ count: 1, hotUpdateAvgMs: 18, rollbackAvgMs: 12 })
     expect(durations.summaryBySurface['subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 44, rollbackAvgMs: 45 })
     expect(durations.summaryBySurface['subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 46, rollbackAvgMs: 47 })
@@ -1175,7 +1307,86 @@ describe('watch-hmr regression summary helpers', () => {
       peakRssMb: 132,
       rssDeltaMb: 0,
       peakProcessCount: 2,
+      uniqueProcessCount: 2,
+      peakSample: {
+        rssMb: 132,
+      },
     })
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3'].peakSample.topProcesses[0]).toMatchObject({
+      rssMb: 118,
+      command: 'node demo-watch',
+    })
+  })
+
+  it('uses plugin debug RSS when process tree sampling under-reports detached Windows watchers', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-debug-rss-'))
+    tempDirs.push(tempDir)
+    const reportFile = 'watch-report.json'
+    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    cases[0]!.memoryDebugSamples = [
+      {
+        at: 2,
+        bundler: 'vite',
+        phase: 'generateBundle',
+        durationMs: 22,
+        data: {
+          process: {
+            heapUsedMb: 512,
+            rssMb: 2048,
+          },
+          processCache: {
+            staleCacheKeys: 0,
+            staleHashKeys: 0,
+          },
+        },
+      },
+    ]
+    cases[0]!.memoryDebugSummary = summarizeMemoryDebugSamples(cases[0]!.memoryDebugSamples)
+    const options: CliOptions = {
+      caseName: 'demo',
+      timeoutMs: 2_000,
+      pollMs: 20,
+      skipBuild: true,
+      quietSass: true,
+      webOnly: false,
+      styleOnly: false,
+      mainStyleOnly: false,
+      reportFile,
+    }
+
+    const stdoutSpy = vi.spyOn(process.stdout, 'write').mockReturnValue(true)
+    try {
+      await writeReport(tempDir, options, cases)
+    }
+    finally {
+      stdoutSpy.mockRestore()
+    }
+
+    const report = JSON.parse(await readFile(path.join(tempDir, reportFile), 'utf8'))
+    expect(report.memoryReport.summary).toMatchObject({
+      peakRssMb: 2048,
+      maxRssDeltaMb: 1916,
+      peakHeapUsedMb: 512,
+    })
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({
+      baselineRssMb: 132,
+      peakRssMb: 2048,
+      peakMaxProcessRssMb: 2048,
+      rssDeltaMb: 1916,
+      peakDebugRssMb: 2048,
+      peakHeapUsedMb: 512,
+    })
+  })
+
+  it('samples repository-scoped detached Windows watcher processes in HMR reports', () => {
+    const script = createWindowsProcessTreeMemoryScript(42, String.raw`C:\repo\weapp-tailwindcss`)
+
+    expect(script).toContain(String.raw`$repositoryRoot = 'C:\repo\weapp-tailwindcss'`)
+    expect(script).toContain('CommandLine')
+    expect(script).toContain('uni\\.js[\\s\\S]+-p\\s+mp-weixin')
+    expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch')
+    expect(script).toContain('$command.Contains($repositoryRoot)')
+    expect(script).not.toContain('@(;')
   })
 
   it('builds a CI-facing HMR speed report from watch JSON metrics', async () => {
@@ -1236,6 +1447,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(markdown).toContain('- budget: <=1000ms')
     expect(markdown).toContain('- plugin process budget: <=500ms')
     expect(markdown).toContain('- preferred target: <=1000ms')
+    expect(markdown).toContain('output=semantic')
     expect(markdown).toContain('| template:preferred-round | 1 | 30ms | 30ms | 30ms | 30ms | 30ms |')
     expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
   })
@@ -1316,7 +1528,7 @@ describe('watch-hmr regression summary helpers', () => {
     metrics.memoryPeakRssMb = summary.peakRssMb
     metrics.memoryRssDeltaMb = summary.rssDeltaMb
 
-    expect(summary).toMatchObject({ baselineRssMb: 640, peakRssMb: 702, rssDeltaMb: 62, peakProcessCount: 2 })
+    expect(summary).toMatchObject({ baselineRssMb: 640, peakRssMb: 702, rssDeltaMb: 62, peakProcessCount: 2, uniqueProcessCount: 0 })
     metrics.memorySummary = summary
     metrics.memoryPeakRssMb = summary.peakRssMb
     metrics.memoryRssDeltaMb = summary.rssDeltaMb
@@ -1365,14 +1577,57 @@ describe('watch-hmr regression summary helpers', () => {
         phase: 'generateBundle',
         durationMs: 100,
         data: {
+          bundle: {
+            hasOmittedKnownFiles: true,
+          },
           process: {
             heapUsedMb: 640,
             rssMb: 720,
+          },
+          processCache: {
+            staleCacheKeys: 3,
+            staleHashKeys: 11,
+            pruneSkipped: true,
           },
         },
       },
     ]
     metrics.memoryDebugSummary = summarizeMemoryDebugSamples(metrics.memoryDebugSamples)
+
+    expect(metrics.memoryDebugSummary.topHeapPhases).toEqual([
+      {
+        phase: 'vite:generateBundle',
+        count: 1,
+        peakHeapUsedMb: 640,
+        peakRssMb: 720,
+        peakStaleCacheKeys: 3,
+        peakStaleHashKeys: 11,
+        pruneSkippedCount: 1,
+        omittedKnownFilesCount: 1,
+      },
+    ])
+    expect(metrics.memoryDebugSummary.topStaleCachePhases).toEqual([
+      {
+        phase: 'vite:generateBundle',
+        count: 1,
+        peakStaleCacheKeys: 3,
+        peakStaleHashKeys: 11,
+        pruneSkippedCount: 1,
+        omittedKnownFilesCount: 1,
+      },
+    ])
+    expect(metrics.memoryDebugSummary.topDurationPhases).toEqual([
+      {
+        phase: 'vite:generateBundle',
+        count: 1,
+        peakDurationMs: 100,
+        peakDurationActiveCss: 0,
+        peakDurationStaleCacheKeys: 3,
+        peakDurationStaleHashKeys: 11,
+        peakDurationPruneSkipped: true,
+        peakDurationOmittedKnownFiles: true,
+      },
+    ])
 
     expect(() => assertMemoryBudget(metrics, {
       caseName: 'demo',
@@ -1394,7 +1649,7 @@ describe('watch-hmr regression summary helpers', () => {
       { at: 3, rssMb: 742, maxProcessRssMb: 698, processCount: 3 },
     ])
 
-    expect(summary).toMatchObject({ baselineRssMb: 684, peakRssMb: 742, rssDeltaMb: 58, peakProcessCount: 3 })
+    expect(summary).toMatchObject({ baselineRssMb: 684, peakRssMb: 742, rssDeltaMb: 58, peakProcessCount: 3, uniqueProcessCount: 0 })
   })
 
   it('prefers total timing samples when collecting plugin processing metrics', () => {

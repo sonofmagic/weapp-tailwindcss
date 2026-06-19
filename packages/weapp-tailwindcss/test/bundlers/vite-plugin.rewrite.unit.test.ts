@@ -39,7 +39,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   it('rewrites tailwindcss imports for css entry files by default', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
-    currentContext.twPatcher.majorVersion = 4
+    currentContext.tailwindRuntime.majorVersion = 4
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
@@ -286,12 +286,11 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({ disabled: true })
     setCurrentContext(currentContext)
-    currentContext.twPatcher.majorVersion = 4
+    currentContext.tailwindRuntime.majorVersion = 4
     const plugins = WeappTailwindcss()
     expect(plugins?.length).toBe(1)
     const rewritePlugin = plugins?.[0]
     expect(rewritePlugin?.name).toBe(`${vitePluginName}:rewrite-css-imports`)
-    expect(currentContext.twPatcher.patch).not.toHaveBeenCalled()
 
     const transform = getTransformHandler(rewritePlugin as Plugin)
     expect(transform).toBeTypeOf('function')
@@ -416,7 +415,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   it('keeps css import rewrite plugin when main plugin is disabled for tailwind v4 projects', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({ disabled: { plugin: true } }))
-    getCurrentContext().twPatcher.majorVersion = 4
+    getCurrentContext().tailwindRuntime.majorVersion = 4
     const plugins = WeappTailwindcss({
       disabled: { plugin: true },
     })
@@ -426,7 +425,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
   it('keeps generator css transform but skips import rewrite when tailwindcss major version is below 4', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
-    currentContext.twPatcher.majorVersion = 3
+    currentContext.tailwindRuntime.majorVersion = 3
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`) as Plugin
     expect(rewritePlugin).toBeTruthy()

@@ -1,6 +1,6 @@
 import type { Buffer } from 'node:buffer'
 import type { Browser, Page } from 'playwright'
-import type { CliOptions, HmrMemoryDebugSample, MemoryUsageSample, WatchCase, WebHmrConfig, WebHmrMetrics, WebHmrSourceClassReplacementMetrics } from './types'
+import type { CliOptions, HmrMemoryDebugSample, MemoryUsageSample, PluginProcessSample, WatchCase, WebHmrConfig, WebHmrMetrics, WebHmrSourceClassReplacementMetrics } from './types'
 import { createHash } from 'node:crypto'
 import { existsSync } from 'node:fs'
 import process from 'node:process'
@@ -22,6 +22,16 @@ import { resolveReloadAcceptAttemptTimeout, waitForWebCompileSettled } from './w
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
 const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
+
+function collectPluginProcessMetrics(samples: PluginProcessSample[], startedAt: number) {
+  const phaseSamples = samples.filter(sample => sample.at >= startedAt)
+  const totalSamples = phaseSamples.filter(sample => sample.metric === 'total' || sample.phase === 'total')
+  const budgetSamples = totalSamples.length > 0 ? totalSamples : phaseSamples
+  return {
+    samples: phaseSamples,
+    totalMs: Math.max(0, ...budgetSamples.map(sample => sample.durationMs)),
+  }
+}
 
 function hashPortSeed(value: string) {
   const hex = createHash('sha1').update(value).digest('hex').slice(0, 6)
@@ -526,6 +536,7 @@ export async function runWebHmr(
   let url = `http://127.0.0.1:${port}/`
   let readyAt = 0
   let lastCompileSignalAt = 0
+  const pluginProcessSamples: PluginProcessSample[] = []
   const memoryDebugSamples: HmrMemoryDebugSample[] = []
   const memorySamples: MemoryUsageSample[] = []
   const child = spawnPnpm(['run', config.devScript, ...(config.devArgs ?? [])], {
@@ -585,6 +596,15 @@ export async function runWebHmr(
         lastCompileSignalAt = readyAt
       }
       const pluginSample = parsePluginProcessSample(line)
+      if (pluginSample) {
+        pluginProcessSamples.push({
+          at: Date.now(),
+          ...pluginSample,
+        })
+        if (pluginProcessSamples.length > 1000) {
+          pluginProcessSamples.shift()
+        }
+      }
       const memoryDebug = pluginSample?.details?.['memoryDebug']
       if (pluginSample && memoryDebug && typeof memoryDebug === 'object' && !Array.isArray(memoryDebug)) {
         memoryDebugSamples.push({
@@ -604,6 +624,38 @@ export async function runWebHmr(
   child.stdout.on('data', collect)
   child.stderr.on('data', collect)
 
+  let stopped = false
+  const cleanupProcessResources = () => {
+    if (stopped) {
+      return
+    }
+    stopped = true
+    clearInterval(memoryTimer)
+    recordMemorySample()
+    child.stdout.off('data', collect)
+    child.stderr.off('data', collect)
+    try {
+      child.stdin.end()
+    }
+    catch {
+    }
+    try {
+      child.stdin.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stdout.destroy()
+    }
+    catch {
+    }
+    try {
+      child.stderr.destroy()
+    }
+    catch {
+    }
+  }
+
   const waitForCompileSettled = async (
     phaseStartedAt: number,
     phase: string,
@@ -613,8 +665,7 @@ export async function runWebHmr(
       options.timeoutMs,
       config.compileSettleTimeoutMs ?? 30_000,
     )
-    await waitForWebCompileSettled({
-      acceptWhen,
+    const settleOptions = {
       getLastCompileSignalAt: () => lastCompileSignalAt,
       label: watchCase.label,
       phase,
@@ -626,11 +677,16 @@ export async function runWebHmr(
           throw new Error(`[${watchCase.label}] web watch process exited unexpectedly with code ${child.exitCode}`)
         }
       },
-    })
+    }
+    if (acceptWhen) {
+      Object.assign(settleOptions, { acceptWhen })
+    }
+    await waitForWebCompileSettled(settleOptions)
   }
 
   const stop = async () => {
     if (child.exitCode != null) {
+      cleanupProcessResources()
       return
     }
     const kill = (signal: NodeJS.Signals) => {
@@ -657,6 +713,7 @@ export async function runWebHmr(
     if (child.exitCode == null) {
       kill('SIGKILL')
     }
+    cleanupProcessResources()
   }
 
   let browser: Browser | undefined
@@ -838,6 +895,8 @@ export async function runWebHmr(
         element.remove()
       }).catch(() => {})
     }
+    const hotUpdatePluginMetrics = collectPluginProcessMetrics(pluginProcessSamples, hotUpdateStartedAt)
+    const rollbackPluginMetrics = collectPluginProcessMetrics(pluginProcessSamples, rollbackStartedAt)
     const sourceClassReplacementSequence = await runSourceClassReplacementSequence(
       watchCase,
       options,
@@ -866,7 +925,11 @@ export async function runWebHmr(
       computedStyle: computedStyle!,
       initialReadyMs,
       hotUpdateEffectiveMs,
+      hotUpdatePluginProcessMs: hotUpdatePluginMetrics.totalMs,
+      hotUpdatePluginProcessSamples: hotUpdatePluginMetrics.samples,
       rollbackEffectiveMs,
+      rollbackPluginProcessMs: rollbackPluginMetrics.totalMs,
+      rollbackPluginProcessSamples: rollbackPluginMetrics.samples,
       ...(sourceClassReplacementSequence ? { sourceClassReplacementSequence } : {}),
       ...(sourceDomReplacementSequence ? { sourceDomReplacementSequence } : {}),
       memorySamples,
@@ -888,7 +951,6 @@ export async function runWebHmr(
     catch {
     }
     await browser?.close().catch(() => {})
-    clearInterval(memoryTimer)
     await stop()
   }
 }

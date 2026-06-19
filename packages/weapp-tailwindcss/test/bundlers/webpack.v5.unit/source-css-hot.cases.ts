@@ -34,7 +34,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         cwd: root,
         base: root,
@@ -46,7 +46,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         },
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         cwd: root,
         baseFallbacks: [],
@@ -213,14 +213,14 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
           dependencies: [],
         }
       }),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
         cssEntries: [sourceCssFile],
@@ -240,8 +240,8 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
         styleHandler: vi.fn(async (code: string) => ({ css: `handled:${code}` })),
         tailwindcssBasedir: root,
-        twPatcher: {
-          ...createContext().twPatcher,
+        tailwindRuntime: {
+          ...createContext().tailwindRuntime,
           majorVersion: 4,
           getClassSet: vi.fn(async () => new Set<string>()),
           getClassSetSync: vi.fn(() => new Set<string>()),
@@ -409,7 +409,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         dependencies: [],
         version: 3,
       })),
-      resolveTailwindV3SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         cwd: root,
         base: root,
@@ -421,7 +421,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         },
         version: 3,
       })),
-      resolveTailwindV3SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         cwd: root,
         baseFallbacks: [],

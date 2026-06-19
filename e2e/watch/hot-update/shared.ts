@@ -327,6 +327,7 @@ interface HotUpdateReport {
   options?: {
     webOnly?: boolean
     mainStyleOnly?: boolean
+    mainStyleSubPackageLimit?: number
   }
   summary: HotUpdateSummary
   summaryByRound: Partial<Record<MutationRoundName, HotUpdateSummary>>
@@ -929,9 +930,13 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
 
     const subPackageMainStyleHotUpdates = item.subPackageMainStyleHotUpdates ?? []
     if (SUBPACKAGE_HMR_CASES.has(item.name)) {
-      expect(subPackageMainStyleHotUpdates.length).toBe(2)
-      expect(subPackageMainStyleHotUpdates.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
-      expect(subPackageMainStyleHotUpdates.some(metric => metric.independent)).toBe(true)
+      const subPackageLimit = report.options?.mainStyleSubPackageLimit
+      const expectedSubPackageCount = subPackageLimit == null ? 2 : Math.min(2, Math.max(0, subPackageLimit))
+      expect(subPackageMainStyleHotUpdates.length).toBe(expectedSubPackageCount)
+      if (subPackageLimit == null) {
+        expect(subPackageMainStyleHotUpdates.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
+        expect(subPackageMainStyleHotUpdates.some(metric => metric.independent)).toBe(true)
+      }
     }
     for (const subPackage of subPackageMainStyleHotUpdates) {
       const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)
@@ -1372,6 +1377,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
+  const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportFile = createReportFilePath(cwd, target)
 
   const args = [
@@ -1407,6 +1413,10 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
 
   if (mainStyleOnly) {
     args.push('--main-style-only')
+  }
+
+  if (mainStyleSubPackageLimit) {
+    args.push('--main-style-subpackage-limit', mainStyleSubPackageLimit)
   }
 
   await runWatchHmrCommand(cwd, args, commandTimeoutMs)

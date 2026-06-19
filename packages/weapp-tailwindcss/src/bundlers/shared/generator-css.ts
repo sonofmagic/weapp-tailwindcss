@@ -1,8 +1,9 @@
 import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css/types'
 import process from 'node:process'
-import { extractSourceCandidates } from 'tailwindcss-patch'
+import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
 import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives } from './generator-css/directives'
@@ -79,10 +80,21 @@ export async function generateCssByGenerator(
     debug,
   } = options
   const generatorOptions = {
-    ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
+    ...normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+      appType: opts.appType,
+      platform: opts.cssOptions?.platform ?? opts.platform,
+      tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+      uniAppX: opts.uniAppX,
+    }),
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
   }
-  const majorVersion = runtimeState.twPatcher.majorVersion
+  const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+    appType: opts.appType,
+    platform: opts.cssOptions?.platform ?? opts.platform,
+    tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+    uniAppX: opts.uniAppX,
+  })
+  const majorVersion = runtimeState.tailwindRuntime.majorVersion
   const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(
       normalizeTailwindSourceDirectives(rawSource, {
@@ -99,7 +111,7 @@ export async function generateCssByGenerator(
   const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
   if (cleanedLocalImportWrapper !== undefined) {
     return {
-      css: generatorOptions.target === 'weapp'
+      css: shouldUseMiniProgramCssBranch(generatorBranch)
         ? removeUnsupportedMiniProgramAtRules(cleanedLocalImportWrapper)
         : cleanedLocalImportWrapper,
       target: generatorOptions.target,
@@ -210,7 +222,7 @@ export async function generateCssByGenerator(
               matchedCssSourceFile,
             })
         : runtimeWithCurrentCss
-      const generatorRuntime = majorVersion === 4 && generatorOptions.target === 'weapp'
+      const generatorRuntime = majorVersion === 4 && shouldUseMiniProgramCssBranch(generatorBranch)
         ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
         : sourceRuntime
       const useIncrementalCache = majorVersion === 3 || majorVersion === 4
@@ -372,6 +384,21 @@ export async function generateCssByGenerator(
       file,
     )
     let css = generatedCss
+    if (
+      majorVersion === 4
+      && generated.target === 'weapp'
+      && generatorRawSource.includes('weapp-tailwindcss generator-placeholder')
+      && !hasUserCssLayerBlocks(generatorRawSource)
+    ) {
+      const userCss = await transformGeneratorUserCss(userCssRawSource, {
+        generatorTarget: generated.target,
+        generatorStyleOptions,
+        cssUserHandlerOptions,
+        styleHandler,
+        importFallback: generatorOptions.importFallback,
+      })
+      css = createCssSourceOrderAppend(userCss, css)
+    }
     if (generated.target === 'weapp') {
       css = inheritLegacyUnitConvertedDeclarations(css, generatorRawSource)
       if (hasUserCssLayerBlocks(generatorRawSource)) {

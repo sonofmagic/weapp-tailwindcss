@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-06-19T02:11:34.607Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "includeLocal": true,
+  "exitCode": 0,
+  "summary": {
+    "count": 6,
+    "baselineRssMb": 564,
+    "peakRssMb": 1682,
+    "rssDeltaMb": 1118,
+    "peakMaxProcessRssMb": 999,
+    "peakProcessCount": 8,
+    "firstAt": 1781835089164,
+    "lastAt": 1781835094174,
+    "durationMs": 5010,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-h5-ssr",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-19T02:11:29.134Z",
+      "endedAt": "2026-06-19T02:11:34.607Z",
+      "local": true,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 564,
+        "peakRssMb": 1682,
+        "rssDeltaMb": 1118,
+        "peakMaxProcessRssMb": 999,
+        "peakProcessCount": 8,
+        "firstAt": 1781835089164,
+        "lastAt": 1781835094174,
+        "durationMs": 5010
+      },
+      "samples": [
+        {
+          "at": 1781835089164,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781835090166,
+          "rssMb": 564,
+          "maxProcessRssMb": 161,
+          "processCount": 5
+        },
+        {
+          "at": 1781835091169,
+          "rssMb": 929,
+          "maxProcessRssMb": 294,
+          "processCount": 7
+        },
+        {
+          "at": 1781835092173,
+          "rssMb": 1256,
+          "maxProcessRssMb": 601,
+          "processCount": 7
+        },
+        {
+          "at": 1781835093173,
+          "rssMb": 1670,
+          "maxProcessRssMb": 987,
+          "processCount": 8
+        },
+        {
+          "at": 1781835094174,
+          "rssMb": 1682,
+          "maxProcessRssMb": 999,
+          "processCount": 8
+        }
+      ]
+    }
+  ]
+}

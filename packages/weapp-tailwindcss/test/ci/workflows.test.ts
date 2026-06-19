@@ -49,6 +49,10 @@ function stepRuns(workflow: Record<string, any>, jobName: string) {
     .filter((run): run is string => typeof run === 'string')
 }
 
+function hasRunContaining(runs: string[], command: string) {
+  return runs.some(run => run.includes(command))
+}
+
 function extractJsonArrays(source: string) {
   return [...source.matchAll(/\[\{.*?\}\]/g)].map((match) => {
     return JSON.parse(match[0]) as Array<Record<string, unknown>>
@@ -84,12 +88,13 @@ describe('ci workflows', () => {
       return typeof step.name === 'string' && step.name.startsWith('E2E ')
     })).toBe(false)
 
-    expect(stepRuns(workflow, 'quality')).toEqual(expect.arrayContaining([
+    const qualityRuns = stepRuns(workflow, 'quality')
+    expect(qualityRuns).toEqual(expect.arrayContaining([
       'pnpm install --frozen-lockfile',
       'pnpm lint',
-      'pnpm build:ci',
-      'pnpm test:release',
     ]))
+    expect(hasRunContaining(qualityRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasRunContaining(qualityRuns, 'pnpm test:release')).toBe(true)
   })
 
   it('keeps heavyweight e2e checks parallel to the quality gate', () => {
@@ -106,18 +111,16 @@ describe('ci workflows', () => {
     expect(staticRuns).not.toContain('pnpm build')
     expect(focusedRuns).not.toContain('pnpm build')
     expect(multiplatformRuns).not.toContain('pnpm build')
-    expect(qualityRuns).toContain('pnpm build:ci')
+    expect(hasRunContaining(qualityRuns, 'pnpm build:ci')).toBe(true)
     expect(staticJob['timeout-minutes']).toBe(15)
     expect(staticJob.strategy['fail-fast']).toBe(false)
     expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
-    expect(staticRuns).toEqual(expect.arrayContaining([
-      'pnpm build:ci',
-      'pnpm exec playwright install chromium',
-      'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}',
-    ]))
-    expect(focusedRuns).toContain('pnpm build:ci')
-    expect(multiplatformRuns).toContain('pnpm build:ci')
+    expect(staticRuns).toContain('pnpm exec playwright install chromium')
+    expect(hasRunContaining(staticRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasRunContaining(staticRuns, 'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
+    expect(hasRunContaining(focusedRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasRunContaining(multiplatformRuns, 'pnpm build:ci')).toBe(true)
 
     expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(focusedRows)).toEqual([
@@ -136,7 +139,7 @@ describe('ci workflows', () => {
       'pnpm e2e:web-css-preservation',
       'pnpm e2e:demo-user-workflow',
     ])
-    expect(stepRuns(workflow, 'e2e-focused')).toContain('${{ matrix.command }}')
+    expect(hasRunContaining(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
 
     expect(workflow.jobs['e2e-multiplatform'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(multiplatformRows)).toEqual([
@@ -147,7 +150,7 @@ describe('ci workflows', () => {
       'pnpm e2e:multiplatform-build',
       'pnpm e2e:multiplatform-build:taro-alipay',
     ])
-    expect(stepRuns(workflow, 'e2e-multiplatform')).toContain('${{ matrix.command }}')
+    expect(hasRunContaining(stepRuns(workflow, 'e2e-multiplatform'), '${{ matrix.command }}')).toBe(true)
   })
 
   it('keeps the preprocessor source demo in local e2e and CI', () => {
@@ -546,6 +549,7 @@ describe('e2e watch workflow', () => {
         watch_timeout_ms: '240000',
         watch_command_timeout_ms: '600000',
         watch_main_style_only: '1',
+        watch_main_style_subpackage_limit: '0',
       },
     ]
     const slowMacosUniAppPrBudgets = [

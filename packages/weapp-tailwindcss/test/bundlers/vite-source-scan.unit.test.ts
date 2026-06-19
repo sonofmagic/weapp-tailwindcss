@@ -1,4 +1,4 @@
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { mkdir, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
@@ -44,7 +44,7 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: '/project',
           base: '/project',
           baseFallbacks: [],
@@ -59,14 +59,14 @@ describe('bundlers/vite source scan', () => {
           }],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
     })
 
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike)
+    } as TailwindcssRuntimeLike)
 
     expect(fallbackResolve).not.toHaveBeenCalled()
     expect(resolved?.entries).toEqual([
@@ -102,20 +102,20 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
     })
 
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -145,20 +145,20 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
     })
 
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -188,20 +188,20 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
     })
 
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -249,13 +249,13 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('css entry should be discovered')
         }),
       }
@@ -264,13 +264,13 @@ describe('bundlers/vite source scan', () => {
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
     await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -306,13 +306,13 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('css entry should be discovered')
         }),
       }
@@ -321,13 +321,13 @@ describe('bundlers/vite source scan', () => {
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
     await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -431,13 +431,13 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
     })
 
@@ -445,7 +445,7 @@ describe('bundlers/vite source scan', () => {
     const discovered = await discoverTailwindV4CssEntries(tempDir, 'dist/dev/mp-weixin')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist/dev/mp-weixin',
     })
@@ -491,13 +491,13 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('auto-discovered css roots should avoid full Tailwind v4 source fallback')
         }),
       }
@@ -506,7 +506,7 @@ describe('bundlers/vite source scan', () => {
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -546,7 +546,7 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: tempDir,
           base: tempDir,
           baseFallbacks: [],
@@ -564,7 +564,7 @@ describe('bundlers/vite source scan', () => {
             },
           ],
         })),
-        resolveTailwindV4SourceFromPatcher: vi.fn(async () => {
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => {
           throw new Error('configured cssSources should avoid full Tailwind v4 source fallback')
         }),
       }
@@ -573,7 +573,7 @@ describe('bundlers/vite source scan', () => {
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
@@ -592,7 +592,7 @@ describe('bundlers/vite source scan', () => {
     expect(resolved?.entries?.some(entry => entry.negated)).toBe(false)
   })
 
-  it('keeps broad Tailwind v4 fallback when the Vite root differs from the patcher project root', async () => {
+  it('keeps broad Tailwind v4 fallback when the Vite root differs from the runtime project root', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
     await writeFile(path.join(tempDir, 'app.scss'), [
       '@import "tailwindcss" source(none);',
@@ -610,20 +610,20 @@ describe('bundlers/vite source scan', () => {
       const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
       return {
         ...actual,
-        resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
           projectRoot: '/outside-project',
           base: '/outside-project',
           baseFallbacks: [],
           packageName: 'tailwindcss4',
         })),
-        resolveTailwindV4SourceFromPatcher: fallbackResolve,
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
       }
     })
 
     const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
-    } as TailwindcssPatcherLike, {
+    } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })

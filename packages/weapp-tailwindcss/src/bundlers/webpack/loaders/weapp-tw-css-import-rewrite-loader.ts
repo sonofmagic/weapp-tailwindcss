@@ -105,7 +105,7 @@ async function generateCssForWebpackPipeline(
   const normalizedSource = normalizeCssConfigDirectives(source, file)
   const cssHandlerOptions = createCssHandlerOptions(
     compilerOptions,
-    runtimeState.twPatcher.majorVersion,
+    runtimeState.tailwindRuntime.majorVersion,
     file,
     rewriteOptions.appType,
   )

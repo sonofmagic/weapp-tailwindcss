@@ -86,6 +86,7 @@
     "e2e:demo:workflow": "tsx scripts/demo-e2e-workflow.ts",
     "e2e:demo:workflow:local": "tsx scripts/demo-e2e-workflow.ts --local",
     "e2e:demo:weapp-memory": "tsx scripts/demo-weapp-memory-report.ts --continue-on-error",
+    "e2e:local:full-report": "tsx scripts/local-full-platform-report.ts",
     "e2e:ide": "cross-env E2E_IDE=1 E2E_IDE_BUILD=1 vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/framework-ide-support.test.ts",
     "e2e:ide:build": "pnpm e2e:ide",
     "e2e:ide:skip-build": "cross-env E2E_IDE=1 E2E_IDE_BUILD=0 vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/framework-ide-support.test.ts",

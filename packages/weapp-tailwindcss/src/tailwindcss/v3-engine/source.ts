@@ -1,11 +1,11 @@
 import type { Config } from 'tailwindcss'
 import type { TailwindV3ResolvedSource, TailwindV3SourceOptions } from './types'
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { loadConfig } from 'tailwindcss-config'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { omitUndefined } from '@/utils/object'
 
 const DEFAULT_TAILWIND_V3_CSS = [
@@ -54,8 +54,8 @@ function resolveCssConfig(css: string | undefined, base: string) {
   }
 }
 
-function getProjectRoot(patcher: TailwindcssPatcherLike) {
-  return patcher.options?.projectRoot ?? process.cwd()
+function getProjectRoot(runtime: TailwindcssRuntimeLike) {
+  return runtime.options?.projectRoot ?? process.cwd()
 }
 
 function normalizeLoadedConfig(config: Config | undefined) {
@@ -69,9 +69,9 @@ function normalizeLoadedConfig(config: Config | undefined) {
   return config
 }
 
-function resolveTailwindCssPackageName(patcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
-  return tailwindOptions?.packageName ?? patcher.packageInfo?.name ?? 'tailwindcss'
+function resolveTailwindCssPackageName(runtime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(runtime.options)
+  return tailwindOptions?.packageName ?? runtime.packageInfo?.name ?? 'tailwindcss'
 }
 
 export async function resolveTailwindV3Source(
@@ -102,22 +102,22 @@ export async function resolveTailwindV3Source(
   }
 }
 
-export function resolveTailwindV3SourceOptionsFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export function resolveTailwindV3SourceOptionsFromRuntime(
+  runtime: TailwindcssRuntimeLike,
 ): TailwindV3SourceOptions {
-  const projectRoot = getProjectRoot(patcher)
-  const tailwindOptions = resolveTailwindcssOptions(patcher.options)
+  const projectRoot = getProjectRoot(runtime)
+  const tailwindOptions = resolveTailwindcssOptions(runtime.options)
   return {
     projectRoot,
     cwd: tailwindOptions?.v3?.cwd ?? tailwindOptions?.cwd ?? projectRoot,
     config: tailwindOptions?.v3?.config ?? tailwindOptions?.config,
-    packageName: resolveTailwindCssPackageName(patcher),
+    packageName: resolveTailwindCssPackageName(runtime),
     postcssPlugin: tailwindOptions?.v3?.postcssPlugin ?? tailwindOptions?.postcssPlugin,
   }
 }
 
-export function resolveTailwindV3SourceFromPatcher(
-  patcher: TailwindcssPatcherLike,
+export function resolveTailwindV3SourceFromRuntime(
+  runtime: TailwindcssRuntimeLike,
 ) {
-  return resolveTailwindV3Source(resolveTailwindV3SourceOptionsFromPatcher(patcher))
+  return resolveTailwindV3Source(resolveTailwindV3SourceOptionsFromRuntime(runtime))
 }

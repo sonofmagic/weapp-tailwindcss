@@ -5,7 +5,7 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
-import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, wait } from './shared'
+import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
 import { normalizeCssTextSnapshot } from './snapshotUtils'
 import { collectTokenSourceReports, formatTokenSourceFileReport } from './tokenSourceReports'
 
@@ -266,6 +266,8 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   const shouldResetPatchCaches = !entry.name.startsWith('taro-')
 
   await clearProjectBuildState(root)
+
+  await twPatch(root)
 
   if (process.env.E2E_SKIP_BUILD !== '1') {
     await ensureProjectBuilt(root)

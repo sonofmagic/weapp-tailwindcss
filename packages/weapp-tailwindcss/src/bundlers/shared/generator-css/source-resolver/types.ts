@@ -1,10 +1,10 @@
 import type { SourceSideCssEntryOptions } from '../source-files'
-import type { resolveTailwindV4SourceOptionsFromPatcher } from '@/generator'
+import type { resolveTailwindV4SourceOptionsFromRuntime } from '@/generator'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { InternalUserDefinedOptions } from '@/types'
 
 export interface GeneratorSourceRuntimeState {
-  twPatcher: InternalUserDefinedOptions['twPatcher']
+  tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
 }
 
 export interface GeneratorSourceSelectionOptions {
@@ -14,7 +14,7 @@ export interface GeneratorSourceSelectionOptions {
   cssSources?: TailwindV4CssSource[] | undefined
 }
 
-export type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher> & {
+export type TailwindV4SourceOptions = ReturnType<typeof resolveTailwindV4SourceOptionsFromRuntime> & {
   config?: string | undefined
   outputRoot?: string | undefined
   sourceFile?: string | undefined

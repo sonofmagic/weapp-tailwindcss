@@ -124,6 +124,34 @@ function createClassTokenExpectedValues(classToken: string | undefined, escaped:
   return [...values]
 }
 
+function createRollbackProbeSource(
+  mutationKind: 'template' | 'script' | 'content',
+  mutation: ClassMutationConfig,
+  sourceOriginal: string,
+  payload: {
+    marker: string
+    classVariableName: string
+  },
+) {
+  if (mutationKind === 'content') {
+    return {
+      marker: undefined,
+      source: sourceOriginal,
+    }
+  }
+
+  const source = mutation.mutate(sourceOriginal, {
+    marker: payload.marker,
+    classLiteral: '',
+    classVariableName: payload.classVariableName,
+  })
+
+  return {
+    marker: source === sourceOriginal ? undefined : payload.marker,
+    source,
+  }
+}
+
 function resolveIssue33SnapshotDir(
   watchCase: WatchCase,
   mutationKind: 'template' | 'script',
@@ -842,10 +870,19 @@ export async function runClassMutation(
     try {
       const updatedOutputMtimes = await collectOutputMtimes(mutationOutputFiles)
       const rollbackStartedAt = Date.now()
+      const rollbackProbe = createRollbackProbeSource(
+        mutationKind,
+        mutation,
+        sourceOriginal,
+        {
+          marker: `tw-watch-${watchCase.name}-${mutationKind}-rollback-${Date.now()}`,
+          classVariableName,
+        },
+      )
       process.stdout.write(
         `[watch-hmr] ${watchCase.label} mutation=${mutationKind} round=${roundConfig.name} phase=delete dirty=${formatPath(sourcePath)}\n`,
       )
-      await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+      await writeFilePreserveEol(sourcePath, rollbackProbe.source, sourceOriginal)
       rollbackOutputMs = await waitForOutputFilesUpdated(
         watchCase,
         mutationOutputFiles,
@@ -860,6 +897,9 @@ export async function runClassMutation(
           }
           if (isContentMutation) {
             return effectiveEscapedClasses.every(escaped => !outputs.js.includes(escaped))
+          }
+          if (rollbackProbe.marker && !outputs.wxml.includes(rollbackProbe.marker) && !outputs.js.includes(rollbackProbe.marker)) {
+            return false
           }
           return !outputs.wxml.includes(effectiveMarker)
             && !outputs.js.includes(effectiveMarker)

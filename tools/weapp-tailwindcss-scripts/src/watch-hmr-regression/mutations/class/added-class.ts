@@ -312,10 +312,16 @@ export async function runAddedClassMutation(
   const hotUpdatePluginMetrics = collectPluginProcessMetrics(session, hotUpdateStartedAt)
 
   const rollbackStartedAt = Date.now()
+  const rollbackMarker = `tw-watch-added-class-rollback-${watchCase.name}-${mutationKind}-${Date.now()}`
+  const sourceAfterRollback = mutation.mutate(sourceOriginal, {
+    marker: rollbackMarker,
+    classLiteral: baseScenario.classLiteral,
+    classVariableName,
+  })
   process.stdout.write(
     `[watch-hmr] ${watchCase.label} mutation=${mutationKind} added-class phase=delete dirty=${sourcePath}\n`,
   )
-  await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+  await writeFilePreserveEol(sourcePath, sourceAfterRollback, sourceOriginal)
   const rollbackOutputMs = await waitForOutputsUpdated(
     watchCase,
     mtimeAfterAdd,
@@ -324,17 +330,15 @@ export async function runAddedClassMutation(
     rollbackStartedAt,
     async () => {
       const outputs = await readOutputs(watchCase, globalStyleOutputs)
-      return !outputs.wxml.includes(markerAfter) && !outputs.js.includes(markerAfter)
+      const rollbackMarkerPresent = sourceAfterRollback === sourceOriginal
+        || outputs.wxml.includes(rollbackMarker)
+        || outputs.js.includes(rollbackMarker)
+      return rollbackMarkerPresent
+        && !outputs.wxml.includes(markerAfter)
+        && !outputs.js.includes(markerAfter)
     },
   )
-  const rollbackEffectiveMs = await waitForMarkerState(
-    watchCase,
-    markerAfter,
-    'absent',
-    cliOptions,
-    session,
-    rollbackStartedAt,
-  )
+  const rollbackEffectiveMs = rollbackOutputMs
   const rollbackPluginMetrics = collectPluginProcessMetrics(session, rollbackStartedAt)
 
   return {

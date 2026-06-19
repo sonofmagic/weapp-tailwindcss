@@ -67,7 +67,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css cleanup', () => {
       },
     }
 
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 
@@ -87,7 +87,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css cleanup', () => {
 
   it('removes leftover Tailwind CSS source directives from webpack css assets', async () => {
     testState.currentContext = createContext()
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let currentAssetStore: Record<string, string> = {}

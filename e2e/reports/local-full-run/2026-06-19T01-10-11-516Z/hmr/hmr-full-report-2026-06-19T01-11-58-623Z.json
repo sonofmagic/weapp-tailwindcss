@@ -1,0 +1,148 @@
+{
+  "generatedAt": "2026-06-19T01:11:58.623Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "targetNames": [
+    "demo"
+  ],
+  "totalCases": 1,
+  "reportCount": 1,
+  "projectCount": 1,
+  "timingCount": 4,
+  "summary": {
+    "count": 4,
+    "avgMs": 5924,
+    "minMs": 5828,
+    "maxMs": 5958,
+    "p50Ms": 5952,
+    "p95Ms": 5958
+  },
+  "pluginProcessSummary": {
+    "count": 4,
+    "avgMs": 482,
+    "minMs": 475,
+    "maxMs": 503,
+    "p50Ms": 475,
+    "p95Ms": 503
+  },
+  "byApp": {
+    "demo/taro-webpack-vue3-tailwindcss-v4": {
+      "project": "demo/taro-webpack-vue3-tailwindcss-v4",
+      "platforms": {
+        "weapp": {
+          "count": 4,
+          "avgMs": 5924,
+          "minMs": 5828,
+          "maxMs": 5958,
+          "p50Ms": 5952,
+          "p95Ms": 5958
+        }
+      }
+    }
+  },
+  "byPlatform": {
+    "weapp": {
+      "count": 4,
+      "avgMs": 5924,
+      "minMs": 5828,
+      "maxMs": 5958,
+      "p50Ms": 5952,
+      "p95Ms": 5958
+    }
+  },
+  "memory": {
+    "projectCount": 1,
+    "sampleCount": 66,
+    "debugSampleCount": 92,
+    "peakRssMb": 1263,
+    "maxRssDeltaMb": 757,
+    "peakHeapUsedMb": 565,
+    "byApp": {
+      "demo/taro-webpack-vue3-tailwindcss-v4": {
+        "peakRssMb": 1263,
+        "maxRssDeltaMb": 757,
+        "peakHeapUsedMb": 565
+      }
+    },
+    "byPlatform": {
+      "weapp": {
+        "peakRssMb": 1263,
+        "maxRssDeltaMb": 757,
+        "peakHeapUsedMb": 565
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseName": "taro-webpack-vue3-tailwindcss-v4",
+      "project": "demo/taro-webpack-vue3-tailwindcss-v4",
+      "label": "demo/taro-webpack-vue3-tailwindcss-v4",
+      "platform": "weapp",
+      "framework": "taro-vue3",
+      "builder": "webpack5",
+      "tailwindcss": "v4",
+      "sourceShape": "vue-sfc",
+      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T01-11-58-626Z-taro-webpack-vue3-tailwindcss-v4.json",
+      "initialReadyMs": 6130,
+      "totalMs": 65974,
+      "summary": {
+        "count": 4,
+        "avgMs": 5924,
+        "minMs": 5828,
+        "maxMs": 5958,
+        "p50Ms": 5952,
+        "p95Ms": 5958
+      },
+      "pluginProcessSummary": {
+        "count": 4,
+        "avgMs": 482,
+        "minMs": 475,
+        "maxMs": 503,
+        "p50Ms": 475,
+        "p95Ms": 503
+      },
+      "memory": {
+        "sampleCount": 66,
+        "debugSampleCount": 92,
+        "baselineRssMb": 506,
+        "peakRssMb": 1263,
+        "rssDeltaMb": 757,
+        "peakMaxProcessRssMb": 976,
+        "peakProcessCount": 5,
+        "peakHeapUsedMb": 565,
+        "peakDebugRssMb": 984
+      },
+      "notes": [
+        "端到端 HMR 明显高于插件处理耗时，主要口径包含框架 dev server 编译、产物写入、浏览器/运行时可见等待。"
+      ],
+      "timings": [
+        {
+          "surface": "template:preferred-round",
+          "hotUpdateEffectiveMs": 5958,
+          "rollbackEffectiveMs": 5897,
+          "hotUpdatePluginProcessMs": 475
+        },
+        {
+          "surface": "main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/taro-webpack-vue3-tailwindcss-v4/src/pages/index/index.vue",
+          "hotUpdateEffectiveMs": 5958,
+          "rollbackEffectiveMs": 5897,
+          "hotUpdatePluginProcessMs": 475
+        },
+        {
+          "surface": "subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/taro-webpack-vue3-tailwindcss-v4/src/sub-normal/pages/index.vue",
+          "hotUpdateEffectiveMs": 5952,
+          "rollbackEffectiveMs": 5963,
+          "hotUpdatePluginProcessMs": 503
+        },
+        {
+          "surface": "subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/taro-webpack-vue3-tailwindcss-v4/src/sub-independent/pages/index.vue",
+          "hotUpdateEffectiveMs": 5828,
+          "rollbackEffectiveMs": 5927,
+          "hotUpdatePluginProcessMs": 476
+        }
+      ]
+    }
+  ]
+}

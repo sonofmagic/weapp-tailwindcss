@@ -10,8 +10,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js class set refresh', () 
     testState.currentContext = createContext({
       jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classSet, options as any)),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -105,7 +104,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js class set refresh', () 
     const secondPass = currentAssetStore['index.js']
     expect(secondPass).toContain(replaceWxml('bg-[#f0a0a0]'))
     expect(secondPass).not.toContain('bg-[#f0a0a0]')
-    expect(testState.currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
+    expect(testState.currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
   })
 
 })

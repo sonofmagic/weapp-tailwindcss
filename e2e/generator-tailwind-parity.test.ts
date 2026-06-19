@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, symlink } from 'node:fs/promises'
+import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
@@ -170,5 +170,48 @@ describe('generator tailwind parity', () => {
     expect(weapp.css).toContain('border-radius: 9999px')
     expect(weapp.css).not.toContain('@property')
     expect(weapp.css).not.toContain('calc(infinity * 1px)')
+  })
+
+  it('matches Tailwind v4 cwd-based default source scanning for bare imports', async () => {
+    expect(tailwindcssV4Version.startsWith('4.')).toBe(true)
+    const fixture = await createTailwindV4FixtureRoot()
+    const cssDir = path.join(fixture.root, 'src', 'styles')
+    const pagesDir = path.join(fixture.root, 'pages')
+    await mkdir(cssDir, { recursive: true })
+    await mkdir(pagesDir, { recursive: true })
+    await writeFile(path.join(pagesDir, 'index.html'), '<view class="bg-red-500 w-4"></view>', 'utf8')
+    const cssEntry = path.join(cssDir, 'app.css')
+    const css = '@import "tailwindcss";'
+    await writeFile(cssEntry, css, 'utf8')
+
+    const cwd = process.cwd()
+    let officialCss = ''
+    try {
+      process.chdir(fixture.root)
+      const official = await postcss([
+        tailwindcssPostcssV4({
+          optimize: false,
+        }),
+      ]).process(css, {
+        from: cssEntry,
+      })
+      officialCss = official.css
+    }
+    finally {
+      process.chdir(cwd)
+    }
+
+    const source = await resolveTailwindV4Source({
+      projectRoot: fixture.root,
+      cssEntries: [cssEntry],
+      packageName: 'tailwindcss',
+    })
+    const engine = createWeappTailwindcssGenerator(source)
+    const web = await engine.generate({
+      target: 'web',
+    })
+
+    expect(web.classSet).toEqual(new Set(['bg-red-500', 'w-4']))
+    expect(normalizeCss(web.css)).toBe(normalizeCss(officialCss))
   })
 })

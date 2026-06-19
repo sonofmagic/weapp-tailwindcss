@@ -1,0 +1,60 @@
+{
+  "generatedAt": "2026-06-19T01:13:49.945Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "profile": "hmr-smoke",
+  "steps": [
+    {
+      "name": "mini-program-hmr-memory",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:demo:weapp-memory",
+        "--stage",
+        "hmr",
+        "--out-dir",
+        ".tmp/local-full-report-weapp-memory"
+      ],
+      "startedAt": "2026-06-19T01:10:11.517Z",
+      "endedAt": "2026-06-19T01:13:49.940Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 219,
+        "baselineRssMb": 704,
+        "peakRssMb": 3641,
+        "rssDeltaMb": 2937,
+        "peakMaxProcessRssMb": 2121,
+        "peakProcessCount": 15,
+        "firstAt": 1781831411546,
+        "lastAt": 1781831629912,
+        "durationMs": 218366
+      },
+      "copiedArtifacts": [
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/README.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/summary.json",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/projects/mpx-tailwindcss-v4.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/projects/taro-webpack-react-tailwindcss-v4.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/projects/taro-webpack-vue3-tailwindcss-v4.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/projects/uni-app-vite-tailwindcss-v4.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/weapp-memory/projects/weapp-vite-tailwindcss-v4.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-10-12-582Z.json",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-10-12-582Z.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-10-42-347Z.json",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-10-42-347Z.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-11-58-623Z.json",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-11-58-623Z.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-13-14-563Z.json",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-13-14-563Z.md",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-13-34-164Z.json",
+        "e2e/reports/local-full-run/2026-06-19T01-10-11-516Z/hmr/hmr-full-report-2026-06-19T01-13-34-164Z.md"
+      ]
+    }
+  ],
+  "summary": {
+    "stepCount": 1,
+    "passedStepCount": 1,
+    "failedStepCount": 0,
+    "skippedStepCount": 0,
+    "peakRssMb": 3641,
+    "maxRssDeltaMb": 2937
+  }
+}

@@ -1,8 +1,8 @@
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { describe, expect, it, vi } from 'vitest'
 import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 
-function createMockPatcher(
+function createMockRuntime(
   options?: {
     syncSet?: Set<string>
     extractedSet?: Set<string>
@@ -13,7 +13,7 @@ function createMockPatcher(
   const extractedSet = options?.extractedSet ?? new Set<string>()
   const fallbackSet = options?.fallbackSet ?? new Set<string>()
 
-  const patcher: TailwindcssPatcherLike = {
+  const runtime: TailwindcssRuntimeLike = {
     packageInfo: {
       name: 'tailwindcss',
       version: '3.4.19',
@@ -22,7 +22,6 @@ function createMockPatcher(
       packageJson: {},
     } as any,
     majorVersion: 3,
-    patch: vi.fn(async () => ({} as any)),
     getClassSet: vi.fn(async () => fallbackSet),
     getClassSetSync: vi.fn(() => syncSet),
     extract: vi.fn(async () => ({
@@ -36,63 +35,63 @@ function createMockPatcher(
     } as any,
   }
 
-  return patcher
+  return runtime
 }
 
 describe('tailwindcss runtime class set collection', () => {
   it('prefers extract result when force collecting to avoid stale sync cache', async () => {
     const staleSyncSet = new Set(['stale-only'])
     const freshExtractedSet = new Set(['2xl:text-[red]'])
-    const patcher = createMockPatcher({
+    const runtime = createMockRuntime({
       syncSet: staleSyncSet,
       extractedSet: freshExtractedSet,
       fallbackSet: new Set(['fallback-only']),
     })
 
-    const collected = await collectRuntimeClassSet(patcher, {
+    const collected = await collectRuntimeClassSet(runtime, {
       force: true,
       skipRefresh: true,
     })
 
     expect(collected).toBe(freshExtractedSet)
     expect(collected.has('2xl:text-[red]')).toBe(true)
-    expect(patcher.extract).toHaveBeenCalledTimes(1)
-    expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(runtime.extract).toHaveBeenCalledTimes(1)
+    expect(runtime.getClassSetSync).toHaveBeenCalledTimes(1)
   })
 
   it('keeps empty extract result when force collecting v3 to avoid stale sync cache pollution', async () => {
     const syncSet = new Set(['bg-[length:200rpx_100rpx]'])
     const extractedSet = new Set<string>()
-    const patcher = createMockPatcher({
+    const runtime = createMockRuntime({
       syncSet,
       extractedSet,
       fallbackSet: new Set(['fallback-only']),
     })
 
-    const collected = await collectRuntimeClassSet(patcher, {
+    const collected = await collectRuntimeClassSet(runtime, {
       force: true,
       skipRefresh: true,
     })
 
     expect(collected).toBe(extractedSet)
-    expect(patcher.extract).toHaveBeenCalledTimes(1)
-    expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(runtime.extract).toHaveBeenCalledTimes(1)
+    expect(runtime.getClassSetSync).toHaveBeenCalledTimes(1)
   })
 
   it('can still use sync set on non-force path when extract is unavailable', async () => {
     const syncSet = new Set(['bg-[#123456]'])
-    const patcher = createMockPatcher({
+    const runtime = createMockRuntime({
       syncSet,
       extractedSet: new Set<string>(),
       fallbackSet: new Set(['fallback-only']),
     })
 
-    const collected = await collectRuntimeClassSet(patcher, {
+    const collected = await collectRuntimeClassSet(runtime, {
       force: false,
       skipRefresh: true,
     })
 
     expect(collected).toBe(syncSet)
-    expect(patcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(runtime.getClassSetSync).toHaveBeenCalledTimes(1)
   })
 })

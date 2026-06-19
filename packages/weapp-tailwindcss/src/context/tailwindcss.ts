@@ -1,24 +1,24 @@
-import type { TailwindcssPatcherFactoryOptions } from '@/tailwindcss/v4'
+import type { TailwindcssRuntimeFactoryOptions } from '@/tailwindcss/v4'
 import type { InternalUserDefinedOptions } from '@/types'
 import { logger } from '@weapp-tailwindcss/logger'
 import { findWorkspaceRoot } from '@/context/workspace'
 import {
-  createPatcherForBase,
+  createTailwindcssRuntimeForBase,
   groupCssEntriesByBase,
   guessBasedirFromEntries,
   normalizeCssEntries,
-  tryCreateMultiTailwindcssPatcher,
+  tryCreateMultiTailwindcssRuntime,
 } from '@/tailwindcss/v4'
 import { omitUndefined } from '@/utils/object'
 import { resolveTailwindcssBasedir } from './tailwindcss/basedir'
 import { detectImplicitCssEntries } from './tailwindcss/rax'
 
-export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOptions) {
+export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOptions) {
   const {
     tailwindcssBasedir,
-    supportCustomLengthUnitsPatch,
+    supportCustomLengthUnits,
     tailwindcss,
-    tailwindcssPatcherOptions,
+    tailwindcssRuntimeOptions,
     cssEntries: rawCssEntries,
     appType,
     arbitraryValues,
@@ -37,10 +37,10 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
     ctx.cssEntries = normalizedCssEntries
   }
 
-  const patcherOptions: TailwindcssPatcherFactoryOptions = {
+  const runtimeOptions: TailwindcssRuntimeFactoryOptions = {
     tailwindcss,
-    tailwindcssPatcherOptions,
-    supportCustomLengthUnitsPatch,
+    tailwindcssRuntimeOptions,
+    supportCustomLengthUnits,
     appType,
     bareArbitraryValues: arbitraryValues?.bareArbitraryValues,
   }
@@ -55,28 +55,28 @@ export function createTailwindcssPatcherFromContext(ctx: InternalUserDefinedOpti
       }))
     : undefined
 
-  const multiPatcher = groupedCssEntries
-    ? tryCreateMultiTailwindcssPatcher(groupedCssEntries, patcherOptions)
+  const multiRuntime = groupedCssEntries
+    ? tryCreateMultiTailwindcssRuntime(groupedCssEntries, runtimeOptions)
     : undefined
 
-  if (multiPatcher) {
-    return multiPatcher
+  if (multiRuntime) {
+    return multiRuntime
   }
 
   if (groupedCssEntries?.size === 1) {
     const firstGroup = groupedCssEntries.entries().next().value
     if (firstGroup) {
       const [baseDir, entries] = firstGroup
-      return createPatcherForBase(baseDir, entries, patcherOptions)
+      return createTailwindcssRuntimeForBase(baseDir, entries, runtimeOptions)
     }
   }
 
   const effectiveCssEntries = normalizedCssEntries ?? rawCssEntries
 
-  return createPatcherForBase(
+  return createTailwindcssRuntimeForBase(
     resolvedTailwindcssBasedir,
     effectiveCssEntries,
-    patcherOptions,
+    runtimeOptions,
   )
 }
 

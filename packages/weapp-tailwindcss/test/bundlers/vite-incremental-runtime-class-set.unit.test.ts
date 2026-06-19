@@ -18,10 +18,9 @@ function createOptions() {
   } as any
 }
 
-function createPatcher(projectRoot: string) {
+function createRuntime(projectRoot: string) {
   return {
     majorVersion: 4,
-    patch: vi.fn(async () => ({})),
     getClassSet: vi.fn(async () => new Set<string>()),
     extract: vi.fn(async () => ({ classSet: new Set<string>() })),
     options: {
@@ -35,10 +34,9 @@ function createPatcher(projectRoot: string) {
   } as any
 }
 
-function createV3Patcher() {
+function createV3Runtime() {
   return {
     majorVersion: 3,
-    patch: vi.fn(async () => ({})),
     getClassSet: vi.fn(async () => new Set<string>()),
     extract: vi.fn(async () => ({ classSet: new Set<string>() })),
     options: {},
@@ -63,7 +61,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
@@ -96,7 +94,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const firstRuntimeSet = await manager.sync(patcher, firstSnapshot)
+    const firstRuntimeSet = await manager.sync(runtime, firstSnapshot)
 
     expect(firstRuntimeSet).toEqual(new Set(['foo', 'bar', 'baz']))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
@@ -118,7 +116,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const secondRuntimeSet = await manager.sync(patcher, secondSnapshot)
+    const secondRuntimeSet = await manager.sync(runtime, secondSnapshot)
 
     expect(secondRuntimeSet).toEqual(new Set(['bar', 'baz', 'qux']))
     expect(extractCandidates).toHaveBeenCalledTimes(1)
@@ -130,7 +128,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       expect(options?.bareArbitraryValues).toBe(true)
       return String(options?.content ?? '').split(/\s+/).filter(Boolean)
@@ -151,7 +149,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const runtimeSet = await manager.sync(patcher, snapshot)
+    const runtimeSet = await manager.sync(runtime, snapshot)
 
     expect(runtimeSet).toEqual(new Set(['text-var(--brand)', 'w-calc(100%-1rem)']))
     expect(extractRawCandidates).toHaveBeenCalledWith(
@@ -168,7 +166,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     } as any
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
@@ -194,7 +192,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set([
+    await expect(manager.sync(runtime, snapshot)).resolves.toEqual(new Set([
       'h-[458rpx]',
       'w-[218rpx]',
       'inset-x-[30%]',
@@ -209,7 +207,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createV3Patcher()
+    const runtime = createV3Runtime()
     const jsSource = 'const n = "flex bg-yellow-300/30"; const bgObj = common_vendor.ref({ "bg-[#999998]": true });'
     const extractRawCandidates = vi.fn(async (content: string, extension?: string) => {
       if (extension === 'js' && content.includes('bg-[#999998]')) {
@@ -232,7 +230,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const runtimeSet = await manager.sync(patcher, snapshot, {
+    const runtimeSet = await manager.sync(runtime, snapshot, {
       baseClassSet: new Set(['bg-[#999999]']),
     })
 
@@ -247,7 +245,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
@@ -277,7 +275,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await manager.sync(patcher, firstSnapshot)
+    await manager.sync(runtime, firstSnapshot)
     updateBundleBuildState(state, firstSnapshot, new Map([
       ['assets/index.js', new Set<string>()],
     ]))
@@ -291,7 +289,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const nextRuntimeSet = await manager.sync(patcher, nextSnapshot)
+    const nextRuntimeSet = await manager.sync(runtime, nextSnapshot)
 
     expect(nextRuntimeSet).toEqual(new Set(['bar']))
     expect(extractCandidates).not.toHaveBeenCalled()
@@ -301,7 +299,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       const source = options?.content ?? ''
       return source.split(/\s+/).filter(candidate => candidate === 'bar')
@@ -334,7 +332,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await manager.sync(patcher, firstSnapshot)
+    await manager.sync(runtime, firstSnapshot)
     updateBundleBuildState(state, firstSnapshot, new Map([
       ['assets/index.js', new Set<string>()],
     ]), { incremental: true })
@@ -350,7 +348,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await expect(manager.sync(patcher, emptyHtmlSnapshot)).resolves.toEqual(new Set(['bar']))
+    await expect(manager.sync(runtime, emptyHtmlSnapshot)).resolves.toEqual(new Set(['bar']))
     updateBundleBuildState(state, emptyHtmlSnapshot, new Map([
       ['assets/index.js', new Set<string>()],
     ]), { incremental: true })
@@ -366,7 +364,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await expect(manager.sync(patcher, invalidJsSnapshot)).resolves.toEqual(new Set<string>())
+    await expect(manager.sync(runtime, invalidJsSnapshot)).resolves.toEqual(new Set<string>())
   })
 
   it('prefers cssEntries when building extract options for tailwind v4', async () => {
@@ -374,13 +372,13 @@ describe('bundlers/vite incremental runtime class set', () => {
     const projectRoot = path.join(tempRoot, 'css-entry-project')
     const outDir = path.join(projectRoot, 'dist')
     const state = createBundleBuildState()
-    const patcher = createPatcher(projectRoot)
+    const runtime = createRuntime(projectRoot)
     const cssEntry = path.join(projectRoot, 'src/app.css')
     await mkdir(path.dirname(cssEntry), { recursive: true })
     await writeFile(cssEntry, '@import "tailwindcss";\n@theme { --color-brand: #123456; }\n', 'utf8')
-    patcher.options.tailwind.v4.cssEntries = [cssEntry]
-    patcher.options.tailwind.postcssPlugin = path.join(projectRoot, 'node_modules/@tailwindcss/postcss/dist/index.js')
-    patcher.packageInfo = {
+    runtime.options.tailwind.v4.cssEntries = [cssEntry]
+    runtime.options.tailwind.postcssPlugin = path.join(projectRoot, 'node_modules/@tailwindcss/postcss/dist/index.js')
+    runtime.packageInfo = {
       name: '@tailwindcss/postcss',
       rootPath: path.join(projectRoot, 'node_modules/@tailwindcss/postcss'),
     }
@@ -398,7 +396,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await manager.sync(patcher, snapshot)
+    await manager.sync(runtime, snapshot)
 
     expect(extractCandidates).toHaveBeenCalledTimes(1)
     expect(extractCandidates.mock.calls[0]?.[0]?.css).toContain('@theme { --color-brand: #123456; }')
@@ -408,10 +406,10 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
-    patcher.options.tailwind.packageName = 'tailwindcss4'
-    patcher.options.tailwind.postcssPlugin = '/project/node_modules/@tailwindcss/postcss/dist/index.js'
-    patcher.packageInfo = {
+    const runtime = createRuntime('/project')
+    runtime.options.tailwind.packageName = 'tailwindcss4'
+    runtime.options.tailwind.postcssPlugin = '/project/node_modules/@tailwindcss/postcss/dist/index.js'
+    runtime.packageInfo = {
       name: '@tailwindcss/postcss',
       rootPath: '/project/node_modules/@tailwindcss/postcss',
     }
@@ -429,7 +427,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await manager.sync(patcher, snapshot)
+    await manager.sync(runtime, snapshot)
 
     expect(extractCandidates).toHaveBeenCalledTimes(1)
     expect(extractCandidates.mock.calls[0]?.[0]?.css).toBe('@import "tailwindcss4";')
@@ -439,7 +437,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async () => ['w-[200rpx]', 'h-[20upx]', 'bg-[#123456]'])
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('w-[200rpx]')) {
@@ -463,7 +461,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set([
+    await expect(manager.sync(runtime, snapshot)).resolves.toEqual(new Set([
       'w-[200rpx]',
       'h-[20upx]',
       'bg-[#123456]',
@@ -475,7 +473,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const events: string[] = []
     let releaseFirst: (() => void) | undefined
     const firstExtraction = new Promise<void>((resolve) => {
@@ -514,7 +512,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const syncPromise = manager.sync(patcher, snapshot)
+    const syncPromise = manager.sync(runtime, snapshot)
     await vi.waitFor(() => {
       expect(events).toEqual(['first:start'])
     })
@@ -531,7 +529,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       const source = options?.content ?? ''
       return source.split(/\s+/).filter(candidate => [
@@ -554,7 +552,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const firstRuntimeSet = await manager.sync(patcher, firstSnapshot)
+    const firstRuntimeSet = await manager.sync(runtime, firstSnapshot)
 
     expect(firstRuntimeSet).toEqual(new Set([
       'text-[102.43rpx]',
@@ -580,7 +578,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const secondRuntimeSet = await manager.sync(patcher, secondSnapshot)
+    const secondRuntimeSet = await manager.sync(runtime, secondSnapshot)
 
     expect(secondRuntimeSet).toEqual(new Set([
       'text-[103.43rpx]',
@@ -594,7 +592,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createPatcher('/project')
+    const runtime = createRuntime('/project')
     const extractCandidates = vi.fn(async (options) => {
       const source = options?.content ?? ''
       return source.split(/\s+/).filter(Boolean)
@@ -640,7 +638,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await expect(manager.sync(patcher, snapshot)).resolves.toEqual(new Set(['bg-[#123456]']))
+    await expect(manager.sync(runtime, snapshot)).resolves.toEqual(new Set(['bg-[#123456]']))
     expect(extractRawCandidates).toHaveBeenCalledTimes(1)
     expect(extractRawCandidates).toHaveBeenCalledWith(
       expect.stringContaining('bg-[#123456]'),
@@ -657,11 +655,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     const outDir = path.join(tempRoot, 'dist')
     const state = createBundleBuildState()
     const projectRoot = path.join(tempRoot, 'project')
-    const patcher = createPatcher(projectRoot)
+    const runtime = createRuntime(projectRoot)
     const cssEntry = path.join(projectRoot, 'src/app.css')
     await mkdir(path.dirname(cssEntry), { recursive: true })
     await writeFile(cssEntry, '@import "tailwindcss";', 'utf8')
-    patcher.options.tailwind.v4.cssEntries = [cssEntry]
+    runtime.options.tailwind.v4.cssEntries = [cssEntry]
 
     const extractCandidates = vi.fn(async () => ['foo'])
     const extractRawCandidates = vi.fn(async () => [{ rawCandidate: 'foo' }])
@@ -677,7 +675,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await manager.sync(patcher, firstSnapshot)
+    await manager.sync(runtime, firstSnapshot)
     expect(extractCandidates).toHaveBeenCalledTimes(1)
 
     updateBundleBuildState(state, firstSnapshot, new Map([
@@ -694,7 +692,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    await manager.sync(patcher, secondSnapshot)
+    await manager.sync(runtime, secondSnapshot)
     expect(extractCandidates).toHaveBeenCalledTimes(2)
   })
 
@@ -702,7 +700,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createV3Patcher()
+    const runtime = createV3Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('bg-blue-500')) {
         return [{ rawCandidate: 'bg-blue-500' }]
@@ -723,7 +721,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const firstRuntimeSet = await manager.sync(patcher, firstSnapshot, {
+    const firstRuntimeSet = await manager.sync(runtime, firstSnapshot, {
       baseClassSet: new Set(['bg-blue-500', 'safelist-only']),
     })
 
@@ -738,7 +736,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const secondRuntimeSet = await manager.sync(patcher, secondSnapshot)
+    const secondRuntimeSet = await manager.sync(runtime, secondSnapshot)
 
     expect(secondRuntimeSet).toEqual(new Set(['safelist-only', 'bg-[#123455]']))
     expect(secondRuntimeSet.has('bg-blue-500')).toBe(false)
@@ -749,7 +747,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createV3Patcher()
+    const runtime = createV3Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('bg-[red]')) {
         return [{ rawCandidate: 'bg-[red]' }]
@@ -790,7 +788,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const runtimeSet = await manager.sync(patcher, secondSnapshot, {
+    const runtimeSet = await manager.sync(runtime, secondSnapshot, {
       baseClassSet: new Set(['bg-[#4268EA]', 'bg-[red]', 'safelist-only']),
       skipInitialFullScanWithBase: true,
     })
@@ -807,7 +805,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createV3Patcher()
+    const runtime = createV3Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('bg-[red]')) {
         return [
@@ -838,7 +836,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       ['pages/index/index.js', new Set<string>()],
     ]))
 
-    await manager.sync(patcher, firstSnapshot, {
+    await manager.sync(runtime, firstSnapshot, {
       baseClassSet: new Set(['bg-[red]', 'bg-[#4268EA]']),
       skipInitialFullScanWithBase: true,
     })
@@ -853,7 +851,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const runtimeSet = await manager.sync(patcher, rollbackSnapshot, {
+    const runtimeSet = await manager.sync(runtime, rollbackSnapshot, {
       baseClassSet: new Set(['bg-[red]', 'bg-[#4268EA]']),
     })
 
@@ -865,7 +863,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createV3Patcher()
+    const runtime = createV3Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('Hello world!')) {
         return [
@@ -887,7 +885,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const runtimeSet = await manager.sync(patcher, snapshot, {
+    const runtimeSet = await manager.sync(runtime, snapshot, {
       baseClassSet: new Set(['bg-[red]', 'flex']),
     })
 
@@ -899,7 +897,7 @@ describe('bundlers/vite incremental runtime class set', () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const patcher = createV3Patcher()
+    const runtime = createV3Runtime()
     const jsSource = [
       'const complexExpression = "size > 4 ? keep-[business] : App.vue:4"',
       'const view = <View className="bg-[red] before:content-[\\"111\\"] bg-yellow-300/30">Hello world!</View>',
@@ -922,7 +920,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       },
     }, opts, outDir, state)
 
-    const runtimeSet = await manager.sync(patcher, snapshot)
+    const runtimeSet = await manager.sync(runtime, snapshot)
 
     expect(runtimeSet).toEqual(new Set([
       'bg-[red]',

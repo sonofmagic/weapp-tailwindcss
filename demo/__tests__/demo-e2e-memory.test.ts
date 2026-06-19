@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  createWindowsProcessTreeMemoryScript,
   createDemoE2eMemoryReport,
   renderDemoE2eMemoryMarkdown,
   summarizeMemorySamples,
@@ -12,7 +13,7 @@ describe('demo e2e memory report', () => {
       { at: 1000, rssMb: 40, maxProcessRssMb: 40, processCount: 1 },
       { at: 2000, rssMb: 180, maxProcessRssMb: 120, processCount: 3 },
       { at: 3000, rssMb: 260, maxProcessRssMb: 160, processCount: 4 },
-    ])).toEqual({
+    ])).toMatchObject({
       count: 3,
       baselineRssMb: 180,
       peakRssMb: 260,
@@ -22,7 +23,21 @@ describe('demo e2e memory report', () => {
       firstAt: 1000,
       lastAt: 3000,
       durationMs: 2000,
+      peakSample: {
+        rssMb: 260,
+      },
     })
+  })
+
+  it('adds repository-scoped Windows watcher processes when pnpm detaches the dev server', () => {
+    const script = createWindowsProcessTreeMemoryScript(42, String.raw`C:\repo\weapp-tailwindcss`)
+
+    expect(script).toContain(String.raw`$repositoryRoot = 'C:\repo\weapp-tailwindcss'`)
+    expect(script).toContain('CommandLine')
+    expect(script).toContain('uni\\.js[\\s\\S]+-p\\s+mp-weixin')
+    expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch')
+    expect(script).toContain('$command.Contains($repositoryRoot)')
+    expect(script).not.toContain('@(;')
   })
 
   it('creates a workflow-level memory report and markdown table by step', () => {
@@ -80,7 +95,7 @@ describe('demo e2e memory report', () => {
 
     const markdown = renderDemoE2eMemoryMarkdown(report)
     expect(markdown).toContain('# Demo E2E 内存占用报告')
-    expect(markdown).toContain('| matrix assertions | 0 | 2 | 180MB | 220MB | 40MB | 140MB | 3 | 1s | `pnpm exec vitest` |')
-    expect(markdown).toContain('| HBuilderX uni-app H5 HMR (local) | 1 | 2 | 256MB | 320MB | 64MB | 210MB | 5 | 1s | `pnpm e2e:hbuilderx:h5` |')
+    expect(markdown).toContain('| matrix assertions | 0 | 2 | 180MB | 220MB | 40MB | 140MB | 3 | 0 | 1s | `pnpm exec vitest` |')
+    expect(markdown).toContain('| HBuilderX uni-app H5 HMR (local) | 1 | 2 | 256MB | 320MB | 64MB | 210MB | 5 | 0 | 1s | `pnpm e2e:hbuilderx:h5` |')
   })
 })

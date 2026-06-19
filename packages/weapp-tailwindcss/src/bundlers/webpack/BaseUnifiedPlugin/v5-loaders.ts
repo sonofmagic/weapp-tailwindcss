@@ -1,4 +1,4 @@
-import type { TailwindV4CssSource } from 'tailwindcss-patch'
+import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
 import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'

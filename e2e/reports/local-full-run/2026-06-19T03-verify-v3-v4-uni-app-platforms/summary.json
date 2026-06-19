@@ -1,0 +1,1638 @@
+{
+  "generatedAt": "2026-06-19T02:12:30.489Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "profile": "smoke",
+  "steps": [
+    {
+      "name": "quality",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "build:ci"
+      ],
+      "startedAt": "2026-06-19T02:09:13.829Z",
+      "endedAt": "2026-06-19T02:09:22.060Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 9,
+        "baselineRssMb": 1709,
+        "peakRssMb": 1709,
+        "rssDeltaMb": 0,
+        "peakMaxProcessRssMb": 384,
+        "peakProcessCount": 9,
+        "firstAt": 1781834953859,
+        "lastAt": 1781834961874,
+        "durationMs": 8015
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "mini-program-hmr-memory",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:demo:weapp-memory",
+        "--out-dir",
+        ".tmp/local-full-report-weapp-memory"
+      ],
+      "startedAt": "2026-06-19T02:09:22.062Z",
+      "endedAt": "2026-06-19T02:10:16.802Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 55,
+        "baselineRssMb": 421,
+        "peakRssMb": 3710,
+        "rssDeltaMb": 3289,
+        "peakMaxProcessRssMb": 2086,
+        "peakProcessCount": 14,
+        "firstAt": 1781834962092,
+        "lastAt": 1781835016204,
+        "durationMs": 54112
+      },
+      "copiedArtifacts": [
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/README.md",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/summary.json",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/projects/uni-app-vite-tailwindcss-v3.md",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/projects/uni-app-vite-tailwindcss-v4.md",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/hmr/hmr-full-report-2026-06-19T02-09-23-627Z.json",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/hmr/hmr-full-report-2026-06-19T02-09-23-627Z.md",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/hmr/hmr-full-report-2026-06-19T02-09-57-969Z.json",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/hmr/hmr-full-report-2026-06-19T02-09-57-969Z.md"
+      ]
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-h5",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "h5",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:16.806Z",
+      "endedAt": "2026-06-19T02:10:24.199Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 8,
+        "baselineRssMb": 562,
+        "peakRssMb": 4594,
+        "rssDeltaMb": 4032,
+        "peakMaxProcessRssMb": 1391,
+        "peakProcessCount": 143,
+        "firstAt": 1781835016835,
+        "lastAt": 1781835023872,
+        "durationMs": 7037
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-h5-ssr",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "h5:ssr",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:24.201Z",
+      "endedAt": "2026-06-19T02:10:32.595Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 9,
+        "baselineRssMb": 574,
+        "peakRssMb": 4382,
+        "rssDeltaMb": 3808,
+        "peakMaxProcessRssMb": 1430,
+        "peakProcessCount": 144,
+        "firstAt": 1781835024231,
+        "lastAt": 1781835032244,
+        "durationMs": 8013
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-alipay",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-alipay",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:32.597Z",
+      "endedAt": "2026-06-19T02:10:37.738Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 545,
+        "peakRssMb": 1465,
+        "rssDeltaMb": 920,
+        "peakMaxProcessRssMb": 800,
+        "peakProcessCount": 7,
+        "firstAt": 1781835032627,
+        "lastAt": 1781835037639,
+        "durationMs": 5012
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-baidu",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-baidu",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:37.740Z",
+      "endedAt": "2026-06-19T02:10:42.924Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 561,
+        "peakRssMb": 1430,
+        "rssDeltaMb": 869,
+        "peakMaxProcessRssMb": 772,
+        "peakProcessCount": 7,
+        "firstAt": 1781835037769,
+        "lastAt": 1781835042784,
+        "durationMs": 5015
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-kuaishou",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-kuaishou",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:42.926Z",
+      "endedAt": "2026-06-19T02:10:48.034Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 573,
+        "peakRssMb": 1483,
+        "rssDeltaMb": 910,
+        "peakMaxProcessRssMb": 810,
+        "peakProcessCount": 7,
+        "firstAt": 1781835042956,
+        "lastAt": 1781835047976,
+        "durationMs": 5020
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-lark",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-lark",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:48.036Z",
+      "endedAt": "2026-06-19T02:10:53.149Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 560,
+        "peakRssMb": 1461,
+        "rssDeltaMb": 901,
+        "peakMaxProcessRssMb": 803,
+        "peakProcessCount": 7,
+        "firstAt": 1781835048065,
+        "lastAt": 1781835053087,
+        "durationMs": 5022
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-qq",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-qq",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:53.150Z",
+      "endedAt": "2026-06-19T02:10:58.303Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 566,
+        "peakRssMb": 1446,
+        "rssDeltaMb": 880,
+        "peakMaxProcessRssMb": 779,
+        "peakProcessCount": 7,
+        "firstAt": 1781835053181,
+        "lastAt": 1781835058190,
+        "durationMs": 5009
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-toutiao",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-toutiao",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:10:58.304Z",
+      "endedAt": "2026-06-19T02:11:03.432Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 564,
+        "peakRssMb": 1468,
+        "rssDeltaMb": 904,
+        "peakMaxProcessRssMb": 808,
+        "peakProcessCount": 7,
+        "firstAt": 1781835058334,
+        "lastAt": 1781835063363,
+        "durationMs": 5029
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-weixin",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "mp-weixin",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:03.434Z",
+      "endedAt": "2026-06-19T02:11:08.623Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 567,
+        "peakRssMb": 1532,
+        "rssDeltaMb": 965,
+        "peakMaxProcessRssMb": 818,
+        "peakProcessCount": 8,
+        "firstAt": 1781835063463,
+        "lastAt": 1781835068489,
+        "durationMs": 5026
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "quickapp-webview",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:08.625Z",
+      "endedAt": "2026-06-19T02:11:13.777Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 565,
+        "peakRssMb": 1443,
+        "rssDeltaMb": 878,
+        "peakMaxProcessRssMb": 777,
+        "peakProcessCount": 7,
+        "firstAt": 1781835068654,
+        "lastAt": 1781835073708,
+        "durationMs": 5054
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-huawei",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "quickapp-webview-huawei",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:13.779Z",
+      "endedAt": "2026-06-19T02:11:18.911Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 570,
+        "peakRssMb": 1488,
+        "rssDeltaMb": 918,
+        "peakMaxProcessRssMb": 817,
+        "peakProcessCount": 7,
+        "firstAt": 1781835073808,
+        "lastAt": 1781835078834,
+        "durationMs": 5026
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-union",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "quickapp-webview-union",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:18.912Z",
+      "endedAt": "2026-06-19T02:11:24.063Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 566,
+        "peakRssMb": 1438,
+        "rssDeltaMb": 872,
+        "peakMaxProcessRssMb": 773,
+        "peakProcessCount": 7,
+        "firstAt": 1781835078942,
+        "lastAt": 1781835083979,
+        "durationMs": 5037
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-h5",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "h5",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:24.064Z",
+      "endedAt": "2026-06-19T02:11:29.133Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 567,
+        "peakRssMb": 1682,
+        "rssDeltaMb": 1115,
+        "peakMaxProcessRssMb": 1000,
+        "peakProcessCount": 8,
+        "firstAt": 1781835084094,
+        "lastAt": 1781835089105,
+        "durationMs": 5011
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-h5-ssr",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "h5:ssr",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:29.134Z",
+      "endedAt": "2026-06-19T02:11:34.607Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 564,
+        "peakRssMb": 1682,
+        "rssDeltaMb": 1118,
+        "peakMaxProcessRssMb": 999,
+        "peakProcessCount": 8,
+        "firstAt": 1781835089164,
+        "lastAt": 1781835094174,
+        "durationMs": 5010
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-alipay",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-alipay",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:34.608Z",
+      "endedAt": "2026-06-19T02:11:38.683Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 566,
+        "peakRssMb": 1325,
+        "rssDeltaMb": 759,
+        "peakMaxProcessRssMb": 659,
+        "peakProcessCount": 8,
+        "firstAt": 1781835094636,
+        "lastAt": 1781835098652,
+        "durationMs": 4016
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-baidu",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-baidu",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:38.684Z",
+      "endedAt": "2026-06-19T02:11:42.969Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 561,
+        "peakRssMb": 1407,
+        "rssDeltaMb": 846,
+        "peakMaxProcessRssMb": 744,
+        "peakProcessCount": 8,
+        "firstAt": 1781835098714,
+        "lastAt": 1781835102727,
+        "durationMs": 4013
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-jd",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-jd",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:42.971Z",
+      "endedAt": "2026-06-19T02:11:47.206Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 564,
+        "peakRssMb": 1399,
+        "rssDeltaMb": 835,
+        "peakMaxProcessRssMb": 738,
+        "peakProcessCount": 8,
+        "firstAt": 1781835103000,
+        "lastAt": 1781835107028,
+        "durationMs": 4028
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-kuaishou",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-kuaishou",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:47.208Z",
+      "endedAt": "2026-06-19T02:11:51.463Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 562,
+        "peakRssMb": 1394,
+        "rssDeltaMb": 832,
+        "peakMaxProcessRssMb": 728,
+        "peakProcessCount": 8,
+        "firstAt": 1781835107237,
+        "lastAt": 1781835111263,
+        "durationMs": 4026
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-lark",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-lark",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:51.465Z",
+      "endedAt": "2026-06-19T02:11:55.781Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 558,
+        "peakRssMb": 1407,
+        "rssDeltaMb": 849,
+        "peakMaxProcessRssMb": 744,
+        "peakProcessCount": 8,
+        "firstAt": 1781835111494,
+        "lastAt": 1781835115513,
+        "durationMs": 4019
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-qq",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-qq",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:11:55.782Z",
+      "endedAt": "2026-06-19T02:12:00.045Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 564,
+        "peakRssMb": 1398,
+        "rssDeltaMb": 834,
+        "peakMaxProcessRssMb": 731,
+        "peakProcessCount": 8,
+        "firstAt": 1781835115811,
+        "lastAt": 1781835119839,
+        "durationMs": 4028
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-toutiao",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-toutiao",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:12:00.046Z",
+      "endedAt": "2026-06-19T02:12:04.338Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 565,
+        "peakRssMb": 1404,
+        "rssDeltaMb": 839,
+        "peakMaxProcessRssMb": 740,
+        "peakProcessCount": 8,
+        "firstAt": 1781835120075,
+        "lastAt": 1781835124082,
+        "durationMs": 4007
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-weixin",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-weixin",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:12:04.339Z",
+      "endedAt": "2026-06-19T02:12:08.676Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 567,
+        "peakRssMb": 1439,
+        "rssDeltaMb": 872,
+        "peakMaxProcessRssMb": 723,
+        "peakProcessCount": 9,
+        "firstAt": 1781835124368,
+        "lastAt": 1781835128397,
+        "durationMs": 4029
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-xhs",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "mp-xhs",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:12:08.678Z",
+      "endedAt": "2026-06-19T02:12:12.925Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 566,
+        "peakRssMb": 1399,
+        "rssDeltaMb": 833,
+        "peakMaxProcessRssMb": 730,
+        "peakProcessCount": 8,
+        "firstAt": 1781835128708,
+        "lastAt": 1781835132714,
+        "durationMs": 4006
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "quickapp-webview",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:12:12.926Z",
+      "endedAt": "2026-06-19T02:12:17.162Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 570,
+        "peakRssMb": 1404,
+        "rssDeltaMb": 834,
+        "peakMaxProcessRssMb": 731,
+        "peakProcessCount": 8,
+        "firstAt": 1781835132955,
+        "lastAt": 1781835136980,
+        "durationMs": 4025
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-huawei",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "quickapp-webview-huawei",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:12:17.164Z",
+      "endedAt": "2026-06-19T02:12:21.459Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 537,
+        "peakRssMb": 1394,
+        "rssDeltaMb": 857,
+        "peakMaxProcessRssMb": 733,
+        "peakProcessCount": 8,
+        "firstAt": 1781835137193,
+        "lastAt": 1781835141214,
+        "durationMs": 4021
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-union",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "quickapp-webview-union",
+        "stage": "build",
+        "source": "multiplatform-build"
+      },
+      "startedAt": "2026-06-19T02:12:21.461Z",
+      "endedAt": "2026-06-19T02:12:25.766Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 5,
+        "baselineRssMb": 564,
+        "peakRssMb": 1397,
+        "rssDeltaMb": 833,
+        "peakMaxProcessRssMb": 732,
+        "peakProcessCount": 8,
+        "firstAt": 1781835141489,
+        "lastAt": 1781835145502,
+        "durationMs": 4013
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "h5-dev-uni-app-vite-tailwindcss-v3",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--bail=1",
+        "-c",
+        "./e2e/vitest.e2e.config.ts",
+        "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
+        "-t",
+        "uni-app vite Tailwind v3"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v3",
+        "platform": "h5",
+        "stage": "runtime",
+        "source": "uni-app-h5-dev"
+      },
+      "startedAt": "2026-06-19T02:12:25.768Z",
+      "endedAt": "2026-06-19T02:12:28.378Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 3,
+        "baselineRssMb": 606,
+        "peakRssMb": 936,
+        "rssDeltaMb": 330,
+        "peakMaxProcessRssMb": 329,
+        "peakProcessCount": 8,
+        "firstAt": 1781835145798,
+        "lastAt": 1781835147800,
+        "durationMs": 2002
+      },
+      "copiedArtifacts": []
+    },
+    {
+      "name": "h5-dev-uni-app-vite-tailwindcss-v4",
+      "status": "passed",
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--bail=1",
+        "-c",
+        "./e2e/vitest.e2e.config.ts",
+        "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
+        "-t",
+        "uni-app vite Tailwind v4"
+      ],
+      "metric": {
+        "project": "uni-app-vite-tailwindcss-v4",
+        "platform": "h5",
+        "stage": "runtime",
+        "source": "uni-app-h5-dev"
+      },
+      "startedAt": "2026-06-19T02:12:28.380Z",
+      "endedAt": "2026-06-19T02:12:30.488Z",
+      "exitCode": 0,
+      "summary": {
+        "count": 3,
+        "baselineRssMb": 621,
+        "peakRssMb": 978,
+        "rssDeltaMb": 357,
+        "peakMaxProcessRssMb": 355,
+        "peakProcessCount": 8,
+        "firstAt": 1781835148409,
+        "lastAt": 1781835150420,
+        "durationMs": 2011
+      },
+      "copiedArtifacts": []
+    }
+  ],
+  "platformReports": [
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "app-android",
+      "build": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "Android 调试依赖本机 HBuilderX 与 Android 模拟器。"
+      },
+      "hmr": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "Android 调试依赖本机 HBuilderX 与 Android 模拟器。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "app-ios",
+      "build": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "iOS 调试依赖 macOS Simulator 与 HBuilderX。"
+      },
+      "hmr": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "iOS 调试依赖 macOS Simulator 与 HBuilderX。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "h5",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 7037,
+        "peakRssMb": 4594,
+        "rssDeltaMb": 4032,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-h5"
+      },
+      "hmr": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "exec",
+          "vitest",
+          "run",
+          "--bail=1",
+          "-c",
+          "./e2e/vitest.e2e.config.ts",
+          "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
+          "-t",
+          "uni-app vite Tailwind v3"
+        ],
+        "durationMs": 2002,
+        "peakRssMb": 936,
+        "rssDeltaMb": 330,
+        "source": "step:h5-dev-uni-app-vite-tailwindcss-v3"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "h5:ssr",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 8013,
+        "peakRssMb": 4382,
+        "rssDeltaMb": 3808,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-h5-ssr"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-alipay",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5012,
+        "peakRssMb": 1465,
+        "rssDeltaMb": 920,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-alipay"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-baidu",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5015,
+        "peakRssMb": 1430,
+        "rssDeltaMb": 869,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-baidu"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-kuaishou",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5020,
+        "peakRssMb": 1483,
+        "rssDeltaMb": 910,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-kuaishou"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-lark",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5022,
+        "peakRssMb": 1461,
+        "rssDeltaMb": 901,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-lark"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-qq",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5009,
+        "peakRssMb": 1446,
+        "rssDeltaMb": 880,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-qq"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-toutiao",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5029,
+        "peakRssMb": 1468,
+        "rssDeltaMb": 904,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-toutiao"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "mp-weixin",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5026,
+        "peakRssMb": 1532,
+        "rssDeltaMb": 965,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-weixin"
+      },
+      "hmr": {
+        "coverage": "automated",
+        "status": "passed",
+        "e2eAvgMs": 2348,
+        "e2eP95Ms": 2659,
+        "e2eMaxMs": 2659,
+        "pluginMaxMs": 1387,
+        "peakRssMb": 2348,
+        "rssDeltaMb": 1884,
+        "pluginHeapPeakMb": 1655,
+        "source": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-23-629Z-uni-app-vite-tailwindcss-v3.json"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "quickapp-webview",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5054,
+        "peakRssMb": 1443,
+        "rssDeltaMb": 878,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "quickapp-webview-huawei",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5026,
+        "peakRssMb": 1488,
+        "rssDeltaMb": 918,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-huawei"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v3",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v3",
+      "platform": "quickapp-webview-union",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5037,
+        "peakRssMb": 1438,
+        "rssDeltaMb": 872,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-union"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "app-android",
+      "build": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "Android 调试依赖本机 HBuilderX 与 Android 模拟器。"
+      },
+      "hmr": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "Android 调试依赖本机 HBuilderX 与 Android 模拟器。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "app-ios",
+      "build": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "iOS 调试依赖 macOS Simulator 与 HBuilderX。"
+      },
+      "hmr": {
+        "coverage": "local",
+        "status": "local",
+        "reason": "iOS 调试依赖 macOS Simulator 与 HBuilderX。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "h5",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5011,
+        "peakRssMb": 1682,
+        "rssDeltaMb": 1115,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-h5"
+      },
+      "hmr": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "exec",
+          "vitest",
+          "run",
+          "--bail=1",
+          "-c",
+          "./e2e/vitest.e2e.config.ts",
+          "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
+          "-t",
+          "uni-app vite Tailwind v4"
+        ],
+        "durationMs": 2011,
+        "peakRssMb": 978,
+        "rssDeltaMb": 357,
+        "source": "step:h5-dev-uni-app-vite-tailwindcss-v4"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "h5:ssr",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 5010,
+        "peakRssMb": 1682,
+        "rssDeltaMb": 1118,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-h5-ssr"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-alipay",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4016,
+        "peakRssMb": 1325,
+        "rssDeltaMb": 759,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-alipay"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-baidu",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4013,
+        "peakRssMb": 1407,
+        "rssDeltaMb": 846,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-baidu"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-jd",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4028,
+        "peakRssMb": 1399,
+        "rssDeltaMb": 835,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-jd"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-kuaishou",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4026,
+        "peakRssMb": 1394,
+        "rssDeltaMb": 832,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-kuaishou"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-lark",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4019,
+        "peakRssMb": 1407,
+        "rssDeltaMb": 849,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-lark"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-qq",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4028,
+        "peakRssMb": 1398,
+        "rssDeltaMb": 834,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-qq"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-toutiao",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4007,
+        "peakRssMb": 1404,
+        "rssDeltaMb": 839,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-toutiao"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-weixin",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4029,
+        "peakRssMb": 1439,
+        "rssDeltaMb": 872,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-weixin"
+      },
+      "hmr": {
+        "coverage": "automated",
+        "status": "passed",
+        "e2eAvgMs": 861,
+        "e2eP95Ms": 1050,
+        "e2eMaxMs": 1050,
+        "pluginMaxMs": 335,
+        "peakRssMb": 1072,
+        "rssDeltaMb": 600,
+        "pluginHeapPeakMb": 530,
+        "source": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-57-972Z-uni-app-vite-tailwindcss-v4.json"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "mp-xhs",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4006,
+        "peakRssMb": 1399,
+        "rssDeltaMb": 833,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-xhs"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "quickapp-webview",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4025,
+        "peakRssMb": 1404,
+        "rssDeltaMb": 834,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "quickapp-webview-huawei",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4021,
+        "peakRssMb": 1394,
+        "rssDeltaMb": 857,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-huawei"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "platform": "quickapp-webview-union",
+      "build": {
+        "coverage": "automated",
+        "status": "passed",
+        "command": [
+          "pnpm",
+          "e2e:multiplatform-build"
+        ],
+        "durationMs": 4013,
+        "peakRssMb": 1397,
+        "rssDeltaMb": 833,
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-union"
+      },
+      "hmr": {
+        "coverage": "exempt",
+        "status": "exempt",
+        "reason": "该平台当前只做构建产物验证，没有登记真实运行态 HMR 命令。"
+      }
+    }
+  ],
+  "summary": {
+    "stepCount": 30,
+    "passedStepCount": 30,
+    "failedStepCount": 0,
+    "skippedStepCount": 0,
+    "peakRssMb": 4594,
+    "maxRssDeltaMb": 4032
+  }
+}

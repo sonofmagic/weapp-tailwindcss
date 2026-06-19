@@ -126,15 +126,17 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     __internalDeferMissingCssEntriesWarning: true,
   } as UserDefinedOptions)
 
-  const { templateHandler, styleHandler, jsHandler, cache, twPatcher: initialTwPatcher, refreshTailwindcssPatcher } = opts
+  const { templateHandler, styleHandler, jsHandler, cache } = opts
+  const initialTailwindRuntime = opts.tailwindRuntime
+  const refreshTailwindcssRuntime = opts.refreshTailwindcssRuntime
 
-  const readyPromise = createTailwindRuntimeReadyPromise(initialTwPatcher)
+  const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
 
   let runtimeSet = new Set<string>()
   const runtimeState = {
-    twPatcher: initialTwPatcher,
+    tailwindRuntime: initialTailwindRuntime,
     readyPromise,
-    refreshTailwindcssPatcher,
+    refreshTailwindcssRuntime,
   }
   const defaultStyleHandlerOptionsCache = new Map<number | 'unknown', Partial<IStyleHandlerOptions>>()
   let cachedDefaultTemplateHandlerOptions: Partial<ITemplateHandlerOptions> | undefined
@@ -150,7 +152,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let cachedGulpSourceCandidates: Set<string> | undefined
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
-  const sourceCandidateExtractor = initialTwPatcher.majorVersion === 3
+  const sourceCandidateExtractor = initialTailwindRuntime.majorVersion === 3
     ? createTailwindV3DefaultExtractor()
     : undefined
   const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
@@ -210,9 +212,9 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     if (!changed && runtimeSetInitialized) {
       return runtimeSet
     }
-    if (runtimeState.twPatcher.majorVersion === 4 && !runtimeSetDirty) {
+    if (runtimeState.tailwindRuntime.majorVersion === 4 && !runtimeSetDirty) {
       try {
-        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.twPatcher, createGulpRuntimeSnapshot(runtimeSourcesByFile, [filename]))
+        runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, createGulpRuntimeSnapshot(runtimeSourcesByFile, [filename]))
         runtimeSetInitialized = true
         return runtimeSet
       }
@@ -227,11 +229,11 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   async function refreshGulpSourceCandidates(forceRefresh = false) {
-    if (runtimeState.twPatcher.majorVersion !== 3) {
+    if (runtimeState.tailwindRuntime.majorVersion !== 3) {
       return new Set<string>()
     }
     const root = opts.tailwindcssBasedir ?? process.cwd()
-    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
       root,
     })
     const nextSignature = cache.computeHash(JSON.stringify({
@@ -268,13 +270,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   async function refreshGulpV4SourceCandidates(forceRefresh = false) {
-    if (runtimeState.twPatcher.majorVersion !== 4) {
+    if (runtimeState.tailwindRuntime.majorVersion !== 4) {
       cachedGulpSourceCandidateGetter = undefined
       cachedGulpSourceCandidateSourceGetter = undefined
       return undefined
     }
     const root = opts.tailwindcssBasedir ?? process.cwd()
-    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.twPatcher, {
+    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
       root,
     })
     const nextSignature = cache.computeHash(JSON.stringify({
@@ -310,7 +312,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>, sourceTraceSignature?: string, sourceCandidateSignature?: string) {
     return cache.computeHash([
       rawSource,
-      getRuntimeClassSetSignature(runtimeState.twPatcher),
+      getRuntimeClassSetSignature(runtimeState.tailwindRuntime),
       [...nextRuntimeSet].sort().join('\n'),
       sourceTraceSignature ?? 'css-source-trace:0',
       sourceCandidateSignature ?? 'gulp-source-candidates:0',
@@ -320,7 +322,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   async function registerAutoCssSource(file: File, rawSource: string) {
     if (
       hasInitialTailwindCssRoots
-      || (runtimeState.twPatcher.majorVersion ?? 0) < 4
+      || (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
       || !file.path
       || !hasTailwindRootDirectives(rawSource)
     ) {
@@ -358,26 +360,26 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   function resolveWxssHandlerOptions(options?: Partial<IStyleHandlerOptions>) {
-    const majorVersion = runtimeState.twPatcher.majorVersion ?? 'unknown'
+    const majorVersion = runtimeState.tailwindRuntime.majorVersion ?? 'unknown'
     if (!options || Object.keys(options).length === 0) {
       let cached = defaultStyleHandlerOptionsCache.get(majorVersion)
       if (!cached) {
-        cached = runtimeState.twPatcher.majorVersion === undefined
+        cached = runtimeState.tailwindRuntime.majorVersion === undefined
           ? {}
           : {
-              majorVersion: runtimeState.twPatcher.majorVersion,
+              majorVersion: runtimeState.tailwindRuntime.majorVersion,
             }
         defaultStyleHandlerOptionsCache.set(majorVersion, cached)
       }
       return cached
     }
 
-    return runtimeState.twPatcher.majorVersion === undefined
+    return runtimeState.tailwindRuntime.majorVersion === undefined
       ? {
           ...options,
         }
       : {
-          majorVersion: runtimeState.twPatcher.majorVersion,
+          majorVersion: runtimeState.tailwindRuntime.majorVersion,
           ...options,
         }
   }
@@ -470,17 +472,17 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const rawSource = file.contents.toString()
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
       const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
-      const shouldUseGenerator = runtimeState.twPatcher.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
+      const shouldUseGenerator = runtimeState.tailwindRuntime.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
       let gulpSourceCandidateGetter: typeof cachedGulpSourceCandidateGetter
-      if (shouldUseGenerator && runtimeState.twPatcher.majorVersion === 4) {
+      if (shouldUseGenerator && runtimeState.tailwindRuntime.majorVersion === 4) {
         gulpSourceCandidateGetter = await refreshGulpV4SourceCandidates(cssSourceChanged)
       }
       let nextRuntimeSet = await refreshRuntimeSet({
         forceRefresh: cssSourceChanged,
-        forceCollect: cssSourceChanged || (runtimeState.twPatcher.majorVersion !== 4 && isMainChunk),
+        forceCollect: cssSourceChanged || (runtimeState.tailwindRuntime.majorVersion !== 4 && isMainChunk),
         clearCache: cssSourceChanged,
       })
-      if (runtimeState.twPatcher.majorVersion === 3 && shouldUseGenerator) {
+      if (runtimeState.tailwindRuntime.majorVersion === 3 && shouldUseGenerator) {
         const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged || isMainChunk)
         gulpSourceCandidateGetter = cachedGulpSourceCandidateGetter
         if (sourceCandidates.size > 0) {
@@ -558,8 +560,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           sourceFilename: filename,
         },
       }
-      if (runtimeState.twPatcher.majorVersion !== undefined) {
-        handlerOptions.tailwindcssMajorVersion = runtimeState.twPatcher.majorVersion
+      if (runtimeState.tailwindRuntime.majorVersion !== undefined) {
+        handlerOptions.tailwindcssMajorVersion = runtimeState.tailwindRuntime.majorVersion
       }
       await processCachedTask<string>({
         cache,

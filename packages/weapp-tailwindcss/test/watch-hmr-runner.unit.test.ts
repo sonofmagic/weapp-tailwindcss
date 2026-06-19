@@ -2,7 +2,7 @@ import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { runCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
+import { runCase, runMainStyleOnlyCase, WatchHmrPartialMetricsError } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/runner'
 import type {
   CliOptions,
   MutationRoundMetrics,
@@ -22,6 +22,21 @@ vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/sessi
 }))
 
 vi.mock('../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations', () => ({
+  createSubPackageWatchCase: (_watchCase: WatchCase, mutation: WatchCase['subPackageMutations'] extends Array<infer T> ? T : never) => ({
+    name: 'mpx-tailwindcss-v4',
+    label: `demo/mpx-tailwindcss-v4/${mutation.root}`,
+    project: 'demo/mpx-tailwindcss-v4',
+    group: 'demo',
+    cwd: '',
+    devScript: 'dev:e2e-watch',
+    outputWxml: mutation.outputWxml,
+    outputJs: mutation.outputJs,
+    outputStyleCandidates: mutation.outputStyleCandidates,
+    globalStyleCandidates: mutation.globalStyleCandidates,
+    templateMutation: mutation.templateMutation,
+    scriptMutation: mutation.templateMutation,
+    styleMutation: mutation.styleMutation,
+  }),
   runClassMutation: (...args: unknown[]) => runClassMutationMock(...args),
   runMainStyleHotUpdate: (...args: unknown[]) => runMainStyleHotUpdateMock(...args),
   runStyleMutation: (...args: unknown[]) => runStyleMutationMock(...args),
@@ -40,6 +55,31 @@ function createOptions(): CliOptions {
     webOnly: false,
     styleOnly: false,
     mainStyleOnly: false,
+  }
+}
+
+function createMainStyleMetric(sourceFile: string, hotUpdateEffectiveMs = 12) {
+  return {
+    label: 'text-[102.43rpx] to text-[103.43rpx]',
+    mutationKind: 'template',
+    sourceFile,
+    verifyEscapedIn: ['js'],
+    verifyClassLiteralIn: ['js'],
+    fromClassToken: 'text-[102.43rpx]',
+    toClassToken: 'text-[103.43rpx]',
+    fromEscapedClass: 'text-_b_102_2e43rpx_B',
+    toEscapedClass: 'text-_b_103_2e43rpx_B',
+    verifiedGlobalStyleEscapedClasses: ['text-_b_103_2e43rpx_B'],
+    minRequiredGlobalStyleEscapedClasses: 1,
+    rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_103_2e43rpx_B'],
+    hotUpdateOutputMs: 10,
+    hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: 2,
+    hotUpdatePluginProcessSamples: [],
+    rollbackOutputMs: 8,
+    rollbackEffectiveMs: 9,
+    rollbackPluginProcessMs: 1,
+    rollbackPluginProcessSamples: [],
   }
 }
 
@@ -159,28 +199,7 @@ describe('watch-hmr runner', () => {
       return Promise.resolve(createClassMetric(mutationKind, sourceFile))
     })
     runStyleMutationMock.mockResolvedValue(createStyleMetric(styleFile))
-    runMainStyleHotUpdateMock.mockResolvedValue({
-      label: 'text-[102.43rpx] to text-[103.43rpx]',
-      mutationKind: 'template',
-      sourceFile,
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      fromClassToken: 'text-[102.43rpx]',
-      toClassToken: 'text-[103.43rpx]',
-      fromEscapedClass: 'text-_b_102_2e43rpx_B',
-      toEscapedClass: 'text-_b_103_2e43rpx_B',
-      verifiedGlobalStyleEscapedClasses: ['text-_b_103_2e43rpx_B'],
-      minRequiredGlobalStyleEscapedClasses: 1,
-      rollbackVerifiedGlobalStyleRemovedClasses: ['text-_b_103_2e43rpx_B'],
-      hotUpdateOutputMs: 10,
-      hotUpdateEffectiveMs: 12,
-      hotUpdatePluginProcessMs: 2,
-      hotUpdatePluginProcessSamples: [],
-      rollbackOutputMs: 8,
-      rollbackEffectiveMs: 9,
-      rollbackPluginProcessMs: 1,
-      rollbackPluginProcessSamples: [],
-    })
+    runMainStyleHotUpdateMock.mockResolvedValue(createMainStyleMetric(sourceFile))
 
     const watchCase: WatchCase = {
       name: 'taro-webpack-react-tailwindcss-v4',
@@ -237,6 +256,186 @@ describe('watch-hmr runner', () => {
         rssMb: 125,
       },
     })
+    expect(session.stop).toHaveBeenCalledTimes(1)
+  })
+
+  it('limits main-style-only subpackage checks for slow PR smoke runs', async () => {
+    const sourceFile = path.join(tempDir, 'index.mpx')
+    const normalSubSource = path.join(tempDir, 'sub-normal.mpx')
+    const independentSubSource = path.join(tempDir, 'sub-independent.mpx')
+    await writeFile(sourceFile, '<template></template>\n', 'utf8')
+    await writeFile(normalSubSource, '<template></template>\n', 'utf8')
+    await writeFile(independentSubSource, '<template></template>\n', 'utf8')
+    const session: WatchSession = {
+      child: {} as WatchSession['child'],
+      ensureRunning: vi.fn(),
+      lastCompileSuccessAt: vi.fn(() => 0),
+      logs: vi.fn(() => 'watch logs'),
+      memorySamplesSince: vi.fn(() => []),
+      memoryDebugSamplesSince: vi.fn(() => []),
+      stop: vi.fn(async () => {}),
+      pluginProcessSamplesSince: vi.fn(() => []),
+    }
+    createWatchSessionMock.mockReturnValue(session)
+    runMainStyleHotUpdateMock.mockImplementation((watchCase: WatchCase) => {
+      return Promise.resolve(createMainStyleMetric(watchCase.templateMutation.sourceFile, watchCase.label.includes('sub-normal') ? 24 : 12))
+    })
+
+    const watchCase: WatchCase = {
+      name: 'mpx-tailwindcss-v4',
+      label: 'demo/mpx-tailwindcss-v4',
+      project: 'demo/mpx-tailwindcss-v4',
+      group: 'demo',
+      cwd: tempDir,
+      devScript: 'dev:e2e-watch',
+      outputWxml: path.join(tempDir, 'dist/index.wxml'),
+      outputJs: path.join(tempDir, 'dist/index.js'),
+      outputStyleCandidates: [path.join(tempDir, 'dist/index.wxss')],
+      globalStyleCandidates: [path.join(tempDir, 'dist/app.wxss')],
+      templateMutation: {
+        sourceFile,
+        verifyEscapedIn: ['js'],
+        mutate: source => `${source}\n<!-- root -->`,
+      },
+      scriptMutation: {
+        sourceFile,
+        verifyEscapedIn: ['js'],
+        mutate: source => source,
+      },
+      styleMutation: {
+        sourceFile,
+        mutate: source => source,
+      },
+      subPackageMutations: [
+        {
+          root: 'sub-normal',
+          independent: false,
+          outputWxml: path.join(tempDir, 'dist/sub-normal/index.wxml'),
+          outputJs: path.join(tempDir, 'dist/sub-normal/index.js'),
+          outputStyleCandidates: [path.join(tempDir, 'dist/sub-normal/index.wxss')],
+          globalStyleCandidates: [path.join(tempDir, 'dist/sub-normal/app.wxss')],
+          templateMutation: {
+            sourceFile: normalSubSource,
+            verifyEscapedIn: ['js'],
+            mutate: source => `${source}\n<!-- normal -->`,
+          },
+          styleMutation: {
+            sourceFile: normalSubSource,
+            mutate: source => source,
+          },
+        },
+        {
+          root: 'sub-independent',
+          independent: true,
+          outputWxml: path.join(tempDir, 'dist/sub-independent/index.wxml'),
+          outputJs: path.join(tempDir, 'dist/sub-independent/index.js'),
+          outputStyleCandidates: [path.join(tempDir, 'dist/sub-independent/index.wxss')],
+          globalStyleCandidates: [path.join(tempDir, 'dist/sub-independent/app.wxss')],
+          templateMutation: {
+            sourceFile: independentSubSource,
+            verifyEscapedIn: ['js'],
+            mutate: source => `${source}\n<!-- independent -->`,
+          },
+          styleMutation: {
+            sourceFile: independentSubSource,
+            mutate: source => source,
+          },
+        },
+      ],
+    }
+
+    const result = await runMainStyleOnlyCase(watchCase, {
+      ...createOptions(),
+      mainStyleOnly: true,
+      mainStyleSubPackageLimit: 1,
+    })
+
+    expect(runMainStyleHotUpdateMock).toHaveBeenCalledTimes(2)
+    expect(result.subPackageMainStyleHotUpdates).toHaveLength(1)
+    expect(result.subPackageMainStyleHotUpdates?.[0]).toMatchObject({
+      root: 'sub-normal',
+      independent: false,
+    })
+    expect(session.stop).toHaveBeenCalledTimes(1)
+  })
+
+  it('throws partial metrics when main-style-only fails after root metrics are collected', async () => {
+    const sourceFile = path.join(tempDir, 'index.mpx')
+    const subSource = path.join(tempDir, 'sub-normal.mpx')
+    await writeFile(sourceFile, '<template></template>\n', 'utf8')
+    await writeFile(subSource, '<template></template>\n', 'utf8')
+    const session: WatchSession = {
+      child: {} as WatchSession['child'],
+      ensureRunning: vi.fn(),
+      lastCompileSuccessAt: vi.fn(() => 0),
+      logs: vi.fn(() => 'watch logs'),
+      memorySamplesSince: vi.fn(() => [
+        { at: 1, rssMb: 100, maxProcessRssMb: 80, processCount: 1 },
+      ]),
+      memoryDebugSamplesSince: vi.fn(() => []),
+      stop: vi.fn(async () => {}),
+      pluginProcessSamplesSince: vi.fn(() => []),
+    }
+    createWatchSessionMock.mockReturnValue(session)
+    runMainStyleHotUpdateMock
+      .mockResolvedValueOnce(createMainStyleMetric(sourceFile))
+      .mockRejectedValueOnce(new Error('subpackage timeout'))
+
+    const watchCase: WatchCase = {
+      name: 'mpx-tailwindcss-v4',
+      label: 'demo/mpx-tailwindcss-v4',
+      project: 'demo/mpx-tailwindcss-v4',
+      group: 'demo',
+      cwd: tempDir,
+      devScript: 'dev:e2e-watch',
+      outputWxml: path.join(tempDir, 'dist/index.wxml'),
+      outputJs: path.join(tempDir, 'dist/index.js'),
+      outputStyleCandidates: [path.join(tempDir, 'dist/index.wxss')],
+      globalStyleCandidates: [path.join(tempDir, 'dist/app.wxss')],
+      templateMutation: {
+        sourceFile,
+        verifyEscapedIn: ['js'],
+        mutate: source => `${source}\n<!-- root -->`,
+      },
+      scriptMutation: {
+        sourceFile,
+        verifyEscapedIn: ['js'],
+        mutate: source => source,
+      },
+      styleMutation: {
+        sourceFile,
+        mutate: source => source,
+      },
+      subPackageMutations: [{
+        root: 'sub-normal',
+        independent: false,
+        outputWxml: path.join(tempDir, 'dist/sub-normal/index.wxml'),
+        outputJs: path.join(tempDir, 'dist/sub-normal/index.js'),
+        outputStyleCandidates: [path.join(tempDir, 'dist/sub-normal/index.wxss')],
+        globalStyleCandidates: [path.join(tempDir, 'dist/sub-normal/app.wxss')],
+        templateMutation: {
+          sourceFile: subSource,
+          verifyEscapedIn: ['js'],
+          mutate: source => `${source}\n<!-- normal -->`,
+        },
+        styleMutation: {
+          sourceFile: subSource,
+          mutate: source => source,
+        },
+      }],
+    }
+
+    await expect(runMainStyleOnlyCase(watchCase, {
+      ...createOptions(),
+      mainStyleOnly: true,
+    })).rejects.toMatchObject({
+      name: 'WatchHmrPartialMetricsError',
+      metrics: {
+        name: 'mpx-tailwindcss-v4',
+        memoryPeakRssMb: 100,
+        subPackageMainStyleHotUpdates: [],
+      },
+    } satisfies Partial<WatchHmrPartialMetricsError>)
     expect(session.stop).toHaveBeenCalledTimes(1)
   })
 })

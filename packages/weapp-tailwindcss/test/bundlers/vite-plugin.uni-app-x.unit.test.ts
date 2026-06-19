@@ -34,11 +34,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const transformUVueMock = getTransformUVueMock()
     const runtimeSet = new Set(['uvue'])
-    setCurrentContext(createContext())
-    const currentContext = getCurrentContext()
-    currentContext.uniAppX = { enabled: true }
-    currentContext.twPatcher = {
-      patch: vi.fn(),
+    const tailwindRuntime = {
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => {
         throw new Error('getClassSetSync is not supported for Tailwind CSS v4 projects. Use getClassSet instead.')
@@ -46,6 +42,11 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
     }
+    setCurrentContext(createContext({
+      uniAppX: { enabled: true },
+      tailwindRuntime,
+    }))
+    const currentContext = getCurrentContext()
     currentContext.onStart = vi.fn()
     currentContext.onEnd = vi.fn()
 
@@ -67,10 +68,11 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const nvueBuildStart = nvuePlugin.buildStart as any
     await nvueBuildStart?.call(nvuePlugin)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
     const nvueTransform = nvuePlugin.transform as any
     const nvueResult = await nvueTransform?.call(nvuePlugin, 'console.log("x")', 'App.nvue')
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(transformUVueMock).toHaveBeenCalledWith('console.log("x")', 'App.nvue', currentContext.jsHandler, runtimeSet)
     expect(nvueResult).toEqual({ code: 'uvue:App.nvue:console.log("x")' })
 
@@ -90,8 +92,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
       'const answer = "text-[#424242]"',
@@ -141,8 +143,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -195,8 +196,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
       jsHandler: vi.fn((code: string) => ({ code: `asset:${code}` })),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -270,8 +270,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         }
         return { code: `chunk:${code}` }
       }),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -493,8 +492,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -537,8 +535,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         'Component.uvue',
       )
       expect(firstResult?.code).toContain(hashedExisting)
-      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+      expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
 
       runtimeIndex = 1
       const secondResult = await (nvuePlugin.transform as any)?.call(
@@ -547,8 +545,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         'Component.uvue',
       )
       expect(secondResult?.code).toContain(hashedNew)
-      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(3)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(3)
+      expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(3)
     }
     finally {
       transformUVueMock.mockImplementation(
@@ -569,8 +567,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -613,8 +610,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         'Component.uvue',
       )
       expect(firstResult?.code).toContain(hashedExisting)
-      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(2)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(2)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+      expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
 
       runtimeIndex = 1
       const secondResult = await (nvuePlugin.transform as any)?.call(
@@ -623,8 +620,8 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         'Component.uvue',
       )
       expect(secondResult?.code).toContain(hashedNew)
-      expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(3)
-      expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(3)
+      expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(3)
+      expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(3)
     }
     finally {
       transformUVueMock.mockImplementation(
@@ -644,8 +641,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -669,25 +665,25 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
     await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
     await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.uvue' } as HmrContext)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
     await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.nvue' } as HmrContext)
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     await (nvuePlugin.handleHotUpdate as any)?.call(nvuePlugin, { file: '/src/pages/foo.vue' } as HmrContext)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on .uvue/.nvue watch changes in build watch mode', async () => {
@@ -701,8 +697,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -727,23 +722,23 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
 
     runtimeIndex = 1
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.uvue')
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.nvue')
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     await (nvuePlugin.watchChange as any)?.call(nvuePlugin, '/src/pages/foo.vue')
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('forces runtime refresh for uni-app-x transform even for non-watch build runs', async () => {
@@ -758,8 +753,7 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     setCurrentContext(createContext({
       uniAppX: { enabled: true },
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -783,12 +777,12 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
     await (postPlugin.configResolved as any)?.call(postPlugin, config)
     await (nvuePlugin.buildStart as any)?.call(nvuePlugin)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
     runtimeIndex = 1
     await (nvuePlugin.transform as any)?.call(nvuePlugin, '<template></template>', 'App.uvue')
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.twPatcher.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(transformUVueMock).toHaveBeenCalledWith('<template></template>', 'App.uvue', currentContext.jsHandler, runtimeSets[1])
   }, TEST_TIMEOUT_MS)
 })

@@ -6,7 +6,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 export interface GenerateCssByGeneratorOptions {
   opts: InternalUserDefinedOptions
   runtimeState: {
-    twPatcher: InternalUserDefinedOptions['twPatcher']
+    tailwindRuntime: InternalUserDefinedOptions['tailwindRuntime']
     readyPromise: Promise<void>
   }
   runtime: Set<string>

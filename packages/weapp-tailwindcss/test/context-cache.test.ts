@@ -34,7 +34,9 @@ describe('compiler context cache', () => {
     })
 
     expect(ctxA).toBe(ctxB)
-    expect(ctxA.twPatcher).toBe(ctxB.twPatcher)
+    expect(ctxA.tailwindRuntime).toBe(ctxB.tailwindRuntime)
+    expect(ctxA.tailwindRuntime).toBe(ctxB.tailwindRuntime)
+    expect(ctxA.tailwindRuntime).toBe(ctxA.tailwindRuntime)
   })
 
   it('creates new context when options differ', () => {
@@ -70,12 +72,12 @@ describe('compiler context cache', () => {
     const firstProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3')
     const secondProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v4')
 
-    process.env.npm_package_json = path.join(firstProject, 'package.json')
-    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3'
+    process.env['npm_package_json'] = path.join(firstProject, 'package.json')
+    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3'
     const ctxA = getCompilerContext()
 
-    process.env.npm_package_json = path.join(secondProject, 'package.json')
-    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4'
+    process.env['npm_package_json'] = path.join(secondProject, 'package.json')
+    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4'
     const ctxB = getCompilerContext()
 
     expect(ctxA).not.toBe(ctxB)
@@ -90,12 +92,12 @@ describe('compiler context cache', () => {
       tailwindcssBasedir: firstProject,
     }
 
-    process.env.npm_package_json = path.join(firstProject, 'package.json')
-    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3'
+    process.env['npm_package_json'] = path.join(firstProject, 'package.json')
+    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3'
     const ctxA = getCompilerContext(options)
 
-    process.env.npm_package_json = path.join(secondProject, 'package.json')
-    process.env.PNPM_PACKAGE_NAME = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4'
+    process.env['npm_package_json'] = path.join(secondProject, 'package.json')
+    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4'
     const ctxB = getCompilerContext(options)
 
     expect(ctxA).toBe(ctxB)
@@ -165,7 +167,7 @@ describe('compiler context cache', () => {
 
   it('returns undefined for circular options instead of throwing', () => {
     const circular: Record<string, unknown> = {}
-    circular.self = circular
+    circular['self'] = circular
 
     expect(createCompilerContextCacheKey(circular)).toBeUndefined()
   })
@@ -183,9 +185,39 @@ describe('compiler context cache', () => {
     expect(first).toBe(second)
   })
 
+  it('limits cached compiler contexts with least-recently-used pruning', () => {
+    process.env['WEAPP_TW_COMPILER_CONTEXT_CACHE_MAX'] = '2'
+    const firstOptions = {
+      tailwindcssBasedir: process.cwd(),
+      cssEntries: ['src/first.css'],
+    }
+    const secondOptions = {
+      tailwindcssBasedir: process.cwd(),
+      cssEntries: ['src/second.css'],
+    }
+    const thirdOptions = {
+      tailwindcssBasedir: process.cwd(),
+      cssEntries: ['src/third.css'],
+    }
+
+    const first = withCompilerContextCache(firstOptions, () => ({ value: 'first' } as never))
+    const second = withCompilerContextCache(secondOptions, () => ({ value: 'second' } as never))
+
+    expect(withCompilerContextCache(firstOptions, () => ({ value: 'first-new' } as never))).toBe(first)
+
+    const third = withCompilerContextCache(thirdOptions, () => ({ value: 'third' } as never))
+    expect(third).toEqual({ value: 'third' })
+    expect(withCompilerContextCache(firstOptions, () => ({ value: 'first-newer' } as never))).toBe(first)
+
+    const secondAfterPrune = withCompilerContextCache(secondOptions, () => ({ value: 'second-new' } as never))
+
+    expect(secondAfterPrune).not.toBe(second)
+    expect(secondAfterPrune).toEqual({ value: 'second-new' })
+  })
+
   it('does not cache factory results when options cannot be keyed', () => {
     const circular: Record<string, unknown> = {}
-    circular.self = circular
+    circular['self'] = circular
     const first = withCompilerContextCache(circular, () => ({ value: 1 } as never))
     const second = withCompilerContextCache(circular, () => ({ value: 2 } as never))
 

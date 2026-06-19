@@ -2,15 +2,14 @@ import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tail
 import type { IArbitraryValues } from '@/types/shared'
 import { readFile } from 'node:fs/promises'
 import { LRUCache } from 'lru-cache'
-import { extractSourceCandidates } from 'tailwindcss-patch'
 import { md5Hash } from '@/cache/md5'
+import { extractCandidatesFromSource } from '@/tailwindcss/candidates'
 import {
   FULL_SOURCE_SCAN_EXTENSION_RE,
   isFileMatchedByTailwindSourceEntries,
   resolveSourceScanPath,
 } from '@/tailwindcss/source-scan'
 import { resolveSourceCandidateScanFiles } from './source-candidates/scan-root'
-import { extractScriptStringCandidates } from './source-candidates/script'
 
 export { createTailwindV3DefaultExtractor } from './source-candidates/tailwind-v3-default-extractor'
 
@@ -94,16 +93,7 @@ async function extractCandidates(
   extension: string,
   options: SourceCandidateCollectorOptions,
 ) {
-  const candidates = options.extractor
-    ? new Set(await options.extractor(source, extension))
-    : new Set(await extractSourceCandidates(source, extension, {
-        ...(options.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: options.bareArbitraryValues }),
-      }))
-  const scriptCandidates = await extractScriptStringCandidates(source, extension, options)
-  for (const candidate of scriptCandidates) {
-    candidates.add(candidate)
-  }
-  return candidates
+  return extractCandidatesFromSource(source, extension, options)
 }
 
 export function isSourceCandidateRequest(id: string) {

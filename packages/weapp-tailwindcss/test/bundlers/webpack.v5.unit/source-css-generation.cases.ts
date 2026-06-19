@@ -40,14 +40,14 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         css: options.css,
         dependencies: [],
       })),
-      resolveTailwindV4SourceFromPatcher: vi.fn(async () => ({
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
         base: root,
         baseFallbacks: [],
         css: '@import "tailwindcss";',
         dependencies: [],
       })),
-      resolveTailwindV4SourceOptionsFromPatcher: vi.fn(() => ({
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
       })),
@@ -64,8 +64,8 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         mainCssChunkMatcher: vi.fn(() => false),
         styleHandler: vi.fn(async (code: string) => ({ css: `handled:${code}` })),
         tailwindcssBasedir: root,
-        twPatcher: {
-          ...createContext().twPatcher,
+        tailwindRuntime: {
+          ...createContext().tailwindRuntime,
           majorVersion: 4,
           getClassSet: vi.fn(async () => new Set(['bg-normal-subpackage-marker'])),
           getClassSetSync: vi.fn(() => new Set(['bg-normal-subpackage-marker'])),

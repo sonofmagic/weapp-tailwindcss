@@ -67,7 +67,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css loader assets', () =
       },
     }
 
-    testState.currentContext.twPatcher.majorVersion = 4
+    testState.currentContext.tailwindRuntime.majorVersion = 4
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
 

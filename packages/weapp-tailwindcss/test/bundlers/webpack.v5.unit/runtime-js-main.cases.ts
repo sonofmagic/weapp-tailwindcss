@@ -12,8 +12,8 @@ describe('bundlers/webpack WeappTailwindcss / runtime js main updates', () => {
         transformCount += 1
         return { css: `runtime:${transformCount}` }
       }),
-      twPatcher: {
-        ...createContext().twPatcher,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),

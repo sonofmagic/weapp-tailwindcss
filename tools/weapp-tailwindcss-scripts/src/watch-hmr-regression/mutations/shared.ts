@@ -5,6 +5,7 @@ import type {
   MutationRoundMetrics,
   MutationScenario,
   OutputMtime,
+  OutputWaitDiagnostics,
   StyleMutationPayload,
   WatchCase,
   WatchCaseRoundComparison,
@@ -324,6 +325,26 @@ export async function waitForOutputFilesUpdated(
   startedAt = Date.now(),
   acceptWhen?: () => Promise<boolean>,
 ) {
+  return (await waitForOutputFilesUpdatedWithDiagnostics(
+    watchCase,
+    files,
+    baselineMtimes,
+    options,
+    session,
+    startedAt,
+    acceptWhen,
+  )).elapsedMs
+}
+
+export async function waitForOutputFilesUpdatedWithDiagnostics(
+  watchCase: WatchCase,
+  files: string[],
+  baselineMtimes: Map<string, number>,
+  options: CliOptions,
+  session: WatchSession,
+  startedAt = Date.now(),
+  acceptWhen?: () => Promise<boolean>,
+): Promise<OutputWaitDiagnostics> {
   const acceptsSemanticOutput = async () => {
     if (!acceptWhen) {
       return false
@@ -337,8 +358,22 @@ export async function waitForOutputFilesUpdated(
     }
   }
 
-  return waitFor(
+  let lastDiagnostics: OutputWaitDiagnostics = {
+    trigger: 'semantic',
+    elapsedMs: 0,
+    fileCount: files.length,
+    resolvedFileCount: 0,
+    exactFileUpdated: false,
+    globFileUpdated: false,
+    semanticAccepted: false,
+    missingExactFiles: [],
+    updatedFiles: [],
+  }
+
+  const elapsedMs = await waitFor(
     async () => {
+      const missingExactFiles: string[] = []
+      const updatedFiles: string[] = []
       let exactFileUpdated = false
       for (const file of files) {
         if (isOutputFilePattern(file)) {
@@ -347,7 +382,19 @@ export async function waitForOutputFilesUpdated(
 
         const currentMtime = await getMtime(file)
         if (currentMtime === 0) {
+          missingExactFiles.push(file)
           if (await acceptsSemanticOutput()) {
+            lastDiagnostics = {
+              trigger: 'semantic',
+              elapsedMs: Date.now() - startedAt,
+              fileCount: files.length,
+              resolvedFileCount: 0,
+              exactFileUpdated,
+              globFileUpdated: false,
+              semanticAccepted: true,
+              missingExactFiles,
+              updatedFiles,
+            }
             return true
           }
           continue
@@ -356,26 +403,74 @@ export async function waitForOutputFilesUpdated(
         const baselineMtime = baselineMtimes.get(file) ?? 0
         if (baselineMtime === 0 || currentMtime > baselineMtime) {
           exactFileUpdated = true
+          updatedFiles.push(file)
         }
       }
 
       if (exactFileUpdated && !acceptWhen) {
+        lastDiagnostics = {
+          trigger: 'exact-mtime',
+          elapsedMs: Date.now() - startedAt,
+          fileCount: files.length,
+          resolvedFileCount: 0,
+          exactFileUpdated,
+          globFileUpdated: false,
+          semanticAccepted: false,
+          missingExactFiles,
+          updatedFiles,
+        }
         return true
       }
 
       const resolvedFiles = await expandOutputFileEntries(files)
+      let globFileUpdated = false
       for (const file of resolvedFiles) {
         const baselineMtime = baselineMtimes.get(file) ?? 0
         const currentMtime = await getMtime(file)
         if (baselineMtime === 0 || currentMtime > baselineMtime) {
           if (acceptWhen) {
+            globFileUpdated = true
+            updatedFiles.push(file)
             break
+          }
+          lastDiagnostics = {
+            trigger: 'glob-mtime',
+            elapsedMs: Date.now() - startedAt,
+            fileCount: files.length,
+            resolvedFileCount: resolvedFiles.length,
+            exactFileUpdated,
+            globFileUpdated: true,
+            semanticAccepted: false,
+            missingExactFiles,
+            updatedFiles: [...new Set([...updatedFiles, file])],
           }
           return true
         }
       }
       if (await acceptsSemanticOutput()) {
+        lastDiagnostics = {
+          trigger: 'semantic',
+          elapsedMs: Date.now() - startedAt,
+          fileCount: files.length,
+          resolvedFileCount: resolvedFiles.length,
+          exactFileUpdated,
+          globFileUpdated,
+          semanticAccepted: true,
+          missingExactFiles,
+          updatedFiles: [...new Set(updatedFiles)],
+        }
         return true
+      }
+      lastDiagnostics = {
+        trigger: 'semantic',
+        elapsedMs: Date.now() - startedAt,
+        fileCount: files.length,
+        resolvedFileCount: resolvedFiles.length,
+        exactFileUpdated,
+        globFileUpdated,
+        semanticAccepted: false,
+        missingExactFiles,
+        updatedFiles: [...new Set(updatedFiles)],
       }
       return false
     },
@@ -387,6 +482,11 @@ export async function waitForOutputFilesUpdated(
     },
     startedAt,
   )
+
+  return {
+    ...lastDiagnostics,
+    elapsedMs,
+  }
 }
 
 export async function waitForMarkerState(

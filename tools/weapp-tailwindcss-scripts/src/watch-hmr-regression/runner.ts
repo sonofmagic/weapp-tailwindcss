@@ -52,6 +52,16 @@ interface HeapBudgetSample {
   heapUsedMb: number
 }
 
+export class WatchHmrPartialMetricsError extends Error {
+  readonly metrics: WatchCaseMetrics
+
+  constructor(message: string, metrics: WatchCaseMetrics) {
+    super(message)
+    this.name = 'WatchHmrPartialMetricsError'
+    this.metrics = metrics
+  }
+}
+
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return [...new Set([
     watchCase.contentMutation?.sourceFile,
@@ -349,12 +359,12 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
       ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
       hotUpdateOutputMs: webHmrMetrics.hotUpdateEffectiveMs,
       hotUpdateEffectiveMs: webHmrMetrics.hotUpdateEffectiveMs,
-      hotUpdatePluginProcessMs: 0,
-      hotUpdatePluginProcessSamples: [],
+      hotUpdatePluginProcessMs: webHmrMetrics.hotUpdatePluginProcessMs,
+      hotUpdatePluginProcessSamples: webHmrMetrics.hotUpdatePluginProcessSamples,
       rollbackOutputMs: webHmrMetrics.rollbackEffectiveMs,
       rollbackEffectiveMs: webHmrMetrics.rollbackEffectiveMs,
-      rollbackPluginProcessMs: 0,
-      rollbackPluginProcessSamples: [],
+      rollbackPluginProcessMs: webHmrMetrics.rollbackPluginProcessMs,
+      rollbackPluginProcessSamples: webHmrMetrics.rollbackPluginProcessSamples,
       totalMs: Date.now() - caseStartedAt,
       memorySamples,
       ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
@@ -381,6 +391,76 @@ export async function runWebOnlyCase(watchCase: WatchCase, options: CliOptions):
   }
 }
 
+function normalizeMainStyleSubPackageLimit(limit: number | undefined, total: number) {
+  if (limit == null || !Number.isFinite(limit)) {
+    return total
+  }
+  return Math.max(0, Math.min(total, Math.trunc(limit)))
+}
+
+function createMainStyleOnlyMetrics(params: {
+  watchCase: WatchCase
+  caseStartedAt: number
+  sessionStartedAt: number
+  session: ReturnType<typeof createWatchSession>
+  initialReadyMs: number
+  mainStyleHotUpdate: WatchCaseMetrics['mainStyleHotUpdate']
+  subPackageMainStyleHotUpdates: NonNullable<WatchCaseMetrics['subPackageMainStyleHotUpdates']>
+}) {
+  const {
+    watchCase,
+    caseStartedAt,
+    sessionStartedAt,
+    session,
+    initialReadyMs,
+    mainStyleHotUpdate,
+    subPackageMainStyleHotUpdates,
+  } = params
+  const classTokens = [mainStyleHotUpdate.toClassToken]
+  const memorySamples = session.memorySamplesSince(sessionStartedAt)
+  const memoryDebugSamples = session.memoryDebugSamplesSince(sessionStartedAt)
+  const memorySummary = summarizeMemorySamples(memorySamples)
+  const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
+  const metrics: WatchCaseMetrics = {
+    name: watchCase.name,
+    label: watchCase.label,
+    project: watchCase.project,
+    projectGroup: watchCase.group,
+    marker: `main-style:${watchCase.name}`,
+    classLiteral: classTokens.join(' '),
+    classTokens,
+    escapedClasses: [mainStyleHotUpdate.toEscapedClass],
+    rounds: [],
+    verifyEscapedIn: watchCase.templateMutation.verifyEscapedIn,
+    verifyClassLiteralIn: watchCase.templateMutation.verifyClassLiteralIn ?? [],
+    globalStyleOutputs: watchCase.globalStyleCandidates,
+    mutationMetrics: [],
+    mainStyleHotUpdate,
+    subPackageMainStyleHotUpdates,
+    subPackageMutationMetrics: [],
+    summaryByMutationKind: summarizeMutationMetricsByKind([]),
+    initialReadyMs,
+    ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
+    hotUpdateOutputMs: mainStyleHotUpdate.hotUpdateOutputMs,
+    hotUpdateEffectiveMs: mainStyleHotUpdate.hotUpdateEffectiveMs,
+    hotUpdatePluginProcessMs: mainStyleHotUpdate.hotUpdatePluginProcessMs,
+    hotUpdatePluginProcessSamples: mainStyleHotUpdate.hotUpdatePluginProcessSamples,
+    rollbackOutputMs: mainStyleHotUpdate.rollbackOutputMs,
+    rollbackEffectiveMs: mainStyleHotUpdate.rollbackEffectiveMs,
+    rollbackPluginProcessMs: mainStyleHotUpdate.rollbackPluginProcessMs,
+    rollbackPluginProcessSamples: mainStyleHotUpdate.rollbackPluginProcessSamples,
+    totalMs: Date.now() - caseStartedAt,
+    memorySamples,
+    ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
+    memorySummary,
+    memoryDebugSummary,
+    memoryPeakRssMb: memorySummary.peakRssMb,
+    memoryRssDeltaMb: memorySummary.rssDeltaMb,
+  }
+
+  return metrics
+}
+
 export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
   const caseStartedAt = Date.now()
   const sourcePath = watchCase.templateMutation.sourceFile
@@ -392,12 +472,15 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
   const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
     quietSass: options.quietSass,
   }, watchCase.env)
+  let initialReadyMs = 0
+  let mainStyleHotUpdate: WatchCaseMetrics['mainStyleHotUpdate'] | undefined
+  const subPackageMainStyleHotUpdates: NonNullable<WatchCaseMetrics['subPackageMainStyleHotUpdates']> = []
 
   try {
     const outputsReadyMs = await waitForOutputsReady(watchCase, options, session, sessionStartedAt)
     const warmupMs = await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
-    const initialReadyMs = Math.max(outputsReadyMs, warmupMs)
-    const mainStyleHotUpdate = await runMainStyleHotUpdate(
+    initialReadyMs = Math.max(outputsReadyMs, warmupMs)
+    mainStyleHotUpdate = await runMainStyleHotUpdate(
       watchCase,
       options,
       session,
@@ -407,8 +490,17 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       watchCase.globalStyleCandidates,
     )
 
-    const subPackageMainStyleHotUpdates = []
-    for (const mutation of watchCase.subPackageMutations ?? []) {
+    const subPackageMutations = watchCase.subPackageMutations ?? []
+    const subPackageLimit = normalizeMainStyleSubPackageLimit(
+      options.mainStyleSubPackageLimit,
+      subPackageMutations.length,
+    )
+    if (subPackageLimit < subPackageMutations.length) {
+      process.stdout.write(
+        `[watch-hmr] ${watchCase.label} main-style-only subpackage limit ${subPackageLimit}/${subPackageMutations.length}\n`,
+      )
+    }
+    for (const mutation of subPackageMutations.slice(0, subPackageLimit)) {
       const subWatchCase = createSubPackageWatchCase(watchCase, mutation)
       const subSourcePath = mutation.templateMutation.sourceFile
       const subSourceOriginal = sourceOriginals.get(subSourcePath)
@@ -432,47 +524,15 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
       })
     }
 
-    const classTokens = [mainStyleHotUpdate.toClassToken]
-    const memorySamples = session.memorySamplesSince(sessionStartedAt)
-    const memoryDebugSamples = session.memoryDebugSamplesSince(sessionStartedAt)
-    const memorySummary = summarizeMemorySamples(memorySamples)
-    const memoryDebugSummary = summarizeMemoryDebugSamples(memoryDebugSamples)
-    const metrics: WatchCaseMetrics = {
-      name: watchCase.name,
-      label: watchCase.label,
-      project: watchCase.project,
-      projectGroup: watchCase.group,
-      marker: `main-style:${watchCase.name}`,
-      classLiteral: classTokens.join(' '),
-      classTokens,
-      escapedClasses: [mainStyleHotUpdate.toEscapedClass],
-      rounds: [],
-      verifyEscapedIn: watchCase.templateMutation.verifyEscapedIn,
-      verifyClassLiteralIn: watchCase.templateMutation.verifyClassLiteralIn ?? [],
-      globalStyleOutputs: watchCase.globalStyleCandidates,
-      mutationMetrics: [],
+    const metrics = createMainStyleOnlyMetrics({
+      watchCase,
+      caseStartedAt,
+      sessionStartedAt,
+      session,
+      initialReadyMs,
       mainStyleHotUpdate,
       subPackageMainStyleHotUpdates,
-      subPackageMutationMetrics: [],
-      summaryByMutationKind: summarizeMutationMetricsByKind([]),
-      initialReadyMs,
-      ...(watchCase.maxPluginProcessMs == null ? {} : { maxPluginProcessMs: watchCase.maxPluginProcessMs }),
-      hotUpdateOutputMs: mainStyleHotUpdate.hotUpdateOutputMs,
-      hotUpdateEffectiveMs: mainStyleHotUpdate.hotUpdateEffectiveMs,
-      hotUpdatePluginProcessMs: mainStyleHotUpdate.hotUpdatePluginProcessMs,
-      hotUpdatePluginProcessSamples: mainStyleHotUpdate.hotUpdatePluginProcessSamples,
-      rollbackOutputMs: mainStyleHotUpdate.rollbackOutputMs,
-      rollbackEffectiveMs: mainStyleHotUpdate.rollbackEffectiveMs,
-      rollbackPluginProcessMs: mainStyleHotUpdate.rollbackPluginProcessMs,
-      rollbackPluginProcessSamples: mainStyleHotUpdate.rollbackPluginProcessSamples,
-      totalMs: Date.now() - caseStartedAt,
-      memorySamples,
-      ...(memoryDebugSamples.length > 0 ? { memoryDebugSamples } : {}),
-      memorySummary,
-      memoryDebugSummary,
-      memoryPeakRssMb: memorySummary.peakRssMb,
-      memoryRssDeltaMb: memorySummary.rssDeltaMb,
-    }
+    })
 
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} main-style-only passed (main-style=${mainStyleHotUpdate.hotUpdateEffectiveMs}ms)\n`,
@@ -483,6 +543,18 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
   catch (error) {
     const message = error instanceof Error ? error.message : String(error)
     const logs = session.logs()
+    if (mainStyleHotUpdate) {
+      const metrics = createMainStyleOnlyMetrics({
+        watchCase,
+        caseStartedAt,
+        sessionStartedAt,
+        session,
+        initialReadyMs,
+        mainStyleHotUpdate,
+        subPackageMainStyleHotUpdates,
+      })
+      throw new WatchHmrPartialMetricsError(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`, metrics)
+    }
     throw new Error(`${message}\n[${watchCase.label}] recent watch logs:\n${logs}`)
   }
   finally {

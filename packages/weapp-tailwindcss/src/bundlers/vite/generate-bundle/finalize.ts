@@ -201,14 +201,17 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     { incremental: useIncrementalMode },
   )
   state.generatorCandidateSignature = generatorCandidateSignature
-  if (useIncrementalMode && !snapshot.hasOmittedKnownFiles) {
+  const processCachePruned = useIncrementalMode && typeof cache.prune === 'function'
+  const processCachePruneSkipReason = processCachePruned
+    ? undefined
+    : !useIncrementalMode
+        ? 'full-mode'
+        : 'cache-prune-unavailable'
+  if (processCachePruned) {
     cache.prune?.({
       cacheKeys: activeProcessCacheKeys,
       hashKeys: activeProcessHashKeys,
     })
-  }
-  else if (useIncrementalMode) {
-    cache.pruneHashKeys?.(activeProcessHashKeys)
   }
   pruneLastCssResults(lastCssResultByFile, lastCssSourceHashByFile, activeViteCssCacheFiles)
   pruneViteCssCaches?.({
@@ -250,8 +253,11 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
         cache,
         generatorRuntimeSize: generatorRuntime.size,
         getViteCssCacheStats,
+        hasOmittedKnownFiles: snapshot.hasOmittedKnownFiles,
         lastCssResultByFile,
         phase: 'generateBundle',
+        processCachePruned,
+        processCachePruneSkipReason,
         runtimeSize: runtime.size,
         sourceCandidatesSize: sourceCandidates.size,
         transformRuntimeSize: transformRuntime.size,

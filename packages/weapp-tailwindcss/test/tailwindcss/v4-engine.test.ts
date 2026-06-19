@@ -2,11 +2,11 @@ import { mkdir, mkdtemp, symlink, writeFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
-import type { TailwindCssPatchOptions } from 'tailwindcss-patch'
-import { resolveTailwindV4SourceFromPatchOptions } from 'tailwindcss-patch'
 import { afterEach, vi } from 'vitest'
 import { getCompilerContext } from '@/context'
-import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromPatcher, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
+import type { TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
+import { clearTailwindV4IncrementalGenerateCacheForTest, createTailwindV4Engine, getTailwindV4IncrementalGenerateCacheStatsForTest, resolveTailwindV4Source, resolveTailwindV4SourceOptionsFromRuntime, transformTailwindV4CssToWeapp } from '@/tailwindcss/v4-engine'
+import { resolveTailwindV4SourceFromRuntimeOptions } from '@/tailwindcss/v4-engine/source'
 
 const require = createRequire(import.meta.url)
 const tailwindcssRoot = path.dirname(require.resolve('tailwindcss4/package.json'))
@@ -475,8 +475,8 @@ describe('tailwindcss v4 engine', () => {
         root: null,
       }
     })
-    vi.doMock('tailwindcss-patch', async (importOriginal) => {
-      const actual = await importOriginal<typeof import('tailwindcss-patch')>()
+    vi.doMock('@tailwindcss-mangle/engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@tailwindcss-mangle/engine')>()
       return {
         ...actual,
         createTailwindV4Engine: vi.fn(() => ({
@@ -937,6 +937,84 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).not.toContain('.bg-green-500')
   })
 
+  it('scans from the project cwd for bare Tailwind v4 imports resolved through cssEntries', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-default-cwd-'))
+    const cssDir = path.join(root, 'src', 'styles')
+    const pagesDir = path.join(root, 'pages')
+    await linkTailwindcssPackage(root)
+    await mkdir(cssDir, { recursive: true })
+    await mkdir(pagesDir, { recursive: true })
+    await mkdir(path.join(root, 'node_modules', 'ignored-pkg'), { recursive: true })
+    await writeFile(path.join(pagesDir, 'index.html'), '<view class="bg-red-500 w-4"></view>', 'utf8')
+    await writeFile(path.join(cssDir, 'local.html'), '<view class="bg-blue-500"></view>', 'utf8')
+    await writeFile(path.join(root, 'node_modules', 'ignored-pkg', 'index.js'), 'export const cls = "bg-green-500"', 'utf8')
+    await writeFile(path.join(root, 'pnpm-lock.yaml'), 'lockfileVersion: "9.0"\npackages:\n  text-red-500: {}\n', 'utf8')
+    const cssEntry = path.join(cssDir, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-500: oklch(63.7% 0.237 25.331);
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+        --color-green-500: oklch(72.3% 0.219 149.579);
+        --spacing: 0.25rem;
+      }
+      @import "tailwindcss";
+      @tailwind utilities;
+    `, 'utf8')
+    const source = await resolveTailwindV4Source({
+      projectRoot: root,
+      cssEntries: [cssEntry],
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect(source.base).toBe(cssDir)
+    expect(result.classSet).toEqual(new Set(['bg-blue-500', 'bg-red-500', 'w-4']))
+    expect(result.rawCss).toContain('.bg-red-500')
+    expect(result.rawCss).toContain('.w-4')
+    expect(result.rawCss).not.toContain('.bg-green-500')
+    expect(result.rawCss).not.toContain('.text-red-500')
+  })
+
+  it('refreshes bare import scanning when cssEntries source files change', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-cssentries-hmr-'))
+    const cssDir = path.join(root, 'src', 'styles')
+    const pagesDir = path.join(root, 'pages')
+    await linkTailwindcssPackage(root)
+    await mkdir(cssDir, { recursive: true })
+    await mkdir(pagesDir, { recursive: true })
+    const page = path.join(pagesDir, 'index.html')
+    await writeFile(page, '<view class="bg-red-500"></view>', 'utf8')
+    const cssEntry = path.join(cssDir, 'app.css')
+    await writeFile(cssEntry, `
+      @theme default {
+        --color-red-500: oklch(63.7% 0.237 25.331);
+        --color-blue-500: oklch(62.3% 0.214 259.815);
+      }
+      @import "tailwindcss";
+      @tailwind utilities;
+    `, 'utf8')
+
+    const generate = async () => {
+      const source = await resolveTailwindV4Source({
+        projectRoot: root,
+        cssEntries: [cssEntry],
+      })
+      return createTailwindV4Engine(source).generate({ incrementalCache: true })
+    }
+
+    const initial = await generate()
+    await writeFile(page, '<view class="bg-blue-500"></view>', 'utf8')
+    const updated = await generate()
+
+    expect(initial.dependencies).toContain(cssEntry)
+    expect(updated.dependencies).toContain(cssEntry)
+    expect(initial.classSet).toEqual(new Set(['bg-red-500']))
+    expect(updated.classSet).toEqual(new Set(['bg-blue-500']))
+    expect(updated.rawCss).toContain('.bg-blue-500')
+    expect(updated.rawCss).not.toContain('.bg-red-500')
+  })
+
   it('uses the Tailwind v4 import source base for automatic source detection', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-source-base-'))
     const srcDir = path.join(root, 'src')
@@ -1071,7 +1149,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.rawCss).not.toContain('@reference')
   })
 
-  it('keeps cssEntries source options aligned with tailwindcss-patch defaults', async () => {
+  it('keeps cssEntries source options aligned with engine defaults', async () => {
     const implicitPatchOptions = {
       projectRoot: '/workspace/app',
       tailwindcss: {
@@ -1081,7 +1159,7 @@ describe('tailwindcss v4 engine', () => {
           cssEntries: ['/workspace/app/src/app.css'],
         },
       },
-    } satisfies TailwindCssPatchOptions
+    } satisfies TailwindCssRuntimeOptions
     const explicitPatchOptions = {
       projectRoot: '/workspace/app',
       tailwindcss: {
@@ -1092,8 +1170,8 @@ describe('tailwindcss v4 engine', () => {
           cssEntries: ['/workspace/app/src/app.css'],
         },
       },
-    } satisfies TailwindCssPatchOptions
-    const implicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+    } satisfies TailwindCssRuntimeOptions
+    const implicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
         tailwind: {
@@ -1107,7 +1185,7 @@ describe('tailwindcss v4 engine', () => {
       },
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
-    const explicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+    const explicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
         tailwind: {
@@ -1122,12 +1200,12 @@ describe('tailwindcss v4 engine', () => {
       },
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
-    const rawExplicitBaseOptions = resolveTailwindV4SourceOptionsFromPatcher({
+    const rawExplicitBaseOptions = resolveTailwindV4SourceOptionsFromRuntime({
       options: explicitPatchOptions,
       packageInfo: { name: 'tailwindcss', version: '4.2.4' },
     } as any)
-    const implicitPatchSource = await resolveTailwindV4SourceFromPatchOptions(implicitPatchOptions)
-    const explicitPatchSource = await resolveTailwindV4SourceFromPatchOptions(explicitPatchOptions)
+    const implicitPatchSource = await resolveTailwindV4SourceFromRuntimeOptions(implicitPatchOptions)
+    const explicitPatchSource = await resolveTailwindV4SourceFromRuntimeOptions(explicitPatchOptions)
 
     expect(implicitBaseOptions.base).toBeUndefined()
     expect(explicitBaseOptions.base).toBe('/custom/base')
@@ -1158,7 +1236,7 @@ describe('tailwindcss v4 engine', () => {
         negated: true,
       },
     ]
-    const options = resolveTailwindV4SourceOptionsFromPatcher({
+    const options = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
         tailwind: {

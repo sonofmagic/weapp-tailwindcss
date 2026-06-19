@@ -1,7 +1,6 @@
 import type { ParseError, ParserOptions } from '@babel/parser'
 import type { CssPreflightOptions, Document, IStyleHandlerOptions, Result as PostcssResult, Root } from '@weapp-tailwindcss/postcss'
 import type { SourceMap } from 'magic-string'
-import type { ILengthUnitsPatchOptions, TailwindcssPatcher } from 'tailwindcss-patch'
 import type { ICreateCacheReturnType } from '../cache'
 import type { ItemOrItemArray } from './base'
 import type { AppType, IArbitraryValues, ICustomAttributesEntities } from './shared'
@@ -10,12 +9,19 @@ import type {
   UniAppXOptions as UniAppXUserDefinedOptions,
   UserDefinedOptions,
 } from './user-defined-options'
-
-type AsyncableMethod<T> = T extends (...args: infer A) => infer R
-  ? (...args: A) => Promise<Awaited<R>> | Awaited<R>
-  : never
+import type {
+  LengthUnitsRuntimeOptions,
+  TailwindContentTokenReport,
+  TailwindcssExtractOptions,
+  TailwindcssExtractResult,
+  TailwindCssOptions,
+  TailwindCssRuntimeOptions,
+  TailwindPackageInfo,
+} from '@/tailwindcss/runtime-types'
 
 export type {
+  TailwindCssOptions,
+  TailwindCssRuntimeOptions,
   UniAppXComponentLocalStylesOptions,
   UniAppXUserDefinedOptions,
   UserDefinedOptions,
@@ -32,11 +38,9 @@ export type RequiredDefined<T> = {
 type InternalUserDefinedOptionsBase = RequiredDefined<
   Omit<
     UserDefinedOptions,
-    | 'supportCustomLengthUnitsPatch'
+    | 'supportCustomLengthUnits'
     | 'customReplaceDictionary'
     | 'cache'
-    | 'twPatcher'
-    | 'refreshTailwindcssPatcher'
     | 'templateHandler'
     | 'styleHandler'
     | 'jsHandler'
@@ -57,15 +61,14 @@ export interface JsHandlerResult {
   linked?: Record<string, LinkedJsModuleResult>
 }
 
-export interface TailwindcssPatcherLike {
-  packageInfo: TailwindcssPatcher['packageInfo']
-  majorVersion?: TailwindcssPatcher['majorVersion'] | undefined
-  patch?: TailwindcssPatcher['patch'] | undefined
-  getClassSet: AsyncableMethod<TailwindcssPatcher['getClassSet']>
-  getClassSetSync?: TailwindcssPatcher['getClassSetSync'] | undefined
-  extract: TailwindcssPatcher['extract']
-  collectContentTokens?: TailwindcssPatcher['collectContentTokens'] | undefined
-  options?: TailwindcssPatcher['options'] | undefined
+export interface TailwindcssRuntimeLike {
+  packageInfo: TailwindPackageInfo
+  majorVersion?: number | undefined
+  getClassSet: () => Promise<Set<string>> | Set<string>
+  getClassSetSync?: (() => Set<string>) | undefined
+  extract: (options?: TailwindcssExtractOptions) => Promise<TailwindcssExtractResult> | TailwindcssExtractResult
+  collectContentTokens?: (() => Promise<TailwindContentTokenReport> | TailwindContentTokenReport) | undefined
+  options?: TailwindCssRuntimeOptions | undefined
 }
 
 export type BabelParserOptions = ParserOptions & {
@@ -75,7 +78,7 @@ export type BabelParserOptions = ParserOptions & {
   cacheMaxSourceLength?: number | undefined
 }
 
-export interface RefreshTailwindcssPatcherOptions {
+export interface RefreshTailwindcssRuntimeOptions {
   clearCache?: boolean | undefined
 }
 
@@ -148,15 +151,15 @@ export interface ITemplateHandlerOptions extends ICommonReplaceOptions {
 }
 
 export interface InternalUserDefinedOptions extends InternalUserDefinedOptionsBase {
-  supportCustomLengthUnitsPatch: ILengthUnitsPatchOptions | boolean
+  supportCustomLengthUnits: LengthUnitsRuntimeOptions | boolean
   templateHandler: (rawSource: string, options?: ITemplateHandlerOptions) => Promise<string>
   styleHandler: (rawSource: string, options?: IStyleHandlerOptions) => Promise<PostcssResult<Root | Document>>
   jsHandler: JsHandler
   escapeMap: Record<string, string>
   customReplaceDictionary: Record<string, string>
   cache: ICreateCacheReturnType
-  twPatcher: TailwindcssPatcherLike
-  refreshTailwindcssPatcher: (options?: RefreshTailwindcssPatcherOptions) => Promise<TailwindcssPatcherLike>
+  tailwindRuntime: TailwindcssRuntimeLike
+  refreshTailwindcssRuntime: (options?: RefreshTailwindcssRuntimeOptions) => Promise<TailwindcssRuntimeLike>
 }
 
 export type InternalPostcssOptions = Pick<

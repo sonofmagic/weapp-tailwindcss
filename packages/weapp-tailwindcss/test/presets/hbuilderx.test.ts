@@ -31,8 +31,8 @@ describe('hbuilderx preset', () => {
     expect(result.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
     expect(result.tailwindcss?.version).toBe(4)
-    expect(result.tailwindcssPatcherOptions?.projectRoot).toBe(path.normalize('/Users/foo/uni-project'))
-    expect(result.tailwindcssPatcherOptions?.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
+    expect(result.tailwindcssRuntimeOptions?.projectRoot).toBe(path.normalize('/Users/foo/uni-project'))
+    expect(result.tailwindcssRuntimeOptions?.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
   })
 
   it('resolves relative base against overridden working directory hints', () => {
@@ -48,6 +48,6 @@ describe('hbuilderx preset', () => {
     const expectedBase = path.resolve('/Applications/HBuilderX.app/Contents/HBuilderX', './')
     expect(result.tailwindcssBasedir).toBe(expectedBase)
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
-    expect(result.tailwindcssPatcherOptions?.tailwindcss?.v3?.cwd).toBe(expectedBase)
+    expect(result.tailwindcssRuntimeOptions?.tailwindcss?.v3?.cwd).toBe(expectedBase)
   })
 })

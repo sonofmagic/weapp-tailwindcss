@@ -1,4 +1,3 @@
-import type { TailwindCssOptions, TailwindCssPatchOptions } from 'tailwindcss-patch'
 import type {
   AppType,
   CreateJsHandlerOptions,
@@ -9,6 +8,8 @@ import type {
   IStyleHandlerOptions,
   ITemplateHandlerOptions,
   JsModuleGraphOptions,
+  TailwindCssOptions,
+  TailwindCssPatchOptions,
   UserDefinedOptions,
 } from 'weapp-tailwindcss/types'
 import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd'

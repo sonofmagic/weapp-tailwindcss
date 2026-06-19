@@ -154,8 +154,8 @@ async function runHotUpdateCase(testCase: DemoCase) {
 
   const ctx = getCompilerContext(options)
 
-  await createTailwindRuntimeReadyPromise(ctx.twPatcher)
-  const baseline = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+  await createTailwindRuntimeReadyPromise(ctx.tailwindRuntime)
+  const baseline = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
   expect(baseline.has(testCase.marker)).toBe(false)
 
   const mutated = insertBeforeClosingTag(
@@ -166,16 +166,16 @@ async function runHotUpdateCase(testCase: DemoCase) {
   await fs.writeFile(entryPath, mutated, 'utf8')
 
   try {
-    await ctx.refreshTailwindcssPatcher({ clearCache: true })
-    await createTailwindRuntimeReadyPromise(ctx.twPatcher)
-    const refreshed = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+    await ctx.refreshTailwindcssRuntime({ clearCache: true })
+    await createTailwindRuntimeReadyPromise(ctx.tailwindRuntime)
+    const refreshed = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
     expect(refreshed.has(testCase.marker)).toBe(true)
   }
   finally {
     await fs.writeFile(entryPath, original, 'utf8')
-    await ctx.refreshTailwindcssPatcher({ clearCache: true })
-    await createTailwindRuntimeReadyPromise(ctx.twPatcher)
-    const restored = await collectRuntimeClassSet(ctx.twPatcher, { force: true, skipRefresh: true })
+    await ctx.refreshTailwindcssRuntime({ clearCache: true })
+    await createTailwindRuntimeReadyPromise(ctx.tailwindRuntime)
+    const restored = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
     expect(restored.has(testCase.marker)).toBe(false)
   }
 }

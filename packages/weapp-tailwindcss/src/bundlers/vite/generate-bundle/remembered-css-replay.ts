@@ -158,7 +158,7 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
         scopedSourceCandidateGetter,
         {
           includeFallbackSignature: cssHandlerOptions.isMainChunk,
-          majorVersion: runtimeState.twPatcher.majorVersion,
+          majorVersion: runtimeState.tailwindRuntime.majorVersion,
         },
       ),
     )

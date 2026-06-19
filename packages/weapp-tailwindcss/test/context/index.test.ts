@@ -9,7 +9,7 @@ const createHandlersFromContext = vi.fn(() => ({
   templateHandler: Symbol('template'),
 }))
 
-const createTailwindcssPatcherFromContext = vi.fn()
+const createTailwindcssRuntimeFromContext = vi.fn()
 
 vi.mock('@weapp-tailwindcss/logger', () => ({
   logger: {
@@ -70,7 +70,7 @@ vi.mock('@/context/handlers', () => ({
 }))
 
 vi.mock('@/context/tailwindcss', () => ({
-  createTailwindcssPatcherFromContext,
+  createTailwindcssRuntimeFromContext,
 }))
 
 describe('getCompilerContext', () => {
@@ -78,13 +78,13 @@ describe('getCompilerContext', () => {
     vi.clearAllMocks()
     vi.resetModules()
     createHandlersFromContext.mockClear()
-    createTailwindcssPatcherFromContext.mockReset()
+    createTailwindcssRuntimeFromContext.mockReset()
     const globalCacheHolder = globalThis as { __WEAPP_TW_COMPILER_CONTEXT_CACHE__?: Map<string, unknown> }
     globalCacheHolder.__WEAPP_TW_COMPILER_CONTEXT_CACHE__?.clear?.()
   })
 
   it('provides empty includeCustomProperties when tailwindcss v4 auto enables cssCalc', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.0.0' },
       majorVersion: 4,
     })
@@ -103,7 +103,7 @@ describe('getCompilerContext', () => {
   })
 
   it('uses Tailwind v4 preflight defaults when the runtime is v4', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
     })
@@ -121,7 +121,7 @@ describe('getCompilerContext', () => {
   })
 
   it('merges user cssPreflight overrides on top of Tailwind v4 defaults', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
     })
@@ -144,7 +144,7 @@ describe('getCompilerContext', () => {
   })
 
   it('uses lightweight border preflight for Tailwind v4 uni-app x output', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
     })
@@ -166,7 +166,7 @@ describe('getCompilerContext', () => {
   })
 
   it('keeps explicit uni-app x border preflight overrides', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
     })
@@ -188,7 +188,7 @@ describe('getCompilerContext', () => {
   })
 
   it('keeps Tailwind v3 preflight defaults when the runtime is v3', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '3.4.19' },
       majorVersion: 3,
     })
@@ -205,7 +205,7 @@ describe('getCompilerContext', () => {
   })
 
   it('keeps user provided arrays intact when no defaults defined', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
     })
@@ -228,7 +228,7 @@ describe('getCompilerContext', () => {
       precision: 5,
     }
 
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0' },
       majorVersion: 4,
     })
@@ -247,7 +247,7 @@ describe('getCompilerContext', () => {
   })
 
   it('warns when tailwindcss v4 is used without cssEntries', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0', rootPath: '/workspace/tailwindcss' },
       majorVersion: 4,
     })
@@ -264,7 +264,7 @@ describe('getCompilerContext', () => {
   })
 
   it('does not warn when cssEntries are provided for tailwindcss v4', async () => {
-    createTailwindcssPatcherFromContext.mockReturnValue({
+    createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '4.1.0', rootPath: '/workspace/tailwindcss' },
       majorVersion: 4,
     })
@@ -280,13 +280,13 @@ describe('getCompilerContext', () => {
   })
 })
 
-describe('clearTailwindcssPatcherCache', () => {
-  it('skips missing and disabled patchers', async () => {
-    const { clearTailwindcssPatcherCache } = await import('@/context')
+describe('clearTailwindcssRuntimeCache', () => {
+  it('skips missing and disabled runtimes', async () => {
+    const { clearTailwindcssRuntimeCache } = await import('@/context')
     const clearCache = vi.fn()
 
-    await expect(clearTailwindcssPatcherCache(undefined)).resolves.toBeUndefined()
-    await expect(clearTailwindcssPatcherCache({
+    await expect(clearTailwindcssRuntimeCache(undefined)).resolves.toBeUndefined()
+    await expect(clearTailwindcssRuntimeCache({
       clearCache,
       options: {
         cache: {
@@ -294,7 +294,7 @@ describe('clearTailwindcssPatcherCache', () => {
         },
       },
     } as never)).resolves.toBeUndefined()
-    await expect(clearTailwindcssPatcherCache({
+    await expect(clearTailwindcssRuntimeCache({
       clearCache,
       options: {
         cache: null,
@@ -304,8 +304,8 @@ describe('clearTailwindcssPatcherCache', () => {
     expect(clearCache).not.toHaveBeenCalled()
   })
 
-  it('clears patcher cache and removes configured cache paths', async () => {
-    const { clearTailwindcssPatcherCache } = await import('@/context')
+  it('clears runtime cache and removes configured cache paths', async () => {
+    const { clearTailwindcssRuntimeCache } = await import('@/context')
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-clear-cache-'))
     const cacheFile = path.join(root, 'cache.json')
     const privateCacheFile = path.join(root, 'private.json')
@@ -318,7 +318,7 @@ describe('clearTailwindcssPatcherCache', () => {
     ]))
 
     const clearCache = vi.fn(async () => {})
-    await clearTailwindcssPatcherCache({
+    await clearTailwindcssRuntimeCache({
       clearCache,
       options: {
         cache: {
@@ -341,11 +341,11 @@ describe('clearTailwindcssPatcherCache', () => {
     expect(clearCache).toHaveBeenCalledWith({ scope: 'all' })
   })
 
-  it('continues when patcher clearCache throws', async () => {
-    const { clearTailwindcssPatcherCache } = await import('@/context')
+  it('continues when runtime clearCache throws', async () => {
+    const { clearTailwindcssRuntimeCache } = await import('@/context')
     const { logger } = await import('@weapp-tailwindcss/logger')
 
-    await expect(clearTailwindcssPatcherCache({
+    await expect(clearTailwindcssRuntimeCache({
       clearCache: vi.fn(async () => {
         throw new Error('clear failed')
       }),
@@ -355,7 +355,7 @@ describe('clearTailwindcssPatcherCache', () => {
     } as never)).resolves.toBeUndefined()
 
     expect(logger.debug).toHaveBeenCalledWith(
-      'failed to clear tailwindcss patcher cache via clearCache(): %O',
+      'failed to clear tailwindcss runtime cache via clearCache(): %O',
       expect.any(Error),
     )
   })

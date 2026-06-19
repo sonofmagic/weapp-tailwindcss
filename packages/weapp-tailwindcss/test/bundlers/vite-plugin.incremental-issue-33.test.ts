@@ -64,8 +64,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -143,8 +142,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -179,9 +177,9 @@ describe('bundlers/vite incremental issue #33 regression', () => {
 
     await generateBundle?.call(postPlugin, {} as any, firstBundle)
 
-    currentContext.twPatcher.extract.mockClear()
-    currentContext.twPatcher.getClassSetSync.mockClear()
-    currentContext.twPatcher.getClassSet.mockClear()
+    currentContext.tailwindRuntime.extract.mockClear()
+    currentContext.tailwindRuntime.getClassSetSync.mockClear()
+    currentContext.tailwindRuntime.getClassSet.mockClear()
 
     const secondBundle = {
       [htmlFile]: {
@@ -200,9 +198,9 @@ describe('bundlers/vite incremental issue #33 regression', () => {
 
     expectEscaped((secondBundle[htmlFile] as OutputAsset).source.toString(), rawTemplateToken)
     expectEscaped((secondBundle[jsFile] as OutputChunk).code, rawScriptToken)
-    expect(currentContext.twPatcher.extract).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSetSync).not.toHaveBeenCalled()
-    expect(currentContext.twPatcher.getClassSet).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
+    expect(currentContext.tailwindRuntime.getClassSet).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('keeps script/template arbitrary values correct across add-modify-delete in incremental runs', async () => {
@@ -228,8 +226,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     setCurrentContext(createContext({
       templateHandler: vi.fn(async (code: string) => escapeKnown(code)),
       jsHandler,
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
@@ -299,8 +296,78 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(jsAfterDelete).not.toContain(replaceWxml(token))
     }
 
-    expect(getCurrentContext().twPatcher.extract).toHaveBeenCalled()
+    expect(getCurrentContext().tailwindRuntime.extract).toHaveBeenCalled()
     expect(jsHandler).toHaveBeenCalled()
+  }, TEST_TIMEOUT_MS)
+
+  it('does not reuse stale html transform when rollback source matches an older raw hash', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const htmlFile = 'dist/pages/index/index.wxml'
+    const rawToken = 'bg-[#101010]'
+    const escapedToken = replaceWxml(rawToken)
+    const emptyRuntimeSet = new Set<string>()
+    const filledRuntimeSet = new Set([rawToken])
+    let runtimeSet = emptyRuntimeSet
+
+    const templateHandler = vi.fn(async (code: string) => {
+      let result = code
+      for (const token of runtimeSet) {
+        result = result.replaceAll(token, replaceWxml(token))
+      }
+      return result
+    })
+
+    setCurrentContext(createContext({
+      templateHandler,
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 3,
+      },
+    }))
+
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+
+    const firstBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawToken}">before</view>`),
+        fileName: htmlFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, firstBundle)
+    expect((firstBundle[htmlFile] as OutputAsset).source.toString()).toContain(rawToken)
+
+    runtimeSet = filledRuntimeSet
+    const secondBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawToken}">after</view>`),
+        fileName: htmlFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, secondBundle)
+    expect((secondBundle[htmlFile] as OutputAsset).source.toString()).toContain(escapedToken)
+
+    const rollbackBundle = {
+      [htmlFile]: {
+        ...createRollupAsset(`<view class="${rawToken}">before</view>`),
+        fileName: htmlFile,
+      },
+    } as Record<string, OutputAsset | OutputChunk>
+    await generateBundle?.call(postPlugin, {} as any, rollbackBundle)
+    expect((rollbackBundle[htmlFile] as OutputAsset).source.toString()).toContain(escapedToken)
+    expect(templateHandler).toHaveBeenCalledTimes(3)
   }, TEST_TIMEOUT_MS)
 
   it('refreshes runtime class set on build-command watch iterations for changed vue object class keys', async () => {
@@ -321,8 +388,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       jsHandler: vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classNameSet, options as any),
       ),
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -371,7 +437,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
     const transformedCode = (secondBundle[jsFile] as OutputChunk).code
     expect(transformedCode).toContain(replaceWxml('bg-[#999998]'))
     expect(transformedCode).not.toContain('bg-[#999998]')
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 
   it('keeps high-risk arbitrary object class keys escaped across build-command watch iterations', async () => {
@@ -404,8 +470,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       jsHandler: vi.fn((code: string, classNameSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classNameSet, options as any),
       ),
-      twPatcher: {
-        patch: vi.fn(async () => {}),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
@@ -457,6 +522,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(transformedCode).not.toContain(stage.raw)
     }
 
-    expect(currentContext.twPatcher.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 })

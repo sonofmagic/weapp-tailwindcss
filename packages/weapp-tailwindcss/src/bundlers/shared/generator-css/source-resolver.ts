@@ -17,11 +17,11 @@ import process from 'node:process'
 import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCss } from '@/bundlers/vite/source-scan'
 import {
   resolveTailwindV3Source,
-  resolveTailwindV3SourceFromPatcher,
-  resolveTailwindV3SourceOptionsFromPatcher,
+  resolveTailwindV3SourceFromRuntime,
+  resolveTailwindV3SourceOptionsFromRuntime,
   resolveTailwindV4Source,
-  resolveTailwindV4SourceFromPatcher,
-  resolveTailwindV4SourceOptionsFromPatcher,
+  resolveTailwindV4SourceFromRuntime,
+  resolveTailwindV4SourceOptionsFromRuntime,
 } from '@/generator'
 import {
   normalizeLegacyContentEntries,
@@ -190,7 +190,7 @@ function shouldPreferResolvedSourceSideEntry(
 function resolveMatchingTailwindV4CssEntry(
   rawSource: string,
   file: string,
-  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>,
+  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromRuntime>,
 ) {
   const cssEntries = sourceOptions.cssEntries
   if (!cssEntries?.length) {
@@ -368,7 +368,7 @@ function tryResolveTailwindV4SourceOptions(
   runtimeState: GeneratorSourceRuntimeState,
 ) {
   try {
-    return resolveTailwindV4SourceOptionsFromPatcher(runtimeState.twPatcher)
+    return resolveTailwindV4SourceOptionsFromRuntime(runtimeState.tailwindRuntime)
   }
   catch {
     return undefined
@@ -506,7 +506,7 @@ function createTailwindV4CssSourceResolver(
 
 async function resolveTailwindV4SourceSideEntrySource(
   resolvedEntrySource: ReturnType<typeof resolveSourceSideCssEntrySource>,
-  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromPatcher>,
+  sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromRuntime>,
   generatorOptions: NormalizedWeappTailwindcssGeneratorOptions | undefined,
   file: string,
 ) {
@@ -575,7 +575,7 @@ export async function resolveGeneratorSource(
       } as SourceSideCssEntrySource
     : undefined
   if (majorVersion === 3) {
-    const sourceOptions = resolveTailwindV3SourceOptionsFromPatcher(runtimeState.twPatcher)
+    const sourceOptions = resolveTailwindV3SourceOptionsFromRuntime(runtimeState.tailwindRuntime)
     const mergedSourceOptions = omitUndefined({
       ...sourceOptions,
       config: generatorOptions?.config ?? sourceOptions.config,
@@ -598,7 +598,7 @@ export async function resolveGeneratorSource(
     if (!resolvedEntrySource) {
       const source = await (generatorOptions?.config
         ? resolveTailwindV3Source(mergedSourceOptions)
-        : resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher))
+        : resolveTailwindV3SourceFromRuntime(runtimeState.tailwindRuntime))
       return withTailwindV3SourceMetadata(source)
     }
     if (
@@ -609,7 +609,7 @@ export async function resolveGeneratorSource(
     ) {
       const source = await (generatorOptions?.config
         ? resolveTailwindV3Source(mergedSourceOptions)
-        : resolveTailwindV3SourceFromPatcher(runtimeState.twPatcher))
+        : resolveTailwindV3SourceFromRuntime(runtimeState.tailwindRuntime))
       return withTailwindV3SourceMetadata(source)
     }
     const config = resolveExistingConfigPath(
@@ -721,7 +721,7 @@ export async function resolveGeneratorSource(
 
   const resolvedEntrySource = sourceSideEntrySource ?? cssEntrySource ?? applyEntrySource
   if (!resolvedEntrySource) {
-    const source = await resolveTailwindV4SourceFromPatcher(runtimeState.twPatcher)
+    const source = await resolveTailwindV4SourceFromRuntime(runtimeState.tailwindRuntime)
     return generatorOptions?.config
       ? {
           ...source,
@@ -788,16 +788,16 @@ export async function resolveGeneratorSources(
 
   let sourceOptions: TailwindV4SourceOptions
   try {
-    const sourceOptionsFromPatcher = resolveTailwindV4SourceOptionsFromPatcher(runtimeState.twPatcher)
-    const cssEntries = selectionOptions?.cssEntries ?? sourceOptionsFromPatcher.cssEntries
+    const sourceOptionsFromRuntime = resolveTailwindV4SourceOptionsFromRuntime(runtimeState.tailwindRuntime)
+    const cssEntries = selectionOptions?.cssEntries ?? sourceOptionsFromRuntime.cssEntries
     sourceOptions = omitUndefined<TailwindV4SourceOptions>({
-      ...sourceOptionsFromPatcher,
+      ...sourceOptionsFromRuntime,
       sourceFile: resolvePostcssSourceFile(cssHandlerOptions),
       ...resolveCssHandlerSourceOptions(cssHandlerOptions),
       cssEntries,
       cssSources: mergeCssSources(
-        mergeCssSources(sourceOptionsFromPatcher.cssSources, selectionOptions?.cssSources),
-        sourceOptionsFromPatcher.cssSources?.length || selectionOptions?.cssSources?.length
+        mergeCssSources(sourceOptionsFromRuntime.cssSources, selectionOptions?.cssSources),
+        sourceOptionsFromRuntime.cssSources?.length || selectionOptions?.cssSources?.length
           ? undefined
           : createCssEntrySources(cssEntries) as TailwindV4CssSource[] | undefined,
       ),

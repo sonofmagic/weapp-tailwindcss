@@ -1,5 +1,5 @@
-import type { CreateTailwindcssPatcherOptions } from '@/tailwindcss/patcher'
-import type { InternalUserDefinedOptions, TailwindcssPatcherLike } from '@/types'
+import type { CreateTailwindcssRuntimeOptions } from '@/tailwindcss/runtime-factory'
+import type { InternalUserDefinedOptions, TailwindcssRuntimeLike } from '@/types'
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
@@ -110,41 +110,41 @@ describe('resolveTailwindcssBasedir', () => {
 
 })
 
-describe('createTailwindcssPatcherFromContext', () => {
+describe('createTailwindcssRuntimeFromContext', () => {
   afterEach(() => {
-    vi.doUnmock('@/tailwindcss/patcher')
+    vi.doUnmock('@/tailwindcss/runtime-factory')
     vi.resetModules()
   })
 
-  it('creates multiple patchers when css entries belong to different package roots', async () => {
-    const calls: CreateTailwindcssPatcherOptions[] = []
-    const createdPatchers: TailwindcssPatcherLike[] = []
+  it('creates multiple runtimes when css entries belong to different package roots', async () => {
+    const calls: CreateTailwindcssRuntimeOptions[] = []
+    const createdRuntimes: TailwindcssRuntimeLike[] = []
     const classSets = [['foo'], ['bar']]
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => {
+    vi.doMock('@/tailwindcss/runtime-factory', () => {
+      const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
+        calls.push(options)
+        const classes = classSets[createdRuntimes.length] ?? []
+        const stub: TailwindcssRuntimeLike = {
+          packageInfo: { version: '4.1.0' } as any,
+          majorVersion: 4,
+          options: options as any,
+          getClassSet: vi.fn(async () => new Set(classes)),
+          extract: vi.fn(async () => ({
+            classList: classes,
+            classSet: new Set(classes),
+          })),
+        }
+        createdRuntimes.push(stub)
+        return stub
+      })
       return {
-        createTailwindcssPatcher: vi.fn((options: CreateTailwindcssPatcherOptions) => {
-          calls.push(options)
-          const classes = classSets[createdPatchers.length] ?? []
-          const stub: TailwindcssPatcherLike = {
-            packageInfo: { version: '4.1.0' } as any,
-            majorVersion: 4,
-            options: options as any,
-            patch: vi.fn(async () => ({})),
-            getClassSet: vi.fn(async () => new Set(classes)),
-            extract: vi.fn(async () => ({
-              classList: classes,
-              classSet: new Set(classes),
-            })),
-          }
-          createdPatchers.push(stub)
-          return stub
-        }),
+        createTailwindcssRuntime,
       }
     })
 
-    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const { createTailwindcssRuntimeFromContext } = await import('@/context/tailwindcss')
 
     const workspaceTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-workspace-'))
     const workspace = path.join(workspaceTemp, 'project')
@@ -163,14 +163,14 @@ describe('createTailwindcssPatcherFromContext', () => {
     try {
       const ctx = {
         tailwindcssBasedir: workspace,
-        supportCustomLengthUnitsPatch: undefined,
+        supportCustomLengthUnits: undefined,
         tailwindcss: undefined,
-        tailwindcssPatcherOptions: undefined,
+        tailwindcssRuntimeOptions: undefined,
         cssEntries: [entryA, entryB],
         appType: 'taro',
       } as unknown as InternalUserDefinedOptions
 
-      const patcher = createTailwindcssPatcherFromContext(ctx)
+      const runtime = createTailwindcssRuntimeFromContext(ctx)
 
       expect(calls).toHaveLength(2)
       const basedirs = calls.map(call => call.basedir)
@@ -179,14 +179,10 @@ describe('createTailwindcssPatcherFromContext', () => {
       expect(basedirs.filter(b => b === externalRoot)).toHaveLength(1)
       expect(calls.map(call => call.tailwindcss?.packageName)).toEqual(['tailwindcss', 'tailwindcss'])
 
-      expect(patcher.patch).toBeUndefined()
-      expect(createdPatchers[0].patch).not.toHaveBeenCalled()
-      expect(createdPatchers[1].patch).not.toHaveBeenCalled()
-
-      const classSet = await patcher.getClassSet()
+      const classSet = await runtime.getClassSet()
       expect([...classSet]).toEqual(['foo', 'bar'])
 
-      const extracted = await patcher.extract({})
+      const extracted = await runtime.extract({})
       expect([...extracted.classSet]).toEqual(['foo', 'bar'])
       expect(extracted.classList).toEqual(['foo', 'bar'])
     }
@@ -196,31 +192,32 @@ describe('createTailwindcssPatcherFromContext', () => {
     }
   })
 
-  it('returns a single patcher when css entries share the same workspace base', async () => {
-    const createdPatchers: TailwindcssPatcherLike[] = []
-    const calls: CreateTailwindcssPatcherOptions[] = []
-    const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
+  it('returns a single runtime when css entries share the same workspace base', async () => {
+    const createdRuntimes: TailwindcssRuntimeLike[] = []
+    const calls: CreateTailwindcssRuntimeOptions[] = []
+    const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
       calls.push(options)
-      const stub: TailwindcssPatcherLike = {
+      const stub: TailwindcssRuntimeLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
         // 测试仅校验结构传递，避免在此处施加过严的类型约束
         options: options as any,
-        patch: vi.fn(async () => ({})),
         getClassSet: vi.fn(async () => new Set(['foo'])),
         extract: vi.fn(async () => ({
           classList: ['foo'],
           classSet: new Set(['foo']),
         })),
       }
-      createdPatchers.push(stub)
+      createdRuntimes.push(stub)
       return stub
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/runtime-factory', () => ({
+      createTailwindcssRuntime,
+    }))
 
-    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const { createTailwindcssRuntimeFromContext } = await import('@/context/tailwindcss')
     const workspaceTemp = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-single-'))
     const workspace = path.join(workspaceTemp, 'project')
     mkdirSync(path.join(workspace, 'apps', 'alpha', 'src'), { recursive: true })
@@ -235,16 +232,16 @@ describe('createTailwindcssPatcherFromContext', () => {
     try {
       const ctx = {
         tailwindcssBasedir: workspace,
-        supportCustomLengthUnitsPatch: undefined,
+        supportCustomLengthUnits: undefined,
         tailwindcss: undefined,
-        tailwindcssPatcherOptions: undefined,
+        tailwindcssRuntimeOptions: undefined,
         cssEntries: [entryA, entryB],
         appType: 'taro',
       } as unknown as InternalUserDefinedOptions
 
-      const _patcher = createTailwindcssPatcherFromContext(ctx)
+      const _runtime = createTailwindcssRuntimeFromContext(ctx)
 
-      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
+      expect(createTailwindcssRuntime).toHaveBeenCalledTimes(1)
       expect(new Set(calls.map(call => call.basedir))).toEqual(new Set([workspace]))
       expect(calls[0].tailwindcss?.v4?.base).toBeUndefined()
       expect(calls[0].tailwindcss?.packageName).toBe('tailwindcss')
@@ -263,27 +260,28 @@ describe('createTailwindcssPatcherFromContext', () => {
   })
 
   it('detects default cssEntries for rax projects when omitted', async () => {
-    const createdPatchers: TailwindcssPatcherLike[] = []
-    const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
-      const stub: TailwindcssPatcherLike = {
+    const createdRuntimes: TailwindcssRuntimeLike[] = []
+    const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
+      const stub: TailwindcssRuntimeLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
         options: options as any,
-        patch: vi.fn(async () => ({})),
         getClassSet: vi.fn(async () => new Set(['foo'])),
         extract: vi.fn(async () => ({
           classList: ['foo'],
           classSet: new Set(['foo']),
         })),
       }
-      createdPatchers.push(stub)
+      createdRuntimes.push(stub)
       return stub
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/runtime-factory', () => ({
+      createTailwindcssRuntime,
+    }))
 
-    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const { createTailwindcssRuntimeFromContext } = await import('@/context/tailwindcss')
     const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-rax-'))
     const projectRoot = path.join(tempRoot, 'rax-app')
     mkdirSync(path.join(projectRoot, 'src'), { recursive: true })
@@ -293,17 +291,17 @@ describe('createTailwindcssPatcherFromContext', () => {
     try {
       const ctx = {
         tailwindcssBasedir: projectRoot,
-        supportCustomLengthUnitsPatch: undefined,
+        supportCustomLengthUnits: undefined,
         tailwindcss: undefined,
-        tailwindcssPatcherOptions: undefined,
+        tailwindcssRuntimeOptions: undefined,
         cssEntries: undefined,
         appType: 'rax',
       } as unknown as InternalUserDefinedOptions
 
-      const patcher = createTailwindcssPatcherFromContext(ctx)
-      expect(patcher).toBeDefined()
-      expect(createTailwindcssPatcher).toHaveBeenCalledTimes(1)
-      expect(createTailwindcssPatcher).toHaveBeenCalledWith(expect.objectContaining({
+      const runtime = createTailwindcssRuntimeFromContext(ctx)
+      expect(runtime).toBeDefined()
+      expect(createTailwindcssRuntime).toHaveBeenCalledTimes(1)
+      expect(createTailwindcssRuntime).toHaveBeenCalledWith(expect.objectContaining({
         tailwindcss: expect.objectContaining({
           packageName: 'tailwindcss',
           v4: expect.objectContaining({
@@ -319,12 +317,11 @@ describe('createTailwindcssPatcherFromContext', () => {
   })
 
   it('infers cssEntries from package.json when appType is missing but project depends on rax', async () => {
-    const createTailwindcssPatcher = vi.fn((options: CreateTailwindcssPatcherOptions) => {
-      const stub: TailwindcssPatcherLike = {
+    const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
+      const stub: TailwindcssRuntimeLike = {
         packageInfo: { version: '4.1.0' } as any,
         majorVersion: 4,
         options: options as any,
-        patch: vi.fn(async () => ({})),
         getClassSet: vi.fn(async () => new Set(['foo'])),
         extract: vi.fn(async () => ({
           classList: ['foo'],
@@ -335,9 +332,11 @@ describe('createTailwindcssPatcherFromContext', () => {
     })
 
     vi.resetModules()
-    vi.doMock('@/tailwindcss/patcher', () => ({ createTailwindcssPatcher }))
+    vi.doMock('@/tailwindcss/runtime-factory', () => ({
+      createTailwindcssRuntime,
+    }))
 
-    const { createTailwindcssPatcherFromContext } = await import('@/context/tailwindcss')
+    const { createTailwindcssRuntimeFromContext } = await import('@/context/tailwindcss')
     const tempRoot = mkdtempSync(path.join(os.tmpdir(), 'weapp-tw-rax-auto-'))
     const projectRoot = path.join(tempRoot, 'rax-auto')
     mkdirSync(path.join(projectRoot, 'src'), { recursive: true })
@@ -354,14 +353,14 @@ describe('createTailwindcssPatcherFromContext', () => {
     try {
       const ctx = {
         tailwindcssBasedir: projectRoot,
-        supportCustomLengthUnitsPatch: undefined,
+        supportCustomLengthUnits: undefined,
         tailwindcss: undefined,
-        tailwindcssPatcherOptions: undefined,
+        tailwindcssRuntimeOptions: undefined,
         cssEntries: undefined,
         appType: undefined,
       } as unknown as InternalUserDefinedOptions
 
-      createTailwindcssPatcherFromContext(ctx)
+      createTailwindcssRuntimeFromContext(ctx)
       expect(ctx.cssEntries).toEqual([globalEntry])
     }
     finally {

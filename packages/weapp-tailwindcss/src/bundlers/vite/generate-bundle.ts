@@ -4,6 +4,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -64,7 +65,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
   const cssHandlerOptions = createCssHandlerOptionsCache({
     getAppType: () => context.opts.appType,
     mainCssChunkMatcher: context.opts.mainCssChunkMatcher,
-    getMajorVersion: () => context.runtimeState.twPatcher.majorVersion,
+    getMajorVersion: () => context.runtimeState.tailwindRuntime.majorVersion,
     getOutputRoot: () => currentOutDir,
     getExtraOptions: file => ({
       ...resolveViteCssHandlerExtraOptions(file),
@@ -121,10 +122,23 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       jsHandler,
       uniAppX,
     } = opts
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator)
-    const isWebGeneratorTarget = generatorOptions.target === 'web'
     const resolvedConfig = getResolvedConfig()
     const uniUtsPlatform = resolveUniUtsPlatform()
+    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
+      appType: opts.appType,
+      platform: opts.cssOptions?.platform ?? opts.platform,
+      tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+      uniAppX,
+      uniUtsPlatform,
+    })
+    const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
+      appType: opts.appType,
+      platform: opts.cssOptions?.platform ?? opts.platform,
+      tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+      uniAppX,
+      uniUtsPlatform,
+    })
+    const isWebGeneratorTarget = generatorBranch.isWeb
     const isNativeAppStyleTarget = uniUtsPlatform.isApp
     const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
     const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
@@ -132,7 +146,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
     )
     const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
-    const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.twPatcher.majorVersion === 3
+    const shouldGenerateWebCssByGenerator = isWebGeneratorTarget && runtimeState.tailwindRuntime.majorVersion === 3
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
@@ -201,7 +215,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     } = createSubpackageSourceCandidateScope({
       getSourceCandidateSourcesForEntries,
       getSourceCandidatesForEntries,
-      projectRoot: (opts.tailwindcssPatcherOptions as { projectRoot?: string | undefined } | undefined)?.projectRoot,
+      projectRoot: (opts.tailwindcssRuntimeOptions as { projectRoot?: string | undefined } | undefined)?.projectRoot,
       rootDir,
       snapshot,
       sourceRoot,
@@ -210,7 +224,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       useIncrementalMode,
     })
     recordTimingDetail('snapshot', snapshotStart)
-    const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.twPatcher.majorVersion === 4)
+    const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.tailwindRuntime.majorVersion === 4)
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const processFiles = snapshot.processFiles
@@ -234,7 +248,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       cssHandlerOptions,
       fallbackRuntime: runtime,
       getSourceCandidatesForEntries,
-      majorVersion: runtimeState.twPatcher.majorVersion,
+      majorVersion: runtimeState.tailwindRuntime.majorVersion,
       outputFile,
       rawSource,
       shouldExcludeSubpackageSourceCandidates,
@@ -246,7 +260,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const hasCssAssetEntry = snapshot.entries.some(entry => entry.type === 'css' && entry.output.type === 'asset')
     const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
-    const useV3OxideSourceRuntime = runtimeState.twPatcher.majorVersion === 3
+    const useV3OxideSourceRuntime = runtimeState.tailwindRuntime.majorVersion === 3
       && sourceCandidates.size > 0
       && hasCssAssetEntry
       && !envFlags.forceRuntimeRefreshByEnv
@@ -259,7 +273,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       : undefined
     // Tailwind v4 的任意值在 uni-app/Taro 等上游输出里可能已经被转义。
     // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放主样式产物。
-    const forceV4RuntimeRefreshBySource = runtimeState.twPatcher.majorVersion === 4
+    const forceV4RuntimeRefreshBySource = runtimeState.tailwindRuntime.majorVersion === 4
       && forceRuntimeRefreshBySource
     const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
       ? new Set<string>()
@@ -279,7 +293,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         sourceCandidates.size,
       )
     }
-    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.twPatcher.majorVersion === 4 && generatorOptions.target === 'weapp'
+    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.tailwindRuntime.majorVersion === 4
+      && shouldUseMiniProgramCssBranch(generatorBranch)
     const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
@@ -287,20 +302,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     let transformRuntime = transformBaseRuntime ?? runtime
     let generatorRuntime = collectLegacyContainerCompatCandidates(
       sourceCandidates,
-      runtimeState.twPatcher.majorVersion === 3 && hasRuntimeAffectingChanges && transformBaseRuntime
+      runtimeState.tailwindRuntime.majorVersion === 3 && hasRuntimeAffectingChanges && transformBaseRuntime
         ? new Set([
             ...filteredGeneratorCandidates,
             ...transformBaseRuntime,
           ])
         : filteredGeneratorCandidates,
     )
-    if (runtimeState.twPatcher.majorVersion === 3 && generatorRuntime.size === 0) {
+    if (runtimeState.tailwindRuntime.majorVersion === 3 && generatorRuntime.size === 0) {
       generatorRuntime = await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
       transformRuntime = generatorRuntime
     }
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
-    if (runtimeState.twPatcher.majorVersion === 4 && sourceCandidates.size > 0 && jsEntries.size > 0) {
+    if (runtimeState.tailwindRuntime.majorVersion === 4 && sourceCandidates.size > 0 && jsEntries.size > 0) {
       const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
       if (mainCssEntry) {
         const validatedSourceRuntime = await validateCandidatesByGenerator({
@@ -323,7 +338,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
       }
     }
-    const shouldValidateV3GeneratorRuntime = runtimeState.twPatcher.majorVersion === 3
+    const shouldValidateV3GeneratorRuntime = runtimeState.tailwindRuntime.majorVersion === 3
       && useV3OxideSourceRuntime
       && generatorRuntime.size > 0
       && (state.iteration === 0 || !hasRuntimeAffectingChanges)
@@ -406,7 +421,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       )
     }
     debug('get runtimeSet, class count: %d, transform class count: %d', runtime.size, transformRuntime.size)
-    const runtimeSignature = getRuntimeClassSetSignature(runtimeState.twPatcher) ?? 'runtime:missing'
+    const runtimeSignature = getRuntimeClassSetSignature(runtimeState.tailwindRuntime) ?? 'runtime:missing'
+    const transformRuntimeSignature = createCandidateSignature(transformRuntime)
     const shouldProcessTailwindGeneration = !useIncrementalMode
       || hasRuntimeAffectingChanges
       || generatorCandidatesChanged
@@ -417,7 +433,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       debug,
     })
     const createHandlerOptions = createJsHandlerOptionsFactory({
-      getMajorVersion: () => runtimeState.twPatcher.majorVersion,
+      getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion,
       moduleGraph: moduleGraphOptions,
     })
 
@@ -447,14 +463,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         const rawSource = originalEntrySource
         const cacheKey = file
-        const hashKey = `${file}:html:${runtimeSignature}`
+        const hashKey = `${file}:html:${transformRuntimeSignature}`
         rememberProcessCacheKey(cacheKey, hashKey)
         tasks.push(timeTask('html', () =>
           processCachedTask<string>({
             cache,
             cacheKey,
             hashKey,
-            hash: getSnapshotHash(snapshot.sourceHashByFile, file, rawSource),
+            hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, rawSource)}:${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, rawSource)}:${transformRuntimeSignature}`,
             applyResult(source) {
               originalSource.source = source
             },
@@ -643,7 +659,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             hasCurrentTailwindGenerationDirective
             || hasRememberedApplyDirective
             || (
-              runtimeState.twPatcher.majorVersion === 4
+              runtimeState.tailwindRuntime.majorVersion === 4
               && hasRememberedTailwindGenerationSource
             )
           )
@@ -752,15 +768,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               scopedSourceCandidateGetter,
               {
                 includeFallbackSignature: cssHandlerOptions.isMainChunk,
-                majorVersion: runtimeState.twPatcher.majorVersion,
+                majorVersion: runtimeState.tailwindRuntime.majorVersion,
               },
             )
           : trackedGeneratorCandidateSignature
         const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
         const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
-        const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}:${sourceTraceSignature}`
+        const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.tailwindRuntime.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}:${sourceTraceSignature}`
         const cssCacheKey = file
-        const cssHashKey = `${file}:css:${cssRuntimeSignature}:${runtimeState.twPatcher.majorVersion ?? 'unknown'}`
+        const cssHashKey = `${file}:css:${cssRuntimeSignature}:${runtimeState.tailwindRuntime.majorVersion ?? 'unknown'}`
         const cssLinkedImpactSignature = runtimeLinkedCssFiles.has(file) || runtimeLinkedCssFiles.has(outputFile)
           ? [
               ...[...snapshot.runtimeAffectingChangedByType.html]
@@ -856,7 +872,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   }
                   metrics.css.elapsed += measureElapsed(start)
                   metrics.css.transformed++
-                  debug('css handle via tailwind v%s engine(%s): %s', runtimeState.twPatcher.majorVersion, generated.target, outputFile)
+                  debug('css handle via tailwind v%s engine(%s): %s', runtimeState.tailwindRuntime.majorVersion, generated.target, outputFile)
                   return tracedCss
                 }
                 if (isWebGeneratorTarget) {

@@ -1,2 +1,2 @@
 export * from './config'
-export * from './patcher'
+export * from './runtime-factory'

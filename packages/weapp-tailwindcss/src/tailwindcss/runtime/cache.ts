@@ -1,9 +1,9 @@
-import type { TailwindcssPatcherLike } from '@/types'
+import type { TailwindcssRuntimeLike } from '@/types'
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
-import { resolveTailwindcssOptions } from '@/tailwindcss/patcher-options'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { expandTailwindSourceEntries } from '@/tailwindcss/source-scan'
 
 interface RuntimeClassSetCacheEntry {
@@ -12,18 +12,18 @@ interface RuntimeClassSetCacheEntry {
   signature?: string | undefined
 }
 
-const runtimeClassSetCache = new WeakMap<TailwindcssPatcherLike, RuntimeClassSetCacheEntry>()
+const runtimeClassSetCache = new WeakMap<TailwindcssRuntimeLike, RuntimeClassSetCacheEntry>()
 const runtimeFileSignatureCache = new Map<string, string>()
 const runtimeTrackedSourceFilesCache = new Map<string, string[]>()
 let runtimeFileSignatureCacheClearTimer: ReturnType<typeof setTimeout> | undefined
 
-export const runtimeSignaturePatchersSymbol = Symbol.for('weapp-tailwindcss.runtimeSignaturePatchers')
+export const runtimeSignatureRuntimesSymbol = Symbol.for('weapp-tailwindcss.runtimeSignatureRuntimes')
 
-function getCacheEntry(twPatcher: TailwindcssPatcherLike) {
-  let entry = runtimeClassSetCache.get(twPatcher)
+function getCacheEntry(tailwindRuntime: TailwindcssRuntimeLike) {
+  let entry = runtimeClassSetCache.get(tailwindRuntime)
   if (!entry) {
     entry = {}
-    runtimeClassSetCache.set(twPatcher, entry)
+    runtimeClassSetCache.set(tailwindRuntime, entry)
   }
   return entry
 }
@@ -62,8 +62,8 @@ function getFileSignature(filePath: string) {
   return signature
 }
 
-function getTailwindTrackedFiles(twPatcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(twPatcher.options)
+function getTailwindTrackedFiles(tailwindRuntime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(tailwindRuntime.options)
   const tracked = new Set<string>()
   const configPath = tailwindOptions?.config
   if (typeof configPath === 'string' && configPath.length > 0) {
@@ -99,8 +99,8 @@ function normalizeTrackedSourceSignature(cssEntries: string[] | undefined, cssSo
   })
 }
 
-async function collectTailwindV4TrackedSourceFiles(twPatcher: TailwindcssPatcherLike) {
-  const tailwindOptions = resolveTailwindcssOptions(twPatcher.options)
+async function collectTailwindV4TrackedSourceFiles(tailwindRuntime: TailwindcssRuntimeLike) {
+  const tailwindOptions = resolveTailwindcssOptions(tailwindRuntime.options)
   const signature = normalizeTrackedSourceSignature(
     tailwindOptions?.v4?.cssEntries,
     tailwindOptions?.v4?.cssSources,
@@ -130,7 +130,7 @@ async function collectTailwindV4TrackedSourceFiles(twPatcher: TailwindcssPatcher
     }
     const base = typeof cssSource.file === 'string' && cssSource.file.length > 0
       ? path.dirname(cssSource.file)
-      : tailwindOptions?.v4?.base ?? tailwindOptions?.cwd ?? twPatcher.options?.projectRoot ?? process.cwd()
+      : tailwindOptions?.v4?.base ?? tailwindOptions?.cwd ?? tailwindRuntime.options?.projectRoot ?? process.cwd()
     const resolved = await resolveTailwindV4EntriesFromCssCached(cssSource.css, base)
     const expanded = resolved?.entries?.length
       ? await expandTailwindSourceEntries(resolved.entries)
@@ -174,8 +174,8 @@ function readOptionalProperty(value: unknown, key: string) {
   return (value as Record<string, unknown>)[key]
 }
 
-function getTailwindOptionsSignature(twPatcher: TailwindcssPatcherLike) {
-  const options = twPatcher.options
+function getTailwindOptionsSignature(tailwindRuntime: TailwindcssRuntimeLike) {
+  const options = tailwindRuntime.options
   const tailwindOptions = resolveTailwindcssOptions(options)
   return normalizeSignatureValue({
     projectRoot: options?.projectRoot,
@@ -197,71 +197,71 @@ function getTailwindOptionsSignature(twPatcher: TailwindcssPatcherLike) {
   })
 }
 
-function getRuntimeTargetSignature(twPatcher: TailwindcssPatcherLike) {
-  const packageInfo = twPatcher.packageInfo
+function getRuntimeTargetSignature(tailwindRuntime: TailwindcssRuntimeLike) {
+  const packageInfo = tailwindRuntime.packageInfo
   return [
     packageInfo?.name ?? 'missing',
     packageInfo?.rootPath ?? 'missing',
     packageInfo?.version ?? 'unknown',
-    twPatcher.majorVersion ?? 'unknown',
-    getTailwindOptionsSignature(twPatcher),
+    tailwindRuntime.majorVersion ?? 'unknown',
+    getTailwindOptionsSignature(tailwindRuntime),
   ].join(':')
 }
 
-function getNestedPatchers(twPatcher: TailwindcssPatcherLike) {
-  const nested = (twPatcher as TailwindcssPatcherLike & {
-    [runtimeSignaturePatchersSymbol]?: TailwindcssPatcherLike[]
-  })[runtimeSignaturePatchersSymbol]
+function getNestedRuntimes(tailwindRuntime: TailwindcssRuntimeLike) {
+  const nested = (tailwindRuntime as TailwindcssRuntimeLike & {
+    [runtimeSignatureRuntimesSymbol]?: TailwindcssRuntimeLike[]
+  })[runtimeSignatureRuntimesSymbol]
   return Array.isArray(nested) && nested.length > 0 ? nested : undefined
 }
 
-function getOwnRuntimeClassSetSignature(twPatcher: TailwindcssPatcherLike) {
-  const trackedFiles = [...getTailwindTrackedFiles(twPatcher)]
+function getOwnRuntimeClassSetSignature(tailwindRuntime: TailwindcssRuntimeLike) {
+  const trackedFiles = [...getTailwindTrackedFiles(tailwindRuntime)]
     .sort((a, b) => a.localeCompare(b))
     .map(getFileSignature)
   const configSignature = trackedFiles.length > 0 ? trackedFiles.join('|') : 'files:missing'
-  const runtimeTargetSignature = getRuntimeTargetSignature(twPatcher)
+  const runtimeTargetSignature = getRuntimeTargetSignature(tailwindRuntime)
   return `${configSignature}|runtime:${runtimeTargetSignature}`
 }
 
-export function invalidateRuntimeClassSet(twPatcher?: TailwindcssPatcherLike) {
-  if (!twPatcher) {
+export function invalidateRuntimeClassSet(tailwindRuntime?: TailwindcssRuntimeLike) {
+  if (!tailwindRuntime) {
     return
   }
-  const nestedPatchers = getNestedPatchers(twPatcher)
-  if (nestedPatchers) {
-    for (const patcher of nestedPatchers) {
-      invalidateRuntimeClassSet(patcher)
+  const nestedRuntimes = getNestedRuntimes(tailwindRuntime)
+  if (nestedRuntimes) {
+    for (const runtime of nestedRuntimes) {
+      invalidateRuntimeClassSet(runtime)
     }
   }
-  for (const trackedFile of getTailwindTrackedFiles(twPatcher)) {
+  for (const trackedFile of getTailwindTrackedFiles(tailwindRuntime)) {
     runtimeFileSignatureCache.delete(trackedFile)
   }
   runtimeTrackedSourceFilesCache.clear()
-  runtimeClassSetCache.delete(twPatcher)
+  runtimeClassSetCache.delete(tailwindRuntime)
 }
 
-export function getRuntimeClassSetCacheEntry(twPatcher: TailwindcssPatcherLike) {
-  return getCacheEntry(twPatcher)
+export function getRuntimeClassSetCacheEntry(tailwindRuntime: TailwindcssRuntimeLike) {
+  return getCacheEntry(tailwindRuntime)
 }
 
-export function getRuntimeClassSetSignature(twPatcher: TailwindcssPatcherLike) {
-  const nestedPatchers = getNestedPatchers(twPatcher)
-  if (nestedPatchers) {
-    return nestedPatchers
+export function getRuntimeClassSetSignature(tailwindRuntime: TailwindcssRuntimeLike) {
+  const nestedRuntimes = getNestedRuntimes(tailwindRuntime)
+  if (nestedRuntimes) {
+    return nestedRuntimes
       .map(getOwnRuntimeClassSetSignature)
       .sort((a, b) => a.localeCompare(b))
       .join('||')
   }
-  return getOwnRuntimeClassSetSignature(twPatcher)
+  return getOwnRuntimeClassSetSignature(tailwindRuntime)
 }
 
-export async function getRuntimeClassSetSignatureWithSources(twPatcher: TailwindcssPatcherLike) {
-  const baseSignature = getRuntimeClassSetSignature(twPatcher)
-  if (twPatcher.majorVersion !== 4) {
+export async function getRuntimeClassSetSignatureWithSources(tailwindRuntime: TailwindcssRuntimeLike) {
+  const baseSignature = getRuntimeClassSetSignature(tailwindRuntime)
+  if (tailwindRuntime.majorVersion !== 4) {
     return baseSignature
   }
-  const trackedSourceFiles = await collectTailwindV4TrackedSourceFiles(twPatcher)
+  const trackedSourceFiles = await collectTailwindV4TrackedSourceFiles(tailwindRuntime)
   if (trackedSourceFiles.length === 0) {
     return baseSignature
   }

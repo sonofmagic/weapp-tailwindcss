@@ -2,7 +2,6 @@ import { mkdtemp, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { clearTailwindV3IncrementalGenerateCacheForTest, createTailwindV3Engine, getTailwindV3IncrementalGenerateCacheStatsForTest, resolveTailwindV3Source, transformTailwindV3CssToWeapp } from '@/tailwindcss/v3-engine'
-import { TailwindcssPatcher } from 'tailwindcss-patch'
 import plugin from 'tailwindcss/plugin'
 
 const UNOCSS_DEFAULT_STYLE_CANDIDATES = [
@@ -87,26 +86,20 @@ describe('tailwindcss v3 engine', () => {
     expect(source.configObject?.content).toEqual(inlineConfig.content)
   })
 
-  it('reuses runtime patch setup for repeated engines with the same source', async () => {
+  it('generates repeated engines without patching Tailwind runtime', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
       base: path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3'),
       config: undefined,
     })
-    const patchSpy = vi.spyOn(TailwindcssPatcher.prototype, 'patch')
-
     const first = createTailwindV3Engine(source)
     const second = createTailwindV3Engine(source)
 
-    try {
-      await first.generate({ candidates: ['bg-blue-500'] })
-      await second.generate({ candidates: ['bg-[#123455]'] })
+    const firstResult = await first.generate({ candidates: ['bg-blue-500'] })
+    const secondResult = await second.generate({ candidates: ['bg-[#123455]'] })
 
-      expect(patchSpy).toHaveBeenCalledTimes(1)
-    }
-    finally {
-      patchSpy.mockRestore()
-    }
+    expect(firstResult.classSet).toEqual(new Set(['bg-blue-500']))
+    expect(secondResult.classSet).toEqual(new Set(['bg-[#123455]']))
   })
 
   it('generates without loading the Tailwind v3 PostCSS plugin entry', async () => {
@@ -184,6 +177,86 @@ describe('tailwindcss v3 engine', () => {
     expect(transformed).toContain('.text-_b55rpx_B')
     expect(transformed).toContain('font-size: 55rpx')
     expect(transformed).not.toContain('color: 55rpx')
+  })
+
+  it('keeps rpx arbitrary length utilities valid in generated mini-program css', async () => {
+    const candidates = [
+      'basis-[32rpx]',
+      'grid-cols-[200rpx_minmax(900rpx,_1fr)_100rpx]',
+      'gap-[2.75rpx]',
+      'p-[0.32rpx]',
+      'm-[23.43rpx]',
+      'space-y-[12.0rpx]',
+      'w-[12rpx]',
+      'min-w-[12rpx]',
+      'max-w-[12rpx]',
+      'h-[12rpx]',
+      'min-h-[12rpx]',
+      'max-h-[12rpx]',
+      'text-[32rpx]',
+      'text-[length:32rpx]',
+      'tracking-[.25rpx]',
+      'leading-[3rpx]',
+      'decoration-[3rpx]',
+      'underline-offset-[3rpx]',
+      'indent-[50rpx]',
+      'bg-[center_top_1rpx]',
+      'bg-[length:200rpx_100rpx]',
+      'rounded-[12rpx]',
+      'border-t-[3rpx]',
+      'divide-x-[3rpx]',
+      'outline-[5rpx]',
+      'ring-[10rpx]',
+      'ring-offset-[3rpx]',
+      'shadow-[0_35rpx_60rpx_-15px_rgba(0,0,0,0.3)]',
+      'translate-y-[17rpx]',
+    ]
+    const source = await resolveTailwindV3Source({
+      css: '@tailwind utilities;',
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates,
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+    const css = compactCss(result.css)
+
+    expect(result.classSet).toEqual(new Set(candidates))
+    expect(css).toContain('.basis-_b32rpx_B{flex-basis:32rpx')
+    expect(css).toContain('grid-template-columns:200rpxminmax(900rpx,1fr)100rpx')
+    expect(css).toContain('.gap-_b2_d75rpx_B{gap:2.75rpx')
+    expect(css).toContain('.p-_b0_d32rpx_B{padding:0.32rpx')
+    expect(css).toContain('.m-_b23_d43rpx_B{margin:23.43rpx')
+    expect(css).toContain('margin-top:calc(12.0rpx*calc(1-var(--tw-space-y-reverse)))')
+    expect(css).toContain('.w-_b12rpx_B{width:12rpx')
+    expect(css).toContain('.min-w-_b12rpx_B{min-width:12rpx')
+    expect(css).toContain('.max-w-_b12rpx_B{max-width:12rpx')
+    expect(css).toContain('.h-_b12rpx_B{height:12rpx')
+    expect(css).toContain('.min-h-_b12rpx_B{min-height:12rpx')
+    expect(css).toContain('.max-h-_b12rpx_B{max-height:12rpx')
+    expect(css).toContain('.text-_b32rpx_B{font-size:32rpx')
+    expect(css).toContain('.text-_blength_c32rpx_B{font-size:32rpx')
+    expect(css).toContain('.tracking-_b_d25rpx_B{letter-spacing:.25rpx')
+    expect(css).toContain('.leading-_b3rpx_B{line-height:3rpx')
+    expect(css).toContain('.decoration-_b3rpx_B{text-decoration-thickness:3rpx')
+    expect(css).toContain('.underline-offset-_b3rpx_B{text-underline-offset:3rpx')
+    expect(css).toContain('.indent-_b50rpx_B{text-indent:50rpx')
+    expect(css).toContain('.bg-_bcenter_top_1rpx_B{background-position:centertop1rpx')
+    expect(css).toContain('.bg-_blength_c200rpx_100rpx_B{background-size:200rpx100rpx')
+    expect(css).toContain('.rounded-_b12rpx_B{border-radius:12rpx')
+    expect(css).toContain('.border-t-_b3rpx_B{border-top-width:3rpx')
+    expect(css).toContain('border-left-width:calc(3rpx*calc(1-var(--tw-divide-x-reverse)))')
+    expect(css).toContain('.outline-_b5rpx_B{outline-width:5rpx')
+    expect(css).toContain('calc(10rpx+var(--tw-ring-offset-width))')
+    expect(css).toContain('.ring-offset-_b3rpx_B{--tw-ring-offset-width:3rpx')
+    expect(css).toContain('--tw-shadow:035rpx60rpx-15pxrgba(0,0,0,0.3)')
+    expect(css).toContain('--tw-translate-y:17rpx')
+    expect(css).not.toContain('border-top-color:3rpx')
   })
 
   it('supports default UnoCSS class syntax when bare arbitrary values are enabled', async () => {

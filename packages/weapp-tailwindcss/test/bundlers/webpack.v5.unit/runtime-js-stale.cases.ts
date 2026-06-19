@@ -10,8 +10,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js stale fallback', () => 
     testState.currentContext = createContext({
       jsHandler: vi.fn((code: string, classSet?: Set<string>, options?: Record<string, unknown>) =>
         realJsHandler(code, classSet, options as any)),
-      twPatcher: {
-        patch: vi.fn(),
+      tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
