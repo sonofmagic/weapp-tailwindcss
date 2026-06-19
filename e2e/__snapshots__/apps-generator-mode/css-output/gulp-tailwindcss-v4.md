@@ -5,7 +5,7 @@ Entry: gulp-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 14421 | 73 | false | false | false | true | true | false | true |
+| 15958 | 77 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -15,21 +15,24 @@ Entry: gulp-tailwindcss-v4/dist/app.wxss
 | 2 | `pages/more/more.wxss` |
 | 3 | `sub-independent/pages/index.wxss` |
 | 4 | `sub-normal/pages/index.wxss` |
+| 5 | `third-party-ui.wxss` |
 
 ## Generator CSS Summary
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 12063 | 67 | false | false | false | true | true | false | true |
+| `app.wxss` | 12614 | 71 | false | false | false | true | true | false | true |
 | `pages/more/more.wxss` | 195 | 2 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1162 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1117 | 6 | false | false | false | false | false | false | true |
+| `third-party-ui.wxss` | 986 | 4 | false | false | false | false | false | false | false |
 
 ## Generator CSS
 
 ### app.wxss
 
 ```css
+@import './src/third-party-ui.wxss';
 view,
 text,
 ::after,
@@ -356,6 +359,30 @@ wx-root-portal-content {
     color: var(--color-slate-100);
   }
 }
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
 ```
 
 ### pages/more/more.wxss
@@ -445,5 +472,51 @@ wx-root-portal-content {
  /* tokens: before:content-['normal_subpackage_gulp-tailwindcss-v4'] <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
+}
+```
+
+### third-party-ui.wxss
+
+```css
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  -webkit-animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  -webkit-animation: weappTwUserUiRotation 1s linear infinite;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@-webkit-keyframes weappTwUserUiRotation {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    -webkit-transform: scale(0.96);
+    transform: scale(0.96);
+  }
 }
 ```

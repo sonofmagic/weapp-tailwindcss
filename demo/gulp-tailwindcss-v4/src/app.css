@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./src/third-party-ui.css";
 @config "../tailwind.config.js";
 @source "./**/*.{html,js,ts,wxml,ttml}";
 @source not "./sub-normal/**/*";

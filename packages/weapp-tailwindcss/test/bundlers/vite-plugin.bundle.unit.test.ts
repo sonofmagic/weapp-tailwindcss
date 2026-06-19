@@ -10397,6 +10397,67 @@ ${utilities}
     expect(createCssTransformShareScopeKey(opts, 'pages/b.wxss', '.card{color:red}')).toBe('global')
   })
 
+  it('finalizes retained mini-program css assets without dropping third-party css', async () => {
+    const { createStyleHandler } = await import('@weapp-tailwindcss/postcss')
+    const { finalizeMiniProgramCssAssets } = await import('@/bundlers/vite/generate-bundle/final-css-assets')
+    const styleHandler = createStyleHandler({
+      autoprefixer: false,
+      cssPresetEnv: false,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+      cssRemoveHoverPseudoClass: true,
+      isMainChunk: false,
+      majorVersion: 3,
+    })
+    const bundle = {
+      'retained.wxss': {
+        ...createRollupAsset(`
+.nut-searchbar__nut-icon-mask-close:hover {
+  cursor: pointer;
+}
+.nut-icon {
+  color: var(--nut-icon-color, #171a26);
+}
+@keyframes rotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+page {
+  --nut-icon-height: 32rpx;
+}
+`),
+        fileName: 'retained.wxss',
+      },
+    }
+    const onUpdate = vi.fn()
+    const recordCssAssetResult = vi.fn()
+
+    await finalizeMiniProgramCssAssets(bundle, {
+      cssMatcher: file => file.endsWith('.wxss'),
+      getCssHandlerOptions: file => ({
+        isMainChunk: file === 'app.wxss',
+        majorVersion: 3,
+        postcssOptions: {
+          options: {
+            from: file,
+          },
+        },
+      } as any),
+      isWebGeneratorTarget: false,
+      onUpdate,
+      recordCssAssetResult,
+      styleHandler,
+    })
+
+    const css = (bundle['retained.wxss'] as OutputAsset).source.toString()
+    expect(css).not.toContain(':hover')
+    expect(css).toContain('.nut-icon')
+    expect(css).toContain('--nut-icon-height')
+    expect(css).toContain('@keyframes rotation')
+    expect(recordCssAssetResult).toHaveBeenCalledWith('retained.wxss', css)
+    expect(onUpdate).toHaveBeenCalledWith('retained.wxss', expect.any(String), css)
+  })
+
   it('logs css diffs when vite css diff debugging is enabled', async () => {
     const previousDebugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF
     process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF = '1'

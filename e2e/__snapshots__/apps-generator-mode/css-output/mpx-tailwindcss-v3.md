@@ -5,28 +5,30 @@ Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 187902 | 2900 | false | false | false | true | true | false | true |
+| 188416 | 2902 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
 | # | File |
 | ---: | --- |
-| 1 | `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` |
-| 2 | `components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss` |
-| 3 | `components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss` |
-| 4 | `components/vant/weapp/lib/button/index.wxss` |
-| 5 | `components/vant/weapp/lib/icon/index.wxss` |
-| 6 | `components/vant/weapp/lib/info/index.wxss` |
-| 7 | `components/vant/weapp/lib/loading/index.wxss` |
-| 8 | `styles/base.wxss` |
-| 9 | `styles/index.1.wxss` |
-| 10 | `styles/index.2.wxss` |
-| 11 | `styles/utilities.wxss` |
+| 1 | `app.wxss` |
+| 2 | `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` |
+| 3 | `components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss` |
+| 4 | `components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss` |
+| 5 | `components/vant/weapp/lib/button/index.wxss` |
+| 6 | `components/vant/weapp/lib/icon/index.wxss` |
+| 7 | `components/vant/weapp/lib/info/index.wxss` |
+| 8 | `components/vant/weapp/lib/loading/index.wxss` |
+| 9 | `styles/base.wxss` |
+| 10 | `styles/index.1.wxss` |
+| 11 | `styles/index.2.wxss` |
+| 12 | `styles/utilities.wxss` |
 
 ## Generator CSS Summary
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
+| `app.wxss` | 514 | 4 | false | false | false | false | false | false | false |
 | `components/tdesign-miniprogram/miniprogram_dist/button/button.wxss` | 24949 | 139 | false | false | false | false | false | false | false |
 | `components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss` | 128577 | 2354 | false | false | false | false | false | false | false |
 | `components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss` | 4283 | 33 | false | false | false | false | false | false | false |
@@ -40,6 +42,35 @@ Entry: mpx-tailwindcss-v3/dist/wx/app.wxss
 | `styles/utilities.wxss` | 5694 | 34 | false | false | false | true | true | false | true |
 
 ## Generator CSS
+
+### app.wxss
+
+```css
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
+```
 
 ### components/tdesign-miniprogram/miniprogram_dist/button/button.wxss
 

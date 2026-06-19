@@ -1,3 +1,4 @@
+import { Button as NutButton } from '@nutui/nutui-taro'
 import { createApp } from 'vue'
 
 import './app.scss'
@@ -8,5 +9,7 @@ const app = createApp({
   onShow() {},
   onHide() {},
 })
+
+app.component('NutButton', NutButton)
 
 export default app

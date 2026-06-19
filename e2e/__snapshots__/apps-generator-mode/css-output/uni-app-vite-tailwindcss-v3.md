@@ -5,7 +5,7 @@ Entry: uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 211296 | 2838 | false | false | false | true | true | false | true |
+| 211810 | 2841 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -28,7 +28,7 @@ Entry: uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 148544 | 2547 | false | false | false | true | true | false | true |
+| `app.wxss` | 149058 | 2551 | false | false | false | true | true | false | true |
 | `custom-tab-bar/index.wxss` | 582 | 5 | false | false | false | false | false | false | false |
 | `moduleA/pages/a.wxss` | 2887 | 6 | false | false | false | false | false | false | true |
 | `moduleA/pages/b.wxss` | 2887 | 6 | false | false | false | false | false | false | true |
@@ -46,6 +46,30 @@ Entry: uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss
 ### app.wxss
 
 ```css
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
 ::before,
 ::after {
   --tw-content: '';

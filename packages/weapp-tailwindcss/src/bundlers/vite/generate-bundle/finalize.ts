@@ -9,6 +9,7 @@ import { updateBundleBuildState } from '../bundle-state'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets, removeCssCoveredByRootStyleAssets } from '../processed-css-assets'
 import { normalizeBundleFileNameKeysForTest } from './bundle-file-names'
 import { resolveViteCssPipelineOutputFile } from './css-output'
+import { finalizeMiniProgramCssAssets } from './final-css-assets'
 import { resolveViteMemoryDebugStats } from './memory-debug'
 import { formatCacheHitRate, formatMs } from './metrics'
 import { collectMiniProgramSubpackageRoots } from './subpackages'
@@ -191,6 +192,16 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     onUpdate,
     recordCssAssetResult,
     subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
+  })
+  await finalizeMiniProgramCssAssets(bundle, {
+    cssMatcher: opts.cssMatcher,
+    debug,
+    getCssHandlerOptions,
+    isWebGeneratorTarget,
+    lastCssResultByFile,
+    onUpdate,
+    recordCssAssetResult,
+    styleHandler,
   })
 
   const stateUpdateStart = performance.now()

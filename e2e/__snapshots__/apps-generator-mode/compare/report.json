@@ -11,7 +11,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 16425,
+      "bytes": 16939,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before",
@@ -79,7 +79,11 @@
         ".theme-dark_cbg-zinc-900.theme-dark",
         ".theme-dark_cbg-zinc-950.theme-dark",
         ".theme-dark_ctext-zinc-50.theme-dark",
-        ".w-screen"
+        ".w-screen",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
+        "to"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -100,11 +104,12 @@
       "app.wxss",
       "pages/more/more.wxss",
       "sub-independent/pages/index.wxss",
-      "sub-normal/pages/index.wxss"
+      "sub-normal/pages/index.wxss",
+      "third-party-ui.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 14421,
+      "bytes": 15958,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
@@ -176,8 +181,12 @@
         ".theme-dark .dark_ctext-zinc-50",
         ".tw-root",
         ".w-screen",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -196,6 +205,7 @@
     "fixture": "demo",
     "cssFile": "mpx-tailwindcss-v3/dist/wx/app.wxss",
     "cssFiles": [
+      "app.wxss",
       "components/tdesign-miniprogram/miniprogram_dist/button/button.wxss",
       "components/tdesign-miniprogram/miniprogram_dist/icon/icon.wxss",
       "components/tdesign-miniprogram/miniprogram_dist/loading/loading.wxss",
@@ -210,7 +220,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 187902,
+      "bytes": 188416,
       "selectors": [
         ".after_ccontent-_b_au_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x8fd9_u_x662f_u_x4e2d_u_x6587_u_x5b57_u_x7b26_u_x4e32__a_B:after",
         ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
@@ -3105,6 +3115,8 @@
         ".van-loading__text:empty",
         ".van-multi-ellipsis--l2",
         ".van-multi-ellipsis--l3",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
         "0%",
         "1%",
         "33%",
@@ -3131,13 +3143,14 @@
     "cssFiles": [
       "app.wxss",
       "styles/app.wxss",
+      "styles/third-party-ui.wxss",
       "pages/component/index.wxss",
       "styles/index.wxss",
       "sub-independent/styles/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 46584,
+      "bytes": 47243,
       "selectors": [
         ".-mt-2",
         "._2xl_ctext-base",
@@ -3262,8 +3275,12 @@
         ".w-_b20px_B",
         ".w-_b300rpx_B",
         ".w-screen",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -3292,7 +3309,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 61811,
+      "bytes": 62055,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -3476,7 +3493,11 @@
         ".w-_b20px_B",
         ".w-_b300rpx_B",
         ".w-_b404px_B",
-        ".w-full"
+        ".w-full",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
+        "to"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -3501,7 +3522,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 18471,
+      "bytes": 22838,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -3552,6 +3573,23 @@
         ".h-8",
         ".mt-2",
         ".mt-4",
+        ".nut-icon",
+        ".nut-icon-Loading",
+        ".nut-icon-Loading1",
+        ".nut-icon-am-blink",
+        ".nut-icon-am-bounce",
+        ".nut-icon-am-bounce.nut-icon-am-infinite",
+        ".nut-icon-am-breathe",
+        ".nut-icon-am-flash",
+        ".nut-icon-am-infinite",
+        ".nut-icon-am-jump",
+        ".nut-icon-am-jump.nut-icon-am-infinite",
+        ".nut-icon-am-rotate",
+        ".nut-icon-am-rotate.nut-icon-am-infinite",
+        ".nut-icon-am-shake",
+        ".nut-icon-img",
+        ".nut-icon-loading",
+        ".nut-icon-loading1",
         ".px-3",
         ".px-4",
         ".py-2",
@@ -3584,8 +3622,26 @@
         ".via-yellow-300",
         ".w-28",
         ".w-8",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "0%",
+        "18.5%",
+        "20%",
+        "25%",
+        "31.5%",
+        "40%",
+        "43%",
+        "43.5%",
+        "50%",
+        "53%",
+        "6.5%",
+        "70%",
+        "75%",
+        "80%",
+        "90%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -3612,7 +3668,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 8955,
+      "bytes": 9469,
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
@@ -3661,7 +3717,11 @@
         ".theme-dark_cbg-zinc-900.theme-dark",
         ".theme-dark_cbg-zinc-950.theme-dark",
         ".theme-dark_ctext-zinc-50.theme-dark",
-        ".tw-page-style-watch-anchor"
+        ".tw-page-style-watch-anchor",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
+        "to"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -3687,7 +3747,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 5131,
+      "bytes": 6237,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
@@ -3724,8 +3784,12 @@
         ".to-blue-500",
         ".tw-page-style-watch-anchor",
         ".tw-root",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -3751,7 +3815,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 16350,
+      "bytes": 16594,
       "selectors": [
         ".a",
         ".aspect-w-16 > text",
@@ -3836,7 +3900,11 @@
         ".w-12",
         ".w-_b100px_B",
         ".w-_b200_v_B",
-        ".w-_b300rpx_B"
+        ".w-_b300rpx_B",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
+        "to"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -3861,7 +3929,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 7808,
+      "bytes": 8322,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
@@ -3900,8 +3968,12 @@
         ".to-blue-500",
         ".tw-page-style-watch-anchor",
         ".tw-root",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -3927,7 +3999,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 8703,
+      "bytes": 9217,
       "selectors": [
         ".before_ccontent-_b_a11111_a_B:before",
         ".before_ccontent-_b_a222_a_B:before",
@@ -3973,7 +4045,11 @@
         ".theme-dark .theme-dark_ctext-zinc-50",
         ".theme-dark_cbg-zinc-900.theme-dark",
         ".theme-dark_cbg-zinc-950.theme-dark",
-        ".theme-dark_ctext-zinc-50.theme-dark"
+        ".theme-dark_ctext-zinc-50.theme-dark",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
+        "to"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -3998,7 +4074,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 5036,
+      "bytes": 6142,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
@@ -4033,8 +4109,12 @@
         ".theme-dark .dark_ctext-zinc-50",
         ".to-blue-500",
         ".tw-root",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -4068,7 +4148,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 211296,
+      "bytes": 211810,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -6896,9 +6976,12 @@
         ".w-_b61_d1px_B",
         ".w-_b77rpx_B",
         ".w-screen",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
         ".wx_cbg-blue-400",
         ".xxx ~ .xxx-invalid:visible",
         "0%",
+        "50%",
         "::-webkit-scrollbar",
         ":host",
         "[data-c-h='true']",
@@ -6933,7 +7016,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 31517,
+      "bytes": 31912,
       "selectors": [
         ".active_cbg-emerald-50:active",
         ".active_cbg-emerald-600:active",
@@ -7068,9 +7151,13 @@
         ".underline",
         ".w-12",
         ".w-20",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "[data-c-h='true']",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,
@@ -7096,7 +7183,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 47472,
+      "bytes": 47986,
       "selectors": [
         ".-inset-1",
         ".-inset-_b1rpx_B",
@@ -7278,7 +7365,11 @@
         ".w-_b12rpx_B",
         ".w-_b24rpx_B",
         ".weapp-reset-button",
-        ".weapp-reset-button:after"
+        ".weapp-reset-button:after",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
+        "to"
       ],
       "hasSupports": false,
       "hasHoverPseudo": false,
@@ -7303,7 +7394,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 20702,
+      "bytes": 21216,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
@@ -7385,8 +7476,12 @@
         ".user-motto",
         ".w-_b323px_B",
         ".w-_b50px_B",
+        ".weapp-tw-user-ui-card",
+        ".weapp-tw-user-ui-loading",
+        "50%",
         ":host",
         "page",
+        "to",
         "wx-root-portal-content"
       ],
       "hasSupports": false,

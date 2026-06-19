@@ -8,6 +8,7 @@ createApp({})
 
 <style lang="scss">
   @config "../tailwind.config.js";
+  @import './third-party-ui.scss';
   @import 'tailwindcss/base.css';
   @import 'tailwindcss/components.css';
   @import 'tailwindcss/utilities.css';

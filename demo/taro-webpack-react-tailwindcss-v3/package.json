@@ -80,6 +80,7 @@
   "author": "ice breaker <1324318532@qq.com>",
   "dependencies": {
     "@babel/runtime": "catalog:babelRuntime7284",
+    "@nutui/nutui-react-taro": "^3.0.20",
     "@react-native-community/slider": "catalog:reactNativeSlider442",
     "@react-native-picker/picker": "catalog:reactNativePicker261",
     "@tarojs/components": "catalog:taro4",

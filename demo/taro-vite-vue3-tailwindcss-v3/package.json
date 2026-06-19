@@ -85,6 +85,7 @@
   ],
   "dependencies": {
     "@babel/runtime": "catalog:babelRuntime7284",
+    "@nutui/nutui-taro": "^4.3.14",
     "@react-native-community/slider": "catalog:reactNativeSlider442",
     "@react-native-picker/picker": "catalog:reactNativePicker261",
     "@tarojs/components": "catalog:taro4",

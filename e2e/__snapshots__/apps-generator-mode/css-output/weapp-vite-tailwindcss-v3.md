@@ -5,7 +5,7 @@ Entry: weapp-vite-tailwindcss-v3/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 47472 | 181 | false | false | false | true | true | false | true |
+| 47986 | 185 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: weapp-vite-tailwindcss-v3/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 40181 | 163 | false | false | false | true | true | false | true |
+| `app.wxss` | 40695 | 167 | false | false | false | true | true | false | true |
 | `pages/index/merge/index.wxss` | 3348 | 16 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1989 | 2 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1954 | 2 | false | false | false | false | false | false | true |
@@ -877,6 +877,30 @@ text,
  /*tokens: focus:[&_view]:p-4 <= miniprogram/pages/index/merge/index.ts*/
 .focus_c_b_n_view_B_cp-4 view:focus {
   padding: 32rpx;
+}
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
 }
  /* tokens: icon-[mdi--account] <= miniprogram/pages/index/index.wxml */
  /* tokens: icon-[mdi--home] <= miniprogram/pages/index/index.wxml */

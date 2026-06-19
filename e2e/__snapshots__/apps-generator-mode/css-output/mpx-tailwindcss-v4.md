@@ -5,7 +5,7 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 46584 | 126 | false | false | false | true | true | false | true |
+| 47243 | 130 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -13,16 +13,18 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 | ---: | --- |
 | 1 | `app.wxss` |
 | 2 | `styles/app.wxss` |
-| 3 | `pages/component/index.wxss` |
-| 4 | `styles/index.wxss` |
-| 5 | `sub-independent/styles/index.wxss` |
+| 3 | `styles/third-party-ui.wxss` |
+| 4 | `pages/component/index.wxss` |
+| 5 | `styles/index.wxss` |
+| 6 | `sub-independent/styles/index.wxss` |
 
 ## Generator CSS Summary
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 29 | 0 | false | false | false | false | false | false | false |
+| `app.wxss` | 69 | 0 | false | false | false | false | false | false | false |
 | `styles/app.wxss` | 15483 | 126 | false | false | false | true | true | false | true |
+| `styles/third-party-ui.wxss` | 619 | 4 | false | false | false | false | false | false | false |
 | `pages/component/index.wxss` | 106 | 0 | false | false | false | false | false | false | false |
 | `styles/index.wxss` | 15483 | 126 | false | false | false | true | true | false | true |
 | `sub-independent/styles/index.wxss` | 15483 | 126 | false | false | false | true | true | false | true |
@@ -33,6 +35,7 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 
 ```css
 @import './styles/app.wxss';
+@import './styles/third-party-ui.wxss';
 ```
 
 ### styles/app.wxss
@@ -568,6 +571,44 @@ wx-root-portal-content {
  /* tokens: system-dark:text-slate-100 <= src/pages/index.mpx */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
+  }
+}
+```
+
+### styles/third-party-ui.wxss
+
+```css
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+.weapp-tw-user-ui-card {
+  align-items: center;
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  display: inline-flex;
+  gap: 8rpx;
+}
+.weapp-tw-user-ui-loading {
+  animation: weappTwUserUiRotation 1s linear infinite;
+  display: inline-block;
+  height: 32rpx;
+  width: 32rpx;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
   }
 }
 ```

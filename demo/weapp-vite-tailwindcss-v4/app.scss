@@ -1,5 +1,6 @@
 // Tailwind root entry intentionally lives in SCSS to cover preprocessor source handling.
 @import "tailwindcss";
+@import "./third-party-ui.css";
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;

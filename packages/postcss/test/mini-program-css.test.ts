@@ -50,6 +50,18 @@ describe('mini-program css cleanup', () => {
     expect(css).toContain('--color-p3:rgb(50, 128, 255)')
   })
 
+  it('removes root specificity placeholders from finalized css without touching user selectors', () => {
+    const css = finalizeMiniProgramCss([
+      'page:not(.does-not-exist),.tw-root,wx-root-portal-content:not(.does-not-exist){--nut-icon-height:32rpx}',
+      '.btn:not(.does-not-exist){color:red}',
+    ].join('\n'))
+
+    expect(css).toContain('page,.tw-root,wx-root-portal-content{--nut-icon-height:32rpx}')
+    expect(css).toContain('.btn:not(.does-not-exist){color:red}')
+    expect(css).not.toContain('page:not(.does-not-exist)')
+    expect(css).not.toContain('wx-root-portal-content:not(.does-not-exist)')
+  })
+
   it('normalizes Tailwind v4 rounded-full infinity radius for mini-program output', () => {
     const css = finalizeMiniProgramCss([
       '/*! tailwindcss v4.2.4 */',

@@ -5,7 +5,7 @@ Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 20702 | 83 | false | false | false | true | true | false | true |
+| 21216 | 87 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 18546 | 77 | false | false | false | true | true | false | true |
+| `app.wxss` | 19060 | 81 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | 115 | 2 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1096 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1061 | 6 | false | false | false | false | false | false | true |
@@ -545,6 +545,30 @@ wx-root-portal-content {
  /* tokens: theme-dark <= pages/index/index.wxml | dark:bg-zinc-950 <= pages/index/index.wxml */
  /* tokens: dark:text-zinc-50 <= pages/index/index.wxml | theme-dark <= pages/index/index.wxml */
  /* tokens: theme-dark <= pages/index/index.wxml | dark:text-zinc-50 <= pages/index/index.wxml */
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
 ```
 
 ### pages/index/index.wxss

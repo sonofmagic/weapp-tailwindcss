@@ -99,6 +99,16 @@ describe('specificity cleaner', () => {
     expect(emptyRule.selectors).toEqual([])
   })
 
+  it('cleans css-has-pseudo specificity placeholders from root scopes only', () => {
+    const cleaner = createRootSpecificityCleaner({
+      cssSelectorReplacement: { root: ['page', '.tw-root', 'wx-root-portal-content'] },
+      cssPresetEnv: { features: {} },
+    } as any)
+    const rule = postcss.parse('page:not(.does-not-exist),.tw-root,wx-root-portal-content:not(.does-not-exist),.btn:not(.does-not-exist) { color: red }').first as Rule
+    cleaner?.(rule)
+    expect(rule.selector).toBe('page,.tw-root,wx-root-portal-content,.btn:not(.does-not-exist)')
+  })
+
   it('cleans fallback placeholder selectors in rules and raw code', () => {
     const cleaner = createFallbackPlaceholderCleaner()
     const rule = postcss.parse('page:not(#n),view:not(#n),.demo:not(#n) { color: red }').first as Rule

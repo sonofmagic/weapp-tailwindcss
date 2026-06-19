@@ -3,6 +3,7 @@ import type { IStyleHandlerOptions } from '../../types'
 import { assignRuleSelectors } from '../../utils/selector-guard'
 
 const FALLBACK_PLACEHOLDER_SUFFIXES = [':not(#n)', ':not(#\\#)']
+const ROOT_SPECIFICITY_MATCHING_NAMES = ['does-not-exist']
 
 // normalizeSelectorList 将 root/universal 替换配置规范化为数组
 function normalizeSelectorList(value?: string | string[] | false) {
@@ -71,19 +72,22 @@ export function createRootSpecificityCleaner(options: IStyleHandlerOptions) {
   const specificityMatchingName = getSpecificityMatchingName(options)
   const selectors = normalizeSelectorList(options.cssSelectorReplacement?.root)
 
-  if (!specificityMatchingName || selectors.length === 0) {
+  if (selectors.length === 0) {
     return undefined
   }
 
-  const suffix = `:not(.${specificityMatchingName})`
+  const specificityNames = new Set([
+    ...ROOT_SPECIFICITY_MATCHING_NAMES,
+    ...(specificityMatchingName ? [specificityMatchingName] : []),
+  ])
   const targets = selectors
     .map(selector => selector?.trim())
     .filter((selector): selector is string => Boolean(selector?.length))
-    .map(selector => ({
-      match: `${selector}${suffix}`,
-      spacedMatch: `${selector} ${suffix}`,
+    .flatMap(selector => [...specificityNames].map(name => ({
+      match: `${selector}:not(.${name})`,
+      spacedMatch: `${selector} :not(.${name})`,
       replacement: selector,
-    }))
+    })))
 
   if (!targets.length) {
     return undefined

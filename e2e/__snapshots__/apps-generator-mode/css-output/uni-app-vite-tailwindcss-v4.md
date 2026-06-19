@@ -5,7 +5,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 31517 | 137 | false | false | false | true | true | false | true |
+| 31912 | 141 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -21,7 +21,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 19384 | 108 | false | false | false | true | true | false | true |
+| `app.wxss` | 19779 | 112 | false | false | false | true | true | false | true |
 | `pages-order/pages/home/home.wxss` | 5034 | 51 | false | false | false | false | false | false | true |
 | `pages-order/pages/user/user.wxss` | 5034 | 51 | false | false | false | false | false | false | true |
 | `sub-independent/pages/index.wxss` | 1108 | 6 | false | false | false | false | false | false | true |
@@ -343,6 +343,30 @@ wx-root-portal-content {
   gap: 8px;
   color: var(--color-midnight);
 }
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
 .reset-button {
   display: block;
 }
@@ -458,8 +482,6 @@ page {
     color: var(--color-slate-100);
   }
 }
-/* stylelint-disable custom-property-pattern */
-/* Core plugin extractor sources are intentionally not loaded here. */
  /* tokens: mt-2 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
  /* tokens: mt-4 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
  /* tokens: mt-6 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */

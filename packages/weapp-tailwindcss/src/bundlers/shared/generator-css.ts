@@ -2,6 +2,7 @@ import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css/types'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -64,6 +65,42 @@ function resolveGeneratorSourceConcurrency() {
   return 1
 }
 
+function collectCssRuleIdentityMarkers(source: string) {
+  const markers = new Set<string>()
+  try {
+    const root = postcss.parse(source)
+    root.walkRules((rule) => {
+      for (const selector of rule.selectors ?? [rule.selector]) {
+        for (const match of selector.matchAll(/\.((?:\\.|[_a-z\u00A0-\uFFFF-])(?:\\.|[\w\u00A0-\uFFFF-])*)/gi)) {
+          markers.add(`class:${match[1]}`)
+        }
+      }
+    })
+    root.walkAtRules('keyframes', (rule) => {
+      if (rule.params) {
+        markers.add(`keyframes:${rule.params}`)
+      }
+    })
+  }
+  catch {
+  }
+  return markers
+}
+
+function isCssAlreadyRepresentedByMarkers(css: string, source: string) {
+  const sourceMarkers = collectCssRuleIdentityMarkers(source)
+  if (sourceMarkers.size === 0) {
+    return false
+  }
+  const cssMarkers = collectCssRuleIdentityMarkers(css)
+  for (const marker of sourceMarkers) {
+    if (!cssMarkers.has(marker)) {
+      return false
+    }
+  }
+  return true
+}
+
 export async function generateCssByGenerator(
   options: GenerateCssByGeneratorOptions,
 ): Promise<GenerateCssByGeneratorResult | undefined> {
@@ -77,6 +114,7 @@ export async function generateCssByGenerator(
     cssUserHandlerOptions,
     getSourceCandidatesForEntries,
     styleHandler,
+    userRawSource,
     debug,
   } = options
   const generatorOptions = {
@@ -103,12 +141,26 @@ export async function generateCssByGenerator(
     ),
   )
   const localImportParts = splitLocalCssImports(effectiveRawSource)
+  const localImports = options.restoreLocalCssImports === false
+    ? undefined
+    : localImportParts?.imports
   const generatorRawSource = localImportParts?.source ?? effectiveRawSource
-  const userCssRawSource = majorVersion === 4
-    ? removeTailwindV4GeneratorAtRules(generatorRawSource)
-    : generatorRawSource
-  const userCssOrderSource = GENERATOR_PLACEHOLDER_MARKER_RE.test(generatorRawSource)
+  const rawUserSource = userRawSource === undefined
     ? generatorRawSource
+    : stripUnmatchedTailwindSourceMediaCloseFragments(
+        stripTailwindSourceMediaFragments(
+          normalizeTailwindSourceDirectives(userRawSource, {
+            importFallback: generatorOptions.importFallback,
+          }),
+        ),
+      )
+  const userLocalImportParts = splitLocalCssImports(rawUserSource)
+  const userSource = userLocalImportParts?.source ?? rawUserSource
+  const userCssRawSource = majorVersion === 4
+    ? removeTailwindV4GeneratorAtRules(userSource)
+    : userSource
+  const userCssOrderSource = GENERATOR_PLACEHOLDER_MARKER_RE.test(userSource)
+    ? userSource
     : userCssRawSource
 
   const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
@@ -266,7 +318,7 @@ export async function generateCssByGenerator(
           }))
         : options.previousCss
       return {
-        css: restoreLocalCssImports(css, localImportParts?.imports),
+        css: restoreLocalCssImports(css, localImports),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -371,11 +423,11 @@ export async function generateCssByGenerator(
             injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
               cssHandlerOptions,
               isolateCurrentCssCandidates,
-              localImports: localImportParts?.imports,
+              localImports,
             }),
             styleOptions: generatorStyleOptions,
           }),
-          localImportParts?.imports,
+          localImports,
         ),
         target: generated.target,
         source: 'generator',
@@ -429,7 +481,13 @@ export async function generateCssByGenerator(
       }
     }
     if (hasMatchedCssSourceFile || generated.target === 'web') {
-      if (hasMatchedCssSourceFile && generated.target === 'weapp' && !hasGeneratedCss && !hasGeneratedMarkers) {
+      if (
+        hasMatchedCssSourceFile
+        && generated.target === 'weapp'
+        && !hasGeneratedCss
+        && !hasGeneratedMarkers
+        && !isCssAlreadyRepresentedByMarkers(css, userCssRawSource)
+      ) {
         const userCss = await transformGeneratorUserCss(userCssRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,
@@ -488,11 +546,11 @@ export async function generateCssByGenerator(
             injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
               cssHandlerOptions,
               isolateCurrentCssCandidates,
-              localImports: localImportParts?.imports,
+              localImports,
             }),
             styleOptions: generatorStyleOptions,
           }),
-          localImportParts?.imports,
+          localImports,
         ),
         target: generated.target,
         source: 'generator',
@@ -526,11 +584,11 @@ export async function generateCssByGenerator(
           injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
             cssHandlerOptions,
             isolateCurrentCssCandidates,
-            localImports: localImportParts?.imports,
+            localImports,
           }),
           styleOptions: generatorStyleOptions,
         }),
-        localImportParts?.imports,
+        localImports,
       ),
       target: generated.target,
       source: 'generator',

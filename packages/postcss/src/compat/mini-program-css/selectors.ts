@@ -36,6 +36,7 @@ export const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([
 ])
 
 export const SPECIFICITY_PLACEHOLDER_SUFFIXES = [':not(#n)', ':not(#\\#)']
+export const ROOT_SPECIFICITY_PLACEHOLDER_SUFFIXES = [':not(.does-not-exist)']
 
 const MINI_PROGRAM_UNSUPPORTED_BROWSER_SELECTORS = new Set([
   ':-moz-focusring',

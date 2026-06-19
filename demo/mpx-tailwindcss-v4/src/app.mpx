@@ -7,6 +7,7 @@
 </script>
 
 <style src="./app.css" />
+<style src="./third-party-ui.css" />
 
 <script type="application/json">
   {

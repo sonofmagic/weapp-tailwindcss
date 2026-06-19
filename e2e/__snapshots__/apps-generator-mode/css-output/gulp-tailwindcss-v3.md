@@ -5,7 +5,7 @@ Entry: gulp-tailwindcss-v3/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 16425 | 67 | false | false | false | true | true | false | true |
+| 16939 | 71 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -20,7 +20,7 @@ Entry: gulp-tailwindcss-v3/dist/app.wxss
 
 | File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | 12345 | 63 | false | false | false | true | true | false | true |
+| `app.wxss` | 12859 | 67 | false | false | false | true | true | false | true |
 | `pages/more/more.wxss` | 195 | 2 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | 1960 | 2 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | 1925 | 2 | false | false | false | false | false | false | true |
@@ -30,6 +30,30 @@ Entry: gulp-tailwindcss-v3/dist/app.wxss
 ### app.wxss
 
 ```css
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
 ::before,
 ::after {
   --tw-content: '';

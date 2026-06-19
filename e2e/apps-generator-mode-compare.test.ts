@@ -53,6 +53,12 @@ const localHBuilderXProjectNames = new Set(
 )
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
+const USER_IMPORTED_UI_CSS_MARKERS = [
+  '.weapp-tw-user-ui-card',
+  '.weapp-tw-user-ui-loading',
+  '@keyframes weappTwUserUiRotation',
+  '@keyframes weappTwUserUiBreathe',
+] as const
 
 function filterCompareProjects(projects: CompareProject[]) {
   const filter = process.env['E2E_PROJECT_FILTER']
@@ -465,6 +471,15 @@ function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generato
   }
 }
 
+function expectUserImportedUiCssMarkers(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  for (const marker of USER_IMPORTED_UI_CSS_MARKERS) {
+    expect(
+      generatorResult.css,
+      `${project.name} should keep user imported UI css marker ${marker}`,
+    ).toContain(marker)
+  }
+}
+
 function expectSubpackageCssFiles(project: CompareProject, generatorResult: GeneratorBuildResult) {
   const requiredSubpackageCssFiles = project.requiredCssFiles
     .map(file => file.replace(/\\/g, '/'))
@@ -757,6 +772,7 @@ describe('demo generator mode output', () => {
         expectGulpTailwindV3SubpackageCssIsolation(project, generatorResult)
         expectSubpackageCssFiles(project, generatorResult)
         expectSubpackageMarkersInGeneratedCss(project, generatorResult)
+        expectUserImportedUiCssMarkers(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }
     }

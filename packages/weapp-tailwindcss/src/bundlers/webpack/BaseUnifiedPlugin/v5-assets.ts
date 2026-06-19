@@ -4,6 +4,7 @@ import type { WebpackSourceCandidateScanMemoryStats } from './v5-assets/source-c
 import type { LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { pluginName } from '@/constants'
 import { resolveStyleOptionsFromContext } from '@/context/style-options'
 import { shouldSkipJsTransform } from '@/js/precheck'
@@ -17,8 +18,8 @@ import { processCachedTask } from '../../shared/cache'
 import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../../shared/css-cleanup'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
-import { generateCssByGenerator, isPureLocalCssImportWrapper } from '../../shared/generator-css'
-import { removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
+import { generateCssByGenerator, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives, isPureLocalCssImportWrapper } from '../../shared/generator-css'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories, resolveTaskConcurrency } from '../../shared/run-tasks'
@@ -96,7 +97,74 @@ function resolveWebpackGeneratorRawSource(
   rawSource: string,
   cssHandlerOptions: WebpackCssHandlerOptions,
 ) {
-  return cssHandlerOptions.sourceOptions?.sourceCss ?? rawSource
+  const sourceCss = cssHandlerOptions.sourceOptions?.sourceCss
+  if (
+    sourceCss
+    && (
+      hasTailwindRootDirectives(sourceCss, { importFallback: true })
+      || hasTailwindSourceDirectives(sourceCss, { importFallback: true })
+      || hasTailwindApplyDirective(sourceCss)
+      || hasTailwindGeneratedCss(sourceCss)
+      || hasTailwindGeneratedCssMarkers(sourceCss)
+    )
+  ) {
+    return sourceCss
+  }
+  return rawSource
+}
+
+function shouldUseWebpackAssetAsGeneratorUserCss(
+  rawSource: string,
+  generatorRawSource: string,
+) {
+  return rawSource !== generatorRawSource
+    && !hasTailwindRootDirectives(rawSource, { importFallback: true })
+    && !hasTailwindSourceDirectives(rawSource, { importFallback: true })
+    && !hasTailwindApplyDirective(rawSource)
+    && /(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i.test(rawSource)
+    && (
+      !hasTailwindGeneratedCssMarkers(rawSource)
+      || hasAdditionalWebpackAssetUserCssMarkers(rawSource, generatorRawSource)
+    )
+}
+
+function collectWebpackAssetUserCssMarkers(source: string) {
+  const markers = new Set<string>()
+  try {
+    const root = postcss.parse(source)
+    root.walkRules((rule) => {
+      for (const selector of rule.selectors ?? [rule.selector]) {
+        for (const match of selector.matchAll(/\.((?:\\.|[_a-z\u00A0-\uFFFF-])(?:\\.|[\w\u00A0-\uFFFF-])*)/gi)) {
+          markers.add(`class:${match[1]}`)
+        }
+      }
+    })
+    root.walkAtRules('keyframes', (rule) => {
+      if (rule.params) {
+        markers.add(`keyframes:${rule.params}`)
+      }
+    })
+  }
+  catch {
+  }
+  return markers
+}
+
+function hasAdditionalWebpackAssetUserCssMarkers(
+  rawSource: string,
+  generatorRawSource: string,
+) {
+  const rawMarkers = collectWebpackAssetUserCssMarkers(rawSource)
+  if (rawMarkers.size === 0) {
+    return false
+  }
+  const generatorMarkers = collectWebpackAssetUserCssMarkers(generatorRawSource)
+  for (const marker of rawMarkers) {
+    if (!generatorMarkers.has(marker)) {
+      return true
+    }
+  }
+  return false
 }
 
 function stripStyleExtension(file: string) {
@@ -519,7 +587,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           try {
             finalized = pruneMiniProgramGeneratedCss(finalized, {
-              preservePreflight: runtimeState.tailwindRuntime.majorVersion === 3,
+              preservePreflight: runtimeState.tailwindRuntime.majorVersion === 3 || runtimeState.tailwindRuntime.majorVersion === 4,
             })
           }
           catch {
@@ -863,6 +931,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   await runtimeState.readyPromise
                   const cssHandlerOptions = getCssHandlerOptions(file)
                   const generatorRawSource = resolveWebpackGeneratorRawSource(currentRawSource, cssHandlerOptions)
+                  const userRawSource = shouldUseWebpackAssetAsGeneratorUserCss(currentRawSource, generatorRawSource)
+                    ? currentRawSource
+                    : undefined
                   if (isPureLocalCssImportWrapper(currentRawSource)) {
                     return {
                       result: new ConcatSource(removeTailwindSourceDirectives(
@@ -876,10 +947,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     runtimeState,
                     runtime: runtimeSet,
                     rawSource: generatorRawSource,
+                    ...(userRawSource === undefined ? {} : { userRawSource }),
                     file,
                     cssHandlerOptions,
                     cssUserHandlerOptions: getCssUserHandlerOptions(file),
                     getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
+                    restoreLocalCssImports: false,
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })

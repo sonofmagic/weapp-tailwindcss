@@ -43,6 +43,7 @@ export async function transformTailwindV4CssToWeapp(
     ...options,
   })
   const pruneOptions = {
+    preservePreflight: true,
     preserveConditionalComments: hasCssMacroStyleOptions(options),
   }
   return pruneMiniProgramGeneratedCss(protectedCss.restore(result.css), pruneOptions)
