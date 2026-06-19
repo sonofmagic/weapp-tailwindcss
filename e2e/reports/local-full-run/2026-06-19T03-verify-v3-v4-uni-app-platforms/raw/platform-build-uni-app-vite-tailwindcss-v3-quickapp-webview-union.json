@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-06-19T02:11:24.063Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "includeLocal": true,
+  "exitCode": 0,
+  "summary": {
+    "count": 6,
+    "baselineRssMb": 566,
+    "peakRssMb": 1438,
+    "rssDeltaMb": 872,
+    "peakMaxProcessRssMb": 773,
+    "peakProcessCount": 7,
+    "firstAt": 1781835078942,
+    "lastAt": 1781835083979,
+    "durationMs": 5037,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-union",
+      "command": [
+        "pnpm",
+        "e2e:multiplatform-build"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-19T02:11:18.912Z",
+      "endedAt": "2026-06-19T02:11:24.063Z",
+      "local": true,
+      "summary": {
+        "count": 6,
+        "baselineRssMb": 566,
+        "peakRssMb": 1438,
+        "rssDeltaMb": 872,
+        "peakMaxProcessRssMb": 773,
+        "peakProcessCount": 7,
+        "firstAt": 1781835078942,
+        "lastAt": 1781835083979,
+        "durationMs": 5037
+      },
+      "samples": [
+        {
+          "at": 1781835078942,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781835079945,
+          "rssMb": 566,
+          "maxProcessRssMb": 161,
+          "processCount": 5
+        },
+        {
+          "at": 1781835080947,
+          "rssMb": 943,
+          "maxProcessRssMb": 315,
+          "processCount": 7
+        },
+        {
+          "at": 1781835081950,
+          "rssMb": 1162,
+          "maxProcessRssMb": 524,
+          "processCount": 7
+        },
+        {
+          "at": 1781835082951,
+          "rssMb": 1424,
+          "maxProcessRssMb": 759,
+          "processCount": 7
+        },
+        {
+          "at": 1781835083979,
+          "rssMb": 1438,
+          "maxProcessRssMb": 773,
+          "processCount": 7
+        }
+      ]
+    }
+  ]
+}

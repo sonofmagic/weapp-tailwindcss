@@ -1,0 +1,146 @@
+{
+  "generatedAt": "2026-06-19T02:09:57.969Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "targetNames": [
+    "demo"
+  ],
+  "totalCases": 1,
+  "reportCount": 1,
+  "projectCount": 1,
+  "timingCount": 4,
+  "summary": {
+    "count": 4,
+    "avgMs": 861,
+    "minMs": 681,
+    "maxMs": 1050,
+    "p50Ms": 681,
+    "p95Ms": 1050
+  },
+  "pluginProcessSummary": {
+    "count": 4,
+    "avgMs": 318,
+    "minMs": 298,
+    "maxMs": 335,
+    "p50Ms": 305,
+    "p95Ms": 335
+  },
+  "byApp": {
+    "demo/uni-app-vite-tailwindcss-v4": {
+      "project": "demo/uni-app-vite-tailwindcss-v4",
+      "platforms": {
+        "mp-weixin": {
+          "count": 4,
+          "avgMs": 861,
+          "minMs": 681,
+          "maxMs": 1050,
+          "p50Ms": 681,
+          "p95Ms": 1050
+        }
+      }
+    }
+  },
+  "byPlatform": {
+    "mp-weixin": {
+      "count": 4,
+      "avgMs": 861,
+      "minMs": 681,
+      "maxMs": 1050,
+      "p50Ms": 681,
+      "p95Ms": 1050
+    }
+  },
+  "memory": {
+    "projectCount": 1,
+    "sampleCount": 18,
+    "debugSampleCount": 10,
+    "peakRssMb": 1072,
+    "maxRssDeltaMb": 600,
+    "peakHeapUsedMb": 530,
+    "byApp": {
+      "demo/uni-app-vite-tailwindcss-v4": {
+        "peakRssMb": 1072,
+        "maxRssDeltaMb": 600,
+        "peakHeapUsedMb": 530
+      }
+    },
+    "byPlatform": {
+      "mp-weixin": {
+        "peakRssMb": 1072,
+        "maxRssDeltaMb": 600,
+        "peakHeapUsedMb": 530
+      }
+    }
+  },
+  "cases": [
+    {
+      "caseName": "uni-app-vite-tailwindcss-v4",
+      "project": "demo/uni-app-vite-tailwindcss-v4",
+      "label": "demo/uni-app-vite-tailwindcss-v4",
+      "platform": "mp-weixin",
+      "framework": "uni-app",
+      "builder": "vite",
+      "tailwindcss": "v4",
+      "sourceShape": "vue-sfc",
+      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-57-972Z-uni-app-vite-tailwindcss-v4.json",
+      "initialReadyMs": 2543,
+      "totalMs": 17630,
+      "summary": {
+        "count": 4,
+        "avgMs": 861,
+        "minMs": 681,
+        "maxMs": 1050,
+        "p50Ms": 681,
+        "p95Ms": 1050
+      },
+      "pluginProcessSummary": {
+        "count": 4,
+        "avgMs": 318,
+        "minMs": 298,
+        "maxMs": 335,
+        "p50Ms": 305,
+        "p95Ms": 335
+      },
+      "memory": {
+        "sampleCount": 18,
+        "debugSampleCount": 10,
+        "baselineRssMb": 472,
+        "peakRssMb": 1072,
+        "rssDeltaMb": 600,
+        "peakMaxProcessRssMb": 821,
+        "peakProcessCount": 4,
+        "peakHeapUsedMb": 530,
+        "peakDebugRssMb": 821
+      },
+      "notes": [],
+      "timings": [
+        {
+          "surface": "template:preferred-round",
+          "hotUpdateEffectiveMs": 681,
+          "rollbackEffectiveMs": 506,
+          "hotUpdatePluginProcessMs": 335
+        },
+        {
+          "surface": "main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue",
+          "hotUpdateEffectiveMs": 681,
+          "rollbackEffectiveMs": 506,
+          "hotUpdatePluginProcessMs": 335
+        },
+        {
+          "surface": "subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v4/src/sub-normal/pages/index.vue",
+          "hotUpdateEffectiveMs": 1030,
+          "rollbackEffectiveMs": 1018,
+          "hotUpdatePluginProcessMs": 305
+        },
+        {
+          "surface": "subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v4/src/sub-independent/pages/index.vue",
+          "hotUpdateEffectiveMs": 1050,
+          "rollbackEffectiveMs": 999,
+          "hotUpdatePluginProcessMs": 298
+        }
+      ]
+    }
+  ]
+}

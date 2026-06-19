@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-06-19T02:09:22.060Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
+  "includeLocal": true,
+  "exitCode": 0,
+  "summary": {
+    "count": 9,
+    "baselineRssMb": 1709,
+    "peakRssMb": 1709,
+    "rssDeltaMb": 0,
+    "peakMaxProcessRssMb": 384,
+    "peakProcessCount": 9,
+    "firstAt": 1781834953859,
+    "lastAt": 1781834961874,
+    "durationMs": 8015,
+    "stepCount": 1,
+    "failedStepCount": 0
+  },
+  "steps": [
+    {
+      "name": "quality",
+      "command": [
+        "pnpm",
+        "build:ci"
+      ],
+      "exitCode": 0,
+      "startedAt": "2026-06-19T02:09:13.829Z",
+      "endedAt": "2026-06-19T02:09:22.060Z",
+      "local": true,
+      "summary": {
+        "count": 9,
+        "baselineRssMb": 1709,
+        "peakRssMb": 1709,
+        "rssDeltaMb": 0,
+        "peakMaxProcessRssMb": 384,
+        "peakProcessCount": 9,
+        "firstAt": 1781834953859,
+        "lastAt": 1781834961874,
+        "durationMs": 8015
+      },
+      "samples": [
+        {
+          "at": 1781834953859,
+          "rssMb": 0,
+          "maxProcessRssMb": 0,
+          "processCount": 1
+        },
+        {
+          "at": 1781834954865,
+          "rssMb": 1709,
+          "maxProcessRssMb": 366,
+          "processCount": 8
+        },
+        {
+          "at": 1781834955865,
+          "rssMb": 841,
+          "maxProcessRssMb": 198,
+          "processCount": 7
+        },
+        {
+          "at": 1781834956865,
+          "rssMb": 544,
+          "maxProcessRssMb": 190,
+          "processCount": 7
+        },
+        {
+          "at": 1781834957867,
+          "rssMb": 737,
+          "maxProcessRssMb": 384,
+          "processCount": 3
+        },
+        {
+          "at": 1781834958869,
+          "rssMb": 783,
+          "maxProcessRssMb": 264,
+          "processCount": 5
+        },
+        {
+          "at": 1781834959872,
+          "rssMb": 929,
+          "maxProcessRssMb": 265,
+          "processCount": 9
+        },
+        {
+          "at": 1781834960874,
+          "rssMb": 590,
+          "maxProcessRssMb": 192,
+          "processCount": 8
+        },
+        {
+          "at": 1781834961874,
+          "rssMb": 538,
+          "maxProcessRssMb": 193,
+          "processCount": 4
+        }
+      ]
+    }
+  ]
+}
