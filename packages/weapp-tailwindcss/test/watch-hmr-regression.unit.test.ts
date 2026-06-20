@@ -105,6 +105,7 @@ import {
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  isWebCompileDoneLogLine,
   isWebCompileReadyLogLine,
   resolveChromiumLaunchOptions,
   waitForWebPageReloadReady,
@@ -1726,6 +1727,8 @@ describe('watch-hmr regression cases', () => {
     expect(isWebCompileReadyLogLine('webpack 5.102.1 compiled successfully in 389888 ms')).toBe(true)
     expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
     expect(isWebCompileReadyLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
+    expect(isWebCompileDoneLogLine('  ➜  Local:   http://localhost:10086/')).toBe(false)
+    expect(isWebCompileDoneLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
   })
 
   it('retries Web/H5 page readiness when the first navigation races the dev middleware', async () => {
@@ -2570,15 +2573,23 @@ describe('watch-hmr regression cases', () => {
     const taroWebpackVue3V4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')
 
     expect(taroWebpackReactV3Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackReactV3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackReactV3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
     expect(taroWebpackReactV3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
     expect(taroWebpackReactV3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackVue3V3Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackVue3V3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackVue3V3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
     expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
     expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
+    expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackReactV4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
     expect(taroWebpackReactV4Case?.webHmr?.reloadAfterCssMutation).toBe(true)
     expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(90_000)
     expect(taroWebpackVue3V4Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackVue3V4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackVue3V4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
     expect(taroWebpackVue3V4Case?.webHmr?.reloadAfterCssMutation).toBe(true)
     expect(taroWebpackVue3V4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
   })

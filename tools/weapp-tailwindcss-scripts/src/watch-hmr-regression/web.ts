@@ -27,6 +27,10 @@ export function isWebCompileReadyLogLine(line: string) {
   return /ready in \d+|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|(?:^|\s)Local:\s+https?:\/\/|开发服务已就绪|构建完成|编译成功/u.test(line)
 }
 
+export function isWebCompileDoneLogLine(line: string) {
+  return /ready in \d+|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|构建完成|编译成功/u.test(line)
+}
+
 function collectPluginProcessMetrics(samples: PluginProcessSample[], startedAt: number) {
   const phaseSamples = samples.filter(sample => sample.at >= startedAt)
   const totalSamples = phaseSamples.filter(sample => sample.metric === 'total' || sample.phase === 'total')
@@ -596,7 +600,9 @@ export async function runWebHmr(
       }
       if (isWebCompileReadyLogLine(normalized)) {
         readyAt = Date.now()
-        lastCompileSignalAt = readyAt
+      }
+      if (isWebCompileDoneLogLine(normalized)) {
+        lastCompileSignalAt = Date.now()
       }
       const pluginSample = parsePluginProcessSample(line)
       if (pluginSample) {
@@ -664,9 +670,12 @@ export async function runWebHmr(
     phase: string,
     acceptWhen?: () => Promise<boolean>,
   ) => {
+    const configuredTimeoutMs = phase === 'initial'
+      ? (config.initialCompileSettleTimeoutMs ?? config.compileSettleTimeoutMs)
+      : config.compileSettleTimeoutMs
     const timeoutMs = Math.min(
       options.timeoutMs,
-      config.compileSettleTimeoutMs ?? 30_000,
+      configuredTimeoutMs ?? 30_000,
     )
     const settleOptions = {
       getLastCompileSignalAt: () => lastCompileSignalAt,
@@ -755,6 +764,9 @@ export async function runWebHmr(
     }
     if (config.injectMarkerElement) {
       await ensureInjectedMarkerElement(page, marker)
+    }
+    if (config.waitForInitialCompileSettled) {
+      await waitForCompileSettled(startedAt, 'initial')
     }
 
     let lastStyleError = ''

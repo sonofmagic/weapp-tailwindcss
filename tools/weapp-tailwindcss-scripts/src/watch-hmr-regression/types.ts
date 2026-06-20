@@ -280,6 +280,8 @@ export interface WebHmrConfig {
   injectMarkerElement?: boolean
   readySelector?: string
   initialMutationDelayMs?: number
+  waitForInitialCompileSettled?: boolean
+  initialCompileSettleTimeoutMs?: number
   reloadAfterCssMutation?: boolean
   compileSettleTimeoutMs?: number
   mutate: (source: string, payload: ClassMutationPayload) => string

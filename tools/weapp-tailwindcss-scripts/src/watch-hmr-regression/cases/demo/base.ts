@@ -200,6 +200,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/app.less'),
       injectMarkerElement: true,
+      waitForInitialCompileSettled: true,
+      initialCompileSettleTimeoutMs: 900_000,
       reloadAfterCssMutation: true,
       compileSettleTimeoutMs: 180_000,
       env: {
@@ -677,6 +679,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less'),
       injectMarkerElement: true,
+      waitForInitialCompileSettled: true,
+      initialCompileSettleTimeoutMs: 900_000,
       reloadAfterCssMutation: true,
       compileSettleTimeoutMs: 120_000,
       env: {
