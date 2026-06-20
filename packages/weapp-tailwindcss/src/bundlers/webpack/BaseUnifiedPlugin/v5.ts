@@ -89,9 +89,9 @@ function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath:
 }
 
 function setupWebpackWatchOutputIgnore(compiler: Compiler) {
-  const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions) => {
-    const outputPath = compiler.outputPath || compiler.options?.output?.path
-    const outputDir = outputPath ? path.resolve(outputPath) : undefined
+  const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions, outputPath?: string) => {
+    const resolvedOutputPath = outputPath || compiler.outputPath || compiler.options?.output?.path
+    const outputDir = resolvedOutputPath ? path.resolve(resolvedOutputPath) : undefined
     if (!outputDir) {
       return watchOptions
     }
@@ -117,18 +117,26 @@ function setupWebpackWatchOutputIgnore(compiler: Compiler) {
 
   const syncOutputIgnoredPath = () => {
     const outputPath = compiler.outputPath || compiler.options?.output?.path
-    const outputDir = outputPath ? path.resolve(outputPath) : undefined
-    if (!outputDir) {
-      return
-    }
-
     const watchOptions = (compiler.watching as { watchOptions?: WebpackWatchOptions } | undefined)?.watchOptions
     if (watchOptions) {
-      appendOutputIgnoredPath(watchOptions)
+      appendOutputIgnoredPath(watchOptions, outputPath)
     }
   }
 
   compiler.hooks.watchRun?.tap(pluginName, syncOutputIgnoredPath)
+  compiler.hooks.thisCompilation?.tap(pluginName, (compilation) => {
+    const outputPath = compilation.compiler?.outputPath || compilation.outputOptions?.path
+    const watchOptions = (compiler.watching as { watchOptions?: WebpackWatchOptions } | undefined)?.watchOptions
+    if (watchOptions) {
+      appendOutputIgnoredPath(watchOptions, outputPath)
+    }
+    else {
+      const compilerWatchOptions = appendOutputIgnoredPath(compiler.options.watchOptions, outputPath)
+      if (compilerWatchOptions) {
+        compiler.options.watchOptions = compilerWatchOptions
+      }
+    }
+  })
 }
 
 /**
