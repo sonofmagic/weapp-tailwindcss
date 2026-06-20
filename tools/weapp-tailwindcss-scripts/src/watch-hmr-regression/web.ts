@@ -23,6 +23,10 @@ const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
 const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
 
+export function isWebCompileReadyLogLine(line: string) {
+  return /ready in \d+|compiled successfully|compiled with (?:some )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|开发服务已就绪|构建完成|编译成功/u.test(line)
+}
+
 function collectPluginProcessMetrics(samples: PluginProcessSample[], startedAt: number) {
   const phaseSamples = samples.filter(sample => sample.at >= startedAt)
   const totalSamples = phaseSamples.filter(sample => sample.metric === 'total' || sample.phase === 'total')
@@ -234,8 +238,8 @@ export async function waitForWebPageReady(
   startedAt = Date.now(),
 ) {
   const attemptTimeoutMs = Math.min(
-    Math.max(options.pollMs * 10, 2_000),
-    10_000,
+    Math.max(options.pollMs * 1_500, 60_000),
+    180_000,
     Math.max(options.timeoutMs, 1),
   )
   let lastError = ''
@@ -589,9 +593,8 @@ export async function runWebHmr(
       const matchedUrl = normalized.match(LOCAL_URL_RE)?.[0]
       if (matchedUrl) {
         url = matchedUrl
-        readyAt = Date.now()
       }
-      if (/ready in \d+|compiled successfully|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|local:/i.test(normalized)) {
+      if (isWebCompileReadyLogLine(normalized)) {
         readyAt = Date.now()
         lastCompileSignalAt = readyAt
       }

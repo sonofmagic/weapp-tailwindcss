@@ -43,10 +43,11 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     const themeManualDark = item.themeManualDarkScreenshot ? renderImageLink(context, item.themeManualDarkScreenshot, `${altPrefix}-theme-manual-dark`) : ''
     const hmrBefore = item.hmrBeforeScreenshot ? renderImageLink(context, item.hmrBeforeScreenshot, `${altPrefix}-hmr-before`) : ''
     const hmrAfter = item.hmrAfterScreenshot ? renderImageLink(context, item.hmrAfterScreenshot, `${altPrefix}-hmr-after`) : ''
+    const hmrSteps = renderHmrStepLinks(context, item)
     const diff = renderDiffLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${hmrSteps} | ${diff} | ${comparison} | ${error} |`
   })
   const rows = results.map((item) => {
     const screenshot = item.screenshot ? `[截图](${path.relative(context.artifactRoot, item.screenshot)})` : ''
@@ -54,12 +55,14 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     const themeManualDark = item.themeManualDarkScreenshot ? `[手动暗色](${path.relative(context.artifactRoot, item.themeManualDarkScreenshot)})` : ''
     const hmrBefore = item.hmrBeforeScreenshot ? `[HMR 前](${path.relative(context.artifactRoot, item.hmrBeforeScreenshot)})` : ''
     const hmrAfter = item.hmrAfterScreenshot ? `[HMR 后](${path.relative(context.artifactRoot, item.hmrAfterScreenshot)})` : ''
+    const hmrSteps = renderHmrStepTextLinks(context, item)
     const diff = renderDiffTextLinks(context, item)
     const comparison = item.comparison ? `ratio=${item.comparison.ratio}` : ''
     const error = item.error ? item.error.split('\n')[0] : ''
-    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${diff} | ${comparison} | ${error} |`
+    return `| ${item.name} | ${item.platform} | ${item.styleIsolationVariant ?? ''} | ${item.status} | ${screenshot} | ${themeLight} | ${themeManualDark} | ${hmrBefore} | ${hmrAfter} | ${hmrSteps} | ${diff} | ${comparison} | ${error} |`
   })
   const hmrPairs = results.filter(item => item.hmrBeforeScreenshot && item.hmrAfterScreenshot)
+  const hmrStepCount = results.reduce((total, item) => total + (item.hmrSteps?.length ?? 0), 0)
   await fs.writeFile(reportMd, [
     '# Demo Visual E2E Report',
     '',
@@ -72,18 +75,19 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
     }),
     `- Screenshots: ${results.filter(item => item.screenshot).length}`,
     `- HMR visual pairs: ${hmrPairs.length}`,
+    `- HMR visual steps: ${hmrStepCount}`,
     `- Cross-platform comparisons: ${comparisons.length}`,
     '',
     '## Visual Matrix',
     '',
-    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | HMR Steps | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...visualRows,
     '',
     '## Link Matrix',
     '',
-    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | Diff | Comparison | Error |',
-    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+    '| Demo | Platform | Variant | Status | Screenshot | Theme Light | Theme Manual Dark | HMR Before | HMR After | HMR Steps | Diff | Comparison | Error |',
+    '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
     ...rows,
     '',
   ].join('\n'))
@@ -91,6 +95,29 @@ export async function writeReport(results: CaseResult[], context: RuntimeContext
 
 function createHmrComparisons(results: CaseResult[], context: RuntimeContext) {
   for (const item of results) {
+    for (const step of item.hmrSteps ?? []) {
+      if (!step.beforeScreenshot || !step.afterScreenshot) {
+        continue
+      }
+      const compared = compareImages(
+        step.afterScreenshot,
+        step.beforeScreenshot,
+        [item.name, item.platform, item.styleIsolationVariant, step.name, 'hmr'].filter(Boolean).join('-'),
+        context,
+      )
+      step.diff = compared.diff
+      step.evidence = {
+        ...step.evidence,
+        hmrVisualDiff: {
+          differentPixels: compared.differentPixels,
+          ratio: compared.ratio,
+        },
+      }
+      if (item.status === 'passed' && (item.platform === 'h5' || item.platform === 'weapp') && compared.differentPixels === 0) {
+        item.status = 'failed'
+        item.error = `${step.name} HMR 前后截图没有可见像素差异`
+      }
+    }
     if (!item.hmrBeforeScreenshot || !item.hmrAfterScreenshot) {
       continue
     }
@@ -147,10 +174,34 @@ function renderDiffLinks(context: RuntimeContext, item: CaseResult) {
   return links.join('<br />')
 }
 
+function renderHmrStepLinks(context: RuntimeContext, item: CaseResult) {
+  return (item.hmrSteps ?? [])
+    .map((step) => {
+      const before = step.beforeScreenshot ? renderImageLink(context, step.beforeScreenshot, `${item.platform}-${item.name}-${step.name}-before`) : ''
+      const after = renderImageLink(context, step.afterScreenshot, `${item.platform}-${item.name}-${step.name}-after`)
+      const diff = step.diff ? renderImageLink(context, step.diff, `${item.platform}-${item.name}-${step.name}-diff`) : ''
+      return [step.name, before, after, diff].filter(Boolean).join('<br />')
+    })
+    .join('<hr />')
+}
+
 function renderDiffTextLinks(context: RuntimeContext, item: CaseResult) {
   const links = [
     item.hmrDiff ? `[HMR diff](${path.relative(context.artifactRoot, item.hmrDiff)})` : '',
     item.diff ? `[跨端 diff](${path.relative(context.artifactRoot, item.diff)})` : '',
   ].filter(Boolean)
   return links.join('<br />')
+}
+
+function renderHmrStepTextLinks(context: RuntimeContext, item: CaseResult) {
+  return (item.hmrSteps ?? [])
+    .map((step) => {
+      const links = [
+        step.beforeScreenshot ? `[${step.name} 前](${path.relative(context.artifactRoot, step.beforeScreenshot)})` : '',
+        `[${step.name} 后](${path.relative(context.artifactRoot, step.afterScreenshot)})`,
+        step.diff ? `[${step.name} diff](${path.relative(context.artifactRoot, step.diff)})` : '',
+      ].filter(Boolean)
+      return links.join(' ')
+    })
+    .join('<br />')
 }

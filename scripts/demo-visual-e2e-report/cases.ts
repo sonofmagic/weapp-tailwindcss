@@ -1,7 +1,7 @@
 import type { Browser, Page } from 'playwright'
 import type { CliOptions, WatchCase, WatchSession } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types.ts'
 import type { StyleIsolationVariant } from './style-isolation.ts'
-import type { CaseResult, MiniProgramHmrMutation, MiniProgramHmrVisualConfig, RuntimeContext } from './types.ts'
+import type { CaseResult, MiniProgramHmrMutation, MiniProgramHmrVisualConfig, RuntimeContext, VisualHmrStepResult } from './types.ts'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
@@ -18,7 +18,7 @@ import {
 import { createWatchSession, runPnpmCommand, sleep } from '../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session.ts'
 import { closeMiniProgramAndCleanup, launchMiniProgramInCleanDevTools } from './ide.ts'
 import { findFreePort, killProcessTree, spawnPnpm, waitForUrl } from './process.ts'
-import { resolveHmrScreenshotPath, resolveScreenshotPath, resolveThemeScreenshotPath } from './screenshots.ts'
+import { resolveHmrScreenshotPath, resolveHmrStepScreenshotPath, resolveScreenshotPath, resolveThemeScreenshotPath } from './screenshots.ts'
 import {
   readManifest,
   resolveStyleIsolationVariants,
@@ -44,9 +44,10 @@ export interface H5Case {
 
 export interface H5HmrVisualConfig {
   label: string
-  mutate: (projectRoot: string) => Promise<() => Promise<void>>
+  steps?: string[]
+  mutate: (projectRoot: string, stepIndex: number) => Promise<() => Promise<void>>
   waitForReady?: (page: Page, url: string, logs: string[]) => Promise<Record<string, unknown> | undefined>
-  waitForUpdate: (page: Page, url: string, logs: string[]) => Promise<Record<string, unknown> | undefined>
+  waitForUpdate: (page: Page, url: string, logs: string[], stepIndex: number) => Promise<Record<string, unknown> | undefined>
 }
 
 export interface MiniProgramCase {
@@ -142,10 +143,49 @@ async function runH5CaseVariant(
       const themeLight = await capturePageScreenshot(page, themeLightScreenshot, `${item.name} theme light`)
       await captureH5ManualDarkScreenshot(page, themeManualDarkScreenshot)
       const initialEvidence = await item.hmr.waitForReady?.(page, resolvedUrl, logs)
-      const before = await capturePageScreenshot(page, hmrBeforeScreenshot, `${item.name} hmr before`)
-      restoreSource = await item.hmr.mutate(projectRoot)
-      const hmrEvidence = await item.hmr.waitForUpdate(page, resolvedUrl, logs)
-      const after = await capturePageScreenshot(page, hmrAfterScreenshot, `${item.name} hmr after`)
+      const hmrSteps = item.hmr.steps?.length ? item.hmr.steps : ['visual-hmr']
+      const stepResults: VisualHmrStepResult[] = []
+      let previousAfterScreenshot: string | undefined
+      let firstBeforeScreenshot: string | undefined
+      let lastAfterScreenshot: string | undefined
+      for (let index = 0; index < hmrSteps.length; index++) {
+        const stepName = hmrSteps[index]!
+        const beforeScreenshot = resolveHmrStepScreenshotPath(context, item.name, 'h5', stepName, 'before', variant.key)
+        const afterScreenshot = resolveHmrStepScreenshotPath(context, item.name, 'h5', stepName, 'after', variant.key)
+        if (previousAfterScreenshot) {
+          await fs.mkdir(path.dirname(beforeScreenshot), { recursive: true })
+          await fs.copyFile(previousAfterScreenshot, beforeScreenshot)
+        }
+        else {
+          await capturePageScreenshot(page, beforeScreenshot, `${item.name} ${stepName} hmr before`)
+        }
+        const stepRestoreSource = await item.hmr.mutate(projectRoot, index)
+        restoreSource ??= stepRestoreSource
+        const hmrEvidence = await item.hmr.waitForUpdate(page, resolvedUrl, logs, index)
+        await capturePageScreenshot(page, afterScreenshot, `${item.name} ${stepName} hmr after`)
+        const hmrMarker = typeof hmrEvidence?.['text'] === 'string'
+          ? hmrEvidence['text']
+          : typeof (hmrEvidence?.['runtime'] as Record<string, unknown> | undefined)?.['text'] === 'string'
+            ? String((hmrEvidence?.['runtime'] as Record<string, unknown>)['text'])
+            : stepName
+        stepResults.push({
+          name: stepName,
+          marker: hmrMarker,
+          classLiteral: String(hmrEvidence?.['classLiteral'] ?? ''),
+          expectedBackgroundColor: String(hmrEvidence?.['expectedBackgroundColor'] ?? ''),
+          beforeScreenshot,
+          afterScreenshot,
+          evidence: hmrEvidence,
+        })
+        firstBeforeScreenshot ??= beforeScreenshot
+        previousAfterScreenshot = afterScreenshot
+        lastAfterScreenshot = afterScreenshot
+      }
+      if (!firstBeforeScreenshot || !lastAfterScreenshot) {
+        throw new Error(`${item.name} H5 visual HMR 没有产生截图步骤`)
+      }
+      await fs.copyFile(firstBeforeScreenshot, hmrBeforeScreenshot)
+      await fs.copyFile(lastAfterScreenshot, hmrAfterScreenshot)
       await fs.copyFile(hmrAfterScreenshot, screenshot)
       results.push({
         name: item.name,
@@ -157,14 +197,13 @@ async function runH5CaseVariant(
         themeManualDarkScreenshot,
         hmrBeforeScreenshot,
         hmrAfterScreenshot,
+        hmrSteps: stepResults,
         diagnostics: {
-          after,
-          before,
           console: diagnostics.console,
           hmr: {
             label: item.hmr.label,
-            evidence: hmrEvidence,
             initialEvidence,
+            steps: stepResults,
           },
           requests: diagnostics.requests,
           theme: {
@@ -481,54 +520,82 @@ async function runMiniProgramHmrCase(
     port = beforeRelaunch.port
     const beforePage = beforeRelaunch.page
     await withTimeout(`${item.name} waitFor before`, 10_000, beforePage?.waitFor?.(1000) ?? Promise.resolve())
-    await withTimeout(`${item.name} hmr before screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, hmrBeforeScreenshot, caseTimeoutMs))
 
     const { artifacts: baselineArtifacts, mtimes } = await collectArtifactMtimes(watchCase)
     if (watchCase.initialMutationDelayMs) {
       await sleep(watchCase.initialMutationDelayMs)
     }
-    mutation = await item.hmr.mutate()
-    const mutationStartedAt = Date.now()
+    const stepResults: VisualHmrStepResult[] = []
     const outputFiles = [
       watchCase.outputWxml,
       watchCase.outputJs,
       ...watchCase.outputStyleCandidates,
       ...watchCase.globalStyleCandidates,
     ]
-    await waitForOutputFilesUpdated(
-      watchCase,
-      outputFiles,
-      mtimes,
-      options,
-      session,
-      mutationStartedAt,
-      async () => hasAnyNeedle(await readArtifacts(watchCase), [mutation!.marker]),
-    )
-    await waitForMarkerState(watchCase, mutation.marker, 'present', options, session, mutationStartedAt)
+    let currentMtimes = mtimes
+    let currentPage = beforePage
+    let liveContent = ''
+    let refreshDiagnostics: Record<string, string> = {}
+    for (let index = 0; index < item.hmr.steps.length; index++) {
+      const step = item.hmr.steps[index]!
+      const beforeScreenshot = resolveHmrStepScreenshotPath(context, item.name, 'weapp', step.name, 'before', variant.key)
+      const afterScreenshot = resolveHmrStepScreenshotPath(context, item.name, 'weapp', step.name, 'after', variant.key)
+      await withTimeout(`${item.name} ${step.name} hmr before screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, beforeScreenshot, caseTimeoutMs))
+      mutation = await item.hmr.mutate(step, mutation)
+      const mutationStartedAt = Date.now()
+      await waitForOutputFilesUpdated(
+        watchCase,
+        outputFiles,
+        currentMtimes,
+        options,
+        session,
+        mutationStartedAt,
+        async () => hasAnyNeedle(await readArtifacts(watchCase), [mutation!.marker, mutation!.classLiteral]),
+      )
+      await waitForMarkerState(watchCase, mutation.marker, 'present', options, session, mutationStartedAt)
 
-    const refreshDiagnostics = await refreshMiniProgramCompile(miniProgram, item.name, caseTimeoutMs)
-    const afterRelaunch = await relaunchMiniProgramPage({
-      miniProgram,
-      name: item.name,
-      options,
-      port,
-      projectPath,
-      route,
-      timeoutMs: caseTimeoutMs,
-    })
-    miniProgram = afterRelaunch.miniProgram
-    port = afterRelaunch.port
-    const afterPage = afterRelaunch.page
-    const liveContent = await waitForMiniProgramLiveMarker(afterPage, route, mutation.marker, options, session, mutationStartedAt)
-    await withTimeout(`${item.name} waitFor after`, 10_000, afterPage?.waitFor?.(1000) ?? Promise.resolve())
-    await withTimeout(`${item.name} hmr after screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, hmrAfterScreenshot, caseTimeoutMs))
+      refreshDiagnostics = await refreshMiniProgramCompile(miniProgram, item.name, caseTimeoutMs)
+      const afterRelaunch = await relaunchMiniProgramPage({
+        miniProgram,
+        name: item.name,
+        options,
+        port,
+        projectPath,
+        route,
+        timeoutMs: caseTimeoutMs,
+      })
+      miniProgram = afterRelaunch.miniProgram
+      port = afterRelaunch.port
+      currentPage = afterRelaunch.page
+      liveContent = await waitForMiniProgramLiveMarker(currentPage, route, mutation.marker, options, session, mutationStartedAt)
+      await withTimeout(`${item.name} waitFor ${step.name} after`, 10_000, currentPage?.waitFor?.(1000) ?? Promise.resolve())
+      await withTimeout(`${item.name} ${step.name} hmr after screenshot`, caseTimeoutMs, captureMiniProgramScreenshot(miniProgram, afterScreenshot, caseTimeoutMs))
+      stepResults.push({
+        ...step,
+        afterScreenshot,
+        beforeScreenshot,
+        evidence: {
+          marker: mutation.marker,
+          classLiteral: mutation.classLiteral,
+          liveContentPreview: liveContent.slice(0, 320),
+        },
+      })
+      currentMtimes = (await collectArtifactMtimes(watchCase)).mtimes
+    }
+    if (stepResults.length === 0) {
+      throw new Error(`${item.name} 小程序 visual HMR 没有产生截图步骤`)
+    }
+    await fs.mkdir(path.dirname(hmrBeforeScreenshot), { recursive: true })
+    await fs.copyFile(stepResults[0]!.beforeScreenshot!, hmrBeforeScreenshot)
+    await fs.copyFile(stepResults[stepResults.length - 1]!.afterScreenshot, hmrAfterScreenshot)
     await fs.copyFile(hmrAfterScreenshot, screenshot)
     const png = PNG.sync.read(await fs.readFile(screenshot))
 
-    const pageEl = await afterPage?.$('page')
+    const pageEl = await currentPage?.$('page')
     const wxml = await withTimeout(`${item.name} wxml`, 10_000, pageEl?.wxml().catch(() => '') ?? Promise.resolve(''))
-    const themeWxml = await collectMiniProgramThemeWxmlEvidence(afterPage, typeof wxml === 'string' ? wxml : '')
-    const themeScreenshot = await collectMiniProgramThemeScreenshotEvidence(afterPage, png)
+    const themeWxml = await collectMiniProgramThemeWxmlEvidence(currentPage, typeof wxml === 'string' ? wxml : '')
+    const themeScreenshot = await collectMiniProgramThemeScreenshotEvidence(currentPage, png)
+      .catch(error => ({ skipped: true, reason: stringifyError(error) }))
     const themeCss = await collectMiniProgramThemeCssEvidence(projectPath, resolveMiniProgramThemeCssFiles(item))
     results.push({
       name: item.name,
@@ -540,10 +607,12 @@ async function runMiniProgramHmrCase(
       themeManualDarkScreenshot: screenshot,
       hmrBeforeScreenshot,
       hmrAfterScreenshot,
+      hmrSteps: stepResults,
       diagnostics: {
         hmr: {
           label: item.hmr.label,
           marker: mutation.marker,
+          steps: stepResults,
         },
         liveContentPreview: liveContent.slice(0, 800),
         outputChangedCount: (await readArtifacts(watchCase)).filter((artifact) => {

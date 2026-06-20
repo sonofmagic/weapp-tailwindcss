@@ -105,6 +105,7 @@ import {
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  isWebCompileReadyLogLine,
   resolveChromiumLaunchOptions,
   waitForWebPageReloadReady,
   waitForWebPageReady,
@@ -1718,6 +1719,13 @@ describe('watch-hmr regression cases', () => {
     expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
   })
 
+  it('does not treat webpack-dev-server URL output as Web/H5 compile readiness', () => {
+    expect(isWebCompileReadyLogLine('<i> [webpack-dev-server] Loopback: http://localhost:10086/')).toBe(false)
+    expect(isWebCompileReadyLogLine('<i> [webpack-dev-middleware] wait until bundle finished: /')).toBe(false)
+    expect(isWebCompileReadyLogLine('webpack 5.102.1 compiled successfully in 389888 ms')).toBe(true)
+    expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
+  })
+
   it('retries Web/H5 page readiness when the first navigation races the dev middleware', async () => {
     const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
     const page = {
@@ -1739,6 +1747,54 @@ describe('watch-hmr regression cases', () => {
     expect(waitForReadySelector).toHaveBeenCalledWith({
       state: 'attached',
       timeout: 500,
+    })
+  })
+
+  it('gives slow Web/H5 dev middleware enough time for initial page readiness', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReady(page as any, 'http://127.0.0.1:10086/', '#app', {
+      timeoutMs: 240_000,
+      pollMs: 40,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.goto).toHaveBeenCalledWith('http://127.0.0.1:10086/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 60_000,
+    })
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 60_000,
+    })
+  })
+
+  it('caps initial Web/H5 page readiness attempts below the whole case timeout', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReady(page as any, 'http://127.0.0.1:10086/', '#app', {
+      timeoutMs: 420_000,
+      pollMs: 1_000,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.goto).toHaveBeenCalledWith('http://127.0.0.1:10086/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 180_000,
+    })
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 180_000,
     })
   })
 

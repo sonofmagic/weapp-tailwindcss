@@ -3,7 +3,7 @@ import type { WebCase, WebRuntimeStyleAssertion } from '../../e2e/hbuilderx-loca
 import type { TaroWebHmrCase } from '../../e2e/taro-web-demo-hmr-cases.ts'
 import type { WebViteHmrCase } from '../../e2e/web-vite-demo-hmr-cases.ts'
 import type { H5HmrVisualConfig } from './cases.ts'
-import type { MiniProgramHmrVisualConfig } from './types.ts'
+import type { MiniProgramHmrMutation, MiniProgramHmrVisualConfig, VisualHmrStep } from './types.ts'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import path from 'pathe'
@@ -13,6 +13,26 @@ import { writeFilePreserveEol } from '../../tools/weapp-tailwindcss-scripts/src/
 
 const pollIntervalMs = 150
 const hmrTimeoutMs = Number(process.env['DEMO_VISUAL_HMR_TIMEOUT_MS'] ?? process.env['DEMO_VISUAL_TIMEOUT_MS'] ?? 180_000)
+export const VISUAL_HMR_STEPS: VisualHmrStep[] = [
+  {
+    name: 'bg-red',
+    marker: 'DEMO-VISUAL-HMR-BG-RED',
+    classLiteral: 'bg-[#ef4444] text-[#ffffff] text-[32rpx] px-[24rpx] py-[16rpx]',
+    expectedBackgroundColor: 'rgb(239, 68, 68)',
+  },
+  {
+    name: 'bg-emerald',
+    marker: 'DEMO-VISUAL-HMR-BG-EMERALD',
+    classLiteral: 'bg-[#10b981] text-[#052e16] text-[32rpx] px-[24rpx] py-[16rpx]',
+    expectedBackgroundColor: 'rgb(16, 185, 129)',
+  },
+  {
+    name: 'bg-sky',
+    marker: 'DEMO-VISUAL-HMR-BG-SKY',
+    classLiteral: 'bg-[#0ea5e9] text-[#082f49] text-[32rpx] px-[24rpx] py-[16rpx]',
+    expectedBackgroundColor: 'rgb(14, 165, 233)',
+  },
+]
 
 function wait(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -71,18 +91,18 @@ async function readTextIfExists(file: string) {
   return await fs.readFile(file, 'utf8').catch(() => '')
 }
 
-function createMiniProgramVisualSnippet(sourceFile: string, marker: string) {
-  const classLiteral = 'bg-[#ff0000] text-[#ffffff] text-[32rpx] px-[24rpx] py-[16rpx]'
+function createMiniProgramVisualSnippet(sourceFile: string, step: VisualHmrStep) {
+  const classLiteral = step.classLiteral
   if (/\.(?:tsx|jsx)$/.test(sourceFile)) {
     return {
       classLiteral,
-      snippet: `<View className="${classLiteral}">${marker}</View>`,
+      snippet: `<View className="${classLiteral}">${step.marker}</View>`,
       anchors: ['<View className=\'index\'>', '<View className="index">', '<View>', '<>'],
     }
   }
   return {
     classLiteral,
-    snippet: `<view class="${classLiteral}">${marker}</view>`,
+    snippet: `<view class="${classLiteral}">${step.marker}</view>`,
     anchors: [
       '<view class="space-y-2.5">',
       '<view class="index">',
@@ -97,8 +117,8 @@ function createMiniProgramVisualSnippet(sourceFile: string, marker: string) {
   }
 }
 
-function insertMiniProgramVisualSnippet(source: string, sourceFile: string, marker: string) {
-  const visual = createMiniProgramVisualSnippet(sourceFile, marker)
+function insertMiniProgramVisualSnippet(source: string, sourceFile: string, step: VisualHmrStep) {
+  const visual = createMiniProgramVisualSnippet(sourceFile, step)
   const cleaned = removeMiniProgramVisualSnippets(source)
   const anchor = visual.anchors.find(item => cleaned.includes(item))
   if (!anchor) {
@@ -113,6 +133,8 @@ function insertMiniProgramVisualSnippet(source: string, sourceFile: string, mark
 
 function removeMiniProgramVisualSnippets(source: string) {
   return source
+    .replace(/\n[ \t]*<view class="[^"]*">DEMO-VISUAL-HMR-BG-[^<]+<\/view>/g, '')
+    .replace(/\n[ \t]*<View className="[^"]*">DEMO-VISUAL-HMR-BG-[^<]+<\/View>/g, '')
     .replace(/\n[ \t]*<view class="[^"]*">tw-visual-weapp-[^<]+<\/view>/g, '')
     .replace(/\n[ \t]*<View className="[^"]*">tw-visual-weapp-[^<]+<\/View>/g, '')
 }
@@ -139,10 +161,11 @@ async function insertHBuilderXWebMarker(sourceFile: string, item: WebCase, stepI
   })
 }
 
-async function waitForRedDomMarker(
+async function waitForVisualHmrDomMarker(
   page: Page,
   selector: string,
   expectedText: string,
+  expectedBackgroundColor: string,
   label: string,
 ) {
   return await waitFor(label, async () => {
@@ -154,15 +177,63 @@ async function waitForRedDomMarker(
     const actual = await locator.first().evaluate((element) => {
       const style = window.getComputedStyle(element)
       return {
+        backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
         color: style.color.replace(/\s+/g, ' '),
         text: element.textContent?.trim() ?? '',
       }
     })
-    if (actual.text.includes(expectedText) && actual.color === 'rgb(255, 0, 0)') {
+    if (actual.text.includes(expectedText) && actual.backgroundColor === expectedBackgroundColor) {
       return actual
     }
     return undefined
   })
+}
+
+function createVisualHmrElement(options: {
+  classLiteral: string
+  marker: string
+  target: 'react' | 'vue' | 'web-react' | 'web-vue'
+}) {
+  if (options.target === 'react') {
+    return `<View data-demo-visual-hmr="${options.marker}" className="${options.classLiteral}">${options.marker}</View>`
+  }
+  if (options.target === 'web-react') {
+    return `<div data-demo-visual-hmr="${options.marker}" className="${options.classLiteral}">${options.marker}</div>`
+  }
+  if (options.target === 'web-vue') {
+    return `<div data-demo-visual-hmr="${options.marker}" class="${options.classLiteral}">${options.marker}</div>`
+  }
+  return `<view data-demo-visual-hmr="${options.marker}" class="${options.classLiteral}">${options.marker}</view>`
+}
+
+function removeH5VisualHmrElements(source: string) {
+  return source
+    .replace(/\n[ \t]*<View data-demo-visual-hmr="[^"]+" className="[^"]+">DEMO-VISUAL-HMR-BG-[^<]+<\/View>/g, '')
+    .replace(/\n[ \t]*<view data-demo-visual-hmr="[^"]+" class="[^"]+">DEMO-VISUAL-HMR-BG-[^<]+<\/view>/g, '')
+    .replace(/\n[ \t]*<div data-demo-visual-hmr="[^"]+" className="[^"]+">DEMO-VISUAL-HMR-BG-[^<]+<\/div>/g, '')
+    .replace(/\n[ \t]*<div data-demo-visual-hmr="[^"]+" class="[^"]+">DEMO-VISUAL-HMR-BG-[^<]+<\/div>/g, '')
+}
+
+function insertH5VisualHmrElement(source: string, anchors: string[], insertion: string, name: string, sourceFile: string) {
+  const cleaned = removeH5VisualHmrElements(source)
+  const anchor = anchors.find(candidate => cleaned.includes(candidate))
+  if (!anchor) {
+    throw new Error(`${name} 找不到 visual HMR 插入锚点：${sourceFile}`)
+  }
+  if (anchor.startsWith('</')) {
+    return cleaned.replace(anchor, `${insertion}\n${anchor}`)
+  }
+  return cleaned.replace(anchor, `${insertion}\n${anchor}`)
+}
+
+async function waitForVisualHmrStep(page: Page, step: VisualHmrStep, label: string) {
+  return await waitForVisualHmrDomMarker(
+    page,
+    `[data-demo-visual-hmr="${step.marker}"]`,
+    step.marker,
+    step.expectedBackgroundColor,
+    label,
+  )
 }
 
 async function reloadForScreenshot(page: Page, url: string) {
@@ -278,9 +349,9 @@ async function waitForCssIncludes(url: string, expected: Array<string | RegExp>,
 }
 
 function createHBuilderXWebHmrVisualConfig(item: WebCase): H5HmrVisualConfig {
-  const step = item.hmrSteps[0]!
   return {
-    label: `${item.name} ${step.markerText}`,
+    label: `${item.name} HBuilderX Web visual HMR`,
+    steps: item.hmrSteps.map((_, index) => `hbuilderx-step-${index + 1}`),
     async waitForReady(page, url) {
       const cssEvidence = await waitForCssIncludes(
         joinUrl(url, item.initialCssPath),
@@ -290,11 +361,12 @@ function createHBuilderXWebHmrVisualConfig(item: WebCase): H5HmrVisualConfig {
       const runtimeEvidence = await waitForRuntimeAssertions(page, item.initialRuntimeStyles, `${item.name} HBuilderX Web initial runtime`)
       return { css: cssEvidence, runtime: runtimeEvidence }
     },
-    async mutate(projectRoot) {
+    async mutate(projectRoot, stepIndex) {
       const sourceFile = path.resolve(projectRoot, item.sourceFile)
-      return await insertHBuilderXWebMarker(sourceFile, item, 0)
+      return await insertHBuilderXWebMarker(sourceFile, item, stepIndex)
     },
-    async waitForUpdate(page, url) {
+    async waitForUpdate(page, url, _logs, stepIndex) {
+      const step = item.hmrSteps[Math.min(stepIndex, item.hmrSteps.length - 1)]!
       const cssEvidence = await waitForCssIncludes(
         joinUrl(url, item.hmrCssPath),
         step.cssContains,
@@ -303,66 +375,94 @@ function createHBuilderXWebHmrVisualConfig(item: WebCase): H5HmrVisualConfig {
       const runtimeEvidence = await waitForRuntimeAssertions(page, step.runtimeStyles, `${item.name} HBuilderX Web runtime HMR`)
       await reloadForScreenshot(page, url)
       await page.locator(`text=${step.markerText}`).first().waitFor({ timeout: 30_000 })
-      return { css: cssEvidence, runtime: runtimeEvidence, text: step.markerText }
+      return {
+        classLiteral: step.markerClass,
+        css: cssEvidence,
+        expectedBackgroundColor: String(step.runtimeStyles?.[0]?.styles.backgroundColor ?? ''),
+        runtime: runtimeEvidence,
+        text: step.markerText,
+      }
     },
   }
 }
 
 export function createTaroHmrVisualConfig(item: TaroWebHmrCase): H5HmrVisualConfig {
+  const isReact = /\.tsx$/.test(item.sourceFile)
+  const target = isReact ? 'react' : 'vue'
   return {
     label: item.name,
-    async mutate(projectRoot) {
+    steps: VISUAL_HMR_STEPS.map(step => step.name),
+    async mutate(projectRoot, stepIndex) {
       const sourceFile = path.resolve(projectRoot, item.sourceFile)
+      const step = VISUAL_HMR_STEPS[stepIndex]!
+      const insertion = createVisualHmrElement({
+        classLiteral: step.classLiteral,
+        marker: step.marker,
+        target,
+      })
       return await mutateFile(sourceFile, (source) => {
-        const anchor = item.anchors.find(candidate => source.includes(candidate))
-        if (!anchor) {
-          throw new Error(`${item.name} 找不到 HMR 插入锚点：${sourceFile}`)
-        }
-        return source.replace(anchor, `${item.insertion}\n${anchor}`)
+        return insertH5VisualHmrElement(source, item.anchors, insertion, item.name, sourceFile)
       })
     },
-    async waitForUpdate(page, url) {
+    async waitForUpdate(page, url, _logs, stepIndex) {
+      const step = VISUAL_HMR_STEPS[stepIndex]!
       if (item.assertion === 'css') {
         const cssPaths = item.cssPaths ?? []
         const cssEvidence = await waitFor(`${item.name} Taro H5 CSS HMR`, async () => {
           for (const cssPath of cssPaths) {
             const latest = await fetchText(joinUrl(url, cssPath))
-            if (/(?:#|_h)ff0000|rgb\(255(?:\s+|,\s*)0(?:\s+|,\s*)0\)/i.test(latest)) {
-              return { cssPath, matched: 'red text color' }
+            const bgClass = step.classLiteral.split(/\s+/).find(item => item.startsWith('bg-['))
+            if (bgClass && latest.includes(bgClass.replace('bg-[', 'bg-_b_').replace('#', 'h').replace(']', '_B'))) {
+              return { cssPath, matched: bgClass }
+            }
+            if (latest.toLowerCase().includes(step.classLiteral.match(/bg-\[#([0-9a-f]+)\]/i)?.[1] ?? '')) {
+              return { cssPath, matched: step.classLiteral }
             }
           }
           return undefined
         })
         await reloadForScreenshot(page, url)
-        await page.locator(`[data-taro-web-hmr="${item.markerAttr}"]`).first().waitFor({ timeout: 30_000 })
-        return cssEvidence
+        const runtime = await waitForVisualHmrStep(page, step, `${item.name} Taro H5 DOM visual HMR`)
+        return {
+          classLiteral: step.classLiteral,
+          css: cssEvidence,
+          expectedBackgroundColor: step.expectedBackgroundColor,
+          runtime,
+        }
       }
-      return await waitForRedDomMarker(
-        page,
-        `[data-taro-web-hmr="${item.markerAttr}"]`,
-        item.markerText,
-        `${item.name} Taro H5 DOM HMR`,
-      )
+      const runtime = await waitForVisualHmrStep(page, step, `${item.name} Taro H5 DOM visual HMR`)
+      return {
+        classLiteral: step.classLiteral,
+        expectedBackgroundColor: step.expectedBackgroundColor,
+        runtime,
+      }
     },
   }
 }
 
 export function createWebViteHmrVisualConfig(item: WebViteHmrCase): H5HmrVisualConfig {
+  const target = item.sourceFile.endsWith('.tsx') ? 'web-react' : 'web-vue'
   return {
     label: item.name,
-    async mutate(projectRoot) {
+    steps: VISUAL_HMR_STEPS.map(step => step.name),
+    async mutate(projectRoot, stepIndex) {
       const sourceFile = path.resolve(projectRoot, item.sourceFile)
-      return await mutateFile(sourceFile, source => source
-        .replace(item.classFrom, item.classTo)
-        .replace(item.titleFrom, item.titleTo))
+      const step = VISUAL_HMR_STEPS[stepIndex]!
+      const insertion = createVisualHmrElement({
+        classLiteral: step.classLiteral,
+        marker: step.marker,
+        target,
+      })
+      return await mutateFile(sourceFile, source => insertH5VisualHmrElement(source, [item.classFrom], insertion, item.name, sourceFile))
     },
-    async waitForUpdate(page) {
-      return await waitForRedDomMarker(
-        page,
-        `[data-web-vite-hmr="${item.markerAttr}"]`,
-        item.titleTo,
-        `${item.name} Web Vite HMR`,
-      )
+    async waitForUpdate(page, _url, _logs, stepIndex) {
+      const step = VISUAL_HMR_STEPS[stepIndex]!
+      const runtime = await waitForVisualHmrStep(page, step, `${item.name} Web Vite visual HMR`)
+      return {
+        classLiteral: step.classLiteral,
+        expectedBackgroundColor: step.expectedBackgroundColor,
+        runtime,
+      }
     },
   }
 }
@@ -378,24 +478,26 @@ export function createUniH5HmrVisualConfig(repoRoot: string, name: string): H5Hm
     return undefined
   }
   if (!watchCase.webHmr || !sequence) {
-    const marker = `DEMO-VISUAL-HMR-${name}`
     return {
       label: `${watchCase.label} template visual HMR`,
-      async mutate() {
+      steps: VISUAL_HMR_STEPS.map(step => step.name),
+      async mutate(_projectRoot, stepIndex) {
+        const step = VISUAL_HMR_STEPS[stepIndex]!
         return await mutateFile(watchCase.templateMutation.sourceFile, (source) => {
           if (source.includes('写法示例Start!')) {
             return source
-              .replace('class="text-xl text-gray-600/95"', 'class="text-[red] font-bold"')
-              .replace('写法示例Start!', marker)
+              .replace(/class="[^"]*font-bold[^"]*"|class="text-xl text-gray-600\/95"/, `class="${step.classLiteral}" data-demo-visual-hmr="${step.marker}"`)
+              .replace(/DEMO-VISUAL-HMR-BG-[A-Z]+|写法示例Start!/, step.marker)
           }
           return watchCase.templateMutation.mutate(source, {
-            classLiteral: 'text-[red] font-bold',
+            classLiteral: step.classLiteral,
             classVariableName: '__twVisualHmrClass',
-            marker,
+            marker: step.marker,
           })
         })
       },
-      async waitForUpdate(page) {
+      async waitForUpdate(page, _url, _logs, stepIndex) {
+        const step = VISUAL_HMR_STEPS[stepIndex]!
         return await waitFor(`${watchCase.label} H5 template HMR`, async () => {
           const actual = await page.evaluate((expectedMarker) => {
             const elements = Array.from(document.querySelectorAll('body *'))
@@ -405,12 +507,16 @@ export function createUniH5HmrVisualConfig(repoRoot: string, name: string): H5Hm
             }
             const style = window.getComputedStyle(element)
             return {
-              color: style.color.replace(/\s+/g, ' '),
+              backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
               text: element.textContent?.trim() ?? '',
             }
-          }, marker)
-          if (actual?.text.includes(marker) && actual.color === 'rgb(255, 0, 0)') {
-            return actual
+          }, step.marker)
+          if (actual?.text.includes(step.marker) && actual.backgroundColor === step.expectedBackgroundColor) {
+            return {
+              ...actual,
+              classLiteral: step.classLiteral,
+              expectedBackgroundColor: step.expectedBackgroundColor,
+            }
           }
           return undefined
         })
@@ -418,7 +524,8 @@ export function createUniH5HmrVisualConfig(repoRoot: string, name: string): H5Hm
     }
   }
   return {
-    label: `${watchCase.label} ${sequence.label}`,
+    label: `${watchCase.label} visual HMR`,
+    steps: VISUAL_HMR_STEPS.map(step => step.name),
     async waitForReady(page) {
       const readySelector = watchCase.webHmr?.readySelector
       if (!readySelector) {
@@ -429,38 +536,37 @@ export function createUniH5HmrVisualConfig(repoRoot: string, name: string): H5Hm
         return count > 0 ? { readySelector } : undefined
       })
     },
-    async mutate() {
-      return await mutateFile(watchCase.webHmr!.sourceFile, source => sequence.mutate(source).next)
-    },
-    async waitForUpdate(page) {
-      const selector = '[data-tw-watch-web-dom="1"]'
-      return await waitFor(`${watchCase.label} H5 DOM HMR`, async () => {
-        const locator = page.locator(selector)
-        const count = await locator.count()
-        if (count === 0) {
-          return undefined
-        }
-        const actual = await locator.first().evaluate((element) => {
-          const style = window.getComputedStyle(element)
-          return {
-            backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
-            color: style.color.replace(/\s+/g, ' '),
-            text: element.textContent?.trim() ?? '',
-          }
+    async mutate(_projectRoot, stepIndex) {
+      const step = VISUAL_HMR_STEPS[stepIndex]!
+      return await mutateFile(watchCase.webHmr!.sourceFile, (source) => {
+        const target = /\.(?:tsx|jsx)$/.test(watchCase.webHmr!.sourceFile) ? 'react' : 'vue'
+        const insertion = createVisualHmrElement({
+          classLiteral: step.classLiteral,
+          marker: step.marker,
+          target,
         })
-        const expectedColor = sequence.expectedStyle?.color
-        const expectedBackgroundColor = sequence.expectedStyle?.backgroundColor
-        if (!actual.text.includes(sequence.expectedText)) {
-          return undefined
-        }
-        if (expectedColor && actual.color !== expectedColor) {
-          return undefined
-        }
-        if (expectedBackgroundColor && actual.backgroundColor !== expectedBackgroundColor) {
-          return undefined
-        }
-        return actual
+        return insertH5VisualHmrElement(
+          source,
+          [
+            '<view>',
+            '<View>',
+            '</template>',
+            '</View>',
+          ],
+          insertion,
+          watchCase.label,
+          watchCase.webHmr!.sourceFile,
+        )
       })
+    },
+    async waitForUpdate(page, _url, _logs, stepIndex) {
+      const step = VISUAL_HMR_STEPS[stepIndex]!
+      const runtime = await waitForVisualHmrStep(page, step, `${watchCase.label} H5 visual DOM HMR`)
+      return {
+        classLiteral: step.classLiteral,
+        expectedBackgroundColor: step.expectedBackgroundColor,
+        runtime,
+      }
     },
   }
 }
@@ -474,24 +580,26 @@ export function createMiniProgramHmrVisualConfig(repoRoot: string, name: string)
   return {
     label: `${watchCase.label} mini-program template visual HMR`,
     watchCase,
-    async mutate() {
+    steps: VISUAL_HMR_STEPS,
+    async mutate(step: VisualHmrStep, previous?: MiniProgramHmrMutation) {
       const sourceFile = mutation.sourceFile
       const original = removeMiniProgramVisualSnippets(await fs.readFile(sourceFile, 'utf8'))
-      const marker = `tw-visual-weapp-${watchCase.name}-${Date.now().toString().slice(-6)}`
       const [baselineWxml, baselineJs, baselineGlobalStyle] = await Promise.all([
         readTextIfExists(watchCase.outputWxml),
         readTextIfExists(watchCase.outputJs),
         Promise.all([...watchCase.outputStyleCandidates, ...watchCase.globalStyleCandidates].map(readTextIfExists))
           .then(items => items.join('\n')),
       ])
-      if (baselineWxml.includes(marker) || baselineJs.includes(marker) || baselineGlobalStyle.includes(marker)) {
-        throw new Error(`[${watchCase.label}] 小程序可视 HMR marker 已存在：${marker}`)
+      if (!previous && (baselineWxml.includes(step.marker) || baselineJs.includes(step.marker) || baselineGlobalStyle.includes(step.marker))) {
+        throw new Error(`[${watchCase.label}] 小程序可视 HMR marker 已存在：${step.marker}`)
       }
-      const next = insertMiniProgramVisualSnippet(original, sourceFile, marker)
+      const next = insertMiniProgramVisualSnippet(original, sourceFile, step)
       await writeFilePreserveEol(sourceFile, original, original)
       await writeFilePreserveEol(sourceFile, next.source, original)
       return {
-        marker,
+        classLiteral: next.classLiteral,
+        expectedBackgroundColor: step.expectedBackgroundColor,
+        marker: step.marker,
         restore: async () => {
           await writeFilePreserveEol(sourceFile, original, original)
         },

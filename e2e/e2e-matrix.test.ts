@@ -278,6 +278,7 @@ describe('e2e matrix', () => {
     const rootPackageJson = readDemoPackageJson('package.json')
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
     const visualScript = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report.ts'), 'utf8')
+    const visualHmr = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report/hmr.ts'), 'utf8')
 
     expect(rootPackageJson.scripts?.['e2e:ide:visual']).toContain('--weapp-only --fail-on-incomplete')
     expect(rootPackageJson.scripts?.['e2e:ide:issues-909-916-928']).toContain('e2e/issue-909-ide.test.ts')
@@ -286,7 +287,41 @@ describe('e2e matrix', () => {
     expect(rootPackageJson.scripts?.['e2e:ide:where']).toContain('e2e/where-selector-ide.test.ts')
     expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:issues-909-916-928 && pnpm e2e:ide:where && pnpm e2e:ide:visual')
     expect(visualScript).toContain('url: item.name.startsWith(\'mpx-\') ? \'/pages/index\' : \'/pages/index/index\'')
+    expect(visualHmr).toContain('VISUAL_HMR_STEPS')
+    expect(visualHmr.match(/bg-\[#/g)?.length, 'visual HMR should use multiple arbitrary bg values').toBeGreaterThanOrEqual(3)
     expect(workflow).toContain('args: [\'e2e:mp:ide\']')
+  })
+
+  it('keeps automated demo HMR platforms wired to screenshot visual HMR', () => {
+    const visualScript = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report.ts'), 'utf8')
+    const visualHmr = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report/hmr.ts'), 'utf8')
+    const visualCaseNames = E2E_PROJECTS.map(item => item.name).sort()
+    const h5VisualNames = [
+      ...taroWebHmrCaseNames.map(name => name.replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
+      ...webViteHmrCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
+      'uni-app-vite-tailwindcss-v3',
+      'uni-app-vite-tailwindcss-v4',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v3',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ].sort()
+
+    const expectedWeappNames = DEMO_COVERAGE_MATRIX
+      .filter(item => !item.name.startsWith('web/'))
+      .map(item => item.name)
+      .sort()
+    const expectedH5Names = DEMO_COVERAGE_MATRIX
+      .filter(item => item.platforms.some(platform => platform.hmrCoverage !== 'exempt' && ['h5', 'web'].includes(platform.platform)))
+      .map(item => item.name)
+      .sort()
+
+    expect(visualCaseNames).toEqual(expectedWeappNames)
+    expect(h5VisualNames).toEqual(expectedH5Names)
+    expect(visualScript).toContain('runH5Case(browser')
+    expect(visualScript).toContain('runMiniProgramCase({')
+    expect(visualHmr).toContain('expectedBackgroundColor')
+    expect(visualHmr).toContain('waitForVisualHmrStep')
   })
 
   it('keeps demo workflow routed through composable platform e2e groups', () => {
