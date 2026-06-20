@@ -35,6 +35,7 @@ export function uniAppMiniCase(options: {
       `${outputDir}/${styleFile}`,
     ],
     styleFiles: [outputDir],
+    styleFileExtensions: [styleFile.slice(styleFile.lastIndexOf('.'))],
     textFiles: options.textFile ? [`${outputDir}/${options.textFile}`] : undefined,
     styleContains: options.styleContains,
     textContains: options.textContains,
@@ -56,6 +57,7 @@ export function uniAppH5Case(options: {
     outputDir: 'dist/build/h5',
     requiredFiles: ['dist/build/h5/index.html'],
     styleFiles: ['dist/build/h5/assets'],
+    styleFileExtensions: ['.css'],
     textFiles: ['dist/build/h5/index.html'],
     styleContains: options.styleContains,
     textContains: ['<html'],
@@ -82,6 +84,7 @@ export function uniAppH5SsrCase(options: {
       'dist/build/h5/server/index.html',
     ],
     styleFiles: ['dist/build/h5/client/assets'],
+    styleFileExtensions: ['.css'],
     textFiles: ['dist/build/h5/client/index.html', 'dist/build/h5/server/index.html'],
     styleContains: options.styleContains,
     textContains: ['<html'],
@@ -109,6 +112,7 @@ export function uniAppQuickappCase(options: {
       `${outputDir}/app.css`,
     ],
     styleFiles: [outputDir],
+    styleFileExtensions: ['.css'],
     styleContains: options.styleContains,
     notContains: [rawTailwindDirectiveRE],
     status: 'ci',
@@ -134,6 +138,7 @@ export function uniAppHBuilderXMiniCase(options: {
       `${outputDir}/pages/index/index.wxml`,
     ],
     styleFiles: [`${outputDir}/app.wxss`],
+    styleFileExtensions: ['.wxss'],
     textFiles: [`${outputDir}/pages/index/index.wxml`],
     styleContains: [
       '.bg-_b_h123456_B',
@@ -173,6 +178,7 @@ export function mpxCase(options: {
       'dist/wx/pages/index.wxml',
     ],
     styleFiles: ['dist/wx/styles'],
+    styleFileExtensions: ['.wxss'],
     textFiles: ['dist/wx/pages/index.wxml'],
     styleContains: options.version === 'v4'
       ? [
@@ -240,11 +246,42 @@ export function taroMiniCase(options: {
       output.pageTemplate,
     ],
     styleFiles: ['dist'],
+    styleFileExtensions: [options.platform === 'alipay' ? '.acss' : '.ttss'],
     textFiles: [output.pageScript],
     styleContains: options.styleContains,
     textContains: options.textContains,
     notContains: [rawTailwindDirectiveRE],
     status: options.status ?? 'local',
     reason: options.reason ?? 'Taro 非微信小程序目标通过多平台构建专项断言；本地 runner 可能因系统依赖挂起，不放入默认 vitest/execa 构建集合。',
+  }
+}
+
+export function gulpMiniCase(options: {
+  project: string
+  platform: 'tt'
+  styleContains: Array<string | RegExp>
+  textContains: Array<string | RegExp>
+}): BuildOutputCase {
+  return {
+    name: `${options.project} ${options.platform}`,
+    framework: 'gulp',
+    projectDir: `demo/${options.project}`,
+    platform: options.platform,
+    command: ['pnpm', 'run', `build:${options.platform}`],
+    outputDir: 'dist',
+    requiredFiles: [
+      'dist/app.ttss',
+      'dist/pages/index/index.ttml',
+      'dist/pages/index/index.ttss',
+      'dist/sub-normal/pages/index.ttml',
+      'dist/sub-normal/pages/index.ttss',
+    ],
+    styleFiles: ['dist'],
+    styleFileExtensions: ['.ttss'],
+    textFiles: ['dist'],
+    styleContains: options.styleContains,
+    textContains: options.textContains,
+    notContains: [rawTailwindDirectiveRE],
+    status: 'ci',
   }
 }

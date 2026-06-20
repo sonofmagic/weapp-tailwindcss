@@ -105,6 +105,16 @@ function createUniAppTargets(project: string, platforms: string[]): Multiplatfor
   })
 }
 
+function createGulpTargets(project: string): MultiplatformTarget[] {
+  return [target({
+    framework: 'gulp',
+    projectDir: `demo/${project}`,
+    platform: 'tt',
+    coverage: 'default-ci',
+    reason: 'Gulp 头条端作为原生小程序非微信产物回归，覆盖 .ttss/.ttml 转译结果。',
+  })]
+}
+
 function createUniAppHBuilderXTargets(project: string): MultiplatformTarget[] {
   return [
     target({
@@ -182,6 +192,8 @@ function createUniAppXTargets(project: string): MultiplatformTarget[] {
 }
 
 export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
+  ...createGulpTargets('gulp-tailwindcss-v3'),
+  ...createGulpTargets('gulp-tailwindcss-v4'),
   ...createUniAppTargets('uni-app-vite-tailwindcss-v3', uniAppV3Platforms),
   ...createUniAppTargets('uni-app-vite-tailwindcss-v4', uniAppV4Platforms),
   ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v3'),

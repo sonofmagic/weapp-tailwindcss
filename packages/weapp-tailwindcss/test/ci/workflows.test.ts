@@ -130,6 +130,7 @@ describe('ci workflows', () => {
       'taro-h5-build',
       'web-css-preservation',
       'demo-user-workflow',
+      'demo-platform-output-matrix',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
@@ -138,6 +139,7 @@ describe('ci workflows', () => {
       'pnpm e2e:taro:h5-build',
       'pnpm e2e:web-css-preservation',
       'pnpm e2e:demo-user-workflow',
+      'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
     ])
     expect(hasStepRunCommand(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
 

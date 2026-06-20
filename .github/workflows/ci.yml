@@ -158,6 +158,8 @@ jobs:
             command: pnpm e2e:web-css-preservation
           - case_name: demo-user-workflow
             command: pnpm e2e:demo-user-workflow
+          - case_name: demo-platform-output-matrix
+            command: pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
