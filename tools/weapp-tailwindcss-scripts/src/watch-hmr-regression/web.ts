@@ -24,7 +24,7 @@ const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
 const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
 
 export function isWebCompileReadyLogLine(line: string) {
-  return /ready in \d+|compiled successfully|compiled with (?:some )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|开发服务已就绪|构建完成|编译成功/u.test(line)
+  return /ready in \d+|compiled successfully|compiled with (?:some )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|(?:^|\s)Local:\s+https?:\/\/|开发服务已就绪|构建完成|编译成功/u.test(line)
 }
 
 function collectPluginProcessMetrics(samples: PluginProcessSample[], startedAt: number) {

@@ -1722,6 +1722,7 @@ describe('watch-hmr regression cases', () => {
   it('does not treat webpack-dev-server URL output as Web/H5 compile readiness', () => {
     expect(isWebCompileReadyLogLine('<i> [webpack-dev-server] Loopback: http://localhost:10086/')).toBe(false)
     expect(isWebCompileReadyLogLine('<i> [webpack-dev-middleware] wait until bundle finished: /')).toBe(false)
+    expect(isWebCompileReadyLogLine('  ➜  Local:   http://localhost:10086/')).toBe(true)
     expect(isWebCompileReadyLogLine('webpack 5.102.1 compiled successfully in 389888 ms')).toBe(true)
     expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
   })
