@@ -141,7 +141,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
-  const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
+  const shouldRewriteCssImports = opts.rewriteCssImports === true
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
     appType: opts.appType,
     platform: opts.cssOptions?.platform ?? opts.platform,
@@ -743,6 +743,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
     onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code),
     shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code),
+    shouldDeferGeneration: (_id, code) => !shouldRewriteCssImports
+      && tailwindcssMajorVersion >= 4
+      && hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback }),
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,

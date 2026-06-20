@@ -8,8 +8,6 @@ import micromatch from 'micromatch'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
-import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
@@ -17,6 +15,7 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../shared/generator-css'
 import { isWatchFileInRuntimeDependencies } from './shared'
 import { setupWebpackV5ProcessAssetsHook } from './v5-assets'
 import { setupWebpackV5Loaders } from './v5-loaders'
@@ -172,20 +171,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const refreshTailwindRuntime = refreshTailwindcssRuntime
 
     const disabledOptions = resolvePluginDisabledState(disabled)
-    const isTailwindcssV4 = (initialTailwindRuntime.majorVersion ?? 0) >= 4
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator, {
-      appType: this.options.appType,
-      platform: this.options.cssOptions?.platform ?? this.options.platform,
-      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
-      uniAppX: this.options.uniAppX,
-    })
-    const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
-      appType: this.options.appType,
-      platform: this.options.cssOptions?.platform ?? this.options.platform,
-      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
-      uniAppX: this.options.uniAppX,
-    })
-    const shouldRewriteCssImports = isTailwindcssV4 || generatorBranch.isWeb
+    const shouldRewriteCssImports = this.options.rewriteCssImports === true
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
@@ -488,6 +474,8 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       isWebpackProcessedCssAsset(file, rawSource, metadata) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
           || isWebpackProcessedTailwindEntryAsset(metadata?.isMainCssChunk)
+          || hasTailwindGeneratedCss(rawSource)
+          || hasTailwindGeneratedCssMarkers(rawSource)
           || rawSource.includes('weapp-tailwindcss webpack-generated-css')
       },
       consumeRuntimeRefreshRequirement() {

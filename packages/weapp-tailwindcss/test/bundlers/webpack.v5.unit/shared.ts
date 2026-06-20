@@ -61,6 +61,7 @@ export function isCssImportRewriteLoader(entry: { loader?: string }) {
 
 interface TestContext {
   disabled: boolean
+  rewriteCssImports?: boolean
   generator?: unknown
   onLoad: ReturnType<typeof vi.fn>
   onStart: ReturnType<typeof vi.fn>

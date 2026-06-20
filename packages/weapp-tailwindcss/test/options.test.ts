@@ -89,10 +89,10 @@ describe('get options', () => {
     expect(mainCssChunkMatcher).toHaveBeenCalledWith('shell.acss', 'taro')
   })
 
-  it('enables generator import fallback by default', () => {
-    expect(normalizeWeappTailwindcssGeneratorOptions(undefined).importFallback).toBe(true)
-    expect(normalizeWeappTailwindcssGeneratorOptions({}).importFallback).toBe(true)
-    expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: false }).importFallback).toBe(false)
+  it('disables generator import fallback by default', () => {
+    expect(normalizeWeappTailwindcssGeneratorOptions(undefined).importFallback).toBe(false)
+    expect(normalizeWeappTailwindcssGeneratorOptions({}).importFallback).toBe(false)
+    expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: true }).importFallback).toBe(true)
   })
 
   it('keeps weapp as generator target without framework web env', () => {

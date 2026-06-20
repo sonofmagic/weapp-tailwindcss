@@ -2,17 +2,17 @@
 
 exports[`vite > v4-vite-plugin > css 1`] = `
 "view,text,::after,::before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-to: #0000;
-  --tw-gradient-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-to-position: 100%;
-}
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+    --tw-gradient-position: initial;
+    --tw-gradient-from: #0000;
+    --tw-gradient-to: #0000;
+    --tw-gradient-stops: initial;
+    --tw-gradient-from-position: 0%;
+    --tw-gradient-to-position: 100%;
+  }
 :host,page,.tw-root,wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;
@@ -107,11 +107,11 @@ console.log("bg-_b_h123456_B text-_b_h123456_B first-letter_cmarker_ctext-clip")
 
 exports[`vite > v4-vite-postcss > css 1`] = `
 "view,text,::after,::before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-}
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0 solid;
+  }
 :host,page,.tw-root,wx-root-portal-content {
   --color-gray-200: #e5e7eb;
   --color-gray-400: #9ca3af;

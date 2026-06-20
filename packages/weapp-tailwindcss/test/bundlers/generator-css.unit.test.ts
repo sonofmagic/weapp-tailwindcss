@@ -5,13 +5,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 function normalizeGeneratorOptions(options: any) {
   if (options == null) {
-    return { target: 'weapp', importFallback: true }
+    return { target: 'weapp', importFallback: false }
   }
   return {
     target: options.target ?? 'weapp',
     config: options.config,
     styleOptions: options.styleOptions,
-    importFallback: options.importFallback ?? true,
+    importFallback: options.importFallback ?? false,
     tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? true,
   }
 }
@@ -929,7 +929,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).toHaveBeenCalledTimes(1)
   })
 
-  it('treats weapp-tailwindcss imports as Tailwind v4 source entries by default', async () => {
+  it('treats weapp-tailwindcss imports as Tailwind v4 source entries when import fallback is enabled', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = '@import "weapp-tailwindcss";\n.card{color:red}'
     const rawTailwindCss = '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */\n.w-\\[100px\\]{width:100px}'
@@ -964,6 +964,9 @@ describe('bundlers/shared generator css', () => {
     const styleHandler = vi.fn(async (code: string) => ({ css: `legacy:${code}` }))
     const result = await generateCssByGenerator({
       opts: {
+        generator: {
+          importFallback: true,
+        },
         styleHandler,
       } as any,
       runtimeState: {
@@ -3522,6 +3525,7 @@ describe('bundlers/shared generator css', () => {
       opts: {
         generator: {
           target: 'weapp',
+          importFallback: true,
         },
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,
@@ -3601,6 +3605,7 @@ describe('bundlers/shared generator css', () => {
       opts: {
         generator: {
           target: 'weapp',
+          importFallback: true,
         },
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
       } as any,

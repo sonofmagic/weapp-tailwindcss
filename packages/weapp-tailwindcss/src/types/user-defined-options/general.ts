@@ -92,6 +92,18 @@ export interface UserDefinedOptionsGeneralPart {
   replaceRuntimePackages?: boolean | Record<string, string> | undefined
 
   /**
+   * 是否把 CSS 中的 Tailwind 包入口改写到 `weapp-tailwindcss` 内部样式入口。
+   *
+   * @group 3.一般配置
+   * @remarks
+   * 默认关闭。Tailwind CSS v4 项目应保留 `@import "tailwindcss"` 原始入口，由
+   * `weapp-tailwindcss` 基于 CSS AST/source 结果生成目标端 CSS。仅在需要兼容旧项目
+   * 或特定框架无法正常解析 Tailwind 包入口时显式开启。
+   * @default false
+   */
+  rewriteCssImports?: boolean | undefined
+
+  /**
    * 控制 Tailwind CSS 直接生成目标端 CSS 的策略。
    *
    * @group 3.一般配置

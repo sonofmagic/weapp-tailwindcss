@@ -104,7 +104,6 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
     opt?.registerCssSourceFile?.({
       file: this.resourcePath,
       css: resolveRegisteredCssSource(this.resourcePath, source),
-      processed: true,
     })
   }
   const maybePromise = opt?.getClassSet?.()

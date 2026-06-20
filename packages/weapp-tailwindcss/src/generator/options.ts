@@ -25,7 +25,7 @@ export interface WeappTailwindcssGeneratorOptions {
   /**
    * 将 `@import "weapp-tailwindcss"` 作为 Tailwind CSS v4 生成入口的兜底别名。
    *
-   * 适用于框架无法把 `@import "tailwindcss"` 改写到 `weapp-tailwindcss` 包入口的场景，默认开启。
+   * 适用于旧项目仍使用 `@import "weapp-tailwindcss"` 作为入口的兼容场景，默认关闭。
    */
   importFallback?: boolean | undefined
   /**
@@ -68,7 +68,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     return {
       target,
       branch,
-      importFallback: true,
+      importFallback: false,
       tailwindcssV3Compatibility: branch.platformFamily !== 'web' && branch.platformFamily !== 'tailwind',
       bareArbitraryValues: undefined,
     }
@@ -79,7 +79,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     branch,
     config: options.config,
     styleOptions: options.styleOptions,
-    importFallback: options.importFallback ?? true,
+    importFallback: options.importFallback ?? false,
     tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? (branch.platformFamily !== 'web' && branch.platformFamily !== 'tailwind'),
     bareArbitraryValues: options.bareArbitraryValues,
   }

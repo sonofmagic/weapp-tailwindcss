@@ -15,6 +15,7 @@ import {
   splitGeneratorPlaceholderCssBySourceOrder,
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCssBySourceOrder,
+  TAILWIND_BANNER_RE,
 } from './markers'
 
 export function finalizeMiniProgramGeneratorCss(
@@ -236,6 +237,16 @@ export function shouldUseGeneratorForCurrentCss(
     rawSource: string
   },
 ) {
+  if (
+    majorVersion === 3
+    && TAILWIND_BANNER_RE.test(options.rawSource)
+    && !options.hasGeneratedMarkers
+    && !hasTailwindSourceDirectives(options.rawSource, { importFallback: true })
+    && !hasTailwindApplyDirective(options.rawSource)
+    && options.forceGenerator !== true
+  ) {
+    return false
+  }
   const hasApplyDirectives = hasTailwindApplyDirective(options.rawSource)
   const sourceCss = (cssHandlerOptions as { sourceOptions?: { sourceCss?: string | undefined } | undefined }).sourceOptions?.sourceCss
   const hasSourceCssDirectives = typeof sourceCss === 'string'

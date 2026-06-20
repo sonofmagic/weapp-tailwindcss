@@ -835,9 +835,11 @@ describe('v5 vite generator bundle', () => {
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const finalizerPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer') as Plugin
     expect(sourcePlugin).toBeTruthy()
     expect(rewritePlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
+    expect(finalizerPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'serve',
@@ -1662,7 +1664,7 @@ describe('v5 vite generator bundle', () => {
 
     await generateBundle?.call(postPlugin, {} as any, {
       'app.css': {
-        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        ...createRollupAsset('@import "tailwindcss";'),
         fileName: 'app.css',
       },
     })
@@ -1760,9 +1762,11 @@ describe('v5 vite generator bundle', () => {
     const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const serveGenerationPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(sourcePlugin).toBeTruthy()
     expect(rewritePlugin).toBeTruthy()
+    expect(serveGenerationPlugin).toBeTruthy()
     expect(postPlugin).toBeTruthy()
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
@@ -1779,6 +1783,12 @@ describe('v5 vite generator bundle', () => {
       '@import "tailwindcss";',
       cssFile,
     )
+    expect(generateMock).not.toHaveBeenCalled()
+    const serveTransform = getTransformHandler(serveGenerationPlugin)
+    await serveTransform?.call(serveGenerationPlugin, '@import "tailwindcss";', cssFile)
+    expect(generateMock.mock.calls.at(-1)?.[0]).toEqual(expect.objectContaining({
+      candidates: expect.any(Set),
+    }))
     const firstCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
     expect(firstCandidates.has('text-slate-800')).toBe(true)
     expect(firstCandidates.has('bg-[red]')).toBe(false)
@@ -1811,6 +1821,8 @@ describe('v5 vite generator bundle', () => {
       '@import "tailwindcss";',
       cssFile,
     )
+    generateMock.mockClear()
+    await serveTransform?.call(serveGenerationPlugin, '@import "tailwindcss";', cssFile)
     const secondCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
     expect(secondCandidates.has('bg-[red]')).toBe(true)
     expect(secondCandidates.has('text-[blue]')).toBe(true)
@@ -1906,7 +1918,7 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, {
       'app.css': {
-        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        ...createRollupAsset('@tailwind utilities;'),
         fileName: 'app.css',
       },
     })
@@ -1991,16 +2003,7 @@ describe('v5 vite generator bundle', () => {
     }))
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    const plugins = WeappTailwindcss({
-      cssEntries: [cssEntry],
-      tailwindcss: {
-        version: 4,
-        packageName: 'tailwindcss4',
-        v4: {
-          cssEntries: [cssEntry],
-        },
-      },
-    })
+    const plugins = WeappTailwindcss()
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
 
@@ -2110,6 +2113,7 @@ describe('v5 vite generator bundle', () => {
     })
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    const finalizerPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:css-finalizer') as Plugin
 
     await (postPlugin.configResolved as any)?.call(postPlugin, {
       command: 'build',
@@ -2117,12 +2121,18 @@ describe('v5 vite generator bundle', () => {
       css: { postcss: { plugins: [] } },
       build: { outDir: 'dist' },
     } as ResolvedConfig)
+    await (finalizerPlugin.configResolved as any)?.call(finalizerPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
     await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
 
-    const generateBundle = getGenerateBundleHandler(postPlugin)
-    await generateBundle?.call(postPlugin, {} as any, {
+    const generateBundle = getGenerateBundleHandler(finalizerPlugin)
+    await generateBundle?.call(finalizerPlugin, {} as any, {
       'app.css': {
-        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        ...createRollupAsset(await readFile(cssEntry, 'utf8')),
         fileName: 'app.css',
       },
     })

@@ -64,10 +64,10 @@ function getOutputOptionsHandler(plugin: Plugin) {
 
 function normalizeGeneratorOptions(options: any) {
   if (options == null) {
-    return { importFallback: true, target: 'weapp' }
+    return { importFallback: false, target: 'weapp' }
   }
   return {
-    importFallback: options.importFallback ?? true,
+    importFallback: options.importFallback ?? false,
     target: options.target ?? 'weapp',
     styleOptions: options.styleOptions,
   }

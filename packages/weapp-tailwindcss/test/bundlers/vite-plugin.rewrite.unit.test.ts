@@ -36,10 +36,28 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     resetVitePluginTestContext()
   })
 
-  it('rewrites tailwindcss imports for css entry files by default', async () => {
+  it('keeps tailwindcss imports unresolved by default while retaining generator transform ownership', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     currentContext.tailwindRuntime.majorVersion = 4
+    const plugins = WeappTailwindcss()
+    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
+    expect(rewritePlugin).toBeTruthy()
+
+    const resolveId = getResolveIdHandler(rewritePlugin as Plugin)
+    expect(resolveId).toBeTypeOf('function')
+    expect((rewritePlugin as Plugin).enforce).toBe('pre')
+
+    expect(await resolveId?.('tailwindcss', '/src/app.css')).toBeNull()
+    expect(await resolveId?.('tailwindcss/base', '/src/global.scss?inline')).toBeNull()
+    expect(await resolveId?.('tailwindcss', '/src/*')).toBeNull()
+  }, TEST_TIMEOUT_MS)
+
+  it('rewrites tailwindcss imports for css entry files when enabled', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const currentContext = getCurrentContext()
+    currentContext.tailwindRuntime.majorVersion = 4
+    currentContext.rewriteCssImports = true
     const plugins = WeappTailwindcss()
     const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`)
     expect(rewritePlugin).toBeTruthy()
@@ -141,6 +159,27 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
       '@tailwind utilities;',
       expect.anything(),
     )
+  })
+
+  it('defers Tailwind v4 root import generation when css import rewrite is disabled', async () => {
+    const generateTailwindCss = vi.fn(async () => '.flex{display:flex}')
+    const onTailwindRootCss = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      onTailwindRootCss,
+      shouldDeferGeneration: (_id, code) => code.includes('@import "tailwindcss"'),
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: false,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+
+    const source = '@import "tailwindcss";'
+    const result = await transform?.(source, '/src/app.css') as TransformResult
+
+    expect(result).toBeNull()
+    expect(onTailwindRootCss).toHaveBeenCalledWith('/src/app.css', source)
+    expect(generateTailwindCss).not.toHaveBeenCalled()
   })
 
   it('can emit generated css for Tailwind v3 Sass @use entries before preprocessing', async () => {
@@ -282,9 +321,18 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(source.startsWith('tailwind:')).toBeTruthy()
   }, TEST_TIMEOUT_MS)
 
-  it('keeps tailwindcss imports resolvable when plugin is disabled for tailwind v4 projects', async () => {
+  it('does not keep tailwindcss imports resolvable by default when plugin is disabled for tailwind v4 projects', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({ disabled: true })
+    setCurrentContext(currentContext)
+    currentContext.tailwindRuntime.majorVersion = 4
+    const plugins = WeappTailwindcss()
+    expect(plugins).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps tailwindcss imports resolvable when plugin is disabled and css import rewrite is enabled', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const currentContext = createContext({ disabled: true, rewriteCssImports: true })
     setCurrentContext(currentContext)
     currentContext.tailwindRuntime.majorVersion = 4
     const plugins = WeappTailwindcss()
@@ -412,12 +460,23 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     await expect(transform?.('@import "tailwindcss";', '/src/main.ts')).resolves.toBeNull()
   })
 
-  it('keeps css import rewrite plugin when main plugin is disabled for tailwind v4 projects', async () => {
+  it('skips css import rewrite plugin when main plugin is disabled by default for tailwind v4 projects', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     setCurrentContext(createContext({ disabled: { plugin: true } }))
     getCurrentContext().tailwindRuntime.majorVersion = 4
     const plugins = WeappTailwindcss({
       disabled: { plugin: true },
+    })
+    expect(plugins).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps css import rewrite plugin when main plugin is disabled and css import rewrite is enabled', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    setCurrentContext(createContext({ disabled: { plugin: true }, rewriteCssImports: true }))
+    getCurrentContext().tailwindRuntime.majorVersion = 4
+    const plugins = WeappTailwindcss({
+      disabled: { plugin: true },
+      rewriteCssImports: true,
     })
     expect(plugins?.map(plugin => plugin.name)).toEqual([`${vitePluginName}:rewrite-css-imports`])
   }, TEST_TIMEOUT_MS)

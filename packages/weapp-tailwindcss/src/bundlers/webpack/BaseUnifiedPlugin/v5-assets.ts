@@ -81,6 +81,10 @@ function pruneMapToMaxSize<Key, Value>(map: Map<Key, Value>, maxSize: number) {
   }
 }
 
+function stripTrailingLineWhitespace(source: string) {
+  return source.replace(/[ \t]+$/gm, '')
+}
+
 function pruneWebpackCssHandlerOptionCaches(
   cssHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>,
   cssUserHandlerOptionsCache: Map<string, WebpackCssHandlerOptions>,
@@ -173,6 +177,45 @@ function collectWebpackCssRuleIdentityMarkers(source: string) {
   catch {
   }
   return markers
+}
+
+function unescapeCssIdentifier(value: string) {
+  return value.replace(/\\([0-9a-f]{1,6}\s?|.)/gi, (_match, escaped: string) => {
+    const hex = escaped.trim()
+    if (/^[0-9a-f]+$/i.test(hex)) {
+      const codePoint = Number.parseInt(hex, 16)
+      if (Number.isFinite(codePoint)) {
+        return String.fromCodePoint(codePoint)
+      }
+    }
+    return escaped
+  })
+}
+
+function collectGeneratedCssRuntimeCandidates(source: string) {
+  const candidates = new Set<string>()
+  if (
+    hasBundlerGeneratedCssMarker(source)
+    || (!hasTailwindGeneratedCss(source) && !hasTailwindGeneratedCssMarkers(source))
+  ) {
+    return candidates
+  }
+  try {
+    const root = postcss.parse(source)
+    root.walkRules((rule) => {
+      for (const selector of rule.selectors ?? [rule.selector]) {
+        for (const match of selector.matchAll(/\.((?:\\.|[\w\u00A0-\uFFFF-])(?:\\.|[\w\u00A0-\uFFFF-])*)/g)) {
+          const candidate = unescapeCssIdentifier(match[1] ?? '')
+          if (isRuntimeTransformCandidate(candidate)) {
+            candidates.add(candidate)
+          }
+        }
+      }
+    })
+  }
+  catch {
+  }
+  return candidates
 }
 
 function hasAdditionalWebpackAssetUserCssMarkers(
@@ -877,6 +920,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
         }
         const transformRuntimeSet = new Set(runtimeSet)
+        const hasRuntimeTransformAssets = Boolean(
+          !isWebGeneratorTarget
+          && ((groupedEntries.html?.length ?? 0) > 0 || (groupedEntries.js?.length ?? 0) > 0),
+        )
+        if (hasRuntimeTransformAssets && Array.isArray(groupedEntries.css)) {
+          for (const [, originalSource] of groupedEntries.css) {
+            for (const candidate of collectGeneratedCssRuntimeCandidates(originalSource.source().toString())) {
+              transformRuntimeSet.add(candidate)
+            }
+          }
+        }
         const transformedJsRuntimeCandidates = new Set<string>()
         let currentJsRuntimeCandidates: Set<string> | undefined
         let currentJsRuntimeTokenSignature: string | undefined
@@ -1114,6 +1168,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const processedCssDecisionCacheKey = `${file}:${processedCssHashKey ?? 'hash:0'}`
             let currentProcessedRawSource: string | undefined
             let hasGeneratedCssMarker = false
+            let hasTailwindGeneratedAssetCss = false
             const readCurrentProcessedRawSource = () => {
               currentProcessedRawSource ??= readRawSource()
               return currentProcessedRawSource
@@ -1123,14 +1178,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               : undefined
             if (cachedSkipProcessedCssAsset !== undefined) {
               hasGeneratedCssMarker = cachedSkipProcessedCssAsset && cssHandlerOptionsForProcessedAsset.isMainChunk
+              hasTailwindGeneratedAssetCss = hasGeneratedCssMarker
             }
             else {
               const source = readCurrentProcessedRawSource()
               hasGeneratedCssMarker = hasBundlerGeneratedCssMarker(source)
+              hasTailwindGeneratedAssetCss = hasTailwindGeneratedCss(source)
+                || hasTailwindGeneratedCssMarkers(source)
             }
             const hasProcessedMainAssetUserCss = cachedSkipProcessedCssAsset === undefined
               && cssHandlerOptionsForProcessedAsset.isMainChunk
-              && hasGeneratedCssMarker
+              && (hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
               && createWebpackUserCssSourceAppend(
                 [...cssSources.entries()].map(([sourceFile, source]) => ({
                   ...source,
@@ -1146,7 +1204,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   || isWebpackProcessedCssAsset?.(file, readCurrentProcessedRawSource(), processedCssAssetMetadata)
                 )
                 && !hasProcessedMainAssetUserCss
-                && (!cssHandlerOptionsForProcessedAsset.isMainChunk || hasGeneratedCssMarker)
+                && (!cssHandlerOptionsForProcessedAsset.isMainChunk || hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
               )
             )
             if (processedCssAssetKnown && cachedSkipProcessedCssAsset === undefined) {
@@ -1180,9 +1238,16 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   },
                   transform: async () => {
                     const source = readCurrentProcessedRawSource()
-                    const nextCss = finalizeCssAssetSource(source, {
-                      generatedCss: hasGeneratedCssMarker,
-                    })
+                    const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss && !hasGeneratedCssMarker
+                    const handledCss = shouldTransformGeneratedAssetCss
+                      ? (await compilerOptions.styleHandler(
+                          source,
+                          cssHandlerOptionsForProcessedAsset,
+                        )).css
+                      : source
+                    const nextCss = stripTrailingLineWhitespace(finalizeCssAssetSource(handledCss, {
+                      generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
+                    }))
                     debug('css skip webpack-loader-pipeline asset: %s', file)
                     return {
                       result: new ConcatSource(finalizeTracedCss(nextCss)),
@@ -1255,7 +1320,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     generatorRawSource,
                     sourceFile,
                   )
-                  const shouldAppendCurrentAssetUserCss = !sourceCssProcessed || registeredUserRawSource === undefined
+                  const currentAssetLooksGenerated = hasTailwindGeneratedCss(currentRawSource)
+                    || hasTailwindGeneratedCssMarkers(currentRawSource)
+                  const shouldAppendCurrentAssetUserCss = (!sourceCssProcessed || registeredUserRawSource === undefined)
+                    && !(sourceCssProcessed && currentAssetLooksGenerated)
                   const userRawSource = createWebpackGeneratorUserCssSourceAppend(
                     sourceCssProcessed && shouldAppendCurrentAssetUserCss
                       ? {

@@ -4,7 +4,7 @@ import { setupWebpackV5UnitTest, CSS_IMPORT_REWRITE_LOADER_PATH, createCompilerW
 describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   setupWebpackV5UnitTest()
   it('uses mpx style compiler loader as anchor when appType is mpx', () => {
-    testState.currentContext = createContext({ appType: 'mpx' })
+    testState.currentContext = createContext({ appType: 'mpx', rewriteCssImports: true } as any)
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     const plugin = new WeappTailwindcss()
@@ -27,7 +27,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('inserts rewrite loader after style compiler for mpx modules', () => {
-    testState.currentContext = createContext({ appType: 'mpx' })
+    testState.currentContext = createContext({ appType: 'mpx', rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -54,7 +54,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('falls back to strip-conditional loader when style compiler anchor is missing', () => {
-    testState.currentContext = createContext({ appType: 'mpx' })
+    testState.currentContext = createContext({ appType: 'mpx', rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -80,7 +80,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('reorders an existing rewrite loader so it runs before the mpx style compiler', () => {
-    testState.currentContext = createContext({ appType: 'mpx' })
+    testState.currentContext = createContext({ appType: 'mpx', rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockImplementation(() => testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -105,7 +105,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('falls back to css matcher when anchor is missing', () => {
-    testState.currentContext = createContext({ appType: 'mpx' })
+    testState.currentContext = createContext({ appType: 'mpx', rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -130,7 +130,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('treats resources with queries as css modules', () => {
-    testState.currentContext = createContext()
+    testState.currentContext = createContext({ rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -151,7 +151,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('injects rewrite loader for preprocessor and SFC style modules', () => {
-    testState.currentContext = createContext()
+    testState.currentContext = createContext({ rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -179,7 +179,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
     const previousDebug = process.env.WEAPP_TW_LOADER_DEBUG
     process.env.WEAPP_TW_LOADER_DEBUG = '1'
     try {
-      testState.currentContext = createContext()
+      testState.currentContext = createContext({ rewriteCssImports: true } as any)
       getCompilerContextMock.mockReturnValue(testState.currentContext)
       const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
       const plugin = new WeappTailwindcss()
@@ -212,7 +212,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('detects mpx style modules via resource query', () => {
-    testState.currentContext = createContext({ appType: 'mpx' })
+    testState.currentContext = createContext({ appType: 'mpx', rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
@@ -231,7 +231,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
   })
 
   it('avoids inserting duplicate rewrite loaders when already present', () => {
-    testState.currentContext = createContext()
+    testState.currentContext = createContext({ rewriteCssImports: true } as any)
     testState.currentContext.tailwindRuntime.majorVersion = 4
     getCompilerContextMock.mockReturnValue(testState.currentContext)
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()

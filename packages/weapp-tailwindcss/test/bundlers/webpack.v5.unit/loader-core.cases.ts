@@ -4,7 +4,21 @@ import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTrack
 import RuntimeClassSetLoader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
-  it('forwards tailwindcssImportRewrite options when tailwindcss v4 detected', () => {
+  it('does not inject css import rewrite loader by default for tailwindcss v4', () => {
+    testState.currentContext.tailwindRuntime.majorVersion = 4
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    new WeappTailwindcss().apply(compiler as any)
+
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    expect(module.loaders.find(entry => isCssImportRewriteLoader(entry))).toBeUndefined()
+    expect(module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)).toBeDefined()
+  })
+
+  it('forwards tailwindcssImportRewrite options when css import rewrite is enabled', () => {
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
     const compilation = {
       compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
@@ -54,7 +68,14 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
         },
       },
     }
-    testState.currentContext.tailwindRuntime.majorVersion = 4
+    testState.currentContext = createContext({
+      rewriteCssImports: true,
+      tailwindRuntime: {
+        ...testState.currentContext.tailwindRuntime,
+        majorVersion: 4,
+      },
+    })
+    getCompilerContextMock.mockReturnValue(testState.currentContext)
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const module: LoaderModule = {
@@ -79,6 +100,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   it('uses safe runtime keys so runtime options are not serialized into webpack requests', () => {
     testState.currentContext = createContext({
       ...testState.currentContext,
+      rewriteCssImports: true,
       customReplaceDictionary: {
         '!': '_e',
         '#': '_h',
@@ -146,7 +168,6 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     expect(registerCssSourceFile).toHaveBeenCalledWith({
       file: '/workspace/src/pages/index.wxss',
       css: undefined,
-      processed: true,
     })
   })
 
