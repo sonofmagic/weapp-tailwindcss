@@ -205,7 +205,7 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
 }
 
 export function normalizeRawCssSnapshotText(source: string) {
-  return `${source.replace(/\r\n/g, '\n').trimEnd().split('\n').map(line => line.trimEnd()).join('\n')}\n`
+  return `${normalizeCssImports(source.replace(/\r\n/g, '\n')).trimEnd().split('\n').map(line => line.trimEnd()).join('\n')}\n`
 }
 
 export async function formatRawCssSnapshotText(source: string) {
