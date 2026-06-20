@@ -5,6 +5,10 @@ import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
@@ -46,7 +50,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: ['@tarojs/plugin-html', '@tarojs/plugin-platform-harmony-hybrid'],
+    plugins: taroPlugins,
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {

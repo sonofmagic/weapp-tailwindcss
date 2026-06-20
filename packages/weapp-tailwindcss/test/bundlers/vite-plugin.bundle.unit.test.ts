@@ -188,7 +188,8 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       'other-vite-plugin',
     ])
     const postcssPlugins = (config.css?.postcss as any)?.plugins
-    expect(postcssPlugins?.[0]).toEqual({ postcssPlugin: 'mocked-html-transform' })
+    expect(postcssPlugins).toContainEqual({ postcssPlugin: 'postcss-html-transform' })
+    expect(postcssPlugins).not.toContainEqual({ postcssPlugin: 'mocked-html-transform' })
     expect(postcssPlugins).not.toContainEqual(expect.objectContaining({ postcssPlugin: '@tailwindcss/postcss' }))
     expect(postcssPlugins).not.toContainEqual(expect.objectContaining({ postcssPlugin: 'tailwindcss' }))
 

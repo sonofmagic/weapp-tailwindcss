@@ -17,6 +17,10 @@ const generator = {
 const isNativeTarget = process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'jdrn'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 
 function taroAlipayBrowserslistAssetPlugin(): Plugin {
   return {
@@ -51,7 +55,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+    plugins: taroPlugins,
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {

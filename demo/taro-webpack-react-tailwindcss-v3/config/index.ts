@@ -8,6 +8,10 @@ const require = createRequire(__filename)
 const bench = require('../../bench.cjs')('taro-react')
 const taroEnv = process.env.TARO_ENV
 const isWebLikeTarget = taroEnv === 'h5' || taroEnv === 'harmony' || taroEnv === 'harmony-hybrid'
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 
 const generator = {
   target: isWebLikeTarget ? 'web' : 'weapp',
@@ -43,7 +47,7 @@ const config: UserConfigExport<'webpack5'> = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: ['@tarojs/plugin-html', '@tarojs/plugin-platform-harmony-hybrid'],
+  plugins: taroPlugins,
   defineConstants: {},
   copy: {
     patterns: [],

@@ -9,8 +9,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { getPostcssPluginName, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
-import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
+import { removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
@@ -1008,12 +1007,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
               if (removed > 0) {
                 debug('remove official tailwind postcss plugins in generator mode: %d', removed)
               }
-            }
-            const idx = postcssPlugins.findIndex(x =>
-              getPostcssPluginName(x) === 'postcss-html-transform')
-            if (idx > -1) {
-              postcssPlugins.splice(idx, 1, postcssHtmlTransform())
-              debug('remove postcss-html-transform plugin from vite config')
             }
           }
         }, { emit: false })

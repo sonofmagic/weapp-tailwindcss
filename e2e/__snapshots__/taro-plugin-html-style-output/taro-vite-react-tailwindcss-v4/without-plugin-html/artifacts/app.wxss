@@ -1,0 +1,2 @@
+@import 'app-origin.wxss';
+@import 'vendors.wxss';

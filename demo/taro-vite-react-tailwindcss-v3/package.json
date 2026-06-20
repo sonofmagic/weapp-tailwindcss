@@ -92,6 +92,7 @@
     "@tarojs/components-rn": "catalog:taro4rn",
     "@tarojs/helper": "catalog:taro4",
     "@tarojs/plugin-framework-react": "catalog:taro4",
+    "@tarojs/plugin-html": "catalog:taro4",
     "@tarojs/plugin-platform-alipay": "catalog:taro4",
     "@tarojs/plugin-platform-h5": "catalog:taro4",
     "@tarojs/plugin-platform-harmony-hybrid": "catalog:taro4",

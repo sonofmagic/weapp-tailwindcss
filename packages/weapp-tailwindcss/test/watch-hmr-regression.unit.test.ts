@@ -2237,21 +2237,29 @@ describe('watch-hmr regression cases', () => {
       expect(configSource, configPath).not.toMatch(/['"]tailwindcss['"]\s*:/)
     }
 
-    const taroWebpackConfigs = [
+    const taroConfigs = [
+      'demo/taro-vite-react-tailwindcss-v3/config/index.ts',
+      'demo/taro-vite-react-tailwindcss-v4/config/index.ts',
+      'demo/taro-vite-vue3-tailwindcss-v3/config/index.ts',
+      'demo/taro-vite-vue3-tailwindcss-v4/config/index.ts',
       'demo/taro-webpack-react-tailwindcss-v3/config/index.ts',
       'demo/taro-webpack-vue3-tailwindcss-v3/config/index.ts',
       'demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
       'demo/taro-webpack-vue3-tailwindcss-v4/config/index.ts',
     ]
-    for (const configPath of taroWebpackConfigs) {
+    for (const configPath of taroConfigs) {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
       expect(configSource, configPath).toContain('@tarojs/plugin-html')
+      expect(configSource, configPath).toContain('WEAPP_TW_TARO_PLUGIN_HTML')
+      expect(configSource, configPath).toContain('=== \'0\'')
       expect(configSource, configPath).toContain('WeappTailwindcss')
-      expect(configSource, configPath).toContain('disableWebpackDevServerClientOverlay(chain)')
-      expect(configSource, configPath).toMatch(/chain\.devServer\.set\(['"]client['"],\s*\{[\s\S]*?overlay:\s*false/)
       expectTaroGeneratorTargetConfig(configSource, configPath)
-      expect(configSource, configPath).not.toContain('chain.watchOptions({')
-      expect(configSource, configPath).not.toContain('ignored: [distDir]')
+      if (configPath.includes('taro-webpack-')) {
+        expect(configSource, configPath).toContain('disableWebpackDevServerClientOverlay(chain)')
+        expect(configSource, configPath).toMatch(/chain\.devServer\.set\(['"]client['"],\s*\{[\s\S]*?overlay:\s*false/)
+        expect(configSource, configPath).not.toContain('chain.watchOptions({')
+        expect(configSource, configPath).not.toContain('ignored: [distDir]')
+      }
     }
 
     const taroAppStyleEntries = [
