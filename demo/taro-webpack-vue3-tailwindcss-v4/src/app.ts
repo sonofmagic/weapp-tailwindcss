@@ -10,6 +10,6 @@ const app = createApp({
   onHide() {},
 })
 
-app.component('NutButton', NutButton)
+app.use(NutButton)
 
 export default app

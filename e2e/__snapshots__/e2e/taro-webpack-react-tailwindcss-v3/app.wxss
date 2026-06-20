@@ -527,7 +527,7 @@ wx-root-portal-content {
 .nut-horizontal-items {
   float: left;
 }
-.nut-horizontal-items li {
+.nut-horizontal-items .h5-li {
   display: block;
   float: left;
   color: var(--nutui-color-title, #1a1a1a);
@@ -541,7 +541,7 @@ wx-root-portal-content {
   visibility: hidden;
   clear: both;
 }
-.nut-vertical-items li {
+.nut-vertical-items .h5-li {
   display: block;
   color: var(--nutui-color-title, #1a1a1a);
   background: var(--nutui-color-background-overlay, #ffffff);
@@ -584,8 +584,8 @@ wx-root-portal-content {
 .nut-rtl .nut-horizontal-items {
   float: right;
 }
-[dir='rtl'] .nut-horizontal-items li,
-.nut-rtl .nut-horizontal-items li {
+[dir='rtl'] .nut-horizontal-items .h5-li,
+.nut-rtl .nut-horizontal-items .h5-li {
   float: right;
   margin-right: 0;
   margin-left: 20rpx;
@@ -616,7 +616,7 @@ wx-root-portal-content {
   align-items: center;
   color: var(--nutui-uploader-image-color, var(--nutui-color-text-help, #888b94));
 }
-.nut-uploader-icon i,
+.nut-uploader-icon .h5-i,
 .nut-uploader-icon .nut-icon {
   color: var(--nutui-uploader-image-color, var(--nutui-color-text-help, #888b94));
   margin-bottom: var(--nutui-uploader-image-icon-margin-bottom, 6rpx);
@@ -631,17 +631,15 @@ wx-root-portal-content {
   width: 100% !important;
   height: 100% !important;
   overflow: hidden;
-  cursor: pointer;
   opacity: 0;
 }
 .nut-uploader-input:disabled {
-  cursor: not-allowed;
 }
 .nut-uploader-upload-disabled {
   background: var(--nutui-uploader-background-disabled, var(--nutui-color-background, #f2f3f5));
   color: var(--nutui-uploader-image-disabled, var(--nutui-color-text-disabled, #c2c4cc));
 }
-.nut-uploader-upload-disabled .nut-uploader-icon i,
+.nut-uploader-upload-disabled .nut-uploader-icon .h5-i,
 .nut-uploader-upload-disabled .nut-uploader-icon .nut-icon {
   color: var(--nutui-uploader-image-disabled, var(--nutui-color-text-disabled, #c2c4cc));
   margin-bottom: var(--nutui-uploader-image-icon-margin-bottom, 6rpx);
@@ -667,7 +665,7 @@ wx-root-portal-content {
   border-radius: var(--nutui-uploader-image-border-radius, 4rpx);
   z-index: 10;
 }
-.nut-uploader-preview-progress i {
+.nut-uploader-preview-progress .h5-i {
   margin-bottom: var(--nutui-uploader-image-icon-margin-bottom, 6rpx);
 }
 .nut-uploader-preview-progress-msg {
@@ -724,7 +722,7 @@ wx-root-portal-content {
   border-radius: var(--nutui-uploader-image-border-radius, 4rpx);
   overflow: hidden;
 }
-.nut-uploader-preview-img i {
+.nut-uploader-preview-img .h5-i {
   color: var(--nutui-color-title, #1a1a1a);
 }
 .nut-uploader-preview-img .tips {
@@ -828,7 +826,7 @@ wx-root-portal-content {
 .nut-video-player:focus {
   outline: none;
 }
-.nut-video video {
+.nut-video .h5-video {
   width: 100%;
   height: 100%;
   object-fit: fill;
@@ -881,7 +879,6 @@ wx-root-portal-content {
   font-size: var(--nutui-tour-content-bottom-btn-font-size, 12rpx);
   border-radius: var(--nutui-tour-content-bottom-btn-border-radius, 4rpx);
   color: var(--nutui-color-text, #505259);
-  cursor: pointer;
 }
 .nut-tour-content-bottom-operate-btn.active {
   color: #fff;
@@ -1177,7 +1174,6 @@ wx-root-portal-content {
   border-radius: var(--nutui-tag-mark-border-radius, 0 8rpx 8rpx 0);
 }
 .nut-tag-close {
-  cursor: pointer;
 }
 .nut-tag-custom-icon {
   display: flex;
@@ -1222,7 +1218,6 @@ wx-root-portal-content {
   color: var(--nutui-color-text-help, #888b94);
 }
 .nut-textarea-limit-disabled {
-  cursor: not-allowed;
   color: var(--nutui-color-text-disabled, #c2c4cc);
 }
 .nut-textarea-textarea {
@@ -1254,7 +1249,6 @@ wx-root-portal-content {
   color: var(--nutui-color-text-help, #888b94);
 }
 .nut-textarea-textarea-disabled {
-  cursor: not-allowed;
   color: var(--nutui-color-text-disabled, #c2c4cc);
 }
 .nut-textarea-textarea-disabled::-webkit-input-placeholder {
@@ -1904,7 +1898,6 @@ wx-root-portal-content {
   right: 0;
 }
 .nut-switch {
-  cursor: pointer;
   position: relative;
   display: flex;
   display: inline-flex;
@@ -2059,7 +2052,6 @@ wx-root-portal-content {
   flex-direction: row;
   position: relative;
   overflow: hidden;
-  cursor: grab;
   background-color: #fff;
 }
 .nut-swipe-wrapper {
@@ -2106,7 +2098,7 @@ wx-root-portal-content {
   height: 100%;
   background-color: var(--nutui-steps-background-color, #ffffff);
 }
-.nut-steps-horizontal .nut-step-head-icon .nut-image img {
+.nut-steps-horizontal .nut-step-head-icon .nut-image .h5-img {
   vertical-align: top;
 }
 .nut-steps-horizontal .nut-step.nut-step-process .nut-step-title {
@@ -2653,7 +2645,6 @@ wx-root-portal-content {
   overflow-y: auto;
 }
 .nut-sidebar-titles-item {
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2674,7 +2665,6 @@ wx-root-portal-content {
 }
 .nut-sidebar-titles-item-disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc);
-  cursor: not-allowed;
 }
 .nut-shortpassword-popup {
   padding: 32rpx 24rpx 28rpx;
@@ -2958,34 +2948,34 @@ wx-root-portal-content {
 .nut-searchbar-left {
   margin-right: var(--nutui-searchbar-gap, 12rpx);
 }
-.nut-searchbar-left > div,
-.nut-searchbar-left > span,
-.nut-searchbar-left > i,
-.nut-searchbar-left > svg,
+.nut-searchbar-left > .h5-div,
+.nut-searchbar-left > .h5-span,
+.nut-searchbar-left > .h5-i,
+.nut-searchbar-left > .h5-svg,
 .nut-searchbar-left .nut-icon {
   margin-right: var(--nutui-searchbar-gap, 12rpx);
 }
-.nut-searchbar-left > div:last-child,
-.nut-searchbar-left > span:last-child,
-.nut-searchbar-left > i:last-child,
-.nut-searchbar-left > svg:last-child,
+.nut-searchbar-left > .h5-div:last-child,
+.nut-searchbar-left > .h5-span:last-child,
+.nut-searchbar-left > .h5-i:last-child,
+.nut-searchbar-left > .h5-svg:last-child,
 .nut-searchbar-left .nut-icon:last-child {
   margin-right: 0;
 }
 .nut-searchbar-right {
   margin-left: var(--nutui-searchbar-gap, 12rpx);
 }
-.nut-searchbar-right > div,
-.nut-searchbar-right > span,
-.nut-searchbar-right > i,
-.nut-searchbar-right > svg,
+.nut-searchbar-right > .h5-div,
+.nut-searchbar-right > .h5-span,
+.nut-searchbar-right > .h5-i,
+.nut-searchbar-right > .h5-svg,
 .nut-searchbar-right .nut-icon {
   margin-left: var(--nutui-searchbar-gap, 12rpx);
 }
-.nut-searchbar-right > div:first-child,
-.nut-searchbar-right > span:first-child,
-.nut-searchbar-right > i:first-child,
-.nut-searchbar-right > svg:first-child,
+.nut-searchbar-right > .h5-div:first-child,
+.nut-searchbar-right > .h5-span:first-child,
+.nut-searchbar-right > .h5-i:first-child,
+.nut-searchbar-right > .h5-svg:first-child,
 .nut-searchbar-right .nut-icon:first-child {
   margin-left: 0;
 }
@@ -3009,7 +2999,6 @@ wx-root-portal-content {
   border-radius: var(--nutui-searchbar-content-round-border-radius, 19rpx);
 }
 .nut-searchbar-disabled {
-  cursor: not-allowed;
 }
 .nut-searchbar-focus {
   padding: 5rpx var(--nutui-searchbar-gap, 12rpx);
@@ -3022,29 +3011,29 @@ wx-root-portal-content {
   margin-right: 0;
   margin-left: var(--nutui-searchbar-gap, 12rpx);
 }
-[dir='rtl'] .nut-searchbar-left > div,
-[dir='rtl'] .nut-searchbar-left > span,
-[dir='rtl'] .nut-searchbar-left > svg,
-.nut-rtl .nut-searchbar-left > div,
-.nut-rtl .nut-searchbar-left > span,
-.nut-rtl .nut-searchbar-left > svg {
+[dir='rtl'] .nut-searchbar-left > .h5-div,
+[dir='rtl'] .nut-searchbar-left > .h5-span,
+[dir='rtl'] .nut-searchbar-left > .h5-svg,
+.nut-rtl .nut-searchbar-left > .h5-div,
+.nut-rtl .nut-searchbar-left > .h5-span,
+.nut-rtl .nut-searchbar-left > .h5-svg {
   margin-right: 0;
   margin-left: var(--nutui-searchbar-gap, 12rpx);
 }
-[dir='rtl'] .nut-searchbar-left > div.nut-icon,
-[dir='rtl'] .nut-searchbar-left > span.nut-icon,
-[dir='rtl'] .nut-searchbar-left > svg.nut-icon,
-.nut-rtl .nut-searchbar-left > div.nut-icon,
-.nut-rtl .nut-searchbar-left > span.nut-icon,
-.nut-rtl .nut-searchbar-left > svg.nut-icon {
+[dir='rtl'] .nut-searchbar-left > .h5-div.nut-icon,
+[dir='rtl'] .nut-searchbar-left > .h5-span.nut-icon,
+[dir='rtl'] .nut-searchbar-left > .h5-svg.nut-icon,
+.nut-rtl .nut-searchbar-left > .h5-div.nut-icon,
+.nut-rtl .nut-searchbar-left > .h5-span.nut-icon,
+.nut-rtl .nut-searchbar-left > .h5-svg.nut-icon {
   transform: rotate(180deg);
 }
-[dir='rtl'] .nut-searchbar-left > div:last-child,
-[dir='rtl'] .nut-searchbar-left > span:last-child,
-[dir='rtl'] .nut-searchbar-left > svg:last-child,
-.nut-rtl .nut-searchbar-left > div:last-child,
-.nut-rtl .nut-searchbar-left > span:last-child,
-.nut-rtl .nut-searchbar-left > svg:last-child {
+[dir='rtl'] .nut-searchbar-left > .h5-div:last-child,
+[dir='rtl'] .nut-searchbar-left > .h5-span:last-child,
+[dir='rtl'] .nut-searchbar-left > .h5-svg:last-child,
+.nut-rtl .nut-searchbar-left > .h5-div:last-child,
+.nut-rtl .nut-searchbar-left > .h5-span:last-child,
+.nut-rtl .nut-searchbar-left > .h5-svg:last-child {
   margin-right: 0;
   margin-left: 0;
 }
@@ -3053,21 +3042,21 @@ wx-root-portal-content {
   margin-left: 0;
   margin-right: var(--nutui-searchbar-gap, 12rpx);
 }
-[dir='rtl'] .nut-searchbar-right > div,
-[dir='rtl'] .nut-searchbar-right > span,
-[dir='rtl'] .nut-searchbar-right > svg,
-.nut-rtl .nut-searchbar-right > div,
-.nut-rtl .nut-searchbar-right > span,
-.nut-rtl .nut-searchbar-right > svg {
+[dir='rtl'] .nut-searchbar-right > .h5-div,
+[dir='rtl'] .nut-searchbar-right > .h5-span,
+[dir='rtl'] .nut-searchbar-right > .h5-svg,
+.nut-rtl .nut-searchbar-right > .h5-div,
+.nut-rtl .nut-searchbar-right > .h5-span,
+.nut-rtl .nut-searchbar-right > .h5-svg {
   margin-left: 0;
   margin-right: var(--nutui-searchbar-gap, 12rpx);
 }
-[dir='rtl'] .nut-searchbar-right > div:first-child,
-[dir='rtl'] .nut-searchbar-right > span:first-child,
-[dir='rtl'] .nut-searchbar-right > svg:first-child,
-.nut-rtl .nut-searchbar-right > div:first-child,
-.nut-rtl .nut-searchbar-right > span:first-child,
-.nut-rtl .nut-searchbar-right > svg:first-child {
+[dir='rtl'] .nut-searchbar-right > .h5-div:first-child,
+[dir='rtl'] .nut-searchbar-right > .h5-span:first-child,
+[dir='rtl'] .nut-searchbar-right > .h5-svg:first-child,
+.nut-rtl .nut-searchbar-right > .h5-div:first-child,
+.nut-rtl .nut-searchbar-right > .h5-span:first-child,
+.nut-rtl .nut-searchbar-right > .h5-svg:first-child {
   margin-left: 0;
   margin-right: 0;
 }
@@ -3232,7 +3221,6 @@ wx-root-portal-content {
   background-color: var(--nutui-range-inactive-color, var(--nutui-color-primary-light-pressed, #ffebf1));
   border-radius: 2rpx;
   flex: 1;
-  cursor: pointer;
 }
 .nut-range::before {
   position: absolute;
@@ -3287,14 +3275,12 @@ wx-root-portal-content {
   position: absolute;
   top: 50%;
   left: 100%;
-  cursor: grab;
   outline: none;
 }
 .nut-range-button-wrapper-left {
   position: absolute;
   top: 50%;
   left: 0;
-  cursor: grab;
   outline: none;
   touch-action: none;
 }
@@ -3316,13 +3302,11 @@ wx-root-portal-content {
   box-sizing: border-box;
 }
 .nut-range-disabled {
-  cursor: not-allowed;
   opacity: 0.54;
 }
 .nut-range-disabled .nut-range-button-wrapper,
 .nut-range-disabled .nut-range-button-wrapper-left,
 .nut-range-disabled .nut-range-button-wrapper-right {
-  cursor: not-allowed;
 }
 .nut-range-mark {
   position: absolute;
@@ -3478,10 +3462,8 @@ wx-root-portal-content {
   touch-action: pan-x;
 }
 .nut-rate.disabled .nut-rate-item-icon {
-  cursor: not-allowed;
 }
 .nut-rate.readonly .nut-rate-item-icon {
-  cursor: default;
 }
 .nut-rate-item {
   display: flex;
@@ -3529,7 +3511,6 @@ wx-root-portal-content {
 .nut-rate-item-icon {
   display: flex;
   align-items: center;
-  cursor: pointer;
 }
 .nut-rate-item-icon .nut-icon {
   color: var(--nutui-rate-icon-color, var(--nutui-color-primary-icon, #ff3333));
@@ -3974,7 +3955,6 @@ wx-root-portal-content {
   width: var(--nutui-popup-icon-size, 20rpx);
   height: var(--nutui-popup-icon-size, 20rpx);
   color: var(--nutui-color-title, #1a1a1a);
-  cursor: pointer;
 }
 .nut-popup-title-right:active {
   opacity: 0.7;
@@ -4358,7 +4338,6 @@ wx-root-portal-content {
 }
 .nut-popover .nut-popover-content .nut-popover-item.nut-popover-item-disabled {
   color: var(--nutui-popover-disable-color, var(--nutui-color-text-disabled, #c2c4cc));
-  cursor: not-allowed;
 }
 .nut-popover .nut-popover-content .nut-popover-item.nut-popover-taroitem {
   display: flex;
@@ -4651,7 +4630,6 @@ wx-root-portal-content {
   background: #fff;
   border-radius: var(--nutui-pagination-item-border-radius, 2rpx);
   border: var(--nutui-pagination-item-border-width, 1rpx) solid var(--nutui-pagination-item-border-color, var(--nutui-color-border, rgba(0, 0, 0, 0.06)));
-  cursor: pointer;
 }
 .nut-pagination-prev,
 .nut-pagination-item {
@@ -4675,7 +4653,6 @@ wx-root-portal-content {
 .nut-pagination-prev-disabled {
   color: var(--nutui-pagination-disable-color, var(--nutui-color-text-disabled, #c2c4cc));
   background-color: var(--nutui-pagination-disable-background-color, #f7f8fa);
-  cursor: not-allowed;
 }
 .nut-pagination-simple {
   height: 39rpx;
@@ -4787,7 +4764,6 @@ wx-root-portal-content {
   font-size: var(--nutui-numberkeyboard-header-close-font-size, 14rpx);
   background-color: var(--nutui-numberkeyboard-header-close-background-color, transparent);
   border: none;
-  cursor: pointer;
 }
 .nut-numberkeyboard-body {
   display: flex;
@@ -4820,7 +4796,6 @@ wx-root-portal-content {
   border-radius: var(--nutui-numberkeyboard-key-border-radius, 8rpx);
   border: var(--nutui-numberkeyboard-key-border, none);
   font-weight: var(--nutui-font-weight-bold, 600);
-  cursor: pointer;
 }
 /* tokens: key <= src/pages/issue-928/index.tsx */
 .nut-numberkeyboard-body-wrapper .key.active {
@@ -5192,7 +5167,6 @@ wx-root-portal-content {
   flex-direction: row;
   max-width: 124rpx;
   height: 100%;
-  cursor: pointer;
 }
 .nut-navbar-left .nut-icon,
 .nut-navbar-left .nutui-iconfont,
@@ -5448,11 +5422,9 @@ wx-root-portal-content {
 }
 .nut-inputnumber-icon {
   color: var(--nutui-color-text, #505259);
-  cursor: pointer;
 }
 .nut-inputnumber-icon-disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc);
-  cursor: not-allowed;
 }
 .nut-inputnumber-input {
   display: flex;
@@ -5585,9 +5557,8 @@ wx-root-portal-content {
 .nut-input-disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc) !important;
 }
-.nut-input-disabled input:disabled {
+.nut-input-disabled .h5-input:disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc);
-  cursor: not-allowed;
   background: none;
   opacity: 1;
   -webkit-text-fill-color: var(--nutui-color-text-disabled, #c2c4cc);
@@ -5791,8 +5762,8 @@ wx-root-portal-content {
 .nut-imagepreview-swiper .nut-swiper-item .nut-image-preview-box {
   width: 100%;
 }
-.nut-imagepreview-swiper .nut-imagepreview-swiper-item .nut-video video,
-.nut-imagepreview-swiper .nut-swiper-item .nut-video video {
+.nut-imagepreview-swiper .nut-imagepreview-swiper-item .nut-video .h5-video,
+.nut-imagepreview-swiper .nut-swiper-item .nut-video .h5-video {
   object-fit: contain;
 }
 [dir='rtl'] .nut-imagepreview-index .arrow,
@@ -5978,7 +5949,6 @@ wx-root-portal-content {
   flex-direction: row-reverse;
 }
 .nut-grid-item-content-clickable {
-  cursor: pointer;
 }
 .nut-grid-item-content-clickable::before {
   position: absolute;
@@ -6372,7 +6342,6 @@ wx-root-portal-content {
   display: flex;
 }
 .nut-ellipsis .nut-ellipsis-text {
-  cursor: pointer;
   color: var(--nutui-ellipsis-expand-collapse-color, var(--nutui-color-info, #0073ff));
   display: inline-block;
 }
@@ -6488,7 +6457,6 @@ wx-root-portal-content {
   margin: 1rpx 0;
   color: var(--nutui-elevator-bars-color, var(--nutui-color-text-help, #888b94));
   font-size: var(--nutui-elevator-bars-font-size, var(--nutui-font-size-xxs, 10rpx));
-  cursor: pointer;
 }
 .nut-elevator-bars-inner-item-active {
   font-weight: var(--nutui-font-weight-bold, 600);
@@ -6555,7 +6523,7 @@ wx-root-portal-content {
   width: var(--nutui-empty-image-size, 160rpx);
   height: var(--nutui-empty-image-size, 160rpx);
 }
-.nut-empty-base img,
+.nut-empty-base .h5-img,
 .nut-empty-base image {
   width: 100%;
   height: 100%;
@@ -6564,7 +6532,7 @@ wx-root-portal-content {
   width: var(--nutui-empty-image-small-size, 120rpx);
   height: var(--nutui-empty-image-small-size, 120rpx);
 }
-.nut-empty-small img,
+.nut-empty-small .h5-img,
 .nut-empty-small image {
   width: 100%;
   height: 100%;
@@ -6677,7 +6645,6 @@ wx-root-portal-content {
 .nut-dialog-close {
   position: absolute !important;
   z-index: 1;
-  cursor: pointer;
   width: var(--nutui-dialog-close-width, 16rpx);
   height: var(--nutui-dialog-close-height, 16rpx);
   display: flex;
@@ -7670,7 +7637,6 @@ wx-root-portal-content {
   opacity: 0.1;
 }
 .nut-cell-clickable {
-  cursor: pointer;
 }
 .nut-cell-clickable::before {
   position: absolute;
@@ -7738,11 +7704,9 @@ wx-root-portal-content {
   border-bottom: var(--nutui-cascader-item-border-bottom, 0rpx solid var(--nutui-color-border, rgba(0, 0, 0, 0.06)));
   font-size: var(--nutui-cascader-item-font-size, var(--nutui-font-size-base, 14rpx));
   color: var(--nutui-cascader-item-color, var(--nutui-color-title, #1a1a1a));
-  cursor: pointer;
 }
 .nut-cascader-item.disabled {
   opacity: 0.6;
-  cursor: not-allowed;
 }
 .nut-cascader-item.active:not(.disabled) {
   color: var(--nutui-cascader-item-active-color, var(--nutui-color-primary, #ff0f23));
@@ -7774,7 +7738,7 @@ wx-root-portal-content {
   height: 120rpx;
   flex-shrink: 0;
 }
-.nut-card-left > img {
+.nut-card-left > .h5-img {
   display: block;
   width: 100%;
   height: 100%;
@@ -7858,7 +7822,6 @@ wx-root-portal-content {
 .nut-calendarcard-header-right {
   display: flex;
   flex-direction: row;
-  cursor: pointer;
   margin: 16rpx;
   line-height: 1;
 }
@@ -7884,12 +7847,10 @@ wx-root-portal-content {
   position: relative;
   width: var(--nutui-calendar-day-width, 14.28%);
   height: 48rpx;
-  cursor: pointer;
   margin-bottom: 4rpx;
   text-align: center;
 }
 .nut-calendarcard-day.header {
-  cursor: auto;
 }
 .nut-calendarcard-day-top,
 .nut-calendarcard-day-bottom {
@@ -7947,7 +7908,6 @@ wx-root-portal-content {
 .nut-calendarcard-day.prev,
 .nut-calendarcard-day.next,
 .nut-calendarcard-day.disabled {
-  cursor: not-allowed;
 }
 .nut-calendarcard-day.prev .nut-calendarcard-day-top,
 .nut-calendarcard-day.prev .nut-calendarcard-day-inner,
@@ -7976,16 +7936,16 @@ wx-root-portal-content {
 }
 [dir='rtl'] .nut-calendarcard-header-left .nut-icon-ArrowLeft,
 [dir='rtl'] .nut-calendarcard-header-left .nut-icon-ArrowRight,
-[dir='rtl'] .nut-calendarcard-header-left svg,
+[dir='rtl'] .nut-calendarcard-header-left .h5-svg,
 [dir='rtl'] .nut-calendarcard-header-right .nut-icon-ArrowLeft,
 [dir='rtl'] .nut-calendarcard-header-right .nut-icon-ArrowRight,
-[dir='rtl'] .nut-calendarcard-header-right svg,
+[dir='rtl'] .nut-calendarcard-header-right .h5-svg,
 .nut-rtl .nut-calendarcard-header-left .nut-icon-ArrowLeft,
 .nut-rtl .nut-calendarcard-header-left .nut-icon-ArrowRight,
-.nut-rtl .nut-calendarcard-header-left svg,
+.nut-rtl .nut-calendarcard-header-left .h5-svg,
 .nut-rtl .nut-calendarcard-header-right .nut-icon-ArrowLeft,
 .nut-rtl .nut-calendarcard-header-right .nut-icon-ArrowRight,
-.nut-rtl .nut-calendarcard-header-right svg {
+.nut-rtl .nut-calendarcard-header-right .h5-svg {
   transform: rotate(180deg);
 }
 [dir='rtl'] .nut-calendarcard-day.start,
@@ -8218,7 +8178,6 @@ wx-root-portal-content {
   font-size: var(--nutui-button-default-font-size, var(--nutui-font-size-base, 14rpx));
   font-weight: var(--nutui-font-weight, 400);
   text-align: center;
-  cursor: pointer;
   transition: opacity 0.2s;
   user-select: none;
   touch-action: manipulation;
@@ -8279,7 +8238,6 @@ wx-root-portal-content {
   display: none;
 }
 .nut-button-disabled {
-  cursor: not-allowed;
   color: #fff;
 }
 .nut-button.nut-button-icononly {
@@ -8568,7 +8526,6 @@ wx-root-portal-content {
   border-color: transparent;
 }
 .nut-button-loading {
-  cursor: default;
   opacity: 0.9;
 }
 .nut-button-square {
@@ -8788,7 +8745,6 @@ wx-root-portal-content {
   width: 100%;
   height: 100%;
   opacity: 0;
-  cursor: pointer;
   z-index: 2;
 }
 .nut-avatar-cropper-popup {
@@ -8831,7 +8787,6 @@ wx-root-portal-content {
 .nut-avatar-cropper-popup-toolbar-item {
   color: #fff;
   padding: 15rpx;
-  cursor: pointer;
   display: flex;
   align-items: center;
 }
@@ -9268,7 +9223,6 @@ wx-root-portal-content {
   line-height: var(--nutui-actionsheet-item-line-height, 24rpx);
   font-size: var(--nutui-font-size-base, 14rpx);
   color: var(--nutui-actionsheet-item-color, var(--nutui-color-title, #1a1a1a));
-  cursor: pointer;
 }
 .nut-actionsheet-cancel-name,
 .nut-actionsheet-item-name {
@@ -9292,7 +9246,6 @@ wx-root-portal-content {
 .nut-actionsheet-cancel-disabled,
 .nut-actionsheet-item-disabled {
   color: var(--nutui-color-text-disabled, #c2c4cc) !important;
-  cursor: not-allowed;
 }
 .nut-actionsheet-cancel {
   margin-top: 5rpx;

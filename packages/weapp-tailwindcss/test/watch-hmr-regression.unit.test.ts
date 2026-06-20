@@ -1866,15 +1866,29 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackCase?.webHmr).not.toHaveProperty('devArgs')
   })
 
-  it('keeps Taro webpack React v4 H5 watch regression on NutUI stubs', async () => {
+  it('keeps Taro webpack demos on real NutUI and html plugin integration', async () => {
     const configSource = await readFile(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
     ), 'utf8')
+    const reactPackageJson = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-react-tailwindcss-v4/package.json',
+    ), 'utf8')
+    const reactPageSource = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx',
+    ), 'utf8')
+    const vueAppSource = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts',
+    ), 'utf8')
 
-    expect(configSource).toContain('function applyWatchRegressionAliases')
-    expect(configSource).toMatch(/mini:\s*\{[\s\S]*?webpackChain\(chain\)\s*\{[\s\S]*?applyWatchRegressionAliases\(chain\)/)
-    expect(configSource).toMatch(/h5:\s*\{[\s\S]*?webpackChain\(chain\)\s*\{[\s\S]*?applyWatchRegressionAliases\(chain\)/)
+    expect(configSource).toContain('@tarojs/plugin-html')
+    expect(reactPackageJson).toContain('@nutui/nutui-react-taro')
+    expect(reactPageSource).toContain('@nutui/nutui-react-taro')
+    expect(vueAppSource).toContain('@nutui/nutui-taro')
+    expect(vueAppSource).toContain('app.use(NutButton)')
   })
 
   it('keeps the uni-app Vue3 Vite v3 style mutation on the global Tailwind layer entry', () => {
@@ -2231,7 +2245,7 @@ describe('watch-hmr regression cases', () => {
     ]
     for (const configPath of taroWebpackConfigs) {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
-      expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
+      expect(configSource, configPath).toContain('@tarojs/plugin-html')
       expect(configSource, configPath).toContain('WeappTailwindcss')
       expectTaroGeneratorTargetConfig(configSource, configPath)
       expect(configSource, configPath).not.toContain('chain.watchOptions({')

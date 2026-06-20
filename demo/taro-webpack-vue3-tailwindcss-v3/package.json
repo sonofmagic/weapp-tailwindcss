@@ -86,6 +86,7 @@
     "@tarojs/components": "catalog:taro4",
     "@tarojs/components-rn": "catalog:taro4rn",
     "@tarojs/plugin-framework-vue3": "catalog:taro4",
+    "@tarojs/plugin-html": "catalog:taro4",
     "@tarojs/plugin-platform-harmony-hybrid": "catalog:taro4",
     "@tarojs/router": "catalog:taro4",
     "@tarojs/runtime": "catalog:taro4",

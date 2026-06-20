@@ -434,6 +434,14 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         stage: Compilation.PROCESS_ASSETS_STAGE_SUMMARIZE,
       },
       async (assets) => {
+        const entries = Object.entries(assets)
+        if (entries.length === 0) {
+          return
+        }
+        const groupedEntries = getGroupedEntries(entries, compilerOptions)
+        if (isWebGeneratorTarget && !groupedEntries.css?.length) {
+          return
+        }
         compilerOptions.onStart()
         debug('start')
         await runtimeState.readyPromise
@@ -453,7 +461,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           debug,
         })
 
-        const entries = Object.entries(assets)
         const compilerOutputPath = compilation.compiler?.outputPath ?? compiler.outputPath
         const outputDir = compilerOutputPath
           ? path.resolve(compilerOutputPath)
@@ -509,7 +516,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             }
           }
         }
-        const groupedEntries = getGroupedEntries(entries, compilerOptions)
         const watchMode = isWatchMode?.() === true
         const cssAssetResources = createWebpackCssAssetResourceMap(
           compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,

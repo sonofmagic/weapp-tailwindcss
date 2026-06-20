@@ -4,7 +4,6 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
-const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 
 const generator = {
@@ -40,7 +39,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+    plugins: ['@tarojs/plugin-html', '@tarojs/plugin-platform-harmony-hybrid'],
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {

@@ -6,7 +6,6 @@ import prodConfig from './prod'
 
 const require = createRequire(__filename)
 const bench = require('../../bench.cjs')('taro-react')
-const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const taroEnv = process.env.TARO_ENV
 const isWebLikeTarget = taroEnv === 'h5' || taroEnv === 'harmony' || taroEnv === 'harmony-hybrid'
 
@@ -37,7 +36,7 @@ const config: UserConfigExport<'webpack5'> = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+  plugins: ['@tarojs/plugin-html', '@tarojs/plugin-platform-harmony-hybrid'],
   defineConstants: {},
   copy: {
     patterns: [],
