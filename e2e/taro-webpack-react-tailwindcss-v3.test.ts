@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import process from 'node:process'
+import fg from 'fast-glob'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
@@ -23,20 +24,25 @@ describe('e2e', () => {
       await ensureProjectBuilt(root)
     }
 
-    const appWxss = await fs.readFile(path.resolve(projectPath, 'dist/app.wxss'), 'utf8')
+    const wxssFiles = await fg('dist/**/*.wxss', {
+      cwd: projectPath,
+      absolute: true,
+      onlyFiles: true,
+    })
+    const wxss = (await Promise.all(wxssFiles.map(file => fs.readFile(file, 'utf8')))).join('\n')
 
-    expect(appWxss).toContain('.bg-gradient-to-r')
-    expect(appWxss).toContain('.bg-gradient-to-tr')
-    expect(appWxss).toContain('.from-cyan-500')
-    expect(appWxss).toContain('.via-purple-500')
-    expect(appWxss).toContain('.to-blue-500')
-    expect(appWxss).toMatch(/background-image:\s*linear-gradient\(to right,\s*var\(--tw-gradient-stops\)\)/)
-    expect(appWxss).toContain('--tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)')
-    expect(appWxss).toContain('--tw-gradient-stops: var(--tw-gradient-from), #a855f7 var(--tw-gradient-via-position), var(--tw-gradient-to)')
-    expect(appWxss).toContain('var(--tw-gradient-from-position)')
-    expect(appWxss).toContain('var(--tw-gradient-to-position)')
-    expect(appWxss).toContain('background-image: linear-gradient(to right,#06b6d4,#3b82f6)')
-    expect(appWxss).toContain('background-image: radial-gradient(circle at 50% 50%,#06b6d4,#a855f7,#3b82f6)')
-    expect(appWxss).toContain('background-image: conic-gradient(from 180deg,#06b6d4,#a855f7,#3b82f6)')
+    expect(wxss).toContain('.bg-gradient-to-r')
+    expect(wxss).toContain('.bg-gradient-to-tr')
+    expect(wxss).toContain('.from-cyan-500')
+    expect(wxss).toContain('.via-purple-500')
+    expect(wxss).toContain('.to-blue-500')
+    expect(wxss).toMatch(/background-image:\s*linear-gradient\(to right,\s*var\(--tw-gradient-stops\)\)/)
+    expect(wxss).toMatch(/--tw-gradient-stops:\s*var\(--tw-gradient-from\),\s*var\(--tw-gradient-to\)/)
+    expect(wxss).toMatch(/--tw-gradient-stops:\s*var\(--tw-gradient-from\),\s*#a855f7 var\(--tw-gradient-via-position(?:,\s*)?\),\s*var\(--tw-gradient-to\)/)
+    expect(wxss).toContain('--tw-gradient-from-position')
+    expect(wxss).toContain('--tw-gradient-to-position')
+    expect(wxss).toMatch(/background-image:\s*linear-gradient\(to right,#06b6d4,#3b82f6\)/)
+    expect(wxss).toMatch(/background-image:\s*radial-gradient\(circle at 50% 50%,#06b6d4,#a855f7,#3b82f6\)/)
+    expect(wxss).toMatch(/background-image:\s*conic-gradient\(from 180deg,#06b6d4,#a855f7,#3b82f6\)/)
   })
 })

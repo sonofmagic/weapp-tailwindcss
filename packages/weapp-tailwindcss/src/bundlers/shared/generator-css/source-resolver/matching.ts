@@ -9,11 +9,6 @@ export function normalizeCssSourceForCompare(css: string) {
   return stripGeneratorPlaceholderMarkers(stripTailwindBanners(css)).trim()
 }
 
-export function getOutputFileStem(file: string) {
-  const normalized = file.replace(/[?#].*$/, '')
-  return path.basename(normalized, path.extname(normalized))
-}
-
 function getOutputFileWithoutExtension(file: string) {
   const normalized = file.replace(/[?#].*$/, '')
   const ext = path.extname(normalized)
@@ -39,10 +34,6 @@ function collectCssSourceMatchBases(
     const base = normalizeMatchPath(getOutputFileWithoutExtension(candidate))
     if (base.length > 0) {
       bases.add(base)
-      const withoutWorkspaceSegment = base.replace(/^(?:src|dist)\//, '')
-      if (withoutWorkspaceSegment !== base && withoutWorkspaceSegment.length > 0) {
-        bases.add(withoutWorkspaceSegment)
-      }
     }
   }
   addBase(normalizedFile)

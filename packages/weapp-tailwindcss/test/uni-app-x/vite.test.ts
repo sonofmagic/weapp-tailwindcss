@@ -637,8 +637,13 @@ describe('uni-app-x vite plugins', () => {
       expect(placeholderPlugin).toBeDefined()
       const bundle = {
         'assets/App.js': createChunk('const _style_0 = {};'),
-        'main.wxss': createAsset('.flex { display: flex; } .bg-_b_h102938_B { background-color: #102938; } .text-_b_hf7fbff_B { color: #f7fbff; }'),
-        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "flex wtu-a wtu-b" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);'),
+        'styles/theme.wxss': createAsset('.flex { display: flex; } .bg-_b_h102938_B { background-color: #102938; } .text-_b_hf7fbff_B { color: #f7fbff; }'),
+        'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "flex wtu-a wtu-b" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);', {
+          isEntry: true,
+          viteMetadata: {
+            importedCss: new Set(['styles/theme.wxss']),
+          },
+        }),
         'assets/pages/index/index.js.map': createAsset(JSON.stringify({
           sourcesContent: [
             '<style scoped>\n.wtu-a {\n  @apply bg-[#102938];\n}\n.wtu-b {\n  @apply text-[#f7fbff];\n}\n</style>',
@@ -859,6 +864,67 @@ describe('uni-app-x vite plugins', () => {
     expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-a":{"":{"backgroundColor":"rgba(16,41,56,1)"}}')
     expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-b":{"":{"color":"rgba(247,251,255,1)"}}')
     expect(bundle['assets/pages/index/index.js'].code).toContain('"wtu-c":{"":{"width":173}}')
+  })
+
+  it('hydrates harmony global styles from bundle css assets without app or main file names', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "page-global" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);', {
+        isEntry: true,
+        viteMetadata: {
+          importedCss: new Set(['global/theme.wxss']),
+        },
+      }),
+      'global/theme.wxss': createAsset('.page-global { color: #123456; }'),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle)
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"page-global":{"":{"color":"#123456"}}')
+  })
+
+  it('does not guess harmony global style assets from output file names', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "page-global page-derived page-derived-css" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);', {
+        isEntry: true,
+        viteMetadata: {
+          importedCss: new Set<string>(),
+        },
+      }),
+      'global/theme.wxss': createAsset('.page-global { color: #123456; }'),
+      'pages/index/index.wxss': createAsset('.page-derived { color: #654321; }'),
+      'pages/index/index.css': createAsset('.page-derived-css { color: #abcdef; }'),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle)
+
+    expect(changed).toBe(false)
+    expect(bundle['assets/pages/index/index.js'].code).not.toContain('"page-global":{"":{"color":"#123456"}}')
+    expect(bundle['assets/pages/index/index.js'].code).not.toContain('"page-derived":{"":{"color":"#654321"}}')
+    expect(bundle['assets/pages/index/index.js'].code).not.toContain('"page-derived-css":{"":{"color":"#abcdef"}}')
+  })
+
+  it('hydrates harmony css assets only for chunks linked by bundle metadata', () => {
+    const bundle = {
+      'assets/App.js': createChunk('const _style_0 = {};'),
+      'assets/pages/index/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "page-linked page-other" })}\nconst index = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/index/index.uvue"]]);', {
+        viteMetadata: {
+          importedCss: new Set(['chunks/page-linked.wxss']),
+        },
+      }),
+      'assets/pages/about/index.js': createChunk('const _style_0 = {};\nfunction render(){return createElementVNode("view", { class: "page-linked page-other" })}\nconst about = _export_sfc(_sfc_main, [["render", render], ["styles", [_style_0]], ["__file", "pages/about/index.uvue"]]);'),
+      'chunks/page-linked.wxss': createAsset('.page-linked { color: #123456; }'),
+      'chunks/page-other.wxss': createAsset('.page-other { color: #654321; }'),
+    }
+
+    const changed = injectUniAppXHarmonyBundleStyles(bundle)
+
+    expect(changed).toBe(true)
+    expect(bundle['assets/pages/index/index.js'].code).toContain('"page-linked":{"":{"color":"#123456"}}')
+    expect(bundle['assets/pages/index/index.js'].code).not.toContain('"page-other":{"":{"color":"#654321"}}')
+    expect(bundle['assets/pages/about/index.js'].code).not.toContain('"page-linked":{"":{"color":"#123456"}}')
   })
 
   it('hydrates harmony local styles even when App style is empty', () => {

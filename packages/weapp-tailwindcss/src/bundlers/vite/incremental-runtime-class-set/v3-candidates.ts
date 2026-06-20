@@ -155,7 +155,7 @@ function isLikelyTailwindV3OpacityModifier(candidate: string) {
   return /^[!-]?[a-z][\w-]*-\w[\w-]*\/(?:\d+|\[[^\]]+\])$/.test(utility)
 }
 
-function isHighConfidenceV3Candidate(candidate: string) {
+export function isHighConfidenceV3Candidate(candidate: string) {
   return isLikelyTailwindV3ArbitraryUtility(candidate)
     || isLikelyTailwindV3VariantUtility(candidate)
     || isLikelyTailwindV3OpacityModifier(candidate)

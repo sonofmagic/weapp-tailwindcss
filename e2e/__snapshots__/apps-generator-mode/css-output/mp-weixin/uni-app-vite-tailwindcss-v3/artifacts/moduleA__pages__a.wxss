@@ -1,0 +1,92 @@
+::before,
+::after {
+  --tw-content: '';
+}
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: currentColor;
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x:;
+  --tw-pan-y:;
+  --tw-pinch-zoom:;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position:;
+  --tw-gradient-via-position:;
+  --tw-gradient-to-position:;
+  --tw-ordinal:;
+  --tw-slashed-zero:;
+  --tw-numeric-figure:;
+  --tw-numeric-spacing:;
+  --tw-numeric-fraction:;
+  --tw-ring-inset:;
+  --tw-ring-offset-width: 0rpx;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgba(59, 130, 246, 0.5);
+  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
+  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
+  --tw-blur:;
+  --tw-brightness:;
+  --tw-contrast:;
+  --tw-grayscale:;
+  --tw-hue-rotate:;
+  --tw-invert:;
+  --tw-saturate:;
+  --tw-sepia:;
+  --tw-drop-shadow:;
+  --tw-backdrop-blur:;
+  --tw-backdrop-brightness:;
+  --tw-backdrop-contrast:;
+  --tw-backdrop-grayscale:;
+  --tw-backdrop-hue-rotate:;
+  --tw-backdrop-invert:;
+  --tw-backdrop-opacity:;
+  --tw-backdrop-saturate:;
+  --tw-backdrop-sepia:;
+  --tw-contain-size:;
+  --tw-contain-layout:;
+  --tw-contain-paint:;
+  --tw-contain-style:;
+}
+ /* tokens: inline <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.inline {
+  display: inline;
+}
+ /* tokens: filter <= src/moduleA/pages/b.vue, src/moduleA/pages/utils.filter.js */
+.filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+ /* tokens: before:content-['moduleA_独立分包'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B::before {
+  --tw-content: 'moduleA 独立分包';
+  content: var(--tw-content);
+}
+ /* tokens: after:content-['我是className'] <= src/moduleA/pages/index.vue */
+.after_ccontent-_b_au_x6211_u_x662f_className_a_B::after {
+  --tw-content: '我是className';
+  content: var(--tw-content);
+}
+ /* tokens: after:content-['我来自utils.filter.js'] <= src/moduleA/pages/utils.filter.js */
+.after_ccontent-_b_au_x6211_u_x6765_u_x81ea_utils_dfilter_djs_a_B::after {
+  --tw-content: '我来自utils.filter.js';
+  content: var(--tw-content);
+}
+ /* tokens: after:content-[\'我来自inline-wxs\'] <= src/moduleA/pages/a.vue, src/moduleA/pages/b.vue, src/moduleA/pages/index.vue */
+.after_ccontent-_b_r_au_x6211_u_x6765_u_x81ea_inline-wxs_r_a_B::after {
+  --tw-content: \'我来自inline-wxs\';
+  content: var(--tw-content);
+}

@@ -6,7 +6,7 @@ import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
 import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
-import { normalizeCssTextSnapshot } from './snapshotUtils'
+import { formatRawCssSnapshotText, normalizeCssTextSnapshot } from './snapshotUtils'
 import { collectTokenSourceReports, formatTokenSourceFileReport } from './tokenSourceReports'
 
 export { ensureProjectBuilt } from './projectBuild'
@@ -107,7 +107,7 @@ function shouldSkipAutomator(entry: ProjectEntry) {
 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  await expect(normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
+  await expect(await normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
 }
 
 function shouldCollectIssue909TransformSnapshot(entry: ProjectEntry) {
@@ -149,9 +149,9 @@ function normalizeIssue909WxmlSnapshot(source: string) {
   return source.replace(/\s+style="[^"]*"/g, '')
 }
 
-function normalizeProjectSnapshotContent(fileName: string, source: string) {
+async function normalizeProjectSnapshotContent(fileName: string, source: string) {
   if (/\.(?:wxss|css)$/.test(fileName)) {
-    return `${normalizeCssTextSnapshot(source)}\n`
+    return formatRawCssSnapshotText(source)
   }
 
   const normalized = source

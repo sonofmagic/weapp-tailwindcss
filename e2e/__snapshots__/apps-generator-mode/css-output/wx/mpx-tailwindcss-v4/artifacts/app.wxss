@@ -1,0 +1,2 @@
+@import './styles/app.wxss';
+@import './styles/third-party-ui.wxss';

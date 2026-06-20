@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
+import RuntimeClassSetLoader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
   it('forwards tailwindcssImportRewrite options when tailwindcss v4 detected', () => {
@@ -124,6 +125,29 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     cleanupRuntime?.()
 
     expect(getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)).toBeUndefined()
+  })
+
+  it('does not register css-loader runtime modules as css source content', () => {
+    const registerCssSourceFile = vi.fn()
+    RuntimeClassSetLoader.call({
+      getOptions: () => ({
+        getClassSet: vi.fn(),
+        registerCssSourceFile,
+      }),
+      resourcePath: '/workspace/src/pages/index.wxss',
+    } as any, [
+      '// Imports',
+      'var ___CSS_LOADER_API_IMPORT___ = require("css-loader/runtime/api.js");',
+      'var ___CSS_LOADER_EXPORT___ = ___CSS_LOADER_API_IMPORT___();',
+      '___CSS_LOADER_EXPORT___.push([module.id, ".user-card{color:red}", ""]);',
+      'module.exports = ___CSS_LOADER_EXPORT___;',
+    ].join('\n'))
+
+    expect(registerCssSourceFile).toHaveBeenCalledWith({
+      file: '/workspace/src/pages/index.wxss',
+      css: undefined,
+      processed: true,
+    })
   })
 
 })

@@ -15,13 +15,13 @@ export interface SetupWebpackV5ProcessAssetsHookOptions {
   }
   getRuntimeRefreshRequirement: () => boolean
   refreshRuntimeMetadata: (force: boolean) => Promise<void>
-  isKnownWebpackProcessedCssAsset?: ((file: string) => boolean) | undefined
-  isWebpackProcessedCssAsset?: ((file: string, rawSource: string) => boolean) | undefined
+  isKnownWebpackProcessedCssAsset?: ((file: string, metadata?: { isMainCssChunk?: boolean | undefined }) => boolean) | undefined
+  isWebpackProcessedCssAsset?: ((file: string, rawSource: string, metadata?: { isMainCssChunk?: boolean | undefined }) => boolean) | undefined
   consumeRuntimeRefreshRequirement: () => void
   isWatchMode?: (() => boolean) | undefined
   getWatchChangedFiles?: (() => Iterable<string>) | undefined
   runtimeClassSetManager?: BundleRuntimeClassSetManager | undefined
-  getWebpackCssSources?: (() => Iterable<[string, string | undefined]>) | undefined
+  getWebpackCssSources?: (() => Iterable<[string, { css: string | undefined, processed?: boolean | undefined }]>) | undefined
   pruneWebpackCssSources?: ((activeSourceFiles: ReadonlySet<string>, options?: { watchMode?: boolean | undefined }) => void) | undefined
   prepareWebpackCssSources?: (() => ReadonlySet<string>) | undefined
   debug: (format: string, ...args: unknown[]) => void
@@ -65,6 +65,7 @@ export function buildWebpackBundleSnapshot(
   assets: Record<string, { source: () => unknown }>,
   opts: InternalUserDefinedOptions,
   state: BundleBuildState,
+  compilation?: WebpackAssetCompilationLike | undefined,
 ) {
   const sourceHashByFile = new Map<string, string>()
   const runtimeAffectingSignatureByFile = new Map<string, string>()
@@ -80,7 +81,7 @@ export function buildWebpackBundleSnapshot(
     if (type !== 'html' && type !== 'js') {
       continue
     }
-    const rawSource = asset.source()
+    const rawSource = compilation?.getAsset(file)?.source.source() ?? asset.source()
     const source = stringifyWebpackSource(rawSource)
     const hash = opts.cache.computeHash(source)
     sourceHashByFile.set(file, hash)

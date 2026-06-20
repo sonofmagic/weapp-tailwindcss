@@ -1,7 +1,7 @@
 view,
 text,
-::after,
-::before {
+:after,
+:before {
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   margin: 0;
@@ -22,11 +22,10 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: before:content-['normal_subpackage_taro-vite-vue3-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
-.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B::before {
-  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
-  content: var(--tw-content);
-}
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
+}
+.before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before {
+  --tw-content: 'normal subpackage taro-vite-vue3-tailwindcss-v4';
+  content: var(--tw-content);
 }

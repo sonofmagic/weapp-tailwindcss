@@ -163,7 +163,7 @@ function createNativePatch(entry: ProjectEntry): ProjectPatch {
       },
       {
         file: styleFile,
-        transform: source => `${createApplyStyle(entry)}${source}`,
+        transform: source => prependOrAppendUserStyle(entry, source),
       },
       {
         file: pageFile,
@@ -256,7 +256,7 @@ function createTaroReactPatch(entry: ProjectEntry): ProjectPatch {
       },
       {
         file: styleFile,
-        transform: source => `${createApplyStyle(entry)}${source}`,
+        transform: source => prependOrAppendUserStyle(entry, source),
       },
     ],
   }
@@ -272,7 +272,7 @@ function createTaroVuePatch(entry: ProjectEntry): ProjectPatch {
     ? [
         {
           file: externalStyleFile,
-          transform: source => `${createApplyStyle(entry)}${source}`,
+          transform: source => prependOrAppendUserStyle(entry, source),
         },
       ]
     : [
@@ -342,6 +342,24 @@ function createUniAppPatch(entry: ProjectEntry): ProjectPatch {
 
 function createApplyStyle(_entry: ProjectEntry) {
   return `.${markerClass} {\n  min-width: 0;\n}\nview {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[0]}: 1;\n}\ntext {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[1]}: 1;\n}\nbutton {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[2]}: 1;\n}\ninput {\n  box-sizing: border-box;\n  ${nativeElementRegressionVars[3]}: 1;\n}\n`
+}
+
+function prependOrAppendUserStyle(entry: ProjectEntry, source: string) {
+  const style = createApplyStyle(entry)
+  if (!entry.name.includes('-v4')) {
+    return `${style}${source}`
+  }
+  const customVariantEnd = source.lastIndexOf('}\n')
+  if (customVariantEnd >= 0 && source.includes('@custom-variant')) {
+    const insertAt = customVariantEnd + 2
+    return `${source.slice(0, insertAt)}\n${style}${source.slice(insertAt)}`
+  }
+  const lastTailwindDirective = [...source.matchAll(/^@(import|config|source)[^;]*;\n/gm)].at(-1)
+  if (lastTailwindDirective) {
+    const insertAt = lastTailwindDirective.index + lastTailwindDirective[0].length
+    return `${source.slice(0, insertAt)}${style}${source.slice(insertAt)}`
+  }
+  return `${style}${source}`
 }
 
 function createPatch(entry: ProjectEntry): ProjectPatch {

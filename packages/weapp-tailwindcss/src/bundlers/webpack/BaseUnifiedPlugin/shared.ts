@@ -51,6 +51,28 @@ interface ChunkLike {
   name?: string
   hash?: string | null
   files?: Iterable<string> | Array<string>
+  hasRuntime?: () => boolean
+}
+
+interface ModuleLike {
+  context?: string
+  dependencies?: Array<unknown> | Iterable<unknown>
+  modules?: ModuleLike[] | Iterable<ModuleLike>
+  request?: string
+  resource?: string
+  rootModule?: ModuleLike
+  userRequest?: string
+}
+
+interface DependencyLike {
+  request?: string
+  userRequest?: string
+}
+
+interface ChunkGraphLike {
+  getChunkModulesIterable?: (chunk: ChunkLike) => Iterable<ModuleLike> | undefined
+  getIssuer?: (module: ModuleLike) => ModuleLike | null | undefined
+  getModule?: (dependency: unknown) => ModuleLike | null | undefined
 }
 
 interface WebpackWatchChangeLike {
@@ -80,6 +102,110 @@ function toChunkFiles(files: ChunkLike['files']) {
     return files
   }
   return [...files]
+}
+
+export function inferWebpackMainCssFiles(
+  chunks: Iterable<ChunkLike>,
+  cssMatcher: (file: string) => boolean,
+  options: {
+    mainSourceFiles?: ReadonlySet<string> | undefined
+    resourcesByAsset?: ReadonlyMap<string, ReadonlySet<string>> | undefined
+  } = {},
+) {
+  const mainCssFiles = new Set<string>()
+  const shouldCheckSourceResources = Boolean(options.mainSourceFiles?.size)
+  for (const chunk of chunks) {
+    const files = toChunkFiles(chunk.files)
+    const isRuntimeChunk = chunk.hasRuntime?.() === true
+    if (!isRuntimeChunk) {
+      continue
+    }
+    for (const file of files) {
+      if (!cssMatcher(file)) {
+        continue
+      }
+      if (shouldCheckSourceResources) {
+        const resources = options.resourcesByAsset?.get(file)
+        if (!resources || ![...resources].some(resource => options.mainSourceFiles?.has(resource))) {
+          continue
+        }
+      }
+      mainCssFiles.add(file)
+    }
+  }
+  return mainCssFiles
+}
+
+export function createWebpackCssAssetResourceMap(
+  chunks: Iterable<ChunkLike>,
+  chunkGraph: ChunkGraphLike | undefined,
+  cssMatcher: (file: string) => boolean,
+  normalizeResource: (resource: string, issuer?: { context?: string, resource?: string }) => string | undefined,
+) {
+  const resourcesByAsset = new Map<string, Set<string>>()
+  if (!chunkGraph?.getChunkModulesIterable) {
+    return resourcesByAsset
+  }
+  const collectModuleResources = (module: ModuleLike, resources: Set<string>, seen = new Set<ModuleLike>()) => {
+    if (!module || seen.has(module)) {
+      return
+    }
+    seen.add(module)
+    for (const candidate of [module.resource, module.request, module.userRequest]) {
+      if (typeof candidate !== 'string') {
+        continue
+      }
+      const normalized = normalizeResource(candidate, module)
+      if (normalized) {
+        resources.add(normalized)
+      }
+    }
+    for (const nested of [module.rootModule, chunkGraph.getIssuer?.(module)]) {
+      if (nested) {
+        collectModuleResources(nested, resources, seen)
+      }
+    }
+    for (const nested of module.modules ?? []) {
+      collectModuleResources(nested, resources, seen)
+    }
+    for (const dependency of module.dependencies ?? []) {
+      const dependencyLike = dependency as DependencyLike
+      for (const candidate of [dependencyLike.request, dependencyLike.userRequest]) {
+        if (typeof candidate !== 'string') {
+          continue
+        }
+        const normalized = normalizeResource(candidate, module)
+        if (normalized) {
+          resources.add(normalized)
+        }
+      }
+      const dependencyModule = chunkGraph.getModule?.(dependency)
+      if (dependencyModule) {
+        collectModuleResources(dependencyModule, resources, seen)
+      }
+    }
+  }
+  for (const chunk of chunks) {
+    const cssFiles = toChunkFiles(chunk.files).filter(file => cssMatcher(file))
+    if (cssFiles.length === 0) {
+      continue
+    }
+    const modules = chunkGraph.getChunkModulesIterable(chunk)
+    if (!modules) {
+      continue
+    }
+    const cssResources = new Set<string>()
+    for (const module of modules) {
+      collectModuleResources(module, cssResources)
+    }
+    if (cssResources.size === 0) {
+      continue
+    }
+    for (const cssFile of cssFiles) {
+      resourcesByAsset.set(cssFile, cssResources)
+    }
+  }
+  return resourcesByAsset
 }
 
 export function createAssetHashByChunkMap(chunks: Iterable<ChunkLike>) {

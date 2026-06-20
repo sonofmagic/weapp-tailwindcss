@@ -407,15 +407,31 @@ function shouldUseCssAssetAsMainInjectionTarget(
 }
 
 function isViteProcessedCssResultImported(record: { file: string, outputFile?: string | undefined }, importedStyleFiles: Set<string>) {
-  const importedFileNames = new Set([...importedStyleFiles].map(file => path.posix.basename(file)))
   return importedStyleFiles.has(normalizeOutputPathKey(record.file))
     || (
       typeof record.outputFile === 'string'
-      && (
-        importedStyleFiles.has(normalizeOutputPathKey(record.outputFile))
-        || importedFileNames.has(path.posix.basename(normalizeOutputPathKey(record.outputFile)))
-      )
+      && importedStyleFiles.has(normalizeOutputPathKey(record.outputFile))
     )
+}
+
+function isViteProcessedCssResultCoveredByImportedBundleAsset(
+  record: { file: string, outputFile?: string | undefined },
+  importedStyleFiles: Set<string>,
+  assetFiles: Set<string>,
+) {
+  for (const candidate of [record.file, record.outputFile]) {
+    if (typeof candidate !== 'string' || candidate.length === 0) {
+      continue
+    }
+    const candidateKey = normalizeOutputPathKey(candidate)
+    if (!importedStyleFiles.has(candidateKey)) {
+      continue
+    }
+    if (assetFiles.has(candidateKey)) {
+      return true
+    }
+  }
+  return false
 }
 
 function removeCssCoveredByImportedViteResults(
@@ -510,6 +526,12 @@ function isCoveredViteGeneratedSourceAsset(
   return resolvedOutputFile !== fileKey && existingAssetFiles.has(resolvedOutputFile)
 }
 
+function isSourceRootPrefixedOutputFile(file: string, outputFile: string) {
+  const fileKey = normalizeOutputPathKey(file)
+  const outputFileKey = normalizeOutputPathKey(outputFile)
+  return fileKey !== outputFileKey && fileKey.endsWith(`/${outputFileKey}`)
+}
+
 export function collectViteProcessedCssAssetResults(
   bundle: OutputBundle,
   options: CollectViteProcessedCssAssetOptions,
@@ -551,11 +573,7 @@ export function collectViteProcessedCssAssetResults(
       && (
         options.opts.mainCssChunkMatcher(file, options.opts.appType)
         || (
-          normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
-          && (
-            isRootStyleOutputFile(file)
-            || path.posix.basename(normalizeOutputPathKey(file.replace(/[?#].*$/, ''))) === path.posix.basename(normalizeOutputPathKey(resolvedOutputFile.replace(/[?#].*$/, '')))
-          )
+          isSourceRootPrefixedOutputFile(file, resolvedOutputFile)
           && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
         )
       )
@@ -636,11 +654,15 @@ export function injectViteProcessedCssIntoMainCssAssets(
       importedBundleCssSources,
     )
     const importedViteCssResults = viteCssResults.filter(record => isViteProcessedCssResultImported(record, importedStyleFiles))
+    const bundleAssetFiles = collectBundleAssetFiles(bundle)
+    const uncoveredImportedViteCssResults = importedViteCssResults.filter(
+      record => !isViteProcessedCssResultCoveredByImportedBundleAsset(record, importedStyleFiles, bundleAssetFiles),
+    )
     const importedCssSources = [
       ...importedBundleCssSources,
-      ...importedViteCssResults.map(record => record.css),
+      ...uncoveredImportedViteCssResults.map(record => record.css),
     ]
-    nextCss = removeCssCoveredByImportedViteResults(nextCss, importedViteCssResults.map(record => record.css))
+    nextCss = removeCssCoveredByImportedViteResults(nextCss, uncoveredImportedViteCssResults.map(record => record.css))
     for (const record of viteCssResults) {
       if (!shouldInjectViteProcessedCssResult(options.opts, mainFileKey, record.file, record)) {
         continue

@@ -257,4 +257,102 @@ describe('bundlers/webpack WeappTailwindcss / runtime css main chunks', () => {
     )
   })
 
+  it('infers processed Tailwind entry css from webpack runtime chunks without app or main file names', async () => {
+    const runtimeSet = new Set(['bg-[#123456]'])
+    testState.currentContext = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn(() => false),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            v4: {
+              cssEntries: ['/workspace/src/styles/root-entry.css'],
+            },
+          },
+        },
+      } as any,
+    })
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {
+      'entry/styles.bundle.wxss': [
+        '/* weapp-tailwindcss webpack-generated-css: /workspace/src/styles/root-entry.css */',
+        '.user-card{color:#123456}',
+      ].join('\n'),
+      'pages/index/index.js': 'const cls = "bg-[#123456]"',
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [
+        {
+          id: 'entry-runtime',
+          hash: 'hash-entry-runtime',
+          files: ['entry/styles.bundle.wxss', 'pages/index/index.js'],
+          hasRuntime: () => true,
+        },
+      ],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(testState.currentContext.mainCssChunkMatcher).toHaveBeenCalledWith('entry/styles.bundle.wxss', undefined)
+    expect(currentAssetStore['entry/styles.bundle.wxss']).toContain('.user-card')
+    expect(currentAssetStore['entry/styles.bundle.wxss']).not.toContain('weapp-tailwindcss webpack-generated-css')
+  })
+
 })

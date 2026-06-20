@@ -2472,11 +2472,14 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
   it('injects vite postcss-processed generated css assets into the main mini-program css asset', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    setCurrentContext(createContext({
-      cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/main.css'),
-      styleHandler: vi.fn(async (code: string) => ({
-        css: code,
+	    setCurrentContext(createContext({
+	      cssMatcher: (file: string) => file.endsWith('.wxss'),
+	      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss' || file === 'src/main.css'),
+	      tailwindRuntime: {
+	        majorVersion: 4,
+	      },
+	      styleHandler: vi.fn(async (code: string) => ({
+	        css: code,
         map: {
           toJSON: () => ({
             version: 3,
@@ -2519,7 +2522,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect((bundle['src/main.css'] as OutputAsset).source).toBe('')
-    expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{color:red}\n${processedCss}`)
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain('view,text,::after,::before')
+    expect(appCss).toContain('.app{color:red}')
+    expect(appCss).toContain(processedCss)
   }, TEST_TIMEOUT_MS)
 
   it('normalizes source-root prefixed vite css pipeline assets from bundle graph modules', async () => {
@@ -2530,11 +2536,14 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     await writeFile(path.join(root, 'src/app.css'), '@import "tailwindcss";', 'utf8')
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    setCurrentContext(createContext({
-      cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
-    }))
+	    setCurrentContext(createContext({
+	      cssMatcher: (file: string) => file.endsWith('.wxss'),
+	      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+	      tailwindRuntime: {
+	        majorVersion: 4,
+	      },
+	      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+	    }))
     const plugins = WeappTailwindcss()
     const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
     expect(postPlugin).toBeTruthy()
@@ -2567,7 +2576,10 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.wxss'] as OutputAsset).source).toBe(`.app{}\n${processedCss}`)
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toContain('view,text,::after,::before')
+    expect(appCss).toContain('.app{}')
+    expect(appCss).toContain(processedCss)
   }, TEST_TIMEOUT_MS)
 
   it('keeps uni-app x native app vite css pipeline output as main.css during bundle processing', async () => {
@@ -3358,6 +3370,92 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((appCss.match(/view,text,::after,::before/g) ?? [])).toHaveLength(1)
     expect(appCss).toContain('--tw-content:""')
     expect(appCss).toContain('.bg-app-marker')
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps user declarations on covered preflight rules when injecting vite-processed css into app.wxss', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+
+    const preflightSelector = 'view,text,::after,::before'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset(`${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-rotate-x:;--tw-rotate-y:;}`),
+        fileName: 'app.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined }>([
+      [path.resolve('/project/src/app.css'), {
+        css: [
+          `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--weapp-tw-native-view-regression:1;--weapp-tw-native-text-regression:1}`,
+          '.weapp-tw-dynamic-regression{min-width:0}',
+        ].join('\n'),
+        injectIntoMain: true,
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+
+    expect((appCss.match(/view,text,::after,::before/g) ?? [])).toHaveLength(1)
+    expect(appCss).toContain('--tw-rotate-x:')
+    expect(appCss).toContain('--weapp-tw-native-view-regression:1')
+    expect(appCss).toContain('--weapp-tw-native-text-regression:1')
+    expect(appCss).toContain('.weapp-tw-dynamic-regression')
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps user-authored native element rules when removing imported vite-processed duplicates', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+
+    const preflightSelector = 'view,text,::after,::before'
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset([
+          '@import "app-origin.wxss";',
+          `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-rotate-x:;--tw-rotate-y:;}`,
+          'view{box-sizing:border-box;--weapp-tw-native-view-regression:1}',
+          'text{box-sizing:border-box;--weapp-tw-native-text-regression:1}',
+          '.weapp-tw-dynamic-regression{min-width:0}',
+        ].join('\n')),
+        fileName: 'app.wxss',
+      },
+      'app-origin.wxss': {
+        ...createRollupAsset([
+          `${preflightSelector}{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-rotate-x:;--tw-rotate-y:;}`,
+          '.weapp-tw-dynamic-regression{min-width:0}',
+        ].join('\n')),
+        fileName: 'app-origin.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>([
+      [path.resolve('/project/src/app.css'), {
+        css: (bundle['app.wxss'] as OutputAsset).source.toString().replace('@import "app-origin.wxss";\n', ''),
+        injectIntoMain: true,
+        outputFile: 'app-origin.wxss',
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+
+    expect(appCss).toContain('@import "app-origin.wxss";')
+    expect(appCss).not.toContain('.weapp-tw-dynamic-regression')
+    expect(appCss).toContain('--weapp-tw-native-view-regression:1')
+    expect(appCss).toContain('--weapp-tw-native-text-regression:1')
   }, TEST_TIMEOUT_MS)
 
   it('dedupes mini-program preflight when replaying vite-processed css into app.wxss', () => {
@@ -4695,6 +4793,47 @@ module.exports = {
 
     expect((bundle['app.wxss'] as OutputAsset).source.toString()).not.toContain('.tw-page-build')
     expect(viteProcessedCssAssetResults.get('pages/index/index.css')?.injectIntoMain).toBeUndefined()
+  })
+
+  it('does not treat same-basename vite css results as imported css', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'shell.wxss'),
+    })
+    const bundle = {
+      'shell.wxss': {
+        ...createRollupAsset('@import "./styles/shared.wxss";\n.shell-entry{display:block}'),
+        fileName: 'shell.wxss',
+      },
+      'styles/shared.wxss': {
+        ...createRollupAsset('.style-shared{color:blue}'),
+        fileName: 'styles/shared.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>([
+      ['features/shared.wxss', {
+        css: '.feature-shared{color:red}',
+        injectIntoMain: true,
+        outputFile: 'features/shared.wxss',
+      }],
+      ['styles/shared.wxss', {
+        css: '.style-shared{color:blue}',
+        injectIntoMain: true,
+        outputFile: 'styles/shared.wxss',
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const css = (bundle['shell.wxss'] as OutputAsset).source.toString()
+    expect(css).toContain('@import "./styles/shared.wxss"')
+    expect(css).toContain('.feature-shared{color:red}')
+    expect(css).not.toContain('.style-shared')
   })
 
   it('keeps imported taro vite app css shell when app-origin already carries the generated css', async () => {

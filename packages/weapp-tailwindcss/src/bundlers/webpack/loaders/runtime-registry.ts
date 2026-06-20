@@ -16,6 +16,7 @@ export interface RuntimeLoaderWatchDependencies {
 export interface WebpackCssSourceRegistration {
   css?: string | undefined
   file: string
+  processed?: boolean | undefined
 }
 
 export interface WebpackCssImportRewriteRuntimeOptions {
@@ -26,6 +27,7 @@ export interface WebpackCssImportRewriteRuntimeOptions {
   registerCssSource?: (source: TailwindV4CssSource) => Promise<void> | void
   getRuntimeSet?: () => Promise<Set<string>> | Set<string>
   markGeneratedCssSource?: (file: string) => void
+  registerCssSourceFile?: (source: WebpackCssSourceRegistration) => void
 }
 
 export interface WebpackCssImportRewriteLoaderOptions {

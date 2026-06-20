@@ -200,7 +200,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
     const webpackProcessedCssSourceFiles = new Set<string>()
-    const webpackCssSources = new Map<string, string | undefined>()
+    const webpackCssSources = new Map<string, { css: string | undefined, processed?: boolean | undefined }>()
     const currentWebpackCssSourceFiles = new Set<string>()
     const currentWebpackCssSourceModules = new Set<string>()
     let runtimeMetadataPrepared = false
@@ -325,7 +325,15 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     }
     const registerWebpackCssSourceFile = (source: WebpackCssSourceRegistration) => {
       const file = path.resolve(source.file)
-      webpackCssSources.set(file, source.css)
+      const previous = webpackCssSources.get(file)
+      if (source.processed === true && previous?.processed === false) {
+        currentWebpackCssSourceFiles.add(file)
+        return
+      }
+      webpackCssSources.set(file, {
+        css: source.css,
+        processed: source.processed,
+      })
       currentWebpackCssSourceFiles.add(file)
     }
     const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, options: { watchMode?: boolean | undefined } = {}) => {
@@ -371,10 +379,10 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       currentWebpackCssSourceModules.clear()
       return activeSourceFiles
     }
-    const isWebpackProcessedTailwindEntryAsset = (file: string) => {
+    const isWebpackProcessedTailwindEntryAsset = (isMainCssChunk?: boolean | undefined) => {
       if (
         (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
-        || !this.options.mainCssChunkMatcher(file, this.appType)
+        || isMainCssChunk !== true
         || webpackProcessedCssSourceFiles.size === 0
       ) {
         return false
@@ -465,13 +473,13 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       runtimeState,
       getRuntimeRefreshRequirement: () => runtimeRefreshRequiredForCompilation,
       refreshRuntimeMetadata: ensureRuntimeMetadata,
-      isKnownWebpackProcessedCssAsset(file) {
+      isKnownWebpackProcessedCssAsset(file, metadata) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
-          || isWebpackProcessedTailwindEntryAsset(file)
+          || isWebpackProcessedTailwindEntryAsset(metadata?.isMainCssChunk)
       },
-      isWebpackProcessedCssAsset(file, rawSource) {
+      isWebpackProcessedCssAsset(file, rawSource, metadata) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
-          || isWebpackProcessedTailwindEntryAsset(file)
+          || isWebpackProcessedTailwindEntryAsset(metadata?.isMainCssChunk)
           || rawSource.includes('weapp-tailwindcss webpack-generated-css')
       },
       consumeRuntimeRefreshRequirement() {

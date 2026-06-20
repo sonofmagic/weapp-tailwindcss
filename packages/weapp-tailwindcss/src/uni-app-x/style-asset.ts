@@ -31,9 +31,15 @@ const EXPORT_SFC_RE = /_export_sfc\(_sfc_main\s*,\s*\[/
 export const UNI_APP_X_STYLE_PLACEHOLDER_VERSION = 'uni-app-x-style-placeholder-v2'
 
 type BundleItem = { type: string } | OutputAsset | OutputChunk
+type OutputChunkWithViteMetadata = OutputChunk & {
+  viteMetadata?: {
+    importedCss?: Iterable<string>
+  }
+}
 
 interface HarmonyStyleInjectOptions {
   cssSources?: Iterable<string | undefined> | undefined
+  styleAssetFiles?: Iterable<string | undefined> | ((file: string) => Iterable<string | undefined>) | undefined
   excludeComponents?: boolean | undefined
   mapSources?: Iterable<string | undefined> | undefined
 }
@@ -194,14 +200,20 @@ function findFirstStyleObjectDecl(source: string): StyleObjectDecl | undefined {
   }
 }
 
-function resolveCssFallbackFiles(file: string) {
-  const files = ['main.wxss', 'main.css', 'app.wxss', 'app.css']
-  const assetsPrefix = 'assets/'
-  if (file.startsWith(assetsPrefix) && file.endsWith('.js')) {
-    const withoutAssets = file.slice(assetsPrefix.length).replace(/\.js$/, '')
-    files.push(`${withoutAssets}.wxss`, `${withoutAssets}.css`)
+function resolveCssFallbackFiles(styleAssetFiles: Iterable<string | undefined> = []) {
+  const files = new Set<string>()
+  for (const assetFile of styleAssetFiles) {
+    if (assetFile) {
+      files.add(assetFile)
+    }
   }
-  return files
+  return [...files]
+}
+
+function resolveStyleAssetFilesForChunk(file: string, styleAssetFiles: HarmonyStyleInjectOptions['styleAssetFiles']) {
+  return typeof styleAssetFiles === 'function'
+    ? styleAssetFiles(file)
+    : styleAssetFiles
 }
 
 function resolveSourceMapFiles(file: string) {
@@ -220,7 +232,7 @@ function createStyleValueFromBundleSources(
 ) {
   const cssStyles = mergeStyleValues(
     ...[...(options.cssSources ?? [])].map(source => source ? cssSourceToStyleValue(source) : undefined),
-    ...resolveCssFallbackFiles(file).map((cssFile) => {
+    ...resolveCssFallbackFiles(resolveStyleAssetFilesForChunk(file, options.styleAssetFiles)).map((cssFile) => {
       const source = getBundleSource?.(cssFile)
       return source ? cssSourceToStyleValue(source) : undefined
     }),
@@ -325,6 +337,13 @@ export function injectUniAppXHarmonyBundleStyles(
   options: HarmonyStyleInjectOptions = {},
 ) {
   const getBundleSource = createUniAppXBundleAssetSourceGetter(bundle)
+  const styleAssetFilesByChunk = collectUniAppXBundleStyleAssetFilesByChunk(bundle)
+  const resolveStyleAssetFiles = typeof options.styleAssetFiles === 'function'
+    ? options.styleAssetFiles
+    : (file: string) => [
+        ...(options.styleAssetFiles ?? []),
+        ...(styleAssetFilesByChunk.get(file) ?? []),
+      ]
   let changed = false
   for (const [file, item] of Object.entries(bundle)) {
     if (item.type !== 'chunk' || !file.endsWith('.js')) {
@@ -333,6 +352,7 @@ export function injectUniAppXHarmonyBundleStyles(
     const currentSource = (item as OutputChunk).code
     const nextSource = injectUniAppXHarmonyGlobalStyles(file, currentSource, getBundleSource, {
       ...options,
+      styleAssetFiles: resolveStyleAssetFiles,
       mapSources: collectChunkMapSourcesContent(item as OutputChunk),
     })
     if (nextSource !== currentSource) {
@@ -341,6 +361,61 @@ export function injectUniAppXHarmonyBundleStyles(
     }
   }
   return changed
+}
+
+function collectUniAppXBundleStyleAssetFilesByChunk(bundle: Record<string, BundleItem>) {
+  const styleAssetFilesByChunk = new Map<string, Set<string>>()
+  const appStyleAssetFiles = new Set<string>()
+  const assetFiles = new Set(
+    Object.entries(bundle)
+      .filter(([, item]) => item.type === 'asset')
+      .map(([file]) => file)
+      .filter(isStyleAssetFile),
+  )
+
+  for (const [chunkFile, item] of Object.entries(bundle)) {
+    if (item.type !== 'chunk') {
+      continue
+    }
+    const chunk = item as OutputChunkWithViteMetadata
+    for (const cssFile of chunk.viteMetadata?.importedCss ?? []) {
+      if (!assetFiles.has(cssFile)) {
+        continue
+      }
+      if (APP_JS_RE.test(chunk.fileName ?? chunkFile) || APP_JS_RE.test(chunkFile)) {
+        appStyleAssetFiles.add(cssFile)
+        continue
+      }
+      let styleAssetFiles = styleAssetFilesByChunk.get(chunkFile)
+      if (!styleAssetFiles) {
+        styleAssetFiles = new Set<string>()
+        styleAssetFilesByChunk.set(chunkFile, styleAssetFiles)
+      }
+      styleAssetFiles.add(cssFile)
+    }
+  }
+
+  if (appStyleAssetFiles.size > 0) {
+    for (const [file, item] of Object.entries(bundle)) {
+      if (item.type !== 'chunk' || !file.endsWith('.js') || APP_JS_RE.test(file)) {
+        continue
+      }
+      let styleAssetFiles = styleAssetFilesByChunk.get(file)
+      if (!styleAssetFiles) {
+        styleAssetFiles = new Set<string>()
+        styleAssetFilesByChunk.set(file, styleAssetFiles)
+      }
+      for (const appStyleAssetFile of appStyleAssetFiles) {
+        styleAssetFiles.add(appStyleAssetFile)
+      }
+    }
+  }
+
+  return styleAssetFilesByChunk
+}
+
+function isStyleAssetFile(file: string) {
+  return /\.(?:acss|css|jxss|qss|ttss|wxss)$/i.test(file)
 }
 
 export function isUniAppXHarmonyBundle(bundle: Record<string, BundleItem>) {

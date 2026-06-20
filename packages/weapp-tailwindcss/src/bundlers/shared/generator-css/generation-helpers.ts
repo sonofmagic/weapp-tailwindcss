@@ -226,9 +226,10 @@ export function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwind
 }
 
 export function shouldUseGeneratorForCurrentCss(
-  _majorVersion: number | undefined,
+  majorVersion: number | undefined,
   cssHandlerOptions: IStyleHandlerOptions,
   options: {
+    forceGenerator?: boolean | undefined
     hasGeneratedCss: boolean
     hasGeneratedMarkers: boolean
     hasSourceDirectives: boolean
@@ -236,11 +237,20 @@ export function shouldUseGeneratorForCurrentCss(
   },
 ) {
   const hasApplyDirectives = hasTailwindApplyDirective(options.rawSource)
-  return options.hasGeneratedCss
+  const sourceCss = (cssHandlerOptions as { sourceOptions?: { sourceCss?: string | undefined } | undefined }).sourceOptions?.sourceCss
+  const hasSourceCssDirectives = typeof sourceCss === 'string'
+    && (
+      hasTailwindRootDirectives(sourceCss, { importFallback: true })
+      || hasTailwindSourceDirectives(sourceCss, { importFallback: true })
+      || hasTailwindApplyDirective(sourceCss)
+    )
+  return options.forceGenerator === true
+    || options.hasGeneratedCss
     || options.hasGeneratedMarkers
     || options.hasSourceDirectives
     || hasApplyDirectives
-    || cssHandlerOptions.isMainChunk
+    || ((majorVersion === 3 || majorVersion === 4) && hasSourceCssDirectives)
+    || (majorVersion === 4 && cssHandlerOptions.isMainChunk)
 }
 
 export function hasGeneratorSourceDirectives(source: string, importFallback: boolean) {

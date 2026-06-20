@@ -215,6 +215,33 @@ function collectGeneratedDeclarationPropsBySelector(generatedCss: string, select
   return propsBySelector
 }
 
+function isRuleCoveredByGeneratedProps(
+  rule: postcss.Rule,
+  generatedDeclarationPropsBySelector: Map<string, Set<string>>,
+) {
+  const nodeSelectors = getRuleCompatSelectorKeys(rule)
+  if (nodeSelectors.length === 0) {
+    return false
+  }
+  const props = new Set<string>()
+  rule.walkDecls((decl) => {
+    props.add(decl.prop)
+  })
+  if (props.size === 0) {
+    return false
+  }
+  for (const selector of nodeSelectors) {
+    const generatedProps = generatedDeclarationPropsBySelector.get(selector)
+    if (!generatedProps) {
+      continue
+    }
+    if ([...props].every(prop => generatedProps.has(prop))) {
+      return true
+    }
+  }
+  return false
+}
+
 export function removeGeneratedSelectorCompatCss(css: string, generatedCss: string) {
   const generatedSelectors = collectGeneratedSelectors(generatedCss)
   if (generatedSelectors.size === 0) {
@@ -266,6 +293,9 @@ export function collectDedupedPostTransformCompatCss(css: string, generatedCss: 
         const duplicated = nodeSelectors.some(selector => generatedSelectors.has(selector))
         if (!duplicated) {
           preservedNodes.push(node.clone())
+          return
+        }
+        if (isRuleCoveredByGeneratedProps(node, generatedDeclarationPropsBySelector)) {
           return
         }
         if (isCustomPropertyOnlyRule(node) && !isPseudoContentInitRule(node) && !hasUtilityClassSelector(node.selector)) {

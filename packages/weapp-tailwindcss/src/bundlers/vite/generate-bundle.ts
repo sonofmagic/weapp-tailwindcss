@@ -851,6 +851,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   styleHandler,
                   debug,
                   previousCss,
+                  ...(runtimeState.tailwindRuntime.majorVersion === 4 && vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
+                    ? { userRawSource: rawSource }
+                    : {}),
                 })
                 if (generated) {
                   const tracedCss = annotateCss(generated.css)

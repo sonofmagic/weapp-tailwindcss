@@ -1,0 +1,192 @@
+.tw-page-style-watch-anchor {
+  color: inherit;
+}
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --nut-icon-height: 32rpx;
+  --nut-icon-width: 32rpx;
+  --nut-icon-line-height: 32rpx;
+  --nut-icon-color: #171a26;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+}
+.nut-icon {
+  color: var(--nut-icon-color, #171a26);
+  display: inline-block;
+  font-size: var(--nut-icon-width, 32rpx);
+  height: var(--nut-icon-height, 32rpx);
+  line-height: var(--nut-icon-line-height, 32rpx);
+  position: relative;
+  text-align: right;
+  width: var(--nut-icon-width, 32rpx);
+}
+.nut-icon-img {
+  height: var(--nut-icon-height);
+  object-fit: contain;
+  width: var(--nut-icon-width);
+}
+.nut-icon-Loading,
+.nut-icon-Loading1,
+.nut-icon-loading,
+.nut-icon-loading1 {
+  animation: rotation 1s linear infinite;
+  display: inline-block;
+}
+.nut-icon-am-infinite {
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
+.nut-icon-am-jump {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: nutJumpOne;
+  animation-timing-function: ease;
+}
+.nut-icon-am-jump.nut-icon-am-infinite {
+  animation-name: nutJump;
+}
+.nut-icon-am-rotate {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: rotation;
+  animation-timing-function: linear;
+}
+.nut-icon-am-rotate.nut-icon-am-infinite {
+  animation-direction: normal;
+}
+.nut-icon-am-blink {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: nutBlink;
+  animation-timing-function: linear;
+}
+.nut-icon-am-breathe {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: nutBreathe;
+  animation-timing-function: ease-in-out;
+}
+.nut-icon-am-flash {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: nutFlash;
+  animation-timing-function: ease-in-out;
+}
+.nut-icon-am-bounce {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: nutBounce;
+  animation-timing-function: ease-in-out;
+}
+.nut-icon-am-bounce.nut-icon-am-infinite {
+  animation-direction: normal;
+}
+.nut-icon-am-shake {
+  animation-delay: var(--animate-delay);
+  animation-duration: var(--animate-duration);
+  animation-name: nutShake;
+  animation-timing-function: ease-in-out;
+}
+@keyframes rotation {
+  0% {
+  }
+  to {
+  }
+}
+@keyframes nutJump {
+  to {
+    transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
+  }
+}
+@keyframes nutJumpOne {
+  50% {
+    transform: scale3d(0.8, 1, 0.9) translateY(-20rpx);
+  }
+  to {
+    transform: scaleZ(1) translateY(0);
+  }
+}
+@keyframes nutBlink {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nutBreathe {
+  0%,
+  to {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+@keyframes nutFlash {
+  0%,
+  50%,
+  to {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes nutBounce {
+  0%,
+  20%,
+  53%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+  }
+  40%,
+  43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -60rpx, 0) scaleY(1.1);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -30rpx, 0) scaleY(1.05);
+  }
+  80% {
+    transform: translateZ(0) scaleY(0.95);
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+  90% {
+    transform: translate3d(0, -8rpx, 0) scaleY(1.02);
+  }
+}
+@keyframes nutShake {
+  0% {
+    transform: translate(0);
+  }
+  6.5% {
+    transform: translate(-12rpx) rotateY(-9deg);
+  }
+  18.5% {
+    transform: translate(10rpx) rotateY(7deg);
+  }
+  31.5% {
+    transform: translate(-6rpx) rotateY(-5deg);
+  }
+  43.5% {
+    transform: translate(4rpx) rotateY(3deg);
+  }
+  50% {
+    transform: translate(0);
+  }
+}

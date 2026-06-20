@@ -164,13 +164,21 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   const input = Buffer.isBuffer(source) ? source.toString('utf-8') : source
   const hasTailwindRoot = typeof input === 'string' && hasTailwindRootDirectives(input, { importFallback: true })
   const registerTask = hasTailwindRoot
-    ? opt?.tailwindcssImportRewrite?.registerCssSource?.({
-        file: this.resourcePath,
-        css: normalizeCssConfigDirectives(
+    ? (() => {
+        const css = normalizeCssConfigDirectives(
           normalizeTailwindSourceForGenerator(input, { importFallback: true }),
           this.resourcePath,
-        ),
-      })
+        )
+        opt?.tailwindcssImportRewrite?.registerCssSourceFile?.({
+          file: this.resourcePath,
+          css,
+          processed: false,
+        })
+        return opt?.tailwindcssImportRewrite?.registerCssSource?.({
+          file: this.resourcePath,
+          css,
+        })
+      })()
     : undefined
   const transform = () => {
     const transformed = transformCssImportRewriteSource(source, opt)

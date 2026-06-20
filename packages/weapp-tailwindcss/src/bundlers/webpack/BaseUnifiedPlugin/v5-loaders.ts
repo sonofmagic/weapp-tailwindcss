@@ -76,6 +76,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         runtimeState,
         ...(appType === undefined ? {} : { appType }),
         ...(registerAutoCssSource === undefined ? {} : { registerCssSource: registerAutoCssSource }),
+        ...(registerWebpackCssSourceFile === undefined ? {} : { registerCssSourceFile: registerWebpackCssSourceFile }),
         getRuntimeSet: getRuntimeSetInLoader,
         ...(markWebpackProcessedCssSource === undefined ? {} : { markGeneratedCssSource: markWebpackProcessedCssSource }),
       }
@@ -145,10 +146,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       if (process.env['WEAPP_TW_LOADER_DEBUG'] && isCssModule) {
         debug('loader hook css module: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
-      if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.includes('app.css')) {
-        debug('app.css module loaders=%o anchors=%o', loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
-      }
-      else if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
+      if (process.env['WEAPP_TW_LOADER_DEBUG'] && typeof module.resource === 'string' && module.resource.endsWith('.css')) {
         debug('css module seen: %s loaders=%o anchors=%o', module.resource, loaderEntries.map((x: any) => x.loader), { rewriteAnchorIdx, classSetAnchorIdx })
       }
       if (rewriteAnchorIdx === -1 && classSetAnchorIdx === -1 && !isCssModule) {

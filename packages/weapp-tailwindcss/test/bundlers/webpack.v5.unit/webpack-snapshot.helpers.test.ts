@@ -60,6 +60,27 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
     expect(snapshot.processFiles.js.has('assets/index.js')).toBe(true)
   })
 
+  it('prefers current compilation asset sources when snapshotting runtime entries', () => {
+    const snapshot = buildWebpackBundleSnapshot({
+      'assets/index.js': {
+        source: () => 'const cls = "stale-source"',
+      },
+    }, createOptions(), createBundleBuildState(), {
+      getAsset: vi.fn((file: string) => file === 'assets/index.js'
+        ? {
+            source: {
+              source: () => 'const cls = "fresh-source"',
+            },
+          }
+        : undefined),
+      updateAsset: vi.fn(),
+    } as any)
+
+    expect(snapshot.entries).toHaveLength(1)
+    expect(snapshot.entries[0]?.source).toBe('const cls = "fresh-source"')
+    expect(snapshot.entries[0]?.output.source).toBe('const cls = "fresh-source"')
+  })
+
   it('can update cache-hit assets without stringifying sources for comparison', () => {
     const updateAsset = vi.fn()
     const onUpdate = vi.fn()

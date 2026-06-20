@@ -46,7 +46,7 @@ import {
 import { resolveSourceSideCssEntrySource } from './source-files'
 import { createTailwindV4ApplyReferenceSource } from './source-resolver/apply-reference'
 import { resolveExistingConfigPath } from './source-resolver/config'
-import { getOutputFileStem, normalizeCssSourceForCompare, scoreTailwindV4CssSourceFileMatch } from './source-resolver/matching'
+import { normalizeCssSourceForCompare, scoreTailwindV4CssSourceFileMatch } from './source-resolver/matching'
 import {
   withGeneratorSourceMetadata,
   withMatchedSourceSideMetadata,
@@ -198,7 +198,6 @@ function resolveMatchingTailwindV4CssEntry(
   }
 
   const normalizedRawSource = normalizeCssSourceForCompare(rawSource)
-  const outputStem = getOutputFileStem(file)
   const matches = cssEntries
     .map((cssEntry) => {
       if (!existsSync(cssEntry)) {
@@ -211,18 +210,6 @@ function resolveMatchingTailwindV4CssEntry(
           return {
             cssEntry,
             score: 1000000 + pathScore,
-          }
-        }
-        if (pathScore > 0) {
-          return {
-            cssEntry,
-            score: pathScore,
-          }
-        }
-        if (cssEntries.length === 1 && outputStem.length > 0 && getOutputFileStem(cssEntry) === outputStem) {
-          return {
-            cssEntry,
-            score: 1,
           }
         }
         return undefined
@@ -333,21 +320,14 @@ async function resolveMatchingTailwindV4CssSource(
           score: 1000000,
         }
       }
-      if (typeof cssSource.file === 'string') {
-        const pathScore = scoreTailwindV4CssSourceFileMatch(file, cssSource.file, sourceOptions)
-        if (pathScore > 0) {
-          return {
-            cssSource,
-            index,
-            score: pathScore,
-          }
-        }
-      }
       if (normalizeCssSourceForCompare(cssSource.css) === normalizedRawSource) {
+        const pathScore = typeof cssSource.file === 'string'
+          ? scoreTailwindV4CssSourceFileMatch(file, cssSource.file, sourceOptions)
+          : 0
         return {
           cssSource,
           index,
-          score: 1,
+          score: 1 + pathScore,
         }
       }
       return undefined

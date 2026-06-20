@@ -204,6 +204,14 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
     .join('\n')
 }
 
+export function normalizeRawCssSnapshotText(source: string) {
+  return `${source.replace(/\r\n/g, '\n').trimEnd().split('\n').map(line => line.trimEnd()).join('\n')}\n`
+}
+
+export async function formatRawCssSnapshotText(source: string) {
+  return normalizeRawCssSnapshotText(await formatCss(source.replace(/\r\n/g, '\n')))
+}
+
 const SCANNER_NOISE_SELECTORS = new Set([
   '.start',
   '.end',
@@ -1060,17 +1068,14 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     visited.add(normalizedPath)
 
     const source = await fs.readFile(normalizedPath, 'utf8')
-    const withoutBanner = stripTailwindBanner(source)
-    const normalizedImports = normalizeCssImports(withoutBanner)
-    const normalizedCss = normalizeCssSnapshot(normalizedImports, options)
-    const formatted = normalizeTokenCommentIndent(normalizeFormattedCssSnapshot(await formatCss(normalizedCss)))
+    const formatted = await formatRawCssSnapshotText(source)
 
     snapshots.push({
       fileName: snapshotName,
       content: formatted,
     })
 
-    const imports = extractCssImports(withoutBanner)
+    const imports = extractCssImports(source)
     for (const request of imports) {
       const resolved = resolveCssImport(projectRoot, normalizedPath, request)
       if (!resolved) {

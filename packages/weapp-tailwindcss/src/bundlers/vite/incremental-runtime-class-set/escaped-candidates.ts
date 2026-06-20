@@ -74,3 +74,28 @@ export function collectEscapedRuntimeCandidates(
   }
   return candidates
 }
+
+export function collectStrictEscapedRuntimeCandidates(
+  source: string,
+  escapeMap: Record<string, string>,
+  escapeFragments: string[],
+) {
+  const candidates = new Set<string>()
+  ESCAPED_CLASS_TOKEN_RE.lastIndex = 0
+  let match = ESCAPED_CLASS_TOKEN_RE.exec(source)
+  while (match) {
+    const token = match[0]
+    if (hasEscapeFragment(token, escapeFragments)) {
+      const restored = unescapeClassName(token, { map: escapeMap })
+      if (
+        restored !== token
+        && TAILWIND_RESTORED_CANDIDATE_SIGNAL_RE.test(restored)
+        && !/\s/.test(restored)
+      ) {
+        candidates.add(restored)
+      }
+    }
+    match = ESCAPED_CLASS_TOKEN_RE.exec(source)
+  }
+  return candidates
+}

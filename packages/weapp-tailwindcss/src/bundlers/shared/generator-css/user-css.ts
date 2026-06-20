@@ -52,12 +52,6 @@ export function removeTailwindV4GeneratorAtRules(source: string) {
       rule.remove()
       changed = true
     })
-    root.walk((node) => {
-      if ('nodes' in node && node.nodes?.length === 0) {
-        node.remove()
-        changed = true
-      }
-    })
     return changed ? root.toString() : source
   }
   catch {
@@ -73,6 +67,49 @@ function isCommentOnlyCss(source: string) {
   catch {
     return false
   }
+}
+
+function removeMiniProgramHoverSelectors(source: string, enabled: boolean | undefined = true) {
+  if (!enabled || !source.includes(':hover')) {
+    return source
+  }
+  try {
+    const root = postcss.parse(source)
+    let changed = false
+    root.walkRules((rule) => {
+      const selectors = rule.selectors ?? [rule.selector]
+      const keptSelectors = selectors.filter(selector => !selector.includes(':hover'))
+      if (keptSelectors.length === selectors.length) {
+        return
+      }
+      changed = true
+      if (keptSelectors.length === 0) {
+        rule.remove()
+        return
+      }
+      rule.selectors = keptSelectors
+    })
+    root.walk((node) => {
+      if ('nodes' in node && node.nodes?.length === 0) {
+        node.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : source
+  }
+  catch {
+    return source
+  }
+}
+
+function removeProcessedMiniProgramUnsupportedCss(
+  source: string,
+  options: Partial<IStyleHandlerOptions>,
+) {
+  return removeMiniProgramHoverSelectors(
+    removeUnsupportedMiniProgramAtRules(source),
+    options.cssRemoveHoverPseudoClass,
+  )
 }
 
 function unwrapMiniProgramCascadeLayers(source: string) {
@@ -348,10 +385,19 @@ export async function transformGeneratorUserCss(
     cssUserHandlerOptions: IStyleHandlerOptions
     styleHandler: InternalUserDefinedOptions['styleHandler']
     importFallback: boolean
+    processed?: boolean | undefined
   },
 ) {
   if (source.trim().length === 0) {
     return ''
+  }
+  if (options.processed) {
+    return options.generatorTarget === 'weapp'
+      ? removeProcessedMiniProgramUnsupportedCss(source, {
+          ...options.generatorStyleOptions,
+          ...options.cssUserHandlerOptions,
+        })
+      : source
   }
   const repairedSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(source),
