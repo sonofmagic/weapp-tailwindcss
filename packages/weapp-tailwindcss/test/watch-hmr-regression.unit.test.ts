@@ -2186,6 +2186,11 @@ describe('watch-hmr regression cases', () => {
       'uni-app-vite-tailwindcss-v4',
     ]
     const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
+    const sourceOnlyWebHmrCases = new Set([
+      'taro-webpack-react-tailwindcss-v3',
+      'taro-webpack-react-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v3',
+    ])
 
     for (const name of webCaseNames) {
       const watchCase = caseMap.get(name)
@@ -2194,7 +2199,7 @@ describe('watch-hmr regression cases', () => {
 
       expect(watchCase?.webHmr, `${name} should define Web/H5 HMR coverage`).toBeDefined()
       expect(sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
-      if (name === 'taro-webpack-vue3-tailwindcss-v3') {
+      if (sourceOnlyWebHmrCases.has(name)) {
         expect(cssEntryFile).toBe('')
       }
       else {
@@ -2206,7 +2211,8 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase?.webHmr?.devScript).toBe(expectedDevScript)
     }
 
-    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
+    expect(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile).toBeUndefined()
+    expect(caseMap.get('taro-webpack-react-tailwindcss-v4')?.webHmr?.cssEntryFile).toBeUndefined()
     expect(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile).toBeUndefined()
 
     const taroWebpackPostcssConfigs = [
@@ -2580,7 +2586,9 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackReactV3Case?.webHmr?.devScript).toBe('build:h5')
     expect(taroWebpackReactV3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackReactV3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
-    expect(taroWebpackReactV3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
+    expect(taroWebpackReactV3Case?.webHmr?.injectMarkerElement).toBeUndefined()
+    expect(taroWebpackReactV3Case?.webHmr?.cssEntryFile).toBeUndefined()
+    expect(taroWebpackReactV3Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
     expect(taroWebpackReactV3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackVue3V3Case?.webHmr?.devScript).toBe('build:h5')
     expect(taroWebpackVue3V3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
@@ -2592,8 +2600,10 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
     expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackReactV4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
-    expect(taroWebpackReactV4Case?.webHmr?.reloadAfterCssMutation).toBe(true)
-    expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(90_000)
+    expect(taroWebpackReactV4Case?.webHmr?.injectMarkerElement).toBeUndefined()
+    expect(taroWebpackReactV4Case?.webHmr?.cssEntryFile).toBeUndefined()
+    expect(taroWebpackReactV4Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
+    expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackVue3V4Case?.webHmr?.devScript).toBe('build:h5')
     expect(taroWebpackVue3V4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackVue3V4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
