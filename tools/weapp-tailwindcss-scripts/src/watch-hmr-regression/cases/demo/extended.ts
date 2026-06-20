@@ -783,6 +783,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     webHmr: {
       devScript: 'dev:h5',
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/app.css'),
+      injectMarkerElement: true,
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
       compileSettleTimeoutMs: 180_000,
@@ -790,8 +792,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         NODE_ENV: 'development',
       },
       mutate(source, payload) {
-        const snippet = `      <View data-tw-watch-web="${payload.marker}" className="${payload.classLiteral}">${payload.marker}-web</View>`
-        return insertBeforeClosingTag(source, '    </>', snippet)
+        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
       },
     },
   }
@@ -1059,7 +1060,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       injectMarkerElement: true,
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
-      reloadAfterCssMutation: true,
       compileSettleTimeoutMs: 120_000,
       env: {
         NODE_ENV: 'development',

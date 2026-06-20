@@ -198,6 +198,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       devScript: 'build:h5',
       devArgs: ['--watch'],
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/pages/index/index.tsx'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v3/src/app.less'),
+      injectMarkerElement: true,
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
       compileSettleTimeoutMs: 180_000,
@@ -205,8 +207,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         NODE_ENV: 'development',
       },
       mutate(source, payload) {
-        const snippet = `      <View data-tw-watch-web="${payload.marker}" className="${payload.classLiteral}">${payload.marker}-web</View>`
-        return insertBeforeClosingTag(source, '    </>', snippet)
+        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
       },
     },
   }
@@ -675,6 +676,8 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       devScript: 'build:h5',
       devArgs: ['--watch'],
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
+      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less'),
+      injectMarkerElement: true,
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
       compileSettleTimeoutMs: 180_000,
@@ -682,11 +685,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
         NODE_ENV: 'development',
       },
       mutate(source, payload) {
-        return insertBeforeClosingTag(
-          source,
-          '</template>',
-          `    <view data-tw-watch-web="${payload.marker}" class="${payload.classLiteral}">${payload.marker}-web</view>`,
-        )
+        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
       },
     },
   }

@@ -22,6 +22,7 @@ import { resolveReloadAcceptAttemptTimeout, waitForWebCompileSettled } from './w
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
 const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
+const WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS = 1_000
 
 export function isWebCompileReadyLogLine(line: string) {
   return /ready in \d+|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|(?:^|\s)Local:\s+https?:\/\/|开发服务已就绪|构建完成|编译成功/u.test(line)
@@ -89,6 +90,10 @@ function resolveRollbackClassLiteral(config: WebHmrConfig) {
 
 function createCssEntryContent(source: string, marker: string, classLiteral: string) {
   return `${source.trimEnd()}\n[data-tw-watch-web="${marker}"] { @apply ${classLiteral}; }\n`
+}
+
+export function resolveWebHmrMarkerAttachTimeout(pollMs: number) {
+  return Math.max(pollMs, WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS)
 }
 
 function normalizeDomExpectedStyle(style: NonNullable<NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]['expectedStyle']>) {
@@ -794,7 +799,7 @@ export async function runWebHmr(
           }
           await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
             state: 'attached',
-            timeout: Math.max(options.pollMs, 250),
+            timeout: resolveWebHmrMarkerAttachTimeout(options.pollMs),
           })
           const currentStyle = await getElementComputedStyle(page, marker)
           assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
@@ -834,7 +839,7 @@ export async function runWebHmr(
             }
             await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
               state: 'attached',
-              timeout: options.pollMs,
+              timeout: resolveWebHmrMarkerAttachTimeout(options.pollMs),
             })
             const currentStyle = await getElementComputedStyle(page, marker)
             computedStyle = assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
