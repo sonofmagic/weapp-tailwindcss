@@ -227,7 +227,15 @@ jobs:
 
       - name: Install Playwright Chromium
         shell: bash
-        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
 
       - name: Build watch suite package dependencies
         run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build
@@ -493,7 +501,15 @@ jobs:
 
       - name: Install Playwright Chromium
         shell: bash
-        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
 
       - name: Build watch suite package dependencies
         run: pnpm --filter weapp-tailwindcss... --filter "./packages-runtime/*" run build

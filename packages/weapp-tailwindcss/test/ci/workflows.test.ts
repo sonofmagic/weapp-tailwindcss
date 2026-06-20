@@ -53,6 +53,13 @@ function hasStepRunCommand(runs: string[], command: string) {
   return runs.some(run => run === command || run.includes(`-- ${command}`))
 }
 
+function expectPlaywrightInstallRetry(run: string, command: string) {
+  expect(run).toContain('for attempt in 1 2 3 4')
+  expect(run).toContain(`if ${command}; then`)
+  expect(run).toContain('sleep $((attempt * 10))')
+  expect(run.trimEnd()).toContain(command)
+}
+
 function extractJsonArrays(source: string) {
   return [...source.matchAll(/\[\{.*?\}\]/g)].map((match) => {
     return JSON.parse(match[0]) as Array<Record<string, unknown>>
@@ -116,7 +123,7 @@ describe('ci workflows', () => {
     expect(staticJob.strategy['fail-fast']).toBe(false)
     expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
-    expect(staticRuns).toContain('pnpm exec playwright install chromium')
+    expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium')
     expect(hasStepRunCommand(staticRuns, 'pnpm build:ci')).toBe(true)
     expect(hasStepRunCommand(staticRuns, 'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
     expect(hasStepRunCommand(focusedRuns, 'pnpm build:ci')).toBe(true)
@@ -153,6 +160,12 @@ describe('ci workflows', () => {
       'pnpm e2e:multiplatform-build:taro-alipay',
     ])
     expect(hasStepRunCommand(stepRuns(workflow, 'e2e-multiplatform'), '${{ matrix.command }}')).toBe(true)
+
+    for (const jobName of ['e2e-static', 'e2e-focused', 'e2e-multiplatform'] as const) {
+      const installRun = stepRuns(workflow, jobName).find(run => run.includes('playwright install chromium'))
+      expect(installRun, `${jobName} should install Playwright Chromium`).toBeDefined()
+      expectPlaywrightInstallRetry(installRun!, 'pnpm exec playwright install chromium')
+    }
   })
 
   it('keeps the preprocessor source demo in local e2e and CI', () => {
@@ -221,6 +234,10 @@ describe('ci workflows', () => {
     ]))
     expect(rows.every(row => row.watch_web_only === '1')).toBe(true)
     expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
+    expectPlaywrightInstallRetry(
+      stepRuns(workflow, 'e2e-watch').find(run => run.includes('playwright install chromium'))!,
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+    )
     expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
     expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     expect(job.steps.some((step: Record<string, unknown>) => {
@@ -480,6 +497,10 @@ describe('e2e watch workflow', () => {
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
     expect(cases).not.toContain('macos:22:taro-webpack-react-tailwindcss-v4:issue33')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
+    expectPlaywrightInstallRetry(
+      stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+    )
   })
 
   it('keeps nightly full-regression coverage for broad cases and Node 24 probes', () => {
@@ -502,6 +523,10 @@ describe('e2e watch workflow', () => {
       'windows:24:weapp-vite-tailwindcss-v3:issue33',
     ]))
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
+    expectPlaywrightInstallRetry(
+      stepRuns(workflow, 'nightly-full-regression').find(run => run.includes('playwright install chromium'))!,
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+    )
   })
 
   it('keeps explicit plugin processing budgets for e2e watch rows while allowing longer startup timeouts', () => {
