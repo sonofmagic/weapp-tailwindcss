@@ -3,21 +3,21 @@ text,
 ::after,
 ::before {
   box-sizing: border-box;
+  border: 0 solid;
   margin: 0;
   padding: 0;
-  border: 0 solid;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
-  --tw-font-weight: ;
-  --tw-leading: ;
+  --tw-font-weight:;
+  --tw-leading:;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
   --tw-inset-shadow: 0 0 #0000;
-  --tw-ring-color: ;
+  --tw-ring-color:;
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-inset: ;
+  --tw-ring-inset:;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
@@ -539,11 +539,11 @@ wx-root-portal-content {
     color: var(--color-slate-100);
   }
 }
-
 .weapp-tw-user-ui-card {
   display: inline-flex;
   align-items: center;
   gap: 8rpx;
+  color: #175e75;
   color: var(--weapp-tw-user-ui-color, #175e75);
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
 }
@@ -566,13 +566,4 @@ wx-root-portal-content {
     opacity: 0.65;
     transform: scale(0.96);
   }
-}
-*,
-:after,
-:before,
-::backdrop {
-  box-sizing: border-box;
-  border: 0 solid;
-  margin: 0;
-  padding: 0;
 }

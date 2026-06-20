@@ -1545,11 +1545,6 @@ wx-root-portal-content {
   color: var(--nut-dark-color, var(--nut-white, #fff));
 }
 
-.nut-theme-dark .nut-searchbar .nut-searchbar__input-clear .nut-searchbar__nut-icon-mask-close:hover {
-  cursor: pointer;
-  color: var(--nut-dark-color, var(--nut-white, #fff));
-}
-
 .nut-theme-dark .nut-searchbar__right-search-icon,
 .nut-theme-dark .nut-searchbar__left-search-icon {
   color: var(--nut-dark-color, var(--nut-white, #fff));
@@ -1677,11 +1672,6 @@ wx-root-portal-content {
 
 .nut-searchbar__search-input .nut-searchbar__input-clear .nut-searchbar__nut-icon-mask-close {
   color: #ccc;
-}
-
-.nut-searchbar__search-input .nut-searchbar__input-clear .nut-searchbar__nut-icon-mask-close:hover {
-  cursor: pointer;
-  color: #686868;
 }
 
 .nut-searchbar__search-input .nut-searchbar__input-inner-icon-absolute .nut-searchbar__input-clear {
@@ -5469,11 +5459,6 @@ wx-root-portal-content {
   box-shadow: 0 0 2rpx #0003;
   margin: 0 -5rpx;
   border-radius: 50%;
-}
-
-.nut-video-controller .nut-video-controller__progress .nut-video-controller__ball:hover {
-  width: 15rpx;
-  height: 15rpx;
 }
 
 .nut-video-controller .nut-video-controller__full {

@@ -1,28 +1,4 @@
 .weapp-tw-user-ui-card {
-  align-items: center;
-  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
-  color: var(--weapp-tw-user-ui-color, #175e75);
-  display: inline-flex;
-  gap: 8rpx;
-}
-.weapp-tw-user-ui-loading {
-  animation: weappTwUserUiRotation 1s linear infinite;
-  display: inline-block;
-  height: 32rpx;
-  width: 32rpx;
-}
-@keyframes weappTwUserUiRotation {
-  to {
-    transform: rotate(1turn);
-  }
-}
-@keyframes weappTwUserUiBreathe {
-  50% {
-    opacity: 0.65;
-    transform: scale(0.96);
-  }
-}
-.weapp-tw-user-ui-card {
   display: inline-flex;
   align-items: center;
   gap: 8rpx;
