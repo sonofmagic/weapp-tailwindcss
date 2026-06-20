@@ -867,15 +867,16 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         await refreshRuntimeMetadata(forceRuntimeRefresh)
         consumeRuntimeRefreshRequirement()
-        const transformRuntimeSet = new Set(runtimeSet)
         const webpackSourceCandidateSet = webpackSourceCandidates?.getSourceCandidatesForEntries(undefined)
+        const generatorRuntimeSet = new Set(runtimeSet)
         if (webpackSourceCandidateSet?.size) {
           for (const candidate of webpackSourceCandidateSet) {
             if (isRuntimeTransformCandidate(candidate)) {
-              transformRuntimeSet.add(candidate)
+              generatorRuntimeSet.add(candidate)
             }
           }
         }
+        const transformRuntimeSet = new Set(runtimeSet)
         const transformedJsRuntimeCandidates = new Set<string>()
         let currentJsRuntimeCandidates: Set<string> | undefined
         let currentJsRuntimeTokenSignature: string | undefined
@@ -942,10 +943,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const getGeneratorRuntimeSet = () => {
           const currentJsCandidates = getCurrentJsRuntimeCandidates()
           if (transformedJsRuntimeCandidates.size === 0 && (!currentJsCandidates || currentJsCandidates.size === 0)) {
-            return transformRuntimeSet
+            return generatorRuntimeSet
           }
           return new Set([
-            ...transformRuntimeSet,
+            ...generatorRuntimeSet,
             ...(currentJsCandidates ?? []),
             ...transformedJsRuntimeCandidates,
           ])
