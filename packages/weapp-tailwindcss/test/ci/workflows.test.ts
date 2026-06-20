@@ -537,9 +537,10 @@ describe('e2e watch workflow', () => {
       {
         watch_case: 'taro-webpack-react-tailwindcss-v4',
         round_profile: 'default',
-        timeout_minutes: 45,
-        watch_timeout_ms: '420000',
-        watch_command_timeout_ms: '960000',
+        timeout_minutes: 70,
+        watch_timeout_ms: '600000',
+        watch_max_hot_update_ms: '420000',
+        watch_command_timeout_ms: '1800000',
         watch_web_only: '1',
       },
       {
@@ -644,6 +645,15 @@ describe('e2e watch workflow', () => {
         os: 'windows-latest',
         runner_label: 'windows',
         ...budget,
+      }))
+    }
+    const slowStartupTaroWebpackPrRows = prRows.filter(row => typeof row.watch_case === 'string' && row.watch_case.startsWith('taro-webpack-'))
+    expect(slowStartupTaroWebpackPrRows).not.toHaveLength(0)
+    for (const row of slowStartupTaroWebpackPrRows) {
+      expect(row).toEqual(expect.objectContaining({
+        watch_timeout_ms: '600000',
+        watch_max_hot_update_ms: '420000',
+        watch_command_timeout_ms: '1800000',
       }))
     }
     expect(nightlyRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))

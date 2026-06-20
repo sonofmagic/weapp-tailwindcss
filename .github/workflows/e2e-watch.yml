@@ -66,6 +66,7 @@ jobs:
             timeout_minutes: 70
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
+            watch_max_hot_update_ms: '420000'
             watch_command_timeout_ms: '1800000'
           - os: macos-latest
             runner_label: macos
@@ -76,6 +77,7 @@ jobs:
             timeout_minutes: 70
             watch_timeout_ms: '600000'
             watch_poll_ms: '40'
+            watch_max_hot_update_ms: '420000'
             watch_command_timeout_ms: '1800000'
           - os: macos-latest
             runner_label: macos
@@ -103,20 +105,22 @@ jobs:
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
-            timeout_minutes: 45
-            watch_timeout_ms: '420000'
+            timeout_minutes: 70
+            watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_command_timeout_ms: '960000'
+            watch_max_hot_update_ms: '420000'
+            watch_command_timeout_ms: '1800000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-webpack-vue3-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
-            timeout_minutes: 45
-            watch_timeout_ms: '420000'
+            timeout_minutes: 70
+            watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_command_timeout_ms: '960000'
+            watch_max_hot_update_ms: '420000'
+            watch_command_timeout_ms: '1800000'
           - os: macos-latest
             runner_label: macos
             watch_case: taro-vite-vue3-tailwindcss-v3
@@ -183,10 +187,11 @@ jobs:
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
-            timeout_minutes: 45
-            watch_timeout_ms: '420000'
+            timeout_minutes: 70
+            watch_timeout_ms: '600000'
             watch_poll_ms: '40'
-            watch_command_timeout_ms: '960000'
+            watch_max_hot_update_ms: '420000'
+            watch_command_timeout_ms: '1800000'
           - os: windows-latest
             runner_label: windows
             watch_case: mpx-tailwindcss-v4
