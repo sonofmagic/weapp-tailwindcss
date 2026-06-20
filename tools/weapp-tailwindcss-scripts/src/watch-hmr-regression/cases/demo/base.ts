@@ -677,17 +677,18 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       devScript: 'build:h5',
       devArgs: ['--watch'],
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/pages/index/index.vue'),
-      cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less'),
-      injectMarkerElement: true,
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
-      reloadAfterCssMutation: true,
       compileSettleTimeoutMs: 180_000,
       env: {
         NODE_ENV: 'development',
       },
       mutate(source, payload) {
-        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
+        return insertBeforeClosingTag(
+          source,
+          '</template>',
+          `    <view data-tw-watch-web="${payload.marker}" class="${payload.classLiteral}">${payload.marker}-web</view>`,
+        )
       },
     },
   }

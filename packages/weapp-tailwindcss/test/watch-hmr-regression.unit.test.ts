@@ -2194,7 +2194,12 @@ describe('watch-hmr regression cases', () => {
 
       expect(watchCase?.webHmr, `${name} should define Web/H5 HMR coverage`).toBeDefined()
       expect(sourceFile).toMatch(/src\/pages\/index\/index\.(?:tsx|vue)$/)
-      expect(cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
+      if (name === 'taro-webpack-vue3-tailwindcss-v3') {
+        expect(cssEntryFile).toBe('')
+      }
+      else {
+        expect(cssEntryFile).toMatch(/src\/(?:app|main|tailwind)\.(?:css|less|scss)$/)
+      }
       const expectedDevScript = name === 'taro-webpack-react-tailwindcss-v4'
         ? 'dev:h5'
         : name.startsWith('taro-') ? 'build:h5' : 'dev:h5'
@@ -2202,7 +2207,7 @@ describe('watch-hmr regression cases', () => {
     }
 
     expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
-    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
+    expect(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile).toBeUndefined()
 
     const taroWebpackPostcssConfigs = [
       'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
@@ -2580,7 +2585,9 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackVue3V3Case?.webHmr?.devScript).toBe('build:h5')
     expect(taroWebpackVue3V3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackVue3V3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
-    expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
+    expect(taroWebpackVue3V3Case?.webHmr?.injectMarkerElement).toBeUndefined()
+    expect(taroWebpackVue3V3Case?.webHmr?.cssEntryFile).toBeUndefined()
+    expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
     expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
     expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
