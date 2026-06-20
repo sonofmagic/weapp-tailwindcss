@@ -16,6 +16,13 @@ const generator = {
   },
 } satisfies UserDefinedOptions['generator']
 
+function disableWebpackDevServerClientOverlay(chain: any) {
+  chain.devServer.set('client', {
+    ...(chain.devServer.get('client') ?? {}),
+    overlay: false,
+  })
+}
+
 const config: UserConfigExport<'webpack5'> = {
   compiler: {
     prebundle: {
@@ -153,6 +160,7 @@ const config: UserConfigExport<'webpack5'> = {
     },
     webpackChain(chain) {
       chain.plugins.delete('webpackbar')
+      disableWebpackDevServerClientOverlay(chain)
       chain.merge({
         plugin: {
           install: {

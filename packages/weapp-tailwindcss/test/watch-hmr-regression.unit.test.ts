@@ -2247,6 +2247,8 @@ describe('watch-hmr regression cases', () => {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
       expect(configSource, configPath).toContain('@tarojs/plugin-html')
       expect(configSource, configPath).toContain('WeappTailwindcss')
+      expect(configSource, configPath).toContain('disableWebpackDevServerClientOverlay(chain)')
+      expect(configSource, configPath).toMatch(/chain\.devServer\.set\(['"]client['"],\s*\{[\s\S]*?overlay:\s*false/)
       expectTaroGeneratorTargetConfig(configSource, configPath)
       expect(configSource, configPath).not.toContain('chain.watchOptions({')
       expect(configSource, configPath).not.toContain('ignored: [distDir]')

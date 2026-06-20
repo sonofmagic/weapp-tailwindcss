@@ -15,6 +15,13 @@ const generator = {
   },
 } satisfies UserDefinedOptions['generator']
 
+function disableWebpackDevServerClientOverlay(chain: any) {
+  chain.devServer.set('client', {
+    ...(chain.devServer.get('client') ?? {}),
+    overlay: false,
+  })
+}
+
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
   process.env.BROWSERSLIST_ENV = isWatchBuild
@@ -123,6 +130,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.plugins.delete('webpackbar')
+        disableWebpackDevServerClientOverlay(chain)
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
         chain.merge({
           plugin: {
