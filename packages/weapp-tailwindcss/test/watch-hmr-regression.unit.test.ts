@@ -2561,12 +2561,26 @@ describe('watch-hmr regression cases', () => {
     expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.initialBuildScript).toBe('build')
   })
 
-  it('keeps slow Taro webpack React v4 H5 web rollback settle timeout explicit', () => {
+  it('keeps slow Taro webpack H5 web rollback settle timeouts explicit', () => {
+    const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const taroWebpackReactV3Case = demoBaseCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v3')
+    const taroWebpackVue3V3Case = demoBaseCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v3')
     const taroWebpackReactV4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')
+    const taroWebpackVue3V4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')
 
+    expect(taroWebpackReactV3Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackReactV3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
+    expect(taroWebpackReactV3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
+    expect(taroWebpackVue3V3Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
+    expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
+    expect(taroWebpackReactV4Case?.webHmr?.reloadAfterCssMutation).toBe(true)
     expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(90_000)
+    expect(taroWebpackVue3V4Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackVue3V4Case?.webHmr?.reloadAfterCssMutation).toBe(true)
+    expect(taroWebpackVue3V4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {

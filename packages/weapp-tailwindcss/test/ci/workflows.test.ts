@@ -537,8 +537,8 @@ describe('e2e watch workflow', () => {
       {
         watch_case: 'taro-webpack-react-tailwindcss-v4',
         round_profile: 'default',
-        timeout_minutes: 70,
-        watch_timeout_ms: '600000',
+        timeout_minutes: 80,
+        watch_timeout_ms: '900000',
         watch_max_hot_update_ms: '420000',
         watch_command_timeout_ms: '1800000',
         watch_web_only: '1',
@@ -651,7 +651,8 @@ describe('e2e watch workflow', () => {
     expect(slowStartupTaroWebpackPrRows).not.toHaveLength(0)
     for (const row of slowStartupTaroWebpackPrRows) {
       expect(row).toEqual(expect.objectContaining({
-        watch_timeout_ms: '600000',
+        timeout_minutes: 80,
+        watch_timeout_ms: '900000',
         watch_max_hot_update_ms: '420000',
         watch_command_timeout_ms: '1800000',
       }))
