@@ -1725,6 +1725,7 @@ describe('watch-hmr regression cases', () => {
     expect(isWebCompileReadyLogLine('  ➜  Local:   http://localhost:10086/')).toBe(true)
     expect(isWebCompileReadyLogLine('webpack 5.102.1 compiled successfully in 389888 ms')).toBe(true)
     expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
+    expect(isWebCompileReadyLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
   })
 
   it('retries Web/H5 page readiness when the first navigation races the dev middleware', async () => {
