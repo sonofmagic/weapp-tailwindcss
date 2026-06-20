@@ -682,7 +682,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
       reloadAfterCssMutation: true,
-      compileSettleTimeoutMs: 120_000,
+      compileSettleTimeoutMs: 180_000,
       env: {
         NODE_ENV: 'development',
       },

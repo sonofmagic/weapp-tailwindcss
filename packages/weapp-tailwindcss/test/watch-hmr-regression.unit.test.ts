@@ -2581,7 +2581,7 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackVue3V3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackVue3V3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
     expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBe(true)
-    expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
+    expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
     expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackReactV4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
