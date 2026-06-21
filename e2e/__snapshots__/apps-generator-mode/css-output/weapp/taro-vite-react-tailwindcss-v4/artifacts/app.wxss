@@ -13258,7 +13258,6 @@ wx-root-portal-content {
   font-size: var(--nutui-price-decimal-small-size, 12rpx);
 }
 .nut-price-line {
-  text-decoration: line-through;
   text-decoration: line-through var(--nutui-price-line-color, var(--nutui-color-text-help));
 }
 .nut-popup {
