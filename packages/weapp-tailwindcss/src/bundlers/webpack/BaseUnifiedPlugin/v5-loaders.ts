@@ -62,14 +62,16 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
   const shouldInjectRuntimeClassSetLoader = compilerOptions.generator?.target !== 'web'
-  const runtimeCssImportRewriteLoader = shouldRewriteCssImports
+  const shouldInjectCssImportRewriteLoader = shouldRewriteCssImports
+    || (compilerOptions.generator?.target === 'web' && runtimeState.tailwindRuntime.majorVersion === 4)
+  const runtimeCssImportRewriteLoader = shouldInjectCssImportRewriteLoader
     ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined
   const runtimeClassSetLoaderExists = fs.existsSync(runtimeClassSetLoader)
   const runtimeCssImportRewriteLoaderExists = runtimeCssImportRewriteLoader
     ? fs.existsSync(runtimeCssImportRewriteLoader)
     : false
-  const runtimeLoaderRewriteOptions = shouldRewriteCssImports
+  const runtimeLoaderRewriteOptions = shouldInjectCssImportRewriteLoader
     ? {
         pkgDir: weappTailwindcssPackageDir,
         compilerOptions,

@@ -22,6 +22,7 @@ import { generateCssByGenerator, hasTailwindGeneratedCss, hasTailwindGeneratedCs
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, parseImportRequest, removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { createCssSourceOrderAppend, hasMiniProgramTailwindV4PreflightReset } from '../../shared/generator-css/generation-helpers'
 import { scoreTailwindV4CssSourceFileMatch } from '../../shared/generator-css/source-resolver/matching'
+import { removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../shared/generator-css/user-css'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories, resolveTaskConcurrency } from '../../shared/run-tasks'
@@ -840,6 +841,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             stripBundlerGeneratedCssMarkers(source),
             { importFallback: true },
           )
+          if (isWebGeneratorTarget && runtimeState.tailwindRuntime.majorVersion === 4) {
+            return stripTrailingLineWhitespace(
+              stripUnmatchedTailwindSourceMediaCloseFragments(
+                stripTailwindSourceMediaFragments(
+                  removeTailwindV4GeneratorAtRules(finalized),
+                ),
+              ),
+            )
+          }
           if (isWebGeneratorTarget || options.generatedCss !== true) {
             return finalized
           }

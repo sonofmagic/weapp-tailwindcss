@@ -728,7 +728,7 @@ export async function transformGeneratorUserCss(
     return ''
   }
   if (options.processed) {
-    return options.generatorTarget === 'weapp'
+    const cleanedSource = options.generatorTarget === 'weapp'
       ? removeTailwindV4GeneratedUserCssArtifacts(
           removeProcessedMiniProgramUnsupportedCss(source, {
             ...options.generatorStyleOptions,
@@ -736,6 +736,11 @@ export async function transformGeneratorUserCss(
           }),
         )
       : source
+    return stripUnmatchedTailwindSourceMediaCloseFragments(
+      stripTailwindSourceMediaFragments(
+        removeTailwindV4GeneratorAtRules(cleanedSource),
+      ),
+    )
   }
   const repairedSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(source),
@@ -751,9 +756,11 @@ export async function transformGeneratorUserCss(
   }
   const sanitizedSource = removeTailwindSourceDirectives(
     stripUnmatchedTailwindSourceMediaCloseFragments(
-      stripTailwindSourceMediaFragments(options.generatorTarget === 'weapp'
-        ? removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(unwrapMiniProgramCascadeLayers(cleanedSource)))
-        : cleanedSource),
+      stripTailwindSourceMediaFragments(
+        options.generatorTarget === 'weapp'
+          ? removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(unwrapMiniProgramCascadeLayers(cleanedSource)))
+          : cleanedSource,
+      ),
     ),
     {
       importFallback: options.importFallback,

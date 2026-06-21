@@ -170,6 +170,60 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('--default-font-family')
   })
 
+  it('removes Tailwind v4 source media wrappers before preserving web user css', async () => {
+    const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+
+    const css = await transformGeneratorUserCss([
+      '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
+      '@media source(none){',
+      '  @tailwind utilities;',
+      '}',
+      '.home-hero{display:grid}',
+      '.home-v5{color:#0f172a}',
+      '@keyframes homePulse{to{opacity:.65}}',
+    ].join('\n'), {
+      generatorTarget: 'web',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      importFallback: true,
+    })
+
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(css).toContain('.home-hero')
+    expect(css).toContain('.home-v5')
+    expect(css).toContain('@keyframes homePulse')
+    expect(css).not.toContain('@media source(none)')
+    expect(css).not.toContain('@tailwind utilities')
+  })
+
+  it('removes Tailwind v4 source media wrappers from processed web user css', async () => {
+    const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+
+    const css = await transformGeneratorUserCss([
+      '.home-hero{display:grid}',
+      '@media source(none){',
+      '  @tailwind utilities;',
+      '}',
+      '.home-v5{color:#0f172a}',
+    ].join('\n'), {
+      generatorTarget: 'web',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      importFallback: true,
+      processed: true,
+    })
+
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(css).toContain('.home-hero')
+    expect(css).toContain('.home-v5')
+    expect(css).not.toContain('@media source(none)')
+    expect(css).not.toContain('@tailwind utilities')
+  })
+
   it('removes post-transform Tailwind v4 preflight fragments without generated css markers', async () => {
     const { removeTailwindV4GeneratedUserCssArtifacts } = await import('@/bundlers/shared/generator-css/user-css')
 
