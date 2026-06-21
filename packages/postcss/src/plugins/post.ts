@@ -2,6 +2,7 @@
 import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
+import { isMiniProgramPreflightRule } from '../compat/mini-program-css/predicates'
 import { MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
@@ -78,6 +79,28 @@ function removeLegacyFlexboxPrefix(decl: Declaration) {
 function injectMissingTailwindcssV4Defaults(root: Root) {
   const nodes = createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
   if (nodes.length === 0) {
+    return
+  }
+  let preflightRule: Rule | undefined
+  root.walkRules((rule) => {
+    if (isMiniProgramPreflightRule(rule)) {
+      preflightRule = rule
+      return false
+    }
+  })
+  if (preflightRule) {
+    const existingProps = new Set<string>()
+    preflightRule.walkDecls((decl) => {
+      existingProps.add(decl.prop)
+    })
+    for (const node of nodes) {
+      if (existingProps.has(node.prop)) {
+        continue
+      }
+      existingProps.add(node.prop)
+      preflightRule.append(node)
+    }
+    preflightRule.raws.semicolon = true
     return
   }
   root.append({

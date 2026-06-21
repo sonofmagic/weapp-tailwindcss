@@ -49,6 +49,9 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
   })
 
   it('registers tailwindcss v4 cssSources from the injected css rewrite loader', async () => {
+    testState.currentContext = createContext({
+      rewriteCssImports: true,
+    })
     testState.currentContext.tailwindRuntime.majorVersion = 4
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     const plugin = new WeappTailwindcss()

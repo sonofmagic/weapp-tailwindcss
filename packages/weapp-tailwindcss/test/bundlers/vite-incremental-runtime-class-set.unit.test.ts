@@ -588,6 +588,56 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(secondRuntimeSet.has('text-[102.43rpx]')).toBe(false)
   })
 
+  it('restores escaped v3 runtime candidates from changed output files', async () => {
+    const opts = createOptions()
+    const outDir = '/project/dist'
+    const state = createBundleBuildState()
+    const runtime = createV3Runtime()
+    const extractRawCandidates = vi.fn(async () => [])
+    const manager = createBundleRuntimeClassSetManager({
+      extractRawCandidates,
+    })
+
+    const firstSnapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "text-_b23_d000025px_B bg-_b_h000025_B after_cml-_b0_d000025px_B";'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const firstRuntimeSet = await manager.sync(runtime, firstSnapshot)
+
+    expect(firstRuntimeSet).toEqual(new Set([
+      'text-[23.000025px]',
+      'bg-[#000025]',
+      'after:ml-[0.000025px]',
+    ]))
+    expect(extractRawCandidates).toHaveBeenCalledWith(
+      expect.stringContaining('bg-_b_h000025_B'),
+      'js',
+    )
+
+    updateBundleBuildState(state, firstSnapshot, new Map([
+      ['pages/index/index.js', new Set<string>()],
+    ]), { incremental: true })
+
+    const secondSnapshot = buildBundleSnapshot({
+      'pages/index/index.js': {
+        ...createRollupChunk('const cls = "text-_b23_d000026px_B bg-_b_h000026_B after_cml-_b0_d000026px_B";'),
+        fileName: 'pages/index/index.js',
+      },
+    }, opts, outDir, state)
+
+    const secondRuntimeSet = await manager.sync(runtime, secondSnapshot)
+
+    expect(secondRuntimeSet).toEqual(new Set([
+      'text-[23.000026px]',
+      'bg-[#000026]',
+      'after:ml-[0.000026px]',
+    ]))
+    expect(secondRuntimeSet.has('bg-[#000025]')).toBe(false)
+  })
+
   it('ignores dependency vendor chunks when collecting tailwind v4 runtime candidates', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'

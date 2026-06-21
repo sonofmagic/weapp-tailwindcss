@@ -1,12 +1,60 @@
+import fs from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
-import { normalizeCssSnapshot, normalizeFormattedCssSnapshot, normalizeSnapshotName } from './snapshotUtils'
+import { collectCssSnapshots, normalizeCssSnapshot, normalizeFormattedCssSnapshot, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
   it('normalizes generated css file hashes in path segments', () => {
     expect(normalizeSnapshotName('components/listb90661b8/index.wxss')).toBe('components/list/index.wxss')
     expect(normalizeSnapshotName('components/vant/weappda3e1e6c/lib/button/index.wxss')).toBe('components/vant/weapp/lib/button/index.wxss')
     expect(normalizeSnapshotName('styles/base3f288b8e.wxss')).toBe('styles/base.wxss')
+  })
+
+  it('normalizes generated css import hashes in raw snapshots', () => {
+    expect(normalizeRawCssSnapshotText([
+      '@import \'./styles/appb60826a4.wxss\';',
+      '@import \'./styles/third-party-ui2633b7c4.wxss\';',
+    ].join('\n'))).toBe([
+      '@import \'./styles/app.wxss\';',
+      '@import \'./styles/third-party-ui.wxss\';',
+      '',
+    ].join('\n'))
+  })
+
+  it('applies webpack app split noise options to raw snapshots', () => {
+    expect(normalizeRawCssSnapshotText([
+      ':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif;--nut-icon-height:16rpx;--animate-duration:1s}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '.nut-icon{width:16rpx;width:var(--nut-icon-width,16rpx)}',
+      '.nut-icon-am-jump{animation-name:nutJumpOne}',
+      '@keyframes nutJumpOne{50%{transform:translateY(-10rpx)}}',
+    ].join('\n'), {
+      normalizeWebpackAppSplitNoise: true,
+    })).toBe([
+      ':host, page, .tw-root, wx-root-portal-content{--font-sans:ui-sans-serif}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '',
+    ].join('\n'))
+  })
+
+  it('applies webpack app split noise options when collecting css snapshots', async () => {
+    const root = await fs.mkdtemp(path.join(tmpdir(), 'weapp-tw-css-snapshot-'))
+    await fs.writeFile(path.join(root, 'app.wxss'), [
+      ':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif;--nut-icon-height:16rpx;--animate-duration:1s}',
+      '.nut-icon{width:16rpx;width:var(--nut-icon-width,16rpx)}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+    ].join('\n'))
+
+    const snapshots = await collectCssSnapshots(root, 'app.wxss', {
+      normalizeWebpackAppSplitNoise: true,
+    })
+
+    expect(snapshots).toHaveLength(1)
+    expect(snapshots[0]?.content).toContain('.bg-independent-subpackage-marker')
+    expect(snapshots[0]?.content).not.toContain('.nut-icon')
+    expect(snapshots[0]?.content).not.toContain('--nut-icon-height')
   })
 
   it('normalizes formatted base selector spacing across platforms', () => {
@@ -255,6 +303,25 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('removes existing token comments with legacy spacing before re-annotating rules', () => {
+    expect(normalizeCssSnapshot([
+      '/*tokens: btn <= src/pages/index/daisyui.vue */',
+      '/* tokens: relative <= src/components/TestCase55.vue */',
+      '.btn { display: inline-flex; }',
+      '.relative { position: relative; }',
+    ].join('\n'), {
+      tokenSources: new Map([
+        ['btn', { token: 'btn', sources: ['src/pages/index/daisyui.vue'] }],
+        ['relative', { token: 'relative', sources: ['src/components/TestCase55.vue'] }],
+      ]),
+    })).toBe([
+      '/* tokens: btn <= src/pages/index/daisyui.vue */',
+      '.btn { display: inline-flex; }',
+      '/* tokens: relative <= src/components/TestCase55.vue */',
+      '.relative { position: relative; }',
+    ].join('\n'))
+  })
+
   it('marks extracted tokens without source files as generated', () => {
     expect(normalizeCssSnapshot('.rotate-y-90 { transform: rotateY(90deg); }', {
       tokenSources: new Map([
@@ -484,7 +551,17 @@ describe('normalizeCssSnapshot', () => {
       '}',
       ':host, page, .tw-root, wx-root-portal-content {',
       '  --spacing: 8rpx;',
+      '}',
+      'view, text, ::after, ::before {',
       '  --tw-gradient-position: initial;',
+      '  box-sizing: border-box;',
+      '  border-width: 0;',
+      '}',
+      'view, text, ::after, ::before {',
+      '  border: 0 solid;',
+      '  box-sizing: border-box;',
+      '  margin: 0;',
+      '  padding: 0;',
       '}',
     ].join('\n'))
   })
@@ -565,5 +642,36 @@ describe('normalizeCssSnapshot', () => {
       '  background-color: #2563eb;',
       '}',
     ].join('\n'))
+  })
+
+  it('keeps mini-program preflight reset when normalizing Taro webpack app split noise', () => {
+    const css = normalizeCssSnapshot([
+      '@font-face { font-family: "JDZH-Regular"; src: url(data:font/ttf;base64,abc) format("truetype"); }',
+      'view, text, ::after, ::before {',
+      '  box-sizing: border-box;',
+      '  margin: 0;',
+      '  padding: 0;',
+      '  border: 0 solid;',
+      '  --tw-rotate-x:;',
+      '  --tw-gradient-position: initial;',
+      '}',
+      ':host, page, .tw-root, wx-root-portal-content {',
+      '  --spacing: 8rpx;',
+      '}',
+    ].join('\n'), {
+      normalizeWebpackAppSplitNoise: true,
+    })
+
+    expect(css).toContain('view, text, ::after, ::before {')
+    expect(css).toContain('box-sizing: border-box;')
+    expect(css).toContain('margin: 0;')
+    expect(css).toContain('padding: 0;')
+    expect(css).toContain('border: 0 solid;')
+    expect(css).toContain('--tw-rotate-x:;')
+    expect(css).toContain('--tw-gradient-position: initial;')
+    expect(css).toContain(':host, page, .tw-root, wx-root-portal-content {')
+    expect(css).toContain('--spacing: 8rpx;')
+    expect(css.indexOf('view, text, ::after, ::before {')).toBeLessThan(css.indexOf('--tw-rotate-x:;'))
+    expect(css.indexOf('--tw-gradient-position: initial;')).toBeLessThan(css.indexOf(':host, page, .tw-root, wx-root-portal-content {'))
   })
 })

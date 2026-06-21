@@ -92,6 +92,18 @@ export interface UserDefinedOptionsGeneralPart {
   replaceRuntimePackages?: boolean | Record<string, string> | undefined
 
   /**
+   * 是否把 CSS 中的 Tailwind 包入口改写到 `weapp-tailwindcss` 内部样式入口。
+   *
+   * @group 3.一般配置
+   * @remarks
+   * 默认关闭。Tailwind CSS v4 项目应保留 `@import "tailwindcss"` 原始入口，由
+   * `weapp-tailwindcss` 基于 CSS AST/source 结果生成目标端 CSS。仅在需要兼容旧项目
+   * 或特定框架无法正常解析 Tailwind 包入口时显式开启。
+   * @default false
+   */
+  rewriteCssImports?: boolean | undefined
+
+  /**
    * 控制 Tailwind CSS 直接生成目标端 CSS 的策略。
    *
    * @group 3.一般配置
@@ -162,6 +174,17 @@ export interface UserDefinedOptionsGeneralPart {
     cacheMaxEntries?: number | undefined
     cacheMaxSourceLength?: number | undefined
   }) | undefined
+
+  /**
+   * 实验性 JS 转译快路径。
+   *
+   * @group 3.一般配置
+   * @experimental
+   * @remarks
+   * 当前仅在调用侧关闭 source map，且没有模块图、模块替换、ignore 调用/标签模板语义时尝试 OXC。
+   * OXC npm 包本身要求 Node `^20.19.0 || >=22.12.0`，Node 18 环境会自动回退到 Babel。
+   */
+  experimentalJsFastPath?: boolean | 'oxc' | undefined
 
   /**
    * 自定义 Tailwind 子组合器的替换值。

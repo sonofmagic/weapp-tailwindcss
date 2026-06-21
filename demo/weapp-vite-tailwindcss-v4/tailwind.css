@@ -1,0 +1,17 @@
+/* Tailwind v4 root entry intentionally uses plain CSS. */
+@import "tailwindcss";
+@import "./third-party-ui.css";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
+@plugin "@iconify/tailwind4";
+@plugin "@iconify/tailwind4" {
+  prefix: "iconify";
+  scale: 1.2;
+}
+@config "./tailwind.config.js";
+@source "./pages/**/*.{wxml,html,js,ts,jsx,tsx,vue}";
+@source not "./sub-normal/**/*";
+@source not "./sub-independent/**/*";

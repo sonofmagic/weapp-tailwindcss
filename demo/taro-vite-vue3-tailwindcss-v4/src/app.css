@@ -1,4 +1,5 @@
 @import "tailwindcss" source(none);
+@import "@nutui/nutui-taro/dist/style.css";
 @config "../tailwind.config.js";
 @source "../src/**/*.{ts,js,vue,html}";
 @source not "../src/sub-normal/**/*";

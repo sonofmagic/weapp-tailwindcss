@@ -12,6 +12,7 @@ export interface CaseResult {
   themeManualDarkScreenshot?: string
   hmrBeforeScreenshot?: string
   hmrAfterScreenshot?: string
+  hmrSteps?: VisualHmrStepResult[]
   hmrDiff?: string
   diff?: string
   comparison?: Record<string, unknown>
@@ -31,11 +32,28 @@ export interface RuntimeContext {
 
 export interface MiniProgramHmrMutation {
   marker: string
+  classLiteral: string
+  expectedBackgroundColor?: string
   restore: () => Promise<void>
+}
+
+export interface VisualHmrStep {
+  name: string
+  marker: string
+  classLiteral: string
+  expectedBackgroundColor: string
+}
+
+export interface VisualHmrStepResult extends VisualHmrStep {
+  beforeScreenshot?: string
+  afterScreenshot: string
+  diff?: string
+  evidence?: Record<string, unknown>
 }
 
 export interface MiniProgramHmrVisualConfig {
   label: string
   watchCase: WatchCase
-  mutate: () => Promise<MiniProgramHmrMutation>
+  steps: VisualHmrStep[]
+  mutate: (step: VisualHmrStep, previous?: MiniProgramHmrMutation) => Promise<MiniProgramHmrMutation>
 }

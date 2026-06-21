@@ -91,6 +91,17 @@ describe('tailwindcss/v4/runtime helpers', () => {
     ])
   })
 
+  it('ignores non-css entries for Tailwind v4 runtime css roots', async () => {
+    const { guessBasedirFromEntries, normalizeCssEntries } = await loadModule()
+    const anchor = '/workspace/project'
+
+    expect(normalizeCssEntries(['./src/app.scss', './src/app.less', './src/app.css'], anchor)).toEqual([
+      path.normalize(path.resolve(anchor, './src/app.css')),
+    ])
+    expect(normalizeCssEntries(['./src/app.scss', './src/app.less'], anchor)).toBeUndefined()
+    expect(guessBasedirFromEntries(['/workspace/project/src/app.scss'])).toBeUndefined()
+  })
+
   it('returns undefined when no valid css entries exist after normalization', async () => {
     const { normalizeCssEntries } = await loadModule()
     const anchor = '/workspace/project'

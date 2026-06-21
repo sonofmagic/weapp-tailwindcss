@@ -32,3 +32,14 @@ export function resolveHmrScreenshotPath(
 ) {
   return path.join(resolveScreenshotDir(context, name, platform, variant), `hmr-${phase}.png`)
 }
+
+export function resolveHmrStepScreenshotPath(
+  context: RuntimeContext,
+  name: string,
+  platform: VisualPlatform,
+  stepName: string,
+  phase: 'before' | 'after',
+  variant?: string,
+) {
+  return path.join(resolveScreenshotDir(context, name, platform, variant), 'hmr', stepName.replace(/[^\w.-]+/g, '-'), `${phase}.png`)
+}

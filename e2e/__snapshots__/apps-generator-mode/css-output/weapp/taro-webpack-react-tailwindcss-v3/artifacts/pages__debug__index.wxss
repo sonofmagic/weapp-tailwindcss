@@ -1,0 +1,196 @@
+ /* tokens: my-text-[#11e331] <= src/components/TailwindPrefix.tsx */
+.my-text-_b_h11e331_B {
+  --tw-text-opacity: 1;
+  color: rgba(17, 227, 49, var(--tw-text-opacity, 1));
+}
+.aaaaaaa {
+  color: red;
+}
+ /* tokens: a <= src/index.html, src/pages/index/index.tsx */
+.a {
+  color: green;
+}
+ /* tokens: b <= src/pages/index/index.tsx */
+.b {
+  color: yellow;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --nut-icon-height: 16rpx;
+  --nut-icon-width: 16rpx;
+  --nut-icon-line-height: 16rpx;
+  --nut-icon-color: #171a26;
+  --animate-duration: 1s;
+  --animate-delay: 0s;
+}
+.nut-icon {
+  display: inline-block;
+  position: relative;
+  width: var(--nut-icon-width, 16rpx);
+  height: var(--nut-icon-height, 16rpx);
+  font-size: var(--nut-icon-width, 16rpx);
+  line-height: var(--nut-icon-line-height, 16rpx);
+  text-align: right;
+  color: var(--nut-icon-color, #171a26);
+}
+.nut-icon-img {
+  width: var(--nut-icon-width);
+  height: var(--nut-icon-height);
+  object-fit: contain;
+}
+.nut-icon-loading,
+.nut-icon-loading1,
+.nut-icon-Loading,
+.nut-icon-Loading1 {
+  display: inline-block;
+  animation: rotation 1s infinite linear;
+}
+.nut-icon-am-infinite {
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+.nut-icon-am-jump {
+  animation-name: nutJumpOne;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: ease;
+  animation-delay: var(--animate-delay);
+}
+.nut-icon-am-jump.nut-icon-am-infinite {
+  animation-name: nutJump;
+}
+.nut-icon-am-rotate {
+  animation-name: rotation;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: linear;
+  animation-delay: var(--animate-delay);
+}
+.nut-icon-am-rotate.nut-icon-am-infinite {
+  animation-direction: normal;
+}
+.nut-icon-am-blink {
+  animation-name: nutBlink;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: linear;
+  animation-delay: var(--animate-delay);
+}
+.nut-icon-am-breathe {
+  animation-name: nutBreathe;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: ease-in-out;
+  animation-delay: var(--animate-delay);
+}
+.nut-icon-am-flash {
+  animation-name: nutFlash;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: ease-in-out;
+  animation-delay: var(--animate-delay);
+}
+.nut-icon-am-bounce {
+  animation-name: nutBounce;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: ease-in-out;
+  animation-delay: var(--animate-delay);
+}
+.nut-icon-am-bounce.nut-icon-am-infinite {
+  animation-direction: normal;
+}
+.nut-icon-am-shake {
+  animation-name: nutShake;
+  animation-duration: var(--animate-duration);
+  animation-timing-function: ease-in-out;
+  animation-delay: var(--animate-delay);
+}
+@keyframes rotation {
+  0% {
+  }
+  to {
+  }
+}
+@keyframes nutJump {
+  to {
+    transform: scale3d(0.8, 1, 0.9) translateY(-10rpx);
+  }
+}
+@keyframes nutJumpOne {
+  50% {
+    transform: scale3d(0.8, 1, 0.9) translateY(-10rpx);
+  }
+  to {
+    transform: scaleZ(1) translateY(0);
+  }
+}
+@keyframes nutBlink {
+  0% {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nutBreathe {
+  0%,
+  to {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+@keyframes nutFlash {
+  0%,
+  50%,
+  to {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+@keyframes nutBounce {
+  0%,
+  20%,
+  53%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0);
+  }
+  40%,
+  43% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -30rpx, 0) scaleY(1.1);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -15rpx, 0) scaleY(1.05);
+  }
+  80% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translateZ(0) scaleY(0.95);
+  }
+  90% {
+    transform: translate3d(0, -4rpx, 0) scaleY(1.02);
+  }
+}
+@keyframes nutShake {
+  0% {
+    transform: translate(0);
+  }
+  6.5% {
+    transform: translate(-6rpx) rotateY(-9deg);
+  }
+  18.5% {
+    transform: translate(5rpx) rotateY(7deg);
+  }
+  31.5% {
+    transform: translate(-3rpx) rotateY(-5deg);
+  }
+  43.5% {
+    transform: translate(2rpx) rotateY(3deg);
+  }
+  50% {
+    transform: translate(0);
+  }
+}

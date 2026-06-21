@@ -1,4 +1,6 @@
 @import "tailwindcss" source(none);
+@import "@nutui/nutui-taro/dist/style.css";
+
 @config "../tailwind.config.js";
 @source "../src";
 @source not "../src/sub-normal";
@@ -6,5 +8,33 @@
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;
+  }
+}
+
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
   }
 }

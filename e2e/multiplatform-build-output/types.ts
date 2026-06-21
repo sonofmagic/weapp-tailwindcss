@@ -12,6 +12,7 @@ export interface BuildOutputCase {
   outputDir: string
   requiredFiles: string[]
   styleFiles: string[]
+  styleFileExtensions?: string[]
   textFiles?: string[]
   styleContains: Array<string | RegExp>
   textContains?: Array<string | RegExp>

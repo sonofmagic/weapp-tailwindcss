@@ -33,6 +33,7 @@ interface RewriteCssImportsOptions {
   onTailwindRootCss?: ((id: string, code: string) => Promise<void> | void) | undefined
   onCssSourceTransform?: ((id: string, code: string) => Promise<void> | void) | undefined
   shouldGenerateCss?: ((id: string, code: string) => boolean) | undefined
+  shouldDeferGeneration?: ((id: string, code: string) => boolean) | undefined
 }
 
 function stripTailwindConfigDirectives(code: string) {
@@ -79,7 +80,9 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         if (hasTailwindRoot) {
           await options.onTailwindRootCss?.(id, normalizedCode)
         }
-        if (options.shouldOwnTailwindGeneration && (hasTailwindRoot || options.shouldGenerateCss?.(id, normalizedCode))) {
+        const shouldGenerateInPreTransform = !options.shouldDeferGeneration?.(id, normalizedCode)
+          && (hasTailwindRoot || options.shouldGenerateCss?.(id, normalizedCode))
+        if (options.shouldOwnTailwindGeneration && shouldGenerateInPreTransform) {
           const generatedCss = await options.generateTailwindCss?.(id, normalizedCode, this)
           if (generatedCss !== undefined) {
             return {

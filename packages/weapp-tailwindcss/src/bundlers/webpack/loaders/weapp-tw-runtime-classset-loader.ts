@@ -25,6 +25,12 @@ function normalizeRuntimeCssSource(source: string | Buffer) {
   return shouldCleanRuntimeCss(source) ? cleanRuntimeCss(source) : source
 }
 
+function isWebpackCssLoaderRuntimeSource(source: string) {
+  return source.includes('___CSS_LOADER_EXPORT___')
+    && source.includes('___CSS_LOADER_API_IMPORT___')
+    && source.includes('module.exports = ___CSS_LOADER_EXPORT___')
+}
+
 function shouldCleanRuntimeCss(css: string) {
   return css.includes('@layer') || css.includes('@theme')
 }
@@ -47,15 +53,30 @@ function removeUnsupportedThemeKeyframes(root: postcss.Root) {
 }
 
 function resolveOriginalCssSource(file: string, source: string | Buffer) {
-  if (!isPlainCssResource(file)) {
-    return Buffer.isBuffer(source) ? source.toString('utf8') : source
+  if (isPlainCssResource(file)) {
+    try {
+      return readFileSync(file, 'utf8')
+    }
+    catch {
+    }
   }
-  try {
-    return readFileSync(file, 'utf8')
+  return Buffer.isBuffer(source) ? source.toString('utf8') : source
+}
+
+function resolveRegisteredCssSource(file: string, source: string | Buffer) {
+  const sourceText = Buffer.isBuffer(source) ? source.toString('utf8') : source
+  if (!isWebpackCssLoaderRuntimeSource(sourceText)) {
+    return resolveOriginalCssSource(file, source)
   }
-  catch {
-    return Buffer.isBuffer(source) ? source.toString('utf8') : source
+  if (isPlainCssResource(file)) {
+    try {
+      return readFileSync(file, 'utf8')
+    }
+    catch {
+      return undefined
+    }
   }
+  return undefined
 }
 
 function isPlainCssResource(file: string) {
@@ -82,7 +103,7 @@ const WeappTwRuntimeClassSetLoader: webpack.LoaderDefinitionFunction<RuntimeClas
   if (this.resourcePath) {
     opt?.registerCssSourceFile?.({
       file: this.resourcePath,
-      css: resolveOriginalCssSource(this.resourcePath, source),
+      css: resolveRegisteredCssSource(this.resourcePath, source),
     })
   }
   const maybePromise = opt?.getClassSet?.()

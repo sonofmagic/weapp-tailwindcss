@@ -8,8 +8,8 @@ import { createDebug } from '@/debug'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime } from '@/tailwindcss/v4-engine'
 import { collectChangedRuntimeFiles, createRuntimeEntries, resolveEntryExtension } from './incremental-runtime-class-set/entries'
-import { collectEscapedRuntimeCandidates, createEscapeFragments } from './incremental-runtime-class-set/escaped-candidates'
-import { createHighConfidenceLiteralRanges, isRawCandidateAllowedForV3 } from './incremental-runtime-class-set/v3-candidates'
+import { collectEscapedRuntimeCandidates, collectStrictEscapedRuntimeCandidates, createEscapeFragments } from './incremental-runtime-class-set/escaped-candidates'
+import { createHighConfidenceLiteralRanges, isHighConfidenceV3Candidate, isRawCandidateAllowedForV3 } from './incremental-runtime-class-set/v3-candidates'
 
 const debug = createDebug('[vite:runtime-set] ')
 
@@ -229,7 +229,15 @@ export function createBundleRuntimeClassSetManager(
         candidates.add(candidate)
       }
     }
-    if (runtime.majorVersion === 4) {
+    if (runtime.majorVersion === 3) {
+      for (const candidate of collectStrictEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
+        if (!isHighConfidenceV3Candidate(candidate)) {
+          continue
+        }
+        candidates.add(candidate)
+      }
+    }
+    else if (runtime.majorVersion === 4) {
       for (const candidate of collectEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
         candidates.add(candidate)
       }

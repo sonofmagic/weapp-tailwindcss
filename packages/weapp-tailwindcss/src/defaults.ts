@@ -127,6 +127,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     ignoreCallExpressionIdentifiers: [],
     ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore'],
     replaceRuntimePackages: false,
+    rewriteCssImports: false,
     generator: {},
     cssSourceTrace: false,
     tailwindcssRuntimeOptions: {

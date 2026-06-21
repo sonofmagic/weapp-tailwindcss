@@ -1,6 +1,7 @@
 import type { BuildOutputCase } from './types'
 import process from 'node:process'
 import {
+  gulpMiniCase,
   mpxCase,
   taroMiniCase,
   uniAppH5Case,
@@ -14,8 +15,23 @@ import { MULTIPLATFORM_TARGETS } from './targets'
 
 const uniAppV3StyleContains = ['.bg-_b_h123456_B', '.i-mdi-home', '.before_ccontent']
 const uniAppV4StyleContains = ['.bg-_b_h0000ff_B', '.i-mdi-home', '.before_ccontent']
+const gulpV3StyleContains = ['.text-_b_h123456_B', '.bg-_b_hfff_B', '.before_ccontent']
+const gulpV4StyleContains = ['.text-_b_h123456_B', '.i-mdi-ab-testing', '.bg-normal-subpackage-marker', '.before_ccontent']
+const gulpTextContains = ['bg-_burl', 'text-_b_h123456_B', 'bg-normal-subpackage-marker']
 
 export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
+  gulpMiniCase({
+    project: 'gulp-tailwindcss-v3',
+    platform: 'tt',
+    styleContains: gulpV3StyleContains,
+    textContains: gulpTextContains,
+  }),
+  gulpMiniCase({
+    project: 'gulp-tailwindcss-v4',
+    platform: 'tt',
+    styleContains: gulpV4StyleContains,
+    textContains: gulpTextContains,
+  }),
   ...(['mp-alipay', 'mp-baidu', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin'] as const).map(platform =>
     uniAppMiniCase({
       project: 'uni-app-vite-tailwindcss-v3',

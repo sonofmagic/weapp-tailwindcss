@@ -1,0 +1,34 @@
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+.weapp-tw-user-ui-card {
+  align-items: center;
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+  color: #175e75;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  display: inline-flex;
+  gap: 8rpx;
+}
+.weapp-tw-user-ui-loading {
+  animation: weappTwUserUiRotation 1s linear infinite;
+  display: inline-block;
+  height: 32rpx;
+  width: 32rpx;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(1turn);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}

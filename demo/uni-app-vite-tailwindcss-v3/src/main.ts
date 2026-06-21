@@ -2,6 +2,7 @@
 // import uView from 'vk-uview-ui';
 // import 'uno.css';
 // import 'virtual:windi.css';
+import './third-party-ui.scss';
 if (import.meta.env.VITE_WEAPP_TW_WATCH_REGRESSION === '1') {
   import('./tailwind.scss');
 }

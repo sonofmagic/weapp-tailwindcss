@@ -9,8 +9,7 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { getPostcssPluginName, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
-import postcssHtmlTransform from '@weapp-tailwindcss/postcss/html-transform'
+import { removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
@@ -19,7 +18,7 @@ import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
-import { normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
+import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
@@ -49,7 +48,7 @@ import { createSourceCandidateCollector, createTailwindV3DefaultExtractor, isSou
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
-import { cleanUrl, slash } from './utils'
+import { cleanUrl, isCSSRequest, isHTMLRequest, slash } from './utils'
 import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 const debug = createDebug()
@@ -142,7 +141,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
-  const shouldRewriteCssImports = tailwindcssMajorVersion >= 4
+  const shouldRewriteCssImports = opts.rewriteCssImports === true
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
     appType: opts.appType,
     platform: opts.cssOptions?.platform ?? opts.platform,
@@ -181,6 +180,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const file = cleanUrl(id)
     if (!path.isAbsolute(file)) {
+      return
+    }
+    if (!isTailwindV4CssEntry(file)) {
       return
     }
     if (isMissingInternalCssSource(file)) {
@@ -387,6 +389,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       seenRoots.add(basedir)
     }
     for (const cssEntry of opts.tailwindcss?.v4?.cssEntries ?? []) {
+      if (!isTailwindV4CssEntry(cssEntry)) {
+        continue
+      }
       const cssEntryRoot = path.dirname(path.resolve(cssEntry))
       if (seenRoots.has(cssEntryRoot)) {
         continue
@@ -654,6 +659,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     await runtimeState.readyPromise
     await waitForSourceCandidateSyncs()
     const file = cleanUrl(id)
+    if (!isCSSRequest(file) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
+      return undefined
+    }
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
@@ -744,6 +752,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
     onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code),
     shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code),
+    shouldDeferGeneration: (_id, code) => !shouldRewriteCssImports
+      && tailwindcssMajorVersion >= 4
+      && hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback }),
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,
     weappTailwindcssDirPosix,
@@ -1008,12 +1019,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
               if (removed > 0) {
                 debug('remove official tailwind postcss plugins in generator mode: %d', removed)
               }
-            }
-            const idx = postcssPlugins.findIndex(x =>
-              getPostcssPluginName(x) === 'postcss-html-transform')
-            if (idx > -1) {
-              postcssPlugins.splice(idx, 1, postcssHtmlTransform())
-              debug('remove postcss-html-transform plugin from vite config')
             }
           }
         }, { emit: false })

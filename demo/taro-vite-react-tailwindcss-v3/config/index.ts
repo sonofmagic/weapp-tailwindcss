@@ -8,6 +8,10 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 const taroEnv = process.env.TARO_ENV
 const isWebLikeTarget = taroEnv === 'h5' || taroEnv === 'harmony' || taroEnv === 'harmony-hybrid'
 const isNativeTarget = taroEnv === 'rn' || taroEnv === 'jdrn'
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 
 const generator = {
   target: isWebLikeTarget ? 'web' : 'weapp',
@@ -48,7 +52,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     },
     sourceRoot: 'src',
     outputRoot: 'dist',
-    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+    plugins: taroPlugins,
     defineConstants: {
     },
     copy: {

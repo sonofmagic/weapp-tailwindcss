@@ -8,6 +8,16 @@ const FAST_JS_TRANSFORM_HINT_RE = /className\b|class\s*=|classList\.|\b(?:twMerg
 const DEPENDENCY_HINT_RE = /\bimport\s*[("'`{*]|\brequire\s*\(|\bexport\s+\*\s+from\s+["'`]|\bexport\s*\{[^}]*\}\s*from\s+["'`]/
 
 /**
+ * 判断源码是否可能声明跨模块依赖。
+ *
+ * 该检查只作为性能预筛：返回 `true` 时必须保守走 AST 模块图分析；
+ * 返回 `false` 时源码中没有可被当前模块图消费的静态 import/export/require 形态。
+ */
+export function hasDependencyHint(rawSource: string): boolean {
+  return DEPENDENCY_HINT_RE.test(rawSource)
+}
+
+/**
  * 判断是否可以跳过 JS 转换。
  * 通过正则快速检测源码内容，避免不必要的 Babel AST 解析。
  *
@@ -31,7 +41,7 @@ export function shouldSkipJsTransform(rawSource: string, options?: IJsHandlerOpt
   if (options?.wrapExpression) {
     return false
   }
-  if (DEPENDENCY_HINT_RE.test(rawSource)) {
+  if (hasDependencyHint(rawSource)) {
     return false
   }
   return !FAST_JS_TRANSFORM_HINT_RE.test(rawSource)

@@ -34,7 +34,7 @@ const tailwindV4DemoCssEntries = [
   'demo/taro-vite-react-tailwindcss-v4/src/app.css',
   'demo/taro-vite-vue3-tailwindcss-v4/src/app.css',
   'demo/uni-app-vite-tailwindcss-v4/src/main.css',
-  'demo/weapp-vite-tailwindcss-v4/app.scss',
+  'demo/weapp-vite-tailwindcss-v4/tailwind.css',
 ] as const
 
 async function readProjectFile(relativePath: string) {
@@ -192,6 +192,7 @@ describe('demo matrix generator config', () => {
     for (const cssSource of cssEntries) {
       expect(cssSource).toContain('tailwindcss')
     }
+    expect(tailwindV4DemoCssEntries.every(entry => entry.endsWith('.css'))).toBe(true)
   })
 
   it('keeps every Tailwind CSS v4 demo entry compatible with default import fallback', async () => {

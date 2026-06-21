@@ -204,6 +204,17 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
     .join('\n')
 }
 
+export function normalizeRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
+  if (Object.keys(options).length > 0) {
+    return `${normalizeCssTextSnapshot(source, options)}\n`
+  }
+  return `${normalizeCssImports(source.replace(/\r\n/g, '\n')).trimEnd().split('\n').map(line => line.trimEnd()).join('\n')}\n`
+}
+
+export async function formatRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
+  return normalizeRawCssSnapshotText(await formatCss(source.replace(/\r\n/g, '\n')), options)
+}
+
 const SCANNER_NOISE_SELECTORS = new Set([
   '.start',
   '.end',
@@ -302,19 +313,17 @@ const TAILWIND_V4_COLOR_RGBA_COMPAT = new Map([
 
 const WEAPP_ROOT_SELECTOR = ':host, page, .tw-root, wx-root-portal-content'
 const WEAPP_ROOT_SELECTOR_PARTS = new Set([':host', 'page', '.tw-root', 'wx-root-portal-content'])
-const WEAPP_BASE_SELECTOR_PARTS = new Set(['view', 'text', '::after', '::before'])
-const WEAPP_BASE_NOISE_DECLS = new Set([
-  'border',
-  'border-color',
-  'border-style',
-  'border-width',
-  'box-sizing',
-  'margin',
-  'padding',
-])
 
 const WEBPACK_APP_SPLIT_NOISE_KEYFRAMES = new Set(['float-pop', 'jump'])
 const WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES = new Set(['JDZH-Regular', 'JDZH-Bold'])
+const WEBPACK_APP_SPLIT_NOISE_ROOT_DECLS = new Set([
+  '--animate-delay',
+  '--animate-duration',
+  '--nut-icon-color',
+  '--nut-icon-height',
+  '--nut-icon-line-height',
+  '--nut-icon-width',
+])
 const SUBPACKAGE_MARKER_SELECTOR_RE = /^\.bg-(?:independent|normal)-subpackage-marker$|^\.before_ccontent-_b_a(?:independent|normal)_subpackage_/
 
 const TAILWIND_V4_APP_COLOR_ORDER = new Map([
@@ -556,13 +565,25 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
     return
   }
 
+  const hasNutIconSplitNoise = root.some((node) => {
+    return node.type === 'rule'
+      && node.selectors.some(selector => normalizeSelectorPart(selector).startsWith('.nut-icon'))
+  })
+
   root.walkAtRules((rule) => {
-    if (/keyframes$/i.test(rule.name) && (WEBPACK_APP_SPLIT_NOISE_KEYFRAMES.has(rule.params) || rule.params.startsWith('nut'))) {
+    if (
+      /keyframes$/i.test(rule.name)
+      && (
+        WEBPACK_APP_SPLIT_NOISE_KEYFRAMES.has(rule.params)
+        || rule.params.startsWith('nut')
+        || (hasNutIconSplitNoise && rule.params === 'rotation')
+      )
+    ) {
       rule.remove()
     }
   })
 
-  let hasWebpackAppSplitNoise = false
+  let hasWebpackAppSplitNoise = hasNutIconSplitNoise
   root.walkAtRules('font-face', (rule) => {
     rule.walkDecls('font-family', (decl) => {
       const fontFamily = decl.value.replaceAll(/["']/g, '')
@@ -573,6 +594,14 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
   })
   if (!hasWebpackAppSplitNoise) {
     return
+  }
+
+  if (hasNutIconSplitNoise) {
+    root.walkRules((rule) => {
+      if (rule.selectors.every(selector => normalizeSelectorPart(selector).startsWith('.nut-icon'))) {
+        rule.remove()
+      }
+    })
   }
 
   root.walkAtRules((rule) => {
@@ -587,32 +616,6 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
           decl.value = 'url(data:font/ttf;base64,<stable>) format("truetype")'
         })
       }
-    }
-  })
-
-  root.walkRules((rule) => {
-    if (!isSelectorSet(rule, WEAPP_BASE_SELECTOR_PARTS)) {
-      return
-    }
-
-    let hasTailwindVariables = false
-    rule.walkDecls((decl) => {
-      if (decl.prop.startsWith('--tw-')) {
-        hasTailwindVariables = true
-        return
-      }
-      if (WEAPP_BASE_NOISE_DECLS.has(decl.prop)) {
-        decl.remove()
-      }
-    })
-
-    if (!rule.nodes || rule.nodes.length === 0) {
-      rule.remove()
-      return
-    }
-
-    if (hasTailwindVariables) {
-      rule.selector = WEAPP_ROOT_SELECTOR
     }
   })
 
@@ -631,6 +634,10 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
   firstRootRule.selector = WEAPP_ROOT_SELECTOR
   const seen = new Set<string>()
   firstRootRule.walkDecls((decl) => {
+    if (WEBPACK_APP_SPLIT_NOISE_ROOT_DECLS.has(decl.prop)) {
+      decl.remove()
+      return
+    }
     seen.add(`${decl.prop}\0${decl.value}`)
   })
 
@@ -641,6 +648,10 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
     }
 
     for (const decl of movableDecls) {
+      if (WEBPACK_APP_SPLIT_NOISE_ROOT_DECLS.has(decl.prop)) {
+        decl.remove()
+        continue
+      }
       const key = `${decl.prop}\0${decl.value}`
       decl.remove()
       if (seen.has(key)) {
@@ -966,7 +977,7 @@ function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOption
   }
 
   root.walkComments((comment) => {
-    if (/^\s*tokens:\s/.test(comment.text)) {
+    if (/^\s*tokens:\s?/.test(comment.text)) {
       comment.remove()
     }
   })
@@ -1096,17 +1107,21 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     visited.add(normalizedPath)
 
     const source = await fs.readFile(normalizedPath, 'utf8')
-    const withoutBanner = stripTailwindBanner(source)
-    const normalizedImports = normalizeCssImports(withoutBanner)
-    const normalizedCss = normalizeCssSnapshot(normalizedImports, options)
-    const formatted = normalizeTokenCommentIndent(normalizeFormattedCssSnapshot(await formatCss(normalizedCss)))
+    const cssNormalizeOptions: CssSnapshotOptions = {}
+    if (options.normalizeWebpackAppSplitNoise) {
+      cssNormalizeOptions.normalizeWebpackAppSplitNoise = true
+    }
+    if (options.normalizeTailwindV4RootVariableNoise) {
+      cssNormalizeOptions.normalizeTailwindV4RootVariableNoise = true
+    }
+    const formatted = await formatRawCssSnapshotText(source, cssNormalizeOptions)
 
     snapshots.push({
       fileName: snapshotName,
       content: formatted,
     })
 
-    const imports = extractCssImports(withoutBanner)
+    const imports = extractCssImports(source)
     for (const request of imports) {
       const resolved = resolveCssImport(projectRoot, normalizedPath, request)
       if (!resolved) {

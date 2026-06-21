@@ -19,6 +19,7 @@ import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
+import { isHTMLRequest } from './utils'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 interface RememberedMainCssSource {
@@ -279,11 +280,14 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         const isCssOutputAssetEntry = (
           entry: [string, OutputAsset | OutputChunk],
         ): entry is [string, OutputAsset] => {
-          const [, output] = entry
+          const [bundleFile, output] = entry
+          const fileName = output.fileName || bundleFile
           return (
             output.type === 'asset'
-            && opts.cssMatcher(output.fileName)
-            && !isCssAssetProcessed(output, output.fileName)
+            && opts.cssMatcher(fileName)
+            && !opts.htmlMatcher(fileName)
+            && !isHTMLRequest(fileName)
+            && !isCssAssetProcessed(output, fileName)
           )
         }
 

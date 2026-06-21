@@ -10,7 +10,7 @@ describe('multiplatform build output smoke', () => {
     expect(new Set(names).size).toBe(names.length)
 
     const frameworks = new Set(MULTIPLATFORM_BUILD_OUTPUT_CASES.map(item => item.framework))
-    expect(frameworks).toEqual(new Set(['uni-app', 'uni-app-x', 'taro', 'mpx']))
+    expect(frameworks).toEqual(new Set(['gulp', 'uni-app', 'uni-app-x', 'taro', 'mpx']))
 
     const caseKeys = new Set(MULTIPLATFORM_BUILD_OUTPUT_CASES.map(uniqueTargetKey))
     const targetKeys = new Set(MULTIPLATFORM_TARGETS.map(uniqueTargetKey))
@@ -31,6 +31,10 @@ describe('multiplatform build output smoke', () => {
 
     for (const item of MULTIPLATFORM_BUILD_OUTPUT_CASES.filter(item => item.status === 'local')) {
       expect(item.reason?.length, `${item.name} should document why it is not in CI`).toBeGreaterThan(0)
+    }
+
+    for (const item of MULTIPLATFORM_BUILD_OUTPUT_CASES.filter(item => item.status === 'ci')) {
+      expect(item.styleFileExtensions?.length, `${item.name} should declare expected style output suffixes`).toBeGreaterThan(0)
     }
   })
 

@@ -2,9 +2,12 @@ import { describe, expect, it } from 'vitest'
 import {
   createAssetHashByChunkMap,
   createRuntimeAwareCssHash,
+  createWebpackCssAssetResourceMap,
   getCacheKey,
   hasLoaderEntry,
+  inferWebpackMainCssFiles,
   isCssLikeModuleResource,
+  resolveSingleActiveWebpackCssResource,
   stripResourceQuery,
 } from '@/bundlers/webpack/BaseUnifiedPlugin/shared'
 
@@ -76,5 +79,206 @@ describe('bundlers/webpack shared helpers', () => {
     expect(createRuntimeAwareCssHash('main:chunk-a', sourceHash, 'runtime:1')).toBe('main:chunk-a:runtime:1')
     expect(createRuntimeAwareCssHash(undefined, sourceHash, 'runtime:1')).toBe('source:old-utilities:runtime:1')
     expect(createRuntimeAwareCssHash(undefined, sourceHash, 'runtime:2')).toBe('source:old-utilities:runtime:2')
+  })
+
+  it('infers main css from webpack runtime chunks without app or main filenames', () => {
+    const cssMatcher = (file: string) => file.endsWith('.wxss')
+    const result = inferWebpackMainCssFiles([
+      {
+        id: 'entry-runtime',
+        files: ['entry/root-style.bundle.wxss', 'entry/root-runtime.js'],
+        hasRuntime: () => true,
+      },
+      {
+        id: 'page',
+        files: ['pages/index/index.wxss', 'pages/index/index.js'],
+        hasRuntime: () => false,
+      },
+    ], cssMatcher)
+
+    expect([...result]).toEqual(['entry/root-style.bundle.wxss'])
+  })
+
+  it('requires configured source resource matches before inferring v4 main css files', () => {
+    const cssMatcher = (file: string) => file.endsWith('.wxss')
+    const resourcesByAsset = new Map([
+      ['entry/root-style.bundle.wxss', new Set(['/workspace/src/styles/root-entry.css'])],
+      ['sub-independent/pages/index.wxss', new Set(['/workspace/src/sub-independent/pages/index.css'])],
+    ])
+    const result = inferWebpackMainCssFiles([
+      {
+        id: 'entry-runtime',
+        files: ['entry/root-style.bundle.wxss'],
+        hasRuntime: () => true,
+      },
+      {
+        id: 'independent-runtime',
+        files: ['sub-independent/pages/index.wxss'],
+        hasRuntime: () => true,
+      },
+    ], cssMatcher, {
+      mainSourceFiles: new Set(['/workspace/src/styles/root-entry.css']),
+      resourcesByAsset,
+    })
+
+    expect([...result]).toEqual(['entry/root-style.bundle.wxss'])
+  })
+
+  it('maps css assets to webpack module resources from chunk graph without filename matching', () => {
+    const cssMatcher = (file: string) => file.endsWith('.wxss')
+    const result = createWebpackCssAssetResourceMap(
+      [
+        {
+          id: 'entry-runtime',
+          files: ['entry/root-style.bundle.wxss'],
+        },
+      ],
+      {
+        getChunkModulesIterable: () => [
+          { resource: '/workspace/src/styles/root-entry.css?type=style' },
+          { resource: '/workspace/src/pages/index.tsx' },
+        ],
+      },
+      cssMatcher,
+      resource => stripResourceQuery(resource),
+    )
+
+    expect(result.get('entry/root-style.bundle.wxss')).toEqual(new Set([
+      '/workspace/src/styles/root-entry.css',
+      '/workspace/src/pages/index.tsx',
+    ]))
+  })
+
+  it('resolves the only active webpack css module resource for generated web css assets', () => {
+    expect(resolveSingleActiveWebpackCssResource(
+      new Set(['/workspace/demo/src/sub-normal/pages/index.css']),
+      new Set(['/workspace/demo/src/sub-normal/pages/index.css']),
+    )).toBe('/workspace/demo/src/sub-normal/pages/index.css')
+
+    expect(resolveSingleActiveWebpackCssResource(
+      new Set([
+        '/workspace/demo/src/sub-normal/pages/index.css',
+        '/workspace/demo/src/sub-normal/pages/other.css',
+      ]),
+      new Set([
+        '/workspace/demo/src/sub-normal/pages/index.css',
+        '/workspace/demo/src/sub-normal/pages/other.css',
+      ]),
+    )).toBeUndefined()
+
+    expect(resolveSingleActiveWebpackCssResource(
+      new Set(['/workspace/demo/src/sub-normal/pages/index.css']),
+      new Set(['/workspace/demo/src/app.css']),
+    )).toBeUndefined()
+  })
+
+  it('collects nested webpack css module resources from chunk graph modules', () => {
+    const cssMatcher = (file: string) => file.endsWith('.wxss')
+    const result = createWebpackCssAssetResourceMap(
+      [
+        {
+          id: 'runtime-entry',
+          files: ['entry/root-style.bundle.wxss'],
+          hasRuntime: () => true,
+        },
+      ],
+      {
+        getModule: dependency => (dependency as { resolvedModule?: any }).resolvedModule,
+        getChunkModulesIterable: () => [
+          {
+            modules: [
+              { resource: '/workspace/src/styles/root-entry.css?type=style' },
+              {
+                rootModule: {
+                  userRequest: '/workspace/src/pages/index.css',
+                },
+              },
+            ],
+            dependencies: [
+              {
+                resolvedModule: {
+                  resource: '/workspace/node_modules/ui/dist/style.css',
+                },
+              },
+            ],
+          },
+        ],
+      },
+      cssMatcher,
+      resource => stripResourceQuery(resource),
+    )
+
+    expect(result.get('entry/root-style.bundle.wxss')).toEqual(new Set([
+      '/workspace/src/styles/root-entry.css',
+      '/workspace/src/pages/index.css',
+      '/workspace/node_modules/ui/dist/style.css',
+    ]))
+  })
+
+  it('maps css assets from webpack dependency requests relative to the issuer module', () => {
+    const cssMatcher = (file: string) => file.endsWith('.wxss')
+    const result = createWebpackCssAssetResourceMap(
+      [
+        {
+          id: 'subpackage-page',
+          files: ['sub-normal/pages/index.wxss'],
+        },
+      ],
+      {
+        getChunkModulesIterable: () => [
+          {
+            resource: '/workspace/src/sub-normal/pages/index.vue',
+            dependencies: [
+              { request: './index.css' },
+            ],
+          },
+        ],
+      },
+      cssMatcher,
+      (resource, issuer) => {
+        if (!isCssLikeModuleResource(resource, file => file.endsWith('.css'))) {
+          return undefined
+        }
+        const normalized = stripResourceQuery(resource)
+        if (!normalized) {
+          return undefined
+        }
+        if (normalized.startsWith('.')) {
+          const issuerResource = issuer?.resource ? stripResourceQuery(issuer.resource) : undefined
+          return issuerResource ? `${issuerResource.slice(0, issuerResource.lastIndexOf('/'))}/${normalized.replace(/^\.\//, '')}` : undefined
+        }
+        return normalized
+      },
+    )
+
+    expect(result.get('sub-normal/pages/index.wxss')).toEqual(new Set([
+      '/workspace/src/sub-normal/pages/index.css',
+    ]))
+  })
+
+  it('scores generated subpackage css assets against registered source css files', async () => {
+    const { scoreTailwindV4CssSourceFileMatch } = await import('@/bundlers/shared/generator-css/source-resolver/matching')
+
+    const matchedScore = scoreTailwindV4CssSourceFileMatch(
+      'sub-normal/pages/index.wxss',
+      '/workspace/demo/src/sub-normal/pages/index.css',
+      {
+        outputRoot: '/workspace/demo/dist',
+        projectRoot: '/workspace/demo',
+        cwd: '/workspace/demo',
+      },
+    )
+    const basenameOnlyScore = scoreTailwindV4CssSourceFileMatch(
+      'sub-normal/pages/index.wxss',
+      '/workspace/demo/src/sub-independent/pages/index.css',
+      {
+        outputRoot: '/workspace/demo/dist',
+        projectRoot: '/workspace/demo',
+        cwd: '/workspace/demo',
+      },
+    )
+
+    expect(matchedScore).toBeGreaterThanOrEqual(1000)
+    expect(basenameOnlyScore).toBeLessThan(1000)
   })
 })

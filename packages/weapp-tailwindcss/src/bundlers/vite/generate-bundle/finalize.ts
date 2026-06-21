@@ -9,6 +9,7 @@ import { updateBundleBuildState } from '../bundle-state'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets, removeCssCoveredByRootStyleAssets } from '../processed-css-assets'
 import { normalizeBundleFileNameKeysForTest } from './bundle-file-names'
 import { resolveViteCssPipelineOutputFile } from './css-output'
+import { finalizeMiniProgramCssAssets } from './final-css-assets'
 import { resolveViteMemoryDebugStats } from './memory-debug'
 import { formatCacheHitRate, formatMs } from './metrics'
 import { collectMiniProgramSubpackageRoots } from './subpackages'
@@ -121,7 +122,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     useIncrementalMode,
   } = options
   if (cssTaskFactories.length > 0) {
-    const cssConcurrency = resolveViteCssTaskConcurrency(useIncrementalMode)
+    const cssConcurrency = resolveViteCssTaskConcurrency(useIncrementalMode, runtimeState.tailwindRuntime.majorVersion)
     tasks.push(runWithConcurrency(cssTaskFactories, cssConcurrency).then(() => undefined))
   }
 
@@ -192,6 +193,16 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     recordCssAssetResult,
     subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
   })
+  await finalizeMiniProgramCssAssets(bundle, {
+    cssMatcher: opts.cssMatcher,
+    debug,
+    getCssHandlerOptions,
+    isWebGeneratorTarget,
+    lastCssResultByFile,
+    onUpdate,
+    recordCssAssetResult,
+    styleHandler,
+  })
 
   const stateUpdateStart = performance.now()
   updateBundleBuildState(
@@ -201,26 +212,31 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     { incremental: useIncrementalMode },
   )
   state.generatorCandidateSignature = generatorCandidateSignature
-  const processCachePruned = useIncrementalMode && typeof cache.prune === 'function'
+  const shouldPruneTransientCaches = !snapshot.hasOmittedKnownFiles
+  const processCachePruned = useIncrementalMode && shouldPruneTransientCaches && typeof cache.prune === 'function'
   const processCachePruneSkipReason = processCachePruned
     ? undefined
     : !useIncrementalMode
         ? 'full-mode'
-        : 'cache-prune-unavailable'
+        : !shouldPruneTransientCaches
+            ? 'omitted-known-files'
+            : 'cache-prune-unavailable'
   if (processCachePruned) {
     cache.prune?.({
       cacheKeys: activeProcessCacheKeys,
       hashKeys: activeProcessHashKeys,
     })
   }
-  pruneLastCssResults(lastCssResultByFile, lastCssSourceHashByFile, activeViteCssCacheFiles)
-  pruneViteCssCaches?.({
-    activeFiles: activeViteCssCacheFiles,
-    activeKnownSfcFiles: new Set([
-      ...snapshot.sourceHashByFile.keys(),
-      ...snapshot.entries.map(entry => entry.file),
-    ]),
-  })
+  if (shouldPruneTransientCaches) {
+    pruneLastCssResults(lastCssResultByFile, lastCssSourceHashByFile, activeViteCssCacheFiles)
+    pruneViteCssCaches?.({
+      activeFiles: activeViteCssCacheFiles,
+      activeKnownSfcFiles: new Set([
+        ...snapshot.sourceHashByFile.keys(),
+        ...snapshot.entries.map(entry => entry.file),
+      ]),
+    })
+  }
   recordTimingDetail('state.update', stateUpdateStart)
 
   debug(

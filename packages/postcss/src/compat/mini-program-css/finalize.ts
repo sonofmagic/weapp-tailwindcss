@@ -14,6 +14,7 @@ import { collectPreflightRules, createPreflightResetRule } from './preflight'
 import {
   removeDisplayP3Declarations,
   removeEmptyAtRules,
+  removeRootSpecificityPlaceholders,
   removeSpecificityPlaceholders,
   removeTailwindContainerMaxWidthMediaRules,
   removeTailwindContainerWidthRules,
@@ -39,6 +40,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
     atRule.remove()
   })
   removeSpecificityPlaceholders(root)
+  removeRootSpecificityPlaceholders(root)
   removeUnsupportedBrowserSelectors(root)
   removeDisplayP3Declarations(root)
   removeTailwindContainerMaxWidthMediaRules(root)

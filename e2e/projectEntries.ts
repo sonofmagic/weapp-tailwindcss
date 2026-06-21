@@ -132,6 +132,8 @@ export const E2E_PROJECTS = [
     cssFile: 'app.wxss',
     cssFiles: [
       'app.wxss',
+      'main.wxss',
+      'common.wxss',
       'sub-normal/pages/index.wxss',
       'sub-independent/pages/index.wxss',
     ],

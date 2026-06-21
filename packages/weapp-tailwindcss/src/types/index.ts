@@ -104,6 +104,10 @@ export interface IJsHandlerOptions {
   alwaysEscape?: boolean | undefined
   unescapeUnicode?: boolean | undefined
   babelParserOptions?: BabelParserOptions | undefined
+  /**
+   * 实验性 JS 解析快路径。当前仅在无 source map、无模块图与无 ignore 语义时尝试 OXC。
+   */
+  experimentalJsFastPath?: boolean | 'oxc' | undefined
   ignoreTaggedTemplateExpressionIdentifiers?: (string | RegExp)[] | undefined
   ignoreCallExpressionIdentifiers?: (string | RegExp)[] | undefined
   uniAppX?: boolean | undefined

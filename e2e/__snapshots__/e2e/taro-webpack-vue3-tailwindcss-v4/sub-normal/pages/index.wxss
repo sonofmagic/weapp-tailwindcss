@@ -21,11 +21,39 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
+/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.vue */
 .before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage taro-webpack-vue3-tailwindcss-v4';
   content: var(--tw-content);
 }
+/* tokens: before:content-['normal_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-normal/pages/index.vue */
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
+}
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
+.tw-page-style-watch-anchor {
+  color: inherit;
 }

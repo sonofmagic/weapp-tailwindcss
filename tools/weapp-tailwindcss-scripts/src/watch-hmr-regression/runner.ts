@@ -502,7 +502,8 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
     }
     for (const mutation of subPackageMutations.slice(0, subPackageLimit)) {
       const subWatchCase = createSubPackageWatchCase(watchCase, mutation)
-      const subSourcePath = mutation.templateMutation.sourceFile
+      const mainStyleMutation = mutation.mainStyleMutation ?? mutation.templateMutation
+      const subSourcePath = mainStyleMutation.sourceFile
       const subSourceOriginal = sourceOriginals.get(subSourcePath)
         ?? await fs.readFile(subSourcePath, 'utf8')
       sourceOriginals.set(subSourcePath, subSourceOriginal)
@@ -517,7 +518,7 @@ export async function runMainStyleOnlyCase(watchCase: WatchCase, options: CliOpt
           options,
           session,
           'template',
-          mutation.templateMutation,
+          mainStyleMutation,
           subSourceOriginal,
           mutation.globalStyleCandidates,
         ),

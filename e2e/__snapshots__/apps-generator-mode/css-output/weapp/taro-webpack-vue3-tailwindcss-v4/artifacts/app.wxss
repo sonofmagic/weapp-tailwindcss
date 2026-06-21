@@ -1,0 +1,225 @@
+view,
+text,
+::after,
+::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-slate-100: #f1f5f9;
+  --color-zinc-950: #09090b;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-slate-900: rgb(15, 23, 43);
+  --color-white: #fff;
+  --color-purple-800: #6b21a8;
+  --color-pink-200: #fbcfe8;
+  --color-zinc-50: rgb(250, 250, 250);
+  --color-zinc-900: rgb(24, 24, 27);
+  --spacing: 8rpx;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+ /* tokens: mt-2 <= src/pages/index/index.vue */
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
+}
+ /* tokens: mt-4 <= src/pages/index/index.vue */
+.mt-4 {
+  margin-top: calc(var(--spacing) * 4);
+}
+ /* tokens: h-14 <= src/pages/index/index.vue */
+.h-14 {
+  height: calc(var(--spacing) * 14);
+}
+ /* tokens: rounded <= src/pages/index/index.vue */
+.rounded {
+  border-radius: 8rpx;
+}
+ /* tokens: rounded-[24rpx] <= src/pages/index/index.vue */
+.rounded-_b24rpx_B {
+  border-radius: 24rpx;
+}
+ /* tokens: bg-[#123456] <= src/pages/index/index.vue */
+.bg-_b_h123456_B {
+  background-color: #123456;
+}
+ /* tokens: bg-[#534312] <= src/pages/index/index.vue */
+.bg-_b_h534312_B {
+  background-color: #534312;
+}
+ /* tokens: bg-purple-800 <= src/pages/index/index.vue */
+.bg-purple-800 {
+  background-color: var(--color-purple-800);
+}
+ /* tokens: bg-white <= src/pages/index/index.vue */
+.bg-white {
+  background-color: var(--color-white);
+}
+ /* tokens: bg-gradient-to-r <= src/pages/index/index.vue */
+.bg-gradient-to-r {
+  --tw-gradient-position: to right in oklab;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+ /* tokens: from-cyan-500 <= src/pages/index/index.vue */
+.from-cyan-500 {
+  --tw-gradient-from: var(--color-cyan-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+}
+ /* tokens: to-blue-500 <= src/pages/index/index.vue */
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position, ), var(--tw-gradient-to) var(--tw-gradient-to-position, );
+}
+ /* tokens: px-3 <= src/pages/index/index.vue */
+.px-3 {
+  padding-left: calc(var(--spacing) * 3);
+  padding-right: calc(var(--spacing) * 3);
+}
+ /* tokens: px-4 <= src/pages/index/index.vue */
+.px-4 {
+  padding-left: calc(var(--spacing) * 4);
+  padding-right: calc(var(--spacing) * 4);
+}
+ /* tokens: px-[32px] <= src/pages/index/index.vue */
+.px-_b32px_B {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+ /* tokens: py-2 <= src/pages/index/index.vue */
+.py-2 {
+  padding-top: calc(var(--spacing) * 2);
+  padding-bottom: calc(var(--spacing) * 2);
+}
+ /* tokens: py-3 <= src/pages/index/index.vue */
+.py-3 {
+  padding-top: calc(var(--spacing) * 3);
+  padding-bottom: calc(var(--spacing) * 3);
+}
+ /* tokens: py-[18px] <= src/pages/index/index.vue */
+.py-_b18px_B {
+  padding-top: 18rpx;
+  padding-bottom: 18rpx;
+}
+ /* tokens: text-[100rpx] <= src/pages/index/index.vue */
+.text-_b100rpx_B {
+  font-size: 100rpx;
+}
+ /* tokens: text-[#fff] <= src/pages/index/index.vue */
+.text-_b_hfff_B {
+  color: #fff;
+}
+ /* tokens: text-[#ffffff] <= src/pages/index/index.vue */
+.text-_b_hffffff_B {
+  color: #ffffff;
+}
+ /* tokens: text-pink-200 <= src/pages/index/index.vue */
+.text-pink-200 {
+  color: var(--color-pink-200);
+}
+ /* tokens: text-slate-900 <= src/pages/index/index.vue */
+.text-slate-900 {
+  color: var(--color-slate-900);
+}
+ /* tokens: dark:bg-zinc-900 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_cbg-zinc-900.theme-dark {
+  background-color: var(--color-zinc-900);
+}
+ /* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-900 <= src/pages/index/index.vue */
+.theme-dark .dark_cbg-zinc-900 {
+  background-color: var(--color-zinc-900);
+}
+ /* tokens: dark:bg-zinc-950 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_cbg-zinc-950.theme-dark {
+  background-color: var(--color-zinc-950);
+}
+ /* tokens: theme-dark <= src/pages/index/index.vue | dark:bg-zinc-950 <= src/pages/index/index.vue */
+.theme-dark .dark_cbg-zinc-950 {
+  background-color: var(--color-zinc-950);
+}
+ /* tokens: dark:text-zinc-50 <= src/pages/index/index.vue | theme-dark <= src/pages/index/index.vue */
+.dark_ctext-zinc-50.theme-dark {
+  color: var(--color-zinc-50);
+}
+ /* tokens: theme-dark <= src/pages/index/index.vue | dark:text-zinc-50 <= src/pages/index/index.vue */
+.theme-dark .dark_ctext-zinc-50 {
+  color: var(--color-zinc-50);
+}
+@media (prefers-color-scheme: dark) {
+ /* tokens: system-dark:bg-slate-900 <= src/pages/index/index.vue */
+  .system-dark_cbg-slate-900 {
+    background-color: var(--color-slate-900);
+  }
+}
+@media (prefers-color-scheme: dark) {
+ /* tokens: system-dark:text-slate-100 <= src/pages/index/index.vue */
+  .system-dark_ctext-slate-100 {
+    color: var(--color-slate-100);
+  }
+}
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
+.weapp-tw-user-ui-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  color: var(--weapp-tw-user-ui-color, #175e75);
+  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
+}
+.weapp-tw-user-ui-loading {
+  display: inline-block;
+  width: 32rpx;
+  height: 32rpx;
+  animation: weappTwUserUiRotation 1s linear infinite;
+}
+@keyframes weappTwUserUiRotation {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes weappTwUserUiBreathe {
+  50% {
+    opacity: 0.65;
+    transform: scale(0.96);
+  }
+}
+.tw-page-style-watch-anchor {
+  color: inherit;
+}

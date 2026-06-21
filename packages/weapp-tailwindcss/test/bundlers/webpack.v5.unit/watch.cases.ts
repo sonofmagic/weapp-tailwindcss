@@ -155,6 +155,84 @@ describe('bundlers/webpack WeappTailwindcss / watch ignored paths', () => {
     ])
   })
 
+  it('adds delayed compilation output path to active watch ignored paths', () => {
+    const outputPath = path.resolve(process.cwd(), 'dist-h5')
+    const watch = vi.fn()
+    const thisCompilationHandlers: Array<(compilation: any) => void> = []
+    const compilation = {
+      compiler: { outputPath },
+      outputOptions: { path: outputPath },
+      chunks: [],
+      hooks: {
+        processAssets: {
+          tapPromise: vi.fn(),
+        },
+      },
+      updateAsset: vi.fn(),
+      getAsset: vi.fn(),
+    }
+    const compiler = {
+      options: {},
+      watch,
+      watching: {
+        watchOptions: {
+          aggregateTimeout: 100,
+          ignored: ['**/node_modules/**'],
+        },
+      },
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        watchRun: {
+          tap: vi.fn(),
+        },
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        thisCompilation: {
+          tap: (_name: string, handler: (compilationParam: any) => void) => {
+            thisCompilationHandlers.push(handler)
+            handler(compilation)
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (compilationParam: any) => void) => {
+            handler(compilation)
+          },
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    expect(compiler.watch).toBe(watch)
+    expect(thisCompilationHandlers.length).toBeGreaterThan(0)
+    expect(compiler.watching.watchOptions.ignored).toEqual([
+      '**/node_modules/**',
+      outputPath,
+    ])
+  })
+
   it('wraps mixed webpack watch ignored rules as a predicate', () => {
     const outputPath = path.resolve(process.cwd(), 'dist')
     const ignoredPredicate = vi.fn((file: string) => file.includes('/custom-cache/'))

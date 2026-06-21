@@ -312,6 +312,8 @@ describe('tailwindcss/v4/config', () => {
     expect(normalizeCssEntriesConfig(42)).toBeUndefined()
     expect(normalizeCssEntriesConfig('   ')).toBeUndefined()
     expect(normalizeCssEntriesConfig([' a.css ', 123 as any])).toEqual(['a.css'])
+    expect(normalizeCssEntriesConfig([' app.scss ', ' app.less ', ' app.css '])).toEqual(['app.css'])
+    expect(normalizeCssEntriesConfig([' app.scss ', ' app.less '])).toBeUndefined()
     expect(normalizeCssEntriesConfig([])).toBeUndefined()
   })
 

@@ -738,6 +738,35 @@ describe('tailwindcss v3 engine', () => {
     expect(webCss).toContain('.btn{display:inline-flex')
   })
 
+  it('collects custom component selectors from Tailwind v3 layer css as generation candidates', async () => {
+    const source = await resolveTailwindV3Source({
+      css: [
+        '@tailwind components;',
+        '@tailwind utilities;',
+        '@layer components {',
+        '  .tw-watch-style-case {',
+        '    @apply font-bold text-center bg-[#123456] px-[12px];',
+        '  }',
+        '}',
+      ].join('\n'),
+      base: process.cwd(),
+      config: undefined,
+    })
+    const engine = createTailwindV3Engine(source)
+
+    const result = await engine.generate({
+      candidates: [],
+      incrementalCache: true,
+    })
+    const css = compactCss(result.css)
+
+    expect(css).toContain('.tw-watch-style-case{')
+    expect(css).toContain('font-weight:700')
+    expect(css).toContain('text-align:center')
+    expect(css).toContain('rgba(18,52,86')
+    expect([...result.classSet]).toEqual(expect.arrayContaining(['tw-watch-style-case']))
+  })
+
   it('supports Tailwind v3 functions and directives in generator output', async () => {
     const source = await resolveTailwindV3Source({
       css: [

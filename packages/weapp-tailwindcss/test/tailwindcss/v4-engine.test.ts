@@ -1253,6 +1253,31 @@ describe('tailwindcss v4 engine', () => {
     expect(options.sources).toBe(sourceEntries)
   })
 
+  it('normalizes runtime cssSources @config relative to their source file', () => {
+    const cssFile = '/workspace/app/src/sub-normal/pages/index.css'
+    const options = resolveTailwindV4SourceOptionsFromRuntime({
+      options: {
+        projectRoot: '/workspace/app',
+        tailwind: {
+          cwd: '/workspace/app',
+          v4: {
+            cssSources: [{
+              file: cssFile,
+              css: '@import "tailwindcss" source(none);\n@config "../../../tailwind.config.sub-normal.js";',
+            }],
+          },
+        },
+      },
+      packageInfo: { name: 'tailwindcss', version: '4.2.4' },
+    } as any)
+
+    expect(options.cssSources?.[0]).toEqual(expect.objectContaining({
+      file: cssFile,
+      base: path.dirname(cssFile),
+      css: expect.stringContaining('@config "/workspace/app/tailwind.config.sub-normal.js";'),
+    }))
+  })
+
   it('keeps missing cssEntries as imports for Tailwind resolution', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-engine-'))
     const cssEntry = path.join(root, 'missing.css')
@@ -1337,6 +1362,7 @@ describe('tailwindcss v4 engine', () => {
 
     expect(result.css).toContain('background-color: var(--color-blue-500)')
     expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
+    expect(result.css).toContain('view,text,::after,::before')
     expect(result.incrementalCss).toContain('.text-white_f10')
     expect(result.incrementalCss).not.toContain('view,text,::after,::before')
     expect(result.css).not.toContain('color-mix')

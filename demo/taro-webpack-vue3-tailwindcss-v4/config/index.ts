@@ -4,8 +4,11 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
-const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 
 const generator = {
   target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
@@ -15,6 +18,13 @@ const generator = {
     px2rpx: true,
   },
 } satisfies UserDefinedOptions['generator']
+
+function disableWebpackDevServerClientOverlay(chain: any) {
+  chain.devServer.set('client', {
+    ...(chain.devServer.get('client') ?? {}),
+    overlay: false,
+  })
+}
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
 export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
@@ -40,7 +50,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+    plugins: taroPlugins,
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {
@@ -124,6 +134,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.plugins.delete('webpackbar')
+        disableWebpackDevServerClientOverlay(chain)
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
         chain.merge({
           plugin: {

@@ -67,6 +67,32 @@ function resolveStyleOutputExtensionFromMatcher(
   return COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS.find(extension => cssMatcher(`${stem}${extension}`))
 }
 
+function resolveStyleOutputFileFromFiles(
+  files: Iterable<string> | undefined,
+  cssMatcher: ((file: string) => boolean) | undefined,
+  stem: string,
+) {
+  const cleanStem = normalizeOutputPathKey(stem)
+  const stemSuffix = `/${cleanStem}`
+  const matchedFiles = new Set<string>()
+  for (const file of files ?? []) {
+    const cleanFile = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+    if (!cssMatcher?.(cleanFile)) {
+      continue
+    }
+    const extension = path.extname(cleanFile)
+    if (!extension || extension === '.css') {
+      continue
+    }
+    const outputStem = cleanFile.slice(0, -extension.length)
+    const outputStemSuffix = `/${outputStem}`
+    if (outputStem === cleanStem || outputStem.endsWith(stemSuffix) || cleanStem.endsWith(outputStemSuffix)) {
+      matchedFiles.add(cleanFile)
+    }
+  }
+  return matchedFiles.size === 1 ? [...matchedFiles][0] : undefined
+}
+
 export function resolveMiniProgramStyleOutputExtension(options: {
   cssMatcher?: ((file: string) => boolean) | undefined
   fallback?: string | undefined
@@ -74,9 +100,9 @@ export function resolveMiniProgramStyleOutputExtension(options: {
   stem?: string | undefined
 } = {}) {
   return resolveStyleOutputExtensionFromFiles(options.files, options.cssMatcher, options.stem)
+    ?? resolveStyleOutputExtensionFromFiles(options.files, options.cssMatcher)
     ?? resolveStyleOutputExtensionFromMatcher(options.cssMatcher, options.stem)
     ?? normalizeStyleOutputExtension(options.fallback)
-    ?? resolveStyleOutputExtensionFromFiles(options.files, options.cssMatcher)
     ?? FALLBACK_STYLE_OUTPUT_EXTENSION
 }
 
@@ -178,6 +204,42 @@ export function resolveViteCssPipelineOutputFile(
     return normalizedFile
   }
   return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, fallbackExtension ?? FALLBACK_STYLE_OUTPUT_EXTENSION)
+}
+
+export function resolveViteCssPipelineOutputFileFromSourceFile(
+  sourceFile: string,
+  opts: Pick<InternalUserDefinedOptions, 'cssMatcher' | 'platform'>,
+  rootDir: string,
+  isWebGeneratorTarget = false,
+  preserveCssExtension = false,
+  sourceRoot?: string | undefined,
+  styleOutputExtension?: string | undefined,
+  styleOutputFiles?: Iterable<string> | undefined,
+) {
+  const normalizedFile = resolveReplayCssOutputFileFromSourceRoot(rootDir, sourceFile, sourceRoot)
+  const cleanFile = normalizedFile.replace(/[?#].*$/, '')
+  if (
+    isWebGeneratorTarget
+    || preserveCssExtension
+    || !CSS_SOURCE_OUTPUT_EXT_RE.test(cleanFile)
+    || !isCSSRequest(normalizedFile)
+  ) {
+    return normalizedFile
+  }
+  const stem = cleanFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, '')
+  const matchedStyleFile = resolveStyleOutputFileFromFiles(styleOutputFiles, opts.cssMatcher, stem)
+  if (matchedStyleFile) {
+    return matchedStyleFile
+  }
+  const styleExtension = resolveStyleOutputExtensionFromFiles(styleOutputFiles, opts.cssMatcher, stem)
+    ?? resolveMiniProgramStyleOutputExtension({
+      cssMatcher: opts.cssMatcher,
+      fallback: styleOutputExtension,
+      files: styleOutputFiles,
+      stem,
+    })
+    ?? normalizeStyleOutputExtension(styleOutputExtension)
+  return normalizedFile.replace(CSS_SOURCE_OUTPUT_EXT_RE, styleExtension)
 }
 
 export function canProcessViteSourceStyleAsCss(source: string, file: string) {

@@ -42,6 +42,18 @@ describe('bundlers/vite runtime-affecting signature', () => {
     expect(parseCache.size).toBe(0)
   })
 
+  it('skips js parser work when source has no runtime-affecting text hint', () => {
+    parseCache.clear()
+
+    const signature = createRuntimeAffectingSourceSignature(
+      'let count = 1 + 2\ncount++\nexport { count }',
+      'js',
+    )
+
+    expect(signature).toBe('')
+    expect(parseCache.size).toBe(0)
+  })
+
   it('uses a lightweight js text signature without depending on quote style', () => {
     const first = createRuntimeAffectingSourceSignature('const cls = "text-[#123456]"', 'js')
     const second = createRuntimeAffectingSourceSignature('const cls = \'text-[#123456]\'', 'js')

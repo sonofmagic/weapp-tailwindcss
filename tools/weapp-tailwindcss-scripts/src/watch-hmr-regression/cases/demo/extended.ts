@@ -80,18 +80,6 @@ function mutateUniAppViteV3BgObjKey(
   return mutateVueScriptSetupObjectKeyByAnchor(source, anchor, payload)
 }
 
-function mutateTrailingCssLayerBlock(source: string, payload: Parameters<NonNullable<WatchCase['styleMutation']>['mutate']>[1]) {
-  const index = source.lastIndexOf('\n}')
-  if (index < 0) {
-    throw new Error('css layer closing brace not found')
-  }
-  const snippet = createStyleRuleSnippet(payload)
-    .split('\n')
-    .map(line => `  ${line}`)
-    .join('\n')
-  return `${source.slice(0, index)}\n\n${snippet}${source.slice(index)}`
-}
-
 function createSubPackageMutations(
   baseCwd: string,
   options: {
@@ -230,9 +218,17 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/App.vue'),
+      outputNeedles() {
+        return ['color: #123457']
+      },
+      rollbackNeedles() {
+        return ['color: #123457']
+      },
+      validateApply: false,
+      validateFunction: false,
       mutate(source, payload) {
-        return mutateTrailingCssLayerBlock(source, payload)
+        return insertBeforeClosingTag(source, '</style>', `${payload.styleNeedle} { color: #123457; }`)
       },
     },
     subPackageMutations: createSubPackageMutations(baseCwd, {
@@ -255,6 +251,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
       injectMarkerElement: true,
+      reloadAfterCssMutation: true,
       readySelector: 'uni-page[data-page="pages/index/index"] uni-view.content',
       initialMutationDelayMs: 1500,
       mutate(source, payload) {
@@ -504,7 +501,23 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         validateApply: false,
         validateFunction: false,
       },
-    }),
+    }).map(mutation => ({
+      ...mutation,
+      mainStyleMutation: {
+        ...mutation.templateMutation,
+        sourceFile: mutation.styleMutation.sourceFile,
+        verifyEscapedIn: [],
+        mutate(source, payload) {
+          if (!payload.classLiteral.trim()) {
+            return source
+          }
+          const inlineSource = payload.classLiteral.trim()
+          const inlineDirective = `@source inline(${JSON.stringify(inlineSource)});`
+          const markerRule = `\n/* ${payload.marker}-${mutation.root}-main-style */\n.tw-watch-${mutation.root}-main-style { color: transparent; }\n`
+          return `${source}\n${inlineDirective}${markerRule}`
+        },
+      },
+    })),
   }
 
   const taroViteTailwindcssV4Case: WatchCase = {
@@ -785,7 +798,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
-      reloadAfterCssMutation: true,
+      waitForInitialCompileSettled: true,
+      initialCompileSettleTimeoutMs: 900_000,
       compileSettleTimeoutMs: 180_000,
       env: {
         NODE_ENV: 'development',
@@ -1057,7 +1071,8 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
-      reloadAfterCssMutation: true,
+      waitForInitialCompileSettled: true,
+      initialCompileSettleTimeoutMs: 900_000,
       compileSettleTimeoutMs: 120_000,
       env: {
         NODE_ENV: 'development',

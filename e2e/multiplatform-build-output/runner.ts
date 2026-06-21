@@ -7,7 +7,13 @@ import path from 'pathe'
 import { expect } from 'vitest'
 import { clearProjectBuildState } from '../projectTest'
 
+const styleExtensions = /\.(?:css|wxss|acss|jxss|qss|ttss)$/i
 const textExtensions = /\.(?:js|json|html|css|wxss|acss|jxss|qss|ttss|wxml|axml|qml|swan|ttml|uvue)$/i
+
+interface ReadOutputResult {
+  files: string[]
+  text: string
+}
 
 async function pathExists(file: string) {
   try {
@@ -19,11 +25,20 @@ async function pathExists(file: string) {
   }
 }
 
-async function readMaybeDirectory(root: string, target: string) {
+async function readMaybeDirectory(
+  root: string,
+  target: string,
+  options: {
+    extensions?: RegExp | undefined
+  } = {},
+): Promise<ReadOutputResult> {
   const absolute = path.resolve(root, target)
   const stat = await fs.stat(absolute)
   if (stat.isFile()) {
-    return fs.readFile(absolute, 'utf8')
+    return {
+      files: [absolute],
+      text: await fs.readFile(absolute, 'utf8'),
+    }
   }
 
   const files = await fg('**/*', {
@@ -32,12 +47,16 @@ async function readMaybeDirectory(root: string, target: string) {
     onlyFiles: true,
   })
   const texts: string[] = []
+  const extensions = options.extensions ?? textExtensions
   for (const file of files.sort()) {
-    if (textExtensions.test(file)) {
+    if (extensions.test(file)) {
       texts.push(await fs.readFile(file, 'utf8'))
     }
   }
-  return texts.join('\n')
+  return {
+    files: files.sort(),
+    text: texts.join('\n'),
+  }
 }
 
 function expectNeedle(content: string, needle: string | RegExp, label: string) {
@@ -85,14 +104,26 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
     expect(await pathExists(path.resolve(projectRoot, file)), `${item.name} should emit ${file}`).toBe(true)
   }
 
-  const styles = (await Promise.all(item.styleFiles.map(file => readMaybeDirectory(projectRoot, file)))).join('\n')
+  const styleOutputs = await Promise.all(item.styleFiles.map(file => readMaybeDirectory(projectRoot, file, {
+    extensions: styleExtensions,
+  })))
+  const styleFiles = styleOutputs.flatMap(output => output.files)
+  const styles = styleOutputs.map(output => output.text).join('\n')
   expect(styles.length, `${item.name} should emit readable style output`).toBeGreaterThan(0)
+  if (item.styleFileExtensions?.length) {
+    const emittedExtensions = new Set(styleFiles.map(file => path.extname(file).toLowerCase()))
+    const hasExpectedStyleExtension = item.styleFileExtensions.some(ext => emittedExtensions.has(ext))
+    expect(
+      hasExpectedStyleExtension,
+      `${item.name} should emit style output with one of ${item.styleFileExtensions.join(', ')}`,
+    ).toBe(true)
+  }
   for (const needle of item.styleContains) {
     expectNeedle(styles, needle, `${item.name} style output should contain ${String(needle)}`)
   }
 
   const texts = item.textFiles
-    ? (await Promise.all(item.textFiles.map(file => readMaybeDirectory(projectRoot, file)))).join('\n')
+    ? (await Promise.all(item.textFiles.map(file => readMaybeDirectory(projectRoot, file)))).map(output => output.text).join('\n')
     : ''
   for (const needle of item.textContains ?? []) {
     expectNeedle(texts, needle, `${item.name} text output should contain ${String(needle)}`)

@@ -3,6 +3,8 @@ import { LRUCache } from 'lru-cache'
 import { md5Hash } from '../cache/md5'
 import { defuOverrideArray } from '../utils'
 import { jsHandler } from './babel'
+import { oxcJsHandler } from './fast-path/oxc'
+import { hasDependencyHint } from './precheck'
 
 export {
   jsHandler,
@@ -63,6 +65,7 @@ function getOptionsFingerprint(options: IJsHandlerOptions): string {
     JSON.stringify(options.ignoreCallExpressionIdentifiers ?? null),
     JSON.stringify(options.ignoreTaggedTemplateExpressionIdentifiers?.map(v => v instanceof RegExp ? v.source : v) ?? null),
     JSON.stringify(options.moduleSpecifierReplacements ?? null),
+    String(options.experimentalJsFastPath ?? ''),
     JSON.stringify(options.babelParserOptions ?? null),
   ]
 
@@ -95,6 +98,20 @@ function shouldCacheJsResult(rawSource: string, options: IJsHandlerOptions) {
   return true
 }
 
+function resolveFastPathOptions(rawSource: string, options: IJsHandlerOptions): IJsHandlerOptions {
+  if (!options.moduleGraph) {
+    return options
+  }
+  if (options.moduleSpecifierReplacements && Object.keys(options.moduleSpecifierReplacements).length > 0) {
+    return options
+  }
+  if (hasDependencyHint(rawSource)) {
+    return options
+  }
+  const { moduleGraph: _moduleGraph, ...fastPathOptions } = options
+  return fastPathOptions
+}
+
 export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
   // 预构建不可变的默认选项对象，避免每次调用都重新创建字面量。
   const defaults: IJsHandlerOptions = {
@@ -108,6 +125,7 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
     alwaysEscape: options.alwaysEscape,
     unescapeUnicode: options.unescapeUnicode,
     babelParserOptions: options.babelParserOptions,
+    experimentalJsFastPath: options.experimentalJsFastPath,
     ignoreCallExpressionIdentifiers: options.ignoreCallExpressionIdentifiers,
     ignoreTaggedTemplateExpressionIdentifiers: options.ignoreTaggedTemplateExpressionIdentifiers,
     uniAppX: options.uniAppX,
@@ -226,7 +244,8 @@ export function createJsHandler(options: CreateJsHandlerOptions): JsHandler {
       return cached
     }
 
-    return setCachedJsResult(rawSource, resolvedOptions, jsHandler(rawSource, resolvedOptions))
+    const fastPathResult = oxcJsHandler(rawSource, resolveFastPathOptions(rawSource, resolvedOptions))
+    return setCachedJsResult(rawSource, resolvedOptions, fastPathResult ?? jsHandler(rawSource, resolvedOptions))
   }
 
   return handler

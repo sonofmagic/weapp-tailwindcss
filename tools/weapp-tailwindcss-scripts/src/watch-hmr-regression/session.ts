@@ -88,7 +88,6 @@ export function createLineCollector(
 const compileSuccessLinePatterns = [
   /compiled successfully/i,
   /compiled with (?:some )?warnings?/i,
-  /build complete/i,
   /watching for changes/i,
   /watching for file changes/i,
   /ready in \d+/i,

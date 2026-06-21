@@ -22,6 +22,15 @@ import { resolveReloadAcceptAttemptTimeout, waitForWebCompileSettled } from './w
 const LOCAL_URL_RE = /https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])\S*/i
 const RGB_RE = /^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/
 const DOM_REPLACEMENT_SELECTOR = '[data-tw-watch-web-dom]'
+const WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS = 1_000
+
+export function isWebCompileReadyLogLine(line: string) {
+  return /ready in \d+|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|(?:^|\s)Local:\s+https?:\/\/|开发服务已就绪|构建完成|编译成功/u.test(line)
+}
+
+export function isWebCompileDoneLogLine(line: string) {
+  return /ready in \d+|compiled successfully|compiled with (?:(?:some|\d+) )?warnings?|webpack\s+[\d.]+\s+compiled|webpack compiled|构建完成|编译成功/u.test(line)
+}
 
 function collectPluginProcessMetrics(samples: PluginProcessSample[], startedAt: number) {
   const phaseSamples = samples.filter(sample => sample.at >= startedAt)
@@ -83,6 +92,10 @@ function createCssEntryContent(source: string, marker: string, classLiteral: str
   return `${source.trimEnd()}\n[data-tw-watch-web="${marker}"] { @apply ${classLiteral}; }\n`
 }
 
+export function resolveWebHmrMarkerAttachTimeout(pollMs: number) {
+  return Math.max(pollMs, WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS)
+}
+
 function normalizeDomExpectedStyle(style: NonNullable<NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]['expectedStyle']>) {
   return {
     color: style.color ? normalizeRgb(style.color) : undefined,
@@ -103,17 +116,27 @@ async function getElementComputedStyle(page: Page, marker: string) {
   })
 }
 
-async function ensureInjectedMarkerElement(page: Page, marker: string) {
-  await page.evaluate((currentMarker) => {
+async function ensureInjectedMarkerElement(page: Page, marker: string, classLiteral?: string) {
+  await page.evaluate(({ currentMarker, currentClassLiteral }) => {
     const selector = `[data-tw-watch-web="${currentMarker}"]`
-    if (document.querySelector(selector)) {
+    const existed = document.querySelector(selector)
+    if (existed) {
+      if (currentClassLiteral != null) {
+        existed.className = currentClassLiteral
+      }
       return
     }
     const element = document.createElement('div')
     element.dataset['twWatchWeb'] = currentMarker
+    if (currentClassLiteral != null) {
+      element.className = currentClassLiteral
+    }
     element.textContent = `${currentMarker}-web`
     document.body.appendChild(element)
-  }, marker)
+  }, {
+    currentClassLiteral: classLiteral,
+    currentMarker: marker,
+  })
 }
 
 function createWebSourceMutation(config: WebHmrConfig, marker: string) {
@@ -129,6 +152,14 @@ function createWebSourceMutation(config: WebHmrConfig, marker: string) {
       })
     },
   }
+}
+
+function createWebRollbackSourceMutation(config: WebHmrConfig, source: string, marker: string) {
+  return config.mutate(source, {
+    marker,
+    classLiteral: resolveRollbackClassLiteral(config),
+    classVariableName: '__twWatchWebRollbackClass',
+  })
 }
 
 function assertComputedStyle(
@@ -234,8 +265,8 @@ export async function waitForWebPageReady(
   startedAt = Date.now(),
 ) {
   const attemptTimeoutMs = Math.min(
-    Math.max(options.pollMs * 10, 2_000),
-    10_000,
+    Math.max(options.pollMs * 1_500, 60_000),
+    180_000,
     Math.max(options.timeoutMs, 1),
   )
   let lastError = ''
@@ -589,11 +620,12 @@ export async function runWebHmr(
       const matchedUrl = normalized.match(LOCAL_URL_RE)?.[0]
       if (matchedUrl) {
         url = matchedUrl
+      }
+      if (isWebCompileReadyLogLine(normalized)) {
         readyAt = Date.now()
       }
-      if (/ready in \d+|compiled successfully|webpack\s+[\d.]+\s+compiled|webpack compiled|dev server running|local:/i.test(normalized)) {
-        readyAt = Date.now()
-        lastCompileSignalAt = readyAt
+      if (isWebCompileDoneLogLine(normalized)) {
+        lastCompileSignalAt = Date.now()
       }
       const pluginSample = parsePluginProcessSample(line)
       if (pluginSample) {
@@ -661,9 +693,12 @@ export async function runWebHmr(
     phase: string,
     acceptWhen?: () => Promise<boolean>,
   ) => {
+    const configuredTimeoutMs = phase === 'initial'
+      ? (config.initialCompileSettleTimeoutMs ?? config.compileSettleTimeoutMs)
+      : config.compileSettleTimeoutMs
     const timeoutMs = Math.min(
       options.timeoutMs,
-      config.compileSettleTimeoutMs ?? 30_000,
+      configuredTimeoutMs ?? 30_000,
     )
     const settleOptions = {
       getLastCompileSignalAt: () => lastCompileSignalAt,
@@ -751,13 +786,19 @@ export async function runWebHmr(
       await sleep(config.initialMutationDelayMs!)
     }
     if (config.injectMarkerElement) {
-      await ensureInjectedMarkerElement(page, marker)
+      await ensureInjectedMarkerElement(page, marker, mutation.classLiteral)
+    }
+    if (config.waitForInitialCompileSettled) {
+      await waitForCompileSettled(startedAt, 'initial')
     }
 
     let lastStyleError = ''
     const reloadTimeoutMs = Math.min(options.timeoutMs, 120_000)
     const reloadAcceptAttemptTimeoutMs = resolveReloadAcceptAttemptTimeout(reloadTimeoutMs, options.pollMs)
-    const createReloadedStyleAcceptWhen = (expectedStyle: ReturnType<typeof resolveExpectedStyle>) => {
+    const createReloadedStyleAcceptWhen = (
+      expectedStyle: ReturnType<typeof resolveExpectedStyle>,
+      classLiteral: string,
+    ) => {
       let lastReloadAttemptAt = 0
       return async () => {
         const now = Date.now()
@@ -775,11 +816,11 @@ export async function runWebHmr(
             timeout: reloadAcceptAttemptTimeoutMs,
           })
           if (config.injectMarkerElement) {
-            await ensureInjectedMarkerElement(page, marker)
+            await ensureInjectedMarkerElement(page, marker, classLiteral)
           }
           await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
             state: 'attached',
-            timeout: Math.max(options.pollMs, 250),
+            timeout: resolveWebHmrMarkerAttachTimeout(options.pollMs),
           })
           const currentStyle = await getElementComputedStyle(page, marker)
           assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
@@ -794,9 +835,7 @@ export async function runWebHmr(
 
     const initialReadyMs = Date.now() - startedAt
     const hotUpdateStartedAt = Date.now()
-    if (!config.injectMarkerElement) {
-      await writeFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
-    }
+    await writeFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
     if (config.cssEntryFile && cssEntryOriginal != null) {
       await writeFilePreserveEol(
         config.cssEntryFile,
@@ -806,7 +845,7 @@ export async function runWebHmr(
     }
     const expectedStyle = resolveExpectedStyle(config)
     if (config.reloadAfterCssMutation) {
-      await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
+      await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle, mutation.classLiteral))
     }
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
     let hotUpdateEffectiveMs = 0
@@ -815,11 +854,11 @@ export async function runWebHmr(
         async () => {
           try {
             if (config.injectMarkerElement) {
-              await ensureInjectedMarkerElement(page, marker)
+              await ensureInjectedMarkerElement(page, marker, mutation.classLiteral)
             }
             await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
               state: 'attached',
-              timeout: options.pollMs,
+              timeout: resolveWebHmrMarkerAttachTimeout(options.pollMs),
             })
             const currentStyle = await getElementComputedStyle(page, marker)
             computedStyle = assertComputedStyle(watchCase, marker, currentStyle, expectedStyle)
@@ -845,9 +884,13 @@ export async function runWebHmr(
 
     const rollbackStartedAt = Date.now()
     const rollbackExpectedStyle = resolveRollbackExpectedStyle(config)
-    if (!config.injectMarkerElement) {
-      await writeFilePreserveEol(config.sourceFile, sourceOriginal, sourceOriginal)
-    }
+    await writeFilePreserveEol(
+      config.sourceFile,
+      config.injectMarkerElement
+        ? createWebRollbackSourceMutation(config, sourceOriginal, marker)
+        : sourceOriginal,
+      sourceOriginal,
+    )
     if (config.cssEntryFile && cssEntryOriginal != null) {
       await writeFilePreserveEol(
         config.cssEntryFile,
@@ -858,13 +901,13 @@ export async function runWebHmr(
       )
     }
     if (config.reloadAfterCssMutation) {
-      await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
+      await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle, resolveRollbackClassLiteral(config)))
     }
     const rollbackEffectiveMs = await waitFor(
       async () => {
         try {
           if (config.injectMarkerElement) {
-            await ensureInjectedMarkerElement(page, marker)
+            await ensureInjectedMarkerElement(page, marker, rollbackExpectedStyle ? resolveRollbackClassLiteral(config) : undefined)
           }
           if (!config.injectMarkerElement) {
             return await page.locator(`[data-tw-watch-web="${marker}"]`).count() === 0

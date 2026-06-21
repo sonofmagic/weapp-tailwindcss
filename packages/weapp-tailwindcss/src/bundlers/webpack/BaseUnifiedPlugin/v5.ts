@@ -8,8 +8,6 @@ import micromatch from 'micromatch'
 import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
-import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
-import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
@@ -17,6 +15,8 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
+import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../shared/generator-css'
+import { normalizeTailwindConfigDirectives } from '../../shared/generator-css/directives'
 import { isWatchFileInRuntimeDependencies } from './shared'
 import { setupWebpackV5ProcessAssetsHook } from './v5-assets'
 import { setupWebpackV5Loaders } from './v5-loaders'
@@ -89,9 +89,9 @@ function appendIgnoredPath(ignored: WebpackWatchOptions['ignored'], ignoredPath:
 }
 
 function setupWebpackWatchOutputIgnore(compiler: Compiler) {
-  const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions) => {
-    const outputPath = compiler.outputPath || compiler.options?.output?.path
-    const outputDir = outputPath ? path.resolve(outputPath) : undefined
+  const appendOutputIgnoredPath = (watchOptions?: WebpackWatchOptions, outputPath?: string) => {
+    const resolvedOutputPath = outputPath || compiler.outputPath || compiler.options?.output?.path
+    const outputDir = resolvedOutputPath ? path.resolve(resolvedOutputPath) : undefined
     if (!outputDir) {
       return watchOptions
     }
@@ -117,18 +117,26 @@ function setupWebpackWatchOutputIgnore(compiler: Compiler) {
 
   const syncOutputIgnoredPath = () => {
     const outputPath = compiler.outputPath || compiler.options?.output?.path
-    const outputDir = outputPath ? path.resolve(outputPath) : undefined
-    if (!outputDir) {
-      return
-    }
-
     const watchOptions = (compiler.watching as { watchOptions?: WebpackWatchOptions } | undefined)?.watchOptions
     if (watchOptions) {
-      appendOutputIgnoredPath(watchOptions)
+      appendOutputIgnoredPath(watchOptions, outputPath)
     }
   }
 
   compiler.hooks.watchRun?.tap(pluginName, syncOutputIgnoredPath)
+  compiler.hooks.thisCompilation?.tap(pluginName, (compilation) => {
+    const outputPath = compilation.compiler?.outputPath || compilation.outputOptions?.path
+    const watchOptions = (compiler.watching as { watchOptions?: WebpackWatchOptions } | undefined)?.watchOptions
+    if (watchOptions) {
+      appendOutputIgnoredPath(watchOptions, outputPath)
+    }
+    else {
+      const compilerWatchOptions = appendOutputIgnoredPath(compiler.options.watchOptions, outputPath)
+      if (compilerWatchOptions) {
+        compiler.options.watchOptions = compilerWatchOptions
+      }
+    }
+  })
 }
 
 /**
@@ -164,20 +172,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const refreshTailwindRuntime = refreshTailwindcssRuntime
 
     const disabledOptions = resolvePluginDisabledState(disabled)
-    const isTailwindcssV4 = (initialTailwindRuntime.majorVersion ?? 0) >= 4
-    const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(this.options.generator, {
-      appType: this.options.appType,
-      platform: this.options.cssOptions?.platform ?? this.options.platform,
-      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
-      uniAppX: this.options.uniAppX,
-    })
-    const generatorBranch = resolveGeneratorRuntimeBranch(generatorOptions, {
-      appType: this.options.appType,
-      platform: this.options.cssOptions?.platform ?? this.options.platform,
-      tailwindcssMajorVersion: initialTailwindRuntime.majorVersion,
-      uniAppX: this.options.uniAppX,
-    })
-    const shouldRewriteCssImports = isTailwindcssV4 || generatorBranch.isWeb
+    const shouldRewriteCssImports = this.options.rewriteCssImports === true
     const isMpxApp = isMpx(this.appType)
     if (shouldRewriteCssImports) {
       setupMpxTailwindcssRedirect(weappTailwindcssPackageDir, isMpxApp)
@@ -200,7 +195,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const runtimeWatchDependencyFiles = new Set<string>()
     const runtimeWatchDependencyContexts = new Set<string>()
     const webpackProcessedCssSourceFiles = new Set<string>()
-    const webpackCssSources = new Map<string, string | undefined>()
+    const webpackCssSources = new Map<string, { css: string | undefined, processed?: boolean | undefined }>()
+    const currentWebpackCssSourceFiles = new Set<string>()
+    const currentWebpackCssSourceModules = new Set<string>()
     let runtimeMetadataPrepared = false
 
     const updateRuntimeWatchDependencies = async () => {
@@ -318,8 +315,23 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const markWebpackProcessedCssSource = (file: string) => {
       webpackProcessedCssSourceFiles.add(path.resolve(file))
     }
+    const markWebpackCssSourceModule = (file: string) => {
+      currentWebpackCssSourceModules.add(path.resolve(file))
+    }
     const registerWebpackCssSourceFile = (source: WebpackCssSourceRegistration) => {
-      webpackCssSources.set(path.resolve(source.file), source.css)
+      const file = path.resolve(source.file)
+      const previous = webpackCssSources.get(file)
+      if (source.processed === true && previous?.processed === false) {
+        currentWebpackCssSourceFiles.add(file)
+        return
+      }
+      webpackCssSources.set(file, {
+        css: typeof source.css === 'string'
+          ? normalizeTailwindConfigDirectives(source.css, path.dirname(file))
+          : source.css,
+        processed: source.processed,
+      })
+      currentWebpackCssSourceFiles.add(file)
     }
     const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, options: { watchMode?: boolean | undefined } = {}) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
@@ -344,10 +356,32 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
         }
       }
     }
-    const isWebpackProcessedTailwindEntryAsset = (file: string) => {
+    const prepareWebpackCssSources = (activeAssetResources: ReadonlySet<string> = new Set()) => {
+      const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
+      const configuredSourceFiles = new Set<string>()
+      for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
+        configuredSourceFiles.add(path.resolve(entry))
+      }
+      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+        if (source.file) {
+          configuredSourceFiles.add(path.resolve(source.file))
+        }
+      }
+      const activeSourceFiles = new Set([
+        ...configuredSourceFiles,
+        ...currentWebpackCssSourceModules,
+        ...activeAssetResources,
+        ...[...currentWebpackCssSourceFiles].filter(file => currentWebpackCssSourceModules.has(file)),
+        ...[...currentWebpackCssSourceFiles].filter(file => activeAssetResources.has(file)),
+      ])
+      currentWebpackCssSourceFiles.clear()
+      currentWebpackCssSourceModules.clear()
+      return activeSourceFiles
+    }
+    const isWebpackProcessedTailwindEntryAsset = (isMainCssChunk?: boolean | undefined) => {
       if (
         (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
-        || !this.options.mainCssChunkMatcher(file, this.appType)
+        || isMainCssChunk !== true
         || webpackProcessedCssSourceFiles.size === 0
       ) {
         return false
@@ -420,6 +454,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       getClassSetInLoader,
       getRuntimeSetInLoader,
       markWebpackProcessedCssSource,
+      markWebpackCssSourceModule,
       registerWebpackCssSourceFile,
       getRuntimeWatchDependencies() {
         return {
@@ -437,13 +472,15 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       runtimeState,
       getRuntimeRefreshRequirement: () => runtimeRefreshRequiredForCompilation,
       refreshRuntimeMetadata: ensureRuntimeMetadata,
-      isKnownWebpackProcessedCssAsset(file) {
+      isKnownWebpackProcessedCssAsset(file, metadata) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
-          || isWebpackProcessedTailwindEntryAsset(file)
+          || isWebpackProcessedTailwindEntryAsset(metadata?.isMainCssChunk)
       },
-      isWebpackProcessedCssAsset(file, rawSource) {
+      isWebpackProcessedCssAsset(file, rawSource, metadata) {
         return webpackProcessedCssSourceFiles.has(path.resolve(file))
-          || isWebpackProcessedTailwindEntryAsset(file)
+          || isWebpackProcessedTailwindEntryAsset(metadata?.isMainCssChunk)
+          || hasTailwindGeneratedCss(rawSource)
+          || hasTailwindGeneratedCssMarkers(rawSource)
           || rawSource.includes('weapp-tailwindcss webpack-generated-css')
       },
       consumeRuntimeRefreshRequirement() {
@@ -454,6 +491,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
       getWebpackCssSources: () => webpackCssSources,
       pruneWebpackCssSources,
+      prepareWebpackCssSources,
       debug,
     })
   }

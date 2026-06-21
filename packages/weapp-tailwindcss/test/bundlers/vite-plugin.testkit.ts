@@ -73,7 +73,13 @@ export function createContext(overrides: Record<string, unknown> = {}) {
     } & Record<string, unknown>
   }
   const mergedTailwindRuntimeOptions = overrideTailwindRuntime?.options
-    ? overrideTailwindRuntime.options
+    ? {
+        ...defaultTailwindRuntime.options,
+        ...overrideTailwindRuntime.options,
+        ...(overrideTailwindRuntime.options.tailwindcss === undefined
+          ? {}
+          : { tailwindcss: overrideTailwindRuntime.options.tailwindcss }),
+      }
     : defaultTailwindRuntime.options
   const mergedTailwindRuntime = overrideTailwindRuntime
     ? {

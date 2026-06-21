@@ -11,6 +11,7 @@
 - 代码默认 TypeScript + ESM，缩进 2 空格。
 - 文件超过约 300 行优先按目录拆分（如 `feature/a.ts`），避免 `feature.a.ts`。
 - 测试默认 Vitest；修复缺陷或改行为必须补回归测试。
+- 验证默认优先本地完成：凡是能通过本地 `pnpm`/Vitest/e2e/构建命令确认的问题，必须先在本地验证并记录命令；只有用户明确要求“PR CI/CD 验证”“盯 CI/CD”或远端环境是唯一可验证来源时，才长时间等待远端 CI/CD。
 - 新增或调整 demo、issue 复现页、样式输出回归用例时，必须重新生成对应项目的 e2e static 快照/产物基线，并在验证记录中说明对应项目与命令；禁止只改源码或 IDE 用例而遗漏 static 基线。
 - 本项目禁止使用 Prettier 做格式化；不要运行 `prettier`、`pnpm format` 或其它会调用 Prettier 的格式化命令。
 - 提交信息遵循 Conventional Commits。
@@ -27,6 +28,7 @@
 - 推荐目录形态：在仓库同级目录创建工作树，例如 `../weapp-tailwindcss-codex/<task-slug>`；不要把并发工作树放进当前仓库目录内部。
 - 每个并发任务使用独立分支名，例如 `codex/<task-slug>`；开始前先执行 `git status --short --branch`，确认当前工作树没有其他代理遗留改动。
 - 在任何编辑、格式化、测试自动修复、`git add`、`git commit`、`git rebase` 或 `git push` 前，都要重新检查 `git status --short`；如果出现自己没有产生的改动，必须停止并说明冲突来源，不得覆盖、删除或顺手纳入提交。
+- 提交并推送后，除非用户明确要求等待 PR CI/CD，否则只需报告已完成的本地验证和推送状态；不要因为远端 CI/CD 较慢而默认阻塞当前任务。
 - 禁止在共享 checkout 中用 `git restore`、`git checkout -- <file>`、批量格式化、代码生成或清理命令处理自己不拥有的文件；确需清理时，先确认文件归属。
 - 提交前只暂存当前任务拥有的文件；除非用户明确要求“提交所有代码”，否则禁止用 `git add -A` 混入其他代理或用户的改动。
 

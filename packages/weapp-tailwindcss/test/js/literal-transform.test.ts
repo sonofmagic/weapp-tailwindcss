@@ -39,4 +39,20 @@ describe('js literal transform helper', () => {
 
     expect(transformLiteralText('p-10% p-2.5px', {})).toBeUndefined()
   })
+
+  it('transforms arbitrary literal aliases only by exact classNameSet hits', () => {
+    expect(transformLiteralText('bg-[#f50505] text-[100rpx] w-[112px]', {
+      classNameSet: new Set(['bg-[#f50505]', 'text-[100rpx]', 'w-[112px]']),
+    })).toBe('bg-_b_hf50505_B text-_b100rpx_B w-_b112px_B')
+
+    expect(transformLiteralText('bg-[#f50505] text-[100rpx] w-[112px]', {
+      classNameSet: new Set(['bg-[#f50505]']),
+    })).toBe('bg-_b_hf50505_B text-[100rpx] w-[112px]')
+  })
+
+  it('keeps inline style string values untouched without classNameSet hits', () => {
+    expect(transformLiteralText('1px solid #0f172a 6px 56px 112px 100vh 32px 24px', {
+      classNameSet: new Set(['bg-[#f50505]', 'text-[100rpx]', 'w-[112px]']),
+    })).toBeUndefined()
+  })
 })

@@ -1,5 +1,6 @@
 import { View, Text } from '@tarojs/components'
 import './index.scss'
+import { Button as NutButton } from '@nutui/nutui-react-taro'
 
 export default function Index() {
   return (
@@ -7,6 +8,9 @@ export default function Index() {
       <View className='bg-[red] flex flex-col'>
         <View className='text-[#438821] dark:text-[#ec4f4f] before:content-["11111"]'>Hello world!</View>
         <View className="text-[#3d31a4] before:content-['222']">Hello world!</View>
+      </View>
+      <View className='weapp-tw-nutui-react-demo mt-4'>
+        <NutButton type='primary'>NutUI React Button</NutButton>
       </View>
       <View className='theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 theme-dark:bg-zinc-900 theme-dark:text-zinc-50 dark:bg-zinc-900 dark:text-zinc-50'>
         Taro Vite React Tailwind CSS v3 system dark

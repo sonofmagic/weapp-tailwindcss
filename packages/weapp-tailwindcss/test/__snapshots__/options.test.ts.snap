@@ -126,6 +126,7 @@ exports[`get options > default options 1`] = `
   "onUpdate": [Function],
   "postcssOptions": {},
   "replaceRuntimePackages": false,
+  "rewriteCssImports": false,
   "styleHandler": [Function],
   "tailwindcssBasedir": "<cwd>",
   "tailwindcssRuntimeOptions": {

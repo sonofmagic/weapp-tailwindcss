@@ -105,7 +105,10 @@ import {
   writeFilePreserveEol,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/text'
 import {
+  isWebCompileDoneLogLine,
+  isWebCompileReadyLogLine,
   resolveChromiumLaunchOptions,
+  resolveWebHmrMarkerAttachTimeout,
   waitForWebPageReloadReady,
   waitForWebPageReady,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web'
@@ -1718,6 +1721,22 @@ describe('watch-hmr regression cases', () => {
     expect(resolveChromiumLaunchOptions()).toMatchObject({ headless: true })
   })
 
+  it('keeps Web/H5 HMR marker attach checks above a single poll tick', () => {
+    expect(resolveWebHmrMarkerAttachTimeout(40)).toBe(1000)
+    expect(resolveWebHmrMarkerAttachTimeout(1500)).toBe(1500)
+  })
+
+  it('does not treat webpack-dev-server URL output as Web/H5 compile readiness', () => {
+    expect(isWebCompileReadyLogLine('<i> [webpack-dev-server] Loopback: http://localhost:10086/')).toBe(false)
+    expect(isWebCompileReadyLogLine('<i> [webpack-dev-middleware] wait until bundle finished: /')).toBe(false)
+    expect(isWebCompileReadyLogLine('  ➜  Local:   http://localhost:10086/')).toBe(true)
+    expect(isWebCompileReadyLogLine('webpack 5.102.1 compiled successfully in 389888 ms')).toBe(true)
+    expect(isWebCompileReadyLogLine('compiled with some warnings')).toBe(true)
+    expect(isWebCompileReadyLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
+    expect(isWebCompileDoneLogLine('  ➜  Local:   http://localhost:10086/')).toBe(false)
+    expect(isWebCompileDoneLogLine('webpack 5.107.2 compiled with 1 warning in 369825 ms')).toBe(true)
+  })
+
   it('retries Web/H5 page readiness when the first navigation races the dev middleware', async () => {
     const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
     const page = {
@@ -1739,6 +1758,54 @@ describe('watch-hmr regression cases', () => {
     expect(waitForReadySelector).toHaveBeenCalledWith({
       state: 'attached',
       timeout: 500,
+    })
+  })
+
+  it('gives slow Web/H5 dev middleware enough time for initial page readiness', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReady(page as any, 'http://127.0.0.1:10086/', '#app', {
+      timeoutMs: 240_000,
+      pollMs: 40,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.goto).toHaveBeenCalledWith('http://127.0.0.1:10086/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 60_000,
+    })
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 60_000,
+    })
+  })
+
+  it('caps initial Web/H5 page readiness attempts below the whole case timeout', async () => {
+    const waitForReadySelector = vi.fn().mockResolvedValue(undefined)
+    const page = {
+      goto: vi.fn().mockResolvedValue(undefined),
+      locator: vi.fn(() => ({
+        waitFor: waitForReadySelector,
+      })),
+    }
+
+    await expect(waitForWebPageReady(page as any, 'http://127.0.0.1:10086/', '#app', {
+      timeoutMs: 420_000,
+      pollMs: 1_000,
+    })).resolves.toBeGreaterThanOrEqual(0)
+
+    expect(page.goto).toHaveBeenCalledWith('http://127.0.0.1:10086/', {
+      waitUntil: 'domcontentloaded',
+      timeout: 180_000,
+    })
+    expect(waitForReadySelector).toHaveBeenCalledWith({
+      state: 'attached',
+      timeout: 180_000,
     })
   })
 
@@ -1799,34 +1866,54 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackCase?.webHmr).not.toHaveProperty('devArgs')
   })
 
-  it('keeps Taro webpack React v4 H5 watch regression on NutUI stubs', async () => {
+  it('keeps Taro webpack demos on real NutUI and html plugin integration', async () => {
     const configSource = await readFile(path.resolve(
       __dirname,
       '../../../demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
     ), 'utf8')
+    const reactPackageJson = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-react-tailwindcss-v4/package.json',
+    ), 'utf8')
+    const reactPageSource = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx',
+    ), 'utf8')
+    const vueAppSource = await readFile(path.resolve(
+      __dirname,
+      '../../../demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts',
+    ), 'utf8')
 
-    expect(configSource).toContain('function applyWatchRegressionAliases')
-    expect(configSource).toMatch(/mini:\s*\{[\s\S]*?webpackChain\(chain\)\s*\{[\s\S]*?applyWatchRegressionAliases\(chain\)/)
-    expect(configSource).toMatch(/h5:\s*\{[\s\S]*?webpackChain\(chain\)\s*\{[\s\S]*?applyWatchRegressionAliases\(chain\)/)
+    expect(configSource).toContain('@tarojs/plugin-html')
+    expect(reactPackageJson).toContain('@nutui/nutui-react-taro')
+    expect(reactPageSource).toContain('@nutui/nutui-react-taro')
+    expect(vueAppSource).toContain('@nutui/nutui-taro')
+    expect(vueAppSource).toContain('app.use(NutButton)')
   })
 
-  it('keeps the uni-app Vue3 Vite v3 style mutation on the global Tailwind layer entry', () => {
+  it('keeps the uni-app Vue3 Vite v3 style mutation on the Vite style entry', () => {
     const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
     const styleMutation = uniAppCase?.styleMutation
     const source = [
-      '@use "tailwindcss/base";',
-      '',
-      '@layer components {',
-      '  .btn { @apply text-sm; }',
-      '}',
+      '<template><view /></template>',
+      '<style lang="scss">',
+      '@import "./tailwind.scss";',
+      '</style>',
     ].join('\n')
-    const mutated = styleMutation?.mutate(source, createStyleMutationPayload({
+    const payload = createStyleMutationPayload({
       name: 'uni-app-vite-tailwindcss-v3',
-    } as WatchCase))
+    } as WatchCase)
+    const mutated = styleMutation?.mutate(source, payload)
 
-    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'))
-    expect(mutated).toContain('@layer components {\n  .btn { @apply text-sm; }\n\n  .tw-watch-style-uni-app-vite-tailwindcss-v3-')
-    expect(mutated?.trimEnd()).toMatch(/\}\s*$/)
+    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/src/App.vue'))
+    expect(styleMutation?.importerFiles).toBeUndefined()
+    expect(styleMutation?.outputStyleNeedle?.(payload)).toBeUndefined()
+    expect(styleMutation?.outputNeedles?.(payload)).toEqual(['color: #123457'])
+    expect(styleMutation?.rollbackNeedles?.(payload)).toEqual(['color: #123457'])
+    expect(styleMutation?.validateApply).toBe(false)
+    expect(mutated).toContain(payload.styleNeedle)
+    expect(mutated).toContain('color: #123457')
+    expect(mutated).toContain(`${payload.styleNeedle} { color: #123457; }\n</style>`)
   })
 
   it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {
@@ -2125,7 +2212,6 @@ describe('watch-hmr regression cases', () => {
       'uni-app-vite-tailwindcss-v4',
     ]
     const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
-
     for (const name of webCaseNames) {
       const watchCase = caseMap.get(name)
       const sourceFile = toSlashPath(watchCase?.webHmr?.sourceFile ?? '')
@@ -2140,8 +2226,9 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase?.webHmr?.devScript).toBe(expectedDevScript)
     }
 
-    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
-    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toContain('src/app.less')
+    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v3\/src\/app\.less$/)
+    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v4')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v4\/src\/app\.css$/)
+    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-vue3-tailwindcss-v3\/src\/app\.less$/)
 
     const taroWebpackPostcssConfigs = [
       'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
@@ -2156,19 +2243,29 @@ describe('watch-hmr regression cases', () => {
       expect(configSource, configPath).not.toMatch(/['"]tailwindcss['"]\s*:/)
     }
 
-    const taroWebpackConfigs = [
+    const taroConfigs = [
+      'demo/taro-vite-react-tailwindcss-v3/config/index.ts',
+      'demo/taro-vite-react-tailwindcss-v4/config/index.ts',
+      'demo/taro-vite-vue3-tailwindcss-v3/config/index.ts',
+      'demo/taro-vite-vue3-tailwindcss-v4/config/index.ts',
       'demo/taro-webpack-react-tailwindcss-v3/config/index.ts',
       'demo/taro-webpack-vue3-tailwindcss-v3/config/index.ts',
       'demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
       'demo/taro-webpack-vue3-tailwindcss-v4/config/index.ts',
     ]
-    for (const configPath of taroWebpackConfigs) {
+    for (const configPath of taroConfigs) {
       const configSource = await readFile(path.resolve(__dirname, '../../..', configPath), 'utf8')
-      expect(configSource, configPath).toContain('WEAPP_TW_WATCH_REGRESSION')
+      expect(configSource, configPath).toContain('@tarojs/plugin-html')
+      expect(configSource, configPath).toContain('WEAPP_TW_TARO_PLUGIN_HTML')
+      expect(configSource, configPath).toContain('=== \'0\'')
       expect(configSource, configPath).toContain('WeappTailwindcss')
       expectTaroGeneratorTargetConfig(configSource, configPath)
-      expect(configSource, configPath).not.toContain('chain.watchOptions({')
-      expect(configSource, configPath).not.toContain('ignored: [distDir]')
+      if (configPath.includes('taro-webpack-')) {
+        expect(configSource, configPath).toContain('disableWebpackDevServerClientOverlay(chain)')
+        expect(configSource, configPath).toMatch(/chain\.devServer\.set\(['"]client['"],\s*\{[\s\S]*?overlay:\s*false/)
+        expect(configSource, configPath).not.toContain('chain.watchOptions({')
+        expect(configSource, configPath).not.toContain('ignored: [distDir]')
+      }
     }
 
     const taroAppStyleEntries = [
@@ -2450,7 +2547,7 @@ describe('watch-hmr regression cases', () => {
       toRepoPath(watchCase.styleMutation.sourceFile),
     ]))
 
-    expect(styleSources.get('uni-app-vite-tailwindcss-v3')).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss')
+    expect(styleSources.get('uni-app-vite-tailwindcss-v3')).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/App.vue')
     expect(styleSources.get('uni-app-vite-tailwindcss-v4')).toBe('/repo/demo/uni-app-vite-tailwindcss-v4/src/main.css')
     expect(styleSources.get('mpx-tailwindcss-v3')).toBe('/repo/demo/mpx-tailwindcss-v3/src/app.mpx')
     expect(styleSources.get('mpx-tailwindcss-v4')).toBe('/repo/demo/mpx-tailwindcss-v4/src/pages/component/index.mpx')
@@ -2503,12 +2600,40 @@ describe('watch-hmr regression cases', () => {
     expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.initialBuildScript).toBe('build')
   })
 
-  it('keeps slow Taro webpack React v4 H5 web rollback settle timeout explicit', () => {
+  it('keeps slow Taro webpack H5 web rollback settle timeouts explicit', () => {
+    const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const taroWebpackReactV3Case = demoBaseCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v3')
+    const taroWebpackVue3V3Case = demoBaseCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v3')
     const taroWebpackReactV4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')
+    const taroWebpackVue3V4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')
 
+    expect(taroWebpackReactV3Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackReactV3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackReactV3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
+    expect(taroWebpackReactV3Case?.webHmr?.injectMarkerElement).toBe(true)
+    expect(toSlashPath(taroWebpackReactV3Case?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v3\/src\/app\.less$/)
+    expect(taroWebpackReactV3Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
+    expect(taroWebpackReactV3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
+    expect(taroWebpackVue3V3Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackVue3V3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackVue3V3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
+    expect(taroWebpackVue3V3Case?.webHmr?.injectMarkerElement).toBe(true)
+    expect(toSlashPath(taroWebpackVue3V3Case?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-vue3-tailwindcss-v3\/src\/app\.less$/)
+    expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
+    expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
-    expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(90_000)
+    expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackReactV4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
+    expect(taroWebpackReactV4Case?.webHmr?.injectMarkerElement).toBe(true)
+    expect(toSlashPath(taroWebpackReactV4Case?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v4\/src\/app\.css$/)
+    expect(taroWebpackReactV4Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
+    expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
+    expect(taroWebpackVue3V4Case?.webHmr?.devScript).toBe('build:h5')
+    expect(taroWebpackVue3V4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
+    expect(taroWebpackVue3V4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
+    expect(taroWebpackVue3V4Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
+    expect(taroWebpackVue3V4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
   })
 
   it('filters platform-specific unstable watch cases from grouped runs', () => {

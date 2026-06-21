@@ -213,6 +213,79 @@ describe('bundlers/shared css-imports', () => {
     expect(result).toBe('@import "/virtual/weapp-tailwindcss/index.css";\n@config "/src/tailwind.config.js";')
   })
 
+  it('removes Tailwind source directives from generated webpack H5 css', async () => {
+    vi.resetModules()
+    const generateCssByGenerator = vi.fn(async (options: any) => ({
+      css: [
+        '@import "tailwindcss" source(none);',
+        '@config "/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js";',
+        '@source "./src/**/*.{tsx,css}";',
+        '.bg-red-500 { background-color: red; }',
+      ].join('\n'),
+      target: 'web',
+      source: 'generator',
+      dependencies: ['/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js'],
+    }))
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => ({
+      ...(await importOriginal<typeof import('@/bundlers/shared/generator-css')>()),
+      generateCssByGenerator,
+    }))
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const registerCssSource = vi.fn()
+    const registerCssSourceFile = vi.fn()
+    const markGeneratedCssSource = vi.fn()
+    const addDependency = vi.fn()
+    const source = [
+      '@import "tailwindcss" source(none);',
+      '@config "../../../tailwind.config.sub-normal.js";',
+      '@source "./src/**/*.{tsx,css}";',
+    ].join('\n')
+
+    const result = await webpackLoader.call({
+      addDependency,
+      getOptions: () => ({
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType: 'taro',
+          compilerOptions: {
+            appType: 'taro',
+            generator: { target: 'web' },
+            mainCssChunkMatcher: () => false,
+            styleHandler: async (css: string) => ({ css }),
+          },
+          getRuntimeSet: async () => new Set(['bg-red-500']),
+          markGeneratedCssSource,
+          registerCssSource,
+          registerCssSourceFile,
+          runtimeState: {
+            readyPromise: Promise.resolve(),
+            tailwindRuntime: { majorVersion: 4 },
+          },
+        },
+      }),
+      resourcePath: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css',
+      rootContext: '/repo/demo/taro-webpack-react-tailwindcss-v4',
+    } as any, source)
+
+    expect(generateCssByGenerator).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: expect.stringContaining('@config "/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js";'),
+    }))
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css',
+      css: expect.stringContaining('@config "/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js";'),
+    })
+    expect(registerCssSourceFile).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining('@config "/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js";'),
+    }))
+    expect(result).toContain(createBundlerGeneratedCssMarker('webpack', '/repo/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css'))
+    expect(result).toContain('.bg-red-500 { background-color: red; }')
+    expect(result).not.toContain('@config')
+    expect(result).not.toContain('@source')
+    expect(result).not.toContain('@import "tailwindcss"')
+    expect(addDependency).toHaveBeenCalledWith('/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js')
+    expect(markGeneratedCssSource).toHaveBeenCalledWith('/repo/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css')
+  })
+
   it('registers sanitized preprocessor root css sources from the webpack loader', async () => {
     const registerCssSource = vi.fn()
     const result = loader.call({

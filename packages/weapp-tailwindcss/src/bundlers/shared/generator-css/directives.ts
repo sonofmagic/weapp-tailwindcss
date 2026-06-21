@@ -335,7 +335,8 @@ export function hasTailwindApplyDirective(rawSource: string) {
     return found
   }
   catch {
-    return false
+    const fallback = extractTailwindSourceForPostcssFallback(rawSource)
+    return typeof fallback === 'string' && /@apply\s[^;{}]+;/.test(fallback)
   }
 }
 

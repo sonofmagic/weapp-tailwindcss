@@ -5,8 +5,8 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
-import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
-import { normalizeCssTextSnapshot } from './snapshotUtils'
+import { clearTailwindPatchTaskCache, collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
+import { formatRawCssSnapshotText, normalizeCssTextSnapshot } from './snapshotUtils'
 import { collectTokenSourceReports, formatTokenSourceFileReport } from './tokenSourceReports'
 
 export { ensureProjectBuilt } from './projectBuild'
@@ -66,16 +66,21 @@ async function clearTailwindPatchCaches(root: string, options: { includeBuildOut
     path.resolve(root, '.cache'),
     path.resolve(root, 'node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, 'node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, 'src/node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(root, 'config/node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'config/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, 'config/node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(root, '.tw-patch/tailwindcss-target.json'),
     path.resolve(root, 'node_modules/.vite'),
     path.resolve(workspaceRoot, 'node_modules/.cache/tailwindcss-patch'),
     path.resolve(workspaceRoot, 'node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(workspaceRoot, 'node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/tailwindcss-patch'),
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/@tailwindcss-mangle'),
   ])
 
   if (options.includeBuildOutputs) {
@@ -89,6 +94,7 @@ async function clearTailwindPatchCaches(root: string, options: { includeBuildOut
 }
 
 export async function clearProjectBuildState(root: string) {
+  clearTailwindPatchTaskCache(root)
   await clearTailwindPatchCaches(root, { includeBuildOutputs: true })
 }
 
@@ -107,7 +113,7 @@ function shouldSkipAutomator(entry: ProjectEntry) {
 
 async function expectProjectSnapshot(suite: string, projectName: string, fileName: string, content: string) {
   const snapshotPath = await resolveSnapshotFile(__dirname, suite, projectName, fileName)
-  await expect(normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
+  await expect(await normalizeProjectSnapshotContent(fileName, content)).toMatchFileSnapshot(snapshotPath)
 }
 
 function shouldCollectIssue909TransformSnapshot(entry: ProjectEntry) {
@@ -149,9 +155,9 @@ function normalizeIssue909WxmlSnapshot(source: string) {
   return source.replace(/\s+style="[^"]*"/g, '')
 }
 
-function normalizeProjectSnapshotContent(fileName: string, source: string) {
+async function normalizeProjectSnapshotContent(fileName: string, source: string) {
   if (/\.(?:wxss|css)$/.test(fileName)) {
-    return `${normalizeCssTextSnapshot(source)}\n`
+    return formatRawCssSnapshotText(source)
   }
 
   const normalized = source
@@ -333,9 +339,13 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
+    const shouldNormalizeWebpackAppSplitNoise = (
+      entry.name === 'taro-webpack-react-tailwindcss-v4'
+      || entry.name === 'taro-webpack-vue3-tailwindcss-v4'
+    ) && cssEntry.snapshotName.startsWith('sub-')
     const cssSnapshots = await collectCssSnapshots(projectPath, cssEntry.cssFile, {
       classList,
-      normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
+      normalizeWebpackAppSplitNoise: shouldNormalizeWebpackAppSplitNoise,
       normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
       rootSnapshotName: cssEntry.snapshotName,
       tokenSources,

@@ -1,4 +1,5 @@
 import type { AppsGeneratorCompareReportItem, CompareReportItem, CssSummary } from './apps-generator-report'
+import type { DemoCoverageEntry } from './demoCoverageMatrix'
 import type { ProjectEntry } from './shared'
 import { Buffer } from 'node:buffer'
 import fs from 'node:fs/promises'
@@ -19,6 +20,8 @@ interface CompareProject {
   name: string
   fixturesDir: '../demo'
   rootDir: string
+  platform: string
+  allowedPlatforms: string[]
   cssFile: string
   cssPath: string
   requiredCssFiles: string[]
@@ -53,6 +56,12 @@ const localHBuilderXProjectNames = new Set(
 )
 
 const MINI_PROGRAM_CSS_PATTERN = '**/*.{wx,ac,jx,tt,q,c,ty}ss'
+const USER_IMPORTED_UI_CSS_MARKERS = [
+  '.weapp-tw-user-ui-card',
+  '.weapp-tw-user-ui-loading',
+  '@keyframes weappTwUserUiRotation',
+  '@keyframes weappTwUserUiBreathe',
+] as const
 
 function filterCompareProjects(projects: CompareProject[]) {
   const filter = process.env['E2E_PROJECT_FILTER']
@@ -203,6 +212,7 @@ function summarizeCss(css: string): CssSummary {
 }
 
 function createCompareProject(entry: ProjectEntry, fixturesDir: '../demo'): CompareProject {
+  const coverageEntry = findCoverageEntry(entry.name)
   const outputCssPath = path.join(entry.projectPath, entry.cssFile)
   const rootPrefix = `${entry.name}${path.sep}`
   const cssPath = outputCssPath.startsWith(rootPrefix)
@@ -219,9 +229,48 @@ function createCompareProject(entry: ProjectEntry, fixturesDir: '../demo'): Comp
     name: entry.name,
     fixturesDir,
     rootDir: entry.name,
+    platform: resolveDefaultBuildPlatform(entry, coverageEntry),
+    allowedPlatforms: coverageEntry.platforms.map(platform => platform.platform),
     cssFile: outputCssPath,
     cssPath,
     requiredCssFiles,
+  }
+}
+
+function findCoverageEntry(name: string): DemoCoverageEntry {
+  const entry = DEMO_COVERAGE_MATRIX.find(item => item.name === name)
+  if (!entry) {
+    throw new Error(`Missing demo coverage matrix entry for ${name}`)
+  }
+  return entry
+}
+
+function resolveDefaultBuildPlatform(project: ProjectEntry, entry: DemoCoverageEntry) {
+  const outputPath = normalizeOutputCssFileName(path.join(project.projectPath, project.cssFile))
+  const pathPlatform = resolveOutputPathPlatform(outputPath)
+  if (pathPlatform) {
+    return pathPlatform
+  }
+
+  const defaultPlatform = entry.platforms.find(platform => platform.buildScript === 'build')
+  if (defaultPlatform) {
+    return defaultPlatform.platform
+  }
+
+  const staticAutomatedPlatform = entry.platforms.find(platform => platform.staticCoverage === 'automated')
+  if (staticAutomatedPlatform) {
+    return staticAutomatedPlatform.platform
+  }
+
+  return entry.platforms[0]?.platform ?? 'unknown'
+}
+
+function resolveOutputPathPlatform(outputPath: string) {
+  const segments = outputPath.split('/')
+  for (const segment of segments) {
+    if (/^(?:mp|quickapp|app)-/.test(segment) || segment === 'h5' || segment === 'h5:ssr' || segment === 'wx') {
+      return segment
+    }
   }
 }
 
@@ -410,13 +459,19 @@ function createReportItem(
   project: CompareProject,
   generatorResult: GeneratorBuildResult,
 ): CompareReportItem {
-  const generatorCss = normalizeCssForSummary(generatorResult.css)
+  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
+    ? `${createStableCssSnapshots(generatorResult, project.cssFile)
+      .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
+      .join('\n')}\n`
+    : `${normalizeCssSnapshot(generatorResult.css)}\n`
   const generator = summarizeCss(generatorCss)
   const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
 
   return {
     name: project.name,
     fixture: 'demo',
+    platform: project.platform,
+    allowedPlatforms: project.allowedPlatforms,
     cssFile: project.cssFile,
     cssFiles: cssSnapshots.length > 0 ? cssSnapshots.map(snapshot => snapshot.fileName) : [project.cssFile],
     status: 'passed',
@@ -462,6 +517,15 @@ function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generato
     : generatorResult.css
   for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
     expect(css, `${project.name} generated css outputs should include ${pattern} marker`).toMatch(pattern)
+  }
+}
+
+function expectUserImportedUiCssMarkers(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  for (const marker of USER_IMPORTED_UI_CSS_MARKERS) {
+    expect(
+      generatorResult.css,
+      `${project.name} should keep user imported UI css marker ${marker}`,
+    ).toContain(marker)
   }
 }
 
@@ -519,6 +583,8 @@ async function createProjectReport(
     return {
       name: project.name,
       fixture: 'demo',
+      platform: project.platform,
+      allowedPlatforms: project.allowedPlatforms,
       cssFile: project.cssFile,
       cssFiles: [project.cssFile],
       status: 'failed',
@@ -559,36 +625,110 @@ function normalizeCssSnapshot(css: string) {
   return normalizeCssTextSnapshot(css)
 }
 
-function normalizeCssForSummary(css: string) {
-  return `${normalizeCssSnapshot(css)}\n`
+const TARO_WEBPACK_V4_NUTUI_NOISE_KEYFRAMES = new Set([
+  'rotation',
+  'nutJump',
+  'nutJumpOne',
+  'nutBlink',
+  'nutBreathe',
+  'nutFlash',
+  'nutBounce',
+  'nutShake',
+])
+
+function shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project: CompareProject, fileName: string) {
+  return project.name === 'taro-webpack-react-tailwindcss-v4'
+    && normalizeOutputCssFileName(fileName) === 'sub-independent/pages/index.wxss'
+}
+
+function shouldNormalizeProjectCssSnapshots(project: CompareProject) {
+  return project.name === 'taro-webpack-react-tailwindcss-v4'
+}
+
+function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
+  try {
+    const root = postcss.parse(css)
+    root.walkDecls((decl) => {
+      if (
+        decl.prop.startsWith('--nut-icon-')
+        || decl.prop === '--animate-duration'
+        || decl.prop === '--animate-delay'
+      ) {
+        decl.remove()
+      }
+    })
+    root.walkRules((rule) => {
+      if ((rule.selectors ?? [rule.selector]).every(selector => /(?:^|[\s>+~])\.nut-icon[\w-]*(?:$|[\s.#:[>+~])/.test(selector))) {
+        rule.remove()
+      }
+    })
+    root.walkAtRules('keyframes', (rule) => {
+      if (TARO_WEBPACK_V4_NUTUI_NOISE_KEYFRAMES.has(rule.params)) {
+        rule.remove()
+      }
+    })
+    return normalizeCssSnapshot(root.toString())
+  }
+  catch {
+    return css
+  }
+}
+
+function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
+  const normalized = normalizeCssSnapshot(snapshot.content)
+  return shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project, snapshot.fileName)
+    ? removeTaroWebpackV4IndependentNutuiNoise(normalized)
+    : normalized
+}
+
+function formatAllowedPlatforms(platforms: string[]) {
+  if (platforms.length === 0) {
+    return '-'
+  }
+  return platforms.map(platform => `\`${platform.replaceAll('|', '\\|')}\``).join(', ')
+}
+
+function getCssArtifactFileName(fileName: string) {
+  const normalized = normalizeOutputCssFileName(fileName).replace(/^\.\//, '')
+  const withoutQuery = normalized.replace(/[?#].*$/, '')
+  const safeFileName = withoutQuery
+    .split('/')
+    .filter(Boolean)
+    .map(segment => segment.replace(/[^\w.-]/g, '-'))
+    .join('__')
+  return safeFileName || 'output.css'
+}
+
+function createCssArtifactSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
+  return `${normalizeProjectCssSnapshot(project, snapshot).trimEnd()}\n`
 }
 
 function createCssOutputSnapshot(
   project: CompareProject,
   generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
 ) {
-  const generatorCss = normalizeCssSnapshot(generatorResult.css)
-  const generator = summarizeCss(`${generatorCss}\n`)
   const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
+  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
+    ? stableCssSnapshots.map(snapshot => normalizeProjectCssSnapshot(project, snapshot)).join('\n')
+    : normalizeCssSnapshot(generatorResult.css)
+  const generator = summarizeCss(`${generatorCss}\n`)
   const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
-    const summary = summarizeCss(`${normalizeCssSnapshot(snapshot.content)}\n`)
+    const summary = summarizeCss(`${normalizeProjectCssSnapshot(project, snapshot)}\n`)
+    const artifactFile = `artifacts/${getCssArtifactFileName(snapshot.fileName)}`
     return [
-      `| \`${snapshot.fileName}\` | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
+      `| \`${snapshot.fileName}\` | [${artifactFile}](${artifactFile}) | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
     ]
   })
-  const cssFileRows = stableCssSnapshots.map((snapshot, index) => `| ${index + 1} | \`${snapshot.fileName}\` |`)
-  const cssSections = stableCssSnapshots.flatMap(snapshot => [
-    `### ${snapshot.fileName}`,
-    '',
-    '```css',
-    normalizeCssSnapshot(snapshot.content),
-    '```',
-    '',
-  ])
+  const cssFileRows = stableCssSnapshots.map((snapshot, index) => {
+    const artifactFile = `artifacts/${getCssArtifactFileName(snapshot.fileName)}`
+    return `| ${index + 1} | \`${snapshot.fileName}\` | [${artifactFile}](${artifactFile}) |`
+  })
   return [
     `# ${project.name} CSS Output`,
     '',
     'Fixture: demo',
+    `Platform: ${project.platform}`,
+    `Allowed platforms: ${formatAllowedPlatforms(project.allowedPlatforms)}`,
     `Entry: ${project.cssFile}`,
     '',
     '| Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
@@ -597,19 +737,15 @@ function createCssOutputSnapshot(
     '',
     '## Generator CSS Files',
     '',
-    '| # | File |',
-    '| ---: | --- |',
+    '| # | File | Artifact |',
+    '| ---: | --- | --- |',
     ...cssFileRows,
     '',
     '## Generator CSS Summary',
     '',
-    '| File | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
-    '| --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
+    '| File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |',
+    '| --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |',
     ...cssSummaryRows,
-    '',
-    '## Generator CSS',
-    '',
-    ...cssSections,
   ].join('\n')
 }
 
@@ -617,8 +753,17 @@ async function expectCssOutputSnapshot(
   project: CompareProject,
   generatorResult: GeneratorBuildResult,
 ) {
-  const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', `${project.name}.md`)
+  const snapshotPath = await resolveSnapshotFile(__dirname, 'apps-generator-mode', 'css-output', path.join(project.platform, project.name, 'README.md'))
   await expectNormalizedReportSnapshot(snapshotPath, createCssOutputSnapshot(project, generatorResult))
+  for (const snapshot of createStableCssSnapshots(generatorResult, project.cssFile)) {
+    const artifactPath = await resolveSnapshotFile(
+      __dirname,
+      'apps-generator-mode',
+      'css-output',
+      path.join(project.platform, project.name, 'artifacts', getCssArtifactFileName(snapshot.fileName)),
+    )
+    await expect(createCssArtifactSnapshot(project, snapshot)).toMatchFileSnapshot(artifactPath)
+  }
 }
 
 describe('demo generator mode output', () => {
@@ -647,11 +792,13 @@ describe('demo generator mode output', () => {
     ])
   })
 
-  it('prints css metrics before raw css output blocks', () => {
-    const snapshot = createCssOutputSnapshot({
+  it('prints css metrics before raw css output blocks', async () => {
+    const snapshot = await createCssOutputSnapshot({
       name: 'fixture-app',
       fixturesDir: '../demo',
       rootDir: 'fixture-app',
+      platform: 'mp-weixin',
+      allowedPlatforms: ['mp-weixin', 'h5'],
       cssFile: 'fixture-app/dist/app.wxss',
       cssPath: 'dist/app.wxss',
       requiredCssFiles: ['fixture-app/dist/app.wxss'],
@@ -668,21 +815,22 @@ describe('demo generator mode output', () => {
     const cssTableIndex = snapshot.indexOf('| File | Bytes |')
     const firstCssBlockIndex = snapshot.indexOf('### app.wxss')
 
-    expect(snapshot.indexOf('| Bytes |')).toBeLessThan(generatorCssIndex)
-    expect(cssTableIndex).toBeLessThan(generatorCssIndex)
-    expect(generatorCssIndex).toBeLessThan(firstCssBlockIndex)
+    expect(snapshot.indexOf('| Bytes |')).toBeGreaterThanOrEqual(0)
+    expect(generatorCssIndex).toBe(-1)
+    expect(cssTableIndex).toBe(-1)
+    expect(firstCssBlockIndex).toBe(-1)
     expect(snapshot).toContain('# fixture-app CSS Output')
+    expect(snapshot).toContain('Platform: mp-weixin')
+    expect(snapshot).toContain('Allowed platforms: `mp-weixin`, `h5`')
     expect(snapshot).toContain('| 56 | 2 | false | false | false | false | false | false | false |')
     expect(snapshot).not.toContain('Generator CSS files:')
     expect(snapshot).toContain('## Generator CSS Files')
-    expect(snapshot).toContain('| # | File |')
-    expect(snapshot).toContain('| 1 | `app.wxss` |')
-    expect(snapshot).toContain('| 2 | `pages/index/index.wxss` |')
-    expect(snapshot).toContain('| `app.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
-    expect(snapshot).toContain('| `pages/index/index.wxss` | 28 | 1 | false | false | false | false | false | false | false |')
-    expect(snapshot).toContain('### app.wxss')
-    expect(snapshot).toContain('### pages/index/index.wxss')
-    expect(snapshot).toContain('.generator { color: blue; }')
+    expect(snapshot).toContain('| # | File | Artifact |')
+    expect(snapshot).toContain('| 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |')
+    expect(snapshot).toContain('| 2 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) |')
+    expect(snapshot).toContain('| `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 28 | 1 | false | false | false | false | false | false | false |')
+    expect(snapshot).toContain('| `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 28 | 1 | false | false | false | false | false | false | false |')
+    expect(snapshot).not.toContain('.generator { color: blue; }')
   })
 
   it('dedupes imported hashed css files from generator output snapshots', async () => {
@@ -757,6 +905,7 @@ describe('demo generator mode output', () => {
         expectGulpTailwindV3SubpackageCssIsolation(project, generatorResult)
         expectSubpackageCssFiles(project, generatorResult)
         expectSubpackageMarkersInGeneratedCss(project, generatorResult)
+        expectUserImportedUiCssMarkers(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }
     }

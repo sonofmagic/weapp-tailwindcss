@@ -15,6 +15,7 @@ import {
 } from './e2eMatrix'
 import { frameworkIdeWatchCaseNames } from './frameworkIdeHotUpdate'
 import { getFrameworkIdeCases } from './frameworkSupportMatrix'
+import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
 import { MULTIPLATFORM_BUILD_OUTPUT_CASES } from './multiplatform-build-output/cases'
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
 import { E2E_PROJECTS } from './projectEntries'
@@ -151,6 +152,19 @@ function readDemoSource(entry: { name: string }) {
   return parts.join('\n')
 }
 
+function demoPlatformKey(name: string, platform: string) {
+  return `${name}:${platform}`
+}
+
+function outputCaseKey(item: { projectDir: string, platform: string }) {
+  return demoPlatformKey(item.projectDir.replace('demo/', ''), item.platform)
+}
+
+function hasBuildOutputEvidence(name: string, platform: string, cases: Map<string, typeof MULTIPLATFORM_BUILD_OUTPUT_CASES[number]>) {
+  const item = cases.get(demoPlatformKey(name, platform))
+  return Boolean(item && (item.status === 'ci' || item.styleContains.length > 0 || item.reason))
+}
+
 describe('e2e matrix', () => {
   it('keeps every demo package explicit in the demo coverage matrix', () => {
     expect(DEMO_COVERAGE_MATRIX.map(item => item.name).sort()).toEqual(discoverDemoPackageNames())
@@ -278,6 +292,7 @@ describe('e2e matrix', () => {
     const rootPackageJson = readDemoPackageJson('package.json')
     const workflow = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-e2e-workflow.ts'), 'utf8')
     const visualScript = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report.ts'), 'utf8')
+    const visualHmr = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report/hmr.ts'), 'utf8')
 
     expect(rootPackageJson.scripts?.['e2e:ide:visual']).toContain('--weapp-only --fail-on-incomplete')
     expect(rootPackageJson.scripts?.['e2e:ide:issues-909-916-928']).toContain('e2e/issue-909-ide.test.ts')
@@ -286,7 +301,41 @@ describe('e2e matrix', () => {
     expect(rootPackageJson.scripts?.['e2e:ide:where']).toContain('e2e/where-selector-ide.test.ts')
     expect(rootPackageJson.scripts?.['e2e:ide:full']).toContain('pnpm e2e:ide && pnpm e2e:ide:issues-909-916-928 && pnpm e2e:ide:where && pnpm e2e:ide:visual')
     expect(visualScript).toContain('url: item.name.startsWith(\'mpx-\') ? \'/pages/index\' : \'/pages/index/index\'')
+    expect(visualHmr).toContain('VISUAL_HMR_STEPS')
+    expect(visualHmr.match(/bg-\[#/g)?.length, 'visual HMR should use multiple arbitrary bg values').toBeGreaterThanOrEqual(3)
     expect(workflow).toContain('args: [\'e2e:mp:ide\']')
+  })
+
+  it('keeps automated demo HMR platforms wired to screenshot visual HMR', () => {
+    const visualScript = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report.ts'), 'utf8')
+    const visualHmr = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report/hmr.ts'), 'utf8')
+    const visualCaseNames = E2E_PROJECTS.map(item => item.name).sort()
+    const h5VisualNames = [
+      ...taroWebHmrCaseNames.map(name => name.replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
+      ...webViteHmrCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
+      'uni-app-vite-tailwindcss-v3',
+      'uni-app-vite-tailwindcss-v4',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-x-hbuilderx-tailwindcss-v3',
+      'uni-app-x-hbuilderx-tailwindcss-v4',
+    ].sort()
+
+    const expectedWeappNames = DEMO_COVERAGE_MATRIX
+      .filter(item => !item.name.startsWith('web/'))
+      .map(item => item.name)
+      .sort()
+    const expectedH5Names = DEMO_COVERAGE_MATRIX
+      .filter(item => item.platforms.some(platform => platform.hmrCoverage !== 'exempt' && ['h5', 'web'].includes(platform.platform)))
+      .map(item => item.name)
+      .sort()
+
+    expect(visualCaseNames).toEqual(expectedWeappNames)
+    expect(h5VisualNames).toEqual(expectedH5Names)
+    expect(visualScript).toContain('runH5Case(browser')
+    expect(visualScript).toContain('runMiniProgramCase({')
+    expect(visualHmr).toContain('expectedBackgroundColor')
+    expect(visualHmr).toContain('waitForVisualHmrStep')
   })
 
   it('keeps demo workflow routed through composable platform e2e groups', () => {
@@ -438,6 +487,56 @@ describe('e2e matrix', () => {
         }
         expect(targets.has(`${entry.name}:${platform.platform}`), `${entry.name} ${platform.platform} should be in MULTIPLATFORM_TARGETS`).toBe(true)
       }
+    }
+  })
+
+  it('keeps every demo platform mapped to build output, browser HMR, IDE, or HBuilderX local evidence', () => {
+    const outputCases = new Map(MULTIPLATFORM_BUILD_OUTPUT_CASES.map(item => [outputCaseKey(item), item]))
+    const hbuilderMiniCases = new Set(miniProgramCases.map(item => demoPlatformKey(item.projectDir.replace('demo/', ''), item.platform)))
+    const hbuilderWebCases = new Set(webCases.map(item => demoPlatformKey(item.projectDir.replace('demo/', ''), 'h5')))
+    const hbuilderAppCases = new Set([...uniAppAppCases, ...uniAppXAppCases].map(item => demoPlatformKey(item.projectDir.replace('demo/', ''), item.platform)))
+    const visualMiniProgramCases = new Set(E2E_PROJECTS.map(item => demoPlatformKey(item.name, 'weapp')))
+    const taroBrowserCases = new Set(taroWebHmrCaseNames.map(name => demoPlatformKey(name.replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v'), 'h5')))
+    const webBrowserCases = new Set(webViteHmrCaseNames.map(name => demoPlatformKey(name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v'), 'web')))
+
+    for (const entry of DEMO_COVERAGE_MATRIX) {
+      for (const platform of entry.platforms) {
+        const key = demoPlatformKey(entry.name, platform.platform)
+        const hasEvidence
+          = hasBuildOutputEvidence(entry.name, platform.platform, outputCases)
+            || hbuilderMiniCases.has(key)
+            || hbuilderWebCases.has(key)
+            || hbuilderAppCases.has(key)
+            || visualMiniProgramCases.has(key)
+            || taroBrowserCases.has(key)
+            || webBrowserCases.has(key)
+            || platform.evidence.includes('demo:web:compare')
+
+        expect(hasEvidence, `${entry.name} ${platform.platform} should have executable or documented local e2e evidence`).toBe(true)
+      }
+    }
+  })
+
+  it('keeps Android and Harmony local App cases backed by transformed output and HMR assertions', () => {
+    const appCases = [...uniAppAppCases, ...uniAppXAppCases]
+    const expectedKeys = DEMO_COVERAGE_MATRIX
+      .flatMap(entry => entry.platforms
+        .filter(platform => platform.platform === 'app-android' || platform.platform === 'app-harmony')
+        .map(platform => demoPlatformKey(entry.name, platform.platform)))
+      .sort()
+    const actualKeys = appCases
+      .filter(item => item.platform === 'app-android' || item.platform === 'app-harmony')
+      .map(item => demoPlatformKey(item.projectDir.replace('demo/', ''), item.platform))
+      .sort()
+
+    expect(actualKeys).toEqual(expectedKeys)
+
+    for (const item of appCases.filter(item => item.platform === 'app-android' || item.platform === 'app-harmony')) {
+      expect(item.transformedContains.length, `${item.name} should assert transformed App output`).toBeGreaterThan(0)
+      expect(item.hmrTransformedContains.length, `${item.name} should assert transformed App HMR output`).toBeGreaterThan(0)
+      expect(item.markerClass, `${item.name} should mutate a Tailwind arbitrary class`).toContain('bg-[#')
+      expect(item.hmrMarkerClass, `${item.name} should mutate a Tailwind arbitrary HMR class`).toContain('bg-[#')
+      expect(item.requiredFiles.length, `${item.name} should assert required App output files`).toBeGreaterThan(0)
     }
   })
 

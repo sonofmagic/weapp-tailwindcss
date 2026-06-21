@@ -44,9 +44,9 @@ import {
   hasTailwindGeneratedCssMarkers,
 } from './markers'
 import { resolveSourceSideCssEntrySource } from './source-files'
-import { createTailwindV4ApplyReferenceSource } from './source-resolver/apply-reference'
+import { createTailwindV4ApplyReferenceSource, createTailwindV4SourceReferenceSource } from './source-resolver/apply-reference'
 import { resolveExistingConfigPath } from './source-resolver/config'
-import { getOutputFileStem, normalizeCssSourceForCompare, scoreTailwindV4CssSourceFileMatch } from './source-resolver/matching'
+import { normalizeCssSourceForCompare, scoreTailwindV4CssSourceFileMatch } from './source-resolver/matching'
 import {
   withGeneratorSourceMetadata,
   withMatchedSourceSideMetadata,
@@ -175,6 +175,7 @@ function shouldResolveSourceSideCssEntry(rawSource: string) {
 
 function shouldPreferTailwindV3SourceSideEntry(rawSource: string, sourceSideEntrySource: unknown) {
   return Boolean(sourceSideEntrySource)
+    && !hasTailwindApplyDirective(rawSource)
     && !hasTailwindSourceDirectives(rawSource, { importFallback: true })
 }
 
@@ -198,7 +199,6 @@ function resolveMatchingTailwindV4CssEntry(
   }
 
   const normalizedRawSource = normalizeCssSourceForCompare(rawSource)
-  const outputStem = getOutputFileStem(file)
   const matches = cssEntries
     .map((cssEntry) => {
       if (!existsSync(cssEntry)) {
@@ -211,18 +211,6 @@ function resolveMatchingTailwindV4CssEntry(
           return {
             cssEntry,
             score: 1000000 + pathScore,
-          }
-        }
-        if (pathScore > 0) {
-          return {
-            cssEntry,
-            score: pathScore,
-          }
-        }
-        if (cssEntries.length === 1 && outputStem.length > 0 && getOutputFileStem(cssEntry) === outputStem) {
-          return {
-            cssEntry,
-            score: 1,
           }
         }
         return undefined
@@ -260,6 +248,38 @@ function normalizeTailwindV4CssSourceConfig(
     ...cssSource,
     css: normalizeConfigDirective(cssSource.css, entrySource.config),
   }
+}
+
+function normalizeResolvedTailwindV4SourceConfig<T extends TailwindResolvedSource>(
+  source: T,
+  file: string | undefined,
+  sourceOptions: TailwindV4SourceOptions | undefined,
+) {
+  if (!('css' in source) || typeof source.css !== 'string' || !source.css.includes('@config')) {
+    return source
+  }
+  const sourceFile = typeof file === 'string' && file.length > 0
+    ? file
+    : (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile
+  if (!sourceFile) {
+    return source
+  }
+  const entrySource = resolveCssEntrySource(source.css, path.dirname(path.resolve(sourceFile)), {
+    removeConfig: false,
+  })
+  const config = resolveExistingConfigPath(
+    entrySource?.config,
+    entrySource?.configRequest,
+    sourceFile,
+    sourceOptions ?? {},
+  )
+  const normalizedCss = normalizeConfigDirective(source.css, config)
+  return normalizedCss === source.css
+    ? source
+    : {
+        ...source,
+        css: normalizedCss,
+      }
 }
 
 function hydrateTailwindV4CssSource(
@@ -333,21 +353,14 @@ async function resolveMatchingTailwindV4CssSource(
           score: 1000000,
         }
       }
-      if (typeof cssSource.file === 'string') {
-        const pathScore = scoreTailwindV4CssSourceFileMatch(file, cssSource.file, sourceOptions)
-        if (pathScore > 0) {
-          return {
-            cssSource,
-            index,
-            score: pathScore,
-          }
-        }
-      }
       if (normalizeCssSourceForCompare(cssSource.css) === normalizedRawSource) {
+        const pathScore = typeof cssSource.file === 'string'
+          ? scoreTailwindV4CssSourceFileMatch(file, cssSource.file, sourceOptions)
+          : 0
         return {
           cssSource,
           index,
-          score: 1,
+          score: 1 + pathScore,
         }
       }
       return undefined
@@ -523,7 +536,7 @@ async function resolveTailwindV4SourceSideEntrySource(
       sourceFile: resolvedEntrySource.file,
     },
   )
-  const css = createTailwindV4ApplyReferenceSource(
+  const css = createTailwindV4SourceReferenceSource(
     normalizeConfigDirective(
       prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
       config,
@@ -741,12 +754,17 @@ export async function resolveGeneratorSource(
     resolvedEntrySource.config,
     resolvedEntrySource.configRequest,
     file,
-    resolvedSourceOptions ?? {},
+    omitUndefined({
+      ...(resolvedSourceOptions ?? {}),
+      sourceFile: (resolvedEntrySource as SourceSideCssEntrySource).file
+        ?? resolvedSourceOptions?.sourceFile
+        ?? resolvePostcssSourceFile(cssHandlerOptions),
+    }),
   )
   const sourceBase = resolvedEntrySource === cssEntrySource && config
     ? path.dirname(config)
     : resolvedEntrySource.base
-  const css = createTailwindV4ApplyReferenceSource(
+  const css = createTailwindV4SourceReferenceSource(
     normalizeConfigDirective(
       prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
       config,
@@ -812,13 +830,18 @@ export async function resolveGeneratorSources(
     ? await resolveMatchingTailwindV4CssEntry(rawSource, file, sourceOptions)
     : undefined
   if (matchedCssEntrySource) {
+    const source = generatorOptions?.config
+      ? {
+          ...matchedCssEntrySource,
+          css: prependConfigDirective(matchedCssEntrySource.css, generatorOptions.config),
+        }
+      : matchedCssEntrySource
     return [
-      generatorOptions?.config
-        ? {
-            ...matchedCssEntrySource,
-            css: prependConfigDirective(matchedCssEntrySource.css, generatorOptions.config),
-          }
-        : matchedCssEntrySource,
+      normalizeResolvedTailwindV4SourceConfig(
+        source,
+        (matchedCssEntrySource as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile,
+        sourceOptions,
+      ),
     ]
   }
   const sourceSideEntrySource = canResolveSourceSideCssEntry(file, cssHandlerOptions, sourceOptions)
@@ -842,13 +865,18 @@ export async function resolveGeneratorSources(
   )
   const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource
   if (preferredCssEntrySource) {
+    const source = generatorOptions?.config
+      ? {
+          ...preferredCssEntrySource,
+          css: prependConfigDirective(preferredCssEntrySource.css, generatorOptions.config),
+        }
+      : preferredCssEntrySource
     return [
-      generatorOptions?.config
-        ? {
-            ...preferredCssEntrySource,
-            css: prependConfigDirective(preferredCssEntrySource.css, generatorOptions.config),
-          }
-        : preferredCssEntrySource,
+      normalizeResolvedTailwindV4SourceConfig(
+        source,
+        (preferredCssEntrySource as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile,
+        sourceOptions,
+      ),
     ]
   }
 
@@ -868,7 +896,11 @@ export async function resolveGeneratorSources(
     }
     if (sourceOptions.cssSources?.length === 1) {
       return [
-        await createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)(sourceOptions.cssSources[0]!),
+        normalizeResolvedTailwindV4SourceConfig(
+          await createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)(sourceOptions.cssSources[0]!),
+          sourceOptions.cssSources[0]?.file,
+          sourceOptions,
+        ),
       ]
     }
     const resolved = await resolveGeneratorSource(majorVersion, runtimeState, rawSource, file, cssHandlerOptions, generatorOptions, selectionOptions)

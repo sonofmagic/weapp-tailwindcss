@@ -9,11 +9,6 @@ export function normalizeCssSourceForCompare(css: string) {
   return stripGeneratorPlaceholderMarkers(stripTailwindBanners(css)).trim()
 }
 
-export function getOutputFileStem(file: string) {
-  const normalized = file.replace(/[?#].*$/, '')
-  return path.basename(normalized, path.extname(normalized))
-}
-
 function getOutputFileWithoutExtension(file: string) {
   const normalized = file.replace(/[?#].*$/, '')
   const ext = path.extname(normalized)
@@ -22,6 +17,14 @@ function getOutputFileWithoutExtension(file: string) {
 
 function normalizeMatchPath(file: string) {
   return file.split(path.sep).join('/')
+}
+
+function stripBundlerContentHash(name: string) {
+  return name.replace(/[._-]?[a-f0-9]{6,32}$/i, '')
+}
+
+function getMatchBasename(file: string) {
+  return stripBundlerContentHash(path.basename(getOutputFileWithoutExtension(file.replace(/[?#].*$/, ''))))
 }
 
 function isPathWithinRoot(file: string, root: string) {
@@ -39,10 +42,6 @@ function collectCssSourceMatchBases(
     const base = normalizeMatchPath(getOutputFileWithoutExtension(candidate))
     if (base.length > 0) {
       bases.add(base)
-      const withoutWorkspaceSegment = base.replace(/^(?:src|dist)\//, '')
-      if (withoutWorkspaceSegment !== base && withoutWorkspaceSegment.length > 0) {
-        bases.add(withoutWorkspaceSegment)
-      }
     }
   }
   addBase(normalizedFile)
@@ -79,6 +78,8 @@ export function scoreTailwindV4CssSourceFileMatch(
     sourceOptions.projectRoot,
     sourceOptions.cwd,
   ])
+  const outputBasename = getMatchBasename(file)
+  const sourceBasename = getMatchBasename(cssSourceFile)
   let bestScore = 0
   for (const outputBase of outputBases) {
     for (const sourceBase of sourceBases) {
@@ -92,6 +93,9 @@ export function scoreTailwindV4CssSourceFileMatch(
         bestScore = Math.max(bestScore, 1000 + outputBase.length)
       }
     }
+  }
+  if (outputBasename && outputBasename === sourceBasename) {
+    bestScore = Math.max(bestScore, 100 + outputBasename.length)
   }
   return bestScore
 }

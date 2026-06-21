@@ -4,9 +4,12 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 
-const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK === '1'
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 const cssOptions = {
   tailwindcssV4GradientFallback,
   px2rpx: true,
@@ -21,17 +24,11 @@ const generator = {
   },
 } satisfies UserDefinedOptions['generator']
 
-function applyWatchRegressionAliases(chain: any) {
-  if (!isWatchRegression) {
-    return
-  }
-  const nutuiStub = require.resolve('../src/watch-regression/nutui-stub.tsx')
-  const nutuiStyleStub = require.resolve('../src/watch-regression/nutui-style-stub.css')
-  chain.resolve.alias
-    .set('@nutui/nutui-react-taro$', nutuiStub)
-    .set('@nutui/icons-react-taro$', nutuiStub)
-    .set('@nutui/nutui-react-taro/dist/styles/themes/default.css$', nutuiStyleStub)
-    .set('@nutui/nutui-react-taro/dist/style.css$', nutuiStyleStub)
+function disableWebpackDevServerClientOverlay(chain: any) {
+  chain.devServer.set('client', {
+    ...(chain.devServer.get('client') ?? {}),
+    overlay: false,
+  })
 }
 
 // https://taro-docs.jd.com/docs/next/config#defineconfig-辅助函数
@@ -58,7 +55,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       375: 2,
       828: 1.81 / 2
     },
-    plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+    plugins: taroPlugins,
     sourceRoot: 'src',
     outputRoot: 'dist',
     defineConstants: {
@@ -98,7 +95,6 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
-        applyWatchRegressionAliases(chain)
         chain.merge({
           plugin: {
             install: {
@@ -146,8 +142,8 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
       },
       webpackChain(chain) {
         chain.plugins.delete('webpackbar')
+        disableWebpackDevServerClientOverlay(chain)
         chain.resolve.plugin('tsconfig-paths').use(TsconfigPathsPlugin)
-        applyWatchRegressionAliases(chain)
         chain.merge({
           plugin: {
             install: {

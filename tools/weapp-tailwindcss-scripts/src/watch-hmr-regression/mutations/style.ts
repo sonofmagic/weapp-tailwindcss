@@ -13,6 +13,13 @@ import {
 } from '../text'
 import { collectPluginProcessMetrics, createStyleMutationPayload, expandOutputFileEntries, waitForCompileSettled } from './shared'
 
+async function touchImporterFiles(files: string[]) {
+  for (const file of files) {
+    const now = new Date()
+    await fs.utimes(file, now, now)
+  }
+}
+
 export async function runStyleMutation(
   watchCase: WatchCase,
   options: CliOptions,
@@ -27,9 +34,11 @@ export async function runStyleMutation(
   const verifyOutputCandidates = styleMutation.verifyOutputCandidates ?? outputStyleCandidates
   const validateApply = styleMutation.validateApply !== false
   const validateFunction = styleMutation.validateFunction !== false
+  const outputStyleNeedle = styleMutation.outputStyleNeedle?.(payload) ?? payload.styleNeedle
   const outputNeedles = styleMutation.outputNeedles?.(payload) ?? payload.outputNeedles
   const rollbackNeedles = styleMutation.rollbackNeedles?.(payload) ?? payload.rollbackNeedles
-  const hasExpectedStyleRule = (content: string) => findCssRuleBodies(content, payload.styleNeedle).length > 0
+  const importerFiles = styleMutation.importerFiles ?? []
+  const hasExpectedStyleRule = (content: string) => findCssRuleBodies(content, outputStyleNeedle).length > 0
   const hasExpectedOutput = (content: string) =>
     outputNeedles.every(needle => content.includes(needle)) && hasExpectedStyleRule(content)
 
@@ -82,6 +91,7 @@ export async function runStyleMutation(
   const baselineOutputCandidateMtimes = await collectOutputCandidateMtimes()
   const hotUpdateStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, mutatedSource, sourceOriginal)
+  await touchImporterFiles(importerFiles)
   const hotUpdateOutputMs = await waitForOutputCandidateMtimeChanged(
     baselineOutputCandidateMtimes,
     hotUpdateStartedAt,
@@ -124,15 +134,15 @@ export async function runStyleMutation(
     assertContains(updatedStyle, needle, `[${watchCase.label}] updated style output (${formatPath(resolvedOutputStyle)})`)
   }
   if (validateApply && payload.expectedApplyDeclarations.length > 0) {
-    const updatedRuleBodies = findCssRuleBodies(updatedStyle, payload.styleNeedle)
+    const updatedRuleBodies = findCssRuleBodies(updatedStyle, outputStyleNeedle)
     if (updatedRuleBodies.length === 0) {
-      throw new Error(`[${watchCase.label}] failed to locate style rule body for ${payload.styleNeedle}`)
+      throw new Error(`[${watchCase.label}] failed to locate style rule body for ${outputStyleNeedle}`)
     }
     for (const expectedDeclaration of payload.expectedApplyDeclarations) {
       const normalizedExpectedDeclaration = normalizeCssDeclaration(expectedDeclaration)
       if (!updatedRuleBodies.some(ruleBody => normalizeCssDeclaration(ruleBody).includes(normalizedExpectedDeclaration))) {
         throw new Error(
-          `[${watchCase.label}] style @apply declaration missing: ${expectedDeclaration}, rule=${payload.styleNeedle}`,
+          `[${watchCase.label}] style @apply declaration missing: ${expectedDeclaration}, rule=${outputStyleNeedle}`,
         )
       }
     }
@@ -142,7 +152,7 @@ export async function runStyleMutation(
         return updatedRuleBodies.some(ruleBody => normalizeCssDeclaration(ruleBody).includes(normalizedExpectedDeclaration))
       })) {
         throw new Error(
-          `[${watchCase.label}] style @apply declaration group missing: ${expectedDeclarationGroup.join(' or ')}, rule=${payload.styleNeedle}`,
+          `[${watchCase.label}] style @apply declaration group missing: ${expectedDeclarationGroup.join(' or ')}, rule=${outputStyleNeedle}`,
         )
       }
     }
@@ -172,6 +182,7 @@ export async function runStyleMutation(
   const outputCandidateMtimesAfterHotUpdate = await collectOutputCandidateMtimes()
   const rollbackStartedAt = Date.now()
   await writeFilePreserveEol(sourcePath, sourceOriginal, sourceOriginal)
+  await touchImporterFiles(importerFiles)
   const rollbackOutputMs = await waitForOutputCandidateMtimeChanged(
     outputCandidateMtimesAfterHotUpdate,
     rollbackStartedAt,

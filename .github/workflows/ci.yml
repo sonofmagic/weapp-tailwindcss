@@ -124,7 +124,15 @@ jobs:
         run: pnpm ci:memory --label e2e-static-build-${{ matrix.shard }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm exec playwright install chromium
 
       - name: E2E Static
         run: pnpm ci:memory --label e2e-static-${{ matrix.shard }}-${{ matrix.shard_total }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}
@@ -158,6 +166,8 @@ jobs:
             command: pnpm e2e:web-css-preservation
           - case_name: demo-user-workflow
             command: pnpm e2e:demo-user-workflow
+          - case_name: demo-platform-output-matrix
+            command: pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
@@ -185,7 +195,15 @@ jobs:
         run: pnpm ci:memory --label e2e-focused-build-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm exec playwright install chromium
 
       - name: Run focused e2e
         run: pnpm ci:memory --label e2e-focused-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- ${{ matrix.command }}
@@ -240,7 +258,15 @@ jobs:
         run: pnpm ci:memory --label e2e-multiplatform-build-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- pnpm build:ci
 
       - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm exec playwright install chromium
 
       - name: Run multiplatform e2e
         run: pnpm ci:memory --label e2e-multiplatform-${{ matrix.case_name }} --max-rss-mb 5632 --max-rss-delta-mb 4608 -- ${{ matrix.command }}
@@ -320,7 +346,15 @@ jobs:
 
       - name: Install Playwright Chromium
         shell: bash
-        run: pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
+        run: |
+          for attempt in 1 2 3 4; do
+            if pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium; then
+              exit 0
+            fi
+            echo "Playwright Chromium install failed, retrying (${attempt}/4)"
+            sleep $((attempt * 10))
+          done
+          pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium
 
       - name: Build watch suite package dependencies
         run: pnpm build:ci

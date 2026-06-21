@@ -1,9 +1,24 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTracking, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssImportRewriteLoader, path, testState, WeappTailwindcss } from './shared'
+import RuntimeClassSetLoader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
-  it('forwards tailwindcssImportRewrite options when tailwindcss v4 detected', () => {
+  it('does not inject css import rewrite loader by default for tailwindcss v4', () => {
+    testState.currentContext.tailwindRuntime.majorVersion = 4
+    const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
+    new WeappTailwindcss().apply(compiler as any)
+
+    const module: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+    }
+    getLoaderHandler()?.({}, module)
+
+    expect(module.loaders.find(entry => isCssImportRewriteLoader(entry))).toBeUndefined()
+    expect(module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)).toBeDefined()
+  })
+
+  it('forwards tailwindcssImportRewrite options when css import rewrite is enabled', () => {
     let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
     const compilation = {
       compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
@@ -53,7 +68,14 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
         },
       },
     }
-    testState.currentContext.tailwindRuntime.majorVersion = 4
+    testState.currentContext = createContext({
+      rewriteCssImports: true,
+      tailwindRuntime: {
+        ...testState.currentContext.tailwindRuntime,
+        majorVersion: 4,
+      },
+    })
+    getCompilerContextMock.mockReturnValue(testState.currentContext)
     const plugin = new WeappTailwindcss()
     plugin.apply(compiler as any)
     const module: LoaderModule = {
@@ -78,6 +100,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   it('uses safe runtime keys so runtime options are not serialized into webpack requests', () => {
     testState.currentContext = createContext({
       ...testState.currentContext,
+      rewriteCssImports: true,
       customReplaceDictionary: {
         '!': '_e',
         '#': '_h',
@@ -124,6 +147,28 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     cleanupRuntime?.()
 
     expect(getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)).toBeUndefined()
+  })
+
+  it('does not register css-loader runtime modules as css source content', () => {
+    const registerCssSourceFile = vi.fn()
+    RuntimeClassSetLoader.call({
+      getOptions: () => ({
+        getClassSet: vi.fn(),
+        registerCssSourceFile,
+      }),
+      resourcePath: '/workspace/src/pages/index.wxss',
+    } as any, [
+      '// Imports',
+      'var ___CSS_LOADER_API_IMPORT___ = require("css-loader/runtime/api.js");',
+      'var ___CSS_LOADER_EXPORT___ = ___CSS_LOADER_API_IMPORT___();',
+      '___CSS_LOADER_EXPORT___.push([module.id, ".user-card{color:red}", ""]);',
+      'module.exports = ___CSS_LOADER_EXPORT___;',
+    ].join('\n'))
+
+    expect(registerCssSourceFile).toHaveBeenCalledWith({
+      file: '/workspace/src/pages/index.wxss',
+      css: undefined,
+    })
   })
 
 })

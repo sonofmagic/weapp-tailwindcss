@@ -122,7 +122,29 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       }
       const compilation = {
         compiler: { outputPath: path.join(dir, 'dist') },
-        chunks: [{ id: 'main', hash: 'hash-1', files: Object.keys(assetStore) }],
+        chunks: [
+          { id: 'app', hash: 'hash-app', files: ['app.wxss'] },
+          { id: 'module-b', hash: 'hash-module-b', files: ['moduleB/pages/index.wxss'] },
+          { id: 'module-c', hash: 'hash-module-c', files: ['moduleC/pages/index.wxss'] },
+          { id: 'sub-normal', hash: 'hash-sub-normal', files: ['sub-normal/pages/index.wxss'] },
+        ],
+        chunkGraph: {
+          getChunkModulesIterable: (chunk: { id?: string }) => {
+            if (chunk.id === 'app') {
+              return [{ resource: appCss }]
+            }
+            if (chunk.id === 'module-b') {
+              return [{ resource: moduleBCss }]
+            }
+            if (chunk.id === 'module-c') {
+              return [{ resource: moduleCCss }]
+            }
+            if (chunk.id === 'sub-normal') {
+              return [{ resource: subNormalCss }]
+            }
+            return []
+          },
+        },
         hooks: {
           processAssets: {
             tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
@@ -344,6 +366,17 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       const compilation = {
         compiler: { outputPath: path.join(dir, 'dist') },
         chunks: [{ id: 'sub-normal', hash: 'hash-1', files: Object.keys(assetStore) }],
+        chunkGraph: {
+          getChunkModulesIterable: (chunk: { files?: string[] }) => {
+            if (chunk.files?.includes('app.wxss')) {
+              return [{ resource: appCss }]
+            }
+            if (chunk.files?.includes('sub-normal/pages/index.wxss')) {
+              return [{ resource: subNormalCss }]
+            }
+            return []
+          },
+        },
         hooks: {
           processAssets: {
             tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
@@ -431,6 +464,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       assetStore = {
         'sub-normal/pages/index.wxss': '@tailwind utilities;',
       }
+      compilation.chunks[0] = { id: 'sub-normal', hash: 'hash-2', files: Object.keys(assetStore) }
       await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
 
       expect(generateMock.mock.calls).toHaveLength(2)

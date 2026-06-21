@@ -75,6 +75,11 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
       const compilation = {
         compiler: { outputPath: path.join(root, 'dist') },
         chunks: [{ id: 'page', hash: 'hash-1', files: ['pages/index/index.wxss'] }],
+        chunkGraph: {
+          getChunkModulesIterable: () => [{
+            resource: sourceCssFile,
+          }],
+        },
         hooks: {
           processAssets: {
             tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
@@ -268,6 +273,17 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
           { id: 'app', hash: 'same-app-hash', files: ['app.wxss'] },
           { id: 'page', hash: 'page-hash-1', files: ['pages/index/index.js'] },
         ],
+        chunkGraph: {
+          getChunkModulesIterable: (chunk: { id?: string }) => {
+            if (chunk.id === 'app') {
+              return [{ resource: sourceCssFile }]
+            }
+            if (chunk.id === 'sub-independent') {
+              return [{ resource: subSourceCssFile }]
+            }
+            return []
+          },
+        },
         hooks: {
           processAssets: {
             tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
@@ -344,12 +360,15 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
       assetStore = {
         'sub-independent/pages/index.wxss': '.sub-independent{}',
       }
+      compilation.chunks[0] = { id: 'sub-independent', hash: 'sub-hash-1', files: ['sub-independent/pages/index.wxss'] }
       await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
 
       assetStore = {
         'app.wxss': 'view,text{box-sizing:border-box}',
         'pages/index/index.js': 'const cls = "text-_b23px_B"',
       }
+      compilation.chunks[0] = { id: 'app', hash: 'same-app-hash', files: ['app.wxss'] }
+      compilation.chunks[1] = { id: 'page', hash: 'page-hash-1', files: ['pages/index/index.js'] }
 
       await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
 
@@ -447,6 +466,14 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
       const compilation = {
         compiler: { outputPath: path.join(root, 'dist') },
         chunks: [{ id: 'page', hash: 'hash-1', files: ['pages/index/index.wxss'] }],
+        chunkGraph: {
+          getChunkModulesIterable: (chunk: { files?: string[] }) => {
+            if (chunk.files?.includes('pages/index/index.wxss')) {
+              return [{ resource: activeSourceCssFile }]
+            }
+            return []
+          },
+        },
         hooks: {
           processAssets: {
             tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
@@ -525,6 +552,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
       assetStore = {
         'pages/removed/index.wxss': staleSourceCss,
       }
+      compilation.chunks[0] = { id: 'removed', hash: 'hash-2', files: ['pages/removed/index.wxss'] }
       await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
 
       expect(testState.currentContext.styleHandler).toHaveBeenCalledTimes(2)

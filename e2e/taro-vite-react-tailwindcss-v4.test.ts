@@ -12,6 +12,18 @@ defineProjectTest(project, {
   fixturesDir: '../demo',
 })
 
+function collectCssRuleBlocks(css: string, selector: string) {
+  const blocks: string[] = []
+  const rulePattern = /(?:^|\n)([^@{}][^{]*)\{([^{}]*)\}/g
+  for (const match of css.matchAll(rulePattern)) {
+    const selectorList = match[1]?.split(',').map(item => item.trim()) ?? []
+    if (selectorList.includes(selector)) {
+      blocks.push(`${match[1]}{${match[2]}}`)
+    }
+  }
+  return blocks.join('\n')
+}
+
 describe('e2e', () => {
   it('keeps non-class JSX and WXML text unescaped in Taro Vite React v4 output', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
@@ -47,8 +59,8 @@ describe('e2e', () => {
       await ensureProjectBuilt(root)
     }
 
-    const css = await fs.readFile(path.resolve(projectPath, 'dist/app-origin.wxss'), 'utf8')
-    const linearBlocks = css.match(/\.bg-linear-to-r\s*\{[^}]*\}/g)?.join('\n') ?? ''
+    const css = await fs.readFile(path.resolve(projectPath, 'dist/app.wxss'), 'utf8')
+    const linearBlocks = collectCssRuleBlocks(css, '.bg-linear-to-r')
 
     expect(css).toContain('.bg-linear-to-r')
     expect(css).not.toMatch(/^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m)

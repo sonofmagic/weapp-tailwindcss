@@ -60,6 +60,27 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
     expect(snapshot.processFiles.js.has('assets/index.js')).toBe(true)
   })
 
+  it('prefers current compilation asset sources when snapshotting runtime entries', () => {
+    const snapshot = buildWebpackBundleSnapshot({
+      'assets/index.js': {
+        source: () => 'const cls = "stale-source"',
+      },
+    }, createOptions(), createBundleBuildState(), {
+      getAsset: vi.fn((file: string) => file === 'assets/index.js'
+        ? {
+            source: {
+              source: () => 'const cls = "fresh-source"',
+            },
+          }
+        : undefined),
+      updateAsset: vi.fn(),
+    } as any)
+
+    expect(snapshot.entries).toHaveLength(1)
+    expect(snapshot.entries[0]?.source).toBe('const cls = "fresh-source"')
+    expect(snapshot.entries[0]?.output.source).toBe('const cls = "fresh-source"')
+  })
+
   it('can update cache-hit assets without stringifying sources for comparison', () => {
     const updateAsset = vi.fn()
     const onUpdate = vi.fn()
@@ -210,5 +231,117 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
 
     expect(secondSource).not.toHaveBeenCalled()
     expect(isWebpackProcessedCssAsset).not.toHaveBeenCalled()
+  })
+
+  it('prepares webpack css sources with active resources from chunk graph', async () => {
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    const subpackageCss = '/workspace/demo/src/sub-normal/pages/index.css'
+    const chunk = {
+      id: 'sub-normal',
+      hash: 'stable-hash',
+      files: ['sub-normal/pages/index.wxss'],
+    }
+    const compilation = {
+      compiler: { outputPath: '/workspace/demo/dist' },
+      chunks: [chunk],
+      chunkGraph: {
+        getChunkModulesIterable: vi.fn(() => [
+          { resource: subpackageCss },
+        ]),
+      },
+      outputOptions: { path: '/workspace/demo/dist' },
+      hooks: {
+        processAssets: {
+          tapPromise: vi.fn((_options, handler) => {
+            processAssetsCallbacks.push(handler)
+          }),
+        },
+      },
+      getAsset: vi.fn((file: string) => file === 'sub-normal/pages/index.wxss'
+        ? {
+            source: {
+              source: () => '@import "tailwindcss";',
+            },
+          }
+        : undefined),
+      updateAsset: vi.fn(),
+    }
+    const compiler = {
+      outputPath: '/workspace/demo/dist',
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: class {
+            constructor(private readonly value: string) {}
+
+            source() {
+              return this.value
+            }
+          },
+        },
+      },
+      hooks: {
+        compilation: {
+          tap: vi.fn((_name: string, handler: (compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+    const activeResourceSets: string[][] = []
+
+    setupWebpackV5ProcessAssetsHook({
+      compiler: compiler as any,
+      options: {
+        arbitraryValues: {},
+        cache: createCache(),
+        cssMatcher: (file: string) => file.endsWith('.wxss') || file.endsWith('.css'),
+        cssPreflight: undefined,
+        htmlMatcher: () => false,
+        jsMatcher: () => false,
+        wxsMatcher: () => false,
+        mainCssChunkMatcher: () => false,
+        onEnd: vi.fn(),
+        onStart: vi.fn(),
+        onUpdate: vi.fn(),
+        styleHandler: vi.fn(async (source: string) => ({ css: source })),
+        tailwindcssBasedir: '/workspace/demo',
+        templateHandler: vi.fn(),
+      } as any,
+      runtimeState: {
+        readyPromise: Promise.resolve(),
+        tailwindRuntime: {
+          majorVersion: 4,
+          options: {},
+        } as any,
+      },
+      getRuntimeRefreshRequirement: () => false,
+      refreshRuntimeMetadata: vi.fn(async () => undefined),
+      consumeRuntimeRefreshRequirement: vi.fn(),
+      isWatchMode: () => false,
+      getWatchChangedFiles: () => [],
+      runtimeClassSetManager: {
+        reset: vi.fn(),
+        sync: vi.fn(async () => new Set<string>()),
+      } as any,
+      getWebpackCssSources: () => new Map([
+        [subpackageCss, { css: '@import "tailwindcss";' }],
+      ]),
+      prepareWebpackCssSources: (activeResources = new Set()) => {
+        activeResourceSets.push([...activeResources])
+        return activeResources
+      },
+      debug: vi.fn(),
+    })
+
+    await processAssetsCallbacks[0]!({
+      'sub-normal/pages/index.wxss': {
+        source: () => '@import "tailwindcss";',
+      },
+    })
+
+    expect(activeResourceSets).toEqual([[subpackageCss]])
   })
 })

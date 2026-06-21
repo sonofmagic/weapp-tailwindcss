@@ -1,6 +1,6 @@
 import type { ChildProcessWithoutNullStreams } from 'node:child_process'
 import { spawn } from 'node:child_process'
-import { existsSync, promises as fs } from 'node:fs'
+import { existsSync, promises as fs, realpathSync } from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 
@@ -67,6 +67,20 @@ interface ProjectInjectionState {
   cleanup: () => Promise<void>
 }
 
+function createExecutableCommand(command: string): PnpmCommand {
+  const resolved = realpathSync(command)
+  if (resolved.endsWith('.js')) {
+    return {
+      command: process.platform === 'win32' ? 'node.exe' : 'node',
+      args: [resolved],
+    }
+  }
+  return {
+    command,
+    args: [],
+  }
+}
+
 const BENCH_PAGES_START_MARKER = '// BENCH_BIG_START'
 const BENCH_PAGES_END_MARKER = '// BENCH_BIG_END'
 
@@ -81,6 +95,11 @@ const SRC_PREFIX_RE = /^src\//
 const LEADING_SLASH_RE = /^\//
 
 function parseArg(flag: string, argv: string[]) {
+  const prefix = `${flag}=`
+  const inline = argv.find(value => value.startsWith(prefix))
+  if (inline) {
+    return inline.slice(prefix.length)
+  }
   const index = argv.indexOf(flag)
   if (index === -1) {
     return undefined
@@ -105,11 +124,7 @@ function parseBooleanFlag(value: string | undefined) {
 }
 
 function resolveBaseCwd() {
-  if (process.env.INIT_CWD) {
-    return path.resolve(process.env.INIT_CWD)
-  }
-
-  let cursor = process.cwd()
+  let cursor = path.resolve(process.env.INIT_CWD || process.cwd())
   while (true) {
     if (existsSync(path.join(cursor, 'pnpm-workspace.yaml'))) {
       return cursor
@@ -157,6 +172,14 @@ function now() {
 
 function createEnv(mode: 'optimized' | 'legacy', options: BenchCliOptions) {
   const env = { ...process.env }
+  const pathValue = env.PATH || env.Path || env.path
+  env.PATH = [
+    path.dirname(process.execPath),
+    pathValue,
+    '/usr/local/bin',
+    '/usr/bin',
+    '/bin',
+  ].filter(Boolean).join(path.delimiter)
   if (mode === 'legacy') {
     env.WEAPP_TW_VITE_FORCE_RUNTIME_REFRESH = '1'
     env.WEAPP_TW_VITE_DISABLE_DIRTY = '1'
@@ -175,6 +198,21 @@ function createEnv(mode: 'optimized' | 'legacy', options: BenchCliOptions) {
 }
 
 function resolvePnpmCommand(): PnpmCommand {
+  const pathPnpm = process.env.PATH
+    ?.split(path.delimiter)
+    .map(item => path.join(item, process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'))
+    .find(item => existsSync(item))
+  if (pathPnpm) {
+    return createExecutableCommand(pathPnpm)
+  }
+
+  const pnpmBin = process.env.PNPM_HOME
+    ? path.join(process.env.PNPM_HOME, process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm')
+    : undefined
+  if (pnpmBin && existsSync(pnpmBin)) {
+    return createExecutableCommand(pnpmBin)
+  }
+
   return {
     command: process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm',
     args: [],

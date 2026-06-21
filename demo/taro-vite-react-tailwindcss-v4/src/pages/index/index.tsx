@@ -1,5 +1,6 @@
 import { View, Text } from '@tarojs/components'
 import './index.css'
+import { Button as NutButton } from '@nutui/nutui-react-taro'
 
 export default function Index() {
   const complexTrace = 'at App.vue:4 index.ts:120:3'
@@ -12,6 +13,9 @@ export default function Index() {
       <div className='h-[300px] text-[#c31d6b] bg-[#123456]'>短斤少两快点撒</div>
       <Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>
       <View className='bg-[red]'>Hello world!</View>
+      <View className='weapp-tw-nutui-react-demo mt-4'>
+        <NutButton type='primary'>NutUI React Button</NutButton>
+      </View>
       <View className='theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 dark:bg-zinc-900 dark:text-zinc-50'>
         Taro Vite React Tailwind CSS v4 system dark
         <View className='theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark:bg-zinc-950 dark:text-zinc-50'>

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { View, Navigator, Button } from '@tarojs/components'
 import classNames from 'classnames'
 import './index.scss'
+import { Button as NutButton } from '@nutui/nutui-react-taro'
 // import { useEnv, useNavigationBar, useModal, useToast } from "taro-hooks";
 // import { Button } from 'antd-mobile'
 import EndClassCom from './endClassCom'
@@ -35,6 +36,9 @@ const Index = () => {
       <View className={aaa}>11</View>
       <View className='shadow-md'>shadow-md</View>
       <View className='form-box py-[62px] rotate-45 px-[95px] bg-sky-500/80 dark:bg-[#123456]'>py-[62px] px-[95px]</View>
+      <View className='weapp-tw-nutui-react-demo mt-4'>
+        <NutButton type='primary'>NutUI React Button</NutButton>
+      </View>
       <View className='theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 theme-dark:bg-zinc-900 theme-dark:text-zinc-50 dark:bg-zinc-900 dark:text-zinc-50'>
         Taro Webpack React Tailwind CSS v3 system dark
         <View className='theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 theme-dark:bg-zinc-950 theme-dark:text-zinc-50'>

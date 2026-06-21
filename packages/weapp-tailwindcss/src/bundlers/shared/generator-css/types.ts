@@ -18,8 +18,12 @@ export interface GenerateCssByGeneratorOptions {
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
+  userRawSource?: string | undefined
+  userRawSourceProcessed?: boolean | undefined
+  forceGenerator?: boolean | undefined
   previousCss?: string | undefined
   deferEmptyScopedCssSource?: boolean | undefined
+  restoreLocalCssImports?: boolean | undefined
 }
 
 export interface GenerateCssByGeneratorResult {

@@ -1,0 +1,7 @@
+/* stylelint-disable-next-line import-notation */
+.s .a {
+  color: turquoise;
+}
+.user-motto {
+  font-size: 12px;
+}

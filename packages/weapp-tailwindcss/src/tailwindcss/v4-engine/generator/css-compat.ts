@@ -39,11 +39,7 @@ function isTailwindCssPreflightImport(params: string) {
   return specifier === 'tailwindcss/preflight.css' || specifier === 'tailwindcss/preflight'
 }
 
-function hasImportLayerOption(params: string) {
-  return /\blayer(?:\s*\(|\s*$)/.test(params)
-}
-
-function removeUnlayeredTailwindV4PreflightImports(css: string) {
+function removeTailwindV4PreflightImports(css: string) {
   if (!css.includes('preflight')) {
     return css
   }
@@ -58,7 +54,7 @@ function removeUnlayeredTailwindV4PreflightImports(css: string) {
 
   let changed = false
   root.walkAtRules('import', (rule) => {
-    if (isTailwindCssPreflightImport(rule.params) && !hasImportLayerOption(rule.params)) {
+    if (isTailwindCssPreflightImport(rule.params)) {
       rule.remove()
       changed = true
     }
@@ -113,7 +109,7 @@ export function createCompatibleSource(
 ) {
   const shouldApplyTailwindV3Compatibility = tailwindcssV3Compatibility ?? target === 'weapp'
   const filteredSourceCss = target === 'weapp'
-    ? removeUnlayeredTailwindV4PreflightImports(source.css)
+    ? removeTailwindV4PreflightImports(source.css)
     : source.css
   const sourceCss = shouldApplyTailwindV3Compatibility
     ? applyTailwindV3CompatibilityCss(filteredSourceCss)

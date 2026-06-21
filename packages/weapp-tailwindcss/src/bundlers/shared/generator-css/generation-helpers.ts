@@ -15,7 +15,12 @@ import {
   splitGeneratorPlaceholderCssBySourceOrder,
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCssBySourceOrder,
+  TAILWIND_BANNER_RE,
 } from './markers'
+
+export function hasMiniProgramTailwindV4PreflightReset(css: string) {
+  return /(?:^|[},])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{[^}]*\bborder\s*:\s*0\s+solid\b/.test(css)
+}
 
 export function finalizeMiniProgramGeneratorCss(
   css: string,
@@ -27,8 +32,11 @@ export function finalizeMiniProgramGeneratorCss(
   if (target !== 'weapp') {
     return css
   }
+  const injectPreflight = majorVersion === 4
+    && options.injectPreflight !== false
+    && !hasMiniProgramTailwindV4PreflightReset(css)
   return finalizeMiniProgramCss(css, {
-    cssPreflight: majorVersion === 4 && options.injectPreflight !== false ? cssPreflight : undefined,
+    cssPreflight: injectPreflight ? cssPreflight : undefined,
     isTailwindcssV4: majorVersion === 4,
     preservePseudoContentInit: majorVersion === 3,
     tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
@@ -159,14 +167,12 @@ export function shouldScanTailwindV4Sources(
 
 export function shouldAppendWebBundleCssFallback(
   target: string,
-  options: {
+  _options: {
     hasSourceDirectives: boolean
     hasMatchedCssSourceFile: boolean
   },
 ) {
   return target === 'web'
-    && !options.hasMatchedCssSourceFile
-    && !options.hasSourceDirectives
 }
 
 export function isEmptyCssSourceOrderParts(parts: {
@@ -226,21 +232,41 @@ export function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwind
 }
 
 export function shouldUseGeneratorForCurrentCss(
-  _majorVersion: number | undefined,
+  majorVersion: number | undefined,
   cssHandlerOptions: IStyleHandlerOptions,
   options: {
+    forceGenerator?: boolean | undefined
     hasGeneratedCss: boolean
     hasGeneratedMarkers: boolean
     hasSourceDirectives: boolean
     rawSource: string
   },
 ) {
+  if (
+    majorVersion === 3
+    && TAILWIND_BANNER_RE.test(options.rawSource)
+    && !options.hasGeneratedMarkers
+    && !hasTailwindSourceDirectives(options.rawSource, { importFallback: true })
+    && !hasTailwindApplyDirective(options.rawSource)
+    && options.forceGenerator !== true
+  ) {
+    return false
+  }
   const hasApplyDirectives = hasTailwindApplyDirective(options.rawSource)
-  return options.hasGeneratedCss
+  const sourceCss = (cssHandlerOptions as { sourceOptions?: { sourceCss?: string | undefined } | undefined }).sourceOptions?.sourceCss
+  const hasSourceCssDirectives = typeof sourceCss === 'string'
+    && (
+      hasTailwindRootDirectives(sourceCss, { importFallback: true })
+      || hasTailwindSourceDirectives(sourceCss, { importFallback: true })
+      || hasTailwindApplyDirective(sourceCss)
+    )
+  return options.forceGenerator === true
+    || options.hasGeneratedCss
     || options.hasGeneratedMarkers
     || options.hasSourceDirectives
     || hasApplyDirectives
-    || cssHandlerOptions.isMainChunk
+    || ((majorVersion === 3 || majorVersion === 4) && hasSourceCssDirectives)
+    || (majorVersion === 4 && cssHandlerOptions.isMainChunk)
 }
 
 export function hasGeneratorSourceDirectives(source: string, importFallback: boolean) {

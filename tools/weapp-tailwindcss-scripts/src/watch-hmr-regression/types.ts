@@ -210,9 +210,11 @@ export interface ClassMutationConfig {
 
 export interface StyleMutationConfig {
   sourceFile: string
+  importerFiles?: string[]
   verifyOutputCandidates?: string[]
   validateApply?: boolean
   validateFunction?: boolean
+  outputStyleNeedle?: (payload: StyleMutationPayload) => string
   outputNeedles?: (payload: StyleMutationPayload) => string[]
   rollbackNeedles?: (payload: StyleMutationPayload) => string[]
   mutate: (source: string, payload: StyleMutationPayload) => string
@@ -268,6 +270,7 @@ export interface SubPackageMutationConfig {
   globalStyleCandidates: string[]
   minGlobalStyleEscapedClasses?: number
   templateMutation: ClassMutationConfig
+  mainStyleMutation?: ClassMutationConfig
   styleMutation: StyleMutationConfig
   skipStyleMutation?: boolean
 }
@@ -280,6 +283,8 @@ export interface WebHmrConfig {
   injectMarkerElement?: boolean
   readySelector?: string
   initialMutationDelayMs?: number
+  waitForInitialCompileSettled?: boolean
+  initialCompileSettleTimeoutMs?: number
   reloadAfterCssMutation?: boolean
   compileSettleTimeoutMs?: number
   mutate: (source: string, payload: ClassMutationPayload) => string

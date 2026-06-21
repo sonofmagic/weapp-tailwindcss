@@ -49,8 +49,15 @@ function stepRuns(workflow: Record<string, any>, jobName: string) {
     .filter((run): run is string => typeof run === 'string')
 }
 
-function hasRunContaining(runs: string[], command: string) {
-  return runs.some(run => run.includes(command))
+function hasStepRunCommand(runs: string[], command: string) {
+  return runs.some(run => run === command || run.includes(`-- ${command}`))
+}
+
+function expectPlaywrightInstallRetry(run: string, command: string) {
+  expect(run).toContain('for attempt in 1 2 3 4')
+  expect(run).toContain(`if ${command}; then`)
+  expect(run).toContain('sleep $((attempt * 10))')
+  expect(run.trimEnd()).toContain(command)
 }
 
 function extractJsonArrays(source: string) {
@@ -93,8 +100,8 @@ describe('ci workflows', () => {
       'pnpm install --frozen-lockfile',
       'pnpm lint',
     ]))
-    expect(hasRunContaining(qualityRuns, 'pnpm build:ci')).toBe(true)
-    expect(hasRunContaining(qualityRuns, 'pnpm test:release')).toBe(true)
+    expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasStepRunCommand(qualityRuns, 'pnpm test:release')).toBe(true)
   })
 
   it('keeps heavyweight e2e checks parallel to the quality gate', () => {
@@ -111,16 +118,16 @@ describe('ci workflows', () => {
     expect(staticRuns).not.toContain('pnpm build')
     expect(focusedRuns).not.toContain('pnpm build')
     expect(multiplatformRuns).not.toContain('pnpm build')
-    expect(hasRunContaining(qualityRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasStepRunCommand(qualityRuns, 'pnpm build:ci')).toBe(true)
     expect(staticJob['timeout-minutes']).toBe(15)
     expect(staticJob.strategy['fail-fast']).toBe(false)
     expect(staticJob.strategy.matrix.shard).toEqual([1, 2, 3])
     expect(staticJob.strategy.matrix.shard_total).toEqual([3])
-    expect(staticRuns).toContain('pnpm exec playwright install chromium')
-    expect(hasRunContaining(staticRuns, 'pnpm build:ci')).toBe(true)
-    expect(hasRunContaining(staticRuns, 'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
-    expect(hasRunContaining(focusedRuns, 'pnpm build:ci')).toBe(true)
-    expect(hasRunContaining(multiplatformRuns, 'pnpm build:ci')).toBe(true)
+    expect(staticRuns.join('\n')).toContain('pnpm exec playwright install chromium')
+    expect(hasStepRunCommand(staticRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasStepRunCommand(staticRuns, 'pnpm e2e:static --exclude e2e/taro-h5-build-smoke.test.ts --shard=${{ matrix.shard }}/${{ matrix.shard_total }}')).toBe(true)
+    expect(hasStepRunCommand(focusedRuns, 'pnpm build:ci')).toBe(true)
+    expect(hasStepRunCommand(multiplatformRuns, 'pnpm build:ci')).toBe(true)
 
     expect(workflow.jobs['e2e-focused'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(focusedRows)).toEqual([
@@ -130,6 +137,7 @@ describe('ci workflows', () => {
       'taro-h5-build',
       'web-css-preservation',
       'demo-user-workflow',
+      'demo-platform-output-matrix',
     ])
     expect(focusedRows.map(row => row.command)).toEqual([
       'pnpm e2e:generator-parity',
@@ -138,8 +146,9 @@ describe('ci workflows', () => {
       'pnpm e2e:taro:h5-build',
       'pnpm e2e:web-css-preservation',
       'pnpm e2e:demo-user-workflow',
+      'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
     ])
-    expect(hasRunContaining(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
+    expect(hasStepRunCommand(stepRuns(workflow, 'e2e-focused'), '${{ matrix.command }}')).toBe(true)
 
     expect(workflow.jobs['e2e-multiplatform'].strategy['fail-fast']).toBe(false)
     expect(matrixCaseNames(multiplatformRows)).toEqual([
@@ -150,7 +159,13 @@ describe('ci workflows', () => {
       'pnpm e2e:multiplatform-build',
       'pnpm e2e:multiplatform-build:taro-alipay',
     ])
-    expect(hasRunContaining(stepRuns(workflow, 'e2e-multiplatform'), '${{ matrix.command }}')).toBe(true)
+    expect(hasStepRunCommand(stepRuns(workflow, 'e2e-multiplatform'), '${{ matrix.command }}')).toBe(true)
+
+    for (const jobName of ['e2e-static', 'e2e-focused', 'e2e-multiplatform'] as const) {
+      const installRun = stepRuns(workflow, jobName).find(run => run.includes('playwright install chromium'))
+      expect(installRun, `${jobName} should install Playwright Chromium`).toBeDefined()
+      expectPlaywrightInstallRetry(installRun!, 'pnpm exec playwright install chromium')
+    }
   })
 
   it('keeps the preprocessor source demo in local e2e and CI', () => {
@@ -177,7 +192,8 @@ describe('ci workflows', () => {
       expect.objectContaining({ command: 'pnpm e2e:preprocessor' }),
     ]))
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
-    expect(readText('demo/weapp-vite-tailwindcss-v4/app.scss')).toContain('@import "tailwindcss";')
+    expect(readText('demo/weapp-vite-tailwindcss-v4/app.css')).not.toContain('@import "tailwindcss";')
+    expect(readText('demo/weapp-vite-tailwindcss-v4/tailwind.css')).toContain('@import "tailwindcss";')
   })
 
   it('keeps workflow_dispatch compatibility coverage across OS and Node versions', () => {
@@ -219,6 +235,10 @@ describe('ci workflows', () => {
     ]))
     expect(rows.every(row => row.watch_web_only === '1')).toBe(true)
     expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
+    expectPlaywrightInstallRetry(
+      stepRuns(workflow, 'e2e-watch').find(run => run.includes('playwright install chromium'))!,
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+    )
     expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
     expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
     expect(job.steps.some((step: Record<string, unknown>) => {
@@ -478,6 +498,10 @@ describe('e2e watch workflow', () => {
     expect(cases.some(item => item.includes(':weapp-vite-tailwindcss-'))).toBe(false)
     expect(cases).not.toContain('macos:22:taro-webpack-react-tailwindcss-v4:issue33')
     expect(stepRuns(workflow, 'pr-quick-gate')).toContain('pnpm e2e:watch')
+    expectPlaywrightInstallRetry(
+      stepRuns(workflow, 'pr-quick-gate').find(run => run.includes('playwright install chromium'))!,
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+    )
   })
 
   it('keeps nightly full-regression coverage for broad cases and Node 24 probes', () => {
@@ -500,6 +524,10 @@ describe('e2e watch workflow', () => {
       'windows:24:weapp-vite-tailwindcss-v3:issue33',
     ]))
     expect(stepRuns(workflow, 'nightly-full-regression')).toContain('pnpm e2e:watch')
+    expectPlaywrightInstallRetry(
+      stepRuns(workflow, 'nightly-full-regression').find(run => run.includes('playwright install chromium'))!,
+      'pnpm --filter @weapp-tailwindcss/scripts exec playwright install chromium',
+    )
   })
 
   it('keeps explicit plugin processing budgets for e2e watch rows while allowing longer startup timeouts', () => {
@@ -537,9 +565,10 @@ describe('e2e watch workflow', () => {
       {
         watch_case: 'taro-webpack-react-tailwindcss-v4',
         round_profile: 'default',
-        timeout_minutes: 45,
-        watch_timeout_ms: '420000',
-        watch_command_timeout_ms: '960000',
+        timeout_minutes: 80,
+        watch_timeout_ms: '900000',
+        watch_max_hot_update_ms: '420000',
+        watch_command_timeout_ms: '1800000',
         watch_web_only: '1',
       },
       {
@@ -644,6 +673,16 @@ describe('e2e watch workflow', () => {
         os: 'windows-latest',
         runner_label: 'windows',
         ...budget,
+      }))
+    }
+    const slowStartupTaroWebpackPrRows = prRows.filter(row => typeof row.watch_case === 'string' && row.watch_case.startsWith('taro-webpack-'))
+    expect(slowStartupTaroWebpackPrRows).not.toHaveLength(0)
+    for (const row of slowStartupTaroWebpackPrRows) {
+      expect(row).toEqual(expect.objectContaining({
+        timeout_minutes: 80,
+        watch_timeout_ms: '900000',
+        watch_max_hot_update_ms: '420000',
+        watch_command_timeout_ms: '1800000',
       }))
     }
     expect(nightlyRows).toContainEqual(expect.objectContaining(slowMacosWeappViteBudget))

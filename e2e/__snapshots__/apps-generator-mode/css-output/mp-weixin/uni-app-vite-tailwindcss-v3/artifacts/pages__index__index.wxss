@@ -1,0 +1,40 @@
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --primary-color-hex: #4268ea;
+  --primary-color-bg: yellow;
+  --my-var: green;
+  --my-var-length: 24rpx;
+}
+ /* tokens: test <= src/pages/index/index.vue */
+.test {
+  display: flex !important;
+  height: 100rpx !important;
+  width: 100rpx !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 40rpx !important;
+  background-color: rgba(18, 52, 86, var(--tw-bg-opacity, 1)) !important;
+  --tw-bg-opacity: 0.54 !important;
+  --tw-text-opacity: 1 !important;
+  color: rgba(255, 255, 255, var(--tw-text-opacity, 1)) !important;
+}
+ /* tokens: content <= index.html, src/pages/index/index.vue, src/pages/issue/tailwind.typography.config.js */
+.content::before {
+  content: '';
+  display: inline-block;
+  height: 40rpx;
+  width: 40rpx;
+  background-color: rgba(239, 68, 68, 0.5);
+}
+ /* tokens: apply-class-0 <= src/pages/index/index.vue */
+.apply-class-0 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(59, 130, 246, var(--tw-bg-opacity, 1));
+}
+ /* tokens: apply-class-0 <= src/pages/index/index.vue */
+.apply-class-0 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(96, 165, 250, var(--tw-bg-opacity, 1));
+}

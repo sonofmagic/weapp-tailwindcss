@@ -8,6 +8,7 @@ import { removeTailwindSourceDirectives, resolveCssEntrySource } from './directi
 import { collectDedupedPostTransformCompatCss, collectGeneratedSelectors, removeDuplicatedViteMarkers, removeGeneratedSelectorCompatCss } from './legacy-selectors'
 import { createCssAppend, stripTailwindBanners } from './markers'
 import { resolveCssSourceBase } from './source-resolver'
+import { removeTailwindV4GeneratedUserCssArtifacts } from './user-css'
 
 const LEGACY_CONTAINER_COMPAT_CSS = [
   '.container {',
@@ -176,7 +177,7 @@ function resolveLegacyCompatCssSource(rawSource: string) {
   }
   const parseableSource = closeTrailingUnclosedBlocks(stripTailwindBanners(rawSource))
   const source = removeTailwindSourceDirectives(parseableSource)
-  const resolved = closeTrailingUnclosedBlocks(removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source)))
+  const resolved = closeTrailingUnclosedBlocks(removeTailwindV4GeneratedUserCssArtifacts(removeUnsupportedMiniProgramAtRules(removeTailwindApplyRules(source))))
   setLimitedCacheValue(legacyCompatSourceCache, rawSource, resolved)
   return resolved
 }
@@ -296,7 +297,7 @@ export async function appendLegacyCompatCss(
     setLimitedCacheValue(legacyCompatTransformCache, compatCssCacheKey, compatCss)
   }
   const cleanedCompatCss = collectDedupedPostTransformCompatCss(
-    removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css),
+    removeTailwindV4GeneratedUserCssArtifacts(removeDuplicatedViteMarkers(removeUnsupportedMiniProgramAtRules(compatCss), css)),
     css,
   )
   if (cleanedCompatCss.trim().length === 0) {

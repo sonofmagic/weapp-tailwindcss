@@ -6,9 +6,12 @@ import prodConfig from './prod'
 
 const require = createRequire(__filename)
 const bench = require('../../bench.cjs')('taro-vue3')
-const isWatchRegression = process.env.WEAPP_TW_WATCH_REGRESSION === '1'
 const taroEnv = process.env.TARO_ENV
 const isWebLikeTarget = taroEnv === 'h5' || taroEnv === 'harmony' || taroEnv === 'harmony-hybrid'
+const taroPlugins = [
+  ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
+  '@tarojs/plugin-platform-harmony-hybrid',
+]
 
 const generator = {
   target: isWebLikeTarget ? 'web' : 'weapp',
@@ -16,6 +19,13 @@ const generator = {
     px2rpx: true,
   },
 } satisfies UserDefinedOptions['generator']
+
+function disableWebpackDevServerClientOverlay(chain: any) {
+  chain.devServer.set('client', {
+    ...(chain.devServer.get('client') ?? {}),
+    overlay: false,
+  })
+}
 
 const config: UserConfigExport<'webpack5'> = {
   compiler: {
@@ -37,7 +47,7 @@ const config: UserConfigExport<'webpack5'> = {
   },
   sourceRoot: 'src',
   outputRoot: 'dist',
-  plugins: ['@tarojs/plugin-platform-harmony-hybrid'],
+  plugins: taroPlugins,
   defineConstants: {},
   copy: {
     patterns: [],
@@ -154,6 +164,7 @@ const config: UserConfigExport<'webpack5'> = {
     },
     webpackChain(chain) {
       chain.plugins.delete('webpackbar')
+      disableWebpackDevServerClientOverlay(chain)
       chain.merge({
         plugin: {
           install: {

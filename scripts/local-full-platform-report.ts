@@ -23,6 +23,7 @@ interface LocalFullRunStep {
     fromDir: string
     pattern: RegExp
     toDir: string
+    recursive?: boolean
   }>
 }
 
@@ -262,14 +263,12 @@ function buildProfileSteps(profile: string): LocalFullRunStep[] {
       name: 'visual-weapp-h5-app',
       command: ['pnpm', 'exec', 'tsx', 'scripts/demo-visual-e2e-report.ts', '--fail-on-incomplete'],
       optional: true,
-      artifactFiles: [
+      artifactGlobs: [
         {
-          from: 'e2e/.artifacts/demo-visual/full/report.md',
-          to: 'visual/report.md',
-        },
-        {
-          from: 'e2e/.artifacts/demo-visual/full/report.json',
-          to: 'visual/report.json',
+          fromDir: 'e2e/.artifacts/demo-visual/full',
+          pattern: /\.(?:json|md|png)$/,
+          toDir: 'visual',
+          recursive: true,
         },
       ],
     },
@@ -372,9 +371,32 @@ async function copyArtifact(root: string, artifact: NonNullable<LocalFullRunStep
   return path.relative(process.cwd(), target)
 }
 
+async function collectArtifactEntries(sourceDir: string, recursive?: boolean) {
+  const entries: string[] = []
+
+  async function visit(dir: string, prefix = '') {
+    const dirents = await readdir(dir, { withFileTypes: true }).catch(() => [])
+    for (const dirent of dirents) {
+      const relative = path.join(prefix, dirent.name)
+      if (dirent.isDirectory()) {
+        if (recursive) {
+          await visit(path.join(dir, dirent.name), relative)
+        }
+        continue
+      }
+      if (dirent.isFile()) {
+        entries.push(relative)
+      }
+    }
+  }
+
+  await visit(sourceDir)
+  return entries
+}
+
 async function copyArtifactGlobSince(root: string, glob: NonNullable<LocalFullRunStep['artifactGlobs']>[number], sinceMs: number) {
   const sourceDir = path.resolve(glob.fromDir)
-  const entries = await readdir(sourceDir).catch(() => [])
+  const entries = await collectArtifactEntries(sourceDir, glob.recursive)
   const copied: string[] = []
   for (const entry of entries.filter(name => glob.pattern.test(name)).sort()) {
     const source = path.join(sourceDir, entry)

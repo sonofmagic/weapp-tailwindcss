@@ -88,7 +88,7 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
         },
         {
           label: 'Vue SFC、脚本动态类、普通 CSS 和图标样式进入 H5 CSS',
-          files: ['dist/build/h5/assets'],
+          files: ['dist/build/h5'],
           contains: ['.i-mdi-home', '.layer-card-v4', '.bg-\\[\\#0000ff\\]', '.rounded-full'],
           notContains: [rawTailwindDirectiveRE],
         },

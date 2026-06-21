@@ -21,11 +21,12 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: before:content-['normal_subpackage_gulp-tailwindcss-v4'] <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
+/* tokens: bg-normal-subpackage-marker <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
+.bg-normal-subpackage-marker {
+  background-color: #2563eb;
+}
+/* tokens: before:content-['normal_subpackage_gulp-tailwindcss-v4'] <= src/sub-normal/pages/index.ttml, src/sub-normal/pages/index.wxml */
 .before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage gulp-tailwindcss-v4';
   content: var(--tw-content);
-}
-.bg-normal-subpackage-marker {
-  background-color: #2563eb;
 }

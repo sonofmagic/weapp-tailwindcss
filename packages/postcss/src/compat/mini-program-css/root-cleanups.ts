@@ -2,7 +2,7 @@ import type postcss from 'postcss'
 import { normalizeModernColorValue } from '../color-mix'
 import { isDisplayP3MediaRule } from './color-gamut'
 import { isBrowserElementPreflightRule } from './predicates'
-import { isUnsupportedBrowserPreflightSelector, isUnsupportedBrowserSelector, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
+import { isUnsupportedBrowserPreflightSelector, isUnsupportedBrowserSelector, MINI_PROGRAM_THEME_SCOPE_SELECTORS, ROOT_SPECIFICITY_PLACEHOLDER_SUFFIXES, SPECIFICITY_PLACEHOLDER_SUFFIXES } from './selectors'
 
 export function removeSpecificityPlaceholders(root: postcss.Root) {
   root.walkRules((rule) => {
@@ -16,6 +16,35 @@ export function removeSpecificityPlaceholders(root: postcss.Root) {
       for (const suffix of SPECIFICITY_PLACEHOLDER_SUFFIXES) {
         if (next.includes(suffix)) {
           next = next.split(suffix).join('')
+        }
+      }
+      if (next !== selector) {
+        changed = true
+      }
+      return next
+    })
+
+    if (changed) {
+      rule.selectors = selectors
+    }
+  })
+}
+
+export function removeRootSpecificityPlaceholders(root: postcss.Root) {
+  root.walkRules((rule) => {
+    if (!rule.selectors || rule.selectors.length === 0) {
+      return
+    }
+
+    let changed = false
+    const selectors = rule.selectors.map((selector) => {
+      let next = selector
+      for (const scopeSelector of MINI_PROGRAM_THEME_SCOPE_SELECTORS) {
+        for (const suffix of ROOT_SPECIFICITY_PLACEHOLDER_SUFFIXES) {
+          const target = `${scopeSelector}${suffix}`
+          if (next.includes(target)) {
+            next = next.split(target).join(scopeSelector)
+          }
         }
       }
       if (next !== selector) {
