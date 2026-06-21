@@ -210,9 +210,11 @@ export interface ClassMutationConfig {
 
 export interface StyleMutationConfig {
   sourceFile: string
+  importerFiles?: string[]
   verifyOutputCandidates?: string[]
   validateApply?: boolean
   validateFunction?: boolean
+  outputStyleNeedle?: (payload: StyleMutationPayload) => string
   outputNeedles?: (payload: StyleMutationPayload) => string[]
   rollbackNeedles?: (payload: StyleMutationPayload) => string[]
   mutate: (source: string, payload: StyleMutationPayload) => string

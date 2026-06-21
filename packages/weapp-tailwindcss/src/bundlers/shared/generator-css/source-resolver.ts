@@ -175,6 +175,7 @@ function shouldResolveSourceSideCssEntry(rawSource: string) {
 
 function shouldPreferTailwindV3SourceSideEntry(rawSource: string, sourceSideEntrySource: unknown) {
   return Boolean(sourceSideEntrySource)
+    && !hasTailwindApplyDirective(rawSource)
     && !hasTailwindSourceDirectives(rawSource, { importFallback: true })
 }
 

@@ -1404,6 +1404,7 @@ describe('bundlers/shared generator css', () => {
 
   it('keeps Tailwind layer blocks from preprocessor sources when extracting fallback sources', async () => {
     const { normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
+    const { hasTailwindApplyDirective } = await import('@/bundlers/shared/generator-css/directives')
     const rawSource = [
       '$brand: #123456;',
       '@use "tailwindcss/base";',
@@ -1417,7 +1418,7 @@ describe('bundlers/shared generator css', () => {
       '',
       '  .btn {',
       '    // use custom raw-btn',
-      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white w-[137px];',
       '  }',
       '}',
       '.card { color: $brand; }',
@@ -1428,11 +1429,12 @@ describe('bundlers/shared generator css', () => {
       '    @apply after:border-none inline-flex items-center gap-2 rounded text-sm font-semibold transition-all;',
       '  }',
       '  .btn {',
-      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white;',
+      '    @apply raw-btn bg-gradient-to-r from-[#9e58e9] to-blue-500 px-2 py-1 text-white w-[137px];',
       '  }',
       '}',
     ].join('\n')
 
+    expect(hasTailwindApplyDirective(rawSource)).toBe(true)
     expect(normalizeTailwindSourceForGenerator(rawSource)).toBe([
       '@import "tailwindcss/base";',
       '@import "tailwindcss/components";',
@@ -9359,6 +9361,148 @@ describe('bundlers/shared generator css', () => {
           css: expect.stringContaining(`@config "${root}/tailwind.config.sub-normal.js";`),
         }),
       ],
+    }))
+  })
+
+  it('prefers current Tailwind v3 raw @apply source over stale source-side style files', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-current-apply-'))
+    const sourceFile = path.join(root, 'src/tailwind.scss')
+    const oldSource = [
+      '@use "tailwindcss/base";',
+      '@use "tailwindcss/components";',
+      '@use "tailwindcss/utilities";',
+      '@layer components {',
+      '  .btn { @apply text-white; }',
+      '}',
+    ].join('\n')
+    const currentSource = oldSource.replace('text-white;', 'text-white w-[137px];')
+    const resolveTailwindV3Source = vi.fn(async (options: any = {}) => ({
+      projectRoot: root,
+      base: options.base ?? root,
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+      config: options.config,
+      sources: [],
+      version: 3,
+    }))
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(sourceFile, oldSource)
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      resolveTailwindV3Source,
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: root,
+        cwd: root,
+        baseFallbacks: [root],
+      })),
+    }))
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+
+    const source = await resolveGeneratorSource(
+      3,
+      {
+        tailwindRuntime: {
+          majorVersion: 3,
+        } as any,
+      },
+      currentSource,
+      sourceFile,
+      {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: sourceFile,
+          },
+        },
+        majorVersion: 3,
+        sourceOptions: {
+          projectRoot: root,
+          cwd: root,
+          sourceFile,
+        },
+      } as any,
+      normalizeGeneratorOptions(),
+    )
+
+    expect(source?.css).toContain('w-[137px]')
+    expect(resolveTailwindV3Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining('w-[137px]'),
+    }))
+  })
+
+  it('resolves Tailwind v3 source-side entries through local style imports', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-local-style-import-'))
+    const appFile = path.join(root, 'src/App.vue')
+    const tailwindFile = path.join(root, 'src/tailwind.scss')
+    const appSource = [
+      '<template><view /></template>',
+      '<style lang="scss">',
+      '@import "./tailwind.scss";',
+      '</style>',
+    ].join('\n')
+    const tailwindSource = [
+      '@use "tailwindcss/base";',
+      '@use "tailwindcss/components";',
+      '@use "tailwindcss/utilities";',
+      '@layer components {',
+      '  .tw-watch-style-case { @apply font-bold; }',
+      '}',
+    ].join('\n')
+    const resolveTailwindV3Source = vi.fn(async (options: any = {}) => ({
+      projectRoot: root,
+      base: options.base ?? root,
+      baseFallbacks: [],
+      css: options.css,
+      dependencies: [],
+      config: options.config,
+      sources: [],
+      version: 3,
+    }))
+    await mkdir(path.dirname(appFile), { recursive: true })
+    await writeFile(appFile, appSource)
+    await writeFile(tailwindFile, tailwindSource)
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      resolveTailwindV3Source,
+      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: root,
+        cwd: root,
+        baseFallbacks: [root],
+      })),
+    }))
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+
+    const source = await resolveGeneratorSource(
+      3,
+      {
+        tailwindRuntime: {
+          majorVersion: 3,
+        } as any,
+      },
+      appSource,
+      path.join(root, 'dist/dev/mp-weixin/app.wxss'),
+      {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: path.join(root, 'dist/dev/mp-weixin/app.wxss'),
+          },
+        },
+        majorVersion: 3,
+        sourceOptions: {
+          projectRoot: root,
+          cwd: root,
+          sourceFile: appFile,
+        },
+      } as any,
+      normalizeGeneratorOptions(),
+    )
+
+    expect(source?.css).toContain('.tw-watch-style-case')
+    expect(source?.css).toContain('@apply font-bold')
+    expect((source as any).__weappTailwindcssMeta?.matchedCssSourceFile).toBe(tailwindFile)
+    expect(resolveTailwindV3Source).toHaveBeenCalledWith(expect.objectContaining({
+      base: path.dirname(tailwindFile),
+      css: expect.stringContaining('.tw-watch-style-case'),
     }))
   })
 

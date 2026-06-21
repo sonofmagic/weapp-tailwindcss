@@ -1891,23 +1891,29 @@ describe('watch-hmr regression cases', () => {
     expect(vueAppSource).toContain('app.use(NutButton)')
   })
 
-  it('keeps the uni-app Vue3 Vite v3 style mutation on the global Tailwind layer entry', () => {
+  it('keeps the uni-app Vue3 Vite v3 style mutation on the Vite style entry', () => {
     const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
     const styleMutation = uniAppCase?.styleMutation
     const source = [
-      '@use "tailwindcss/base";',
-      '',
-      '@layer components {',
-      '  .btn { @apply text-sm; }',
-      '}',
+      '<template><view /></template>',
+      '<style lang="scss">',
+      '@import "./tailwind.scss";',
+      '</style>',
     ].join('\n')
-    const mutated = styleMutation?.mutate(source, createStyleMutationPayload({
+    const payload = createStyleMutationPayload({
       name: 'uni-app-vite-tailwindcss-v3',
-    } as WatchCase))
+    } as WatchCase)
+    const mutated = styleMutation?.mutate(source, payload)
 
-    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'))
-    expect(mutated).toContain('@layer components {\n  .btn { @apply text-sm; }\n\n  .tw-watch-style-uni-app-vite-tailwindcss-v3-')
-    expect(mutated?.trimEnd()).toMatch(/\}\s*$/)
+    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/src/App.vue'))
+    expect(styleMutation?.importerFiles).toBeUndefined()
+    expect(styleMutation?.outputStyleNeedle?.(payload)).toBeUndefined()
+    expect(styleMutation?.outputNeedles?.(payload)).toEqual(['color: #123457'])
+    expect(styleMutation?.rollbackNeedles?.(payload)).toEqual(['color: #123457'])
+    expect(styleMutation?.validateApply).toBe(false)
+    expect(mutated).toContain(payload.styleNeedle)
+    expect(mutated).toContain('color: #123457')
+    expect(mutated).toContain(`${payload.styleNeedle} { color: #123457; }\n</style>`)
   })
 
   it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {
@@ -2541,7 +2547,7 @@ describe('watch-hmr regression cases', () => {
       toRepoPath(watchCase.styleMutation.sourceFile),
     ]))
 
-    expect(styleSources.get('uni-app-vite-tailwindcss-v3')).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss')
+    expect(styleSources.get('uni-app-vite-tailwindcss-v3')).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/App.vue')
     expect(styleSources.get('uni-app-vite-tailwindcss-v4')).toBe('/repo/demo/uni-app-vite-tailwindcss-v4/src/main.css')
     expect(styleSources.get('mpx-tailwindcss-v3')).toBe('/repo/demo/mpx-tailwindcss-v3/src/app.mpx')
     expect(styleSources.get('mpx-tailwindcss-v4')).toBe('/repo/demo/mpx-tailwindcss-v4/src/pages/component/index.mpx')

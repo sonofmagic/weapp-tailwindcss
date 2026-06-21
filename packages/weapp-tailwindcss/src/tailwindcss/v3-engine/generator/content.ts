@@ -42,6 +42,38 @@ export function collectCandidates(candidates: Iterable<string> | undefined) {
   return new Set(candidates ?? [])
 }
 
+function addApplyCandidates(params: string, candidates: Set<string>) {
+  for (const candidate of params.split(/\s+/)) {
+    const normalized = candidate.replace(/!important$/, '').trim()
+    if (normalized) {
+      candidates.add(normalized)
+    }
+  }
+}
+
+function collectApplyCandidatesByText(css: string, candidates: Set<string>) {
+  let index = 0
+  while (index < css.length) {
+    const applyIndex = css.indexOf('@apply', index)
+    if (applyIndex < 0) {
+      break
+    }
+    let paramsStart = applyIndex + '@apply'.length
+    while (paramsStart < css.length && /\s/.test(css[paramsStart]!)) {
+      paramsStart++
+    }
+    const paramsEnd = css.indexOf(';', paramsStart)
+    if (paramsEnd < 0) {
+      break
+    }
+    const params = css.slice(paramsStart, paramsEnd)
+    if (!/[{}]/.test(params)) {
+      addApplyCandidates(params, candidates)
+    }
+    index = paramsEnd + 1
+  }
+}
+
 function collectApplyCandidatesFromCss(css: string) {
   if (!css.includes('@apply')) {
     return []
@@ -50,16 +82,11 @@ function collectApplyCandidatesFromCss(css: string) {
   const candidates = new Set<string>()
   try {
     postcss.parse(css).walkAtRules('apply', (rule) => {
-      for (const candidate of rule.params.split(/\s+/)) {
-        const normalized = candidate.replace(/!important$/, '').trim()
-        if (normalized) {
-          candidates.add(normalized)
-        }
-      }
+      addApplyCandidates(rule.params, candidates)
     })
   }
   catch {
-    // CSS 解析失败时交给后续 Tailwind 流程报错或降级处理。
+    collectApplyCandidatesByText(css, candidates)
   }
   return [...candidates]
 }

@@ -1,9 +1,10 @@
-import type { CliOptions, StyleMutationMetrics, WatchCase, WatchCaseMetrics, WatchProjectGroup, WatchSession } from './types'
+import type { CliOptions, StyleMutationMetrics, WatchCase, WatchCaseMetrics, WatchProjectGroup } from './types'
 import { promises as fs } from 'node:fs'
 import process from 'node:process'
 import { summarizeMemoryDebugSamples, summarizeMemorySamples } from './memory-report'
+import { waitForInitialWarmup } from './mutations/shared'
 import { runStyleMutation } from './mutations/style'
-import { createWatchSession, sleep } from './session'
+import { createWatchSession } from './session'
 import { summarizeMutationMetricsByKind } from './summary'
 import { writeFilePreserveEol } from './text'
 
@@ -17,17 +18,6 @@ export interface StyleOnlyCaseMetrics {
   rollbackMs: number
   rollbackNeedleCleared: boolean
   outputStyle: string
-}
-
-export async function waitForStyleOnlyWarmup(
-  session: WatchSession,
-  stableWindowMs = 2000,
-) {
-  const startedAt = Date.now()
-  while (Date.now() - startedAt < stableWindowMs) {
-    session.ensureRunning()
-    await sleep(200)
-  }
 }
 
 function toStyleOnlyWatchCaseMetrics(
@@ -94,7 +84,7 @@ export async function runStyleOnlyCase(
   )
 
   try {
-    await waitForStyleOnlyWarmup(session)
+    await waitForInitialWarmup(watchCase, options, session, sessionStartedAt)
     const initialReadyMs = Date.now() - sessionStartedAt
     const styleMetrics = await runStyleMutation(
       watchCase,

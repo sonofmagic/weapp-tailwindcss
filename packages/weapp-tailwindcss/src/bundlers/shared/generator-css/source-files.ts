@@ -1,11 +1,14 @@
 import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import {
   hasTailwindSourceDirectives,
+  parseImportRequest,
   resolveCssEntrySource,
 } from './directives'
 
 const SFC_STYLE_BLOCK_RE = /<style\b[^>]*>([\s\S]*?)<\/style>/gi
+const STYLE_IMPORT_EXTENSIONS = ['.css', '.scss', '.sass', '.less', '.styl', '.stylus', '.pcss', '.postcss']
 
 export interface SourceSideCssEntryOptions {
   projectRoot?: string | undefined
@@ -244,6 +247,95 @@ function extractStyleDirectiveSources(source: string) {
   return hasTailwindSourceDirectives(source, { importFallback: true }) ? [source] : []
 }
 
+function extractSfcStyleSources(source: string) {
+  const styleSources: string[] = []
+  SFC_STYLE_BLOCK_RE.lastIndex = 0
+  let match = SFC_STYLE_BLOCK_RE.exec(source)
+  while (match !== null) {
+    styleSources.push(match[1] ?? '')
+    match = SFC_STYLE_BLOCK_RE.exec(source)
+  }
+  return styleSources
+}
+
+function isLocalStyleImportRequest(request: string | undefined) {
+  return typeof request === 'string'
+    && request.length > 0
+    && (request.startsWith('.') || request.startsWith('/'))
+}
+
+function resolveLocalStyleImportFile(request: string, base: string) {
+  const resolved = path.isAbsolute(request) ? request : path.resolve(base, request)
+  const normalized = resolved.replace(/[?#].*$/, '')
+  if (existsSync(normalized)) {
+    return normalized
+  }
+  if (path.extname(normalized)) {
+    return undefined
+  }
+  for (const extension of STYLE_IMPORT_EXTENSIONS) {
+    const candidate = `${normalized}${extension}`
+    if (existsSync(candidate)) {
+      return candidate
+    }
+  }
+  return undefined
+}
+
+function collectLocalStyleImportFiles(source: string, base: string) {
+  const files: string[] = []
+  const sources = extractSfcStyleSources(source)
+  if (sources.length === 0) {
+    sources.push(source)
+  }
+  for (const styleSource of sources) {
+    try {
+      const root = postcss.parse(styleSource)
+      root.walkAtRules('import', (rule) => {
+        const request = parseImportRequest(rule.params)
+        if (!isLocalStyleImportRequest(request)) {
+          return
+        }
+        const file = resolveLocalStyleImportFile(request, base)
+        if (file) {
+          files.push(file)
+        }
+      })
+    }
+    catch {
+    }
+  }
+  return files
+}
+
+function extractStyleDirectiveSourcesDeep(
+  source: string,
+  sourceFile: string,
+  seen: Set<string>,
+): Array<{ source: string, file: string }> {
+  const ownSources = extractStyleDirectiveSources(source)
+  if (ownSources.length > 0) {
+    return ownSources.map(styleSource => ({ source: styleSource, file: sourceFile }))
+  }
+
+  const sources: Array<{ source: string, file: string }> = []
+  const base = path.dirname(sourceFile)
+  for (const importedFile of collectLocalStyleImportFiles(source, base)) {
+    const normalizedImportedFile = path.resolve(importedFile)
+    if (seen.has(normalizedImportedFile)) {
+      continue
+    }
+    seen.add(normalizedImportedFile)
+    try {
+      const importedSource = readFileSync(normalizedImportedFile, 'utf8')
+      sources.push(...extractStyleDirectiveSourcesDeep(importedSource, normalizedImportedFile, seen))
+    }
+    catch {
+    }
+  }
+  return sources
+}
+
 export interface SourceSideCssEntrySource {
   css: string
   config?: string | undefined
@@ -269,12 +361,13 @@ export function resolveSourceSideCssEntrySource(
       if (source === undefined) {
         continue
       }
-      for (const styleSource of extractStyleDirectiveSources(source)) {
-        const cssEntrySource = resolveCssEntrySource(styleSource, path.dirname(sourceFile), resolveOptions)
+      const directiveSources = extractStyleDirectiveSourcesDeep(source, sourceFile, new Set([path.resolve(sourceFile)]))
+      for (const styleSource of directiveSources) {
+        const cssEntrySource = resolveCssEntrySource(styleSource.source, path.dirname(styleSource.file), resolveOptions)
         if (cssEntrySource) {
           return {
             ...cssEntrySource,
-            file: sourceFile,
+            file: styleSource.file,
           }
         }
       }

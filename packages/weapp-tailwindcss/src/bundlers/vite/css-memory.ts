@@ -1,4 +1,5 @@
 import type { RememberedCssSource } from './generate-bundle'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSourceStyleRequest, stripRequestQuery } from '../shared/style-requests'
@@ -208,6 +209,24 @@ export function createViteCssMemory(options: {
     return undefined
   }
 
+  const resolveCurrentStyleSource = async (sourceFile: string) => {
+    const cached = resolveCachedStyleSource(sourceFile)
+    if (cached != null) {
+      return cached
+    }
+    const file = cleanUrl(stripRequestQuery(sourceFile))
+    if (!isSourceStyleRequest(file)) {
+      return undefined
+    }
+    try {
+      return await readFile(file, 'utf8')
+    }
+    catch (error) {
+      options.debug('refresh remembered css source read failed: %s %O', file, error)
+      return undefined
+    }
+  }
+
   const refreshRememberedCssSourceByCurrentFile = async (sourceFile: string) => {
     const file = cleanUrl(sourceFile)
     const normalizedSourceFile = normalizeOutputPathKey(file)
@@ -217,7 +236,7 @@ export function createViteCssMemory(options: {
     if (matchedRememberedSources.length === 0) {
       return
     }
-    const source = resolveCachedStyleSource(file)
+    const source = await resolveCurrentStyleSource(file)
     if (source == null) {
       options.debug('refresh remembered css source skipped: missing cached source for %s', file)
       return
@@ -244,7 +263,7 @@ export function createViteCssMemory(options: {
     if (!rememberedKey || !path.isAbsolute(file)) {
       return undefined
     }
-    const source = resolveCachedStyleSource(file)
+    const source = await resolveCurrentStyleSource(file)
     if (source == null) {
       options.debug('refresh remembered css source before bundle replay skipped: missing cached source for %s', file)
       return undefined

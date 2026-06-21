@@ -27,6 +27,7 @@ import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssA
 import { collectConfiguredTailwindV4CssSourceEntries } from '@/bundlers/vite/generate-bundle/configured-css-sources'
 import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { isFileMatchedByTailwindSourceEntries } from '@/tailwindcss/source-scan'
+import { createViteCssMemory } from '@/bundlers/vite/css-memory'
 
 const TEST_TIMEOUT_MS = 30000
 const SPLIT_WHITESPACE_RE = /\s+/
@@ -3275,6 +3276,32 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).toHaveBeenCalled()
     expect((bundle['pages/index/index.wxss'] as OutputAsset).source.toString()).toContain('.text-red-500')
   }, TEST_TIMEOUT_MS)
+
+  it('refreshes remembered source style files from disk before bundle replay when cache is missing', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-css-memory-refresh-'))
+    createdDirs.push(root)
+    const sourceFile = path.join(root, 'src/tailwind.scss')
+    const oldSource = '.old-style { @apply block; }'
+    const currentSource = '.tw-watch-style-case { @apply font-bold; }'
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(sourceFile, oldSource, 'utf8')
+    const cssMemory = createViteCssMemory({
+      debug: vi.fn(),
+      getSourceCandidateSource: () => undefined,
+    })
+    const remembered = {
+      outputFile: 'app.wxss',
+      rawSource: oldSource,
+      sourceFile,
+    }
+    cssMemory.rememberCssSource(remembered)
+    await writeFile(sourceFile, currentSource, 'utf8')
+
+    const refreshed = await cssMemory.refreshRememberedCssSource(remembered)
+
+    expect(refreshed?.rawSource).toBe(currentSource)
+    expect(refreshed?.sourceFile).toBe(sourceFile)
+  })
 
   it('does not reuse a mismatched vite-generated app css marker for page css assets', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()

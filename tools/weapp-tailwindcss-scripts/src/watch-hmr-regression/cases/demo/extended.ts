@@ -80,18 +80,6 @@ function mutateUniAppViteV3BgObjKey(
   return mutateVueScriptSetupObjectKeyByAnchor(source, anchor, payload)
 }
 
-function mutateTrailingCssLayerBlock(source: string, payload: Parameters<NonNullable<WatchCase['styleMutation']>['mutate']>[1]) {
-  const index = source.lastIndexOf('\n}')
-  if (index < 0) {
-    throw new Error('css layer closing brace not found')
-  }
-  const snippet = createStyleRuleSnippet(payload)
-    .split('\n')
-    .map(line => `  ${line}`)
-    .join('\n')
-  return `${source.slice(0, index)}\n\n${snippet}${source.slice(index)}`
-}
-
 function createSubPackageMutations(
   baseCwd: string,
   options: {
@@ -230,9 +218,17 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       verifyClassLiteralIn: ['js'],
     },
     styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
+      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/App.vue'),
+      outputNeedles() {
+        return ['color: #123457']
+      },
+      rollbackNeedles() {
+        return ['color: #123457']
+      },
+      validateApply: false,
+      validateFunction: false,
       mutate(source, payload) {
-        return mutateTrailingCssLayerBlock(source, payload)
+        return insertBeforeClosingTag(source, '</style>', `${payload.styleNeedle} { color: #123457; }`)
       },
     },
     subPackageMutations: createSubPackageMutations(baseCwd, {
