@@ -255,6 +255,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
       cssEntryFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
       injectMarkerElement: true,
+      reloadAfterCssMutation: true,
       readySelector: 'uni-page[data-page="pages/index/index"] uni-view.content',
       initialMutationDelayMs: 1500,
       mutate(source, payload) {

@@ -116,17 +116,27 @@ async function getElementComputedStyle(page: Page, marker: string) {
   })
 }
 
-async function ensureInjectedMarkerElement(page: Page, marker: string) {
-  await page.evaluate((currentMarker) => {
+async function ensureInjectedMarkerElement(page: Page, marker: string, classLiteral?: string) {
+  await page.evaluate(({ currentMarker, currentClassLiteral }) => {
     const selector = `[data-tw-watch-web="${currentMarker}"]`
-    if (document.querySelector(selector)) {
+    const existed = document.querySelector(selector)
+    if (existed) {
+      if (currentClassLiteral != null) {
+        existed.className = currentClassLiteral
+      }
       return
     }
     const element = document.createElement('div')
     element.dataset['twWatchWeb'] = currentMarker
+    if (currentClassLiteral != null) {
+      element.className = currentClassLiteral
+    }
     element.textContent = `${currentMarker}-web`
     document.body.appendChild(element)
-  }, marker)
+  }, {
+    currentClassLiteral: classLiteral,
+    currentMarker: marker,
+  })
 }
 
 function createWebSourceMutation(config: WebHmrConfig, marker: string) {
@@ -142,6 +152,14 @@ function createWebSourceMutation(config: WebHmrConfig, marker: string) {
       })
     },
   }
+}
+
+function createWebRollbackSourceMutation(config: WebHmrConfig, source: string, marker: string) {
+  return config.mutate(source, {
+    marker,
+    classLiteral: resolveRollbackClassLiteral(config),
+    classVariableName: '__twWatchWebRollbackClass',
+  })
 }
 
 function assertComputedStyle(
@@ -768,7 +786,7 @@ export async function runWebHmr(
       await sleep(config.initialMutationDelayMs!)
     }
     if (config.injectMarkerElement) {
-      await ensureInjectedMarkerElement(page, marker)
+      await ensureInjectedMarkerElement(page, marker, mutation.classLiteral)
     }
     if (config.waitForInitialCompileSettled) {
       await waitForCompileSettled(startedAt, 'initial')
@@ -777,7 +795,10 @@ export async function runWebHmr(
     let lastStyleError = ''
     const reloadTimeoutMs = Math.min(options.timeoutMs, 120_000)
     const reloadAcceptAttemptTimeoutMs = resolveReloadAcceptAttemptTimeout(reloadTimeoutMs, options.pollMs)
-    const createReloadedStyleAcceptWhen = (expectedStyle: ReturnType<typeof resolveExpectedStyle>) => {
+    const createReloadedStyleAcceptWhen = (
+      expectedStyle: ReturnType<typeof resolveExpectedStyle>,
+      classLiteral: string,
+    ) => {
       let lastReloadAttemptAt = 0
       return async () => {
         const now = Date.now()
@@ -795,7 +816,7 @@ export async function runWebHmr(
             timeout: reloadAcceptAttemptTimeoutMs,
           })
           if (config.injectMarkerElement) {
-            await ensureInjectedMarkerElement(page, marker)
+            await ensureInjectedMarkerElement(page, marker, classLiteral)
           }
           await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
             state: 'attached',
@@ -814,9 +835,7 @@ export async function runWebHmr(
 
     const initialReadyMs = Date.now() - startedAt
     const hotUpdateStartedAt = Date.now()
-    if (!config.injectMarkerElement) {
-      await writeFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
-    }
+    await writeFilePreserveEol(config.sourceFile, mutatedSource, sourceOriginal)
     if (config.cssEntryFile && cssEntryOriginal != null) {
       await writeFilePreserveEol(
         config.cssEntryFile,
@@ -826,7 +845,7 @@ export async function runWebHmr(
     }
     const expectedStyle = resolveExpectedStyle(config)
     if (config.reloadAfterCssMutation) {
-      await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle))
+      await waitForCompileSettled(hotUpdateStartedAt, 'hot-update', createReloadedStyleAcceptWhen(expectedStyle, mutation.classLiteral))
     }
     let computedStyle: WebHmrMetrics['computedStyle'] | undefined
     let hotUpdateEffectiveMs = 0
@@ -835,7 +854,7 @@ export async function runWebHmr(
         async () => {
           try {
             if (config.injectMarkerElement) {
-              await ensureInjectedMarkerElement(page, marker)
+              await ensureInjectedMarkerElement(page, marker, mutation.classLiteral)
             }
             await page.locator(`[data-tw-watch-web="${marker}"]`).waitFor({
               state: 'attached',
@@ -865,9 +884,13 @@ export async function runWebHmr(
 
     const rollbackStartedAt = Date.now()
     const rollbackExpectedStyle = resolveRollbackExpectedStyle(config)
-    if (!config.injectMarkerElement) {
-      await writeFilePreserveEol(config.sourceFile, sourceOriginal, sourceOriginal)
-    }
+    await writeFilePreserveEol(
+      config.sourceFile,
+      config.injectMarkerElement
+        ? createWebRollbackSourceMutation(config, sourceOriginal, marker)
+        : sourceOriginal,
+      sourceOriginal,
+    )
     if (config.cssEntryFile && cssEntryOriginal != null) {
       await writeFilePreserveEol(
         config.cssEntryFile,
@@ -878,13 +901,13 @@ export async function runWebHmr(
       )
     }
     if (config.reloadAfterCssMutation) {
-      await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle))
+      await waitForCompileSettled(rollbackStartedAt, 'rollback', createReloadedStyleAcceptWhen(rollbackExpectedStyle, resolveRollbackClassLiteral(config)))
     }
     const rollbackEffectiveMs = await waitFor(
       async () => {
         try {
           if (config.injectMarkerElement) {
-            await ensureInjectedMarkerElement(page, marker)
+            await ensureInjectedMarkerElement(page, marker, rollbackExpectedStyle ? resolveRollbackClassLiteral(config) : undefined)
           }
           if (!config.injectMarkerElement) {
             return await page.locator(`[data-tw-watch-web="${marker}"]`).count() === 0
