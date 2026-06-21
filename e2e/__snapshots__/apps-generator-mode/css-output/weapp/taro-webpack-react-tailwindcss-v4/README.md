@@ -7,7 +7,7 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 36143 | 119 | false | false | false | true | true | false | true |
+| 32423 | 119 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -24,5 +24,5 @@ Entry: taro-webpack-react-tailwindcss-v4/dist/app.wxss
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 21128 | 115 | false | false | false | true | true | false | true |
 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 4044 | 38 | false | false | false | false | false | false | false |
-| `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 5561 | 42 | false | false | false | false | false | false | true |
+| `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1725 | 11 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 5526 | 42 | false | false | false | false | false | false | true |

@@ -183,6 +183,12 @@ interface TailwindInfo {
 const extractionTasks = new Map<string, Promise<ExtractionResult | undefined>>()
 const patchTasks = new Map<string, Promise<void>>()
 
+export function clearTailwindPatchTaskCache(root: string) {
+  const normalizedRoot = path.resolve(root)
+  patchTasks.delete(normalizedRoot)
+  extractionTasks.delete(normalizedRoot)
+}
+
 function normalizePath(root: string, target: string) {
   return path.isAbsolute(target) ? target : path.resolve(root, target)
 }
@@ -525,19 +531,21 @@ async function runTwExtract(root: string): Promise<ExtractionResult | undefined>
 }
 
 export function twPatch(root: string) {
-  let task = patchTasks.get(root)
+  const normalizedRoot = path.resolve(root)
+  let task = patchTasks.get(normalizedRoot)
   if (!task) {
-    task = runTwPatch(root)
-    patchTasks.set(root, task)
+    task = runTwPatch(normalizedRoot)
+    patchTasks.set(normalizedRoot, task)
   }
   return task
 }
 
 export function twExtract(root: string) {
-  let task = extractionTasks.get(root)
+  const normalizedRoot = path.resolve(root)
+  let task = extractionTasks.get(normalizedRoot)
   if (!task) {
-    task = runTwExtract(root)
-    extractionTasks.set(root, task)
+    task = runTwExtract(normalizedRoot)
+    extractionTasks.set(normalizedRoot, task)
   }
   return task
 }

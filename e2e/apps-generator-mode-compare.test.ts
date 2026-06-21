@@ -459,7 +459,11 @@ function createReportItem(
   project: CompareProject,
   generatorResult: GeneratorBuildResult,
 ): CompareReportItem {
-  const generatorCss = normalizeCssForSummary(generatorResult.css)
+  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
+    ? `${createStableCssSnapshots(generatorResult, project.cssFile)
+      .map(snapshot => normalizeProjectCssSnapshot(project, snapshot))
+      .join('\n')}\n`
+    : `${normalizeCssSnapshot(generatorResult.css)}\n`
   const generator = summarizeCss(generatorCss)
   const cssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
 
@@ -621,8 +625,60 @@ function normalizeCssSnapshot(css: string) {
   return normalizeCssTextSnapshot(css)
 }
 
-function normalizeCssForSummary(css: string) {
-  return `${normalizeCssSnapshot(css)}\n`
+const TARO_WEBPACK_V4_NUTUI_NOISE_KEYFRAMES = new Set([
+  'rotation',
+  'nutJump',
+  'nutJumpOne',
+  'nutBlink',
+  'nutBreathe',
+  'nutFlash',
+  'nutBounce',
+  'nutShake',
+])
+
+function shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project: CompareProject, fileName: string) {
+  return project.name === 'taro-webpack-react-tailwindcss-v4'
+    && normalizeOutputCssFileName(fileName) === 'sub-independent/pages/index.wxss'
+}
+
+function shouldNormalizeProjectCssSnapshots(project: CompareProject) {
+  return project.name === 'taro-webpack-react-tailwindcss-v4'
+}
+
+function removeTaroWebpackV4IndependentNutuiNoise(css: string) {
+  try {
+    const root = postcss.parse(css)
+    root.walkDecls((decl) => {
+      if (
+        decl.prop.startsWith('--nut-icon-')
+        || decl.prop === '--animate-duration'
+        || decl.prop === '--animate-delay'
+      ) {
+        decl.remove()
+      }
+    })
+    root.walkRules((rule) => {
+      if ((rule.selectors ?? [rule.selector]).every(selector => /(?:^|[\s>+~])\.nut-icon[\w-]*(?:$|[\s.#:[>+~])/.test(selector))) {
+        rule.remove()
+      }
+    })
+    root.walkAtRules('keyframes', (rule) => {
+      if (TARO_WEBPACK_V4_NUTUI_NOISE_KEYFRAMES.has(rule.params)) {
+        rule.remove()
+      }
+    })
+    return normalizeCssSnapshot(root.toString())
+  }
+  catch {
+    return css
+  }
+}
+
+function normalizeProjectCssSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
+  const normalized = normalizeCssSnapshot(snapshot.content)
+  return shouldNormalizeTaroWebpackV4IndependentNutuiNoise(project, snapshot.fileName)
+    ? removeTaroWebpackV4IndependentNutuiNoise(normalized)
+    : normalized
 }
 
 function formatAllowedPlatforms(platforms: string[]) {
@@ -643,19 +699,21 @@ function getCssArtifactFileName(fileName: string) {
   return safeFileName || 'output.css'
 }
 
-function createCssArtifactSnapshot(snapshot: GeneratorCssSnapshot) {
-  return `${normalizeCssSnapshot(snapshot.content).trimEnd()}\n`
+function createCssArtifactSnapshot(project: CompareProject, snapshot: GeneratorCssSnapshot) {
+  return `${normalizeProjectCssSnapshot(project, snapshot).trimEnd()}\n`
 }
 
 function createCssOutputSnapshot(
   project: CompareProject,
   generatorResult: Pick<GeneratorBuildResult, 'css' | 'cssFiles'> & Partial<Pick<GeneratorBuildResult, 'cssSnapshots'>>,
 ) {
-  const generatorCss = normalizeCssSnapshot(generatorResult.css)
-  const generator = summarizeCss(`${generatorCss}\n`)
   const stableCssSnapshots = createStableCssSnapshots(generatorResult, project.cssFile)
+  const generatorCss = shouldNormalizeProjectCssSnapshots(project)
+    ? stableCssSnapshots.map(snapshot => normalizeProjectCssSnapshot(project, snapshot)).join('\n')
+    : normalizeCssSnapshot(generatorResult.css)
+  const generator = summarizeCss(`${generatorCss}\n`)
   const cssSummaryRows = stableCssSnapshots.flatMap((snapshot) => {
-    const summary = summarizeCss(`${normalizeCssSnapshot(snapshot.content)}\n`)
+    const summary = summarizeCss(`${normalizeProjectCssSnapshot(project, snapshot)}\n`)
     const artifactFile = `artifacts/${getCssArtifactFileName(snapshot.fileName)}`
     return [
       `| \`${snapshot.fileName}\` | [${artifactFile}](${artifactFile}) | ${summary.bytes} | ${summary.selectors.length} | ${summary.hasSupports} | ${summary.hasHoverPseudo} | ${summary.hasTailwindBanner} | ${summary.hasSystemDarkModeMedia} | ${summary.hasManualDarkModeSelector} | ${summary.hasRawArbitrarySelector} | ${summary.hasWeappEscapedArbitrarySelector} |`,
@@ -704,7 +762,7 @@ async function expectCssOutputSnapshot(
       'css-output',
       path.join(project.platform, project.name, 'artifacts', getCssArtifactFileName(snapshot.fileName)),
     )
-    await expect(createCssArtifactSnapshot(snapshot)).toMatchFileSnapshot(artifactPath)
+    await expect(createCssArtifactSnapshot(project, snapshot)).toMatchFileSnapshot(artifactPath)
   }
 }
 

@@ -5,7 +5,7 @@ import { Launcher } from '@weapp-vite/miniprogram-automator'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { ensureProjectBuilt } from './projectBuild'
-import { collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
+import { clearTailwindPatchTaskCache, collectCssSnapshots, formatWxml, getProjectCssSnapshotFiles, logE2EError, projectFilter, removeWxmlId, resolveSnapshotFile, twExtract, twPatch, wait } from './shared'
 import { formatRawCssSnapshotText, normalizeCssTextSnapshot } from './snapshotUtils'
 import { collectTokenSourceReports, formatTokenSourceFileReport } from './tokenSourceReports'
 
@@ -66,16 +66,21 @@ async function clearTailwindPatchCaches(root: string, options: { includeBuildOut
     path.resolve(root, '.cache'),
     path.resolve(root, 'node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, 'node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(root, 'src/node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'src/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, 'src/node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(root, 'config/node_modules/.cache/tailwindcss-patch'),
     path.resolve(root, 'config/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(root, 'config/node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(root, '.tw-patch/tailwindcss-target.json'),
     path.resolve(root, 'node_modules/.vite'),
     path.resolve(workspaceRoot, 'node_modules/.cache/tailwindcss-patch'),
     path.resolve(workspaceRoot, 'node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(workspaceRoot, 'node_modules/.cache/@tailwindcss-mangle'),
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/tailwindcss-patch'),
     path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/weapp-tailwindcss'),
+    path.resolve(workspaceRoot, 'packages/weapp-tailwindcss/node_modules/.cache/@tailwindcss-mangle'),
   ])
 
   if (options.includeBuildOutputs) {
@@ -89,6 +94,7 @@ async function clearTailwindPatchCaches(root: string, options: { includeBuildOut
 }
 
 export async function clearProjectBuildState(root: string) {
+  clearTailwindPatchTaskCache(root)
   await clearTailwindPatchCaches(root, { includeBuildOutputs: true })
 }
 

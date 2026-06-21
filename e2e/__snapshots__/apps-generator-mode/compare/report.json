@@ -5712,7 +5712,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 36143,
+      "bytes": 32423,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
