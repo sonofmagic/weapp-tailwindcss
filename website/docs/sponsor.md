@@ -11,7 +11,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 成为 weapp-tailwindcss 的赞助商

@@ -15,7 +15,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 ## AtomGit G-Star 项目毕业认证

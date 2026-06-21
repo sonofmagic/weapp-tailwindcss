@@ -15,7 +15,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # js 中的精确转化与忽略

@@ -14,7 +14,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 生成样式只作用于view和text标签

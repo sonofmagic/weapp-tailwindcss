@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**weapp-tailwindcss** is a Turbo-based monorepo that brings TailwindCSS atomic styling to mini-program (小程序) developers. It provides comprehensive TailwindCSS support for WeChat Mini Programs, Taro, uni-app, remax, rax, mpx, and other mini-program frameworks across webpack, vite, rspack, rollup, rolldown, and gulp build tools.
+**weapp-tailwindcss** is a Turbo-based monorepo that brings TailwindCSS atomic styling to mini-program (小程序) developers. It provides comprehensive TailwindCSS support for WeChat Mini Programs, Taro, uni-app, remax, mpx, and other mini-program frameworks across webpack, vite, rspack, rollup, rolldown, and gulp build tools.
 
 ## Monorepo Structure
 

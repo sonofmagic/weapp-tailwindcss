@@ -17,7 +17,6 @@ keywords:
   - 小程序
   - 微信小程序
   - taro
-  - rax
 ---
 # uni-app CLI Vue3 Vite
 

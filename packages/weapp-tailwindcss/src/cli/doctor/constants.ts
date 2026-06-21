@@ -20,5 +20,4 @@ export const FRAMEWORK_DEPS: Array<[string, string]> = [
   ['@dcloudio/uni-app', 'uni-app'],
   ['@mpxjs/core', 'MPX'],
   ['remax', 'Remax'],
-  ['rax', 'Rax'],
 ]

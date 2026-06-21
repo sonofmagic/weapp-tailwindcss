@@ -11,7 +11,6 @@ import {
 } from '@/tailwindcss/v4'
 import { omitUndefined } from '@/utils/object'
 import { resolveTailwindcssBasedir } from './tailwindcss/basedir'
-import { detectImplicitCssEntries } from './tailwindcss/rax'
 
 export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOptions) {
   const {
@@ -29,10 +28,7 @@ export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOpti
   ctx.tailwindcssBasedir = resolvedTailwindcssBasedir
   logger.debug('tailwindcss basedir resolved: %s', resolvedTailwindcssBasedir)
 
-  let normalizedCssEntries = normalizeCssEntries(rawCssEntries, resolvedTailwindcssBasedir)
-  if (!normalizedCssEntries) {
-    normalizedCssEntries = detectImplicitCssEntries(ctx.appType, resolvedTailwindcssBasedir)
-  }
+  const normalizedCssEntries = normalizeCssEntries(rawCssEntries, resolvedTailwindcssBasedir)
   if (normalizedCssEntries) {
     ctx.cssEntries = normalizedCssEntries
   }

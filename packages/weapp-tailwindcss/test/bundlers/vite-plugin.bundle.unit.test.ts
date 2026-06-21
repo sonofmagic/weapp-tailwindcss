@@ -11411,6 +11411,91 @@ page {
     expect(onUpdate).toHaveBeenCalledWith('retained.wxss', expect.any(String), css)
   })
 
+  it('finalizes retained mini-program css assets with cascade layer specificity placeholders', async () => {
+    const { finalizeMiniProgramCssAssets } = await import('@/bundlers/vite/generate-bundle/final-css-assets')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const bundle = {
+      'retained.wxss': {
+        ...createRollupAsset([
+          '.navbar__items:not(#\\#):not(#\\#){gap:.75rem}',
+          '.icon-\\[mdi--home\\]:not(#n){display:inline-block}',
+        ].join('\n')),
+        fileName: 'retained.wxss',
+      },
+    }
+    const onUpdate = vi.fn()
+    const recordCssAssetResult = vi.fn()
+
+    await finalizeMiniProgramCssAssets(bundle, {
+      cssMatcher: file => file.endsWith('.wxss'),
+      getCssHandlerOptions: file => ({
+        isMainChunk: file === 'app.wxss',
+        majorVersion: 4,
+        postcssOptions: {
+          options: {
+            from: file,
+          },
+        },
+      } as any),
+      isWebGeneratorTarget: false,
+      onUpdate,
+      recordCssAssetResult,
+      styleHandler,
+    })
+
+    const css = (bundle['retained.wxss'] as OutputAsset).source.toString()
+    expect(css).not.toContain(':not(#\\#)')
+    expect(css).not.toContain(':not(#n)')
+    expect(css).toContain('.navbar__items{gap:.75rem}')
+    expect(css).toContain('.icon-\\[mdi--home\\]{display:inline-block}')
+    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(recordCssAssetResult).toHaveBeenCalledWith('retained.wxss', css)
+    expect(onUpdate).toHaveBeenCalledWith('retained.wxss', expect.any(String), css)
+  })
+
+  it('strips cascade layer specificity placeholders from cached mini-program css assets', async () => {
+    const { finalizeMiniProgramCssAssets } = await import('@/bundlers/vite/generate-bundle/final-css-assets')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const bundle = {
+      'cached.wxss': {
+        ...createRollupAsset([
+          '.cached:not(#\\#){color:red}',
+          '.icon-\\[mdi--home\\]:not(#n){display:inline-block}',
+        ].join('\n')),
+        fileName: 'cached.wxss',
+      },
+    }
+    const onUpdate = vi.fn()
+    const recordCssAssetResult = vi.fn()
+
+    await finalizeMiniProgramCssAssets(bundle, {
+      cssMatcher: file => file.endsWith('.wxss'),
+      getCssHandlerOptions: file => ({
+        isMainChunk: file === 'app.wxss',
+        majorVersion: 4,
+        postcssOptions: {
+          options: {
+            from: file,
+          },
+        },
+      } as any),
+      isWebGeneratorTarget: false,
+      lastCssResultByFile: new Map([['cached.wxss', 'cached']]),
+      onUpdate,
+      recordCssAssetResult,
+      styleHandler,
+    })
+
+    const css = (bundle['cached.wxss'] as OutputAsset).source.toString()
+    expect(css).not.toContain(':not(#\\#)')
+    expect(css).not.toContain(':not(#n)')
+    expect(css).toContain('.cached{color:red}')
+    expect(css).toContain('.icon-\\[mdi--home\\]{display:inline-block}')
+    expect(styleHandler).not.toHaveBeenCalled()
+    expect(recordCssAssetResult).toHaveBeenCalledWith('cached.wxss', css)
+    expect(onUpdate).toHaveBeenCalledWith('cached.wxss', expect.any(String), css)
+  })
+
   it('logs css diffs when vite css diff debugging is enabled', async () => {
     const previousDebugCssDiff = process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF
     process.env.WEAPP_TW_VITE_DEBUG_CSS_DIFF = '1'

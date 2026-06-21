@@ -14,7 +14,6 @@ keywords:
   - 小程序
   - 微信小程序
   - uni-app
-  - rax
   - mpx
 ---
 # Taro

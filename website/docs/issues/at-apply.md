@@ -17,7 +17,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 # css 中使用 @apply 警告问题
 

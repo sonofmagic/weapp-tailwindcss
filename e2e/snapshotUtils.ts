@@ -548,8 +548,6 @@ function removeTailwindV4DefaultTokenNoise(root: postcss.Root) {
 
 function normalizeSelectorPart(selector: string) {
   return selector
-    .replaceAll(':not(#\\#)', '')
-    .replaceAll(':not(#n)', '')
     .replace(/(?<![:\\]):(before|after)\b/g, '::$1')
     .trim()
 }

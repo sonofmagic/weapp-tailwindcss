@@ -15,7 +15,11 @@ import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
-import { finalizeMiniProgramCss, pruneMiniProgramGeneratedCss } from '../../shared/css-cleanup'
+import {
+  finalizeMiniProgramCss,
+  pruneMiniProgramGeneratedCss,
+  stripMiniProgramCssSpecificityPlaceholders,
+} from '../../shared/css-cleanup'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap, isCssSourceTraceEnabled } from '../../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../../shared/generated-css-marker'
 import { generateCssByGenerator, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives, isPureLocalCssImportWrapper } from '../../shared/generator-css'
@@ -851,7 +855,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             )
           }
           if (isWebGeneratorTarget || options.generatedCss !== true) {
-            return finalized
+            return isWebGeneratorTarget
+              ? finalized
+              : stripMiniProgramCssSpecificityPlaceholders(finalized)
           }
           try {
             finalized = pruneMiniProgramGeneratedCss(finalized, {
@@ -867,7 +873,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
             })
           }
-          return finalized
+          return stripMiniProgramCssSpecificityPlaceholders(finalized)
         }
         const finalizeMiniProgramUserCssAssetSource = (source: string) => {
           const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
@@ -881,9 +887,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             isTailwindcssV4: runtimeState.tailwindRuntime.majorVersion === 4,
             tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
           })
-          return runtimeState.tailwindRuntime.majorVersion === 4
+          const output = runtimeState.tailwindRuntime.majorVersion === 4
             ? removeTailwindV4StandaloneHostPreflightRule(finalized)
             : finalized
+          return stripMiniProgramCssSpecificityPlaceholders(output)
         }
         const shouldRefreshWebpackSourceCandidates = groupedEntries.css?.length
           || isCssSourceTraceEnabled(compilerOptions)
@@ -1289,10 +1296,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     const source = readCurrentProcessedRawSource()
                     const shouldTransformGeneratedAssetCss = hasTailwindGeneratedAssetCss && !hasGeneratedCssMarker
                     const handledCss = shouldTransformGeneratedAssetCss
-                      ? (await compilerOptions.styleHandler(
-                          source,
-                          cssHandlerOptionsForProcessedAsset,
-                        )).css
+                      ? isWebGeneratorTarget
+                        ? source
+                        : (await compilerOptions.styleHandler(
+                            source,
+                            cssHandlerOptionsForProcessedAsset,
+                          )).css
                       : source
                     const nextCss = stripTrailingLineWhitespace(finalizeCssAssetSource(handledCss, {
                       generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
@@ -1405,10 +1414,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   })
                   const css = finalizeTracedCss(generated
                     ? finalizeCssAssetSource(generated.css, { generatedCss: true })
-                    : finalizeCssAssetSource(
-                        (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
-                        { generatedCss: false },
-                      ))
+                    : isWebGeneratorTarget
+                      ? finalizeCssAssetSource(generatorRawSource, { generatedCss: false })
+                      : finalizeCssAssetSource(
+                          (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
+                          { generatedCss: false },
+                        ))
                   const source = new ConcatSource(css)
 
                   if (generated) {

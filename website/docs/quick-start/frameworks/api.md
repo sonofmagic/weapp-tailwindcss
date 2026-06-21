@@ -15,7 +15,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # Nodejs API
@@ -27,7 +26,7 @@ keywords:
 :::caution
 普通项目推荐接入 `weapp-tailwindcss/vite` 或 `weapp-tailwindcss/webpack`。Node.js API 适合自研构建器、批处理脚本、Gulp 插件封装等场景。
 
-如果你只是普通 `uni-app`、`Taro`、`Mpx`、`Rax` 或原生小程序项目，请优先使用对应框架页的构建器插件。
+如果你只是普通 `uni-app`、`Taro`、`Mpx` 或原生小程序项目，请优先使用对应框架页的构建器插件。
 :::
 
 ## Tailwind CSS 4 前置步骤

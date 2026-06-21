@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-21T16:00:55.197Z",
+  "generatedAt": "2026-06-21T21:23:28.907Z",
   "totals": {
-    "files": 165,
-    "issues": 2
+    "files": 164,
+    "issues": 1
   },
   "coverage": {
     "docs": {
@@ -23,18 +23,12 @@
     }
   },
   "issueTypes": {
-    "few_keywords": 2
+    "few_keywords": 1
   },
   "issues": [
     {
       "type": "few_keywords",
       "file": "migrations/v3.md",
-      "message": "keywords 数量偏少（4）",
-      "scope": "docs"
-    },
-    {
-      "type": "few_keywords",
-      "file": "quick-start/frameworks/rax.md",
       "message": "keywords 数量偏少（4）",
       "scope": "docs"
     }

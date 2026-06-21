@@ -18,7 +18,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 
 # 上下文窗口（Context Window）

@@ -16,7 +16,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 默认盒模型(box-sizing)问题

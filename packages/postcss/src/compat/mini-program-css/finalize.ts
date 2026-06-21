@@ -16,6 +16,7 @@ import {
   removeEmptyAtRules,
   removeRootSpecificityPlaceholders,
   removeSpecificityPlaceholders,
+  removeSpecificityPlaceholdersFromSource,
   removeTailwindContainerMaxWidthMediaRules,
   removeTailwindContainerWidthRules,
   removeUnsupportedBrowserSelectors,
@@ -111,6 +112,6 @@ export function finalizeMiniProgramCss(css: string, options: FinalizeMiniProgram
     return root.toString()
   }
   catch {
-    return cleanedCss
+    return removeSpecificityPlaceholdersFromSource(cleanedCss)
   }
 }

@@ -9,7 +9,13 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
       },
       htmlMatcher: (file: string) => file.endsWith('.html'),
       jsMatcher: (file: string) => file.endsWith('.js'),
-      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      styleHandler: vi.fn(async () => {
+        throw new Error('web target should not use mini-program styleHandler')
+      }),
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+      },
     })
     getCompilerContextMock.mockReturnValue(testState.currentContext)
 
@@ -81,10 +87,16 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
     plugin.apply(compiler as any)
 
     const mergedCss = [
-      '.navbar__brand { color: var(--ifm-navbar-link-color); }',
-      '.home-hero { display: grid; }',
-      '.home-v5 .home-facts { gap: 1rem; }',
-      '.rounded-full { border-radius: calc(infinity * 1px); }',
+      '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+      '@layer theme, base, components, utilities;',
+      '@layer components {',
+      '  .navbar__brand { color: var(--ifm-navbar-link-color); }',
+      '  .navbar__items { gap: .75rem; }',
+      '  .icon-\\[mdi--home\\] { display: inline-block; --svg: url("data:image/svg+xml,%3Csvg%3E"); }',
+      '  .home-hero { display: grid; }',
+      '  .home-v5 .home-facts { gap: 1rem; }',
+      '  .rounded-full { border-radius: calc(infinity * 1px); }',
+      '}',
     ].join('\n')
     currentAssetStore = {
       'index.html': '<div class="bg-[#07c160]"></div>',
@@ -95,11 +107,14 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
 
     expect(testState.currentContext.templateHandler).not.toHaveBeenCalled()
     expect(testState.currentContext.jsHandler).not.toHaveBeenCalled()
-    expect(testState.currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
     expect(updateAsset.mock.calls.some(([file]) => file === 'index.html')).toBe(false)
     expect(updateAsset.mock.calls.some(([file]) => file === 'index.js')).toBe(false)
-    expect(updateAsset.mock.calls.some(([file]) => file === 'index.css')).toBe(false)
-    expect(currentAssetStore['index.css']).toBe(mergedCss)
+    expect(updateAsset.mock.calls.some(([file]) => file === 'index.css')).toBe(true)
+    expect(currentAssetStore['index.css']).toContain('@layer components')
+    expect(currentAssetStore['index.css']).toContain('.navbar__items')
+    expect(currentAssetStore['index.css']).toContain('.icon-\\[mdi--home\\]')
+    expect(currentAssetStore['index.css']).not.toContain(':not(#\\#)')
   })
 
   it('skips processAssets work when webpack reports no assets', async () => {

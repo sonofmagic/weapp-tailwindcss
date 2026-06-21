@@ -17,7 +17,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 # `Tarojs` 中使用 `terser` 压缩代码
 

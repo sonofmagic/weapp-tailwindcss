@@ -8,11 +8,13 @@ export {
 } from './compat/color-mix'
 export {
   finalizeMiniProgramCss,
+  hasMiniProgramCssSpecificityPlaceholders,
   hoistTailwindPreflightBase,
   pruneMiniProgramGeneratedCss,
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,
+  stripMiniProgramCssSpecificityPlaceholders,
 } from './compat/mini-program-css'
 export {
   normalizeMiniProgramPrefixedDeclaration,

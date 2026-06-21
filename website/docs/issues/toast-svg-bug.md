@@ -17,7 +17,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 # H5 端原生 toast 样式偏移问题
 

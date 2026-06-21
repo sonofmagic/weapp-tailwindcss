@@ -11,7 +11,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 旧有uni-app项目升级webpack5指南

@@ -14,7 +14,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # tailwindcss 多上下文与独立分包

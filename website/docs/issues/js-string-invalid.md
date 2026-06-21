@@ -17,7 +17,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 # 写在 js 中的 tailwindcss 任意值失效
 

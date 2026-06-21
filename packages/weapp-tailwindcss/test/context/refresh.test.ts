@@ -79,7 +79,7 @@ describe('Context Refresh Mechanism', () => {
   })
 
   it('should work with different app types', async () => {
-    const appTypes: Array<UserDefinedOptions['appType']> = ['taro', 'uni-app', 'uni-app-vite', 'uni-app-x', 'mpx', 'native', 'rax']
+    const appTypes: Array<UserDefinedOptions['appType']> = ['taro', 'uni-app', 'uni-app-vite', 'uni-app-x', 'mpx', 'native']
 
     for (const appType of appTypes) {
       const ctx = getCompilerContext({ appType })

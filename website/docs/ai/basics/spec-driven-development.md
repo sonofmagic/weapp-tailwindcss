@@ -18,7 +18,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 
 # Spec-Driven Development（规范驱动开发）

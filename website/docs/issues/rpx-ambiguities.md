@@ -15,7 +15,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # rpx 任意值颜色或长度单位二义性与解决方案

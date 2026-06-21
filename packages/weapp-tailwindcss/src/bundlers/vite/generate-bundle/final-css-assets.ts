@@ -1,5 +1,9 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext } from './types'
+import {
+  hasMiniProgramCssSpecificityPlaceholders,
+  stripMiniProgramCssSpecificityPlaceholders,
+} from '@/bundlers/shared/css-cleanup'
 
 function readAssetSource(output: OutputAsset) {
   return typeof output.source === 'string'
@@ -8,7 +12,9 @@ function readAssetSource(output: OutputAsset) {
 }
 
 function shouldFinalizeMiniProgramCssAsset(source: string) {
-  return source.includes(':hover') || source.includes('does-not-exist')
+  return source.includes(':hover')
+    || source.includes('does-not-exist')
+    || hasMiniProgramCssSpecificityPlaceholders(source)
 }
 
 export async function finalizeMiniProgramCssAssets(
@@ -37,12 +43,20 @@ export async function finalizeMiniProgramCssAssets(
     if (!options.cssMatcher(file)) {
       continue
     }
-    if (options.lastCssResultByFile?.has(file)) {
-      continue
-    }
 
     const rawSource = readAssetSource(output)
     if (rawSource.trim().length === 0) {
+      continue
+    }
+    if (options.lastCssResultByFile?.has(file)) {
+      const outputCss = stripMiniProgramCssSpecificityPlaceholders(rawSource)
+      if (outputCss !== rawSource) {
+        output.source = outputCss
+        options.recordCssAssetResult?.(file, outputCss)
+        options.onUpdate(file, rawSource, outputCss)
+        options.debug?.('strip mini-program css specificity placeholders: %s bytes=%d', file, outputCss.length)
+        updated++
+      }
       continue
     }
     if (!shouldFinalizeMiniProgramCssAsset(rawSource)) {
@@ -60,14 +74,15 @@ export async function finalizeMiniProgramCssAssets(
       },
       cssPresetEnv: false,
     })
-    if (css === rawSource) {
+    const outputCss = stripMiniProgramCssSpecificityPlaceholders(css)
+    if (outputCss === rawSource) {
       continue
     }
 
-    output.source = css
-    options.recordCssAssetResult?.(file, css)
-    options.onUpdate(file, rawSource, css)
-    options.debug?.('finalize mini-program css asset: %s bytes=%d', file, css.length)
+    output.source = outputCss
+    options.recordCssAssetResult?.(file, outputCss)
+    options.onUpdate(file, rawSource, outputCss)
+    options.debug?.('finalize mini-program css asset: %s bytes=%d', file, outputCss.length)
     updated++
   }
   return updated

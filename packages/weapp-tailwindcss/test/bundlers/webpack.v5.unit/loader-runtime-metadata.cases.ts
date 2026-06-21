@@ -169,4 +169,96 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
     expect(assetStore['app.wxss']?.match(new RegExp(`\\.${generatedClass.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'g'))).toHaveLength(1)
   })
 
+  it('removes cascade layer specificity placeholders from webpack generated mini-program css assets', async () => {
+    testState.currentContext = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        getClassSet: vi.fn(async () => new Set(['icon-[mdi--home]'])),
+        getClassSetSync: vi.fn(() => new Set(['icon-[mdi--home]'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['icon-[mdi--home]']) })),
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            v4: {
+              cssEntries: ['/workspace/src/app.css'],
+            },
+          },
+        },
+      } as any,
+    })
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let assetStore: Record<string, string> = {
+      'app.wxss': [
+        createBundlerGeneratedCssMarker('webpack', '/workspace/src/app.css'),
+        '.navbar__items:not(#\\#):not(#\\#){gap:.75rem}',
+        '.icon-\\[mdi--home\\]:not(#n){display:inline-block}',
+      ].join('\n'),
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [{ id: 'app', hash: 'hash-generated', files: ['app.wxss'] }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        assetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = assetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+
+    expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(assetStore['app.wxss']).not.toContain(':not(#\\#)')
+    expect(assetStore['app.wxss']).not.toContain(':not(#n)')
+    expect(assetStore['app.wxss']).toContain('.navbar__items{gap:.75rem}')
+    expect(assetStore['app.wxss']).toContain('.icon-\\[mdi--home\\]{display:inline-block}')
+  })
+
 })

@@ -14,7 +14,7 @@ describe('defaults getDefaultOptions', () => {
 
     const matcher = options.mainCssChunkMatcher!
 
-    for (const appType of ['uni-app', 'uni-app-vite', 'uni-app-x', 'taro', 'mpx', 'rax', 'remax', 'native', 'weapp-vite', 'kbone'] as const) {
+    for (const appType of ['uni-app', 'uni-app-vite', 'uni-app-x', 'taro', 'mpx', 'remax', 'native', 'weapp-vite', 'kbone'] as const) {
       expect(matcher('app.css', appType)).toBe(false)
       expect(matcher('common/main.css', appType)).toBe(false)
       expect(matcher('bundle.css', appType)).toBe(false)

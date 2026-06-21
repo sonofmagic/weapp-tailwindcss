@@ -30,6 +30,22 @@ export function removeSpecificityPlaceholders(root: postcss.Root) {
   })
 }
 
+export function hasMiniProgramCssSpecificityPlaceholders(source: string) {
+  return SPECIFICITY_PLACEHOLDER_SUFFIXES.some(suffix => source.includes(suffix))
+}
+
+export function stripMiniProgramCssSpecificityPlaceholders(source: string) {
+  let output = source
+  for (const suffix of SPECIFICITY_PLACEHOLDER_SUFFIXES) {
+    if (output.includes(suffix)) {
+      output = output.split(suffix).join('')
+    }
+  }
+  return output
+}
+
+export const removeSpecificityPlaceholdersFromSource = stripMiniProgramCssSpecificityPlaceholders
+
 export function removeRootSpecificityPlaceholders(root: postcss.Root) {
   root.walkRules((rule) => {
     if (!rule.selectors || rule.selectors.length === 0) {

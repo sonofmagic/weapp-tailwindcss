@@ -4,7 +4,7 @@ import { defaultMetaDescription, defaultMetaTitle, siteName, siteUrl, socialImag
 const themeMetadata: NonNullable<ThemeConfig['metadata']> = [
   {
     name: 'keywords',
-    content: 'weapp,小程序,tailwindcss,原子类,uni-app,taro,rax,mpx,native,remax,原生,webpack,plugin,vite,gulp,wxss,wxml',
+    content: 'weapp,小程序,tailwindcss,原子类,uni-app,taro,mpx,native,remax,原生,webpack,plugin,vite,gulp,wxss,wxml',
   },
   {
     name: 'description',

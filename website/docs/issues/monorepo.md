@@ -14,7 +14,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 在 monorepo 中使用

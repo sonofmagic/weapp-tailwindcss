@@ -15,7 +15,6 @@ keywords:
   - 小程序
   - 微信小程序
   - taro
-  - rax
   - mpx
 ---
 # uni-app HBuilderX 使用方式

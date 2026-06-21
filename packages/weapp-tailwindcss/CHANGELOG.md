@@ -349,7 +349,7 @@
 
 - 🐛 **修复全新安装后 Tailwind CSS v3 未自动准备运行时补丁导致的 `rpx` 任意值误判、生成模式 classSet 为空，以及 Vite/JS 任意值类名未转译问题。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
 
-- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认值与 v3 不一致的问题，默认注入 Tailwind CSS v3 兼容默认值，并允许通过 `generator.tailwindcssV3Compatibility: false` 关闭。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
+- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认值与 v3 不一致的问题，默认注入 Tailwind CSS v3 兼容默认值。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
 
 - 🐛 **修正 Tailwind CSS v3 项目的默认生成模式行为：`auto` 会和 Tailwind CSS v4 一样由 weapp-tailwindcss 接管 Tailwind 样式生成，并移除重复的官方 Tailwind PostCSS 链路。** [#890](https://github.com/sonofmagic/weapp-tailwindcss/pull/890) by @sonofmagic
 
@@ -881,7 +881,7 @@
 
 - 🐛 **补齐 Tailwind CSS v4 生成模式升级兼容覆盖，固定 v3/v4 默认值、preflight、space/divide 选择器与新版候选类语法在小程序目标下的输出行为。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
 
-- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认值与 v3 不一致的问题，默认注入 Tailwind CSS v3 兼容默认值，并允许通过 `generator.tailwindcssV3Compatibility: false` 关闭。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
+- 🐛 **修复 Tailwind CSS v4 小程序生成模式默认值与 v3 不一致的问题，默认注入 Tailwind CSS v3 兼容默认值。** [#846](https://github.com/sonofmagic/weapp-tailwindcss/pull/846) by @sonofmagic
 
 ## 5.0.0-next.1
 

@@ -10,7 +10,7 @@ import {
   isPseudoContentInitRule,
   usesTwContentVariable,
 } from './predicates'
-import { removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
+import { removeSpecificityPlaceholders, removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
 import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
@@ -135,6 +135,7 @@ export function pruneMiniProgramGeneratedCss(
   })
 
   removeUnsupportedCascadeLayers(root)
+  removeSpecificityPlaceholders(root)
   removeUnsupportedModernColorDeclarations(root)
   removeTailwindContainerMaxWidthMediaRules(root)
   removeTailwindContainerWidthRules(root)

@@ -236,7 +236,7 @@ export function createDoctorReport(options: DoctorOptions = {}): DoctorReport {
         id: 'framework',
         title: '框架识别',
         status: 'info',
-        message: '未从依赖中识别出 Taro、uni-app、MPX、Remax 或 Rax。',
+        message: '未从依赖中识别出 Taro、uni-app、MPX 或 Remax。',
       })
 
   addCheck(checks, viteConfig || webpackConfig

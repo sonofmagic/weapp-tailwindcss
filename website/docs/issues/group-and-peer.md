@@ -16,7 +16,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # group 和 peer 使用限制

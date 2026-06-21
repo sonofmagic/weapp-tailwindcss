@@ -37,14 +37,6 @@ weapp-tailwindcss 生成器的调用配置。
 
 ***
 
-### tailwindcssV3Compatibility?
-
-> 可选 | **tailwindcssV3Compatibility**: `boolean`
-
-Tailwind CSS v4 小程序生成模式是否注入 v3 默认值兼容层。
-
-***
-
 ### scanSources?
 
 > 可选 | **scanSources**: `boolean | import("tailwindcss-patch").TailwindV4SourcePattern[]`

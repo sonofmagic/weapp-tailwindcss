@@ -11,7 +11,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 小程序 `icon` 解决方案

@@ -10,7 +10,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # Tailwindcss 原子类维护指南

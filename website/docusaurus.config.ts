@@ -195,7 +195,6 @@ const config: Config = {
               new WeappTailwindcss({
                 generator: {
                   target: 'web',
-                  tailwindcssV3Compatibility: false,
                 },
                 tailwindcss: {
                   v4: {

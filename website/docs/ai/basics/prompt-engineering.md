@@ -18,7 +18,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 
 # Prompt Engineering（提示词工程）

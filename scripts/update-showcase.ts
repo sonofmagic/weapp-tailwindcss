@@ -992,7 +992,6 @@ function renderMdx(issue: GitHubIssue, entries: GeneratedEntry[]): string {
     '  - 微信小程序',
     '  - uni-app',
     '  - taro',
-    '  - rax',
     '  - mpx',
     '---',
   ]

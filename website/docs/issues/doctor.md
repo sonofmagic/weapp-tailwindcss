@@ -44,7 +44,7 @@ npx weapp-tailwindcss doctor --cwd ./packages/miniprogram
 | Tailwind 配置 | 检查 `tailwind.config.*` 是否存在 |
 | PostCSS 配置 | 检查 `postcss.config.*` 是否存在 |
 | 生成模式配置 | 检查 v5 项目是否应移除 Tailwind 官方 PostCSS / Vite 生成插件 |
-| 框架依赖 | 识别 Taro、uni-app、MPX、Remax、Rax |
+| 框架依赖 | 识别 Taro、uni-app、MPX、Remax |
 | 构建器配置 | 识别 `vite.config.*` 或 `webpack.config.*` |
 
 ## 输出说明

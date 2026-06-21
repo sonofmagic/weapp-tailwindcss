@@ -18,7 +18,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
 ---
 
 # Vibe Coding（直觉编程）

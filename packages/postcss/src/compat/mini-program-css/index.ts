@@ -12,3 +12,7 @@ export {
   pruneMiniProgramGeneratedCss,
   type PruneMiniProgramGeneratedCssOptions,
 } from './prune-generated'
+export {
+  hasMiniProgramCssSpecificityPlaceholders,
+  stripMiniProgramCssSpecificityPlaceholders,
+} from './root-cleanups'

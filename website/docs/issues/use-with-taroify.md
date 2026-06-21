@@ -15,7 +15,6 @@ keywords:
   - 微信小程序
   - uni-app
   - taro
-  - rax
   - mpx
 ---
 # 和 Taroify 一起使用

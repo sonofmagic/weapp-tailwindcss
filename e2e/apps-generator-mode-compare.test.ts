@@ -164,8 +164,6 @@ function compareText(a: string, b: string) {
 
 function normalizeSelector(selector: string) {
   return selector
-    .replaceAll(':not(#\\#)', '')
-    .replaceAll(':not(#n)', '')
     .replaceAll('::before', ':before')
     .replaceAll('::after', ':after')
     .replace(/\s+/g, ' ')
@@ -554,6 +552,22 @@ function expectSubpackageCssFiles(project: CompareProject, generatorResult: Gene
   }
 }
 
+function expectNoMiniProgramSpecificityPlaceholders(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  const snapshots = generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots
+    : [{ fileName: project.cssFile, content: generatorResult.css }]
+  for (const snapshot of snapshots) {
+    expect(
+      snapshot.content,
+      `${project.name} ${snapshot.fileName} should not include cascade layer specificity placeholders`,
+    ).not.toMatch(/:not\(#(?:\\#|n)\)/)
+  }
+  expect(
+    generatorResult.css,
+    `${project.name} generated css should not include cascade layer specificity placeholders`,
+  ).not.toMatch(/:not\(#(?:\\#|n)\)/)
+}
+
 function normalizeError(error: unknown) {
   if (error && typeof error === 'object') {
     const maybeError = error as {
@@ -595,6 +609,7 @@ async function createProjectReport(
   await options.onPassed?.({
     generatorResult,
   })
+  expectNoMiniProgramSpecificityPlaceholders(project, generatorResult)
 
   return createReportItem(project, generatorResult)
 }
@@ -774,7 +789,7 @@ describe('demo generator mode output', () => {
       '  .before_ccontent-_b_qx_q_B::before { content: "x"; }',
       '}',
       'view,text,:before,:after { box-sizing: border-box; }',
-      '.bg-red-500:not(#\\#):not(#n) { color: red; }',
+      '.bg-red-500 { color: red; }',
       '::-webkit-calendar-picker-indicator { display: none; }',
       '[hidden]:where(:not([hidden=\'until-found\'])) { display: none; }',
       '.nut-input .weui-input::placeholder { color: gray; }',
@@ -789,6 +804,12 @@ describe('demo generator mode output', () => {
       '.nut-input .weui-input::placeholder',
       '.nut-video video',
       '.prose .a',
+    ])
+  })
+
+  it('does not normalize cascade layer specificity placeholders out of selectors', () => {
+    expect(collectSelectors('.bg-red-500:not(#\\#):not(#n) { color: red; }')).toEqual([
+      '.bg-red-500:not(#\\#):not(#n)',
     ])
   })
 
