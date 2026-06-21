@@ -192,7 +192,8 @@ describe('ci workflows', () => {
       expect.objectContaining({ command: 'pnpm e2e:preprocessor' }),
     ]))
     expect(readText('e2e/preprocessor-source.test.ts')).toContain('@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4')
-    expect(readText('demo/weapp-vite-tailwindcss-v4/app.scss')).toContain('@import "tailwindcss";')
+    expect(readText('demo/weapp-vite-tailwindcss-v4/app.css')).not.toContain('@import "tailwindcss";')
+    expect(readText('demo/weapp-vite-tailwindcss-v4/tailwind.css')).toContain('@import "tailwindcss";')
   })
 
   it('keeps workflow_dispatch compatibility coverage across OS and Node versions', () => {

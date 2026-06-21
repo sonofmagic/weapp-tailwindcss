@@ -275,7 +275,7 @@ const cases: SourceMutationCase[] = [
     projectRoot: path.resolve(repositoryRoot, 'demo/weapp-vite-tailwindcss-v4'),
     appType: 'native',
     resolveOptions: (root) => {
-      const file = path.resolve(root, 'app.scss')
+      const file = path.resolve(root, 'tailwind.css')
       return {
         tailwindcss: {
           v4: {

@@ -1,6 +1,12 @@
 import path from 'node:path'
 import { findNearestPackageRoot } from '@/context/workspace'
 
+const TAILWIND_V4_CSS_ENTRY_RE = /\.css(?:[?#].*)?$/i
+
+export function isTailwindV4CssEntry(entry: string | undefined): entry is string {
+  return typeof entry === 'string' && TAILWIND_V4_CSS_ENTRY_RE.test(entry.trim())
+}
+
 export function guessBasedirFromEntries(entries?: string[]) {
   if (!entries) {
     return undefined
@@ -11,6 +17,9 @@ export function guessBasedirFromEntries(entries?: string[]) {
     }
     const trimmed = entry.trim()
     if (!trimmed || !path.isAbsolute(trimmed)) {
+      continue
+    }
+    if (!isTailwindV4CssEntry(trimmed)) {
       continue
     }
     const entryDir = path.dirname(trimmed)
@@ -34,6 +43,9 @@ export function normalizeCssEntries(entries: string[] | undefined, anchor: strin
     }
     const trimmed = entry.trim()
     if (trimmed.length === 0) {
+      continue
+    }
+    if (!isTailwindV4CssEntry(trimmed)) {
       continue
     }
     const resolved = path.isAbsolute(trimmed)

@@ -104,6 +104,59 @@ function normalizeCssDeclarationKey(decl: postcss.Declaration) {
   ].join(':')
 }
 
+function parseVarFallbackValue(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed.startsWith('var(') || !trimmed.endsWith(')')) {
+    return undefined
+  }
+  const body = trimmed.slice(4, -1)
+  const commaIndex = body.indexOf(',')
+  if (commaIndex === -1) {
+    return undefined
+  }
+  const customPropertyName = body.slice(0, commaIndex).trim()
+  if (!customPropertyName.startsWith('--') || /\s/.test(customPropertyName)) {
+    return undefined
+  }
+  const fallback = body.slice(commaIndex + 1).trim()
+  return fallback.length > 0 ? fallback : undefined
+}
+
+function isEquivalentVarFallbackDeclaration(
+  incoming: postcss.Declaration,
+  baseDeclarations: Set<string>,
+) {
+  const fallback = parseVarFallbackValue(incoming.value)
+  if (!fallback) {
+    return false
+  }
+  return baseDeclarations.has([
+    incoming.prop.trim(),
+    normalizeCssForContainment(fallback),
+    incoming.important ? '!important' : '',
+  ].join(':'))
+}
+
+function isCoveredByBaseVarFallbackDeclaration(
+  incoming: postcss.Declaration,
+  baseDeclarations: Set<string>,
+) {
+  const normalizedValue = normalizeCssForContainment(incoming.value)
+  const importantSuffix = `:${incoming.important ? '!important' : ''}`
+  const prefix = `${incoming.prop.trim()}:var(`
+  for (const declaration of baseDeclarations) {
+    if (!declaration.startsWith(prefix) || !declaration.endsWith(importantSuffix)) {
+      continue
+    }
+    const value = declaration.slice(incoming.prop.trim().length + 1, declaration.length - importantSuffix.length)
+    const fallback = parseVarFallbackValue(value)
+    if (fallback && normalizeCssForContainment(fallback) === normalizedValue) {
+      return true
+    }
+  }
+  return false
+}
+
 function collectCssRuleDeclarationKeys(rule: postcss.Rule) {
   const keys = new Set<string>()
   for (const node of rule.nodes ?? []) {
@@ -388,7 +441,11 @@ function isCssRuleCoveredByDeclarations(
   }
   const declarations = collectCssRuleDeclarationKeys(rule)
   return declarations.size > 0
-    && [...declarations].every(declaration => baseDeclarations.has(declaration))
+    && collectCssRuleDeclarations(rule).every(decl =>
+      baseDeclarations.has(normalizeCssDeclarationKey(decl))
+      || isEquivalentVarFallbackDeclaration(decl, baseDeclarations)
+      || isCoveredByBaseVarFallbackDeclaration(decl, baseDeclarations),
+    )
 }
 
 export function mergeCoveredCssRuleDeclarations(baseCss: string, css: string) {

@@ -29,11 +29,11 @@ async function listLeakedPreprocessorFiles(root: string) {
   })
 }
 
-describe('preprocessor Tailwind source demo', () => {
-  it('builds Tailwind v4 from a real SCSS root entry without leaking preprocessor output files', async () => {
-    const appScss = await fs.readFile(path.join(demoRoot, 'app.scss'), 'utf8')
-    expect(appScss).toContain('@import "tailwindcss";')
-    expect(appScss).toContain('// Tailwind root entry intentionally lives in SCSS')
+describe('Tailwind v4 CSS source demo', () => {
+  it('builds Tailwind v4 from a plain CSS root entry without leaking preprocessor output files', async () => {
+    const appCss = await fs.readFile(path.join(demoRoot, 'tailwind.css'), 'utf8')
+    expect(appCss).toContain('@import "tailwindcss";')
+    expect(appCss).toContain('Tailwind v4 root entry intentionally uses plain CSS')
 
     await fs.rm(path.join(demoRoot, 'dist'), { recursive: true, force: true })
     await execa('pnpm', ['--filter', '@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4', 'build'], {
@@ -56,9 +56,10 @@ describe('preprocessor Tailwind source demo', () => {
     expect(leakedPreprocessorFiles).toEqual([])
     expect(pageWxss).toContain('.s .a')
     expect(pageWxss).toContain('color: turquoise;')
+    expect(appCss).toContain('Tailwind v4 root entry intentionally uses plain CSS')
+    expect(joined).toContain('.bg-_b_h111111_B')
     expect(joined).not.toContain('@import "tailwindcss"')
     expect(joined).not.toContain('@config "./tailwind.config.js"')
-    expect(joined).not.toContain('// Tailwind root entry intentionally lives in SCSS')
     expect(joined).not.toContain('$preprocessor')
     expect(joined).not.toContain('#{$')
   }, 120_000)

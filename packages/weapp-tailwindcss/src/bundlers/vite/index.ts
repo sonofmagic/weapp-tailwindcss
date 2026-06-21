@@ -18,7 +18,7 @@ import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
-import { normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
+import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
 import { isUniAppXEnabled } from '@/uni-app-x/options'
@@ -180,6 +180,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const file = cleanUrl(id)
     if (!path.isAbsolute(file)) {
+      return
+    }
+    if (!isTailwindV4CssEntry(file)) {
       return
     }
     if (isMissingInternalCssSource(file)) {
@@ -386,6 +389,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       seenRoots.add(basedir)
     }
     for (const cssEntry of opts.tailwindcss?.v4?.cssEntries ?? []) {
+      if (!isTailwindV4CssEntry(cssEntry)) {
+        continue
+      }
       const cssEntryRoot = path.dirname(path.resolve(cssEntry))
       if (seenRoots.has(cssEntryRoot)) {
         continue

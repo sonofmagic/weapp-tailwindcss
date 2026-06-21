@@ -18,11 +18,12 @@ import {
   resolveTailwindV3Source,
   resolveTailwindV3SourceOptionsFromRuntime,
 } from '@/tailwindcss/v3-engine'
+import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
 import { readStaticConfigContent } from '../static-config-content'
 import { addSourceScanDependencies, addSourceScanDependency } from './dependencies'
 
 const VITE_SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
-const VITE_TAILWIND_CSS_ENTRY_PATTERN = '**/*.{css,less,sass,scss,styl,stylus,pcss,postcss}'
+const VITE_TAILWIND_CSS_ENTRY_PATTERN = '**/*.css'
 const tailwindV4CssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
 const tailwindConfigCssEntriesCache = new Map<string, Promise<ResolvedTailwindV4CssEntries | undefined>>()
 
@@ -289,6 +290,7 @@ export function collectExistingCssEntries(options: UserDefinedOptions) {
     ...((options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssEntries ?? []),
   ]
     .filter((item): item is string => typeof item === 'string' && item.length > 0)
+    .filter(isTailwindV4CssEntry)
     .map(item => path.resolve(item))
     .filter(item => existsSync(item))
 }

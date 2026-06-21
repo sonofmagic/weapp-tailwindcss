@@ -82,13 +82,18 @@ describe('bundlers/vite source scan', () => {
 
   it('discovers Tailwind v4 css roots from the Vite root and ignores output files', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
-    const cssEntry = path.join(tempDir, 'app.scss')
+    const cssEntry = path.join(tempDir, 'app.css')
+    const ignoredPreprocessorEntry = path.join(tempDir, 'ignored.scss')
     const distCssEntry = path.join(tempDir, 'dist/app.wxss')
     await mkdir(path.join(tempDir, 'dist'), { recursive: true })
     await writeFile(cssEntry, [
       '@import "tailwindcss" source(none);',
       '@source "./pages/**/*.{vue,ts}";',
       '@source inline("text-[45rpx]");',
+    ].join('\n'))
+    await writeFile(ignoredPreprocessorEntry, [
+      '@import "tailwindcss" source(none);',
+      '@source "./ignored/**/*.{vue,ts}";',
     ].join('\n'))
     await writeFile(distCssEntry, [
       '@import "tailwindcss" source(none);',
@@ -112,15 +117,17 @@ describe('bundlers/vite source scan', () => {
       }
     })
 
-    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const { discoverTailwindV4CssEntries, resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
     const resolved = await resolveViteSourceScanEntries({}, {
       majorVersion: 4,
     } as TailwindcssRuntimeLike, {
       root: tempDir,
       outDir: 'dist',
     })
+    const discovered = await discoverTailwindV4CssEntries(tempDir, 'dist')
 
     expect(fallbackResolve).not.toHaveBeenCalled()
+    expect(discovered).toEqual([cssEntry])
     expect(resolved?.explicit).toBe(true)
     expect(resolved?.entries).toEqual([
       {
@@ -225,7 +232,7 @@ describe('bundlers/vite source scan', () => {
 
   it('reads static Tailwind config content without executing the config loader', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
-    const cssEntry = path.join(tempDir, 'app.scss')
+    const cssEntry = path.join(tempDir, 'app.css')
     const configEntry = path.join(tempDir, 'tailwind.config.js')
     await writeFile(cssEntry, [
       '@import "tailwindcss";',
@@ -281,7 +288,7 @@ describe('bundlers/vite source scan', () => {
 
   it('caches Tailwind v4 css source entries while css and config dependencies are unchanged', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
-    const cssEntry = path.join(tempDir, 'app.scss')
+    const cssEntry = path.join(tempDir, 'app.css')
     const configEntry = path.join(tempDir, 'tailwind.config.js')
     await writeFile(cssEntry, [
       '@import "tailwindcss";',
@@ -594,7 +601,7 @@ describe('bundlers/vite source scan', () => {
 
   it('keeps broad Tailwind v4 fallback when the Vite root differs from the runtime project root', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan')
-    await writeFile(path.join(tempDir, 'app.scss'), [
+    await writeFile(path.join(tempDir, 'app.css'), [
       '@import "tailwindcss" source(none);',
       '@source "./pages/**/*.{vue,ts}";',
     ].join('\n'))

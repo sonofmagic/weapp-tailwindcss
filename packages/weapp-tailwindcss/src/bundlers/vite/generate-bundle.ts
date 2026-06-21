@@ -192,7 +192,46 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const envFlags = resolveGenerateBundleEnvFlags()
     const bundleFiles = Object.keys(bundle)
     const activeViteCssCacheFiles = new Set(bundleFiles.map(normalizeViteCssCacheKey))
-    const configuredTailwindV4CssSourceEntries = collectConfiguredTailwindV4CssSourceEntries(opts, opts.tailwindcssBasedir ?? rootDir)
+    const getConfiguredTailwindV4CssSourceEntries = () =>
+      collectConfiguredTailwindV4CssSourceEntries(opts, opts.tailwindcssBasedir ?? rootDir)
+    const selectTailwindV4GenerationCssSourceForOutput = (outputFile: string, entries: ReturnType<typeof getConfiguredTailwindV4CssSourceEntries>) => {
+      const generationSources = entries.filter(entry => hasTailwindGenerationSource(entry.source))
+      if (generationSources.length <= 1) {
+        return generationSources[0]
+      }
+      const scopedSources = currentSubpackageRoots
+        ? generationSources.filter((entry) => {
+            const outputMatchesSubpackage = isSubpackageOutputFile(outputFile, currentSubpackageRoots!)
+            const sourceMatchesSubpackage = isSubpackageOutputFile(entry.file, currentSubpackageRoots!)
+            if (!outputMatchesSubpackage) {
+              return !sourceMatchesSubpackage
+            }
+            return sourceMatchesSubpackage
+              && [...currentSubpackageRoots!].some(root =>
+                isSubpackageOutputFile(outputFile, new Set([root]))
+                && isSubpackageOutputFile(entry.file, new Set([root])),
+              )
+          })
+        : generationSources
+      const explicitSources = scopedSources.filter(entry =>
+        /@(?:config|source|plugin|custom-variant|theme|utility|variant|apply)\b/.test(entry.source),
+      )
+      const candidates = explicitSources.length === 1 ? explicitSources : scopedSources
+      return candidates.length === 1 ? candidates[0] : undefined
+    }
+    const isRootStyleOutputFile = (file: string) => {
+      const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+      return opts.cssMatcher(normalized) && !normalized.includes('/')
+    }
+    const hasViteProcessedCssResultForSource = (sourceFile: string) => {
+      const sourceKey = normalizeOutputPathKey(sourceFile)
+      for (const [file] of getViteProcessedCssAssetResults?.() ?? []) {
+        if (normalizeOutputPathKey(file) === sourceKey) {
+          return true
+        }
+      }
+      return false
+    }
     const buildCommand = resolvedConfig?.command === 'build'
     const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
     const hasOmittedKnownFiles = hasOmittedKnownBundleFiles(bundleFiles, state.sourceHashByFile.keys())
@@ -387,7 +426,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         sourceRoot,
         getSourceCandidateSource,
         jsImportedCssFiles.has(file) ? getSourceCandidateSources : undefined,
-        configuredTailwindV4CssSourceEntries.map(entry => [entry.file, entry.source] as [string, string]),
+        getConfiguredTailwindV4CssSourceEntries().map(entry => [entry.file, entry.source] as [string, string]),
         debug,
       )
       const rawSource = inferredSourceStyle?.rawSource
@@ -600,10 +639,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             rememberedCssSources = [inferredSfcStyleSource]
           }
         }
-        const hasTailwindRememberedSource = rememberedCssSources.some(remembered =>
-          hasTailwindGenerationSource(remembered.rawSource),
-        )
-        if (!hasTailwindRememberedSource) {
+        const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+        if (!hasUsableRememberedTailwindSource) {
+          const configuredTailwindV4CssSourceEntries = getConfiguredTailwindV4CssSourceEntries()
           const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
             outputFile,
             snapshot,
@@ -616,6 +654,20 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           )
           if (inferredSourceStyle) {
             rememberedCssSources = [inferredSourceStyle]
+          }
+          else if (
+            runtimeState.tailwindRuntime.majorVersion === 4
+            && (outputCssHandlerOptions.isMainChunk || isRootStyleOutputFile(outputFile))
+          ) {
+            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, configuredTailwindV4CssSourceEntries)
+            if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file)) {
+              rememberedCssSources = [{
+                outputFile,
+                rawSource: configuredGenerationSource.source,
+                sourceFile: configuredGenerationSource.file,
+              }]
+              debug('source style source inferred from scoped configured tailwind v4 css source: %s -> %s', outputFile, configuredGenerationSource.file)
+            }
           }
         }
         const rememberedCssSource = mergeRememberedCssSources(rememberedCssSources, outputFile)
@@ -650,6 +702,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
         const hasRememberedTailwindGenerationSource = rememberedCssSource != null
           && hasTailwindGenerationSource(rememberedCssSource.rawSource)
+        const usesConfiguredTailwindV4FallbackSource = runtimeState.tailwindRuntime.majorVersion === 4
+          && rememberedCssSource != null
+          && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
+          && normalizeOutputPathKey(rememberedCssSource.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file)
         const hasSameOutputRememberedTailwindGenerationSource = hasRememberedTailwindGenerationSource
           && rememberedCssSource != null
           && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
@@ -666,7 +722,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? assetSourceFile
           : assetSourceFile
-        const outputCssHandlerOptions = getCssHandlerOptions(outputFile)
         const cssHandlerOptions = vitePipelineCssAsset
           ? {
               ...getCssHandlerOptions(generatorSourceFile),
@@ -853,6 +908,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   previousCss,
                   ...(runtimeState.tailwindRuntime.majorVersion === 4 && vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
                     ? { userRawSource: rawSource }
+                    : {}),
+                  ...(usesConfiguredTailwindV4FallbackSource
+                    ? { restoreLocalCssImports: false }
                     : {}),
                 })
                 if (generated) {

@@ -1,4 +1,4 @@
-// Tailwind root entry intentionally lives in SCSS to cover preprocessor source handling.
+/* Tailwind v4 root entry intentionally uses plain CSS. */
 @import "tailwindcss";
 @import "./third-party-ui.css";
 @custom-variant system-dark {
@@ -15,7 +15,3 @@
 @source "./pages/**/*.{wxml,html,js,ts,jsx,tsx,vue}";
 @source not "./sub-normal/**/*";
 @source not "./sub-independent/**/*";
-
-page {
-  --preprocessor-entry-marker: #1d4ed8;
-}

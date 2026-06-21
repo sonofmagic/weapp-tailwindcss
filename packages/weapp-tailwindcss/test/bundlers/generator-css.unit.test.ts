@@ -5143,10 +5143,10 @@ describe('bundlers/shared generator css', () => {
       resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: '/project',
         baseFallbacks: [],
-        cssEntries: ['/project/app.scss', '/project/sub-normal/pages/index.css'],
+        cssEntries: ['/project/app.css', '/project/sub-normal/pages/index.css'],
         cssSources: [
           {
-            file: '/project/app.scss',
+            file: '/project/app.css',
             base: '/project',
             css: mainCss,
           },
