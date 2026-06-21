@@ -18,6 +18,10 @@ import {
   TAILWIND_BANNER_RE,
 } from './markers'
 
+export function hasMiniProgramTailwindV4PreflightReset(css: string) {
+  return /(?:^|[},])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{[^}]*\bborder\s*:\s*0\s+solid\b/.test(css)
+}
+
 export function finalizeMiniProgramGeneratorCss(
   css: string,
   target: string,
@@ -28,8 +32,11 @@ export function finalizeMiniProgramGeneratorCss(
   if (target !== 'weapp') {
     return css
   }
+  const injectPreflight = majorVersion === 4
+    && options.injectPreflight !== false
+    && !hasMiniProgramTailwindV4PreflightReset(css)
   return finalizeMiniProgramCss(css, {
-    cssPreflight: majorVersion === 4 && options.injectPreflight !== false ? cssPreflight : undefined,
+    cssPreflight: injectPreflight ? cssPreflight : undefined,
     isTailwindcssV4: majorVersion === 4,
     preservePseudoContentInit: majorVersion === 3,
     tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback

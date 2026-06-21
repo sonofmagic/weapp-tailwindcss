@@ -52,6 +52,11 @@ module.exports = defineConfig({
         cssSourceTrace: true,
         rem2rpx: true,
         appType: 'mpx',
+        cssEntries: [
+          path.resolve(__dirname, './src/app.css'),
+          path.resolve(__dirname, './src/sub-normal/pages/index.css'),
+          path.resolve(__dirname, './src/sub-independent/pages/index.css'),
+        ],
       })
     )
   },

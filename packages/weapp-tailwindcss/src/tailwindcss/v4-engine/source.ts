@@ -289,14 +289,18 @@ function normalizeTailwindV4CssEntrySources(
   }
 }
 
-function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | undefined) {
+export function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOptions | undefined) {
   if (!options) {
     return options
   }
 
+  const cssBase = resolveBase(options.base, options.projectRoot ?? options.cwd ?? process.cwd())
   const css = options.css === undefined
     ? undefined
-    : normalizeTailwindV4CssPackageImports(options.css, options.packageName)
+    : normalizeTailwindV4CssPackageImports(
+        normalizeTailwindConfigDirectives(options.css, cssBase),
+        options.packageName,
+      )
   const entrySources = normalizeTailwindV4CssEntrySources(options.cssEntries, options.packageName)
   const combinedCssSources = options.cssSources || entrySources?.cssSources
     ? [
@@ -391,10 +395,10 @@ export function resolveTailwindV4SourceOptionsFromRuntime(
   runtime: TailwindcssRuntimeLike,
 ): TailwindV4SourceOptionsWithSources {
   const tailwindV4Options = readTailwindV4Options(runtime)
-  return omitUndefined({
+  return normalizeTailwindV4SourceOptions(omitUndefined({
     ...resolveEngineTailwindV4SourceOptions(runtime),
     sources: tailwindV4Options?.sources,
-  }) as TailwindV4SourceOptionsWithSources
+  }) as TailwindV4SourceOptionsWithSources) as TailwindV4SourceOptionsWithSources
 }
 
 export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {

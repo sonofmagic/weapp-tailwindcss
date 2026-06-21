@@ -3,21 +3,21 @@ text,
 ::after,
 ::before {
   box-sizing: border-box;
-  border: 0 solid;
   margin: 0;
   padding: 0;
+  border: 0 solid;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
-  --tw-font-weight:;
-  --tw-leading:;
+  --tw-font-weight: ;
+  --tw-leading: ;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
   --tw-inset-shadow: 0 0 #0000;
-  --tw-ring-color:;
+  --tw-ring-color: ;
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-inset:;
+  --tw-ring-inset: ;
   --tw-ring-offset-width: 0px;
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-content: '';
@@ -47,6 +47,10 @@ wx-root-portal-content {
   --color-purple-600: #9333ea;
   --color-pink-300: #f9a8d4;
   --color-pink-500: #ec4899;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
   --spacing: 8rpx;
   --text-base: 32rpx;
   --text-base--line-height: 1.5;
@@ -55,6 +59,8 @@ wx-root-portal-content {
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --radius-md: 12rpx;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
 }
 /* tokens: tw-root <= src/custom-tab-bar/index.mpx */
 /* tokens: -mt-2 <= src/pages/index.mpx */

@@ -307,6 +307,19 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
       return opts.cssMatcher(normalized) && !normalized.includes('/')
     }
+    const resolveSubpackageRootForFile = (file: string | undefined) => {
+      if (!file || !currentSubpackageRoots) {
+        return undefined
+      }
+      return [...currentSubpackageRoots].find(root =>
+        isSubpackageOutputFile(file, new Set([root])),
+      )
+    }
+    const isSameSubpackageScope = (outputFile: string, sourceFile: string | undefined) => {
+      const outputRoot = resolveSubpackageRootForFile(outputFile)
+      const sourceRoot = resolveSubpackageRootForFile(sourceFile)
+      return outputRoot === sourceRoot
+    }
     const normalizeGeneratorUserRawSource = (
       source: string,
       sourceFile: string,
@@ -737,7 +750,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             await refreshRememberedCssSource?.(remembered) ?? remembered,
           ))
         }
-        const hasUsableRememberedTailwindSource = rememberedCssSources.some(remembered =>
+        let hasUsableRememberedTailwindSource = rememberedCssSources.some(remembered =>
           hasTailwindGenerationSource(remembered.rawSource)
           && normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file),
         )
@@ -761,6 +774,17 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }
         }
         let outputCssHandlerOptions = getCssHandlerOptions(outputFile)
+        if (
+          currentSubpackageRoots
+          && rememberedCssSources.length > 0
+          && rememberedCssSources.some(remembered =>
+            configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')))
+            && !isSameSubpackageScope(outputFile, remembered.sourceFile),
+          )
+        ) {
+          rememberedCssSources = []
+          hasUsableRememberedTailwindSource = false
+        }
         if (!hasUsableRememberedTailwindSource) {
           const configuredTailwindV4CssSourceEntries = getConfiguredTailwindV4CssSourceEntries()
           const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(

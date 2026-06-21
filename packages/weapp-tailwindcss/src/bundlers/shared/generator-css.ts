@@ -15,7 +15,7 @@ import { cleanLocalCssImportWrapperTailwindDirectives, isPureLocalCssImportWrapp
 import { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindV4GeneratedCssBySourceOrder, stripTailwindBanner } from './generator-css/markers'
 import { resolveGeneratorSourceEntries, resolveGeneratorSources } from './generator-css/source-resolver'
 import { normalizeCssSourceForCompare } from './generator-css/source-resolver/matching'
-import { extractGeneratedCssForUserLayerSelectors, filterApplyOnlyGeneratedCss, hasUserCssLayerBlocks, removeTailwindV4GeneratorAtRules, shouldFilterApplyOnlyGeneratedCss, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
+import { extractGeneratedCssForUserLayerSelectors, filterApplyOnlyGeneratedCss, hasUserCssLayerBlocks, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRules, shouldFilterApplyOnlyGeneratedCss, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
 import { runWithConcurrency } from './run-tasks'
 
@@ -527,6 +527,24 @@ export async function generateCssByGenerator(
         const missingUserCss = isCssAlreadyRepresentedByMarkers(css, userCssRawSource)
           ? filterExistingCssRules(css, userCss)
           : userCss
+        css = createCssSourceOrderAppend(css, missingUserCss)
+      }
+      else if (
+        hasMatchedCssSourceFile
+        && generated.target === 'weapp'
+        && majorVersion === 4
+        && hasGeneratedMarkers
+      ) {
+        const cleanedUserCssRawSource = removeTailwindV4GeneratedUserCssArtifacts(userCssRawSource)
+        const userCss = await transformGeneratorUserCss(cleanedUserCssRawSource, {
+          generatorTarget: generated.target,
+          generatorStyleOptions,
+          cssUserHandlerOptions,
+          styleHandler,
+          importFallback: generatorOptions.importFallback,
+          processed: userRawSourceProcessed,
+        })
+        const missingUserCss = filterExistingCssRules(css, userCss)
         css = createCssSourceOrderAppend(css, missingUserCss)
       }
       else if (hasMatchedCssSourceFile && generated.target === 'weapp' && hasUserCssLayerBlocks(userCssRawSource)) {

@@ -231,4 +231,30 @@ describe('bundlers/webpack shared helpers', () => {
       '/workspace/src/sub-normal/pages/index.css',
     ]))
   })
+
+  it('scores generated subpackage css assets against registered source css files', async () => {
+    const { scoreTailwindV4CssSourceFileMatch } = await import('@/bundlers/shared/generator-css/source-resolver/matching')
+
+    const matchedScore = scoreTailwindV4CssSourceFileMatch(
+      'sub-normal/pages/index.wxss',
+      '/workspace/demo/src/sub-normal/pages/index.css',
+      {
+        outputRoot: '/workspace/demo/dist',
+        projectRoot: '/workspace/demo',
+        cwd: '/workspace/demo',
+      },
+    )
+    const basenameOnlyScore = scoreTailwindV4CssSourceFileMatch(
+      'sub-normal/pages/index.wxss',
+      '/workspace/demo/src/sub-independent/pages/index.css',
+      {
+        outputRoot: '/workspace/demo/dist',
+        projectRoot: '/workspace/demo',
+        cwd: '/workspace/demo',
+      },
+    )
+
+    expect(matchedScore).toBeGreaterThanOrEqual(1000)
+    expect(basenameOnlyScore).toBeLessThan(1000)
+  })
 })

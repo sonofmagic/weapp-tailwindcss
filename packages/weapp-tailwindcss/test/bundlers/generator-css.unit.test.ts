@@ -71,6 +71,21 @@ describe('bundlers/shared generator css', () => {
     vi.resetModules()
   })
 
+  it('matches hashed css assets back to their Tailwind v4 source css file', async () => {
+    const { scoreTailwindV4CssSourceFileMatch } = await import('@/bundlers/shared/generator-css/source-resolver/matching')
+    const score = scoreTailwindV4CssSourceFileMatch(
+      '/project/dist/wx/styles/app0671d720.wxss',
+      '/project/src/app.css',
+      {
+        outputRoot: '/project/dist/wx',
+        projectRoot: '/project',
+        cwd: '/project',
+      },
+    )
+
+    expect(score).toBeGreaterThan(0)
+  })
+
   it('unwraps Tailwind v4 user layer blocks for mini-program generator user css', async () => {
     const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
@@ -139,6 +154,127 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('@keyframes rotation')
     expect(css).toContain('0%')
     expect(css).toContain('to')
+  })
+
+  it('removes Tailwind v4 generated preflight artifacts before preserving mini-program user css', async () => {
+    const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+
+    const css = await transformGeneratorUserCss([
+      '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-content:""}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-slate-900:#0f172a;--font-sans:ui-sans-serif;--default-font-family:var(--font-sans)}',
+      '/* Deprecated */',
+      '/* Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4) */',
+      'abbr[title]{text-decoration:underline;text-decoration:underline dotted}',
+      'button,input[type="button"],input[type="reset"],input[type="submit"]{appearance:button}',
+      '[hidden]:not([hidden="until-found"]){display:none!important}',
+      '.weapp-tw-user-ui-card{display:inline-flex;color:var(--weapp-tw-user-ui-color,#175e75)}',
+      '.weapp-tw-user-ui-loading{animation:weappTwUserUiRotation 1s linear infinite}',
+      '@keyframes weappTwUserUiRotation{to{transform:rotate(360deg)}}',
+    ].join('\n'), {
+      generatorTarget: 'weapp',
+      generatorStyleOptions: {},
+      cssUserHandlerOptions: {} as any,
+      styleHandler,
+      importFallback: true,
+    })
+
+    expect(styleHandler).toHaveBeenCalledWith(
+      expect.not.stringContaining('Deprecated'),
+      expect.anything(),
+    )
+    expect(css).toContain('.weapp-tw-user-ui-card')
+    expect(css).toContain('.weapp-tw-user-ui-loading')
+    expect(css).toContain('@keyframes weappTwUserUiRotation')
+    expect(css).not.toContain('cssremedy')
+    expect(css).not.toContain('abbr[title]')
+    expect(css).not.toContain('appearance:button')
+    expect(css).not.toContain('[hidden]:not')
+    expect(css).not.toContain('--default-font-family')
+  })
+
+  it('removes post-transform Tailwind v4 preflight fragments without generated css markers', async () => {
+    const { removeTailwindV4GeneratedUserCssArtifacts } = await import('@/bundlers/shared/generator-css/user-css')
+
+    const css = removeTailwindV4GeneratedUserCssArtifacts([
+      '.weapp-tw-user-ui-card {',
+      '  display: inline-flex;',
+      '  color: var(--weapp-tw-user-ui-color, #175e75);',
+      '}',
+      '@keyframes weappTwUserUiRotation {',
+      '  to {',
+      '    transform: rotate(360deg);',
+      '  }',
+      '}',
+      '/* Deprecated */',
+      '/*',
+      '  1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)',
+      '  2. Remove default margins and padding',
+      '  3. Reset all borders.',
+      '*/',
+      '/*',
+      '  1. Use a consistent sensible line-height in all browsers.',
+      '  4. Use the user\'s configured `sans` font-family by default.',
+      '*/',
+      ':host {',
+      '  line-height: 1.5; /* 1 */ /* 2 */',
+      '  tab-size: 4; /* 3 */',
+      '  font-family: --theme(--default-font-family, ui-sans-serif, system-ui, sans-serif); /* 4 */',
+      '  font-feature-settings: --theme(--default-font-feature-settings, normal); /* 5 */',
+      '  font-variation-settings: --theme(--default-font-variation-settings, normal); /* 6 */',
+      '}',
+      '/* Add the correct text decoration in Chrome, Edge, and Safari. */',
+      'abbr[title] {',
+      '  text-decoration: underline;',
+      '  text-decoration: underline dotted;',
+      '}',
+      'button,input[type="button"],input[type="reset"],input[type="submit"] {',
+      '  appearance: button;',
+      '}',
+      '/* Make elements with the HTML hidden attribute stay hidden by default. */',
+      '[hidden]:not([hidden="until-found"]) {',
+      '  display: none !important;',
+      '}',
+    ].join('\n'))
+
+    expect(css).toContain('.weapp-tw-user-ui-card')
+    expect(css).toContain('@keyframes weappTwUserUiRotation')
+    expect(css).not.toContain('Deprecated')
+    expect(css).not.toContain('cssremedy')
+    expect(css).not.toContain(':host')
+    expect(css).not.toContain('--theme(')
+    expect(css).not.toContain('abbr[title]')
+    expect(css).not.toContain('appearance: button')
+    expect(css).not.toContain('[hidden]:not')
+  })
+
+  it('removes Tailwind v4 generated preflight artifacts before appending legacy compat css', async () => {
+    const { appendLegacyCompatCss } = await import('@/bundlers/shared/generator-css/legacy-compat')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const css = await appendLegacyCompatCss(
+      '.bg-page-marker{background-color:#2563eb}',
+      [
+        '/*! tailwindcss v4.3.0 | MIT License | https://tailwindcss.com */',
+        'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-content:""}',
+        ':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif;--default-font-family:var(--font-sans)}',
+        '/* Deprecated */',
+        '/* Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4) */',
+        'abbr[title]{text-decoration:underline;text-decoration:underline dotted}',
+        '.weapp-tw-user-ui-card{display:inline-flex}',
+      ].join('\n'),
+      'weapp',
+      styleHandler,
+      {} as any,
+      {},
+    )
+
+    expect(css).toContain('.bg-page-marker')
+    expect(css).toContain('.weapp-tw-user-ui-card')
+    expect(css).not.toContain('Deprecated')
+    expect(css).not.toContain('cssremedy')
+    expect(css).not.toContain('abbr[title]')
+    expect(css).not.toContain('--default-font-family')
   })
 
   it('keeps matched Tailwind v4 css source user layers when generated css markers exist', async () => {
@@ -787,6 +923,93 @@ describe('bundlers/shared generator css', () => {
       target: 'web',
     }))
     expect(styleHandler).not.toHaveBeenCalled()
+  })
+
+  it('adds a Tailwind v4 root import for web assets that only retain source directives', async () => {
+    const runtimeSet = new Set(['rounded-full', 'bg-[#07c160]', 'text-[22px]'])
+    const rawSource = [
+      '@source inline("rounded-full bg-[#07c160] text-[22px]");',
+      '.home-hero{display:grid}',
+    ].join('\n')
+    const generatedCss = [
+      '.rounded-full{border-radius:9999px}',
+      '.bg-\\[\\#07c160\\]{background-color:#07c160}',
+      '.text-\\[22px\\]{font-size:22px}',
+    ].join('')
+    const generateMock = vi.fn(async ({ target }: { target: string }) => ({
+      css: generatedCss,
+      rawCss: generatedCss,
+      target,
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    const resolveTailwindV4Source = vi.fn(async (options: any = {}) => ({
+      projectRoot: process.cwd(),
+      base: process.cwd(),
+      baseFallbacks: [],
+      css: options.css ?? '@import "tailwindcss";',
+      dependencies: [],
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock({
+        resolveTailwindV4Source,
+      }),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'web',
+          tailwindcssV3Compatibility: false,
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'styles.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'styles.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'styles.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining('@import "tailwindcss" source(none);'),
+    }))
+    expect(result?.css).toContain('.rounded-full')
+    expect(result?.css).toContain('.bg-\\[\\#07c160\\]')
+    expect(result?.css).toContain('.home-hero')
+    expect(result?.css).not.toContain('@source inline')
   })
 
   it('preserves mixed generated and custom bundled css for Tailwind v4 web target fallback', async () => {
@@ -8049,6 +8272,22 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('background-image:linear-gradient(to right, #06b6d4, #3b82f6)')
   })
 
+  it('does not inject Tailwind v4 mini-program preflight twice when generator css already has reset', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = finalizeMiniProgramGeneratorCss([
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-content:""}',
+      ':host,page,.tw-root,wx-root-portal-content{--spacing:8rpx;--default-font-family:var(--font-sans)}',
+      '.flex{display:flex}',
+    ].join('\n'), 'weapp', 4, {
+      border: '0 solid',
+    })
+
+    expect(css.match(/:host/g)).toHaveLength(1)
+    expect(css).not.toContain('font-family:--theme')
+    expect(css).not.toContain('font-family: --theme')
+    expect(css).toContain('.flex')
+  })
+
   it('drops split Tailwind source media fragments before transforming user css', async () => {
     const runtimeSet = new Set(['text-red-500'])
     const rawTailwindCss = '.text-red-500{color:red}'
@@ -9111,12 +9350,75 @@ describe('bundlers/shared generator css', () => {
 
     expect(source?.css).toContain('tailwind.config.sub-normal.js')
     expect(source?.css).not.toContain('tailwind.config.sub-independent.js')
+    expect(source?.css).toContain(`@config "${root}/tailwind.config.sub-normal.js";`)
+    expect(source?.css).not.toContain('@config "../../tailwind.config.sub-normal.js";')
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
       cssSources: [
         expect.objectContaining({
           file: normalCss,
+          css: expect.stringContaining(`@config "${root}/tailwind.config.sub-normal.js";`),
         }),
       ],
+    }))
+  })
+
+  it('normalizes Tailwind v4 @config against cssHandler sourceFile when source-side matching falls back to asset css', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-config-source-file-'))
+    const sourceFile = path.join(root, 'src/sub-normal/pages/index.css')
+    const configFile = path.join(root, 'tailwind.config.sub-normal.js')
+    const rawSource = '@import "tailwindcss" source(none);\n@config "../../../tailwind.config.sub-normal.js";'
+    await mkdir(path.dirname(sourceFile), { recursive: true })
+    await writeFile(sourceFile, rawSource)
+    await writeFile(configFile, 'export default {}')
+    const resolveTailwindV4Source = vi.fn(async (options: any = {}) => ({
+      projectRoot: root,
+      base: options.base ?? root,
+      baseFallbacks: [],
+      css: options.css ?? '@import "tailwindcss";',
+      dependencies: [],
+      version: 4,
+    }))
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: root,
+        cwd: root,
+        base: root,
+        baseFallbacks: [root],
+      })),
+    }))
+    const { resolveGeneratorSource } = await import('@/bundlers/shared/generator-css/source-resolver')
+
+    const source = await resolveGeneratorSource(
+      4,
+      {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+      },
+      rawSource,
+      'sub-normal/pages/index.wxss',
+      {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: sourceFile,
+          },
+        },
+        majorVersion: 4,
+        sourceOptions: {
+          outputRoot: path.join(root, 'dist'),
+          sourceFile,
+        },
+      } as any,
+      normalizeGeneratorOptions(),
+    )
+
+    expect(source?.css).toContain(`@config "${configFile}";`)
+    expect(source?.css).not.toContain('../../../tailwind.config.sub-normal.js')
+    expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      base: path.dirname(sourceFile),
+      css: expect.stringContaining(`@config "${configFile}";`),
     }))
   })
 })

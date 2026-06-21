@@ -21,12 +21,12 @@ wx-root-portal-content {
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
 }
- /* tokens: bg-normal-subpackage-marker <= sub-normal/pages/index.wxml */
+ /*tokens: bg-normal-subpackage-marker <= sub-normal/pages/index.wxml*/
 .before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
- /* tokens: before:content-['normal_subpackage_weapp-vite-tailwindcss-v4'] <= sub-normal/pages/index.wxml */
+ /*tokens: before:content-['normal_subpackage_weapp-vite-tailwindcss-v4'] <= sub-normal/pages/index.wxml*/
 .bg-normal-subpackage-marker {
   background-color: #2563eb;
 }

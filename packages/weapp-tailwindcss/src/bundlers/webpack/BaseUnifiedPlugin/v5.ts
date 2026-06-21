@@ -16,6 +16,7 @@ import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/ta
 import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers } from '../../shared/generator-css'
+import { normalizeTailwindConfigDirectives } from '../../shared/generator-css/directives'
 import { isWatchFileInRuntimeDependencies } from './shared'
 import { setupWebpackV5ProcessAssetsHook } from './v5-assets'
 import { setupWebpackV5Loaders } from './v5-loaders'
@@ -325,7 +326,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
         return
       }
       webpackCssSources.set(file, {
-        css: source.css,
+        css: typeof source.css === 'string'
+          ? normalizeTailwindConfigDirectives(source.css, path.dirname(file))
+          : source.css,
         processed: source.processed,
       })
       currentWebpackCssSourceFiles.add(file)
@@ -353,7 +356,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
         }
       }
     }
-    const prepareWebpackCssSources = () => {
+    const prepareWebpackCssSources = (activeAssetResources: ReadonlySet<string> = new Set()) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       const configuredSourceFiles = new Set<string>()
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
@@ -367,7 +370,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       const activeSourceFiles = new Set([
         ...configuredSourceFiles,
         ...currentWebpackCssSourceModules,
+        ...activeAssetResources,
         ...[...currentWebpackCssSourceFiles].filter(file => currentWebpackCssSourceModules.has(file)),
+        ...[...currentWebpackCssSourceFiles].filter(file => activeAssetResources.has(file)),
       ])
       currentWebpackCssSourceFiles.clear()
       currentWebpackCssSourceModules.clear()

@@ -30,4 +30,5 @@ wx-root-portal-content {
   --tw-content: 'normal subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
+
 /*$vite$:1*/

@@ -44,7 +44,7 @@ import {
   hasTailwindGeneratedCssMarkers,
 } from './markers'
 import { resolveSourceSideCssEntrySource } from './source-files'
-import { createTailwindV4ApplyReferenceSource } from './source-resolver/apply-reference'
+import { createTailwindV4ApplyReferenceSource, createTailwindV4SourceReferenceSource } from './source-resolver/apply-reference'
 import { resolveExistingConfigPath } from './source-resolver/config'
 import { normalizeCssSourceForCompare, scoreTailwindV4CssSourceFileMatch } from './source-resolver/matching'
 import {
@@ -535,7 +535,7 @@ async function resolveTailwindV4SourceSideEntrySource(
       sourceFile: resolvedEntrySource.file,
     },
   )
-  const css = createTailwindV4ApplyReferenceSource(
+  const css = createTailwindV4SourceReferenceSource(
     normalizeConfigDirective(
       prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
       config,
@@ -753,12 +753,17 @@ export async function resolveGeneratorSource(
     resolvedEntrySource.config,
     resolvedEntrySource.configRequest,
     file,
-    resolvedSourceOptions ?? {},
+    omitUndefined({
+      ...(resolvedSourceOptions ?? {}),
+      sourceFile: (resolvedEntrySource as SourceSideCssEntrySource).file
+        ?? resolvedSourceOptions?.sourceFile
+        ?? resolvePostcssSourceFile(cssHandlerOptions),
+    }),
   )
   const sourceBase = resolvedEntrySource === cssEntrySource && config
     ? path.dirname(config)
     : resolvedEntrySource.base
-  const css = createTailwindV4ApplyReferenceSource(
+  const css = createTailwindV4SourceReferenceSource(
     normalizeConfigDirective(
       prependConfigDirective(resolvedEntrySource.css, generatorOptions?.config),
       config,

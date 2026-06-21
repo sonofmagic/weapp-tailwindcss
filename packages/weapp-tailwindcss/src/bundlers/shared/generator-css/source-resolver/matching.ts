@@ -19,6 +19,14 @@ function normalizeMatchPath(file: string) {
   return file.split(path.sep).join('/')
 }
 
+function stripBundlerContentHash(name: string) {
+  return name.replace(/[._-]?[a-f0-9]{6,32}$/i, '')
+}
+
+function getMatchBasename(file: string) {
+  return stripBundlerContentHash(path.basename(getOutputFileWithoutExtension(file.replace(/[?#].*$/, ''))))
+}
+
 function isPathWithinRoot(file: string, root: string) {
   const relative = path.relative(root, file)
   return Boolean(relative) && !relative.startsWith('..') && !path.isAbsolute(relative)
@@ -70,6 +78,8 @@ export function scoreTailwindV4CssSourceFileMatch(
     sourceOptions.projectRoot,
     sourceOptions.cwd,
   ])
+  const outputBasename = getMatchBasename(file)
+  const sourceBasename = getMatchBasename(cssSourceFile)
   let bestScore = 0
   for (const outputBase of outputBases) {
     for (const sourceBase of sourceBases) {
@@ -83,6 +93,9 @@ export function scoreTailwindV4CssSourceFileMatch(
         bestScore = Math.max(bestScore, 1000 + outputBase.length)
       }
     }
+  }
+  if (outputBasename && outputBasename === sourceBasename) {
+    bestScore = Math.max(bestScore, 100 + outputBasename.length)
   }
   return bestScore
 }

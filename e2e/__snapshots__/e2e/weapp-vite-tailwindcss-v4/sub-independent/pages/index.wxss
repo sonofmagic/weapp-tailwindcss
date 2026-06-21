@@ -28,10 +28,8 @@ wx-root-portal-content {
 /*tokens: before:content-['independent_subpackage_weapp-vite-tailwindcss-v4'] <= sub-independent/pages/index.wxml*/
 .before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
-  content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
-/*$vite$:1*/
 /*tokens: bg-independent-subpackage-marker <= sub-independent/pages/index.wxml*/
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
@@ -39,5 +37,8 @@ wx-root-portal-content {
 /*tokens: before:content-['independent_subpackage_weapp-vite-tailwindcss-v4'] <= sub-independent/pages/index.wxml*/
 .before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
+  content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
 }
+
+/*$vite$:1*/
