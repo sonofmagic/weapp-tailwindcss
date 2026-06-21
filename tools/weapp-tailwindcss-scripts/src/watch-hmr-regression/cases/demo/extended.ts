@@ -11,7 +11,7 @@ import {
   mutateVueRefStringLiteral,
   replaceExactSnippet,
 } from '../../text'
-import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTailwindV4JsContentRoundConfigs } from '../round-configs'
+import { buildBaselineHexScriptRoundConfigs, buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTailwindV4JsContentRoundConfigs } from '../round-configs'
 
 const taroWatchEnv = {
   TARO_BUILD_STRICT: '1',
@@ -141,6 +141,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     // uni-app Vite v4 watch 在 same-class-literal 场景会重写 app.wxss；
     // 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
     requireStableGlobalStyleOnSameClassLiteral: false,
+    // uni-app Vite v4 的 CSS 汇总阶段偶发超过全局 500ms 守卫；
+    // 这里保留 case 级预算，避免放宽其它 demo 的处理耗时约束。
+    maxPluginProcessMs: 2000,
     cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4'),
     devScript: 'dev:mp-weixin',
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
@@ -258,6 +261,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     // 这里保留 case 级预算，避免放宽全局 500ms 守卫。
     maxPluginProcessMs: 2000,
     initialMutationDelayMs: 15_000,
+    splitSubPackageWatchSessions: true,
     cwd: path.resolve(baseCwd, 'demo/mpx-tailwindcss-v4'),
     devScript: 'dev:e2e-watch',
     env: mpxWatchEnv,
@@ -346,6 +350,11 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
     }).map(mutation => ({
       ...mutation,
+      templateMutation: {
+        ...mutation.templateMutation,
+        roundConfigs: buildBaselineHexScriptRoundConfigs(),
+        skipExtendedHmr: true,
+      },
       mainStyleMutation: {
         ...mutation.templateMutation,
         sourceFile: mutation.styleMutation.sourceFile,

@@ -216,6 +216,21 @@ describe('bundlers/vite source candidates', () => {
     expect(collector.values()).toEqual(new Set(['bg-[#112233]', 'text-[188rpx]']))
   })
 
+  it('keeps current scan source when stale transform source is merged later', async () => {
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const collector = createSourceCandidateCollector()
+    const id = '/project/pages/index.wxml'
+    const currentSource = '<view class="bg-[#111111]"></view>'
+    const staleTransformSource = '<view class="bg-[#f40909]"></view>'
+
+    await collector.sync(id, currentSource)
+    await collector.merge(id, staleTransformSource)
+
+    expect(collector.values()).toEqual(new Set(['bg-[#111111]', 'bg-[#f40909]']))
+    expect(collector.source(id)).toBe(currentSource)
+    expect(new Map(collector.sources()).get(id)).toBe(currentSource)
+  })
+
   it('collects TSX script string and template candidates from AST literals', async () => {
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
     const collector = createSourceCandidateCollector()

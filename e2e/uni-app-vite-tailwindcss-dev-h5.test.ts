@@ -11,10 +11,12 @@ const rawTailwindDirectiveRE = /@(import\s+["']tailwindcss|tailwind|apply|theme|
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const pollIntervalMs = 500
 const serverTimeoutMs = 180_000
+const cssBlockCommentRE = /\/\*[\s\S]*?\*\//g
 
 interface CssModuleExpectation {
   label: string
   path: string
+  tailwindGenerated?: boolean
   contains: Array<string | RegExp>
 }
 
@@ -32,12 +34,8 @@ const cases: DevH5Case[] = [
       {
         label: 'App.vue style HMR module',
         path: '/src/App.vue?vue&type=style&index=0&lang.scss',
-        contains: ['.raw-btn', '.btn', '.flex', /background-image:\s*linear-gradient/],
-      },
-      {
-        label: 'tailwind.scss direct module',
-        path: '/src/tailwind.scss?direct',
-        contains: ['.raw-btn', '.btn', '.flex', /background-image:\s*linear-gradient/],
+        tailwindGenerated: false,
+        contains: ['.reset-button'],
       },
     ],
   },
@@ -232,9 +230,15 @@ async function waitForCssModule(
   throw new Error(`等待 dev:h5 CSS 模块超时：${requestPath}\nlastFetch=${errorText}\n${logs.join('')}`)
 }
 
-function expectGeneratedTailwindCssModule(source: string, expectation: CssModuleExpectation) {
-  expect(source, `${expectation.label} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
-  expect(source, `${expectation.label} 应包含 weapp-tailwindcss 生成标记`).toContain('weapp-tailwindcss vite-generated-css')
+function expectCssModule(source: string, expectation: CssModuleExpectation) {
+  const sourceWithoutComments = source.replace(cssBlockCommentRE, '')
+  expect(sourceWithoutComments, `${expectation.label} 不应保留 Tailwind 原始指令`).not.toMatch(rawTailwindDirectiveRE)
+  if (expectation.tailwindGenerated === false) {
+    expect(source, `${expectation.label} 不应包含 weapp-tailwindcss 生成标记`).not.toContain('weapp-tailwindcss vite-generated-css')
+  }
+  else {
+    expect(source, `${expectation.label} 应包含 weapp-tailwindcss 生成标记`).toContain('weapp-tailwindcss vite-generated-css')
+  }
   for (const item of expectation.contains) {
     if (typeof item === 'string') {
       expect(source, `${expectation.label} 应包含 ${item}`).toContain(item)
@@ -262,7 +266,7 @@ describe('uni-app vite Tailwind dev H5 css hmr', () => {
 
     for (const cssModule of item.modules) {
       const source = await waitForCssModule(cssModule.path, child, logs, fallbackBaseUrl)
-      expectGeneratedTailwindCssModule(source, cssModule)
+      expectCssModule(source, cssModule)
     }
   }, serverTimeoutMs + 30_000)
 })

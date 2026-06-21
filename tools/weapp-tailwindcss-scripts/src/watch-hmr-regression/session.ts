@@ -99,6 +99,7 @@ const compileSuccessLinePatterns = [
   /UTS编译完毕/u,
   /已重新构建/u,
   /重新构建/u,
+  /^(?:\[\d{2}:\d{2}:\d{2}\]\s*)?build complete$/i,
 ] as const
 
 const compileFailureLinePatterns = [
@@ -174,7 +175,7 @@ export function parsePluginProcessSample(line: string): Omit<PluginProcessSample
   }
 }
 
-function isCompileSuccessLine(line: string) {
+export function isCompileSuccessLine(line: string) {
   const normalized = normalizeLogLine(line)
   for (const pattern of compileSuccessLinePatterns) {
     if (pattern.test(normalized)) {
@@ -683,6 +684,20 @@ function cleanupExistingWatchProcesses(cwd: string) {
   }
 }
 
+function isProcessAlive(pid: number | undefined) {
+  if (pid == null) {
+    return false
+  }
+
+  try {
+    process.kill(pid, 0)
+    return true
+  }
+  catch {
+    return false
+  }
+}
+
 function createWatchSpawnEnv(extra: Record<string, string>) {
   const env = createSpawnEnv(process.env, {
     WEAPP_TW_WATCH_REGRESSION: '1',
@@ -807,6 +822,10 @@ export function createWatchCommandSession(
   const memoryTimer = setInterval(recordMemorySample, 1000)
   memoryTimer.unref?.()
   recordMemorySample()
+  let exitSignal: NodeJS.Signals | null = null
+  child.once('close', (_code, signal) => {
+    exitSignal = signal
+  })
 
   const killWatchProcess = (signal: NodeJS.Signals) => {
     const childPid = child.pid
@@ -922,18 +941,27 @@ export function createWatchCommandSession(
     if (child.exitCode != null) {
       throw new Error(`watch process exited unexpectedly with code ${child.exitCode}`)
     }
+    if (exitSignal != null) {
+      throw new Error(`watch process exited unexpectedly with signal ${exitSignal}`)
+    }
+    if (!isProcessAlive(child.pid)) {
+      throw new Error('watch process exited unexpectedly')
+    }
   }
 
   const stop = async () => {
     const waitForExit = async (timeoutMs: number) => {
       const startedAt = Date.now()
-      while (child.exitCode == null && Date.now() - startedAt < timeoutMs) {
+      while (Date.now() - startedAt < timeoutMs) {
+        if (child.exitCode != null || exitSignal != null) {
+          return true
+        }
         await sleep(100)
       }
-      return child.exitCode != null
+      return child.exitCode != null || exitSignal != null
     }
 
-    if (child.exitCode != null) {
+    if (child.exitCode != null || exitSignal != null) {
       cleanupSessionResources()
       closePipes()
       return

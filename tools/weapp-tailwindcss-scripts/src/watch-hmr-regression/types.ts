@@ -194,6 +194,7 @@ export interface ClassMutationConfig {
   verifyAllClassLiterals?: boolean
   forbidBgHexTruncationIn?: Array<'wxml' | 'js'>
   roundConfigs?: MutationRoundConfig[]
+  skipExtendedHmr?: boolean
   mutate: (source: string, payload: ClassMutationPayload) => string
   mutateCommentCarrier?: (source: string, payload: ClassMutationPayload) => string
 }
@@ -246,6 +247,7 @@ export interface WatchCase {
   scriptMutation: ClassMutationConfig
   styleMutation: StyleMutationConfig
   subPackageMutations?: SubPackageMutationConfig[]
+  splitSubPackageWatchSessions?: boolean
   skipStyleMutation?: boolean
   skipWebHmrInFullRun?: boolean
   webHmr?: WebHmrConfig
@@ -536,7 +538,7 @@ export interface SubPackageMutationMetrics {
   outputWxml: string
   outputJs: string
   globalStyleOutputs: string[]
-  mainStyleHotUpdate: MainStyleHotUpdateMetrics
+  mainStyleHotUpdate?: MainStyleHotUpdateMetrics
   template: ClassMutationMetrics
   style?: StyleMutationMetrics
 }

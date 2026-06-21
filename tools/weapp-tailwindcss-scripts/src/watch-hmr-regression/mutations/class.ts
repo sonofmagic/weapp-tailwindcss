@@ -1005,7 +1005,7 @@ export async function runClassMutation(
   }
 
   let addedClassHmr: AddedClassHmrMetrics | undefined
-  if (mutationKind === 'template' || mutationKind === 'script') {
+  if (!mutation.skipExtendedHmr && (mutationKind === 'template' || mutationKind === 'script')) {
     const result = await runAddedClassMutation({
       watchCase,
       options,
@@ -1027,7 +1027,7 @@ export async function runClassMutation(
 
   let sameClassLiteralHmr: SameClassLiteralHmrMetrics | undefined
   let commentCarrierHmr: CommentCarrierHmrMetrics | undefined
-  if (mutationKind === 'script') {
+  if (!mutation.skipExtendedHmr && mutationKind === 'script') {
     const result = await runSameClassLiteralMutation({
       watchCase,
       options,

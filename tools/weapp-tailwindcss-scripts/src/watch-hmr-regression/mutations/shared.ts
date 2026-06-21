@@ -324,6 +324,9 @@ export async function waitForOutputFilesUpdated(
   session: WatchSession,
   startedAt = Date.now(),
   acceptWhen?: () => Promise<boolean>,
+  diagnostics?: {
+    label?: string
+  },
 ) {
   return (await waitForOutputFilesUpdatedWithDiagnostics(
     watchCase,
@@ -333,6 +336,7 @@ export async function waitForOutputFilesUpdated(
     session,
     startedAt,
     acceptWhen,
+    diagnostics,
   )).elapsedMs
 }
 
@@ -344,6 +348,9 @@ export async function waitForOutputFilesUpdatedWithDiagnostics(
   session: WatchSession,
   startedAt = Date.now(),
   acceptWhen?: () => Promise<boolean>,
+  diagnostics: {
+    label?: string
+  } = {},
 ): Promise<OutputWaitDiagnostics> {
   const acceptsSemanticOutput = async () => {
     if (!acceptWhen) {
@@ -477,7 +484,7 @@ export async function waitForOutputFilesUpdatedWithDiagnostics(
     {
       timeoutMs: options.timeoutMs,
       pollMs: options.pollMs,
-      message: `[${watchCase.label}] output files were not updated after source change: ${files.map(formatPath).join(', ')}`,
+      message: `[${watchCase.label}] ${diagnostics.label ? `${diagnostics.label} ` : ''}output files were not updated after source change: ${files.map(formatPath).join(', ')}`,
       onTick: session.ensureRunning,
     },
     startedAt,

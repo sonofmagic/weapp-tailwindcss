@@ -134,6 +134,7 @@ export async function waitFor(
   startedAt = Date.now(),
 ) {
   while (Date.now() - startedAt <= options.timeoutMs) {
+    options.onTick?.()
     if (await predicate()) {
       return Date.now() - startedAt
     }

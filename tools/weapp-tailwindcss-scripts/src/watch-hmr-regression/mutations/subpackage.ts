@@ -115,16 +115,6 @@ export async function runSubPackageMutation(
     ...mutation.outputStyleCandidates,
     ...mutation.globalStyleCandidates,
   ])]
-  const mainStyleHotUpdate = await runMainStyleHotUpdate(
-    subWatchCase,
-    options,
-    session,
-    'template',
-    mutation.templateMutation,
-    templateSourceOriginal,
-    mutation.globalStyleCandidates,
-  )
-
   const template = await runClassMutation(
     subWatchCase,
     options,
@@ -150,8 +140,25 @@ export async function runSubPackageMutation(
         ])],
       )
 
+  let mainStyleHotUpdate
+  if (mutation.mainStyleMutation) {
+    const mainStyleSourcePath = mutation.mainStyleMutation.sourceFile
+    const mainStyleSourceOriginal = sourceOriginals.get(mainStyleSourcePath)
+      ?? await fs.readFile(mainStyleSourcePath, 'utf8')
+    sourceOriginals.set(mainStyleSourcePath, mainStyleSourceOriginal)
+    mainStyleHotUpdate = await runMainStyleHotUpdate(
+      subWatchCase,
+      options,
+      session,
+      'template',
+      mutation.mainStyleMutation,
+      mainStyleSourceOriginal,
+      mutation.globalStyleCandidates,
+    )
+  }
+
   process.stdout.write(
-    `[watch-hmr] ${subWatchCase.label} mutation=subpackage passed (template=${template.hotUpdateEffectiveMs}ms${style ? `, style=${style.hotUpdateEffectiveMs}ms` : ''})\n`,
+    `[watch-hmr] ${subWatchCase.label} mutation=subpackage passed (template=${template.hotUpdateEffectiveMs}ms${style ? `, style=${style.hotUpdateEffectiveMs}ms` : ''}${mainStyleHotUpdate ? `, main-style=${mainStyleHotUpdate.hotUpdateEffectiveMs}ms` : ''})\n`,
   )
 
   return {
@@ -160,7 +167,7 @@ export async function runSubPackageMutation(
     outputWxml: mutation.outputWxml,
     outputJs: mutation.outputJs,
     globalStyleOutputs,
-    mainStyleHotUpdate,
+    ...(mainStyleHotUpdate ? { mainStyleHotUpdate } : {}),
     template,
     style,
   }

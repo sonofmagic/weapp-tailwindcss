@@ -72,7 +72,7 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
           return null
         }
         const file = cleanUrl(id)
-        const normalizedCode = hasTailwindRootDirectives(code)
+        const normalizedCode = hasTailwindRootDirectives(code) || code.includes('@config')
           ? normalizeTailwindConfigDirectives(code, path.dirname(file))
           : code
         await options.onCssSourceTransform?.(id, normalizedCode)
@@ -93,6 +93,12 @@ export function createRewriteCssImportsPlugins(options: RewriteCssImportsOptions
         }
 
         if (!options.shouldRewrite) {
+          if (normalizedCode !== code) {
+            return {
+              code: normalizedCode,
+              map: null,
+            }
+          }
           return null
         }
         const rewritten = rewriteTailwindcssImportsInCode(normalizedCode, weappTailwindcssDirPosix, {

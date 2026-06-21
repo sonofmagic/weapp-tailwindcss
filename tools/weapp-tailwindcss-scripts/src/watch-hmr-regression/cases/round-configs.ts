@@ -79,6 +79,10 @@ export function buildHexScriptRoundConfigs() {
   ]
 }
 
+export function buildBaselineHexScriptRoundConfigs() {
+  return buildHexScriptRoundConfigs().slice(0, 1)
+}
+
 export function buildTailwindV4JsContentRoundConfigs() {
   return buildHexScriptRoundConfigs().map(roundConfig => ({
     ...roundConfig,

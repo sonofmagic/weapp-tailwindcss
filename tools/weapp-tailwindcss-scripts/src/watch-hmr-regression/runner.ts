@@ -8,6 +8,7 @@ import type {
   WatchCaseMetrics,
   WatchCaseMutationMetrics,
   WatchProjectGroup,
+  WatchSession,
   WatchSummary,
 } from './types'
 import { promises as fs } from 'node:fs'
@@ -62,6 +63,12 @@ export class WatchHmrPartialMetricsError extends Error {
   }
 }
 
+interface SubPackageMutationRunResult {
+  metric: WatchCaseMetrics['subPackageMutationMetrics'][number]
+  memorySamples: ReturnType<WatchSession['memorySamplesSince']>
+  memoryDebugSamples: ReturnType<WatchSession['memoryDebugSamplesSince']>
+}
+
 function resolveCaseSourceFiles(watchCase: WatchCase) {
   return [...new Set([
     watchCase.contentMutation?.sourceFile,
@@ -76,6 +83,52 @@ function resolveCaseSourceFiles(watchCase: WatchCase) {
     watchCase.webHmr?.sourceFile,
     watchCase.webHmr?.cssEntryFile,
   ].filter((item): item is string => Boolean(item)))]
+}
+
+async function runSubPackageMutationInNewSession(
+  watchCase: WatchCase,
+  options: CliOptions,
+  subPackageMutation: NonNullable<WatchCase['subPackageMutations']>[number],
+  sourceOriginals: Map<string, string>,
+): Promise<SubPackageMutationRunResult> {
+  const subWatchCase = createSubPackageWatchCase(watchCase, subPackageMutation)
+  const sessionStartedAt = Date.now()
+  const session = createWatchSession(watchCase.cwd, watchCase.devScript, {
+    quietSass: options.quietSass,
+  }, watchCase.env)
+
+  try {
+    await waitForOutputsReady(subWatchCase, options, session, sessionStartedAt)
+    await waitForInitialWarmup(subWatchCase, options, session, sessionStartedAt)
+    if ((watchCase.initialMutationDelayMs ?? 0) > 0) {
+      process.stdout.write(
+        `[watch-hmr] ${subWatchCase.label} split subpackage settle ${watchCase.initialMutationDelayMs}ms\n`,
+      )
+      await sleep(watchCase.initialMutationDelayMs!)
+      session.ensureRunning()
+    }
+
+    const metric = await runSubPackageMutation(
+      watchCase,
+      options,
+      session,
+      subPackageMutation,
+      sourceOriginals,
+    )
+
+    return {
+      metric,
+      memorySamples: session.memorySamplesSince(sessionStartedAt),
+      memoryDebugSamples: session.memoryDebugSamplesSince(sessionStartedAt),
+    }
+  }
+  catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    throw new Error(`${message}\n[${subWatchCase.label}] recent split subpackage watch logs:\n${session.logs()}`)
+  }
+  finally {
+    await session.stop()
+  }
 }
 
 export async function runCase(watchCase: WatchCase, options: CliOptions): Promise<WatchCaseMetrics> {
@@ -207,15 +260,34 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
       globalStyleOutputs,
     )
 
+    const splitSubPackageMemorySamples = []
+    const splitSubPackageMemoryDebugSamples = []
     const subPackageMutationMetrics = []
-    for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
-      subPackageMutationMetrics.push(await runSubPackageMutation(
-        watchCase,
-        options,
-        session,
-        subPackageMutation,
-        sourceOriginals,
-      ))
+    if (watchCase.splitSubPackageWatchSessions && (watchCase.subPackageMutations?.length ?? 0) > 0) {
+      await session.stop()
+      sessionStopped = true
+      for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+        const result = await runSubPackageMutationInNewSession(
+          watchCase,
+          options,
+          subPackageMutation,
+          sourceOriginals,
+        )
+        subPackageMutationMetrics.push(result.metric)
+        splitSubPackageMemorySamples.push(...result.memorySamples)
+        splitSubPackageMemoryDebugSamples.push(...result.memoryDebugSamples)
+      }
+    }
+    else {
+      for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
+        subPackageMutationMetrics.push(await runSubPackageMutation(
+          watchCase,
+          options,
+          session,
+          subPackageMutation,
+          sourceOriginals,
+        ))
+      }
     }
 
     const shouldRunWebHmr = watchCase.webHmr && !watchCase.skipWebHmrInFullRun
@@ -238,10 +310,12 @@ export async function runCase(watchCase: WatchCase, options: CliOptions): Promis
     ]
     const memorySamples = [
       ...session.memorySamplesSince(sessionStartedAt),
+      ...splitSubPackageMemorySamples,
       ...(webHmrMetrics?.memorySamples ?? []),
     ]
     const memoryDebugSamples = [
       ...session.memoryDebugSamplesSince(sessionStartedAt),
+      ...splitSubPackageMemoryDebugSamples,
       ...(webHmrMetrics?.memoryDebugSamples ?? []),
     ]
     const memorySummary = summarizeMemorySamples(memorySamples)
@@ -820,16 +894,18 @@ function collectPluginProcessBudgetSamples(metrics: WatchCaseMetrics): PluginPro
   }
 
   for (const subPackage of metrics.subPackageMutationMetrics) {
-    samples.push(
-      {
-        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:hot-update`,
-        pluginProcessMs: subPackage.mainStyleHotUpdate.hotUpdatePluginProcessMs,
-      },
-      {
-        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:rollback`,
-        pluginProcessMs: subPackage.mainStyleHotUpdate.rollbackPluginProcessMs,
-      },
-    )
+    if (subPackage.mainStyleHotUpdate) {
+      samples.push(
+        {
+          label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:hot-update`,
+          pluginProcessMs: subPackage.mainStyleHotUpdate.hotUpdatePluginProcessMs,
+        },
+        {
+          label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}:rollback`,
+          pluginProcessMs: subPackage.mainStyleHotUpdate.rollbackPluginProcessMs,
+        },
+      )
+    }
     samples.push(
       ...collectClassMutationPluginProcessBudgetSamples(subPackage.template).map(sample => ({
         ...sample,
@@ -908,10 +984,12 @@ function collectHotUpdateBudgetSamples(metrics: WatchCaseMetrics): HotUpdateBudg
   }
 
   for (const subPackage of metrics.subPackageMutationMetrics) {
-    samples.push({
-      label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
-      hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
-    })
+    if (subPackage.mainStyleHotUpdate) {
+      samples.push({
+        label: `subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+        hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+      })
+    }
     samples.push(
       ...collectClassMutationBudgetSamples(subPackage.template).map(sample => ({
         ...sample,

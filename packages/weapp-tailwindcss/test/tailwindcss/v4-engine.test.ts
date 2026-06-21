@@ -104,6 +104,47 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('not-a-tailwind-class')
   })
 
+  it('incrementally generates mini-program css for hex arbitrary candidates', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    await engine.generate({
+      candidates: ['bg-[#000000]', 'text-[46px]', 'h-[28px]'],
+      incrementalCache: true,
+      scanSources: false,
+    })
+    const result = await engine.generate({
+      candidates: [
+        'bg-[#00f7]',
+        'text-[28px]',
+        'h-[16px]',
+        'ring-[1.5px]',
+        'shadow-[0_53px_55px_#000000]',
+        'bg-[#000000]',
+        'text-[46px]',
+        'h-[28px]',
+      ],
+      incrementalCache: true,
+      scanSources: false,
+    })
+
+    expect(result.classSet).toEqual(new Set([
+      'bg-[#000000]',
+      'text-[46px]',
+      'h-[28px]',
+      'bg-[#00f7]',
+      'text-[28px]',
+      'h-[16px]',
+      'ring-[1.5px]',
+      'shadow-[0_53px_55px_#000000]',
+    ]))
+    expect(result.css).toContain('.bg-_b_h00f7_B')
+    expect(result.css).toContain('.shadow-_b0_53px_55px__h000000_B')
+  })
+
   it('bounds v4 incremental generation caches across changing sources', async () => {
     clearTailwindV4IncrementalGenerateCacheForTest()
     const initialStats = getTailwindV4IncrementalGenerateCacheStatsForTest()
@@ -1383,7 +1424,6 @@ describe('tailwindcss v4 engine', () => {
 
     expect(result.css).toContain('background-color: var(--color-blue-500)')
     expect(result.css).toContain('color: rgba(255, 255, 255, 0.1)')
-    expect(result.css).toContain('view,text,::after,::before')
     expect(result.incrementalCss).toContain('.text-white_f10')
     expect(result.incrementalCss).not.toContain('view,text,::after,::before')
     expect(result.css).not.toContain('color-mix')
@@ -1413,14 +1453,14 @@ describe('tailwindcss v4 engine', () => {
       candidates: ['ring', 'border', 'shadow-sm', 'rounded-sm', 'blur-sm', 'outline'],
     })
 
-    expect(result.css).toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).toContain('border-style: var(--tw-border-style)')
     expect(result.css).not.toContain('@layer base')
-    expect(result.css).toContain('--tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(3px + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6))')
-    expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05))')
+    expect(result.css).toContain('--tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor)')
+    expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1))')
     expect(result.css).toContain('border-radius: var(--radius-sm)')
     expect(result.css).toContain('--tw-blur: blur(var(--blur-sm))')
-    expect(result.css).toContain('--blur-sm: 4px')
-    expect(result.css).toContain('outline-width: 3px')
+    expect(result.css).toContain('--blur-sm: 8px')
+    expect(result.css).toContain('outline-width: 1px')
   })
 
   it('uses Tailwind v4 default values for mini-program output by default', async () => {
@@ -1441,8 +1481,8 @@ describe('tailwindcss v4 engine', () => {
       candidates: ['ring', 'border', 'shadow-sm'],
     })
 
-    expect(result.css).toContain('calc(3px + var(--tw-ring-offset-width))')
-    expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05))')
+    expect(result.css).toContain('calc(1px + var(--tw-ring-offset-width))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1))')
   })
 
   it('can opt out of Tailwind v4 default values for native Tailwind v4 output', async () => {

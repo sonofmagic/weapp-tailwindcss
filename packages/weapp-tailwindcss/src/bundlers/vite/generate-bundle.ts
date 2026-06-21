@@ -42,7 +42,7 @@ import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
 import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
-import { createCandidateSignature, getSnapshotHash, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
+import { createCandidateSignature, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { createSubpackageSourceCandidateScope } from './generate-bundle/source-candidate-scope'
 import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './generate-bundle/subpackages'
 import { createBundleTaskTimer } from './generate-bundle/timing'
@@ -322,6 +322,71 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       sourceFile: string,
       fallbackFile: string,
     ) => normalizeRelativeCssConfigDirectives(source, sourceFile || fallbackFile, outDir, opts)
+    const normalizeSourceCandidatePathKey = (file: string) => normalizeOutputPathKey(path.resolve(file))
+    const resolveCurrentSourceCandidateSource = (file: string) => {
+      const cleanedFile = file.replace(/[?#].*$/, '')
+      const normalizedFile = normalizeOutputPathKey(cleanedFile)
+      const absoluteFile = path.isAbsolute(cleanedFile)
+        ? cleanedFile
+        : path.resolve(rootDir, cleanedFile)
+      const relativeFromOutDir = normalizeOutputPathKey(path.relative(outDir, absoluteFile))
+      const sourceCandidates = [
+        sourceRoot ? path.resolve(sourceRoot, file) : undefined,
+        path.resolve(rootDir, file),
+        path.resolve(path.dirname(outDir), file),
+        path.resolve(outDir, file),
+        !path.isAbsolute(relativeFromOutDir) && !relativeFromOutDir.startsWith('../')
+          ? path.resolve(rootDir, relativeFromOutDir)
+          : undefined,
+        !path.isAbsolute(relativeFromOutDir) && !relativeFromOutDir.startsWith('../')
+          ? path.resolve(path.dirname(outDir), relativeFromOutDir)
+          : undefined,
+        file,
+      ]
+      const explicitSource = sourceCandidates.reduce<string | undefined>((source, candidate) => {
+        if (source || !candidate) {
+          return source
+        }
+        return getSourceCandidateSource?.(candidate)
+      }, undefined)
+      if (explicitSource) {
+        return explicitSource
+      }
+
+      const normalizedSourceCandidates = sourceCandidates
+        .filter((candidate): candidate is string => Boolean(candidate))
+        .map(candidate => ({
+          absolute: path.isAbsolute(candidate),
+          key: normalizeSourceCandidatePathKey(candidate),
+        }))
+      let bestSource: {
+        score: number
+        source: string
+      } | undefined
+      for (const [sourceFile, source] of getSourceCandidateSources?.() ?? []) {
+        const normalizedSourceFile = normalizeSourceCandidatePathKey(sourceFile)
+        let score = 0
+        for (const candidate of normalizedSourceCandidates) {
+          if (normalizedSourceFile === candidate.key) {
+            score = Math.max(score, candidate.absolute ? 100 : 80)
+            continue
+          }
+          if (normalizedSourceFile.endsWith(`/${candidate.key}`)) {
+            score = Math.max(score, candidate.absolute ? 60 : 40)
+          }
+        }
+        if (normalizedSourceFile.endsWith(`/${normalizedFile}`)) {
+          score = Math.max(score, 20)
+        }
+        if (score > (bestSource?.score ?? 0)) {
+          bestSource = {
+            score,
+            source,
+          }
+        }
+      }
+      return bestSource?.source
+    }
     const resolveOutputFileFromMatchedCssSource = (sourceFile: string | undefined) => {
       if (!sourceFile) {
         return undefined
@@ -512,9 +577,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       ...generatorRuntime,
       ...transformRuntime,
     ])
-    const defaultTemplateHandlerOptions = {
-      runtimeSet: transformRuntime,
-    }
     metrics.runtimeSet = measureElapsed(runtimeStart)
     timingDetails['runtime'] = metrics.runtimeSet
     if (forceRuntimeRefreshBySource) {
@@ -565,16 +627,28 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         if (!processFiles.html.has(file)) {
           continue
         }
-        const rawSource = originalEntrySource
-        const cacheKey = file
-        const hashKey = `${file}:html:${transformRuntimeSignature}`
+        const rememberedSource = resolveCurrentSourceCandidateSource(file)
+        const rawSource = rememberedSource ?? originalEntrySource
+        const currentRawDynamicCandidates = collectUnescapedDynamicCandidates(rawSource)
+        const templateRuntime = currentRawDynamicCandidates.length > 0
+          ? new Set([
+              ...transformRuntime,
+              ...currentRawDynamicCandidates,
+            ])
+          : transformRuntime
+        const templateRuntimeSignature = templateRuntime === transformRuntime
+          ? transformRuntimeSignature
+          : createCandidateSignature(templateRuntime)
+        const htmlProcessHash = `${cache.computeHash(rawSource)}:${cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'html'))}:${templateRuntimeSignature}`
+        const cacheKey = `${file}:html:${htmlProcessHash}`
+        const hashKey = cacheKey
         rememberProcessCacheKey(cacheKey, hashKey)
         tasks.push(timeTask('html', () =>
           processCachedTask<string>({
             cache,
             cacheKey,
             hashKey,
-            hash: `${getSnapshotHash(snapshot.sourceHashByFile, file, rawSource)}:${getSnapshotHash(snapshot.runtimeAffectingHashByFile, file, rawSource)}:${transformRuntimeSignature}`,
+            hash: htmlProcessHash,
             applyResult(source) {
               originalSource.source = source
             },
@@ -584,7 +658,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             },
             async transform() {
               const start = performance.now()
-              let transformed = await templateHandler(rawSource, defaultTemplateHandlerOptions)
+              let transformed = await templateHandler(rawSource, {
+                runtimeSet: templateRuntime,
+              })
               let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
               let retryRuntimeSet: Set<string> | undefined
 

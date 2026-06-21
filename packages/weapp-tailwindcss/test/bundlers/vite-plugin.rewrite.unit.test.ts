@@ -449,6 +449,53 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(result?.code).not.toContain('@config')
   })
 
+  it('normalizes relative @config directives before css source registration without tailwind imports', async () => {
+    const onCssSourceTransform = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      onCssSourceTransform,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: true,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    const result = await transform?.(
+      '@config "../tailwind.config.js";\n.foo { color: red; }',
+      '/project/src/app.css',
+    ) as TransformResult
+
+    expect(onCssSourceTransform).toHaveBeenCalledWith(
+      '/project/src/app.css',
+      expect.stringContaining('@config "/project/tailwind.config.js";'),
+    )
+    expect(result?.code).not.toContain('@config')
+    expect(result?.code).toContain('.foo { color: red; }')
+  })
+
+  it('returns normalized @config css when import rewrite is disabled', async () => {
+    const onCssSourceTransform = vi.fn()
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      onCssSourceTransform,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: false,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = getTransformHandler(rewritePlugin!)
+    expect(transform).toBeTypeOf('function')
+
+    const result = await transform?.(
+      '@config "../tailwind.config.js";\n.foo { color: red; }',
+      '/project/src/app.css',
+    ) as TransformResult
+
+    expect(result?.code).toContain('@config "/project/tailwind.config.js";')
+    expect(onCssSourceTransform).toHaveBeenCalledWith(
+      '/project/src/app.css',
+      expect.stringContaining('@config "/project/tailwind.config.js";'),
+    )
+  })
+
   it('returns null for non-css transform requests', async () => {
     const [rewritePlugin] = createRewriteCssImportsPlugins({
       shouldRewrite: true,
@@ -481,7 +528,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(plugins?.map(plugin => plugin.name)).toEqual([`${vitePluginName}:rewrite-css-imports`])
   }, TEST_TIMEOUT_MS)
 
-  it('keeps generator css transform but skips import rewrite when tailwindcss major version is below 4', async () => {
+  it('skips generator css transform and import rewrite when tailwindcss major version is below 4', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = getCurrentContext()
     currentContext.tailwindRuntime.majorVersion = 3
@@ -494,7 +541,6 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
 
     expect(await resolveId?.('tailwindcss', '/src/app.css')).toBeNull()
     const result = await transform?.('@import "tailwindcss";', '/src/app.css') as TransformResult
-    expect(result?.code).toContain('weapp-tailwindcss vite-generated-css')
-    expect(result?.code).not.toContain('/virtual/weapp-tailwindcss')
+    expect(result).toBeNull()
   }, TEST_TIMEOUT_MS)
 })

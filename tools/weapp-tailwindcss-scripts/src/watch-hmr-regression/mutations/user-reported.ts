@@ -183,6 +183,9 @@ export async function runUserReportedHotUpdate(
       )
       return true
     },
+    {
+      label: `user-reported=${config.label} phase=hot-update source=${formatPath(sourcePath)}`,
+    },
   )
   const hotUpdateEffectiveMs = hotUpdateOutputMs
   await waitForCompileSettled(watchCase, options, session, hotUpdateStartedAt)
@@ -220,6 +223,9 @@ export async function runUserReportedHotUpdate(
         }
       }
       return true
+    },
+    {
+      label: `user-reported=${config.label} phase=rollback source=${formatPath(sourcePath)}`,
     },
   )
   const rollbackEffectiveMs = rollbackOutputMs

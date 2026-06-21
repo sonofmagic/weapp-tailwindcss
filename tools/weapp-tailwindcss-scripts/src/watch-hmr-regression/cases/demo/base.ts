@@ -171,6 +171,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
     ],
     globalStyleCandidates: [
+      path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/tailwind.wxss'),
       path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
     ],
     contentMutation: {
@@ -234,6 +235,7 @@ export function buildDemoBaseCases(baseCwd: string): WatchCase[] {
       skipStyleMutation: true,
       globalStyleCandidates(subPackage) {
         return [
+          path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/tailwind.wxss'),
           path.resolve(baseCwd, `demo/weapp-vite-tailwindcss-v4/dist/${subPackage}/pages/index.wxss`),
           path.resolve(baseCwd, 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
         ]

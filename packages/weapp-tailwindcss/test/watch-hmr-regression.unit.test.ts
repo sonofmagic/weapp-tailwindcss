@@ -51,6 +51,7 @@ import {
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/memory-report'
 import {
   createWindowsProcessTreeMemoryScript,
+  isCompileSuccessLine,
   parsePluginProcessSample,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/session'
 import {
@@ -488,7 +489,7 @@ describe('watch-hmr regression text helpers', () => {
     )
 
     expect(attempt).toBe(3)
-    expect(tickCount).toBe(2)
+    expect(tickCount).toBe(5)
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(elapsed).toBeLessThan(timeoutMs)
 
@@ -502,6 +503,29 @@ describe('watch-hmr regression text helpers', () => {
         },
       )
     }).rejects.toThrow('timeout message')
+  })
+
+  it('checks watch process state before the first predicate run', async () => {
+    let predicateCalled = false
+
+    await expect(() => {
+      return waitFor(
+        () => {
+          predicateCalled = true
+          return true
+        },
+        {
+          timeoutMs: 50,
+          pollMs: 1,
+          message: 'timeout message',
+          onTick: () => {
+            throw new Error('watch process exited unexpectedly')
+          },
+        },
+      )
+    }).rejects.toThrow('watch process exited unexpectedly')
+
+    expect(predicateCalled).toBe(false)
   })
 
   it('allows output file update waits to pass via semantic fallback when mtimes stay unchanged', async () => {
@@ -667,6 +691,11 @@ describe('watch-hmr regression text helpers', () => {
 
     expect(elapsed).toBeGreaterThanOrEqual(0)
     expect(lastCompileSuccessAt).toBeGreaterThan(phaseStartedAt)
+  })
+
+  it('recognizes gulp build complete output as a compile success line', () => {
+    expect(isCompileSuccessLine('[01:51:54] build complete')).toBe(true)
+    expect(isCompileSuccessLine('[01:51:54] src/app.css changed handled')).toBe(false)
   })
 
   it('allows compile settle to fall back to stable output mtimes when success logs are missing', async () => {
@@ -2052,6 +2081,7 @@ describe('watch-hmr regression cases', () => {
       WATCHPACK_POLLING: '50',
     })
     expect(mpxV4Case?.initialMutationDelayMs).toBe(15_000)
+    expect(mpxV4Case?.splitSubPackageWatchSessions).toBe(true)
     expect(mpxV4Case?.styleMutation.sourceFile).toBe(
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/pages/component/index.mpx'),
     )
@@ -2062,6 +2092,8 @@ describe('watch-hmr regression cases', () => {
     const mpxV4SubPackage = mpxV4Case?.subPackageMutations?.find(item => item.root === 'sub-normal')
     expect(mpxV4SubPackage?.styleMutation.validateApply).toBe(false)
     expect(mpxV4SubPackage?.styleMutation.validateFunction).toBe(false)
+    expect(mpxV4SubPackage?.templateMutation.roundConfigs?.map(round => round.name)).toEqual(['baseline-arbitrary'])
+    expect(mpxV4SubPackage?.templateMutation.skipExtendedHmr).toBe(true)
     expect(mpxV4SubPackage?.outputStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js'),
     ])
@@ -2089,6 +2121,15 @@ describe('watch-hmr regression cases', () => {
     )
     expect(viteNativeCase?.outputStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/pages/index/index.wxss'),
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
+    ])
+    expect(viteNativeCase?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/tailwind.wxss'),
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
+    ])
+    expect(viteNativeCase?.subPackageMutations?.[0]?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/tailwind.wxss'),
+      path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/sub-normal/pages/index.wxss'),
       path.resolve('/repo', 'demo/weapp-vite-tailwindcss-v4/dist/app.wxss'),
     ])
   })
@@ -2119,6 +2160,12 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase.maxPluginProcessMs).toBe(3000)
       expect(watchCase.initialMutationDelayMs).toBe(15_000)
     }
+  })
+
+  it('keeps uni-app Vite watch case on the CSS aggregation budget', () => {
+    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
+
+    expect(uniAppCase?.maxPluginProcessMs).toBe(2000)
   })
 
   it('covers literal refresh content mutations for every demo case', () => {
@@ -2315,11 +2362,19 @@ describe('watch-hmr regression cases', () => {
         expect(subPackageMutation.outputWxml, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.outputJs, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.globalStyleCandidates.length, watchCase.name).toBeGreaterThan(0)
-        expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
-          'baseline-arbitrary',
-          'complex-corpus',
-          'hex-arbitrary',
-        ])
+        if (watchCase.splitSubPackageWatchSessions) {
+          expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
+            'baseline-arbitrary',
+          ])
+          expect(subPackageMutation.mainStyleMutation, watchCase.name).toBeDefined()
+        }
+        else {
+          expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), watchCase.name).toEqual([
+            'baseline-arbitrary',
+            'complex-corpus',
+            'hex-arbitrary',
+          ])
+        }
       }
       expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-independent')?.independent, watchCase.name).toBe(true)
       expect(watchCase.subPackageMutations?.find(item => item.root === 'sub-normal')?.independent, watchCase.name).toBe(false)

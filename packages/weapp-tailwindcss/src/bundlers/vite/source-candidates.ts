@@ -35,9 +35,12 @@ export interface SourceCandidateCollector {
 export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
   cssCandidatesById?: Array<[string, string[]]> | undefined
+  cssSourceById?: Array<[string, string]> | undefined
   scanCandidatesById?: Array<[string, string[]]> | undefined
+  scanSourceById?: Array<[string, string]> | undefined
   sourceById?: Array<[string, string]> | undefined
   transformCandidatesById?: Array<[string, string[]]> | undefined
+  transformSourceById?: Array<[string, string]> | undefined
   inlineExcludedCandidates: string[]
   inlineIncludedCandidates: string[]
 }
@@ -129,14 +132,16 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   const scanCandidatesById = new Map<string, Set<string>>()
   const transformCandidatesById = new Map<string, Set<string>>()
   const cssCandidatesById = new Map<string, Set<string>>()
-  const sourceById = new Map<string, string>()
+  const scanSourceById = new Map<string, string>()
+  const transformSourceById = new Map<string, string>()
+  const cssSourceById = new Map<string, string>()
   const candidateCount = new Map<string, number>()
   let inlineIncludedCandidates = new Set<string>()
   let inlineExcludedCandidates = new Set<string>()
 
   async function sync(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    sourceById.set(normalizedId, source)
+    scanSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
     const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
@@ -153,7 +158,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   async function syncCss(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    sourceById.set(normalizedId, source)
+    cssSourceById.set(normalizedId, source)
     const contentCacheKey = createSourceCandidateContentCacheKey('css', source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
     if (cachedCandidates) {
@@ -169,7 +174,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
 
   async function merge(id: string, source: string) {
     const normalizedId = cleanUrl(id)
-    sourceById.set(normalizedId, source)
+    transformSourceById.set(normalizedId, source)
     const extension = resolveSourceCandidateExtension(normalizedId)
     const contentCacheKey = createSourceCandidateContentCacheKey(extension, source, options.bareArbitraryValues, options.extractor)
     const cachedCandidates = sourceCandidateContentCache.get(contentCacheKey)
@@ -285,7 +290,9 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     scanCandidatesById.delete(normalizedId)
     transformCandidatesById.delete(normalizedId)
     cssCandidatesById.delete(normalizedId)
-    sourceById.delete(normalizedId)
+    scanSourceById.delete(normalizedId)
+    transformSourceById.delete(normalizedId)
+    cssSourceById.delete(normalizedId)
     const previousCandidates = candidatesById.get(normalizedId)
     if (!previousCandidates) {
       return
@@ -295,11 +302,14 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   }
 
   function source(id: string) {
-    return sourceById.get(cleanUrl(id))
+    const normalizedId = cleanUrl(id)
+    return scanSourceById.get(normalizedId)
+      ?? cssSourceById.get(normalizedId)
+      ?? transformSourceById.get(normalizedId)
   }
 
   function sources() {
-    return sourceById.entries()
+    return mergeSourcesByPriority().entries()
   }
 
   function values() {
@@ -391,7 +401,9 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     scanCandidatesById.clear()
     transformCandidatesById.clear()
     cssCandidatesById.clear()
-    sourceById.clear()
+    scanSourceById.clear()
+    transformSourceById.clear()
+    cssSourceById.clear()
     candidateCount.clear()
     inlineIncludedCandidates.clear()
     inlineExcludedCandidates.clear()
@@ -415,9 +427,12 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     return {
       candidatesById: [...candidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
       cssCandidatesById: [...cssCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
+      cssSourceById: [...cssSourceById.entries()],
       scanCandidatesById: [...scanCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
-      sourceById: [...sourceById.entries()],
+      scanSourceById: [...scanSourceById.entries()],
+      sourceById: [...mergeSourcesByPriority().entries()],
       transformCandidatesById: [...transformCandidatesById.entries()].map(([id, candidates]) => [id, [...candidates]]),
+      transformSourceById: [...transformSourceById.entries()],
       inlineExcludedCandidates: [...inlineExcludedCandidates],
       inlineIncludedCandidates: [...inlineIncludedCandidates],
     }
@@ -449,8 +464,14 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
       }
       cssCandidatesById.set(id, candidateSet)
     }
-    for (const [id, source] of snapshot.sourceById ?? []) {
-      sourceById.set(id, source)
+    for (const [id, source] of snapshot.scanSourceById ?? snapshot.sourceById ?? []) {
+      scanSourceById.set(id, source)
+    }
+    for (const [id, source] of snapshot.transformSourceById ?? []) {
+      transformSourceById.set(id, source)
+    }
+    for (const [id, source] of snapshot.cssSourceById ?? []) {
+      cssSourceById.set(id, source)
     }
     const ids = new Set([
       ...scanCandidatesById.keys(),
@@ -481,6 +502,20 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     clearScan,
     resetScan,
     clear,
+  }
+
+  function mergeSourcesByPriority() {
+    const sources = new Map<string, string>()
+    for (const [id, source] of transformSourceById) {
+      sources.set(id, source)
+    }
+    for (const [id, source] of cssSourceById) {
+      sources.set(id, source)
+    }
+    for (const [id, source] of scanSourceById) {
+      sources.set(id, source)
+    }
+    return sources
   }
 }
 
