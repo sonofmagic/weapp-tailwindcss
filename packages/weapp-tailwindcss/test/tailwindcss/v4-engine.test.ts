@@ -1277,6 +1277,28 @@ describe('tailwindcss v4 engine', () => {
     }))
   })
 
+  it('ignores inline Tailwind v4 css and non-css cssSources from runtime options', () => {
+    const options = resolveTailwindV4SourceOptionsFromRuntime({
+      options: {
+        projectRoot: '/workspace/app',
+        tailwind: {
+          cwd: '/workspace/app',
+          v4: {
+            css: '@import "tailwindcss";',
+            cssSources: [{
+              file: '/workspace/app/src/app.scss',
+              css: '@import "tailwindcss";',
+            }],
+          },
+        },
+      },
+      packageInfo: { name: 'tailwindcss', version: '4.2.4' },
+    } as any)
+
+    expect(options.css).toBeUndefined()
+    expect(options.cssSources).toBeUndefined()
+  })
+
   it('keeps missing cssEntries as imports for Tailwind resolution', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-engine-'))
     const cssEntry = path.join(root, 'missing.css')

@@ -259,7 +259,7 @@ describe('createTailwindcssRuntimeFromContext', () => {
     }
   })
 
-  it('detects default cssEntries for rax projects when omitted', async () => {
+  it('does not detect preprocessor files as default cssEntries for rax projects', async () => {
     const createdRuntimes: TailwindcssRuntimeLike[] = []
     const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
       const stub: TailwindcssRuntimeLike = {
@@ -305,11 +305,11 @@ describe('createTailwindcssRuntimeFromContext', () => {
         tailwindcss: expect.objectContaining({
           packageName: 'tailwindcss',
           v4: expect.objectContaining({
-            cssEntries: [globalEntry],
+            cssEntries: [],
           }),
         }),
       }))
-      expect(ctx.cssEntries).toEqual([globalEntry])
+      expect(ctx.cssEntries).toBeUndefined()
     }
     finally {
       rmSync(tempRoot, { recursive: true, force: true })

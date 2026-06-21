@@ -2,7 +2,8 @@ import type { OutputChunk } from 'rollup'
 import type { BundleSnapshot } from '../bundle-state'
 import type { RememberedCssSource } from './types'
 import path from 'node:path'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
+import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
+import { hasTailwindApplyDirective, hasTailwindNonRootGenerationDirectives, hasTailwindRootDirectives, hasTailwindRootImportDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { CSS_SOURCE_OUTPUT_EXT_RE } from './css-output'
 import { scoreMatchingStyleFileBase } from './style-matching'
@@ -25,10 +26,25 @@ export function hasSfcStyleSources(source: string) {
   return extractSfcStyleSources(source).length > 0
 }
 
-export function hasTailwindGenerationSource(source: string) {
-  return hasTailwindSourceDirectives(source, { importFallback: true })
-    || hasTailwindRootDirectives(source, { importFallback: true })
+export function hasTailwindGenerationSource(
+  source: string,
+  options: { allowRootDirectives?: boolean | undefined } = {},
+) {
+  const allowRootDirectives = options.allowRootDirectives !== false
+  return hasTailwindNonRootGenerationDirectives(source, { importFallback: true })
+    || (allowRootDirectives && hasTailwindSourceDirectives(source, { importFallback: true }))
+    || (allowRootDirectives && hasTailwindRootDirectives(source, { importFallback: true }))
     || hasTailwindApplyDirective(source)
+}
+
+function hasTailwindGenerationSourceForFile(file: string, source: string) {
+  if (isTailwindV4CssEntry(file)) {
+    return hasTailwindGenerationSource(source)
+  }
+  if (hasTailwindRootImportDirectives(source, { importFallback: true })) {
+    return false
+  }
+  return hasTailwindGenerationSource(source, { allowRootDirectives: false })
 }
 
 export async function resolveSfcStyleSourceFromOutputFile(
@@ -51,7 +67,7 @@ export async function resolveSfcStyleSourceFromOutputFile(
     return undefined
   }
   const rawSource = extractSfcStyleSources(source).join('\n')
-  if (!rawSource || !hasTailwindGenerationSource(rawSource)) {
+  if (!rawSource || !hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
     debug('sfc style source infer skipped: no tailwind generation source for %s -> %s', outputFile, sourceFile)
     return undefined
   }
@@ -221,12 +237,12 @@ export function resolveSourceStyleSourceFromOutputFile(
 ): RememberedCssSource | undefined {
   let sourceFile = resolveSourceStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
   let rawSource = sourceFile ? getSourceStyleSource?.(sourceFile) : undefined
-  if (!rawSource || !hasTailwindGenerationSource(rawSource)) {
+  if (!rawSource || !hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
     const scoredSources = [
       ...(getSourceStyleSources?.() ?? []),
       ...(configuredSourceEntries ?? []),
     ]
-      .filter(([file, source]) => CSS_SOURCE_OUTPUT_EXT_RE.test(file) && hasTailwindGenerationSource(source))
+      .filter(([file, source]) => CSS_SOURCE_OUTPUT_EXT_RE.test(file) && hasTailwindGenerationSourceForFile(file, source))
       .map(([file, source]) => ({
         file,
         source,
@@ -245,7 +261,7 @@ export function resolveSourceStyleSourceFromOutputFile(
   if (!sourceFile || !rawSource) {
     return undefined
   }
-  if (!hasTailwindGenerationSource(rawSource)) {
+  if (!hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
     debug('source style source infer skipped: no tailwind generation source for %s -> %s', outputFile, sourceFile)
     return undefined
   }

@@ -263,6 +263,52 @@ export function hasTailwindSourceDirectives(rawSource: string, options: Tailwind
   }
 }
 
+export function hasTailwindNonRootGenerationDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
+  try {
+    if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
+      return true
+    }
+    const root = postcss.parse(rawSource)
+    let found = false
+    const ignoreLayer = hasGeneratedCssArtifacts(rawSource)
+    root.walk((node) => {
+      if (
+        isTailwindGenerationDirective(node, { ...options, ignoreLayer })
+        && !(node.type === 'atrule' && isTailwindImportAtRule(node as postcss.AtRule, options))
+      ) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)
+      || /@(?:apply|config|custom-variant|plugin|source|theme|utility|variant)\b/.test(rawSource)
+  }
+}
+
+export function hasTailwindRootImportDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
+  if (!TAILWIND_ROOT_DIRECTIVE_RE.test(rawSource) && !(options.importFallback && rawSource.includes('weapp-tailwindcss'))) {
+    return false
+  }
+
+  try {
+    const root = postcss.parse(rawSource)
+    let found = false
+    root.walkAtRules((node) => {
+      if (isTailwindImportAtRule(node, options)) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return extractTailwindDirectiveLines(rawSource, options).some(line => /@(?:import|use|forward)\b/.test(line))
+  }
+}
+
 export function hasTailwindRootDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
   if (!TAILWIND_ROOT_DIRECTIVE_RE.test(rawSource) && !(options.importFallback && rawSource.includes('weapp-tailwindcss'))) {
     return false

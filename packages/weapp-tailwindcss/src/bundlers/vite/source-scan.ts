@@ -15,7 +15,7 @@ import {
   mergeTailwindInlineSourceCandidates,
   resolveTailwindV4EntriesFromCssCached,
 } from './source-scan/css-entries'
-import { addSourceScanDependencies } from './source-scan/dependencies'
+import { addSourceScanDependencies, addSourceScanDependency } from './source-scan/dependencies'
 
 export {
   discoverTailwindV4CssEntries,

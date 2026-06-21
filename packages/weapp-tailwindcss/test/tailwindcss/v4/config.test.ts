@@ -118,6 +118,27 @@ describe('tailwindcss/v4/config', () => {
     expect(logger.warn).not.toHaveBeenCalled()
   })
 
+  it('warns when tailwindcss v4 cssSources point to non-css files', async () => {
+    const ctx = createCtx({
+      tailwindcss: {
+        v4: {
+          cssSources: [
+            {
+              file: '/ctx/app.scss',
+              css: '@import "tailwindcss";',
+            },
+          ],
+        },
+      },
+    })
+    const runtime = createRuntime(4)
+    const { warnMissingCssEntries } = await loadModule()
+
+    warnMissingCssEntries(ctx, runtime)
+
+    expect(logger.warn).toHaveBeenCalledTimes(1)
+  })
+
   it('warns when modern runtime options omit cssEntries', async () => {
     const ctx = createCtx({
       tailwindcssRuntimeOptions: {
@@ -183,6 +204,29 @@ describe('tailwindcss/v4/config', () => {
     warnMissingCssEntries(ctx, runtime)
 
     expect(logger.warn).not.toHaveBeenCalled()
+  })
+
+  it('warns when modern tailwind runtime cssSources point to non-css files', async () => {
+    const ctx = createCtx({
+      tailwindcssRuntimeOptions: {
+        tailwindcss: {
+          v4: {
+            cssSources: [
+              {
+                file: '/modern/path.vue',
+                css: '@import "tailwindcss";',
+              },
+            ],
+          },
+        },
+      },
+    })
+    const runtime = createRuntime(4)
+    const { warnMissingCssEntries } = await loadModule()
+
+    warnMissingCssEntries(ctx, runtime)
+
+    expect(logger.warn).toHaveBeenCalledTimes(1)
   })
 
   it('applies cssCalc defaults when tailwindcss@4 is detected', async () => {

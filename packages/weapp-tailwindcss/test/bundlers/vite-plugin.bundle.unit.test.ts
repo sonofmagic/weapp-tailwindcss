@@ -25,7 +25,7 @@ import { collectRememberedCssReplayGroups } from '@/bundlers/vite/generate-bundl
 import { createSubpackageSourceCandidateScope } from '@/bundlers/vite/generate-bundle/source-candidate-scope'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 import { collectConfiguredTailwindV4CssSourceEntries } from '@/bundlers/vite/generate-bundle/configured-css-sources'
-import { resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
+import { resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
 import { isFileMatchedByTailwindSourceEntries } from '@/tailwindcss/source-scan'
 import { createViteCssMemory } from '@/bundlers/vite/css-memory'
 
@@ -2497,6 +2497,60 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect(independent?.rawSource).toContain('tailwind.config.sub-independent.js')
     expect(independent?.rawSource).not.toContain('tailwind.config.sub-normal.js')
+  }, TEST_TIMEOUT_MS)
+
+  it('does not infer Tailwind v4 root css from Vue SFC style blocks', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-sfc-root-css-'))
+    createdDirs.push(root)
+    const sourceFile = path.join(root, 'src/pages/index/index.vue')
+    const outputRoot = path.join(root, 'dist')
+    const snapshot = {
+      entries: [
+        {
+          type: 'js',
+          file: 'pages/index/index.js',
+          output: {
+            ...createRollupChunk(''),
+            fileName: 'pages/index/index.js',
+            facadeModuleId: sourceFile,
+            moduleIds: [sourceFile],
+          },
+        },
+      ],
+    } as any
+
+    const matched = await resolveSfcStyleSourceFromOutputFile(
+      'pages/index/index.wxss',
+      snapshot,
+      outputRoot,
+      path.join(root, 'src'),
+      file => file.endsWith('.wxss'),
+      file => file === sourceFile
+        ? '<template><view class="text-red-500" /></template><style>@import "tailwindcss";</style>'
+        : undefined,
+      () => {},
+    )
+
+    expect(matched).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
+  it('does not infer Tailwind v4 root css from preprocessor source styles', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-scss-root-css-'))
+    createdDirs.push(root)
+    const sourceFile = path.join(root, 'src/app.scss')
+
+    const matched = resolveSourceStyleSourceFromOutputFile(
+      'app.wxss',
+      { entries: [] } as any,
+      path.join(root, 'dist'),
+      path.join(root, 'src'),
+      file => file === sourceFile ? '$color: red;\n@import "tailwindcss";\n.app { color: $color; }' : undefined,
+      () => [[sourceFile, '$color: red;\n@import "tailwindcss";\n.app { color: $color; }']],
+      undefined,
+      () => {},
+    )
+
+    expect(matched).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
   it('does not match basename-only remembered subpackage css sources to root page css', async () => {

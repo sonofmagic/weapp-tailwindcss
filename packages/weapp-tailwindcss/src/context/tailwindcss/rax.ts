@@ -30,11 +30,6 @@ function isRaxWorkspace(appType: AppType | undefined, baseDir: string): boolean 
 function collectRaxStyleEntries(baseDir: string): string[] {
   const STYLE_CANDIDATES = [
     'src/global.css',
-    'src/global.scss',
-    'src/global.less',
-    'src/global.sass',
-    'src/global.styl',
-    'src/global.stylus',
   ] as const
   const discovered: string[] = []
   for (const relative of STYLE_CANDIDATES) {

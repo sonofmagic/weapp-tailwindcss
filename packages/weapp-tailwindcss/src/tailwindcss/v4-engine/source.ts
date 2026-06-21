@@ -11,6 +11,7 @@ import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
+import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'
 
 const require = createRequire(import.meta.url)
@@ -302,9 +303,10 @@ export function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOption
         options.packageName,
       )
   const entrySources = normalizeTailwindV4CssEntrySources(options.cssEntries, options.packageName)
-  const combinedCssSources = options.cssSources || entrySources?.cssSources
+  const configuredCssSources = filterTailwindV4CssSourceRoots(options.cssSources)
+  const combinedCssSources = configuredCssSources || entrySources?.cssSources
     ? [
-        ...(options.cssSources ?? []),
+        ...(configuredCssSources ?? []),
         ...(entrySources?.cssSources ?? []),
       ]
     : undefined
@@ -320,9 +322,9 @@ export function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOption
 
   return {
     ...options,
-    ...(css === undefined ? {} : { css }),
+    css,
     ...(cssEntries === undefined ? {} : { cssEntries }),
-    ...(cssSources === undefined ? {} : { cssSources }),
+    cssSources,
   }
 }
 
@@ -378,7 +380,6 @@ function resolveEngineTailwindV4SourceOptions(runtime: TailwindcssRuntimeLike): 
       cwd,
       ...(configuredBase === undefined ? {} : { base: configuredBase }),
       baseFallbacks,
-      ...(tailwindV4Options?.css === undefined ? {} : { css: tailwindV4Options.css }),
       ...(tailwindV4Options?.cssSources === undefined ? {} : { cssSources: tailwindV4Options.cssSources }),
       ...(tailwindV4Options?.cssEntries === undefined ? {} : { cssEntries: tailwindV4Options.cssEntries }),
       packageName: resolveTailwindCssImportTarget(runtime),

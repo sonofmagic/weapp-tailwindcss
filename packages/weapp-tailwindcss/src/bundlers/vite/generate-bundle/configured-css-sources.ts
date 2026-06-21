@@ -2,6 +2,7 @@ import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { resolveTailwindV4CssSourceBase } from '@/tailwindcss/source-scan'
+import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 
 export interface ConfiguredCssSourceEntry {
   file: string
@@ -10,10 +11,10 @@ export interface ConfiguredCssSourceEntry {
 
 export function collectConfiguredTailwindV4CssSources(opts: InternalUserDefinedOptions) {
   const runtimeCssSources = ((opts.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]
-  return [
+  return filterTailwindV4CssSourceRoots([
     ...(opts.tailwindcss?.v4?.cssSources ?? []),
     ...runtimeCssSources,
-  ]
+  ]) ?? []
 }
 
 export function collectConfiguredTailwindV4CssSourceEntries(

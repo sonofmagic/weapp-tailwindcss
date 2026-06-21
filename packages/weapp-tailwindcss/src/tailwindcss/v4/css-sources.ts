@@ -2,21 +2,39 @@ import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { omitUndefined } from '@/utils/object'
+import { isTailwindV4CssEntry } from './css-entries'
 
 function hasCssEntriesValue(value: unknown) {
   if (typeof value === 'string') {
-    return value.trim().length > 0
+    return isTailwindV4CssEntry(value)
   }
-  return Array.isArray(value) && value.some(entry => typeof entry === 'string' && entry.trim().length > 0)
+  return Array.isArray(value) && value.some(isTailwindV4CssEntry)
 }
 
 export function hasCssSourcesValue(value: unknown) {
   return Array.isArray(value) && value.some((source) => {
+    const file = (source as { file?: unknown } | null)?.file
     return typeof source === 'object'
       && source !== null
+      && typeof file === 'string'
+      && isTailwindV4CssEntry(file)
       && typeof (source as { css?: unknown }).css === 'string'
       && (source as { css: string }).css.trim().length > 0
   })
+}
+
+export function isTailwindV4CssSourceRoot(source: unknown): source is TailwindV4CssSource {
+  return typeof source === 'object'
+    && source !== null
+    && typeof (source as { file?: unknown }).file === 'string'
+    && isTailwindV4CssEntry((source as { file: string }).file)
+}
+
+export function filterTailwindV4CssSourceRoots(
+  sources: TailwindV4CssSource[] | undefined,
+) {
+  const filtered = sources?.filter(isTailwindV4CssSourceRoot)
+  return filtered && filtered.length > 0 ? filtered : undefined
 }
 
 export function hasConfiguredTailwindV4CssRoots(
@@ -60,6 +78,9 @@ export function upsertTailwindV4CssSource(
   opts: UserDefinedOptions,
   source: TailwindV4CssSource,
 ) {
+  if (!isTailwindV4CssEntry(source.file)) {
+    return false
+  }
   const normalizedSource: TailwindV4CssSource = omitUndefined({
     ...source,
     ...(source.base === undefined ? {} : { base: normalizeCssSourceBase(source.base) }),

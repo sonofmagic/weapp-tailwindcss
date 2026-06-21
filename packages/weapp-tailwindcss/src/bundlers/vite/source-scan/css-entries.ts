@@ -15,6 +15,7 @@ import {
   resolveCssSourceEntries,
 } from '@/tailwindcss/source-scan'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
+import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { readStaticConfigContent } from '../static-config-content'
 
 const VITE_SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
@@ -398,8 +399,8 @@ export async function discoverTailwindV4CssEntries(root: string, outDir: string 
 }
 
 export function collectConfiguredCssSources(options: UserDefinedOptions) {
-  return [
+  return filterTailwindV4CssSourceRoots([
     ...(options.tailwindcss?.v4?.cssSources ?? []),
     ...(((options.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4?.cssSources ?? []) as TailwindV4CssSource[]),
-  ]
+  ]) ?? []
 }
