@@ -841,11 +841,20 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const finalizeCssAssetSource = (source: string, options: { generatedCss?: boolean } = {}) => {
           const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
-          let finalized = removeTailwindSourceDirectives(
-            stripBundlerGeneratedCssMarkers(source),
-            { importFallback: true },
-          )
           if (isWebGeneratorTarget && runtimeState.tailwindRuntime.majorVersion === 4) {
+            if (options.generatedCss === true) {
+              return stripTrailingLineWhitespace(
+                stripUnmatchedTailwindSourceMediaCloseFragments(
+                  stripTailwindSourceMediaFragments(
+                    stripBundlerGeneratedCssMarkers(source),
+                  ),
+                ),
+              )
+            }
+            const finalized = removeTailwindSourceDirectives(
+              stripBundlerGeneratedCssMarkers(source),
+              { importFallback: true },
+            )
             return stripTrailingLineWhitespace(
               stripUnmatchedTailwindSourceMediaCloseFragments(
                 stripTailwindSourceMediaFragments(
@@ -854,6 +863,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               ),
             )
           }
+          let finalized = removeTailwindSourceDirectives(
+            stripBundlerGeneratedCssMarkers(source),
+            { importFallback: true },
+          )
           if (isWebGeneratorTarget || options.generatedCss !== true) {
             return isWebGeneratorTarget
               ? finalized
