@@ -204,12 +204,15 @@ export function normalizeCssTextSnapshot(source: string, options: CssSnapshotOpt
     .join('\n')
 }
 
-export function normalizeRawCssSnapshotText(source: string) {
+export function normalizeRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
+  if (Object.keys(options).length > 0) {
+    return `${normalizeCssTextSnapshot(source, options)}\n`
+  }
   return `${normalizeCssImports(source.replace(/\r\n/g, '\n')).trimEnd().split('\n').map(line => line.trimEnd()).join('\n')}\n`
 }
 
-export async function formatRawCssSnapshotText(source: string) {
-  return normalizeRawCssSnapshotText(await formatCss(source.replace(/\r\n/g, '\n')))
+export async function formatRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
+  return normalizeRawCssSnapshotText(await formatCss(source.replace(/\r\n/g, '\n')), options)
 }
 
 const SCANNER_NOISE_SELECTORS = new Set([
@@ -313,6 +316,14 @@ const WEAPP_ROOT_SELECTOR_PARTS = new Set([':host', 'page', '.tw-root', 'wx-root
 
 const WEBPACK_APP_SPLIT_NOISE_KEYFRAMES = new Set(['float-pop', 'jump'])
 const WEBPACK_APP_SPLIT_NOISE_FONT_FAMILIES = new Set(['JDZH-Regular', 'JDZH-Bold'])
+const WEBPACK_APP_SPLIT_NOISE_ROOT_DECLS = new Set([
+  '--animate-delay',
+  '--animate-duration',
+  '--nut-icon-color',
+  '--nut-icon-height',
+  '--nut-icon-line-height',
+  '--nut-icon-width',
+])
 const SUBPACKAGE_MARKER_SELECTOR_RE = /^\.bg-(?:independent|normal)-subpackage-marker$|^\.before_ccontent-_b_a(?:independent|normal)_subpackage_/
 
 const TAILWIND_V4_APP_COLOR_ORDER = new Map([
@@ -554,13 +565,25 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
     return
   }
 
+  const hasNutIconSplitNoise = root.some((node) => {
+    return node.type === 'rule'
+      && node.selectors.some(selector => normalizeSelectorPart(selector).startsWith('.nut-icon'))
+  })
+
   root.walkAtRules((rule) => {
-    if (/keyframes$/i.test(rule.name) && (WEBPACK_APP_SPLIT_NOISE_KEYFRAMES.has(rule.params) || rule.params.startsWith('nut'))) {
+    if (
+      /keyframes$/i.test(rule.name)
+      && (
+        WEBPACK_APP_SPLIT_NOISE_KEYFRAMES.has(rule.params)
+        || rule.params.startsWith('nut')
+        || (hasNutIconSplitNoise && rule.params === 'rotation')
+      )
+    ) {
       rule.remove()
     }
   })
 
-  let hasWebpackAppSplitNoise = false
+  let hasWebpackAppSplitNoise = hasNutIconSplitNoise
   root.walkAtRules('font-face', (rule) => {
     rule.walkDecls('font-family', (decl) => {
       const fontFamily = decl.value.replaceAll(/["']/g, '')
@@ -571,6 +594,14 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
   })
   if (!hasWebpackAppSplitNoise) {
     return
+  }
+
+  if (hasNutIconSplitNoise) {
+    root.walkRules((rule) => {
+      if (rule.selectors.every(selector => normalizeSelectorPart(selector).startsWith('.nut-icon'))) {
+        rule.remove()
+      }
+    })
   }
 
   root.walkAtRules((rule) => {
@@ -603,6 +634,10 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
   firstRootRule.selector = WEAPP_ROOT_SELECTOR
   const seen = new Set<string>()
   firstRootRule.walkDecls((decl) => {
+    if (WEBPACK_APP_SPLIT_NOISE_ROOT_DECLS.has(decl.prop)) {
+      decl.remove()
+      return
+    }
     seen.add(`${decl.prop}\0${decl.value}`)
   })
 
@@ -613,6 +648,10 @@ function normalizeWeappRootRules(root: postcss.Root, options: CssSnapshotOptions
     }
 
     for (const decl of movableDecls) {
+      if (WEBPACK_APP_SPLIT_NOISE_ROOT_DECLS.has(decl.prop)) {
+        decl.remove()
+        continue
+      }
       const key = `${decl.prop}\0${decl.value}`
       decl.remove()
       if (seen.has(key)) {

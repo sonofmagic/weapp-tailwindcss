@@ -20,6 +20,22 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('applies webpack app split noise options to raw snapshots', () => {
+    expect(normalizeRawCssSnapshotText([
+      ':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif;--nut-icon-height:16rpx;--animate-duration:1s}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '.nut-icon{width:16rpx;width:var(--nut-icon-width,16rpx)}',
+      '.nut-icon-am-jump{animation-name:nutJumpOne}',
+      '@keyframes nutJumpOne{50%{transform:translateY(-10rpx)}}',
+    ].join('\n'), {
+      normalizeWebpackAppSplitNoise: true,
+    })).toBe([
+      ':host, page, .tw-root, wx-root-portal-content{--font-sans:ui-sans-serif}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+      '',
+    ].join('\n'))
+  })
+
   it('normalizes formatted base selector spacing across platforms', () => {
     expect(normalizeFormattedCssSnapshot([
       '.bg-independent-subpackage-marker {',
