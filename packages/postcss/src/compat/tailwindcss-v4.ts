@@ -103,7 +103,7 @@ export function usesTailwindcssV4ContentVariable(root: Root) {
   return used
 }
 
-// Tailwind v4 的变量默认值只为当前 CSS 实际使用到的变量补齐，避免 v3/v4 全量变量串入
+// Tailwind v4 的变量默认值只为当前 CSS 实际使用到的变量补齐，避免全量变量串入
 export function createUsedCssVarsV4Nodes(usedProps: ReadonlySet<string>) {
   return cssVarsV4
     .filter(def => usedProps.has(def.prop) && !UNSUPPORTED_CUSTOM_PROPERTY_DEFAULT_PROPS.has(def.prop))

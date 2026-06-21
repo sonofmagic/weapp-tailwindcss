@@ -50,10 +50,6 @@ export interface TailwindRuntimeOptionsBase {
   postcssPlugin?: string | undefined
 }
 
-export interface TailwindV2Options extends TailwindRuntimeOptionsBase {}
-
-export interface TailwindV3Options extends TailwindRuntimeOptionsBase {}
-
 export interface TailwindV4Options {
   base?: string | undefined
   css?: string | undefined
@@ -66,11 +62,9 @@ export interface TailwindV4Options {
 }
 
 export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
-  version?: 2 | 3 | 4 | undefined
+  version?: 4 | undefined
   packageName?: string | undefined
   resolve?: PackageResolvingOptions | undefined
-  v2?: TailwindV2Options | undefined
-  v3?: TailwindV3Options | undefined
   v4?: TailwindV4Options | undefined
 }
 

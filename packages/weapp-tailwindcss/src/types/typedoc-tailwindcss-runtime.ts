@@ -118,16 +118,6 @@ export interface TailwindRuntimeOptionsBase {
 }
 
 /**
- * Tailwind CSS v2 补丁配置。
- */
-export interface TailwindV2Options extends TailwindRuntimeOptionsBase {}
-
-/**
- * Tailwind CSS v3 补丁配置。
- */
-export interface TailwindV3Options extends TailwindRuntimeOptionsBase {}
-
-/**
  * Tailwind CSS v4 提取配置。
  */
 export interface TailwindV4Options {
@@ -169,7 +159,7 @@ export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
   /**
    * 当前项目使用的 Tailwind CSS 主版本。未传入时会从已安装包推断。
    */
-  version?: 2 | 3 | 4
+  version?: 4
   /**
    * Tailwind 包名。项目使用分支包时可以改这里。
    */
@@ -178,14 +168,6 @@ export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
    * 传给 `local-pkg` 的包解析配置。
    */
   resolve?: PackageResolvingOptions
-  /**
-   * Tailwind CSS v2 补丁选项。
-   */
-  v2?: TailwindV2Options
-  /**
-   * Tailwind CSS v3 补丁选项。
-   */
-  v3?: TailwindV3Options
   /**
    * Tailwind CSS v4 补丁选项。
    */

@@ -52,7 +52,7 @@ async function renderBaseCss(caseId: string, plugins: ReturnType<typeof reset>[]
 }
 
 describe('reset plugin', () => {
-  it('injects default button and image resets for tailwindcss v3', async () => {
+  it('injects default button and image resets', async () => {
     const { css } = await renderBaseCss('compat-default-button-image', [reset()])
 
     const normalized = css.replace(/\s+/g, '')

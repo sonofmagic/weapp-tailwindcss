@@ -12,7 +12,6 @@ import { shouldSkipJsTransform } from '@/js/precheck'
 import { ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { getGroupedEntries } from '@/utils'
 import { processCachedTask } from '../../shared/cache'
@@ -30,7 +29,7 @@ import { createBundleBuildState, updateBundleBuildState } from '../../vite/bundl
 import { createCandidateSignature } from '../../vite/generate-bundle/signatures'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
-import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../../vite/source-candidates'
+import { createSourceCandidateCollector } from '../../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../../vite/source-scan'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey, inferWebpackMainCssFiles, isCssLikeModuleResource, resolveSingleActiveWebpackCssResource, stripResourceQuery } from './shared'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from './v5-assets/helpers'
@@ -456,7 +455,6 @@ function resolveWebpackMemoryDebugStats(context: {
     },
     sourceCandidateScan: context.sourceCandidateScan,
     tailwind: {
-      v3: getTailwindV3IncrementalGenerateCacheStats(),
       v4: getTailwindV4IncrementalGenerateCacheStats(),
     },
   }
@@ -630,9 +628,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             .map(([file, source]) => [path.resolve(file), source] as const),
         )
         const configuredMainCssEntryFiles = (() => {
-          if ((runtimeState.tailwindRuntime.majorVersion ?? 0) < 4) {
-            return []
-          }
           const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
           return [
             ...(tailwindOptions?.v4?.cssEntries ?? []),
@@ -643,12 +638,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         const inferredMainCssFiles = inferWebpackMainCssFiles(
           compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,
           compilerOptions.cssMatcher,
-          (runtimeState.tailwindRuntime.majorVersion ?? 0) >= 4
-            ? {
-                mainSourceFiles: new Set(configuredMainCssEntryFiles),
-                resourcesByAsset: cssAssetResources,
-              }
-            : {},
+          {
+            mainSourceFiles: new Set(configuredMainCssEntryFiles),
+            resourcesByAsset: cssAssetResources,
+          },
         )
         const isMainCssChunk = (file: string) =>
           compilerOptions.mainCssChunkMatcher(file, appType)
@@ -815,7 +808,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const refreshWebpackSourceCandidates = async (): Promise<WebpackSourceCandidateCache | undefined> => {
           const majorVersion = runtimeState.tailwindRuntime.majorVersion
-          if (majorVersion !== 3 && majorVersion !== 4) {
+          if (majorVersion !== 4) {
             return undefined
           }
           const root = compilerOptions.tailwindcssBasedir ?? process.cwd()
@@ -834,9 +827,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             changedFiles: watchChangedFiles,
             collector: createSourceCandidateCollector({
               bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
-              extractor: majorVersion === 3
-                ? createTailwindV3DefaultExtractor()
-                : undefined,
             }),
             outDir: outputDir,
             root,
@@ -855,7 +845,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           try {
             finalized = pruneMiniProgramGeneratedCss(finalized, {
-              preservePreflight: runtimeState.tailwindRuntime.majorVersion === 3 || runtimeState.tailwindRuntime.majorVersion === 4,
+              preservePreflight: runtimeState.tailwindRuntime.majorVersion === 4,
             })
           }
           catch {
@@ -864,7 +854,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 ? compilerOptions.cssPreflight
                 : undefined,
               isTailwindcssV4: runtimeState.tailwindRuntime.majorVersion === 4,
-              preservePseudoContentInit: runtimeState.tailwindRuntime.majorVersion === 3,
               tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
             })
           }
@@ -880,7 +869,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               ? compilerOptions.cssPreflight
               : undefined,
             isTailwindcssV4: runtimeState.tailwindRuntime.majorVersion === 4,
-            preservePseudoContentInit: runtimeState.tailwindRuntime.majorVersion === 3,
             tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
           })
           return runtimeState.tailwindRuntime.majorVersion === 4
@@ -914,7 +902,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         debug('processAssets ensure runtime set forceRefresh=%s major=%s', forceRuntimeRefresh, runtimeState.tailwindRuntime.majorVersion ?? 'unknown')
         let runtimeSet: Set<string>
         let runtimeAffectingSourceHash = 'runtime-affecting:0'
-        if (watchMode && (runtimeState.tailwindRuntime.majorVersion === 3 || runtimeState.tailwindRuntime.majorVersion === 4) && !forceRuntimeRefresh) {
+        if (watchMode && runtimeState.tailwindRuntime.majorVersion === 4 && !forceRuntimeRefresh) {
           const snapshot = buildWebpackBundleSnapshot(assets as any, compilerOptions, bundleBuildState, compilation as any)
           if (!webpackWatchRuntimeScanInitialized) {
             for (const entry of snapshot.entries) {
@@ -928,17 +916,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             ...(groupedEntries.js ?? []).map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
           ].sort().join('\n\n'))
           try {
-            const baseClassSet = runtimeState.tailwindRuntime.majorVersion === 3 && !webpackWatchRuntimeScanInitialized
-              ? await ensureRuntimeClassSet(runtimeState, {
-                  forceRefresh: false,
-                  forceCollect: true,
-                  clearCache: false,
-                  allowEmpty: true,
-                })
-              : undefined
             runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
-              baseClassSet,
-              skipInitialFullScanWithBase: baseClassSet !== undefined,
             })
           }
           catch (error) {
@@ -965,7 +943,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             // In watch mode the runtime-classset loader may have already
             // refreshed the class set for this compilation. Reuse that cached
             // result unless webpack reported a runtime dependency change;
-            // otherwise Taro webpack v3 can do a second full content scan in
+            // otherwise webpack can do a second full content scan in
             // processAssets for the same rebuild.
             forceCollect: !watchMode || forceRuntimeRefresh,
             clearCache: forceRuntimeRefresh,
@@ -999,7 +977,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         let currentJsRuntimeCandidates: Set<string> | undefined
         let currentJsRuntimeTokenSignature: string | undefined
         const getCurrentJsRuntimeCandidates = () => {
-          if (runtimeState.tailwindRuntime.majorVersion !== 3 && runtimeState.tailwindRuntime.majorVersion !== 4) {
+          if (runtimeState.tailwindRuntime.majorVersion !== 4) {
             return undefined
           }
           if (currentJsRuntimeCandidates) {
@@ -1107,13 +1085,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 rawSource: chunkHash === undefined ? readRawSource() : undefined,
                 hash: chunkHash,
                 applyResult(source, { cacheHit }) {
-                  const updated = updateAssetIfChanged(file, source, {
+                  updateAssetIfChanged(file, source, {
                     compare: !cacheHit,
                     notifyUpdate: !cacheHit,
                   })
-                  if (updated && runtimeState.tailwindRuntime.majorVersion === 3) {
-                    rememberTransformedRuntimeCandidates(source)
-                  }
                 },
                 onCacheHit() {
                   debug('html cache hit: %s', file)
@@ -1168,7 +1143,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     compare: !cacheHit,
                     notifyUpdate: !cacheHit,
                   })
-                  if (updated && (runtimeState.tailwindRuntime.majorVersion === 3 || runtimeState.tailwindRuntime.majorVersion === 4)) {
+                  if (updated && runtimeState.tailwindRuntime.majorVersion === 4) {
                     rememberTransformedRuntimeCandidates(source)
                   }
                 },
@@ -1369,13 +1344,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const generatorRawSource = resolveWebpackGeneratorRawSource(currentRawSource, cssHandlerOptions)
                   const sourceFile = cssHandlerOptions.sourceOptions?.sourceFile
                   const sourceCssProcessed = sourceFile ? cssSources.get(path.resolve(sourceFile))?.processed === true : false
-                  const forceWebpackV3RuntimeMainGeneration = runtimeState.tailwindRuntime.majorVersion === 3
-                    && watchMode
-                    && cssHandlerOptions.isMainChunk
-                    && (
-                      transformedJsRuntimeCandidates.size > 0
-                      || ((getCurrentJsRuntimeCandidates()?.size ?? 0) > 0)
-                    )
                   const registeredUserRawSource = createWebpackUserCssSourceAppend(
                     [...cssSources.entries()].map(([registeredSourceFile, source]) => ({
                       ...source,
@@ -1421,7 +1389,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     cssHandlerOptions,
                     cssUserHandlerOptions: getCssUserHandlerOptions(file),
                     getSourceCandidatesForEntries: webpackSourceCandidates?.getSourceCandidatesForEntries,
-                    ...(forceWebpackV3RuntimeMainGeneration ? { forceGenerator: true } : {}),
                     restoreLocalCssImports: false,
                     styleHandler: compilerOptions.styleHandler,
                     debug,

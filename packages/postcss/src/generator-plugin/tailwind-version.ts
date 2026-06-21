@@ -32,9 +32,6 @@ export function resolvePostcssTailwindVersion(
   if (packageName === '@tailwindcss/postcss' || packageName.includes('tailwindcss4')) {
     return 4
   }
-  if (packageName.includes('tailwindcss3')) {
-    return 3
-  }
   if (hasTailwindV4CssSyntax(root)) {
     return 4
   }

@@ -8,10 +8,10 @@ import {
 } from './predicates'
 import { MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
 
-export function collectThemeVariableRule(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
+export function collectThemeVariableRule(root: postcss.Root, _options: FinalizeMiniProgramCssOptions = {}) {
   const themeRules: postcss.Rule[] = []
   const declarations = new Map<string, postcss.Declaration>()
-  const shouldPreserveContentInit = options.preservePseudoContentInit || usesTwContentVariable(root)
+  const shouldPreserveContentInit = usesTwContentVariable(root)
 
   for (const node of root.nodes ?? []) {
     if (!isMiniProgramThemeVariableRule(node)) {

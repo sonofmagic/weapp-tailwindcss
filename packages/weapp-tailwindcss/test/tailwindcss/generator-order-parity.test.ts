@@ -3,20 +3,15 @@ import { createRequire } from 'node:module'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import postcss from 'postcss'
-import tailwindcssV3 from 'tailwindcss'
 import tailwindcssPostcssV4 from '@tailwindcss/postcss'
 import { replaceWxml } from '@/wxml/shared'
-import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV3Version = require('tailwindcss/package.json').version as string
 const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
 
-const TAILWIND_V3_CSS = '@tailwind base; @tailwind components; @tailwind utilities;'
-
 // 这些语料从 Tailwind submodule 的 sort 与 variant-order 用例提炼而来，用于锁定官方生成顺序。
-const TAILWIND_V3_ORDER_CORPUS = [
+const TAILWIND_V4_COMPATIBLE_ORDER_CORPUS = [
   'before:block',
   'after:content-[\'tail\']',
   'first:flex',
@@ -193,15 +188,6 @@ function collectTransformedCandidateOrder(css: string, candidates: string[]) {
     .map(item => item.candidate)
 }
 
-function createTailwindV3Config(candidates: string[]) {
-  return {
-    content: [{
-      raw: candidates.join(' '),
-      extension: 'html',
-    }],
-  }
-}
-
 function createTailwindV4Css(candidates: string[]) {
   return [
     '@import "tailwindcss" source(none);',
@@ -231,30 +217,6 @@ async function createTailwindV4FixtureRoot() {
 
 describe('generator order parity', () => {
   it('keeps Tailwind v4 generated rule order identical to official Tailwind', async () => {
-    expect(tailwindcssV3Version.startsWith('3.')).toBe(true)
-
-    const config = createTailwindV3Config(TAILWIND_V3_ORDER_CORPUS)
-    const official = await postcss([
-      tailwindcssV3(config),
-    ]).process(TAILWIND_V3_CSS, {
-      from: undefined,
-    })
-    const source = await resolveTailwindV3Source({
-      css: TAILWIND_V3_CSS,
-      base: process.cwd(),
-      configObject: config,
-    })
-    const engine = createTailwindV3Engine(source)
-    const result = await engine.generate({
-      candidates: [...TAILWIND_V3_ORDER_CORPUS].reverse(),
-      target: 'web',
-    })
-
-    expect(collectRuleOrder(result.css)).toEqual(collectRuleOrder(official.css))
-    expect(normalizeCss(result.css)).toBe(normalizeCss(official.css))
-  })
-
-  it('keeps Tailwind v4 generated rule order identical to official Tailwind', async () => {
     const fixture = await createTailwindV4FixtureRoot()
     const css = createTailwindV4CompatibilityCss(TAILWIND_V4_ORDER_CORPUS)
 
@@ -278,23 +240,6 @@ describe('generator order parity', () => {
 
     expect(collectRuleOrder(result.css)).toEqual(collectRuleOrder(expectedCss))
     expect(normalizeCss(result.css)).toBe(normalizeCss(expectedCss))
-  })
-
-  it('preserves Tailwind v4 order after mini-program selector transforms', async () => {
-    const config = createTailwindV3Config(MINI_PROGRAM_STABLE_CORPUS)
-    const source = await resolveTailwindV3Source({
-      css: TAILWIND_V3_CSS,
-      base: process.cwd(),
-      configObject: config,
-    })
-    const result = await createTailwindV3Engine(source).generate({
-      candidates: [...MINI_PROGRAM_STABLE_CORPUS].reverse(),
-      target: 'weapp',
-    })
-
-    const rawOrder = collectCandidateOrder(result.rawCss, MINI_PROGRAM_PRESERVED_ORDER_CORPUS)
-    const transformedOrder = collectTransformedCandidateOrder(result.css, MINI_PROGRAM_PRESERVED_ORDER_CORPUS)
-    expect(transformedOrder).toEqual(rawOrder)
   })
 
   it('preserves Tailwind v4 order after mini-program selector transforms', async () => {

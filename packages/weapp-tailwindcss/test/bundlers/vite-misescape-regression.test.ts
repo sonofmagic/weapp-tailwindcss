@@ -7,8 +7,8 @@ import { replaceWxml } from '@/wxml/shared'
 
 const misescapeCases = [
   {
-    label: 'tailwindcss v3',
-    majorVersion: 3,
+    label: 'tailwindcss v4 red background',
+    majorVersion: 4,
     runtimeClass: 'bg-[red]',
   },
   {
@@ -53,7 +53,7 @@ function expectNoMisescapedSamples(result: string, samples: readonly string[] = 
 }
 
 describe('vite misescape regressions', () => {
-  it('keeps v3 source-scan-only candidates out of JS transforms', () => {
+  it('keeps source-scan-only candidates out of JS transforms', () => {
     const runtimeClass = 'text-[#438821]'
     const sourceOnlyCandidates = new Set([
       runtimeClass,
@@ -71,7 +71,7 @@ describe('vite misescape regressions', () => {
       },
       escapeMap: MappingChars2String,
       needEscaped: true,
-      tailwindcssMajorVersion: 3,
+      tailwindcssMajorVersion: 4,
     })
     const code = `
 const complexExpression = 'size > 4 ? keep-[business] : App.vue:4'

@@ -17,10 +17,8 @@ function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters
       config: options?.config,
       styleOptions: options?.styleOptions,
       importFallback: options?.importFallback ?? true,
-      tailwindcssV3Compatibility: options?.tailwindcssV3Compatibility ?? true,
       bareArbitraryValues: options?.bareArbitraryValues,
     })),
-    resolveTailwindV3Source: vi.fn(async options => ({ version: 3, ...options })),
     resolveTailwindV4Source: vi.fn(async options => ({ version: 4, ...options })),
     ...overrides,
   }
@@ -31,34 +29,6 @@ function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters
 }
 
 describe('generator postcss plugin factory', () => {
-  it('routes explicit v3 css through the injected v3 source resolver', async () => {
-    const { adapters, generate } = createAdapters()
-    const plugin = createWeappTailwindcssPostcssPlugin(adapters)
-    const result = await postcss([
-      plugin({
-        version: 3,
-        candidates: ['text-red-500'],
-        scanSources: false,
-      }),
-    ]).process('@tailwind utilities;', {
-      from: undefined,
-    })
-
-    expect(adapters.resolveTailwindV3Source).toHaveBeenCalledWith(expect.objectContaining({
-      css: '@tailwind utilities;',
-    }))
-    expect(adapters.resolveTailwindV4Source).not.toHaveBeenCalled()
-    expect(generate).toHaveBeenCalledWith(expect.objectContaining({
-      candidates: new Set(['text-red-500']),
-      target: 'weapp',
-    }))
-    expect(result.css).toContain('.generated')
-    expect(result.messages).toContainEqual(expect.objectContaining({
-      type: 'weapp-tailwindcss:generated',
-      target: 'weapp',
-    }))
-  })
-
   it('prepends Tailwind import for v4 apply-only css before resolving source', async () => {
     const { adapters } = createAdapters({
       createGenerator: vi.fn(() => ({
@@ -106,6 +76,5 @@ describe('generator postcss plugin factory', () => {
     })
 
     expect(adapters.resolveTailwindV4Source).toHaveBeenCalled()
-    expect(adapters.resolveTailwindV3Source).not.toHaveBeenCalled()
   })
 })

@@ -269,7 +269,7 @@ describe('tailwindcss/v4/runtime helpers', () => {
     expect(packageNames).toEqual(['tailwindcss'])
   })
 
-  it('prefers the installed Tailwind package version over an explicit v4 setting', async () => {
+  it('keeps the explicit Tailwind v4 setting when creating the runtime', async () => {
     createTailwindcssRuntime.mockImplementation(options => options)
     const { createTailwindcssRuntimeForBase } = await loadModule()
 
@@ -282,7 +282,7 @@ describe('tailwindcss/v4/runtime helpers', () => {
 
     expect(createTailwindcssRuntime).toHaveBeenCalledTimes(1)
     expect(runtime.tailwindcss?.packageName).toBe('tailwindcss')
-    expect(runtime.tailwindcss?.version).toBe(3)
+    expect(runtime.tailwindcss?.version).toBe(4)
   })
 
   it('does not fallback to @tailwindcss/postcss when tailwindcss package is incompatible', async () => {
@@ -440,25 +440,6 @@ describe('tailwindcss/v4/runtime helpers', () => {
     expect(runtime.tailwindcss?.v4?.cssEntries).toEqual([])
   })
 
-  it('keeps explicit tailwindcss v3 projects on the v3 package even when v4 config exists', async () => {
-    createTailwindcssRuntime.mockImplementation(options => options)
-    const { createTailwindcssRuntimeForBase } = await loadModule()
-
-    const runtime = createTailwindcssRuntimeForBase('/workspace/app', undefined, {
-      tailwindcss: {
-        version: 3,
-        v4: {
-          base: '/workspace/app',
-        },
-      },
-      tailwindcssRuntimeOptions: undefined,
-      supportCustomLengthUnits: true,
-      appType: 'taro',
-    } as unknown as InternalUserDefinedOptions) as any
-
-    expect(createTailwindcssRuntime).toHaveBeenCalledTimes(1)
-    expect(runtime.tailwindcss?.packageName).toBe('tailwindcss')
-  })
 
   it('does not infer v3 from the tailwindcss package name because it can also be v4', async () => {
     createTailwindcssRuntime.mockImplementation(options => options)

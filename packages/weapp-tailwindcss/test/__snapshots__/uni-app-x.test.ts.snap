@@ -1,36 +1,5 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`uni-app-x > tailwindcss3 index.uvue.ts case 1 1`] = `
-"
-	const __sfc__ = defineComponent({
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
-		}
-	})
-
-export default __sfc__
-function GenPagesIndexIndexRender(this: InstanceType<typeof __sfc__>): any | null {
-const _ctx = this
-const _cache = this.$.renderCache
-  return _cE("view", _uM({ class: "px-4" }), [
-    _cE("view", _uM({ class: "mt-_b32_d43rpx_B bg-_b_h322323_B" }), [
-      _cE("text", _uM({ class: "text-_b_h844343_B" }), _tD(_ctx.title), 1 /* TEXT */)
-    ]),
-    _cE("text", _uM({ class: "icebreaker" }), "icebreaker")
-  ])
-}
-const GenPagesIndexIndexStyles = [_uM([["icebreaker", _pS(_uM([["color", "#844343"]]))]])]
-"
-`;
-
 exports[`uni-app-x > uvue.ts case 0 1`] = `
 "
 const __sfc__ = defineComponent({
@@ -74,8 +43,10 @@ page,.tw-root,wx-root-portal-content,:host {
   background-color: #322323;
 }
 .px-4 {
-  padding-left: calc(var(--spacing) * 4);
-  padding-right: calc(var(--spacing) * 4);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-left: calc(var(--spacing)*4);
+  padding-right: calc(var(--spacing)*4);
 }
 .text-_b_h844343_B {
   color: #844343;

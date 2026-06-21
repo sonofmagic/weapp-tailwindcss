@@ -10,7 +10,6 @@ import { createFallbackPlaceholderCleaner, createFallbackPlaceholderReplacer, cr
 import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
 import { isNotLastChildPseudo, normalizeSpacingDeclarations } from '@/selectorParser/spacing'
 import { appendRuleSelector, assignRuleSelectors } from '@/utils/selector-guard'
-import cssVarsV3 from '../src/cssVarsV3'
 import * as entry from '../src/index'
 import * as selectorExports from '../src/selectorParser'
 import { createPlugin, createPlugins } from './plugins/utils'
@@ -22,9 +21,7 @@ const COLOR_DECLARATION_REGEX = /color:/g
 const RGBA_COMPACT_REGEX = /rgba\(1,2,3,0\.5\)/
 
 describe('entry exports', () => {
-  it('loads core entry points and css vars', async () => {
-    expect(Array.isArray(cssVarsV3)).toBe(true)
-    expect(cssVarsV3[0]?.prop).toBe('--tw-border-spacing-x')
+  it('loads core entry points', async () => {
     expect(typeof entry.createStylePipeline).toBe('function')
     expect(typeof selectorExports.getFallbackRemove).toBe('function')
     await import('../src/types')

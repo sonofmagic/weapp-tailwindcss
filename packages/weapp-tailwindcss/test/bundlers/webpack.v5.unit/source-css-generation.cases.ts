@@ -31,7 +31,6 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
       })),
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: root,
@@ -213,7 +212,6 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
       })),
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: root,
@@ -419,7 +417,6 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
       })),
       resolveTailwindV4Source: resolveTailwindV4SourceMock,
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
@@ -586,8 +583,8 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
     }
   })
 
-  it('keeps webpack extracted third-party css when v3 generated css is already in the asset', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-generated-user-'))
+  it('keeps webpack extracted third-party css when generated css is already in the asset', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v4-generated-user-'))
     const appCssFile = path.join(root, 'src/app.css')
     const sourceCss = [
       '@config "../tailwind.config.js";',
@@ -596,7 +593,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
       '@tailwind utilities;',
     ].join('\n')
     const generatedRawCss = [
-      '/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */',
+      '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
       '.bg-page-marker{background-color:#2563eb}',
     ].join('\n')
     const extractedCss = [
@@ -624,7 +621,6 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
       })),
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: root,
@@ -643,27 +639,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
       resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: root,
-        base: root,
-        baseFallbacks: [],
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: root,
-        base: options.base,
-        baseFallbacks: [],
-        css: options.css,
-        dependencies: [],
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: root,
-        base: root,
-        baseFallbacks: [],
-        css: sourceCss,
-        dependencies: [],
-      })),
-    }))
+      })),    }))
 
     try {
       await mkdir(path.dirname(appCssFile), { recursive: true })
@@ -678,7 +654,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         tailwindcssBasedir: root,
         tailwindRuntime: {
           ...createContext().tailwindRuntime,
-          majorVersion: 3,
+          majorVersion: 4,
           getClassSet: vi.fn(async () => new Set(['bg-page-marker'])),
           getClassSetSync: vi.fn(() => new Set(['bg-page-marker'])),
           extract: vi.fn(async () => ({ classSet: new Set(['bg-page-marker']) })),
@@ -792,7 +768,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
   })
 
   it('keeps processed webpack user css with data urls without relying on app or main filenames', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-processed-user-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v4-processed-user-'))
     const entryCssFile = path.join(root, 'src/styles/root-entry.css')
     const sourceCss = [
       '@config "../../tailwind.config.js";',
@@ -801,7 +777,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
       '@tailwind utilities;',
     ].join('\n')
     const generatedRawCss = [
-      '/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */',
+      '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
       '.bg-entry-marker{background-color:#2563eb}',
     ].join('\n')
     const extractedCss = [
@@ -829,7 +805,6 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
       })),
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: root,
@@ -848,27 +823,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
       resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
         projectRoot: root,
         baseFallbacks: [],
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: root,
-        base: root,
-        baseFallbacks: [],
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: root,
-        base: options.base,
-        baseFallbacks: [],
-        css: options.css,
-        dependencies: [],
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: root,
-        base: root,
-        baseFallbacks: [],
-        css: sourceCss,
-        dependencies: [],
-      })),
-    }))
+      })),    }))
 
     try {
       await mkdir(path.dirname(entryCssFile), { recursive: true })
@@ -888,7 +843,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         tailwindcssBasedir: root,
         tailwindRuntime: {
           ...createContext().tailwindRuntime,
-          majorVersion: 3,
+          majorVersion: 4,
           getClassSet: vi.fn(async () => new Set(['bg-entry-marker'])),
           getClassSetSync: vi.fn(() => new Set(['bg-entry-marker'])),
           extract: vi.fn(async () => ({ classSet: new Set(['bg-entry-marker']) })),

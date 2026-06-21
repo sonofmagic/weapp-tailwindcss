@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '../types'
 
 export type WeappTailwindcssPostcssTarget = 'weapp' | 'web' | 'tailwind'
-export type WeappTailwindcssPostcssTailwindVersion = 3 | 4
+export type WeappTailwindcssPostcssTailwindVersion = 4
 
 export interface TailwindCandidateSource {
   content: string
@@ -13,7 +13,6 @@ export interface WeappTailwindcssPostcssGenerateOptions {
   scanSources?: boolean | undefined
   sources?: TailwindCandidateSource[] | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
-  tailwindcssV3Compatibility?: boolean | undefined
   target?: WeappTailwindcssPostcssTarget | undefined
 }
 
@@ -27,17 +26,6 @@ export interface WeappTailwindcssPostcssGenerateResult {
 
 export interface WeappTailwindcssPostcssGenerator {
   generate: (options?: WeappTailwindcssPostcssGenerateOptions) => Promise<WeappTailwindcssPostcssGenerateResult>
-}
-
-export interface TailwindV3SourceOptions {
-  projectRoot?: string | undefined
-  cwd?: string | undefined
-  base?: string | undefined
-  css?: string | undefined
-  config?: string | undefined
-  configObject?: unknown
-  packageName?: string | undefined
-  postcssPlugin?: string | undefined
 }
 
 export interface TailwindV4SourceOptions {
@@ -54,7 +42,6 @@ export interface WeappTailwindcssPostcssGeneratorUserOptions {
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   importFallback?: boolean | undefined
-  tailwindcssV3Compatibility?: boolean | undefined
   bareArbitraryValues?: unknown
 }
 
@@ -63,7 +50,6 @@ export interface NormalizedWeappTailwindcssPostcssGeneratorOptions {
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   importFallback: boolean
-  tailwindcssV3Compatibility: boolean
   bareArbitraryValues?: unknown
 }
 
@@ -72,7 +58,6 @@ export interface WeappTailwindcssPostcssPluginAdapters {
   normalizeGeneratorOptions: (
     options: WeappTailwindcssPostcssGeneratorUserOptions | undefined,
   ) => NormalizedWeappTailwindcssPostcssGeneratorOptions
-  resolveTailwindV3Source: (options: TailwindV3SourceOptions) => Promise<TailwindResolvedSource>
   resolveTailwindV4Source: (options: TailwindV4SourceOptions) => Promise<TailwindResolvedSource>
 }
 
@@ -81,7 +66,7 @@ export interface WeappTailwindcssPostcssPluginAdapters {
  */
 export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOptions {
   /**
-   * 生成器配置，用于控制目标端、Tailwind 配置路径和 v4 兼容层。
+   * 生成器配置，用于控制目标端和 Tailwind 配置路径。
    */
   generator?: WeappTailwindcssPostcssGeneratorUserOptions | undefined
   /**

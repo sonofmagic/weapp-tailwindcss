@@ -2,7 +2,7 @@ import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { AppType } from '@/types/shared'
 import type { UniUtsPlatformInfo } from '@/utils'
 
-export type TailwindcssBranchVersion = 3 | 4
+export type TailwindcssBranchVersion = 4
 
 export type RuntimePlatformFamily = 'web' | 'mini-program' | 'native-app' | 'tailwind'
 
@@ -25,7 +25,6 @@ export interface RuntimeBranch {
   platformFamily: RuntimePlatformFamily
   platform: string | undefined
   nativeAppPlatform?: NativeAppPlatform | undefined
-  isTailwindV3: boolean
   isTailwindV4: boolean
   isWeb: boolean
   isMiniProgram: boolean

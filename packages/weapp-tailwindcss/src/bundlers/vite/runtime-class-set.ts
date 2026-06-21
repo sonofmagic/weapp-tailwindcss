@@ -118,7 +118,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   async function ensureBundleRuntimeClassSet(
     snapshot: BundleSnapshot,
     forceRefresh = false,
-    options: {
+    _options: {
       allowBaselineOnlyInitialSync?: boolean | undefined
       baseClassSet?: Set<string> | undefined
       transformOnly?: boolean | undefined
@@ -143,41 +143,6 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
     if (runtimeState.tailwindRuntime.majorVersion === 4 && !forceRuntimeRefresh) {
       try {
         const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
-        runtimeSet = nextRuntimeSet
-        return nextRuntimeSet
-      }
-      catch (error) {
-        debug('incremental runtime set sync failed, fallback to full collect: %O', error)
-        await bundleRuntimeClassSetManager.reset()
-      }
-    }
-
-    if (runtimeState.tailwindRuntime.majorVersion === 3 && !forceRuntimeRefresh) {
-      if (options.transformOnly) {
-        try {
-          return await transformRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
-        }
-        catch (error) {
-          debug('incremental transform runtime set sync failed, fallback to full collect: %O', error)
-          await transformRuntimeClassSetManager.reset()
-        }
-      }
-
-      try {
-        let baseClassSet = options.baseClassSet
-        if (!baseClassSet && (!runtimeSet || shouldRefreshRuntime)) {
-          baseClassSet = await collectRuntimeClassSet(runtimeState.tailwindRuntime, {
-            force: true,
-            skipRefresh: shouldRefreshRuntime,
-            clearCache: shouldRefreshRuntime,
-          })
-        }
-        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
-          baseClassSet: baseClassSet ?? (
-            options.allowBaselineOnlyInitialSync === true ? runtimeSet : undefined
-          ),
-          skipInitialFullScanWithBase: options.allowBaselineOnlyInitialSync === true && Boolean(runtimeSet),
-        })
         runtimeSet = nextRuntimeSet
         return nextRuntimeSet
       }

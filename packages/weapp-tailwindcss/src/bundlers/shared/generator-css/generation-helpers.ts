@@ -15,7 +15,6 @@ import {
   splitGeneratorPlaceholderCssBySourceOrder,
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCssBySourceOrder,
-  TAILWIND_BANNER_RE,
 } from './markers'
 
 export function hasMiniProgramTailwindV4PreflightReset(css: string) {
@@ -38,7 +37,6 @@ export function finalizeMiniProgramGeneratorCss(
   return finalizeMiniProgramCss(css, {
     cssPreflight: injectPreflight ? cssPreflight : undefined,
     isTailwindcssV4: majorVersion === 4,
-    preservePseudoContentInit: majorVersion === 3,
     tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
       ?? options.styleOptions?.tailwindcssV4GradientFallback,
   })
@@ -72,16 +70,6 @@ export function mergeScopedRuntimeWithCurrentRuntime(
     matchedCssSourceFile: boolean
   },
 ) {
-  if (
-    options.majorVersion === 3
-    && !options.isolateCssSource
-  ) {
-    return new Set([
-      ...scopedRuntime,
-      ...runtime,
-      ...(options.currentCssCandidates ?? []),
-    ])
-  }
   if (options.isolateCssSource) {
     if (options.matchedCssSourceFile) {
       return new Set([
@@ -127,7 +115,7 @@ export function shouldIsolateScopedCssSource(
   if (sourceEntries?.length === 0) {
     return false
   }
-  return (majorVersion === 3 || majorVersion === 4) && sourceEntries !== undefined && options.cssHandlerOptions?.isMainChunk !== true
+  return majorVersion === 4 && sourceEntries !== undefined && options.cssHandlerOptions?.isMainChunk !== true
 }
 
 export function shouldIsolateCurrentTailwindV4CssCandidates(
@@ -242,16 +230,6 @@ export function shouldUseGeneratorForCurrentCss(
     rawSource: string
   },
 ) {
-  if (
-    majorVersion === 3
-    && TAILWIND_BANNER_RE.test(options.rawSource)
-    && !options.hasGeneratedMarkers
-    && !hasTailwindSourceDirectives(options.rawSource, { importFallback: true })
-    && !hasTailwindApplyDirective(options.rawSource)
-    && options.forceGenerator !== true
-  ) {
-    return false
-  }
   const hasApplyDirectives = hasTailwindApplyDirective(options.rawSource)
   const sourceCss = (cssHandlerOptions as { sourceOptions?: { sourceCss?: string | undefined } | undefined }).sourceOptions?.sourceCss
   const hasSourceCssDirectives = typeof sourceCss === 'string'
@@ -265,7 +243,7 @@ export function shouldUseGeneratorForCurrentCss(
     || options.hasGeneratedMarkers
     || options.hasSourceDirectives
     || hasApplyDirectives
-    || ((majorVersion === 3 || majorVersion === 4) && hasSourceCssDirectives)
+    || (majorVersion === 4 && hasSourceCssDirectives)
     || (majorVersion === 4 && cssHandlerOptions.isMainChunk)
 }
 
@@ -317,7 +295,7 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
     sources: generatedResults.flatMap(item => item.sources),
   }
 }
-const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
+const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([4])
 
 type GeneratorResult = Awaited<ReturnType<ReturnType<typeof createWeappTailwindcssGenerator>['generate']>>
 

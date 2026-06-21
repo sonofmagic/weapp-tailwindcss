@@ -85,7 +85,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
 export function hoistTailwindPreflightBase(css: string) {
   try {
     const root = postcss.parse(css)
-    const preflightRules = collectPreflightRules(root, { preservePseudoContentInit: true })
+    const preflightRules = collectPreflightRules(root)
     insertHoistedRules(root, preflightRules)
     return root.toString()
   }

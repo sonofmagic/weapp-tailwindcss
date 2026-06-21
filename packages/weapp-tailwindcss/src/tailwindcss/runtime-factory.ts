@@ -6,7 +6,6 @@ import type {
   TailwindCssRuntimeOptions,
 } from './runtime-types'
 import type { TailwindcssRuntimeLike } from '@/types'
-import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
@@ -16,7 +15,6 @@ import { postcss } from '@weapp-tailwindcss/postcss'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
 import { findNearestPackageRoot } from '@/context/workspace'
 import { omitUndefined } from '@/utils/object'
-import { extractCandidatesFromSource } from './candidates'
 import {
   normalizeExtendLengthUnits,
   normalizeTailwindcssRuntimeOptions,
@@ -27,8 +25,6 @@ import {
   resolveModuleFromPaths,
   resolveTailwindConfigFallback,
 } from './runtime-resolve'
-import { expandTailwindSourceEntries, resolveTailwindSourceEntry } from './source-scan'
-import { resolveTailwindV3SourceFromRuntime } from './v3-engine'
 import { resolveTailwindV4SourceFromRuntime } from './v4-engine'
 import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION } from './version'
 
@@ -112,19 +108,13 @@ function createPackageInfo(tailwindOptions: TailwindUserOptions | undefined): Ta
 }
 
 function resolveMajorVersion(tailwindOptions: TailwindUserOptions | undefined, packageInfo: TailwindcssRuntimeLike['packageInfo']) {
-  if (tailwindOptions?.version === 2 || tailwindOptions?.version === 3 || tailwindOptions?.version === 4) {
+  if (tailwindOptions?.version === 4) {
     return tailwindOptions.version
   }
 
   const version = packageInfo.version
   if (version?.startsWith('4.')) {
     return 4
-  }
-  if (version?.startsWith('3.')) {
-    return 3
-  }
-  if (version?.startsWith('2.')) {
-    return 2
   }
   return DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION
 }
@@ -157,139 +147,6 @@ function createFallbackTailwindcssRuntime(options?: TailwindCssRuntimeOptions): 
   }
 }
 
-function findBalancedBlock(source: string, start: number) {
-  const open = source[start]
-  const close = open === '[' ? ']' : open === '{' ? '}' : undefined
-  if (!close) {
-    return undefined
-  }
-
-  let depth = 0
-  let quote: '"' | '\'' | '`' | undefined
-  let escaped = false
-  for (let index = start; index < source.length; index++) {
-    const char = source[index]
-    if (quote) {
-      if (escaped) {
-        escaped = false
-        continue
-      }
-      if (char === '\\') {
-        escaped = true
-        continue
-      }
-      if (char === quote) {
-        quote = undefined
-      }
-      continue
-    }
-
-    if (char === '"' || char === '\'' || char === '`') {
-      quote = char
-      continue
-    }
-    if (char === open) {
-      depth++
-      continue
-    }
-    if (char === close) {
-      depth--
-      if (depth === 0) {
-        return source.slice(start, index + 1)
-      }
-    }
-  }
-  return undefined
-}
-
-function findContentBlock(source: string) {
-  const match = /\bcontent\s*:/.exec(source)
-  if (!match) {
-    return undefined
-  }
-  const start = match.index + match[0].length
-  const blockStart = source.slice(start).search(/[{[]/)
-  if (blockStart < 0) {
-    return undefined
-  }
-  return findBalancedBlock(source, start + blockStart)
-}
-
-function readStringLiteral(input: string, start: number) {
-  const quote = input[start]
-  if (quote !== '"' && quote !== '\'' && quote !== '`') {
-    return undefined
-  }
-  let value = ''
-  let escaped = false
-  for (let index = start + 1; index < input.length; index++) {
-    const char = input[index]
-    if (escaped) {
-      value += char
-      escaped = false
-      continue
-    }
-    if (char === '\\') {
-      escaped = true
-      continue
-    }
-    if (char === quote) {
-      return {
-        value,
-        end: index + 1,
-      }
-    }
-    if (quote === '`' && char === '$' && input[index + 1] === '{') {
-      return undefined
-    }
-    value += char
-  }
-  return undefined
-}
-
-function isStaticContentPattern(value: string) {
-  if (value.length === 0) {
-    return false
-  }
-  if (/\s/.test(value)) {
-    return false
-  }
-  return value.startsWith('.')
-    || value.startsWith('/')
-    || value.startsWith('!')
-    || value.includes('*')
-    || value.includes('{')
-}
-
-async function readStaticTailwindV3Content(config: string | undefined) {
-  if (!config) {
-    return []
-  }
-  let code: string
-  try {
-    code = await readFile(config, 'utf8')
-  }
-  catch {
-    return []
-  }
-  const block = findContentBlock(code)
-  if (!block) {
-    return []
-  }
-  const values: string[] = []
-  for (let index = 0; index < block.length; index++) {
-    const literal = readStringLiteral(block, index)
-    if (!literal) {
-      continue
-    }
-    if (isStaticContentPattern(literal.value)) {
-      values.push(literal.value)
-    }
-    index = literal.end - 1
-  }
-  return values
-}
-
 function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): TailwindcssRuntimeLike {
   const tailwindOptions = options.tailwindcss
   const packageInfo = createPackageInfo(tailwindOptions)
@@ -304,102 +161,12 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
     return new Set([...classSet].filter(className => options.filter?.(className) !== false))
   }
 
-  async function collectTailwindV3CandidateSources() {
-    const source = await resolveTailwindV3SourceFromRuntime(runtime).catch(async () => {
-      const cwd = tailwindOptions?.v3?.cwd ?? tailwindOptions?.cwd ?? options.projectRoot ?? process.cwd()
-      const config = tailwindOptions?.v3?.config ?? tailwindOptions?.config
-      return {
-        version: 3 as const,
-        projectRoot: options.projectRoot ?? cwd,
-        cwd,
-        base: cwd,
-        css: '@tailwind utilities;',
-        config,
-        configObject: {
-          content: await readStaticTailwindV3Content(config),
-        },
-        dependencies: [],
-        packageName: tailwindOptions?.packageName ?? 'tailwindcss',
-        postcssPlugin: tailwindOptions?.v3?.postcssPlugin ?? tailwindOptions?.postcssPlugin ?? 'tailwindcss',
-      }
-    })
-    const content = source.configObject?.content
-    const sources: Array<{ content: string, extension?: string | undefined }> = []
-    const sourceEntries: Array<Awaited<ReturnType<typeof resolveTailwindSourceEntry>>> = []
-
-    async function addContentPattern(pattern: string, base: string) {
-      const negated = pattern.startsWith('!')
-      sourceEntries.push(await resolveTailwindSourceEntry(
-        negated ? pattern.slice(1) : pattern,
-        base,
-        negated,
-      ))
-    }
-
-    async function visit(value: unknown, base = source.cwd) {
-      if (Array.isArray(value)) {
-        for (const item of value) {
-          await visit(item, base)
-        }
-        return
-      }
-      if (typeof value === 'string') {
-        await addContentPattern(value, base)
-        return
-      }
-      if (value && typeof value === 'object') {
-        const record = value as { raw?: unknown, extension?: unknown, files?: unknown }
-        if (typeof record.raw === 'string') {
-          sources.push({
-            content: record.raw,
-            extension: typeof record.extension === 'string' ? record.extension : 'html',
-          })
-          return
-        }
-        if (record.files !== undefined) {
-          await visit(record.files, base)
-        }
-      }
-    }
-
-    await visit(content)
-
-    const files = await expandTailwindSourceEntries(sourceEntries)
-    await Promise.all(files.map(async (file) => {
-      try {
-        sources.push({
-          content: await readFile(file, 'utf8'),
-          extension: path.extname(file).slice(1) || 'html',
-        })
-      }
-      catch {
-        // 源文件可能在 watch 中被删除，跳过后续轮次会重新收集。
-      }
-    }))
-
-    return {
-      source,
-      sources,
-    }
-  }
-
   async function collectClassSet() {
-    if (majorVersion === 4) {
-      const report = await collectContentTokens()
-      const candidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
-        return typeof entry === 'string' ? entry : entry.rawCandidate
-      }).filter((entry): entry is string => typeof entry === 'string' && entry.length > 0))
-      await collectTailwindV4CssCandidates(candidates)
-      return applyClassSetFilter(candidates)
-    }
-
-    const { sources } = await collectTailwindV3CandidateSources()
-    const candidates = new Set<string>()
-    for (const source of sources) {
-      for (const candidate of await extractCandidatesFromSource(source.content, source.extension ?? 'html')) {
-        candidates.add(candidate)
-      }
-    }
+    const report = await collectContentTokens()
+    const candidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
+      return typeof entry === 'string' ? entry : entry.rawCandidate
+    }).filter((entry): entry is string => typeof entry === 'string' && entry.length > 0))
+    await collectTailwindV4CssCandidates(candidates)
     return applyClassSetFilter(candidates)
   }
 
@@ -430,33 +197,19 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
   }
 
   async function collectContentTokens(): Promise<TailwindContentTokenReport> {
-    if (majorVersion === 4) {
-      const source = await resolveTailwindV4SourceFromRuntime(runtime)
-      const report = await extractProjectCandidatesWithPositions({
-        base: source.base,
-        baseFallbacks: source.baseFallbacks,
-        css: source.css,
-        cwd: source.projectRoot,
-        sources: source.sources,
-      })
-      return {
-        entries: report.entries,
-        filesScanned: report.filesScanned,
-        sources: source.sources,
-        skippedFiles: report.skippedFiles,
-      }
-    }
-
-    const { sources } = await collectTailwindV3CandidateSources()
-    const entries: string[] = []
-    for (const source of sources) {
-      entries.push(...await extractCandidatesFromSource(source.content, source.extension ?? 'html'))
-    }
+    const source = await resolveTailwindV4SourceFromRuntime(runtime)
+    const report = await extractProjectCandidatesWithPositions({
+      base: source.base,
+      baseFallbacks: source.baseFallbacks,
+      css: source.css,
+      cwd: source.projectRoot,
+      sources: source.sources,
+    })
     return {
-      entries,
-      filesScanned: sources.length,
-      sources,
-      skippedFiles: [],
+      entries: report.entries,
+      filesScanned: report.filesScanned,
+      sources: source.sources,
+      skippedFiles: report.skippedFiles,
     }
   }
 
@@ -483,9 +236,6 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
     majorVersion,
     options,
     async getClassSet() {
-      if (majorVersion !== 4 && classSetCache) {
-        return classSetCache
-      }
       return (await extract({ write: false })).classSet
     },
     getClassSetSync() {

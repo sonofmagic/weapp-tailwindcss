@@ -181,25 +181,8 @@ export async function ensureRuntimeClassSet(
   }
 }
 
-function shouldPreferSync(majorVersion: number | undefined) {
-  if (majorVersion == null) {
-    return true
-  }
-  if (majorVersion === 3) {
-    return true
-  }
-  if (majorVersion === 4) {
-    return true
-  }
-  return false
-}
-
 function tryGetRuntimeClassSetSync(tailwindRuntime: TailwindcssRuntimeLike) {
   if (typeof tailwindRuntime.getClassSetSync !== 'function') {
-    return undefined
-  }
-
-  if (!shouldPreferSync(tailwindRuntime.majorVersion)) {
     return undefined
   }
 
@@ -212,12 +195,7 @@ function tryGetRuntimeClassSetSync(tailwindRuntime: TailwindcssRuntimeLike) {
     return set
   }
   catch (error) {
-    if (tailwindRuntime.majorVersion === 4) {
-      debug('getClassSetSync() unavailable for tailwindcss v4, fallback to async getClassSet(): %O', error)
-    }
-    else {
-      debug('getClassSetSync() failed, fallback to async getClassSet(): %O', error)
-    }
+    debug('getClassSetSync() unavailable for tailwindcss v4, fallback to async getClassSet(): %O', error)
     return undefined
   }
 }
@@ -246,9 +224,6 @@ async function mergeTailwindV4GeneratorClassSet(
   tailwindRuntime: TailwindcssRuntimeLike,
   classSet: Set<string>,
 ) {
-  if (tailwindRuntime.majorVersion !== 4) {
-    return classSet
-  }
   const generatorClassSet = await collectTailwindV4GeneratorClassSet(tailwindRuntime).catch(() => undefined)
   if (!generatorClassSet || generatorClassSet.size === 0) {
     return classSet
@@ -257,12 +232,6 @@ async function mergeTailwindV4GeneratorClassSet(
     ...classSet,
     ...generatorClassSet,
   ])
-}
-
-function canReturnExtractClassSetImmediately(
-  tailwindRuntime: TailwindcssRuntimeLike,
-) {
-  return tailwindRuntime.majorVersion !== 4
 }
 
 async function collectRuntimeClassSet(
@@ -306,18 +275,6 @@ async function collectRuntimeClassSet(
   }
 
   const task = (async () => {
-    // force 场景先抓一份 sync 快照作为兜底，避免 extract() 在某些环境返回空集合后
-    // 破坏本轮 JS/WXML 转译结果（例如构建链路中 class set 尚未落盘的瞬时状态）。
-    const preExtractSyncSetCandidate = options.force
-      ? tryGetRuntimeClassSetSync(activeRuntime)
-      : undefined
-    const preExtractSyncSet = activeRuntime.majorVersion === 4
-      ? undefined
-      : preExtractSyncSetCandidate
-    if (preExtractSyncSet) {
-      debug('runtime class set snapshot via getClassSetSync() before extract(), size=%d', preExtractSyncSet.size)
-    }
-
     // 强制收集时优先走 extract()：
     // 在多构建/热更新场景下，sync class set 可能受上轮缓存影响而滞后，
     // 先用 extract() 能拿到更接近当前源码状态的类集合。
@@ -327,17 +284,9 @@ async function collectRuntimeClassSet(
       const result = await activeRuntime.extract({ write: false })
       if (result?.classSet) {
         if (result.classSet.size > 0) {
-          if (canReturnExtractClassSetImmediately(activeRuntime)) {
-            debug('runtime class set resolved via extract(), size=%d', result.classSet.size)
-            return result.classSet
-          }
           const merged = await mergeTailwindV4GeneratorClassSet(activeRuntime, result.classSet)
           debug('runtime class set resolved via extract() + tailwindcss v4 source scan, extract=%d merged=%d', result.classSet.size, merged.size)
           return merged
-        }
-        if (preferExtract && activeRuntime.majorVersion !== 4) {
-          debug('runtime class set resolved via empty extract() on force collect, size=0')
-          return result.classSet
         }
         if (preferExtract) {
           debug('runtime class set from extract() is empty on force collect, fallback to generator/sync/async class set')
@@ -351,16 +300,9 @@ async function collectRuntimeClassSet(
       debug('extract() failed, fallback to getClassSet(): %O', error)
     }
 
-    if (activeRuntime.majorVersion === 4) {
-      const generatorClassSet = await collectTailwindV4GeneratorClassSet(activeRuntime)
-      if (generatorClassSet && generatorClassSet.size > 0) {
-        return generatorClassSet
-      }
-    }
-
-    if (preExtractSyncSet) {
-      debug('runtime class set fallback to pre-extract sync snapshot, size=%d', preExtractSyncSet.size)
-      return preExtractSyncSet
+    const generatorClassSet = await collectTailwindV4GeneratorClassSet(activeRuntime)
+    if (generatorClassSet && generatorClassSet.size > 0) {
+      return generatorClassSet
     }
 
     const syncSet = tryGetRuntimeClassSetSync(activeRuntime)

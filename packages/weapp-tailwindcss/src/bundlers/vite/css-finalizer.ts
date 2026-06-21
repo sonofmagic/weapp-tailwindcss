@@ -119,9 +119,6 @@ function shouldGenerateCssByGenerator(
   if (hasTailwindRootDirectives(rawSource, { importFallback: generatorOptions.importFallback })) {
     return true
   }
-  if (opts.tailwindRuntime.majorVersion === 3) {
-    return false
-  }
   return processed
     && hasTailwindApplyDirective(rawSource)
     && shouldFinalizeProcessedCssAsset(opts, file)

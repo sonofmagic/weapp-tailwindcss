@@ -629,16 +629,6 @@ describe('v5 vite generator bundle', () => {
       root: null,
       version: 3,
     }))
-    const resolveV3SourceMock = vi.fn(async () => ({
-      version: 3,
-      projectRoot: process.cwd(),
-      cwd: process.cwd(),
-      base: process.cwd(),
-      css: '@tailwind utilities;',
-      dependencies: [],
-      packageName: 'tailwindcss',
-      postcssPlugin: 'tailwindcss',
-    }))
     const resolveV4SourceMock = vi.fn()
 
     vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
@@ -654,7 +644,6 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV3SourceFromRuntime: resolveV3SourceMock,
         resolveTailwindV4SourceFromRuntime: resolveV4SourceMock,
       }
     })
@@ -668,7 +657,7 @@ describe('v5 vite generator bundle', () => {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -691,7 +680,7 @@ describe('v5 vite generator bundle', () => {
       target: 'weapp',
       styleOptions: expect.objectContaining({
         isMainChunk: true,
-        majorVersion: 3,
+        majorVersion: 4,
       }),
     }))
     expect(generateMock.mock.calls[0]?.[0]?.candidates).toEqual(runtimeSet)
@@ -699,7 +688,7 @@ describe('v5 vite generator bundle', () => {
     expect(userCssCall).toBeTruthy()
     expect(userCssCall?.[1]).toMatchObject({
       isMainChunk: false,
-      majorVersion: 3,
+      majorVersion: 4,
     })
   }, TEST_TIMEOUT_MS)
 
@@ -734,16 +723,6 @@ describe('v5 vite generator bundle', () => {
             new Set([...candidates].filter(candidate => candidate === 'bg-[red]'))
           )),
         })),
-        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-          version: 3,
-          projectRoot: process.cwd(),
-          cwd: process.cwd(),
-          base: process.cwd(),
-          css: '@tailwind utilities;',
-          dependencies: [],
-          packageName: 'tailwindcss',
-          postcssPlugin: 'tailwindcss',
-        })),
         resolveTailwindV4SourceFromRuntime: vi.fn(),
       }
     })
@@ -753,7 +732,7 @@ describe('v5 vite generator bundle', () => {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -1866,20 +1845,6 @@ describe('v5 vite generator bundle', () => {
           generate: generateMock,
           validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
         })),
-        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-          version: 3,
-          projectRoot: tempDir,
-          cwd: tempDir,
-          base: tempDir,
-          css: '@tailwind utilities;',
-          config: configFile,
-          configObject: {
-            content: ['./src/**/*.{ts,tsx}', '!./src/apis/**'],
-          },
-          dependencies: [configFile],
-          packageName: 'tailwindcss',
-          postcssPlugin: 'tailwindcss',
-        })),
       }
     })
 
@@ -1888,7 +1853,7 @@ describe('v5 vite generator bundle', () => {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        majorVersion: 3,
+        majorVersion: 4,
         options: {
           projectRoot: tempDir,
           tailwindcss: {

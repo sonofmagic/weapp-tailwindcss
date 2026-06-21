@@ -294,8 +294,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
 
     const registerAutoCssSource = async (source: TailwindV4CssSource) => {
       if (
-        (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
-        || !source.file
+        !source.file
       ) {
         return
       }
@@ -333,21 +332,15 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       })
       currentWebpackCssSourceFiles.add(file)
     }
-    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, options: { watchMode?: boolean | undefined } = {}) => {
+    const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, _options: { watchMode?: boolean | undefined } = {}) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
-      const isTailwindcssV4 = (runtimeState.tailwindRuntime.majorVersion ?? 0) >= 4
-      if (!isTailwindcssV4 && options.watchMode !== true) {
-        return
-      }
       const configuredSourceFiles = new Set<string>()
-      if (isTailwindcssV4) {
-        for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
-          configuredSourceFiles.add(path.resolve(entry))
-        }
-        for (const source of tailwindOptions?.v4?.cssSources ?? []) {
-          if (source.file) {
-            configuredSourceFiles.add(path.resolve(source.file))
-          }
+      for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
+        configuredSourceFiles.add(path.resolve(entry))
+      }
+      for (const source of tailwindOptions?.v4?.cssSources ?? []) {
+        if (source.file) {
+          configuredSourceFiles.add(path.resolve(source.file))
         }
       }
       for (const file of webpackCssSources.keys()) {
@@ -380,8 +373,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     }
     const isWebpackProcessedTailwindEntryAsset = (isMainCssChunk?: boolean | undefined) => {
       if (
-        (runtimeState.tailwindRuntime.majorVersion ?? 0) < 4
-        || isMainCssChunk !== true
+        isMainCssChunk !== true
         || webpackProcessedCssSourceFiles.size === 0
       ) {
         return false

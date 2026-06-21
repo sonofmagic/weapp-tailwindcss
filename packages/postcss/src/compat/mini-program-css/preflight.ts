@@ -10,19 +10,7 @@ import {
   MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS,
 } from './selectors'
 
-const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
 const MINI_PROGRAM_PSEUDO_CONTENT_SELECTORS = new Set(['::before', '::after'])
-
-function createPseudoContentInitRule() {
-  const rule = postcss.rule({
-    selector: MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR,
-  })
-  rule.append({
-    prop: '--tw-content',
-    value: '\'\'',
-  })
-  return rule
-}
 
 function applyConfiguredPreflightDeclarations(
   rule: postcss.Rule,
@@ -56,7 +44,7 @@ function applyConfiguredPreflightDeclarations(
   }
 }
 
-export function collectPreflightRules(root: postcss.Root, options: { preservePseudoContentInit?: boolean, cssPreflight?: CssPreflightOptions | undefined } = {}) {
+export function collectPreflightRules(root: postcss.Root, options: { cssPreflight?: CssPreflightOptions | undefined } = {}) {
   const preflightNodes: postcss.Rule[] = []
 
   for (const node of root.nodes ?? []) {
@@ -84,7 +72,7 @@ export function collectPreflightRules(root: postcss.Root, options: { preservePse
     const isPseudoContentScope = selectors.length > 0
       && selectors.every(selector => MINI_PROGRAM_PSEUDO_CONTENT_SELECTORS.has(selector))
     if (isPseudoContentScope) {
-      rule.selector = MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR
+      rule.remove()
     }
     else if (hasElementSelector && selectors.every(selector => MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS.has(selector))) {
       rule.selector = MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR
@@ -92,15 +80,11 @@ export function collectPreflightRules(root: postcss.Root, options: { preservePse
     }
   }
   const nonEmptyPreflightRules = clonedPreflightRules.filter(rule => (rule.nodes?.length ?? 0) > 0)
-  const preflightRules = [
-    ...(options.preservePseudoContentInit ? [createPseudoContentInitRule()] : []),
-    ...nonEmptyPreflightRules,
-  ]
   for (const node of preflightNodes) {
     node.remove()
   }
 
-  return preflightRules
+  return nonEmptyPreflightRules
 }
 
 export function createPreflightResetRule(cssPreflight: CssPreflightOptions | undefined) {

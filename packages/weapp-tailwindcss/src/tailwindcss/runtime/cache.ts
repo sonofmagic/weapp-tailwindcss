@@ -183,8 +183,6 @@ function getTailwindOptionsSignature(tailwindRuntime: TailwindcssRuntimeLike) {
     versionHint: readOptionalProperty(tailwindOptions, 'versionHint'),
     cwd: tailwindOptions?.cwd,
     config: tailwindOptions?.config,
-    v2: tailwindOptions?.v2,
-    v3: tailwindOptions?.v3,
     v4: {
       base: tailwindOptions?.v4?.base,
       configuredBase: readOptionalProperty(tailwindOptions?.v4, 'configuredBase'),

@@ -5,20 +5,17 @@ import path from 'node:path'
 import process from 'node:process'
 import {
   createTailwindSourceEntryMatcher,
-  normalizeLegacyContentEntries,
   resolveTailwindV4CssSourceBase,
 } from '@/tailwindcss/source-scan'
-import { resolveTailwindV3SourceFromRuntime } from '@/tailwindcss/v3-engine'
 import { resolveTailwindV4SourceFromRuntime, resolveTailwindV4SourceOptionsFromRuntime } from '@/tailwindcss/v4-engine'
 import {
   collectConfiguredCssSources,
   collectExistingCssEntries,
   discoverTailwindV4CssEntries,
   mergeTailwindInlineSourceCandidates,
-  resolveTailwindV3CssEntryScan,
   resolveTailwindV4EntriesFromCssCached,
 } from './source-scan/css-entries'
-import { addSourceScanDependencies, addSourceScanDependency } from './source-scan/dependencies'
+import { addSourceScanDependencies } from './source-scan/dependencies'
 
 export {
   discoverTailwindV4CssEntries,
@@ -79,27 +76,6 @@ export async function resolveViteSourceScanEntries(
   runtime: TailwindcssRuntimeLike,
   scanOptions: ResolveViteSourceScanOptions = {},
 ): Promise<ResolvedViteSourceScan | undefined> {
-  if (runtime.majorVersion === 3) {
-    const [source, cssEntryScan] = await Promise.all([
-      resolveTailwindV3SourceFromRuntime(runtime),
-      resolveTailwindV3CssEntryScan(options, runtime),
-    ])
-    const contentEntries = [
-      ...normalizeLegacyContentEntries(source.configObject?.content, source.cwd, {
-        relativeBase: source.config ? path.dirname(source.config) : source.cwd,
-      }),
-      ...cssEntryScan.entries,
-    ]
-    const dependencies = new Set<string>()
-    addSourceScanDependency(dependencies, source.config)
-    for (const dependency of cssEntryScan.dependencies) {
-      dependencies.add(dependency)
-    }
-    return contentEntries.length > 0
-      ? createResolvedViteSourceScan({ entries: contentEntries }, dependencies)
-      : undefined
-  }
-
   if (runtime.majorVersion === 4) {
     const sourceOptions = resolveTailwindV4SourceOptionsFromRuntime(runtime)
     const cssEntries = collectExistingCssEntries(options)

@@ -78,12 +78,6 @@ export function createTailwindcssRuntimeForBase(
 
   const defaultTailwindcssConfig: TailwindUserOptions = {
     cwd: baseDir,
-    v2: {
-      cwd: baseDir,
-    },
-    v3: {
-      cwd: baseDir,
-    },
     v4: hasCssEntries
       ? omitUndefined({ cssEntries })
       : omitUndefined({
@@ -142,9 +136,7 @@ export function createTailwindcssRuntimeForBase(
   const packageNameForVersionDetection = configuredPackageName ?? mergedTailwindOptions.packageName ?? 'tailwindcss'
   const installedTailwindVersion = readInstalledPackageMajorVersion(packageNameForVersionDetection, baseDir)
   const resolvedTailwindVersion = installedTailwindVersion ?? explicitTailwindVersion
-  const supportedResolvedTailwindVersion = resolvedTailwindVersion === 2 || resolvedTailwindVersion === 3 || resolvedTailwindVersion === 4
-    ? resolvedTailwindVersion
-    : undefined
+  const supportedResolvedTailwindVersion = resolvedTailwindVersion === 4 ? resolvedTailwindVersion : undefined
 
   const tailwindOptionsForPackage: TailwindUserOptions = {
     ...mergedTailwindOptions,

@@ -8,7 +8,7 @@ export const DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION: WeappTailwindcssPostcs
 function normalizeSupportedTailwindcssMajorVersion(
   version: number | undefined,
 ): WeappTailwindcssPostcssTailwindVersion | undefined {
-  return version === 3 || version === 4 ? version : undefined
+  return version === 4 ? version : undefined
 }
 
 interface PackageJsonLike {
@@ -57,7 +57,7 @@ function findPackageJsonDeclaringPackage(packageName: string, base: string) {
 }
 
 function readDeclaredPackageMajorVersion(version: string | undefined) {
-  const match = version?.match(/(?:^|\D)([34])(?:\.|\b)/)
+  const match = version?.match(/(?:^|\D)(4)(?:\.|\b)/)
   return normalizeSupportedTailwindcssMajorVersion(match ? Number(match[1]) : undefined)
 }
 

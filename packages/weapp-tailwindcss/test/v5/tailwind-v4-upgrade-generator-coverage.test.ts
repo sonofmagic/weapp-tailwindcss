@@ -97,7 +97,7 @@ async function generate(css: string, generator: NonNullable<Parameters<typeof we
 }
 
 describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
-  it('keeps target web aligned with native Tailwind v4 defaults unless Tailwind v4 compatibility is explicitly enabled', async () => {
+  it('keeps target web aligned with native Tailwind v4 defaults unless Tailwind v4 is explicitly enabled', async () => {
     const fixture = await createFixtureBase()
     const [officialResult, generatorResult] = await Promise.all([
       postcss([
@@ -143,7 +143,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('restores Tailwind v4 default values for explicit web generator compatibility output', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-      tailwindcssV3Compatibility: true,
       target: 'web',
     })
 
@@ -173,7 +172,7 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('oklch(')
   })
 
-  it('uses Tailwind v4 compatibility defaults and colors for mini-program generator output by default', async () => {
+  it('uses Tailwind v4 defaults and colors for mini-program generator output by default', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
       target: 'weapp',
     })
@@ -323,7 +322,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
         }),
@@ -375,7 +373,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
         }),
@@ -431,7 +428,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
         }),
@@ -558,7 +554,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
         }),
@@ -641,7 +636,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
       postcss([
         weappTailwindcss({
           generator: {
-            tailwindcssV3Compatibility: false,
             target: 'weapp',
           },
         }),
@@ -680,7 +674,6 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
 
   it('can opt mini-program generator output into native Tailwind v4 defaults', async () => {
     const result = await generate(UPGRADE_DEFAULTS_SOURCE_CSS, {
-      tailwindcssV3Compatibility: false,
       target: 'weapp',
     })
 
@@ -698,7 +691,7 @@ describe('v5 Tailwind CSS v4 upgrade generator coverage', () => {
     expect(result.css).not.toContain('oklch(')
   })
 
-  it('keeps user-defined theme colors ahead of Tailwind v4 compatibility color defaults', async () => {
+  it('keeps user-defined theme colors ahead of Tailwind v4 color defaults', async () => {
     const result = await generate(`
       @import "tailwindcss" source(none);
       @theme {

@@ -1,10 +1,9 @@
 import type { Result, Root } from 'postcss'
-import type { TailwindSourceEntry } from '../source-scan'
 import type { TailwindCandidateSource, WeappTailwindcssPostcssPluginOptions } from './types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { loadConfig } from 'tailwindcss-config'
-import { extractRawCandidatesWithPositions, extractValidCandidates } from 'tailwindcss-patch'
+import { extractValidCandidates } from 'tailwindcss-patch'
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
@@ -59,53 +58,15 @@ async function collectConfigContentFiles(root: Root, base: string, options: Weap
       config: configPath,
       cwd: path.dirname(configPath),
     })
-    const contentEntries = normalizeLegacyContentEntries(
-      result?.config.content,
-      options.version === 3 ? options.projectRoot ?? base : path.dirname(configPath),
-      {
-        relativeBase: path.dirname(configPath),
-      },
-    )
+    const contentEntries = normalizeLegacyContentEntries(result?.config.content, path.dirname(configPath), {
+      relativeBase: path.dirname(configPath),
+    })
     files.push(...await expandTailwindSourceEntries(contentEntries))
   }
   return {
     configPaths,
     files: [...new Set(files)],
   }
-}
-
-async function collectConfiguredContentEntries(root: Root, base: string, options: WeappTailwindcssPostcssPluginOptions) {
-  const configPath = resolveOptionConfigPath(options.generator?.config ?? options.config, base) ?? collectConfigPaths(root, base)[0]
-  if (!configPath) {
-    return []
-  }
-  const resolvedConfigPath = path.isAbsolute(configPath) ? configPath : path.resolve(base, configPath)
-  const result = await loadConfig({
-    config: resolvedConfigPath,
-    cwd: path.dirname(resolvedConfigPath),
-  })
-  return normalizeLegacyContentEntries(
-    result?.config.content,
-    options.version === 3 ? options.projectRoot ?? base : path.dirname(resolvedConfigPath),
-    {
-      relativeBase: path.dirname(resolvedConfigPath),
-    },
-  )
-}
-
-async function collectRawCandidatesFromSourceEntries(sourceEntries: TailwindSourceEntry[]) {
-  const candidates = new Set<string>()
-  const files = await expandTailwindSourceEntries(sourceEntries)
-  await Promise.all(files.map(async (file) => {
-    const matches = await extractRawCandidatesWithPositions(await readFile(file, 'utf8'), getSourceExtension(file))
-    for (const match of matches) {
-      const candidate = match?.rawCandidate
-      if (typeof candidate === 'string' && candidate.length > 0) {
-        candidates.add(candidate)
-      }
-    }
-  }))
-  return candidates
 }
 
 export async function collectAutoTailwindCandidates(
@@ -123,14 +84,8 @@ export async function collectAutoTailwindCandidates(
   const hasSourceNone = root.toString().includes('source(none)')
   const shouldSkipAutoScan = isTailwindV4ApplyOnlyCss(root, options)
   const inlineCandidates = collectCssInlineSourceCandidates(root)
-  const configuredContentEntries = options.version === 3
-    ? await collectConfiguredContentEntries(root, base, options)
-    : []
 
-  if (configuredContentEntries.length > 0) {
-    sourceEntries.push(...configuredContentEntries)
-  }
-  else if (!hasSourceNone && !shouldSkipAutoScan) {
+  if (!hasSourceNone && !shouldSkipAutoScan) {
     sourceEntries.push({
       base,
       negated: false,
@@ -141,14 +96,12 @@ export async function collectAutoTailwindCandidates(
   sourceEntries.push(...await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN))
   const candidates = sourceEntries.length === 0
     ? []
-    : options.version === 3
-      ? await collectRawCandidatesFromSourceEntries(sourceEntries)
-      : await extractValidCandidates({
-          base,
-          css: root.toString(),
-          cwd: projectRoot,
-          sources: sourceEntries,
-        })
+    : await extractValidCandidates({
+        base,
+        css: root.toString(),
+        cwd: projectRoot,
+        sources: sourceEntries,
+      })
 
   return new Set([
     ...[...candidates].filter(candidate => !inlineCandidates.excluded.has(candidate)),

@@ -43,7 +43,7 @@ export interface UserDefinedOptionsGeneralPart {
    *
    * @group 3.一般配置
    * @remarks
-   * 默认关闭。传入 `true` 后会启用 Tailwind CSS v3 / v4 裸任意值生成。class 字符转义继续由
+   * 默认关闭。传入 `true` 后会启用 Tailwind CSS v4 裸任意值生成。class 字符转义继续由
    * `customReplaceDictionary` 控制，JS 转译仍遵循 `classNameSet` 精确命中原则。
    *
    * @default false

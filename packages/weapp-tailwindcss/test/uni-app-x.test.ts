@@ -60,40 +60,6 @@ describe('uni-app-x', () => {
     expect(css).toMatchSnapshot('css')
   })
 
-  it('tailwindcss3 index.uvue.ts case 1', async () => {
-    const { jsHandler, styleHandler } = getCompilerContext({
-      uniAppX: true,
-    })
-    const set = new Set<string>()
-    set.add('mt-[32.43rpx]')
-    set.add('bg-[#322323]')
-    set.add('text-[#844343]')
-    const { code } = jsHandler(
-      await getCase('uni-app-x/tw3-index.uvue.ts'),
-      set,
-      {
-        babelParserOptions: {
-          sourceType: 'unambiguous',
-          plugins: [
-            'typescript',
-          ],
-        },
-      },
-    )
-    expect(code).toMatchSnapshot()
-
-    const { css } = await styleHandler(
-      await getCase('uni-app-x/App.uvue.css'),
-      {
-        uniAppX: true,
-      },
-    )
-    expect(css).toContain('.mt-_b32_d43rpx_B')
-    expect(css).toContain('.bg-_b_h322323_B')
-    expect(css).not.toMatch(INVALID_UNI_APP_X_BASE_SELECTOR_RE)
-    expect(css).not.toContain('--tw-border-spacing-x: 0;')
-  })
-
   it.each(['app-android', 'app-ios', 'app-harmony'])('keeps @tailwind base usable on %s without pseudo-element selectors', async (platform) => {
     process.env.UNI_UTS_PLATFORM = platform
     const { styleHandler } = getCompilerContext({

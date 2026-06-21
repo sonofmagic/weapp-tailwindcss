@@ -2,7 +2,7 @@ import type { Declaration } from 'postcss'
 
 const LENGTH_VALUE_REGEXP = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?rpx$/i
 
-// 修复 tailwindcss 各版本在 JIT 下将 rpx 解析为颜色的情况，返回是否发生变更
+// 修复 Tailwind CSS 在 JIT 下将 rpx 解析为颜色的情况，返回是否发生变更
 export function normalizeTailwindcssRpxDeclaration(
   decl: Declaration,
   options?: { majorVersion?: number },
@@ -12,7 +12,7 @@ export function normalizeTailwindcssRpxDeclaration(
 
   if (
     LENGTH_VALUE_REGEXP.test(normalizedValue)
-    && (majorVersion === undefined || majorVersion === 2 || majorVersion === 3 || majorVersion === 4)
+    && (majorVersion === undefined || majorVersion === 4)
   ) {
     const lowerProp = decl.prop.toLowerCase()
     if (lowerProp === 'color') {

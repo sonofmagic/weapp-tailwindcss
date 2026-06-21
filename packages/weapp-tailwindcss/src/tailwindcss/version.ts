@@ -2,14 +2,14 @@ import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
-export type SupportedTailwindcssMajorVersion = 3 | 4
+export type SupportedTailwindcssMajorVersion = 4
 
 export const DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION: SupportedTailwindcssMajorVersion = 4
 
 export function normalizeSupportedTailwindcssMajorVersion(
   version: number | undefined,
 ): SupportedTailwindcssMajorVersion | undefined {
-  return version === 3 || version === 4 ? version : undefined
+  return version === 4 ? version : undefined
 }
 
 interface PackageJsonLike {
@@ -58,7 +58,7 @@ function readDeclaredPackageVersion(packageName: string, pkg: PackageJsonLike | 
 }
 
 function readDeclaredPackageMajorVersion(version: string | undefined) {
-  const match = version?.match(/(?:^|\D)([34])(?:\.|\b)/)
+  const match = version?.match(/(?:^|\D)(4)(?:\.|\b)/)
   return normalizeSupportedTailwindcssMajorVersion(match ? Number(match[1]) : undefined)
 }
 

@@ -32,7 +32,6 @@ export type {
   NormalizedWeappTailwindcssPostcssGeneratorOptions,
   TailwindCandidateSource,
   TailwindResolvedSource,
-  TailwindV3SourceOptions,
   TailwindV4SourceOptions,
   WeappTailwindcssPostcssGenerateOptions,
   WeappTailwindcssPostcssGenerateResult,

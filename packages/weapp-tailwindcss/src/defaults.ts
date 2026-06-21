@@ -9,13 +9,6 @@ const JS_FILE_PATTERN = /.+\.[cm]?js?$/
 
 const alwaysFalse = () => false
 
-export const TAILWIND_V3_CSS_PREFLIGHT = {
-  'box-sizing': 'border-box',
-  'border-width': '0',
-  'border-style': 'solid',
-  'border-color': 'currentColor',
-} satisfies Exclude<CssPreflightOptions, false>
-
 export const TAILWIND_V4_CSS_PREFLIGHT = {
   'box-sizing': 'border-box',
   'margin': '0',
@@ -23,11 +16,9 @@ export const TAILWIND_V4_CSS_PREFLIGHT = {
   'border': '0 solid',
 } satisfies Exclude<CssPreflightOptions, false>
 
-export function getDefaultCssPreflight(tailwindcssMajorVersion?: number): Exclude<CssPreflightOptions, false> {
+export function getDefaultCssPreflight(): Exclude<CssPreflightOptions, false> {
   return {
-    ...(tailwindcssMajorVersion === 4
-      ? TAILWIND_V4_CSS_PREFLIGHT
-      : TAILWIND_V3_CSS_PREFLIGHT),
+    ...TAILWIND_V4_CSS_PREFLIGHT,
   }
 }
 

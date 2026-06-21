@@ -8,7 +8,6 @@ import postcss from 'postcss'
 import twPlugin from '@/css-macro'
 import { normalComment } from '@/css-macro/constants'
 import postcssPlugin from '@/css-macro/postcss'
-import { createTailwindV3Engine, resolveTailwindV3Source } from '@/tailwindcss/v3-engine'
 import { createTailwindV4Engine, resolveTailwindV4Source } from '@/tailwindcss/v4-engine'
 
 let cssMacroPluginPath: string
@@ -54,120 +53,6 @@ function createTailwindV4MacroCss() {
 // not screen and (weapp-tw-platform:uniVersion > 3.9)
 // not screen and (weapp-tw-platform:H5 || MP-WEIXIN)
 describe('css-macro tailwindcss plugin', () => {
-  it('auto enables postcss macro transform for tailwindcss v3 config plugins', async () => {
-    const source = await resolveTailwindV3Source({
-      css: '@tailwind utilities;',
-      base: process.cwd(),
-      config: undefined,
-    })
-    source.configObject = {
-      content: [],
-      plugins: [twPlugin],
-    }
-    const engine = createTailwindV3Engine(source)
-
-    const result = await engine.generate({
-      candidates: ['ifdef-[MP-WEIXIN]:bg-blue-500'],
-      styleOptions: {
-        isMainChunk: false,
-      },
-    })
-
-    expect(result.rawCss).toContain('@weapp-tw-ifdef')
-    expect(result.css).toContain('#ifdef MP-WEIXIN')
-    expect(result.css).toContain('#endif')
-    expect(result.css).not.toContain('@media')
-    expect(result.css).not.toContain('@weapp-tw-ifdef')
-  })
-
-  it('compiles tailwindcss v3 css-macro comments by mini-program platform before final css output', async () => {
-    const source = await resolveTailwindV3Source({
-      css: '@tailwind utilities;',
-      base: process.cwd(),
-      config: undefined,
-    })
-    source.configObject = {
-      content: [],
-      plugins: [twPlugin],
-    }
-    const engine = createTailwindV3Engine(source)
-
-    const result = await engine.generate({
-      candidates: ['ifdef-[MP-WEIXIN]:bg-blue-500', 'ifndef-[MP-WEIXIN]:bg-red-500'],
-      styleOptions: {
-        isMainChunk: false,
-        platform: 'mp-weixin',
-      },
-    })
-
-    expect(result.rawCss).toContain('@weapp-tw-ifdef')
-    expect(result.rawCss).toContain('@weapp-tw-ifndef')
-    expect(result.css).toContain('.ifdef-_bMP-WEIXIN_B_cbg-blue-500')
-    expect(result.css).not.toContain('.ifndef-_bMP-WEIXIN_B_cbg-red-500')
-    expect(result.css).not.toContain('#ifdef MP-WEIXIN')
-    expect(result.css).not.toContain('#ifndef MP-WEIXIN')
-    expect(result.css).not.toContain('@weapp-tw-ifdef')
-    expect(result.css).not.toContain('@weapp-tw-ifndef')
-  })
-
-  it('auto enables postcss macro transform for tailwindcss v3 web target', async () => {
-    const source = await resolveTailwindV3Source({
-      css: '@tailwind utilities;',
-      base: process.cwd(),
-      config: undefined,
-    })
-    source.configObject = {
-      content: [],
-      plugins: [twPlugin],
-    }
-    const engine = createTailwindV3Engine(source)
-
-    const result = await engine.generate({
-      target: 'web',
-      candidates: ['ifdef-[H5]:bg-[#ff6611]'],
-      styleOptions: {
-        isMainChunk: false,
-      },
-    })
-
-    expect(result.rawCss).toContain('@weapp-tw-ifdef')
-    expect(result.css).toContain('/* #ifdef H5 */\n.ifdef-\\[H5\\]\\:bg-\\[\\#ff6611\\]')
-    expect(result.css).toContain('/* #endif */')
-    expect(result.css).not.toContain('@weapp-tw-ifdef')
-    expect(result.css).not.toContain('.ifdef-_bH5_B_cbg-_b_hff6611_B')
-  })
-
-  it('compiles tailwindcss v3 css-macro comments by web platform before final css output', async () => {
-    const source = await resolveTailwindV3Source({
-      css: '@tailwind utilities;',
-      base: process.cwd(),
-      config: undefined,
-    })
-    source.configObject = {
-      content: [],
-      plugins: [twPlugin],
-    }
-    const engine = createTailwindV3Engine(source)
-
-    const result = await engine.generate({
-      target: 'web',
-      candidates: ['ifdef-[MP-WEIXIN]:bg-blue-500', 'ifndef-[MP-WEIXIN]:bg-red-500'],
-      styleOptions: {
-        isMainChunk: false,
-        platform: 'h5',
-      },
-    })
-
-    expect(result.rawCss).toContain('@weapp-tw-ifdef')
-    expect(result.rawCss).toContain('@weapp-tw-ifndef')
-    expect(result.css).not.toContain('.ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500')
-    expect(result.css).toContain('.ifndef-\\[MP-WEIXIN\\]\\:bg-red-500')
-    expect(result.css).not.toContain('#ifdef MP-WEIXIN')
-    expect(result.css).not.toContain('#ifndef MP-WEIXIN')
-    expect(result.css).not.toContain('@weapp-tw-ifdef')
-    expect(result.css).not.toContain('@weapp-tw-ifndef')
-  })
-
   it('auto enables postcss macro transform for tailwindcss v4 @plugin', async () => {
     const source = await resolveTailwindV4Source({
       css: createTailwindV4MacroCss(),

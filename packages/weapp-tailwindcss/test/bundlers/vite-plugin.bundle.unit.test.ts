@@ -385,38 +385,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         generate: generateMock,
         validateCandidates: validateCandidatesMock,
       })),
-      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-      resolveTailwindV3Source: vi.fn(async options => ({
-        version: 3,
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        css: options?.css ?? '@tailwind utilities;',
-        config: undefined,
-        configObject: {},
-        dependencies: [],
-        packageName: 'tailwindcss',
-        postcssPlugin: 'tailwindcss',
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        version: 3,
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        css: '@tailwind utilities;',
-        config: undefined,
-        configObject: {},
-        dependencies: [],
-        packageName: 'tailwindcss',
-        postcssPlugin: 'tailwindcss',
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        packageName: 'tailwindcss',
-        postcssPlugin: 'tailwindcss',
-      })),
-    }))
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,    }))
 
     const runtimeSet = new Set(['from-runtime'])
     const currentContext = createContext({
@@ -426,7 +395,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     })
     setCurrentContext(currentContext)
@@ -806,7 +775,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         options: {
           projectRoot: root,
@@ -985,7 +954,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['bg-[#134543]'])),
         getClassSetSync: vi.fn(() => new Set(['bg-[#134543]'])),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['bg-[#134543]']) })),
       },
     }))
@@ -1420,7 +1389,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['text-[#00ff00]'])),
         getClassSetSync: vi.fn(() => new Set(['text-[#00ff00]'])),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['text-[#00ff00]']) })),
       },
     }))
@@ -1706,7 +1675,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         options: {
           projectRoot: root,
@@ -1879,7 +1848,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         options: {
           projectRoot: root,
@@ -2085,7 +2054,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         options: {
           projectRoot: root,
@@ -3238,7 +3207,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -3313,7 +3282,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['text-red-500'])),
         getClassSetSync: vi.fn(() => new Set(['text-red-500'])),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['text-red-500']) })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -3366,7 +3335,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['module-a-marker'])),
         getClassSetSync: vi.fn(() => new Set(['module-a-marker'])),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['module-a-marker']) })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -3444,7 +3413,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['unexpected-global'])),
         getClassSetSync: vi.fn(() => new Set(['unexpected-global'])),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(['unexpected-global']) })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -4061,7 +4030,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         options: {
           projectRoot: root,
@@ -4212,7 +4181,7 @@ module.exports = {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         options: {
           projectRoot: root,
@@ -4469,7 +4438,7 @@ module.exports = {
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
       },
     })
@@ -5368,17 +5337,7 @@ module.exports = {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-          projectRoot: process.cwd(),
-          cwd: process.cwd(),
-          css: '@tailwind utilities;',
-          dependencies: [],
-          packageName: 'tailwindcss',
-          postcssPlugin: 'tailwindcss',
-          version: 3,
-        })),
-      }
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,      }
     })
 
     setCurrentContext(createContext({
@@ -5392,7 +5351,7 @@ module.exports = {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -5556,7 +5515,7 @@ const trace = "at App.vue:4"
         getClassSet: vi.fn(async () => new Set([baselineClass, firstClass])),
         getClassSetSync: vi.fn(() => new Set([baselineClass, firstClass])),
         extract: extractMock,
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -6326,7 +6285,7 @@ const trace = "at App.vue:4"
         getClassSet: vi.fn(async () => new Set(['from-runtime'])),
         getClassSetSync: vi.fn(() => new Set(['from-runtime'])),
         extract: vi.fn(async () => ({ classSet: new Set(['from-runtime']) })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -8224,7 +8183,7 @@ const trace = "at App.vue:4"
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -9342,7 +9301,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -9463,18 +9422,7 @@ ${utilities}
         createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => ({
           generate: vi.fn(async () => generateMock(source)),
         })),
-        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
-        resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-          version: 3,
-          projectRoot: process.cwd(),
-          cwd: process.cwd(),
-          base: process.cwd(),
-          css: '@tailwind utilities;',
-          dependencies: [],
-          packageName: 'tailwindcss',
-          postcssPlugin: 'tailwindcss',
-        })),
-      }
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,      }
     })
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
@@ -9502,7 +9450,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(currentCandidates)),
         getClassSetSync: vi.fn(() => new Set(currentCandidates)),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(currentCandidates) })),
         getContexts: vi.fn(() => [{
           userConfig: { content: ['./src/**/*.{html,js,ts,jsx,tsx,vue}'] },
@@ -9621,7 +9569,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(currentCandidates)),
         getClassSetSync: vi.fn(() => new Set(currentCandidates)),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(currentCandidates) })),
         getContexts: vi.fn(() => [{
           userConfig: { content: ['./src/**/*.{html,js,ts,jsx,tsx,vue}'] },
@@ -9732,7 +9680,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
       },
     }))
@@ -9809,7 +9757,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(runtimeSet)),
         getClassSetSync: vi.fn(() => new Set(runtimeSet)),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set(runtimeSet) })),
       },
     }))
@@ -10013,7 +9961,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -10145,7 +10093,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: ['./miniprogram/**/*.{wxml,js,ts}'] },
@@ -10248,7 +10196,7 @@ ${utilities}
         tailwindRuntime: {
           getClassSet: vi.fn(async () => new Set<string>()),
           getClassSetSync: vi.fn(() => new Set<string>()),
-          majorVersion: 3,
+          majorVersion: 4,
           extract: vi.fn(async () => ({ classSet: new Set<string>() })),
           getContexts: vi.fn(() => [{
             userConfig: { content: [] },
@@ -10389,7 +10337,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -10531,7 +10479,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -10661,7 +10609,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -10786,7 +10734,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -10912,7 +10860,7 @@ ${utilities}
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
-        majorVersion: 3,
+        majorVersion: 4,
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
         getContexts: vi.fn(() => [{
           userConfig: { content: [] },
@@ -11313,7 +11261,7 @@ ${utilities}
       cssChildCombinatorReplaceValue: ['view', 'text'],
       cssRemoveHoverPseudoClass: true,
       isMainChunk: false,
-      majorVersion: 3,
+      majorVersion: 4,
     })
     const bundle = {
       'retained.wxss': {
@@ -11343,7 +11291,7 @@ page {
       cssMatcher: file => file.endsWith('.wxss'),
       getCssHandlerOptions: file => ({
         isMainChunk: file === 'app.wxss',
-        majorVersion: 3,
+        majorVersion: 4,
         postcssOptions: {
           options: {
             from: file,

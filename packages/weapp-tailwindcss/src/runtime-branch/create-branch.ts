@@ -13,7 +13,6 @@ export function createRuntimeBranch(
     platformFamily,
     platform: options.platform,
     nativeAppPlatform: options.nativeAppPlatform,
-    isTailwindV3: tailwindcssVersion === 3,
     isTailwindV4: tailwindcssVersion === 4,
     isWeb: platformFamily === 'web',
     isMiniProgram: platformFamily === 'mini-program',

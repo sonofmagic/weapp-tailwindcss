@@ -1,6 +1,6 @@
 import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { TailwindInlineSourceCandidates, TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import type { TailwindcssRuntimeLike, UserDefinedOptions } from '@/types'
+import type { UserDefinedOptions } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
@@ -14,13 +14,8 @@ import {
   parseConfigParam,
   resolveCssSourceEntries,
 } from '@/tailwindcss/source-scan'
-import {
-  resolveTailwindV3Source,
-  resolveTailwindV3SourceOptionsFromRuntime,
-} from '@/tailwindcss/v3-engine'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
 import { readStaticConfigContent } from '../static-config-content'
-import { addSourceScanDependencies, addSourceScanDependency } from './dependencies'
 
 const VITE_SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
 const VITE_TAILWIND_CSS_ENTRY_PATTERN = '**/*.css'
@@ -293,54 +288,6 @@ export function collectExistingCssEntries(options: UserDefinedOptions) {
     .filter(isTailwindV4CssEntry)
     .map(item => path.resolve(item))
     .filter(item => existsSync(item))
-}
-
-export async function resolveTailwindV3CssEntryScan(
-  options: UserDefinedOptions,
-  runtime: TailwindcssRuntimeLike,
-) {
-  const cssEntries = collectExistingCssEntries(options)
-  const entries: TailwindSourceEntry[] = []
-  const dependencies = new Set<string>()
-  if (cssEntries.length === 0) {
-    return {
-      entries,
-      dependencies,
-    }
-  }
-
-  const sourceOptions = resolveTailwindV3SourceOptionsFromRuntime(runtime)
-  await Promise.all(cssEntries.map(async (cssEntry) => {
-    addSourceScanDependency(dependencies, cssEntry)
-    let css: string
-    try {
-      css = readFileSync(cssEntry, 'utf8')
-    }
-    catch {
-      return
-    }
-    const cssConfigEntries = await resolveTailwindConfigEntriesFromCssCached(css, path.dirname(cssEntry))
-    if (cssConfigEntries) {
-      addSourceScanDependencies(dependencies, cssConfigEntries.dependencies)
-      entries.push(...cssConfigEntries.entries)
-      return
-    }
-    const source = await resolveTailwindV3Source({
-      ...sourceOptions,
-      base: path.dirname(cssEntry),
-      css,
-    })
-    addSourceScanDependency(dependencies, source.config)
-    addSourceScanDependencies(dependencies, source.dependencies)
-    entries.push(...normalizeLegacyContentEntries(source.configObject?.content, source.cwd, {
-      relativeBase: source.config ? path.dirname(source.config) : source.cwd,
-    }))
-  }))
-
-  return {
-    entries,
-    dependencies,
-  }
 }
 
 async function pathExistsAsFile(file: string) {

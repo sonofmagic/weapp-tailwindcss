@@ -56,7 +56,7 @@ export function createContext(overrides: Record<string, unknown> = {}) {
   const defaultTailwindRuntime = {
     getClassSet: vi.fn(async () => runtimeSet),
     getClassSetSync: vi.fn(() => runtimeSet),
-    majorVersion: 3,
+    majorVersion: 4,
     extract: vi.fn(async () => ({ classSet: runtimeSet })),
     options: {
       projectRoot: testRoot,

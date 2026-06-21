@@ -8,7 +8,6 @@ import { createWeappTailwindcssPostcssPlugin } from '@weapp-tailwindcss/postcss'
 import {
   createWeappTailwindcssGenerator,
   normalizeWeappTailwindcssGeneratorOptions,
-  resolveTailwindV3Source,
   resolveTailwindV4Source,
 } from './generator'
 
@@ -18,7 +17,6 @@ const adapters: WeappTailwindcssPostcssPluginAdapters = {
     return generator as unknown as WeappTailwindcssPostcssGenerator
   },
   normalizeGeneratorOptions: options => normalizeWeappTailwindcssGeneratorOptions(options as Parameters<typeof normalizeWeappTailwindcssGeneratorOptions>[0]),
-  resolveTailwindV3Source: options => resolveTailwindV3Source(options as Parameters<typeof resolveTailwindV3Source>[0]),
   resolveTailwindV4Source: options => resolveTailwindV4Source(options as Parameters<typeof resolveTailwindV4Source>[0]),
 }
 

@@ -11,8 +11,6 @@ export type {
   ExtractOptions,
   TailwindCssOptions,
   TailwindCssRuntimeOptions,
-  TailwindV2Options,
-  TailwindV3Options,
   TailwindV4Options,
 } from './types/typedoc-tailwindcss-runtime'
 export type { UserDefinedOptions } from './types/user-defined-options'

@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { vi } from 'vitest'
 import { getCompilerContext } from '@/context'
-import { TAILWIND_V3_CSS_PREFLIGHT, TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
+import { TAILWIND_V4_CSS_PREFLIGHT } from '@/defaults'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { generatorTargetEnvKeys } from '@/runtime-branch/generator-target-env'
 import { defu } from '@/utils'
@@ -98,14 +98,12 @@ describe('get options', () => {
   it('keeps weapp as generator target without framework web env', () => {
     withGeneratorTargetEnv({}, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('weapp')
-      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(true)
     })
   })
 
   it('infers web generator target from uni-app, uni-app x, Mpx and Taro H5 env', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'h5' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
-      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(false)
     })
 
     withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'web' }, () => {
@@ -132,7 +130,6 @@ describe('get options', () => {
   it('infers web generator target from plain uni-app App WebView env', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'app' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
-      expect(normalizeWeappTailwindcssGeneratorOptions({}).tailwindcssV3Compatibility).toBe(false)
     })
 
     withGeneratorTargetEnv({ UNI_PLATFORM: 'app-plus' }, () => {
@@ -160,11 +157,11 @@ describe('get options', () => {
 
   it('resolves generator runtime branch from Tailwind version and platform context', () => {
     const miniProgramOptions = normalizeWeappTailwindcssGeneratorOptions({}, {
-      tailwindcssMajorVersion: 3,
+      tailwindcssMajorVersion: 4,
       uniUtsPlatform: 'mp-alipay',
     })
     expect(miniProgramOptions.branch).toMatchObject({
-      tailwindcssVersion: 3,
+      tailwindcssVersion: 4,
       platformFamily: 'mini-program',
       platform: 'mp-alipay',
     })
@@ -195,7 +192,6 @@ describe('get options', () => {
   it('keeps explicit generator target before env inference', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'h5', TARO_ENV: 'h5' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'weapp' }).target).toBe('weapp')
-      expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'weapp' }).tailwindcssV3Compatibility).toBe(true)
     })
   })
 
@@ -240,10 +236,12 @@ describe('get options', () => {
       cssPreflight,
     })
     expect(config.cssPreflight).toStrictEqual({
+      border: '0 solid',
       'border-color': false,
       'border-style': 0,
-      'border-width': '0',
       'box-sizing': 'content-box',
+      margin: '0',
+      padding: '0',
     })
   })
 
@@ -257,10 +255,10 @@ describe('get options', () => {
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
   })
 
-  it('uses Tailwind v4 cssPreflight defaults for tailwindcss v3 runtime', () => {
+  it('uses Tailwind v4 cssPreflight defaults for default runtime', () => {
     const config = getCompilerContext()
-    expect(config.tailwindRuntime.majorVersion).toBe(3)
-    expect(config.cssPreflight).toStrictEqual(TAILWIND_V3_CSS_PREFLIGHT)
+    expect(config.tailwindRuntime.majorVersion).toBe(4)
+    expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
   })
 
   // it('supportCustomLengthUnits boolean', () => {

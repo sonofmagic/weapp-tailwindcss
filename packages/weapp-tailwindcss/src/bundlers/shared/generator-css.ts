@@ -201,24 +201,15 @@ export async function generateCssByGenerator(
   if (
     !isSupportedGeneratorMajorVersion(majorVersion)
     || !shouldGenerateCurrentCss
-    || (
-      majorVersion === 3
-      && !cssHandlerOptions.isMainChunk
-      && !hasSourceDirectives
-      && !hasGeneratedCss
-      && !hasGeneratedMarkers
-    )
   ) {
     return undefined
   }
 
   try {
     await runtimeState.readyPromise
-    const currentCssCandidates = majorVersion === 4
-      ? await extractSourceCandidates(generatorRawSource, 'css', {
-          ...(generatorOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: generatorOptions.bareArbitraryValues }),
-        })
-      : []
+    const currentCssCandidates = await extractSourceCandidates(generatorRawSource, 'css', {
+      ...(generatorOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: generatorOptions.bareArbitraryValues }),
+    })
     const isolateCurrentCssCandidates = shouldIsolateCurrentTailwindV4CssCandidates(
       majorVersion,
       cssHandlerOptions,
@@ -252,7 +243,7 @@ export async function generateCssByGenerator(
     const sourceConcurrency = resolveGeneratorSourceConcurrency()
     const generatedResultsWithDeferred = await runWithConcurrency(sources.map(source => async () => {
       const generator = createWeappTailwindcssGenerator(source)
-      const sourceEntries = getSourceCandidatesForEntries && (majorVersion === 3 || majorVersion === 4)
+      const sourceEntries = getSourceCandidatesForEntries && majorVersion === 4
         ? await resolveGeneratorSourceEntries(source, runtimeState)
         : undefined
       const scopedRuntime = sourceEntries && sourceEntries.length > 0
@@ -288,11 +279,10 @@ export async function generateCssByGenerator(
       const generatorRuntime = majorVersion === 4 && shouldUseMiniProgramCssBranch(generatorBranch)
         ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
         : sourceRuntime
-      const useIncrementalCache = majorVersion === 3 || majorVersion === 4
       return generator.generate({
         bareArbitraryValues: generatorOptions.bareArbitraryValues,
         candidates: generatorRuntime,
-        incrementalCache: useIncrementalCache,
+        incrementalCache: true,
         scanSources: shouldScanTailwindV4Sources(
           majorVersion,
           generatorOptions.target,
@@ -300,7 +290,6 @@ export async function generateCssByGenerator(
           isolateCssSource,
         ),
         styleOptions: generatorStyleOptions,
-        tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
         target: generatorOptions.target,
       })
     }), sourceConcurrency)

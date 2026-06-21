@@ -111,14 +111,12 @@ describe('bundlers/vite source candidates', () => {
   })
 
   it('matches Tailwind v4 default extracted candidates with source entries', async () => {
-    const { createSourceCandidateCollector, createTailwindV3DefaultExtractor } = await import('@/bundlers/vite/source-candidates')
-    const root = await createTempDir('weapp-tw-vite-v3-source-entries')
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-v4-source-entries')
     const file = path.join(root, 'src/subpackages/normal/pages/entry/index.wxml')
     await writeTempFile(file, '<view class="bg-normal"></view>')
 
-    const collector = createSourceCandidateCollector({
-      extractor: createTailwindV3DefaultExtractor(),
-    })
+    const collector = createSourceCandidateCollector()
     await collector.scanRoot({
       root,
       entries: [{
@@ -136,12 +134,10 @@ describe('bundlers/vite source candidates', () => {
   })
 
   it('refreshes Tailwind v4 Vue arbitrary candidates after a source update', async () => {
-    const { createSourceCandidateCollector, createTailwindV3DefaultExtractor } = await import('@/bundlers/vite/source-candidates')
-    const root = await createTempDir('weapp-tw-vite-v3-vue-hmr-candidates')
+    const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
+    const root = await createTempDir('weapp-tw-vite-v4-vue-hmr-candidates')
     const file = path.join(root, 'src/components/sections/CapabilityShowcase.vue')
-    const collector = createSourceCandidateCollector({
-      extractor: createTailwindV3DefaultExtractor(),
-    })
+    const collector = createSourceCandidateCollector()
 
     await writeTempFile(file, '<template><view class="text-2xl font-semibold"></view></template>')
     await collector.syncCurrentFile(file)

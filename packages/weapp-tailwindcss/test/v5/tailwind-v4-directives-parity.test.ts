@@ -390,7 +390,6 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     const result = await postcss([
       weappTailwindcss({
         generator: {
-          tailwindcssV3Compatibility: false,
           target: 'weapp',
         },
       }),

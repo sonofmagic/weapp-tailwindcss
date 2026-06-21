@@ -44,7 +44,7 @@ import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirect
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createViteServeCssGenerationPlugins } from './serve-css-generation'
 import { createSourceCandidateScanSignature } from './source-candidate-scan-signature'
-import { createSourceCandidateCollector, createTailwindV3DefaultExtractor, isSourceCandidateRequest } from './source-candidates'
+import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
@@ -276,12 +276,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const customAttributesEntities = toCustomAttributesEntities(customAttributes)
   let resolvedConfig: ResolvedConfig | undefined
   let recordedGeneratorCandidates: Set<string> | undefined
-  const sourceCandidateExtractor = tailwindcssMajorVersion === 3
-    ? createTailwindV3DefaultExtractor()
-    : undefined
   const sourceCandidateCollector = createSourceCandidateCollector({
     bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
-    extractor: sourceCandidateExtractor,
   })
   const sourceCandidateScanCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
     max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,

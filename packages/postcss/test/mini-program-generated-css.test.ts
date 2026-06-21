@@ -37,7 +37,7 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('.md\\:block{display:block}')
   })
 
-  it('does not synthesize the Tailwind v3 pseudo content init in final mini-program css', () => {
+  it('does not synthesize pseudo content init in final mini-program css', () => {
     const css = finalizeMiniProgramCss([
       ':host,page,.tw-root,wx-root-portal-content {',
       '  --color-red-500: red;',
@@ -72,33 +72,7 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('--color-red-500: red')
   })
 
-  it('keeps pseudo content init scoped to pseudo elements when hoisting preflight', () => {
-    const css = finalizeMiniProgramCss([
-      'view,text,::after,::before{--tw-content:"";box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}',
-      '.before\\:content-\\[\\\"x\\\"\\]::before{--tw-content:"x";content:var(--tw-content)}',
-    ].join('\n'), {
-      preservePseudoContentInit: true,
-    })
-
-    expect(css).toContain('::before,\n::after{--tw-content:\'\'')
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box')
-    expect(css).not.toContain('view,text,::after,::before{--tw-content')
-  })
-
-  it('restores element scoped Tailwind v3 content init to pseudo elements when pruning generated css', () => {
-    const css = pruneMiniProgramGeneratedCss([
-      'view,text,::after,::before{--tw-content:\'\'}',
-      'view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0}',
-    ].join('\n'), {
-      preservePreflight: true,
-    })
-
-    expect(css).toContain('::before,\n::after{--tw-content:\'\'')
-    expect(css).toContain('view,text,::after,::before{--tw-border-spacing-x:0;box-sizing:border-box;border-width:0}')
-    expect(css).not.toContain('view,text,::after,::before{--tw-content')
-  })
-
-  it('keeps pseudo scoped Tailwind v3 content init before element variable scope pruning', () => {
+  it('keeps pseudo scoped content init before element variable scope pruning', () => {
     const css = pruneMiniProgramGeneratedCss([
       '::before,::after{--tw-content:""}',
       'view,text,::after,::before{--tw-border-spacing-x:0}',
@@ -111,13 +85,13 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('view,text,::after,::before{--tw-content')
   })
 
-  it('drops element scoped Tailwind v3 content init when pruning generated css without preflight', () => {
+  it('drops element scoped content init when pruning generated css without preflight', () => {
     const css = pruneMiniProgramGeneratedCss('view,text,::after,::before{--tw-content:\'\'}')
 
     expect(css).toBe('')
   })
 
-  it('keeps injected Tailwind v3 mini-program preflight before runtime variables', async () => {
+  it('keeps injected mini-program preflight before runtime variables', async () => {
     const styleHandler = createStyleHandler({
       cssPreflight: {
         'box-sizing': 'border-box',
@@ -138,9 +112,7 @@ describe('mini-program generated css cleanup', () => {
     const css = finalizeMiniProgramCss([
       'view,text,::after,::before{--tw-border-spacing-x:0;--tw-border-spacing-y:0}',
       'view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}',
-    ].join('\n'), {
-      preservePseudoContentInit: true,
-    })
+    ].join('\n'))
 
     expect(css).toContain('view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor;--tw-border-spacing-x:0')
   })

@@ -2,7 +2,7 @@
 
 > 简体中文 | [English](./README.en.md)
 
-这个包是把 Tailwind CSS 带到小程序生态的核心入口，负责类名转译、CSS 兼容、框架构建适配和 Tailwind v3/v4 支持。
+这个包是把 Tailwind CSS 带到小程序生态的核心入口，负责类名转译、CSS 兼容、框架构建适配和 Tailwind v4 支持。
 
 ## 官网
 

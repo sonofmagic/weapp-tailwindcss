@@ -32,8 +32,6 @@ export function createBasePreset(options: BasePresetOptions = {}) {
   const normalizedCssEntries = normalizeCssEntries(cssEntries)
 
   const tailwindConfig: NonNullable<UserDefinedOptions['tailwindcss']> = {
-    v2: { cwd: baseDir },
-    v3: { cwd: baseDir },
     v4: omitUndefined({
       base: baseDir,
       cssEntries: normalizedCssEntries,

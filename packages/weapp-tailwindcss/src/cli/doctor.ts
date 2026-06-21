@@ -196,7 +196,7 @@ export function createDoctorReport(options: DoctorOptions = {}): DoctorReport {
         status: tailwindMajor === 4 ? 'info' : 'warn',
         message: '未检测到 tailwind.config.*。',
         suggestion: tailwindMajor === 4
-          ? 'Tailwind CSS v4 可以采用 CSS-first 配置；如果使用 v3 或复杂 content/source，请补充配置文件。'
+          ? 'Tailwind CSS v4 可以采用 CSS-first 配置；复杂 content/source 场景请补充配置文件。'
           : '请确认 Tailwind content/source 配置能够覆盖小程序页面、组件和脚本文件。',
       })
 

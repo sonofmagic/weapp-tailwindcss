@@ -23,7 +23,6 @@ const demoProjects = [
   'weapp-vite-tailwindcss-v4',
 ] as const
 
-const tailwindV3Projects = demoProjects.filter(project => project.endsWith('-v3'))
 const tailwindV4Projects = demoProjects.filter(project => project.endsWith('-v4'))
 const subPackageRoots = ['sub-normal', 'sub-independent'] as const
 const tailwindV4DemoCssEntries = [
@@ -135,22 +134,7 @@ describe('demo matrix generator config', () => {
     )
   })
 
-  it('keeps Tailwind CSS v4 and v4 dependencies aligned with the directory suffix', async () => {
-    for (const project of tailwindV3Projects) {
-      const pkg = await readProjectJson<{
-        scripts?: Record<string, string>
-        dependencies?: Record<string, string>
-        devDependencies?: Record<string, string>
-      }>(`demo/${project}/package.json`)
-      const deps = {
-        ...(pkg.dependencies ?? {}),
-        ...(pkg.devDependencies ?? {}),
-      }
-
-      expect(pkg.scripts?.postinstall, project).toBeUndefined()
-      expect(deps.tailwindcss, project).toBe('catalog:tailwindcss3')
-    }
-
+  it('keeps Tailwind CSS v4 dependencies aligned with the directory suffix', async () => {
     for (const project of tailwindV4Projects) {
       const pkg = await readProjectJson<{
         scripts?: Record<string, string>

@@ -29,12 +29,6 @@ export interface WeappTailwindcssGeneratorOptions {
    */
   importFallback?: boolean | undefined
   /**
-   * Tailwind CSS v4 小程序生成模式默认注入 v3 默认值兼容层，保持升级前的视觉行为。
-   *
-   * 设为 `false` 时，完全使用 Tailwind CSS v4 原生默认值。
-   */
-  tailwindcssV3Compatibility?: boolean | undefined
-  /**
    * 是否启用 UnoCSS 风格裸任意值。通常由顶层 `unocss` / `arbitraryValues` 配置注入。
    *
    * @internal
@@ -50,7 +44,6 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   importFallback: boolean
-  tailwindcssV3Compatibility: boolean
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
 
@@ -69,7 +62,6 @@ export function normalizeWeappTailwindcssGeneratorOptions(
       target,
       branch,
       importFallback: false,
-      tailwindcssV3Compatibility: branch.platformFamily !== 'web' && branch.platformFamily !== 'tailwind',
       bareArbitraryValues: undefined,
     }
   }
@@ -80,7 +72,6 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     config: options.config,
     styleOptions: options.styleOptions,
     importFallback: options.importFallback ?? false,
-    tailwindcssV3Compatibility: options.tailwindcssV3Compatibility ?? (branch.platformFamily !== 'web' && branch.platformFamily !== 'tailwind'),
     bareArbitraryValues: options.bareArbitraryValues,
   }
 }

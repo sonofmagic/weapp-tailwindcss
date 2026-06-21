@@ -8,8 +8,7 @@ import { createDebug } from '@/debug'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
 import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime } from '@/tailwindcss/v4-engine'
 import { collectChangedRuntimeFiles, createRuntimeEntries, resolveEntryExtension } from './incremental-runtime-class-set/entries'
-import { collectEscapedRuntimeCandidates, collectStrictEscapedRuntimeCandidates, createEscapeFragments } from './incremental-runtime-class-set/escaped-candidates'
-import { createHighConfidenceLiteralRanges, isHighConfidenceV3Candidate, isRawCandidateAllowedForV3 } from './incremental-runtime-class-set/v3-candidates'
+import { collectEscapedRuntimeCandidates, createEscapeFragments } from './incremental-runtime-class-set/escaped-candidates'
 
 const debug = createDebug('[vite:runtime-set] ')
 
@@ -172,13 +171,6 @@ export function createBundleRuntimeClassSetManager(
       return
     }
 
-    if (runtime.majorVersion === 3 && !customExtractCandidates) {
-      for (const candidate of unknownCandidates) {
-        candidateValidityCache.set(candidate, true)
-      }
-      return
-    }
-
     const context = await resolveValidationContextCached(runtime)
     if (!customExtractCandidates) {
       try {
@@ -204,7 +196,7 @@ export function createBundleRuntimeClassSetManager(
   async function extractEntryRawCandidates(
     entry: BundleStateEntry,
     runtime: TailwindcssRuntimeLike,
-    knownSourceCandidates?: Set<string>,
+    _knownSourceCandidates?: Set<string>,
   ) {
     const extension = resolveEntryExtension(entry)
     const matches = options.bareArbitraryValues === undefined || options.bareArbitraryValues === false
@@ -212,32 +204,14 @@ export function createBundleRuntimeClassSetManager(
       : await extractRawCandidates(entry.source, extension, {
           bareArbitraryValues: options.bareArbitraryValues,
         })
-    const highConfidenceLiteralRanges = runtime.majorVersion === 3 && !customExtractCandidates
-      ? createHighConfidenceLiteralRanges(entry.source, matches)
-      : []
     const candidates = new Set<string>()
     for (const match of matches) {
       const candidate = match?.rawCandidate
       if (typeof candidate === 'string' && candidate.length > 0) {
-        if (
-          runtime.majorVersion === 3
-          && !customExtractCandidates
-          && !isRawCandidateAllowedForV3(entry.source, candidate, match.start, extension, knownSourceCandidates, highConfidenceLiteralRanges)
-        ) {
-          continue
-        }
         candidates.add(candidate)
       }
     }
-    if (runtime.majorVersion === 3) {
-      for (const candidate of collectStrictEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
-        if (!isHighConfidenceV3Candidate(candidate)) {
-          continue
-        }
-        candidates.add(candidate)
-      }
-    }
-    else if (runtime.majorVersion === 4) {
+    if (runtime.majorVersion === 4) {
       for (const candidate of collectEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
         candidates.add(candidate)
       }

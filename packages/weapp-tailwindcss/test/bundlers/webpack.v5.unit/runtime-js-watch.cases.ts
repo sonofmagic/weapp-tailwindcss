@@ -175,39 +175,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
     testState.currentContext = createContext({
@@ -218,7 +186,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
         options: {},
       },
     } as any)
@@ -337,39 +305,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -385,7 +321,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
         options: {},
       },
     } as any)
@@ -508,39 +444,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -561,7 +465,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
         options: {},
       },
     } as any)
@@ -680,39 +584,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -733,7 +605,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
         options: {},
       },
     } as any)
@@ -857,39 +729,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: options.base ?? process.cwd(),
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        base: process.cwd(),
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: process.cwd(),
-        cwd: process.cwd(),
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -909,7 +749,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         getClassSet: vi.fn(async () => new Set<string>()),
         getClassSetSync: vi.fn(() => new Set<string>()),
         extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-        majorVersion: 3,
+        majorVersion: 4,
         options: {},
       },
     } as any)

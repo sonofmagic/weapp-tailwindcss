@@ -784,19 +784,6 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('--tw-ring-offset-width: 8rpx')
     expect(css).not.toContain('--tw-ring-color: 8rpx')
 
-    const v3 = await styleHandler(code, {
-      isMainChunk: true,
-      majorVersion: 3,
-    })
-    expect(v3.css).toContain('border-width: 10rpx')
-    expect(v3.css).toContain('font-size: 32rpx')
-
-    const v2jit = await styleHandler(code, {
-      isMainChunk: true,
-      majorVersion: 2,
-    })
-    expect(v2jit.css).toContain('border-width: 10rpx')
-    expect(v2jit.css).toContain('font-size: 32rpx')
   })
 
   it('keeps Tailwind CSS v4 border default style when only border utility is generated', async () => {
@@ -886,13 +873,13 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('background-clip: text')
   })
 
-  it('adds webkit background clip for Tailwind CSS v3 by default', async () => {
+  it('adds webkit background clip for Tailwind CSS v4 by default', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
     })
     const { css } = await styleHandler('.bg-clip-text { background-clip: text; }', {
       isMainChunk: true,
-      majorVersion: 3,
+      majorVersion: 4,
     })
 
     expect(css).toContain('-webkit-background-clip: text')
@@ -1020,7 +1007,7 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
   it('deduplicates transition-property declarations after mini-program prefix cleanup', async () => {
     const styleHandler = createStyleHandler({
       isMainChunk: true,
-      majorVersion: 3,
+      majorVersion: 4,
     })
     const { css } = await styleHandler([
       '.transition {',

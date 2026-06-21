@@ -52,7 +52,6 @@ interface TailwindV4IncrementalCacheSeedOptions {
   generated: Awaited<ReturnType<TailwindV4Engine['generate']>>
   requestedCandidates: Set<string>
   styleOptions: Partial<IStyleHandlerOptions> | undefined
-  tailwindcssV3Compatibility: boolean | undefined
   target: TailwindV4GenerateTarget
 }
 
@@ -101,7 +100,6 @@ function createIncrementalGenerateCacheKey(
   source: TailwindV4ResolvedSource,
   target: TailwindV4GenerateTarget,
   styleOptions: Partial<IStyleHandlerOptions> | undefined,
-  tailwindcssV3Compatibility: boolean | undefined,
 ) {
   return [
     source.projectRoot,
@@ -111,7 +109,6 @@ function createIncrementalGenerateCacheKey(
     createDependencyFingerprint(source.dependencies),
     target,
     createStableJson(styleOptions),
-    createStableJson(tailwindcssV3Compatibility),
   ].join('\0')
 }
 
@@ -264,7 +261,6 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
     options.compatibleSource,
     options.target,
     options.styleOptions,
-    options.tailwindcssV3Compatibility,
   )
   const customPropertyValues = collectCustomPropertyValues(options.compatibleSource.css)
   mergeCustomPropertyValues(customPropertyValues, options.generated.css)
@@ -291,12 +287,11 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const {
       scanSources = true,
       styleOptions,
-      tailwindcssV3Compatibility,
       target = 'weapp',
       ...patchOptions
     } = options
     const resolvedStyleOptions = resolveStyleOptions(generateSource, styleOptions)
-    const compatibleSource = createCompatibleSource(generateSource, target, tailwindcssV3Compatibility)
+    const compatibleSource = createCompatibleSource(generateSource, target)
     const engine = createEngineTailwindV4Engine(compatibleSource)
     const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
     const filesystemCandidates = Array.isArray(resolvedScanSources)
@@ -329,7 +324,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
   async function generateWithIncrementalCache(options: TailwindV4GenerateOptions = {}) {
     const target = options.target ?? 'weapp'
-    const compatibleSource = createCompatibleSource(source, target, options.tailwindcssV3Compatibility)
+    const compatibleSource = createCompatibleSource(source, target)
     const requestedCandidates = resolveTargetCandidates(options.candidates, target)
     const styleOptions = resolveStyleOptions(source, options.styleOptions)
 
@@ -341,7 +336,6 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       compatibleSource,
       target,
       styleOptions,
-      options.tailwindcssV3Compatibility,
     )
 
     if (options.scanSources === true) {
@@ -352,7 +346,6 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           generated,
           requestedCandidates,
           styleOptions: options.styleOptions,
-          tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
           target,
         })
         if (!admitted) {
@@ -372,7 +365,6 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
             generated,
             requestedCandidates,
             styleOptions,
-            tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
             target,
           })
           if (!admitted) {
@@ -406,7 +398,6 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
             generated,
             requestedCandidates,
             styleOptions,
-            tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
             target,
           })
           if (!admitted) {
@@ -470,7 +461,6 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
         generated,
         requestedCandidates,
         styleOptions,
-        tailwindcssV3Compatibility: options.tailwindcssV3Compatibility,
         target,
       })
       return generated

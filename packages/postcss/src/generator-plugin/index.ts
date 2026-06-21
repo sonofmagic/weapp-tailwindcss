@@ -100,25 +100,15 @@ export function createWeappTailwindcssPostcssPlugin(
         const generatorConfig = generatorOptions.config ?? options.config
         const rawCss = sourceOptions.css ?? root.toString()
         const isApplyOnlyTailwindV4Css = tailwindVersion === 4 && isTailwindV4ApplyOnlyCss(rawCss, root)
-        const source = tailwindVersion === 3
-          ? await adapters.resolveTailwindV3Source({
-              config: generatorConfig,
-              css: rawCss,
-              base: resolvePostcssBase(result, options),
-              cwd: resolvePostcssProjectRoot(result, options),
-              projectRoot: resolvePostcssProjectRoot(result, options),
-              packageName: options.packageName,
-              postcssPlugin: options.postcssPlugin,
-            })
-          : await adapters.resolveTailwindV4Source({
-              ...sourceOptions,
-              css: prependConfigDirective(
-                resolveTailwindV4PostcssSourceCss(rawCss, sourceOptions, root),
-                generatorConfig,
-              ),
-              base: resolvePostcssBase(result, options),
-              projectRoot: resolvePostcssProjectRoot(result, options),
-            })
+        const source = await adapters.resolveTailwindV4Source({
+          ...sourceOptions,
+          css: prependConfigDirective(
+            resolveTailwindV4PostcssSourceCss(rawCss, sourceOptions, root),
+            generatorConfig,
+          ),
+          base: resolvePostcssBase(result, options),
+          projectRoot: resolvePostcssProjectRoot(result, options),
+        })
         const generator = adapters.createGenerator(source)
         const generated = await generator.generate({
           candidates: new Set([
@@ -134,7 +124,6 @@ export function createWeappTailwindcssPostcssPlugin(
             ...generatorOptions.styleOptions,
             ...styleOptions,
           },
-          tailwindcssV3Compatibility: generatorOptions.tailwindcssV3Compatibility,
           target: generatorOptions.target,
         })
         const css = isApplyOnlyTailwindV4Css
@@ -163,7 +152,6 @@ export type {
   NormalizedWeappTailwindcssPostcssGeneratorOptions,
   TailwindCandidateSource,
   TailwindResolvedSource,
-  TailwindV3SourceOptions,
   TailwindV4SourceOptions,
   WeappTailwindcssPostcssGenerateOptions,
   WeappTailwindcssPostcssGenerateResult,

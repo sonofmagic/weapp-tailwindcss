@@ -3,14 +3,10 @@ import type { IStyleHandlerOptions } from './types'
 import { Declaration, Rule } from 'postcss'
 import { collectUsedTailwindcssV4Variables, createUsedCssVarsV4Nodes, isTailwindcssV4, testIfRootHostForV4, usesTailwindcssV4ContentVariable } from './compat/tailwindcss-v4'
 import { isUniAppXEnabled } from './compat/uni-app-x'
-import cssVarsV3 from './cssVarsV3'
 import { isOnlyBeforeAndAfterPseudoElement } from './selectorParser'
-import { createCssVarNodes } from './utils/css-vars'
 import { appendRuleSelector, assignRuleSelectors } from './utils/selector-guard'
 import { hasTwVars } from './utils/tw-vars'
 
-// v3 变量集合在运行时转换为 Declaration 以便快速插入
-const cssVarsV3Nodes = createCssVarNodes(cssVarsV3)
 const DEFAULT_ROOT_SELECTORS = ['page', '.tw-root', 'wx-root-portal-content'] as const
 
 // ':not(template) ~ :not(template)'
@@ -73,53 +69,6 @@ export function makePseudoVarRule() {
 
 function isEmptyContentInitDeclaration(decl: Declaration) {
   return decl.prop === '--tw-content' && (decl.value === '""' || decl.value === '\'\'')
-}
-
-function isPseudoContentInitSelector(selector: string) {
-  return selector === ':before' || selector === ':after' || selector === '::before' || selector === '::after'
-}
-
-function isElementContentInitSelector(selector: string) {
-  return selector === '*' || selector === 'view' || selector === 'text'
-}
-
-function isOnlyEmptyContentInitRule(node: Rule) {
-  let hasDeclaration = false
-  let onlyEmptyContentInit = true
-  node.walkDecls((decl) => {
-    hasDeclaration = true
-    if (!isEmptyContentInitDeclaration(decl)) {
-      onlyEmptyContentInit = false
-    }
-  })
-  return hasDeclaration && onlyEmptyContentInit
-}
-
-function restorePseudoContentInitScope(node: Rule) {
-  if (!isOnlyEmptyContentInitRule(node)) {
-    return false
-  }
-  let hasPseudoSelector = false
-  let hasElementSelector = false
-  for (const selector of node.selectors) {
-    if (isPseudoContentInitSelector(selector)) {
-      hasPseudoSelector = true
-    }
-    else if (isElementContentInitSelector(selector)) {
-      hasElementSelector = true
-    }
-    else {
-      return false
-    }
-  }
-  if (!hasPseudoSelector || !hasElementSelector) {
-    return false
-  }
-  assignRuleSelectors(node, ['::before', '::after'], {
-    phase: 'pre',
-    reason: 'restore-pseudo-content-init-scope',
-  })
-  return true
 }
 
 function removeTailwindV4EmptyContentInit(node: Rule) {
@@ -227,10 +176,6 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
   if (isTailwindcss4 && !usesTailwindcssV4ContentVariable(node.root()) && (!hasClassSelector(node) || isRootThemeScopeRule(node))) {
     removeTailwindV4EmptyContentInit(node)
   }
-  if (!isTailwindcss4 && restorePseudoContentInitScope(node)) {
-    return
-  }
-
   // 变量注入和 preflight
   if (
     testIfVariablesScope(node)
@@ -243,15 +188,10 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
       phase: 'pre',
       reason: 'rewrite-variable-scope',
     })
-    if (!uniAppXEnabled && !isTailwindcss4) {
-      node.before(makePseudoVarRule())
-    }
     injectPreflightDeclarations(node, options)
   }
-  if (injectAdditionalCssVarScope && (isTailwindcss4 ? testIfRootHostForV4(node) : testIfTwBackdrop(node))) {
-    const nodes = isTailwindcss4
-      ? createUsedCssVarsV4Nodes(collectUsedTailwindcssV4Variables(node.root()))
-      : cssVarsV3Nodes
+  if (injectAdditionalCssVarScope && isTailwindcss4 && testIfRootHostForV4(node)) {
+    const nodes = createUsedCssVarsV4Nodes(collectUsedTailwindcssV4Variables(node.root()))
     if (nodes.length === 0) {
       return
     }
@@ -266,9 +206,6 @@ export function commonChunkPreflight(node: Rule, options: IStyleHandlerOptions) 
       })
     }
     node.before(syntheticRule)
-    if (!uniAppXEnabled && !isTailwindcss4) {
-      node.before(makePseudoVarRule())
-    }
     injectPreflightDeclarations(syntheticRule, options)
   }
 }

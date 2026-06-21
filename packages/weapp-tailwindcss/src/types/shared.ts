@@ -26,7 +26,7 @@ export interface IArbitraryValues {
    * 是否启用 UnoCSS 风格裸任意值。
    *
    * @remarks
-   * 开启后会在 Tailwind CSS v3 / v4 生成链路识别 `p-10%`、`p-2.5px`、
+   * 开启后会在 Tailwind CSS v4 生成链路识别 `p-10%`、`p-2.5px`、
    * `m-4rem`、`bg-#fff`、`text-rgb(255,0,0)` 等裸任意值。JS 转译仍遵循
    * `classNameSet` 精确命中原则。
    *
@@ -45,7 +45,7 @@ export interface IUnocssCompatibilityOptions {
    * 是否启用 UnoCSS 风格裸任意值。
    *
    * @remarks
-   * 开启后会在 Tailwind CSS v3 / v4 生成链路识别 `p-10%`、`bg-#fff`、
+   * 开启后会在 Tailwind CSS v4 生成链路识别 `p-10%`、`bg-#fff`、
    * `text-rgb(255,0,0)` 等写法。
    *
    * @default `true`

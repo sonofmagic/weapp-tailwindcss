@@ -97,14 +97,6 @@ function resolveInstalledTailwindDefaults(resolve?: PackageResolvingOptions) {
     }
   }
 
-  if (major === 3) {
-    return {
-      version: 3 as const,
-      packageName: 'tailwindcss',
-      postcssPlugin: 'tailwindcss',
-    }
-  }
-
   return undefined
 }
 
@@ -147,9 +139,6 @@ export function uniAppX(options: UniAppXOptions) {
           ...(installedTailwindDefaults ?? {}),
           cwd: options.base,
           resolve: resolvedResolve,
-          v3: {
-            cwd: options.base,
-          },
           v4: omitUndefined({
             base: options.base,
             cssEntries,

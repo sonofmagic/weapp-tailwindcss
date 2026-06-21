@@ -148,10 +148,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     )
     const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget
-      && (
-        runtimeState.tailwindRuntime.majorVersion === 3
-        || runtimeState.tailwindRuntime.majorVersion === 4
-      )
+      && runtimeState.tailwindRuntime.majorVersion === 4
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
@@ -425,61 +422,30 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
-    const hasCssAssetEntry = snapshot.entries.some(entry => entry.type === 'css' && entry.output.type === 'asset')
     const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
-    const useV3OxideSourceRuntime = runtimeState.tailwindRuntime.majorVersion === 3
-      && sourceCandidates.size > 0
-      && hasCssAssetEntry
-      && !envFlags.forceRuntimeRefreshByEnv
-      && !envFlags.disableV3OxideSourceRuntime
     const runtimeStart = performance.now()
-    const transformBaseRuntime = useV3OxideSourceRuntime
-      ? await ensureBundleRuntimeClassSet(snapshot, envFlags.forceRuntimeRefreshByEnv, {
-          transformOnly: true,
-        })
-      : undefined
     // Tailwind v4 的任意值在 uni-app/Taro 等上游输出里可能已经被转义。
     // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放主样式产物。
     const forceV4RuntimeRefreshBySource = runtimeState.tailwindRuntime.majorVersion === 4
       && forceRuntimeRefreshBySource
     const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
       ? new Set<string>()
-      : useV3OxideSourceRuntime
-        ? await ensureBundleRuntimeClassSet(snapshot, envFlags.forceRuntimeRefreshByEnv, {
-            allowBaselineOnlyInitialSync: true,
-            baseClassSet: sourceCandidates,
+      : useBundleRuntimeClassSet
+        ? await ensureBundleRuntimeClassSet(snapshot, envFlags.forceRuntimeRefreshByEnv || forceV4RuntimeRefreshBySource, {
+            allowBaselineOnlyInitialSync: buildCommand,
           })
-        : useBundleRuntimeClassSet
-          ? await ensureBundleRuntimeClassSet(snapshot, envFlags.forceRuntimeRefreshByEnv || forceV4RuntimeRefreshBySource, {
-              allowBaselineOnlyInitialSync: buildCommand,
-            })
-          : await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
-    if (useV3OxideSourceRuntime) {
-      debug(
-        '[tailwindcss:v3] use oxide source candidates as runtime input, candidates=%d',
-        sourceCandidates.size,
-      )
-    }
+        : await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
     const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.tailwindRuntime.majorVersion === 4
       && shouldUseMiniProgramCssBranch(generatorBranch)
     const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates
-    let transformRuntime = transformBaseRuntime ?? runtime
-    let generatorRuntime = collectLegacyContainerCompatCandidates(
+    const transformRuntime = runtime
+    const generatorRuntime = collectLegacyContainerCompatCandidates(
       sourceCandidates,
-      runtimeState.tailwindRuntime.majorVersion === 3 && hasRuntimeAffectingChanges && transformBaseRuntime
-        ? new Set([
-            ...filteredGeneratorCandidates,
-            ...transformBaseRuntime,
-          ])
-        : filteredGeneratorCandidates,
+      filteredGeneratorCandidates,
     )
-    if (runtimeState.tailwindRuntime.majorVersion === 3 && generatorRuntime.size === 0) {
-      generatorRuntime = await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
-      transformRuntime = generatorRuntime
-    }
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
     if (runtimeState.tailwindRuntime.majorVersion === 4 && sourceCandidates.size > 0 && jsEntries.size > 0) {
@@ -498,38 +464,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           skipGenerateFallback: true,
         })
         if (validatedSourceRuntime.size > 0) {
-          transformRuntime = new Set([
-            ...transformRuntime,
-            ...validatedSourceRuntime,
-          ])
-        }
-      }
-    }
-    const shouldValidateV3GeneratorRuntime = runtimeState.tailwindRuntime.majorVersion === 3
-      && useV3OxideSourceRuntime
-      && generatorRuntime.size > 0
-      && (state.iteration === 0 || !hasRuntimeAffectingChanges)
-      && cssEntries.length <= 1
-    if (shouldValidateV3GeneratorRuntime) {
-      const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
-      if (mainCssEntry) {
-        const validatedRuntime = await validateCandidatesByGenerator({
-          opts,
-          runtimeState,
-          candidates: generatorRuntime,
-          rawSource: mainCssEntry.source,
-          file: mainCssEntry.file,
-          cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
-          cssUserHandlerOptions: getCssUserHandlerOptions(mainCssEntry.file),
-          styleHandler,
-          debug,
-        })
-        if (validatedRuntime.size > 0) {
-          generatorRuntime = collectLegacyContainerCompatCandidates(
-            sourceCandidates,
-            validatedRuntime,
-          )
-          transformRuntime = generatorRuntime
+          for (const candidate of validatedSourceRuntime) {
+            transformRuntime.add(candidate)
+          }
         }
       }
     }

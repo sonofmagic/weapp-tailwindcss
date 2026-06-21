@@ -11,8 +11,6 @@ import {
 } from '@/tailwindcss/source-scan'
 import { resolveSourceCandidateScanFiles } from './source-candidates/scan-root'
 
-export { createTailwindV3DefaultExtractor } from './source-candidates/tailwind-v3-default-extractor'
-
 export interface SourceCandidateCollector {
   sync: (id: string, source: string) => Promise<void>
   syncCss: (id: string, source: string) => Promise<void>

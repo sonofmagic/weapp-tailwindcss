@@ -133,12 +133,9 @@ describe('style processing pipeline', () => {
     ])
   })
 
-  it.each([
-    ['Tailwind CSS v3', 3],
-    ['Tailwind CSS v4', 4],
-  ] as const)('adds autoprefixer by default for %s', (_, majorVersion) => {
+  it('adds autoprefixer by default for Tailwind CSS v4', () => {
     const options = createOptions({
-      majorVersion,
+      majorVersion: 4,
       px2rpx: false,
       rem2rpx: false,
       cssCalc: false,

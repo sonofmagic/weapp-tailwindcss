@@ -1,7 +1,7 @@
 import type { SourceCandidateFilterOptions } from '../source-candidates'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import path from 'node:path'
-import { resolveTailwindConfigEntriesFromCssCached, resolveTailwindV4EntriesFromCssCached } from '../source-scan'
+import { resolveTailwindV4EntriesFromCssCached } from '../source-scan'
 import { createCandidateSignature } from './signatures'
 
 function hasOwnSourceDirectives(rawSource: string) {
@@ -19,9 +19,7 @@ export async function createScopedGeneratorCandidateSignature(
     return fallbackSignature
   }
   const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
-  const resolved = options.majorVersion === 3
-    ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
-    : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
+  const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
   if (resolved?.entries === undefined) {
     return fallbackSignature
   }
@@ -46,7 +44,6 @@ export async function createScopedGeneratorRuntime(options: {
     cssHandlerOptions,
     fallbackRuntime,
     getSourceCandidatesForEntries,
-    majorVersion,
     outputFile,
     rawSource,
     shouldExcludeSubpackageSourceCandidates,
@@ -55,9 +52,7 @@ export async function createScopedGeneratorRuntime(options: {
   } = options
   if (getSourceCandidatesForEntries && rawSource && sourceFile) {
     const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
-    const resolved = majorVersion === 3
-      ? await resolveTailwindConfigEntriesFromCssCached(rawSource, sourceBase)
-      : await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
+    const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
     if (resolved?.entries !== undefined && (resolved.entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
       return scopedSourceCandidateGetter?.(resolved.entries)
         ?? getSourceCandidatesForEntries(resolved.entries)

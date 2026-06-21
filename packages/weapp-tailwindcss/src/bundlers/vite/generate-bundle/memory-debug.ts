@@ -1,6 +1,5 @@
 import type { GenerateBundleContext } from './types'
 import process from 'node:process'
-import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 
 function toMb(bytes: number) {
@@ -77,7 +76,6 @@ export function resolveViteMemoryDebugStats(context: {
       lastCssResultByFile: summarizeStringMapCache(context.lastCssResultByFile),
     },
     tailwind: {
-      v3: getTailwindV3IncrementalGenerateCacheStats(),
       v4: getTailwindV4IncrementalGenerateCacheStats(),
     },
   }

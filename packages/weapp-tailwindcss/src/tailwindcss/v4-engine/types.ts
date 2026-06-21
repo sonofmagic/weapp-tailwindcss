@@ -29,7 +29,7 @@ export interface TailwindV4SourcePattern {
   negated: boolean
 }
 
-type TailwindV4EngineGenerateOptions = Omit<EngineTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'tailwindcssV3Compatibility' | 'scanSources' | 'bareArbitraryValues'>
+type TailwindV4EngineGenerateOptions = Omit<EngineTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'scanSources' | 'bareArbitraryValues'>
 
 /**
  * Tailwind CSS v4 生成配置。
@@ -51,10 +51,6 @@ export interface TailwindV4GenerateOptions extends TailwindV4EngineGenerateOptio
    * 传给小程序 CSS 兼容转换器的额外配置。
    */
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
-  /**
-   * 是否在 v4 生成模式中注入 v3 默认值兼容层。
-   */
-  tailwindcssV3Compatibility?: boolean | undefined
   /**
    * 是否扫描文件系统中的源码入口。
    */

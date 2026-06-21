@@ -1,6 +1,5 @@
 import type { TailwindV4GenerateTarget, TailwindV4ResolvedSource } from '../types'
 import { postcss } from '@weapp-tailwindcss/postcss'
-import { applyTailwindV3CompatibilityCss } from '../tailwind-v3-compatibility'
 import { createTailwindV4DefaultColorThemeCss } from '../tailwind-v4-default-colors'
 
 function findLeadingImportInsertionIndex(css: string) {
@@ -105,17 +104,13 @@ function removeUnsupportedThemeVendorKeyframes(css: string) {
 export function createCompatibleSource(
   source: TailwindV4ResolvedSource,
   target: TailwindV4GenerateTarget,
-  tailwindcssV3Compatibility: boolean | undefined,
 ) {
-  const shouldApplyTailwindV3Compatibility = tailwindcssV3Compatibility ?? target === 'weapp'
   const filteredSourceCss = target === 'weapp'
     ? removeTailwindV4PreflightImports(source.css)
     : source.css
-  const sourceCss = shouldApplyTailwindV3Compatibility
-    ? applyTailwindV3CompatibilityCss(filteredSourceCss)
-    : target === 'weapp'
-      ? applyMiniProgramTailwindV4DefaultColorCss(filteredSourceCss)
-      : filteredSourceCss
+  const sourceCss = target === 'weapp'
+    ? applyMiniProgramTailwindV4DefaultColorCss(filteredSourceCss)
+    : filteredSourceCss
   const compatibleSourceCss = removeUnsupportedThemeVendorKeyframes(sourceCss)
   return compatibleSourceCss === source.css ? source : { ...source, css: compatibleSourceCss }
 }

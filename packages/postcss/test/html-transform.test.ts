@@ -1,4 +1,4 @@
-import { generateCss3, generateCss4 } from '@weapp-tailwindcss/test-helper'
+import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 import fs from 'fs-extra'
 import path from 'pathe'
 import postcss from 'postcss'
@@ -56,41 +56,6 @@ describe('html-transform', () => {
     
       `)
     expect(css.trim()).toMatchSnapshot(``)
-  })
-
-  it('tailwindcss v3', async () => {
-    const { css } = await generateCss3(targetCode)
-    expect(css.trim()).toMatchSnapshot()
-  })
-
-  it('tailwindcss v3 with htmlTransform', async () => {
-    const { css } = await generateCss3(targetCode, {
-      postcssPlugins: [htmlTransform()],
-    })
-    expect(css.trim()).toMatchSnapshot()
-  })
-
-  it('tailwindcss v3 all', async () => {
-    const { css } = await generateCss3(targetCode, {
-      css: '@tailwind base;@tailwind components;@tailwind utilities;',
-    })
-    expect(css.trim()).toMatchSnapshot()
-  })
-
-  it('tailwindcss v3 all with htmlTransform', async () => {
-    const { css } = await generateCss3(targetCode, {
-      css: '@tailwind base;@tailwind components;@tailwind utilities;',
-      postcssPlugins: [htmlTransform()],
-    })
-    expect(css.trim()).toMatchSnapshot()
-  })
-
-  it('tailwindcss v3 all with htmlTransform with removeUniversal true', async () => {
-    const { css } = await generateCss3(targetCode, {
-      css: '@tailwind base;@tailwind components;@tailwind utilities;',
-      postcssPlugins: [htmlTransform({ removeUniversal: true })],
-    })
-    expect(css.trim()).toMatchSnapshot()
   })
 
   it('tailwindcss v4', async () => {

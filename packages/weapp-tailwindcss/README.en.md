@@ -2,7 +2,7 @@
 
 > English | [简体中文](./README.md)
 
-This is the core package that brings Tailwind CSS to mini program ecosystems, handling class transformation, CSS compatibility, framework build adapters, and Tailwind v3/v4 support.
+This is the core package that brings Tailwind CSS to mini program ecosystems, handling class transformation, CSS compatibility, framework build adapters, and Tailwind v4 support.
 
 ## Website
 

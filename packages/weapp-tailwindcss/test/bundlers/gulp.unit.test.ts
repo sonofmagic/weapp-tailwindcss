@@ -82,7 +82,7 @@ describe('bundlers/gulp createPlugins', () => {
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
-      majorVersion: 3,
+      majorVersion: 4,
     }
 
     currentContext = {
@@ -430,42 +430,7 @@ describe('bundlers/gulp createPlugins', () => {
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
         target: 'weapp',
         styleOptions: {},
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: options.base ?? dir,
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: options.config?.includes('sub-normal')
-            ? ['./src/sub-normal/**/*.{wxml,ts}']
-            : options.config?.includes('sub-independent')
-              ? ['./src/sub-independent/**/*.{wxml,ts}']
-              : ['./src/pages/**/*.{wxml,ts}'],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: dir,
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: ['./src/**/*.{wxml,ts}'],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: dir,
-        cwd: dir,
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     try {
       const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
@@ -645,38 +610,7 @@ describe('bundlers/gulp createPlugins', () => {
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
         target: 'weapp',
         styleOptions: {},
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: options.base ?? dir,
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: ['./src/pages/**/*.wxml'],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: dir,
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: ['./src/pages/**/*.wxml'],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: dir,
-        cwd: dir,
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     try {
       const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
@@ -747,7 +681,7 @@ describe('bundlers/gulp createPlugins', () => {
     expect(styleHandler).toHaveBeenCalledTimes(2)
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
-      majorVersion: 3,
+      majorVersion: 4,
       postcssOptions: {
         options: {
           from: '/src/app.wxss',
@@ -761,7 +695,7 @@ describe('bundlers/gulp createPlugins', () => {
     })
     expect(styleHandler.mock.calls[1]?.[1]).toEqual({
       isMainChunk: false,
-      majorVersion: 3,
+      majorVersion: 4,
       postcssOptions: {
         options: {
           from: '/src/page.wxss',
@@ -793,7 +727,7 @@ describe('bundlers/gulp createPlugins', () => {
     expect(mainCssChunkMatcher).toHaveBeenCalledWith('styles/index.css', undefined)
     expect(styleHandler.mock.calls[0]?.[1]).toEqual({
       isMainChunk: true,
-      majorVersion: 3,
+      majorVersion: 4,
       postcssOptions: {
         options: {
           from: '/src/styles/index.css',
@@ -961,7 +895,7 @@ describe('bundlers/gulp createPlugins', () => {
 
     expect(styleHandler.mock.calls[0]?.[1]).toMatchObject({
       isMainChunk: false,
-      majorVersion: 3,
+      majorVersion: 4,
       cssRemoveProperty: false,
     })
     expect(templateHandler.mock.calls[0]?.[1]).toMatchObject({

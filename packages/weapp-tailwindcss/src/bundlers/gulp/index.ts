@@ -10,14 +10,13 @@ import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
-import { getTailwindV3IncrementalGenerateCacheStats } from '@/tailwindcss/v3-engine'
 import { getTailwindV4IncrementalGenerateCacheStats } from '@/tailwindcss/v4-engine'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { generateCssByGenerator } from '../shared/generator-css'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
-import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../vite/source-candidates'
+import { createSourceCandidateCollector } from '../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../vite/source-scan'
 import { createGulpModuleGraphOptions } from './module-graph'
 import { createGulpRuntimeSnapshot } from './runtime-snapshot'
@@ -108,7 +107,6 @@ function resolveGulpMemoryDebugStats(context: {
       defaultStyleHandlerOptions: context.defaultStyleHandlerOptionsCache.size,
     },
     tailwind: {
-      v3: getTailwindV3IncrementalGenerateCacheStats(),
       v4: getTailwindV4IncrementalGenerateCacheStats(),
     },
   }
@@ -149,18 +147,13 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   let runtimeSetDirty = false
   const runtimeSourceHashByFile = new Map<string, string>()
   const runtimeSourcesByFile = new Map<string, { source: string, type: 'html' | 'js' }>()
-  let cachedGulpSourceCandidates: Set<string> | undefined
   let cachedGulpSourceCandidateSignature: string | undefined
   const gulpProcessCacheKeys = new Set<string>()
-  const sourceCandidateExtractor = initialTailwindRuntime.majorVersion === 3
-    ? createTailwindV3DefaultExtractor()
-    : undefined
   const bundleRuntimeClassSetManager: BundleRuntimeClassSetManager
     = (options as UserDefinedOptions & { __internalGulpRuntimeClassSetManager?: BundleRuntimeClassSetManager }).__internalGulpRuntimeClassSetManager
       ?? createBundleRuntimeClassSetManager()
 
   function invalidateGulpSourceCandidates() {
-    cachedGulpSourceCandidates = undefined
     cachedGulpSourceCandidateSignature = undefined
     cachedGulpSourceCandidateGetter = undefined
     cachedGulpSourceCandidateSourceGetter = undefined
@@ -226,47 +219,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return refreshRuntimeSet({
       forceCollect: true,
     })
-  }
-
-  async function refreshGulpSourceCandidates(forceRefresh = false) {
-    if (runtimeState.tailwindRuntime.majorVersion !== 3) {
-      return new Set<string>()
-    }
-    const root = opts.tailwindcssBasedir ?? process.cwd()
-    const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
-      root,
-    })
-    const nextSignature = cache.computeHash(JSON.stringify({
-      root,
-      entries: sourceScan?.entries,
-      inlineCandidates: sourceScan?.inlineCandidates
-        ? {
-            included: [...sourceScan.inlineCandidates.included].sort(),
-            excluded: [...sourceScan.inlineCandidates.excluded].sort(),
-          }
-        : undefined,
-      explicit: sourceScan?.explicit ?? false,
-      dependencies: [...(sourceScan?.dependencies ?? [])].sort(),
-    }))
-    if (!forceRefresh && cachedGulpSourceCandidateSignature === nextSignature && cachedGulpSourceCandidates) {
-      return cachedGulpSourceCandidates
-    }
-    const collector = createSourceCandidateCollector({
-      bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
-      extractor: sourceCandidateExtractor,
-    })
-    await collector.scanRoot({
-      entries: sourceScan?.entries,
-      root,
-    })
-    collector.syncInline(sourceScan?.inlineCandidates)
-    cachedGulpSourceCandidateSignature = nextSignature
-    cachedGulpSourceCandidateGetter = entries => collector.valuesForEntries(entries)
-    cachedGulpSourceCandidateSourceGetter = entries => collector.sourcesForEntries(entries)
-    cachedGulpSourceCandidates = sourceScan?.entries
-      ? collector.valuesForEntries(sourceScan.entries)
-      : collector.values()
-    return cachedGulpSourceCandidates
   }
 
   async function refreshGulpV4SourceCandidates(forceRefresh = false) {
@@ -471,28 +423,16 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       }
       const rawSource = file.contents.toString()
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
-      const isMainChunk = opts.mainCssChunkMatcher(resolveGulpMatcherName(file), opts.appType)
-      const shouldUseGenerator = runtimeState.tailwindRuntime.majorVersion !== 3 || hasTailwindRootDirectives(rawSource)
+      const shouldUseGenerator = true
       let gulpSourceCandidateGetter: typeof cachedGulpSourceCandidateGetter
       if (shouldUseGenerator && runtimeState.tailwindRuntime.majorVersion === 4) {
         gulpSourceCandidateGetter = await refreshGulpV4SourceCandidates(cssSourceChanged)
       }
-      let nextRuntimeSet = await refreshRuntimeSet({
+      const nextRuntimeSet = await refreshRuntimeSet({
         forceRefresh: cssSourceChanged,
-        forceCollect: cssSourceChanged || (runtimeState.tailwindRuntime.majorVersion !== 4 && isMainChunk),
+        forceCollect: cssSourceChanged,
         clearCache: cssSourceChanged,
       })
-      if (runtimeState.tailwindRuntime.majorVersion === 3 && shouldUseGenerator) {
-        const sourceCandidates = await refreshGulpSourceCandidates(cssSourceChanged || isMainChunk)
-        gulpSourceCandidateGetter = cachedGulpSourceCandidateGetter
-        if (sourceCandidates.size > 0) {
-          nextRuntimeSet = new Set([
-            ...nextRuntimeSet,
-            ...sourceCandidates,
-          ])
-          runtimeSet = nextRuntimeSet
-        }
-      }
       const sourceTraceTokenSources = cachedGulpSourceCandidateSourceGetter
         ? createCssTokenSourceMap(cachedGulpSourceCandidateSourceGetter(undefined), opts)
         : undefined

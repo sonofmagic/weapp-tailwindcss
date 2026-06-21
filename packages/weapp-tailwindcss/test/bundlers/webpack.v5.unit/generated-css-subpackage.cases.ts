@@ -65,44 +65,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
         target: 'weapp',
         styleOptions: {},
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: options.base ?? dir,
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: options.config?.includes('sub-b')
-            ? ['./src/moduleB/**/*.{wxml,ts}']
-            : options.config?.includes('sub-c')
-              ? ['./src/moduleC/**/*.{wxml,ts}']
-              : options.config?.includes('sub-normal')
-                ? ['./src/sub-normal/**/*.{wxml,ts}']
-                : ['./src/pages/**/*.{wxml,ts}'],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: dir,
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        configObject: {
-          content: ['./src/**/*.{wxml,ts}'],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: dir,
-        cwd: dir,
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
@@ -309,40 +272,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
         target: 'weapp',
         styleOptions: {},
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: options.base ?? dir,
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: options.config?.includes('sub-normal')
-            ? ['./src/sub-normal/**/*.{wxml,ts}']
-            : ['./src/pages/**/*.{wxml,ts}'],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: dir,
-        cwd: dir,
-        base: dir,
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        configObject: {
-          content: ['./src/**/*.{wxml,ts}'],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: dir,
-        cwd: dir,
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
@@ -355,7 +285,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
           getClassSet: vi.fn(async () => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
           getClassSetSync: vi.fn(() => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
           extract: vi.fn(async () => ({ classSet: new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only']) })),
-          majorVersion: 3,
+          majorVersion: 4,
         },
       } as any)
 

@@ -19,39 +19,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: root,
-        cwd: root,
-        base: options.base ?? root,
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: root,
-        cwd: root,
-        base: root,
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: root,
-        cwd: root,
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     try {
       await mkdir(path.dirname(sourceCssFile), { recursive: true })
@@ -206,7 +174,6 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
       })),
       resolveTailwindV4Source: vi.fn(async (options: any) => {
         const cssSource = options.cssSources?.[0]
@@ -413,39 +380,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-        tailwindcssV3Compatibility: true,
-      })),
-      resolveTailwindV3Source: vi.fn(async (options: any) => ({
-        projectRoot: root,
-        cwd: root,
-        base: options.base ?? root,
-        baseFallbacks: [],
-        css: options.css,
-        config: options.config,
-        configObject: {
-          content: [],
-        },
-        dependencies: [],
-        version: 3,
-      })),
-      resolveTailwindV3SourceFromRuntime: vi.fn(async () => ({
-        projectRoot: root,
-        cwd: root,
-        base: root,
-        baseFallbacks: [],
-        css: '@tailwind utilities;',
-        dependencies: [],
-        configObject: {
-          content: [],
-        },
-        version: 3,
-      })),
-      resolveTailwindV3SourceOptionsFromRuntime: vi.fn(() => ({
-        projectRoot: root,
-        cwd: root,
-        baseFallbacks: [],
-      })),
-    }))
+      })),    }))
 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
