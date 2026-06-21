@@ -266,6 +266,25 @@ describe('normalizeCssSnapshot', () => {
     ].join('\n'))
   })
 
+  it('removes existing token comments with legacy spacing before re-annotating rules', () => {
+    expect(normalizeCssSnapshot([
+      '/*tokens: btn <= src/pages/index/daisyui.vue */',
+      '/* tokens: relative <= src/components/TestCase55.vue */',
+      '.btn { display: inline-flex; }',
+      '.relative { position: relative; }',
+    ].join('\n'), {
+      tokenSources: new Map([
+        ['btn', { token: 'btn', sources: ['src/pages/index/daisyui.vue'] }],
+        ['relative', { token: 'relative', sources: ['src/components/TestCase55.vue'] }],
+      ]),
+    })).toBe([
+      '/* tokens: btn <= src/pages/index/daisyui.vue */',
+      '.btn { display: inline-flex; }',
+      '/* tokens: relative <= src/components/TestCase55.vue */',
+      '.relative { position: relative; }',
+    ].join('\n'))
+  })
+
   it('marks extracted tokens without source files as generated', () => {
     expect(normalizeCssSnapshot('.rotate-y-90 { transform: rotateY(90deg); }', {
       tokenSources: new Map([

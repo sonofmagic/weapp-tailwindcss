@@ -9,7 +9,7 @@ import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
-import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
 
@@ -130,7 +130,8 @@ async function generateCssForWebpackPipeline(
   for (const dependency of generated.dependencies) {
     registerWebpackWatchFile(loaderContext, dependency)
   }
-  return `${createBundlerGeneratedCssMarker('webpack', file)}\n${generated.css}`
+  const css = removeTailwindSourceDirectives(generated.css, { importFallback: true })
+  return `${createBundlerGeneratedCssMarker('webpack', file)}\n${css}`
 }
 
 export function transformCssImportRewriteSource(

@@ -7,6 +7,7 @@ import {
   hasLoaderEntry,
   inferWebpackMainCssFiles,
   isCssLikeModuleResource,
+  resolveSingleActiveWebpackCssResource,
   stripResourceQuery,
 } from '@/bundlers/webpack/BaseUnifiedPlugin/shared'
 
@@ -146,6 +147,29 @@ describe('bundlers/webpack shared helpers', () => {
       '/workspace/src/styles/root-entry.css',
       '/workspace/src/pages/index.tsx',
     ]))
+  })
+
+  it('resolves the only active webpack css module resource for generated web css assets', () => {
+    expect(resolveSingleActiveWebpackCssResource(
+      new Set(['/workspace/demo/src/sub-normal/pages/index.css']),
+      new Set(['/workspace/demo/src/sub-normal/pages/index.css']),
+    )).toBe('/workspace/demo/src/sub-normal/pages/index.css')
+
+    expect(resolveSingleActiveWebpackCssResource(
+      new Set([
+        '/workspace/demo/src/sub-normal/pages/index.css',
+        '/workspace/demo/src/sub-normal/pages/other.css',
+      ]),
+      new Set([
+        '/workspace/demo/src/sub-normal/pages/index.css',
+        '/workspace/demo/src/sub-normal/pages/other.css',
+      ]),
+    )).toBeUndefined()
+
+    expect(resolveSingleActiveWebpackCssResource(
+      new Set(['/workspace/demo/src/sub-normal/pages/index.css']),
+      new Set(['/workspace/demo/src/app.css']),
+    )).toBeUndefined()
   })
 
   it('collects nested webpack css module resources from chunk graph modules', () => {

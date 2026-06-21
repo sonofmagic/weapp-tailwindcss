@@ -136,6 +136,19 @@ export function inferWebpackMainCssFiles(
   return mainCssFiles
 }
 
+export function resolveSingleActiveWebpackCssResource(
+  assetResources: ReadonlySet<string> | undefined,
+  activeWebpackAssetResourceFiles: ReadonlySet<string>,
+) {
+  const activeAssetResourceMatches = [...(assetResources ?? [])]
+    .map(sourceFile => path.resolve(sourceFile))
+    .filter(sourceFile => activeWebpackAssetResourceFiles.has(sourceFile))
+    .sort()
+  return activeAssetResourceMatches.length === 1
+    ? activeAssetResourceMatches[0]
+    : undefined
+}
+
 export function createWebpackCssAssetResourceMap(
   chunks: Iterable<ChunkLike>,
   chunkGraph: ChunkGraphLike | undefined,

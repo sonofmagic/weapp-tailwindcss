@@ -83,7 +83,7 @@ export function uniAppH5SsrCase(options: {
       'dist/build/h5/server/entry-server.js',
       'dist/build/h5/server/index.html',
     ],
-    styleFiles: ['dist/build/h5/client/assets'],
+    styleFiles: ['dist/build/h5/client'],
     styleFileExtensions: ['.css'],
     textFiles: ['dist/build/h5/client/index.html', 'dist/build/h5/server/index.html'],
     styleContains: options.styleContains,

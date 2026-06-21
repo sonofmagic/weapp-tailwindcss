@@ -212,13 +212,6 @@ wx-root-portal-content {
 .visible {
   visibility: visible;
 }
-/* tokens: btn <= src/pages/index/daisyui.vue */
-/* tokens: btn <= src/pages/index/daisyui.vue */
-/* tokens: btn <= src/pages/index/daisyui.vue */
-/* tokens: relative <= src/components/TestCase55.vue */
-/*tokens: btn <= src/pages/index/daisyui.vue */
-/*tokens: btn <= src/pages/index/daisyui.vue */
-/*tokens: btn <= src/pages/index/daisyui.vue */
 .raw-btn {
   display: inline-flex;
   align-items: center;
@@ -235,7 +228,7 @@ wx-root-portal-content {
   content: var(--tw-content);
   border-style: none;
 }
-/*tokens: btn <= src/pages/index/daisyui.vue */
+/* tokens: btn <= src/pages/index/daisyui.vue */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -248,12 +241,12 @@ wx-root-portal-content {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-/*tokens: btn <= src/pages/index/daisyui.vue */
+/* tokens: btn <= src/pages/index/daisyui.vue */
 .btn::after {
   content: var(--tw-content);
   border-style: none;
 }
-/*tokens: btn <= src/pages/index/daisyui.vue */
+/* tokens: btn <= src/pages/index/daisyui.vue */
 .btn {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
   --tw-gradient-from: #9e58e9 var(--tw-gradient-from-position);
@@ -267,6 +260,7 @@ wx-root-portal-content {
   --tw-text-opacity: 1;
   color: rgba(255, 255, 255, var(--tw-text-opacity, 1));
 }
+/* tokens: relative <= src/components/TestCase55.vue */
 .relative {
   position: relative;
 }

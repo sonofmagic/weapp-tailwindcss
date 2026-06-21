@@ -938,7 +938,7 @@ function annotateRuleTokenSources(root: postcss.Root, options: CssSnapshotOption
   }
 
   root.walkComments((comment) => {
-    if (/^\s*tokens:\s/.test(comment.text)) {
+    if (/^\s*tokens:\s?/.test(comment.text)) {
       comment.remove()
     }
   })

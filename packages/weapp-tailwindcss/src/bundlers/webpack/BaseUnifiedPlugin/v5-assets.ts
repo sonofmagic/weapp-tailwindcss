@@ -32,7 +32,7 @@ import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runti
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
 import { createSourceCandidateCollector, createTailwindV3DefaultExtractor } from '../../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../../vite/source-scan'
-import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey, inferWebpackMainCssFiles, isCssLikeModuleResource, stripResourceQuery } from './shared'
+import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey, inferWebpackMainCssFiles, isCssLikeModuleResource, resolveSingleActiveWebpackCssResource, stripResourceQuery } from './shared'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from './v5-assets/helpers'
 import { createWebpackSourceCandidateScanCache } from './v5-assets/source-candidate-cache'
 
@@ -667,10 +667,18 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           return undefined
         }
         const resolveWebpackCssSourceFile = (file: string, rawSource?: string | undefined) => {
-          if (cssSources.size === 0) {
-            return undefined
-          }
           const assetResources = cssAssetResources.get(file)
+          const activeAssetResource = resolveSingleActiveWebpackCssResource(assetResources, activeWebpackAssetResourceFiles)
+          if (cssSources.size === 0) {
+            if (activeAssetResource) {
+              activeWebpackCssSourceFiles.add(activeAssetResource)
+              return activeAssetResource
+            }
+            if (assetResources && assetResources.size > 0) {
+              return undefined
+            }
+            return resolveConfiguredMainCssSourceFile(file)
+          }
           const resourceMatches = [...(assetResources ?? [])]
             .filter(sourceFile => cssSources.has(sourceFile))
             .sort()
@@ -695,14 +703,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             activeWebpackCssSourceFiles.add(sourceFile!)
             return sourceFile
           }
-          const activeAssetResourceMatches = [...(assetResources ?? [])]
-            .map(sourceFile => path.resolve(sourceFile))
-            .filter(sourceFile => activeWebpackAssetResourceFiles.has(sourceFile))
-            .sort()
-          if (activeAssetResourceMatches.length === 1) {
-            const sourceFile = activeAssetResourceMatches[0]
-            activeWebpackCssSourceFiles.add(sourceFile!)
-            return sourceFile
+          if (activeAssetResource) {
+            activeWebpackCssSourceFiles.add(activeAssetResource)
+            return activeAssetResource
           }
           if (rawSource) {
             const representedTailwindSourceMatches = [...cssSources.entries()]
@@ -1423,10 +1426,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     styleHandler: compilerOptions.styleHandler,
                     debug,
                   })
-                  const css = finalizeTracedCss(generated?.css ?? finalizeCssAssetSource(
-                    (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
-                    { generatedCss: false },
-                  ))
+                  const css = finalizeTracedCss(generated
+                    ? finalizeCssAssetSource(generated.css, { generatedCss: true })
+                    : finalizeCssAssetSource(
+                        (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
+                        { generatedCss: false },
+                      ))
                   const source = new ConcatSource(css)
 
                   if (generated) {
