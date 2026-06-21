@@ -1,6 +1,9 @@
+import fs from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
-import { normalizeCssSnapshot, normalizeFormattedCssSnapshot, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
+import { collectCssSnapshots, normalizeCssSnapshot, normalizeFormattedCssSnapshot, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
   it('normalizes generated css file hashes in path segments', () => {
@@ -34,6 +37,24 @@ describe('normalizeCssSnapshot', () => {
       '.bg-independent-subpackage-marker{background-color:#dc2626}',
       '',
     ].join('\n'))
+  })
+
+  it('applies webpack app split noise options when collecting css snapshots', async () => {
+    const root = await fs.mkdtemp(path.join(tmpdir(), 'weapp-tw-css-snapshot-'))
+    await fs.writeFile(path.join(root, 'app.wxss'), [
+      ':host,page,.tw-root,wx-root-portal-content{--font-sans:ui-sans-serif;--nut-icon-height:16rpx;--animate-duration:1s}',
+      '.nut-icon{width:16rpx;width:var(--nut-icon-width,16rpx)}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+    ].join('\n'))
+
+    const snapshots = await collectCssSnapshots(root, 'app.wxss', {
+      normalizeWebpackAppSplitNoise: true,
+    })
+
+    expect(snapshots).toHaveLength(1)
+    expect(snapshots[0]?.content).toContain('.bg-independent-subpackage-marker')
+    expect(snapshots[0]?.content).not.toContain('.nut-icon')
+    expect(snapshots[0]?.content).not.toContain('--nut-icon-height')
   })
 
   it('normalizes formatted base selector spacing across platforms', () => {

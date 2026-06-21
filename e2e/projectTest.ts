@@ -339,9 +339,13 @@ async function runProjectTest(entry: ProjectEntry, options: ProjectTestOptions) 
   }
 
   for (const cssEntry of getProjectCssSnapshotFiles(entry)) {
+    const shouldNormalizeWebpackAppSplitNoise = (
+      entry.name === 'taro-webpack-react-tailwindcss-v4'
+      || entry.name === 'taro-webpack-vue3-tailwindcss-v4'
+    ) && cssEntry.snapshotName.startsWith('sub-')
     const cssSnapshots = await collectCssSnapshots(projectPath, cssEntry.cssFile, {
       classList,
-      normalizeWebpackAppSplitNoise: entry.name === 'taro-webpack-react-tailwindcss-v4' || entry.name === 'taro-webpack-vue3-tailwindcss-v4',
+      normalizeWebpackAppSplitNoise: shouldNormalizeWebpackAppSplitNoise,
       normalizeTailwindV4RootVariableNoise: entry.name === 'taro-vite-react-tailwindcss-v4' || entry.name === 'taro-vite-vue3-tailwindcss-v4',
       rootSnapshotName: cssEntry.snapshotName,
       tokenSources,

@@ -1107,7 +1107,14 @@ export async function collectCssSnapshots(projectRoot: string, cssRelativePath: 
     visited.add(normalizedPath)
 
     const source = await fs.readFile(normalizedPath, 'utf8')
-    const formatted = await formatRawCssSnapshotText(source)
+    const cssNormalizeOptions: CssSnapshotOptions = {}
+    if (options.normalizeWebpackAppSplitNoise) {
+      cssNormalizeOptions.normalizeWebpackAppSplitNoise = true
+    }
+    if (options.normalizeTailwindV4RootVariableNoise) {
+      cssNormalizeOptions.normalizeTailwindV4RootVariableNoise = true
+    }
+    const formatted = await formatRawCssSnapshotText(source, cssNormalizeOptions)
 
     snapshots.push({
       fileName: snapshotName,
