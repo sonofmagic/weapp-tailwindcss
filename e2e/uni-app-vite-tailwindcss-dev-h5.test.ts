@@ -26,8 +26,8 @@ interface DevH5Case {
 
 const cases: DevH5Case[] = [
   {
-    name: 'uni-app vite Tailwind v3',
-    projectDir: 'demo/uni-app-vite-tailwindcss-v3',
+    name: 'uni-app vite Tailwind v4',
+    projectDir: 'demo/uni-app-vite-tailwindcss-v4',
     modules: [
       {
         label: 'App.vue style HMR module',

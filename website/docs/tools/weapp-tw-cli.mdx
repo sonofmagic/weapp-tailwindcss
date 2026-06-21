@@ -25,8 +25,8 @@ keywords:
 | --- | --- | --- |
 | 兼容旧脚本中的 patch 调用 | `npx weapp-tw patch` | 仅输出无需执行的提示并跳过；建议从业务项目 `postinstall` 中移除。 |
 | 兼容旧脚本中的状态检查 | `npx weapp-tw status --json` | 输出无需检查的 JSON 报告，便于旧 CI 平滑过渡。 |
-| 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 适用于 Tailwind v3/v4，v4 需传入 `--css`，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
-| 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `content` 配置时非常有用，可与 `--no-write` 一起纯输出。 |
+| 收集 Tailwind 产出的类名缓存 | `npx weapp-tw extract --css src/app.css` | 适用于 Tailwind CSS 4，生成 `.tw-patch/tw-class-cache.*`，支持 `--output`/`--format`。 |
+| 输出 Tailwind token 和定位信息 | `npx weapp-tw tokens --format grouped-json` | 调试 `@source` 扫描范围时非常有用，可与 `--no-write` 一起纯输出。 |
 
 ## `patch` 子命令
 
@@ -65,7 +65,7 @@ $ pnpm --filter demo/native-ts weapp-tw patch
 npx weapp-tw extract --css src/app.css --format lines
 ```
 
-- `--css`：Tailwind 入口 CSS。v4 必填；v3 可省略以沿用 Tailwind 默认入口。
+- `--css`：Tailwind 入口 CSS。
 - `--output`：指定输出文件，默认写入 `.tw-patch/tw-class-cache.json`。
 - `--format`：`json`/`lines`，配合 `--no-write` 可仅打印到终端。
 - `--cwd`：指定加载配置和解析依赖的工作目录。
@@ -98,7 +98,7 @@ npx weapp-tw status --json
 ## 快速排查指引
 
 1. **先移除安装生命周期里的 patch**：删除 `postinstall: "weapp-tw patch"`。
-2. **类名缺失**：用 `weapp-tw extract` 或 `weapp-tw tokens --no-write` 辅助定位是哪段代码没有被 Tailwind `content` / `@source` 收录。
+2. **类名缺失**：用 `weapp-tw extract` 或 `weapp-tw tokens --no-write` 辅助定位是哪段代码没有被 Tailwind `@source` 收录。
 3. **任意值不符合预期**：优先检查入口 CSS、`@source`、`cssEntries` 和构建插件是否生效。
 
 配合这些命令，可以更直观地观察 Tailwind 扫描结果，减少“类名没有生成”这类定位成本。

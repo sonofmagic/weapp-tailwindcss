@@ -16,13 +16,13 @@ describe('taro plugin-html style output snapshots', () => {
     }>
 
     expect(report.map(item => item.project)).toEqual([
-      'taro-webpack-react-tailwindcss-v3',
       'taro-webpack-react-tailwindcss-v4',
-      'taro-vite-react-tailwindcss-v3',
+      'taro-webpack-react-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',
-      'taro-webpack-vue3-tailwindcss-v3',
+      'taro-vite-react-tailwindcss-v4',
       'taro-webpack-vue3-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v3',
+      'taro-webpack-vue3-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
       'taro-vite-vue3-tailwindcss-v4',
     ])
 

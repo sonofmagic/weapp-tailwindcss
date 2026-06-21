@@ -45,11 +45,8 @@ jobs:
           PACKAGES=(
             "@weapp-tailwindcss/runtime"
             "@weapp-tailwindcss/merge"
-            "@weapp-tailwindcss/merge-v3"
             "@weapp-tailwindcss/variants"
-            "@weapp-tailwindcss/variants-v3"
             "@weapp-tailwindcss/cva"
-            "tailwind-variant-v3"
             "@weapp-tailwindcss/typography"
             "@weapp-tailwindcss/ui"
             "theme-transition"

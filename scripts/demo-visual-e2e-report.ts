@@ -25,11 +25,8 @@ const context: RuntimeContext = {
 }
 
 const uniH5Cases = [
-  'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v3',
   'uni-app-x-hbuilderx-tailwindcss-v4',
 ].map(name => ({
   name,

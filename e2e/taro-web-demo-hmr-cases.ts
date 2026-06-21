@@ -51,15 +51,6 @@ function vueCase(options: {
 
 export const taroWebHmrCases: TaroWebHmrCase[] = [
   reactCase({
-    name: 'taro vite react Tailwind v3',
-    projectDir: 'demo/taro-vite-react-tailwindcss-v3',
-    markerAttr: 'vite-react-v3',
-    markerText: 'TARO-WEB-HMR-VITE-REACT-V3',
-    anchors: [
-      '<View className=\'bg-[red] flex flex-col\'>',
-    ],
-  }),
-  reactCase({
     name: 'taro vite react Tailwind v4',
     projectDir: 'demo/taro-vite-react-tailwindcss-v4',
     markerAttr: 'vite-react-v4',
@@ -67,17 +58,6 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
     anchors: [
       '<div className=\'h-[300px] text-[#c31d6b] bg-[#123456]\'>',
     ],
-  }),
-  vueCase({
-    name: 'taro vite vue3 Tailwind v3',
-    projectDir: 'demo/taro-vite-vue3-tailwindcss-v3',
-    markerAttr: 'vite-vue3-v3',
-    markerText: 'TARO-WEB-HMR-VITE-VUE3-V3',
-    anchors: [
-      '<view class="bg-[#89ab8d] flex divide-x-8 divide-solid divide-[#60d256]">',
-      '<view class="index">',
-    ],
-    cssPaths: ['/app.scss'],
   }),
   vueCase({
     name: 'taro vite vue3 Tailwind v4',
@@ -90,16 +70,6 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
     cssPaths: ['/app.css'],
   }),
   reactCase({
-    name: 'taro webpack react Tailwind v3',
-    projectDir: 'demo/taro-webpack-react-tailwindcss-v3',
-    cssEntryFile: 'src/app.less',
-    markerAttr: 'webpack-react-v3',
-    markerText: 'TARO-WEB-HMR-WEBPACK-REACT-V3',
-    anchors: [
-      '<View className=\'relative h-12 w-12 before:absolute before:inset-0 before:border-2 before:border-[#4bd650] rounded-[20rpx] before:rounded-[20rpx]\' />',
-    ],
-  }),
-  reactCase({
     name: 'taro webpack react Tailwind v4',
     projectDir: 'demo/taro-webpack-react-tailwindcss-v4',
     cssEntryFile: 'src/app.css',
@@ -108,18 +78,6 @@ export const taroWebHmrCases: TaroWebHmrCase[] = [
     anchors: [
       '<View className=\'bg-[#534312] text-[#fff] text-[100rpx]\'>',
     ],
-  }),
-  vueCase({
-    name: 'taro webpack vue3 Tailwind v3',
-    projectDir: 'demo/taro-webpack-vue3-tailwindcss-v3',
-    cssEntryFile: 'src/app.less',
-    markerAttr: 'webpack-vue3-v3',
-    markerText: 'TARO-WEB-HMR-WEBPACK-VUE3-V3',
-    anchors: [
-      '<view class="bg-[#89ab8d] flex divide-x-8 divide-solid divide-[#60d256]">',
-      '<view>',
-    ],
-    cssPaths: ['/app.less', '/app.scss', '/app.css'],
   }),
   vueCase({
     name: 'taro webpack vue3 Tailwind v4',

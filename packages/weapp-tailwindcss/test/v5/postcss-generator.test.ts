@@ -85,7 +85,7 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1))')
   })
 
-  it('passes explicit Tailwind v3 compatibility opt-in through postcss generator options', async () => {
+  it('passes explicit Tailwind v4 compatibility opt-in through postcss generator options', async () => {
     const result = await postcss([
       weappTailwindcss({
         generator: {
@@ -420,7 +420,7 @@ describe('v5 postcss generator', () => {
     }
   })
 
-  it('honors Tailwind v3 content negation when collecting postcss local sources', async () => {
+  it('honors Tailwind v4 content negation when collecting postcss local sources', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-not-'))
     const sourceDir = path.join(root, 'src')
     const cssEntry = path.join(root, 'app.css')

@@ -19,8 +19,8 @@ const demoRoot = path.resolve(__dirname, '../../../../demo')
 
 const cases: DemoCase[] = [
   {
-    title: 'gulp-tailwindcss-v3',
-    project: 'gulp-tailwindcss-v3',
+    title: 'gulp-tailwindcss-v4',
+    project: 'gulp-tailwindcss-v4',
     entry: 'src/pages/index/index.wxml',
     marker: 'text-[#aa1116]',
     closingTag: '</view>',
@@ -37,8 +37,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'mpx-tailwindcss-v3',
-    project: 'mpx-tailwindcss-v3',
+    title: 'mpx-tailwindcss-v4',
+    project: 'mpx-tailwindcss-v4',
     entry: 'src/pages/index.mpx',
     marker: 'text-[#aa1112]',
     closingTag: '</template>',
@@ -55,8 +55,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'taro-webpack-react-tailwindcss-v3',
-    project: 'taro-webpack-react-tailwindcss-v3',
+    title: 'taro-webpack-react-tailwindcss-v4',
+    project: 'taro-webpack-react-tailwindcss-v4',
     entry: 'src/pages/index/index.tsx',
     marker: 'text-[#aa1107]',
     closingTag: '</>',
@@ -73,8 +73,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
   },
   {
-    title: 'taro-vite-react-tailwindcss-v3',
-    project: 'taro-vite-react-tailwindcss-v3',
+    title: 'taro-vite-react-tailwindcss-v4',
+    project: 'taro-vite-react-tailwindcss-v4',
     entry: 'src/pages/index/index.tsx',
     marker: 'text-[#aa1108]',
     closingTag: '</View>',
@@ -91,8 +91,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `      <View className='${marker}'>hmr-test</View>\n`,
   },
   {
-    title: 'uni-app-vite-tailwindcss-v3',
-    project: 'uni-app-vite-tailwindcss-v3',
+    title: 'uni-app-vite-tailwindcss-v4',
+    project: 'uni-app-vite-tailwindcss-v4',
     entry: 'src/pages/index/index.vue',
     marker: 'text-[#0f835c]',
     closingTag: '</template>',
@@ -109,8 +109,8 @@ const cases: DemoCase[] = [
     makeSnippet: marker => `  <view class="${marker}">hmr-test</view>\n`,
   },
   {
-    title: 'weapp-vite-tailwindcss-v3',
-    project: 'weapp-vite-tailwindcss-v3',
+    title: 'weapp-vite-tailwindcss-v4',
+    project: 'weapp-vite-tailwindcss-v4',
     entry: 'miniprogram/pages/index/index.wxml',
     marker: 'text-[#aa1115]',
     closingTag: '</view>',

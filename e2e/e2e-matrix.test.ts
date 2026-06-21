@@ -313,11 +313,8 @@ describe('e2e matrix', () => {
     const h5VisualNames = [
       ...taroWebHmrCaseNames.map(name => name.replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
       ...webViteHmrCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
-      'uni-app-vite-tailwindcss-v3',
       'uni-app-vite-tailwindcss-v4',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-x-hbuilderx-tailwindcss-v3',
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ].sort()
 
@@ -354,7 +351,7 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:app']).toBe('pnpm e2e:android && pnpm e2e:ios && pnpm e2e:harmony')
     expect(scripts['e2e:hbuilderx:local:harmony']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-harmony')
     expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_LOCAL=1')
-    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v3,uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v3,uni-app-x-hbuilderx-tailwindcss-v4')
+    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')
     expect(scripts['e2e:hbuilderx:local:demo:mp']).toContain('E2E_HBUILDERX_CASE_GROUP=mp')
     expect(scripts['e2e:hbuilderx:local:demo:mp-extra']).toBe('pnpm e2e:hbuilderx:local:demo:mp-alipay && pnpm e2e:hbuilderx:local:demo:mp-baidu && pnpm e2e:hbuilderx:local:demo:mp-toutiao')
     expect(scripts['e2e:hbuilderx:local:demo:mp-alipay']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-alipay')
@@ -385,7 +382,7 @@ describe('e2e matrix', () => {
     expect(localFullReport).toContain('h5-dev-')
     expect(localFullReport).toContain('uni-app-vite-tailwindcss-dev-h5.test.ts')
     expect(localFullReport).toContain('DEFAULT_MINI_CASES')
-    expect(localFullReport).toContain('uni-app-vite-tailwindcss-v3')
+    expect(localFullReport).toContain('uni-app-vite-tailwindcss-v4')
     expect(localFullReport).toContain('uni-app-vite-tailwindcss-v4')
     expect(localFullReport).toContain('DEFAULT_PLATFORM_BUILD_CASES')
     expect(localFullReport).toContain('LOCAL_FULL_REPORT_PLATFORM_BUILD_CASES')
@@ -406,13 +403,9 @@ describe('e2e matrix', () => {
 
   it('wires SFC-like automated hot-update demos to template/script/style report assertions', () => {
     expect(getAutomatedThreeBlockHotUpdateDemoNames()).toEqual([
-      'mpx-tailwindcss-v3',
       'mpx-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v3',
       'taro-vite-vue3-tailwindcss-v4',
-      'taro-webpack-vue3-tailwindcss-v3',
       'taro-webpack-vue3-tailwindcss-v4',
-      'uni-app-vite-tailwindcss-v3',
       'uni-app-vite-tailwindcss-v4',
     ])
   })
@@ -445,11 +438,11 @@ describe('e2e matrix', () => {
 
   it('keeps uni-app and uni-app x demo workflow coverage explicit for mini-program, web, Android, iOS and Harmony', () => {
     const expectedPlatformsByName = new Map([
-      ['uni-app-vite-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
-      ['uni-app-x-hbuilderx-tailwindcss-v3', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
+      ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
+      ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
       ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
     ])
 
@@ -542,8 +535,8 @@ describe('e2e matrix', () => {
 
   it('keeps non-WeChat mini-program style outputs in Taro and uni-app build regressions', () => {
     const cases = new Set(MULTIPLATFORM_BUILD_OUTPUT_CASES.map(item => `${item.projectDir.replace('demo/', '')}:${item.platform}`))
-    expect(cases.has('uni-app-vite-tailwindcss-v3:mp-alipay')).toBe(true)
-    expect(cases.has('uni-app-vite-tailwindcss-v3:mp-toutiao')).toBe(true)
+    expect(cases.has('uni-app-vite-tailwindcss-v4:mp-alipay')).toBe(true)
+    expect(cases.has('uni-app-vite-tailwindcss-v4:mp-toutiao')).toBe(true)
     expect(cases.has('uni-app-vite-tailwindcss-v4:mp-alipay')).toBe(true)
     expect(cases.has('uni-app-vite-tailwindcss-v4:mp-jd')).toBe(true)
     expect(cases.has('uni-app-vite-tailwindcss-v4:mp-toutiao')).toBe(true)
@@ -563,47 +556,31 @@ describe('e2e matrix', () => {
 
   it('keeps the static e2e project matrix explicit', () => {
     expect(getAllStaticE2EProjectNames()).toEqual([
-      'gulp-tailwindcss-v3',
       'gulp-tailwindcss-v4',
-      'mpx-tailwindcss-v3',
       'mpx-tailwindcss-v4',
-      'taro-webpack-react-tailwindcss-v3',
       'taro-webpack-react-tailwindcss-v4',
-      'taro-vite-react-tailwindcss-v3',
       'taro-vite-react-tailwindcss-v4',
-      'taro-webpack-vue3-tailwindcss-v3',
       'taro-webpack-vue3-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v3',
       'taro-vite-vue3-tailwindcss-v4',
-      'uni-app-vite-tailwindcss-v3',
       'uni-app-vite-tailwindcss-v4',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-x-hbuilderx-tailwindcss-v3',
       'uni-app-x-hbuilderx-tailwindcss-v4',
-      'weapp-vite-tailwindcss-v3',
       'weapp-vite-tailwindcss-v4',
     ])
   })
 
   it('covers every demo/web Vite package with browser source HMR', () => {
     expect(webViteHmrCaseNames).toEqual([
-      'web react vite Tailwind v3',
       'web react vite Tailwind v4',
-      'web vue vite Tailwind v3',
       'web vue vite Tailwind v4',
     ])
   })
 
   it('covers every Taro demo package with browser source HMR', () => {
     expect(taroWebHmrCaseNames).toEqual([
-      'taro vite react Tailwind v3',
       'taro vite react Tailwind v4',
-      'taro vite vue3 Tailwind v3',
       'taro vite vue3 Tailwind v4',
-      'taro webpack react Tailwind v3',
       'taro webpack react Tailwind v4',
-      'taro webpack vue3 Tailwind v3',
       'taro webpack vue3 Tailwind v4',
     ])
   })

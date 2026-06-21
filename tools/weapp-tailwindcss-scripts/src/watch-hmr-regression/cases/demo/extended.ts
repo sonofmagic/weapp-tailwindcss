@@ -9,9 +9,6 @@ import {
   mutateScriptByDataAnchorWithCommentCarrier,
   mutateTsxScriptByReturnAnchor,
   mutateVueRefStringLiteral,
-  mutateVueScriptSetupArrayByAnchor,
-  mutateVueScriptSetupArrayByAnchorWithCommentCarrier,
-  mutateVueScriptSetupObjectKeyByAnchor,
   replaceExactSnippet,
 } from '../../text'
 import { buildHexScriptRoundConfigs, buildIssue33HighRiskRoundConfigs, buildTailwindV4JsContentRoundConfigs } from '../round-configs'
@@ -66,18 +63,6 @@ function mutateVueScriptWithTemplateConsumer(
     '</template>',
     `    <view hidden :class="${payload.classVariableName}">{{ __twWatchScriptMarker }}</view>`,
   )
-}
-
-function mutateUniAppViteV3BgObjKey(
-  source: string,
-  payload: Parameters<NonNullable<WatchCase['contentMutation']>['mutate']>[1],
-) {
-  const bgObjMatch = /const\s+bgObj\s*=\s*ref\s*\(\s*\{[\s\S]*?\}\s*\)/.exec(source)
-  const anchor = /(['"]bg-\[[^\r\n'"]+\]['"]\s*:\s*true)/.exec(bgObjMatch?.[0] ?? '')?.[1]
-  if (!anchor) {
-    throw new Error('uni-app vite v3 bgObj arbitrary bg key anchor not found')
-  }
-  return mutateVueScriptSetupObjectKeyByAnchor(source, anchor, payload)
 }
 
 function createSubPackageMutations(
@@ -148,148 +133,6 @@ function createSubPackageMutations(
 }
 
 export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
-  const uniAppVue3ViteCase: WatchCase = {
-    name: 'uni-app-vite-tailwindcss-v3',
-    label: 'demo/uni-app-vite-tailwindcss-v3',
-    project: 'demo/uni-app-vite-tailwindcss-v3',
-    group: 'demo',
-    requireStableGlobalStyleOnSameClassLiteral: false,
-    maxPluginProcessMs: 5000,
-    cwd: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3'),
-    devScript: 'dev:mp-weixin',
-    outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/tailwind.wxss'),
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
-    ],
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
-      verifyEscapedIn: ['wxml'],
-      verifyClassLiteralIn: [],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertIntoVueTemplateRoot(source, snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return mutateVueScriptSetupArrayByAnchor(
-          source,
-          'const classArray = [',
-          payload,
-        )
-      },
-      mutateCommentCarrier(source, payload) {
-        return mutateVueScriptSetupArrayByAnchorWithCommentCarrier(
-          source,
-          'const classArray = [',
-          payload,
-        )
-      },
-    },
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return mutateUniAppViteV3BgObjKey(source, payload)
-      },
-    },
-    userReportedHotUpdate: {
-      label: 'cardsColor bg-[#4268EA] to bg-[red]',
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
-      before: 'bg-[#4268EA] shadow-indigo-100',
-      after: 'bg-[red] shadow-indigo-100',
-      beforeClassTokens: ['bg-[#4268EA]'],
-      afterClassTokens: ['bg-[red]'],
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/App.vue'),
-      outputNeedles() {
-        return ['color: #123457']
-      },
-      rollbackNeedles() {
-        return ['color: #123457']
-      },
-      validateApply: false,
-      validateFunction: false,
-      mutate(source, payload) {
-        return insertBeforeClosingTag(source, '</style>', `${payload.styleNeedle} { color: #123457; }`)
-      },
-    },
-    subPackageMutations: createSubPackageMutations(baseCwd, {
-      project: 'uni-app-vite-tailwindcss-v3',
-      sourceRoot: 'src',
-      distRoot: 'dist/dev/mp-weixin',
-      version: 'v3',
-      pageKind: 'vue',
-      skipStyleMutation: true,
-      globalStyleCandidates(subPackage) {
-        return [
-          path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/${subPackage}/pages/index.wxss`),
-          path.resolve(baseCwd, `demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/src/${subPackage}/pages/index.wxss`),
-          path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
-        ]
-      },
-    }),
-    webHmr: {
-      devScript: 'dev:h5',
-      sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue'),
-      cssEntryFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v3/src/tailwind.scss'),
-      injectMarkerElement: true,
-      reloadAfterCssMutation: true,
-      readySelector: 'uni-page[data-page="pages/index/index"] uni-view.content',
-      initialMutationDelayMs: 1500,
-      mutate(source, payload) {
-        return `${source}\n/* ${payload.marker} ${payload.classLiteral} */`
-      },
-      sourceClassReplacementSequence: [
-        {
-          label: 'bgObj bg-[#999999] to bg-[#134543]',
-          from: '\'bg-[#999999]\':true',
-          to: '\'bg-[#134543]\':true',
-          expectedCssIncludes: ['134543'],
-        },
-        {
-          label: 'bgObj bg-[#134543] to bg-[#256789]',
-          from: '\'bg-[#134543]\':true',
-          to: '\'bg-[#256789]\':true',
-          expectedCssIncludes: ['256789'],
-        },
-      ],
-      sourceDomReplacementSequence: [
-        {
-          label: 'title and color text-[#990000] to text-[red]',
-          mutate(source) {
-            return replaceWebDomSnippet(
-              source,
-              `<view class="!font-bold !text-[#990000]" :class="['text-2xl', { underline: true }]">{{ title }}</view>`,
-              `<view ${webDomMarkerAttr} class="!font-bold text-[red]" :class="['text-2xl', { underline: true }]">H5-HMR-UNI-V3</view>`,
-            )
-          },
-          expectedText: 'H5-HMR-UNI-V3',
-          expectedStyle: {
-            color: 'rgb(255, 0, 0)',
-          },
-        },
-      ],
-    },
-  }
-
   const uniAppTailwindcssV4Case: WatchCase = {
     name: 'uni-app-vite-tailwindcss-v4',
     label: 'demo/uni-app-vite-tailwindcss-v4',
@@ -614,108 +457,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
   }
 
-  const taroAppViteCase: WatchCase = {
-    name: 'taro-vite-react-tailwindcss-v3',
-    label: 'demo/taro-vite-react-tailwindcss-v3',
-    project: 'demo/taro-vite-react-tailwindcss-v3',
-    group: 'demo',
-    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
-    // Taro Vite v3 watch 会重写全局 wxss；
-    // same-class-literal 仍校验 HMR 生效、回滚与 escaped class，不强制全局样式文本完全稳定。
-    requireStableGlobalStyleOnSameClassLiteral: false,
-    initialMutationDelayMs: 15_000,
-    cwd: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3'),
-    devScript: 'dev:e2e-watch',
-    env: taroViteWatchEnv,
-    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '      <View className=\'bg-[#89ab8d] flex divide-x-8 divide-solid divide-[#60d256]\'>',
-          `      <View className='${payload.classLiteral}'>`,
-          'taro-vite-react-tailwindcss-v3 jsx class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        const snippet = `      <View className='${payload.classLiteral}'>${payload.marker}-template</View>`
-        return insertBeforeClosingTag(source, '    </View>', snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return mutateTsxScriptByReturnAnchor(source, payload)
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/app.scss'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-    subPackageMutations: createSubPackageMutations(baseCwd, {
-      project: 'taro-vite-react-tailwindcss-v3',
-      sourceRoot: 'src',
-      distRoot: 'dist',
-      version: 'v3',
-      pageKind: 'tsx',
-      styleSourceFile() {
-        return path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/app.scss')
-      },
-      styleCandidates() {
-        return [
-          path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
-          path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
-        ]
-      },
-      globalStyleCandidates(subPackage) {
-        return [
-          path.resolve(baseCwd, `demo/taro-vite-react-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
-          path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss'),
-          path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/dist/app.wxss'),
-        ]
-      },
-    }),
-    webHmr: {
-      devScript: 'build:h5',
-      devArgs: ['--watch'],
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/pages/index/index.tsx'),
-      cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-react-tailwindcss-v3/src/app.scss'),
-      injectMarkerElement: true,
-      env: {
-        NODE_ENV: 'development',
-      },
-      mutate(source, payload) {
-        return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
-      },
-    },
-  }
-
   const taroWebpackTailwindcssV4DemoCase: WatchCase = {
     name: 'taro-webpack-react-tailwindcss-v4',
     label: 'demo/taro-webpack-react-tailwindcss-v4',
@@ -806,97 +547,6 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
       mutate(source, payload) {
         return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
-      },
-    },
-  }
-
-  const taroViteVue3V3Case: WatchCase = {
-    ...taroAppViteCase,
-    name: 'taro-vite-vue3-tailwindcss-v3',
-    label: 'demo/taro-vite-vue3-tailwindcss-v3',
-    project: 'demo/taro-vite-vue3-tailwindcss-v3',
-    maxPluginProcessMs: taroVitePluginProcessBudgetMs,
-    cwd: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3'),
-    outputWxml: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.wxml'),
-    outputJs: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.js'),
-    outputStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/pages/index/index.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/app.wxss'),
-    ],
-    globalStyleCandidates: [
-      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/app-origin.wxss'),
-      path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/app.wxss'),
-    ],
-    contentMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      forbidBgHexTruncationIn: ['js'],
-      roundConfigs: buildIssue33HighRiskRoundConfigs(),
-      mutate(source, payload) {
-        return replaceExactSnippet(
-          source,
-          '<view class="bg-[#89ab8d] flex flex-col">',
-          `<view class="${payload.classLiteral}">`,
-          'taro-vite-vue3-tailwindcss-v3 vue class anchor',
-        )
-      },
-    },
-    templateMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      verifyAllEscapedClasses: false,
-      verifyAllClassLiterals: false,
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        const snippet = `    <view class="${payload.classLiteral}">${payload.marker}-template</view>`
-        return insertBeforeClosingTag(source, '</template>', snippet)
-      },
-    },
-    scriptMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/pages/index/index.vue'),
-      verifyEscapedIn: ['js'],
-      verifyClassLiteralIn: ['js'],
-      roundConfigs: buildHexScriptRoundConfigs(),
-      mutate(source, payload) {
-        return mutateVueScriptWithTemplateConsumer(source, payload)
-      },
-    },
-    styleMutation: {
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/app.scss'),
-      mutate(source, payload) {
-        return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
-      },
-    },
-    subPackageMutations: createSubPackageMutations(baseCwd, {
-      project: 'taro-vite-vue3-tailwindcss-v3',
-      sourceRoot: 'src',
-      distRoot: 'dist',
-      version: 'v3',
-      pageKind: 'vue',
-      templateVerifyEscapedIn: ['js'],
-      templateVerifyClassLiteralIn: ['js'],
-      globalStyleCandidates(subPackage) {
-        return [
-          path.resolve(baseCwd, `demo/taro-vite-vue3-tailwindcss-v3/dist/${subPackage}/pages/index.wxss`),
-          path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/app-origin.wxss'),
-          path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/dist/app.wxss'),
-        ]
-      },
-    }),
-    webHmr: {
-      devScript: 'build:h5',
-      devArgs: ['--watch'],
-      sourceFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/pages/index/index.vue'),
-      cssEntryFile: path.resolve(baseCwd, 'demo/taro-vite-vue3-tailwindcss-v3/src/app.scss'),
-      injectMarkerElement: true,
-      env: {
-        NODE_ENV: 'development',
-      },
-      mutate(source, payload) {
-        return `${source}\n<!-- ${payload.marker} ${payload.classLiteral} -->\n`
       },
     },
   }
@@ -1084,13 +734,10 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
   }
 
   return [
-    uniAppVue3ViteCase,
     uniAppTailwindcssV4Case,
     mpxTailwindcssV4Case,
     taroViteTailwindcssV4Case,
-    taroAppViteCase,
     taroWebpackTailwindcssV4DemoCase,
-    taroViteVue3V3Case,
     taroViteVue3V4Case,
     taroWebpackVue3V4Case,
   ]

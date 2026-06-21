@@ -86,19 +86,12 @@ function readWorkspacePackageVersion(relativeDir: string): string {
   return pkg.version
 }
 
-const MERGE_PACKAGES = {
-  v4: {
-    name: '@weapp-tailwindcss/merge',
-    version: readWorkspacePackageVersion(path.join('packages-runtime', 'merge')),
-  },
-  v3: {
-    name: '@weapp-tailwindcss/merge-v3',
-    version: readWorkspacePackageVersion(path.join('packages-runtime', 'merge-v3')),
-  },
+const MERGE_PACKAGE = {
+  name: '@weapp-tailwindcss/merge',
+  version: readWorkspacePackageVersion(path.join('packages-runtime', 'merge')),
 } as const
 
-const MERGE_PACKAGE_NAMES = [MERGE_PACKAGES.v4.name, MERGE_PACKAGES.v3.name] as const
-const MERGE_V3_EXCLUDED_TEMPLATES = new Set(['uni-app-x-hbuilderx'])
+const MERGE_PACKAGE_NAMES = [MERGE_PACKAGE.name] as const
 
 async function fetchLatestVersion(pkgName: string): Promise<string> {
   const cached = latestVersionCache.get(pkgName)
@@ -463,17 +456,10 @@ async function resolveTailwindTargets(pkg: PackageJson): Promise<TailwindResolut
         version,
         range: `^${version}`,
       },
-      {
-        name: MERGE_PACKAGES.v3.name,
-        version: MERGE_PACKAGES.v3.version,
-        range: `^${MERGE_PACKAGES.v3.version}`,
-        addIfMissing: 'dependencies',
-        ensurePnpmOnlyBuilt: true,
-      },
     ]
     return {
       targets,
-      removePackages: collectMergePackagesToRemove(pkg, MERGE_PACKAGES.v3.name),
+      removePackages: collectMergePackagesToRemove(pkg),
     }
   }
 
@@ -506,16 +492,16 @@ async function resolveTailwindTargets(pkg: PackageJson): Promise<TailwindResolut
     }
 
     targets.push({
-      name: MERGE_PACKAGES.v4.name,
-      version: MERGE_PACKAGES.v4.version,
-      range: `^${MERGE_PACKAGES.v4.version}`,
+      name: MERGE_PACKAGE.name,
+      version: MERGE_PACKAGE.version,
+      range: `^${MERGE_PACKAGE.version}`,
       addIfMissing: 'dependencies',
       ensurePnpmOnlyBuilt: true,
     })
 
     return {
       targets,
-      removePackages: collectMergePackagesToRemove(pkg, MERGE_PACKAGES.v4.name),
+      removePackages: collectMergePackagesToRemove(pkg, MERGE_PACKAGE.name),
     }
   }
 
@@ -658,14 +644,7 @@ async function processTemplate(
   const raw = readFileSync(pkgPath, 'utf8')
   const indent = detectIndentation(raw)
   const pkg = JSON.parse(raw) as PackageJson
-  let tailwindResolution = await resolveTailwindTargets(pkg)
-  if (MERGE_V3_EXCLUDED_TEMPLATES.has(templateName)) {
-    const removePackages = new Set([...tailwindResolution.removePackages, MERGE_PACKAGES.v3.name])
-    tailwindResolution = {
-      targets: tailwindResolution.targets.filter(target => target.name !== MERGE_PACKAGES.v3.name),
-      removePackages: [...removePackages],
-    }
-  }
+  const tailwindResolution = await resolveTailwindTargets(pkg)
   const relevantTargets = dedupeTargets([
     ...filterTargetsForPackage(pkg, baseTargets),
     ...tailwindResolution.targets,

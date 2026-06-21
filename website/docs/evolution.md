@@ -19,7 +19,7 @@ keywords:
 
 当前主要处理链路：
 
-- Tailwind CSS 3 / 4：由 `weapp-tailwindcss` 的生成器入口接管 CSS 生成
+- Tailwind CSS 4：由 `weapp-tailwindcss` 的生成器入口接管 CSS 生成
 - 模板：使用 `htmlparser2` 解析 `wxml` / 类 HTML 模板
 - 脚本：使用 Babel 解析语法，再通过精确位置替换改写类名
 - 样式：使用 PostCSS 处理选择器、单位、CSS 变量和平台兼容逻辑

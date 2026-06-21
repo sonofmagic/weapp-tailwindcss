@@ -4,21 +4,14 @@ import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from '../
 import { filterHBuilderXCases, matchesHBuilderXCaseFilter, parseCaseNameFilters } from '../../../e2e/hbuilderx-local/filters'
 
 const hbuilderxDemoNames = [
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v3',
   'uni-app-x-hbuilderx-tailwindcss-v4',
 ]
 const hbuilderxMiniProgramCaseNames = [
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-alipay',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-baidu',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-toutiao',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-baidu',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-toutiao',
-  'uni-app-x-hbuilderx-tailwindcss-v3',
   'uni-app-x-hbuilderx-tailwindcss-v4',
 ]
 
@@ -90,10 +83,9 @@ describe('HBuilderX local demo matrix', () => {
     const uniAppXMiniProgramCases = miniProgramCases.filter(item => item.projectDir.includes('uni-app-x-hbuilderx'))
 
     expect(uniAppXMiniProgramCases.map(item => item.name)).toEqual([
-      'uni-app-x-hbuilderx-tailwindcss-v3',
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
-    expect(uniAppXMiniProgramCases.map(item => item.platform)).toEqual(['mp-weixin', 'mp-weixin'])
+    expect(uniAppXMiniProgramCases.map(item => item.platform)).toEqual(['mp-weixin'])
   })
 
   it('keeps uni-app-x HBuilderX cases covering dynamic classes, user styles and component styles', () => {
@@ -130,30 +122,24 @@ describe('HBuilderX local demo matrix', () => {
   it('keeps local App coverage explicit for supported HBuilderX demo platforms', () => {
     const appCaseNames = [...uniAppAppCases, ...uniAppXAppCases].map(item => item.name)
 
-    expect(appCaseNames).toContain('uni-app-vite-vue3-hbuilderx-tailwindcss-v3 android')
-    expect(appCaseNames).toContain('uni-app-vite-vue3-hbuilderx-tailwindcss-v3 ios')
     expect(appCaseNames).toContain('uni-app-vite-vue3-hbuilderx-tailwindcss-v4 android')
     expect(appCaseNames).toContain('uni-app-vite-vue3-hbuilderx-tailwindcss-v4 ios')
-    expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v3 android')
-    expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v3 ios')
-    expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v3 harmony')
     expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v4 android')
     expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v4 ios')
     expect(appCaseNames).toContain('uni-app-x-hbuilderx-tailwindcss-v4 harmony')
   })
 
   it('filters local HBuilderX e2e cases by demo name without requiring Vitest -t suffix matching', () => {
-    const filters = parseCaseNameFilters('uni-app-x-hbuilderx-tailwindcss-v4, uni-app-vite-vue3-hbuilderx-tailwindcss-v3')
+    const filters = parseCaseNameFilters('uni-app-x-hbuilderx-tailwindcss-v4, uni-app-vite-vue3-hbuilderx-tailwindcss-v4')
 
     expect(matchesHBuilderXCaseFilter('uni-app-x-hbuilderx-tailwindcss-v4 harmony', filters)).toBe(true)
-    expect(matchesHBuilderXCaseFilter('uni-app-x-hbuilderx-tailwindcss-v3 harmony', filters)).toBe(false)
-    expect(matchesHBuilderXCaseFilter('uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-alipay', filters)).toBe(true)
-    expect(matchesHBuilderXCaseFilter('uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-baidu', ['uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-alipay'])).toBe(false)
+    expect(matchesHBuilderXCaseFilter('uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay', filters)).toBe(true)
+    expect(matchesHBuilderXCaseFilter('uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-baidu', ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay'])).toBe(false)
     expect(filterHBuilderXCases(miniProgramCases, filters).map(item => item.name)).toEqual([
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-alipay',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-baidu',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v3 mp-toutiao',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-baidu',
+      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-toutiao',
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
   })

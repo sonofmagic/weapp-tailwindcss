@@ -105,7 +105,7 @@ const classArray = [
         js: (await stat(outputJs)).mtimeMs,
       }
       const options: CliOptions = {
-        caseName: 'uni-app-vite-tailwindcss-v3',
+        caseName: 'uni-app-vite-tailwindcss-v4',
         timeoutMs: 2_000,
         pollMs: 5,
         skipBuild: true,
@@ -115,7 +115,7 @@ const classArray = [
         mainStyleOnly: false,
       }
       const watchCase = {
-        name: 'uni-app-vite-tailwindcss-v3',
+        name: 'uni-app-vite-tailwindcss-v4',
         label: 'unit/comment-carrier',
         outputWxml,
         outputJs,
@@ -174,7 +174,7 @@ const classArray = [
         baselineMtime: baseline,
       })
 
-      expect(result.commentCarrierHmr.marker).toContain('tw-watch-uni-app-vite-tailwindcss-v3-script-issue33-arbitrary')
+      expect(result.commentCarrierHmr.marker).toContain('tw-watch-uni-app-vite-tailwindcss-v4-script-issue33-arbitrary')
       expect(lastCompileSuccessCalls).toBeGreaterThan(0)
       expect(readFileSync(sourceFile, 'utf8')).toBe(sourceOriginal)
     }
@@ -185,7 +185,7 @@ const classArray = [
 
   it('enables comment-carrier mutation for the weapp-vite demo case', () => {
     const cases = buildDemoBaseCases('/virtual/workspace')
-    const weappViteCase = cases.find(item => item.name === 'weapp-vite-tailwindcss-v3')
+    const weappViteCase = cases.find(item => item.name === 'weapp-vite-tailwindcss-v4')
 
     expect(weappViteCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
@@ -195,20 +195,6 @@ const classArray = [
     const taroViteCase = cases.find(item => item.name === 'taro-vite-react-tailwindcss-v4')
 
     expect(taroViteCase?.scriptMutation.mutateCommentCarrier).toBeUndefined()
-  })
-
-  it('disables comment-carrier mutation for the taro-vite-react-tailwindcss-v3 demo case', () => {
-    const cases = buildDemoExtendedCases('/virtual/workspace')
-    const taroAppViteCase = cases.find(item => item.name === 'taro-vite-react-tailwindcss-v3')
-
-    expect(taroAppViteCase?.scriptMutation.mutateCommentCarrier).toBeUndefined()
-  })
-
-  it('enables comment-carrier mutation for the taro-webpack-react-tailwindcss-v3 demo case', () => {
-    const cases = buildDemoBaseCases('/virtual/workspace')
-    const taroWebpackCase = cases.find(item => item.name === 'taro-webpack-react-tailwindcss-v3')
-
-    expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
   it('disables comment-carrier mutation for the taro-webpack-react-tailwindcss-v4 demo case', () => {
@@ -225,12 +211,10 @@ const classArray = [
     expect(taroWebpackCase?.scriptMutation.mutateCommentCarrier).toBeUndefined()
   })
 
-  it('enables comment-carrier mutation for the uni-app vite and mpx demo cases', () => {
-    const baseCases = buildDemoBaseCases('/virtual/workspace')
+  it('enables comment-carrier mutation for the mpx demo case', () => {
     const extendedCases = buildDemoExtendedCases('/virtual/workspace')
 
-    expect(baseCases.find(item => item.name === 'mpx-tailwindcss-v3')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
-    expect(extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v3')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
+    expect(extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')?.scriptMutation.mutateCommentCarrier).toBeTypeOf('function')
   })
 
   it('enables comment-carrier mutation for the v4 demo cases', () => {

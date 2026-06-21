@@ -91,9 +91,9 @@ function isIdeUniAppViteMiniProgramProject(root: string, pkg?: { name?: string }
   }
   const name = pkg?.name ?? ''
   const normalizedRoot = root.replaceAll('\\', '/')
-  return name.includes('uni-app-vite-tailwindcss-v3')
+  return name.includes('uni-app-vite-tailwindcss-v4')
     || name.includes('uni-app-vite-tailwindcss-v4')
-    || normalizedRoot.includes('/uni-app-vite-tailwindcss-v3')
+    || normalizedRoot.includes('/uni-app-vite-tailwindcss-v4')
     || normalizedRoot.includes('/uni-app-vite-tailwindcss-v4')
 }
 

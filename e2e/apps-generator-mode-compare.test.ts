@@ -480,7 +480,7 @@ function createReportItem(
 }
 
 function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
-  if (project.name !== 'weapp-vite-tailwindcss-v3') {
+  if (project.name !== 'weapp-vite-tailwindcss-v4') {
     return
   }
   expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed css files').not.toContain('miniprogram/app.wxss')
@@ -493,7 +493,7 @@ function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generato
 }
 
 function expectGulpTailwindV3SubpackageCssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
-  if (project.name !== 'gulp-tailwindcss-v3') {
+  if (project.name !== 'gulp-tailwindcss-v4') {
     return
   }
   const independent = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-independent/pages/index.wxss')

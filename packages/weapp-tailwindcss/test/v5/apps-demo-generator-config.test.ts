@@ -5,21 +5,21 @@ import { resolveCssEntrySource } from '@/bundlers/shared/generator-css'
 const repositoryRoot = path.resolve(__dirname, '../../../..')
 
 const demoProjects = [
-  'gulp-tailwindcss-v3',
   'gulp-tailwindcss-v4',
-  'mpx-tailwindcss-v3',
+  'gulp-tailwindcss-v4',
   'mpx-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v3',
+  'mpx-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
   'taro-webpack-vue3-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v3',
+  'taro-webpack-vue3-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
-  'taro-vite-vue3-tailwindcss-v3',
+  'taro-vite-react-tailwindcss-v4',
   'taro-vite-vue3-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v3',
+  'taro-vite-vue3-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
-  'weapp-vite-tailwindcss-v3',
+  'uni-app-vite-tailwindcss-v4',
+  'weapp-vite-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ] as const
 
@@ -71,7 +71,7 @@ function appConfigPath(project: string) {
   if (project.startsWith('mpx-')) {
     return `demo/${project}/src/app.mpx`
   }
-  if (project === 'weapp-vite-tailwindcss-v3') {
+  if (project === 'weapp-vite-tailwindcss-v4') {
     return `demo/${project}/miniprogram/app.json.ts`
   }
   return `demo/${project}/app.json`
@@ -79,7 +79,7 @@ function appConfigPath(project: string) {
 
 function subPackageStyleCandidates(project: string, subPackage: typeof subPackageRoots[number]) {
   const extensions = project.endsWith('-v3') ? ['scss', 'css'] : ['css']
-  if (project.startsWith('weapp-vite-tailwindcss-v3')) {
+  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
     return extensions.map(extension => `demo/${project}/miniprogram/${subPackage}/pages/index.${extension}`)
   }
   if (project.startsWith('weapp-vite-tailwindcss-v4')) {
@@ -107,7 +107,7 @@ function subPackagePageCandidates(project: string, subPackage: typeof subPackage
   if (project.startsWith('mpx-')) {
     return [`demo/${project}/src/${subPackage}/pages/index.mpx`]
   }
-  if (project.startsWith('weapp-vite-tailwindcss-v3')) {
+  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
     return [`demo/${project}/miniprogram/${subPackage}/pages/index.wxml`]
   }
   if (project.startsWith('weapp-vite-tailwindcss-v4')) {
@@ -135,7 +135,7 @@ describe('demo matrix generator config', () => {
     )
   })
 
-  it('keeps Tailwind CSS v3 and v4 dependencies aligned with the directory suffix', async () => {
+  it('keeps Tailwind CSS v4 and v4 dependencies aligned with the directory suffix', async () => {
     for (const project of tailwindV3Projects) {
       const pkg = await readProjectJson<{
         scripts?: Record<string, string>
@@ -164,8 +164,6 @@ describe('demo matrix generator config', () => {
 
       expect(pkg.scripts?.postinstall, project).toBeUndefined()
       expect(deps.tailwindcss, project).toBe('catalog:tailwindcss4')
-      expect(deps['@weapp-tailwindcss/merge-v3'], project).toBeUndefined()
-      expect(deps['@weapp-tailwindcss/variants-v3'], project).toBeUndefined()
     }
   })
 

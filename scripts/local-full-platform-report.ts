@@ -131,30 +131,21 @@ interface HmrFullRunSummary {
 
 const DEFAULT_OUT_ROOT = 'e2e/reports/local-full-run'
 const DEFAULT_MINI_CASES = [
-  'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
-  'weapp-vite-tailwindcss-v3',
   'weapp-vite-tailwindcss-v4',
-  'mpx-tailwindcss-v3',
   'mpx-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v3',
   'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v3',
   'taro-webpack-vue3-tailwindcss-v4',
 ]
 const DEFAULT_PLATFORM_BUILD_CASES = [
-  'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
 ]
 const DEFAULT_PLATFORM_REPORT_CASES = [
   ...DEFAULT_PLATFORM_BUILD_CASES,
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v3',
   'uni-app-x-hbuilderx-tailwindcss-v4',
 ]
 const DEFAULT_H5_DEV_CASES = [
-  'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
 ]
 
@@ -215,9 +206,7 @@ function buildProfileSteps(profile: string): LocalFullRunStep[] {
   const fastHmr = profile === 'smoke' || profile === 'hmr-smoke'
   const miniCases = selectedCases('LOCAL_FULL_REPORT_MINI_CASES', DEFAULT_MINI_CASES)
   const hbuilderxCases = selectedCases('LOCAL_FULL_REPORT_HBUILDERX_CASES', [
-    'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
     'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-    'uni-app-x-hbuilderx-tailwindcss-v3',
     'uni-app-x-hbuilderx-tailwindcss-v4',
   ])
   const weappMemoryStage = profile === 'hmr-smoke' ? ['--stage', 'hmr'] : []
@@ -313,7 +302,6 @@ function buildProfileSteps(profile: string): LocalFullRunStep[] {
 function buildH5DevSteps(): LocalFullRunStep[] {
   const caseNames = selectedCases('LOCAL_FULL_REPORT_H5_CASES', DEFAULT_H5_DEV_CASES)
   const titleByName = new Map([
-    ['uni-app-vite-tailwindcss-v3', 'uni-app vite Tailwind v3'],
     ['uni-app-vite-tailwindcss-v4', 'uni-app vite Tailwind v4'],
   ])
 

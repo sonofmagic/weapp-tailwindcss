@@ -56,11 +56,10 @@ import TailwindcssLogo from '../../../assets/logo.png'
 
 ## 当前支持范围
 
-`weapp-tailwindcss@5` 同时支持 Tailwind CSS 3 和 Tailwind CSS 4。uni-app x 项目建议通过 `WeappTailwindcss(uniAppX(...))` 注册插件，Tailwind 的生成和小程序/App 转译都交给 `weapp-tailwindcss`。
+当前文档面向 Tailwind CSS 4。uni-app x 项目建议通过 `WeappTailwindcss(uniAppX(...))` 注册插件，Tailwind 的生成和小程序/App 转译都交给 `weapp-tailwindcss`。如果项目必须继续使用 Tailwind CSS 3，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 | Tailwind 版本 | 入口方式 | 扫描方式 | 当前验证 |
 | --- | --- | --- | --- |
-| Tailwind CSS 3 | `@tailwind base;` / `components` / `utilities` | `tailwind.config.js` 的 `content` | HBuilderX 小程序、Android、iOS |
 | Tailwind CSS 4 | `@import "tailwindcss" source(none);` | CSS 入口里的 `@source` | HBuilderX 小程序、Android、iOS |
 
 :::info 本地 E2E

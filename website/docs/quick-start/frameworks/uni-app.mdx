@@ -61,17 +61,9 @@ const config = {
 module.exports = config
 ```
 
-`src/app.css` 按 Tailwind 版本选择入口：
+`src/app.css` 使用 Tailwind CSS 4 入口。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ```css title="src/app.css"
-/* Tailwind CSS 3.x */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-```css title="src/app.css"
-/* Tailwind CSS 4.x */
 @import "tailwindcss";
 @source "./**/*.{html,js,ts,jsx,tsx,vue}";
 @source not "../dist";
@@ -79,4 +71,4 @@ module.exports = config
 @source not "../unpackage";
 ```
 
-Tailwind CSS 3.x 的扫描范围写在 `tailwind.config.js` 的 `content` 里；Tailwind CSS 4.x 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再在 PostCSS 中注册 Tailwind 官方生成插件。
+扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再在 PostCSS 中注册 Tailwind 官方生成插件。

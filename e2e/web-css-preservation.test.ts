@@ -20,8 +20,8 @@ interface WebCssPreservationCase {
 
 const cases: WebCssPreservationCase[] = [
   {
-    name: 'demo/web react vite Tailwind v3',
-    projectDir: 'demo/web/react-vite-tailwindcss-v3',
+    name: 'demo/web react vite Tailwind v4',
+    projectDir: 'demo/web/react-vite-tailwindcss-v4',
     buildScript: 'build:web',
     outputDir: 'dist',
     generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32rpx\\]'],
@@ -36,8 +36,8 @@ const cases: WebCssPreservationCase[] = [
     ordinaryCss: [/font-family:\s*Inter/],
   },
   {
-    name: 'demo/web vue vite Tailwind v3',
-    projectDir: 'demo/web/vue-vite-tailwindcss-v3',
+    name: 'demo/web vue vite Tailwind v4',
+    projectDir: 'demo/web/vue-vite-tailwindcss-v4',
     buildScript: 'build:web',
     outputDir: 'dist',
     generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32rpx\\]'],
@@ -52,8 +52,8 @@ const cases: WebCssPreservationCase[] = [
     ordinaryCss: [/font-family:\s*Inter/],
   },
   {
-    name: 'uni-app vite Tailwind v3 H5',
-    projectDir: 'demo/uni-app-vite-tailwindcss-v3',
+    name: 'uni-app vite Tailwind v4 H5',
+    projectDir: 'demo/uni-app-vite-tailwindcss-v4',
     buildScript: 'build:h5',
     outputDir: 'dist/build/h5',
     generatedCss: ['.flex', '.raw-btn', /background-image:\s*linear-gradient/],

@@ -30,17 +30,6 @@ const runtimeBuildTargets = [
     ],
   },
   {
-    name: '@weapp-tailwindcss/merge-v3',
-    filter: '@weapp-tailwindcss/merge-v3',
-    label: '@weapp-tailwindcss/merge-v3',
-    packageRoot: path.join(repoRoot, 'packages-runtime/merge-v3'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
-  },
-  {
     name: '@weapp-tailwindcss/cva',
     filter: '@weapp-tailwindcss/cva',
     label: '@weapp-tailwindcss/cva',
@@ -56,28 +45,6 @@ const runtimeBuildTargets = [
     filter: '@weapp-tailwindcss/variants',
     label: '@weapp-tailwindcss/variants',
     packageRoot: path.join(repoRoot, 'packages-runtime/variants'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
-  },
-  {
-    name: 'tailwind-variant-v3',
-    filter: 'tailwind-variant-v3',
-    label: 'tailwind-variant-v3',
-    packageRoot: path.join(repoRoot, 'packages-runtime/tailwind-variant-v3'),
-    stamps: [
-      'dist/index.cjs',
-      'dist/index.mjs',
-      'dist/index.d.mts',
-    ],
-  },
-  {
-    name: '@weapp-tailwindcss/variants-v3',
-    filter: '@weapp-tailwindcss/variants-v3',
-    label: '@weapp-tailwindcss/variants-v3',
-    packageRoot: path.join(repoRoot, 'packages-runtime/variants-v3'),
     stamps: [
       'dist/index.cjs',
       'dist/index.mjs',
@@ -258,19 +225,13 @@ function expandRuntimeBuildTargets() {
 
   if (
     dependencyNames.has('@weapp-tailwindcss/merge')
-    || dependencyNames.has('@weapp-tailwindcss/merge-v3')
     || dependencyNames.has('@weapp-tailwindcss/cva')
     || dependencyNames.has('@weapp-tailwindcss/variants')
-    || dependencyNames.has('@weapp-tailwindcss/variants-v3')
   ) {
     addTarget(targetByName.get('@weapp-tailwindcss/runtime'))
   }
   if (dependencyNames.has('@weapp-tailwindcss/variants')) {
     addTarget(targetByName.get('@weapp-tailwindcss/merge'))
-  }
-  if (dependencyNames.has('@weapp-tailwindcss/variants-v3')) {
-    addTarget(targetByName.get('@weapp-tailwindcss/merge-v3'))
-    addTarget(targetByName.get('tailwind-variant-v3'))
   }
 
   return runtimeBuildTargets.filter(target => selectedNames.has(target.name))

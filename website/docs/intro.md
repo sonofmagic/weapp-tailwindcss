@@ -54,7 +54,7 @@ keywords:
 
 ### 👉 [安装依赖](/docs/quick-start/install)
 
-先选择 `tailwindcss@3` 或 `tailwindcss@4`，再按 `uni-app`、`Taro`、`Mpx`、`Weapp-vite` 等框架注册 `WeappTailwindcss` 构建器插件。
+当前文档默认使用 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请使用 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ### 👉 [各框架模板](/docs/community/templates)
 
@@ -62,7 +62,7 @@ keywords:
 
 ### 👉 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)
 
-如果你已经确定使用 `tailwindcss@4`，这里有 CSS-first、`@source`、`@apply`、`@layer` 和 IntelliSense 的补充说明。
+这里有 CSS-first、`@source`、`@apply`、`@layer` 和 IntelliSense 的补充说明。
 
 ## 演示视频
 

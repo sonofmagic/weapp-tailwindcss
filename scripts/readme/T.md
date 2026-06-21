@@ -59,7 +59,7 @@
 - 支持最新版本的 `tailwindcss v4` 和 `v3`。
 - 支持 `webpack5`、`vite`、`rspack`、`rollup`、`rolldown` 和 `gulp` 这些打包工具，也支持纯 `Nodejs` API 的方式，集成到你自己的构建工具中。
 
-> `weapp-tailwindcss@5` 面向 Tailwind CSS v3/v4 和现代构建链路，不再内置 Webpack4、PostCSS7、Tailwind CSS v2 兼容入口。`weapp-tailwindcss@5` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
+> `weapp-tailwindcss@5` 面向 Tailwind CSS v4/v4 和现代构建链路，不再内置 Webpack4、PostCSS7、Tailwind CSS v2 兼容入口。`weapp-tailwindcss@5` 需要 `nodejs` 版本 `^20.19.0 || >=22.12.0`，建议安装 `nodejs` 的 `LTS` 版本，详见 [nodejs/release](https://github.com/nodejs/release)
 
 ## [安装与使用方式](https://tw.icebreaker.top/docs/quick-start/install)
 

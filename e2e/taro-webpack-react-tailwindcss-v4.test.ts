@@ -39,7 +39,7 @@ describe('e2e', () => {
     expect(normalizedCss).toContain('border:0solid')
   })
 
-  it('does not emit Tailwind CSS v3 empty content init for v4 output', async () => {
+  it('does not emit Tailwind CSS v4 empty content init for v4 output', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)
     const projectPath = path.resolve(projectBase, project.projectPath)

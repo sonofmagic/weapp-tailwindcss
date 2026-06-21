@@ -29,7 +29,8 @@ function mutateVueOptionsDataWithTemplateConsumer(
   )
 }
 
-function createUniAppHBuilderXVue3Case(baseCwd: string, version: 'v3' | 'v4'): WatchCase {
+function createUniAppHBuilderXVue3Case(baseCwd: string): WatchCase {
+  const version = 'v4'
   const projectName = `uni-app-vite-vue3-hbuilderx-tailwindcss-${version}` as const
   const outputRoot = `demo/${projectName}/unpackage/dist/dev/mp-weixin`
 
@@ -148,7 +149,8 @@ function mutateUniAppXScriptSetupWithTemplateConsumer(
   )
 }
 
-function createUniAppXHBuilderXCase(baseCwd: string, version: 'v3' | 'v4'): WatchCase {
+function createUniAppXHBuilderXCase(baseCwd: string): WatchCase {
+  const version = 'v4'
   const projectName = `uni-app-x-hbuilderx-tailwindcss-${version}` as const
   const outputRoot = `demo/${projectName}/unpackage/dist/dev/mp-weixin`
   const pageSource = path.resolve(baseCwd, `demo/${projectName}/pages/index/index.uvue`)
@@ -204,9 +206,7 @@ function createUniAppXHBuilderXCase(baseCwd: string, version: 'v3' | 'v4'): Watc
 
 export function buildUniAppHBuilderXCases(baseCwd: string): WatchCase[] {
   return [
-    createUniAppHBuilderXVue3Case(baseCwd, 'v3'),
-    createUniAppHBuilderXVue3Case(baseCwd, 'v4'),
-    createUniAppXHBuilderXCase(baseCwd, 'v3'),
-    createUniAppXHBuilderXCase(baseCwd, 'v4'),
+    createUniAppHBuilderXVue3Case(baseCwd),
+    createUniAppXHBuilderXCase(baseCwd),
   ]
 }

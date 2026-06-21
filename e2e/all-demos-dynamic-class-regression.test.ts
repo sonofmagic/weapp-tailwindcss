@@ -137,14 +137,14 @@ async function cleanupPatchedProjects() {
 
 function createNativePatch(entry: ProjectEntry): ProjectPatch {
   const root = projectRoot(entry)
-  const weappViteSourceRoot = entry.name === 'weapp-vite-tailwindcss-v3' ? 'miniprogram' : ''
+  const weappViteSourceRoot = entry.name === 'weapp-vite-tailwindcss-v4' ? 'miniprogram' : ''
   const pageFile = entry.name.startsWith('weapp-vite')
     ? path.resolve(root, weappViteSourceRoot, 'pages/index/index.wxml')
     : path.resolve(root, 'src/pages/index/index.wxml')
   const styleFile = entry.name.startsWith('weapp-vite')
     ? path.resolve(root, weappViteSourceRoot, 'pages/index/index.scss')
     : path.resolve(root, 'src/pages/index/index.scss')
-  const pageMarker = entry.name === 'weapp-vite-tailwindcss-v3'
+  const pageMarker = entry.name === 'weapp-vite-tailwindcss-v4'
     ? '<view class="{{className}}">className</view>'
     : entry.name === 'weapp-vite-tailwindcss-v4'
       ? '<view class="space-y-2.5">'

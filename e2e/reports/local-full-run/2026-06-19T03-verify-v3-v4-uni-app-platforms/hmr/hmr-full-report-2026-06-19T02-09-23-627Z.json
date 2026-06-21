@@ -25,8 +25,8 @@
     "p95Ms": 1387
   },
   "byApp": {
-    "demo/uni-app-vite-tailwindcss-v3": {
-      "project": "demo/uni-app-vite-tailwindcss-v3",
+    "demo/uni-app-vite-tailwindcss-v4": {
+      "project": "demo/uni-app-vite-tailwindcss-v4",
       "platforms": {
         "mp-weixin": {
           "count": 4,
@@ -57,7 +57,7 @@
     "maxRssDeltaMb": 1884,
     "peakHeapUsedMb": 1655,
     "byApp": {
-      "demo/uni-app-vite-tailwindcss-v3": {
+      "demo/uni-app-vite-tailwindcss-v4": {
         "peakRssMb": 2348,
         "maxRssDeltaMb": 1884,
         "peakHeapUsedMb": 1655
@@ -73,15 +73,15 @@
   },
   "cases": [
     {
-      "caseName": "uni-app-vite-tailwindcss-v3",
-      "project": "demo/uni-app-vite-tailwindcss-v3",
-      "label": "demo/uni-app-vite-tailwindcss-v3",
+      "caseName": "uni-app-vite-tailwindcss-v4",
+      "project": "demo/uni-app-vite-tailwindcss-v4",
+      "label": "demo/uni-app-vite-tailwindcss-v4",
       "platform": "mp-weixin",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
       "sourceShape": "vue-sfc",
-      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-23-629Z-uni-app-vite-tailwindcss-v3.json",
+      "reportFile": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-23-629Z-uni-app-vite-tailwindcss-v4.json",
       "initialReadyMs": 3296,
       "totalMs": 32027,
       "summary": {
@@ -121,21 +121,21 @@
         },
         {
           "surface": "main-style:text-[102.43rpx] to text-[103.43rpx]",
-          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v3/src/pages/index/index.vue",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v4/src/pages/index/index.vue",
           "hotUpdateEffectiveMs": 2059,
           "rollbackEffectiveMs": 1931,
           "hotUpdatePluginProcessMs": 1387
         },
         {
           "surface": "subpackage:sub-normal:main-style:text-[102.43rpx] to text-[103.43rpx]",
-          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v3/src/sub-normal/pages/index.vue",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v4/src/sub-normal/pages/index.vue",
           "hotUpdateEffectiveMs": 2615,
           "rollbackEffectiveMs": 2631,
           "hotUpdatePluginProcessMs": 1275
         },
         {
           "surface": "subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]",
-          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v3/src/sub-independent/pages/index.vue",
+          "sourceFile": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine/demo/uni-app-vite-tailwindcss-v4/src/sub-independent/pages/index.vue",
           "hotUpdateEffectiveMs": 2659,
           "rollbackEffectiveMs": 2619,
           "hotUpdatePluginProcessMs": 1269

@@ -18,7 +18,7 @@
   },
   "steps": [
     {
-      "name": "h5-dev-uni-app-vite-tailwindcss-v3",
+      "name": "h5-dev-uni-app-vite-tailwindcss-v4",
       "command": [
         "pnpm",
         "exec",
@@ -29,7 +29,7 @@
         "./e2e/vitest.e2e.config.ts",
         "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
         "-t",
-        "uni-app vite Tailwind v3"
+        "uni-app vite Tailwind v4"
       ],
       "exitCode": 0,
       "startedAt": "2026-06-19T02:12:25.768Z",

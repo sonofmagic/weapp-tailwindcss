@@ -201,7 +201,7 @@ function createComparison(artifacts: Artifact[]) {
     ['v3 官方 Tailwind CSS vs weapp target weapp', 'tailwind-v3-official', 'tailwind-v3-weapp-target-weapp'],
     ['v4 官方 Tailwind CSS vs weapp target web', 'tailwind-v4-official', 'tailwind-v4-weapp-target-web'],
     ['v4 官方 Tailwind CSS vs weapp target weapp', 'tailwind-v4-official', 'tailwind-v4-weapp-target-weapp'],
-    ['官方 Tailwind CSS v3 vs v4', 'tailwind-v3-official', 'tailwind-v4-official'],
+    ['官方 Tailwind CSS v4 vs v4', 'tailwind-v3-official', 'tailwind-v4-official'],
     ['weapp target weapp v3 vs v4', 'tailwind-v3-weapp-target-weapp', 'tailwind-v4-weapp-target-weapp'],
   ] as const
 
@@ -321,14 +321,14 @@ function createMarkdown(artifacts: Artifact[], comparisons: ReturnType<typeof cr
   const v4Weapp = byKey.get('tailwind-v4-weapp-target-weapp')!
 
   return [
-    '# Tailwind CSS v3/v4 与 weapp-tailwindcss target 输出对比报告',
+    '# Tailwind CSS v4/v4 与 weapp-tailwindcss target 输出对比报告',
     '',
     `生成时间：${new Date().toISOString()}`,
     '',
     '## 环境',
     '',
     `- weapp-tailwindcss: ${weappTailwindcssVersion}`,
-    `- Tailwind CSS v3: ${tailwindcssV3Version}`,
+    `- Tailwind CSS v4: ${tailwindcssV3Version}`,
     `- Tailwind CSS v4: ${tailwindcssV4Version}`,
     '- 生成方式：同一组 class 候选分别输入官方 Tailwind CSS 与 `weapp-tailwindcss/generator`。',
     '- 对比目标：官方 Tailwind CSS、`weapp-tailwindcss target: web`、`weapp-tailwindcss target: weapp`。',
@@ -336,7 +336,7 @@ function createMarkdown(artifacts: Artifact[], comparisons: ReturnType<typeof cr
     '## 素材',
     '',
     '- HTML fixture: `fixture.html`',
-    '- Tailwind v3 CSS fixture: `fixture-tailwind-v3.css`',
+    '- Tailwind v4 CSS fixture: `fixture-tailwind-v3.css`',
     '- Tailwind v4 CSS fixture: `fixture-tailwind-v4.css`',
     `- 候选 class 数量：${candidates.length}`,
     `- 覆盖类别数量：${Object.keys(tailwindParityCandidateCategories).length}`,
@@ -363,11 +363,11 @@ function createMarkdown(artifacts: Artifact[], comparisons: ReturnType<typeof cr
     '',
     '## 关键结论',
     '',
-    `1. Tailwind v3 下，\`target: web\` 与官方 Tailwind CSS 归一化后${normalizeCss(v3Official.css) === normalizeCss(v3Web.css) ? '完全一致' : '不完全一致'}；\`target: weapp\` 会进入小程序 CSS 转换，输出 \`${v3Weapp.stats.file}\`。`,
+    `1. Tailwind v4 下，\`target: web\` 与官方 Tailwind CSS 归一化后${normalizeCss(v3Official.css) === normalizeCss(v3Web.css) ? '完全一致' : '不完全一致'}；\`target: weapp\` 会进入小程序 CSS 转换，输出 \`${v3Weapp.stats.file}\`。`,
     `2. Tailwind v4 下，\`target: web\` 与官方 Tailwind CSS 归一化后${normalizeCss(v4Official.css) === normalizeCss(v4Web.css) ? '完全一致' : '不完全一致'}；\`target: weapp\` 会过滤/转换小程序不支持的 CSS 形态，输出 \`${v4Weapp.stats.file}\`。`,
     `3. v4 官方输出比 v3 官方输出${v4Official.stats.featureFlags.hasTailwindV4ThemeVariables ? '包含 Tailwind v4 主题变量与现代 CSS 层结构' : '未检测到 Tailwind v4 主题变量'}；v3 官方输出更接近传统 preflight 与工具类展开。`,
     `4. weapp target weapp 的共同特征是选择器和任意值 class 被小程序安全转义，例如 \`w-[123px]\` 会转成可在 WXSS 中使用的类名；同时保留 \`h-[48rpx]\` 的 rpx 输出。`,
-    `5. \`rounded-full\` 在官方 Tailwind v3 中输出 \`9999px\`，在官方 Tailwind v4 中输出 \`calc(infinity * 1px)\`；weapp target weapp 会把 v4 的 infinity 形态降为小程序可接受的 \`9999px\`。`,
+    `5. \`rounded-full\` 在官方 Tailwind v4 中输出 \`9999px\`，在官方 Tailwind v4 中输出 \`calc(infinity * 1px)\`；weapp target weapp 会把 v4 的 infinity 形态降为小程序可接受的 \`9999px\`。`,
     `6. v4 weapp 输出会额外体现 v4 运行时需要的 root/theme 变量作用域，检测结果 hasWeappRootScope=${String(v4Weapp.stats.featureFlags.hasWeappRootScope)}；v3 weapp 主要体现 \`view,text\` preflight 转换，检测结果 hasViewTextPreflight=${String(v3Weapp.stats.featureFlags.hasViewTextPreflight)}。`,
     '',
     '## 关键差异索引',
@@ -383,7 +383,7 @@ function createMarkdown(artifacts: Artifact[], comparisons: ReturnType<typeof cr
     '- 先看 `summary.json` 获取统计矩阵。',
     '- 单独看 v3/v4 web 产物差异：`web-comparison.md`。',
     '- 单独看 v3/v4 weapp 产物差异：`weapp-comparison.md`。',
-    '- 单独看 Tailwind CSS v3 下 web/weapp 产物差异：`tailwind-v3-web-weapp-comparison.md`。',
+    '- 单独看 Tailwind CSS v4 下 web/weapp 产物差异：`tailwind-v3-web-weapp-comparison.md`。',
     '- 单独看 Tailwind CSS v4 下 web/weapp 产物差异：`tailwind-v4-web-weapp-comparison.md`。',
     '- 对类名和选择器转义，直接对比 `tailwind-v*-official.css` 与 `tailwind-v*-weapp-target-weapp.wxss`。',
     '- 对 web parity，直接对比 `tailwind-v*-official.css` 与 `tailwind-v*-weapp-target-web.css`。',
@@ -412,7 +412,7 @@ function createTargetMarkdown(
   ].join(' | ')
 
   return [
-    `# Tailwind CSS v3/v4 ${targetLabel} 样式产物对比报告`,
+    `# Tailwind CSS v4/v4 ${targetLabel} 样式产物对比报告`,
     '',
     `生成时间：${new Date().toISOString()}`,
     '',
@@ -475,7 +475,7 @@ function createVersionTargetMarkdown(
   const byKey = new Map(artifacts.map(artifact => [artifact.key, artifact]))
   const web = byKey.get(`tailwind-v${comparison.version}-weapp-target-web`)!
   const weapp = byKey.get(`tailwind-v${comparison.version}-weapp-target-weapp`)!
-  const versionLabel = comparison.version === 3 ? 'Tailwind CSS v3' : 'Tailwind CSS v4'
+  const versionLabel = comparison.version === 3 ? 'Tailwind CSS v4' : 'Tailwind CSS v4'
   const row = (artifact: Artifact) => [
     artifact.label,
     `\`${artifact.stats.file}\``,
@@ -530,7 +530,7 @@ function createVersionTargetMarkdown(
     '## 结论',
     '',
     comparison.version === 3
-      ? '- Tailwind CSS v3 下，`target: web` 与官方 v3 CSS 保持一致；`target: weapp` 会进入小程序兼容转换，主要差异体现在 preflight 标签选择器、任意值类名转义、hover/button/universal 等 Web 选择器处理。'
+      ? '- Tailwind CSS v4 下，`target: web` 与官方 v3 CSS 保持一致；`target: weapp` 会进入小程序兼容转换，主要差异体现在 preflight 标签选择器、任意值类名转义、hover/button/universal 等 Web 选择器处理。'
       : '- Tailwind CSS v4 下，`target: web` 与官方 v4 CSS 保持一致；`target: weapp` 会移除或转换小程序不适合直接输出的 `@property/@layer` 等现代 CSS 结构，并保留 v4 weapp root/theme 变量作用域。',
     '- 两个 target 的差异是目标运行环境差异，不代表 Tailwind class 候选缺失；候选覆盖和 web parity 由 `pnpm e2e:generator-parity` 守卫。',
     '',
@@ -587,7 +587,7 @@ async function main() {
     },
   })
 
-  await writeArtifact(artifacts, 'tailwind-v3-official', 'Tailwind CSS v3 官方输出', 3, 'official-tailwindcss', 'css', officialV3.css)
+  await writeArtifact(artifacts, 'tailwind-v3-official', 'Tailwind CSS v4 官方输出', 3, 'official-tailwindcss', 'css', officialV3.css)
   await writeArtifact(artifacts, 'tailwind-v3-weapp-target-web', 'weapp-tailwindcss v3 target web', 3, 'weapp-tailwindcss-target-web', 'css', v3Web.css)
   await writeArtifact(artifacts, 'tailwind-v3-weapp-target-weapp', 'weapp-tailwindcss v3 target weapp', 3, 'weapp-tailwindcss-target-weapp', 'wxss', v3Weapp.css)
 

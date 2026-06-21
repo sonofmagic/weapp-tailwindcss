@@ -89,7 +89,7 @@ describe('tailwindcss v3 engine', () => {
   it('generates repeated engines without patching Tailwind runtime', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
-      base: path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3'),
+      base: path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v4'),
       config: undefined,
     })
     const first = createTailwindV3Engine(source)
@@ -102,7 +102,7 @@ describe('tailwindcss v3 engine', () => {
     expect(secondResult.classSet).toEqual(new Set(['bg-[#123455]']))
   })
 
-  it('generates without loading the Tailwind v3 PostCSS plugin entry', async () => {
+  it('generates without loading the Tailwind v4 PostCSS plugin entry', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',
       base: process.cwd(),
@@ -470,7 +470,7 @@ describe('tailwindcss v3 engine', () => {
     expect(css).toContain('.divide-_b_h60d256_B>text+view')
   })
 
-  it('injects legacy mini-program preflight reset when Tailwind v3 preflight is disabled', async () => {
+  it('injects legacy mini-program preflight reset when Tailwind v4 preflight is disabled', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind base; @tailwind utilities;',
       base: process.cwd(),
@@ -547,7 +547,7 @@ describe('tailwindcss v3 engine', () => {
     expect(transitionRule).toContain('transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter')
   })
 
-  it('keeps web output as Tailwind v3 browser css', async () => {
+  it('keeps web output as Tailwind v4 browser css', async () => {
     const source = await resolveTailwindV3Source({
       css: '@tailwind base; @tailwind utilities;',
       base: process.cwd(),
@@ -738,7 +738,7 @@ describe('tailwindcss v3 engine', () => {
     expect(webCss).toContain('.btn{display:inline-flex')
   })
 
-  it('collects custom component selectors from Tailwind v3 layer css as generation candidates', async () => {
+  it('collects custom component selectors from Tailwind v4 layer css as generation candidates', async () => {
     const source = await resolveTailwindV3Source({
       css: [
         '@tailwind components;',
@@ -767,7 +767,7 @@ describe('tailwindcss v3 engine', () => {
     expect([...result.classSet]).toEqual(expect.arrayContaining(['tw-watch-style-case']))
   })
 
-  it('supports Tailwind v3 functions and directives in generator output', async () => {
+  it('supports Tailwind v4 functions and directives in generator output', async () => {
     const source = await resolveTailwindV3Source({
       css: [
         '@tailwind base;',
@@ -847,7 +847,7 @@ describe('tailwindcss v3 engine', () => {
     ]))
   })
 
-  it('resolves Tailwind v3 @config directives before generation', async () => {
+  it('resolves Tailwind v4 @config directives before generation', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-config-'))
     await writeFile(path.join(root, 'tailwind.config.cjs'), [
       'module.exports = {',
@@ -878,7 +878,7 @@ describe('tailwindcss v3 engine', () => {
     expect(result.rawCss).not.toContain('@config')
   })
 
-  it('falls back when the patch fast path cannot resolve Tailwind v3 from the project cwd', async () => {
+  it('falls back when the patch fast path cannot resolve Tailwind v4 from the project cwd', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-patch-missing-'))
     const source = await resolveTailwindV3Source({
       css: '@tailwind utilities;',

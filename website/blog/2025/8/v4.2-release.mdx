@@ -41,60 +41,34 @@ npm init -y
 
 初始化一个 `package.json` 文件 (当然你也可以手动创建)
 
-### 1. 安装并引入 tailwindcss@3
+### 1. 安装并引入 Tailwind CSS
 
-```bash
-# 安装 tailwindcss@3 版本的依赖
-npm i -D tailwindcss@3 postcss autoprefixer
-# 初始化一个 tailwind.config.js 文件
-npx tailwindcss init
-```
-
-然后，在你的根目录中的 `App.uvue` 中引入 `tailwindcss` 使它在应用全局生效
-
-```html title="App.uvue"
-<style>
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-</style>
-```
+这篇发布日志中的 Tailwind CSS 3 接入示例已经迁移到旧版文档。当前站点只保留 Tailwind CSS 4 接入说明；如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ### 2. 安装 weapp-tailwindcss
 
 在项目目录下，执行:
 
 ```bash
-npm i -D weapp-tailwindcss
+npm i -D tailwindcss weapp-tailwindcss
 ```
 
-然后把下列脚本，添加进你的 `package.json` 的 `scripts` 字段里:
-
-```json title="package.json"
- "scripts": {
-    // highlight-next-line
-   "postinstall": "weapp-tw patch"
- }
-```
-
-当前接入方式已经合并到 [快速使用](https://tw.icebreaker.top/docs/quick-start/install)。
+当前接入方式已经合并到 [快速使用](https://tw.icebreaker.top/docs/quick-start/install)。不再需要配置 `postinstall: "weapp-tw patch"`。
 
 ### 3. uni-app x 中注册 weapp-tailwindcss
 
-#### 3.0. 创建辅助函数
+#### 3.0. 配置 Tailwind CSS 入口
 
-在项目中创建 `shared.js` 文件，用于存放一些工具函数：
+在项目根目录创建 `main.css`：
 
-```js title="shared.js"
-const path = require('node:path')
-// 绝对路径处理
-function r(...args) {
-  return path.resolve(__dirname, ...args)
-}
-
-module.exports = {
-  r,
-}
+```css title="main.css"
+@import "tailwindcss" source(none);
+@source "./App.uvue";
+@source "./pages/**/*.{uts,uvue}";
+@source "./components/**/*.{uts,uvue}";
+@source "./stores/**/*.{uts,uvue}";
+@source not "./uni_modules/**/*";
+@source not "./unpackage/**/*";
 ```
 
 #### 3.1. 配置 `Vite`
@@ -107,9 +81,7 @@ module.exports = {
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import { r } from './shared'
 import { uniAppX } from 'weapp-tailwindcss/presets'
-import tailwindcss from 'tailwindcss'
 
 export default defineConfig({
     plugins: [
@@ -117,43 +89,19 @@ export default defineConfig({
         WeappTailwindcss(
             uniAppX({
                 base: __dirname,
+                cssEntries: [
+                    new URL('./main.css', import.meta.url).pathname,
+                ],
                 rem2rpx: true,
             }),
         ),
     ],
-    css: {
-        postcss: {
-            plugins: [
-                tailwindcss({
-                    config: r('./tailwind.config.js'),
-                }),
-            ]
-        }
-    }
 });
 ```
 
 #### 3.2. 更改 `tailwindcss` 配置
 
-你需要在 `tailwind.config.js` 的 `content` 配置中，使用绝对路径去包括所有的提取文件
-
-```js title="tailwind.config.js"
-const { r } = require('./shared')
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    r('./pages/**/*.{uts,uvue}'),
-    r('./components/**/*.{uts,uvue}') 
-  ],
-  corePlugins: {
-    preflight: false,
-  },
-}
-
-```
-
-> 如需从更多目录提取样式 `token`，可按需扩展 `content`。
+当前 Tailwind CSS 4 配置请查看 [uni-app x 接入文档](/docs/quick-start/frameworks/uni-app-x)。旧版 Tailwind CSS 3 配置请查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ---
 

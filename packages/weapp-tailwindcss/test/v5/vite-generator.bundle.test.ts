@@ -1828,7 +1828,7 @@ describe('v5 vite generator bundle', () => {
     expect(secondCandidates.has('text-[blue]')).toBe(true)
   }, TEST_TIMEOUT_MS)
 
-  it('honors Tailwind v3 content negation when scanning vite source candidates', async () => {
+  it('honors Tailwind v4 content negation when scanning vite source candidates', async () => {
     const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v3-not-${Date.now()}-${Math.random().toString(16).slice(2)}`)
     createdDirs.push(tempDir)
     const pageFile = path.join(tempDir, 'src/pages/index.tsx')

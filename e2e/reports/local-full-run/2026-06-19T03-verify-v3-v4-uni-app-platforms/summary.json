@@ -52,7 +52,7 @@
       "copiedArtifacts": [
         "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/README.md",
         "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/summary.json",
-        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/projects/uni-app-vite-tailwindcss-v3.md",
+        "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/projects/uni-app-vite-tailwindcss-v4.md",
         "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/weapp-memory/projects/uni-app-vite-tailwindcss-v4.md",
         "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/hmr/hmr-full-report-2026-06-19T02-09-23-627Z.json",
         "e2e/reports/local-full-run/2026-06-19T03-verify-v3-v4-uni-app-platforms/hmr/hmr-full-report-2026-06-19T02-09-23-627Z.md",
@@ -61,14 +61,14 @@
       ]
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-h5",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-h5",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "h5",
         "stage": "build",
         "source": "multiplatform-build"
@@ -90,14 +90,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-h5-ssr",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-h5-ssr",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "h5:ssr",
         "stage": "build",
         "source": "multiplatform-build"
@@ -119,14 +119,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-alipay",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-alipay",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-alipay",
         "stage": "build",
         "source": "multiplatform-build"
@@ -148,14 +148,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-baidu",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-baidu",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-baidu",
         "stage": "build",
         "source": "multiplatform-build"
@@ -177,14 +177,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-kuaishou",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-kuaishou",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-kuaishou",
         "stage": "build",
         "source": "multiplatform-build"
@@ -206,14 +206,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-lark",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-lark",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-lark",
         "stage": "build",
         "source": "multiplatform-build"
@@ -235,14 +235,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-qq",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-qq",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-qq",
         "stage": "build",
         "source": "multiplatform-build"
@@ -264,14 +264,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-toutiao",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-toutiao",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-toutiao",
         "stage": "build",
         "source": "multiplatform-build"
@@ -293,14 +293,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-mp-weixin",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-mp-weixin",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "mp-weixin",
         "stage": "build",
         "source": "multiplatform-build"
@@ -322,14 +322,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "quickapp-webview",
         "stage": "build",
         "source": "multiplatform-build"
@@ -351,14 +351,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-huawei",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-huawei",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "quickapp-webview-huawei",
         "stage": "build",
         "source": "multiplatform-build"
@@ -380,14 +380,14 @@
       "copiedArtifacts": []
     },
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-union",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-union",
       "status": "passed",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "quickapp-webview-union",
         "stage": "build",
         "source": "multiplatform-build"
@@ -815,7 +815,7 @@
       "copiedArtifacts": []
     },
     {
-      "name": "h5-dev-uni-app-vite-tailwindcss-v3",
+      "name": "h5-dev-uni-app-vite-tailwindcss-v4",
       "status": "passed",
       "command": [
         "pnpm",
@@ -827,10 +827,10 @@
         "./e2e/vitest.e2e.config.ts",
         "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
         "-t",
-        "uni-app vite Tailwind v3"
+        "uni-app vite Tailwind v4"
       ],
       "metric": {
-        "project": "uni-app-vite-tailwindcss-v3",
+        "project": "uni-app-vite-tailwindcss-v4",
         "platform": "h5",
         "stage": "runtime",
         "source": "uni-app-h5-dev"
@@ -891,7 +891,7 @@
   ],
   "platformReports": [
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -908,7 +908,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -925,7 +925,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -940,7 +940,7 @@
         "durationMs": 7037,
         "peakRssMb": 4594,
         "rssDeltaMb": 4032,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-h5"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-h5"
       },
       "hmr": {
         "coverage": "automated",
@@ -955,16 +955,16 @@
           "./e2e/vitest.e2e.config.ts",
           "e2e/uni-app-vite-tailwindcss-dev-h5.test.ts",
           "-t",
-          "uni-app vite Tailwind v3"
+          "uni-app vite Tailwind v4"
         ],
         "durationMs": 2002,
         "peakRssMb": 936,
         "rssDeltaMb": 330,
-        "source": "step:h5-dev-uni-app-vite-tailwindcss-v3"
+        "source": "step:h5-dev-uni-app-vite-tailwindcss-v4"
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -979,7 +979,7 @@
         "durationMs": 8013,
         "peakRssMb": 4382,
         "rssDeltaMb": 3808,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-h5-ssr"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-h5-ssr"
       },
       "hmr": {
         "coverage": "exempt",
@@ -988,7 +988,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1003,7 +1003,7 @@
         "durationMs": 5012,
         "peakRssMb": 1465,
         "rssDeltaMb": 920,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-alipay"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-alipay"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1012,7 +1012,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1027,7 +1027,7 @@
         "durationMs": 5015,
         "peakRssMb": 1430,
         "rssDeltaMb": 869,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-baidu"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-baidu"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1036,7 +1036,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1051,7 +1051,7 @@
         "durationMs": 5020,
         "peakRssMb": 1483,
         "rssDeltaMb": 910,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-kuaishou"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-kuaishou"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1060,7 +1060,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1075,7 +1075,7 @@
         "durationMs": 5022,
         "peakRssMb": 1461,
         "rssDeltaMb": 901,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-lark"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-lark"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1084,7 +1084,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1099,7 +1099,7 @@
         "durationMs": 5009,
         "peakRssMb": 1446,
         "rssDeltaMb": 880,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-qq"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-qq"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1108,7 +1108,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1123,7 +1123,7 @@
         "durationMs": 5029,
         "peakRssMb": 1468,
         "rssDeltaMb": 904,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-toutiao"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-toutiao"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1132,7 +1132,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1147,7 +1147,7 @@
         "durationMs": 5026,
         "peakRssMb": 1532,
         "rssDeltaMb": 965,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-mp-weixin"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-mp-weixin"
       },
       "hmr": {
         "coverage": "automated",
@@ -1159,11 +1159,11 @@
         "peakRssMb": 2348,
         "rssDeltaMb": 1884,
         "pluginHeapPeakMb": 1655,
-        "source": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-23-629Z-uni-app-vite-tailwindcss-v3.json"
+        "source": "e2e/benchmark/e2e-watch-hmr/2026-06-19T02-09-23-629Z-uni-app-vite-tailwindcss-v4.json"
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1178,7 +1178,7 @@
         "durationMs": 5054,
         "peakRssMb": 1443,
         "rssDeltaMb": 878,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1187,7 +1187,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1202,7 +1202,7 @@
         "durationMs": 5026,
         "peakRssMb": 1488,
         "rssDeltaMb": 918,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-huawei"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-huawei"
       },
       "hmr": {
         "coverage": "exempt",
@@ -1211,7 +1211,7 @@
       }
     },
     {
-      "project": "uni-app-vite-tailwindcss-v3",
+      "project": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -1226,7 +1226,7 @@
         "durationMs": 5037,
         "peakRssMb": 1438,
         "rssDeltaMb": 872,
-        "source": "step:platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview-union"
+        "source": "step:platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview-union"
       },
       "hmr": {
         "coverage": "exempt",

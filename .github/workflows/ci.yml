@@ -291,7 +291,7 @@ jobs:
           - os: ubuntu-latest
             runner_label: linux
             node-version: 22
-            watch_case: uni-app-vite-tailwindcss-v3
+            watch_case: uni-app-vite-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
@@ -302,7 +302,7 @@ jobs:
           - os: macos-latest
             runner_label: macos
             node-version: 22
-            watch_case: uni-app-vite-tailwindcss-v3
+            watch_case: uni-app-vite-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'
@@ -313,7 +313,7 @@ jobs:
           - os: windows-latest
             runner_label: windows
             node-version: 22
-            watch_case: uni-app-vite-tailwindcss-v3
+            watch_case: uni-app-vite-tailwindcss-v4
             round_profile: default
             watch_save_snapshots: '1'
             watch_web_only: '1'

@@ -83,15 +83,15 @@ npx weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 
 ### 生成模式项目仍注册 Tailwind 官方生成插件
 
-`weapp-tailwindcss@5` 默认由 `WeappTailwindcss` 构建器插件接管 Tailwind CSS 生成。小程序构建里不要再同时注册 `@tailwindcss/postcss`、`@tailwindcss/vite` 或 Tailwind CSS 3.x 的 `tailwindcss` PostCSS 插件。
+`weapp-tailwindcss@5` 默认由 `WeappTailwindcss` 构建器插件接管 Tailwind CSS 生成。小程序构建里不要再同时注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。
 
 如果项目已有 `postcss.config.*`，只保留业务自己的非 Tailwind 插件。Tailwind CSS 4.x 的入口 CSS 使用 `@import "tailwindcss"` 与 `@source`；常规 Vite 项目会自动识别入口，多入口、入口未被构建器引入或自动识别失败时，再通过 `cssEntries` 显式传给 `WeappTailwindcss`。
 
 ### 未检测到 tailwind.config.*
 
-对于 Tailwind CSS v3 项目，请检查 `tailwind.config.*` 的 `content` 是否覆盖页面、组件和脚本文件。
+Tailwind CSS 4 支持 CSS-first 配置，未检测到 `tailwind.config.*` 不一定是问题。如果 JS 字符串中的 class 没有被识别，需要检查 CSS 入口中的 `@source`。
 
-对于 Tailwind CSS v4 项目，未检测到 `tailwind.config.*` 不一定是问题。v4 支持 CSS-first 配置，但如果 JS 字符串中的 class 没有被识别，仍需要检查 CSS 入口中的 `@source`。
+如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## issue 反馈建议
 
@@ -107,7 +107,7 @@ npx weapp-tailwindcss doctor --json
 | --- | --- |
 | 框架 | Taro / uni-app / MPX / 原生小程序 |
 | 构建器 | Vite / Webpack / Gulp |
-| Tailwind CSS 版本 | v3 / v4 |
+| Tailwind CSS 版本 | v4 |
 | 目标端 | 微信小程序 / H5 / App / 鸿蒙 |
 | 复现命令 | `pnpm dev:mp-weixin` |
 

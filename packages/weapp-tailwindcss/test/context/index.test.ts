@@ -187,7 +187,7 @@ describe('getCompilerContext', () => {
     })
   })
 
-  it('keeps Tailwind v3 preflight defaults when the runtime is v3', async () => {
+  it('keeps Tailwind v4 preflight defaults when the runtime is v3', async () => {
     createTailwindcssRuntimeFromContext.mockReturnValue({
       packageInfo: { version: '3.4.19' },
       majorVersion: 3,

@@ -15,11 +15,11 @@ const taroH5BuildRE = /(?:taro-build-runner\.mjs build|taro build)\s+--type h5/
 const generatedCssRE = /\.(?:flex|grid|rounded|theme-mode-demo)\b|\.h-\\\[300px\\\]|\.bg-\\\[|\.text-\\\[/
 const taroRuntimeCssRE = /\.taro-app-wrap\b|html,body\{width:100%;height:100%\}|body\{font-family:-apple-system-font/
 const ordinaryProjectCssREByName = new Map<string, RegExp>([
-  ['taro vite react Tailwind v3', /\.tw-page-style-watch-anchor\b/],
   ['taro vite react Tailwind v4', /\.tw-page-style-watch-anchor\b/],
-  ['taro webpack react Tailwind v3', /\.(?:aspect-w-16|xxx)\b/],
+  ['taro vite react Tailwind v4', /\.tw-page-style-watch-anchor\b/],
+  ['taro webpack react Tailwind v4', /\.(?:aspect-w-16|xxx)\b/],
   ['taro webpack react Tailwind v4', /\.tw-page-style-watch-anchor\b/],
-  ['taro webpack vue3 Tailwind v3', /\.(?:aspect-w-16|xxx)\b/],
+  ['taro webpack vue3 Tailwind v4', /\.(?:aspect-w-16|xxx)\b/],
   ['taro webpack vue3 Tailwind v4', /\.tw-page-style-watch-anchor\b/],
 ])
 

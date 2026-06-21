@@ -1,6 +1,6 @@
 ---
 title: uni-app CLI Vue3 Vite
-description: uni-app CLI Vue3 Vite 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。
+description: uni-app CLI Vue3 Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。
 keywords:
   - 快速开始
   - 安装
@@ -25,37 +25,11 @@ keywords:
 这是 `uni-app cli` 创建的 Vue3 Vite 项目。如果你使用 `HBuilderX` 创建项目，请看 [uni-app HBuilderX 使用方式](/docs/quick-start/frameworks/hbuilderx)。
 :::
 
-## 选择 Tailwind 入口
+## Tailwind 入口
 
-| Tailwind 版本 | 安装 | CSS 入口 | 扫描配置 |
-| --- | --- | --- | --- |
-| 3.x | `pnpm add -D tailwindcss@3 weapp-tailwindcss` | `@tailwind base;` 等指令 | `tailwind.config.js` 的 `content` |
-| 4.x | `pnpm add -D tailwindcss weapp-tailwindcss` | `@import "tailwindcss";` | CSS 入口里的 `@source` |
+当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 Tailwind CSS 生成由 `WeappTailwindcss` 接管，不要在小程序构建里再注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
-
-### Tailwind CSS 3.x
-
-```css title="src/app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-```ts title="tailwind.config.ts"
-export default {
-  content: [
-    './index.html',
-    './src/**/*.{html,js,ts,jsx,tsx,vue}',
-    '!./src/uni_modules/**/*',
-    '!./node_modules/**/*',
-    '!./dist/**/*',
-    '!./unpackage/**/*',
-  ],
-}
-```
-
-### Tailwind CSS 4.x
 
 ```css title="src/app.css"
 @import "tailwindcss";
@@ -117,7 +91,7 @@ WeappTailwindcss({
 
 ### 根因
 
-这不是业务代码真的写了这样的类名，而是扫描范围太宽，把第三方源码、文档或构建产物也纳入了提取范围。Tailwind 3 用 `content` 排除，Tailwind 4 用 `@source not` 排除。
+这不是业务代码真的写了这样的类名，而是扫描范围太宽，把第三方源码、文档或构建产物也纳入了提取范围。使用 `@source not` 排除这些目录。
 
 ### 最佳实践
 

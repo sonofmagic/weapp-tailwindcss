@@ -18,7 +18,7 @@
   },
   "steps": [
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-h5-ssr",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-h5-ssr",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"

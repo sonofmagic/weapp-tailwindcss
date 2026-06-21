@@ -495,7 +495,7 @@ async function runTwPatch(root: string): Promise<void> {
     const status = await twPatcher.getPatchStatus()
     const lengthUnitStatus = status.entries.find(entry => entry.name === 'extendLengthUnits')
     if (lengthUnitStatus?.status !== 'applied') {
-      throw new Error(`[e2e] Tailwind v3 rpx length-unit patch was not applied for ${root}: ${JSON.stringify(status, null, 2)}`)
+      throw new Error(`[e2e] Tailwind v4 rpx length-unit patch was not applied for ${root}: ${JSON.stringify(status, null, 2)}`)
     }
   })
 }

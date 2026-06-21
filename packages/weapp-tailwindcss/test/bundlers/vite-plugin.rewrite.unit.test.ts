@@ -137,7 +137,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
   })
 
-  it('can emit generated css without rewriting imports for Tailwind v3 generator mode', async () => {
+  it('can emit generated css without rewriting imports for Tailwind v4 generator mode', async () => {
     const generateTailwindCss = vi.fn(async () => '.flex{display:flex}')
     const [rewritePlugin] = createRewriteCssImportsPlugins({
       generateTailwindCss,
@@ -182,7 +182,7 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(generateTailwindCss).not.toHaveBeenCalled()
   })
 
-  it('can emit generated css for Tailwind v3 Sass @use entries before preprocessing', async () => {
+  it('can emit generated css for Tailwind v4 Sass @use entries before preprocessing', async () => {
     const source = [
       '@use "tailwindcss/base";',
       '@use "tailwindcss/components";',

@@ -24,31 +24,25 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - case_name: uni-app-vue3-vite-tailwindcss-v3
-            timeout_minutes: 30
           - case_name: uni-app-vite-tailwindcss-v4
             timeout_minutes: 30
-          - case_name: taro-react-webpack-tailwindcss-v3
-            timeout_minutes: 35
-          - case_name: taro-react-webpack-tailwindcss-v4
-            timeout_minutes: 35
-          - case_name: taro-react-vite-tailwindcss-v3
-            timeout_minutes: 40
-          - case_name: taro-react-vite-tailwindcss-v4
-            timeout_minutes: 40
-          - case_name: taro-vue3-webpack-tailwindcss-v3
-            timeout_minutes: 35
-          - case_name: taro-apps-webpack-tailwindcss-v4
-            timeout_minutes: 35
-          - case_name: mpx-webpack-tailwindcss-v3
-            timeout_minutes: 35
-          - case_name: mpx-webpack-tailwindcss-v4
-            timeout_minutes: 35
-          - case_name: gulp-tailwindcss-v3
+          - case_name: uni-app-vite-vue3-hbuilderx-tailwindcss-v4
             timeout_minutes: 30
-          - case_name: weapp-vite-native-tailwindcss-v4
+          - case_name: uni-app-x-hbuilderx-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: taro-webpack-react-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: taro-vite-react-tailwindcss-v4
+            timeout_minutes: 40
+          - case_name: taro-webpack-vue3-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: taro-vite-vue3-tailwindcss-v4
+            timeout_minutes: 40
+          - case_name: mpx-tailwindcss-v4
+            timeout_minutes: 35
+          - case_name: gulp-tailwindcss-v4
             timeout_minutes: 30
-          - case_name: weapp-vite-native-ts-tailwindcss-v3
+          - case_name: weapp-vite-tailwindcss-v4
             timeout_minutes: 30
           - case_name: where-selector
             timeout_minutes: 15

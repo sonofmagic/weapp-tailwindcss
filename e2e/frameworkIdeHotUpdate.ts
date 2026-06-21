@@ -21,25 +21,15 @@ const IDE_STYLE_HOT_UPDATE_EXEMPT_CASES = new Set([
 ])
 
 export const frameworkIdeWatchCaseNames: Record<string, WatchCase['name']> = {
-  'gulp-tailwindcss-v3': 'gulp-tailwindcss-v3',
   'gulp-tailwindcss-v4': 'gulp-tailwindcss-v4',
-  'mpx-tailwindcss-v3': 'mpx-tailwindcss-v3',
   'mpx-tailwindcss-v4': 'mpx-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v3': 'taro-webpack-react-tailwindcss-v3',
   'taro-webpack-react-tailwindcss-v4': 'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v3': 'taro-webpack-vue3-tailwindcss-v3',
   'taro-webpack-vue3-tailwindcss-v4': 'taro-webpack-vue3-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v3': 'taro-vite-react-tailwindcss-v3',
   'taro-vite-react-tailwindcss-v4': 'taro-vite-react-tailwindcss-v4',
-  'taro-vite-vue3-tailwindcss-v3': 'taro-vite-vue3-tailwindcss-v3',
   'taro-vite-vue3-tailwindcss-v4': 'taro-vite-vue3-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v3': 'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4': 'uni-app-vite-tailwindcss-v4',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3': 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4': 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'uni-app-x-hbuilderx-tailwindcss-v3': 'uni-app-x-hbuilderx-tailwindcss-v3',
   'uni-app-x-hbuilderx-tailwindcss-v4': 'uni-app-x-hbuilderx-tailwindcss-v4',
-  'weapp-vite-tailwindcss-v3': 'weapp-vite-tailwindcss-v3',
   'weapp-vite-tailwindcss-v4': 'weapp-vite-tailwindcss-v4',
 }
 

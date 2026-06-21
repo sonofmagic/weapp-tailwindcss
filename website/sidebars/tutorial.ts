@@ -83,7 +83,6 @@ const tutorialSidebar: SidebarConfig = [
           },
         ],
       },
-      'quick-start/frameworks/rax',
       'quick-start/frameworks/api',
     ],
   },

@@ -117,7 +117,7 @@ function resolveOptions(): BenchCliOptions {
   const argv = process.argv.slice(2)
   const mode = (parseArg('--mode', argv) ?? 'both') as BenchCliOptions['mode']
   const baseCwd = resolveBaseCwd()
-  const cwd = resolvePathArg(baseCwd, parseArg('--cwd', argv), 'templates/uni-app-vite-vue3-tailwind-vscode-template')
+  const cwd = resolvePathArg(baseCwd, parseArg('--cwd', argv), 'templates/uni-app-tailwindcss-v4')
   const output = resolvePathArg(baseCwd, parseArg('--output', argv), 'benchmark/vite-adapter-perf-report.json')
 
   return {

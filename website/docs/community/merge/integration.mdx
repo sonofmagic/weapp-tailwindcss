@@ -70,8 +70,7 @@ keywords:
 | Tailwind 版本 | 合并运行时 | 变体运行时 | 说明 |
 | --- | --- | --- | --- |
 | v4 | `@weapp-tailwindcss/merge` | `@weapp-tailwindcss/variants` | 默认组合，适配 `tailwind-merge@3` |
-| v3 | `@weapp-tailwindcss/merge-v3` | `@weapp-tailwindcss/variants-v3` | 旧项目长期维护 |
-| v3 Web | `tailwind-variant-v3` | `tailwind-variant-v3` | 仅 Web 场景可直接用上游 |
+| v3 | `weapp-tailwindcss@4` | 旧版文档站 | 请查看 https://v4.tw.icebreaker.top/ |
 
 ## 与 weapp-tailwindcss 插件联动
 
@@ -85,7 +84,7 @@ keywords:
 
 ## 调试建议
 
-- **验证运行时版本**：输出 `tailwindMergeVersion`，确认 v3/v4 分支是否正确。
+- **验证运行时版本**：输出 `tailwindMergeVersion`，确认当前运行时分支是否正确。
 - **确认转义链路**：本地执行脚本，检查 `twMerge` 是否完成「还原 ➜ 合并 ➜ 重新转义」。
 
   ```bash

@@ -6,13 +6,13 @@
 
 | Project | With plugin-html | Without plugin-html | Same hashes | Changed files |
 | --- | --- | --- | --- | ---: |
-| [taro-webpack-react-tailwindcss-v3](taro-webpack-react-tailwindcss-v3/README.md) | passed | passed | false | 2 |
+| [taro-webpack-react-tailwindcss-v4](taro-webpack-react-tailwindcss-v4/README.md) | passed | passed | false | 2 |
 | [taro-webpack-react-tailwindcss-v4](taro-webpack-react-tailwindcss-v4/README.md) | passed | passed | true | 0 |
-| [taro-vite-react-tailwindcss-v3](taro-vite-react-tailwindcss-v3/README.md) | passed | passed | true | 0 |
 | [taro-vite-react-tailwindcss-v4](taro-vite-react-tailwindcss-v4/README.md) | passed | passed | true | 0 |
-| [taro-webpack-vue3-tailwindcss-v3](taro-webpack-vue3-tailwindcss-v3/README.md) | passed | passed | false | 2 |
+| [taro-vite-react-tailwindcss-v4](taro-vite-react-tailwindcss-v4/README.md) | passed | passed | true | 0 |
+| [taro-webpack-vue3-tailwindcss-v4](taro-webpack-vue3-tailwindcss-v4/README.md) | passed | passed | false | 2 |
 | [taro-webpack-vue3-tailwindcss-v4](taro-webpack-vue3-tailwindcss-v4/README.md) | passed | passed | true | 0 |
-| [taro-vite-vue3-tailwindcss-v3](taro-vite-vue3-tailwindcss-v3/README.md) | passed | passed | true | 0 |
+| [taro-vite-vue3-tailwindcss-v4](taro-vite-vue3-tailwindcss-v4/README.md) | passed | passed | true | 0 |
 | [taro-vite-vue3-tailwindcss-v4](taro-vite-vue3-tailwindcss-v4/README.md) | passed | passed | true | 0 |
 
 ## File Index

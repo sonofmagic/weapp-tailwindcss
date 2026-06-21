@@ -13,7 +13,7 @@ const describeIde = process.env['E2E_IDE'] === '1' ? describe : describe.skip
 const v4ProjectRoot = path.resolve(__dirname, '../demo/taro-webpack-react-tailwindcss-v4')
 const v4ProjectPath = v4ProjectRoot
 const v4AppWxssPath = path.resolve(v4ProjectRoot, 'dist/app.wxss')
-const v3ProjectRoot = path.resolve(__dirname, '../demo/taro-webpack-react-tailwindcss-v3')
+const v3ProjectRoot = path.resolve(__dirname, '../demo/taro-webpack-react-tailwindcss-v4')
 const v3ProjectPath = v3ProjectRoot
 const v3AppWxssPath = path.resolve(v3ProjectRoot, 'dist/app.wxss')
 const issue909PageUrl = '/pages/issue-909/index'
@@ -590,7 +590,7 @@ describeIde.sequential('issues 909/916/928 IDE runtime', () => {
   }, 120_000)
 })
 
-describeIde.sequential('issue 928 Tailwind v3 IDE runtime', () => {
+describeIde.sequential('issue 928 Tailwind v4 IDE runtime', () => {
   let miniProgram: any
 
   beforeAll(async () => {
@@ -618,7 +618,7 @@ describeIde.sequential('issue 928 Tailwind v3 IDE runtime', () => {
     await cleanupDevTools()
   })
 
-  it('keeps Tailwind v3 gradient utilities valid in WeChat DevTools', async () => {
+  it('keeps Tailwind v4 gradient utilities valid in WeChat DevTools', async () => {
     const appWxss = await fs.readFile(v3AppWxssPath, 'utf8')
     expect(appWxss).toContain('.bg-gradient-to-r')
     expect(appWxss).toContain('.from-cyan-500')
@@ -633,7 +633,7 @@ describeIde.sequential('issue 928 Tailwind v3 IDE runtime', () => {
 
     await assertIssue928GradientRuntime(miniProgram, {
       artifactPrefix: 'v3',
-      coveredIssue: '#928 Tailwind v3 gradient stop fallbacks',
+      coveredIssue: '#928 Tailwind v4 gradient stop fallbacks',
       expectedPrimaryClass: 'bg-gradient-to-r',
       expectedViaClass: 'via-purple-500',
       gradientSelector: '.issue-928-v3-gradient',

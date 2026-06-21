@@ -151,7 +151,7 @@ describeFrameworkIde.sequential('framework support matrix ide', () => {
     }
   })
 
-  it('covers Tailwind CSS v3 and v4 IDE hot updates for every supported framework family', () => {
+  it('covers Tailwind CSS v4 and v4 IDE hot updates for every supported framework family', () => {
     if (process.env['E2E_PROJECT_FILTER']) {
       return
     }

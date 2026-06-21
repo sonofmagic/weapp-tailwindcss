@@ -96,8 +96,8 @@ describe('cssEntries integration', () => {
     }
   })
 
-  it('refreshes script arbitrary values for uni-app-vite-tailwindcss-v3', async () => {
-    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v3')
+  it('refreshes script arbitrary values for uni-app-vite-tailwindcss-v4', async () => {
+    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
     const previousToken = 'bg-[#123456] shadow-blue-100'
@@ -135,8 +135,8 @@ describe('cssEntries integration', () => {
     }
   })
 
-  it('keeps shorthand hex script classes refreshable for uni-app-vite-tailwindcss-v3', async () => {
-    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v3')
+  it('keeps shorthand hex script classes refreshable for uni-app-vite-tailwindcss-v4', async () => {
+    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
     const previousToken = '\'bg-[#999999]\':true'
@@ -173,8 +173,8 @@ describe('cssEntries integration', () => {
     }
   })
 
-  it('refreshes high-risk arbitrary script token families for uni-app-vite-tailwindcss-v3', async () => {
-    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v3')
+  it('refreshes high-risk arbitrary script token families for uni-app-vite-tailwindcss-v4', async () => {
+    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
 

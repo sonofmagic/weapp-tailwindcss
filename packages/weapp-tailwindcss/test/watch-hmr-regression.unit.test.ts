@@ -652,7 +652,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForCompileSettled(
       {
-        label: 'demo/taro-vite-react-tailwindcss-v3',
+        label: 'demo/taro-vite-react-tailwindcss-v4',
       } as any,
       {
         timeoutMs: 1_200,
@@ -684,7 +684,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForCompileSettled(
       {
-        label: 'demo/weapp-vite-tailwindcss-v3',
+        label: 'demo/weapp-vite-tailwindcss-v4',
         outputWxml: wxmlFile,
         outputJs: jsFile,
       } as any,
@@ -726,7 +726,7 @@ describe('watch-hmr regression text helpers', () => {
     try {
       elapsed = await waitForOutputsReady(
         {
-          label: 'demo/weapp-vite-tailwindcss-v3',
+          label: 'demo/weapp-vite-tailwindcss-v4',
           outputWxml: wxmlFile,
           outputJs: jsFile,
         } as any,
@@ -760,7 +760,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForOutputsReady(
       {
-        label: 'demo/weapp-vite-tailwindcss-v3',
+        label: 'demo/weapp-vite-tailwindcss-v4',
         requireInitialCompileSuccess: false,
         outputWxml: wxmlFile,
         outputJs: jsFile,
@@ -845,7 +845,7 @@ describe('watch-hmr regression text helpers', () => {
 
     const elapsed = await waitForInitialWarmup(
       {
-        label: 'demo/weapp-vite-tailwindcss-v3',
+        label: 'demo/weapp-vite-tailwindcss-v4',
         requireInitialCompileSuccess: true,
         outputWxml: wxmlFile,
         outputJs: jsFile,
@@ -1121,7 +1121,7 @@ describe('watch-hmr regression summary helpers', () => {
     })
 
     const cases = [
-      createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40),
+      createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40),
       createCase('weapp-vite-tailwindcss-v4', 'demo', 50, 70),
     ]
 
@@ -1141,11 +1141,11 @@ describe('watch-hmr regression summary helpers', () => {
       rollbackAvgMs: 55,
     })
     expect(summarizeMetricsByGroup(cases).demo).toMatchObject({ count: 2, hotUpdateAvgMs: 40 })
-    expect(summarizeMetricsByProject(cases)['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: 1, rollbackAvgMs: 40 })
+    expect(summarizeMetricsByProject(cases)['demo-weapp-vite-tailwindcss-v4']).toMatchObject({ count: 2, rollbackAvgMs: 55 })
   })
 
   it('summarizes mutation kinds using preferred rounds', () => {
-    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    const cases = [createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)]
     const byCase = summarizeMutationKindAcrossCases(cases)
     const byMutation = summarizeMutationMetricsByKind(cases[0].mutationMetrics)
 
@@ -1257,7 +1257,7 @@ describe('watch-hmr regression summary helpers', () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-summary-'))
     tempDirs.push(tempDir)
     const reportFile = 'artifacts/watch-report.json'
-    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    const cases = [createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)]
     const options: CliOptions = {
       caseName: 'demo',
       timeoutMs: 2_000,
@@ -1292,7 +1292,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(report.options.mainStyleOnly).toBe(false)
     expect(report.summary).toMatchObject({ count: 1, hotUpdateAvgMs: 30, rollbackAvgMs: 40 })
     expect(report.summaryByMutationKind.template).toMatchObject({ count: 1, hotUpdateAvgMs: 30 })
-    expect(report.hmrDurations.byProject['demo-weapp-vite-tailwindcss-v3'].timings.map((item: any) => item.surface)).toEqual(expect.arrayContaining([
+    expect(report.hmrDurations.byProject['demo-weapp-vite-tailwindcss-v4'].timings.map((item: any) => item.surface)).toEqual(expect.arrayContaining([
       'template:preferred-round',
       'template:complex-corpus',
       'script:complex-corpus',
@@ -1306,7 +1306,7 @@ describe('watch-hmr regression summary helpers', () => {
       peakRssMb: 132,
       maxRssDeltaMb: 0,
     })
-    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v4']).toMatchObject({
       peakRssMb: 132,
       rssDeltaMb: 0,
       peakProcessCount: 2,
@@ -1315,7 +1315,7 @@ describe('watch-hmr regression summary helpers', () => {
         rssMb: 132,
       },
     })
-    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3'].peakSample.topProcesses[0]).toMatchObject({
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v4'].peakSample.topProcesses[0]).toMatchObject({
       rssMb: 118,
       command: 'node demo-watch',
     })
@@ -1325,7 +1325,7 @@ describe('watch-hmr regression summary helpers', () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-debug-rss-'))
     tempDirs.push(tempDir)
     const reportFile = 'watch-report.json'
-    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    const cases = [createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)]
     cases[0]!.memoryDebugSamples = [
       {
         at: 2,
@@ -1371,7 +1371,7 @@ describe('watch-hmr regression summary helpers', () => {
       maxRssDeltaMb: 1916,
       peakHeapUsedMb: 512,
     })
-    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({
+    expect(report.memoryReport.byProject['demo-weapp-vite-tailwindcss-v4']).toMatchObject({
       baselineRssMb: 132,
       peakRssMb: 2048,
       peakMaxProcessRssMb: 2048,
@@ -1396,7 +1396,7 @@ describe('watch-hmr regression summary helpers', () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-speed-'))
     tempDirs.push(tempDir)
     const reportFile = 'artifacts/watch-report.json'
-    const cases = [createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)]
+    const cases = [createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)]
     const options: CliOptions = {
       caseName: 'demo',
       timeoutMs: 2_000,
@@ -1437,7 +1437,7 @@ describe('watch-hmr regression summary helpers', () => {
       p50Ms: 30,
       maxMs: 32,
     })
-    expect(speedReport.byProject['demo-weapp-vite-tailwindcss-v3']).toMatchObject({ count: samples.length })
+    expect(speedReport.byProject['demo-weapp-vite-tailwindcss-v4']).toMatchObject({ count: samples.length })
     expect(speedReport.bySurface.style).toMatchObject({ count: 1, avgMs: 32 })
     expect(speedReport.slowest[0]).toMatchObject({ surface: 'style', hotUpdateMs: 32 })
     expect(speedReport.maxHotUpdateBudgetMs).toBe(1000)
@@ -1452,11 +1452,11 @@ describe('watch-hmr regression summary helpers', () => {
     expect(markdown).toContain('- preferred target: <=1000ms')
     expect(markdown).toContain('output=semantic')
     expect(markdown).toContain('| template:preferred-round | 1 | 30ms | 30ms | 30ms | 30ms | 30ms |')
-    expect(markdown).toContain('Tailwind v3/v4 官方 Vite/Webpack 插件')
+    expect(markdown).toContain('Tailwind v4/v4 官方 Vite/Webpack 插件')
   })
 
   it('applies hot-update budget checks to nested HMR samples', () => {
-    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const metrics = createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)
     const scriptMetric = metrics.mutationMetrics.find(
       mutation => mutation.mutationKind === 'script',
     )
@@ -1498,7 +1498,7 @@ describe('watch-hmr regression summary helpers', () => {
   })
 
   it('applies weapp-tailwindcss processing budget checks to nested HMR samples', () => {
-    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const metrics = createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)
     const scriptMetric = metrics.mutationMetrics.find(
       mutation => mutation.mutationKind === 'script',
     )
@@ -1521,7 +1521,7 @@ describe('watch-hmr regression summary helpers', () => {
   })
 
   it('summarizes and guards watch process memory growth', () => {
-    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const metrics = createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)
     metrics.memorySamples = [
       { at: 1, rssMb: 640, maxProcessRssMb: 620, processCount: 2 },
       { at: 2, rssMb: 702, maxProcessRssMb: 680, processCount: 2 },
@@ -1549,7 +1549,7 @@ describe('watch-hmr regression summary helpers', () => {
   })
 
   it('guards absolute process tree RSS peak', () => {
-    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const metrics = createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)
     metrics.memorySamples = [
       { at: 1, rssMb: 640, maxProcessRssMb: 620, processCount: 2 },
       { at: 2, rssMb: 702, maxProcessRssMb: 680, processCount: 2 },
@@ -1572,7 +1572,7 @@ describe('watch-hmr regression summary helpers', () => {
   })
 
   it('guards plugin process heap usage when memory debug samples are available', () => {
-    const metrics = createCase('weapp-vite-tailwindcss-v3', 'demo', 30, 40)
+    const metrics = createCase('weapp-vite-tailwindcss-v4', 'demo', 30, 40)
     metrics.memoryDebugSamples = [
       {
         at: 1,
@@ -1692,7 +1692,7 @@ describe('watch-hmr regression summary helpers', () => {
   })
 
   it('lets CLI budget override slower case-specific plugin processing budgets', () => {
-    const metrics = createCase('uni-app-vite-tailwindcss-v3', 'demo', 30, 40)
+    const metrics = createCase('uni-app-vite-tailwindcss-v4', 'demo', 30, 40)
     metrics.maxPluginProcessMs = 5000
     const templateMetric = metrics.mutationMetrics.find(
       mutation => mutation.mutationKind === 'template',
@@ -1842,19 +1842,15 @@ describe('watch-hmr regression cases', () => {
     expect(roundConfig?.buildModifyClassTokens?.('seed')).toEqual([...ISSUE33_MODIFY_CLASS_TOKENS])
   })
 
-  it('keeps the uni-app Vue3 Vite content mutation anchored to the bgObj page fixture', () => {
-    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
+  it('keeps the uni-app Vite v4 content mutation anchored to the page class ref', () => {
+    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
     const contentMutation = uniAppCase?.contentMutation
 
     expect(contentMutation).toBeDefined()
     expect(contentMutation?.mutate(
-      [
-        'const bgObj = ref({',
-        '  \'bg-[#232322]\':true',
-        '})',
-      ].join('\n'),
+      'const className = ref(\'bg-[#0000ff] text-[45rpx] text-white\')',
       payload,
-    )).toContain('\'text-[#123456]\':true')
+    )).toContain(`const className = ref('${payload.classLiteral}')`)
   })
 
   it('uses the development H5 watch script for Taro webpack React v4 web HMR', () => {
@@ -1891,8 +1887,8 @@ describe('watch-hmr regression cases', () => {
     expect(vueAppSource).toContain('app.use(NutButton)')
   })
 
-  it('keeps the uni-app Vue3 Vite v3 style mutation on the Vite style entry', () => {
-    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
+  it('keeps the uni-app Vite v4 style mutation on the Vite style entry', () => {
+    const uniAppCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
     const styleMutation = uniAppCase?.styleMutation
     const source = [
       '<template><view /></template>',
@@ -1901,19 +1897,18 @@ describe('watch-hmr regression cases', () => {
       '</style>',
     ].join('\n')
     const payload = createStyleMutationPayload({
-      name: 'uni-app-vite-tailwindcss-v3',
+      name: 'uni-app-vite-tailwindcss-v4',
     } as WatchCase)
     const mutated = styleMutation?.mutate(source, payload)
 
-    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/src/App.vue'))
+    expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/src/main.css'))
     expect(styleMutation?.importerFiles).toBeUndefined()
     expect(styleMutation?.outputStyleNeedle?.(payload)).toBeUndefined()
-    expect(styleMutation?.outputNeedles?.(payload)).toEqual(['color: #123457'])
-    expect(styleMutation?.rollbackNeedles?.(payload)).toEqual(['color: #123457'])
-    expect(styleMutation?.validateApply).toBe(false)
+    expect(styleMutation?.outputNeedles?.(payload)).toBeUndefined()
+    expect(styleMutation?.rollbackNeedles?.(payload)).toBeUndefined()
+    expect(styleMutation?.validateApply).toBeUndefined()
     expect(mutated).toContain(payload.styleNeedle)
-    expect(mutated).toContain('color: #123457')
-    expect(mutated).toContain(`${payload.styleNeedle} { color: #123457; }\n</style>`)
+    expect(mutated).toMatch(new RegExp(`${payload.styleNeedle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} \\{ color: #[0-9a-f]{6}; \\}`))
   })
 
   it('keeps enough fresh class candidates after watch mode accumulates earlier classes', () => {
@@ -2026,27 +2021,24 @@ describe('watch-hmr regression cases', () => {
   it('registers the new tailwindcss v4 watch cases with expected outputs', () => {
     const extendedCases = buildDemoExtendedCases('/repo')
     const baseCases = buildDemoBaseCases('/repo')
-    const uniViteCase = extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v3')
-    const uniViteV4Case = extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v4')
+    const uniViteCase = extendedCases.find(item => item.name === 'uni-app-vite-tailwindcss-v4')
     const mpxV4Case = extendedCases.find(item => item.name === 'mpx-tailwindcss-v4')
     const viteNativeCase = baseCases.find(item => item.name === 'weapp-vite-tailwindcss-v4')
 
     expect(uniViteCase?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/pages/index/index.wxml'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
     )
     expect(uniViteCase?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v3/dist/dev/mp-weixin/app.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
-    expect(uniViteCase?.maxPluginProcessMs).toBe(5000)
-
-    expect(uniViteV4Case?.outputStyleCandidates).toEqual([
+    expect(uniViteCase?.outputStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
-    expect(uniViteV4Case?.globalStyleCandidates).toEqual([
+    expect(uniViteCase?.globalStyleCandidates).toEqual([
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
-    expect(uniViteV4Case?.subPackageMutations?.[0]?.globalStyleCandidates).not.toContain(
+    expect(uniViteCase?.subPackageMutations?.[0]?.globalStyleCandidates).not.toContain(
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
     )
 
@@ -2118,9 +2110,7 @@ describe('watch-hmr regression cases', () => {
     const cases = buildDemoExtendedCases('/repo').filter(watchCase => watchCase.name.startsWith('taro-vite-'))
 
     expect(cases.map(watchCase => watchCase.name).sort()).toEqual([
-      'taro-vite-react-tailwindcss-v3',
       'taro-vite-react-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v3',
       'taro-vite-vue3-tailwindcss-v4',
     ])
 
@@ -2136,7 +2126,7 @@ describe('watch-hmr regression cases', () => {
       ...buildDemoBaseCases('/repo'),
       ...buildDemoExtendedCases('/repo'),
     ]
-    const contentMutationOptionalCases = new Set(['gulp-tailwindcss-v3', 'gulp-tailwindcss-v4'])
+    const contentMutationOptionalCases = new Set(['gulp-tailwindcss-v4'])
 
     expect(cases.length).toBeGreaterThan(0)
 
@@ -2175,20 +2165,12 @@ describe('watch-hmr regression cases', () => {
     ]
 
     expect(cases.map(watchCase => watchCase.name)).toEqual([
-      'gulp-tailwindcss-v3',
       'gulp-tailwindcss-v4',
-      'taro-webpack-react-tailwindcss-v3',
-      'taro-webpack-vue3-tailwindcss-v3',
-      'mpx-tailwindcss-v3',
-      'weapp-vite-tailwindcss-v3',
       'weapp-vite-tailwindcss-v4',
-      'uni-app-vite-tailwindcss-v3',
       'uni-app-vite-tailwindcss-v4',
       'mpx-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',
-      'taro-vite-react-tailwindcss-v3',
       'taro-webpack-react-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v3',
       'taro-vite-vue3-tailwindcss-v4',
       'taro-webpack-vue3-tailwindcss-v4',
     ])
@@ -2200,15 +2182,10 @@ describe('watch-hmr regression cases', () => {
       ...buildDemoExtendedCases('/repo'),
     ]
     const webCaseNames = [
-      'taro-webpack-react-tailwindcss-v3',
       'taro-webpack-react-tailwindcss-v4',
-      'taro-vite-react-tailwindcss-v3',
       'taro-vite-react-tailwindcss-v4',
-      'taro-webpack-vue3-tailwindcss-v3',
       'taro-webpack-vue3-tailwindcss-v4',
-      'taro-vite-vue3-tailwindcss-v3',
       'taro-vite-vue3-tailwindcss-v4',
-      'uni-app-vite-tailwindcss-v3',
       'uni-app-vite-tailwindcss-v4',
     ]
     const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
@@ -2226,13 +2203,10 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase?.webHmr?.devScript).toBe(expectedDevScript)
     }
 
-    expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v3\/src\/app\.less$/)
     expect(toSlashPath(caseMap.get('taro-webpack-react-tailwindcss-v4')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v4\/src\/app\.css$/)
-    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v3')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-vue3-tailwindcss-v3\/src\/app\.less$/)
+    expect(toSlashPath(caseMap.get('taro-webpack-vue3-tailwindcss-v4')?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-vue3-tailwindcss-v4\/src\/app\.css$/)
 
     const taroWebpackPostcssConfigs = [
-      'demo/taro-webpack-react-tailwindcss-v3/postcss.config.js',
-      'demo/taro-webpack-vue3-tailwindcss-v3/postcss.config.js',
       'demo/taro-webpack-react-tailwindcss-v4/postcss.config.mjs',
       'demo/taro-webpack-vue3-tailwindcss-v4/postcss.config.mjs',
     ]
@@ -2244,12 +2218,8 @@ describe('watch-hmr regression cases', () => {
     }
 
     const taroConfigs = [
-      'demo/taro-vite-react-tailwindcss-v3/config/index.ts',
       'demo/taro-vite-react-tailwindcss-v4/config/index.ts',
-      'demo/taro-vite-vue3-tailwindcss-v3/config/index.ts',
       'demo/taro-vite-vue3-tailwindcss-v4/config/index.ts',
-      'demo/taro-webpack-react-tailwindcss-v3/config/index.ts',
-      'demo/taro-webpack-vue3-tailwindcss-v3/config/index.ts',
       'demo/taro-webpack-react-tailwindcss-v4/config/index.ts',
       'demo/taro-webpack-vue3-tailwindcss-v4/config/index.ts',
     ]
@@ -2269,13 +2239,9 @@ describe('watch-hmr regression cases', () => {
     }
 
     const taroAppStyleEntries = [
-      ['demo/taro-vite-react-tailwindcss-v3/src/app.ts', 'app.scss'],
       ['demo/taro-vite-react-tailwindcss-v4/src/app.ts', 'app.css'],
-      ['demo/taro-vite-vue3-tailwindcss-v3/src/app.ts', 'app.scss'],
       ['demo/taro-vite-vue3-tailwindcss-v4/src/app.ts', 'app.css'],
-      ['demo/taro-webpack-react-tailwindcss-v3/src/app.ts', 'app.less'],
       ['demo/taro-webpack-react-tailwindcss-v4/src/app.ts', 'app.css'],
-      ['demo/taro-webpack-vue3-tailwindcss-v3/src/app.ts', 'app.less'],
       ['demo/taro-webpack-vue3-tailwindcss-v4/src/app.ts', 'app.css'],
     ]
     for (const [entryPath, styleFile] of taroAppStyleEntries) {
@@ -2290,27 +2256,17 @@ describe('watch-hmr regression cases', () => {
     expect(webpackV5PluginSource).toContain('setupWebpackWatchOutputIgnore')
     expect(webpackV5PluginSource).toContain('compiler.outputPath || compiler.options?.output?.path')
 
-    for (const appStyle of ['src/app.less', 'src/app.scss']) {
-      const appStyleSource = await readFile(
-        path.resolve(__dirname, '../../../demo/taro-webpack-react-tailwindcss-v3', appStyle),
-        'utf8',
-      )
-      expect(appStyleSource, appStyle).toContain('@import \'tailwindcss/base\';')
-      if (appStyleSource.includes('@config')) {
-        expect(appStyleSource, appStyle).toContain('../tailwind.config.js')
-      }
-    }
-
-    const taroWebpackV3Styles = [
-      'demo/taro-webpack-react-tailwindcss-v3/src/sub-normal/pages/index.css',
-      'demo/taro-webpack-react-tailwindcss-v3/src/sub-independent/pages/index.css',
-      'demo/taro-webpack-vue3-tailwindcss-v3/src/app.less',
-      'demo/taro-webpack-vue3-tailwindcss-v3/src/sub-normal/pages/index.css',
-      'demo/taro-webpack-vue3-tailwindcss-v3/src/sub-independent/pages/index.css',
+    const taroWebpackStyles = [
+      'demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+      'demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css',
+      'demo/taro-webpack-react-tailwindcss-v4/src/sub-independent/pages/index.css',
+      'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css',
+      'demo/taro-webpack-vue3-tailwindcss-v4/src/sub-normal/pages/index.css',
+      'demo/taro-webpack-vue3-tailwindcss-v4/src/sub-independent/pages/index.css',
     ]
-    for (const stylePath of taroWebpackV3Styles) {
+    for (const stylePath of taroWebpackStyles) {
       const styleSource = await readFile(path.resolve(__dirname, '../../..', stylePath), 'utf8')
-      expect(styleSource, stylePath).toContain('@import \'tailwindcss/base\';')
+      expect(styleSource, stylePath).toContain('@import "tailwindcss"')
       if (styleSource.includes('@config')) {
         expect(styleSource, stylePath).toContain('tailwind.config')
       }
@@ -2355,16 +2311,7 @@ describe('watch-hmr regression cases', () => {
       expect(watchCase.subPackageMutations?.map(item => item.root).sort(), watchCase.name).toEqual(['sub-independent', 'sub-normal'])
       for (const subPackageMutation of watchCase.subPackageMutations ?? []) {
         expect(subPackageMutation.templateMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
-        if (watchCase.name === 'taro-vite-react-tailwindcss-v3') {
-          expect(toRepoPath(subPackageMutation.styleMutation.sourceFile), watchCase.name).toBe('/repo/demo/taro-vite-react-tailwindcss-v3/src/app.scss')
-          expect(subPackageMutation.outputStyleCandidates.map(toRepoPath), watchCase.name).toEqual([
-            '/repo/demo/taro-vite-react-tailwindcss-v3/dist/app-origin.wxss',
-            '/repo/demo/taro-vite-react-tailwindcss-v3/dist/app.wxss',
-          ])
-        }
-        else {
-          expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
-        }
+        expect(subPackageMutation.styleMutation.sourceFile, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.outputWxml, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.outputJs, watchCase.name).toContain(subPackageMutation.root)
         expect(subPackageMutation.globalStyleCandidates.length, watchCase.name).toBeGreaterThan(0)
@@ -2446,9 +2393,12 @@ describe('watch-hmr regression cases', () => {
   })
 
   it('uses wildcard style candidates for mpx utility outputs', () => {
-    const mpxCase = buildDemoBaseCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v3')
+    const mpxCase = buildDemoExtendedCases('/repo').find(watchCase => watchCase.name === 'mpx-tailwindcss-v4')
     expect(mpxCase?.globalStyleCandidates).toContain(
-      path.resolve('/repo', 'demo/mpx-tailwindcss-v3/dist/wx/styles/utilities*.wxss'),
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/app*.wxss'),
+    )
+    expect(mpxCase?.globalStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/dist/wx/styles/index*.wxss'),
     )
     expect(mpxCase?.env).toMatchObject({
       CHOKIDAR_INTERVAL: '50',
@@ -2547,9 +2497,7 @@ describe('watch-hmr regression cases', () => {
       toRepoPath(watchCase.styleMutation.sourceFile),
     ]))
 
-    expect(styleSources.get('uni-app-vite-tailwindcss-v3')).toBe('/repo/demo/uni-app-vite-tailwindcss-v3/src/App.vue')
     expect(styleSources.get('uni-app-vite-tailwindcss-v4')).toBe('/repo/demo/uni-app-vite-tailwindcss-v4/src/main.css')
-    expect(styleSources.get('mpx-tailwindcss-v3')).toBe('/repo/demo/mpx-tailwindcss-v3/src/app.mpx')
     expect(styleSources.get('mpx-tailwindcss-v4')).toBe('/repo/demo/mpx-tailwindcss-v4/src/pages/component/index.mpx')
     expect(styleSources.get('taro-webpack-react-tailwindcss-v4')).toBe('/repo/demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.css')
 
@@ -2573,8 +2521,8 @@ describe('watch-hmr regression cases', () => {
   it('opts out same-class global-style stability for platform-variant watch cases', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')
-    const weappViteCase = demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')
-    const uniAppVue3ViteCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')
+    const weappViteCase = demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')
+    const uniAppVue3ViteCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
 
     expect(weappViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
     expect(uniAppVue3ViteCase?.requireStableGlobalStyleOnSameClassLiteral).toBe(false)
@@ -2583,7 +2531,7 @@ describe('watch-hmr regression cases', () => {
   it('does not require initial compile success for weapp-vite powered watch cases with unstable ready logs', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
 
-    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.requireInitialCompileSuccess).toBe(false)
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(false)
     expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')?.requireInitialCompileSuccess).toBe(false)
   })
 
@@ -2597,31 +2545,14 @@ describe('watch-hmr regression cases', () => {
   it('prebuilds the weapp-vite demo before watch so dev hot updates start from complete outputs', () => {
     const demoBaseCases = buildDemoBaseCases('/repo')
 
-    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v3')?.initialBuildScript).toBe('build')
+    expect(demoBaseCases.find(watchCase => watchCase.name === 'weapp-vite-tailwindcss-v4')?.initialBuildScript).toBe('build')
   })
 
   it('keeps slow Taro webpack H5 web rollback settle timeouts explicit', () => {
-    const demoBaseCases = buildDemoBaseCases('/repo')
     const demoExtendedCases = buildDemoExtendedCases('/repo')
-    const taroWebpackReactV3Case = demoBaseCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v3')
-    const taroWebpackVue3V3Case = demoBaseCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v3')
     const taroWebpackReactV4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-react-tailwindcss-v4')
     const taroWebpackVue3V4Case = demoExtendedCases.find(watchCase => watchCase.name === 'taro-webpack-vue3-tailwindcss-v4')
 
-    expect(taroWebpackReactV3Case?.webHmr?.devScript).toBe('build:h5')
-    expect(taroWebpackReactV3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
-    expect(taroWebpackReactV3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
-    expect(taroWebpackReactV3Case?.webHmr?.injectMarkerElement).toBe(true)
-    expect(toSlashPath(taroWebpackReactV3Case?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v3\/src\/app\.less$/)
-    expect(taroWebpackReactV3Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
-    expect(taroWebpackReactV3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
-    expect(taroWebpackVue3V3Case?.webHmr?.devScript).toBe('build:h5')
-    expect(taroWebpackVue3V3Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
-    expect(taroWebpackVue3V3Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
-    expect(taroWebpackVue3V3Case?.webHmr?.injectMarkerElement).toBe(true)
-    expect(toSlashPath(taroWebpackVue3V3Case?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-vue3-tailwindcss-v3\/src\/app\.less$/)
-    expect(taroWebpackVue3V3Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
-    expect(taroWebpackVue3V3Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
     expect(taroWebpackReactV4Case?.webHmr?.devScript).toBe('dev:h5')
     expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackReactV4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
@@ -2647,7 +2578,7 @@ describe('watch-hmr regression cases', () => {
 
     const win32DemoCases = pickCases(win32Cases, 'demo')
     expect(win32DemoCases.every(watchCase => watchCase.group === 'demo')).toBe(true)
-    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v3')).toBeDefined()
+    expect(win32DemoCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')).toBeDefined()
   })
 
   it('keeps issue33 and Vue3 watch cases across PR smoke and nightly CI matrices', async () => {
@@ -2673,14 +2604,14 @@ describe('watch-hmr regression cases', () => {
     ]
 
     const requiredMatrixEntries = [
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4', round_profile: 'issue33' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite-tailwindcss-v4', round_profile: 'issue33' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4', round_profile: 'default' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v3', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4', round_profile: 'default' },
-      { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v3', round_profile: 'issue33' },
-      { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite-tailwindcss-v3', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v4', round_profile: 'issue33' },
+      { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite-tailwindcss-v4', round_profile: 'issue33' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
     ]
 

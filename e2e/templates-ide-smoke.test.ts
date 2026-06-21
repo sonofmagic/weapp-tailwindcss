@@ -38,9 +38,7 @@ const templateIdeCases: TemplateIdeCase[] = [
     requiredFiles: ['app.js', 'app.json', 'app.wxss', 'pages/index.wxml', 'project.config.json'],
   },
   ...[
-    'taro-react-tailwind-vscode-template',
     'taro-vite-tailwindcss-v4',
-    'taro-vue3-tailwind-vscode-template',
     'taro-webpack-tailwindcss-v4',
   ].map<TemplateIdeCase>(template => ({
     name: `${template} weapp`,
@@ -53,8 +51,6 @@ const templateIdeCases: TemplateIdeCase[] = [
   })),
   ...[
     'uni-app-tailwindcss-v4',
-    'uni-app-vite-vue3-tailwind-vscode-template',
-    'uni-app-vue2-tailwind-vscode-template',
     'uni-app-webpack-tailwindcss-v4',
   ].map<TemplateIdeCase>(template => ({
     name: `${template} mp-weixin`,
@@ -77,14 +73,6 @@ const localOnlyIdeCases: TemplateIdeLocalOnlyCase[] = [
   {
     name: 'uni-app-hbuilderx-tailwindcss-v4',
     reason: '该模板没有可离线 CLI 构建脚本，需要在 HBuilderX 中导入后运行，不能用 WeChat DevTools automator 覆盖。',
-  },
-  {
-    name: 'uni-app-vue3-tailwind-hbuilder-template',
-    reason: '该模板没有可离线 CLI 构建脚本，需要在 HBuilderX 中导入后运行，不能用 WeChat DevTools automator 覆盖。',
-  },
-  {
-    name: 'uni-app-x-hbuilderx',
-    reason: 'uni-app x 需要 HBuilderX 与 Android/iOS 设备或模拟器环境，不能用 WeChat DevTools automator 覆盖。',
   },
 ]
 

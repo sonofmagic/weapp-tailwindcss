@@ -519,7 +519,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('guards Tailwind v3 and v4 generator output for web and weapp targets', async () => {
+  it('guards Tailwind v4 and v4 generator output for web and weapp targets', async () => {
     const runtimeSet = new Set(['w-[100px]', 'bg-[#123456]'])
     const rawWebCss = [
       '.w-\\[100px\\]{width:100px}',
@@ -1500,7 +1500,7 @@ describe('bundlers/shared generator css', () => {
     ].join('\n'))
   })
 
-  it('extracts Tailwind v3 @tailwind directives from Less sources', async () => {
+  it('extracts Tailwind v4 @tailwind directives from Less sources', async () => {
     const { resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
     const rawSource = [
       '@brand: #123456;',
@@ -1519,7 +1519,7 @@ describe('bundlers/shared generator css', () => {
     ].join('\n'))
   })
 
-  it('extracts Tailwind v3 Sass @use subpath imports before preprocessing', async () => {
+  it('extracts Tailwind v4 Sass @use subpath imports before preprocessing', async () => {
     const { hasTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
     const { hasTailwindRootDirectives } = await import('@/bundlers/shared/generator-css/directives')
     const rawSource = [
@@ -1740,7 +1740,7 @@ describe('bundlers/shared generator css', () => {
     vi.doMock('@/generator', () => ({
       ...createDefaultGeneratorMock({
         resolveTailwindV3SourceFromRuntime: vi.fn(async () => {
-          throw new Error('should not resolve Tailwind v3 source')
+          throw new Error('should not resolve Tailwind v4 source')
         }),
         resolveTailwindV4SourceFromRuntime,
         resolveTailwindV4Source,
@@ -2968,7 +2968,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler.mock.calls[0]?.[0]).toContain('.card:hover')
   })
 
-  it('removes Tailwind v3 directives from legacy compat css after an unclosed imported rule', async () => {
+  it('removes Tailwind v4 directives from legacy compat css after an unclosed imported rule', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = [
       ':host,page,.tw-root,wx-root-portal-content {',
@@ -3220,7 +3220,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('generates Tailwind v3 css in auto mode when @tailwind utilities is present', async () => {
+  it('generates Tailwind v4 css in auto mode when @tailwind utilities is present', async () => {
     const rawSource = [
       '@tailwind utilities;',
       '.card{color:red}',
@@ -3308,7 +3308,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('keeps Tailwind v3 scoped subpackage css sources isolated from the full runtime set', async () => {
+  it('keeps Tailwind v4 scoped subpackage css sources isolated from the full runtime set', async () => {
     const rawSource = [
       '@tailwind utilities;',
       '.card{color:red}',
@@ -3421,7 +3421,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('generates Tailwind v3 css in auto mode when only @apply is present', async () => {
+  it('generates Tailwind v4 css in auto mode when only @apply is present', async () => {
     const rawSource = [
       '.test {',
       '  @apply flex text-center h-[100px] w-[222.222px] items-center justify-center rounded-[40px] bg-[#123456] bg-opacity-[.54] text-[#ffffff] !important;',
@@ -3524,7 +3524,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('passes generator config to Tailwind v3 source resolution', async () => {
+  it('passes generator config to Tailwind v4 source resolution', async () => {
     const configFile = path.resolve(process.cwd(), 'tailwind.config.js')
     const rawSource = '@tailwind utilities;'
     const generateMock = vi.fn(async () => ({
@@ -3607,7 +3607,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('does not append raw Tailwind v3 @apply rules after generated css', async () => {
+  it('does not append raw Tailwind v4 @apply rules after generated css', async () => {
     const rawSource = [
       '@tailwind base;',
       '@tailwind components;',
@@ -3717,7 +3717,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('keeps Tailwind v3 component classes only referenced by @apply in app css output', async () => {
+  it('keeps Tailwind v4 component classes only referenced by @apply in app css output', async () => {
     const rawSource = [
       '@tailwind base;',
       '@tailwind components;',
@@ -3799,7 +3799,7 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('@apply')
   })
 
-  it('keeps Tailwind v3 component layer classes from Sass app css in dev output', async () => {
+  it('keeps Tailwind v4 component layer classes from Sass app css in dev output', async () => {
     const rawSource = [
       '$brand: #123456;',
       '@use "tailwindcss/base";',
@@ -3886,7 +3886,7 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('// formatter note')
   })
 
-  it('rebuilds Tailwind v3 mini-program layer css instead of appending incremental utilities after previous css', async () => {
+  it('rebuilds Tailwind v4 mini-program layer css instead of appending incremental utilities after previous css', async () => {
     const rawSource = [
       '@tailwind base;',
       '@tailwind components;',
@@ -4120,7 +4120,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('does not resolve relative Tailwind v3 css assets from package root source files', async () => {
+  it('does not resolve relative Tailwind v4 css assets from package root source files', async () => {
     const runtimeSet = new Set(['w-[100px]'])
     const rawSource = [
       ':host,page,.tw-root,wx-root-portal-content {',
@@ -4276,7 +4276,7 @@ describe('bundlers/shared generator css', () => {
     expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('skips forced Tailwind v3 generator for ordinary non-main css assets', async () => {
+  it('skips forced Tailwind v4 generator for ordinary non-main css assets', async () => {
     const rawSource = '.page{color:red}'
     const generateMock = vi.fn(async () => ({
       css: '.w-_b100px_B{width:100px}',
@@ -6661,7 +6661,7 @@ describe('bundlers/shared generator css', () => {
     expect(generateOptions.scanSources).toBe(false)
   })
 
-  it('keeps Tailwind v3 @config css entries on the full runtime set', async () => {
+  it('keeps Tailwind v4 @config css entries on the full runtime set', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-config-runtime-'))
     const cssFile = path.join(root, 'src/app.wxss')
     const configFile = path.join(root, 'tailwind.config.js')
@@ -9364,7 +9364,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('prefers current Tailwind v3 raw @apply source over stale source-side style files', async () => {
+  it('prefers current Tailwind v4 raw @apply source over stale source-side style files', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-current-apply-'))
     const sourceFile = path.join(root, 'src/tailwind.scss')
     const oldSource = [
@@ -9430,7 +9430,7 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
-  it('resolves Tailwind v3 source-side entries through local style imports', async () => {
+  it('resolves Tailwind v4 source-side entries through local style imports', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-local-style-import-'))
     const appFile = path.join(root, 'src/App.vue')
     const tailwindFile = path.join(root, 'src/tailwind.scss')

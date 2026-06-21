@@ -1,7 +1,0 @@
-{
-  "file": "src/moduleB/pages/index.tsx",
-  "count": 1,
-  "tokens": [
-    "before:content-['moduleB_独立分包']"
-  ]
-}

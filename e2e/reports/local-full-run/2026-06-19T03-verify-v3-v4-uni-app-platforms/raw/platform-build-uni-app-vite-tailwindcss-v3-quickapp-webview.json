@@ -18,7 +18,7 @@
   },
   "steps": [
     {
-      "name": "platform-build-uni-app-vite-tailwindcss-v3-quickapp-webview",
+      "name": "platform-build-uni-app-vite-tailwindcss-v4-quickapp-webview",
       "command": [
         "pnpm",
         "e2e:multiplatform-build"

@@ -19,11 +19,8 @@ const communitySidebar: SidebarConfig = [
     items: [
       'community/packages-runtime/index',
       'community/packages-runtime/merge',
-      'community/packages-runtime/merge-v3',
       'community/packages-runtime/cva',
       'community/packages-runtime/variants',
-      'community/packages-runtime/tailwind-variant-v3',
-      'community/packages-runtime/variants-v3',
       'community/packages-runtime/multi-platform-demos',
     ],
   },

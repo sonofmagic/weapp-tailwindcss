@@ -82,7 +82,7 @@ async function createTailwindV4FixtureRoot() {
 }
 
 describe('generator tailwind parity', () => {
-  it('keeps Tailwind v3 web output identical to tailwindcss v3 and records weapp contrast', async () => {
+  it('keeps Tailwind v4 web output identical to tailwindcss v3 and records weapp contrast', async () => {
     expect(tailwindcssV3Version.startsWith('3.')).toBe(true)
 
     const config = {

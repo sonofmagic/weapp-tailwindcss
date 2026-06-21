@@ -230,18 +230,9 @@ function createUniAppXHBuilderXMiniProgramCase(options: {
 
 export const miniProgramCases: MiniProgramCase[] = [
   ...createUniAppHBuilderXMiniProgramCases({
-    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    tailwindcss: 'v3',
-  }),
-  ...createUniAppHBuilderXMiniProgramCases({
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     tailwindcss: 'v4',
-  }),
-  createUniAppXHBuilderXMiniProgramCase({
-    name: 'uni-app-x-hbuilderx-tailwindcss-v3',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
   }),
   createUniAppXHBuilderXMiniProgramCase({
     name: 'uni-app-x-hbuilderx-tailwindcss-v4',
@@ -353,18 +344,6 @@ function createUniAppAppCases(options: {
 
 export const uniAppAppCases: AppCase[] = [
   ...createUniAppAppCases({
-    name: 'uni-app-vite-tailwindcss-v3',
-    projectDir: 'demo/uni-app-vite-tailwindcss-v3',
-    sourceFile: 'src/pages/index/index.vue',
-    markerAnchor: '<Issue228 class=',
-    version: 'v3',
-    launchEnv: {
-      UNI_INPUT_DIR: 'src',
-    },
-    transformedFiles: [],
-    transformedOutputFiles: ['app-service.js', 'app.css'],
-  }),
-  ...createUniAppAppCases({
     name: 'uni-app-vite-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-tailwindcss-v4',
     sourceFile: 'src/pages/index/index.vue',
@@ -373,20 +352,6 @@ export const uniAppAppCases: AppCase[] = [
     launchEnv: {
       UNI_INPUT_DIR: 'src',
     },
-    transformedFiles: [],
-    transformedOutputFiles: ['app-service.js', 'app.css'],
-  }),
-  ...createUniAppAppCases({
-    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    sourceFile: 'pages/index/index.vue',
-    markerAnchor: '<view class="text-[#888800]">',
-    markerAnchorCandidates: [
-      '<view class="text-[#888800]">',
-      '<view class="text-[red]">',
-    ],
-    version: 'v3',
-    outputDir: 'unpackage/dist/dev/app',
     transformedFiles: [],
     transformedOutputFiles: ['app-service.js', 'app.css'],
   }),
@@ -407,86 +372,6 @@ export const uniAppAppCases: AppCase[] = [
 ]
 
 export const uniAppXAppCases: AppCase[] = [
-  {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v3 android',
-    platform: 'app-android',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
-    outputDir: '.debug/bundle-post/asset',
-    outputDirCandidates: [
-      '.debug/bundle-post/asset',
-      'unpackage/dist/dev/.tsc/app-android',
-      'unpackage/dist/dev/.uvue/app-android',
-      'unpackage/dist/dev/app-android',
-    ],
-    sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
-    markerText: 'hbuilderx-app-dynamic-v3-android',
-    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
-    hmrMarkerText: 'hbuilderx-app-hmr-v3-android',
-    launchArgs: defaultAndroidLaunchArgs,
-    requiredFiles: [
-      'App.uvue',
-      'pages/index/index.uvue.ts',
-    ],
-    transformedOutputFiles: [
-      'App.uvue',
-      'pages/index/index.uvue.ts',
-    ],
-    transformedContains: uniAppXAndroidInitialTransformedContains,
-    hmrTransformedContains: uniAppXAndroidHmrTransformedContains,
-  },
-  {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v3 ios',
-    platform: 'app-ios',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
-    outputDir: 'unpackage/dist/dev/app-ios',
-    sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
-    markerText: 'hbuilderx-app-dynamic-v3-ios',
-    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
-    hmrMarkerText: 'hbuilderx-app-hmr-v3-ios',
-    launchArgs: defaultIosLaunchArgs,
-    requiredFiles: [
-      'manifest.json',
-    ],
-    transformedFiles: [
-      'unpackage/cache/.app-ios/sourcemap/app-service.js.map',
-    ],
-    transformedContains: ['bg-_b_h102938_B', 'text-_b_hf7fbff_B', 'w-_b173px_B', 'hbuilderx-app-dynamic-v3-ios'],
-    hmrTransformedContains: ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B', 'hbuilderx-app-hmr-v3-ios'],
-  },
-  {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v3 harmony',
-    platform: 'app-harmony',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
-    outputDir: 'unpackage/dist/dev/.app-harmony',
-    outputDirCandidates: [
-      'unpackage/dist/dev/.app-harmony',
-      'unpackage/dist/dev/app-harmony',
-      'unpackage/cache/.app-harmony/sourcemap',
-    ],
-    sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    markerClass: 'bg-[#102938] text-[#f7fbff] w-[173px]',
-    markerText: 'hbuilderx-app-dynamic-v3-harmony',
-    hmrMarkerClass: 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]',
-    hmrMarkerText: 'hbuilderx-app-hmr-v3-harmony',
-    launchArgs: defaultHarmonyLaunchArgs,
-    requiredFiles: [
-      'manifest.json',
-      'app-service.js',
-      'assets/pages/index/index.js',
-    ],
-    transformedFiles: [
-      'unpackage/dist/dev/.app-harmony/app-service.js',
-      'unpackage/dist/dev/.app-harmony/assets/App.js',
-      'unpackage/dist/dev/.app-harmony/assets/pages/index/index.js',
-    ],
-    transformedContains: [...harmonyInitialTransformedContains, 'hbuilderx-app-dynamic-v3-harmony'],
-    hmrTransformedContains: [...harmonyHmrTransformedContains, 'hbuilderx-app-hmr-v3-harmony'],
-  },
   {
     name: 'uni-app-x-hbuilderx-tailwindcss-v4 android',
     platform: 'app-android',
@@ -571,37 +456,6 @@ export const uniAppXAppCases: AppCase[] = [
 
 export const webCases: WebCase[] = [
   {
-    name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    sourceFile: 'pages/index/index.vue',
-    markerAnchor: '<view class="text-[#888800]">',
-    markerAnchorCandidates: [
-      '<view class="text-[#888800]">',
-      '<view class="text-[red]">',
-    ],
-    initialCssPath: '/main.css?direct',
-    hmrCssPath: '/main.css?direct',
-    initialCssContains: [/background-color:\s*rgb\(18 52 86/],
-    workflow: uniAppHBuilderXWorkflow,
-    hmrSteps: [
-      {
-        markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
-        markerText: 'hbuilderx-web-hmr-v3-step-1',
-        cssContains: [/background-color:\s*rgb\(15 81 50/, /color:\s*rgb\(248 250 252/, /width:\s*188px/],
-      },
-      {
-        markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
-        markerText: 'hbuilderx-web-hmr-v3-step-2',
-        cssContains: [/background-color:\s*rgb\(124 45 18/, /color:\s*rgb\(236 254 255/, /height:\s*37px/, /margin-top:\s*11px/],
-      },
-      {
-        markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
-        markerText: 'hbuilderx-web-hmr-v3-step-3',
-        cssContains: [/background-color:\s*rgb\(67 56 202/, /color:\s*rgb\(254 243 199/, /width:\s*221px/, /border-radius:\s*13px/],
-      },
-    ],
-  },
-  {
     name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     projectDir: 'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     sourceFile: 'pages/index/index.vue',
@@ -629,33 +483,6 @@ export const webCases: WebCase[] = [
         markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
         markerText: 'hbuilderx-web-hmr-v4-step-3',
         cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
-      },
-    ],
-  },
-  {
-    name: 'uni-app-x-hbuilderx-tailwindcss-v3',
-    projectDir: 'demo/uni-app-x-hbuilderx-tailwindcss-v3',
-    sourceFile: 'pages/index/index.uvue',
-    markerAnchor: '<BindClass />',
-    initialCssPath: '/App.uvue?vue&type=style&index=0&lang.scss',
-    hmrCssPath: '/App.uvue?vue&type=style&index=0&lang.scss',
-    initialCssContains: ['.w-32', '.rounded-md', /background-color:\s*rgb\(242 25 3/],
-    workflow: uniAppXHBuilderXWorkflow,
-    hmrSteps: [
-      {
-        markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
-        markerText: 'hbuilderx-web-hmr-v3-step-1',
-        cssContains: [/background-color:\s*rgb\(15 81 50/, /color:\s*rgb\(248 250 252/, /width:\s*188px/],
-      },
-      {
-        markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
-        markerText: 'hbuilderx-web-hmr-v3-step-2',
-        cssContains: [/background-color:\s*rgb\(124 45 18/, /color:\s*rgb\(236 254 255/, /height:\s*37px/, /margin-top:\s*11px/],
-      },
-      {
-        markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
-        markerText: 'hbuilderx-web-hmr-v3-step-3',
-        cssContains: [/background-color:\s*rgb\(67 56 202/, /color:\s*rgb\(254 243 199/, /width:\s*221px/, /border-radius:\s*13px/],
       },
     ],
   },

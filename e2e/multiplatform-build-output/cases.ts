@@ -13,49 +13,17 @@ import {
 import { createLocalTargetCase, uniqueTargetKey } from './helpers'
 import { MULTIPLATFORM_TARGETS } from './targets'
 
-const uniAppV3StyleContains = ['.bg-_b_h123456_B', '.i-mdi-home', '.before_ccontent']
 const uniAppV4StyleContains = ['.bg-_b_h0000ff_B', '.i-mdi-home', '.before_ccontent']
-const gulpV3StyleContains = ['.text-_b_h123456_B', '.bg-_b_hfff_B', '.before_ccontent']
 const gulpV4StyleContains = ['.text-_b_h123456_B', '.i-mdi-ab-testing', '.bg-normal-subpackage-marker', '.before_ccontent']
 const gulpTextContains = ['bg-_burl', 'text-_b_h123456_B', 'bg-normal-subpackage-marker']
 
 export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
-  gulpMiniCase({
-    project: 'gulp-tailwindcss-v3',
-    platform: 'tt',
-    styleContains: gulpV3StyleContains,
-    textContains: gulpTextContains,
-  }),
   gulpMiniCase({
     project: 'gulp-tailwindcss-v4',
     platform: 'tt',
     styleContains: gulpV4StyleContains,
     textContains: gulpTextContains,
   }),
-  ...(['mp-alipay', 'mp-baidu', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin'] as const).map(platform =>
-    uniAppMiniCase({
-      project: 'uni-app-vite-tailwindcss-v3',
-      platform,
-      styleContains: uniAppV3StyleContains,
-      textFile: platform === 'mp-alipay' ? 'pages/index/index.axml' : undefined,
-      textContains: platform === 'mp-alipay' ? ['bg-_b_h123456_B'] : undefined,
-    }),
-  ),
-  uniAppH5Case({
-    project: 'uni-app-vite-tailwindcss-v3',
-    styleContains: ['.i-mdi-home', 'box-sizing'],
-  }),
-  uniAppH5SsrCase({
-    project: 'uni-app-vite-tailwindcss-v3',
-    styleContains: ['.i-mdi-home', 'box-sizing'],
-  }),
-  ...(['quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union'] as const).map(platform =>
-    uniAppQuickappCase({
-      project: 'uni-app-vite-tailwindcss-v3',
-      platform,
-      styleContains: ['bg-_b_h123456_B'],
-    }),
-  ),
   ...(['mp-alipay', 'mp-baidu', 'mp-jd', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'mp-xhs'] as const).map(platform =>
     uniAppMiniCase({
       project: 'uni-app-vite-tailwindcss-v4',
@@ -81,26 +49,9 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     }),
   ),
   uniAppHBuilderXMiniCase({
-    project: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
-    version: 'v3',
-  }),
-  uniAppHBuilderXMiniCase({
     project: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
     version: 'v4',
   }),
-  ...(['wx', 'ali', 'swan', 'tt', 'dd'] as const).map(platform =>
-    mpxCase({
-      project: 'mpx-tailwindcss-v3',
-      version: 'v3',
-      platform,
-      command: platform === 'wx'
-        ? ['pnpm', 'run', 'build']
-        : ['pnpm', 'run', 'build', '--', '--mode', platform],
-      env: {
-        MPX_CURRENT_TARGET_MODE: platform,
-      },
-    }),
-  ),
   ...(['wx', 'ali', 'swan', 'tt', 'dd'] as const).map(platform =>
     mpxCase({
       project: 'mpx-tailwindcss-v4',
@@ -152,38 +103,6 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     platform: 'tt',
     styleContains: ['.bg-_b_h123456_B', '.text-_b_hfff_B'],
     textContains: ['bg-_b_h123456_B', 'text-_b_hfff_B'],
-    status: 'ci',
-  }),
-  taroMiniCase({
-    project: 'taro-vite-react-tailwindcss-v3',
-    packageName: '@weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v3',
-    platform: 'alipay',
-    styleContains: ['.bg-_b_h89ab8d_B', '.text-_b_h438821_B'],
-    textContains: ['bg-_b_h89ab8d_B', 'text-_b_h438821_B'],
-    status: 'ci',
-  }),
-  taroMiniCase({
-    project: 'taro-vite-react-tailwindcss-v3',
-    packageName: '@weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v3',
-    platform: 'tt',
-    styleContains: ['.bg-_b_h89ab8d_B', '.text-_b_h438821_B'],
-    textContains: ['bg-_b_h89ab8d_B', 'text-_b_h438821_B'],
-    status: 'ci',
-  }),
-  taroMiniCase({
-    project: 'taro-vite-vue3-tailwindcss-v3',
-    packageName: '@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v3',
-    platform: 'alipay',
-    styleContains: ['.bg-_b_h89ab8d_B', '.text-_b_h438821_B'],
-    textContains: ['bg-_b_h89ab8d_B', 'text-_b_h438821_B'],
-    status: 'ci',
-  }),
-  taroMiniCase({
-    project: 'taro-vite-vue3-tailwindcss-v3',
-    packageName: '@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v3',
-    platform: 'tt',
-    styleContains: ['.bg-_b_h89ab8d_B', '.text-_b_h438821_B'],
-    textContains: ['bg-_b_h89ab8d_B', 'text-_b_h438821_B'],
     status: 'ci',
   }),
 ]

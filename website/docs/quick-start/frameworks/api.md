@@ -30,17 +30,18 @@ keywords:
 如果你只是普通 `uni-app`、`Taro`、`Mpx`、`Rax` 或原生小程序项目，请优先使用对应框架页的构建器插件。
 :::
 
-## Tailwind CSS 3.x 前置步骤
+## Tailwind CSS 4 前置步骤
 
-API 只负责转译代码文本，不会替你自动运行完整框架构建。Tailwind CSS 3.x 项目仍然需要先让入口 CSS 完成生成：
+API 只负责转译代码文本，不会替你自动运行完整框架构建。请先让入口 CSS 完成生成。当前文档面向 `tailwindcss@4`，如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ```css title="app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@source "./src/**/*.{wxml,js,ts,vue}";
+@source "./app.{js,ts,json}";
+@source not "./dist";
 ```
 
-`tailwind.config.js` 的 `content` 要包含实际源码，并排除 `node_modules`、`dist`、`unpackage` 等产物目录。只有 Tailwind 已经提取到的类名，后续 `transformJs` 才能精确命中并转译。
+`@source` 要包含实际源码，并排除 `node_modules`、`dist`、`unpackage` 等产物目录。只有 Tailwind 已经提取到的类名，后续 `transformJs` 才能精确命中并转译。
 
 ## 如何使用
 
@@ -82,7 +83,7 @@ const wxmlCode = await ctx.transformWxml(rawWxmlCode)
 const jsCode = await ctx.transformJs(rawJsCode)
 ```
 
-这里的 `runtimeSet` 来自 Tailwind 的 `content` / `@source` 扫描结果。请先确保扫描范围覆盖真实源码；没有被 Tailwind 扫到的运行时字符串，Node.js API 不会靠猜测去转译。
+这里的 `runtimeSet` 来自 Tailwind 的 `@source` 扫描结果。请先确保扫描范围覆盖真实源码；没有被 Tailwind 扫到的运行时字符串，Node.js API 不会靠猜测去转译。
 
 ## `runtimeSet` 的高级覆盖边界
 
@@ -132,4 +133,4 @@ const classNames = ['mb-[1.5rem]']
 | `weapp-tailwindcss/webpack` | Webpack 框架 | 插件接管 |
 | `weapp-tailwindcss/core` | 自研构建器或脚本 | 需要你自己串好生成顺序 |
 
-对于 Tailwind CSS 4.x，自定义构建器还需要显式处理 CSS 入口、`@source`、`cssEntries` 等信息；普通项目建议直接使用 [Tailwind CSS 4.x 各框架注册方式](/docs/quick-start/v4)。
+自定义构建器还需要显式处理 CSS 入口、`@source`、`cssEntries` 等信息；普通项目建议直接使用 [Tailwind CSS 4 各框架注册方式](/docs/quick-start/v4)。

@@ -22,8 +22,8 @@
 - `pnpm --filter weapp-tailwindcss build`
 - `pnpm --filter weapp-tailwindcss exec vitest run test/watch-hmr-regression.unit.test.ts test/ci/workflows.test.ts`
 - `pnpm --filter weapp-tailwindcss test`
-- `pnpm --filter weapp-tailwindcss test:watch-hmr -- --case weapp-vite-tailwindcss-v3 --timeout 240000 --poll 40 --max-plugin-process-ms 500 --report e2e/benchmark/e2e-watch-hmr/manual-weapp-vite-v3-plugin-budget.json --skip-build --quiet-sass`
-- `pnpm --filter weapp-tailwindcss test:watch-hmr -- --case gulp-tailwindcss-v3 --timeout 180000 --poll 40 --max-plugin-process-ms 500 --report e2e/benchmark/e2e-watch-hmr/manual-gulp-v3-plugin-budget.json --skip-build --quiet-sass`
+- `pnpm --filter weapp-tailwindcss test:watch-hmr -- --case weapp-vite-tailwindcss-v4 --timeout 240000 --poll 40 --max-plugin-process-ms 500 --report e2e/benchmark/e2e-watch-hmr/manual-weapp-vite-v3-plugin-budget.json --skip-build --quiet-sass`
+- `pnpm --filter weapp-tailwindcss test:watch-hmr -- --case gulp-tailwindcss-v4 --timeout 180000 --poll 40 --max-plugin-process-ms 500 --report e2e/benchmark/e2e-watch-hmr/manual-gulp-v3-plugin-budget.json --skip-build --quiet-sass`
 
 结果：
 

@@ -1,6 +1,6 @@
 ---
 title: 开发参考手册
-description: 所以假如你要兼容更多的手机机型，请使用 tailwindcss@3.x。
+description: Tailwind CSS 4 在 weapp-tailwindcss 中的配置说明。
 keywords:
   - 快速开始
   - 安装
@@ -31,11 +31,11 @@ keywords:
 
 `tailwindcss@4.x` 生成的样式，对现代的浏览器来说刚刚好，可是对那些移动设备来说，就不一定了。 -->
 
-所以假如你要兼容更多的手机机型，请使用 `tailwindcss@3.x`。
+如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## 定位的变化: 样式预处理器
 
-相对于 `tailwindcss@3` 版本， `tailwindcss@4` 存在定位的重大变更
+`tailwindcss@4` 存在定位的重大变更
 
 它直接变成了一个样式预处理器，和原生 `css` 已经它的规范相结合，相辅相成。
 
@@ -49,7 +49,7 @@ keywords:
 
 1. Vite 项目注册 `weapp-tailwindcss/vite` 的 `WeappTailwindcss`。
 2. Webpack 项目注册 `weapp-tailwindcss/webpack` 的 `WeappTailwindcss`。
-3. Tailwind CSS v3 和 v4 都由 `WeappTailwindcss` 读取配置并生成目标 CSS。
+3. Tailwind CSS 4 由 `WeappTailwindcss` 读取配置并生成目标 CSS。
 4. `postcss.config.js` 里不再注册 `@tailwindcss/postcss` 或 `tailwindcss` PostCSS 插件。
 
 这样可以避免同一个构建里同时存在两套 Tailwind 生成链路：官方 Tailwind 插件先生成一次浏览器 CSS，`weapp-tailwindcss` 再尝试二次后处理。生成模式会直接输出小程序目标 CSS，并让模板 / JS 类名转译共享同一份 `classSet`。
@@ -223,7 +223,7 @@ shamefully-hoist=true
 
 ### 根因
 
-根因和 Tailwind v3 的 `content` 误扫描一致，都是因为扫描范围过宽，把第三方源码、README 示例文本或构建产物误当成候选。
+根因是扫描范围过宽，把第三方源码、README 示例文本或构建产物误当成候选。
 
 ### 推荐配置
 

@@ -257,7 +257,7 @@ describe('get options', () => {
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
   })
 
-  it('uses Tailwind v3 cssPreflight defaults for tailwindcss v3 runtime', () => {
+  it('uses Tailwind v4 cssPreflight defaults for tailwindcss v3 runtime', () => {
     const config = getCompilerContext()
     expect(config.tailwindRuntime.majorVersion).toBe(3)
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V3_CSS_PREFLIGHT)

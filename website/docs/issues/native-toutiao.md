@@ -57,43 +57,25 @@ npm i -D gulp gulp-postcss gulp-plumber del@^6
 
 ## 安装与配置 tailwindcss
 
-- 安装 Tailwind CSS 3.x 与 weapp-tailwindcss
+- 安装 Tailwind CSS 与 weapp-tailwindcss
 
 ```sh
-npm i -D tailwindcss@3 weapp-tailwindcss
-```
-
-- 初始化 tailwindcss 配置文件
-
-```sh
-npx tailwindcss init
+npm i -D tailwindcss weapp-tailwindcss
 ```
 
 - 不再创建 Tailwind 专用的 `postcss.config.js`
 
 `weapp-tailwindcss@5` 默认由构建器插件接管 Tailwind CSS 生成。如果项目已有 PostCSS 配置，只保留业务自己的非 Tailwind 插件。
 
-- 配置 `tailwind.config.js`
-
-```js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  // 不在 content 包括的文件内的 class，不会生成对应的 css 工具类
-  content: ['./src/**/*.{ttml,js}'],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-```
-
 - 代码引入 `tailwindcss`，打开 `src/app.ttss`
 
 ```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@source "./**/*.{ttml,js}";
+@source not "../dist";
 ```
+
+如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## 配置 vscode 插件
 

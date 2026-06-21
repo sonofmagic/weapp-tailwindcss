@@ -78,8 +78,8 @@ describe('demo user workflow e2e matrix', () => {
       item.userWorkflow.surfaces.includes('build-style-integrity'),
     )
     expect(styleIntegrityCases.map(item => item.name)).toEqual(expect.arrayContaining([
-      'uni-app-vite-tailwindcss-v3 h5',
-      'mpx-tailwindcss-v3 wx',
+      'uni-app-vite-tailwindcss-v4 h5',
+      'mpx-tailwindcss-v4 wx',
       'taro-webpack-react-tailwindcss-v4 alipay',
     ]))
 

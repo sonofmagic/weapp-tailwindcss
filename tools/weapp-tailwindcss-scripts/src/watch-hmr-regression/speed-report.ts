@@ -227,7 +227,7 @@ export function renderSpeedReportMarkdown(report: HmrSpeedReport) {
 
   lines.push('')
   lines.push('## 实现依据')
-  lines.push('- Tailwind v3/v4 官方 Vite/Webpack 插件在 watch 生命周期复用 compiler、scanner 与 candidates 集合。')
+  lines.push('- Tailwind v4/v4 官方 Vite/Webpack 插件在 watch 生命周期复用 compiler、scanner 与 candidates 集合。')
   lines.push('- 本仓库 HMR 回归沿用同一思路：启动一次开发 watcher，在同一 session 内连续验证 template/script/style/content/subpackage 变更，并记录增量输出与实际生效耗时。')
   return `${lines.join('\n')}\n`
 }

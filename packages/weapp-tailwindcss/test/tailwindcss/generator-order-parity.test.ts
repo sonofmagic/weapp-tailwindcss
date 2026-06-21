@@ -230,7 +230,7 @@ async function createTailwindV4FixtureRoot() {
 }
 
 describe('generator order parity', () => {
-  it('keeps Tailwind v3 generated rule order identical to official Tailwind', async () => {
+  it('keeps Tailwind v4 generated rule order identical to official Tailwind', async () => {
     expect(tailwindcssV3Version.startsWith('3.')).toBe(true)
 
     const config = createTailwindV3Config(TAILWIND_V3_ORDER_CORPUS)
@@ -280,7 +280,7 @@ describe('generator order parity', () => {
     expect(normalizeCss(result.css)).toBe(normalizeCss(expectedCss))
   })
 
-  it('preserves Tailwind v3 order after mini-program selector transforms', async () => {
+  it('preserves Tailwind v4 order after mini-program selector transforms', async () => {
     const config = createTailwindV3Config(MINI_PROGRAM_STABLE_CORPUS)
     const source = await resolveTailwindV3Source({
       css: TAILWIND_V3_CSS,

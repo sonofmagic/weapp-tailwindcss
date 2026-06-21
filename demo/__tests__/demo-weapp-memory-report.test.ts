@@ -48,10 +48,10 @@ describe('demo weapp memory report', () => {
 
   it('builds per-demo markdown with optimization guidance', () => {
     const project: ProjectReport = {
-      name: 'uni-app-vite-tailwindcss-v3',
+      name: 'uni-app-vite-tailwindcss-v4',
       framework: 'uni-app',
       builder: 'vite',
-      tailwindcss: 'v3',
+      tailwindcss: 'v4',
       sourceShape: 'vue-sfc',
       platform: 'weapp',
       status: 'passed',
@@ -86,7 +86,7 @@ describe('demo weapp memory report', () => {
     project.recommendations = createMemoryRecommendations(project)
 
     const markdown = renderProjectMarkdown(project)
-    expect(markdown).toContain('# uni-app-vite-tailwindcss-v3 微信小程序端内存报告')
+    expect(markdown).toContain('# uni-app-vite-tailwindcss-v4 微信小程序端内存报告')
     expect(markdown).toContain('## 优化建议')
     expect(markdown).toContain('优先用当前报告里的 peak RSS / RSS delta 锁定阶段')
     expect(markdown).toContain('检查 weapp-tailwindcss 配置是否把 content/@source 扫描范围放大到 dist、node_modules、unpackage 或跨 demo 目录')
@@ -110,20 +110,20 @@ describe('demo weapp memory report', () => {
       summary,
     })
     expect(indexMarkdown).toContain('Demo 微信小程序端内存报告汇总')
-    expect(indexMarkdown).toContain('[uni-app-vite-tailwindcss-v3](./projects/uni-app-vite-tailwindcss-v3.md)')
+    expect(indexMarkdown).toContain('[uni-app-vite-tailwindcss-v4](./projects/uni-app-vite-tailwindcss-v4.md)')
   })
 
   it('selects only weapp-related demo cases', () => {
     const names = collectWeappCases().map(item => item.name)
-    const uniApp = collectWeappCases().find(item => item.name === 'uni-app-vite-tailwindcss-v3')
-    expect(names).toContain('weapp-vite-tailwindcss-v3')
-    expect(names).toContain('uni-app-vite-tailwindcss-v3')
-    expect(names).toContain('uni-app-vite-vue3-hbuilderx-tailwindcss-v3')
-    expect(names).not.toContain('web/react-vite-tailwindcss-v3')
+    const uniApp = collectWeappCases().find(item => item.name === 'uni-app-vite-tailwindcss-v4')
+    expect(names).toContain('weapp-vite-tailwindcss-v4')
+    expect(names).toContain('uni-app-vite-tailwindcss-v4')
+    expect(names).toContain('uni-app-vite-vue3-hbuilderx-tailwindcss-v4')
+    expect(names).not.toContain('web/react-vite-tailwindcss-v4')
     expect(uniApp?.buildCommand).toEqual([
       'pnpm',
       '--filter',
-      '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3',
+      '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4',
       'run',
       'build:mp-weixin',
     ])

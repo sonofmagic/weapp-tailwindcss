@@ -1,7 +1,0 @@
-{
-  "file": "src/sub-independent/pages/index.tsx",
-  "count": 1,
-  "tokens": [
-    "before:content-['independent_subpackage_taro-vite-react-tailwindcss-v3']"
-  ]
-}

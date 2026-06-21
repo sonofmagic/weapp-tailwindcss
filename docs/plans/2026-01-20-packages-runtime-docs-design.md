@@ -2,7 +2,7 @@
 
 ## 目标
 - 在 docs 侧新增 `community/packages-runtime` 作为运行时包主线入口。
-- 为 `packages-runtime` 6 个包提供详细中文用法与示例。
+- 为 `packages-runtime` v4 运行时包提供详细中文用法与示例。
 - 提供跨端（小程序 + Web）示例，覆盖 uni-app 与 Taro。
 - 旧 `community/merge` 文档保留，但改为引导到新章节。
 
@@ -10,11 +10,9 @@
 - 新增目录：`website/docs/community/packages-runtime/`
 - 新增页面：
   - `index.mdx`（矩阵 + 版本选择 + 多端心智模型）
-  - `merge.mdx`、`merge-v3.mdx`
+  - `merge.mdx`
   - `cva.mdx`
   - `variants.mdx`
-  - `tailwind-variant-v3.mdx`
-  - `variants-v3.mdx`
   - `multi-platform-demos.mdx`
 - 侧边栏：在 `community` 下新增 `packages-runtime` 类目。
 
@@ -39,6 +37,6 @@
 - `community/merge/integration.mdx`：增加指向新章节的提示。
 
 ## 风险与注意
-- Tailwind v3/v4 的运行时包需要与编译期版本一致。
+- Tailwind v4 运行时包需要与编译期版本一致。
 - 若封装别名函数，需更新 `ignoreCallExpressionIdentifiers`。
 - Web 侧需关闭 escape/unescape，避免类名无法匹配。

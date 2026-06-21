@@ -1,6 +1,6 @@
 ---
 title: uni-app HBuilderX 使用方式
-description: HBuilderX Vue3 Vite 项目接入 weapp-tailwindcss 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。
+description: HBuilderX Vue3 Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss 的配置方式，以及 Vue2 Webpack 存量项目的处理建议。
 keywords:
   - 快速开始
   - 安装
@@ -31,49 +31,9 @@ keywords:
 
 这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。HBuilderX 会改变运行时的 `process.cwd()`，所以扫描路径和 `cssEntries` 都建议使用绝对路径。
 
-Tailwind CSS 3 和 4 的框架注册方式一样，差异只在 CSS 入口和扫描配置：
-
-| Tailwind 版本 | CSS 入口 | 扫描配置 |
-| --- | --- | --- |
-| 3.x | `@tailwind base;` 等指令 | `tailwind.config.js` 的 `content` |
-| 4.x | `@import "tailwindcss";` | CSS 入口里的 `@source` |
-
-### tailwind.config.js
-
-Tailwind CSS 3.x 项目使用 `tailwind.config.js`：
-
-```js title="tailwind.config.js"
-const path = require('node:path')
-
-const resolve = (p) => {
-  return path.resolve(__dirname, p)
-}
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    './index.html',
-    './pages/**/*.{html,js,ts,jsx,tsx,vue}',
-    './components/**/*.{html,js,ts,jsx,tsx,vue}',
-    '!./uni_modules/**/*',
-    '!./unpackage/**/*',
-  ].map(resolve),
-  corePlugins: {
-    preflight: false,
-  },
-}
-```
+当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ### CSS 入口
-
-Tailwind CSS 3.x:
-
-```css title="src/app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-Tailwind CSS 4.x:
 
 ```css title="src/app.css"
 @import "tailwindcss";
@@ -128,7 +88,7 @@ WeappTailwindcss({
 });
 ```
 
-生成模式下不要再注册 Tailwind 官方生成插件。Tailwind 3 不要注册 `tailwindcss` PostCSS 插件；Tailwind 4 不要注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。项目已有 PostCSS 配置时，只保留框架或业务需要的非 Tailwind 插件。
+生成模式下不要再注册 Tailwind 官方生成插件，不要注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。项目已有 PostCSS 配置时，只保留框架或业务需要的非 Tailwind 插件。
 
 `hbuilderx` 正式版本的 `vue2` 项目由于使用 `webpack4` 和 `postcss7`，不再适配当前版本。存量项目请继续停留在旧版本，或者迁移到 `HBuilderX Vue3 Vite` / `uni-app cli vue2 webpack5` 链路。
 

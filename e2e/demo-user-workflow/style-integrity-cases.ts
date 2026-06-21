@@ -19,7 +19,7 @@ function styleIntegrityCase(
 export const DEMO_STYLE_INTEGRITY_CASES: DemoUserWorkflowCase[] = [
   styleIntegrityCase(
     uniAppH5Case({
-      project: 'uni-app-vite-tailwindcss-v3',
+      project: 'uni-app-vite-tailwindcss-v4',
       styleContains: [
         '.raw-btn',
         '.btn',
@@ -63,7 +63,7 @@ export const DEMO_STYLE_INTEGRITY_CASES: DemoUserWorkflowCase[] = [
   ),
   styleIntegrityCase(
     mpxCase({
-      project: 'mpx-tailwindcss-v3',
+      project: 'mpx-tailwindcss-v4',
       version: 'v3',
       platform: 'wx',
       command: ['pnpm', 'run', 'build'],

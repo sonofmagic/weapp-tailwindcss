@@ -14,9 +14,9 @@ const TARO_WATCH_READY_RE = /→ Watching|watching for file changes/i
 const TARO_COMPILED_RE = /Compiled successfully/i
 const ROOT = process.cwd()
 const TARGETS = [
-  'taro-webpack-react-tailwindcss-v3',
   'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v3',
+  'taro-webpack-react-tailwindcss-v4',
+  'taro-webpack-vue3-tailwindcss-v4',
   'taro-webpack-vue3-tailwindcss-v4',
 ]
 const STABLE_AFTER_READY_MS = 8_000

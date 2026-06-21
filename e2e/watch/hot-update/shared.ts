@@ -13,25 +13,15 @@ export type DemoWatchShardName
     | 'demo-taro-vue3'
     | 'demo-uni'
 export type ConcreteWatchCaseName
-  = | 'gulp-tailwindcss-v3'
-    | 'gulp-tailwindcss-v4'
-    | 'mpx-tailwindcss-v3'
+  = | 'gulp-tailwindcss-v4'
     | 'mpx-tailwindcss-v4'
-    | 'taro-webpack-react-tailwindcss-v3'
     | 'taro-webpack-react-tailwindcss-v4'
-    | 'taro-vite-react-tailwindcss-v3'
     | 'taro-vite-react-tailwindcss-v4'
-    | 'taro-webpack-vue3-tailwindcss-v3'
     | 'taro-webpack-vue3-tailwindcss-v4'
-    | 'taro-vite-vue3-tailwindcss-v3'
     | 'taro-vite-vue3-tailwindcss-v4'
-    | 'uni-app-vite-tailwindcss-v3'
     | 'uni-app-vite-tailwindcss-v4'
-    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
     | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
-    | 'uni-app-x-hbuilderx-tailwindcss-v3'
     | 'uni-app-x-hbuilderx-tailwindcss-v4'
-    | 'weapp-vite-tailwindcss-v3'
     | 'weapp-vite-tailwindcss-v4'
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
 type MutationKind = 'template' | 'script' | 'style' | 'content'
@@ -49,20 +39,14 @@ const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
 const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
-  'taro-webpack-react-tailwindcss-v3',
   'taro-webpack-react-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v3',
   'taro-vite-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v3',
   'taro-webpack-vue3-tailwindcss-v4',
-  'taro-vite-vue3-tailwindcss-v3',
   'taro-vite-vue3-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v3',
   'uni-app-vite-tailwindcss-v4',
-  'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
 ])
-const WEB_SOURCE_DOM_HMR_CASES = new Set<ConcreteWatchCaseName>(['uni-app-vite-tailwindcss-v3', 'uni-app-vite-tailwindcss-v4', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'])
+const WEB_SOURCE_DOM_HMR_CASES = new Set<ConcreteWatchCaseName>(['uni-app-vite-tailwindcss-v4', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'])
 const SUBPACKAGE_HMR_CASES = new Set(
   buildCases(path.resolve(import.meta.dirname, '../../..'))
     .filter(item => (item.subPackageMutations?.length ?? 0) > 0)
@@ -357,7 +341,7 @@ const criticalDemoProjectsByShard = Object.fromEntries(
   }),
 ) as Record<DemoWatchShardName, string[]>
 
-const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v3', 'uni-app-vite-tailwindcss-v3'])
+const bothCases = new Set<ConcreteWatchCaseName>(['taro-webpack-react-tailwindcss-v4', 'uni-app-vite-tailwindcss-v4'])
 const noApplyValidationCases = new Set<ConcreteWatchCaseName>(['mpx-tailwindcss-v4', 'uni-app-vite-tailwindcss-v4', 'taro-vite-react-tailwindcss-v4', 'taro-webpack-react-tailwindcss-v4', 'weapp-vite-tailwindcss-v4'])
 const noFunctionValidationCases = new Set<ConcreteWatchCaseName>([
   'mpx-tailwindcss-v4',
@@ -494,26 +478,16 @@ function shouldHaveWebHmr(item: HotUpdateCaseReport) {
 export function resolveCaseName() {
   const value = process.env.E2E_WATCH_CASE
   if (
-    value === 'gulp-tailwindcss-v3'
-    || value === 'gulp-tailwindcss-v4'
-    || value === 'mpx-tailwindcss-v3'
+    value === 'gulp-tailwindcss-v4'
     || value === 'mpx-tailwindcss-v4'
-    || value === 'taro-webpack-react-tailwindcss-v3'
     || value === 'taro-webpack-react-tailwindcss-v4'
-    || value === 'taro-vite-react-tailwindcss-v3'
     || value === 'taro-vite-react-tailwindcss-v4'
-    || value === 'taro-webpack-vue3-tailwindcss-v3'
     || value === 'taro-webpack-vue3-tailwindcss-v4'
-    || value === 'taro-vite-vue3-tailwindcss-v3'
     || value === 'taro-vite-vue3-tailwindcss-v4'
-    || value === 'uni-app-vite-tailwindcss-v3'
     || value === 'uni-app-vite-tailwindcss-v4'
-    || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v3'
     || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
-    || value === 'uni-app-x-hbuilderx-tailwindcss-v3'
     || value === 'uni-app-x-hbuilderx-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
-    || value === 'weapp-vite-tailwindcss-v3'
     || value === 'both'
     || value === 'all'
     || value === 'demo'
@@ -780,7 +754,7 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
   expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
   expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
-  if (item.name === 'uni-app-vite-tailwindcss-v3') {
+  if (item.name === 'uni-app-vite-tailwindcss-v4') {
     const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
     expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual(['bgObj bg-[#999999] to bg-[#134543]', 'bgObj bg-[#134543] to bg-[#256789]'])
     expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
@@ -1107,7 +1081,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(styleMetric).toBeUndefined()
     }
 
-    if (item.name === 'uni-app-vite-tailwindcss-v3' || item.name === 'uni-app-vite-tailwindcss-v4') {
+    if (item.name === 'uni-app-vite-tailwindcss-v4') {
       const userReportedHotUpdate = item.userReportedHotUpdate
       expect(userReportedHotUpdate, `[${item.project}] should include the user reported hot-update scenario`).toBeDefined()
       if (!userReportedHotUpdate) {
@@ -1120,7 +1094,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(userReportedHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
-      if (item.name === 'uni-app-vite-tailwindcss-v3') {
+      if (item.name === 'uni-app-vite-tailwindcss-v4') {
         expect(userReportedHotUpdate.label).toBe('cardsColor bg-[#4268EA] to bg-[red]')
         expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['bg-[#4268EA] shadow-indigo-100', 'bg-[red] shadow-indigo-100']))
         expect(userReportedHotUpdate.classTokens.some(token => token === 'bg-[red]' || token === 'bg-[#4268EA]')).toBe(true)

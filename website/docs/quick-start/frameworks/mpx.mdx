@@ -1,6 +1,6 @@
 ---
 title: Mpx
-description: Mpx 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。
+description: Mpx 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。
 keywords:
   - 快速开始
   - 安装
@@ -55,15 +55,7 @@ module.exports = defineConfig({
 
 Tailwind CSS 生成由 `WeappTailwindcss` 接管，不要再注册 Tailwind 官方 PostCSS 生成插件。
 
-### Tailwind CSS 3.x
-
-```css title="src/app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-### Tailwind CSS 4.x
+如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ```css title="src/app.css"
 @import "tailwindcss";

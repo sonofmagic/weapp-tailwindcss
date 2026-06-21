@@ -7,7 +7,7 @@
 
 ## 目录定位
 
-- 该目录包含运行时增强包：`runtime`、`merge`、`merge-v3`、`cva`、`variants`、`variants-v3`、`tailwind-variant-v3`、`typography`、`theme-transition`、`ui`。
+- 该目录包含运行时增强包：`runtime`、`merge`、`cva`、`variants`、`typography`、`theme-transition`、`ui`。
 - 共性目标：在不破坏上游库语义的前提下，增加小程序 escape/unescape、平台兼容和 DX 封装。
 
 ## 通用开发原则

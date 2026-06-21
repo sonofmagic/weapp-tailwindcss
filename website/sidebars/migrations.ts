@@ -10,10 +10,6 @@ const migrationsSidebar: SidebarConfig = [
   },
   {
     type: 'doc',
-    id: 'migrations/v3',
-  },
-  {
-    type: 'doc',
     id: 'migrations/v2',
   },
   {

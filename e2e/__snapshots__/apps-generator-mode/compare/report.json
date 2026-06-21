@@ -1,13 +1,13 @@
 [
   {
-    "name": "gulp-tailwindcss-v3",
+    "name": "gulp-tailwindcss-v4",
     "fixture": "demo",
     "platform": "weapp",
     "allowedPlatforms": [
       "weapp",
       "tt"
     ],
-    "cssFile": "gulp-tailwindcss-v3/dist/app.wxss",
+    "cssFile": "gulp-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
       "pages/more/more.wxss",
@@ -18,8 +18,8 @@
     "generator": {
       "bytes": 17453,
       "selectors": [
-        ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v3_a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".bg-_b_hfff_B",
         ".bg-_blength_c100_v_100_v_B",
         ".bg-_bred_B",
@@ -211,7 +211,7 @@
     }
   },
   {
-    "name": "mpx-tailwindcss-v3",
+    "name": "mpx-tailwindcss-v4",
     "fixture": "demo",
     "platform": "wx",
     "allowedPlatforms": [
@@ -221,7 +221,7 @@
       "tt",
       "dd"
     ],
-    "cssFile": "mpx-tailwindcss-v3/dist/wx/app.wxss",
+    "cssFile": "mpx-tailwindcss-v4/dist/wx/app.wxss",
     "cssFiles": [
       "app.wxss",
       "components/tdesign-miniprogram/miniprogram_dist/button/button.wxss",
@@ -245,8 +245,8 @@
         ".after_ccontent-_b_qu_x4f60_u_x597d_u_x554a_u_xff0c_u_x6211_u_x5f88_u_x65e0_u_x804a__q_B:after",
         ".after_cml-0_d5:after",
         ".after_ctext-red-500:after",
-        ".before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v3_a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_mpx-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_mpx-tailwindcss-v4_a_B:before",
         ".bg-_b_h123456_B",
         ".bg-_b_h929292_B",
         ".bg-_bred_B",
@@ -3324,7 +3324,7 @@
     }
   },
   {
-    "name": "taro-webpack-react-tailwindcss-v3",
+    "name": "taro-webpack-react-tailwindcss-v4",
     "fixture": "demo",
     "platform": "weapp",
     "allowedPlatforms": [
@@ -3339,7 +3339,7 @@
       "harmony-hybrid",
       "quickapp"
     ],
-    "cssFile": "taro-webpack-react-tailwindcss-v3/dist/app.wxss",
+    "cssFile": "taro-webpack-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
       "moduleB/pages/index.wxss",
@@ -3374,11 +3374,11 @@
         ".before_cborder-2:before",
         ".before_cborder-_b_h0000ff_B:before",
         ".before_cborder-_b_h4bd650_B:before",
-        ".before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_amoduleA_u_x666e_u_x901a_u_x5206_u_x5305__a_B:before",
         ".before_ccontent-_b_amoduleB_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before",
         ".before_ccontent-_b_amoduleC_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_taro-webpack-react-tailwindcss-v4_a_B:before",
         ".before_cinset-0:before",
         ".before_crounded-_b20rpx_B:before",
         ".bg-_b_h123456_B",
@@ -5846,7 +5846,7 @@
     }
   },
   {
-    "name": "taro-vite-react-tailwindcss-v3",
+    "name": "taro-vite-react-tailwindcss-v4",
     "fixture": "demo",
     "platform": "weapp",
     "allowedPlatforms": [
@@ -5860,7 +5860,7 @@
       "jd",
       "harmony-hybrid"
     ],
-    "cssFile": "taro-vite-react-tailwindcss-v3/dist/app.wxss",
+    "cssFile": "taro-vite-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
@@ -5875,8 +5875,8 @@
       "selectors": [
         ".before_ccontent-_b_a222_a_B:before",
         ".before_ccontent-_b_a333_a_B:before",
-        ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v3_a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_q11111_q_B:before",
         ".bg-_b_h89ab8d_B",
         ".bg-_b_he24826_B",
@@ -10355,7 +10355,7 @@
     }
   },
   {
-    "name": "taro-webpack-vue3-tailwindcss-v3",
+    "name": "taro-webpack-vue3-tailwindcss-v4",
     "fixture": "demo",
     "platform": "weapp",
     "allowedPlatforms": [
@@ -10370,7 +10370,7 @@
       "harmony-hybrid",
       "quickapp"
     ],
-    "cssFile": "taro-webpack-vue3-tailwindcss-v3/dist/app.wxss",
+    "cssFile": "taro-webpack-vue3-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
       "pages/index/index.wxss",
@@ -10386,8 +10386,8 @@
         ".before_cabsolute:before",
         ".before_cborder-2:before",
         ".before_cborder-_b_h4bd650_B:before",
-        ".before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
         ".before_cinset-0:before",
         ".before_crounded-_b20rpx_B:before",
         ".bg-_b_h123456_B",
@@ -12067,7 +12067,7 @@
     }
   },
   {
-    "name": "taro-vite-vue3-tailwindcss-v3",
+    "name": "taro-vite-vue3-tailwindcss-v4",
     "fixture": "demo",
     "platform": "weapp",
     "allowedPlatforms": [
@@ -12081,7 +12081,7 @@
       "jd",
       "harmony-hybrid"
     ],
-    "cssFile": "taro-vite-vue3-tailwindcss-v3/dist/app.wxss",
+    "cssFile": "taro-vite-vue3-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
       "app-origin.wxss",
@@ -12095,8 +12095,8 @@
       "selectors": [
         ".before_ccontent-_b_a11111_a_B:before",
         ".before_ccontent-_b_a222_a_B:before",
-        ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".bg-_b_h89ab8d_B",
         ".bg-_b_he24826_B",
         ".bg-independent-subpackage-marker",
@@ -15580,7 +15580,7 @@
     }
   },
   {
-    "name": "uni-app-vite-tailwindcss-v3",
+    "name": "uni-app-vite-tailwindcss-v4",
     "fixture": "demo",
     "platform": "mp-weixin",
     "allowedPlatforms": [
@@ -15599,7 +15599,7 @@
       "quickapp-webview-huawei",
       "quickapp-webview-union"
     ],
-    "cssFile": "uni-app-vite-tailwindcss-v3/dist/build/mp-weixin/app.wxss",
+    "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss",
     "cssFiles": [
       "app.wxss",
       "custom-tab-bar/index.wxss",
@@ -15639,9 +15639,9 @@
         ".backdrop-blur-_b2rpx_B",
         ".before_ccontent-_b_aFestivus_a_B:before",
         ".before_ccontent-_b_a_x_a_B:before",
-        ".before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_amoduleA_u_x72ec_u_x7acb_u_x5206_u_x5305__a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before",
         ".bg-_b_h123324_B",
         ".bg-_b_h123456_B",
         ".bg-_b_h3482f2_B",
@@ -18659,13 +18659,13 @@
     }
   },
   {
-    "name": "weapp-vite-tailwindcss-v3",
+    "name": "weapp-vite-tailwindcss-v4",
     "fixture": "demo",
     "platform": "weapp",
     "allowedPlatforms": [
       "weapp"
     ],
-    "cssFile": "weapp-vite-tailwindcss-v3/dist/app.wxss",
+    "cssFile": "weapp-vite-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
       "components/IceButton/index.wxss",
@@ -18687,8 +18687,8 @@
         "._bmask-type_calpha_B",
         "._bmask-type_cluminance_B",
         "._bpadding_c20rpx_B",
-        ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v3_a_B:before",
-        ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v3_a_B:before",
+        ".before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
+        ".before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before",
         ".bg-_b_h111111_B",
         ".bg-_b_h123456_B",
         ".bg-_b_h16a34a_B",

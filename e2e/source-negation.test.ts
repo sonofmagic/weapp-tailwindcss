@@ -80,7 +80,7 @@ async function collectDependencyFilesForCompare(messages: postcss.Result['messag
 }
 
 describe('source negation e2e', () => {
-  it('honors Tailwind v3 content negation through the PostCSS generator', async () => {
+  it('honors Tailwind v4 content negation through the PostCSS generator', async () => {
     const project = await createTempProject('weapp-tw-e2e-postcss-v3-not-')
     try {
       const { ignoredFile, pageFile } = await writeSharedSources(project.root)
@@ -147,7 +147,7 @@ describe('source negation e2e', () => {
     }
   })
 
-  it('honors Tailwind v3 content negation through a real Vite generator build', async () => {
+  it('honors Tailwind v4 content negation through a real Vite generator build', async () => {
     const project = await createTempProject('weapp-tw-e2e-vite-v3-not-')
     try {
       await writeSharedSources(project.root)

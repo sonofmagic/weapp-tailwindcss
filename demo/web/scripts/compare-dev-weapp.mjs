@@ -17,9 +17,7 @@ const outputDir = process.env.WEB_DEMO_COMPARE_OUTPUT
   : path.join(webRoot, '.compare-dev-weapp')
 
 const projects = [
-  'react-vite-tailwindcss-v3',
   'react-vite-tailwindcss-v4',
-  'vue-vite-tailwindcss-v3',
   'vue-vite-tailwindcss-v4',
 ]
 

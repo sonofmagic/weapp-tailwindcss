@@ -3,7 +3,7 @@
   "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss-codex/tailwindcss-mangle-engine",
   "cases": [
     {
-      "name": "uni-app-vite-tailwindcss-v3",
+      "name": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -17,7 +17,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4",
             "run",
             "build:mp-weixin"
           ],
@@ -43,7 +43,7 @@
           "startedAt": "2026-06-19T02:09:22.500Z",
           "endedAt": "2026-06-19T02:09:22.937Z",
           "exitCode": 0,
-          "reportFile": ".tmp/local-full-report-weapp-memory/raw/uni-app-vite-tailwindcss-v3-build.json"
+          "reportFile": ".tmp/local-full-report-weapp-memory/raw/uni-app-vite-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -272,7 +272,7 @@
           "startedAt": "2026-06-19T02:09:22.938Z",
           "endedAt": "2026-06-19T02:09:56.838Z",
           "exitCode": 0,
-          "reportFile": ".tmp/local-full-report-weapp-memory/raw/uni-app-vite-tailwindcss-v3-hmr.json"
+          "reportFile": ".tmp/local-full-report-weapp-memory/raw/uni-app-vite-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [

@@ -36,7 +36,7 @@ keywords:
 npm install @weapp-tailwindcss/merge
 ```
 
-如果项目仍在使用 Tailwind CSS v3，请改用 `@weapp-tailwindcss/merge-v3`；而 `@weapp-tailwindcss/runtime` 通常作为间接依赖被自动安装。
+如果项目必须继续使用 Tailwind CSS v3，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)；而 `@weapp-tailwindcss/runtime` 通常作为间接依赖被自动安装。
 
 ## Runtime 基础导出
 
@@ -66,7 +66,7 @@ import {
 4. `restoreValue` 还原。
 5. escape 输出并缓存结果（256 条）。
 
-`@weapp-tailwindcss/merge` 与 `merge-v3` 默认使用 `createRpxLengthTransform()` 作为预处理/还原钩子。
+`@weapp-tailwindcss/merge` 默认使用 `createRpxLengthTransform()` 作为预处理/还原钩子。
 
 ## createRpxLengthTransform
 
@@ -104,8 +104,7 @@ import {
 ```
 
 - `@weapp-tailwindcss/merge` 适配 `tailwindcss@4`，`tailwindMergeVersion` 为 `3`。
-- `@weapp-tailwindcss/merge-v3` 适配 `tailwindcss@3`，`tailwindMergeVersion` 为 `2`。
-- 两个包均内置 rpx 归一化与 escape/unescape，API 完全一致。
+- 内置 rpx 归一化与 escape/unescape。
 
 ## twMerge(...classValues)
 
@@ -160,6 +159,4 @@ const raw = weappTwIgnore`
 
 - `@weapp-tailwindcss/cva`：封装 `class-variance-authority`，详见 [@weapp-tailwindcss/cva](/docs/community/packages-runtime/cva)  
 - `@weapp-tailwindcss/variants`：封装 `tailwind-variants`，详见 [@weapp-tailwindcss/variants](/docs/community/packages-runtime/variants)  
-- `@weapp-tailwindcss/merge-v3`：面向 `tailwindcss@3` 的长期支持分支  
-- `@weapp-tailwindcss/variants-v3`：基于 `tailwind-variant-v3` 的小程序运行时  
-- `tailwind-variant-v3`：上游 v3 runtime（Web 优先）
+- Tailwind CSS 3 项目：请使用 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)

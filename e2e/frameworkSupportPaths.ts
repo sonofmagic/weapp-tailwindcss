@@ -23,7 +23,7 @@ export function resolveFrameworkSupportPaths(entry: FrameworkSupportCase) {
 }
 
 function resolveFrameworkIdeProjectPath(entry: FrameworkSupportCase) {
-  if (entry.name === 'uni-app-vite-tailwindcss-v3' || entry.name === 'uni-app-vite-tailwindcss-v4') {
+  if (entry.name === 'uni-app-vite-tailwindcss-v4' || entry.name === 'uni-app-vite-tailwindcss-v4') {
     return `${entry.name}/dist/dev/mp-weixin`
   }
   return entry.project.projectPath

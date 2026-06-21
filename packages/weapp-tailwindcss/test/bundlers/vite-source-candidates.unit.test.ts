@@ -110,7 +110,7 @@ describe('bundlers/vite source candidates', () => {
     expect(values).toEqual(new Set(['flex', 'bg-yellow-300/30', 'w-[100px]']))
   })
 
-  it('matches Tailwind v3 default extracted candidates with source entries', async () => {
+  it('matches Tailwind v4 default extracted candidates with source entries', async () => {
     const { createSourceCandidateCollector, createTailwindV3DefaultExtractor } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-v3-source-entries')
     const file = path.join(root, 'src/subpackages/normal/pages/entry/index.wxml')
@@ -135,7 +135,7 @@ describe('bundlers/vite source candidates', () => {
     }])).toEqual(new Set(['bg-normal']))
   })
 
-  it('refreshes Tailwind v3 Vue arbitrary candidates after a source update', async () => {
+  it('refreshes Tailwind v4 Vue arbitrary candidates after a source update', async () => {
     const { createSourceCandidateCollector, createTailwindV3DefaultExtractor } = await import('@/bundlers/vite/source-candidates')
     const root = await createTempDir('weapp-tw-vite-v3-vue-hmr-candidates')
     const file = path.join(root, 'src/components/sections/CapabilityShowcase.vue')

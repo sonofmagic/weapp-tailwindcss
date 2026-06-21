@@ -1,6 +1,6 @@
 ---
 title: Taro
-description: Taro Webpack / Vite 项目接入 weapp-tailwindcss，并同时说明 Tailwind CSS 3 和 4 的入口差异。
+description: Taro Webpack / Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。
 keywords:
   - 快速开始
   - 安装
@@ -32,41 +32,11 @@ Taro v4 可以走 Webpack，也可以走 Vite。新项目优先选 Webpack，问
 
 下面的配置适用于 Taro 的 `react` / `preact` / `vue2` / `vue3`。文档默认你的源码都放在 `src` 目录下，这也是 Taro 模板的默认结构。
 
-## Tailwind CSS 版本选择
+## Tailwind CSS 入口
 
-框架注册方式和 Tailwind 版本没有强绑定，主要差异在 `src/app.css`：
-
-| Tailwind 版本 | 安装 | CSS 入口 | 扫描配置 |
-| --- | --- | --- | --- |
-| 3.x | `pnpm add -D tailwindcss@3 weapp-tailwindcss` | `@tailwind base;` 等指令 | `tailwind.config.js` 的 `content` |
-| 4.x | `pnpm add -D tailwindcss weapp-tailwindcss` | `@import "tailwindcss" source(none);` | CSS 入口里的 `@source` |
+当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 小程序构建只注册 `WeappTailwindcss`。不要再在 PostCSS 中注册 `tailwindcss` 或 `@tailwindcss/postcss`，也不要为 Taro Vite 注册 `@tailwindcss/vite`。
-
-### Tailwind CSS 3.x 入口
-
-```css title="src/app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
-
-如果你的 Taro 项目本来引入的是 `src/app.scss` 或 `src/app.less`，Tailwind CSS 3 也可以继续放在这个文件里。Taro 会先处理 Sass/Less，再进入后面的样式链路。
-
-```js title="tailwind.config.js"
-module.exports = {
-  content: [
-    './src/**/*.{js,jsx,ts,tsx,vue}',
-    '!./dist/**/*',
-    '!./node_modules/**/*',
-  ],
-  corePlugins: {
-    preflight: false,
-  },
-}
-```
-
-### Tailwind CSS 4.x 入口
 
 ```css title="src/app.css"
 @import "tailwindcss" source(none);
@@ -144,7 +114,7 @@ const weappTailwindcssOptions = {
 }
 ```
 
-`cssEntries` 指向的是 Tailwind 入口文件。Tailwind 4 请指向纯 `.css`；Tailwind 3 如果你确实把 `@tailwind` 写在 `app.scss` 或 `app.less` 里，就指向这个实际入口。
+`cssEntries` 指向的是 Tailwind 入口文件，请指向纯 `.css`。
 
 不要在 H5 里写 `disabled: process.env.TARO_ENV === 'h5'`。小程序和 H5 都注册插件，`weapp-tailwindcss` 会按目标端处理。
 
@@ -210,7 +180,7 @@ const baseConfig: UserConfigExport<'vite'> = {
 }
 ```
 
-Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 Tailwind 官方生成插件注册到 PostCSS 或 Vite 配置里。`src/app.css` 按上方版本选择写 Tailwind 3 或 4 的入口。
+Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 Tailwind 官方生成插件注册到 PostCSS 或 Vite 配置里。`src/app.css` 按上方写 Tailwind 4 入口。
 
 常规 Taro Vite 项目也可以自动识别被引入的 `src/app.css`。只有入口没有被引入、多入口、自动识别失败时，再按 Webpack 那段补 `cssEntries`。
 

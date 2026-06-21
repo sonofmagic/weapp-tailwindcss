@@ -214,9 +214,7 @@ function createUniQuickappWebviewBuildCase(template: string, platform: string): 
 
 const templateCases: TemplateCase[] = [
   { name: 'mpx-tailwindcss-v4' },
-  { name: 'taro-react-tailwind-vscode-template' },
   { name: 'taro-vite-tailwindcss-v4' },
-  { name: 'taro-vue3-tailwind-vscode-template' },
   { name: 'taro-webpack-tailwindcss-v4' },
   {
     name: 'uni-app-hbuilderx-tailwindcss-v4',
@@ -225,21 +223,7 @@ const templateCases: TemplateCase[] = [
     configContains: ['weapp-tailwindcss/vite', 'WeappTailwindcss', 'cssEntries'],
   },
   { name: 'uni-app-tailwindcss-v4' },
-  { name: 'uni-app-vite-vue3-tailwind-vscode-template' },
-  { name: 'uni-app-vue2-tailwind-vscode-template' },
-  {
-    name: 'uni-app-vue3-tailwind-hbuilder-template',
-    localOnlyReason: 'HBuilderX 模板没有提交可离线执行的 CLI build 脚本，默认回归检查依赖与 Vite/PostCSS 配置。',
-    configFiles: ['vite.config.js', 'postcss.config.cjs', 'tailwind.config.js'],
-    configContains: ['weapp-tailwindcss/vite', 'WeappTailwindcss', 'postcssPlugins'],
-  },
   { name: 'uni-app-webpack-tailwindcss-v4' },
-  {
-    name: 'uni-app-x-hbuilderx',
-    localOnlyReason: 'uni-app x 模板需要 HBuilderX/设备运行环境，默认回归检查依赖与 uni-app x preset 配置。',
-    configFiles: ['vite.config.ts', 'tailwind.config.js', 'App.uvue', 'pages/index/index.uvue'],
-    configContains: ['weapp-tailwindcss/vite', 'weappTailwindcss', 'weapp-tailwindcss/presets', 'uniAppX'],
-  },
 ]
 
 const templateBuildCases: TemplateBuildCase[] = [
@@ -252,21 +236,14 @@ const templateBuildCases: TemplateBuildCase[] = [
     styleFiles: ['dist/wx/app.wxss', 'dist/wx/styles'],
     textFiles: ['dist/wx/pages/index.wxml'],
   },
-  ...createTaroMiniBuildCases('taro-react-tailwind-vscode-template', ['alipay', 'jd', 'qq', 'swan', 'tt', 'weapp']),
-  createTaroH5BuildCase('taro-react-tailwind-vscode-template'),
   ...createTaroMiniBuildCases('taro-vite-tailwindcss-v4', ['weapp']),
   createTaroH5BuildCase('taro-vite-tailwindcss-v4'),
-  ...createTaroMiniBuildCases('taro-vue3-tailwind-vscode-template', ['alipay', 'qq', 'swan', 'tt', 'weapp']),
-  createTaroH5BuildCase('taro-vue3-tailwind-vscode-template'),
   ...createTaroMiniBuildCases('taro-webpack-tailwindcss-v4', ['alipay', 'jd', 'qq', 'swan', 'tt', 'weapp']),
   createTaroH5BuildCase('taro-webpack-tailwindcss-v4'),
   ...[
     'uni-app-tailwindcss-v4',
-    'uni-app-vite-vue3-tailwind-vscode-template',
   ].flatMap<TemplateBuildCase>(template => [
-    ...Object.keys(uniMiniOutputByPlatform)
-      .filter(platform => template === 'uni-app-tailwindcss-v4' || (platform !== 'mp-jd' && platform !== 'mp-xhs'))
-      .map(platform => createUniMiniBuildCase(template, platform)),
+    ...Object.keys(uniMiniOutputByPlatform).map(platform => createUniMiniBuildCase(template, platform)),
     createUniH5BuildCase(template),
     createUniH5SsrBuildCase(template),
     ...[
@@ -276,7 +253,6 @@ const templateBuildCases: TemplateBuildCase[] = [
     ].map(platform => createUniQuickappWebviewBuildCase(template, platform)),
   ]),
   ...[
-    'uni-app-vue2-tailwind-vscode-template',
     'uni-app-webpack-tailwindcss-v4',
   ].flatMap<TemplateBuildCase>(template => [
     ...['mp-alipay', 'mp-baidu', 'mp-kuaishou', 'mp-qq', 'mp-toutiao', 'mp-weixin']
@@ -295,9 +271,7 @@ const templateBuildCases: TemplateBuildCase[] = [
 
 const localOnlyBuildTargets: LocalOnlyBuildTarget[] = [
   ...[
-    'taro-react-tailwind-vscode-template',
     'taro-vite-tailwindcss-v4',
-    'taro-vue3-tailwind-vscode-template',
     'taro-webpack-tailwindcss-v4',
   ].flatMap(template => [
     { template, script: 'build:rn', reason: 'Taro RN 构建需要 React Native 运行时与原生工程环境，不纳入默认模板 CLI 回归。' },
@@ -319,25 +293,19 @@ const localOnlyBuildTargets: LocalOnlyBuildTarget[] = [
   ]),
   ...[
     'uni-app-tailwindcss-v4',
-    'uni-app-vite-vue3-tailwind-vscode-template',
   ].flatMap(template => [
     { template, script: 'build:app', reason: 'uni-app app 端需要原生 App 构建环境，本轮只记录为本地环境验证项。' },
     { template, script: 'build:custom', reason: 'custom 构建脚本需要额外平台参数，本轮只记录为本地环境验证项。' },
   ]),
   ...[
-    'uni-app-vue2-tailwind-vscode-template',
     'uni-app-webpack-tailwindcss-v4',
   ].flatMap(template => [
     { template, script: 'build:app-plus', reason: 'app-plus 端需要原生 App 构建环境，本轮只记录为本地环境验证项。' },
     { template, script: 'build:custom', reason: 'custom 构建脚本需要额外平台参数，本轮只记录为本地环境验证项。' },
     { template, script: 'build:quickapp-native', reason: 'quickapp-native 需要快应用 native 工具链，本轮只记录为本地环境验证项。' },
-    ...(template === 'uni-app-vue2-tailwind-vscode-template'
-      ? [{ template, script: 'build:mp-360', reason: 'mp-360 端依赖较旧平台工具链，本轮只记录为本地环境验证项。' }]
-      : [{ template, script: 'build:mp-360', reason: 'mp-360 端依赖较旧平台工具链，本轮只记录为本地环境验证项。' }]),
+    { template, script: 'build:mp-360', reason: 'mp-360 端依赖较旧平台工具链，本轮只记录为本地环境验证项。' },
   ]),
   { template: 'uni-app-hbuilderx-tailwindcss-v4', script: 'HBuilderX run', reason: '该模板未提交 CLI build 脚本，需要在 HBuilderX 中导入后运行。' },
-  { template: 'uni-app-vue3-tailwind-hbuilder-template', script: 'HBuilderX run', reason: '该模板未提交 CLI build 脚本，需要在 HBuilderX 中导入后运行。' },
-  { template: 'uni-app-x-hbuilderx', script: 'dev:android:emulator/dev:ios:simulator', reason: 'uni-app x 需要 HBuilderX 与设备或模拟器环境，本轮只做配置 smoke。' },
 ]
 
 const rawTailwindDirectiveRE = /(?:^|[;{}\n])\s*@(import\s+["']tailwindcss|tailwind|apply|theme|source)\b/
@@ -524,13 +492,7 @@ describe('templates build smoke', () => {
     expect(workspace).toContain('- .')
     expect(await fs.readFile(path.resolve(root, '.npmrc'), 'utf8')).toContain('registry=https://registry.npmjs.org/')
 
-    if (item.name === 'uni-app-x-hbuilderx') {
-      expect(deps['weapp-tailwindcss']).toBe('5.0.7')
-      expect(deps['@weapp-tailwindcss/debug-uni-app-x']).toBe('1.0.1')
-    }
-    else {
-      expect(deps['weapp-tailwindcss']).toBe('^5.0.7')
-    }
+    expect(deps['weapp-tailwindcss']).toBe('^5.0.7')
 
     if (Object.keys(deps).some(name => name.startsWith('@dcloudio/'))) {
       expect(pkg.scripts?.['up:pkg'], `${item.name} should keep @dcloudio upgrade out of generic package upgrade`).toContain('"!@dcloudio/*"')

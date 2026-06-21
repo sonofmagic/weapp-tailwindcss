@@ -1,6 +1,6 @@
 [
   {
-    "project": "taro-webpack-react-tailwindcss-v3",
+    "project": "taro-webpack-react-tailwindcss-v4",
     "cssFiles": [
       "dist/app.wxss",
       "dist/sub-normal/pages/index.wxss",
@@ -225,7 +225,7 @@
     }
   },
   {
-    "project": "taro-vite-react-tailwindcss-v3",
+    "project": "taro-vite-react-tailwindcss-v4",
     "cssFiles": [
       "dist/app.wxss",
       "dist/sub-normal/pages/index.wxss",
@@ -551,7 +551,7 @@
     }
   },
   {
-    "project": "taro-webpack-vue3-tailwindcss-v3",
+    "project": "taro-webpack-vue3-tailwindcss-v4",
     "cssFiles": [
       "dist/app.wxss",
       "dist/sub-normal/pages/index.wxss",
@@ -776,7 +776,7 @@
     }
   },
   {
-    "project": "taro-vite-vue3-tailwindcss-v3",
+    "project": "taro-vite-vue3-tailwindcss-v4",
     "cssFiles": [
       "dist/app.wxss",
       "dist/sub-normal/pages/index.wxss",

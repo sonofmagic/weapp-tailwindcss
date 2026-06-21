@@ -1,7 +1,0 @@
-{
-  "file": "src/moduleA/pages/index.tsx",
-  "count": 1,
-  "tokens": [
-    "before:content-['moduleA_普通分包']"
-  ]
-}

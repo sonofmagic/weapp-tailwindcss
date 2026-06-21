@@ -1,7 +1,0 @@
-{
-  "file": "miniprogram/sub-normal/pages/index.wxml",
-  "count": 1,
-  "tokens": [
-    "before:content-['normal_subpackage_weapp-vite-tailwindcss-v3']"
-  ]
-}

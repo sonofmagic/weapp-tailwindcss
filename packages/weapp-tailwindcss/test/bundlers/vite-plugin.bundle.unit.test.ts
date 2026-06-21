@@ -366,7 +366,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect((bundle['components/button.acss'] as OutputAsset).source).toBe('.button{color:blue}')
   })
 
-  it('uses oxide source candidates as the default Tailwind v3 runtime input in Vite generator mode', async () => {
+  it('uses oxide source candidates as the default Tailwind v4 runtime input in Vite generator mode', async () => {
     const validateCandidatesMock = vi.fn(async (candidates: Set<string>) => {
       return new Set([...candidates].filter(candidate => candidate === 'bg-[red]'))
     })
@@ -775,7 +775,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     }))
   })
 
-  it('generates Tailwind v3 css in vite serve after sass imports are inlined', async () => {
+  it('generates Tailwind v4 css in vite serve after sass imports are inlined', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-css-hmr-'))
     createdDirs.push(root)
     const configFile = path.join(root, 'tailwind.config.js')
@@ -1652,7 +1652,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(String(bundle['app.css'].source)).toContain('.text-_b37px_B')
   }, TEST_TIMEOUT_MS)
 
-  it('skips single-entry Tailwind v3 candidate validation when multiple css entries own independent configs', async () => {
+  it('skips single-entry Tailwind v4 candidate validation when multiple css entries own independent configs', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-multi-entry-'))
     createdDirs.push(root)
     const appCss = path.join(root, 'src/app.css')
@@ -1835,7 +1835,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(String(bundle['app.css'].source)).toContain('.h-_b29px_B')
   })
 
-  it('generates Tailwind v3 css entries from their own @config content in main-package directories', async () => {
+  it('generates Tailwind v4 css entries from their own @config content in main-package directories', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-main-multi-config-'))
     createdDirs.push(root)
     const featureACss = path.join(root, 'src/features/a/index.css')
@@ -2050,7 +2050,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(featureBOutput).not.toContain('.bg-global{}')
   }, TEST_TIMEOUT_MS)
 
-  it('keeps explicit Tailwind v3 @config with empty content from falling back to global candidates', async () => {
+  it('keeps explicit Tailwind v4 @config with empty content from falling back to global candidates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-empty-config-'))
     createdDirs.push(root)
     const cssEntry = path.join(root, 'src/empty/index.css')
@@ -2407,7 +2407,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(independent?.rawSource).not.toContain('tailwind.config.sub-normal.js')
   }, TEST_TIMEOUT_MS)
 
-  it('intersects broad Tailwind v3 config entries with subpackage output scope', async () => {
+  it('intersects broad Tailwind v4 config entries with subpackage output scope', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-subpackage-scope-'))
     createdDirs.push(root)
     const sourceRoot = path.join(root, 'miniprogram')
@@ -4027,7 +4027,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(recorded.get(path.join(root, 'miniprogram/sub-independent/pages/index.scss'))?.outputFile).toBe('sub-independent/pages/index.wxss')
   })
 
-  it('preserves vite-processed Tailwind v3 subpackage css instead of regenerating it from global candidates', async () => {
+  it('preserves vite-processed Tailwind v4 subpackage css instead of regenerating it from global candidates', async () => {
     const generateMock = vi.fn(async () => ({
       css: '.global-regenerated{}',
       rawCss: '.global-regenerated{}',
@@ -4129,7 +4129,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('regenerates Tailwind v3 subpackage css from external SFC style source when output asset is empty', async () => {
+  it('regenerates Tailwind v4 subpackage css from external SFC style source when output asset is empty', async () => {
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
       const css = [...options.candidates].sort().map((candidate) => {
         if (candidate === 'bg-normal-subpackage-marker') {
@@ -4194,8 +4194,8 @@ module.exports = {
     const independentScssFile = path.join(root, 'src/sub-independent/pages/index.scss')
     const normalScss = '@config "../../../tailwind.config.sub-normal.js";\n@import "tailwindcss/utilities";'
     const independentScss = '@config "../../../tailwind.config.sub-independent.js";\n@import "tailwindcss/utilities";'
-    await writeFile(normalVueFile, '<view class="bg-normal-subpackage-marker before:content-[\'normal_subpackage_uni-app-vite-tailwindcss-v3\']"></view>', 'utf8')
-    await writeFile(independentVueFile, '<view class="bg-independent-subpackage-marker before:content-[\'independent_subpackage_uni-app-vite-tailwindcss-v3\']"></view>', 'utf8')
+    await writeFile(normalVueFile, '<view class="bg-normal-subpackage-marker before:content-[\'normal_subpackage_uni-app-vite-tailwindcss-v4\']"></view>', 'utf8')
+    await writeFile(independentVueFile, '<view class="bg-independent-subpackage-marker before:content-[\'independent_subpackage_uni-app-vite-tailwindcss-v4\']"></view>', 'utf8')
     await writeFile(normalScssFile, normalScss, 'utf8')
     await writeFile(independentScssFile, independentScss, 'utf8')
     const collector = createSourceCandidateCollector()
@@ -4425,7 +4425,7 @@ module.exports = {
     }))
   }, TEST_TIMEOUT_MS)
 
-  it('excludes subpackage source candidates when generating Tailwind v3 app css', async () => {
+  it('excludes subpackage source candidates when generating Tailwind v4 app css', async () => {
     const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
       const css = [...options.candidates].sort().map(candidate => `.${candidate}{display:block}`).join('')
       return {
@@ -5294,7 +5294,7 @@ module.exports = {
     expect(refreshTailwindcssRuntime).not.toHaveBeenCalled()
   })
 
-  it('removes Tailwind v3 official PostCSS plugins in default auto mode', async () => {
+  it('removes Tailwind v4 official PostCSS plugins in default auto mode', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({
       generator: {
@@ -5341,7 +5341,7 @@ module.exports = {
     ])
   }, TEST_TIMEOUT_MS)
 
-  it('generates Tailwind v3 web css in vite generator mode', async () => {
+  it('generates Tailwind v4 web css in vite generator mode', async () => {
     const runtimeSet = new Set(['flex', 'min-h-screen'])
     const generatedCss = '.flex{display:flex}.min-h-screen{min-height:100vh}'
     const generateMock = vi.fn(async ({ target, candidates }: { target: string, candidates: Set<string> }) => ({
@@ -6300,7 +6300,7 @@ const trace = "at App.vue:4"
     expect(addWatchFile).toHaveBeenCalledWith('/repo/uni-app-x/main.css')
   }, TEST_TIMEOUT_MS)
 
-  it('scans source candidates during Tailwind v3 web generator buildStart', async () => {
+  it('scans source candidates during Tailwind v4 web generator buildStart', async () => {
     const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v3-web-scan-'))
     createdDirs.push(projectRoot)
     await mkdir(path.join(projectRoot, 'src'), { recursive: true })

@@ -32,7 +32,7 @@ keywords:
 
 更改模板工具链流程前，请确保你比较熟悉工具链开发（到我这样的水平就差不多了）。
 
-另外这些模板，只需要稍微改一下产物后缀，添加 `tailwind.config.js` 的 `content` 就可以适配百度，头条，京东...各个平台。
+另外这些模板，只需要稍微改一下产物后缀，调整 `@source` 扫描范围就可以适配百度，头条，京东...各个平台。
 :::
 
 ## gulp 模板
@@ -41,13 +41,7 @@ keywords:
 
 ## weapp-vite 模板
 
-如果你希望原生小程序也走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)。Tailwind CSS 3.x 项目继续使用 `tailwind.config.js` 的 `content` 扫描范围，入口 CSS 使用：
-
-```css title="app.css"
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+如果你希望原生小程序也走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)。当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 然后在 `vite.config.ts` 中注册 `weapp-tailwindcss/vite`：
 
@@ -67,7 +61,7 @@ export default defineConfig({
 生成模式会接管 Tailwind CSS 生成和小程序转译，不需要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
 常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口、入口未被 Vite 引入或自动识别失败时，再手动配置 `cssEntries`。
 
-Tailwind CSS 4.x 项目的入口 CSS 改用：
+Tailwind CSS 4 的入口 CSS：
 
 ```css title="app.css"
 @import "tailwindcss";
@@ -85,7 +79,7 @@ Tailwind 4 的入口只放在纯 `.css` 文件里。完整写法见 [纯原生 w
 
 这可能有以下几个原因:
 
-1. 代码文件不在 `tailwind.config.js` 的 `content` 配置内
+1. 代码文件不在 `@source` 扫描范围内
 2. 原生小程序组件是默认开启 **组件样式隔离** 的，默认情况下，自定义组件的样式只受到自定义组件 wxss 的影响。而 `tailwindcss` 生成的工具类，都在 `app.wxss` 这个全局样式文件里面。不属于组件内部，自然不生效。
 
 这时候可以使用:

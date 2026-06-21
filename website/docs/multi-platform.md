@@ -176,7 +176,6 @@ export default {
 
 小程序构建链路里，Tailwind CSS 的样式生成统一交给 `weapp-tailwindcss`。不要为了兼容 H5、App 或 HMR 问题再额外注册这些插件：
 
-- `tailwindcss@3` PostCSS 插件
 - `@tailwindcss/postcss`
 - `@tailwindcss/vite`
 
@@ -205,7 +204,7 @@ WeappTailwindcss({
 
 ## CSS 变量计算模式
 
-Tailwind CSS 4 下，如果没有显式配置 `cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。Tailwind CSS 3 默认不启用。
+Tailwind CSS 4 下，如果没有显式配置 `cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。
 
 需要注意的是，默认模式只会补充一条预计算声明，不会删除后面的原始 `calc()` 声明。这样可以保持 CSS 级联兼容，但如果目标小程序运行时会优先采用后续 `calc()`，你需要显式指定要清理的 CSS 变量。
 
@@ -306,9 +305,7 @@ WeappTailwindcss({
 如果 H5 端启用了 Tailwind Preflight，`svg` 默认可能被设置为 `display: block`，部分图标会出现偏移。可以在全局样式里按 H5 条件覆盖：
 
 ```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* #ifdef H5 */
 svg {

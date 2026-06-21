@@ -48,9 +48,9 @@ const routeLinks: RouteItem[] = [
     icon: 'icon-[mdi--numeric-4-box-outline]',
   },
   {
-    href: '/docs/quick-start/install',
-    label: 'v3 / 存量项目',
-    description: '按 content、框架和构建器选择稳妥接入路线。',
+    href: 'https://v4.tw.icebreaker.top/',
+    label: 'v3 旧版文档',
+    description: 'Tailwind CSS 3 项目请使用 weapp-tailwindcss@4。',
     icon: 'icon-[mdi--source-branch]',
   },
   {
@@ -69,7 +69,7 @@ const capabilities: CapabilityItem[] = [
   },
   {
     title: 'Tailwind 多模式并行',
-    description: '新项目使用 CSS-first，存量项目继续保留稳定接入路径。',
+    description: '当前文档面向 Tailwind CSS 4，旧项目可回到 v4 文档站维护。',
     icon: 'icon-[mdi--source-branch]',
   },
   {
@@ -86,9 +86,9 @@ const capabilities: CapabilityItem[] = [
 
 const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
   {
-    href: '/docs/quick-start/install',
+    href: '/docs/quick-start/v4',
     label: '快速开始',
-    description: '按 Tailwind 版本与构建器选择接入路线。',
+    description: '按 Tailwind CSS 4 与构建器选择接入路线。',
     icon: 'icon-[mdi--rocket-launch-outline]',
   },
   {

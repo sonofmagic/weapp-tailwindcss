@@ -10,7 +10,7 @@ const require = createRequire(import.meta.url)
 const packageRoot = path.resolve(__dirname, '../..')
 const workspaceRoot = path.resolve(packageRoot, '../..')
 const pluginPackageRoots = [
-  path.join(workspaceRoot, 'demo/uni-app-vite-tailwindcss-v3'),
+  path.join(workspaceRoot, 'demo/uni-app-vite-tailwindcss-v4'),
   path.join(workspaceRoot, 'demo/uni-app-vite-tailwindcss-v4'),
   path.join(workspaceRoot, 'website'),
 ]

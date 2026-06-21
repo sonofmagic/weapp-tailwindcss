@@ -13,5 +13,5 @@
 
 | demo | status | build peak RSS | HMR peak RSS | max RSS delta | report |
 | --- | --- | ---: | ---: | ---: | --- |
-| uni-app-vite-tailwindcss-v3 | passed | 0MB | 3399MB | 2773MB | [uni-app-vite-tailwindcss-v3](./projects/uni-app-vite-tailwindcss-v3.md) |
+| uni-app-vite-tailwindcss-v4 | passed | 0MB | 3399MB | 2773MB | [uni-app-vite-tailwindcss-v4](./projects/uni-app-vite-tailwindcss-v4.md) |
 | uni-app-vite-tailwindcss-v4 | passed | 0MB | 2076MB | 1421MB | [uni-app-vite-tailwindcss-v4](./projects/uni-app-vite-tailwindcss-v4.md) |

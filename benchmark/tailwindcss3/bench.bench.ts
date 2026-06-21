@@ -1,8 +1,4 @@
-import { twMerge as mergeWeappV3 } from '@weapp-tailwindcss/merge-v3'
-
-import { tv as tvWeappV3 } from '@weapp-tailwindcss/variants-v3'
 import { twMerge as mergeV2 } from 'tailwind-merge'
-import { tv as tvV3 } from 'tailwind-variant-v3'
 import { tv as tvLegacy } from 'tailwind-variants'
 import { bench, describe } from 'vitest'
 
@@ -37,13 +33,10 @@ const badgeOptions = {
 } as const
 
 const badgeLegacy = tvLegacy(badgeOptions)
-const badgeV3 = tvV3(badgeOptions)
-const badgeWeappV3 = tvWeappV3(badgeOptions)
 const benchOptions = { time: 300 }
 
 describe('tailwindcss v3 merge benchmarks', () => {
   bench('tailwind-merge v2', () => benchTwMerge(mergeV2), benchOptions)
-  bench('@weapp-tailwindcss/merge-v3', () => benchTwMerge(mergeWeappV3), benchOptions)
 })
 
 describe('tailwindcss v3 variants benchmarks', () => {
@@ -51,20 +44,6 @@ describe('tailwindcss v3 variants benchmarks', () => {
     'tailwind-variants 0.x',
     () => {
       badgeLegacy({ tone: 'info' })
-    },
-    benchOptions,
-  )
-  bench(
-    'tailwind-variant-v3 (upstream compat)',
-    () => {
-      badgeV3({ tone: 'info' })
-    },
-    benchOptions,
-  )
-  bench(
-    '@weapp-tailwindcss/variants-v3',
-    () => {
-      badgeWeappV3({ tone: 'info' })
     },
     benchOptions,
   )

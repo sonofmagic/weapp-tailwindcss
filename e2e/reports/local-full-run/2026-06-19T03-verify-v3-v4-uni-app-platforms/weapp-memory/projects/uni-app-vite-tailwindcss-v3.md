@@ -1,4 +1,4 @@
-# uni-app-vite-tailwindcss-v3 微信小程序端内存报告
+# uni-app-vite-tailwindcss-v4 微信小程序端内存报告
 
 - framework: uni-app
 - builder: vite
@@ -11,7 +11,7 @@
 
 | stage | status | samples | baseline RSS | peak RSS | RSS delta | max process RSS | peak processes | duration | command |
 | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
-| build | passed | 1 | 0MB | 0MB | 0MB | 0MB | 1 | 0s | `pnpm --filter @weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3 run build:mp-weixin` |
+| build | passed | 1 | 0MB | 0MB | 0MB | 0MB | 1 | 0s | `pnpm --filter @weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4 run build:mp-weixin` |
 | hmr | passed | 34 | 626MB | 3399MB | 2773MB | 2071MB | 11 | 33s | `pnpm e2e:hot-update:demo` |
 
 ## 优化建议

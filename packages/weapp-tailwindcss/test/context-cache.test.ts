@@ -69,11 +69,11 @@ describe('compiler context cache', () => {
     // 回归保护：
     // 当同一进程里连续构建多个项目，且 options 隐式/一致时，
     // cache 仍必须按 runtime package scope 隔离，防止 Tailwind context 串用。
-    const firstProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3')
+    const firstProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v4')
     const secondProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v4')
 
     process.env['npm_package_json'] = path.join(firstProject, 'package.json')
-    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3'
+    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4'
     const ctxA = getCompilerContext()
 
     process.env['npm_package_json'] = path.join(secondProject, 'package.json')
@@ -86,14 +86,14 @@ describe('compiler context cache', () => {
   })
 
   it('reuses context across runtime package scope changes when tailwindcssBasedir is explicit', () => {
-    const firstProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v3')
+    const firstProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v4')
     const secondProject = path.resolve(process.cwd(), 'demo/uni-app-vite-tailwindcss-v4')
     const options = {
       tailwindcssBasedir: firstProject,
     }
 
     process.env['npm_package_json'] = path.join(firstProject, 'package.json')
-    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3'
+    process.env['PNPM_PACKAGE_NAME'] = '@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4'
     const ctxA = getCompilerContext(options)
 
     process.env['npm_package_json'] = path.join(secondProject, 'package.json')

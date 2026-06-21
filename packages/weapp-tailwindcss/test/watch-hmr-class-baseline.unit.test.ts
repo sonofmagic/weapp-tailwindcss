@@ -51,7 +51,7 @@ describe('watch-hmr class baseline', () => {
       stop: vi.fn(async () => {}),
     }
     const watchCase = {
-      label: 'demo/uni-app-vite-tailwindcss-v3',
+      label: 'demo/uni-app-vite-tailwindcss-v4',
       outputWxml,
       outputJs,
     } as WatchCase

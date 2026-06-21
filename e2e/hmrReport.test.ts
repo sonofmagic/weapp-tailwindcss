@@ -8,14 +8,14 @@ describe('hmr full run report', () => {
   it('summarizes hot-update timings by app and platform', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-hmr-report-'))
     try {
-      const reportFile = path.join(root, 'weapp-vite-tailwindcss-v3.json')
+      const reportFile = path.join(root, 'weapp-vite-tailwindcss-v4.json')
       await writeFile(reportFile, JSON.stringify({
         hmrDurations: {
           byProject: {
-            'weapp-vite-tailwindcss-v3': {
-              name: 'weapp-vite-tailwindcss-v3',
-              label: 'weapp vite Tailwind v3',
-              project: 'weapp-vite-tailwindcss-v3',
+            'weapp-vite-tailwindcss-v4': {
+              name: 'weapp-vite-tailwindcss-v4',
+              label: 'weapp vite Tailwind v4',
+              project: 'weapp-vite-tailwindcss-v4',
               projectGroup: 'demo',
               initialReadyMs: 1000,
               totalMs: 3000,
@@ -32,7 +32,7 @@ describe('hmr full run report', () => {
         generatedAt: '2026-06-15T00:00:00.000Z',
         repositoryRoot: root,
         targetNames: ['demo'],
-        reports: [{ caseName: 'weapp-vite-tailwindcss-v3', reportFile }],
+        reports: [{ caseName: 'weapp-vite-tailwindcss-v4', reportFile }],
       })
 
       expect(report.totalCases).toBe(1)
@@ -40,17 +40,17 @@ describe('hmr full run report', () => {
       expect(report.timingCount).toBe(2)
       expect(report.summary).toEqual({ count: 2, avgMs: 100, minMs: 80, maxMs: 120, p50Ms: 80, p95Ms: 120 })
       expect(report.pluginProcessSummary).toEqual({ count: 2, avgMs: 10, minMs: 8, maxMs: 12, p50Ms: 8, p95Ms: 12 })
-      expect(report.byApp['weapp-vite-tailwindcss-v3']?.platforms['weapp']).toEqual(report.summary)
+      expect(report.byApp['weapp-vite-tailwindcss-v4']?.platforms['weapp']).toEqual(report.summary)
       expect(report.byPlatform['weapp']).toEqual(report.summary)
       expect(report.cases[0]).toMatchObject({
-        caseName: 'weapp-vite-tailwindcss-v3',
-        project: 'weapp-vite-tailwindcss-v3',
+        caseName: 'weapp-vite-tailwindcss-v4',
+        project: 'weapp-vite-tailwindcss-v4',
         platform: 'weapp',
         framework: 'weapp-vite',
         builder: 'vite',
         tailwindcss: 'v3',
         sourceShape: 'native',
-        reportFile: 'weapp-vite-tailwindcss-v3.json',
+        reportFile: 'weapp-vite-tailwindcss-v4.json',
         initialReadyMs: 1000,
         totalMs: 3000,
         pluginProcessSummary: { count: 2, avgMs: 10, minMs: 8, maxMs: 12, p50Ms: 8, p95Ms: 12 },
@@ -172,14 +172,14 @@ describe('hmr full run report', () => {
   it('resolves uni-app full-run HMR to the mp-weixin platform from the hot-update command', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-hmr-report-'))
     try {
-      const reportFile = path.join(root, 'uni-app-vite-tailwindcss-v3.json')
+      const reportFile = path.join(root, 'uni-app-vite-tailwindcss-v4.json')
       await writeFile(reportFile, JSON.stringify({
         hmrDurations: {
           byProject: {
-            'uni-app-vite-tailwindcss-v3': {
-              name: 'uni-app-vite-tailwindcss-v3',
-              label: 'uni-app vite Tailwind v3',
-              project: 'uni-app-vite-tailwindcss-v3',
+            'uni-app-vite-tailwindcss-v4': {
+              name: 'uni-app-vite-tailwindcss-v4',
+              label: 'uni-app vite Tailwind v4',
+              project: 'uni-app-vite-tailwindcss-v4',
               projectGroup: 'demo',
               initialReadyMs: 1000,
               totalMs: 3000,
@@ -193,11 +193,11 @@ describe('hmr full run report', () => {
         generatedAt: '2026-06-15T00:00:00.000Z',
         repositoryRoot: root,
         targetNames: ['demo'],
-        reports: [{ caseName: 'uni-app-vite-tailwindcss-v3', reportFile }],
+        reports: [{ caseName: 'uni-app-vite-tailwindcss-v4', reportFile }],
       })
 
       expect(report.cases[0]?.platform).toBe('mp-weixin')
-      expect(report.byApp['uni-app-vite-tailwindcss-v3']?.platforms['mp-weixin']).toEqual(report.summary)
+      expect(report.byApp['uni-app-vite-tailwindcss-v4']?.platforms['mp-weixin']).toEqual(report.summary)
     }
     finally {
       await rm(root, { force: true, recursive: true })

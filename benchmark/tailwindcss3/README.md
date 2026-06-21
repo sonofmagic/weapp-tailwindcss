@@ -1,6 +1,6 @@
 # tailwindcss3 性能对比
 
-聚焦 tailwindcss v3 生态下的运行时性能，涵盖 upstream 与小程序增强版的 merge / variants 封装。
+聚焦 tailwindcss v3 生态下的 upstream 运行时性能，涵盖 merge / variants 封装。
 
 ## 运行
 
@@ -14,4 +14,3 @@ pnpm --filter benchmark-tailwindcss3 bench
 需要的依赖：
 
 - `tailwind-merge@2.x`、`tailwind-variants@0.x`
-- Workspace 内的 `@weapp-tailwindcss/merge-v3`、`tailwind-variant-v3`、`@weapp-tailwindcss/variants-v3`

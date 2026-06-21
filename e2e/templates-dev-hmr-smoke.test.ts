@@ -48,9 +48,7 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
     expectedOutput: 'HMR',
   },
   ...[
-    'taro-react-tailwind-vscode-template',
     'taro-vite-tailwindcss-v4',
-    'taro-vue3-tailwind-vscode-template',
     'taro-webpack-tailwindcss-v4',
   ].map<TemplateDevHmrCase>(template => ({
     name: `${template} weapp dev hmr`,
@@ -80,7 +78,6 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
   })),
   ...[
     'uni-app-tailwindcss-v4',
-    'uni-app-vite-vue3-tailwind-vscode-template',
   ].map<TemplateDevHmrCase>(template => ({
     name: `${template} mp-weixin dev hmr`,
     template,
@@ -105,7 +102,6 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
     expectedOutput: 'HMR',
   })),
   ...[
-    'uni-app-vue2-tailwind-vscode-template',
     'uni-app-webpack-tailwindcss-v4',
   ].map<TemplateDevHmrCase>(template => ({
     name: `${template} mp-weixin dev hmr`,
@@ -114,12 +110,8 @@ const templateDevHmrCases: TemplateDevHmrCase[] = [
     devScript: 'dev:mp-weixin',
     sourceFile: 'src/pages/index/index.vue',
     outputFiles: ['dist/dev/mp-weixin/pages/index/index.wxml', 'dist/dev/mp-weixin/pages/index/index.js', 'dist/dev/mp-weixin/app.wxss'],
-    sourceNeedle: template === 'uni-app-vue2-tailwind-vscode-template'
-      ? '旧项目也能拥有清爽原子样式'
-      : 'webpack 工程里的轻量原子样式',
-    replacement: template === 'uni-app-vue2-tailwind-vscode-template'
-      ? '旧项目也能拥有清爽原子样式 HMR'
-      : 'webpack 工程里的轻量原子样式 HMR',
+    sourceNeedle: 'webpack 工程里的轻量原子样式',
+    replacement: 'webpack 工程里的轻量原子样式 HMR',
     expectedOutput: 'HMR',
   })),
 ]

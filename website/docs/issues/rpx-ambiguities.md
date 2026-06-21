@@ -88,7 +88,7 @@ keywords:
 
 ## 目前插件的解决方案
 
-目前 `weapp-tailwindcss@5` 的生成模式会在构建运行时处理 Tailwind CSS 3.x / 4.x 的候选类名与小程序单位兼容，不需要再执行 `weapp-tw patch`。
+目前 `weapp-tailwindcss@5` 的生成模式会在构建运行时处理 Tailwind CSS 4 的候选类名与小程序单位兼容，不需要再执行 `weapp-tw patch`。
 
 如果你仍然在旧项目里看到 `postinstall: "weapp-tw patch"`，可以直接删除。当前 `weapp-tw patch` 只是兼容旧脚本的提示命令。
 

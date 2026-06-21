@@ -3,7 +3,7 @@ import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, fs, getWebpackLoaderRuntime, mkdir, mkdtemp, os, path, rm, testState, WeappTailwindcss, writeFile } from './shared'
 describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => {
   setupWebpackV5UnitTest()
-  it('scopes webpack Tailwind v3 subpackage css generation to each config content entry', async () => {
+  it('scopes webpack Tailwind v4 subpackage css generation to each config content entry', async () => {
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-subpackage-'))
     const srcDir = path.join(dir, 'src')
     const appCss = path.join(srcDir, 'app.wxss')
@@ -258,7 +258,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
     }
   })
 
-  it('does not merge main runtime candidates into webpack Tailwind v3 subpackage css', async () => {
+  it('does not merge main runtime candidates into webpack Tailwind v4 subpackage css', async () => {
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-subpackage-runtime-'))
     const srcDir = path.join(dir, 'src')
     const subNormalCss = path.join(srcDir, 'sub-normal/pages/index.css')

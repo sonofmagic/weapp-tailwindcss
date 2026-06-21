@@ -46,7 +46,7 @@ async function createTailwindV4FixtureRoot() {
 }
 
 describe('generator web parity', () => {
-  it('keeps Tailwind v3 web output identical to tailwindcss v3', async () => {
+  it('keeps Tailwind v4 web output identical to tailwindcss v3', async () => {
     expect(tailwindcssV3Version.startsWith('3.')).toBe(true)
 
     const config = {

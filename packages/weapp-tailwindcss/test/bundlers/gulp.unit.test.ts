@@ -376,7 +376,7 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
-  it('scopes gulp Tailwind v3 subpackage css generation to each config content entry', async () => {
+  it('scopes gulp Tailwind v4 subpackage css generation to each config content entry', async () => {
     tailwindRuntime.majorVersion = 3
     runtimeSet = new Set(['app-only', 'normal-only', 'independent-only'])
     tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
@@ -608,7 +608,7 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
-  it('refreshes gulp Tailwind v3 css source candidates after wxml updates', async () => {
+  it('refreshes gulp Tailwind v4 css source candidates after wxml updates', async () => {
     tailwindRuntime.majorVersion = 3
     runtimeSet = new Set(['app-before', 'app-after'])
     tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)

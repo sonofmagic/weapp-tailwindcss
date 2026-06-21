@@ -1,22 +1,5 @@
 import type { MultiplatformTarget } from './types'
 
-const uniAppV3Platforms = [
-  'app-android',
-  'app-ios',
-  'h5',
-  'h5:ssr',
-  'mp-alipay',
-  'mp-baidu',
-  'mp-kuaishou',
-  'mp-lark',
-  'mp-qq',
-  'mp-toutiao',
-  'mp-weixin',
-  'quickapp-webview',
-  'quickapp-webview-huawei',
-  'quickapp-webview-union',
-]
-
 const uniAppV4Platforms = [
   'app-android',
   'app-ios',
@@ -46,19 +29,6 @@ const taroVitePlatforms = [
   'qq',
   'jd',
   'harmony-hybrid',
-]
-
-const taroWebpackV3Platforms = [
-  'weapp',
-  'swan',
-  'alipay',
-  'tt',
-  'h5',
-  'rn',
-  'qq',
-  'jd',
-  'harmony-hybrid',
-  'quickapp',
 ]
 
 const taroWebpackV4Platforms = [
@@ -192,22 +162,13 @@ function createUniAppXTargets(project: string): MultiplatformTarget[] {
 }
 
 export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
-  ...createGulpTargets('gulp-tailwindcss-v3'),
   ...createGulpTargets('gulp-tailwindcss-v4'),
-  ...createUniAppTargets('uni-app-vite-tailwindcss-v3', uniAppV3Platforms),
   ...createUniAppTargets('uni-app-vite-tailwindcss-v4', uniAppV4Platforms),
-  ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v3'),
   ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'),
-  ...createTaroTargets('taro-vite-react-tailwindcss-v3', taroVitePlatforms),
   ...createTaroTargets('taro-vite-react-tailwindcss-v4', taroVitePlatforms),
-  ...createTaroTargets('taro-vite-vue3-tailwindcss-v3', taroVitePlatforms),
   ...createTaroTargets('taro-vite-vue3-tailwindcss-v4', taroVitePlatforms),
-  ...createTaroTargets('taro-webpack-react-tailwindcss-v3', taroWebpackV3Platforms),
   ...createTaroTargets('taro-webpack-react-tailwindcss-v4', taroWebpackV4Platforms),
-  ...createTaroTargets('taro-webpack-vue3-tailwindcss-v3', taroWebpackV3Platforms),
   ...createTaroTargets('taro-webpack-vue3-tailwindcss-v4', taroWebpackV4Platforms),
-  ...createMpxTargets('mpx-tailwindcss-v3'),
   ...createMpxTargets('mpx-tailwindcss-v4'),
-  ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v3'),
   ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v4'),
 ]

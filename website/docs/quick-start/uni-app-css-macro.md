@@ -70,33 +70,9 @@ uni-app 本身支持 CSS 条件编译：
 - 常规集成不需要手动注册 `weapp-tailwindcss/css-macro/postcss`。
 - 旧版伪 `@media (weapp-tw-platform:...)` 输出仍由 PostCSS 入口兼容处理，方便存量自定义流程迁移。
 
-## Tailwind CSS v3
+## Tailwind CSS 3 旧项目
 
-在 `tailwind.config.js` 中注册插件：
-
-```js
-const cssMacro = require('weapp-tailwindcss/css-macro')
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ['./src/**/*.{vue,js,ts,jsx,tsx}'],
-  plugins: [
-    cssMacro(),
-  ],
-}
-```
-
-然后直接使用动态变体：
-
-```html
-<view class="ifdef-[MP-WEIXIN]:bg-blue-500 ifndef-[MP-WEIXIN]:bg-red-500">
-  css-macro
-</view>
-```
-
-:::tip
-动态变体依赖 Tailwind 的 `matchVariant`。Tailwind CSS v3 项目请使用 `tailwindcss >= 3.2`。
-:::
+当前文档站不再维护 Tailwind CSS 3 的 css-macro 接入内容。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## Tailwind CSS v4
 
@@ -119,41 +95,25 @@ v4 场景下，`weapp-tailwindcss` 会扫描入口 CSS 中的 `@plugin "weapp-ta
 
 ## 自定义平台别名
 
-如果默认的 `ifdef-[...]` / `ifndef-[...]` 太长，可以通过 `variantsMap` 定义静态别名：
+如果默认的 `ifdef-[...]` / `ifndef-[...]` 太长，可以通过 `@plugin` 的 `variantsMap` 定义静态别名：
 
-```js
-const cssMacro = require('weapp-tailwindcss/css-macro')
-
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  plugins: [
-    cssMacro({
-      variantsMap: {
-        wx: 'MP-WEIXIN',
-        '-wx': {
-          value: 'MP-WEIXIN',
-          negative: true,
-        },
-        mv: {
-          value: 'H5 || MP-WEIXIN',
-        },
-        '-mv': {
-          value: 'H5 || MP-WEIXIN',
-          negative: true,
-        },
-      },
-    }),
-  ],
+```css
+@import "tailwindcss";
+@plugin "weapp-tailwindcss/css-macro" {
+  variantsMap: {
+    wx: "MP-WEIXIN";
+    mv: "H5 || MP-WEIXIN";
+  }
 }
 ```
 
 对应用法：
 
 ```html
-<view class="wx:bg-blue-400 -wx:bg-red-400">
+<view class="wx:bg-blue-400 ifndef-[MP-WEIXIN]:bg-red-400">
   微信小程序蓝色，非微信小程序红色
 </view>
-<view class="mv:text-blue-400 -mv:text-gray-500">
+<view class="mv:text-blue-400 ifndef-[H5||MP-WEIXIN]:text-gray-500">
   H5 或微信小程序蓝色，其它平台灰色
 </view>
 ```
@@ -163,7 +123,7 @@ module.exports = {
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | `dynamic` | `boolean` | `true` | 是否注册 `ifdef-[...]` / `ifndef-[...]` 动态变体 |
-| `variantsMap` | `Record<string, string | { value: string, negative?: boolean }>` | `{}` | 注册静态平台别名；`negative: true` 表示生成 `#ifndef` |
+| `variantsMap` | `Record<string, string>` | `{}` | 注册静态平台别名 |
 
 ## 平台表达式
 
@@ -224,11 +184,6 @@ plugins: [
 ```
 
 保留 Tailwind 侧声明即可：
-
-```js
-// Tailwind CSS v3
-plugins: [cssMacro()]
-```
 
 ```css
 /* Tailwind CSS v4 */

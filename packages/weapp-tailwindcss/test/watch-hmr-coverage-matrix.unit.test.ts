@@ -38,9 +38,7 @@ const demoPackageProjects = readdirSync(join(repoRoot, 'demo'), { withFileTypes:
   .sort()
 // HBuilderX 项目依赖本机 IDE 验证，不进入 CI 的通用 watch 回归矩阵。
 const localOnlyDemoProjects = new Set([
-  'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
   'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-  'demo/uni-app-x-hbuilderx-tailwindcss-v3',
   'demo/uni-app-x-hbuilderx-tailwindcss-v4',
 ])
 const automatedWatchDemoPackageProjects = demoPackageProjects
@@ -301,9 +299,7 @@ describe('watch-hmr coverage matrix', () => {
 
       expect(relaxedCases).toEqual([
         'taro-webpack-react-tailwindcss-v4',
-        'uni-app-vite-vue3-hbuilderx-tailwindcss-v3',
         'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-        'uni-app-x-hbuilderx-tailwindcss-v3',
         'uni-app-x-hbuilderx-tailwindcss-v4',
       ])
     }
@@ -362,10 +358,10 @@ describe('watch-hmr coverage matrix', () => {
   })
 
   it('keeps demo source boundary checks portable on Windows paths', () => {
-    expectDemoSourceFile('D:\\repo\\demo\\gulp-tailwindcss-v3\\src\\pages\\index\\index.wxml', 'windows demo path')
+    expectDemoSourceFile('D:\\repo\\demo\\gulp-tailwindcss-v4\\src\\pages\\index\\index.wxml', 'windows demo path')
 
     expect(() => {
-      expectDemoSourceFile('D:\\repo\\demo\\gulp-tailwindcss-v3\\dist\\pages\\index\\index.wxml', 'windows dist path')
+      expectDemoSourceFile('D:\\repo\\demo\\gulp-tailwindcss-v4\\dist\\pages\\index\\index.wxml', 'windows dist path')
     }).toThrow()
   })
 
@@ -405,13 +401,14 @@ describe('watch-hmr coverage matrix', () => {
   })
 
   it('keeps the mpx script-only added-class regression guarded by global wxss output', () => {
-    const mpxCase = automatedWatchCases.find(item => item.project === 'demo/mpx-tailwindcss-v3')
+    const mpxCase = automatedWatchCases.find(item => item.project === 'demo/mpx-tailwindcss-v4')
 
     expect(mpxCase).toBeDefined()
     expect(mpxCase?.scriptMutation.verifyClassLiteralIn).toContain('js')
-    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('utilities*.wxss'))).toBe(true)
-    expect(mpxCase?.minGlobalStyleEscapedClasses).toBeGreaterThanOrEqual(1)
-    expect(mpxCase?.requireInitialCompileSuccess).toBe(true)
+    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('styles/app*.wxss'))).toBe(true)
+    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('styles/index*.wxss'))).toBe(true)
+    expect(mpxCase?.minGlobalStyleEscapedClasses).toBeUndefined()
+    expect(mpxCase?.requireInitialCompileSuccess).toBeUndefined()
     expect(mpxCase?.initialMutationDelayMs).toBe(15_000)
   })
 

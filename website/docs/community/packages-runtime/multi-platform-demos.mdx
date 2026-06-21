@@ -21,7 +21,7 @@ keywords:
   - rax
 ---
 
-本页示例统一以 **Tailwind v4** 为主线（`@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`）。如果你的项目仍是 Tailwind v3，请将 `merge/variants` 替换为 `merge-v3/variants-v3`。
+本页示例统一以 **Tailwind v4** 为主线（`@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`）。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## Demo 1：uni-app + Web（Vue + TS）
 
@@ -148,7 +148,7 @@ export function CardWeb() {
 ### 注意事项
 
 - `process.env.TARO_ENV` 在构建期注入，适用于 H5/小程序的条件切换。
-- 若你使用 Tailwind v3，请切换为 `@weapp-tailwindcss/variants-v3`。
+- 若你必须继续使用 Tailwind v3，请使用 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## 扩展方向
 

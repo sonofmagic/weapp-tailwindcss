@@ -3,7 +3,7 @@
   "repositoryRoot": "/Users/yangqiming/Documents/GitHub/weapp-tailwindcss-codex/hmr-memory",
   "cases": [
     {
-      "name": "gulp-tailwindcss-v3",
+      "name": "gulp-tailwindcss-v4",
       "framework": "gulp",
       "builder": "gulp",
       "tailwindcss": "v3",
@@ -17,7 +17,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/gulp-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/gulp-tailwindcss-v4",
             "run",
             "build"
           ],
@@ -73,7 +73,7 @@
           "startedAt": "2026-06-17T12:49:08.619Z",
           "endedAt": "2026-06-17T12:49:14.101Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/gulp-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/gulp-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -410,7 +410,7 @@
           "startedAt": "2026-06-17T12:49:14.102Z",
           "endedAt": "2026-06-17T12:50:05.756Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/gulp-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/gulp-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -837,7 +837,7 @@
       ]
     },
     {
-      "name": "mpx-tailwindcss-v3",
+      "name": "mpx-tailwindcss-v4",
       "framework": "mpx",
       "builder": "webpack5",
       "tailwindcss": "v3",
@@ -851,7 +851,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/mpx-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/mpx-tailwindcss-v4",
             "run",
             "build"
           ],
@@ -931,7 +931,7 @@
           "startedAt": "2026-06-17T12:51:02.382Z",
           "endedAt": "2026-06-17T12:51:12.021Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/mpx-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/mpx-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -1520,7 +1520,7 @@
           "startedAt": "2026-06-17T12:51:12.022Z",
           "endedAt": "2026-06-17T12:52:46.093Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/mpx-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/mpx-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -2553,7 +2553,7 @@
       ]
     },
     {
-      "name": "taro-vite-react-tailwindcss-v3",
+      "name": "taro-vite-react-tailwindcss-v4",
       "framework": "taro-react",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -2567,7 +2567,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/taro-vite-react-tailwindcss-v4",
             "run",
             "build:weapp"
           ],
@@ -2629,7 +2629,7 @@
           "startedAt": "2026-06-17T12:55:38.787Z",
           "endedAt": "2026-06-17T12:55:45.016Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-react-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-react-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -4274,7 +4274,7 @@
           "startedAt": "2026-06-17T12:55:45.016Z",
           "endedAt": "2026-06-17T13:00:14.823Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-react-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-react-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -6039,7 +6039,7 @@
       ]
     },
     {
-      "name": "taro-vite-vue3-tailwindcss-v3",
+      "name": "taro-vite-vue3-tailwindcss-v4",
       "framework": "taro-vue3",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -6053,7 +6053,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v4",
             "run",
             "build:weapp"
           ],
@@ -6097,7 +6097,7 @@
           "startedAt": "2026-06-17T13:04:54.762Z",
           "endedAt": "2026-06-17T13:04:58.176Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-vue3-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-vue3-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -7700,7 +7700,7 @@
           "startedAt": "2026-06-17T13:04:58.176Z",
           "endedAt": "2026-06-17T13:09:20.706Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-vue3-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-vite-vue3-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -9339,7 +9339,7 @@
       ]
     },
     {
-      "name": "taro-webpack-react-tailwindcss-v3",
+      "name": "taro-webpack-react-tailwindcss-v4",
       "framework": "taro-react",
       "builder": "webpack5",
       "tailwindcss": "v3",
@@ -9353,7 +9353,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4",
             "run",
             "build:weapp"
           ],
@@ -9433,7 +9433,7 @@
           "startedAt": "2026-06-17T13:13:39.558Z",
           "endedAt": "2026-06-17T13:13:49.188Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-react-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-react-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -12050,7 +12050,7 @@
           "startedAt": "2026-06-17T13:13:49.189Z",
           "endedAt": "2026-06-17T13:21:01.598Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-react-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-react-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -15645,7 +15645,7 @@
       ]
     },
     {
-      "name": "taro-webpack-vue3-tailwindcss-v3",
+      "name": "taro-webpack-vue3-tailwindcss-v4",
       "framework": "taro-vue3",
       "builder": "webpack5",
       "tailwindcss": "v3",
@@ -15659,7 +15659,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/taro-webpack-vue3-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/taro-webpack-vue3-tailwindcss-v4",
             "run",
             "build:weapp"
           ],
@@ -15721,7 +15721,7 @@
           "startedAt": "2026-06-17T16:19:09.827Z",
           "endedAt": "2026-06-17T16:19:15.904Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-vue3-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-vue3-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -18320,7 +18320,7 @@
           "startedAt": "2026-06-17T16:19:15.905Z",
           "endedAt": "2026-06-17T16:26:24.408Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-vue3-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/taro-webpack-vue3-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -21699,7 +21699,7 @@
       ]
     },
     {
-      "name": "uni-app-vite-tailwindcss-v3",
+      "name": "uni-app-vite-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -21713,7 +21713,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/uni-app-vite-tailwindcss-v4",
             "run",
             "build:mp-weixin"
           ],
@@ -21739,7 +21739,7 @@
           "startedAt": "2026-06-17T16:30:49.477Z",
           "endedAt": "2026-06-17T16:30:49.954Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/uni-app-vite-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/uni-app-vite-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -22832,7 +22832,7 @@
           "startedAt": "2026-06-17T16:30:49.954Z",
           "endedAt": "2026-06-17T16:33:48.081Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/uni-app-vite-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/uni-app-vite-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
@@ -23385,7 +23385,7 @@
       ]
     },
     {
-      "name": "uni-app-vite-vue3-hbuilderx-tailwindcss-v3",
+      "name": "uni-app-vite-vue3-hbuilderx-tailwindcss-v4",
       "framework": "uni-app",
       "builder": "vite-hbuilderx",
       "tailwindcss": "v3",
@@ -23487,7 +23487,7 @@
       ]
     },
     {
-      "name": "uni-app-x-hbuilderx-tailwindcss-v3",
+      "name": "uni-app-x-hbuilderx-tailwindcss-v4",
       "framework": "uni-app-x",
       "builder": "hbuilderx",
       "tailwindcss": "v3",
@@ -23589,7 +23589,7 @@
       ]
     },
     {
-      "name": "weapp-vite-tailwindcss-v3",
+      "name": "weapp-vite-tailwindcss-v4",
       "framework": "weapp-vite",
       "builder": "vite",
       "tailwindcss": "v3",
@@ -23603,7 +23603,7 @@
           "command": [
             "pnpm",
             "--filter",
-            "@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v3",
+            "@weapp-tailwindcss-demo/weapp-vite-tailwindcss-v4",
             "run",
             "build"
           ],
@@ -23659,7 +23659,7 @@
           "startedAt": "2026-06-17T16:35:05.545Z",
           "endedAt": "2026-06-17T16:35:11.473Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/weapp-vite-tailwindcss-v3-build.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/weapp-vite-tailwindcss-v4-build.json"
         },
         {
           "stage": "hmr",
@@ -24050,7 +24050,7 @@
           "startedAt": "2026-06-17T16:35:11.474Z",
           "endedAt": "2026-06-17T16:36:11.718Z",
           "exitCode": 0,
-          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/weapp-vite-tailwindcss-v3-hmr.json"
+          "reportFile": "e2e/benchmark/demo-weapp-memory/raw/weapp-vite-tailwindcss-v4-hmr.json"
         }
       ],
       "recommendations": [
