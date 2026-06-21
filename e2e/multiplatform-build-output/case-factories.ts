@@ -56,7 +56,7 @@ export function uniAppH5Case(options: {
     command: ['pnpm', 'run', 'build:h5'],
     outputDir: 'dist/build/h5',
     requiredFiles: ['dist/build/h5/index.html'],
-    styleFiles: ['dist/build/h5/assets'],
+    styleFiles: ['dist/build/h5'],
     styleFileExtensions: ['.css'],
     textFiles: ['dist/build/h5/index.html'],
     styleContains: options.styleContains,

@@ -160,14 +160,12 @@ export function shouldScanTailwindV4Sources(
 
 export function shouldAppendWebBundleCssFallback(
   target: string,
-  options: {
+  _options: {
     hasSourceDirectives: boolean
     hasMatchedCssSourceFile: boolean
   },
 ) {
   return target === 'web'
-    && !options.hasMatchedCssSourceFile
-    && !options.hasSourceDirectives
 }
 
 export function isEmptyCssSourceOrderParts(parts: {

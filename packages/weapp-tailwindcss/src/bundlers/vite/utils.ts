@@ -10,10 +10,15 @@ export function slash(p: string): string {
 
 export const isWindows = process.platform === 'win32'
 
-const cssLangs = `\\.(css|less|sass|scss|styl|stylus|pcss|postcss)($|\\?)`
+const cssLangs = `\\.(?:css|less|sass|scss|styl|stylus|pcss|postcss)(?:$|\\?)`
 export const cssLangRE = new RegExp(cssLangs)
+const htmlLangRE = /\.html?(?:$|\?)/
 export function isCSSRequest(request: string): boolean {
   return cssLangRE.test(request) || isSourceStyleRequest(request)
+}
+
+export function isHTMLRequest(request: string): boolean {
+  return htmlLangRE.test(request)
 }
 
 export function normalizePath(id: string): string {

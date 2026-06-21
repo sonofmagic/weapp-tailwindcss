@@ -122,7 +122,7 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     useIncrementalMode,
   } = options
   if (cssTaskFactories.length > 0) {
-    const cssConcurrency = resolveViteCssTaskConcurrency(useIncrementalMode)
+    const cssConcurrency = resolveViteCssTaskConcurrency(useIncrementalMode, runtimeState.tailwindRuntime.majorVersion)
     tasks.push(runWithConcurrency(cssTaskFactories, cssConcurrency).then(() => undefined))
   }
 

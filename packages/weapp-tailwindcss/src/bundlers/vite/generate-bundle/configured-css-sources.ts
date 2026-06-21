@@ -21,6 +21,7 @@ export function collectConfiguredTailwindV4CssSourceEntries(
   fallbackBase: string,
 ) {
   const entries: ConfiguredCssSourceEntry[] = []
+  const seen = new Set<string>()
   for (const cssSource of collectConfiguredTailwindV4CssSources(opts)) {
     if (typeof cssSource.css !== 'string' || cssSource.css.length === 0) {
       continue
@@ -29,8 +30,14 @@ export function collectConfiguredTailwindV4CssSourceEntries(
     const file = typeof cssSource.file === 'string' && cssSource.file.length > 0
       ? cssSource.file
       : path.join(base, 'tailwind.css')
+    const resolvedFile = path.isAbsolute(file) ? path.resolve(file) : path.resolve(base, file)
+    const key = `${resolvedFile}\0${cssSource.css}`
+    if (seen.has(key)) {
+      continue
+    }
+    seen.add(key)
     entries.push({
-      file: path.isAbsolute(file) ? path.resolve(file) : path.resolve(base, file),
+      file: resolvedFile,
       source: cssSource.css,
     })
   }

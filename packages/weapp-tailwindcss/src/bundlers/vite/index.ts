@@ -48,7 +48,7 @@ import { createSourceCandidateCollector, createTailwindV3DefaultExtractor, isSou
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
 import { resolveImplicitTailwindcssBasedirFromViteRoot } from './tailwind-basedir'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
-import { cleanUrl, slash } from './utils'
+import { cleanUrl, isCSSRequest, isHTMLRequest, slash } from './utils'
 import { resolveWeappViteSourceRoot } from './weapp-vite-config'
 
 const debug = createDebug()
@@ -659,6 +659,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     await runtimeState.readyPromise
     await waitForSourceCandidateSyncs()
     const file = cleanUrl(id)
+    if (!isCSSRequest(file) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
+      return undefined
+    }
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget

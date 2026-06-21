@@ -1,9 +1,11 @@
 import type { BundleSnapshot } from '../bundle-state'
 import type { SourceCandidateFilterOptions } from '../source-candidates'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
+import path from 'node:path'
 import { collectMiniProgramSubpackageSourceEntries, isSubpackageOutputFile } from './subpackages'
 
 interface CreateSubpackageSourceCandidateScopeOptions {
+  cssSourceFiles?: Iterable<string> | undefined
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Set<string>) | undefined
   getSourceCandidateSourcesForEntries?: ((entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) => Map<string, Set<string>>) | undefined
   projectRoot?: string | undefined
@@ -42,12 +44,61 @@ function intersectCandidateSourceMaps(left: Map<string, Set<string>>, right: Map
   return matched
 }
 
+function normalizeSourceFile(file: string) {
+  return path.resolve(file.replace(/[?#].*$/, ''))
+}
+
+function resolveSubpackageSourceRootFromFile(file: string, subpackageRoot: string) {
+  const normalizedFile = normalizeSourceFile(file).split(path.sep).join('/')
+  const normalizedRoot = subpackageRoot.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '')
+  if (!normalizedRoot) {
+    return undefined
+  }
+  const rootSegment = `/${normalizedRoot}/`
+  const rootIndex = normalizedFile.lastIndexOf(rootSegment)
+  if (rootIndex < 0) {
+    return undefined
+  }
+  return normalizedFile.slice(0, rootIndex)
+}
+
+function collectSubpackageSourceRootsFromCssSources(
+  cssSourceFiles: Iterable<string> | undefined,
+  subpackageRoots: Set<string> | undefined,
+) {
+  const sourceRootsByPackageRoot = new Map<string, Set<string>>()
+  if (!cssSourceFiles || !subpackageRoots) {
+    return sourceRootsByPackageRoot
+  }
+  for (const file of cssSourceFiles) {
+    if (typeof file !== 'string' || file.length === 0) {
+      continue
+    }
+    for (const root of subpackageRoots) {
+      const sourceRoot = resolveSubpackageSourceRootFromFile(file, root)
+      if (!sourceRoot) {
+        continue
+      }
+      const roots = sourceRootsByPackageRoot.get(root) ?? new Set<string>()
+      roots.add(sourceRoot)
+      sourceRootsByPackageRoot.set(root, roots)
+    }
+  }
+  return sourceRootsByPackageRoot
+}
+
+function flattenSourceRoots(sourceRootsByPackageRoot: Map<string, Set<string>>) {
+  return [...new Set([...sourceRootsByPackageRoot.values()].flatMap(roots => [...roots]))]
+}
+
 export function createSubpackageSourceCandidateScope(options: CreateSubpackageSourceCandidateScopeOptions) {
+  const cssSourceRootsByPackageRoot = collectSubpackageSourceRootsFromCssSources(options.cssSourceFiles, options.subpackageRoots)
   const subpackageSourceExcludeEntries = options.subpackageRoots
     ? collectMiniProgramSubpackageSourceEntries(options.snapshot, options.subpackageRoots, [
         options.rootDir,
         options.tailwindcssBasedir,
         options.projectRoot,
+        ...flattenSourceRoots(cssSourceRootsByPackageRoot),
       ])
     : []
 
@@ -65,6 +116,14 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
     const root = matchedRoots[0]
     if (!root) {
       return undefined
+    }
+    const configuredSourceRoots = cssSourceRootsByPackageRoot.get(root)
+    if (configuredSourceRoots?.size === 1) {
+      return [{
+        base: [...configuredSourceRoots][0]!,
+        negated: false,
+        pattern: `${root}/**/*`,
+      }]
     }
     return options.sourceRoot
       ? [{

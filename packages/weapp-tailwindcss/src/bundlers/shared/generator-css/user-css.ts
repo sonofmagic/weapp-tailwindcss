@@ -18,6 +18,231 @@ const TAILWIND_V4_GENERATOR_AT_RULES = new Set([
   'variant',
 ])
 
+function removeBalancedAtRuleBlock(source: string, atRuleStart: number) {
+  const blockStart = source.indexOf('{', atRuleStart)
+  if (blockStart === -1) {
+    const semicolon = source.indexOf(';', atRuleStart)
+    return semicolon === -1 ? source.slice(0, atRuleStart) : `${source.slice(0, atRuleStart)}${source.slice(semicolon + 1)}`
+  }
+  let depth = 0
+  for (let index = blockStart; index < source.length; index++) {
+    const char = source[index]
+    if (char === '{') {
+      depth++
+      continue
+    }
+    if (char !== '}') {
+      continue
+    }
+    depth--
+    if (depth === 0) {
+      return `${source.slice(0, atRuleStart)}${source.slice(index + 1)}`
+    }
+  }
+  return source.slice(0, atRuleStart)
+}
+
+function removeTailwindV4GeneratorAtRulesFallback(source: string) {
+  let next = source
+  let changed = false
+  const sourceMediaRE = /@media\s+source\([^)]*\)\s*\{/g
+  for (;;) {
+    sourceMediaRE.lastIndex = 0
+    const match = sourceMediaRE.exec(next)
+    if (!match) {
+      break
+    }
+    next = removeBalancedAtRuleBlock(next, match.index)
+    changed = true
+  }
+  const atRuleRE = /@(?:config|custom-variant|plugin|source|theme|utility|variant)\b/g
+  for (;;) {
+    atRuleRE.lastIndex = 0
+    const match = atRuleRE.exec(next)
+    if (!match) {
+      break
+    }
+    next = removeBalancedAtRuleBlock(next, match.index)
+    changed = true
+  }
+  return changed ? next : source
+}
+
+function removeTailwindSourceMediaBlocks(source: string) {
+  let next = source
+  let changed = false
+  const sourceMediaRE = /@media\s+source\([^)]*\)\s*\{/g
+  for (;;) {
+    sourceMediaRE.lastIndex = 0
+    const match = sourceMediaRE.exec(next)
+    if (!match) {
+      break
+    }
+    const blockStart = next.indexOf('{', match.index)
+    if (blockStart === -1) {
+      break
+    }
+    let depth = 0
+    let blockEnd = -1
+    for (let index = blockStart; index < next.length; index++) {
+      const char = next[index]
+      if (char === '{') {
+        depth++
+        continue
+      }
+      if (char !== '}') {
+        continue
+      }
+      depth--
+      if (depth === 0) {
+        blockEnd = index
+        break
+      }
+    }
+    if (blockEnd === -1) {
+      break
+    }
+    next = `${next.slice(0, match.index)}${next.slice(blockEnd + 1)}`
+    changed = true
+  }
+  for (;;) {
+    const atRuleStart = findTailwindSourceWrapperBlockStart(next)
+    if (atRuleStart === -1) {
+      break
+    }
+    next = removeBalancedAtRuleBlock(next, atRuleStart)
+    changed = true
+  }
+  return changed ? next : source
+}
+
+function terminateTailwindSourceAtRulesBeforeNextDirective(source: string) {
+  if (!source.includes('@source')) {
+    return source
+  }
+  let next = ''
+  let searchIndex = 0
+  for (;;) {
+    const atRuleStart = source.indexOf('@source', searchIndex)
+    if (atRuleStart === -1) {
+      next += source.slice(searchIndex)
+      break
+    }
+    const nextChar = source[atRuleStart + '@source'.length]
+    if (nextChar && /[\w-]/.test(nextChar)) {
+      next += source.slice(searchIndex, atRuleStart + '@source'.length)
+      searchIndex = atRuleStart + '@source'.length
+      continue
+    }
+    next += source.slice(searchIndex, atRuleStart)
+    let quote: string | undefined
+    let parenDepth = 0
+    let terminated = false
+    let index = atRuleStart + '@source'.length
+    for (; index < source.length; index++) {
+      const char = source[index]
+      if (quote) {
+        if (char === '\\') {
+          index++
+          continue
+        }
+        if (char === quote) {
+          quote = undefined
+        }
+        continue
+      }
+      if (char === '"' || char === '\'') {
+        quote = char
+        continue
+      }
+      if (char === '(') {
+        parenDepth++
+        continue
+      }
+      if (char === ')' && parenDepth > 0) {
+        parenDepth--
+        continue
+      }
+      if (parenDepth > 0) {
+        continue
+      }
+      if (char === ';' || char === '{') {
+        terminated = true
+        index++
+        break
+      }
+      if (
+        char === '@'
+        && /^(?:config|custom-variant|plugin|source|theme|utility|variant)\b/.test(source.slice(index + 1))
+      ) {
+        break
+      }
+    }
+    const segment = source.slice(atRuleStart, index)
+    const trimmedSegment = segment.trimEnd()
+    next += terminated || trimmedSegment.endsWith(';') || trimmedSegment.endsWith('{')
+      ? segment
+      : `${trimmedSegment};${segment.slice(trimmedSegment.length)}`
+    searchIndex = index
+  }
+  return next
+}
+
+function findTailwindSourceWrapperBlockStart(source: string) {
+  let searchIndex = 0
+  for (;;) {
+    const atRuleStart = source.indexOf('@source', searchIndex)
+    if (atRuleStart === -1) {
+      return -1
+    }
+    const nextChar = source[atRuleStart + '@source'.length]
+    if (nextChar && /[\w-]/.test(nextChar)) {
+      searchIndex = atRuleStart + '@source'.length
+      continue
+    }
+    let quote: string | undefined
+    let parenDepth = 0
+    for (let index = atRuleStart + '@source'.length; index < source.length; index++) {
+      const char = source[index]
+      if (quote) {
+        if (char === '\\') {
+          index++
+          continue
+        }
+        if (char === quote) {
+          quote = undefined
+        }
+        continue
+      }
+      if (char === '"' || char === '\'') {
+        quote = char
+        continue
+      }
+      if (char === '(') {
+        parenDepth++
+        continue
+      }
+      if (char === ')' && parenDepth > 0) {
+        parenDepth--
+        continue
+      }
+      if (parenDepth > 0) {
+        continue
+      }
+      if (char === ';') {
+        searchIndex = index + 1
+        break
+      }
+      if (char === '{') {
+        return atRuleStart
+      }
+    }
+    if (searchIndex <= atRuleStart) {
+      return -1
+    }
+  }
+}
+
 function removeTailwindApplyAtRules(source: string) {
   if (!source.includes('@apply')) {
     return source
@@ -46,6 +271,11 @@ export function removeTailwindV4GeneratorAtRules(source: string) {
     const root = postcss.parse(source)
     let changed = false
     root.walkAtRules((rule) => {
+      if (rule.name === 'media' && /^source\(/.test(rule.params.trim())) {
+        rule.remove()
+        changed = true
+        return
+      }
       if (!TAILWIND_V4_GENERATOR_AT_RULES.has(rule.name)) {
         return
       }
@@ -55,7 +285,7 @@ export function removeTailwindV4GeneratorAtRules(source: string) {
     return changed ? root.toString() : source
   }
   catch {
-    return source
+    return removeTailwindV4GeneratorAtRulesFallback(source)
   }
 }
 
@@ -128,7 +358,7 @@ function unwrapMiniProgramCascadeLayers(source: string) {
 
 export function stripTailwindSourceMediaFragments(source: string) {
   let removedSourceMediaStart = false
-  return source
+  return terminateTailwindSourceAtRulesBeforeNextDirective(removeTailwindSourceMediaBlocks(source))
     .split(/\r?\n/)
     .filter((line) => {
       if (/^\s*@media\s+source\([^)]*\)\s*\{\s*$/.test(line)) {
@@ -145,7 +375,6 @@ export function stripTailwindSourceMediaFragments(source: string) {
       return true
     })
     .join('\n')
-    .replace(/\}[^\S\r\n]*(?=@(?:config|source)\b)/g, '')
 }
 
 function stripLeadingTailwindSourceMediaCloseFragment(source: string) {

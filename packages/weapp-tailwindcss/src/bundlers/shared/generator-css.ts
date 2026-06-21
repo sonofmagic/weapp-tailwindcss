@@ -395,6 +395,11 @@ export async function generateCssByGenerator(
         const userCss = await transformGeneratorUserCss(userCssRawSource, userCssOptions)
         css = createCssSourceOrderAppend(css, userCss)
       }
+      if (generated.target === 'web') {
+        const userCss = await transformGeneratorUserCss(userCssRawSource, userCssOptions)
+        const missingUserCss = filterExistingCssRules(css, userCss)
+        css = createCssSourceOrderAppend(css, missingUserCss)
+      }
       if (
         generated.target === 'weapp'
         && isEmptyCssSourceOrderParts(orderedExtraCss)
@@ -567,7 +572,8 @@ export async function generateCssByGenerator(
           importFallback: generatorOptions.importFallback,
           processed: userRawSourceProcessed,
         })
-        css = createCssSourceOrderAppend(css, userCss)
+        const missingUserCss = filterExistingCssRules(css, userCss)
+        css = createCssSourceOrderAppend(css, missingUserCss)
       }
       return {
         css: restoreLocalCssImports(

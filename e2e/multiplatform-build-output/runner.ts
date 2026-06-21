@@ -7,6 +7,7 @@ import path from 'pathe'
 import { expect } from 'vitest'
 import { clearProjectBuildState } from '../projectTest'
 
+const styleExtensions = /\.(?:css|wxss|acss|jxss|qss|ttss)$/i
 const textExtensions = /\.(?:js|json|html|css|wxss|acss|jxss|qss|ttss|wxml|axml|qml|swan|ttml|uvue)$/i
 
 interface ReadOutputResult {
@@ -24,7 +25,13 @@ async function pathExists(file: string) {
   }
 }
 
-async function readMaybeDirectory(root: string, target: string): Promise<ReadOutputResult> {
+async function readMaybeDirectory(
+  root: string,
+  target: string,
+  options: {
+    extensions?: RegExp | undefined
+  } = {},
+): Promise<ReadOutputResult> {
   const absolute = path.resolve(root, target)
   const stat = await fs.stat(absolute)
   if (stat.isFile()) {
@@ -40,8 +47,9 @@ async function readMaybeDirectory(root: string, target: string): Promise<ReadOut
     onlyFiles: true,
   })
   const texts: string[] = []
+  const extensions = options.extensions ?? textExtensions
   for (const file of files.sort()) {
-    if (textExtensions.test(file)) {
+    if (extensions.test(file)) {
       texts.push(await fs.readFile(file, 'utf8'))
     }
   }
@@ -96,7 +104,9 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
     expect(await pathExists(path.resolve(projectRoot, file)), `${item.name} should emit ${file}`).toBe(true)
   }
 
-  const styleOutputs = await Promise.all(item.styleFiles.map(file => readMaybeDirectory(projectRoot, file)))
+  const styleOutputs = await Promise.all(item.styleFiles.map(file => readMaybeDirectory(projectRoot, file, {
+    extensions: styleExtensions,
+  })))
   const styleFiles = styleOutputs.flatMap(output => output.files)
   const styles = styleOutputs.map(output => output.text).join('\n')
   expect(styles.length, `${item.name} should emit readable style output`).toBeGreaterThan(0)

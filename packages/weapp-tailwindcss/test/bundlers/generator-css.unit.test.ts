@@ -7052,6 +7052,86 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).not.toMatch(/^\s*\}\s*$/m)
   })
 
+  it('removes minified Tailwind v4 source media and directives before preserving web user css', async () => {
+    const runtimeSet = new Set(['i-mdi-home'])
+    const generatedCss = '.i-mdi-home{display:inline-block}'
+    const rawSource = [
+      '@media source(none){@layer theme, base, components, utilities;@layer utilities{.i-mdi-home{display:inline-block}}}',
+      '@config "../tailwind.config.js";',
+      '@source "../src/**/*.{vue,ts}";',
+      '@custom-variant system-dark{@media (prefers-color-scheme: dark) {@slot;}}',
+      '@theme{ --color-midnight: #121063; }',
+      '@layer components{.layer-card-v4{display:flex}}',
+      '.weapp-tw-user-ui-card{display:inline-flex}',
+      '@keyframes weappTwUserUiRotation{to{transform:rotate(360deg)}}',
+    ].join('')
+    const generateMock = vi.fn(async ({ target }: { target: string }) => ({
+      css: generatedCss,
+      rawCss: generatedCss,
+      target,
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      ...createDefaultGeneratorMock(),
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'web',
+          tailwindcssV3Compatibility: false,
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource,
+      file: 'assets/index.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'assets/index.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'assets/index.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).toContain(generatedCss)
+    expect(result?.css).toContain('.weapp-tw-user-ui-card{display:inline-flex}')
+    expect(result?.css).toContain('@keyframes weappTwUserUiRotation')
+    expect(result?.css).not.toContain('@media source(none)')
+    expect(result?.css).not.toContain('@config')
+    expect(result?.css).not.toContain('@source')
+    expect(result?.css).not.toContain('@theme')
+  })
+
   it('prefers configured Tailwind v4 css source over placeholder-expanded bundle css', async () => {
     const runtimeSet = new Set(['bg-linear-to-r'])
     const configuredCss = '@import "tailwindcss";\n@config "./tailwind.config.js";'
@@ -8125,6 +8205,175 @@ describe('bundlers/shared generator css', () => {
       expect.stringMatching(/^\s*\}\s*$/m),
       expect.anything(),
     )
+    expect(result?.css).toContain(weappCss)
+  })
+
+  it('drops Tailwind source wrapper blocks before generator compilation', async () => {
+    const runtimeSet = new Set(['text-red-500'])
+    const rawTailwindCss = '.text-red-500{color:red}'
+    const weappCss = '.text-red-500{color:red}'
+    const generatorSources: Array<{ css: string }> = []
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => {
+        generatorSources.push(source)
+        return {
+          generate: generateMock,
+        }
+      }),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: [
+        '@import "tailwindcss";',
+        '@source "../src" {',
+        '.text-red-500{color:red}',
+        '}',
+        '.user-card{display:block}',
+      ].join('\n'),
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(generatorSources[0]?.css).not.toContain('@source "../src" {')
+    expect(generatorSources[0]?.css).not.toContain('.text-red-500{color:red}')
+    expect(result?.css).not.toContain('@source "../src" {')
+    expect(result?.css).toContain(weappCss)
+    expect(result?.css).toContain('.user-card')
+  })
+
+  it('terminates minified Tailwind source directives before generator compilation', async () => {
+    const runtimeSet = new Set(['text-red-500'])
+    const rawTailwindCss = '.text-red-500{color:red}'
+    const weappCss = '.text-red-500{color:red}'
+    const generatorSources: Array<{ css: string }> = []
+    const generateMock = vi.fn(async () => ({
+      css: weappCss,
+      rawCss: rawTailwindCss,
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn((source: { css: string }) => {
+        generatorSources.push(source)
+        return {
+          generate: generateMock,
+        }
+      }),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '@config "../tailwind.config.js";@source "../src";@source not "../src/sub-normal";@source not "../src/sub-independent"',
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(generatorSources[0]?.css).toContain('@source not "../src/sub-independent";')
     expect(result?.css).toContain(weappCss)
   })
 

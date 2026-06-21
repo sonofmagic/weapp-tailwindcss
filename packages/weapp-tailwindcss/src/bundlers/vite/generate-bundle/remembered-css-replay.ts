@@ -4,6 +4,7 @@ import type { GenerateBundleContext, RememberedCssSource } from './types'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { generateCssByGenerator } from '../../shared/generator-css'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
+import { isHTMLRequest } from '../utils'
 import { createCssRuntimeSignature } from './css-share-scope'
 import { measureElapsed } from './metrics'
 import { collectRememberedCssReplayGroups, createRememberedCssRuntimeSignature, mergeRememberedCssSources } from './remembered-css'
@@ -120,6 +121,9 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     bundleFiles,
   )
   for (const [outputFile, rememberedGroup] of rememberedReplayGroups) {
+    if (isHTMLRequest(outputFile) || options.opts.htmlMatcher(outputFile)) {
+      continue
+    }
     const refreshedRememberedGroup = await Promise.all(rememberedGroup.map(async item => ({
       key: item.key,
       remembered: await refreshRememberedCssSource?.(item.remembered) ?? item.remembered,

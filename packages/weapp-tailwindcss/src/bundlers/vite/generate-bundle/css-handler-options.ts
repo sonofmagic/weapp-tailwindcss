@@ -43,7 +43,11 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
     const appType = options.getAppType()
     const isMainChunk = options.mainCssChunkMatcher(file, appType)
     const outputRoot = options.getOutputRoot?.()
-    const from = outputRoot ? path.resolve(outputRoot, file) : file
+    const from = path.isAbsolute(file)
+      ? file
+      : outputRoot
+        ? path.resolve(outputRoot, file)
+        : file
     const extraOptions = options.getExtraOptions?.(file) ?? {}
     const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}:${JSON.stringify(extraOptions)}`
     const cached = cssHandlerOptionsCache.get(cacheKey)
