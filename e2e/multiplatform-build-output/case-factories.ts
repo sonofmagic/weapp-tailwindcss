@@ -137,7 +137,7 @@ export function uniAppHBuilderXMiniCase(options: {
       `${outputDir}/app.wxss`,
       `${outputDir}/pages/index/index.wxml`,
     ],
-    styleFiles: [`${outputDir}/app.wxss`],
+    styleFiles: [outputDir],
     styleFileExtensions: ['.wxss'],
     textFiles: [`${outputDir}/pages/index/index.wxml`],
     styleContains: [
