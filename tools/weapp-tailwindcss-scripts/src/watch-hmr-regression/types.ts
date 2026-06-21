@@ -268,6 +268,7 @@ export interface SubPackageMutationConfig {
   globalStyleCandidates: string[]
   minGlobalStyleEscapedClasses?: number
   templateMutation: ClassMutationConfig
+  mainStyleMutation?: ClassMutationConfig
   styleMutation: StyleMutationConfig
   skipStyleMutation?: boolean
 }

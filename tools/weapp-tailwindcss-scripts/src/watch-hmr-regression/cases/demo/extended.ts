@@ -505,7 +505,23 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
         validateApply: false,
         validateFunction: false,
       },
-    }),
+    }).map(mutation => ({
+      ...mutation,
+      mainStyleMutation: {
+        ...mutation.templateMutation,
+        sourceFile: mutation.styleMutation.sourceFile,
+        verifyEscapedIn: [],
+        mutate(source, payload) {
+          if (!payload.classLiteral.trim()) {
+            return source
+          }
+          const inlineSource = payload.classLiteral.trim()
+          const inlineDirective = `@source inline(${JSON.stringify(inlineSource)});`
+          const markerRule = `\n/* ${payload.marker}-${mutation.root}-main-style */\n.tw-watch-${mutation.root}-main-style { color: transparent; }\n`
+          return `${source}\n${inlineDirective}${markerRule}`
+        },
+      },
+    })),
   }
 
   const taroViteTailwindcssV4Case: WatchCase = {

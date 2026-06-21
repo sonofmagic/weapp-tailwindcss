@@ -863,9 +863,9 @@ function assertMainStyleHotUpdateMetric(
   expect(metric.label).toBe('text-[102.43rpx] to text-[103.43rpx]')
   expect(metric.mutationKind, `${label} main-style hot-update should edit the template carrier`).toBe('template')
   if (expectedMutation) {
-    expect(normalizePathLike(metric.sourceFile), `${label} main-style hot-update should use configured template source`).toBe(normalizePathLike(expectedMutation.sourceFile))
-    expect(metric.verifyEscapedIn, `${label} main-style hot-update should keep template output verification`).toEqual(expectedMutation.verifyEscapedIn)
-    expect(metric.verifyClassLiteralIn, `${label} main-style hot-update should keep template literal verification`).toEqual(expectedMutation.verifyClassLiteralIn ?? [])
+    expect(normalizePathLike(metric.sourceFile), `${label} main-style hot-update should use configured mutation source`).toBe(normalizePathLike(expectedMutation.sourceFile))
+    expect(metric.verifyEscapedIn, `${label} main-style hot-update should keep configured output verification`).toEqual(expectedMutation.verifyEscapedIn)
+    expect(metric.verifyClassLiteralIn, `${label} main-style hot-update should keep configured literal verification`).toEqual(expectedMutation.verifyClassLiteralIn ?? [])
   }
   expect(metric.fromClassToken).toBe('text-[102.43rpx]')
   expect(metric.toClassToken).toBe('text-[103.43rpx]')
@@ -944,7 +944,7 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
         subPackage.mainStyleHotUpdate,
         `[${item.project}:${subPackage.root}]`,
         maxHotUpdateMs,
-        configuredSubPackageMutation?.templateMutation,
+        configuredSubPackageMutation?.mainStyleMutation ?? configuredSubPackageMutation?.templateMutation,
       )
     }
 
