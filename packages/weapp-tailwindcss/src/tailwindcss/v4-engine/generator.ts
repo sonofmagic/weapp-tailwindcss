@@ -12,6 +12,7 @@ import { createTailwindV4Engine as createEngineTailwindV4Engine, extractRawCandi
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasCssMacroTailwindV4Directive, withCssMacroStyleOptions } from '@/css-macro/auto'
+import { shouldUseWebGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
 import { loadTailwindV4DesignSystem } from './design-system'
@@ -286,13 +287,28 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
   return true
 }
 
-function normalizeTargetRpxTextCandidates(candidates: Iterable<string>, target: TailwindV4GenerateTarget) {
-  return target === 'web'
-    ? {
+function shouldNormalizeRpxTextCandidatesForTarget(
+  target: TailwindV4GenerateTarget,
+  styleOptions: Partial<IStyleHandlerOptions> | undefined,
+) {
+  if (target !== 'web') {
+    return true
+  }
+  const options = styleOptions as (Partial<IStyleHandlerOptions> & { appType?: string | undefined }) | undefined
+  return options?.appType === 'uni-app-vite' || shouldUseWebGeneratorTargetFromEnv()
+}
+
+function normalizeTargetRpxTextCandidates(
+  candidates: Iterable<string>,
+  target: TailwindV4GenerateTarget,
+  styleOptions: Partial<IStyleHandlerOptions> | undefined,
+) {
+  return shouldNormalizeRpxTextCandidatesForTarget(target, styleOptions)
+    ? normalizeRpxTextCandidates(candidates)
+    : {
         candidates: new Set(candidates),
         restoreCandidates: new Map<string, string>(),
       }
-    : normalizeRpxTextCandidates(candidates)
 }
 
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
@@ -320,7 +336,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...collectCandidates(patchOptions.candidates),
       ...(filesystemCandidates ?? []),
     ]), target)
-    const normalizedCandidates = normalizeTargetRpxTextCandidates(resolvedCandidates, target)
+    const normalizedCandidates = normalizeTargetRpxTextCandidates(resolvedCandidates, target, resolvedStyleOptions)
     const result = await engine.generate(omitUndefined({
       scanSources: delegateSourceScan ? resolvedScanSources : false,
       ...patchOptions,
@@ -426,7 +442,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
         const designSystem = await cached.designSystemPromise
-        const normalizedMissing = normalizeTargetRpxTextCandidates(missingCandidates, target)
+        const normalizedMissing = normalizeTargetRpxTextCandidates(missingCandidates, target, styleOptions)
         const normalizedMissingCandidates = [...normalizedMissing.candidates]
         const cssByCandidate = designSystem.candidatesToCss(normalizedMissingCandidates)
         const rawCssParts: string[] = []

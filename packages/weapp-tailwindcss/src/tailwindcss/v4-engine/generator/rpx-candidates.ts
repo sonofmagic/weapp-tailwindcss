@@ -1,5 +1,6 @@
 const BARE_RPX_TEXT_CANDIDATE_RE = /(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u
 const RPX_TEXT_LENGTH_SELECTOR_RE = /text-\\\[length\\:((?:\\[.+-]|[+\-.\d])+rpx)\\\]/g
+const RPX_TEXT_SELECTOR_RE = /(?:^|[^\\])\.((?:\\.|[\w-])*text-\\\[((?:\\[.+-]|[+\-.\d])+rpx)\\\](?:\\.|[\w-])*)/g
 
 function normalizeRpxTextCandidate(candidate: string) {
   return candidate.replace(BARE_RPX_TEXT_CANDIDATE_RE, '$1text-[length:$2]$3')
@@ -47,4 +48,15 @@ export function restoreRpxTextCssSelectors(css: string, restoreCandidates: Reado
   return css.replace(RPX_TEXT_LENGTH_SELECTOR_RE, (match, value: string) => {
     return restoredValues.has(normalizeCssEscapedRpxSelectorValue(value)) ? `text-\\[${value}\\]` : match
   })
+}
+
+export function collectRpxTextSelectorValues(selector: string) {
+  const values = new Set<string>()
+  if (!selector.includes('text-\\[') || !selector.includes('rpx')) {
+    return values
+  }
+  for (const match of selector.matchAll(RPX_TEXT_SELECTOR_RE)) {
+    values.add(normalizeCssEscapedRpxSelectorValue(match[2]))
+  }
+  return values
 }

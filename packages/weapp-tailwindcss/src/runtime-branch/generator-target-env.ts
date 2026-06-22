@@ -62,7 +62,7 @@ function inferGeneratorTargetFromExplicitEnv(): WeappTailwindcssGeneratorTarget 
   }
 }
 
-function shouldUseWebGeneratorTargetFromEnv(): boolean {
+export function shouldUseWebGeneratorTargetFromEnv(): boolean {
   return uniWebPlatformEnvKeys.some(key => isUniWebPlatform(getEnvValue(key)))
     || (
       isUniAppWebViewPlatform(getEnvValue('UNI_PLATFORM'))

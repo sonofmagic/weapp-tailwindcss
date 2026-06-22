@@ -4,10 +4,14 @@ import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 
+export type ResolvedStyleOptions = Partial<IStyleHandlerOptions> & {
+  appType?: InternalUserDefinedOptions['appType'] | undefined
+}
+
 export function resolveStyleOptionsFromContext(
   ctx: InternalUserDefinedOptions,
   tailwindcssMajorVersion?: number,
-): Partial<IStyleHandlerOptions> {
+): ResolvedStyleOptions {
   const resolvedUniAppXOptions = resolveUniAppXOptions(ctx.uniAppX)
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(ctx.generator, {
     appType: ctx.appType,
@@ -43,6 +47,7 @@ export function resolveStyleOptionsFromContext(
   } satisfies NonNullable<IStyleHandlerOptions['cssOptions']>
 
   return {
+    appType: ctx.appType,
     cssPreflight: cssOptions.cssPreflight,
     cssPreflightRange: cssOptions.cssPreflightRange,
     cssChildCombinatorReplaceValue: cssOptions.cssChildCombinatorReplaceValue,

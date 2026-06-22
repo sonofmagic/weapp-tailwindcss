@@ -271,7 +271,7 @@ describe('tailwindcss v4 engine', () => {
     expect(transformed).not.toContain('color: 55rpx')
   })
 
-  it('keeps rpx arbitrary text values aligned with official Tailwind in generated web css', async () => {
+  it('treats rpx arbitrary text values as lengths in generated web css', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -280,22 +280,107 @@ describe('tailwindcss v4 engine', () => {
 
     const result = await engine.generate({
       candidates: ['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]'],
+      styleOptions: {
+        appType: 'uni-app-vite',
+      },
       target: 'web',
     })
 
     expect(result.classSet).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
     expect(result.rawCandidates).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
     expect(result.css).toContain('.text-\\[55rpx\\]')
-    expect(result.css).toContain('color: 55rpx')
+    expect(result.css).toContain('font-size: 55rpx')
     expect(result.css).toContain('.text-\\[32\\.4rpx\\]')
-    expect(result.css).toContain('color: 32.4rpx')
+    expect(result.css).toContain('font-size: 32.4rpx')
     expect(result.css).toContain('.hover\\:text-\\[66rpx\\]')
-    expect(result.css).toContain('color: 66rpx')
+    expect(result.css).toContain('font-size: 66rpx')
     expect(result.css).toContain('.hover\\:text-\\[32\\.4rpx\\]')
     expect(result.css).not.toContain('text-\\[length\\:')
+    expect(result.css).not.toContain('color: 55rpx')
+    expect(result.css).not.toContain('color: 32.4rpx')
+    expect(result.css).not.toContain('color: 66rpx')
+  })
+
+  it('treats scanned rpx arbitrary text values as lengths in generated web css', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-web-rpx-text-'))
+    const pageFile = path.join(root, 'src/pages/index/index.vue')
+    await mkdir(path.dirname(pageFile), { recursive: true })
+    await writeFile(pageFile, '<template><view class="text-[102.43rpx] text-[#123456]"></view></template>', 'utf8')
+    const source = await resolveTailwindV4Source({
+      css: [
+        '@theme default { --color-blue-500: oklch(62.3% 0.214 259.815); }',
+        '@tailwind utilities;',
+        '@source "./src/**/*.{vue,js,ts}";',
+      ].join('\n'),
+      base: root,
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      styleOptions: {
+        appType: 'uni-app-vite',
+      },
+      target: 'web',
+    })
+
+    expect(result.css).toContain('.text-\\[102\\.43rpx\\]')
+    expect(result.css).toContain('font-size: 102.43rpx')
+    expect(result.css).toContain('.text-\\[\\#123456\\]')
+    expect(result.css).toContain('color: #123456')
+    expect(result.css).not.toContain('color: 102.43rpx')
+  })
+
+  it('keeps ordinary web rpx arbitrary text values aligned with official Tailwind', async () => {
+    const source = await resolveTailwindV4Source({
+      css: MINIMAL_THEME_CSS,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['text-[55rpx]'],
+      target: 'web',
+    })
+
+    expect(result.css).toContain('.text-\\[55rpx\\]')
+    expect(result.css).toContain('color: 55rpx')
     expect(result.css).not.toContain('font-size: 55rpx')
-    expect(result.css).not.toContain('font-size: 32.4rpx')
-    expect(result.css).not.toContain('font-size: 66rpx')
+  })
+
+  it('treats scanned rpx arbitrary text values as lengths for uni-app H5 web css', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM = 'h5'
+    try {
+      const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-uni-h5-rpx-text-'))
+      const pageFile = path.join(root, 'src/pages/index/index.vue')
+      await mkdir(path.dirname(pageFile), { recursive: true })
+      await writeFile(pageFile, '<template><view class="text-[102.43rpx] text-[#123456]"></view></template>', 'utf8')
+      const source = await resolveTailwindV4Source({
+        css: [
+          '@tailwind utilities;',
+          '@source "./src/**/*.{vue,js,ts}";',
+        ].join('\n'),
+        base: root,
+      })
+      const engine = createTailwindV4Engine(source)
+
+      const result = await engine.generate({
+        target: 'web',
+      })
+
+      expect(result.css).toContain('.text-\\[102\\.43rpx\\]')
+      expect(result.css).toContain('font-size: 102.43rpx')
+      expect(result.css).toContain('color: #123456')
+      expect(result.css).not.toContain('color: 102.43rpx')
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
   })
 
   it('scopes Tailwind v4 gradient variables to mini-program component elements', async () => {
@@ -403,7 +488,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.rawCandidates).toEqual(new Set(['text-[88rpx]']))
   })
 
-  it('keeps rpx text selectors aligned with official Tailwind in web incremental css', async () => {
+  it('treats rpx text selectors as lengths in web incremental css', async () => {
     const source = await resolveTailwindV4Source({
       css: `${MINIMAL_THEME_CSS}\n/* web rpx incremental */`,
       base: process.cwd(),
@@ -414,30 +499,38 @@ describe('tailwindcss v4 engine', () => {
       candidates: ['text-[88rpx]'],
       incrementalCache: true,
       scanSources: false,
+      styleOptions: {
+        appType: 'uni-app-vite',
+      },
       target: 'web',
     })
     const second = await engine.generate({
       candidates: ['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]'],
       incrementalCache: true,
       scanSources: false,
+      styleOptions: {
+        appType: 'uni-app-vite',
+      },
       target: 'web',
     })
 
     expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
     expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]']))
     expect(second.css).toContain('.text-\\[88rpx\\]')
-    expect(second.css).toContain('color: 88rpx')
+    expect(second.css).toContain('font-size: 88rpx')
     expect(second.css).toContain('.text-\\[188rpx\\]')
-    expect(second.css).toContain('color: 188rpx')
+    expect(second.css).toContain('font-size: 188rpx')
     expect(second.css).toContain('.text-\\[32\\.4rpx\\]')
-    expect(second.css).toContain('color: 32.4rpx')
+    expect(second.css).toContain('font-size: 32.4rpx')
     expect(second.incrementalCss).toContain('.text-\\[188rpx\\]')
-    expect(second.incrementalCss).toContain('color: 188rpx')
+    expect(second.incrementalCss).toContain('font-size: 188rpx')
     expect(second.incrementalCss).toContain('.text-\\[32\\.4rpx\\]')
-    expect(second.incrementalCss).toContain('color: 32.4rpx')
+    expect(second.incrementalCss).toContain('font-size: 32.4rpx')
     expect(second.css).not.toContain('text-\\[length\\:')
     expect(second.incrementalCss).not.toContain('text-\\[length\\:')
-    expect(second.css).not.toContain('font-size: 88rpx')
+    expect(second.css).not.toContain('color: 88rpx')
+    expect(second.css).not.toContain('color: 188rpx')
+    expect(second.css).not.toContain('color: 32.4rpx')
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {
