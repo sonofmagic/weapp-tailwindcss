@@ -1,9 +1,10 @@
+import type { ConcreteOrPlatformWatchCaseName } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
-import { buildCases, demoWatchShardCases, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
@@ -13,16 +14,7 @@ export type DemoWatchShardName
     | 'demo-taro-vue3'
     | 'demo-uni'
 export type ConcreteWatchCaseName
-  = | 'gulp-tailwindcss-v4'
-    | 'mpx-tailwindcss-v4'
-    | 'taro-webpack-react-tailwindcss-v4'
-    | 'taro-vite-react-tailwindcss-v4'
-    | 'taro-webpack-vue3-tailwindcss-v4'
-    | 'taro-vite-vue3-tailwindcss-v4'
-    | 'uni-app-vite-tailwindcss-v4'
-    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
-    | 'uni-app-x-hbuilderx-tailwindcss-v4'
-    | 'weapp-vite-tailwindcss-v4'
+  = ConcreteOrPlatformWatchCaseName
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
 type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
@@ -327,6 +319,7 @@ interface HotUpdateReport {
 
 const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
 const configuredWatchCasesByName = new Map(configuredWatchCases.map(item => [item.name, item]))
+const configuredWatchCaseNames = new Set(configuredWatchCases.map(item => item.name))
 
 const criticalDemoProjects = configuredWatchCases.filter(item => item.group === 'demo').map(item => item.project)
 const criticalDemoProjectsByShard = Object.fromEntries(
@@ -466,13 +459,13 @@ function normalizeGlobalStyleOutputs(value?: string | string[]) {
 function assertHasWxssOutput(outputs: string[], label: string) {
   expect(outputs.length, `${label} should have at least one global style output`).toBeGreaterThan(0)
   expect(
-    outputs.some(output => output.includes('.wxss')),
-    `${label} should contain *.wxss output`,
+    outputs.some(output => /\.(?:wxss|acss|ttss)(?:$|[*?])/.test(output)),
+    `${label} should contain mini-program style output`,
   ).toBe(true)
 }
 
 function shouldHaveWebHmr(item: HotUpdateCaseReport) {
-  return WEB_HMR_CASES.has(item.name)
+  return WEB_HMR_CASES.has(getBaseWatchCaseName(item.name) ?? item.name)
 }
 
 export function resolveCaseName() {
@@ -480,11 +473,7 @@ export function resolveCaseName() {
   if (
     value === 'gulp-tailwindcss-v4'
     || value === 'mpx-tailwindcss-v4'
-    || value === 'taro-webpack-react-tailwindcss-v4'
-    || value === 'taro-vite-react-tailwindcss-v4'
-    || value === 'taro-webpack-vue3-tailwindcss-v4'
-    || value === 'taro-vite-vue3-tailwindcss-v4'
-    || value === 'uni-app-vite-tailwindcss-v4'
+    || configuredWatchCaseNames.has(value as ConcreteWatchCaseName)
     || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
     || value === 'uni-app-x-hbuilderx-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
@@ -537,7 +526,7 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
   }
 
   if (isConcreteWatchCaseName(caseName)) {
-    return caseName === target
+    return caseName === target || getBaseWatchCaseName(caseName) === target
   }
 
   return false
@@ -754,7 +743,7 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
   expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
   expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
-  if (item.name === 'uni-app-vite-tailwindcss-v4') {
+  if ((getBaseWatchCaseName(item.name) ?? item.name) === 'uni-app-vite-tailwindcss-v4') {
     const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
     expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual(['bgObj bg-[#999999] to bg-[#134543]', 'bgObj bg-[#134543] to bg-[#256789]'])
     expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
@@ -764,7 +753,7 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
       expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     }
   }
-  if (WEB_SOURCE_DOM_HMR_CASES.has(item.name)) {
+  if (WEB_SOURCE_DOM_HMR_CASES.has(getBaseWatchCaseName(item.name) ?? item.name)) {
     const sourceDomReplacementSequence = webHmr.sourceDomReplacementSequence ?? []
     expect(sourceDomReplacementSequence.length, `[${item.project}] should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
     for (const metric of sourceDomReplacementSequence) {
@@ -1343,16 +1332,20 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
 
 export async function runHotUpdateTarget(target: WatchCaseName) {
   const cwd = path.resolve(__dirname, '../..')
+  const caseName = resolveCaseName()
+  const runTarget = isConcreteWatchCaseName(caseName) && getBaseWatchCaseName(caseName) === target
+    ? caseName
+    : target
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
   const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', timeoutMs)
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
-  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(target, timeoutMs))
+  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(runTarget, timeoutMs))
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
-  const reportFile = createReportFilePath(cwd, target)
+  const reportFile = createReportFilePath(cwd, runTarget)
 
   const args = [
     '--filter',
@@ -1360,7 +1353,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
     'test:watch-hmr',
     '--',
     '--case',
-    target,
+    runTarget,
     '--timeout',
     String(timeoutMs),
     '--poll',
@@ -1398,7 +1391,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const raw = await fs.readFile(reportFile, 'utf8')
   const report = JSON.parse(raw) as HotUpdateReport
   process.stdout.write(`[e2e-watch] hmr report saved: ${reportFile}\n`)
-  assertHotUpdateReport(report, target, maxHotUpdateMs)
+  assertHotUpdateReport(report, runTarget, maxHotUpdateMs)
 
   if (isIssue33RoundProfile()) {
     const snapshotsDir = path.resolve(cwd, './benchmark/e2e-watch-hmr/snapshots')

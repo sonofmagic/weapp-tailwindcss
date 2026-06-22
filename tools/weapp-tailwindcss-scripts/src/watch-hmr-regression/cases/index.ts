@@ -22,10 +22,22 @@ export const demoWatchShardCases: Record<DemoWatchShardName, ConcreteWatchCaseNa
 }
 
 const demoWatchShardNames = new Set<DemoWatchShardName>(Object.keys(demoWatchShardCases) as DemoWatchShardName[])
+const defaultDemoWatchCaseNames = new Set<ConcreteWatchCaseName>(Object.values(demoWatchShardCases).flat())
 const localOnlyWatchCaseNames = new Set<ConcreteWatchCaseName>([
   'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
   'uni-app-x-hbuilderx-tailwindcss-v4',
 ])
+
+export function getBaseWatchCaseName(caseName: CliOptions['caseName']): ConcreteWatchCaseName | undefined {
+  if (caseName === 'all' || caseName === 'both' || caseName === 'demo' || isDemoWatchShardName(caseName)) {
+    return undefined
+  }
+  return caseName.split(':', 1)[0] as ConcreteWatchCaseName
+}
+
+export function isPlatformWatchCaseName(caseName: CliOptions['caseName']) {
+  return Boolean(getBaseWatchCaseName(caseName) && caseName.includes(':'))
+}
 
 export function isDemoWatchShardName(caseName: CliOptions['caseName']): caseName is DemoWatchShardName {
   return demoWatchShardNames.has(caseName as DemoWatchShardName)
@@ -36,7 +48,8 @@ export function filterCasesForPlatform(cases: WatchCase[], _platform: NodeJS.Pla
 }
 
 export function isLocalOnlyWatchCase(caseName: CliOptions['caseName']) {
-  return caseName !== 'all' && caseName !== 'both' && caseName !== 'demo' && !isDemoWatchShardName(caseName) && localOnlyWatchCaseNames.has(caseName)
+  const baseCaseName = getBaseWatchCaseName(caseName)
+  return Boolean(baseCaseName && localOnlyWatchCaseNames.has(baseCaseName))
 }
 
 export function buildCases(baseCwd: string, options: {
@@ -55,7 +68,7 @@ export function pickCases(allCases: WatchCase[], caseName: CliOptions['caseName'
   }
 
   if (caseName === 'demo') {
-    return allCases.filter(item => item.group === caseName)
+    return allCases.filter(item => item.group === caseName && defaultDemoWatchCaseNames.has(item.name))
   }
 
   if (isDemoWatchShardName(caseName)) {

@@ -15,11 +15,13 @@ export type HotUpdateTargetName = typeof HOT_UPDATE_TARGETS[number]['name']
 const repoRoot = path.resolve(import.meta.dirname, '..')
 const DEMO_HOT_UPDATE_CASES = buildCases(repoRoot)
   .filter(item => item.group === 'demo')
+  .filter(item => !item.name.includes(':'))
   .map(item => item.name)
 const DEMO_LOCAL_HOT_UPDATE_CASES = buildCases(repoRoot, {
   includeLocalOnly: true,
 })
   .filter(item => item.group === 'demo' && !DEMO_HOT_UPDATE_CASES.includes(item.name))
+  .filter(item => !item.name.includes(':'))
   .map(item => item.name)
 
 export const HOT_UPDATE_CASES_BY_TARGET: Record<HotUpdateTargetName, string[]> = {

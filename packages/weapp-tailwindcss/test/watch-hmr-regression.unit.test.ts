@@ -2152,7 +2152,13 @@ describe('watch-hmr regression cases', () => {
 
     expect(cases.map(watchCase => watchCase.name).sort()).toEqual([
       'taro-vite-react-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4:alipay',
+      'taro-vite-react-tailwindcss-v4:tt',
+      'taro-vite-react-tailwindcss-v4:weapp',
       'taro-vite-vue3-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4:alipay',
+      'taro-vite-vue3-tailwindcss-v4:tt',
+      'taro-vite-vue3-tailwindcss-v4:weapp',
     ])
 
     for (const watchCase of cases) {
@@ -2217,10 +2223,58 @@ describe('watch-hmr regression cases', () => {
       'uni-app-vite-tailwindcss-v4',
       'mpx-tailwindcss-v4',
       'taro-vite-react-tailwindcss-v4',
+      'taro-vite-react-tailwindcss-v4:weapp',
+      'taro-vite-react-tailwindcss-v4:alipay',
+      'taro-vite-react-tailwindcss-v4:tt',
       'taro-webpack-react-tailwindcss-v4',
+      'taro-webpack-react-tailwindcss-v4:weapp',
       'taro-vite-vue3-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4:weapp',
+      'taro-vite-vue3-tailwindcss-v4:alipay',
+      'taro-vite-vue3-tailwindcss-v4:tt',
       'taro-webpack-vue3-tailwindcss-v4',
+      'taro-webpack-vue3-tailwindcss-v4:weapp',
+      'uni-app-vite-tailwindcss-v4:mp-weixin',
+      'uni-app-vite-tailwindcss-v4:mp-alipay',
+      'uni-app-vite-tailwindcss-v4:mp-qq',
+      'uni-app-vite-tailwindcss-v4:mp-toutiao',
     ])
+  })
+
+  it('derives mini-program platform watch cases with platform-specific scripts and output paths', () => {
+    const cases = buildDemoExtendedCases('/repo')
+    const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
+
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:weapp')?.devScript).toBe('dev:e2e-watch')
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.devScript).toBe('dev:alipay')
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:tt')?.devScript).toBe('dev:tt')
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.axml'),
+    )
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.globalStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/taro-vite-react-tailwindcss-v4/dist/app.acss'),
+    )
+    expect(caseMap.get('taro-vite-vue3-tailwindcss-v4:tt')?.subPackageMutations?.[0]?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/taro-vite-vue3-tailwindcss-v4/dist/sub-normal/pages/index.ttml'),
+    )
+    expect(caseMap.get('taro-vite-vue3-tailwindcss-v4:tt')?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/taro-vite-vue3-tailwindcss-v4/dist/sub-normal/pages/index.ttss'),
+    )
+
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4')?.devScript).toBe('dev:mp-weixin')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-weixin')?.devScript).toBe('dev:mp-weixin')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.devScript).toBe('dev:mp-alipay')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-qq')?.devScript).toBe('dev:mp-qq')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.devScript).toBe('dev:mp-toutiao')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.outputWxml).toBe(
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-alipay/pages/index/index.wxml'),
+    )
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-alipay/app.wxss'),
+    ])
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-toutiao/sub-normal/pages/index.wxss'),
+    )
   })
 
   it('covers every Taro and uni-app Web/H5 hot-update case in watch config and PR CI', async () => {
@@ -2334,7 +2388,13 @@ describe('watch-hmr regression cases', () => {
     }
     const prMatrixEntries = workflow.jobs?.['pr-quick-gate']?.strategy?.matrix?.include ?? []
 
-    for (const name of webCaseNames) {
+    const prWebCaseNames = [
+      'taro-vite-react-tailwindcss-v4',
+      'taro-vite-vue3-tailwindcss-v4',
+      'uni-app-vite-tailwindcss-v4',
+    ]
+
+    for (const name of prWebCaseNames) {
       expect(
         prMatrixEntries,
         `${name} should run in PR quick gate on macOS`,
@@ -2393,8 +2453,9 @@ describe('watch-hmr regression cases', () => {
 
       const normalizedCandidates = watchCase.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/').replace(/^[A-Z]:(?=\/)/i, ''))
       if (watchCase.name.startsWith('uni-app-vite-tailwindcss-')) {
+        const platform = watchCase.name.includes(':') ? watchCase.name.split(':')[1] : 'mp-weixin'
         expect(normalizedCandidates, watchCase.name).toEqual([
-          `/repo/demo/${watchCase.name}/dist/dev/mp-weixin/app.wxss`,
+          `/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/${platform}/app.wxss`,
         ])
       }
       if (watchCase.name.startsWith('uni-app-vite-vue3-hbuilderx-tailwindcss-')) {
@@ -2510,7 +2571,8 @@ describe('watch-hmr regression cases', () => {
     for (const watchCase of cases) {
       const payload = createStyleMutationPayload(watchCase)
 
-      if (applyUnsupportedCases.has(watchCase.name)) {
+      const baseWatchCaseName = watchCase.name.split(':', 1)[0]
+      if (applyUnsupportedCases.has(baseWatchCaseName)) {
         expect(payload.applyUtilities, `${watchCase.name} should skip unsupported @apply validation`).toEqual([])
         expect(payload.expectedApplyDeclarations, `${watchCase.name} should skip unsupported @apply declarations`).toEqual([])
       }
@@ -2519,7 +2581,7 @@ describe('watch-hmr regression cases', () => {
         expect(payload.expectedApplyDeclarations.length, `${watchCase.name} should validate expanded @apply declarations`).toBeGreaterThan(0)
       }
 
-      if (functionUnsupportedCases.has(watchCase.name)) {
+      if (functionUnsupportedCases.has(baseWatchCaseName)) {
         expect(payload.functionNeedle, `${watchCase.name} should skip unsupported Tailwind function validation`).toBeUndefined()
         expect(payload.functionDeclarations, `${watchCase.name} should not inject unsupported Tailwind functions`).toEqual([])
         expect(payload.expectedFunctionDeclarations, `${watchCase.name} should not expect unsupported Tailwind function declarations`).toEqual([])
@@ -2532,7 +2594,7 @@ describe('watch-hmr regression cases', () => {
         expect(payload.forbiddenFunctionFragments, `${watchCase.name} should forbid unresolved Tailwind functions`).toContain('theme(')
       }
 
-      if (referenceRequiredCases.has(watchCase.name)) {
+      if (referenceRequiredCases.has(baseWatchCaseName)) {
         expect(payload.referenceDirective, `${watchCase.name} should include Tailwind v4 @reference`).toBe('@reference "tailwindcss";')
       }
       else {
@@ -2663,8 +2725,16 @@ describe('watch-hmr regression cases', () => {
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'weapp-vite-tailwindcss-v4', round_profile: 'issue33' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4', round_profile: 'default' },
       { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
-      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4:alipay', artifact_case: 'taro-vite-react-tailwindcss-v4-alipay', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-react-tailwindcss-v4:tt', artifact_case: 'taro-vite-react-tailwindcss-v4-tt', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4:alipay', artifact_case: 'taro-vite-vue3-tailwindcss-v4-alipay', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-vite-vue3-tailwindcss-v4:tt', artifact_case: 'taro-vite-vue3-tailwindcss-v4-tt', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-react-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-react-tailwindcss-v4-weapp', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'taro-webpack-vue3-tailwindcss-v4:weapp', artifact_case: 'taro-webpack-vue3-tailwindcss-v4-weapp', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-weixin', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-weixin', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-alipay', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-alipay', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-qq', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-qq', round_profile: 'default' },
+      { os: 'macos-latest', runner_label: 'macos', watch_case: 'uni-app-vite-tailwindcss-v4:mp-toutiao', artifact_case: 'uni-app-vite-tailwindcss-v4-mp-toutiao', round_profile: 'default' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'uni-app-vite-tailwindcss-v4', round_profile: 'issue33' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'weapp-vite-tailwindcss-v4', round_profile: 'issue33' },
       { os: 'windows-latest', runner_label: 'windows', watch_case: 'taro-vite-vue3-tailwindcss-v4', round_profile: 'default' },
@@ -2673,6 +2743,7 @@ describe('watch-hmr regression cases', () => {
     for (const entry of requiredMatrixEntries) {
       expect(matrixEntries).toContainEqual(expect.objectContaining(entry))
     }
+    expect(String(workflowSource)).toContain('${{ matrix.artifact_case || matrix.watch_case }}')
     expect(prMatrixEntries.some(entry => String(entry.watch_case).startsWith('weapp-vite-tailwindcss-'))).toBe(false)
   })
 

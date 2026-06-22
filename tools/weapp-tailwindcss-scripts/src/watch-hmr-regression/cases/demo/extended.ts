@@ -1,4 +1,4 @@
-import type { SubPackageMutationConfig, WatchCase } from '../../types'
+import type { SubPackageMutationConfig, TaroMiniProgramWatchPlatform, UniAppMiniProgramWatchPlatform, WatchCase } from '../../types'
 import path from 'node:path'
 import {
   appendTrailingSnippet,
@@ -37,9 +37,109 @@ const taroViteWatchEnv = {
 
 const taroVitePluginProcessBudgetMs = 3000
 const webDomMarkerAttr = 'data-tw-watch-web-dom="1"'
+const taroMiniProgramPlatforms: TaroMiniProgramWatchPlatform[] = ['weapp', 'alipay', 'tt']
+const uniAppMiniProgramPlatforms: UniAppMiniProgramWatchPlatform[] = ['mp-weixin', 'mp-alipay', 'mp-qq', 'mp-toutiao']
+const taroOutputExtensions: Record<TaroMiniProgramWatchPlatform, {
+  template: string
+  style: string
+}> = {
+  weapp: {
+    template: 'wxml',
+    style: 'wxss',
+  },
+  alipay: {
+    template: 'axml',
+    style: 'acss',
+  },
+  tt: {
+    template: 'ttml',
+    style: 'ttss',
+  },
+}
 
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
+}
+
+function replacePathSegment(filePath: string, from: string, to: string) {
+  return filePath.split(from).join(to)
+}
+
+function replaceExtension(filePath: string, from: string, to: string) {
+  return filePath.replace(new RegExp(`\\.${from.replace('.', '\\.')}(\\*?)$`), `.${to}$1`)
+}
+
+function createTaroPlatformCase(
+  watchCase: WatchCase,
+  platform: TaroMiniProgramWatchPlatform,
+): WatchCase {
+  if (platform === 'weapp') {
+    return {
+      ...watchCase,
+      name: `${watchCase.name}:${platform}`,
+      label: `${watchCase.label}:${platform}`,
+      devScript: 'dev:e2e-watch',
+    }
+  }
+
+  const outputExtensions = taroOutputExtensions[platform]
+  const replaceOutputFile = (filePath: string) => {
+    return replaceExtension(
+      replaceExtension(filePath, 'wxml', outputExtensions.template),
+      'wxss',
+      outputExtensions.style,
+    )
+  }
+  const replaceOutputFiles = (files: string[]) => files.map(replaceOutputFile)
+
+  return {
+    ...watchCase,
+    name: `${watchCase.name}:${platform}`,
+    label: `${watchCase.label}:${platform}`,
+    devScript: `dev:${platform}`,
+    outputWxml: replaceOutputFile(watchCase.outputWxml),
+    outputStyleCandidates: replaceOutputFiles(watchCase.outputStyleCandidates),
+    globalStyleCandidates: replaceOutputFiles(watchCase.globalStyleCandidates),
+    subPackageMutations: watchCase.subPackageMutations?.map(mutation => ({
+      ...mutation,
+      outputWxml: replaceOutputFile(mutation.outputWxml),
+      outputStyleCandidates: replaceOutputFiles(mutation.outputStyleCandidates),
+      globalStyleCandidates: replaceOutputFiles(mutation.globalStyleCandidates),
+    })),
+  }
+}
+
+function createUniAppPlatformCase(
+  watchCase: WatchCase,
+  platform: UniAppMiniProgramWatchPlatform,
+): WatchCase {
+  const replacePlatformPath = (filePath: string) => replacePathSegment(filePath, '/dist/dev/mp-weixin/', `/dist/dev/${platform}/`)
+  return {
+    ...watchCase,
+    name: `${watchCase.name}:${platform}`,
+    label: `${watchCase.label}:${platform}`,
+    devScript: `dev:${platform}`,
+    outputWxml: replacePlatformPath(watchCase.outputWxml),
+    outputJs: replacePlatformPath(watchCase.outputJs),
+    outputStyleCandidates: watchCase.outputStyleCandidates.map(replacePlatformPath),
+    globalStyleCandidates: watchCase.globalStyleCandidates.map(replacePlatformPath),
+    subPackageMutations: watchCase.subPackageMutations?.map(mutation => ({
+      ...mutation,
+      outputWxml: replacePlatformPath(mutation.outputWxml),
+      outputJs: replacePlatformPath(mutation.outputJs),
+      outputStyleCandidates: mutation.outputStyleCandidates.map(replacePlatformPath),
+      globalStyleCandidates: mutation.globalStyleCandidates.map(replacePlatformPath),
+    })),
+  }
+}
+
+function createPlatformCases(watchCase: WatchCase, platforms: readonly TaroMiniProgramWatchPlatform[]): WatchCase[]
+function createPlatformCases(watchCase: WatchCase, platforms: readonly UniAppMiniProgramWatchPlatform[]): WatchCase[]
+function createPlatformCases(watchCase: WatchCase, platforms: readonly (TaroMiniProgramWatchPlatform | UniAppMiniProgramWatchPlatform)[]) {
+  if (watchCase.name.startsWith('uni-app-vite-tailwindcss-v4')) {
+    return (platforms as readonly UniAppMiniProgramWatchPlatform[]).map(platform => createUniAppPlatformCase(watchCase, platform))
+  }
+  return (platforms as readonly TaroMiniProgramWatchPlatform[]).map(platform => createTaroPlatformCase(watchCase, platform))
 }
 
 function replaceWebDomSnippet(source: string, from: string, to: string) {
@@ -746,8 +846,13 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     uniAppTailwindcssV4Case,
     mpxTailwindcssV4Case,
     taroViteTailwindcssV4Case,
+    ...createPlatformCases(taroViteTailwindcssV4Case, taroMiniProgramPlatforms),
     taroWebpackTailwindcssV4DemoCase,
+    ...createPlatformCases(taroWebpackTailwindcssV4DemoCase, ['weapp']),
     taroViteVue3V4Case,
+    ...createPlatformCases(taroViteVue3V4Case, taroMiniProgramPlatforms),
     taroWebpackVue3V4Case,
+    ...createPlatformCases(taroWebpackVue3V4Case, ['weapp']),
+    ...createPlatformCases(uniAppTailwindcssV4Case, uniAppMiniProgramPlatforms),
   ]
 }

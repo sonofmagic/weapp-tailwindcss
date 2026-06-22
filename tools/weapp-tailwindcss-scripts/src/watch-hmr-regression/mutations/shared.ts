@@ -14,6 +14,7 @@ import type {
 import { readdir } from 'node:fs/promises'
 import path from 'node:path'
 import { replaceWxml } from '../../core/replace-wxml'
+import { getBaseWatchCaseName } from '../cases'
 import { formatPath } from '../cli'
 import { getMtime, readFileIfExists, waitFor } from '../text'
 import {
@@ -605,10 +606,11 @@ export function createClassMutationScenario(
 export function createStyleMutationPayload(watchCase: WatchCase): StyleMutationPayload {
   const seed = `${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
   const marker = `tw-watch-style-${watchCase.name}-${seed}`
-  const applyValidation = STYLE_APPLY_UNSUPPORTED_CASES.has(watchCase.name)
+  const policyCaseName = getBaseWatchCaseName(watchCase.name) ?? watchCase.name
+  const applyValidation = STYLE_APPLY_UNSUPPORTED_CASES.has(policyCaseName)
     ? undefined
     : DEFAULT_STYLE_APPLY_VALIDATION
-  const functionNeedle = STYLE_FUNCTION_UNSUPPORTED_CASES.has(watchCase.name)
+  const functionNeedle = STYLE_FUNCTION_UNSUPPORTED_CASES.has(policyCaseName)
     ? undefined
     : `.${marker}-theme`
   const styleNeedle = `.${marker}`
@@ -626,7 +628,7 @@ export function createStyleMutationPayload(watchCase: WatchCase): StyleMutationP
       : [],
     expectedFunctionDeclarations: functionNeedle ? ['padding:', 'margin-left:'] : [],
     forbiddenFunctionFragments: functionNeedle ? ['theme('] : [],
-    ...(STYLE_REFERENCE_REQUIRED_CASES.has(watchCase.name)
+    ...(STYLE_REFERENCE_REQUIRED_CASES.has(policyCaseName)
       ? { referenceDirective: '@reference "tailwindcss";' }
       : {}),
   }

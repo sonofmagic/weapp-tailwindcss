@@ -2,7 +2,7 @@ import type { ConcreteWatchCaseName } from '../tools/weapp-tailwindcss-scripts/s
 import fs from 'node:fs'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
-import { buildCases, demoWatchShardCases, pickCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, getBaseWatchCaseName, pickCases } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, HOT_UPDATE_COVERED_PROJECTS, HOT_UPDATE_EXEMPT_PROJECTS } from './e2eMatrix'
 import { FRAMEWORK_SUPPORT_CASES, getFrameworkCiCases, getFrameworkIdeExemptCases } from './frameworkSupportMatrix'
 import { miniProgramCases, uniAppAppCases, uniAppXAppCases, webCases } from './hbuilderx-local/cases'
@@ -56,8 +56,9 @@ describeFrameworkCi('framework support matrix ci', () => {
 
   it('keeps every demo hot-update case runnable from the e2e watch suite by name', () => {
     for (const caseName of HOT_UPDATE_CASES_BY_TARGET.demo) {
+      const baseCaseName = getBaseWatchCaseName(caseName) ?? caseName
       expect(
-        fs.existsSync(path.resolve(__dirname, `watch/hot-update/demo/${caseName}.test.ts`)),
+        fs.existsSync(path.resolve(__dirname, `watch/hot-update/demo/${baseCaseName}.test.ts`)),
         `${caseName} should have a dedicated e2e watch hot-update test entry`,
       ).toBe(true)
     }
@@ -121,13 +122,9 @@ describeFrameworkCi('framework support matrix ci', () => {
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-baidu',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-toutiao',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-alipay',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-baidu',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-toutiao',
       'uni-app-x-hbuilderx-tailwindcss-v4',
     ])
-    for (const name of ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4']) {
+    for (const name of ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4']) {
       expect(
         miniProgramCases
           .filter(item => item.projectDir.endsWith(name))
@@ -135,7 +132,7 @@ describeFrameworkCi('framework support matrix ci', () => {
         `${name} should cover HBuilderX non-WeChat mini-program output locally`,
       ).toEqual(['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao'])
     }
-    for (const name of ['uni-app-x-hbuilderx-tailwindcss-v4', 'uni-app-x-hbuilderx-tailwindcss-v4']) {
+    for (const name of ['uni-app-x-hbuilderx-tailwindcss-v4']) {
       expect(
         miniProgramCases
           .filter(item => item.projectDir.endsWith(name))
@@ -161,15 +158,8 @@ describeFrameworkCi('framework support matrix ci', () => {
     expect(appCases.map(item => item.name)).toEqual([
       'uni-app-vite-tailwindcss-v4 android',
       'uni-app-vite-tailwindcss-v4 ios',
-      'uni-app-vite-tailwindcss-v4 android',
-      'uni-app-vite-tailwindcss-v4 ios',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 android',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 ios',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 android',
-      'uni-app-vite-vue3-hbuilderx-tailwindcss-v4 ios',
-      'uni-app-x-hbuilderx-tailwindcss-v4 android',
-      'uni-app-x-hbuilderx-tailwindcss-v4 ios',
-      'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
       'uni-app-x-hbuilderx-tailwindcss-v4 android',
       'uni-app-x-hbuilderx-tailwindcss-v4 ios',
       'uni-app-x-hbuilderx-tailwindcss-v4 harmony',
