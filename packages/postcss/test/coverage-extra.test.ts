@@ -126,13 +126,20 @@ describe('mp helpers', () => {
     const inject = () => [new Declaration({ prop: 'color', value: 'blue' })]
     commonChunkPreflight(beforeAfterRule, { cssInjectPreflight: inject } as any)
     expect(isOnlyBeforeAndAfterPseudoElement(beforeAfterRule)).toBe(true)
+    expect(beforeAfterRule.nodes?.some(node => node.type === 'decl' && node.prop === 'color' && node.value === 'blue')).toBe(true)
 
-    const backdropRule = postcss.parse('::backdrop { --tw-a:1; --tw-b:2 }').first as Rule
-    commonChunkPreflight(backdropRule, {
+    const root = postcss.parse([
+      ':root,:host { --color-red-500: red; }',
+      '.shadow { box-shadow: var(--tw-shadow); }',
+    ].join('\n'))
+    const rootRule = root.first as Rule
+    commonChunkPreflight(rootRule, {
+      majorVersion: 4,
       injectAdditionalCssVarScope: true,
       cssInjectPreflight: inject,
     } as any)
-    expect(backdropRule.prev()).toBeTruthy()
+    expect(rootRule.prev()?.type).toBe('rule')
+    expect(rootRule.prev()?.toString()).toContain('color: blue')
   })
 })
 

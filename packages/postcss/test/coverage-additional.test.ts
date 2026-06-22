@@ -270,7 +270,8 @@ describe('mp helpers', () => {
     const beforeCount = rule.nodes?.length ?? 0
     const inject = () => [new Declaration({ prop: 'color', value: 'blue' })]
     commonChunkPreflight(rule, { cssInjectPreflight: inject } as any)
-    expect(rule.prev()?.type).toBe('rule')
+    expect(rule.prev()).toBeUndefined()
+    expect(rule.nodes?.some(node => node.type === 'decl' && node.prop === 'color' && node.value === 'blue')).toBe(true)
     expect(rule.nodes?.length ?? 0).toBeGreaterThan(beforeCount)
   })
 })

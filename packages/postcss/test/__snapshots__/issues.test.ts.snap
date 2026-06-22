@@ -390,10 +390,8 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/643 2`] = `
-"::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+"
+    view,text,::before,::after {
       --tw-gradient-position: initial;
       --tw-gradient-from: rgba(0,0,0,0);
       --tw-gradient-via: rgba(0,0,0,0);
@@ -600,10 +598,8 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/652 2`] = `
-"::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+"
+    view,text,::before,::after {
       --tw-rotate-x: initial;
       --tw-rotate-y: initial;
       --tw-rotate-z: initial;
@@ -887,10 +883,8 @@ exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/726 1`]
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/726 2`] = `
-"::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+"
+    view,text,::before,::after {
       --tw-divide-x-reverse: 0;
       --tw-border-style: solid;
       --tw-divide-y-reverse: 0;
@@ -918,10 +912,8 @@ view,text,::after,::before {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/909 1`] = `
-"::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+"
+    view,text,::before,::after {
       --tw-rotate-x: initial;
       --tw-rotate-y: initial;
       --tw-rotate-z: initial;
@@ -941,10 +933,8 @@ view,text,::after,::before {
 `;
 
 exports[`issues > https://github.com/sonofmagic/weapp-tailwindcss/issues/928 1`] = `
-"::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+"
+    view,text,::before,::after {
       --tw-gradient-position: initial;
       --tw-gradient-from: rgba(0,0,0,0);
       --tw-gradient-via: rgba(0,0,0,0);
@@ -1094,10 +1084,8 @@ exports[`issues > tailwindcss@4 text/* heuristics should not treat headers as cl
 `;
 
 exports[`issues > tailwindcss@4 text/* heuristics should not treat headers as classes 2`] = `
-"::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+"
+    view,text,::before,::after {
       --tw-space-y-reverse: 0;
       --tw-font-weight: initial;
     }
