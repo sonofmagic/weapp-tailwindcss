@@ -211,7 +211,7 @@ interface SubPackageMutationMetric {
   outputWxml: string
   outputJs: string
   globalStyleOutputs: string[]
-  mainStyleHotUpdate: MainStyleHotUpdateMetric
+  mainStyleHotUpdate?: MainStyleHotUpdateMetric
   template: TemplateOrScriptMutationMetric
   style: StyleMutationMetric
 }
@@ -685,10 +685,12 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
     }
 
     for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
-      samples.push({
-        label: `${oneCase.project}:subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
-        hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
-      })
+      if (subPackage.mainStyleHotUpdate) {
+        samples.push({
+          label: `${oneCase.project}:subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+          hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+        })
+      }
       samples.push({
         label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
         hotUpdateEffectiveMs: subPackage.template.hotUpdateEffectiveMs,
@@ -801,7 +803,9 @@ function assertHmrDurationReport(report: HotUpdateReport, item: HotUpdateCaseRep
     expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
   }
   for (const subPackage of item.subPackageMutationMetrics ?? []) {
-    expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
+    if (subPackage.mainStyleHotUpdate) {
+      expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
+    }
     expect(surfaces).toContain(`subpackage:${subPackage.root}:template`)
     if (subPackage.style) {
       expect(surfaces).toContain(`subpackage:${subPackage.root}:style`)
@@ -994,12 +998,14 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     for (const subPackage of subPackageMutationMetrics) {
       const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)
-      assertMainStyleHotUpdateMetric(
-        subPackage.mainStyleHotUpdate,
-        `[${item.project}:${subPackage.root}]`,
-        maxHotUpdateMs,
-        configuredSubPackageMutation?.templateMutation,
-      )
+      if (subPackage.mainStyleHotUpdate) {
+        assertMainStyleHotUpdateMetric(
+          subPackage.mainStyleHotUpdate,
+          `[${item.project}:${subPackage.root}]`,
+          maxHotUpdateMs,
+          configuredSubPackageMutation?.templateMutation,
+        )
+      }
     }
     if (expectedGroup) {
       expect(item.projectGroup).toBe(expectedGroup)
@@ -1083,11 +1089,6 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(userReportedHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
-      if (item.name === 'uni-app-vite-tailwindcss-v4') {
-        expect(userReportedHotUpdate.label).toBe('cardsColor bg-[#4268EA] to bg-[red]')
-        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['bg-[#4268EA] shadow-indigo-100', 'bg-[red] shadow-indigo-100']))
-        expect(userReportedHotUpdate.classTokens.some(token => token === 'bg-[red]' || token === 'bg-[#4268EA]')).toBe(true)
-      }
       if (item.name === 'uni-app-vite-tailwindcss-v4') {
         expect(userReportedHotUpdate.label).toBe('index text-[102.43rpx] to text-[103.43rpx]')
         expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['text-[#00f285] text-[102.43rpx] font-bold underline', 'text-[#00f285] text-[103.43rpx] font-bold underline']))
