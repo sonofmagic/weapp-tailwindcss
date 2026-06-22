@@ -2280,13 +2280,13 @@ describe('watch-hmr regression cases', () => {
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-qq')?.devScript).toBe('dev:e2e-watch')
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.devScript).toBe('dev:e2e-watch')
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.outputWxml).toBe(
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-alipay/pages/index/index.wxml'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-alipay/pages/index/index.wxml'),
     )
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.globalStyleCandidates).toEqual([
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-alipay/app.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-alipay/app.wxss'),
     ])
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(
-      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-toutiao/sub-normal/pages/index.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-toutiao/sub-normal/pages/index.wxss'),
     )
   })
 
@@ -2467,8 +2467,9 @@ describe('watch-hmr regression cases', () => {
       const normalizedCandidates = watchCase.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/').replace(/^[A-Z]:(?=\/)/i, ''))
       if (watchCase.name.startsWith('uni-app-vite-tailwindcss-')) {
         const platform = watchCase.name.includes(':') ? watchCase.name.split(':')[1] : 'mp-weixin'
+        const outputKind = watchCase.name.includes(':') ? 'build' : 'dev'
         expect(normalizedCandidates, watchCase.name).toEqual([
-          `/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/${platform}/app.wxss`,
+          `/repo/demo/uni-app-vite-tailwindcss-v4/dist/${outputKind}/${platform}/app.wxss`,
         ])
       }
       if (watchCase.name.startsWith('uni-app-vite-vue3-hbuilderx-tailwindcss-')) {

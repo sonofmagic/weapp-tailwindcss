@@ -467,7 +467,11 @@ function assertHasWxssOutput(outputs: string[], label: string) {
 }
 
 function shouldHaveWebHmr(item: HotUpdateCaseReport) {
-  return WEB_HMR_CASES.has(getBaseWatchCaseName(item.name) ?? item.name)
+  return WEB_HMR_CASES.has(resolveReportBaseCaseName(item))
+}
+
+function resolveReportBaseCaseName(item: HotUpdateCaseReport) {
+  return getBaseWatchCaseName(item.name) ?? item.name
 }
 
 export function resolveCaseName() {
@@ -890,7 +894,8 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
   }
 
   for (const item of report.cases) {
-    const configuredWatchCase = configuredWatchCasesByName.get(item.name)
+    const baseCaseName = resolveReportBaseCaseName(item)
+    const configuredWatchCase = configuredWatchCasesByName.get(baseCaseName)
     expect(item.initialReadyMs).toBeGreaterThan(0)
     assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     expect(item.rounds).toEqual([])
@@ -898,7 +903,7 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
     expect(item.subPackageMutationMetrics ?? []).toEqual([])
 
     const subPackageMainStyleHotUpdates = item.subPackageMainStyleHotUpdates ?? []
-    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+    if (SUBPACKAGE_HMR_CASES.has(baseCaseName)) {
       const subPackageLimit = report.options?.mainStyleSubPackageLimit
       const expectedSubPackageCount = subPackageLimit == null ? 2 : Math.min(2, Math.max(0, subPackageLimit))
       expect(subPackageMainStyleHotUpdates.length).toBe(expectedSubPackageCount)
@@ -971,7 +976,8 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 
   for (const item of report.cases) {
-    const configuredWatchCase = configuredWatchCasesByName.get(item.name)
+    const baseCaseName = resolveReportBaseCaseName(item)
+    const configuredWatchCase = configuredWatchCasesByName.get(baseCaseName)
     expect(item.initialReadyMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
@@ -983,7 +989,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
     const hasStyleMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'style')
     expect(item.mutationMetrics.length).toBe(2 + (hasStyleMutation ? 1 : 0) + (hasContentMutation ? 1 : 0))
-    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+    if (SUBPACKAGE_HMR_CASES.has(baseCaseName)) {
       expect(subPackageMutationMetrics.length).toBe(2)
       expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
       expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
@@ -1204,7 +1210,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length, `[${item.project}] issue33 script round should hit transformed classes in wxss outputs`).toBeGreaterThan(0)
       }
 
-      if (commentCarrierRequiredCases.has(item.name)) {
+      if (commentCarrierRequiredCases.has(baseCaseName)) {
         const commentCarrierHmr = scriptMetric.commentCarrierHmr
         expect(commentCarrierHmr).toBeDefined()
         if (!commentCarrierHmr) {
@@ -1226,7 +1232,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     if (styleMetric && styleMetric.mutationKind === 'style') {
       expect(MINI_PROGRAM_STYLE_OUTPUT_RE.test(styleMetric.outputStyle), `[${item.project}] style mutation should use mini-program style output`).toBe(true)
       expect(styleMetric.styleNeedle).toContain('.tw-watch-style-')
-      if (noApplyValidationCases.has(item.name)) {
+      if (noApplyValidationCases.has(baseCaseName)) {
         expect(styleMetric.applyUtilities.length).toBe(0)
         expect(styleMetric.expectedApplyDeclarations.length).toBe(0)
       }
@@ -1234,7 +1240,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(styleMetric.applyUtilities.length).toBeGreaterThan(0)
         expect(styleMetric.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
-      if (noFunctionValidationCases.has(item.name)) {
+      if (noFunctionValidationCases.has(baseCaseName)) {
         expect(styleMetric.functionNeedle).toBeUndefined()
         expect(styleMetric.functionDeclarations.length).toBe(0)
         expect(styleMetric.expectedFunctionDeclarations.length).toBe(0)
@@ -1246,7 +1252,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(styleMetric.expectedFunctionDeclarations.length).toBeGreaterThan(0)
         expect(styleMetric.forbiddenFunctionFragments).toContain('theme(')
       }
-      if (referenceDirectiveRequiredCases.has(item.name)) {
+      if (referenceDirectiveRequiredCases.has(baseCaseName)) {
         expect(styleMetric.referenceDirective).toBe('@reference "tailwindcss";')
       }
       else {
@@ -1275,7 +1281,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
       expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
       expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
-      if (!noApplyValidationCases.has(item.name)) {
+      if (!noApplyValidationCases.has(baseCaseName)) {
         expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
         expect(subPackageMetric.style.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
@@ -1289,7 +1295,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 
   const commentCarrierSummary: CommentCarrierSummaryItem[] = report.cases
-    .filter(item => commentCarrierRequiredCases.has(item.name))
+    .filter(item => commentCarrierRequiredCases.has(resolveReportBaseCaseName(item)))
     .map((item) => {
       const scriptMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'script')
       if (!scriptMetric || scriptMetric.mutationKind === 'style') {

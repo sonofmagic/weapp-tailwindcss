@@ -121,7 +121,7 @@ function createUniAppPlatformCase(
   watchCase: WatchCase,
   platform: UniAppMiniProgramWatchPlatform,
 ): WatchCase {
-  const replacePlatformPath = (filePath: string) => replacePathSegment(filePath, '/dist/dev/mp-weixin/', `/dist/dev/${platform}/`)
+  const replacePlatformPath = (filePath: string) => replacePathSegment(filePath, '/dist/dev/mp-weixin/', `/dist/build/${platform}/`)
   return {
     ...watchCase,
     name: `${watchCase.name}:${platform}`,
