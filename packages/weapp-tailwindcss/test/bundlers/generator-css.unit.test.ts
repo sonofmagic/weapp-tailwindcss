@@ -126,6 +126,14 @@ describe('bundlers/shared generator css', () => {
     expect(score).toBeGreaterThan(0)
   })
 
+  it('detects generated Tailwind CSS markers without treating plain css as generated', async () => {
+    const { hasTailwindGeneratedCssMarkers } = await import('@/bundlers/shared/generator-css')
+    expect(hasTailwindGeneratedCssMarkers('.flex{display:flex}')).toBe(false)
+    expect(hasTailwindGeneratedCssMarkers('.hover\\:bg-sky-500:hover{background-color:var(--color-sky-500)}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers('@property --tw-gradient-from{syntax:"*";inherits:false}')).toBe(true)
+    expect(hasTailwindGeneratedCssMarkers('/*! weapp-tailwindcss generator-placeholder */')).toBe(true)
+  })
+
   it('unwraps Tailwind v4 user layer blocks for mini-program generator user css', async () => {
     const { transformGeneratorUserCss } = await import('@/bundlers/shared/generator-css/user-css')
     const styleHandler = vi.fn(async (code: string) => ({ css: code }))
@@ -813,6 +821,95 @@ describe('bundlers/shared generator css', () => {
       expect(result?.css).toContain('.px-3')
       expect(result?.css).toContain('.py-2')
       expect(result?.css).toContain('.text-slate-700')
+    }
+    finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
+  it('generates default web utilities from Tailwind v4 explicit @source entries', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-web-real-source-scan-'))
+    const cssEntry = path.join(root, 'src/css/tailwind.css')
+    const page = path.join(root, 'src/pages/index.tsx')
+    try {
+      await mkdir(path.dirname(cssEntry), { recursive: true })
+      await mkdir(path.dirname(page), { recursive: true })
+      await writeFile(cssEntry, [
+        '@import "tailwindcss" source(none);',
+        '@source "../../src/**/*.{ts,tsx}";',
+      ].join('\n'), 'utf8')
+      await writeFile(page, 'export default <div className="flex grid items-center bg-[#0284c7]"></div>', 'utf8')
+
+      const { createContext } = await import('./vite-plugin.testkit')
+      const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+      const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+      const ctx = createContext({
+        generator: {
+          target: 'web',
+        },
+        styleHandler,
+        tailwindRuntime: {
+          options: {
+            projectRoot: root,
+            tailwindcss: {
+              cwd: root,
+              v4: {
+                base: root,
+                cssEntries: [cssEntry],
+              },
+            },
+          },
+        },
+        tailwindcss: {
+          v4: {
+            base: root,
+            cssEntries: [cssEntry],
+          },
+        },
+      } as any)
+      const rawSource = await readFile(cssEntry, 'utf8')
+      const result = await generateTailwindV4Css({
+        opts: ctx as any,
+        runtimeState: {
+          tailwindRuntime: ctx.tailwindRuntime as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: new Set(),
+        rawSource,
+        file: cssEntry,
+        outputFile: cssEntry,
+        cssHandlerOptions: {
+          isMainChunk: true,
+          postcssOptions: {
+            options: {
+              from: cssEntry,
+            },
+          },
+          majorVersion: 4,
+        } as any,
+        cssUserHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: cssEntry,
+            },
+          },
+          majorVersion: 4,
+        } as any,
+        styleHandler,
+        debug: vi.fn(),
+      })
+
+      expect([...(result?.classSet ?? new Set())]).toEqual(expect.arrayContaining([
+        'flex',
+        'grid',
+        'items-center',
+        'bg-[#0284c7]',
+      ]))
+      expect(result?.css).toContain('.flex')
+      expect(result?.css).toContain('.grid')
+      expect(result?.css).toContain('.items-center')
+      expect(result?.css).toContain('.bg-\\[\\#0284c7\\]')
     }
     finally {
       await rm(root, { recursive: true, force: true })

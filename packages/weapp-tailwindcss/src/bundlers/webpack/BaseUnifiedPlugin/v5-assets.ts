@@ -1,7 +1,7 @@
 import type { SourceCandidateStore } from '../../vite/source-candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions, WebpackSourceLike } from './v5-assets/helpers'
 import type { WebpackSourceCandidateScanMemoryStats } from './v5-assets/source-candidate-cache'
-import type { LinkedJsModuleResult } from '@/types'
+import type { LinkedJsModuleResult, TailwindcssRuntimeLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { MappingChars2String } from '@weapp-core/escape'
@@ -94,6 +94,18 @@ function isRuntimeTransformCandidate(candidate: string) {
 
 function collectRuntimeTokenSignatureParts(source: string) {
   return source.match(/[\w-]+_[A-Z][\w-]*/gi) ?? []
+}
+
+function getRuntimeClassSetSync(tailwindRuntime: TailwindcssRuntimeLike) {
+  if (typeof tailwindRuntime.getClassSetSync !== 'function') {
+    return new Set<string>()
+  }
+  try {
+    return new Set(tailwindRuntime.getClassSetSync() ?? [])
+  }
+  catch {
+    return new Set<string>()
+  }
 }
 
 function toMb(bytes: number) {
@@ -951,8 +963,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         let runtimeSet: Set<string>
         let runtimeAffectingSourceHash = 'runtime-affecting:0'
         if (watchMode && runtimeState.tailwindRuntime.majorVersion === 4 && !forceRuntimeRefresh) {
+          const shouldSkipInitialRuntimeBundleScan = isWebGeneratorTarget && !webpackWatchRuntimeScanInitialized
+          const baseRuntimeSet = shouldSkipInitialRuntimeBundleScan
+            ? getRuntimeClassSetSync(runtimeState.tailwindRuntime)
+            : await ensureRuntimeClassSet(runtimeState, {
+                forceRefresh: false,
+                forceCollect: false,
+                clearCache: false,
+                allowEmpty: false,
+              })
           const snapshot = buildWebpackBundleSnapshot(assets as any, compilerOptions, bundleBuildState, compilation as any)
-          if (!webpackWatchRuntimeScanInitialized) {
+          if (!webpackWatchRuntimeScanInitialized && !shouldSkipInitialRuntimeBundleScan) {
             for (const entry of snapshot.entries) {
               if (entry.type === 'html' || entry.type === 'js') {
                 snapshot.runtimeAffectingChangedByType[entry.type].add(entry.file)
@@ -963,19 +984,26 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             ...(groupedEntries.html ?? []).map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
             ...(groupedEntries.js ?? []).map(([file, source]) => `${file}:${compilerOptions.cache.computeHash(source.source().toString())}`),
           ].sort().join('\n\n'))
-          try {
-            runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
-            })
+          if (shouldSkipInitialRuntimeBundleScan) {
+            runtimeSet = baseRuntimeSet
           }
-          catch (error) {
-            debug('webpack incremental runtime set sync failed, fallback to full collect: %O', error)
-            await bundleRuntimeClassSetManager.reset()
-            runtimeSet = await ensureRuntimeClassSet(runtimeState, {
-              forceRefresh: false,
-              forceCollect: true,
-              clearCache: false,
-              allowEmpty: false,
-            })
+          else {
+            try {
+              runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
+                baseClassSet: baseRuntimeSet,
+                skipInitialFullScanWithBase: false,
+              })
+            }
+            catch (error) {
+              debug('webpack incremental runtime set sync failed, fallback to full collect: %O', error)
+              await bundleRuntimeClassSetManager.reset()
+              runtimeSet = await ensureRuntimeClassSet(runtimeState, {
+                forceRefresh: false,
+                forceCollect: true,
+                clearCache: false,
+                allowEmpty: false,
+              })
+            }
           }
           releaseWebpackBundleSnapshotSources(snapshot)
           updateBundleBuildState(bundleBuildState, snapshot, new Map(), { incremental: true })
@@ -1025,7 +1053,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         let currentJsRuntimeCandidates: Set<string> | undefined
         let currentJsRuntimeTokenSignature: string | undefined
         const getCurrentJsRuntimeCandidates = () => {
-          if (runtimeState.tailwindRuntime.majorVersion !== 4) {
+          if (isWebGeneratorTarget || runtimeState.tailwindRuntime.majorVersion !== 4) {
             return undefined
           }
           if (currentJsRuntimeCandidates) {
@@ -1049,6 +1077,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const getCurrentJsRuntimeTokenSignature = () => {
           if (currentJsRuntimeTokenSignature !== undefined) {
+            return currentJsRuntimeTokenSignature
+          }
+          if (isWebGeneratorTarget) {
+            currentJsRuntimeTokenSignature = ''
             return currentJsRuntimeTokenSignature
           }
           const tokens: string[] = []
@@ -1398,6 +1430,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const generatorRawSource = resolveWebpackGeneratorRawSource(currentRawSource, cssHandlerOptions)
                   const sourceFile = cssHandlerOptions.sourceOptions?.sourceFile
                   const loaderGeneratedCss = sourceFile
+                    && !isWebGeneratorTarget
                     ? generatedCssSources.get(path.resolve(sourceFile))
                     : undefined
                   if (loaderGeneratedCss) {
