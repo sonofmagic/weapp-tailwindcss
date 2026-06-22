@@ -238,9 +238,17 @@ wx-root-portal-content {
 .border-_b10px_B {
   border-width: 10px;
 }
+ /* tokens: border-[10rpx] <= src/pages/index.mpx */
+.border-_b10rpx_B {
+  border-width: 10rpx;
+}
  /* tokens: border-t-[4px] <= src/pages/index.mpx */
 .border-t-_b4px_B {
   border-top-width: 4px;
+}
+ /* tokens: border-b-[4rpx] <= src/pages/index.mpx */
+.border-b-_b4rpx_B {
+  border-bottom-width: 4rpx;
 }
  /* tokens: border-solid <= src/pages/index.mpx */
 .border-solid {
@@ -251,17 +259,9 @@ wx-root-portal-content {
 .border-_b_h098765_B {
   border-color: #098765;
 }
- /* tokens: border-[10rpx] <= src/pages/index.mpx */
-.border-_b10rpx_B {
-  border-width: 10rpx;
-}
  /* tokens: border-[red] <= src/pages/index.mpx */
 .border-_bred_B {
   border-color: red;
-}
- /* tokens: border-b-[4rpx] <= src/pages/index.mpx */
-.border-b-_b4rpx_B {
-  border-bottom-width: 4rpx;
 }
  /* tokens: !bg-green-500 <= src/pages/index.mpx */
 ._ebg-green-500 {

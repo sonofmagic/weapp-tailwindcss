@@ -1,7 +1,29 @@
 {
   "file": "src/sub-normal/pages/index.tsx",
-  "count": 1,
+  "count": 23,
   "tokens": [
-    "before:content-['normal_subpackage_taro-vite-react-tailwindcss-v4']"
+    "!mt-2",
+    "-translate-y-1",
+    "[--watch-hmr-offset:000089px]",
+    "[@supports(display:grid)]:grid",
+    "[mask-type:luminance]",
+    "after:ml-[0.000089px]",
+    "before:content-['normal_subpackage_taro-vite-react-tailwindcss-v4']",
+    "bg-[#000089]",
+    "bg-[rgb(12,34,56)]",
+    "data-[state=open]:opacity-100",
+    "grid-cols-[200rpx_minmax(900rpx,_1fr)_000089px]",
+    "grid-rows-[auto_minmax(0,_1fr)]",
+    "group-[:nth-of-type(3)_&]:block",
+    "h-[22px]",
+    "max-[712px]:p-[13px]",
+    "ring-[1.9px]",
+    "space-y-2.5",
+    "supports-[backdrop-filter:blur(2px)]:backdrop-blur-[2px]",
+    "supports-[display:grid]:grid",
+    "text-[23.000089px]",
+    "text-[34px]",
+    "text-black/[0.00]",
+    "w-[calc(100%_-_000089px)]"
   ]
 }
