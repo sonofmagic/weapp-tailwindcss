@@ -7,7 +7,6 @@ import { createStyleHandler } from '@/index'
 import { createStylePipeline } from '@/pipeline'
 
 const v4Code = fs.readFileSync(path.resolve(__dirname, '../fixtures/css/v4.1.2.css'), 'utf8')
-const v3Code = fs.readFileSync(path.resolve(__dirname, '../fixtures/css/v3.css'), 'utf8')
 
 /** 不含任何现代特征的简单 CSS */
 const simpleCode = `
@@ -45,7 +44,6 @@ const baseOptions = { isMainChunk: true }
 
 // 预计算信号
 const v4Signal = probeFeatures(v4Code)
-const v3Signal = probeFeatures(v3Code)
 const simpleSignal = probeFeatures(simpleCode)
 const rpxSignal = probeFeatures(rpxCode)
 
@@ -56,9 +54,6 @@ const fullProcessor = postcss(fullPipeline.plugins)
 const v4Pipeline = createStylePipeline({ ...baseOptions } as any, v4Signal)
 const v4Processor = postcss(v4Pipeline.plugins)
 
-const v3Pipeline = createStylePipeline({ ...baseOptions } as any, v3Signal)
-const v3Processor = postcss(v3Pipeline.plugins)
-
 const simplePipeline = createStylePipeline({ ...baseOptions } as any, simpleSignal)
 const simpleProcessor = postcss(simplePipeline.plugins)
 
@@ -68,10 +63,6 @@ const rpxProcessor = postcss(rpxPipeline.plugins)
 describe('pipeline pruning benchmark - 信号探测开销', () => {
   bench('probeFeatures: v4 CSS (198 行)', () => {
     probeFeatures(v4Code)
-  })
-
-  bench('probeFeatures: v3 CSS (10 行)', () => {
-    probeFeatures(v3Code)
   })
 
   bench('probeFeatures: 简单 CSS (20 行)', () => {
@@ -108,15 +99,11 @@ describe('pipeline pruning benchmark - 端到端 handler 对比', () => {
     await handler(v4Code, { isMainChunk: true, majorVersion: 4 })
   })
 
-  bench('handler: v3 CSS (含 :not)', async () => {
-    await handler(v3Code, { isMainChunk: true, majorVersion: 3 })
-  })
-
   bench('handler: 简单 CSS (无现代特征)', async () => {
     await handler(simpleCode, { isMainChunk: true })
   })
 
   bench('handler: rpx CSS (无现代特征)', async () => {
-    await handler(rpxCode, { isMainChunk: true, majorVersion: 2 })
+    await handler(rpxCode, { isMainChunk: true })
   })
 })

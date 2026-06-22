@@ -11,7 +11,6 @@ describe('postcss v4 @apply', () => {
 
     const result = await postcss([
       weappTailwindcssPostcssPlugin({
-        version: 4,
         packageName: 'tailwindcss',
         base: process.cwd(),
         projectRoot: process.cwd(),
@@ -42,8 +41,7 @@ describe('postcss v4 @apply', () => {
     expect(result.css).toContain('display: flex')
     expect(result.css).toContain('flex-direction: column')
     expect(result.css).toContain('align-items: center')
-    expect(result.css).toContain('--spacing: 8rpx')
-    expect(result.css).toContain('padding-top: calc(var(--spacing) * 4)')
+    expect(result.css).toContain('padding-top: calc(var(--spacing, 0.25rem) * 4)')
     expect(result.css).toContain('background-color: rgba(49, 237, 216, 0.54)')
     expect(result.css).not.toContain('@apply')
     expect(result.css).not.toContain('@reference')

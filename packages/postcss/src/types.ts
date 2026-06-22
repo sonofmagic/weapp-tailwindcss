@@ -164,7 +164,7 @@ export type IStyleHandlerOptions = {
   uniAppX?: boolean | undefined
   uniAppXCssTarget?: UniAppXCssTarget | undefined
   uniAppXUnsupported?: UniAppXUnsupportedMode | undefined
-  majorVersion?: number | undefined
+  majorVersion?: 4 | undefined
 } & RequiredStyleHandlerOptions
 
 export interface UserDefinedPostcssOptions {

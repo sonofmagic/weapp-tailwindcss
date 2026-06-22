@@ -5,7 +5,6 @@ import { prependConfigDirective } from './config-directive'
 import { addDependencyMessages, addSourceDependencyMessages, replaceRootCss, resolvePostcssBase, resolvePostcssProjectRoot } from './context'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from './directives'
 import { collectAutoTailwindCandidates, collectPostcssLocalSources } from './source-files'
-import { resolvePostcssTailwindVersion } from './tailwind-version'
 
 const PLUGIN_NAME = 'weapp-tailwindcss'
 
@@ -15,8 +14,9 @@ function isTailwindV4ApplyOnlyCss(css: string, root: postcss.Root) {
 }
 
 function resolveTailwindV4PostcssSourceCss(css: string, sourceOptions: Pick<WeappTailwindcssPostcssPluginOptions, 'packageName'>, root: postcss.Root) {
+  const packageName = sourceOptions.packageName ?? 'tailwindcss'
   return isTailwindV4ApplyOnlyCss(css, root)
-    ? `@import "${sourceOptions.packageName ?? 'tailwindcss'}" source(none);\n${css}`
+    ? `@import "${packageName}" source(none);\n@reference "${packageName}";\n${css}`
     : css
 }
 
@@ -91,7 +91,6 @@ export function createWeappTailwindcssPostcssPlugin(
           ...sourceOptions
         } = options
         const generatorOptions = adapters.normalizeGeneratorOptions(userGeneratorOptions)
-        const tailwindVersion = resolvePostcssTailwindVersion(root, result, options)
 
         const [collectedSources, autoCandidates] = await Promise.all([
           collectPostcssLocalSources(root, result, options),
@@ -99,7 +98,7 @@ export function createWeappTailwindcssPostcssPlugin(
         ])
         const generatorConfig = generatorOptions.config ?? options.config
         const rawCss = sourceOptions.css ?? root.toString()
-        const isApplyOnlyTailwindV4Css = tailwindVersion === 4 && isTailwindV4ApplyOnlyCss(rawCss, root)
+        const isApplyOnlyTailwindV4Css = isTailwindV4ApplyOnlyCss(rawCss, root)
         const source = await adapters.resolveTailwindV4Source({
           ...sourceOptions,
           css: prependConfigDirective(
@@ -159,6 +158,5 @@ export type {
   WeappTailwindcssPostcssGeneratorUserOptions,
   WeappTailwindcssPostcssPluginAdapters,
   WeappTailwindcssPostcssPluginOptions,
-  WeappTailwindcssPostcssTailwindVersion,
   WeappTailwindcssPostcssTarget,
 } from './types'

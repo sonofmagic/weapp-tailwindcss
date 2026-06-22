@@ -41,7 +41,6 @@ export type {
   WeappTailwindcssPostcssGeneratorUserOptions,
   WeappTailwindcssPostcssPluginAdapters,
   WeappTailwindcssPostcssPluginOptions,
-  WeappTailwindcssPostcssTailwindVersion,
   WeappTailwindcssPostcssTarget,
 } from './generator-plugin'
 export * from './handler'

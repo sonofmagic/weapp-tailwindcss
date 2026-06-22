@@ -4,7 +4,6 @@ import { bench, describe } from 'vitest'
 import { createStyleHandler } from '@/index'
 
 const v4Code = fs.readFileSync(path.resolve(__dirname, '../fixtures/css/v4.1.2.css'), 'utf8')
-const v3Code = fs.readFileSync(path.resolve(__dirname, '../fixtures/css/v3.css'), 'utf8')
 const rpxCode = `
 .border-_b10rpx_B { border-style: var(--tw-border-style); border-color: 10rpx; }
 .text-_b32rpx_B { color: 32rpx; }
@@ -14,8 +13,7 @@ const rpxCode = `
 `
 
 const v4Handler = createStyleHandler({ isMainChunk: true })
-const v3Handler = createStyleHandler({ isMainChunk: true })
-const v2Handler = createStyleHandler({ isMainChunk: true })
+const rpxHandler = createStyleHandler({ isMainChunk: true })
 
 describe('style handler benchmark', () => {
   bench('tailwind v4 main chunk', async () => {
@@ -25,17 +23,9 @@ describe('style handler benchmark', () => {
     })
   })
 
-  bench('tailwind v3 main chunk', async () => {
-    await v3Handler(v3Code, {
+  bench('rpx arbitrary value normalization', async () => {
+    await rpxHandler(rpxCode, {
       isMainChunk: true,
-      majorVersion: 3,
-    })
-  })
-
-  bench('rpx arbitrary value normalization (v2 jit)', async () => {
-    await v2Handler(rpxCode, {
-      isMainChunk: true,
-      majorVersion: 2,
     })
   })
 })

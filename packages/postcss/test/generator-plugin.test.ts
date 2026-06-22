@@ -29,7 +29,7 @@ function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters
 }
 
 describe('generator postcss plugin factory', () => {
-  it('prepends Tailwind import for v4 apply-only css before resolving source', async () => {
+  it('prepends Tailwind import and reference for apply-only css before resolving source', async () => {
     const { adapters } = createAdapters({
       createGenerator: vi.fn(() => ({
         generate: vi.fn(async () => ({
@@ -48,7 +48,6 @@ describe('generator postcss plugin factory', () => {
     const plugin = createWeappTailwindcssPostcssPlugin(adapters)
     const result = await postcss([
       plugin({
-        version: 4,
         scanSources: false,
       }),
     ]).process('.card { @apply flex; }', {
@@ -58,23 +57,11 @@ describe('generator postcss plugin factory', () => {
     expect(adapters.resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
       css: expect.stringContaining('@import "tailwindcss" source(none);'),
     }))
+    expect(adapters.resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+      css: expect.stringContaining('@reference "tailwindcss";'),
+    }))
     expect(result.css).toContain('.card')
     expect(result.css).toContain('--spacing')
     expect(result.css).not.toContain('.unused')
-  })
-
-  it('uses explicit version before installed package detection', async () => {
-    const { adapters } = createAdapters()
-    const plugin = createWeappTailwindcssPostcssPlugin(adapters)
-    await postcss([
-      plugin({
-        version: 4,
-        scanSources: false,
-      }),
-    ]).process('.card { @apply flex; }', {
-      from: import.meta.filename,
-    })
-
-    expect(adapters.resolveTailwindV4Source).toHaveBeenCalled()
   })
 })

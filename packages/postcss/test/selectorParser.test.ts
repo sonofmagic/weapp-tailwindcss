@@ -101,13 +101,13 @@ describe('selectorParser', () => {
 
   it.each([
     [
-      'tailwind v3/v4 class dark selector',
+      'tailwind class dark selector',
       '.dark\\:bg-black:where(.dark, .dark *){color:red;}',
       ['.dark_cbg-black.dark', '.dark_cbg-black.dark *'],
       [':where('],
     ],
     [
-      'tailwind v3/v4 attribute dark selector',
+      'tailwind attribute dark selector',
       '.dark\\:bg-black:where([data-mode="dark"], [data-mode="dark"] *){color:red;}',
       ['.dark_cbg-black[data-mode="dark"]', '.dark_cbg-black[data-mode="dark"] *'],
       [':where('],

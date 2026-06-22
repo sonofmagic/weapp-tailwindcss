@@ -1,7 +1,6 @@
 import type { IStyleHandlerOptions } from '../types'
 
 export type WeappTailwindcssPostcssTarget = 'weapp' | 'web' | 'tailwind'
-export type WeappTailwindcssPostcssTailwindVersion = 4
 
 export interface TailwindCandidateSource {
   content: string
@@ -69,10 +68,6 @@ export interface WeappTailwindcssPostcssPluginOptions extends TailwindV4SourceOp
    * 生成器配置，用于控制目标端和 Tailwind 配置路径。
    */
   generator?: WeappTailwindcssPostcssGeneratorUserOptions | undefined
-  /**
-   * 显式指定 Tailwind CSS 主版本。未传入时会从 CSS 与依赖环境推断。
-   */
-  version?: WeappTailwindcssPostcssTailwindVersion | undefined
   /**
    * Tailwind 配置文件路径。
    */

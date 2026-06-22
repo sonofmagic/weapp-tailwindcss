@@ -18,9 +18,8 @@ import { hasTailwindApplyDirective, hasTailwindRootDirectives } from './directiv
 
 const POSTCSS_SOURCE_PATTERN = createSourceScanPattern(DEFAULT_SOURCE_SCAN_EXTENSIONS)
 
-function isTailwindV4ApplyOnlyCss(root: Root, options: WeappTailwindcssPostcssPluginOptions) {
-  return options.version === 4
-    && hasTailwindApplyDirective(root.toString())
+function isTailwindV4ApplyOnlyCss(root: Root) {
+  return hasTailwindApplyDirective(root.toString())
     && !hasTailwindRootDirectives(root, { importFallback: true })
 }
 
@@ -82,7 +81,7 @@ export async function collectAutoTailwindCandidates(
   const projectRoot = resolvePostcssProjectRoot(result, options)
   const sourceEntries = []
   const hasSourceNone = root.toString().includes('source(none)')
-  const shouldSkipAutoScan = isTailwindV4ApplyOnlyCss(root, options)
+  const shouldSkipAutoScan = isTailwindV4ApplyOnlyCss(root)
   const inlineCandidates = collectCssInlineSourceCandidates(root)
 
   if (!hasSourceNone && !shouldSkipAutoScan) {

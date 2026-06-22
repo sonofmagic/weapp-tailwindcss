@@ -5,7 +5,7 @@ const LENGTH_VALUE_REGEXP = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?rpx$/i
 // 修复 Tailwind CSS 在 JIT 下将 rpx 解析为颜色的情况，返回是否发生变更
 export function normalizeTailwindcssRpxDeclaration(
   decl: Declaration,
-  options?: { majorVersion?: number },
+  options?: { majorVersion?: 4 },
 ): boolean {
   const majorVersion = options?.majorVersion
   const normalizedValue = decl.value.trim()

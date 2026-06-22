@@ -54,7 +54,7 @@ const DEFAULT_VARIABLE_SCOPE_SELECTORS = new Set([
   '::backdrop',
 ])
 
-export function isTailwindcssV4(options?: { majorVersion?: number }) {
+export function isTailwindcssV4(options?: { majorVersion?: 4 }) {
   return options?.majorVersion === 4
 }
 
