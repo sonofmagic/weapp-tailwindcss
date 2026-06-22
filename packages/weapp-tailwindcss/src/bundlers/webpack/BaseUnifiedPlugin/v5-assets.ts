@@ -161,9 +161,10 @@ interface WebpackGeneratorUserCssSource {
 function shouldUseWebpackAssetAsGeneratorUserCss(
   rawSource: string,
   generatorRawSource: string,
+  options: { processed?: boolean | undefined } = {},
 ) {
   return rawSource !== generatorRawSource
-    && !rawSource.includes('data:')
+    && (options.processed === true || !rawSource.includes('data:'))
     && !hasTailwindRootDirectives(rawSource, { importFallback: true })
     && !hasTailwindSourceDirectives(rawSource, { importFallback: true })
     && !hasTailwindApplyDirective(rawSource)
@@ -1400,18 +1401,26 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   )
                   const currentAssetLooksGenerated = hasTailwindGeneratedCss(currentRawSource)
                     || hasTailwindGeneratedCssMarkers(currentRawSource)
-                  const shouldAppendCurrentAssetUserCss = (!sourceCssProcessed || registeredUserRawSource === undefined)
-                    && !(sourceCssProcessed && currentAssetLooksGenerated)
+                  const shouldPreserveGeneratedWebAssetUserCss = isWebGeneratorTarget
+                    && runtimeState.tailwindRuntime.majorVersion === 4
+                    && currentAssetLooksGenerated
+                  const currentAssetHasUserCss = sourceCssProcessed && currentAssetLooksGenerated && !shouldPreserveGeneratedWebAssetUserCss
+                    ? false
+                    : shouldUseWebpackAssetAsGeneratorUserCss(currentRawSource, generatorRawSource, {
+                        processed: sourceCssProcessed || shouldPreserveGeneratedWebAssetUserCss,
+                      })
+                  const shouldAppendCurrentAssetUserCss = (!sourceCssProcessed || registeredUserRawSource === undefined || currentAssetHasUserCss)
+                    && !(sourceCssProcessed && currentAssetLooksGenerated && !currentAssetHasUserCss)
                   const userRawSource = createWebpackGeneratorUserCssSourceAppend(
                     sourceCssProcessed && shouldAppendCurrentAssetUserCss
                       ? {
                           css: currentRawSource,
                           processed: true,
                         }
-                      : shouldAppendCurrentAssetUserCss && shouldUseWebpackAssetAsGeneratorUserCss(currentRawSource, generatorRawSource)
+                      : shouldAppendCurrentAssetUserCss && currentAssetHasUserCss
                         ? {
                             css: currentRawSource,
-                            processed: false,
+                            processed: currentAssetLooksGenerated,
                           }
                         : undefined,
                     registeredUserRawSource,
