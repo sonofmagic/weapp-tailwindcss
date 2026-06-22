@@ -4,6 +4,10 @@ import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBu
 import { createBundleBuildState } from '@/bundlers/vite/bundle-state'
 import { createCache } from '@/cache'
 
+function toPosixPath(value: string) {
+  return value.replace(/\\/g, '/')
+}
+
 function createOptions() {
   return {
     cache: createCache(),
@@ -342,6 +346,6 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       },
     })
 
-    expect(activeResourceSets).toEqual([[subpackageCss]])
+    expect(activeResourceSets.map(resources => resources.map(toPosixPath))).toEqual([[toPosixPath(subpackageCss)]])
   })
 })

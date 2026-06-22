@@ -235,7 +235,7 @@ describe('bundlers/webpack WeappTailwindcss / watch ignored paths', () => {
 
   it('wraps mixed webpack watch ignored rules as a predicate', () => {
     const outputPath = path.resolve(process.cwd(), 'dist')
-    const ignoredPredicate = vi.fn((file: string) => file.includes('/custom-cache/'))
+    const ignoredPredicate = vi.fn((file: string) => file.replace(/\\/g, '/').includes('/custom-cache/'))
     const watch = vi.fn()
     const watchRunHandlers: Array<() => void> = []
     const compilation = {

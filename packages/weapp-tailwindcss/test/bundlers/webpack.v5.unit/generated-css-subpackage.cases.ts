@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, fs, getWebpackLoaderRuntime, mkdir, mkdtemp, os, path, rm, testState, WeappTailwindcss, writeFile } from './shared'
+
+function toPosixPath(value: string) {
+  return value.replace(/\\/g, '/')
+}
+
 describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => {
   setupWebpackV5UnitTest()
   it('scopes webpack Tailwind v4 subpackage css generation to each config content entry', async () => {
@@ -240,13 +245,13 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
             'tailwind.config.js',
           ]
             .map(file => path.join(dir, file))
-            .find(file => source?.css?.includes(file))
-        callsByFile.set(config, call[0]?.candidates as Set<string>)
+            .find(file => source?.css?.includes(toPosixPath(file)) || source?.css?.includes(file))
+        callsByFile.set(config ? toPosixPath(config) : config, call[0]?.candidates as Set<string>)
       }
-      expect(callsByFile.get(path.join(dir, 'tailwind.config.js'))).toEqual(new Set(['app-only']))
-      expect(callsByFile.get(path.join(dir, 'tailwind.config.sub-b.js'))).toEqual(new Set(['module-b-only']))
-      expect(callsByFile.get(path.join(dir, 'tailwind.config.sub-c.js'))).toEqual(new Set(['module-c-only']))
-      expect(callsByFile.get(path.join(dir, 'tailwind.config.sub-normal.js'))).toEqual(new Set(['normal-only']))
+      expect(callsByFile.get(toPosixPath(path.join(dir, 'tailwind.config.js')))).toEqual(new Set(['app-only']))
+      expect(callsByFile.get(toPosixPath(path.join(dir, 'tailwind.config.sub-b.js')))).toEqual(new Set(['module-b-only']))
+      expect(callsByFile.get(toPosixPath(path.join(dir, 'tailwind.config.sub-c.js')))).toEqual(new Set(['module-c-only']))
+      expect(callsByFile.get(toPosixPath(path.join(dir, 'tailwind.config.sub-normal.js')))).toEqual(new Set(['normal-only']))
     }
     finally {
       vi.doUnmock('@/generator')

@@ -577,31 +577,31 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       },
       sourceDomReplacementSequence: [
         {
-          label: 'bg-purple-800 to bg-[red]',
-          mutate(source) {
-            return replaceWebDomSnippet(
-              source,
-              `      <View className='bg-purple-800 text-pink-200'>`,
-              `      <View ${webDomMarkerAttr} className='bg-[red] text-pink-200'>`,
-            )
-          },
-          expectedText: '11',
-          expectedStyle: {
-            backgroundColor: 'rgb(255, 0, 0)',
-          },
-        },
-        {
           label: 'bg-[red] to bg-[#00ff00]',
           mutate(source) {
             return replaceWebDomSnippet(
               source,
-              `      <View ${webDomMarkerAttr} className='bg-[red] text-pink-200'>`,
-              `      <View ${webDomMarkerAttr} className='bg-[#00ff00] text-pink-200'>`,
+              `      <View className='bg-[red]'>Hello world!</View>`,
+              `      <View ${webDomMarkerAttr} className='bg-[#00ff00]'>Hello world!</View>`,
             )
           },
-          expectedText: '11',
+          expectedText: 'Hello world!',
           expectedStyle: {
             backgroundColor: 'rgb(0, 255, 0)',
+          },
+        },
+        {
+          label: 'bg-[#00ff00] to bg-[#0000ff]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `      <View ${webDomMarkerAttr} className='bg-[#00ff00]'>Hello world!</View>`,
+              `      <View ${webDomMarkerAttr} className='bg-[#0000ff]'>Hello world!</View>`,
+            )
+          },
+          expectedText: 'Hello world!',
+          expectedStyle: {
+            backgroundColor: 'rgb(0, 0, 255)',
           },
         },
       ],
