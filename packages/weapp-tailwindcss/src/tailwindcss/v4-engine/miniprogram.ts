@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { TailwindV4GenerateTarget } from './types'
 import type { AppType } from '@/types'
-import { createStyleHandler, normalizeTailwindcssRpxDeclarations, postcss, protectDynamicColorMixAlpha } from '@weapp-tailwindcss/postcss'
+import { createStyleHandler, normalizeTailwindcssWebRpxDeclarations, postcss, protectDynamicColorMixAlpha } from '@weapp-tailwindcss/postcss'
 import { hasCssMacroStyleOptions, transformCssMacroCss } from '@/css-macro/auto'
 import { shouldUseWebGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { pruneMiniProgramGeneratedCss } from '../miniprogram'
@@ -62,7 +62,7 @@ export function transformTailwindV4WebRpxCss(css: string) {
 
   try {
     const root = postcss.parse(css)
-    const changed = normalizeTailwindcssRpxDeclarations(root, { majorVersion: 4 })
+    const changed = normalizeTailwindcssWebRpxDeclarations(root, { majorVersion: 4 })
     return changed ? root.toString() : css
   }
   catch {
