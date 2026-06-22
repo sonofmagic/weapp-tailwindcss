@@ -404,11 +404,12 @@ describe('watch-hmr coverage matrix', () => {
 
   it('keeps the mpx script-only added-class regression guarded by global wxss output', () => {
     const mpxCase = automatedWatchCases.find(item => item.project === 'demo/mpx-tailwindcss-v4')
+    const globalStyleCandidates = mpxCase?.globalStyleCandidates.map(item => item.replace(/\\/g, '/')) ?? []
 
     expect(mpxCase).toBeDefined()
     expect(mpxCase?.scriptMutation.verifyClassLiteralIn).toContain('js')
-    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('styles/app*.wxss'))).toBe(true)
-    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('styles/index*.wxss'))).toBe(true)
+    expect(globalStyleCandidates.some(item => item.includes('styles/app*.wxss'))).toBe(true)
+    expect(globalStyleCandidates.some(item => item.includes('styles/index*.wxss'))).toBe(true)
     expect(mpxCase?.minGlobalStyleEscapedClasses).toBeUndefined()
     expect(mpxCase?.requireInitialCompileSuccess).toBeUndefined()
     expect(mpxCase?.initialMutationDelayMs).toBe(15_000)

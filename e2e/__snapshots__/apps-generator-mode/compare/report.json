@@ -10,14 +10,14 @@
     "cssFile": "gulp-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
+      "third-party-ui.wxss",
       "pages/more/more.wxss",
       "sub-independent/pages/index.wxss",
-      "sub-normal/pages/index.wxss",
-      "third-party-ui.wxss"
+      "sub-normal/pages/index.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 15950,
+      "bytes": 15432,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_gulp-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_gulp-tailwindcss-v4_a_B:before",
@@ -123,12 +123,11 @@
     "cssFiles": [
       "app.wxss",
       "styles/app.wxss",
-      "styles/third-party-ui.wxss",
-      "pages/component/index.wxss"
+      "styles/third-party-ui.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 15772,
+      "bytes": 15560,
       "selectors": [
         ".-m-_b20px_B",
         ".-mt-2",
@@ -298,7 +297,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 320857,
+      "bytes": 311418,
       "selectors": [
         ".-bg-conic-180",
         ".-bg-linear-65",
@@ -2551,6 +2550,7 @@
     "cssFile": "taro-vite-react-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
+      "app-origin.wxss",
       "pages/index/index.wxss",
       "sub-independent/pages/index.wxss",
       "sub-normal/pages/index.wxss",
@@ -2558,12 +2558,19 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 584590,
+      "bytes": 588420,
       "selectors": [
+        ".-translate-y-1",
+        "._b--watch-hmr-offset_c000089px_B",
+        "._bmask-type_cluminance_B",
+        "._emt-2",
+        ".after_cml-_b0_d000089px_B:after",
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-react-tailwindcss-v4_a_B:before",
+        ".bg-_b_h000089_B",
         ".bg-_b_h123456_B",
         ".bg-_bred_B",
+        ".bg-_brgb_p12_m34_m56_P_B",
         ".bg-gradient-to-r",
         ".bg-independent-subpackage-marker",
         ".bg-linear-to-r",
@@ -2573,6 +2580,7 @@
         ".dark_cbg-zinc-900.theme-dark",
         ".dark_cbg-zinc-950.theme-dark",
         ".dark_ctext-zinc-50.theme-dark",
+        ".data-_bstate_zopen_B_copacity-100[data-state='open']",
         ".fade-appear",
         ".fade-appear-active",
         ".fade-enter",
@@ -2582,8 +2590,12 @@
         ".fade-exit-active",
         ".fade-exit-done",
         ".from-cyan-500",
+        ".grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_000089px_B",
+        ".grid-rows-_bauto_minmax_p0_m_1fr_P_B",
         ".h-14",
+        ".h-_b22px_B",
         ".h-_b300px_B",
+        ".max-_b712px_B_cp-_b13px_B",
         ".mt-2",
         ".mt-4",
         ".nut-actionsheet",
@@ -4470,6 +4482,7 @@
         ".px-4",
         ".py-2",
         ".py-3",
+        ".ring-_b1_d9px_B",
         ".rounded",
         ".rtl-nut-range-button-wrapper",
         ".rtl-nut-range-button-wrapper-left",
@@ -4482,12 +4495,19 @@
         ".rtl-nut-range-vertical-mark",
         ".rtl-nut-range-vertical-mark-text-wrapper",
         ".rtl-nut-range-vertical-tick",
+        ".space-y-2_d5 > text + text",
+        ".space-y-2_d5 > text + view",
+        ".space-y-2_d5 > view + text",
+        ".space-y-2_d5 > view + view",
         ".system-dark_cbg-slate-900",
         ".system-dark_ctext-slate-100",
         ".taro-textarea",
+        ".text-_b23_d000089px_B",
+        ".text-_b34px_B",
         ".text-_b55rpx_B",
         ".text-_b_hc31d6b_B",
         ".text-_b_hfff_B",
+        ".text-black_f_b0_d00_B",
         ".text-slate-900",
         ".theme-dark .dark_cbg-zinc-900",
         ".theme-dark .dark_cbg-zinc-950",
@@ -4499,6 +4519,7 @@
         ".toast-fade-leave-to",
         ".tw-page-style-watch-anchor",
         ".tw-root",
+        ".w-_bcalc_p100_v_-_000089px_P_B",
         ".weapp-tw-user-ui-card",
         ".weapp-tw-user-ui-loading",
         "0%",
@@ -4521,6 +4542,8 @@
         "80%",
         "90%",
         ":host",
+        ":nth-of-type(3) .group text.group-_b_cnth-of-type_p3_P__n_B_cblock",
+        ":nth-of-type(3) .group view.group-_b_cnth-of-type_p3_P__n_B_cblock",
         "[dir='rtl'] .form-layout-left .nut-form-item-label",
         "[dir='rtl'] .form-layout-left .nut-form-item-label .required",
         "[dir='rtl'] .form-layout-right .nut-form-item-label",
@@ -4837,7 +4860,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 234921,
+      "bytes": 233262,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before",
@@ -6416,13 +6439,14 @@
     "cssFile": "taro-vite-vue3-tailwindcss-v4/dist/app.wxss",
     "cssFiles": [
       "app.wxss",
+      "app-origin.wxss",
       "sub-independent/pages/index.wxss",
       "sub-normal/pages/index.wxss",
       "vendors.wxss"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 557239,
+      "bytes": 557268,
       "selectors": [
         ".before_ccontent-_b_aindependent_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",
         ".before_ccontent-_b_anormal_subpackage_taro-vite-vue3-tailwindcss-v4_a_B:before",

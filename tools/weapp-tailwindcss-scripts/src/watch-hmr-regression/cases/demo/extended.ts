@@ -62,7 +62,11 @@ function normalizeExtension(version: 'v3' | 'v4') {
 }
 
 function replacePathSegment(filePath: string, from: string, to: string) {
-  return filePath.split(from).join(to)
+  const normalizedFrom = from.replace(/^\/|\/$/g, '')
+  const normalizedTo = to.replace(/^\/|\/$/g, '')
+  return filePath
+    .replaceAll(normalizedFrom.replaceAll('/', path.sep), normalizedTo.replaceAll('/', path.sep))
+    .replaceAll(normalizedFrom.replaceAll('/', '/'), normalizedTo.replaceAll('/', '/'))
 }
 
 function replaceExtension(filePath: string, from: string, to: string) {
