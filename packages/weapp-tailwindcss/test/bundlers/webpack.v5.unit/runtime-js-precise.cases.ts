@@ -147,15 +147,15 @@ describe('bundlers/webpack WeappTailwindcss / runtime js precise matching', () =
           getClassSet: vi.fn(async () => runtimeSet),
           getClassSetSync: vi.fn(() => runtimeSet),
           extract: vi.fn(async () => ({ classSet: runtimeSet })),
-          majorVersion: 3,
+          majorVersion: 4,
           options: {
             projectRoot: root,
             tailwindcss: {
               config: configFile,
               cwd: root,
-              v3: {
-                config: configFile,
-                cwd: root,
+              v4: {
+                css: '@import "tailwindcss";',
+                base: root,
               },
             },
           },

@@ -40,6 +40,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
         { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader.js??ruleSet[1]' },
         { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/index.js??ruleSet[1]' },
       ],
+      resource: '/abs/src/page.mpx?type=styles&lang=css',
     }
     handler?.({}, module)
 
@@ -66,6 +67,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
       loaders: [
         { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/strip-conditional-loader.js??ruleSet[1]' },
       ],
+      resource: '/abs/src/page.mpx?type=styles&lang=css',
     }
     handler?.({}, module)
 
@@ -93,6 +95,7 @@ describe('bundlers/webpack WeappTailwindcss / mpx loader wiring', () => {
         { loader: CSS_IMPORT_REWRITE_LOADER_PATH },
         { loader: '/abs/node_modules/@mpxjs/webpack-plugin/lib/style-compiler/index.js??ruleSet[0]' },
       ],
+      resource: '/abs/src/page.mpx?type=styles&lang=css',
     }
 
     handler?.({}, module)

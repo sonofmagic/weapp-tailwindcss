@@ -140,6 +140,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
 
   const disabledOptions = resolvePluginDisabledState(disabled)
   const tailwindcssMajorVersion = initialTailwindRuntime.majorVersion ?? 0
+  if (!disabledOptions.plugin && tailwindcssMajorVersion !== 4) {
+    throw new Error('weapp-tailwindcss/vite 新生成管线仅支持 Tailwind CSS v4，请升级 tailwindcss 或停留在旧版 weapp-tailwindcss。')
+  }
   const shouldOwnTailwindGeneration = !disabledOptions.plugin
   const shouldRewriteCssImports = opts.rewriteCssImports === true
   const generatorOptions = normalizeWeappTailwindcssGeneratorOptions(opts.generator, {
@@ -173,8 +176,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const registerAutoCssSource = async (id: string, css: string, options: { refresh?: boolean } = {}) => {
     if (
-      tailwindcssMajorVersion < 4
-      || !shouldOwnTailwindGeneration
+      !shouldOwnTailwindGeneration
     ) {
       return
     }
@@ -234,8 +236,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   }
   const discoverAndRegisterAutoCssSources = async () => {
     if (
-      tailwindcssMajorVersion < 4
-      || !shouldOwnTailwindGeneration
+      !shouldOwnTailwindGeneration
       || hasInitialTailwindCssRoots
       || !resolvedConfig?.root
     ) {
@@ -751,7 +752,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     onCssSourceTransform: (id, code) => cssMemory.refreshRememberedCssSourceBySourceFile(id, code),
     shouldGenerateCss: (_id, code) => hasVitePipelineTailwindGenerationDirective(code),
     shouldDeferGeneration: (_id, code) => !shouldRewriteCssImports
-      && tailwindcssMajorVersion >= 4
       && hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback }),
     shouldOwnTailwindGeneration,
     shouldRewrite: shouldRewriteCssImports,

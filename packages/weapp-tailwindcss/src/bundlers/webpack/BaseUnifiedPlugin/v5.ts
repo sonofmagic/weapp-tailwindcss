@@ -180,6 +180,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     if (disabledOptions.plugin) {
       return
     }
+    if (initialTailwindRuntime.majorVersion !== 4) {
+      throw new Error('weapp-tailwindcss/webpack 新生成管线仅支持 Tailwind CSS v4，请升级 tailwindcss 或停留在旧版 weapp-tailwindcss。')
+    }
     setupWebpackWatchOutputIgnore(compiler)
     const readyPromise = createTailwindRuntimeReadyPromise(initialTailwindRuntime)
     const runtimeState = {

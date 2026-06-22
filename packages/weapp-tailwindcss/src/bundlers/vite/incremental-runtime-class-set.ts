@@ -195,7 +195,7 @@ export function createBundleRuntimeClassSetManager(
 
   async function extractEntryRawCandidates(
     entry: BundleStateEntry,
-    runtime: TailwindcssRuntimeLike,
+    _runtime: TailwindcssRuntimeLike,
     _knownSourceCandidates?: Set<string>,
   ) {
     const extension = resolveEntryExtension(entry)
@@ -211,10 +211,8 @@ export function createBundleRuntimeClassSetManager(
         candidates.add(candidate)
       }
     }
-    if (runtime.majorVersion === 4) {
-      for (const candidate of collectEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
-        candidates.add(candidate)
-      }
+    for (const candidate of collectEscapedRuntimeCandidates(entry.source, escapeMap, escapeFragments)) {
+      candidates.add(candidate)
     }
     return candidates
   }

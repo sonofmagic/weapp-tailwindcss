@@ -323,7 +323,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -392,7 +392,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -474,7 +474,7 @@ describe('bundlers/vite incremental issue #33 regression', () => {
         getClassSet: vi.fn(async () => getRuntimeSet()),
         getClassSetSync: vi.fn(() => getRuntimeSet()),
         extract: vi.fn(async () => ({ classSet: getRuntimeSet() })),
-        majorVersion: 3,
+        majorVersion: 4,
       },
     }))
 
@@ -522,6 +522,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(transformedCode).not.toContain(stage.raw)
     }
 
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(stageTokens.length - 1)
   }, TEST_TIMEOUT_MS)
 })

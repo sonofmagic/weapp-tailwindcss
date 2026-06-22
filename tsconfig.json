@@ -24,13 +24,7 @@
       "path": "./packages-runtime/merge"
     },
     {
-      "path": "./packages-runtime/merge-v3"
-    },
-    {
       "path": "./packages-runtime/runtime"
-    },
-    {
-      "path": "./packages-runtime/tailwind-variant-v3"
     },
     {
       "path": "./packages-runtime/theme-transition"
@@ -43,9 +37,6 @@
     },
     {
       "path": "./packages-runtime/variants"
-    },
-    {
-      "path": "./packages-runtime/variants-v3"
     },
     {
       "path": "./packages/babel"

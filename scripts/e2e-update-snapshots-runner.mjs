@@ -23,17 +23,10 @@ function run(command, commandArgs) {
   })
 }
 
-const nodeMajor = Number.parseInt(process.versions.node.split('.')[0] ?? '0', 10)
-
-const command = nodeMajor >= 22
-  ? {
-      bin: process.execPath,
-      args: ['--experimental-strip-types', 'scripts/update-e2e-css-snapshots.ts'],
-    }
-  : {
-      bin: pnpmCmd,
-      args: ['exec', 'tsx', 'scripts/update-e2e-css-snapshots.ts'],
-    }
+const command = {
+  bin: pnpmCmd,
+  args: ['exec', 'tsx', 'scripts/update-e2e-css-snapshots.ts'],
+}
 
 const exitCode = await run(command.bin, command.args)
 process.exit(exitCode)

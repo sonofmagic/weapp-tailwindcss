@@ -120,7 +120,11 @@ export function createContext(overrides: Partial<TestContext> = {}): TestContext
       getClassSet: vi.fn(async () => runtimeSet),
       getClassSetSync: vi.fn(() => runtimeSet),
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
-      majorVersion: 3,
+      majorVersion: 4,
+      options: {
+        projectRoot: process.cwd(),
+        tailwindcss: {},
+      },
     },
     mainCssChunkMatcher: vi.fn(() => true),
     cssMatcher: (file: string) => file.endsWith('.css'),

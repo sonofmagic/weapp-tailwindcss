@@ -34,13 +34,32 @@ function createRuntime(projectRoot: string) {
   } as any
 }
 
-function createV3Runtime() {
+function createV4Runtime() {
   return {
-    majorVersion: 3,
+    majorVersion: 4,
     getClassSet: vi.fn(async () => new Set<string>()),
     extract: vi.fn(async () => ({ classSet: new Set<string>() })),
-    options: {},
+    options: {
+      projectRoot: process.cwd(),
+      tailwindcss: {
+        v4: {
+          cssSources: [{
+            css: '@theme { --color-test: #000; }',
+            base: process.cwd(),
+          }],
+          base: process.cwd(),
+        },
+      },
+    },
   } as any
+}
+
+function createCandidateValidator(validCandidates: string[]) {
+  const valid = new Set(validCandidates)
+  return vi.fn(async (options?: { content?: string }) => {
+    const source = options?.content ?? ''
+    return source.split(/\s+/).filter(candidate => valid.has(candidate))
+  })
 }
 
 describe('bundlers/vite incremental runtime class set', () => {
@@ -203,11 +222,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     )
   })
 
-  it('keeps current v3 high-confidence raw candidates even when base class set is stale', async () => {
+  it('keeps current v4 high-confidence raw candidates even when base class set is stale', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const jsSource = 'const n = "flex bg-yellow-300/30"; const bgObj = common_vendor.ref({ "bg-[#999998]": true });'
     const extractRawCandidates = vi.fn(async (content: string, extension?: string) => {
       if (extension === 'js' && content.includes('bg-[#999998]')) {
@@ -220,6 +239,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       return []
     })
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator(['flex', 'bg-[#999998]', 'bg-yellow-300/30']),
       extractRawCandidates,
     })
 
@@ -588,13 +608,21 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(secondRuntimeSet.has('text-[102.43rpx]')).toBe(false)
   })
 
-  it('restores escaped v3 runtime candidates from changed output files', async () => {
+  it('restores escaped v4 runtime candidates from changed output files', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const extractRawCandidates = vi.fn(async () => [])
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator([
+        'text-[23.000025px]',
+        'bg-[#000025]',
+        'after:ml-[0.000025px]',
+        'text-[23.000026px]',
+        'bg-[#000026]',
+        'after:ml-[0.000026px]',
+      ]),
       extractRawCandidates,
     })
 
@@ -746,11 +774,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractCandidates).toHaveBeenCalledTimes(2)
   })
 
-  it('keeps v3 non-source baseline classes while replacing changed source candidates', async () => {
+  it('keeps v4 non-source baseline classes while replacing changed source candidates', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('bg-blue-500')) {
         return [{ rawCandidate: 'bg-blue-500' }]
@@ -761,6 +789,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       return []
     })
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator(['bg-blue-500', 'bg-[#123455]']),
       extractRawCandidates,
     })
 
@@ -793,11 +822,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(extractRawCandidates).toHaveBeenCalledTimes(2)
   })
 
-  it('uses v3 baseline runtime set without scanning clean files on first incremental sync', async () => {
+  it('uses v4 baseline runtime set without scanning clean files on first incremental sync', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('bg-[red]')) {
         return [{ rawCandidate: 'bg-[red]' }]
@@ -808,6 +837,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       return []
     })
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator(['bg-[red]', 'vendor-token']),
       extractRawCandidates,
     })
 
@@ -851,11 +881,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     )
   })
 
-  it('keeps v3 rollback arbitrary classes from changed JS literals when raw positions are missing', async () => {
+  it('keeps v4 rollback arbitrary classes from changed JS literals when raw positions are missing', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('bg-[red]')) {
         return [
@@ -872,6 +902,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       return []
     })
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator(['bg-[red]', 'bg-[#4268EA]']),
       extractRawCandidates,
     })
 
@@ -909,11 +940,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(runtimeSet.has('shadow-indigo-100')).toBe(false)
   })
 
-  it('filters v3 raw text candidates by confirmed source candidates before JS transform', async () => {
+  it('filters v4 raw text candidates by confirmed source candidates before JS transform', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const extractRawCandidates = vi.fn(async (content: string) => {
       if (content.includes('Hello world!')) {
         return [
@@ -925,6 +956,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       return []
     })
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator(['bg-[red]', 'flex']),
       extractRawCandidates,
     })
 
@@ -943,11 +975,11 @@ describe('bundlers/vite incremental runtime class set', () => {
     expect(runtimeSet.has('world!')).toBe(false)
   })
 
-  it('keeps v3 bracket-like business text out of the runtime class set', async () => {
+  it('keeps v4 bracket-like business text out of the runtime class set', async () => {
     const opts = createOptions()
     const outDir = '/project/dist'
     const state = createBundleBuildState()
-    const runtime = createV3Runtime()
+    const runtime = createV4Runtime()
     const jsSource = [
       'const complexExpression = "size > 4 ? keep-[business] : App.vue:4"',
       'const view = <View className="bg-[red] before:content-[\\"111\\"] bg-yellow-300/30">Hello world!</View>',
@@ -960,6 +992,7 @@ describe('bundlers/vite incremental runtime class set', () => {
       { rawCandidate: 'bg-yellow-300/30', start: content.indexOf('bg-yellow-300/30') },
     ])
     const manager = createBundleRuntimeClassSetManager({
+      extractCandidates: createCandidateValidator(['bg-[red]', 'before:content-[\\"111\\"]', 'bg-yellow-300/30']),
       extractRawCandidates,
     })
 

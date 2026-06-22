@@ -23,7 +23,7 @@ interface ClearTailwindcssRuntimeCacheOptions {
 function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined): CssPreflightOptions {
   const userCssPreflight = opts?.cssOptions?.cssPreflight ?? opts?.cssPreflight
   const cssPreflight = resolveDefaultCssPreflight(userCssPreflight, majorVersion)
-  if (majorVersion !== 4 || cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
+  if (cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
     return cssPreflight
   }
   const userCssPreflightObject = userCssPreflight && typeof userCssPreflight === 'object'

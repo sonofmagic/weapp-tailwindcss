@@ -11,15 +11,20 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
     const generatedCss = '.tw-watch-style-case{font-weight:700;color:red}'
 
     vi.resetModules()
-    vi.doMock('@/generator', () => ({
-      createWeappTailwindcssGenerator: vi.fn(() => ({
-        generate: vi.fn(),
-      })),
-      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
-        target: 'weapp',
-        importFallback: true,
-        styleOptions: {},
-      })),    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+          target: 'weapp',
+          importFallback: true,
+          styleOptions: {},
+        })),
+      }
+    })
 
     try {
       await mkdir(path.dirname(sourceCssFile), { recursive: true })

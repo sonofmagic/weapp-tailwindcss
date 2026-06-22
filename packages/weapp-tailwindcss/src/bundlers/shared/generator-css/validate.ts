@@ -5,8 +5,6 @@ import {
 } from '@/generator'
 import { resolveGeneratorSources } from './source-resolver'
 
-const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([3, 4])
-
 export interface ValidateCandidatesByGeneratorOptions extends Omit<GenerateCssByGeneratorOptions, 'runtime'> {
   candidates: Set<string>
   skipGenerateFallback?: boolean | undefined
@@ -26,7 +24,7 @@ export async function validateCandidatesByGenerator(
     skipGenerateFallback,
   } = options
   const majorVersion = runtimeState.tailwindRuntime.majorVersion
-  if (!SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0) || candidates.size === 0) {
+  if (majorVersion !== 4 || candidates.size === 0) {
     return new Set<string>()
   }
 

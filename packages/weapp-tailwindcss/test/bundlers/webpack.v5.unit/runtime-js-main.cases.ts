@@ -1,23 +1,57 @@
 import { describe, expect, it, vi } from 'vitest'
-import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, path, testState, WeappTailwindcss } from './shared'
+import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, path, testState } from './shared'
 describe('bundlers/webpack WeappTailwindcss / runtime js main updates', () => {
   setupWebpackV5UnitTest()
-  it('regenerates main css when only runtime classes change', async () => {
+  it('preserves plain main css when only runtime classes change', async () => {
+    let generateCount = 0
+    const generateMock = vi.fn(async () => {
+      generateCount += 1
+      return {
+        css: `.runtime-${generateCount}{color:red}`,
+        rawCss: `.runtime-${generateCount}{color:red}`,
+        target: 'weapp',
+        classSet: new Set<string>(),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+          target: 'weapp',
+          importFallback: true,
+        })),
+      }
+    })
+    vi.resetModules()
+    const { WeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
     let runtimeSet = new Set(['bg-[#101010]'])
-    let transformCount = 0
     const cssInput = '.runtime-anchor { color: red; }'
     testState.currentContext = createContext({
       mainCssChunkMatcher: vi.fn(() => true),
-      styleHandler: vi.fn(async () => {
-        transformCount += 1
-        return { css: `runtime:${transformCount}` }
-      }),
       tailwindRuntime: {
         ...createContext().tailwindRuntime,
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
-        majorVersion: 3,
+        majorVersion: 4,
+        options: {
+          projectRoot: process.cwd(),
+          tailwindcss: {
+            v4: {
+              cssSources: [{
+                css: '@theme { --color-test: #000; }',
+                base: process.cwd(),
+              }],
+            },
+          },
+        },
       } as any,
     })
 
@@ -80,7 +114,7 @@ describe('bundlers/webpack WeappTailwindcss / runtime js main updates', () => {
 
     new WeappTailwindcss().apply(compiler as any)
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
-    expect(currentAssetStore['app.css']).toBe('runtime:1')
+    expect(currentAssetStore['app.css']).toBe('css:.runtime-anchor { color: red; }')
 
     runtimeSet = new Set(['bg-[#202020]'])
     currentAssetStore = {
@@ -88,11 +122,12 @@ describe('bundlers/webpack WeappTailwindcss / runtime js main updates', () => {
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(currentAssetStore['app.css']).toBe('runtime:2')
-    expect(testState.currentContext.styleHandler).toHaveBeenCalledTimes(2)
+    expect(currentAssetStore['app.css']).toBe('css:.runtime-anchor { color: red; }')
+    expect(generateMock).not.toHaveBeenCalled()
   })
 
   it('reuses template handler options for multiple html assets in one compilation', async () => {
+    const { WeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     let currentAssetStore: Record<string, string> = {}
     const compilation = {

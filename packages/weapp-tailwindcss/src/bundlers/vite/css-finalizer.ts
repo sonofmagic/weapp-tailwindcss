@@ -307,8 +307,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           ...runtime,
           ...(getSourceCandidates?.() ?? []),
         ])
-        const generatorRuntime = runtimeState.tailwindRuntime.majorVersion === 4
-          && shouldUseMiniProgramCssBranch(generatorBranch)
+        const generatorRuntime = shouldUseMiniProgramCssBranch(generatorBranch)
           ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
           : collectedGeneratorCandidates
         await Promise.all(entries.map(async ([bundleFile, output]) => {

@@ -382,7 +382,7 @@ describe('bundlers/gulp createPlugins', () => {
     tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
     tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
 
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v3-'))
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-'))
     ;(currentContext as any).tailwindcssBasedir = dir
     const srcDir = path.join(dir, 'src')
     const appCss = path.join(srcDir, 'app.scss')
@@ -579,7 +579,7 @@ describe('bundlers/gulp createPlugins', () => {
     tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
     tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
 
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v3-hot-'))
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-hot-'))
     ;(currentContext as any).tailwindcssBasedir = dir
     currentContext.mainCssChunkMatcher = vi.fn(() => false)
     const srcDir = path.join(dir, 'src')

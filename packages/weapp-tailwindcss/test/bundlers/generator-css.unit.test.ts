@@ -6411,7 +6411,7 @@ describe('bundlers/shared generator css', () => {
   })
 
   it('keeps Tailwind v4 @config css entries on the full runtime set', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v3-config-runtime-'))
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-config-runtime-'))
     const cssFile = path.join(root, 'src/app.wxss')
     const configFile = path.join(root, 'tailwind.config.js')
     await mkdir(path.dirname(cssFile), { recursive: true })
@@ -8663,6 +8663,41 @@ describe('bundlers/shared generator css', () => {
     expect(injected).toBe(0)
     expect(css).toBe('@import "app-origin.wxss";')
     expect(css).not.toContain('.from-origin')
+  })
+
+  it('preserves mini-program local import shell css without resolving imported assets', async () => {
+    const { injectViteProcessedCssIntoMainCssAssets } = await import('@/bundlers/vite/processed-css-assets')
+    const bundle = {
+      'app.wxss': {
+        type: 'asset',
+        fileName: 'app.wxss',
+        source: '@import "./main.wxss";\n',
+      },
+      'main.wxss': {
+        type: 'asset',
+        fileName: 'main.wxss',
+        source: '.from-main{color:red}',
+      },
+    } as any
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        mainCssChunkMatcher: (file: string) => file === 'app.wxss',
+        appType: 'uni-app-vite',
+      } as any,
+      getViteProcessedCssAssetResults: () => [[
+        '/project/src/main.css',
+        {
+          css: '.from-main{color:red}',
+          injectIntoMain: true,
+          outputFile: 'main.wxss',
+        },
+      ]],
+    })
+
+    expect(injected).toBe(0)
+    expect(bundle['app.wxss'].source).toBe('@import "./main.wxss";\n')
   })
 
   it('removes comment-only media rules after filtering imported vite-processed css', async () => {

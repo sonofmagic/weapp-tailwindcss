@@ -668,7 +668,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
       }
       const compilation = {
         compiler: { outputPath: path.join(root, 'dist') },
-        chunks: [{ id: 'app', hash: 'hash-v3-generated-user', files: ['app.wxss'] }],
+        chunks: [{ id: 'app', hash: 'hash-v4-generated-user', files: ['app.wxss'] }],
         chunkGraph: {
           getChunkModulesIterable: () => [{
             resource: appCssFile,
@@ -859,7 +859,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css generation',
         compiler: { outputPath: path.join(root, 'dist') },
         chunks: [{
           id: 'entry-runtime',
-          hash: 'hash-v3-processed-user',
+          hash: 'hash-v4-processed-user',
           files: ['entry/root-style.bundle.wxss'],
           hasRuntime: () => true,
         }],

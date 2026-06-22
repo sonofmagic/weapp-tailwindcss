@@ -8,7 +8,7 @@ import { inspect } from 'node:util'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { getWebpackLoaderRuntime } from './runtime-registry'
@@ -172,8 +172,11 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
   }
   const opt = resolveLoaderOptions(this.getOptions())
   const input = Buffer.isBuffer(source) ? source.toString('utf-8') : source
-  const hasTailwindRoot = typeof input === 'string' && hasTailwindRootDirectives(input, { importFallback: true })
-  const registerTask = hasTailwindRoot
+  const hasTailwindGeneratorSource = typeof input === 'string' && (
+    hasTailwindRootDirectives(input, { importFallback: true })
+    || hasTailwindApplyDirective(input)
+  )
+  const registerTask = hasTailwindGeneratorSource
     ? (() => {
         const css = normalizeCssConfigDirectives(
           normalizeTailwindSourceForGenerator(input, { importFallback: true }),
@@ -197,7 +200,7 @@ const WeappTwCssImportRewriteLoader: webpack.LoaderDefinitionFunction<CssImportR
     }
     return transformed
   }
-  const canGenerate = hasTailwindRoot
+  const canGenerate = hasTailwindGeneratorSource
     && opt?.tailwindcssImportRewrite?.compilerOptions
     && opt.tailwindcssImportRewrite.runtimeState
     && opt.tailwindcssImportRewrite.getRuntimeSet

@@ -229,6 +229,9 @@ function hasConfiguredContainerCompat(rawSource: string, file: string, cssHandle
 }
 
 function hasConfiguredContainerCompatSource(source: TailwindResolvedSource) {
+  if (typeof source.css !== 'string') {
+    return false
+  }
   if (hasContainerConfigToken(source.css)) {
     return true
   }

@@ -1,6 +1,6 @@
 import { add } from 'lodash'
 import { formatTime } from './utils/util'
-import './third-party-ui.css'
+import './app.css'
 
 console.log(add(1, 2))
 // app.js

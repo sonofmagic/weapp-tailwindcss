@@ -80,40 +80,6 @@ async function collectDependencyFilesForCompare(messages: postcss.Result['messag
 }
 
 describe('source negation e2e', () => {
-  it('honors Tailwind v4 content negation through the PostCSS generator', async () => {
-    const project = await createTempProject('weapp-tw-e2e-postcss-v3-not-')
-    try {
-      const { ignoredFile, pageFile } = await writeSharedSources(project.root)
-      const configFile = path.join(project.root, 'tailwind.config.js')
-      await writeFile(configFile, [
-        'module.exports = {',
-        '  content: ["./src/**/*.{ts,wxml}", "!./src/apis/**"],',
-        '  corePlugins: { preflight: false },',
-        '}',
-      ].join('\n'), 'utf8')
-
-      const result = await postcss([
-        weappTailwindcssPostcss({
-          version: 3,
-          config: configFile,
-        }),
-      ]).process('@tailwind utilities;', {
-        from: path.join(project.root, 'app.css'),
-      })
-
-      expect(result.css).toContain('.bg-_b_h112233_B')
-      expect(result.css).toContain('.w-_b100px_B')
-      expect(result.css).not.toContain('.text-_b77rpx_B')
-      expect(result.css).not.toContain('.bg-_b_h445566_B')
-      const dependencyFiles = await collectDependencyFilesForCompare(result.messages)
-      expect(dependencyFiles).toContain(await resolvePathForCompare(pageFile))
-      expect(dependencyFiles).not.toContain(await resolvePathForCompare(ignoredFile))
-    }
-    finally {
-      await project.cleanup()
-    }
-  })
-
   it('honors Tailwind v4 @source not through the PostCSS generator', async () => {
     const project = await createTempProject('weapp-tw-e2e-postcss-v4-not-')
     try {
@@ -141,52 +107,6 @@ describe('source negation e2e', () => {
       const dependencyFiles = await collectDependencyFilesForCompare(result.messages)
       expect(dependencyFiles).toContain(await resolvePathForCompare(pageFile))
       expect(dependencyFiles).not.toContain(await resolvePathForCompare(ignoredFile))
-    }
-    finally {
-      await project.cleanup()
-    }
-  })
-
-  it('honors Tailwind v4 content negation through a real Vite generator build', async () => {
-    const project = await createTempProject('weapp-tw-e2e-vite-v3-not-')
-    try {
-      await writeSharedSources(project.root)
-      await writeFile(path.join(project.root, 'tailwind.config.js'), [
-        'module.exports = {',
-        '  content: ["./src/**/*.{ts,wxml}", "!./src/apis/**"],',
-        '  corePlugins: { preflight: false },',
-        '}',
-      ].join('\n'), 'utf8')
-      await writeFile(path.join(project.root, 'src/app.css'), '@tailwind utilities;', 'utf8')
-      await writeFile(path.join(project.root, 'src/main.ts'), 'import "./app.css"; import "./apis/client"; console.log("bg-[#112233] w-[100px]");', 'utf8')
-
-      await build({
-        build: {
-          emptyOutDir: true,
-          outDir: path.join(project.root, 'dist'),
-          rollupOptions: {
-            input: path.join(project.root, 'src/main.ts'),
-          },
-        },
-        configFile: false,
-        logLevel: 'silent',
-        plugins: [
-          WeappTailwindcss({
-            tailwindcss: {
-              version: 3,
-              config: path.join(project.root, 'tailwind.config.js'),
-            },
-            tailwindcssBasedir: project.root,
-          })!,
-        ].flat(),
-        root: project.root,
-      })
-
-      const css = await readBuiltCss(project.root)
-      expect(css).toContain('.bg-_b_h112233_B')
-      expect(css).toContain('.w-_b100px_B')
-      expect(css).not.toContain('.text-_b77rpx_B')
-      expect(css).not.toContain('.bg-_b_h445566_B')
     }
     finally {
       await project.cleanup()

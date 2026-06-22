@@ -92,6 +92,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
     plugin.apply(compiler as any)
     const module: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/workspace/src/app.css',
     }
     loaderHandler?.({}, module)
     const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
@@ -150,6 +151,7 @@ describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
 
     const module: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/workspace/src/app.css',
     }
     getLoaderHandler()?.({}, module)
 

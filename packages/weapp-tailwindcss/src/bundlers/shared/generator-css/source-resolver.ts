@@ -68,16 +68,24 @@ function mergeCssSources(
   cssEntrySources: TailwindV4CssSource[] | undefined,
 ) {
   const merged: TailwindV4CssSource[] = []
-  const seenFiles = new Set<string>()
+  const fileIndex = new Map<string, number>()
   const addSource = (cssSource: TailwindV4CssSource) => {
     const file = typeof cssSource.file === 'string' && cssSource.file.length > 0
       ? path.resolve(cssSource.file)
       : undefined
     if (file) {
-      if (seenFiles.has(file)) {
+      const previousIndex = fileIndex.get(file)
+      if (previousIndex !== undefined) {
+        const previous = merged[previousIndex]
+        if (
+          typeof previous?.css !== 'string'
+          && typeof cssSource.css === 'string'
+        ) {
+          merged[previousIndex] = cssSource
+        }
         return
       }
-      seenFiles.add(file)
+      fileIndex.set(file, merged.length)
     }
     merged.push(cssSource)
   }
@@ -393,10 +401,10 @@ async function resolveSingleTailwindV4CssSource(
   const sourceBaseFallback = sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd()
   const sourceBase = resolveTailwindV4CssSourceBase(cssSource, sourceBaseFallback)
   const normalizedCssSource = normalizeTailwindV4CssSourceConfig(cssSource, sourceBase)
-  const source = await resolveTailwindV4Source({
-    ...omitUndefined(sourceOptions),
-    cssSources: [normalizedCssSource],
-  })
+  const source = await resolveTailwindV4Source(createSingleTailwindV4SourceOptions(sourceOptions, {
+    base: sourceBase,
+    css: normalizedCssSource.css,
+  }))
   return withGeneratorSourceMetadata(source, {
     matchedCssSourceFile: options.matched && typeof normalizedCssSource.file === 'string'
       ? normalizedCssSource.file
@@ -699,8 +707,7 @@ export async function resolveGeneratorSources(
     removeConfig: false,
   })
   if (
-    majorVersion !== 4
-    || (cssEntrySource && !cssHandlerOptions.isMainChunk)
+    (cssEntrySource && !cssHandlerOptions.isMainChunk)
     || (
       !cssHandlerOptions.isMainChunk
       && hasTailwindApplyDirective(rawSource)

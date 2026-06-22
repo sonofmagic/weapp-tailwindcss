@@ -205,7 +205,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     if (!changed && runtimeSetInitialized) {
       return runtimeSet
     }
-    if (runtimeState.tailwindRuntime.majorVersion === 4 && !runtimeSetDirty) {
+    if (!runtimeSetDirty) {
       try {
         runtimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, createGulpRuntimeSnapshot(runtimeSourcesByFile, [filename]))
         runtimeSetInitialized = true
@@ -222,11 +222,6 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   async function refreshGulpV4SourceCandidates(forceRefresh = false) {
-    if (runtimeState.tailwindRuntime.majorVersion !== 4) {
-      cachedGulpSourceCandidateGetter = undefined
-      cachedGulpSourceCandidateSourceGetter = undefined
-      return undefined
-    }
     const root = opts.tailwindcssBasedir ?? process.cwd()
     const sourceScan = await resolveViteSourceScanEntries(opts, runtimeState.tailwindRuntime, {
       root,
@@ -425,7 +420,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
       const shouldUseGenerator = true
       let gulpSourceCandidateGetter: typeof cachedGulpSourceCandidateGetter
-      if (shouldUseGenerator && runtimeState.tailwindRuntime.majorVersion === 4) {
+      if (shouldUseGenerator) {
         gulpSourceCandidateGetter = await refreshGulpV4SourceCandidates(cssSourceChanged)
       }
       const nextRuntimeSet = await refreshRuntimeSet({

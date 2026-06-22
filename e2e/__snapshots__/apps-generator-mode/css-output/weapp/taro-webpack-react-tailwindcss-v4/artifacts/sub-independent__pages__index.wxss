@@ -25,6 +25,15 @@ wx-root-portal-content {
   content: var(--tw-content);
 }
  /* tokens: before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-react-tailwindcss-v4';
+  content: var(--tw-content);
+}
+ /* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.tsx */
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
+ /* tokens: before:content-['independent_subpackage_taro-webpack-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
 .bg-independent-subpackage-marker {
   background-color: #dc2626;
 }

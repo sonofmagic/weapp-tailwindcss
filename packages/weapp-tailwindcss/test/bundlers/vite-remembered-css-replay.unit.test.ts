@@ -72,6 +72,7 @@ describe('bundlers/vite remembered css replay', () => {
       onUpdate: vi.fn(),
       opts: {
         cssMatcher: (file: string) => file.endsWith('.wxss'),
+        htmlMatcher: (file: string) => file.endsWith('.wxml'),
       },
       recordCssAssetResult: vi.fn(),
       recordViteProcessedCssAssetResult: vi.fn(),
@@ -79,7 +80,7 @@ describe('bundlers/vite remembered css replay', () => {
       rootDir: '/repo',
       runtimeState: {
         tailwindRuntime: {
-          majorVersion: 3,
+          majorVersion: 4,
         },
         readyPromise: Promise.resolve(),
       },

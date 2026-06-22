@@ -163,13 +163,13 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
       getViteProcessedCssAssetResults,
       markCssAssetProcessed,
       recordCssAssetResult,
-      shouldRemoveInjectedSourceAsset: (_targetFile, record) => {
-        if (record.injectIntoMain !== true || typeof record.outputFile !== 'string') {
+      shouldRemoveInjectedSourceAsset: (targetFile, record) => {
+        if (record.injectIntoMain === false) {
           return false
         }
+        const targetFileKey = normalizeOutputPathKey(targetFile)
         const recordFileKey = normalizeOutputPathKey(record.file)
-        const outputFileKey = normalizeOutputPathKey(record.outputFile)
-        return recordFileKey !== outputFileKey
+        return recordFileKey !== targetFileKey
       },
       debug,
       onUpdate,

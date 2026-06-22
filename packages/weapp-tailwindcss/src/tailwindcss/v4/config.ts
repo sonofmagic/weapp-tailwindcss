@@ -106,7 +106,7 @@ export function warnMissingCssEntries(
     return
   }
 
-  if (tailwindRuntime?.majorVersion !== 4) {
+  if (!tailwindRuntime) {
     return
   }
 
@@ -124,9 +124,9 @@ export function applyV4CssCalcDefaults(
   cssCalc: InternalUserDefinedOptions['cssCalc'],
   tailwindRuntime: TailwindcssRuntimeLike | undefined,
 ): InternalUserDefinedOptions['cssCalc'] {
-  const cssCalcOptions = cssCalc ?? tailwindRuntime?.majorVersion === 4
+  const cssCalcOptions = cssCalc ?? true
 
-  if (tailwindRuntime?.majorVersion === 4 && cssCalcOptions) {
+  if (tailwindRuntime && cssCalcOptions) {
     return ensureDefaultsIncluded(cssCalcOptions)
   }
 

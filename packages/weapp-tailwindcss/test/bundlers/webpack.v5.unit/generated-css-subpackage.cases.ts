@@ -4,7 +4,7 @@ import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, create
 describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => {
   setupWebpackV5UnitTest()
   it('scopes webpack Tailwind v4 subpackage css generation to each config content entry', async () => {
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-subpackage-'))
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v4-subpackage-'))
     const srcDir = path.join(dir, 'src')
     const appCss = path.join(srcDir, 'app.wxss')
     const moduleBCss = path.join(srcDir, 'moduleB/pages/index.wxss')
@@ -256,7 +256,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
   })
 
   it('does not merge main runtime candidates into webpack Tailwind v4 subpackage css', async () => {
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v3-subpackage-runtime-'))
+    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-v4-subpackage-runtime-'))
     const srcDir = path.join(dir, 'src')
     const subNormalCss = path.join(srcDir, 'sub-normal/pages/index.css')
     const appCss = path.join(srcDir, 'app.css')

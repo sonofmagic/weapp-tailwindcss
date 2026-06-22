@@ -21,7 +21,7 @@ import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState } from './bundle-state'
-import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
+import { collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
 import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/configured-css-sources'
 import { createCssAssetEmitter, resolveAssetSourceFile } from './generate-bundle/css-assets'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
@@ -57,6 +57,29 @@ export { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-fil
 export { resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
+
+function isRootMiniProgramStyleOutputFile(file: string) {
+  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  return !normalized.includes('/')
+    && /\.(?:wxss|acss|ttss|qss|jxss|tyss)$/i.test(normalized)
+}
+
+function createRelativeCssImportRequest(targetFile: string, importedFile: string) {
+  const normalizedTargetFile = normalizeOutputPathKey(targetFile.replace(/[?#].*$/, ''))
+  const normalizedImportedFile = normalizeOutputPathKey(importedFile.replace(/[?#].*$/, ''))
+  const targetDir = path.posix.dirname(normalizedTargetFile)
+  const baseDir = targetDir === '.' ? '' : targetDir
+  const relative = path.posix.relative(baseDir, normalizedImportedFile)
+  return relative.startsWith('.') ? relative : `./${relative}`
+}
+
+function createCssImportShell(targetFile: string, importedFile: string) {
+  return `@import "${createRelativeCssImportRequest(targetFile, importedFile)}";\n`
+}
+
+function shouldKeepRootMiniProgramStyleAsImportShell(appType: unknown) {
+  return appType === 'uni-app-vite' || appType === 'uni-app-x'
+}
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
@@ -149,7 +172,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     )
     const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget
-      && runtimeState.tailwindRuntime.majorVersion === 4
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
@@ -450,7 +472,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       useIncrementalMode,
     })
     recordTimingDetail('snapshot', snapshotStart)
-    const useBundleRuntimeClassSet = !isWebGeneratorTarget && (useIncrementalMode || runtimeState.tailwindRuntime.majorVersion === 4)
+    const useBundleRuntimeClassSet = !isWebGeneratorTarget
     const forceRuntimeRefreshBySource = useIncrementalMode
       && hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const processFiles = snapshot.processFiles
@@ -488,8 +510,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const runtimeStart = performance.now()
     // Tailwind v4 的任意值在 uni-app/Taro 等上游输出里可能已经被转义。
     // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放主样式产物。
-    const forceV4RuntimeRefreshBySource = runtimeState.tailwindRuntime.majorVersion === 4
-      && forceRuntimeRefreshBySource
+    const forceV4RuntimeRefreshBySource = forceRuntimeRefreshBySource
     const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
       ? new Set<string>()
       : useBundleRuntimeClassSet
@@ -497,20 +518,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             allowBaselineOnlyInitialSync: buildCommand,
           })
         : await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
-    const shouldFilterTailwindV4MiniProgramCandidates = runtimeState.tailwindRuntime.majorVersion === 4
-      && shouldUseMiniProgramCssBranch(generatorBranch)
+    const shouldFilterTailwindV4MiniProgramCandidates = shouldUseMiniProgramCssBranch(generatorBranch)
     const collectedGeneratorCandidates = new Set([...runtime, ...sourceCandidates])
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates
     const transformRuntime = runtime
-    const generatorRuntime = collectLegacyContainerCompatCandidates(
-      sourceCandidates,
-      filteredGeneratorCandidates,
-    )
+    const generatorRuntime = filteredGeneratorCandidates
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
-    if (runtimeState.tailwindRuntime.majorVersion === 4 && sourceCandidates.size > 0 && jsEntries.size > 0) {
+    if (sourceCandidates.size > 0 && jsEntries.size > 0) {
       const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
       if (mainCssEntry) {
         const validatedSourceRuntime = await validateCandidatesByGenerator({
@@ -740,8 +757,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         const applyCssResult = (source: string) => {
           if (outputFile !== file) {
+            const shouldKeepSourceAsImportShell = isRootMiniProgramStyleOutputFile(file)
+              && isRootMiniProgramStyleOutputFile(outputFile)
+              && shouldKeepRootMiniProgramStyleAsImportShell(opts.appType)
+            const importShellSource = shouldKeepSourceAsImportShell
+              ? createCssImportShell(file, outputFile)
+              : undefined
             if (bundle[file] === originalSource && originalSource.originalFileNames?.includes(assetSourceFile)) {
-              originalSource.source = source
+              originalSource.source = importShellSource ?? source
               return
             }
             const existingOutput = bundle[outputFile]
@@ -755,7 +778,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               delete bundle[file]
             }
             else {
-              originalSource.source = ''
+              originalSource.source = importShellSource ?? ''
             }
             return
           }
@@ -857,8 +880,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             }]
           }
           else if (
-            runtimeState.tailwindRuntime.majorVersion === 4
-            && hasTailwindGenerationSource(rawSource)
+            hasTailwindGenerationSource(rawSource)
             && (originalSource.originalFileNames?.length ?? 0) === 0
           ) {
             const availableConfiguredTailwindV4CssSourceEntries = configuredTailwindV4CssSourceEntries.filter(entry =>
@@ -928,8 +950,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && hasTailwindApplyDirective(rememberedCssSource.rawSource)
         const hasRememberedTailwindGenerationSource = rememberedCssSource != null
           && hasTailwindGenerationSource(rememberedCssSource.rawSource)
-        const usesConfiguredTailwindV4FallbackSource = runtimeState.tailwindRuntime.majorVersion === 4
-          && rememberedCssSource != null
+        const usesConfiguredTailwindV4FallbackSource = rememberedCssSource != null
           && normalizeOutputPathKey(rememberedCssSource.outputFile) === normalizeOutputPathKey(outputFile)
           && normalizeOutputPathKey(rememberedCssSource.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file)
         const hasSameOutputRememberedTailwindGenerationSource = hasRememberedTailwindGenerationSource
@@ -940,10 +961,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && (
             hasCurrentTailwindGenerationDirective
             || hasRememberedApplyDirective
-            || (
-              runtimeState.tailwindRuntime.majorVersion === 4
-              && hasRememberedTailwindGenerationSource
-            )
+            || hasRememberedTailwindGenerationSource
           )
         const generatorSourceFile = vitePipelineCssAsset
           ? rememberedCssSource?.sourceFile ?? assetSourceFile
@@ -961,16 +979,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               isMainChunk: outputCssHandlerOptions.isMainChunk,
             }
           : getCssHandlerOptions(file)
-        const generatorCssHandlerOptions = runtimeState.tailwindRuntime.majorVersion === 4
-          ? {
-              ...cssHandlerOptions,
-              sourceOptions: {
-                ...(cssHandlerOptions.sourceOptions ?? {}),
-                sourceFile: generatorSourceFile,
-                cssEntries: opts.cssEntries,
-              },
-            }
-          : cssHandlerOptions
+        const generatorCssHandlerOptions = {
+          ...cssHandlerOptions,
+          sourceOptions: {
+            ...(cssHandlerOptions.sourceOptions ?? {}),
+            sourceFile: generatorSourceFile,
+            cssEntries: opts.cssEntries,
+          },
+        }
         const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)
         const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, generatorCssHandlerOptions)
         const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
@@ -1154,7 +1170,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                       styleHandler,
                       debug,
                       previousCss,
-                      ...(runtimeState.tailwindRuntime.majorVersion === 4 && vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
+                      ...(vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
                         ? { userRawSource: normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile) }
                         : {}),
                       ...(usesConfiguredTailwindV4FallbackSource

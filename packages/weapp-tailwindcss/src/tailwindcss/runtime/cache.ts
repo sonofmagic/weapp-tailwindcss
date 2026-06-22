@@ -256,9 +256,6 @@ export function getRuntimeClassSetSignature(tailwindRuntime: TailwindcssRuntimeL
 
 export async function getRuntimeClassSetSignatureWithSources(tailwindRuntime: TailwindcssRuntimeLike) {
   const baseSignature = getRuntimeClassSetSignature(tailwindRuntime)
-  if (tailwindRuntime.majorVersion !== 4) {
-    return baseSignature
-  }
   const trackedSourceFiles = await collectTailwindV4TrackedSourceFiles(tailwindRuntime)
   if (trackedSourceFiles.length === 0) {
     return baseSignature

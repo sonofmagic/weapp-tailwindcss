@@ -86,19 +86,3 @@ export function collectUnescapedDynamicCandidates(
 
   return [...matches]
 }
-
-export function collectLegacyContainerCompatCandidates(
-  sourceCandidates: Set<string>,
-  candidates: Set<string>,
-) {
-  if (candidates.has('container')) {
-    return candidates
-  }
-  if (!sourceCandidates.has('container')) {
-    return candidates
-  }
-  return new Set([
-    ...candidates,
-    'container',
-  ])
-}

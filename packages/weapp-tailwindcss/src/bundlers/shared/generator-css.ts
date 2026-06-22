@@ -8,7 +8,7 @@ import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives } from './generator-css/directives'
-import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, isSupportedGeneratorMajorVersion, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldInjectMiniProgramPreflightForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
+import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldInjectMiniProgramPreflightForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
 import { inheritLegacyUnitConvertedDeclarations } from './generator-css/legacy-units'
 import { cleanLocalCssImportWrapperTailwindDirectives, isPureLocalCssImportWrapper, restoreLocalCssImports, splitLocalCssImports } from './generator-css/local-imports'
@@ -149,6 +149,9 @@ export async function generateCssByGenerator(
     uniAppX: opts.uniAppX,
   })
   const majorVersion = runtimeState.tailwindRuntime.majorVersion
+  if (majorVersion !== 4) {
+    throw new Error('weapp-tailwindcss 生成管线仅支持 Tailwind CSS v4。')
+  }
   const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(
       normalizeTailwindSourceDirectives(rawSource, {
@@ -174,9 +177,7 @@ export async function generateCssByGenerator(
         )
   const userLocalImportParts = splitLocalCssImports(rawUserSource)
   const userSource = userLocalImportParts?.source ?? rawUserSource
-  const userCssRawSource = majorVersion === 4
-    ? removeTailwindV4GeneratorAtRules(userSource)
-    : userSource
+  const userCssRawSource = removeTailwindV4GeneratorAtRules(userSource)
   const userCssOrderSource = GENERATOR_PLACEHOLDER_MARKER_RE.test(userSource)
     ? userSource
     : userCssRawSource
@@ -218,8 +219,7 @@ export async function generateCssByGenerator(
   })
 
   if (
-    !isSupportedGeneratorMajorVersion(majorVersion)
-    || !shouldGenerateCurrentCss
+    !shouldGenerateCurrentCss
   ) {
     return undefined
   }
@@ -262,7 +262,7 @@ export async function generateCssByGenerator(
     const sourceConcurrency = resolveGeneratorSourceConcurrency()
     const generatedResultsWithDeferred = await runWithConcurrency(sources.map(source => async () => {
       const generator = createWeappTailwindcssGenerator(source)
-      const sourceEntries = getSourceCandidatesForEntries && majorVersion === 4
+      const sourceEntries = getSourceCandidatesForEntries
         ? await resolveGeneratorSourceEntries(source, runtimeState)
         : undefined
       const sourceScopedRuntime = sourceEntries && sourceEntries.length > 0
@@ -298,7 +298,7 @@ export async function generateCssByGenerator(
               matchedCssSourceFile,
             })
         : runtimeWithCurrentCss
-      const generatorRuntime = majorVersion === 4 && shouldUseMiniProgramCssBranch(generatorBranch)
+      const generatorRuntime = shouldUseMiniProgramCssBranch(generatorBranch)
         ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceRuntime)
         : sourceRuntime
       return generator.generate({
@@ -495,8 +495,7 @@ export async function generateCssByGenerator(
     )
     let css = generatedCss
     if (
-      majorVersion === 4
-      && generated.target === 'weapp'
+      generated.target === 'weapp'
       && generatorRawSource.includes('weapp-tailwindcss generator-placeholder')
       && !hasUserCssLayerBlocks(generatorRawSource)
     ) {
@@ -558,7 +557,6 @@ export async function generateCssByGenerator(
       else if (
         hasMatchedCssSourceFile
         && generated.target === 'weapp'
-        && majorVersion === 4
         && hasGeneratedMarkers
       ) {
         const cleanedUserCssRawSource = removeTailwindV4GeneratedUserCssArtifacts(userCssRawSource)

@@ -137,21 +137,18 @@ async function cleanupPatchedProjects() {
 
 function createNativePatch(entry: ProjectEntry): ProjectPatch {
   const root = projectRoot(entry)
-  const weappViteSourceRoot = entry.name === 'weapp-vite-tailwindcss-v4' ? 'miniprogram' : ''
   const pageFile = entry.name.startsWith('weapp-vite')
-    ? path.resolve(root, weappViteSourceRoot, 'pages/index/index.wxml')
+    ? path.resolve(root, 'pages/index/index.wxml')
     : path.resolve(root, 'src/pages/index/index.wxml')
   const styleFile = entry.name.startsWith('weapp-vite')
-    ? path.resolve(root, weappViteSourceRoot, 'pages/index/index.scss')
+    ? path.resolve(root, 'pages/index/index.scss')
     : path.resolve(root, 'src/pages/index/index.scss')
   const pageMarker = entry.name === 'weapp-vite-tailwindcss-v4'
-    ? '<view class="{{className}}">className</view>'
-    : entry.name === 'weapp-vite-tailwindcss-v4'
-      ? '<view class="space-y-2.5">'
-      : '<view class="{{contentStyle}}">'
+    ? '<view class="space-y-2.5">'
+    : '<view class="{{contentStyle}}">'
   const inserted = `${pageMarker}\n  <view class="${markerClass} {{true?'h-[458rpx] w-[218rpx] inset-x-[30%]':''}}">dynamic regression</view>`
   const scriptFile = entry.name.startsWith('weapp-vite')
-    ? path.resolve(root, weappViteSourceRoot, 'pages/index/index.ts')
+    ? path.resolve(root, 'pages/index/index.ts')
     : path.resolve(root, 'src/pages/index/index.ts')
 
   return {

@@ -6,6 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { removeUnsupportedCascadeLayers } from '@/tailwindcss/remove-unsupported-css'
+import { isWebpackCssLoaderRuntimeSource } from '../shared/css-loader-runtime'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchContext, registerWebpackWatchFile } from './watch-dependencies'
 
@@ -23,12 +24,6 @@ function normalizeRuntimeCssSource(source: string | Buffer) {
     return shouldCleanRuntimeCss(css) ? Buffer.from(cleanRuntimeCss(css)) : source
   }
   return shouldCleanRuntimeCss(source) ? cleanRuntimeCss(source) : source
-}
-
-function isWebpackCssLoaderRuntimeSource(source: string) {
-  return source.includes('___CSS_LOADER_EXPORT___')
-    && source.includes('___CSS_LOADER_API_IMPORT___')
-    && source.includes('module.exports = ___CSS_LOADER_EXPORT___')
 }
 
 function shouldCleanRuntimeCss(css: string) {

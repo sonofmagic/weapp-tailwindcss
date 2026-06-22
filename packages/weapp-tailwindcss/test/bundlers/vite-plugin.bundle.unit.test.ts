@@ -1678,7 +1678,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('skips single-entry Tailwind v4 candidate validation when multiple css entries own independent configs', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-multi-entry-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-multi-entry-'))
     createdDirs.push(root)
     const appCss = path.join(root, 'src/app.css')
     const appConfig = path.join(root, 'src/tailwind.config.js')
@@ -1861,7 +1861,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   })
 
   it('generates Tailwind v4 css entries from their own @config content in main-package directories', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-main-multi-config-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-main-multi-config-'))
     createdDirs.push(root)
     const featureACss = path.join(root, 'src/features/a/index.css')
     const featureBCss = path.join(root, 'src/features/b/index.css')
@@ -2085,7 +2085,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
   }, TEST_TIMEOUT_MS)
 
   it('keeps explicit Tailwind v4 @config with empty content from falling back to global candidates', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-empty-config-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-empty-config-'))
     createdDirs.push(root)
     const cssEntry = path.join(root, 'src/empty/index.css')
     const configFile = path.join(root, 'src/empty/tailwind.config.cjs')
@@ -4136,7 +4136,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       }
     })
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-subpackage-stale-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-subpackage-stale-'))
     createdDirs.push(root)
     const subCssFile = path.join(root, 'miniprogram/sub-normal/pages/index.css')
     const rawSubCss = '@config "../../../tailwind.config.sub-normal.js";\n@tailwind utilities;'
@@ -4258,7 +4258,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
     const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-empty-subpackage-css-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-empty-subpackage-css-'))
     createdDirs.push(root)
     await mkdir(path.join(root, 'src/sub-normal/pages'), { recursive: true })
     await mkdir(path.join(root, 'src/sub-independent/pages'), { recursive: true })
@@ -4539,7 +4539,7 @@ module.exports = {
       }
     })
     const { createSourceCandidateCollector } = await import('@/bundlers/vite/source-candidates')
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v3-main-package-scope-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-main-package-scope-'))
     createdDirs.push(root)
     const mainSourceFile = path.join(root, 'miniprogram/pages/index.wxml')
     const subSourceFile = path.join(root, 'miniprogram/sub-normal/pages/index.wxml')
@@ -5605,7 +5605,7 @@ const trace = "at App.vue:4"
     expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
   }, TEST_TIMEOUT_MS)
 
-  it('updates v3 watch runtime classes incrementally without full extract on source candidate changes', async () => {
+  it('updates v4 watch runtime classes incrementally without full extract on source candidate changes', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const htmlFile = 'pages/index/index.wxml'
     const jsFile = 'assets/index.js'
@@ -6379,7 +6379,7 @@ const trace = "at App.vue:4"
   }, TEST_TIMEOUT_MS)
 
   it('scans source candidates during Tailwind v4 web generator buildStart', async () => {
-    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v3-web-scan-'))
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v4-web-scan-'))
     createdDirs.push(projectRoot)
     await mkdir(path.join(projectRoot, 'src'), { recursive: true })
     await writeFile(path.join(projectRoot, 'src/App.vue'), '<template><view class="flex min-h-screen"></view></template>')
@@ -9408,7 +9408,7 @@ const cls = "w-[1.5px]"
     }
   }, TEST_TIMEOUT_MS)
 
-  it('replays uni-app v3 Tailwind entry css into app.wxss after rollback candidates change', async () => {
+  it('replays uni-app v4 Tailwind entry css into app.wxss after rollback candidates change', async () => {
     const preflight = 'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;}'
     const reorderedPreflight = 'view,text,::after,::before{margin:0;border:0 solid;padding:0;box-sizing:border-box;}'
     const wrapGeneratedCss = (utilities: string, baseCss = preflight) => `${baseCss}
@@ -9546,7 +9546,7 @@ ${utilities}
     }
   }, TEST_TIMEOUT_MS)
 
-  it('regenerates custom uni-app v3 Tailwind entry css when a Vue template adds a new arbitrary class', async () => {
+  it('regenerates custom uni-app v4 Tailwind entry css when a Vue template adds a new arbitrary class', async () => {
     const createCss = (candidates: Set<string>) => [...candidates]
       .sort()
       .map(candidate => `.${replaceWxml(candidate)}{font-size:${candidate === 'text-[123rpx]' ? '123rpx' : '48rpx'}}`)
@@ -9573,7 +9573,7 @@ ${utilities}
     })
 
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-v3-template-hmr-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-v4-template-hmr-'))
     createdDirs.push(root)
     const styleEntryFile = path.join(root, 'src/styles/tw-entry.vue')
     const pageFile = path.join(root, 'src/components/sections/CapabilityShowcase.vue')
@@ -9670,7 +9670,7 @@ ${utilities}
     expect(secondEntryCss).toContain('123rpx')
   }, TEST_TIMEOUT_MS)
 
-  it('regenerates remembered uni-app v3 app.wxss when only component template candidates change', async () => {
+  it('regenerates remembered uni-app v4 app.wxss when only component template candidates change', async () => {
     const createCss = (candidates: Set<string>) => [...candidates]
       .sort()
       .map(candidate => `.${replaceWxml(candidate)}{font-size:${candidate === 'text-[123rpx]' ? '123rpx' : '24px'}}`)
@@ -9702,7 +9702,7 @@ ${utilities}
       }
     })
     const { createGenerateBundleHook: createGenerateBundleHookWithMock } = await import('@/bundlers/vite/generate-bundle')
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-v3-app-hmr-'))
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-uni-v4-app-hmr-'))
     createdDirs.push(root)
     const appFile = path.join(root, 'src/App.vue')
     await mkdir(path.dirname(appFile), { recursive: true })
@@ -12063,7 +12063,7 @@ const fallback = "bg-[#434332] px-[32px]"
     }
   }, TEST_TIMEOUT_MS)
 
-  it('uses configured tailwind v4 css root for root shell output without restoring local imports', async () => {
+  it('uses configured tailwind v4 css root for root shell output', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-root-shell-'))
     createdDirs.push(root)
     const tailwindCssFile = path.join(root, 'tailwind.css')
@@ -12072,9 +12072,7 @@ const fallback = "bg-[#434332] px-[32px]"
       userRawSource?: string | undefined
       restoreLocalCssImports?: boolean | undefined
     }) => {
-      const generatedCss = options.restoreLocalCssImports === false
-        ? '.bg-red-500{background-color:#ef4444}'
-        : '@import "./third-party-ui.css";\n.bg-red-500{background-color:#ef4444}'
+      const generatedCss = '.bg-red-500{background-color:#ef4444}'
       return {
         css: [generatedCss, options.userRawSource].filter(Boolean).join('\n'),
         rawCss: options.rawSource,
@@ -12176,8 +12174,9 @@ const fallback = "bg-[#434332] px-[32px]"
 
     const bundle = {
       'app.wxss': {
-        ...createRollupAsset('/* Main style shell. */'),
+        ...createRollupAsset('@import "tailwindcss";\n/* Main style shell. */'),
         fileName: 'app.wxss',
+        originalFileNames: [tailwindCssFile],
       },
       'third-party-ui.wxss': {
         ...createRollupAsset('.weapp-tw-user-ui-card{display:inline-flex}'),
@@ -12190,11 +12189,10 @@ const fallback = "bg-[#434332] px-[32px]"
     const appCss = String((bundle['app.wxss'] as OutputAsset).source)
     expect(appCss).toContain('.bg-red-500')
     expect(appCss).not.toContain('@import "./third-party-ui.css"')
-    expect(appCss).toContain('/* Main style shell. */')
     expect(generateCssByGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
       file: tailwindCssFile,
       rawSource: expect.stringContaining('@import "tailwindcss"'),
-      restoreLocalCssImports: false,
     }))
   }, TEST_TIMEOUT_MS)
+
 })

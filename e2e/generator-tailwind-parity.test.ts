@@ -4,21 +4,17 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import tailwindcssPostcssV4 from '@tailwindcss/postcss'
 import postcss from 'postcss'
-import tailwindcssV3 from 'tailwindcss'
 import {
   createWeappTailwindcssGenerator,
-  resolveTailwindV3Source,
   resolveTailwindV4Source,
 } from 'weapp-tailwindcss/generator'
 import { tailwindParityCandidateCategories, tailwindParityCandidates } from './fixtures/tailwind-parity-candidates'
 
 const require = createRequire(import.meta.url)
-const tailwindcssV3Version = require('tailwindcss/package.json').version as string
 const tailwindcssV4Version = require('tailwindcss4/package.json').version as string
 
 const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
 
-const TAILWIND_V3_CSS = '@tailwind base; @tailwind components; @tailwind utilities;'
 const TAILWIND_V4_CSS = [
   '@import "tailwindcss" source(none);',
   `@source inline('${tailwindParityCandidates.map(x => x.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')).join(' ')}');`,
@@ -82,60 +78,6 @@ async function createTailwindV4FixtureRoot() {
 }
 
 describe('generator tailwind parity', () => {
-  it('keeps Tailwind v4 web output identical to tailwindcss v3 and records weapp contrast', async () => {
-    expect(tailwindcssV3Version.startsWith('3.')).toBe(true)
-
-    const config = {
-      content: [{
-        raw: tailwindParityCandidates.join(' '),
-        extension: 'html',
-      }],
-    }
-    const official = await postcss([
-      tailwindcssV3(config),
-    ]).process(TAILWIND_V3_CSS, {
-      from: undefined,
-    })
-    const source = await resolveTailwindV3Source({
-      css: TAILWIND_V3_CSS,
-      base: process.cwd(),
-      configObject: config,
-    })
-    const engine = createWeappTailwindcssGenerator(source)
-    const web = await engine.generate({
-      candidates: tailwindParityCandidates,
-      target: 'web',
-    })
-    const weapp = await engine.generate({
-      candidates: [...tailwindParityCandidates, 'text-[22rpx]'],
-      styleOptions: {
-        cssPreflight: {
-          'box-sizing': 'border-box',
-          'border-width': '0',
-          'border-style': 'solid',
-          'border-color': 'currentColor',
-        },
-      },
-      target: 'weapp',
-    })
-
-    expect(web.css).toBe(web.rawCss)
-    expectCandidateCoverage(web.classSet)
-    expect(normalizeCss(web.css)).toBe(normalizeCss(official.css))
-    expect(weapp.css).not.toBe(web.css)
-    expect(weapp.css).toContain('view,text,::before,::after')
-    expect(weapp.css).toContain('.w-_b123px_B')
-    expect(weapp.css).toContain('.h-_b48rpx_B')
-    expect(weapp.css).toContain('.text-_b22rpx_B')
-    expect(weapp.css).toContain('font-size: 22rpx')
-    expect(weapp.css).not.toContain('color: 22rpx')
-    expect(weapp.css).toContain('border-radius: 9999px')
-    expect(weapp.css).toContain('view,text,::before,::after {\n  box-sizing: border-box;')
-    expect(weapp.css).not.toContain('button {\n  background-color: transparent;')
-    expect(weapp.css).not.toContain('textarea {\n  resize: vertical;')
-    expect(weapp.css).not.toContain('appearance: button;')
-  })
-
   it('keeps Tailwind v4 web output identical to tailwindcss v4 and records weapp contrast', async () => {
     expect(tailwindcssV4Version.startsWith('4.')).toBe(true)
     const fixture = await createTailwindV4FixtureRoot()

@@ -1,1 +1,3 @@
 /* Main style shell. Tailwind v4 source directives live in tailwind.css. */
+@import "./tailwind.css";
+@import "./third-party-ui.css";

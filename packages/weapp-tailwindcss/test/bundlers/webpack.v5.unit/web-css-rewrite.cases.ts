@@ -186,7 +186,7 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
       resource: '/abs/app.css',
     }
     loaderHandler?.({}, v4WebModule)
-    expect(v4WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
+    expect(v4WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
     expect(v4WebModule.loaders.some(entry => entry.loader === ctxV4Web.runtimeLoaderPath)).toBe(false)
 
     const ctxV4WebCssEntries = createContext({
@@ -232,54 +232,5 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
     loaderHandler?.({}, v4RewriteModule)
     expect(v4RewriteModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
 
-    const ctxV3 = createContext()
-    ctxV3.tailwindRuntime.majorVersion = 3
-    getCompilerContextMock.mockImplementationOnce(() => ctxV3)
-    loaderHandler = undefined
-    plugin = new WeappTailwindcss()
-    plugin.apply(compiler as any)
-    const v3Module: LoaderModule = {
-      loaders: [{ loader: '/path/postcss-loader.js' }],
-      resource: '/abs/app.css',
-    }
-    loaderHandler?.({}, v3Module)
-    expect(v3Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
-
-    const ctxV3Web = createContext({
-      generator: {
-        target: 'web',
-      },
-    })
-    ctxV3Web.tailwindRuntime.majorVersion = 3
-    getCompilerContextMock.mockImplementationOnce(() => ctxV3Web)
-    loaderHandler = undefined
-    plugin = new WeappTailwindcss()
-    plugin.apply(compiler as any)
-    const v3WebModule: LoaderModule = {
-      loaders: [{ loader: '/path/postcss-loader.js' }],
-      resource: '/abs/app.css',
-    }
-    loaderHandler?.({}, v3WebModule)
-    expect(v3WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
-    expect(v3WebModule.loaders.some(entry => entry.loader === ctxV3Web.runtimeLoaderPath)).toBe(false)
-
-    const ctxV3WebRewrite = createContext({
-      rewriteCssImports: true,
-      generator: {
-        target: 'web',
-      },
-    })
-    ctxV3WebRewrite.tailwindRuntime.majorVersion = 3
-    getCompilerContextMock.mockImplementationOnce(() => ctxV3WebRewrite)
-    loaderHandler = undefined
-    plugin = new WeappTailwindcss()
-    plugin.apply(compiler as any)
-    const v3WebRewriteModule: LoaderModule = {
-      loaders: [{ loader: '/path/postcss-loader.js' }],
-      resource: '/abs/app.css',
-    }
-    loaderHandler?.({}, v3WebRewriteModule)
-    expect(v3WebRewriteModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
-    expect(v3WebRewriteModule.loaders.some(entry => entry.loader === ctxV3WebRewrite.runtimeLoaderPath)).toBe(false)
   })
 })

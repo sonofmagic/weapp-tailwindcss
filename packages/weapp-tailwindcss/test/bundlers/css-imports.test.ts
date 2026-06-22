@@ -397,6 +397,87 @@ describe('bundlers/shared css-imports', () => {
     expect(markGeneratedCssSource).toHaveBeenCalledWith('/repo/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css')
   })
 
+  it('generates webpack H5 css for apply-only entries', async () => {
+    vi.resetModules()
+    const generateTailwindV4Css = vi.fn(async (options: any) => ({
+      css: [
+        '[data-tw-watch-web="marker"] {',
+        '  background-color: rgb(18,52,86);',
+        '  width: 88px;',
+        '  height: 44px;',
+        '}',
+      ].join('\n'),
+      target: 'web',
+      source: 'generator',
+      classSet: new Set(['bg-[#123456]', 'w-[88px]', 'h-[44px]']),
+      dependencies: [],
+      metadata: {
+        file: options.file,
+        majorVersion: 4,
+        outputFile: options.outputFile,
+      },
+    }))
+    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+      generateTailwindV4Css,
+    }))
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const registerCssSource = vi.fn()
+    const registerCssSourceFile = vi.fn()
+    const markGeneratedCssSource = vi.fn()
+    const registerGeneratedCss = vi.fn()
+    const source = '[data-tw-watch-web="marker"] { @apply bg-[#123456] w-[88px] h-[44px]; }'
+
+    const result = await webpackLoader.call({
+      getOptions: () => ({
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType: 'taro',
+          compilerOptions: {
+            appType: 'taro',
+            generator: { target: 'web' },
+            mainCssChunkMatcher: () => false,
+            styleHandler: async (css: string) => ({ css }),
+          },
+          getRuntimeSet: async () => new Set(['bg-[#123456]', 'w-[88px]', 'h-[44px]']),
+          markGeneratedCssSource,
+          registerGeneratedCss,
+          registerCssSource,
+          registerCssSourceFile,
+          runtimeState: {
+            readyPromise: Promise.resolve(),
+            tailwindRuntime: { majorVersion: 4 },
+          },
+        },
+      }),
+      resourcePath: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+      rootContext: '/repo/demo/taro-webpack-react-tailwindcss-v4',
+    } as any, source)
+
+    expect(generateTailwindV4Css).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: source,
+      file: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+      outputFile: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+    }))
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+      css: source,
+    })
+    expect(registerCssSourceFile).toHaveBeenCalledWith({
+      file: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+      css: source,
+      processed: false,
+    })
+    expect(result).toContain(createBundlerGeneratedCssMarker('webpack', '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css'))
+    expect(result).toContain('[data-tw-watch-web="marker"]')
+    expect(result).toContain('width: 88px;')
+    expect(registerGeneratedCss).toHaveBeenCalledWith(expect.objectContaining({
+      classSet: new Set(['bg-[#123456]', 'w-[88px]', 'h-[44px]']),
+      css: expect.stringContaining('[data-tw-watch-web="marker"]'),
+      file: '/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css',
+    }))
+    expect(markGeneratedCssSource).toHaveBeenCalledWith('/repo/demo/taro-webpack-react-tailwindcss-v4/src/app.css')
+  })
+
   it('registers sanitized preprocessor root css sources from the webpack loader', async () => {
     const registerCssSource = vi.fn()
     const result = loader.call({

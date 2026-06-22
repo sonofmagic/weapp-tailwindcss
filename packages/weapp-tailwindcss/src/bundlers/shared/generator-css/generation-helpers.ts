@@ -24,19 +24,18 @@ export function hasMiniProgramTailwindV4PreflightReset(css: string) {
 export function finalizeMiniProgramGeneratorCss(
   css: string,
   target: string,
-  majorVersion: number | undefined,
+  _majorVersion: number | undefined,
   cssPreflight: InternalUserDefinedOptions['cssPreflight'],
   options: { injectPreflight?: boolean, styleOptions?: Partial<IStyleHandlerOptions> | undefined } = {},
 ) {
   if (target !== 'weapp') {
     return css
   }
-  const injectPreflight = majorVersion === 4
-    && options.injectPreflight !== false
+  const injectPreflight = options.injectPreflight !== false
     && !hasMiniProgramTailwindV4PreflightReset(css)
   return finalizeMiniProgramCss(css, {
     cssPreflight: injectPreflight ? cssPreflight : undefined,
-    isTailwindcssV4: majorVersion === 4,
+    isTailwindcssV4: true,
     tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
       ?? options.styleOptions?.tailwindcssV4GradientFallback,
   })
@@ -95,7 +94,7 @@ export function mergeScopedRuntimeWithCurrentRuntime(
 }
 
 export function shouldIsolateScopedCssSource(
-  majorVersion: number | undefined,
+  _majorVersion: number | undefined,
   source: GeneratorResolvedSource,
   sourceEntries: TailwindSourceEntry[] | undefined,
   options: {
@@ -115,11 +114,11 @@ export function shouldIsolateScopedCssSource(
   if (sourceEntries?.length === 0) {
     return false
   }
-  return majorVersion === 4 && sourceEntries !== undefined && options.cssHandlerOptions?.isMainChunk !== true
+  return sourceEntries !== undefined && options.cssHandlerOptions?.isMainChunk !== true
 }
 
 export function shouldIsolateCurrentTailwindV4CssCandidates(
-  majorVersion: number | undefined,
+  _majorVersion: number | undefined,
   cssHandlerOptions: IStyleHandlerOptions,
   options: {
     hasGeneratedCss: boolean
@@ -127,8 +126,7 @@ export function shouldIsolateCurrentTailwindV4CssCandidates(
     rawSource: string
   },
 ) {
-  return majorVersion === 4
-    && !cssHandlerOptions.isMainChunk
+  return !cssHandlerOptions.isMainChunk
     && hasTailwindApplyDirective(options.rawSource)
     && !hasTailwindRootDirectives(options.rawSource)
     && !options.hasGeneratedCss
@@ -142,7 +140,7 @@ export function shouldScanTailwindV4Sources(
   isolateCssSource: boolean,
 ) {
   if (majorVersion !== 4) {
-    return false
+    throw new Error('weapp-tailwindcss 生成管线仅支持 Tailwind CSS v4。')
   }
   if (target === 'web') {
     return true
@@ -220,7 +218,7 @@ export function splitRawSourceByGeneratedCssOrder(rawSource: string, rawTailwind
 }
 
 export function shouldUseGeneratorForCurrentCss(
-  majorVersion: number | undefined,
+  _majorVersion: number | undefined,
   cssHandlerOptions: IStyleHandlerOptions,
   options: {
     forceGenerator?: boolean | undefined
@@ -243,8 +241,7 @@ export function shouldUseGeneratorForCurrentCss(
     || options.hasGeneratedMarkers
     || options.hasSourceDirectives
     || hasApplyDirectives
-    || (majorVersion === 4 && hasSourceCssDirectives)
-    || (majorVersion === 4 && cssHandlerOptions.isMainChunk)
+    || hasSourceCssDirectives
 }
 
 export function hasGeneratorSourceDirectives(source: string, importFallback: boolean) {
@@ -295,10 +292,4 @@ export function mergeGeneratorResults(generatedResults: GeneratorResult[]) {
     sources: generatedResults.flatMap(item => item.sources),
   }
 }
-const SUPPORTED_GENERATOR_MAJOR_VERSIONS = new Set([4])
-
 type GeneratorResult = Awaited<ReturnType<ReturnType<typeof createWeappTailwindcssGenerator>['generate']>>
-
-export function isSupportedGeneratorMajorVersion(majorVersion: number | undefined) {
-  return SUPPORTED_GENERATOR_MAJOR_VERSIONS.has(majorVersion ?? 0)
-}

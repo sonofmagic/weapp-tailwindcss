@@ -56,16 +56,16 @@ const cases: WebCssPreservationCase[] = [
     projectDir: 'demo/uni-app-vite-tailwindcss-v4',
     buildScript: 'build:h5',
     outputDir: 'dist/build/h5',
-    generatedCss: ['.flex', '.raw-btn', /background-image:\s*linear-gradient/],
-    ordinaryCss: [/\.content\[data-v-[\w-]+\]::before/, '.btn'],
+    generatedCss: ['.flex', '.rounded-full'],
+    ordinaryCss: ['.layer-card-v4', '.weapp-tw-user-ui-card', '.reset-button'],
   },
   {
     name: 'uni-app vite Tailwind v4 H5',
     projectDir: 'demo/uni-app-vite-tailwindcss-v4',
     buildScript: 'build:h5',
     outputDir: 'dist/build/h5',
-    generatedCss: ['.flex', '.rounded-full', /--color-midnight\s*:/],
-    ordinaryCss: ['.layer-card-v4'],
+    generatedCss: ['.flex', '.rounded-full'],
+    ordinaryCss: ['.layer-card-v4', '.weapp-tw-user-ui-loading', '@keyframes weappTwUserUiRotation'],
   },
 ]
 

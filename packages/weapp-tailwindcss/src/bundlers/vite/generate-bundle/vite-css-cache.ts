@@ -3,15 +3,12 @@ import { normalizeOutputPathKey } from '../../shared/module-graph'
 
 const VITE_LAST_CSS_RESULT_CACHE_MAX = 64
 
-export function resolveViteCssTaskConcurrency(useIncrementalMode: boolean, majorVersion?: number | undefined) {
+export function resolveViteCssTaskConcurrency(_useIncrementalMode: boolean, _majorVersion?: number | undefined) {
   const configured = Number.parseInt(process.env['WEAPP_TW_VITE_CSS_CONCURRENCY'] ?? '', 10)
   if (Number.isFinite(configured) && configured > 0) {
     return configured
   }
-  if (majorVersion === 4) {
-    return 1
-  }
-  return useIncrementalMode ? 1 : 2
+  return 1
 }
 
 export function normalizeViteCssCacheKey(file: string) {

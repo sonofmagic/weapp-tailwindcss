@@ -48,7 +48,7 @@ describe('hmr full run report', () => {
         platform: 'weapp',
         framework: 'weapp-vite',
         builder: 'vite',
-        tailwindcss: 'v3',
+        tailwindcss: 'v4',
         sourceShape: 'native',
         reportFile: 'weapp-vite-tailwindcss-v4.json',
         initialReadyMs: 1000,

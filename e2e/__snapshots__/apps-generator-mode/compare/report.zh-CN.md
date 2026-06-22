@@ -7,13 +7,13 @@
 | 项目 | 来源 | 平台 | 允许平台 | 状态 | CSS 文件 | 字节数 | 选择器数 | @supports | :hover | Tailwind banner | 系统暗色媒体查询 | 手动暗色选择器 | 不兼容主题属性选择器 | 不兼容主题复杂选择器 | 原始任意值选择器 | 小程序转义任意值选择器 |
 | --- | --- | --- | --- | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | gulp-tailwindcss-v4 | demo | weapp | `weapp`, `tt` | 通过 | `gulp-tailwindcss-v4/dist/app.wxss` (+4) | 15950 | 77 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| mpx-tailwindcss-v4 | demo | wx | `wx`, `ali`, `swan`, `tt`, `dd` | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+5) | 49894 | 130 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-react-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 32337 | 119 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| mpx-tailwindcss-v4 | demo | wx | `wx`, `ali`, `swan`, `tt`, `dd` | 通过 | `mpx-tailwindcss-v4/dist/wx/app.wxss` (+3) | 15772 | 132 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-react-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-react-tailwindcss-v4/dist/app.wxss` (+3) | 320857 | 2221 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-react-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-react-tailwindcss-v4/dist/app.wxss` (+4) | 584590 | 2241 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| taro-webpack-vue3-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 10006 | 44 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| taro-webpack-vue3-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-webpack-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 234921 | 1547 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 | taro-vite-vue3-tailwindcss-v4 | demo | weapp | `weapp`, `swan`, `alipay`, `tt`, `h5`, `rn`, `qq`, `jd`, `harmony-hybrid` | 通过 | `taro-vite-vue3-tailwindcss-v4/dist/app.wxss` (+3) | 557239 | 1731 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| uni-app-vite-tailwindcss-v4 | demo | mp-weixin | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+4) | 34139 | 141 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
-| weapp-vite-tailwindcss-v4 | demo | weapp | `weapp` | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+5) | 31441 | 87 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| uni-app-vite-tailwindcss-v4 | demo | mp-weixin | `app-android`, `app-ios`, `h5`, `h5:ssr`, `mp-alipay`, `mp-baidu`, `mp-jd`, `mp-kuaishou`, `mp-lark`, `mp-qq`, `mp-toutiao`, `mp-weixin`, `mp-xhs`, `quickapp-webview`, `quickapp-webview-huawei`, `quickapp-webview-union` | 通过 | `uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss` (+5) | 34162 | 141 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
+| weapp-vite-tailwindcss-v4 | demo | weapp | `weapp` | 通过 | `weapp-vite-tailwindcss-v4/dist/app.wxss` (+4) | 39705 | 87 | 否 | 否 | 否 | 是 | 是 | 否 | 否 | 否 | 是 |
 
 ## 说明
 
@@ -37,8 +37,8 @@
 
 ### mpx-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `styles/app.wxss`, `styles/third-party-ui.wxss`, `pages/component/index.wxss`, `styles/index.wxss`, `sub-independent/styles/index.wxss`
-- 选择器：`.-mt-2`, `._2xl_ctext-base`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`, `.bg-sky-500`, `.bg-white`
+- CSS 文件：`app.wxss`, `styles/app.wxss`, `styles/third-party-ui.wxss`, `pages/component/index.wxss`
+- 选择器：`.-m-_b20px_B`, `.-mt-2`, `._2xl_ctext-_bred_B`, `._2xl_ctext-base`, `._ebg-green-500`, `._efont-bold`, `._etext-_b_h990000_B`, `.active_cbg-_b_h543210_B:active`, `.active_cbg-_b_h989898_B:active`, `.after_cborder-none:after`, `.before_ccontent-_b_aFestivus_a_B:before`, `.bg-_b_h010101_B`, `.bg-_b_h123456_B`, `.bg-_b_h434344_B`, `.bg-_b_he90505_B`, `.bg-blue-500_f50`, `.bg-gray-100`, `.bg-pink-500`, `.bg-red-400`, `.bg-red-500`
 
 ### taro-webpack-react-tailwindcss-v4
 
@@ -53,7 +53,7 @@
 ### taro-webpack-vue3-tailwindcss-v4
 
 - CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
-- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.mt-2`, `.mt-4`, `.px-3`, `.px-4`, `.px-_b32px_B`, `.py-2`
+- 选择器：`.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B:before`, `.bg-_b_h123456_B`, `.bg-_b_h534312_B`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.collapse-border-none .nut-collapse-item__title:after`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.from-cyan-500`, `.h-14`, `.mt-2`, `.mt-4`, `.nut-action-sheet`, `.nut-action-sheet .nut-action-sheet__cancel`, `.nut-action-sheet .nut-action-sheet__desc`
 
 ### taro-vite-vue3-tailwindcss-v4
 
@@ -62,10 +62,10 @@
 
 ### uni-app-vite-tailwindcss-v4
 
-- CSS 文件：`common.wxss`, `main.wxss`, `pages-order/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
+- CSS 文件：`app.wxss`, `main.wxss`, `common.wxss`, `pages-order/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`
 - 选择器：`.active_cbg-emerald-50:active`, `.active_cbg-emerald-600:active`, `.aspect-_bcalc_p4_x3_u1_P_f3_B`, `.aspect-_p--my-aspect-ratio_P`, `.before_ccontent-_b_aindependent_subpackage_uni-app-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_uni-app-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h0000ff_B`, `.bg-_b_h123498_B`, `.bg-emerald-100`, `.bg-emerald-500`, `.bg-independent-subpackage-marker`, `.bg-midnight`, `.bg-neutral-1B`, `.bg-normal-subpackage-marker`, `.bg-slate-50`, `.bg-white`, `.block`, `.border`, `.border-emerald-500`, `.border-slate-200`
 
 ### weapp-vite-tailwindcss-v4
 
-- CSS 文件：`app.wxss`, `packageB/pages/apple.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`, `tailwind.wxss`
+- CSS 文件：`app.wxss`, `pages/index/index.wxss`, `sub-independent/pages/index.wxss`, `sub-normal/pages/index.wxss`, `tailwind.wxss`
 - 选择器：`.before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.before_ccontent-_b_anormal_subpackage_weapp-vite-tailwindcss-v4_a_B:before`, `.bg-_b_h111111_B`, `.bg-_b_h3a32d1_B`, `.bg-_b_h68c828_B`, `.bg-amber-300`, `.bg-blue-500_f30`, `.bg-gradient-to-b`, `.bg-gradient-to-t`, `.bg-gradient-to-tr`, `.bg-gray-900`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-white`, `.bg-zinc-50`, `.border-4`, `.dark_cbg-zinc-900.theme-dark`, `.dark_cbg-zinc-950.theme-dark`, `.dark_ctext-zinc-50.theme-dark`, `.duration-500`

@@ -406,7 +406,7 @@ export function isCommentOnlyCss(source: string) {
   }
 }
 
-function removeMiniProgramHoverSelectors(source: string, enabled: boolean | undefined = true) {
+export function removeMiniProgramHoverSelectors(source: string, enabled: boolean | undefined = true) {
   if (!enabled || !source.includes(':hover')) {
     return source
   }
@@ -695,7 +695,7 @@ export function filterApplyOnlyGeneratedCss(css: string, source: string) {
 }
 
 export function shouldFilterApplyOnlyGeneratedCss(
-  majorVersion: number | undefined,
+  _majorVersion: number | undefined,
   target: string,
   source: string,
   options: {
@@ -703,8 +703,7 @@ export function shouldFilterApplyOnlyGeneratedCss(
     hasGeneratedMarkers: boolean
   },
 ) {
-  return majorVersion === 4
-    && target === 'weapp'
+  return target === 'weapp'
     && hasTailwindApplyDirective(source)
     && !hasTailwindRootDirectives(source)
     && !options.hasGeneratedCss

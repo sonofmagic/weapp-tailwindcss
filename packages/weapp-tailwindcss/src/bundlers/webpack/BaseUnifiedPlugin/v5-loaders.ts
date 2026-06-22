@@ -10,7 +10,6 @@ import { pluginName } from '@/constants'
 import { resolveRuntimeBranch } from '@/runtime-branch'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve } from '@/shared/mpx'
-import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
@@ -75,16 +74,9 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
   const shouldInjectRuntimeClassSetLoader = !generatorBranch.isWeb
-  const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
-  const shouldGenerateWebTailwindV4CssInLoader = generatorBranch.isWeb
-    && runtimeState.tailwindRuntime.majorVersion === 4
-    && (
-      (tailwindOptions?.v4?.cssEntries?.length ?? 0) > 0
-      || (tailwindOptions?.v4?.cssSources?.length ?? 0) > 0
-    )
   const shouldInjectCssImportRewriteLoader = shouldRewriteCssImports
-    || (runtimeState.tailwindRuntime.majorVersion === 4 && !generatorBranch.isWeb)
-    || shouldGenerateWebTailwindV4CssInLoader
+    || !generatorBranch.isWeb
+    || runtimeState.tailwindRuntime.majorVersion === 4
   const runtimeCssImportRewriteLoader = shouldInjectCssImportRewriteLoader
     ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined
@@ -188,6 +180,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         cssImportRewriteLoaderOptions
         && runtimeCssImportRewriteLoaderExists
         && runtimeCssImportRewriteLoader
+        && isCssModule
       ) {
         const existingIndex = loaderEntries.findIndex(entry => entry.loader?.includes?.(runtimeCssImportRewriteLoader))
         const rewriteLoaderEntry = existingIndex !== -1

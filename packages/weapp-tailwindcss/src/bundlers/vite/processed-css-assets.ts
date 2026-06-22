@@ -11,6 +11,7 @@ import {
 import path from 'pathe'
 import { parseBundlerGeneratedCssMarkerBlocks, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
 import { parseImportRequest, removeTailwindSourceDirectives } from '../shared/generator-css/directives'
+import { isPureLocalCssImportWrapper } from '../shared/generator-css/local-imports'
 import { extractMarkedUserLayerComponentsCss, mergeMarkedUserLayerComponentsCss } from '../shared/generator-css/user-layer-order'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSubpackageOutputFile } from './generate-bundle/subpackages'
@@ -377,6 +378,16 @@ function isRootStyleOutputFile(file: string) {
   return isCssOutputFile(normalized) && !normalized.includes('/')
 }
 
+function isMiniProgramStyleOutputFile(file: string) {
+  return /\.(?:wxss|acss|ttss|qss|jxss|tyss)(?:$|[?#])/i.test(file)
+}
+
+function shouldPreserveMiniProgramImportShell(opts: InternalUserDefinedOptions, file: string, css: string) {
+  return isMiniProgramStyleOutputFile(file)
+    && opts.cssMatcher(file)
+    && isPureLocalCssImportWrapper(css)
+}
+
 function shouldUseCssAssetAsMainInjectionTarget(
   opts: InternalUserDefinedOptions,
   file: string,
@@ -667,6 +678,10 @@ export function injectViteProcessedCssIntoMainCssAssets(
     }
     const mainFileKey = normalizeOutputPathKey(file)
     const originalSource = readAssetSource(output)
+    if (shouldPreserveMiniProgramImportShell(options.opts, file, originalSource)) {
+      options.debug?.('preserve mini-program css import shell asset: %s', file)
+      continue
+    }
     let nextCss = removeTailwindEntryDirectivesFromCss(originalSource)
     const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)
@@ -702,6 +717,9 @@ export function injectViteProcessedCssIntoMainCssAssets(
       let css = stripBundlerGeneratedCssMarkers(record.css).trim()
       css = removeCssCoveredByImportedViteResults(css, importedCssSources).trim()
       if (css.length === 0) {
+        continue
+      }
+      if (containsCssAfterMinify(nextCss, css) || filterExistingCssRules(nextCss, css).length === 0) {
         continue
       }
       const mergedLayerCss = mergeMarkedUserLayerComponentsCss(nextCss, css)
@@ -764,7 +782,9 @@ export function injectViteProcessedCssIntoMainCssAssets(
         }
         const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
         const isRecordFile = candidateKey === recordFileKey
-        const isProcessedSource = readAssetSource(candidateOutput).trim() === record.css.trim()
+        const candidateSource = readAssetSource(candidateOutput).trim()
+        const isProcessedSource = candidateSource === record.css.trim()
+          || (candidateSource.length > 0 && containsCssAfterMinify(nextCss, candidateSource))
         if ((!isRecordFile && !isProcessedSource) || candidateKey === normalizeOutputPathKey(file)) {
           continue
         }

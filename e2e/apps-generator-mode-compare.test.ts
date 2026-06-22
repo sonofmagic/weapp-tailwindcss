@@ -518,6 +518,59 @@ function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generato
   }
 }
 
+function expectPackageCssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (!generatorResult.cssFiles.some(file => SUBPACKAGE_ROOTS.some(root => normalizeOutputCssFileName(file).includes(root)))) {
+    return
+  }
+
+  const snapshots = generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots
+    : [{ fileName: project.cssFile, content: generatorResult.css }]
+
+  for (const snapshot of snapshots) {
+    const fileName = normalizeOutputCssFileName(snapshot.fileName)
+    const isNormalSubpackage = fileName.includes('sub-normal')
+    const isIndependentSubpackage = fileName.includes('sub-independent')
+    const isSubpackage = isNormalSubpackage || isIndependentSubpackage
+
+    if (!isSubpackage) {
+      for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
+        expect(
+          snapshot.content,
+          `${project.name} main package css ${snapshot.fileName} should not include subpackage marker ${pattern}`,
+        ).not.toMatch(pattern)
+      }
+    }
+    if (isNormalSubpackage) {
+      expect(
+        snapshot.content,
+        `${project.name} normal subpackage css ${snapshot.fileName} should not include independent subpackage candidates`,
+      ).not.toMatch(/independent[-_]subpackage/i)
+    }
+    if (isIndependentSubpackage) {
+      expect(
+        snapshot.content,
+        `${project.name} independent subpackage css ${snapshot.fileName} should not include normal subpackage candidates`,
+      ).not.toMatch(/normal[-_]subpackage/i)
+    }
+  }
+}
+
+function expectWeappViteAppCssInlined(project: CompareProject, generatorResult: GeneratorBuildResult) {
+  if (project.name !== 'weapp-vite-tailwindcss-v4') {
+    return
+  }
+  const appCss = generatorResult.cssSnapshots.find(snapshot => normalizeOutputCssFileName(snapshot.fileName) === 'app.wxss')
+  expect(appCss, 'weapp-vite app.wxss snapshot should exist').toBeTruthy()
+  expect(appCss?.content, 'weapp-vite app.wxss should inline app.css imports').not.toContain('@import')
+  expect(appCss?.content, 'weapp-vite app.wxss should keep main Tailwind utilities').toContain('.text-red-700')
+  expect(appCss?.content, 'weapp-vite app.wxss should keep user imported css').toContain('.weapp-tw-user-ui-card')
+  expect(appCss?.content.match(/\.text-red-700\b/g) ?? [], 'weapp-vite app.wxss should not duplicate main Tailwind utilities').toHaveLength(1)
+  expect(appCss?.content.match(/\.weapp-tw-user-ui-card\b/g) ?? [], 'weapp-vite app.wxss should not duplicate imported user css').toHaveLength(1)
+  expect(appCss?.content, 'weapp-vite app.wxss should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
+  expect(appCss?.content, 'weapp-vite app.wxss should not include independent subpackage candidates').not.toMatch(/independent[-_]subpackage/i)
+}
+
 function expectUserImportedUiCssMarkers(project: CompareProject, generatorResult: GeneratorBuildResult) {
   for (const marker of USER_IMPORTED_UI_CSS_MARKERS) {
     expect(
@@ -926,6 +979,8 @@ describe('demo generator mode output', () => {
         expectGulpTailwindV3SubpackageCssIsolation(project, generatorResult)
         expectSubpackageCssFiles(project, generatorResult)
         expectSubpackageMarkersInGeneratedCss(project, generatorResult)
+        expectPackageCssIsolation(project, generatorResult)
+        expectWeappViteAppCssInlined(project, generatorResult)
         expectUserImportedUiCssMarkers(project, generatorResult)
         await expectCssOutputSnapshot(project, generatorResult)
       }

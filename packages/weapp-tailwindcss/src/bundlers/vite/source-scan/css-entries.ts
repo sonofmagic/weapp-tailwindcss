@@ -317,7 +317,10 @@ export async function resolveTailwindV4EntriesFromCssCached(css: string, base: s
   if (cached) {
     return cached
   }
-  const task = resolveTailwindV4EntriesFromCss(css, base)
+  const task = resolveTailwindV4EntriesFromCss(css, base).catch((error) => {
+    tailwindV4CssEntriesCache.delete(cacheKey)
+    throw error
+  })
   tailwindV4CssEntriesCache.set(cacheKey, task)
   return task
 }

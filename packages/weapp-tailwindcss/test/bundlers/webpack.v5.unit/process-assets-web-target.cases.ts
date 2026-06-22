@@ -382,7 +382,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
     const cssEntry = path.join(root, 'src/tailwind.css')
     await mkdir(path.dirname(cssEntry), { recursive: true })
     await writeFile(cssEntry, [
-      '@import "tailwindcss" source(none);',
+      '@import "tailwindcss4" source(none);',
       '@source inline("sr-only flex");',
     ].join('\n'), 'utf8')
     testState.currentContext = createContext({
@@ -400,7 +400,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
         options: {
           tailwindcss: {
             cwd: root,
-            packageName: 'tailwindcss',
+            packageName: 'tailwindcss4',
             v4: {
               cssEntries: [cssEntry],
             },
@@ -597,7 +597,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
     const cssEntry = path.join(root, 'src/css/tailwind.css')
     await mkdir(path.dirname(cssEntry), { recursive: true })
     await writeFile(cssEntry, [
-      '@import "tailwindcss" source(none);',
+      '@import "tailwindcss4" source(none);',
       '@source inline("sr-only flex icon-[mdi--wechat]");',
     ].join('\n'), 'utf8')
     testState.currentContext = createContext({
@@ -615,7 +615,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
         options: {
           tailwindcss: {
             cwd: root,
-            packageName: 'tailwindcss',
+            packageName: 'tailwindcss4',
             v4: {
               cssEntries: [cssEntry],
             },
@@ -728,7 +728,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
       await mkdir(path.dirname(cssEntry), { recursive: true })
       await mkdir(path.dirname(page), { recursive: true })
       await writeFile(cssEntry, [
-        '@import "tailwindcss" source(none);',
+        '@import "tailwindcss4" source(none);',
         '@source "../../src/**/*.{ts,tsx}";',
       ].join('\n'), 'utf8')
       await writeFile(page, 'export default <div className="flex grid items-center bg-[#0284c7]"></div>', 'utf8')
@@ -747,7 +747,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
           options: {
             tailwindcss: {
               cwd: root,
-              packageName: 'tailwindcss',
+              packageName: 'tailwindcss4',
               v4: {
                 cssEntries: [cssEntry],
               },

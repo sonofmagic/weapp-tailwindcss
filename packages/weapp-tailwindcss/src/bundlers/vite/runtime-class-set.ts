@@ -140,7 +140,7 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
       await transformRuntimeClassSetManager.reset()
     }
 
-    if (runtimeState.tailwindRuntime.majorVersion === 4 && !forceRuntimeRefresh) {
+    if (!forceRuntimeRefresh) {
       try {
         const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
         runtimeSet = nextRuntimeSet
