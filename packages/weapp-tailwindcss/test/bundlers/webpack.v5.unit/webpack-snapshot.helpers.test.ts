@@ -8,6 +8,10 @@ function toPosixPath(value: string) {
   return value.replace(/\\/g, '/')
 }
 
+function toPortableResourcePath(value: string) {
+  return toPosixPath(value).replace(/^[A-Z]:/i, '')
+}
+
 function createOptions() {
   return {
     cache: createCache(),
@@ -346,6 +350,6 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       },
     })
 
-    expect(activeResourceSets.map(resources => resources.map(toPosixPath))).toEqual([[toPosixPath(subpackageCss)]])
+    expect(activeResourceSets.map(resources => resources.map(toPortableResourcePath))).toEqual([[toPortableResourcePath(subpackageCss)]])
   })
 })
