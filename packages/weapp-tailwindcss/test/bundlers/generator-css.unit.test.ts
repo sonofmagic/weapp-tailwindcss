@@ -47,6 +47,70 @@ describe('bundlers/shared generator css', () => {
     vi.resetModules()
   })
 
+  it('returns standardized Tailwind v4 generation metadata and exact class set', async () => {
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: '.text-\\[24rpx\\]{font-size:24rpx}',
+          rawCss: '.text-\\[24rpx\\]{font-size:24rpx}',
+          target: 'weapp',
+          classSet: new Set(['text-[24rpx]']),
+          dependencies: ['/workspace/tailwind.config.ts'],
+          root: null,
+        })),
+      })),
+    }))
+
+    const { generateTailwindV4Css } = await import('@/bundlers/shared/v4-generation-core')
+    const result = await generateTailwindV4Css({
+      opts: {
+        cssPreflight: 'view',
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(['text-[24rpx]']),
+      rawSource: '@import "tailwindcss";',
+      file: '/workspace/src/app.css',
+      outputFile: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+    })
+
+    expect(result?.classSet).toEqual(new Set(['text-[24rpx]']))
+    expect(result?.dependencies).toEqual(['/workspace/tailwind.config.ts'])
+    expect(result?.metadata).toMatchObject({
+      file: '/workspace/src/app.css',
+      majorVersion: 4,
+      outputFile: 'app.wxss',
+    })
+  })
+
   it('matches hashed css assets back to their Tailwind v4 source css file', async () => {
     const { scoreTailwindV4CssSourceFileMatch } = await import('@/bundlers/shared/generator-css/source-resolver/matching')
     const score = scoreTailwindV4CssSourceFileMatch(
@@ -534,12 +598,13 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       css: `${weappCss}\nlegacy:.card{color:red}`,
       target: 'weapp',
       source: 'generator',
       dependencies: [],
     })
+    expect(result?.classSet).toEqual(new Set(['w-[100px]']))
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: runtimeSet,
       target: 'weapp',
@@ -1114,12 +1179,13 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       css: `${weappCss}\nlegacy:.card{color:red}`,
       target: 'weapp',
       source: 'generator',
       dependencies: [],
     })
+    expect(result?.classSet).toEqual(new Set(['w-[100px]']))
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
       css: '@import "tailwindcss";\n.card{color:red}',
     }))

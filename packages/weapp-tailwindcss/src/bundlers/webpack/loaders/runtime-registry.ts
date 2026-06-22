@@ -19,6 +19,13 @@ export interface WebpackCssSourceRegistration {
   processed?: boolean | undefined
 }
 
+export interface WebpackGeneratedCssRegistration {
+  classSet: Set<string>
+  css: string
+  dependencies: string[]
+  file: string
+}
+
 export interface WebpackCssImportRewriteRuntimeOptions {
   pkgDir: string
   appType?: AppType
@@ -27,6 +34,7 @@ export interface WebpackCssImportRewriteRuntimeOptions {
   registerCssSource?: (source: TailwindV4CssSource) => Promise<void> | void
   getRuntimeSet?: () => Promise<Set<string>> | Set<string>
   markGeneratedCssSource?: (file: string) => void
+  registerGeneratedCss?: (source: WebpackGeneratedCssRegistration) => void
   registerCssSourceFile?: (source: WebpackCssSourceRegistration) => void
 }
 

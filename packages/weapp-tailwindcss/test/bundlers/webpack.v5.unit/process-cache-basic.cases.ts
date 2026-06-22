@@ -122,7 +122,7 @@ describe('bundlers/webpack WeappTailwindcss / process cache basic', () => {
     await processAssetsCallbacks[0](assetsRun)
 
     expect(testState.currentContext.onStart).toHaveBeenCalledTimes(1)
-    expect(testState.currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(testState.currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect(testState.currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(testState.currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect(testState.currentContext.jsHandler).toHaveBeenCalledTimes(1)
@@ -157,7 +157,7 @@ describe('bundlers/webpack WeappTailwindcss / process cache basic', () => {
     expect(testState.currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(testState.currentContext.onEnd).toHaveBeenCalledTimes(2)
     expect(testState.currentContext.onUpdate).toHaveBeenCalledTimes(3)
-    expect(testState.currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
+    expect(testState.currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
     expect(testState.currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
   })
 

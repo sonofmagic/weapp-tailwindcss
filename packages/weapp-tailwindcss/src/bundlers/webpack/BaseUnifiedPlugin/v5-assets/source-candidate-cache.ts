@@ -1,5 +1,5 @@
 import type { SourceCandidateScanRoot } from '../../../vite/source-candidate-scan-signature'
-import type { SourceCandidateCollector, SourceCandidateCollectorSnapshot } from '../../../vite/source-candidates'
+import type { SourceCandidateCollectorSnapshot, SourceCandidateStore } from '../../../vite/source-candidates'
 import type { ResolvedViteSourceScan } from '../../../vite/source-scan'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import { stat } from 'node:fs/promises'
@@ -11,9 +11,9 @@ import { isSourceCandidateRequest } from '../../../vite/source-candidates'
 import { resolveSourceCandidateScanFiles } from '../../../vite/source-candidates/scan-root'
 
 export interface WebpackSourceCandidateCacheRecord {
-  getSourceCandidatesForEntries: SourceCandidateCollector['valuesForEntries']
+  getSourceCandidatesForEntries: SourceCandidateStore['valuesForEntries']
   signatureHash: string
-  tokenSources: ReturnType<SourceCandidateCollector['sourcesForEntries']>
+  tokenSources: ReturnType<SourceCandidateStore['sourcesForEntries']>
 }
 
 export interface WebpackSourceCandidateScanMemoryStats {
@@ -36,7 +36,7 @@ interface CachedScan {
 
 interface ResolveWebpackSourceCandidateCacheOptions {
   changedFiles?: Iterable<string> | undefined
-  collector: SourceCandidateCollector
+  collector: SourceCandidateStore
   outDir: string
   root: string
   sourceScan: ResolvedViteSourceScan | undefined
@@ -99,7 +99,7 @@ function dedupeSourceEntries(entries: TailwindSourceEntry[] | undefined) {
 }
 
 function createWebpackSourceCandidateCacheRecord(
-  collector: SourceCandidateCollector,
+  collector: SourceCandidateStore,
   sourceScan: ResolvedViteSourceScan | undefined,
   signatureHash: string,
 ): WebpackSourceCandidateCacheRecord {
@@ -170,7 +170,7 @@ async function resolveScanFiles(roots: SourceCandidateScanRoot[], outDir: string
 }
 
 async function syncChangedScanFiles(
-  collector: SourceCandidateCollector,
+  collector: SourceCandidateStore,
   cachedScan: CachedScan,
   scanFiles: Set<string>,
   changedFiles: Set<string>,

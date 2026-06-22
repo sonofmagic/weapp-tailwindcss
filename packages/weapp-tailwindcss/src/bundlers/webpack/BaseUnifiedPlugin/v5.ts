@@ -1,7 +1,7 @@
 // webpack 5
 import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
-import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
+import type { WebpackCssSourceRegistration, WebpackGeneratedCssRegistration } from '../loaders/runtime-registry'
 import type { AppType, IBaseWebpackPlugin, InternalUserDefinedOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import micromatch from 'micromatch'
@@ -196,6 +196,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const runtimeWatchDependencyContexts = new Set<string>()
     const webpackProcessedCssSourceFiles = new Set<string>()
     const webpackCssSources = new Map<string, { css: string | undefined, processed?: boolean | undefined }>()
+    const webpackGeneratedCssSources = new Map<string, WebpackGeneratedCssRegistration>()
     const currentWebpackCssSourceFiles = new Set<string>()
     const currentWebpackCssSourceModules = new Set<string>()
     let runtimeMetadataPrepared = false
@@ -332,6 +333,14 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       })
       currentWebpackCssSourceFiles.add(file)
     }
+    const registerWebpackGeneratedCss = (source: WebpackGeneratedCssRegistration) => {
+      const file = path.resolve(source.file)
+      webpackGeneratedCssSources.set(file, {
+        ...source,
+        file,
+      })
+      currentWebpackCssSourceFiles.add(file)
+    }
     const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, _options: { watchMode?: boolean | undefined } = {}) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       const configuredSourceFiles = new Set<string>()
@@ -346,6 +355,11 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       for (const file of webpackCssSources.keys()) {
         if (!activeSourceFiles.has(file) && !configuredSourceFiles.has(file)) {
           webpackCssSources.delete(file)
+        }
+      }
+      for (const file of webpackGeneratedCssSources.keys()) {
+        if (!activeSourceFiles.has(file) && !configuredSourceFiles.has(file)) {
+          webpackGeneratedCssSources.delete(file)
         }
       }
     }
@@ -448,6 +462,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       markWebpackProcessedCssSource,
       markWebpackCssSourceModule,
       registerWebpackCssSourceFile,
+      registerWebpackGeneratedCss,
       getRuntimeWatchDependencies() {
         return {
           files: runtimeWatchDependencyFiles,
@@ -482,6 +497,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       getWatchChangedFiles: collectWatchChangedFiles,
       runtimeClassSetManager: (this.options as any).__internalWebpackRuntimeClassSetManager,
       getWebpackCssSources: () => webpackCssSources,
+      getWebpackGeneratedCssSources: () => webpackGeneratedCssSources,
       pruneWebpackCssSources,
       prepareWebpackCssSources,
       debug,

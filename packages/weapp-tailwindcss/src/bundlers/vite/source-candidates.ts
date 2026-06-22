@@ -11,7 +11,8 @@ import {
 } from '@/tailwindcss/source-scan'
 import { resolveSourceCandidateScanFiles } from './source-candidates/scan-root'
 
-export interface SourceCandidateCollector {
+export interface SourceCandidateStore {
+  syncSource: (id: string, source: string) => Promise<void>
   sync: (id: string, source: string) => Promise<void>
   syncCss: (id: string, source: string) => Promise<void>
   merge: (id: string, source: string) => Promise<void>
@@ -31,6 +32,8 @@ export interface SourceCandidateCollector {
   resetScan: () => void
   clear: () => void
 }
+
+export interface SourceCandidateCollector extends SourceCandidateStore {}
 
 export interface SourceCandidateCollectorSnapshot {
   candidatesById: Array<[string, string[]]>
@@ -127,7 +130,7 @@ function addCandidateSet(
   }
 }
 
-export function createSourceCandidateCollector(options: SourceCandidateCollectorOptions = {}): SourceCandidateCollector {
+export function createSourceCandidateStore(options: SourceCandidateCollectorOptions = {}): SourceCandidateStore {
   const candidatesById = new Map<string, Set<string>>()
   const scanCandidatesById = new Map<string, Set<string>>()
   const transformCandidatesById = new Map<string, Set<string>>()
@@ -484,6 +487,7 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
   }
 
   return {
+    syncSource: sync,
     sync,
     syncCss,
     merge,
@@ -517,6 +521,10 @@ export function createSourceCandidateCollector(options: SourceCandidateCollector
     }
     return sources
   }
+}
+
+export function createSourceCandidateCollector(options: SourceCandidateCollectorOptions = {}): SourceCandidateCollector {
+  return createSourceCandidateStore(options)
 }
 
 export function getSourceCandidateContentCacheStatsForTest() {

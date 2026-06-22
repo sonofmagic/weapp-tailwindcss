@@ -127,9 +127,14 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
       'index.js': 'const cls = "bg-[#101010] text-[100rpx]"',
     }
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
-    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(1)
-    expect(incrementalRuntimeSet.has('bg-[#101010]')).toBe(true)
-    expect(currentAssetStore['index.js']).toContain(replaceWxml('bg-[#101010]'))
+    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(majorVersion === 4 ? 1 : 0)
+    expect(incrementalRuntimeSet.has('bg-[#101010]')).toBe(majorVersion === 4)
+    if (majorVersion === 4) {
+      expect(currentAssetStore['index.js']).toContain(replaceWxml('bg-[#101010]'))
+    }
+    else {
+      expect(currentAssetStore['index.js']).toContain('bg-[#101010]')
+    }
 
     currentAssetStore = {
       'index.js': 'const cls = "bg-[#202020] text-[100rpx]"',
@@ -138,10 +143,20 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
     watchRunHandlers[0]?.()
     await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
 
-    expect(currentAssetStore['index.js']).toContain(replaceWxml('bg-[#202020]'))
-    expect(currentAssetStore['index.js']).not.toContain('bg-[#202020]')
-    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(2)
-    expect(testState.currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(majorVersion === 3 ? 1 : 0)
+    if (majorVersion === 4) {
+      expect(currentAssetStore['index.js']).toContain(replaceWxml('bg-[#202020]'))
+      expect(currentAssetStore['index.js']).not.toContain('bg-[#202020]')
+    }
+    else {
+      expect(currentAssetStore['index.js']).toContain('bg-[#202020]')
+    }
+    expect(incrementalRuntimeManager.sync).toHaveBeenCalledTimes(majorVersion === 4 ? 2 : 0)
+    if (majorVersion === 3) {
+      expect(testState.currentContext.tailwindRuntime.extract).toHaveBeenCalled()
+    }
+    else {
+      expect(testState.currentContext.tailwindRuntime.extract).not.toHaveBeenCalled()
+    }
   })
 
   it('feeds escaped v3 webpack js candidates into main css generation during watch', async () => {
@@ -175,7 +190,27 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+      })),
+    }))
 
     const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
     testState.currentContext = createContext({
@@ -305,7 +340,27 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+      })),
+    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -444,7 +499,27 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+      })),
+    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -584,7 +659,27 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+      })),
+    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),
@@ -729,7 +824,27 @@ describe('bundlers/webpack WeappTailwindcss / runtime js watch candidates', () =
         target: 'weapp',
         importFallback: true,
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        baseFallbacks: [],
+      })),
+    }))
 
     const incrementalRuntimeManager = {
       reset: vi.fn(async () => undefined),

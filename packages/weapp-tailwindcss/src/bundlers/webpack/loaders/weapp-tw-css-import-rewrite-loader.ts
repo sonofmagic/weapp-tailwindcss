@@ -8,8 +8,8 @@ import { inspect } from 'node:util'
 import { ensurePosix } from '@weapp-tailwindcss/shared'
 import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
-import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
 import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
+import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
@@ -111,12 +111,13 @@ async function generateCssForWebpackPipeline(
     file,
     rewriteOptions.appType,
   )
-  const generated = await generateCssByGenerator({
+  const generated = await generateTailwindV4Css({
     opts: compilerOptions,
     runtimeState,
     runtime,
     rawSource: normalizedSource,
     file,
+    outputFile: file,
     cssHandlerOptions,
     cssUserHandlerOptions: {
       ...cssHandlerOptions,
@@ -129,6 +130,12 @@ async function generateCssForWebpackPipeline(
     return undefined
   }
   rewriteOptions.markGeneratedCssSource?.(file)
+  rewriteOptions.registerGeneratedCss?.({
+    classSet: generated.classSet,
+    css: generated.css,
+    dependencies: generated.dependencies,
+    file,
+  })
   for (const dependency of generated.dependencies) {
     registerWebpackWatchFile(loaderContext, dependency)
   }

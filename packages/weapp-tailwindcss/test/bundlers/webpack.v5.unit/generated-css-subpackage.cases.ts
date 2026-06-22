@@ -65,7 +65,27 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
         target: 'weapp',
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: options.config ? [options.config] : [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: dir,
+        baseFallbacks: [],
+      })),
+    }))
 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
@@ -74,6 +94,10 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
         tailwindcssBasedir: dir,
+        tailwindRuntime: {
+          ...createContext().tailwindRuntime,
+          majorVersion: 4,
+        },
       } as any)
 
       const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
@@ -207,7 +231,17 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
 
       const callsByFile = new Map<string, Set<string>>()
       for (const call of generateMock.mock.calls) {
-        callsByFile.set(call[0]?.source?.config, call[0]?.candidates as Set<string>)
+        const source = call[0]?.source
+        const config = source?.config
+          ?? [
+            'tailwind.config.sub-normal.js',
+            'tailwind.config.sub-b.js',
+            'tailwind.config.sub-c.js',
+            'tailwind.config.js',
+          ]
+            .map(file => path.join(dir, file))
+            .find(file => source?.css?.includes(file))
+        callsByFile.set(config, call[0]?.candidates as Set<string>)
       }
       expect(callsByFile.get(path.join(dir, 'tailwind.config.js'))).toEqual(new Set(['app-only']))
       expect(callsByFile.get(path.join(dir, 'tailwind.config.sub-b.js'))).toEqual(new Set(['module-b-only']))
@@ -272,7 +306,27 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
         target: 'weapp',
         styleOptions: {},
-      })),    }))
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: options.css,
+        config: options.config,
+        dependencies: options.config ? [options.config] : [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: dir,
+        base: dir,
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: dir,
+        baseFallbacks: [],
+      })),
+    }))
 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')

@@ -28,8 +28,15 @@ export interface GenerateCssByGeneratorOptions {
 
 export interface GenerateCssByGeneratorResult {
   css: string
+  classSet: Set<string>
   target: string
   source: 'generator'
   dependencies: string[]
   incremental?: boolean | undefined
+  metadata?: {
+    file: string
+    majorVersion?: number | undefined
+    outputFile?: string | undefined
+    rawCss?: string | undefined
+  } | undefined
 }

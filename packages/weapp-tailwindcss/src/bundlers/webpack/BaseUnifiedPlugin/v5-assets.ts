@@ -1,4 +1,4 @@
-import type { SourceCandidateCollector } from '../../vite/source-candidates'
+import type { SourceCandidateStore } from '../../vite/source-candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions, WebpackSourceLike } from './v5-assets/helpers'
 import type { WebpackSourceCandidateScanMemoryStats } from './v5-assets/source-candidate-cache'
 import type { LinkedJsModuleResult } from '@/types'
@@ -30,11 +30,12 @@ import { removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, st
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories, resolveTaskConcurrency } from '../../shared/run-tasks'
+import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createBundleBuildState, updateBundleBuildState } from '../../vite/bundle-state'
 import { createCandidateSignature } from '../../vite/generate-bundle/signatures'
 import { createBundleRuntimeClassSetManager } from '../../vite/incremental-runtime-class-set'
 import { collectStrictEscapedRuntimeCandidates, createEscapeFragments } from '../../vite/incremental-runtime-class-set/escaped-candidates'
-import { createSourceCandidateCollector } from '../../vite/source-candidates'
+import { createSourceCandidateStore } from '../../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../../vite/source-scan'
 import { createAssetHashByChunkMap, createRuntimeAwareCssHash, createWebpackCssAssetResourceMap, getCacheKey, inferWebpackMainCssFiles, isCssLikeModuleResource, resolveSingleActiveWebpackCssResource, stripResourceQuery } from './shared'
 import { buildWebpackBundleSnapshot, createWebpackAssetUpdater, releaseWebpackBundleSnapshotSources } from './v5-assets/helpers'
@@ -78,9 +79,9 @@ function removeTailwindV4StandaloneHostPreflightRule(source: string) {
 }
 
 interface WebpackSourceCandidateCache {
-  getSourceCandidatesForEntries: SourceCandidateCollector['valuesForEntries']
+  getSourceCandidatesForEntries: SourceCandidateStore['valuesForEntries']
   signatureHash: string
-  tokenSources: ReturnType<SourceCandidateCollector['sourcesForEntries']>
+  tokenSources: ReturnType<SourceCandidateStore['sourcesForEntries']>
 }
 
 function isRuntimeTransformCandidate(candidate: string) {
@@ -481,6 +482,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
     getWatchChangedFiles,
     runtimeClassSetManager,
     getWebpackCssSources,
+    getWebpackGeneratedCssSources,
     pruneWebpackCssSources,
     prepareWebpackCssSources,
     debug,
@@ -631,6 +633,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
         }
         const cssSources = new Map(
           [...(getWebpackCssSources?.() ?? [])]
+            .map(([file, source]) => [path.resolve(file), source] as const),
+        )
+        const generatedCssSources = new Map(
+          [...(getWebpackGeneratedCssSources?.() ?? [])]
             .map(([file, source]) => [path.resolve(file), source] as const),
         )
         const hasConfiguredTailwindV4SourceRoots = () => {
@@ -842,7 +848,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           return webpackSourceCandidateScanCache.resolve({
             changedFiles: watchChangedFiles,
-            collector: createSourceCandidateCollector({
+            collector: createSourceCandidateStore({
               bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
             }),
             outDir: outputDir,
@@ -1240,8 +1246,6 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const processedCssAssetMetadata = {
               isMainCssChunk: cssHandlerOptionsForProcessedAsset.isMainChunk,
             }
-            const shouldForceConfiguredMainCssGeneration = cssHandlerOptionsForProcessedAsset.isMainChunk
-              && hasConfiguredTailwindV4SourceRoots()
             const processedCssAssetKnown = isKnownWebpackProcessedCssAsset?.(file, processedCssAssetMetadata) === true
             const processedCssHashKey = createRuntimeAwareCssHash(
               chunkHash,
@@ -1269,6 +1273,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               hasTailwindGeneratedAssetCss = hasTailwindGeneratedCss(source)
                 || hasTailwindGeneratedCssMarkers(source)
             }
+            const shouldForceConfiguredMainCssGeneration = cssHandlerOptionsForProcessedAsset.isMainChunk
+              && hasConfiguredTailwindV4SourceRoots()
+              && !hasGeneratedCssMarker
             const hasProcessedMainAssetUserCss = cachedSkipProcessedCssAsset === undefined
               && cssHandlerOptionsForProcessedAsset.isMainChunk
               && (hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
@@ -1390,6 +1397,23 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const cssHandlerOptions = getCssHandlerOptions(file, currentRawSource)
                   const generatorRawSource = resolveWebpackGeneratorRawSource(currentRawSource, cssHandlerOptions)
                   const sourceFile = cssHandlerOptions.sourceOptions?.sourceFile
+                  const loaderGeneratedCss = sourceFile
+                    ? generatedCssSources.get(path.resolve(sourceFile))
+                    : undefined
+                  if (loaderGeneratedCss) {
+                    for (const className of loaderGeneratedCss.classSet) {
+                      generatorRuntimeSet.add(className)
+                      transformRuntimeSet.add(className)
+                    }
+                    for (const dependency of loaderGeneratedCss.dependencies) {
+                      compilation.fileDependencies?.add?.(dependency)
+                    }
+                    const css = finalizeTracedCss(finalizeCssAssetSource(loaderGeneratedCss.css, { generatedCss: true }))
+                    debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
+                    return {
+                      result: new ConcatSource(css),
+                    }
+                  }
                   const sourceCssProcessed = sourceFile ? cssSources.get(path.resolve(sourceFile))?.processed === true : false
                   const registeredUserRawSource = createWebpackUserCssSourceAppend(
                     [...cssSources.entries()].map(([registeredSourceFile, source]) => ({
@@ -1433,7 +1457,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       )),
                     }
                   }
-                  const generated = await generateCssByGenerator({
+                  const generatorOptions = {
                     opts: compilerOptions,
                     runtimeState,
                     runtime: getGeneratorRuntimeSet(),
@@ -1448,7 +1472,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     restoreLocalCssImports: false,
                     styleHandler: compilerOptions.styleHandler,
                     debug,
-                  })
+                  }
+                  const generated = runtimeState.tailwindRuntime.majorVersion === 4
+                    ? await generateTailwindV4Css({
+                        ...generatorOptions,
+                        outputFile: file,
+                      })
+                    : await generateCssByGenerator(generatorOptions)
                   const css = finalizeTracedCss(generated
                     ? finalizeCssAssetSource(generated.css, { generatedCss: true })
                     : isWebGeneratorTarget
@@ -1460,6 +1490,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const source = new ConcatSource(css)
 
                   if (generated) {
+                    for (const className of generated.classSet) {
+                      generatorRuntimeSet.add(className)
+                    }
                     debug('css handle via tailwind v%s engine(%s): %s', runtimeState.tailwindRuntime.majorVersion, generated.target, file)
                   }
                   else {

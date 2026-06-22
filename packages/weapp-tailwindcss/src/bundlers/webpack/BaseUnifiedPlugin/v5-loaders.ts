@@ -1,6 +1,6 @@
 import type { TailwindV4CssSource } from '@tailwindcss-mangle/engine'
 import type { Compiler } from 'webpack'
-import type { WebpackCssSourceRegistration } from '../loaders/runtime-registry'
+import type { WebpackCssSourceRegistration, WebpackGeneratedCssRegistration } from '../loaders/runtime-registry'
 import type { TailwindRuntimeState } from '@/tailwindcss/runtime'
 import type { AppType, InternalUserDefinedOptions } from '@/types'
 import fs from 'node:fs'
@@ -28,6 +28,7 @@ interface SetupWebpackV5LoadersOptions {
   getRuntimeSetInLoader: () => Promise<Set<string>>
   markWebpackProcessedCssSource?: ((file: string) => void) | undefined
   markWebpackCssSourceModule?: ((file: string) => void) | undefined
+  registerWebpackGeneratedCss?: ((source: WebpackGeneratedCssRegistration) => void) | undefined
   registerWebpackCssSourceFile?: ((source: WebpackCssSourceRegistration) => void) | undefined
   getRuntimeWatchDependencies: () => {
     files: ReadonlySet<string>
@@ -51,6 +52,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     getRuntimeSetInLoader,
     markWebpackProcessedCssSource,
     markWebpackCssSourceModule,
+    registerWebpackGeneratedCss,
     registerWebpackCssSourceFile,
     getRuntimeWatchDependencies,
     runtimeRegistryKey = `weapp-tailwindcss-${Date.now()}-${Math.random().toString(36).slice(2)}`,
@@ -100,6 +102,7 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
         ...(registerWebpackCssSourceFile === undefined ? {} : { registerCssSourceFile: registerWebpackCssSourceFile }),
         getRuntimeSet: getRuntimeSetInLoader,
         ...(markWebpackProcessedCssSource === undefined ? {} : { markGeneratedCssSource: markWebpackProcessedCssSource }),
+        ...(registerWebpackGeneratedCss === undefined ? {} : { registerGeneratedCss: registerWebpackGeneratedCss }),
       }
     : undefined
   const classSetLoaderOptions = {

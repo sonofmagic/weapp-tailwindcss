@@ -39,6 +39,17 @@ describe('bundlers/vite source candidates', () => {
     expect(collector.values()).toEqual(new Set(['text-[23px]', 'bg-[#123456]']))
   })
 
+  it('exposes a shared source candidate store API for bundlers', async () => {
+    const { createSourceCandidateStore } = await import('@/bundlers/vite/source-candidates')
+    const store = createSourceCandidateStore()
+
+    await store.syncSource('/project/pages/index.wxml', '<view class="text-[24rpx]"></view>')
+    await store.syncCss('/project/app.css', '.btn { @apply bg-[#123456]; }')
+
+    expect(store.values()).toEqual(new Set(['text-[24rpx]', 'bg-[#123456]']))
+    expect(store.source('/project/pages/index.wxml')).toBe('<view class="text-[24rpx]"></view>')
+  })
+
   it('bounds extracted candidate cache without retaining full hmr source text in keys', async () => {
     const {
       clearSourceCandidateContentCacheForTest,

@@ -175,9 +175,14 @@ export async function generateCssByGenerator(
       css: shouldUseMiniProgramCssBranch(generatorBranch)
         ? removeUnsupportedMiniProgramAtRules(cleanedLocalImportWrapper)
         : cleanedLocalImportWrapper,
+      classSet: new Set(),
       target: generatorOptions.target,
       source: 'generator',
       dependencies: [],
+      metadata: {
+        file,
+        majorVersion,
+      },
     }
   }
 
@@ -316,10 +321,16 @@ export async function generateCssByGenerator(
         : options.previousCss
       return {
         css: restoreLocalCssImports(css, localImports),
+        classSet: generated.classSet,
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
         incremental: true,
+        metadata: {
+          file,
+          majorVersion,
+          rawCss: generated.rawCss,
+        },
       }
     }
     const shouldFilterApplyOnlyCss = shouldFilterApplyOnlyGeneratedCss(
@@ -449,9 +460,15 @@ export async function generateCssByGenerator(
           }),
           localImports,
         ),
+        classSet: generated.classSet,
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
+        metadata: {
+          file,
+          majorVersion,
+          rawCss: generated.rawCss,
+        },
       }
     }
 
@@ -597,9 +614,15 @@ export async function generateCssByGenerator(
           }),
           localImports,
         ),
+        classSet: generated.classSet,
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
+        metadata: {
+          file,
+          majorVersion,
+          rawCss: generated.rawCss,
+        },
       }
     }
     if (!shouldFilterApplyOnlyCss && !userRawSourceProcessed) {
@@ -655,9 +678,15 @@ export async function generateCssByGenerator(
         }),
         localImports,
       ),
+      classSet: generated.classSet,
       target: generated.target,
       source: 'generator',
       dependencies: generated.dependencies,
+      metadata: {
+        file,
+        majorVersion,
+        rawCss: generated.rawCss,
+      },
     }
   }
   catch (error) {
