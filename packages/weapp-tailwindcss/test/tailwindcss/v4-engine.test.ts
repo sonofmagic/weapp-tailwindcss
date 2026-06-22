@@ -1606,7 +1606,7 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).not.toContain('group-hover')
   })
 
-  it('can return raw Tailwind css for diagnostics', async () => {
+  it('can generate web css without mini-program escaping', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -1614,11 +1614,11 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      target: 'tailwind',
+      target: 'web',
       candidates: ['w-[100px]'],
     })
 
-    expect(result.target).toBe('tailwind')
+    expect(result.target).toBe('web')
     expect(result.css).toBe(result.rawCss)
     expect(result.css).toContain('.w-\\[100px\\]')
     expect(result.css).not.toContain('.w-_b100px_B')

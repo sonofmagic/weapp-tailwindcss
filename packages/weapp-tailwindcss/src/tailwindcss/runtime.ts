@@ -209,7 +209,7 @@ async function collectTailwindV4GeneratorClassSet(tailwindRuntime: TailwindcssRu
     const source = await resolveTailwindV4SourceFromRuntime(tailwindRuntime)
     const generated = await createTailwindV4Engine(source).generate({
       scanSources: true,
-      target: 'tailwind',
+      target: 'web',
     })
     debug('runtime class set resolved via tailwindcss v4 generator source scan, size=%d', generated.classSet.size)
     return generated.classSet

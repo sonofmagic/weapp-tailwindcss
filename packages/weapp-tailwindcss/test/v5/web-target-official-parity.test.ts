@@ -2,7 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Transform } from 'node:stream'
 import { Buffer } from 'node:buffer'
 import { createRequire } from 'node:module'
-import { mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
+import { access, mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import postcss from 'postcss'
@@ -31,9 +31,17 @@ import {
 } from '../bundlers/webpack.v5.unit/shared'
 
 const require = createRequire(import.meta.url)
+const workspaceRoot = path.resolve(__dirname, '../../../..')
 const tailwindcssV4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const websiteRoot = path.join(workspaceRoot, 'website')
 const createdRoots: string[] = []
 const TEST_TIMEOUT = 120_000
+
+interface WebParityFixture {
+  css: string
+  cssEntry: string
+  root: string
+}
 
 const PARITY_CANDIDATES = [
   'container',
@@ -149,6 +157,28 @@ const PARITY_CSS = [
   '',
 ].join('\n')
 
+const FILE_SCAN_CSS = [
+  '@import "tailwindcss" source(none);',
+  '@plugin "@iconify/tailwind4";',
+  '',
+  '@theme {',
+  '  --color-brand: #155dfc;',
+  '}',
+  '',
+  '@source "./**/*.{ts,tsx}";',
+  '',
+].join('\n')
+
+const FILE_SCAN_SOURCE = [
+  'export function Page() {',
+  '  return (',
+  '    <main className="sr-only flex text-brand icon-[mdi--home] icon-[logos--chrome]">',
+  '      content',
+  '    </main>',
+  '  )',
+  '}',
+].join('\n')
+
 function normalizeCss(css: string) {
   return css
     .replace(/\/\*![\s\S]*?\*\//g, '')
@@ -177,7 +207,7 @@ function createViteResolver(root: string) {
   }
 }
 
-async function createFixtureRoot(name: string) {
+async function createFixtureRoot(name: string): Promise<WebParityFixture> {
   const root = await mkdtemp(path.join(tmpdir(), `weapp-tw-${name}-`))
   createdRoots.push(root)
   await mkdir(path.join(root, 'node_modules'), { recursive: true })
@@ -188,21 +218,58 @@ async function createFixtureRoot(name: string) {
   return {
     root,
     cssEntry,
+    css: PARITY_CSS,
   }
 }
 
-async function generateOfficialPostcssCss(cssEntry: string) {
+async function findPackageRoot(resolvedFile: string) {
+  let dir = path.dirname(resolvedFile)
+  while (dir !== path.dirname(dir)) {
+    try {
+      await access(path.join(dir, 'package.json'))
+      return dir
+    }
+    catch {
+      dir = path.dirname(dir)
+    }
+  }
+  throw new Error(`Unable to find package root for ${resolvedFile}`)
+}
+
+async function linkFixturePackage(root: string, packageName: string) {
+  const packageDir = await findPackageRoot(require.resolve(packageName, {
+    paths: [websiteRoot],
+  }))
+  const target = path.join(root, 'node_modules', ...packageName.split('/'))
+  await mkdir(path.dirname(target), { recursive: true })
+  await symlink(packageDir, target, 'dir')
+}
+
+async function createFileScanFixtureRoot(): Promise<WebParityFixture> {
+  const fixture = await createFixtureRoot('web-target-file-scan')
+  await linkFixturePackage(fixture.root, '@iconify/tailwind4')
+  await linkFixturePackage(fixture.root, '@iconify-json/mdi')
+  await linkFixturePackage(fixture.root, '@iconify-json/logos')
+  await writeFile(fixture.cssEntry, FILE_SCAN_CSS, 'utf8')
+  await writeFile(path.join(fixture.root, 'src/page.tsx'), FILE_SCAN_SOURCE, 'utf8')
+  return {
+    ...fixture,
+    css: FILE_SCAN_CSS,
+  }
+}
+
+async function generateOfficialPostcssCss(cssEntry: string, css: string) {
   const result = await postcss([
     tailwindcssPostcss({
       optimize: false,
     }),
-  ]).process(PARITY_CSS, {
+  ]).process(css, {
     from: cssEntry,
   })
   return result.css
 }
 
-async function generateOfficialViteCss(root: string) {
+async function generateOfficialViteCss(root: string, cssEntry: string, css: string) {
   const plugins = tailwindcssVite({
     optimize: false,
   })
@@ -235,15 +302,15 @@ async function generateOfficialViteCss(root: string) {
   const result = await transform?.call({
     addWatchFile: vi.fn(),
     environment,
-  }, PARITY_CSS, path.join(root, 'src/app.css'))
+  }, css, cssEntry)
   expect(result?.code, 'official tailwind vite transform should emit css').toBeTruthy()
   return String(result.code)
 }
 
-async function generateCoreCss(root: string) {
+async function generateCoreCss(root: string, css: string) {
   const source = await resolveTailwindV4Source({
     base: root,
-    css: PARITY_CSS,
+    css,
     packageName: 'tailwindcss',
     projectRoot: root,
   })
@@ -259,7 +326,7 @@ function getGenerateBundleHandler(plugin: { generateBundle?: unknown }) {
   return typeof hook === 'object' ? hook.handler : hook
 }
 
-async function generateVitePluginCss(root: string, cssEntry: string) {
+async function generateVitePluginCss(root: string, cssEntry: string, css: string) {
   resetVitePluginTestContext()
   setCurrentContext(createContext({
     appType: undefined,
@@ -310,7 +377,7 @@ async function generateVitePluginCss(root: string, cssEntry: string) {
   })
   const bundle = {
     'assets/app.css': {
-      ...createRollupAsset(PARITY_CSS),
+      ...createRollupAsset(css),
       fileName: 'assets/app.css',
       originalFileName: cssEntry,
     } as OutputAsset,
@@ -347,7 +414,7 @@ function runGulpTransform(transform: Transform, file: Vinyl) {
   })
 }
 
-async function generateGulpCss(root: string, cssEntry: string) {
+async function generateGulpCss(root: string, cssEntry: string, css: string) {
   const plugins = createGulpPlugins({
     cssEntries: [cssEntry],
     generator: {
@@ -360,11 +427,11 @@ async function generateGulpCss(root: string, cssEntry: string) {
     cwd: root,
     base: path.dirname(cssEntry),
     path: cssEntry,
-    contents: Buffer.from(PARITY_CSS),
+    contents: Buffer.from(css),
   }))
 }
 
-async function generateWebpackPluginCss(root: string, cssEntry: string) {
+async function generateWebpackPluginCss(root: string, cssEntry: string, css: string) {
   vi.resetModules()
   const { WeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
   webpackTestState.currentContext = createWebpackContext({
@@ -400,7 +467,7 @@ async function generateWebpackPluginCss(root: string, cssEntry: string) {
   const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
   let loaderHandler: ((loaderContext: any, module: { loaders: Array<{ loader: string, options?: Record<string, any> }>, resource?: string }) => void) | undefined
   let assetStore: Record<string, string> = {
-    'assets/app.css': PARITY_CSS,
+    'assets/app.css': css,
   }
   const compilation = {
     compiler: {
@@ -490,7 +557,7 @@ async function generateWebpackPluginCss(root: string, cssEntry: string) {
   const classSetLoaderEntry = sourceCssModule.loaders.find(entry => entry.loader === webpackTestState.currentContext.runtimeLoaderPath)
   const loaderRuntime = getWebpackLoaderRuntime(classSetLoaderEntry?.options?.weappTailwindcssRuntimeKey)
   loaderRuntime?.classSet?.registerCssSourceFile?.({
-    css: PARITY_CSS,
+    css,
     file: cssEntry,
   })
 
@@ -504,19 +571,18 @@ afterEach(async () => {
 })
 
 describe('web target official tailwind parity', () => {
-  it('keeps every weapp-tailwindcss web generation path identical to official Tailwind CSS output', async () => {
-    const fixture = await createFixtureRoot('web-target-official-parity')
-    const officialPostcss = await generateOfficialPostcssCss(fixture.cssEntry)
-    const officialVite = await generateOfficialViteCss(fixture.root)
+  async function expectWebParity(fixture: WebParityFixture) {
+    const officialPostcss = await generateOfficialPostcssCss(fixture.cssEntry, fixture.css)
+    const officialVite = await generateOfficialViteCss(fixture.root, fixture.cssEntry, fixture.css)
     const expected = normalizeCss(officialPostcss)
 
     expect(normalizeCss(officialVite)).toBe(expected)
 
     const outputs = {
-      core: await generateCoreCss(fixture.root),
-      gulp: await generateGulpCss(fixture.root, fixture.cssEntry),
-      vite: await generateVitePluginCss(fixture.root, fixture.cssEntry),
-      webpack: await generateWebpackPluginCss(fixture.root, fixture.cssEntry),
+      core: await generateCoreCss(fixture.root, fixture.css),
+      gulp: await generateGulpCss(fixture.root, fixture.cssEntry, fixture.css),
+      vite: await generateVitePluginCss(fixture.root, fixture.cssEntry, fixture.css),
+      webpack: await generateWebpackPluginCss(fixture.root, fixture.cssEntry, fixture.css),
     }
 
     for (const [name, css] of Object.entries(outputs)) {
@@ -524,5 +590,21 @@ describe('web target official tailwind parity', () => {
       expect(css, `${name} web output should keep Tailwind web layers`).toContain('@layer')
       expect(css, `${name} web output should never include mini-program specificity fallback`).not.toContain(':not(#\\#)')
     }
+  }
+
+  it('keeps every weapp-tailwindcss web generation path identical to official Tailwind CSS output', async () => {
+    await expectWebParity(await createFixtureRoot('web-target-official-parity'))
+  }, TEST_TIMEOUT)
+
+  it('keeps filesystem @source scanning identical to official Tailwind CSS output for static utilities and dynamic icon plugins', async () => {
+    const fixture = await createFileScanFixtureRoot()
+    await expectWebParity(fixture)
+
+    const css = await generateCoreCss(fixture.root, fixture.css)
+    expect(css).toContain('.sr-only')
+    expect(css).toContain('.icon-\\[mdi--home\\]')
+    expect(css).toContain('.icon-\\[logos--chrome\\]')
+    expect(css).toContain('--svg')
+    expect(css).toMatch(/mask|background/)
   }, TEST_TIMEOUT)
 })

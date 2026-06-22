@@ -632,6 +632,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           [...(getWebpackCssSources?.() ?? [])]
             .map(([file, source]) => [path.resolve(file), source] as const),
         )
+        const hasConfiguredTailwindV4SourceRoots = () => {
+          const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
+          return (tailwindOptions?.v4?.cssEntries?.length ?? 0) > 0
+            || (tailwindOptions?.v4?.cssSources?.length ?? 0) > 0
+        }
         const configuredMainCssEntryFiles = (() => {
           const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
           return [
@@ -648,9 +653,15 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             resourcesByAsset: cssAssetResources,
           },
         )
+        const singleConfiguredCssAsset = isWebGeneratorTarget
+          && configuredMainCssEntryFiles.length > 0
+          && (groupedEntries.css?.length ?? 0) === 1
+          ? groupedEntries.css?.[0]?.[0]
+          : undefined
         const isMainCssChunk = (file: string) =>
           compilerOptions.mainCssChunkMatcher(file, appType)
           || inferredMainCssFiles.has(file)
+          || file === singleConfiguredCssAsset
         const activeWebpackCssSourceFiles = new Set<string>()
         const resolveConfiguredMainCssSourceFile = (file: string) => {
           if (!isMainCssChunk(file)) {
@@ -1228,6 +1239,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const processedCssAssetMetadata = {
               isMainCssChunk: cssHandlerOptionsForProcessedAsset.isMainChunk,
             }
+            const shouldForceConfiguredMainCssGeneration = cssHandlerOptionsForProcessedAsset.isMainChunk
+              && hasConfiguredTailwindV4SourceRoots()
             const processedCssAssetKnown = isKnownWebpackProcessedCssAsset?.(file, processedCssAssetMetadata) === true
             const processedCssHashKey = createRuntimeAwareCssHash(
               chunkHash,
@@ -1268,7 +1281,8 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const shouldSkipProcessedCssAsset = (
               cachedSkipProcessedCssAsset
               ?? (
-                (
+                !shouldForceConfiguredMainCssGeneration
+                && (
                   processedCssAssetKnown
                   || isWebpackProcessedCssAsset?.(file, readCurrentProcessedRawSource(), processedCssAssetMetadata)
                 )
@@ -1415,6 +1429,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     runtimeState,
                     runtime: getGeneratorRuntimeSet(),
                     rawSource: generatorRawSource,
+                    forceGenerator: cssHandlerOptions.isMainChunk && hasConfiguredTailwindV4SourceRoots(),
                     ...(userRawSource === undefined ? {} : { userRawSource: userRawSource.css }),
                     ...(userRawSource?.processed === true ? { userRawSourceProcessed: true } : {}),
                     file,

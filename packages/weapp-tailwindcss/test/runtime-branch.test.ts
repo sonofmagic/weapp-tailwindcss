@@ -3,7 +3,6 @@ import { resolveRuntimeBranch, shouldUseMiniProgramCssBranch, shouldUseNativeApp
 import { generatorTargetEnvKeys, inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { createMiniProgramRuntimeBranch } from '@/runtime-branch/mini-program'
 import { createNativeAppRuntimeBranch } from '@/runtime-branch/native-app'
-import { createTailwindRuntimeBranch } from '@/runtime-branch/tailwind'
 import { createWebRuntimeBranch } from '@/runtime-branch/web'
 import { resolveUniUtsPlatform } from '@/utils'
 
@@ -53,7 +52,7 @@ describe('resolveRuntimeBranch', () => {
   it.each([
     [3, 'v3'],
     [4, 'v4'],
-  ] as const)('routes Tailwind CSS %s mini-program output independently', (tailwindcssMajorVersion) => {
+  ] as const)('routes Tailwind CSS %s mini-program output through the v4 generator branch', (tailwindcssMajorVersion) => {
     const branch = resolveRuntimeBranch({
       generatorTarget: 'weapp',
       tailwindcssMajorVersion,
@@ -61,7 +60,7 @@ describe('resolveRuntimeBranch', () => {
     })
 
     expect(branch).toMatchObject({
-      tailwindcssVersion: tailwindcssMajorVersion,
+      tailwindcssVersion: 4,
       platformFamily: 'mini-program',
       platform: 'mp-weixin',
       isMiniProgram: true,
@@ -75,7 +74,7 @@ describe('resolveRuntimeBranch', () => {
   it.each([
     [3, 'v3'],
     [4, 'v4'],
-  ] as const)('routes Tailwind CSS %s web output independently', (tailwindcssMajorVersion) => {
+  ] as const)('routes Tailwind CSS %s web output through the v4 generator branch', (tailwindcssMajorVersion) => {
     const branch = resolveRuntimeBranch({
       generatorTarget: 'web',
       tailwindcssMajorVersion,
@@ -83,7 +82,7 @@ describe('resolveRuntimeBranch', () => {
     })
 
     expect(branch).toMatchObject({
-      tailwindcssVersion: tailwindcssMajorVersion,
+      tailwindcssVersion: 4,
       platformFamily: 'web',
       platform: 'web',
       isMiniProgram: false,
@@ -186,7 +185,7 @@ describe('inferGeneratorTargetFromEnv', () => {
     })
 
     withGeneratorTargetEnv({ WEAPP_TAILWINDCSS_TARGET: 'tailwind' }, () => {
-      expect(inferGeneratorTargetFromEnv()).toBe('tailwind')
+      expect(inferGeneratorTargetFromEnv()).toBe('weapp')
     })
   })
 })
@@ -231,15 +230,4 @@ describe('runtime branch files', () => {
     })
   })
 
-  it('creates tailwind passthrough branch from the dedicated tailwind file', () => {
-    expect(createTailwindRuntimeBranch(createBranchBase({
-      generatorTarget: 'tailwind',
-      platform: 'mp-weixin',
-      tailwindcssMajorVersion: 4,
-    }))).toMatchObject({
-      platformFamily: 'tailwind',
-      isTailwindV4: true,
-      platform: 'mp-weixin',
-    })
-  })
 })

@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 34275 | 141 | false | false | false | true | true | false | true |
+| 34139 | 141 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -23,8 +23,8 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `common.wxss` | [artifacts/common.wxss](artifacts/common.wxss) | 9203 | 51 | false | false | false | false | false | false | true |
-| `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) | 14398 | 112 | false | false | false | true | true | false | true |
-| `pages-order/index.wxss` | [artifacts/pages-order__index.wxss](artifacts/pages-order__index.wxss) | 8609 | 51 | false | false | false | false | false | false | true |
-| `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1108 | 6 | false | false | false | false | false | false | true |
-| `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 1073 | 6 | false | false | false | false | false | false | true |
+| `common.wxss` | [artifacts/common.wxss](artifacts/common.wxss) | 9148 | 51 | false | false | false | false | false | false | true |
+| `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) | 14372 | 112 | false | false | false | true | true | false | true |
+| `pages-order/index.wxss` | [artifacts/pages-order__index.wxss](artifacts/pages-order__index.wxss) | 8554 | 51 | false | false | false | false | false | false | true |
+| `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1050 | 6 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 1015 | 6 | false | false | false | false | false | false | true |

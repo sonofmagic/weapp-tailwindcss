@@ -16,19 +16,16 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --radius: 8rpx;
-  --color-white: #fff;
-  --color-slate-100: #f1f5f9;
-  --color-slate-900: #0f172a;
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --color-zinc-50: #fafafa;
-  --color-zinc-900: #18181b;
-  --color-zinc-950: #09090b;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-slate-100: #f1f5f9;
+  --color-slate-900: #0f172b;
+  --color-zinc-50: #fafafa;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+  --color-white: #fff;
   --spacing: 8rpx;
   --text-xs: 24rpx;
   --text-xs--line-height: 1.33333;
@@ -170,7 +167,7 @@ wx-root-portal-content {
 }
 /* tokens: rounded <= src/pages/index/index.wxml */
 .rounded {
-  border-radius: var(--radius);
+  border-radius: 8rpx;
 }
 /* tokens: border-b <= src/pages/index/index.ttml, src/pages/index/index.wxml, src/pages/more/more.ttml, src/pages/more/more.wxml */
 .border-b {

@@ -69,16 +69,20 @@ module.exports = {
 
 ## Tailwindcss v4
 
-在 `Tailwindcss@4` 中，不会自动读取 `tailwind.config.js` 文件，所以你需要使用 [@config](https://tailwindcss.com/docs/functions-and-directives#config-directive) 指令，手动 引入 `tailwindcss` 的配置文件。
+在 `Tailwindcss@4` 中，不会自动读取 `tailwind.config.js` 文件，所以你需要使用 [@config](https://tailwindcss.com/docs/functions-and-directives#config-directive) 指令，手动引入 `tailwindcss` 的配置文件。
+
+Iconify 推荐使用 `@iconify/tailwind4`，并且直接在 Tailwind 入口 CSS 中注册：
 
 ```css
 @import "tailwindcss";
+@plugin "@iconify/tailwind4";
+
 /* 添加下面这一行，路径为你创建的 tailwind.config.js 文件路径 */
 /* highlight-next-line */
 @config "../tailwind.config.js";
 ```
 
-> **注意**：`tailwindcss@4` + `weapp-tailwindcss@5` 的实际运行时入口推荐直接写 `@import 'tailwindcss'`。构建器会在 Tailwind v4 小程序生成链路中解析到目标 CSS。
+> **注意**：`tailwindcss@4` + `weapp-tailwindcss@5` 的实际运行时入口推荐直接写 `@import 'tailwindcss'`。构建器会在 Tailwind v4 小程序生成链路中解析到目标 CSS。Iconify v4 插件也应该跟随入口 CSS 注册，不再写到 `tailwind.config.js` 的 `plugins` 中。
 
 这样在 `tailwindcss@4` 中才能起效果
 

@@ -169,7 +169,7 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
       resource: '/abs/app.css',
     }
     loaderHandler?.({}, v4Module)
-    expect(v4Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
+    expect(v4Module.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
 
     const ctxV4Web = createContext({
       generator: {
@@ -186,8 +186,36 @@ describe('bundlers/webpack WeappTailwindcss / web css rewrite loader', () => {
       resource: '/abs/app.css',
     }
     loaderHandler?.({}, v4WebModule)
-    expect(v4WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
+    expect(v4WebModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(false)
     expect(v4WebModule.loaders.some(entry => entry.loader === ctxV4Web.runtimeLoaderPath)).toBe(false)
+
+    const ctxV4WebCssEntries = createContext({
+      generator: {
+        target: 'web',
+      },
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            v4: {
+              cssEntries: ['/abs/app.css'],
+            },
+          },
+        },
+      },
+    })
+    getCompilerContextMock.mockImplementationOnce(() => ctxV4WebCssEntries)
+    loaderHandler = undefined
+    plugin = new WeappTailwindcss()
+    plugin.apply(compiler as any)
+    const v4WebCssEntriesModule: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/abs/app.css',
+    }
+    loaderHandler?.({}, v4WebCssEntriesModule)
+    expect(v4WebCssEntriesModule.loaders.some(entry => isCssImportRewriteLoader(entry))).toBe(true)
+    expect(v4WebCssEntriesModule.loaders.some(entry => entry.loader === ctxV4WebCssEntries.runtimeLoaderPath)).toBe(false)
 
     const ctxV4Rewrite = createContext({
       rewriteCssImports: true,

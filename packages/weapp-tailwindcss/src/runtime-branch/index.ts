@@ -2,7 +2,6 @@ import type { RuntimeBranch, RuntimeBranchContext, RuntimeBranchGeneratorOptions
 import { createMiniProgramRuntimeBranch } from './mini-program'
 import { createNativeAppRuntimeBranch } from './native-app'
 import { isRuntimeUniAppXEnabled, normalizeRuntimeUniUtsPlatform } from './platform'
-import { createTailwindRuntimeBranch } from './tailwind'
 import { resolveTailwindcssBranchVersion } from './tailwind-version'
 import { createWebRuntimeBranch } from './web'
 
@@ -20,9 +19,6 @@ export function resolveRuntimeBranch(context: RuntimeBranchContext): RuntimeBran
     uniUtsPlatform,
   }
 
-  if (context.generatorTarget === 'tailwind') {
-    return createTailwindRuntimeBranch(base)
-  }
   if (context.generatorTarget === 'web') {
     return createWebRuntimeBranch(base)
   }

@@ -20,22 +20,20 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-white: #fff;
-  --color-slate-50: #f8fafc;
-  --color-slate-200: #e2e8f0;
-  --color-slate-500: #64748b;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --color-emerald-50: #ecfdf5;
-  --color-emerald-100: #d1fae5;
-  --color-emerald-500: #10b981;
-  --color-emerald-600: #059669;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d0fae5;
+  --color-emerald-500: #00bc7d;
+  --color-emerald-600: #009966;
+  --color-slate-50: #f8fafc;
+  --color-slate-200: #e2e8f0;
+  --color-slate-500: #62748e;
+  --color-slate-800: #1d293d;
+  --color-slate-900: #0f172b;
+  --color-white: #fff;
   --spacing: 8rpx;
   --text-xs: 24rpx;
   --text-xs--line-height: 1.33333;
@@ -245,7 +243,7 @@ wx-root-portal-content {
 }
 /* tokens: shadow-sm <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .shadow-sm {
-  --tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.05));
+  --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 /* tokens: active:bg-emerald-50 <= src/pages-order/pages/user/user.vue */

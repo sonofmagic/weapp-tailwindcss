@@ -4,11 +4,11 @@ import type { UniUtsPlatformInfo } from '@/utils'
 
 export type TailwindcssBranchVersion = 4
 
-export type RuntimePlatformFamily = 'web' | 'mini-program' | 'native-app' | 'tailwind'
+export type RuntimePlatformFamily = 'web' | 'mini-program' | 'native-app'
 
 export type NativeAppPlatform = 'android' | 'ios' | 'harmony' | 'unknown'
 
-export type WeappTailwindcssGeneratorTarget = 'weapp' | 'web' | 'tailwind'
+export type WeappTailwindcssGeneratorTarget = 'weapp' | 'web'
 
 export interface RuntimeBranchContext {
   appType?: AppType | undefined

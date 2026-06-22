@@ -24,18 +24,18 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-slate-100: #f1f5f9;
-  --color-zinc-950: #09090b;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
-  --color-emerald-500: rgb(0, 185, 129);
-  --color-emerald-600: rgb(0, 150, 105);
-  --color-slate-900: rgb(15, 23, 43);
+  --color-emerald-500: #00bc7d;
+  --color-emerald-600: #009966;
+  --color-slate-900: #0f172b;
   --color-white: #fff;
   --color-zinc-50: rgb(250, 250, 250);
   --color-zinc-900: rgb(24, 24, 27);
+  --color-slate-100: #f1f5f9;
+  --color-zinc-950: #09090b;
   --spacing: 8rpx;
   --text-sm: 28rpx;
   --text-sm--line-height: 1.42857;

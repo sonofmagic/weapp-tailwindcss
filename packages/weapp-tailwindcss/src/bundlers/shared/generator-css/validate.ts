@@ -59,7 +59,7 @@ export async function validateCandidatesByGenerator(
     const generated = await generator.generate({
       bareArbitraryValues: generatorOptions.bareArbitraryValues,
       candidates,
-      target: 'tailwind',
+      target: 'web',
     })
     return generated.classSet
   }))

@@ -31,7 +31,7 @@ function getEnvValue(key: string): string | undefined {
 }
 
 function normalizeGeneratorTargetValue(value: string | undefined): WeappTailwindcssGeneratorTarget | undefined {
-  return value === 'weapp' || value === 'web' || value === 'tailwind' ? value : undefined
+  return value === 'weapp' || value === 'web' ? value : undefined
 }
 
 function isUniWebPlatform(value: string | undefined): boolean {

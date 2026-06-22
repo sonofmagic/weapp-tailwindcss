@@ -27,6 +27,9 @@ class FakeConcatSource {
 
 interface TestContext {
   disabled: boolean
+  generator?: {
+    target?: 'web' | 'weapp' | undefined
+  }
   onLoad: ReturnType<typeof vi.fn>
   onStart: ReturnType<typeof vi.fn>
   onEnd: ReturnType<typeof vi.fn>
@@ -42,7 +45,7 @@ interface TestContext {
     extract: ReturnType<typeof vi.fn>
     majorVersion: number
     options: {
-      tailwind: {
+      tailwindcss: {
         v4: {
           cssEntries: string[]
           sources: never[]
@@ -65,6 +68,9 @@ function createContext(): TestContext {
 
   return {
     disabled: false,
+    generator: {
+      target: 'web',
+    },
     onLoad: vi.fn(),
     onStart: vi.fn(),
     onEnd: vi.fn(),
@@ -80,9 +86,9 @@ function createContext(): TestContext {
       extract: vi.fn(async () => ({ classSet: runtimeSet })),
       majorVersion: 4,
       options: {
-        tailwind: {
+        tailwindcss: {
           v4: {
-            cssEntries: ['/virtual/app.css'],
+            cssEntries: [],
             sources: [],
           },
         },
@@ -127,13 +133,14 @@ describe('bundlers/webpack v5 runtime metadata', () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-webpack-v5-runtime-'))
     const cssEntry = path.join(root, 'app.css')
     await writeFile(cssEntry, [
-      '@theme default {',
+      '@import "tailwindcss" source(none);',
+      '@source inline("tw-watch-style-case");',
+      '@theme {',
       '  --color-red-500: #ef4444;',
       '}',
-      '@tailwind utilities;',
       '.tw-watch-style-case { color: red; }',
     ].join('\n'))
-    currentContext.tailwindRuntime.options.tailwind.v4.cssEntries = [cssEntry]
+    currentContext.tailwindRuntime.options.tailwindcss.v4.cssEntries = [cssEntry]
 
     const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
     const invalidHandlers: Array<() => void> = []

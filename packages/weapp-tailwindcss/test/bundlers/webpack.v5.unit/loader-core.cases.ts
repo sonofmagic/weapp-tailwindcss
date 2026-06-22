@@ -4,18 +4,30 @@ import { setupWebpackV5UnitTest, FakeConcatSource, createCompilerWithLoaderTrack
 import RuntimeClassSetLoader from '@/bundlers/webpack/loaders/weapp-tw-runtime-classset-loader'
 describe('bundlers/webpack WeappTailwindcss / loader core wiring', () => {
   setupWebpackV5UnitTest()
-  it('does not inject css import rewrite loader by default for tailwindcss v4', () => {
-    testState.currentContext.tailwindRuntime.majorVersion = 4
+  it('injects css import generation loader by default for tailwindcss v4 mini-program targets', () => {
+    testState.currentContext = createContext({
+      generator: { target: 'weapp' },
+      tailwindRuntime: {
+        ...testState.currentContext.tailwindRuntime,
+        majorVersion: 4,
+      },
+    })
     const { compiler, getLoaderHandler } = createCompilerWithLoaderTracking()
     new WeappTailwindcss().apply(compiler as any)
 
     const module: LoaderModule = {
       loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/workspace/src/app.css',
     }
     getLoaderHandler()?.({}, module)
 
-    expect(module.loaders.find(entry => isCssImportRewriteLoader(entry))).toBeUndefined()
-    expect(module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)).toBeDefined()
+    const rewriteLoaderEntry = module.loaders.find(entry => isCssImportRewriteLoader(entry))
+    const classSetLoaderEntry = module.loaders.find(entry => entry.loader === testState.currentContext.runtimeLoaderPath)
+    expect(rewriteLoaderEntry).toBeDefined()
+    expect(classSetLoaderEntry).toBeDefined()
+    const postcssIndex = module.loaders.findIndex(entry => entry.loader.includes('postcss-loader'))
+    expect(module.loaders.indexOf(rewriteLoaderEntry!)).toBeGreaterThan(postcssIndex)
+    expect(module.loaders.indexOf(classSetLoaderEntry!)).toBeLessThan(postcssIndex)
   })
 
   it('forwards tailwindcssImportRewrite options when css import rewrite is enabled', () => {

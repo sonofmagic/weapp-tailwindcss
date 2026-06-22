@@ -213,6 +213,98 @@ describe('bundlers/shared css-imports', () => {
     expect(result).toBe('@import "/virtual/weapp-tailwindcss/index.css";\n@config "/src/tailwind.config.js";')
   })
 
+  it('expands Tailwind v4 mini-program css before postcss-loader can consume source(none)', async () => {
+    vi.resetModules()
+    const generateCssByGenerator = vi.fn(async (options: any) => ({
+      css: [
+        '.bg-brand{background-color:#123456}',
+        '.rounded-full{border-radius:9999px}',
+        '.dark .text-foreground{color:#ffffff}',
+      ].join('\n'),
+      target: 'weapp',
+      source: 'generator',
+      dependencies: ['/repo/tailwind.config.ts'],
+    }))
+    vi.doMock('@/bundlers/shared/generator-css', async (importOriginal) => ({
+      ...(await importOriginal<typeof import('@/bundlers/shared/generator-css')>()),
+      generateCssByGenerator,
+    }))
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const registerCssSource = vi.fn()
+    const registerCssSourceFile = vi.fn()
+    const markGeneratedCssSource = vi.fn()
+    const addDependency = vi.fn()
+    const source = [
+      '@import "tailwindcss" source(none);',
+      '@config "../../tailwind.config.ts";',
+      '@theme {',
+      '  --radius-full: 9999px;',
+      '}',
+      '@source "../../src/**/*.{js,jsx,ts,tsx,md,mdx}";',
+      '@source "../../docs/**/*.{md,mdx}";',
+      '@source "../../blog/**/*.{md,mdx}";',
+      '@source "../../config/**/*.{ts,tsx}";',
+      '@source "../../docusaurus.config.ts";',
+      '@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));',
+    ].join('\n')
+
+    const result = await webpackLoader.call({
+      addDependency,
+      getOptions: () => ({
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType: 'taro',
+          compilerOptions: {
+            appType: 'taro',
+            generator: {},
+            mainCssChunkMatcher: () => true,
+            styleHandler: async (css: string) => ({ css }),
+          },
+          getRuntimeSet: async () => new Set(['bg-brand', 'rounded-full', 'dark:text-foreground']),
+          markGeneratedCssSource,
+          registerCssSource,
+          registerCssSourceFile,
+          runtimeState: {
+            readyPromise: Promise.resolve(),
+            tailwindRuntime: { majorVersion: 4 },
+          },
+        },
+      }),
+      resourcePath: '/repo/website/src/css/custom.css',
+      rootContext: '/repo/website',
+    } as any, source)
+
+    expect(generateCssByGenerator).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: expect.stringContaining('@import "tailwindcss" source(none);'),
+      file: '/repo/website/src/css/custom.css',
+      cssHandlerOptions: expect.objectContaining({
+        isMainChunk: true,
+      }),
+    }))
+    expect(generateCssByGenerator).toHaveBeenCalledWith(expect.objectContaining({
+      rawSource: expect.stringContaining('@config "/repo/website/tailwind.config.ts";'),
+    }))
+    expect(registerCssSource).toHaveBeenCalledWith({
+      file: '/repo/website/src/css/custom.css',
+      css: expect.stringContaining('@config "/repo/website/tailwind.config.ts";'),
+    })
+    expect(registerCssSourceFile).toHaveBeenCalledWith(expect.objectContaining({
+      file: '/repo/website/src/css/custom.css',
+      processed: false,
+      css: expect.stringContaining('@source "../../src/**/*.{js,jsx,ts,tsx,md,mdx}";'),
+    }))
+    expect(result).toContain(createBundlerGeneratedCssMarker('webpack', '/repo/website/src/css/custom.css'))
+    expect(result).toContain('.bg-brand{background-color:#123456}')
+    expect(result).not.toContain('@import "tailwindcss"')
+    expect(result).not.toContain('@media source(none)')
+    expect(result).not.toContain('source(none)')
+    expect(result).not.toContain(':not(#\\#)')
+    expect(result).not.toContain('@config')
+    expect(result).not.toContain('@source')
+    expect(addDependency).toHaveBeenCalledWith('/repo/tailwind.config.ts')
+    expect(markGeneratedCssSource).toHaveBeenCalledWith('/repo/website/src/css/custom.css')
+  })
+
   it('removes Tailwind source directives from generated webpack H5 css', async () => {
     vi.resetModules()
     const generateCssByGenerator = vi.fn(async (options: any) => ({

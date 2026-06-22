@@ -132,7 +132,7 @@ const platformIcons: Array<{ id: string, label: string, content: ReactNode }> = 
   {
     id: 'android',
     label: 'Android',
-    content: <i aria-hidden="true" className="icon-[bxl--android] text-[32px] text-[#3DDC84]"></i>,
+    content: <i aria-hidden="true" className="icon-[mdi--android] text-[32px] text-[#3DDC84]"></i>,
   },
   {
     id: 'ios',

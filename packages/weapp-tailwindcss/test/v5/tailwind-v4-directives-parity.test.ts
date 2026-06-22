@@ -318,12 +318,12 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     }))
   })
 
-  it('keeps target tailwind as the raw Tailwind v4 output before mini-program transforms', async () => {
+  it('keeps target web as the raw Tailwind v4 output before mini-program transforms', async () => {
     const fixture = await createTailwindV4DirectiveFixture()
     const result = await postcss([
       weappTailwindcss({
         generator: {
-          target: 'tailwind',
+          target: 'web',
         },
       }),
     ]).process(fixture.css, {
@@ -338,7 +338,7 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(result.css).toContain('.theme-midnight\\:bg-brand')
     expect(result.css).not.toContain('.theme-midnight_cbg-brand')
     expect(generatedMessage).toEqual(expect.objectContaining({
-      target: 'tailwind',
+      target: 'web',
       rawCss: result.css,
     }))
   })

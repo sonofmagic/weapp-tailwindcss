@@ -13,6 +13,10 @@
 <view class="rotate-_b10deg_B">rotate1111111</view>
 <view class="text-_b32rpx_B border-_b10rpx_B">rpx</view>
 <view class="text-_b32px_B border-_b10px_B">px</view>
+<view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 dark_cbg-zinc-900 dark_ctext-zinc-50">
+  Mpx Tailwind CSS v4 system dark
+  <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark_cbg-zinc-950 dark_ctext-zinc-50">Mpx Tailwind CSS v4 manual dark</view>
+</view>
 <view class="_etext-primary _eborder-primary text-_b32px_B">1111</view>
 <view class="border-b-_b4rpx_B border-t-_b4px_B border w-screen h-3 border-_bred_B"></view>
 <view>
@@ -52,7 +56,7 @@
 </view>
 <view class="px-_b34_d54rpx_B text-_b32_d4rpx_B text-_b_h5cdc34_B">
   Hello World
-  <list is="components/listdacd7b7a/index">
+  <list is="components/list27ad1c25/index">
     <view class="bg-_b_h434344_B index--bg-_b_h434344_B active_cbg-_b_h543210_B index--active_cbg-_b_h543210_B">
       <view>手机</view>
       <view>电视</view>

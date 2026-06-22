@@ -26,31 +26,28 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --radius: 8rpx;
-  --color-black: #000;
-  --color-white: #fff;
-  --color-slate-100: #f1f5f9;
-  --color-slate-900: #0f172a;
-  --color-gray-100: #f3f4f6;
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --color-zinc-50: #fafafa;
-  --color-zinc-800: #27272a;
-  --color-zinc-900: #18181b;
-  --color-zinc-950: #09090b;
-  --color-red-400: #f87171;
-  --color-red-500: #ef4444;
-  --color-yellow-400: #facc15;
-  --color-green-500: #22c55e;
-  --color-sky-500: #0ea5e9;
-  --color-blue-500: #3b82f6;
-  --color-purple-600: #9333ea;
-  --color-pink-300: #f9a8d4;
-  --color-pink-500: #ec4899;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-red-400: #ff6467;
+  --color-red-500: #fb2c36;
+  --color-yellow-400: #fdc700;
+  --color-green-500: #00c950;
+  --color-sky-500: #00a6f4;
+  --color-blue-500: #2b7fff;
+  --color-purple-600: #9810fa;
+  --color-pink-300: #fda5d5;
+  --color-pink-500: #f6339a;
+  --color-slate-100: #f1f5f9;
+  --color-slate-900: #0f172b;
+  --color-gray-100: #f3f4f6;
+  --color-zinc-50: #fafafa;
+  --color-zinc-800: #27272a;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+  --color-black: #000;
+  --color-white: #fff;
   --spacing: 8rpx;
   --text-base: 32rpx;
   --text-base--line-height: 1.5;
@@ -229,7 +226,7 @@ wx-root-portal-content {
 }
 /* tokens: rounded <= src/pages/index.mpx */
 .rounded {
-  border-radius: var(--radius);
+  border-radius: 8rpx;
 }
 /* tokens: rounded-md <= src/pages/index.mpx */
 .rounded-md {
@@ -293,7 +290,7 @@ wx-root-portal-content {
 }
 /* tokens: bg-blue-500/50 <= src/pages/index.mpx */
 .bg-blue-500_f50 {
-  background-color: rgba(59, 130, 246, 0.5);
+  background-color: rgba(43, 127, 255, 0.5);
 }
 /* tokens: bg-gray-100 <= src/pages/index.mpx */
 .bg-gray-100 {
@@ -452,7 +449,7 @@ wx-root-portal-content {
 }
 /* tokens: ring-4 <= src/pages/index.mpx */
 .ring-4 {
-  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, var(--color-blue-500, #3b82f6));
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
 /* tokens: ring-pink-300 <= src/pages/index.mpx */

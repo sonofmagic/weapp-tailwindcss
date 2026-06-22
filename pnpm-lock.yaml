@@ -3154,12 +3154,9 @@ importers:
       '@iconify-json/mdi-light':
         specifier: catalog:iconifyJson
         version: 1.2.2
-      '@iconify/tailwind':
-        specifier: ^1.2.0
-        version: 1.2.0
-      '@iconify/types':
-        specifier: ^2.0.0
-        version: 2.0.0
+      '@iconify/tailwind4':
+        specifier: ^1.2.3
+        version: 1.2.3(tailwindcss@4.3.1)
       '@playwright/test':
         specifier: ^1.61.0
         version: 1.61.0
@@ -7224,9 +7221,6 @@ packages:
     resolution: {integrity: sha512-z8SKiMHRASJKF/IY//87MF88lcB7ulxh8vlhQXXLWsBkNtOh6ese9R41MyGpQeqXdRvQVt+/fX2glQtHFjQ+MA==}
     peerDependencies:
       tailwindcss: '>= 4.0.0'
-
-  '@iconify/tailwind@1.2.0':
-    resolution: {integrity: sha512-KgpIHWOTcRYw1XcoUqyNSrmYyfLLqZYu3AmP8zdfLk0F5TqRO8YerhlvlQmGfn7rJXgPeZN569xPAJnJ53zZxA==}
 
   '@iconify/tools@5.0.12':
     resolution: {integrity: sha512-aFPwSFmFphUPVjNLUkgxgUPSPVgTEEjv0mE7NgvfoQBuE5TtsMrKa4HTY65cM5oXZ2a1xKQcW/RKhiOKEiAarw==}
@@ -34357,10 +34351,6 @@ snapshots:
       '@iconify/types': 2.0.0
       '@iconify/utils': 3.1.1
       tailwindcss: 4.3.1
-
-  '@iconify/tailwind@1.2.0':
-    dependencies:
-      '@iconify/types': 2.0.0
 
   '@iconify/tools@5.0.12':
     dependencies:

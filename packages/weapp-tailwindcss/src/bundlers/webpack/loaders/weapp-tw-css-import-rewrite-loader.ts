@@ -10,6 +10,7 @@ import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
 import { hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
+import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
 
@@ -98,7 +99,8 @@ async function generateCssForWebpackPipeline(
   }
   await runtimeState.readyPromise
   const runtime = await getRuntimeSet()
-  if (compilerOptions.generator?.target !== 'web') {
+  const generatorTarget = compilerOptions.generator?.target ?? inferGeneratorTargetFromEnv()
+  if (generatorTarget !== 'web' && generatorTarget !== 'weapp') {
     return undefined
   }
   const file = loaderContext.resourcePath

@@ -1,6 +1,7 @@
 @import 'tailwindcss' source(none);
 
 @config '../../tailwind.config.ts';
+@plugin '@iconify/tailwind4';
 
 /* Tailwind v4 默认的 rounded-full 无限半径写法会让 css-minimizer 无法解析。 */
 @theme {

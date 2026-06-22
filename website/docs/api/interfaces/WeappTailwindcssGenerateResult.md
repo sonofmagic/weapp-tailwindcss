@@ -109,6 +109,6 @@ v3 生成器没有编译后的 source root，固定为 `null`。
 
 ### target
 
-> **target**: `"weapp" | "web" | "tailwind"`
+> **target**: `"weapp" | "web"`
 
 实际生成目标。

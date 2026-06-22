@@ -137,6 +137,60 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
   })
 
+  it('expands Tailwind v4 mini-program css before Vite PostCSS can consume source(none)', async () => {
+    const addWatchFile = vi.fn()
+    const generateTailwindCss = vi.fn(async (_id: string, code: string, hookContext?: { addWatchFile?: (id: string) => void }) => {
+      expect(code).toContain('@import "tailwindcss" source(none);')
+      expect(code).toContain('@config "/project/tailwind.config.ts";')
+      hookContext?.addWatchFile?.('/project/tailwind.config.ts')
+      return [
+        '.bg-brand{background-color:#123456}',
+        '.rounded-full{border-radius:9999px}',
+        '.dark .text-foreground{color:#ffffff}',
+      ].join('\n')
+    })
+    const [rewritePlugin] = createRewriteCssImportsPlugins({
+      generateTailwindCss,
+      shouldOwnTailwindGeneration: true,
+      shouldRewrite: false,
+      weappTailwindcssDirPosix: '/virtual/weapp-tailwindcss',
+    })
+    const transform = typeof rewritePlugin?.transform === 'object'
+      ? rewritePlugin.transform.handler
+      : rewritePlugin?.transform
+    const source = [
+      '@import "tailwindcss" source(none);',
+      '@config "../../tailwind.config.ts";',
+      '@theme {',
+      '  --radius-full: 9999px;',
+      '}',
+      '@source "../../src/**/*.{js,jsx,ts,tsx,md,mdx}";',
+      '@source "../../docs/**/*.{md,mdx}";',
+      '@source "../../blog/**/*.{md,mdx}";',
+      '@source "../../config/**/*.{ts,tsx}";',
+      '@source "../../docusaurus.config.ts";',
+      '@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));',
+    ].join('\n')
+
+    const result = await transform?.call(
+      { addWatchFile },
+      source,
+      '/project/src/css/custom.css',
+    ) as TransformResult
+
+    expect(result?.code).toContain('.bg-brand{background-color:#123456}')
+    expect(result?.code).not.toContain('@import "tailwindcss"')
+    expect(result?.code).not.toContain('@media source(none)')
+    expect(result?.code).not.toContain('source(none)')
+    expect(result?.code).not.toContain(':not(#\\#)')
+    expect(generateTailwindCss).toHaveBeenCalledWith(
+      '/project/src/css/custom.css',
+      expect.stringContaining('@config "/project/tailwind.config.ts";'),
+      expect.objectContaining({ addWatchFile }),
+    )
+    expect(addWatchFile).toHaveBeenCalledWith('/project/tailwind.config.ts')
+  })
+
   it('can emit generated css without rewriting imports for Tailwind v4 generator mode', async () => {
     const generateTailwindCss = vi.fn(async () => '.flex{display:flex}')
     const [rewritePlugin] = createRewriteCssImportsPlugins({

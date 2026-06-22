@@ -7,7 +7,7 @@ Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 31718 | 87 | false | false | false | true | true | false | true |
+| 31441 | 87 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -24,9 +24,9 @@ Entry: weapp-vite-tailwindcss-v4/dist/app.wxss
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 14560 | 81 | false | false | false | true | true | false | true |
+| `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 14496 | 81 | false | false | false | true | true | false | true |
 | `packageB/pages/apple.wxss` | [artifacts/packageB__pages__apple.wxss](artifacts/packageB__pages__apple.wxss) | 1 | 0 | false | false | false | false | false | false | false |
 | `pages/index/index.wxss` | [artifacts/pages__index__index.wxss](artifacts/pages__index__index.wxss) | 115 | 2 | false | false | false | false | false | false | false |
-| `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1542 | 6 | false | false | false | false | false | false | true |
-| `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 1057 | 6 | false | false | false | false | false | false | true |
-| `tailwind.wxss` | [artifacts/tailwind.wxss](artifacts/tailwind.wxss) | 14560 | 81 | false | false | false | true | true | false | true |
+| `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1335 | 6 | false | false | false | false | false | false | true |
+| `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 999 | 6 | false | false | false | false | false | false | true |
+| `tailwind.wxss` | [artifacts/tailwind.wxss](artifacts/tailwind.wxss) | 14496 | 81 | false | false | false | true | true | false | true |

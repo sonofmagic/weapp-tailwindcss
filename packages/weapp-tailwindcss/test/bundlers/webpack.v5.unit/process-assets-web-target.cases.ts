@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, getCompilerContextMock, path, testState, WeappTailwindcss } from './shared'
+import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, getCompilerContextMock, mkdir, mkdtemp, os, path, testState, WeappTailwindcss, writeFile } from './shared'
 describe('bundlers/webpack WeappTailwindcss / process assets web target', () => {
   setupWebpackV5UnitTest()
   it('skips html and js transforms and preserves final css for web generator target', async () => {
@@ -375,6 +375,119 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
     expect(currentAssetStore['index.css']).toContain('.home-v5')
     expect(currentAssetStore['index.css']).not.toContain('@media source(none)')
     expect(currentAssetStore['index.css']).not.toContain('@tailwind utilities')
+  })
+
+  it('generates web css from explicit Tailwind v4 cssEntries when webpack only exposes merged css assets', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-web-entry-'))
+    const cssEntry = path.join(root, 'src/tailwind.css')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(cssEntry, [
+      '@import "tailwindcss" source(none);',
+      '@source inline("sr-only flex");',
+    ].join('\n'), 'utf8')
+    testState.currentContext = createContext({
+      generator: {
+        target: 'web',
+      },
+      mainCssChunkMatcher: vi.fn(() => false),
+      isWebpackProcessedCssAsset: () => true,
+      styleHandler: vi.fn(async () => {
+        throw new Error('web target should not use mini-program styleHandler')
+      }),
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            cwd: root,
+            packageName: 'tailwindcss',
+            v4: {
+              cssEntries: [cssEntry],
+            },
+          },
+        },
+      },
+      tailwindcssBasedir: root,
+    } as any)
+    getCompilerContextMock.mockReturnValue(testState.currentContext)
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let currentAssetStore: Record<string, string> = {}
+    const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+      currentAssetStore[file] = source.toString()
+    })
+    const compilation = {
+      compiler: { outputPath: path.join(root, 'dist') },
+      chunks: [{ id: 'main', hash: 'hash-explicit-web-entry', files: ['assets/styles.css'] }],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset,
+      getAsset(file: string) {
+        const content = currentAssetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: vi.fn(),
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: (_name: string, handler: (factory: any) => void) => {
+            handler({
+              hooks: {
+                beforeResolve: {
+                  tap: vi.fn(),
+                },
+              },
+            })
+          },
+        },
+        compilation: {
+          tap: (_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          },
+        },
+      },
+    }
+
+    const plugin = new WeappTailwindcss()
+    plugin.apply(compiler as any)
+
+    currentAssetStore = {
+      'assets/styles.css': '.home-v5{display:grid}',
+    }
+    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+    expect(updateAsset).toHaveBeenCalledWith('assets/styles.css', expect.any(FakeConcatSource))
+    expect(currentAssetStore['assets/styles.css']).toContain('.sr-only')
+    expect(currentAssetStore['assets/styles.css']).toContain('.flex')
+    expect(currentAssetStore['assets/styles.css']).toContain('.home-v5')
+    expect(currentAssetStore['assets/styles.css']).not.toContain(':not(#\\#)')
   })
 
 })

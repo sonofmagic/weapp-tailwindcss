@@ -9,7 +9,7 @@ import type {
 } from '@tailwindcss-mangle/engine'
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 
-export type TailwindV4GenerateTarget = 'weapp' | 'web' | 'tailwind'
+export type TailwindV4GenerateTarget = 'weapp' | 'web'
 
 /**
  * Tailwind CSS v4 解析出的文件扫描规则。

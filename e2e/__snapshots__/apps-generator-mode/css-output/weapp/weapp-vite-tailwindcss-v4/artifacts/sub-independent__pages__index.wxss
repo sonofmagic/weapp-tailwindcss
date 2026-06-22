@@ -12,8 +12,6 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -30,10 +28,6 @@ wx-root-portal-content {
 .before_ccontent-_b_aindependent_subpackage_weapp-vite-tailwindcss-v4_a_B::before {
   --tw-content: 'independent subpackage weapp-vite-tailwindcss-v4';
   content: var(--tw-content);
-}
- /*tokens: bg-independent-subpackage-marker <= sub-independent/pages/index.wxml*/
-.bg-independent-subpackage-marker {
-  background-color: #dc2626;
 }
  /*tokens: before:content-['independent_subpackage_weapp-vite-tailwindcss-v4'] <= sub-independent/pages/index.wxml*/
 .bg-independent-subpackage-marker {

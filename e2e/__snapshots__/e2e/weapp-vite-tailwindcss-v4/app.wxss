@@ -22,33 +22,30 @@ text,
 page,
 .tw-root,
 wx-root-portal-content {
-  --radius: 8rpx;
-  --color-white: #fff;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --color-gray-900: #111827;
-  --color-zinc-50: #fafafa;
-  --color-zinc-900: #18181b;
-  --color-zinc-950: #09090b;
-  --color-red-700: #b91c1c;
-  --color-amber-300: #fcd34d;
-  --color-green-300: #86efac;
-  --color-emerald-600: #059669;
-  --color-sky-600: #0284c7;
-  --color-blue-200: #bfdbfe;
-  --color-blue-500: #3b82f6;
-  --color-violet-600: #7c3aed;
-  --color-pink-300: #f9a8d4;
-  --color-rose-600: #e11d48;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-red-700: #c10007;
+  --color-amber-300: #ffd230;
+  --color-green-300: #7bf1a8;
+  --color-emerald-600: #009966;
+  --color-sky-600: #0084d1;
+  --color-blue-200: #bedbff;
+  --color-blue-500: #2b7fff;
+  --color-violet-600: #7f22fe;
+  --color-pink-300: #fda5d5;
+  --color-rose-600: #ec003f;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-700: #314158;
+  --color-slate-800: #1d293d;
+  --color-slate-900: #0f172b;
+  --color-gray-900: #101828;
+  --color-zinc-50: #fafafa;
+  --color-zinc-900: #18181b;
+  --color-zinc-950: #09090b;
+  --color-white: #fff;
   --spacing: 8rpx;
   --default-transition-duration: 150ms;
   --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
@@ -201,7 +198,7 @@ wx-root-portal-content {
 }
 /* tokens: rounded <= pages/index/index.wxml */
 .rounded {
-  border-radius: var(--radius);
+  border-radius: 8rpx;
 }
 /* tokens: border-4 <= pages/index/index.wxml */
 .border-4 {
@@ -226,7 +223,7 @@ wx-root-portal-content {
 }
 /* tokens: bg-blue-500/30 <= pages/index/index.wxml */
 .bg-blue-500_f30 {
-  background-color: rgba(59, 130, 246, 0.3);
+  background-color: rgba(43, 127, 255, 0.3);
 }
 /* tokens: bg-gray-900 <= pages/index/index.wxml */
 .bg-gray-900 {

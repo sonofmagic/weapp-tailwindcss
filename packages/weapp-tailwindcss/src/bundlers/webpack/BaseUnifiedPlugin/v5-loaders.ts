@@ -7,7 +7,10 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { pluginName } from '@/constants'
+import { resolveRuntimeBranch } from '@/runtime-branch'
+import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { ensureMpxTailwindcssAliases, injectMpxCssRewritePreRules, isMpx, patchMpxLoaderResolve } from '@/shared/mpx'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { deleteWebpackLoaderRuntime, setWebpackLoaderRuntime } from '../loaders/runtime-registry'
 import { createLoaderAnchorFinders } from '../shared/loader-anchors'
 import { hasLoaderEntry, isCssLikeModuleResource } from './shared'
@@ -54,6 +57,14 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
     debug,
   } = options
   const isMpxApp = isMpx(appType)
+  const generatorTarget = compilerOptions.generator?.target ?? inferGeneratorTargetFromEnv()
+  const generatorBranch = resolveRuntimeBranch({
+    appType: compilerOptions.appType,
+    generatorTarget,
+    platform: compilerOptions.cssOptions?.platform ?? compilerOptions.platform,
+    tailwindcssMajorVersion: runtimeState.tailwindRuntime.majorVersion,
+    uniAppX: compilerOptions.uniAppX,
+  })
 
   if (shouldRewriteCssImports && isMpxApp) {
     ensureMpxTailwindcssAliases(compiler, weappTailwindcssPackageDir)
@@ -61,9 +72,17 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
 
   const runtimeClassSetLoader = runtimeLoaderPath
     ?? path.resolve(__dirname, './weapp-tw-runtime-classset-loader.js')
-  const shouldInjectRuntimeClassSetLoader = compilerOptions.generator?.target !== 'web'
+  const shouldInjectRuntimeClassSetLoader = !generatorBranch.isWeb
+  const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
+  const shouldGenerateWebTailwindV4CssInLoader = generatorBranch.isWeb
+    && runtimeState.tailwindRuntime.majorVersion === 4
+    && (
+      (tailwindOptions?.v4?.cssEntries?.length ?? 0) > 0
+      || (tailwindOptions?.v4?.cssSources?.length ?? 0) > 0
+    )
   const shouldInjectCssImportRewriteLoader = shouldRewriteCssImports
-    || (compilerOptions.generator?.target === 'web' && runtimeState.tailwindRuntime.majorVersion === 4)
+    || (runtimeState.tailwindRuntime.majorVersion === 4 && !generatorBranch.isWeb)
+    || shouldGenerateWebTailwindV4CssInLoader
   const runtimeCssImportRewriteLoader = shouldInjectCssImportRewriteLoader
     ? path.resolve(__dirname, './weapp-tw-css-import-rewrite-loader.js')
     : undefined

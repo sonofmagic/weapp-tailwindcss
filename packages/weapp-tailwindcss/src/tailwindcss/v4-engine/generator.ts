@@ -180,6 +180,13 @@ function collectSeenCandidates(
   ])
 }
 
+function shouldDelegateWebSourceScanToTailwind(
+  target: TailwindV4GenerateTarget,
+  scanSources: TailwindV4GenerateOptions['scanSources'],
+) {
+  return target === 'web' && scanSources !== false
+}
+
 function createIncrementalStyleOptions(styleOptions: Partial<IStyleHandlerOptions> | undefined) {
   return {
     ...styleOptions,
@@ -294,7 +301,8 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     const compatibleSource = createCompatibleSource(generateSource, target)
     const engine = createEngineTailwindV4Engine(compatibleSource)
     const resolvedScanSources = await resolveScanSources(generateSource, scanSources)
-    const filesystemCandidates = Array.isArray(resolvedScanSources)
+    const delegateSourceScan = shouldDelegateWebSourceScanToTailwind(target, resolvedScanSources)
+    const filesystemCandidates = !delegateSourceScan && Array.isArray(resolvedScanSources)
       ? new Set(await extractRawCandidates(resolvedScanSources, {
           ...(patchOptions.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: patchOptions.bareArbitraryValues }),
         }))
@@ -305,7 +313,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
     ]), target)
     const normalizedCandidates = normalizeRpxTextCandidates(resolvedCandidates)
     const result = await engine.generate(omitUndefined({
-      scanSources: false,
+      scanSources: delegateSourceScan ? resolvedScanSources : false,
       ...patchOptions,
       candidates: normalizedCandidates.candidates,
     }))
