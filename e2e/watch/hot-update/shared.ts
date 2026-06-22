@@ -30,6 +30,7 @@ const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
+const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:wxss|acss|ttss)(?:$|[*?])/
 const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'taro-webpack-react-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
@@ -443,7 +444,8 @@ function resolveDefaultWatchCommandTimeoutMs(target: WatchCaseName, timeoutMs: n
 function createReportFilePath(cwd: string, target: WatchCaseName) {
   const reportDir = path.resolve(cwd, './benchmark/e2e-watch-hmr')
   const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
-  return path.join(reportDir, `${timestamp}-${target}.json`)
+  const safeTarget = target.replace(/[^\w.-]+/g, '-')
+  return path.join(reportDir, `${timestamp}-${safeTarget}.json`)
 }
 
 function normalizeGlobalStyleOutputs(value?: string | string[]) {
@@ -459,7 +461,7 @@ function normalizeGlobalStyleOutputs(value?: string | string[]) {
 function assertHasWxssOutput(outputs: string[], label: string) {
   expect(outputs.length, `${label} should have at least one global style output`).toBeGreaterThan(0)
   expect(
-    outputs.some(output => /\.(?:wxss|acss|ttss)(?:$|[*?])/.test(output)),
+    outputs.some(output => MINI_PROGRAM_STYLE_OUTPUT_RE.test(output)),
     `${label} should contain mini-program style output`,
   ).toBe(true)
 }
@@ -1222,7 +1224,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     }
 
     if (styleMetric && styleMetric.mutationKind === 'style') {
-      expect(styleMetric.outputStyle).toContain('.wxss')
+      expect(MINI_PROGRAM_STYLE_OUTPUT_RE.test(styleMetric.outputStyle), `[${item.project}] style mutation should use mini-program style output`).toBe(true)
       expect(styleMetric.styleNeedle).toContain('.tw-watch-style-')
       if (noApplyValidationCases.has(item.name)) {
         expect(styleMetric.applyUtilities.length).toBe(0)
