@@ -22,6 +22,9 @@ export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOpti
     appType,
     arbitraryValues,
   } = ctx
+  const effectiveSupportCustomLengthUnits = ctx.generator?.target === 'web'
+    ? false
+    : supportCustomLengthUnits
 
   const absoluteCssEntryBasedir = guessBasedirFromEntries(rawCssEntries)
   const resolvedTailwindcssBasedir = resolveTailwindcssBasedir(tailwindcssBasedir, absoluteCssEntryBasedir)
@@ -36,7 +39,7 @@ export function createTailwindcssRuntimeFromContext(ctx: InternalUserDefinedOpti
   const runtimeOptions: TailwindcssRuntimeFactoryOptions = {
     tailwindcss,
     tailwindcssRuntimeOptions,
-    supportCustomLengthUnits,
+    supportCustomLengthUnits: effectiveSupportCustomLengthUnits,
     appType,
     bareArbitraryValues: arbitraryValues?.bareArbitraryValues,
   }

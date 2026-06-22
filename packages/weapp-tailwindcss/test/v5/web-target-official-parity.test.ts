@@ -2,7 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Transform } from 'node:stream'
 import { Buffer } from 'node:buffer'
 import { createRequire } from 'node:module'
-import { access, mkdir, mkdtemp, rm, symlink, writeFile } from 'node:fs/promises'
+import { access, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import postcss from 'postcss'
@@ -13,6 +13,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { WeappTailwindcss as createGulpPlugins } from '@/gulp'
 import { createWeappTailwindcssGenerator, resolveTailwindV4Source } from '@/generator'
 import { WeappTailwindcss as createVitePlugins } from '@/vite'
+import { generateCssByGenerator } from '@/bundlers/shared/generator-css'
 import {
   createContext,
   createRollupAsset,
@@ -258,6 +259,15 @@ async function createFileScanFixtureRoot(): Promise<WebParityFixture> {
   }
 }
 
+async function createWebsiteFixture(): Promise<WebParityFixture> {
+  const cssEntry = path.join(websiteRoot, 'src/css/tailwind.css')
+  return {
+    root: websiteRoot,
+    cssEntry,
+    css: await readFile(cssEntry, 'utf8'),
+  }
+}
+
 async function generateOfficialPostcssCss(cssEntry: string, css: string) {
   const result = await postcss([
     tailwindcssPostcss({
@@ -307,9 +317,9 @@ async function generateOfficialViteCss(root: string, cssEntry: string, css: stri
   return String(result.code)
 }
 
-async function generateCoreCss(root: string, css: string) {
+async function generateCoreCss(root: string, css: string, cssEntry?: string) {
   const source = await resolveTailwindV4Source({
-    base: root,
+    base: cssEntry ? path.dirname(cssEntry) : root,
     css,
     packageName: 'tailwindcss',
     projectRoot: root,
@@ -319,6 +329,66 @@ async function generateCoreCss(root: string, css: string) {
     target: 'web',
   })
   return result.css
+}
+
+async function generateSharedGeneratorCss(root: string, cssEntry: string, css: string) {
+  const runtimeState = {
+    tailwindRuntime: {
+      majorVersion: 4,
+      getClassSet: vi.fn(async () => new Set<string>()),
+      getClassSetSync: vi.fn(() => new Set<string>()),
+      extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+      options: {
+        projectRoot: root,
+        tailwindcss: {
+          cwd: root,
+          packageName: 'tailwindcss',
+          v4: {
+            cssEntries: [cssEntry],
+          },
+        },
+      },
+    } as any,
+    readyPromise: Promise.resolve(),
+  }
+  const result = await generateCssByGenerator({
+    opts: {
+      generator: {
+        target: 'web',
+      },
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      tailwindcssBasedir: root,
+    } as any,
+    runtimeState,
+    runtime: new Set(),
+    rawSource: css,
+    file: cssEntry,
+    cssHandlerOptions: {
+      isMainChunk: true,
+      majorVersion: 4,
+      postcssOptions: {
+        options: {
+          from: cssEntry,
+        },
+      },
+      sourceOptions: {
+        sourceFile: cssEntry,
+      },
+    } as any,
+    cssUserHandlerOptions: {
+      isMainChunk: false,
+      majorVersion: 4,
+      postcssOptions: {
+        options: {
+          from: cssEntry,
+        },
+      },
+    } as any,
+    debug: vi.fn(),
+    styleHandler: vi.fn(async (code: string) => ({ css: code })),
+  })
+  expect(result?.css, 'shared generator should emit css').toBeTruthy()
+  return result!.css
 }
 
 function getGenerateBundleHandler(plugin: { generateBundle?: unknown }) {
@@ -579,7 +649,7 @@ describe('web target official tailwind parity', () => {
     expect(normalizeCss(officialVite)).toBe(expected)
 
     const outputs = {
-      core: await generateCoreCss(fixture.root, fixture.css),
+      core: await generateCoreCss(fixture.root, fixture.css, fixture.cssEntry),
       gulp: await generateGulpCss(fixture.root, fixture.cssEntry, fixture.css),
       vite: await generateVitePluginCss(fixture.root, fixture.cssEntry, fixture.css),
       webpack: await generateWebpackPluginCss(fixture.root, fixture.cssEntry, fixture.css),
@@ -596,11 +666,29 @@ describe('web target official tailwind parity', () => {
     await expectWebParity(await createFixtureRoot('web-target-official-parity'))
   }, TEST_TIMEOUT)
 
+  it('keeps the real website Tailwind CSS web output identical to @tailwindcss/postcss', async () => {
+    const fixture = await createWebsiteFixture()
+    const officialPostcss = await generateOfficialPostcssCss(fixture.cssEntry, fixture.css)
+    const outputs = {
+      core: await generateCoreCss(fixture.root, fixture.css, fixture.cssEntry),
+      shared: await generateSharedGeneratorCss(fixture.root, fixture.cssEntry, fixture.css),
+      webpack: await generateWebpackPluginCss(fixture.root, fixture.cssEntry, fixture.css),
+    }
+
+    for (const [name, css] of Object.entries(outputs)) {
+      expect(css, `${name} website web output should match @tailwindcss/postcss byte-for-byte`).toBe(officialPostcss)
+      expect(css).toContain('.sr-only')
+      expect(css).toContain('.icon-\\[mdi--wechat\\]')
+      expect(css).toContain('--svg')
+      expect(css).not.toContain(':not(#\\#)')
+    }
+  }, TEST_TIMEOUT)
+
   it('keeps filesystem @source scanning identical to official Tailwind CSS output for static utilities and dynamic icon plugins', async () => {
     const fixture = await createFileScanFixtureRoot()
     await expectWebParity(fixture)
 
-    const css = await generateCoreCss(fixture.root, fixture.css)
+    const css = await generateCoreCss(fixture.root, fixture.css, fixture.cssEntry)
     expect(css).toContain('.sr-only')
     expect(css).toContain('.icon-\\[mdi--home\\]')
     expect(css).toContain('.icon-\\[logos--chrome\\]')

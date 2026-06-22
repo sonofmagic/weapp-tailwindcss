@@ -286,6 +286,15 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
   return true
 }
 
+function normalizeTargetRpxTextCandidates(candidates: Iterable<string>, target: TailwindV4GenerateTarget) {
+  return target === 'web'
+    ? {
+        candidates: new Set(candidates),
+        restoreCandidates: new Map<string, string>(),
+      }
+    : normalizeRpxTextCandidates(candidates)
+}
+
 export function createTailwindV4Engine(source: TailwindV4ResolvedSource): TailwindV4Engine {
   async function generateOnce(
     generateSource: TailwindV4ResolvedSource,
@@ -311,7 +320,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...collectCandidates(patchOptions.candidates),
       ...(filesystemCandidates ?? []),
     ]), target)
-    const normalizedCandidates = normalizeRpxTextCandidates(resolvedCandidates)
+    const normalizedCandidates = normalizeTargetRpxTextCandidates(resolvedCandidates, target)
     const result = await engine.generate(omitUndefined({
       scanSources: delegateSourceScan ? resolvedScanSources : false,
       ...patchOptions,
@@ -417,7 +426,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
         const designSystem = await cached.designSystemPromise
-        const normalizedMissing = normalizeRpxTextCandidates(missingCandidates)
+        const normalizedMissing = normalizeTargetRpxTextCandidates(missingCandidates, target)
         const normalizedMissingCandidates = [...normalizedMissing.candidates]
         const cssByCandidate = designSystem.candidatesToCss(normalizedMissingCandidates)
         const rawCssParts: string[] = []

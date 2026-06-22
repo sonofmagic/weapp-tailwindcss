@@ -396,7 +396,7 @@ export function removeTailwindV4GeneratorAtRules(source: string) {
   }
 }
 
-function isCommentOnlyCss(source: string) {
+export function isCommentOnlyCss(source: string) {
   try {
     const root = postcss.parse(source)
     return root.nodes.length > 0 && root.nodes.every(node => node.type === 'comment')

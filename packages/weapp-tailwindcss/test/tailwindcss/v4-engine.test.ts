@@ -271,7 +271,7 @@ describe('tailwindcss v4 engine', () => {
     expect(transformed).not.toContain('color: 55rpx')
   })
 
-  it('treats rpx arbitrary text values as lengths in generated web css', async () => {
+  it('keeps rpx arbitrary text values aligned with official Tailwind in generated web css', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -286,16 +286,16 @@ describe('tailwindcss v4 engine', () => {
     expect(result.classSet).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
     expect(result.rawCandidates).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
     expect(result.css).toContain('.text-\\[55rpx\\]')
-    expect(result.css).toContain('font-size: 55rpx')
+    expect(result.css).toContain('color: 55rpx')
     expect(result.css).toContain('.text-\\[32\\.4rpx\\]')
-    expect(result.css).toContain('font-size: 32.4rpx')
+    expect(result.css).toContain('color: 32.4rpx')
     expect(result.css).toContain('.hover\\:text-\\[66rpx\\]')
-    expect(result.css).toContain('font-size: 66rpx')
+    expect(result.css).toContain('color: 66rpx')
     expect(result.css).toContain('.hover\\:text-\\[32\\.4rpx\\]')
     expect(result.css).not.toContain('text-\\[length\\:')
-    expect(result.css).not.toContain('color: 55rpx')
-    expect(result.css).not.toContain('color: 32.4rpx')
-    expect(result.css).not.toContain('color: 66rpx')
+    expect(result.css).not.toContain('font-size: 55rpx')
+    expect(result.css).not.toContain('font-size: 32.4rpx')
+    expect(result.css).not.toContain('font-size: 66rpx')
   })
 
   it('scopes Tailwind v4 gradient variables to mini-program component elements', async () => {
@@ -403,7 +403,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.rawCandidates).toEqual(new Set(['text-[88rpx]']))
   })
 
-  it('keeps rpx text selectors restored in web incremental css', async () => {
+  it('keeps rpx text selectors aligned with official Tailwind in web incremental css', async () => {
     const source = await resolveTailwindV4Source({
       css: `${MINIMAL_THEME_CSS}\n/* web rpx incremental */`,
       base: process.cwd(),
@@ -426,20 +426,18 @@ describe('tailwindcss v4 engine', () => {
     expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
     expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]']))
     expect(second.css).toContain('.text-\\[88rpx\\]')
-    expect(second.css).toContain('font-size: 88rpx')
+    expect(second.css).toContain('color: 88rpx')
     expect(second.css).toContain('.text-\\[188rpx\\]')
-    expect(second.css).toContain('font-size: 188rpx')
+    expect(second.css).toContain('color: 188rpx')
     expect(second.css).toContain('.text-\\[32\\.4rpx\\]')
-    expect(second.css).toContain('font-size: 32.4rpx')
+    expect(second.css).toContain('color: 32.4rpx')
     expect(second.incrementalCss).toContain('.text-\\[188rpx\\]')
-    expect(second.incrementalCss).toContain('font-size: 188rpx')
+    expect(second.incrementalCss).toContain('color: 188rpx')
     expect(second.incrementalCss).toContain('.text-\\[32\\.4rpx\\]')
-    expect(second.incrementalCss).toContain('font-size: 32.4rpx')
+    expect(second.incrementalCss).toContain('color: 32.4rpx')
     expect(second.css).not.toContain('text-\\[length\\:')
     expect(second.incrementalCss).not.toContain('text-\\[length\\:')
-    expect(second.css).not.toContain('color: 88rpx')
-    expect(second.css).not.toContain('color: 188rpx')
-    expect(second.css).not.toContain('color: 32.4rpx')
+    expect(second.css).not.toContain('font-size: 88rpx')
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {

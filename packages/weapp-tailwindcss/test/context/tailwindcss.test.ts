@@ -259,4 +259,44 @@ describe('createTailwindcssRuntimeFromContext', () => {
     }
   })
 
+  it('disables custom length units for web generator target', async () => {
+    const calls: CreateTailwindcssRuntimeOptions[] = []
+    const createTailwindcssRuntime = vi.fn((options: CreateTailwindcssRuntimeOptions) => {
+      calls.push(options)
+      return {
+        packageInfo: { version: '4.1.0' } as any,
+        majorVersion: 4,
+        options: options as any,
+        getClassSet: vi.fn(async () => new Set<string>()),
+        extract: vi.fn(async () => ({
+          classList: [],
+          classSet: new Set<string>(),
+        })),
+      } as TailwindcssRuntimeLike
+    })
+
+    vi.resetModules()
+    vi.doMock('@/tailwindcss/runtime-factory', () => ({
+      createTailwindcssRuntime,
+    }))
+
+    const { createTailwindcssRuntimeFromContext } = await import('@/context/tailwindcss')
+
+    createTailwindcssRuntimeFromContext({
+      tailwindcssBasedir: '/workspace/website',
+      supportCustomLengthUnits: undefined,
+      tailwindcss: undefined,
+      tailwindcssRuntimeOptions: undefined,
+      cssEntries: ['/workspace/website/src/css/tailwind.css'],
+      appType: undefined,
+      arbitraryValues: { allowDoubleQuotes: false, bareArbitraryValues: false },
+      generator: {
+        target: 'web',
+      },
+    } as unknown as InternalUserDefinedOptions)
+
+    expect(createTailwindcssRuntime).toHaveBeenCalledTimes(1)
+    expect(calls[0].supportCustomLengthUnits).toBe(false)
+  })
+
 })
