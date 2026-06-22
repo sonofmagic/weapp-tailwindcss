@@ -178,6 +178,14 @@ function resolveMatchingTailwindV4CssEntry(
     return undefined
   }
 
+  const normalizedFile = path.resolve(file.replace(/[?#].*$/, ''))
+  const pathMatchedEntries = cssEntries.filter(cssEntry =>
+    path.resolve(cssEntry.replace(/[?#].*$/, '')) === normalizedFile,
+  )
+  if (pathMatchedEntries.length === 1) {
+    return resolveTailwindV4CssEntrySource(pathMatchedEntries[0]!, sourceOptions)
+  }
+
   const normalizedRawSource = normalizeCssSourceForCompare(rawSource)
   const matches = cssEntries
     .map((cssEntry) => {
@@ -707,16 +715,15 @@ export async function resolveGeneratorSources(
   try {
     const sourceOptionsFromRuntime = resolveTailwindV4SourceOptionsFromRuntime(runtimeState.tailwindRuntime)
     const cssEntries = selectionOptions?.cssEntries ?? sourceOptionsFromRuntime.cssEntries
+    const runtimeCssSources = selectionOptions?.cssEntries ? undefined : sourceOptionsFromRuntime.cssSources
     sourceOptions = omitUndefined<TailwindV4SourceOptions>({
       ...sourceOptionsFromRuntime,
       sourceFile: resolvePostcssSourceFile(cssHandlerOptions),
       ...resolveCssHandlerSourceOptions(cssHandlerOptions),
       cssEntries,
       cssSources: mergeCssSources(
-        mergeCssSources(sourceOptionsFromRuntime.cssSources, selectionOptions?.cssSources),
-        sourceOptionsFromRuntime.cssSources?.length || selectionOptions?.cssSources?.length
-          ? undefined
-          : createCssEntrySources(cssEntries) as TailwindV4CssSource[] | undefined,
+        mergeCssSources(runtimeCssSources, selectionOptions?.cssSources),
+        undefined,
       ),
     } satisfies UndefinedOptional<TailwindV4SourceOptions>) as TailwindV4SourceOptions
   }

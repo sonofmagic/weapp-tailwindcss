@@ -66,6 +66,20 @@ function resolveGeneratorSourceConcurrency() {
   return 1
 }
 
+function intersectCandidateSets(left: Set<string>, right: Set<string>) {
+  if (left.size === 0 || right.size === 0) {
+    return new Set<string>()
+  }
+  const [small, large] = left.size <= right.size ? [left, right] : [right, left]
+  const matched = new Set<string>()
+  for (const candidate of small) {
+    if (large.has(candidate)) {
+      matched.add(candidate)
+    }
+  }
+  return matched
+}
+
 function collectCssRuleIdentityMarkers(source: string) {
   const markers = new Set<string>()
   try {
@@ -251,9 +265,12 @@ export async function generateCssByGenerator(
       const sourceEntries = getSourceCandidatesForEntries && majorVersion === 4
         ? await resolveGeneratorSourceEntries(source, runtimeState)
         : undefined
-      const scopedRuntime = sourceEntries && sourceEntries.length > 0
+      const sourceScopedRuntime = sourceEntries && sourceEntries.length > 0
         ? getSourceCandidatesForEntries?.(sourceEntries)
         : undefined
+      const scopedRuntime = options.sourceCandidates && sourceScopedRuntime
+        ? intersectCandidateSets(options.sourceCandidates, sourceScopedRuntime)
+        : options.sourceCandidates ?? sourceScopedRuntime
       const isolateCssSource = shouldIsolateScopedCssSource(majorVersion, source, sourceEntries, {
         cssHandlerOptions,
         target: generatorOptions.target,

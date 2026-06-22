@@ -14,10 +14,11 @@ import { resolveUniUtsPlatform } from '@/utils'
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
-import { generateCssByGenerator, validateCandidatesByGenerator } from '../shared/generator-css'
+import { validateCandidatesByGenerator } from '../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { pushConcurrentTaskFactories } from '../shared/run-tasks'
+import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState } from './bundle-state'
 import { collectLegacyContainerCompatCandidates, collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
@@ -299,10 +300,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         return candidates[0]
       }
       return selectByRawSourceFingerprint(candidates)
-    }
-    const isRootStyleOutputFile = (file: string) => {
-      const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
-      return opts.cssMatcher(normalized) && !normalized.includes('/')
     }
     const resolveSubpackageRootForFile = (file: string | undefined) => {
       if (!file || !currentSubpackageRoots) {
@@ -714,6 +711,27 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         const assetSourceFile = resolveAssetSourceFile(originalSource, file)
         const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, assetSourceFile, outDir, opts)
         let outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
+        if (
+          outputFile !== file
+          && (originalSource.originalFileNames?.length ?? 0) > 0
+          && opts.cssMatcher(file)
+        ) {
+          outputFile = file
+        }
+        const resolveMatchedOutputFileForCurrentAsset = (sourceFile: string | undefined) => {
+          if (!sourceFile) {
+            return undefined
+          }
+          if (
+            normalizeOutputPathKey(assetSourceFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, ''))
+            || originalSource.originalFileNames?.some(originalFile =>
+              normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, '')),
+            )
+          ) {
+            return file
+          }
+          return resolveOutputFileFromMatchedCssSource(sourceFile)
+        }
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
         if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
           delete bundle[file]
@@ -722,6 +740,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         }
         const applyCssResult = (source: string) => {
           if (outputFile !== file) {
+            if (bundle[file] === originalSource && originalSource.originalFileNames?.includes(assetSourceFile)) {
+              originalSource.source = source
+              return
+            }
             const existingOutput = bundle[outputFile]
             if (existingOutput?.type === 'asset') {
               existingOutput.source = source
@@ -826,7 +848,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                   )
             )
           if (inferredOriginalSourceStyle) {
-            outputFile = resolveOutputFileFromMatchedCssSource(inferredOriginalSourceStyle.sourceFile) ?? outputFile
+            outputFile = resolveMatchedOutputFileForCurrentAsset(inferredOriginalSourceStyle.sourceFile) ?? outputFile
             activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
             outputCssHandlerOptions = getCssHandlerOptions(outputFile)
             rememberedCssSources = [{
@@ -836,18 +858,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           }
           else if (
             runtimeState.tailwindRuntime.majorVersion === 4
-            && (
-              outputCssHandlerOptions.isMainChunk
-              || isRootStyleOutputFile(outputFile)
-              || hasTailwindGenerationSource(rawSource)
-            )
+            && hasTailwindGenerationSource(rawSource)
+            && (originalSource.originalFileNames?.length ?? 0) === 0
           ) {
             const availableConfiguredTailwindV4CssSourceEntries = configuredTailwindV4CssSourceEntries.filter(entry =>
               !usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(entry.file)),
             )
             const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource)
             if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file)) {
-              outputFile = resolveOutputFileFromMatchedCssSource(configuredGenerationSource.file) ?? outputFile
+              outputFile = resolveMatchedOutputFileForCurrentAsset(configuredGenerationSource.file) ?? outputFile
               activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
               outputCssHandlerOptions = getCssHandlerOptions(outputFile)
               usedConfiguredTailwindV4CssSourceFiles.add(normalizeOutputPathKey(configuredGenerationSource.file))
@@ -867,7 +886,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && outputCssHandlerOptions.isMainChunk !== true
           && configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(rememberedCssSource.sourceFile.replace(/[?#].*$/, '')))
         ) {
-          const matchedOutputFile = resolveOutputFileFromMatchedCssSource(rememberedCssSource.sourceFile)
+          const matchedOutputFile = resolveMatchedOutputFileForCurrentAsset(rememberedCssSource.sourceFile)
           if (matchedOutputFile && normalizeOutputPathKey(matchedOutputFile) !== normalizeOutputPathKey(outputFile)) {
             outputFile = matchedOutputFile
             activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
@@ -942,19 +961,29 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               isMainChunk: outputCssHandlerOptions.isMainChunk,
             }
           : getCssHandlerOptions(file)
-        const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, cssHandlerOptions)
-        const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, cssHandlerOptions)
+        const generatorCssHandlerOptions = runtimeState.tailwindRuntime.majorVersion === 4
+          ? {
+              ...cssHandlerOptions,
+              sourceOptions: {
+                ...(cssHandlerOptions.sourceOptions ?? {}),
+                sourceFile: generatorSourceFile,
+                cssEntries: opts.cssEntries,
+              },
+            }
+          : cssHandlerOptions
+        const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)
+        const scopedSourceCandidateSourceGetter = createScopedSourceCandidateSourceGetter(outputFile, generatorCssHandlerOptions)
         const sourceTraceTokenSources = scopedSourceCandidateSourceGetter
           ? createCssTokenSourceMap(scopedSourceCandidateSourceGetter(undefined), opts)
           : undefined
         const sourceTraceSignature = createCssSourceTraceCacheSignature(sourceTraceTokenSources, opts)
-        const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, cssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
+        const scopedGeneratorRuntime = await createScopedGeneratorRuntime(outputFile, generatorCssHandlerOptions, generatorRuntime, generatorRawSource, generatorSourceFile)
         const annotateCss = (css: string) => annotateCssSourceTrace(css, {
           opts,
           tokenSources: sourceTraceTokenSources,
         })
         const shouldRegenerateMainPackageCssWithScopedCandidates = vitePipelineCssAsset
-          && shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)
+          && shouldExcludeSubpackageSourceCandidates(outputFile, generatorCssHandlerOptions)
         const generatorCssUserHandlerOptions = getCssUserHandlerOptions(generatorSourceFile)
         const cssRuntimeAffectingSignature = vitePipelineCssAsset
           ? createRuntimeAffectingSourceSignature(generatorRawSource, 'css')
@@ -964,7 +993,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           ? cache.computeHash(cssRuntimeAffectingSignature)
           : snapshot.runtimeAffectingHashByFile.get(file)
             ?? cache.computeHash(cssRuntimeAffectingSignature)
-        const cssShareScope = createCssTransformShareScopeKey(opts, generatorSourceFile, generatorRawSource)
+        const cssShareScope = createCssTransformShareScopeKey(opts, outputFile, generatorRawSource)
         const shouldRegenerateCollectedViteCss = viteProcessedCssAsset
           && useIncrementalMode
           && state.generatorCandidateSignature !== undefined
@@ -1036,7 +1065,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               trackedGeneratorCandidateSignature,
               scopedSourceCandidateGetter,
               {
-                includeFallbackSignature: cssHandlerOptions.isMainChunk,
+                includeFallbackSignature: generatorCssHandlerOptions.isMainChunk,
                 majorVersion: runtimeState.tailwindRuntime.majorVersion,
               },
             )
@@ -1108,25 +1137,31 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                 const previousCss = !vitePipelineCssAsset && useIncrementalMode && !hasRuntimeAffectingChanges && !snapshot.changedByType.css.has(file)
                   ? getLastCssResult(lastCssResultByFile, outputFile, file)
                   : undefined
-                const generated = await generateCssByGenerator({
-                  opts,
-                  runtimeState,
-                  runtime: scopedGeneratorRuntime,
-                  rawSource: generatorRawSource,
-                  file: generatorSourceFile,
-                  cssHandlerOptions,
-                  cssUserHandlerOptions: generatorCssUserHandlerOptions,
-                  getSourceCandidatesForEntries: scopedSourceCandidateGetter,
-                  styleHandler,
-                  debug,
-                  previousCss,
-                  ...(runtimeState.tailwindRuntime.majorVersion === 4 && vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
-                    ? { userRawSource: normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile) }
-                    : {}),
-                  ...(usesConfiguredTailwindV4FallbackSource
-                    ? { restoreLocalCssImports: false }
-                    : {}),
-                })
+                const shouldGenerateCssWithCore = hasTailwindGenerationSource(generatorRawSource)
+                  || hasBundlerGeneratedCssMarker(rawSource)
+                const generated = shouldGenerateCssWithCore
+                  ? await generateTailwindV4Css({
+                      opts,
+                      runtimeState,
+                      runtime: scopedGeneratorRuntime,
+                      rawSource: generatorRawSource,
+                      file: generatorSourceFile,
+                      outputFile,
+                      cssHandlerOptions: generatorCssHandlerOptions,
+                      cssUserHandlerOptions: generatorCssUserHandlerOptions,
+                      getSourceCandidatesForEntries: scopedSourceCandidateGetter,
+                      sourceCandidates: scopedGeneratorRuntime,
+                      styleHandler,
+                      debug,
+                      previousCss,
+                      ...(runtimeState.tailwindRuntime.majorVersion === 4 && vitePipelineCssAsset && !hasBundlerGeneratedCssMarker(rawSource) && normalizeCssSourceForCompare(rawSource) !== normalizeCssSourceForCompare(generatorRawSource)
+                        ? { userRawSource: normalizeGeneratorUserRawSource(rawSource, generatorSourceFile, assetSourceFile) }
+                        : {}),
+                      ...(usesConfiguredTailwindV4FallbackSource
+                        ? { restoreLocalCssImports: false }
+                        : {}),
+                    })
+                  : undefined
                 if (generated) {
                   const tracedCss = annotateCss(generated.css)
                   registerGeneratorDependencies({ addWatchFile }, generated.dependencies)

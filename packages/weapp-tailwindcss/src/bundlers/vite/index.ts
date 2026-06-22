@@ -28,10 +28,10 @@ import { resolvePluginDisabledState } from '@/utils/disabled'
 import { resolvePackageDir } from '@/utils/resolve-package'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { createBundlerGeneratedCssMarker, hasBundlerGeneratedCssMarker } from '../shared/generated-css-marker'
-import { generateCssByGenerator } from '../shared/generator-css'
 import { createHmrTimingRecorder } from '../shared/hmr-timing'
 import { normalizeOutputPathKey } from '../shared/module-graph'
 import { isSourceStyleRequest } from '../shared/style-requests'
+import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createViteCssMemory, shouldCollectTransformedSourceCandidates } from './css-memory'
 import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from './generate-bundle'
@@ -655,14 +655,15 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     await runtimeState.readyPromise
     await waitForSourceCandidateSyncs()
     const file = cleanUrl(id)
-    if (!isCSSRequest(file) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
+    const requestFile = isCSSRequest(id) ? id : file
+    if (!isCSSRequest(requestFile) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
       return undefined
     }
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
-    const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, generatorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
+    const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, generatorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()
       ?? getSourceCandidates()
       ?? await ensureRuntimeClassSet()
@@ -677,12 +678,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       && !cssHandlerOptions.isMainChunk
       && hasTailwindApplyDirective(code)
     )
-    const generated = await generateCssByGenerator({
+    const generated = await generateTailwindV4Css({
       opts,
       runtimeState,
       runtime,
       rawSource: code,
       file,
+      outputFile,
       cssHandlerOptions,
       cssUserHandlerOptions: transformCssHandlerOptions.getCssUserHandlerOptions(file),
       cssSources: transientCssSource

@@ -76,17 +76,23 @@ function normalizeGeneratorOptions(options: any) {
   }
 }
 
+function createMockTailwindV4SourceResolver(overrides: Record<string, unknown> = {}) {
+  return vi.fn(async (options: { base?: string, css?: string } = {}) => ({
+    version: 4,
+    projectRoot: process.cwd(),
+    base: options.base ?? process.cwd(),
+    baseFallbacks: [],
+    css: options.css ?? '@import "tailwindcss" source(none);',
+    dependencies: [],
+    packageName: 'tailwindcss',
+    ...overrides,
+  }))
+}
+
 function mockTailwindV4GeneratorCss(css = '/* generated */') {
   vi.doMock('@/generator', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@/generator')>()
-    const resolveMockTailwindV4Source = vi.fn(async () => ({
-      version: 4,
-      projectRoot: process.cwd(),
-      base: process.cwd(),
-      baseFallbacks: [],
-      css: '@import "tailwindcss" source(none);',
-      dependencies: [],
-    }))
+    const resolveMockTailwindV4Source = createMockTailwindV4SourceResolver()
     return {
       ...actual,
       createWeappTailwindcssGenerator: vi.fn(() => ({
@@ -104,6 +110,12 @@ function mockTailwindV4GeneratorCss(css = '/* generated */') {
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: resolveMockTailwindV4Source,
       resolveTailwindV4SourceFromRuntime: resolveMockTailwindV4Source,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
     }
   })
 }
@@ -217,7 +229,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(currentContext.onStart).toHaveBeenCalledTimes(1)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
     expect((bundle['index.wxml'] as OutputAsset).source).toBe(`tpl:${html}`)
@@ -241,14 +253,14 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     await generateBundle?.call(postPlugin, {} as any, bundleSecondRun)
 
-    expect(currentContext.templateHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.templateHandler).toHaveBeenCalledTimes(2)
     expect(currentContext.jsHandler).toHaveBeenCalledTimes(1)
-    expect(currentContext.styleHandler).toHaveBeenCalledTimes(1)
+    expect(currentContext.styleHandler).toHaveBeenCalledTimes(2)
     expect(currentContext.onStart).toHaveBeenCalledTimes(2)
     expect(currentContext.onEnd).toHaveBeenCalledTimes(2)
-    expect(currentContext.onUpdate).toHaveBeenCalledTimes(3)
+    expect(currentContext.onUpdate).toHaveBeenCalledTimes(5)
     expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
-    expect(currentContext.tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
   it('limits incremental vite css bundle tasks to avoid HMR memory spikes', async () => {
@@ -380,7 +392,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       dependencies: [],
       sources: [],
       root: null,
-      version: 3,
+      version: 4,
     }))
     const resolveMockTailwindV4Source = vi.fn(async () => ({
       version: 4,
@@ -1696,7 +1708,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       dependencies: [],
       sources: [],
       root: null,
-      version: 3,
+      version: 4,
       }
     })
 
@@ -1874,7 +1886,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       dependencies: [],
       sources: [],
       root: null,
-      version: 3,
+      version: 4,
     }))
     vi.doMock('@/generator', async (importOriginal) => {
       const actual = await importOriginal<typeof import('@/generator')>()
@@ -1884,6 +1896,15 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           generate: generateMock,
         })),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4Source: createMockTailwindV4SourceResolver({ projectRoot: root, base: root }),
+        resolveTailwindV4SourceFromRuntime: createMockTailwindV4SourceResolver({ projectRoot: root, base: root }),
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          version: 4,
+          projectRoot: root,
+          base: root,
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
+        })),
       }
     })
 
@@ -6493,7 +6514,14 @@ const trace = "at App.vue:4"
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: createEngineMock,
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: resolveSourceMock,
       resolveTailwindV4SourceFromRuntime: resolveSourceMock,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
     }))
 
     setCurrentContext(createContext({
@@ -6574,7 +6602,14 @@ const trace = "at App.vue:4"
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: createEngineMock,
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: resolveSourceMock,
       resolveTailwindV4SourceFromRuntime: resolveSourceMock,
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
+      })),
     }))
 
     setCurrentContext(createContext({
@@ -6641,12 +6676,19 @@ const trace = "at App.vue:4"
         generate: generateMock,
       })),
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: createMockTailwindV4SourceResolver(),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: process.cwd(),
         base: process.cwd(),
         baseFallbacks: [],
         css: '@import "tailwindcss" source(none);',
         dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        packageName: 'tailwindcss',
       })),
     }))
 
@@ -7566,12 +7608,19 @@ const trace = "at App.vue:4"
           }
         }),
         normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        resolveTailwindV4Source: createMockTailwindV4SourceResolver({ projectRoot: root, base: root }),
         resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
           projectRoot: root,
           base: root,
           baseFallbacks: [],
           css: '@import "tailwindcss" source(none);',
           dependencies: [],
+        })),
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: root,
+          base: root,
+          baseFallbacks: [],
+          packageName: 'tailwindcss',
         })),
       }
     })

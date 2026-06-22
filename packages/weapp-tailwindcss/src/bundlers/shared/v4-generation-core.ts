@@ -3,6 +3,7 @@ import { generateCssByGenerator } from './generator-css'
 
 export interface TailwindV4GenerationCoreInput extends GenerateCssByGeneratorOptions {
   outputFile?: string | undefined
+  sourceCandidates?: Set<string> | undefined
 }
 
 export interface TailwindV4GenerationCoreResult extends GenerateCssByGeneratorResult {

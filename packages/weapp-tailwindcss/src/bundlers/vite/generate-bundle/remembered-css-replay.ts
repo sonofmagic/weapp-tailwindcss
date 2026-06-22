@@ -2,7 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext, RememberedCssSource } from './types'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
-import { generateCssByGenerator } from '../../shared/generator-css'
+import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 import { createRuntimeAffectingSourceSignature } from '../runtime-affecting-signature'
 import { isHTMLRequest } from '../utils'
 import { createCssRuntimeSignature } from './css-share-scope'
@@ -184,12 +184,13 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
     }
     cssTaskFactories.push(() => timeTask('css.replay', async () => {
       const start = performance.now()
-      const generated = await generateCssByGenerator({
+      const generated = await generateTailwindV4Css({
         opts,
         runtimeState,
         runtime: scopedGeneratorRuntime,
         rawSource,
         file: sourceFile,
+        outputFile,
         cssHandlerOptions,
         cssUserHandlerOptions: getCssUserHandlerOptions(sourceFile),
         getSourceCandidatesForEntries: scopedSourceCandidateGetter,

@@ -16,6 +16,7 @@ export interface GenerateCssByGeneratorOptions {
   cssUserHandlerOptions: IStyleHandlerOptions
   cssSources?: TailwindV4CssSource[] | undefined
   getSourceCandidatesForEntries?: ((entries: TailwindSourceEntry[] | undefined) => Set<string>) | undefined
+  sourceCandidates?: Set<string> | undefined
   styleHandler: InternalUserDefinedOptions['styleHandler']
   debug: (format: string, ...args: unknown[]) => void
   userRawSource?: string | undefined

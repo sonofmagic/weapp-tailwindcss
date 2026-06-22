@@ -14,8 +14,9 @@ import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtili
 import { resolveUniUtsPlatform } from '@/utils'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { stripBundlerGeneratedCssMarkers } from '../shared/generated-css-marker'
-import { generateCssByGenerator, hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
+import { hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
+import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
@@ -241,12 +242,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             ...applyUtilities,
           ])
           const harmonyCssHandlerOptions = createCssHandlerOptions(opts, runtimeState.tailwindRuntime.majorVersion, 'uni-app-x-harmony-apply.css')
-          const generated = await generateCssByGenerator({
+          const generated = await generateTailwindV4Css({
             opts,
             runtimeState,
             runtime: harmonyRuntime,
             rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
             file: 'uni-app-x-harmony-apply.css',
+            outputFile: 'uni-app-x-harmony-apply.css',
             cssHandlerOptions: harmonyCssHandlerOptions,
             cssUserHandlerOptions: {
               ...harmonyCssHandlerOptions,
@@ -349,12 +351,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
               }
             : cssUserHandlerOptions
           const generated = shouldGenerateCssByGenerator(opts, runtimeState.tailwindRuntime.majorVersion, file, generatorRawSource, processed)
-            ? await generateCssByGenerator({
+            ? await generateTailwindV4Css({
                 opts,
                 runtimeState,
                 runtime: generatorRuntime,
                 rawSource: generatorRawSource,
                 file: generatorSourceFile,
+                outputFile: file,
                 cssHandlerOptions: generatorCssHandlerOptions,
                 cssUserHandlerOptions: generatorCssUserHandlerOptions,
                 getSourceCandidatesForEntries,

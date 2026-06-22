@@ -228,7 +228,10 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
     _sourceFile: string,
     outputCssHandlerOptions: { isMainChunk?: boolean | undefined },
   ) =>
-    outputCssHandlerOptions.isMainChunk === true
+    (
+      outputCssHandlerOptions.isMainChunk === true
+      && !outputFile.replace(/[?#].*$/, '').includes('/')
+    )
     || (
       options.useIncrementalMode
       && isMainPackageStyleOutputFile(outputFile)

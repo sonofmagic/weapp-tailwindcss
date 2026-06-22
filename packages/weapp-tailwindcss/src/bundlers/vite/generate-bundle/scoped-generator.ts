@@ -8,6 +8,45 @@ function hasOwnSourceDirectives(rawSource: string) {
   return rawSource.includes('@source') || rawSource.includes('@config')
 }
 
+function createLocalSourceEntries(sourceFile: string): TailwindSourceEntry[] {
+  return [{
+    base: path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, ''))),
+    negated: false,
+    pattern: '**/*',
+  }]
+}
+
+function intersectCandidates(first: Set<string>, second: Set<string>) {
+  const scoped = new Set<string>()
+  const [small, large] = first.size <= second.size ? [first, second] : [second, first]
+  for (const candidate of small) {
+    if (large.has(candidate)) {
+      scoped.add(candidate)
+    }
+  }
+  return scoped
+}
+
+function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resolvedEntries: TailwindSourceEntry[] | undefined) {
+  if (!hasOwnSourceDirectives(rawSource)) {
+    return {
+      entries: resolvedEntries,
+      localEntries: undefined,
+    }
+  }
+  const localEntries = createLocalSourceEntries(sourceFile)
+  if (!resolvedEntries || resolvedEntries.length === 0) {
+    return {
+      entries: localEntries,
+      localEntries: undefined,
+    }
+  }
+  return {
+    entries: resolvedEntries,
+    localEntries,
+  }
+}
+
 export async function createScopedGeneratorCandidateSignature(
   rawSource: string,
   sourceFile: string,
@@ -20,10 +59,15 @@ export async function createScopedGeneratorCandidateSignature(
   }
   const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
   const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-  if (resolved?.entries === undefined) {
+  const { entries, localEntries } = resolveScopedSourceEntries(rawSource, sourceFile, resolved?.entries)
+  if (entries === undefined) {
     return fallbackSignature
   }
-  const scopedSignature = createCandidateSignature(getSourceCandidatesForEntries(resolved.entries))
+  const scopedCandidates = getSourceCandidatesForEntries(entries)
+  const intersectedCandidates = localEntries
+    ? intersectCandidates(scopedCandidates, getSourceCandidatesForEntries(localEntries))
+    : scopedCandidates
+  const scopedSignature = createCandidateSignature(intersectedCandidates)
   return options.includeFallbackSignature === true
     ? `${scopedSignature}:${fallbackSignature}`
     : scopedSignature
@@ -53,9 +97,16 @@ export async function createScopedGeneratorRuntime(options: {
   if (getSourceCandidatesForEntries && rawSource && sourceFile) {
     const sourceBase = path.dirname(path.resolve(sourceFile.replace(/[?#].*$/, '')))
     const resolved = await resolveTailwindV4EntriesFromCssCached(rawSource, sourceBase)
-    if (resolved?.entries !== undefined && (resolved.entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
-      return scopedSourceCandidateGetter?.(resolved.entries)
-        ?? getSourceCandidatesForEntries(resolved.entries)
+    const { entries, localEntries } = resolveScopedSourceEntries(rawSource, sourceFile, resolved?.entries)
+    if (entries !== undefined && (entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
+      const scopedCandidates = scopedSourceCandidateGetter?.(entries)
+        ?? getSourceCandidatesForEntries(entries)
+      if (!localEntries) {
+        return scopedCandidates
+      }
+      const localCandidates = scopedSourceCandidateGetter?.(localEntries)
+        ?? getSourceCandidatesForEntries(localEntries)
+      return intersectCandidates(scopedCandidates, localCandidates)
     }
   }
   const scopedCandidates = scopedSourceCandidateGetter?.(undefined)

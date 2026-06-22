@@ -3,7 +3,7 @@ import type { CssHandlerOptionsCache } from './css-handler-options'
 import type { GenerateBundleContext } from './types'
 import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtilities, createUniAppXBundleAssetSourceGetter, createUniAppXHarmonyApplyGeneratorSource, injectUniAppXHarmonyBundleStyles, injectUniAppXStylePlaceholder } from '@/uni-app-x/style-asset'
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
-import { generateCssByGenerator } from '../../shared/generator-css'
+import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 
 interface HandleUniAppXPostCssOptions {
   bundle: Record<string, OutputAsset | OutputChunk>
@@ -49,7 +49,7 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
   if (isHarmonyAppStyleTarget && applyUtilities.size > 0 && applyStyleSources.length > 0) {
     const outputFile = 'uni-app-x-harmony-apply.css'
     const cssHandlerOptions = getCssHandlerOptions(outputFile)
-    const generated = await generateCssByGenerator({
+    const generated = await generateTailwindV4Css({
       opts,
       runtimeState,
       runtime: new Set([
@@ -58,6 +58,7 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
       ]),
       rawSource: createUniAppXHarmonyApplyGeneratorSource(applyStyleSources, applyUtilities),
       file: outputFile,
+      outputFile,
       cssHandlerOptions,
       cssUserHandlerOptions: {
         ...cssHandlerOptions,

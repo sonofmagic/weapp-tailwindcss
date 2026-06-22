@@ -383,6 +383,22 @@ function shouldUseCssAssetAsMainInjectionTarget(
   records: Array<{ injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>,
 ) {
   const fileKey = normalizeOutputPathKey(file)
+  if (
+    !isRootStyleOutputFile(file)
+    && records.some(record =>
+      typeof record.outputFile === 'string'
+      && normalizeOutputPathKey(record.outputFile) === fileKey,
+    )
+  ) {
+    return false
+  }
+  if (!isRootStyleOutputFile(file)) {
+    return records.some(record =>
+      record.injectIntoMain === true
+      && typeof record.outputFile === 'string'
+      && normalizeOutputPathKey(record.outputFile) === fileKey,
+    )
+  }
   const explicitTargetMatched = records.some((record) => {
     if (record.injectIntoMain !== true) {
       return false
@@ -571,9 +587,13 @@ export function collectViteProcessedCssAssetResults(
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
       && (
-        options.opts.mainCssChunkMatcher(file, options.opts.appType)
+        (
+          isRootStyleOutputFile(file)
+          && options.opts.mainCssChunkMatcher(file, options.opts.appType)
+        )
         || (
           isSourceRootPrefixedOutputFile(file, resolvedOutputFile)
+          && isRootStyleOutputFile(resolvedOutputFile)
           && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
         )
       )
@@ -638,6 +658,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
       continue
     }
     const file = getAssetFile(bundleFile, output)
+    const fileKey = normalizeOutputPathKey(file)
     if (
       !options.opts.cssMatcher(file)
       || !shouldUseCssAssetAsMainInjectionTarget(options.opts, file, viteCssResults)
@@ -664,6 +685,14 @@ export function injectViteProcessedCssIntoMainCssAssets(
     ]
     nextCss = removeCssCoveredByImportedViteResults(nextCss, uncoveredImportedViteCssResults.map(record => record.css))
     for (const record of viteCssResults) {
+      if (!isRootStyleOutputFile(file)) {
+        if (
+          typeof record.outputFile !== 'string'
+          || normalizeOutputPathKey(record.outputFile) !== fileKey
+        ) {
+          continue
+        }
+      }
       if (!shouldInjectViteProcessedCssResult(options.opts, mainFileKey, record.file, record)) {
         continue
       }
