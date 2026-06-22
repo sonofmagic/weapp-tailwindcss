@@ -302,6 +302,7 @@ export interface WebHmrSourceClassReplacement {
 
 export interface WebHmrSourceDomReplacement {
   label: string
+  selector?: string
   mutate: (source: string) => {
     next: string
     from: string
@@ -666,6 +667,7 @@ export interface WebHmrSourceClassReplacementMetrics {
 
 export interface WebHmrSourceDomReplacementMetrics {
   label: string
+  selector?: string
   from: string
   to: string
   expectedText: string

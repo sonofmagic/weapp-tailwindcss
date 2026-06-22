@@ -699,6 +699,53 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
       },
+      sourceDomReplacementSequence: [
+        {
+          label: 'bg-purple-800 to bg-[#123]',
+          selector: '#tw-watch-dom',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `      <View id='tw-watch-dom' className='bg-purple-800 text-pink-200'>`,
+              `      <View id='tw-watch-dom' className='bg-[#123] text-pink-200'>`,
+            )
+          },
+          expectedText: '11',
+          expectedStyle: {
+            backgroundColor: 'rgb(17, 34, 51)',
+          },
+        },
+        {
+          label: 'bg-[#123] to bg-[#124]',
+          selector: '#tw-watch-dom',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `      <View id='tw-watch-dom' className='bg-[#123] text-pink-200'>`,
+              `      <View id='tw-watch-dom' className='bg-[#124] text-pink-200'>`,
+            )
+          },
+          expectedText: '11',
+          expectedStyle: {
+            backgroundColor: 'rgb(17, 34, 68)',
+          },
+        },
+        {
+          label: 'bg-[#124] to bg-[#125]',
+          selector: '#tw-watch-dom',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `      <View id='tw-watch-dom' className='bg-[#124] text-pink-200'>`,
+              `      <View id='tw-watch-dom' className='bg-[#125] text-pink-200'>`,
+            )
+          },
+          expectedText: '11',
+          expectedStyle: {
+            backgroundColor: 'rgb(17, 34, 85)',
+          },
+        },
+      ],
     },
   }
 

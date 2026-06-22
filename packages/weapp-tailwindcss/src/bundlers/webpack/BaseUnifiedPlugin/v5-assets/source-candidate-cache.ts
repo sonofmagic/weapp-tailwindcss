@@ -2,7 +2,7 @@ import type { SourceCandidateScanRoot } from '../../../vite/source-candidate-sca
 import type { SourceCandidateCollectorSnapshot, SourceCandidateStore } from '../../../vite/source-candidates'
 import type { ResolvedViteSourceScan } from '../../../vite/source-scan'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
-import { stat } from 'node:fs/promises'
+import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import { md5Hash } from '@/cache/md5'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
@@ -25,6 +25,7 @@ export interface WebpackSourceCandidateScanMemoryStats {
 }
 
 interface CachedScanFileMeta {
+  contentHash: string
   mtimeMs: number
   size: number
 }
@@ -41,6 +42,11 @@ interface ResolveWebpackSourceCandidateCacheOptions {
   root: string
   sourceScan: ResolvedViteSourceScan | undefined
   watchMode: boolean
+}
+
+interface ResolvedScanFileSnapshot {
+  meta: CachedScanFileMeta
+  source: string
 }
 
 const WEBPACK_SOURCE_CANDIDATE_SCAN_CACHE_MAX = 2
@@ -129,12 +135,17 @@ function normalizeChangedFiles(changedFiles: Iterable<string> | undefined) {
   )
 }
 
-async function resolveFileMeta(file: string): Promise<CachedScanFileMeta | undefined> {
+async function resolveScanFileSnapshot(file: string): Promise<ResolvedScanFileSnapshot | undefined> {
   try {
     const stats = await stat(file)
+    const source = await readFile(file, 'utf8')
     return {
-      mtimeMs: stats.mtimeMs,
-      size: stats.size,
+      meta: {
+        contentHash: md5Hash(source),
+        mtimeMs: stats.mtimeMs,
+        size: stats.size,
+      },
+      source,
     }
   }
   catch (error) {
@@ -149,7 +160,9 @@ async function resolveFileMeta(file: string): Promise<CachedScanFileMeta | undef
 }
 
 function isSameFileMeta(left: CachedScanFileMeta | undefined, right: CachedScanFileMeta | undefined) {
-  return left?.mtimeMs === right?.mtimeMs && left?.size === right?.size
+  return left?.contentHash === right?.contentHash
+    && left?.mtimeMs === right?.mtimeMs
+    && left?.size === right?.size
 }
 
 async function resolveScanFiles(roots: SourceCandidateScanRoot[], outDir: string) {
@@ -184,18 +197,18 @@ async function syncChangedScanFiles(
   }
 
   await Promise.all([...scanFiles].map(async (file) => {
-    const nextMeta = await resolveFileMeta(file)
-    if (!nextMeta) {
+    const nextSnapshot = await resolveScanFileSnapshot(file)
+    if (!nextSnapshot) {
       collector.remove(file)
       cachedScan.files.delete(file)
       return
     }
     const previousMeta = cachedScan.files.get(file)
-    if (previousMeta && isSameFileMeta(previousMeta, nextMeta) && !changedFiles.has(file)) {
+    if (previousMeta && isSameFileMeta(previousMeta, nextSnapshot.meta) && !changedFiles.has(file)) {
       return
     }
-    await collector.syncFile(file)
-    cachedScan.files.set(file, nextMeta)
+    await collector.sync(file, nextSnapshot.source)
+    cachedScan.files.set(file, nextSnapshot.meta)
   }))
 }
 
@@ -242,12 +255,12 @@ export function createWebpackSourceCandidateScanCache() {
     collector.syncInline(sourceScan?.inlineCandidates)
     const files = new Map<string, CachedScanFileMeta>()
     await Promise.all([...scanFiles].map(async (file) => {
-      const nextMeta = await resolveFileMeta(file)
-      if (!nextMeta) {
+      const nextSnapshot = await resolveScanFileSnapshot(file)
+      if (!nextSnapshot) {
         return
       }
-      await collector.syncFile(file)
-      files.set(file, nextMeta)
+      await collector.sync(file, nextSnapshot.source)
+      files.set(file, nextSnapshot.meta)
     }))
     if (watchMode) {
       scans.set(nextSignatureHash, {

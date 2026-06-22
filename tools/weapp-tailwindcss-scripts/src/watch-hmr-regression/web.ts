@@ -191,8 +191,12 @@ function assertComputedStyle(
   return normalizedActual
 }
 
-async function getDomReplacementComputedStyle(page: Page) {
-  return page.locator(DOM_REPLACEMENT_SELECTOR).evaluate((element) => {
+function resolveDomReplacementSelector(item: NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]) {
+  return item.selector ?? DOM_REPLACEMENT_SELECTOR
+}
+
+async function getDomReplacementComputedStyle(page: Page, selector: string) {
+  return page.locator(selector).evaluate((element) => {
     const style = window.getComputedStyle(element)
     return {
       backgroundColor: style.backgroundColor,
@@ -449,13 +453,14 @@ async function runSourceDomReplacementSequence(
     )
     await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
 
+    const selector = resolveDomReplacementSelector(item)
     let verifiedCssIncludes: string[] = []
     let computedStyle: ReturnType<typeof assertDomReplacement> | undefined
     let lastError = ''
     const hotUpdateEffectiveMs = await waitFor(
       async () => {
         try {
-          await page.locator(DOM_REPLACEMENT_SELECTOR).waitFor({
+          await page.locator(selector).waitFor({
             state: 'attached',
             timeout: options.pollMs,
           })
@@ -468,7 +473,7 @@ async function runSourceDomReplacementSequence(
           }
           computedStyle = assertDomReplacement(
             watchCase,
-            await getDomReplacementComputedStyle(page),
+            await getDomReplacementComputedStyle(page, selector),
             item,
           )
           return true
@@ -491,6 +496,7 @@ async function runSourceDomReplacementSequence(
 
     results.push({
       label: item.label,
+      ...(item.selector ? { selector: item.selector } : {}),
       from: mutation.from,
       to: mutation.to,
       expectedText: item.expectedText,

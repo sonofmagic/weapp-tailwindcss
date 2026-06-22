@@ -10,7 +10,11 @@ import { rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } from '@/bundlers/shared/generator-css/directives'
 import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
+import { createSourceCandidateStore, isSourceCandidateRequest } from '@/bundlers/vite/source-candidates'
+import { resolveSourceCandidateScanFiles } from '@/bundlers/vite/source-candidates/scan-root'
+import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
+import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
 
@@ -85,6 +89,50 @@ function createCssHandlerOptions(
   }
 }
 
+async function resolveWebpackLoaderSourceCandidates(
+  source: string,
+  loaderContext: webpack.LoaderContext<CssImportRewriteLoaderOptions>,
+  options: CssImportRewriteLoaderOptions | undefined,
+) {
+  const compilerOptions = options?.tailwindcssImportRewrite?.compilerOptions
+  if (!compilerOptions) {
+    return undefined
+  }
+  const root = compilerOptions.tailwindcssBasedir ?? process.cwd()
+  const file = loaderContext.resourcePath
+  const resolved = await resolveTailwindV4EntriesFromCssCached(source, path.dirname(file))
+  if (!resolved) {
+    return undefined
+  }
+  const collector = createSourceCandidateStore({
+    bareArbitraryValues: compilerOptions.arbitraryValues?.bareArbitraryValues,
+  })
+  collector.syncInline(resolved.inlineCandidates)
+  const outDir = loaderContext.rootContext
+    ? path.resolve(loaderContext.rootContext, compilerOptions.outputDir ?? 'dist')
+    : undefined
+  const scanFiles = await resolveSourceCandidateScanFiles({
+    entries: resolved.entries,
+    explicit: resolved.explicit,
+    filter: isSourceCandidateRequest,
+    outDir,
+    root,
+  })
+  await Promise.all(scanFiles.map(async (file) => {
+    const normalizedFile = resolveSourceScanPath(file)
+    registerWebpackWatchFile(loaderContext, normalizedFile)
+    await collector.syncFile(normalizedFile)
+  }))
+  const candidates = collector.valuesForEntries(resolved.entries)
+  if (candidates.size === 0) {
+    return undefined
+  }
+  return {
+    candidates,
+    getSourceCandidatesForEntries: collector.valuesForEntries,
+  }
+}
+
 async function generateCssForWebpackPipeline(
   source: string,
   loaderContext: webpack.LoaderContext<CssImportRewriteLoaderOptions>,
@@ -111,6 +159,7 @@ async function generateCssForWebpackPipeline(
     file,
     rewriteOptions.appType,
   )
+  const sourceCandidateScan = await resolveWebpackLoaderSourceCandidates(normalizedSource, loaderContext, options)
   const generated = await generateTailwindV4Css({
     opts: compilerOptions,
     runtimeState,
@@ -118,6 +167,8 @@ async function generateCssForWebpackPipeline(
     rawSource: normalizedSource,
     file,
     outputFile: file,
+    getSourceCandidatesForEntries: sourceCandidateScan?.getSourceCandidatesForEntries,
+    sourceCandidates: sourceCandidateScan?.candidates,
     cssHandlerOptions,
     cssUserHandlerOptions: {
       ...cssHandlerOptions,

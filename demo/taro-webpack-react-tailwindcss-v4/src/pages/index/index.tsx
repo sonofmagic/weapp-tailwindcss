@@ -8,7 +8,7 @@ export default function Index() {
       <View className='bg-[#534312] text-[#fff] text-[100rpx]'>
         <Text>Hello world!</Text>
       </View>
-      <View className='bg-purple-800 text-pink-200'>
+      <View id='tw-watch-dom' className='bg-purple-800 text-pink-200'>
         11
       </View>
       <View className='weapp-tw-nutui-react-demo mt-4'>

@@ -738,6 +738,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
           target: 'web',
         },
         mainCssChunkMatcher: vi.fn(() => false),
+        isKnownWebpackProcessedCssAsset: () => true,
         styleHandler: vi.fn(async () => {
           throw new Error('web target should not use mini-program styleHandler')
         }),
@@ -883,6 +884,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
           target: 'web',
         },
         mainCssChunkMatcher: vi.fn(() => false),
+        isKnownWebpackProcessedCssAsset: () => true,
         styleHandler: vi.fn(async () => {
           throw new Error('web target should not use mini-program styleHandler')
         }),
