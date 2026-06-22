@@ -218,7 +218,7 @@
     "lru-cache": "11.5.1",
     "magic-string": "0.30.21",
     "micromatch": "^4.0.8",
-    "semver": "~7.8.4",
+    "semver": "~7.8.5",
     "tailwindcss-config": "workspace:*",
     "yaml": "^2.9.0"
   },

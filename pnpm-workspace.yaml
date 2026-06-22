@@ -69,7 +69,7 @@ catalogs:
   iconifyJson:
     '@iconify-json/line-md': ^1.2.16
     '@iconify-json/logos': ^1.2.11
-    '@iconify-json/lucide': ^1.2.113
+    '@iconify-json/lucide': ^1.2.114
     '@iconify-json/mdi': ^1.2.3
     '@iconify-json/mdi-light': ^1.2.2
     '@iconify-json/svg-spinners': ^1.2.4
@@ -232,8 +232,8 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.6
+    weapp-ide-cli: ^5.4.9
   weappVite:
-    weapp-vite: ^6.16.47
+    weapp-vite: ^6.17.2
   wrangler:
-    wrangler: ^4.101.0
+    wrangler: ^4.103.0
