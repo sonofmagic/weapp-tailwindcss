@@ -181,6 +181,14 @@ function patchPublishedResolverDependencies(json, resolverDependencies) {
 }
 
 async function patchPackageJson(file, baseline, resolverDependencies) {
+  try {
+    await fs.access(file)
+  }
+  catch {
+    process.stdout.write(`[benchmark] skip missing package.json: ${rel(file)}\n`)
+    return false
+  }
+
   const source = await fs.readFile(file, 'utf8')
   const json = JSON.parse(source)
   let changed = false

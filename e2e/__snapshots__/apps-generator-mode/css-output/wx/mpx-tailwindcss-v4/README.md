@@ -7,7 +7,7 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 15772 | 132 | false | false | false | true | true | false | true |
+| 15560 | 132 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -16,7 +16,6 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 | 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |
 | 2 | `styles/app.wxss` | [artifacts/styles__app.wxss](artifacts/styles__app.wxss) |
 | 3 | `styles/third-party-ui.wxss` | [artifacts/styles__third-party-ui.wxss](artifacts/styles__third-party-ui.wxss) |
-| 4 | `pages/component/index.wxss` | [artifacts/pages__component__index.wxss](artifacts/pages__component__index.wxss) |
 
 ## Generator CSS Summary
 
@@ -24,5 +23,4 @@ Entry: mpx-tailwindcss-v4/dist/wx/app.wxss
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 69 | 0 | false | false | false | false | false | false | false |
 | `styles/app.wxss` | [artifacts/styles__app.wxss](artifacts/styles__app.wxss) | 14978 | 128 | false | false | false | true | true | false | true |
-| `styles/third-party-ui.wxss` | [artifacts/styles__third-party-ui.wxss](artifacts/styles__third-party-ui.wxss) | 619 | 4 | false | false | false | false | false | false | false |
-| `pages/component/index.wxss` | [artifacts/pages__component__index.wxss](artifacts/pages__component__index.wxss) | 106 | 0 | false | false | false | false | false | false | false |
+| `styles/third-party-ui.wxss` | [artifacts/styles__third-party-ui.wxss](artifacts/styles__third-party-ui.wxss) | 513 | 4 | false | false | false | false | false | false | false |

@@ -20,6 +20,7 @@ const FIRST_WHITESPACE_RE = /\s/
 const WATCH_COMMAND_PATTERNS = [
   /weapp-vite(?:\.js)?\s+dev/i,
   /taro-build-guard\.mjs\s+--watch/i,
+  /taro-build-runner\.mjs\s+build\s+--type\s+\S+\s+--watch/i,
   /run-mpx-cli-service\.js\s+serve/i,
   /webpack(?:\.js)?\s+--watch/i,
   /gulp[\s\S]+gulpfile\.ts/i,
@@ -468,7 +469,7 @@ export function createWindowsProcessTreeMemoryScript(rootPid: number, cwd = proc
   return [
     `$root = [int]${escapedRootPid}`,
     `$repositoryRoot = '${cwd.replaceAll('\'', '\'\'')}'`,
-    '$watchCommandPatterns = @("weapp-vite(?:\\.js)?\\s+dev", "taro-build-guard\\.mjs\\s+--watch", "taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch", "run-mpx-cli-service\\.js\\s+serve", "webpack(?:\\.js)?\\s+--watch", "gulp[\\s\\S]+gulpfile\\.ts", "\\bpnpm\\b[\\s\\S]+build:weapp[\\s\\S]+--watch", "hbuilderx[\\s\\S]+launch[\\s\\S]+mp-weixin", "uni\\.js[\\s\\S]+-p\\s+mp-weixin")',
+    '$watchCommandPatterns = @("weapp-vite(?:\\.js)?\\s+dev", "taro-build-guard\\.mjs\\s+--watch", "taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch", "taro-build-runner\\.mjs\\s+build\\s+--type\\s+\\S+\\s+--watch", "run-mpx-cli-service\\.js\\s+serve", "webpack(?:\\.js)?\\s+--watch", "gulp[\\s\\S]+gulpfile\\.ts", "\\bpnpm\\b[\\s\\S]+build:weapp[\\s\\S]+--watch", "hbuilderx[\\s\\S]+launch[\\s\\S]+mp-weixin", "uni\\.js[\\s\\S]+-p\\s+mp-weixin")',
     '$processes = @(Get-CimInstance Win32_Process | Select-Object ProcessId,ParentProcessId,WorkingSetSize,CommandLine)',
     '$children = @{}',
     'foreach ($process in $processes) {',

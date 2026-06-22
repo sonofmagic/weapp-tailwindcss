@@ -2,6 +2,7 @@ import process from 'node:process'
 import { createContext } from 'weapp-tailwindcss/core'
 
 const tailwindConfig = new URL('../tailwind.config.cjs', import.meta.url).pathname
+const cssEntry = new URL('./app.css', import.meta.url).pathname
 
 export interface DemoResult {
   js: string
@@ -15,6 +16,9 @@ export async function runNodeApiCoreDemo(): Promise<DemoResult> {
     appType: 'native',
     tailwindcss: {
       config: tailwindConfig,
+      v4: {
+        cssEntries: [cssEntry],
+      },
     },
   })
   const runtimeSet = await ctx.getRuntimeSet({

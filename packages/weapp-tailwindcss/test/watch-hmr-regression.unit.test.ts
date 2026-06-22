@@ -1417,6 +1417,7 @@ describe('watch-hmr regression summary helpers', () => {
     expect(script).toContain('CommandLine')
     expect(script).toContain('uni\\.js[\\s\\S]+-p\\s+mp-weixin')
     expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+h5\\s+--watch')
+    expect(script).toContain('taro-build-runner\\.mjs\\s+build\\s+--type\\s+\\S+\\s+--watch')
     expect(script).toContain('$command.Contains($repositoryRoot)')
     expect(script).not.toContain('@(;')
   })
@@ -2246,8 +2247,14 @@ describe('watch-hmr regression cases', () => {
     const caseMap = new Map(cases.map(watchCase => [watchCase.name, watchCase]))
 
     expect(caseMap.get('taro-vite-react-tailwindcss-v4:weapp')?.devScript).toBe('dev:e2e-watch')
-    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.devScript).toBe('dev:alipay')
-    expect(caseMap.get('taro-vite-react-tailwindcss-v4:tt')?.devScript).toBe('dev:tt')
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.devScript).toBe('dev:e2e-watch')
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.env).toMatchObject({
+      TARO_E2E_WATCH_PLATFORM: 'alipay',
+    })
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:tt')?.devScript).toBe('dev:e2e-watch')
+    expect(caseMap.get('taro-vite-react-tailwindcss-v4:tt')?.env).toMatchObject({
+      TARO_E2E_WATCH_PLATFORM: 'tt',
+    })
     expect(caseMap.get('taro-vite-react-tailwindcss-v4:alipay')?.outputWxml).toBe(
       path.resolve('/repo', 'demo/taro-vite-react-tailwindcss-v4/dist/pages/index/index.axml'),
     )
@@ -2262,10 +2269,16 @@ describe('watch-hmr regression cases', () => {
     )
 
     expect(caseMap.get('uni-app-vite-tailwindcss-v4')?.devScript).toBe('dev:mp-weixin')
-    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-weixin')?.devScript).toBe('dev:mp-weixin')
-    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.devScript).toBe('dev:mp-alipay')
-    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-qq')?.devScript).toBe('dev:mp-qq')
-    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.devScript).toBe('dev:mp-toutiao')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-weixin')?.devScript).toBe('dev:e2e-watch')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-weixin')?.env).toMatchObject({
+      UNI_E2E_WATCH_PLATFORM: 'mp-weixin',
+    })
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.devScript).toBe('dev:e2e-watch')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.env).toMatchObject({
+      UNI_E2E_WATCH_PLATFORM: 'mp-alipay',
+    })
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-qq')?.devScript).toBe('dev:e2e-watch')
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.devScript).toBe('dev:e2e-watch')
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.outputWxml).toBe(
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-alipay/pages/index/index.wxml'),
     )

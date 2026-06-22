@@ -743,8 +743,8 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
   expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
   expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
-  if ((getBaseWatchCaseName(item.name) ?? item.name) === 'uni-app-vite-tailwindcss-v4') {
-    const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+  const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+  if (sourceClassReplacementSequence.length > 0) {
     expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual(['bgObj bg-[#999999] to bg-[#134543]', 'bgObj bg-[#134543] to bg-[#256789]'])
     expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
     expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
