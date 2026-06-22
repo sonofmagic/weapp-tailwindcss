@@ -470,6 +470,8 @@ jobs:
           test/bundlers/module-graph.unit.test.ts
           test/bundlers/vite-bundle-entries.unit.test.ts
           test/bundlers/vite-plugin.uni-app-x.unit.test.ts
+          test/bundlers/webpack.v5.unit.test.ts
+          test/bundlers/webpack.v5.unit/source-candidate-cache.test.ts
           test/tailwindcss/patcher-resolve.test.ts
           test/tailwindcss/targets.log.test.ts
           test/watch-hmr-coverage-matrix.unit.test.ts

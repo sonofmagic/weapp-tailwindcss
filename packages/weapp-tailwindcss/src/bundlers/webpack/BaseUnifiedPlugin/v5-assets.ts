@@ -1315,7 +1315,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             const processedCssHashKey = createRuntimeAwareCssHash(
               chunkHash,
               chunkHash === undefined ? undefined : 'webpack-css-asset:chunk',
-              `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${cssSourceTraceSignature}`,
+              `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}`,
             )
             const processedCssDecisionCacheKey = `${file}:${processedCssHashKey ?? 'hash:0'}`
             let currentProcessedRawSource: string | undefined
@@ -1389,7 +1389,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   hash: createRuntimeAwareCssHash(
                     chunkHash,
                     sourceHash,
-                    `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${cssSourceTraceSignature}`,
+                    `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}`,
                   ),
                   applyResult(source, { cacheHit }) {
                     updateAssetIfChanged(file, source, {
@@ -1558,6 +1558,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         processed: sourceCssProcessed || shouldPreserveGeneratedWebAssetUserCss,
                       })
                   const shouldAppendCurrentAssetUserCss = !currentAssetHasBundlerGeneratedMarker
+                    && !shouldPreserveGeneratedWebAssetUserCss
                     && (!sourceCssProcessed || registeredUserRawSource === undefined || currentAssetHasUserCss)
                     && !(sourceCssProcessed && currentAssetLooksGenerated && !currentAssetHasUserCss)
                   const userRawSource = createWebpackGeneratorUserCssSourceAppend(

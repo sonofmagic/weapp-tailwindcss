@@ -575,6 +575,36 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       mutate(source, payload) {
         return `${source}\n// ${payload.marker} ${payload.classLiteral}\n`
       },
+      sourceDomReplacementSequence: [
+        {
+          label: 'bg-purple-800 to bg-[red]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `      <View className='bg-purple-800 text-pink-200'>`,
+              `      <View ${webDomMarkerAttr} className='bg-[red] text-pink-200'>`,
+            )
+          },
+          expectedText: '11',
+          expectedStyle: {
+            backgroundColor: 'rgb(255, 0, 0)',
+          },
+        },
+        {
+          label: 'bg-[red] to bg-[#00ff00]',
+          mutate(source) {
+            return replaceWebDomSnippet(
+              source,
+              `      <View ${webDomMarkerAttr} className='bg-[red] text-pink-200'>`,
+              `      <View ${webDomMarkerAttr} className='bg-[#00ff00] text-pink-200'>`,
+            )
+          },
+          expectedText: '11',
+          expectedStyle: {
+            backgroundColor: 'rgb(0, 255, 0)',
+          },
+        },
+      ],
     },
   }
 

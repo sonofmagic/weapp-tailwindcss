@@ -106,6 +106,46 @@ describe('bundlers/webpack source candidate scan cache', () => {
     })
   })
 
+  it('syncs changed scan files when webpack does not report changed files', async () => {
+    const { pageA, root } = await createFixture()
+    const cache = createWebpackSourceCandidateScanCache()
+    const sourceScan = {
+      entries: [
+        {
+          base: path.join(root, 'src'),
+          negated: false,
+          pattern: '**/*.tsx',
+        },
+      ],
+      explicit: true,
+    }
+
+    const first = await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: true,
+    })
+    expect(first.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set(['w-1', 'w-2']))
+
+    await new Promise(resolve => setTimeout(resolve, 20))
+    await writeFile(pageA, 'export const a = "bg-[#111111]"', 'utf8')
+
+    const secondCollector = createSourceCandidateCollector()
+    const secondSyncFile = vi.spyOn(secondCollector, 'syncFile')
+    const second = await cache.resolve({
+      collector: secondCollector,
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: true,
+    })
+
+    expect(secondSyncFile).toHaveBeenCalledWith(pageA)
+    expect(second.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set(['bg-[#111111]', 'w-2']))
+  })
+
   it('keeps distinct cache records behind short signature hashes', async () => {
     const { root } = await createFixture()
     const cache = createWebpackSourceCandidateScanCache()

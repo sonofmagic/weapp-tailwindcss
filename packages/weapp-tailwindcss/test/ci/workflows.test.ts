@@ -379,7 +379,7 @@ describe('ci workflows', () => {
     expect(scripts['e2e:hbuilderx:harmony']).toBe('pnpm e2e:hbuilderx:local:harmony')
 
     expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_LOCAL=1')
-    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')
+    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')
     expect(scripts['e2e:hbuilderx:local:demo:mp']).toContain('E2E_HBUILDERX_CASE_GROUP=mp')
     expect(scripts['e2e:hbuilderx:local:demo:mp-extra']).toBe('pnpm e2e:hbuilderx:local:demo:mp-alipay && pnpm e2e:hbuilderx:local:demo:mp-baidu && pnpm e2e:hbuilderx:local:demo:mp-toutiao')
     expect(scripts['e2e:hbuilderx:local:demo:mp-alipay']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-alipay')
@@ -478,15 +478,12 @@ describe('e2e watch workflow', () => {
     expect(cases).toEqual(expect.arrayContaining([
       'macos:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:uni-app-vite-tailwindcss-v4:issue33',
-      'macos:22:taro-webpack-react-tailwindcss-v4:default',
-      'macos:22:taro-webpack-react-tailwindcss-v4:default',
       'macos:22:taro-vite-react-tailwindcss-v4:default',
-      'macos:22:taro-vite-react-tailwindcss-v4:default',
-      'macos:22:taro-webpack-vue3-tailwindcss-v4:default',
-      'macos:22:taro-webpack-vue3-tailwindcss-v4:default',
       'macos:22:taro-vite-vue3-tailwindcss-v4:default',
-      'macos:22:taro-vite-vue3-tailwindcss-v4:default',
-      'macos:22:uni-app-vite-tailwindcss-v4:default',
+      'macos:22:taro-vite-react-tailwindcss-v4:alipay:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v4:tt:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:mp-weixin:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:mp-alipay:default',
       'macos:22:mpx-tailwindcss-v4:default',
       'windows:22:uni-app-vite-tailwindcss-v4:default',
       'windows:22:uni-app-vite-tailwindcss-v4:issue33',
