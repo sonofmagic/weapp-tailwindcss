@@ -24,6 +24,25 @@ function collectCssRuleBlocks(css: string, selector: string) {
   return blocks.join('\n')
 }
 
+async function readCssWithLocalImports(projectPath: string, file: string, seen = new Set<string>()) {
+  const filePath = path.resolve(projectPath, file)
+  if (seen.has(filePath)) {
+    return ''
+  }
+  seen.add(filePath)
+  const css = await fs.readFile(filePath, 'utf8')
+  const imports = [...css.matchAll(/@import\s+(?:"([^"]+)"|'([^']+)')/g)]
+    .map(match => match[1] ?? match[2])
+    .filter((request): request is string => Boolean(request) && request.startsWith('.'))
+  if (imports.length === 0) {
+    return css
+  }
+  const importedCss = await Promise.all(imports.map(request =>
+    readCssWithLocalImports(path.dirname(filePath), request, seen),
+  ))
+  return `${css}\n${importedCss.join('\n')}`
+}
+
 describe('e2e', () => {
   it('keeps non-class JSX and WXML text unescaped in Taro Vite React v4 output', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
@@ -59,7 +78,7 @@ describe('e2e', () => {
       await ensureProjectBuilt(root)
     }
 
-    const css = await fs.readFile(path.resolve(projectPath, 'dist/app.wxss'), 'utf8')
+    const css = await readCssWithLocalImports(projectPath, 'dist/app.wxss')
     const linearBlocks = collectCssRuleBlocks(css, '.bg-linear-to-r')
 
     expect(css).toContain('.bg-linear-to-r')

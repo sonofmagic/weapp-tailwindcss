@@ -18,6 +18,7 @@ import { hasTailwindGeneratedCssMarkers } from '../shared/generator-css'
 import { hasLocalCssImport, hasTailwindApplyDirective, hasTailwindRootDirectives } from '../shared/generator-css/directives'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle'
+import { normalizeTaroRootImportShellAssets } from './generate-bundle/finalize'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from './processed-css-assets'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { isHTMLRequest } from './utils'
@@ -297,6 +298,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           await injectHarmonyBundleStyles(runtime)
           collectViteProcessedCssAssets()
           injectViteProcessedCssIntoMainCss()
+          normalizeTaroRootImportShellAssets(bundle, {
+            appType: opts.appType,
+            cssMatcher: opts.cssMatcher,
+            debug,
+            onUpdate: opts.onUpdate,
+            recordCssAssetResult,
+          })
           return
         }
 
@@ -385,6 +393,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
         await injectHarmonyBundleStyles(generatorRuntime)
         collectViteProcessedCssAssets()
         injectViteProcessedCssIntoMainCss()
+        normalizeTaroRootImportShellAssets(bundle, {
+          appType: opts.appType,
+          cssMatcher: opts.cssMatcher,
+          debug,
+          onUpdate: opts.onUpdate,
+          recordCssAssetResult,
+        })
       },
     },
   }

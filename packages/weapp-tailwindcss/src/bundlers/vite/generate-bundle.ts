@@ -77,8 +77,20 @@ function createCssImportShell(targetFile: string, importedFile: string) {
   return `@import "${createRelativeCssImportRequest(targetFile, importedFile)}";\n`
 }
 
-function shouldKeepRootMiniProgramStyleAsImportShell(appType: unknown) {
-  return appType === 'uni-app-vite' || appType === 'uni-app-x'
+function createRootMiniProgramOriginStyleOutputFile(file: string) {
+  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  if (/(?:^|\/)[^/]+-origin\.[^.]+$/i.test(normalized)) {
+    return normalized
+  }
+  return normalized.replace(/(\.[^.]+)$/, '-origin$1')
+}
+
+export function shouldKeepRootMiniProgramStyleAsImportShell(appType: unknown) {
+  return appType === 'uni-app-vite' || appType === 'uni-app-x' || appType === 'taro'
+}
+
+export function shouldMoveRootMiniProgramStyleToImportShellOrigin(appType: unknown) {
+  return appType === 'taro'
 }
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
@@ -735,6 +747,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         ) {
           outputFile = file
         }
+        if (
+          outputFile === file
+          && isRootMiniProgramStyleOutputFile(file)
+          && shouldMoveRootMiniProgramStyleToImportShellOrigin(opts.appType)
+        ) {
+          outputFile = createRootMiniProgramOriginStyleOutputFile(file)
+        }
         const resolveMatchedOutputFileForCurrentAsset = (sourceFile: string | undefined) => {
           if (!sourceFile) {
             return undefined
@@ -764,6 +783,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               ? createCssImportShell(file, outputFile)
               : undefined
             if (bundle[file] === originalSource && originalSource.originalFileNames?.includes(assetSourceFile)) {
+              const existingOutput = bundle[outputFile]
+              if (existingOutput?.type === 'asset') {
+                existingOutput.source = source
+              }
+              else {
+                emitOrReplayCssAsset(outputFile, source)
+              }
               originalSource.source = importShellSource ?? source
               return
             }

@@ -15,6 +15,7 @@ import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/ta
 import { processCachedTask } from '../shared/cache'
 import { annotateCssSourceTrace, createCssSourceTraceCacheSignature, createCssTokenSourceMap } from '../shared/css-source-trace'
 import { generateCssByGenerator } from '../shared/generator-css'
+import { rewriteLocalCssImportRequestsForOutput, splitLocalCssImports } from '../shared/generator-css/local-imports'
 import { createBundleRuntimeClassSetManager } from '../vite/incremental-runtime-class-set'
 import { createSourceCandidateCollector } from '../vite/source-candidates'
 import { resolveViteSourceScanEntries } from '../vite/source-scan'
@@ -256,13 +257,14 @@ export function createPlugins(options: UserDefinedOptions = {}) {
     return cachedGulpSourceCandidateGetter
   }
 
-  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>, sourceTraceSignature?: string, sourceCandidateSignature?: string) {
+  function createRuntimeSetHash(rawSource: string, nextRuntimeSet: Set<string>, sourceTraceSignature?: string, sourceCandidateSignature?: string, outputSignature?: string) {
     return cache.computeHash([
       rawSource,
       getRuntimeClassSetSignature(runtimeState.tailwindRuntime),
       [...nextRuntimeSet].sort().join('\n'),
       sourceTraceSignature ?? 'css-source-trace:0',
       sourceCandidateSignature ?? 'gulp-source-candidates:0',
+      outputSignature ?? 'gulp-output:0',
     ].join('\n\n'))
   }
 
@@ -280,10 +282,11 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       normalizeTailwindConfigDirectives(rawSource, path.dirname(sourceFile)),
       { importFallback: true },
     )
+    const generatorSourceCss = splitLocalCssImports(sourceCss)?.source ?? sourceCss
     const changed = upsertTailwindV4CssSource(opts, {
       file: sourceFile,
       base: path.dirname(sourceFile),
-      css: sourceCss,
+      css: generatorSourceCss,
     })
     if (!changed) {
       return false
@@ -329,6 +332,12 @@ export function createPlugins(options: UserDefinedOptions = {}) {
           majorVersion: runtimeState.tailwindRuntime.majorVersion,
           ...options,
         }
+  }
+
+  function resolveGulpStyleOutputExtension(file: File) {
+    return typeof opts.cssMatcher === 'function' && opts.cssMatcher(path.basename(file.path))
+      ? path.extname(file.path)
+      : undefined
   }
 
   function resolveGulpMatcherName(file: File) {
@@ -418,7 +427,7 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       }
       const rawSource = file.contents.toString()
       const cssSourceChanged = await registerAutoCssSource(file, rawSource)
-      const shouldUseGenerator = true
+      const shouldUseGenerator = runtimeState.tailwindRuntime.majorVersion === 4
       let gulpSourceCandidateGetter: typeof cachedGulpSourceCandidateGetter
       if (shouldUseGenerator) {
         gulpSourceCandidateGetter = await refreshGulpV4SourceCandidates(cssSourceChanged)
@@ -435,10 +444,14 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       const sourceCandidateSignature = cachedGulpSourceCandidateGetter
         ? `gulp-source-candidates:1:${[...cachedGulpSourceCandidateGetter(undefined)].sort().join('\n')}`
         : undefined
+      const styleOutputExtension = resolveGulpStyleOutputExtension(file)
+      const outputSignature = styleOutputExtension
+        ? `gulp-output:1:${styleOutputExtension}`
+        : 'gulp-output:0'
       await processCachedTask<string>({
         cache,
         cacheKey: file.path,
-        hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature, sourceCandidateSignature),
+        hash: createRuntimeSetHash(rawSource, nextRuntimeSet, sourceTraceSignature, sourceCandidateSignature, outputSignature),
         applyResult(source) {
           file.contents = Buffer.from(source)
         },
@@ -466,9 +479,12 @@ export function createPlugins(options: UserDefinedOptions = {}) {
             opts,
             tokenSources: sourceTraceTokenSources,
           })
+          const outputCss = rewriteLocalCssImportRequestsForOutput(css, {
+            styleOutputExtension,
+          })
           debug('css handle: %s', file.path)
           return {
-            result: css,
+            result: outputCss,
           }
         },
       })

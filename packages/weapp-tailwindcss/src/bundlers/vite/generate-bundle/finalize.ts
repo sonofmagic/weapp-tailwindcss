@@ -2,7 +2,11 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleBuildState, BundleSnapshot } from '../bundle-state'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
+import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { injectUniAppXHarmonyBundleStyles } from '@/uni-app-x/style-asset'
+import { parseImportRequest } from '../../shared/generator-css/directives'
+import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-imports'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { runWithConcurrency } from '../../shared/run-tasks'
 import { updateBundleBuildState } from '../bundle-state'
@@ -67,6 +71,130 @@ interface FinalizeGenerateBundleOptions {
   timingDetails: Record<string, number>
   transformRuntime: Set<string>
   useIncrementalMode: boolean
+}
+
+function readAssetSource(asset: OutputAsset) {
+  return typeof asset.source === 'string' ? asset.source : asset.source.toString()
+}
+
+function getAssetFile(bundleFile: string, asset: OutputAsset) {
+  return asset.fileName || bundleFile
+}
+
+function isRootMiniProgramStyleOutputFile(file: string) {
+  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  return !normalized.includes('/')
+    && /\.(?:wxss|acss|ttss|qss|jxss|tyss)$/i.test(normalized)
+}
+
+function createRelativeCssImportRequest(targetFile: string, importedFile: string) {
+  const normalizedTargetFile = normalizeOutputPathKey(targetFile.replace(/[?#].*$/, ''))
+  const normalizedImportedFile = normalizeOutputPathKey(importedFile.replace(/[?#].*$/, ''))
+  const targetDir = path.posix.dirname(normalizedTargetFile)
+  const baseDir = targetDir === '.' ? '' : targetDir
+  const relative = path.posix.relative(baseDir, normalizedImportedFile)
+  return relative.startsWith('.') ? relative : `./${relative}`
+}
+
+function createCssImportShell(targetFile: string, importedFile: string) {
+  return `@import "${createRelativeCssImportRequest(targetFile, importedFile)}";\n`
+}
+
+function resolveRootMiniProgramOriginStyleFile(file: string) {
+  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+  if (!isRootMiniProgramStyleOutputFile(normalized)) {
+    return
+  }
+  if (/(?:^|\/)[^/]+-origin\.[^.]+$/i.test(normalized)) {
+    return
+  }
+  return normalized.replace(/(\.[^.]+)$/, '-origin$1')
+}
+
+function resolveSingleCssImportOutputFile(targetFile: string, css: string) {
+  let importedFile: string | undefined
+  try {
+    const root = postcss.parse(css)
+    root.walkAtRules('import', (atRule) => {
+      if (importedFile !== undefined) {
+        return
+      }
+      const request = parseImportRequest(atRule.params)
+      if (!request || /^(?:https?:)?\/\//i.test(request) || request.startsWith('data:')) {
+        return
+      }
+      const cleanRequest = request.replace(/[?#].*$/, '')
+      if (!/\.(?:css|wxss|acss|ttss|qss|jxss|tyss)$/i.test(cleanRequest)) {
+        return
+      }
+      const targetDir = path.posix.dirname(normalizeOutputPathKey(targetFile))
+      importedFile = normalizeOutputPathKey(path.posix.join(targetDir === '.' ? '' : targetDir, cleanRequest))
+    })
+  }
+  catch {
+  }
+  return importedFile
+}
+
+export function normalizeTaroRootImportShellAssets(
+  bundle: Record<string, OutputAsset | OutputChunk>,
+  options: Pick<GenerateBundleContext['opts'], 'appType' | 'cssMatcher'> & {
+    debug: GenerateBundleContext['debug']
+    onUpdate: GenerateBundleContext['opts']['onUpdate']
+    recordCssAssetResult: GenerateBundleContext['recordCssAssetResult']
+  },
+) {
+  if (options.appType !== 'taro') {
+    return 0
+  }
+  let updated = 0
+  for (const [rootBundleFile, rootOutput] of Object.entries(bundle)) {
+    if (rootOutput.type !== 'asset') {
+      continue
+    }
+    const rootFile = getAssetFile(rootBundleFile, rootOutput)
+    if (!isRootMiniProgramStyleOutputFile(rootFile) || !options.cssMatcher(rootFile)) {
+      continue
+    }
+    const originFile = resolveRootMiniProgramOriginStyleFile(rootFile)
+    if (!originFile || !options.cssMatcher(originFile)) {
+      continue
+    }
+    const originOutput = Object.entries(bundle).find(([bundleFile, output]) =>
+      output.type === 'asset'
+      && normalizeOutputPathKey(getAssetFile(bundleFile, output)) === normalizeOutputPathKey(originFile),
+    )?.[1]
+    if (originOutput?.type !== 'asset') {
+      continue
+    }
+    const rootSource = readAssetSource(rootOutput)
+    if (isPureLocalCssImportWrapper(rootSource)) {
+      continue
+    }
+    const originSource = readAssetSource(originOutput)
+    if (isPureLocalCssImportWrapper(originSource)) {
+      const importedFile = resolveSingleCssImportOutputFile(originFile, originSource)
+      if (importedFile && normalizeOutputPathKey(importedFile) !== normalizeOutputPathKey(rootFile)) {
+        continue
+      }
+    }
+    else if (originSource.trim().length > 0 && originSource.trim() !== rootSource.trim()) {
+      continue
+    }
+    const nextRootSource = createCssImportShell(rootFile, originFile)
+    if (rootSource === nextRootSource) {
+      continue
+    }
+    rootOutput.source = nextRootSource
+    originOutput.source = rootSource
+    options.recordCssAssetResult?.(rootFile, nextRootSource)
+    options.recordCssAssetResult?.(originFile, rootSource)
+    options.onUpdate?.(rootFile, rootSource, nextRootSource)
+    options.onUpdate?.(originFile, originSource, rootSource)
+    options.debug('normalize taro root css import shell: %s -> %s', rootFile, originFile)
+    updated++
+  }
+  return updated
 }
 
 export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOptions) {
@@ -184,6 +312,13 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     }
     syncViteProcessedCssIntoMainCssAssets()
   }
+  normalizeTaroRootImportShellAssets(bundle, {
+    appType: opts.appType,
+    cssMatcher: opts.cssMatcher,
+    debug,
+    onUpdate,
+    recordCssAssetResult,
+  })
   normalizeBundleFileNameKeysForTest(bundle)
   removeCssCoveredByRootStyleAssets(bundle, {
     cssMatcher: opts.cssMatcher,

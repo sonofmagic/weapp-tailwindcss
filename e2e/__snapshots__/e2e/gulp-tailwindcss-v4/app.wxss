@@ -1,4 +1,4 @@
-@import './src/third-party-ui.wxss';
+@import './third-party-ui.wxss';
 view,
 text,
 ::after,
@@ -325,29 +325,5 @@ wx-root-portal-content {
   /* tokens: system-dark:text-slate-100 <= src/pages/index/index.wxml */
   .system-dark_ctext-slate-100 {
     color: var(--color-slate-100);
-  }
-}
-.weapp-tw-user-ui-card {
-  display: inline-flex;
-  align-items: center;
-  gap: 8rpx;
-  color: var(--weapp-tw-user-ui-color, #175e75);
-  animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;
-}
-.weapp-tw-user-ui-loading {
-  display: inline-block;
-  width: 32rpx;
-  height: 32rpx;
-  animation: weappTwUserUiRotation 1s linear infinite;
-}
-@keyframes weappTwUserUiRotation {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@keyframes weappTwUserUiBreathe {
-  50% {
-    opacity: 0.65;
-    transform: scale(0.96);
   }
 }

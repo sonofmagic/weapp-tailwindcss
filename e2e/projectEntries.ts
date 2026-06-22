@@ -66,7 +66,6 @@ export const E2E_PROJECTS = [
     cssFiles: [
       'app.wxss',
       'main.wxss',
-      'common.wxss',
       'sub-normal/pages/index.wxss',
       'sub-independent/pages/index.wxss',
     ],

@@ -20,7 +20,7 @@ import {
   setCurrentContext,
 } from './vite-plugin.testkit'
 import { classifyBundleEntry } from '@/bundlers/vite/bundle-state'
-import { createGenerateBundleHook, normalizeBundleFileNameKeysForTest, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile } from '@/bundlers/vite/generate-bundle'
+import { createGenerateBundleHook, normalizeBundleFileNameKeysForTest, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from '@/bundlers/vite/generate-bundle'
 import { collectRememberedCssReplayGroups } from '@/bundlers/vite/generate-bundle/remembered-css'
 import { createSubpackageSourceCandidateScope } from '@/bundlers/vite/generate-bundle/source-candidate-scope'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
@@ -2302,6 +2302,11 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       cssMatcher: file => file.endsWith('.acss') || file.endsWith('.ttss') || file.endsWith('.mss'),
       files: ['app.acss', 'pages/index/index.ttss'],
     })).toBe('.css')
+    expect(shouldKeepRootMiniProgramStyleAsImportShell('taro')).toBe(true)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell('uni-app-vite')).toBe(true)
+    expect(shouldKeepRootMiniProgramStyleAsImportShell('native')).toBe(false)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('taro')).toBe(true)
+    expect(shouldMoveRootMiniProgramStyleToImportShellOrigin('uni-app-vite')).toBe(false)
   }, TEST_TIMEOUT_MS)
 
   it('keeps css extension for uni-app x native app vite css pipeline output', async () => {
@@ -5146,7 +5151,7 @@ module.exports = {
 
     await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
 
-    expect((bundle['app.wxss'] as OutputAsset).source.toString()).toBe('@import "app-origin.wxss";')
+    expect((bundle['app.wxss'] as OutputAsset).source.toString()).toBe('@import "./app-origin.wxss";\n')
     expect((bundle['app-origin.wxss'] as OutputAsset).source.toString()).not.toContain('weapp-tailwindcss generated css')
   }, TEST_TIMEOUT_MS)
 
@@ -5269,6 +5274,45 @@ module.exports = {
     expect(appCss).toContain('@import "app-origin.wxss";')
     expect(appCss).toContain('.app-main{}')
     expect(appCss).not.toContain('.bg-normal-subpackage-marker')
+  })
+
+  it('injects root vite processed css into imported app origin while preserving taro app shell', () => {
+    const context = createContext({
+      appType: 'taro',
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+    })
+    const bundle = {
+      'app.wxss': {
+        ...createRollupAsset('@import "./app-origin.wxss";'),
+        fileName: 'app.wxss',
+      },
+      'app-origin.wxss': {
+        ...createRollupAsset('.taro-origin{}'),
+        fileName: 'app-origin.wxss',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>([
+      [path.resolve('/project/src/app.css'), {
+        css: '.app-main{}',
+        injectIntoMain: true,
+        outputFile: 'app-origin.wxss',
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.wxss'] as OutputAsset).source.toString()
+    const appOriginCss = (bundle['app-origin.wxss'] as OutputAsset).source.toString()
+    expect(appCss).toBe('@import "./app-origin.wxss";')
+    expect(appCss).not.toContain('.app-main')
+    expect(appOriginCss).toContain('.taro-origin{}')
+    expect(appOriginCss).toContain('.app-main{}')
   })
 
   it('does not replay explicit root vite css into subpackage page styles', () => {

@@ -383,9 +383,38 @@ function isMiniProgramStyleOutputFile(file: string) {
 }
 
 function shouldPreserveMiniProgramImportShell(opts: InternalUserDefinedOptions, file: string, css: string) {
-  return isMiniProgramStyleOutputFile(file)
+  return (opts.appType === 'taro' || opts.appType === 'uni-app-vite' || opts.appType === 'uni-app-x')
+    && isMiniProgramStyleOutputFile(file)
     && opts.cssMatcher(file)
     && isPureLocalCssImportWrapper(css)
+}
+
+function resolvePreservedImportShellInjectionTarget(
+  opts: InternalUserDefinedOptions,
+  bundle: OutputBundle,
+  file: string,
+  css: string,
+) {
+  if (opts.appType !== 'taro') {
+    return
+  }
+  const importedStyleFiles = collectImportedStyleFiles(css, file)
+  if (importedStyleFiles.size !== 1) {
+    return
+  }
+  const [importedFile] = importedStyleFiles
+  if (!isRootStyleOutputFile(importedFile)) {
+    return
+  }
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const outputFile = getAssetFile(bundleFile, output)
+    if (normalizeOutputPathKey(outputFile) === normalizeOutputPathKey(importedFile)) {
+      return outputFile
+    }
+  }
 }
 
 function shouldUseCssAssetAsMainInjectionTarget(
@@ -664,24 +693,43 @@ export function injectViteProcessedCssIntoMainCssAssets(
     })
     .filter(record => record.css.length > 0)
   let injected = 0
-  for (const [bundleFile, output] of Object.entries(bundle)) {
+  for (const [bundleFile, bundleOutput] of Object.entries(bundle)) {
+    let output = bundleOutput
     if (output.type !== 'asset') {
       continue
     }
-    const file = getAssetFile(bundleFile, output)
-    const fileKey = normalizeOutputPathKey(file)
+    let file = getAssetFile(bundleFile, output)
     if (
       !options.opts.cssMatcher(file)
       || !shouldUseCssAssetAsMainInjectionTarget(options.opts, file, viteCssResults)
     ) {
       continue
     }
-    const mainFileKey = normalizeOutputPathKey(file)
-    const originalSource = readAssetSource(output)
+    let originalSource = readAssetSource(output)
     if (shouldPreserveMiniProgramImportShell(options.opts, file, originalSource)) {
-      options.debug?.('preserve mini-program css import shell asset: %s', file)
-      continue
+      const importedTargetFile = resolvePreservedImportShellInjectionTarget(options.opts, bundle, file, originalSource)
+      if (typeof importedTargetFile === 'string') {
+        options.debug?.('preserve mini-program css import shell asset: %s -> %s', file, importedTargetFile)
+        const importedOutput = Object.entries(bundle).find(([candidateFile, candidate]) =>
+          candidate.type === 'asset'
+          && normalizeOutputPathKey(getAssetFile(candidateFile, candidate)) === normalizeOutputPathKey(importedTargetFile),
+        )?.[1]
+        if (importedOutput?.type === 'asset') {
+          output = importedOutput
+          file = importedTargetFile
+          originalSource = readAssetSource(output)
+        }
+        else {
+          continue
+        }
+      }
+      else {
+        options.debug?.('preserve mini-program css import shell asset: %s', file)
+        continue
+      }
     }
+    const fileKey = normalizeOutputPathKey(file)
+    const mainFileKey = normalizeOutputPathKey(file)
     let nextCss = removeTailwindEntryDirectivesFromCss(originalSource)
     const importedStyleFiles = collectImportedStyleFiles(nextCss, file)
     const importedBundleCssSources = collectImportedBundleCssSources(bundle, importedStyleFiles)

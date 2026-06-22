@@ -2,6 +2,7 @@ import { Buffer } from 'node:buffer'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
+import { rewriteLocalCssImportRequestsForOutput } from '@/bundlers/shared/generator-css/local-imports'
 import loader, { transformCssImportRewriteSource } from '@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader'
 
 function joinPosixPath(base: string, subpath: string) {
@@ -38,6 +39,17 @@ describe('bundlers/shared css-imports', () => {
   it('normalizes tailwindcss$ and ignores unrelated specifiers', () => {
     expect(resolveTailwindcssImport('tailwindcss$', pkgDir, { join: joinPosixPath })).toBe(`${pkgDir}/index.css`)
     expect(resolveTailwindcssImport('postcss', pkgDir)).toBeNull()
+  })
+
+  it('rewrites local source css imports to emitted mini-program style paths', () => {
+    expect(rewriteLocalCssImportRequestsForOutput(
+      '@import "./src/third-party-ui.css";\n.foo{color:red}',
+      { styleOutputExtension: '.wxss' },
+    )).toBe('@import "./third-party-ui.wxss";\n.foo{color:red}')
+    expect(rewriteLocalCssImportRequestsForOutput(
+      '@import "./styles/third-party-ui.css?inline";',
+      { styleOutputExtension: 'acss' },
+    )).toBe('@import "./styles/third-party-ui.acss?inline";')
   })
 
   it('rewrites buffer sources in loader for mpx', () => {

@@ -1,12 +1,3 @@
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
-}
 .weapp-tw-user-ui-card {
   align-items: center;
   animation: weappTwUserUiBreathe 1.2s ease-in-out infinite;

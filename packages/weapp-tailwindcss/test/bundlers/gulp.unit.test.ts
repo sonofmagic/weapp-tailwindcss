@@ -15,6 +15,7 @@ interface InternalContext {
   styleHandler: ReturnType<typeof vi.fn>
   jsHandler: ReturnType<typeof vi.fn>
   cache: ReturnType<typeof createCache>
+  cssMatcher?: ReturnType<typeof vi.fn>
   jsMatcher?: ReturnType<typeof vi.fn>
   wxsMatcher?: ReturnType<typeof vi.fn>
   mainCssChunkMatcher: ReturnType<typeof vi.fn>
@@ -107,6 +108,7 @@ describe('bundlers/gulp createPlugins', () => {
   })
 
   it('processes files and caches results across runs', async () => {
+    tailwindRuntime.majorVersion = 3
     const plugins = createPlugins()
     expect(getCompilerContextMock).toHaveBeenCalled()
 
@@ -114,22 +116,19 @@ describe('bundlers/gulp createPlugins', () => {
     const processedCss = await runTransform(plugins.transformWxss(), cssFile)
     expect(processedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(styleHandler).toHaveBeenCalledTimes(1)
-    expect(tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(1)
     expect(tailwindRuntime.extract).toHaveBeenCalledTimes(1)
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
     expect(styleHandler).toHaveBeenCalledTimes(1)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
-    expect(tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(2)
-    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(1)
 
     // Ensure runtime set is reused for JS handler
     const jsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
-    expect(tailwindRuntime.getClassSetSync).toHaveBeenCalledTimes(3)
-    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(3)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(2)
     expect(jsHandler).toHaveBeenCalledWith(
       'import "./init"; console.log("hi")',
       runtimeSet,
@@ -246,22 +245,81 @@ describe('bundlers/gulp createPlugins', () => {
     expect(tailwindRuntime.extract).not.toHaveBeenCalled()
   })
 
-  it('registers tailwindcss v4 cssSources from wxss files before collecting runtime classes', async () => {
+  it('registers tailwindcss v4 cssSources without local css imports', async () => {
     tailwindRuntime.majorVersion = 4
-    const plugins = createPlugins()
+    currentContext.cssMatcher = vi.fn((id: string) => id.endsWith('.wxss'))
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
+      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      target: 'weapp',
+      classSet: new Set(candidates),
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+    vi.resetModules()
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
+        target: 'weapp',
+        styleOptions: {},
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/',
+        base: options.base ?? options.cssSources?.[0]?.base ?? '/',
+        baseFallbacks: [],
+        css: options.css ?? options.cssSources?.[0]?.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: '/',
+        base: '/',
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: '/',
+        base: '/',
+        baseFallbacks: [],
+        cssSources: currentContext.tailwindcss?.v4?.cssSources ?? [],
+      })),
+    }))
 
-    const source = '@source inline("w-4");'
-    const cssFile = createFile('/src/app.wxss', source)
-    await runTransform(plugins.transformWxss(), cssFile)
+    try {
+      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
+      const plugins = createMockedPlugins()
 
-    expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
-      {
-        file: '/src/app.wxss',
-        base: '/src',
-        css: source,
-      },
-    ])
-    expect(tailwindRuntime.extract).toHaveBeenCalled()
+      const source = [
+        '@import "tailwindcss";',
+        '@import "./src/third-party-ui.css";',
+        '@source inline("w-4");',
+      ].join('\n')
+      const cssFile = createFile('/src/app.css', source)
+      const processed = await runTransform(plugins.transformWxss(), cssFile)
+
+      expect(currentContext.tailwindcss?.v4?.cssSources).toEqual([
+        {
+          file: '/src/app.css',
+          base: '/src',
+          css: [
+            '@import "tailwindcss";',
+            '@source inline("w-4");',
+          ].join('\n'),
+        },
+      ])
+      expect(processed.contents?.toString()).toContain('@import "./third-party-ui.css";')
+      expect(processed.contents?.toString()).not.toContain('./src/third-party-ui.css')
+      expect(processed.contents?.toString()).not.toContain('.weapp-tw-user-ui-card')
+      expect(generateMock).toHaveBeenCalled()
+      expect(tailwindRuntime.extract).toHaveBeenCalled()
+    }
+    finally {
+      vi.doUnmock('@/generator')
+      vi.resetModules()
+    }
   })
 
   it('scopes gulp Tailwind v4 css generation to each css root @source entries', async () => {
@@ -376,7 +434,7 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
-  it('scopes gulp Tailwind v4 subpackage css generation to each config content entry', async () => {
+  it('uses the legacy style handler for tailwindcss v3 config content entries', async () => {
     tailwindRuntime.majorVersion = 3
     runtimeSet = new Set(['app-only', 'normal-only', 'independent-only'])
     tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
@@ -456,10 +514,22 @@ describe('bundlers/gulp createPlugins', () => {
         contents: Buffer.from(await fs.promises.readFile(independentCss, 'utf8')),
       }))
 
-      const [appCall, normalCall, independentCall] = generateMock.mock.calls.map(call => call[0]?.candidates as Set<string>)
-      expect(appCall).toEqual(new Set(['app-only']))
-      expect(normalCall).toEqual(new Set(['normal-only']))
-      expect(independentCall).toEqual(new Set(['independent-only']))
+      expect(generateMock).not.toHaveBeenCalled()
+      expect(styleHandler).toHaveBeenCalledTimes(3)
+      expect(styleHandler.mock.calls.map(call => call[0])).toEqual([
+        [
+          '@config "../tailwind.config.js";',
+          '@tailwind utilities;',
+        ].join('\n'),
+        [
+          '@config "../../../tailwind.config.sub-normal.js";',
+          '@tailwind utilities;',
+        ].join('\n'),
+        [
+          '@config "../../../tailwind.config.sub-independent.js";',
+          '@tailwind utilities;',
+        ].join('\n'),
+      ])
     }
     finally {
       vi.doUnmock('@/generator')
@@ -573,7 +643,7 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
-  it('refreshes gulp Tailwind v4 css source candidates after wxml updates', async () => {
+  it('uses the legacy style handler after tailwindcss v3 wxml updates', async () => {
     tailwindRuntime.majorVersion = 3
     runtimeSet = new Set(['app-before', 'app-after'])
     tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
@@ -638,8 +708,8 @@ describe('bundlers/gulp createPlugins', () => {
         contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
       }))
 
-      const lastCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
-      expect(lastCandidates).toEqual(new Set(['app-after']))
+      expect(generateMock).not.toHaveBeenCalled()
+      expect(styleHandler).toHaveBeenCalledTimes(1)
     }
     finally {
       vi.doUnmock('@/generator')

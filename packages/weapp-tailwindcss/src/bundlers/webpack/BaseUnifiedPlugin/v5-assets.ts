@@ -377,12 +377,16 @@ function createWebpackUserCssSourceAppend(
   sources: Iterable<{ css: string | undefined, file: string, processed?: boolean | undefined }>,
   generatorRawSource: string,
   currentSourceFile?: string | undefined,
+  shouldIncludeSource?: ((file: string) => boolean) | undefined,
 ) {
   const matchedSources: Array<{ css: string, file: string, processed: boolean }> = []
   const seen = new Set<string>()
   for (const source of sources) {
     const css = source.css
     if (!css || seen.has(css)) {
+      continue
+    }
+    if (shouldIncludeSource && !shouldIncludeSource(source.file)) {
       continue
     }
     seen.add(css)
@@ -798,6 +802,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           return resolveConfiguredMainCssSourceFile(file)
         }
+        const isSameWebpackSourceScope = (outputFile: string, candidateSourceFile: string, currentSourceFile?: string | undefined) => {
+          if (!currentSourceFile) {
+            return false
+          }
+          if (path.resolve(candidateSourceFile) === path.resolve(currentSourceFile)) {
+            return true
+          }
+          const candidateKey = path.resolve(candidateSourceFile)
+          const outputResources = cssAssetResources.get(outputFile)
+          return outputResources?.has(candidateKey) === true
+        }
         const getCssHandlerOptions = (file: string, rawSource?: string | undefined) => {
           const majorVersion = runtimeState.tailwindRuntime.majorVersion
           const isMainChunk = isMainCssChunk(file)
@@ -933,13 +948,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           }
           return stripMiniProgramCssSpecificityPlaceholders(removeMiniProgramHoverSelectors(finalized, styleOptions.cssRemoveHoverPseudoClass))
         }
-        const finalizeMiniProgramUserCssAssetSource = (source: string) => {
+        const finalizeMiniProgramUserCssAssetSource = (source: string, options: { cssPreflight?: boolean | undefined } = {}) => {
           const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
           if (isWebGeneratorTarget) {
             return source
           }
           const finalized = finalizeMiniProgramCss(removeMiniProgramHoverSelectors(source, styleOptions.cssRemoveHoverPseudoClass), {
-            cssPreflight: !hasMiniProgramTailwindV4PreflightReset(source)
+            cssPreflight: options.cssPreflight !== false && !hasMiniProgramTailwindV4PreflightReset(source)
               ? compilerOptions.cssPreflight
               : undefined,
             isTailwindcssV4: true,
@@ -966,12 +981,17 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           opts: compilerOptions,
           tokenSources: cssSourceTraceTokenSources,
         })
-        const finalizeTracedCss = (css: string) => {
+        const shouldInjectCssTracePreflight = (cssHandlerOptions: WebpackCssHandlerOptions) => {
+          return compilerOptions.appType !== 'mpx' || cssHandlerOptions.isMainChunk !== false
+        }
+        const finalizeTracedCss = (css: string, cssHandlerOptions: WebpackCssHandlerOptions) => {
           const traced = annotateCss(css)
           if (isWebGeneratorTarget || !isCssSourceTraceEnabled(compilerOptions)) {
             return traced
           }
-          return finalizeMiniProgramUserCssAssetSource(traced)
+          return finalizeMiniProgramUserCssAssetSource(traced, {
+            cssPreflight: shouldInjectCssTracePreflight(cssHandlerOptions),
+          })
         }
         const hasRuntimeTransformAssets = Boolean(
           !isWebGeneratorTarget
@@ -1396,7 +1416,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     }))
                     debug('css skip webpack-loader-pipeline asset: %s', file)
                     return {
-                      result: new ConcatSource(finalizeTracedCss(nextCss)),
+                      result: new ConcatSource(finalizeTracedCss(nextCss, cssHandlerOptionsForProcessedAsset)),
                     }
                   },
                 })
@@ -1502,7 +1522,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     for (const dependency of loaderGeneratedCss.dependencies) {
                       compilation.fileDependencies?.add?.(dependency)
                     }
-                    const css = finalizeTracedCss(finalizeCssAssetSource(loaderGeneratedCss.css, { generatedCss: true }))
+                    const css = finalizeTracedCss(finalizeCssAssetSource(loaderGeneratedCss.css, { generatedCss: true }), cssHandlerOptions)
                     debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
                     return {
                       result: new ConcatSource(css),
@@ -1516,6 +1536,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     })),
                     generatorRawSource,
                     sourceFile,
+                    registeredSourceFile => isSameWebpackSourceScope(file, registeredSourceFile, sourceFile),
                   )
                   const currentAssetLooksGenerated = hasTailwindGeneratedCss(currentRawSource)
                     || hasTailwindGeneratedCssMarkers(currentRawSource)
@@ -1650,7 +1671,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       : finalizeCssAssetSource(
                           (await compilerOptions.styleHandler(generatorRawSource, cssHandlerOptions)).css,
                           { generatedCss: false },
-                        ))
+                        ), cssHandlerOptions)
                   const source = new ConcatSource(css)
 
                   if (generated) {

@@ -2,6 +2,8 @@ import { postcss } from '@weapp-tailwindcss/postcss'
 import { parseImportRequest, removeTailwindSourceDirectives } from './directives'
 
 const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
+const CSS_STYLE_EXTENSION_RE = /\.(?:css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)(?:$|[?#])/i
+const SOURCE_STYLE_EXTENSION_RE = /\.(?:css|scss|sass|less|styl|stylus|pcss|postcss)(?:$|[?#])/i
 
 function createCssSourceOrderAppend(base: string, extra: string) {
   if (!base) {
@@ -135,4 +137,65 @@ export function restoreLocalCssImports(css: string, imports: string | undefined)
     return css
   }
   return createCssSourceOrderAppend(imports, css)
+}
+
+function splitRequestSuffix(request: string) {
+  const queryIndex = request.indexOf('?')
+  const hashIndex = request.indexOf('#')
+  const suffixIndexCandidates = [queryIndex, hashIndex].filter(index => index >= 0)
+  const suffixIndex = suffixIndexCandidates.length > 0 ? Math.min(...suffixIndexCandidates) : -1
+  if (suffixIndex < 0) {
+    return {
+      clean: request,
+      suffix: '',
+    }
+  }
+  return {
+    clean: request.slice(0, suffixIndex),
+    suffix: request.slice(suffixIndex),
+  }
+}
+
+function normalizeOutputImportRequest(request: string, styleOutputExtension: string | undefined) {
+  const normalizedStyleOutputExtension = styleOutputExtension?.startsWith('.')
+    ? styleOutputExtension
+    : styleOutputExtension
+      ? `.${styleOutputExtension}`
+      : undefined
+  const { clean, suffix } = splitRequestSuffix(request.replace(/\\/g, '/'))
+  const normalized = clean
+    .replace(/^(?:\.\/)?src\//, './')
+    .replace(SOURCE_STYLE_EXTENSION_RE, normalizedStyleOutputExtension ?? '.css')
+  return `${normalized}${suffix}`
+}
+
+export function rewriteLocalCssImportRequestsForOutput(
+  css: string,
+  options: {
+    styleOutputExtension?: string | undefined
+  } = {},
+) {
+  if (!css.includes('@import')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkAtRules('import', (atRule) => {
+      const request = parseImportRequest(atRule.params)
+      if (!request || !isLocalImportRequest(request) || !CSS_STYLE_EXTENSION_RE.test(request)) {
+        return
+      }
+      const rewritten = normalizeOutputImportRequest(request, options.styleOutputExtension)
+      if (rewritten === request) {
+        return
+      }
+      atRule.params = atRule.params.replace(request, rewritten)
+      changed = true
+    })
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
 }
