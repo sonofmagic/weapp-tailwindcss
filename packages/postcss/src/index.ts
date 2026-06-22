@@ -21,6 +21,10 @@ export {
   removeUnsupportedMiniProgramPrefixedAtRule,
 } from './compat/mini-program-prefixes'
 export {
+  normalizeTailwindcssRpxDeclaration,
+  normalizeTailwindcssRpxDeclarations,
+} from './compat/tailwindcss-rpx'
+export {
   compileCssMacroConditionalComments,
   CSS_MACRO_STYLE_OPTIONS_MARKER,
   hasCssMacroStyleOptions,

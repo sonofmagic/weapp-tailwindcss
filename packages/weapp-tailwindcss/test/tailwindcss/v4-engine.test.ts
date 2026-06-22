@@ -271,7 +271,7 @@ describe('tailwindcss v4 engine', () => {
     expect(transformed).not.toContain('color: 55rpx')
   })
 
-  it('treats rpx arbitrary text values as lengths in generated web css', async () => {
+  it('treats rpx arbitrary values as lengths in generated uni-app web css', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -279,15 +279,35 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      candidates: ['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]'],
+      candidates: [
+        'text-[55rpx]',
+        'text-[32.4rpx]',
+        'hover:text-[66rpx]',
+        'hover:text-[32.4rpx]',
+        'border-[10rpx]',
+        'border-x-[12rpx]',
+        'bg-[10rpx]',
+        'outline-[5rpx]',
+        'ring-[8rpx]',
+      ],
       styleOptions: {
         appType: 'uni-app-vite',
       },
       target: 'web',
     })
 
-    expect(result.classSet).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
-    expect(result.rawCandidates).toEqual(new Set(['text-[55rpx]', 'text-[32.4rpx]', 'hover:text-[66rpx]', 'hover:text-[32.4rpx]']))
+    expect(result.classSet).toEqual(new Set([
+      'text-[55rpx]',
+      'text-[32.4rpx]',
+      'hover:text-[66rpx]',
+      'hover:text-[32.4rpx]',
+      'border-[10rpx]',
+      'border-x-[12rpx]',
+      'bg-[10rpx]',
+      'outline-[5rpx]',
+      'ring-[8rpx]',
+    ]))
+    expect(result.rawCandidates).toEqual(result.classSet)
     expect(result.css).toContain('.text-\\[55rpx\\]')
     expect(result.css).toContain('font-size: 55rpx')
     expect(result.css).toContain('.text-\\[32\\.4rpx\\]')
@@ -296,16 +316,35 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('font-size: 66rpx')
     expect(result.css).toContain('.hover\\:text-\\[32\\.4rpx\\]')
     expect(result.css).not.toContain('text-\\[length\\:')
+    expect(result.css).toContain('.border-\\[10rpx\\]')
+    expect(result.css).toContain('border-width: 10rpx')
+    expect(result.css).toContain('.border-x-\\[12rpx\\]')
+    expect(result.css).toContain('border-inline-width: 12rpx')
+    expect(result.css).toContain('.bg-\\[10rpx\\]')
+    expect(result.css).toContain('background-size: 10rpx')
+    expect(result.css).toContain('.outline-\\[5rpx\\]')
+    expect(result.css).toContain('outline-width: 5rpx')
+    expect(result.css).toContain('.ring-\\[8rpx\\]')
+    expect(result.css).toContain('calc(8rpx + var(--tw-ring-offset-width))')
     expect(result.css).not.toContain('color: 55rpx')
     expect(result.css).not.toContain('color: 32.4rpx')
     expect(result.css).not.toContain('color: 66rpx')
+    expect(result.css).not.toContain('border-color: 10rpx')
+    expect(result.css).not.toContain('border-inline-color: 12rpx')
+    expect(result.css).not.toContain('background-color: 10rpx')
+    expect(result.css).not.toContain('outline-color: 5rpx')
+    expect(result.css).not.toContain('--tw-ring-color: 8rpx')
   })
 
-  it('treats scanned rpx arbitrary text values as lengths in generated web css', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-web-rpx-text-'))
+  it('treats scanned rpx arbitrary values as lengths in generated uni-app web css', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-web-rpx-length-'))
     const pageFile = path.join(root, 'src/pages/index/index.vue')
     await mkdir(path.dirname(pageFile), { recursive: true })
-    await writeFile(pageFile, '<template><view class="text-[102.43rpx] text-[#123456]"></view></template>', 'utf8')
+    await writeFile(pageFile, [
+      '<template>',
+      '<view class="text-[102.43rpx] text-[#123456] border-[10rpx] bg-[10rpx] outline-[5rpx] ring-[8rpx]"></view>',
+      '</template>',
+    ].join(''), 'utf8')
     const source = await resolveTailwindV4Source({
       css: [
         '@theme default { --color-blue-500: oklch(62.3% 0.214 259.815); }',
@@ -327,10 +366,18 @@ describe('tailwindcss v4 engine', () => {
     expect(result.css).toContain('font-size: 102.43rpx')
     expect(result.css).toContain('.text-\\[\\#123456\\]')
     expect(result.css).toContain('color: #123456')
+    expect(result.css).toContain('border-width: 10rpx')
+    expect(result.css).toContain('background-size: 10rpx')
+    expect(result.css).toContain('outline-width: 5rpx')
+    expect(result.css).toContain('--tw-ring-offset-width: 8rpx')
     expect(result.css).not.toContain('color: 102.43rpx')
+    expect(result.css).not.toContain('border-color: 10rpx')
+    expect(result.css).not.toContain('background-color: 10rpx')
+    expect(result.css).not.toContain('outline-color: 5rpx')
+    expect(result.css).not.toContain('--tw-ring-color: 8rpx')
   })
 
-  it('keeps ordinary web rpx arbitrary text values aligned with official Tailwind', async () => {
+  it('keeps ordinary web rpx arbitrary values aligned with official Tailwind', async () => {
     const source = await resolveTailwindV4Source({
       css: MINIMAL_THEME_CSS,
       base: process.cwd(),
@@ -338,23 +385,31 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const result = await engine.generate({
-      candidates: ['text-[55rpx]'],
+      candidates: ['text-[55rpx]', 'border-[10rpx]', 'bg-[10rpx]', 'outline-[5rpx]', 'ring-[8rpx]'],
       target: 'web',
     })
 
     expect(result.css).toContain('.text-\\[55rpx\\]')
     expect(result.css).toContain('color: 55rpx')
+    expect(result.css).toContain('border-color: 10rpx')
+    expect(result.css).toContain('background-color: 10rpx')
+    expect(result.css).toContain('outline-color: 5rpx')
+    expect(result.css).toContain('--tw-ring-color: 8rpx')
     expect(result.css).not.toContain('font-size: 55rpx')
   })
 
-  it('treats scanned rpx arbitrary text values as lengths for uni-app H5 web css', async () => {
+  it('treats scanned rpx arbitrary values as lengths for uni-app H5 web css', async () => {
     const previousUniPlatform = process.env.UNI_PLATFORM
     process.env.UNI_PLATFORM = 'h5'
     try {
-      const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-uni-h5-rpx-text-'))
+      const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-uni-h5-rpx-length-'))
       const pageFile = path.join(root, 'src/pages/index/index.vue')
       await mkdir(path.dirname(pageFile), { recursive: true })
-      await writeFile(pageFile, '<template><view class="text-[102.43rpx] text-[#123456]"></view></template>', 'utf8')
+      await writeFile(pageFile, [
+        '<template>',
+        '<view class="text-[102.43rpx] text-[#123456] border-[10rpx] bg-[10rpx] outline-[5rpx] ring-[8rpx]"></view>',
+        '</template>',
+      ].join(''), 'utf8')
       const source = await resolveTailwindV4Source({
         css: [
           '@tailwind utilities;',
@@ -371,7 +426,15 @@ describe('tailwindcss v4 engine', () => {
       expect(result.css).toContain('.text-\\[102\\.43rpx\\]')
       expect(result.css).toContain('font-size: 102.43rpx')
       expect(result.css).toContain('color: #123456')
+      expect(result.css).toContain('border-width: 10rpx')
+      expect(result.css).toContain('background-size: 10rpx')
+      expect(result.css).toContain('outline-width: 5rpx')
+      expect(result.css).toContain('--tw-ring-offset-width: 8rpx')
       expect(result.css).not.toContain('color: 102.43rpx')
+      expect(result.css).not.toContain('border-color: 10rpx')
+      expect(result.css).not.toContain('background-color: 10rpx')
+      expect(result.css).not.toContain('outline-color: 5rpx')
+      expect(result.css).not.toContain('--tw-ring-color: 8rpx')
     }
     finally {
       if (previousUniPlatform === undefined) {
@@ -488,7 +551,7 @@ describe('tailwindcss v4 engine', () => {
     expect(second.rawCandidates).toEqual(new Set(['text-[88rpx]']))
   })
 
-  it('treats rpx text selectors as lengths in web incremental css', async () => {
+  it('treats rpx selectors as lengths in web incremental css', async () => {
     const source = await resolveTailwindV4Source({
       css: `${MINIMAL_THEME_CSS}\n/* web rpx incremental */`,
       base: process.cwd(),
@@ -496,7 +559,7 @@ describe('tailwindcss v4 engine', () => {
     const engine = createTailwindV4Engine(source)
 
     const first = await engine.generate({
-      candidates: ['text-[88rpx]'],
+      candidates: ['text-[88rpx]', 'border-[10rpx]'],
       incrementalCache: true,
       scanSources: false,
       styleOptions: {
@@ -505,7 +568,7 @@ describe('tailwindcss v4 engine', () => {
       target: 'web',
     })
     const second = await engine.generate({
-      candidates: ['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]'],
+      candidates: ['text-[88rpx]', 'border-[10rpx]', 'text-[188rpx]', 'text-[32.4rpx]', 'bg-[10rpx]', 'outline-[5rpx]', 'ring-[8rpx]'],
       incrementalCache: true,
       scanSources: false,
       styleOptions: {
@@ -514,8 +577,8 @@ describe('tailwindcss v4 engine', () => {
       target: 'web',
     })
 
-    expect(first.classSet).toEqual(new Set(['text-[88rpx]']))
-    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'text-[188rpx]', 'text-[32.4rpx]']))
+    expect(first.classSet).toEqual(new Set(['text-[88rpx]', 'border-[10rpx]']))
+    expect(second.classSet).toEqual(new Set(['text-[88rpx]', 'border-[10rpx]', 'text-[188rpx]', 'text-[32.4rpx]', 'bg-[10rpx]', 'outline-[5rpx]', 'ring-[8rpx]']))
     expect(second.css).toContain('.text-\\[88rpx\\]')
     expect(second.css).toContain('font-size: 88rpx')
     expect(second.css).toContain('.text-\\[188rpx\\]')
@@ -526,11 +589,33 @@ describe('tailwindcss v4 engine', () => {
     expect(second.incrementalCss).toContain('font-size: 188rpx')
     expect(second.incrementalCss).toContain('.text-\\[32\\.4rpx\\]')
     expect(second.incrementalCss).toContain('font-size: 32.4rpx')
+    expect(second.css).toContain('.border-\\[10rpx\\]')
+    expect(second.css).toContain('border-width: 10rpx')
+    expect(second.css).toContain('.bg-\\[10rpx\\]')
+    expect(second.css).toContain('background-size: 10rpx')
+    expect(second.css).toContain('.outline-\\[5rpx\\]')
+    expect(second.css).toContain('outline-width: 5rpx')
+    expect(second.css).toContain('.ring-\\[8rpx\\]')
+    expect(second.css).toContain('calc(8rpx + var(--tw-ring-offset-width))')
+    expect(second.incrementalCss).toContain('.bg-\\[10rpx\\]')
+    expect(second.incrementalCss).toContain('background-size: 10rpx')
+    expect(second.incrementalCss).toContain('.outline-\\[5rpx\\]')
+    expect(second.incrementalCss).toContain('outline-width: 5rpx')
+    expect(second.incrementalCss).toContain('.ring-\\[8rpx\\]')
+    expect(second.incrementalCss).toContain('calc(8rpx + var(--tw-ring-offset-width))')
     expect(second.css).not.toContain('text-\\[length\\:')
     expect(second.incrementalCss).not.toContain('text-\\[length\\:')
+    expect(second.css).not.toContain('border-\\[length\\:')
+    expect(second.css).not.toContain('bg-\\[length\\:')
+    expect(second.css).not.toContain('outline-\\[length\\:')
+    expect(second.css).not.toContain('ring-\\[length\\:')
     expect(second.css).not.toContain('color: 88rpx')
     expect(second.css).not.toContain('color: 188rpx')
     expect(second.css).not.toContain('color: 32.4rpx')
+    expect(second.css).not.toContain('border-color: 10rpx')
+    expect(second.css).not.toContain('background-color: 10rpx')
+    expect(second.css).not.toContain('outline-color: 5rpx')
+    expect(second.css).not.toContain('--tw-ring-color: 8rpx')
   })
 
   it('remembers requested candidates that do not generate css in the v4 incremental cache', async () => {

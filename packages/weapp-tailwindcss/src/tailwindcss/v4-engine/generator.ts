@@ -17,7 +17,7 @@ import { omitUndefined } from '@/utils/object'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from './candidates'
 import { loadTailwindV4DesignSystem } from './design-system'
 import { createCompatibleSource } from './generator/css-compat'
-import { normalizeRpxTextCandidates, restoreRpxTextCandidates, restoreRpxTextCssSelectors } from './generator/rpx-candidates'
+import { normalizeRpxLengthCandidates, restoreRpxLengthCandidates, restoreRpxLengthCssSelectors } from './generator/rpx-candidates'
 import { resolveScanSources } from './generator/scan-sources'
 import { transformTailwindV4CssByTarget } from './miniprogram'
 
@@ -287,7 +287,7 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
   return true
 }
 
-function shouldNormalizeRpxTextCandidatesForTarget(
+function shouldNormalizeRpxLengthCandidatesForTarget(
   target: TailwindV4GenerateTarget,
   styleOptions: Partial<IStyleHandlerOptions> | undefined,
 ) {
@@ -298,13 +298,13 @@ function shouldNormalizeRpxTextCandidatesForTarget(
   return options?.appType === 'uni-app-vite' || shouldUseWebGeneratorTargetFromEnv()
 }
 
-function normalizeTargetRpxTextCandidates(
+function normalizeTargetRpxLengthCandidates(
   candidates: Iterable<string>,
   target: TailwindV4GenerateTarget,
   styleOptions: Partial<IStyleHandlerOptions> | undefined,
 ) {
-  return shouldNormalizeRpxTextCandidatesForTarget(target, styleOptions)
-    ? normalizeRpxTextCandidates(candidates)
+  return shouldNormalizeRpxLengthCandidatesForTarget(target, styleOptions)
+    ? normalizeRpxLengthCandidates(candidates)
     : {
         candidates: new Set(candidates),
         restoreCandidates: new Map<string, string>(),
@@ -336,19 +336,19 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
       ...collectCandidates(patchOptions.candidates),
       ...(filesystemCandidates ?? []),
     ]), target)
-    const normalizedCandidates = normalizeTargetRpxTextCandidates(resolvedCandidates, target, resolvedStyleOptions)
+    const normalizedCandidates = normalizeTargetRpxLengthCandidates(resolvedCandidates, target, resolvedStyleOptions)
     const result = await engine.generate(omitUndefined({
       scanSources: delegateSourceScan ? resolvedScanSources : false,
       ...patchOptions,
       candidates: normalizedCandidates.candidates,
     }))
-    const rawCss = restoreRpxTextCssSelectors(result.css, normalizedCandidates.restoreCandidates)
+    const rawCss = restoreRpxLengthCssSelectors(result.css, normalizedCandidates.restoreCandidates)
     const css = await transformTailwindV4CssByTarget(rawCss, target, resolvedStyleOptions)
 
     return {
       ...result,
-      classSet: restoreRpxTextCandidates(result.classSet, normalizedCandidates.restoreCandidates),
-      rawCandidates: restoreRpxTextCandidates(result.rawCandidates, normalizedCandidates.restoreCandidates),
+      classSet: restoreRpxLengthCandidates(result.classSet, normalizedCandidates.restoreCandidates),
+      rawCandidates: restoreRpxLengthCandidates(result.rawCandidates, normalizedCandidates.restoreCandidates),
       css,
       rawCss,
       target,
@@ -442,7 +442,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
 
       return runIncrementalGenerateTask(cacheKey, requestedCandidates, options.scanSources, async () => {
         const designSystem = await cached.designSystemPromise
-        const normalizedMissing = normalizeTargetRpxTextCandidates(missingCandidates, target, styleOptions)
+        const normalizedMissing = normalizeTargetRpxLengthCandidates(missingCandidates, target, styleOptions)
         const normalizedMissingCandidates = [...normalizedMissing.candidates]
         const cssByCandidate = designSystem.candidatesToCss(normalizedMissingCandidates)
         const rawCssParts: string[] = []
@@ -451,7 +451,7 @@ export function createTailwindV4Engine(source: TailwindV4ResolvedSource): Tailwi
           const candidate = normalizedMissingCandidates[index]
           const css = cssByCandidate[index]
           if (candidate && typeof css === 'string' && css.trim().length > 0) {
-            rawCssParts.push(restoreRpxTextCssSelectors(css, normalizedMissing.restoreCandidates))
+            rawCssParts.push(restoreRpxLengthCssSelectors(css, normalizedMissing.restoreCandidates))
             classSet.add(normalizedMissing.restoreCandidates.get(candidate) ?? candidate)
           }
         }

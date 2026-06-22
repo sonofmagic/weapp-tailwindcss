@@ -1,4 +1,4 @@
-import type { Declaration } from 'postcss'
+import type { Declaration, Root } from 'postcss'
 
 const LENGTH_VALUE_REGEXP = /^[+-]?(?:\d+(?:\.\d+)?|\.\d+)(?:e[+-]?\d+)?rpx$/i
 
@@ -38,4 +38,15 @@ export function normalizeTailwindcssRpxDeclaration(
   }
 
   return false
+}
+
+export function normalizeTailwindcssRpxDeclarations(
+  root: Root,
+  options?: { majorVersion?: 4 },
+) {
+  let changed = false
+  root.walkDecls((decl) => {
+    changed = normalizeTailwindcssRpxDeclaration(decl, options) || changed
+  })
+  return changed
 }
