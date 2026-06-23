@@ -2,49 +2,11 @@ import { spawn } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { benchmarkProjects as projects } from './projects.mjs'
 
 const defaultVersions = [
   { version: '4.9.8', root: '/tmp/weapp-tailwindcss-4.9.8' },
   { version: '4.10.2', root: '/tmp/weapp-tailwindcss-4.10.2' },
-]
-
-const projects = [
-  {
-    key: 'demo-uni-app-vite-tailwindcss-v3',
-    project: 'demo/uni-app-vite-tailwindcss-v3',
-    sourceFile: 'src/pages/index/index.vue',
-    outputTemplate: 'dist/build/mp-weixin/pages/index/index.wxml',
-    devScript: 'dev:e2e-watch',
-    buildScript: 'build',
-    injectType: 'vue',
-  },
-  {
-    key: 'demo-uni-app-vite-tailwindcss-v4',
-    project: 'demo/uni-app-vite-tailwindcss-v4',
-    sourceFile: 'src/pages/index/index.vue',
-    outputTemplate: 'dist/build/mp-weixin/pages/index/index.wxml',
-    devScript: 'dev:e2e-watch',
-    buildScript: 'build',
-    injectType: 'vue',
-  },
-  {
-    key: 'demo-weapp-vite-tailwindcss-v3',
-    project: 'demo/weapp-vite-tailwindcss-v3',
-    sourceFile: 'miniprogram/pages/index/index.wxml',
-    outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev:e2e-watch',
-    buildScript: 'build',
-    injectType: 'wxml-class',
-  },
-  {
-    key: 'demo-weapp-vite-tailwindcss-v4',
-    project: 'demo/weapp-vite-tailwindcss-v4',
-    sourceFile: 'pages/index/index.wxml',
-    outputTemplate: 'dist/pages/index/index.wxml',
-    devScript: 'dev:e2e-watch',
-    buildScript: 'build',
-    injectType: 'wxml-class',
-  },
 ]
 
 function parseNumber(flag, fallback) {
@@ -109,6 +71,9 @@ function stddev(values) {
 }
 
 function summarize(values) {
+  if (values.length === 0) {
+    return undefined
+  }
   const sorted = [...values].sort((a, b) => a - b)
   return {
     mean: mean(values),
@@ -117,6 +82,10 @@ function summarize(values) {
     max: sorted[sorted.length - 1],
     stddev: stddev(values),
   }
+}
+
+function summarizeSteady(values) {
+  return summarize(values.slice(1)) ?? summarize(values)
 }
 
 function spawnPnpm(cwd, args, stdio = 'pipe') {
@@ -261,6 +230,16 @@ function injectContent(original, marker, injectType) {
     return next
   }
 
+  if (injectType === 'jsx') {
+    const next = original.replace(/className="([^"]*)"/, (_full, classes) => {
+      return `className="${classes} ${marker}"`
+    })
+    if (next === original) {
+      throw new Error('inject failed: className="..." not found')
+    }
+    return next
+  }
+
   const replaced = original.replace(/class="([^"]*)"/, (_full, classes) => {
     return `class="${classes} ${marker}"`
   })
@@ -356,26 +335,39 @@ async function runCase(versionMeta, projectMeta, options) {
   const cwd = path.join(versionMeta.root, projectMeta.project)
   const buildMs = []
 
-  for (let i = 0; i < options.buildRuns; i += 1) {
-    const ms = await runBuildOnce(cwd, projectMeta.buildScript, options.timeoutMs)
-    buildMs.push(ms)
-    process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build ${i + 1}/${options.buildRuns}: ${ms.toFixed(2)}ms\n`)
+  const buildMode = projectMeta.buildMode ?? 'build'
+  if (buildMode === 'unsupported') {
+    process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build skipped: ${projectMeta.buildNote}\n`)
+  }
+  else {
+    for (let i = 0; i < options.buildRuns; i += 1) {
+      const ms = await runBuildOnce(cwd, projectMeta.buildScript, options.timeoutMs)
+      buildMs.push(ms)
+      process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build ${i + 1}/${options.buildRuns}: ${ms.toFixed(2)}ms\n`)
+    }
   }
 
-  const hmrMs = await runHmrRounds({
-    cwd,
-    sourceFile: projectMeta.sourceFile,
-    outputTemplate: projectMeta.outputTemplate,
-    devScript: projectMeta.devScript,
-    injectType: projectMeta.injectType,
-    rounds: options.hmrRuns,
-    timeoutMs: options.timeoutMs,
-    pollIntervalMs: options.pollIntervalMs,
-  })
+  const hmrMode = projectMeta.hmrMode ?? 'watch'
+  const hmrMs = []
+  if (hmrMode === 'unsupported' || hmrMode === 'fallback-build') {
+    process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr skipped: ${projectMeta.hmrNote}\n`)
+  }
+  else {
+    hmrMs.push(...await runHmrRounds({
+      cwd,
+      sourceFile: projectMeta.sourceFile,
+      outputTemplate: projectMeta.outputTemplate,
+      devScript: projectMeta.devScript,
+      injectType: projectMeta.injectType,
+      rounds: options.hmrRuns,
+      timeoutMs: options.timeoutMs,
+      pollIntervalMs: options.pollIntervalMs,
+    }))
 
-  hmrMs.forEach((ms, idx) => {
-    process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr ${idx + 1}/${options.hmrRuns}: ${ms.toFixed(2)}ms\n`)
-  })
+    hmrMs.forEach((ms, idx) => {
+      process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr ${idx + 1}/${options.hmrRuns} mode=${hmrMode}: ${ms.toFixed(2)}ms\n`)
+    })
+  }
 
   return {
     version: versionMeta.version,
@@ -383,11 +375,13 @@ async function runCase(versionMeta, projectMeta, options) {
     ...projectMeta,
     buildMs,
     hmrMs,
+    buildMode,
+    hmrMode,
     summary: {
       build: summarize(buildMs),
       hmr: summarize(hmrMs),
-      buildSteady: summarize(buildMs.slice(1)),
-      hmrSteady: summarize(hmrMs.slice(1)),
+      buildSteady: summarizeSteady(buildMs),
+      hmrSteady: summarizeSteady(hmrMs),
     },
   }
 }
