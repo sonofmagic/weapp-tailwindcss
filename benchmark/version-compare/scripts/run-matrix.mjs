@@ -107,7 +107,7 @@ function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
   })
 }
 
-const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
+const localUrlRE = /(?:Local|Loopback|Listening at):\s*(https?:\/\/\S+)/i
 
 async function readText(file) {
   try {

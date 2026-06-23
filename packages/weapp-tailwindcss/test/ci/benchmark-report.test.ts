@@ -32,11 +32,10 @@ describe('benchmark ci report', () => {
       'demo-uni-app-vite-tailwindcss-v4__h5',
     ]))
     expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
-    const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx') && !project.key.includes('taro-webpack'))
+    const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx'))
     expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
     expect(realDevServerTargets.every(project => project.hmrDriver === 'dev-server')).toBe(true)
     expect(benchmarkProjects.filter(project => project.target === 'h5' && project.key.includes('hbuilderx')).every(project => project.hmrMode === 'unsupported')).toBe(true)
-    expect(benchmarkProjects.filter(project => project.target === 'h5' && project.key.includes('taro-webpack')).every(project => project.hmrMode === 'unsupported')).toBe(true)
   })
 
   it('keeps benchmark working copies free from stale build outputs', async () => {
@@ -53,6 +52,7 @@ describe('benchmark ci report', () => {
     const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-matrix.mjs'), 'utf8')
 
     expect(source).toContain('runDevServerHmrRounds')
+    expect(source).toContain('Local|Loopback|Listening at')
     expect(source).toContain("['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort']")
     expect(source).toContain("['exec', 'uni', '--host', '127.0.0.1', '--port', String(port), '--strictPort']")
     expect(source).toContain('resolveLoggedBaseUrls')
