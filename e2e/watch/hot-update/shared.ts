@@ -1,9 +1,10 @@
+import type { ConcreteOrPlatformWatchCaseName } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import fs from 'node:fs/promises'
 import process from 'node:process'
 import { execa } from 'execa'
 import path from 'pathe'
 import { expect } from 'vitest'
-import { buildCases, demoWatchShardCases, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, demoWatchShardCases, getBaseWatchCaseName, isDemoWatchShardName, isLocalOnlyWatchCase } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 
 export type WatchProjectGroup = 'demo'
@@ -13,16 +14,7 @@ export type DemoWatchShardName
     | 'demo-taro-vue3'
     | 'demo-uni'
 export type ConcreteWatchCaseName
-  = | 'gulp-tailwindcss-v4'
-    | 'mpx-tailwindcss-v4'
-    | 'taro-webpack-react-tailwindcss-v4'
-    | 'taro-vite-react-tailwindcss-v4'
-    | 'taro-webpack-vue3-tailwindcss-v4'
-    | 'taro-vite-vue3-tailwindcss-v4'
-    | 'uni-app-vite-tailwindcss-v4'
-    | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
-    | 'uni-app-x-hbuilderx-tailwindcss-v4'
-    | 'weapp-vite-tailwindcss-v4'
+  = ConcreteOrPlatformWatchCaseName
 export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
 type MutationKind = 'template' | 'script' | 'style' | 'content'
 type MutationRoundName = 'baseline-arbitrary' | 'complex-corpus' | 'hex-arbitrary' | 'issue33-arbitrary'
@@ -38,6 +30,7 @@ const INVALID_BG_UNTERMINATED_RE = /\bbg-\[[^\]]*$/gm
 const INVALID_PX_UNTERMINATED_RE = /\bpx-\[[^\]]*$/gm
 const INVALID_BG_INNER_SPACE_RE = /\bbg-\[[^\]\s]*\s[^\]\s]*\]/g
 const INVALID_PX_INNER_SPACE_RE = /\bpx-\[[^\]\s]*\s[^\]\s]*\]/g
+const MINI_PROGRAM_STYLE_OUTPUT_RE = /\.(?:wxss|acss|ttss)(?:$|[*?])/
 const WEB_HMR_CASES = new Set<ConcreteWatchCaseName>([
   'taro-webpack-react-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
@@ -219,7 +212,7 @@ interface SubPackageMutationMetric {
   outputWxml: string
   outputJs: string
   globalStyleOutputs: string[]
-  mainStyleHotUpdate: MainStyleHotUpdateMetric
+  mainStyleHotUpdate?: MainStyleHotUpdateMetric
   template: TemplateOrScriptMutationMetric
   style: StyleMutationMetric
 }
@@ -327,6 +320,7 @@ interface HotUpdateReport {
 
 const configuredWatchCases = buildCases(path.resolve(__dirname, '../../..'))
 const configuredWatchCasesByName = new Map(configuredWatchCases.map(item => [item.name, item]))
+const configuredWatchCaseNames = new Set(configuredWatchCases.map(item => item.name))
 
 const criticalDemoProjects = configuredWatchCases.filter(item => item.group === 'demo').map(item => item.project)
 const criticalDemoProjectsByShard = Object.fromEntries(
@@ -450,7 +444,8 @@ function resolveDefaultWatchCommandTimeoutMs(target: WatchCaseName, timeoutMs: n
 function createReportFilePath(cwd: string, target: WatchCaseName) {
   const reportDir = path.resolve(cwd, './benchmark/e2e-watch-hmr')
   const timestamp = new Date().toISOString().replaceAll(':', '-').replaceAll('.', '-')
-  return path.join(reportDir, `${timestamp}-${target}.json`)
+  const safeTarget = target.replace(/[^\w.-]+/g, '-')
+  return path.join(reportDir, `${timestamp}-${safeTarget}.json`)
 }
 
 function normalizeGlobalStyleOutputs(value?: string | string[]) {
@@ -466,13 +461,17 @@ function normalizeGlobalStyleOutputs(value?: string | string[]) {
 function assertHasWxssOutput(outputs: string[], label: string) {
   expect(outputs.length, `${label} should have at least one global style output`).toBeGreaterThan(0)
   expect(
-    outputs.some(output => output.includes('.wxss')),
-    `${label} should contain *.wxss output`,
+    outputs.some(output => MINI_PROGRAM_STYLE_OUTPUT_RE.test(output)),
+    `${label} should contain mini-program style output`,
   ).toBe(true)
 }
 
 function shouldHaveWebHmr(item: HotUpdateCaseReport) {
-  return WEB_HMR_CASES.has(item.name)
+  return WEB_HMR_CASES.has(resolveReportBaseCaseName(item))
+}
+
+function resolveReportBaseCaseName(item: HotUpdateCaseReport) {
+  return getBaseWatchCaseName(item.name) ?? item.name
 }
 
 export function resolveCaseName() {
@@ -480,11 +479,7 @@ export function resolveCaseName() {
   if (
     value === 'gulp-tailwindcss-v4'
     || value === 'mpx-tailwindcss-v4'
-    || value === 'taro-webpack-react-tailwindcss-v4'
-    || value === 'taro-vite-react-tailwindcss-v4'
-    || value === 'taro-webpack-vue3-tailwindcss-v4'
-    || value === 'taro-vite-vue3-tailwindcss-v4'
-    || value === 'uni-app-vite-tailwindcss-v4'
+    || configuredWatchCaseNames.has(value as ConcreteWatchCaseName)
     || value === 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
     || value === 'uni-app-x-hbuilderx-tailwindcss-v4'
     || value === 'weapp-vite-tailwindcss-v4'
@@ -537,7 +532,7 @@ export function shouldRunTarget(caseName: WatchCaseName, target: ConcreteWatchCa
   }
 
   if (isConcreteWatchCaseName(caseName)) {
-    return caseName === target
+    return caseName === target || getBaseWatchCaseName(caseName) === target
   }
 
   return false
@@ -696,10 +691,12 @@ function collectReportBudgetSamples(report: HotUpdateReport) {
     }
 
     for (const subPackage of oneCase.subPackageMutationMetrics ?? []) {
-      samples.push({
-        label: `${oneCase.project}:subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
-        hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
-      })
+      if (subPackage.mainStyleHotUpdate) {
+        samples.push({
+          label: `${oneCase.project}:subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`,
+          hotUpdateEffectiveMs: subPackage.mainStyleHotUpdate.hotUpdateEffectiveMs,
+        })
+      }
       samples.push({
         label: `${oneCase.project}:subpackage:${subPackage.root}:template`,
         hotUpdateEffectiveMs: subPackage.template.hotUpdateEffectiveMs,
@@ -754,8 +751,8 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
   expect(webHmr.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
   expect(webHmr.rollbackEffectiveMs).toBeGreaterThan(0)
   expect(webHmr.totalMs).toBeGreaterThanOrEqual(webHmr.hotUpdateEffectiveMs)
-  if (item.name === 'uni-app-vite-tailwindcss-v4') {
-    const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+  const sourceClassReplacementSequence = webHmr.sourceClassReplacementSequence ?? []
+  if (sourceClassReplacementSequence.length > 0) {
     expect(sourceClassReplacementSequence.map(metric => metric.label)).toEqual(['bgObj bg-[#999999] to bg-[#134543]', 'bgObj bg-[#134543] to bg-[#256789]'])
     expect(sourceClassReplacementSequence[0]?.verifiedCssIncludes).toContain('134543')
     expect(sourceClassReplacementSequence[1]?.verifiedCssIncludes).toContain('256789')
@@ -764,7 +761,7 @@ function assertWebHmrCase(item: HotUpdateCaseReport, maxHotUpdateMs: number) {
       expect(metric.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
     }
   }
-  if (WEB_SOURCE_DOM_HMR_CASES.has(item.name)) {
+  if (WEB_SOURCE_DOM_HMR_CASES.has(getBaseWatchCaseName(item.name) ?? item.name)) {
     const sourceDomReplacementSequence = webHmr.sourceDomReplacementSequence ?? []
     expect(sourceDomReplacementSequence.length, `[${item.project}] should verify source DOM H5 HMR`).toBeGreaterThanOrEqual(1)
     for (const metric of sourceDomReplacementSequence) {
@@ -812,7 +809,9 @@ function assertHmrDurationReport(report: HotUpdateReport, item: HotUpdateCaseRep
     expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
   }
   for (const subPackage of item.subPackageMutationMetrics ?? []) {
-    expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
+    if (subPackage.mainStyleHotUpdate) {
+      expect(surfaces).toContain(`subpackage:${subPackage.root}:main-style:${subPackage.mainStyleHotUpdate.label}`)
+    }
     expect(surfaces).toContain(`subpackage:${subPackage.root}:template`)
     if (subPackage.style) {
       expect(surfaces).toContain(`subpackage:${subPackage.root}:style`)
@@ -895,7 +894,8 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
   }
 
   for (const item of report.cases) {
-    const configuredWatchCase = configuredWatchCasesByName.get(item.name)
+    const baseCaseName = resolveReportBaseCaseName(item)
+    const configuredWatchCase = configuredWatchCasesByName.get(baseCaseName)
     expect(item.initialReadyMs).toBeGreaterThan(0)
     assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     expect(item.rounds).toEqual([])
@@ -903,7 +903,7 @@ function assertMainStyleOnlyHotUpdateReport(report: HotUpdateReport, target: Wat
     expect(item.subPackageMutationMetrics ?? []).toEqual([])
 
     const subPackageMainStyleHotUpdates = item.subPackageMainStyleHotUpdates ?? []
-    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+    if (SUBPACKAGE_HMR_CASES.has(baseCaseName)) {
       const subPackageLimit = report.options?.mainStyleSubPackageLimit
       const expectedSubPackageCount = subPackageLimit == null ? 2 : Math.min(2, Math.max(0, subPackageLimit))
       expect(subPackageMainStyleHotUpdates.length).toBe(expectedSubPackageCount)
@@ -976,7 +976,8 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 
   for (const item of report.cases) {
-    const configuredWatchCase = configuredWatchCasesByName.get(item.name)
+    const baseCaseName = resolveReportBaseCaseName(item)
+    const configuredWatchCase = configuredWatchCasesByName.get(baseCaseName)
     expect(item.initialReadyMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeGreaterThan(0)
     expect(item.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
@@ -988,7 +989,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     const subPackageMutationMetrics = item.subPackageMutationMetrics ?? []
     const hasStyleMutation = item.mutationMetrics.some(metric => metric.mutationKind === 'style')
     expect(item.mutationMetrics.length).toBe(2 + (hasStyleMutation ? 1 : 0) + (hasContentMutation ? 1 : 0))
-    if (SUBPACKAGE_HMR_CASES.has(item.name)) {
+    if (SUBPACKAGE_HMR_CASES.has(baseCaseName)) {
       expect(subPackageMutationMetrics.length).toBe(2)
       expect(subPackageMutationMetrics.map(metric => metric.root).sort()).toEqual(['sub-independent', 'sub-normal'])
       expect(subPackageMutationMetrics.some(metric => metric.independent)).toBe(true)
@@ -1005,12 +1006,14 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     assertMainStyleHotUpdateMetric(item.mainStyleHotUpdate, `[${item.project}]`, maxHotUpdateMs, configuredWatchCase?.templateMutation)
     for (const subPackage of subPackageMutationMetrics) {
       const configuredSubPackageMutation = configuredWatchCase?.subPackageMutations?.find(item => item.root === subPackage.root)
-      assertMainStyleHotUpdateMetric(
-        subPackage.mainStyleHotUpdate,
-        `[${item.project}:${subPackage.root}]`,
-        maxHotUpdateMs,
-        configuredSubPackageMutation?.templateMutation,
-      )
+      if (subPackage.mainStyleHotUpdate) {
+        assertMainStyleHotUpdateMetric(
+          subPackage.mainStyleHotUpdate,
+          `[${item.project}:${subPackage.root}]`,
+          maxHotUpdateMs,
+          configuredSubPackageMutation?.templateMutation,
+        )
+      }
     }
     if (expectedGroup) {
       expect(item.projectGroup).toBe(expectedGroup)
@@ -1094,11 +1097,6 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeGreaterThan(0)
       expect(userReportedHotUpdate.hotUpdateEffectiveMs).toBeLessThanOrEqual(maxHotUpdateMs)
       expect(userReportedHotUpdate.rollbackEffectiveMs).toBeGreaterThan(0)
-      if (item.name === 'uni-app-vite-tailwindcss-v4') {
-        expect(userReportedHotUpdate.label).toBe('cardsColor bg-[#4268EA] to bg-[red]')
-        expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['bg-[#4268EA] shadow-indigo-100', 'bg-[red] shadow-indigo-100']))
-        expect(userReportedHotUpdate.classTokens.some(token => token === 'bg-[red]' || token === 'bg-[#4268EA]')).toBe(true)
-      }
       if (item.name === 'uni-app-vite-tailwindcss-v4') {
         expect(userReportedHotUpdate.label).toBe('index text-[102.43rpx] to text-[103.43rpx]')
         expect([userReportedHotUpdate.from, userReportedHotUpdate.to]).toEqual(expect.arrayContaining(['text-[#00f285] text-[102.43rpx] font-bold underline', 'text-[#00f285] text-[103.43rpx] font-bold underline']))
@@ -1212,7 +1210,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(scriptMetric.verifiedGlobalStyleEscapedClasses.length, `[${item.project}] issue33 script round should hit transformed classes in wxss outputs`).toBeGreaterThan(0)
       }
 
-      if (commentCarrierRequiredCases.has(item.name)) {
+      if (commentCarrierRequiredCases.has(baseCaseName)) {
         const commentCarrierHmr = scriptMetric.commentCarrierHmr
         expect(commentCarrierHmr).toBeDefined()
         if (!commentCarrierHmr) {
@@ -1232,9 +1230,9 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
     }
 
     if (styleMetric && styleMetric.mutationKind === 'style') {
-      expect(styleMetric.outputStyle).toContain('.wxss')
+      expect(MINI_PROGRAM_STYLE_OUTPUT_RE.test(styleMetric.outputStyle), `[${item.project}] style mutation should use mini-program style output`).toBe(true)
       expect(styleMetric.styleNeedle).toContain('.tw-watch-style-')
-      if (noApplyValidationCases.has(item.name)) {
+      if (noApplyValidationCases.has(baseCaseName)) {
         expect(styleMetric.applyUtilities.length).toBe(0)
         expect(styleMetric.expectedApplyDeclarations.length).toBe(0)
       }
@@ -1242,7 +1240,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(styleMetric.applyUtilities.length).toBeGreaterThan(0)
         expect(styleMetric.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
-      if (noFunctionValidationCases.has(item.name)) {
+      if (noFunctionValidationCases.has(baseCaseName)) {
         expect(styleMetric.functionNeedle).toBeUndefined()
         expect(styleMetric.functionDeclarations.length).toBe(0)
         expect(styleMetric.expectedFunctionDeclarations.length).toBe(0)
@@ -1254,7 +1252,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
         expect(styleMetric.expectedFunctionDeclarations.length).toBeGreaterThan(0)
         expect(styleMetric.forbiddenFunctionFragments).toContain('theme(')
       }
-      if (referenceDirectiveRequiredCases.has(item.name)) {
+      if (referenceDirectiveRequiredCases.has(baseCaseName)) {
         expect(styleMetric.referenceDirective).toBe('@reference "tailwindcss";')
       }
       else {
@@ -1283,7 +1281,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
       expect(subPackageMetric.style.sourceFile).toContain(subPackageMetric.root)
       expect(subPackageMetric.globalStyleOutputs).toContain(subPackageMetric.style.outputStyle)
       expect(subPackageMetric.style.styleNeedle).toContain('.tw-watch-style-')
-      if (!noApplyValidationCases.has(item.name)) {
+      if (!noApplyValidationCases.has(baseCaseName)) {
         expect(subPackageMetric.style.applyUtilities.length).toBeGreaterThan(0)
         expect(subPackageMetric.style.expectedApplyDeclarations.length).toBeGreaterThan(0)
       }
@@ -1297,7 +1295,7 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
   }
 
   const commentCarrierSummary: CommentCarrierSummaryItem[] = report.cases
-    .filter(item => commentCarrierRequiredCases.has(item.name))
+    .filter(item => commentCarrierRequiredCases.has(resolveReportBaseCaseName(item)))
     .map((item) => {
       const scriptMetric = item.mutationMetrics.find(mutation => mutation.mutationKind === 'script')
       if (!scriptMetric || scriptMetric.mutationKind === 'style') {
@@ -1343,16 +1341,20 @@ export function assertHotUpdateReport(report: HotUpdateReport, target: WatchCase
 
 export async function runHotUpdateTarget(target: WatchCaseName) {
   const cwd = path.resolve(__dirname, '../..')
+  const caseName = resolveCaseName()
+  const runTarget = isConcreteWatchCaseName(caseName) && getBaseWatchCaseName(caseName) === target
+    ? caseName
+    : target
   const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
   const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
   const maxHotUpdateMs = toNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS', timeoutMs)
   const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
-  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(target, timeoutMs))
+  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', resolveDefaultWatchCommandTimeoutMs(runTarget, timeoutMs))
   const skipBuild = toBoolEnv('E2E_WATCH_SKIP_BUILD', true)
   const quietSass = toBoolEnv('E2E_WATCH_QUIET_SASS', true)
   const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
   const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
-  const reportFile = createReportFilePath(cwd, target)
+  const reportFile = createReportFilePath(cwd, runTarget)
 
   const args = [
     '--filter',
@@ -1360,7 +1362,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
     'test:watch-hmr',
     '--',
     '--case',
-    target,
+    runTarget,
     '--timeout',
     String(timeoutMs),
     '--poll',
@@ -1398,7 +1400,7 @@ export async function runHotUpdateTarget(target: WatchCaseName) {
   const raw = await fs.readFile(reportFile, 'utf8')
   const report = JSON.parse(raw) as HotUpdateReport
   process.stdout.write(`[e2e-watch] hmr report saved: ${reportFile}\n`)
-  assertHotUpdateReport(report, target, maxHotUpdateMs)
+  assertHotUpdateReport(report, runTarget, maxHotUpdateMs)
 
   if (isIssue33RoundProfile()) {
     const snapshotsDir = path.resolve(cwd, './benchmark/e2e-watch-hmr/snapshots')

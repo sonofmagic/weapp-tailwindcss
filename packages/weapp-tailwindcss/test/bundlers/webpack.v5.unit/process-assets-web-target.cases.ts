@@ -738,6 +738,7 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
           target: 'web',
         },
         mainCssChunkMatcher: vi.fn(() => false),
+        isKnownWebpackProcessedCssAsset: () => true,
         styleHandler: vi.fn(async () => {
           throw new Error('web target should not use mini-program styleHandler')
         }),
@@ -859,6 +860,171 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
       expect(css).toContain('.items-center')
       expect(css).toContain('.bg-\\[\\#0284c7\\]')
       expect(css).not.toBe('.icon-\\[mdi--wechat\\]{display:inline-block}')
+    }
+    finally {
+      await rm(root, { force: true, recursive: true })
+    }
+  })
+
+  it('regenerates web css for repeated arbitrary class changes in the same watch session', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-web-watch-arbitrary-'))
+    const cssEntry = path.join(root, 'src/app.css')
+    const page = path.join(root, 'src/pages/index/index.tsx')
+    try {
+      await mkdir(path.dirname(cssEntry), { recursive: true })
+      await mkdir(path.dirname(page), { recursive: true })
+      await writeFile(cssEntry, [
+        '@import "tailwindcss4" source(none);',
+        '@source "./pages/index";',
+      ].join('\n'), 'utf8')
+      await writeFile(page, 'export default <div className="bg-[#111111] text-[#fff]"></div>', 'utf8')
+
+      testState.currentContext = createContext({
+        generator: {
+          target: 'web',
+        },
+        mainCssChunkMatcher: vi.fn(() => false),
+        isKnownWebpackProcessedCssAsset: () => true,
+        styleHandler: vi.fn(async () => {
+          throw new Error('web target should not use mini-program styleHandler')
+        }),
+        tailwindRuntime: {
+          ...createContext().tailwindRuntime,
+          majorVersion: 4,
+          getClassSet: vi.fn(async () => new Set<string>()),
+          getClassSetSync: vi.fn(() => new Set<string>()),
+          options: {
+            tailwindcss: {
+              cwd: root,
+              packageName: 'tailwindcss4',
+              v4: {
+                cssEntries: [cssEntry],
+              },
+            },
+          },
+        },
+        tailwindcssBasedir: root,
+      } as any)
+      getCompilerContextMock.mockReturnValue(testState.currentContext)
+
+      const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+      let loaderHandler: ((loaderContext: any, module: any) => void) | undefined
+      let currentAssetStore: Record<string, string> = {}
+      const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+        currentAssetStore[file] = source.toString()
+      })
+      const compilation = {
+        compiler: { outputPath: path.join(root, 'dist') },
+        chunks: [{
+          id: 'main',
+          hash: 'stable-css-hash',
+          files: ['css/app.css'],
+          hasRuntime: () => true,
+        }],
+        chunkGraph: {
+          getChunkModulesIterable: () => [{
+            resource: cssEntry,
+          }],
+        },
+        hooks: {
+          processAssets: {
+            tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+              processAssetsCallbacks.push(handler)
+            },
+          },
+        },
+        updateAsset,
+        getAsset(file: string) {
+          const content = currentAssetStore[file]
+          if (content === undefined) {
+            return undefined
+          }
+          return {
+            source: {
+              source: () => content,
+            },
+          }
+        },
+      }
+      const compiler = {
+        options: {
+          watch: true,
+        },
+        modifiedFiles: new Set<string>(),
+        removedFiles: new Set<string>(),
+        webpack: {
+          Compilation: {
+            PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+          },
+          sources: {
+            ConcatSource: FakeConcatSource,
+          },
+          NormalModule: {
+            getCompilationHooks: vi.fn(() => ({
+              loader: {
+                tap: (_name: string, handler: (loaderContext: any, module: any) => void) => {
+                  loaderHandler = handler
+                },
+              },
+            })),
+          },
+        },
+        hooks: {
+          watchRun: {
+            tap: vi.fn(),
+          },
+          normalModuleFactory: {
+            tap: (_name: string, handler: (factory: any) => void) => {
+              handler({
+                hooks: {
+                  beforeResolve: {
+                    tap: vi.fn(),
+                  },
+                },
+              })
+            },
+          },
+          compilation: {
+            tap: (_name: string, handler: (_compilation: any) => void) => {
+              handler(compilation)
+            },
+          },
+        },
+      }
+
+      const plugin = new WeappTailwindcss()
+      plugin.apply(compiler as any)
+
+      const module = {
+        resource: cssEntry,
+        loaders: [{ loader: '/path/postcss-loader.js' }],
+      }
+      loaderHandler?.({}, module)
+      const rewriteLoaderEntry = module.loaders.find(isCssImportRewriteLoader)
+      const loaderRuntime = getWebpackLoaderRuntime(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
+      loaderRuntime?.cssImportRewrite?.registerCssSourceFile?.({
+        file: cssEntry,
+        css: await readFile(cssEntry, 'utf8'),
+        processed: false,
+      })
+
+      currentAssetStore = {
+        'css/app.css': await readFile(cssEntry, 'utf8'),
+      }
+      await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+      expect(currentAssetStore['css/app.css']).toContain('.bg-\\[\\#111111\\]')
+
+      await writeFile(page, 'export default <div className="bg-[#222222] text-[#fff]"></div>', 'utf8')
+      compiler.modifiedFiles = new Set([page])
+      await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+      expect(currentAssetStore['css/app.css']).toContain('.bg-\\[\\#222222\\]')
+      expect(currentAssetStore['css/app.css']).not.toContain('.bg-\\[\\#111111\\]')
+
+      await writeFile(page, 'export default <div className="bg-[#333333] text-[#fff]"></div>', 'utf8')
+      compiler.modifiedFiles = new Set([page])
+      await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+      expect(currentAssetStore['css/app.css']).toContain('.bg-\\[\\#333333\\]')
+      expect(currentAssetStore['css/app.css']).not.toContain('.bg-\\[\\#222222\\]')
     }
     finally {
       await rm(root, { force: true, recursive: true })

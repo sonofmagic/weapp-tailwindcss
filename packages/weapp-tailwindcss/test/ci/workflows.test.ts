@@ -272,6 +272,17 @@ describe('ci workflows', () => {
     expect(releaseStep.env.NODE_AUTH_TOKEN).toBeUndefined()
   })
 
+  it('keeps PR benchmark coverage on the full demo matrix', () => {
+    const { workflow } = readWorkflow('benchmark.yml')
+    const job = workflow.jobs['current-vs-published']
+    const runCommand = stepRuns(workflow, 'current-vs-published').find(run => run.includes('pnpm bench:ci'))
+
+    expect(job['timeout-minutes']).toBeGreaterThanOrEqual(90)
+    expect(job.env.BENCH_ONLY).not.toContain('demo-weapp-vite-tailwindcss-v4')
+    expect(job.env.BENCH_ONLY).toBe("${{ github.event.inputs.only || '' }}")
+    expect(runCommand).toContain('--only "$BENCH_ONLY"')
+  })
+
   it('keeps release version phase lightweight inside changesets action', () => {
     const { workflow } = readWorkflow('release.yml')
     const releaseStep = workflow.jobs.release.steps.find((step: Record<string, unknown>) => {
@@ -315,11 +326,11 @@ describe('ci workflows', () => {
       'next',
     ])
     expect(workflow.on.workflow_dispatch.inputs.baseline.default).toBe('auto')
-    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(45)
+    expect(workflow.jobs['current-vs-published']['timeout-minutes']).toBe(90)
     expect(workflow.jobs['current-vs-published'].env.WEAPP_TW_BENCH_BASELINE).toContain('auto')
     expect(workflow.jobs['current-vs-published'].env.BENCH_BUILD_RUNS).toContain("github.event_name == 'pull_request' && '1'")
     expect(workflow.jobs['current-vs-published'].env.BENCH_HMR_RUNS).toContain("github.event_name == 'pull_request' && '1'")
-    expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toContain('demo-weapp-vite-tailwindcss-v4')
+    expect(workflow.jobs['current-vs-published'].env.BENCH_ONLY).toBe("${{ github.event.inputs.only || '' }}")
     expect(runs).toContain('pnpm install --frozen-lockfile')
     expect(runs).toContain('pnpm bench:ci --')
     expect(runs).toContain('--result-dir .tmp/benchmark-ci/result')
@@ -379,7 +390,7 @@ describe('ci workflows', () => {
     expect(scripts['e2e:hbuilderx:harmony']).toBe('pnpm e2e:hbuilderx:local:harmony')
 
     expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_LOCAL=1')
-    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')
+    expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')
     expect(scripts['e2e:hbuilderx:local:demo:mp']).toContain('E2E_HBUILDERX_CASE_GROUP=mp')
     expect(scripts['e2e:hbuilderx:local:demo:mp-extra']).toBe('pnpm e2e:hbuilderx:local:demo:mp-alipay && pnpm e2e:hbuilderx:local:demo:mp-baidu && pnpm e2e:hbuilderx:local:demo:mp-toutiao')
     expect(scripts['e2e:hbuilderx:local:demo:mp-alipay']).toContain('E2E_HBUILDERX_MP_PLATFORM=mp-alipay')
@@ -478,15 +489,12 @@ describe('e2e watch workflow', () => {
     expect(cases).toEqual(expect.arrayContaining([
       'macos:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:uni-app-vite-tailwindcss-v4:issue33',
-      'macos:22:taro-webpack-react-tailwindcss-v4:default',
-      'macos:22:taro-webpack-react-tailwindcss-v4:default',
       'macos:22:taro-vite-react-tailwindcss-v4:default',
-      'macos:22:taro-vite-react-tailwindcss-v4:default',
-      'macos:22:taro-webpack-vue3-tailwindcss-v4:default',
-      'macos:22:taro-webpack-vue3-tailwindcss-v4:default',
       'macos:22:taro-vite-vue3-tailwindcss-v4:default',
-      'macos:22:taro-vite-vue3-tailwindcss-v4:default',
-      'macos:22:uni-app-vite-tailwindcss-v4:default',
+      'macos:22:taro-vite-react-tailwindcss-v4:alipay:default',
+      'macos:22:taro-vite-vue3-tailwindcss-v4:tt:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:mp-weixin:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:mp-alipay:default',
       'macos:22:mpx-tailwindcss-v4:default',
       'windows:22:uni-app-vite-tailwindcss-v4:default',
       'windows:22:uni-app-vite-tailwindcss-v4:issue33',

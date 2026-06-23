@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process'
 import { mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
+import { pathToFileURL } from 'node:url'
 import { DEFAULT_PLUGIN_PROCESS_BUDGET_MS } from '../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/types'
 import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_CI_CASES, resolveHotUpdateTargets } from './e2eMatrix'
 import { writeHmrFullRunMarkdown, writeHmrFullRunReport } from './hmrReport'
@@ -21,6 +22,15 @@ function toBoolEnv(name: string, fallback: boolean) {
     return fallback
   }
   return value === '1' || value === 'true'
+}
+
+function resolveOptionalNumberEnv(name: string) {
+  const value = process.env[name]
+  if (value == null || value.trim() === '') {
+    return undefined
+  }
+  const numeric = Number(value)
+  return Number.isFinite(numeric) ? numeric : undefined
 }
 
 function formatTimestamp(date = new Date()) {
@@ -71,17 +81,88 @@ async function ensureReportDir(root: string) {
   return dir
 }
 
+export interface WatchHmrCommandOptions {
+  timeoutMs: number
+  pollMs: number
+  maxPluginProcessMs: number
+  reportFile: string
+  webOnly: boolean
+  styleOnly: boolean
+  mainStyleOnly: boolean
+  mainStyleSubPackageLimit?: string
+  maxHotUpdateMs?: number
+  maxMemoryRssMb?: number
+  maxMemoryRssDeltaMb?: number
+  maxMemoryHeapUsedMb?: number
+}
+
+export function resolveWatchCommandOptions(reportFile: string): WatchHmrCommandOptions {
+  return {
+    timeoutMs: toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000),
+    pollMs: toNumberEnv('E2E_WATCH_POLL_MS', 40),
+    maxPluginProcessMs: toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS),
+    reportFile,
+    webOnly: toBoolEnv('E2E_WATCH_WEB_ONLY', false),
+    styleOnly: toBoolEnv('E2E_WATCH_STYLE_ONLY', false),
+    mainStyleOnly: toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false),
+    mainStyleSubPackageLimit: process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT,
+    maxHotUpdateMs: resolveOptionalNumberEnv('E2E_WATCH_MAX_HOT_UPDATE_MS'),
+    maxMemoryRssMb: resolveOptionalNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_MB'),
+    maxMemoryRssDeltaMb: resolveOptionalNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB'),
+    maxMemoryHeapUsedMb: resolveOptionalNumberEnv('E2E_WATCH_MAX_MEMORY_HEAP_USED_MB'),
+  }
+}
+
+export function buildWatchHmrArgs(caseName: string, options: WatchHmrCommandOptions) {
+  return [
+    '--filter',
+    'weapp-tailwindcss',
+    'test:watch-hmr',
+    '--',
+    '--case',
+    caseName,
+    '--timeout',
+    String(options.timeoutMs),
+    '--poll',
+    String(options.pollMs),
+    '--max-plugin-process-ms',
+    String(options.maxPluginProcessMs),
+    '--report',
+    options.reportFile,
+    '--skip-build',
+    '--quiet-sass',
+    ...(options.webOnly ? ['--web-only'] : []),
+    ...(options.styleOnly ? ['--style-only'] : []),
+    ...(options.mainStyleOnly ? ['--main-style-only'] : []),
+    ...(options.mainStyleSubPackageLimit ? ['--main-style-subpackage-limit', options.mainStyleSubPackageLimit] : []),
+    ...(options.maxHotUpdateMs != null ? ['--max-hot-update-ms', String(options.maxHotUpdateMs)] : []),
+    ...(options.maxMemoryRssMb != null && options.maxMemoryRssMb > 0 ? ['--max-memory-rss-mb', String(options.maxMemoryRssMb)] : []),
+    ...(options.maxMemoryRssDeltaMb != null && options.maxMemoryRssDeltaMb > 0 ? ['--max-memory-rss-delta-mb', String(options.maxMemoryRssDeltaMb)] : []),
+    ...(options.maxMemoryHeapUsedMb != null && options.maxMemoryHeapUsedMb > 0 ? ['--max-memory-heap-used-mb', String(options.maxMemoryHeapUsedMb)] : []),
+  ]
+}
+
+function killSpawnedProcess(child: ReturnType<typeof spawn>) {
+  if (child.pid == null || child.exitCode != null) {
+    return
+  }
+
+  if (process.platform === 'win32') {
+    spawn('taskkill', ['/pid', String(child.pid), '/t', '/f'], {
+      stdio: 'ignore',
+      windowsHide: true,
+    }).on('error', () => undefined)
+    return
+  }
+
+  child.kill('SIGTERM')
+}
+
 async function runConcreteCase(root: string, caseName: string, progress: ProgressState) {
-  const timeoutMs = toNumberEnv('E2E_WATCH_TIMEOUT_MS', 240000)
-  const pollMs = toNumberEnv('E2E_WATCH_POLL_MS', 40)
-  const maxPluginProcessMs = toNumberEnv('E2E_WATCH_MAX_PLUGIN_PROCESS_MS', DEFAULT_PLUGIN_PROCESS_BUDGET_MS)
-  const maxMemoryRssMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_MB', 0)
-  const maxMemoryRssDeltaMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB', 0)
-  const maxMemoryHeapUsedMb = toNumberEnv('E2E_WATCH_MAX_MEMORY_HEAP_USED_MB', 0)
-  const mainStyleOnly = toBoolEnv('E2E_WATCH_MAIN_STYLE_ONLY', false)
-  const mainStyleSubPackageLimit = process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT
   const reportDir = await ensureReportDir(root)
   const reportFile = path.join(reportDir, `${formatTimestamp()}-${caseName}.json`)
+  const commandOptions = resolveWatchCommandOptions(reportFile)
+  const commandTimeoutMs = toNumberEnv('E2E_WATCH_COMMAND_TIMEOUT_MS', 0)
   const elapsed = () => formatDuration(Date.now() - progress.startedAt)
 
   process.stdout.write(
@@ -90,29 +171,7 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
 
   const child = spawn(
     'pnpm',
-    [
-      '--filter',
-      'weapp-tailwindcss',
-      'test:watch-hmr',
-      '--',
-      '--case',
-      caseName,
-      '--timeout',
-      String(timeoutMs),
-      '--poll',
-      String(pollMs),
-      '--max-plugin-process-ms',
-      String(maxPluginProcessMs),
-      '--report',
-      reportFile,
-      '--skip-build',
-      '--quiet-sass',
-      ...(mainStyleOnly ? ['--main-style-only'] : []),
-      ...(mainStyleSubPackageLimit ? ['--main-style-subpackage-limit', mainStyleSubPackageLimit] : []),
-      ...(maxMemoryRssMb > 0 ? ['--max-memory-rss-mb', String(maxMemoryRssMb)] : []),
-      ...(maxMemoryRssDeltaMb > 0 ? ['--max-memory-rss-delta-mb', String(maxMemoryRssDeltaMb)] : []),
-      ...(maxMemoryHeapUsedMb > 0 ? ['--max-memory-heap-used-mb', String(maxMemoryHeapUsedMb)] : []),
-    ],
+    buildWatchHmrArgs(caseName, commandOptions),
     {
       cwd: root,
       env: {
@@ -125,9 +184,40 @@ async function runConcreteCase(root: string, caseName: string, progress: Progres
   )
 
   const exitCode = await new Promise<number>((resolve, reject) => {
-    child.on('error', reject)
+    let settled = false
+    let timeout: NodeJS.Timeout | undefined
+    const settle = (code: number) => {
+      if (settled) {
+        return
+      }
+      settled = true
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+      resolve(code)
+    }
+    timeout = commandTimeoutMs > 0
+      ? setTimeout(() => {
+          process.stderr.write(
+            `[e2e-hot-update] ${formatProgress(progress.current - 1, progress.total)} command timeout ${caseName} after ${formatDuration(commandTimeoutMs)} elapsed=${elapsed()}\n`,
+          )
+          killSpawnedProcess(child)
+          settle(124)
+        }, commandTimeoutMs)
+      : undefined
+    timeout?.unref?.()
+    child.on('error', (error) => {
+      if (settled) {
+        return
+      }
+      settled = true
+      if (timeout) {
+        clearTimeout(timeout)
+      }
+      reject(error)
+    })
     child.on('close', (code) => {
-      resolve(code ?? 1)
+      settle(code ?? 1)
     })
   })
 
@@ -200,7 +290,9 @@ async function main() {
   process.stdout.write(`[e2e-hot-update] ${formatProgress(completedCases, totalCases)} all cases passed elapsed=${formatDuration(Date.now() - startedAt)}\n`)
 }
 
-main().catch((error) => {
-  process.stderr.write(`${String(error)}\n`)
-  process.exitCode = 1
-})
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch((error) => {
+    process.stderr.write(`${String(error)}\n`)
+    process.exitCode = 1
+  })
+}

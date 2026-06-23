@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, getWebpackLoaderRuntime, mkdir, mkdtemp, os, path, rm, testState, WeappTailwindcss, writeFile } from './shared'
+
+function toPosixPath(value: string) {
+  return value.replace(/\\/g, '/')
+}
+
 describe('bundlers/webpack WeappTailwindcss / registered source css hot updates', () => {
   setupWebpackV5UnitTest()
   it('refreshes webpack registered source css options after style hot updates', async () => {
@@ -358,7 +363,7 @@ describe('bundlers/webpack WeappTailwindcss / registered source css hot updates'
         expect.anything(),
       )
       expect(generatorSources.at(-1)?.css).toContain('@import "tailwindcss" source(none);')
-      expect(generatorSources.at(-1)?.css).toContain(`@config "${path.join(root, 'tailwind.config.js')}"`)
+      expect(generatorSources.at(-1)?.css).toContain(`@config "${toPosixPath(path.join(root, 'tailwind.config.js'))}"`)
       expect(generatorSources.at(-1)?.css).toContain('@source "../src/pages/index";')
       expect(assetStore['app.wxss']).toContain('.text-_b24px_B')
     }

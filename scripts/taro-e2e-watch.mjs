@@ -8,7 +8,9 @@ const WEAK_READY_RE = /watching for file changes/i
 const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const taroBuildGuardPath = path.resolve(import.meta.dirname, './taro-build-guard.mjs')
+const taroBuildRunnerPath = path.resolve(import.meta.dirname, './taro-build-runner.mjs')
 const ensureWeappTailwindcssBuiltPath = path.resolve(import.meta.dirname, './ensure-weapp-tailwindcss-built.mjs')
+const taroPlatform = process.env.TARO_E2E_WATCH_PLATFORM || 'weapp'
 const forceNativeWatch = process.env.TARO_E2E_WATCH_NATIVE === '1'
 const forcePollingWatch = process.env.TARO_E2E_WATCH_NATIVE === '0'
 const forcePollingRestart = process.env.TARO_E2E_WATCH_RESTART === '1'
@@ -78,7 +80,10 @@ function pipeWithReady(child, resolveReady) {
 async function runBuild() {
   await new Promise((resolve, reject) => {
     let output = ''
-    const build = spawn(process.execPath, [taroBuildGuardPath], {
+    const buildArgs = taroPlatform === 'weapp'
+      ? [taroBuildGuardPath]
+      : [taroBuildRunnerPath, 'build', '--type', taroPlatform]
+    const build = spawn(process.execPath, buildArgs, {
       cwd: process.cwd(),
       env: {
         ...process.env,
@@ -205,7 +210,7 @@ async function main() {
   // 避免每次变更重启 production build，把真实增量耗时放大到数秒。
   const restartNativeWatchOnChange = forcePollingRestart && !forceNativeWatch && !forcePollingWatch && taroViteProject
   const skipNativeWatch = forcePollingWatch
-  process.stdout.write(`[taro-e2e-watch] mode=${restartNativeWatchOnChange ? 'vite-polling-restart' : skipNativeWatch ? 'polling-build' : 'native-watch'} cwd=${process.cwd()}\n`)
+  process.stdout.write(`[taro-e2e-watch] mode=${restartNativeWatchOnChange ? 'vite-polling-restart' : skipNativeWatch ? 'polling-build' : 'native-watch'} platform=${taroPlatform} cwd=${process.cwd()}\n`)
   // e2e watch 只预构建一次，后续直接调用 Taro guard，避免 npm lifecycle 反复清理 dist 触发自循环。
   await runEnsureBuild()
   let resolveReady
@@ -226,7 +231,10 @@ async function main() {
     restartQueued = true
   }
   const startNativeWatch = () => {
-    const child = spawn(process.execPath, [taroBuildGuardPath, '--watch'], {
+    const watchArgs = taroPlatform === 'weapp'
+      ? [taroBuildGuardPath, '--watch']
+      : [taroBuildRunnerPath, 'build', '--type', taroPlatform, '--watch']
+    const child = spawn(process.execPath, watchArgs, {
       cwd: process.cwd(),
       env: process.env,
       stdio: ['ignore', 'pipe', 'pipe'],

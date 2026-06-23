@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, realpath, rm, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, realpath, rm, stat, utimes, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -49,7 +49,7 @@ describe('bundlers/webpack source candidate scan cache', () => {
     }
 
     const firstCollector = createSourceCandidateCollector()
-    const firstSyncFile = vi.spyOn(firstCollector, 'syncFile')
+    const firstSync = vi.spyOn(firstCollector, 'sync')
     const first = await cache.resolve({
       collector: firstCollector,
       outDir: path.join(root, 'dist'),
@@ -57,7 +57,7 @@ describe('bundlers/webpack source candidate scan cache', () => {
       sourceScan: scan,
       watchMode: true,
     })
-    expect(firstSyncFile).toHaveBeenCalledTimes(2)
+    expect(firstSync).toHaveBeenCalledTimes(2)
     expect(first.signatureHash).toMatch(/^[a-f0-9]{32}$/)
     expect(first.getSourceCandidatesForEntries(scan.entries)).toEqual(new Set(['w-1', 'w-2']))
     expect(cache.getMemoryStats()).toMatchObject({
@@ -68,7 +68,7 @@ describe('bundlers/webpack source candidate scan cache', () => {
     expect(cache.getMemoryStats().signatureHash).toMatch(/^[a-f0-9]{32}$/)
 
     const secondCollector = createSourceCandidateCollector()
-    const secondSyncFile = vi.spyOn(secondCollector, 'syncFile')
+    const secondSync = vi.spyOn(secondCollector, 'sync')
     const second = await cache.resolve({
       collector: secondCollector,
       outDir: path.join(root, 'dist'),
@@ -76,7 +76,7 @@ describe('bundlers/webpack source candidate scan cache', () => {
       sourceScan: scan,
       watchMode: true,
     })
-    expect(secondSyncFile).not.toHaveBeenCalled()
+    expect(secondSync).not.toHaveBeenCalled()
     expect(second.getSourceCandidatesForEntries(scan.entries)).toEqual(new Set(['w-1', 'w-2']))
     expect(cache.getMemoryStats()).toMatchObject({
       files: 2,
@@ -86,7 +86,7 @@ describe('bundlers/webpack source candidate scan cache', () => {
 
     await writeFile(pageA, 'export const a = "w-3"', 'utf8')
     const thirdCollector = createSourceCandidateCollector()
-    const thirdSyncFile = vi.spyOn(thirdCollector, 'syncFile')
+    const thirdSync = vi.spyOn(thirdCollector, 'sync')
     const third = await cache.resolve({
       changedFiles: [pageA],
       collector: thirdCollector,
@@ -95,15 +95,101 @@ describe('bundlers/webpack source candidate scan cache', () => {
       sourceScan: scan,
       watchMode: true,
     })
-    expect(thirdSyncFile).toHaveBeenCalledTimes(1)
-    expect(thirdSyncFile).toHaveBeenCalledWith(pageA)
-    expect(thirdSyncFile).not.toHaveBeenCalledWith(pageB)
+    expect(thirdSync).toHaveBeenCalledTimes(1)
+    expect(thirdSync).toHaveBeenCalledWith(pageA, 'export const a = "w-3"')
+    expect(thirdSync).not.toHaveBeenCalledWith(pageB, expect.any(String))
     expect(third.getSourceCandidatesForEntries(scan.entries)).toEqual(new Set(['w-2', 'w-3']))
     expect(cache.getMemoryStats()).toMatchObject({
       files: 2,
       lastHit: true,
       snapshots: 1,
     })
+  })
+
+  it('syncs changed scan files when webpack does not report changed files', async () => {
+    const { pageA, root } = await createFixture()
+    const cache = createWebpackSourceCandidateScanCache()
+    const sourceScan = {
+      entries: [
+        {
+          base: path.join(root, 'src'),
+          negated: false,
+          pattern: '**/*.tsx',
+        },
+      ],
+      explicit: true,
+    }
+
+    const first = await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: true,
+    })
+    expect(first.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set(['w-1', 'w-2']))
+
+    await new Promise(resolve => setTimeout(resolve, 20))
+    await writeFile(pageA, 'export const a = "bg-[#111111]"', 'utf8')
+
+    const secondCollector = createSourceCandidateCollector()
+    const secondSync = vi.spyOn(secondCollector, 'sync')
+    const second = await cache.resolve({
+      collector: secondCollector,
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: true,
+    })
+
+    expect(secondSync).toHaveBeenCalledWith(pageA, 'export const a = "bg-[#111111]"')
+    expect(second.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set(['bg-[#111111]', 'w-2']))
+  })
+
+  it('syncs same-size source updates even when file timestamps are unchanged', async () => {
+    const { pageA, root } = await createFixture()
+    const cache = createWebpackSourceCandidateScanCache()
+    const sourceScan = {
+      entries: [
+        {
+          base: path.join(root, 'src'),
+          negated: false,
+          pattern: '**/*.tsx',
+        },
+      ],
+      explicit: true,
+    }
+
+    await writeFile(pageA, 'export const a = "bg-[#123]"', 'utf8')
+    const originalStats = await stat(pageA)
+    const originalModifiedAt = originalStats.mtime
+
+    const first = await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: true,
+    })
+    expect(first.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set(['bg-[#123]', 'w-2']))
+
+    await writeFile(pageA, 'export const a = "bg-[#124]"', 'utf8')
+    await utimes(pageA, originalStats.atime, originalModifiedAt)
+
+    const secondCollector = createSourceCandidateCollector()
+    const secondSync = vi.spyOn(secondCollector, 'sync')
+    const secondSyncFile = vi.spyOn(secondCollector, 'syncFile')
+    const second = await cache.resolve({
+      collector: secondCollector,
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: true,
+    })
+
+    expect(secondSync).toHaveBeenCalledWith(pageA, 'export const a = "bg-[#124]"')
+    expect(secondSyncFile).not.toHaveBeenCalled()
+    expect(second.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set(['bg-[#124]', 'w-2']))
   })
 
   it('keeps distinct cache records behind short signature hashes', async () => {

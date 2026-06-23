@@ -1,4 +1,7 @@
 import { Buffer } from 'node:buffer'
+import { mkdtemp, mkdir, realpath, rm, writeFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { resolveTailwindcssImport, rewriteTailwindcssImportsInCode } from '@/bundlers/shared/css-imports'
 import { createBundlerGeneratedCssMarker } from '@/bundlers/shared/generated-css-marker'
@@ -11,9 +14,12 @@ function joinPosixPath(base: string, subpath: string) {
 
 describe('bundlers/shared css-imports', () => {
   const pkgDir = '/virtual/weapp-tailwindcss'
+  const createdDirs: string[] = []
 
-  afterEach(() => {
+  afterEach(async () => {
     delete process.env.WEAPP_TW_LOADER_DEBUG
+    await Promise.all(createdDirs.map(dir => rm(dir, { recursive: true, force: true })))
+    createdDirs.length = 0
     vi.restoreAllMocks()
     vi.doUnmock('@/generator')
   })
@@ -407,6 +413,86 @@ describe('bundlers/shared css-imports', () => {
     expect(result).not.toContain('@import "tailwindcss"')
     expect(addDependency).toHaveBeenCalledWith('/repo/demo/taro-webpack-react-tailwindcss-v4/tailwind.config.sub-normal.js')
     expect(markGeneratedCssSource).toHaveBeenCalledWith('/repo/demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css')
+  })
+
+  it('passes current @source candidates to webpack H5 css generation', async () => {
+    vi.resetModules()
+    const projectRoot = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-loader-source-'))
+    createdDirs.push(projectRoot)
+    const pageDir = path.join(projectRoot, 'src/pages/index')
+    await mkdir(pageDir, { recursive: true })
+    await writeFile(
+      path.join(pageDir, 'index.tsx'),
+      [
+        'export default function Index() {',
+        '  return <View className="bg-[#123] text-pink-200">11</View>',
+        '}',
+      ].join('\n'),
+      'utf8',
+    )
+
+    const generateTailwindV4Css = vi.fn(async (options: any) => ({
+      css: '.bg-\\[\\#123\\]{background-color:#112233}',
+      target: 'web',
+      source: 'generator',
+      classSet: new Set(['bg-[#123]']),
+      dependencies: [],
+      metadata: {
+        file: options.file,
+        majorVersion: 4,
+        outputFile: options.outputFile,
+      },
+    }))
+    vi.doMock('@/bundlers/shared/v4-generation-core', () => ({
+      generateTailwindV4Css,
+    }))
+    const { default: webpackLoader } = await import('@/bundlers/webpack/loaders/weapp-tw-css-import-rewrite-loader')
+    const addDependency = vi.fn()
+    const source = [
+      '@import "tailwindcss" source(none);',
+      '@source "../src/pages/index";',
+    ].join('\n')
+
+    await webpackLoader.call({
+      addDependency,
+      getOptions: () => ({
+        tailwindcssImportRewrite: {
+          pkgDir,
+          appType: 'taro',
+          compilerOptions: {
+            appType: 'taro',
+            generator: { target: 'web' },
+            mainCssChunkMatcher: () => true,
+            outputDir: 'dist',
+            tailwindcssBasedir: projectRoot,
+            styleHandler: async (css: string) => ({ css }),
+          },
+          getRuntimeSet: async () => new Set(['bg-purple-800', 'text-pink-200']),
+          runtimeState: {
+            readyPromise: Promise.resolve(),
+            tailwindRuntime: { majorVersion: 4 },
+          },
+        },
+      }),
+      resourcePath: path.join(projectRoot, 'src/app.css'),
+      rootContext: projectRoot,
+    } as any, source)
+
+    const options = generateTailwindV4Css.mock.calls[0]?.[0]
+    expect(options.sourceCandidates).toEqual(expect.any(Set))
+    expect(options.sourceCandidates.has('bg-[#123]')).toBe(true)
+    expect(options.sourceCandidates.has('text-pink-200')).toBe(true)
+    expect(options.getSourceCandidatesForEntries).toEqual(expect.any(Function))
+    const scopedCandidates = options.getSourceCandidatesForEntries([
+      {
+        base: path.join(projectRoot, 'src/pages/index'),
+        negated: false,
+        pattern: '**/*',
+      },
+    ])
+    expect(scopedCandidates).toEqual(expect.any(Set))
+    expect(scopedCandidates.has('bg-[#123]')).toBe(true)
+    expect(addDependency).toHaveBeenCalledWith(await realpath(path.join(pageDir, 'index.tsx')))
   })
 
   it('generates webpack H5 css for apply-only entries', async () => {

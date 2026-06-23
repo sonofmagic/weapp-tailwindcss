@@ -2,7 +2,7 @@ import fs from 'fs-extra'
 import path from 'pathe'
 import prettier from 'prettier'
 import autoprefixer from 'autoprefixer'
-import { createStyleHandler, finalizeMiniProgramCss } from '@/index'
+import { convertTailwindcssRpxValueToRem, createStyleHandler, finalizeMiniProgramCss, normalizeTailwindcssRpxDeclarations, normalizeTailwindcssWebRpxDeclarations, postcss } from '@/index'
 
 const WEBKIT_HYPHENS_RE = /-webkit-hyphens\s*:\s*none/
 const MARGIN_TRIM_RE = /margin-trim\s*:\s*inline/
@@ -784,6 +784,51 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
     expect(css).toContain('--tw-ring-offset-width: 8rpx')
     expect(css).not.toContain('--tw-ring-color: 8rpx')
 
+  })
+
+  it('recovers misparsed arbitrary rpx lengths from a PostCSS root', () => {
+    const root = postcss.parse(`
+.border-_b10rpx_B { border-color: 10rpx; }
+.text-_b32rpx_B { color: 32rpx; }
+.bg-_b10rpx_B { background-color: 10rpx; }
+.outline-_b5rpx_B { outline-color: 5rpx; }
+.ring-_b8rpx_B { --tw-ring-color: 8rpx; }
+`)
+
+    expect(normalizeTailwindcssRpxDeclarations(root, { majorVersion: 4 })).toBe(true)
+    const css = root.toString()
+
+    expect(css).toContain('border-width: 10rpx')
+    expect(css).not.toContain('border-color: 10rpx')
+    expect(css).toContain('font-size: 32rpx')
+    expect(css).not.toContain('color: 32rpx')
+    expect(css).toContain('background-size: 10rpx')
+    expect(css).not.toContain('background-color: 10rpx')
+    expect(css).toContain('outline-width: 5rpx')
+    expect(css).not.toContain('outline-color: 5rpx')
+    expect(css).toContain('--tw-ring-offset-width: 8rpx')
+    expect(css).not.toContain('--tw-ring-color: 8rpx')
+  })
+
+  it('converts arbitrary rpx declaration values to rem for uni-app web', () => {
+    expect(convertTailwindcssRpxValueToRem('102.43rpx')).toBe('3.20094rem')
+    expect(convertTailwindcssRpxValueToRem('calc(8rpx + var(--tw-ring-offset-width))')).toBe('calc(0.25rem + var(--tw-ring-offset-width))')
+    expect(convertTailwindcssRpxValueToRem('0 25rpx 50rpx -12rpx rgb(0 0 0 / 25%)')).toBe('0 0.78125rem 1.5625rem -0.375rem rgb(0 0 0 / 25%)')
+
+    const root = postcss.parse(`
+.text-_b102_d43rpx_B { color: 102.43rpx; }
+.m-_b16rpx_B { margin: 16rpx 0 32rpx; }
+.ring-_b8rpx_B { --tw-ring-color: 8rpx; box-shadow: 0 0 0 calc(8rpx + var(--tw-ring-offset-width)); }
+`)
+
+    expect(normalizeTailwindcssWebRpxDeclarations(root, { majorVersion: 4 })).toBe(true)
+    const css = root.toString()
+
+    expect(css).toContain('font-size: 3.20094rem')
+    expect(css).not.toContain('color: 102.43rpx')
+    expect(css).toContain('margin: 0.5rem 0 1rem')
+    expect(css).toContain('--tw-ring-offset-width: 0.25rem')
+    expect(css).toContain('calc(0.25rem + var(--tw-ring-offset-width))')
   })
 
   it('keeps Tailwind CSS v4 border default style when only border utility is generated', async () => {

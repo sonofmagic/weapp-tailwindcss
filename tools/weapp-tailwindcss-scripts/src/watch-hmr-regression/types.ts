@@ -17,7 +17,11 @@ export type ConcreteWatchCaseName
     | 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4'
     | 'uni-app-x-hbuilderx-tailwindcss-v4'
     | 'weapp-vite-tailwindcss-v4'
-export type WatchCaseName = ConcreteWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
+export type TaroMiniProgramWatchPlatform = 'weapp' | 'alipay' | 'tt'
+export type UniAppMiniProgramWatchPlatform = 'mp-weixin' | 'mp-alipay' | 'mp-qq' | 'mp-toutiao'
+export type PlatformWatchCaseName = `${ConcreteWatchCaseName}:${string}`
+export type ConcreteOrPlatformWatchCaseName = ConcreteWatchCaseName | PlatformWatchCaseName
+export type WatchCaseName = ConcreteOrPlatformWatchCaseName | 'both' | 'all' | 'demo' | DemoWatchShardName
 export const MUTATION_ROUND_NAMES = ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary', 'issue33-arbitrary'] as const
 export const DEFAULT_HOT_UPDATE_BUDGET_MS = 1000
 export const PREFERRED_HOT_UPDATE_TARGET_MS = 1000
@@ -224,7 +228,7 @@ export interface UserReportedHotUpdateConfig {
 }
 
 export interface WatchCase {
-  name: ConcreteWatchCaseName
+  name: ConcreteOrPlatformWatchCaseName
   label: string
   project: string
   group: WatchProjectGroup
@@ -298,6 +302,8 @@ export interface WebHmrSourceClassReplacement {
 
 export interface WebHmrSourceDomReplacement {
   label: string
+  beforeSelector?: string
+  selector?: string
   mutate: (source: string) => {
     next: string
     from: string
@@ -662,6 +668,7 @@ export interface WebHmrSourceClassReplacementMetrics {
 
 export interface WebHmrSourceDomReplacementMetrics {
   label: string
+  selector?: string
   from: string
   to: string
   expectedText: string

@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createBundlerGeneratedCssMarker, createCompilerWithLoaderTracking, createContext, getWebpackLoaderRuntime, isCssImportRewriteLoader, path, replaceWxml, testState, WeappTailwindcss } from './shared'
+
+function toPosixPath(value: string) {
+  return value.replace(/\\/g, '/')
+}
+
 describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
   setupWebpackV5UnitTest()
   it('prepares runtime metadata from the injected loader and tolerates token collection failures', async () => {
@@ -70,7 +75,10 @@ describe('bundlers/webpack WeappTailwindcss / loader runtime metadata', () => {
       css: '@import "tailwindcss";\n@source inline("w-4");',
     })
 
-    expect(testState.currentContext.tailwindcss?.v4?.cssSources).toEqual([
+    expect(testState.currentContext.tailwindcss?.v4?.cssSources?.map((item: { file: string, css: string }) => ({
+      ...item,
+      file: toPosixPath(item.file),
+    }))).toEqual([
       {
         file: '/workspace/src/app.css',
         css: '@import "tailwindcss";\n@source inline("w-4");',

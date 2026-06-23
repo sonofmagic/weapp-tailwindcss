@@ -1,15 +1,31 @@
-const BARE_RPX_TEXT_CANDIDATE_RE = /(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u
-const RPX_TEXT_LENGTH_SELECTOR_RE = /text-\\\[length\\:((?:\\[.+-]|[+\-.\d])+rpx)\\\]/g
+const RPX_LENGTH_UTILITY_PATTERN = String.raw`text|border(?:-[trblxyse])?|bg|outline|ring`
+const BARE_RPX_LENGTH_CANDIDATE_RE = new RegExp(
+  String.raw`(^|:)(!?)(${RPX_LENGTH_UTILITY_PATTERN})-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$`,
+  'u',
+)
+const BARE_RPX_LENGTH_HINT_CANDIDATE_RE = new RegExp(
+  String.raw`(?:^|:)!?(${RPX_LENGTH_UTILITY_PATTERN})-\[length:([-+]?(?:\d+|\d*\.\d+)rpx)\].*$`,
+  'u',
+)
+const RPX_LENGTH_SELECTOR_RE = new RegExp(
+  String.raw`(${RPX_LENGTH_UTILITY_PATTERN})-\\\[length\\:((?:\\[.+-]|[+\-.\d])+rpx)\\\]`,
+  'g',
+)
 
-function normalizeRpxTextCandidate(candidate: string) {
-  return candidate.replace(BARE_RPX_TEXT_CANDIDATE_RE, '$1text-[length:$2]$3')
+function normalizeRpxLengthCandidate(candidate: string) {
+  return candidate.replace(
+    BARE_RPX_LENGTH_CANDIDATE_RE,
+    (_match, prefix: string, important: string, utility: string, value: string, suffix: string) => {
+      return `${prefix}${important}${utility}-[length:${value}]${suffix}`
+    },
+  )
 }
 
-export function normalizeRpxTextCandidates(candidates: Iterable<string>) {
+export function normalizeRpxLengthCandidates(candidates: Iterable<string>) {
   const normalized = new Set<string>()
   const restoreCandidates = new Map<string, string>()
   for (const candidate of candidates) {
-    const normalizedCandidate = normalizeRpxTextCandidate(candidate)
+    const normalizedCandidate = normalizeRpxLengthCandidate(candidate)
     normalized.add(normalizedCandidate)
     if (normalizedCandidate !== candidate) {
       restoreCandidates.set(normalizedCandidate, candidate)
@@ -21,7 +37,7 @@ export function normalizeRpxTextCandidates(candidates: Iterable<string>) {
   }
 }
 
-export function restoreRpxTextCandidates(candidates: Iterable<string>, restoreCandidates: ReadonlyMap<string, string>) {
+export function restoreRpxLengthCandidates(candidates: Iterable<string>, restoreCandidates: ReadonlyMap<string, string>) {
   if (restoreCandidates.size === 0) {
     return new Set(candidates)
   }
@@ -32,19 +48,21 @@ function normalizeCssEscapedRpxSelectorValue(value: string) {
   return value.replace(/\\([.+-])/g, '$1')
 }
 
-export function restoreRpxTextCssSelectors(css: string, restoreCandidates: ReadonlyMap<string, string>) {
-  if (restoreCandidates.size === 0 || !css.includes('text-\\[length\\:')) {
+export function restoreRpxLengthCssSelectors(css: string, restoreCandidates: ReadonlyMap<string, string>) {
+  if (restoreCandidates.size === 0 || !css.includes('\\[length\\:')) {
     return css
   }
-  const restoredValues = new Set(
+  const restoredUtilities = new Set(
     [...restoreCandidates.keys()]
       .map((candidate) => {
-        const match = BARE_RPX_TEXT_CANDIDATE_RE.exec(candidate.replace('[length:', '['))
-        return match?.[2]
+        const match = BARE_RPX_LENGTH_HINT_CANDIDATE_RE.exec(candidate)
+        return match ? `${match[1]}:${match[2]}` : undefined
       })
       .filter((value): value is string => Boolean(value)),
   )
-  return css.replace(RPX_TEXT_LENGTH_SELECTOR_RE, (match, value: string) => {
-    return restoredValues.has(normalizeCssEscapedRpxSelectorValue(value)) ? `text-\\[${value}\\]` : match
+  return css.replace(RPX_LENGTH_SELECTOR_RE, (match, utility: string, value: string) => {
+    return restoredUtilities.has(`${utility}:${normalizeCssEscapedRpxSelectorValue(value)}`)
+      ? `${utility}-\\[${value}\\]`
+      : match
   })
 }

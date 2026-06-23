@@ -3,6 +3,7 @@ import { createContext } from 'weapp-tailwindcss/core'
 import { memoryClassMatrix } from './fixtures'
 
 const tailwindConfig = new URL('../tailwind.config.cjs', import.meta.url).pathname
+const cssEntry = new URL('./app.css', import.meta.url).pathname
 
 export interface MemorySample {
   heapUsedMb: number
@@ -58,6 +59,9 @@ export async function runMemoryDemo(options: {
     appType: 'native',
     tailwindcss: {
       config: tailwindConfig,
+      v4: {
+        cssEntries: [cssEntry],
+      },
     },
   })
   await ctx.getRuntimeSet({

@@ -5,17 +5,11 @@ import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { buildSummary, toMarkdown } from './ci-report.mjs'
+import { benchmarkProjectDirs } from './projects.mjs'
 
 const dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.resolve(dirname, '../../..')
 const packageJsonPath = path.join(repoRoot, 'packages/weapp-tailwindcss/package.json')
-
-const projectDirs = [
-  'demo/uni-app-vite-tailwindcss-v3',
-  'demo/uni-app-vite-tailwindcss-v4',
-  'demo/weapp-vite-tailwindcss-v3',
-  'demo/weapp-vite-tailwindcss-v4',
-]
 
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 const publishedResolverDependencyNames = [
@@ -119,7 +113,7 @@ function shouldCopy(src) {
   if (parts.some(part => part === '.git' || part === 'node_modules' || part === '.tmp')) {
     return false
   }
-  if (parts.some(part => part === '.turbo' || part === 'coverage' || part === 'coverage-vitest')) {
+  if (parts.some(part => part === '.turbo' || part === 'coverage' || part === 'coverage-vitest' || part === 'dist')) {
     return false
   }
   if (relative === 'benchmark/framework-compare/projects') {
@@ -181,6 +175,14 @@ function patchPublishedResolverDependencies(json, resolverDependencies) {
 }
 
 async function patchPackageJson(file, baseline, resolverDependencies) {
+  try {
+    await fs.access(file)
+  }
+  catch {
+    process.stdout.write(`[benchmark] skip missing package.json: ${rel(file)}\n`)
+    return false
+  }
+
   const source = await fs.readFile(file, 'utf8')
   const json = JSON.parse(source)
   let changed = false
@@ -200,7 +202,7 @@ async function patchPackageJson(file, baseline, resolverDependencies) {
 
 async function patchPublishedRoot(root, baseline, resolverDependencies) {
   const patched = []
-  for (const projectDir of projectDirs) {
+  for (const projectDir of benchmarkProjectDirs) {
     const file = path.join(root, projectDir, 'package.json')
     if (await patchPackageJson(file, baseline, resolverDependencies)) {
       patched.push(projectDir)

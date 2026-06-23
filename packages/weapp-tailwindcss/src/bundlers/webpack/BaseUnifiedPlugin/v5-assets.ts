@@ -100,6 +100,32 @@ function collectRuntimeTokenSignatureParts(source: string) {
   return source.match(/[\w-]+_[A-Z][\w-]*/gi) ?? []
 }
 
+function hasMissingRuntimeCandidates(
+  classSet: ReadonlySet<string> | undefined,
+  candidates: ReadonlySet<string> | undefined,
+) {
+  if (!classSet || !candidates?.size) {
+    return false
+  }
+  for (const candidate of candidates) {
+    if (isRuntimeTransformCandidate(candidate) && !classSet.has(candidate)) {
+      return true
+    }
+  }
+  return false
+}
+
+function resolveGeneratedCssRuntimeCandidates(
+  source: string,
+  fallbackClassSet?: ReadonlySet<string> | undefined,
+) {
+  const classSet = collectGeneratedCssRuntimeCandidates(source)
+  if (classSet.size > 0 || fallbackClassSet === undefined) {
+    return classSet
+  }
+  return fallbackClassSet
+}
+
 function getRuntimeClassSetSync(tailwindRuntime: TailwindcssRuntimeLike) {
   if (typeof tailwindRuntime.getClassSetSync !== 'function') {
     return new Set<string>()
@@ -1312,10 +1338,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 || processedSourceCss.includes('@config')
               )
             const processedCssAssetKnown = isKnownWebpackProcessedCssAsset?.(file, processedCssAssetMetadata) === true
+            const processedLoaderGeneratedCss = processedSourceFile
+              ? generatedCssSources.get(path.resolve(processedSourceFile))
+              : undefined
             const processedCssHashKey = createRuntimeAwareCssHash(
               chunkHash,
               chunkHash === undefined ? undefined : 'webpack-css-asset:chunk',
-              `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${cssSourceTraceSignature}`,
+              `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}`,
             )
             const processedCssDecisionCacheKey = `${file}:${processedCssHashKey ?? 'hash:0'}`
             let currentProcessedRawSource: string | undefined
@@ -1325,6 +1354,19 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               currentProcessedRawSource ??= readRawSource()
               return currentProcessedRawSource
             }
+            const shouldRegenerateStaleProcessedWebCssAsset = isWebGeneratorTarget
+              && cssHandlerOptionsForProcessedAsset.isMainChunk
+              && webpackSourceCandidateSet !== undefined
+              && (
+                hasMissingRuntimeCandidates(processedLoaderGeneratedCss?.classSet, webpackSourceCandidateSet)
+                || hasMissingRuntimeCandidates(
+                  resolveGeneratedCssRuntimeCandidates(
+                    readCurrentProcessedRawSource(),
+                    processedLoaderGeneratedCss?.classSet,
+                  ),
+                  webpackSourceCandidateSet,
+                )
+              )
             const cachedSkipProcessedCssAsset = processedCssAssetKnown
               ? processedCssAssetSkipDecisionCache.get(processedCssDecisionCacheKey)
               : undefined
@@ -1361,6 +1403,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
               && (hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
             const shouldSkipKnownProcessedCssAsset = !shouldForceConfiguredMainCssGeneration
               && !shouldRegenerateProcessedTailwindV4SourceCss
+              && !shouldRegenerateStaleProcessedWebCssAsset
               && (
                 processedCssAssetKnown
                 || isWebpackProcessedCssAsset?.(file, readCurrentProcessedRawSource(), processedCssAssetMetadata)
@@ -1389,7 +1432,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   hash: createRuntimeAwareCssHash(
                     chunkHash,
                     sourceHash,
-                    `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${cssSourceTraceSignature}`,
+                    `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}`,
                   ),
                   applyResult(source, { cacheHit }) {
                     updateAssetIfChanged(file, source, {
@@ -1558,6 +1601,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         processed: sourceCssProcessed || shouldPreserveGeneratedWebAssetUserCss,
                       })
                   const shouldAppendCurrentAssetUserCss = !currentAssetHasBundlerGeneratedMarker
+                    && !shouldPreserveGeneratedWebAssetUserCss
                     && (!sourceCssProcessed || registeredUserRawSource === undefined || currentAssetHasUserCss)
                     && !(sourceCssProcessed && currentAssetLooksGenerated && !currentAssetHasUserCss)
                   const userRawSource = createWebpackGeneratorUserCssSourceAppend(

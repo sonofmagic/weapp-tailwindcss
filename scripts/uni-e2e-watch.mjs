@@ -9,6 +9,7 @@ const sourceDirs = ['src']
 const ignoredDirs = new Set(['dist', 'node_modules', '.git'])
 const ignoredFiles = new Set(['auto-imports.d.ts', 'components.d.ts', 'uni-pages.d.ts'])
 const useNativeWatch = process.env.UNI_E2E_WATCH_NATIVE === '1'
+const uniPlatform = process.env.UNI_E2E_WATCH_PLATFORM || 'mp-weixin'
 
 function createPnpmCommand(args) {
   if (pnpmExecPath) {
@@ -53,7 +54,7 @@ function pipeWithReady(child, resolveReady) {
 
 async function runBuild() {
   await new Promise((resolve, reject) => {
-    const build = spawnPnpm(['run', 'build:mp-weixin'], {
+    const build = spawnPnpm(['run', `build:${uniPlatform}`], {
       env: {
         UNI_BUILD_STRICT: '1',
         WEAPP_TW_HMR_TIMING: '0',
@@ -140,7 +141,7 @@ async function main() {
   let pollTimer
   let lastSnapshot = await collectSnapshot()
 
-  process.stdout.write(`[uni-e2e-watch] mode=${useNativeWatch ? 'native-watch-with-build-fallback' : 'polling-build'} cwd=${process.cwd()}\n`)
+  process.stdout.write(`[uni-e2e-watch] mode=${useNativeWatch ? 'native-watch-with-build-fallback' : 'polling-build'} platform=${uniPlatform} cwd=${process.cwd()}\n`)
 
   let dev
   let ready = Promise.resolve()
@@ -150,7 +151,7 @@ async function main() {
     ready = new Promise((resolve) => {
       resolveReady = resolve
     })
-    dev = spawnPnpm(['exec', 'uni', '-p', 'mp-weixin'])
+    dev = spawnPnpm(['exec', 'uni', '-p', uniPlatform])
     pipeWithReady(dev, resolveReady)
   }
 

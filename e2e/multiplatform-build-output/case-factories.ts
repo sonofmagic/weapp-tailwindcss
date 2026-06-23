@@ -189,7 +189,6 @@ export function mpxCase(options: {
         ]
       : [
           '.bg-_b_h123456_B',
-          '.bg-_burl',
           '.before_ccontent',
         ],
     textContains: options.version === 'v4'
@@ -198,8 +197,8 @@ export function mpxCase(options: {
           'text-_b_hbada55_B',
         ]
       : [
-          'classNames',
-          'bgUrl',
+          'bg-_b_h123456_B',
+          'before_ccontent',
         ],
     notContains: [rawTailwindDirectiveRE],
     status: 'ci',

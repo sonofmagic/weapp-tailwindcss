@@ -5,7 +5,7 @@ import { HOT_UPDATE_CASES_BY_TARGET, HOT_UPDATE_COVERED_PROJECTS } from '../../.
 import { getFrameworkIdeCases, getFrameworkIdeExemptCases } from '../../../e2e/frameworkSupportMatrix'
 import { shouldRequireIdeLivePageVisibility } from '../../../e2e/frameworkIdeClassHotUpdate'
 import { frameworkIdeWatchCaseNames } from '../../../e2e/frameworkIdeHotUpdate'
-import { buildCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
+import { buildCases, getBaseWatchCaseName } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases'
 import { buildDemoBaseCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/base'
 import { buildDemoExtendedCases } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/cases/demo/extended'
 import { createStyleMutationPayload } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/shared'
@@ -27,6 +27,7 @@ const ideWatchCases = buildCases('/repo', { includeLocalOnly: true })
 
 const watchCoveredProjects = new Set(automatedWatchCases.map(item => item.project))
 const watchCoveredCaseNames = new Set(automatedWatchCases.map(item => item.name))
+const defaultWatchCoveredCaseNames = new Set(automatedWatchCases.map(item => item.name).filter(name => !name.includes(':')))
 const automatedWatchCasesByName = new Map(automatedWatchCases.map(item => [item.name, item]))
 const ideWatchCasesByName = new Map(ideWatchCases.map(item => [item.name, item]))
 const repoRoot = join(import.meta.dirname, '../../..')
@@ -147,15 +148,16 @@ describe('watch-hmr coverage matrix', () => {
   })
 
   it('wires every demo watch case into hot-update e2e entries', () => {
-    expect([...HOT_UPDATE_CASES_BY_TARGET.demo].sort()).toEqual([...watchCoveredCaseNames].sort())
+    expect([...HOT_UPDATE_CASES_BY_TARGET.demo].sort()).toEqual([...defaultWatchCoveredCaseNames].sort())
 
     for (const watchCase of automatedWatchCases) {
+      const baseCaseName = getBaseWatchCaseName(watchCase.name) ?? watchCase.name
       expect(
-        HOT_UPDATE_COVERED_PROJECTS.has(watchCase.name),
+        HOT_UPDATE_COVERED_PROJECTS.has(baseCaseName),
         `${watchCase.name} should be included in hot-update e2e coverage`,
       ).toBe(true)
       expect(
-        existsSync(join(repoRoot, 'e2e/watch/hot-update/demo', `${watchCase.name}.test.ts`)),
+        existsSync(join(repoRoot, 'e2e/watch/hot-update/demo', `${baseCaseName}.test.ts`)),
         `${watchCase.name} should have a dedicated e2e watch hot-update test entry`,
       ).toBe(true)
     }
@@ -176,7 +178,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(subPackageMutation.outputJs).toContain(subPackageMutation.root)
         expect(subPackageMutation.templateMutation.sourceFile).toContain(subPackageMutation.root)
         expectDemoSourceFile(subPackageMutation.styleMutation.sourceFile, `${watchCase.project} ${subPackageMutation.root} style HMR`)
-        expect(subPackageMutation.templateMutation.roundConfigs?.length).toBeGreaterThanOrEqual(3)
+        expect(subPackageMutation.templateMutation.roundConfigs?.length).toBeGreaterThanOrEqual(watchCase.splitSubPackageWatchSessions ? 1 : 3)
         expect(subPackageMutation.templateMutation.verifyEscapedIn.length + (subPackageMutation.templateMutation.verifyClassLiteralIn?.length ?? 0)).toBeGreaterThan(0)
       }
       if (watchCase.contentMutation) {
@@ -208,11 +210,10 @@ describe('watch-hmr coverage matrix', () => {
           subPackageMutation.templateMutation,
           `${watchCase.name}:${subPackageMutation.root}`,
         )
-        expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), `${watchCase.name}:${subPackageMutation.root}`).toEqual([
-          'baseline-arbitrary',
-          'complex-corpus',
-          'hex-arbitrary',
-        ])
+        const expectedSubPackageRounds = watchCase.splitSubPackageWatchSessions
+          ? ['baseline-arbitrary']
+          : ['baseline-arbitrary', 'complex-corpus', 'hex-arbitrary']
+        expect(subPackageMutation.templateMutation.roundConfigs?.map(item => item.name), `${watchCase.name}:${subPackageMutation.root}`).toEqual(expectedSubPackageRounds)
       }
     }
 
@@ -368,8 +369,9 @@ describe('watch-hmr coverage matrix', () => {
   it('keeps style @apply and Tailwind function validation policy explicit', () => {
     for (const watchCase of automatedWatchCases) {
       const payload = createStyleMutationPayload(watchCase)
+      const baseCaseName = getBaseWatchCaseName(watchCase.name) ?? watchCase.name
 
-      if (STYLE_APPLY_UNSUPPORTED_CASES.has(watchCase.name)) {
+      if (STYLE_APPLY_UNSUPPORTED_CASES.has(baseCaseName)) {
         expect(payload.applyUtilities, `${watchCase.name} should skip unsupported @apply validation`).toEqual([])
         expect(payload.expectedApplyDeclarations, `${watchCase.name} should skip unsupported @apply declarations`).toEqual([])
       }
@@ -378,7 +380,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(payload.expectedApplyDeclarations.length, `${watchCase.name} should validate expanded @apply declarations`).toBeGreaterThan(0)
       }
 
-      if (STYLE_FUNCTION_UNSUPPORTED_CASES.has(watchCase.name)) {
+      if (STYLE_FUNCTION_UNSUPPORTED_CASES.has(baseCaseName)) {
         expect(payload.functionNeedle, `${watchCase.name} should skip unsupported Tailwind function validation`).toBeUndefined()
         expect(payload.functionDeclarations, `${watchCase.name} should not inject unsupported Tailwind functions`).toEqual([])
         expect(payload.expectedFunctionDeclarations, `${watchCase.name} should not expect unsupported Tailwind function declarations`).toEqual([])
@@ -391,7 +393,7 @@ describe('watch-hmr coverage matrix', () => {
         expect(payload.forbiddenFunctionFragments, `${watchCase.name} should forbid unresolved Tailwind functions`).toContain('theme(')
       }
 
-      if (STYLE_REFERENCE_REQUIRED_CASES.has(watchCase.name)) {
+      if (STYLE_REFERENCE_REQUIRED_CASES.has(baseCaseName)) {
         expect(payload.referenceDirective, `${watchCase.name} should include Tailwind v4 @reference`).toBe('@reference "tailwindcss";')
       }
       else {
@@ -402,11 +404,12 @@ describe('watch-hmr coverage matrix', () => {
 
   it('keeps the mpx script-only added-class regression guarded by global wxss output', () => {
     const mpxCase = automatedWatchCases.find(item => item.project === 'demo/mpx-tailwindcss-v4')
+    const globalStyleCandidates = mpxCase?.globalStyleCandidates.map(item => item.replace(/\\/g, '/')) ?? []
 
     expect(mpxCase).toBeDefined()
     expect(mpxCase?.scriptMutation.verifyClassLiteralIn).toContain('js')
-    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('styles/app*.wxss'))).toBe(true)
-    expect(mpxCase?.globalStyleCandidates.some(item => item.includes('styles/index*.wxss'))).toBe(true)
+    expect(globalStyleCandidates.some(item => item.includes('styles/app*.wxss'))).toBe(true)
+    expect(globalStyleCandidates.some(item => item.includes('styles/index*.wxss'))).toBe(true)
     expect(mpxCase?.minGlobalStyleEscapedClasses).toBeUndefined()
     expect(mpxCase?.requireInitialCompileSuccess).toBeUndefined()
     expect(mpxCase?.initialMutationDelayMs).toBe(15_000)

@@ -7857,7 +7857,3 @@ wx-root-portal-content {
     transform: scale(0.96);
   }
 }
-
-.tw-page-style-watch-anchor {
-  color: inherit;
-}

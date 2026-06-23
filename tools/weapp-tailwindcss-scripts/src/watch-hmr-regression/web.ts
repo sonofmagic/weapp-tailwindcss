@@ -96,6 +96,10 @@ export function resolveWebHmrMarkerAttachTimeout(pollMs: number) {
   return Math.max(pollMs, WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS)
 }
 
+export function resolveWebHmrDomAttachTimeout(pollMs: number) {
+  return resolveWebHmrMarkerAttachTimeout(pollMs)
+}
+
 function normalizeDomExpectedStyle(style: NonNullable<NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]['expectedStyle']>) {
   return {
     color: style.color ? normalizeRgb(style.color) : undefined,
@@ -191,8 +195,19 @@ function assertComputedStyle(
   return normalizedActual
 }
 
-async function getDomReplacementComputedStyle(page: Page) {
-  return page.locator(DOM_REPLACEMENT_SELECTOR).evaluate((element) => {
+function resolveDomReplacementSelector(item: NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]) {
+  return item.selector ?? DOM_REPLACEMENT_SELECTOR
+}
+
+function resolveDomReplacementBeforeSelector(
+  config: WebHmrConfig,
+  item: NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number],
+) {
+  return item.beforeSelector ?? config.readySelector ?? 'body'
+}
+
+async function getDomReplacementComputedStyle(page: Page, selector: string) {
+  return page.locator(selector).evaluate((element) => {
     const style = window.getComputedStyle(element)
     return {
       backgroundColor: style.backgroundColor,
@@ -447,17 +462,23 @@ async function runSourceDomReplacementSequence(
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} web source-dom-replacement=${item.label} from=${mutation.from} to=${mutation.to}\n`,
     )
+    await waitForWebPageReady(page, page.url(), resolveDomReplacementBeforeSelector(config, item), {
+      timeoutMs: Math.min(options.timeoutMs, 120_000),
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] web source DOM replacement base node was not ready: ${item.label}`,
+    }, hotUpdateStartedAt)
     await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
 
+    const selector = resolveDomReplacementSelector(item)
     let verifiedCssIncludes: string[] = []
     let computedStyle: ReturnType<typeof assertDomReplacement> | undefined
     let lastError = ''
     const hotUpdateEffectiveMs = await waitFor(
       async () => {
         try {
-          await page.locator(DOM_REPLACEMENT_SELECTOR).waitFor({
+          await page.locator(selector).waitFor({
             state: 'attached',
-            timeout: options.pollMs,
+            timeout: resolveWebHmrDomAttachTimeout(options.pollMs),
           })
           const styleText = await collectStyleText(page)
           verifiedCssIncludes = (item.expectedCssIncludes ?? [])
@@ -468,7 +489,7 @@ async function runSourceDomReplacementSequence(
           }
           computedStyle = assertDomReplacement(
             watchCase,
-            await getDomReplacementComputedStyle(page),
+            await getDomReplacementComputedStyle(page, selector),
             item,
           )
           return true
@@ -491,6 +512,7 @@ async function runSourceDomReplacementSequence(
 
     results.push({
       label: item.label,
+      ...(item.selector ? { selector: item.selector } : {}),
       from: mutation.from,
       to: mutation.to,
       expectedText: item.expectedText,
