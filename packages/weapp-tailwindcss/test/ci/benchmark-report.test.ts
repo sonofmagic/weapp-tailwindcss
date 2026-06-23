@@ -32,9 +32,11 @@ describe('benchmark ci report', () => {
       'demo-uni-app-vite-tailwindcss-v4__h5',
     ]))
     expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
-    expect(benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx')).every(project => project.hmrMode === 'watch')).toBe(true)
-    expect(benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx')).every(project => project.hmrDriver === 'dev-server')).toBe(true)
+    const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx') && !project.key.includes('taro-webpack'))
+    expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
+    expect(realDevServerTargets.every(project => project.hmrDriver === 'dev-server')).toBe(true)
     expect(benchmarkProjects.filter(project => project.target === 'h5' && project.key.includes('hbuilderx')).every(project => project.hmrMode === 'unsupported')).toBe(true)
+    expect(benchmarkProjects.filter(project => project.target === 'h5' && project.key.includes('taro-webpack')).every(project => project.hmrMode === 'unsupported')).toBe(true)
   })
 
   it('keeps benchmark working copies free from stale build outputs', async () => {
