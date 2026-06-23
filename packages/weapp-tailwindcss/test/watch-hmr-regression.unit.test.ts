@@ -118,6 +118,10 @@ import {
   resolveReloadAcceptAttemptTimeout,
   waitForWebCompileSettled,
 } from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/web-compile-settle'
+import {
+  buildWatchHmrArgs,
+  resolveWatchCommandOptions,
+} from '../../../e2e/run-hot-update'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -1027,6 +1031,68 @@ const bgObj = ref({
 })
 
 describe('watch-hmr regression cli options', () => {
+  it('forwards e2e watch workflow profile flags to concrete watch runs', () => {
+    const envKeys = [
+      'E2E_WATCH_TIMEOUT_MS',
+      'E2E_WATCH_POLL_MS',
+      'E2E_WATCH_MAX_HOT_UPDATE_MS',
+      'E2E_WATCH_MAX_PLUGIN_PROCESS_MS',
+      'E2E_WATCH_WEB_ONLY',
+      'E2E_WATCH_MAIN_STYLE_ONLY',
+      'E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT',
+      'E2E_WATCH_MAX_MEMORY_RSS_MB',
+      'E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB',
+      'E2E_WATCH_MAX_MEMORY_HEAP_USED_MB',
+    ] as const
+    const originalEnv = new Map(envKeys.map(key => [key, process.env[key]]))
+    process.env.E2E_WATCH_TIMEOUT_MS = '900000'
+    process.env.E2E_WATCH_POLL_MS = '40'
+    process.env.E2E_WATCH_MAX_HOT_UPDATE_MS = '420000'
+    process.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS = '9000'
+    process.env.E2E_WATCH_WEB_ONLY = '1'
+    process.env.E2E_WATCH_MAIN_STYLE_ONLY = '0'
+    process.env.E2E_WATCH_MAIN_STYLE_SUBPACKAGE_LIMIT = ''
+    process.env.E2E_WATCH_MAX_MEMORY_RSS_MB = '5632'
+    process.env.E2E_WATCH_MAX_MEMORY_RSS_DELTA_MB = '4608'
+    process.env.E2E_WATCH_MAX_MEMORY_HEAP_USED_MB = '4096'
+
+    try {
+      const options = resolveWatchCommandOptions('/tmp/watch-report.json')
+      const args = buildWatchHmrArgs('taro-webpack-react-tailwindcss-v4', options)
+
+      expect(args).toEqual(expect.arrayContaining([
+        '--case',
+        'taro-webpack-react-tailwindcss-v4',
+        '--timeout',
+        '900000',
+        '--max-hot-update-ms',
+        '420000',
+        '--max-plugin-process-ms',
+        '9000',
+        '--web-only',
+        '--max-memory-rss-mb',
+        '5632',
+        '--max-memory-rss-delta-mb',
+        '4608',
+        '--max-memory-heap-used-mb',
+        '4096',
+      ]))
+      expect(args).not.toContain('--main-style-only')
+      expect(args).not.toContain('--main-style-subpackage-limit')
+    }
+    finally {
+      for (const key of envKeys) {
+        const value = originalEnv.get(key)
+        if (value == null) {
+          delete process.env[key]
+        }
+        else {
+          process.env[key] = value
+        }
+      }
+    }
+  })
+
   it('accepts --report-file as an alias of --report for main-style-only runs', () => {
     const originalArgv = process.argv
     process.argv = [
