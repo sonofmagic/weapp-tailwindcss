@@ -52,6 +52,7 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     return {
       key: current.key,
       project: current.project,
+      target: current.target,
       baselineBuild,
       currentBuild,
       buildDeltaPct: pct(baselineBuild, currentBuild),
@@ -117,7 +118,7 @@ export function toMarkdown(summary, baselineSpec) {
       item.baselineHmrMode !== 'watch' && `baseline HMR: ${item.baselineHmrNote ?? item.baselineHmrMode}`,
       item.currentHmrMode !== 'watch' && `current HMR: ${item.currentHmrNote ?? item.currentHmrMode}`,
     ].filter(Boolean).join('<br>')
-    return `| ${item.key} | ${fmtMs(item.baselineBuild)} | ${fmtMs(item.currentBuild)} | ${fmtPct(item.buildDeltaPct)} | ${hmrMode} | ${fmtMs(item.baselineHmr)} | ${fmtMs(item.currentHmr)} | ${fmtPct(item.hmrDeltaPct)} | ${note || '-'} |`
+    return `| ${item.key} | ${item.target ?? '-'} | ${fmtMs(item.baselineBuild)} | ${fmtMs(item.currentBuild)} | ${fmtPct(item.buildDeltaPct)} | ${hmrMode} | ${fmtMs(item.baselineHmr)} | ${fmtMs(item.currentHmr)} | ${fmtPct(item.hmrDeltaPct)} | ${note || '-'} |`
   }).join('\n')
   const errors = summary.errors.length
     ? summary.errors.map(item => `- ${item.version} / ${item.key}: ${String(item.error).split('\n')[0]}`).join('\n')
@@ -141,8 +142,8 @@ export function toMarkdown(summary, baselineSpec) {
 
 ## 项目矩阵
 
-| 项目 | Baseline Build(ms) | Current Build(ms) | Build 变化 | HMR 模式 | Baseline HMR(ms) | Current HMR(ms) | HMR 变化 | 备注 |
-| --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | --- |
+| 项目 | 目标平台 | Baseline Build(ms) | Current Build(ms) | Build 变化 | HMR 模式 | Baseline HMR(ms) | Current HMR(ms) | HMR 变化 | 备注 |
+| --- | --- | ---: | ---: | ---: | --- | ---: | ---: | ---: | --- |
 ${rows}
 
 ## 失败项

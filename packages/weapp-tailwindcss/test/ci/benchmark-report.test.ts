@@ -22,14 +22,19 @@ describe('benchmark ci report', () => {
     }
 
     const demoProjects = collectPackageDirs(path.join(repoRoot, 'demo')).sort()
-    const benchmarkProjectDirs = benchmarkProjects.map(project => project.project).sort()
+    const benchmarkProjectDirs = Array.from(new Set(benchmarkProjects.map(project => project.project))).sort()
 
     expect(benchmarkProjectDirs).toEqual(demoProjects)
     expect(benchmarkProjects.map(project => project.key)).toEqual(expect.arrayContaining([
-      'demo-web-react-vite-tailwindcss-v4',
-      'demo-web-vue-vite-tailwindcss-v4',
+      'demo-web-react-vite-tailwindcss-v4__web',
+      'demo-web-vue-vite-tailwindcss-v4__web',
+      'demo-uni-app-vite-tailwindcss-v4__mp-weixin',
+      'demo-uni-app-vite-tailwindcss-v4__h5',
     ]))
-    expect(benchmarkProjects.filter(project => project.key.includes('taro')).every(project => project.hmrMode === 'unsupported')).toBe(true)
+    expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
+    expect(benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx')).every(project => project.hmrMode === 'watch')).toBe(true)
+    expect(benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx')).every(project => project.hmrDriver === 'dev-server')).toBe(true)
+    expect(benchmarkProjects.filter(project => project.target === 'h5' && project.key.includes('hbuilderx')).every(project => project.hmrMode === 'unsupported')).toBe(true)
   })
 
   it('keeps benchmark working copies free from stale build outputs', async () => {
@@ -38,6 +43,22 @@ describe('benchmark ci report', () => {
     const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-ci.mjs'), 'utf8')
 
     expect(source).toContain("part === 'dist'")
+  })
+
+  it('keeps dev server HMR measured through fixed-port development servers', async () => {
+    const fs = await import('node:fs')
+    const path = await import('node:path')
+    const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-matrix.mjs'), 'utf8')
+
+    expect(source).toContain('runDevServerHmrRounds')
+    expect(source).toContain("['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort']")
+    expect(source).toContain("['exec', 'uni', '--host', '127.0.0.1', '--port', String(port), '--strictPort']")
+    expect(source).toContain('resolveLoggedBaseUrls')
+    expect(source).toContain('fetchProbeText')
+    expect(source).toContain("onlyItems.includes(item.key) || onlyItems.includes(item.project)")
+    expect(source).toContain("className=(['\"])(.*?)\\1")
+    expect(source).toContain('data-tw-bench')
+    expect(source).toContain('outputProbeTemplates')
   })
 
   it('keeps published baseline failures non-blocking when current rows pass', async () => {
@@ -54,13 +75,14 @@ describe('benchmark ci report', () => {
       rows: [
         {
           version: baselineLabel,
-          key: 'demo-weapp-vite-tailwindcss-v4',
+          key: 'demo-weapp-vite-tailwindcss-v4__mp-weixin',
           error: 'published package does not support SCSS root entry',
         },
         {
           version: currentLabel,
-          key: 'demo-weapp-vite-tailwindcss-v4',
+          key: 'demo-weapp-vite-tailwindcss-v4__mp-weixin',
           project: 'demo/weapp-vite-tailwindcss-v4',
+          target: 'mp-weixin',
           summary: {
             build: { median: 100 },
             hmr: { median: 50 },
@@ -88,8 +110,9 @@ describe('benchmark ci report', () => {
       rows: [
         {
           version: baselineLabel,
-          key: 'demo-weapp-vite-tailwindcss-v4',
+          key: 'demo-weapp-vite-tailwindcss-v4__mp-weixin',
           project: 'demo/weapp-vite-tailwindcss-v4',
+          target: 'mp-weixin',
           hmrMode: 'watch',
           summary: {
             build: { median: 100 },
@@ -98,8 +121,9 @@ describe('benchmark ci report', () => {
         },
         {
           version: currentLabel,
-          key: 'demo-weapp-vite-tailwindcss-v4',
+          key: 'demo-weapp-vite-tailwindcss-v4__mp-weixin',
           project: 'demo/weapp-vite-tailwindcss-v4',
+          target: 'mp-weixin',
           hmrMode: 'watch',
           summary: {
             build: { median: 110 },
@@ -108,8 +132,9 @@ describe('benchmark ci report', () => {
         },
         {
           version: baselineLabel,
-          key: 'demo-uni-app-vite-tailwindcss-v4',
+          key: 'demo-uni-app-vite-tailwindcss-v4__mp-weixin',
           project: 'demo/uni-app-vite-tailwindcss-v4',
+          target: 'mp-weixin',
           hmrMode: 'fallback-build',
           hmrNote: 'fallback',
           summary: {
@@ -118,8 +143,9 @@ describe('benchmark ci report', () => {
         },
         {
           version: currentLabel,
-          key: 'demo-uni-app-vite-tailwindcss-v4',
+          key: 'demo-uni-app-vite-tailwindcss-v4__mp-weixin',
           project: 'demo/uni-app-vite-tailwindcss-v4',
+          target: 'mp-weixin',
           hmrMode: 'fallback-build',
           hmrNote: 'fallback',
           summary: {
@@ -128,8 +154,9 @@ describe('benchmark ci report', () => {
         },
         {
           version: baselineLabel,
-          key: 'demo-web-react-vite-tailwindcss-v4',
+          key: 'demo-web-react-vite-tailwindcss-v4__web',
           project: 'demo/web/react-vite-tailwindcss-v4',
+          target: 'web',
           hmrMode: 'unsupported',
           hmrNote: 'web browser hmr',
           summary: {
@@ -138,8 +165,9 @@ describe('benchmark ci report', () => {
         },
         {
           version: currentLabel,
-          key: 'demo-web-react-vite-tailwindcss-v4',
+          key: 'demo-web-react-vite-tailwindcss-v4__web',
           project: 'demo/web/react-vite-tailwindcss-v4',
+          target: 'web',
           hmrMode: 'unsupported',
           hmrNote: 'web browser hmr',
           summary: {
@@ -152,9 +180,10 @@ describe('benchmark ci report', () => {
     expect(summary.averages.watchHmrCompareCount).toBe(1)
     expect(summary.averages.hmrDeltaPct).toBe(-50)
     const markdown = toMarkdown(summary, 'next')
-    expect(markdown).toContain('| demo-uni-app-vite-tailwindcss-v4 |')
-    expect(markdown).toContain('| demo-uni-app-vite-tailwindcss-v4 | 200.00 | 200.00 | +0.00% | fallback-build | - | - | - |')
-    expect(markdown).toContain('| demo-web-react-vite-tailwindcss-v4 |')
+    expect(markdown).toContain('| 项目 | 目标平台 | Baseline Build(ms) |')
+    expect(markdown).toContain('| demo-uni-app-vite-tailwindcss-v4__mp-weixin | mp-weixin |')
+    expect(markdown).toContain('| demo-uni-app-vite-tailwindcss-v4__mp-weixin | mp-weixin | 200.00 | 200.00 | +0.00% | fallback-build | - | - | - |')
+    expect(markdown).toContain('| demo-web-react-vite-tailwindcss-v4__web | web |')
     expect(markdown).toContain('fallback-build')
     expect(markdown).toContain('unsupported')
     expect(markdown).toContain('真实 watch HMR 稳态中位数平均变化：-50.00%（1 项；fallback-build/unsupported 不参与）')

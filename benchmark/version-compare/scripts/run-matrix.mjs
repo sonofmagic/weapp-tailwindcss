@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process'
 import fs from 'node:fs/promises'
+import net from 'node:net'
 import path from 'node:path'
 import process from 'node:process'
 import { benchmarkProjects as projects } from './projects.mjs'
@@ -97,6 +98,17 @@ function spawnPnpm(cwd, args, stdio = 'pipe') {
   })
 }
 
+function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
+  return spawn(process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm', args, {
+    cwd,
+    stdio,
+    detached: process.platform !== 'win32',
+    env: { ...process.env, ...env },
+  })
+}
+
+const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
+
 async function readText(file) {
   try {
     return await fs.readFile(file, 'utf8')
@@ -116,6 +128,15 @@ async function exists(file) {
   }
 }
 
+async function statMtimeMs(file) {
+  try {
+    return (await fs.stat(file)).mtimeMs
+  }
+  catch {
+    return 0
+  }
+}
+
 async function waitFor(check, timeoutMs, intervalMs = 120) {
   const start = Date.now()
   while (Date.now() - start < timeoutMs) {
@@ -125,6 +146,100 @@ async function waitFor(check, timeoutMs, intervalMs = 120) {
     await new Promise(resolve => setTimeout(resolve, intervalMs))
   }
   return false
+}
+
+async function findFreePort() {
+  return await new Promise((resolve, reject) => {
+    const server = net.createServer()
+    server.unref()
+    server.once('error', reject)
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address()
+      if (!address || typeof address === 'string') {
+        server.close(() => reject(new Error('unable to resolve free port')))
+        return
+      }
+      const { port } = address
+      server.close(() => resolve(port))
+    })
+  })
+}
+
+function appendQuery(url, key, value) {
+  const separator = url.includes('?') ? '&' : '?'
+  return `${url}${separator}${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+}
+
+function trimTrailingSlash(value) {
+  return value.endsWith('/') ? value.slice(0, -1) : value
+}
+
+function resolveDevServerCommand(projectMeta, port) {
+  if (Array.isArray(projectMeta.devServerCommand) && projectMeta.devServerCommand.length > 0) {
+    return projectMeta.devServerCommand.map(item => String(item).replaceAll('{port}', String(port)))
+  }
+
+  if (projectMeta.devScript === 'dev:h5') {
+    return ['exec', 'uni', '--host', '127.0.0.1', '--port', String(port), '--strictPort']
+  }
+
+  if (projectMeta.devScript === 'dev') {
+    return ['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort']
+  }
+
+  return ['run', projectMeta.devScript]
+}
+
+function resolveServerProbeUrls(projectMeta, baseUrl, marker) {
+  const base = trimTrailingSlash(baseUrl)
+  if (Array.isArray(projectMeta.serverProbePaths) && projectMeta.serverProbePaths.length > 0) {
+    return projectMeta.serverProbePaths.map(item => appendQuery(`${base}${item}`, 'twbench', marker))
+  }
+  const modulePath = projectMeta.serverModulePath ?? `/${projectMeta.sourceFile}`
+  return [appendQuery(`${base}${modulePath}`, 'twbench', marker)]
+}
+
+async function fetchText(url) {
+  const response = await fetch(url, {
+    cache: 'no-store',
+  })
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status} ${response.statusText}`)
+  }
+  return await response.text()
+}
+
+function resolveLoggedBaseUrls(logs, fallbackUrl) {
+  const urls = new Set([fallbackUrl])
+  for (const line of logs) {
+    const matched = line.match(localUrlRE)?.[1]
+    if (matched) {
+      urls.add(matched)
+    }
+  }
+  return Array.from(urls)
+}
+
+async function fetchProbeText(url) {
+  const html = await fetchText(url)
+  const assetUrls = []
+  for (const match of html.matchAll(/(?:src|href)=["']([^"']+)["']/g)) {
+    const assetPath = match[1]
+    if (!assetPath || assetPath.startsWith('http') || assetPath.startsWith('//') || assetPath.startsWith('data:')) {
+      continue
+    }
+    assetUrls.push(new URL(assetPath, url).toString())
+  }
+
+  const assetTexts = []
+  for (const assetUrl of assetUrls) {
+    try {
+      assetTexts.push(await fetchText(appendQuery(assetUrl, 'twbench_asset', Date.now())))
+    }
+    catch {
+    }
+  }
+  return `${html}\n${assetTexts.join('\n')}`
 }
 
 function stopChild(child) {
@@ -223,7 +338,7 @@ async function runBuildOnce(cwd, buildScript, timeoutMs) {
 
 function injectContent(original, marker, injectType) {
   if (injectType === 'vue') {
-    const next = original.replace('</template>', `\n  <view class="${marker} bg-[#123456]">bench</view>\n</template>`)
+    const next = original.replace('</template>', `\n  <view data-tw-bench="${marker}" class="bg-[#123456]">bench</view>\n</template>`)
     if (next === original) {
       throw new Error('inject failed: </template> not found')
     }
@@ -231,20 +346,20 @@ function injectContent(original, marker, injectType) {
   }
 
   if (injectType === 'jsx') {
-    const next = original.replace(/className="([^"]*)"/, (_full, classes) => {
-      return `className="${classes} ${marker}"`
+    const next = original.replace(/className=(['"])(.*?)\1/, (full, quote, classes) => {
+      return `data-tw-bench=${quote}${marker}${quote} ${full.replace(classes, `${classes} bg-[#123456]`)}`
     })
     if (next === original) {
-      throw new Error('inject failed: className="..." not found')
+      throw new Error('inject failed: className="..." or className=\'...\' not found')
     }
     return next
   }
 
   const replaced = original.replace(/class="([^"]*)"/, (_full, classes) => {
-    return `class="${classes} ${marker}"`
+    return `data-tw-bench="${marker}" class="${classes} bg-[#123456]"`
   })
   if (replaced === original) {
-    return `${original}\n<view class="${marker}">bench</view>\n`
+    return `${original}\n<view data-tw-bench="${marker}" class="bg-[#123456]">bench</view>\n`
   }
   return replaced
 }
@@ -253,17 +368,21 @@ async function runHmrRounds({
   cwd,
   sourceFile,
   outputTemplate,
+  outputProbeTemplates = [],
   devScript,
   injectType,
+  devEnv,
   rounds,
   timeoutMs,
   pollIntervalMs,
 }) {
   const sourcePath = path.join(cwd, sourceFile)
   const outputPath = path.join(cwd, outputTemplate)
+  const probePaths = [outputPath, ...outputProbeTemplates.map(item => path.join(cwd, item))]
   const original = await fs.readFile(sourcePath, 'utf8')
+  const initialOutputMtime = await statMtimeMs(outputPath)
 
-  const child = spawnPnpm(cwd, ['run', devScript], 'pipe')
+  const child = spawnPnpmWithEnv(cwd, ['run', devScript], devEnv, 'pipe')
   const logs = []
   const collect = (buf) => {
     const text = buf.toString('utf8')
@@ -288,6 +407,9 @@ async function runHmrRounds({
       if (!(await exists(outputPath))) {
         return false
       }
+      if (await statMtimeMs(outputPath) <= initialOutputMtime) {
+        return false
+      }
       const text = await readText(outputPath)
       return text.trim().length > 0
     }, timeoutMs, pollIntervalMs)
@@ -308,18 +430,124 @@ async function runHmrRounds({
         if (child.exitCode != null) {
           throw new Error(`dev exited during hmr round=${i + 1} code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
         }
-        const text = await readText(outputPath)
-        return text.includes(marker)
+        for (const probePath of probePaths) {
+          const text = await readText(probePath)
+          if (text.includes(marker)) {
+            return true
+          }
+        }
+        return false
       }, timeoutMs, pollIntervalMs)
 
       if (!ok) {
-        throw new Error(`hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}`)
+        throw new Error(`hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${logs.slice(-120).join('\n')}`)
       }
 
       times.push(now() - start)
 
       await fs.writeFile(sourcePath, original, 'utf8')
       await new Promise(resolve => setTimeout(resolve, injectType === 'wxml-class' ? 900 : 260))
+    }
+
+    await fs.writeFile(sourcePath, original, 'utf8')
+    return times
+  }
+  finally {
+    await stopChild(child)
+    await fs.writeFile(sourcePath, original, 'utf8')
+  }
+}
+
+async function runDevServerHmrRounds({
+  cwd,
+  projectMeta,
+  rounds,
+  timeoutMs,
+  pollIntervalMs,
+}) {
+  const sourcePath = path.join(cwd, projectMeta.sourceFile)
+  const original = await fs.readFile(sourcePath, 'utf8')
+  const port = await findFreePort()
+  const child = spawnPnpmWithEnv(cwd, resolveDevServerCommand(projectMeta, port), {
+    BROWSER: 'none',
+    ...projectMeta.devEnv,
+  }, 'pipe')
+  const logs = []
+  const collect = (buf) => {
+    const text = buf.toString('utf8')
+    for (const line of text.split(/\r?\n/)) {
+      if (!line) {
+        continue
+      }
+      logs.push(line)
+      if (logs.length > 600) {
+        logs.shift()
+      }
+    }
+  }
+  child.stdout.on('data', collect)
+  child.stderr.on('data', collect)
+
+  try {
+    let baseUrl = `http://127.0.0.1:${port}/`
+    const ready = await waitFor(async () => {
+      if (child.exitCode != null) {
+        throw new Error(`dev server exited early code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
+      }
+      for (const candidate of resolveLoggedBaseUrls(logs, `http://127.0.0.1:${port}/`)) {
+        try {
+          const text = await fetchText(candidate)
+          if (text.trim().length > 0) {
+            baseUrl = candidate
+            return true
+          }
+        }
+        catch {
+        }
+      }
+      return false
+    }, timeoutMs, pollIntervalMs)
+
+    if (!ready) {
+      throw new Error(`dev server warmup timeout ${timeoutMs}ms\n${logs.slice(-120).join('\n')}`)
+    }
+
+    const times = []
+    for (let i = 0; i < rounds; i += 1) {
+      const marker = `twbench${Date.now()}${i}`
+      const next = injectContent(original, marker, projectMeta.injectType)
+      const probeUrls = resolveServerProbeUrls(projectMeta, baseUrl, marker)
+      const start = now()
+      await fs.writeFile(sourcePath, next, 'utf8')
+
+      let lastError = ''
+      const ok = await waitFor(async () => {
+        if (child.exitCode != null) {
+          throw new Error(`dev server exited during hmr round=${i + 1} code=${child.exitCode}\n${logs.slice(-120).join('\n')}`)
+        }
+        for (const url of probeUrls) {
+          try {
+            const text = await fetchProbeText(url)
+            if (text.includes(marker)) {
+              return true
+            }
+            lastError = `${url} marker not found`
+          }
+          catch (error) {
+            lastError = error instanceof Error ? `${url} ${error.message}` : `${url} ${String(error)}`
+          }
+        }
+        return false
+      }, timeoutMs, pollIntervalMs)
+
+      if (!ok) {
+        throw new Error(`dev server hmr round ${i + 1} timeout ${timeoutMs}ms marker=${marker}\n${lastError}\n${logs.slice(-120).join('\n')}`)
+      }
+
+      times.push(now() - start)
+
+      await fs.writeFile(sourcePath, original, 'utf8')
+      await new Promise(resolve => setTimeout(resolve, 260))
     }
 
     await fs.writeFile(sourcePath, original, 'utf8')
@@ -353,16 +581,29 @@ async function runCase(versionMeta, projectMeta, options) {
     process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr skipped: ${projectMeta.hmrNote}\n`)
   }
   else {
-    hmrMs.push(...await runHmrRounds({
-      cwd,
-      sourceFile: projectMeta.sourceFile,
-      outputTemplate: projectMeta.outputTemplate,
-      devScript: projectMeta.devScript,
-      injectType: projectMeta.injectType,
-      rounds: options.hmrRuns,
-      timeoutMs: options.timeoutMs,
-      pollIntervalMs: options.pollIntervalMs,
-    }))
+    if (projectMeta.hmrDriver === 'dev-server') {
+      hmrMs.push(...await runDevServerHmrRounds({
+        cwd,
+        projectMeta,
+        rounds: options.hmrRuns,
+        timeoutMs: options.timeoutMs,
+        pollIntervalMs: options.pollIntervalMs,
+      }))
+    }
+    else {
+      hmrMs.push(...await runHmrRounds({
+        cwd,
+        sourceFile: projectMeta.sourceFile,
+        outputTemplate: projectMeta.outputTemplate,
+        outputProbeTemplates: projectMeta.outputProbeTemplates,
+        devScript: projectMeta.devScript,
+        injectType: projectMeta.injectType,
+        devEnv: projectMeta.devEnv,
+        rounds: options.hmrRuns,
+        timeoutMs: options.timeoutMs,
+        pollIntervalMs: options.pollIntervalMs,
+      }))
+    }
 
     hmrMs.forEach((ms, idx) => {
       process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] hmr ${idx + 1}/${options.hmrRuns} mode=${hmrMode}: ${ms.toFixed(2)}ms\n`)
@@ -398,7 +639,10 @@ async function main() {
   const options = { buildRuns, hmrRuns, timeoutMs, pollIntervalMs }
   const rows = []
   const selectedProjects = only
-    ? projects.filter(item => only.split(',').map(v => v.trim()).filter(Boolean).includes(item.key))
+    ? projects.filter((item) => {
+        const onlyItems = only.split(',').map(v => v.trim()).filter(Boolean)
+        return onlyItems.includes(item.key) || onlyItems.includes(item.project)
+      })
     : projects
 
   for (const versionMeta of versions) {
