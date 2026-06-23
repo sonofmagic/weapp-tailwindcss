@@ -1287,11 +1287,11 @@ describe('watch-hmr regression summary helpers', () => {
     const mpxCase = buildCases('/repo', { includeLocalOnly: true }).find(item => item.name === 'mpx-tailwindcss-v4')
     const subNormal = mpxCase?.subPackageMutations?.find(item => item.root === 'sub-normal')
 
-    expect(subNormal?.mainStyleMutation?.sourceFile.replace(/\\/g, '/')).toBe('/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css')
-    expect(subNormal?.outputStyleCandidates.map(item => item.replace(/\\/g, '/'))).toContain(
+    expect(subNormal?.mainStyleMutation?.sourceFile ? toRepoPath(subNormal.mainStyleMutation.sourceFile) : undefined).toBe('/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css')
+    expect(subNormal?.outputStyleCandidates.map(toRepoPath)).toContain(
       '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
     )
-    expect(subNormal?.globalStyleCandidates.map(item => item.replace(/\\/g, '/'))).not.toContain(
+    expect(subNormal?.globalStyleCandidates.map(toRepoPath)).not.toContain(
       '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
     )
   })
