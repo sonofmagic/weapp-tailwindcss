@@ -199,6 +199,13 @@ function resolveDomReplacementSelector(item: NonNullable<WebHmrConfig['sourceDom
   return item.selector ?? DOM_REPLACEMENT_SELECTOR
 }
 
+function resolveDomReplacementBeforeSelector(
+  config: WebHmrConfig,
+  item: NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number],
+) {
+  return item.beforeSelector ?? config.readySelector ?? 'body'
+}
+
 async function getDomReplacementComputedStyle(page: Page, selector: string) {
   return page.locator(selector).evaluate((element) => {
     const style = window.getComputedStyle(element)
@@ -455,7 +462,7 @@ async function runSourceDomReplacementSequence(
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} web source-dom-replacement=${item.label} from=${mutation.from} to=${mutation.to}\n`,
     )
-    await waitForWebPageReady(page, page.url(), resolveDomReplacementSelector(item), {
+    await waitForWebPageReady(page, page.url(), resolveDomReplacementBeforeSelector(config, item), {
       timeoutMs: Math.min(options.timeoutMs, 120_000),
       pollMs: options.pollMs,
       message: `[${watchCase.label}] web source DOM replacement base node was not ready: ${item.label}`,

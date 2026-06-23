@@ -387,6 +387,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceDomReplacementSequence: [
         {
           label: 'title and color text-[#00f285] to text-[red]',
+          beforeSelector: '.text-\\[\\#00f285\\]',
           mutate(source) {
             return replaceWebDomSnippet(
               source,

@@ -302,6 +302,7 @@ export interface WebHmrSourceClassReplacement {
 
 export interface WebHmrSourceDomReplacement {
   label: string
+  beforeSelector?: string
   selector?: string
   mutate: (source: string) => {
     next: string

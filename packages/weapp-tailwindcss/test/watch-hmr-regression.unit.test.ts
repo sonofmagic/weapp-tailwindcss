@@ -2805,6 +2805,13 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackVue3V4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
   })
 
+  it('waits for existing Web/H5 DOM nodes before source DOM replacement', () => {
+    const demoExtendedCases = buildDemoExtendedCases('/repo')
+    const uniAppCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
+
+    expect(uniAppCase?.webHmr?.sourceDomReplacementSequence?.[0]?.beforeSelector).toBe('.text-\\[\\#00f285\\]')
+  })
+
   it('filters platform-specific unstable watch cases from grouped runs', () => {
     const cases = buildCases('/repo')
 
