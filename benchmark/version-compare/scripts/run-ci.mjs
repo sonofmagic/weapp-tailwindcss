@@ -113,7 +113,7 @@ function shouldCopy(src) {
   if (parts.some(part => part === '.git' || part === 'node_modules' || part === '.tmp')) {
     return false
   }
-  if (parts.some(part => part === '.turbo' || part === 'coverage' || part === 'coverage-vitest')) {
+  if (parts.some(part => part === '.turbo' || part === 'coverage' || part === 'coverage-vitest' || part === 'dist')) {
     return false
   }
   if (relative === 'benchmark/framework-compare/projects') {

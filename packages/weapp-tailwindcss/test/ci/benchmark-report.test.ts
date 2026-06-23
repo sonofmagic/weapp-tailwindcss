@@ -29,6 +29,15 @@ describe('benchmark ci report', () => {
       'demo-web-react-vite-tailwindcss-v4',
       'demo-web-vue-vite-tailwindcss-v4',
     ]))
+    expect(benchmarkProjects.filter(project => project.key.includes('taro')).every(project => project.hmrMode === 'unsupported')).toBe(true)
+  })
+
+  it('keeps benchmark working copies free from stale build outputs', async () => {
+    const fs = await import('node:fs')
+    const path = await import('node:path')
+    const source = fs.readFileSync(path.resolve(__dirname, '../../../../benchmark/version-compare/scripts/run-ci.mjs'), 'utf8')
+
+    expect(source).toContain("part === 'dist'")
   })
 
   it('keeps published baseline failures non-blocking when current rows pass', async () => {

@@ -289,7 +289,7 @@ async function runHmrRounds({
         return false
       }
       const text = await readText(outputPath)
-      return text.length > 120
+      return text.trim().length > 0
     }, timeoutMs, pollIntervalMs)
 
     if (!ready) {
