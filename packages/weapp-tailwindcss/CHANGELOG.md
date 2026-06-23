@@ -1,5 +1,44 @@
 # weapp-tailwindcss
 
+## 5.1.0
+
+### Minor Changes
+
+- ✨ **移除 Rax 框架兼容支持，不再提供 `appType: 'rax'` 类型、Rax 依赖识别和 `src/global.css` 隐式入口探测。** [`3d04bcf`](https://github.com/sonofmagic/weapp-tailwindcss/commit/3d04bcf6e538eb8ebe7ef27efd00de2280064995) by @sonofmagic
+
+- ✨ **移除 `generator.target: "tailwind"` 生成目标，生成目标仅保留 `weapp` 与 `web`。需要原始 Tailwind Web CSS 时请使用 `generator.target: "web"`。** [`076152e`](https://github.com/sonofmagic/weapp-tailwindcss/commit/076152e4cb73acbf9294c044942bf277559928f8) by @sonofmagic
+
+- ✨ **移除 Tailwind CSS v3 兼容链路，后续生成、运行时与小程序 CSS 处理统一面向 Tailwind CSS v4。** [`d9be474`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d9be474f9f6f205a78f5057421e990a5004a6474) by @sonofmagic
+
+- ✨ **Tailwind CSS v4 入口现在必须来自独立的 `.css` 文件，例如在 `app.css` 中写入 `@import "tailwindcss";`。不再支持把 Tailwind v4 根入口写在 `.scss`、`.less` 等预处理器文件或 Vue SFC 的 `<style>` 块中，也不再消费 inline `tailwindcss.v4.css` 作为根入口。** [`6f79918`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6f79918b3ca70c3ad85399296a5d69e7844624c4) by @sonofmagic
+
+- ✨ **将 `weapp-tailwindcss` 内部的 Tailwind 运行时接入切换为 `@tailwindcss-mangle/engine`，不再依赖 `tailwindcss-patch` 修改 Tailwind 包本身，并移除旧的 `twPatcher`、`createTailwindcssPatcher` 等 patcher 兼容命名，统一使用 Tailwind 运行时对象；同时新增 Tailwind CSS v3/v4 与 Web/H5、小程序、uni-app x Android/iOS/Harmony 的运行时分支路由，并将 Web/H5、小程序、原生 App 与 Tailwind 原样输出拆到独立分支文件，让不同版本和平台走独立判断入口，降低 App 端调整影响 H5 或小程序输出的风险；补齐 Tailwind CSS v3/v4 的源码候选扫描、Vite/Webpack 运行时类集合刷新与相关回归覆盖，并修复运行时候选污染时 WXML/JS 条件表达式里的普通业务字符串被误转义的问题。** [#939](https://github.com/sonofmagic/weapp-tailwindcss/pull/939) by @sonofmagic
+
+- ✨ **Vite 与 Webpack5 生成链路收敛为 Tailwind CSS v4 优先的 CSS-first/loader-first 管线，入口仍保留 `weapp-tailwindcss/vite` 与 `weapp-tailwindcss/webpack`。新管线要求使用 Tailwind CSS v4，并建议通过显式 CSS entry 或 `tailwindcss.v4.cssEntries/cssSources` 声明样式来源；不再依赖旧的隐式 CSS source 推断、Webpack 末端补偿生成或历史 MPX 专用 loader 排序兜底。** [`cff9ad4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cff9ad4d4b076933d017981e5364692915d2dc28) by @sonofmagic
+
+### Patch Changes
+
+- 🐛 **新增实验性 OXC JS 转译快路径，在关闭 source map 且不涉及模块图、模块替换、ignore 语义和任意值兜底时，可通过 `experimentalJsFastPath: 'oxc'` 尝试使用 `oxc-parser` 加速纯字面量转译；不满足条件、运行环境低于 `oxc-parser` 支持范围或无法加载 OXC 时会自动回退到 Babel。该快路径保持可选加载，不会影响 Node.js 18 的默认 CommonJS 使用，并减少遍历期间的临时对象分配。** [#938](https://github.com/sonofmagic/weapp-tailwindcss/pull/938) by @sonofmagic
+
+- 🐛 **补全面向 demo 的热更新回归覆盖，修复 Vite watch 下样式源刷新不及时的问题，并调整 Taro Web/H5 与 Webpack demo 的 HMR 断言，使小程序端、H5 端、正常开发和热更新场景都能稳定通过。** [#935](https://github.com/sonofmagic/weapp-tailwindcss/pull/935) by @sonofmagic
+
+- 🐛 **修复 Webpack web target 下 Tailwind CSS v4 入口 CSS 会被 css-loader 提前展开为 `@media source(none)`，导致文档站生产构建丢失大量样式的问题。** [`0219ec9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0219ec9dad4f32a25bf2259736fd313f39eff1b0) by @sonofmagic
+
+- 🐛 **修复 Webpack web target 在开发态首轮构建中扫描已打包 JS/HTML 导致文档站卡在 92% asset processing 的问题，并确保显式 Tailwind CSS v4 入口在生产与开发构建中都能生成完整工具类样式。** [`dfd9be8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/dfd9be8c88412ac12908170ee65c091cb17b6fa9) by @sonofmagic
+
+- 🐛 **修复 Vite HMR 局部增量构建中缓存 hash 记录持续累积的问题，限制全局 compiler context 缓存的长期驻留规模，并为 watch/HMR 与 CI 流程补充内存报告和内存守卫，便于提前发现内存异常。** [`4d5447c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4d5447cf49be20126691e36d53a41f370383398d) by @sonofmagic
+
+- 🐛 **Vite 集成不再默认替换 Taro 注入的 `postcss-html-transform`，保留 `@tarojs/plugin-html` 自身的样式转换行为。** [#938](https://github.com/sonofmagic/weapp-tailwindcss/pull/938) by @sonofmagic
+
+- 🐛 **修复 Webpack web target 下已生成的 Tailwind CSS v4 产物会丢失官方 layer 声明的问题，并增加 core、Vite、Webpack、Gulp 与官方 PostCSS/Vite 产物一致性的回归测试。** [`a4d7330`](https://github.com/sonofmagic/weapp-tailwindcss/commit/a4d7330d1866e9c17119dd6ae976ba1142c50801) by @sonofmagic
+
+- 🐛 **优化 Tailwind v3/v4 增量生成缓存的内存占用：隔离 CSS 源可复用增量缓存，同时超出候选数或 CSS 字节上限的大型生成结果不再进入长期缓存，避免 HMR 中保留无效的大型 Tailwind context。** [`318e3f6`](https://github.com/sonofmagic/weapp-tailwindcss/commit/318e3f6b21f5f31ea9f840538ce836d0e914a839) by @sonofmagic
+
+- 🐛 **移除 `@weapp-tailwindcss/postcss` 中 Tailwind CSS v3 相关的版本探测、显式 `version` 配置、v3 fixture 与 benchmark 基线。** [`1dc7b97`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1dc7b9766df9ab218e1eedb0eec392e4d0a7f515) by @sonofmagic
+  - PostCSS 生成插件现在固定按 Tailwind CSS v4 CSS-first 流程处理。仅包含 `@apply` 的局部 CSS 会在内部注入 Tailwind v4 `@reference` 上下文并跳过自动源码扫描，不再依赖旧的 v3/v4 分支判断。
+- 📦 **Dependencies** [`1dc7b97`](https://github.com/sonofmagic/weapp-tailwindcss/commit/1dc7b9766df9ab218e1eedb0eec392e4d0a7f515)
+  → `@weapp-tailwindcss/postcss@3.1.0`
+
 ## 5.0.13
 
 ### Patch Changes
