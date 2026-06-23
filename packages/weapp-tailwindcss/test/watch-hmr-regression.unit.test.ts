@@ -2283,11 +2283,18 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-alipay/pages/index/index.wxml'),
     )
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-alipay')?.globalStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-alipay/main.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-alipay/common.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-alipay/app.wxss'),
     ])
     expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.subPackageMutations?.[0]?.globalStyleCandidates).toContain(
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-toutiao/sub-normal/pages/index.wxss'),
     )
+    expect(caseMap.get('uni-app-vite-tailwindcss-v4:mp-toutiao')?.subPackageMutations?.[0]?.globalStyleCandidates).toEqual(expect.arrayContaining([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-toutiao/main.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-toutiao/common.wxss'),
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/build/mp-toutiao/app.wxss'),
+    ]))
   })
 
   it('covers every Taro and uni-app Web/H5 hot-update case in watch config and PR CI', async () => {
@@ -2467,10 +2474,18 @@ describe('watch-hmr regression cases', () => {
       const normalizedCandidates = watchCase.globalStyleCandidates.map(candidate => candidate.replace(/\\/g, '/').replace(/^[A-Z]:(?=\/)/i, ''))
       if (watchCase.name.startsWith('uni-app-vite-tailwindcss-')) {
         const platform = watchCase.name.includes(':') ? watchCase.name.split(':')[1] : 'mp-weixin'
-        const outputKind = watchCase.name.includes(':') ? 'build' : 'dev'
-        expect(normalizedCandidates, watchCase.name).toEqual([
-          `/repo/demo/uni-app-vite-tailwindcss-v4/dist/${outputKind}/${platform}/app.wxss`,
-        ])
+        if (watchCase.name.includes(':')) {
+          expect(normalizedCandidates, watchCase.name).toEqual([
+            `/repo/demo/uni-app-vite-tailwindcss-v4/dist/build/${platform}/main.wxss`,
+            `/repo/demo/uni-app-vite-tailwindcss-v4/dist/build/${platform}/common.wxss`,
+            `/repo/demo/uni-app-vite-tailwindcss-v4/dist/build/${platform}/app.wxss`,
+          ])
+        }
+        else {
+          expect(normalizedCandidates, watchCase.name).toEqual([
+            `/repo/demo/uni-app-vite-tailwindcss-v4/dist/dev/${platform}/app.wxss`,
+          ])
+        }
       }
       if (watchCase.name.startsWith('uni-app-vite-vue3-hbuilderx-tailwindcss-')) {
         expect(normalizedCandidates, watchCase.name).toEqual([

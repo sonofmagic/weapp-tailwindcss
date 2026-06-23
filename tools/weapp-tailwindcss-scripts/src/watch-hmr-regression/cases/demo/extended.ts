@@ -122,6 +122,12 @@ function createUniAppPlatformCase(
   platform: UniAppMiniProgramWatchPlatform,
 ): WatchCase {
   const replacePlatformPath = (filePath: string) => replacePathSegment(filePath, '/dist/dev/mp-weixin/', `/dist/build/${platform}/`)
+  const buildOutputRoot = replacePlatformPath(path.resolve(watchCase.cwd, 'dist/dev/mp-weixin'))
+  const buildGlobalStyleCandidates = [
+    path.join(buildOutputRoot, 'main.wxss'),
+    path.join(buildOutputRoot, 'common.wxss'),
+    path.join(buildOutputRoot, 'app.wxss'),
+  ]
   return {
     ...watchCase,
     name: `${watchCase.name}:${platform}`,
@@ -133,14 +139,17 @@ function createUniAppPlatformCase(
     },
     outputWxml: replacePlatformPath(watchCase.outputWxml),
     outputJs: replacePlatformPath(watchCase.outputJs),
-    outputStyleCandidates: watchCase.outputStyleCandidates.map(replacePlatformPath),
-    globalStyleCandidates: watchCase.globalStyleCandidates.map(replacePlatformPath),
+    outputStyleCandidates: buildGlobalStyleCandidates,
+    globalStyleCandidates: buildGlobalStyleCandidates,
     subPackageMutations: watchCase.subPackageMutations?.map(mutation => ({
       ...mutation,
       outputWxml: replacePlatformPath(mutation.outputWxml),
       outputJs: replacePlatformPath(mutation.outputJs),
       outputStyleCandidates: mutation.outputStyleCandidates.map(replacePlatformPath),
-      globalStyleCandidates: mutation.globalStyleCandidates.map(replacePlatformPath),
+      globalStyleCandidates: [
+        ...mutation.globalStyleCandidates.map(replacePlatformPath),
+        ...buildGlobalStyleCandidates,
+      ],
     })),
   }
 }

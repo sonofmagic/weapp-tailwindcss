@@ -127,11 +127,9 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 15560,
+      "bytes": 15482,
       "selectors": [
-        ".-m-_b20px_B",
         ".-mt-2",
-        "._2xl_ctext-_bred_B",
         "._2xl_ctext-base",
         "._ebg-green-500",
         "._efont-bold",
