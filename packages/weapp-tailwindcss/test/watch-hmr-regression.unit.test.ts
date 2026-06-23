@@ -109,6 +109,7 @@ import {
   isWebCompileDoneLogLine,
   isWebCompileReadyLogLine,
   resolveChromiumLaunchOptions,
+  resolveWebHmrDomAttachTimeout,
   resolveWebHmrMarkerAttachTimeout,
   waitForWebPageReloadReady,
   waitForWebPageReady,
@@ -1282,6 +1283,19 @@ describe('watch-hmr regression summary helpers', () => {
     expect(durations.summaryBySurface['subpackage:sub-independent:main-style:text-[102.43rpx] to text-[103.43rpx]']).toMatchObject({ count: 1, hotUpdateAvgMs: 43, rollbackAvgMs: 44 })
   })
 
+  it('keeps mpx subpackage main-style checks on generated CSS loader carriers', () => {
+    const mpxCase = buildCases('/repo', { includeLocalOnly: true }).find(item => item.name === 'mpx-tailwindcss-v4')
+    const subNormal = mpxCase?.subPackageMutations?.find(item => item.root === 'sub-normal')
+
+    expect(subNormal?.mainStyleMutation?.sourceFile.replace(/\\/g, '/')).toBe('/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css')
+    expect(subNormal?.outputStyleCandidates.map(item => item.replace(/\\/g, '/'))).toContain(
+      '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
+    )
+    expect(subNormal?.globalStyleCandidates.map(item => item.replace(/\\/g, '/'))).not.toContain(
+      '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
+    )
+  })
+
   it('resolves report paths and writes report files', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-watch-summary-'))
     tempDirs.push(tempDir)
@@ -1754,6 +1768,11 @@ describe('watch-hmr regression cases', () => {
   it('keeps Web/H5 HMR marker attach checks above a single poll tick', () => {
     expect(resolveWebHmrMarkerAttachTimeout(40)).toBe(1000)
     expect(resolveWebHmrMarkerAttachTimeout(1500)).toBe(1500)
+  })
+
+  it('keeps Web/H5 source DOM replacement attach checks above a single poll tick', () => {
+    expect(resolveWebHmrDomAttachTimeout(40)).toBe(1000)
+    expect(resolveWebHmrDomAttachTimeout(1500)).toBe(1500)
   })
 
   it('does not treat webpack-dev-server URL output as Web/H5 compile readiness', () => {

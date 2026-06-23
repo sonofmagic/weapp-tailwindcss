@@ -96,6 +96,10 @@ export function resolveWebHmrMarkerAttachTimeout(pollMs: number) {
   return Math.max(pollMs, WEB_HMR_MARKER_ATTACH_MIN_TIMEOUT_MS)
 }
 
+export function resolveWebHmrDomAttachTimeout(pollMs: number) {
+  return resolveWebHmrMarkerAttachTimeout(pollMs)
+}
+
 function normalizeDomExpectedStyle(style: NonNullable<NonNullable<WebHmrConfig['sourceDomReplacementSequence']>[number]['expectedStyle']>) {
   return {
     color: style.color ? normalizeRgb(style.color) : undefined,
@@ -462,7 +466,7 @@ async function runSourceDomReplacementSequence(
         try {
           await page.locator(selector).waitFor({
             state: 'attached',
-            timeout: options.pollMs,
+            timeout: resolveWebHmrDomAttachTimeout(options.pollMs),
           })
           const styleText = await collectStyleText(page)
           verifiedCssIncludes = (item.expectedCssIncludes ?? [])
