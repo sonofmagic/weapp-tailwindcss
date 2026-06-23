@@ -56,6 +56,27 @@ const taroOutputExtensions: Record<TaroMiniProgramWatchPlatform, {
     style: 'ttss',
   },
 }
+const uniAppOutputExtensions: Record<UniAppMiniProgramWatchPlatform, {
+  template: string
+  style: string
+}> = {
+  'mp-weixin': {
+    template: 'wxml',
+    style: 'wxss',
+  },
+  'mp-alipay': {
+    template: 'axml',
+    style: 'acss',
+  },
+  'mp-qq': {
+    template: 'qml',
+    style: 'qss',
+  },
+  'mp-toutiao': {
+    template: 'ttml',
+    style: 'ttss',
+  },
+}
 
 function normalizeExtension(version: 'v3' | 'v4') {
   return version === 'v3' ? 'scss' : 'css'
@@ -121,12 +142,21 @@ function createUniAppPlatformCase(
   watchCase: WatchCase,
   platform: UniAppMiniProgramWatchPlatform,
 ): WatchCase {
+  const outputExtensions = uniAppOutputExtensions[platform]
   const replacePlatformPath = (filePath: string) => replacePathSegment(filePath, '/dist/dev/mp-weixin/', `/dist/build/${platform}/`)
+  const replaceOutputFile = (filePath: string) => {
+    return replaceExtension(
+      replaceExtension(replacePlatformPath(filePath), 'wxml', outputExtensions.template),
+      'wxss',
+      outputExtensions.style,
+    )
+  }
+  const replaceOutputFiles = (files: string[]) => files.map(replaceOutputFile)
   const buildOutputRoot = replacePlatformPath(path.resolve(watchCase.cwd, 'dist/dev/mp-weixin'))
   const buildGlobalStyleCandidates = [
-    path.join(buildOutputRoot, 'main.wxss'),
-    path.join(buildOutputRoot, 'common.wxss'),
-    path.join(buildOutputRoot, 'app.wxss'),
+    path.join(buildOutputRoot, `main.${outputExtensions.style}`),
+    path.join(buildOutputRoot, `common.${outputExtensions.style}`),
+    path.join(buildOutputRoot, `app.${outputExtensions.style}`),
   ]
   return {
     ...watchCase,
@@ -137,17 +167,17 @@ function createUniAppPlatformCase(
       ...watchCase.env,
       UNI_E2E_WATCH_PLATFORM: platform,
     },
-    outputWxml: replacePlatformPath(watchCase.outputWxml),
+    outputWxml: replaceOutputFile(watchCase.outputWxml),
     outputJs: replacePlatformPath(watchCase.outputJs),
     outputStyleCandidates: buildGlobalStyleCandidates,
     globalStyleCandidates: buildGlobalStyleCandidates,
     subPackageMutations: watchCase.subPackageMutations?.map(mutation => ({
       ...mutation,
-      outputWxml: replacePlatformPath(mutation.outputWxml),
+      outputWxml: replaceOutputFile(mutation.outputWxml),
       outputJs: replacePlatformPath(mutation.outputJs),
-      outputStyleCandidates: mutation.outputStyleCandidates.map(replacePlatformPath),
+      outputStyleCandidates: replaceOutputFiles(mutation.outputStyleCandidates),
       globalStyleCandidates: [
-        ...mutation.globalStyleCandidates.map(replacePlatformPath),
+        ...replaceOutputFiles(mutation.globalStyleCandidates),
         ...buildGlobalStyleCandidates,
       ],
     })),
