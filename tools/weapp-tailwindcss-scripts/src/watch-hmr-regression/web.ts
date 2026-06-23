@@ -455,6 +455,11 @@ async function runSourceDomReplacementSequence(
     process.stdout.write(
       `[watch-hmr] ${watchCase.label} web source-dom-replacement=${item.label} from=${mutation.from} to=${mutation.to}\n`,
     )
+    await waitForWebPageReady(page, page.url(), resolveDomReplacementSelector(item), {
+      timeoutMs: Math.min(options.timeoutMs, 120_000),
+      pollMs: options.pollMs,
+      message: `[${watchCase.label}] web source DOM replacement base node was not ready: ${item.label}`,
+    }, hotUpdateStartedAt)
     await writeFilePreserveEol(config.sourceFile, mutation.next, sourceOriginal)
 
     const selector = resolveDomReplacementSelector(item)

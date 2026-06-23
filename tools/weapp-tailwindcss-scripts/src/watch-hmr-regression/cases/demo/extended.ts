@@ -729,6 +729,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       sourceFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/pages/index/index.tsx'),
       cssEntryFile: path.resolve(baseCwd, 'demo/taro-webpack-react-tailwindcss-v4/src/app.css'),
       injectMarkerElement: true,
+      readySelector: '#tw-watch-dom',
       waitForInitialCompileSettled: true,
       initialCompileSettleTimeoutMs: 900_000,
       compileSettleTimeoutMs: 180_000,

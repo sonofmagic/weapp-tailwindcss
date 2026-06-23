@@ -2794,6 +2794,7 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackReactV4Case?.webHmr?.waitForInitialCompileSettled).toBe(true)
     expect(taroWebpackReactV4Case?.webHmr?.initialCompileSettleTimeoutMs).toBeGreaterThanOrEqual(900_000)
     expect(taroWebpackReactV4Case?.webHmr?.injectMarkerElement).toBe(true)
+    expect(taroWebpackReactV4Case?.webHmr?.readySelector).toBe('#tw-watch-dom')
     expect(toSlashPath(taroWebpackReactV4Case?.webHmr?.cssEntryFile ?? '')).toMatch(/demo\/taro-webpack-react-tailwindcss-v4\/src\/app\.css$/)
     expect(taroWebpackReactV4Case?.webHmr?.reloadAfterCssMutation).toBeUndefined()
     expect(taroWebpackReactV4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(180_000)
