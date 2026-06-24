@@ -1,11 +1,9 @@
-::before,::after {
-      --tw-content: "";
-}
-view,text,::before,::after {
+
+    view,text,::before,::after {
       box-sizing: border-box;
-      border-width: 0;
-      border-style: solid;
-      border-color: currentColor;
+      margin: 0;
+      padding: 0;
+      border: 0 solid;
       --tw-shadow: 0 0 rgba(0,0,0,0);
       --tw-shadow-color: initial;
       --tw-shadow-alpha: 100%;
@@ -50,29 +48,36 @@ view,text,::after,::before {
     width: 100px;
   }
 .p-2 {
-    padding: calc(var(--spacing) * 2);
+    padding: 0.5rem;
+    padding: calc(var(--spacing)*2);
   }
 .p-10 {
-    padding: calc(var(--spacing) * 10);
+    padding: 2.5rem;
+    padding: calc(var(--spacing)*10);
   }
 .shadow {
     --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0,0,0,0.10196)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0,0,0,0.10196));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 1px 3px 0 rgba(0,0,0,0.10196), 0 1px 2px -1px rgba(0,0,0,0.10196);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
 .invert {
     --tw-invert: invert(100%);
+            filter:           invert(100%)      ;
             filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
   }
 .before_ccontent-_b_a_u_a_B::before {
       --tw-content: '+';
+      content: '+';
       content: var(--tw-content);
     }
 .before_ccontent-_b_r_ahello_r_a_B::before {
       --tw-content: \'hello\';
+      content: \'hello\';
       content: var(--tw-content);
     }
 @media (prefers-color-scheme: dark) {
 .dark_cbg-zinc-800 {
+      background-color: rgb(39, 39, 42);
       background-color: var(--color-zinc-800);
   }
     }
