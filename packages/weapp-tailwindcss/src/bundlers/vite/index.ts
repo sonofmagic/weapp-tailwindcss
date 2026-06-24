@@ -4,7 +4,6 @@ import type { SourceCandidateCollectorSnapshot, SourceCandidateFilterOptions } f
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { UserDefinedOptions } from '@/types'
 import { Buffer } from 'node:buffer'
-import { existsSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
@@ -39,6 +38,7 @@ import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from 
 import { hasSelfAcceptingNonStyleHotModule, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from './hot-css-modules'
 import { touchMapEntry } from './map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
+import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeStringCache, summarizeViteProcessedCssResults } from './plugin-cache'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
@@ -59,45 +59,9 @@ const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCol
   max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
 })
 
-function isMissingInternalCssSource(file: string) {
-  return !existsSync(file) && path.resolve(file).startsWith(`${weappTailwindcssPackageDir}${path.sep}`)
-}
-
 export interface WeappTailwindcssVitePlugin {
   name: string
   [hook: string]: any
-}
-
-function normalizeVitePersistentCacheKey(file: string) {
-  return normalizeOutputPathKey(file)
-}
-
-function toMb(bytes: number) {
-  return Math.round(bytes / 1024 / 1024)
-}
-
-function summarizeStringCache(map: Map<string, string>) {
-  let bytes = 0
-  for (const value of map.values()) {
-    bytes += value.length
-  }
-  return {
-    bytes,
-    mb: toMb(bytes),
-    size: map.size,
-  }
-}
-
-function summarizeViteProcessedCssResults(map: Map<string, { css: string }>) {
-  let bytes = 0
-  for (const record of map.values()) {
-    bytes += record.css.length
-  }
-  return {
-    bytes,
-    mb: toMb(bytes),
-    size: map.size,
-  }
 }
 
 /**
@@ -168,7 +132,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   let autoCssSourcesRefresh: Promise<void> | undefined
   let autoCssSourcesDiscovered = false
   const syncTailwindCssSourceCandidates = async (id: string, css: string) => {
-    if (tailwindcssMajorVersion === 4 && isMissingInternalCssSource(cleanUrl(id))) {
+    if (tailwindcssMajorVersion === 4 && isMissingInternalCssSource(cleanUrl(id), weappTailwindcssPackageDir)) {
       return
     }
     await sourceCandidateCollector.syncCss(id, css)
@@ -187,7 +151,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!isTailwindV4CssEntry(file)) {
       return
     }
-    if (isMissingInternalCssSource(file)) {
+    if (isMissingInternalCssSource(file, weappTailwindcssPackageDir)) {
       return
     }
     const sourceFile = path.normalize(file)

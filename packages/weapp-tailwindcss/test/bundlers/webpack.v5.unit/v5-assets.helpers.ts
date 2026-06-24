@@ -1,0 +1,598 @@
+import { describe, expect, it } from 'vitest'
+import { MappingChars2String } from '@weapp-core/escape'
+import {
+  addRuntimeTransformCandidates,
+  collectGeneratedCssRuntimeCandidates,
+  collectWebpackJsRuntimeCandidatesFromAssets,
+  collectWebpackJsRuntimeTokenSignature,
+  collectRuntimeTokenSignatureParts,
+  collectWebpackAssetUserCssMarkers,
+  collectWebpackCssRuleIdentityMarkers,
+  createWebpackGeneratorCssSource,
+  createWebpackGeneratorUserCssSourceAppend,
+  createWebpackCssSourceTraceTokenSources,
+  createWebpackCurrentAssetUserRawSource,
+  createWebpackUserCssSourceAppend,
+  finalizeMiniProgramUserCssAssetSource,
+  finalizeTracedWebpackCssAsset,
+  finalizeWebpackCssAssetSource,
+  getRuntimeClassSetSync,
+  hasAdditionalWebpackAssetUserCssMarkers,
+  hasMissingRuntimeCandidates,
+  hasProcessedCssAssetUrl,
+  hasUsableWebpackGeneratorCssSources,
+  hasWebpackTailwindSourceDirectives,
+  isRuntimeTransformCandidate,
+  isWebpackCssSourceRepresentedInAsset,
+  isWebpackTailwindImportRequest,
+  normalizeWebpackGeneratorCssSources,
+  parseWebpackCssLayerNames,
+  pruneMapToMaxSize,
+  pruneWebpackCssHandlerOptionCaches,
+  removeTailwindV4StandaloneHostPreflightRule,
+  removeWebpackGeneratorNonTailwindImports,
+  removeWebpackTailwindGeneratedAssetCss,
+  resolveGeneratedCssRuntimeCandidates,
+  resolveWebpackCssAssetModuleResource,
+  resolveWebpackGeneratorRawSource,
+  isSameWebpackCssSourceScope,
+  shouldFallbackToWebpackUserCssOnGeneratorError,
+  shouldAppendCurrentWebpackAssetUserCss,
+  shouldUseWebpackAssetAsGeneratorUserCss,
+  shouldInjectWebpackCssTracePreflight,
+  stringifyOptionalWebpackSourceValue,
+  stringifyWebpackSourceLike,
+  stripTrailingLineWhitespace,
+  toMb,
+  unescapeCssIdentifier,
+} from '@/bundlers/webpack/BaseUnifiedPlugin/v5-assets'
+import { createEscapeFragments } from '@/bundlers/vite/incremental-runtime-class-set/escaped-candidates'
+import { createContext } from './shared'
+
+class TestWebpackSource {
+  constructor(private readonly value: string | { toString: () => string }) {}
+
+  source() {
+    return this.value
+  }
+}
+
+describe('bundlers/webpack v5-assets helpers', () => {
+  it('removes only standalone :host Tailwind theme preflight rules', () => {
+    expect(removeTailwindV4StandaloneHostPreflightRule('.card{color:red}')).toBe('.card{color:red}')
+    expect(removeTailwindV4StandaloneHostPreflightRule(':host{color:red}.card{color:blue}')).toBe(':host{color:red}.card{color:blue}')
+    expect(removeTailwindV4StandaloneHostPreflightRule(':host{color:red}.card{--tw:--theme(color.red.500)}')).toBe(':host{color:red}.card{--tw:--theme(color.red.500)}')
+    expect(removeTailwindV4StandaloneHostPreflightRule(':host{--tw:--theme(color.red.500)}\n.card{color:red}')).toBe('.card{color:red}')
+    expect(removeTailwindV4StandaloneHostPreflightRule(':host{--tw:--theme(')).toBe(':host{--tw:--theme(')
+  })
+
+  it('filters runtime transform candidates and missing runtime candidates', () => {
+    expect(isRuntimeTransformCandidate('bg-red-500')).toBe(true)
+    expect(isRuntimeTransformCandidate('')).toBe(false)
+    expect(isRuntimeTransformCandidate('foo=bar')).toBe(false)
+    expect(isRuntimeTransformCandidate('<view>')).toBe(false)
+    expect(isRuntimeTransformCandidate('text-${color}')).toBe(false)
+    expect(hasMissingRuntimeCandidates(undefined, new Set(['bg-red-500']))).toBe(false)
+    expect(hasMissingRuntimeCandidates(new Set(['bg-red-500']), undefined)).toBe(false)
+    expect(hasMissingRuntimeCandidates(new Set(['bg-red-500']), new Set(['bg-red-500']))).toBe(false)
+    expect(hasMissingRuntimeCandidates(new Set(['bg-red-500']), new Set(['bg-blue-500']))).toBe(true)
+    expect(hasMissingRuntimeCandidates(new Set<string>(), new Set(['foo=bar']))).toBe(false)
+  })
+
+  it('collects runtime token signatures and generated css runtime candidates', () => {
+    expect(collectRuntimeTokenSignatureParts('foo c_bg_Red alpha_Beta-1 no_match')).toEqual(['c_bg_Red', 'alpha_Beta-1', 'no_match'])
+    const fallback = new Set(['fallback'])
+    expect(resolveGeneratedCssRuntimeCandidates('.plain{color:red}', fallback)).toBe(fallback)
+    expect(resolveGeneratedCssRuntimeCandidates('/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}', fallback)).toEqual(new Set(['bg-red-500']))
+    expect(resolveGeneratedCssRuntimeCandidates('/*! tailwindcss v4.0.0 */ .foo\\:bar{color:red}')).toEqual(new Set(['foo:bar']))
+    expect(collectGeneratedCssRuntimeCandidates('/*! tailwindcss v4.0.0 */ .foo\\3d bar{color:red}')).toEqual(new Set())
+    expect(collectGeneratedCssRuntimeCandidates('/*! tailwindcss v4.0.0 */ .foo{')).toEqual(new Set())
+  })
+
+  it('reads runtime class set synchronously with fallback for unsupported runtimes', () => {
+    expect(getRuntimeClassSetSync({} as any)).toEqual(new Set())
+    expect(getRuntimeClassSetSync({ getClassSetSync: () => undefined } as any)).toEqual(new Set())
+    expect(getRuntimeClassSetSync({ getClassSetSync: () => ['a', 'b'] } as any)).toEqual(new Set(['a', 'b']))
+    expect(getRuntimeClassSetSync({ getClassSetSync: () => { throw new Error('fail') } } as any)).toEqual(new Set())
+  })
+
+  it('collects webpack js runtime candidates and token signatures from assets', () => {
+    const escapeFragments = createEscapeFragments(MappingChars2String)
+    const assets = new Map<string, any>([
+      ['a.js', 'const cls = "bg-_b_h123456_B _e invalid=value"'],
+      ['b.js', new TestWebpackSource({ toString: () => 'const marker = "foo_Bar baz_Qux"' })],
+      ['c.js', 'const cls = "foo_B_g"'],
+    ])
+    const getAssetSource = (file: string) => assets.get(file)
+    expect(collectWebpackJsRuntimeCandidatesFromAssets({
+      escapeFragments,
+      getAssetSource,
+      isWebGeneratorTarget: true,
+      jsAssets: ['a.js'],
+    })).toBeUndefined()
+    expect(collectWebpackJsRuntimeCandidatesFromAssets({
+      escapeFragments,
+      getAssetSource,
+      isWebGeneratorTarget: false,
+      jsAssets: ['missing.js', 'a.js'],
+    })).toEqual(new Set(['bg-[#123456]']))
+    expect(collectWebpackJsRuntimeCandidatesFromAssets({
+      escapeFragments,
+      getAssetSource,
+      isWebGeneratorTarget: false,
+      jsAssets: ['c.js'],
+    })).toEqual(new Set())
+    expect(collectWebpackJsRuntimeTokenSignature({
+      getAssetSource,
+      isWebGeneratorTarget: true,
+      jsAssets: ['b.js'],
+    })).toBe('')
+    expect(collectWebpackJsRuntimeTokenSignature({
+      getAssetSource,
+      isWebGeneratorTarget: false,
+      jsAssets: ['missing.js', 'b.js'],
+    })).toBe('baz_Qux\nfoo_Bar')
+    expect(stringifyWebpackSourceLike('plain')).toBe('plain')
+    expect(stringifyWebpackSourceLike(new TestWebpackSource({ toString: () => 'object-source' }) as any)).toBe('object-source')
+
+    const target = new Set(['base'])
+    addRuntimeTransformCandidates(target, undefined)
+    addRuntimeTransformCandidates(target, new Set(['bg-red-500', 'foo=bar']))
+    expect(target).toEqual(new Set(['base', 'bg-red-500']))
+
+    expect(stringifyOptionalWebpackSourceValue('plain')).toBe('plain')
+    expect(stringifyOptionalWebpackSourceValue({ toString: () => 'object' })).toBe('object')
+    expect(stringifyOptionalWebpackSourceValue(undefined)).toBe('')
+  })
+
+  it('covers small cache and string helpers', () => {
+    expect(toMb(2 * 1024 * 1024 + 100)).toBe(2)
+    expect(stripTrailingLineWhitespace('a  \n\tb\t\nc')).toBe('a\n\tb\nc')
+
+    const map = new Map<string, number>([['a', 1], ['b', 2], ['c', 3]])
+    pruneMapToMaxSize(map, 2)
+    expect([...map.keys()]).toEqual(['b', 'c'])
+    pruneMapToMaxSize(map, 3)
+    expect([...map.keys()]).toEqual(['b', 'c'])
+    pruneMapToMaxSize(new Map(), 0)
+    const undefinedKeyMap = new Map<any, number>([[undefined, 1], ['next', 2]])
+    pruneMapToMaxSize(undefinedKeyMap, 0)
+    expect([...undefinedKeyMap.keys()]).toEqual([undefined, 'next'])
+  })
+
+  it('prunes webpack css handler option caches by active css assets and max size', () => {
+    const cssHandlerOptionsCache = new Map<string, any>([
+      ['4:1:src:hash:generator:app.wxss', {}],
+      ['4:1:src:hash:generator:stale.wxss', {}],
+    ])
+    const cssUserHandlerOptionsCache = new Map<string, any>()
+    for (let index = 0; index < 130; index++) {
+      cssUserHandlerOptionsCache.set(`key-${index}:app.wxss`, {})
+    }
+    pruneWebpackCssHandlerOptionCaches(cssHandlerOptionsCache, cssUserHandlerOptionsCache, new Set(['app.wxss']))
+    expect([...cssHandlerOptionsCache.keys()]).toEqual(['4:1:src:hash:generator:app.wxss'])
+    expect(cssUserHandlerOptionsCache.size).toBe(128)
+    expect(cssUserHandlerOptionsCache.has('key-0:app.wxss')).toBe(false)
+    expect(cssUserHandlerOptionsCache.has('key-129:app.wxss')).toBe(true)
+  })
+
+  it('resolves generator raw source from explicit Tailwind source css', () => {
+    expect(resolveWebpackGeneratorRawSource('.asset{}', { isMainChunk: true, postcssOptions: { options: { from: 'app.wxss' } } })).toBe('.asset{}')
+    expect(resolveWebpackGeneratorRawSource('.asset{}', {
+      isMainChunk: true,
+      postcssOptions: { options: { from: 'app.wxss' } },
+      sourceOptions: {
+        sourceCss: '@tailwind utilities;',
+      },
+    })).toBe('@tailwind utilities;')
+    expect(resolveWebpackGeneratorRawSource('.asset{}', {
+      isMainChunk: true,
+      postcssOptions: { options: { from: 'app.wxss' } },
+      sourceOptions: {
+        sourceCss: '/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}',
+      },
+    })).toBe('/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}')
+  })
+
+  it('normalizes generator css source arrays', () => {
+    expect(hasUsableWebpackGeneratorCssSources(undefined)).toBe(false)
+    expect(hasUsableWebpackGeneratorCssSources([{ css: '', file: 'empty.css', base: '.', dependencies: [] } as any])).toBe(false)
+    expect(hasUsableWebpackGeneratorCssSources([{ css: '@tailwind utilities;', file: 'app.css', base: '.', dependencies: [] } as any])).toBe(true)
+    expect(normalizeWebpackGeneratorCssSources(undefined)).toBeUndefined()
+    expect(normalizeWebpackGeneratorCssSources([])).toBeUndefined()
+    expect(normalizeWebpackGeneratorCssSources([
+      { css: '', file: 'empty.css', base: '.', dependencies: [] } as any,
+      { css: '@tailwind utilities;', file: 'app.css', base: '.', dependencies: [] } as any,
+    ])).toEqual([{ css: '@tailwind utilities;', file: 'app.css', base: '.', dependencies: [] }])
+    expect(createWebpackGeneratorCssSource(undefined, '@tailwind utilities;')).toBeUndefined()
+    expect(createWebpackGeneratorCssSource('/repo/app.css', '.card{}')).toBeUndefined()
+    expect(createWebpackGeneratorCssSource('/repo/app.css', '@tailwind utilities;')).toEqual({
+      file: '/repo/app.css',
+      base: '/repo',
+      css: '@tailwind utilities;',
+      dependencies: ['/repo/app.css'],
+    })
+  })
+
+  it('detects processed css asset urls and generator user css eligibility', () => {
+    expect(hasProcessedCssAssetUrl('.icon{background:url(data:image/svg+xml,a)}')).toBe(true)
+    expect(hasProcessedCssAssetUrl('.icon{background:url("/a.svg")}')).toBe(false)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{color:red}', '.generated{}')).toBe(true)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{background:url(data:image/svg+xml,a)}', '.generated{}')).toBe(false)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('.card{background:url(data:image/svg+xml,a)}', '.generated{}', { processed: true })).toBe(true)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('@tailwind utilities;', '.generated{}')).toBe(false)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}', '/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}')).toBe(false)
+    expect(shouldUseWebpackAssetAsGeneratorUserCss('/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}.card{color:blue}', '/*! tailwindcss v4.0.0 */ .bg-red-500{color:red}')).toBe(true)
+  })
+
+  it('collects user css markers from selectors, custom properties, keyframes and font faces', () => {
+    expect(collectWebpackAssetUserCssMarkers([
+      '.card,.escaped\\:hover{--brand:red;color:red}',
+      'page{display:block}',
+      '@keyframes spin{to{opacity:1}}',
+      '@font-face{font-family:"Icon Font";src:url(icon.woff2)}',
+    ].join('\n'))).toEqual(new Set([
+      'class:card',
+      'class:escaped\\:hover',
+      'class:woff2',
+      'selector:page',
+      'selector:to',
+      'custom-property:--brand',
+      'keyframes:spin',
+      'font-face:"Icon Font"',
+    ]))
+    expect(collectWebpackAssetUserCssMarkers('.card{')).toEqual(new Set(['class:card']))
+  })
+
+  it('parses and removes webpack Tailwind generated layer css', () => {
+    expect(parseWebpackCssLayerNames('theme, utilities, components')).toEqual(['theme', 'utilities', 'components'])
+    expect(parseWebpackCssLayerNames(' , base , ')).toEqual(['base'])
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer theme, utilities;\n@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer theme{.bg-red-500{color:red}}\n@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
+    expect(removeWebpackTailwindGeneratedAssetCss('@supports (display:grid){}')).toBe('')
+    expect(removeWebpackTailwindGeneratedAssetCss('@media screen{@supports (display:grid){}}')).toBe('')
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer components{}')).toBe('')
+    expect(removeWebpackTailwindGeneratedAssetCss('@media screen{}')).toBe('')
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer theme{')).toBe('@layer theme{')
+  })
+
+  it('collects css rule identity markers and unescapes identifiers', () => {
+    expect(unescapeCssIdentifier('foo\\3a bar')).toBe('foo:bar')
+    expect(unescapeCssIdentifier('foo\\:bar')).toBe('foo:bar')
+    expect(collectWebpackCssRuleIdentityMarkers('.foo,.bar\\3a baz{color:red}@keyframes spin{to{}}')).toEqual(new Set([
+      'class:foo',
+      'class:bar\\3a',
+      'keyframes:spin',
+    ]))
+    expect(collectWebpackCssRuleIdentityMarkers('.foo{color:red}@keyframes {to{}}')).toEqual(new Set(['class:foo']))
+    expect(collectWebpackCssRuleIdentityMarkers('.foo{')).toEqual(new Set())
+  })
+
+  it('detects additional user css markers against generator css', () => {
+    expect(hasAdditionalWebpackAssetUserCssMarkers('.card{color:red}', '.card{color:red}')).toBe(false)
+    expect(hasAdditionalWebpackAssetUserCssMarkers('.card{color:red}.extra{color:blue}', '.card{color:red}')).toBe(true)
+    expect(hasAdditionalWebpackAssetUserCssMarkers('}', '.card{color:red}')).toBe(false)
+  })
+
+  it('detects webpack Tailwind source directives and import requests', () => {
+    expect(hasWebpackTailwindSourceDirectives(undefined)).toBe(false)
+    expect(hasWebpackTailwindSourceDirectives('.card{}')).toBe(false)
+    expect(hasWebpackTailwindSourceDirectives('@tailwind utilities;')).toBe(true)
+    expect(hasWebpackTailwindSourceDirectives('@source "../pages";')).toBe(true)
+    expect(hasWebpackTailwindSourceDirectives('.bg-red-500{color:red}/*! tailwindcss v4.0.0 */')).toBe(true)
+
+    expect(isWebpackTailwindImportRequest(undefined)).toBeUndefined()
+    expect(isWebpackTailwindImportRequest('tailwindcss')).toBe(true)
+    expect(isWebpackTailwindImportRequest('tailwindcss/theme.css')).toBe(true)
+    expect(isWebpackTailwindImportRequest('tailwindcss4')).toBe(true)
+    expect(isWebpackTailwindImportRequest('tailwindcss4/utilities')).toBe(true)
+    expect(isWebpackTailwindImportRequest('weapp-tailwindcss')).toBe(true)
+    expect(isWebpackTailwindImportRequest('weapp-tailwindcss/index.css')).toBe(true)
+    expect(isWebpackTailwindImportRequest('./local.css')).toBe(false)
+  })
+
+  it('removes non-Tailwind imports from generator source css', () => {
+    expect(removeWebpackGeneratorNonTailwindImports(undefined)).toBeUndefined()
+    expect(removeWebpackGeneratorNonTailwindImports('.card{}')).toBe('.card{}')
+    expect(removeWebpackGeneratorNonTailwindImports([
+      '@import "./theme.css";',
+      '@import "tailwindcss";',
+      '@import "weapp-tailwindcss/index.css";',
+      '.card{color:red}',
+    ].join('\n'))).toBe([
+      '@import "tailwindcss";',
+      '@import "weapp-tailwindcss/index.css";',
+      '.card{color:red}',
+    ].join('\n'))
+    expect(removeWebpackGeneratorNonTailwindImports('@import "')).toBe('@import "')
+  })
+
+  it('checks whether source css is represented in webpack asset css', () => {
+    expect(isWebpackCssSourceRepresentedInAsset('.card{color:red}', undefined)).toBe(false)
+    expect(isWebpackCssSourceRepresentedInAsset('.card{color:red}', '@tailwind utilities;')).toBe(false)
+    expect(isWebpackCssSourceRepresentedInAsset('.card{color:red}@keyframes fade{to{}}', [
+      '@tailwind utilities;',
+      '.card{color:red}',
+      '@keyframes fade{to{}}',
+    ].join('\n'))).toBe(true)
+    expect(isWebpackCssSourceRepresentedInAsset('.card{color:red}', [
+      '@tailwind utilities;',
+      '.missing{color:red}',
+    ].join('\n'))).toBe(false)
+  })
+
+  it('creates sorted and deduped user css appends', () => {
+    expect(createWebpackUserCssSourceAppend([], '.generated{}')).toBeUndefined()
+    expect(createWebpackUserCssSourceAppend([
+      { file: '/repo/b.css', css: '.b{color:blue}', processed: true },
+      { file: '/repo/a.css', css: '.a{color:red}', processed: true },
+      { file: '/repo/dup.css', css: '.a{color:red}', processed: true },
+      { file: '/repo/skip.css', css: '.skip{color:black}', processed: true },
+      { file: '/repo/data.css', css: '.icon{background:url(data:image/svg+xml,a)}' },
+    ], '.generated{}', '/repo/b.css', file => !file.endsWith('skip.css'))).toEqual({
+      css: '.b{color:blue}\n.a{color:red}',
+      processed: true,
+    })
+    expect(createWebpackUserCssSourceAppend([
+      { file: '/repo/c.css', css: '.c{color:cyan}', processed: true },
+      { file: '/repo/a.css', css: '.a{color:red}', processed: true },
+      { file: '/repo/b.css', css: '.b{color:blue}', processed: true },
+    ], '.generated{}', '/repo/b.css')).toEqual({
+      css: '.b{color:blue}\n.a{color:red}\n.c{color:cyan}',
+      processed: true,
+    })
+    expect(createWebpackUserCssSourceAppend([
+      { file: '/repo/current.css', css: '.current{color:green}', processed: true },
+      { file: '/repo/a.css', css: '.a{color:red}', processed: true },
+    ], '.generated{}', '/repo/current.css')).toEqual({
+      css: '.current{color:green}\n.a{color:red}',
+      processed: true,
+    })
+    expect(createWebpackUserCssSourceAppend([
+      { file: '/repo/a.css', css: '.generated{}', processed: true },
+    ], '.generated{}')).toBeUndefined()
+  })
+
+  it('combines generator user css source parts without duplicating existing rules', () => {
+    expect(createWebpackGeneratorUserCssSourceAppend(undefined)).toBeUndefined()
+    expect(createWebpackGeneratorUserCssSourceAppend({ css: '   ', processed: true })).toBeUndefined()
+    expect(createWebpackGeneratorUserCssSourceAppend(
+      { css: '.a{color:red}', processed: true },
+      { css: '.a{color:red}\n.b{color:blue}', processed: false },
+    )).toEqual({
+      css: '.a{color:red}\n.b{color:blue}',
+      processed: false,
+    })
+    expect(createWebpackGeneratorUserCssSourceAppend(
+      { css: '.a{color:red}', processed: true },
+      { css: '.a{color:red}', processed: true },
+    )).toEqual({
+      css: '.a{color:red}',
+      processed: true,
+    })
+  })
+
+  it('resolves css trace preflight injection for mpx sub chunks', () => {
+    expect(shouldInjectWebpackCssTracePreflight(undefined, { isMainChunk: false })).toBe(true)
+    expect(shouldInjectWebpackCssTracePreflight('mpx', { isMainChunk: true })).toBe(true)
+    expect(shouldInjectWebpackCssTracePreflight('mpx', { isMainChunk: false })).toBe(false)
+  })
+
+  it('resolves webpack css asset module resources from webpack module metadata', () => {
+    const cssMatcher = (file: string) => file.endsWith('.css') || file.endsWith('.wxss')
+    expect(resolveWebpackCssAssetModuleResource('/repo/src/app.css?modules', undefined, { cssMatcher })).toBe('/repo/src/app.css')
+    expect(resolveWebpackCssAssetModuleResource('?type=styles', undefined, { appType: 'mpx', cssMatcher })).toBeUndefined()
+    expect(resolveWebpackCssAssetModuleResource('./page.css?modules', { resource: '/repo/src/pages/index.js' }, { cssMatcher })).toBe('/repo/src/pages/page.css')
+    expect(resolveWebpackCssAssetModuleResource('./page.css?modules', { context: '/repo/src/pages' }, { cssMatcher })).toBe('/repo/src/pages/page.css')
+    expect(resolveWebpackCssAssetModuleResource('./page.css?modules', undefined, { cssMatcher })).toBeUndefined()
+    expect(resolveWebpackCssAssetModuleResource('/repo/src/app.js', undefined, { cssMatcher })).toBeUndefined()
+    expect(resolveWebpackCssAssetModuleResource('/repo/src/app.wxss?type=styles', undefined, { appType: 'mpx', cssMatcher })).toBe('/repo/src/app.wxss')
+  })
+
+  it('checks whether registered css sources share the same webpack output scope', () => {
+    const resourcesByAsset = new Map<string, Set<string>>([
+      ['pages/index.css', new Set(['/repo/src/pages/index.css'])],
+    ])
+    expect(isSameWebpackCssSourceScope({
+      candidateSourceFile: '/repo/src/pages/index.css',
+      outputFile: 'pages/index.css',
+      resourcesByAsset,
+    })).toBe(false)
+    expect(isSameWebpackCssSourceScope({
+      candidateSourceFile: '/repo/src/pages/index.css',
+      currentSourceFile: '/repo/src/pages/index.css',
+      outputFile: 'pages/index.css',
+      resourcesByAsset,
+    })).toBe(true)
+    expect(isSameWebpackCssSourceScope({
+      candidateSourceFile: '/repo/src/pages/index.css',
+      currentSourceFile: '/repo/src/app.css',
+      outputFile: 'pages/index.css',
+      resourcesByAsset,
+    })).toBe(true)
+    expect(isSameWebpackCssSourceScope({
+      candidateSourceFile: '/repo/src/other.css',
+      currentSourceFile: '/repo/src/app.css',
+      outputFile: 'pages/index.css',
+      resourcesByAsset,
+    })).toBe(false)
+  })
+
+  it('decides whether current webpack asset user css should be appended', () => {
+    const base = {
+      currentAssetHasBundlerGeneratedMarker: false,
+      currentAssetHasUserCss: true,
+      currentAssetLooksGenerated: false,
+      registeredUserRawSource: undefined,
+      shouldPreserveGeneratedWebAssetUserCss: false,
+      sourceCssProcessed: false,
+    }
+    expect(shouldAppendCurrentWebpackAssetUserCss(base)).toBe(true)
+    expect(shouldAppendCurrentWebpackAssetUserCss({ ...base, currentAssetHasBundlerGeneratedMarker: true })).toBe(false)
+    expect(shouldAppendCurrentWebpackAssetUserCss({ ...base, shouldPreserveGeneratedWebAssetUserCss: true })).toBe(false)
+    expect(shouldAppendCurrentWebpackAssetUserCss({ ...base, sourceCssProcessed: true, registeredUserRawSource: { css: '.registered{}', processed: true }, currentAssetHasUserCss: false })).toBe(false)
+    expect(shouldAppendCurrentWebpackAssetUserCss({ ...base, sourceCssProcessed: true, registeredUserRawSource: { css: '.registered{}', processed: true }, currentAssetHasUserCss: true })).toBe(true)
+    expect(shouldAppendCurrentWebpackAssetUserCss({ ...base, sourceCssProcessed: true, currentAssetLooksGenerated: true, currentAssetHasUserCss: false })).toBe(false)
+
+    expect(createWebpackCurrentAssetUserRawSource({
+      currentAssetHasUserCss: true,
+      currentAssetLooksGenerated: false,
+      currentAssetUserCssSource: '.asset{}',
+      shouldAppendCurrentAssetUserCss: false,
+      sourceCssProcessed: false,
+    })).toBeUndefined()
+    expect(createWebpackCurrentAssetUserRawSource({
+      currentAssetHasUserCss: false,
+      currentAssetLooksGenerated: false,
+      currentAssetUserCssSource: '.asset{}',
+      shouldAppendCurrentAssetUserCss: true,
+      sourceCssProcessed: true,
+    })).toEqual({ css: '.asset{}', processed: true })
+    expect(createWebpackCurrentAssetUserRawSource({
+      currentAssetHasUserCss: false,
+      currentAssetLooksGenerated: false,
+      currentAssetUserCssSource: '.asset{}',
+      shouldAppendCurrentAssetUserCss: true,
+      sourceCssProcessed: false,
+    })).toBeUndefined()
+    expect(createWebpackCurrentAssetUserRawSource({
+      currentAssetHasUserCss: true,
+      currentAssetLooksGenerated: true,
+      currentAssetUserCssSource: '.asset{}',
+      shouldAppendCurrentAssetUserCss: true,
+      sourceCssProcessed: false,
+    })).toEqual({ css: '.asset{}', processed: true })
+  })
+
+  it('decides when plain webpack css can fall back after generator errors', () => {
+    expect(shouldFallbackToWebpackUserCssOnGeneratorError({
+      configuredMainCssEntryFilesLength: 0,
+      generatorRawSource: '.card{color:red}',
+      hasExplicitTailwindV4SourceCss: false,
+    })).toBe(true)
+    expect(shouldFallbackToWebpackUserCssOnGeneratorError({
+      configuredMainCssEntryFilesLength: 1,
+      generatorRawSource: '.card{color:red}',
+      hasExplicitTailwindV4SourceCss: false,
+    })).toBe(false)
+    expect(shouldFallbackToWebpackUserCssOnGeneratorError({
+      configuredMainCssEntryFilesLength: 0,
+      generatorRawSource: '@tailwind utilities;',
+      hasExplicitTailwindV4SourceCss: false,
+    })).toBe(false)
+    expect(shouldFallbackToWebpackUserCssOnGeneratorError({
+      configuredMainCssEntryFilesLength: 0,
+      generatorRawSource: '@source "../pages";',
+      hasExplicitTailwindV4SourceCss: false,
+    })).toBe(false)
+    expect(shouldFallbackToWebpackUserCssOnGeneratorError({
+      configuredMainCssEntryFilesLength: 0,
+      generatorRawSource: '.btn{@apply flex;}',
+      hasExplicitTailwindV4SourceCss: false,
+    })).toBe(false)
+    expect(shouldFallbackToWebpackUserCssOnGeneratorError({
+      configuredMainCssEntryFilesLength: 0,
+      generatorRawSource: '.card{color:red}',
+      hasExplicitTailwindV4SourceCss: true,
+    })).toBe(false)
+  })
+
+  it('finalizes mini-program user css assets while preserving web target css', () => {
+    const baseContext = createContext({
+      cssPreflight: {
+        'box-sizing': 'border-box',
+      },
+      cssRemoveHoverPseudoClass: true,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+      },
+    } as any)
+    expect(finalizeMiniProgramUserCssAssetSource('.card:hover{color:red}', baseContext as any, true)).toBe('.card:hover{color:red}')
+    const finalized = finalizeMiniProgramUserCssAssetSource('.card,.card:hover{color:red}', baseContext as any, false)
+    expect(finalized).not.toContain(':hover')
+    expect(finalized).toContain('.card')
+    const withoutPreflight = finalizeMiniProgramUserCssAssetSource('.card{color:red}', baseContext as any, false, {
+      cssPreflight: false,
+    })
+    expect(withoutPreflight).toContain('.card')
+  })
+
+  it('finalizes traced webpack css assets according to target and trace options', () => {
+    const cssHandlerOptions = {
+      isMainChunk: false,
+      postcssOptions: { options: { from: 'page.css' } },
+    }
+    const baseContext = createContext({
+      appType: 'mpx',
+      cssPreflight: {
+        'box-sizing': 'border-box',
+      },
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+      },
+    } as any)
+    expect(finalizeTracedWebpackCssAsset('.card{color:red}', cssHandlerOptions, {
+      annotateCss: css => `traced:${css}`,
+      compilerOptions: baseContext as any,
+      isWebGeneratorTarget: true,
+    })).toBe('traced:.card{color:red}')
+    expect(finalizeTracedWebpackCssAsset('.card{color:red}', cssHandlerOptions, {
+      annotateCss: css => `traced:${css}`,
+      compilerOptions: baseContext as any,
+      isWebGeneratorTarget: false,
+    })).toBe('traced:.card{color:red}')
+    const traceContext = {
+      ...baseContext,
+      cssSourceTrace: true,
+    }
+    expect(createWebpackCssSourceTraceTokenSources(baseContext as any, undefined)).toBeUndefined()
+    expect(createWebpackCssSourceTraceTokenSources(baseContext as any, {
+      getSourceCandidatesForEntries: () => new Set(),
+      signatureHash: 'sig',
+      tokenSources: new Map([['card', new Set(['/repo/src/page.wxml'])]]),
+    })).toBeUndefined()
+    expect(createWebpackCssSourceTraceTokenSources(traceContext as any, {
+      getSourceCandidatesForEntries: () => new Set(),
+      signatureHash: 'sig',
+      tokenSources: new Map([['card', new Set(['/repo/src/page.wxml'])]]),
+    })?.get('card')).toEqual({
+      token: 'card',
+      sources: ['/repo/src/page.wxml'],
+    })
+    const finalized = finalizeTracedWebpackCssAsset('.card{color:red}', cssHandlerOptions, {
+      annotateCss: css => `/* tokens: card <= src/page.wxml */\n${css}`,
+      compilerOptions: traceContext as any,
+      isWebGeneratorTarget: false,
+    })
+    expect(finalized).toContain('tokens:')
+    expect(finalized).toContain('.card')
+  })
+
+  it('finalizes webpack css asset sources for web and mini-program targets', () => {
+    const baseContext = createContext({
+      cssPreflight: {
+        'box-sizing': 'border-box',
+      },
+      cssRemoveHoverPseudoClass: true,
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        majorVersion: 4,
+      },
+    } as any)
+
+    expect(finalizeWebpackCssAssetSource('@tailwind utilities;\n.card{color:red}', baseContext as any, true)).toBe('.card{color:red}')
+    expect(finalizeWebpackCssAssetSource('/*! weapp-tailwindcss generated */\n.card{color:red}', baseContext as any, true, {
+      generatedCss: true,
+    })).toContain('.card')
+    expect(finalizeWebpackCssAssetSource('.card:hover{color:red}', baseContext as any, false)).not.toContain(':hover')
+    expect(finalizeWebpackCssAssetSource('@media {', baseContext as any, false, {
+      generatedCss: true,
+    })).toContain('@media')
+    expect(finalizeWebpackCssAssetSource('view,text,::after,::before{border:0 solid}.card{color:red', baseContext as any, false, {
+      generatedCss: true,
+    })).toContain('.card')
+  })
+})

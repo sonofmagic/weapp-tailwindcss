@@ -1,4 +1,6 @@
 import './webpack.v5.unit/watch.cases'
+import './webpack.v5.unit/v5-assets.helpers'
+import './webpack.v5.unit/v5-assets.hook-branches.cases'
 import './webpack.v5.unit/process-cache-basic.cases'
 import './webpack.v5.unit/process-cache-debug.cases'
 import './webpack.v5.unit/source-candidate-cache.test'

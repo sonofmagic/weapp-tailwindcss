@@ -2,7 +2,6 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundle/types'
 import path from 'node:path'
 import process from 'node:process'
-import { logger } from '@weapp-tailwindcss/logger'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
@@ -21,16 +20,17 @@ import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState } from './bundle-state'
-import { collectUnescapedDynamicCandidates } from './generate-bundle/candidates'
 import { collectConfiguredTailwindV4CssSourceEntries } from './generate-bundle/configured-css-sources'
 import { createCssAssetEmitter, resolveAssetSourceFile } from './generate-bundle/css-assets'
 import { normalizeRelativeCssConfigDirectives } from './generate-bundle/css-config-directives'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
-import { canProcessViteSourceStyleAsCss, normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssOutputFile, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from './generate-bundle/css-output'
+import { normalizeCssSourceForCompare, resolveMiniProgramStyleOutputExtension, resolveViteCssPipelineOutputFile } from './generate-bundle/css-output'
+import { applyCssResultToBundle, createMatchedCssSourceOutputResolver, hasViteProcessedCssResultForSource, resolveCssBundleOutputFile, resolveOutputFileFromMatchedCssSource, shouldSkipRawSourceStyleAsset } from './generate-bundle/css-output-helpers'
 import { createCssRuntimeSignature, createCssTransformShareScopeKey } from './generate-bundle/css-share-scope'
 import { hasOmittedKnownBundleFiles } from './generate-bundle/dirty-state'
 import { resolveGenerateBundleEnvFlags } from './generate-bundle/env-flags'
 import { finalizeGenerateBundle } from './generate-bundle/finalize'
+import { processHtmlBundleEntry } from './generate-bundle/html-processing'
 import { createJsEntryResolver } from './generate-bundle/js-entries'
 import { createJsHandlerOptionsFactory } from './generate-bundle/js-handler-options'
 import { createLinkedUpdateHelpers } from './generate-bundle/js-linking'
@@ -41,11 +41,14 @@ import { createRememberedCssRuntimeSignature, findRememberedCssSources, mergeRem
 import { processRememberedCssReplay } from './generate-bundle/remembered-css-replay'
 import { registerGeneratorDependencies } from './generate-bundle/rollup-assets'
 import { collectCssExtensionByStem, collectJsImportedCssFiles, collectRuntimeLinkedCssFiles } from './generate-bundle/runtime-linked-css'
+import { rememberRuntimeLinkedCssSources } from './generate-bundle/runtime-linked-source-memory'
 import { createScopedGeneratorCandidateSignature, createScopedGeneratorRuntime as resolveScopedGeneratorRuntime } from './generate-bundle/scoped-generator'
 import { hasSfcStyleSources, hasTailwindGenerationSource, normalizeSfcSourceFileForCompare, resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from './generate-bundle/sfc-style-source'
 import { createCandidateSignature, hasRuntimeAffectingSourceChanges, summarizeStringDiff } from './generate-bundle/signatures'
 import { createSubpackageSourceCandidateScope } from './generate-bundle/source-candidate-scope'
+import { resolveCurrentSourceCandidateSource } from './generate-bundle/source-candidate-source'
 import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './generate-bundle/subpackages'
+import { isSameSubpackageScope, selectTailwindV4GenerationCssSourceForOutput } from './generate-bundle/tailwind-v4-css-source'
 import { createBundleTaskTimer } from './generate-bundle/timing'
 import { getLastCssResult, normalizeViteCssCacheKey, rememberLastCssResult } from './generate-bundle/vite-css-cache'
 import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset } from './processed-css-assets'
@@ -56,42 +59,9 @@ import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './
 export { normalizeBundleFileNameKeysForTest } from './generate-bundle/bundle-file-names'
 export { resolveMiniProgramStyleOutputExtension, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile } from './generate-bundle/css-output'
 export { resolveRememberedCssSourceForTest } from './generate-bundle/remembered-css'
+export { shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './generate-bundle/root-style-output'
+
 export type { GenerateBundleContext, GenerateBundleThis, RememberedCssSource } from './generate-bundle/types'
-
-function isRootMiniProgramStyleOutputFile(file: string) {
-  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
-  return !normalized.includes('/')
-    && /\.(?:wxss|acss|ttss|qss|jxss|tyss)$/i.test(normalized)
-}
-
-function createRelativeCssImportRequest(targetFile: string, importedFile: string) {
-  const normalizedTargetFile = normalizeOutputPathKey(targetFile.replace(/[?#].*$/, ''))
-  const normalizedImportedFile = normalizeOutputPathKey(importedFile.replace(/[?#].*$/, ''))
-  const targetDir = path.posix.dirname(normalizedTargetFile)
-  const baseDir = targetDir === '.' ? '' : targetDir
-  const relative = path.posix.relative(baseDir, normalizedImportedFile)
-  return relative.startsWith('.') ? relative : `./${relative}`
-}
-
-function createCssImportShell(targetFile: string, importedFile: string) {
-  return `@import "${createRelativeCssImportRequest(targetFile, importedFile)}";\n`
-}
-
-function createRootMiniProgramOriginStyleOutputFile(file: string) {
-  const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
-  if (/(?:^|\/)[^/]+-origin\.[^.]+$/i.test(normalized)) {
-    return normalized
-  }
-  return normalized.replace(/(\.[^.]+)$/, '-origin$1')
-}
-
-export function shouldKeepRootMiniProgramStyleAsImportShell(appType: unknown) {
-  return appType === 'uni-app-vite' || appType === 'uni-app-x' || appType === 'taro'
-}
-
-export function shouldMoveRootMiniProgramStyleToImportShellOrigin(appType: unknown) {
-  return appType === 'taro'
-}
 
 export function createGenerateBundleHook(context: GenerateBundleContext) {
   const state = createBundleBuildState()
@@ -240,211 +210,22 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           },
         },
       }, opts.tailwindcssBasedir ?? rootDir)
-    const collectTailwindV4SourceFingerprint = (source: string) => {
-      const tokens = new Set<string>()
-      const add = (prefix: string, value: string | undefined) => {
-        const normalized = value?.trim()
-        if (normalized) {
-          tokens.add(`${prefix}:${normalized}`)
-        }
-      }
-      for (const match of source.matchAll(/@config\s+(["'])(.+?)\1\s*;?/g)) {
-        const configRequest = match[2] ?? ''
-        add('config', path.basename(configRequest))
-        add('config-request', configRequest.replace(/\\/g, '/'))
-      }
-      for (const match of source.matchAll(/@source\s+(not\s+)?(["'])(.+?)\2\s*;?/g)) {
-        add(match[1] ? 'source:not' : 'source', match[3])
-      }
-      for (const match of source.matchAll(/@custom-variant\s+([^{\s]+)/g)) {
-        add('custom-variant', match[1])
-      }
-      for (const match of source.matchAll(/@(?:theme|utility|variant|layer)\s+([^{;\s]+)/g)) {
-        add('directive', match[1])
-      }
-      for (const match of source.matchAll(/--[\w-]+(?=\s*:)/g)) {
-        add('theme-token', match[0])
-      }
-      for (const match of source.matchAll(/\.([_a-z][\w-]*)\s*[{,]/gi)) {
-        add('selector', match[1])
-      }
-      return tokens
-    }
-    const scoreConfiguredTailwindV4SourceForRawSource = (rawSource: string | undefined, entrySource: string) => {
-      if (!rawSource) {
-        return 0
-      }
-      const rawTokens = collectTailwindV4SourceFingerprint(rawSource)
-      if (rawTokens.size === 0) {
-        return 0
-      }
-      const entryTokens = collectTailwindV4SourceFingerprint(entrySource)
-      let score = 0
-      for (const token of entryTokens) {
-        if (rawTokens.has(token)) {
-          score += token.startsWith('config:') ? 100 : 1
-        }
-      }
-      return score
-    }
-    const selectTailwindV4GenerationCssSourceForOutput = (
-      outputFile: string,
-      entries: ReturnType<typeof getConfiguredTailwindV4CssSourceEntries>,
-      rawSource?: string,
-    ) => {
-      const generationSources = entries.filter(entry => hasTailwindGenerationSource(entry.source))
-      if (generationSources.length <= 1) {
-        return generationSources[0]
-      }
-      const selectByRawSourceFingerprint = (candidates: typeof generationSources) => {
-        const scoredSources = candidates
-          .map(entry => ({
-            entry,
-            score: scoreConfiguredTailwindV4SourceForRawSource(rawSource, entry.source),
-          }))
-          .filter(item => item.score > 0)
-          .sort((a, b) => b.score - a.score)
-        const bestScore = scoredSources[0]?.score
-        const bestSources = bestScore ? scoredSources.filter(item => item.score === bestScore) : []
-        return bestSources.length === 1 ? bestSources[0]?.entry : undefined
-      }
-      const rawSourceMatched = selectByRawSourceFingerprint(generationSources)
-      if (rawSourceMatched) {
-        return rawSourceMatched
-      }
-      const scopedSources = currentSubpackageRoots
-        ? generationSources.filter((entry) => {
-            const outputMatchesSubpackage = isSubpackageOutputFile(outputFile, currentSubpackageRoots!)
-            const sourceMatchesSubpackage = isSubpackageOutputFile(entry.file, currentSubpackageRoots!)
-            if (!outputMatchesSubpackage) {
-              return !sourceMatchesSubpackage
-            }
-            return sourceMatchesSubpackage
-              && [...currentSubpackageRoots!].some(root =>
-                isSubpackageOutputFile(outputFile, new Set([root]))
-                && isSubpackageOutputFile(entry.file, new Set([root])),
-              )
-          })
-        : generationSources
-      const explicitSources = scopedSources.filter(entry =>
-        /@(?:config|source|plugin|custom-variant|theme|utility|variant|apply)\b/.test(entry.source),
-      )
-      const candidates = explicitSources.length === 1 ? explicitSources : scopedSources
-      if (candidates.length === 1) {
-        return candidates[0]
-      }
-      return selectByRawSourceFingerprint(candidates)
-    }
-    const resolveSubpackageRootForFile = (file: string | undefined) => {
-      if (!file || !currentSubpackageRoots) {
-        return undefined
-      }
-      return [...currentSubpackageRoots].find(root =>
-        isSubpackageOutputFile(file, new Set([root])),
-      )
-    }
-    const isSameSubpackageScope = (outputFile: string, sourceFile: string | undefined) => {
-      const outputRoot = resolveSubpackageRootForFile(outputFile)
-      const sourceRoot = resolveSubpackageRootForFile(sourceFile)
-      return outputRoot === sourceRoot
-    }
     const normalizeGeneratorUserRawSource = (
       source: string,
       sourceFile: string,
       fallbackFile: string,
     ) => normalizeRelativeCssConfigDirectives(source, sourceFile || fallbackFile, outDir, opts)
-    const normalizeSourceCandidatePathKey = (file: string) => normalizeOutputPathKey(path.resolve(file))
-    const resolveCurrentSourceCandidateSource = (file: string) => {
-      const cleanedFile = file.replace(/[?#].*$/, '')
-      const normalizedFile = normalizeOutputPathKey(cleanedFile)
-      const absoluteFile = path.isAbsolute(cleanedFile)
-        ? cleanedFile
-        : path.resolve(rootDir, cleanedFile)
-      const relativeFromOutDir = normalizeOutputPathKey(path.relative(outDir, absoluteFile))
-      const sourceCandidates = [
-        sourceRoot ? path.resolve(sourceRoot, file) : undefined,
-        path.resolve(rootDir, file),
-        path.resolve(path.dirname(outDir), file),
-        path.resolve(outDir, file),
-        !path.isAbsolute(relativeFromOutDir) && !relativeFromOutDir.startsWith('../')
-          ? path.resolve(rootDir, relativeFromOutDir)
-          : undefined,
-        !path.isAbsolute(relativeFromOutDir) && !relativeFromOutDir.startsWith('../')
-          ? path.resolve(path.dirname(outDir), relativeFromOutDir)
-          : undefined,
-        file,
-      ]
-      const explicitSource = sourceCandidates.reduce<string | undefined>((source, candidate) => {
-        if (source || !candidate) {
-          return source
-        }
-        return getSourceCandidateSource?.(candidate)
-      }, undefined)
-      if (explicitSource) {
-        return explicitSource
-      }
-
-      const normalizedSourceCandidates = sourceCandidates
-        .filter((candidate): candidate is string => Boolean(candidate))
-        .map(candidate => ({
-          absolute: path.isAbsolute(candidate),
-          key: normalizeSourceCandidatePathKey(candidate),
-        }))
-      let bestSource: {
-        score: number
-        source: string
-      } | undefined
-      for (const [sourceFile, source] of getSourceCandidateSources?.() ?? []) {
-        const normalizedSourceFile = normalizeSourceCandidatePathKey(sourceFile)
-        let score = 0
-        for (const candidate of normalizedSourceCandidates) {
-          if (normalizedSourceFile === candidate.key) {
-            score = Math.max(score, candidate.absolute ? 100 : 80)
-            continue
-          }
-          if (normalizedSourceFile.endsWith(`/${candidate.key}`)) {
-            score = Math.max(score, candidate.absolute ? 60 : 40)
-          }
-        }
-        if (normalizedSourceFile.endsWith(`/${normalizedFile}`)) {
-          score = Math.max(score, 20)
-        }
-        if (score > (bestSource?.score ?? 0)) {
-          bestSource = {
-            score,
-            source,
-          }
-        }
-      }
-      return bestSource?.source
-    }
-    const resolveOutputFileFromMatchedCssSource = (sourceFile: string | undefined) => {
-      if (!sourceFile) {
-        return undefined
-      }
-      const outputFile = resolveViteCssPipelineOutputFileFromSourceFile(
-        sourceFile,
+    const resolveMatchedCssSourceOutputFile = (sourceFile: string | undefined) =>
+      resolveOutputFileFromMatchedCssSource({
+        bundleFiles,
+        defaultStyleOutputExtension,
+        isWebGeneratorTarget,
         opts,
         rootDir,
-        isWebGeneratorTarget,
-        false,
+        shouldPreserveAppCssExtension: false,
+        sourceFile,
         sourceRoot,
-        defaultStyleOutputExtension,
-        bundleFiles,
-      )
-      return opts.cssMatcher(outputFile)
-        ? outputFile
-        : undefined
-    }
-    const hasViteProcessedCssResultForSource = (sourceFile: string) => {
-      const sourceKey = normalizeOutputPathKey(sourceFile)
-      for (const [file] of getViteProcessedCssAssetResults?.() ?? []) {
-        if (normalizeOutputPathKey(file) === sourceKey) {
-          return true
-        }
-      }
-      return false
-    }
+      })
     const usedConfiguredTailwindV4CssSourceFiles = new Set<string>()
     const buildCommand = resolvedConfig?.command === 'build'
     const hasPreviousBundleState = state.iteration > 0 || state.sourceHashByFile.size > 0
@@ -569,34 +350,24 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       ...collectRuntimeLinkedCssFiles(snapshot, cssExtensionByStem, defaultStyleOutputExtension),
       ...jsImportedCssFiles,
     ])
-    for (const file of runtimeLinkedCssFiles) {
-      if (snapshot.sourceHashByFile.has(file)) {
-        processFiles.css.add(file)
-        continue
-      }
-      const outputFile = resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, shouldPreserveAppCssExtension, sourceRoot, defaultStyleOutputExtension, bundleFiles)
-      const inferredSourceStyle = resolveSourceStyleSourceFromOutputFile(
-        outputFile,
-        snapshot,
-        outDir,
-        sourceRoot,
-        getSourceCandidateSource,
-        jsImportedCssFiles.has(file) ? getSourceCandidateSources : undefined,
-        getConfiguredTailwindV4CssSourceEntries().map(entry => [entry.file, entry.source] as [string, string]),
-        debug,
-      )
-      const rawSource = inferredSourceStyle?.rawSource
-        ?? getSourceCandidateSource?.(path.resolve(outDir, file))
-        ?? getSourceCandidateSource?.(file)
-      if (rawSource === undefined || !hasTailwindGenerationSource(rawSource)) {
-        continue
-      }
-      rememberCssSource?.({
-        outputFile,
-        rawSource,
-        sourceFile: inferredSourceStyle?.sourceFile ?? path.resolve(outDir, file),
-      })
-    }
+    rememberRuntimeLinkedCssSources({
+      bundleFiles,
+      debug,
+      defaultStyleOutputExtension,
+      getConfiguredTailwindV4CssSourceEntries,
+      getSourceCandidateSource,
+      getSourceCandidateSources,
+      isWebGeneratorTarget,
+      jsImportedCssFiles,
+      opts,
+      outDir,
+      rememberCssSource,
+      rootDir,
+      runtimeLinkedCssFiles,
+      shouldPreserveAppCssExtension,
+      snapshot,
+      sourceRoot,
+    })
     recordGeneratorCandidates?.(generatorRuntime)
     const dynamicRetryCandidates = new Set([
       ...sourceCandidates,
@@ -653,82 +424,31 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         if (!processFiles.html.has(file)) {
           continue
         }
-        const rememberedSource = resolveCurrentSourceCandidateSource(file)
-        const rawSource = rememberedSource ?? originalEntrySource
-        const currentRawDynamicCandidates = collectUnescapedDynamicCandidates(rawSource)
-        const templateRuntime = currentRawDynamicCandidates.length > 0
-          ? new Set([
-              ...transformRuntime,
-              ...currentRawDynamicCandidates,
-            ])
-          : transformRuntime
-        const templateRuntimeSignature = templateRuntime === transformRuntime
-          ? transformRuntimeSignature
-          : createCandidateSignature(templateRuntime)
-        const htmlProcessHash = `${cache.computeHash(rawSource)}:${cache.computeHash(createRuntimeAffectingSourceSignature(rawSource, 'html'))}:${templateRuntimeSignature}`
-        const cacheKey = `${file}:html:${htmlProcessHash}`
-        const hashKey = cacheKey
-        rememberProcessCacheKey(cacheKey, hashKey)
-        tasks.push(timeTask('html', () =>
-          processCachedTask<string>({
-            cache,
-            cacheKey,
-            hashKey,
-            hash: htmlProcessHash,
-            applyResult(source) {
-              originalSource.source = source
-            },
-            onCacheHit() {
-              metrics.html.cacheHits++
-              debug('html cache hit: %s', file)
-            },
-            async transform() {
-              const start = performance.now()
-              let transformed = await templateHandler(rawSource, {
-                runtimeSet: templateRuntime,
-              })
-              let unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed)
-              let retryRuntimeSet: Set<string> | undefined
-
-              if (unresolvedDynamicCandidates.length > 0) {
-                const fullRuntimeSet = await context.ensureRuntimeClassSet(true)
-                const allowedRetryCandidates = fullRuntimeSet.size === 0
-                  ? unresolvedDynamicCandidates
-                  : unresolvedDynamicCandidates.filter(candidate => dynamicRetryCandidates.has(candidate) || fullRuntimeSet.has(candidate))
-                retryRuntimeSet = new Set([
-                  ...fullRuntimeSet,
-                  ...allowedRetryCandidates,
-                ])
-                unresolvedDynamicCandidates = unresolvedDynamicCandidates.filter(candidate => retryRuntimeSet?.has(candidate) === true)
-              }
-
-              if (retryRuntimeSet && unresolvedDynamicCandidates.length > 0) {
-                logger.warn(
-                  '检测到已提取 WXML 动态类名未完成转译，已回退到完整 runtimeSet 重试: %s -> %O',
-                  file,
-                  unresolvedDynamicCandidates,
-                )
-                transformed = await templateHandler(rawSource, {
-                  runtimeSet: retryRuntimeSet,
-                })
-                unresolvedDynamicCandidates = collectUnescapedDynamicCandidates(transformed, retryRuntimeSet)
-                if (unresolvedDynamicCandidates.length > 0) {
-                  logger.warn(
-                    '已提取 WXML 动态类名在完整 runtimeSet 重试后仍未完成转译: %s -> %O',
-                    file,
-                    unresolvedDynamicCandidates,
-                  )
-                }
-              }
-              metrics.html.elapsed += measureElapsed(start)
-              metrics.html.transformed++
-              onUpdate(file, rawSource, transformed)
-              debug('html handle: %s', file)
-              return {
-                result: transformed,
-              }
-            },
-          })))
+        processHtmlBundleEntry({
+          cache,
+          context,
+          debug,
+          dynamicRetryCandidates,
+          file,
+          metrics,
+          onUpdate,
+          originalEntrySource,
+          originalSource,
+          rememberProcessCacheKey,
+          resolveCurrentSourceCandidateSource: file => resolveCurrentSourceCandidateSource({
+            file,
+            getSourceCandidateSource,
+            getSourceCandidateSources,
+            outDir,
+            rootDir,
+            sourceRoot,
+          }),
+          tasks,
+          templateHandler,
+          timeTask,
+          transformRuntime,
+          transformRuntimeSignature,
+        })
         continue
       }
 
@@ -739,76 +459,40 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         // 否则会退回未转译内容并与同轮 JS/WXML 的 class 改写失配。
         const assetSourceFile = resolveAssetSourceFile(originalSource, file)
         const rawSource = normalizeRelativeCssConfigDirectives(originalEntrySource, assetSourceFile, outDir, opts)
-        let outputFile = resolveViteCssOutputFile(file, opts, isWebGeneratorTarget, shouldPreserveAppCssExtension, defaultStyleOutputExtension, bundleFiles)
-        if (
-          outputFile !== file
-          && (originalSource.originalFileNames?.length ?? 0) > 0
-          && opts.cssMatcher(file)
-        ) {
-          outputFile = file
-        }
-        if (
-          outputFile === file
-          && isRootMiniProgramStyleOutputFile(file)
-          && shouldMoveRootMiniProgramStyleToImportShellOrigin(opts.appType)
-        ) {
-          outputFile = createRootMiniProgramOriginStyleOutputFile(file)
-        }
-        const resolveMatchedOutputFileForCurrentAsset = (sourceFile: string | undefined) => {
-          if (!sourceFile) {
-            return undefined
-          }
-          if (
-            normalizeOutputPathKey(assetSourceFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, ''))
-            || originalSource.originalFileNames?.some(originalFile =>
-              normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, '')),
-            )
-          ) {
-            return file
-          }
-          return resolveOutputFileFromMatchedCssSource(sourceFile)
-        }
+        let outputFile = resolveCssBundleOutputFile({
+          bundleFiles,
+          defaultStyleOutputExtension,
+          file,
+          isWebGeneratorTarget,
+          opts,
+          shouldPreserveAppCssExtension,
+        })
+        const resolveMatchedOutputFileForCurrentAsset = createMatchedCssSourceOutputResolver({
+          assetSourceFile,
+          file,
+          originalFileNames: originalSource.originalFileNames,
+          resolveOutputFileFromMatchedCssSource: resolveMatchedCssSourceOutputFile,
+        })
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
-        if (outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)) {
+        if (shouldSkipRawSourceStyleAsset(outputFile, file, rawSource)) {
           delete bundle[file]
           debug('css skip raw source style asset: %s -> %s', file, outputFile)
           continue
         }
+        const hasViteProcessedCssRecord = getViteProcessedCssAssetResult?.(file) != null
+        const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
         const applyCssResult = (source: string) => {
-          if (outputFile !== file) {
-            const shouldKeepSourceAsImportShell = isRootMiniProgramStyleOutputFile(file)
-              && isRootMiniProgramStyleOutputFile(outputFile)
-              && shouldKeepRootMiniProgramStyleAsImportShell(opts.appType)
-            const importShellSource = shouldKeepSourceAsImportShell
-              ? createCssImportShell(file, outputFile)
-              : undefined
-            if (bundle[file] === originalSource && originalSource.originalFileNames?.includes(assetSourceFile)) {
-              const existingOutput = bundle[outputFile]
-              if (existingOutput?.type === 'asset') {
-                existingOutput.source = source
-              }
-              else {
-                emitOrReplayCssAsset(outputFile, source)
-              }
-              originalSource.source = importShellSource ?? source
-              return
-            }
-            const existingOutput = bundle[outputFile]
-            if (existingOutput?.type === 'asset') {
-              existingOutput.source = source
-            }
-            else {
-              emitOrReplayCssAsset(outputFile, source)
-            }
-            if (!viteProcessedCssAsset && SOURCE_STYLE_OUTPUT_EXT_RE.test(file)) {
-              delete bundle[file]
-            }
-            else {
-              originalSource.source = importShellSource ?? ''
-            }
-            return
-          }
-          originalSource.source = source
+          applyCssResultToBundle({
+            appType: opts.appType,
+            assetSourceFile,
+            bundle,
+            emitOrReplayCssAsset,
+            file,
+            originalSource,
+            outputFile,
+            source,
+            viteProcessedCssAsset,
+          })
         }
         if (isWebGeneratorTarget && !shouldGenerateWebCssByGenerator) {
           applyCssResult(rawSource)
@@ -817,8 +501,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           debug('css skip web target: %s', outputFile)
           continue
         }
-        const hasViteProcessedCssRecord = getViteProcessedCssAssetResult?.(file) != null
-        const viteProcessedCssAsset = isViteProcessedCssAsset?.(originalSource, file) === true || hasViteProcessedCssRecord
         const cssAssetProcessed = isCssAssetProcessed?.(originalSource, file) === true
         const alreadyProcessedCssAsset = viteProcessedCssAsset || cssAssetProcessed
         let rememberedCssSources = findRememberedCssSources(
@@ -863,7 +545,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && rememberedCssSources.length > 0
           && rememberedCssSources.some(remembered =>
             configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')))
-            && !isSameSubpackageScope(outputFile, remembered.sourceFile),
+            && !isSameSubpackageScope(outputFile, remembered.sourceFile, currentSubpackageRoots),
           )
         ) {
           rememberedCssSources = []
@@ -912,8 +594,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             const availableConfiguredTailwindV4CssSourceEntries = configuredTailwindV4CssSourceEntries.filter(entry =>
               !usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(entry.file)),
             )
-            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource)
-            if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file)) {
+            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource, currentSubpackageRoots)
+            if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file, getViteProcessedCssAssetResults)) {
               outputFile = resolveMatchedOutputFileForCurrentAsset(configuredGenerationSource.file) ?? outputFile
               activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
               outputCssHandlerOptions = getCssHandlerOptions(outputFile)
@@ -1303,10 +985,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         bundle,
         bundleFiles,
         cache,
+        cssTaskFactories,
         createScopedGeneratorRuntime,
         createScopedSourceCandidateGetter,
         createScopedSourceCandidateSourceGetter,
-        cssTaskFactories,
         debug,
         defaultStyleOutputExtension,
         emitOrReplayCssAsset,
