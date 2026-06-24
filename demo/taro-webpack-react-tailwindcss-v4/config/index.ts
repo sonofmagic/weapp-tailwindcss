@@ -85,6 +85,12 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
 
           }
         },
+        autoprefixer: {
+          enable: true,
+          config: {
+            overrideBrowserslist: ['iOS >= 8', 'Android >= 4.1'],
+          }
+        },
         cssModules: {
           enable: false, // 默认为 false，如需使用 css modules 功能，则设为 true
           config: {

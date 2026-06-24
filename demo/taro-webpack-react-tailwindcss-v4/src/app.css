@@ -45,3 +45,11 @@ view {
     transform: scale(0.96);
   }
 }
+
+.issue-940-app-class {
+  color: rgb(4, 5, 6);
+}
+
+.issue-941-bg-image {
+  background-image: url("./issue-941-asset.svg");
+}

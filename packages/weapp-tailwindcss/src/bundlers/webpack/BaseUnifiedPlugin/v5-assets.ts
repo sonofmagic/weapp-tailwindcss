@@ -26,6 +26,7 @@ import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '.
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives, isPureLocalCssImportWrapper } from '../../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, parseImportRequest, removeTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { createCssSourceOrderAppend, hasMiniProgramTailwindV4PreflightReset } from '../../shared/generator-css/generation-helpers'
+import { removeGeneratedSelectorCompatCss } from '../../shared/generator-css/legacy-selectors'
 import { scoreTailwindV4CssSourceFileMatch } from '../../shared/generator-css/source-resolver/matching'
 import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../shared/generator-css/user-css'
 import { emitHmrTiming } from '../../shared/hmr-timing'
@@ -214,6 +215,10 @@ function normalizeWebpackGeneratorCssSources(cssSources: TailwindV4CssSource[] |
   }
   const normalized = cssSources.filter(source => typeof source?.css === 'string' && source.css.length > 0)
   return normalized.length > 0 ? normalized : undefined
+}
+
+function hasProcessedCssAssetUrl(css: string) {
+  return /url\(\s*["']?data:/i.test(css)
 }
 
 function shouldUseWebpackAssetAsGeneratorUserCss(
@@ -1557,7 +1562,13 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       hasTailwindSourceDirectives(sourceCss, { importFallback: true })
                       || sourceCss.includes('@config')
                     )
-                  if (loaderGeneratedCss && !shouldRegenerateExplicitTailwindV4CssSource) {
+                  if (
+                    loaderGeneratedCss
+                    && (
+                      !shouldRegenerateExplicitTailwindV4CssSource
+                      || hasBundlerGeneratedCssMarker(currentRawSource)
+                    )
+                  ) {
                     for (const className of loaderGeneratedCss.classSet) {
                       generatorRuntimeSet.add(className)
                       transformRuntimeSet.add(className)
@@ -1565,7 +1576,34 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     for (const dependency of loaderGeneratedCss.dependencies) {
                       compilation.fileDependencies?.add?.(dependency)
                     }
-                    const css = finalizeTracedCss(finalizeCssAssetSource(loaderGeneratedCss.css, { generatedCss: true }), cssHandlerOptions)
+                    const currentRawSourceWithoutBundlerMarkers = stripBundlerGeneratedCssMarkers(currentRawSource)
+                    const currentAssetHasProcessedUrl = hasProcessedCssAssetUrl(currentRawSourceWithoutBundlerMarkers)
+                      && currentRawSourceWithoutBundlerMarkers !== loaderGeneratedCss.css
+                    const currentAssetUserCss = currentAssetHasProcessedUrl
+                      ? currentRawSourceWithoutBundlerMarkers
+                      : shouldUseWebpackAssetAsGeneratorUserCss(currentRawSourceWithoutBundlerMarkers, loaderGeneratedCss.css, {
+                        processed: true,
+                      })
+                        ? removeGeneratedSelectorCompatCss(
+                            currentRawSourceWithoutBundlerMarkers,
+                            loaderGeneratedCss.css,
+                          )
+                        : undefined
+                    const mergedLoaderCss = currentAssetUserCss === undefined
+                      ? loaderGeneratedCss.css
+                      : (createWebpackGeneratorUserCssSourceAppend(
+                          {
+                            css: currentAssetHasProcessedUrl
+                              ? removeGeneratedSelectorCompatCss(loaderGeneratedCss.css, currentAssetUserCss)
+                              : filterExistingCssRules(currentAssetUserCss, loaderGeneratedCss.css),
+                            processed: true,
+                          },
+                          {
+                            css: currentAssetUserCss,
+                            processed: true,
+                          },
+                        )?.css ?? loaderGeneratedCss.css)
+                    const css = finalizeTracedCss(finalizeCssAssetSource(mergedLoaderCss, { generatedCss: true }), cssHandlerOptions)
                     debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
                     return {
                       result: new ConcatSource(css),
