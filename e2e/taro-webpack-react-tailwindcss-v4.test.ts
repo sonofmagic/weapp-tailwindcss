@@ -81,6 +81,25 @@ describe('e2e', () => {
     expect(countCssSelector(css, '.issue-940-app-class')).toBe(1)
   })
 
+  it('keeps webpack processed static asset urls in app wxss', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const css = await fs.readFile(
+      path.resolve(projectPath, 'dist/app.wxss'),
+      'utf8',
+    )
+
+    expect(css).toContain('.issue-941-bg-image')
+    expect(css).toMatch(/background-image:\s*url\(["']?data:image\/svg\+xml[;,]/)
+    expect(css).not.toContain('./issue-941-asset.svg')
+  })
+
   it('keeps NutUI css imported from app entry in page wxss', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)

@@ -217,6 +217,10 @@ function normalizeWebpackGeneratorCssSources(cssSources: TailwindV4CssSource[] |
   return normalized.length > 0 ? normalized : undefined
 }
 
+function hasProcessedCssAssetUrl(css: string) {
+  return /url\(\s*["']?data:/i.test(css)
+}
+
 function shouldUseWebpackAssetAsGeneratorUserCss(
   rawSource: string,
   generatorRawSource: string,
@@ -1573,19 +1577,25 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       compilation.fileDependencies?.add?.(dependency)
                     }
                     const currentRawSourceWithoutBundlerMarkers = stripBundlerGeneratedCssMarkers(currentRawSource)
-                    const currentAssetUserCss = shouldUseWebpackAssetAsGeneratorUserCss(currentRawSourceWithoutBundlerMarkers, loaderGeneratedCss.css, {
-                      processed: true,
-                    })
-                      ? removeGeneratedSelectorCompatCss(
-                          currentRawSourceWithoutBundlerMarkers,
-                          loaderGeneratedCss.css,
-                        )
-                      : undefined
+                    const currentAssetHasProcessedUrl = hasProcessedCssAssetUrl(currentRawSourceWithoutBundlerMarkers)
+                      && currentRawSourceWithoutBundlerMarkers !== loaderGeneratedCss.css
+                    const currentAssetUserCss = currentAssetHasProcessedUrl
+                      ? currentRawSourceWithoutBundlerMarkers
+                      : shouldUseWebpackAssetAsGeneratorUserCss(currentRawSourceWithoutBundlerMarkers, loaderGeneratedCss.css, {
+                        processed: true,
+                      })
+                        ? removeGeneratedSelectorCompatCss(
+                            currentRawSourceWithoutBundlerMarkers,
+                            loaderGeneratedCss.css,
+                          )
+                        : undefined
                     const mergedLoaderCss = currentAssetUserCss === undefined
                       ? loaderGeneratedCss.css
                       : (createWebpackGeneratorUserCssSourceAppend(
                           {
-                            css: loaderGeneratedCss.css,
+                            css: currentAssetHasProcessedUrl
+                              ? removeGeneratedSelectorCompatCss(loaderGeneratedCss.css, currentAssetUserCss)
+                              : filterExistingCssRules(currentAssetUserCss, loaderGeneratedCss.css),
                             processed: true,
                           },
                           {

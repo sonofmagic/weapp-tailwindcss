@@ -234,4 +234,135 @@ describe('bundlers/webpack WeappTailwindcss / registered source css taro main', 
     expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
   })
 
+  it('keeps webpack processed asset urls when merging loader generated css', async () => {
+    testState.currentContext = createContext({
+      rewriteCssImports: true,
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+      styleHandler: vi.fn(async (code: string) => ({ css: `handled:${code}` })),
+      tailwindRuntime: {
+        ...createContext().tailwindRuntime,
+        getClassSet: vi.fn(async () => new Set(['test-class'])),
+        getClassSetSync: vi.fn(() => new Set(['test-class'])),
+        extract: vi.fn(async () => ({ classSet: new Set(['test-class']) })),
+        majorVersion: 4,
+        options: {
+          tailwindcss: {
+            v4: {
+              cssEntries: ['/workspace/src/app.css'],
+            },
+          },
+        },
+      } as any,
+    })
+
+    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+    let loaderHandler: ((loaderContext: any, module: LoaderModule) => void) | undefined
+    let assetStore: Record<string, string> = {
+      'app.wxss': [
+        createBundlerGeneratedCssMarker('webpack', '/workspace/src/app.css'),
+        '.test-class { color: rgb(4, 5, 6); }',
+        '.issue-941-bg-image { background-image: url(data:image/svg+xml;base64,PHN2Zy8+); }',
+      ].join('\n'),
+    }
+    const compilation = {
+      compiler: { outputPath: path.resolve(process.cwd(), 'dist') },
+      chunks: [
+        {
+          id: 'app',
+          hash: 'hash-generated-with-asset-url',
+          files: ['app.wxss'],
+          hasRuntime: () => true,
+        },
+      ],
+      hooks: {
+        processAssets: {
+          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+            processAssetsCallbacks.push(handler)
+          },
+        },
+      },
+      updateAsset: vi.fn((file: string, source: FakeConcatSource) => {
+        assetStore[file] = source.toString()
+      }),
+      getAsset(file: string) {
+        const content = assetStore[file]
+        if (content === undefined) {
+          return undefined
+        }
+        return {
+          source: {
+            source: () => content,
+          },
+        }
+      },
+    }
+    const compiler = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+        },
+        sources: {
+          ConcatSource: FakeConcatSource,
+        },
+        NormalModule: {
+          getCompilationHooks: vi.fn(() => ({
+            loader: {
+              tap: (_name: string, handler: (loaderContext: any, module: LoaderModule) => void) => {
+                loaderHandler = handler
+              },
+            },
+          })),
+        },
+      },
+      hooks: {
+        normalModuleFactory: {
+          tap: vi.fn(() => {}),
+        },
+        compilation: {
+          tap: vi.fn((_name: string, handler: (_compilation: any) => void) => {
+            handler(compilation)
+          }),
+        },
+      },
+    }
+
+    new WeappTailwindcss().apply(compiler as any)
+    const sourceCssModule: LoaderModule = {
+      loaders: [{ loader: '/path/postcss-loader.js' }],
+      resource: '/workspace/src/app.css',
+    }
+    loaderHandler?.({}, sourceCssModule)
+    const rewriteLoaderEntry = sourceCssModule.loaders.find(isCssImportRewriteLoader)
+    const loaderRuntime = getWebpackLoaderRuntime(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
+    loaderRuntime?.cssImportRewrite?.registerCssSourceFile?.({
+      file: '/workspace/src/app.css',
+      css: [
+        '@import "tailwindcss" source(none);',
+        '@source "./pages/index";',
+        '.test-class { color: rgb(4, 5, 6); }',
+        '.issue-941-bg-image { background-image: url("./issue-941-asset.svg"); }',
+      ].join('\n'),
+      processed: false,
+    })
+    loaderRuntime?.cssImportRewrite?.registerGeneratedCss?.({
+      classSet: new Set(['test-class']),
+      css: [
+        createBundlerGeneratedCssMarker('webpack', '/workspace/src/app.css'),
+        '.test-class { color: #040506; }',
+        '.issue-941-bg-image { background-image: url("./issue-941-asset.svg"); }',
+      ].join('\n'),
+      dependencies: ['/workspace/src/app.css'],
+      file: '/workspace/src/app.css',
+    })
+    loaderRuntime?.cssImportRewrite?.markGeneratedCssSource?.('/workspace/src/app.css')
+
+    await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+
+    expect(assetStore['app.wxss']).toContain('background-image: url(data:image/svg+xml;base64,PHN2Zy8+);')
+    expect(assetStore['app.wxss']).not.toContain('url("./issue-941-asset.svg")')
+    expect(assetStore['app.wxss']?.match(/\.test-class/g)).toHaveLength(1)
+    expect(testState.currentContext.styleHandler).not.toHaveBeenCalled()
+  })
+
 })
