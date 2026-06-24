@@ -204,10 +204,6 @@ catalogs:
     tailwindcss4:
       specifier: npm:tailwindcss@^4.3.1
       version: 4.3.1
-  tailwindcssMangleEngine:
-    '@tailwindcss-mangle/engine':
-      specifier: 0.1.0
-      version: 0.1.0
   tailwindcssPatch:
     tailwindcss-patch:
       specifier: 9.5.0
@@ -381,6 +377,7 @@ catalogs:
       version: 4.104.0
 
 overrides:
+  '@tailwindcss-mangle/engine': 0.1.1
   jiti: 2.7.0
   postcss-calc: link:packages/postcss-calc
   postcss-urlrewrite: 0.3.0
@@ -2703,8 +2700,8 @@ importers:
   packages/postcss:
     dependencies:
       '@tailwindcss-mangle/engine':
-        specifier: catalog:tailwindcssMangleEngine
-        version: 0.1.0(tailwindcss@4.3.1)
+        specifier: 0.1.1
+        version: 0.1.1(tailwindcss@4.3.1)
       '@weapp-core/escape':
         specifier: ~8.0.0
         version: 8.0.0
@@ -2905,8 +2902,8 @@ importers:
         specifier: ~7.29.7
         version: 7.29.7
       '@tailwindcss-mangle/engine':
-        specifier: catalog:tailwindcssMangleEngine
-        version: 0.1.0(tailwindcss@4.3.1)
+        specifier: 0.1.1
+        version: 0.1.1(tailwindcss@4.3.1)
       '@vue/compiler-dom':
         specifier: catalog:vue3
         version: 3.5.38
@@ -11834,9 +11831,9 @@ packages:
   '@tailwindcss-mangle/config@7.0.2':
     resolution: {integrity: sha512-MGDtVXIUicgJc+oP+OGZSeaBAnUNN3G31T3HmSp2Y9ytJ/msjGMrIyNtLhYtoJbW1gTvM9fcLrPPefxQaKZVuA==}
 
-  '@tailwindcss-mangle/engine@0.1.0':
-    resolution: {integrity: sha512-oaEQrc0vC5V9/CykL7CLkUp+/kN1PtEKo9M0akk5/N56AcULV2eAMCTMmW3uAsZC9/8CpeYQ5cieArEuY6g81g==}
-    engines: {node: '>=22.13.0'}
+  '@tailwindcss-mangle/engine@0.1.1':
+    resolution: {integrity: sha512-GvPo/Kra4rWkoqvzovw3CqXRvjBnqmRtXq83VL08QrO0ZxlGOwq19be8p6YxVMRFPlvZ5ZhSE0jeXYjFj/4xmw==}
+    engines: {node: '>=18.20.0'}
     peerDependencies:
       tailwindcss: '>=2.0.0'
     peerDependenciesMeta:
@@ -41184,7 +41181,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  '@tailwindcss-mangle/engine@0.1.0(tailwindcss@4.3.1)':
+  '@tailwindcss-mangle/engine@0.1.1(tailwindcss@4.3.1)':
     dependencies:
       '@tailwindcss/node': 4.3.1
       '@tailwindcss/oxide': 4.3.1
@@ -61743,7 +61740,7 @@ snapshots:
       '@babel/traverse': 7.29.7
       '@babel/types': 7.29.7
       '@tailwindcss-mangle/config': 7.0.2(magicast@0.5.3)
-      '@tailwindcss-mangle/engine': 0.1.0(tailwindcss@4.3.1)
+      '@tailwindcss-mangle/engine': 0.1.1(tailwindcss@4.3.1)
       cac: 6.7.14
       consola: 3.4.2
       fs-extra: 11.3.5

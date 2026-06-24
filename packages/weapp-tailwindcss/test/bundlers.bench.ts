@@ -3,22 +3,16 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { Compiler, Configuration } from 'webpack'
 import fsSync from 'node:fs'
 import fs from 'node:fs/promises'
-import { createRequire } from 'node:module'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { MappingChars2String } from '@weapp-core/escape'
 import gulp from 'gulp'
-import gulpPostcss from 'gulp-postcss'
-import postcss from 'postcss'
 import { bench, describe } from 'vitest'
 import { compile, createLoader, getMemfsCompiler5 } from 'webpack-build-utils'
 import { WeappTailwindcss } from '@/bundlers/vite'
 import { vitePluginName } from '@/constants'
 import { createPlugins } from '@/gulp'
 import { WeappTailwindcss } from '@/webpack'
-
-const require = createRequire(import.meta.url)
-const tailwindcss = require('tailwindcss')
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -27,15 +21,9 @@ const webpackFixtureRoot = path.resolve(__dirname, 'fixtures/webpack/v5/wxml')
 const viteFixtureRoot = path.resolve(__dirname, 'fixtures/vite')
 const gulpFixtureRoot = path.resolve(__dirname, 'fixtures/gulp')
 
-const webpackTailwindConfig = path.resolve(webpackFixtureRoot, 'tailwind.config.js')
 const viteCssPath = path.resolve(viteFixtureRoot, 'src/index.css')
 const viteHtmlPath = path.resolve(viteFixtureRoot, 'src/index.html')
 const viteJsPath = path.resolve(viteFixtureRoot, 'src/index.js')
-const gulpTailwindConfig = path.resolve(gulpFixtureRoot, 'tailwind.config.js')
-
-const webpackCssProcessor = postcss([
-  tailwindcss({ config: webpackTailwindConfig }),
-])
 
 const viteHtmlSource = fsSync.readFileSync(viteHtmlPath, 'utf8')
 const viteCssSource = fsSync.readFileSync(viteCssPath, 'utf8')
@@ -86,8 +74,7 @@ function createWebpackCompiler(mode: Configuration['mode']): Compiler {
             ])
 
             this.emitFile(`${basename}.wxml`, wxmlContent)
-            const res = await webpackCssProcessor.process(cssContent, { from: undefined, map: false })
-            this.emitFile(`${basename}.css`, res.css ?? res.toString())
+            this.emitFile(`${basename}.css`, cssContent)
             return source.toString()
           }),
         },
@@ -166,7 +153,6 @@ async function runGulpPipeline() {
 
   const cssStream = gulp
     .src('src/**/*.css', { cwd: gulpFixtureRoot })
-    .pipe(gulpPostcss([tailwindcss({ config: gulpTailwindConfig })]))
     .pipe(plugins.transformWxss())
 
   const jsStream = gulp
