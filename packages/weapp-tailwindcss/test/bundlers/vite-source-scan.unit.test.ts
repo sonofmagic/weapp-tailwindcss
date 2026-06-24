@@ -80,6 +80,38 @@ describe('bundlers/vite source scan', () => {
     expect(resolved?.inlineCandidates?.included).toEqual(new Set(['text-[45rpx]']))
   })
 
+  it('skips cssSources without @source entries instead of falling back to workspace scans', async () => {
+    const fallbackResolve = vi.fn(async () => {
+      throw new Error('plain cssSources should not fall back to full Tailwind v4 source resolution')
+    })
+    vi.doMock('@/tailwindcss/v4-engine', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/tailwindcss/v4-engine')>()
+      return {
+        ...actual,
+        resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+          projectRoot: '/project',
+          base: '/project',
+          baseFallbacks: [],
+          cssSources: [{
+            file: '/project/src/theme.css',
+            base: '/project/src',
+            css: '@theme { --color-brand: #123456; }',
+          }],
+          packageName: 'tailwindcss4',
+        })),
+        resolveTailwindV4SourceFromRuntime: fallbackResolve,
+      }
+    })
+
+    const { resolveViteSourceScanEntries } = await import('@/bundlers/vite/source-scan')
+    const resolved = await resolveViteSourceScanEntries({}, {
+      majorVersion: 4,
+    } as TailwindcssRuntimeLike)
+
+    expect(resolved).toBeUndefined()
+    expect(fallbackResolve).not.toHaveBeenCalled()
+  })
+
   it('resolves Tailwind v4 cssSources @config relative to their source file directory', async () => {
     const tempDir = await createTempDir('weapp-tw-vite-source-scan-css-source-config')
     const cssEntry = path.join(tempDir, 'src/sub-normal/pages/index.css')

@@ -169,6 +169,9 @@ export async function resolveViteSourceScanEntries(
       inlineCandidates: cssSourceInlineCandidates,
     }, dependencies)
   }
+  if (cssSourceCount > 0) {
+    return undefined
+  }
 
   const source = await resolveTailwindV4SourceFromRuntime(runtime)
   addSourceScanDependency(dependencies, (source as { file?: string }).file)

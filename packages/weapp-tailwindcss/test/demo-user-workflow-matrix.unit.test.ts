@@ -1,5 +1,35 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
+import path from 'node:path'
 import { DEMO_USER_WORKFLOW_CASES } from '../../../e2e/demo-user-workflow-cases'
+
+interface DemoPackageJson {
+  scripts?: Record<string, string>
+}
+
+function readDemoPackageJson(projectDir: string): DemoPackageJson {
+  return JSON.parse(
+    readFileSync(path.resolve(__dirname, '../../..', projectDir, 'package.json'), 'utf8'),
+  ) as DemoPackageJson
+}
+
+function resolvePnpmRunScript(command: string[]) {
+  return command[0] === 'pnpm' && command[1] === 'run'
+    ? command[2]
+    : undefined
+}
+
+function resolveDevScriptCandidates(item: (typeof DEMO_USER_WORKFLOW_CASES)[number]) {
+  const buildScript = resolvePnpmRunScript(item.command)
+  const platformDevScript = `dev:${item.platform}`
+  const candidates = new Set<string>()
+  if (buildScript?.startsWith('build:')) {
+    candidates.add(`dev:${buildScript.slice('build:'.length)}`)
+  }
+  candidates.add(platformDevScript)
+  candidates.add('dev')
+  return [...candidates]
+}
 
 describe('demo user workflow e2e matrix', () => {
   it('covers H5 and multiple non-WeChat mini-program platforms', () => {
@@ -96,10 +126,58 @@ describe('demo user workflow e2e matrix', () => {
     const assertionLabels = styleIntegrityCases.flatMap(item => item.userWorkflow.assertions.map(assertion => assertion.label))
     expect(assertionLabels).toEqual(expect.arrayContaining([
       'uni-app H5 build 保留用户在 tailwind.scss 中写的普通样式',
-      'uni-app H5 build 保留 uview-plus 第三方组件库样式',
+      'uni-app H5 build 保留用户引入的第三方组件库样式',
       'Mpx 微信小程序 build 保留用户在 SFC 中写的普通样式',
-      'Mpx 微信小程序 build 保留 Vant 和 TDesign 第三方组件样式',
+      'Mpx 微信小程序 build 保留用户引入的第三方组件样式',
       'Taro Webpack 支付宝小程序 build 保留页面用户自写样式',
     ]))
+  })
+
+  it('keeps every demo H5 and mini-program build case paired with a dev script', () => {
+    const h5AndMiniProgramCases = DEMO_USER_WORKFLOW_CASES.filter(item =>
+      item.status === 'ci'
+      && (
+        item.userWorkflow.surfaces.includes('h5')
+        || item.userWorkflow.surfaces.includes('mini-program')
+      ),
+    )
+
+    expect(h5AndMiniProgramCases.length).toBeGreaterThan(0)
+
+    for (const item of h5AndMiniProgramCases) {
+      const pkg = readDemoPackageJson(item.projectDir)
+      const scripts = pkg.scripts ?? {}
+      const buildScript = resolvePnpmRunScript(item.command)
+      if (buildScript) {
+        expect(
+          scripts[buildScript],
+          `${item.name} should keep package script "${buildScript}" for build regression coverage`,
+        ).toBeTruthy()
+      }
+
+      const devCandidates = resolveDevScriptCandidates(item)
+      expect(
+        devCandidates.some(script => typeof scripts[script] === 'string' && scripts[script].length > 0),
+        `${item.name} should expose one of dev scripts: ${devCandidates.join(', ')}`,
+      ).toBe(true)
+    }
+  })
+
+  it('keeps demo dev and build chains split across H5 and mini-program surfaces', () => {
+    const ciCases = DEMO_USER_WORKFLOW_CASES.filter(item => item.status === 'ci')
+    const h5Cases = ciCases.filter(item => item.userWorkflow.surfaces.includes('h5'))
+    const miniProgramCases = ciCases.filter(item => item.userWorkflow.surfaces.includes('mini-program'))
+
+    expect(h5Cases.some(item => item.command.includes('build:h5'))).toBe(true)
+    expect(h5Cases.some(item => resolveDevScriptCandidates(item).includes('dev:h5'))).toBe(true)
+    expect(miniProgramCases.some(item => item.framework === 'uni-app')).toBe(true)
+    expect(miniProgramCases.some(item => item.framework === 'taro')).toBe(true)
+    expect(miniProgramCases.some(item => item.framework === 'mpx')).toBe(true)
+    expect(miniProgramCases.some(item => item.framework === 'gulp')).toBe(true)
+
+    for (const item of [...h5Cases, ...miniProgramCases]) {
+      expect(item.styleFiles.length, `${item.name} should assert style outputs`).toBeGreaterThan(0)
+      expect(item.styleContains.length, `${item.name} should assert generated style content`).toBeGreaterThan(0)
+    }
   })
 })
