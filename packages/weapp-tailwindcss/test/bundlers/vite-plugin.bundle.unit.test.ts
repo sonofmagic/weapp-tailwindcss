@@ -11985,6 +11985,118 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
   }, TEST_TIMEOUT_MS)
 
+  it('skips bundle entries whose sources are excluded by transform.exclude', async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-932-'))
+    createdDirs.push(rootDir)
+    const includedModule = path.resolve(rootDir, 'src/pages/index.ts')
+    const excludedModule = path.resolve(rootDir, 'src/generated/openapi-client.ts')
+    const excludedWxml = path.resolve(rootDir, 'src/generated/raw.wxml')
+    const excludedWxss = path.resolve(rootDir, 'src/generated/raw.scss')
+    const mixedWxml = path.resolve(rootDir, 'src/pages/mixed.wxml')
+
+    const runtimeSet = new Set(['text-[#111111]'])
+    const context = createContext({
+      templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
+      styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+      jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
+      transform: {
+        exclude: ['src/generated/**'],
+      },
+    })
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root: rootDir,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+
+    const includedChunk = {
+      ...createRollupChunk('const cls = "text-[#111111]"'),
+      fileName: 'pages/index.js',
+      moduleIds: [includedModule],
+      modules: {
+        [includedModule]: {},
+      },
+    } as unknown as OutputChunk
+    const excludedCode = 'export const api = "text-[#222222]";\nexport const value = 1;'
+    const excludedChunk = {
+      ...createRollupChunk(excludedCode),
+      fileName: 'generated/openapi-client.js',
+      moduleIds: [excludedModule],
+      modules: {
+        [excludedModule]: {},
+      },
+    } as unknown as OutputChunk
+    const bundle = {
+      'pages/index.wxml': {
+        ...createRollupAsset('<view class="text-[#111111]"></view>'),
+        fileName: 'pages/index.wxml',
+        originalFileNames: [path.resolve(rootDir, 'src/pages/index.wxml')],
+      } satisfies OutputAsset,
+      'generated/raw.wxml': {
+        ...createRollupAsset('<view class="text-[#222222]"></view>'),
+        fileName: 'generated/raw.wxml',
+        originalFileNames: [excludedWxml],
+      } satisfies OutputAsset,
+      'pages/mixed.wxml': {
+        ...createRollupAsset('<view class="text-[#333333]"></view>'),
+        fileName: 'pages/mixed.wxml',
+        originalFileNames: [excludedWxml, mixedWxml],
+      } satisfies OutputAsset,
+      'pages/index.wxss': {
+        ...createRollupAsset('.used { @apply text-[#111111]; }'),
+        fileName: 'pages/index.wxss',
+        originalFileNames: [path.resolve(rootDir, 'src/pages/index.scss')],
+      } satisfies OutputAsset,
+      'generated/raw.wxss': {
+        ...createRollupAsset('.raw { color: red; }'),
+        fileName: 'generated/raw.wxss',
+        originalFileNames: [excludedWxss],
+      } satisfies OutputAsset,
+      'pages/index.js': includedChunk,
+      'generated/openapi-client.js': excludedChunk,
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+
+    expect(context.jsHandler).toHaveBeenCalledTimes(1)
+    expect(context.jsHandler.mock.calls[0]?.[0]).toBe('const cls = "text-[#111111]"')
+    expect(context.templateHandler).toHaveBeenCalledTimes(2)
+    expect(context.templateHandler.mock.calls[0]?.[0]).toBe('<view class="text-[#111111]"></view>')
+    expect(context.templateHandler.mock.calls[1]?.[0]).toBe('<view class="text-[#333333]"></view>')
+    expect(includedChunk.code).toBe('js:const cls = "text-[#111111]"')
+    expect(excludedChunk.code).toBe(excludedCode)
+    expect((bundle['generated/raw.wxml'] as OutputAsset).source).toBe('<view class="text-[#222222]"></view>')
+    expect((bundle['generated/raw.wxss'] as OutputAsset).source).toBe('.raw { color: red; }')
+  }, TEST_TIMEOUT_MS)
+
   it('propagates linked js updates to asset entries', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const rootDir = process.cwd()

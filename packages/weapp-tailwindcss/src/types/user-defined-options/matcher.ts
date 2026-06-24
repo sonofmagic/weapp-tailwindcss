@@ -1,4 +1,24 @@
+import type { ItemOrItemArray } from '../base'
 import type { AppType } from '../shared'
+
+export type TransformRule = string | RegExp | ((id: string) => boolean)
+
+export interface TransformOptions {
+  /**
+   * 只允许命中的源码模块或产物进入 `weapp-tailwindcss` 转译流程。
+   *
+   * @remarks
+   * 未配置时不限制转译范围。字符串会按项目 root 相对 glob 或绝对 glob 匹配；`RegExp` 与函数接收绝对路径。
+   */
+  include?: ItemOrItemArray<TransformRule> | undefined
+  /**
+   * 排除不需要进入 `weapp-tailwindcss` 转译流程的源码模块或产物。
+   *
+   * @remarks
+   * 字符串会按项目 root 相对 glob 或绝对 glob 匹配；`RegExp` 与函数接收绝对路径。
+   */
+  exclude?: ItemOrItemArray<TransformRule> | undefined
+}
 
 export interface UserDefinedOptionsMatcherPart {
   /**
@@ -19,6 +39,26 @@ export interface UserDefinedOptionsMatcherPart {
    * @group 1.文件匹配
    */
   jsMatcher?: ((name: string) => boolean) | undefined
+
+  /**
+   * 控制哪些源码模块或产物需要进入 `weapp-tailwindcss` 转译流程。
+   *
+   * @group 1.文件匹配
+   * @remarks
+   * 该配置只影响 `weapp-tailwindcss` 的 HTML/CSS/JS 转译，不影响 Tailwind CSS `@source`/content token 扫描。
+   * Vite 构建中 JS chunk 会基于 Rollup `moduleIds`/`modules` 判断源码模块；当一个 JS chunk 不满足 `include` 或所有源码模块都命中 `exclude` 时，跳过该 chunk 的 JS AST 转译。
+   * HTML/CSS asset 会优先基于 Rollup `originalFileName`/`originalFileNames` 判断，缺失时使用输出文件名兜底。
+   * `exclude` 优先级高于 `include`；多来源产物只有全部来源都命中 `exclude` 时才整体跳过。
+   *
+   * @example
+   * ```ts
+   * transform: {
+   *   include: ['src/**.{wxml,js,ts,vue,css,scss}'],
+   *   exclude: ['src/generated/**', /\/openapi\//],
+   * }
+   * ```
+   */
+  transform?: TransformOptions | undefined
   /**
    * 声明负责承载 Tailwind CSS 全局变量作用域的 CSS Bundle。
    *

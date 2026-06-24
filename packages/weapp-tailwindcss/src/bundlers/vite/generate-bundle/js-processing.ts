@@ -4,6 +4,7 @@ import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
 import type { CreateJsHandlerOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
+import { logger } from '@/logger'
 import { createUniAppXBundleAssetSourceGetter, UNI_APP_X_STYLE_PLACEHOLDER_VERSION } from '@/uni-app-x/style-asset'
 import { createUniAppXAssetTask } from '@/uni-app-x/vite'
 import { processCachedTask } from '../../shared/cache'
@@ -32,8 +33,11 @@ interface ProcessJsBundleEntryOptions {
   rememberProcessCacheKey: (cacheKey: string, hashKey?: string | number) => void
   runtimeSignature: string
   snapshot: BundleSnapshot
+  shouldSkipAstTransform: ((chunk: OutputChunk) => boolean) | undefined
+  slowJsAstWarnMs: number
   timeTask: (name: string, task: () => Promise<void>) => Promise<void>
   transformRuntime: Set<string>
+  transformFilterSignature: string
   uniAppX: GenerateBundleContext['opts']['uniAppX']
   useIncrementalMode: boolean
 }
@@ -58,8 +62,11 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
     rememberProcessCacheKey,
     runtimeSignature,
     snapshot,
+    shouldSkipAstTransform,
+    slowJsAstWarnMs,
     timeTask,
     transformRuntime,
+    transformFilterSignature,
     uniAppX,
     useIncrementalMode,
   } = options
@@ -87,7 +94,10 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
           snapshot.sourceHashByFile,
         )
       : undefined
-    const hashSalt = createJsHashSalt(runtimeSignature, linkedImpactSignature)
+    const hashSalt = createJsHashSalt(
+      `${runtimeSignature}:transform-filter:${transformFilterSignature}`,
+      linkedImpactSignature,
+    )
     const hashKey = `${file}:js`
     const sourceHash = getSnapshotHash(snapshot.sourceHashByFile, file, initialRawSource)
     const processHash = `${sourceHash}:${hashSalt}`
@@ -124,6 +134,14 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
             if (!shouldTransformJs) {
               debug('js cache replay miss, fallback transform: %s', file)
             }
+            if (shouldSkipAstTransform?.(originalSource)) {
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              debug('js skip ast transform (filtered): %s', file)
+              return {
+                result: rawSource,
+              }
+            }
             const handlerOptions = createHandlerOptions(absoluteFile)
             if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
               metrics.js.elapsed += measureElapsed(start)
@@ -133,9 +151,19 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
               }
             }
 
+            const handlerStart = performance.now()
             const { code, linked } = await jsHandler(rawSource, transformRuntime, handlerOptions)
+            const handlerElapsed = measureElapsed(handlerStart)
             metrics.js.elapsed += measureElapsed(start)
             metrics.js.transformed++
+            if (handlerElapsed >= slowJsAstWarnMs) {
+              logger.warn(
+                'JS AST 转译耗时较长: %s 用时 %sms，源码约 %d bytes。若这是大型生成 TS/JS chunk，请配置 weapp-tailwindcss 的 transform.exclude 排除 generated/openapi 等目录。',
+                file,
+                handlerElapsed.toFixed(1),
+                rawSource.length,
+              )
+            }
             onUpdate(file, rawSource, code)
             debug('js handle: %s', file)
             collectLinkedFileNames(linked, getJsEntry, linkedSet)

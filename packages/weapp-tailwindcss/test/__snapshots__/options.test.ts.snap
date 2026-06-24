@@ -135,6 +135,10 @@ exports[`get options > default options 1`] = `
     "filter": [Function],
   },
   "templateHandler": [Function],
+  "transform": {
+    "exclude": [],
+    "include": [],
+  },
   "unocss": false,
   "wxsMatcher": [Function],
 }

@@ -50,6 +50,7 @@ import { resolveCurrentSourceCandidateSource } from './generate-bundle/source-ca
 import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './generate-bundle/subpackages'
 import { isSameSubpackageScope, selectTailwindV4GenerationCssSourceForOutput } from './generate-bundle/tailwind-v4-css-source'
 import { createBundleTaskTimer } from './generate-bundle/timing'
+import { createTransformFilter, createTransformFilterSignature, shouldSkipViteAssetTransform, shouldSkipViteJsChunkTransform } from './generate-bundle/transform-filter'
 import { getLastCssResult, normalizeViteCssCacheKey, rememberLastCssResult } from './generate-bundle/vite-css-cache'
 import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
@@ -298,6 +299,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     })
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
+    const transformFilter = createTransformFilter(opts.transform, rootDir)
+    const transformFilterSignature = createTransformFilterSignature(opts.transform)
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const runtimeStart = performance.now()
@@ -421,6 +424,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           debug('html skip web target: %s', file)
           continue
         }
+        if (shouldSkipViteAssetTransform(originalSource, file, rootDir, transformFilter)) {
+          metrics.html.transformed++
+          debug('html skip transform (filtered): %s', file)
+          continue
+        }
         if (!processFiles.html.has(file)) {
           continue
         }
@@ -493,6 +501,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             source,
             viteProcessedCssAsset,
           })
+        }
+        if (shouldSkipViteAssetTransform(originalSource, file, rootDir, transformFilter)) {
+          applyCssResult(rawSource)
+          markCssAssetProcessed?.(originalSource, outputFile)
+          onUpdate(outputFile, rawSource, rawSource)
+          metrics.css.transformed++
+          debug('css skip transform (filtered): %s', outputFile)
+          continue
         }
         if (isWebGeneratorTarget && !shouldGenerateWebCssByGenerator) {
           applyCssResult(rawSource)
@@ -971,6 +987,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         rememberProcessCacheKey,
         runtimeSignature,
         snapshot,
+        transformFilterSignature,
+        shouldSkipAstTransform: transformFilter
+          ? chunk => shouldSkipViteJsChunkTransform(chunk, transformFilter)
+          : undefined,
+        slowJsAstWarnMs: envFlags.slowJsAstWarnMs,
         timeTask,
         transformRuntime,
         uniAppX,
