@@ -45,3 +45,7 @@ view {
     transform: scale(0.96);
   }
 }
+
+.issue-940-app-class {
+  color: rgb(4, 5, 6);
+}

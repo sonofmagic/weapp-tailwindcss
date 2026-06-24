@@ -16,6 +16,11 @@ function compactCss(css: string) {
   return css.replace(/\s+/g, '')
 }
 
+function countCssSelector(css: string, selector: string) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return css.match(new RegExp(escaped, 'g'))?.length ?? 0
+}
+
 describe('e2e', () => {
   it('keeps Tailwind CSS v4 mini-program preflight reset in app wxss', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
@@ -56,6 +61,24 @@ describe('e2e', () => {
     expect(css).not.toMatch(
       /^::before,\s*::after\s*\{\s*--tw-content:\s*(?:''|"")\s*(?:;|\})/m,
     )
+  })
+
+  it('keeps sibling app css imports while avoiding duplicate generated source css', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const css = await fs.readFile(
+      path.resolve(projectPath, 'dist/app.wxss'),
+      'utf8',
+    )
+
+    expect(countCssSelector(css, '.issue-940-style-class')).toBe(1)
+    expect(countCssSelector(css, '.issue-940-app-class')).toBe(1)
   })
 
   it('keeps NutUI css imported from app entry in page wxss', async () => {
