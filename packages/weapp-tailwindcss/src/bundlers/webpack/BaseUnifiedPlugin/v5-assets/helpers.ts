@@ -124,6 +124,11 @@ export function buildWebpackBundleSnapshot(
       file,
       output: {
         fileName: file,
+        name: undefined,
+        names: [],
+        needsCodeReference: false,
+        originalFileName: null,
+        originalFileNames: [],
         source,
         type: 'asset',
       },
@@ -149,7 +154,12 @@ export function buildWebpackBundleSnapshot(
 export function releaseWebpackBundleSnapshotSources(snapshot: BundleSnapshot) {
   for (const entry of snapshot.entries) {
     entry.source = ''
-    entry.output.source = ''
+    if (entry.output.type === 'asset') {
+      entry.output.source = ''
+    }
+    else {
+      entry.output.code = ''
+    }
   }
 }
 

@@ -341,7 +341,7 @@ export function injectUniAppXHarmonyBundleStyles(
   const resolveStyleAssetFiles = typeof options.styleAssetFiles === 'function'
     ? options.styleAssetFiles
     : (file: string) => [
-        ...(options.styleAssetFiles ?? []),
+        ...((options.styleAssetFiles as Iterable<string | undefined> | undefined) ?? []),
         ...(styleAssetFilesByChunk.get(file) ?? []),
       ]
   let changed = false

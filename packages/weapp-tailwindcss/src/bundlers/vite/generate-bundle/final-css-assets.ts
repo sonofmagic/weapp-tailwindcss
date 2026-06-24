@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext } from './types'
+import type { IStyleHandlerOptions } from '@/types'
 import {
   hasMiniProgramCssSpecificityPlaceholders,
   stripMiniProgramCssSpecificityPlaceholders,
@@ -21,7 +22,7 @@ export async function finalizeMiniProgramCssAssets(
   bundle: Record<string, OutputAsset | OutputChunk>,
   options: {
     cssMatcher: GenerateBundleContext['opts']['cssMatcher']
-    getCssHandlerOptions: GenerateBundleContext['getCssHandlerOptions']
+    getCssHandlerOptions: (file: string) => IStyleHandlerOptions
     isWebGeneratorTarget: boolean
     lastCssResultByFile?: Map<string, string> | undefined
     onUpdate: GenerateBundleContext['opts']['onUpdate']
@@ -70,9 +71,9 @@ export async function finalizeMiniProgramCssAssets(
       cssOptions: {
         ...(cssHandlerOptions.cssOptions ?? {}),
         autoprefixer: false,
-        cssPresetEnv: false,
+        cssPresetEnv: {},
       },
-      cssPresetEnv: false,
+      cssPresetEnv: {},
     })
     const outputCss = stripMiniProgramCssSpecificityPlaceholders(css)
     if (outputCss === rawSource) {

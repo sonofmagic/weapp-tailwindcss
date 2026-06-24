@@ -24,13 +24,13 @@ export function getDefaultCssPreflight(): Exclude<CssPreflightOptions, false> {
 
 export function resolveDefaultCssPreflight(
   cssPreflight: CssPreflightOptions | undefined,
-  tailwindcssMajorVersion?: number,
+  _tailwindcssMajorVersion?: number,
 ): CssPreflightOptions {
   if (cssPreflight === false) {
     return false
   }
   return {
-    ...getDefaultCssPreflight(tailwindcssMajorVersion),
+    ...getDefaultCssPreflight(),
     ...(cssPreflight ?? {}),
   }
 }
@@ -69,7 +69,7 @@ export function getDefaultOptions(): UserDefinedOptions {
     mainCssChunkMatcher: alwaysFalse,
     wxsMatcher: alwaysFalse,
     // 参考：https://tailwindcss.com/docs/preflight#border-styles-are-reset-globally
-    cssPreflight: getDefaultCssPreflight(3),
+    cssPreflight: getDefaultCssPreflight(),
 
     disabled: false,
     onLoad: noop,

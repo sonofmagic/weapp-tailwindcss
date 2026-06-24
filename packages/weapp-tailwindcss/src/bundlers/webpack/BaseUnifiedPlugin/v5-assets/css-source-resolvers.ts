@@ -1,6 +1,7 @@
 import type { SetupWebpackV5ProcessAssetsHookOptions } from './helpers'
 import type { WebpackCssHandlerOptions } from './pipeline-helpers'
 import path from 'node:path'
+import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, hasTailwindSourceDirectives } from '../../../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from '../../../shared/generator-css/directives'
@@ -206,7 +207,7 @@ export function createWebpackCssSourceResolvers(options: {
         ...(generatorSourceCss === undefined ? {} : { sourceCss: generatorSourceCss }),
         ...(sourceFile === undefined ? {} : { sourceFile }),
       },
-      ...(majorVersion === undefined ? {} : { majorVersion }),
+      ...(normalizeStyleHandlerMajorVersion(majorVersion) === undefined ? {} : { majorVersion: 4 as const }),
     }
     cssHandlerOptionsCache.set(cacheKey, created)
     return created

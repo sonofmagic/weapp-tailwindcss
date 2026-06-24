@@ -296,7 +296,7 @@ function collectLocalStyleImportFiles(source: string, base: string) {
         if (!isLocalStyleImportRequest(request)) {
           return
         }
-        const file = resolveLocalStyleImportFile(request, base)
+        const file = request ? resolveLocalStyleImportFile(request, base) : undefined
         if (file) {
           files.push(file)
         }

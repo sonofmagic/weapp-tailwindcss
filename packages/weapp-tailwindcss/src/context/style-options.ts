@@ -8,6 +8,10 @@ export type ResolvedStyleOptions = Partial<IStyleHandlerOptions> & {
   appType?: InternalUserDefinedOptions['appType'] | undefined
 }
 
+export function normalizeStyleHandlerMajorVersion(majorVersion: number | undefined): 4 | undefined {
+  return majorVersion === 4 ? 4 : undefined
+}
+
 export function resolveStyleOptionsFromContext(
   ctx: InternalUserDefinedOptions,
   tailwindcssMajorVersion?: number,

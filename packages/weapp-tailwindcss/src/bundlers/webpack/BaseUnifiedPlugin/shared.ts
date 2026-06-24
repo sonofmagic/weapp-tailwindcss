@@ -48,10 +48,10 @@ export function hasLoaderEntry(
 
 interface ChunkLike {
   id?: string | number | null
-  name?: string
+  name?: string | undefined
   hash?: string | null
-  files?: Iterable<string> | Array<string>
-  hasRuntime?: () => boolean
+  files?: Iterable<string> | Array<string> | undefined
+  hasRuntime?: (() => boolean) | undefined
 }
 
 interface ModuleLike {

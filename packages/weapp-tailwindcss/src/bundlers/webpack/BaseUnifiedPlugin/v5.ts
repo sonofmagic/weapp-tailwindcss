@@ -236,13 +236,19 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       try {
         const report = await runtimeState.tailwindRuntime.collectContentTokens()
         for (const entry of report.entries ?? []) {
-          if (entry.file) {
-            runtimeWatchDependencyFiles.add(entry.file)
+          const file = typeof entry === 'object' && entry !== null && 'file' in entry
+            ? entry.file
+            : undefined
+          if (typeof file === 'string') {
+            runtimeWatchDependencyFiles.add(file)
           }
         }
         for (const source of report.sources ?? []) {
-          if (source?.base) {
-            runtimeWatchDependencyContexts.add(source.base)
+          const base = typeof source === 'object' && source !== null && 'base' in source
+            ? source.base
+            : undefined
+          if (typeof base === 'string') {
+            runtimeWatchDependencyContexts.add(base)
           }
         }
       }

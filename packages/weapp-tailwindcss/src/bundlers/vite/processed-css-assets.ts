@@ -403,6 +403,9 @@ function resolvePreservedImportShellInjectionTarget(
     return
   }
   const [importedFile] = importedStyleFiles
+  if (!importedFile) {
+    return
+  }
   if (!isRootStyleOutputFile(importedFile)) {
     return
   }

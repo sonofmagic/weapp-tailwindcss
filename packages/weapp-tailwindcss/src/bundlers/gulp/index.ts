@@ -6,6 +6,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { getCompilerContext } from '@/context'
+import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { createDebug } from '@/debug'
 import { shouldSkipJsTransform } from '@/js/precheck'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet } from '@/tailwindcss/runtime'
@@ -310,26 +311,27 @@ export function createPlugins(options: UserDefinedOptions = {}) {
   }
 
   function resolveWxssHandlerOptions(options?: Partial<IStyleHandlerOptions>) {
-    const majorVersion = runtimeState.tailwindRuntime.majorVersion ?? 'unknown'
+    const styleHandlerMajorVersion = normalizeStyleHandlerMajorVersion(runtimeState.tailwindRuntime.majorVersion)
+    const majorVersion = styleHandlerMajorVersion ?? 'unknown'
     if (!options || Object.keys(options).length === 0) {
       let cached = defaultStyleHandlerOptionsCache.get(majorVersion)
       if (!cached) {
-        cached = runtimeState.tailwindRuntime.majorVersion === undefined
+        cached = styleHandlerMajorVersion === undefined
           ? {}
           : {
-              majorVersion: runtimeState.tailwindRuntime.majorVersion,
+              majorVersion: styleHandlerMajorVersion,
             }
         defaultStyleHandlerOptionsCache.set(majorVersion, cached)
       }
       return cached
     }
 
-    return runtimeState.tailwindRuntime.majorVersion === undefined
+    return styleHandlerMajorVersion === undefined
       ? {
           ...options,
         }
       : {
-          majorVersion: runtimeState.tailwindRuntime.majorVersion,
+          majorVersion: styleHandlerMajorVersion,
           ...options,
         }
   }

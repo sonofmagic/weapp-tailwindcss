@@ -13,6 +13,7 @@ import { generateTailwindV4Css } from '@/bundlers/shared/v4-generation-core'
 import { createSourceCandidateStore, isSourceCandidateRequest } from '@/bundlers/vite/source-candidates'
 import { resolveSourceCandidateScanFiles } from '@/bundlers/vite/source-candidates/scan-root'
 import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
+import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { getWebpackLoaderRuntime } from './runtime-registry'
@@ -85,7 +86,7 @@ function createCssHandlerOptions(
         from: file,
       },
     },
-    ...(majorVersion === undefined ? {} : { majorVersion }),
+    ...(normalizeStyleHandlerMajorVersion(majorVersion) === undefined ? {} : { majorVersion: 4 as const }),
   }
 }
 
@@ -109,7 +110,7 @@ async function resolveWebpackLoaderSourceCandidates(
   })
   collector.syncInline(resolved.inlineCandidates)
   const outDir = loaderContext.rootContext
-    ? path.resolve(loaderContext.rootContext, compilerOptions.outputDir ?? 'dist')
+    ? path.resolve(loaderContext.rootContext, 'dist')
     : undefined
   const scanFiles = await resolveSourceCandidateScanFiles({
     entries: resolved.entries,

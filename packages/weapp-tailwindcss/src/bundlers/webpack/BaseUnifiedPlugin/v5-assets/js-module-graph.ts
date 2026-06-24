@@ -1,3 +1,4 @@
+import type { sources as WebpackSources } from 'webpack'
 import type { SetupWebpackV5ProcessAssetsHookOptions } from './helpers'
 import type { LinkedJsModuleResult } from '@/types'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../../shared/module-graph'
@@ -31,7 +32,7 @@ export function createWebpackJsAssetModuleGraph(options: {
         return undefined
       }
       const source = asset.source.source()
-      return typeof source === 'string' ? source : source.toString()
+      return source == null ? '' : String(source)
     },
     filter(id: string) {
       return jsAssets.has(id)
@@ -44,10 +45,10 @@ export function createWebpackJsAssetModuleGraph(options: {
 }
 
 export function applyWebpackLinkedJsResults(options: {
-  ConcatSource: new (code: string) => { source?: () => unknown, toString: () => string }
+  ConcatSource: new (code: string) => WebpackSources.Source
   compilation: {
     getAsset: (file: string) => { source: { source: () => unknown } } | undefined
-    updateAsset: (file: string, source: unknown) => void
+    updateAsset: (file: string, source: WebpackSources.Source) => void
   }
   compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options']
   debug: SetupWebpackV5ProcessAssetsHookOptions['debug']
@@ -67,7 +68,7 @@ export function applyWebpackLinkedJsResults(options: {
       continue
     }
     const previousSource = asset.source.source()
-    const previous = typeof previousSource === 'string' ? previousSource : previousSource.toString()
+    const previous = previousSource == null ? '' : String(previousSource)
     if (previous === code) {
       continue
     }

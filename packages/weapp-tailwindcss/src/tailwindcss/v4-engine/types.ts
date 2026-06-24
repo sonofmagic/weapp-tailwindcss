@@ -2,10 +2,10 @@ import type {
   TailwindV4Engine as EngineTailwindV4Engine,
   TailwindV4GenerateOptions as EngineTailwindV4GenerateOptions,
   TailwindV4GenerateResult as EngineTailwindV4GenerateResult,
+  TailwindV4ResolvedSource as EngineTailwindV4ResolvedSource,
+  TailwindV4SourceOptions as EngineTailwindV4SourceOptions,
   TailwindV4CandidateSource,
   TailwindV4DesignSystem,
-  TailwindV4ResolvedSource,
-  TailwindV4SourceOptions,
 } from '@tailwindcss-mangle/engine'
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 
@@ -30,6 +30,18 @@ export interface TailwindV4SourcePattern {
 }
 
 type TailwindV4EngineGenerateOptions = Omit<EngineTailwindV4GenerateOptions, 'target' | 'styleOptions' | 'scanSources' | 'bareArbitraryValues'>
+export type TailwindV4SourceOptions = EngineTailwindV4SourceOptions
+export type TailwindV4CssSource = NonNullable<TailwindV4SourceOptions['cssSources']>[number]
+
+/**
+ * weapp-tailwindcss 在 Tailwind v4 engine source 基础上附加的运行时来源信息。
+ */
+export interface TailwindV4ResolvedSource extends EngineTailwindV4ResolvedSource {
+  cwd?: string | undefined
+  projectRoot: string
+  cssSources?: TailwindV4CssSource[] | undefined
+  sources?: TailwindV4SourcePattern[] | undefined
+}
 
 /**
  * Tailwind CSS v4 生成配置。
@@ -110,6 +122,4 @@ export interface TailwindV4Engine extends Omit<EngineTailwindV4Engine, 'generate
 export type {
   TailwindV4CandidateSource,
   TailwindV4DesignSystem,
-  TailwindV4ResolvedSource,
-  TailwindV4SourceOptions,
 }

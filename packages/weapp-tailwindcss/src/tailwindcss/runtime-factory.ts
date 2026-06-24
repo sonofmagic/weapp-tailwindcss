@@ -129,7 +129,7 @@ function createFallbackTailwindcssRuntime(options?: TailwindCssRuntimeOptions): 
     async getClassSet() {
       return new Set<string>()
     },
-    async extract(_options?: TailwindcssExtractOptions): TailwindcssExtractResult {
+    async extract(_options?: TailwindcssExtractOptions): Promise<TailwindcssExtractResult> {
       const classSet = new Set<string>()
       return {
         classList: [],
@@ -203,12 +203,12 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
       baseFallbacks: source.baseFallbacks,
       css: source.css,
       cwd: source.projectRoot,
-      sources: source.sources,
+      ...(source.sources === undefined ? {} : { sources: source.sources }),
     })
     return {
       entries: report.entries,
       filesScanned: report.filesScanned,
-      sources: source.sources,
+      sources: source.sources ?? [],
       skippedFiles: report.skippedFiles,
     }
   }

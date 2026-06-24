@@ -35,7 +35,7 @@ function isConditionTestLiteral(path: NodePath<StringLiteral | TemplateElement>)
   let current: NodePath | null = path
 
   while (current?.parentPath) {
-    const parent = current.parentPath
+    const parent: NodePath = current.parentPath
     if (parent.isConditionalExpression()) {
       return parent.node.test === current.node
     }

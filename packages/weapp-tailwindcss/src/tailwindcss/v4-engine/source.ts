@@ -1,4 +1,4 @@
-import type { TailwindV4SourceOptions, TailwindV4SourceOptionsWithSources } from './types'
+import type { TailwindV4ResolvedSource, TailwindV4SourceOptions, TailwindV4SourceOptionsWithSources } from './types'
 import type { TailwindcssRuntimeLike } from '@/types'
 import { existsSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
@@ -322,9 +322,9 @@ export function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOption
 
   return {
     ...options,
-    css,
+    ...(css === undefined ? {} : { css }),
     ...(cssEntries === undefined ? {} : { cssEntries }),
-    cssSources,
+    ...(cssSources === undefined ? {} : { cssSources }),
   }
 }
 
@@ -402,9 +402,9 @@ export function resolveTailwindV4SourceOptionsFromRuntime(
   }) as TailwindV4SourceOptionsWithSources) as TailwindV4SourceOptionsWithSources
 }
 
-export function resolveTailwindV4Source(options?: TailwindV4SourceOptions) {
+export function resolveTailwindV4Source(options?: TailwindV4SourceOptions): Promise<TailwindV4ResolvedSource> {
   const normalizedOptions = normalizeTailwindV4SourceOptions(options)
-  return resolveEngineTailwindV4Source(normalizedOptions)
+  return resolveEngineTailwindV4Source(normalizedOptions) as Promise<TailwindV4ResolvedSource>
 }
 
 export function resolveTailwindV4SourceFromRuntimeOptions(options?: {

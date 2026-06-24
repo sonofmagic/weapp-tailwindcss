@@ -132,7 +132,7 @@ export function mergeRememberedCssSources(
 
 export function collectRememberedCssReplayGroups(
   sources: Iterable<[string, RememberedCssSource]> | undefined,
-  opts: Pick<InternalUserDefinedOptions, 'cssMatcher'>,
+  opts: Pick<InternalUserDefinedOptions, 'cssMatcher' | 'platform'>,
   rootDir: string,
   isWebGeneratorTarget: boolean,
   preserveCssExtension: boolean,

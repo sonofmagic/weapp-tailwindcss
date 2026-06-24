@@ -1,7 +1,7 @@
 import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
 import type { SourceSideCssEntrySource } from './source-files'
+import type { GeneratorResolvedSource } from './source-resolver/metadata'
 import type {
-  GeneratorResolvedSource,
   GeneratorSourceRuntimeState,
   GeneratorSourceSelectionOptions,
   SourceStyleMatchOptions,
@@ -375,7 +375,7 @@ async function resolveMatchingTailwindV4CssSource(
 
 function tryResolveTailwindV4SourceOptions(
   runtimeState: GeneratorSourceRuntimeState,
-) {
+): TailwindV4SourceOptions | undefined {
   try {
     return resolveTailwindV4SourceOptionsFromRuntime(runtimeState.tailwindRuntime)
   }

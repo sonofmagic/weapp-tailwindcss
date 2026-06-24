@@ -248,7 +248,7 @@ function hasConfiguredContainerCompatSource(source: TailwindResolvedSource) {
     }
   }
 
-  if ('config' in source && source.config) {
+  if ('config' in source && typeof source.config === 'string') {
     try {
       if (/\bcontainer\b/.test(readFileSync(source.config, 'utf8'))) {
         return true

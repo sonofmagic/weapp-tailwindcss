@@ -4,7 +4,7 @@ import { createJsHandler } from '@/js'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
 import { createTemplateHandler } from '@/wxml'
 import { resolveRuntimePackageReplacements } from './runtime-package-replacements'
-import { resolveStyleOptionsFromContext } from './style-options'
+import { normalizeStyleHandlerMajorVersion, resolveStyleOptionsFromContext } from './style-options'
 
 export function createHandlersFromContext(
   ctx: InternalUserDefinedOptions,
@@ -43,7 +43,7 @@ export function createHandlersFromContext(
     postcssOptions,
     uniAppXUnsupported: resolvedUniAppXOptions.uvueUnsupported,
     cssCalc: cssCalcOptions,
-    majorVersion: tailwindcssMajorVersion,
+    majorVersion: normalizeStyleHandlerMajorVersion(tailwindcssMajorVersion),
   })
 
   const jsHandler = createJsHandler({

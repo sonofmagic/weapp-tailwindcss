@@ -6,6 +6,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
+import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -95,7 +96,7 @@ function createCssHandlerOptions(
         from: file,
       },
     },
-    ...(majorVersion === undefined ? {} : { majorVersion }),
+    ...(normalizeStyleHandlerMajorVersion(majorVersion) === undefined ? {} : { majorVersion: 4 as const }),
   }
 }
 

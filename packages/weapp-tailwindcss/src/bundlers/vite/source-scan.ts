@@ -162,7 +162,7 @@ export async function resolveViteSourceScanEntries(
   const cssSourceScanEntries = createMergedCssEntrySourceScanEntries(entries, {
     sourceCount: cssSourceCount,
   })
-  if (cssSourceScanEntries.length > 0 || cssSourceInlineCandidates || explicit || sourceOptions.cssSources?.length || configuredCssSources.length > 0) {
+  if (cssSourceScanEntries.length > 0 || cssSourceInlineCandidates || explicit) {
     return createResolvedViteSourceScan({
       entries: explicit ? cssSourceScanEntries : cssSourceScanEntries.length > 0 ? cssSourceScanEntries : undefined,
       explicit,

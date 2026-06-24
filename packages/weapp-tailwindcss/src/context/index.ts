@@ -123,9 +123,6 @@ export async function clearTailwindcssRuntimeCache(
 
   const cachePaths = new Map<string, boolean>()
   const normalizedCacheOptions = typeof cacheOptions === 'object' ? cacheOptions : undefined
-  if (normalizedCacheOptions?.path) {
-    cachePaths.set(normalizedCacheOptions.path, false)
-  }
   // 以非侵入方式访问私有的缓存目录路径，避免依赖 Tailwind 运行时内部类型。
   const privateCachePath: string | undefined = (tailwindRuntime as any)?.cacheStore?.options?.path
   if (privateCachePath) {

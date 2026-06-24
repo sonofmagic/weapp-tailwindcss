@@ -28,9 +28,9 @@ export function resolveWeappViteSourceRoot(config: unknown, _appType?: unknown) 
   if (configuredSrcRoot) {
     return configuredSrcRoot
   }
-  const envSrcRoot = resolveSourceRootCandidate(root, process.env.UNI_INPUT_DIR)
-    ?? resolveSourceRootCandidate(root, process.env.UNI_INPUT_ROOT)
-    ?? resolveSourceRootCandidate(root, process.env.UNI_APP_INPUT_DIR)
+  const envSrcRoot = resolveSourceRootCandidate(root, process.env['UNI_INPUT_DIR'])
+    ?? resolveSourceRootCandidate(root, process.env['UNI_INPUT_ROOT'])
+    ?? resolveSourceRootCandidate(root, process.env['UNI_APP_INPUT_DIR'])
   if (envSrcRoot) {
     return envSrcRoot
   }

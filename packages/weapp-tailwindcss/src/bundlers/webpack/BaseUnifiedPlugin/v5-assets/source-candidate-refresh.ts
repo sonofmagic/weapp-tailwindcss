@@ -25,6 +25,9 @@ export async function refreshWebpackSourceCandidates(options: {
     options.debug('webpack source candidate scan skipped: %O', error)
     return undefined
   }
+  if (!sourceScan || (!sourceScan.explicit && !sourceScan.entries?.length && !sourceScan.inlineCandidates)) {
+    return undefined
+  }
   return options.scanCache.resolve({
     changedFiles: options.watchChangedFiles,
     collector: createSourceCandidateStore({

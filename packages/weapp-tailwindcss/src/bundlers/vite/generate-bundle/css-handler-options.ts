@@ -1,5 +1,6 @@
 import type { InternalUserDefinedOptions, IStyleHandlerOptions } from '@/types'
 import path from 'node:path'
+import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 
 type CssHandlerOptions = IStyleHandlerOptions & {
@@ -8,7 +9,7 @@ type CssHandlerOptions = IStyleHandlerOptions & {
       from: string
     }
   }
-  majorVersion: number | undefined
+  majorVersion?: 4 | undefined
   sourceOptions?: {
     outputRoot?: string | undefined
   } | undefined
@@ -63,7 +64,7 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
           from,
         },
       },
-      majorVersion,
+      majorVersion: normalizeStyleHandlerMajorVersion(majorVersion),
       sourceOptions: {
         outputRoot,
       },

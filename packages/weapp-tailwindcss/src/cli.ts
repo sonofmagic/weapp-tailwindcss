@@ -36,15 +36,28 @@ function parseArgs(argv: string[]) {
   const positional: string[] = []
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index]
+    if (arg === undefined) {
+      continue
+    }
     if (!arg.startsWith('--')) {
       positional.push(arg)
       continue
     }
 
     const [rawKey, inlineValue] = arg.slice(2).split('=', 2)
+    if (!rawKey) {
+      continue
+    }
     const key = rawKey.replace(/-([a-z])/g, (_, char: string) => char.toUpperCase())
     const next = argv[index + 1]
-    const value = inlineValue ?? (next && !next.startsWith('-') ? argv[++index] : true)
+    let value: boolean | string = true
+    if (inlineValue !== undefined) {
+      value = inlineValue
+    }
+    else if (next !== undefined && !next.startsWith('-')) {
+      index++
+      value = next
+    }
     const current = options[key]
     if (current === undefined) {
       options[key] = value
@@ -87,7 +100,7 @@ async function runStatus(options: CliOptions) {
     status: 'unnecessary',
     message: PATCH_COMMAND_OBSOLETE_NOTICE,
   }
-  if (toBoolean(options.json, false)) {
+  if (toBoolean(options['json'], false)) {
     logger.log(JSON.stringify(payload, null, 2))
     return
   }
@@ -99,14 +112,14 @@ async function runStatus(options: CliOptions) {
 async function runVscodeEntry(options: CliOptions) {
   const resolvedCwd = resolveCliCwd(options.cwd)
   const baseDir = resolvedCwd ?? process.cwd()
-  const cssEntry = readStringOption('css', options.css)
+  const cssEntry = readStringOption('css', options['css'])
   if (!cssEntry) {
     throw new Error('Option "--css" is required.')
   }
 
-  const output = readStringOption('output', options.output)
-  const sources = readStringArrayOption('source', options.source)
-  const force = toBoolean(options.force, false)
+  const output = readStringOption('output', options['output'])
+  const sources = readStringArrayOption('source', options['source'])
+  const force = toBoolean(options['force'], false)
 
   const result = await generateVscodeIntellisenseEntry({
     baseDir,
@@ -124,14 +137,14 @@ async function runVscodeEntry(options: CliOptions) {
 async function runDoctor(options: CliOptions) {
   const resolvedCwd = resolveCliCwd(options.cwd)
   const report = createDoctorReport({ cwd: resolvedCwd })
-  if (toBoolean(options.json, false)) {
+  if (toBoolean(options['json'], false)) {
     logger.log(JSON.stringify(report, null, 2))
   }
   else {
     logger.log(formatDoctorReport(report))
   }
 
-  if (hasDoctorFailure(report, toBoolean(options.strict, false))) {
+  if (hasDoctorFailure(report, toBoolean(options['strict'], false))) {
     process.exitCode = 1
   }
 }

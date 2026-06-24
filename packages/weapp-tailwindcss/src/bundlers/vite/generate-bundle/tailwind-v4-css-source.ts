@@ -18,19 +18,19 @@ export function collectTailwindV4SourceFingerprint(source: string) {
     add('config-request', configRequest.replace(/\\/g, '/'))
   }
   for (const match of source.matchAll(/@source\s+(not\s+)?(["'])(.+?)\2\s*;?/g)) {
-    add(match[1] ? 'source:not' : 'source', match[3])
+    add(match[1] ? 'source:not' : 'source', match[3]!)
   }
   for (const match of source.matchAll(/@custom-variant\s+([^{\s]+)/g)) {
-    add('custom-variant', match[1])
+    add('custom-variant', match[1]!)
   }
   for (const match of source.matchAll(/@(?:theme|utility|variant|layer)\s+([^{;\s]+)/g)) {
-    add('directive', match[1])
+    add('directive', match[1]!)
   }
   for (const match of source.matchAll(/--[\w-]+(?=\s*:)/g)) {
     add('theme-token', match[0])
   }
   for (const match of source.matchAll(/\.([_a-z][\w-]*)\s*[{,]/gi)) {
-    add('selector', match[1])
+    add('selector', match[1]!)
   }
   return tokens
 }

@@ -90,6 +90,7 @@ export interface TailwindcssExtractOptions extends ExtractOptions {}
 export interface TailwindcssExtractResult {
   classList: string[]
   classSet: Set<string>
+  filename?: string | undefined
 }
 
 export interface TailwindContentTokenReport {

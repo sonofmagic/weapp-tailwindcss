@@ -2,6 +2,7 @@ import type { TailwindV4CssSource } from '../../../shared/generator-css/source-r
 import type { createEscapeFragments } from '../../../vite/incremental-runtime-class-set/escaped-candidates'
 import type { SourceCandidateStore } from '../../../vite/source-candidates'
 import type { SetupWebpackV5ProcessAssetsHookOptions, WebpackSourceLike } from './helpers'
+import type { WebpackSourceCandidateScanMemoryStats } from './source-candidate-cache'
 import type { TailwindcssRuntimeLike } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
@@ -22,7 +23,7 @@ import { isCssLikeModuleResource, stripResourceQuery } from '../shared'
 export interface WebpackCssHandlerOptions {
   isMainChunk: boolean
   postcssOptions: { options: { from: string } }
-  majorVersion?: number | undefined
+  majorVersion?: 4 | undefined
   sourceOptions?: {
     cssSources?: TailwindV4CssSource[] | undefined
     outputRoot?: string | undefined

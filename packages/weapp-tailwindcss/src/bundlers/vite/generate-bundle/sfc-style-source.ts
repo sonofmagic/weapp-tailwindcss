@@ -183,7 +183,7 @@ function resolveSourceStyleFileFromSiblingChunk(
   sourceRoot: string | undefined,
   debug: (format: string, ...args: unknown[]) => void,
 ) {
-  const siblingJsFile = resolveSiblingJsChunkFile(outputFile)
+  const siblingJsFile = resolveSiblingJsChunkFile(outputFile, undefined)
   if (!siblingJsFile) {
     debug('source style sibling chunk skipped: no sibling js for %s', outputFile)
     return undefined
@@ -237,7 +237,7 @@ export function resolveSourceStyleSourceFromOutputFile(
 ): RememberedCssSource | undefined {
   let sourceFile = resolveSourceStyleFileFromSiblingChunk(outputFile, snapshot, outputRoot, sourceRoot, debug)
   let rawSource = sourceFile ? getSourceStyleSource?.(sourceFile) : undefined
-  if (!rawSource || !hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
+  if (!sourceFile || !rawSource || !hasTailwindGenerationSourceForFile(sourceFile, rawSource)) {
     const scoredSources = [
       ...(getSourceStyleSources?.() ?? []),
       ...(configuredSourceEntries ?? []),
@@ -253,8 +253,8 @@ export function resolveSourceStyleSourceFromOutputFile(
     const bestScore = scoredSources[0]?.score
     const bestSources = bestScore ? scoredSources.filter(item => item.score === bestScore) : []
     if (bestSources.length === 1) {
-      sourceFile = bestSources[0].file
-      rawSource = bestSources[0].source
+      sourceFile = bestSources[0]!.file
+      rawSource = bestSources[0]!.source
       debug('source style source inferred from cache: %s -> %s', outputFile, sourceFile)
     }
   }

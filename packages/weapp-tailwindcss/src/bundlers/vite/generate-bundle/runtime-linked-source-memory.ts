@@ -1,6 +1,6 @@
-import type { BundleSnapshot } from './bundle-state'
+import type { BundleSnapshot } from '../bundle-state'
 import type { RememberedCssSource } from './types'
-import type { UserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import { resolveViteCssPipelineOutputFile } from './css-output'
 import { hasTailwindGenerationSource, resolveSourceStyleSourceFromOutputFile } from './sfc-style-source'
@@ -11,10 +11,10 @@ export interface RememberRuntimeLinkedCssSourcesOptions {
   debug: (message: string, ...args: unknown[]) => void
   getConfiguredTailwindV4CssSourceEntries: () => Array<{ file: string, source: string }>
   getSourceCandidateSource?: ((file: string) => string | undefined) | undefined
-  getSourceCandidateSources?: (() => Iterable<[string, string]> | undefined) | undefined
+  getSourceCandidateSources?: (() => Iterable<[string, string]>) | undefined
   isWebGeneratorTarget: boolean
   jsImportedCssFiles: Set<string>
-  opts: UserDefinedOptions
+  opts: Pick<InternalUserDefinedOptions, 'cssMatcher' | 'platform'>
   outDir: string
   rememberCssSource?: ((source: RememberedCssSource) => void) | undefined
   rootDir: string

@@ -524,7 +524,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             : undefined
           const processedCssHashKey = createRuntimeAwareCssHash(
             chunkHash,
-            chunkHash === undefined ? undefined : 'webpack-css-asset:chunk',
+            chunkHash === undefined ? compilerOptions.cache.computeHash(readRawSource()) : 'webpack-css-asset:chunk',
             `${createRuntimeSetHash(getGeneratorRuntimeSet())}:${runtimeAffectingSourceHash}:${webpackSourceCandidates?.signatureHash ?? 'source-candidates:0'}:${webpackSourceCandidateValueSignature}:${cssSourceTraceSignature}`,
           )
           const processedCssDecisionCacheKey = `${file}:${processedCssHashKey}`
@@ -561,9 +561,20 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             hasTailwindGeneratedAssetCss = hasTailwindGeneratedCss(source)
               || hasTailwindGeneratedCssMarkers(source)
           }
+          const hasProcessedAssetTailwindDirectives = () => {
+            const source = readCurrentProcessedRawSource()
+            return hasTailwindRootDirectives(source, { importFallback: true })
+              || hasTailwindSourceDirectives(source, { importFallback: true })
+              || hasTailwindApplyDirective(source)
+          }
           const shouldForceConfiguredMainCssGeneration = cssHandlerOptionsForProcessedAsset.isMainChunk
             && hasConfiguredTailwindV4SourceRoots()
             && !hasGeneratedCssMarker
+            && (
+              configuredMainCssEntryFiles.length > 0
+              || shouldRegenerateProcessedTailwindV4SourceCss
+              || hasProcessedAssetTailwindDirectives()
+            )
           const hasProcessedMainAssetUserCss = cachedSkipProcessedCssAsset === undefined
             && cssHandlerOptionsForProcessedAsset.isMainChunk
             && (hasGeneratedCssMarker || hasTailwindGeneratedAssetCss)
@@ -596,7 +607,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
             ?? (shouldFinalizeProcessedWebCssAsset || shouldPreserveFinalWebCssAsset || shouldSkipKnownProcessedCssAsset)
           )
           if (processedCssAssetKnown && cachedSkipProcessedCssAsset === undefined && !shouldFinalizeProcessedWebCssAsset && !shouldPreserveFinalWebCssAsset) {
-            processedCssAssetSkipDecisionCache.set(processedCssDecisionCacheKey, shouldSkipProcessedCssAsset)
+            processedCssAssetSkipDecisionCache.set(processedCssDecisionCacheKey, shouldSkipProcessedCssAsset === true)
           }
           if (shouldSkipProcessedCssAsset) {
             const hashKey = `${file}:asset`

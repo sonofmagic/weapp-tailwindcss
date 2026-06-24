@@ -1,5 +1,5 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
-import type { UserDefinedOptions } from '@/types'
+import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
 import { canProcessViteSourceStyleAsCss, resolveViteCssOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssImportShell, createRootMiniProgramOriginStyleOutputFile, isRootMiniProgramStyleOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './root-style-output'
@@ -9,7 +9,7 @@ export function resolveCssBundleOutputFile(options: {
   defaultStyleOutputExtension: string
   file: string
   isWebGeneratorTarget: boolean
-  opts: UserDefinedOptions
+  opts: InternalUserDefinedOptions
   shouldPreserveAppCssExtension: boolean
 }) {
   const {
@@ -39,7 +39,7 @@ export function resolveOutputFileFromMatchedCssSource(options: {
   bundleFiles: string[]
   defaultStyleOutputExtension: string
   isWebGeneratorTarget: boolean
-  opts: UserDefinedOptions
+  opts: Pick<InternalUserDefinedOptions, 'cssMatcher' | 'platform'>
   rootDir: string
   shouldPreserveAppCssExtension: boolean
   sourceFile: string | undefined
