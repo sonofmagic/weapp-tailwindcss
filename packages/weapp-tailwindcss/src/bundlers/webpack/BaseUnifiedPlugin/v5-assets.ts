@@ -1622,17 +1622,18 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const currentAssetLooksGenerated = hasTailwindGeneratedCss(currentRawSource)
                     || hasTailwindGeneratedCssMarkers(currentRawSource)
                   const currentAssetHasBundlerGeneratedMarker = hasBundlerGeneratedCssMarker(currentRawSource)
+                  const currentAssetHasAdditionalUserCss = currentAssetLooksGenerated
+                    && hasAdditionalWebpackAssetUserCssMarkers(currentRawSource, generatorRawSource)
                   const shouldPreserveGeneratedWebAssetUserCss = isWebGeneratorTarget
                     && currentAssetLooksGenerated
                     && !currentAssetHasBundlerGeneratedMarker
+                    && !currentAssetHasAdditionalUserCss
                   const hasExplicitSourceCssForCurrentAsset = sourceCss !== undefined
                     && (
                       hasTailwindRootDirectives(sourceCss, { importFallback: true })
                       || hasTailwindSourceDirectives(sourceCss, { importFallback: true })
                       || hasTailwindApplyDirective(sourceCss)
                     )
-                  const currentAssetHasAdditionalUserCss = currentAssetLooksGenerated
-                    && hasAdditionalWebpackAssetUserCssMarkers(currentRawSource, generatorRawSource)
                   const currentAssetHasUserCss = (sourceCssProcessed || hasExplicitSourceCssForCurrentAsset) && currentAssetLooksGenerated && !shouldPreserveGeneratedWebAssetUserCss
                     ? currentAssetHasAdditionalUserCss
                     : shouldUseWebpackAssetAsGeneratorUserCss(currentRawSource, generatorRawSource, {
