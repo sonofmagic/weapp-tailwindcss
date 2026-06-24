@@ -11985,6 +11985,97 @@ const fallback = "bg-[#434332] px-[32px]"
     expect(linkedOptions?.moduleGraph?.resolve?.('./chunk.js', linkedOptions.filename ?? '')).toBe(linkedFile)
   }, TEST_TIMEOUT_MS)
 
+  it('skips js chunks whose modules are excluded by Tailwind v4 source entries', async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-issue-932-'))
+    createdDirs.push(rootDir)
+    const includedModule = path.resolve(rootDir, 'src/pages/index.ts')
+    const excludedModule = path.resolve(rootDir, 'src/generated/openapi-client.ts')
+    const sourceEntries = [
+      {
+        base: path.resolve(rootDir, 'src'),
+        negated: false,
+        pattern: '**/*.{ts,wxml}',
+      },
+      {
+        base: path.resolve(rootDir, 'src/generated'),
+        negated: true,
+        pattern: '**/*.ts',
+      },
+    ]
+
+    const runtimeSet = new Set(['text-[#111111]'])
+    const context = createContext({
+      twPatcher: {
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        getClassSet: vi.fn(async () => runtimeSet),
+      },
+      jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
+    })
+
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        twPatcher: context.twPatcher as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug: vi.fn(),
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root: rootDir,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed: vi.fn(),
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => new Set<string>(),
+      getSourceScanEntries: () => sourceEntries,
+      getSourceCandidatesForEntries: () => new Set<string>(),
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+
+    const includedChunk = {
+      ...createRollupChunk('const cls = "text-[#111111]"'),
+      moduleIds: [includedModule],
+      modules: {
+        [includedModule]: {},
+      },
+    } as OutputChunk
+    const excludedChunk = {
+      ...createRollupChunk('export const api = "text-[#222222]";\nexport const value = 1;'),
+      moduleIds: [excludedModule],
+      modules: {
+        [excludedModule]: {},
+      },
+    } as OutputChunk
+    const bundle = {
+      'pages/index.js': includedChunk,
+      'generated/openapi-client.js': excludedChunk,
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {}, bundle)
+
+    expect(context.jsHandler).toHaveBeenCalledTimes(1)
+    expect(context.jsHandler.mock.calls[0]?.[0]).toBe('const cls = "text-[#111111]"')
+    expect(includedChunk.code).toContain('js:')
+    expect(excludedChunk.code).toBe('export const api = "text-[#222222]";\nexport const value = 1;')
+  }, TEST_TIMEOUT_MS)
+
   it('propagates linked js updates to asset entries', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const rootDir = process.cwd()

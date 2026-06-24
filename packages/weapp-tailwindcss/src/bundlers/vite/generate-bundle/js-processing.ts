@@ -2,6 +2,7 @@ import type { OutputAsset, OutputChunk } from 'rollup'
 import type { BundleSnapshot, BundleStateEntry } from '../bundle-state'
 import type { BundleMetrics } from './metrics'
 import type { GenerateBundleContext } from './types'
+import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import type { CreateJsHandlerOptions, LinkedJsModuleResult } from '@/types'
 import path from 'node:path'
 import { createUniAppXBundleAssetSourceGetter, UNI_APP_X_STYLE_PLACEHOLDER_VERSION } from '@/uni-app-x/style-asset'
@@ -10,6 +11,7 @@ import { processCachedTask } from '../../shared/cache'
 import { shouldSkipViteJsTransform } from '../js-precheck'
 import { resolveUniAppXJsTransformEnabled } from './js-handler-options'
 import { collectLinkedFileNames } from './js-linking'
+import { isViteJsChunkWithinTailwindSourceScope } from './js-source-scope'
 import { measureElapsed } from './metrics'
 import { createJsHashSalt, createLinkedImpactSignature, getSnapshotHash } from './signatures'
 
@@ -32,6 +34,7 @@ interface ProcessJsBundleEntryOptions {
   rememberProcessCacheKey: (cacheKey: string, hashKey?: string | number) => void
   runtimeSignature: string
   snapshot: BundleSnapshot
+  sourceScanEntries: TailwindSourceEntry[] | undefined
   timeTask: (name: string, task: () => Promise<void>) => Promise<void>
   transformRuntime: Set<string>
   uniAppX: GenerateBundleContext['opts']['uniAppX']
@@ -58,6 +61,7 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
     rememberProcessCacheKey,
     runtimeSignature,
     snapshot,
+    sourceScanEntries,
     timeTask,
     transformRuntime,
     uniAppX,
@@ -125,6 +129,14 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
               debug('js cache replay miss, fallback transform: %s', file)
             }
             const handlerOptions = createHandlerOptions(absoluteFile)
+            if (!isViteJsChunkWithinTailwindSourceScope(originalSource, sourceScanEntries)) {
+              metrics.js.elapsed += measureElapsed(start)
+              metrics.js.transformed++
+              debug('js skip transform (outside tailwind source scan): %s', file)
+              return {
+                result: rawSource,
+              }
+            }
             if (!disableJsPrecheck && shouldSkipViteJsTransform(rawSource, handlerOptions)) {
               metrics.js.elapsed += measureElapsed(start)
               metrics.js.transformed++

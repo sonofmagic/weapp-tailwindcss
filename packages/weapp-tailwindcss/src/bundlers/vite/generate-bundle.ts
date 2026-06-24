@@ -130,6 +130,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       getSourceCandidates,
       getSourceCandidateSource,
       getSourceCandidateSources,
+      getSourceScanEntries,
+      isWatchLikeBuild,
       getSourceCandidatesForEntries,
       getSourceCandidateSourcesForEntries,
       waitForSourceCandidateSyncs,
@@ -517,6 +519,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     })
     const jsEntries = snapshot.jsEntries
     const getJsEntry = createJsEntryResolver(jsEntries)
+    const sourceScanEntries = getSourceScanEntries?.()
+    const jsSourceScanEntries = buildCommand && !isWatchLikeBuild?.()
+      ? sourceScanEntries
+      : undefined
     const moduleGraphOptions = createBundleModuleGraphOptions(outDir, jsEntries)
     const hasRuntimeAffectingChanges = hasRuntimeAffectingSourceChanges(snapshot.runtimeAffectingChangedByType)
     const runtimeStart = performance.now()
@@ -1289,6 +1295,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         rememberProcessCacheKey,
         runtimeSignature,
         snapshot,
+        sourceScanEntries: jsSourceScanEntries,
         timeTask,
         transformRuntime,
         uniAppX,

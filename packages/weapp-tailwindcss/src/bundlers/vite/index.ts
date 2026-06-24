@@ -347,6 +347,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     recordedGeneratorCandidates = undefined
   }
   const getSourceCandidates = () => sourceCandidateCollector.values()
+  const getSourceScanEntries = () => sourceScanEntries
   const getSourceCandidatesForEntries = (entries: TailwindSourceEntry[] | undefined) => sourceCandidateCollector.valuesForEntries(entries)
   const getSourceCandidateSourcesForEntries = (entries: TailwindSourceEntry[] | undefined, options?: SourceCandidateFilterOptions) =>
     sourceCandidateCollector.sourcesForEntries(entries, options)
@@ -778,6 +779,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getSourceCandidates,
     getSourceCandidateSource: file => sourceCandidateCollector.source(file),
     getSourceCandidateSources: () => sourceCandidateCollector.sources(),
+    getSourceScanEntries,
+    isWatchLikeBuild,
     getSourceCandidatesForEntries,
     getSourceCandidateSourcesForEntries,
     waitForSourceCandidateSyncs,
