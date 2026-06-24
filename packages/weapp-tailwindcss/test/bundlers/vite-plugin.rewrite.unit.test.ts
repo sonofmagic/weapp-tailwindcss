@@ -582,19 +582,4 @@ describe('bundlers/vite WeappTailwindcss rewrite', () => {
     expect(plugins?.map(plugin => plugin.name)).toEqual([`${vitePluginName}:rewrite-css-imports`])
   }, TEST_TIMEOUT_MS)
 
-  it('skips generator css transform and import rewrite when tailwindcss major version is below 4', async () => {
-    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
-    const currentContext = getCurrentContext()
-    currentContext.tailwindRuntime.majorVersion = 3
-    const plugins = WeappTailwindcss()
-    const rewritePlugin = plugins?.find(plugin => plugin.name === `${vitePluginName}:rewrite-css-imports`) as Plugin
-    expect(rewritePlugin).toBeTruthy()
-
-    const resolveId = getResolveIdHandler(rewritePlugin)
-    const transform = getTransformHandler(rewritePlugin)
-
-    expect(await resolveId?.('tailwindcss', '/src/app.css')).toBeNull()
-    const result = await transform?.('@import "tailwindcss";', '/src/app.css') as TransformResult
-    expect(result).toBeNull()
-  }, TEST_TIMEOUT_MS)
 })

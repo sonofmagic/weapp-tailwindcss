@@ -256,6 +256,7 @@ describe('bundlers/vite helper modules', () => {
       sourceRoot: '/repo/src',
     })).toBeUndefined()
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.wxss', '.a{}')).toBe(false)
+    expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '')).toBe(false)
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', 'div { color: red; }')).toBe(false)
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '$color: red; .a { color: $color; }')).toBe(true)
 

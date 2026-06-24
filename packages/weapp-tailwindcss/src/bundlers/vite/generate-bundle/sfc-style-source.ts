@@ -3,7 +3,7 @@ import type { BundleSnapshot } from '../bundle-state'
 import type { RememberedCssSource } from './types'
 import path from 'node:path'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
-import { hasTailwindApplyDirective, hasTailwindNonRootGenerationDirectives, hasTailwindRootDirectives, hasTailwindRootImportDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindNonRootGenerationDirectives, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { CSS_SOURCE_OUTPUT_EXT_RE } from './css-output'
 import { scoreMatchingStyleFileBase } from './style-matching'
@@ -40,9 +40,6 @@ export function hasTailwindGenerationSource(
 function hasTailwindGenerationSourceForFile(file: string, source: string) {
   if (isTailwindV4CssEntry(file)) {
     return hasTailwindGenerationSource(source)
-  }
-  if (hasTailwindRootImportDirectives(source, { importFallback: true })) {
-    return false
   }
   return hasTailwindGenerationSource(source, { allowRootDirectives: false })
 }

@@ -31,14 +31,14 @@
 
 - 在微信小程序、支付宝小程序、抖音小程序等小程序环境中使用 Tailwind CSS。
 - 在 `uni-app` / `uni-app x`、Taro、Mpx、原生小程序、weapp-vite 等框架里复用同一套原子化样式写法。
-- 在 Tailwind CSS v3/v4 项目中处理小程序 class 转义、选择器兼容、rpx 任意值、CSS 降级和 H5/Web 输出差异。
+- 在 Tailwind CSS v4 项目中处理小程序 class 转义、选择器兼容、rpx 任意值、CSS 降级和 H5/Web 输出差异。
 - 在多端项目中同时覆盖小程序、H5/Web 与 App WebView 等目标。
 
 ## 当前支持
 
 | 能力         | 说明                                                                          |
 | ------------ | ----------------------------------------------------------------------------- |
-| Tailwind CSS | 支持 Tailwind CSS v3 与 v4                                                    |
+| Tailwind CSS | 支持 Tailwind CSS v4                                                          |
 | 构建工具     | 支持 Vite、Webpack 5、Rspack、Rollup、Rolldown、Gulp 与 Node API              |
 | 框架         | 支持 uni-app / uni-app x、Taro、Mpx、原生小程序、weapp-vite 等接入方式        |
 | 多端输出     | 覆盖小程序、H5/Web 与 App WebView 等平台差异                                  |
@@ -75,9 +75,7 @@
 | -------------------------------- | ---------------------------------------------------------- |
 | `@weapp-tailwindcss/runtime`     | escape/unescape、缓存、rpx 转换等运行时基础能力            |
 | `@weapp-tailwindcss/merge`       | Tailwind Merge v3 的小程序运行时封装                       |
-| `@weapp-tailwindcss/merge-v3`    | Tailwind Merge v2 的小程序运行时封装，面向 Tailwind CSS v3 |
 | `@weapp-tailwindcss/variants`    | tailwind-variants 的小程序运行时封装                       |
-| `@weapp-tailwindcss/variants-v3` | Tailwind CSS v3 生态的 variants 封装                       |
 | `@weapp-tailwindcss/cva`         | class-variance-authority 的小程序运行时封装                |
 | `@weapp-tailwindcss/typography`  | Tailwind Typography 的小程序适配版本                       |
 | `theme-transition`               | 主题切换运行时与 Tailwind 插件                             |
@@ -96,7 +94,7 @@ npx skills add sonofmagic/skills --skill weapp-tailwindcss
 它适合处理这些任务：
 
 - 新项目接入 `uni-app` / `uni-app x`、Taro 或原生小程序。
-- 判断 Tailwind CSS v3/v4 的配置差异。
+- 判断 Tailwind CSS v4 的配置差异。
 - 排查 class 不生效、rpx 任意值、JS 字符串 class、`space-x/space-y` 等问题。
 - 生成可验证、可回滚的接入步骤。
 

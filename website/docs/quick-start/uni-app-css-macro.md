@@ -70,9 +70,6 @@ uni-app 本身支持 CSS 条件编译：
 - 常规集成不需要手动注册 `weapp-tailwindcss/css-macro/postcss`。
 - 旧版伪 `@media (weapp-tw-platform:...)` 输出仍由 PostCSS 入口兼容处理，方便存量自定义流程迁移。
 
-## Tailwind CSS 3 旧项目
-
-当前文档站不再维护 Tailwind CSS 3 的 css-macro 接入内容。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
 
 ## Tailwind CSS v4
 

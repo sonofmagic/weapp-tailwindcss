@@ -33,7 +33,7 @@ Taro v4 可以走 Webpack，也可以走 Vite。新项目优先选 Webpack，问
 
 ## Tailwind CSS 入口
 
-当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档面向 `tailwindcss@4`。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 小程序构建只注册 `WeappTailwindcss`。不要再在 PostCSS 中注册 `tailwindcss` 或 `@tailwindcss/postcss`，也不要为 Taro Vite 注册 `@tailwindcss/vite`。
 

@@ -1,10 +1,10 @@
 import type { RollupOutput } from 'rollup'
 import type { InlineConfig, Plugin } from 'vite'
 import path from 'node:path'
+import tailwindcss from '@tailwindcss/postcss'
 import { defu } from 'defu'
 import * as Diff from 'diff'
 import prettier from 'prettier'
-import tailwindcss from 'tailwindcss'
 import { build } from 'vite'
 import { WeappTailwindcss as weappTw } from '@/bundlers/vite/index'
 // 注意： 打包成 h5 和 app 都不需要开启插件配置
@@ -15,7 +15,7 @@ import { WeappTailwindcss as weappTw } from '@/bundlers/vite/index'
 const postcssPlugins = [
   // require('autoprefixer')(),
   tailwindcss({
-    config: path.resolve(__dirname, '../fixtures/vite/tailwind.config.js'),
+    base: path.resolve(__dirname, '../fixtures/vite/src'),
   }),
 ]
 

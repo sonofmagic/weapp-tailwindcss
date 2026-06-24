@@ -249,6 +249,7 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(parseWebpackCssLayerNames(' , base , ')).toEqual(['base'])
     expect(removeWebpackTailwindGeneratedAssetCss('@layer theme, utilities;\n@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
     expect(removeWebpackTailwindGeneratedAssetCss('@layer theme{.bg-red-500{color:red}}\n@layer components{.btn{color:red}}')).toBe('@layer components{.btn{color:red}}')
+    expect(removeWebpackTailwindGeneratedAssetCss('@layer utilities{.bg-\\[\\#222222\\]{color:red}.text-\\[\\#fff\\]{color:white}}\n.site-shell{display:grid}\n:root{--site-shell-gap:16px}')).toBe('.site-shell{display:grid}\n:root{--site-shell-gap:16px}')
     expect(removeWebpackTailwindGeneratedAssetCss('@supports (display:grid){}')).toBe('')
     expect(removeWebpackTailwindGeneratedAssetCss('@media screen{@supports (display:grid){}}')).toBe('')
     expect(removeWebpackTailwindGeneratedAssetCss('@layer components{}')).toBe('')

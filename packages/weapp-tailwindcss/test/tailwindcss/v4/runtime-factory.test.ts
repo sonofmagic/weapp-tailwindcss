@@ -373,7 +373,7 @@ describe('tailwindcss/v4/runtime helpers', () => {
   it('does not create dual runtimes when only default v4 scaffolding exists', async () => {
     createTailwindcssRuntime.mockImplementation(options => ({
       packageInfo: { name: options.tailwindcss?.packageName } as any,
-      majorVersion: 3,
+      majorVersion: 4,
       options,
       getClassSet: vi.fn(async () => new Set()),
       extract: vi.fn(async () => undefined as any),

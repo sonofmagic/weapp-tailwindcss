@@ -4,6 +4,7 @@ import type { CreateJsHandlerOptions, IStyleHandlerOptions, ITemplateHandlerOpti
 import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
+import { prependConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { getCompilerContext } from '@/context'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
@@ -283,7 +284,8 @@ export function createPlugins(options: UserDefinedOptions = {}) {
       normalizeTailwindConfigDirectives(rawSource, path.dirname(sourceFile)),
       { importFallback: true },
     )
-    const generatorSourceCss = splitLocalCssImports(sourceCss)?.source ?? sourceCss
+    const config = runtimeState.tailwindRuntime.options?.tailwindcss?.config
+    const generatorSourceCss = prependConfigDirective(splitLocalCssImports(sourceCss)?.source ?? sourceCss, config)
     const changed = upsertTailwindV4CssSource(opts, {
       file: sourceFile,
       base: path.dirname(sourceFile),

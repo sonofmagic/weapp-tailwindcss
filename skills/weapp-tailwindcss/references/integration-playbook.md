@@ -6,7 +6,7 @@
 
 1. Node 版本建议 `^20.19.0 || >=22.12.0`
 2. 包管理器默认 `pnpm`
-3. 明确 Tailwind 主版本：`v3` 或 `v4`
+3. 使用 Tailwind CSS 4
 4. 明确目标端：仅小程序 or 小程序 + `H5/App`
 
 ## 2. 安装
@@ -15,20 +15,9 @@
 pnpm add -D tailwindcss weapp-tailwindcss postcss autoprefixer
 ```
 
-生成模式不需要在 `package.json` 中写入 `postinstall: "weapp-tw patch"`，也不需要手动执行 `weapp-tw patch`。排障时优先检查入口 CSS、`@source` / `content`、`cssEntries` 和构建插件是否生效。
+生成模式不需要在 `package.json` 中写入 `postinstall: "weapp-tw patch"`，也不需要手动执行 `weapp-tw patch`。排障时优先检查入口 CSS、`@source`、`cssEntries` 和构建插件是否生效。
 
-## 3. Tailwind 扫描配置基线
-
-### Tailwind v3（`content`）
-
-```js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ['./src/**/*.{wxml,html,js,ts,jsx,tsx,vue}'],
-}
-```
-
-### Tailwind v4（`@source`）
+## 3. Tailwind CSS 4 扫描配置基线
 
 ```css
 @import 'tailwindcss';

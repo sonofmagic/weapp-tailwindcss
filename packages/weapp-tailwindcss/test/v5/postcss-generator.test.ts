@@ -106,9 +106,9 @@ describe('v5 postcss generator', () => {
       from: undefined,
     })
 
-    expect(result.css).toContain('border-color: var(--color-gray-200, currentcolor)')
-    expect(result.css).toContain('calc(3px + var(--tw-ring-offset-width))')
-    expect(result.css).toContain('--tw-shadow: 0 1px 2px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.05))')
+    expect(result.css).not.toContain('border-color: var(--color-gray-200, currentcolor)')
+    expect(result.css).toContain('calc(1px + var(--tw-ring-offset-width))')
+    expect(result.css).toContain('--tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1))')
   })
 
   it('uses generator target option for v4 web output', async () => {
@@ -379,147 +379,41 @@ describe('v5 postcss generator', () => {
     expect(result.css).toContain('#123456')
   })
 
-  it('generates mini-program css from tailwind v3 config content without v4 @source', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-'))
-    const sourceDir = path.join(root, 'src')
-    const cssEntry = path.join(root, 'app.css')
-    const configFile = path.join(root, 'tailwind.config.js')
-    const pageEntry = path.join(sourceDir, 'page.wxml')
-    await mkdir(sourceDir)
-    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{wxml,js}"], theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
-    await writeFile(pageEntry, '<view class="w-[300.31rpx] bg-brand hover:bg-blue-500"></view>', 'utf8')
-
-    const cwd = process.cwd()
-    process.chdir(root)
-    try {
-      const result = await postcss([
-        weappTailwindcss({
-          version: 3,
-          config: configFile,
-        }),
-      ]).process('@tailwind utilities;', {
-        from: cssEntry,
-      })
-
-      expect(result.css).toContain('.w-_b300_d31rpx_B')
-      expect(result.css).toContain('width: 300.31rpx')
-      expect(result.css).toContain('.bg-brand')
-      expect(result.css).not.toContain(':hover')
-      expect(result.messages).toContainEqual(expect.objectContaining({
-        type: 'weapp-tailwindcss:generated',
-        target: 'weapp',
-      }))
-      expect(result.messages).toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: configFile,
-      }))
-    }
-    finally {
-      process.chdir(cwd)
-    }
-  })
-
   it('honors Tailwind v4 content negation when collecting postcss local sources', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-not-'))
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v4-not-'))
     const sourceDir = path.join(root, 'src')
     const cssEntry = path.join(root, 'app.css')
-    const configFile = path.join(root, 'tailwind.config.js')
     const pageEntry = path.join(sourceDir, 'pages', 'index.wxml')
     const ignoredEntry = path.join(sourceDir, 'apis', 'client.ts')
     await mkdir(path.dirname(pageEntry), { recursive: true })
     await mkdir(path.dirname(ignoredEntry), { recursive: true })
-    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{wxml,js,ts}", "!./src/apis/**"], theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
     await writeFile(pageEntry, '<view class="w-[300.31rpx] bg-brand"></view>', 'utf8')
     await writeFile(ignoredEntry, 'export const cls = "text-[77rpx]"', 'utf8')
 
-    const cwd = process.cwd()
-    process.chdir(root)
-    try {
-      const result = await postcss([
-        weappTailwindcss({
-          version: 3,
-          config: configFile,
-        }),
-      ]).process('@tailwind utilities;', {
-        from: cssEntry,
-      })
-
-      expect(result.css).toContain('.w-_b300_d31rpx_B')
-      expect(result.css).toContain('.bg-brand')
-      expect(result.css).not.toContain('.text-_b77rpx_B')
-      expect(result.messages).toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: resolveSourceScanPath(pageEntry),
-      }))
-      expect(result.messages).not.toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: ignoredEntry,
-      }))
-    }
-    finally {
-      process.chdir(cwd)
-    }
-  })
-
-  it('uses generator config for tailwind v3 source generation', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-generator-config-'))
-    const sourceDir = path.join(root, 'src')
-    const cssEntry = path.join(root, 'app.css')
-    const configFile = path.join(root, 'tailwind.config.js')
-    const pageEntry = path.join(sourceDir, 'page.wxml')
-    await mkdir(sourceDir)
-    await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{wxml,js}"], theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
-    await writeFile(pageEntry, '<view class="bg-brand"></view>', 'utf8')
-
-    const cwd = process.cwd()
-    process.chdir(root)
-    try {
-      const result = await postcss([
-        weappTailwindcss({
-          version: 3,
-          generator: {
-            config: configFile,
-          },
-        }),
-      ]).process('@tailwind utilities;', {
-        from: cssEntry,
-      })
-
-      expect(result.css).toContain('.bg-brand')
-      expect(result.css).toContain('18, 52, 86')
-      expect(result.messages).toContainEqual(expect.objectContaining({
-        type: 'dependency',
-        file: configFile,
-      }))
-    }
-    finally {
-      process.chdir(cwd)
-    }
-  })
-
-  it('resolves tailwind v3 @config paths relative to the current postcss input file', async () => {
-    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v5-postcss-v3-config-'))
-    const sourceDir = path.join(root, 'src')
-    const cssEntry = path.join(sourceDir, 'app.css')
-    const configFile = path.join(root, 'tailwind.config.js')
-    await mkdir(sourceDir)
-    await writeFile(configFile, 'module.exports = { theme: { extend: { colors: { brand: "#123456" } } } }', 'utf8')
-
     const result = await postcss([
-      weappTailwindcss({
-        version: 3,
-        candidates: ['bg-brand', 'w-[100px]'],
-      }),
+      weappTailwindcss(),
     ]).process(`
-      @config "../tailwind.config.js";
+      @theme default {
+        --color-brand: #123456;
+      }
+      @source "./src";
+      @source not "./src/apis/**";
       @tailwind utilities;
     `, {
       from: cssEntry,
     })
 
+    expect(result.css).toContain('.w-_b300_d31rpx_B')
     expect(result.css).toContain('.bg-brand')
-    expect(result.css).toContain('18, 52, 86')
-    expect(result.css).toContain('.w-_b100px_B')
+    expect(result.css).not.toContain('.text-_b77rpx_B')
+    expect(result.messages).toContainEqual(expect.objectContaining({
+      type: 'dependency',
+      file: resolveSourceScanPath(pageEntry),
+    }))
+    expect(result.messages).not.toContainEqual(expect.objectContaining({
+      type: 'dependency',
+      file: ignoredEntry,
+    }))
   })
 
   it('treats generator false as the default generator path', async () => {
@@ -532,7 +426,7 @@ describe('v5 postcss generator', () => {
       from: undefined,
     })
 
-    expect(result.css).toBe(css)
+    expect(result.css.replace(/\s+/g, ' ').trim()).toBe(css)
     expect(result.messages).toContainEqual(expect.objectContaining({
       type: 'weapp-tailwindcss:generated',
     }))

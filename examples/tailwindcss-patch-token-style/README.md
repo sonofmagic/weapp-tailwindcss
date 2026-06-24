@@ -18,4 +18,4 @@ pnpm --filter @weapp-tailwindcss-example/tailwindcss-patch-token-style build
 pnpm --filter @weapp-tailwindcss-example/tailwindcss-patch-token-style test
 ```
 
-这个示例刻意不注册 `@tailwindcss/postcss`、`@tailwindcss/vite` 或 `tailwindcss@3` PostCSS 插件，便于单独观察 `tailwindcss-patch` 的 token 提取和样式生成能力。
+这个示例刻意不注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite` 生成插件，便于单独观察 `tailwindcss-patch` 的 token 提取和样式生成能力。

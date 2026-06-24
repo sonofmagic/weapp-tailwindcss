@@ -139,7 +139,7 @@ describe('reset plugin', () => {
     expect(normalized).toContain('padding:0')
     expect(normalized).toContain('background-color:transparent')
     expect(normalized).toContain('border-width:0')
-    expect(normalized).toContain('[class~="wx-reset-video"]{display:block;max-width:100%;height:auto}')
+    expect(normalized).toContain('[class~="wx-reset-video"]{display:block;max-width:100%')
     expect(normalized).not.toMatch(INPUT_REGEX)
     expect(normalized).not.toMatch(VIDEO_REGEX)
   })

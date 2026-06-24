@@ -355,17 +355,17 @@ describe('Runtime Hot Update', () => {
       expect(mockRuntime.extract).toHaveBeenCalled()
     })
 
-    it('RT-009: should collect sync snapshot and still prefer extract when available for v3', async () => {
+    it('RT-009: should collect sync snapshot and still prefer extract when available for v4', async () => {
       const mockClassSet = new Set(['class-1'])
       const mockRuntime: TailwindcssRuntimeLike = {
         packageInfo: {
           name: 'tailwindcss',
-          version: '3.4.0',
+          version: '4.2.4',
           rootPath: '/fake/path',
           packageJsonPath: '/fake/path/package.json',
           packageJson: {},
         },
-        majorVersion: 3,
+        majorVersion: 4,
         options: undefined,
         extract: vi.fn().mockResolvedValue({ classSet: mockClassSet }),
         getClassSet: vi.fn().mockResolvedValue(mockClassSet),
@@ -375,7 +375,7 @@ describe('Runtime Hot Update', () => {
       const result = await collectRuntimeClassSet(mockRuntime, { force: true, skipRefresh: true })
 
       expect(result).toBe(mockClassSet)
-      expect(mockRuntime.getClassSetSync).toHaveBeenCalled()
+      expect(mockRuntime.getClassSetSync).not.toHaveBeenCalled()
       // force 收集会优先尝试 extract，以保证拿到更新后的 class set
       expect(mockRuntime.extract).toHaveBeenCalled()
     })
@@ -386,12 +386,12 @@ describe('Runtime Hot Update', () => {
       const mockRuntime: TailwindcssRuntimeLike = {
         packageInfo: {
           name: 'tailwindcss',
-          version: '3.4.0',
+          version: '4.2.4',
           rootPath: '/fake/path',
           packageJsonPath: '/fake/path/package.json',
           packageJson: {},
         },
-        majorVersion: 3,
+        majorVersion: 4,
         options: undefined,
         extract: vi.fn().mockResolvedValue({ classSet: mockClassSet }),
         getClassSet: vi.fn().mockResolvedValue(mockClassSet),
@@ -400,7 +400,7 @@ describe('Runtime Hot Update', () => {
 
       const result = await collectRuntimeClassSet(mockRuntime, { force: true, skipRefresh: true })
 
-      expect(mockRuntime.getClassSetSync).toHaveBeenCalled()
+      expect(mockRuntime.getClassSetSync).not.toHaveBeenCalled()
       expect(mockRuntime.extract).toHaveBeenCalled()
       expect(result).toBe(mockClassSet)
     })

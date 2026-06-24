@@ -6,20 +6,12 @@ const repositoryRoot = path.resolve(__dirname, '../../../..')
 
 const demoProjects = [
   'gulp-tailwindcss-v4',
-  'gulp-tailwindcss-v4',
-  'mpx-tailwindcss-v4',
   'mpx-tailwindcss-v4',
   'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-react-tailwindcss-v4',
-  'taro-webpack-vue3-tailwindcss-v4',
   'taro-webpack-vue3-tailwindcss-v4',
   'taro-vite-react-tailwindcss-v4',
-  'taro-vite-react-tailwindcss-v4',
-  'taro-vite-vue3-tailwindcss-v4',
   'taro-vite-vue3-tailwindcss-v4',
   'uni-app-vite-tailwindcss-v4',
-  'uni-app-vite-tailwindcss-v4',
-  'weapp-vite-tailwindcss-v4',
   'weapp-vite-tailwindcss-v4',
 ] as const
 
@@ -71,16 +63,13 @@ function appConfigPath(project: string) {
     return `demo/${project}/src/app.mpx`
   }
   if (project === 'weapp-vite-tailwindcss-v4') {
-    return `demo/${project}/miniprogram/app.json.ts`
+    return `demo/${project}/app.json`
   }
   return `demo/${project}/app.json`
 }
 
 function subPackageStyleCandidates(project: string, subPackage: typeof subPackageRoots[number]) {
   const extensions = project.endsWith('-v3') ? ['scss', 'css'] : ['css']
-  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
-    return extensions.map(extension => `demo/${project}/miniprogram/${subPackage}/pages/index.${extension}`)
-  }
   if (project.startsWith('weapp-vite-tailwindcss-v4')) {
     return extensions.map(extension => `demo/${project}/${subPackage}/pages/index.${extension}`)
   }
@@ -105,9 +94,6 @@ function subPackagePageCandidates(project: string, subPackage: typeof subPackage
   }
   if (project.startsWith('mpx-')) {
     return [`demo/${project}/src/${subPackage}/pages/index.mpx`]
-  }
-  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
-    return [`demo/${project}/miniprogram/${subPackage}/pages/index.wxml`]
   }
   if (project.startsWith('weapp-vite-tailwindcss-v4')) {
     return [`demo/${project}/${subPackage}/pages/index.wxml`]
@@ -151,7 +137,7 @@ describe('demo matrix generator config', () => {
     }
   })
 
-  it('keeps Tailwind CSS v4 demos on standard CSS entry detection without cssEntries', async () => {
+  it('keeps Tailwind CSS v4 demos on standard CSS entry detection except explicit Mpx subpackage entries', async () => {
     const configPaths = [
       'demo/gulp-tailwindcss-v4/gulpfile.ts',
       'demo/mpx-tailwindcss-v4/mpx.config.js',
@@ -167,7 +153,14 @@ describe('demo matrix generator config', () => {
       Promise.all(tailwindV4DemoCssEntries.map(readProjectFile)),
     ])
 
-    expect(configs.join('\n')).not.toContain('cssEntries')
+    for (const [index, configSource] of configs.entries()) {
+      if (configPaths[index] === 'demo/mpx-tailwindcss-v4/mpx.config.js') {
+        expect(configSource, configPaths[index]).toContain('cssEntries')
+      }
+      else {
+        expect(configSource, configPaths[index]).not.toContain('cssEntries')
+      }
+    }
     for (const [index, configSource] of configs.entries()) {
       expect(configSource, configPaths[index]).toContain('tailwindcssBasedir: process.cwd()')
     }
@@ -203,8 +196,8 @@ describe('demo matrix generator config', () => {
     const taroProjects = demoProjects.filter(project => project.startsWith('taro-'))
 
     expect(taroProjects.every(project => project.includes('-react-') || project.includes('-vue3-'))).toBe(true)
-    expect(taroProjects.filter(project => project.includes('-react-')).length).toBe(4)
-    expect(taroProjects.filter(project => project.includes('-vue3-')).length).toBe(4)
+    expect(taroProjects.filter(project => project.includes('-react-')).length).toBe(2)
+    expect(taroProjects.filter(project => project.includes('-vue3-')).length).toBe(2)
   })
 
   it('keeps every demo wired with normal and independent subpackages', async () => {

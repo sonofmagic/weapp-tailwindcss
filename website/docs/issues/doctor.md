@@ -91,7 +91,7 @@ npx weapp-tailwindcss doctor --cwd ./demo/uni-app-vue3-vite
 
 Tailwind CSS 4 支持 CSS-first 配置，未检测到 `tailwind.config.*` 不一定是问题。如果 JS 字符串中的 class 没有被识别，需要检查 CSS 入口中的 `@source`。
 
-如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档仅维护 Tailwind CSS 4 接入说明。
 
 ## issue 反馈建议
 

@@ -1,13 +1,9 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
-import postcss from 'postcss'
 import { defineConfig, build as viteBuild } from 'vite'
 import dts from 'vite-plugin-dts'
-import { loadTailwindcss3 } from './scripts/load-tailwindcss3'
-import { weappTailwindcssUIPreset } from './src/preset'
 
 const CSS_EXT_RE = /\.css$/
 
@@ -77,20 +73,6 @@ const cssBuildConfig = {
 export default defineConfig(async ({ command, mode }) => {
   if (command === 'build') {
     await viteBuild({ ...cssBuildConfig, mode })
-
-    const tailwindcss3 = await loadTailwindcss3(rootDir)
-    const cssSource = await readFile(path.resolve(srcDir, 'index.css'), 'utf8')
-    const tailwind3Result = await postcss([
-      tailwindcss3({
-        presets: [weappTailwindcssUIPreset],
-        corePlugins: { preflight: false },
-        content: [{ raw: '', extension: 'html' }],
-      }),
-    ]).process(cssSource, { from: path.resolve(srcDir, 'index.css') })
-
-    const css3Path = path.resolve(rootDir, 'dist/index.tailwind3.css')
-    await writeFile(css3Path, tailwind3Result.css, 'utf8')
-    await writeFile(css3Path.replace(CSS_EXT_RE, '.wxss'), tailwind3Result.css, 'utf8')
   }
 
   return {

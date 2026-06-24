@@ -19,6 +19,7 @@ export interface GenerateBundleContext {
     options?: {
       allowBaselineOnlyInitialSync?: boolean | undefined
       baseClassSet?: Set<string> | undefined
+      refreshBySource?: boolean | undefined
       transformOnly?: boolean | undefined
     },
   ) => Promise<Set<string>>

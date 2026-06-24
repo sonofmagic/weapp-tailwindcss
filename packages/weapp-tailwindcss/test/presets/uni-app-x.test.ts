@@ -102,7 +102,7 @@ describe('uni-app-x preset', () => {
   it('records installed tailwind major version into runtime options', async () => {
     env.clearBaseEnv()
     getTailwindcssPackageInfoMock.mockReturnValue({
-      version: '3.4.19',
+      version: '4.3.1',
     })
     const { uniAppX } = await import('@/presets')
 
@@ -112,17 +112,17 @@ describe('uni-app-x preset', () => {
     })
 
     expect(result.tailwindcssRuntimeOptions?.tailwindcss).toMatchObject({
-      version: 3,
+      version: 4,
       packageName: 'tailwindcss',
-      postcssPlugin: 'tailwindcss',
+      postcssPlugin: '@tailwindcss/postcss',
       resolve: {
         paths: ['/repo/uni-app-x/node_modules', '/repo/uni-app-x'],
       },
     })
     expect(result.tailwindcss).toMatchObject({
-      version: 3,
+      version: 4,
       packageName: 'tailwindcss',
-      postcssPlugin: 'tailwindcss',
+      postcssPlugin: '@tailwindcss/postcss',
       resolve: {
         paths: ['/repo/uni-app-x/node_modules', '/repo/uni-app-x'],
       },

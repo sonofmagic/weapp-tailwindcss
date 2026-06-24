@@ -36,7 +36,7 @@ interface ProcessRememberedCssReplayOptions {
   cssTaskFactories: Array<() => Promise<void>>
   debug: GenerateBundleContext['debug']
   defaultStyleOutputExtension: string
-  emitOrReplayCssAsset: (fileName: string, source: string) => OutputAsset
+  emitOrReplayCssAsset: (fileName: string, source: string) => OutputAsset | undefined
   generatorRuntime: Set<string>
   getCssHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssHandlerOptions']>
   getCssUserHandlerOptions: (file: string) => ReturnType<ReturnType<typeof import('./css-handler-options').createCssHandlerOptionsCache>['getCssUserHandlerOptions']>
@@ -217,7 +217,9 @@ export async function processRememberedCssReplay(options: ProcessRememberedCssRe
       }
       if (shouldEmitRememberedReplayCssAsset) {
         const replayAsset = emitOrReplayCssAsset(outputFile, css)
-        markCssAssetProcessed?.(replayAsset, outputFile)
+        if (replayAsset) {
+          markCssAssetProcessed?.(replayAsset, outputFile)
+        }
       }
       metrics.css.elapsed += measureElapsed(start)
       metrics.css.transformed++

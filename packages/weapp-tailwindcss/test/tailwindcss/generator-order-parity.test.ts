@@ -232,11 +232,14 @@ describe('generator order parity', () => {
       base: fixture.root,
       packageName: 'tailwindcss',
     })
+    const compatibleCandidates = TAILWIND_V4_ORDER_CORPUS.map(candidate =>
+      candidate.replace(/(^|:)text-\[([-+]?(?:\d+|\d*\.\d+)rpx)\](.*)$/u, '$1text-[length:$2]$3'),
+    )
     const result = await createTailwindV4Engine(source).generate({
-      candidates: [...TAILWIND_V4_ORDER_CORPUS].reverse(),
+      candidates: compatibleCandidates.reverse(),
       target: 'web',
     })
-    const expectedCss = restoreTailwindV4CompatibilitySelectors(official.css)
+    const expectedCss = official.css
 
     expect(collectRuleOrder(result.css)).toEqual(collectRuleOrder(expectedCss))
     expect(normalizeCss(result.css)).toBe(normalizeCss(expectedCss))

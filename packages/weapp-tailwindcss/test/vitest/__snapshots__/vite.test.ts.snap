@@ -52,70 +52,21 @@ exports[`vite test > vite common build 1`] = `
 `;
 
 exports[`vite test > vite common build 2`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 ::after,
 ::before {
   box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:
-;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-red-300: #ffa2a2;
+  --color-yellow-300: #ffdf20;
 }
 .flex {
   display: flex;
@@ -123,17 +74,14 @@ text,
 .grid {
   display: grid;
 }
-.h-_b100px_B {
-  height: 100px;
-}
 .h-_b99px_B {
   height: 99px;
 }
+.h-_b100px_B {
+  height: 100px;
+}
 .w-_b1_d5rem_B {
   width: 1.5rem;
-}
-.w-_b100px_B {
-  width: 100px;
 }
 .w-_b55px_B {
   width: 55px;
@@ -141,16 +89,17 @@ text,
 .w-_b99px_B {
   width: 99px;
 }
+.w-_b100px_B {
+  width: 100px;
+}
 .bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+  background-color: #929292;
 }
 .bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+  background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.3);
+  background-color: rgba(255, 223, 32, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -159,7 +108,7 @@ text,
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.3);
+  color: rgba(255, 162, 162, 0.3);
 }
 "
 `;
@@ -183,8 +132,6 @@ exports[`vite test > vite common build 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -193,6 +140,7 @@ exports[`vite test > vite common build 3`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
+    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
@@ -204,70 +152,21 @@ exports[`vite test > vite common build twice for cache 1`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 2`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 ::after,
 ::before {
   box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:
-;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-red-300: #ffa2a2;
+  --color-yellow-300: #ffdf20;
 }
 .flex {
   display: flex;
@@ -275,17 +174,14 @@ text,
 .grid {
   display: grid;
 }
-.h-_b100px_B {
-  height: 100px;
-}
 .h-_b99px_B {
   height: 99px;
 }
+.h-_b100px_B {
+  height: 100px;
+}
 .w-_b1_d5rem_B {
   width: 1.5rem;
-}
-.w-_b100px_B {
-  width: 100px;
 }
 .w-_b55px_B {
   width: 55px;
@@ -293,16 +189,17 @@ text,
 .w-_b99px_B {
   width: 99px;
 }
+.w-_b100px_B {
+  width: 100px;
+}
 .bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+  background-color: #929292;
 }
 .bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+  background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.3);
+  background-color: rgba(255, 223, 32, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -311,7 +208,7 @@ text,
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.3);
+  color: rgba(255, 162, 162, 0.3);
 }
 "
 `;
@@ -335,8 +232,6 @@ exports[`vite test > vite common build twice for cache 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -345,6 +240,7 @@ exports[`vite test > vite common build twice for cache 3`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
+    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
@@ -356,70 +252,21 @@ exports[`vite test > vite common build twice for cache 4`] = `
 `;
 
 exports[`vite test > vite common build twice for cache 5`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 ::after,
 ::before {
   box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:
-;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-red-300: #ffa2a2;
+  --color-yellow-300: #ffdf20;
 }
 .flex {
   display: flex;
@@ -427,17 +274,14 @@ text,
 .grid {
   display: grid;
 }
-.h-_b100px_B {
-  height: 100px;
-}
 .h-_b99px_B {
   height: 99px;
 }
+.h-_b100px_B {
+  height: 100px;
+}
 .w-_b1_d5rem_B {
   width: 1.5rem;
-}
-.w-_b100px_B {
-  width: 100px;
 }
 .w-_b55px_B {
   width: 55px;
@@ -445,16 +289,17 @@ text,
 .w-_b99px_B {
   width: 99px;
 }
+.w-_b100px_B {
+  width: 100px;
+}
 .bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+  background-color: #929292;
 }
 .bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+  background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.3);
+  background-color: rgba(255, 223, 32, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -463,7 +308,7 @@ text,
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.3);
+  color: rgba(255, 162, 162, 0.3);
 }
 "
 `;
@@ -487,8 +332,6 @@ exports[`vite test > vite common build twice for cache 6`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -497,6 +340,7 @@ exports[`vite test > vite common build twice for cache 6`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
+    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "
@@ -508,70 +352,21 @@ exports[`vite test > vite common build with rem2rpx 1`] = `
 `;
 
 exports[`vite test > vite common build with rem2rpx 2`] = `
-"::before,
-::after {
-  --tw-content: "";
-}
-view,
+"view,
 text,
 ::after,
 ::before {
   box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: currentColor;
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgba(59, 130, 246, 0.5);
-  --tw-ring-offset-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-ring-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow: 0 0 rgba(0, 0, 0, 0);
-  --tw-shadow-colored: 0 0 rgba(0, 0, 0, 0);
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:
-;
+  margin: 0;
+  padding: 0;
+  border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --color-red-300: #ffa2a2;
+  --color-yellow-300: #ffdf20;
 }
 .flex {
   display: flex;
@@ -579,17 +374,14 @@ text,
 .grid {
   display: grid;
 }
-.h-_b100px_B {
-  height: 100px;
-}
 .h-_b99px_B {
   height: 99px;
 }
+.h-_b100px_B {
+  height: 100px;
+}
 .w-_b1_d5rem_B {
   width: 48rpx;
-}
-.w-_b100px_B {
-  width: 100px;
 }
 .w-_b55px_B {
   width: 55px;
@@ -597,16 +389,17 @@ text,
 .w-_b99px_B {
   width: 99px;
 }
+.w-_b100px_B {
+  width: 100px;
+}
 .bg-_b_h929292_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(146, 146, 146, var(--tw-bg-opacity, 1));
+  background-color: #929292;
 }
 .bg-_bred_B {
-  --tw-bg-opacity: 1;
-  background-color: rgba(255, 0, 0, var(--tw-bg-opacity, 1));
+  background-color: red;
 }
 .bg-yellow-300_f30 {
-  background-color: rgba(253, 224, 71, 0.3);
+  background-color: rgba(255, 223, 32, 0.3);
 }
 .bg-_burl_p_ahttps_c_f_fxxx_dcom_fxx_dwebp_a_P_B {
   background-image: url("https://xxx.com/xx.webp");
@@ -615,7 +408,7 @@ text,
   background-image: url("https://yyy.com/xx.webp");
 }
 .text-red-300_f30 {
-  color: rgba(252, 165, 165, 0.3);
+  color: rgba(255, 162, 162, 0.3);
 }
 "
 `;
@@ -639,8 +432,6 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     <title></title>
     <!--preload-links-->
     <!--app-context-->
-    <script type="module" crossorigin src="/assets/index-[hash].js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-[hash].css" />
   </head>
 
   <body>
@@ -649,6 +440,7 @@ exports[`vite test > vite common build with rem2rpx 3`] = `
     </div>
     <div class="w-_b55px_B bg-_bred_B">hello</div>
     <div class="w-_b1_d5rem_B bg-_b_h929292_B">world</div>
+    <script type="module" src="/index.js"></script>
   </body>
 </html>
 "

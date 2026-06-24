@@ -178,11 +178,21 @@ export async function generateCssByGenerator(
   const userLocalImportParts = splitLocalCssImports(rawUserSource)
   const userSource = userLocalImportParts?.source ?? rawUserSource
   const userCssRawSource = removeTailwindV4GeneratorAtRules(userSource)
+  const generatedUserCssOrderSource = hasTailwindGeneratedCss(userSource)
+    ? splitTailwindV4GeneratedCssBySourceOrder(userSource, generatorRawSource)
+    : undefined
+  const generatedUserCssRawSource = generatedUserCssOrderSource
+    ? createCssAppend(generatedUserCssOrderSource.before, generatedUserCssOrderSource.after)
+    : hasTailwindGeneratedCss(userSource)
+      ? ''
+      : userCssRawSource
   const userCssOrderSource = GENERATOR_PLACEHOLDER_MARKER_RE.test(userSource)
     ? userSource
-    : userCssRawSource
+    : hasTailwindGeneratedCss(userSource)
+      ? userSource
+      : generatedUserCssRawSource
   const hasDistinctUserRawSource = typeof userRawSource === 'string'
-    && normalizeCssSourceForCompare(userCssRawSource) !== normalizeCssSourceForCompare(generatorRawSource)
+    && normalizeCssSourceForCompare(generatedUserCssRawSource) !== normalizeCssSourceForCompare(generatorRawSource)
 
   const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
   if (cleanedLocalImportWrapper !== undefined) {
@@ -216,6 +226,9 @@ export async function generateCssByGenerator(
     hasGeneratedMarkers,
     hasSourceDirectives,
     rawSource: generatorRawSource,
+    runtimeCandidateCount: runtime.size,
+    target: generatorOptions.target,
+    configuredCssSourceCount: options.cssSources?.length,
   })
 
   if (
@@ -426,10 +439,10 @@ export async function generateCssByGenerator(
         && hasDistinctUserRawSource
         && !hasGeneratedCss
         && !hasGeneratedMarkers
-        && !hasTailwindApplyDirective(userCssRawSource)
+        && !hasTailwindApplyDirective(generatedUserCssRawSource)
       ) {
-        const userCss = await transformGeneratorUserCss(userCssRawSource, userCssOptions)
-        const missingUserCss = isCssAlreadyRepresentedByMarkers(css, userCssRawSource)
+        const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, userCssOptions)
+        const missingUserCss = isCssAlreadyRepresentedByMarkers(css, generatedUserCssRawSource)
           ? filterExistingCssRules(css, userCss)
           : userCss
         css = createCssSourceOrderAppend(css, missingUserCss)
@@ -438,10 +451,15 @@ export async function generateCssByGenerator(
         if (shouldFinalizeMarkedUserLayerComponentsCss(file)) {
           css = reorderMarkedUserLayerComponentsCss(css)
         }
-        if (!shouldFilterApplyOnlyCss && !userRawSourceProcessed) {
+        if (
+          !shouldFilterApplyOnlyCss
+          && !userRawSourceProcessed
+          && !hasGeneratedCss
+          && !hasGeneratedMarkers
+        ) {
           css = await appendLegacyCompatCss(
             css,
-            userCssRawSource,
+            generatedUserCssRawSource,
             generated.target,
             styleHandler,
             cssHandlerOptions,
@@ -450,7 +468,7 @@ export async function generateCssByGenerator(
           if (!isolateCurrentCssCandidates) {
             css = await appendLegacyContainerCompatCss(
               css,
-              userCssRawSource,
+              generatedUserCssRawSource,
               file,
               runtime,
               configuredContainerCompat,
@@ -499,7 +517,7 @@ export async function generateCssByGenerator(
       && generatorRawSource.includes('weapp-tailwindcss generator-placeholder')
       && !hasUserCssLayerBlocks(generatorRawSource)
     ) {
-      const userCss = await transformGeneratorUserCss(userCssRawSource, {
+      const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
         generatorTarget: generated.target,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -541,7 +559,7 @@ export async function generateCssByGenerator(
         && !hasGeneratedCss
         && !hasGeneratedMarkers
       ) {
-        const userCss = await transformGeneratorUserCss(userCssRawSource, {
+        const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,
           cssUserHandlerOptions,
@@ -549,7 +567,7 @@ export async function generateCssByGenerator(
           importFallback: generatorOptions.importFallback,
           processed: userRawSourceProcessed,
         })
-        const missingUserCss = isCssAlreadyRepresentedByMarkers(css, userCssRawSource)
+        const missingUserCss = isCssAlreadyRepresentedByMarkers(css, generatedUserCssRawSource)
           ? filterExistingCssRules(css, userCss)
           : userCss
         css = createCssSourceOrderAppend(css, missingUserCss)
@@ -558,6 +576,7 @@ export async function generateCssByGenerator(
         hasMatchedCssSourceFile
         && generated.target === 'weapp'
         && hasGeneratedMarkers
+        && !hasGeneratedCss
       ) {
         const cleanedUserCssRawSource = removeTailwindV4GeneratedUserCssArtifacts(userCssRawSource)
         const userCss = await transformGeneratorUserCss(cleanedUserCssRawSource, {
@@ -571,8 +590,8 @@ export async function generateCssByGenerator(
         const missingUserCss = filterExistingCssRules(css, userCss)
         css = createCssSourceOrderAppend(css, missingUserCss)
       }
-      else if (hasMatchedCssSourceFile && generated.target === 'weapp' && hasUserCssLayerBlocks(userCssRawSource)) {
-        const layerUserCss = await transformGeneratorUserCss(splitUserCssLayerBlocks(userCssRawSource).layer, {
+      else if (hasMatchedCssSourceFile && generated.target === 'weapp' && hasUserCssLayerBlocks(generatedUserCssRawSource)) {
+        const layerUserCss = await transformGeneratorUserCss(splitUserCssLayerBlocks(generatedUserCssRawSource).layer, {
           generatorTarget: generated.target,
           generatorStyleOptions,
           cssUserHandlerOptions,
@@ -588,10 +607,16 @@ export async function generateCssByGenerator(
         }
       }
       if (hasMatchedCssSourceFile && generated.target === 'weapp') {
-        if (!isolateCurrentCssCandidates && !shouldFilterApplyOnlyCss && !userRawSourceProcessed) {
+        if (
+          !isolateCurrentCssCandidates
+          && !shouldFilterApplyOnlyCss
+          && !userRawSourceProcessed
+          && !hasGeneratedCss
+          && !hasGeneratedMarkers
+        ) {
           css = await appendLegacyContainerCompatCss(
             css,
-            userCssRawSource,
+            generatedUserCssRawSource,
             file,
             runtime,
             configuredContainerCompat,
@@ -606,7 +631,7 @@ export async function generateCssByGenerator(
         hasSourceDirectives,
         hasMatchedCssSourceFile,
       })) {
-        const userCss = await transformGeneratorUserCss(userCssRawSource, {
+        const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
           generatorTarget: generated.target,
           generatorStyleOptions,
           cssUserHandlerOptions,
@@ -640,10 +665,15 @@ export async function generateCssByGenerator(
         },
       }
     }
-    if (!shouldFilterApplyOnlyCss && !userRawSourceProcessed) {
+    if (
+      !shouldFilterApplyOnlyCss
+      && !userRawSourceProcessed
+      && !hasGeneratedCss
+      && !hasGeneratedMarkers
+    ) {
       css = await appendLegacyCompatCss(
         css,
-        userCssRawSource,
+        generatedUserCssRawSource,
         generated.target,
         styleHandler,
         cssHandlerOptions,
@@ -651,7 +681,7 @@ export async function generateCssByGenerator(
       )
       css = await appendLegacyContainerCompatCss(
         css,
-        userCssRawSource,
+        generatedUserCssRawSource,
         file,
         runtime,
         configuredContainerCompat,
@@ -666,9 +696,9 @@ export async function generateCssByGenerator(
       && hasDistinctUserRawSource
       && !hasGeneratedCss
       && !hasGeneratedMarkers
-      && !hasTailwindApplyDirective(userCssRawSource)
+      && !hasTailwindApplyDirective(generatedUserCssRawSource)
     ) {
-      const userCss = await transformGeneratorUserCss(userCssRawSource, {
+      const userCss = await transformGeneratorUserCss(generatedUserCssRawSource, {
         generatorTarget: generated.target,
         generatorStyleOptions,
         cssUserHandlerOptions,
@@ -676,7 +706,7 @@ export async function generateCssByGenerator(
         importFallback: generatorOptions.importFallback,
         processed: userRawSourceProcessed,
       })
-      const missingUserCss = isCssAlreadyRepresentedByMarkers(css, userCssRawSource)
+      const missingUserCss = isCssAlreadyRepresentedByMarkers(css, generatedUserCssRawSource)
         ? filterExistingCssRules(css, userCss)
         : userCss
       css = createCssSourceOrderAppend(css, missingUserCss)

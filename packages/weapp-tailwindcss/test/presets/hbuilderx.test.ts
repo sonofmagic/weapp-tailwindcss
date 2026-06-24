@@ -27,7 +27,6 @@ describe('hbuilderx preset', () => {
 
     // 环境变量中的绝对路径经 path.normalize 返回平台原生格式
     expect(result.tailwindcssBasedir).toBe(path.normalize('/Users/foo/uni-project'))
-    expect(result.tailwindcss?.v3?.cwd).toBe(path.normalize('/Users/foo/uni-project'))
     expect(result.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
     expect(result.tailwindcss?.version).toBe(4)
@@ -48,6 +47,6 @@ describe('hbuilderx preset', () => {
     const expectedBase = path.resolve('/Applications/HBuilderX.app/Contents/HBuilderX', './')
     expect(result.tailwindcssBasedir).toBe(expectedBase)
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
-    expect(result.tailwindcssRuntimeOptions?.tailwindcss?.v3?.cwd).toBe(expectedBase)
+    expect(result.tailwindcssRuntimeOptions?.projectRoot).toBe(expectedBase)
   })
 })

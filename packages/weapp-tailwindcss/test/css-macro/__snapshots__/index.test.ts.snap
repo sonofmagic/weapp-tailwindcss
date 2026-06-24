@@ -1,236 +1,346 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`css-macro tailwindcss plugin > dynamic apply case 6 > postcss 1`] = `
-"/* #ifdef H5 || MP-WEIXIN */
+"/* #ifndef H5 || MP-WEIXIN */
 .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
+}
 /* #endif */
-/* #ifndef H5 || MP-WEIXIN */
+/* #ifdef H5 || MP-WEIXIN */
 .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic apply case 6 > tw 1`] = `
-"@weapp-tw-ifdef "H5||MP-WEIXIN" {
-    .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
-    }
-}
-@weapp-tw-ifndef "H5||MP-WEIXIN" {
-    .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1))
-    }
+".apply-test {
+  @weapp-tw-ifdef "H5||MP-WEIXIN" {
+    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+  }
+  @weapp-tw-ifndef "H5||MP-WEIXIN" {
+    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic apply case 7 > postcss 1`] = `
-"/* #ifdef H5 || MP-WEIXIN */
+"/* #ifndef H5 || MP-WEIXIN */
 .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
+}
 /* #endif */
-/* #ifndef H5 || MP-WEIXIN */
+/* #ifdef H5 || MP-WEIXIN */
 .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic apply case 7 > tw 1`] = `
-"@weapp-tw-ifdef "H5_||_MP-WEIXIN" {
-    .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
-    }
-}
-@weapp-tw-ifndef "H5_||_MP-WEIXIN" {
-    .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1))
-    }
+".apply-test {
+  @weapp-tw-ifdef "H5 || MP-WEIXIN" {
+    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+  }
+  @weapp-tw-ifndef "H5 || MP-WEIXIN" {
+    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic apply case 8 > postcss 1`] = `
-"/* #ifdef H5\\_||\\_MP-WEIXIN */
+"/* #ifndef H5 || MP-WEIXIN */
 .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216))
+}
 /* #endif */
-/* #ifndef H5\\_||\\_MP-WEIXIN */
+/* #ifdef H5 || MP-WEIXIN */
 .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624))
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic apply case 8 > tw 1`] = `
-"@weapp-tw-ifdef "H5\\\\_||\\\\_MP-WEIXIN" {
-    .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(96 165 250 / var(--tw-bg-opacity, 1))
-    }
-}
-@weapp-tw-ifndef "H5\\\\_||\\\\_MP-WEIXIN" {
-    .apply-test {
-        --tw-bg-opacity: 1;
-        background-color: rgb(248 113 113 / var(--tw-bg-opacity, 1))
-    }
+".apply-test {
+  @weapp-tw-ifdef "H5_||_MP-WEIXIN" {
+    background-color: var(--color-blue-400, oklch(70.7% 0.165 254.624));
+  }
+  @weapp-tw-ifndef "H5_||_MP-WEIXIN" {
+    background-color: var(--color-red-400, oklch(70.4% 0.191 22.216));
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 0 > postcss 1`] = `
-"/* #ifdef MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifdef MP-WEIXIN */
 .ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 0 > tw 1`] = `
-"@weapp-tw-ifdef "MP-WEIXIN" {
-    .ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifdef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
+  @weapp-tw-ifdef "MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 1 > postcss 1`] = `
-"/* #ifndef MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifndef MP-WEIXIN */
 .ifndef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 1 > tw 1`] = `
-"@weapp-tw-ifndef "MP-WEIXIN" {
-    .ifndef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifndef-\\[MP-WEIXIN\\]\\:bg-blue-500 {
+  @weapp-tw-ifndef "MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 2 > postcss 1`] = `
-"/* #ifndef uniVersion>3.9 */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifndef uniVersion>3.9 */
 .ifndef-\\[uniVersion\\>3\\.9\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 2 > tw 1`] = `
-"@weapp-tw-ifndef "uniVersion>3.9" {
-    .ifndef-\\[uniVersion\\>3\\.9\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifndef-\\[uniVersion\\>3\\.9\\]\\:bg-blue-500 {
+  @weapp-tw-ifndef "uniVersion>3.9" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 3 > postcss 1`] = `
-"/* #ifndef uniVersion > 3.9 */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifndef uniVersion > 3.9 */
 .ifndef-\\[uniVersion_\\>_3\\.9\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 3 > tw 1`] = `
-"@weapp-tw-ifndef "uniVersion_>_3.9" {
-    .ifndef-\\[uniVersion_\\>_3\\.9\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifndef-\\[uniVersion_\\>_3\\.9\\]\\:bg-blue-500 {
+  @weapp-tw-ifndef "uniVersion > 3.9" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 4 > postcss 1`] = `
-"/* #ifndef uni\\_version > 3.9 */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifndef uni version > 3.9 */
 .ifndef-\\[uni\\\\_version_\\>_3\\.9\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 4 > tw 1`] = `
-"@weapp-tw-ifndef "uni\\\\_version_>_3.9" {
-    .ifndef-\\[uni\\\\_version_\\>_3\\.9\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifndef-\\[uni\\\\_version_\\>_3\\.9\\]\\:bg-blue-500 {
+  @weapp-tw-ifndef "uni_version > 3.9" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 5 > postcss 1`] = `
-"/* #ifndef H5 || MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifndef H5 || MP-WEIXIN */
 .ifndef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 5 > tw 1`] = `
-"@weapp-tw-ifndef "H5||MP-WEIXIN" {
-    .ifndef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifndef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
+  @weapp-tw-ifndef "H5||MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef with underscored spaces > postcss 1`] = `
-"/* #ifdef H5 || MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifdef H5 || MP-WEIXIN */
 .ifdef-\\[H5_\\|\\|_MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef with underscored spaces > tw 1`] = `
-"@weapp-tw-ifdef "H5_||_MP-WEIXIN" {
-    .ifdef-\\[H5_\\|\\|_MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifdef-\\[H5_\\|\\|_MP-WEIXIN\\]\\:bg-blue-500 {
+  @weapp-tw-ifdef "H5 || MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef without spaces > postcss 1`] = `
-"/* #ifdef H5 || MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifdef H5 || MP-WEIXIN */
 .ifdef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > dynamic case 5 ifdef without spaces > tw 1`] = `
-"@weapp-tw-ifdef "H5||MP-WEIXIN" {
-    .ifdef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.ifdef-\\[H5\\|\\|MP-WEIXIN\\]\\:bg-blue-500 {
+  @weapp-tw-ifdef "H5||MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
@@ -263,73 +373,137 @@ exports[`css-macro tailwindcss plugin > postcss expand case 1 > postcss 1`] = `
 `;
 
 exports[`css-macro tailwindcss plugin > static case 0 > postcss 1`] = `
-"/* #ifdef MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifdef MP-WEIXIN */
 .wx\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > static case 0 > tw 1`] = `
-"@weapp-tw-ifdef "MP-WEIXIN" {
-    .wx\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
-}"
-`;
-
-exports[`css-macro tailwindcss plugin > static case 1 > postcss 1`] = `
-"/* #ifndef MP-WEIXIN */
-.-wx\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
-/* #endif */"
-`;
-
-exports[`css-macro tailwindcss plugin > static case 1 > tw 1`] = `
-"@weapp-tw-ifndef "MP-WEIXIN" {
-    .-wx\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.wx\\:bg-blue-500 {
+  @weapp-tw-ifdef "MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > static case 2 > postcss 1`] = `
-"/* #ifdef uniVersion > 3.9 */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifdef uniVersion > 3.9 */
 .hv\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > static case 2 > tw 1`] = `
-"@weapp-tw-ifdef "uniVersion > 3.9" {
-    .hv\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.hv\\:bg-blue-500 {
+  @weapp-tw-ifdef "uniVersion > 3.9" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;
 
 exports[`css-macro tailwindcss plugin > static case 3 > postcss 1`] = `
-"/* #ifdef H5 || MP-WEIXIN */
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifdef H5 || MP-WEIXIN */
 .mv\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+    background-color: var(--color-blue-500)
+}
 /* #endif */"
 `;
 
 exports[`css-macro tailwindcss plugin > static case 3 > tw 1`] = `
-"@weapp-tw-ifdef "H5 || MP-WEIXIN" {
-    .mv\\:bg-blue-500 {
-        --tw-bg-opacity: 1;
-        background-color: rgb(59 130 246 / var(--tw-bg-opacity, 1))
-    }
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.mv\\:bg-blue-500 {
+  @weapp-tw-ifdef "H5 || MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
+}"
+`;
+
+exports[`css-macro tailwindcss plugin > static negative case 1 > postcss 1`] = `
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+/* #ifndef MP-WEIXIN */
+.not-wx\\:bg-blue-500 {
+    background-color: var(--color-blue-500)
+}
+/* #endif */"
+`;
+
+exports[`css-macro tailwindcss plugin > static negative case 1 > tw 1`] = `
+":root, :host {
+  --color-blue-500: oklch(62.3% .214 259.815);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.not-wx\\:bg-blue-500 {
+  @weapp-tw-ifndef "MP-WEIXIN" {
+    background-color: var(--color-blue-500);
+  }
 }"
 `;

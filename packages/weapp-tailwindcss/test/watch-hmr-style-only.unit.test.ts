@@ -22,7 +22,7 @@ let tempDir: string
 function createOptions(): CliOptions {
   return {
     caseName: 'all',
-    timeoutMs: 1000,
+    timeoutMs: 6000,
     pollMs: 10,
     skipBuild: true,
     quietSass: true,
@@ -64,12 +64,18 @@ function createWatchCase(sourceFile: string): WatchCase {
 describe('watch-hmr style-only helpers', () => {
   beforeEach(async () => {
     tempDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-style-only-'))
+    let now = 100_000
+    vi.spyOn(Date, 'now').mockImplementation(() => {
+      now += 2_000
+      return now
+    })
     createWatchSessionMock.mockReset()
     runStyleMutationMock.mockReset()
     sleepMock.mockReset().mockResolvedValue()
   })
 
   afterEach(async () => {
+    vi.restoreAllMocks()
     await rm(tempDir, { recursive: true, force: true })
   })
 
@@ -80,7 +86,7 @@ describe('watch-hmr style-only helpers', () => {
     const session: WatchSession = {
       child: {} as WatchSession['child'],
       ensureRunning: vi.fn(),
-      lastCompileSuccessAt: vi.fn(() => 0),
+      lastCompileSuccessAt: vi.fn(() => 106_000),
       logs: vi.fn(() => 'watch logs'),
       memorySamplesSince: vi.fn(() => [
         { at: 1, rssMb: 200, maxProcessRssMb: 180, processCount: 2 },
@@ -164,7 +170,7 @@ describe('watch-hmr style-only helpers', () => {
     const session: WatchSession = {
       child: {} as WatchSession['child'],
       ensureRunning: vi.fn(),
-      lastCompileSuccessAt: vi.fn(() => 0),
+      lastCompileSuccessAt: vi.fn(() => 106_000),
       logs: vi.fn(() => 'captured watch logs'),
       memorySamplesSince: vi.fn(() => []),
       memoryDebugSamplesSince: vi.fn(() => []),

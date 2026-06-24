@@ -34,7 +34,7 @@
     "pathe": "^2.0.3",
     "picocolors": "^1.1.1",
     "postcss": "catalog:postcss85",
-    "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss4": "catalog:tailwindcss4",
     "traverse": "^0.6.11"
   },

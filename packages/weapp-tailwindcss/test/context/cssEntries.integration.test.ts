@@ -102,9 +102,10 @@ describe('cssEntries integration', () => {
     const original = await fs.readFile(sourceFile, 'utf8')
     const previousToken = 'bg-[#123456] shadow-blue-100'
     const nextToken = 'bg-[#4545AB] shadow-blue-100'
+    const originalWithPreviousToken = appendScriptLiteralProbe(original, [previousToken])
 
-    expect(original.includes(previousToken)).toBe(true)
     expect(original.includes(nextToken)).toBe(false)
+    await fs.writeFile(sourceFile, originalWithPreviousToken, 'utf8')
 
     const ctx = getCompilerContext({
       tailwindcssBasedir: projectRoot,
@@ -116,7 +117,7 @@ describe('cssEntries integration', () => {
     expect(baseline.has('bg-[#4545AB]')).toBe(false)
     expect(baseline.has('bg-[#4545ab]')).toBe(false)
 
-    await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
+    await fs.writeFile(sourceFile, originalWithPreviousToken.replace(previousToken, nextToken), 'utf8')
 
     try {
       await ctx.refreshTailwindcssRuntime({ clearCache: true })
@@ -141,9 +142,10 @@ describe('cssEntries integration', () => {
     const original = await fs.readFile(sourceFile, 'utf8')
     const previousToken = '\'bg-[#999999]\':true'
     const nextToken = '\'bg-[#f00]\':true'
+    const originalWithPreviousToken = original.replace('</script>', `\nconst __twShortHexHotRefresh = ref({ ${previousToken} })\n</script>`)
 
-    expect(original.includes(previousToken)).toBe(true)
     expect(original.includes(nextToken)).toBe(false)
+    await fs.writeFile(sourceFile, originalWithPreviousToken, 'utf8')
 
     const ctx = getCompilerContext({
       tailwindcssBasedir: projectRoot,
@@ -154,7 +156,7 @@ describe('cssEntries integration', () => {
     expect(baseline.has('bg-[#999999]')).toBe(true)
     expect(baseline.has('bg-[#f00]')).toBe(false)
 
-    await fs.writeFile(sourceFile, original.replace(previousToken, nextToken), 'utf8')
+    await fs.writeFile(sourceFile, originalWithPreviousToken.replace(previousToken, nextToken), 'utf8')
 
     try {
       await ctx.refreshTailwindcssRuntime({ clearCache: true })

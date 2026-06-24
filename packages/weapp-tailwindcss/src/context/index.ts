@@ -128,6 +128,9 @@ export async function clearTailwindcssRuntimeCache(
   if (privateCachePath) {
     cachePaths.set(privateCachePath, false)
   }
+  if (normalizedCacheOptions?.path) {
+    cachePaths.set(normalizedCacheOptions.path, false)
+  }
   if (options?.removeDirectory && normalizedCacheOptions?.dir) {
     cachePaths.set(normalizedCacheOptions.dir, true)
   }

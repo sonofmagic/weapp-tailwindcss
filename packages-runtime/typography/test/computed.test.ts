@@ -1,6 +1,5 @@
 /* eslint-disable ts/no-require-imports */
-import postcss from 'postcss'
-import tailwind from 'tailwindcss'
+import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 
 const typographyPlugin: any = require('../src/index')
 
@@ -12,20 +11,21 @@ describe('computed hooks', () => {
   it('merges computed entries when provided', async () => {
     typographyPlugin._computed.sample = (value: Record<string, string>) => value
 
-    const { css } = await postcss([tailwind({
-      content: [{ raw: '<div class="prose"></div>' }],
-      corePlugins: { preflight: false },
-      plugins: [typographyPlugin()],
-      theme: {
-        typography: {
-          DEFAULT: {
-            sample: {
-              color: 'tomato',
+    const { css } = await generateCss4('<div class="prose"></div>', {
+      twConfig: {
+        corePlugins: { preflight: false },
+        plugins: [typographyPlugin()],
+        theme: {
+          typography: {
+            DEFAULT: {
+              sample: {
+                color: 'tomato',
+              },
             },
           },
         },
       },
-    })]).process('@tailwind base; @tailwind components; @tailwind utilities;', { from: undefined })
+    })
 
     expect(css).toContain('color: tomato')
   })

@@ -61,7 +61,7 @@
     "htmlparser2": "^12.0.0",
     "magic-string": "^0.30.21",
     "postcss": "catalog:postcss85",
-    "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss-config": "workspace:*"
   }
 }

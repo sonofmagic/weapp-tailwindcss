@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-21T21:31:34.083Z",
+  "generatedAt": "2026-06-24T19:03:31.351Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 164,
-    "docs": 160,
+    "all": 163,
+    "docs": 159,
     "blog": 4
   },
   "documents": [
@@ -2036,7 +2036,7 @@
       "id": "doc:community/packages-runtime/multi-platform-demos",
       "title": "多端 Demo：小程序 + Web",
       "description": "基于 packages-runtime 的跨端示例：uni-app + Web、Taro + Web。",
-      "summary": "本页示例统一以 **Tailwind v4** 为主线（@weapp-tailwindcss/merge + @weapp-tailwindcss/variants）。如果项目必须继续使用 tailwindcss@3，请安装 weapp-tailwindcss@4 并查看 v4 文档站。",
+      "summary": "本页示例统一以 **Tailwind v4** 为主线（@weapp-tailwindcss/merge + @weapp-tailwindcss/variants）。当前文档仅维护 Tailwind CSS 4 接入说明。",
       "url": "/docs/community/packages-runtime/multi-platform-demos",
       "canonical": "https://tw.icebreaker.top/docs/community/packages-runtime/multi-platform-demos",
       "keywords": [
@@ -3074,36 +3074,6 @@
     },
     {
       "kind": "doc",
-      "id": "doc:migrations/v3",
-      "title": "Tailwind CSS 3 旧版迁移文档",
-      "description": "Tailwind CSS 3 项目请使用 weapp-tailwindcss@4 文档站。",
-      "summary": "当前文档站不再维护 Tailwind CSS 3 的接入、运行时与迁移内容。",
-      "url": "/docs/migrations/v3",
-      "canonical": "https://tw.icebreaker.top/docs/migrations/v3",
-      "keywords": [
-        "Tailwind CSS 3",
-        "weapp-tailwindcss@4",
-        "旧版文档",
-        "迁移",
-        "升级",
-        "兼容",
-        "Tailwind",
-        "CSS",
-        "旧版迁移文档",
-        "migrations",
-        "v3",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "小程序",
-        "微信小程序",
-        "uni-app"
-      ],
-      "headings": [],
-      "updatedAt": null,
-      "source": "docs/migrations/v3.md"
-    },
-    {
-      "kind": "doc",
       "id": "doc:migrations/v5",
       "title": "从 v4 迁移到 v5",
       "description": "weapp-tailwindcss v4 项目升级到 v5 的迁移清单，覆盖依赖、Tailwind 入口、构建插件、H5/Web 与 uni-app x。",
@@ -3665,7 +3635,7 @@
       "id": "doc:quick-start/frameworks/uni-app",
       "title": "uni-app CLI Vue2 Webpack",
       "description": "uni-app CLI Vue2 Webpack 存量项目接入 weapp-tailwindcss 的配置说明。",
-      "summary": "src/app.css 使用 Tailwind CSS 4 入口。如果项目必须继续使用 tailwindcss@3，请安装 weapp-tailwindcss@4 并查看 v4 文档站。",
+      "summary": "src/app.css 使用 Tailwind CSS 4 入口。当前文档仅维护 Tailwind CSS 4 接入说明。",
       "url": "/docs/quick-start/frameworks/uni-app",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app",
       "keywords": [
@@ -3695,7 +3665,7 @@
       "id": "doc:quick-start/frameworks/uni-app-vite",
       "title": "uni-app CLI Vue3 Vite",
       "description": "uni-app CLI Vue3 Vite 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。",
-      "summary": "当前文档面向 tailwindcss@4。如果项目必须继续使用 tailwindcss@3，请安装 weapp-tailwindcss@4 并查看 v4 文档站。",
+      "summary": "当前文档面向 tailwindcss@4。当前文档仅维护 Tailwind CSS 4 接入说明。",
       "url": "/docs/quick-start/frameworks/uni-app-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/uni-app-vite",
       "keywords": [
@@ -3971,12 +3941,12 @@
       "headings": [
         "能解决什么",
         "当前生成链路",
-        "Tailwind CSS 3 旧项目",
         "Tailwind CSS v4",
         "自定义平台别名",
         "平台表达式",
         "平台裁剪行为",
-        "不再需要手动 PostCSS 配置"
+        "不再需要手动 PostCSS 配置",
+        "在 `@apply` 中使用"
       ],
       "updatedAt": null,
       "source": "docs/quick-start/uni-app-css-macro.md"
@@ -4082,7 +4052,7 @@
       "id": "doc:quick-start/v4/readme",
       "title": "开发参考手册",
       "description": "Tailwind CSS 4 在 weapp-tailwindcss 中的配置说明。",
-      "summary": "如果项目必须继续使用 tailwindcss@3，请安装 weapp-tailwindcss@4 并查看 v4 文档站。",
+      "summary": "当前文档仅维护 Tailwind CSS 4 接入说明。",
       "url": "/docs/quick-start/v4/readme",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/readme",
       "keywords": [

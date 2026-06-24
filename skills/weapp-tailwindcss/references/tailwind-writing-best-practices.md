@@ -136,18 +136,7 @@ uvtw({
 <view class="bg-[length:12rpx]"></view>
 ```
 
-## 5. v3 / v4 扫描配置基线
-
-### 5.1 Tailwind v3（`content`）
-
-```js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ['./src/**/*.{wxml,html,js,ts,jsx,tsx,vue}'],
-}
-```
-
-### 5.2 Tailwind v4（`@source`）
+## 5. Tailwind CSS 4 扫描配置基线
 
 ```css
 @import 'tailwindcss';
@@ -163,7 +152,7 @@ module.exports = {
 
 ## 6. weapp 运行时联动要点
 
-- 使用 `@weapp-tailwindcss/merge`（v4）或 `@weapp-tailwindcss/merge-v3`（v3）处理冲突与转义一致性。
+- 使用 `@weapp-tailwindcss/merge` 处理冲突与转义一致性。
 - 若把 `twMerge` / `cva` / `tv` / `cn` 做了重命名封装，补充 `ignoreCallExpressionIdentifiers`。
 - 需要原样透传给第三方库时，使用 `weappTwIgnore` 跳过编译期转义。
 

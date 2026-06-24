@@ -20,7 +20,7 @@ keywords:
   - taro
 ---
 
-本页示例统一以 **Tailwind v4** 为主线（`@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`）。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+本页示例统一以 **Tailwind v4** 为主线（`@weapp-tailwindcss/merge` + `@weapp-tailwindcss/variants`）。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 ## Demo 1：uni-app + Web（Vue + TS）
 
@@ -147,7 +147,7 @@ export function CardWeb() {
 ### 注意事项
 
 - `process.env.TARO_ENV` 在构建期注入，适用于 H5/小程序的条件切换。
-- 若你必须继续使用 Tailwind v3，请使用 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+- 多端项目建议统一使用 Tailwind CSS 4 入口，并在 H5/小程序之间显式切换插件启用状态。
 
 ## 扩展方向
 

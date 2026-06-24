@@ -274,13 +274,11 @@ describe('v5 vite generator bundle', () => {
     expect(code).toContain(replaceWxml('mt-[22rpx]'))
     expect(code).toContain(replaceWxml('px-[8px]'))
     expect(code).toContain(replaceWxml('py-[4px]'))
-    expect(code).toContain('bg-[#654321]')
+    expect(code).toContain(replaceWxml('bg-[#654321]'))
     expect(code).toContain('shadow-blue-100')
-    expect(code).toContain('rounded-[999px]')
+    expect(code).toContain(replaceWxml('rounded-[999px]'))
     expect(code).toContain('at App.vue:4')
-    expect(code).toContain('biz-token-[alpha]')
-    expect(code).not.toContain(replaceWxml('bg-[#654321]'))
-    expect(code).not.toContain(replaceWxml('rounded-[999px]'))
+    expect(code).toContain(replaceWxml('biz-token-[alpha]'))
   }, TEST_TIMEOUT_MS)
 
   it('can force generator output for tailwind v4 main css without relying on the tailwind banner', async () => {
@@ -447,7 +445,7 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
-    expect((bundle['app.css'] as OutputAsset).source).toBe(weappCss)
+    expect((bundle['app.css'] as OutputAsset).source).toBe(`${weappCss}\ncss:${viteCss}`)
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: expect.any(Set),
       target: 'weapp',
@@ -455,7 +453,10 @@ describe('v5 vite generator bundle', () => {
     const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
     expect(candidates.has('w-[100px]')).toBe(true)
     expect(candidates.has('text-red-500')).toBe(true)
-    expect(currentContext.styleHandler).not.toHaveBeenCalled()
+    expect(currentContext.styleHandler).toHaveBeenCalledWith(viteCss, expect.objectContaining({
+      isMainChunk: false,
+      majorVersion: 4,
+    }))
   }, TEST_TIMEOUT_MS)
 
   it('can emit web css without mini-program post processing for multi-target apps', async () => {
@@ -523,7 +524,11 @@ describe('v5 vite generator bundle', () => {
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect((bundle['app.css'] as OutputAsset).source).toBe(`${rawTailwindCss}${userCss}`)
-    expect(generateMock).not.toHaveBeenCalled()
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: new Set(),
+      scanSources: true,
+      target: 'web',
+    }))
     expect(currentContext.styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
@@ -610,11 +615,14 @@ describe('v5 vite generator bundle', () => {
     expect((bundle['app.css'] as OutputAsset).source).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
     expect((bundle['app.css'] as OutputAsset).source).not.toContain('@layer theme')
     expect((bundle['app.css'] as OutputAsset).source).not.toContain('@theme default')
-    expect(generateMock).not.toHaveBeenCalled()
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      candidates: runtimeSet,
+      target: 'web',
+    }))
     expect(getCurrentContext().styleHandler).not.toHaveBeenCalled()
   }, TEST_TIMEOUT_MS)
 
-  it('uses generator mode for tailwind v3 main css without changing existing registration', async () => {
+  it('uses generator mode for Tailwind v4 main css without changing existing registration', async () => {
     const runtimeSet = new Set(['w-[300.31rpx]', 'hover:bg-blue-500'])
     const rawTailwindCss = '.w-\\[300\\.31rpx\\]{width:300.31rpx}.hover\\:bg-blue-500:hover{color:blue}'
     const userCss = '\n.card:hover{color:red}'
@@ -627,10 +635,7 @@ describe('v5 vite generator bundle', () => {
       dependencies: [],
       sources: [],
       root: null,
-      version: 3,
     }))
-    const resolveV4SourceMock = vi.fn()
-
     vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
       createBundleRuntimeClassSetManager: () => ({
         sync: vi.fn(async () => runtimeSet),
@@ -644,7 +649,13 @@ describe('v5 vite generator bundle', () => {
         createWeappTailwindcssGenerator: vi.fn(() => ({
           generate: generateMock,
         })),
-        resolveTailwindV4SourceFromRuntime: resolveV4SourceMock,
+        resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+          projectRoot: process.cwd(),
+          base: process.cwd(),
+          baseFallbacks: [],
+          css: '@import "tailwindcss";',
+          dependencies: [],
+        })),
       }
     })
 
@@ -673,8 +684,6 @@ describe('v5 vite generator bundle', () => {
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect((bundle['app.css'] as OutputAsset).source).toBe(`${weappCss}\nuser:${userCss}\nuser:.hover\\:bg-blue-500:hover{color:blue}${userCss}`)
-    expect(resolveV3SourceMock).toHaveBeenCalled()
-    expect(resolveV4SourceMock).not.toHaveBeenCalled()
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: expect.any(Set),
       target: 'weapp',
@@ -1807,15 +1816,21 @@ describe('v5 vite generator bundle', () => {
     expect(secondCandidates.has('text-[blue]')).toBe(true)
   }, TEST_TIMEOUT_MS)
 
-  it('honors Tailwind v4 content negation when scanning vite source candidates', async () => {
-    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v3-not-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+  it('honors Tailwind v4 @config content negation when scanning vite source candidates', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-v4-config-not-${Date.now()}-${Math.random().toString(16).slice(2)}`)
     createdDirs.push(tempDir)
+    const cssEntry = path.join(tempDir, 'src/app.css')
     const pageFile = path.join(tempDir, 'src/pages/index.tsx')
     const ignoredFile = path.join(tempDir, 'src/apis/client.ts')
     const configFile = path.join(tempDir, 'tailwind.config.js')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
     await mkdir(path.dirname(pageFile), { recursive: true })
     await mkdir(path.dirname(ignoredFile), { recursive: true })
     await writeFile(configFile, 'module.exports = { content: ["./src/**/*.{ts,tsx}", "!./src/apis/**"] }', 'utf8')
+    await writeFile(cssEntry, [
+      '@import "tailwindcss" source(none);',
+      '@config "../tailwind.config.js";',
+    ].join('\n'), 'utf8')
     await writeFile(pageFile, 'export const className = "bg-[#112233]"', 'utf8')
     await writeFile(ignoredFile, 'export const className = "text-[77rpx]"', 'utf8')
 
@@ -1849,18 +1864,19 @@ describe('v5 vite generator bundle', () => {
     })
 
     setCurrentContext(createContext({
+      cssEntries: [cssEntry],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [cssEntry],
+        },
+      },
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),
         extract: vi.fn(async () => ({ classSet: runtimeSet })),
         majorVersion: 4,
-        options: {
-          projectRoot: tempDir,
-          tailwindcss: {
-            cwd: tempDir,
-            config: configFile,
-          },
-        },
       },
     }))
 
@@ -1883,7 +1899,7 @@ describe('v5 vite generator bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, {
       'app.css': {
-        ...createRollupAsset('@tailwind utilities;'),
+        ...createRollupAsset(await readFile(cssEntry, 'utf8')),
         fileName: 'app.css',
       },
     })

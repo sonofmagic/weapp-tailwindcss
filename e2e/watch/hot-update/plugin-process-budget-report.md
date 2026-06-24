@@ -12,7 +12,7 @@
 - watch-HMR runner 采集插件处理样本，并新增 `--max-plugin-process-ms` 与 `E2E_WATCH_MAX_PLUGIN_PROCESS_MS`。
 - CI e2e-watch 默认插件处理预算调整为 `500ms`。
 - 速度报告新增插件处理预算统计，保留端到端 HMR 样本。
-- demo HMR 回归继续覆盖 Gulp、MPX、Taro Webpack/Vite、uni-app Vite、weapp-vite 的 v3/v4 组合。
+- demo HMR 回归继续覆盖 Gulp、MPX、Taro Webpack/Vite、uni-app Vite、weapp-vite 的 Tailwind CSS 4 组合。
 - 为慢启动/重型组件场景加入回归模式裁剪，减少与插件无关的宿主工具链噪声。
 
 ## 本地验证

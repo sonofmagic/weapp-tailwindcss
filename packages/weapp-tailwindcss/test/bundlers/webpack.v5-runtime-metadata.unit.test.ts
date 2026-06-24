@@ -129,7 +129,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
     existsSyncSpy.mockRestore()
   })
 
-  it('refreshes runtime metadata during css-only invalidation for v4 output', async () => {
+  it('keeps v4 css-only invalidation output without forcing runtime metadata refresh', async () => {
     const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-webpack-v5-runtime-'))
     const cssEntry = path.join(root, 'app.css')
     await writeFile(cssEntry, [
@@ -232,7 +232,7 @@ describe('bundlers/webpack v5 runtime metadata', () => {
 
     await processAssetsCallbacks[0](createAssets(assetStore))
 
-    expect(currentContext.refreshTailwindcssRuntime.mock.calls.length).toBeGreaterThan(refreshCallsAfterBaseline)
+    expect(currentContext.refreshTailwindcssRuntime.mock.calls.length).toBe(refreshCallsAfterBaseline)
     expect(assetStore['index.css']).toContain('.tw-watch-style-case')
     await rm(root, { recursive: true, force: true })
   })

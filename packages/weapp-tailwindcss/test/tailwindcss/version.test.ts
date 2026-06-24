@@ -10,8 +10,8 @@ const repoRoot = path.resolve(__dirname, '../../../..')
 
 describe('tailwindcss version helpers', () => {
   it('normalizes only supported Tailwind major versions', () => {
-    expect(normalizeSupportedTailwindcssMajorVersion(3)).toBe(3)
     expect(normalizeSupportedTailwindcssMajorVersion(4)).toBe(4)
+    expect(normalizeSupportedTailwindcssMajorVersion(3)).toBeUndefined()
     expect(normalizeSupportedTailwindcssMajorVersion(2)).toBeUndefined()
     expect(normalizeSupportedTailwindcssMajorVersion(undefined)).toBeUndefined()
   })
@@ -21,7 +21,7 @@ describe('tailwindcss version helpers', () => {
   })
 
   it('reads the installed Tailwind package major version from the project root', () => {
-    expect(readInstalledPackageMajorVersion('tailwindcss', repoRoot)).toBe(3)
+    expect(readInstalledPackageMajorVersion('tailwindcss', repoRoot)).toBe(4)
     expect(readInstalledPackageMajorVersion('tailwindcss4', repoRoot)).toBe(4)
   })
 

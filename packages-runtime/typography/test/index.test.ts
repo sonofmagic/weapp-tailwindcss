@@ -1,8 +1,6 @@
 /* eslint-disable ts/no-require-imports */
 import type { Config } from 'tailwindcss'
-import path from 'node:path'
-import postcss from 'postcss'
-import tailwind from 'tailwindcss'
+import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 
 const typographyPlugin = require('../src/index')
 // import typographyPlugin from '@/index'
@@ -72,16 +70,28 @@ const _defaults = css`
   }
 `
 
+function extractContentInput(content: unknown) {
+  if (Array.isArray(content)) {
+    return content.map((entry) => {
+      if (entry && typeof entry === 'object' && 'raw' in entry) {
+        return String(entry.raw)
+      }
+      return String(entry)
+    })
+  }
+  return ''
+}
+
 function run(config: Config, options = {}) {
-  const { currentTestName } = expect.getState()
-  config = {
+  const mergedConfig = {
     plugins: [typographyPlugin(options)],
     corePlugins: { preflight: false },
     ...config,
   }
+  const { content, ...twConfig } = mergedConfig as Config & { content?: unknown }
 
-  return postcss(tailwind(config)).process(['@tailwind base;', '@tailwind components;', '@tailwind utilities'].join('\n'), {
-    from: `${path.resolve(__filename)}?test=${currentTestName}`,
+  return generateCss4(extractContentInput(content), {
+    twConfig,
   })
 }
 

@@ -26,7 +26,7 @@ keywords:
 
 ## Tailwind 入口
 
-当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档面向 `tailwindcss@4`。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 Tailwind CSS 生成由 `WeappTailwindcss` 接管，不要在小程序构建里再注册 `tailwindcss`、`@tailwindcss/postcss` 或 `@tailwindcss/vite`。
 

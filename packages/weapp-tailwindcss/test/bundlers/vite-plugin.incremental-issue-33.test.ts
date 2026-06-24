@@ -522,6 +522,6 @@ describe('bundlers/vite incremental issue #33 regression', () => {
       expect(transformedCode).not.toContain(stage.raw)
     }
 
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(stageTokens.length - 1)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
   }, TEST_TIMEOUT_MS)
 })

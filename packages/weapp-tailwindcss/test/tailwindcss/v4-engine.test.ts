@@ -1494,7 +1494,7 @@ describe('tailwindcss v4 engine', () => {
     }))
   })
 
-  it('ignores inline Tailwind v4 css and non-css cssSources from runtime options', () => {
+  it('ignores inline Tailwind v4 css and preserves configured cssSources from runtime options', () => {
     const options = resolveTailwindV4SourceOptionsFromRuntime({
       options: {
         projectRoot: '/workspace/app',
@@ -1513,7 +1513,10 @@ describe('tailwindcss v4 engine', () => {
     } as any)
 
     expect(options.css).toBeUndefined()
-    expect(options.cssSources).toBeUndefined()
+    expect(options.cssSources).toEqual([{
+      file: '/workspace/app/src/app.scss',
+      css: '@import "tailwindcss";',
+    }])
   })
 
   it('keeps missing cssEntries as imports for Tailwind resolution', async () => {

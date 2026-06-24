@@ -168,6 +168,6 @@ view,text,::before,::after {
 }
 ```
 
-这块区域是 Tailwind 入口展开后生成的变量初始化代码。Tailwind CSS 3 通常来自 `@tailwind base;`，Tailwind CSS 4 则来自 `@import "tailwindcss";` 对应的生成结果。
+这块区域是 Tailwind 入口展开后生成的变量初始化代码，来自 `@import "tailwindcss";` 对应的生成结果。
 
 丢失这块区域会导致 `bg-gradient-to-r` 这类依赖 CSS 变量的工具类失效。

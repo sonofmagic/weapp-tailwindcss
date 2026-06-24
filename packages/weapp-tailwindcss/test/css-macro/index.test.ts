@@ -409,13 +409,13 @@ describe('css-macro tailwindcss plugin', () => {
     expect(cssOutput).toMatchSnapshot('postcss')
   })
 
-  it('static case 1', async () => {
-    const { css } = await getCss('-wx:bg-blue-500', {
+  it('static negative case 1', async () => {
+    const { css } = await getCss('not-wx:bg-blue-500', {
       twConfig: {
         plugins: [
           twPlugin({
             variantsMap: {
-              '-wx': {
+              'not-wx': {
                 value: 'MP-WEIXIN',
                 negative: true,
               },

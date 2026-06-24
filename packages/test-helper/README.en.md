@@ -2,7 +2,7 @@
 
 > English | [简体中文](./README.md)
 
-This package provides Tailwind v3/v4 CSS generation and output helpers for repository tests and regression coverage.
+This package provides Tailwind CSS 4 generation and output helpers for repository tests and regression coverage.
 
 ## Website
 

@@ -37,6 +37,7 @@ interface ProcessJsBundleEntryOptions {
   slowJsAstWarnMs: number
   timeTask: (name: string, task: () => Promise<void>) => Promise<void>
   transformRuntime: Set<string>
+  transformRuntimeSignature: string
   transformFilterSignature: string
   uniAppX: GenerateBundleContext['opts']['uniAppX']
   useIncrementalMode: boolean
@@ -66,6 +67,7 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
     slowJsAstWarnMs,
     timeTask,
     transformRuntime,
+    transformRuntimeSignature,
     transformFilterSignature,
     uniAppX,
     useIncrementalMode,
@@ -95,7 +97,7 @@ export function processJsBundleEntry(options: ProcessJsBundleEntryOptions) {
         )
       : undefined
     const hashSalt = createJsHashSalt(
-      `${runtimeSignature}:transform-filter:${transformFilterSignature}`,
+      `${transformRuntimeSignature}:transform-filter:${transformFilterSignature}`,
       linkedImpactSignature,
     )
     const hashKey = `${file}:js`

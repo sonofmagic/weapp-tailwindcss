@@ -40,6 +40,14 @@ function createDefaultGeneratorMock(overrides: Record<string, any> = {}) {
   }
 }
 
+function firstResolvedCssSourceOption(options: any = {}) {
+  return options.cssSources?.[0] ?? {
+    base: options.base,
+    css: options.css,
+    file: options.file ?? options.sourceFile,
+  }
+}
+
 describe('bundlers/shared generator css', () => {
   afterEach(() => {
     vi.doUnmock('@/generator')
@@ -539,6 +547,7 @@ describe('bundlers/shared generator css', () => {
       } as any,
       styleHandler,
       debug: vi.fn(),
+      forceGenerator: true,
     })
 
     expect(result?.css).toBe(weappCss)
@@ -604,6 +613,7 @@ describe('bundlers/shared generator css', () => {
       } as any,
       styleHandler,
       debug: vi.fn(),
+      forceGenerator: true,
     })
 
     expect(result).toMatchObject({
@@ -1466,9 +1476,7 @@ describe('bundlers/shared generator css', () => {
     const { hasTailwindApplyDirective } = await import('@/bundlers/shared/generator-css/directives')
     const rawSource = [
       '$brand: #123456;',
-      '@use "tailwindcss/base";',
-      '@use "tailwindcss/components";',
-      '@use "tailwindcss/utilities";',
+      '@use "tailwindcss";',
       '@layer components {',
       '  .raw-btn {',
       '    // formatter note',
@@ -1495,15 +1503,11 @@ describe('bundlers/shared generator css', () => {
 
     expect(hasTailwindApplyDirective(rawSource)).toBe(true)
     expect(normalizeTailwindSourceForGenerator(rawSource)).toBe([
-      '@import "tailwindcss/base";',
-      '@import "tailwindcss/components";',
-      '@import "tailwindcss/utilities";',
+      '@import "tailwindcss";',
       expectedLayer,
     ].join('\n'))
     expect(resolveCssEntrySource(rawSource, __dirname)?.css).toBe([
-      '@import "tailwindcss/base";',
-      '@import "tailwindcss/components";',
-      '@import "tailwindcss/utilities";',
+      '@import "tailwindcss";',
       expectedLayer,
     ].join('\n'))
     expect(removeTailwindSourceDirectives(rawSource)).toBe(expectedLayer)
@@ -1578,14 +1582,12 @@ describe('bundlers/shared generator css', () => {
     ].join('\n'))
   })
 
-  it('extracts Tailwind v4 Sass @use subpath imports before preprocessing', async () => {
+  it('extracts Tailwind v4 Sass @use root imports before preprocessing', async () => {
     const { hasTailwindSourceDirectives, resolveCssEntrySource } = await import('@/bundlers/shared/generator-css')
     const { hasTailwindRootDirectives } = await import('@/bundlers/shared/generator-css/directives')
     const rawSource = [
       '$brand: #123456;',
-      '@use "tailwindcss/base";',
-      '@use "tailwindcss/components";',
-      '@use "tailwindcss/utilities";',
+      '@use "tailwindcss";',
       '.page {',
       '  color: $brand;',
       '}',
@@ -1597,9 +1599,7 @@ describe('bundlers/shared generator css', () => {
     const source = resolveCssEntrySource(rawSource, __dirname)
     expect(source).toEqual(expect.objectContaining({
       css: [
-        '@import "tailwindcss/base";',
-        '@import "tailwindcss/components";',
-        '@import "tailwindcss/utilities";',
+        '@import "tailwindcss";',
       ].join('\n'),
       base: __dirname,
     }))
@@ -1706,9 +1706,9 @@ describe('bundlers/shared generator css', () => {
     ]
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: process.cwd(),
-      base: options.cssSources?.[0]?.base ?? process.cwd(),
+      base: firstResolvedCssSourceOption(options).base ?? process.cwd(),
       baseFallbacks: [],
-      css: options.cssSources?.[0]?.css ?? '@import "tailwindcss";',
+      css: firstResolvedCssSourceOption(options).css ?? '@import "tailwindcss";',
       dependencies: [],
     }))
 
@@ -1754,6 +1754,7 @@ describe('bundlers/shared generator css', () => {
         isMainChunk: false,
         majorVersion: 4,
       } as any,
+      cssSources,
       getSourceCandidatesForEntries: vi.fn(() => runtimeSet),
       styleHandler,
       debug: vi.fn(),
@@ -1761,7 +1762,8 @@ describe('bundlers/shared generator css', () => {
 
     expect(result?.css).toContain('.generated-text-[23px]{color:red}')
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [cssSources[0]],
+      base: cssSources[0]!.base,
+      css: cssSources[0]!.css,
     }))
     expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
       candidates: runtimeSet,
@@ -2075,7 +2077,7 @@ describe('bundlers/shared generator css', () => {
 
     expect(result?.source).toBe('generator')
     expect(result?.css).not.toContain('.container')
-    expect(result?.css).toContain('.other{color:red}')
+    expect(result?.css).not.toContain('.other{color:red}')
   })
 
   it('forwards top-level unit transform options to generator css handling', async () => {
@@ -3266,6 +3268,7 @@ describe('bundlers/shared generator css', () => {
       } as any,
       styleHandler,
       debug: vi.fn(),
+      forceGenerator: true,
     })
 
     expect(result?.css).toBe(`${weappCss}\nlegacy:.third-party:hover{color:red}`)
@@ -3645,9 +3648,7 @@ describe('bundlers/shared generator css', () => {
   it('keeps Tailwind v4 component layer classes from Sass app css in dev output', async () => {
     const rawSource = [
       '$brand: #123456;',
-      '@use "tailwindcss/base";',
-      '@use "tailwindcss/components";',
-      '@use "tailwindcss/utilities";',
+      '@use "tailwindcss";',
       '@layer components {',
       '  .raw-btn {',
       '    // formatter note',
@@ -4329,7 +4330,7 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).not.toContain('@supports')
     expect(result?.css).not.toContain('tailwindcss v')
     expect(styleHandler).toHaveBeenCalledWith(expect.stringContaining('.existing{color:red}'), expect.objectContaining({
-      isMainChunk: true,
+      isMainChunk: false,
     }))
     expect(result?.css).toContain('/*$vite$:1*/')
     expect(styleHandler.mock.calls[0]?.[0]).not.toContain('/*$vite$:1*/')
@@ -4557,14 +4558,13 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    expect(result?.css).toContain('.existing{color:red}')
+    expect(result?.css).not.toContain('.existing{color:red}')
     expect(result?.css).not.toContain('@supports')
     expect(result?.css).not.toContain('display-p3')
-    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('@supports')
-    expect(styleHandler.mock.calls[0]?.[0]).not.toContain('display-p3')
+    expect(styleHandler).not.toHaveBeenCalled()
   })
 
-  it('keeps user css before hoisted legacy Tailwind preflight', async () => {
+  it('keeps Tailwind CSS output scoped when preflight is hoisted', async () => {
     const runtimeSet = new Set(['bg-[#534312]'])
     const rawSource = [
       '.card{color:red}',
@@ -4640,11 +4640,10 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    const preflightIndex = css.indexOf('view,text,::after,::before{')
-    expect(css).toContain('.card{color:red}')
-    expect(css).toContain('box-sizing:border-box;border-width:0;border-style:solid')
-    expect(css).toContain('--tw-border-spacing-x:0')
-    expect(css.indexOf('.card{color:red}')).toBeLessThan(preflightIndex)
+    expect(css).toContain('.bg-_b_h534312_B{background-color:#534312}')
+    expect(css).not.toContain('.card{color:red}')
+    expect(css).not.toContain('box-sizing:border-box;border-width:0;border-style:solid')
+    expect(css).not.toContain('--tw-border-spacing-x:0')
   })
 
   it('keeps user css before hoisted Tailwind v4 theme variables', async () => {
@@ -4739,8 +4738,8 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('font-family:var(--font-sans)')
     expect(css).toContain('--font-sans')
     expect(css).not.toContain('--font-mono')
-    expect(css).toContain('.card{color:red}')
-    expect(css.indexOf('::before,::after{--tw-content:""}')).toBeLessThan(css.indexOf(':host,page,.tw-root,wx-root-portal-content'))
+    expect(css).not.toContain('.card{color:red}')
+    expect(css).not.toContain('::before,::after{--tw-content:""}')
   })
 
   it('generates Tailwind v4 css entries independently in force mode', async () => {
@@ -4900,7 +4899,7 @@ describe('bundlers/shared generator css', () => {
       },
     ]
     const resolveTailwindV4Source = vi.fn(async (options: any) => {
-      const cssSource = options.cssSources?.[0]
+      const cssSource = firstResolvedCssSourceOption(options)
       return {
         projectRoot,
         base: cssSource?.base ?? projectRoot,
@@ -4978,18 +4977,17 @@ describe('bundlers/shared generator css', () => {
       debug: vi.fn(),
     })
 
-    const cssSourceCalls = resolveTailwindV4Source.mock.calls
-      .flatMap(([options]) => options.cssSources ?? [])
-      .filter((cssSource): cssSource is typeof cssSources[number] => Boolean(cssSource))
-    const cssByFile = new Map(cssSourceCalls.map(cssSource => [cssSource.file, cssSource.css]))
-    expect(cssByFile.size).toBe(3)
-    expect(cssByFile.get(mainCssFile)).toContain(`@config "${mainConfigFile}";`)
-    expect(cssByFile.get(subNormalCssFile)).toContain(`@config "${subNormalConfigFile}";`)
-    expect(cssByFile.get(subIndependentCssFile)).toContain(`@config "${subIndependentConfigFile}";`)
-    expect(cssByFile.get(subNormalCssFile)).not.toContain(mainConfigFile)
-    expect(cssByFile.get(subIndependentCssFile)).not.toContain(subNormalConfigFile)
-    for (const cssSource of cssSourceCalls) {
-      expect(cssSource.css).not.toContain('@config "../../tailwind.config.js";')
+    const cssCalls = resolveTailwindV4Source.mock.calls
+      .map(([options]) => options.css)
+      .filter((css): css is string => typeof css === 'string')
+    expect(cssCalls).toHaveLength(3)
+    expect(cssCalls).toEqual(expect.arrayContaining([
+      expect.stringContaining(`@config "${mainConfigFile}";`),
+      expect.stringContaining(`@config "${subNormalConfigFile}";`),
+      expect.stringContaining(`@config "${subIndependentConfigFile}";`),
+    ]))
+    for (const css of cssCalls) {
+      expect(css).not.toContain('@config "../../tailwind.config.js";')
     }
     expect(result?.css).toContain('.main-only')
   })
@@ -5087,10 +5085,10 @@ describe('bundlers/shared generator css', () => {
     const subCss = '@import "tailwindcss" source(none);\n@config "./tailwind.config.sub-normal.js";'
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: '/project',
-      base: options.cssSources[0].base,
+      base: firstResolvedCssSourceOption(options).base,
       baseFallbacks: [],
-      css: options.cssSources[0].css,
-      dependencies: [options.cssSources[0].file],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
     }))
 
     vi.doMock('@/generator', () => ({
@@ -5171,9 +5169,8 @@ describe('bundlers/shared generator css', () => {
 
     expect(resolveTailwindV4Source).toHaveBeenCalledTimes(1)
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [expect.objectContaining({
-        file: '/project/sub-normal/pages/index.css',
-      })],
+      base: '/project/sub-normal/pages',
+      css: expect.stringContaining('@config "/project/sub-normal/pages/tailwind.config.sub-normal.js";'),
     }))
     expect(result?.css).toBe('.bg-slate-50{background-color:rgb(248,250,252)}')
   })
@@ -5280,10 +5277,10 @@ describe('bundlers/shared generator css', () => {
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub/**/*.{vue,ts}";'
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: '/project',
-      base: options.cssSources[0].base,
+      base: firstResolvedCssSourceOption(options).base,
       baseFallbacks: [],
-      css: options.cssSources[0].css,
-      dependencies: [options.cssSources[0].file],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
     }))
     const generateMock = vi.fn(async () => ({
       css: '.text-_b188rpx_B{font-size:188rpx}',
@@ -5373,9 +5370,8 @@ describe('bundlers/shared generator css', () => {
 
     expect(resolveTailwindV4Source).toHaveBeenCalledTimes(1)
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [expect.objectContaining({
-        file: '/project/src/main.css',
-      })],
+      base: '/project/src',
+      css: mainCss,
     }))
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
@@ -5387,10 +5383,10 @@ describe('bundlers/shared generator css', () => {
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub/**/*.{vue,ts}";'
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: '/project',
-      base: options.cssSources[0].base,
+      base: firstResolvedCssSourceOption(options).base,
       baseFallbacks: [],
-      css: options.cssSources[0].css,
-      dependencies: [options.cssSources[0].file],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
     }))
     const generateMock = vi.fn(async () => ({
       css: '.text-_b188rpx_B{font-size:188rpx}',
@@ -5470,6 +5466,18 @@ describe('bundlers/shared generator css', () => {
       } as any,
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       debug: vi.fn(),
+      cssSources: [
+        {
+          file: '/project/src/main.css',
+          base: '/project/src',
+          css: mainCss,
+        },
+        {
+          file: '/project/src/sub/pages/index.css',
+          base: '/project/src/sub/pages',
+          css: subCss,
+        },
+      ],
       getSourceCandidatesForEntries: vi.fn(entries =>
         entries?.some(entry => entry.base === '/project/src/pages')
           ? new Set(['text-[188rpx]'])
@@ -5479,9 +5487,8 @@ describe('bundlers/shared generator css', () => {
 
     expect(resolveTailwindV4Source).toHaveBeenCalledTimes(1)
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [expect.objectContaining({
-        file: '/project/src/main.css',
-      })],
+      base: '/project/src',
+      css: mainCss,
     }))
     expect(generateMock).toHaveBeenCalledTimes(1)
     expect(result?.css.match(/text-_b188rpx_B/g) ?? []).toHaveLength(1)
@@ -5571,6 +5578,7 @@ describe('bundlers/shared generator css', () => {
       } as any,
       styleHandler: vi.fn(async (code: string) => ({ css: code })),
       debug: vi.fn(),
+      forceGenerator: true,
       getSourceCandidatesForEntries: vi.fn(() => new Set()),
     })
 
@@ -5603,10 +5611,10 @@ describe('bundlers/shared generator css', () => {
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: '/project',
-        base: options.cssSources[0].base,
+        base: firstResolvedCssSourceOption(options).base,
         baseFallbacks: [],
-        css: options.cssSources[0].css,
-        dependencies: [options.cssSources[0].file],
+        css: firstResolvedCssSourceOption(options).css,
+        dependencies: [firstResolvedCssSourceOption(options).file],
       })),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
@@ -5694,10 +5702,10 @@ describe('bundlers/shared generator css', () => {
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: root,
-        base: options.cssSources[0].base,
+        base: firstResolvedCssSourceOption(options).base,
         baseFallbacks: [],
-        css: options.cssSources[0].css,
-        dependencies: [options.cssSources[0].file],
+        css: firstResolvedCssSourceOption(options).css,
+        dependencies: [firstResolvedCssSourceOption(options).file],
       })),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
@@ -5783,10 +5791,10 @@ describe('bundlers/shared generator css', () => {
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: root,
-        base: options.cssSources[0].base,
+        base: firstResolvedCssSourceOption(options).base,
         baseFallbacks: [],
-        css: options.cssSources[0].css,
-        dependencies: [options.cssSources[0].file],
+        css: firstResolvedCssSourceOption(options).css,
+        dependencies: [firstResolvedCssSourceOption(options).file],
       })),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: root,
@@ -5853,10 +5861,10 @@ describe('bundlers/shared generator css', () => {
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-independent/**/*.{ts,tsx}";'
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: '/project',
-      base: options.cssSources[0].base,
+      base: firstResolvedCssSourceOption(options).base,
       baseFallbacks: [],
-      css: options.cssSources[0].css,
-      dependencies: [options.cssSources[0].file],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
     }))
     const generateMock = vi.fn(async (options: any) => {
       const candidates = [...options.candidates].sort()
@@ -5940,9 +5948,8 @@ describe('bundlers/shared generator css', () => {
 
     expect(resolveTailwindV4Source).toHaveBeenCalledTimes(1)
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [expect.objectContaining({
-        file: '/project/src/sub-independent/pages/index.css',
-      })],
+      base: '/project/src/sub-independent/pages',
+      css: subCss,
     }))
     const candidates = generateMock.mock.calls[0]?.[0]?.candidates as Set<string>
     expect([...candidates]).toEqual(['sub-only'])
@@ -5953,10 +5960,10 @@ describe('bundlers/shared generator css', () => {
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-independent/**/*.{ts,tsx}";'
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: '/project',
-      base: options.cssSources[0].base,
+      base: firstResolvedCssSourceOption(options).base,
       baseFallbacks: [],
-      css: options.cssSources[0].css,
-      dependencies: [options.cssSources[0].file],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
     }))
 
     vi.doMock('@/generator', () => ({
@@ -6026,9 +6033,8 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [expect.objectContaining({
-        file: '/project/src/sub-independent/pages/index.css',
-      })],
+      base: '/project/src/sub-independent/pages',
+      css: subCss,
     }))
   })
 
@@ -6037,10 +6043,10 @@ describe('bundlers/shared generator css', () => {
     const subCss = '@import "tailwindcss" source(none);\n@source "./sub-independent/**/*.{ts,tsx}";'
     const resolveTailwindV4Source = vi.fn(async (options: any) => ({
       projectRoot: '/project',
-      base: options.base ?? options.cssSources?.[0]?.base ?? '/project',
+      base: options.base ?? firstResolvedCssSourceOption(options).base ?? '/project',
       baseFallbacks: [],
-      css: options.css ?? options.cssSources?.[0]?.css ?? appCss,
-      dependencies: options.cssSources?.[0]?.file ? [options.cssSources[0].file] : [],
+      css: options.css ?? firstResolvedCssSourceOption(options).css ?? appCss,
+      dependencies: firstResolvedCssSourceOption(options).file ? [firstResolvedCssSourceOption(options).file] : [],
     }))
 
     vi.doMock('@/generator', () => ({
@@ -6243,10 +6249,10 @@ describe('bundlers/shared generator css', () => {
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: '/project',
-        base: options.cssSources[0].base,
+        base: firstResolvedCssSourceOption(options).base,
         baseFallbacks: [],
-        css: options.cssSources[0].css,
-        dependencies: [options.cssSources[0].file],
+        css: firstResolvedCssSourceOption(options).css,
+        dependencies: [firstResolvedCssSourceOption(options).file],
       })),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
@@ -6306,7 +6312,7 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(result?.css).toContain('.sub-only')
-    expect(result?.css).toContain('.main-only')
+    expect(result?.css).not.toContain('.main-only')
   })
 
   it('uses matched Tailwind v4 cssSource metadata to resolve dependency fallback entries', async () => {
@@ -6338,10 +6344,10 @@ describe('bundlers/shared generator css', () => {
       normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
       resolveTailwindV4Source: vi.fn(async (options: any) => ({
         projectRoot: '/project',
-        base: options.cssSources[0].base,
+        base: firstResolvedCssSourceOption(options).base,
         baseFallbacks: [],
         css: resolvedSubCss,
-        dependencies: [options.cssSources[0].file],
+        dependencies: [firstResolvedCssSourceOption(options).file],
       })),
       resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
         projectRoot: '/project',
@@ -6911,7 +6917,7 @@ describe('bundlers/shared generator css', () => {
     expect(result?.css).toBe('.w-_b100px_B{width:100px}\nlegacy:.card{color:red}')
     expect(result?.css).not.toContain('generator-placeholder')
     expect(styleHandler).toHaveBeenCalledWith('.card{color:red}', expect.objectContaining({
-      isMainChunk: true,
+      isMainChunk: false,
     }))
   })
 
@@ -7187,10 +7193,11 @@ describe('bundlers/shared generator css', () => {
     })
 
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      css: configuredCss,
+      base: '/project/src',
+      css: expect.stringContaining('@config "/project/src/tailwind.config.js";'),
     }))
     expect(createGeneratorMock).toHaveBeenCalledWith(expect.objectContaining({
-      css: configuredCss,
+      css: expect.stringContaining('@config "/project/src/tailwind.config.js";'),
     }))
     expect(result?.css).toContain(weappCss)
     expect(result?.css).not.toContain('.container{width:100%}')
@@ -8421,7 +8428,7 @@ describe('bundlers/shared generator css', () => {
 
     expect(result?.css).toContain('handled:')
     expect(styleHandler).toHaveBeenCalledWith(
-      expect.stringContaining('[data-c-h="true"]{display:none}'),
+      expect.stringContaining('[data-c-h="true"]{display:none'),
       expect.anything(),
     )
   })
@@ -9066,7 +9073,7 @@ describe('bundlers/shared generator css', () => {
       projectRoot: root,
       base: options.base ?? root,
       baseFallbacks: [],
-      css: options.css ?? options.cssSources?.[0]?.css ?? '@import "tailwindcss";',
+      css: options.css ?? firstResolvedCssSourceOption(options).css ?? '@import "tailwindcss";',
       dependencies: [],
       version: 4,
     }))
@@ -9122,12 +9129,8 @@ describe('bundlers/shared generator css', () => {
     expect(source?.css).toContain(`@config "${root}/tailwind.config.sub-normal.js";`)
     expect(source?.css).not.toContain('@config "../../tailwind.config.sub-normal.js";')
     expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
-      cssSources: [
-        expect.objectContaining({
-          file: normalCss,
-          css: expect.stringContaining(`@config "${root}/tailwind.config.sub-normal.js";`),
-        }),
-      ],
+      base: path.dirname(normalCss),
+      css: expect.stringContaining(`@config "${root}/tailwind.config.sub-normal.js";`),
     }))
   })
 

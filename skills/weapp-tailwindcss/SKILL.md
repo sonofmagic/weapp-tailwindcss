@@ -1,6 +1,6 @@
 ---
 name: weapp-tailwindcss
-description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目中接入和排障 weapp-tailwindcss。Use when 用户提到 weapp-tailwindcss、小程序 Tailwind 不生效、rpx 任意值、JS 字符串 class、space-y/space-x、weapp-tw patch、content/@source、twMerge/cva/tv。
+description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目中接入和排障 weapp-tailwindcss。Use when 用户提到 weapp-tailwindcss、小程序 Tailwind 不生效、rpx 任意值、JS 字符串 class、space-y/space-x、weapp-tw patch、@source、twMerge/cva/tv。
 ---
 
 # weapp-tailwindcss Skill
@@ -42,11 +42,10 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 ### 1) 基线配置（所有任务通用）
 
 - 先判断 Tailwind 主版本与扫描方式：
-- `tailwindcss@3` 用 `tailwind.config.js -> content`
 - `tailwindcss@4` 用入口 CSS 的 `@source`
 - 扫描范围必须覆盖真实模板与脚本文件，并排除 `dist` / `unpackage` / `node_modules`
 - 生成模式不再要求 `postinstall`，也不需要手动执行 `weapp-tw patch`
-- `weapp-tw patch` 仅作为旧脚本兼容提示保留；排障优先检查入口 CSS、`@source` / `content`、`cssEntries` 和构建插件是否生效
+- `weapp-tw patch` 仅作为旧脚本兼容提示保留；排障优先检查入口 CSS、`@source`、`cssEntries` 和构建插件是否生效
 
 ### 2) 按任务类型执行
 
@@ -70,7 +69,7 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 
 - 先跑开发态，再跑目标端构建
 - 至少验证 3 类样式：基础工具类、任意值（含 `rpx`）、变体/伪类
-- 若 `JS/TS` 中 class 不生效，优先检查 `content/@source` 是否覆盖该文件与扩展名
+- 若 `JS/TS` 中 class 不生效，优先检查 `@source` 是否覆盖该文件与扩展名
 - 若 `space-y-*` / `space-x-*` 不生效，固定优先级：
 - 先改结构（子节点落到 `view/text` 或外层补 `view`）
 - 再评估 `virtualHost`
@@ -97,7 +96,7 @@ description: 帮助用户在 uni-app、taro、uni-app x 与原生小程序项目
 
 - 不要再要求用户执行 `weapp-tw patch`；当前版本由构建运行时自动接管 Tailwind CSS 处理
 - 不要把小程序转译插件无条件应用到纯 `H5` 场景
-- 不要忽略 `content/@source` 范围配置；这会直接导致 class 不生成
+- 不要忽略 `@source` 范围配置；这会直接导致 class 不生成
 - 不要建议“运行时自由拼接 class 字符串”作为常规方案；优先枚举化或 `cva/tv`
 - 对 `text-[22rpx]`、`bg-[22rpx]` 等二义性任意值，提供 `length:` / `color:` 前缀作为兜底写法
 - 涉及 `twMerge` / `twJoin` / `cva` / `cn` / `tv` 的封装或重命名时，提醒配置 `ignoreCallExpressionIdentifiers`

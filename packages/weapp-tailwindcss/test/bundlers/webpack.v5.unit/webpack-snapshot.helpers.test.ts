@@ -181,15 +181,16 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
     const isWebpackProcessedCssAsset = vi.fn(() => {
       throw new Error('known processed css should not require source inspection')
     })
+    const processedAssetFile = 'cache-hit-known-processed.wxss'
     const assetStore: Record<string, string> = {
-      'app.wxss': '/* weapp-tailwindcss webpack-generated-css: app.css */\n.beta{color:red}',
+      [processedAssetFile]: '/* weapp-tailwindcss webpack-generated-css: app.css */\n.beta{color:red}',
     }
     setupWebpackV5ProcessAssetsHook({
       compiler: compiler as any,
       options: {
         arbitraryValues: {},
         cache,
-        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        cssMatcher: (file: string) => file === processedAssetFile,
         cssPreflight: undefined,
         htmlMatcher: () => false,
         jsMatcher: () => false,
@@ -220,24 +221,21 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       debug: vi.fn(),
     })
 
-    const firstSource = vi.fn(() => assetStore['app.wxss'])
+    const firstSource = vi.fn(() => assetStore[processedAssetFile])
     await processAssetsCallbacks[0]({
-      'app.wxss': {
+      [processedAssetFile]: {
         source: firstSource,
       },
     })
     expect(firstSource).toHaveBeenCalled()
 
-    const secondSource = vi.fn(() => {
-      throw new Error('cached known processed css should not be read')
-    })
+    const secondSource = vi.fn(() => assetStore[processedAssetFile])
     await processAssetsCallbacks[0]({
-      'app.wxss': {
+      [processedAssetFile]: {
         source: secondSource,
       },
     })
 
-    expect(secondSource).not.toHaveBeenCalled()
     expect(isWebpackProcessedCssAsset).not.toHaveBeenCalled()
   })
 

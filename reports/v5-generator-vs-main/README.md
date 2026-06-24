@@ -64,7 +64,6 @@
 | `demo/uni-app-tailwindcss-v4` | 差异 | 中高风险 | +22.0 KiB | 5 | [report](demo/uni-app-tailwindcss-v4/report.md) | [artifact.diff](demo/uni-app-tailwindcss-v4/artifact.diff) |
 | `demo/uni-app-tailwindcss-v5` | 当前新增 | 新增项目 | +54.2 KiB | 22 | [report](demo/uni-app-tailwindcss-v5/report.md) | [artifact.diff](demo/uni-app-tailwindcss-v5/artifact.diff) |
 | `demo/uni-app-vue3-vite` | 差异 | 中高风险 | +88.8 KiB | 14 | [report](demo/uni-app-vue3-vite/report.md) | [artifact.diff](demo/uni-app-vue3-vite/artifact.diff) |
-| `demo/uni-app-x-hbuilderx-tailwindcss3` | 无产物 | 无产物 | 0 B | 0 | [report](demo/uni-app-x-hbuilderx-tailwindcss3/report.md) | [artifact.diff](demo/uni-app-x-hbuilderx-tailwindcss3/artifact.diff) |
 | `demo/uni-app-x-hbuilderx-tailwindcss4` | 无产物 | 无产物 | 0 B | 0 | [report](demo/uni-app-x-hbuilderx-tailwindcss4/report.md) | [artifact.diff](demo/uni-app-x-hbuilderx-tailwindcss4/artifact.diff) |
 | `demo/web` | 无产物 | 无产物 | 0 B | 0 | [report](demo/web/report.md) | [artifact.diff](demo/web/artifact.diff) |
 

@@ -1,69 +1,191 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`responsive-design > 2xl:text-sm 1`] = `
-"@media (min-width: 1536px) {
-    .\\32xl\\:text-sm {
-        font-size: 0.875rem;
-        line-height: 1.25rem
-    }
+":root, :host {
+  --text-sm: .875rem;
+  --text-sm--line-height: calc(1.25/.875);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.\\32 xl\\:text-sm {
+  @media (width >= 96rem) {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
 }"
 `;
 
 exports[`responsive-design > 2xl:text-sm 2`] = `
-"@media (min-width: 1536px) {
-    ._2xl_ctext-sm {
-        font-size: 0.875rem;
-        line-height: 1.25rem
-    }
-}"
+"page,.tw-root,wx-root-portal-content,:host {
+  --text-sm: .875rem;
+  --text-sm--line-height: 1.42857;
+}
+view,text,::after,::before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 96rem) {
+._2xl_ctext-sm {
+    font-size: .875rem;
+    font-size: var(--text-sm);
+    line-height: 1.42857;
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+  }"
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string array type 1`] = `
-".space-y-4 > :not([hidden]) ~ :not([hidden]) {
+"@layer properties;
+:root, :host {
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.space-y-4 {
+  :where(& > :not(:last-child)) {
     --tw-space-y-reverse: 0;
-    margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(1rem * var(--tw-space-y-reverse))
+    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-space-y-reverse: 0;
+    }
+  }
 }"
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string array type 2`] = `
-".space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
+"
+    view,text,::before,::after {
+      --tw-space-y-reverse: 0;
+    }
+page,.tw-root,wx-root-portal-content,:host {
+  --spacing: .25rem;
+}
+view,text,::after,::before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.space-y-4>view+view,.space-y-4>view+text,.space-y-4>text+view,.space-y-4>text+text {
     --tw-space-y-reverse: 0;
-    margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(1rem * var(--tw-space-y-reverse))
-}"
+    margin-bottom: 0rem;
+    margin-bottom: calc((var(--spacing)*4)*var(--tw-space-y-reverse));
+    margin-top: 1rem;
+    margin-top: calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)));
+  }"
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string type 1`] = `
-".space-y-4 > :not([hidden]) ~ :not([hidden]) {
+"@layer properties;
+:root, :host {
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.space-y-4 {
+  :where(& > :not(:last-child)) {
     --tw-space-y-reverse: 0;
-    margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(1rem * var(--tw-space-y-reverse))
+    margin-block-start: calc(calc(var(--spacing) * 4) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 4) * calc(1 - var(--tw-space-y-reverse)));
+  }
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-space-y-reverse: 0;
+    }
+  }
 }"
 `;
 
 exports[`responsive-design > space-y-4 cssChildCombinatorReplaceValue string type 2`] = `
-".space-y-4>view,text,button,input~view,text,button,input+view,text,button,input~view,text,button,input {
+"
+    view,text,::before,::after {
+      --tw-space-y-reverse: 0;
+    }
+page,.tw-root,wx-root-portal-content,:host {
+  --spacing: .25rem;
+}
+view,text,::after,::before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.space-y-4>view,text,button,input~view,text,button,input+view,text,button,input~view,text,button,input {
     --tw-space-y-reverse: 0;
-    margin-top: calc(1rem * (1 - var(--tw-space-y-reverse)));
-    margin-bottom: calc(1rem * var(--tw-space-y-reverse))
-}"
+    margin-bottom: 0rem;
+    margin-bottom: calc((var(--spacing)*4)*var(--tw-space-y-reverse));
+    margin-top: 1rem;
+    margin-top: calc((var(--spacing)*4)*(1 - var(--tw-space-y-reverse)));
+  }"
 `;
 
 exports[`responsive-design > xl:text-sm 1`] = `
-"@media (min-width: 1280px) {
-    .xl\\:text-sm {
-        font-size: 0.875rem;
-        line-height: 1.25rem
-    }
+":root, :host {
+  --text-sm: .875rem;
+  --text-sm--line-height: calc(1.25/.875);
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.xl\\:text-sm {
+  @media (width >= 80rem) {
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+  }
 }"
 `;
 
 exports[`responsive-design > xl:text-sm 2`] = `
-"@media (min-width: 1280px) {
-    .xl_ctext-sm {
-        font-size: 0.875rem;
-        line-height: 1.25rem
-    }
-}"
+"page,.tw-root,wx-root-portal-content,:host {
+  --text-sm: .875rem;
+  --text-sm--line-height: 1.42857;
+}
+view,text,::after,::before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 80rem) {
+.xl_ctext-sm {
+    font-size: .875rem;
+    font-size: var(--text-sm);
+    line-height: 1.42857;
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+}
+  }"
 `;

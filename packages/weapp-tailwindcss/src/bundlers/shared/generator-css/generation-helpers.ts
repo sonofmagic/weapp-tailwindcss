@@ -226,6 +226,9 @@ export function shouldUseGeneratorForCurrentCss(
     hasGeneratedMarkers: boolean
     hasSourceDirectives: boolean
     rawSource: string
+    runtimeCandidateCount?: number | undefined
+    target?: string | undefined
+    configuredCssSourceCount?: number | undefined
   },
 ) {
   const hasApplyDirectives = hasTailwindApplyDirective(options.rawSource)
@@ -242,6 +245,19 @@ export function shouldUseGeneratorForCurrentCss(
     || options.hasSourceDirectives
     || hasApplyDirectives
     || hasSourceCssDirectives
+    || (
+      cssHandlerOptions.isMainChunk
+      && (options.configuredCssSourceCount ?? 0) > 0
+    )
+    || (
+      cssHandlerOptions.isMainChunk
+      && options.rawSource.includes('weapp-tailwindcss')
+    )
+    || (
+      options.target === 'web'
+      && cssHandlerOptions.isMainChunk
+      && (options.runtimeCandidateCount ?? 0) > 0
+    )
 }
 
 export function hasGeneratorSourceDirectives(source: string, importFallback: boolean) {

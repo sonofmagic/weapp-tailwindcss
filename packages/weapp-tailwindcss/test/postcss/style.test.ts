@@ -140,7 +140,7 @@ describe("styleHandler", () => {
       escapeMap: MappingChars2String,
     });
 
-    expect(css).toBe("::before,::after{--tw-content: '';}");
+    expect(css).toBe("view,text,::before,::after{--tw-content: '';}");
   });
 
   it("cssPreflightRange option view", async () => {
@@ -870,19 +870,18 @@ describe("styleHandler", () => {
   });
 
   it("add postcss plugins case 0", async () => {
-    const tw = await import("tailwindcss");
+    const tailwindcssPostcss = await import("@tailwindcss/postcss");
 
     const { styleHandler } = getCompilerContext({
       postcssOptions: {
         plugins: [
-          tw.default({
-            content: [],
-            corePlugins: { preflight: false },
+          tailwindcssPostcss.default({
+            optimize: false,
           }) as postcss.Plugin,
         ],
       },
     });
-    const rawCode = `@tailwind base;
+    const rawCode = `@import "tailwindcss" source(none);
   `;
     const { css } = await styleHandler(rawCode, { isMainChunk: true });
     expect(css).toMatchSnapshot();

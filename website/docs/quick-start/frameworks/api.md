@@ -31,7 +31,7 @@ keywords:
 
 ## Tailwind CSS 4 前置步骤
 
-API 只负责转译代码文本，不会替你自动运行完整框架构建。请先让入口 CSS 完成生成。当前文档面向 `tailwindcss@4`，如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+API 只负责转译代码文本，不会替你自动运行完整框架构建。请先让入口 CSS 完成生成。当前文档面向 `tailwindcss@4`，当前文档仅维护 Tailwind CSS 4 接入说明。
 
 ```css title="app.css"
 @import "tailwindcss";

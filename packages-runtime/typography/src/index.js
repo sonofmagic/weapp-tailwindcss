@@ -41,14 +41,40 @@ function transformTag2Class(s, classPrefix = '') {
   return ast.toString()
 }
 
+function normalizeCssPropertyName(name) {
+  if (name.startsWith('--') || name.startsWith('@') || name.startsWith('&') || name.startsWith('>')) {
+    return name
+  }
+  return name.replace(/[A-Z]/g, match => `-${match.toLowerCase()}`)
+}
+
+function normalizeCssProperties(value) {
+  if (Array.isArray(value)) {
+    return value
+  }
+  if (!isObject(value)) {
+    return value
+  }
+  return Object.fromEntries(
+    Object.entries(value).map(([key, entry]) => [
+      normalizeCssPropertyName(key),
+      normalizeCssProperties(entry),
+    ]),
+  )
+}
+
 function configToCss(config = {}, { target, className, modifier, prefix, mode, classPrefix }) {
   function updateSelector(k, v) {
+    v = normalizeCssProperties(v)
+
     if (target === 'legacy') {
-      return mode === 'class' && typeof v === 'object' ? [transformTag2Class(k, classPrefix), v] : [k, v]
+      return mode === 'class' && typeof v === 'object' && !Array.isArray(v)
+        ? [transformTag2Class(k, classPrefix), v]
+        : [normalizeCssPropertyName(k), v]
     }
 
     if (Array.isArray(v)) {
-      return [k, v]
+      return [normalizeCssPropertyName(k), v]
     }
 
     if (isObject(v)) {
@@ -61,7 +87,7 @@ function configToCss(config = {}, { target, className, modifier, prefix, mode, c
       return [inWhere(k, { className, modifier, prefix }), v]
     }
 
-    return [k, v]
+    return [normalizeCssPropertyName(k), v]
   }
 
   return Object.fromEntries(

@@ -247,6 +247,8 @@ export function collectWebpackAssetUserCssMarkers(source: string) {
 }
 
 const WEBPACK_TAILWIND_GENERATED_LAYER_NAMES = new Set(['theme', 'base', 'utilities'])
+const WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE = /(?:^|[^\w-])\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
+const WEBPACK_TAILWIND_UTILITY_PREFIX_RE = /^\.(?:-?(?:bg|text|border|ring|shadow|drop-shadow|[pmwhz]|px|py|pt|pr|pb|pl|mx|my|mt|mr|mb|ml|min-w|min-h|max-w|max-h|flex|grid|inline|block|hidden|rounded|opacity|translate|scale|rotate|skew|top|right|bottom|left|inset|gap|font|leading|tracking|underline|container)(?:[\-\\{]|$)|\\\[)/
 
 export function parseWebpackCssLayerNames(params: string) {
   return params
@@ -267,9 +269,31 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
       const shouldRemoveLayer = isLayerDeclaration
         ? hasGeneratedLayerName
         : names.length > 0 && names.every(name => WEBPACK_TAILWIND_GENERATED_LAYER_NAMES.has(name))
-      if (shouldRemoveLayer) {
+      if (shouldRemoveLayer && isLayerDeclaration) {
         rule.remove()
         changed = true
+        return
+      }
+      if (shouldRemoveLayer && !names.includes('utilities')) {
+        rule.remove()
+        changed = true
+        return
+      }
+      if (shouldRemoveLayer) {
+        rule.walkRules((nestedRule) => {
+          const selector = nestedRule.selector.trim()
+          if (
+            WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE.test(selector)
+            || WEBPACK_TAILWIND_UTILITY_PREFIX_RE.test(selector)
+          ) {
+            nestedRule.remove()
+            changed = true
+          }
+        })
+        if (rule.nodes?.length === 0) {
+          rule.remove()
+          changed = true
+        }
       }
     })
     root.walkAtRules((rule) => {
@@ -656,9 +680,13 @@ export function shouldAppendCurrentWebpackAssetUserCss(options: {
   shouldPreserveGeneratedWebAssetUserCss: boolean
   sourceCssProcessed: boolean
 }) {
+  const hasGeneratedAssetUserCss = options.currentAssetLooksGenerated && options.currentAssetHasUserCss
   return !options.currentAssetHasBundlerGeneratedMarker
     && !options.shouldPreserveGeneratedWebAssetUserCss
-    && (!options.sourceCssProcessed || options.registeredUserRawSource === undefined || options.currentAssetHasUserCss)
+    && (
+      hasGeneratedAssetUserCss
+      || (!options.sourceCssProcessed || options.registeredUserRawSource === undefined || options.currentAssetHasUserCss)
+    )
     && !(options.sourceCssProcessed && options.currentAssetLooksGenerated && !options.currentAssetHasUserCss)
 }
 

@@ -243,16 +243,6 @@
       "hasBuildScript": true
     },
     {
-      "id": "demo/uni-app-x-hbuilderx-tailwindcss3",
-      "type": "demo",
-      "typeLabel": "示例",
-      "packageName": "@weapp-tailwindcss-demo/uni-app-x-hbuilderx-tailwindcss3",
-      "displayName": "uni-app-x-hbuilderx-tailwindcss3",
-      "benchmarkKey": "uni-app-x-hbuilderx-tailwindcss3",
-      "buildScript": "build",
-      "hasBuildScript": true
-    },
-    {
       "id": "demo/uni-app-x-hbuilderx-tailwindcss4",
       "type": "demo",
       "typeLabel": "示例",

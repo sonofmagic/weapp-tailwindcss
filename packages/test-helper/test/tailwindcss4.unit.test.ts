@@ -23,6 +23,25 @@ describe('tailwindcss4 test helper', () => {
     expect(result.css).toBe(`@import "${require.resolve('weapp-tailwindcss/index.css')}";`)
   })
 
+  it('writes inline content to a temporary source file', async () => {
+    await generateCss('<view class="text-red-500"></view>')
+
+    expect(tailwindcssPostcss).toHaveBeenLastCalledWith({
+      base: expect.stringContaining('weapp-tw-test-helper-'),
+    })
+  })
+
+  it('keeps glob content in a temporary test project', async () => {
+    const result = await generateCss(['src/**/*.wxml'], {
+      isContentGlob: true,
+    })
+
+    expect(tailwindcssPostcss).toHaveBeenLastCalledWith({
+      base: expect.stringContaining('weapp-tw-test-helper-'),
+    })
+    expect(result.css).toContain('@source "src/**/*.wxml";')
+  })
+
   it('rewrites tailwindcss$ and url subpath imports when resolvable', async () => {
     const result = await generateCss('/project/app', {
       css: [

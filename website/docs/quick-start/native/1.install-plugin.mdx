@@ -75,7 +75,7 @@ export default defineConfig({
 
 ```
 
-Tailwind CSS 4 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再注册 Tailwind 官方生成插件，也不需要执行 `weapp-tw patch`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+Tailwind CSS 4 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再注册 Tailwind 官方生成插件，也不需要执行 `weapp-tw patch`。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口。多入口、入口没有被 Vite 引入、自动识别失败时，再手动配置 `cssEntries`：
 

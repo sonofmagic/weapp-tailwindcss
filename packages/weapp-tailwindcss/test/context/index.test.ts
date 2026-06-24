@@ -187,10 +187,10 @@ describe('getCompilerContext', () => {
     })
   })
 
-  it('keeps Tailwind v4 preflight defaults when the runtime is v3', async () => {
+  it('keeps Tailwind v4 preflight defaults from runtime metadata', async () => {
     createTailwindcssRuntimeFromContext.mockReturnValue({
-      packageInfo: { version: '3.4.19' },
-      majorVersion: 3,
+      packageInfo: { version: '4.2.4' },
+      majorVersion: 4,
     })
 
     const { getCompilerContext } = await import('@/context')
@@ -198,9 +198,9 @@ describe('getCompilerContext', () => {
 
     expect(ctx.cssPreflight).toEqual({
       'box-sizing': 'border-box',
-      'border-width': '0',
-      'border-style': 'solid',
-      'border-color': 'currentColor',
+      border: '0 solid',
+      margin: '0',
+      padding: '0',
     })
   })
 

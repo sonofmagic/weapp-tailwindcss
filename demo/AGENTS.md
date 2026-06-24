@@ -8,7 +8,7 @@
 - 修改 demo 时优先维持演示可用性，不引入与示例目标无关的重构。
 - 尽量保留各框架默认目录结构与构建脚本，避免因统一风格破坏框架约定。
 - 若为回归问题新增 demo 变更，应在说明中标注对应问题场景与验证步骤。
-- Tailwind CSS v4 demo 的样式必须由 `weapp-tailwindcss` 生成；不要注册 `tailwindcss@3` PostCSS 插件、`@tailwindcss/postcss` 或 `@tailwindcss/vite` 来生成样式。
+- Tailwind CSS v4 demo 的样式必须由 `weapp-tailwindcss` 生成；不要注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite` 来生成样式。
 - Taro、uni-app 等 Web/H5 demo 遇到样式或 HMR 问题时，也应修正 `weapp-tailwindcss` 的生成链路，不能用官方 Tailwind 生成插件兜底。
 - 涉及小程序样式输出、热更新或构建器适配问题时，demo/e2e 回归不能只覆盖微信小程序；Taro 与 uni-app 至少要包含一个非微信小程序目标，验证 `.acss`、`.ttss`、`.qss`、`.jxss` 或框架产出的 `.css` 等真实产物后缀。
 - demo 不应通过 `app.wxss`、`main.wxss`、`app-origin.wxss` 这类固定文件名来证明通用行为；回归断言应面向框架真实输出文件集合和平台产物目录。

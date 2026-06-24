@@ -41,9 +41,9 @@ weapp-tailwindcss 统一生成器实例。
 
 ### source
 
-> **source**: `TailwindV3ResolvedSource | import("tailwindcss-patch").TailwindV4ResolvedSource`
+> **source**: `import("tailwindcss-patch").TailwindV4ResolvedSource`
 
-解析后的 Tailwind v3 source。
+解析后的 Tailwind CSS 4 source。
 
 ***
 

@@ -1,19 +1,32 @@
 /* eslint-disable ts/no-require-imports, style/quote-props */
 import type { Config } from 'tailwindcss'
-import postcss from 'postcss'
-import tailwind from 'tailwindcss'
+import { generateCss4 } from '@weapp-tailwindcss/test-helper'
 
 const typographyPlugin = require('../src/index')
 
 const html = String.raw
 
+function extractContentInput(content: unknown) {
+  if (Array.isArray(content)) {
+    return content.map((entry) => {
+      if (entry && typeof entry === 'object' && 'raw' in entry) {
+        return String(entry.raw)
+      }
+      return String(entry)
+    })
+  }
+  return ''
+}
+
 function run(config: Config) {
-  return postcss(tailwind({
+  const mergedConfig = {
     plugins: [typographyPlugin({ target: 'modern', classPrefix: 'tw-' })],
     corePlugins: { preflight: false },
     ...config,
-  })).process('@tailwind base; @tailwind components; @tailwind utilities;', {
-    from: undefined,
+  }
+  const { content, ...twConfig } = mergedConfig as Config & { content?: unknown }
+  return generateCss4(extractContentInput(content), {
+    twConfig,
   })
 }
 
@@ -39,10 +52,10 @@ describe('modern target', () => {
       },
     })
 
-    expect(css).toContain('.prose :where(.prose > ul > li):not(:where([class~="not-prose"],[class~="not-prose"] *))::marker')
+    expect(css).toContain(':where(.prose > ul > li):not(:where([class~="not-prose"], [class~="not-prose"] *))::marker')
     expect(css).toContain('text-align: left')
     expect(css).toContain('text-align: right')
-    expect(css).toContain(':where(code):not(:where([class~="not-prose"],[class~="not-prose"] *))')
+    expect(css).toContain(':where(code):not(:where([class~="not-prose"], [class~="not-prose"] *))')
   })
 
   it('applies modern selectors for non-default modifiers', async () => {
@@ -65,7 +78,7 @@ describe('modern target', () => {
     })
 
     expect(css).toContain('.prose-lg')
-    expect(css).toContain('.prose-lg :where(.prose-lg > h1):not(:where([class~="not-prose"],[class~="not-prose"] *))')
+    expect(css).toContain(':where(.prose-lg > h1):not(:where([class~="not-prose"], [class~="not-prose"] *))')
     expect(css).toContain('strong')
   })
 })

@@ -6,16 +6,15 @@ export function createCssAssetEmitter(
   context: Pick<GenerateBundleThis, 'emitFile'>,
 ) {
   return (fileName: string, source: string) => {
-    const replayAsset = createReplayCssAsset(fileName, source)
     if (context.emitFile) {
       context.emitFile({
         type: 'asset',
         fileName,
         source,
       })
-      return replayAsset
+      return undefined
     }
-    return replayAsset
+    return createReplayCssAsset(fileName, source)
   }
 }
 

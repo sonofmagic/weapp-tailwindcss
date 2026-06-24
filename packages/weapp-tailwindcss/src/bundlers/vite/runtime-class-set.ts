@@ -118,9 +118,10 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
   async function ensureBundleRuntimeClassSet(
     snapshot: BundleSnapshot,
     forceRefresh = false,
-    _options: {
+    options: {
       allowBaselineOnlyInitialSync?: boolean | undefined
       baseClassSet?: Set<string> | undefined
+      refreshBySource?: boolean | undefined
       transformOnly?: boolean | undefined
     } = {},
   ) {
@@ -142,7 +143,16 @@ export function createViteRuntimeClassSet(options: CreateViteRuntimeClassSetOpti
 
     if (!forceRuntimeRefresh) {
       try {
-        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot)
+        const baseClassSet = options.baseClassSet
+          ?? runtimeSet
+          ?? await collectRuntimeClassSet(runtimeState.tailwindRuntime, {
+            force: invalidation.changed,
+            clearCache: invalidation.changed,
+          })
+        const nextRuntimeSet = await bundleRuntimeClassSetManager.sync(runtimeState.tailwindRuntime, snapshot, {
+          baseClassSet,
+          skipInitialFullScanWithBase: options.allowBaselineOnlyInitialSync,
+        })
         runtimeSet = nextRuntimeSet
         return nextRuntimeSet
       }

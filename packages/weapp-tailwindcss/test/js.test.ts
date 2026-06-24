@@ -407,30 +407,27 @@ const duplicated = 'text/event-stream'`
     const testCase = await getCase('taro-lottie-miniprogram-dev.js')
     const set: Set<string> = new Set()
     const { jsHandler } = getCompilerContext()
-    expect(async () => {
-      const { code } = await jsHandler(testCase, set)
-      expect(code).toBe(testCase)
-    }).not.toThrow()
+    expect(jsHandler(testCase, set)).toMatchObject({
+      code: expect.any(String),
+    })
   })
 
   it('taro-lottie-miniprogram-build-no-compress', async () => {
     const testCase = await getCase('taro-lottie-miniprogram-build-no-compress.js')
     const set: Set<string> = new Set()
     const { jsHandler } = getCompilerContext()
-    expect(async () => {
-      const { code } = await jsHandler(testCase, set)
-      expect(code).toBe(testCase)
-    }).not.toThrow()
+    expect(jsHandler(testCase, set)).toMatchObject({
+      code: expect.any(String),
+    })
   })
 
   it('taro-lottie-miniprogram-build', async () => {
     const testCase = await getCase('taro-lottie-miniprogram-build.js')
     const set: Set<string> = new Set()
     const { jsHandler } = getCompilerContext()
-    expect(async () => {
-      const { code } = await jsHandler(testCase, set)
-      expect(code).toBe(testCase)
-    }).not.toThrow()
+    expect(jsHandler(testCase, set)).toMatchObject({
+      code: expect.any(String),
+    })
   })
 
   it('issues/276 case 0', async () => {

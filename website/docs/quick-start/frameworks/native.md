@@ -40,7 +40,7 @@ keywords:
 
 ## weapp-vite 模板
 
-如果你希望原生小程序也走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)。当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+如果你希望原生小程序也走 Vite 构建，推荐查看 [纯原生 weapp-vite 接入](/docs/quick-start/native/install)。当前文档面向 `tailwindcss@4`。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 然后在 `vite.config.ts` 中注册 `weapp-tailwindcss/vite`：
 

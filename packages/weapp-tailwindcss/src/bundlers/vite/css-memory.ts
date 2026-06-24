@@ -108,6 +108,7 @@ export function createViteCssMemory(options: {
 }) {
   const rememberedCssSources = new Map<string, RememberedCssSource>()
   const rememberedCssSignatureByFile = new Map<string, string>()
+  const knownCssSources = new Map<string, string>()
   const knownSfcSources = new Map<string, string>()
 
   const rememberKnownSfcSource = (id: string, code: string) => {
@@ -189,6 +190,7 @@ export function createViteCssMemory(options: {
   }
 
   const refreshRememberedCssSourceBySourceFile = (sourceFile: string, rawSource: string) => {
+    touchMapEntry(knownCssSources, normalizeCssSourceIdentity(sourceFile), rawSource)
     const normalizedSourceFile = normalizeCssSourceIdentity(sourceFile)
     const relatedRememberedEntries = [...rememberedCssSources].filter(([, remembered]) =>
       normalizeCssSourceIdentity(remembered.sourceFile) === normalizedSourceFile,
@@ -215,6 +217,14 @@ export function createViteCssMemory(options: {
       return cached
     }
     const file = cleanUrl(stripRequestQuery(sourceFile))
+    const knownSource = knownCssSources.get(normalizeCssSourceIdentity(sourceFile))
+    if (knownSource != null) {
+      return knownSource
+    }
+    const candidateSource = options.getSourceCandidateSource(file)
+    if (candidateSource != null) {
+      return candidateSource
+    }
     if (!isSourceStyleRequest(file)) {
       return undefined
     }
@@ -309,6 +319,7 @@ export function createViteCssMemory(options: {
     pruneMapToMaxSize(rememberedCssSources, VITE_REMEMBERED_CSS_CACHE_MAX, (rememberedKey) => {
       rememberedCssSignatureByFile.delete(String(rememberedKey))
     })
+    pruneMapToMaxSize(knownCssSources, VITE_REMEMBERED_CSS_CACHE_MAX)
     pruneMapToMaxSize(knownSfcSources, VITE_KNOWN_SFC_SOURCE_CACHE_MAX)
   }
 
@@ -321,6 +332,8 @@ export function createViteCssMemory(options: {
       rememberedCssSources: rememberedCssSources.size,
       rememberedCssSourcesRaw: summarizeRememberedCssSources(rememberedCssSources),
       rememberedCssSignatureByFile: rememberedCssSignatureByFile.size,
+      knownCssSources: knownCssSources.size,
+      knownCssSourcesRaw: summarizeStringMapCache(knownCssSources),
       knownSfcSources: knownSfcSources.size,
       knownSfcSourcesRaw: summarizeStringMapCache(knownSfcSources),
     }),

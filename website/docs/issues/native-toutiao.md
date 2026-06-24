@@ -74,7 +74,7 @@ npm i -D tailwindcss weapp-tailwindcss
 @source not "../dist";
 ```
 
-如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档仅维护 Tailwind CSS 4 接入说明。
 
 ## 配置 vscode 插件
 

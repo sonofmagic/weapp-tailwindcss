@@ -30,7 +30,7 @@ keywords:
 
 这条路线适合 HBuilderX 创建的 Vue3 Vite 项目。HBuilderX 会改变运行时的 `process.cwd()`，所以扫描路径和 `cssEntries` 都建议使用绝对路径。
 
-当前文档面向 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档面向 `tailwindcss@4`。当前文档仅维护 Tailwind CSS 4 接入说明。
 
 ### CSS 入口
 

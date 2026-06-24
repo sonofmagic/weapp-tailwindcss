@@ -1,6 +1,30 @@
+import { existsSync, realpathSync } from 'node:fs'
 import path from 'node:path'
 import { slash } from '../utils'
 import { stripStyleFileExtension } from './css-output'
+
+function resolveStyleMatchingRealPath(value: string) {
+  const resolved = path.resolve(value)
+  let current = resolved
+  const pendingSegments: string[] = []
+  while (!existsSync(current)) {
+    const parent = path.dirname(current)
+    if (parent === current) {
+      return resolved
+    }
+    pendingSegments.unshift(path.basename(current))
+    current = parent
+  }
+  try {
+    const realPath = realpathSync.native(current)
+    return pendingSegments.length > 0
+      ? path.join(realPath, ...pendingSegments)
+      : realPath
+  }
+  catch {
+    return resolved
+  }
+}
 
 export function isMatchingCssSourceFile(
   outputFile: string,
@@ -28,7 +52,7 @@ export function collectStyleFileMatchBases(file: string, roots: Array<string | u
     .map(root => path.resolve(root))
   if (path.isAbsolute(normalizedFile)) {
     for (const root of resolvedRoots) {
-      const relative = path.relative(root, normalizedFile)
+      const relative = path.relative(resolveStyleMatchingRealPath(root), resolveStyleMatchingRealPath(normalizedFile))
       if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) {
         addBase(relative)
       }

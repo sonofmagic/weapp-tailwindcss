@@ -17,28 +17,13 @@ const linkedPackages = [
   '@egoist/tailwindcss-icons',
   '@iconify-json/lucide',
   '@iconify-json/mdi',
-  '@iconify/tailwind',
-  '@tailwindcss/aspect-ratio',
-  '@tailwindcss/container-queries',
-  '@tailwindcss/forms',
-  '@tailwindcss/line-clamp',
   '@tailwindcss/typography',
 ]
 const pluginCandidates = [
-  'form-input',
   'prose',
-  'aspect-w-16',
-  'aspect-h-9',
-  '@container',
-  '@lg:underline',
-  'line-clamp-2',
   'i-mdi-home',
   'i-lucide-house',
   'ei-[mdi--home]',
-  'icon--mdi',
-  'icon--mdi--home',
-  'iconify',
-  'iconify-mdi-home',
   'icon-[mdi--home]',
   'plugin-card',
   'plugin-scrollbar',
@@ -179,7 +164,7 @@ async function createV4CssPluginDirectiveFixture() {
 function createV4ConfigSource() {
   return [
     'const { iconsPlugin, dynamicIconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")',
-    'const { addCleanIconSelectors, addDynamicIconSelectors, addIconSelectors } = require("@iconify/tailwind")',
+    'const addDynamicIconSelectors = require("@iconify/tailwind4").default',
     'const plugin = require("tailwindcss/plugin")',
     '',
     'module.exports = {',
@@ -190,17 +175,9 @@ function createV4ConfigSource() {
     '    },',
     '  },',
     '  plugins: [',
-    '    require("@tailwindcss/forms"),',
     '    require("@tailwindcss/typography"),',
-    '    require("@tailwindcss/aspect-ratio"),',
-    '    require("@tailwindcss/container-queries"),',
     '    iconsPlugin({ collections: getIconCollections(["mdi", "lucide"]) }),',
     '    dynamicIconsPlugin({ prefix: "ei" }),',
-    '    addCleanIconSelectors("mdi:home"),',
-    '    addIconSelectors({',
-    '      prefixes: [{ prefix: "mdi", icons: ["home"] }],',
-    '      iconSelector: ".iconify-{prefix}-{name}",',
-    '    }),',
     '    addDynamicIconSelectors(),',
     '    plugin(({ addComponents, addUtilities, matchUtilities, theme }) => {',
     '      addComponents({',
@@ -278,24 +255,14 @@ describe('tailwindcss generator plugin compatibility', () => {
     const css = compactCss(result.css)
 
     expect(result.classSet).toEqual(new Set(pluginCandidates))
-    expect(result.css).toContain('.form-input')
     expect(result.css).toContain('.prose')
-    expect(result.css).toContain('.aspect-w-16')
-    expect(result.css).toContain('.aspect-h-9')
-    expect(result.css).toContain('.line-clamp-2')
     expect(result.css).toContain('.plugin-card')
     expect(result.css).toContain('color: #123456')
     expect(result.css).toContain('.plugin-scrollbar')
     expect(result.css).toContain('scrollbar-width: thin')
     expect(result.css).toContain('.plugin-size-card')
     expect(result.css).toContain('width: 48rpx')
-    expect(result.css).toContain('@container')
-    expect(css).toContain('text-decoration-line:underline')
     expectIconCss(result.css)
-    expect(result.css).toContain('.icon--mdi')
-    expect(result.css).toContain('.icon--mdi--home')
-    expect(result.css).toContain('.iconify')
-    expect(result.css).toContain('.iconify-mdi-home')
     expect(result.css).not.toContain('ei-\\[mdi--home\\]')
     expect(result.css).not.toContain('icon-\\[mdi--home\\]')
     expect(result.css).not.toContain('@media')

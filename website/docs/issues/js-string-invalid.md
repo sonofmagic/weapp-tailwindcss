@@ -56,6 +56,6 @@ const xs = {
 
 文档地址: https://tailwindcss.com/docs/detecting-classes-in-source-files#explicitly-registering-sources
 
-如果项目必须继续使用 `tailwindcss@3`，请安装 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档仅维护 Tailwind CSS 4 接入说明。
 
 <!-- 因为 `tailwindcss` 和 `weapp-tailwindcss` 的转化规则 ，是根据你的源代码里提取出来的 `token` 决定的 -->

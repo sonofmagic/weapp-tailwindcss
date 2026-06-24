@@ -1,557 +1,205 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`postcss plugin > @apply space-y/x case 1`] = `
-".test > :not([hidden]) ~ :not([hidden]) {
- --tw-space-x-reverse:0;
- margin-right:calc(0.25rem * var(--tw-space-x-reverse));
- margin-left:calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
- --tw-space-y-reverse:0;
- margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));
- margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))
-}
+"@layer properties;
+@layer utilities;
 .test {
- --tw-text-opacity:1;
- color:rgb(18 52 86 / var(--tw-text-opacity, 1));
- font-size:20px
+  :where(& > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing, 0.25rem) * 2) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing, 0.25rem) * 2) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(& > :not(:last-child)) {
+    --tw-space-x-reverse: 0;
+    margin-inline-start: calc(var(--spacing, 0.25rem) * var(--tw-space-x-reverse));
+    margin-inline-end: calc(var(--spacing, 0.25rem) * calc(1 - var(--tw-space-x-reverse)));
+  }
+  color: #123456;
+  font-size: 20px;
+}
+@property --tw-space-y-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@property --tw-space-x-reverse {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-space-y-reverse: 0;
+      --tw-space-x-reverse: 0;
+    }
+  }
 }"
 `;
 
 exports[`postcss plugin > base tw output 1`] = `
-"*, ::before, ::after {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:  ;
+"@layer base {
+  *,:after,:before,::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+  }
 }
-
-::backdrop {
-  --tw-border-spacing-x: 0;
-  --tw-border-spacing-y: 0;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-rotate: 0;
-  --tw-skew-x: 0;
-  --tw-skew-y: 0;
-  --tw-scale-x: 1;
-  --tw-scale-y: 1;
-  --tw-pan-x:  ;
-  --tw-pan-y:  ;
-  --tw-pinch-zoom:  ;
-  --tw-scroll-snap-strictness: proximity;
-  --tw-gradient-from-position:  ;
-  --tw-gradient-via-position:  ;
-  --tw-gradient-to-position:  ;
-  --tw-ordinal:  ;
-  --tw-slashed-zero:  ;
-  --tw-numeric-figure:  ;
-  --tw-numeric-spacing:  ;
-  --tw-numeric-fraction:  ;
-  --tw-ring-inset:  ;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-color: #fff;
-  --tw-ring-color: rgb(59 130 246 / 0.5);
-  --tw-ring-offset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-colored: 0 0 #0000;
-  --tw-blur:  ;
-  --tw-brightness:  ;
-  --tw-contrast:  ;
-  --tw-grayscale:  ;
-  --tw-hue-rotate:  ;
-  --tw-invert:  ;
-  --tw-saturate:  ;
-  --tw-sepia:  ;
-  --tw-drop-shadow:  ;
-  --tw-backdrop-blur:  ;
-  --tw-backdrop-brightness:  ;
-  --tw-backdrop-contrast:  ;
-  --tw-backdrop-grayscale:  ;
-  --tw-backdrop-hue-rotate:  ;
-  --tw-backdrop-invert:  ;
-  --tw-backdrop-opacity:  ;
-  --tw-backdrop-saturate:  ;
-  --tw-backdrop-sepia:  ;
-  --tw-contain-size:  ;
-  --tw-contain-layout:  ;
-  --tw-contain-paint:  ;
-  --tw-contain-style:  ;
-}
-
-*,
-::before,
-::after {
-  box-sizing: border-box;
-  border-width: 0;
-  border-style: solid;
-  border-color: #e5e7eb;
-}
-
-::before,
-::after {
-  --tw-content: '';
-}
-
-html,
-:host {
-  line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-  -moz-tab-size: 4;
-  tab-size: 4;
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-feature-settings: normal;
-  font-variation-settings: normal;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  margin: 0;
-  line-height: inherit;
-}
-
-hr {
-  height: 0;
-  color: inherit;
-  border-top-width: 1px;
-}
-
-abbr:where([title]) {
-  text-decoration: underline dotted;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-size: inherit;
-  font-weight: inherit;
-}
-
-a {
-  color: inherit;
-  text-decoration: inherit;
-}
-
-b,
-strong {
-  font-weight: bolder;
-}
-
-code,
-kbd,
-samp,
-pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-feature-settings: normal;
-  font-variation-settings: normal;
-  font-size: 1em;
-}
-
-small {
-  font-size: 80%;
-}
-
-sub,
-sup {
-  font-size: 75%;
-  line-height: 0;
-  position: relative;
-  vertical-align: baseline;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-sup {
-  top: -0.5em;
-}
-
-table {
-  text-indent: 0;
-  border-color: inherit;
-  border-collapse: collapse;
-}
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  font-family: inherit;
-  font-feature-settings: inherit;
-  font-variation-settings: inherit;
-  font-size: 100%;
-  font-weight: inherit;
-  line-height: inherit;
-  letter-spacing: inherit;
-  color: inherit;
-  margin: 0;
-  padding: 0;
-}
-
-button,
-select {
-  text-transform: none;
-}
-
-button,
-input:where([type='button']),
-input:where([type='reset']),
-input:where([type='submit']) {
-  -webkit-appearance: button;
-  background-color: transparent;
-  background-image: none;
-}
-
-:-moz-focusring {
-  outline: auto;
-}
-
-:-moz-ui-invalid {
-  box-shadow: none;
-}
-
-progress {
-  vertical-align: baseline;
-}
-
-::-webkit-inner-spin-button,
-::-webkit-outer-spin-button {
-  height: auto;
-}
-
-[type='search'] {
-  -webkit-appearance: textfield;
-  outline-offset: -2px;
-}
-
-::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-
-::-webkit-file-upload-button {
-  -webkit-appearance: button;
-  font: inherit;
-}
-
-summary {
-  display: list-item;
-}
-
-blockquote,
-dl,
-dd,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-hr,
-figure,
-p,
-pre {
-  margin: 0;
-}
-
-fieldset {
-  margin: 0;
-  padding: 0;
-}
-
-legend {
-  padding: 0;
-}
-
-ol,
-ul,
-menu {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-dialog {
-  padding: 0;
-}
-
-textarea {
-  resize: vertical;
-}
-
-input::placeholder,
-textarea::placeholder {
-  opacity: 1;
-  color: #9ca3af;
-}
-
-button,
-[role="button"] {
-  cursor: pointer;
-}
-:disabled {
-  cursor: default;
-}
-
-img,
-svg,
-video,
-canvas,
-audio,
-iframe,
-embed,
-object {
-  display: block;
-  vertical-align: middle;
-}
-
-img,
-video {
-  max-width: 100%;
-  height: auto;
-}
-[hidden]:where(:not([hidden="until-found"])) {
-  display: none;
-}"
+@layer utilities;"
 `;
 
 exports[`postcss plugin > base tw output without prefilight 1`] = `
-"*, ::before, ::after {
-    --tw-border-spacing-x: 0;
-    --tw-border-spacing-y: 0;
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    --tw-pan-x:  ;
-    --tw-pan-y:  ;
-    --tw-pinch-zoom:  ;
-    --tw-scroll-snap-strictness: proximity;
-    --tw-gradient-from-position:  ;
-    --tw-gradient-via-position:  ;
-    --tw-gradient-to-position:  ;
-    --tw-ordinal:  ;
-    --tw-slashed-zero:  ;
-    --tw-numeric-figure:  ;
-    --tw-numeric-spacing:  ;
-    --tw-numeric-fraction:  ;
-    --tw-ring-inset:  ;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / 0.5);
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-    --tw-blur:  ;
-    --tw-brightness:  ;
-    --tw-contrast:  ;
-    --tw-grayscale:  ;
-    --tw-hue-rotate:  ;
-    --tw-invert:  ;
-    --tw-saturate:  ;
-    --tw-sepia:  ;
-    --tw-drop-shadow:  ;
-    --tw-backdrop-blur:  ;
-    --tw-backdrop-brightness:  ;
-    --tw-backdrop-contrast:  ;
-    --tw-backdrop-grayscale:  ;
-    --tw-backdrop-hue-rotate:  ;
-    --tw-backdrop-invert:  ;
-    --tw-backdrop-opacity:  ;
-    --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  ;
-    --tw-contain-size:  ;
-    --tw-contain-layout:  ;
-    --tw-contain-paint:  ;
-    --tw-contain-style:  
+"@layer base {
+  *,:after,:before,::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+  }
 }
-::backdrop {
-    --tw-border-spacing-x: 0;
-    --tw-border-spacing-y: 0;
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    --tw-pan-x:  ;
-    --tw-pan-y:  ;
-    --tw-pinch-zoom:  ;
-    --tw-scroll-snap-strictness: proximity;
-    --tw-gradient-from-position:  ;
-    --tw-gradient-via-position:  ;
-    --tw-gradient-to-position:  ;
-    --tw-ordinal:  ;
-    --tw-slashed-zero:  ;
-    --tw-numeric-figure:  ;
-    --tw-numeric-spacing:  ;
-    --tw-numeric-fraction:  ;
-    --tw-ring-inset:  ;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / 0.5);
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-    --tw-blur:  ;
-    --tw-brightness:  ;
-    --tw-contrast:  ;
-    --tw-grayscale:  ;
-    --tw-hue-rotate:  ;
-    --tw-invert:  ;
-    --tw-saturate:  ;
-    --tw-sepia:  ;
-    --tw-drop-shadow:  ;
-    --tw-backdrop-blur:  ;
-    --tw-backdrop-brightness:  ;
-    --tw-backdrop-contrast:  ;
-    --tw-backdrop-grayscale:  ;
-    --tw-backdrop-hue-rotate:  ;
-    --tw-backdrop-invert:  ;
-    --tw-backdrop-opacity:  ;
-    --tw-backdrop-saturate:  ;
-    --tw-backdrop-sepia:  ;
-    --tw-contain-size:  ;
-    --tw-contain-layout:  ;
-    --tw-contain-paint:  ;
-    --tw-contain-style:  
-}"
+@layer utilities;"
 `;
 
 exports[`postcss plugin > base utilities output 1`] = `
-".h-10 {
-    height: 2.5rem
+":root, :host {
+  --spacing: .25rem;
+}
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.h-10 {
+  height: calc(var(--spacing) * 10);
 }
 .w-10 {
-    width: 2.5rem
+  width: calc(var(--spacing) * 10);
 }
-.bg-\\[rgba\\(255\\2c 254\\2c 253\\2c \\.5\\)\\] {
-    background-color: rgba(255,254,253,.5)
+.bg-\\[rgba\\(255\\,254\\,253\\,\\.5\\)\\] {
+  background-color: rgba(255,254,253,.5);
 }"
 `;
 
 exports[`postcss plugin > before:content-['+'] 1`] = `
-".before\\:content-\\[\\'\\+\\'\\]::before {
+"@layer properties;
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.before\\:content-\\[\\'\\+\\'\\] {
+  &::before {
     --tw-content: '+';
-    content: var(--tw-content)
+    content: var(--tw-content);
+  }
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-content: "";
+    }
+  }
 }"
 `;
 
 exports[`postcss plugin > dark mode class > css 1`] = `
 "
-  .tbody .tr {
-    border-bottom-width: 1px
-  }
+    view,text,::before,::after {
+      --tw-border-style: solid;
+    }
 .tbody .tr {
-    --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: rgb(241, 245, 249);
+    border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr.dark view {
-    border-color: rgba(148, 163, 184, 0.1)
-  }
+      border-color: rgba(144, 161, 185, 0.1);
+    }
 .tbody .tr.dark text {
-    border-color: rgba(148, 163, 184, 0.1)
-  }"
+      border-color: rgba(144, 161, 185, 0.1);
+    }"
 `;
 
 exports[`postcss plugin > dark mode class 1`] = `
-".tbody {
+"@layer properties;
+.tbody {
   .tr {
-    border-bottom-width: 1px
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+    &:is(.dark *) {
+      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+      }
+    }
   }
-  .tr {
-    --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
-  }
-  .tr:is(.dark *) {
-    border-color: rgb(148 163 184 / 0.1)
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-border-style: solid;
+    }
   }
 }"
 `;
 
 exports[`postcss plugin > dark mode media > css 1`] = `
 "
-  .tbody .tr {
-    border-bottom-width: 1px
-  }
+    view,text,::before,::after {
+      --tw-border-style: solid;
+    }
 .tbody .tr {
-    --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: rgb(241, 245, 249);
+    border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 @media (prefers-color-scheme: dark) {
-    .tbody .tr {
-      border-color: rgba(148, 163, 184, 0.1)
-    }
-  }"
+.tbody .tr {
+      border-color: rgba(144, 161, 185, 0.1);
+  }
+    }"
 `;
 
 exports[`postcss plugin > dark mode media 1`] = `
-".tbody {
+"@layer properties;
+.tbody {
   .tr {
-    border-bottom-width: 1px
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+    @media (prefers-color-scheme: dark) {
+      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+      }
+    }
   }
-  .tr {
-    --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
-  }
-  @media (prefers-color-scheme: dark) {
-    .tr {
-      border-color: rgb(148 163 184 / 0.1)
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-border-style: solid;
     }
   }
 }"
@@ -559,108 +207,180 @@ exports[`postcss plugin > dark mode media 1`] = `
 
 exports[`postcss plugin > dark mode selector > css 1`] = `
 "
-  .tbody .tr {
-    border-bottom-width: 1px
-  }
+    view,text,::before,::after {
+      --tw-border-style: solid;
+    }
 .tbody .tr {
-    --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: rgb(241, 245, 249);
+    border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr.dark,.tbody .tr.dark view,.tbody .tr.dark text {
-    border-color: rgba(148, 163, 184, 0.1)
-  }"
+      border-color: rgba(144, 161, 185, 0.1);
+    }"
 `;
 
 exports[`postcss plugin > dark mode selector 1`] = `
-".tbody {
+"@layer properties;
+.tbody {
   .tr {
-    border-bottom-width: 1px
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+    &:where(.dark, .dark *) {
+      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+      }
+    }
   }
-  .tr {
-    --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
-  }
-  .tr:where(.dark, .dark *) {
-    border-color: rgb(148 163 184 / 0.1)
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-border-style: solid;
+    }
   }
 }"
 `;
 
 exports[`postcss plugin > dark mode variant 1 > css 1`] = `
 "
-  .tbody .tr {
-    border-bottom-width: 1px
-  }
+    view,text,::before,::after {
+      --tw-border-style: solid;
+    }
 .tbody .tr {
-    --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: rgb(241, 245, 249);
+    border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr:not(view):not(text) {
-    border-color: rgba(148, 163, 184, 0.1)
-  }"
+      border-color: rgba(144, 161, 185, 0.1);
+    }"
 `;
 
 exports[`postcss plugin > dark mode variant 1 1`] = `
-".tbody {
+"@layer properties;
+.tbody {
   .tr {
-    border-bottom-width: 1px
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+    &:not(.light *) {
+      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+      }
+    }
   }
-  .tr {
-    --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
-  }
-  .tr:not(.light *) {
-    border-color: rgb(148 163 184 / 0.1)
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-border-style: solid;
+    }
   }
 }"
 `;
 
 exports[`postcss plugin > dark mode variant 2 > css 1`] = `
 "
-  .tbody .tr {
-    border-bottom-width: 1px
-  }
+    view,text,::before,::after {
+      --tw-border-style: solid;
+    }
 .tbody .tr {
-    --tw-border-opacity: 1;
-    border-color: rgba(241, 245, 249, var(--tw-border-opacity, 1))
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: rgb(241, 245, 249);
+    border-color: var(--color-slate-100, rgb(241, 245, 249));
   }
 .tbody .tr.dark view {
-    border-color: rgba(148, 163, 184, 0.1)
-  }
-.tbody .tr.dark text {
-    border-color: rgba(148, 163, 184, 0.1)
-  }
-@media (prefers-color-scheme: dark) {
-    .tbody .tr:not(view):not(text) {
-      border-color: rgba(148, 163, 184, 0.1)
+      border-color: rgba(144, 161, 185, 0.1);
     }
-  }"
+.tbody .tr.dark text {
+      border-color: rgba(144, 161, 185, 0.1);
+    }
+@media (prefers-color-scheme: dark) {
+      .tbody .tr:not(view):not(text) {
+        border-color: rgba(144, 161, 185, 0.1);
+      }
+    }"
 `;
 
 exports[`postcss plugin > dark mode variant 2 1`] = `
-".tbody {
+"@layer properties;
+.tbody {
   .tr {
-    border-bottom-width: 1px
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 1px;
+    border-color: var(--color-slate-100, oklch(96.8% 0.007 247.896));
+    &:is(.dark *) {
+      border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+      @supports (color: color-mix(in lab, red, red)) {
+        border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      &:not(.light *) {
+        border-color: color-mix(in srgb, oklch(70.4% 0.04 256.788) 10%, transparent);
+        @supports (color: color-mix(in lab, red, red)) {
+          border-color: color-mix(in oklab, var(--color-slate-400, oklch(70.4% 0.04 256.788)) 10%, transparent);
+        }
+      }
+    }
   }
-  .tr {
-    --tw-border-opacity: 1;
-    border-color: rgb(241 245 249 / var(--tw-border-opacity, 1))
-  }
-  .tr:is(.dark *) {
-    border-color: rgb(148 163 184 / 0.1)
-  }
-  @media (prefers-color-scheme: dark) {
-    .tr:not(.light *) {
-      border-color: rgb(148 163 184 / 0.1)
+}
+@property --tw-border-style {
+  syntax: "*";
+  inherits: false;
+  initial-value: solid;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-border-style: solid;
     }
   }
 }"
 `;
 
 exports[`postcss plugin > double quote after class 1`] = `
-".after\\:content-\\[\\"\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\"\\]::after {
+"@layer properties;
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.after\\:content-\\[\\"对酒当歌，人生几何\\"\\] {
+  &::after {
     --tw-content: "对酒当歌，人生几何";
-    content: var(--tw-content)
+    content: var(--tw-content);
+  }
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-content: "";
+    }
+  }
 }"
 `;
 
@@ -679,6 +399,7 @@ wx-root-portal-content,
   position: static;
 }
 .h-14 {
+  height: 3.5rem;
   height: calc(var(--spacing) * 14);
 }
 .h-_b300px_B {
@@ -688,6 +409,7 @@ wx-root-portal-content,
   background-color: #123456;
 }
 .bg-purple-300 {
+  background-color: rgb(216, 180, 255);
   background-color: var(--color-purple-300);
 }
 .bg-gradient-to-r {
@@ -717,19 +439,72 @@ wx-root-portal-content,
 .text-_b_hfff_B {
   color: #fff;
 }
+view,
+text,
+::after,
+::before {
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
+}
 "
 `;
 
 exports[`postcss plugin > single quote after class 1`] = `
-".after\\:content-\\[\\'\\5BF9\\9152\\5F53\\6B4C\\FF0C\\4EBA\\751F\\51E0\\4F55\\'\\]::after {
+"@layer properties;
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.after\\:content-\\[\\'对酒当歌，人生几何\\'\\] {
+  &::after {
     --tw-content: '对酒当歌，人生几何';
-    content: var(--tw-content)
+    content: var(--tw-content);
+  }
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-content: "";
+    }
+  }
 }"
 `;
 
 exports[`postcss plugin > utf-8 compat after:content-['我是伪元素'] 1`] = `
-".after\\:content-\\[\\'\\6211\\662F\\4F2A\\5143\\7D20\\'\\]::after {
+"@layer properties;
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.after\\:content-\\[\\'我是伪元素\\'\\] {
+  &::after {
     --tw-content: '我是伪元素';
-    content: var(--tw-content)
+    content: var(--tw-content);
+  }
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-content: "";
+    }
+  }
 }"
 `;

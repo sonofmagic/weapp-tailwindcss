@@ -1,12 +1,15 @@
 import type { Plugin } from 'vite'
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
 import os from 'node:os'
 import path from 'node:path'
 import { build } from 'vite'
 import { afterEach, describe, expect, it } from 'vitest'
 import { WeappTailwindcss } from '@/bundlers/vite'
 
+const require = createRequire(import.meta.url)
 const createdDirs: string[] = []
+const tailwindcssRoot = path.dirname(require.resolve('tailwindcss/package.json'))
 
 const rawCss = `*, ::before, ::after {
   --tw-border-spacing-x: 0;
@@ -24,8 +27,11 @@ const rawCss = `*, ::before, ::after {
 async function createFixtureRoot() {
   const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tailwindcss-vite-reemit-'))
   createdDirs.push(root)
+  const nodeModulesDir = path.join(root, 'node_modules')
+  await mkdir(nodeModulesDir, { recursive: true })
 
   await Promise.all([
+    symlink(tailwindcssRoot, path.join(nodeModulesDir, 'tailwindcss'), 'dir'),
     writeFile(path.join(root, 'app.ts'), 'import "./app.css"\nconsole.log("vite css asset")\n'),
     writeFile(path.join(root, 'app.css'), rawCss),
   ])
@@ -64,6 +70,7 @@ async function runBuild(renameInGenerateBundle: boolean) {
   const distDir = path.join(root, 'dist')
   const weappTwPlugins = WeappTailwindcss({
     appType: 'weapp-vite',
+    tailwindcssBasedir: root,
   })
   const plugins: Plugin[] = renameInGenerateBundle
     ? [...weappTwPlugins, renameCssToWxssPlugin()]

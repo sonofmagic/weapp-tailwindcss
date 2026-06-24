@@ -2,11 +2,8 @@ import { readFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { isCI } from 'ci-info'
-import postcss from 'postcss'
 import { build as viteBuild } from 'vite'
 import { beforeAll, describe, expect, it } from 'vitest'
-import { loadTailwindcss3 } from '../scripts/load-tailwindcss3'
-import { weappTailwindcssUIPreset } from '../src/preset'
 import { button, mergeClassNames, skeleton, tag } from '../src/variants'
 
 const testDir = fileURLToPath(new URL('.', import.meta.url))
@@ -15,7 +12,6 @@ const distCss = resolve(packageRoot, 'dist/index.css')
 const viteConfigPath = resolve(packageRoot, 'vite.config.ts')
 
 let cssOutput = ''
-let cssOutputV3 = ''
 
 beforeAll(async () => {
   if (isCI) {
@@ -28,17 +24,6 @@ beforeAll(async () => {
     logLevel: 'error',
   })
   cssOutput = await readFile(distCss, 'utf8')
-
-  const tailwindcss3 = await loadTailwindcss3(packageRoot)
-  const result = await postcss([
-    tailwindcss3({
-      presets: [weappTailwindcssUIPreset],
-      corePlugins: { preflight: false },
-      content: [{ raw: '', extension: 'html' }],
-    }),
-  ]).process('@tailwind base; @tailwind components; @tailwind utilities;', { from: undefined })
-
-  cssOutputV3 = result.css
 })
 
 describe.skipIf(isCI)('atomic CSS build', () => {
@@ -64,14 +49,6 @@ describe.skipIf(isCI)('atomic CSS build', () => {
     expect(cssOutput).toContain('.wt-button:active')
     expect(cssOutput).toContain('.wt-input.is-error')
     expect(cssOutput).toContain('@keyframes wt-skeleton-pulse')
-  })
-})
-
-describe.skipIf(isCI)('tailwind v3 compatibility', () => {
-  it('emits utilities and components', () => {
-    expect(cssOutputV3).toContain('.wt-flex')
-    expect(cssOutputV3).toContain('.wt-button')
-    expect(cssOutputV3).toContain('@keyframes wt-skeleton-pulse')
   })
 })
 

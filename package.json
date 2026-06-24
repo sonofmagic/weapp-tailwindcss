@@ -350,7 +350,7 @@
     "set-value": "^4.1.0",
     "style-loader": "^4.0.0",
     "stylelint": "catalog:stylelint1625",
-    "tailwindcss": "catalog:tailwindcss3",
+    "tailwindcss": "catalog:tailwindcss4",
     "tailwindcss4": "catalog:tailwindcss4",
     "terser-webpack-plugin": "^5.6.1",
     "traverse": "^0.6.11",

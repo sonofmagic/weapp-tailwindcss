@@ -1,130 +1,282 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`tailwind complex syntax output > generates wxss selectors for complex syntax corpus > tailwind-css 1`] = `
-".w-\\[calc\\(100\\%_-_17px\\)\\] {
-    width: calc(100% - 17px)
+"@layer properties;
+:root, :host {
+  --color-black: #000;
 }
-.grid-cols-\\[200rpx_minmax\\(900rpx\\2c _1fr\\)_17px\\] {
-    grid-template-columns: 200rpx minmax(900rpx, 1fr) 17px
+*,:after,:before,::backdrop {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
 }
-.text-\\[length\\:var\\(--step-2\\)\\] {
-    font-size: var(--step-2)
+.w-\\[calc\\(100\\%_-_17px\\)\\] {
+  width: calc(100% - 17px);
 }
-.text-black\\/\\[0\\.37\\] {
-    color: rgb(0 0 0 / 0.37)
-}
-.shadow-\\[0_35px_60px_-15px_rgba\\(0\\2c 0\\2c 0\\2c 0\\.3\\)\\] {
-    --tw-shadow: 0 35px 60px -15px rgba(0,0,0,0.3);
-    --tw-shadow-colored: 0 35px 60px -15px var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
-}
-.ring-\\[1\\.7px\\] {
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1.7px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)
-}
-.\\[--scroll-offset\\:56px\\] {
-    --scroll-offset: 56px
+.grid-cols-\\[200rpx_minmax\\(900rpx\\,_1fr\\)_17px\\] {
+  grid-template-columns: 200rpx minmax(900rpx, 1fr) 17px;
 }
 .\\[mask-type\\:luminance\\] {
-    mask-type: luminance
+  mask-type: luminance;
 }
-.before\\:content-\\[\\'hello_world\\'\\]::before {
+.text-\\[length\\:var\\(--step-2\\)\\] {
+  font-size: var(--step-2);
+}
+.text-black\\/\\[0\\.37\\] {
+  color: color-mix(in srgb, #000 37%, transparent);
+  @supports (color: color-mix(in lab, red, red)) {
+    color: color-mix(in oklab, var(--color-black) 37%, transparent);
+  }
+}
+.shadow-\\[0_35px_60px_-15px_rgba\\(0\\,0\\,0\\,0\\.3\\)\\] {
+  --tw-shadow: 0 35px 60px -15px var(--tw-shadow-color, rgba(0,0,0,0.3));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring-\\[1\\.7px\\] {
+  --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1.7px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.\\[--scroll-offset\\:56px\\] {
+  --scroll-offset: 56px;
+}
+.group-\\[\\.is-published\\]\\:block {
+  &:is(:where(.group):is(.is-published) *) {
+    display: block;
+  }
+}
+.group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block {
+  &:is(:nth-of-type(3) :where(.group) *) {
+    display: block;
+  }
+}
+.before\\:content-\\[\\'hello_world\\'\\] {
+  &::before {
     --tw-content: 'hello world';
-    content: var(--tw-content)
+    content: var(--tw-content);
+  }
 }
-.after\\:content-\\[\\'\\[\\'\\]::after {
+.after\\:content-\\[\\'\\[\\'\\] {
+  &::after {
     --tw-content: '[';
-    content: var(--tw-content)
+    content: var(--tw-content);
+  }
 }
-.hover\\:\\[mask-type\\:alpha\\]:hover {
-    mask-type: alpha
-}
-.group.is-published .group-\\[\\.is-published\\]\\:block {
-    display: block
-}
-:nth-of-type(3) .group .group-\\[\\:nth-of-type\\(3\\)_\\&\\]\\:block {
-    display: block
-}
-@media (min-width: 1024px) {
-    .lg\\:\\[--scroll-offset\\:44px\\] {
-        --scroll-offset: 44px
+.hover\\:\\[mask-type\\:alpha\\] {
+  &:hover {
+    @media (hover: hover) {
+      mask-type: alpha;
     }
+  }
 }
-.\\[\\&\\:nth-child\\(3\\)\\]\\:underline:nth-child(3) {
-    text-decoration-line: underline
+.lg\\:\\[--scroll-offset\\:44px\\] {
+  @media (width >= 64rem) {
+    --scroll-offset: 44px;
+  }
 }
-@media (min-width: 1024px) {
-    .lg\\:\\[\\&\\:nth-child\\(3\\)\\]\\:hover\\:underline:hover:nth-child(3) {
-        text-decoration-line: underline
+.\\[\\&\\:nth-child\\(3\\)\\]\\:underline {
+  &:nth-child(3) {
+    text-decoration-line: underline;
+  }
+}
+.lg\\:\\[\\&\\:nth-child\\(3\\)\\]\\:hover\\:underline {
+  @media (width >= 64rem) {
+    &:nth-child(3) {
+      &:hover {
+        @media (hover: hover) {
+          text-decoration-line: underline;
+        }
+      }
     }
+  }
 }
-@media(any-hover:hover) {
-    .\\[\\@media\\(any-hover\\:hover\\)\\{\\&\\:hover\\}\\]\\:opacity-100:hover {
-        opacity: 1
-    }
+.\\[\\@supports\\(display\\:grid\\)\\]\\:grid {
+  @supports (display:grid) {
+    display: grid;
+  }
 }
-@supports(display:grid) {
-    .\\[\\@supports\\(display\\:grid\\)\\]\\:grid {
-        display: grid
+@property --tw-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-inset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-inset-ring-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-inset-ring-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-ring-inset {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-ring-offset-width {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --tw-ring-offset-color {
+  syntax: "*";
+  inherits: false;
+  initial-value: #fff;
+}
+@property --tw-ring-offset-shadow {
+  syntax: "*";
+  inherits: false;
+  initial-value: 0 0 #0000;
+}
+@property --tw-content {
+  syntax: "*";
+  initial-value: "";
+  inherits: false;
+}
+@layer properties {
+  @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
+    *, ::before, ::after, ::backdrop {
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+      --tw-content: "";
     }
+  }
 }"
 `;
 
 exports[`tailwind complex syntax output > generates wxss selectors for complex syntax corpus > wxss 1`] = `
-".w-_bcalc_p100_v_-_17px_P_B {
-    width: calc(100% - 17px)
+"
+    view,text,::before,::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: 0 solid;
+      --tw-shadow: 0 0 rgba(0,0,0,0);
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 rgba(0,0,0,0);
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: initial;
+      --tw-ring-shadow: 0 0 rgba(0,0,0,0);
+      --tw-inset-ring-color: initial;
+      --tw-inset-ring-shadow: 0 0 rgba(0,0,0,0);
+      --tw-ring-inset: initial;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 rgba(0,0,0,0);
+      --tw-content: "";
+    }
+page,.tw-root,wx-root-portal-content,:host {
+  --color-black: #000;
+}
+view,text,::after,::before {
+  box-sizing: border-box;
+  border: 0 solid;
+  margin: 0;
+  padding: 0;
+}
+.w-_bcalc_p100_v_-_17px_P_B {
+  width: calc(100% - 17px);
 }
 .grid-cols-_b200rpx_minmax_p900rpx_m_1fr_P_17px_B {
-    grid-template-columns: 200rpx minmax(900rpx, 1fr) 17px
-}
-.text-_blength_cvar_p--step-2_P_B {
-    font-size: var(--step-2)
-}
-.text-black_f_b0_d37_B {
-    color: rgba(0, 0, 0, 0.37)
-}
-.shadow-_b0_35px_60px_-15px_rgba_p0_m0_m0_m0_d3_P_B {
-    --tw-shadow: 0 35px 60px -15px rgba(0,0,0,0.3);
-    --tw-shadow-colored: 0 35px 60px -15px var(--tw-shadow-color);
-    box-shadow: var(--tw-ring-offset-shadow, 0 0 rgba(0,0,0,0)), var(--tw-ring-shadow, 0 0 rgba(0,0,0,0)), var(--tw-shadow)
-}
-.ring-_b1_d7px_B {
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1.7px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 rgba(0,0,0,0))
-}
-._b--scroll-offset_c56px_B {
-    --scroll-offset: 56px
+  grid-template-columns: 200rpx minmax(900rpx, 1fr) 17px;
 }
 ._bmask-type_cluminance_B {
-    mask-type: luminance
+  mask-type: luminance;
 }
+.text-_blength_cvar_p--step-2_P_B {
+  font-size: var(--step-2);
+}
+.text-black_f_b0_d37_B {
+  color: rgba(0, 0, 0, 0.37);
+}
+.shadow-_b0_35px_60px_-15px_rgba_p0_m0_m0_m0_d3_P_B {
+  --tw-shadow: 0 35px 60px -15px var(--tw-shadow-color, rgba(0,0,0,0.3));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), 0 35px 60px -15px rgba(0,0,0,0.3);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+.ring-_b1_d7px_B {
+  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(1.7px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
+._b--scroll-offset_c56px_B {
+  --scroll-offset: 56px;
+}
+.group.is-published view.group-_b_dis-published_B_cblock,.group.is-published text.group-_b_dis-published_B_cblock {
+    display: block;
+  }
+:nth-of-type(3) .group view.group-_b_cnth-of-type_p3_P__n_B_cblock {
+    display: block;
+  }
+:nth-of-type(3) .group text.group-_b_cnth-of-type_p3_P__n_B_cblock {
+    display: block;
+  }
 .before_ccontent-_b_ahello_world_a_B::before {
     --tw-content: 'hello world';
-    content: var(--tw-content)
-}
+    content: 'hello world';
+    content: var(--tw-content);
+  }
 .after_ccontent-_b_a_b_a_B::after {
     --tw-content: '[';
-    content: var(--tw-content)
+    content: '[';
+    content: var(--tw-content);
+  }
+@media (min-width: 64rem) {
+.lg_c_b--scroll-offset_c44px_B {
+    --scroll-offset: 44px;
 }
-.group.is-published .group-_b_dis-published_B_cblock {
-    display: block
-}
-:nth-of-type(3) .group .group-_b_cnth-of-type_p3_P__n_B_cblock {
-    display: block
-}
-@media (min-width: 1024px) {
-    .lg_c_b--scroll-offset_c44px_B {
-        --scroll-offset: 44px
-    }
-}
+  }
 ._b_n_cnth-child_p3_P_B_cunderline:nth-child(3) {
-            text-decoration-line: underline
+            text-decoration-line: underline;
+  }
+@supports (display:grid) {
+._b_tsupports_pdisplay_cgrid_P_B_cgrid {
+    display: grid;
 }
-@supports(display:grid) {
-    ._b_tsupports_pdisplay_cgrid_P_B_cgrid {
-        display: grid
-    }
-}"
+  }"
 `;

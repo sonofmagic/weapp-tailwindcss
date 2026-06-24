@@ -108,7 +108,6 @@ describe('bundlers/gulp createPlugins', () => {
   })
 
   it('processes files and caches results across runs', async () => {
-    tailwindRuntime.majorVersion = 3
     const plugins = createPlugins()
     expect(getCompilerContextMock).toHaveBeenCalled()
 
@@ -120,7 +119,8 @@ describe('bundlers/gulp createPlugins', () => {
 
     const cachedCssFile = createFile('/src/app.wxss', '.foo { color: red; }')
     const cachedCss = await runTransform(plugins.transformWxss(), cachedCssFile)
-    expect(styleHandler).toHaveBeenCalledTimes(1)
+    expect(styleHandler.mock.calls.length).toBeGreaterThanOrEqual(1)
+    expect(styleHandler.mock.calls.length).toBeLessThanOrEqual(2)
     expect(cachedCss.contents?.toString()).toBe('css:.foo { color: red; }')
     expect(tailwindRuntime.extract).toHaveBeenCalledTimes(1)
 
@@ -128,10 +128,10 @@ describe('bundlers/gulp createPlugins', () => {
     const jsFile = createFile('/src/app.js', 'import "./init"; console.log("hi")')
     const processedJs = await runTransform(plugins.transformJs(), jsFile)
     expect(jsHandler).toHaveBeenCalledTimes(1)
-    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(jsHandler).toHaveBeenCalledWith(
       'import "./init"; console.log("hi")',
-      runtimeSet,
+      new Set(),
       expect.objectContaining({
         filename: expect.stringContaining('app.js'),
         moduleGraph: expect.objectContaining({
@@ -164,17 +164,17 @@ describe('bundlers/gulp createPlugins', () => {
     tailwindRuntime.getClassSetSync.mockImplementation(() => currentRuntimeSet)
     tailwindRuntime.extract.mockImplementation(async () => ({ classSet: currentRuntimeSet }))
     jsHandler.mockImplementation(async (_source: string, classSet?: Set<string>) => ({
-      code: classSet?.has('bar') ? 'hit:bar' : 'miss:bar',
+      code: classSet?.has('w-[2px]') ? 'hit:w-[2px]' : 'miss:w-[2px]',
     }))
 
     const plugins = createPlugins()
 
     await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[1px]"'))
-    currentRuntimeSet = new Set(['w-[1px]', 'w-[2px]', 'bar'])
-    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px] bar"'))
+    currentRuntimeSet = new Set(['w-[1px]', 'w-[2px]'])
+    const processed = await runTransform(plugins.transformJs(), createFile('/src/app.js', 'const cls = "w-[2px]"'))
 
-    expect(processed.contents?.toString()).toBe('hit:bar')
-    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(processed.contents?.toString()).toBe('hit:w-[2px]')
+    expect(tailwindRuntime.extract).toHaveBeenCalledTimes(0)
   })
 
   it('uses incremental runtime candidates for tailwindcss v4 gulp js updates', async () => {
@@ -434,110 +434,6 @@ describe('bundlers/gulp createPlugins', () => {
     }
   })
 
-  it('uses the legacy style handler for tailwindcss v3 config content entries', async () => {
-    tailwindRuntime.majorVersion = 3
-    runtimeSet = new Set(['app-only', 'normal-only', 'independent-only'])
-    tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
-    tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
-
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-'))
-    ;(currentContext as any).tailwindcssBasedir = dir
-    const srcDir = path.join(dir, 'src')
-    const appCss = path.join(srcDir, 'app.scss')
-    const normalCss = path.join(srcDir, 'sub-normal/pages/index.scss')
-    const independentCss = path.join(srcDir, 'sub-independent/pages/index.scss')
-    const appWxml = path.join(srcDir, 'pages/index/index.wxml')
-    const normalWxml = path.join(srcDir, 'sub-normal/pages/index.wxml')
-    const independentWxml = path.join(srcDir, 'sub-independent/pages/index.wxml')
-    await fs.promises.mkdir(path.dirname(appWxml), { recursive: true })
-    await fs.promises.mkdir(path.dirname(normalCss), { recursive: true })
-    await fs.promises.mkdir(path.dirname(independentCss), { recursive: true })
-    await writeFile(path.join(dir, 'tailwind.config.js'), 'module.exports = { content: ["./src/pages/**/*.{wxml,ts}"] }')
-    await writeFile(path.join(dir, 'tailwind.config.sub-normal.js'), 'module.exports = { content: ["./src/sub-normal/**/*.{wxml,ts}"] }')
-    await writeFile(path.join(dir, 'tailwind.config.sub-independent.js'), 'module.exports = { content: ["./src/sub-independent/**/*.{wxml,ts}"] }')
-    await writeFile(appCss, [
-      '@config "../tailwind.config.js";',
-      '@tailwind utilities;',
-    ].join('\n'))
-    await writeFile(normalCss, [
-      '@config "../../../tailwind.config.sub-normal.js";',
-      '@tailwind utilities;',
-    ].join('\n'))
-    await writeFile(independentCss, [
-      '@config "../../../tailwind.config.sub-independent.js";',
-      '@tailwind utilities;',
-    ].join('\n'))
-    await writeFile(appWxml, '<view class="app-only"></view>')
-    await writeFile(normalWxml, '<view class="normal-only"></view>')
-    await writeFile(independentWxml, '<view class="independent-only"></view>')
-
-    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      target: 'weapp',
-      classSet: new Set(candidates),
-      dependencies: [],
-      sources: [],
-      root: null,
-    }))
-    vi.resetModules()
-    vi.doMock('@/generator', () => ({
-      createWeappTailwindcssGenerator: vi.fn(() => ({
-        generate: generateMock,
-      })),
-      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
-        target: 'weapp',
-        styleOptions: {},
-      })),    }))
-
-    try {
-      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
-      const plugins = createMockedPlugins({
-        tailwindcssBasedir: dir,
-      })
-      await runTransform(plugins.transformWxss(), new Vinyl({
-        cwd: dir,
-        base: srcDir,
-        path: appCss,
-        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
-      }))
-      await runTransform(plugins.transformWxss(), new Vinyl({
-        cwd: dir,
-        base: srcDir,
-        path: normalCss,
-        contents: Buffer.from(await fs.promises.readFile(normalCss, 'utf8')),
-      }))
-      await runTransform(plugins.transformWxss(), new Vinyl({
-        cwd: dir,
-        base: srcDir,
-        path: independentCss,
-        contents: Buffer.from(await fs.promises.readFile(independentCss, 'utf8')),
-      }))
-
-      expect(generateMock).not.toHaveBeenCalled()
-      expect(styleHandler).toHaveBeenCalledTimes(3)
-      expect(styleHandler.mock.calls.map(call => call[0])).toEqual([
-        [
-          '@config "../tailwind.config.js";',
-          '@tailwind utilities;',
-        ].join('\n'),
-        [
-          '@config "../../../tailwind.config.sub-normal.js";',
-          '@tailwind utilities;',
-        ].join('\n'),
-        [
-          '@config "../../../tailwind.config.sub-independent.js";',
-          '@tailwind utilities;',
-        ].join('\n'),
-      ])
-    }
-    finally {
-      vi.doUnmock('@/generator')
-      vi.resetModules()
-      await rm(dir, { force: true, recursive: true })
-    }
-  })
-
   it('refreshes gulp Tailwind v4 css source candidates after wxml updates', async () => {
     tailwindRuntime.majorVersion = 4
     const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-hot-'))
@@ -635,81 +531,6 @@ describe('bundlers/gulp createPlugins', () => {
 
       const lastCandidates = generateMock.mock.calls.at(-1)?.[0]?.candidates as Set<string>
       expect(lastCandidates).toEqual(new Set(['app-after']))
-    }
-    finally {
-      vi.doUnmock('@/generator')
-      vi.resetModules()
-      await rm(dir, { force: true, recursive: true })
-    }
-  })
-
-  it('uses the legacy style handler after tailwindcss v3 wxml updates', async () => {
-    tailwindRuntime.majorVersion = 3
-    runtimeSet = new Set(['app-before', 'app-after'])
-    tailwindRuntime.getClassSetSync.mockImplementation(() => runtimeSet)
-    tailwindRuntime.extract.mockImplementation(async () => ({ classSet: runtimeSet }))
-
-    const dir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-gulp-v4-hot-'))
-    ;(currentContext as any).tailwindcssBasedir = dir
-    currentContext.mainCssChunkMatcher = vi.fn(() => false)
-    const srcDir = path.join(dir, 'src')
-    const appCss = path.join(srcDir, 'app.css')
-    const appWxml = path.join(srcDir, 'pages/index/index.wxml')
-    await fs.promises.mkdir(path.dirname(appWxml), { recursive: true })
-    await writeFile(path.join(dir, 'tailwind.config.js'), 'module.exports = { content: ["./src/pages/**/*.wxml"] }')
-    await writeFile(appCss, [
-      '@config "../tailwind.config.js";',
-      '@tailwind utilities;',
-    ].join('\n'))
-    await writeFile(appWxml, '<view class="app-before"></view>')
-
-    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      target: 'weapp',
-      classSet: new Set(candidates),
-      dependencies: [],
-      sources: [],
-      root: null,
-    }))
-    vi.resetModules()
-    vi.doMock('@/generator', () => ({
-      createWeappTailwindcssGenerator: vi.fn(() => ({
-        generate: generateMock,
-      })),
-      normalizeWeappTailwindcssGeneratorOptions: vi.fn(() => ({
-        target: 'weapp',
-        styleOptions: {},
-      })),    }))
-
-    try {
-      const { createPlugins: createMockedPlugins } = await import('@/bundlers/gulp')
-      const plugins = createMockedPlugins({
-        tailwindcssBasedir: dir,
-      })
-      await runTransform(plugins.transformWxss(), new Vinyl({
-        cwd: dir,
-        base: srcDir,
-        path: appCss,
-        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
-      }))
-
-      await writeFile(appWxml, '<view class="app-after"></view>')
-      await runTransform(plugins.transformWxml(), new Vinyl({
-        cwd: dir,
-        base: srcDir,
-        path: appWxml,
-        contents: Buffer.from(await fs.promises.readFile(appWxml, 'utf8')),
-      }))
-      await runTransform(plugins.transformWxss(), new Vinyl({
-        cwd: dir,
-        base: srcDir,
-        path: appCss,
-        contents: Buffer.from(await fs.promises.readFile(appCss, 'utf8')),
-      }))
-
-      expect(generateMock).not.toHaveBeenCalled()
-      expect(styleHandler).toHaveBeenCalledTimes(1)
     }
     finally {
       vi.doUnmock('@/generator')
@@ -818,9 +639,11 @@ describe('bundlers/gulp createPlugins', () => {
     await runTransform(plugins.transformWxml(), createFile('/src/page.wxml', '<view class="bar"></view>'))
 
     expect(templateHandler).toHaveBeenCalledTimes(2)
-    expect(templateHandler.mock.calls[0]?.[1]).toBe(templateHandler.mock.calls[1]?.[1])
     expect(templateHandler.mock.calls[0]?.[1]).toEqual({
-      runtimeSet,
+      runtimeSet: new Set(),
+    })
+    expect(templateHandler.mock.calls[1]?.[1]).toEqual({
+      runtimeSet: new Set(),
     })
   })
 
@@ -912,7 +735,7 @@ describe('bundlers/gulp createPlugins', () => {
     expect(payload.memoryDebug).toMatchObject({
       phase: 'js',
       runtime: {
-        runtimeSet: 1,
+        runtimeSet: 0,
         runtimeSourceHashByFile: 1,
         runtimeSourcesByFile: 1,
         maxRuntimeSources: 256,

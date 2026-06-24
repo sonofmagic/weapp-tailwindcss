@@ -48,10 +48,10 @@ const routeLinks: RouteItem[] = [
     icon: 'icon-[mdi--numeric-4-box-outline]',
   },
   {
-    href: 'https://v4.tw.icebreaker.top/',
-    label: 'v3 旧版文档',
-    description: 'Tailwind CSS 3 项目请使用 weapp-tailwindcss@4。',
-    icon: 'icon-[mdi--source-branch]',
+    href: '/docs/quick-start/install',
+    label: '安装依赖',
+    description: '使用 tailwindcss@4 与 weapp-tailwindcss 初始化项目。',
+    icon: 'icon-[mdi--package-variant-closed]',
   },
   {
     href: '/docs/api/interfaces/UserDefinedOptions',

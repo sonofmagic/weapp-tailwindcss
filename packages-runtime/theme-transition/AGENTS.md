@@ -27,7 +27,7 @@
 - 修改 `tailwindcss` 插件时，至少覆盖：
   - 各 `darkMode` 策略；
   - 非法 selector 告警分支；
-  - Tailwind v3/v4 的兼容调用路径。
+  - Tailwind CSS 4 的插件调用路径。
 
 ## 推荐验证命令
 

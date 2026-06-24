@@ -16,12 +16,12 @@ function createMockRuntime(
   const runtime: TailwindcssRuntimeLike = {
     packageInfo: {
       name: 'tailwindcss',
-      version: '3.4.19',
+      version: '4.2.4',
       rootPath: '/tmp/tailwindcss',
       packageJsonPath: '/tmp/tailwindcss/package.json',
       packageJson: {},
     } as any,
-    majorVersion: 3,
+    majorVersion: 4,
     getClassSet: vi.fn(async () => fallbackSet),
     getClassSetSync: vi.fn(() => syncSet),
     extract: vi.fn(async () => ({
@@ -56,10 +56,10 @@ describe('tailwindcss runtime class set collection', () => {
     expect(collected).toBe(freshExtractedSet)
     expect(collected.has('2xl:text-[red]')).toBe(true)
     expect(runtime.extract).toHaveBeenCalledTimes(1)
-    expect(runtime.getClassSetSync).toHaveBeenCalledTimes(1)
+    expect(runtime.getClassSetSync).not.toHaveBeenCalled()
   })
 
-  it('keeps empty extract result when force collecting v3 to avoid stale sync cache pollution', async () => {
+  it('falls back when force collecting v4 returns an empty extract result', async () => {
     const syncSet = new Set(['bg-[length:200rpx_100rpx]'])
     const extractedSet = new Set<string>()
     const runtime = createMockRuntime({
@@ -73,7 +73,7 @@ describe('tailwindcss runtime class set collection', () => {
       skipRefresh: true,
     })
 
-    expect(collected).toBe(extractedSet)
+    expect(collected).toBe(syncSet)
     expect(runtime.extract).toHaveBeenCalledTimes(1)
     expect(runtime.getClassSetSync).toHaveBeenCalledTimes(1)
   })

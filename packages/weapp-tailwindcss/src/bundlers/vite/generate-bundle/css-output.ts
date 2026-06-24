@@ -1,4 +1,5 @@
 import type { InternalUserDefinedOptions } from '@/types'
+import { existsSync, realpathSync } from 'node:fs'
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
@@ -10,6 +11,29 @@ export const CSS_SOURCE_OUTPUT_EXT_RE = /\.(?:css|less|sass|scss|styl|stylus|pcs
 const SOURCE_STYLE_NON_CSS_SYNTAX_RE = /(?:^|\n)\s*(?:\/\/|\$[\w-]+\s*:|@(?:use|forward|mixin|include|function)\b)/
 const FALLBACK_STYLE_OUTPUT_EXTENSION = '.css'
 const COMMON_MINI_PROGRAM_STYLE_OUTPUT_EXTENSIONS = ['.wxss', '.acss', '.ttss', '.qss', '.jxss', '.tyss']
+
+function resolveCssOutputRealPath(value: string) {
+  const resolved = path.resolve(value)
+  let current = resolved
+  const pendingSegments: string[] = []
+  while (!existsSync(current)) {
+    const parent = path.dirname(current)
+    if (parent === current) {
+      return resolved
+    }
+    pendingSegments.unshift(path.basename(current))
+    current = parent
+  }
+  try {
+    const realPath = realpathSync.native(current)
+    return pendingSegments.length > 0
+      ? path.join(realPath, ...pendingSegments)
+      : realPath
+  }
+  catch {
+    return resolved
+  }
+}
 
 function normalizeStyleOutputExtension(value: string | undefined) {
   if (typeof value !== 'string' || value.trim().length === 0) {
@@ -86,7 +110,12 @@ function resolveStyleOutputFileFromFiles(
     }
     const outputStem = cleanFile.slice(0, -extension.length)
     const outputStemSuffix = `/${outputStem}`
-    if (outputStem === cleanStem || outputStem.endsWith(stemSuffix) || cleanStem.endsWith(outputStemSuffix)) {
+    if (
+      outputStem === cleanStem
+      || outputStem.endsWith(stemSuffix)
+      || cleanStem.endsWith(outputStemSuffix)
+      || cleanStem.endsWith(`/${outputStem}`)
+    ) {
       matchedFiles.add(cleanFile)
     }
   }
@@ -107,7 +136,9 @@ export function resolveMiniProgramStyleOutputExtension(options: {
 }
 
 export function resolveReplayCssOutputFile(rootDir: string, file: string) {
-  const nextFile = path.isAbsolute(file) ? path.relative(rootDir, file) : file
+  const nextFile = path.isAbsolute(file)
+    ? path.relative(resolveCssOutputRealPath(rootDir), resolveCssOutputRealPath(file))
+    : file
   const normalizedFile = normalizeOutputPathKey(nextFile)
   if (
     normalizedFile.length === 0

@@ -31,14 +31,14 @@ It is designed for:
 
 - Using Tailwind CSS in WeChat, Alipay, Douyin, and other mini program environments.
 - Sharing atomic CSS conventions across `uni-app` / `uni-app x`, Taro, Mpx, native mini programs, weapp-vite, and related stacks.
-- Handling mini program class escaping, selector compatibility, rpx arbitrary values, CSS fallbacks, and H5/Web output differences in Tailwind CSS v3/v4 projects.
+- Handling mini program class escaping, selector compatibility, rpx arbitrary values, CSS fallbacks, and H5/Web output differences in Tailwind CSS v4 projects.
 - Building multi-platform apps that target mini programs, H5/Web, and App WebViews.
 
 ## Current Support
 
 | Area              | Support                                                                                    |
 | ----------------- | ------------------------------------------------------------------------------------------ |
-| Tailwind CSS      | Tailwind CSS v3 and v4                                                                     |
+| Tailwind CSS      | Tailwind CSS v4                                                                            |
 | Build tools       | Vite, Webpack 5, Rspack, Rollup, Rolldown, Gulp, and Node API                              |
 | Frameworks        | uni-app / uni-app x, Taro, Mpx, native mini programs, weapp-vite, and related integrations |
 | Output targets    | Mini programs, H5/Web, App WebView, and related platform differences                       |
@@ -75,9 +75,7 @@ It is designed for:
 | -------------------------------- | ----------------------------------------------------------------------------- |
 | `@weapp-tailwindcss/runtime`     | Shared runtime layer for escape/unescape, caching, and rpx transforms         |
 | `@weapp-tailwindcss/merge`       | Mini program runtime wrapper for Tailwind Merge v3                            |
-| `@weapp-tailwindcss/merge-v3`    | Mini program runtime wrapper for Tailwind Merge v2, targeting Tailwind CSS v3 |
 | `@weapp-tailwindcss/variants`    | Mini program runtime wrapper for tailwind-variants                            |
-| `@weapp-tailwindcss/variants-v3` | Variants wrapper for the Tailwind CSS v3 ecosystem                            |
 | `@weapp-tailwindcss/cva`         | Mini program runtime wrapper for class-variance-authority                     |
 | `@weapp-tailwindcss/typography`  | Mini program adapted version of Tailwind Typography                           |
 | `theme-transition`               | Theme transition runtime and Tailwind plugin                                  |
@@ -96,7 +94,7 @@ npx skills add sonofmagic/skills --skill weapp-tailwindcss
 It is useful for:
 
 - Setting up `uni-app` / `uni-app x`, Taro, or native mini program projects.
-- Choosing the right Tailwind CSS v3/v4 configuration path.
+- Choosing the right Tailwind CSS v4 configuration path.
 - Troubleshooting missing classes, rpx arbitrary values, JS string classes, and `space-x/space-y` behavior.
 - Producing integration steps with validation and rollback guidance.
 

@@ -3,7 +3,7 @@ import type { RememberedCssSource } from './types'
 import type { InternalUserDefinedOptions } from '@/types'
 import { hasBundlerGeneratedCssMarker, parseBundlerGeneratedCssMarkerBlocks } from '../../shared/generated-css-marker'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
-import { resolveViteCssPipelineOutputFile } from './css-output'
+import { CSS_SOURCE_OUTPUT_EXT_RE, resolveViteCssPipelineOutputFileFromSourceFile } from './css-output'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 import { scoreMatchingStyleFileBase } from './style-matching'
 
@@ -142,16 +142,28 @@ export function collectRememberedCssReplayGroups(
 ) {
   const groups = new Map<string, Array<{ key: string, remembered: RememberedCssSource }>>()
   for (const [key, remembered] of sources ?? []) {
-    const outputFile = resolveViteCssPipelineOutputFile(
-      remembered.outputFile,
-      opts,
-      rootDir,
-      isWebGeneratorTarget,
-      preserveCssExtension,
-      sourceRoot,
-      styleOutputExtension,
-      styleOutputFiles,
-    )
+    const cleanSourceFile = remembered.sourceFile.replace(/[?#].*$/, '')
+    const outputFile = CSS_SOURCE_OUTPUT_EXT_RE.test(cleanSourceFile)
+      ? resolveViteCssPipelineOutputFileFromSourceFile(
+          remembered.sourceFile,
+          opts,
+          rootDir,
+          isWebGeneratorTarget,
+          preserveCssExtension,
+          sourceRoot,
+          styleOutputExtension,
+          styleOutputFiles,
+        )
+      : resolveViteCssPipelineOutputFileFromSourceFile(
+          remembered.outputFile,
+          opts,
+          rootDir,
+          isWebGeneratorTarget,
+          preserveCssExtension,
+          sourceRoot,
+          styleOutputExtension,
+          styleOutputFiles,
+        )
     const outputKey = normalizeOutputPathKey(outputFile)
     const group = groups.get(outputKey) ?? []
     group.push({ key, remembered })

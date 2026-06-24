@@ -53,12 +53,11 @@ describe('tailwindcss/v4/config', () => {
     expect(logger.warn.mock.calls[0][0]).toContain('cssEntries')
   })
 
-  it('skips warning for non-v4 runtimes', async () => {
+  it('skips warning when runtime is missing', async () => {
     const ctx = createCtx()
-    const runtime = createRuntime(3)
     const { warnMissingCssEntries } = await loadModule()
 
-    warnMissingCssEntries(ctx, runtime)
+    warnMissingCssEntries(ctx, undefined)
 
     expect(logger.warn).not.toHaveBeenCalled()
   })

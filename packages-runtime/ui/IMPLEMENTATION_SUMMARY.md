@@ -279,7 +279,7 @@ interface ButtonProps extends Partial<ButtonVariants> {
 
 5. **其他测试** (11个用例)
    - Variants helpers
-   - Tailwind CSS 3 加载
+   - Tailwind CSS 4 加载
    - Atomic 样式生成
 
 ## 文档产出

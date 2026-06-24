@@ -5,6 +5,44 @@ import { collectUniAppXHarmonyApplyStyleSources, collectUniAppXHarmonyApplyUtili
 import { annotateCssSourceTrace, createCssTokenSourceMap } from '../../shared/css-source-trace'
 import { generateTailwindV4Css } from '../../shared/v4-generation-core'
 
+function appendCss(baseCss: string, css: string) {
+  if (baseCss.length === 0) {
+    return css
+  }
+  if (css.length === 0) {
+    return baseCss
+  }
+  return `${baseCss}\n${css}`
+}
+
+function injectHarmonyCssIntoMainAsset(
+  bundle: Record<string, OutputAsset | OutputChunk>,
+  cssSources: string[],
+  onUpdate: GenerateBundleContext['opts']['onUpdate'],
+  debug: GenerateBundleContext['debug'],
+) {
+  const output = bundle['main.css']
+  if (output?.type !== 'asset' || cssSources.length === 0) {
+    return false
+  }
+  const currentSource = String(output.source)
+  let nextSource = currentSource
+  for (const css of cssSources) {
+    const trimmedCss = css.trim()
+    if (trimmedCss.length === 0 || nextSource.includes(trimmedCss)) {
+      continue
+    }
+    nextSource = appendCss(nextSource, trimmedCss)
+  }
+  if (nextSource === currentSource) {
+    return false
+  }
+  output.source = nextSource
+  onUpdate('main.css', currentSource, nextSource)
+  debug('uni-app-x harmony main css inject')
+  return true
+}
+
 interface HandleUniAppXPostCssOptions {
   bundle: Record<string, OutputAsset | OutputChunk>
   debug: GenerateBundleContext['debug']
@@ -79,6 +117,9 @@ export async function handleUniAppXPostCssTasks(options: HandleUniAppXPostCssOpt
   }
   if (isHarmonyAppStyleTarget && injectUniAppXHarmonyBundleStyles(bundle, { cssSources: viteProcessedCssSources })) {
     debug('uni-app-x harmony bundle styles inject')
+  }
+  if (isHarmonyAppStyleTarget) {
+    injectHarmonyCssIntoMainAsset(bundle, viteProcessedCssSources, onUpdate, debug)
   }
   for (const [file, item] of Object.entries(bundle)) {
     if (item.type !== 'asset' || !file.endsWith('.uvue.ts')) {

@@ -93,12 +93,12 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
 
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call(postPlugin, {} as any, bundle)
-    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(2)
+    expect(currentContext.tailwindRuntime.extract).toHaveBeenCalledTimes(1)
     expect(currentContext.tailwindRuntime.getClassSetSync).not.toHaveBeenCalled()
 
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
       'const answer = "text-[#424242]"',
-      runtimeSet,
+      expect.any(Set),
       expect.objectContaining({
         filename: expect.stringContaining('index.js'),
         moduleGraph: expect.objectContaining({
@@ -110,10 +110,15 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         }),
       }),
     )
+    const firstRuntimeSet = (currentContext.jsHandler as any).mock.calls[0][1] as Set<string>
+    expect(firstRuntimeSet).toEqual(expect.any(Set))
+    expect(firstRuntimeSet.has('uvue')).toBe(true)
+    expect(firstRuntimeSet.has('text-[#424242]')).toBe(true)
+    expect(firstRuntimeSet.has('text-[#565656]')).toBe(true)
     expect((bundle['index.js'] as any).code).toBe('js:const answer = "text-[#424242]"')
     expect(currentContext.jsHandler).toHaveBeenCalledWith(
       'console.log("text-[#565656]")',
-      runtimeSet,
+      expect.any(Set),
       expect.objectContaining({
         filename: expect.stringContaining('index.asset.js'),
         moduleGraph: expect.objectContaining({
@@ -128,6 +133,10 @@ describe('bundlers/vite WeappTailwindcss uni-app-x', () => {
         uniAppX: true,
       }),
     )
+    const secondRuntimeSet = (currentContext.jsHandler as any).mock.calls[1][1] as Set<string>
+    expect(secondRuntimeSet.has('uvue')).toBe(true)
+    expect(secondRuntimeSet.has('text-[#424242]')).toBe(true)
+    expect(secondRuntimeSet.has('text-[#565656]')).toBe(true)
     expect((bundle['index.asset.js'] as OutputAsset).source).toBe('js:console.log("text-[#565656]")')
   }, TEST_TIMEOUT_MS)
 

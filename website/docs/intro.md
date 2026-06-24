@@ -53,7 +53,7 @@ keywords:
 
 ### 👉 [安装依赖](/docs/quick-start/install)
 
-当前文档默认使用 `tailwindcss@4`。如果项目必须继续使用 `tailwindcss@3`，请使用 `weapp-tailwindcss@4` 并查看 [v4 文档站](https://v4.tw.icebreaker.top/)。
+当前文档默认使用 `tailwindcss@4` 与 `weapp-tailwindcss` 当前版本。
 
 ### 👉 [各框架模板](/docs/community/templates)
 

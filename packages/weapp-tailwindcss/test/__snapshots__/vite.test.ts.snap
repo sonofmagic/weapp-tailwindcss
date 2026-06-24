@@ -14,16 +14,14 @@ exports[`vite > v4-vite-plugin > css 1`] = `
     --tw-gradient-to-position: 100%;
   }
 :host,page,.tw-root,wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --color-green-400: #4ade80;
-  --color-sky-400: #38bdf8;
-  --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
+    --color-green-400: #05df72;
+    --color-sky-400: #00bcff;
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
 }
 .bg-_b_h123456_B {
     background-color: #123456;
@@ -113,14 +111,12 @@ exports[`vite > v4-vite-postcss > css 1`] = `
     border: 0 solid;
   }
 :host,page,.tw-root,wx-root-portal-content {
-  --color-gray-200: #e5e7eb;
-  --color-gray-400: #9ca3af;
-  --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
+    --font-sans: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans, sans-serif, "Apple Color Emoji",
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-  --default-font-family: var(--font-sans);
-  --default-mono-font-family: var(--font-mono);
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
 }
 .bg-_b_h123456_B {
     background-color: #123456;

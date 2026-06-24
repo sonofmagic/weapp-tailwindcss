@@ -307,11 +307,12 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     // Tailwind v4 的任意值在 uni-app/Taro 等上游输出里可能已经被转义。
     // HTML/JS 发生运行时相关变更时，优先回到源码扫描刷新集合，避免用旧集合重放主样式产物。
     const forceV4RuntimeRefreshBySource = forceRuntimeRefreshBySource
-    const runtime = isWebGeneratorTarget && !shouldGenerateWebCssByGenerator
+    const runtime = isWebGeneratorTarget
       ? new Set<string>()
       : useBundleRuntimeClassSet
-        ? await ensureBundleRuntimeClassSet(snapshot, envFlags.forceRuntimeRefreshByEnv || forceV4RuntimeRefreshBySource, {
+        ? await ensureBundleRuntimeClassSet(snapshot, envFlags.forceRuntimeRefreshByEnv, {
             allowBaselineOnlyInitialSync: buildCommand,
+            refreshBySource: forceV4RuntimeRefreshBySource,
           })
         : await context.ensureRuntimeClassSet(envFlags.forceRuntimeRefreshByEnv)
     const shouldFilterTailwindV4MiniProgramCandidates = shouldUseMiniProgramCssBranch(generatorBranch)
@@ -319,7 +320,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates
-    const transformRuntime = runtime
+    const transformRuntime = new Set(filteredGeneratorCandidates)
     const generatorRuntime = filteredGeneratorCandidates
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
@@ -528,9 +529,10 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           opts.tailwindcssBasedir,
         )
         if (rememberedCssSources.length > 0) {
-          rememberedCssSources = await Promise.all(rememberedCssSources.map(async remembered =>
-            await refreshRememberedCssSource?.(remembered) ?? remembered,
-          ))
+          rememberedCssSources = await Promise.all(rememberedCssSources.map(async (remembered) => {
+            const refreshed = await refreshRememberedCssSource?.(remembered)
+            return refreshed ?? remembered
+          }))
         }
         let hasUsableRememberedTailwindSource = rememberedCssSources.some(remembered =>
           hasTailwindGenerationSource(remembered.rawSource)
@@ -775,15 +777,23 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             collectedBundlerGeneratedCssFiles.has(file)
             || hasBundlerGeneratedCssMarker(rawSource)
           )
+        const strippedViteProcessedCss = stripBundlerGeneratedCssMarkers(rawSource)
+        const shouldPreserveStaleGeneratedCssAsset = hasStaleViteProcessedCssSource
+          && shouldPreserveCollectedViteCssAsset
+          && strippedViteProcessedCss.trim().length > 0
+          && !strippedViteProcessedCss.includes('weapp-tailwindcss generator-placeholder')
+          && !strippedViteProcessedCss.includes('vite-placeholder')
+          && !hasTailwindGenerationSource(strippedViteProcessedCss)
+          && !hasTailwindApplyDirective(strippedViteProcessedCss)
         if (
           alreadyProcessedCssAsset
           && !shouldRefreshViteProcessedCssByCandidates
-          && !hasStaleViteProcessedCssSource
+          && (!hasStaleViteProcessedCssSource || shouldPreserveStaleGeneratedCssAsset)
           && !hasRememberedApplySource
           && !shouldRegenerateMainPackageCssWithScopedCandidates
           && (!shouldTrackGeneratorRuntime || shouldPreserveCollectedViteCssAsset)
         ) {
-          const nextCss = stripBundlerGeneratedCssMarkers(rawSource)
+          const nextCss = strippedViteProcessedCss
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
           recordCssAssetResult?.(outputFile, nextCss)
@@ -812,9 +822,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           : trackedGeneratorCandidateSignature
         const cssRuntimeSignature = createCssRuntimeSignature(runtimeSignature, scopedGeneratorCandidateSignature)
         const rememberedCssRuntimeSignature = createRememberedCssRuntimeSignature(cssRuntimeSignature, cssRuntimeAffectingHash)
-        const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.tailwindRuntime.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingSignature}:${scopedGeneratorCandidateSignature}:${sourceTraceSignature}`
-        const cssCacheKey = file
-        const cssHashKey = `${file}:css:${cssRuntimeSignature}:${runtimeState.tailwindRuntime.majorVersion ?? 'unknown'}`
+        const cssSharedCacheKey = `${cssShareScope}:${cssRuntimeSignature}:${runtimeState.tailwindRuntime.majorVersion ?? 'unknown'}:${cssHandlerOptions.isMainChunk ? '1' : '0'}:${cssRuntimeAffectingHash}:${scopedGeneratorCandidateSignature}:${sourceTraceSignature}`
+        const cssCacheKey = outputFile
+        const cssHashKey = `${outputFile}:css:${cssRuntimeSignature}:${runtimeState.tailwindRuntime.majorVersion ?? 'unknown'}`
         const cssLinkedImpactSignature = runtimeLinkedCssFiles.has(file) || runtimeLinkedCssFiles.has(outputFile)
           ? [
               ...[...snapshot.runtimeAffectingChangedByType.html]
@@ -994,6 +1004,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         slowJsAstWarnMs: envFlags.slowJsAstWarnMs,
         timeTask,
         transformRuntime,
+        transformRuntimeSignature,
         uniAppX,
         useIncrementalMode,
       })

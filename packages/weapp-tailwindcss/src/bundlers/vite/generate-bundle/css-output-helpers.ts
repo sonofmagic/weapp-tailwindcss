@@ -32,7 +32,9 @@ export function resolveCssBundleOutputFile(options: {
 }
 
 export function shouldSkipRawSourceStyleAsset(outputFile: string, file: string, rawSource: string) {
-  return outputFile !== file && !canProcessViteSourceStyleAsCss(rawSource, file)
+  return rawSource.trim().length > 0
+    && outputFile !== file
+    && !canProcessViteSourceStyleAsCss(rawSource, file)
 }
 
 export function resolveOutputFileFromMatchedCssSource(options: {
@@ -56,6 +58,9 @@ export function resolveOutputFileFromMatchedCssSource(options: {
     sourceRoot,
   } = options
   if (!sourceFile) {
+    return undefined
+  }
+  if (isWebGeneratorTarget) {
     return undefined
   }
   const outputFile = resolveViteCssPipelineOutputFileFromSourceFile(
@@ -117,7 +122,7 @@ export function hasViteProcessedCssResultForSource(
 export function applyCssResultToBundle(options: {
   assetSourceFile: string
   bundle: Record<string, OutputAsset | OutputChunk>
-  emitOrReplayCssAsset: (file: string, source: string) => void
+  emitOrReplayCssAsset: (file: string, source: string) => OutputAsset | undefined
   file: string
   originalSource: OutputAsset
   outputFile: string
@@ -152,7 +157,10 @@ export function applyCssResultToBundle(options: {
       existingOutput.source = source
     }
     else {
-      emitOrReplayCssAsset(outputFile, source)
+      const replayAsset = emitOrReplayCssAsset(outputFile, source)
+      if (replayAsset) {
+        bundle[outputFile] = replayAsset
+      }
     }
     originalSource.source = importShellSource ?? source
     return
@@ -162,7 +170,10 @@ export function applyCssResultToBundle(options: {
     existingOutput.source = source
   }
   else {
-    emitOrReplayCssAsset(outputFile, source)
+    const replayAsset = emitOrReplayCssAsset(outputFile, source)
+    if (replayAsset) {
+      bundle[outputFile] = replayAsset
+    }
   }
   if (!viteProcessedCssAsset && SOURCE_STYLE_OUTPUT_EXT_RE.test(file)) {
     delete bundle[file]

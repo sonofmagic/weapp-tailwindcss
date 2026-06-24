@@ -770,9 +770,6 @@ export function injectViteProcessedCssIntoMainCssAssets(
       if (css.length === 0) {
         continue
       }
-      if (containsCssAfterMinify(nextCss, css) || filterExistingCssRules(nextCss, css).length === 0) {
-        continue
-      }
       const mergedLayerCss = mergeMarkedUserLayerComponentsCss(nextCss, css)
       if (mergedLayerCss.merged) {
         nextCss = mergedLayerCss.css
@@ -780,6 +777,9 @@ export function injectViteProcessedCssIntoMainCssAssets(
         if (css.length === 0) {
           continue
         }
+      }
+      if (containsCssAfterMinify(nextCss, css) || filterExistingCssRules(nextCss, css).length === 0) {
+        continue
       }
       if (containsCssAfterMinify(nextCss, css)) {
         continue

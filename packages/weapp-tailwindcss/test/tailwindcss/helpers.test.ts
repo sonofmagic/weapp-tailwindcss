@@ -214,7 +214,7 @@ describe('tailwindcss helpers', () => {
     expect(postcssPlugin).not.toContain('@tailwindcss/postcss')
   })
 
-  it('falls back to default tailwind config when project has none', async () => {
+  it('uses Tailwind v4 defaults without creating a fallback config when project has none', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-no-config-'))
     const { createTailwindcssRuntime } = await import('@/tailwindcss')
 
@@ -223,9 +223,8 @@ describe('tailwindcss helpers', () => {
         basedir: tempDir,
       })
       const callArgs = runtime.options as any
-      expect(callArgs.tailwindcss?.config).toBeDefined()
-      expect(typeof callArgs.tailwindcss?.config).toBe('string')
-      expect(path.isAbsolute(callArgs.tailwindcss?.config)).toBe(true)
+      expect(callArgs.tailwindcss?.config).toBeUndefined()
+      expect(callArgs.tailwind?.v4?.css).toBeUndefined()
     }
     finally {
       await rm(tempDir, { recursive: true, force: true })
