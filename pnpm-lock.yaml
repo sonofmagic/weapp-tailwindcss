@@ -2723,6 +2723,9 @@ importers:
 
   packages/postcss:
     dependencies:
+      '@tailwindcss-mangle/engine':
+        specifier: catalog:tailwindcssMangleEngine
+        version: 0.1.0(tailwindcss@4.3.1)
       '@weapp-core/escape':
         specifier: ~8.0.0
         version: 8.0.0
@@ -2765,9 +2768,6 @@ importers:
       tailwindcss-config:
         specifier: workspace:*
         version: link:../tailwindcss-config
-      tailwindcss-patch:
-        specifier: catalog:tailwindcssPatch
-        version: 9.5.0(magicast@0.5.3)(tailwindcss@4.3.1)
     devDependencies:
       '@csstools/css-color-parser':
         specifier: ^4.1.8

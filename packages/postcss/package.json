@@ -75,6 +75,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/postcss-calc": "workspace:^",
     "@weapp-tailwindcss/shared": "workspace:*",
@@ -88,8 +89,7 @@
     "postcss-rule-unit-converter": "^0.2.2",
     "postcss-selector-parser": "~7.1.4",
     "postcss-value-parser": "^4.2.0",
-    "tailwindcss-config": "workspace:*",
-    "tailwindcss-patch": "catalog:tailwindcssPatch"
+    "tailwindcss-config": "workspace:*"
   },
   "devDependencies": {
     "@csstools/css-color-parser": "^4.1.8",

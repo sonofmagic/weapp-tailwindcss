@@ -2,8 +2,8 @@ import type { Root } from 'postcss'
 import { realpathSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import path from 'node:path'
+import { resolveProjectSourceFiles } from '@tailwindcss-mangle/engine'
 import micromatch from 'micromatch'
-import { resolveProjectSourceFiles } from 'tailwindcss-patch'
 
 export interface TailwindSourceEntry {
   base: string

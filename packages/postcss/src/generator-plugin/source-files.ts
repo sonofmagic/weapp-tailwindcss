@@ -2,8 +2,8 @@ import type { Result, Root } from 'postcss'
 import type { TailwindCandidateSource, WeappTailwindcssPostcssPluginOptions } from './types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { extractValidCandidates } from '@tailwindcss-mangle/engine'
 import { loadConfig } from 'tailwindcss-config'
-import { extractValidCandidates } from 'tailwindcss-patch'
 import {
   collectCssInlineSourceCandidates,
   createSourceScanPattern,
