@@ -78,6 +78,17 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
   }))
   const baselineErrors = errors.filter(item => item.version === baselineLabel)
   const currentErrors = errors.filter(item => item.version === currentLabel)
+  const baselineErrorKeys = new Set(baselineErrors.map(item => item.key))
+  const currentErrorKeys = new Set(currentErrors.map(item => item.key))
+  const currentOnlyErrors = currentErrors.filter(item => !baselineErrorKeys.has(item.key))
+  const sharedErrors = currentErrors
+    .filter(item => baselineErrorKeys.has(item.key))
+    .map(current => ({
+      key: current.key,
+      baselineError: baselineErrors.find(item => item.key === current.key)?.error,
+      currentError: current.error,
+    }))
+  const baselineOnlyErrors = baselineErrors.filter(item => !currentErrorKeys.has(item.key))
   const validBuildCompares = compares.filter(item => !item.baselineError && !item.currentError && typeof item.baselineBuild === 'number' && typeof item.currentBuild === 'number')
   const validWatchHmrCompares = compares.filter((item) => {
     return !item.baselineError
@@ -96,6 +107,9 @@ export function buildSummary(raw, baselineLabel, currentLabel) {
     errors,
     baselineErrors,
     currentErrors,
+    currentOnlyErrors,
+    sharedErrors,
+    baselineOnlyErrors,
     averages: {
       buildDeltaPct: average(validBuildCompares.map(item => item.buildDeltaPct)),
       hmrDeltaPct: average(validWatchHmrCompares.map(item => item.hmrDeltaPct)),
@@ -139,6 +153,8 @@ export function toMarkdown(summary, baselineSpec) {
 - Build 稳态中位数平均变化：${fmtPct(summary.averages.buildDeltaPct)}（${summary.averages.buildCompareCount} 项）
 - 真实 watch HMR 稳态中位数平均变化：${fmtPct(summary.averages.hmrDeltaPct)}（${summary.averages.watchHmrCompareCount} 项；fallback-build/unsupported 不参与）
 - 失败项：${summary.errors.length}
+- 当前版本独有失败项：${summary.currentOnlyErrors.length}
+- 基线/当前共同失败项：${summary.sharedErrors.length}
 
 ## 项目矩阵
 
