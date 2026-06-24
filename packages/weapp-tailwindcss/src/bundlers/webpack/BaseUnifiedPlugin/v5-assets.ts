@@ -28,7 +28,7 @@ import { hasTailwindApplyDirective, hasTailwindRootDirectives, parseImportReques
 import { createCssSourceOrderAppend, hasMiniProgramTailwindV4PreflightReset } from '../../shared/generator-css/generation-helpers'
 import { removeGeneratedSelectorCompatCss } from '../../shared/generator-css/legacy-selectors'
 import { scoreTailwindV4CssSourceFileMatch } from '../../shared/generator-css/source-resolver/matching'
-import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../shared/generator-css/user-css'
+import { removeMiniProgramHoverSelectors, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRules, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments } from '../../shared/generator-css/user-css'
 import { emitHmrTiming } from '../../shared/hmr-timing'
 import { resolveOutputSpecifier, toAbsoluteOutputPath } from '../../shared/module-graph'
 import { pushConcurrentTaskFactories, resolveTaskConcurrency } from '../../shared/run-tasks'
@@ -246,7 +246,68 @@ function collectWebpackAssetUserCssMarkers(source: string) {
   for (const match of source.matchAll(/@(?:-[\w-]+-)?keyframes\s+((?:\\.|[-\w\u00A0-\uFFFF])+)/gi)) {
     markers.add(`keyframes:${match[1]}`)
   }
+  try {
+    const root = postcss.parse(source)
+    root.walkRules((rule) => {
+      for (const selector of rule.selectors ?? [rule.selector]) {
+        if (!/(?:^|[^\w-])\.[_a-z\u00A0-\uFFFF\\-]/i.test(selector)) {
+          markers.add(`selector:${selector.trim().replace(/\s+/g, ' ')}`)
+        }
+      }
+      rule.walkDecls((decl) => {
+        if (decl.prop.startsWith('--')) {
+          markers.add(`custom-property:${decl.prop}`)
+        }
+      })
+    })
+    root.walkAtRules('font-face', (rule) => {
+      rule.walkDecls('font-family', (decl) => {
+        markers.add(`font-face:${decl.value.trim()}`)
+      })
+    })
+  }
+  catch {
+  }
   return markers
+}
+
+const WEBPACK_TAILWIND_GENERATED_LAYER_NAMES = new Set(['theme', 'base', 'utilities'])
+
+function parseWebpackCssLayerNames(params: string) {
+  return params
+    .split(',')
+    .map(name => name.trim())
+    .filter(Boolean)
+}
+
+function removeWebpackTailwindGeneratedAssetCss(source: string) {
+  const cleaned = removeTailwindV4GeneratedUserCssArtifacts(source)
+  try {
+    const root = postcss.parse(cleaned)
+    let changed = false
+    root.walkAtRules('layer', (rule) => {
+      const names = parseWebpackCssLayerNames(rule.params)
+      const hasGeneratedLayerName = names.some(name => WEBPACK_TAILWIND_GENERATED_LAYER_NAMES.has(name))
+      const isLayerDeclaration = rule.nodes === undefined
+      if (
+        (isLayerDeclaration && hasGeneratedLayerName)
+        || (names.length > 0 && names.every(name => WEBPACK_TAILWIND_GENERATED_LAYER_NAMES.has(name)))
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    root.walkAtRules((rule) => {
+      if (rule.nodes !== undefined && rule.nodes.length === 0) {
+        rule.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : cleaned
+  }
+  catch {
+    return cleaned
+  }
 }
 
 function collectWebpackCssRuleIdentityMarkers(source: string) {
@@ -1622,8 +1683,11 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const currentAssetLooksGenerated = hasTailwindGeneratedCss(currentRawSource)
                     || hasTailwindGeneratedCssMarkers(currentRawSource)
                   const currentAssetHasBundlerGeneratedMarker = hasBundlerGeneratedCssMarker(currentRawSource)
+                  const currentAssetUserCssSource = currentAssetLooksGenerated
+                    ? removeWebpackTailwindGeneratedAssetCss(currentRawSource)
+                    : currentRawSource
                   const currentAssetHasAdditionalUserCss = currentAssetLooksGenerated
-                    && hasAdditionalWebpackAssetUserCssMarkers(currentRawSource, generatorRawSource)
+                    && hasAdditionalWebpackAssetUserCssMarkers(currentAssetUserCssSource, generatorRawSource)
                   const shouldPreserveGeneratedWebAssetUserCss = isWebGeneratorTarget
                     && currentAssetLooksGenerated
                     && !currentAssetHasBundlerGeneratedMarker
@@ -1636,7 +1700,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     )
                   const currentAssetHasUserCss = (sourceCssProcessed || hasExplicitSourceCssForCurrentAsset) && currentAssetLooksGenerated && !shouldPreserveGeneratedWebAssetUserCss
                     ? currentAssetHasAdditionalUserCss
-                    : shouldUseWebpackAssetAsGeneratorUserCss(currentRawSource, generatorRawSource, {
+                    : shouldUseWebpackAssetAsGeneratorUserCss(currentAssetUserCssSource, generatorRawSource, {
                         processed: sourceCssProcessed || shouldPreserveGeneratedWebAssetUserCss,
                       })
                   const shouldAppendCurrentAssetUserCss = !currentAssetHasBundlerGeneratedMarker
@@ -1646,12 +1710,12 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   const userRawSource = createWebpackGeneratorUserCssSourceAppend(
                     sourceCssProcessed && shouldAppendCurrentAssetUserCss
                       ? {
-                          css: currentRawSource,
+                          css: currentAssetUserCssSource,
                           processed: true,
                         }
                       : shouldAppendCurrentAssetUserCss && currentAssetHasUserCss
                         ? {
-                            css: currentRawSource,
+                            css: currentAssetUserCssSource,
                             processed: currentAssetLooksGenerated,
                           }
                         : undefined,

@@ -1,6 +1,129 @@
 import { describe, expect, it, vi } from 'vitest'
 import { readFile, rm } from 'node:fs/promises'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, getCompilerContextMock, getWebpackLoaderRuntime, isCssImportRewriteLoader, mkdir, mkdtemp, os, path, testState, WeappTailwindcss, writeFile } from './shared'
+
+async function runFinalWebCssAssetRegenerationCase(options: {
+  assetCss: string[]
+  expected: string[]
+  notExpected?: string[] | undefined
+  inlineCandidates?: string | undefined
+}) {
+  const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-web-final-css-'))
+  const cssEntry = path.join(root, 'src/css/tailwind.css')
+  await mkdir(path.dirname(cssEntry), { recursive: true })
+  await writeFile(cssEntry, [
+    '@import "tailwindcss4" source(none);',
+    `@source inline("${options.inlineCandidates ?? 'sr-only flex icon-[mdi--wechat]'}");`,
+  ].join('\n'), 'utf8')
+  testState.currentContext = createContext({
+    generator: {
+      target: 'web',
+    },
+    mainCssChunkMatcher: vi.fn(() => false),
+    styleHandler: vi.fn(async () => {
+      throw new Error('web target should not use mini-program styleHandler')
+    }),
+    tailwindRuntime: {
+      ...createContext().tailwindRuntime,
+      majorVersion: 4,
+      options: {
+        tailwindcss: {
+          cwd: root,
+          packageName: 'tailwindcss4',
+          v4: {
+            cssEntries: [cssEntry],
+          },
+        },
+      },
+    },
+    tailwindcssBasedir: root,
+  } as any)
+  getCompilerContextMock.mockReturnValue(testState.currentContext)
+
+  const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
+  let currentAssetStore: Record<string, string> = {}
+  const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
+    currentAssetStore[file] = source.toString()
+  })
+  const compilation = {
+    compiler: { outputPath: path.join(root, 'build') },
+    chunks: [{ id: 'main', hash: 'hash-final-web-css', files: ['styles.css'] }],
+    hooks: {
+      processAssets: {
+        tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
+          processAssetsCallbacks.push(handler)
+        },
+      },
+    },
+    updateAsset,
+    getAsset(file: string) {
+      const content = currentAssetStore[file]
+      if (content === undefined) {
+        return undefined
+      }
+      return {
+        source: {
+          source: () => content,
+        },
+      }
+    },
+  }
+  const compiler = {
+    webpack: {
+      Compilation: {
+        PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
+      },
+      sources: {
+        ConcatSource: FakeConcatSource,
+      },
+      NormalModule: {
+        getCompilationHooks: vi.fn(() => ({
+          loader: {
+            tap: vi.fn(),
+          },
+        })),
+      },
+    },
+    hooks: {
+      normalModuleFactory: {
+        tap: (_name: string, handler: (factory: any) => void) => {
+          handler({
+            hooks: {
+              beforeResolve: {
+                tap: vi.fn(),
+              },
+            },
+          })
+        },
+      },
+      compilation: {
+        tap: (_name: string, handler: (_compilation: any) => void) => {
+          handler(compilation)
+        },
+      },
+    },
+  }
+
+  const plugin = new WeappTailwindcss()
+  plugin.apply(compiler as any)
+
+  currentAssetStore = {
+    'styles.css': options.assetCss.join('\n'),
+  }
+  await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
+
+  const css = currentAssetStore['styles.css']
+  expect(updateAsset).toHaveBeenCalledWith('styles.css', expect.any(FakeConcatSource))
+  expect(css).toContain('.sr-only')
+  expect(css).toContain('.flex')
+  for (const item of options.expected) {
+    expect(css).toContain(item)
+  }
+  for (const item of options.notExpected ?? ['@tailwind utilities', '@media source(none)', ':not(#\\#)']) {
+    expect(css).not.toContain(item)
+  }
+}
+
 describe('bundlers/webpack WeappTailwindcss / process assets web target', () => {
   setupWebpackV5UnitTest()
   it('skips html and js transforms and preserves final css for web generator target', async () => {
@@ -720,108 +843,10 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
     expect(css).not.toContain(':not(#\\#)')
   })
 
-  it('preserves Docusaurus theme css from final web css asset when regenerating explicit Tailwind v4 cssEntries', async () => {
-    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-webpack-web-docusaurus-final-'))
-    const cssEntry = path.join(root, 'src/css/tailwind.css')
-    await mkdir(path.dirname(cssEntry), { recursive: true })
-    await writeFile(cssEntry, [
-      '@import "tailwindcss4" source(none);',
-      '@source inline("sr-only flex icon-[mdi--wechat]");',
-    ].join('\n'), 'utf8')
-    testState.currentContext = createContext({
-      generator: {
-        target: 'web',
-      },
-      mainCssChunkMatcher: vi.fn(() => false),
-      styleHandler: vi.fn(async () => {
-        throw new Error('web target should not use mini-program styleHandler')
-      }),
-      tailwindRuntime: {
-        ...createContext().tailwindRuntime,
-        majorVersion: 4,
-        options: {
-          tailwindcss: {
-            cwd: root,
-            packageName: 'tailwindcss4',
-            v4: {
-              cssEntries: [cssEntry],
-            },
-          },
-        },
-      },
-      tailwindcssBasedir: root,
-    } as any)
-    getCompilerContextMock.mockReturnValue(testState.currentContext)
-
-    const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
-    let currentAssetStore: Record<string, string> = {}
-    const updateAsset = vi.fn((file: string, source: FakeConcatSource) => {
-      currentAssetStore[file] = source.toString()
-    })
-    const compilation = {
-      compiler: { outputPath: path.join(root, 'build') },
-      chunks: [{ id: 'main', hash: 'hash-docusaurus-final-web-css', files: ['styles.css'] }],
-      hooks: {
-        processAssets: {
-          tapPromise: (_options: unknown, handler: (assets: Record<string, any>) => Promise<void>) => {
-            processAssetsCallbacks.push(handler)
-          },
-        },
-      },
-      updateAsset,
-      getAsset(file: string) {
-        const content = currentAssetStore[file]
-        if (content === undefined) {
-          return undefined
-        }
-        return {
-          source: {
-            source: () => content,
-          },
-        }
-      },
-    }
-    const compiler = {
-      webpack: {
-        Compilation: {
-          PROCESS_ASSETS_STAGE_SUMMARIZE: Symbol('stage'),
-        },
-        sources: {
-          ConcatSource: FakeConcatSource,
-        },
-        NormalModule: {
-          getCompilationHooks: vi.fn(() => ({
-            loader: {
-              tap: vi.fn(),
-            },
-          })),
-        },
-      },
-      hooks: {
-        normalModuleFactory: {
-          tap: (_name: string, handler: (factory: any) => void) => {
-            handler({
-              hooks: {
-                beforeResolve: {
-                  tap: vi.fn(),
-                },
-              },
-            })
-          },
-        },
-        compilation: {
-          tap: (_name: string, handler: (_compilation: any) => void) => {
-            handler(compilation)
-          },
-        },
-      },
-    }
-
-    const plugin = new WeappTailwindcss()
-    plugin.apply(compiler as any)
-
-    currentAssetStore = {
-      'styles.css': [
+  it.each([
+    {
+      label: 'Docusaurus theme variables and custom selectors',
+      assetCss: [
         '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
         '@layer theme, base, components, utilities;',
         '@layer utilities {',
@@ -831,22 +856,87 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
         ':root{--ifm-color-primary:#2563eb}',
         '.navbar{height:var(--ifm-navbar-height)}',
         '.home-hero{display:grid;min-height:calc(100vh - var(--ifm-navbar-height))}',
-      ].join('\n'),
-    }
-    await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
-
-    const css = currentAssetStore['styles.css']
-    expect(updateAsset).toHaveBeenCalledWith('styles.css', expect.any(FakeConcatSource))
-    expect(css).toContain('.sr-only')
-    expect(css).toContain('.flex')
-    expect(css).toContain('.icon-\\[mdi--wechat\\]')
-    expect(css).toContain(':root')
-    expect(css).toContain('--ifm-color-primary')
-    expect(css).toContain('.navbar')
-    expect(css).toContain('.home-hero')
-    expect(css).not.toContain('@tailwind utilities')
-    expect(css).not.toContain('@media source(none)')
-    expect(css).not.toContain(':not(#\\#)')
+      ],
+      expected: [
+        '.icon-\\[mdi--wechat\\]',
+        ':root',
+        '--ifm-color-primary',
+        '.navbar',
+        '.home-hero',
+      ],
+    },
+    {
+      label: 'classless root variables and element selectors',
+      assetCss: [
+        '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
+        '.sr-only{position:absolute;width:1px;height:1px}',
+        ':root{--site-surface:#fff;--site-foreground:#111827}',
+        'html[data-theme="dark"]{--site-surface:#020617}',
+        'body{margin:0;background:var(--site-surface)}',
+        'main > section{scroll-margin-top:4rem}',
+      ],
+      expected: [
+        '--site-surface',
+        'html[data-theme="dark"]',
+        'body',
+        'main > section',
+      ],
+    },
+    {
+      label: 'media query and keyframes from user css',
+      assetCss: [
+        '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
+        '.sr-only{position:absolute;width:1px;height:1px}',
+        '@media (min-width: 996px){.theme-doc-sidebar-container{display:block}}',
+        '@keyframes docs-fade-in{from{opacity:0}to{opacity:1}}',
+        '.theme-doc-markdown{animation:docs-fade-in .2s ease}',
+      ],
+      expected: [
+        '@media (min-width: 996px)',
+        '.theme-doc-sidebar-container',
+        '@keyframes docs-fade-in',
+        '.theme-doc-markdown',
+      ],
+    },
+    {
+      label: 'third-party component css and data url icon styles',
+      assetCss: [
+        '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
+        '.sr-only{position:absolute;width:1px;height:1px}',
+        '.n-button{display:inline-flex;align-items:center}',
+        '.n-button--primary{background:#18a058;color:#fff}',
+        '.van-icon-success{background-image:url("data:image/svg+xml,%3Csvg viewBox=%270 0 16 16%27%3E%3C/svg%3E")}',
+        '.tdesign-popup__mask{position:fixed;inset:0}',
+      ],
+      expected: [
+        '.n-button',
+        '.n-button--primary',
+        '.van-icon-success',
+        'data:image/svg+xml',
+        '.tdesign-popup__mask',
+      ],
+    },
+    {
+      label: 'font-face and custom property only css',
+      assetCss: [
+        '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */',
+        '.sr-only{position:absolute;width:1px;height:1px}',
+        '@font-face{font-family:"InterVariable";src:url("/fonts/inter.woff2") format("woff2");font-display:swap}',
+        ':root{--font-display:"InterVariable",sans-serif}',
+        'h1{font-family:var(--font-display)}',
+      ],
+      expected: [
+        '@font-face',
+        'InterVariable',
+        '--font-display',
+        'h1',
+      ],
+    },
+  ])('preserves $label from final web css asset when regenerating explicit Tailwind v4 cssEntries', async ({ assetCss, expected }) => {
+    await runFinalWebCssAssetRegenerationCase({
+      assetCss,
+      expected,
+    })
   })
 
   it('regenerates web css in processAssets instead of consuming incomplete loader css', async () => {
@@ -1142,18 +1232,27 @@ describe('bundlers/webpack WeappTailwindcss / process assets web target', () => 
       }
       await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
       expect(currentAssetStore['css/app.css']).toContain('.bg-\\[\\#111111\\]')
+      currentAssetStore['css/app.css'] = [
+        currentAssetStore['css/app.css'],
+        '.site-shell{display:grid}',
+        ':root{--site-shell-gap:16px}',
+      ].join('\n')
 
       await writeFile(page, 'export default <div className="bg-[#222222] text-[#fff]"></div>', 'utf8')
       compiler.modifiedFiles = new Set([page])
       await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
       expect(currentAssetStore['css/app.css']).toContain('.bg-\\[\\#222222\\]')
       expect(currentAssetStore['css/app.css']).not.toContain('.bg-\\[\\#111111\\]')
+      expect(currentAssetStore['css/app.css']).toContain('.site-shell')
+      expect(currentAssetStore['css/app.css']).toContain('--site-shell-gap')
 
       await writeFile(page, 'export default <div className="bg-[#333333] text-[#fff]"></div>', 'utf8')
       compiler.modifiedFiles = new Set([page])
       await processAssetsCallbacks[0](createAssetsFromStore(currentAssetStore))
       expect(currentAssetStore['css/app.css']).toContain('.bg-\\[\\#333333\\]')
       expect(currentAssetStore['css/app.css']).not.toContain('.bg-\\[\\#222222\\]')
+      expect(currentAssetStore['css/app.css']).toContain('.site-shell')
+      expect(currentAssetStore['css/app.css']).toContain('--site-shell-gap')
     }
     finally {
       await rm(root, { force: true, recursive: true })
