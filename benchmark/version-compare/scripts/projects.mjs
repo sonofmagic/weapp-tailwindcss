@@ -9,6 +9,10 @@ export const benchmarkProjects = [
     devScript: 'dev',
     injectType: 'wxml-class',
     hmrMode: 'watch',
+    devEnv: {
+      CHOKIDAR_INTERVAL: '50',
+      CHOKIDAR_USEPOLLING: '1',
+    },
   },
   {
     key: 'demo-mpx-tailwindcss-v4__mp-weixin',
