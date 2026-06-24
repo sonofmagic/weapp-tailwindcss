@@ -108,6 +108,7 @@ function spawnPnpmWithEnv(cwd, args, env = {}, stdio = 'pipe') {
 }
 
 const localUrlRE = /(?:Local|Loopback|Listening at):\s*(https?:\/\/\S+)/i
+const devReadyLogRE = /compiled successfully|Compiled successfully|built in [\d.]+m?s?|Build complete|Watching for changes|ready in \d+/i
 
 async function readText(file) {
   try {
@@ -218,6 +219,10 @@ function resolveLoggedBaseUrls(logs, fallbackUrl) {
     }
   }
   return Array.from(urls)
+}
+
+function hasDevReadyLog(logs) {
+  return logs.some(line => devReadyLogRE.test(line))
 }
 
 async function fetchProbeText(url) {
@@ -407,7 +412,7 @@ async function runHmrRounds({
       if (!(await exists(outputPath))) {
         return false
       }
-      if (await statMtimeMs(outputPath) <= initialOutputMtime) {
+      if ((await statMtimeMs(outputPath) <= initialOutputMtime) && !hasDevReadyLog(logs)) {
         return false
       }
       const text = await readText(outputPath)
