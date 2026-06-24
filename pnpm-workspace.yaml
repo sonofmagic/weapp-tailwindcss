@@ -41,7 +41,7 @@ overrides:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.5.0
+    autoprefixer: ^10.5.1
   babelCore7285:
     '@babel/core': ^7.29.7
   babelPresetReact7285:
@@ -208,13 +208,13 @@ catalogs:
   vite724:
     vite: ^7.3.5
   vite8:
-    vite: ^8.0.16
+    vite: ^8.1.0
   vitePluginInspect:
     vite-plugin-inspect: ^11.4.1
   vitePluginReact4:
     '@vitejs/plugin-react': ^4.7.0
   vitePluginReact6:
-    '@vitejs/plugin-react': ^6.0.2
+    '@vitejs/plugin-react': ^6.0.3
   vitePluginVue6:
     '@vitejs/plugin-vue': ^6.0.7
   vitest:
@@ -236,4 +236,4 @@ catalogs:
   weappVite:
     weapp-vite: ^6.17.2
   wrangler:
-    wrangler: ^4.103.0
+    wrangler: ^4.104.0
