@@ -193,6 +193,58 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     )
   })
 
+  it('skips non-css Vue template content that leaks into uni-app css assets', async () => {
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const templateSource = [
+      '<template>',
+      '  <view',
+      '    class="bg-cover"',
+      '    :style="{',
+      '      backgroundImage: `url(${topBgImg})`,',
+      '      paddingTop: `${navigationHeight + topHeight}px`,',
+      '    }"',
+      '  >',
+      '    // marker',
+      '  </view>',
+      '</template>',
+    ].join('\n')
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.wxss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'pages/member-rights.wxss'),
+      styleHandler: vi.fn(async (code: string) => {
+        if (code.includes('<template>')) {
+          throw new Error('template source must not be parsed as css')
+        }
+        return { css: `css:${code}` }
+      }),
+    })
+    setCurrentContext(context)
+
+    const plugins = WeappTailwindcss()
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: process.cwd(),
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/mp-weixin' },
+    } as ResolvedConfig)
+
+    const bundle = {
+      'pages/member-rights.wxss': {
+        ...createRollupAsset(templateSource),
+        fileName: 'pages/member-rights.wxss',
+        originalFileName: path.resolve(process.cwd(), 'src/pages/member-rights.vue'),
+        originalFileNames: [path.resolve(process.cwd(), 'src/pages/member-rights.vue')],
+      },
+    }
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await expect(generateBundle?.call(postPlugin, {} as any, bundle)).resolves.toBeUndefined()
+    expect(context.styleHandler).not.toHaveBeenCalled()
+    expect(bundle['pages/member-rights.wxss']).toBeUndefined()
+  }, TEST_TIMEOUT_MS)
+
   it('generates bundle assets and leverages cache', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const currentContext = createContext({

@@ -259,6 +259,8 @@ describe('bundlers/vite helper modules', () => {
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '')).toBe(false)
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', 'div { color: red; }')).toBe(false)
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '$color: red; .a { color: $color; }')).toBe(true)
+    expect(shouldSkipRawSourceStyleAsset('pages/index.wxss', 'pages/index.wxss', '<template><view>// marker</view></template>', '/repo/src/pages/index.vue')).toBe(true)
+    expect(shouldSkipRawSourceStyleAsset('pages/index.wxss', 'pages/index.wxss', '$color: red; .a { color: $color; }', '/repo/src/pages/index.wxss', file => file.endsWith('.wxss'))).toBe(false)
 
     const fallback = vi.fn((sourceFile?: string) => sourceFile ? `out/${sourceFile}` : undefined)
     const resolve = createMatchedCssSourceOutputResolver({

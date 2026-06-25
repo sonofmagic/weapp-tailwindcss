@@ -505,7 +505,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           resolveOutputFileFromMatchedCssSource: resolveMatchedCssSourceOutputFile,
         })
         activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
-        if (shouldSkipRawSourceStyleAsset(outputFile, file, rawSource)) {
+        if (shouldSkipRawSourceStyleAsset(outputFile, file, rawSource, assetSourceFile, opts.cssMatcher)) {
           delete bundle[file]
           debug('css skip raw source style asset: %s -> %s', file, outputFile)
           continue

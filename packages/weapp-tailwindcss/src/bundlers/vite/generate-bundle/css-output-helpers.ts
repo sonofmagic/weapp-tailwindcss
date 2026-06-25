@@ -1,6 +1,7 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { InternalUserDefinedOptions } from '@/types'
 import { normalizeOutputPathKey } from '@/bundlers/shared/module-graph'
+import { isSourceStyleRequest } from '../../shared/style-requests'
 import { canProcessViteSourceStyleAsCss, resolveViteCssOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, SOURCE_STYLE_OUTPUT_EXT_RE } from './css-output'
 import { createCssImportShell, createRootMiniProgramOriginStyleOutputFile, isRootMiniProgramStyleOutputFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from './root-style-output'
 
@@ -31,10 +32,22 @@ export function resolveCssBundleOutputFile(options: {
   return outputFile
 }
 
-export function shouldSkipRawSourceStyleAsset(outputFile: string, file: string, rawSource: string) {
-  return rawSource.trim().length > 0
-    && outputFile !== file
-    && !canProcessViteSourceStyleAsCss(rawSource, file)
+export function shouldSkipRawSourceStyleAsset(
+  outputFile: string,
+  file: string,
+  rawSource: string,
+  assetSourceFile = file,
+  cssMatcher?: ((file: string) => boolean) | undefined,
+) {
+  const source = rawSource.trim()
+  if (source.length === 0) {
+    return false
+  }
+  if (canProcessViteSourceStyleAsCss(source, file)) {
+    return false
+  }
+  const isKnownStyleSource = isSourceStyleRequest(assetSourceFile) || cssMatcher?.(assetSourceFile) === true
+  return outputFile !== file || !isKnownStyleSource
 }
 
 export function resolveOutputFileFromMatchedCssSource(options: {
