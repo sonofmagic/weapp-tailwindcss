@@ -42,7 +42,9 @@ export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
       tailwindcssBasedir: __dirname,
       cssEntries: [
         // Tailwind CSS 入口文件绝对路径

@@ -152,7 +152,9 @@ module.exports = {
     transformWxml: transformHtml,
     transformWxss: transformCss,
   } = tailwindcssGulp.createPlugins({
-    rem2rpx: true,
+    cssOptions: {
+      rem2rpx: true,
+    },
   })
 
   const config = {

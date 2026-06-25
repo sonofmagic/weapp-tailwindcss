@@ -1,6 +1,6 @@
 ---
 title: "TailwindCssOptions"
-description: "按 Tailwind 版本划分的补丁配置。"
+description: "按 Tailwind 版本划分的运行时配置。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -17,7 +17,7 @@ keywords:
 
 # TailwindCssOptions
 
-按 Tailwind 版本划分的补丁配置。
+按 Tailwind 版本划分的运行时配置。
 
 ## 属性
 
@@ -47,7 +47,7 @@ Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 
 ### version?
 
-> 可选 | **version**: `3 | 4 | 2`
+> 可选 | **version**: `4`
 
 当前项目使用的 Tailwind CSS 主版本。未传入时会从已安装包推断。
 
@@ -83,59 +83,11 @@ Resolve path as posix or win32
 
 ***
 
-### v2?
-
-> 可选 | **v2**: `TailwindV2Options`
-
-Tailwind CSS v2 补丁选项。
-
-#### config?
-
-> 可选 | **config**: `string`
-
-Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
-#### cwd?
-
-> 可选 | **cwd**: `string`
-
-解析 Tailwind 配置相对路径时使用的工作目录。
-#### postcssPlugin?
-
-> 可选 | **postcssPlugin**: `string`
-
-自定义 PostCSS 插件名称。未传入时使用默认名称。
-
-***
-
-### v3?
-
-> 可选 | **v3**: `TailwindV3Options`
-
-Tailwind CSS v3 补丁选项。
-
-#### config?
-
-> 可选 | **config**: `string`
-
-Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
-#### cwd?
-
-> 可选 | **cwd**: `string`
-
-解析 Tailwind 配置相对路径时使用的工作目录。
-#### postcssPlugin?
-
-> 可选 | **postcssPlugin**: `string`
-
-自定义 PostCSS 插件名称。未传入时使用默认名称。
-
-***
-
 ### v4?
 
 > 可选 | **v4**: `TailwindV4Options`
 
-Tailwind CSS v4 补丁选项。
+Tailwind CSS v4 提取与 CSS 入口选项。
 
 #### base?
 
@@ -149,7 +101,7 @@ Tailwind CSS v4 补丁选项。
 直接传给 v4 设计系统的原始 CSS。
 #### cssSources?
 
-> 可选 | **cssSources**: `TailwindV4CssSource[]`
+> 可选 | **cssSources**: `import("@tailwindcss-mangle/engine").TailwindV4CssSource[]`
 
 构建器在 CSS 落盘前捕获的内存 CSS 入口。
 #### cssEntries?

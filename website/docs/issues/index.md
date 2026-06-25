@@ -107,7 +107,9 @@ import uni from '@dcloudio/vite-plugin-uni';
 import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 // vite 插件配置
 const vitePlugins = [uni(),WeappTailwindcss({
-  rem2rpx: true
+  cssOptions: {
+    rem2rpx: true,
+  },
 })];
 
 export default defineConfig({
@@ -125,7 +127,9 @@ const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM ===
 
 WeappTailwindcss({
   disabled: isApp,
-  rem2rpx: true
+  cssOptions: {
+    rem2rpx: true,
+  },
 });
 ```
 
@@ -161,7 +165,7 @@ WeappTailwindcss({
 
 - 组件外层套一层 `<view>` 元素。
 - `virtualHost` 解决方案，在自定义组件中添加 `options: { virtualHost: true }` 即可解决此问题。
-- [`cssChildCombinatorReplaceValue`](/docs/api/options/general#csschildcombinatorreplacevalue) 配置项
+- [`cssOptions.cssChildCombinatorReplaceValue`](/docs/api/options/general#cssoptions) 配置项
 
 ## 使用 uni-app vite vue 注册插件时，发行到 h5 环境出现: [plugin:vite-plugin-uni-app-weapp-tailwindcss-adaptor] 'import' and 'export' may appear only with 'sourceType: "module"' (1:0) 错误
 
@@ -170,7 +174,9 @@ WeappTailwindcss({
 ```js
 import { WeappTailwindcss } from "weapp-tailwindcss/vite";
 const vitePlugins = [uni(), WeappTailwindcss({
-  rem2rpx: true
+  cssOptions: {
+    rem2rpx: true,
+  },
 })];
 ```
 

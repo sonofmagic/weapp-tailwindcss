@@ -69,7 +69,7 @@ Skill 会要求 AI 优先完成这些关键动作：
 - 补齐 `tailwindcss` 与 `weapp-tailwindcss` 最小可用配置
 - 生成模式不再要求 `postinstall`，也不需要手动执行 `weapp-tw patch`
 - 给出“可复制命令 + 可复制配置 + 验证步骤”
-- 对 `space-y-*` / `space-x-*` 问题按固定优先级排查：先改结构，再评估 `virtualHost`，最后扩展 `cssChildCombinatorReplaceValue`
+- 对 `space-y-*` / `space-x-*` 问题按固定优先级排查：先改结构，再评估 `virtualHost`，最后扩展 `cssOptions.cssChildCombinatorReplaceValue`
 
 ## Skill 执行流程（更新）
 
@@ -106,7 +106,7 @@ Skill 输出会强制包含以下项目，避免只给概念不落地：
 
 1. 先改结构：让相邻子节点落在 `view/text`，或外层包一层 `view`
 2. 再评估组件层：自定义组件场景启用 `virtualHost`
-3. 最后改配置：仅在必要时扩展 `cssChildCombinatorReplaceValue`，并保持最小化标签范围
+3. 最后改配置：仅在必要时扩展 `cssOptions.cssChildCombinatorReplaceValue`，并保持最小化标签范围
 
 ## 推荐提示词
 

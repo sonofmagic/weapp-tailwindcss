@@ -37,35 +37,15 @@ weapp-tailwindcss 生成器的调用配置。
 
 ***
 
-### scanSources?
-
-> 可选 | **scanSources**: `boolean | import("tailwindcss-patch").TailwindV4SourcePattern[]`
-
-是否扫描文件系统中的源码入口。
-
-***
-
 ### candidates?
 
 > 可选 | **candidates**: `Iterable<string>`
-
-需要生成的候选 class。
 
 ***
 
 ### sources?
 
-> 可选 | **sources**: `TailwindV3CandidateSource[] & import("tailwindcss-patch").TailwindV4CandidateSource[]`
-
-额外的内联候选来源。
-
-***
-
-### bareArbitraryValues?
-
-> 可选 | **bareArbitraryValues**: `((boolean | { units?: string[]; }) & (boolean | { units?: string[]; }))`
-
-是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`bg-#fff`。
+> 可选 | **sources**: `TailwindV4CandidateSource[]`
 
 ***
 
@@ -74,3 +54,19 @@ weapp-tailwindcss 生成器的调用配置。
 > 可选 | **incrementalCache**: `boolean`
 
 是否启用增量生成缓存。
+
+***
+
+### bareArbitraryValues?
+
+> 可选 | **bareArbitraryValues**: `boolean | { units?: string[]; }`
+
+是否启用 UnoCSS 风格的裸任意值，例如 `p-10%`、`p-2.5px`。
+
+***
+
+### scanSources?
+
+> 可选 | **scanSources**: `boolean | import("@tailwindcss-mangle/engine").TailwindV4SourcePattern[]`
+
+是否扫描文件系统中的源码入口。

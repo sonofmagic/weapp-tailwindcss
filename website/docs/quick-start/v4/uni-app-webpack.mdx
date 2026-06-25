@@ -54,7 +54,9 @@ const config = {
   configureWebpack: (config) => {
     config.plugins.push(
       new WeappTailwindcss({
-        rem2rpx: true,
+        cssOptions: {
+          rem2rpx: true,
+        },
         cssEntries: [
           // Tailwind CSS 入口文件绝对路径
           path.resolve(__dirname, './src/app.css'),

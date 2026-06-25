@@ -38,7 +38,7 @@ export default {
 
 | 能力 | 说明 |
 | --- | --- |
-| 裸任意值生成 | 将 `p-10%`、`bg-#fff`、`text-rgb(255,0,0)` 等候选交给 `tailwindcss-patch` 的 Tailwind CSS v4 引擎处理。 |
+| 裸任意值生成 | 将 `p-10%`、`bg-#fff`、`text-rgb(255,0,0)` 等候选交给 Tailwind CSS v4 运行时生成链路处理。 |
 | class 名称转义 | 继续使用 `weapp-tailwindcss` 现有的 `customReplaceDictionary` 转义链路，例如默认会把 `:`、`[`、`#` 转为小程序安全字符。 |
 
 > 注意：JS 转译仍然遵循 `classNameSet` 精确命中原则，不会对普通字符串做启发式猜测。

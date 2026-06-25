@@ -1,6 +1,6 @@
 ---
 title: "ApplyOptions"
-description: "Tailwind 运行时补丁行为配置。"
+description: "Tailwind 运行时行为配置。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -17,7 +17,7 @@ keywords:
 
 # ApplyOptions
 
-Tailwind 运行时补丁行为配置。
+Tailwind 运行时行为配置。
 
 ## 属性
 
@@ -25,7 +25,7 @@ Tailwind 运行时补丁行为配置。
 
 > 可选 | **overwrite**: `boolean`
 
-是否允许覆盖磁盘上已经打过补丁的文件。
+是否允许覆盖已有运行时缓存或上下文状态。
 
 ***
 
@@ -41,4 +41,4 @@ Tailwind 运行时补丁行为配置。
 
 > 可选 | **extendLengthUnits**: `false | ExtendLengthUnitsOptions`
 
-扩展长度单位补丁，传入 `false` 可完全关闭。
+扩展长度单位支持，传入 `false` 可完全关闭。

@@ -86,7 +86,7 @@ const jsCode = await ctx.transformJs(rawJsCode)
 
 ## `runtimeSet` 的高级覆盖边界
 
-`transformJs` 的核心原则是：只处理 Tailwind 实际生成过的运行时类名。`transformJs(rawJsCode, { runtimeSet })` 仍然保留给测试、自研构建器深度集成和极少数高级覆盖场景，但这个集合应该来自 `getRuntimeSet()`、`tailwindcss-patch` / Tailwind 提取结果，不能把业务 API 路径、页面路由、文件路径等普通字符串手工塞进去。
+`transformJs` 的核心原则是：只处理 Tailwind 实际生成过的运行时类名。`transformJs(rawJsCode, { runtimeSet })` 仍然保留给测试、自研构建器深度集成和极少数高级覆盖场景，但这个集合应该来自 `getRuntimeSet()` 或 Tailwind v4 提取结果，不能把业务 API 路径、页面路由、文件路径等普通字符串手工塞进去。
 
 例如下面的 `order/get_order_amount` 是接口路径，不是 Tailwind class：
 

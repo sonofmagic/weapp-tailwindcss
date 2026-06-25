@@ -38,11 +38,13 @@ keywords:
 
 一个常见场景是 Taro 项目同时使用 `@tarojs/plugin-html`，构建过程中把 Tailwind 的变量初始化区域删掉了。
 
-可以先在 `WeappTailwindcss` 配置里开启：
+可以先在 `WeappTailwindcss` 的 `cssOptions` 里开启：
 
 ```ts
 WeappTailwindcss({
-  injectAdditionalCssVarScope: true,
+  cssOptions: {
+    injectAdditionalCssVarScope: true,
+  },
 })
 ```
 

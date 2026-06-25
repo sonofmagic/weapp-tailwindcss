@@ -21,6 +21,50 @@ weapp-tailwindcss 生成器的输出结果。
 
 ## 属性
 
+### classSet
+
+> **classSet**: `Set<string>`
+
+#### size
+
+> **size**: `number`
+#### __@toStringTag@9625
+
+> **__@toStringTag@9625**: `string`
+
+***
+
+### rawCandidates
+
+> **rawCandidates**: `Set<string>`
+
+#### size
+
+> **size**: `number`
+#### __@toStringTag@9625
+
+> **__@toStringTag@9625**: `string`
+
+***
+
+### dependencies
+
+> **dependencies**: `string[]`
+
+***
+
+### sources
+
+> **sources**: `TailwindV4SourcePattern[]`
+
+***
+
+### root
+
+> **root**: `TailwindV4CompiledSourceRoot`
+
+***
+
 ### css
 
 > **css**: `string`
@@ -50,60 +94,6 @@ Tailwind 原始输出 CSS。
 > 可选 | **incrementalRawCss**: `string`
 
 本次增量新增的 Tailwind 原始 CSS。
-
-***
-
-### classSet
-
-> **classSet**: `Set<string>`
-
-成功生成的 class 集合。
-
-#### size
-
-> **size**: `number`
-#### __@toStringTag@9916
-
-> **__@toStringTag@9916**: `string`
-
-***
-
-### rawCandidates
-
-> **rawCandidates**: `Set<string>`
-
-输入侧的原始候选 class 集合。
-
-#### size
-
-> **size**: `number`
-#### __@toStringTag@9916
-
-> **__@toStringTag@9916**: `string`
-
-***
-
-### dependencies
-
-> **dependencies**: `string[]`
-
-生成依赖的文件列表。
-
-***
-
-### sources
-
-> **sources**: `import("tailwindcss-patch").TailwindV4SourcePattern[] | TailwindV3SourcePattern[]`
-
-Tailwind 配置解析出的扫描规则。
-
-***
-
-### root
-
-> **root**: `import("tailwindcss-patch").TailwindV4CompiledSourceRoot`
-
-v3 生成器没有编译后的 source root，固定为 `null`。
 
 ***
 

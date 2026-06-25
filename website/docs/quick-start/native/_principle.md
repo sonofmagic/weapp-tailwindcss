@@ -18,7 +18,9 @@ const config = {
   // ...
   // highlight-start
   weappTailwindcssOptions: {
-    rem2rpx: true,
+    cssOptions: {
+      rem2rpx: true,
+    },
   },
   // highlight-end
 }

@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-21T21:23:28.907Z",
+  "generatedAt": "2026-06-25T03:47:21.051Z",
   "totals": {
-    "files": 164,
-    "issues": 1
+    "files": 161,
+    "issues": 0
   },
   "coverage": {
     "docs": {
@@ -22,15 +22,6 @@
       "keywords": 1
     }
   },
-  "issueTypes": {
-    "few_keywords": 1
-  },
-  "issues": [
-    {
-      "type": "few_keywords",
-      "file": "migrations/v3.md",
-      "message": "keywords 数量偏少（4）",
-      "scope": "docs"
-    }
-  ]
+  "issueTypes": {},
+  "issues": []
 }

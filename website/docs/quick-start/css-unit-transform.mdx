@@ -1,7 +1,7 @@
 ---
 toc_max_heading_level: 4
 title: CSS 单位转化
-description: 配置 px2rpx 和 unitsToPx，处理小程序、多端和 uni-app x 场景里的单位转换。
+description: 通过 cssOptions 配置 px2rpx 和 unitsToPx，处理小程序、多端和 uni-app x 场景里的单位转换。
 keywords:
   - 快速开始
   - 安装
@@ -21,11 +21,13 @@ keywords:
 
 # CSS 单位转化
 
-最常见的情况是 `rem` 转 `rpx`，直接在 `WeappTailwindcss` 里开 `rem2rpx` 就行：
+最常见的情况是 `rem` 转 `rpx`，直接在 `WeappTailwindcss` 的 `cssOptions` 里开启 `rem2rpx`：
 
 ```js
 WeappTailwindcss({
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
 })
 ```
 
@@ -33,14 +35,16 @@ WeappTailwindcss({
 
 ## px 转 rpx
 
-从 `weapp-tailwindcss@4.3.0` 开始，插件内置了 [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform)。需要 `px` 转 `rpx` 时，直接开 `px2rpx`：
+从 `weapp-tailwindcss@4.3.0` 开始，插件内置了 [`postcss-pxtransform`](https://www.npmjs.com/package/postcss-pxtransform)。需要 `px` 转 `rpx` 时，在 `cssOptions` 中开启 `px2rpx`：
 
 ```js
 // vite
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 WeappTailwindcss({
-  px2rpx: true,
+  cssOptions: {
+    px2rpx: true,
+  },
 })
 ```
 
@@ -49,7 +53,9 @@ WeappTailwindcss({
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
 new WeappTailwindcss({
-  px2rpx: true,
+  cssOptions: {
+    px2rpx: true,
+  },
 })
 ```
 
@@ -59,10 +65,12 @@ new WeappTailwindcss({
 
 ```js
 WeappTailwindcss({
-  px2rpx: {
-    designWidth: 375,
-    deviceRatio: {
-      375: 2,
+  cssOptions: {
+    px2rpx: {
+      designWidth: 375,
+      deviceRatio: {
+        375: 2,
+      },
     },
   },
 })
@@ -72,14 +80,16 @@ WeappTailwindcss({
 
 ## 多单位转 px
 
-`uni-app x` 等场景更适合输出 `px`。这时可以启用 `unitsToPx`，把 `rem`、`em`、`vw`、`vh`、`vmin`、`vmax`、`rpx` 等单位转成 `px`。
+`uni-app x` 等场景更适合输出 `px`。这时可以启用 `cssOptions.unitsToPx`，把 `rem`、`em`、`vw`、`vh`、`vmin`、`vmax`、`rpx` 等单位转成 `px`。
 
 ```js
 // vite
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 WeappTailwindcss({
-  unitsToPx: true,
+  cssOptions: {
+    unitsToPx: true,
+  },
 })
 ```
 
@@ -94,15 +104,17 @@ WeappTailwindcss({
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
 new WeappTailwindcss({
-  unitsToPx: {
-    unitPrecision: 2,
-    unitMap: {
-      rem: 16,
-      rpx: 0.5,
-      vw: 3.75,
+  cssOptions: {
+    unitsToPx: {
+      unitPrecision: 2,
+      unitMap: {
+        rem: 16,
+        rpx: 0.5,
+        vw: 3.75,
+      },
     },
   },
 })
 ```
 
-如果最终想输出 `px`，不要同时开启 `px2rpx` 或 `rem2rpx`。`unitsToPx` 会先转成 `px`，后续还会继续被转成 `rpx`。
+如果最终想输出 `px`，不要同时开启 `cssOptions.px2rpx` 或 `cssOptions.rem2rpx`。`cssOptions.unitsToPx` 会先转成 `px`，后续还会继续被转成 `rpx`。

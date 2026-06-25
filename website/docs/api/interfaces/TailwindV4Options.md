@@ -39,7 +39,7 @@ Tailwind CSS v4 提取配置。
 
 ### cssSources?
 
-> 可选 | **cssSources**: `TailwindV4CssSource[]`
+> 可选 | **cssSources**: `import("@tailwindcss-mangle/engine").TailwindV4CssSource[]`
 
 构建器在 CSS 落盘前捕获的内存 CSS 入口。
 

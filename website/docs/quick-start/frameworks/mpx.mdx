@@ -38,7 +38,9 @@ module.exports = defineConfig({
   configureWebpack(config) {
     config.plugins.push(
       new WeappTailwindcss({
-        rem2rpx: true,
+        cssOptions: {
+          rem2rpx: true,
+        },
         appType: 'mpx',
         cssEntries: [
           path.resolve(__dirname, 'src/app.css'),

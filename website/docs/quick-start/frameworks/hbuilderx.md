@@ -62,7 +62,9 @@ export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
       tailwindcssBasedir: __dirname,
       cssEntries: [
         resolve('src/app.css'),
@@ -79,7 +81,9 @@ const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM ===
 
 WeappTailwindcss({
   disabled: isApp,
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
   tailwindcssBasedir: __dirname,
   cssEntries: [
     resolve("src/app.css"),

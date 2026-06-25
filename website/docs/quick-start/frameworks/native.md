@@ -51,7 +51,9 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 export default defineConfig({
   plugins: [
     WeappTailwindcss({
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
     }),
   ],
 })

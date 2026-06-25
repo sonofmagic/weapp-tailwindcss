@@ -49,7 +49,9 @@ WeappTailwindcss({
 
 ```ts title="推荐"
 WeappTailwindcss({
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
 })
 ```
 
@@ -78,7 +80,9 @@ export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
     }),
   ],
 })
@@ -91,7 +95,9 @@ const isApp = process.env.UNI_PLATFORM === 'app' || process.env.UNI_PLATFORM ===
 
 WeappTailwindcss({
   disabled: isApp,
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
 })
 ```
 
@@ -115,7 +121,9 @@ export default defineConfig({
         cssEntries: [
           path.resolve(__dirname, 'main.css'),
         ],
-        rem2rpx: true,
+        cssOptions: {
+          rem2rpx: true,
+        },
       }),
     ),
   ],
@@ -138,7 +146,9 @@ module.exports = {
     config.plugins.push(
       new WeappTailwindcss({
         appType: 'mpx',
-        rem2rpx: true,
+        cssOptions: {
+          rem2rpx: true,
+        },
       }),
     )
   },
@@ -160,7 +170,9 @@ export default {
           plugin: WeappTailwindcss,
           args: [
             {
-              rem2rpx: true,
+              cssOptions: {
+                rem2rpx: true,
+              },
             },
           ],
         },
@@ -179,7 +191,7 @@ export default {
 - `@tailwindcss/postcss`
 - `@tailwindcss/vite`
 
-如果项目已有 `postcss.config.js`，只保留业务需要的非 Tailwind 插件即可。需要配置现代 CSS 兼容转换时，优先使用 `WeappTailwindcss` 自带的 `cssPresetEnv` 和 `autoprefixer` 选项。
+如果项目已有 `postcss.config.js`，只保留业务需要的非 Tailwind 插件即可。需要配置现代 CSS 兼容转换时，优先使用 `WeappTailwindcss` 自带的 `cssOptions.cssPresetEnv` 和 `cssOptions.autoprefixer` 选项。
 
 ## 现代 CSS 与 App WebView 兼容
 
@@ -187,24 +199,28 @@ export default {
 
 ```ts
 WeappTailwindcss({
-  rem2rpx: true,
-  cssPresetEnv: {
-    browsers: 'chrome >= 50',
+  cssOptions: {
+    rem2rpx: true,
+    cssPresetEnv: {
+      browsers: 'chrome >= 50',
+    },
   },
 })
 ```
 
-`autoprefixer` 默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。如果确实需要关闭，可以显式传入：
+`cssOptions.autoprefixer` 默认启用，用于为小程序 WebView 补齐 `-webkit-` 等兼容前缀，例如让 `bg-clip-text` 输出 `-webkit-background-clip: text`。如果确实需要关闭，可以显式传入：
 
 ```ts
 WeappTailwindcss({
-  autoprefixer: false,
+  cssOptions: {
+    autoprefixer: false,
+  },
 })
 ```
 
 ## CSS 变量计算模式
 
-Tailwind CSS 4 下，如果没有显式配置 `cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。
+Tailwind CSS 4 下，如果没有显式配置 `cssOptions.cssCalc`，插件会默认启用 CSS 变量与 `calc()` 的预计算。
 
 需要注意的是，默认模式只会补充一条预计算声明，不会删除后面的原始 `calc()` 声明。这样可以保持 CSS 级联兼容，但如果目标小程序运行时会优先采用后续 `calc()`，你需要显式指定要清理的 CSS 变量。
 
@@ -220,7 +236,7 @@ page,
 }
 ```
 
-启用默认 `cssCalc` 后会补出预计算结果，并保留原声明：
+启用默认 `cssOptions.cssCalc` 后会补出预计算结果，并保留原声明：
 
 ```css
 page,
@@ -237,7 +253,9 @@ page,
 
 ```ts
 WeappTailwindcss({
-  cssCalc: ['--spacing'],
+  cssOptions: {
+    cssCalc: ['--spacing'],
+  },
 })
 ```
 
@@ -251,9 +269,11 @@ WeappTailwindcss({
 
 ```ts
 WeappTailwindcss({
-  cssCalc: {
-    includeCustomProperties: ['--spacing'],
-    preserve: true,
+  cssOptions: {
+    cssCalc: {
+      includeCustomProperties: ['--spacing'],
+      preserve: true,
+    },
   },
 })
 ```
@@ -262,38 +282,44 @@ WeappTailwindcss({
 
 ```ts
 WeappTailwindcss({
-  cssCalc: [/^--(gap|spacing)$/],
+  cssOptions: {
+    cssCalc: [/^--(gap|spacing)$/],
+  },
 })
 ```
 
-需要关闭 Tailwind CSS 4 默认的 `cssCalc` 时，传入：
+需要关闭 Tailwind CSS 4 默认的 `cssOptions.cssCalc` 时，传入：
 
 ```ts
 WeappTailwindcss({
-  cssCalc: false,
+  cssOptions: {
+    cssCalc: false,
+  },
 })
 ```
 
 ## 多端单位转换
 
-如果同一套代码需要按平台处理单位，优先使用 `unitConversion.platforms`。平台名称会兼容 `weapp`/`mp-weixin`、`h5`/`web`、`app-plus`/`app` 等常见别名；未显式传入 `platform` 时，会从常见构建环境变量推断。
+如果同一套代码需要按平台处理单位，优先使用 `cssOptions.unitConversion.platforms`。平台名称会兼容 `weapp`/`mp-weixin`、`h5`/`web`、`app-plus`/`app` 等常见别名；未显式传入 `cssOptions.platform` 时，会从常见构建环境变量推断。
 
 ```ts
 import { unitConversionComposeRules, unitConversionPresets } from 'weapp-tailwindcss'
 
 WeappTailwindcss({
-  unitConversion: {
-    platforms: {
-      'mp-weixin': {
-        rules: unitConversionComposeRules(
-          unitConversionPresets.pxToRpx({ ratio: 2 }),
-          unitConversionPresets.remToRpx({ rootValue: 16 }),
-        ),
-      },
-      h5: {
-        rules: [
-          unitConversionPresets.rpxToPx({ ratio: 0.5 }),
-        ],
+  cssOptions: {
+    unitConversion: {
+      platforms: {
+        'mp-weixin': {
+          rules: unitConversionComposeRules(
+            unitConversionPresets.pxToRpx({ ratio: 2 }),
+            unitConversionPresets.remToRpx({ rootValue: 16 }),
+          ),
+        },
+        h5: {
+          rules: [
+            unitConversionPresets.rpxToPx({ ratio: 0.5 }),
+          ],
+        },
       },
     },
   },

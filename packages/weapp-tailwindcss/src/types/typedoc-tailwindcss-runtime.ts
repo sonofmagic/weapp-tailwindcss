@@ -89,7 +89,7 @@ export interface ExtendLengthUnitsOptions extends Partial<LengthUnitsRuntimeOpti
  */
 export interface ApplyOptions {
   /**
-   * 是否允许覆盖磁盘上已经打过补丁的文件。
+   * 是否允许覆盖已有运行时缓存或上下文状态。
    */
   overwrite?: boolean
   /**
@@ -153,7 +153,7 @@ export interface TailwindV4Options {
 }
 
 /**
- * 按 Tailwind 版本划分的补丁配置。
+ * 按 Tailwind 版本划分的运行时配置。
  */
 export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
   /**
@@ -169,13 +169,13 @@ export interface TailwindCssOptions extends TailwindRuntimeOptionsBase {
    */
   resolve?: PackageResolvingOptions
   /**
-   * Tailwind CSS v4 补丁选项。
+   * Tailwind CSS v4 提取与 CSS 入口选项。
    */
   v4?: TailwindV4Options
 }
 
 /**
- * Tailwind CSS 补丁运行器的根配置。
+ * Tailwind CSS 运行时根配置。
  */
 export interface TailwindCssRuntimeOptions {
   /**
@@ -187,7 +187,7 @@ export interface TailwindCssRuntimeOptions {
    */
   tailwindcss?: TailwindCssOptions
   /**
-   * 补丁行为开关。
+   * 运行时行为开关。
    */
   apply?: ApplyOptions
   /**

@@ -72,7 +72,9 @@ export default defineConfig({
   plugins: [
     WeappTailwindcss({
       // 常用内置能力：开启 px 自动转换
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
     }),
   ],
 })

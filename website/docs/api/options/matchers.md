@@ -2,7 +2,7 @@
 title: "🧩 文件匹配"
 sidebar_label: "🧩 文件匹配"
 sidebar_position: 2
-description: "🧩 文件匹配：6 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
+description: "🧩 文件匹配：7 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -17,7 +17,7 @@ keywords:
   - "插件参数"
 ---
 
-本页收录 6 个配置项，来源于 `UserDefinedOptions`。
+本页收录 7 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
@@ -26,6 +26,7 @@ keywords:
 | [htmlMatcher](#htmlmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的 `wxml` 等模板文件。 |
 | [cssMatcher](#cssmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的 `wxss` 等样式文件。 |
 | [jsMatcher](#jsmatcher) | <code>(name: string) => boolean</code> | — | 匹配需要处理的编译后 `js` 文件。 |
+| [transform](#transform) | <code>TransformOptions</code> | — | 控制哪些源码模块或产物需要进入 `weapp-tailwindcss` 转译流程。 |
 | [mainCssChunkMatcher](#maincsschunkmatcher) | <code>(name: string, appType?: AppType) => boolean</code> | — | 声明负责承载 Tailwind CSS 全局变量作用域的 CSS Bundle。 |
 | [wxsMatcher](#wxsmatcher) | <code>(name: string) => boolean</code> | <code>()=>false</code> | 匹配各端的 `wxs`/`sjs`/`.filter.js` 文件。 |
 | [inlineWxs](#inlinewxs) | <code>boolean</code> | <code>false</code> | 是否转义 `wxml` 中的内联 `wxs`。 |
@@ -79,6 +80,28 @@ keywords:
 #### 返回
 
 `boolean`
+
+### transform
+
+> 可选 | 类型: `TransformOptions`
+
+控制哪些源码模块或产物需要进入 `weapp-tailwindcss` 转译流程。
+
+#### 备注
+
+该配置只影响 `weapp-tailwindcss` 的 HTML/CSS/JS 转译，不影响 Tailwind CSS `@source`/content token 扫描。
+Vite 构建中 JS chunk 会基于 Rollup `moduleIds`/`modules` 判断源码模块；当一个 JS chunk 不满足 `include` 或所有源码模块都命中 `exclude` 时，跳过该 chunk 的 JS AST 转译。
+HTML/CSS asset 会优先基于 Rollup `originalFileName`/`originalFileNames` 判断，缺失时使用输出文件名兜底。
+`exclude` 优先级高于 `include`；多来源产物只有全部来源都命中 `exclude` 时才整体跳过。
+
+#### 示例
+
+```ts
+transform: {
+  include: ['src/**.{wxml,js,ts,vue,css,scss}'],
+  exclude: ['src/generated/**', /\/openapi\//],
+}
+```
 
 ### mainCssChunkMatcher
 

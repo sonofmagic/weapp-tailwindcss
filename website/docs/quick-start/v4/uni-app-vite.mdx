@@ -44,7 +44,9 @@ export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
     }),
   ],
 });

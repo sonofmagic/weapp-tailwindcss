@@ -62,7 +62,9 @@ export default defineConfig({
         cssEntries: [
           path.resolve(__dirname, 'main.css'),
         ],
-        rem2rpx: true,
+        cssOptions: {
+          rem2rpx: true,
+        },
       }),
     ),
   ],

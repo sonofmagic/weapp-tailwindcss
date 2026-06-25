@@ -498,7 +498,7 @@ function buildPropertyDoc(symbol: MorphSymbol): PropertyDoc | undefined {
     optional,
   )
   const jsDoc = readJsDoc(declaration)
-  if (jsDoc.tags.ignore || jsDoc.tags.internal) {
+  if (jsDoc.tags.ignore || jsDoc.tags.internal || jsDoc.tags.deprecated) {
     return undefined
   }
 

@@ -54,7 +54,9 @@ export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
-      rem2rpx: true,
+      cssOptions: {
+        rem2rpx: true,
+      },
     }),
   ],
 })
@@ -67,7 +69,9 @@ export default defineConfig({
 import path from 'node:path'
 
 WeappTailwindcss({
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
   cssEntries: [
     path.resolve(__dirname, 'src/app.css'),
   ],

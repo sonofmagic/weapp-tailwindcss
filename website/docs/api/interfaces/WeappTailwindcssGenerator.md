@@ -39,19 +39,19 @@ weapp-tailwindcss 统一生成器实例。
 
 ***
 
-### source
+### loadDesignSystem()
 
-> **source**: `import("tailwindcss-patch").TailwindV4ResolvedSource`
+> **loadDesignSystem()**: `() => Promise<TailwindV4DesignSystem>`
 
-解析后的 Tailwind CSS 4 source。
+#### 返回
+
+`Promise<TailwindV4DesignSystem>`
 
 ***
 
 ### validateCandidates()
 
-> **validateCandidates()**: `((candidates: Iterable<string>) => Promise<Set<string>>) | ((candidates: Iterable<string>) => Promise<Set<string>>)`
-
-校验候选 class，并返回 Tailwind 能识别的集合。
+> **validateCandidates()**: `(candidates: Iterable<string>) => Promise<Set<string>>`
 
 #### 参数
 
@@ -62,3 +62,36 @@ weapp-tailwindcss 统一生成器实例。
 #### 返回
 
 `Promise<Set<string>>`
+
+***
+
+### source
+
+> **source**: `TailwindV4ResolvedSource`
+
+解析后的 Tailwind v4 source。
+
+#### base
+
+> **base**: `string`
+#### baseFallbacks
+
+> **baseFallbacks**: `string[]`
+#### css
+
+> **css**: `string`
+#### dependencies
+
+> **dependencies**: `string[]`
+#### cwd?
+
+> 可选 | **cwd**: `string`
+#### projectRoot
+
+> **projectRoot**: `string`
+#### cssSources?
+
+> 可选 | **cssSources**: `import("@tailwindcss-mangle/engine").TailwindV4CssSource[]`
+#### sources?
+
+> 可选 | **sources**: `TailwindV4SourcePattern[]`

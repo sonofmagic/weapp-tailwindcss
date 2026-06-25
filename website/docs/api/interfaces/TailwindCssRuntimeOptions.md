@@ -1,6 +1,6 @@
 ---
-title: "TailwindCssPatchOptions"
-description: "Tailwind CSS 补丁运行器的根配置。"
+title: "TailwindCssRuntimeOptions"
+description: "Tailwind CSS 运行时根配置。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -9,15 +9,15 @@ keywords:
   - "小程序"
   - "tailwindcss"
   - "微信小程序"
-  - "TailwindCssPatchOptions"
-  - "TailwindCssPatchOptions 接口"
-  - "TailwindCssPatchOptions 类型定义"
+  - "TailwindCssRuntimeOptions"
+  - "TailwindCssRuntimeOptions 接口"
+  - "TailwindCssRuntimeOptions 类型定义"
   - "TypeScript"
 ---
 
-# TailwindCssPatchOptions
+# TailwindCssRuntimeOptions
 
-Tailwind CSS 补丁运行器的根配置。
+Tailwind CSS 运行时根配置。
 
 ## 属性
 
@@ -52,7 +52,7 @@ Tailwind 配置文件路径。自动识别不够准确时可以显式传入。
 自定义 PostCSS 插件名称。未传入时使用默认名称。
 #### version?
 
-> 可选 | **version**: `3 | 4 | 2`
+> 可选 | **version**: `4`
 
 当前项目使用的 Tailwind CSS 主版本。未传入时会从已安装包推断。
 #### packageName?
@@ -65,21 +65,11 @@ Tailwind 包名。项目使用分支包时可以改这里。
 > 可选 | **resolve**: `PackageResolvingOptions`
 
 传给 `local-pkg` 的包解析配置。
-#### v2?
-
-> 可选 | **v2**: `TailwindV2Options`
-
-Tailwind CSS v2 补丁选项。
-#### v3?
-
-> 可选 | **v3**: `TailwindV3Options`
-
-Tailwind CSS v3 补丁选项。
 #### v4?
 
 > 可选 | **v4**: `TailwindV4Options`
 
-Tailwind CSS v4 补丁选项。
+Tailwind CSS v4 提取与 CSS 入口选项。
 
 ***
 
@@ -87,13 +77,13 @@ Tailwind CSS v4 补丁选项。
 
 > 可选 | **apply**: `ApplyOptions`
 
-补丁行为开关。
+运行时行为开关。
 
 #### overwrite?
 
 > 可选 | **overwrite**: `boolean`
 
-是否允许覆盖磁盘上已经打过补丁的文件。
+是否允许覆盖已有运行时缓存或上下文状态。
 #### exposeContext?
 
 > 可选 | **exposeContext**: `boolean | ExposeContextOptions`
@@ -103,7 +93,7 @@ Tailwind CSS v4 补丁选项。
 
 > 可选 | **extendLengthUnits**: `false | ExtendLengthUnitsOptions`
 
-扩展长度单位补丁，传入 `false` 可完全关闭。
+扩展长度单位支持，传入 `false` 可完全关闭。
 
 ***
 

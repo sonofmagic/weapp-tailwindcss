@@ -24,6 +24,6 @@ keywords:
 
 默认情况下， `weapp-tailwindcss` 会把 `*` 选择器转化成 `view,text` 的选择器
 
-这个配置可以通过 `cssSelectorReplacement.universal` 进行更改，从而适配更多标签。
+这个配置可以通过 `cssOptions.cssSelectorReplacement.universal` 进行更改，从而适配更多标签。
 
-详见 [cssSelectorReplacement.universal 文档](/docs/api/options/important#cssselectorreplacement)
+详见 [`cssOptions`](/docs/api/options/general#cssoptions)

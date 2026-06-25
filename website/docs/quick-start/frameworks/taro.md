@@ -64,7 +64,9 @@ const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 // import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 
 const weappTailwindcssOptions = {
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
   tailwindcssBasedir: process.cwd(),
 }
 
@@ -105,7 +107,9 @@ function registerWeappTailwindcss(chain) {
 const path = require('node:path')
 
 const weappTailwindcssOptions = {
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
   tailwindcssBasedir: process.cwd(),
   cssEntries: [
     path.resolve(__dirname, '../src/app.css'),
@@ -167,10 +171,12 @@ const baseConfig: UserConfigExport<'vite'> = {
     type: 'vite',
     vitePlugins: [
       WeappTailwindcss({
-        // rem转rpx
-        rem2rpx: true,
-        // Taro Vite 可能移除 Tailwind CSS 变量，需要重新注入变量作用域
-        injectAdditionalCssVarScope: true,
+        cssOptions: {
+          // rem转rpx
+          rem2rpx: true,
+          // Taro Vite 可能移除 Tailwind CSS 变量，需要重新注入变量作用域
+          injectAdditionalCssVarScope: true,
+        },
       })
     ] as Plugin[] // 从 vite 引入 type, 为了智能提示
   },

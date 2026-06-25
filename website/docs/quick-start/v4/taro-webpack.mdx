@@ -67,7 +67,9 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
             plugin: WeappTailwindcss,
             args: [{
               // 这里可以传参数
-              rem2rpx: true,
+              cssOptions: {
+                rem2rpx: true,
+              },
               tailwindcssBasedir: process.cwd(),
             }],
           },
@@ -89,7 +91,9 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 import path from 'node:path'
 
 args: [{
-  rem2rpx: true,
+  cssOptions: {
+    rem2rpx: true,
+  },
   tailwindcssBasedir: process.cwd(),
   cssEntries: [
     path.resolve(__dirname, '../src/app.css'),

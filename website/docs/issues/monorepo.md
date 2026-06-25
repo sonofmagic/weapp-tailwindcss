@@ -33,7 +33,9 @@ const config = {
           plugin: WeappTailwindcss,
           args: [
             {
-              rem2rpx: true,
+              cssOptions: {
+                rem2rpx: true,
+              },
               // highlight-next-line
               tailwindcssBasedir: path.resolve(__dirname, '../'),
             },
@@ -56,7 +58,9 @@ const config = {
           plugin: WeappTailwindcss,
           args: [
             {
-              rem2rpx: true,
+              cssOptions: {
+                rem2rpx: true,
+              },
               // highlight-next-line
               cssEntries: [
                 // app.css 的路径

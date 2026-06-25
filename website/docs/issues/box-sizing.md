@@ -31,8 +31,10 @@ keywords:
 ```js
 WeappTailwindcss({
   // 添加这一行配置即可
-  cssPreflight: {
-    'box-sizing': false,
+  cssOptions: {
+    cssPreflight: {
+      'box-sizing': false,
+    },
   },
 }),
 ```
@@ -43,6 +45,6 @@ WeappTailwindcss({
 
 ## 参考文档
 
-https://tw.icebreaker.top/docs/api/interfaces/UserDefinedOptions#csspreflight
+https://tw.icebreaker.top/docs/api/options/general#cssoptions
 
 https://github.com/sonofmagic/weapp-tailwindcss/issues/604
