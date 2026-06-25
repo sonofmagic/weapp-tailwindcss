@@ -54,7 +54,7 @@ export default defineConfig({
 ```
 
 `weapp-tailwindcss@5` 默认启用生成模式，不需要再注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss`。如果项目已有 `postcss.config.js`，可以继续保留业务自己的 PostCSS 插件，但请移除 Tailwind 官方生成插件。
-常规 weapp-vite 项目会自动识别 `app.css` 这类 Tailwind CSS 入口。只有多入口、入口没有被 Vite 引入、自动识别失败等场景，才需要手动配置 `cssEntries`。
+常规 weapp-vite 项目会自动识别已经被构建器引入的 `app.css` 这类 Tailwind CSS 入口。只有多入口、自动识别失败或自定义构建链无法稳定发现入口等场景，才需要手动配置 `cssEntries`。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过项目入口实际引入。
 
 ## 添加样式
 

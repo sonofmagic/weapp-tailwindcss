@@ -49,7 +49,7 @@ Tailwind CSS v4 提取配置。
 
 > 可选 | **cssEntries**: `string[]`
 
-需要扫描 `@config` 指令的 CSS 入口文件。
+Tailwind CSS 4 入口文件列表，用于补充识别入口中的 `@import "tailwindcss"`、`@source` 与 `@config`。入口 CSS 仍然需要被项目实际 import 或纳入构建图，`cssEntries` 不会替代框架生成该 CSS 资产。
 
 ***
 

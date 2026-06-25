@@ -44,6 +44,8 @@ keywords:
 
 Tailwind 4 的入口只放在纯 `.css` 文件里，不要直接写进 `scss`、`less`、`sass` 入口。VS Code IntelliSense 需要时，可以把 `tailwindCSS.experimental.configFile` 指向这个 CSS 文件。
 
+入口 CSS 仍然要被项目实际引入，例如在 `src/App.vue` 的全局 `<style>` 中 `@import "./app.css";`。`cssEntries` 是给 `weapp-tailwindcss` 的入口识别配置，不会替代 HBuilderX / uni-app 把该 CSS 文件纳入构建图。
+
 ### vite.config.[tj]s
 
 注册 `WeappTailwindcss` 时传入入口 CSS 的绝对路径：
@@ -72,6 +74,12 @@ export default defineConfig({
     })
   ],
 })
+```
+
+```vue title="src/App.vue"
+<style>
+@import "./app.css";
+</style>
 ```
 
 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果 App 构建不希望插件参与，可以只针对 App 目标显式禁用：

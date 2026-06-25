@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-25T03:47:01.382Z",
+  "generatedAt": "2026-06-25T08:29:40.054Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 161,
@@ -4020,7 +4020,7 @@
       "id": "doc:quick-start/v4/taro-vite",
       "title": "Taro vite",
       "description": "在项目目录下的 src/app.css 中，添加以下内容：",
-      "summary": "入口没有被引入、多入口、自动识别失败时，再补这一项：",
+      "summary": "多入口、自动识别失败或自定义构建链无法稳定发现入口时，再补这一项。cssEntries 只负责补充识别，入口 CSS 仍然要通过 Taro 入口实际引入：",
       "url": "/docs/quick-start/v4/taro-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/taro-vite",
       "keywords": [

@@ -187,7 +187,7 @@ const baseConfig: UserConfigExport<'vite'> = {
 
 Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 Tailwind 官方生成插件注册到 PostCSS 或 Vite 配置里。`src/app.css` 按上方写 Tailwind 4 入口。
 
-常规 Taro Vite 项目也可以自动识别被引入的 `src/app.css`。只有入口没有被引入、多入口、自动识别失败时，再按 Webpack 那段补 `cssEntries`。
+常规 Taro Vite 项目也可以自动识别被引入的 `src/app.css`。只有多入口、自动识别失败或自定义构建链无法稳定发现入口时，再按 Webpack 那段补 `cssEntries`。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过 Taro 入口实际引入。
 
 `TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: process.env.TARO_ENV === 'h5'`。如果 RN 或 Harmony 构建不希望插件参与，可以只针对这些目标显式设置 `disabled`。
 

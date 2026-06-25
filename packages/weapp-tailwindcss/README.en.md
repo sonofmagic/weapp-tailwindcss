@@ -7,3 +7,5 @@ This is the core package that brings Tailwind CSS to mini program ecosystems, ha
 ## Website
 
 For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).
+
+For Tailwind CSS 4 projects, the entry CSS must still be imported by the application. Configure `cssEntries` when the plugin needs an explicit hint, but do not treat it as a replacement for importing the CSS entry into the build graph.

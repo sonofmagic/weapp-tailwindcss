@@ -60,7 +60,7 @@ export default defineConfig({
 ```
 
 生成模式会接管 Tailwind CSS 生成和小程序转译，不需要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
-常规 weapp-vite 项目会自动识别被引入的 Tailwind CSS 入口；多入口、入口未被 Vite 引入或自动识别失败时，再手动配置 `cssEntries`。
+常规 weapp-vite 项目会自动识别已经被项目引入的 Tailwind CSS 入口；多入口、自动识别失败或自定义构建链无法稳定发现入口时，再手动配置 `cssEntries`。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过项目入口实际引入。
 
 Tailwind CSS 4 的入口 CSS：
 

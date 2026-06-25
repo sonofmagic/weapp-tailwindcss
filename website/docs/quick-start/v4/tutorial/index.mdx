@@ -80,7 +80,7 @@ export default defineConfig({
 })
 ```
 
-常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口。只有多入口、入口未被 Vite 引入、自动识别失败等场景，才需要手动配置 `cssEntries`。
+常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口。只有多入口、自动识别失败或自定义构建链无法稳定发现入口等场景，才需要手动配置 `cssEntries`。`cssEntries` 不是替代 import 的开关，入口 CSS 仍然要通过框架的全局样式入口或业务入口文件被实际引入。
 
 ## 步骤三：检查 PostCSS 配置
 
@@ -133,7 +133,7 @@ export default defineConfig({
 运行框架命令（如 `pnpm dev:weapp` 或 `pnpm run build -- --watch`），查看开发者工具中的页面是否渲染出预期样式。如果没有：
 
 - 确认 `@source` 是否包含当前文件扩展名
-- 确认入口 CSS 是否被构建器引入；多入口或自动识别失败时，再检查 `cssEntries` 是否指向正确路径
+- 确认入口 CSS 是否被构建器引入；多入口或自动识别失败时，再检查 `cssEntries` 是否指向已经被项目引入的入口 CSS
 - 若在单文件组件内使用 `@apply`，确保添加了 `@reference`
 
 ## 常见下一步

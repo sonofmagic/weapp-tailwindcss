@@ -60,7 +60,7 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 > 常规 Taro Vite 项目会自动识别被引入的 `src/app.css`，可以不写 `cssEntries`。
 > 这里说的是 Tailwind CSS 4：`cssEntries` 请指向纯 `.css` 文件，不要指向 `scss` / `less` / `sass`。业务 Sass/Less 可以继续用，但 Tailwind 4 的 `@import "tailwindcss"` 入口建议单独放在 CSS 文件里。
 
-入口没有被引入、多入口、自动识别失败时，再补这一项：
+多入口、自动识别失败或自定义构建链无法稳定发现入口时，再补这一项。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过 Taro 入口实际引入：
 
 ```js
 import path from 'node:path'
