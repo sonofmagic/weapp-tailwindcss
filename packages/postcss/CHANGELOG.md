@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.1.2
+
+### Patch Changes
+
+- 🐛 **新增 Web 端 Tailwind CSS v4 产物兼容降级配置，可通过 `generator.webCompat` 移除或降级 `@theme`、`@layer`、`@property`、现代颜色函数与相关 `@supports`，以适配更多 Android/iOS WebView 场景。** [`9ce2cd5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9ce2cd590ea2a373f4372d499a10ed8a2d333d0c) by @sonofmagic
+
 ## 3.1.1
 
 ### Patch Changes
