@@ -1,9 +1,19 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { argv, cwd, env, exit } from 'node:process'
+import { argv, cwd, env, exit, stderr, stdout } from 'node:process'
 
 const prereleaseTags = new Set(['alpha', 'beta', 'rc', 'next'])
+const transientChangesetVersionErrorPatterns = [
+  /Failed to parse data from GitHub/i,
+  /Invalid response body/i,
+  /Premature close/i,
+  /ECONNRESET/i,
+  /ETIMEDOUT/i,
+  /EAI_AGAIN/i,
+  /fetch failed/i,
+  /socket hang up/i,
+]
 
 function parseArgs(args) {
   const options = {
@@ -77,6 +87,61 @@ function run(command, args, options) {
   }
 }
 
+function runWithRetry(command, args, options, retryOptions) {
+  const text = commandToText(command, args)
+  const retries = retryOptions.retries ?? 0
+
+  if (options.dryRun) {
+    console.log(`[dry-run] retry ${retries} ${text}`)
+    run(command, args, options)
+    return
+  }
+
+  let lastStatus = 1
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    console.log(`$ ${text}${attempt > 0 ? ` (retry ${attempt}/${retries})` : ''}`)
+    const result = spawnSync(command, args, {
+      encoding: 'utf8',
+      env,
+    })
+
+    if (result.stdout) {
+      stdout.write(result.stdout)
+    }
+    if (result.stderr) {
+      stderr.write(result.stderr)
+    }
+    if (result.error) {
+      throw result.error
+    }
+    if (result.status === 0) {
+      return
+    }
+
+    lastStatus = result.status ?? 1
+    const output = `${result.stdout ?? ''}\n${result.stderr ?? ''}`
+    const canRetry = attempt < retries && retryOptions.shouldRetry(output, lastStatus)
+    if (!canRetry) {
+      exit(lastStatus)
+    }
+
+    console.warn(`changeset version 遇到临时错误，准备重试 (${attempt + 1}/${retries})`)
+  }
+
+  exit(lastStatus)
+}
+
+function shouldRetryChangesetVersion(output) {
+  return transientChangesetVersionErrorPatterns.some(pattern => pattern.test(output))
+}
+
+function runChangesetVersion(options) {
+  runWithRetry('pnpm', ['changeset', 'version'], options, {
+    retries: 2,
+    shouldRetry: output => shouldRetryChangesetVersion(output),
+  })
+}
+
 function getCurrentBranch(options) {
   if (options.branch) {
     return options.branch
@@ -125,7 +190,7 @@ function enterPreMode(tag, options) {
 
 function publishLatest(options) {
   if (options.phase === 'version') {
-    run('pnpm', ['changeset', 'version'], options)
+    runChangesetVersion(options)
     return
   }
 
@@ -137,7 +202,7 @@ function publishLatest(options) {
 function publishPrerelease(tag, options) {
   if (options.phase === 'version') {
     enterPreMode(tag, options)
-    run('pnpm', ['changeset', 'version'], options)
+    runChangesetVersion(options)
     return
   }
 

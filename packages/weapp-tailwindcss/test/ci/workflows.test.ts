@@ -299,11 +299,13 @@ describe('ci workflows', () => {
     )?.[1] ?? ''
 
     expect(releaseStep.with.version).toBe('pnpm publish-packages -- --phase version')
-    expect(latestVersionBranch).toContain('changeset\', \'version')
+    expect(publishScript).toContain('runWithRetry(\'pnpm\', [\'changeset\', \'version\']')
+    expect(publishScript).toContain('/Premature close/i')
+    expect(latestVersionBranch).toContain('runChangesetVersion(options)')
     expect(latestVersionBranch).not.toContain('pnpm\', [\'build')
     expect(latestVersionBranch).not.toContain('pnpm\', [\'test')
     expect(prereleaseVersionBranch).toContain('enterPreMode(tag, options)')
-    expect(prereleaseVersionBranch).toContain('changeset\', \'version')
+    expect(prereleaseVersionBranch).toContain('runChangesetVersion(options)')
   })
 
   it('runs current vs published benchmark on every ci/cd trigger', () => {
