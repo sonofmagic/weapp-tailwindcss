@@ -193,7 +193,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     )
   })
 
-  it('skips non-css Vue template content that leaks into uni-app css assets', async () => {
+  it('skips non-css Vue/NVue/UVue template content that leaks into uni-app css assets', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const templateSource = [
       '<template>',
@@ -208,9 +208,71 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       '  </view>',
       '</template>',
     ].join('\n')
+    const sfcSourceVariants = {
+      vue: [
+        path.resolve(process.cwd(), 'src/pages/member-rights.vue'),
+        `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=template&id=abc&lang.ts`,
+        `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&lang.ts&type=template&id=abc`,
+        `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=template&id=abc&lang=ts`,
+        `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=template&id=abc&ts=true`,
+        `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=script&setup=true&lang.ts`,
+      ],
+      nvue: [
+        path.resolve(process.cwd(), 'src/pages/native-view.nvue'),
+        `${path.resolve(process.cwd(), 'src/pages/native-view.nvue')}?vue&type=template&id=abc&lang.ts`,
+        `${path.resolve(process.cwd(), 'src/pages/native-view.nvue')}?vue&lang.ts&type=template&id=abc`,
+        `${path.resolve(process.cwd(), 'src/pages/native-view.nvue')}?vue&type=template&id=abc&lang=ts`,
+        `${path.resolve(process.cwd(), 'src/pages/native-view.nvue')}?vue&type=template&id=abc&ts=true`,
+        `${path.resolve(process.cwd(), 'src/pages/native-view.nvue')}?vue&type=script&setup=true&lang.ts`,
+      ],
+      uvue: [
+        path.resolve(process.cwd(), 'src/pages/uni-view.uvue'),
+        `${path.resolve(process.cwd(), 'src/pages/uni-view.uvue')}?vue&type=template&id=abc&lang.uts`,
+        `${path.resolve(process.cwd(), 'src/pages/uni-view.uvue')}?vue&lang.uts&type=template&id=abc`,
+        `${path.resolve(process.cwd(), 'src/pages/uni-view.uvue')}?vue&type=template&id=abc&lang=uts`,
+        `${path.resolve(process.cwd(), 'src/pages/uni-view.uvue')}?vue&type=template&id=abc&ts=true`,
+        `${path.resolve(process.cwd(), 'src/pages/uni-view.uvue')}?vue&type=script&setup=true&lang.uts`,
+      ],
+    } as const
+    const miniProgramStyleOutputs = ['wxss', 'acss', 'ttss', 'qss'] as const
+    const leakedTemplateCases = Object.entries(sfcSourceVariants).flatMap(([kind, sourceFiles]) =>
+      sourceFiles.flatMap((sourceFile, sourceIndex) =>
+        miniProgramStyleOutputs.map(extension => ({
+          outputFile: `pages/${kind}-${sourceIndex}.${extension}`,
+          sourceFile,
+        })),
+      ),
+    )
+    const styleSource = '$color: red;\n.member { color: $color; }'
+    const styleSourceCases = [
+      {
+        outputFile: 'pages/member-rights-style.wxss',
+        sourceFile: `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=style&index=0&lang.scss`,
+      },
+      {
+        outputFile: 'pages/member-rights-style-lang-eq.wxss',
+        sourceFile: `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=style&index=0&lang=scss&scoped=true`,
+      },
+      {
+        outputFile: 'pages/member-rights-style-lang-dot.wxss',
+        sourceFile: `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=style&index=0&lang.css#hash`,
+      },
+      {
+        outputFile: 'pages/member-rights-style-type-plural.wxss',
+        sourceFile: `${path.resolve(process.cwd(), 'src/pages/member-rights.vue')}?vue&type=styles&index=0&lang=css`,
+      },
+      {
+        outputFile: 'pages/native-view-style.wxss',
+        sourceFile: `${path.resolve(process.cwd(), 'src/pages/native-view.nvue')}?vue&type=style&index=0&lang=css#hash`,
+      },
+      {
+        outputFile: 'pages/uni-view-style.wxss',
+        sourceFile: `${path.resolve(process.cwd(), 'src/pages/uni-view.uvue')}?vue&type=style&index=0&inline&lang.css`,
+      },
+    ] as const
     const context = createContext({
-      cssMatcher: (file: string) => file.endsWith('.wxss'),
-      mainCssChunkMatcher: vi.fn((file: string) => file === 'pages/member-rights.wxss'),
+      cssMatcher: (file: string) => /\.(?:wxss|acss|ttss|qss)$/.test(file),
+      mainCssChunkMatcher: vi.fn((file: string) => file.endsWith('.wxss') || file.endsWith('.acss') || file.endsWith('.ttss') || file.endsWith('.qss')),
       styleHandler: vi.fn(async (code: string) => {
         if (code.includes('<template>')) {
           throw new Error('template source must not be parsed as css')
@@ -231,18 +293,30 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
       build: { outDir: 'dist/build/mp-weixin' },
     } as ResolvedConfig)
 
-    const bundle = {
-      'pages/member-rights.wxss': {
+    const bundle = Object.fromEntries([
+      ...leakedTemplateCases.map(({ outputFile, sourceFile }) => [outputFile, {
         ...createRollupAsset(templateSource),
-        fileName: 'pages/member-rights.wxss',
-        originalFileName: path.resolve(process.cwd(), 'src/pages/member-rights.vue'),
-        originalFileNames: [path.resolve(process.cwd(), 'src/pages/member-rights.vue')],
-      },
-    }
+        fileName: outputFile,
+        originalFileName: sourceFile,
+        originalFileNames: [sourceFile],
+      }]),
+      ...styleSourceCases.map(({ outputFile, sourceFile }) => [outputFile, {
+        ...createRollupAsset(styleSource),
+        fileName: outputFile,
+        originalFileName: sourceFile,
+        originalFileNames: [sourceFile],
+      }]),
+    ])
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await expect(generateBundle?.call(postPlugin, {} as any, bundle)).resolves.toBeUndefined()
-    expect(context.styleHandler).not.toHaveBeenCalled()
-    expect(bundle['pages/member-rights.wxss']).toBeUndefined()
+    expect(context.styleHandler).toHaveBeenCalledTimes(styleSourceCases.length)
+    for (const { outputFile } of styleSourceCases) {
+      expect(context.styleHandler).toHaveBeenCalledWith(styleSource, expect.anything())
+      expect(bundle[outputFile]?.source).toBe(`css:${styleSource}`)
+    }
+    for (const { outputFile } of leakedTemplateCases) {
+      expect(bundle[outputFile], outputFile).toBeUndefined()
+    }
   }, TEST_TIMEOUT_MS)
 
   it('generates bundle assets and leverages cache', async () => {

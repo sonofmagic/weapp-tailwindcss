@@ -261,6 +261,56 @@ describe('bundlers/vite helper modules', () => {
     expect(shouldSkipRawSourceStyleAsset('app.wxss', 'app.scss', '$color: red; .a { color: $color; }')).toBe(true)
     expect(shouldSkipRawSourceStyleAsset('pages/index.wxss', 'pages/index.wxss', '<template><view>// marker</view></template>', '/repo/src/pages/index.vue')).toBe(true)
     expect(shouldSkipRawSourceStyleAsset('pages/index.wxss', 'pages/index.wxss', '$color: red; .a { color: $color; }', '/repo/src/pages/index.wxss', file => file.endsWith('.wxss'))).toBe(false)
+    const sfcSourceVariants = {
+      vue: [
+        '/repo/src/pages/index.vue',
+        '/repo/src/pages/index.vue?vue&type=template&id=abc&lang.ts',
+        '/repo/src/pages/index.vue?vue&lang.ts&type=template&id=abc',
+        '/repo/src/pages/index.vue?vue&type=template&id=abc&lang=ts',
+        '/repo/src/pages/index.vue?vue&type=template&id=abc&ts=true',
+        '/repo/src/pages/index.vue?vue&type=script&setup=true&lang.ts',
+      ],
+      nvue: [
+        '/repo/src/pages/index.nvue',
+        '/repo/src/pages/index.nvue?vue&type=template&id=abc&lang.ts',
+        '/repo/src/pages/index.nvue?vue&lang.ts&type=template&id=abc',
+        '/repo/src/pages/index.nvue?vue&type=template&id=abc&lang=ts',
+        '/repo/src/pages/index.nvue?vue&type=template&id=abc&ts=true',
+        '/repo/src/pages/index.nvue?vue&type=script&setup=true&lang.ts',
+      ],
+      uvue: [
+        '/repo/src/pages/index.uvue',
+        '/repo/src/pages/index.uvue?vue&type=template&id=abc&lang.uts',
+        '/repo/src/pages/index.uvue?vue&lang.uts&type=template&id=abc',
+        '/repo/src/pages/index.uvue?vue&type=template&id=abc&lang=uts',
+        '/repo/src/pages/index.uvue?vue&type=template&id=abc&ts=true',
+        '/repo/src/pages/index.uvue?vue&type=script&setup=true&lang.uts',
+      ],
+    } as const
+    const miniProgramStyleOutputs = ['wxss', 'acss', 'ttss', 'qss'] as const
+    for (const sourceFiles of Object.values(sfcSourceVariants)) {
+      for (const sourceFile of sourceFiles) {
+        for (const extension of miniProgramStyleOutputs) {
+          const outputFile = `pages/index.${extension}`
+          expect(shouldSkipRawSourceStyleAsset(outputFile, outputFile, '<template><view>// marker</view></template>', sourceFile), sourceFile).toBe(true)
+        }
+      }
+    }
+    const styleSourceAssets = [
+      ['/repo/src/pages/index.vue?vue&type=style&index=0&lang.scss', 'pages/index.wxss'],
+      ['/repo/src/pages/index.vue?vue&type=style&index=0&lang=scss&scoped=true', 'pages/index.wxss'],
+      ['/repo/src/pages/index.vue?vue&type=style&index=0&lang.css#hash', 'pages/index.wxss'],
+      ['/repo/src/pages/index.vue?vue&type=styles&index=0&lang=css', 'pages/index.wxss'],
+      ['/repo/src/pages/index.nvue?vue&type=style&index=0&lang.css', 'pages/index.wxss'],
+      ['/repo/src/pages/index.nvue?vue&type=style&index=0&lang=css#hash', 'pages/index.wxss'],
+      ['/repo/src/pages/index.uvue?vue&type=style&index=0&lang.scss', 'pages/index.wxss'],
+      ['/repo/src/pages/index.uvue?vue&type=style&index=0&inline&lang.css', 'pages/index.wxss'],
+      ['/repo/src/pages/index.wxss', 'pages/index.wxss'],
+      ['/repo/src/pages/index.acss', 'pages/index.acss'],
+    ] as const
+    for (const [sourceFile, outputFile] of styleSourceAssets) {
+      expect(shouldSkipRawSourceStyleAsset(outputFile, outputFile, '$color: red; .a { color: $color; }', sourceFile, file => /\.(?:wxss|acss|ttss|qss)$/.test(file)), sourceFile).toBe(false)
+    }
 
     const fallback = vi.fn((sourceFile?: string) => sourceFile ? `out/${sourceFile}` : undefined)
     const resolve = createMatchedCssSourceOutputResolver({
