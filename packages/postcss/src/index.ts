@@ -30,6 +30,11 @@ export {
   type TailwindcssRpxToRemOptions,
 } from './compat/tailwindcss-rpx'
 export {
+  type NormalizedWebCssCompatOptions,
+  normalizeWebCssCompatOptions,
+  transformWebCssCompat,
+} from './compat/web-css'
+export {
   compileCssMacroConditionalComments,
   CSS_MACRO_STYLE_OPTIONS_MARKER,
   hasCssMacroStyleOptions,

@@ -102,6 +102,24 @@ export interface CssAtRules {
   media?: boolean | undefined
 }
 
+export type WebCssCompatPreset = 'off' | 'legacy-web'
+
+export interface WebCssCompatFeatures {
+  theme?: boolean | undefined
+  layer?: boolean | undefined
+  property?: boolean | undefined
+  oklch?: boolean | undefined
+  colorFunctions?: boolean | undefined
+  supports?: boolean | undefined
+}
+
+export interface WebCssCompatOptions {
+  preset?: WebCssCompatPreset | undefined
+  features?: WebCssCompatFeatures | undefined
+}
+
+export type WebCssCompatUserOptions = boolean | WebCssCompatOptions
+
 export interface CssOptions {
   cssPreflight?: CssPreflightOptions | undefined
   cssPreflightRange?: 'all' | undefined

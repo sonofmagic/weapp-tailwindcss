@@ -95,6 +95,12 @@ describe('get options', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: true }).importFallback).toBe(true)
   })
 
+  it('keeps web generator compatibility disabled by default', () => {
+    expect(normalizeWeappTailwindcssGeneratorOptions(undefined).webCompat).toBeUndefined()
+    expect(normalizeWeappTailwindcssGeneratorOptions({}).webCompat).toBeUndefined()
+    expect(normalizeWeappTailwindcssGeneratorOptions({ webCompat: true }).webCompat).toBe(true)
+  })
+
   it('keeps weapp as generator target without framework web env', () => {
     withGeneratorTargetEnv({}, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('weapp')

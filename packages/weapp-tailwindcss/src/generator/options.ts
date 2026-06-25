@@ -1,4 +1,4 @@
-import type { IStyleHandlerOptions } from '@weapp-tailwindcss/postcss/types'
+import type { IStyleHandlerOptions, WebCssCompatUserOptions } from '@weapp-tailwindcss/postcss/types'
 import type { WeappTailwindcssGeneratorTarget } from './types'
 import type { RuntimeBranch, RuntimeBranchContext } from '@/runtime-branch'
 import type { IArbitraryValues } from '@/types/shared'
@@ -23,6 +23,14 @@ export interface WeappTailwindcssGeneratorOptions {
    */
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
   /**
+   * Web 端 Tailwind CSS v4 产物兼容降级配置。
+   *
+   * @remarks
+   * 默认关闭。传入 `true` 等价于 `{ preset: 'legacy-web' }`，会移除或降级
+   * `@layer`、`@property`、现代颜色函数与相关 `@supports` 包裹。
+   */
+  webCompat?: WebCssCompatUserOptions | undefined
+  /**
    * 将 `@import "weapp-tailwindcss"` 作为 Tailwind CSS v4 生成入口的兜底别名。
    *
    * 适用于旧项目仍使用 `@import "weapp-tailwindcss"` 作为入口的兼容场景，默认关闭。
@@ -43,6 +51,7 @@ export interface NormalizedWeappTailwindcssGeneratorOptions {
   branch: RuntimeBranch
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  webCompat: WebCssCompatUserOptions | undefined
   importFallback: boolean
   bareArbitraryValues?: IArbitraryValues['bareArbitraryValues'] | undefined
 }
@@ -61,6 +70,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     return {
       target,
       branch,
+      webCompat: undefined,
       importFallback: false,
       bareArbitraryValues: undefined,
     }
@@ -71,6 +81,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     branch,
     config: options.config,
     styleOptions: options.styleOptions,
+    webCompat: options.webCompat,
     importFallback: options.importFallback ?? false,
     bareArbitraryValues: options.bareArbitraryValues,
   }

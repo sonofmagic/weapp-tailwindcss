@@ -16,6 +16,7 @@ function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters
       target: options?.target ?? 'weapp',
       config: options?.config,
       styleOptions: options?.styleOptions,
+      webCompat: options?.webCompat,
       importFallback: options?.importFallback ?? true,
       bareArbitraryValues: options?.bareArbitraryValues,
     })),
@@ -63,5 +64,45 @@ describe('generator postcss plugin factory', () => {
     expect(result.css).toContain('.card')
     expect(result.css).toContain('--spacing')
     expect(result.css).not.toContain('.unused')
+  })
+
+  it('applies web css compatibility transform for web target', async () => {
+    const { adapters } = createAdapters({
+      createGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: [
+            '@layer theme {',
+            '  :root { --color-blue-500: oklch(62.3% .214 259.815); }',
+            '}',
+            '@property --tw-rotate-x { syntax: "*"; inherits: false; }',
+            '@supports (color: color-mix(in lab, red, red)) {',
+            '  .text-blue { color: color-mix(in oklab, var(--color-blue-500) 50%, transparent); }',
+            '}',
+          ].join('\n'),
+          rawCss: '',
+          target: 'web',
+          classSet: new Set<string>(),
+          dependencies: [],
+        })),
+      })),
+    })
+    const plugin = createWeappTailwindcssPostcssPlugin(adapters)
+    const result = await postcss([
+      plugin({
+        generator: {
+          target: 'web',
+          webCompat: true,
+        },
+      }),
+    ]).process('@import "tailwindcss";', {
+      from: undefined,
+    })
+
+    expect(result.css).not.toContain('@layer')
+    expect(result.css).not.toContain('@property')
+    expect(result.css).not.toContain('@supports')
+    expect(result.css).not.toContain('oklch(')
+    expect(result.css).toContain(':root')
+    expect(result.css).toContain('.text-blue')
   })
 })

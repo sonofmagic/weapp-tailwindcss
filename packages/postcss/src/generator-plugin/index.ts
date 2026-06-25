@@ -1,6 +1,7 @@
 import type { PluginCreator, Rule } from 'postcss'
 import type { WeappTailwindcssPostcssPluginAdapters, WeappTailwindcssPostcssPluginOptions } from './types'
 import postcss from 'postcss'
+import { transformWebCssCompat } from '../compat/web-css'
 import { prependConfigDirective } from './config-directive'
 import { addDependencyMessages, addSourceDependencyMessages, replaceRootCss, resolvePostcssBase, resolvePostcssProjectRoot } from './context'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from './directives'
@@ -128,8 +129,11 @@ export function createWeappTailwindcssPostcssPlugin(
         const css = isApplyOnlyTailwindV4Css
           ? filterApplyOnlyGeneratedCss(generated.css, rawCss)
           : generated.css
+        const finalCss = generated.target === 'web'
+          ? transformWebCssCompat(css, generatorOptions.webCompat)
+          : css
 
-        replaceRootCss(root, css, result)
+        replaceRootCss(root, finalCss, result)
         addDependencyMessages(result, generated)
         addSourceDependencyMessages(result, collectedSources.files)
         result.messages.push({

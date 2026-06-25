@@ -2,7 +2,7 @@ import type { GeneratorResolvedSource } from './generator-css/source-resolver'
 import type { GenerateCssByGeneratorOptions, GenerateCssByGeneratorResult } from './generator-css/types'
 import process from 'node:process'
 import { extractSourceCandidates } from '@tailwindcss-mangle/engine'
-import { filterExistingCssRules, postcss } from '@weapp-tailwindcss/postcss'
+import { filterExistingCssRules, postcss, transformWebCssCompat } from '@weapp-tailwindcss/postcss'
 import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
@@ -125,6 +125,16 @@ function mergeGeneratedCssClassSet(classSet: Set<string>, candidates: Iterable<s
   return merged
 }
 
+function finalizeWebGeneratorCss(
+  css: string,
+  target: string,
+  webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat'],
+) {
+  return target === 'web'
+    ? transformWebCssCompat(css, webCompat)
+    : css
+}
+
 export async function generateCssByGenerator(
   options: GenerateCssByGeneratorOptions,
 ): Promise<GenerateCssByGeneratorResult | undefined> {
@@ -172,6 +182,16 @@ export async function generateCssByGenerator(
   const localImports = options.restoreLocalCssImports === false
     ? undefined
     : localImportParts?.imports
+  const finalizeGeneratorCss = (css: string, target: string, finalizeOptions: Parameters<typeof finalizeMiniProgramGeneratorCss>[4] = {}) => {
+    return finalizeWebGeneratorCss(
+      restoreLocalCssImports(
+        finalizeMiniProgramGeneratorCss(css, target, majorVersion, opts.cssPreflight, finalizeOptions),
+        localImports,
+      ),
+      target,
+      generatorOptions.webCompat,
+    )
+  }
   const generatorRawSource = localImportParts?.source ?? effectiveRawSource
   const rawUserSource = userRawSource === undefined
     ? generatorRawSource
@@ -358,7 +378,7 @@ export async function generateCssByGenerator(
             styleOptions: generatorStyleOptions,
           }))
         : options.previousCss
-      const finalCss = restoreLocalCssImports(css, localImports)
+      const finalCss = finalizeWebGeneratorCss(restoreLocalCssImports(css, localImports), generated.target, generatorOptions.webCompat)
       return {
         css: finalCss,
         classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
@@ -493,17 +513,14 @@ export async function generateCssByGenerator(
       else if (generated.target === 'weapp' && shouldFinalizeMarkedUserLayerComponentsCss(file)) {
         css = reorderMarkedUserLayerComponentsCss(css)
       }
-      const finalCss = restoreLocalCssImports(
-        finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-          injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-            cssHandlerOptions,
-            isolateCurrentCssCandidates,
-            localImports,
-          }),
-          styleOptions: generatorStyleOptions,
+      const finalCss = finalizeGeneratorCss(css, generated.target, {
+        injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+          cssHandlerOptions,
+          isolateCurrentCssCandidates,
+          localImports,
         }),
-        localImports,
-      )
+        styleOptions: generatorStyleOptions,
+      })
       return {
         css: finalCss,
         classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
@@ -652,17 +669,14 @@ export async function generateCssByGenerator(
         const missingUserCss = isCommentOnlyCss(userCss) ? '' : filterExistingCssRules(css, userCss)
         css = createCssSourceOrderAppend(css, missingUserCss)
       }
-      const finalCss = restoreLocalCssImports(
-        finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-          injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-            cssHandlerOptions,
-            isolateCurrentCssCandidates,
-            localImports,
-          }),
-          styleOptions: generatorStyleOptions,
+      const finalCss = finalizeGeneratorCss(css, generated.target, {
+        injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+          cssHandlerOptions,
+          isolateCurrentCssCandidates,
+          localImports,
         }),
-        localImports,
-      )
+        styleOptions: generatorStyleOptions,
+      })
       return {
         css: finalCss,
         classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
@@ -722,17 +736,14 @@ export async function generateCssByGenerator(
         : userCss
       css = createCssSourceOrderAppend(css, missingUserCss)
     }
-    const finalCss = restoreLocalCssImports(
-      finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-        injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-          cssHandlerOptions,
-          isolateCurrentCssCandidates,
-          localImports,
-        }),
-        styleOptions: generatorStyleOptions,
+    const finalCss = finalizeGeneratorCss(css, generated.target, {
+      injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+        cssHandlerOptions,
+        isolateCurrentCssCandidates,
+        localImports,
       }),
-      localImports,
-    )
+      styleOptions: generatorStyleOptions,
+    })
     return {
       css: finalCss,
       classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),

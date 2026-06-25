@@ -1,4 +1,4 @@
-import type { IStyleHandlerOptions } from '../types'
+import type { IStyleHandlerOptions, WebCssCompatUserOptions } from '../types'
 
 export type WeappTailwindcssPostcssTarget = 'weapp' | 'web' | 'tailwind'
 
@@ -40,6 +40,7 @@ export interface WeappTailwindcssPostcssGeneratorUserOptions {
   target?: WeappTailwindcssPostcssTarget | undefined
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  webCompat?: WebCssCompatUserOptions | undefined
   importFallback?: boolean | undefined
   bareArbitraryValues?: unknown
 }
@@ -48,6 +49,7 @@ export interface NormalizedWeappTailwindcssPostcssGeneratorOptions {
   target: WeappTailwindcssPostcssTarget
   config?: string | undefined
   styleOptions?: Partial<IStyleHandlerOptions> | undefined
+  webCompat: WebCssCompatUserOptions | undefined
   importFallback: boolean
   bareArbitraryValues?: unknown
 }
