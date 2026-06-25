@@ -1,0 +1,48 @@
+{
+  "name": "@weapp-tailwindcss-demo/web-react-webpack-tailwindcss-v4",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "webpack serve --mode development",
+    "dev:weapp": "cross-env WEAPP_TW_TARGET=weapp webpack serve --mode development",
+    "build": "pnpm run build:web",
+    "build:web": "webpack --mode production",
+    "build:weapp": "cross-env WEAPP_TW_TARGET=weapp WEBPACK_DIST=dist-weapp webpack --mode production",
+    "predev": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:weapp": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:web": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:weapp": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:babelCore7285",
+    "@babel/preset-react": "catalog:babelPresetReact7285",
+    "@babel/preset-typescript": "^7.29.7",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "babel-loader": "^10.1.1",
+    "cross-env": "catalog:crossEnv",
+    "css-loader": "^7.1.4",
+    "html-webpack-plugin": "^5.6.7",
+    "mini-css-extract-plugin": "^2.10.2",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "catalog:typescript59",
+    "weapp-tailwindcss": "workspace:*",
+    "webpack": "5.105.4",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/web/react-webpack-tailwindcss-v4"
+  }
+}

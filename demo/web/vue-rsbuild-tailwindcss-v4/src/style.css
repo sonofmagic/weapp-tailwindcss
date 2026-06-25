@@ -1,0 +1,18 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+@config "../tailwind.config.cjs";
+@source "../index.html";
+@source "./**/*.{vue,ts}";
+@source inline("min-h-screen bg-zinc-50 p-6 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-50 mx-auto grid max-w-4xl gap-6 rounded border border-zinc-900/10 bg-white p-5 shadow-[0_8rpx_24rpx_rgba(0,0,0,0.12)] text-[32rpx] font-semibold mt-3 text-sm leading-6 text-zinc-600 dark:text-zinc-300 theme-mode-demo mt-4 px-4 py-3 text-slate-900 system-dark:bg-slate-900 system-dark:text-slate-100 mt-2 px-3 py-2 dark:bg-zinc-950 grid-cols-2 gap-[16rpx] md:grid-cols-4 bg-amber-300 bg-green-300 bg-blue-300 bg-pink-300 rounded p-[24rpx] text-center before:mr-1 before:content-['v4'] -mt-1.5 gap-3.5 rounded-[18.5px] border-dashed border-[#336699]/40 bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px] !-translate-y-[3.5px] -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] text-white shadow-[0_2.5px_7.5px_rgba(18,52,86,0.35)] !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-[#1f2937] opacity-[0.82] w-fit bg-blue-500 px-4 py-2 transition hover:bg-blue-300 active:bg-green-300 text-[red]");
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
+
+html {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}

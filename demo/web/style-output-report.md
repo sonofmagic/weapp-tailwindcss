@@ -1,6 +1,6 @@
-# Web Vite Tailwind CSS 产物对比报告
+# Web Tailwind CSS 产物对比报告
 
-本文记录 `demo/web` 中 2 个纯 Vite Tailwind CSS v4 demo 在 `web` 与 `weapp` 两种 target 下的 CSS 产物差异。对比前已关闭 Tailwind 浏览器 preflight。
+本文记录 `demo/web` 中 6 个纯 Web Tailwind CSS v4 demo 在 `web` 与 `weapp` 两种 target 下的 CSS 产物差异。对比前已关闭 Tailwind 浏览器 preflight。
 
 ## 对比对象
 
@@ -8,6 +8,16 @@
 | --- | --- | --- | --- | --- |
 | `react-vite-tailwindcss-v4` | `4.x` | React | `dist/assets/*.css` | `dist-weapp/assets/*.css` |
 | `vue-vite-tailwindcss-v4` | `4.x` | Vue | `dist/assets/*.css` | `dist-weapp/assets/*.css` |
+| `react-rsbuild-tailwindcss-v4` | `4.x` | React | `dist/static/css/*.css` | `dist-weapp/static/css/*.css` |
+| `vue-rsbuild-tailwindcss-v4` | `4.x` | Vue | `dist/static/css/*.css` | `dist-weapp/static/css/*.css` |
+| `react-webpack-tailwindcss-v4` | `4.x` | React | `dist/assets/*.css` | `dist-weapp/assets/*.css` |
+| `vue-webpack-tailwindcss-v4` | `4.x` | Vue | `dist/assets/*.css` | `dist-weapp/assets/*.css` |
+
+注册方式：
+
+- Vite：`weapp-tailwindcss/vite`
+- Rsbuild：通过 `tools.rspack.plugins` 注册 `weapp-tailwindcss/webpack`
+- Webpack：通过 `plugins` 注册 `weapp-tailwindcss/webpack`
 
 ## 构建命令
 
@@ -16,6 +26,14 @@ pnpm --filter @weapp-tailwindcss-demo/web-react-vite-tailwindcss-v4 build:web
 pnpm --filter @weapp-tailwindcss-demo/web-react-vite-tailwindcss-v4 build:weapp
 pnpm --filter @weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4 build:web
 pnpm --filter @weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4 build:weapp
+pnpm --filter @weapp-tailwindcss-demo/web-react-rsbuild-tailwindcss-v4 build:web
+pnpm --filter @weapp-tailwindcss-demo/web-react-rsbuild-tailwindcss-v4 build:weapp
+pnpm --filter @weapp-tailwindcss-demo/web-vue-rsbuild-tailwindcss-v4 build:web
+pnpm --filter @weapp-tailwindcss-demo/web-vue-rsbuild-tailwindcss-v4 build:weapp
+pnpm --filter @weapp-tailwindcss-demo/web-react-webpack-tailwindcss-v4 build:web
+pnpm --filter @weapp-tailwindcss-demo/web-react-webpack-tailwindcss-v4 build:weapp
+pnpm --filter @weapp-tailwindcss-demo/web-vue-webpack-tailwindcss-v4 build:web
+pnpm --filter @weapp-tailwindcss-demo/web-vue-webpack-tailwindcss-v4 build:weapp
 ```
 
 ## Preflight 状态
@@ -23,6 +41,8 @@ pnpm --filter @weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4 build:weapp
 2 组产物均不导入 `tailwindcss/preflight.css`，只显式导入 `theme.css` 与 `utilities.css`。
 
 ## Tailwind v4 差异
+
+Rsbuild demo 通过 `tools.rspack` 注册 `weapp-tailwindcss/webpack` 后，`weapp` target 可以在 asset 阶段生成完整小程序 CSS；`web` target 当前保留 Rsbuild 默认 CSS 处理结果，未触发 Tailwind v4 生成 loader。这是该组 demo 用来对比 Vite/Webpack 的重点差异之一。
 
 Web 产物以 v4 theme variables 和 property registration 为主，weapp 产物会把主题变量挂到小程序根选择器，并把不适合小程序的语法转成更稳定的格式。
 

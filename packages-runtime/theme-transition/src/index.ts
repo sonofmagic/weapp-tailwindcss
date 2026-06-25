@@ -207,6 +207,7 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
       )
 
       await animation?.finished.catch(() => {})
+      await transition.finished.catch(() => {})
     }
     catch (error) {
       logger?.warn?.('[theme-transition] Falling back to simple toggle because view transition failed.', error)

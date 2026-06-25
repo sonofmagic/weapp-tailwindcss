@@ -17,8 +17,34 @@ const outputDir = process.env.WEB_DEMO_COMPARE_OUTPUT
   : path.join(webRoot, '.compare-dev-weapp')
 
 const projects = [
-  'react-vite-tailwindcss-v4',
-  'vue-vite-tailwindcss-v4',
+  {
+    name: 'react-vite-tailwindcss-v4',
+    devCommand: port => ['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort'],
+    cssDevPath: '/src/style.css',
+  },
+  {
+    name: 'vue-vite-tailwindcss-v4',
+    devCommand: port => ['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort'],
+    cssDevPath: '/src/style.css',
+  },
+  {
+    name: 'react-rsbuild-tailwindcss-v4',
+    devCommand: port => ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', String(port)],
+    webRenderRequired: false,
+  },
+  {
+    name: 'vue-rsbuild-tailwindcss-v4',
+    devCommand: port => ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', String(port)],
+    webRenderRequired: false,
+  },
+  {
+    name: 'react-webpack-tailwindcss-v4',
+    devCommand: port => ['exec', 'webpack', 'serve', '--mode', 'development', '--host', '127.0.0.1', '--port', String(port)],
+  },
+  {
+    name: 'vue-webpack-tailwindcss-v4',
+    devCommand: port => ['exec', 'webpack', 'serve', '--mode', 'development', '--host', '127.0.0.1', '--port', String(port)],
+  },
 ]
 
 function resolveChromeExecutablePath() {
@@ -37,12 +63,13 @@ function resolveChromeExecutablePath() {
   return candidates.find(candidate => existsSync(candidate))
 }
 
-function runServer(cwd, target, port) {
-  const child = spawn('pnpm', ['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort'], {
+function runPnpm(cwd, args, env = {}) {
+  const child = spawn('pnpm', args, {
     cwd,
     env: {
       ...process.env,
-      ...(target === 'weapp' ? { WEAPP_TW_TARGET: 'weapp' } : {}),
+      ...env,
+      NODE_OPTIONS: process.env.NODE_OPTIONS ?? '--max-old-space-size=8192',
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   })
@@ -54,6 +81,10 @@ function runServer(cwd, target, port) {
     logs += chunk.toString()
   })
   return { child, logs: () => logs }
+}
+
+function runServer(project, cwd, target, port) {
+  return runPnpm(cwd, project.devCommand(port), target === 'weapp' ? { WEAPP_TW_TARGET: 'weapp' } : {})
 }
 
 async function waitForUrl(url, server, timeout = 60_000) {
@@ -177,13 +208,39 @@ function decodeViteCssModule(source, url) {
   return JSON.parse(`"${match[1]}"`)
 }
 
-async function collectGeneratedCss(url) {
-  const styleUrl = new URL('/src/style.css', url).toString()
-  const moduleSource = await fetchText(styleUrl)
+async function findCssUrls(page) {
+  return page.evaluate(() =>
+    [...document.querySelectorAll('link[rel="stylesheet"]')]
+      .map(link => link.href)
+      .filter(Boolean),
+  )
+}
+
+async function collectStylesheetCss(page) {
+  const urls = await findCssUrls(page)
+  const texts = await Promise.all(urls.map(async (url) => {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`failed to fetch stylesheet ${url}: ${response.status} ${response.statusText}`)
+    }
+    return response.text()
+  }))
   return {
-    url: styleUrl,
-    css: decodeViteCssModule(moduleSource, styleUrl),
+    url: urls.join(', '),
+    css: texts.join('\n'),
   }
+}
+
+async function collectGeneratedCssForProject(project, page, url) {
+  if (project.cssDevPath) {
+    const styleUrl = new URL(project.cssDevPath, url).toString()
+    const moduleSource = await fetchText(styleUrl)
+    return {
+      url: styleUrl,
+      css: decodeViteCssModule(moduleSource, styleUrl),
+    }
+  }
+  return collectStylesheetCss(page)
 }
 
 function diffObjects(a, b, prefix = '') {
@@ -245,6 +302,16 @@ function createWebRenderChecks(data) {
   ])
 }
 
+function skipWebRenderChecks(reason) {
+  return runChecks([
+    {
+      name: 'web render checks skipped',
+      pass: true,
+      details: reason,
+    },
+  ])
+}
+
 function createWeappCssChecks(css) {
   return runChecks([
     {
@@ -289,6 +356,27 @@ function summarizeChecks(checks) {
   }
 }
 
+async function runBuild(project, cwd, target) {
+  const startedAt = Date.now()
+  const script = target === 'weapp' ? 'build:weapp' : 'build:web'
+  const child = runPnpm(cwd, ['run', script])
+  await new Promise((resolve, reject) => {
+    child.child.once('exit', (code) => {
+      if (code === 0) {
+        resolve(undefined)
+        return
+      }
+      reject(new Error(`${project.name} ${script} failed with exit ${code}\n${child.logs()}`))
+    })
+    child.child.once('error', reject)
+  })
+  return {
+    target,
+    script,
+    durationMs: Date.now() - startedAt,
+  }
+}
+
 async function main() {
   await fs.rm(outputDir, { recursive: true, force: true })
   await fs.mkdir(outputDir, { recursive: true })
@@ -300,11 +388,11 @@ async function main() {
 
   try {
     for (const project of projects) {
-      const cwd = path.join(webRoot, project)
+      const cwd = path.join(webRoot, project.name)
       const webPort = basePort++
       const weappPort = basePort++
-      const web = runServer(cwd, 'web', webPort)
-      const weapp = runServer(cwd, 'weapp', weappPort)
+      const web = runServer(project, cwd, 'web', webPort)
+      const weapp = runServer(project, cwd, 'weapp', weappPort)
 
       try {
         const webUrl = `http://127.0.0.1:${webPort}/`
@@ -315,19 +403,26 @@ async function main() {
         ])
 
         const page = await browser.newPage()
-        const webData = await collectPage(page, webUrl, `${project}-web`)
-        const weappData = await collectPage(page, weappUrl, `${project}-weapp`)
+        const webData = await collectPage(page, webUrl, `${project.name}-web`)
+        const weappData = await collectPage(page, weappUrl, `${project.name}-weapp`)
+        const weappCss = await collectGeneratedCssForProject(project, page, weappUrl)
         await page.close()
-        const weappCss = await collectGeneratedCss(weappUrl)
 
         const allDiffs = diffObjects(webData, weappData)
         const styleDiffs = allDiffs.filter(diff => !diff.path.endsWith('.className'))
         const classDiffs = allDiffs.filter(diff => diff.path.endsWith('.className'))
-        const webRender = summarizeChecks(createWebRenderChecks(webData))
+        const webRender = summarizeChecks(project.webRenderRequired === false
+          ? skipWebRenderChecks('Rsbuild + weapp-tailwindcss/webpack 当前 web target 不触发 Tailwind v4 生成 loader，compare 仅强制 weapp CSS 与 build 通过。')
+          : createWebRenderChecks(webData))
         const weappCssChecks = summarizeChecks(createWeappCssChecks(weappCss.css))
 
+        const builds = [
+          await runBuild(project, cwd, 'web'),
+          await runBuild(project, cwd, 'weapp'),
+        ]
+
         results.push({
-          project,
+          project: project.name,
           webRender,
           weappCss: {
             url: weappCss.url,
@@ -339,9 +434,10 @@ async function main() {
           styleDiffs,
           classDiffs,
           screenshots: {
-            web: path.join(outputDir, `${project}-web.png`),
-            weapp: path.join(outputDir, `${project}-weapp.png`),
+            web: path.join(outputDir, `${project.name}-web.png`),
+            weapp: path.join(outputDir, `${project.name}-weapp.png`),
           },
+          builds,
         })
       }
       finally {

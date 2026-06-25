@@ -1,0 +1,17 @@
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+
+@config "../tailwind.config.cjs";
+@source "../index.html";
+@source "./**/*.{ts,tsx}";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}
+
+html {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}

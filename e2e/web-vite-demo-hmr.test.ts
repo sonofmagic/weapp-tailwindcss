@@ -93,9 +93,10 @@ function runPredev(projectRoot: string) {
   }
 }
 
-function createDevServer(projectRoot: string, port: number) {
+function createDevServer(item: WebViteHmrCase, projectRoot: string, port: number) {
   runPredev(projectRoot)
-  const child = spawn('pnpm', ['exec', 'vite', '--host', '127.0.0.1', '--port', String(port), '--strictPort'], {
+  const args = item.devCommand.map(arg => arg === '{port}' ? String(port) : arg)
+  const child = spawn('pnpm', args, {
     cwd: projectRoot,
     detached: process.platform !== 'win32',
     shell: process.platform === 'win32',
@@ -103,6 +104,7 @@ function createDevServer(projectRoot: string, port: number) {
     env: {
       ...process.env,
       BROWSER: 'none',
+      NODE_ENV: 'development',
       NODE_OPTIONS: process.env['NODE_OPTIONS'] ?? '--max-old-space-size=8192',
     },
   })
@@ -123,7 +125,7 @@ function resolveBaseUrls(logs: string[], fallbackUrl: string) {
   return Array.from(urls)
 }
 
-async function waitForReadyUrl(child: ChildProcess, logs: string[], fallbackUrl: string) {
+async function waitForReadyUrl(item: WebViteHmrCase, child: ChildProcess, logs: string[], fallbackUrl: string) {
   let lastError: unknown
   const startedAt = Date.now()
 
@@ -134,7 +136,7 @@ async function waitForReadyUrl(child: ChildProcess, logs: string[], fallbackUrl:
     for (const baseUrl of resolveBaseUrls(logs, fallbackUrl)) {
       try {
         const response = await fetch(baseUrl)
-        if (response.ok) {
+        if (response.ok && (!item.readyLog || item.readyLog.test(logs.join('')))) {
           return baseUrl
         }
         lastError = new Error(`${baseUrl} -> HTTP ${response.status} ${response.statusText}`)
@@ -163,20 +165,50 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string) {
   }
 }
 
+async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: string) {
+  let lastError = ''
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    try {
+      const title = await page.locator('h1').textContent({ timeout: 2_000 })
+      if (title?.trim() === item.titleFrom) {
+        return
+      }
+      lastError = `h1=${title}`
+    }
+    catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+    await page.goto(baseUrl, {
+      waitUntil: 'domcontentloaded',
+      timeout: Math.min(serverTimeoutMs, 60_000),
+    }).catch((error) => {
+      lastError = error instanceof Error ? error.message : String(error)
+    })
+    await wait(pollIntervalMs)
+  }
+
+  const body = await page.locator('body').textContent().catch(error => String(error))
+  throw new Error(`${item.name} Web HMR 初始页面未渲染：${lastError}\nbody=${body}`)
+}
+
 async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
   let lastError = ''
   const startedAt = Date.now()
 
   while (Date.now() - startedAt < serverTimeoutMs) {
     try {
-      const actual = await page.locator(`[data-web-vite-hmr="${item.markerAttr}"]`).evaluate((element) => {
+      const actual = await page.locator('h1').evaluate((element) => {
         const style = window.getComputedStyle(element)
         return {
           color: style.color.replace(/\s+/g, ' '),
           text: element.textContent?.trim() ?? '',
+          marker: element.getAttribute('data-web-vite-hmr'),
         }
       })
-      if (actual.text === item.titleTo && actual.color === 'rgb(255, 0, 0)') {
+      const styleMatched = item.styleRequired === false || actual.color === 'rgb(255, 0, 0)'
+      if (actual.text === item.titleTo && styleMatched) {
         return
       }
       lastError = JSON.stringify(actual)
@@ -215,7 +247,7 @@ async function cleanupBestEffort(name: string, task: () => Promise<void> | void,
   await cleanupWithTimeout(name, task, timeoutMs).catch(() => undefined)
 }
 
-describe('demo/web Vite source HMR', () => {
+describe('demo/web source HMR', () => {
   afterEach(async () => {
     if (restoreSource) {
       await cleanupWithTimeout('restore source', restoreSource)
@@ -235,9 +267,9 @@ describe('demo/web Vite source HMR', () => {
     const projectRoot = path.resolve(repoRoot, item.projectDir)
     const sourceFile = path.resolve(projectRoot, item.sourceFile)
     const port = await findFreePort()
-    const child = createDevServer(projectRoot, port)
+    const child = createDevServer(item, projectRoot, port)
     const logs = collectProcessOutput(child)
-    const baseUrl = await waitForReadyUrl(child, logs, `http://127.0.0.1:${port}/`)
+    const baseUrl = await waitForReadyUrl(item, child, logs, `http://127.0.0.1:${port}/`)
 
     browser = await chromium.launch({
       executablePath: await resolveChromeExecutable(),
@@ -248,6 +280,7 @@ describe('demo/web Vite source HMR', () => {
       waitUntil: 'domcontentloaded',
       timeout: Math.min(serverTimeoutMs, 60_000),
     })
+    await waitForInitialRender(page, item, baseUrl)
 
     await mutateSource(item, sourceFile)
     await waitForDomHmr(page, item)

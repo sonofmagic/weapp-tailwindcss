@@ -1,9 +1,27 @@
 import { vi } from 'vitest'
 import { useToggleTheme } from '@/index'
 
-function createDocumentMock() {
+function createDeferred<T = void>() {
+  let resolve!: (value: T | PromiseLike<T>) => void
+  let reject!: (reason?: unknown) => void
+  const promise = new Promise<T>((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise
+    reject = rejectPromise
+  })
+
+  return {
+    promise,
+    reject,
+    resolve,
+  }
+}
+
+function createDocumentMock(options: {
+  animationFinished?: Promise<void>
+  transitionFinished?: Promise<void>
+} = {}) {
   const animate = vi.fn(() => ({
-    finished: Promise.resolve(),
+    finished: options.animationFinished ?? Promise.resolve(),
   }))
   const attributes = new Map<string, string>()
   const styleProperties = new Map<string, string>()
@@ -35,7 +53,7 @@ function createDocumentMock() {
     })
     return {
       ready: updateCallbackDone.then(() => {}),
-      finished: Promise.resolve(),
+      finished: options.transitionFinished ?? Promise.resolve(),
       updateCallbackDone,
     }
   })
@@ -148,6 +166,44 @@ describe('useToggleTheme', () => {
     expect(options).toMatchObject({
       pseudoElement: '::view-transition-new(root)',
     })
+  })
+
+  it('keeps transition state until the browser view transition finishes', async () => {
+    let dark = false
+    const animationFinished = createDeferred()
+    const transitionFinished = createDeferred()
+    const { documentLike, documentElement, style } = createDocumentMock({
+      animationFinished: animationFinished.promise,
+      transitionFinished: transitionFinished.promise,
+    })
+
+    const { toggleTheme } = useToggleTheme({
+      toggle: () => {
+        dark = !dark
+      },
+      isCurrentDark: () => dark,
+      document: documentLike,
+      window: windowMock,
+    })
+
+    const task = toggleTheme({ clientX: 100, clientY: 120 })
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(documentElement.getAttribute('data-theme-transition')).toBe('to-dark')
+
+    animationFinished.resolve()
+    await Promise.resolve()
+    await Promise.resolve()
+
+    expect(documentElement.getAttribute('data-theme-transition')).toBe('to-dark')
+    expect(style.getPropertyValue('--theme-transition-radius')).not.toBe('')
+
+    transitionFinished.resolve()
+    await task
+
+    expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(style.getPropertyValue('--theme-transition-radius')).toBe('')
   })
 
   it('sets transition state before toggling from dark to light and cleans it afterwards', async () => {

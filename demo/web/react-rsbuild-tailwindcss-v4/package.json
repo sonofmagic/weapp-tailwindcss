@@ -1,0 +1,41 @@
+{
+  "name": "@weapp-tailwindcss-demo/web-react-rsbuild-tailwindcss-v4",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "rsbuild dev",
+    "dev:weapp": "cross-env WEAPP_TW_TARGET=weapp rsbuild dev",
+    "build": "pnpm run build:web",
+    "build:web": "rsbuild build",
+    "build:weapp": "cross-env WEAPP_TW_TARGET=weapp RSDIST=dist-weapp rsbuild build",
+    "preview": "rsbuild preview",
+    "predev": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:weapp": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:web": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:weapp": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "react": "catalog:react19",
+    "react-dom": "catalog:react19"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "^2.0.15",
+    "@rsbuild/plugin-react": "^2.1.0",
+    "@types/react": "catalog:react19",
+    "@types/react-dom": "catalog:react19",
+    "cross-env": "catalog:crossEnv",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "catalog:typescript59",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/web/react-rsbuild-tailwindcss-v4"
+  }
+}
