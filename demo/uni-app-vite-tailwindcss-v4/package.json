@@ -100,7 +100,7 @@
     "@dcloudio/uni-mp-xhs": "3.0.0-5000720260410001",
     "@dcloudio/uni-quickapp-webview": "3.0.0-5000720260410001",
     "tailwindcss-core-plugins-extractor": "workspace:*",
-    "vue": "^3.5.38",
+    "vue": "^3.5.39",
     "vue-i18n": "^9.1.9"
   },
   "devDependencies": {
@@ -112,7 +112,7 @@
     "@egoist/tailwindcss-icons": "catalog:egoistTailwindcssIcons",
     "@iconify-json/lucide": "catalog:iconifyJson",
     "@iconify-json/mdi": "catalog:iconifyJson",
-    "@vue/runtime-core": "^3.5.38",
+    "@vue/runtime-core": "^3.5.39",
     "@vue/tsconfig": "^0.9.1",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",

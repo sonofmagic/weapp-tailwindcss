@@ -121,7 +121,7 @@ catalogs:
     tailwindcss-4: npm:tailwindcss@^4.3.1
     tailwindcss4: npm:tailwindcss@^4.3.1
   tailwindcssPatch:
-    tailwindcss-patch: 9.5.0
+    tailwindcss-patch: 9.5.1
   tailwindcssMangleEngine:
     '@tailwindcss-mangle/engine': 0.1.1
   tailwindcssRem:
@@ -186,7 +186,7 @@ catalogs:
   tsx:
     tsx: ^4.22.4
   typesNode2410:
-    '@types/node': ^24.13.2
+    '@types/node': ^26.0.1
   typescript59:
     typescript: ^6.0.3
   typescript59tilde:
@@ -220,9 +220,9 @@ catalogs:
   vue2:
     vue: ^2.7.16
   vue3:
-    '@vue/compiler-dom': ^3.5.38
-    '@vue/compiler-sfc': ^3.5.38
-    vue: ^3.5.38
+    '@vue/compiler-dom': ^3.5.39
+    '@vue/compiler-sfc': ^3.5.39
+    vue: ^3.5.39
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
@@ -232,6 +232,6 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.4.10
   weappVite:
-    weapp-vite: ^6.17.3
+    weapp-vite: ^6.17.4
   wrangler:
     wrangler: ^4.104.0
