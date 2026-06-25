@@ -101,6 +101,9 @@ describe('tailwindcss', () => {
     expect(css).toContain('::view-transition-old(root)')
     expect(css).toContain('::view-transition-new(root)')
     expect(css).toContain('@media (prefers-color-scheme: dark)')
+    expect(css).toContain('[data-theme-transition="to-dark"]::view-transition-new(root)')
+    expect(css).toContain('[data-theme-transition="from-dark"]::view-transition-old(root)')
+    expect(css).toContain('var(--theme-transition-radius)')
   })
 
   it('themeTransitionPlugin darkMode selector case 0', async () => {

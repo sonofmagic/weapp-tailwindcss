@@ -5,6 +5,29 @@ function createDocumentMock() {
   const animate = vi.fn(() => ({
     finished: Promise.resolve(),
   }))
+  const attributes = new Map<string, string>()
+  const styleProperties = new Map<string, string>()
+  const style = {
+    setProperty: vi.fn((property: string, value: string) => {
+      styleProperties.set(property, value)
+    }),
+    removeProperty: vi.fn((property: string) => {
+      styleProperties.delete(property)
+    }),
+    getPropertyValue: vi.fn((property: string) => styleProperties.get(property) ?? ''),
+  }
+  const documentElement = {
+    animate,
+    getBoundingClientRect: () => ({ width: 1024, height: 768, top: 0, left: 0, right: 1024, bottom: 768 }),
+    getAttribute: vi.fn((name: string) => attributes.get(name) ?? null),
+    removeAttribute: vi.fn((name: string) => {
+      attributes.delete(name)
+    }),
+    setAttribute: vi.fn((name: string, value: string) => {
+      attributes.set(name, value)
+    }),
+    style,
+  }
 
   const startViewTransition = vi.fn((callback: () => Promise<void> | void) => {
     const updateCallbackDone = Promise.resolve().then(async () => {
@@ -18,17 +41,16 @@ function createDocumentMock() {
   })
 
   const documentLike = {
-    documentElement: {
-      animate,
-      getBoundingClientRect: () => ({ width: 1024, height: 768, top: 0, left: 0, right: 1024, bottom: 768 }),
-    },
+    documentElement,
     startViewTransition,
   } as unknown as Parameters<typeof useToggleTheme>[0]['document']
 
   return {
     animate,
     documentLike,
+    documentElement,
     startViewTransition,
+    style,
   }
 }
 
@@ -87,12 +109,73 @@ describe('useToggleTheme', () => {
       Math.max(120, 768 - 120),
     )
     expect(keyframes.clipPath).toEqual([
-      `circle(${expectedRadius}px at 100px 120px)`,
       'circle(0px at 100px 120px)',
+      `circle(${expectedRadius}px at 100px 120px)`,
     ])
     expect(options).toMatchObject({
       duration: 400,
       easing: 'ease-in',
+      pseudoElement: '::view-transition-new(root)',
+    })
+  })
+
+  it('sets transition state before toggling from light to dark and cleans it afterwards', async () => {
+    let dark = false
+    const { documentLike, animate, documentElement, style } = createDocumentMock()
+    const states: Array<string | null> = []
+
+    const { toggleTheme } = useToggleTheme({
+      toggle: () => {
+        states.push(documentElement.getAttribute('data-theme-transition'))
+        expect(style.getPropertyValue('--theme-transition-x')).toBe('100px')
+        expect(style.getPropertyValue('--theme-transition-y')).toBe('120px')
+        dark = !dark
+      },
+      isCurrentDark: () => dark,
+      document: documentLike,
+      window: windowMock,
+    })
+
+    await toggleTheme({ clientX: 100, clientY: 120 })
+
+    expect(states).toEqual(['to-dark'])
+    expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(style.getPropertyValue('--theme-transition-x')).toBe('')
+    expect(style.removeProperty).toHaveBeenCalledWith('--theme-transition-radius')
+
+    const [keyframes, options] = animate.mock.calls[0]
+    expect(keyframes.clipPath[0]).toBe('circle(0px at 100px 120px)')
+    expect(options).toMatchObject({
+      pseudoElement: '::view-transition-new(root)',
+    })
+  })
+
+  it('sets transition state before toggling from dark to light and cleans it afterwards', async () => {
+    let dark = true
+    const { documentLike, animate, documentElement, style } = createDocumentMock()
+    const states: Array<string | null> = []
+
+    const { toggleTheme } = useToggleTheme({
+      toggle: () => {
+        states.push(documentElement.getAttribute('data-theme-transition'))
+        expect(style.getPropertyValue('--theme-transition-radius')).not.toBe('')
+        dark = !dark
+      },
+      isCurrentDark: () => dark,
+      document: documentLike,
+      window: windowMock,
+    })
+
+    await toggleTheme({ clientX: 100, clientY: 120 })
+
+    expect(states).toEqual(['from-dark'])
+    expect(documentElement.getAttribute('data-theme-transition')).toBeNull()
+    expect(style.getPropertyValue('--theme-transition-radius')).toBe('')
+
+    const [keyframes, options] = animate.mock.calls[0]
+    expect(keyframes.clipPath[0]).toMatch(/^circle\(.+px at 100px 120px\)$/)
+    expect(keyframes.clipPath[1]).toBe('circle(0px at 100px 120px)')
+    expect(options).toMatchObject({
       pseudoElement: '::view-transition-old(root)',
     })
   })

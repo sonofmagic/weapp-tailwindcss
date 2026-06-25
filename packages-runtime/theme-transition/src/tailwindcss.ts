@@ -150,6 +150,21 @@ function createThemeTransitionPlugin(themeTransitionPluginOptions?: ThemeTransit
     }
     // 或者 mode === 'variant'
 
+    rule['[data-theme-transition="to-dark"]::view-transition-old(root)'] = {
+      zIndex: floor,
+    }
+    rule['[data-theme-transition="to-dark"]::view-transition-new(root)'] = {
+      clipPath: 'circle(0px at var(--theme-transition-x) var(--theme-transition-y))',
+      zIndex: ceiling,
+    }
+    rule['[data-theme-transition="from-dark"]::view-transition-old(root)'] = {
+      clipPath: 'circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y))',
+      zIndex: ceiling,
+    }
+    rule['[data-theme-transition="from-dark"]::view-transition-new(root)'] = {
+      zIndex: floor,
+    }
+
     addBase(
       rule,
     )

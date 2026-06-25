@@ -58,6 +58,50 @@ export interface UseToggleThemeResult {
   environment: ToggleThemeEnvironment
 }
 
+type ThemeTransitionDirection = 'to-dark' | 'from-dark'
+type ThemeTransitionStyleDeclaration = Pick<CSSStyleDeclaration, 'removeProperty' | 'setProperty'>
+
+const themeTransitionAttribute = 'data-theme-transition'
+const themeTransitionCustomProperties = [
+  '--theme-transition-x',
+  '--theme-transition-y',
+  '--theme-transition-radius',
+] as const
+
+function getStyleDeclaration(target: Element | null) {
+  const style = (target as { style?: unknown } | null)?.style
+  if (!style || typeof style !== 'object') {
+    return undefined
+  }
+
+  const maybeStyle = style as Partial<ThemeTransitionStyleDeclaration>
+  return typeof maybeStyle.setProperty === 'function' && typeof maybeStyle.removeProperty === 'function'
+    ? maybeStyle as ThemeTransitionStyleDeclaration
+    : undefined
+}
+
+function applyTransitionState(
+  target: Element | null,
+  direction: ThemeTransitionDirection,
+  x: number,
+  y: number,
+  endRadius: number,
+) {
+  const style = getStyleDeclaration(target)
+
+  target?.setAttribute?.(themeTransitionAttribute, direction)
+  style?.setProperty('--theme-transition-x', `${x}px`)
+  style?.setProperty('--theme-transition-y', `${y}px`)
+  style?.setProperty('--theme-transition-radius', `${endRadius}px`)
+
+  return () => {
+    target?.removeAttribute?.(themeTransitionAttribute)
+    for (const property of themeTransitionCustomProperties) {
+      style?.removeProperty(property)
+    }
+  }
+}
+
 export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeResult {
   const {
     toggle,
@@ -132,7 +176,16 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
     const { clipPath, reverseClipPath } = createClipPathKeyframes({ x, y, endRadius })
 
     let transitionWorkExecuted = false
+    let cleanupTransitionState: (() => void) | undefined
     try {
+      const isDark = Boolean(isCurrentDark?.())
+      cleanupTransitionState = applyTransitionState(
+        environment.target,
+        isDark ? 'from-dark' : 'to-dark',
+        x,
+        y,
+        endRadius,
+      )
       const transition = startViewTransition!(async () => {
         transitionWorkExecuted = true
         await runTransitionWork()
@@ -140,7 +193,6 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
 
       await transition.ready
 
-      const isDark = Boolean(isCurrentDark?.())
       const animation = environment.target.animate?.(
         {
           clipPath: isDark ? reverseClipPath : clipPath,
@@ -161,6 +213,9 @@ export function useToggleTheme(options: UseToggleThemeOptions): UseToggleThemeRe
       if (!transitionWorkExecuted) {
         await runWithoutViewTransition()
       }
+    }
+    finally {
+      cleanupTransitionState?.()
     }
   }
   return {

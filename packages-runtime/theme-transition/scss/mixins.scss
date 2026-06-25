@@ -20,4 +20,22 @@
   #{$darkSelector}::view-transition-new(root) {
     z-index: $floorZIndex;
   }
+
+  [data-theme-transition='to-dark']::view-transition-old(root) {
+    z-index: $floorZIndex;
+  }
+
+  [data-theme-transition='to-dark']::view-transition-new(root) {
+    clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
+    z-index: $ceilingZIndex;
+  }
+
+  [data-theme-transition='from-dark']::view-transition-old(root) {
+    clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+    z-index: $ceilingZIndex;
+  }
+
+  [data-theme-transition='from-dark']::view-transition-new(root) {
+    z-index: $floorZIndex;
+  }
 }

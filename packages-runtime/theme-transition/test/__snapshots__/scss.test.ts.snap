@@ -21,6 +21,24 @@ exports[`scss > compileString 1`] = `
 
 .dark::view-transition-new(root) {
   z-index: 1;
+}
+
+[data-theme-transition=to-dark]::view-transition-old(root) {
+  z-index: 1;
+}
+
+[data-theme-transition=to-dark]::view-transition-new(root) {
+  clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 2147483646;
+}
+
+[data-theme-transition=from-dark]::view-transition-old(root) {
+  clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 2147483646;
+}
+
+[data-theme-transition=from-dark]::view-transition-new(root) {
+  z-index: 1;
 }"
 `;
 
@@ -44,6 +62,24 @@ exports[`scss > compileString case 0 1`] = `
 }
 
 [data-theme=dark]::view-transition-new(root) {
+  z-index: 1;
+}
+
+[data-theme-transition=to-dark]::view-transition-old(root) {
+  z-index: 1;
+}
+
+[data-theme-transition=to-dark]::view-transition-new(root) {
+  clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 2147483646;
+}
+
+[data-theme-transition=from-dark]::view-transition-old(root) {
+  clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 2147483646;
+}
+
+[data-theme-transition=from-dark]::view-transition-new(root) {
   z-index: 1;
 }"
 `;
@@ -69,6 +105,24 @@ exports[`scss > compileString case 1 1`] = `
 
 [data-theme=dark]::view-transition-new(root) {
   z-index: 2;
+}
+
+[data-theme-transition=to-dark]::view-transition-old(root) {
+  z-index: 2;
+}
+
+[data-theme-transition=to-dark]::view-transition-new(root) {
+  clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 3;
+}
+
+[data-theme-transition=from-dark]::view-transition-old(root) {
+  clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 3;
+}
+
+[data-theme-transition=from-dark]::view-transition-new(root) {
+  z-index: 2;
 }"
 `;
 
@@ -92,6 +146,24 @@ exports[`scss > index 1`] = `
 }
 
 .dark::view-transition-new(root) {
+  z-index: 1;
+}
+
+[data-theme-transition=to-dark]::view-transition-old(root) {
+  z-index: 1;
+}
+
+[data-theme-transition=to-dark]::view-transition-new(root) {
+  clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 2147483646;
+}
+
+[data-theme-transition=from-dark]::view-transition-old(root) {
+  clip-path: circle(var(--theme-transition-radius) at var(--theme-transition-x) var(--theme-transition-y));
+  z-index: 2147483646;
+}
+
+[data-theme-transition=from-dark]::view-transition-new(root) {
   z-index: 1;
 }"
 `;
