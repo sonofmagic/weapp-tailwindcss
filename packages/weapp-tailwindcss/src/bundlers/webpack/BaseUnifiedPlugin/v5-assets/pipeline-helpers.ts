@@ -628,6 +628,43 @@ export function shouldFallbackToWebpackUserCssOnGeneratorError(options: {
     && options.configuredMainCssEntryFilesLength === 0
 }
 
+function isWindowsAbsoluteResourcePath(file: string) {
+  return /^[a-z]:[\\/]/i.test(file) || /^[/\\]{2}[^/\\]/.test(file)
+}
+
+function isPosixAbsoluteResourcePath(file: string) {
+  return file.startsWith('/')
+}
+
+function resolveWebpackResourcePath(file: string, base?: string | undefined) {
+  if (isWindowsAbsoluteResourcePath(file)) {
+    return path.win32.resolve(file)
+  }
+  if (isPosixAbsoluteResourcePath(file)) {
+    return path.posix.resolve(file)
+  }
+  if (base) {
+    if (isWindowsAbsoluteResourcePath(base)) {
+      return path.win32.resolve(base, file)
+    }
+    if (isPosixAbsoluteResourcePath(base)) {
+      return path.posix.resolve(base, file)
+    }
+    return path.resolve(base, file)
+  }
+  return undefined
+}
+
+function dirnameWebpackResourcePath(file: string) {
+  if (isWindowsAbsoluteResourcePath(file)) {
+    return path.win32.dirname(file)
+  }
+  if (isPosixAbsoluteResourcePath(file)) {
+    return path.posix.dirname(file)
+  }
+  return path.dirname(file)
+}
+
 export function resolveWebpackCssAssetModuleResource(
   resource: string,
   issuer: { context?: string, resource?: string } | undefined,
@@ -643,16 +680,16 @@ export function resolveWebpackCssAssetModuleResource(
   if (!normalized) {
     return undefined
   }
-  if (path.isAbsolute(normalized)) {
-    return path.resolve(normalized)
+  const absoluteResource = resolveWebpackResourcePath(normalized)
+  if (absoluteResource) {
+    return absoluteResource
   }
   const issuerResource = issuer?.resource ? stripResourceQuery(issuer.resource) : undefined
-  const issuerContext = issuerResource && path.isAbsolute(issuerResource)
-    ? path.dirname(issuerResource)
+  const issuerResourcePath = issuerResource ? resolveWebpackResourcePath(issuerResource) : undefined
+  const issuerContext = issuerResourcePath
+    ? dirnameWebpackResourcePath(issuerResourcePath)
     : issuer?.context
-  return issuerContext
-    ? path.resolve(issuerContext, normalized)
-    : undefined
+  return resolveWebpackResourcePath(normalized, issuerContext)
 }
 
 export function isSameWebpackCssSourceScope(options: {
@@ -664,12 +701,18 @@ export function isSameWebpackCssSourceScope(options: {
   if (!options.currentSourceFile) {
     return false
   }
-  if (path.resolve(options.candidateSourceFile) === path.resolve(options.currentSourceFile)) {
+  const candidateKey = resolveWebpackResourcePath(options.candidateSourceFile) ?? path.resolve(options.candidateSourceFile)
+  const currentKey = resolveWebpackResourcePath(options.currentSourceFile) ?? path.resolve(options.currentSourceFile)
+  if (candidateKey === currentKey) {
     return true
   }
-  const candidateKey = path.resolve(options.candidateSourceFile)
   const outputResources = options.resourcesByAsset.get(options.outputFile)
-  return outputResources?.has(candidateKey) === true
+  if (!outputResources) {
+    return false
+  }
+  return [...outputResources].some((resource) => {
+    return (resolveWebpackResourcePath(resource) ?? path.resolve(resource)) === candidateKey
+  })
 }
 
 export function shouldAppendCurrentWebpackAssetUserCss(options: {

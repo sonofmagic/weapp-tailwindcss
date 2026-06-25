@@ -391,6 +391,14 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(resolveWebpackCssAssetModuleResource('/repo/src/app.wxss?type=styles', undefined, { appType: 'mpx', cssMatcher })).toBe('/repo/src/app.wxss')
   })
 
+  it('resolves Windows webpack css module resources without rewriting POSIX absolute resources', () => {
+    const cssMatcher = (file: string) => file.endsWith('.css')
+    expect(resolveWebpackCssAssetModuleResource('D:\\repo\\src\\app.css?modules', undefined, { cssMatcher })).toBe('D:\\repo\\src\\app.css')
+    expect(resolveWebpackCssAssetModuleResource('./page.css?modules', { resource: 'D:\\repo\\src\\pages\\index.js' }, { cssMatcher })).toBe('D:\\repo\\src\\pages\\page.css')
+    expect(resolveWebpackCssAssetModuleResource('./page.css?modules', { context: 'D:\\repo\\src\\pages' }, { cssMatcher })).toBe('D:\\repo\\src\\pages\\page.css')
+    expect(resolveWebpackCssAssetModuleResource('/repo/src/app.css?modules', undefined, { cssMatcher })).toBe('/repo/src/app.css')
+  })
+
   it('checks whether registered css sources share the same webpack output scope', () => {
     const resourcesByAsset = new Map<string, Set<string>>([
       ['pages/index.css', new Set(['/repo/src/pages/index.css'])],
@@ -415,6 +423,24 @@ describe('bundlers/webpack v5-assets helpers', () => {
     expect(isSameWebpackCssSourceScope({
       candidateSourceFile: '/repo/src/other.css',
       currentSourceFile: '/repo/src/app.css',
+      outputFile: 'pages/index.css',
+      resourcesByAsset,
+    })).toBe(false)
+  })
+
+  it('checks webpack css source scope across Windows resource keys', () => {
+    const resourcesByAsset = new Map<string, Set<string>>([
+      ['pages/index.css', new Set(['D:\\repo\\src\\pages\\index.css'])],
+    ])
+    expect(isSameWebpackCssSourceScope({
+      candidateSourceFile: 'D:\\repo\\src\\pages\\index.css',
+      currentSourceFile: 'D:\\repo\\src\\app.css',
+      outputFile: 'pages/index.css',
+      resourcesByAsset,
+    })).toBe(true)
+    expect(isSameWebpackCssSourceScope({
+      candidateSourceFile: 'D:\\repo\\src\\other.css',
+      currentSourceFile: 'D:\\repo\\src\\app.css',
       outputFile: 'pages/index.css',
       resourcesByAsset,
     })).toBe(false)
