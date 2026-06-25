@@ -1,5 +1,15 @@
 # weapp-tailwindcss
 
+## 5.1.2
+
+### Patch Changes
+
+- 🐛 **修复 uni-app Vite 产物阶段可能把 Vue 模板源码当作样式交给 PostCSS 解析的问题，避免动态 `:style` 模板触发 `Unknown word` 报错。** [`cb75ed9`](https://github.com/sonofmagic/weapp-tailwindcss/commit/cb75ed92e9cbbe1b5c1f94a717b7191b96f26377) by @sonofmagic
+
+- 🐛 **新增 Web 端 Tailwind CSS v4 产物兼容降级配置，可通过 `generator.webCompat` 移除或降级 `@theme`、`@layer`、`@property`、现代颜色函数与相关 `@supports`，以适配更多 Android/iOS WebView 场景。** [`9ce2cd5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9ce2cd590ea2a373f4372d499a10ed8a2d333d0c) by @sonofmagic
+- 📦 **Dependencies** [`9ce2cd5`](https://github.com/sonofmagic/weapp-tailwindcss/commit/9ce2cd590ea2a373f4372d499a10ed8a2d333d0c)
+  → `@weapp-tailwindcss/postcss@3.1.2`
+
 ## 5.1.1
 
 ### Patch Changes
