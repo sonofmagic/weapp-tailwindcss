@@ -3,7 +3,7 @@ import type {
   TailwindcssRuntimeLike,
 } from '@/types'
 import { createDebug } from '@/debug'
-import { createTailwindV4Engine, resolveTailwindV4SourceFromRuntime } from '@/tailwindcss/v4-engine'
+import { createTailwindV4Engine, loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime, resolveValidTailwindV4Candidates } from '@/tailwindcss/v4-engine'
 import {
   getRuntimeClassSetCacheEntry,
   getRuntimeClassSetSignatureWithSources,
@@ -211,8 +211,12 @@ async function collectTailwindV4GeneratorClassSet(tailwindRuntime: TailwindcssRu
       scanSources: true,
       target: 'web',
     })
-    debug('runtime class set resolved via tailwindcss v4 generator source scan, size=%d', generated.classSet.size)
-    return generated.classSet
+    const designSystem = await loadTailwindV4DesignSystem(source)
+    const classSet = resolveValidTailwindV4Candidates(designSystem, generated.classSet, {
+      ...(source.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: source.bareArbitraryValues }),
+    })
+    debug('runtime class set resolved via tailwindcss v4 generator source scan, raw=%d valid=%d', generated.classSet.size, classSet.size)
+    return classSet
   }
   catch (error) {
     debug('tailwindcss v4 generator source scan failed, continuing fallback chain: %O', error)

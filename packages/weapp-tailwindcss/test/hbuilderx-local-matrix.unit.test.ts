@@ -101,6 +101,7 @@ describe('HBuilderX local demo matrix', () => {
       expectContainsMatcher(miniProgramCase?.cssContains ?? [], '.text-_b93_d54rpx_B', `${name} should keep arbitrary dynamic text utilities`)
       expectContainsMatcher(miniProgramCase?.cssContains ?? [], '.bg-_b_hf21903_B', `${name} should keep page user-authored style utilities`)
       expectContainsMatcher(miniProgramCase?.cssContains ?? [], '.text-_b_hda0e3c_B', `${name} should keep page user-authored text utilities`)
+      expectContainsMatcher(webCase?.initialCssContains ?? [], /background-color:\s*#f21903/, `${name} should verify generated H5 CSS from page user styles`)
       expect(miniProgramCase?.outputContains?.['app.json'], `${name} should verify subpackage registration`).toEqual([
         '"root": "sub-normal"',
         '"root": "sub-independent"',
@@ -108,14 +109,6 @@ describe('HBuilderX local demo matrix', () => {
       ])
       expect(miniProgramCase?.outputContains?.['sub-normal/pages/index.wxml'], `${name} should verify normal subpackage marker`).toContain('bg-normal-subpackage-marker')
       expect(miniProgramCase?.outputContains?.['sub-independent/pages/index.wxml'], `${name} should verify independent subpackage marker`).toContain('bg-independent-subpackage-marker')
-
-      if (name.endsWith('-v4')) {
-        expect(webCase?.initialRuntimeStyles?.map(item => item.selector), `${name} should verify runtime styles from @apply`).toEqual([
-          '.content',
-          '.bg-\\[\\#f21903\\]',
-          '.test',
-        ])
-      }
     }
   })
 

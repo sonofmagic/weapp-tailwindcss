@@ -1,5 +1,6 @@
 import type { OutputAsset, OutputChunk } from 'rollup'
 import type { GenerateBundleContext, GenerateBundleThis } from './generate-bundle/types'
+import { Buffer } from 'node:buffer'
 import path from 'node:path'
 import process from 'node:process'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
@@ -16,7 +17,6 @@ import { hasBundlerGeneratedCssMarker, stripBundlerGeneratedCssMarkers } from '.
 import { validateCandidatesByGenerator } from '../shared/generator-css'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives } from '../shared/generator-css/directives'
 import { normalizeOutputPathKey } from '../shared/module-graph'
-import { pushConcurrentTaskFactories } from '../shared/run-tasks'
 import { generateTailwindV4Css } from '../shared/v4-generation-core'
 import { createBundleModuleGraphOptions } from './bundle-entries'
 import { buildBundleSnapshot, createBundleBuildState } from './bundle-state'
@@ -320,28 +320,50 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
     const filteredGeneratorCandidates = shouldFilterTailwindV4MiniProgramCandidates
       ? filterUnsupportedMiniProgramTailwindV4Candidates(collectedGeneratorCandidates)
       : collectedGeneratorCandidates
-    const transformRuntime = new Set(filteredGeneratorCandidates)
+    const filteredSourceCandidates = shouldFilterTailwindV4MiniProgramCandidates
+      ? filterUnsupportedMiniProgramTailwindV4Candidates(sourceCandidates)
+      : sourceCandidates
+    const transformRuntime = shouldFilterTailwindV4MiniProgramCandidates
+      ? new Set(runtime)
+      : new Set(filteredGeneratorCandidates)
     const generatorRuntime = filteredGeneratorCandidates
     const cssEntries = snapshot.entries.filter(entry =>
       entry.type === 'css' && entry.output.type === 'asset')
-    if (sourceCandidates.size > 0 && jsEntries.size > 0) {
+    const hasMultipleConfiguredCssEntries = (opts.cssEntries?.length ?? 0) > 1
+    if (sourceCandidates.size > 0 && !hasMultipleConfiguredCssEntries) {
       const mainCssEntry = cssEntries.find(entry => getCssHandlerOptions(entry.file).isMainChunk) ?? cssEntries[0]
       if (mainCssEntry) {
-        const validatedSourceRuntime = await validateCandidatesByGenerator({
-          opts,
-          runtimeState,
-          candidates: filteredGeneratorCandidates,
-          rawSource: mainCssEntry.source,
-          file: mainCssEntry.file,
-          cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
-          cssUserHandlerOptions: getCssUserHandlerOptions(mainCssEntry.file),
-          styleHandler,
-          debug,
-          skipGenerateFallback: true,
-        })
-        if (validatedSourceRuntime.size > 0) {
-          for (const candidate of validatedSourceRuntime) {
-            transformRuntime.add(candidate)
+        const mainCssRawSource = typeof mainCssEntry.output.source === 'string'
+          ? mainCssEntry.output.source
+          : Buffer.from(mainCssEntry.output.source).toString()
+        const shouldValidateSourceRuntime = !hasTailwindApplyDirective(mainCssRawSource)
+        if (shouldValidateSourceRuntime) {
+          const generatedCssSources = new Set<string>()
+          for (const [, record] of getViteProcessedCssAssetResults?.() ?? []) {
+            if (typeof record === 'string') {
+              generatedCssSources.add(record)
+            }
+            else if (typeof record?.css === 'string') {
+              generatedCssSources.add(record.css)
+            }
+          }
+          const validatedSourceRuntime = await validateCandidatesByGenerator({
+            opts,
+            runtimeState,
+            candidates: filteredSourceCandidates,
+            rawSource: mainCssRawSource,
+            generatedCssSources,
+            file: mainCssEntry.file,
+            cssHandlerOptions: getCssHandlerOptions(mainCssEntry.file),
+            cssUserHandlerOptions: getCssUserHandlerOptions(mainCssEntry.file),
+            styleHandler,
+            debug,
+            skipGenerateFallback: false,
+          })
+          if (validatedSourceRuntime.size > 0) {
+            for (const candidate of validatedSourceRuntime) {
+              transformRuntime.add(candidate)
+            }
           }
         }
       }
@@ -919,6 +941,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     debug('css diff %s: %s', generatorSourceFile, summarizeStringDiff(generatorRawSource, tracedCss))
                   }
                   debug('css generated result: %s bytes=%d', file, tracedCss.length)
+                  for (const candidate of generated.classSet ?? []) {
+                    transformRuntime.add(candidate)
+                  }
                   recordCssAssetResult?.(outputFile, tracedCss)
                   recordViteProcessedCssAssetResult?.(outputFile, tracedCss, {
                     injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
@@ -1053,7 +1078,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       })
     }
 
-    pushConcurrentTaskFactories(tasks, jsTaskFactories)
     await finalizeGenerateBundle({
       activeProcessCacheKeys,
       activeProcessHashKeys,
@@ -1078,6 +1102,8 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       isNativeAppStyleTarget,
       isViteProcessedCssAsset,
       isWebGeneratorTarget,
+      jsAfterCss: shouldFilterTailwindV4MiniProgramCandidates && cssTaskFactories.length > 0,
+      jsTaskFactories,
       lastCssResultByFile,
       lastCssSourceHashByFile,
       linkedByEntry,

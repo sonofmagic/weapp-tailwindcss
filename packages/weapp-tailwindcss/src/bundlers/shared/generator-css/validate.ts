@@ -1,12 +1,11 @@
 import type { GenerateCssByGeneratorOptions } from './types'
-import {
-  createWeappTailwindcssGenerator,
-  normalizeWeappTailwindcssGeneratorOptions,
-} from '@/generator'
+import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
+import { collectGeneratedRawSourceCandidates } from './class-selectors'
 import { resolveGeneratorSources } from './source-resolver'
 
 export interface ValidateCandidatesByGeneratorOptions extends Omit<GenerateCssByGeneratorOptions, 'runtime'> {
   candidates: Set<string>
+  generatedCssSources?: Iterable<string> | undefined
   skipGenerateFallback?: boolean | undefined
 }
 
@@ -21,47 +20,51 @@ export async function validateCandidatesByGenerator(
     opts,
     rawSource,
     runtimeState,
-    skipGenerateFallback,
   } = options
   const majorVersion = runtimeState.tailwindRuntime.majorVersion
   if (majorVersion !== 4 || candidates.size === 0) {
     return new Set<string>()
   }
-
-  const generatorOptions = {
-    ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
-    bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
-  }
-  const sources = await resolveGeneratorSources(
-    majorVersion,
-    runtimeState,
-    rawSource,
-    file,
-    cssHandlerOptions,
-    generatorOptions,
-    {
-      cssEntries: opts.cssEntries,
-      runtime: candidates,
-    },
-  )
-  const classSets = await Promise.all(sources.map(async (source) => {
-    const generator = createWeappTailwindcssGenerator(source)
-    if (generatorOptions.bareArbitraryValues === undefined || generatorOptions.bareArbitraryValues === false) {
-      if (typeof generator.validateCandidates === 'function') {
-        return generator.validateCandidates(candidates)
+  const classSet = new Set<string>()
+  try {
+    const generatorOptions = {
+      ...normalizeWeappTailwindcssGeneratorOptions(opts.generator),
+      bareArbitraryValues: opts.arbitraryValues?.bareArbitraryValues,
+    }
+    const sources = await resolveGeneratorSources(
+      majorVersion,
+      runtimeState,
+      rawSource,
+      file,
+      cssHandlerOptions,
+      generatorOptions,
+      {
+        cssEntries: opts.cssEntries,
+        runtime: candidates,
+      },
+    )
+    const classSets = await Promise.all(sources.map(async (source) => {
+      const generator = createWeappTailwindcssGenerator(source)
+      if (typeof generator.validateCandidates !== 'function') {
+        return new Set<string>()
       }
+      return generator.validateCandidates(candidates)
+    }))
+    for (const candidate of classSets.flatMap(item => [...item])) {
+      classSet.add(candidate)
     }
-    if (skipGenerateFallback) {
-      return new Set<string>()
+  }
+  catch {
+  }
+  const rawSourceCandidates = collectGeneratedRawSourceCandidates(candidates, rawSource, opts.escapeMap)
+  for (const candidate of rawSourceCandidates) {
+    classSet.add(candidate)
+  }
+  for (const generatedCss of options.generatedCssSources ?? []) {
+    for (const candidate of collectGeneratedRawSourceCandidates(candidates, generatedCss, opts.escapeMap)) {
+      classSet.add(candidate)
     }
-    const generated = await generator.generate({
-      bareArbitraryValues: generatorOptions.bareArbitraryValues,
-      candidates,
-      target: 'web',
-    })
-    return generated.classSet
-  }))
-  const classSet = new Set(classSets.flatMap(item => [...item]))
+  }
   debug(
     'tailwind generator validated candidates: %s candidates=%d classSet=%d',
     file,

@@ -1,7 +1,6 @@
 import type { RollupOutput } from 'rollup'
 import type { InlineConfig, Plugin } from 'vite'
 import path from 'node:path'
-import tailwindcss from '@tailwindcss/postcss'
 import { defu } from 'defu'
 import * as Diff from 'diff'
 import prettier from 'prettier'
@@ -11,14 +10,6 @@ import { WeappTailwindcss as weappTw } from '@/bundlers/vite/index'
 // const isH5 = process.env.UNI_PLATFORM === 'h5'
 // const isApp = process.env.UNI_PLATFORM === 'app-plus'
 // const WeappTailwindcssDisabled = isH5 || isApp
-// postcss 插件配置
-const postcssPlugins = [
-  // require('autoprefixer')(),
-  tailwindcss({
-    base: path.resolve(__dirname, '../fixtures/vite/src'),
-  }),
-]
-
 async function assertSnap(
   plugin?: Plugin | Plugin[] | undefined,
   options?: InlineConfig,
@@ -56,11 +47,6 @@ async function assertSnap(
     root: path.resolve(__dirname, '../fixtures/vite/src'),
     plugins: vitePlugins,
     logLevel: 'silent',
-    css: {
-      postcss: {
-        plugins: postcssPlugins,
-      },
-    },
     build: {
       write: false,
     },

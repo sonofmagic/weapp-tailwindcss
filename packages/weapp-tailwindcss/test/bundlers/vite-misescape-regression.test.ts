@@ -93,6 +93,49 @@ const view = <View className="${runtimeClass}">Hello world!</View>
     expect(result).not.toContain('before_ccontent-_b_qnot-generated_q_B')
   })
 
+  it('keeps unvalidated source candidates out of Vite JS transform runtime', () => {
+    const runtimeClass = 'text-[55rpx]'
+    const sourceCandidates = new Set([
+      runtimeClass,
+      'bg-purple-300',
+      'Hello',
+      'world!',
+      'keep-[business]',
+      'https://example.com/a[b]?q=Hello',
+    ])
+    const runtime = new Set([runtimeClass])
+    const validatedSourceRuntime = new Set(['bg-purple-300'])
+    const transformRuntime = new Set(runtime)
+    for (const candidate of validatedSourceRuntime) {
+      transformRuntime.add(candidate)
+    }
+    const jsHandler = createJsHandler({
+      babelParserOptions: {
+        sourceType: 'module',
+        plugins: ['jsx', 'typescript'],
+      },
+      escapeMap: MappingChars2String,
+      needEscaped: true,
+      tailwindcssMajorVersion: 4,
+    })
+    const code = `
+const complexExpression = 'size > 4 ? keep-[business] : App.vue:4'
+const urlLikeText = 'https://example.com/a[b]?q=Hello world!'
+const view = <View className="${runtimeClass} bg-purple-300">Hello world!</View>
+`
+
+    const result = jsHandler(code, transformRuntime).code
+
+    expect(sourceCandidates.size).toBeGreaterThan(transformRuntime.size)
+    expect(result).toContain(replaceWxml(runtimeClass, { escapeMap: MappingChars2String }))
+    expect(result).toContain(replaceWxml('bg-purple-300', { escapeMap: MappingChars2String }))
+    expect(result).toContain('Hello world!')
+    expect(result).toContain('keep-[business]')
+    expect(result).toContain('https://example.com/a[b]?q=Hello world!')
+    expect(result).not.toContain('Hello world_e')
+    expect(result).not.toContain('keep-_bbusiness_B')
+  })
+
   it.each(misescapeCases)('keeps non-class JS and JSX text untouched in $label', ({ majorVersion, runtimeClass }) => {
     const jsHandler = createJsHandler({
       babelParserOptions: {

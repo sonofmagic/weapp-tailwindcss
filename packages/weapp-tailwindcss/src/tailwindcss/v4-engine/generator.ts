@@ -172,13 +172,8 @@ function resolveTargetCandidates(
 
 function collectSeenCandidates(
   generated: Pick<Awaited<ReturnType<TailwindV4Engine['generate']>>, 'rawCandidates' | 'classSet'>,
-  requestedCandidates: Set<string>,
 ) {
-  return new Set([
-    ...requestedCandidates,
-    ...generated.rawCandidates,
-    ...generated.classSet,
-  ])
+  return new Set(generated.classSet)
 }
 
 function shouldDelegateWebSourceScanToTailwind(
@@ -273,7 +268,7 @@ function seedIncrementalGenerateCache(options: TailwindV4IncrementalCacheSeedOpt
   const customPropertyValues = collectCustomPropertyValues(options.compatibleSource.css)
   mergeCustomPropertyValues(customPropertyValues, options.generated.css)
   incrementalGenerateCache.set(cacheKey, {
-    seenCandidates: collectSeenCandidates(options.generated, options.requestedCandidates),
+    seenCandidates: collectSeenCandidates(options.generated),
     classSet: new Set(options.generated.classSet),
     css: options.generated.css,
     rawCss: options.generated.rawCss,

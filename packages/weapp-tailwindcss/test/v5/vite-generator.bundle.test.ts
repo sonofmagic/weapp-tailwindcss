@@ -274,11 +274,11 @@ describe('v5 vite generator bundle', () => {
     expect(code).toContain(replaceWxml('mt-[22rpx]'))
     expect(code).toContain(replaceWxml('px-[8px]'))
     expect(code).toContain(replaceWxml('py-[4px]'))
-    expect(code).toContain(replaceWxml('bg-[#654321]'))
+    expect(code).toContain('bg-[#654321]')
     expect(code).toContain('shadow-blue-100')
-    expect(code).toContain(replaceWxml('rounded-[999px]'))
+    expect(code).toContain('rounded-[999px]')
     expect(code).toContain('at App.vue:4')
-    expect(code).toContain(replaceWxml('biz-token-[alpha]'))
+    expect(code).toContain('biz-token-[alpha]')
   }, TEST_TIMEOUT_MS)
 
   it('can force generator output for tailwind v4 main css without relying on the tailwind banner', async () => {

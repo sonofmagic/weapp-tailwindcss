@@ -16,6 +16,7 @@ import {
   readUtf8,
   resolveBaseUrls,
   resolveChromeExecutable,
+  runPnpm,
   serverTimeoutMs,
   spawnPnpm,
   wait,
@@ -59,7 +60,17 @@ function createDevServer(projectRoot: string, port: number) {
     }
   }
 
-  const child = spawnPnpm(projectRoot, ['run', 'dev:h5'], childEnv)
+  const child = spawnPnpm(projectRoot, [
+    'exec',
+    'cross-env',
+    'WEAPP_TW_HMR_TIMING=1',
+    'UNI_INPUT_DIR=.',
+    'uni',
+    '--host',
+    '127.0.0.1',
+    '--port',
+    String(port),
+  ], childEnv)
   devProcess = child
   return child
 }
@@ -273,6 +284,7 @@ export async function runWebHmr(
   hmrSteps: WebHmrStep[],
 ) {
   const port = await findFreePort()
+  await runPnpm(projectRoot, ['run', 'predev:h5'], serverTimeoutMs)
   const child = createDevServer(projectRoot, port)
   const logs = collectProcessOutput(child)
   const baseUrl = `http://127.0.0.1:${port}/`

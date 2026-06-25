@@ -1,5 +1,7 @@
 <template>
   <view class="bg-normal-subpackage-marker before:content-['normal_subpackage_mpx-tailwindcss-v4']">普通分包</view>
+
+  <view class="">tw-watch-mpx-tailwindcss-v4-template-rollback-1782343366855-normal-subpackage</view>
 </template>
 
 <script>

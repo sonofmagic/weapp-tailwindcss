@@ -1,6 +1,30 @@
 <view class="index" style="">
+  <view class="h5-div h-_b300px_B text-_b_hc31d6b_B bg-_b_h123456_B" style="">短斤少两快点撒</view>
   <text class="text-_b55rpx_B text-_b_hfff_B bg-purple-300" space="" style=""></text>
   <view class="bg-_bred_B" style="">Hello world!</view>
+  <view class="weapp-tw-nutui-react-demo mt-4" style="">
+    <button
+      app-parameter=""
+      business-id=""
+      class="h5-button nut-button nut-button-primary nut-button-primary-solid nut-button-normal nut-button-round nut-button-round-normal"
+      form-type=""
+      hover-class="button-hover"
+      hover-start-time="20"
+      hover-stay-time="70"
+      lang=""
+      open-type=""
+      send-message-img=""
+      send-message-path=""
+      send-message-title=""
+      session-from=""
+      size="default"
+      style=""
+      type=""
+      role="button"
+      aria-disabled="false">
+      <view class="nut-button-wrap" style=""><view class="nut-button-children nut-button-normal-children nut-button-primary-children" style="">NutUI React Button</view></view>
+    </button>
+  </view>
   <view class="theme-mode-demo mt-4 rounded bg-white px-4 py-3 text-slate-900 system-dark_cbg-slate-900 system-dark_ctext-slate-100 dark_cbg-zinc-900 dark_ctext-zinc-50" style="">
     Taro Vite React Tailwind CSS v4 system dark
     <view class="theme-dark mt-2 rounded bg-white px-3 py-2 text-slate-900 dark_cbg-zinc-950 dark_ctext-zinc-50" style="">Taro Vite React Tailwind CSS v4 manual dark</view>

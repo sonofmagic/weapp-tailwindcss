@@ -122,6 +122,9 @@ import {
   buildWatchHmrArgs,
   resolveWatchCommandOptions,
 } from '../../../e2e/run-hot-update'
+import {
+  collectSubPackageStyleOutputs,
+} from '../../../tools/weapp-tailwindcss-scripts/src/watch-hmr-regression/mutations/subpackage'
 import { replaceWxml } from '../src/wxml/shared'
 import type {
   CliOptions,
@@ -1352,6 +1355,7 @@ describe('watch-hmr regression summary helpers', () => {
   it('keeps mpx subpackage main-style checks on generated CSS loader carriers', () => {
     const mpxCase = buildCases('/repo', { includeLocalOnly: true }).find(item => item.name === 'mpx-tailwindcss-v4')
     const subNormal = mpxCase?.subPackageMutations?.find(item => item.root === 'sub-normal')
+    const styleOutputs = subNormal ? collectSubPackageStyleOutputs(subNormal).map(toRepoPath) : []
 
     expect(subNormal?.mainStyleMutation?.sourceFile ? toRepoPath(subNormal.mainStyleMutation.sourceFile) : undefined).toBe('/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css')
     expect(subNormal?.outputStyleCandidates.map(toRepoPath)).toContain(
@@ -1359,6 +1363,12 @@ describe('watch-hmr regression summary helpers', () => {
     )
     expect(subNormal?.globalStyleCandidates.map(toRepoPath)).not.toContain(
       '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
+    )
+    expect(styleOutputs).toContain(
+      '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
+    )
+    expect(styleOutputs).toContain(
+      '/repo/demo/mpx-tailwindcss-v4/dist/wx/styles/*.wxss',
     )
   })
 

@@ -62,6 +62,13 @@ function expectMetric(value: boolean, message: string) {
   }
 }
 
+export function collectSubPackageStyleOutputs(mutation: SubPackageMutationConfig) {
+  return [...new Set([
+    ...mutation.outputStyleCandidates,
+    ...mutation.globalStyleCandidates,
+  ])]
+}
+
 export async function runSubPackageMutation(
   watchCase: WatchCase,
   options: CliOptions,
@@ -111,10 +118,7 @@ export async function runSubPackageMutation(
   await sleep(Math.min(Math.max(options.pollMs * 2, 600), 1500))
   session.ensureRunning()
 
-  const globalStyleOutputs = [...new Set([
-    ...mutation.outputStyleCandidates,
-    ...mutation.globalStyleCandidates,
-  ])]
+  const globalStyleOutputs = collectSubPackageStyleOutputs(mutation)
   const template = await runClassMutation(
     subWatchCase,
     options,
@@ -134,10 +138,7 @@ export async function runSubPackageMutation(
         session,
         mutation.styleMutation,
         styleSourceOriginal!,
-        [...new Set([
-          ...mutation.outputStyleCandidates,
-          ...mutation.globalStyleCandidates,
-        ])],
+        globalStyleOutputs,
       )
 
   let mainStyleHotUpdate
@@ -153,7 +154,7 @@ export async function runSubPackageMutation(
       'template',
       mutation.mainStyleMutation,
       mainStyleSourceOriginal,
-      mutation.globalStyleCandidates,
+      globalStyleOutputs,
     )
   }
 

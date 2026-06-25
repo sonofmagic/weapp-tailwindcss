@@ -44,6 +44,8 @@ interface FinalizeGenerateBundleOptions {
   isNativeAppStyleTarget: boolean
   isViteProcessedCssAsset: GenerateBundleContext['isViteProcessedCssAsset']
   isWebGeneratorTarget: boolean
+  jsAfterCss: boolean
+  jsTaskFactories: Array<() => Promise<void>>
   lastCssResultByFile: Map<string, string>
   lastCssSourceHashByFile: Map<string, string>
   linkedByEntry: Map<string, Set<string>> | undefined
@@ -222,6 +224,8 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     isNativeAppStyleTarget,
     isViteProcessedCssAsset,
     isWebGeneratorTarget,
+    jsAfterCss,
+    jsTaskFactories,
     lastCssResultByFile,
     lastCssSourceHashByFile,
     linkedByEntry,
@@ -249,12 +253,20 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     transformRuntime,
     useIncrementalMode,
   } = options
+  const tasksStart = performance.now()
   if (cssTaskFactories.length > 0) {
     const cssConcurrency = resolveViteCssTaskConcurrency(useIncrementalMode, runtimeState.tailwindRuntime.majorVersion)
-    tasks.push(runWithConcurrency(cssTaskFactories, cssConcurrency).then(() => undefined))
+    const cssTask = runWithConcurrency(cssTaskFactories, cssConcurrency).then(() => undefined)
+    if (jsAfterCss) {
+      await cssTask
+    }
+    else {
+      tasks.push(cssTask)
+    }
   }
-
-  const tasksStart = performance.now()
+  if (jsTaskFactories.length > 0) {
+    tasks.push(runWithConcurrency(jsTaskFactories).then(() => undefined))
+  }
   await Promise.all(tasks)
   recordTimingDetail('tasks', tasksStart)
   for (const apply of pendingLinkedUpdates) {

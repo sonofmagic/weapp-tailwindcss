@@ -231,6 +231,60 @@ describe('tailwindcss helpers', () => {
     }
   })
 
+  it('filters Tailwind v4 raw source tokens before exposing runtime class set', async () => {
+    const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-v4-runtime-'))
+    const { createTailwindcssRuntime } = await import('@/tailwindcss')
+    const repoRoot = path.resolve(__dirname, '../../../..')
+
+    try {
+      await writeFile(path.join(tempDir, 'app.css'), '@import "tailwindcss";')
+      await writeFile(path.join(tempDir, 'index.tsx'), [
+        'export const view = (',
+        '  <View',
+        '    className="text-[55rpx] text-[#fff] bg-purple-300"',
+        '    data-url="https://example.com/a[b]?q=Hello world!"',
+        '  >',
+        '    Hello world!',
+        '  </View>',
+        ')',
+      ].join('\n'))
+
+      const runtime = createTailwindcssRuntime({
+        basedir: tempDir,
+        tailwindcss: {
+          resolve: {
+            paths: [path.resolve(__dirname, '../../../../node_modules')],
+          },
+          v4: {
+            css: `@import "tailwindcss" source("${tempDir.replaceAll('\\', '\\\\')}");`,
+            base: repoRoot,
+          },
+        },
+      })
+
+      const classSet = await runtime.getClassSet()
+      const { collectRuntimeClassSet } = await import('@/tailwindcss/runtime')
+      const collectedClassSet = await collectRuntimeClassSet(runtime, {
+        force: true,
+        skipRefresh: true,
+      })
+
+      expect(classSet.has('text-[55rpx]')).toBe(true)
+      expect(classSet.has('text-[#fff]')).toBe(true)
+      expect(classSet.has('bg-purple-300')).toBe(true)
+      expect(classSet.has('world!')).toBe(false)
+      expect(classSet.has('https://example.com/a[b]?q=Hello')).toBe(false)
+      expect(collectedClassSet.has('text-[55rpx]')).toBe(true)
+      expect(collectedClassSet.has('text-[#fff]')).toBe(true)
+      expect(collectedClassSet.has('bg-purple-300')).toBe(true)
+      expect(collectedClassSet.has('world!')).toBe(false)
+      expect(collectedClassSet.has('https://example.com/a[b]?q=Hello')).toBe(false)
+    }
+    finally {
+      await rm(tempDir, { recursive: true, force: true })
+    }
+  })
+
   it('sets cwd from discovered tailwind config when cwd is not provided', async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), 'wtw-tailwind-config-cwd-'))
     const { createTailwindcssRuntime } = await import('@/tailwindcss')

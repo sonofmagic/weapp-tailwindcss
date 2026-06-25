@@ -1,5 +1,7 @@
 <template>
   <view class="bg-independent-subpackage-marker before:content-['independent_subpackage_mpx-tailwindcss-v4']">独立分包</view>
+
+  <view class="">tw-watch-mpx-tailwindcss-v4-template-rollback-1782343414286-independent-subpackage</view>
 </template>
 
 <script>

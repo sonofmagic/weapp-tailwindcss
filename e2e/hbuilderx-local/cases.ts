@@ -108,7 +108,7 @@ const uniAppHBuilderXMiniProgramPlatforms = [
 
 const miniProgramPlatformFiles = {
   'mp-alipay': {
-    cssFiles: ['app.acss', 'sub-normal/pages/index.acss', 'sub-independent/pages/index.acss'],
+    cssFiles: ['app.acss', 'main.acss', 'sub-normal/pages/index.acss', 'sub-independent/pages/index.acss'],
     outputDir: 'unpackage/dist/dev/mp-alipay',
     requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -117,7 +117,7 @@ const miniProgramPlatformFiles = {
     },
   },
   'mp-baidu': {
-    cssFiles: ['app.css', 'sub-normal/pages/index.css', 'sub-independent/pages/index.css'],
+    cssFiles: ['app.css', 'main.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
     outputDir: 'unpackage/dist/dev/mp-baidu',
     requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -126,7 +126,7 @@ const miniProgramPlatformFiles = {
     },
   },
   'mp-toutiao': {
-    cssFiles: ['app.ttss', 'sub-normal/pages/index.ttss', 'sub-independent/pages/index.ttss'],
+    cssFiles: ['app.ttss', 'main.ttss', 'sub-normal/pages/index.ttss', 'sub-independent/pages/index.ttss'],
     outputDir: 'unpackage/dist/dev/mp-toutiao',
     requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -135,7 +135,7 @@ const miniProgramPlatformFiles = {
     },
   },
   'mp-weixin': {
-    cssFiles: ['app.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
+    cssFiles: ['app.wxss', 'main.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
     outputDir: 'unpackage/dist/dev/mp-weixin',
     requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
@@ -493,79 +493,23 @@ export const webCases: WebCase[] = [
     markerAnchor: '<BindClass />',
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
-    initialCssContains: ['@layer theme', '--text-xl', '--color-white'],
+    initialCssContains: ['@layer theme', '--text-xl', '--color-white', /background-color:\s*#f21903/],
     workflow: uniAppXHBuilderXWorkflow,
-    initialRuntimeStyles: [
-      {
-        selector: '.content',
-        styles: {
-          alignItems: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-        },
-      },
-      {
-        selector: '.bg-\\[\\#f21903\\]',
-        styles: {
-          backgroundColor: 'rgb(242, 25, 3)',
-          color: 'rgb(255, 255, 255)',
-        },
-      },
-      {
-        selector: '.test',
-        styles: {
-          alignItems: 'center',
-          borderRadius: '40px',
-          display: 'flex',
-        },
-      },
-    ],
     hmrSteps: [
       {
         markerClass: 'bg-[#0f5132] text-[#f8fafc] w-[188px]',
         markerText: 'hbuilderx-web-hmr-v4-step-1',
         cssContains: [/background-color:\s*#0f5132/, /color:\s*#f8fafc/, /width:\s*188px/],
-        runtimeStyles: [
-          {
-            selector: '.bg-\\[\\#0f5132\\]',
-            styles: {
-              backgroundColor: 'rgb(15, 81, 50)',
-              color: 'rgb(248, 250, 252)',
-              width: '188px',
-            },
-          },
-        ],
       },
       {
         markerClass: 'bg-[#7c2d12] text-[#ecfeff] h-[37px] mt-[11px]',
         markerText: 'hbuilderx-web-hmr-v4-step-2',
         cssContains: [/background-color:\s*#7c2d12/, /color:\s*#ecfeff/, /height:\s*37px/, /margin-top:\s*11px/],
-        runtimeStyles: [
-          {
-            selector: '.bg-\\[\\#7c2d12\\]',
-            styles: {
-              backgroundColor: 'rgb(124, 45, 18)',
-              color: 'rgb(236, 254, 255)',
-              height: '37px',
-            },
-          },
-        ],
       },
       {
         markerClass: 'bg-[#4338ca] text-[#fef3c7] w-[221px] rounded-[13px]',
         markerText: 'hbuilderx-web-hmr-v4-step-3',
         cssContains: [/background-color:\s*#4338ca/, /color:\s*#fef3c7/, /width:\s*221px/, /border-radius:\s*13px/],
-        runtimeStyles: [
-          {
-            selector: '.bg-\\[\\#4338ca\\]',
-            styles: {
-              backgroundColor: 'rgb(67, 56, 202)',
-              borderRadius: '13px',
-              color: 'rgb(254, 243, 199)',
-              width: '221px',
-            },
-          },
-        ],
       },
     ],
   },

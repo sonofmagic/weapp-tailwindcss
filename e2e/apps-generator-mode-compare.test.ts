@@ -477,33 +477,17 @@ function createReportItem(
   }
 }
 
-function expectWeappViteTailwindV3CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
+function expectWeappViteTailwindV4CssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
   if (project.name !== 'weapp-vite-tailwindcss-v4') {
     return
   }
-  expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed css files').not.toContain('miniprogram/app.wxss')
-  expect(generatorResult.cssFiles, 'weapp-vite v3 should not emit source-root-prefixed subpackage css files').not.toContain('miniprogram/sub-normal/pages/index.wxss')
+  expect(generatorResult.cssFiles, 'weapp-vite v4 should not emit source-root-prefixed css files').not.toContain('miniprogram/app.wxss')
+  expect(generatorResult.cssFiles, 'weapp-vite v4 should not emit source-root-prefixed subpackage css files').not.toContain('miniprogram/sub-normal/pages/index.wxss')
   const independent = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-independent/pages/index.wxss')
-  expect(independent, 'weapp-vite v3 independent subpackage css snapshot should exist').toBeTruthy()
+  expect(independent, 'weapp-vite v4 independent subpackage css snapshot should exist').toBeTruthy()
   expect(independent?.content, 'independent subpackage css should keep its own candidates').toMatch(/independent[-_]subpackage/i)
   expect(independent?.content, 'independent subpackage css should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
   expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('text-red-500')
-}
-
-function expectGulpTailwindV3SubpackageCssIsolation(project: CompareProject, generatorResult: GeneratorBuildResult) {
-  if (project.name !== 'gulp-tailwindcss-v4') {
-    return
-  }
-  const independent = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-independent/pages/index.wxss')
-  const normal = generatorResult.cssSnapshots.find(snapshot => snapshot.fileName === 'sub-normal/pages/index.wxss')
-  expect(independent, 'gulp v3 independent subpackage css snapshot should exist').toBeTruthy()
-  expect(normal, 'gulp v3 normal subpackage css snapshot should exist').toBeTruthy()
-  expect(independent?.content, 'independent subpackage css should keep its own candidates').toMatch(/independent[-_]subpackage/i)
-  expect(independent?.content, 'independent subpackage css should not include normal subpackage candidates').not.toMatch(/normal[-_]subpackage/i)
-  expect(independent?.content, 'independent subpackage css should not include main package candidates').not.toContain('space-y-1')
-  expect(normal?.content, 'normal subpackage css should keep its own candidates').toMatch(/normal[-_]subpackage/i)
-  expect(normal?.content, 'normal subpackage css should not include independent subpackage candidates').not.toMatch(/independent[-_]subpackage/i)
-  expect(normal?.content, 'normal subpackage css should not include main package candidates').not.toContain('space-y-1')
 }
 
 function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generatorResult: GeneratorBuildResult) {
@@ -975,8 +959,7 @@ describe('demo generator mode output', () => {
       expect(item.generator.hasUnsupportedThemeComplexSelector, `${project.name} generator css should not include theme :where/:not selectors`).toBe(false)
       expect(item.generator.hasWeappEscapedArbitrarySelector || !item.generator.hasRawArbitrarySelector).toBe(true)
       if (generatorResult) {
-        expectWeappViteTailwindV3CssIsolation(project, generatorResult)
-        expectGulpTailwindV3SubpackageCssIsolation(project, generatorResult)
+        expectWeappViteTailwindV4CssIsolation(project, generatorResult)
         expectSubpackageCssFiles(project, generatorResult)
         expectSubpackageMarkersInGeneratedCss(project, generatorResult)
         expectPackageCssIsolation(project, generatorResult)

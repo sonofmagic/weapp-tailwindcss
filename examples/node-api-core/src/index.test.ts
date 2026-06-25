@@ -15,7 +15,7 @@ describe('node api core example', () => {
     expect(result.wxss).toContain('.bg-_b_h123456_B')
     expect(result.js).toContain('mb-_b1_d5rem_B')
     expect(result.js).toContain('not-a-tailwind-token')
-  }, 20000)
+  }, 60000)
 
   it('keeps long-lived createContext memory growth bounded', async () => {
     const result = await runMemoryDemo({

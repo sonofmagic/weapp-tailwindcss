@@ -7,6 +7,7 @@ import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOpti
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup'
+import { collectGeneratedRawSourceCandidates } from './generator-css/class-selectors'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives } from './generator-css/directives'
 import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldInjectMiniProgramPreflightForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
@@ -114,6 +115,14 @@ function isCssAlreadyRepresentedByMarkers(css: string, source: string) {
     }
   }
   return true
+}
+
+function mergeGeneratedCssClassSet(classSet: Set<string>, candidates: Iterable<string>, css: string, escapeMap: Record<string, string> | undefined) {
+  const merged = new Set(classSet)
+  for (const candidate of collectGeneratedRawSourceCandidates(candidates, css, escapeMap)) {
+    merged.add(candidate)
+  }
+  return merged
 }
 
 export async function generateCssByGenerator(
@@ -349,9 +358,10 @@ export async function generateCssByGenerator(
             styleOptions: generatorStyleOptions,
           }))
         : options.previousCss
+      const finalCss = restoreLocalCssImports(css, localImports)
       return {
-        css: restoreLocalCssImports(css, localImports),
-        classSet: generated.classSet,
+        css: finalCss,
+        classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -483,19 +493,20 @@ export async function generateCssByGenerator(
       else if (generated.target === 'weapp' && shouldFinalizeMarkedUserLayerComponentsCss(file)) {
         css = reorderMarkedUserLayerComponentsCss(css)
       }
-      return {
-        css: restoreLocalCssImports(
-          finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-            injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-              cssHandlerOptions,
-              isolateCurrentCssCandidates,
-              localImports,
-            }),
-            styleOptions: generatorStyleOptions,
+      const finalCss = restoreLocalCssImports(
+        finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
+          injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+            cssHandlerOptions,
+            isolateCurrentCssCandidates,
+            localImports,
           }),
-          localImports,
-        ),
-        classSet: generated.classSet,
+          styleOptions: generatorStyleOptions,
+        }),
+        localImports,
+      )
+      return {
+        css: finalCss,
+        classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -506,7 +517,6 @@ export async function generateCssByGenerator(
         },
       }
     }
-
     debug(
       'tailwind direct css generation prefix mismatch, append transformed bundle css %s',
       file,
@@ -642,19 +652,20 @@ export async function generateCssByGenerator(
         const missingUserCss = isCommentOnlyCss(userCss) ? '' : filterExistingCssRules(css, userCss)
         css = createCssSourceOrderAppend(css, missingUserCss)
       }
-      return {
-        css: restoreLocalCssImports(
-          finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-            injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-              cssHandlerOptions,
-              isolateCurrentCssCandidates,
-              localImports,
-            }),
-            styleOptions: generatorStyleOptions,
+      const finalCss = restoreLocalCssImports(
+        finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
+          injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+            cssHandlerOptions,
+            isolateCurrentCssCandidates,
+            localImports,
           }),
-          localImports,
-        ),
-        classSet: generated.classSet,
+          styleOptions: generatorStyleOptions,
+        }),
+        localImports,
+      )
+      return {
+        css: finalCss,
+        classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
         target: generated.target,
         source: 'generator',
         dependencies: generated.dependencies,
@@ -711,19 +722,20 @@ export async function generateCssByGenerator(
         : userCss
       css = createCssSourceOrderAppend(css, missingUserCss)
     }
-    return {
-      css: restoreLocalCssImports(
-        finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
-          injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-            cssHandlerOptions,
-            isolateCurrentCssCandidates,
-            localImports,
-          }),
-          styleOptions: generatorStyleOptions,
+    const finalCss = restoreLocalCssImports(
+      finalizeMiniProgramGeneratorCss(css, generated.target, majorVersion, opts.cssPreflight, {
+        injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
+          cssHandlerOptions,
+          isolateCurrentCssCandidates,
+          localImports,
         }),
-        localImports,
-      ),
-      classSet: generated.classSet,
+        styleOptions: generatorStyleOptions,
+      }),
+      localImports,
+    )
+    return {
+      css: finalCss,
+      classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),
       target: generated.target,
       source: 'generator',
       dependencies: generated.dependencies,

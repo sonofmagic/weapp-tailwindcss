@@ -9,7 +9,7 @@ import type { TailwindcssRuntimeLike } from '@/types'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import process from 'node:process'
-import { extractProjectCandidatesWithPositions } from '@tailwindcss-mangle/engine'
+import { extractProjectCandidatesWithPositions, resolveValidTailwindV4Candidates } from '@tailwindcss-mangle/engine'
 import { logger } from '@weapp-tailwindcss/logger'
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { defuOverrideArray } from '@weapp-tailwindcss/shared'
@@ -25,7 +25,7 @@ import {
   resolveModuleFromPaths,
   resolveTailwindConfigFallback,
 } from './runtime-resolve'
-import { resolveTailwindV4SourceFromRuntime } from './v4-engine'
+import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime } from './v4-engine'
 import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION } from './version'
 
 const require = createRequire(import.meta.url)
@@ -163,9 +163,14 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
 
   async function collectClassSet() {
     const report = await collectContentTokens()
-    const candidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
+    const rawCandidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
       return typeof entry === 'string' ? entry : entry.rawCandidate
     }).filter((entry): entry is string => typeof entry === 'string' && entry.length > 0))
+    const source = await resolveTailwindV4SourceFromRuntime(runtime)
+    const designSystem = await loadTailwindV4DesignSystem(source)
+    const candidates = new Set(resolveValidTailwindV4Candidates(designSystem, rawCandidates, {
+      ...(source.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: source.bareArbitraryValues }),
+    }))
     await collectTailwindV4CssCandidates(candidates)
     return applyClassSetFilter(candidates)
   }
