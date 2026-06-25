@@ -1,5 +1,11 @@
 # @weapp-tailwindcss/postcss
 
+## 3.1.1
+
+### Patch Changes
+
+- 🐛 **将 Tailwind 候选提取与源码扫描依赖从 `tailwindcss-patch` 收敛到 `@tailwindcss-mangle/engine`，减少 PostCSS 包的额外 patch/CLI 依赖。** [`ddcb7c8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ddcb7c82d00a06be462c13b7d11d4367c1b1091e) by @sonofmagic
+
 ## 3.1.0
 
 ### Minor Changes

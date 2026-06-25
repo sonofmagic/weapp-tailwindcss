@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 5.1.1
+
+### Patch Changes
+
+- 🐛 **增强 Webpack web target 最终 CSS asset 的保留逻辑，避免重新生成 Tailwind CSS 时丢失无类名选择器、主题变量、字体、媒体查询和第三方组件样式，同时防止 watch 增量更新保留旧的 Tailwind 生成类。** [`c47543c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/c47543c4de40e91f33a689d6f6e41c7c8218860b) by @sonofmagic
+
+- 🐛 **修复 Taro Webpack 入口同时引入多个 CSS 时，已由 loader 生成的主样式被再次生成并导致自定义样式重复的问题；同时保留 webpack/css-loader 已处理的静态资源 URL，避免背景图等相对资源路径在合并 CSS 时退回为未打包的裸路径。** [#945](https://github.com/sonofmagic/weapp-tailwindcss/pull/945) by @sonofmagic
+
+- 🐛 **新增 Vite 构建下的 `transform.include` / `transform.exclude` 配置，用于控制需要进入 `weapp-tailwindcss` HTML/CSS/JS 转译流程的源码或产物，并在 JS AST 转译耗时异常时提示可排除大型生成 TS/JS chunk。** [`56f1f40`](https://github.com/sonofmagic/weapp-tailwindcss/commit/56f1f40120d5a8c4ede61b6e6a5fc43b36964070) by @sonofmagic
+
+- 🐛 **修复 Webpack web target 使用 Tailwind CSS v4 cssEntries 重新生成样式时，最终 CSS asset 中的 Docusaurus 主题样式和用户自定义样式被丢弃的问题。** [`fd2a9b7`](https://github.com/sonofmagic/weapp-tailwindcss/commit/fd2a9b752ba7d14d91a096adce6fd89a649c0a4c) by @sonofmagic
+- 📦 **Dependencies** [`ddcb7c8`](https://github.com/sonofmagic/weapp-tailwindcss/commit/ddcb7c82d00a06be462c13b7d11d4367c1b1091e)
+  → `@weapp-tailwindcss/postcss@3.1.1`
+
 ## 5.1.0
 
 ### Minor Changes
