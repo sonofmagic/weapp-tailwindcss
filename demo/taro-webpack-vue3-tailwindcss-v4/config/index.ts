@@ -7,7 +7,7 @@ import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const taroPlugins = [
   ...(process.env.WEAPP_TW_TARO_PLUGIN_HTML === '0' ? [] : ['@tarojs/plugin-html']),
-  '@tarojs/plugin-platform-harmony-hybrid',
+  // '@tarojs/plugin-platform-harmony-hybrid',
 ]
 
 const generator = {
