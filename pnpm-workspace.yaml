@@ -42,7 +42,7 @@ overrides:
 
 catalogs:
   autoprefixer10:
-    autoprefixer: ^10.5.1
+    autoprefixer: ^10.5.2
   babelCore7285:
     '@babel/core': ^7.29.7
   babelPresetReact7285:
@@ -204,7 +204,7 @@ catalogs:
   vite5421:
     vite: ^5.4.21
   vite724:
-    vite: ^7.3.5
+    vite: ^7.3.6
   vite8:
     vite: ^8.1.0
   vitePluginInspect:
@@ -230,8 +230,8 @@ catalogs:
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
-    weapp-ide-cli: ^5.4.9
+    weapp-ide-cli: ^5.4.10
   weappVite:
-    weapp-vite: ^6.17.2
+    weapp-vite: ^6.17.3
   wrangler:
     wrangler: ^4.104.0

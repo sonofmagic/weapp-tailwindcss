@@ -359,7 +359,7 @@
     "tsdown": "0.22.2",
     "tslib": "^2.8.1",
     "tsx": "catalog:tsx",
-    "turbo": "^2.9.18",
+    "turbo": "^2.10.0",
     "type-fest": "^5.7.0",
     "typescript": "catalog:typescript59",
     "undici": "^8.5.0",

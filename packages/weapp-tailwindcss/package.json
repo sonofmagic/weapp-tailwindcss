@@ -204,7 +204,7 @@
     "@babel/parser": "~7.29.7",
     "@babel/traverse": "~7.29.7",
     "@babel/types": "~7.29.7",
-    "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
+    "@tailwindcss-mangle/engine": "0.1.1",
     "@vue/compiler-dom": "catalog:vue3",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/logger": "workspace:*",
