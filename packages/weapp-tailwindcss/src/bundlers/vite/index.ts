@@ -35,6 +35,7 @@ import { createViteCssFinalizerOutputPlugin } from './css-finalizer'
 import { createViteCssMemory, shouldCollectTransformedSourceCandidates } from './css-memory'
 import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
+import { createJsHandlerOptionsFactory } from './generate-bundle/js-handler-options'
 import { hasSelfAcceptingNonStyleHotModule, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from './hot-css-modules'
 import { touchMapEntry } from './map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
@@ -43,6 +44,7 @@ import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
 import { createViteServeCssGenerationPlugins } from './serve-css-generation'
+import { createViteServeJsTransformPlugin } from './serve-js-transform'
 import { createSourceCandidateScanSignature } from './source-candidate-scan-signature'
 import { createSourceCandidateCollector, isSourceCandidateRequest } from './source-candidates'
 import { createViteSourceScanMatcher, discoverTailwindV4CssEntries, resolveTailwindV4EntriesFromCssCached, resolveViteSourceScanEntries, resolveViteTailwindV4CssDependencies } from './source-scan'
@@ -607,6 +609,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       ...resolveUniAppXNativeCssHandlerOptions(opts),
     }),
   })
+  const serveJsHandlerOptions = createJsHandlerOptionsFactory({
+    getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion,
+    moduleGraph: undefined,
+  })
   const generateTailwindCssForVitePipeline = async (
     id: string,
     code: string,
@@ -882,6 +888,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       getCommand: () => resolvedConfig?.command,
       onTailwindRootCss: (id, code) => registerAutoCssSource(id, code),
       shouldGenerate: () => shouldOwnTailwindGeneration,
+    }),
+    createViteServeJsTransformPlugin({
+      createHandlerOptions: serveJsHandlerOptions,
+      getCommand: () => resolvedConfig?.command,
+      jsHandler,
+      shouldTransform: () => shouldOwnTailwindGeneration && !generatorBranch.isWeb,
+      transformRuntime: ensureRuntimeClassSet,
     }),
     {
       name: `${vitePluginName}:post`,

@@ -58,7 +58,7 @@ Web 产物以 v4 theme variables 和 property registration 为主，weapp 产物
 
 - `!p-[18.5px]` 在 web 与 weapp 中均生成 `padding: 18.5px !important`。
 - `-ml-[5.5px]` 在 web 中为 `margin-left: calc(5.5px * -1)`，在 weapp 中类名转为小程序安全形式。
-- `!-translate-y-[3.5px]` 在 web 与 weapp 中都保留负值和 `!important`。
+- `[box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]` 在 web 与 weapp 中都生成等价阴影声明。
 - `rounded-[18.5px]`、`text-[13.5px]`、`px-[13.5px]`、`scale-[1.03]`、`opacity-[0.82]` 都在 web 与 weapp 产物中生成。
 - `bg-[linear-gradient(...)]` 在 web 与 weapp 中均保留实际 `linear-gradient(...)`。
 

@@ -11,6 +11,7 @@ const webRoot = path.resolve(scriptDir, '..')
 const repoRoot = path.resolve(webRoot, '..', '..')
 const require = createRequire(path.join(repoRoot, 'package.json'))
 const { chromium } = require('playwright')
+const { PNG } = require('pngjs')
 
 const outputDir = process.env.WEB_DEMO_COMPARE_OUTPUT
   ? path.resolve(process.env.WEB_DEMO_COMPARE_OUTPUT)
@@ -30,12 +31,10 @@ const projects = [
   {
     name: 'react-rsbuild-tailwindcss-v4',
     devCommand: port => ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', String(port)],
-    webRenderRequired: false,
   },
   {
     name: 'vue-rsbuild-tailwindcss-v4',
     devCommand: port => ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', String(port)],
-    webRenderRequired: false,
   },
   {
     name: 'react-webpack-tailwindcss-v4',
@@ -302,17 +301,8 @@ function createWebRenderChecks(data) {
   ])
 }
 
-function skipWebRenderChecks(reason) {
-  return runChecks([
-    {
-      name: 'web render checks skipped',
-      pass: true,
-      details: reason,
-    },
-  ])
-}
-
 function createWeappCssChecks(css) {
+  const hasRawArbitrarySelector = css.split(/[,{]/).some(part => part.trimStart().startsWith('.') && part.includes('['))
   return runChecks([
     {
       name: 'contains normal utility selector',
@@ -327,8 +317,8 @@ function createWeappCssChecks(css) {
       pass: /\.bg-_b_h123456_B\s*\{/.test(css),
     },
     {
-      name: 'contains escaped important arbitrary transform selector',
-      pass: /\._e-translate-y-_b3_d5px_B\s*\{/.test(css),
+      name: 'contains escaped arbitrary property selector',
+      pass: /\._bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B\s*\{/.test(css),
     },
     {
       name: 'contains escaped decimal arbitrary radius selector',
@@ -340,7 +330,7 @@ function createWeappCssChecks(css) {
     },
     {
       name: 'does not emit raw arbitrary selectors',
-      pass: !/(?:^|[,{]\s*)\.[^,{]*\\?\[(?:#|[^\]]+\])/.test(css),
+      pass: !hasRawArbitrarySelector,
     },
     {
       name: 'does not leave Tailwind directives uncompiled',
@@ -354,6 +344,60 @@ function summarizeChecks(checks) {
     failedCount: checks.filter(check => !check.pass).length,
     checks,
   }
+}
+
+async function compareScreenshots(webPath, weappPath, diffPath) {
+  const { default: pixelmatch } = await import('pixelmatch')
+  const web = PNG.sync.read(await fs.readFile(webPath))
+  const weapp = PNG.sync.read(await fs.readFile(weappPath))
+  const maxDiffRatio = Number(process.env.WEB_DEMO_COMPARE_MAX_DIFF_RATIO ?? 0.02)
+  const sameSize = web.width === weapp.width && web.height === weapp.height
+  if (!sameSize) {
+    return {
+      pass: false,
+      maxDiffRatio,
+      width: web.width,
+      height: web.height,
+      weappWidth: weapp.width,
+      weappHeight: weapp.height,
+      diffPixels: null,
+      diffRatio: null,
+      diffPath,
+    }
+  }
+
+  const diff = new PNG({ width: web.width, height: web.height })
+  const diffPixels = pixelmatch(web.data, weapp.data, diff.data, web.width, web.height, {
+    threshold: 0.1,
+  })
+  const diffRatio = diffPixels / (web.width * web.height)
+  await fs.writeFile(diffPath, PNG.sync.write(diff))
+  return {
+    pass: diffRatio <= maxDiffRatio,
+    maxDiffRatio,
+    width: web.width,
+    height: web.height,
+    diffPixels,
+    diffRatio,
+    diffPath,
+  }
+}
+
+function createVisualParityChecks(screenshotDiff, styleDiffs, classDiffs) {
+  return summarizeChecks(runChecks([
+    {
+      name: 'web and weapp screenshots are visually equivalent',
+      pass: screenshotDiff.pass,
+      details: screenshotDiff.pass
+        ? `${screenshotDiff.diffPixels} diff pixels within ratio ${screenshotDiff.maxDiffRatio}`
+        : `${screenshotDiff.diffPixels ?? 'size mismatch'} diff pixels, ratio=${screenshotDiff.diffRatio ?? 'n/a'}, limit=${screenshotDiff.maxDiffRatio}, diff=${screenshotDiff.diffPath}`,
+    },
+    {
+      name: 'computed style/class diagnostics collected',
+      pass: true,
+      details: `${styleDiffs.length} style/layout diffs, ${classDiffs.length} class diffs`,
+    },
+  ]))
 }
 
 async function runBuild(project, cwd, target) {
@@ -411,9 +455,14 @@ async function main() {
         const allDiffs = diffObjects(webData, weappData)
         const styleDiffs = allDiffs.filter(diff => !diff.path.endsWith('.className'))
         const classDiffs = allDiffs.filter(diff => diff.path.endsWith('.className'))
-        const webRender = summarizeChecks(project.webRenderRequired === false
-          ? skipWebRenderChecks('Rsbuild + weapp-tailwindcss/webpack 当前 web target 不触发 Tailwind v4 生成 loader，compare 仅强制 weapp CSS 与 build 通过。')
-          : createWebRenderChecks(webData))
+        const screenshots = {
+          web: path.join(outputDir, `${project.name}-web.png`),
+          weapp: path.join(outputDir, `${project.name}-weapp.png`),
+          diff: path.join(outputDir, `${project.name}-diff.png`),
+        }
+        const screenshotDiff = await compareScreenshots(screenshots.web, screenshots.weapp, screenshots.diff)
+        const parity = createVisualParityChecks(screenshotDiff, styleDiffs, classDiffs)
+        const webRender = summarizeChecks(createWebRenderChecks(webData))
         const weappCssChecks = summarizeChecks(createWeappCssChecks(weappCss.css))
 
         const builds = [
@@ -424,6 +473,7 @@ async function main() {
         results.push({
           project: project.name,
           webRender,
+          parity,
           weappCss: {
             url: weappCss.url,
             size: weappCss.css.length,
@@ -431,12 +481,10 @@ async function main() {
           },
           styleDiffCount: styleDiffs.length,
           classDiffCount: classDiffs.length,
+          screenshotDiff,
           styleDiffs,
           classDiffs,
-          screenshots: {
-            web: path.join(outputDir, `${project.name}-web.png`),
-            weapp: path.join(outputDir, `${project.name}-weapp.png`),
-          },
+          screenshots,
           builds,
         })
       }
@@ -455,6 +503,7 @@ async function main() {
 
   const failed = results.filter(result =>
     result.webRender.failedCount > 0
+    || result.parity.failedCount > 0
     || result.weappCss.failedCount > 0,
   )
   if (failed.length > 0) {

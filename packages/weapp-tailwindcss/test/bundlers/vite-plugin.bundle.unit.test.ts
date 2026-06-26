@@ -8627,7 +8627,10 @@ const cls = "rounded-[92rpx]"
   it('keeps source-location tokens unchanged in build mode with classNameSet-only strategy', async () => {
     const runtimeSet = new Set(['text-red-500'])
     const context = createContext({
-      jsHandler: createJsHandler({}),
+      jsHandler: createJsHandler({
+        escapeMap: MappingChars2String,
+        needEscaped: true,
+      }),
       tailwindRuntime: {
         getClassSet: vi.fn(async () => runtimeSet),
         getClassSetSync: vi.fn(() => runtimeSet),

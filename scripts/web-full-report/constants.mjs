@@ -1,21 +1,16 @@
-export interface WebViteHmrCase {
-  name: string
-  projectDir: string
-  devCommand: string[]
-  readyLog?: RegExp
-  styleRequired?: boolean
-  sourceFile: string
-  titleFrom: string
-  titleTo: string
-  classFrom: string
-  classTo: string
-  markerAttr: string
-}
+export const projects = [
+  'react-vite-tailwindcss-v4',
+  'vue-vite-tailwindcss-v4',
+  'react-rsbuild-tailwindcss-v4',
+  'vue-rsbuild-tailwindcss-v4',
+  'react-webpack-tailwindcss-v4',
+  'vue-webpack-tailwindcss-v4',
+]
 
-export const webViteHmrCases: WebViteHmrCase[] = [
+export const hmrCases = [
   {
     name: 'web react vite Tailwind v4',
-    projectDir: 'demo/web/react-vite-tailwindcss-v4',
+    project: 'react-vite-tailwindcss-v4',
     devCommand: ['exec', 'vite', '--host', '127.0.0.1', '--port', '{port}', '--strictPort'],
     sourceFile: 'src/main.tsx',
     titleFrom: 'React Vite Tailwind CSS v4',
@@ -26,7 +21,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
   },
   {
     name: 'web vue vite Tailwind v4',
-    projectDir: 'demo/web/vue-vite-tailwindcss-v4',
+    project: 'vue-vite-tailwindcss-v4',
     devCommand: ['exec', 'vite', '--host', '127.0.0.1', '--port', '{port}', '--strictPort'],
     sourceFile: 'src/App.vue',
     titleFrom: 'Vue Vite Tailwind CSS v4',
@@ -37,7 +32,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
   },
   {
     name: 'web react rsbuild Tailwind v4',
-    projectDir: 'demo/web/react-rsbuild-tailwindcss-v4',
+    project: 'react-rsbuild-tailwindcss-v4',
     devCommand: ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', '{port}'],
     readyLog: /ready\s+built/i,
     styleRequired: false,
@@ -50,7 +45,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
   },
   {
     name: 'web vue rsbuild Tailwind v4',
-    projectDir: 'demo/web/vue-rsbuild-tailwindcss-v4',
+    project: 'vue-rsbuild-tailwindcss-v4',
     devCommand: ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', '{port}'],
     readyLog: /ready\s+built/i,
     styleRequired: false,
@@ -63,7 +58,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
   },
   {
     name: 'web react webpack Tailwind v4',
-    projectDir: 'demo/web/react-webpack-tailwindcss-v4',
+    project: 'react-webpack-tailwindcss-v4',
     devCommand: ['exec', 'webpack', 'serve', '--mode', 'development', '--host', '127.0.0.1', '--port', '{port}'],
     sourceFile: 'src/main.tsx',
     titleFrom: 'React Webpack Tailwind CSS v4',
@@ -74,7 +69,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
   },
   {
     name: 'web vue webpack Tailwind v4',
-    projectDir: 'demo/web/vue-webpack-tailwindcss-v4',
+    project: 'vue-webpack-tailwindcss-v4',
     devCommand: ['exec', 'webpack', 'serve', '--mode', 'development', '--host', '127.0.0.1', '--port', '{port}'],
     sourceFile: 'src/App.vue',
     titleFrom: 'Vue Webpack Tailwind CSS v4',
@@ -84,5 +79,3 @@ export const webViteHmrCases: WebViteHmrCase[] = [
     markerAttr: 'vue-webpack-v4',
   },
 ]
-
-export const webViteHmrCaseNames = webViteHmrCases.map(item => item.name)

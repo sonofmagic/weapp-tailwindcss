@@ -24,7 +24,7 @@ const cases: WebCssPreservationCase[] = [
     projectDir: 'demo/web/react-vite-tailwindcss-v4',
     buildScript: 'build:web',
     outputDir: 'dist',
-    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32rpx\\]'],
+    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32px\\]'],
     ordinaryCss: [/font-family:\s*Inter/],
   },
   {
@@ -32,7 +32,7 @@ const cases: WebCssPreservationCase[] = [
     projectDir: 'demo/web/react-vite-tailwindcss-v4',
     buildScript: 'build:web',
     outputDir: 'dist',
-    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32rpx\\]'],
+    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32px\\]'],
     ordinaryCss: [/font-family:\s*Inter/],
   },
   {
@@ -40,7 +40,7 @@ const cases: WebCssPreservationCase[] = [
     projectDir: 'demo/web/vue-vite-tailwindcss-v4',
     buildScript: 'build:web',
     outputDir: 'dist',
-    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32rpx\\]'],
+    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32px\\]'],
     ordinaryCss: [/font-family:\s*Inter/],
   },
   {
@@ -48,7 +48,7 @@ const cases: WebCssPreservationCase[] = [
     projectDir: 'demo/web/vue-vite-tailwindcss-v4',
     buildScript: 'build:web',
     outputDir: 'dist',
-    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32rpx\\]'],
+    generatedCss: ['.min-h-screen', '.font-semibold', '.text-\\[32px\\]'],
     ordinaryCss: [/font-family:\s*Inter/],
   },
   {

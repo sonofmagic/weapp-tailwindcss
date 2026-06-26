@@ -1,0 +1,1130 @@
+[
+  {
+    "project": "react-vite-tailwindcss-v4",
+    "webRender": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "main renders a non-transparent background",
+          "pass": true,
+          "details": "rgb(250, 250, 250)"
+        },
+        {
+          "name": "section uses grid layout",
+          "pass": true,
+          "details": "grid"
+        },
+        {
+          "name": "responsive swatch grid has four columns at desktop width",
+          "pass": true,
+          "details": "212px 212px 212px 212px"
+        },
+        {
+          "name": "arbitrary value gradient renders",
+          "pass": true,
+          "details": "linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(219, 234, 254) 100%)"
+        },
+        {
+          "name": "decimal arbitrary opacity renders",
+          "pass": true,
+          "details": "0.82"
+        },
+        {
+          "name": "variant pseudo content renders",
+          "pass": true,
+          "details": "\"v4\", \"v4\", \"v4\", \"v4\""
+        }
+      ]
+    },
+    "parity": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "web and weapp screenshots are visually equivalent",
+          "pass": true,
+          "details": "8505 diff pixels within ratio 0.02"
+        },
+        {
+          "name": "computed style/class diagnostics collected",
+          "pass": true,
+          "details": "0 style/layout diffs, 13 class diffs"
+        }
+      ]
+    },
+    "weappCss": {
+      "url": "http://127.0.0.1:4501/src/style.css",
+      "size": 10910,
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "contains normal utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains responsive utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped hex arbitrary selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped arbitrary property selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped decimal arbitrary radius selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped important decimal padding selector",
+          "pass": true
+        },
+        {
+          "name": "does not emit raw arbitrary selectors",
+          "pass": true
+        },
+        {
+          "name": "does not leave Tailwind directives uncompiled",
+          "pass": true
+        }
+      ]
+    },
+    "styleDiffCount": 0,
+    "classDiffCount": 13,
+    "screenshotDiff": {
+      "pass": true,
+      "maxDiffRatio": 0.02,
+      "width": 1280,
+      "height": 916,
+      "diffPixels": 8505,
+      "diffRatio": 0.007253855076419214,
+      "diffPath": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-vite-tailwindcss-v4-diff.png"
+    },
+    "styleDiffs": [],
+    "classDiffs": [
+      {
+        "path": "main.className",
+        "web": "box-border min-h-screen tw-root bg-[#fafafa] p-6 text-[#18181b] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "weapp": "box-border min-h-screen tw-root bg-_b_hfafafa_B p-6 text-_b_h18181b_B dark_cbg-_b_h18181b_B dark_ctext-_b_hfafafa_B"
+      },
+      {
+        "path": "card.className",
+        "web": "box-border rounded border border-solid border-[rgba(24,24,27,0.1)] bg-white p-5 [box-shadow:0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#18181b]",
+        "weapp": "box-border rounded border border-solid border-_brgba_p24_m24_m27_m0_d1_P_B bg-white p-5 _bbox-shadow_c0_8px_24px_rgba_p0_m0_m0_m0_d12_P_B dark_cbg-_b_h18181b_B"
+      },
+      {
+        "path": "title.className",
+        "web": "m-0 text-[32px] leading-[38px] font-semibold",
+        "weapp": "m-0 text-_b32px_B leading-_b38px_B font-semibold"
+      },
+      {
+        "path": "paragraph.className",
+        "web": "mt-3 text-sm leading-6 text-[#52525c] dark:text-[#d4d4d8]",
+        "weapp": "mt-3 text-sm leading-6 text-_b_h52525c_B dark_ctext-_b_hd4d4d8_B"
+      },
+      {
+        "path": "swatchGrid.className",
+        "web": "box-border grid grid-cols-2 gap-[16px] md:grid-cols-4",
+        "weapp": "box-border grid grid-cols-2 gap-_b16px_B md_cgrid-cols-4"
+      },
+      {
+        "path": "swatches.0.className",
+        "web": "bg-[#ffd230] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hffd230_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.1.className",
+        "web": "bg-[#7bf1a8] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h7bf1a8_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.2.className",
+        "web": "bg-[#8ec5ff] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h8ec5ff_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.3.className",
+        "web": "bg-[#fda5d5] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hfda5d5_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "arbitraryBox.className",
+        "web": "box-border -mt-1.5 grid grid-cols-2 gap-3.5 rounded-[18.5px] border border-dashed border-[rgba(51,102,153,0.4)] bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px]",
+        "weapp": "box-border -mt-1_d5 grid grid-cols-2 gap-3_d5 rounded-_b18_d5px_B border border-dashed border-_brgba_p51_m102_m153_m0_d4_P_B bg-_blinear-gradient_p135deg_m_hf8fafc_0_v_m_hdbeafe_100_v_P_B _ep-_b18_d5px_B"
+      },
+      {
+        "path": "arbitrary.className",
+        "web": "box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]",
+        "weapp": "box-border -rotate-2 bg-_b_h123456_B px-_b13_d5px_B py-1_d5 text-_b13_d5px_B leading-_b18px_B text-white _bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B"
+      },
+      {
+        "path": "decimal.className",
+        "web": "box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]",
+        "weapp": "box-border _emt-0 -ml-_b5_d5px_B w-_b37_d5_v_B min-w-_b88_d5px_B scale-_b1_d03_B bg-_brgb_p255_m210_m55_P_B text-center leading-_b28px_B text-_b_h1f2937_B opacity-_b0_d82_B"
+      },
+      {
+        "path": "button.className",
+        "web": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-[#2b7fff] px-4 py-2 text-[14px] leading-[15px] text-white transition hover:bg-[#8ec5ff] active:bg-[#7bf1a8]",
+        "weapp": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-_b_h2b7fff_B px-4 py-2 text-_b14px_B leading-_b15px_B text-white transition hover_cbg-_b_h8ec5ff_B active_cbg-_b_h7bf1a8_B"
+      }
+    ],
+    "screenshots": {
+      "web": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-vite-tailwindcss-v4-web.png",
+      "weapp": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-vite-tailwindcss-v4-weapp.png",
+      "diff": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-vite-tailwindcss-v4-diff.png"
+    },
+    "builds": [
+      {
+        "target": "web",
+        "script": "build:web",
+        "durationMs": 732
+      },
+      {
+        "target": "weapp",
+        "script": "build:weapp",
+        "durationMs": 944
+      }
+    ]
+  },
+  {
+    "project": "vue-vite-tailwindcss-v4",
+    "webRender": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "main renders a non-transparent background",
+          "pass": true,
+          "details": "rgb(250, 250, 250)"
+        },
+        {
+          "name": "section uses grid layout",
+          "pass": true,
+          "details": "grid"
+        },
+        {
+          "name": "responsive swatch grid has four columns at desktop width",
+          "pass": true,
+          "details": "212px 212px 212px 212px"
+        },
+        {
+          "name": "arbitrary value gradient renders",
+          "pass": true,
+          "details": "linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(219, 234, 254) 100%)"
+        },
+        {
+          "name": "decimal arbitrary opacity renders",
+          "pass": true,
+          "details": "0.82"
+        },
+        {
+          "name": "variant pseudo content renders",
+          "pass": true,
+          "details": "\"v4\", \"v4\", \"v4\", \"v4\""
+        }
+      ]
+    },
+    "parity": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "web and weapp screenshots are visually equivalent",
+          "pass": true,
+          "details": "7633 diff pixels within ratio 0.02"
+        },
+        {
+          "name": "computed style/class diagnostics collected",
+          "pass": true,
+          "details": "0 style/layout diffs, 13 class diffs"
+        }
+      ]
+    },
+    "weappCss": {
+      "url": "http://127.0.0.1:4503/src/style.css",
+      "size": 10813,
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "contains normal utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains responsive utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped hex arbitrary selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped arbitrary property selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped decimal arbitrary radius selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped important decimal padding selector",
+          "pass": true
+        },
+        {
+          "name": "does not emit raw arbitrary selectors",
+          "pass": true
+        },
+        {
+          "name": "does not leave Tailwind directives uncompiled",
+          "pass": true
+        }
+      ]
+    },
+    "styleDiffCount": 0,
+    "classDiffCount": 13,
+    "screenshotDiff": {
+      "pass": true,
+      "maxDiffRatio": 0.02,
+      "width": 1280,
+      "height": 916,
+      "diffPixels": 7633,
+      "diffRatio": 0.006510132368995634,
+      "diffPath": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-vite-tailwindcss-v4-diff.png"
+    },
+    "styleDiffs": [],
+    "classDiffs": [
+      {
+        "path": "main.className",
+        "web": "box-border min-h-screen tw-root bg-[#fafafa] p-6 text-[#18181b] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "weapp": "box-border min-h-screen tw-root bg-_b_hfafafa_B p-6 text-_b_h18181b_B dark_cbg-_b_h18181b_B dark_ctext-_b_hfafafa_B"
+      },
+      {
+        "path": "card.className",
+        "web": "box-border rounded border border-solid border-[rgba(24,24,27,0.1)] bg-white p-5 [box-shadow:0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#18181b]",
+        "weapp": "box-border rounded border border-solid border-_brgba_p24_m24_m27_m0_d1_P_B bg-white p-5 _bbox-shadow_c0_8px_24px_rgba_p0_m0_m0_m0_d12_P_B dark_cbg-_b_h18181b_B"
+      },
+      {
+        "path": "title.className",
+        "web": "m-0 text-[32px] leading-[38px] font-semibold",
+        "weapp": "m-0 text-_b32px_B leading-_b38px_B font-semibold"
+      },
+      {
+        "path": "paragraph.className",
+        "web": "mt-3 text-sm leading-6 text-[#52525c] dark:text-[#d4d4d8]",
+        "weapp": "mt-3 text-sm leading-6 text-_b_h52525c_B dark_ctext-_b_hd4d4d8_B"
+      },
+      {
+        "path": "swatchGrid.className",
+        "web": "box-border grid grid-cols-2 gap-[16px] md:grid-cols-4",
+        "weapp": "box-border grid grid-cols-2 gap-_b16px_B md_cgrid-cols-4"
+      },
+      {
+        "path": "swatches.0.className",
+        "web": "bg-[#ffd230] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hffd230_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.1.className",
+        "web": "bg-[#7bf1a8] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h7bf1a8_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.2.className",
+        "web": "bg-[#8ec5ff] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h8ec5ff_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.3.className",
+        "web": "bg-[#fda5d5] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hfda5d5_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "arbitraryBox.className",
+        "web": "box-border -mt-1.5 grid grid-cols-2 gap-3.5 rounded-[18.5px] border border-dashed border-[rgba(51,102,153,0.4)] bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px]",
+        "weapp": "box-border -mt-1_d5 grid grid-cols-2 gap-3_d5 rounded-_b18_d5px_B border border-dashed border-_brgba_p51_m102_m153_m0_d4_P_B bg-_blinear-gradient_p135deg_m_hf8fafc_0_v_m_hdbeafe_100_v_P_B _ep-_b18_d5px_B"
+      },
+      {
+        "path": "arbitrary.className",
+        "web": "box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]",
+        "weapp": "box-border -rotate-2 bg-_b_h123456_B px-_b13_d5px_B py-1_d5 text-_b13_d5px_B leading-_b18px_B text-white _bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B"
+      },
+      {
+        "path": "decimal.className",
+        "web": "box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]",
+        "weapp": "box-border _emt-0 -ml-_b5_d5px_B w-_b37_d5_v_B min-w-_b88_d5px_B scale-_b1_d03_B bg-_brgb_p255_m210_m55_P_B text-center leading-_b28px_B text-_b_h1f2937_B opacity-_b0_d82_B"
+      },
+      {
+        "path": "button.className",
+        "web": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-[#2b7fff] px-4 py-2 text-[14px] leading-[15px] text-white transition hover:bg-[#8ec5ff] active:bg-[#7bf1a8]",
+        "weapp": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-_b_h2b7fff_B px-4 py-2 text-_b14px_B leading-_b15px_B text-white transition hover_cbg-_b_h8ec5ff_B active_cbg-_b_h7bf1a8_B"
+      }
+    ],
+    "screenshots": {
+      "web": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-vite-tailwindcss-v4-web.png",
+      "weapp": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-vite-tailwindcss-v4-weapp.png",
+      "diff": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-vite-tailwindcss-v4-diff.png"
+    },
+    "builds": [
+      {
+        "target": "web",
+        "script": "build:web",
+        "durationMs": 715
+      },
+      {
+        "target": "weapp",
+        "script": "build:weapp",
+        "durationMs": 895
+      }
+    ]
+  },
+  {
+    "project": "react-rsbuild-tailwindcss-v4",
+    "webRender": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "main renders a non-transparent background",
+          "pass": true,
+          "details": "rgb(250, 250, 250)"
+        },
+        {
+          "name": "section uses grid layout",
+          "pass": true,
+          "details": "grid"
+        },
+        {
+          "name": "responsive swatch grid has four columns at desktop width",
+          "pass": true,
+          "details": "212px 212px 212px 212px"
+        },
+        {
+          "name": "arbitrary value gradient renders",
+          "pass": true,
+          "details": "linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(219, 234, 254) 100%)"
+        },
+        {
+          "name": "decimal arbitrary opacity renders",
+          "pass": true,
+          "details": "0.82"
+        },
+        {
+          "name": "variant pseudo content renders",
+          "pass": true,
+          "details": "\"v4\", \"v4\", \"v4\", \"v4\""
+        }
+      ]
+    },
+    "parity": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "web and weapp screenshots are visually equivalent",
+          "pass": true,
+          "details": "9120 diff pixels within ratio 0.02"
+        },
+        {
+          "name": "computed style/class diagnostics collected",
+          "pass": true,
+          "details": "0 style/layout diffs, 13 class diffs"
+        }
+      ]
+    },
+    "weappCss": {
+      "url": "http://127.0.0.1:4505/static/css/vendors-node_modules_pnpm_rsbuild_core_2_0_15_core-js_3_49_0_node_modules_rsbuild_core_dist_c-904036.css, http://127.0.0.1:4505/static/css/index.css",
+      "size": 20858,
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "contains normal utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains responsive utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped hex arbitrary selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped arbitrary property selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped decimal arbitrary radius selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped important decimal padding selector",
+          "pass": true
+        },
+        {
+          "name": "does not emit raw arbitrary selectors",
+          "pass": true
+        },
+        {
+          "name": "does not leave Tailwind directives uncompiled",
+          "pass": true
+        }
+      ]
+    },
+    "styleDiffCount": 0,
+    "classDiffCount": 13,
+    "screenshotDiff": {
+      "pass": true,
+      "maxDiffRatio": 0.02,
+      "width": 1280,
+      "height": 916,
+      "diffPixels": 9120,
+      "diffRatio": 0.0077783842794759825,
+      "diffPath": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-rsbuild-tailwindcss-v4-diff.png"
+    },
+    "styleDiffs": [],
+    "classDiffs": [
+      {
+        "path": "main.className",
+        "web": "box-border min-h-screen tw-root bg-[#fafafa] p-6 text-[#18181b] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "weapp": "box-border min-h-screen tw-root bg-_b_hfafafa_B p-6 text-_b_h18181b_B dark_cbg-_b_h18181b_B dark_ctext-_b_hfafafa_B"
+      },
+      {
+        "path": "card.className",
+        "web": "box-border rounded border border-solid border-[rgba(24,24,27,0.1)] bg-white p-5 [box-shadow:0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#18181b]",
+        "weapp": "box-border rounded border border-solid border-_brgba_p24_m24_m27_m0_d1_P_B bg-white p-5 _bbox-shadow_c0_8px_24px_rgba_p0_m0_m0_m0_d12_P_B dark_cbg-_b_h18181b_B"
+      },
+      {
+        "path": "title.className",
+        "web": "m-0 text-[32px] leading-[38px] font-semibold",
+        "weapp": "m-0 text-_b32px_B leading-_b38px_B font-semibold"
+      },
+      {
+        "path": "paragraph.className",
+        "web": "mt-3 text-sm leading-6 text-[#52525c] dark:text-[#d4d4d8]",
+        "weapp": "mt-3 text-sm leading-6 text-_b_h52525c_B dark_ctext-_b_hd4d4d8_B"
+      },
+      {
+        "path": "swatchGrid.className",
+        "web": "box-border grid grid-cols-2 gap-[16px] md:grid-cols-4",
+        "weapp": "box-border grid grid-cols-2 gap-_b16px_B md_cgrid-cols-4"
+      },
+      {
+        "path": "swatches.0.className",
+        "web": "bg-[#ffd230] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hffd230_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.1.className",
+        "web": "bg-[#7bf1a8] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h7bf1a8_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.2.className",
+        "web": "bg-[#8ec5ff] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h8ec5ff_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.3.className",
+        "web": "bg-[#fda5d5] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hfda5d5_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "arbitraryBox.className",
+        "web": "box-border -mt-1.5 grid grid-cols-2 gap-3.5 rounded-[18.5px] border border-dashed border-[rgba(51,102,153,0.4)] bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px]",
+        "weapp": "box-border -mt-1_d5 grid grid-cols-2 gap-3_d5 rounded-_b18_d5px_B border border-dashed border-_brgba_p51_m102_m153_m0_d4_P_B bg-_blinear-gradient_p135deg_m_hf8fafc_0_v_m_hdbeafe_100_v_P_B _ep-_b18_d5px_B"
+      },
+      {
+        "path": "arbitrary.className",
+        "web": "box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]",
+        "weapp": "box-border -rotate-2 bg-_b_h123456_B px-_b13_d5px_B py-1_d5 text-_b13_d5px_B leading-_b18px_B text-white _bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B"
+      },
+      {
+        "path": "decimal.className",
+        "web": "box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]",
+        "weapp": "box-border _emt-0 -ml-_b5_d5px_B w-_b37_d5_v_B min-w-_b88_d5px_B scale-_b1_d03_B bg-_brgb_p255_m210_m55_P_B text-center leading-_b28px_B text-_b_h1f2937_B opacity-_b0_d82_B"
+      },
+      {
+        "path": "button.className",
+        "web": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-[#2b7fff] px-4 py-2 text-[14px] leading-[15px] text-white transition hover:bg-[#8ec5ff] active:bg-[#7bf1a8]",
+        "weapp": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-_b_h2b7fff_B px-4 py-2 text-_b14px_B leading-_b15px_B text-white transition hover_cbg-_b_h8ec5ff_B active_cbg-_b_h7bf1a8_B"
+      }
+    ],
+    "screenshots": {
+      "web": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-rsbuild-tailwindcss-v4-web.png",
+      "weapp": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-rsbuild-tailwindcss-v4-weapp.png",
+      "diff": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-rsbuild-tailwindcss-v4-diff.png"
+    },
+    "builds": [
+      {
+        "target": "web",
+        "script": "build:web",
+        "durationMs": 687
+      },
+      {
+        "target": "weapp",
+        "script": "build:weapp",
+        "durationMs": 940
+      }
+    ]
+  },
+  {
+    "project": "vue-rsbuild-tailwindcss-v4",
+    "webRender": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "main renders a non-transparent background",
+          "pass": true,
+          "details": "rgb(250, 250, 250)"
+        },
+        {
+          "name": "section uses grid layout",
+          "pass": true,
+          "details": "grid"
+        },
+        {
+          "name": "responsive swatch grid has four columns at desktop width",
+          "pass": true,
+          "details": "212px 212px 212px 212px"
+        },
+        {
+          "name": "arbitrary value gradient renders",
+          "pass": true,
+          "details": "linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(219, 234, 254) 100%)"
+        },
+        {
+          "name": "decimal arbitrary opacity renders",
+          "pass": true,
+          "details": "0.82"
+        },
+        {
+          "name": "variant pseudo content renders",
+          "pass": true,
+          "details": "\"v4\", \"v4\", \"v4\", \"v4\""
+        }
+      ]
+    },
+    "parity": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "web and weapp screenshots are visually equivalent",
+          "pass": true,
+          "details": "8587 diff pixels within ratio 0.02"
+        },
+        {
+          "name": "computed style/class diagnostics collected",
+          "pass": true,
+          "details": "0 style/layout diffs, 13 class diffs"
+        }
+      ]
+    },
+    "weappCss": {
+      "url": "http://127.0.0.1:4507/static/css/vendors-node_modules_pnpm_rsbuild_core_2_0_15_core-js_3_49_0_node_modules_rsbuild_core_dist_c-904036.css, http://127.0.0.1:4507/static/css/index.css",
+      "size": 20684,
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "contains normal utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains responsive utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped hex arbitrary selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped arbitrary property selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped decimal arbitrary radius selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped important decimal padding selector",
+          "pass": true
+        },
+        {
+          "name": "does not emit raw arbitrary selectors",
+          "pass": true
+        },
+        {
+          "name": "does not leave Tailwind directives uncompiled",
+          "pass": true
+        }
+      ]
+    },
+    "styleDiffCount": 0,
+    "classDiffCount": 13,
+    "screenshotDiff": {
+      "pass": true,
+      "maxDiffRatio": 0.02,
+      "width": 1280,
+      "height": 916,
+      "diffPixels": 8587,
+      "diffRatio": 0.00732379230349345,
+      "diffPath": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-rsbuild-tailwindcss-v4-diff.png"
+    },
+    "styleDiffs": [],
+    "classDiffs": [
+      {
+        "path": "main.className",
+        "web": "box-border min-h-screen tw-root bg-[#fafafa] p-6 text-[#18181b] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "weapp": "box-border min-h-screen tw-root bg-_b_hfafafa_B p-6 text-_b_h18181b_B dark_cbg-_b_h18181b_B dark_ctext-_b_hfafafa_B"
+      },
+      {
+        "path": "card.className",
+        "web": "box-border rounded border border-solid border-[rgba(24,24,27,0.1)] bg-white p-5 [box-shadow:0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#18181b]",
+        "weapp": "box-border rounded border border-solid border-_brgba_p24_m24_m27_m0_d1_P_B bg-white p-5 _bbox-shadow_c0_8px_24px_rgba_p0_m0_m0_m0_d12_P_B dark_cbg-_b_h18181b_B"
+      },
+      {
+        "path": "title.className",
+        "web": "m-0 text-[32px] leading-[38px] font-semibold",
+        "weapp": "m-0 text-_b32px_B leading-_b38px_B font-semibold"
+      },
+      {
+        "path": "paragraph.className",
+        "web": "mt-3 text-sm leading-6 text-[#52525c] dark:text-[#d4d4d8]",
+        "weapp": "mt-3 text-sm leading-6 text-_b_h52525c_B dark_ctext-_b_hd4d4d8_B"
+      },
+      {
+        "path": "swatchGrid.className",
+        "web": "box-border grid grid-cols-2 gap-[16px] md:grid-cols-4",
+        "weapp": "box-border grid grid-cols-2 gap-_b16px_B md_cgrid-cols-4"
+      },
+      {
+        "path": "swatches.0.className",
+        "web": "bg-[#ffd230] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hffd230_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.1.className",
+        "web": "bg-[#7bf1a8] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h7bf1a8_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.2.className",
+        "web": "bg-[#8ec5ff] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h8ec5ff_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.3.className",
+        "web": "bg-[#fda5d5] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hfda5d5_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "arbitraryBox.className",
+        "web": "box-border -mt-1.5 grid grid-cols-2 gap-3.5 rounded-[18.5px] border border-dashed border-[rgba(51,102,153,0.4)] bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px]",
+        "weapp": "box-border -mt-1_d5 grid grid-cols-2 gap-3_d5 rounded-_b18_d5px_B border border-dashed border-_brgba_p51_m102_m153_m0_d4_P_B bg-_blinear-gradient_p135deg_m_hf8fafc_0_v_m_hdbeafe_100_v_P_B _ep-_b18_d5px_B"
+      },
+      {
+        "path": "arbitrary.className",
+        "web": "box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]",
+        "weapp": "box-border -rotate-2 bg-_b_h123456_B px-_b13_d5px_B py-1_d5 text-_b13_d5px_B leading-_b18px_B text-white _bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B"
+      },
+      {
+        "path": "decimal.className",
+        "web": "box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]",
+        "weapp": "box-border _emt-0 -ml-_b5_d5px_B w-_b37_d5_v_B min-w-_b88_d5px_B scale-_b1_d03_B bg-_brgb_p255_m210_m55_P_B text-center leading-_b28px_B text-_b_h1f2937_B opacity-_b0_d82_B"
+      },
+      {
+        "path": "button.className",
+        "web": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-[#2b7fff] px-4 py-2 text-[14px] leading-[15px] text-white transition hover:bg-[#8ec5ff] active:bg-[#7bf1a8]",
+        "weapp": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-_b_h2b7fff_B px-4 py-2 text-_b14px_B leading-_b15px_B text-white transition hover_cbg-_b_h8ec5ff_B active_cbg-_b_h7bf1a8_B"
+      }
+    ],
+    "screenshots": {
+      "web": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-rsbuild-tailwindcss-v4-web.png",
+      "weapp": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-rsbuild-tailwindcss-v4-weapp.png",
+      "diff": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-rsbuild-tailwindcss-v4-diff.png"
+    },
+    "builds": [
+      {
+        "target": "web",
+        "script": "build:web",
+        "durationMs": 721
+      },
+      {
+        "target": "weapp",
+        "script": "build:weapp",
+        "durationMs": 959
+      }
+    ]
+  },
+  {
+    "project": "react-webpack-tailwindcss-v4",
+    "webRender": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "main renders a non-transparent background",
+          "pass": true,
+          "details": "rgb(250, 250, 250)"
+        },
+        {
+          "name": "section uses grid layout",
+          "pass": true,
+          "details": "grid"
+        },
+        {
+          "name": "responsive swatch grid has four columns at desktop width",
+          "pass": true,
+          "details": "212px 212px 212px 212px"
+        },
+        {
+          "name": "arbitrary value gradient renders",
+          "pass": true,
+          "details": "linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(219, 234, 254) 100%)"
+        },
+        {
+          "name": "decimal arbitrary opacity renders",
+          "pass": true,
+          "details": "0.82"
+        },
+        {
+          "name": "variant pseudo content renders",
+          "pass": true,
+          "details": "\"v4\", \"v4\", \"v4\", \"v4\""
+        }
+      ]
+    },
+    "parity": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "web and weapp screenshots are visually equivalent",
+          "pass": true,
+          "details": "9552 diff pixels within ratio 0.02"
+        },
+        {
+          "name": "computed style/class diagnostics collected",
+          "pass": true,
+          "details": "0 style/layout diffs, 13 class diffs"
+        }
+      ]
+    },
+    "weappCss": {
+      "url": "http://127.0.0.1:4509/assets/main.css",
+      "size": 10328,
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "contains normal utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains responsive utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped hex arbitrary selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped arbitrary property selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped decimal arbitrary radius selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped important decimal padding selector",
+          "pass": true
+        },
+        {
+          "name": "does not emit raw arbitrary selectors",
+          "pass": true
+        },
+        {
+          "name": "does not leave Tailwind directives uncompiled",
+          "pass": true
+        }
+      ]
+    },
+    "styleDiffCount": 0,
+    "classDiffCount": 13,
+    "screenshotDiff": {
+      "pass": true,
+      "maxDiffRatio": 0.02,
+      "width": 1280,
+      "height": 916,
+      "diffPixels": 9552,
+      "diffRatio": 0.008146834061135371,
+      "diffPath": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-webpack-tailwindcss-v4-diff.png"
+    },
+    "styleDiffs": [],
+    "classDiffs": [
+      {
+        "path": "main.className",
+        "web": "box-border min-h-screen tw-root bg-[#fafafa] p-6 text-[#18181b] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "weapp": "box-border min-h-screen tw-root bg-_b_hfafafa_B p-6 text-_b_h18181b_B dark_cbg-_b_h18181b_B dark_ctext-_b_hfafafa_B"
+      },
+      {
+        "path": "card.className",
+        "web": "box-border rounded border border-solid border-[rgba(24,24,27,0.1)] bg-white p-5 [box-shadow:0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#18181b]",
+        "weapp": "box-border rounded border border-solid border-_brgba_p24_m24_m27_m0_d1_P_B bg-white p-5 _bbox-shadow_c0_8px_24px_rgba_p0_m0_m0_m0_d12_P_B dark_cbg-_b_h18181b_B"
+      },
+      {
+        "path": "title.className",
+        "web": "m-0 text-[32px] leading-[38px] font-semibold",
+        "weapp": "m-0 text-_b32px_B leading-_b38px_B font-semibold"
+      },
+      {
+        "path": "paragraph.className",
+        "web": "mt-3 text-sm leading-6 text-[#52525c] dark:text-[#d4d4d8]",
+        "weapp": "mt-3 text-sm leading-6 text-_b_h52525c_B dark_ctext-_b_hd4d4d8_B"
+      },
+      {
+        "path": "swatchGrid.className",
+        "web": "box-border grid grid-cols-2 gap-[16px] md:grid-cols-4",
+        "weapp": "box-border grid grid-cols-2 gap-_b16px_B md_cgrid-cols-4"
+      },
+      {
+        "path": "swatches.0.className",
+        "web": "bg-[#ffd230] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hffd230_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.1.className",
+        "web": "bg-[#7bf1a8] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h7bf1a8_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.2.className",
+        "web": "bg-[#8ec5ff] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h8ec5ff_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.3.className",
+        "web": "bg-[#fda5d5] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hfda5d5_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "arbitraryBox.className",
+        "web": "box-border -mt-1.5 grid grid-cols-2 gap-3.5 rounded-[18.5px] border border-dashed border-[rgba(51,102,153,0.4)] bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px]",
+        "weapp": "box-border -mt-1_d5 grid grid-cols-2 gap-3_d5 rounded-_b18_d5px_B border border-dashed border-_brgba_p51_m102_m153_m0_d4_P_B bg-_blinear-gradient_p135deg_m_hf8fafc_0_v_m_hdbeafe_100_v_P_B _ep-_b18_d5px_B"
+      },
+      {
+        "path": "arbitrary.className",
+        "web": "box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]",
+        "weapp": "box-border -rotate-2 bg-_b_h123456_B px-_b13_d5px_B py-1_d5 text-_b13_d5px_B leading-_b18px_B text-white _bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B"
+      },
+      {
+        "path": "decimal.className",
+        "web": "box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]",
+        "weapp": "box-border _emt-0 -ml-_b5_d5px_B w-_b37_d5_v_B min-w-_b88_d5px_B scale-_b1_d03_B bg-_brgb_p255_m210_m55_P_B text-center leading-_b28px_B text-_b_h1f2937_B opacity-_b0_d82_B"
+      },
+      {
+        "path": "button.className",
+        "web": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-[#2b7fff] px-4 py-2 text-[14px] leading-[15px] text-white transition hover:bg-[#8ec5ff] active:bg-[#7bf1a8]",
+        "weapp": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-_b_h2b7fff_B px-4 py-2 text-_b14px_B leading-_b15px_B text-white transition hover_cbg-_b_h8ec5ff_B active_cbg-_b_h7bf1a8_B"
+      }
+    ],
+    "screenshots": {
+      "web": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-webpack-tailwindcss-v4-web.png",
+      "weapp": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-webpack-tailwindcss-v4-weapp.png",
+      "diff": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/react-webpack-tailwindcss-v4-diff.png"
+    },
+    "builds": [
+      {
+        "target": "web",
+        "script": "build:web",
+        "durationMs": 1141
+      },
+      {
+        "target": "weapp",
+        "script": "build:weapp",
+        "durationMs": 1293
+      }
+    ]
+  },
+  {
+    "project": "vue-webpack-tailwindcss-v4",
+    "webRender": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "main renders a non-transparent background",
+          "pass": true,
+          "details": "rgb(250, 250, 250)"
+        },
+        {
+          "name": "section uses grid layout",
+          "pass": true,
+          "details": "grid"
+        },
+        {
+          "name": "responsive swatch grid has four columns at desktop width",
+          "pass": true,
+          "details": "212px 212px 212px 212px"
+        },
+        {
+          "name": "arbitrary value gradient renders",
+          "pass": true,
+          "details": "linear-gradient(135deg, rgb(248, 250, 252) 0%, rgb(219, 234, 254) 100%)"
+        },
+        {
+          "name": "decimal arbitrary opacity renders",
+          "pass": true,
+          "details": "0.82"
+        },
+        {
+          "name": "variant pseudo content renders",
+          "pass": true,
+          "details": "\"v4\", \"v4\", \"v4\", \"v4\""
+        }
+      ]
+    },
+    "parity": {
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "web and weapp screenshots are visually equivalent",
+          "pass": true,
+          "details": "8923 diff pixels within ratio 0.02"
+        },
+        {
+          "name": "computed style/class diagnostics collected",
+          "pass": true,
+          "details": "0 style/layout diffs, 13 class diffs"
+        }
+      ]
+    },
+    "weappCss": {
+      "url": "http://127.0.0.1:4511/assets/main.css",
+      "size": 10241,
+      "failedCount": 0,
+      "checks": [
+        {
+          "name": "contains normal utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains responsive utility selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped hex arbitrary selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped arbitrary property selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped decimal arbitrary radius selector",
+          "pass": true
+        },
+        {
+          "name": "contains escaped important decimal padding selector",
+          "pass": true
+        },
+        {
+          "name": "does not emit raw arbitrary selectors",
+          "pass": true
+        },
+        {
+          "name": "does not leave Tailwind directives uncompiled",
+          "pass": true
+        }
+      ]
+    },
+    "styleDiffCount": 0,
+    "classDiffCount": 13,
+    "screenshotDiff": {
+      "pass": true,
+      "maxDiffRatio": 0.02,
+      "width": 1280,
+      "height": 916,
+      "diffPixels": 8923,
+      "diffRatio": 0.007610364355895197,
+      "diffPath": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-webpack-tailwindcss-v4-diff.png"
+    },
+    "styleDiffs": [],
+    "classDiffs": [
+      {
+        "path": "main.className",
+        "web": "box-border min-h-screen tw-root bg-[#fafafa] p-6 text-[#18181b] dark:bg-[#18181b] dark:text-[#fafafa]",
+        "weapp": "box-border min-h-screen tw-root bg-_b_hfafafa_B p-6 text-_b_h18181b_B dark_cbg-_b_h18181b_B dark_ctext-_b_hfafafa_B"
+      },
+      {
+        "path": "card.className",
+        "web": "box-border rounded border border-solid border-[rgba(24,24,27,0.1)] bg-white p-5 [box-shadow:0_8px_24px_rgba(0,0,0,0.12)] dark:bg-[#18181b]",
+        "weapp": "box-border rounded border border-solid border-_brgba_p24_m24_m27_m0_d1_P_B bg-white p-5 _bbox-shadow_c0_8px_24px_rgba_p0_m0_m0_m0_d12_P_B dark_cbg-_b_h18181b_B"
+      },
+      {
+        "path": "title.className",
+        "web": "m-0 text-[32px] leading-[38px] font-semibold",
+        "weapp": "m-0 text-_b32px_B leading-_b38px_B font-semibold"
+      },
+      {
+        "path": "paragraph.className",
+        "web": "mt-3 text-sm leading-6 text-[#52525c] dark:text-[#d4d4d8]",
+        "weapp": "mt-3 text-sm leading-6 text-_b_h52525c_B dark_ctext-_b_hd4d4d8_B"
+      },
+      {
+        "path": "swatchGrid.className",
+        "web": "box-border grid grid-cols-2 gap-[16px] md:grid-cols-4",
+        "weapp": "box-border grid grid-cols-2 gap-_b16px_B md_cgrid-cols-4"
+      },
+      {
+        "path": "swatches.0.className",
+        "web": "bg-[#ffd230] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hffd230_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.1.className",
+        "web": "bg-[#7bf1a8] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h7bf1a8_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.2.className",
+        "web": "bg-[#8ec5ff] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_h8ec5ff_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "swatches.3.className",
+        "web": "bg-[#fda5d5] text-[#18181b] box-border rounded p-[24px] text-center leading-[18px] before:mr-1 before:content-['v4']",
+        "weapp": "bg-_b_hfda5d5_B text-_b_h18181b_B box-border rounded p-_b24px_B text-center leading-_b18px_B before_cmr-1 before_ccontent-_b_av4_a_B"
+      },
+      {
+        "path": "arbitraryBox.className",
+        "web": "box-border -mt-1.5 grid grid-cols-2 gap-3.5 rounded-[18.5px] border border-dashed border-[rgba(51,102,153,0.4)] bg-[linear-gradient(135deg,#f8fafc_0%,#dbeafe_100%)] !p-[18.5px]",
+        "weapp": "box-border -mt-1_d5 grid grid-cols-2 gap-3_d5 rounded-_b18_d5px_B border border-dashed border-_brgba_p51_m102_m153_m0_d4_P_B bg-_blinear-gradient_p135deg_m_hf8fafc_0_v_m_hdbeafe_100_v_P_B _ep-_b18_d5px_B"
+      },
+      {
+        "path": "arbitrary.className",
+        "web": "box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]",
+        "weapp": "box-border -rotate-2 bg-_b_h123456_B px-_b13_d5px_B py-1_d5 text-_b13_d5px_B leading-_b18px_B text-white _bbox-shadow_c0_2_d5px_7_d5px_rgba_p18_m52_m86_m0_d35_P_B"
+      },
+      {
+        "path": "decimal.className",
+        "web": "box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]",
+        "weapp": "box-border _emt-0 -ml-_b5_d5px_B w-_b37_d5_v_B min-w-_b88_d5px_B scale-_b1_d03_B bg-_brgb_p255_m210_m55_P_B text-center leading-_b28px_B text-_b_h1f2937_B opacity-_b0_d82_B"
+      },
+      {
+        "path": "button.className",
+        "web": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-[#2b7fff] px-4 py-2 text-[14px] leading-[15px] text-white transition hover:bg-[#8ec5ff] active:bg-[#7bf1a8]",
+        "weapp": "box-border m-0 w-fit appearance-none rounded border-0 border-none bg-_b_h2b7fff_B px-4 py-2 text-_b14px_B leading-_b15px_B text-white transition hover_cbg-_b_h8ec5ff_B active_cbg-_b_h7bf1a8_B"
+      }
+    ],
+    "screenshots": {
+      "web": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-webpack-tailwindcss-v4-web.png",
+      "weapp": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-webpack-tailwindcss-v4-weapp.png",
+      "diff": "/Users/icebreaker/Projects/github/weapp-tailwindcss/demo/web/report/web-full-report/2026-06-26T07-17-16-352Z/compare/vue-webpack-tailwindcss-v4-diff.png"
+    },
+    "builds": [
+      {
+        "target": "web",
+        "script": "build:web",
+        "durationMs": 1262
+      },
+      {
+        "target": "weapp",
+        "script": "build:weapp",
+        "durationMs": 1437
+      }
+    ]
+  }
+]

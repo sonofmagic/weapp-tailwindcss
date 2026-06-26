@@ -162,6 +162,7 @@
     "e2e:update-snapshots": "node scripts/e2e-update-snapshots-runner.mjs",
     "demo:build": "pnpm run build:demo",
     "demo:web:compare": "node demo/web/scripts/compare-dev-weapp.mjs",
+    "demo:web:full-report": "node scripts/web-full-report.mjs",
     "demo:install": "tsx scripts/demo/install.ts",
     "demo:install:beta": "tsx scripts/demo/install.ts --beta",
     "demo:install:alpha": "tsx scripts/demo/install.ts --alpha",

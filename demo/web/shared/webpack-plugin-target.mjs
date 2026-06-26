@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 
 export function resolveWebDemoGeneratorTarget() {
@@ -8,6 +9,7 @@ export function resolveWebDemoGeneratorTarget() {
 export function createWebDemoWeappTailwindcssWebpackPlugin() {
   return new WeappTailwindcss({
     tailwindcssBasedir: process.cwd(),
+    cssEntries: [path.resolve(process.cwd(), 'src/style.css')],
     cssSourceTrace: true,
     rem2rpx: false,
     generator: {
