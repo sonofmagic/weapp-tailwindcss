@@ -101,6 +101,17 @@ const TARO_SCRIPT_RE = /\btaro\b/u
 const WEAPP_VITE_SCRIPT_RE = /\bweapp-vite\b/u
 const UNI_APP_SCRIPT_RE = /\buni(?:\s|$)/u
 const UNI_APP_VITE_SCRIPT_RE = /\buni(?:\s|$)/u
+const MINI_PROGRAM_PLATFORMS = new Set([
+  'alipay',
+  'baidu',
+  'jd',
+  'qq',
+  'swan',
+  'tt',
+  'weapp',
+  'wechat',
+  'wx',
+])
 const MPX_MARKERS: Array<[string, DetectableAppType]> = [
   ['src/app.mpx', 'mpx'],
   ['app.mpx', 'mpx'],
@@ -146,7 +157,7 @@ function resolvePlatformInfo(value: string | undefined): UniPlatformInfo {
   const isAppIos = normalized === 'app-ios'
   const isAppHarmony = normalized === 'app-harmony'
   const isApp = normalized?.startsWith('app-') === true || normalized === 'app' || normalized === 'app-plus'
-  const isMp = normalized?.startsWith('mp-') === true
+  const isMp = normalized?.startsWith('mp-') === true || (normalized ? MINI_PROGRAM_PLATFORMS.has(normalized) : false)
   const isWeb = normalized?.startsWith('web') === true || normalized === 'h5'
 
   return {
@@ -193,17 +204,34 @@ export function resolvePlatform(value: string | undefined) {
   return resolvePlatformInfo(value)
 }
 
-export function resolveUniPlatform(value: string | undefined) {
+export function resolveTaroPlatform(value: string | undefined = getProcessEnv().TARO_ENV) {
   return resolvePlatform(value)
 }
 
-export function resolveUniUtsPlatform(value: string | undefined) {
+function resolveMpxPlatformValue(env: FrameworkEnv = getProcessEnv()) {
+  return env.MPX_CURRENT_TARGET_MODE ?? env.MPX_CLI_MODE
+}
+
+export function resolveMpxPlatform(value: string | undefined = resolveMpxPlatformValue()) {
+  return resolvePlatform(value)
+}
+
+export function resolveUniPlatform(value: string | undefined = getProcessEnv().UNI_PLATFORM) {
+  return resolvePlatform(value)
+}
+
+export function resolveUniUtsPlatform(value: string | undefined = getProcessEnv().UNI_UTS_PLATFORM) {
+  return resolvePlatform(value)
+}
+
+export function resolveUniAppXPlatform(value: string | undefined = getProcessEnv().UNI_UTS_PLATFORM) {
   return resolvePlatform(value)
 }
 
 export function resolveUniPlatformsFromEnv(env: FrameworkEnv = getProcessEnv()) {
   return {
     uniPlatform: resolveUniPlatform(env.UNI_PLATFORM),
+    uniAppXPlatform: resolveUniAppXPlatform(env.UNI_UTS_PLATFORM),
     uniUtsPlatform: resolveUniUtsPlatform(env.UNI_UTS_PLATFORM),
   }
 }

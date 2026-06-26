@@ -1,11 +1,13 @@
 const path = require('node:path')
+const { resolveUniPlatform } = require('weapp-tailwindcss/framework')
 
 function r(...args) {
   return path.resolve(__dirname, ...args)
 }
 
-const isH5 = process.env.UNI_PLATFORM === 'h5'
-const isApp = process.env.UNI_PLATFORM === 'app'
+const uniPlatform = resolveUniPlatform()
+const isH5 = uniPlatform.isWeb
+const isApp = uniPlatform.isApp
 
 module.exports = {
   r,

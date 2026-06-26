@@ -4,9 +4,9 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import type { Plugin } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import { resolvePlatform } from 'weapp-tailwindcss/framework'
+import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 
-const taroPlatform = resolvePlatform(process.env.TARO_ENV)
+const taroPlatform = resolveTaroPlatform()
 const generator = {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'

@@ -1,8 +1,7 @@
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { UserDefinedOptions } from '@/types'
-import process from 'node:process'
 import { resolveTailwindcssBasedir } from '@/context/tailwindcss'
-import { resolvePlatform, resolveUniPlatformsFromEnv } from '@/framework'
+import { resolveTaroPlatform, resolveUniPlatformsFromEnv } from '@/framework'
 import { defuOverrideArray } from '@/utils'
 import { omitUndefined } from '@/utils/object'
 
@@ -25,7 +24,7 @@ export function shouldEnableWebCompatFromEnv() {
   const { uniPlatform, uniUtsPlatform } = resolveUniPlatformsFromEnv()
   return uniPlatform.isWeb
     || uniUtsPlatform.isWeb
-    || resolvePlatform(process.env['TARO_ENV']).isWeb
+    || resolveTaroPlatform().isWeb
 }
 
 export function withWebCompatGeneratorDefaults<T extends { generator?: UserDefinedOptions['generator'] }>(

@@ -3,7 +3,7 @@ import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
-import { resolvePlatform } from 'weapp-tailwindcss/framework'
+import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const taroPlugins = [
@@ -11,7 +11,7 @@ const taroPlugins = [
   // '@tarojs/plugin-platform-harmony-hybrid',
 ]
 
-const taroPlatform = resolvePlatform(process.env.TARO_ENV)
+const taroPlatform = resolveTaroPlatform()
 const generator = {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'

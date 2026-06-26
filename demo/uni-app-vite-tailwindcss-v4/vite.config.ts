@@ -22,7 +22,7 @@ export default defineConfig(async () => {
         cssSourceTrace: true,
         rem2rpx: true,
         generator: {
-          webCompat: resolveUniPlatform(process.env.UNI_PLATFORM).isWeb ? true : undefined,
+          webCompat: resolveUniPlatform().isWeb ? true : undefined,
         },
       }),
     ],

@@ -1,5 +1,6 @@
 const { defineConfig } = require('@vue/cli-service')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
+const { resolveMpxPlatform } = require('weapp-tailwindcss/framework')
 const path = require('path')
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
@@ -19,7 +20,7 @@ ObjectMiddleware.register = function safeRegister(Constructor, request, name, se
 }
 
 module.exports = defineConfig({
-  outputDir: `dist/${process.env.MPX_CURRENT_TARGET_MODE}`,
+  outputDir: `dist/${resolveMpxPlatform().normalized}`,
   pluginOptions: {
     mpx: {
       plugin: {

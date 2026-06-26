@@ -14,7 +14,11 @@ import {
   isUniAppXPackage,
   isUniAppXManifest,
   isWeappVitePackage,
+  resolveMpxPlatform,
   resolvePlatform,
+  resolveTaroPlatform,
+  resolveUniAppXPlatform,
+  resolveUniPlatform,
   resolveUniPlatformsFromEnv,
   resolveUniUtsPlatform,
   resolveImplicitAppTypeFromViteRoot,
@@ -42,10 +46,27 @@ async function createProjectRoot(
 }
 
 describe('framework detection helpers', () => {
+  const originalEnv = {
+    MPX_CLI_MODE: process.env.MPX_CLI_MODE,
+    MPX_CURRENT_TARGET_MODE: process.env.MPX_CURRENT_TARGET_MODE,
+    TARO_ENV: process.env.TARO_ENV,
+    UNI_PLATFORM: process.env.UNI_PLATFORM,
+    UNI_UTS_PLATFORM: process.env.UNI_UTS_PLATFORM,
+  }
+
   afterEach(async () => {
     await Promise.all(
       createdDirs.splice(0).map(dir => rm(dir, { recursive: true, force: true })),
     )
+    for (const key of Object.keys(originalEnv) as Array<keyof typeof originalEnv>) {
+      const value = originalEnv[key]
+      if (value === undefined) {
+        delete process.env[key]
+      }
+      else {
+        process.env[key] = value
+      }
+    }
   })
 
   it('detects single framework packages', () => {
@@ -101,6 +122,10 @@ describe('framework detection helpers', () => {
       isWeb: true,
       isApp: false,
     })
+    expect(resolveTaroPlatform('weapp')).toMatchObject({
+      normalized: 'weapp',
+      isMp: true,
+    })
     expect(resolveUniUtsPlatform('app-harmony')).toMatchObject({
       normalized: 'app-harmony',
       isApp: true,
@@ -117,6 +142,37 @@ describe('framework detection helpers', () => {
       uniUtsPlatform: {
         isAppAndroid: true,
       },
+    })
+  })
+
+  it('resolves current framework platform from process env by default', () => {
+    process.env.TARO_ENV = 'h5'
+    process.env.UNI_PLATFORM = 'web'
+    process.env.UNI_UTS_PLATFORM = 'app-ios'
+    process.env.MPX_CURRENT_TARGET_MODE = 'wx'
+
+    expect(resolveTaroPlatform()).toMatchObject({
+      normalized: 'h5',
+      isWeb: true,
+    })
+    expect(resolveUniPlatform()).toMatchObject({
+      normalized: 'web',
+      isWeb: true,
+    })
+    expect(resolveUniAppXPlatform()).toMatchObject({
+      normalized: 'app-ios',
+      isAppIos: true,
+    })
+    expect(resolveMpxPlatform()).toMatchObject({
+      normalized: 'wx',
+      isMp: true,
+    })
+
+    delete process.env.MPX_CURRENT_TARGET_MODE
+    process.env.MPX_CLI_MODE = 'web'
+    expect(resolveMpxPlatform()).toMatchObject({
+      normalized: 'web',
+      isWeb: true,
     })
   })
 

@@ -3,7 +3,7 @@ import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
 import prodConfig from './prod'
 import { WeappTailwindcss, UserDefinedOptions } from 'weapp-tailwindcss/webpack'
-import { resolvePlatform } from 'weapp-tailwindcss/framework'
+import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const tailwindcssV4GradientFallback = process.env.WEAPP_TW_V4_GRADIENT_FALLBACK === '1'
@@ -16,7 +16,7 @@ const cssOptions = {
   px2rpx: true,
 } satisfies UserDefinedOptions['cssOptions']
 
-const taroPlatform = resolvePlatform(process.env.TARO_ENV)
+const taroPlatform = resolveTaroPlatform()
 const generator = {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
