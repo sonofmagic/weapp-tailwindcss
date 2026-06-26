@@ -107,7 +107,9 @@ function taroWebHmrCaseName(name: string) {
 
 const taroVitePlatforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid']
 const taroWebpackV4Platforms = ['weapp', 'swan', 'alipay', 'tt', 'h5', 'rn', 'qq', 'jd', 'harmony-hybrid']
+const subpackageTaroWebpackV4Platforms = ['weapp', 'alipay', 'tt', 'h5', 'rn', 'android', 'ios']
 const uniAppV4Platforms = ['app-android', 'app-ios', 'h5', 'h5:ssr', 'mp-alipay', 'mp-baidu', 'mp-jd', 'mp-kuaishou', 'mp-lark', 'mp-qq', 'mp-toutiao', 'mp-weixin', 'mp-xhs', 'quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union']
+const subpackageUniAppV4Platforms = ['app-android', 'app-ios', 'h5', 'h5:ssr', 'mp-alipay', 'mp-toutiao', 'mp-weixin']
 
 function gulpPlatforms(name: string): DemoPlatformCoverage[] {
   return [
@@ -172,6 +174,34 @@ function taroPlatforms(name: string, platforms: string[]): DemoPlatformCoverage[
   })
 }
 
+function subpackageTaroWebpackPlatforms(name: string): DemoPlatformCoverage[] {
+  return subpackageTaroWebpackV4Platforms.map((platform) => {
+    const buildScript = platform === 'weapp' ? 'build:weapp' : `build:${platform}`
+    const devScript = platform === 'weapp' ? 'dev:weapp' : `dev:${platform}`
+    if (platform === 'alipay' || platform === 'tt' || platform === 'h5') {
+      return local(platform, {
+        buildScript,
+        devScript,
+        evidence: 'multiplatform build output',
+        command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} ${platform}" pnpm e2e:multiplatform-build`,
+        reason: '该 subpackage 专项 demo 默认验证构建产物隔离，不纳入 IDE/HMR 长链路。',
+        staticCoverage: 'automated',
+        hmrCoverage: 'exempt',
+      })
+    }
+    return local(platform, {
+      buildScript,
+      devScript,
+      evidence: 'multiplatform target matrix',
+      command: demoCommand(name, buildScript),
+      reason: platform === 'android' || platform === 'ios' || platform === 'rn'
+        ? 'Taro RN/Android/iOS 依赖本地 RN SDK、模拟器或原生环境，默认 CI 不执行。'
+        : '该 subpackage 专项 demo 默认验证 alipay/tt/h5 构建产物，其他目标登记为本地候选。',
+      hmrCoverage: 'exempt',
+    })
+  })
+}
+
 function uniAppPlatforms(name: string, platforms: string[]): DemoPlatformCoverage[] {
   return platforms.map((platform) => {
     const buildScript = `build:${platform}`
@@ -200,6 +230,34 @@ function uniAppPlatforms(name: string, platforms: string[]): DemoPlatformCoverag
       devScript,
       evidence: 'multiplatform build output',
       command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} ${platform}" pnpm e2e:multiplatform-build`,
+    })
+  })
+}
+
+function subpackageUniAppPlatforms(name: string): DemoPlatformCoverage[] {
+  return subpackageUniAppV4Platforms.map((platform) => {
+    const buildScript = `build:${platform}`
+    const devScript = `dev:${platform}`
+    if (platform === 'app-android' || platform === 'app-ios') {
+      return local(platform, {
+        buildScript: 'build:app',
+        devScript: 'dev:app',
+        evidence: platform === 'app-android' ? 'documented App Android local target' : 'documented App iOS local target',
+        command: `E2E_HBUILDERX_LOCAL=1 E2E_HBUILDERX_APP_PLATFORM=${platform} pnpm e2e:hbuilderx:local:${platform === 'app-android' ? 'android' : 'ios'} -t "${name}"`,
+        reason: platform === 'app-android'
+          ? 'Android 调试依赖本机 HBuilderX 与 Android 模拟器。'
+          : 'iOS 调试依赖 macOS Simulator 与 HBuilderX。',
+        hmrCoverage: 'exempt',
+      })
+    }
+    return local(platform, {
+      buildScript,
+      devScript,
+      evidence: 'multiplatform build output',
+      command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} ${platform}" pnpm e2e:multiplatform-build`,
+      reason: '该 subpackage 专项 demo 默认验证构建产物隔离，不纳入 IDE/HMR 长链路。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
     })
   })
 }
@@ -324,8 +382,10 @@ export const DEMO_COVERAGE_MATRIX = [
   entry({ name: 'taro-vite-react-tailwindcss-v4', packageJson: pkg('taro-vite-react-tailwindcss-v4'), framework: 'taro-react', builder: 'vite', tailwindcss: 'v4', sourceShape: 'tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: taroPlatforms('taro-vite-react-tailwindcss-v4', taroVitePlatforms) }),
   entry({ name: 'taro-vite-vue3-tailwindcss-v4', packageJson: pkg('taro-vite-vue3-tailwindcss-v4'), framework: 'taro-vue3', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: taroPlatforms('taro-vite-vue3-tailwindcss-v4', taroVitePlatforms) }),
   entry({ name: 'taro-webpack-react-tailwindcss-v4', packageJson: pkg('taro-webpack-react-tailwindcss-v4'), framework: 'taro-react', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: taroPlatforms('taro-webpack-react-tailwindcss-v4', taroWebpackV4Platforms) }),
+  entry({ name: 'subpackage-taro-webpack-react-tailwindcss-v4', packageJson: pkg('subpackage-taro-webpack-react-tailwindcss-v4'), framework: 'taro-react', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: subpackageTaroWebpackPlatforms('subpackage-taro-webpack-react-tailwindcss-v4') }),
   entry({ name: 'taro-webpack-vue3-tailwindcss-v4', packageJson: pkg('taro-webpack-vue3-tailwindcss-v4'), framework: 'taro-vue3', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: taroPlatforms('taro-webpack-vue3-tailwindcss-v4', taroWebpackV4Platforms) }),
   entry({ name: 'uni-app-vite-tailwindcss-v4', packageJson: pkg('uni-app-vite-tailwindcss-v4'), framework: 'uni-app', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: uniAppPlatforms('uni-app-vite-tailwindcss-v4', uniAppV4Platforms) }),
+  entry({ name: 'subpackage-uni-app-vite-tailwindcss-v4', packageJson: pkg('subpackage-uni-app-vite-tailwindcss-v4'), framework: 'uni-app', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: subpackageUniAppPlatforms('subpackage-uni-app-vite-tailwindcss-v4') }),
   entry({ name: 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4', packageJson: pkg('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'), framework: 'uni-app', builder: 'vite-hbuilderx', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: uniAppHBuilderXPlatforms('uni-app-vite-vue3-hbuilderx-tailwindcss-v4') }),
   entry({ name: 'uni-app-x-hbuilderx-tailwindcss-v4', packageJson: pkg('uni-app-x-hbuilderx-tailwindcss-v4'), framework: 'uni-app-x', builder: 'hbuilderx', tailwindcss: 'v4', sourceShape: 'uvue', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: true, platforms: uniAppXPlatforms('uni-app-x-hbuilderx-tailwindcss-v4') }),
   entry({ name: 'weapp-vite-tailwindcss-v4', packageJson: pkg('weapp-vite-tailwindcss-v4'), framework: 'weapp-vite', builder: 'vite', tailwindcss: 'v4', sourceShape: 'native', sfcBlocks: [], hbuilderxLocal: false, platforms: weappVitePlatforms('weapp-vite-tailwindcss-v4') }),
@@ -368,6 +428,9 @@ export function discoverDemoPackageNames() {
     }
     const rootPkg = path.join(demoRoot, dirent.name, 'package.json')
     if (fs.existsSync(rootPkg)) {
+      if (dirent.name.startsWith('issue-')) {
+        continue
+      }
       names.push(dirent.name)
     }
   }

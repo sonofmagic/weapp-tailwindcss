@@ -1,0 +1,63 @@
+{
+  "name": "@weapp-tailwindcss-demo/subpackage-uni-app-vite-tailwindcss-v4",
+  "private": true,
+  "version": "0.0.0",
+  "description": "uni-app Vite Tailwind CSS v4 subpackage cssEntries regression app",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "build": "pnpm run build:mp-weixin",
+    "build:app": "uni build -p app",
+    "build:h5": "uni build",
+    "build:h5:ssr": "uni build --ssr",
+    "build:mp-alipay": "uni build -p mp-alipay",
+    "build:mp-toutiao": "uni build -p mp-toutiao",
+    "build:mp-weixin": "node ../../scripts/uni-build-guard.mjs build -p mp-weixin",
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run dev:mp-weixin",
+    "dev:app": "cross-env WEAPP_TW_HMR_TIMING=1 uni -p app",
+    "dev:h5": "cross-env WEAPP_TW_HMR_TIMING=1 uni",
+    "dev:h5:ssr": "cross-env WEAPP_TW_HMR_TIMING=1 uni --ssr",
+    "dev:mp-alipay": "cross-env WEAPP_TW_HMR_TIMING=1 uni -p mp-alipay",
+    "dev:mp-toutiao": "cross-env WEAPP_TW_HMR_TIMING=1 uni -p mp-toutiao",
+    "dev:mp-weixin": "cross-env WEAPP_TW_HMR_TIMING=1 uni -p mp-weixin",
+    "prebuild": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:app": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:h5:ssr": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:mp-alipay": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:mp-toutiao": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:app": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:h5:ssr": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:mp-alipay": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:mp-toutiao": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:mp-weixin": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-5000720260410001",
+    "@dcloudio/uni-app-plus": "3.0.0-5000720260410001",
+    "@dcloudio/uni-components": "3.0.0-5000720260410001",
+    "@dcloudio/uni-h5": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-alipay": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-toutiao": "3.0.0-5000720260410001",
+    "@dcloudio/uni-mp-vue": "3.0.0-5000320260312001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-5000720260410001",
+    "vue": "^3.5.39"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.8",
+    "@dcloudio/uni-cli-shared": "3.0.0-5000720260410001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5000720260410001",
+    "@vue/runtime-core": "^3.5.39",
+    "@vue/tsconfig": "^0.9.1",
+    "tailwindcss": "catalog:tailwindcss4",
+    "tailwindcss-patch": "catalog:tailwindcssPatch",
+    "typescript": "catalog:typescript59",
+    "vite": "^5.4.21",
+    "vue-tsc": "catalog:vueTsc318",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}

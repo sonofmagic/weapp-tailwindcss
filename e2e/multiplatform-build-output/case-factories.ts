@@ -13,6 +13,66 @@ const miniStyleFileByPlatform: Record<string, string> = {
   'mp-xhs': 'app.css',
 }
 
+const miniTemplateFileByPlatform: Record<string, string> = {
+  'mp-alipay': 'pages/index/index.axml',
+  'mp-baidu': 'pages/index/index.swan',
+  'mp-jd': 'pages/index/index.jxml',
+  'mp-kuaishou': 'pages/index/index.ksml',
+  'mp-lark': 'pages/index/index.ttml',
+  'mp-qq': 'pages/index/index.qml',
+  'mp-toutiao': 'pages/index/index.ttml',
+  'mp-weixin': 'pages/index/index.wxml',
+  'mp-xhs': 'pages/index/index.xml',
+}
+
+function cssMarker(value: string) {
+  return `.${value}`
+}
+
+function createSubpackageCssAssertions(options: {
+  appStyleFile: string
+  normalStyleFile: string
+  independentStyleFile: string
+  mainMarker: string
+  normalMarker: string
+  independentMarker: string
+  singleEntry: boolean
+}) {
+  const allMarkers = [
+    cssMarker(options.mainMarker),
+    cssMarker(options.normalMarker),
+    cssMarker(options.independentMarker),
+  ]
+
+  if (options.singleEntry) {
+    return [
+      {
+        file: options.appStyleFile,
+        contains: allMarkers,
+        notContains: [rawTailwindDirectiveRE],
+      },
+    ]
+  }
+
+  return [
+    {
+      file: options.appStyleFile,
+      contains: [cssMarker(options.mainMarker)],
+      notContains: [cssMarker(options.normalMarker), cssMarker(options.independentMarker), rawTailwindDirectiveRE],
+    },
+    {
+      file: options.normalStyleFile,
+      contains: [cssMarker(options.normalMarker)],
+      notContains: [cssMarker(options.mainMarker), cssMarker(options.independentMarker), rawTailwindDirectiveRE],
+    },
+    {
+      file: options.independentStyleFile,
+      contains: [cssMarker(options.independentMarker)],
+      notContains: [cssMarker(options.mainMarker), cssMarker(options.normalMarker), rawTailwindDirectiveRE],
+    },
+  ] satisfies BuildOutputCase['fileAssertions']
+}
+
 export function uniAppMiniCase(options: {
   project: string
   platform: keyof typeof miniStyleFileByPlatform
@@ -88,6 +148,99 @@ export function uniAppH5SsrCase(options: {
     textFiles: ['dist/build/h5/client/index.html', 'dist/build/h5/server/index.html'],
     styleContains: options.styleContains,
     textContains: ['<html'],
+    notContains: [rawTailwindDirectiveRE],
+    status: 'ci',
+  }
+}
+
+export function uniAppSubpackageMiniCase(options: {
+  project: string
+  platform: keyof typeof miniStyleFileByPlatform
+  mode: 'isolated' | 'single'
+  markers: {
+    main: string
+    normal: string
+    independent: string
+  }
+}): BuildOutputCase {
+  const outputDir = `dist/build/${options.platform}`
+  const appStyleFile = miniStyleFileByPlatform[options.platform]
+  const extension = appStyleFile.slice(appStyleFile.lastIndexOf('.'))
+  const singleEntry = options.mode === 'single'
+  const mainStyleFile = singleEntry ? `main.single${extension}` : `main${extension}`
+  return {
+    name: `${options.project} ${options.platform} ${options.mode}`,
+    framework: 'uni-app',
+    projectDir: `demo/${options.project}`,
+    platform: options.platform,
+    command: ['pnpm', 'run', `build:${options.platform}`],
+    env: singleEntry ? { E2E_TW_CSS_ENTRY_MODE: 'single' } : undefined,
+    outputDir,
+    requiredFiles: [
+      `${outputDir}/app.js`,
+      `${outputDir}/app.json`,
+      `${outputDir}/${appStyleFile}`,
+      `${outputDir}/${mainStyleFile}`,
+      `${outputDir}/${miniTemplateFileByPlatform[options.platform]}`,
+      `${outputDir}/sub-normal/pages/index${extension}`,
+      `${outputDir}/sub-independent/pages/index${extension}`,
+    ],
+    styleFiles: [outputDir],
+    styleFileExtensions: [extension],
+    textFiles: [outputDir],
+    styleContains: singleEntry
+      ? [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)]
+      : [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
+    textContains: [options.markers.main, options.markers.normal, options.markers.independent],
+    fileAssertions: createSubpackageCssAssertions({
+      appStyleFile: `${outputDir}/${mainStyleFile}`,
+      normalStyleFile: `${outputDir}/sub-normal/pages/index${extension}`,
+      independentStyleFile: `${outputDir}/sub-independent/pages/index${extension}`,
+      mainMarker: options.markers.main,
+      normalMarker: options.markers.normal,
+      independentMarker: options.markers.independent,
+      singleEntry,
+    }),
+    notContains: [rawTailwindDirectiveRE],
+    status: 'ci',
+  }
+}
+
+export function uniAppSubpackageH5Case(options: {
+  project: string
+  mode: 'isolated' | 'single'
+  ssr?: boolean
+  markers: {
+    main: string
+    normal: string
+    independent: string
+  }
+}): BuildOutputCase {
+  const singleEntry = options.mode === 'single'
+  const platform = options.ssr ? 'h5:ssr' : 'h5'
+  return {
+    name: `${options.project} ${platform} ${options.mode}`,
+    framework: 'uni-app',
+    projectDir: `demo/${options.project}`,
+    platform,
+    command: ['pnpm', 'run', options.ssr ? 'build:h5:ssr' : 'build:h5'],
+    env: singleEntry ? { E2E_TW_CSS_ENTRY_MODE: 'single' } : undefined,
+    outputDir: 'dist/build/h5',
+    requiredFiles: options.ssr
+      ? [
+          'dist/build/h5/client/index.html',
+          'dist/build/h5/client/ssr-manifest.json',
+          'dist/build/h5/server/entry-server.js',
+          'dist/build/h5/server/index.html',
+        ]
+      : ['dist/build/h5/index.html'],
+    styleFiles: [options.ssr ? 'dist/build/h5/client' : 'dist/build/h5'],
+    styleFileExtensions: ['.css'],
+    textFiles: options.ssr
+      ? ['dist/build/h5/client/index.html', 'dist/build/h5/server/index.html']
+      : ['dist/build/h5/index.html'],
+    styleContains: [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
+    textContains: ['<div id="app"></div>'],
     notContains: [rawTailwindDirectiveRE],
     status: 'ci',
   }
@@ -254,6 +407,87 @@ export function taroMiniCase(options: {
     notContains: [rawTailwindDirectiveRE],
     status: options.status ?? 'local',
     reason: options.reason ?? 'Taro 非微信小程序目标通过多平台构建专项断言；本地 runner 可能因系统依赖挂起，不放入默认 vitest/execa 构建集合。',
+  }
+}
+
+export function taroSubpackageMiniCase(options: {
+  project: string
+  packageName: string
+  platform: keyof typeof taroMiniOutputByPlatform
+  mode: 'isolated' | 'single'
+  markers: {
+    main: string
+    normal: string
+    independent: string
+  }
+}): BuildOutputCase {
+  const output = taroMiniOutputByPlatform[options.platform]
+  const extension = options.platform === 'alipay' ? '.acss' : '.ttss'
+  const singleEntry = options.mode === 'single'
+  return {
+    name: `${options.project} ${options.platform} ${options.mode}`,
+    framework: 'taro',
+    projectDir: `demo/${options.project}`,
+    platform: options.platform,
+    command: ['pnpm', '--filter', options.packageName, 'run', `build:${options.platform}`],
+    commandCwd: 'repo',
+    env: singleEntry ? { E2E_TW_CSS_ENTRY_MODE: 'single' } : undefined,
+    outputDir: 'dist',
+    requiredFiles: [
+      'dist/app.js',
+      output.appJson,
+      output.appStyle,
+      output.pageTemplate,
+      `dist/sub-normal/pages/index${extension}`,
+      `dist/sub-independent/pages/index${extension}`,
+    ],
+    styleFiles: ['dist'],
+    styleFileExtensions: [extension],
+    textFiles: ['dist'],
+    styleContains: [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
+    textContains: [options.markers.main, options.markers.normal, options.markers.independent],
+    fileAssertions: createSubpackageCssAssertions({
+      appStyleFile: output.appStyle,
+      normalStyleFile: `dist/sub-normal/pages/index${extension}`,
+      independentStyleFile: `dist/sub-independent/pages/index${extension}`,
+      mainMarker: options.markers.main,
+      normalMarker: options.markers.normal,
+      independentMarker: options.markers.independent,
+      singleEntry,
+    }),
+    notContains: [rawTailwindDirectiveRE],
+    status: 'ci',
+  }
+}
+
+export function taroSubpackageH5Case(options: {
+  project: string
+  packageName: string
+  mode: 'isolated' | 'single'
+  markers: {
+    main: string
+    normal: string
+    independent: string
+  }
+}): BuildOutputCase {
+  const singleEntry = options.mode === 'single'
+  return {
+    name: `${options.project} h5 ${options.mode}`,
+    framework: 'taro',
+    projectDir: `demo/${options.project}`,
+    platform: 'h5',
+    command: ['pnpm', '--filter', options.packageName, 'run', 'build:h5'],
+    commandCwd: 'repo',
+    env: singleEntry ? { E2E_TW_CSS_ENTRY_MODE: 'single' } : undefined,
+    outputDir: 'dist',
+    requiredFiles: [
+      'dist/js/app.js',
+    ],
+    styleFiles: ['dist'],
+    styleFileExtensions: ['.css'],
+    styleContains: [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
+    notContains: [rawTailwindDirectiveRE],
+    status: 'ci',
   }
 }
 

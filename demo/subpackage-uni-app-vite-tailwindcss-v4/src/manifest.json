@@ -1,0 +1,10 @@
+{
+  "name": "subpackage-uni-app-vite-tailwindcss-v4",
+  "appid": "__UNI__TWV4_SUBPACKAGE",
+  "description": "uni-app Tailwind CSS v4 subpackage cssEntries regression app",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "mp-weixin": {
+    "appid": "wx0000000000000000"
+  }
+}

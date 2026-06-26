@@ -1,0 +1,6 @@
+@import "tailwindcss" source(none);
+@config "../tailwind.config.all.js";
+
+@source "./pages/**/*.{ts,tsx}";
+@source "./sub-normal/**/*.{ts,tsx}";
+@source "./sub-independent/**/*.{ts,tsx}";

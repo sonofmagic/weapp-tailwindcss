@@ -19,6 +19,16 @@ const uniAppV4Platforms = [
   'quickapp-webview-union',
 ]
 
+const subpackageUniAppV4Platforms = [
+  'app-android',
+  'app-ios',
+  'h5',
+  'h5:ssr',
+  'mp-alipay',
+  'mp-toutiao',
+  'mp-weixin',
+]
+
 const taroVitePlatforms = [
   'weapp',
   'swan',
@@ -41,6 +51,16 @@ const taroWebpackV4Platforms = [
   'qq',
   'jd',
   'harmony-hybrid',
+]
+
+const subpackageTaroWebpackV4Platforms = [
+  'weapp',
+  'alipay',
+  'tt',
+  'h5',
+  'rn',
+  'android',
+  'ios',
 ]
 
 const mpxPlatforms = ['wx', 'ali', 'swan', 'tt', 'dd']
@@ -130,17 +150,20 @@ function createTaroTargets(project: string, platforms: string[]): MultiplatformT
       project.startsWith('taro-vite-')
       || project === 'issue-951-taro-vite-react-tailwindcss-v4'
     ) && (platform === 'alipay' || platform === 'tt')
+    const isSubpackageWebpackCi = project === 'subpackage-taro-webpack-react-tailwindcss-v4' && (platform === 'alipay' || platform === 'tt' || platform === 'h5')
     const isCiScript = project === 'taro-webpack-react-tailwindcss-v4' && platform === 'alipay'
     return target({
       framework: 'taro',
       projectDir: `demo/${project}`,
       platform,
-      coverage: isTaroViteMiniCi ? 'default-ci' : isCiScript ? 'ci-script' : 'local',
+      coverage: isTaroViteMiniCi || isSubpackageWebpackCi ? 'default-ci' : isCiScript ? 'ci-script' : 'local',
       reason: isTaroViteMiniCi
         ? 'Taro Vite alipay/tt 作为非微信小程序核心产物回归，覆盖 .acss/.ttss 与 Vite bundle asset 关系。'
-        : isCiScript
-          ? '通过 pnpm e2e:multiplatform-build:taro-alipay 做专项构建与只读断言；本地 Taro runner 可能因系统依赖挂起。'
-          : '当前 Taro 目标在本仓 demo 中存在 runner 兼容、平台 SDK 或产物残留问题，登记为全平台 local 候选。',
+        : isSubpackageWebpackCi
+          ? 'Taro Webpack subpackage Tailwind v4 回归默认覆盖 alipay/tt 小程序产物和 H5 产物。'
+          : isCiScript
+            ? '通过 pnpm e2e:multiplatform-build:taro-alipay 做专项构建与只读断言；本地 Taro runner 可能因系统依赖挂起。'
+            : '当前 Taro 目标在本仓 demo 中存在 runner 兼容、平台 SDK 或产物残留问题，登记为全平台 local 候选。',
     })
   })
 }
@@ -167,11 +190,13 @@ function createUniAppXTargets(project: string): MultiplatformTarget[] {
 export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
   ...createGulpTargets('gulp-tailwindcss-v4'),
   ...createUniAppTargets('uni-app-vite-tailwindcss-v4', uniAppV4Platforms),
+  ...createUniAppTargets('subpackage-uni-app-vite-tailwindcss-v4', subpackageUniAppV4Platforms),
   ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'),
   ...createTaroTargets('taro-vite-react-tailwindcss-v4', taroVitePlatforms),
   ...createTaroTargets('issue-951-taro-vite-react-tailwindcss-v4', ['alipay', 'tt']),
   ...createTaroTargets('taro-vite-vue3-tailwindcss-v4', taroVitePlatforms),
   ...createTaroTargets('taro-webpack-react-tailwindcss-v4', taroWebpackV4Platforms),
+  ...createTaroTargets('subpackage-taro-webpack-react-tailwindcss-v4', subpackageTaroWebpackV4Platforms),
   ...createTaroTargets('taro-webpack-vue3-tailwindcss-v4', taroWebpackV4Platforms),
   ...createMpxTargets('mpx-tailwindcss-v4'),
   ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v4'),

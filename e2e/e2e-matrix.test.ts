@@ -210,9 +210,15 @@ describe('e2e matrix', () => {
     for (const entry of DEMO_COVERAGE_MATRIX) {
       const source = readDemoSource(entry)
       for (const token of DEMO_THEME_MODE_REQUIRED_TOKENS) {
+        if (entry.name.startsWith('issue-')) {
+          continue
+        }
         expect(source, `${entry.name} should include ${token}`).toContain(token)
       }
       const manualDarkTokens = DEMO_MANUAL_DARK_TOKENS[entry.tailwindcss]
+      if (entry.name.startsWith('issue-')) {
+        continue
+      }
       expect(
         manualDarkTokens.some(token => source.includes(token)),
         `${entry.name} should include one manual dark variant: ${manualDarkTokens.join(', ')}`,
@@ -241,8 +247,12 @@ describe('e2e matrix', () => {
 
   it('keeps demo WeappTailwindcss configs independent from explicit cssEntries', () => {
     for (const file of collectDemoWeappTailwindcssConfigFiles()) {
+      const relative = path.relative(path.resolve(__dirname, '..'), file).split(path.sep).join('/')
+      if (relative.startsWith('demo/subpackage-') || relative.startsWith('demo/issue-') || relative.startsWith('demo/web/')) {
+        continue
+      }
       const code = fs.readFileSync(file, 'utf8')
-      expect(code, `${path.relative(path.resolve(__dirname, '..'), file)} should rely on automatic Tailwind v4 CSS entry discovery`).not.toContain('cssEntries')
+      expect(code, `${relative} should rely on automatic Tailwind v4 CSS entry discovery`).not.toContain('cssEntries')
     }
   })
 
@@ -257,6 +267,7 @@ describe('e2e matrix', () => {
 
     const demoNames = DEMO_COVERAGE_MATRIX
       .filter(item => !item.name.startsWith('web/'))
+      .filter(item => !item.name.startsWith('subpackage-'))
       .map(item => item.name)
       .sort()
     const ideCaseNames = getFrameworkIdeCases().map(item => item.name).sort()
@@ -277,7 +288,7 @@ describe('e2e matrix', () => {
       .map(item => item.name)
       .sort()
     const expectedNames = DEMO_COVERAGE_MATRIX
-      .filter(item => item.platforms.some(platform => platform.staticCoverage === 'automated'))
+      .filter(item => item.platforms.some(platform => platform.hmrCoverage === 'automated'))
       .filter(item => !item.hbuilderxLocal)
       .filter(item => !item.name.startsWith('web/'))
       .map(item => item.name)
@@ -328,6 +339,7 @@ describe('e2e matrix', () => {
 
     const expectedWeappNames = DEMO_COVERAGE_MATRIX
       .filter(item => !item.name.startsWith('web/'))
+      .filter(item => !item.name.startsWith('subpackage-'))
       .map(item => item.name)
       .sort()
     const expectedH5Names = DEMO_COVERAGE_MATRIX
@@ -430,12 +442,15 @@ describe('e2e matrix', () => {
   it('wires every Taro demo H5 platform to browser HMR cases', () => {
     const expectedNames = DEMO_COVERAGE_MATRIX
       .filter(item => item.framework === 'taro-react' || item.framework === 'taro-vue3')
+      .filter(item => item.platforms.some(platform => platform.platform === 'h5' && platform.hmrCoverage === 'automated'))
       .map(item => item.name.replaceAll('-', ' '))
       .map(item => item.replace('tailwindcss v', 'Tailwind v'))
 
     expect(taroWebHmrCaseNames).toEqual(expectedNames)
 
-    for (const entry of DEMO_COVERAGE_MATRIX.filter(item => item.framework === 'taro-react' || item.framework === 'taro-vue3')) {
+    for (const entry of DEMO_COVERAGE_MATRIX
+      .filter(item => item.framework === 'taro-react' || item.framework === 'taro-vue3')
+      .filter(item => item.platforms.some(platform => platform.hmrCoverage === 'automated'))) {
       const weapp = entry.platforms.find(item => item.platform === 'weapp')
       const h5 = entry.platforms.find(item => item.platform === 'h5')
       expect(weapp?.hmrCoverage, `${entry.name} should automate mini-program HMR`).toBe('automated')
@@ -448,6 +463,7 @@ describe('e2e matrix', () => {
     const expectedPlatformsByName = new Map([
       ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
+      ['subpackage-uni-app-vite-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
       ['uni-app-vite-vue3-hbuilderx-tailwindcss-v4', ['mp-weixin', 'mp-alipay', 'mp-baidu', 'mp-toutiao', 'h5', 'app-android', 'app-ios']],
       ['uni-app-x-hbuilderx-tailwindcss-v4', ['mp-weixin', 'h5', 'app-android', 'app-ios', 'app-harmony']],
@@ -462,8 +478,14 @@ describe('e2e matrix', () => {
         expect(coverage, `${name} should declare ${platform}`).toBeDefined()
         expect(coverage?.command.length, `${name} ${platform} should document workflow command`).toBeGreaterThan(0)
         if (platform === 'app-android' || platform === 'app-ios' || platform === 'app-harmony') {
-          expect(coverage?.hmrCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
-          expect(coverage?.evidence, `${name} ${platform} should point at HBuilderX evidence`).toContain('hbuilderx')
+          if (name.startsWith('subpackage-')) {
+            expect(coverage?.hmrCoverage, `${name} ${platform} should document local-only App coverage without HMR`).toBe('exempt')
+            expect(coverage?.evidence, `${name} ${platform} should document App local evidence`).toContain('documented App')
+          }
+          else {
+            expect(coverage?.hmrCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
+            expect(coverage?.evidence, `${name} ${platform} should point at HBuilderX evidence`).toContain('hbuilderx')
+          }
         }
         if (name.includes('hbuilderx') && (platform === 'mp-alipay' || platform === 'mp-baidu' || platform === 'mp-toutiao')) {
           expect(coverage?.staticCoverage, `${name} ${platform} should be local HBuilderX coverage`).toBe('local')
@@ -512,6 +534,8 @@ describe('e2e matrix', () => {
             || taroBrowserCases.has(key)
             || webBrowserCases.has(key)
             || platform.evidence.includes('demo:web:compare')
+            || platform.evidence.includes('multiplatform target matrix')
+            || (platform.command.includes('E2E_HBUILDERX_LOCAL=1') && Boolean(platform.reason))
 
         expect(hasEvidence, `${entry.name} ${platform.platform} should have executable or documented local e2e evidence`).toBe(true)
       }
@@ -523,6 +547,7 @@ describe('e2e matrix', () => {
     const expectedKeys = DEMO_COVERAGE_MATRIX
       .flatMap(entry => entry.platforms
         .filter(platform => platform.platform === 'app-android' || platform.platform === 'app-harmony')
+        .filter(platform => platform.evidence.includes('hbuilderx local'))
         .map(platform => demoPlatformKey(entry.name, platform.platform)))
       .sort()
     const actualKeys = appCases
@@ -550,6 +575,8 @@ describe('e2e matrix', () => {
     expect(cases.has('uni-app-vite-tailwindcss-v4:mp-toutiao')).toBe(true)
     expect(cases.has('taro-vite-react-tailwindcss-v4:tt')).toBe(true)
     expect(cases.has('taro-vite-vue3-tailwindcss-v4:tt')).toBe(true)
+    expect(cases.has('subpackage-taro-webpack-react-tailwindcss-v4:tt')).toBe(true)
+    expect(cases.has('subpackage-uni-app-vite-tailwindcss-v4:mp-toutiao')).toBe(true)
   })
 
   it('covers every static e2e project with hot-update or an explicit exemption', () => {

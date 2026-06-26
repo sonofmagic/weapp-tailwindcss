@@ -4,11 +4,15 @@ import {
   gulpMiniCase,
   mpxCase,
   taroMiniCase,
+  taroSubpackageH5Case,
+  taroSubpackageMiniCase,
   uniAppH5Case,
   uniAppH5SsrCase,
   uniAppHBuilderXMiniCase,
   uniAppMiniCase,
   uniAppQuickappCase,
+  uniAppSubpackageH5Case,
+  uniAppSubpackageMiniCase,
 } from './case-factories'
 import { createLocalTargetCase, uniqueTargetKey } from './helpers'
 import { MULTIPLATFORM_TARGETS } from './targets'
@@ -16,6 +20,16 @@ import { MULTIPLATFORM_TARGETS } from './targets'
 const uniAppV4StyleContains = ['.bg-_b_h0000ff_B', '.i-mdi-home', '.before_ccontent']
 const gulpV4StyleContains = ['.text-_b_h123456_B', '.i-mdi-ab-testing', '.bg-normal-subpackage-marker', '.before_ccontent']
 const gulpTextContains = ['bg-_burl', 'text-_b_h123456_B', 'bg-normal-subpackage-marker']
+const taroSubpackageMarkers = {
+  main: 'bg-twv4-taro-main',
+  normal: 'bg-twv4-taro-normal',
+  independent: 'bg-twv4-taro-independent',
+}
+const uniAppSubpackageMarkers = {
+  main: 'bg-twv4-uni-main',
+  normal: 'bg-twv4-uni-normal',
+  independent: 'bg-twv4-uni-independent',
+}
 
 export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
   gulpMiniCase({
@@ -41,6 +55,29 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     project: 'uni-app-vite-tailwindcss-v4',
     styleContains: ['.i-mdi-home', 'box-sizing'],
   }),
+  ...(['mp-weixin', 'mp-alipay', 'mp-toutiao'] as const).flatMap(platform =>
+    (['isolated', 'single'] as const).map(mode =>
+      uniAppSubpackageMiniCase({
+        project: 'subpackage-uni-app-vite-tailwindcss-v4',
+        platform,
+        mode,
+        markers: uniAppSubpackageMarkers,
+      }),
+    ),
+  ),
+  ...(['isolated', 'single'] as const).flatMap(mode => [
+    uniAppSubpackageH5Case({
+      project: 'subpackage-uni-app-vite-tailwindcss-v4',
+      mode,
+      markers: uniAppSubpackageMarkers,
+    }),
+    uniAppSubpackageH5Case({
+      project: 'subpackage-uni-app-vite-tailwindcss-v4',
+      mode,
+      ssr: true,
+      markers: uniAppSubpackageMarkers,
+    }),
+  ]),
   ...(['quickapp-webview', 'quickapp-webview-huawei', 'quickapp-webview-union'] as const).map(platform =>
     uniAppQuickappCase({
       project: 'uni-app-vite-tailwindcss-v4',
@@ -119,6 +156,25 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     ],
     status: 'ci',
   }),
+  ...(['alipay', 'tt'] as const).flatMap(platform =>
+    (['isolated', 'single'] as const).map(mode =>
+      taroSubpackageMiniCase({
+        project: 'subpackage-taro-webpack-react-tailwindcss-v4',
+        packageName: '@weapp-tailwindcss-demo/subpackage-taro-webpack-react-tailwindcss-v4',
+        platform,
+        mode,
+        markers: taroSubpackageMarkers,
+      }),
+    ),
+  ),
+  ...(['isolated', 'single'] as const).map(mode =>
+    taroSubpackageH5Case({
+      project: 'subpackage-taro-webpack-react-tailwindcss-v4',
+      packageName: '@weapp-tailwindcss-demo/subpackage-taro-webpack-react-tailwindcss-v4',
+      mode,
+      markers: taroSubpackageMarkers,
+    }),
+  ),
   taroMiniCase({
     project: 'issue-951-taro-vite-react-tailwindcss-v4',
     packageName: '@weapp-tailwindcss-demo/issue-951-taro-vite-react-tailwindcss-v4',
