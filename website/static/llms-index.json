@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-25T08:29:40.054Z",
+  "generatedAt": "2026-06-26T17:41:29.546Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 161,
@@ -3038,7 +3038,7 @@
         "4. 检查 Tailwind CSS 入口",
         "5. 注册 WeappTailwindcss",
         "# Taro 迁移要覆盖 H5 和小程序",
-        "6. 什么时候写 cssEntries"
+        "6. 写清 cssEntries"
       ],
       "updatedAt": null,
       "source": "docs/migrations/v5.md"
@@ -4020,7 +4020,7 @@
       "id": "doc:quick-start/v4/taro-vite",
       "title": "Taro vite",
       "description": "在项目目录下的 src/app.css 中，添加以下内容：",
-      "summary": "多入口、自动识别失败或自定义构建链无法稳定发现入口时，再补这一项。cssEntries 只负责补充识别，入口 CSS 仍然要通过 Taro 入口实际引入：",
+      "summary": "cssEntries 只负责让 WeappTailwindcss 稳定读取 Tailwind CSS 入口，入口 CSS 仍然要通过 Taro 入口实际引入。多入口或分包入口请都写进数组：",
       "url": "/docs/quick-start/v4/taro-vite",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/taro-vite",
       "keywords": [

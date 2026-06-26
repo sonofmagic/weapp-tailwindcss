@@ -45,12 +45,16 @@ keywords:
 然后在 `vite.config.ts` 中注册 `weapp-tailwindcss/vite`：
 
 ```ts title="vite.config.ts"
+import path from 'node:path'
 import { defineConfig } from 'weapp-vite/config'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
     WeappTailwindcss({
+      cssEntries: [
+        path.resolve(process.cwd(), 'app.css'),
+      ],
       cssOptions: {
         rem2rpx: true,
       },
@@ -60,7 +64,7 @@ export default defineConfig({
 ```
 
 生成模式会接管 Tailwind CSS 生成和小程序转译，不需要再注册 `tailwindcss` PostCSS 插件，也不需要执行 `weapp-tw patch`。
-常规 weapp-vite 项目会自动识别已经被项目引入的 Tailwind CSS 入口；多入口、自动识别失败或自定义构建链无法稳定发现入口时，再手动配置 `cssEntries`。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过项目入口实际引入。
+Tailwind CSS 4 项目推荐显式配置 `cssEntries`，让 `WeappTailwindcss` 稳定读取入口 CSS 里的 `@source` 与 Tailwind 指令。`cssEntries` 只负责入口识别，入口 CSS 仍然要通过项目入口实际引入。
 
 Tailwind CSS 4 的入口 CSS：
 

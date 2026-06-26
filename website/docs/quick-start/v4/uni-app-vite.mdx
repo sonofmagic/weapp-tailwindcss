@@ -36,6 +36,7 @@ npm install -D tailwindcss weapp-tailwindcss
 ## 2. 配置 `vite.config.ts`
 
 ```ts title="vite.config.ts"
+import { resolve } from 'node:path'
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
@@ -44,6 +45,9 @@ export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
+      cssEntries: [
+        resolve(process.cwd(), 'src/app.css'),
+      ],
       cssOptions: {
         rem2rpx: true,
       },
@@ -53,8 +57,8 @@ export default defineConfig({
 
 ```
 
-> 常规 Vite 项目会自动识别被引入的 Tailwind CSS 入口。只有多入口、自动识别失败或自定义构建链无法稳定发现入口等场景，才需要手动配置 `cssEntries`。
-> `cssEntries` 只负责补充识别，入口 CSS 仍然要通过 `App.vue`、`main.ts` 或框架全局样式入口实际引入到项目里。
+> Tailwind CSS 4 项目推荐显式配置 `cssEntries`，并使用绝对路径指向纯 `.css` 入口。
+> `cssEntries` 只负责让 `WeappTailwindcss` 稳定读取入口中的 `@source` / `@config` / Tailwind 指令，入口 CSS 仍然要通过 `App.vue`、`main.ts` 或框架全局样式入口实际引入到项目里。
 > Tailwind CSS 4 入口建议放在纯 `.css` 文件里，不要直接写进 `scss`、`less` 等预处理样式文件。
 
 ## 3. 添加样式

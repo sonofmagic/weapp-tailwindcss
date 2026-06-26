@@ -140,4 +140,6 @@ MappingChars2String
 
 #### 备注
 
-等价于设置 `tailwindcss.v4.cssEntries`。Vite 常规项目会自动识别被引入的 Tailwind CSS 入口；多入口、Webpack/Gulp/自定义构建或自动识别失败时，再显式配置入口 CSS 的绝对路径。`cssEntries` 只负责补充识别，入口样式文件仍然要被项目实际 import 或纳入构建图。
+等价于设置 `tailwindcss.v4.cssEntries`。Tailwind CSS 4 项目推荐显式配置入口 CSS 的绝对路径；多入口、分包、独立分包、Webpack/Gulp/自定义构建和多平台构建都应该写清楚这些入口。`cssEntries` 只负责入口识别，入口样式文件仍然要被项目实际 import 或纳入构建图。
+
+虽然类型上是可选项，运行时也会尽力从构建图自动发现入口，但这不适合作为长期配置契约。显式配置可以避免某些平台产物名、CSS 合并策略或分包输出差异导致 Tailwind CSS 生成不完整。

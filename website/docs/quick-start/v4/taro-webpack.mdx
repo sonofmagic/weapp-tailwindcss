@@ -49,6 +49,7 @@ npm install -D tailwindcss weapp-tailwindcss
 在项目的配置文件 `config/index` 中注册:
 
 ```js title="config/index.[jt]s"
+import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 // 假如你使用 js 配置，则使用下方 require 的写法
 // const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
@@ -71,6 +72,9 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
                 rem2rpx: true,
               },
               tailwindcssBasedir: process.cwd(),
+              cssEntries: [
+                path.resolve(__dirname, '../src/app.css'),
+              ],
             }],
           },
         },
@@ -82,10 +86,10 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 }
 ```
 
-> 常规 Taro Webpack 项目只要在 `src/app.ts` 或 `src/app.js` 里引入了 `./app.css`，可以不写 `cssEntries`。
+> Tailwind CSS 4 项目推荐显式配置 `cssEntries`，同时仍要在 `src/app.ts` 或 `src/app.js` 里引入 `./app.css`。
 > `weapp-tailwindcss@5` 默认接管 Tailwind CSS 样式生成，不需要再创建 `postcss.config.mjs` 注册 `@tailwindcss/postcss`。如果项目已有 PostCSS 配置，只保留非 Tailwind 的业务插件即可。
 
-多入口、入口不在 `src/app.css`、自动识别失败时，再补这一项：
+多入口、入口不在 `src/app.css` 或有分包独立入口时，把所有纯 `.css` Tailwind 入口都写进 `cssEntries`：
 
 ```js
 import path from 'node:path'

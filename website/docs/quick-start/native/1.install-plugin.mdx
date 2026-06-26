@@ -62,11 +62,15 @@ npm i
 ```ts title="vite.config.ts"
 import { defineConfig } from 'weapp-vite/config'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import path from 'node:path'
 
 export default defineConfig({
   // highlight-start
   plugins: [
     WeappTailwindcss({
+      cssEntries: [
+        path.resolve(process.cwd(), 'app.css'),
+      ],
       cssOptions: {
         rem2rpx: true,
       },
@@ -79,7 +83,7 @@ export default defineConfig({
 
 Tailwind CSS 4 的扫描范围写在 CSS 入口的 `@source` 里。生成模式下不要再注册 Tailwind 官方生成插件，也不需要执行 `weapp-tw patch`。当前文档仅维护 Tailwind CSS 4 接入说明。
 
-常规 weapp-vite 项目会自动识别已经被项目引入的 Tailwind CSS 入口。多入口、自动识别失败或自定义构建链无法稳定发现入口时，再手动配置 `cssEntries`。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过项目入口实际引入：
+Tailwind CSS 4 项目推荐显式配置 `cssEntries`。`cssEntries` 只负责让 `WeappTailwindcss` 稳定读取入口 CSS，入口 CSS 仍然要通过项目入口实际引入；如果有多个 Tailwind CSS 入口，就都写进数组：
 
 ```ts title="vite.config.ts"
 import path from 'node:path'
@@ -93,7 +97,7 @@ export default defineConfig({
         rem2rpx: true,
       },
       cssEntries: [
-        path.resolve(__dirname, 'app.css'),
+        path.resolve(process.cwd(), 'app.css'),
       ],
     }),
   ],

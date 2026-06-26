@@ -59,6 +59,7 @@ import './app.css'
 在项目的配置文件 `config/index` 中注册。小程序和 H5 都需要注册 `WeappTailwindcss`：小程序目标会输出小程序可用 CSS，`TARO_ENV=h5` 时会自动切到 Web 目标。
 
 ```js title="config/index.[jt]s"
+const path = require('node:path')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 // 使用 ts 配置时，可以改用下方 import 写法
 // import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
@@ -68,6 +69,9 @@ const weappTailwindcssOptions = {
     rem2rpx: true,
   },
   tailwindcssBasedir: process.cwd(),
+  cssEntries: [
+    path.resolve(__dirname, '../src/app.css'),
+  ],
 }
 
 function registerWeappTailwindcss(chain) {
@@ -99,9 +103,9 @@ function registerWeappTailwindcss(chain) {
 }
 ```
 
-然后正常运行项目即可。常规 Taro 项目只要 `src/app.ts` 引入了 `./app.css`，这里不用写 `cssEntries`。
+然后正常运行项目即可。Tailwind CSS 4 项目推荐显式配置 `cssEntries`，同时仍要在 `src/app.ts` 或 `src/app.js` 里引入 `./app.css`。
 
-如果你把 Tailwind 入口放到了别的目录，或者项目有多个 Tailwind 入口，再手动补 `cssEntries`：
+如果你把 Tailwind 入口放到了别的目录，或者项目有多个 Tailwind 入口，把这些纯 `.css` 入口都写进 `cssEntries`：
 
 ```js title="config/index.[jt]s"
 const path = require('node:path')
@@ -187,7 +191,7 @@ const baseConfig: UserConfigExport<'vite'> = {
 
 Tailwind CSS 生成由 `weapp-tailwindcss` 接管，不需要再把 Tailwind 官方生成插件注册到 PostCSS 或 Vite 配置里。`src/app.css` 按上方写 Tailwind 4 入口。
 
-常规 Taro Vite 项目也可以自动识别被引入的 `src/app.css`。只有多入口、自动识别失败或自定义构建链无法稳定发现入口时，再按 Webpack 那段补 `cssEntries`。`cssEntries` 只负责补充识别，入口 CSS 仍然要通过 Taro 入口实际引入。
+Taro Vite 也推荐显式配置 `cssEntries`。它只负责让 `weapp-tailwindcss` 稳定读取 Tailwind CSS 入口，入口 CSS 仍然要通过 Taro 入口实际引入。
 
 `TARO_ENV=h5` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: process.env.TARO_ENV === 'h5'`。如果 RN 或 Harmony 构建不希望插件参与，可以只针对这些目标显式设置 `disabled`。
 
