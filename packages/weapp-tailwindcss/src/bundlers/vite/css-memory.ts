@@ -139,6 +139,14 @@ export function createViteCssMemory(options: {
     return source
   }
 
+  const getKnownCssSource = (file: string) => {
+    const source = knownCssSources.get(normalizeCssSourceIdentity(file))
+    if (source != null) {
+      touchMapEntry(knownCssSources, normalizeCssSourceIdentity(file), source)
+    }
+    return source
+  }
+
   const rememberCssSource = (entry: RememberedCssSource, cssRuntimeSignature?: string) => {
     const outputKey = normalizeOutputPathKey(entry.outputFile)
     const normalizedSourceFile = normalizeCssSourceIdentity(entry.sourceFile)
@@ -325,6 +333,7 @@ export function createViteCssMemory(options: {
 
   return {
     getKnownSfcSource,
+    getKnownCssSource,
     getRememberedCssSignature: (file: string) => rememberedCssSignatureByFile.get(normalizeOutputPathKey(file)),
     getRememberedCssSourceEntry: (file: string) => rememberedCssSources.get(normalizeOutputPathKey(file)),
     getRememberedCssSources: () => rememberedCssSources,

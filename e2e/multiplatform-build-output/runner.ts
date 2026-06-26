@@ -129,6 +129,23 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
     expectNeedle(texts, needle, `${item.name} text output should contain ${String(needle)}`)
   }
 
+  for (const assertion of item.fileAssertions ?? []) {
+    const file = path.resolve(projectRoot, assertion.file)
+    expect(await pathExists(file), `${item.name} should emit ${assertion.file}`).toBe(true)
+    const content = await fs.readFile(file, 'utf8')
+    for (const needle of assertion.contains ?? []) {
+      expectNeedle(content, needle, `${item.name} ${assertion.file} should contain ${String(needle)}`)
+    }
+    for (const needle of assertion.notContains ?? []) {
+      if (typeof needle === 'string') {
+        expect(content, `${item.name} ${assertion.file} should not contain ${needle}`).not.toContain(needle)
+      }
+      else {
+        expect(content, `${item.name} ${assertion.file} should not match ${String(needle)}`).not.toMatch(needle)
+      }
+    }
+  }
+
   const combined = `${styles}\n${texts}`
   for (const needle of item.notContains ?? []) {
     if (typeof needle === 'string') {

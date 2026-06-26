@@ -54,6 +54,7 @@ import {
   resolveWebpackCssAssetModuleResource,
   resolveWebpackGeneratorRawSource,
   resolveWebpackMemoryDebugStats,
+  scopeWebpackGeneratorOptionsToCssSource,
   shouldAppendCurrentWebpackAssetUserCss,
   shouldFallbackToWebpackUserCssOnGeneratorError,
   shouldUseWebpackAssetAsGeneratorUserCss,
@@ -875,15 +876,21 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     hasTailwindSourceDirectives(sourceCss, { importFallback: true })
                     || sourceCss.includes('@config')
                   )
+                const currentAssetHasTailwindDirectives = hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
+                  || hasTailwindSourceDirectives(generatorRawSource, { importFallback: true })
+                  || hasTailwindApplyDirective(generatorRawSource)
                 const shouldForceTailwindV4Generation = cssHandlerOptions.isMainChunk
                   && hasConfiguredTailwindV4SourceRoots()
                   && (
                     configuredMainCssEntryFiles.length > 0
-                    || hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
-                    || hasTailwindSourceDirectives(generatorRawSource, { importFallback: true })
-                    || hasTailwindApplyDirective(generatorRawSource)
+                    || currentAssetHasTailwindDirectives
                     || hasExplicitTailwindV4SourceCss
                   )
+                const shouldSkipUnmatchedMainCssGeneration = !isWebGeneratorTarget
+                  && cssHandlerOptions.isMainChunk
+                  && sourceFile === undefined
+                  && configuredMainCssEntryFiles.length > 0
+                  && !currentAssetHasTailwindDirectives
                 const resolvedScopedGeneratorRuntimeSet = await createScopedGeneratorRuntime({
                   cssHandlerOptions,
                   fallbackRuntime: hasExplicitTailwindV4SourceCss ? new Set() : fallbackGeneratorRuntimeSet,
@@ -903,6 +910,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                     ])
                   : resolvedScopedGeneratorRuntimeSet
                 const generatorCssSources = normalizeWebpackGeneratorCssSources(cssHandlerOptions.sourceOptions?.cssSources)
+                const scopedGeneratorCompilerOptions = scopeWebpackGeneratorOptionsToCssSource(compilerOptions, sourceFile, {
+                  disableUnmatchedCssEntries: !isWebGeneratorTarget && cssHandlerOptions.isMainChunk,
+                })
                 const generatorCssHandlerOptions = generatorCssSources === undefined
                   ? cssHandlerOptions
                   : {
@@ -913,7 +923,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                       },
                     }
                 const generatorOptions = {
-                  opts: compilerOptions,
+                  opts: scopedGeneratorCompilerOptions,
                   runtimeState,
                   runtime: scopedGeneratorRuntimeSet,
                   rawSource: generatorRawSource,
@@ -933,23 +943,28 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                   debug,
                 }
                 let generated: Awaited<ReturnType<typeof generateTailwindV4Css>>
-                try {
-                  generated = await generateTailwindV4Css({
-                    ...generatorOptions,
-                    outputFile: file,
-                  })
-                }
-                catch (error) {
-                  const shouldFallbackToUserCss = shouldFallbackToWebpackUserCssOnGeneratorError({
-                    configuredMainCssEntryFilesLength: configuredMainCssEntryFiles.length,
-                    generatorRawSource,
-                    hasExplicitTailwindV4SourceCss,
-                  })
-                  if (!shouldFallbackToUserCss) {
-                    throw error
+                if (!shouldSkipUnmatchedMainCssGeneration) {
+                  try {
+                    generated = await generateTailwindV4Css({
+                      ...generatorOptions,
+                      outputFile: file,
+                    })
                   }
-                  debug('css generator skipped for plain webpack css asset: %s %O', file, error)
-                  generated = undefined
+                  catch (error) {
+                    const shouldFallbackToUserCss = shouldFallbackToWebpackUserCssOnGeneratorError({
+                      configuredMainCssEntryFilesLength: configuredMainCssEntryFiles.length,
+                      generatorRawSource,
+                      hasExplicitTailwindV4SourceCss,
+                    })
+                    if (!shouldFallbackToUserCss) {
+                      throw error
+                    }
+                    debug('css generator skipped for plain webpack css asset: %s %O', file, error)
+                    generated = undefined
+                  }
+                }
+                else {
+                  debug('css generator skipped for unmatched webpack main css asset: %s', file)
                 }
                 const css = finalizeTracedCss(generated
                   ? finalizeCssAssetSource(

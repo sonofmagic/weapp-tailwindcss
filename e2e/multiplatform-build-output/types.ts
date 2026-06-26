@@ -16,6 +16,11 @@ export interface BuildOutputCase {
   textFiles?: string[]
   styleContains: Array<string | RegExp>
   textContains?: Array<string | RegExp>
+  fileAssertions?: Array<{
+    file: string
+    contains?: Array<string | RegExp>
+    notContains?: Array<string | RegExp>
+  }>
   notContains?: Array<string | RegExp>
   env?: Record<string, string>
   status: BuildOutputCaseStatus

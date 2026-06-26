@@ -90,6 +90,66 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     status: 'ci',
   }),
   taroMiniCase({
+    project: 'issue-951-taro-vite-react-tailwindcss-v4',
+    packageName: '@weapp-tailwindcss-demo/issue-951-taro-vite-react-tailwindcss-v4',
+    platform: 'alipay',
+    styleContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+    textContains: ['bg-issue-951-main'],
+    fileAssertions: [
+      {
+        file: 'dist/app-origin.acss',
+        contains: ['.bg-issue-951-main'],
+        notContains: ['.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/pages/index/index.acss',
+        contains: ['.issue-951-page-local'],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-normal/pages/index.acss',
+        contains: ['.bg-issue-951-normal'],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-independent/pages/index.acss',
+        contains: ['.bg-issue-951-independent'],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal'],
+      },
+    ],
+    status: 'ci',
+  }),
+  taroMiniCase({
+    project: 'issue-951-taro-vite-react-tailwindcss-v4',
+    packageName: '@weapp-tailwindcss-demo/issue-951-taro-vite-react-tailwindcss-v4',
+    platform: 'tt',
+    styleContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+    textContains: ['bg-issue-951-main'],
+    fileAssertions: [
+      {
+        file: 'dist/app-origin.ttss',
+        contains: ['.bg-issue-951-main'],
+        notContains: ['.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/pages/index/index.ttss',
+        contains: ['.issue-951-page-local'],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-normal/pages/index.ttss',
+        contains: ['.bg-issue-951-normal'],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-independent/pages/index.ttss',
+        contains: ['.bg-issue-951-independent'],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal'],
+      },
+    ],
+    status: 'ci',
+  }),
+  taroMiniCase({
     project: 'taro-vite-vue3-tailwindcss-v4',
     packageName: '@weapp-tailwindcss-demo/taro-vite-vue3-tailwindcss-v4',
     platform: 'alipay',

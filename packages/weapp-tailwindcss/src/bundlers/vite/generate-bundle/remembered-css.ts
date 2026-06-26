@@ -38,6 +38,31 @@ function normalizeRememberedSourceIdentity(file: string) {
   return normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
 }
 
+function selectBestRememberedCssSourceMatches(
+  sources: RememberedCssSource[],
+  outputFile: string,
+  outputRoot: string,
+  sourceRoot: string | undefined,
+) {
+  if (sources.length <= 1) {
+    return sources
+  }
+  const scoredMatches = sources
+    .map(remembered => ({
+      remembered,
+      score: Math.max(
+        scoreMatchingStyleFileBase(outputFile, remembered.sourceFile, outputRoot, sourceRoot),
+        scoreMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
+      ),
+    }))
+    .filter(match => match.score > 0)
+    .sort((a, b) => b.score - a.score)
+  const bestScore = scoredMatches[0]?.score
+  return bestScore
+    ? scoredMatches.filter(match => match.score === bestScore).map(match => match.remembered)
+    : sources
+}
+
 export function findRememberedCssSources(
   sources: Iterable<[string, RememberedCssSource]> | undefined,
   outputFile: string,
@@ -61,7 +86,7 @@ export function findRememberedCssSources(
       markerFiles.has(normalizeRememberedSourceIdentity(remembered.sourceFile)),
     )
     if (markerMatched.length > 0) {
-      return markerMatched
+      return selectBestRememberedCssSourceMatches(markerMatched, outputFile, outputRoot, sourceRoot)
     }
   }
   const originalFiles = [
@@ -90,20 +115,8 @@ export function findRememberedCssSources(
     return []
   }
 
-  const scoredMatches = rememberedSources
-    .map(remembered => ({
-      remembered,
-      score: Math.max(
-        scoreMatchingStyleFileBase(outputFile, remembered.sourceFile, outputRoot, sourceRoot),
-        scoreMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
-      ),
-    }))
-    .filter(match => match.score > 0)
-    .sort((a, b) => b.score - a.score)
-  const bestScore = scoredMatches[0]?.score
-  return bestScore
-    ? scoredMatches.filter(match => match.score === bestScore).map(match => match.remembered)
-    : []
+  const scoredMatches = selectBestRememberedCssSourceMatches(rememberedSources, outputFile, outputRoot, sourceRoot)
+  return scoredMatches.length === rememberedSources.length ? [] : scoredMatches
 }
 
 export function mergeRememberedCssSources(

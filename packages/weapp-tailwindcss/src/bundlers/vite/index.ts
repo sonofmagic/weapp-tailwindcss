@@ -10,7 +10,7 @@ import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
 import { removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
-import { hasTailwindApplyDirective, hasTailwindRootDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -167,6 +167,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     autoCssSourceContent.set(sourceFile, sourceCss)
     await syncTailwindCssSourceCandidates(sourceFile, sourceCss)
+    cssMemory.refreshRememberedCssSourceBySourceFile(sourceFile, sourceCss)
     const transientSource = {
       file: sourceFile,
       base: sourceBase,
@@ -645,6 +646,17 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       isMainChunk: outputCssHandlerOptions.isMainChunk,
     }
     const transientCssSource = transientAutoCssSources.get(file)
+      ?? (
+        hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback })
+        || hasTailwindSourceDirectives(code, { importFallback: generatorOptions.importFallback })
+        || hasTailwindApplyDirective(code)
+          ? {
+              base: path.dirname(path.resolve(file)),
+              css: code,
+              file: path.resolve(file),
+            }
+          : undefined
+      )
     const shouldDeferEmptyScopedCssSource = transientCssSource == null && !(
       opts.appType === 'uni-app-x'
       && !cssHandlerOptions.isMainChunk
@@ -757,6 +769,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     getRememberedCssSources: cssMemory.getRememberedCssSources,
     getRememberedCssSignature: cssMemory.getRememberedCssSignature,
     setRememberedCssSignature: cssMemory.setRememberedCssSignature,
+    getKnownCssSource: cssMemory.getKnownCssSource,
     getKnownSfcSource: cssMemory.getKnownSfcSource,
     recordGeneratorCandidates,
     pruneViteCssCaches,

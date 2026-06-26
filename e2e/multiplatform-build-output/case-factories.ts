@@ -226,6 +226,7 @@ export function taroMiniCase(options: {
   platform: keyof typeof taroMiniOutputByPlatform
   styleContains: Array<string | RegExp>
   textContains: Array<string | RegExp>
+  fileAssertions?: BuildOutputCase['fileAssertions']
   status?: BuildOutputCase['status']
   reason?: string
 }): BuildOutputCase {
@@ -249,6 +250,7 @@ export function taroMiniCase(options: {
     textFiles: [output.pageScript],
     styleContains: options.styleContains,
     textContains: options.textContains,
+    fileAssertions: options.fileAssertions,
     notContains: [rawTailwindDirectiveRE],
     status: options.status ?? 'local',
     reason: options.reason ?? 'Taro 非微信小程序目标通过多平台构建专项断言；本地 runner 可能因系统依赖挂起，不放入默认 vitest/execa 构建集合。',

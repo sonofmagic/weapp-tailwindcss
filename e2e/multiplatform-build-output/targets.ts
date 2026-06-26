@@ -126,7 +126,10 @@ function createUniAppHBuilderXTargets(project: string): MultiplatformTarget[] {
 
 function createTaroTargets(project: string, platforms: string[]): MultiplatformTarget[] {
   return platforms.map((platform) => {
-    const isTaroViteMiniCi = project.startsWith('taro-vite-') && (platform === 'alipay' || platform === 'tt')
+    const isTaroViteMiniCi = (
+      project.startsWith('taro-vite-')
+      || project === 'issue-951-taro-vite-react-tailwindcss-v4'
+    ) && (platform === 'alipay' || platform === 'tt')
     const isCiScript = project === 'taro-webpack-react-tailwindcss-v4' && platform === 'alipay'
     return target({
       framework: 'taro',
@@ -166,6 +169,7 @@ export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
   ...createUniAppTargets('uni-app-vite-tailwindcss-v4', uniAppV4Platforms),
   ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'),
   ...createTaroTargets('taro-vite-react-tailwindcss-v4', taroVitePlatforms),
+  ...createTaroTargets('issue-951-taro-vite-react-tailwindcss-v4', ['alipay', 'tt']),
   ...createTaroTargets('taro-vite-vue3-tailwindcss-v4', taroVitePlatforms),
   ...createTaroTargets('taro-webpack-react-tailwindcss-v4', taroWebpackV4Platforms),
   ...createTaroTargets('taro-webpack-vue3-tailwindcss-v4', taroWebpackV4Platforms),

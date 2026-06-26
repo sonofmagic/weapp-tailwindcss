@@ -103,6 +103,7 @@ function createSingleTailwindV4SourceOptions(
   options: {
     base: string
     css: string
+    cssEntries?: string[] | undefined
   },
 ) {
   return omitUndefined({
@@ -111,6 +112,7 @@ function createSingleTailwindV4SourceOptions(
     packageName: sourceOptions.packageName,
     base: options.base,
     css: options.css,
+    cssEntries: options.cssEntries,
   })
 }
 
@@ -542,6 +544,7 @@ async function resolveTailwindV4SourceSideEntrySource(
   const source = await resolveTailwindV4Source(createSingleTailwindV4SourceOptions(resolvedSourceOptions, {
     base: resolvedEntrySource.base,
     css,
+    cssEntries: [resolvedEntrySource.file],
   }))
   return withMatchedSourceSideMetadata(source, resolvedEntrySource)
 }
@@ -607,6 +610,21 @@ export async function resolveGeneratorSource(
     && canResolveSourceSideCssEntry(file, cssHandlerOptions, normalizedSourceOptions)
     ? resolveSourceSideCssEntrySource(file, normalizedSourceOptions as SourceStyleMatchOptions, { removeConfig: false })
     : undefined
+  const shouldPreferMatchedSourceSideCssSource = sourceSideEntrySource?.file
+    && normalizedSourceOptions.cssEntries?.some(cssEntry =>
+      path.resolve(cssEntry.replace(/[?#].*$/, '')) === path.resolve(sourceSideEntrySource.file!),
+    )
+  const sourceSideCssSource = shouldPreferMatchedSourceSideCssSource
+    ? await resolveTailwindV4SourceSideEntrySource(
+        sourceSideEntrySource,
+        normalizedSourceOptions,
+        generatorOptions,
+        file,
+      )
+    : undefined
+  if (sourceSideCssSource) {
+    return sourceSideCssSource
+  }
   const matchedCssEntrySource = normalizedSourceOptions
     ? await resolveMatchingTailwindV4CssEntry(rawSource, file, normalizedSourceOptions)
     : undefined
@@ -656,14 +674,6 @@ export async function resolveGeneratorSource(
           css: prependConfigDirective(source.css, generatorOptions.config),
         }
       : source
-  }
-  if (sourceSideEntrySource && normalizedSourceOptions) {
-    return resolveTailwindV4SourceSideEntrySource(
-      sourceSideEntrySource,
-      normalizedSourceOptions,
-      generatorOptions,
-      file,
-    )
   }
   const config = resolveExistingConfigPath(
     resolvedEntrySource.config,

@@ -27,6 +27,10 @@ import {
   selectTailwindV4GenerationCssSourceForOutput,
 } from '@/bundlers/vite/generate-bundle/tailwind-v4-css-source'
 import {
+  createTemporaryCssAssetSourceResolver,
+  isTemporaryCssAssetFile,
+} from '@/bundlers/vite/generate-bundle/temporary-css-assets'
+import {
   isMissingInternalCssSource,
   normalizeVitePersistentCacheKey,
   summarizeStringCache,
@@ -190,18 +194,57 @@ describe('bundlers/vite helper modules', () => {
     expect(scoreConfiguredTailwindV4SourceForRawSource(main.source, main.source)).toBeGreaterThan(100)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [empty])).toBeUndefined()
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main])).toBe(main)
+    expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, empty], undefined)).toBe(main)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], main.source)).toBe(main)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], `${main.source}\n${sub.source}`)).toBe(main)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], undefined, new Set(['sub']))).toBe(main)
     expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [main, sub], undefined, new Set(['sub']))).toBe(sub)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [mainImplicit, mainExplicit], undefined)).toBe(mainExplicit)
     expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [sub, subOther], undefined, new Set(['sub']))).toBe(sub)
+    expect(selectTailwindV4GenerationCssSourceForOutput('other/pages/index.wxss', [sub, subOther], undefined, new Set(['sub', 'other']))).toBe(subOther)
+    expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [sub, subOther], subOther.source, new Set(['sub', 'other']))).toBe(subOther)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], '@import "tailwindcss";')).toBeUndefined()
+    expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [mainImplicit, subOther], undefined)).toBe(subOther)
     expect(resolveSubpackageRootForFile('sub/pages/index.wxss', new Set(['sub']))).toBe('sub')
+    expect(resolveSubpackageRootForFile('pages/index.wxss', new Set(['sub']))).toBeUndefined()
     expect(resolveSubpackageRootForFile(undefined, new Set(['sub']))).toBeUndefined()
     expect(resolveSubpackageRootForFile('sub/pages/index.wxss', undefined)).toBeUndefined()
     expect(isSameSubpackageScope('sub/pages/index.wxss', 'sub/pages/index.css', new Set(['sub']))).toBe(true)
     expect(isSameSubpackageScope('app.wxss', 'sub/pages/index.css', new Set(['sub']))).toBe(false)
+    expect(isSameSubpackageScope('app.wxss', undefined, new Set(['sub']))).toBe(true)
+  })
+
+  it('resolves temporary root css assets to remaining scoped Tailwind v4 css entries', () => {
+    const resolver = createTemporaryCssAssetSourceResolver([
+      {
+        file: '/repo/src/app.css',
+        outputFile: 'app-origin.acss',
+        source: '@import "tailwindcss"; @source "./pages/**/*.tsx";',
+      },
+      {
+        file: '/repo/src/sub-normal/pages/index.css',
+        outputFile: 'sub-normal/pages/index.acss',
+        source: '@import "tailwindcss"; @source "./**/*.tsx";',
+      },
+      {
+        file: '/repo/src/sub-independent/pages/index.css',
+        outputFile: 'sub-independent/pages/index.acss',
+        source: '@import "tailwindcss"; @source "./**/*.tsx";',
+      },
+    ])
+
+    expect(isTemporaryCssAssetFile('index.css')).toBe(true)
+    expect(isTemporaryCssAssetFile('pages/index.css')).toBe(false)
+    expect(isTemporaryCssAssetFile('app.acss')).toBe(false)
+
+    resolver.markUsed('/repo/src/sub-normal/pages/index.css')
+
+    expect(resolver.resolve('index.css')).toEqual({
+      outputFile: 'sub-independent/pages/index.acss',
+      rawSource: '@import "tailwindcss"; @source "./**/*.tsx";',
+      sourceFile: '/repo/src/sub-independent/pages/index.css',
+    })
+    expect(resolver.resolve('index2.css')).toBeUndefined()
   })
 
   it('resolves matched css outputs and applies css results back to bundle assets', () => {

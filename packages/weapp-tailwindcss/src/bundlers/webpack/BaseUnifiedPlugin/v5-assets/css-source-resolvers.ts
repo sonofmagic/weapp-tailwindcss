@@ -74,6 +74,9 @@ export function createWebpackCssSourceResolvers(options: {
     if (!isMainCssChunk(file)) {
       return undefined
     }
+    if (configuredMainCssEntryFiles.length !== 1) {
+      return undefined
+    }
     for (const sourceFile of configuredMainCssEntryFiles) {
       if (cssSources.has(sourceFile)) {
         activeWebpackCssSourceFiles.add(sourceFile)

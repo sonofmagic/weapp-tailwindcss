@@ -373,6 +373,31 @@ function shouldInjectViteProcessedCssResult(
     )
 }
 
+function shouldReplayViteProcessedCssIntoMainCss(
+  opts: InternalUserDefinedOptions,
+  file: string,
+  sourceFile: string | undefined,
+  outputFile: string,
+  subpackageRoots: Set<string> | undefined,
+) {
+  if (subpackageRoots) {
+    const sourceIsSubpackage = isSubpackageOutputFile(sourceFile ?? file, subpackageRoots)
+    const outputIsSubpackage = isSubpackageOutputFile(outputFile, subpackageRoots)
+    if (sourceIsSubpackage || outputIsSubpackage) {
+      return false
+    }
+  }
+  return (
+    isRootStyleOutputFile(file)
+    && opts.mainCssChunkMatcher(file, opts.appType)
+  )
+  || (
+    isSourceRootPrefixedOutputFile(file, outputFile)
+    && isRootStyleOutputFile(outputFile)
+    && opts.mainCssChunkMatcher(outputFile, opts.appType)
+  )
+}
+
 function isRootStyleOutputFile(file: string) {
   const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
   return isCssOutputFile(normalized) && !normalized.includes('/')
@@ -629,16 +654,12 @@ export function collectViteProcessedCssAssetResults(
     options.recordCssAssetResult?.(file, nextCss)
     const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
     const shouldReplayIntoMainCss = options.opts != null
-      && (
-        (
-          isRootStyleOutputFile(file)
-          && options.opts.mainCssChunkMatcher(file, options.opts.appType)
-        )
-        || (
-          isSourceRootPrefixedOutputFile(file, resolvedOutputFile)
-          && isRootStyleOutputFile(resolvedOutputFile)
-          && options.opts.mainCssChunkMatcher(resolvedOutputFile, options.opts.appType)
-        )
+      && shouldReplayViteProcessedCssIntoMainCss(
+        options.opts,
+        file,
+        singleMarkerFile,
+        resolvedOutputFile,
+        options.subpackageRoots,
       )
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {
       injectIntoMain: shouldReplayIntoMainCss || undefined,

@@ -1686,6 +1686,218 @@ describe('v5 vite generator bundle', () => {
     expect(candidates.has('bg-[#112233]')).toBe(false)
   }, TEST_TIMEOUT_MS)
 
+  it('keeps Taro Vite v4 css entries isolated across main and subpackage outputs', async () => {
+    const tempDir = await path.join(os.tmpdir(), `weapp-tw-taro-vite-v4-subpackage-${Date.now()}-${Math.random().toString(16).slice(2)}`)
+    createdDirs.push(tempDir)
+    const appCss = path.join(tempDir, 'src/app.css')
+    const pageCss = path.join(tempDir, 'src/pages/index/index.css')
+    const subNormalCss = path.join(tempDir, 'src/sub-normal/pages/index.css')
+    const subIndependentCss = path.join(tempDir, 'src/sub-independent/pages/index.css')
+    const appPage = path.join(tempDir, 'src/pages/index/index.tsx')
+    const subNormalPage = path.join(tempDir, 'src/sub-normal/pages/index.tsx')
+    const subIndependentPage = path.join(tempDir, 'src/sub-independent/pages/index.tsx')
+    await mkdir(path.dirname(pageCss), { recursive: true })
+    await mkdir(path.dirname(subNormalCss), { recursive: true })
+    await mkdir(path.dirname(subIndependentCss), { recursive: true })
+    await writeFile(appCss, [
+      '@import "tailwindcss" source(none);',
+      '@source "./pages/**/*.{ts,tsx}";',
+      '@source not "./sub-normal/**/*";',
+      '@source not "./sub-independent/**/*";',
+    ].join('\n'), 'utf8')
+    await writeFile(pageCss, '.page-local{}', 'utf8')
+    await writeFile(subNormalCss, [
+      '@import "tailwindcss" source(none);',
+      '@source "./**/*.{ts,tsx}";',
+    ].join('\n'), 'utf8')
+    await writeFile(subIndependentCss, [
+      '@import "tailwindcss" source(none);',
+      '@source "./**/*.{ts,tsx}";',
+    ].join('\n'), 'utf8')
+    await writeFile(appPage, 'export default "vite-main-only"', 'utf8')
+    await writeFile(subNormalPage, 'export default "vite-normal-only"', 'utf8')
+    await writeFile(subIndependentPage, 'export default "vite-independent-only"', 'utf8')
+
+    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => {
+      const css = [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
+    const tokensBySource = new Map<string, Set<string>>([
+      [appPage, new Set(['vite-main-only'])],
+      [subNormalPage, new Set(['vite-normal-only'])],
+      [subIndependentPage, new Set(['vite-independent-only'])],
+    ])
+    const collectCandidates = (entries: Array<{ base?: string, pattern?: string, negated?: boolean }> | undefined) => {
+      if (!entries?.length) {
+        return new Set([...tokensBySource.values()].flatMap(tokens => [...tokens]))
+      }
+      const included = new Set<string>()
+      for (const [file, tokens] of tokensBySource) {
+        const fileKey = file.split(path.sep).join('/')
+        const include = entries.some((entry) => {
+          const base = path.resolve(entry.base ?? tempDir).split(path.sep).join('/')
+          return !entry.negated && fileKey.startsWith(base)
+        })
+        const exclude = entries.some((entry) => {
+          const base = path.resolve(entry.base ?? tempDir).split(path.sep).join('/')
+          return entry.negated && fileKey.startsWith(base)
+        })
+        if (include && !exclude) {
+          for (const token of tokens) {
+            included.add(token)
+          }
+        }
+      }
+      return included
+    }
+
+    vi.doMock('@/bundlers/vite/incremental-runtime-class-set', () => ({
+      createBundleRuntimeClassSetManager: () => ({
+        sync: vi.fn(async () => collectCandidates(undefined)),
+        reset: vi.fn(async () => undefined),
+      }),
+    }))
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: generateMock,
+        })),
+        resolveTailwindV4Source: vi.fn(async (options: any) => ({
+          projectRoot: tempDir,
+          base: options.base ?? tempDir,
+          baseFallbacks: [],
+          css: options.css,
+          dependencies: options.cssEntries ?? [],
+        })),
+      }
+    })
+
+    setCurrentContext(createContext({
+      appType: 'taro',
+      tailwindcssBasedir: tempDir,
+      cssEntries: [appCss, subNormalCss, subIndependentCss],
+      tailwindcss: {
+        version: 4,
+        packageName: 'tailwindcss4',
+        v4: {
+          cssEntries: [appCss, subNormalCss, subIndependentCss],
+        },
+      },
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => collectCandidates(undefined)),
+        getClassSetSync: vi.fn(() => collectCandidates(undefined)),
+        extract: vi.fn(async () => ({ classSet: collectCandidates(undefined) })),
+        collectContentTokens: vi.fn(async entries => ({
+          candidates: collectCandidates(entries),
+          sourcesByToken: new Map([...tokensBySource].flatMap(([file, tokens]) =>
+            [...tokens].map(token => [token, new Set([file])] as const),
+          )),
+        })),
+        majorVersion: 4,
+        options: {
+          projectRoot: tempDir,
+          tailwindcss: {
+            cwd: tempDir,
+            v4: {
+              cssEntries: [appCss, subNormalCss, subIndependentCss],
+            },
+          },
+        },
+      },
+    } as any))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const rewritePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:rewrite-css-imports') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(rewritePlugin).toBeTruthy()
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root: tempDir,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    await (sourcePlugin.buildStart as any)?.call(sourcePlugin)
+    const cssTransform = getTransformHandler(rewritePlugin)
+    await cssTransform?.call(rewritePlugin, await readFile(appCss, 'utf8'), appCss)
+    await cssTransform?.call(rewritePlugin, await readFile(subNormalCss, 'utf8'), subNormalCss)
+    await cssTransform?.call(rewritePlugin, await readFile(subIndependentCss, 'utf8'), subIndependentCss)
+
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'app.css',
+        originalFileNames: [appCss],
+      } as OutputAsset,
+      'pages/index/index.css': {
+        ...createRollupAsset(await readFile(pageCss, 'utf8')),
+        fileName: 'pages/index/index.css',
+        originalFileNames: [pageCss],
+      } as OutputAsset,
+      'sub-normal/pages/index.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'sub-normal/pages/index.css',
+        originalFileNames: [subNormalCss],
+      } as OutputAsset,
+      'sub-independent/pages/index.css': {
+        ...createRollupAsset('/*! weapp-tailwindcss generator-placeholder */'),
+        fileName: 'sub-independent/pages/index.css',
+        originalFileNames: [subIndependentCss],
+      } as OutputAsset,
+      'app.js': {
+        ...createRollupChunk(''),
+        fileName: 'app.js',
+        isEntry: true,
+        moduleIds: [appPage],
+      } as OutputChunk,
+      'sub-normal/pages/index.js': {
+        ...createRollupChunk(''),
+        fileName: 'sub-normal/pages/index.js',
+        isEntry: true,
+        moduleIds: [subNormalPage],
+      } as OutputChunk,
+      'sub-independent/pages/index.js': {
+        ...createRollupChunk(''),
+        fileName: 'sub-independent/pages/index.js',
+        isEntry: true,
+        moduleIds: [subIndependentPage],
+      } as OutputChunk,
+    }
+
+    const generateBundle = getGenerateBundleHandler(postPlugin)
+    await generateBundle?.call(postPlugin, {} as any, bundle)
+
+    expect(generateMock).toHaveBeenCalledTimes(3)
+    expect((bundle['app.css'] as OutputAsset).source).toContain('.vite-main-only')
+    expect((bundle['app.css'] as OutputAsset).source).not.toContain('.vite-normal-only')
+    expect((bundle['app.css'] as OutputAsset).source).not.toContain('.vite-independent-only')
+    expect((bundle['pages/index/index.css'] as OutputAsset).source).toContain('.page-local{}')
+    expect((bundle['pages/index/index.css'] as OutputAsset).source).not.toContain('.vite-main-only')
+    expect((bundle['pages/index/index.css'] as OutputAsset).source).not.toContain('.vite-normal-only')
+    expect((bundle['pages/index/index.css'] as OutputAsset).source).not.toContain('.vite-independent-only')
+    expect((bundle['sub-normal/pages/index.css'] as OutputAsset).source).toContain('.vite-normal-only')
+    expect((bundle['sub-normal/pages/index.css'] as OutputAsset).source).not.toContain('.vite-main-only')
+    expect((bundle['sub-normal/pages/index.css'] as OutputAsset).source).not.toContain('.vite-independent-only')
+    expect((bundle['sub-independent/pages/index.css'] as OutputAsset).source).toContain('.vite-independent-only')
+    expect((bundle['sub-independent/pages/index.css'] as OutputAsset).source).not.toContain('.vite-main-only')
+    expect((bundle['sub-independent/pages/index.css'] as OutputAsset).source).not.toContain('.vite-normal-only')
+  }, TEST_TIMEOUT_MS)
+
   it('invalidates generated css modules when v4 dev hmr adds arbitrary value candidates', async () => {
     const tempDir = await path.join(os.tmpdir(), `weapp-tw-vite-dev-hmr-${Date.now()}-${Math.random().toString(16).slice(2)}`)
     createdDirs.push(tempDir)
