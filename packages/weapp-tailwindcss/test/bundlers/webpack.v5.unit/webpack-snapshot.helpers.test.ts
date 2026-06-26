@@ -266,7 +266,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
       getAsset: vi.fn((file: string) => file === 'sub-normal/pages/index.wxss'
         ? {
             source: {
-              source: () => '@import "tailwindcss";',
+              source: () => '.bg-normal-subpackage-marker{}',
             },
           }
         : undefined),
@@ -333,7 +333,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
         sync: vi.fn(async () => new Set<string>()),
       } as any,
       getWebpackCssSources: () => new Map([
-        [subpackageCss, { css: '@import "tailwindcss";' }],
+        [subpackageCss, { css: '.bg-normal-subpackage-marker{}' }],
       ]),
       prepareWebpackCssSources: (activeResources = new Set()) => {
         activeResourceSets.push([...activeResources])
@@ -344,7 +344,7 @@ describe('bundlers/webpack webpack snapshot helpers', () => {
 
     await processAssetsCallbacks[0]!({
       'sub-normal/pages/index.wxss': {
-        source: () => '@import "tailwindcss";',
+        source: () => '.bg-normal-subpackage-marker{}',
       },
     })
 

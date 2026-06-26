@@ -1,4 +1,4 @@
 @import "tailwindcss" source(none);
 @config "../../../tailwind.config.sub-independent.js";
 @source "./**/*.{ts,tsx}";
-@source "./**/*.css";
+@source "./index.css";
