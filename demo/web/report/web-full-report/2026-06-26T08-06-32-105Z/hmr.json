@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-06-26T08:07:29.125Z",
+  "timeoutMs": 120000,
+  "cases": [
+    {
+      "name": "web react vite Tailwind v4",
+      "project": "react-vite-tailwindcss-v4",
+      "status": "passed",
+      "devReadyMs": 526,
+      "initialRenderMs": 46,
+      "sourceWriteToDomUpdateMs": 267,
+      "totalMs": 1610,
+      "sourceFile": "demo/web/react-vite-tailwindcss-v4/src/main.tsx",
+      "baseUrl": "http://127.0.0.1:60755/"
+    },
+    {
+      "name": "web vue vite Tailwind v4",
+      "project": "vue-vite-tailwindcss-v4",
+      "status": "passed",
+      "devReadyMs": 515,
+      "initialRenderMs": 51,
+      "sourceWriteToDomUpdateMs": 111,
+      "totalMs": 1345,
+      "sourceFile": "demo/web/vue-vite-tailwindcss-v4/src/App.vue",
+      "baseUrl": "http://127.0.0.1:60791/"
+    },
+    {
+      "name": "web react rsbuild Tailwind v4",
+      "project": "react-rsbuild-tailwindcss-v4",
+      "status": "passed",
+      "devReadyMs": 681,
+      "initialRenderMs": 55,
+      "sourceWriteToDomUpdateMs": 195,
+      "totalMs": 1632,
+      "sourceFile": "demo/web/react-rsbuild-tailwindcss-v4/src/main.tsx",
+      "baseUrl": "http://127.0.0.1:60813/"
+    },
+    {
+      "name": "web vue rsbuild Tailwind v4",
+      "project": "vue-rsbuild-tailwindcss-v4",
+      "status": "passed",
+      "devReadyMs": 752,
+      "initialRenderMs": 47,
+      "sourceWriteToDomUpdateMs": 110,
+      "totalMs": 1599,
+      "sourceFile": "demo/web/vue-rsbuild-tailwindcss-v4/src/App.vue",
+      "baseUrl": "http://127.0.0.1:60854/"
+    },
+    {
+      "name": "web react webpack Tailwind v4",
+      "project": "react-webpack-tailwindcss-v4",
+      "status": "passed",
+      "devReadyMs": 1240,
+      "initialRenderMs": 41,
+      "sourceWriteToDomUpdateMs": 266,
+      "totalMs": 2259,
+      "sourceFile": "demo/web/react-webpack-tailwindcss-v4/src/main.tsx",
+      "baseUrl": "http://127.0.0.1:60881/"
+    },
+    {
+      "name": "web vue webpack Tailwind v4",
+      "project": "vue-webpack-tailwindcss-v4",
+      "status": "passed",
+      "devReadyMs": 1240,
+      "initialRenderMs": 49,
+      "sourceWriteToDomUpdateMs": 214,
+      "totalMs": 2184,
+      "sourceFile": "demo/web/vue-webpack-tailwindcss-v4/src/App.vue",
+      "baseUrl": "http://127.0.0.1:60914/"
+    }
+  ]
+}

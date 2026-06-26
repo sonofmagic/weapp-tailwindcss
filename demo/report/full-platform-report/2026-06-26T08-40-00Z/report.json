@@ -1,0 +1,182 @@
+{
+  "generatedAt": "2026-06-26T08:40:00Z",
+  "repositoryRoot": "/Users/icebreaker/Projects/github/weapp-tailwindcss",
+  "head": "1e6dc707b14d1bc2403e26fad5f0920625ba04ac",
+  "environment": {
+    "node": "v24.14.1",
+    "pnpm": "11.8.0"
+  },
+  "scope": [
+    "mpx-tailwindcss-v4",
+    "taro-vite-react-tailwindcss-v4",
+    "taro-vite-vue3-tailwindcss-v4",
+    "taro-webpack-react-tailwindcss-v4",
+    "taro-webpack-vue3-tailwindcss-v4",
+    "uni-app-vite-tailwindcss-v4",
+    "uni-app-vite-vue3-hbuilderx-tailwindcss-v4",
+    "uni-app-x-hbuilderx-tailwindcss-v4",
+    "weapp-vite-tailwindcss-v4"
+  ],
+  "commands": [
+    {
+      "name": "multiplatform-build",
+      "command": "E2E_MULTIPLATFORM_BUILD_STATUS=all E2E_MULTIPLATFORM_BUILD_CASE='mpx-tailwindcss-v4|uni-app-vite-tailwindcss-v4|uni-app-vite-vue3-hbuilderx-tailwindcss-v4 mp-weixin|taro-vite-react-tailwindcss-v4 (alipay|tt)|taro-vite-vue3-tailwindcss-v4 (alipay|tt)|taro-webpack-react-tailwindcss-v4 alipay' pnpm e2e:multiplatform-build",
+      "status": "passed",
+      "durationMs": 119470,
+      "tests": 28
+    },
+    {
+      "name": "taro-h5-build",
+      "command": "pnpm e2e:taro:h5-build",
+      "status": "passed",
+      "durationMs": 67830,
+      "tests": 5
+    },
+    {
+      "name": "taro-web-hmr",
+      "command": "pnpm e2e:taro:web-hmr",
+      "status": "passed",
+      "durationMs": 32810,
+      "tests": 4
+    },
+    {
+      "name": "uni-app-h5-dev-css",
+      "command": "pnpm exec vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/uni-app-vite-tailwindcss-dev-h5.test.ts -t \"uni-app vite Tailwind v4\"",
+      "status": "passed",
+      "durationMs": 3920,
+      "tests": 2
+    },
+    {
+      "name": "mpx-hmr",
+      "command": "E2E_HOT_UPDATE_CASE_NAME=mpx-tailwindcss-v4 pnpm e2e:hot-update:demo",
+      "status": "passed"
+    },
+    {
+      "name": "taro-mini-hmr",
+      "command": "E2E_HOT_UPDATE_CASE_NAME=taro-webpack-react-tailwindcss-v4 pnpm e2e:hot-update:demo",
+      "status": "passed",
+      "durationMs": 523000
+    },
+    {
+      "name": "uni-app-hmr",
+      "command": "E2E_HOT_UPDATE_CASE_NAME=uni-app-vite-tailwindcss-v4 pnpm e2e:hot-update:demo",
+      "status": "passed",
+      "durationMs": 78000
+    },
+    {
+      "name": "weapp-vite-hmr",
+      "command": "E2E_HOT_UPDATE_CASE_NAME=weapp-vite-tailwindcss-v4 pnpm e2e:hot-update:demo",
+      "status": "passed",
+      "durationMs": 53000
+    },
+    {
+      "name": "uni-app-x-hbuilderx-hmr",
+      "command": "E2E_WATCH_CASE=uni-app-x-hbuilderx-tailwindcss-v4 pnpm e2e:watch",
+      "status": "blocked",
+      "blockedReason": "HBuilderX CLI was not available. HBuilderX was not running and HBUILDERX_CLI_PATH was not set."
+    }
+  ],
+  "buildCoverage": {
+    "mpx-tailwindcss-v4": ["wx", "ali", "swan", "tt", "dd"],
+    "uni-app-vite-tailwindcss-v4": [
+      "mp-alipay",
+      "mp-baidu",
+      "mp-jd",
+      "mp-kuaishou",
+      "mp-lark",
+      "mp-qq",
+      "mp-toutiao",
+      "mp-weixin",
+      "mp-xhs",
+      "h5",
+      "h5:ssr",
+      "quickapp-webview",
+      "quickapp-webview-huawei",
+      "quickapp-webview-union"
+    ],
+    "uni-app-vite-vue3-hbuilderx-tailwindcss-v4": ["mp-weixin"],
+    "taro-vite-react-tailwindcss-v4": ["alipay", "tt", "h5"],
+    "taro-vite-vue3-tailwindcss-v4": ["alipay", "tt", "h5"],
+    "taro-webpack-react-tailwindcss-v4": ["alipay", "h5"],
+    "taro-webpack-vue3-tailwindcss-v4": ["h5"],
+    "weapp-vite-tailwindcss-v4": ["weapp"]
+  },
+  "hmr": [
+    {
+      "project": "mpx-tailwindcss-v4",
+      "status": "passed",
+      "contentMs": 1427,
+      "templateMs": 1906,
+      "scriptMs": 1594,
+      "styleMs": 1374,
+      "subpackageCount": 2
+    },
+    {
+      "project": "taro-webpack-react-tailwindcss-v4",
+      "status": "passed",
+      "contentMs": 8085,
+      "templateMs": 11640,
+      "scriptMs": 8088,
+      "styleMs": 8086,
+      "webMs": 1382,
+      "subpackageCount": 2
+    },
+    {
+      "project": "uni-app-vite-tailwindcss-v4",
+      "status": "passed",
+      "contentMs": 592,
+      "templateMs": 766,
+      "scriptMs": 641,
+      "styleMs": 1410,
+      "webMs": 289,
+      "subpackageCount": 2
+    },
+    {
+      "project": "weapp-vite-tailwindcss-v4",
+      "status": "passed",
+      "contentMs": 256,
+      "templateMs": 297,
+      "scriptMs": 295,
+      "styleMs": 249,
+      "subpackageCount": 2
+    },
+    {
+      "project": "uni-app-x-hbuilderx-tailwindcss-v4",
+      "status": "blocked",
+      "blockedReason": "HBuilderX CLI was not available. HBuilderX was not running and HBUILDERX_CLI_PATH was not set."
+    }
+  ],
+  "taroWebHmr": [
+    {
+      "project": "taro-vite-react-tailwindcss-v4",
+      "status": "passed",
+      "hmrMs": 8020
+    },
+    {
+      "project": "taro-vite-vue3-tailwindcss-v4",
+      "status": "passed",
+      "hmrMs": 3815
+    },
+    {
+      "project": "taro-webpack-react-tailwindcss-v4",
+      "status": "passed",
+      "hmrMs": 9818
+    },
+    {
+      "project": "taro-webpack-vue3-tailwindcss-v4",
+      "status": "passed",
+      "hmrMs": 10930
+    }
+  ],
+  "artifacts": {
+    "webFullReport": "demo/web/report/web-full-report/2026-06-26T08-06-32-105Z/README.md",
+    "webFullReportJson": "demo/web/report/web-full-report/2026-06-26T08-06-32-105Z/report.json",
+    "webScreenshots": "demo/web/report/web-full-report/2026-06-26T08-06-32-105Z/compare/",
+    "rawHmrBenchmarkDirectory": "e2e/benchmark/e2e-watch-hmr/"
+  },
+  "notes": [
+    "Raw HMR benchmark files under e2e/benchmark/e2e-watch-hmr/ are ignored by the repository; key metrics are copied into this report.",
+    "HMR test mutations restored demo source files before final status check.",
+    "Existing submodule state is not included in pass/fail conclusions."
+  ]
+}
