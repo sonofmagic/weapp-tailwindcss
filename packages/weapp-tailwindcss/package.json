@@ -60,6 +60,11 @@
       "import": "./dist/webpack.mjs",
       "require": "./dist/webpack.js"
     },
+    "./rspack": {
+      "types": "./dist/rspack.d.ts",
+      "import": "./dist/rspack.mjs",
+      "require": "./dist/rspack.js"
+    },
     "./core": {
       "types": "./dist/core.d.ts",
       "import": "./dist/core.mjs",

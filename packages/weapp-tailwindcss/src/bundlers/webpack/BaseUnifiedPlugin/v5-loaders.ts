@@ -184,7 +184,11 @@ export function setupWebpackV5Loaders(options: SetupWebpackV5LoadersOptions) {
       ) {
         const existingIndex = loaderEntries.findIndex(entry => entry.loader?.includes?.(runtimeCssImportRewriteLoader))
         const rewriteLoaderEntry = existingIndex !== -1
-          ? loaderEntries.splice(existingIndex, 1)[0]
+          ? {
+              ...loaderEntries.splice(existingIndex, 1)[0],
+              loader: runtimeCssImportRewriteLoader,
+              options: cssImportRewriteLoaderOptions,
+            }
           : createCssImportRewriteLoaderEntry()
         if (rewriteLoaderEntry) {
           // Keep rewrite loader just after the anchor (executes before it).

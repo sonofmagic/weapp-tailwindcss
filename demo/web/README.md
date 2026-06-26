@@ -10,7 +10,7 @@
 - `react-webpack-tailwindcss-v4`
 - `vue-webpack-tailwindcss-v4`
 
-Vite demo 使用 `weapp-tailwindcss/vite`；Rsbuild 与 Webpack demo 统一使用 `weapp-tailwindcss/webpack` 插件方案注册。
+Vite demo 使用 `weapp-tailwindcss/vite`；Rsbuild demo 使用 `weapp-tailwindcss/rspack` 修补 Rspack loader 顺序并注册 `weapp-tailwindcss/webpack` 插件；Webpack demo 使用 `weapp-tailwindcss/webpack` 插件方案注册。
 
 默认构建目标是 `web`：
 
