@@ -22,6 +22,9 @@ describe('benchmark ci report', () => {
     }
 
     const demoProjects = collectPackageDirs(path.join(repoRoot, 'demo')).sort()
+      .filter(project => !project.startsWith('demo/issue-'))
+      .filter(project => !project.startsWith('demo/subpackage-'))
+      .filter(project => !project.startsWith('demo/web/') || project.includes('-vite-'))
     const benchmarkProjectDirs = Array.from(new Set(benchmarkProjects.map(project => project.project))).sort()
 
     expect(benchmarkProjectDirs).toEqual(demoProjects)

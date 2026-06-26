@@ -37,7 +37,7 @@ const rows = [
         <div class="box-border -rotate-2 bg-[#123456] px-[13.5px] py-1.5 text-[13.5px] leading-[18px] text-white [box-shadow:0_2.5px_7.5px_rgba(18,52,86,0.35)]">
           arbitrary
         </div>
-        <div class="box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]">
+        <div class="box-border !mt-0 -ml-[5.5px] w-[37.5%] min-w-[88.5px] !-translate-y-[3.5px] scale-[1.03] bg-[rgb(255,210,55)] text-center leading-[28px] text-[#1f2937] opacity-[0.82]">
           decimal
         </div>
       </div>

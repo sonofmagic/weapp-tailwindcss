@@ -240,7 +240,12 @@ function expectTaroGeneratorTargetConfig(configSource: string, configPath: strin
     return
   }
 
-  expect(configSource, configPath).toContain('process.env.TARO_ENV === \'h5\'')
+  if (configSource.includes('resolveTaroPlatform()')) {
+    expect(configSource, configPath).toContain('taroPlatform.isWeb')
+  }
+  else {
+    expect(configSource, configPath).toContain('process.env.TARO_ENV === \'h5\'')
+  }
   expect(configSource, configPath).toContain('process.env.TARO_ENV === \'harmony\'')
   expect(configSource, configPath).toContain('process.env.TARO_ENV === \'harmony-hybrid\'')
 }
