@@ -14,6 +14,7 @@ import {
   isUniAppXPackage,
   isUniAppXManifest,
   isWeappVitePackage,
+  resolvePlatform,
   resolveUniPlatformsFromEnv,
   resolveUniUtsPlatform,
   resolveImplicitAppTypeFromViteRoot,
@@ -95,6 +96,11 @@ describe('framework detection helpers', () => {
   })
 
   it('resolves uni platform environment variables', () => {
+    expect(resolvePlatform('WEB-CUSTOM')).toMatchObject({
+      normalized: 'web-custom',
+      isWeb: true,
+      isApp: false,
+    })
     expect(resolveUniUtsPlatform('app-harmony')).toMatchObject({
       normalized: 'app-harmony',
       isApp: true,

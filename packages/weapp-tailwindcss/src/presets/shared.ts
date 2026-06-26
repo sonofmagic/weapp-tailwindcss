@@ -1,6 +1,8 @@
 import type { PackageResolvingOptions } from 'local-pkg'
 import type { UserDefinedOptions } from '@/types'
+import process from 'node:process'
 import { resolveTailwindcssBasedir } from '@/context/tailwindcss'
+import { resolvePlatform, resolveUniPlatformsFromEnv } from '@/framework'
 import { defuOverrideArray } from '@/utils'
 import { omitUndefined } from '@/utils/object'
 
@@ -17,6 +19,32 @@ export function normalizeCssEntries(entries?: string | string[]) {
   }
   const normalized = Array.isArray(entries) ? entries : [entries]
   return normalized.length > 0 ? normalized : undefined
+}
+
+export function shouldEnableWebCompatFromEnv() {
+  const { uniPlatform, uniUtsPlatform } = resolveUniPlatformsFromEnv()
+  return uniPlatform.isWeb
+    || uniUtsPlatform.isWeb
+    || resolvePlatform(process.env['TARO_ENV']).isWeb
+}
+
+export function withWebCompatGeneratorDefaults<T extends { generator?: UserDefinedOptions['generator'] }>(
+  options: T,
+  enabled = shouldEnableWebCompatFromEnv(),
+): T {
+  if (!enabled) {
+    return options
+  }
+  return {
+    ...options,
+    generator: defuOverrideArray<UserDefinedOptions['generator'], NonNullable<UserDefinedOptions['generator']>[]>(
+      options.generator ?? {},
+      {
+        target: 'web',
+        webCompat: true,
+      },
+    ),
+  }
 }
 
 export function createBasePreset(options: BasePresetOptions = {}) {

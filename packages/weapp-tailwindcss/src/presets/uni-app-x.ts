@@ -2,12 +2,13 @@ import type { PackageResolvingOptions } from 'local-pkg'
 import type { UniAppXComponentLocalStylesOptions, UserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
+import { resolveUniPlatformsFromEnv } from '@/framework'
 import { logger } from '@/logger'
 import { getTailwindcssPackageInfo } from '@/tailwindcss'
 import { resolveUniAppXOptions } from '@/uni-app-x/options'
-import { defuOverrideArray, resolveUniUtsPlatform } from '@/utils'
+import { defuOverrideArray } from '@/utils'
 import { omitUndefined } from '@/utils/object'
-import { normalizeCssEntries } from './shared'
+import { normalizeCssEntries, withWebCompatGeneratorDefaults } from './shared'
 
 export interface UniAppXOptions {
   /**
@@ -102,12 +103,11 @@ function resolveInstalledTailwindDefaults(resolve?: PackageResolvingOptions) {
 
 export function uniAppX(options: UniAppXOptions) {
   logger.info(`UNI_PLATFORM: ${process.env['UNI_PLATFORM']}`)
-  const utsPlatform = resolveUniUtsPlatform()
-  const uniPlatform = resolveUniUtsPlatform(process.env['UNI_PLATFORM'])
+  const { uniPlatform, uniUtsPlatform } = resolveUniPlatformsFromEnv()
 
-  logger.info(`UNI_UTS_PLATFORM: ${utsPlatform.raw ?? 'undefined'}`)
+  logger.info(`UNI_UTS_PLATFORM: ${uniUtsPlatform.raw ?? 'undefined'}`)
 
-  const isApp = utsPlatform.isApp || uniPlatform.isApp
+  const isApp = uniUtsPlatform.isApp || uniPlatform.isApp
   const cssEntries = normalizeCssEntries(options.cssEntries)
   const resolvedResolve = resolveTailwindResolveOptions(options.base, options.resolve)
   const installedTailwindDefaults = resolveInstalledTailwindDefaults(resolvedResolve)
@@ -127,7 +127,9 @@ export function uniAppX(options: UniAppXOptions) {
     options.rawOptions ?? {},
     {
       uniAppX: resolvedUniAppX,
-      ...(options.generator !== undefined ? { generator: options.generator } : {}),
+      ...withWebCompatGeneratorDefaults(
+        options.generator !== undefined ? { generator: options.generator } : {},
+      ),
       rem2rpx: options.rem2rpx,
       unitsToPx: options.unitsToPx,
       unitConversion: options.unitConversion,

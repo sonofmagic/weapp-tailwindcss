@@ -5,6 +5,7 @@ import { dirname } from "node:path";
 // const uni = require("@dcloudio/vite-plugin-uni");
 import uni from "@dcloudio/vite-plugin-uni";
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { resolveUniPlatform } from 'weapp-tailwindcss/framework'
 
 const require = createRequire(import.meta.url);
 const uniMpVueRuntimePath = require.resolve("@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js");
@@ -20,6 +21,9 @@ export default defineConfig(async () => {
         tailwindcssBasedir: process.cwd(),
         cssSourceTrace: true,
         rem2rpx: true,
+        generator: {
+          webCompat: resolveUniPlatform(process.env.UNI_PLATFORM).isWeb ? true : undefined,
+        },
       }),
     ],
     resolve: {

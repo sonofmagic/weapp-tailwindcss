@@ -6,9 +6,16 @@ import { setupEnvSandbox } from './helpers'
 
 describe('hbuilderx preset', () => {
   const env = setupEnvSandbox()
+  const originalUniPlatform = process.env.UNI_PLATFORM
 
   afterEach(() => {
     env.restore()
+    if (originalUniPlatform === undefined) {
+      delete process.env.UNI_PLATFORM
+    }
+    else {
+      process.env.UNI_PLATFORM = originalUniPlatform
+    }
     vi.restoreAllMocks()
   })
 
@@ -48,5 +55,19 @@ describe('hbuilderx preset', () => {
     expect(result.tailwindcssBasedir).toBe(expectedBase)
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['tailwind.css'])
     expect(result.tailwindcssRuntimeOptions?.projectRoot).toBe(expectedBase)
+  })
+
+  it('enables web compatibility for H5 by default', () => {
+    env.clearBaseEnv()
+    process.env.UNI_PLATFORM = 'h5'
+    const result = hbuilderx({
+      base: '/Users/foo/uni-project',
+      cssEntries: 'tailwind.css',
+    })
+
+    expect(result.generator).toMatchObject({
+      target: 'web',
+      webCompat: true,
+    })
   })
 })

@@ -493,7 +493,7 @@ export const webCases: WebCase[] = [
     markerAnchor: '<BindClass />',
     initialCssPath: '/main.css?direct',
     hmrCssPath: '/main.css?direct',
-    initialCssContains: ['@layer theme', '--text-xl', '--color-white', /background-color:\s*#f21903/],
+    initialCssContains: [/:root,\s*:host/, '--text-xl', '--color-white', /background-color:\s*#f21903/],
     workflow: uniAppXHBuilderXWorkflow,
     hmrSteps: [
       {

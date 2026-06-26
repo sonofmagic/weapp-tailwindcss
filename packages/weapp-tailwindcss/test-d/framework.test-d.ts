@@ -7,6 +7,7 @@ import {
   isMpxPackage,
   isRunningInHBuilderX,
   isUniAppXPackage,
+  resolvePlatform,
   resolveUniPlatformsFromEnv,
   resolveUniUtsPlatform,
 } from 'weapp-tailwindcss/framework'
@@ -17,5 +18,6 @@ expectType<DetectableAppType | undefined>(detectAppTypeFromPackageJson({ depende
 expectType<boolean>(isMpxPackage({ scripts: { dev: 'mpx-cli-service serve' } }))
 expectType<boolean>(isUniAppXPackage({ devDependencies: { '@dcloudio/uni-uts-v1': '^3.0.0' } }))
 expectType<boolean>(isRunningInHBuilderX({ cwd: '/Applications/HBuilderX.app/Contents/HBuilderX/plugins/uniapp-cli-vite' }))
+expectType<boolean>(resolvePlatform('h5').isWeb)
 expectType<boolean>(resolveUniUtsPlatform('app-ios').isAppIos)
 expectType<boolean>(resolveUniPlatformsFromEnv({ UNI_PLATFORM: 'h5' }).uniPlatform.isWeb)

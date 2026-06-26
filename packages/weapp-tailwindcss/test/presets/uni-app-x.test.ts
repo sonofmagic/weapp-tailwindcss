@@ -60,7 +60,7 @@ describe('uni-app-x preset', () => {
     expect(result.generator).toBeUndefined()
   })
 
-  it('keeps H5 generator target inferred as web for issue #902 style configuration', async () => {
+  it('enables H5 web compatibility for issue #902 style configuration', async () => {
     env.clearBaseEnv()
     process.env.UNI_PLATFORM = 'h5'
     process.env.UNI_UTS_PLATFORM = 'web'
@@ -76,9 +76,9 @@ describe('uni-app-x preset', () => {
     })
 
     expect(result.appType).toBe('uni-app-x')
-    expect(result.generator).toBeUndefined()
     expect(result.uniAppX?.enabled).toBe(false)
     expect(normalizeWeappTailwindcssGeneratorOptions(result.generator).target).toBe('web')
+    expect(normalizeWeappTailwindcssGeneratorOptions(result.generator).webCompat).toBe(true)
   })
 
   it('honors explicit uni-app x generator target overrides', async () => {
@@ -97,6 +97,26 @@ describe('uni-app-x preset', () => {
     })
 
     expect(normalizeWeappTailwindcssGeneratorOptions(result.generator).target).toBe('weapp')
+  })
+
+  it('keeps explicit uni-app x H5 web compatibility overrides', async () => {
+    env.clearBaseEnv()
+    process.env.UNI_PLATFORM = 'h5'
+    process.env.UNI_UTS_PLATFORM = 'web'
+    getTailwindcssPackageInfoMock.mockReturnValue({
+      version: '4.3.0',
+    })
+    const { uniAppX } = await import('@/presets')
+    const { normalizeWeappTailwindcssGeneratorOptions } = await import('@/generator')
+    const result = uniAppX({
+      base: '/repo/uni-app-x',
+      generator: {
+        webCompat: false,
+      },
+    })
+
+    expect(normalizeWeappTailwindcssGeneratorOptions(result.generator).target).toBe('web')
+    expect(normalizeWeappTailwindcssGeneratorOptions(result.generator).webCompat).toBe(false)
   })
 
   it('records installed tailwind major version into runtime options', async () => {

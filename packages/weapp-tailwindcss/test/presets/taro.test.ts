@@ -6,9 +6,16 @@ import { setupEnvSandbox } from './helpers'
 
 describe('taro preset', () => {
   const env = setupEnvSandbox()
+  const originalTaroEnv = process.env.TARO_ENV
 
   afterEach(() => {
     env.restore()
+    if (originalTaroEnv === undefined) {
+      delete process.env.TARO_ENV
+    }
+    else {
+      process.env.TARO_ENV = originalTaroEnv
+    }
     vi.restoreAllMocks()
   })
 
@@ -25,5 +32,34 @@ describe('taro preset', () => {
     expect(result.tailwindcssBasedir).toBe(path.resolve('/Users/foo/taro-webpack-react-tailwindcss-v4', '.'))
     expect(result.tailwindcss?.v4?.cssEntries).toEqual(['src/app.css'])
     expect(result.tailwindcss?.version).toBe(4)
+  })
+
+  it('enables web compatibility for H5 by default', () => {
+    env.clearBaseEnv()
+    process.env.TARO_ENV = 'h5'
+    const result = taro({
+      base: '/Users/foo/taro-vite-react-tailwindcss-v4',
+    })
+
+    expect(result.generator).toMatchObject({
+      target: 'web',
+      webCompat: true,
+    })
+  })
+
+  it('keeps explicit H5 web compatibility overrides', () => {
+    env.clearBaseEnv()
+    process.env.TARO_ENV = 'h5'
+    const result = taro({
+      base: '/Users/foo/taro-vite-react-tailwindcss-v4',
+      generator: {
+        webCompat: false,
+      },
+    })
+
+    expect(result.generator).toMatchObject({
+      target: 'web',
+      webCompat: false,
+    })
   })
 })

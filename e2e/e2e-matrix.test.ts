@@ -32,6 +32,11 @@ const DEMO_THEME_MODE_REQUIRED_TOKENS = [
   'theme-dark',
 ]
 
+const DEMO_MANUAL_DARK_TOKENS = {
+  v3: ['theme-dark:bg-zinc-950'],
+  v4: ['dark:bg-zinc-950', 'dark:bg-[#09090b]'],
+} as const
+
 function readDemoPackageJson(packageJson: string) {
   return JSON.parse(
     fs.readFileSync(path.resolve(__dirname, '..', packageJson), 'utf8'),
@@ -207,8 +212,11 @@ describe('e2e matrix', () => {
       for (const token of DEMO_THEME_MODE_REQUIRED_TOKENS) {
         expect(source, `${entry.name} should include ${token}`).toContain(token)
       }
-      const manualDarkToken = entry.tailwindcss === 'v3' ? 'theme-dark:bg-zinc-950' : 'dark:bg-zinc-950'
-      expect(source, `${entry.name} should include manual dark variant ${manualDarkToken}`).toContain(manualDarkToken)
+      const manualDarkTokens = DEMO_MANUAL_DARK_TOKENS[entry.tailwindcss]
+      expect(
+        manualDarkTokens.some(token => source.includes(token)),
+        `${entry.name} should include one manual dark variant: ${manualDarkTokens.join(', ')}`,
+      ).toBe(true)
     }
   })
 
@@ -569,11 +577,13 @@ describe('e2e matrix', () => {
     ])
   })
 
-  it('covers every demo/web Vite package with browser source HMR', () => {
-    expect(webViteHmrCaseNames).toEqual([
-      'web react vite Tailwind v4',
-      'web vue vite Tailwind v4',
-    ])
+  it('covers every demo/web package with browser source HMR', () => {
+    const expectedNames = DEMO_COVERAGE_MATRIX
+      .filter(item => item.name.startsWith('web/'))
+      .map(item => item.name.replace('web/', 'web ').replaceAll('-', ' '))
+      .map(item => item.replace('tailwindcss v', 'Tailwind v'))
+
+    expect(webViteHmrCaseNames).toEqual(expectedNames)
   })
 
   it('covers every Taro demo package with browser source HMR', () => {

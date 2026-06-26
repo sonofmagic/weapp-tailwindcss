@@ -4,11 +4,14 @@ import devConfig from './dev'
 import prodConfig from './prod'
 import type { Plugin } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { resolvePlatform } from 'weapp-tailwindcss/framework'
 
+const taroPlatform = resolvePlatform(process.env.TARO_ENV)
 const generator = {
-  target: process.env.TARO_ENV === 'h5' || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
+  target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
     : 'weapp',
+  webCompat: taroPlatform.isWeb ? true : undefined,
   styleOptions: {
     px2rpx: true,
   },

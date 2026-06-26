@@ -189,12 +189,16 @@ export function isRunningInHBuilderX(options: HBuilderXRuntimeHints = {}) {
   return matchesHBuilderXPluginCwd(options.cwd ?? process.cwd())
 }
 
-export function resolveUniPlatform(value: string | undefined) {
+export function resolvePlatform(value: string | undefined) {
   return resolvePlatformInfo(value)
 }
 
+export function resolveUniPlatform(value: string | undefined) {
+  return resolvePlatform(value)
+}
+
 export function resolveUniUtsPlatform(value: string | undefined) {
-  return resolvePlatformInfo(value)
+  return resolvePlatform(value)
 }
 
 export function resolveUniPlatformsFromEnv(env: FrameworkEnv = getProcessEnv()) {

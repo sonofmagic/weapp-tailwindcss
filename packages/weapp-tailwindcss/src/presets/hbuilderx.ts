@@ -1,10 +1,10 @@
 import type { BasePresetOptions } from './shared'
-import { createBasePreset } from './shared'
+import { createBasePreset, withWebCompatGeneratorDefaults } from './shared'
 
 export interface HBuilderXOptions extends BasePresetOptions {}
 
 export function hbuilderx(options: HBuilderXOptions = {}) {
-  return createBasePreset({
+  return createBasePreset(withWebCompatGeneratorDefaults({
     ...options,
-  })
+  }))
 }

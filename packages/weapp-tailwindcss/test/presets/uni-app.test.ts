@@ -32,9 +32,39 @@ describe('uni-app preset', () => {
     expect(result.tailwindcss?.version).toBe(4)
   })
 
-  it('disables plugin for h5/app targets by default', () => {
+  it('enables web compatibility for h5 targets by default', () => {
     env.clearBaseEnv()
     process.env.UNI_PLATFORM = 'h5'
+    const result = uniApp({
+      base: '/Users/foo/uni-app',
+    })
+
+    expect(result.disabled).toBeUndefined()
+    expect(result.generator).toMatchObject({
+      target: 'web',
+      webCompat: true,
+    })
+  })
+
+  it('keeps explicit h5 web compatibility overrides', () => {
+    env.clearBaseEnv()
+    process.env.UNI_PLATFORM = 'h5'
+    const result = uniApp({
+      base: '/Users/foo/uni-app',
+      generator: {
+        webCompat: false,
+      },
+    })
+
+    expect(result.generator).toMatchObject({
+      target: 'web',
+      webCompat: false,
+    })
+  })
+
+  it('disables plugin for app targets by default', () => {
+    env.clearBaseEnv()
+    process.env.UNI_PLATFORM = 'app'
     const result = uniApp({
       base: '/Users/foo/uni-app',
     })
