@@ -135,7 +135,7 @@
     "e2e:templates": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/templates-build-smoke.test.ts",
     "e2e:templates:ide": "cross-env E2E_TEMPLATE_IDE=1 vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/templates-ide-smoke.test.ts",
     "e2e:templates:hmr": "vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/templates-dev-hmr-smoke.test.ts",
-    "e2e:multiplatform-build:taro-alipay": "pnpm --filter @weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4 run build:alipay && cross-env E2E_MULTIPLATFORM_BUILD_STATUS=all E2E_MULTIPLATFORM_BUILD_CASE=\"taro-webpack-react-tailwindcss-v4 alipay\" E2E_MULTIPLATFORM_BUILD_SKIP_BUILD=1 vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/multiplatform-build-output.test.ts",
+    "e2e:multiplatform-build:taro-alipay": "pnpm --filter @weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4 run build:alipay && cross-env E2E_MULTIPLATFORM_BUILD_STATUS=all E2E_MULTIPLATFORM_BUILD_CASE=\"^taro-webpack-react-tailwindcss-v4 alipay$\" E2E_MULTIPLATFORM_BUILD_SKIP_BUILD=1 vitest run --bail=1 -c ./e2e/vitest.e2e.config.ts e2e/multiplatform-build-output.test.ts",
     "e2e:preprocessor": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/preprocessor-source.test.ts",
     "e2e:apps-generator": "vitest run -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
     "e2e:apps-generator:u": "vitest run -u -c ./e2e/vitest.e2e.config.ts e2e/apps-generator-mode-compare.test.ts",
