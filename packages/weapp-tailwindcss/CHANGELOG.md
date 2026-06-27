@@ -1,5 +1,19 @@
 # weapp-tailwindcss
 
+## 5.1.3
+
+### Patch Changes
+
+- 🐛 **修复 Taro webpack5/Vite + Tailwind v4 多 `cssEntries` 场景下，`mainCssChunkMatcher` 宽匹配导致页面或独立分包样式错误复用主样式入口的问题。** [`de82f2f`](https://github.com/sonofmagic/weapp-tailwindcss/commit/de82f2fbe3304474b1cc02ad5f74691eb1b645d1) by @sonofmagic
+
+- 🐛 **本次发布整理了从 `5.1.2` 之后的主要变更：修复 Tailwind v4 多 `cssEntries` 场景下的主样式误匹配与分包样式映射问题，补齐 Taro webpack5/Vite、Rspack、H5/web 兼容与平台环境支持，并同步修复主题过渡的首帧闪烁问题。** [`64faef4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/64faef437046ca1b3f438a2e55d101895500f7a5) by @sonofmagic
+
+- 🐛 **修复 Vite 构建中 Tailwind CSS v4 显式 `cssEntries` 的分包样式映射，避免普通分包样式漏生成或被注入主包样式产物。** [#952](https://github.com/sonofmagic/weapp-tailwindcss/pull/952) by @sonofmagic
+
+- 🐛 **新增 `weapp-tailwindcss/rspack` 导出入口，提供 Rspack 配置修补能力，用于在 Rsbuild/Rspack 中注入 Tailwind v4 CSS 生成 loader，并默认保留 Lightning CSS loader。** [`6937777`](https://github.com/sonofmagic/weapp-tailwindcss/commit/6937777a052cba6b4a79518d35d222b72703db39) by @sonofmagic
+- 📦 **Dependencies** [`64faef4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/64faef437046ca1b3f438a2e55d101895500f7a5)
+  → `@weapp-tailwindcss/postcss@3.1.3`
+
 ## 5.1.2
 
 ### Patch Changes
