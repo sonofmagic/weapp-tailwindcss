@@ -53,7 +53,7 @@ catalogs:
   babelRuntime7284tilde:
     '@babel/runtime': ^7.29.2
   baselineBrowserMapping:
-    baseline-browser-mapping: ^2.10.38
+    baseline-browser-mapping: ^2.10.40
   classVarianceAuthority:
     class-variance-authority: ^0.7.1
   clsx:
@@ -63,7 +63,7 @@ catalogs:
   egoistTailwindcssIcons:
     '@egoist/tailwindcss-icons': ^1.9.2
   eslint10:
-    eslint: ^10.5.0
+    eslint: ^10.6.0
   eslintPluginReact:
     eslint-plugin-react: ^7.37.5
   eslintPluginReactHooks:
@@ -94,7 +94,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.8.4
+    prettier: ^3.8.5
   react18:
     '@types/react': ^19.2.17
     '@types/react-dom': 18.2.7
@@ -110,7 +110,7 @@ catalogs:
   sass195:
     sass: ^1.101.0
   stylelint1625:
-    stylelint: ^17.13.0
+    stylelint: ^17.14.0
   tailwindMerge:
     tailwind-merge: ^3.6.0
   tailwindMerge2:
@@ -233,6 +233,6 @@ catalogs:
   weappIdeCli:
     weapp-ide-cli: ^5.4.10
   weappVite:
-    weapp-vite: ^6.17.4
+    weapp-vite: ^6.17.7
   wrangler:
-    wrangler: ^4.104.0
+    wrangler: ^4.105.0

@@ -23,7 +23,7 @@
     "vue": "catalog:vue3"
   },
   "devDependencies": {
-    "@rsbuild/core": "^2.0.15",
+    "@rsbuild/core": "^2.1.1",
     "@rsbuild/plugin-vue": "^2.0.0",
     "@vue/compiler-sfc": "catalog:vue3",
     "cross-env": "catalog:crossEnv",

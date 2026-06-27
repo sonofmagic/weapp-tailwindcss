@@ -36,7 +36,7 @@
     "vue-tsc": "catalog:vueTsc318",
     "weapp-tailwindcss": "workspace:*",
     "webpack": "5.105.4",
-    "webpack-cli": "^6.0.1",
+    "webpack-cli": "^7.1.0",
     "webpack-dev-server": "^5.2.5"
   },
   "repository": {
