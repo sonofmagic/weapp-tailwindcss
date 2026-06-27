@@ -3,6 +3,8 @@ import { rm } from 'node:fs/promises'
 import { logger } from '@weapp-tailwindcss/logger'
 import { initializeCache } from '@/cache'
 import { getDefaultOptions, resolveDefaultCssPreflight } from '@/defaults'
+import { resolveMpxPlatform } from '@/framework'
+import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 import { invalidateRuntimeClassSet, refreshTailwindcssRuntimeSymbol } from '@/tailwindcss/runtime'
 import { logRuntimeTailwindcssVersion } from '@/tailwindcss/runtime-logs'
 import { logTailwindcssTarget } from '@/tailwindcss/targets'
@@ -93,6 +95,16 @@ function syncLegacyFieldsToCssOptions(ctx: InternalUserDefinedOptions) {
   }
 }
 
+function applyFrameworkPlatformDefaults(ctx: InternalUserDefinedOptions) {
+  if (ctx.cssOptions?.platform || ctx.platform) {
+    ctx.platform = normalizeFrameworkStylePlatform(ctx.cssOptions?.platform ?? ctx.platform, ctx.appType)
+    return
+  }
+  if (ctx.appType === 'mpx') {
+    ctx.platform = normalizeFrameworkStylePlatform(resolveMpxPlatform().normalized, ctx.appType)
+  }
+}
+
 export async function clearTailwindcssRuntimeCache(
   tailwindRuntime: TailwindcssRuntimeLike | undefined,
   options?: ClearTailwindcssRuntimeCacheOptions,
@@ -161,6 +173,7 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   ctx.arbitraryValues = resolveUnocssBareArbitraryValues(ctx.arbitraryValues, ctx.unocss)
   ctx.escapeMap = ctx.customReplaceDictionary
   syncCssOptionsToLegacyFields(ctx)
+  applyFrameworkPlatformDefaults(ctx)
 
   applyLoggerLevel(ctx.logLevel)
 

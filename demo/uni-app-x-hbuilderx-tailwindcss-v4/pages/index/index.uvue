@@ -35,6 +35,9 @@
 			buttonClass(): string {
 				return buttonColors[this.globalNum % buttonColors.length]
 			},
+			templateCorpusDynamicClass(): string {
+				return 'template-corpus-dynamic bg-[#68c828] text-[100px] w-[323px] h-[45px]'
+			},
 		},
 		methods: {
 			setGlobalNum(num: number) {
@@ -50,6 +53,22 @@
 <template>
 	<view class="content">
 		<WeappTailwindcss />
+		<view class="template-corpus-card flex flex-col gap-3 rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-700 p-4 text-white shadow-xl wx:bg-blue-500 not-wx:bg-red-500 any-hover:bg-slate-800">
+			<view class="template-corpus-radial bg-[#e0f2fe] px-[48px] py-[24px] text-[#123456]">
+				<text>template corpus radial</text>
+			</view>
+			<view class="template-corpus-space space-y-2">
+				<view class="rounded-[20px] bg-white px-3 py-1 text-[26px] text-slate-700">
+					<text>space item 1</text>
+				</view>
+				<view :class="templateCorpusDynamicClass">
+					<text>space item 2</text>
+				</view>
+			</view>
+			<view class="template-corpus-apply">
+				<text>apply corpus</text>
+			</view>
+		</view>
 		<view class="my-3 w-full border-t border-solid border-gray-200" />
 		<text class="text-xl text-gray-600/95">
 			写法示例Start!

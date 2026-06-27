@@ -11,3 +11,23 @@
     @slot;
   }
 }
+@custom-variant wx {
+  /*  #ifdef  MP-WEIXIN  */
+  @slot;
+  /*  #endif  */
+}
+@custom-variant not-wx {
+  /*  #ifndef  MP-WEIXIN  */
+  @slot;
+  /*  #endif  */
+}
+@custom-variant any-hover {
+  @media (any-hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+.template-corpus-apply {
+  @apply flex items-center rounded-[20px] bg-[#9e58e9] px-[18px] py-[10px] text-[26px] text-white;
+}

@@ -7,9 +7,23 @@ export default function Index() {
   const complexExpression = 'size > 4 ? keep-[business] : App.vue:4'
   const bracketLikeText = 'before content ["not-generated"]'
   const urlLikeText = 'https://example.com/a[b]?q=Hello world!'
+  const templateCorpusDynamicClass = 'template-corpus-dynamic bg-[#68c828] text-[100rpx] w-[323px] h-[45px]'
 
   return (
     <View className='index'>
+      <View className='template-corpus-card flex flex-col gap-3 rounded-[28rpx] border border-slate-200/80 bg-gradient-to-br from-slate-900/95 to-slate-700/95 p-4 text-white shadow-xl wx:bg-blue-500 not-wx:bg-red-500 any-hover:bg-slate-800'>
+        <View className='template-corpus-radial bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] px-[48px] py-[24rpx] text-[#123456]'>
+          template corpus radial
+        </View>
+        <View className='template-corpus-space space-y-2'>
+          <View className='rounded-[20rpx] bg-white/70 px-3 py-1 text-[26rpx] text-slate-700'>space item 1</View>
+          <View className={templateCorpusDynamicClass}>space item 2</View>
+        </View>
+        <View className='template-corpus-apply'>apply corpus</View>
+        <View className='template-corpus-hover h-16 w-32 rounded-[20rpx] bg-green-200/70' hoverClass="!bg-[gray] after:!content-['good_work!']">
+          hover corpus
+        </View>
+      </View>
       <div className='h-[300px] text-[#c31d6b] bg-[#123456]'>短斤少两快点撒</div>
       <Text className='text-[55rpx] text-[#fff] bg-purple-300'>Hello world!</Text>
       <View className='bg-[red]'>Hello world!</View>

@@ -75,6 +75,8 @@ vi.mock('@/context/tailwindcss', () => ({
 
 describe('getCompilerContext', () => {
   beforeEach(() => {
+    delete process.env.MPX_CLI_MODE
+    delete process.env.MPX_CURRENT_TARGET_MODE
     vi.clearAllMocks()
     vi.resetModules()
     createHandlersFromContext.mockClear()
@@ -277,6 +279,47 @@ describe('getCompilerContext', () => {
     })
 
     expect(logger.warn).not.toHaveBeenCalled()
+  })
+
+  it('infers canonical style platform from Mpx wx environment', async () => {
+    process.env.MPX_CURRENT_TARGET_MODE = 'wx'
+    createTailwindcssRuntimeFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const ctx = getCompilerContext({
+      appType: 'mpx',
+    })
+
+    expect(ctx.platform).toBe('mp-weixin')
+  })
+
+  it('canonicalizes explicit Mpx style platform without changing non-Mpx values', async () => {
+    createTailwindcssRuntimeFromContext.mockReturnValue({
+      packageInfo: { version: '4.1.0' },
+      majorVersion: 4,
+    })
+
+    const { getCompilerContext } = await import('@/context')
+    const mpxCtx = getCompilerContext({
+      appType: 'mpx',
+      cssOptions: {
+        platform: 'wx',
+      },
+    })
+    const taroCtx = getCompilerContext({
+      appType: 'taro',
+      cssOptions: {
+        platform: 'weapp',
+      },
+    })
+
+    expect(mpxCtx.platform).toBe('mp-weixin')
+    expect(mpxCtx.cssOptions?.platform).toBe('mp-weixin')
+    expect(taroCtx.platform).toBe('weapp')
+    expect(taroCtx.cssOptions?.platform).toBe('weapp')
   })
 })
 
