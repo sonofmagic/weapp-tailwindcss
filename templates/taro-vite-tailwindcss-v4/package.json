@@ -87,8 +87,14 @@
     "terser": "^5.48.0",
     "typescript": "^6.0.3",
     "vite": "^4.5.14",
-    "weapp-ide-cli": "^5.4.4",
-    "weapp-tailwindcss": "^5.0.12"
+    "weapp-ide-cli": "^5.4.10",
+    "weapp-tailwindcss": "^5.1.3"
   },
-  "packageManager": "pnpm@11.5.3"
+  "packageManager": "pnpm@11.8.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge"
+    ]
+  }
 }

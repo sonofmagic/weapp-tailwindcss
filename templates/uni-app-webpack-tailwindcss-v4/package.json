@@ -2,7 +2,7 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.5.3",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "serve": "pnpm dev:h5",
     "build": "pnpm build:h5",
@@ -113,8 +113,8 @@
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.3",
     "vue-template-compiler": ">= 2.6.14 < 2.7",
-    "weapp-ide-cli": "^5.4.4",
-    "weapp-tailwindcss": "^5.0.12"
+    "weapp-ide-cli": "^5.4.10",
+    "weapp-tailwindcss": "^5.1.3"
   },
   "browserslist": [
     "Android >= 4.4",
@@ -122,5 +122,11 @@
   ],
   "uni-app": {
     "scripts": {}
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge"
+    ]
   }
 }

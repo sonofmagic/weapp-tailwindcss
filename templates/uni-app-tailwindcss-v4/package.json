@@ -71,12 +71,18 @@
     "@dcloudio/vite-plugin-uni": "3.0.0-5000720260410001",
     "@vue/runtime-core": "^3.4.21",
     "@vue/tsconfig": "^0.8.1",
-    "tailwindcss": "^4.2.4",
+    "tailwindcss": "^4.3.1",
     "typescript": "^6.0.3",
     "vite": "5.2.8",
     "vue-tsc": "^2.2.10",
-    "weapp-ide-cli": "^5.4.4",
-    "weapp-tailwindcss": "^5.0.12"
+    "weapp-ide-cli": "^5.4.10",
+    "weapp-tailwindcss": "^5.1.3"
   },
-  "packageManager": "pnpm@11.5.3"
+  "packageManager": "pnpm@11.8.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "weapp-tailwindcss",
+      "@weapp-tailwindcss/merge"
+    ]
+  }
 }
