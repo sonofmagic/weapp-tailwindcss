@@ -67,25 +67,11 @@ Tailwind 包名。项目使用分支包时可以改这里。
 
 传给 `local-pkg` 的包解析配置。
 
-#### paths?
-
-> 可选 | **paths**: `string[]`
-#### platform?
-
-> 可选 | **platform**: `"posix" | "win32" | "auto"`
-
-##### 默认值
-
-```ts
-'auto'
-Resolve path as posix or win32
-```
-
 ***
 
 ### v4?
 
-> 可选 | **v4**: `TailwindV4Options`
+> 可选 | **v4**: [`TailwindV4Options`](./TailwindV4Options.md)
 
 Tailwind CSS v4 提取与 CSS 入口选项。
 
@@ -101,14 +87,16 @@ Tailwind CSS v4 提取与 CSS 入口选项。
 直接传给 v4 设计系统的原始 CSS。
 #### cssSources?
 
-> 可选 | **cssSources**: `import("@tailwindcss-mangle/engine").TailwindV4CssSource[]`
+> 可选 | **cssSources**: `TailwindV4CssSource[]`
 
 构建器在 CSS 落盘前捕获的内存 CSS 入口。
 #### cssEntries?
 
 > 可选 | **cssEntries**: `string[]`
 
-需要扫描 `@config` 指令的 CSS 入口文件。
+Tailwind CSS 4 入口文件列表，用于识别入口中的 `@import "tailwindcss"`、`@source` 与 `@config`。入口 CSS 仍然需要被项目实际 import 或纳入构建图，`cssEntries` 不会替代框架生成该 CSS 资产。
+
+类型上保持可选，是为了兼容自动发现和内存 CSS 来源；业务项目推荐显式传入绝对路径。多入口、分包、独立分包、Webpack/Gulp/自定义构建和多平台构建都应该写清楚这些入口。
 #### sources?
 
 > 可选 | **sources**: `SourceEntry[]`

@@ -31,7 +31,7 @@ Tailwind CSS 运行时根配置。
 
 ### tailwindcss?
 
-> 可选 | **tailwindcss**: `TailwindCssOptions`
+> 可选 | **tailwindcss**: [`TailwindCssOptions`](./TailwindCssOptions.md)
 
 Tailwind 运行时配置。
 
@@ -67,7 +67,7 @@ Tailwind 包名。项目使用分支包时可以改这里。
 传给 `local-pkg` 的包解析配置。
 #### v4?
 
-> 可选 | **v4**: `TailwindV4Options`
+> 可选 | **v4**: [`TailwindV4Options`](./TailwindV4Options.md)
 
 Tailwind CSS v4 提取与 CSS 入口选项。
 
@@ -75,7 +75,7 @@ Tailwind CSS v4 提取与 CSS 入口选项。
 
 ### apply?
 
-> 可选 | **apply**: `ApplyOptions`
+> 可选 | **apply**: [`ApplyOptions`](./ApplyOptions.md)
 
 运行时行为开关。
 
@@ -99,7 +99,7 @@ Tailwind CSS v4 提取与 CSS 入口选项。
 
 ### extract?
 
-> 可选 | **extract**: `ExtractOptions`
+> 可选 | **extract**: [`ExtractOptions`](./ExtractOptions.md)
 
 类名提取结果输出配置。
 

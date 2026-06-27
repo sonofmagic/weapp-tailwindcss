@@ -23,7 +23,7 @@ weapp-tailwindcss 生成器的调用配置。
 
 ### target?
 
-> 可选 | **target**: `WeappTailwindcssGeneratorTarget`
+> 可选 | **target**: [`WeappTailwindcssGeneratorTarget`](./WeappTailwindcssGeneratorTarget.md)
 
 生成目标。`weapp` 输出小程序兼容 CSS，`web` 保留 Web 形态，`tailwind` 返回 Tailwind 原始输出。
 
@@ -67,6 +67,6 @@ weapp-tailwindcss 生成器的调用配置。
 
 ### scanSources?
 
-> 可选 | **scanSources**: `boolean | import("@tailwindcss-mangle/engine").TailwindV4SourcePattern[]`
+> 可选 | **scanSources**: `boolean | TailwindV4SourcePattern[]`
 
 是否扫描文件系统中的源码入口。

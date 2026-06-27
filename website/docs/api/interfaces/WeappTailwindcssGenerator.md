@@ -31,7 +31,7 @@ weapp-tailwindcss 统一生成器实例。
 
 ##### options?
 
-`WeappTailwindcssGenerateOptions`
+[`WeappTailwindcssGenerateOptions`](./WeappTailwindcssGenerateOptions.md)
 
 #### 返回
 
@@ -71,18 +71,6 @@ weapp-tailwindcss 统一生成器实例。
 
 解析后的 Tailwind v4 source。
 
-#### base
-
-> **base**: `string`
-#### baseFallbacks
-
-> **baseFallbacks**: `string[]`
-#### css
-
-> **css**: `string`
-#### dependencies
-
-> **dependencies**: `string[]`
 #### cwd?
 
 > 可选 | **cwd**: `string`
@@ -91,7 +79,7 @@ weapp-tailwindcss 统一生成器实例。
 > **projectRoot**: `string`
 #### cssSources?
 
-> 可选 | **cssSources**: `import("@tailwindcss-mangle/engine").TailwindV4CssSource[]`
+> 可选 | **cssSources**: `TailwindV4CssSource[]`
 #### sources?
 
 > 可选 | **sources**: `TailwindV4SourcePattern[]`

@@ -8,7 +8,9 @@ import {
   buildOptionsGroupSeoFrontmatter,
   buildOtherInterfacesSeoFrontmatter,
   buildUserDefinedOptionsOverviewFrontmatter,
+  normalizeTypeReferenceText,
   renderInterfaceDoc,
+  renderTypeText,
 } from './generate-api-docs.ts'
 
 describe('generate-api-docs SEO frontmatter', () => {
@@ -90,5 +92,43 @@ describe('generate-api-docs source extraction', () => {
     expect(doc?.properties[0]?.description).toBe('入口文件列表。')
     expect(rendered).toContain('> 可选 | **cssEntries**: `string[]`')
     expect(rendered).not.toContain('`optional`')
+  })
+
+  it('does not render nested properties from external builtin types', () => {
+    const project = new Project({
+      compilerOptions: {
+        lib: ['es2020'],
+      },
+      useInMemoryFileSystem: true,
+    })
+    const sourceFile = project.createSourceFile('/repo/api-fixture.ts', `
+      export interface ApiFixture {
+        /**
+         * 生成的类名集合。
+         */
+        classSet: Set<string>
+      }
+    `)
+    const doc = buildInterfaceDoc('ApiFixture', sourceFile.getInterfaceOrThrow('ApiFixture'))
+    const rendered = renderInterfaceDoc(doc)
+
+    expect(rendered).toContain('> **classSet**: `Set<string>`')
+    expect(rendered).not.toContain('__@toStringTag')
+    expect(rendered).not.toContain('#### size')
+  })
+})
+
+describe('generate-api-docs type links', () => {
+  it('normalizes import-qualified type references', () => {
+    expect(normalizeTypeReferenceText('import("@/tailwindcss/runtime-types").TailwindCssOptions')).toBe('TailwindCssOptions')
+  })
+
+  it('links exported API type references in markdown output', () => {
+    const rendered = renderTypeText('import("@/tailwindcss/runtime-types").TailwindCssOptions', {
+      currentDir: 'options',
+      linkableTypes: new Set(['TailwindCssOptions']),
+    })
+
+    expect(rendered).toBe('[`TailwindCssOptions`](../interfaces/TailwindCssOptions.md)')
   })
 })

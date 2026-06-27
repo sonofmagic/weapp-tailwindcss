@@ -28,7 +28,7 @@ keywords:
 | [customReplaceDictionary](#customreplacedictionary) | <code>Record<string, string></code> | <code>MappingChars2String</code> | 自定义 class 名称的替换字典。 |
 | [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | <code>['weappTwIgnore']</code> | 忽略指定标签模板表达式中的标识符。 |
 | [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | — | 忽略指定调用表达式中的标识符。 |
-| [tailwindcss](#tailwindcss) | <code>import("@/tailwindcss/runtime-types").TailwindCssOptions</code> | — | 为不同版本的 Tailwind 配置行为。 |
+| [tailwindcss](#tailwindcss) | [`TailwindCssOptions`](../interfaces/TailwindCssOptions.md) | — | 为不同版本的 Tailwind 配置行为。 |
 | [cssEntries](#cssentries) | <code>string[]</code> | — | 指定 tailwindcss@4 的入口 CSS。 |
 
 ## 详细说明
@@ -128,7 +128,7 @@ MappingChars2String
 
 ### tailwindcss
 
-> 可选 | 类型: `import("@/tailwindcss/runtime-types").TailwindCssOptions` | 版本: ^4.0.0
+> 可选 | 类型: [`TailwindCssOptions`](../interfaces/TailwindCssOptions.md) | 版本: ^4.0.0
 
 为不同版本的 Tailwind 配置行为。
 

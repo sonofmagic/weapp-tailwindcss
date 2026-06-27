@@ -97,6 +97,13 @@ interface GroupMeta {
   slug: string
 }
 
+type ApiDocsDirectory = 'interfaces' | 'options'
+
+export interface TypeRenderContext {
+  currentDir?: ApiDocsDirectory
+  linkableTypes?: ReadonlySet<string>
+}
+
 /** 匹配一个或多个连续空白字符 */
 const WHITESPACE_RE = /\s+/g
 
@@ -132,6 +139,12 @@ const BACKSLASH_RE = /\\/g
 
 /** 匹配分组标题前缀的标点和空白 */
 const GROUP_TITLE_PREFIX_RE = /^[.．、\s-]+/
+
+/** 匹配 ts-morph 输出的 import("...").TypeName 类型引用 */
+const IMPORT_QUALIFIED_TYPE_RE = /import\((['"])[^'"]+\1\)\.([A-Za-z_$][\w$]*)/g
+
+/** 匹配单一 TypeScript 类型标识符 */
+const SINGLE_TYPE_IDENTIFIER_RE = /^[A-Z][\w$]*$/
 
 function isAsciiDigit(value: string): boolean {
   return value >= '0' && value <= '9'
@@ -285,8 +298,38 @@ function renderInlineCode(value: string): string {
   return `\`${value.replace(BACKTICK_RE, '\\`')}\``
 }
 
+export function normalizeTypeReferenceText(value: string): string {
+  return value.replace(IMPORT_QUALIFIED_TYPE_RE, '$2')
+}
+
+function getApiTypeLink(name: string, currentDir: ApiDocsDirectory): string {
+  return currentDir === 'options'
+    ? `../interfaces/${name}.md`
+    : `./${name}.md`
+}
+
+function isLinkableSingleType(typeText: string, linkableTypes?: ReadonlySet<string>): boolean {
+  return Boolean(linkableTypes?.has(typeText) && SINGLE_TYPE_IDENTIFIER_RE.test(typeText))
+}
+
+export function renderTypeText(value: string, context: TypeRenderContext = {}): string {
+  const typeText = normalizeTypeReferenceText(value)
+  if (isLinkableSingleType(typeText, context.linkableTypes)) {
+    return `[\`${typeText}\`](${getApiTypeLink(typeText, context.currentDir ?? 'interfaces')})`
+  }
+  return renderInlineCode(typeText)
+}
+
 function renderTableCode(value: string): string {
   return `<code>${escapeTableCell(value)}</code>`
+}
+
+function renderTableTypeText(value: string, context: TypeRenderContext): string {
+  const typeText = normalizeTypeReferenceText(value)
+  if (isLinkableSingleType(typeText, context.linkableTypes)) {
+    return escapeTableCell(renderTypeText(typeText, context))
+  }
+  return renderTableCode(typeText)
 }
 
 function renderDefaultInline(value: string): string {
@@ -345,6 +388,13 @@ function getDefinitionLink(node: Node): string | undefined {
     return `${relPath}:${line}`
   }
   return `[${relPath}:${line}](${repoUrl}${relPath}#L${line})`
+}
+
+function isProjectSourceFile(node: Node): boolean {
+  const sourceFile = node.getSourceFile()
+  const filePath = sourceFile.getFilePath()
+  const relPath = path.relative(repoRoot, filePath)
+  return !relPath.startsWith('..') && !path.isAbsolute(relPath) && !sourceFile.isInNodeModules()
 }
 
 function readTagText(tag: JSDocTag): string {
@@ -410,7 +460,7 @@ function getPrimaryCallSignature(type: Type): Signature | undefined {
 
 function scorePropertyDeclaration(decl: PropertySignature): number {
   let score = 0
-  if (!decl.getSourceFile().isInNodeModules()) {
+  if (isProjectSourceFile(decl)) {
     score += 10
   }
   if (decl.getJsDocs().length > 0) {
@@ -456,6 +506,9 @@ function collectNestedProperties(type: Type): PropertyDoc[] {
   for (const symbol of nestedProperties) {
     const declaration = pickPropertyDeclaration(symbol)
     if (!declaration) {
+      continue
+    }
+    if (!isProjectSourceFile(declaration)) {
       continue
     }
     if (!Node.isPropertySignature(declaration)) {
@@ -674,12 +727,12 @@ function renderDefaultValue(value: string): string {
   return `\`\`\`ts\n${trimmed}\n\`\`\``
 }
 
-function renderPropertyMetaLine(prop: PropertyDoc): string {
+function renderPropertyMetaLine(prop: PropertyDoc, context: TypeRenderContext): string {
   const segments: string[] = []
   if (prop.optional) {
     segments.push('可选')
   }
-  segments.push(`类型: ${renderInlineCode(formatTypeForDisplay(prop))}`)
+  segments.push(`类型: ${renderTypeText(formatTypeForDisplay(prop), context)}`)
   const defaultValue = prop.tags.default?.join('\n') ?? ''
   if (defaultValue.trim()) {
     segments.push(`默认值: ${renderDefaultInline(defaultValue)}`)
@@ -695,14 +748,14 @@ function toAnchorId(value: string): string {
   return value.toLowerCase()
 }
 
-function renderProperty(prop: PropertyDoc, level: number): string {
+function renderProperty(prop: PropertyDoc, level: number, context: TypeRenderContext): string {
   const lines: string[] = []
   const heading = `${'#'.repeat(level)} ${prop.name}${prop.isFunction ? '()' : ''}${prop.optional ? '?' : ''}`
   lines.push(heading)
   lines.push('')
 
   const optionalLabel = prop.optional ? '可选 | ' : ''
-  lines.push(`> ${optionalLabel}**${prop.name}${prop.isFunction ? '()' : ''}**: \`${prop.typeText}\``)
+  lines.push(`> ${optionalLabel}**${prop.name}${prop.isFunction ? '()' : ''}**: ${renderTypeText(prop.typeText, context)}`)
   lines.push('')
 
   if (prop.description) {
@@ -756,7 +809,7 @@ function renderProperty(prop: PropertyDoc, level: number): string {
     prop.parameters.forEach((param) => {
       lines.push(`${'#'.repeat(level + 2)} ${param.name}${param.optional ? '?' : ''}`)
       lines.push('')
-      lines.push(`\`${param.typeText}\``)
+      lines.push(renderTypeText(param.typeText, context))
       lines.push('')
     })
   }
@@ -764,27 +817,27 @@ function renderProperty(prop: PropertyDoc, level: number): string {
   if (prop.returns) {
     lines.push(`${'#'.repeat(level + 1)} 返回`)
     lines.push('')
-    lines.push(`\`${prop.returns}\``)
+    lines.push(renderTypeText(prop.returns, context))
     lines.push('')
   }
 
   if (prop.nested?.length) {
     prop.nested.forEach((nested) => {
-      lines.push(renderProperty(nested, level + 1))
+      lines.push(renderProperty(nested, level + 1, context))
     })
   }
 
   return lines.join('\n').trimEnd()
 }
 
-function renderOptionsTable(items: PropertyDoc[]): string[] {
+function renderOptionsTable(items: PropertyDoc[], context: TypeRenderContext): string[] {
   const lines: string[] = []
   lines.push('| 配置项 | 类型 | 默认值 | 说明 |')
   lines.push('| --- | --- | --- | --- |')
   items.forEach((prop) => {
     const anchor = toAnchorId(prop.name)
     const typeText = formatTypeForDisplay(prop)
-    const typeCell = renderTableCode(typeText)
+    const typeCell = renderTableTypeText(typeText, context)
     const defaultCell = renderDefaultCell(prop.tags.default?.join('\n') ?? '')
     const descriptionCell = formatDescriptionCell(prop)
     lines.push(`| [${prop.name}](#${anchor}) | ${typeCell} | ${defaultCell} | ${descriptionCell} |`)
@@ -792,11 +845,11 @@ function renderOptionsTable(items: PropertyDoc[]): string[] {
   return lines
 }
 
-function renderOptionsProperty(prop: PropertyDoc, level: number): string {
+function renderOptionsProperty(prop: PropertyDoc, level: number, context: TypeRenderContext): string {
   const lines: string[] = []
   lines.push(`${'#'.repeat(level)} ${prop.name}`)
   lines.push('')
-  lines.push(renderPropertyMetaLine(prop))
+  lines.push(renderPropertyMetaLine(prop, context))
   lines.push('')
 
   if (prop.description) {
@@ -843,7 +896,7 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
     prop.parameters.forEach((param) => {
       lines.push(`${'#'.repeat(level + 2)} ${param.name}${param.optional ? '?' : ''}`)
       lines.push('')
-      lines.push(`\`${param.typeText}\``)
+      lines.push(renderTypeText(param.typeText, context))
       lines.push('')
     })
   }
@@ -851,21 +904,25 @@ function renderOptionsProperty(prop: PropertyDoc, level: number): string {
   if (prop.returns) {
     lines.push(`${'#'.repeat(level + 1)} 返回`)
     lines.push('')
-    lines.push(`\`${prop.returns}\``)
+    lines.push(renderTypeText(prop.returns, context))
     lines.push('')
   }
 
   if (prop.nested?.length) {
     prop.nested.forEach((nested) => {
-      lines.push(renderOptionsProperty(nested, level + 1))
+      lines.push(renderOptionsProperty(nested, level + 1, context))
     })
   }
 
   return lines.join('\n').trimEnd()
 }
 
-export function renderInterfaceDoc(doc: InterfaceDoc): string {
+export function renderInterfaceDoc(doc: InterfaceDoc, context: TypeRenderContext = {}): string {
   const lines: string[] = []
+  const renderContext: TypeRenderContext = {
+    ...context,
+    currentDir: 'interfaces',
+  }
   pushFrontmatter(lines, buildInterfaceSeoFrontmatter(doc))
   lines.push(`# ${doc.name}`)
   lines.push('')
@@ -905,7 +962,7 @@ export function renderInterfaceDoc(doc: InterfaceDoc): string {
     lines.push(`## ${group.title}`)
     lines.push('')
     group.items.forEach((prop, idx) => {
-      lines.push(renderProperty(prop, 3))
+      lines.push(renderProperty(prop, 3, renderContext))
       if (idx < group.items.length - 1) {
         lines.push('\n***\n')
       }
@@ -945,8 +1002,13 @@ function renderUserDefinedOptionsOverview(
 function renderOptionsGroupDoc(
   meta: GroupMeta,
   items: PropertyDoc[],
+  context: TypeRenderContext = {},
 ): string {
   const lines: string[] = []
+  const renderContext: TypeRenderContext = {
+    ...context,
+    currentDir: 'options',
+  }
   pushFrontmatter(lines, buildOptionsGroupSeoFrontmatter(meta, items.length))
 
   lines.push(`本页收录 ${items.length} 个配置项，来源于 \`UserDefinedOptions\`。`)
@@ -954,13 +1016,13 @@ function renderOptionsGroupDoc(
 
   lines.push('## 配置一览')
   lines.push('')
-  lines.push(...renderOptionsTable(items))
+  lines.push(...renderOptionsTable(items, renderContext))
   lines.push('')
 
   lines.push('## 详细说明')
   lines.push('')
   items.forEach((prop, idx) => {
-    lines.push(renderOptionsProperty(prop, 3))
+    lines.push(renderOptionsProperty(prop, 3, renderContext))
     if (idx < items.length - 1) {
       lines.push('')
     }
@@ -1056,6 +1118,7 @@ function run(): void {
     meta: parseGroupMeta(group.title),
     items: group.items,
   }))
+  const linkableTypes = new Set(interfaceDocs.map(doc => doc.name))
 
   ensureCleanDir(apiInterfacesDir)
   ensureCleanDir(apiOptionsDir)
@@ -1067,12 +1130,12 @@ function run(): void {
       fs.writeFileSync(filePath, renderUserDefinedOptionsOverview(doc, optionGroupMetas), 'utf8')
       continue
     }
-    fs.writeFileSync(filePath, renderInterfaceDoc(doc), 'utf8')
+    fs.writeFileSync(filePath, renderInterfaceDoc(doc, { linkableTypes }), 'utf8')
   }
 
   for (const group of optionGroupMetas) {
     const filePath = path.join(apiOptionsDir, `${group.meta.slug}.md`)
-    fs.writeFileSync(filePath, renderOptionsGroupDoc(group.meta, group.items), 'utf8')
+    fs.writeFileSync(filePath, renderOptionsGroupDoc(group.meta, group.items, { linkableTypes }), 'utf8')
   }
 
   const otherInterfaces = interfaceDocs.filter(item => item.name !== 'UserDefinedOptions')

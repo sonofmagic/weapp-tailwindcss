@@ -25,25 +25,11 @@ weapp-tailwindcss 生成器的输出结果。
 
 > **classSet**: `Set<string>`
 
-#### size
-
-> **size**: `number`
-#### __@toStringTag@9625
-
-> **__@toStringTag@9625**: `string`
-
 ***
 
 ### rawCandidates
 
 > **rawCandidates**: `Set<string>`
-
-#### size
-
-> **size**: `number`
-#### __@toStringTag@9625
-
-> **__@toStringTag@9625**: `string`
 
 ***
 
