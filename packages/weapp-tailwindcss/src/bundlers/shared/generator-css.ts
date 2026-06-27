@@ -12,7 +12,7 @@ import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwi
 import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldInjectMiniProgramPreflightForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
 import { inheritLegacyUnitConvertedDeclarations } from './generator-css/legacy-units'
-import { cleanLocalCssImportWrapperTailwindDirectives, isPureLocalCssImportWrapper, restoreLocalCssImports, splitLocalCssImports } from './generator-css/local-imports'
+import { cleanLocalCssImportWrapperTailwindDirectives, cleanLocalCssImportWrapperTailwindDirectivesRoot, isPureLocalCssImportWrapper, isPureLocalCssImportWrapperRoot, restoreLocalCssImports, splitLocalCssImports, splitLocalCssImportsRoot } from './generator-css/local-imports'
 import { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindV4GeneratedCssBySourceOrder, stripTailwindBanner } from './generator-css/markers'
 import { resolveGeneratorSourceEntries, resolveGeneratorSources } from './generator-css/source-resolver'
 import { normalizeCssSourceForCompare } from './generator-css/source-resolver/matching'
@@ -79,6 +79,36 @@ function intersectCandidateSets(left: Set<string>, right: Set<string>) {
     }
   }
   return matched
+}
+
+function parseCssSourceRoot(rawSource: string) {
+  try {
+    return postcss.parse(rawSource)
+  }
+  catch {
+    return undefined
+  }
+}
+
+function cleanLocalCssImportWrapperFromParsedRoot(rawSource: string, root: postcss.Root | undefined) {
+  if (!root) {
+    return cleanLocalCssImportWrapperTailwindDirectives(rawSource)
+  }
+  return cleanLocalCssImportWrapperTailwindDirectivesRoot(root)
+    ? root.toString()
+    : undefined
+}
+
+function isPureLocalCssImportWrapperFromParsedRoot(rawSource: string, root: postcss.Root | undefined) {
+  return root
+    ? isPureLocalCssImportWrapperRoot(root)
+    : isPureLocalCssImportWrapper(rawSource)
+}
+
+function splitLocalCssImportsFromParsedRoot(rawSource: string, root: postcss.Root | undefined) {
+  return root
+    ? splitLocalCssImportsRoot(root)
+    : splitLocalCssImports(rawSource)
 }
 
 function collectCssRuleIdentityMarkers(source: string) {
@@ -178,7 +208,29 @@ export async function generateCssByGenerator(
       }),
     ),
   )
-  const localImportParts = splitLocalCssImports(effectiveRawSource)
+  const effectiveRawSourceRoot = parseCssSourceRoot(effectiveRawSource)
+  const cleanedLocalImportWrapper = cleanLocalCssImportWrapperFromParsedRoot(effectiveRawSource, effectiveRawSourceRoot)
+  if (cleanedLocalImportWrapper !== undefined) {
+    return {
+      css: shouldUseMiniProgramCssBranch(generatorBranch)
+        ? removeUnsupportedMiniProgramAtRules(cleanedLocalImportWrapper)
+        : cleanedLocalImportWrapper,
+      classSet: new Set(),
+      target: generatorOptions.target,
+      source: 'generator',
+      dependencies: [],
+      metadata: {
+        file,
+        majorVersion,
+      },
+    }
+  }
+
+  if (isPureLocalCssImportWrapperFromParsedRoot(effectiveRawSource, effectiveRawSourceRoot)) {
+    return undefined
+  }
+
+  const localImportParts = splitLocalCssImportsFromParsedRoot(effectiveRawSource, effectiveRawSourceRoot)
   const localImports = options.restoreLocalCssImports === false
     ? undefined
     : localImportParts?.imports
@@ -204,7 +256,9 @@ export async function generateCssByGenerator(
             }),
           ),
         )
-  const userLocalImportParts = splitLocalCssImports(rawUserSource)
+  const userLocalImportParts = rawUserSource === generatorRawSource
+    ? undefined
+    : splitLocalCssImports(rawUserSource)
   const userSource = userLocalImportParts?.source ?? rawUserSource
   const userCssRawSource = removeTailwindV4GeneratorAtRules(userSource)
   const generatedUserCssOrderSource = hasTailwindGeneratedCss(userSource)
@@ -222,27 +276,6 @@ export async function generateCssByGenerator(
       : generatedUserCssRawSource
   const hasDistinctUserRawSource = typeof userRawSource === 'string'
     && normalizeCssSourceForCompare(generatedUserCssRawSource) !== normalizeCssSourceForCompare(generatorRawSource)
-
-  const cleanedLocalImportWrapper = cleanLocalCssImportWrapperTailwindDirectives(effectiveRawSource)
-  if (cleanedLocalImportWrapper !== undefined) {
-    return {
-      css: shouldUseMiniProgramCssBranch(generatorBranch)
-        ? removeUnsupportedMiniProgramAtRules(cleanedLocalImportWrapper)
-        : cleanedLocalImportWrapper,
-      classSet: new Set(),
-      target: generatorOptions.target,
-      source: 'generator',
-      dependencies: [],
-      metadata: {
-        file,
-        majorVersion,
-      },
-    }
-  }
-
-  if (isPureLocalCssImportWrapper(effectiveRawSource)) {
-    return undefined
-  }
 
   const hasGeneratedCss = hasTailwindGeneratedCss(generatorRawSource)
   const hasSourceDirectives = hasTailwindSourceDirectives(generatorRawSource, {

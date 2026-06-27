@@ -75,6 +75,23 @@ export {
   type TailwindCssDirectiveAnalysisOptions,
   type TailwindCssDirectiveOptions,
 } from './generator-plugin/directives'
+export {
+  cleanLocalCssImportWrapperTailwindDirectives,
+  cleanLocalCssImportWrapperTailwindDirectivesRoot,
+  createCssSourceOrderAppend,
+  isLocalCssImportRequest,
+  isPureLocalCssImportWrapper,
+  isPureLocalCssImportWrapperRoot,
+  normalizeOutputImportRequest,
+  prefixLocalCssImportsWithWebpackIgnoreRoot,
+  removeTailwindSourceDirectivesRoot,
+  restoreLocalCssImports,
+  type RewriteLocalCssImportRequestOptions,
+  rewriteLocalCssImportRequestsForOutput,
+  rewriteLocalCssImportRequestsForOutputRoot,
+  splitLocalCssImports,
+  splitLocalCssImportsRoot,
+} from './generator-plugin/local-imports'
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {

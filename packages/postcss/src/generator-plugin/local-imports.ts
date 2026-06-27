@@ -1,0 +1,267 @@
+import type { AtRule, Node, Root } from 'postcss'
+import type { TailwindCssDirectiveOptions } from './directives'
+import { postcss } from '../postcss-runtime'
+import {
+  isTailwindCssImportAtRule,
+  isTailwindCssPackageJsonImportRequest,
+  parseTailwindCssDirectiveRequest,
+} from './directives'
+
+const REMOTE_IMPORT_RE = /^(?:https?:)?\/\//i
+const CSS_STYLE_EXTENSION_RE = /\.(?:css|wxss|acss|ttss|qss|jxss|tyss|scss|sass|less|styl|stylus|pcss|postcss)(?:$|[?#])/i
+const SOURCE_STYLE_EXTENSION_RE = /\.(?:css|scss|sass|less|styl|stylus|pcss|postcss)(?:$|[?#])/i
+
+const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
+  'config',
+  'custom-variant',
+  'layer',
+  'plugin',
+  'reference',
+  'source',
+  'tailwind',
+  'theme',
+  'utility',
+  'variant',
+])
+
+export interface RewriteLocalCssImportRequestOptions {
+  styleOutputExtension?: string | undefined
+}
+
+export function createCssSourceOrderAppend(base: string, extra: string) {
+  if (!base) {
+    return extra
+  }
+  if (!extra) {
+    return base
+  }
+  if (/\s$/.test(base) || /^\s/.test(extra)) {
+    return `${base}${extra}`
+  }
+  return `${base}\n${extra}`
+}
+
+export function isLocalCssImportRequest(request: string) {
+  return request.length > 0
+    && !request.startsWith('#')
+    && !request.startsWith('tailwindcss')
+    && !request.startsWith('weapp-tailwindcss')
+    && !request.startsWith('data:')
+    && !REMOTE_IMPORT_RE.test(request)
+}
+
+function parseImportRequest(params: string) {
+  return parseTailwindCssDirectiveRequest(params)
+}
+
+function isLocalCssImportAtRule(node: AtRule) {
+  const request = parseImportRequest(node.params)
+  return request !== undefined && isLocalCssImportRequest(request)
+}
+
+function isTailwindSourceDirective(node: Node, options: TailwindCssDirectiveOptions = {}) {
+  if (node.type !== 'atrule') {
+    return false
+  }
+  const atRule = node as AtRule
+  if (isTailwindCssImportAtRule(atRule, options)) {
+    return true
+  }
+  if (atRule.name === 'import' && isTailwindCssPackageJsonImportRequest(parseImportRequest(atRule.params))) {
+    return true
+  }
+  if (atRule.name === 'layer') {
+    return !atRule.nodes || atRule.nodes.length === 0
+  }
+  return TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES.has(atRule.name)
+}
+
+export function removeTailwindSourceDirectivesRoot(root: Root, options: TailwindCssDirectiveOptions = {}) {
+  let removed = false
+  root.walk((node) => {
+    if (isTailwindSourceDirective(node, options)) {
+      node.remove()
+      removed = true
+    }
+  })
+  return removed
+}
+
+export function isPureLocalCssImportWrapperRoot(root: Root) {
+  let hasImport = false
+  for (const node of root.nodes) {
+    if (node.type === 'comment') {
+      continue
+    }
+    if (node.type !== 'atrule' || node.name !== 'import' || !isLocalCssImportAtRule(node)) {
+      return false
+    }
+    hasImport = true
+  }
+  return hasImport
+}
+
+export function isPureLocalCssImportWrapper(css: string) {
+  try {
+    return isPureLocalCssImportWrapperRoot(postcss.parse(css))
+  }
+  catch {
+    return false
+  }
+}
+
+export function prefixLocalCssImportsWithWebpackIgnoreRoot(root: Root) {
+  let changed = false
+  root.walkAtRules('import', (atRule) => {
+    if (isLocalCssImportAtRule(atRule)) {
+      atRule.raws.before = `${atRule.raws.before ?? ''}/* webpackIgnore: true */\n`
+      changed = true
+    }
+  })
+  return changed
+}
+
+export function cleanLocalCssImportWrapperTailwindDirectivesRoot(root: Root) {
+  let hasLocalImport = false
+  let hasTailwindDirective = false
+  for (const node of root.nodes) {
+    if (node.type === 'comment') {
+      continue
+    }
+    if (node.type === 'atrule' && node.name === 'import') {
+      if (!isLocalCssImportAtRule(node)) {
+        return false
+      }
+      hasLocalImport = true
+      continue
+    }
+    if (node.type === 'atrule' && node.name === 'source') {
+      hasTailwindDirective = true
+      continue
+    }
+    return false
+  }
+  if (!hasLocalImport || !hasTailwindDirective) {
+    return false
+  }
+  removeTailwindSourceDirectivesRoot(root)
+  prefixLocalCssImportsWithWebpackIgnoreRoot(root)
+  return true
+}
+
+export function cleanLocalCssImportWrapperTailwindDirectives(css: string) {
+  try {
+    const root = postcss.parse(css)
+    return cleanLocalCssImportWrapperTailwindDirectivesRoot(root)
+      ? root.toString()
+      : undefined
+  }
+  catch {
+    return undefined
+  }
+}
+
+export function splitLocalCssImportsRoot(root: Root) {
+  const importRoot = postcss.root()
+  let changed = false
+  for (const node of [...root.nodes]) {
+    if (node.type !== 'atrule' || node.name !== 'import' || !isLocalCssImportAtRule(node)) {
+      continue
+    }
+    importRoot.append(node.clone())
+    node.remove()
+    changed = true
+  }
+  const imports = importRoot.nodes
+    .filter((node): node is AtRule => node.type === 'atrule' && node.name === 'import')
+    .map(node => `@import ${node.params};`)
+    .join('\n')
+  return changed
+    ? {
+        imports,
+        source: root.toString(),
+      }
+    : undefined
+}
+
+export function splitLocalCssImports(source: string) {
+  try {
+    return splitLocalCssImportsRoot(postcss.parse(source))
+  }
+  catch {
+    return undefined
+  }
+}
+
+export function restoreLocalCssImports(css: string, imports: string | undefined) {
+  if (!imports?.trim()) {
+    return css
+  }
+  return createCssSourceOrderAppend(imports, css)
+}
+
+function splitRequestSuffix(request: string) {
+  const queryIndex = request.indexOf('?')
+  const hashIndex = request.indexOf('#')
+  const suffixIndexCandidates = [queryIndex, hashIndex].filter(index => index >= 0)
+  const suffixIndex = suffixIndexCandidates.length > 0 ? Math.min(...suffixIndexCandidates) : -1
+  if (suffixIndex < 0) {
+    return {
+      clean: request,
+      suffix: '',
+    }
+  }
+  return {
+    clean: request.slice(0, suffixIndex),
+    suffix: request.slice(suffixIndex),
+  }
+}
+
+export function normalizeOutputImportRequest(request: string, styleOutputExtension: string | undefined) {
+  const normalizedStyleOutputExtension = styleOutputExtension?.startsWith('.')
+    ? styleOutputExtension
+    : styleOutputExtension
+      ? `.${styleOutputExtension}`
+      : undefined
+  const { clean, suffix } = splitRequestSuffix(request.replace(/\\/g, '/'))
+  const normalized = clean
+    .replace(/^(?:\.\/)?src\//, './')
+    .replace(SOURCE_STYLE_EXTENSION_RE, normalizedStyleOutputExtension ?? '.css')
+  return `${normalized}${suffix}`
+}
+
+export function rewriteLocalCssImportRequestsForOutputRoot(
+  root: Root,
+  options: RewriteLocalCssImportRequestOptions = {},
+) {
+  let changed = false
+  root.walkAtRules('import', (atRule) => {
+    const request = parseImportRequest(atRule.params)
+    if (!request || !isLocalCssImportRequest(request) || !CSS_STYLE_EXTENSION_RE.test(request)) {
+      return
+    }
+    const rewritten = normalizeOutputImportRequest(request, options.styleOutputExtension)
+    if (rewritten === request) {
+      return
+    }
+    atRule.params = atRule.params.replace(request, rewritten)
+    changed = true
+  })
+  return changed
+}
+
+export function rewriteLocalCssImportRequestsForOutput(
+  css: string,
+  options: RewriteLocalCssImportRequestOptions = {},
+) {
+  if (!css.includes('@import')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    return rewriteLocalCssImportRequestsForOutputRoot(root, options) ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
