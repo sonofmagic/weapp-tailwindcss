@@ -2820,6 +2820,16 @@ describe('watch-hmr regression cases', () => {
     expect(taroWebpackVue3V4Case?.webHmr?.compileSettleTimeoutMs).toBeGreaterThanOrEqual(120_000)
   })
 
+  it('disables Taro webpack React v4 prebundle through compiler options for H5 watch', async () => {
+    const configSource = await readFile(
+      path.resolve(__dirname, '../../../demo/taro-webpack-react-tailwindcss-v4/config/index.ts'),
+      'utf8',
+    )
+
+    expect(configSource).toMatch(/compiler:\s*{\s*type:\s*'webpack5',\s*prebundle:\s*{\s*enable:\s*false,/)
+    expect(configSource).not.toMatch(/h5:\s*{[\s\S]*?prebundle:\s*{\s*enable:\s*false,/)
+  })
+
   it('waits for existing Web/H5 DOM nodes before source DOM replacement', () => {
     const demoExtendedCases = buildDemoExtendedCases('/repo')
     const uniAppCase = demoExtendedCases.find(watchCase => watchCase.name === 'uni-app-vite-tailwindcss-v4')
