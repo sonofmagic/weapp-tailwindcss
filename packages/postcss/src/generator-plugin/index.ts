@@ -1,7 +1,7 @@
-import type { PluginCreator, Rule } from 'postcss'
+import type { PluginCreator, Root } from 'postcss'
 import type { WeappTailwindcssPostcssPluginAdapters, WeappTailwindcssPostcssPluginOptions } from './types'
-import postcss from 'postcss'
 import { transformWebCssCompat } from '../compat/web-css'
+import { collectApplyOnlyCssSelectorsRoot, filterApplyOnlyGeneratedCss } from './apply-only'
 import { prependConfigDirective } from './config-directive'
 import { addDependencyMessages, addSourceDependencyMessages, replaceRootCss, resolvePostcssBase, resolvePostcssProjectRoot } from './context'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives } from './directives'
@@ -9,71 +9,16 @@ import { collectAutoTailwindCandidates, collectPostcssLocalSources } from './sou
 
 const PLUGIN_NAME = 'weapp-tailwindcss'
 
-function isTailwindV4ApplyOnlyCss(css: string, root: postcss.Root) {
+function isTailwindV4ApplyOnlyCss(css: string, root: Root) {
   return hasTailwindApplyDirective(css)
     && !hasTailwindRootDirectives(root, { importFallback: true })
 }
 
-function resolveTailwindV4PostcssSourceCss(css: string, sourceOptions: Pick<WeappTailwindcssPostcssPluginOptions, 'packageName'>, root: postcss.Root) {
+function resolveTailwindV4PostcssSourceCss(css: string, sourceOptions: Pick<WeappTailwindcssPostcssPluginOptions, 'packageName'>, root: Root) {
   const packageName = sourceOptions.packageName ?? 'tailwindcss'
   return isTailwindV4ApplyOnlyCss(css, root)
     ? `@import "${packageName}" source(none);\n@reference "${packageName}";\n${css}`
     : css
-}
-
-function normalizeSelector(selector: string) {
-  return selector.replace(/:not\(#\\#\)/g, '').trim()
-}
-
-function collectApplyOnlyCssSelectors(css: string) {
-  const selectors = new Set<string>()
-  try {
-    const root = postcss.parse(css)
-    root.walkRules((rule) => {
-      if (!rule.nodes?.some(node => node.type === 'atrule' && node.name === 'apply')) {
-        return
-      }
-      for (const selector of rule.selectors ?? [rule.selector]) {
-        const normalized = normalizeSelector(selector)
-        if (normalized) {
-          selectors.add(normalized)
-        }
-      }
-    })
-  }
-  catch {
-  }
-  return selectors
-}
-
-function ruleMatchesApplyOnlySelector(rule: Rule, selectors: Set<string>) {
-  const ruleSelectors = rule.selectors ?? [rule.selector]
-  return ruleSelectors.some(selector => selectors.has(normalizeSelector(selector)))
-}
-
-function filterApplyOnlyGeneratedCss(css: string, rawCss: string) {
-  const selectors = collectApplyOnlyCssSelectors(rawCss)
-  if (selectors.size === 0) {
-    return css
-  }
-
-  try {
-    const root = postcss.parse(css)
-    root.walkRules((rule) => {
-      if (!ruleMatchesApplyOnlySelector(rule, selectors) && !rule.nodes?.some(node => node.type === 'decl' && node.prop.startsWith('--'))) {
-        rule.remove()
-      }
-    })
-    root.walkAtRules((rule) => {
-      if (rule.nodes !== undefined && rule.nodes.length === 0) {
-        rule.remove()
-      }
-    })
-    return root.toString()
-  }
-  catch {
-    return css
-  }
 }
 
 export function createWeappTailwindcssPostcssPlugin(
@@ -92,14 +37,17 @@ export function createWeappTailwindcssPostcssPlugin(
           ...sourceOptions
         } = options
         const generatorOptions = adapters.normalizeGeneratorOptions(userGeneratorOptions)
+        const rawCss = sourceOptions.css ?? root.toString()
 
         const [collectedSources, autoCandidates] = await Promise.all([
           collectPostcssLocalSources(root, result, options),
-          collectAutoTailwindCandidates(root, result, options),
+          collectAutoTailwindCandidates(root, result, options, rawCss),
         ])
         const generatorConfig = generatorOptions.config ?? options.config
-        const rawCss = sourceOptions.css ?? root.toString()
         const isApplyOnlyTailwindV4Css = isTailwindV4ApplyOnlyCss(rawCss, root)
+        const applyOnlyCssSelectors = isApplyOnlyTailwindV4Css
+          ? collectApplyOnlyCssSelectorsRoot(root)
+          : undefined
         const source = await adapters.resolveTailwindV4Source({
           ...sourceOptions,
           css: prependConfigDirective(
@@ -127,7 +75,7 @@ export function createWeappTailwindcssPostcssPlugin(
           target: generatorOptions.target,
         })
         const css = isApplyOnlyTailwindV4Css
-          ? filterApplyOnlyGeneratedCss(generated.css, rawCss)
+          ? filterApplyOnlyGeneratedCss(generated.css, applyOnlyCssSelectors ?? new Set())
           : generated.css
         const finalCss = generated.target === 'web'
           ? transformWebCssCompat(css, generatorOptions.webCompat)

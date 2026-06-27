@@ -62,6 +62,12 @@ export type {
   WeappTailwindcssPostcssTarget,
 } from './generator-plugin'
 export {
+  collectApplyOnlyCssSelectors,
+  collectApplyOnlyCssSelectorsRoot,
+  filterApplyOnlyGeneratedCss,
+  filterApplyOnlyGeneratedCssRoot,
+} from './generator-plugin/apply-only'
+export {
   analyzeTailwindCssDirectives,
   isTailwindCssGenerationDirective,
   isTailwindCssImportAtRule,
