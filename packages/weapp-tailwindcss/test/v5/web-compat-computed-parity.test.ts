@@ -119,54 +119,58 @@ const TAILWIND_V4_SURFACE_CANDIDATES = [
   'icon-[tst--wide]',
 ]
 
-const PARITY_CSS = [
-  '@import "tailwindcss" source(none);',
-  '',
-  '@plugin "@iconify/tailwind4" {',
-  '  prefix: "i";',
-  '  scale: 1.25;',
-  '}',
-  '@plugin "@iconify/tailwind4" {',
-  '  prefix: "icon";',
-  '  prefixes: tst;',
-  '  icon-selector: ".ic-{prefix}-{name}";',
-  '  mask-selector: ".mask-icon";',
-  '  background-selector: ".bg-icon";',
-  '  var-name: "icon";',
-  '  square: false;',
-  '  scale: 1.5;',
-  '  icon-sets: from-json(tst, "./test-icons.json");',
-  '}',
-  '',
-  '@theme {',
-  '  --color-brand: #155dfc;',
-  '  --color-accent: oklch(70% 0.17 162);',
-  '  --color-slate-200: oklch(92.9% .013 255.508);',
-  '  --color-slate-700: oklch(37.2% .044 257.287);',
-  '  --color-slate-900: oklch(20.8% .042 265.755);',
-  '  --color-zinc-900: #18181b;',
-  '  --color-zinc-950: #09090b;',
-  '  --spacing-card: 18px;',
-  '  --breakpoint-xs: 30rem;',
-  '  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);',
-  '  --animate-wiggle: wiggle 1s ease-in-out infinite;',
-  '  @keyframes wiggle {',
-  '    0%, 100% { transform: rotate(-3deg); }',
-  '    50% { transform: rotate(3deg); }',
-  '  }',
-  '}',
-  '',
-  '@custom-variant dark (&:where(.dark, .dark *));',
-  '@custom-variant any-hover {',
-  '  @media (any-hover: hover) {',
-  '    &:hover {',
-  '      @slot;',
-  '    }',
-  '  }',
-  '}',
-  `@source inline("${TAILWIND_V4_SURFACE_CANDIDATES.join(' ')}");`,
-  '',
-].join('\n')
+function createParityCss(iconSetFile: string) {
+  const normalizedIconSetFile = iconSetFile.replace(/\\/g, '/')
+  return [
+    '@import "tailwindcss" source(none);',
+    '',
+    '@plugin "@iconify/tailwind4" {',
+    '  prefix: "i";',
+    '  scale: 1.25;',
+    `  icon-sets: from-json(tst, "${normalizedIconSetFile}");`,
+    '}',
+    '@plugin "@iconify/tailwind4" {',
+    '  prefix: "icon";',
+    '  prefixes: tst;',
+    '  icon-selector: ".ic-{prefix}-{name}";',
+    '  mask-selector: ".mask-icon";',
+    '  background-selector: ".bg-icon";',
+    '  var-name: "icon";',
+    '  square: false;',
+    '  scale: 1.5;',
+    `  icon-sets: from-json(tst, "${normalizedIconSetFile}");`,
+    '}',
+    '',
+    '@theme {',
+    '  --color-brand: #155dfc;',
+    '  --color-accent: oklch(70% 0.17 162);',
+    '  --color-slate-200: oklch(92.9% .013 255.508);',
+    '  --color-slate-700: oklch(37.2% .044 257.287);',
+    '  --color-slate-900: oklch(20.8% .042 265.755);',
+    '  --color-zinc-900: #18181b;',
+    '  --color-zinc-950: #09090b;',
+    '  --spacing-card: 18px;',
+    '  --breakpoint-xs: 30rem;',
+    '  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);',
+    '  --animate-wiggle: wiggle 1s ease-in-out infinite;',
+    '  @keyframes wiggle {',
+    '    0%, 100% { transform: rotate(-3deg); }',
+    '    50% { transform: rotate(3deg); }',
+    '  }',
+    '}',
+    '',
+    '@custom-variant dark (&:where(.dark, .dark *));',
+    '@custom-variant any-hover {',
+    '  @media (any-hover: hover) {',
+    '    &:hover {',
+    '      @slot;',
+    '    }',
+    '  }',
+    '}',
+    `@source inline("${TAILWIND_V4_SURFACE_CANDIDATES.join(' ')}");`,
+    '',
+  ].join('\n')
+}
 
 const TEST_ICON_SET = {
   prefix: 'tst',
@@ -262,14 +266,16 @@ async function createFixtureRoot() {
   createdRoots.push(root)
   await mkdir(path.join(root, 'node_modules'), { recursive: true })
   await symlink(tailwindcssV4Root, path.join(root, 'node_modules/tailwindcss'), 'dir')
-  await writeFile(path.join(root, 'test-icons.json'), JSON.stringify(TEST_ICON_SET), 'utf8')
+  const iconSetFile = path.join(root, 'test-icons.json')
+  await writeFile(iconSetFile, JSON.stringify(TEST_ICON_SET), 'utf8')
+  const css = createParityCss(iconSetFile)
   const cssEntry = path.join(root, 'src/app.css')
   await mkdir(path.dirname(cssEntry), { recursive: true })
-  await writeFile(cssEntry, PARITY_CSS, 'utf8')
-  return { root, cssEntry }
+  await writeFile(cssEntry, css, 'utf8')
+  return { root, css, cssEntry }
 }
 
-async function generateWebCss(cssEntry: string, webCompat: boolean) {
+async function generateWebCss(cssEntry: string, css: string, webCompat: boolean) {
   const result = await postcss([
     weappTailwindcss({
       generator: {
@@ -279,7 +285,7 @@ async function generateWebCss(cssEntry: string, webCompat: boolean) {
       packageName: 'tailwindcss',
       scanSources: false,
     }),
-  ]).process(PARITY_CSS, {
+  ]).process(css, {
     from: cssEntry,
   })
   return result.css
@@ -395,8 +401,8 @@ describe('Tailwind CSS v4 web compat computed parity', () => {
   it('keeps webCompat on and off visually equivalent in the browser for the Tailwind v4 utility surface', async () => {
     const fixture = await createFixtureRoot()
     const [standardCss, compatCss] = await Promise.all([
-      generateWebCss(fixture.cssEntry, false),
-      generateWebCss(fixture.cssEntry, true),
+      generateWebCss(fixture.cssEntry, fixture.css, false),
+      generateWebCss(fixture.cssEntry, fixture.css, true),
     ])
 
     expect(standardCss).toContain('@layer')

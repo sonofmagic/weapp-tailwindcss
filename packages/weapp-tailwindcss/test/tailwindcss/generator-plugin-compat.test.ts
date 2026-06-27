@@ -314,10 +314,12 @@ async function createRealIconifyTailwind4OptionMatrixSource(root: string) {
     "@plugin '@iconify/tailwind4' {",
     "  prefix: 'i';",
     '  scale: 1.5;',
+    `  icon-sets: from-json(tst, '${iconSetFile.replace(/\\/g, '/')}');`,
     '}',
     "@plugin '@iconify/tailwind4' {",
     "  prefix: 'only';",
     '  override-only: true;',
+    `  icon-sets: from-json(tst, '${iconSetFile.replace(/\\/g, '/')}');`,
     '}',
     "@plugin '@iconify/tailwind4' {",
     '  prefixes: tst;',
@@ -416,12 +418,11 @@ describe('tailwindcss generator plugin compatibility', () => {
     expect(result.rawCss).toContain('width: 1.5em')
     expect(result.rawCss).toContain('height: 1.5em')
     expect(result.rawCss).toContain('.only-\\[tst--home\\]')
-    expect(result.rawCss).toContain('--svg: "tst--home"')
-    expect(result.rawCss).toContain('mask:')
+    expect(result.rawCss).toContain('background-image: url("data:image/svg+xml')
     expect(result.css).toContain('.i-_btst--home_B')
     expect(result.css).toContain('.only-_btst--home_B')
     expect(result.css).toContain('width: 1.5em')
-    expect(result.css).toContain('--svg: "tst--home"')
+    expect(result.css).toContain('background-image: url("data:image/svg+xml')
     expect(result.css).not.toContain('@plugin')
   })
 })

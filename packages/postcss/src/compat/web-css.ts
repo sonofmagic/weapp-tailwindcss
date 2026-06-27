@@ -190,7 +190,7 @@ function resolveCustomPropertyVarValue(
     if (!customPropertyValue) {
       return
     }
-    const mutableNode = node as typeof node & { nodes?: valueParser.Node[] }
+    const mutableNode = node as any
     mutableNode.type = 'word'
     mutableNode.value = customPropertyValue
     delete mutableNode.nodes
