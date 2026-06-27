@@ -1452,6 +1452,36 @@ describe('bundlers/shared generator css', () => {
     expect(resolveCssEntrySource(rawSource, __dirname)?.css).toBe(expected)
   })
 
+  it('detects complex Tailwind v4 directive sources through shared PostCSS analysis', async () => {
+    const {
+      hasTailwindApplyDirective,
+      hasTailwindNonRootGenerationDirectives,
+      hasTailwindRootDirectives,
+      hasTailwindSourceDirectives,
+    } = await import('@/bundlers/shared/generator-css/directives')
+    const rawSource = [
+      '@import "weapp-tailwindcss";',
+      '@plugin "@iconify/tailwind4" {',
+      '  prefix: "i";',
+      '}',
+      '@custom-variant any-hover {',
+      '  @media (any-hover: hover) {',
+      '    &:hover {',
+      '      @slot;',
+      '    }',
+      '  }',
+      '}',
+      '.btn {',
+      '  @apply flex flex-col gap-3 rounded-[28rpx] text-white;',
+      '}',
+    ].join('\n')
+
+    expect(hasTailwindRootDirectives(rawSource, { importFallback: true })).toBe(true)
+    expect(hasTailwindSourceDirectives(rawSource, { importFallback: true })).toBe(true)
+    expect(hasTailwindNonRootGenerationDirectives(rawSource, { importFallback: true })).toBe(true)
+    expect(hasTailwindApplyDirective(rawSource)).toBe(true)
+  })
+
   it('normalizes registered generator sources from preprocessor syntax', async () => {
     const { normalizeTailwindSourceForGenerator, removeTailwindSourceDirectives } = await import('@/bundlers/shared/generator-css')
     const rawSource = [

@@ -61,6 +61,20 @@ export type {
   WeappTailwindcssPostcssPluginOptions,
   WeappTailwindcssPostcssTarget,
 } from './generator-plugin'
+export {
+  analyzeTailwindCssDirectives,
+  isTailwindCssGenerationDirective,
+  isTailwindCssImportAtRule,
+  isTailwindCssImportRequest,
+  isTailwindCssPackageJsonImportRequest,
+  isWeappTailwindcssImportRequest,
+  normalizeTailwindCssImportRequest,
+  parseTailwindCssConfigRequest,
+  parseTailwindCssDirectiveRequest,
+  type TailwindCssDirectiveAnalysis,
+  type TailwindCssDirectiveAnalysisOptions,
+  type TailwindCssDirectiveOptions,
+} from './generator-plugin/directives'
 export * from './handler'
 export { default as postcssHtmlTransform, type IOptions as PostcssHtmlTransformOptions } from './html-transform'
 export {

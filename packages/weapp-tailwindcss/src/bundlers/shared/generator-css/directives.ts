@@ -1,5 +1,15 @@
+import type { TailwindCssDirectiveAnalysis } from '@weapp-tailwindcss/postcss'
 import path from 'node:path'
-import { postcss } from '@weapp-tailwindcss/postcss'
+import {
+  analyzeTailwindCssDirectives,
+  normalizeTailwindCssImportRequest as baseNormalizeTailwindCssImportRequest,
+  isTailwindCssGenerationDirective,
+  isTailwindCssImportAtRule,
+  isTailwindCssPackageJsonImportRequest,
+  parseTailwindCssConfigRequest,
+  parseTailwindCssDirectiveRequest,
+  postcss,
+} from '@weapp-tailwindcss/postcss'
 import {
   extractConfigRequestFromSource,
   extractTailwindDirectiveLines,
@@ -24,16 +34,6 @@ const TAILWIND_REMOVABLE_SOURCE_DIRECTIVE_NAMES = new Set([
   'variant',
 ])
 
-const TAILWIND_ROOT_DIRECTIVE_NAMES = new Set([
-  'config',
-  'custom-variant',
-  'plugin',
-  'source',
-  'tailwind',
-  'theme',
-  'utility',
-  'variant',
-])
 const TAILWIND_ROOT_DIRECTIVE_RE = /@(?:import\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|(?:use|forward)\s+(?:url\(\s*)?["']?tailwindcss4?(?:\/[^"')\s]*)?|tailwind|config|custom-variant|plugin|source|theme|utility|variant)\b/
 
 interface TailwindDirectiveOptions {
@@ -45,44 +45,23 @@ interface TailwindGenerationDirectiveOptions extends TailwindDirectiveOptions {
 }
 
 export function parseImportRequest(params: string) {
-  const match = /^(?:url\(\s*)?(["']?)([^"')\s]+)\1\s*\)?/.exec(params.trim())
-  return match?.[2]
+  return parseTailwindCssDirectiveRequest(params)
 }
 
 export function hasLocalCssImport(rawSource: string) {
-  let found = false
-  try {
-    postcss.parse(rawSource).walkAtRules('import', (rule) => {
-      const request = parseImportRequest(rule.params)
-      if (request?.startsWith('.') === true || request?.startsWith('/') === true) {
-        found = true
-        return false
-      }
-    })
-  }
-  catch {
-  }
-  return found
+  return analyzeParseableTailwindDirectives(rawSource)?.hasLocalCssImport ?? false
 }
 
 function parseConfigRequest(params: string) {
-  const match = /^(["'])(.+)\1\s*;?$/.exec(params.trim())
-  return match?.[2]
+  return parseTailwindCssConfigRequest(params)
 }
 
 function isPackageJsonImportRequest(request: string | undefined) {
-  return typeof request === 'string' && request.startsWith('#')
-}
-
-function isWeappTailwindcssImportRequest(request: string | undefined) {
-  return request === 'weapp-tailwindcss' || request?.startsWith('weapp-tailwindcss/')
+  return isTailwindCssPackageJsonImportRequest(request)
 }
 
 function normalizeTailwindImportRequest(request: string | undefined, options: TailwindDirectiveOptions = {}) {
-  if (options.importFallback && isWeappTailwindcssImportRequest(request)) {
-    return request!.replace(/^weapp-tailwindcss/, 'tailwindcss')
-  }
-  return request
+  return baseNormalizeTailwindCssImportRequest(request, options)
 }
 
 function replaceImportRequest(params: string, request: string, replacement: string) {
@@ -164,20 +143,15 @@ export function normalizeTailwindSourceDirectives(rawSource: string, options: Ta
 }
 
 function isTailwindImportRequest(request: string | undefined) {
-  return request === 'tailwindcss'
-    || request === 'tailwindcss4'
-    || request?.startsWith('tailwindcss/')
-    || request?.startsWith('tailwindcss4/')
+  const normalized = normalizeTailwindImportRequest(request)
+  return normalized === 'tailwindcss'
+    || normalized === 'tailwindcss4'
+    || normalized?.startsWith('tailwindcss/') === true
+    || normalized?.startsWith('tailwindcss4/') === true
 }
 
 function isTailwindImportAtRule(node: postcss.AtRule, options: TailwindDirectiveOptions = {}) {
-  if (node.name === 'tailwind') {
-    return true
-  }
-  if (node.name !== 'import' && node.name !== 'use' && node.name !== 'forward') {
-    return false
-  }
-  return isTailwindImportRequest(normalizeTailwindImportRequest(parseImportRequest(node.params), options))
+  return isTailwindCssImportAtRule(node, options)
 }
 
 function isTailwindSourceDirective(node: postcss.Node, options: TailwindDirectiveOptions = {}) {
@@ -202,21 +176,20 @@ function hasGeneratedCssArtifacts(rawSource: string) {
 }
 
 function isTailwindGenerationDirective(node: postcss.Node, options: TailwindGenerationDirectiveOptions = {}) {
-  if (node.type !== 'atrule') {
-    return false
+  return isTailwindCssGenerationDirective(node, options)
+}
+
+function analyzeParseableTailwindDirectives(
+  rawSource: string,
+  options: TailwindGenerationDirectiveOptions = {},
+): TailwindCssDirectiveAnalysis | undefined {
+  try {
+    const ignoreLayer = options.ignoreLayer ?? hasGeneratedCssArtifacts(rawSource)
+    return analyzeTailwindCssDirectives(postcss.parse(rawSource), { ...options, ignoreLayer })
   }
-  const atRule = node as postcss.AtRule
-  const request = atRule.name === 'import'
-    ? parseImportRequest(atRule.params)
-    : atRule.name === 'config' || atRule.name === 'plugin' || atRule.name === 'reference'
-      ? parseConfigRequest(atRule.params)
-      : undefined
-  return isTailwindImportAtRule(atRule, options)
-    || isPackageJsonImportRequest(request)
-    || atRule.name === 'apply'
-    || (!options.ignoreLayer && atRule.name === 'layer')
-    || atRule.name === 'config'
-    || atRule.name === 'source'
+  catch {
+    return undefined
+  }
 }
 
 export function removeTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
@@ -243,49 +216,19 @@ export function removeTailwindSourceDirectives(rawSource: string, options: Tailw
 }
 
 export function hasTailwindSourceDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
-  try {
-    if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
-      return true
-    }
-    const root = postcss.parse(rawSource)
-    let found = false
-    const ignoreLayer = hasGeneratedCssArtifacts(rawSource)
-    root.walk((node) => {
-      if (isTailwindGenerationDirective(node, { ...options, ignoreLayer })) {
-        found = true
-        return false
-      }
-    })
-    return found
+  if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
+    return true
   }
-  catch {
-    return extractTailwindDirectiveLines(rawSource, options).length > 0
-  }
+  return analyzeParseableTailwindDirectives(rawSource, options)?.hasTailwindSourceDirectives
+    ?? extractTailwindDirectiveLines(rawSource, options).length > 0
 }
 
 export function hasTailwindNonRootGenerationDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
-  try {
-    if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
-      return true
-    }
-    const root = postcss.parse(rawSource)
-    let found = false
-    const ignoreLayer = hasGeneratedCssArtifacts(rawSource)
-    root.walk((node) => {
-      if (
-        isTailwindGenerationDirective(node, { ...options, ignoreLayer })
-        && !(node.type === 'atrule' && isTailwindImportAtRule(node as postcss.AtRule, options))
-      ) {
-        found = true
-        return false
-      }
-    })
-    return found
+  if (GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)) {
+    return true
   }
-  catch {
-    return GENERATOR_PLACEHOLDER_MARKER_RE.test(rawSource)
-      || /@(?:apply|config|custom-variant|plugin|source|theme|utility|variant)\b/.test(rawSource)
-  }
+  return analyzeParseableTailwindDirectives(rawSource, options)?.hasTailwindNonRootGenerationDirectives
+    ?? /@(?:apply|config|custom-variant|plugin|source|theme|utility|variant)\b/.test(rawSource)
 }
 
 export function hasTailwindRootImportDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
@@ -293,20 +236,8 @@ export function hasTailwindRootImportDirectives(rawSource: string, options: Tail
     return false
   }
 
-  try {
-    const root = postcss.parse(rawSource)
-    let found = false
-    root.walkAtRules((node) => {
-      if (isTailwindImportAtRule(node, options)) {
-        found = true
-        return false
-      }
-    })
-    return found
-  }
-  catch {
-    return extractTailwindDirectiveLines(rawSource, options).some(line => /@(?:import|use|forward)\b/.test(line))
-  }
+  return analyzeParseableTailwindDirectives(rawSource, options)?.hasTailwindRootImportDirectives
+    ?? extractTailwindDirectiveLines(rawSource, options).some(line => /@(?:import|use|forward)\b/.test(line))
 }
 
 export function hasTailwindRootDirectives(rawSource: string, options: TailwindDirectiveOptions = {}) {
@@ -314,29 +245,8 @@ export function hasTailwindRootDirectives(rawSource: string, options: TailwindDi
     return false
   }
 
-  try {
-    const root = postcss.parse(rawSource)
-    let found = false
-    root.walkAtRules((node) => {
-      const request = node.name === 'import'
-        ? parseImportRequest(node.params)
-        : node.name === 'config' || node.name === 'plugin'
-          ? parseConfigRequest(node.params)
-          : undefined
-      if (
-        isTailwindImportAtRule(node, options)
-        || isPackageJsonImportRequest(request)
-        || TAILWIND_ROOT_DIRECTIVE_NAMES.has(node.name)
-      ) {
-        found = true
-        return false
-      }
-    })
-    return found
-  }
-  catch {
-    return extractTailwindDirectiveLines(rawSource, options).length > 0
-  }
+  return analyzeParseableTailwindDirectives(rawSource, options)?.hasTailwindRootDirectives
+    ?? extractTailwindDirectiveLines(rawSource, options).length > 0
 }
 
 export function hasTailwindApplyDirective(rawSource: string) {
@@ -344,19 +254,12 @@ export function hasTailwindApplyDirective(rawSource: string) {
     return false
   }
 
-  try {
-    const root = postcss.parse(rawSource)
-    let found = false
-    root.walkAtRules('apply', () => {
-      found = true
-      return false
-    })
-    return found
+  const analysis = analyzeParseableTailwindDirectives(rawSource)
+  if (analysis) {
+    return analysis.hasTailwindApplyDirective
   }
-  catch {
-    const fallback = extractTailwindSourceForPostcssFallback(rawSource)
-    return typeof fallback === 'string' && /@apply\s[^;{}]+;/.test(fallback)
-  }
+  const fallback = extractTailwindSourceForPostcssFallback(rawSource)
+  return typeof fallback === 'string' && /@apply\s[^;{}]+;/.test(fallback)
 }
 
 export function resolveCssEntrySource(
