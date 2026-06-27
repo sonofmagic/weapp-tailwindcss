@@ -1,5 +1,13 @@
 # theme-transition
 
+## 2.0.3
+
+### Patch Changes
+
+- 🐛 **修复亮色切回暗色时 View Transition 首帧层级与方向状态错误导致的白屏闪烁问题。** [`0ea3d90`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0ea3d90b2a38085b8630b4bee9bb7788d7863ea1) by @sonofmagic
+
+- 🐛 **本次发布整理了从 `5.1.2` 之后的主要变更：修复 Tailwind v4 多 `cssEntries` 场景下的主样式误匹配与分包样式映射问题，补齐 Taro webpack5/Vite、Rspack、H5/web 兼容与平台环境支持，并同步修复主题过渡的首帧闪烁问题。** [`64faef4`](https://github.com/sonofmagic/weapp-tailwindcss/commit/64faef437046ca1b3f438a2e55d101895500f7a5) by @sonofmagic
+
 ## 2.0.2
 
 ### Patch Changes
