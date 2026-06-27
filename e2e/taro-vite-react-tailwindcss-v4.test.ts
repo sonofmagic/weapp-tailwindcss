@@ -33,7 +33,7 @@ async function readCssWithLocalImports(projectPath: string, file: string, seen =
   const css = await fs.readFile(filePath, 'utf8')
   const imports = [...css.matchAll(/@import\s+(?:"([^"]+)"|'([^']+)')/g)]
     .map(match => match[1] ?? match[2])
-    .filter((request): request is string => Boolean(request) && request.startsWith('.'))
+    .filter((request): request is string => Boolean(request) && !/^(?:[a-z]+:|\/|tailwindcss\b)/i.test(request))
   if (imports.length === 0) {
     return css
   }

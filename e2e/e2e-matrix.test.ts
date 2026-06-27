@@ -245,14 +245,22 @@ describe('e2e matrix', () => {
     }
   })
 
-  it('keeps demo WeappTailwindcss configs independent from explicit cssEntries', () => {
+  it('keeps Tailwind CSS v4 demo WeappTailwindcss configs explicit about cssEntries', () => {
     for (const file of collectDemoWeappTailwindcssConfigFiles()) {
       const relative = path.relative(path.resolve(__dirname, '..'), file).split(path.sep).join('/')
       if (relative.startsWith('demo/subpackage-') || relative.startsWith('demo/issue-') || relative.startsWith('demo/web/')) {
         continue
       }
       const code = fs.readFileSync(file, 'utf8')
-      expect(code, `${relative} should rely on automatic Tailwind v4 CSS entry discovery`).not.toContain('cssEntries')
+      if (
+        relative === 'demo/gulp-tailwindcss-v4/gulpfile.ts'
+        || relative.includes('-hbuilderx-')
+      ) {
+        expect(code, `${relative} uses Gulp generator wiring for Tailwind v4 CSS`).not.toContain('cssEntries')
+      }
+      else {
+        expect(code, `${relative} should declare Tailwind v4 CSS entries explicitly`).toContain('cssEntries')
+      }
     }
   })
 

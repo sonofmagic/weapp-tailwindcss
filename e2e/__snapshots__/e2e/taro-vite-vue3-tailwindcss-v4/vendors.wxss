@@ -403,11 +403,8 @@ page {
 .nut-icon {
   display: inline-block;
   position: relative;
-  width: 20rpx;
   width: var(--nut-icon-width);
-  height: 20rpx;
   height: var(--nut-icon-height);
-  line-height: 20rpx;
   line-height: var(--nut-icon-line-height);
   text-align: right;
 }
@@ -419,9 +416,7 @@ page {
   transform: translate(-50%, -50%);
 }
 .nut-icon__img {
-  width: 20rpx;
   width: var(--nut-icon-width);
-  height: 20rpx;
   height: var(--nut-icon-height);
   object-fit: contain;
 }
@@ -439,16 +434,12 @@ page {
 }
 .nut-icon-am-jump {
   -webkit-animation-name: nutJumpOne;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: ease;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: nutJumpOne;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   animation-timing-function: ease;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 .nut-icon-am-jump.nut-icon-am-infinite {
@@ -457,16 +448,12 @@ page {
 }
 .nut-icon-am-rotate {
   -webkit-animation-name: rotation;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: linear;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: rotation;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   animation-timing-function: linear;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 .nut-icon-am-rotate.nut-icon-am-infinite {
@@ -475,59 +462,43 @@ page {
 }
 .nut-icon-am-blink {
   -webkit-animation-name: nutBlink;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: nutBlink;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: linear;
   animation-timing-function: linear;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 .nut-icon-am-breathe {
   -webkit-animation-name: nutBreathe;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: nutBreathe;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   animation-timing-function: ease-in-out;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 .nut-icon-am-flash {
   -webkit-animation-name: nutFlash;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: nutFlash;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   animation-timing-function: ease-in-out;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 .nut-icon-am-bounce {
   -webkit-animation-name: nutBounce;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: nutBounce;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   animation-timing-function: ease-in-out;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 .nut-icon-am-bounce.nut-icon-am-infinite {
@@ -536,16 +507,12 @@ page {
 }
 .nut-icon-am-shake {
   -webkit-animation-name: nutShake;
-  -webkit-animation-duration: 1s;
   -webkit-animation-duration: var(--animate-duration);
   -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-delay: 0s;
   -webkit-animation-delay: var(--animate-delay);
   animation-name: nutShake;
-  animation-duration: 1s;
   animation-duration: var(--animate-duration);
   animation-timing-function: ease-in-out;
-  animation-delay: 0s;
   animation-delay: var(--animate-delay);
 }
 @-webkit-keyframes rotation {

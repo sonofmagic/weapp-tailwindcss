@@ -4,7 +4,11 @@ import { defineConfig } from 'weapp-vite/config'
 
 const weappTailwindcssPlugins = WeappTailwindcss({
   tailwindcssBasedir: process.cwd(),
-  cssEntries: [resolve(process.cwd(), 'tailwind.css')],
+  cssEntries: [
+    resolve(process.cwd(), 'tailwind.css'),
+    resolve(process.cwd(), 'sub-normal/pages/index.css'),
+    resolve(process.cwd(), 'sub-independent/pages/index.css'),
+  ],
   cssSourceTrace: true,
   rem2rpx: true,
 }) ?? []

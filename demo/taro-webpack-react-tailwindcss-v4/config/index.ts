@@ -16,7 +16,11 @@ const cssOptions = {
   tailwindcssV4GradientFallback,
   px2rpx: true,
 } satisfies UserDefinedOptions['cssOptions']
-const cssEntries = [resolve(process.cwd(), 'src/app.css')]
+const cssEntries = [
+  resolve(process.cwd(), 'src/app.css'),
+  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
+  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
+]
 
 const taroPlatform = resolveTaroPlatform()
 const generator = {

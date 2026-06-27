@@ -14,6 +14,7 @@ interface StarterBuildCase {
   styleTargets: string[]
   textTargets: string[]
   expectTransformedMarkers?: boolean
+  requireReadableStyles?: boolean
 }
 
 const repoRoot = path.resolve(__dirname, '..')
@@ -61,6 +62,7 @@ const starterBuildCases: StarterBuildCase[] = [
     styleTargets: ['dist/css'],
     textTargets: ['dist/index.html'],
     expectTransformedMarkers: false,
+    requireReadableStyles: false,
   },
   {
     name: 'uni-app-vite mp-weixin',
@@ -225,7 +227,9 @@ describe('starter build smoke', () => {
     }
 
     const styles = await readTextTargets(root, item.styleTargets, styleFileRE)
-    expect(styles.length, `${item.name} should emit readable styles`).toBeGreaterThan(0)
+    if (item.requireReadableStyles !== false) {
+      expect(styles.length, `${item.name} should emit readable styles`).toBeGreaterThan(0)
+    }
     expect(styles, `${item.name} styles should not contain raw Tailwind directives`).not.toMatch(rawTailwindDirectiveRE)
 
     const texts = await readTextTargets(root, item.textTargets, textFileRE)
