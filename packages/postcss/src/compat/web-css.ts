@@ -1,6 +1,7 @@
 import type { WebCssCompatFeatures, WebCssCompatOptions, WebCssCompatUserOptions } from '../types'
 import postcss from 'postcss'
 import postcssPresetEnv from 'postcss-preset-env'
+import valueParser from 'postcss-value-parser'
 import { normalizeModernColorValue } from './color-mix'
 import { removeUnsupportedCascadeLayers } from './mini-program-css/at-rules'
 
@@ -68,12 +69,20 @@ function collectCustomPropertyValues(root: postcss.Root) {
   return values
 }
 
-function removeRegisteredCustomProperties(root: postcss.Root) {
-  const registeredProperties = new Set<string>()
+interface RegisteredCustomProperty {
+  initialValue?: string | undefined
+}
+
+function collectRegisteredCustomPropertyFallbacks(root: postcss.Root) {
+  const registeredProperties = new Map<string, RegisteredCustomProperty>()
   root.walkAtRules('property', (atRule) => {
     const propertyName = atRule.params.trim().split(/\s+/, 1)[0]
     if (propertyName?.startsWith('--')) {
-      registeredProperties.add(propertyName)
+      const existing = registeredProperties.get(propertyName) ?? {}
+      atRule.walkDecls('initial-value', (decl) => {
+        existing.initialValue = decl.value.trim()
+      })
+      registeredProperties.set(propertyName, existing)
     }
     atRule.remove()
   })
@@ -89,10 +98,38 @@ const tailwindUnregisteredInitialFallbackCustomProperties = new Set([
   '--tw-tracking',
 ])
 
-function removeInitialFallbackDeclarations(root: postcss.Root, registeredProperties: Set<string>) {
+function insertRegisteredCustomPropertyFallbackRule(
+  root: postcss.Root,
+  registeredProperties: ReadonlyMap<string, RegisteredCustomProperty>,
+) {
+  const declarations: postcss.Declaration[] = []
+  for (const [prop, registration] of registeredProperties) {
+    if (!registration.initialValue || registration.initialValue === 'initial') {
+      continue
+    }
+    declarations.push(postcss.decl({
+      prop,
+      value: registration.initialValue,
+    }))
+  }
+
+  if (declarations.length === 0) {
+    return
+  }
+
+  root.prepend(postcss.rule({
+    selector: '*, ::before, ::after, ::backdrop',
+    nodes: declarations,
+  }))
+}
+
+function removeInitialFallbackDeclarations(
+  root: postcss.Root,
+  registeredProperties: ReadonlyMap<string, RegisteredCustomProperty>,
+) {
   root.walkDecls((decl) => {
     if (
-      (registeredProperties.has(decl.prop)
+      ((registeredProperties.has(decl.prop) && !registeredProperties.get(decl.prop)?.initialValue)
         || tailwindUnregisteredInitialFallbackCustomProperties.has(decl.prop))
       && decl.value.trim() === 'initial'
     ) {
@@ -131,20 +168,67 @@ function unwrapThemeAtRules(root: postcss.Root) {
   })
 }
 
+function resolveCustomPropertyVarValue(
+  value: string,
+  customPropertyValues: ReadonlyMap<string, string>,
+) {
+  if (!value.includes('var(')) {
+    return value
+  }
+
+  const parsed = valueParser(value)
+  let changed = false
+  parsed.walk((node) => {
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') {
+      return
+    }
+    const propertyNode = node.nodes.find(child => child.type === 'word' && child.value.startsWith('--'))
+    if (!propertyNode) {
+      return
+    }
+    const customPropertyValue = customPropertyValues.get(propertyNode.value)
+    if (!customPropertyValue) {
+      return
+    }
+    const mutableNode = node as typeof node & { nodes?: valueParser.Node[] }
+    mutableNode.type = 'word'
+    mutableNode.value = customPropertyValue
+    delete mutableNode.nodes
+    changed = true
+  })
+  return changed ? parsed.toString() : value
+}
+
+function insertModernColorFallbackDeclaration(
+  decl: postcss.Declaration,
+  fallbackValue: string,
+) {
+  if (decl.prev()?.type === 'decl'
+    && (decl.prev() as postcss.Declaration).prop === decl.prop
+    && (decl.prev() as postcss.Declaration).value === fallbackValue) {
+    return
+  }
+
+  decl.cloneBefore({
+    value: fallbackValue,
+  })
+}
+
 function normalizeModernColorDeclarations(root: postcss.Root, features: Required<WebCssCompatFeatures>) {
   if (!features.oklch && !features.colorFunctions) {
     return
   }
   const customPropertyValues = collectCustomPropertyValues(root)
   root.walkDecls((decl) => {
-    const normalized = normalizeModernColorValue(decl.value, customPropertyValues)
+    const value = resolveCustomPropertyVarValue(decl.value, customPropertyValues)
+    const normalized = normalizeModernColorValue(value, customPropertyValues)
     if (!normalized.changed) {
       return
     }
     if (!features.colorFunctions && !/oklch|oklab/i.test(decl.value)) {
       return
     }
-    decl.value = normalized.value
+    insertModernColorFallbackDeclaration(decl, normalized.value)
   })
 }
 
@@ -202,7 +286,8 @@ export function transformWebCssCompat(
       removeUnsupportedCascadeLayers(root)
     }
     if (normalized.features.property) {
-      const registeredProperties = removeRegisteredCustomProperties(root)
+      const registeredProperties = collectRegisteredCustomPropertyFallbacks(root)
+      insertRegisteredCustomPropertyFallbackRule(root, registeredProperties)
       removeInitialFallbackDeclarations(root, registeredProperties)
     }
     if (normalized.features.supports) {

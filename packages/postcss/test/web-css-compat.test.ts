@@ -42,11 +42,13 @@ describe('web css compatibility transform', () => {
     expect(result).not.toContain('@layer')
     expect(result).not.toContain('@property')
     expect(result).not.toContain('@supports')
-    expect(result).not.toContain('oklch(')
     expect(result).toContain(':root')
     expect(result).toContain('--color-blue-500: rgb(')
+    expect(result).toContain('--color-blue-500: oklch(')
     expect(result).toContain('.text-blue')
     expect(result).toContain('.bg-blue\\/50')
+    expect(result).toContain('background-color: rgba(')
+    expect(result).toContain('background-color: color-mix(')
   })
 
   it('removes Tailwind initial fallback variables that break gradient var fallbacks without @property', () => {
@@ -90,6 +92,33 @@ describe('web css compatibility transform', () => {
     expect(result).toContain('--tw-gradient-to: #0000')
     expect(result).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
     expect(result).toContain('var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)')
+  })
+
+  it('preserves Tailwind registered property initial values as web compat fallbacks', () => {
+    const css = [
+      '@property --tw-border-style { syntax: "*"; inherits: false; initial-value: solid; }',
+      '@property --tw-shadow { syntax: "*"; inherits: false; initial-value: 0 0 #0000; }',
+      '@property --tw-gradient-stops { syntax: "*"; inherits: false; }',
+      '@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) {',
+      '  *, ::before, ::after, ::backdrop {',
+      '    --tw-border-style: solid;',
+      '    --tw-shadow: 0 0 #0000;',
+      '    --tw-gradient-stops: initial;',
+      '  }',
+      '}',
+      '.border { border-style: var(--tw-border-style); border-width: 1px; }',
+      '.shadow { box-shadow: var(--tw-shadow); }',
+      '.bg-gradient { background-image: linear-gradient(var(--tw-gradient-stops)); }',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).not.toContain('@property')
+    expect(result).toContain('*, ::before, ::after, ::backdrop')
+    expect(result).toContain('--tw-border-style: solid')
+    expect(result).toContain('--tw-shadow: 0 0 #0000')
+    expect(result).not.toContain('--tw-gradient-stops: initial')
+    expect(result).toContain('border-style: var(--tw-border-style)')
+    expect(result).toContain('box-shadow: var(--tw-shadow)')
   })
 
   it('removes known Tailwind initial fallback variables when dev css chunks no longer contain @property rules', () => {
@@ -211,7 +240,8 @@ describe('web css compatibility transform', () => {
 
     expect(keepSupports).toContain('@supports (display: grid)')
     expect(keepSupports).toContain('@supports (color: color-mix')
-    expect(keepSupports).not.toContain('oklch(')
+    expect(keepSupports).toContain('color: rgb(')
+    expect(keepSupports).toContain('color: oklch(')
     expect(keepModernColors).toContain('@supports (display: grid)')
     expect(keepModernColors).not.toContain('@supports (color: color-mix')
     expect(keepModernColors).toContain('oklch(')
@@ -244,7 +274,8 @@ describe('web css compatibility transform', () => {
 
     expect(result).toContain('@layer')
     expect(result).toContain('@property')
-    expect(result).not.toContain('oklch(')
+    expect(result).toContain('color: rgb(')
+    expect(result).toContain('color: oklch(')
   })
 
   it('removes empty modern supports and empty layer at-rules', () => {
