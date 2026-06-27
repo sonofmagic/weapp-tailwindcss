@@ -137,7 +137,7 @@ describe('demo matrix generator config', () => {
     }
   })
 
-  it('keeps Tailwind CSS v4 demos on standard CSS entry detection except explicit Mpx subpackage entries', async () => {
+  it('keeps Tailwind CSS v4 demos on explicit CSS entries except Gulp generator wiring', async () => {
     const configPaths = [
       'demo/gulp-tailwindcss-v4/gulpfile.ts',
       'demo/mpx-tailwindcss-v4/mpx.config.js',
@@ -154,11 +154,11 @@ describe('demo matrix generator config', () => {
     ])
 
     for (const [index, configSource] of configs.entries()) {
-      if (configPaths[index] === 'demo/mpx-tailwindcss-v4/mpx.config.js') {
-        expect(configSource, configPaths[index]).toContain('cssEntries')
+      if (configPaths[index] === 'demo/gulp-tailwindcss-v4/gulpfile.ts') {
+        expect(configSource, configPaths[index]).not.toContain('cssEntries')
       }
       else {
-        expect(configSource, configPaths[index]).not.toContain('cssEntries')
+        expect(configSource, configPaths[index]).toContain('cssEntries')
       }
     }
     for (const [index, configSource] of configs.entries()) {

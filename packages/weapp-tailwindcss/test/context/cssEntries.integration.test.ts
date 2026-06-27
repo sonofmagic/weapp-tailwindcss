@@ -10,6 +10,11 @@ import { collectRuntimeClassSet } from '@/tailwindcss/runtime'
 const require = createRequire(import.meta.url)
 const repoRoot = path.resolve(__dirname, '../../../..')
 const tailwindcss4Root = path.dirname(require.resolve('tailwindcss4/package.json'))
+const uniAppViteV4CssEntries = (projectRoot: string) => [
+  path.resolve(projectRoot, 'src/main.css'),
+  path.resolve(projectRoot, 'src/sub-normal/pages/index.css'),
+  path.resolve(projectRoot, 'src/sub-independent/pages/index.css'),
+]
 const HIGH_RISK_ARBITRARY_ADD_TOKENS = [
   'bg-[#000]',
   'px-[432.43px]',
@@ -110,6 +115,7 @@ describe('cssEntries integration', () => {
     const ctx = getCompilerContext({
       tailwindcssBasedir: projectRoot,
       appType: 'uni-app-vite',
+      cssEntries: uniAppViteV4CssEntries(projectRoot),
     })
 
     const baseline = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
@@ -150,6 +156,7 @@ describe('cssEntries integration', () => {
     const ctx = getCompilerContext({
       tailwindcssBasedir: projectRoot,
       appType: 'uni-app-vite',
+      cssEntries: uniAppViteV4CssEntries(projectRoot),
     })
 
     const baseline = await collectRuntimeClassSet(ctx.tailwindRuntime, { force: true, skipRefresh: true })
@@ -183,6 +190,7 @@ describe('cssEntries integration', () => {
     const ctx = getCompilerContext({
       tailwindcssBasedir: projectRoot,
       appType: 'uni-app-vite',
+      cssEntries: uniAppViteV4CssEntries(projectRoot),
     })
 
 

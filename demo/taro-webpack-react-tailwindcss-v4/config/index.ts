@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
@@ -15,6 +16,7 @@ const cssOptions = {
   tailwindcssV4GradientFallback,
   px2rpx: true,
 } satisfies UserDefinedOptions['cssOptions']
+const cssEntries = [resolve(process.cwd(), 'src/app.css')]
 
 const taroPlatform = resolveTaroPlatform()
 const generator = {
@@ -112,6 +114,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
+                  cssEntries,
                   cssOptions,
                   generator,
                   // before 2248
@@ -161,6 +164,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
+                  cssEntries,
                   cssOptions,
                   generator,
                 } satisfies UserDefinedOptions
