@@ -45,6 +45,7 @@ interface CollectViteProcessedCssAssetOptions {
   recordViteProcessedCssAssetResult?: CssAssetResultRecorder | undefined
   resolveViteProcessedCssOutputFile?: ((file: string) => string | undefined) | undefined
   subpackageRoots?: Set<string> | undefined
+  transformCss?: ((css: string, file: string) => string) | undefined
   debug?: ((format: string, ...args: unknown[]) => void) | undefined
 }
 
@@ -647,6 +648,7 @@ export function collectViteProcessedCssAssetResults(
     ) {
       nextCss = removeCssCoveredByRootStyleBundleSources(bundle, file, nextCss)
     }
+    nextCss = options.transformCss?.(nextCss, file) ?? nextCss
     if (nextCss !== rawSource) {
       output.source = nextCss
     }

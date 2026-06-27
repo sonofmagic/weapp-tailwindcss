@@ -49,6 +49,83 @@ describe('web css compatibility transform', () => {
     expect(result).toContain('.bg-blue\\/50')
   })
 
+  it('removes Tailwind initial fallback variables that break gradient var fallbacks without @property', () => {
+    const css = [
+      '@property --tw-gradient-position { syntax: "*"; inherits: false; }',
+      '@property --tw-gradient-stops { syntax: "*"; inherits: false; }',
+      '@property --tw-gradient-via-stops { syntax: "*"; inherits: false; }',
+      '@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) {',
+      '  *, ::before, ::after, ::backdrop {',
+      '    --tw-gradient-position: initial;',
+      '    --tw-gradient-from: #0000;',
+      '    --tw-gradient-via: #0000;',
+      '    --tw-gradient-to: #0000;',
+      '    --tw-gradient-stops: initial;',
+      '    --tw-gradient-via-stops: initial;',
+      '    --tw-gradient-from-position: 0%;',
+      '    --tw-gradient-via-position: 50%;',
+      '    --tw-gradient-to-position: 100%;',
+      '  }',
+      '}',
+      '.bg-gradient-to-br {',
+      '  --tw-gradient-position: to bottom right in oklab;',
+      '  background-image: linear-gradient(var(--tw-gradient-stops));',
+      '}',
+      '.from-slate-900\\/95 {',
+      '  --tw-gradient-from: rgba(15, 23, 43, 0.95);',
+      '  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));',
+      '}',
+      '.to-slate-700\\/95 {',
+      '  --tw-gradient-to: rgba(49, 65, 88, 0.95);',
+      '  --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));',
+      '}',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).not.toContain('@property')
+    expect(result).not.toContain('--tw-gradient-position: initial')
+    expect(result).not.toContain('--tw-gradient-stops: initial')
+    expect(result).not.toContain('--tw-gradient-via-stops: initial')
+    expect(result).toContain('--tw-gradient-from: #0000')
+    expect(result).toContain('--tw-gradient-to: #0000')
+    expect(result).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
+    expect(result).toContain('var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from)')
+  })
+
+  it('removes known Tailwind initial fallback variables when dev css chunks no longer contain @property rules', () => {
+    const css = [
+      '@supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) {',
+      '  *, ::before, ::after, ::backdrop {',
+      '    --tw-gradient-position: initial;',
+      '    --tw-gradient-from: #0000;',
+      '    --tw-gradient-via: #0000;',
+      '    --tw-gradient-to: #0000;',
+      '    --tw-gradient-stops: initial;',
+      '    --tw-gradient-via-stops: initial;',
+      '    --tw-leading: initial;',
+      '    --tw-font-weight: initial;',
+      '    --tw-tracking: initial;',
+      '    --tw-shadow-color: initial;',
+      '  }',
+      '}',
+      '.bg-gradient-to-br {',
+      '  --tw-gradient-position: to bottom right in oklab;',
+      '  background-image: linear-gradient(var(--tw-gradient-stops));',
+      '}',
+    ].join('\n')
+    const result = transformWebCssCompat(css, true)
+
+    expect(result).not.toContain('--tw-gradient-position: initial')
+    expect(result).not.toContain('--tw-gradient-stops: initial')
+    expect(result).not.toContain('--tw-gradient-via-stops: initial')
+    expect(result).not.toContain('--tw-leading: initial')
+    expect(result).not.toContain('--tw-font-weight: initial')
+    expect(result).not.toContain('--tw-tracking: initial')
+    expect(result).toContain('--tw-shadow-color: initial')
+    expect(result).toContain('--tw-gradient-from: #0000')
+    expect(result).toContain('background-image: linear-gradient(var(--tw-gradient-stops))')
+  })
+
   it('snapshots web and web compat css output differences', () => {
     const web = [
       '@theme {',

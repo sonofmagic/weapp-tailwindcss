@@ -26,8 +26,9 @@ export interface WeappTailwindcssGeneratorOptions {
    * Web 端 Tailwind CSS v4 产物兼容降级配置。
    *
    * @remarks
-   * 默认关闭。传入 `true` 等价于 `{ preset: 'legacy-web' }`，会移除或降级
-   * `@layer`、`@property`、现代颜色函数与相关 `@supports` 包裹。
+   * Web 目标默认保持 Tailwind CSS 官方输出。uni-app H5、Taro H5 等 preset 会在 Web 环境中
+   * 显式开启。传入 `true` 等价于 `{ preset: 'legacy-web' }`，会移除或降级 `@layer`、`@property`、
+   * 现代颜色函数与相关 `@supports` 包裹。
    */
   webCompat?: WebCssCompatUserOptions | undefined
   /**
@@ -65,12 +66,14 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     ...context,
     generatorTarget: target,
   })
+  const hasExplicitTarget = options !== undefined && Object.hasOwn(options, 'target')
+  const webCompat = options?.webCompat ?? (!hasExplicitTarget && branch.isWeb ? true : undefined)
 
   if (options == null) {
     return {
       target,
       branch,
-      webCompat: undefined,
+      webCompat,
       importFallback: false,
       bareArbitraryValues: undefined,
     }
@@ -81,7 +84,7 @@ export function normalizeWeappTailwindcssGeneratorOptions(
     branch,
     config: options.config,
     styleOptions: options.styleOptions,
-    webCompat: options.webCompat,
+    webCompat,
     importFallback: options.importFallback ?? false,
     bareArbitraryValues: options.bareArbitraryValues,
   }

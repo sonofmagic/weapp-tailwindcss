@@ -184,9 +184,30 @@ describe('bundlers/vite helper modules', () => {
     }
     const empty = { file: 'plain.css', source: '.plain{}' }
 
-    const fingerprint = collectTailwindV4SourceFingerprint(`${main.source} @source not "./legacy"; @custom-variant hocus { &:hover { @slot; } } @utility content-auto { content-visibility:auto; }`)
+    const fingerprint = collectTailwindV4SourceFingerprint(`${main.source} @source not "./legacy"; @plugin '@iconify/tailwind4' { prefix: 'i'; scale: 1.2; } @custom-variant hocus { &:hover { @slot; } } @utility content-auto { content-visibility:auto; }`)
     expect([...fingerprint]).toContain('config:tailwind.config.js')
     expect([...fingerprint]).toContain('source:not:./legacy')
+    expect([...fingerprint]).toContain('plugin:@iconify/tailwind4')
+    expect([...fingerprint]).toContain('plugin-option:@iconify/tailwind4:prefix:\'i\'')
+    expect([...fingerprint]).toContain('plugin-option:@iconify/tailwind4:scale:1.2')
+    const iconifyOptionFingerprint = collectTailwindV4SourceFingerprint([
+      "@plugin '@iconify/tailwind4' {",
+      '  prefixes: tst;',
+      '  icon-selector: ".ic-{prefix}-{name}";',
+      '  mask-selector: ".mask-icon";',
+      '  background-selector: ".bg-icon";',
+      '  var-name: "icon";',
+      '  square: false;',
+      '  icon-sets: from-json(tst, "./icons.json");',
+      '}',
+    ].join('\n'))
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:prefixes:tst')
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:icon-selector:".ic-{prefix}-{name}"')
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:mask-selector:".mask-icon"')
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:background-selector:".bg-icon"')
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:var-name:"icon"')
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:square:false')
+    expect([...iconifyOptionFingerprint]).toContain('plugin-option:@iconify/tailwind4:icon-sets:from-json(tst, "./icons.json")')
     expect([...fingerprint]).toContain('custom-variant:hocus')
     expect([...fingerprint]).toContain('directive:content-auto')
     expect(scoreConfiguredTailwindV4SourceForRawSource(undefined, main.source)).toBe(0)

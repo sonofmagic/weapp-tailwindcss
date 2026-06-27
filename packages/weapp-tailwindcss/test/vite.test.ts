@@ -94,12 +94,14 @@ describe.skipIf(isCI)('vite', () => {
   }, 120_000)
 
   it('v4-vite-plugin', async () => {
+    const root = path.resolve(fixturesRootPath, 'v4-vite-plugin')
     await build({
-      root: path.resolve(fixturesRootPath, 'v4-vite-plugin'),
+      root,
       plugins: [
         twv(),
         WeappTailwindcss({
           tailwindcssBasedir: tailwindcss4Basedir,
+          cssEntries: [path.join(root, 'index.css')],
         }),
       ],
       resolve: {
@@ -134,6 +136,7 @@ describe.skipIf(isCI)('vite', () => {
       plugins: [
         WeappTailwindcss({
           tailwindcssBasedir: tailwindcss4Basedir,
+          cssEntries: [path.join(root, 'index.css')],
         }),
       ],
       build: {

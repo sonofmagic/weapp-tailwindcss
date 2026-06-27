@@ -108,6 +108,7 @@ export interface WebCssCompatFeatures {
   theme?: boolean | undefined
   layer?: boolean | undefined
   property?: boolean | undefined
+  nesting?: boolean | undefined
   oklch?: boolean | undefined
   colorFunctions?: boolean | undefined
   supports?: boolean | undefined

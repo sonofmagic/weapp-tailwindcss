@@ -1,10 +1,20 @@
 import path from 'node:path'
+import { postcss } from '@weapp-tailwindcss/postcss'
 import { hasTailwindGenerationSource } from './sfc-style-source'
 import { isSubpackageOutputFile } from './subpackages'
 
 export interface TailwindV4GenerationCssSourceEntry {
   file: string
   source: string
+}
+
+function createStableTextSignature(input: string) {
+  let hash = 2166136261
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i)
+    hash = Math.imul(hash, 16777619)
+  }
+  return (hash >>> 0).toString(36)
 }
 
 export function collectTailwindV4SourceFingerprint(source: string) {
@@ -19,6 +29,28 @@ export function collectTailwindV4SourceFingerprint(source: string) {
   }
   for (const match of source.matchAll(/@source\s+(not\s+)?(["'])(.+?)\2\s*;?/g)) {
     add(match[1] ? 'source:not' : 'source', match[3]!)
+  }
+  for (const match of source.matchAll(/@plugin\s+(["'])(.+?)\1\s*(?:\{([\s\S]*?)\}|;)/g)) {
+    const request = match[2]!
+    const optionBlock = match[3]
+    add('plugin', request)
+    add('plugin-request', request.replace(/\\/g, '/'))
+    if (optionBlock !== undefined) {
+      add('plugin-options', `${request}:${createStableTextSignature(optionBlock)}`)
+    }
+  }
+  try {
+    postcss.parse(source).walkAtRules('plugin', (rule) => {
+      const request = /^(['"])(.+?)\1/.exec(rule.params.trim())?.[2]
+      if (!request || !rule.nodes?.length) {
+        return
+      }
+      rule.walkDecls((decl) => {
+        add('plugin-option', `${request}:${decl.prop}:${decl.value}`)
+      })
+    })
+  }
+  catch {
   }
   for (const match of source.matchAll(/@custom-variant\s+([^{\s]+)/g)) {
     add('custom-variant', match[1]!)

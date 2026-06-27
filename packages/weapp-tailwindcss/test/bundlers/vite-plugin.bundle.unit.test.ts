@@ -193,6 +193,59 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     )
   })
 
+  it('realigns relative Tailwind v4 cssEntries after Vite root inference', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-css-entry-root-'))
+    createdDirs.push(root)
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await writeFile(path.join(root, 'src/tailwind.css'), '@import "tailwindcss" source(none);', 'utf8')
+
+    const staleEntry = path.join(root, 'src/src/tailwind.css')
+    const context = createContext({
+      tailwindcssBasedir: path.join(root, 'src'),
+      cssEntries: [staleEntry],
+      tailwindcss: {
+        v4: {
+          cssEntries: [staleEntry],
+        },
+      },
+      tailwindRuntime: {
+        majorVersion: 4,
+        options: {
+          projectRoot: path.join(root, 'src'),
+          tailwindcss: {
+            cwd: path.join(root, 'src'),
+            v4: {
+              cssEntries: [staleEntry],
+            },
+          },
+        },
+      },
+    })
+    setCurrentContext(context)
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss({
+      cssEntries: ['./src/tailwind.css'],
+    })
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(postPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'build',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/build/mp-weixin' },
+      plugins: [{ name: 'vite:uni' }],
+    } as ResolvedConfig)
+
+    const expectedEntry = path.join(root, 'src/tailwind.css')
+    expect(context.tailwindcssBasedir).toBe(root)
+    expect(context.cssEntries).toEqual([expectedEntry])
+    expect(context.tailwindcss?.v4?.cssEntries).toEqual([expectedEntry])
+    expect(context.tailwindRuntime.options?.tailwindcss?.v4?.cssEntries).toEqual([expectedEntry])
+    expect(context.tailwindRuntime.options?.tailwindcss?.v4?.cssEntries?.[0]).not.toContain(`${path.sep}src${path.sep}src${path.sep}`)
+  }, TEST_TIMEOUT_MS)
+
   it('skips non-css Vue/NVue/UVue template content that leaks into uni-app css assets', async () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const templateSource = [

@@ -1,6 +1,7 @@
 import type { SourceCandidateFilterOptions } from '../source-candidates'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 import path from 'node:path'
+import { hasCssMacroTailwindV4CustomVariantConditionalComments } from '@/css-macro/auto'
 import { resolveTailwindV4EntriesFromCssCached } from '../source-scan'
 import { createCandidateSignature } from './signatures'
 
@@ -25,6 +26,10 @@ function intersectCandidates(first: Set<string>, second: Set<string>) {
     }
   }
   return scoped
+}
+
+function mergeCandidates(first: Set<string>, second: Set<string>) {
+  return new Set([...first, ...second])
 }
 
 function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resolvedEntries: TailwindSourceEntry[] | undefined) {
@@ -101,12 +106,14 @@ export async function createScopedGeneratorRuntime(options: {
     if (entries !== undefined && (entries.length > 0 || hasOwnSourceDirectives(rawSource))) {
       const scopedCandidates = scopedSourceCandidateGetter?.(entries)
         ?? getSourceCandidatesForEntries(entries)
+      const shouldMergeFallbackRuntime = hasCssMacroTailwindV4CustomVariantConditionalComments(rawSource)
       if (!localEntries) {
-        return scopedCandidates
+        return shouldMergeFallbackRuntime ? mergeCandidates(scopedCandidates, fallbackRuntime) : scopedCandidates
       }
       const localCandidates = scopedSourceCandidateGetter?.(localEntries)
         ?? getSourceCandidatesForEntries(localEntries)
-      return intersectCandidates(scopedCandidates, localCandidates)
+      const scopedLocalCandidates = intersectCandidates(scopedCandidates, localCandidates)
+      return shouldMergeFallbackRuntime ? mergeCandidates(scopedLocalCandidates, fallbackRuntime) : scopedLocalCandidates
     }
   }
   const scopedCandidates = scopedSourceCandidateGetter?.(undefined)
@@ -117,7 +124,9 @@ export async function createScopedGeneratorRuntime(options: {
       || shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)
     )
   ) {
-    return scopedCandidates
+    return shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)
+      ? scopedCandidates
+      : mergeCandidates(scopedCandidates, fallbackRuntime)
   }
   if (!shouldExcludeSubpackageSourceCandidates(outputFile, cssHandlerOptions)) {
     return fallbackRuntime

@@ -105,4 +105,44 @@ describe('generator postcss plugin factory', () => {
     expect(result.css).toContain(':root')
     expect(result.css).toContain('.text-blue')
   })
+
+  it('applies default web css compatibility transform for web target', async () => {
+    const { adapters } = createAdapters({
+      normalizeGeneratorOptions: vi.fn(options => ({
+        target: options?.target ?? 'weapp',
+        webCompat: options?.webCompat ?? (options?.target === 'web' ? true : undefined),
+        importFallback: options?.importFallback ?? true,
+      })),
+      createGenerator: vi.fn(() => ({
+        generate: vi.fn(async () => ({
+          css: [
+            '@layer utilities { .text-blue { color: oklch(62.3% .214 259.815); } }',
+            '.space-y-2 { :where(& > :not(:last-child)) { margin-block-end: calc(var(--spacing) * 2); } }',
+            '@property --tw-rotate-x { syntax: "*"; inherits: false; }',
+          ].join('\n'),
+          rawCss: '',
+          target: 'web',
+          classSet: new Set<string>(),
+          dependencies: [],
+        })),
+      })),
+    })
+    const plugin = createWeappTailwindcssPostcssPlugin(adapters)
+    const result = await postcss([
+      plugin({
+        generator: {
+          target: 'web',
+        },
+      }),
+    ]).process('@import "tailwindcss";', {
+      from: undefined,
+    })
+
+    expect(result.css).not.toContain('@layer')
+    expect(result.css).not.toContain('@property')
+    expect(result.css).not.toContain('oklch(')
+    expect(result.css).not.toContain('& > :not(:last-child)')
+    expect(result.css).toContain(':where(.space-y-2 > :not(:last-child))')
+    expect(result.css).toContain('.text-blue')
+  })
 })

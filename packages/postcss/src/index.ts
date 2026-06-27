@@ -38,8 +38,12 @@ export {
   compileCssMacroConditionalComments,
   CSS_MACRO_STYLE_OPTIONS_MARKER,
   hasCssMacroStyleOptions,
+  hasCssMacroTailwindV4CustomVariantConditionalComments,
   hasCssMacroTailwindV4Directive,
+  hasCssMacroTailwindV4InternalAtRules,
+  hasCssMacroTailwindV4Source,
   transformCssMacroCss,
+  transformCssMacroTailwindV4Source,
   withCssMacroStyleOptions,
 } from './css-macro/auto'
 export { CSS_MACRO_POSTCSS_PLUGIN_NAME, default as cssMacroPostcssPlugin } from './css-macro/postcss'

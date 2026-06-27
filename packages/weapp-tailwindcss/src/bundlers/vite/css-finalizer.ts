@@ -6,6 +6,7 @@ import type { InternalUserDefinedOptions } from '@/types'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
+import { transformWebCssCompat } from '@weapp-tailwindcss/postcss'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
@@ -141,6 +142,10 @@ function collectViteProcessedCssSources(
     .map(([, record]) => typeof record === 'string' ? record : record.css)
 }
 
+function finalizeWebCss(css: string, enabled: boolean, webCompat: ReturnType<typeof normalizeWeappTailwindcssGeneratorOptions>['webCompat']) {
+  return enabled ? transformWebCssCompat(css, webCompat) : css
+}
+
 export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext): Plugin {
   return {
     name: 'weapp-tailwindcss:adaptor:css-finalizer',
@@ -215,6 +220,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(file, opts, rootDir, isWebGeneratorTarget, isNativeAppStyleTarget, sourceRoot, resolveMiniProgramStyleOutputExtension({
               files: Object.keys(bundle),
             }), Object.keys(bundle)),
+            transformCss: css => finalizeWebCss(css, generatorBranch.isWeb, generatorOptions.webCompat),
             debug,
           })
         }
@@ -323,7 +329,11 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           const file = output.fileName || bundleFile
           const rawSource = output.source.toString()
           if (isViteProcessedCssAsset?.(output, file)) {
-            const nextCss = annotateCss(stripBundlerGeneratedCssMarkers(rawSource))
+            const nextCss = annotateCss(finalizeWebCss(
+              stripBundlerGeneratedCssMarkers(rawSource),
+              generatorBranch.isWeb,
+              generatorOptions.webCompat,
+            ))
             output.source = nextCss
             markCssAssetProcessed(output, file)
             recordCssAssetResult?.(file, nextCss)
@@ -375,7 +385,7 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
             : undefined
           const nextCss = annotateCss(generated?.css ?? (
             generatorBranch.isWeb
-              ? rawSource
+              ? finalizeWebCss(rawSource, true, generatorOptions.webCompat)
               : (await opts.styleHandler(rawSource, cssHandlerOptions)).css
           ))
           if (generated) {

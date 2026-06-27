@@ -26,6 +26,7 @@ import {
   resolveTailwindConfigFallback,
 } from './runtime-resolve'
 import { loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime } from './v4-engine'
+import { resolveCssMacroTailwindV4Source } from './v4-engine/css-macro-source'
 import { DEFAULT_TAILWINDCSS_GENERATOR_MAJOR_VERSION } from './version'
 
 const require = createRequire(import.meta.url)
@@ -166,7 +167,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
     const rawCandidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
       return typeof entry === 'string' ? entry : entry.rawCandidate
     }).filter((entry): entry is string => typeof entry === 'string' && entry.length > 0))
-    const source = await resolveTailwindV4SourceFromRuntime(runtime)
+    const source = resolveCssMacroTailwindV4Source(await resolveTailwindV4SourceFromRuntime(runtime))
     const designSystem = await loadTailwindV4DesignSystem(source)
     const candidates = new Set(resolveValidTailwindV4Candidates(designSystem, rawCandidates, {
       ...(source.bareArbitraryValues === undefined ? {} : { bareArbitraryValues: source.bareArbitraryValues }),
@@ -176,7 +177,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
   }
 
   async function collectTailwindV4CssCandidates(candidates: Set<string>) {
-    const source = await resolveTailwindV4SourceFromRuntime(runtime)
+    const source = resolveCssMacroTailwindV4Source(await resolveTailwindV4SourceFromRuntime(runtime))
     const cssList = [
       source.css,
       ...(source.cssSources ?? []).map(cssSource => cssSource.css).filter((css): css is string => typeof css === 'string'),
@@ -202,7 +203,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
   }
 
   async function collectContentTokens(): Promise<TailwindContentTokenReport> {
-    const source = await resolveTailwindV4SourceFromRuntime(runtime)
+    const source = resolveCssMacroTailwindV4Source(await resolveTailwindV4SourceFromRuntime(runtime))
     const report = await extractProjectCandidatesWithPositions({
       base: source.base,
       baseFallbacks: source.baseFallbacks,

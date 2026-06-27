@@ -49,6 +49,26 @@ function createTailwindV4MacroCss() {
 `
 }
 
+function createTailwindV4CustomVariantConditionalCommentCss() {
+  return `
+@theme default {
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+  --color-red-500: oklch(63.7% 0.237 25.331);
+}
+@custom-variant wx {
+  /*  #ifdef  MP-WEIXIN  */
+  @slot;
+  /*  #endif  */
+}
+@custom-variant not-wx {
+  /*  #ifndef  MP-WEIXIN  */
+  @slot;
+  /*  #endif  */
+}
+@tailwind utilities;
+`
+}
+
 // not screen and (weapp-tw-platform:MP-WEIXIN)
 // not screen and (weapp-tw-platform:uniVersion > 3.9)
 // not screen and (weapp-tw-platform:H5 || MP-WEIXIN)
@@ -145,6 +165,106 @@ describe('css-macro tailwindcss plugin', () => {
     expect(result.css).not.toContain('#ifndef MP-WEIXIN')
     expect(result.css).not.toContain('@weapp-tw-ifdef')
     expect(result.css).not.toContain('@weapp-tw-ifndef')
+  })
+
+  it('auto enables postcss macro transform for tailwindcss v4 custom variant conditional comments', async () => {
+    const source = await resolveTailwindV4Source({
+      css: createTailwindV4CustomVariantConditionalCommentCss(),
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['wx:bg-blue-500', 'not-wx:bg-red-500'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
+    expect(result.rawCss).toContain('@weapp-tw-ifndef')
+    expect(result.css).toContain('#ifdef MP-WEIXIN')
+    expect(result.css).toContain('.wx_cbg-blue-500')
+    expect(result.css).toContain('#ifndef MP-WEIXIN')
+    expect(result.css).toContain('.not-wx_cbg-red-500')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
+    expect(result.css).not.toContain('@weapp-tw-ifndef')
+  })
+
+  it('compiles tailwindcss v4 custom variant conditional comments by mini-program platform', async () => {
+    const source = await resolveTailwindV4Source({
+      css: createTailwindV4CustomVariantConditionalCommentCss(),
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['wx:bg-blue-500', 'not-wx:bg-red-500'],
+      styleOptions: {
+        isMainChunk: false,
+        platform: 'mp-weixin',
+      },
+    })
+
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
+    expect(result.rawCss).toContain('@weapp-tw-ifndef')
+    expect(result.css).toContain('.wx_cbg-blue-500')
+    expect(result.css).not.toContain('.not-wx_cbg-red-500')
+    expect(result.css).not.toContain('#ifdef MP-WEIXIN')
+    expect(result.css).not.toContain('#ifndef MP-WEIXIN')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
+    expect(result.css).not.toContain('@weapp-tw-ifndef')
+  })
+
+  it('auto enables postcss macro transform for tailwindcss v4 custom variant conditional comments on web target', async () => {
+    const source = await resolveTailwindV4Source({
+      css: createTailwindV4CustomVariantConditionalCommentCss(),
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      target: 'web',
+      candidates: ['wx:bg-blue-500'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
+    expect(result.css).toContain('/* #ifdef MP-WEIXIN */\n.wx\\:bg-blue-500')
+    expect(result.css).toContain('/* #endif */')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
+  })
+
+  it('auto enables postcss macro transform for tailwindcss v4 internal conditional at-rules', async () => {
+    const source = await resolveTailwindV4Source({
+      css: `
+@theme default {
+  --color-blue-500: oklch(62.3% 0.214 259.815);
+}
+@custom-variant wx {
+  @weapp-tw-ifdef "MP-WEIXIN" {
+    @slot;
+  }
+}
+@tailwind utilities;
+`,
+      base: process.cwd(),
+    })
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate({
+      candidates: ['wx:bg-blue-500'],
+      styleOptions: {
+        isMainChunk: false,
+      },
+    })
+
+    expect(result.rawCss).toContain('@weapp-tw-ifdef')
+    expect(result.css).toContain('#ifdef MP-WEIXIN')
+    expect(result.css).toContain('.wx_cbg-blue-500')
+    expect(result.css).not.toContain('@weapp-tw-ifdef')
   })
 
   it('keeps postcss compatibility with legacy media macro output', async () => {

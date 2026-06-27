@@ -1,1 +1,2 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source inline("bg-[#123456] text-[#123456]");

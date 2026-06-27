@@ -11,6 +11,7 @@ interface SourceMutationCase {
   title: string
   projectRoot: string
   appType: AppType
+  createIsolatedProjectRoot?: () => Promise<string>
   resolveOptions?: (projectRoot: string) => Partial<UserDefinedOptions>
   template: {
     entry: string
@@ -135,6 +136,21 @@ async function runMutationLifecycle(
 }
 
 const repositoryRoot = path.resolve(__dirname, '../../../..')
+const uniAppViteV4DemoRoot = path.resolve(repositoryRoot, 'demo/uni-app-vite-tailwindcss-v4')
+
+async function createUniAppViteV4DemoCopy() {
+  const projectRoot = await fs.mkdtemp(path.join(repositoryRoot, 'demo/.tmp-weapp-tw-uni-vite-v4-'))
+  await fs.cp(uniAppViteV4DemoRoot, projectRoot, {
+    recursive: true,
+    filter(source) {
+      const relative = path.relative(uniAppViteV4DemoRoot, source)
+      const parts = relative.split(path.sep)
+      return !parts.some(part => part === 'node_modules' || part === 'dist' || part === '.turbo' || part === '.hbuilderx')
+    },
+  })
+  await fs.symlink(path.join(uniAppViteV4DemoRoot, 'node_modules'), path.join(projectRoot, 'node_modules'), 'dir')
+  return projectRoot
+}
 
 const cases: SourceMutationCase[] = [
   {
@@ -163,8 +179,9 @@ const cases: SourceMutationCase[] = [
   },
   {
     title: 'demo/uni-app-vite-tailwindcss-v4',
-    projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-vite-tailwindcss-v4'),
+    projectRoot: uniAppViteV4DemoRoot,
     appType: 'uni-app-vite',
+    createIsolatedProjectRoot: createUniAppViteV4DemoCopy,
     resolveOptions: root => ({
       cssEntries: [
         path.resolve(root, 'src/main.css'),
@@ -320,11 +337,31 @@ const cases: SourceMutationCase[] = [
 describe.sequential('tailwindcss v4 source hmr regression', () => {
   for (const testCase of cases) {
     it(`${testCase.title} template add/modify/delete/rollback`, async () => {
-      await runMutationLifecycle(testCase, 'template')
+      const projectRoot = testCase.createIsolatedProjectRoot
+        ? await testCase.createIsolatedProjectRoot()
+        : testCase.projectRoot
+      try {
+        await runMutationLifecycle({ ...testCase, projectRoot }, 'template')
+      }
+      finally {
+        if (projectRoot !== testCase.projectRoot) {
+          await fs.rm(projectRoot, { recursive: true, force: true })
+        }
+      }
     })
 
     it(`${testCase.title} script add/modify/delete/rollback`, async () => {
-      await runMutationLifecycle(testCase, 'script')
+      const projectRoot = testCase.createIsolatedProjectRoot
+        ? await testCase.createIsolatedProjectRoot()
+        : testCase.projectRoot
+      try {
+        await runMutationLifecycle({ ...testCase, projectRoot }, 'script')
+      }
+      finally {
+        if (projectRoot !== testCase.projectRoot) {
+          await fs.rm(projectRoot, { recursive: true, force: true })
+        }
+      }
     })
   }
 })

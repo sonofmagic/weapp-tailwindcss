@@ -15,6 +15,7 @@ const uniAppViteV4CssEntries = (projectRoot: string) => [
   path.resolve(projectRoot, 'src/sub-normal/pages/index.css'),
   path.resolve(projectRoot, 'src/sub-independent/pages/index.css'),
 ]
+const uniAppViteV4DemoRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
 const HIGH_RISK_ARBITRARY_ADD_TOKENS = [
   'bg-[#000]',
   'px-[432.43px]',
@@ -23,6 +24,20 @@ const HIGH_RISK_ARBITRARY_ADD_TOKENS = [
   'bg-[var(--primary-color-hex)]',
   'text-[14px]',
 ] as const
+
+async function createUniAppViteV4DemoCopy() {
+  const projectRoot = await fs.mkdtemp(path.join(repoRoot, 'demo/.tmp-weapp-tw-uni-vite-v4-'))
+  await fs.cp(uniAppViteV4DemoRoot, projectRoot, {
+    recursive: true,
+    filter(source) {
+      const relative = path.relative(uniAppViteV4DemoRoot, source)
+      const parts = relative.split(path.sep)
+      return !parts.some(part => part === 'node_modules' || part === 'dist' || part === '.turbo' || part === '.hbuilderx')
+    },
+  })
+  await fs.symlink(path.join(uniAppViteV4DemoRoot, 'node_modules'), path.join(projectRoot, 'node_modules'), 'dir')
+  return projectRoot
+}
 const HIGH_RISK_ARBITRARY_MODIFY_TOKENS = [
   'bg-[#0f0]',
   'px-[256.25px]',
@@ -102,7 +117,7 @@ describe('cssEntries integration', () => {
   })
 
   it('refreshes script arbitrary values for uni-app-vite-tailwindcss-v4', async () => {
-    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
+    const projectRoot = await createUniAppViteV4DemoCopy()
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
     const previousToken = 'bg-[#123456] shadow-blue-100'
@@ -139,11 +154,12 @@ describe('cssEntries integration', () => {
     finally {
       await fs.writeFile(sourceFile, original, 'utf8')
       await ctx.refreshTailwindcssRuntime({ clearCache: true })
+      await fs.rm(projectRoot, { recursive: true, force: true })
     }
   })
 
   it('keeps shorthand hex script classes refreshable for uni-app-vite-tailwindcss-v4', async () => {
-    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
+    const projectRoot = await createUniAppViteV4DemoCopy()
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
     const previousToken = '\'bg-[#999999]\':true'
@@ -179,11 +195,12 @@ describe('cssEntries integration', () => {
     finally {
       await fs.writeFile(sourceFile, original, 'utf8')
       await ctx.refreshTailwindcssRuntime({ clearCache: true })
+      await fs.rm(projectRoot, { recursive: true, force: true })
     }
   })
 
   it('refreshes high-risk arbitrary script token families for uni-app-vite-tailwindcss-v4', async () => {
-    const projectRoot = path.resolve(repoRoot, 'demo/uni-app-vite-tailwindcss-v4')
+    const projectRoot = await createUniAppViteV4DemoCopy()
     const sourceFile = path.join(projectRoot, 'src/pages/index/index.vue')
     const original = await fs.readFile(sourceFile, 'utf8')
 
@@ -229,6 +246,7 @@ describe('cssEntries integration', () => {
     finally {
       await fs.writeFile(sourceFile, original, 'utf8')
       await ctx.refreshTailwindcssRuntime({ clearCache: true })
+      await fs.rm(projectRoot, { recursive: true, force: true })
     }
   })
 })

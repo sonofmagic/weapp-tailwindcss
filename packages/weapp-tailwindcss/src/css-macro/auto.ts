@@ -2,8 +2,12 @@ export {
   compileCssMacroConditionalComments,
   CSS_MACRO_STYLE_OPTIONS_MARKER,
   hasCssMacroStyleOptions,
+  hasCssMacroTailwindV4CustomVariantConditionalComments,
   hasCssMacroTailwindV4Directive,
+  hasCssMacroTailwindV4InternalAtRules,
+  hasCssMacroTailwindV4Source,
   transformCssMacroCss,
+  transformCssMacroTailwindV4Source,
   withCssMacroStyleOptions,
 } from '@weapp-tailwindcss/postcss'
 

@@ -1,1 +1,2 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source inline("bg-[#123456] text-[#123456] first-letter:marker:text-clip bg-gradient-to-r from-green-400 to-sky-400 bg-clip-text text-transparent");

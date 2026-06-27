@@ -95,10 +95,12 @@ describe('get options', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions({ importFallback: true }).importFallback).toBe(true)
   })
 
-  it('keeps web generator compatibility disabled by default', () => {
+  it('keeps explicit web generator output official-compatible unless web compatibility is requested', () => {
     expect(normalizeWeappTailwindcssGeneratorOptions(undefined).webCompat).toBeUndefined()
     expect(normalizeWeappTailwindcssGeneratorOptions({}).webCompat).toBeUndefined()
+    expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'web' }).webCompat).toBeUndefined()
     expect(normalizeWeappTailwindcssGeneratorOptions({ webCompat: true }).webCompat).toBe(true)
+    expect(normalizeWeappTailwindcssGeneratorOptions({ target: 'web', webCompat: false }).webCompat).toBe(false)
   })
 
   it('keeps weapp as generator target without framework web env', () => {
@@ -110,10 +112,12 @@ describe('get options', () => {
   it('infers web generator target from uni-app, uni-app x, Mpx and Taro H5 env', () => {
     withGeneratorTargetEnv({ UNI_PLATFORM: 'h5' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions(undefined).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions(undefined).webCompat).toBe(true)
     })
 
     withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'web' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('web')
+      expect(normalizeWeappTailwindcssGeneratorOptions({}).webCompat).toBe(true)
     })
 
     withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'web-desktop' }, () => {

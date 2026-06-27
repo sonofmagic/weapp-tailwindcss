@@ -127,7 +127,7 @@ async function createTailwindV4AddingCustomStylesFixture() {
     '  --text-fluid: 20px;',
     '  --leading-tightish: 1.1;',
     '}',
-    '@source inline("top-[117px] lg:top-[344px] bg-[#bada55] text-[22px] before:content-[\'Festivus\'] fill-(--my-brand-color) [mask-type:luminance] hover:[mask-type:alpha] [--scroll-offset:56px] lg:[--scroll-offset:44px] grid grid-cols-[1fr_500px_2fr] bg-[url(\'/what_a_rush.png\')] before:content-[\'hello\\_world\'] text-(length:--my-var) text-(color:--my-color) card rounded-none content-auto hover:content-auto scrollbar-hidden tab-github tab-76 tab-inherit tab-[12] opacity-42 opacity-[33%] opacity-soft inset-4 -inset-4 inset-[12px] -inset-[5%] text-fluid/tightish aspect-retro aspect-3/4 aspect-[7/9] theme-midnight:bg-avocado-500 any-hover:content-auto lg:[&:nth-child(-n+3)]:hover:underline");',
+    '@source inline("top-[117px] lg:top-[344px] bg-[#bada55] text-[22px] before:content-[\'Festivus\'] fill-(--my-brand-color) [mask-type:luminance] hover:[mask-type:alpha] [--scroll-offset:56px] lg:[--scroll-offset:44px] grid grid-cols-[1fr_500px_2fr] bg-[url(\'/what_a_rush.png\')] before:content-[\'hello\\_world\'] text-(length:--my-var) text-(color:--my-color) card rounded-none content-auto hover:content-auto scrollbar-hidden tab-github tab-76 tab-inherit tab-[12] opacity-42 opacity-[33%] opacity-soft inset-4 -inset-4 inset-[12px] -inset-[5%] text-fluid/tightish aspect-retro aspect-3/4 aspect-[7/9] theme-midnight:bg-avocado-500 any-hover:content-auto any-hover:focus:bg-[#bada55] any-hover:[&>span]:text-[22px] group-[.published]:any-hover:[&>span]:opacity-soft lg:[&:nth-child(-n+3)]:hover:underline");',
     '@layer base {',
     '  h1 {',
     '    font-size: var(--text-2xl);',
@@ -462,6 +462,13 @@ describe('v5 Tailwind CSS v4 directives parity', () => {
     expect(officialResult.css).toContain("--tw-content: 'hello_world'")
     expect(webResult.css).toContain("--tw-content: 'hello_world'")
     expect(webResult.css).toContain('.theme-midnight\\:bg-avocado-500')
+    expect(webResult.css).toContain('@media (any-hover: hover)')
+    expect(webResult.css).toContain('.any-hover\\:focus\\:bg-\\[\\#bada55\\]')
+    expect(webResult.css).toContain('&:hover')
+    expect(webResult.css).toContain('&:focus')
+    expect(webResult.css).toContain('.any-hover\\:\\[\\&\\>span\\]\\:text-\\[22px\\]')
+    expect(webResult.css).toContain('&>span')
+    expect(webResult.css).toContain('.group-\\[\\.published\\]\\:any-hover\\:\\[\\&\\>span\\]\\:opacity-soft')
     expect(webResult.css).toContain('aspect-ratio: 7/9')
     expect(webResult.css).not.toContain('@source')
     expect(webResult.css).not.toContain('@utility')

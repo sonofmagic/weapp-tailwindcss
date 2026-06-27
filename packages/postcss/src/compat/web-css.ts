@@ -1,5 +1,6 @@
 import type { WebCssCompatFeatures, WebCssCompatOptions, WebCssCompatUserOptions } from '../types'
 import postcss from 'postcss'
+import postcssPresetEnv from 'postcss-preset-env'
 import { normalizeModernColorValue } from './color-mix'
 import { removeUnsupportedCascadeLayers } from './mini-program-css/at-rules'
 
@@ -12,6 +13,7 @@ const disabledFeatures: Required<WebCssCompatFeatures> = {
   theme: false,
   layer: false,
   property: false,
+  nesting: false,
   oklch: false,
   colorFunctions: false,
   supports: false,
@@ -21,6 +23,7 @@ const legacyWebFeatures: Required<WebCssCompatFeatures> = {
   theme: true,
   layer: true,
   property: true,
+  nesting: true,
   oklch: true,
   colorFunctions: true,
   supports: true,
@@ -66,8 +69,35 @@ function collectCustomPropertyValues(root: postcss.Root) {
 }
 
 function removeRegisteredCustomProperties(root: postcss.Root) {
+  const registeredProperties = new Set<string>()
   root.walkAtRules('property', (atRule) => {
+    const propertyName = atRule.params.trim().split(/\s+/, 1)[0]
+    if (propertyName?.startsWith('--')) {
+      registeredProperties.add(propertyName)
+    }
     atRule.remove()
+  })
+  return registeredProperties
+}
+
+const tailwindUnregisteredInitialFallbackCustomProperties = new Set([
+  '--tw-gradient-position',
+  '--tw-gradient-stops',
+  '--tw-gradient-via-stops',
+  '--tw-leading',
+  '--tw-font-weight',
+  '--tw-tracking',
+])
+
+function removeInitialFallbackDeclarations(root: postcss.Root, registeredProperties: Set<string>) {
+  root.walkDecls((decl) => {
+    if (
+      (registeredProperties.has(decl.prop)
+        || tailwindUnregisteredInitialFallbackCustomProperties.has(decl.prop))
+      && decl.value.trim() === 'initial'
+    ) {
+      decl.remove()
+    }
   })
 }
 
@@ -140,6 +170,20 @@ function removeEmptyAtRules(root: postcss.Root) {
   })
 }
 
+function transformCssNesting(root: postcss.Root) {
+  postcss([
+    postcssPresetEnv({
+      stage: false,
+      autoprefixer: false,
+      features: {
+        'nesting-rules': true,
+      },
+    }),
+  ]).process(root, {
+    from: undefined,
+  }).sync()
+}
+
 export function transformWebCssCompat(
   css: string,
   options: WebCssCompatUserOptions | undefined,
@@ -158,10 +202,14 @@ export function transformWebCssCompat(
       removeUnsupportedCascadeLayers(root)
     }
     if (normalized.features.property) {
-      removeRegisteredCustomProperties(root)
+      const registeredProperties = removeRegisteredCustomProperties(root)
+      removeInitialFallbackDeclarations(root, registeredProperties)
     }
     if (normalized.features.supports) {
       removeModernColorSupports(root)
+    }
+    if (normalized.features.nesting) {
+      transformCssNesting(root)
     }
     normalizeModernColorDeclarations(root, normalized.features)
     removeEmptyAtRules(root)

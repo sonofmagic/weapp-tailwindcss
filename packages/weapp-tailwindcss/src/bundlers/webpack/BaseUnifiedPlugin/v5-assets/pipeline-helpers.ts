@@ -311,6 +311,7 @@ export function collectWebpackAssetUserCssMarkers(source: string) {
 const WEBPACK_TAILWIND_GENERATED_LAYER_NAMES = new Set(['theme', 'base', 'utilities'])
 const WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE = /(?:^|[^\w-])\.[^,{]{0,512}(?:\\:|\\\[|\\#)/
 const WEBPACK_TAILWIND_UTILITY_PREFIX_RE = /^\.(?:-?(?:bg|text|border|ring|shadow|drop-shadow|[pmwhz]|px|py|pt|pr|pb|pl|mx|my|mt|mr|mb|ml|min-w|min-h|max-w|max-h|flex|grid|inline|block|hidden|rounded|opacity|translate|scale|rotate|skew|top|right|bottom|left|inset|gap|font|leading|tracking|underline|container)(?:[\-\\{]|$)|\\\[)/
+const WEBPACK_TAILWIND_BANNER_RE = /tailwindcss v4\./
 
 export function parseWebpackCssLayerNames(params: string) {
   return params
@@ -324,6 +325,24 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
   try {
     const root = postcss.parse(cleaned)
     let changed = false
+    let removingBannerPrefix = false
+    for (const node of [...root.nodes]) {
+      if (node.type === 'comment' && WEBPACK_TAILWIND_BANNER_RE.test(node.text)) {
+        node.remove()
+        changed = true
+        removingBannerPrefix = true
+        continue
+      }
+      if (!removingBannerPrefix) {
+        continue
+      }
+      if (isWebpackTailwindGeneratedPrefixNode(node)) {
+        node.remove()
+        changed = true
+        continue
+      }
+      removingBannerPrefix = false
+    }
     root.walkAtRules('layer', (rule) => {
       const names = parseWebpackCssLayerNames(rule.params)
       const hasGeneratedLayerName = names.some(name => WEBPACK_TAILWIND_GENERATED_LAYER_NAMES.has(name))
@@ -358,6 +377,22 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
         }
       }
     })
+    root.walkRules((rule) => {
+      if (rule.parent?.type === 'atrule' && rule.parent.name === 'layer') {
+        return
+      }
+      const selector = rule.selector.trim()
+      if (WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE.test(selector)) {
+        rule.remove()
+        changed = true
+      }
+    })
+    root.walkComments((comment) => {
+      if (WEBPACK_TAILWIND_BANNER_RE.test(comment.text)) {
+        comment.remove()
+        changed = true
+      }
+    })
     root.walkAtRules((rule) => {
       if (rule.nodes !== undefined && rule.nodes.length === 0) {
         rule.remove()
@@ -369,6 +404,39 @@ export function removeWebpackTailwindGeneratedAssetCss(source: string) {
   catch {
     return cleaned
   }
+}
+
+function isWebpackTailwindGeneratedPrefixNode(node: postcss.ChildNode): boolean {
+  if (node.type === 'rule') {
+    return node.selectors.every(selector => isWebpackTailwindGeneratedUtilitySelector(selector.trim(), true))
+  }
+  if (node.type !== 'atrule') {
+    return false
+  }
+  const names = node.name === 'layer'
+    ? parseWebpackCssLayerNames(node.params)
+    : []
+  if (
+    node.name === 'property'
+    && node.params.trim().startsWith('--tw-')
+  ) {
+    return true
+  }
+  if (
+    names.length > 0
+    && names.every(name => WEBPACK_TAILWIND_GENERATED_LAYER_NAMES.has(name))
+  ) {
+    return true
+  }
+  if (node.nodes === undefined || node.nodes.length === 0) {
+    return false
+  }
+  return node.nodes.every(child => isWebpackTailwindGeneratedPrefixNode(child))
+}
+
+function isWebpackTailwindGeneratedUtilitySelector(selector: string, includePrefix: boolean): boolean {
+  return WEBPACK_TAILWIND_UTILITY_RULE_MARKER_RE.test(selector)
+    || (includePrefix && WEBPACK_TAILWIND_UTILITY_PREFIX_RE.test(selector))
 }
 
 export function collectWebpackCssRuleIdentityMarkers(source: string) {

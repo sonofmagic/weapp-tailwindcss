@@ -116,4 +116,66 @@ describe('tailwindcss/v4 runtime integration with @config + cssEntries', () => {
       await fs.rm(fixtureRoot, { force: true, recursive: true })
     }
   })
+
+  it('collects custom variant conditional comment candidates from css entries', async () => {
+    const workspaceRoot = path.resolve(__dirname, '../../../../..')
+    const fixtureRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'weapp-tw-v4-custom-variant-runtime-'))
+    const cssEntry = path.resolve(fixtureRoot, 'src/tailwind.css')
+    const template = path.resolve(fixtureRoot, 'src/pages/index/index.wxml')
+
+    try {
+      await fs.mkdir(path.dirname(template), { recursive: true })
+      await fs.writeFile(
+        cssEntry,
+        [
+          '@import "tailwindcss" source(none);',
+          '@theme default {',
+          '  --color-blue-500: oklch(62.3% 0.214 259.815);',
+          '  --color-red-500: oklch(63.7% 0.237 25.331);',
+          '}',
+          '@custom-variant wx {',
+          '  /*  #ifdef  MP-WEIXIN  */',
+          '  @slot;',
+          '  /*  #endif  */',
+          '}',
+          '@custom-variant not-wx {',
+          '  /*  #ifndef  MP-WEIXIN  */',
+          '  @slot;',
+          '  /*  #endif  */',
+          '}',
+          '@source "./pages/**/*.{wxml,html,js,ts}";',
+        ].join('\n'),
+        'utf8',
+      )
+      await fs.writeFile(
+        template,
+        '<view class="wx:bg-blue-500 not-wx:bg-red-500">custom variant</view>',
+        'utf8',
+      )
+
+      const runtime = createTailwindcssRuntimeForBase(fixtureRoot, [cssEntry], {
+        tailwindcss: {
+          packageName: 'tailwindcss4',
+          version: 4,
+          resolve: {
+            paths: [path.resolve(workspaceRoot, 'node_modules')],
+          },
+        },
+        tailwindcssRuntimeOptions: undefined,
+        supportCustomLengthUnits: true,
+        appType: 'native',
+      } as any)
+
+      const classSet = await collectRuntimeClassSet(runtime, {
+        clearCache: true,
+        force: true,
+      })
+
+      expect(classSet.has('wx:bg-blue-500')).toBe(true)
+      expect(classSet.has('not-wx:bg-red-500')).toBe(true)
+    }
+    finally {
+      await fs.rm(fixtureRoot, { force: true, recursive: true })
+    }
+  })
 })

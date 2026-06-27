@@ -61,6 +61,16 @@ const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCol
   max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
 })
 
+function sameStringList(first: string[] | undefined, second: string[] | undefined) {
+  if (first === second) {
+    return true
+  }
+  if (!first || !second || first.length !== second.length) {
+    return false
+  }
+  return first.every((item, index) => item === second[index])
+}
+
 export interface WeappTailwindcssVitePlugin {
   name: string
   [hook: string]: any
@@ -75,19 +85,30 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
   const hasExplicitAppType = typeof options.appType === 'string' && options.appType.trim().length > 0
   const hasExplicitTailwindcssBasedir = typeof options.tailwindcssBasedir === 'string'
     && options.tailwindcssBasedir.trim().length > 0
+  const rawCssEntries = Array.isArray(options.cssEntries) ? [...options.cssEntries] : undefined
   const opts = getCompilerContext({
     ...options,
     __internalDeferMissingCssEntriesWarning: true,
   } as UserDefinedOptions)
-  const normalizedCssEntries = normalizeCssEntries(options.cssEntries, opts.tailwindcssBasedir ?? process.cwd())
-  if (normalizedCssEntries) {
-    opts.cssEntries ??= normalizedCssEntries
-  }
-  if (opts.cssEntries?.length) {
+  const syncCssEntriesFromAnchor = (anchor: string | undefined) => {
+    const normalizedCssEntries = normalizeCssEntries(rawCssEntries, anchor ?? process.cwd())
+    if (!normalizedCssEntries) {
+      return false
+    }
+    const changed = !sameStringList(opts.cssEntries, normalizedCssEntries)
+    opts.cssEntries = normalizedCssEntries
     opts.tailwindcss ??= {}
     opts.tailwindcss.v4 ??= {}
-    opts.tailwindcss.v4.cssEntries ??= opts.cssEntries
+    opts.tailwindcss.v4.cssEntries = normalizedCssEntries
+    if ((opts.tailwindcssRuntimeOptions as any)?.tailwindcss?.v4) {
+      ;(opts.tailwindcssRuntimeOptions as any).tailwindcss.v4.cssEntries = normalizedCssEntries
+    }
+    if ((opts.tailwindRuntime as any)?.options?.tailwindcss?.v4) {
+      ;(opts.tailwindRuntime as any).options.tailwindcss.v4.cssEntries = normalizedCssEntries
+    }
+    return changed
   }
+  syncCssEntriesFromAnchor(opts.tailwindcssBasedir)
   const {
     disabled,
     customAttributes,
@@ -973,6 +994,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             if (opts.tailwindcssBasedir !== nextTailwindcssBasedir) {
               const previousBasedir = opts.tailwindcssBasedir
               opts.tailwindcssBasedir = nextTailwindcssBasedir
+              shouldRefreshRuntime = syncCssEntriesFromAnchor(nextTailwindcssBasedir) || shouldRefreshRuntime
               debug(
                 'align tailwindcss basedir with vite root: %s -> %s',
                 previousBasedir ?? 'undefined',

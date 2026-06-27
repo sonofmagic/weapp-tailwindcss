@@ -34,6 +34,7 @@ const v4CssPluginCandidates = [
   'daisy-card',
   'icon-[mdi--home]',
   'iconify-[mdi--home]',
+  'iconify-options',
 ]
 
 function compactCss(css: string) {
@@ -79,6 +80,23 @@ async function createPluginFixture(tailwindcssRoot: string) {
     await symlink(packageDir, target, 'dir')
   }
 
+  return root
+}
+
+async function linkPackage(root: string, packageName: string) {
+  const resolvedFile = resolvePluginPackage(packageName)
+  const packageDir = await findPackageRoot(resolvedFile)
+  const target = path.join(root, 'node_modules', ...packageName.split('/'))
+  await mkdir(path.dirname(target), { recursive: true })
+  await symlink(packageDir, target, 'dir')
+}
+
+async function createRealIconifyFixture(tailwindcssRoot: string) {
+  const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-real-iconify-'))
+  const nodeModulesDir = path.join(root, 'node_modules')
+  await mkdir(nodeModulesDir, { recursive: true })
+  await symlink(tailwindcssRoot, path.join(nodeModulesDir, 'tailwindcss'), 'dir')
+  await linkPackage(root, '@iconify/tailwind4')
   return root
 }
 
@@ -136,9 +154,30 @@ async function writeFakeIconifyTailwind4Package(root: string) {
     [
       'const plugin = require("tailwindcss/plugin")',
       '',
-      'module.exports = plugin.withOptions((options = {}) => ({ matchUtilities }) => {',
+      'function stringify(value) {',
+      '  if (Array.isArray(value)) return value.join("|")',
+      '  if (value === undefined) return "unset"',
+      '  if (value === "") return "empty"',
+      '  return String(value)',
+      '}',
+      '',
+      'module.exports = plugin.withOptions((options = {}) => ({ addComponents, matchUtilities }) => {',
       '  const prefix = options.prefix || "icon"',
       '  const scale = Number(options.scale || 1)',
+      '  addComponents({',
+      '    ".iconify-options": {',
+      '      "--iconify-prefix": stringify(options.prefix),',
+      '      "--iconify-override-only": stringify(options.overrideOnly ?? options["override-only"] ?? options.overrideonly),',
+      '      "--iconify-prefixes": stringify(options.prefixes),',
+      '      "--iconify-icon-selector": stringify(options.iconSelector ?? options["icon-selector"] ?? options.iconselector),',
+      '      "--iconify-mask-selector": stringify(options.maskSelector ?? options["mask-selector"] ?? options.maskselector),',
+      '      "--iconify-background-selector": stringify(options.backgroundSelector ?? options["background-selector"] ?? options.backgroundselector),',
+      '      "--iconify-icon-sets": stringify(options.iconSets ?? options["icon-sets"] ?? options.iconsets),',
+      '      "--iconify-var-name": stringify(options.varName ?? options["var-name"] ?? options.varname),',
+      '      "--iconify-square": stringify(options.square),',
+      '      "--iconify-scale": stringify(options.scale),',
+      '    },',
+      '  })',
       '  matchUtilities({',
       '    [prefix]: (value) => ({',
       '      "--svg": `"${value}"`,',
@@ -234,8 +273,63 @@ async function createV4CssPluginDirectiveSource(root: string) {
     '@plugin "@iconify/tailwind4" {',
     '  prefix: "iconify";',
     '  scale: 1.2;',
+    '  override-only: true;',
+    '  prefixes: mdi, lucide;',
+    '  icon-selector: ".ic-{prefix}-{name}";',
+    '  mask-selector: ".mask-icon";',
+    '  background-selector: ".bg-icon";',
+    '  icon-sets: from-json(mdi, "./mdi.json"), from-folder(lucide, "./icons");',
+    '  var-name: "icon";',
+    '  square: false;',
     '}',
     `@source inline("${v4CssPluginCandidates.join(' ')}");`,
+  ].join('\n')
+
+  return resolveTailwindV4Source({
+    base: root,
+    css,
+    projectRoot: root,
+  })
+}
+
+async function createRealIconifyTailwind4OptionMatrixSource(root: string) {
+  const iconSetFile = path.join(root, 'test-icons.json')
+  await writeFile(iconSetFile, JSON.stringify({
+    prefix: 'tst',
+    icons: {
+      home: {
+        body: '<path d="M1 7L8 1l7 6v8H1z"/>',
+        width: 16,
+        height: 16,
+      },
+      wide: {
+        body: '<path d="M0 0h24v12H0z"/>',
+        width: 24,
+        height: 12,
+      },
+    },
+  }), 'utf8')
+  const css = [
+    '@import "tailwindcss" source(none);',
+    "@plugin '@iconify/tailwind4' {",
+    "  prefix: 'i';",
+    '  scale: 1.5;',
+    '}',
+    "@plugin '@iconify/tailwind4' {",
+    "  prefix: 'only';",
+    '  override-only: true;',
+    '}',
+    "@plugin '@iconify/tailwind4' {",
+    '  prefixes: tst;',
+    '  icon-selector: ".ic-{prefix}-{name}";',
+    '  mask-selector: ".mask-icon";',
+    '  background-selector: ".bg-icon";',
+    '  var-name: "icon";',
+    '  square: false;',
+    '  scale: 2;',
+    `  icon-sets: from-json(tst, '${iconSetFile.replace(/\\/g, '/')}');`,
+    '}',
+    '@source inline("i-[tst--home] only-[tst--home]");',
   ].join('\n')
 
   return resolveTailwindV4Source({
@@ -290,8 +384,44 @@ describe('tailwindcss generator plugin compatibility', () => {
     expect(result.rawCss).toContain('width: 1.2em')
     expect(result.rawCss).toContain('height: 1.2em')
     expect(result.rawCss).toContain('mask:')
+    expect(result.rawCss).toContain('.iconify-options')
+    expect(result.rawCss).toContain('--iconify-prefix: iconify')
+    expect(result.rawCss).toContain('--iconify-override-only: true')
+    expect(result.rawCss).toContain('--iconify-prefixes: mdi|lucide')
+    expect(result.rawCss).toContain('--iconify-icon-selector: .ic-{prefix}-{name}')
+    expect(result.rawCss).toContain('--iconify-mask-selector: .mask-icon')
+    expect(result.rawCss).toContain('--iconify-background-selector: .bg-icon')
+    expect(result.rawCss).toContain('--iconify-icon-sets: from-json(mdi, "./mdi.json")|from-folder(lucide, "./icons")')
+    expect(result.rawCss).toContain('--iconify-var-name: icon')
+    expect(result.rawCss).toContain('--iconify-square: false')
+    expect(result.rawCss).toContain('--iconify-scale: 1.2')
     expect(result.css).toContain('.icon-_bmdi--home_B')
     expect(result.css).toContain('.iconify-_bmdi--home_B')
+    expect(result.css).toContain('.iconify-options')
+    expect(result.css).not.toContain('@plugin')
+  })
+
+  it('supports real Iconify Tailwind v4 CSS @plugin option blocks in the v4 engine', async () => {
+    const root = await createRealIconifyFixture(tailwindcss4Root)
+    const source = await createRealIconifyTailwind4OptionMatrixSource(root)
+    const engine = createTailwindV4Engine(source)
+
+    const result = await engine.generate()
+
+    expect(result.classSet).toEqual(new Set([
+      'i-[tst--home]',
+      'only-[tst--home]',
+    ]))
+    expect(result.rawCss).toContain('.i-\\[tst--home\\]')
+    expect(result.rawCss).toContain('width: 1.5em')
+    expect(result.rawCss).toContain('height: 1.5em')
+    expect(result.rawCss).toContain('.only-\\[tst--home\\]')
+    expect(result.rawCss).toContain('--svg: "tst--home"')
+    expect(result.rawCss).toContain('mask:')
+    expect(result.css).toContain('.i-_btst--home_B')
+    expect(result.css).toContain('.only-_btst--home_B')
+    expect(result.css).toContain('width: 1.5em')
+    expect(result.css).toContain('--svg: "tst--home"')
     expect(result.css).not.toContain('@plugin')
   })
 })

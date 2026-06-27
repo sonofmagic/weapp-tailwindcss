@@ -3,6 +3,7 @@ import type { IStyleHandlerOptions, LoadedPostcssOptions } from '../types'
 import path from 'node:path'
 import process from 'node:process'
 import postcss from 'postcss'
+import { ifdefAtRule, ifndefAtRule } from './constants'
 import cssMacroPostcssPlugin, { CSS_MACRO_POSTCSS_PLUGIN_NAME } from './postcss'
 
 export const CSS_MACRO_STYLE_OPTIONS_MARKER = '__weappTailwindcssCssMacroEnabled'
@@ -24,6 +25,7 @@ const PLATFORM_ENV_KEYS = [
 ] as const
 
 const CONDITIONAL_END_RE = /^\s*#endif\s*$/
+const CUSTOM_VARIANT_CONDITIONAL_FALLBACK_RE = /@custom-variant\b[\s\S]*?\/\*\s*#ifn?def\s[^*]*\*\/[\s\S]*?@slot\b[\s\S]*?\/\*\s*#endif\s*\*\//
 
 function readEnvValue(key: string): string | undefined {
   return typeof process === 'undefined' ? undefined : process.env[key]
@@ -153,6 +155,75 @@ function parseConditionalStart(text: string) {
   return undefined
 }
 
+function quoteAtRuleParam(value: string) {
+  return `"${value.replaceAll('\\', '\\\\').replaceAll('"', '\\"')}"`
+}
+
+function hasSlotNode(nodes: postcss.ChildNode[]) {
+  return nodes.some(node => node.type === 'atrule' && node.name === 'slot')
+}
+
+function rewriteCustomVariantConditionalComments(root: postcss.Root) {
+  let changed = false
+
+  root.walkAtRules('custom-variant', (rule) => {
+    const nodes = [...rule.nodes ?? []]
+    for (let index = 0; index < nodes.length; index += 1) {
+      const node = nodes[index]
+      if (node?.type !== 'comment') {
+        continue
+      }
+
+      const start = parseConditionalStart(node.text)
+      if (!start) {
+        continue
+      }
+
+      let depth = 1
+      let endIndex = -1
+      for (let searchIndex = index + 1; searchIndex < nodes.length; searchIndex += 1) {
+        const current = nodes[searchIndex]
+        if (current?.type !== 'comment') {
+          continue
+        }
+        if (parseConditionalStart(current.text)) {
+          depth += 1
+          continue
+        }
+        if (CONDITIONAL_END_RE.test(current.text)) {
+          depth -= 1
+          if (depth === 0) {
+            endIndex = searchIndex
+            break
+          }
+        }
+      }
+
+      if (endIndex < 0) {
+        continue
+      }
+
+      const conditionalNodes = nodes.slice(index + 1, endIndex)
+      if (!hasSlotNode(conditionalNodes)) {
+        continue
+      }
+
+      const conditionalAtRule = postcss.atRule({
+        name: start.directive === 'ifndef' ? ifndefAtRule : ifdefAtRule,
+        params: quoteAtRuleParam(start.expression),
+      })
+      conditionalAtRule.append(...conditionalNodes.map(current => current.clone()))
+      node.replaceWith(conditionalAtRule)
+      for (const removedNode of nodes.slice(index + 1, endIndex + 1)) {
+        removedNode.remove()
+      }
+      changed = true
+    }
+  })
+
+  return changed
+}
+
 export function compileCssMacroConditionalComments(
   css: string,
   options?: Pick<IStyleHandlerOptions, 'platform'>,
@@ -247,6 +318,75 @@ export function hasCssMacroTailwindV4Directive(css: string | undefined): boolean
   }
   catch {
     return /@plugin\s+(?:url\(\s*)?["']weapp-tailwindcss\/css-macro["']/.test(css)
+  }
+}
+
+export function hasCssMacroTailwindV4CustomVariantConditionalComments(css: string | undefined): boolean {
+  if (!css?.includes('@custom-variant') || !css.includes('#if') || !css.includes('@slot')) {
+    return false
+  }
+
+  try {
+    const root = postcss.parse(css)
+    let found = false
+    root.walkAtRules('custom-variant', (rule) => {
+      const nodes = [...rule.nodes ?? []]
+      for (let index = 0; index < nodes.length; index += 1) {
+        const node = nodes[index]
+        if (node?.type !== 'comment' || !parseConditionalStart(node.text)) {
+          continue
+        }
+        const tail = nodes.slice(index + 1)
+        if (tail.some(current => current.type === 'comment' && CONDITIONAL_END_RE.test(current.text)) && hasSlotNode(tail)) {
+          found = true
+          return false
+        }
+      }
+    })
+    return found
+  }
+  catch {
+    return CUSTOM_VARIANT_CONDITIONAL_FALLBACK_RE.test(css)
+  }
+}
+
+export function hasCssMacroTailwindV4InternalAtRules(css: string | undefined): boolean {
+  if (!css?.includes('@weapp-tw-if')) {
+    return false
+  }
+
+  try {
+    let found = false
+    postcss.parse(css).walkAtRules((rule) => {
+      if (rule.name === ifdefAtRule || rule.name === ifndefAtRule) {
+        found = true
+        return false
+      }
+    })
+    return found
+  }
+  catch {
+    return /@weapp-tw-ifn?def\b/.test(css)
+  }
+}
+
+export function hasCssMacroTailwindV4Source(css: string | undefined): boolean {
+  return hasCssMacroTailwindV4Directive(css)
+    || hasCssMacroTailwindV4CustomVariantConditionalComments(css)
+    || hasCssMacroTailwindV4InternalAtRules(css)
+}
+
+export function transformCssMacroTailwindV4Source(css: string): string {
+  if (!hasCssMacroTailwindV4CustomVariantConditionalComments(css)) {
+    return css
+  }
+
+  try {
+    const root = postcss.parse(css)
+    return rewriteCustomVariantConditionalComments(root) ? root.toString() : css
+  }
+  catch {
+    return css
   }
 }
 

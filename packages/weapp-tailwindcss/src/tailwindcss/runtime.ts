@@ -4,6 +4,7 @@ import type {
 } from '@/types'
 import { createDebug } from '@/debug'
 import { createTailwindV4Engine, loadTailwindV4DesignSystem, resolveTailwindV4SourceFromRuntime, resolveValidTailwindV4Candidates } from '@/tailwindcss/v4-engine'
+import { resolveCssMacroTailwindV4Source } from '@/tailwindcss/v4-engine/css-macro-source'
 import {
   getRuntimeClassSetCacheEntry,
   getRuntimeClassSetSignatureWithSources,
@@ -206,7 +207,7 @@ async function collectTailwindV4GeneratorClassSet(tailwindRuntime: TailwindcssRu
   }
 
   try {
-    const source = await resolveTailwindV4SourceFromRuntime(tailwindRuntime)
+    const source = resolveCssMacroTailwindV4Source(await resolveTailwindV4SourceFromRuntime(tailwindRuntime))
     const generated = await createTailwindV4Engine(source).generate({
       scanSources: true,
       target: 'web',
