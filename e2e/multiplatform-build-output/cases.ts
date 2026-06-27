@@ -140,12 +140,11 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
       },
       {
         file: 'dist/pages/index/index.acss',
-        contains: ['.issue-951-page-local'],
-        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+        notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
       },
       {
         file: 'dist/sub-normal/pages/index.acss',
-        contains: ['.bg-issue-951-normal'],
+        contains: ['.issue-951-page-local', '.bg-issue-951-normal'],
         notContains: ['.bg-issue-951-main', '.bg-issue-951-independent'],
       },
       {
@@ -189,12 +188,11 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
       },
       {
         file: 'dist/pages/index/index.ttss',
-        contains: ['.issue-951-page-local'],
-        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+        notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
       },
       {
         file: 'dist/sub-normal/pages/index.ttss',
-        contains: ['.bg-issue-951-normal'],
+        contains: ['.issue-951-page-local', '.bg-issue-951-normal'],
         notContains: ['.bg-issue-951-main', '.bg-issue-951-independent'],
       },
       {

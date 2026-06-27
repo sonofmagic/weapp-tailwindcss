@@ -166,6 +166,11 @@ const cases: SourceMutationCase[] = [
     projectRoot: path.resolve(repositoryRoot, 'demo/uni-app-vite-tailwindcss-v4'),
     appType: 'uni-app-vite',
     resolveOptions: root => ({
+      cssEntries: [
+        path.resolve(root, 'src/main.css'),
+        path.resolve(root, 'src/sub-normal/pages/index.css'),
+        path.resolve(root, 'src/sub-independent/pages/index.css'),
+      ],
       tailwindcss: {
         v4: {
           cssSources: [

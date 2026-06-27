@@ -1,5 +1,5 @@
 /* Tailwind v4 root entry intentionally uses plain CSS. */
-@import "tailwindcss";
+@import "tailwindcss" source(none);
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;

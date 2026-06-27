@@ -7,7 +7,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 34162 | 141 | false | false | false | true | true | false | true |
+| 17588 | 116 | false | false | false | true | true | false | true |
 
 ## Generator CSS Files
 
@@ -15,8 +15,8 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 | ---: | --- | --- |
 | 1 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) |
 | 2 | `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) |
-| 3 | `common.wxss` | [artifacts/common.wxss](artifacts/common.wxss) |
-| 4 | `pages-order/index.wxss` | [artifacts/pages-order__index.wxss](artifacts/pages-order__index.wxss) |
+| 3 | `pages-order/pages/home/home.wxss` | [artifacts/pages-order__pages__home__home.wxss](artifacts/pages-order__pages__home__home.wxss) |
+| 4 | `pages-order/pages/user/user.wxss` | [artifacts/pages-order__pages__user__user.wxss](artifacts/pages-order__pages__user__user.wxss) |
 | 5 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) |
 | 6 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) |
 
@@ -26,7 +26,7 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
 | `app.wxss` | [artifacts/app.wxss](artifacts/app.wxss) | 23 | 0 | false | false | false | false | false | false | false |
 | `main.wxss` | [artifacts/main.wxss](artifacts/main.wxss) | 14372 | 112 | false | false | false | true | true | false | true |
-| `common.wxss` | [artifacts/common.wxss](artifacts/common.wxss) | 9148 | 51 | false | false | false | false | false | false | true |
-| `pages-order/index.wxss` | [artifacts/pages-order__index.wxss](artifacts/pages-order__index.wxss) | 8554 | 51 | false | false | false | false | false | false | true |
+| `pages-order/pages/home/home.wxss` | [artifacts/pages-order__pages__home__home.wxss](artifacts/pages-order__pages__home__home.wxss) | 564 | 4 | false | false | false | false | false | false | false |
+| `pages-order/pages/user/user.wxss` | [artifacts/pages-order__pages__user__user.wxss](artifacts/pages-order__pages__user__user.wxss) | 564 | 4 | false | false | false | false | false | false | false |
 | `sub-independent/pages/index.wxss` | [artifacts/sub-independent__pages__index.wxss](artifacts/sub-independent__pages__index.wxss) | 1050 | 6 | false | false | false | false | false | false | true |
 | `sub-normal/pages/index.wxss` | [artifacts/sub-normal__pages__index.wxss](artifacts/sub-normal__pages__index.wxss) | 1015 | 6 | false | false | false | false | false | false | true |

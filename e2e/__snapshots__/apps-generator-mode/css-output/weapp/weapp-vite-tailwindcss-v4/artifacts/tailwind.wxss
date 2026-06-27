@@ -1,5 +1,3 @@
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */
 view,
 text,
 ::after,
@@ -395,6 +393,8 @@ wx-root-portal-content {
     color: var(--color-slate-100);
   }
 }
+/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
+/* Tailwind v4 root entry intentionally uses plain CSS. */
 .weapp-tw-user-ui-card {
   display: inline-flex;
   align-items: center;
@@ -419,5 +419,3 @@ wx-root-portal-content {
     transform: scale(0.96);
   }
 }
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */

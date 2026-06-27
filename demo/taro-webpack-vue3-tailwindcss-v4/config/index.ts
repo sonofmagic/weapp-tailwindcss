@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import devConfig from './dev'
@@ -21,6 +22,11 @@ const generator = {
     px2rpx: true,
   },
 } satisfies UserDefinedOptions['generator']
+const cssEntries = [
+  resolve(process.cwd(), 'src/app.css'),
+  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
+  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
+]
 
 function disableWebpackDevServerClientOverlay(chain: any) {
   chain.devServer.set('client', {
@@ -104,6 +110,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
+                  cssEntries,
                   rem2rpx: true,
                   generator,
                   // before 2248
@@ -153,6 +160,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                 {
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
+                  cssEntries,
                   rem2rpx: true,
                   generator,
                 } satisfies UserDefinedOptions

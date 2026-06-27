@@ -1,0 +1,49 @@
+{
+  "name": "@weapp-tailwindcss-starter/taro-vite-react",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "build:weapp": "taro build --type weapp",
+    "build:h5": "taro build --type h5",
+    "dev:weapp": "taro build --type weapp --watch",
+    "dev:h5": "taro build --type h5 --watch",
+    "prebuild:weapp": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:weapp": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "predev:h5": "node ../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "@babel/runtime": "catalog:babelRuntime7284",
+    "@tarojs/components": "catalog:taro4",
+    "@tarojs/helper": "catalog:taro4",
+    "@tarojs/plugin-framework-react": "catalog:taro4",
+    "@tarojs/plugin-platform-h5": "catalog:taro4",
+    "@tarojs/plugin-platform-weapp": "catalog:taro4",
+    "@tarojs/react": "catalog:taro4",
+    "@tarojs/runtime": "catalog:taro4",
+    "@tarojs/shared": "catalog:taro4",
+    "@tarojs/taro": "catalog:taro4",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:babelCore7285",
+    "@babel/preset-react": "catalog:babelPresetReact7285",
+    "@tarojs/cli": "catalog:taro4",
+    "@tarojs/vite-runner": "catalog:taro4",
+    "@types/node": "catalog:typesNode2410",
+    "@types/react": "catalog:react18",
+    "@types/webpack-env": "^1.13.6",
+    "@vitejs/plugin-react": "catalog:vitePluginReact4",
+    "babel-preset-taro": "catalog:taro4",
+    "postcss": "catalog:postcss85",
+    "tailwindcss": "catalog:tailwindcss4",
+    "terser": "^5.48.0",
+    "typescript": "catalog:typescript59",
+    "vite": "catalog:vite5421",
+    "weapp-tailwindcss": "workspace:*"
+  }
+}

@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 
 import devConfig from './dev'
@@ -16,6 +17,11 @@ const generator = {
     px2rpx: true,
   },
 }
+const cssEntries = [
+  resolve(process.cwd(), 'src/app.css'),
+  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
+  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
+]
 
 const isNativeTarget = process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'jdrn'
 
@@ -91,6 +97,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
         WeappTailwindcss({
           tailwindcssBasedir: process.cwd(),
           cssSourceTrace: true,
+          cssEntries,
           rem2rpx: true,
           generator,
           disabled: isNativeTarget,

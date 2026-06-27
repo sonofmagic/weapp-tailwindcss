@@ -1,0 +1,3 @@
+.starter-card::after {
+  content: '';
+}

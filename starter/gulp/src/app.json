@@ -1,0 +1,9 @@
+{
+  "pages": ["pages/index/index"],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "Starter",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "style": "v2"
+}

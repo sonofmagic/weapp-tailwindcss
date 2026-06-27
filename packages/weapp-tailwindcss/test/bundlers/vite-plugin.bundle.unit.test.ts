@@ -2686,6 +2686,50 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect([...(scopedSourceGetter?.(broadEntries).keys() ?? [])]).toEqual(['bg-independent-subpackage-marker'])
   }, TEST_TIMEOUT_MS)
 
+  it('collects Tailwind v4 cssEntries as configured css source entries', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-configured-css-entries-'))
+    createdDirs.push(root)
+    const normalCssFile = path.join(root, 'sub-normal/pages/index.css')
+    const independentCssFile = path.join(root, 'sub-independent/pages/index.css')
+    await mkdir(path.dirname(normalCssFile), { recursive: true })
+    await mkdir(path.dirname(independentCssFile), { recursive: true })
+    await writeFile(normalCssFile, '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";', 'utf8')
+    await writeFile(independentCssFile, '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-independent.js";', 'utf8')
+
+    const entries = collectConfiguredTailwindV4CssSourceEntries(createContext({
+      cssEntries: [normalCssFile, independentCssFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [normalCssFile, independentCssFile],
+        },
+      },
+    }) as any, root)
+
+    expect(entries.map(entry => entry.file)).toEqual([normalCssFile, independentCssFile])
+    expect(entries.map(entry => entry.source)).toEqual([
+      expect.stringContaining('tailwind.config.sub-normal.js'),
+      expect.stringContaining('tailwind.config.sub-independent.js'),
+    ])
+  }, TEST_TIMEOUT_MS)
+
+  it('does not treat a single Tailwind v4 cssEntry as configured css source entry', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-configured-single-css-entry-'))
+    createdDirs.push(root)
+    const cssFile = path.join(root, 'tailwind.css')
+    await writeFile(cssFile, '@import "tailwindcss" source(none);', 'utf8')
+
+    const entries = collectConfiguredTailwindV4CssSourceEntries(createContext({
+      cssEntries: [cssFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [cssFile],
+        },
+      },
+    }) as any, root)
+
+    expect(entries).toEqual([])
+  }, TEST_TIMEOUT_MS)
+
   it('matches empty emitted style assets back to configured Tailwind v4 css sources', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-configured-tailwind-css-'))
     createdDirs.push(root)

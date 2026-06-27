@@ -225,7 +225,7 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
 
   const shouldInjectCssIntoMainFromOutput = (
     outputFile: string,
-    _sourceFile: string,
+    sourceFile: string,
     outputCssHandlerOptions: { isMainChunk?: boolean | undefined },
   ) =>
     (
@@ -235,6 +235,7 @@ export function createSubpackageSourceCandidateScope(options: CreateSubpackageSo
     || (
       options.useIncrementalMode
       && isMainPackageStyleOutputFile(outputFile)
+      && isMainPackageStyleOutputFile(sourceFile)
     )
 
   return {

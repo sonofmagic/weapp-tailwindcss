@@ -32,7 +32,7 @@ async function listLeakedPreprocessorFiles(root: string) {
 describe('Tailwind v4 CSS source demo', () => {
   it('builds Tailwind v4 from a plain CSS root entry without leaking preprocessor output files', async () => {
     const appCss = await fs.readFile(path.join(demoRoot, 'tailwind.css'), 'utf8')
-    expect(appCss).toContain('@import "tailwindcss";')
+    expect(appCss).toMatch(/@import\s+"tailwindcss"(?:\s+source\(none\))?;/)
     expect(appCss).toContain('Tailwind v4 root entry intentionally uses plain CSS')
 
     await fs.rm(path.join(demoRoot, 'dist'), { recursive: true, force: true })

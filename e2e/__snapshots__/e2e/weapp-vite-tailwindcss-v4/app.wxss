@@ -240,22 +240,16 @@ wx-root-portal-content {
 /* tokens: bg-gradient-to-b <= pages/index/index.wxml */
 .bg-gradient-to-b {
   --tw-gradient-position: to bottom;
-  --tw-gradient-position: to bottom;
-  background-image: linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 /* tokens: bg-gradient-to-t <= pages/index/index.wxml */
 .bg-gradient-to-t {
   --tw-gradient-position: to top;
-  --tw-gradient-position: to top;
-  background-image: linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 /* tokens: bg-gradient-to-tr <= pages/index/index.wxml */
 .bg-gradient-to-tr {
   --tw-gradient-position: to top right;
-  --tw-gradient-position: to top right;
-  background-image: linear-gradient(var(--tw-gradient-stops));
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
 /* tokens: from-[#2f73f1] <= pages/index/index.wxml */
@@ -403,112 +397,6 @@ wx-root-portal-content {
 }
 /* Main style shell. Tailwind v4 source directives live in tailwind.css. */
 /* Tailwind v4 root entry intentionally uses plain CSS. */
-/* tokens: icon-[mdi--account] <= pages/index/index.wxml */
-.icon-_bmdi--account_B {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: currentColor;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4'/%3E%3C/svg%3E");
-  -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4'/%3E%3C/svg%3E");
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4'/%3E%3C/svg%3E");
-}
-/* tokens: icon-[mdi--home] <= pages/index/index.wxml */
-.icon-_bmdi--home_B {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  background-color: currentColor;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-  -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='black' d='M10 20v-6h4v6h5v-8h3L12 3L2 12h3v8z'/%3E%3C/svg%3E");
-}
-/* tokens: iconify-[lucide--bell] <= pages/index/index.wxml */
-.iconify-_blucide--bell_B {
-  display: inline-block;
-  width: 1.2em;
-  height: 1.2em;
-  background-color: currentColor;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10.268 21a2 2 0 0 0 3.464 0m-10.47-5.674A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326'/%3E%3C/svg%3E");
-  -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10.268 21a2 2 0 0 0 3.464 0m-10.47-5.674A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326'/%3E%3C/svg%3E");
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10.268 21a2 2 0 0 0 3.464 0m-10.47-5.674A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326'/%3E%3C/svg%3E");
-}
-/* tokens: iconify-[lucide--settings] <= pages/index/index.wxml */
-.iconify-_blucide--settings_B {
-  display: inline-block;
-  width: 1.2em;
-  height: 1.2em;
-  background-color: currentColor;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M9.671 4.136a2.34 2.34 0 0 1 4.659 0a2.34 2.34 0 0 0 3.319 1.915a2.34 2.34 0 0 1 2.33 4.033a2.34 2.34 0 0 0 0 3.831a2.34 2.34 0 0 1-2.33 4.033a2.34 2.34 0 0 0-3.319 1.915a2.34 2.34 0 0 1-4.659 0a2.34 2.34 0 0 0-3.32-1.915a2.34 2.34 0 0 1-2.33-4.033a2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/g%3E%3C/svg%3E");
-  -webkit-mask-image: var(--svg);
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M9.671 4.136a2.34 2.34 0 0 1 4.659 0a2.34 2.34 0 0 0 3.319 1.915a2.34 2.34 0 0 1 2.33 4.033a2.34 2.34 0 0 0 0 3.831a2.34 2.34 0 0 1-2.33 4.033a2.34 2.34 0 0 0-3.319 1.915a2.34 2.34 0 0 1-4.659 0a2.34 2.34 0 0 0-3.32-1.915a2.34 2.34 0 0 1-2.33-4.033a2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/g%3E%3C/svg%3E");
-  mask-image: var(--svg);
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  --svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cg fill='none' stroke='black' stroke-linecap='round' stroke-linejoin='round' stroke-width='2'%3E%3Cpath d='M9.671 4.136a2.34 2.34 0 0 1 4.659 0a2.34 2.34 0 0 0 3.319 1.915a2.34 2.34 0 0 1 2.33 4.033a2.34 2.34 0 0 0 0 3.831a2.34 2.34 0 0 1-2.33 4.033a2.34 2.34 0 0 0-3.319 1.915a2.34 2.34 0 0 1-4.659 0a2.34 2.34 0 0 0-3.32-1.915a2.34 2.34 0 0 1-2.33-4.033a2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/g%3E%3C/svg%3E");
-}
-/* tokens: space-y-2.5 <= pages/index/index.wxml */
-.space-y-2_d5 > view + view,
-.space-y-2_d5 > view + text,
-.space-y-2_d5 > text + view,
-.space-y-2_d5 > text + text {
-  --tw-space-y-reverse: 0;
-  margin-bottom: calc((var(--spacing) * 2.5) * 0);
-  margin-bottom: calc((var(--spacing) * 2.5) * var(--tw-space-y-reverse));
-  margin-bottom: calc(var(--spacing) * 2.5 * 0);
-  margin-bottom: calc(var(--spacing) * 2.5 * var(--tw-space-y-reverse));
-  margin-top: calc((var(--spacing) * 2.5) * 1);
-  margin-top: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-y-reverse)));
-  margin-top: calc(var(--spacing) * 2.5 * 1);
-  margin-top: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-y-reverse)));
-}
-/* tokens: space-x-2.5 <= pages/index/index.wxml */
-.space-x-2_d5 > view + view,
-.space-x-2_d5 > view + text,
-.space-x-2_d5 > text + view,
-.space-x-2_d5 > text + text {
-  --tw-space-x-reverse: 0;
-  margin-right: calc((var(--spacing) * 2.5) * 0);
-  margin-right: calc((var(--spacing) * 2.5) * var(--tw-space-x-reverse));
-  margin-right: calc(var(--spacing) * 2.5 * 0);
-  margin-right: calc(var(--spacing) * 2.5 * var(--tw-space-x-reverse));
-  margin-left: calc((var(--spacing) * 2.5) * 1);
-  margin-left: calc((var(--spacing) * 2.5) * (1 - var(--tw-space-x-reverse)));
-  margin-left: calc(var(--spacing) * 2.5 * 1);
-  margin-left: calc(var(--spacing) * 2.5 * (1 - var(--tw-space-x-reverse)));
-}
-/* tokens: from-[#2f73f1] <= pages/index/index.wxml */
-.from-_b_h2f73f1_B {
-  --tw-gradient-from: #2f73f1;
-  --tw-gradient-stops:
-    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
-}
-/* tokens: to-[#4bcefd] <= pages/index/index.wxml */
-.to-_b_h4bcefd_B {
-  --tw-gradient-to: #4bcefd;
-  --tw-gradient-stops:
-    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
-}
 .weapp-tw-user-ui-card {
   display: inline-flex;
   align-items: center;
@@ -535,75 +423,3 @@ wx-root-portal-content {
   }
 }
 /*$vite$:1*/
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */
-/* tokens: mt-2 <= pages/index/index.wxml */
-/* tokens: mt-4 <= pages/index/index.wxml */
-/* tokens: icon-[mdi--account] <= pages/index/index.wxml */
-/* tokens: icon-[mdi--home] <= pages/index/index.wxml */
-/* tokens: iconify-[lucide--bell] <= pages/index/index.wxml */
-/* tokens: iconify-[lucide--settings] <= pages/index/index.wxml */
-/* tokens: flex <= pages/index/index.wxml */
-/* tokens: hidden <= pages/index/index.wxml */
-/* tokens: inline-block <= pages/index/index.wxml */
-/* tokens: size-8 <= pages/index/index.wxml */
-/* tokens: size-12 <= pages/index/index.wxml */
-/* tokens: h-10 <= pages/index/index.wxml */
-/* tokens: h-[30px] <= pages/index/index.wxml */
-/* tokens: h-[45px] <= pages/index/index.wxml */
-/* tokens: min-h-screen <= pages/index/index.wxml */
-/* tokens: w-[50px] <= pages/index/index.wxml */
-/* tokens: w-[323px] <= pages/index/index.wxml */
-/* tokens: flex-col <= pages/index/index.wxml */
-/* tokens: items-center <= pages/index/index.wxml */
-/* tokens: gap-3 <= pages/index/index.wxml */
-/* tokens: space-y-2.5 <= pages/index/index.wxml */
-/* tokens: space-x-2.5 <= pages/index/index.wxml */
-/* tokens: rounded <= pages/index/index.wxml */
-/* tokens: border-4 <= pages/index/index.wxml */
-/* tokens: bg-[#3a32d1] <= pages/index/index.wxml */
-/* tokens: bg-[#68c828] <= pages/index/index.wxml */
-/* tokens: bg-[#111111] <= pages/index/index.wxml */
-/* tokens: bg-amber-300 <= pages/index/index.wxml */
-/* tokens: bg-blue-500/30 <= pages/index/index.wxml */
-/* tokens: bg-gray-900 <= pages/index/index.wxml */
-/* tokens: bg-white <= pages/index/index.wxml */
-/* tokens: bg-zinc-50 <= pages/index/index.wxml */
-/* tokens: bg-gradient-to-b <= pages/index/index.wxml */
-/* tokens: bg-gradient-to-t <= pages/index/index.wxml */
-/* tokens: bg-gradient-to-tr <= pages/index/index.wxml */
-/* tokens: from-[#2f73f1] <= pages/index/index.wxml */
-/* tokens: to-[#4bcefd] <= pages/index/index.wxml */
-/* tokens: p-4 <= pages/index/index.wxml */
-/* tokens: px-3 <= pages/index/index.wxml */
-/* tokens: px-4 <= pages/index/index.wxml */
-/* tokens: py-2 <= pages/index/index.wxml */
-/* tokens: py-3 <= pages/index/index.wxml */
-/* tokens: text-[100px] <= pages/index/index.wxml */
-/* tokens: text-[55rpx] <= pages/index/index.wxml */
-/* tokens: text-[100rpx] <= pages/index/index.wxml */
-/* tokens: text-[#123456] <= pages/index/index.wxml */
-/* tokens: text-blue-500 <= pages/index/index.wxml */
-/* tokens: text-emerald-600 <= pages/index/index.wxml */
-/* tokens: text-pink-300 <= pages/index/index.wxml */
-/* tokens: text-red-700 <= pages/index/index.wxml */
-/* tokens: text-rose-600 <= pages/index/index.wxml */
-/* tokens: text-sky-600 <= pages/index/index.wxml */
-/* tokens: text-slate-200 <= pages/index/index.wxml */
-/* tokens: text-slate-700 <= pages/index/index.wxml */
-/* tokens: text-slate-800 <= pages/index/index.wxml */
-/* tokens: text-slate-900 <= pages/index/index.wxml */
-/* tokens: text-violet-600 <= pages/index/index.wxml */
-/* tokens: transition-colors <= pages/index/index.wxml */
-/* tokens: duration-500 <= pages/index/index.wxml */
-/* tokens: dark:bg-zinc-900 <= pages/index/index.wxml | theme-dark <= pages/index/index.wxml */
-/* tokens: theme-dark <= pages/index/index.wxml | dark:bg-zinc-900 <= pages/index/index.wxml */
-/* tokens: dark:bg-zinc-950 <= pages/index/index.wxml | theme-dark <= pages/index/index.wxml */
-/* tokens: theme-dark <= pages/index/index.wxml | dark:bg-zinc-950 <= pages/index/index.wxml */
-/* tokens: dark:text-zinc-50 <= pages/index/index.wxml | theme-dark <= pages/index/index.wxml */
-/* tokens: theme-dark <= pages/index/index.wxml | dark:text-zinc-50 <= pages/index/index.wxml */
-/*$vite$:1*/
-/* Main style shell. Tailwind v4 source directives live in tailwind.css. */
-/* Tailwind v4 root entry intentionally uses plain CSS. */
