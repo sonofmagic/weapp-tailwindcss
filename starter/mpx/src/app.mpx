@@ -1,0 +1,13 @@
+<script lang="ts">
+import { createApp } from '@mpxjs/core'
+
+createApp({})
+</script>
+
+<style src="./app.css"></style>
+
+<script type="application/json">
+{
+  "pages": ["./pages/index"]
+}
+</script>

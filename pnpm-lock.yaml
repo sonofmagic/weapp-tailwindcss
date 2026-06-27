@@ -313,6 +313,10 @@ catalogs:
     vite:
       specifier: ^4.5.14
       version: 4.5.14
+  vite5421:
+    vite:
+      specifier: ^5.4.21
+      version: 5.4.21
   vite724:
     vite:
       specifier: ^7.3.6
@@ -3567,6 +3571,355 @@ importers:
       cac:
         specifier: ^6.7.14
         version: 6.7.14
+
+  starter/gulp:
+    devDependencies:
+      '@types/gulp':
+        specifier: ^4.0.18
+        version: 4.0.18
+      '@types/gulp-if':
+        specifier: ^3.0.5
+        version: 3.0.5
+      '@types/gulp-rename':
+        specifier: ^2.0.7
+        version: 2.0.7
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.0.1
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      gulp:
+        specifier: ^5.0.1
+        version: 5.0.1
+      gulp-if:
+        specifier: ^3.0.0
+        version: 3.0.0
+      gulp-postcss:
+        specifier: ^10.0.0
+        version: 10.0.0(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)
+      gulp-rename:
+        specifier: ^2.0.0
+        version: 2.1.0
+      gulp-typescript:
+        specifier: ^6.0.0-alpha.1
+        version: 6.0.0-alpha.1(typescript@6.0.3)
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.1
+      tsx:
+        specifier: catalog:tsx
+        version: 4.22.4
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+
+  starter/mpx:
+    dependencies:
+      '@mpxjs/api-proxy':
+        specifier: ^2.10.13
+        version: 2.10.21(@mpxjs/core@2.10.24)(@react-native-async-storage/async-storage@1.21.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(@react-native-community/netinfo@11.1.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(debug@4.4.3)(react-native-device-info@14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0))(react@18.2.0))
+      '@mpxjs/core':
+        specifier: ^2.10.13
+        version: 2.10.24(1c28718c96822fb4f4aaf85760dedccb)
+      '@mpxjs/utils':
+        specifier: ^2.10.13
+        version: 2.10.21(@mpxjs/core@2.10.24)
+      vue:
+        specifier: ^2.7.0
+        version: 2.7.16
+    devDependencies:
+      '@babel/core':
+        specifier: ^7.28.3
+        version: 7.29.7
+      '@babel/plugin-transform-runtime':
+        specifier: ^7.28.3
+        version: 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-env':
+        specifier: ^7.28.3
+        version: 7.29.7(@babel/core@7.29.7)
+      '@babel/runtime-corejs3':
+        specifier: ^7.28.3
+        version: 7.29.7
+      '@mpxjs/babel-plugin-inject-page-events':
+        specifier: ^2.9.0
+        version: 2.10.21
+      '@mpxjs/mpx-cli-service':
+        specifier: ^2.2.2
+        version: 2.2.30(@rspack/core@2.0.8(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(prettier@3.8.4)(react@18.2.0)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.5.0)
+      '@mpxjs/vue-cli-plugin-mpx':
+        specifier: ^2.2.2
+        version: 2.2.30(@babel/core@7.29.7)(@mpxjs/webpack-plugin@2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@rspack/core@2.0.8(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(css-loader@7.1.4(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(postcss@8.5.15)(prettier@3.8.4)(react@18.2.0)(vue-template-compiler@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@mpxjs/vue-cli-plugin-mpx-typescript':
+        specifier: ^2.2.2
+        version: 2.2.30(typescript@6.0.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@mpxjs/webpack-plugin':
+        specifier: ^2.10.14
+        version: 2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@vue/cli-service':
+        specifier: ~5.0.9
+        version: 5.0.9(@rspack/core@2.0.8(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(prettier@3.8.4)(react@18.2.0)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.5.0)
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.1
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+      webpack:
+        specifier: ^5.101.3
+        version: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+
+  starter/taro-vite-react:
+    dependencies:
+      '@babel/runtime':
+        specifier: catalog:babelRuntime7284
+        version: 7.29.7
+      '@tarojs/components':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/helper':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/plugin-framework-react':
+        specifier: catalog:taro4
+        version: 4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-h5':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@tarojs/taro@4.2.0(d6917b277664dfc4d6c29192cbef9cfc))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(react@18.3.1)(rollup@3.30.0)(solid-js@1.9.10)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-weapp':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/service@4.2.0(@swc/helpers@0.5.23))(@tarojs/shared@4.2.0)
+      '@tarojs/react':
+        specifier: catalog:taro4
+        version: 4.2.0(react@18.3.1)
+      '@tarojs/runtime':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/shared':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/taro':
+        specifier: catalog:taro4
+        version: 4.2.0(d6917b277664dfc4d6c29192cbef9cfc)
+      react:
+        specifier: catalog:react18
+        version: 18.3.1
+      react-dom:
+        specifier: catalog:react18
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@babel/core':
+        specifier: catalog:babelCore7285
+        version: 7.29.7
+      '@babel/preset-react':
+        specifier: catalog:babelPresetReact7285
+        version: 7.29.7(@babel/core@7.29.7)
+      '@tarojs/cli':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.0.1)(debug@4.4.3)
+      '@tarojs/vite-runner':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@tarojs/runtime@4.2.0)(@types/babel__core@7.20.5)(jiti@2.7.0)(postcss@8.5.15)(rollup@3.30.0)(terser@5.48.0)(tsx@4.22.4)(typescript@6.0.3)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.0.1
+      '@types/react':
+        specifier: catalog:react18
+        version: 19.2.17
+      '@types/webpack-env':
+        specifier: ^1.13.6
+        version: 1.18.8
+      '@vitejs/plugin-react':
+        specifier: catalog:vitePluginReact4
+        version: 4.7.0(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      babel-preset-taro:
+        specifier: catalog:taro4
+        version: 4.2.0(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/preset-react@7.29.7(@babel/core@7.29.7))(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.0(bf95c18370d153e431af3ff51efae974))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))(react-refresh@0.14.2)
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.1
+      terser:
+        specifier: ^5.48.0
+        version: 5.48.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite5421
+        version: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+
+  starter/taro-webpack-react:
+    dependencies:
+      '@babel/runtime':
+        specifier: catalog:babelRuntime7284
+        version: 7.29.7
+      '@tarojs/components':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/helper':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/plugin-framework-react':
+        specifier: catalog:taro4
+        version: 4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.18.0)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-h5':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@tarojs/taro@4.2.0(250c63b60d33399459bfc502344b9149))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(react@18.3.1)(rollup@3.30.0)(solid-js@1.9.10)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-weapp':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/service@4.2.0(@swc/helpers@0.5.23))(@tarojs/shared@4.2.0)
+      '@tarojs/react':
+        specifier: catalog:taro4
+        version: 4.2.0(react@18.3.1)
+      '@tarojs/runtime':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/shared':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/taro':
+        specifier: catalog:taro4
+        version: 4.2.0(250c63b60d33399459bfc502344b9149)
+      react:
+        specifier: catalog:react18
+        version: 18.3.1
+      react-dom:
+        specifier: catalog:react18
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@babel/core':
+        specifier: catalog:babelCore7285
+        version: 7.29.7
+      '@babel/preset-react':
+        specifier: catalog:babelPresetReact7285
+        version: 7.29.7(@babel/core@7.29.7)
+      '@pmmmwh/react-refresh-webpack-plugin':
+        specifier: ^0.6.2
+        version: 0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.18.0)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/cli':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.0.1)(debug@4.4.3)
+      '@tarojs/webpack5-runner':
+        specifier: catalog:taro4
+        version: 4.2.0(@babel/core@7.29.7)(@rspack/core@2.0.8(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@swc/helpers@0.5.23)(@tarojs/runtime@4.2.0)(debug@4.4.3)(less@4.6.6)(postcss@8.5.15)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(typescript@6.0.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.0.1
+      '@types/react':
+        specifier: catalog:react18
+        version: 19.2.17
+      '@types/webpack-env':
+        specifier: ^1.13.6
+        version: 1.18.8
+      babel-preset-taro:
+        specifier: catalog:taro4
+        version: 4.2.0(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/preset-react@7.29.7(@babel/core@7.29.7))(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.0(8fad8d273c7ef5f735928bda817f84ec))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))(react-refresh@0.18.0)
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      react-refresh:
+        specifier: catalog:reactRefresh018
+        version: 0.18.0
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.1
+      tsconfig-paths-webpack-plugin:
+        specifier: ^4.1.0
+        version: 4.2.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+      webpack:
+        specifier: 5.105.4
+        version: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
+
+  starter/uni-app-vite:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@dcloudio/types@3.4.28)(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-components':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-h5':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-mp-weixin':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(debug@4.4.3)(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      vue:
+        specifier: ^3.4.21
+        version: 3.5.39(typescript@6.0.3)
+    devDependencies:
+      '@dcloudio/types':
+        specifier: ^3.4.8
+        version: 3.4.28
+      '@dcloudio/uni-cli-shared':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/vite-plugin-uni':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@vue/runtime-core':
+        specifier: ^3.4.21
+        version: 3.5.39
+      '@vue/tsconfig':
+        specifier: ^0.8.1
+        version: 0.8.1(typescript@6.0.3)(vue@3.5.39(typescript@6.0.3))
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.1
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: 5.2.8
+        version: 5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      vue-tsc:
+        specifier: ^2.2.10
+        version: 2.2.12(typescript@6.0.3)
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+
+  starter/weapp-vite:
+    devDependencies:
+      tailwindcss:
+        specifier: catalog:tailwindcss4
+        version: 4.3.1
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      weapp-tailwindcss:
+        specifier: workspace:*
+        version: link:../../packages/weapp-tailwindcss
+      weapp-vite:
+        specifier: catalog:weappVite
+        version: 6.17.4(@babel/core@8.0.1)(@types/node@26.0.1)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(miniprogram-api-typings@5.2.1)(oxc-resolver@11.20.0)(rollup@4.62.2)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)
 
   tools/weapp-tailwindcss-scripts:
     dependencies:
@@ -13905,17 +14258,26 @@ packages:
   '@vitest/utils@4.1.9':
     resolution: {integrity: sha512-A51o8ymO5PpqlWNnBP9ZHPXDIpuMtTLlGSjN7la4US+LJzoUMyhwjA5QXlm39JexgwHKW4Xjs8Z2d3dLCXOeuA==}
 
+  '@volar/language-core@2.4.15':
+    resolution: {integrity: sha512-3VHw+QZU0ZG9IuQmzT68IyN4hZNd9GchGPhbD9+pa8CVv7rnoOZwo7T8weIbrRmihqy3ATpdfXFnqRrfPVK6CA==}
+
   '@volar/language-core@2.4.27':
     resolution: {integrity: sha512-DjmjBWZ4tJKxfNC1F6HyYERNHPYS7L7OPFyCrestykNdUZMFYzI9WTyvwPcaNaHlrEUwESHYsfEw3isInncZxQ==}
 
   '@volar/language-core@2.4.28':
     resolution: {integrity: sha512-w4qhIJ8ZSitgLAkVay6AbcnC7gP3glYM3fYwKV3srj8m494E3xtrCv6E+bWviiK/8hs6e6t1ij1s2Endql7vzQ==}
 
+  '@volar/source-map@2.4.15':
+    resolution: {integrity: sha512-CPbMWlUN6hVZJYGcU/GSoHu4EnCHiLaXI9n8c9la6RaI9W5JHX+NqG+GSQcB0JdC2FIBLdZJwGsfKyBB71VlTg==}
+
   '@volar/source-map@2.4.27':
     resolution: {integrity: sha512-ynlcBReMgOZj2i6po+qVswtDUeeBRCTgDurjMGShbm8WYZgJ0PA4RmtebBJ0BCYol1qPv3GQF6jK7C9qoVc7lg==}
 
   '@volar/source-map@2.4.28':
     resolution: {integrity: sha512-yX2BDBqJkRXfKw8my8VarTyjv48QwxdJtvRgUpNE5erCsgEUdI2DsLbpa+rOQVAJYshY99szEcRDmyHbF10ggQ==}
+
+  '@volar/typescript@2.4.15':
+    resolution: {integrity: sha512-2aZ8i0cqPGjXb4BhkMsPYDkkuc2ZQ6yOpqwAuNwUoncELqoy5fRgOQtLR9gB0g902iS0NAkvpIzs27geVyVdPg==}
 
   '@volar/typescript@2.4.27':
     resolution: {integrity: sha512-eWaYCcl/uAPInSK2Lze6IqVWaBu/itVqR5InXcHXFyles4zO++Mglt3oxdgj75BDcv1Knr9Y93nowS8U3wqhxg==}
@@ -14043,6 +14405,14 @@ packages:
       typescript:
         optional: true
 
+  '@vue/language-core@2.2.12':
+    resolution: {integrity: sha512-IsGljWbKGU1MZpBPN+BvPAdr55YPkj2nB/TBNGNC32Vy2qLG25DYu/NBN2vNtZqdRbTRjaoYrahLrToim2NanA==}
+    peerDependencies:
+      typescript: '*'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   '@vue/language-core@3.2.1':
     resolution: {integrity: sha512-g6oSenpnGMtpxHGAwKuu7HJJkNZpemK/zg3vZzZbJ6cnnXq1ssxuNrXSsAHYM3NvH8p4IkTw+NLmuxyeYz4r8A==}
 
@@ -14073,6 +14443,17 @@ packages:
 
   '@vue/shared@3.5.39':
     resolution: {integrity: sha512-l1rrBtBfTnmxvtsvdQDXltUUy8S1Y+ZaqdfUzmAnJkTd8Z8rv5v/ytW+TKiqEOWyHPoqtPlNFSs0lhRmYVSHVA==}
+
+  '@vue/tsconfig@0.8.1':
+    resolution: {integrity: sha512-aK7feIWPXFSUhsCP9PFqPyFOcz4ENkb8hZ2pneL6m2UjCkccvaOhC/5KCKluuBufvp2KzkbdA2W2pk20vLzu3g==}
+    peerDependencies:
+      typescript: 5.x
+      vue: ^3.4.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      vue:
+        optional: true
 
   '@vue/tsconfig@0.9.1':
     resolution: {integrity: sha512-buvjm+9NzLCJL29KY1j1991YYJ5e6275OiK+G4jtmfIb+z4POywbdm0wXusT9adVWqe0xqg70TbI7+mRx4uU9w==}
@@ -14505,6 +14886,9 @@ packages:
 
   alien-signals@0.4.14:
     resolution: {integrity: sha512-itUAVzhczTmP2U5yX67xVpsbbOiquusbWVyA9N+sy6+r6YVbFkahXvNCeEPWEOMhwDYwbVbGHFkVL03N9I5g+Q==}
+
+  alien-signals@1.0.13:
+    resolution: {integrity: sha512-OGj9yyTnJEttvzhTUWuscOvtqxq5vrhF7vL9oS0xJ2mK0ItPYP1/y+vCFebfxoEyAz0++1AIwJ5CMr+Fk3nDmg==}
 
   alien-signals@3.1.1:
     resolution: {integrity: sha512-ogkIWbVrLwKtHY6oOAXaYkAxP+cTH7V5FZ5+Tm4NZFd8VDZ6uNMDrfzqctTZ42eTMCSR3ne3otpcxmqSnFfPYA==}
@@ -28388,6 +28772,34 @@ packages:
       terser:
         optional: true
 
+  vite@5.2.8:
+    resolution: {integrity: sha512-OyZR+c1CE8yeHw5V5t59aXsUPPVTHMDjEZz8MgguLL/Q7NblxhZUlTu9xSPqlsUO/y+X7dlU05jdhvyycD55DA==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@types/node': ^18.0.0 || >=20.0.0
+      less: '*'
+      lightningcss: ^1.21.0
+      sass: '*'
+      stylus: '*'
+      sugarss: '*'
+      terser: ^5.4.0
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+      less:
+        optional: true
+      lightningcss:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      terser:
+        optional: true
+
   vite@5.4.21:
     resolution: {integrity: sha512-o5a9xKjbtuhY6Bi5S3+HvbRERmouabWbyUcpXXUA1u+GNUKoROi9byOJ8M0nHbHYHkYICiMlqxkg1KkYmm25Sw==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -28759,6 +29171,12 @@ packages:
 
   vue-template-es2015-compiler@1.9.1:
     resolution: {integrity: sha512-4gDntzrifFnCEvyoO8PqyJDmguXgVPxKiIxrBKjIowvL9l+N66196+72XVYR8BBf1Uv1Fgt3bGevJ+sEmxfZzw==}
+
+  vue-tsc@2.2.12:
+    resolution: {integrity: sha512-P7OP77b2h/Pmk+lZdJ0YWs+5tJ6J2+uOQPo7tlBnY44QqQSPYvS0qVT4wqDJgwrZaLe47etJLLQRFia71GYITw==}
+    hasBin: true
+    peerDependencies:
+      typescript: '>=5.0.0'
 
   vue-tsc@3.3.5:
     resolution: {integrity: sha512-Rzh/G2MmNlMSAMTiQEjDrsb4dgB/jbtEM47rVN2NtidF1dfb/q4w4QvpQBtW5+y3y5H27Hjh7deVwk+YB02fNg==}
@@ -33664,6 +34082,44 @@ snapshots:
       '@dcloudio/uts-win32-ia32-msvc': 3.0.0-5000720260410001
       '@dcloudio/uts-win32-x64-msvc': 3.0.0-5000720260410001
 
+  '@dcloudio/vite-plugin-uni@3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
+    dependencies:
+      '@babel/core': 7.25.2
+      '@babel/plugin-syntax-import-meta': 7.10.4(@babel/core@7.25.2)
+      '@babel/plugin-transform-typescript': 7.29.7(@babel/core@7.25.2)
+      '@dcloudio/uni-cli-shared': 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-nvue-styler': 3.0.0-5000720260410001
+      '@dcloudio/uni-shared': 3.0.0-5000720260410001
+      '@rollup/pluginutils': 5.1.0(rollup@4.62.2)
+      '@vitejs/plugin-legacy': 5.3.2(terser@5.48.0)(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      '@vitejs/plugin-vue': 5.2.4(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@vitejs/plugin-vue-jsx': 3.1.0(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@vue/compiler-core': 3.4.21
+      '@vue/compiler-dom': 3.4.21
+      '@vue/compiler-sfc': 3.4.21
+      '@vue/shared': 3.4.21
+      cac: 6.7.9
+      debug: 4.3.7
+      estree-walker: 2.0.2
+      express: 4.20.0
+      fast-glob: 3.3.3
+      fs-extra: 10.1.0
+      hash-sum: 2.0.0
+      jsonc-parser: 3.3.1
+      magic-string: 0.30.11
+      picocolors: 1.1.0
+      terser: 5.48.0
+      unplugin-auto-import: 19.1.0(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))
+      vite: 5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+    transitivePeerDependencies:
+      - '@nuxt/kit'
+      - '@vueuse/core'
+      - postcss
+      - rollup
+      - supports-color
+      - ts-node
+      - vue
+
   '@dcloudio/vite-plugin-uni@3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       '@babel/core': 7.25.2
@@ -37595,6 +38051,16 @@ snapshots:
       - vue
       - webpack
 
+  '@mpxjs/template-engine@2.8.7(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      '@mpxjs/webpack-plugin': 2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+    transitivePeerDependencies:
+      - '@mpxjs/core'
+      - supports-color
+      - ts-node
+      - vue
+      - webpack
+
   '@mpxjs/utils@2.10.21(@mpxjs/core@2.10.24)':
     dependencies:
       '@mpxjs/core': 2.10.24(1c28718c96822fb4f4aaf85760dedccb)
@@ -37602,6 +38068,13 @@ snapshots:
   '@mpxjs/vue-cli-plugin-mpx-typescript@2.2.30(typescript@6.0.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
     dependencies:
       ts-loader: 9.5.7(typescript@6.0.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+    transitivePeerDependencies:
+      - typescript
+      - webpack
+
+  '@mpxjs/vue-cli-plugin-mpx-typescript@2.2.30(typescript@6.0.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      ts-loader: 9.5.7(typescript@6.0.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
     transitivePeerDependencies:
       - typescript
       - webpack
@@ -37629,6 +38102,110 @@ snapshots:
       webpack-dev-server: 4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
       webpack-merge: 5.10.0
       webpackbar: 7.0.0(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      wrap-ansi: 5.1.0
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@minify-html/node'
+      - '@rspack/core'
+      - '@swc/core'
+      - '@swc/css'
+      - '@swc/html'
+      - '@vue/compiler-sfc'
+      - arc-templates
+      - atpl
+      - babel-core
+      - bracket-template
+      - bufferutil
+      - cache-loader
+      - clean-css
+      - coffee-script
+      - css-loader
+      - cssnano
+      - csso
+      - debug
+      - dot
+      - dust
+      - dustjs-helpers
+      - dustjs-linkedin
+      - eco
+      - ect
+      - ejs
+      - encoding
+      - esbuild
+      - haml-coffee
+      - hamlet
+      - hamljs
+      - handlebars
+      - hogan.js
+      - html-minifier-terser
+      - htmling
+      - jade
+      - jazz
+      - jqtpl
+      - just
+      - lightningcss
+      - liquid-node
+      - liquor
+      - lodash
+      - marko
+      - mote
+      - mustache
+      - nunjucks
+      - plates
+      - postcss
+      - prettier
+      - pug
+      - qejs
+      - ractive
+      - razor-tmpl
+      - react
+      - react-dom
+      - slm
+      - squirrelly
+      - supports-color
+      - swig
+      - swig-templates
+      - teacup
+      - templayed
+      - then-jade
+      - then-pug
+      - tinyliquid
+      - toffee
+      - twig
+      - twing
+      - uglify-js
+      - underscore
+      - utf-8-validate
+      - vash
+      - velocityjs
+      - vue-template-compiler
+      - walrus
+      - webpack-cli
+      - whiskers
+
+  '@mpxjs/vue-cli-plugin-mpx@2.2.30(@babel/core@7.29.7)(@mpxjs/webpack-plugin@2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@rspack/core@2.0.8(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(css-loader@7.1.4(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(postcss@8.5.15)(prettier@3.8.4)(react@18.2.0)(vue-template-compiler@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      '@mpxjs/cli-shared-utils': 2.2.30
+      '@mpxjs/webpack-plugin': 2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@soda/friendly-errors-webpack-plugin': 1.8.1(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@vue/cli-shared-utils': 5.0.9(encoding@0.1.13)
+      '@vue/vue-loader-v15': vue-loader@15.11.1(@vue/compiler-sfc@3.5.39)(css-loader@7.1.4(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(ejs@3.1.10)(handlebars@4.7.9)(lodash@4.18.1)(prettier@3.8.4)(react@18.2.0)(vue-template-compiler@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      ansi-escapes: 4.3.2
+      babel-loader: 8.4.1(@babel/core@7.29.7)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      cli-highlight: 2.1.11
+      consola: 2.15.3
+      copy-webpack-plugin: 9.1.0(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      fs-extra: 9.1.0
+      launch-editor-middleware: 2.13.2
+      portfinder: 1.0.38
+      std-env: 3.10.0
+      terser-webpack-plugin: 5.6.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack-bundle-analyzer: 4.10.2
+      webpack-chain: 6.5.1
+      webpack-dev-server: 4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      webpack-merge: 5.10.0
+      webpackbar: 7.0.0(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
       wrap-ansi: 5.1.0
     transitivePeerDependencies:
       - '@babel/core'
@@ -37761,6 +38338,65 @@ snapshots:
       source-list-map: 2.0.1
       source-map: 0.7.6
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
+      webpack-virtual-modules: 0.6.2
+    optionalDependencies:
+      vue: 2.7.16
+    transitivePeerDependencies:
+      - '@mpxjs/core'
+      - supports-color
+      - ts-node
+
+  '@mpxjs/webpack-plugin@2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      '@babel/code-frame': 7.29.7
+      '@babel/generator': 7.29.7
+      '@babel/parser': 7.29.7
+      '@babel/traverse': 7.29.7
+      '@babel/types': 7.29.7
+      '@better-scroll/core': 2.5.1
+      '@better-scroll/mouse-wheel': 2.5.1
+      '@better-scroll/movable': 2.5.1
+      '@better-scroll/observe-dom': 2.5.1
+      '@better-scroll/pull-down': 2.5.1
+      '@better-scroll/slide': 2.5.1
+      '@better-scroll/wheel': 2.5.1
+      '@better-scroll/zoom': 2.5.1
+      '@jridgewell/trace-mapping': 0.3.31
+      '@mpxjs/perf': 2.10.24
+      '@mpxjs/template-engine': 2.8.7(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@mpxjs/utils': 2.10.21(@mpxjs/core@2.10.24)
+      acorn: 8.16.0
+      acorn-walk: 7.2.0
+      async: 2.6.4
+      css: 2.2.4
+      css-selector-tokenizer: 0.7.3
+      cssnano: 5.1.15(postcss@8.5.15)
+      de-indent: 1.0.2
+      fastparse: 1.1.2
+      hash-sum: 1.0.2
+      he: 1.2.0
+      html-minifier: 3.5.21
+      icss-utils: 2.1.0
+      json5: 2.2.3
+      loader-utils: 2.0.4
+      lodash: 4.18.1
+      lodash.camelcase: 4.3.0
+      lru-cache: 4.1.5
+      magic-string: 0.26.7
+      mime: 2.6.0
+      object-assign: 4.1.1
+      postcss: 8.5.15
+      postcss-load-config: 3.1.4(postcss@8.5.15)
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.15)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.15)
+      postcss-modules-scope: 3.2.1(postcss@8.5.15)
+      postcss-modules-values: 4.0.0(postcss@8.5.15)
+      postcss-selector-parser: 6.1.2
+      postcss-value-parser: 4.2.0
+      semver: 7.8.5
+      source-list-map: 2.0.1
+      source-map: 0.7.6
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
       webpack-virtual-modules: 0.6.2
     optionalDependencies:
       vue: 2.7.16
@@ -38425,6 +39061,22 @@ snapshots:
   '@playwright/test@1.61.1':
     dependencies:
       playwright: 1.61.1
+
+  '@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      anser: 2.3.5
+      core-js-pure: 3.49.0
+      error-stack-parser: 2.1.4
+      html-entities: 2.6.0
+      react-refresh: 0.14.2
+      schema-utils: 4.3.3
+      source-map: 0.7.6
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+    optionalDependencies:
+      '@types/webpack': 5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+      type-fest: 5.7.0
+      webpack-dev-server: 4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+    optional: true
 
   '@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.18.0)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
     dependencies:
@@ -40867,6 +41519,14 @@ snapshots:
       strip-ansi: 6.0.1
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
 
+  '@soda/friendly-errors-webpack-plugin@1.8.1(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      chalk: 3.0.0
+      error-stack-parser: 2.1.4
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+
   '@soda/get-current-script@1.0.2': {}
 
   '@speed-highlight/core@1.2.17': {}
@@ -41488,6 +42148,39 @@ snapshots:
       - webpack-chain
       - webpack-dev-server
 
+  '@tarojs/components-rn@4.2.0(babb9e9fee0222941c94be5019357f9c)':
+    dependencies:
+      '@ant-design/react-native': 5.0.0(@babel/preset-env@8.0.2(@babel/core@7.29.7))(@react-native-community/cameraroll@4.1.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(@react-native-community/segmented-control@2.2.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(@react-native-community/slider@4.4.2)(@react-native-picker/picker@2.6.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
+      '@tarojs/components': 4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/router-rn': 4.2.0(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-screens@3.29.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      expo: 50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      expo-av: 13.10.6(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-camera: 14.1.3(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-native: 0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1)
+      react-native-maps: 1.3.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - '@react-native-community/cameraroll'
+      - '@react-native-community/segmented-control'
+      - '@tarojs/helper'
+      - '@types/react'
+      - html-webpack-plugin
+      - postcss
+      - react-native-gesture-handler
+      - react-native-safe-area-context
+      - react-native-screens
+      - react-native-web
+      - rollup
+      - supports-color
+      - typescript
+      - vue
+      - webpack
+      - webpack-chain
+      - webpack-dev-server
+    optional: true
+
   '@tarojs/components-rn@4.2.0(bca1515cf65bb39fd03fa875949cfc30)':
     dependencies:
       '@ant-design/react-native': 5.0.0(@babel/preset-env@7.29.7(@babel/core@7.29.7))(@react-native-community/cameraroll@4.1.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(@react-native-community/segmented-control@2.2.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(@react-native-community/slider@4.4.2)(@react-native-picker/picker@2.6.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
@@ -41524,6 +42217,39 @@ snapshots:
       - webpack
       - webpack-chain
       - webpack-dev-server
+
+  '@tarojs/components-rn@4.2.0(c25e6f6ffae307173ccdd4e9191523a2)':
+    dependencies:
+      '@ant-design/react-native': 5.0.0(@babel/preset-env@8.0.2(@babel/core@7.29.7))(@react-native-community/cameraroll@4.1.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(@react-native-community/segmented-control@2.2.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(@react-native-community/slider@4.4.2)(@react-native-picker/picker@2.6.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
+      '@tarojs/components': 4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/router-rn': 4.2.0(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-screens@3.29.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      expo: 50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      expo-av: 13.10.6(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-camera: 14.1.3(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-native: 0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1)
+      react-native-maps: 1.3.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - '@react-native-community/cameraroll'
+      - '@react-native-community/segmented-control'
+      - '@tarojs/helper'
+      - '@types/react'
+      - html-webpack-plugin
+      - postcss
+      - react-native-gesture-handler
+      - react-native-safe-area-context
+      - react-native-screens
+      - react-native-web
+      - rollup
+      - supports-color
+      - typescript
+      - vue
+      - webpack
+      - webpack-chain
+      - webpack-dev-server
+    optional: true
 
   '@tarojs/components@4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
     dependencies:
@@ -41718,6 +42444,22 @@ snapshots:
       '@tarojs/plugin-doctor-win32-x64-msvc': 0.0.13
     transitivePeerDependencies:
       - supports-color
+
+  '@tarojs/plugin-framework-react@4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      '@tarojs/helper': 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/runtime': 4.2.0
+      '@tarojs/shared': 4.2.0
+      acorn: 8.17.0
+      acorn-walk: 8.3.4
+      lodash: 4.18.1
+      tslib: 2.8.1
+    optionalDependencies:
+      '@pmmmwh/react-refresh-webpack-plugin': 0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@vitejs/plugin-react': 4.7.0(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      react: 18.3.1
+      vite: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
 
   '@tarojs/plugin-framework-react@4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.18.0)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
     dependencies:
@@ -42574,6 +43316,44 @@ snapshots:
       - webpack-chain
       - webpack-dev-server
 
+  '@tarojs/runtime-rn@4.2.0(7cdcc130ec967a3d1645f4424cf7da0d)':
+    dependencies:
+      '@tarojs/components-rn': 4.2.0(c25e6f6ffae307173ccdd4e9191523a2)
+      '@tarojs/router-rn': 4.2.0(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-screens@3.29.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@tarojs/shared': 4.2.0
+      react: 18.3.1
+      react-native: 0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1)
+      react-native-device-info: 14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      react-native-root-siblings: 5.0.1
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - '@react-native-community/cameraroll'
+      - '@react-native-community/segmented-control'
+      - '@react-native-community/slider'
+      - '@react-native-picker/picker'
+      - '@tarojs/helper'
+      - '@types/react'
+      - expo
+      - expo-av
+      - expo-camera
+      - html-webpack-plugin
+      - postcss
+      - react-native-gesture-handler
+      - react-native-pager-view
+      - react-native-safe-area-context
+      - react-native-screens
+      - react-native-svg
+      - react-native-web
+      - react-native-webview
+      - rollup
+      - supports-color
+      - typescript
+      - vue
+      - webpack
+      - webpack-chain
+      - webpack-dev-server
+    optional: true
+
   '@tarojs/runtime-rn@4.2.0(99eec6112028ba5cf31d6fce4f1425e6)':
     dependencies:
       '@tarojs/components-rn': 4.2.0(bca1515cf65bb39fd03fa875949cfc30)
@@ -42610,6 +43390,44 @@ snapshots:
       - webpack
       - webpack-chain
       - webpack-dev-server
+
+  '@tarojs/runtime-rn@4.2.0(aee81b3674ed53f62596c7cfc264fa79)':
+    dependencies:
+      '@tarojs/components-rn': 4.2.0(babb9e9fee0222941c94be5019357f9c)
+      '@tarojs/router-rn': 4.2.0(react-native-gesture-handler@2.14.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native-screens@3.29.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@tarojs/shared': 4.2.0
+      react: 18.3.1
+      react-native: 0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1)
+      react-native-device-info: 14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      react-native-root-siblings: 5.0.1
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - '@react-native-community/cameraroll'
+      - '@react-native-community/segmented-control'
+      - '@react-native-community/slider'
+      - '@react-native-picker/picker'
+      - '@tarojs/helper'
+      - '@types/react'
+      - expo
+      - expo-av
+      - expo-camera
+      - html-webpack-plugin
+      - postcss
+      - react-native-gesture-handler
+      - react-native-pager-view
+      - react-native-safe-area-context
+      - react-native-screens
+      - react-native-svg
+      - react-native-web
+      - react-native-webview
+      - rollup
+      - supports-color
+      - typescript
+      - vue
+      - webpack
+      - webpack-chain
+      - webpack-dev-server
+    optional: true
 
   '@tarojs/runtime-rn@4.2.0(c55ec5e4953910f67e43149c6f39ecbf)':
     dependencies:
@@ -42849,6 +43667,118 @@ snapshots:
       - webpack-chain
       - webpack-dev-server
 
+  '@tarojs/taro-rn@4.2.0(8fad8d273c7ef5f735928bda817f84ec)':
+    dependencies:
+      '@bam.tech/react-native-image-resizer': 3.0.11(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@react-native-async-storage/async-storage': 1.21.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      '@react-native-camera-roll/camera-roll': 7.10.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      '@react-native-clipboard/clipboard': 1.16.3(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@react-native-community/geolocation': 3.4.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@react-native-community/netinfo': 11.1.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      '@tarojs/runtime-rn': 4.2.0(aee81b3674ed53f62596c7cfc264fa79)
+      '@tarojs/taro': 4.2.0(250c63b60d33399459bfc502344b9149)
+      base64-js: 1.5.1
+      deprecated-react-native-prop-types: 5.0.0
+      expo: 50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      expo-av: 13.10.6(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-barcode-scanner: 12.9.3(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-brightness: 11.8.0(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-camera: 14.1.3(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-file-system: 16.0.9(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-image-picker: 14.7.1(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-keep-awake: 12.8.2(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-location: 16.5.5(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-sensors: 12.9.1(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-native: 0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1)
+      react-native-device-info: 14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      react-native-image-zoom-viewer: 3.0.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      react-native-root-siblings: 5.0.1
+      react-native-safe-area-context: 4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - '@react-native-community/cameraroll'
+      - '@react-native-community/segmented-control'
+      - '@react-native-community/slider'
+      - '@react-native-picker/picker'
+      - '@tarojs/components'
+      - '@tarojs/helper'
+      - '@tarojs/shared'
+      - '@types/react'
+      - html-webpack-plugin
+      - postcss
+      - react-native-gesture-handler
+      - react-native-pager-view
+      - react-native-screens
+      - react-native-svg
+      - react-native-web
+      - react-native-webview
+      - rollup
+      - supports-color
+      - typescript
+      - vue
+      - webpack
+      - webpack-chain
+      - webpack-dev-server
+    optional: true
+
+  '@tarojs/taro-rn@4.2.0(bf95c18370d153e431af3ff51efae974)':
+    dependencies:
+      '@bam.tech/react-native-image-resizer': 3.0.11(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@react-native-async-storage/async-storage': 1.21.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      '@react-native-camera-roll/camera-roll': 7.10.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      '@react-native-clipboard/clipboard': 1.16.3(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@react-native-community/geolocation': 3.4.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      '@react-native-community/netinfo': 11.1.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      '@tarojs/runtime-rn': 4.2.0(7cdcc130ec967a3d1645f4424cf7da0d)
+      '@tarojs/taro': 4.2.0(d6917b277664dfc4d6c29192cbef9cfc)
+      base64-js: 1.5.1
+      deprecated-react-native-prop-types: 5.0.0
+      expo: 50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      expo-av: 13.10.6(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-barcode-scanner: 12.9.3(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-brightness: 11.8.0(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-camera: 14.1.3(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-file-system: 16.0.9(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-image-picker: 14.7.1(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-keep-awake: 12.8.2(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-location: 16.5.5(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      expo-sensors: 12.9.1(expo@50.0.21(@babel/core@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(encoding@0.1.13)(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1))
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-native: 0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1)
+      react-native-device-info: 14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))
+      react-native-image-zoom-viewer: 3.0.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+      react-native-root-siblings: 5.0.1
+      react-native-safe-area-context: 4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
+    transitivePeerDependencies:
+      - '@babel/preset-env'
+      - '@react-native-community/cameraroll'
+      - '@react-native-community/segmented-control'
+      - '@react-native-community/slider'
+      - '@react-native-picker/picker'
+      - '@tarojs/components'
+      - '@tarojs/helper'
+      - '@tarojs/shared'
+      - '@types/react'
+      - html-webpack-plugin
+      - postcss
+      - react-native-gesture-handler
+      - react-native-pager-view
+      - react-native-screens
+      - react-native-svg
+      - react-native-web
+      - react-native-webview
+      - rollup
+      - supports-color
+      - typescript
+      - vue
+      - webpack
+      - webpack-chain
+      - webpack-dev-server
+    optional: true
+
   '@tarojs/taro-rn@4.2.0(e7df0c491981d42ae1df4a608da0f9ae)':
     dependencies:
       '@bam.tech/react-native-image-resizer': 3.0.11(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7))(encoding@0.1.13)(react@18.3.1))(react@18.3.1)
@@ -42996,6 +43926,54 @@ snapshots:
       stylelint: 16.26.1(typescript@6.0.3)
       vite: 4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
       vite-plugin-static-copy: 0.17.1(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+    transitivePeerDependencies:
+      - '@swc/helpers'
+      - '@types/babel__core'
+      - jiti
+      - rollup
+      - supports-color
+      - terser
+      - tsx
+      - typescript
+
+  '@tarojs/vite-runner@4.2.0(@swc/helpers@0.5.23)(@tarojs/runtime@4.2.0)(@types/babel__core@7.20.5)(jiti@2.7.0)(postcss@8.5.15)(rollup@3.30.0)(terser@5.48.0)(tsx@4.22.4)(typescript@6.0.3)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))':
+    dependencies:
+      '@ampproject/remapping': 2.3.0
+      '@babel/core': 7.29.7
+      '@rollup/plugin-babel': 6.1.0(@babel/core@7.29.7)(@types/babel__core@7.20.5)(rollup@3.30.0)
+      '@rollup/plugin-inject': 5.0.5(rollup@3.30.0)
+      '@rollup/plugin-terser': 0.4.4(rollup@3.30.0)
+      '@rollup/pluginutils': 5.4.0(rollup@3.30.0)
+      '@tarojs/helper': 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/parse-css-to-stylesheet': 0.0.69
+      '@tarojs/runner-utils': 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/runtime': 4.2.0
+      '@tarojs/shared': 4.2.0
+      '@vitejs/plugin-legacy': 4.1.1(terser@5.48.0)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      acorn-walk: 8.3.4
+      autoprefixer: 10.5.2(postcss@8.5.15)
+      babel-plugin-transform-taroapi: 4.2.0(@babel/core@7.29.7)
+      connect-history-api-fallback: 2.0.0
+      fast-glob: 3.3.3
+      html-minifier: 4.0.0
+      json5: 2.2.3
+      lodash: 4.18.1
+      magic-string: 0.30.21
+      mrmime: 2.0.1
+      picomatch: 4.0.4
+      postcss: 8.5.15
+      postcss-css-variables: 0.19.0(postcss@8.5.15)
+      postcss-html-transform: 4.2.0(postcss@8.5.15)
+      postcss-import: 16.1.1(postcss@8.5.15)
+      postcss-load-config: 5.1.0(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)
+      postcss-modules: 6.0.1(postcss@8.5.15)
+      postcss-plugin-constparse: 4.2.0(postcss@8.5.15)
+      postcss-pxtransform: 4.2.0(postcss@8.5.15)
+      regenerator-runtime: 0.11.1
+      sax: 1.2.4
+      stylelint: 16.26.1(typescript@6.0.3)
+      vite: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      vite-plugin-static-copy: 0.17.1(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
     transitivePeerDependencies:
       - '@swc/helpers'
       - '@types/babel__core'
@@ -44354,6 +45332,35 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-legacy@4.1.1(terser@5.48.0)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))':
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/preset-env': 7.29.7(@babel/core@7.29.7)
+      browserslist: 4.28.4
+      core-js: 3.49.0
+      magic-string: 0.30.21
+      regenerator-runtime: 0.13.11
+      systemjs: 6.15.1
+      terser: 5.48.0
+      vite: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-legacy@5.3.2(terser@5.48.0)(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))':
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/preset-env': 7.29.7(@babel/core@7.29.7)
+      browserslist: 4.28.4
+      browserslist-to-esbuild: 2.1.1(browserslist@4.28.4)
+      core-js: 3.49.0
+      magic-string: 0.30.21
+      regenerator-runtime: 0.14.1
+      systemjs: 6.15.1
+      terser: 5.48.0
+      vite: 5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-legacy@5.3.2(terser@5.48.0)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))':
     dependencies:
       '@babel/core': 7.29.7
@@ -44381,6 +45388,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))':
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/plugin-transform-react-jsx-self': 7.29.7(@babel/core@7.29.7)
+      '@babel/plugin-transform-react-jsx-source': 7.29.7(@babel/core@7.29.7)
+      '@rolldown/pluginutils': 1.0.0-beta.27
+      '@types/babel__core': 7.20.5
+      react-refresh: 0.17.0
+      vite: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+    transitivePeerDependencies:
+      - supports-color
+
   '@vitejs/plugin-react@6.0.3(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
@@ -44392,6 +45411,16 @@ snapshots:
       '@babel/plugin-transform-typescript': 7.28.5(@babel/core@7.29.7)
       '@vue/babel-plugin-jsx': 1.5.0(@babel/core@7.29.7)
       vite: 4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      vue: 3.5.39(typescript@6.0.3)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@vitejs/plugin-vue-jsx@3.1.0(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/plugin-transform-typescript': 7.28.5(@babel/core@7.29.7)
+      '@vue/babel-plugin-jsx': 1.5.0(@babel/core@7.29.7)
+      vite: 5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
       vue: 3.5.39(typescript@6.0.3)
     transitivePeerDependencies:
       - supports-color
@@ -44409,6 +45438,11 @@ snapshots:
   '@vitejs/plugin-vue@4.6.2(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
     dependencies:
       vite: 4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      vue: 3.5.39(typescript@6.0.3)
+
+  '@vitejs/plugin-vue@5.2.4(vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
+    dependencies:
+      vite: 5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
       vue: 3.5.39(typescript@6.0.3)
 
   '@vitejs/plugin-vue@5.2.4(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))':
@@ -44536,6 +45570,10 @@ snapshots:
       convert-source-map: 2.0.0
       tinyrainbow: 3.1.0
 
+  '@volar/language-core@2.4.15':
+    dependencies:
+      '@volar/source-map': 2.4.15
+
   '@volar/language-core@2.4.27':
     dependencies:
       '@volar/source-map': 2.4.27
@@ -44544,9 +45582,17 @@ snapshots:
     dependencies:
       '@volar/source-map': 2.4.28
 
+  '@volar/source-map@2.4.15': {}
+
   '@volar/source-map@2.4.27': {}
 
   '@volar/source-map@2.4.28': {}
+
+  '@volar/typescript@2.4.15':
+    dependencies:
+      '@volar/language-core': 2.4.15
+      path-browserify: 1.0.1
+      vscode-uri: 3.1.0
 
   '@volar/typescript@2.4.27':
     dependencies:
@@ -44921,6 +45967,19 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
+  '@vue/language-core@2.2.12(typescript@6.0.3)':
+    dependencies:
+      '@volar/language-core': 2.4.15
+      '@vue/compiler-dom': 3.5.39
+      '@vue/compiler-vue2': 2.7.16
+      '@vue/shared': 3.5.39
+      alien-signals: 1.0.13
+      minimatch: 9.0.9
+      muggle-string: 0.4.1
+      path-browserify: 1.0.1
+    optionalDependencies:
+      typescript: 6.0.3
+
   '@vue/language-core@3.2.1':
     dependencies:
       '@volar/language-core': 2.4.27
@@ -44972,6 +46031,11 @@ snapshots:
   '@vue/shared@3.4.21': {}
 
   '@vue/shared@3.5.39': {}
+
+  '@vue/tsconfig@0.8.1(typescript@6.0.3)(vue@3.5.39(typescript@6.0.3))':
+    optionalDependencies:
+      typescript: 6.0.3
+      vue: 3.5.39(typescript@6.0.3)
 
   '@vue/tsconfig@0.9.1(typescript@6.0.3)(vue@3.5.39(typescript@6.0.3))':
     optionalDependencies:
@@ -45500,6 +46564,8 @@ snapshots:
 
   alien-signals@0.4.14: {}
 
+  alien-signals@1.0.13: {}
+
   alien-signals@3.1.1: {}
 
   alien-signals@3.2.1: {}
@@ -45955,6 +47021,15 @@ snapshots:
       schema-utils: 2.7.1
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
 
+  babel-loader@8.4.1(@babel/core@7.29.7)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      '@babel/core': 7.29.7
+      find-cache-dir: 3.3.2
+      loader-utils: 2.0.4
+      make-dir: 3.1.0
+      schema-utils: 2.7.1
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+
   babel-loader@9.2.1(@babel/core@7.29.7)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@babel/core': 7.29.7
@@ -46227,6 +47302,64 @@ snapshots:
       '@tarojs/taro-rn': 4.2.0(6ff3ee8b174b49ba0e2d355c211870c4)
       '@vue/babel-plugin-jsx': 1.5.0(@babel/core@7.29.7)
       react-refresh: 0.18.0
+    transitivePeerDependencies:
+      - '@babel/plugin-transform-typescript'
+      - '@react-native/babel-preset'
+      - '@swc/helpers'
+      - metro-react-native-babel-preset
+      - supports-color
+
+  babel-preset-taro@4.2.0(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/preset-react@7.29.7(@babel/core@7.29.7))(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.0(8fad8d273c7ef5f735928bda817f84ec))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))(react-refresh@0.18.0):
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/helper-plugin-utils': 7.29.7
+      '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7)
+      '@babel/plugin-transform-class-properties': 7.29.7(@babel/core@7.29.7)
+      '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-env': 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-typescript': 7.29.7(@babel/core@7.29.7)
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@rnx-kit/babel-preset-metro-react-native': 1.1.8(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/runtime@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))
+      '@tarojs/helper': 4.2.0(@swc/helpers@0.5.23)
+      babel-plugin-dynamic-import-node: 2.3.3
+      babel-plugin-transform-imports-api: 1.0.0
+      babel-plugin-transform-solid-jsx: 4.2.0(@babel/core@7.29.7)
+      core-js: 3.49.0
+    optionalDependencies:
+      '@babel/preset-react': 7.29.7(@babel/core@7.29.7)
+      '@tarojs/taro-rn': 4.2.0(8fad8d273c7ef5f735928bda817f84ec)
+      '@vue/babel-plugin-jsx': 1.5.0(@babel/core@7.29.7)
+      react-refresh: 0.18.0
+    transitivePeerDependencies:
+      - '@babel/plugin-transform-typescript'
+      - '@react-native/babel-preset'
+      - '@swc/helpers'
+      - metro-react-native-babel-preset
+      - supports-color
+
+  babel-preset-taro@4.2.0(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/preset-react@7.29.7(@babel/core@7.29.7))(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.0(bf95c18370d153e431af3ff51efae974))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))(react-refresh@0.14.2):
+    dependencies:
+      '@babel/core': 7.29.7
+      '@babel/helper-plugin-utils': 7.29.7
+      '@babel/plugin-proposal-decorators': 7.29.7(@babel/core@7.29.7)
+      '@babel/plugin-transform-class-properties': 7.29.7(@babel/core@7.29.7)
+      '@babel/plugin-transform-runtime': 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-env': 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-typescript': 7.29.7(@babel/core@7.29.7)
+      '@babel/runtime': 7.29.7
+      '@babel/runtime-corejs3': 7.29.7
+      '@rnx-kit/babel-preset-metro-react-native': 1.1.8(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/runtime@7.29.7)(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))
+      '@tarojs/helper': 4.2.0(@swc/helpers@0.5.23)
+      babel-plugin-dynamic-import-node: 2.3.3
+      babel-plugin-transform-imports-api: 1.0.0
+      babel-plugin-transform-solid-jsx: 4.2.0(@babel/core@7.29.7)
+      core-js: 3.49.0
+    optionalDependencies:
+      '@babel/preset-react': 7.29.7(@babel/core@7.29.7)
+      '@tarojs/taro-rn': 4.2.0(bf95c18370d153e431af3ff51efae974)
+      '@vue/babel-plugin-jsx': 1.5.0(@babel/core@7.29.7)
+      react-refresh: 0.14.2
     transitivePeerDependencies:
       - '@babel/plugin-transform-typescript'
       - '@react-native/babel-preset'
@@ -47577,6 +48710,16 @@ snapshots:
       serialize-javascript: 6.0.2
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
 
+  copy-webpack-plugin@9.1.0(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      fast-glob: 3.3.3
+      glob-parent: 6.0.2
+      globby: 11.1.0
+      normalize-path: 3.0.0
+      schema-utils: 3.3.0
+      serialize-javascript: 6.0.2
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+
   core-js-compat@3.49.0:
     dependencies:
       browserslist: 4.28.4
@@ -47823,6 +48966,20 @@ snapshots:
     optionalDependencies:
       '@rspack/core': 2.0.8(@swc/helpers@0.5.23)
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(webpack-cli@6.0.1)
+
+  css-loader@7.1.4(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      icss-utils: 5.1.0(postcss@8.5.15)
+      postcss: 8.5.15
+      postcss-modules-extract-imports: 3.1.0(postcss@8.5.15)
+      postcss-modules-local-by-default: 4.2.0(postcss@8.5.15)
+      postcss-modules-scope: 3.2.1(postcss@8.5.15)
+      postcss-modules-values: 4.0.0(postcss@8.5.15)
+      postcss-value-parser: 4.2.0
+      semver: 7.8.5
+    optionalDependencies:
+      '@rspack/core': 2.0.8(@swc/helpers@0.5.23)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
 
   css-mediaquery@0.1.2: {}
 
@@ -61785,6 +62942,19 @@ snapshots:
       lightningcss: 1.32.0
       postcss: 8.5.15
 
+  terser-webpack-plugin@5.6.0(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      jest-worker: 27.5.1
+      schema-utils: 4.3.3
+      terser: 5.48.0
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+    optionalDependencies:
+      '@swc/core': 1.15.43(@swc/helpers@0.5.23)
+      esbuild: 0.28.1
+      lightningcss: 1.32.0
+      postcss: 8.5.15
+
   terser-webpack-plugin@5.6.1(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
@@ -62197,6 +63367,16 @@ snapshots:
       source-map: 0.7.6
       typescript: 6.0.3
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
+
+  ts-loader@9.5.7(typescript@6.0.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      chalk: 4.1.2
+      enhanced-resolve: 5.22.0
+      micromatch: 4.0.8
+      semver: 7.8.5
+      source-map: 0.7.6
+      typescript: 6.0.3
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
 
   ts-morph@28.0.0:
     dependencies:
@@ -63104,6 +64284,14 @@ snapshots:
       picocolors: 1.1.1
       vite: 4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
 
+  vite-plugin-static-copy@0.17.1(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)):
+    dependencies:
+      chokidar: 3.6.0
+      fast-glob: 3.3.3
+      fs-extra: 11.3.5
+      picocolors: 1.1.1
+      vite: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+
   vite-tsconfig-paths@6.1.1(typescript@6.0.3)(vite@8.1.0(@types/node@26.0.1)(esbuild@0.28.1)(jiti@2.7.0)(less@4.6.6)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)(tsx@4.22.4)(yaml@2.9.0)):
     dependencies:
       debug: 4.4.3
@@ -63119,6 +64307,20 @@ snapshots:
       esbuild: 0.18.20
       postcss: 8.5.15
       rollup: 3.30.0
+    optionalDependencies:
+      '@types/node': 26.0.1
+      fsevents: 2.3.3
+      less: 4.6.6
+      lightningcss: 1.32.0
+      sass: 1.101.0
+      stylus: 0.63.0
+      terser: 5.48.0
+
+  vite@5.2.8(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0):
+    dependencies:
+      esbuild: 0.20.2
+      postcss: 8.5.15
+      rollup: 4.62.2
     optionalDependencies:
       '@types/node': 26.0.1
       fsevents: 2.3.3
@@ -63502,6 +64704,74 @@ snapshots:
       - walrus
       - whiskers
 
+  vue-loader@15.11.1(@vue/compiler-sfc@3.5.39)(css-loader@7.1.4(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(ejs@3.1.10)(handlebars@4.7.9)(lodash@4.18.1)(prettier@3.8.4)(react@18.2.0)(vue-template-compiler@2.7.16)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      '@vue/component-compiler-utils': 3.3.0(ejs@3.1.10)(handlebars@4.7.9)(lodash@4.18.1)(react@18.2.0)
+      css-loader: 7.1.4(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      hash-sum: 1.0.2
+      loader-utils: 1.4.2
+      vue-hot-reload-api: 2.3.4
+      vue-style-loader: 4.1.3
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+    optionalDependencies:
+      '@vue/compiler-sfc': 3.5.39
+      prettier: 3.8.4
+      vue-template-compiler: 2.7.16
+    transitivePeerDependencies:
+      - arc-templates
+      - atpl
+      - babel-core
+      - bracket-template
+      - coffee-script
+      - dot
+      - dust
+      - dustjs-helpers
+      - dustjs-linkedin
+      - eco
+      - ect
+      - ejs
+      - haml-coffee
+      - hamlet
+      - hamljs
+      - handlebars
+      - hogan.js
+      - htmling
+      - jade
+      - jazz
+      - jqtpl
+      - just
+      - liquid-node
+      - liquor
+      - lodash
+      - marko
+      - mote
+      - mustache
+      - nunjucks
+      - plates
+      - pug
+      - qejs
+      - ractive
+      - razor-tmpl
+      - react
+      - react-dom
+      - slm
+      - squirrelly
+      - swig
+      - swig-templates
+      - teacup
+      - templayed
+      - then-jade
+      - then-pug
+      - tinyliquid
+      - toffee
+      - twig
+      - twing
+      - underscore
+      - vash
+      - velocityjs
+      - walrus
+      - whiskers
+
   vue-loader@17.4.2(@vue/compiler-sfc@3.5.39)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       chalk: 4.1.2
@@ -63568,6 +64838,12 @@ snapshots:
     optional: true
 
   vue-template-es2015-compiler@1.9.1: {}
+
+  vue-tsc@2.2.12(typescript@6.0.3):
+    dependencies:
+      '@volar/typescript': 2.4.15
+      '@vue/language-core': 2.2.12(typescript@6.0.3)
+      typescript: 6.0.3
 
   vue-tsc@3.3.5(typescript@6.0.3):
     dependencies:
@@ -63796,7 +65072,6 @@ snapshots:
       range-parser: 1.2.1
       schema-utils: 4.3.3
       webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
-    optional: true
 
   webpack-dev-middleware@5.3.4(webpack@5.107.2(@swc/core@1.3.96(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
@@ -63913,7 +65188,6 @@ snapshots:
       - debug
       - supports-color
       - utf-8-validate
-    optional: true
 
   webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.3.96(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
@@ -64409,6 +65683,16 @@ snapshots:
     optionalDependencies:
       '@rspack/core': 2.0.8(@swc/helpers@0.5.23)
       webpack: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
+
+  webpackbar@7.0.0(@rspack/core@2.0.8(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
+    dependencies:
+      ansis: 3.17.0
+      consola: 3.4.2
+      pretty-time: 1.1.0
+      std-env: 3.10.0
+    optionalDependencies:
+      '@rspack/core': 2.0.8(@swc/helpers@0.5.23)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
 
   websocket-driver@0.7.5:
     dependencies:
