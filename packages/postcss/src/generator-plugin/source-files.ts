@@ -1,4 +1,5 @@
 import type { Result, Root } from 'postcss'
+import type { TailwindSourceEntry } from '../source-scan'
 import type { TailwindCandidateSource, WeappTailwindcssPostcssPluginOptions } from './types'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
@@ -72,7 +73,10 @@ export async function collectAutoTailwindCandidates(
   root: Root,
   result: Result,
   options: WeappTailwindcssPostcssPluginOptions,
-  css = root.toString(),
+  context: {
+    css?: string | undefined
+    sourceEntries?: TailwindSourceEntry[] | undefined
+  } = {},
 ) {
   if (options.scanSources === false) {
     return new Set<string>()
@@ -80,6 +84,7 @@ export async function collectAutoTailwindCandidates(
 
   const base = resolvePostcssBase(result, options)
   const projectRoot = resolvePostcssProjectRoot(result, options)
+  const css = context.css ?? root.toString()
   const sourceEntries = []
   const hasSourceNone = css.includes('source(none)')
   const shouldSkipAutoScan = isTailwindV4ApplyOnlyCss(root, css)
@@ -93,7 +98,7 @@ export async function collectAutoTailwindCandidates(
     })
   }
 
-  sourceEntries.push(...await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN))
+  sourceEntries.push(...(context.sourceEntries ?? await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN)))
   const candidates = sourceEntries.length === 0
     ? []
     : await extractValidCandidates({
@@ -113,9 +118,12 @@ export async function collectPostcssLocalSources(
   root: Root,
   result: Result,
   options: WeappTailwindcssPostcssPluginOptions,
+  context: {
+    sourceEntries?: TailwindSourceEntry[] | undefined
+  } = {},
 ) {
   const base = resolvePostcssBase(result, options)
-  const sourceEntries = await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN)
+  const sourceEntries = context.sourceEntries ?? await resolveCssSourceEntries(root, base, POSTCSS_SOURCE_PATTERN)
 
   const configContentFiles = await collectConfigContentFiles(root, base, options)
   const files = [...new Set([

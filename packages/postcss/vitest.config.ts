@@ -25,6 +25,21 @@ export default defineProject({
     alias,
     globals: true,
     testTimeout: 60_000,
+    coverage: {
+      exclude: [
+        '**/dist/**',
+        '**/test/**',
+        '**/tests/**',
+        '**/*.bench.*',
+        '**/packages/postcss-calc/**',
+        '../postcss-calc/**',
+      ],
+      thresholds: {
+        lines: 95,
+        statements: 95,
+        functions: 95,
+      },
+    },
     benchmark: {
 
     },

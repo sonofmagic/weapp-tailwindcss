@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path from 'pathe'
-import { createStyleHandler } from '@/index'
+import { applyUniAppXUvueCompatibility } from '@/compat/uni-app-x-uvue'
+import { createStyleHandler, postcss } from '@/index'
 
 const INVALID_UNI_APP_X_BASE_SELECTOR_RE = /(^|,)\s*(?:\*|view|text|::before|::after|:before|:after|::backdrop)\s*(?=,|\{)/m
 
@@ -198,5 +199,51 @@ describe('uni-app-x', () => {
 
     expect(result.css).toContain('.space-y-4>view+view')
     expect(result.css).toContain('display: block')
+  })
+
+  it('applies uvue compatibility directly with silent mode and malformed selector fallback', async () => {
+    const result = await postcss().process([
+      '.bad\\{selector{display:block}',
+      '.flex{display:flex}',
+      '@media screen{.gap{gap:1rem}}',
+    ].join('\n'), {
+      from: '/src/App.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'silent',
+    })
+
+    expect(filtered.css).toContain('.flex{display:flex}')
+    expect(filtered.css).not.toContain('display:block')
+    expect(filtered.css).not.toContain('.gap')
+    expect(filtered.css).not.toContain('@media')
+    expect(filtered.warnings()).toEqual([])
+  })
+
+  it('dedupes repeated uvue warnings and reports selector text when no class is present', async () => {
+    const result = await postcss().process([
+      'view{color:red}',
+      '.block{display:block}',
+      '.block{display:block}',
+    ].join('\n'), {
+      from: '/src/App.uvue',
+    })
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'warn',
+    })
+    const warningTexts = filtered.warnings().map(item => item.text)
+
+    expect(filtered.css).toBe('')
+    expect(warningTexts.filter(text => text.includes('block'))).toHaveLength(1)
+    expect(warningTexts).toEqual(expect.arrayContaining([
+      expect.stringContaining('view'),
+      expect.stringContaining('selector must be class-only'),
+    ]))
   })
 })

@@ -71,6 +71,49 @@ describe('style processor cache', () => {
     })
     expect(second).not.toBe(first)
   })
+
+  it('tracks null and undefined process option values in the simple cache key', () => {
+    const cache = new StyleProcessorCache()
+    const options = {
+      ...createBaseOptions(),
+      postcssOptions: {
+        options: {
+          from: null,
+          map: undefined,
+        },
+      },
+    } satisfies IStyleHandlerOptions
+
+    const first = cache.getProcessOptions(options)
+    first.mutated = true
+
+    options.postcssOptions.options.map = false
+    const second = cache.getProcessOptions(options)
+
+    expect(second).toEqual({
+      from: null,
+      map: false,
+    })
+    expect(second).not.toHaveProperty('mutated')
+  })
+
+  it('falls back to fingerprinting for function-valued process options', () => {
+    const cache = new StyleProcessorCache()
+    const options = {
+      ...createBaseOptions(),
+      postcssOptions: {
+        options: {
+          parser: () => undefined,
+        },
+      },
+    } satisfies IStyleHandlerOptions
+
+    const first = cache.getProcessOptions(options)
+    const second = cache.getProcessOptions(options)
+
+    expect(second).toEqual(first)
+    expect(second).not.toBe(first)
+  })
 })
 
 

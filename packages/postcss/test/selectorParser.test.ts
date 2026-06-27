@@ -92,6 +92,51 @@ describe('selectorParser', () => {
     expect(secondRule.toString()).toMatchSnapshot()
   })
 
+  it('ruleTransformSync covers fast path cache, empty selectors, and child combinator template fallbacks', () => {
+    const options: IStyleHandlerOptions = {
+      cssSelectorReplacement: {
+        universal: ['view', 'text'],
+      },
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+    }
+    const fastRule = postcss.parse('.foo .bar{}').first as Rule
+    ruleTransformSync(fastRule, options)
+    expect(fastRule.selector).toBe('.foo .bar')
+
+    const cachedFastRule = postcss.parse('.foo .bar{}').first as Rule
+    ruleTransformSync(cachedFastRule, options)
+    expect(cachedFastRule.selector).toBe('.foo .bar')
+
+    const emptyRule = postcss.rule({ selector: '' })
+    ruleTransformSync(emptyRule, options)
+    expect(emptyRule.selector).toBe('')
+
+    const hiddenRoot = postcss.parse('.space-y-2 > :not(template) ~ :not([hidden]){margin-top:1px;margin-top:var(--v)}')
+    const hiddenRule = hiddenRoot.first as Rule
+    ruleTransformSync(hiddenRule, options)
+    expect(hiddenRule.selector).toContain('.space-y-2>:is(view,text)+:is(view,text)')
+    expect(hiddenRule.toString()).toContain('margin-top:var(--v)')
+  })
+
+  it('ruleTransformSync rewrites root and universal selectors with custom escape map', () => {
+    const options: IStyleHandlerOptions = {
+      cssSelectorReplacement: {
+        root: ['page', '.tw-root'],
+        universal: ['view'],
+      },
+      escapeMap: {
+        ':': '_c_',
+      } as any,
+    }
+    const root = postcss.parse(':root *,.hover\\:bg:hover{color:red}')
+    const rule = root.first as Rule
+    ruleTransformSync(rule, options)
+    const transformed = root.toString()
+
+    expect(transformed).toContain(':is(page,.tw-root) view')
+    expect(transformed).toContain('.hover_c_bg:hover')
+  })
+
   it('ruleTransformSync expands where pseudo branches to mini-program selectors', () => {
     const root = postcss.parse('.theme-dark :where(.dark\\:bg-black,.dark\\:text-white){color:red;}')
     const rule = root.first as Rule

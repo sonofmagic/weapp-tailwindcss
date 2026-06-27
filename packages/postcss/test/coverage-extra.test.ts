@@ -1,19 +1,33 @@
 import type { Plugin } from 'postcss'
 import postcss, { Declaration, Rule } from 'postcss'
 import { describe, expect, it, vi } from 'vitest'
-import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '@/compat/tailwindcss-v4'
+import {
+  appendTailwindcssV4MiniProgramGradientRules,
+  collectUsedTailwindcssV4Variables,
+  createMissingCssVarsV4Nodes,
+  createUsedCssVarsV4Nodes,
+  isTailwindcssV4DisplayP3Declaration,
+  isTailwindcssV4DisplayP3Media,
+  isTailwindcssV4DisplayP3Supports,
+  isTailwindcssV4LinearGradientSupports,
+  isTailwindcssV4ModernCheck,
+  mergeTailwindcssV4GradientDirectionRules,
+  normalizeTailwindcssV4Declaration,
+  usesTailwindcssV4ContentVariable,
+} from '@/compat/tailwindcss-v4'
 import { protectDynamicColorMixAlpha } from '@/compat/color-mix'
 import { stripUnsupportedNodeForUniAppX } from '@/compat/uni-app-x'
 import { fingerprintOptions } from '@/fingerprint'
 import { createStyleHandler } from '@/handler'
 import postcssHtmlTransform from '@/html-transform'
-import { commonChunkPreflight, remakeCssVarSelector } from '@/mp'
+import { commonChunkPreflight, makePseudoVarRule, remakeCssVarSelector, testIfTwBackdrop } from '@/mp'
 import { createOptionsResolver } from '@/options-resolver'
 import { createStylePipeline } from '@/pipeline'
 import { createColorFunctionalFallback } from '@/plugins/colorFunctionalFallback'
 import { createContext } from '@/plugins/ctx'
 import { getCustomPropertyCleaner } from '@/plugins/getCustomPropertyCleaner'
 import { postcssWeappTailwindcssPostPlugin, reorderVariableDeclarations } from '@/plugins/post'
+import { removeRedundantTransitionPropertyFallbacks } from '@/plugins/post/decl-dedupe'
 import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
 import {
   composeIsPseudoAst,
@@ -121,6 +135,18 @@ describe('mp helpers', () => {
     expect(withStringUniversal[0]).toBe('*')
   })
 
+  it('creates pseudo variable rules and detects backdrop variable scopes', () => {
+    const pseudoRule = makePseudoVarRule()
+    expect(pseudoRule.selector).toBe('::before,::after')
+    expect(pseudoRule.toString()).toContain('--tw-content: ""')
+
+    const backdropRule = postcss.parse('::backdrop { --tw-backdrop-blur: blur(4px); --tw-backdrop-brightness: brightness(1); }').first as Rule
+    expect(testIfTwBackdrop(backdropRule)).toBe(true)
+
+    const emptyBackdropRule = postcss.parse('::backdrop { color: red; }').first as Rule
+    expect(testIfTwBackdrop(emptyBackdropRule)).toBe(false)
+  })
+
   it('injects preflight chunks and additional scopes', () => {
     const beforeAfterRule = postcss.parse('::before,::after { --tw-a:1; --tw-b:2 }').first as Rule
     const inject = () => [new Declaration({ prop: 'color', value: 'blue' })]
@@ -140,6 +166,44 @@ describe('mp helpers', () => {
     } as any)
     expect(rootRule.prev()?.type).toBe('rule')
     expect(rootRule.prev()?.toString()).toContain('color: blue')
+  })
+
+  it('rewrites uni-app-x variable scopes with configured carrier selectors', () => {
+    const rule = postcss.parse('*,::before { --tw-shadow: 0 0 #0000; --tw-ring-color: currentColor; }').first as Rule
+    const inject = () => [new Declaration({ prop: 'box-sizing', value: 'border-box' })]
+
+    commonChunkPreflight(rule, {
+      uniAppX: true,
+      cssInjectPreflight: inject,
+      cssSelectorReplacement: {
+        universal: 'uv-view',
+      },
+    } as any)
+
+    expect(rule.selectors).toEqual(['uv-view'])
+    expect(rule.toString()).toContain('box-sizing: border-box')
+  })
+
+  it('uses default uni-app-x variable carriers for additional Tailwind v4 scopes', () => {
+    const root = postcss.parse(`
+      :root,:host {
+        --tw-shadow: 0 0 #0000;
+        --color-blue-500: #3b82f6;
+      }
+      .shadow {
+        box-shadow: var(--tw-shadow);
+      }
+    `)
+    const rootRule = root.first as Rule
+
+    commonChunkPreflight(rootRule, {
+      majorVersion: 4,
+      uniAppX: true,
+      injectAdditionalCssVarScope: true,
+    } as any)
+
+    expect((rootRule.prev() as Rule).selectors).toEqual(['view', 'text'])
+    expect(rootRule.prev()?.toString()).toContain('--tw-shadow')
   })
 })
 
@@ -205,6 +269,43 @@ describe('compat helpers', () => {
     expect(props).not.toContain('--tw-gradient-via-stops')
   })
 
+  it('collects Tailwind v4 variables from @property and respects scoped defaults', () => {
+    const root = postcss.parse(`
+      @property --tw-shadow {
+        syntax: "*";
+        inherits: false;
+        initial-value: 0 0 #0000;
+      }
+      @supports (color: red) {
+        page {
+          --tw-gradient-from-position: 10%;
+        }
+      }
+      :root,:host {
+        --tw-gradient-to-position: 90%;
+      }
+      page {
+        --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to);
+        color: red;
+      }
+      .before\\:content {
+        content: var(--tw-content);
+      }
+    `)
+    const used = collectUsedTailwindcssV4Variables(root)
+    const usedDefaults = createUsedCssVarsV4Nodes(used)
+    const missingDefaults = createMissingCssVarsV4Nodes(root, used)
+    const usedProps = usedDefaults.map(node => node.prop)
+    const missingProps = missingDefaults.map(node => node.prop)
+
+    expect(used.has('--tw-shadow')).toBe(true)
+    expect(used.has('--tw-gradient-stops')).toBe(true)
+    expect(usedProps).toContain('--tw-gradient-to-position')
+    expect(missingProps).not.toContain('--tw-gradient-to-position')
+    expect(missingProps).toContain('--tw-gradient-from-position')
+    expect(usesTailwindcssV4ContentVariable(root)).toBe(true)
+  })
+
   it('removes Tailwind v4 initial gradient via stops for mini-program fallback support', () => {
     const decl = new Declaration({ prop: '--tw-gradient-via-stops', value: 'initial' })
     const changed = normalizeTailwindcssV4Declaration(decl)
@@ -236,7 +337,11 @@ describe('compat helpers', () => {
     mergeTailwindcssV4GradientDirectionRules(root)
 
     const css = root.toString()
-    expect(css.match(/\.bg-linear-to-r\s*\{/g)).toHaveLength(1)
+    const topLevelRules = root.nodes.filter((node): node is Rule => {
+      return node.type === 'rule' && node.selector === '.bg-linear-to-r'
+    })
+
+    expect(topLevelRules).toHaveLength(1)
     expect(css).toContain('--tw-gradient-position: to right;')
     expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
     expect(css).not.toContain('in oklab')
@@ -265,6 +370,190 @@ describe('compat helpers', () => {
     appendTailwindcssV4MiniProgramGradientRules(root)
 
     expect(root.toString().match(/\.bg-linear-to-r\.from-cyan-500\.to-blue-500\s*\{/g)).toHaveLength(1)
+  })
+
+  it('covers Tailwind v4 feature guard predicates', () => {
+    expect(isTailwindcssV4ModernCheck(new postcss.AtRule({
+      name: 'supports',
+      params: '((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color: rgb(from red r g b))))',
+    }))).toBe(true)
+    expect(isTailwindcssV4ModernCheck(new postcss.AtRule({ name: 'media', params: '(min-width: 1px)' }))).toBe(false)
+    expect(isTailwindcssV4LinearGradientSupports(new postcss.AtRule({
+      name: 'supports',
+      params: '(background-image: linear-gradient(in lab, red, red))',
+    }))).toBe(true)
+    expect(isTailwindcssV4DisplayP3Supports(new postcss.AtRule({
+      name: 'supports',
+      params: '(color: color(display-p3 0 0 0%))',
+    }))).toBe(true)
+    expect(isTailwindcssV4DisplayP3Media(new postcss.AtRule({
+      name: 'media',
+      params: '(color-gamut: p3)',
+    }))).toBe(true)
+    expect(isTailwindcssV4DisplayP3Declaration(new Declaration({
+      prop: 'color',
+      value: 'color(display-p3 1 0 0)',
+    }))).toBe(true)
+  })
+
+  it('normalizes Tailwind v4 gradient fallbacks and direction edge cases', () => {
+    const emptyFallback = new Declaration({
+      prop: 'box-shadow',
+      value: 'var(--tw-shadow,)',
+    })
+    expect(normalizeTailwindcssV4Declaration(emptyFallback)).toBe(true)
+    expect(emptyFallback.value).toBe('var(--tw-shadow, )')
+
+    const alreadySpacedFallback = new Declaration({
+      prop: 'box-shadow',
+      value: 'var(--tw-shadow, )',
+    })
+    expect(normalizeTailwindcssV4Declaration(alreadySpacedFallback)).toBe(false)
+
+    const nestedStops = new Declaration({
+      prop: '--tw-gradient-stops',
+      value: 'linear-gradient(var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from), var(--tw-gradient-to)))',
+    })
+    expect(normalizeTailwindcssV4Declaration(nestedStops)).toBe(true)
+    expect(nestedStops.value).toContain('linear-gradient(var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from), var(--tw-gradient-to))')
+
+    const noCommaStops = new Declaration({
+      prop: '--tw-gradient-stops',
+      value: 'var(--tw-gradient-via-stops)',
+    })
+    expect(normalizeTailwindcssV4Declaration(noCommaStops)).toBe(false)
+
+    const radialRule = postcss.parse('.bg-radial{--tw-gradient-position:in oklab;background-image:radial-gradient(var(--tw-gradient-stops))}').first as Rule
+    const radialPosition = radialRule.nodes?.[0] as Declaration
+    expect(normalizeTailwindcssV4Declaration(radialPosition)).toBe(true)
+    expect(radialPosition.value).toBe('at center')
+
+    const conicRule = postcss.parse('.bg-conic{--tw-gradient-position:in oklab;background-image:conic-gradient(var(--tw-gradient-stops))}').first as Rule
+    const conicPosition = conicRule.nodes?.[0] as Declaration
+    expect(normalizeTailwindcssV4Declaration(conicPosition)).toBe(true)
+    expect(conicPosition.value).toBe('from 0deg')
+
+    const emptyLinearRule = postcss.parse('.bg-linear{--tw-gradient-position:in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}').first as Rule
+    const emptyLinearPosition = emptyLinearRule.nodes?.[0] as Declaration
+    expect(normalizeTailwindcssV4Declaration(emptyLinearPosition)).toBe(true)
+    expect(emptyLinearPosition.value).toBe('')
+
+    const noBackgroundRule = postcss.parse('.bg-linear{--tw-gradient-position:in oklab}').first as Rule
+    const noBackgroundPosition = noBackgroundRule.nodes?.[0] as Declaration
+    expect(normalizeTailwindcssV4Declaration(noBackgroundPosition)).toBe(true)
+    expect(noBackgroundPosition.value).toBe('')
+
+    const commaOnlyFallback = new Declaration({
+      prop: '--tw-gradient-stops',
+      value: 'var(--tw-gradient-from) var(--tw-gradient-from-position,)',
+    })
+    expect(normalizeTailwindcssV4Declaration(commaOnlyFallback)).toBe(true)
+    expect(commaOnlyFallback.value).toContain('var(--tw-gradient-from-position, )')
+  })
+
+  it('appends direct Tailwind v4 gradient fallback rules and skips variable/comma positions', () => {
+    const root = postcss.parse(`
+      :root,:host {
+        --color-cyan-500: #06b6d4;
+        --color-blue-500: #3b82f6;
+      }
+      .bg-linear-custom {
+        --tw-gradient-position: var(--angle);
+        background-image: linear-gradient(var(--tw-gradient-stops));
+      }
+      .bg-conic-list {
+        --tw-gradient-position: from 45deg, red, blue;
+        background-image: conic-gradient(var(--tw-gradient-stops));
+      }
+      .bg-radial-direct {
+        --tw-gradient-position: at center;
+        background-image: radial-gradient(var(--tw-gradient-stops, at 20% 30%, red, blue));
+      }
+      .from-cyan-500 {
+        --tw-gradient-from: var(--color-cyan-500);
+      }
+      .to-blue-500 {
+        --tw-gradient-to: var(--color-blue-500);
+      }
+    `)
+
+    appendTailwindcssV4MiniProgramGradientRules(root)
+    const css = root.toString()
+
+    expect(css).toContain('.bg-radial-direct {\n        background-image: radial-gradient(at 20% 30%, red, blue)')
+    expect(css).not.toContain('.bg-linear-custom.from-cyan-500.to-blue-500')
+    expect(css).not.toContain('.bg-conic-list.from-cyan-500.to-blue-500')
+  })
+
+  it('appends positioned Tailwind v4 mini-program gradient combinations with via stops', () => {
+    const root = postcss.parse(`
+      :root,:host {
+        --color-emerald-500: rgb(16, 185, 129);
+        --color-blue-500: rgb(59, 130, 246);
+      }
+      .bg-linear-to-r {
+        --tw-gradient-position: to right;
+        background-image: linear-gradient(var(--tw-gradient-stops, var(--tw-gradient-position), var(--tw-gradient-from), var(--tw-gradient-to)));
+      }
+      .from-plain {
+        --tw-gradient-from: #111827;
+      }
+      .from-10 {
+        --tw-gradient-from-position: 10%;
+      }
+      .via-emerald-500 {
+        --tw-gradient-via: var(--color-emerald-500);
+      }
+      .via-45 {
+        --tw-gradient-via-position: 45%;
+      }
+      .to-blue-500 {
+        --tw-gradient-to: var(--color-blue-500);
+      }
+      .to-90 {
+        --tw-gradient-to-position: 90%;
+      }
+    `)
+
+    appendTailwindcssV4MiniProgramGradientRules(root)
+    const css = root.toString()
+
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-position), var(--tw-gradient-from), var(--tw-gradient-to))')
+    expect(css).toContain('.bg-linear-to-r.from-plain.via-emerald-500.to-blue-500')
+    expect(css).toContain('linear-gradient(to right, #111827, rgb(16, 185, 129), rgb(59, 130, 246))')
+    expect(css).toContain('.bg-linear-to-r.from-plain.from-10.via-emerald-500.via-45.to-blue-500.to-90')
+    expect(css).toContain('linear-gradient(to right, #111827 10%, rgb(16, 185, 129) 45%, rgb(59, 130, 246) 90%)')
+  })
+
+  it('merges duplicate Tailwind v4 gradient direction rules around comments and unrelated declarations', () => {
+    const root = postcss.parse(`
+      .bg-linear-to-r {
+        /* generated by Tailwind */
+        color: inherit;
+        --tw-gradient-position: to right;
+      }
+      .bg-linear-to-r {
+        color: red;
+        background-image: linear-gradient(var(--tw-gradient-stops));
+      }
+      @media (min-width: 1px) {
+        .bg-linear-to-r {
+          --tw-gradient-position: to left;
+        }
+      }
+    `)
+
+    mergeTailwindcssV4GradientDirectionRules(root)
+    const css = root.toString()
+
+    const topLevelRules = root.nodes.filter((node): node is Rule => {
+      return node.type === 'rule' && node.selector === '.bg-linear-to-r'
+    })
+
+    expect(topLevelRules).toHaveLength(1)
+    expect(css).toContain('--tw-gradient-position: to right;')
+    expect(css).toContain('background-image: linear-gradient(var(--tw-gradient-stops));')
+    expect(css).toContain('@media (min-width: 1px)')
   })
 
   it('handles uni-app-x unsupported nodes', () => {
@@ -381,6 +670,26 @@ describe('plugin behaviours', () => {
     reorderVariableDeclarations(rule)
     const order = (rule.nodes as Declaration[]).map(d => d.value)
     expect(order.at(-1)).toBe('var(--v)')
+  })
+
+  it('dedupes redundant transition-property fallbacks with nested comma values', () => {
+    const rule = postcss.parse([
+      '.a {',
+      '  transition-property: "opacity,transform";',
+      '  transition-property: color, opacity;',
+      '  transition-property: color, opacity, transform;',
+      '  transition-property: color, var(--dynamic, opacity);',
+      '}',
+    ].join('\n')).first as Rule
+
+    removeRedundantTransitionPropertyFallbacks(rule)
+    const values = (rule.nodes as Declaration[]).map(decl => decl.value)
+
+    expect(values).toEqual([
+      '"opacity,transform"',
+      'color, opacity, transform',
+      'color, var(--dynamic, opacity)',
+    ])
   })
 })
 

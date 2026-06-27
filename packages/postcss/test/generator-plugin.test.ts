@@ -1,6 +1,16 @@
 import type { WeappTailwindcssPostcssPluginAdapters } from '@/generator-plugin'
+import path from 'node:path'
 import postcss from 'postcss'
 import { createWeappTailwindcssPostcssPlugin } from '@/generator-plugin'
+import { prependConfigDirective } from '../src/generator-plugin/config-directive'
+import {
+  addDependencyMessages,
+  addSourceDependencyMessages,
+  replaceRootCss,
+  resolveInputFile,
+  resolvePostcssBase,
+  resolvePostcssProjectRoot,
+} from '../src/generator-plugin/context'
 
 function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters> = {}) {
   const generate = vi.fn(async () => ({
@@ -30,6 +40,46 @@ function createAdapters(overrides: Partial<WeappTailwindcssPostcssPluginAdapters
 }
 
 describe('generator postcss plugin factory', () => {
+  it('handles context helpers and config directive escaping', async () => {
+    const result = await postcss().process('.a{color:red}', {
+      from: 'src/app.css',
+    })
+    const inputFile = resolveInputFile(result)
+
+    expect(inputFile).toBe(path.resolve(process.cwd(), 'src/app.css'))
+    expect(resolvePostcssBase(result, {})).toBe(path.dirname(inputFile!))
+    expect(resolvePostcssBase(result, { base: '/custom/base' })).toBe('/custom/base')
+    expect(resolvePostcssProjectRoot(result, {})).toBe(path.dirname(inputFile!))
+    expect(resolvePostcssProjectRoot(result, { projectRoot: '/custom/root' })).toBe('/custom/root')
+    expect(prependConfigDirective('.a{}', 'C:\\repo\\"tw".config.ts')).toBe('@config "C:/repo/\\\"tw\\\".config.ts";\n.a{}')
+    expect(prependConfigDirective('@config "./tailwind.config.ts";\n.a{}', './other.ts')).toContain('@config "./tailwind.config.ts";')
+    expect(prependConfigDirective('.a{}', undefined)).toBe('.a{}')
+
+    addDependencyMessages(result, {
+      css: '',
+      rawCss: '',
+      target: 'weapp',
+      classSet: new Set(),
+      dependencies: ['dep.css'],
+    })
+    addSourceDependencyMessages(result, ['source.vue'])
+    expect(result.messages).toEqual([
+      { type: 'dependency', plugin: 'weapp-tailwindcss', file: 'dep.css' },
+      { type: 'dependency', plugin: 'weapp-tailwindcss', file: 'source.vue' },
+    ])
+  })
+
+  it('replaces root css and preserves invalid css fallback text', async () => {
+    const valid = await postcss().process('.a{color:red}', {
+      from: undefined,
+    })
+    replaceRootCss(valid.root, '.b{color:blue}', valid)
+    expect(valid.root.toString()).toBe('.b{color:blue}')
+
+    replaceRootCss(valid.root, '.broken{color:red', valid)
+    expect(valid.root.toString()).toContain('.broken{color:red')
+  })
+
   it('prepends Tailwind import and reference for apply-only css before resolving source', async () => {
     const { adapters } = createAdapters({
       createGenerator: vi.fn(() => ({

@@ -133,6 +133,27 @@ export type {
 } from './postcss-runtime'
 export { createInjectPreflight } from './preflight'
 export { internalCssSelectorReplacer } from './shared'
+export {
+  collectCssInlineSourceCandidates,
+  createSourceScanPattern,
+  createTailwindSourceEntryMatcher,
+  expandInlineSourceCandidatePattern,
+  expandTailwindSourceEntries,
+  FULL_SOURCE_SCAN_EXTENSION_RE,
+  FULL_SOURCE_SCAN_EXTENSIONS,
+  FULL_SOURCE_SCAN_PATTERN,
+  isFileExcludedByTailwindSourceEntries,
+  isFileMatchedByTailwindSourceEntries,
+  normalizeLegacyContentEntries,
+  parseConfigParam,
+  parseSourceFileParam,
+  resolveCssSourceEntries,
+  resolveSourceScanPath,
+  resolveTailwindSourceEntry,
+  type TailwindInlineSourceCandidates,
+  type TailwindSourceEntry,
+  toPosixPath,
+} from './source-scan'
 export * from './types'
 export {
   containsCssAfterMinify,
