@@ -110,8 +110,9 @@ const miniProgramPlatformFiles = {
   'mp-alipay': {
     cssFiles: ['app.acss', 'main.acss', 'sub-normal/pages/index.acss', 'sub-independent/pages/index.acss'],
     outputDir: 'unpackage/dist/dev/mp-alipay',
-    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
+      main: 'pages/index/index.axml',
       independent: 'sub-independent/pages/index.axml',
       normal: 'sub-normal/pages/index.axml',
     },
@@ -119,8 +120,9 @@ const miniProgramPlatformFiles = {
   'mp-baidu': {
     cssFiles: ['app.css', 'main.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
     outputDir: 'unpackage/dist/dev/mp-baidu',
-    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
+      main: 'pages/index/index.swan',
       independent: 'sub-independent/pages/index.swan',
       normal: 'sub-normal/pages/index.swan',
     },
@@ -128,8 +130,9 @@ const miniProgramPlatformFiles = {
   'mp-toutiao': {
     cssFiles: ['app.ttss', 'main.ttss', 'sub-normal/pages/index.ttss', 'sub-independent/pages/index.ttss'],
     outputDir: 'unpackage/dist/dev/mp-toutiao',
-    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
+      main: 'pages/index/index.ttml',
       independent: 'sub-independent/pages/index.ttml',
       normal: 'sub-normal/pages/index.ttml',
     },
@@ -137,8 +140,9 @@ const miniProgramPlatformFiles = {
   'mp-weixin': {
     cssFiles: ['app.wxss', 'main.wxss', 'sub-normal/pages/index.wxss', 'sub-independent/pages/index.wxss'],
     outputDir: 'unpackage/dist/dev/mp-weixin',
-    requiredFiles: ['app.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
+    requiredFiles: ['app.json', 'pages/index/index.json', 'sub-normal/pages/index.json', 'sub-independent/pages/index.json'],
     templateFiles: {
+      main: 'pages/index/index.wxml',
       independent: 'sub-independent/pages/index.wxml',
       normal: 'sub-normal/pages/index.wxml',
     },
@@ -148,6 +152,7 @@ const miniProgramPlatformFiles = {
   outputDir: string
   requiredFiles: string[]
   templateFiles: {
+    main: string
     independent: string
     normal: string
   }
@@ -172,6 +177,28 @@ function createUniAppHBuilderXMiniProgramCase(options: {
 }): MiniProgramCase {
   const platformFiles = miniProgramPlatformFiles[options.platform]
   const isTailwindV4 = options.tailwindcss === 'v4'
+  const tailwindV4CssContains = [
+    '.bg-_b_h123456_B',
+    'background-color: #123456',
+    '.template-corpus-card',
+    '.bg-gradient-to-br',
+    /--tw-gradient-position\s*:\s*to bottom right/,
+    /background-image\s*:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/,
+    /background-image\s*:\s*radial-gradient\(circle at 18% 20%,#e0f2fe,#fdf4ff 70%\)/,
+    /padding-top\s*:\s*24rpx/,
+    /font-size\s*:\s*26rpx/,
+    /border-radius\s*:\s*20rpx/,
+    '.template-corpus-dynamic',
+    '.bg-_b_h68c828_B',
+    '.text-_b100rpx_B',
+    '.w-_b323px_B',
+    '.h-_b45px_B',
+    '.space-y-2>view+view',
+    '.space-y-2>text+view',
+    ...(options.platform === 'mp-weixin' ? ['.wx_cbg-blue-500'] : []),
+    /normal[-_]subpackage/i,
+    /independent[-_]subpackage/i,
+  ]
   return {
     name: withMiniProgramPlatformName(options.name, options.platform),
     platform: options.platform,
@@ -181,11 +208,18 @@ function createUniAppHBuilderXMiniProgramCase(options: {
     cssFiles: platformFiles.cssFiles,
     requiredFiles: platformFiles.requiredFiles,
     cssContains: isTailwindV4
-      ? ['.bg-_b_h123456_B', 'background-color: #123456', /normal[-_]subpackage/i, /independent[-_]subpackage/i]
+      ? tailwindV4CssContains
       : ['.bg-_b_h123456_B', /background-color:\s*rgba\(18,\s*52,\s*86/, /normal[-_]subpackage/i, /independent[-_]subpackage/i],
     cssNotContains: [rawTailwindDirectiveRE],
     outputContains: {
       'app.json': ['"root": "sub-normal"', '"root": "sub-independent"', '"independent": true'],
+      [platformFiles.templateFiles.main]: [
+        'template-corpus-card',
+        'template-corpus-radial',
+        'template-corpus-space',
+        'template-corpus-apply',
+        'template-corpus-hover',
+      ],
       [platformFiles.templateFiles.independent]: ['bg-independent-subpackage-marker'],
       [platformFiles.templateFiles.normal]: ['bg-normal-subpackage-marker'],
     },

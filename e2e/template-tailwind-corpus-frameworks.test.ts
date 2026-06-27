@@ -114,6 +114,7 @@ describe('template Tailwind corpus across framework demos', () => {
   for (const entry of [
     getE2EProject('uni-app-vite-tailwindcss-v4'),
     getE2EProject('taro-vite-react-tailwindcss-v4'),
+    getE2EProject('taro-webpack-vue3-tailwindcss-v4'),
     getE2EProject('mpx-tailwindcss-v4'),
   ]) {
     it(`${entry.name} mini-program build`, async () => {
@@ -123,6 +124,28 @@ describe('template Tailwind corpus across framework demos', () => {
       expectTemplateCorpusBuild(entry, await readOutputFiles(entry))
     }, 600_000)
   }
+
+  it('uni-app HBuilderX demo keeps the same corpus source coverage and local output checks', async () => {
+    const root = path.resolve(demoRoot, 'uni-app-vite-vue3-hbuilderx-tailwindcss-v4')
+    const style = await fs.readFile(path.join(root, 'main.css'), 'utf8')
+    const page = await fs.readFile(path.join(root, 'pages/index/index.vue'), 'utf8')
+    const source = `${style}\n${page}`
+
+    for (const marker of corpusMarkers) {
+      expect(source, `uni-app HBuilderX should keep template corpus marker ${marker}`).toContain(marker)
+    }
+    for (const raw of dynamicClasses) {
+      expect(source, `uni-app HBuilderX should keep dynamic class source ${raw}`).toContain(raw)
+    }
+
+    expect(style, 'uni-app HBuilderX should keep wx custom variant fixture').toContain('@custom-variant wx')
+    expect(style, 'uni-app HBuilderX should keep non-matching not-wx custom variant fixture').toContain('@custom-variant not-wx')
+    expect(style, 'uni-app HBuilderX should keep complex any-hover custom variant fixture').toContain('@custom-variant any-hover')
+    expect(style, 'uni-app HBuilderX should keep @apply corpus').toContain('.template-corpus-apply')
+    expect(page, 'uni-app HBuilderX should keep space-y fixture').toContain('space-y-2')
+    expect(page, 'uni-app HBuilderX should keep gradient fixture').toContain('bg-gradient-to-br')
+    expect(page, 'uni-app HBuilderX should keep hover-class fixture').toContain('hover-class="!bg-[gray] after:!content-[\'good_work!\']"')
+  })
 
   it('uni-app x HBuilderX demo keeps the same conservative corpus source coverage', async () => {
     const root = path.resolve(demoRoot, 'uni-app-x-hbuilderx-tailwindcss-v4')
