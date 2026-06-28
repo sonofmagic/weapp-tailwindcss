@@ -10,11 +10,15 @@ export default defineConfig({
       'css-blank-pseudo',
       'css-has-pseudo',
       'css-prefers-color-scheme',
+      'postcss-selector-parser',
       'postcss-preset-env',
     ],
   },
   clean: true,
   dts: false,
+  outputOptions: {
+    minifyInternalExports: false,
+  },
   outExtensions({ format }) {
     return {
       js: format === 'es' ? '.mjs' : '.js',

@@ -266,6 +266,34 @@ describe('bundlers/vite helper modules', () => {
       sourceFile: '/repo/src/sub-independent/pages/index.css',
     })
     expect(resolver.resolve('index2.css')).toBeUndefined()
+
+    const outOfOrderResolver = createTemporaryCssAssetSourceResolver([
+      {
+        file: '/repo/src/pages/index/index.css',
+        outputFile: 'pages/index/index.acss',
+        source: '@import "tailwindcss"; @source "./index.css"; .issue-951-page-local { color: #111827; }',
+      },
+      {
+        file: '/repo/src/sub-normal/pages/index.css',
+        outputFile: 'sub-normal/pages/index.acss',
+        source: '@import "tailwindcss"; @source "./index.css"; .issue-951-normal-local { color: #7c3aed; }',
+      },
+      {
+        file: '/repo/src/sub-independent/pages/index.css',
+        outputFile: 'sub-independent/pages/index.acss',
+        source: '@import "tailwindcss"; @source "./index.css"; .issue-951-independent-local { color: #059669; }',
+      },
+    ])
+    expect(outOfOrderResolver.resolve('index.css', '.issue-951-independent-local{color:#059669}')).toEqual({
+      outputFile: 'sub-independent/pages/index.acss',
+      rawSource: '@import "tailwindcss"; @source "./index.css"; .issue-951-independent-local { color: #059669; }',
+      sourceFile: '/repo/src/sub-independent/pages/index.css',
+    })
+    expect(outOfOrderResolver.resolve('index2.css', '.issue-951-page-local{color:#111827}')).toEqual({
+      outputFile: 'pages/index/index.acss',
+      rawSource: '@import "tailwindcss"; @source "./index.css"; .issue-951-page-local { color: #111827; }',
+      sourceFile: '/repo/src/pages/index/index.css',
+    })
   })
 
   it('resolves matched css outputs and applies css results back to bundle assets', () => {
@@ -387,6 +415,15 @@ describe('bundlers/vite helper modules', () => {
     expect(resolve('/repo/src/app.css?direct')).toBe('app.wxss')
     expect(resolve('/repo/src/aliased.css')).toBe('app.wxss')
     expect(resolve('pages/index.css')).toBe('out/pages/index.css')
+    const resolveMisplacedSameBasenameCss = createMatchedCssSourceOutputResolver({
+      assetSourceFile: '/repo/src/pages/index/index.css',
+      file: 'sub-independent/pages/index.ttss',
+      resolveOutputFileFromMatchedCssSource: sourceFile =>
+        sourceFile === '/repo/src/pages/index/index.css'
+          ? 'pages/index/index.ttss'
+          : undefined,
+    })
+    expect(resolveMisplacedSameBasenameCss('/repo/src/pages/index/index.css')).toBe('pages/index/index.ttss')
     expect(hasViteProcessedCssResultForSource('app.wxss', () => new Map([['app.wxss', {}]]))).toBe(true)
     expect(hasViteProcessedCssResultForSource('app.wxss', () => new Map([['pages/app.wxss', {}]]))).toBe(false)
     expect(hasViteProcessedCssResultForSource('app.wxss')).toBe(false)
@@ -438,10 +475,11 @@ describe('bundlers/vite helper modules', () => {
     expect(emittedOrigin.source).toBe('@import "./app-origin.wxss";\n')
 
     const originalNoShell = createAsset('old', ['/repo/src/app.css'])
+    const existingNoShell = createAsset('existing')
     applyCssResultToBundle({
       appType: 'native',
       assetSourceFile: '/repo/src/app.css',
-      bundle: { 'app.wxss': originalNoShell },
+      bundle: { 'app.wxss': originalNoShell, 'app-origin.wxss': existingNoShell },
       emitOrReplayCssAsset: vi.fn(),
       file: 'app.wxss',
       originalSource: originalNoShell,
@@ -449,7 +487,8 @@ describe('bundlers/vite helper modules', () => {
       source: 'generated',
       viteProcessedCssAsset: false,
     })
-    expect(originalNoShell.source).toBe('generated')
+    expect(existingNoShell.source).toBe('generated')
+    expect(originalNoShell.source).toBe('')
 
     const secondOriginal = createAsset('old')
     const secondExisting = createAsset('existing')

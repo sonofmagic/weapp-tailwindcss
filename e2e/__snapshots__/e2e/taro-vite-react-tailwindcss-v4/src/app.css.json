@@ -1,5 +1,11 @@
 {
   "file": "src/app.css",
-  "count": 0,
-  "tokens": []
+  "count": 5,
+  "tokens": [
+    "bg-gradient-to-r",
+    "rounded-[20rpx]",
+    "text-[26rpx]",
+    "text-white",
+    "to-blue-500"
+  ]
 }

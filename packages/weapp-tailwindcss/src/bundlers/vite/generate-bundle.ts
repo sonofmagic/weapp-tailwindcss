@@ -413,7 +413,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         )
         return inferredSourceStyle
           && currentSubpackageRoots
-          && isSubpackageOutputFile(outputFile, currentSubpackageRoots)
           ? {
               file: inferredSourceStyle.sourceFile,
               outputFile,
@@ -430,6 +429,18 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           outputFile: remembered.outputFile,
           source: remembered.rawSource,
         })),
+        ...getConfiguredTailwindV4CssSourceEntries()
+          .map((entry) => {
+            const outputFile = resolveMatchedCssSourceOutputFile(entry.file)
+            return outputFile
+              ? {
+                  file: entry.file,
+                  outputFile,
+                  source: entry.source,
+                }
+              : undefined
+          })
+          .filter((entry): entry is { file: string, outputFile: string, source: string } => entry != null),
         ...configuredTailwindV4CssSourceEntriesForScope
           .map((entry) => {
             const outputFile = resolveMatchedCssSourceOutputFile(entry.file)
@@ -652,7 +663,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           hasUsableRememberedTailwindSource = false
         }
         if (isTemporaryCssAssetFile(outputFile) && hasTailwindGenerationSource(rawSource)) {
-          const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile)
+          const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
           if (resolvedTemporarySource) {
             outputFile = resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
               ?? resolvedTemporarySource.outputFile
@@ -713,7 +724,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             isTemporaryCssAssetFile(outputFile)
             && configuredTailwindV4CssSourceEntries.length > 1
           ) {
-            const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile)
+            const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
             if (resolvedTemporarySource) {
               outputFile = resolveMatchedOutputFileForCurrentAsset(resolvedTemporarySource.sourceFile)
                 ?? resolvedTemporarySource.outputFile

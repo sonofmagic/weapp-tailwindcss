@@ -1,5 +1,11 @@
 {
   "file": "src/main.css",
-  "count": 0,
-  "tokens": []
+  "count": 5,
+  "tokens": [
+    "font-semibold",
+    "items-center",
+    "rounded-[20rpx]",
+    "text-[26rpx]",
+    "text-white"
+  ]
 }
