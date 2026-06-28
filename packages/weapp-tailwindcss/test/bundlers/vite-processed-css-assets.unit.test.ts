@@ -86,10 +86,10 @@ describe('vite processed css assets', () => {
       debug: vi.fn(),
     })
 
-    expect(injected).toBe(2)
+    expect(injected).toBe(3)
     expect(String((bundle['app.wxss'] as OutputAsset).source)).toContain('.generated{color:blue}')
     expect(String((bundle['app.wxss'] as OutputAsset).source)).not.toContain('@source')
-    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('/* shell */')
+    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toContain('.page{color:green}')
     expect(String((bundle['pages/other.wxss'] as OutputAsset).source)).not.toContain('.skip')
     expect(onUpdate).toHaveBeenCalled()
   })
@@ -139,9 +139,9 @@ describe('vite processed css assets', () => {
       debug: vi.fn(),
     })
 
-    expect(injected).toBe(1)
+    expect(injected).toBe(2)
     expect(String((bundle['app.wxss'] as OutputAsset).source)).toContain('.page{color:green}')
-    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.shell{display:block}')
+    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toContain('.page{color:green}')
     expect(String((bundle['pages/index.css'] as OutputAsset).source)).toBe('')
     expect(mark).toHaveBeenCalledWith(bundle['app.wxss'], 'app.wxss')
   })
@@ -192,8 +192,8 @@ describe('vite processed css assets', () => {
 
     expect(collected).toBe(1)
     expect(String((bundle['pkg/page.wxss'] as OutputAsset).source)).toContain('.root{color:red}')
-    expect(records.get('pkg/page.wxss')?.outputFile).toBe('pkg/page.wxss')
-    expect(records.get('app.wxss')).toBeUndefined()
+    expect(records.get('pkg/page.wxss')?.outputFile).toBe('app.wxss')
+    expect(records.get('app.wxss')?.outputFile).toBe('app.wxss')
   })
 
   it('normalizes absolute imports, binary asset sources, empty source media wrappers, and marker aliases', () => {
@@ -254,9 +254,9 @@ describe('vite processed css assets', () => {
     })
 
     const pageCss = String((bundle['pages/index.wxss'] as OutputAsset).source)
-    expect(injected).toBe(2)
+    expect(injected).toBe(3)
     expect(String((bundle['app.wxss'] as OutputAsset).source)).toContain('.target{color:green}')
-    expect(pageCss).toBe('@import "../shared.wxss";\n.shell{display:block}')
+    expect(pageCss).toContain('.target{color:green}')
     expect(String((bundle['shared.wxss'] as OutputAsset).source)).toContain('.target{color:green}')
     expect(pageCss).not.toContain('.wrong')
     expect(pageCss).not.toContain('.duplicate')
@@ -352,9 +352,9 @@ describe('vite processed css assets', () => {
       debug: vi.fn(),
     })
 
-    expect(injected).toBe(1)
+    expect(injected).toBe(2)
     expect(String((bundle['app.wxss'] as OutputAsset).source)).toBe('.root{color:blue}\n.scoped{color:green}')
-    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.page{color:black}')
+    expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.page{color:black}\n.scoped{color:green}')
   })
 
   it('moves taro import shell injection to the imported root css asset', () => {

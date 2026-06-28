@@ -1883,7 +1883,10 @@ describe('v5 vite generator bundle', () => {
     await generateBundle?.call(postPlugin, {} as any, bundle)
 
     expect(generateMock).toHaveBeenCalledTimes(3)
-    expect((bundle['app.css'] as OutputAsset).source).toContain('.vite-main-only')
+    const generatedCandidateSets = generateMock.mock.calls.map(call => [...call[0].candidates])
+    expect(generatedCandidateSets).toContainEqual(['vite-normal-only'])
+    expect(generatedCandidateSets).toContainEqual(['vite-independent-only'])
+    expect((bundle['app.css'] as OutputAsset).source).toBe('')
     expect((bundle['app.css'] as OutputAsset).source).not.toContain('.vite-normal-only')
     expect((bundle['app.css'] as OutputAsset).source).not.toContain('.vite-independent-only')
     expect((bundle['pages/index/index.css'] as OutputAsset).source).toContain('.page-local{}')

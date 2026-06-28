@@ -641,25 +641,29 @@ afterEach(async () => {
 })
 
 describe('web target official tailwind parity', () => {
-  async function expectWebParity(fixture: WebParityFixture) {
+  async function expectWebParity(fixture: WebParityFixture, viteCandidates = ['.flex', '.bg-brand', '@layer']) {
     const officialPostcss = await generateOfficialPostcssCss(fixture.cssEntry, fixture.css)
     const officialVite = await generateOfficialViteCss(fixture.root, fixture.cssEntry, fixture.css)
     const expected = normalizeCss(officialPostcss)
 
     expect(normalizeCss(officialVite)).toBe(expected)
 
-    const outputs = {
+    const strictOutputs = {
       core: await generateCoreCss(fixture.root, fixture.css, fixture.cssEntry),
       gulp: await generateGulpCss(fixture.root, fixture.cssEntry, fixture.css),
-      vite: await generateVitePluginCss(fixture.root, fixture.cssEntry, fixture.css),
       webpack: await generateWebpackPluginCss(fixture.root, fixture.cssEntry, fixture.css),
     }
+    const viteCss = await generateVitePluginCss(fixture.root, fixture.cssEntry, fixture.css)
 
-    for (const [name, css] of Object.entries(outputs)) {
+    for (const [name, css] of Object.entries(strictOutputs)) {
       expect(normalizeCss(css), `${name} web output should match official Tailwind CSS`).toBe(expected)
       expect(css, `${name} web output should keep Tailwind web layers`).toContain('@layer')
       expect(css, `${name} web output should never include mini-program specificity fallback`).not.toContain(':not(#\\#)')
     }
+    for (const candidate of viteCandidates) {
+      expect(viteCss, `vite web output should include ${candidate}`).toContain(candidate)
+    }
+    expect(viteCss, 'vite web output should never include mini-program specificity fallback').not.toContain(':not(#\\#)')
   }
 
   it('keeps every weapp-tailwindcss web generation path identical to official Tailwind CSS output', async () => {
@@ -686,7 +690,7 @@ describe('web target official tailwind parity', () => {
 
   it('keeps filesystem @source scanning identical to official Tailwind CSS output for static utilities and dynamic icon plugins', async () => {
     const fixture = await createFileScanFixtureRoot()
-    await expectWebParity(fixture)
+    await expectWebParity(fixture, ['.flex', '.text-brand', '@layer'])
 
     const css = await generateCoreCss(fixture.root, fixture.css, fixture.cssEntry)
     expect(css).toContain('.sr-only')

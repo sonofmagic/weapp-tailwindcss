@@ -1877,8 +1877,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const generateBundle = getGenerateBundleHandler(postPlugin)
     await generateBundle?.call({ addWatchFile: vi.fn() }, {}, bundle, false)
 
-    expect(String(bundle['app.css'].source)).toContain('.bg-_b_h010203_B')
-    expect(String(bundle['app.css'].source)).toContain('.text-_b37px_B')
+    expect(String(bundle['app.css'].source)).toBe('')
+    expect(String(bundle['src/app.css'].source)).toContain('.bg-_b_h010203_B')
+    expect(String(bundle['src/app.css'].source)).toContain('.text-_b37px_B')
   }, TEST_TIMEOUT_MS)
 
   it('skips single-entry Tailwind v4 candidate validation when multiple css entries own independent configs', async () => {
@@ -1981,10 +1982,12 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(generateMock.mock.calls.some(call => call[0].candidates instanceof Set)).toBe(true)
     const generatedCandidateSets = generateMock.mock.calls.map(call => [...call[0].candidates])
     expect(generatedCandidateSets).toContainEqual(['bg-main'])
-    expect(String(bundle['app.css'].source)).toContain('.bg-main{}')
-    expect(String(bundle['app.css'].source)).not.toContain('.bg-normal{}')
-    expect(String(bundle['subpackages/normal/pages/entry/index.css'].source)).toContain('.bg-normal{}')
-    expect(String(bundle['subpackages/normal/pages/entry/index.css'].source)).not.toContain('.bg-main{}')
+    expect(String(bundle['app.css'].source)).toBe('')
+    expect(String(bundle['src/app.css'].source)).toContain('.bg-main{}')
+    expect(String(bundle['src/app.css'].source)).not.toContain('.bg-normal{}')
+    expect(String(bundle['subpackages/normal/pages/entry/index.css'].source)).toBe('')
+    expect(String(bundle['src/subpackages/normal/pages/entry/index.css'].source)).toContain('.bg-normal{}')
+    expect(String(bundle['src/subpackages/normal/pages/entry/index.css'].source)).not.toContain('.bg-main{}')
   }, TEST_TIMEOUT_MS)
 
   it('scans Tailwind v4 @config content for vite source candidates', async () => {
@@ -2739,30 +2742,92 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect([...(scopedSourceGetter?.(broadEntries).keys() ?? [])]).toEqual(['bg-independent-subpackage-marker'])
   }, TEST_TIMEOUT_MS)
 
+  it('falls back to scoped source candidates when subpackage entries cannot narrow broad matches', () => {
+    const root = path.join(os.tmpdir(), 'weapp-tw-vite-subpackage-fallback-scope')
+    const broadEntries = [{
+      base: root,
+      negated: false,
+      pattern: '**/*.{wxml,ts}',
+    }]
+    const getSourceCandidatesForEntries = vi.fn((entries) => {
+      if (entries?.[0]?.pattern === 'sub-independent/**/*') {
+        return new Set<string>()
+      }
+      return new Set(['bg-scoped-only'])
+    })
+    const getSourceCandidateSourcesForEntries = vi.fn((entries) => {
+      const candidates = getSourceCandidatesForEntries(entries)
+      return new Map([...candidates].map(candidate => [candidate, new Set([candidate])]))
+    })
+    const scope = createSubpackageSourceCandidateScope({
+      getSourceCandidatesForEntries,
+      getSourceCandidateSourcesForEntries,
+      rootDir: root,
+      snapshot: { entries: [] } as any,
+      sourceRoot: root,
+      subpackageRoots: new Set(['sub-independent']),
+      useIncrementalMode: false,
+    })
+
+    const scopedGetter = scope.createScopedSourceCandidateGetter('sub-independent/pages/index.wxss', { isMainChunk: false })
+    const scopedSourceGetter = scope.createScopedSourceCandidateSourceGetter('sub-independent/pages/index.wxss', { isMainChunk: false })
+
+    expect(scopedGetter?.([])).toEqual(new Set(['bg-scoped-only']))
+    expect(scopedGetter?.(broadEntries)).toEqual(new Set(['bg-scoped-only']))
+    expect([...(scopedSourceGetter?.([]).keys() ?? [])]).toEqual(['bg-scoped-only'])
+    expect([...(scopedSourceGetter?.(broadEntries).keys() ?? [])]).toEqual(['bg-scoped-only'])
+  })
+
   it('collects Tailwind v4 cssEntries as configured css source entries', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-configured-css-entries-'))
     createdDirs.push(root)
     const normalCssFile = path.join(root, 'sub-normal/pages/index.css')
     const independentCssFile = path.join(root, 'sub-independent/pages/index.css')
+    const runtimeCssFile = path.join(root, 'runtime/tailwind.css')
+    const missingCssFile = path.join(root, 'sub-missing/pages/index.css')
     await mkdir(path.dirname(normalCssFile), { recursive: true })
     await mkdir(path.dirname(independentCssFile), { recursive: true })
     await writeFile(normalCssFile, '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-normal.js";', 'utf8')
     await writeFile(independentCssFile, '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-independent.js";', 'utf8')
 
     const entries = collectConfiguredTailwindV4CssSourceEntries(createContext({
-      cssEntries: [normalCssFile, independentCssFile],
+      cssEntries: [normalCssFile, independentCssFile, missingCssFile, normalCssFile],
       tailwindcss: {
         v4: {
-          cssEntries: [normalCssFile, independentCssFile],
+          cssEntries: [normalCssFile, independentCssFile, missingCssFile],
+        },
+      },
+      tailwindcssRuntimeOptions: {
+        tailwindcss: {
+          v4: {
+            cssEntries: [normalCssFile],
+            cssSources: [
+              {
+                file: runtimeCssFile,
+                css: '@import "tailwindcss" source(none);\n@source "./runtime/**/*.{wxml,ts}";',
+                base: root,
+              },
+              {
+                file: independentCssFile,
+                css: '@import "tailwindcss" source(none);\n@config "../../tailwind.config.sub-independent.js";',
+              },
+              {
+                css: '',
+                base: root,
+              },
+            ],
+          },
         },
       },
     }) as any, root)
 
-    expect(entries.map(entry => entry.file)).toEqual([normalCssFile, independentCssFile])
-    expect(entries.map(entry => entry.source)).toEqual([
-      expect.stringContaining('tailwind.config.sub-normal.js'),
-      expect.stringContaining('tailwind.config.sub-independent.js'),
-    ])
+    expect(entries.map(entry => entry.file)).toEqual([normalCssFile, independentCssFile, runtimeCssFile])
+    expect(entries).toContainEqual({
+      file: runtimeCssFile,
+      source: '@import "tailwindcss" source(none);\n@source "./runtime/**/*.{wxml,ts}";',
+    })
+    expect(entries.find(entry => entry.file === normalCssFile)?.source).toContain('tailwind.config.sub-normal.js')
+    expect(entries.find(entry => entry.file === independentCssFile)?.source).toContain('tailwind.config.sub-independent.js')
   }, TEST_TIMEOUT_MS)
 
   it('does not treat a single Tailwind v4 cssEntry as configured css source entry', async () => {
