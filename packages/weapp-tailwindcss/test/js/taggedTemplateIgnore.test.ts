@@ -120,16 +120,33 @@ describe('taggedTemplateIgnore', () => {
 
   it('unwraps sequence and call tag expressions', () => {
     const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['imported'] })
-    const [sequence, call] = getTagPaths([
+    const [sequence, call, parenthesized] = getTagPaths([
       'import { weappTwIgnore as imported } from "weapp-tailwindcss/escape"',
       '(0, imported)`sequence`',
       'imported()`call`',
+      '(imported)`parenthesized`',
     ].join('\n'))
 
-    expect([sequence, call].map(tag => helper.shouldIgnore(tag))).toEqual([
+    expect([sequence, call, parenthesized].map(tag => helper.shouldIgnore(tag))).toEqual([
       true,
+      false,
       true,
     ])
+  })
+
+  it('unwraps TypeScript assertions and non-null member expressions', () => {
+    const helper = createTaggedTemplateIgnore({ matcher: () => false, names: ['weappTwIgnore'] })
+    const [asExpression, typeAssertion, memberNonNull] = getTagPaths([
+      'import { weappTwIgnore as imported } from "weapp-tailwindcss/escape"',
+      '(imported as any)`as-expression`',
+      '(<any>imported)`type-assertion`',
+      'const registry = { weappTwIgnore: imported }',
+      'registry!.weappTwIgnore`member`',
+    ].join('\n'), ['typescript'])
+
+    expect(helper.shouldIgnore(asExpression)).toBe(false)
+    expect(helper.shouldIgnore(typeAssertion)).toBe(true)
+    expect(helper.shouldIgnore(memberNonNull)).toBe(true)
   })
 
   it('resolves string-literal import specifiers and member aliases', () => {

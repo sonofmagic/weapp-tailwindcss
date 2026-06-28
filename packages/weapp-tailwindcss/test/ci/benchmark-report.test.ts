@@ -13,6 +13,9 @@ describe('benchmark ci report', () => {
         if (!entry.isDirectory()) {
           return []
         }
+        if (entry.name.startsWith('.tmp-')) {
+          return []
+        }
         const packageJson = path.join(full, 'package.json')
         if (fs.existsSync(packageJson)) {
           return [path.relative(repoRoot, full).replaceAll(path.sep, '/')]

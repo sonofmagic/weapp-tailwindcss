@@ -89,6 +89,36 @@ describe('OXC JS fast path', () => {
     expect(oxcJsHandler('const cls = "w-[100px]"', options)).toBeUndefined()
   })
 
+  it('rejects unsupported fast path options and unsupported source markers', () => {
+    expect(isOxcParserRuntimeSupported('unknown')).toBe(false)
+    expect(canUseOxcJsFastPath({
+      ...createOptions(),
+      alwaysEscape: false,
+      classNameSet: new Set<string>(),
+    })).toBe(false)
+    expect(canUseOxcJsFastPath({
+      ...createOptions(),
+      wrapExpression: true,
+    } as any)).toBe(false)
+    expect(canUseOxcJsFastPath({
+      ...createOptions(),
+      moduleSpecifierReplacements: new Map(),
+    } as any)).toBe(false)
+    expect(canUseOxcJsFastPath({
+      ...createOptions(),
+      ignoreTaggedTemplateExpressionIdentifiers: ['tw'],
+    })).toBe(false)
+    expect(oxcJsHandler('eval("const cls = \\"w-[100px]\\"")', createOptions())).toBeUndefined()
+    expect(oxcJsHandler('const marker = "weapp-tw ignore"; const cls = "w-[100px]"', createOptions())).toBeUndefined()
+    expect(oxcJsHandler('const cls = "w-[100px]"', {
+      ...createOptions(),
+      filename: '/project/pages/index.unknown',
+      babelParserOptions: {
+        sourceType: 'commonjs' as any,
+      },
+    })?.code).toContain('w-_b100px_B')
+  })
+
   it('falls back to Babel for ignore-call semantics', () => {
     const options = {
       ...createOptions(),
@@ -121,6 +151,13 @@ describe('OXC JS fast path', () => {
 
     expect(canUseOxcJsFastPath(options)).toBe(false)
     expect(oxcJsHandler('const cls = "w-[100px]"', options)).toBeUndefined()
+  })
+
+  it('returns unchanged code when OXC finds no literal replacements and falls back on parse errors', () => {
+    const options = createOptions()
+
+    expect(oxcJsHandler('const cls = "plain"', options)).toEqual({ code: 'const cls = "plain"' })
+    expect(oxcJsHandler('const broken = ', options)).toBeUndefined()
   })
 
   it('createJsHandler uses OXC only when explicitly enabled', () => {

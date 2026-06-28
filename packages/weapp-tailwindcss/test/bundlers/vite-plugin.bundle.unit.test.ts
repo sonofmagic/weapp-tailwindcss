@@ -12609,4 +12609,92 @@ const fallback = "bg-[#434332] px-[32px]"
     }))
   }, TEST_TIMEOUT_MS)
 
+  it('skips web-target html assets and transform-filtered css assets in generateBundle', async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-generate-skip-'))
+    createdDirs.push(rootDir)
+    const runtimeSet = new Set(['alpha'])
+    const debug = vi.fn()
+    const markCssAssetProcessed = vi.fn()
+    const onUpdate = vi.fn()
+    const context = createContext({
+      appType: 'h5',
+      generator: {
+        target: 'web',
+      },
+      htmlMatcher: (file: string) => file.endsWith('.html'),
+      transform: {
+        exclude: ['src/generated/**'],
+      },
+      onUpdate,
+      templateHandler: vi.fn(async (code: string) => `tpl:${code}`),
+      styleHandler: vi.fn(async (code: string) => ({ css: `css:${code}` })),
+      jsHandler: vi.fn((code: string) => ({ code: `js:${code}` })),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => runtimeSet),
+        getClassSetSync: vi.fn(() => runtimeSet),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: runtimeSet })),
+      },
+    })
+    const generateBundle = createGenerateBundleHook({
+      opts: context as any,
+      runtimeState: {
+        tailwindRuntime: context.tailwindRuntime as any,
+        readyPromise: Promise.resolve(),
+      },
+      ensureRuntimeClassSet: vi.fn(async () => runtimeSet),
+      ensureBundleRuntimeClassSet: vi.fn(async () => runtimeSet),
+      debug,
+      getResolvedConfig: () => ({
+        command: 'build',
+        plugins: [],
+        root: rootDir,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist' },
+      } as unknown as ResolvedConfig),
+      markCssAssetProcessed,
+      isCssAssetProcessed: vi.fn(() => false),
+      isViteProcessedCssAsset: vi.fn(() => false),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult: vi.fn(),
+      getViteProcessedCssAssetResults: () => [],
+      getViteProcessedCssAssetResult: () => undefined,
+      getSourceCandidates: () => runtimeSet,
+      getSourceCandidatesForEntries: () => runtimeSet,
+      waitForSourceCandidateSyncs: vi.fn(async () => undefined),
+      rememberCssSource: vi.fn(),
+      refreshRememberedCssSource: vi.fn(),
+      getRememberedCssSources: () => new Map(),
+      getRememberedCssSignature: () => undefined,
+      setRememberedCssSignature: vi.fn(),
+      recordGeneratorCandidates: vi.fn(),
+    })
+
+    const generatedCssSource = '.raw { color: red; }'
+    const generatedCssAsset = {
+      ...createRollupAsset(generatedCssSource),
+      fileName: 'generated/raw.css',
+      originalFileNames: [path.resolve(rootDir, 'src/generated/raw.css')],
+    } satisfies OutputAsset
+    const bundle = {
+      'index.html': {
+        ...createRollupAsset('<div class="alpha"></div>'),
+        fileName: 'index.html',
+        originalFileNames: [path.resolve(rootDir, 'src/index.html')],
+      } satisfies OutputAsset,
+      'generated/raw.css': generatedCssAsset,
+    }
+
+    await generateBundle.call({ addWatchFile: vi.fn() }, {} as any, bundle)
+
+    expect(context.templateHandler).not.toHaveBeenCalled()
+    expect(context.styleHandler).not.toHaveBeenCalled()
+    expect((bundle['index.html'] as OutputAsset).source).toBe('<div class="alpha"></div>')
+    expect((bundle['generated/raw.css'] as OutputAsset).source).toBe(generatedCssSource)
+    expect(markCssAssetProcessed).toHaveBeenCalledWith(generatedCssAsset, 'generated/raw.css')
+    expect(onUpdate).toHaveBeenCalledWith('generated/raw.css', generatedCssSource, generatedCssSource)
+    expect(debug).toHaveBeenCalledWith('html skip web target: %s', 'index.html')
+    expect(debug).toHaveBeenCalledWith('css skip transform (filtered): %s', 'generated/raw.css')
+  }, TEST_TIMEOUT_MS)
+
 })
