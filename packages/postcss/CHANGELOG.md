@@ -1,5 +1,29 @@
 # @weapp-tailwindcss/postcss
 
+## 3.1.4
+
+### Patch Changes
+
+- 🐛 **修复 `@weapp-tailwindcss/postcss` 产物在 Vite/Vitest SSR 中可能被错误重写并触发 `Unexpected token ':'` 的问题，同时修正 `tailwindcss-config` 的源码导入扩展名，提升发布产物与测试链路稳定性。** [`0e08dac`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0e08dacbe3de03a83a5c7b675adffaf6d0e81e3f)
+
+- 🐛 **抽出 Tailwind v4 `@apply` only CSS 的选择器收集与生成 CSS 过滤工具，并在 PostCSS generator 插件中复用当前 Root，避免为原始 CSS 再次解析。** [`4ea174c`](https://github.com/sonofmagic/weapp-tailwindcss/commit/4ea174c4e6c8518e4cd10476b8a0f5b8978cd9bc)
+  - 同时复用已序列化的入口 CSS 字符串进行自动扫描判断，减少同一轮处理中的重复 `root.toString()`。
+
+- 🐛 **修复 uni-app-vite 小程序端在 Tailwind CSS v4 场景下对 `@layer base` 的误判警告，提前清理 mini-program CSS 中的 cascade layer 语法，并补充对应回归测试。** [`8b98c43`](https://github.com/sonofmagic/weapp-tailwindcss/commit/8b98c4361680bcc51d192dbbdd126842c45d5db1)
+
+- 🐛 **新增 Tailwind CSS 指令 AST 分析工具，并让生成 CSS 入口复用该分析能力，减少重复解析 CSS 字符串的开销。** [`90dc9ca`](https://github.com/sonofmagic/weapp-tailwindcss/commit/90dc9ca048fb28aa913033dc0bb80d06ce85d70c)
+
+- 🐛 **将本地 CSS `@import` 的分析、拆分、清理和输出路径重写逻辑下沉到 `@weapp-tailwindcss/postcss`，并新增可复用的 PostCSS Root 级 API。** [`d789492`](https://github.com/sonofmagic/weapp-tailwindcss/commit/d7894923e84d8649065da5ec8ff29eaee26aa340)
+  - `weapp-tailwindcss` 的 Tailwind v4 生成 CSS 管线现在会复用同一次 CSS AST 解析结果处理本地 import wrapper、纯 import shell 和 import 拆分，减少重复 `postcss.parse(css)` 开销。
+
+- 🐛 **修复 Web 兼容模式下 Tailwind CSS v4 的渐变变量与 @property 处理，避免 H5 渐变失效，并补充 uni-app、taro、mpx、uni-app x 等场景的回归测试。** [`5540608`](https://github.com/sonofmagic/weapp-tailwindcss/commit/554060826b4e5f073a075f18f559f77b72d4fd0e)
+
+- 🐛 **优化 PostCSS 生成器样式处理性能，复用 CSS source 扫描结果，减少重复 `root.toString()` 与重复解析 source entries 的开销；同时导出 source scan 工具并补齐覆盖率门禁与回归测试。** [`634ff3b`](https://github.com/sonofmagic/weapp-tailwindcss/commit/634ff3b2a8c7e8f98cc58ddc92e27f7f081f3cbd)
+
+- 🐛 **修复 Web 兼容模式下 Tailwind CSS v4 的 `@property` 初始值与现代颜色降级处理，确保开启 `webCompat` 后仍保留现代浏览器的最终展示效果，同时为旧 WebView 提供可用 fallback。** [`36b1822`](https://github.com/sonofmagic/weapp-tailwindcss/commit/36b182251090a980b1a60ff5752a301a3d0e0fc5)
+- 📦 **Dependencies** [`0e08dac`](https://github.com/sonofmagic/weapp-tailwindcss/commit/0e08dacbe3de03a83a5c7b675adffaf6d0e81e3f)
+  → `tailwindcss-config@2.0.1`
+
 ## 3.1.3
 
 ### Patch Changes
