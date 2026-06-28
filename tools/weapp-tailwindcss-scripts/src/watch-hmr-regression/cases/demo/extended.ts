@@ -300,6 +300,7 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     outputWxml: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.wxml'),
     outputJs: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/pages/index/index.js'),
     outputStyleCandidates: [
+      path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ],
@@ -355,6 +356,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
     },
     styleMutation: {
       sourceFile: path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/main.css'),
+      importerFiles: [
+        path.resolve(baseCwd, 'demo/uni-app-vite-tailwindcss-v4/src/main.ts'),
+      ],
       mutate(source, payload) {
         return appendTrailingSnippet(source, createStyleRuleSnippet(payload))
       },

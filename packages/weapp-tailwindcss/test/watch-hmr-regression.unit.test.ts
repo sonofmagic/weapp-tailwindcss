@@ -2032,7 +2032,9 @@ describe('watch-hmr regression cases', () => {
     const mutated = styleMutation?.mutate(source, payload)
 
     expect(styleMutation?.sourceFile).toBe(path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/src/main.css'))
-    expect(styleMutation?.importerFiles).toBeUndefined()
+    expect(styleMutation?.importerFiles).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/src/main.ts'),
+    ])
     expect(styleMutation?.outputStyleNeedle?.(payload)).toBeUndefined()
     expect(styleMutation?.outputNeedles?.(payload)).toBeUndefined()
     expect(styleMutation?.rollbackNeedles?.(payload)).toBeUndefined()
@@ -2162,6 +2164,7 @@ describe('watch-hmr regression cases', () => {
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
     expect(uniViteCase?.outputStyleCandidates).toEqual([
+      path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/main.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/src/main.wxss'),
       path.resolve('/repo', 'demo/uni-app-vite-tailwindcss-v4/dist/dev/mp-weixin/app.wxss'),
     ])
