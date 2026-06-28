@@ -1137,22 +1137,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             if (nextAppType && opts.appType !== nextAppType) {
               const previousAppType = opts.appType
               opts.appType = nextAppType
-              if (nextAppType === 'uni-app-vite' && options.cssPreflight === undefined && options.cssOptions?.cssPreflight === undefined) {
-                opts.cssPreflight = false
-                if (opts.cssOptions) {
-                  opts.cssOptions.cssPreflight = false
-                }
-              }
-              if (nextAppType === 'uni-app-vite' && options.cssSelectorReplacement?.root === undefined && options.cssOptions?.cssSelectorReplacement?.root === undefined) {
-                const cssSelectorReplacement = {
-                  ...(opts.cssSelectorReplacement ?? {}),
-                  root: [':host', '.tw-root'],
-                }
-                opts.cssSelectorReplacement = cssSelectorReplacement
-                if (opts.cssOptions) {
-                  opts.cssOptions.cssSelectorReplacement = cssSelectorReplacement
-                }
-              }
               logger.info('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
               debug(
                 'align appType with vite root: %s -> %s',

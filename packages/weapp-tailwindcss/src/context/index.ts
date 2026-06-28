@@ -24,9 +24,6 @@ interface ClearTailwindcssRuntimeCacheOptions {
 
 function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions, majorVersion: number | undefined): CssPreflightOptions {
   const userCssPreflight = opts?.cssOptions?.cssPreflight ?? opts?.cssPreflight
-  if (userCssPreflight === undefined && ctx.appType === 'uni-app-vite') {
-    return false
-  }
   const cssPreflight = resolveDefaultCssPreflight(userCssPreflight, majorVersion)
   if (cssPreflight === false || !resolveUniAppXOptions(ctx.uniAppX).enabled) {
     return cssPreflight
@@ -45,24 +42,6 @@ function resolveContextCssPreflight(opts: UserDefinedOptions | undefined, ctx: I
     'border': userCssPreflightObject && 'border' in userCssPreflightObject
       ? (cssPreflight['border'] ?? false)
       : false,
-  }
-}
-
-function applyUniAppViteMiniProgramCssDefaults(opts: UserDefinedOptions | undefined, ctx: InternalUserDefinedOptions) {
-  if (ctx.appType !== 'uni-app-vite') {
-    return
-  }
-  const userRootSelector = opts?.cssOptions?.cssSelectorReplacement?.root ?? opts?.cssSelectorReplacement?.root
-  if (userRootSelector !== undefined) {
-    return
-  }
-  const nextCssSelectorReplacement = {
-    ...(ctx.cssSelectorReplacement ?? {}),
-    root: [':host', '.tw-root'],
-  }
-  ctx.cssSelectorReplacement = nextCssSelectorReplacement
-  if (ctx.cssOptions) {
-    ctx.cssOptions.cssSelectorReplacement = nextCssSelectorReplacement
   }
 }
 
@@ -211,7 +190,6 @@ function createInternalCompilerContext(opts?: UserDefinedOptions): InternalUserD
   }
 
   ctx.cssPreflight = resolveContextCssPreflight(opts, ctx, tailwindRuntime.majorVersion)
-  applyUniAppViteMiniProgramCssDefaults(opts, ctx)
 
   const cssCalcOptions = applyV4CssCalcDefaults(ctx.cssCalc, tailwindRuntime)
   ctx.cssCalc = cssCalcOptions

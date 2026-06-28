@@ -195,6 +195,55 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     }
   })
 
+  it('keeps uni-app-vite default css root and preflight untouched after vite root inference', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    delete process.env.UNI_PLATFORM
+    try {
+      const context = createContext({
+        appType: 'uni-app-vite',
+        tailwindcssBasedir: '/project',
+        cssPreflight: {
+          'box-sizing': 'border-box',
+          margin: '0',
+          padding: '0',
+          border: '0 solid',
+        },
+        cssSelectorReplacement: {
+          root: ['page', '.tw-root', 'wx-root-portal-content'],
+          universal: ['view', 'text'],
+        },
+      })
+      setCurrentContext(context)
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()!
+      const postPlugin = getPlugin(plugins, 'post')
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root: '/project',
+        plugins: [],
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as ResolvedConfig)
+
+      expect(context.cssPreflight).toMatchObject({
+        'box-sizing': 'border-box',
+        margin: '0',
+        padding: '0',
+        border: '0 solid',
+      })
+      expect(context.cssSelectorReplacement?.root).toStrictEqual(['page', '.tw-root', 'wx-root-portal-content'])
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
+  })
+
   it('strips Tailwind cascade layer syntax from vite serve css before uni bundle style checks', async () => {
     mocks.generateTailwindV4Css.mockResolvedValueOnce({
       css: [

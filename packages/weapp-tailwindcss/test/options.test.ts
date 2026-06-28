@@ -276,8 +276,8 @@ describe('get options', () => {
       appType: 'uni-app-vite',
     })
     expect(config.tailwindRuntime.majorVersion).toBe(4)
-    expect(config.cssPreflight).toBe(false)
-    expect(config.cssSelectorReplacement.root).toStrictEqual([':host', '.tw-root'])
+    expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
+    expect(config.cssSelectorReplacement.root).toStrictEqual(['page', '.tw-root', 'wx-root-portal-content'])
   })
 
   it('keeps explicit mini-program element preflight for uni-app vite', () => {
