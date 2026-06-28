@@ -1,4 +1,5 @@
 import type postcss from 'postcss'
+import type { CssSelectorReplacement } from '../../types'
 
 export const MINI_PROGRAM_THEME_SCOPE_SELECTOR = ':host,page,.tw-root,wx-root-portal-content'
 export const MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR = 'view,text,::after,::before'
@@ -34,6 +35,18 @@ export const MINI_PROGRAM_THEME_SCOPE_SELECTORS = new Set([
   '.tw-root',
   'wx-root-portal-content',
 ])
+
+export function normalizeMiniProgramThemeScopeSelector(root?: CssSelectorReplacement['root']) {
+  if (root === false) {
+    return ':host'
+  }
+  if (root === undefined) {
+    return MINI_PROGRAM_THEME_SCOPE_SELECTOR
+  }
+  const selectors = Array.isArray(root) ? root.filter(Boolean) : [root]
+  const deduped = new Set([':host', ...selectors])
+  return [...deduped].join(',')
+}
 
 export const SPECIFICITY_PLACEHOLDER_SUFFIXES = [':not(#n)', ':not(#\\#)']
 export const ROOT_SPECIFICITY_PLACEHOLDER_SUFFIXES = [':not(.does-not-exist)']

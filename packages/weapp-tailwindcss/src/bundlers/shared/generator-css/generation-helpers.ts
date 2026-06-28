@@ -34,7 +34,13 @@ export function finalizeMiniProgramGeneratorCss(
   const injectPreflight = options.injectPreflight !== false
     && !hasMiniProgramTailwindV4PreflightReset(css)
   return finalizeMiniProgramCss(css, {
-    cssPreflight: injectPreflight ? cssPreflight : undefined,
+    cssPreflight: cssPreflight === false
+      ? false
+      : injectPreflight
+        ? cssPreflight
+        : undefined,
+    cssSelectorReplacement: options.styleOptions?.cssOptions?.cssSelectorReplacement
+      ?? options.styleOptions?.cssSelectorReplacement,
     isTailwindcssV4: true,
     tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
       ?? options.styleOptions?.tailwindcssV4GradientFallback,

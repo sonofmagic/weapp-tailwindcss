@@ -108,13 +108,14 @@ describe('mini-program generated css cleanup', () => {
     expect(css).toContain('view,text,::before,::after{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor;--tw-border-spacing-x:0')
   })
 
-  it('keeps hoisted mini-program preflight before runtime variables when merging equivalent rules', () => {
+  it('keeps hoisted mini-program preflight separate from runtime variables when merging equivalent rules', () => {
     const css = finalizeMiniProgramCss([
       'view,text,::after,::before{--tw-border-spacing-x:0;--tw-border-spacing-y:0}',
       'view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}',
     ].join('\n'))
 
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor;--tw-border-spacing-x:0')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:currentColor}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-spacing-x:0;--tw-border-spacing-y:0}')
   })
 
   it('removes Tailwind v4 content init when content variable is unused', () => {
@@ -138,7 +139,8 @@ describe('mini-program generated css cleanup', () => {
       '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
     ].join(''))
 
-    expect(css).toContain('view,text,::after,::before{--tw-border-style:solid}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-border-style:solid}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
     expect(css).not.toContain('@property')
   })
@@ -158,10 +160,42 @@ describe('mini-program generated css cleanup', () => {
     })
 
     expect(css.match(/view,text,::after,::before\{/g)).toHaveLength(1)
-    expect(css).toContain('border:0 solid;--tw-border-style:solid')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
   })
 
-  it('keeps configured preflight on Tailwind v4 runtime variable rules for normal mini-program output', () => {
+  it('does not synthesize mini-program element preflight when cssPreflight is disabled', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+      '@property --tw-border-style{syntax:"*";inherits:false;initial-value:solid}',
+    ].join(''), {
+      cssPreflight: false,
+      isTailwindcssV4: true,
+    })
+
+    expect(css).not.toContain('view,text,::after,::before')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
+    expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
+  })
+
+  it('drops collected Tailwind v4 element preflight when cssPreflight is disabled', () => {
+    const css = finalizeMiniProgramCss([
+      '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-border-style:solid}',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+    ].join(''), {
+      cssPreflight: false,
+      isTailwindcssV4: true,
+    })
+
+    expect(css).not.toContain('view,text,::after,::before')
+    expect(css).not.toContain('box-sizing:border-box')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
+    expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
+  })
+
+  it('keeps configured preflight separate from Tailwind v4 runtime variable rules for normal mini-program output', () => {
     const css = finalizeMiniProgramCss([
       '/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */',
       'view,text,::after,::before{--tw-space-y-reverse:0;--tw-border-style:solid}',
@@ -176,11 +210,12 @@ describe('mini-program generated css cleanup', () => {
       isTailwindcssV4: true,
     })
 
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-space-y-reverse:0;--tw-border-style:solid;}')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-space-y-reverse:0;--tw-border-style:solid}')
     expect(css).toContain('.space-y-2>view+view')
   })
 
-  it('merges Tailwind v4 property defaults into existing preflight in style handler output', async () => {
+  it('keeps Tailwind v4 property defaults out of existing preflight in style handler output', async () => {
     const styleHandler = createStyleHandler({
       cssPreflight: {
         'box-sizing': 'border-box',
@@ -199,7 +234,8 @@ describe('mini-program generated css cleanup', () => {
     ].join(''))
 
     expect(css.match(/view,text,::after,::before\{/g)).toHaveLength(1)
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-rotate-x:;--tw-rotate-y:;}')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-rotate-x:;--tw-rotate-y:}')
     expect(css).toContain('.rotate-x{transform:var(--tw-rotate-x)var(--tw-rotate-y)}')
     expect(css).not.toContain('@property')
   })
@@ -225,8 +261,7 @@ describe('mini-program generated css cleanup', () => {
     expect(css.match(/margin:0/g)).toHaveLength(1)
     expect(css.match(/padding:0/g)).toHaveLength(1)
     expect(css.match(/border:0 solid/g)).toHaveLength(1)
-    expect(css).toContain('--tw-gradient-position:initial')
-    expect(css).toContain('--tw-border-style:solid')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-position:initial;--tw-border-style:solid')
   })
 
   it('applies configured preflight overrides to collected Tailwind v4 base rules', () => {
@@ -246,7 +281,8 @@ describe('mini-program generated css cleanup', () => {
       isTailwindcssV4: true,
     })
 
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border-width:0;--tw-border-style:solid')
+    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border-width:0}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid')
     expect(css).not.toContain('border:0 solid')
     expect(css).toContain('.border-solid{--tw-border-style:solid;border-style:solid}')
   })
@@ -490,7 +526,7 @@ describe('mini-program generated css cleanup', () => {
     expect(css).not.toContain('normal comment')
   })
 
-  it('scopes Tailwind v4 gradient runtime defaults to mini-program elements only', () => {
+  it('scopes Tailwind v4 gradient runtime defaults to mini-program root scope', () => {
     const css = pruneMiniProgramGeneratedCss([
       ':root,:host{',
       '--tw-gradient-position:initial;',
@@ -504,7 +540,8 @@ describe('mini-program generated css cleanup', () => {
       '.bg-linear-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}',
     ].join(''))
 
-    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:initial')
+    expect(css).not.toContain('view,text,::after,::before{--tw-gradient-position:initial')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-position:initial')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-from-position:0%')

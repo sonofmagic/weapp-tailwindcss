@@ -15,6 +15,7 @@ export {
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,
   stripMiniProgramCssSpecificityPlaceholders,
+  unwrapUnsupportedCascadeLayers,
 } from './compat/mini-program-css'
 export {
   normalizeMiniProgramPrefixedDeclaration,

@@ -2,6 +2,7 @@ export {
   removeUnsupportedAtSupports,
   removeUnsupportedCascadeLayers,
   removeUnsupportedMiniProgramAtRules,
+  unwrapUnsupportedCascadeLayers,
 } from './at-rules'
 export {
   finalizeMiniProgramCss,

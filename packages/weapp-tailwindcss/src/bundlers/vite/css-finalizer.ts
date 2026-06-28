@@ -91,6 +91,7 @@ function createCssHandlerOptions(
 ): IStyleHandlerOptions {
   return {
     ...resolveUniAppXNativeCssHandlerOptions(opts),
+    cssPreflight: opts.cssPreflight,
     isMainChunk: opts.mainCssChunkMatcher(file, opts.appType),
     postcssOptions: {
       options: {

@@ -271,6 +271,38 @@ describe('get options', () => {
     expect(config.cssPreflight).toStrictEqual(TAILWIND_V4_CSS_PREFLIGHT)
   })
 
+  it('disables implicit mini-program element preflight for uni-app vite by default', () => {
+    const config = getCompilerContext({
+      appType: 'uni-app-vite',
+    })
+    expect(config.tailwindRuntime.majorVersion).toBe(4)
+    expect(config.cssPreflight).toBe(false)
+    expect(config.cssSelectorReplacement.root).toStrictEqual([':host', '.tw-root'])
+  })
+
+  it('keeps explicit mini-program element preflight for uni-app vite', () => {
+    const config = getCompilerContext({
+      appType: 'uni-app-vite',
+      cssPreflight: {
+        'box-sizing': 'border-box',
+      },
+    })
+    expect(config.cssPreflight).toStrictEqual({
+      ...TAILWIND_V4_CSS_PREFLIGHT,
+      'box-sizing': 'border-box',
+    })
+  })
+
+  it('keeps explicit root selector replacement for uni-app vite', () => {
+    const config = getCompilerContext({
+      appType: 'uni-app-vite',
+      cssSelectorReplacement: {
+        root: ['page', '.custom-root'],
+      },
+    })
+    expect(config.cssSelectorReplacement.root).toStrictEqual(['page', '.custom-root'])
+  })
+
   // it('supportCustomLengthUnits boolean', () => {
   //   const o0 = getCompilerContext()
   //   expect(o0.supportCustomLengthUnits).toEqual(defaultOptions.supportCustomLengthUnits)

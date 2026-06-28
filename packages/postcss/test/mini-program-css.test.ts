@@ -9,6 +9,7 @@ import {
   removeUnsupportedMiniProgramPrefixedAtRule,
   removeUnsupportedMiniProgramAtRules,
   stripMiniProgramCssSpecificityPlaceholders,
+  unwrapUnsupportedCascadeLayers,
 } from '../src'
 import postcss, { AtRule, Declaration } from 'postcss'
 import {
@@ -39,6 +40,17 @@ describe('mini-program css cleanup', () => {
 
     expect(root.toString()).not.toContain('@layer')
     expect(root.toString()).toContain('.text-red-500{color:red}')
+  })
+
+  it('unwraps unsupported cascade layer blocks from css strings', () => {
+    const css = unwrapUnsupportedCascadeLayers([
+      '@layer base {',
+      '  .wx-only{color:red}',
+      '}',
+    ].join('\n'))
+
+    expect(css).not.toContain('@layer base')
+    expect(css).toContain('.wx-only{color:red}')
   })
 
   it('removes unsupported at-rules with a parser fallback', () => {
@@ -410,7 +422,8 @@ describe('mini-program css cleanup', () => {
     expect(css).toContain('/* #ifdef MP-WEIXIN */')
     expect(css).toContain('/* #endif */')
     expect(css).toContain('view{display:block}')
-    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:to right}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-gradient-position:to right}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-position:to right}')
     expect(css).toContain('page,.tw-root,wx-root-portal-content,:host{--color-brand:red}')
     expect(css).toContain('.card{display:flex}')
     expect(css).toContain('@keyframes spin')

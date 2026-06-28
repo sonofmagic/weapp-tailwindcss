@@ -21,6 +21,7 @@ interface CssHandlerOptionsCacheOptions {
   getMajorVersion: () => number | undefined
   getOutputRoot?: (() => string | undefined) | undefined
   getExtraOptions?: ((file: string) => Partial<IStyleHandlerOptions>) | undefined
+  getDynamicCssOptions?: (() => Partial<IStyleHandlerOptions>) | undefined
 }
 
 export interface CssHandlerOptionsCache {
@@ -50,7 +51,8 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
         ? path.resolve(outputRoot, file)
         : file
     const extraOptions = options.getExtraOptions?.(file) ?? {}
-    const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}:${JSON.stringify(extraOptions)}`
+    const dynamicCssOptions = options.getDynamicCssOptions?.() ?? {}
+    const cacheKey = `${majorVersion ?? 'unknown'}:${appType ?? 'unknown'}:${isMainChunk ? '1' : '0'}:${outputRoot ?? ''}:${file}:${JSON.stringify(extraOptions)}:${JSON.stringify(dynamicCssOptions)}`
     const cached = cssHandlerOptionsCache.get(cacheKey)
     if (cached) {
       return cached
@@ -59,6 +61,7 @@ export function createCssHandlerOptionsCache(options: CssHandlerOptionsCacheOpti
     const created = {
       isMainChunk,
       ...extraOptions,
+      ...dynamicCssOptions,
       postcssOptions: {
         options: {
           from,

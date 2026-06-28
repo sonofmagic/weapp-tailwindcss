@@ -96,6 +96,148 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     })
   })
 
+  it('compiles uni conditional CSS before downstream style checks on mini-program platforms', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM = 'mp-weixin'
+    try {
+      const context = createContext({
+        appType: 'uni-app-vite',
+        tailwindcssBasedir: '/project',
+      })
+      setCurrentContext(context)
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()!
+      const sourcePlugin = getPlugin(plugins, 'source-candidates')
+
+      expect(sourcePlugin.transform).toMatchObject({ order: 'pre' })
+
+      const result = await getTransformHandler(sourcePlugin)?.call(
+        sourcePlugin,
+        [
+          '@import "tailwindcss" source(none);',
+          '@layer base {',
+          '  /* #ifdef H5 */',
+          '  svg { display: initial; }',
+          '  /* #endif */',
+          '  /* #ifdef MP-WEIXIN */',
+          '  .wx-only { color: red; }',
+          '  /* #endif */',
+          '}',
+        ].join('\n'),
+        '/project/src/tailwind.css',
+      )
+
+      expect(result).toMatchObject({
+        code: expect.stringContaining('.wx-only'),
+        map: null,
+      })
+      expect(result?.code).not.toContain('svg')
+      expect(result?.code).not.toContain('#ifdef H5')
+      expect(result?.code).not.toContain('@layer base')
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
+  })
+
+  it('infers mini-program platform from vite output directory for early CSS macro compilation', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    delete process.env.UNI_PLATFORM
+    try {
+      const context = createContext({
+        appType: 'uni-app-vite',
+        tailwindcssBasedir: '/project',
+      })
+      setCurrentContext(context)
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss()!
+      const postPlugin = getPlugin(plugins, 'post')
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root: '/project',
+        plugins: [],
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/mp-weixin' },
+      } as ResolvedConfig)
+
+      const sourcePlugin = getPlugin(plugins, 'source-candidates')
+      const result = await getTransformHandler(sourcePlugin)?.call(
+        sourcePlugin,
+        [
+          '@layer base {',
+          '  /* #ifdef H5 */',
+          '  svg { display: initial; }',
+          '  /* #endif */',
+          '  /* #ifdef MP-WEIXIN */',
+          '  .wx-only { color: red; }',
+          '  /* #endif */',
+          '}',
+        ].join('\n'),
+        '/project/src/tailwind.css',
+      )
+
+      expect(result?.code).toContain('.wx-only')
+      expect(result?.code).not.toContain('svg')
+      expect(result?.code).not.toContain('@layer base')
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
+  })
+
+  it('strips Tailwind cascade layer syntax from vite serve css before uni bundle style checks', async () => {
+    mocks.generateTailwindV4Css.mockResolvedValueOnce({
+      css: [
+        '@layer theme, base, components, utilities;',
+        '@layer base {',
+        '  .base-reset { box-sizing: border-box; }',
+        '}',
+        '@layer utilities {',
+        '  .text-red-500 { color: red; }',
+        '}',
+      ].join('\n'),
+      dependencies: [],
+      classSet: new Set(['base-reset', 'text-red-500']),
+      target: 'weapp',
+    })
+    const context = createContext({
+      appType: 'uni-app-vite',
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist/dev/mp-weixin' },
+    } as ResolvedConfig)
+
+    const serveCssPlugin = getPlugin(plugins, 'generate:serve')
+    const result = await getTransformHandler(serveCssPlugin)?.call(
+      { addWatchFile: vi.fn() },
+      '@import "tailwindcss";',
+      '/project/src/tailwind.css',
+    )
+
+    expect(result?.code).toContain('.base-reset')
+    expect(result?.code).toContain('.text-red-500')
+    expect(result?.code).not.toContain('@layer')
+  })
+
   it('keeps post config inert when plugin ownership is disabled', async () => {
     setCurrentContext(createContext({
       disabled: { plugin: true },

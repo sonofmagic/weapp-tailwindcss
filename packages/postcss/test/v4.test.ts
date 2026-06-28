@@ -845,7 +845,8 @@ page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-
       majorVersion: 4,
     })
 
-    expect(css).toContain('view,text,::after,::before{--tw-border-style:solid}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-border-style:solid}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
     expect(css).not.toContain('@property')
   })

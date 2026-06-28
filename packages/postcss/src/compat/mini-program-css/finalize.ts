@@ -22,7 +22,7 @@ import {
   removeUnsupportedBrowserSelectors,
   removeUnsupportedModernColorDeclarations,
 } from './root-cleanups'
-import { MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from './selectors'
+import { normalizeMiniProgramThemeScopeSelector } from './selectors'
 import { collectThemeVariableRule } from './theme'
 
 export type { FinalizeMiniProgramCssOptions } from './finalize-options'
@@ -64,6 +64,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   }
 
   const hoistAnchor = createHoistInsertionAnchor(root)
+  const themeScopeSelector = normalizeMiniProgramThemeScopeSelector(options.cssSelectorReplacement?.root)
   const preflightRules = collectPreflightRules(root, options)
   if (preflightRules.length === 0) {
     const resetRule = createPreflightResetRule(options.cssPreflight)
@@ -73,7 +74,7 @@ function finalizeMiniProgramCssRoot(root: postcss.Root, options: FinalizeMiniPro
   }
   if (tailwindcssV4DefaultNodes.length > 0) {
     preflightRules.push(postcss.rule({
-      selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
+      selector: themeScopeSelector,
       nodes: tailwindcssV4DefaultNodes,
     }))
   }

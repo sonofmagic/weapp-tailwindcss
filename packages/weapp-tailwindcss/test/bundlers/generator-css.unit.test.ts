@@ -8009,14 +8009,15 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).toContain('view,text,::after,::before{--tw-gradient-from:#0000}')
+    expect(css).not.toContain('view,text,::after,::before{--tw-gradient-from:#0000}')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-gradient-from:#0000}')
     expect(css).toContain('.from-_b_h2f73f1_B{--tw-gradient-from:#2f73f1}')
     expect(css).toContain('.custom{color:red}')
     expect(css.indexOf('.from-_b_h2f73f1_B')).toBeLessThan(css.indexOf('.custom{color:red}'))
     expect(css.match(/from-_b_h2f73f1_B/g)).toHaveLength(1)
   })
 
-  it('keeps Tailwind v4 gradient runtime variables on mini-program component elements', async () => {
+  it('keeps Tailwind v4 gradient runtime variables on mini-program root scope', async () => {
     const runtimeSet = new Set(['bg-linear-to-r', 'from-amber-200', 'to-orange-200'])
     const rawTailwindCss = [
       '/*! tailwindcss v4.2.4 | MIT License | https://tailwindcss.com */',
@@ -8026,8 +8027,7 @@ describe('bundlers/shared generator css', () => {
       '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
     ].join('\n')
     const weappCss = [
-      'view,text,::after,::before{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%}',
-      'page,.tw-root,wx-root-portal-content,:host{--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
+      ':host,page,.tw-root,wx-root-portal-content{--tw-gradient-position:initial;--tw-gradient-from:rgba(0,0,0,0);--tw-gradient-to:rgba(0,0,0,0);--tw-gradient-from-position:0%;--tw-gradient-to-position:100%;--color-amber-200:#fde68a;--color-orange-200:#fed7aa}',
       '.bg-linear-to-r{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))}',
       '.from-amber-200{--tw-gradient-from:var(--color-amber-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
       '.to-orange-200{--tw-gradient-to:var(--color-orange-200);--tw-gradient-stops:var(--tw-gradient-position),var(--tw-gradient-from),var(--tw-gradient-to)}',
@@ -8094,8 +8094,9 @@ describe('bundlers/shared generator css', () => {
     })
 
     const css = result?.css ?? ''
-    expect(css).toContain('view,text,::after,::before{--tw-gradient-position:initial')
-    expect(css).toContain('page,.tw-root,wx-root-portal-content')
+    expect(css).not.toContain('view,text,::after,::before{--tw-gradient-position:initial')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{')
+    expect(css).toContain('--tw-gradient-position:initial')
     expect(css).toContain(':host')
     expect(css).toContain('--tw-gradient-from:rgba(0,0,0,0)')
     expect(css).toContain('--tw-gradient-to:rgba(0,0,0,0)')
@@ -8138,6 +8139,38 @@ describe('bundlers/shared generator css', () => {
     expect(css).not.toContain('font-family:--theme')
     expect(css).not.toContain('font-family: --theme')
     expect(css).toContain('.flex')
+  })
+
+  it('drops Tailwind v4 mini-program preflight reset when cssPreflight is disabled', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = finalizeMiniProgramGeneratorCss([
+      'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid;--tw-border-style:solid}',
+      '.border{border-style:var(--tw-border-style);border-width:1px}',
+    ].join('\n'), 'weapp', 4, false)
+
+    expect(css).not.toContain('view,text,::after,::before')
+    expect(css).not.toContain('box-sizing:border-box')
+    expect(css).toContain(':host,page,.tw-root,wx-root-portal-content{--tw-border-style:solid}')
+    expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
+  })
+
+  it('uses configured mini-program theme scope when finalizing generator css', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = finalizeMiniProgramGeneratorCss([
+      ':host,page,.tw-root,wx-root-portal-content{--color-blue-500:#155dfc}',
+      '.text-blue-500{color:var(--color-blue-500)}',
+    ].join('\n'), 'weapp', 4, false, {
+      styleOptions: {
+        cssSelectorReplacement: {
+          root: [':host', '.tw-root'],
+        },
+      },
+    })
+
+    expect(css).toContain(':host,.tw-root{--color-blue-500:#155dfc}')
+    expect(css).not.toContain('page')
+    expect(css).not.toContain('wx-root-portal-content')
+    expect(css).toContain('.text-blue-500{color:var(--color-blue-500)}')
   })
 
   it('drops split Tailwind source media fragments before transforming user css', async () => {

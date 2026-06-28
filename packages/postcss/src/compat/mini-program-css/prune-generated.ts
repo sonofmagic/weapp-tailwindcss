@@ -11,7 +11,7 @@ import {
   usesTwContentVariable,
 } from './predicates'
 import { removeSpecificityPlaceholders, removeTailwindContainerMaxWidthMediaRules, removeTailwindContainerWidthRules, removeUnsupportedModernColorDeclarations } from './root-cleanups'
-import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS } from './selectors'
+import { getRuleSelectors, isMiniProgramNativeElementSelector, isUnsupportedBrowserPreflightSelector, MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR, MINI_PROGRAM_ELEMENT_SCOPE_SELECTORS, MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
 
 const DEFAULT_WEAPP_VARIABLE_SCOPE = 'page,.tw-root,wx-root-portal-content,:host'
 const MINI_PROGRAM_PSEUDO_CONTENT_SCOPE_SELECTOR = '::before,\n::after'
@@ -96,7 +96,7 @@ function moveTailwindV4GradientRuntimeDeclarations(rule: postcss.Rule) {
 
   if (gradientDeclarations.length > 0) {
     rule.before(new postcss.Rule({
-      selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
+      selector: MINI_PROGRAM_THEME_SCOPE_SELECTOR,
       nodes: gradientDeclarations,
     }))
   }

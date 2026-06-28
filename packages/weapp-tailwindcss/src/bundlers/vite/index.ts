@@ -8,13 +8,14 @@ import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { logger } from '@weapp-tailwindcss/logger'
-import { removeTailwindPostcssPlugins, resolveFilteredPostcssConfig } from '@weapp-tailwindcss/postcss'
+import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
 import { createDebug } from '@/debug'
+import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
 import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
@@ -60,6 +61,13 @@ const SOURCE_CANDIDATE_SCAN_CACHE_MAX = 8
 const sourceCandidateScanSnapshotCache = new LRUCache<string, SourceCandidateCollectorSnapshot>({
   max: SOURCE_CANDIDATE_SCAN_CACHE_MAX,
 })
+const ENV_PLATFORM_KEYS = [
+  'UNI_PLATFORM',
+  'UNI_UTS_PLATFORM',
+  'TARO_ENV',
+  'MPX_CURRENT_TARGET_MODE',
+  'MPX_CLI_MODE',
+] as const
 
 function sameStringList(first: string[] | undefined, second: string[] | undefined) {
   if (first === second) {
@@ -69,6 +77,39 @@ function sameStringList(first: string[] | undefined, second: string[] | undefine
     return false
   }
   return first.every((item, index) => item === second[index])
+}
+
+function normalizeViteStylePlatform(value: string | undefined, appType: UserDefinedOptions['appType']) {
+  return normalizeFrameworkStylePlatform(value, appType)
+}
+
+function inferPlatformFromOutDir(outDir: string | undefined) {
+  const segment = outDir ? path.basename(path.normalize(outDir)) : undefined
+  if (!segment) {
+    return undefined
+  }
+  const normalized = segment.trim().toLowerCase()
+  if (
+    normalized === 'h5'
+    || normalized === 'web'
+    || normalized === 'app'
+    || normalized === 'app-plus'
+    || normalized.startsWith('app-')
+    || normalized.startsWith('mp-')
+    || normalized.startsWith('quickapp-webview')
+  ) {
+    return normalized
+  }
+  return undefined
+}
+
+function isWebOrNativeAppPlatform(platform: string | undefined) {
+  return platform === 'h5'
+    || platform === 'web'
+    || platform?.startsWith('web-') === true
+    || platform === 'app'
+    || platform === 'app-plus'
+    || platform?.startsWith('app-') === true
 }
 
 export interface WeappTailwindcssVitePlugin {
@@ -144,6 +185,42 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     tailwindcssMajorVersion,
     uniAppX,
   })
+  const resolveViteStylePlatform = () => {
+    const explicit = normalizeViteStylePlatform(opts.cssOptions?.platform ?? opts.platform, opts.appType)
+    if (explicit) {
+      return explicit
+    }
+    for (const key of ENV_PLATFORM_KEYS) {
+      const envPlatform = normalizeViteStylePlatform(process.env[key], opts.appType)
+      if (envPlatform) {
+        return envPlatform
+      }
+    }
+    return inferPlatformFromOutDir(resolvedConfig?.build?.outDir)
+  }
+  const transformEarlyMiniProgramCss = (code: string) => {
+    const platform = resolveViteStylePlatform()
+    if (!shouldOwnTailwindGeneration || (platform ? isWebOrNativeAppPlatform(platform) : generatorBranch.isWeb)) {
+      return code
+    }
+    let transformedCode = code
+    if (transformedCode.includes('#if')) {
+      transformedCode = compileCssMacroConditionalComments(transformedCode, {
+        platform: resolveViteStylePlatform(),
+      })
+    }
+    if (transformedCode.includes('@layer')) {
+      transformedCode = unwrapUnsupportedCascadeLayers(transformedCode)
+    }
+    return transformedCode
+  }
+  const finalizeViteMiniProgramCss = (css: string) => {
+    const platform = resolveViteStylePlatform()
+    if (!shouldOwnTailwindGeneration || (platform ? isWebOrNativeAppPlatform(platform) : generatorBranch.isWeb)) {
+      return css
+    }
+    return unwrapUnsupportedCascadeLayers(css)
+  }
   const shouldInferAppType = !hasExplicitAppType && !generatorBranch.isWeb
   const hasInitialTailwindCssRoots = hasConfiguredTailwindV4CssRoots({
     ...options,
@@ -630,6 +707,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       ...resolveViteCssHandlerExtraOptions(file),
       ...resolveUniAppXNativeCssHandlerOptions(opts),
     }),
+    getDynamicCssOptions: () => ({
+      cssPreflight: opts.cssPreflight,
+    }),
   })
   const serveJsHandlerOptions = createJsHandlerOptionsFactory({
     getMajorVersion: () => runtimeState.tailwindRuntime.majorVersion,
@@ -704,7 +784,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!generated) {
       return undefined
     }
-    const tracedCss = annotateCssSourceTrace(generated.css, {
+    const outputCss = finalizeViteMiniProgramCss(generated.css)
+    const tracedCss = annotateCssSourceTrace(outputCss, {
       opts,
       tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts),
     })
@@ -851,24 +932,69 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     {
       name: `${vitePluginName}:source-candidates`,
       enforce: 'pre',
-      async transform(code, id) {
-        if (shouldOwnTailwindGeneration) {
-          cssMemory.rememberKnownSfcSource(id, code)
-        }
-        if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
+      async load(id) {
+        if (
+          !shouldOwnTailwindGeneration
+          || isWebOrNativeAppPlatform(resolveViteStylePlatform())
+          || !isCSSRequest(id)
+          || !shouldCollectTransformedSourceCandidates(id)
+        ) {
           return
         }
-        return hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
-          invalidateRecordedGeneratorCandidates()
-          const file = cleanUrl(id)
-          if (sourceScanMatcher && !sourceScanMatcher(file)) {
-            sourceCandidateCollector.remove(file)
-            cacheCurrentSourceCandidateScan()
+        const file = cleanUrl(id)
+        const rawCode = await readFile(file, 'utf8').catch(() => undefined)
+        if (typeof rawCode !== 'string') {
+          return
+        }
+        const transformedCode = transformEarlyMiniProgramCss(rawCode)
+        if (transformedCode === rawCode) {
+          return
+        }
+        cssMemory.rememberKnownSfcSource(id, transformedCode)
+        return transformedCode
+      },
+      transform: {
+        order: 'pre',
+        async handler(code, id) {
+          let transformedCode = code
+          if (
+            shouldOwnTailwindGeneration
+            && !generatorBranch.isWeb
+            && isCSSRequest(id)
+          ) {
+            transformedCode = transformEarlyMiniProgramCss(code)
+          }
+          const shouldReturnTransformedCode = transformedCode !== code
+          if (shouldOwnTailwindGeneration) {
+            cssMemory.rememberKnownSfcSource(id, transformedCode)
+          }
+          if (!shouldOwnTailwindGeneration || !isSourceCandidateRequest(id) || !shouldCollectTransformedSourceCandidates(id)) {
+            if (shouldReturnTransformedCode) {
+              return {
+                code: transformedCode,
+                map: null,
+              }
+            }
             return
           }
-          await sourceCandidateCollector.merge(id, code)
-          cacheCurrentSourceCandidateScan()
-        }, { emit: false })
+          return hmrTimingRecorder.measure('sourceCandidates.transform', async () => {
+            invalidateRecordedGeneratorCandidates()
+            const file = cleanUrl(id)
+            if (sourceScanMatcher && !sourceScanMatcher(file)) {
+              sourceCandidateCollector.remove(file)
+              cacheCurrentSourceCandidateScan()
+              return
+            }
+            await sourceCandidateCollector.merge(id, transformedCode)
+            cacheCurrentSourceCandidateScan()
+            if (shouldReturnTransformedCode) {
+              return {
+                code: transformedCode,
+                map: null,
+              }
+            }
+          }, { emit: false })
+        },
       },
       async watchChange(id, change) {
         await hmrTimingRecorder.measure('sourceCandidates.watchChange', async () => {
@@ -1011,6 +1137,22 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             if (nextAppType && opts.appType !== nextAppType) {
               const previousAppType = opts.appType
               opts.appType = nextAppType
+              if (nextAppType === 'uni-app-vite' && options.cssPreflight === undefined && options.cssOptions?.cssPreflight === undefined) {
+                opts.cssPreflight = false
+                if (opts.cssOptions) {
+                  opts.cssOptions.cssPreflight = false
+                }
+              }
+              if (nextAppType === 'uni-app-vite' && options.cssSelectorReplacement?.root === undefined && options.cssOptions?.cssSelectorReplacement?.root === undefined) {
+                const cssSelectorReplacement = {
+                  ...(opts.cssSelectorReplacement ?? {}),
+                  root: [':host', '.tw-root'],
+                }
+                opts.cssSelectorReplacement = cssSelectorReplacement
+                if (opts.cssOptions) {
+                  opts.cssOptions.cssSelectorReplacement = cssSelectorReplacement
+                }
+              }
               logger.info('根据 Vite 项目根目录自动推断 appType -> %s', nextAppType)
               debug(
                 'align appType with vite root: %s -> %s',

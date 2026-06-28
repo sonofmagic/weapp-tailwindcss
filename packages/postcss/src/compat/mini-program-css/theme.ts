@@ -6,9 +6,9 @@ import {
   isMiniProgramThemeVariableRule,
   usesTwContentVariable,
 } from './predicates'
-import { MINI_PROGRAM_THEME_SCOPE_SELECTOR } from './selectors'
+import { normalizeMiniProgramThemeScopeSelector } from './selectors'
 
-export function collectThemeVariableRule(root: postcss.Root, _options: FinalizeMiniProgramCssOptions = {}) {
+export function collectThemeVariableRule(root: postcss.Root, options: FinalizeMiniProgramCssOptions = {}) {
   const themeRules: postcss.Rule[] = []
   const declarations = new Map<string, postcss.Declaration>()
   const shouldPreserveContentInit = usesTwContentVariable(root)
@@ -39,7 +39,7 @@ export function collectThemeVariableRule(root: postcss.Root, _options: FinalizeM
   }
 
   const rule = postcss.rule({
-    selector: MINI_PROGRAM_THEME_SCOPE_SELECTOR,
+    selector: normalizeMiniProgramThemeScopeSelector(options.cssSelectorReplacement?.root),
   })
   for (const decl of declarations.values()) {
     rule.append(decl)

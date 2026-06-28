@@ -2,8 +2,7 @@
 import type { Declaration, Plugin, PluginCreator, Root, Rule } from 'postcss'
 import type { IStyleHandlerOptions } from '../types'
 import { defu } from '@weapp-tailwindcss/shared'
-import { isMiniProgramPreflightRule } from '../compat/mini-program-css/predicates'
-import { MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR } from '../compat/mini-program-css/selectors'
+import { MINI_PROGRAM_THEME_SCOPE_SELECTOR, normalizeMiniProgramThemeScopeSelector } from '../compat/mini-program-css/selectors'
 import { normalizeMiniProgramPrefixedDeclaration, removeUnsupportedMiniProgramPrefixedAtRule } from '../compat/mini-program-prefixes'
 import { normalizeTailwindcssRpxDeclaration } from '../compat/tailwindcss-rpx'
 import { appendTailwindcssV4MiniProgramGradientRules, collectUsedTailwindcssV4Variables, createMissingCssVarsV4Nodes, mergeTailwindcssV4GradientDirectionRules, normalizeTailwindcssV4Declaration } from '../compat/tailwindcss-v4'
@@ -76,21 +75,22 @@ function removeLegacyFlexboxPrefix(decl: Declaration) {
   }
 }
 
-function injectMissingTailwindcssV4Defaults(root: Root) {
+function injectMissingTailwindcssV4Defaults(root: Root, options: IStyleHandlerOptions) {
   const nodes = createMissingCssVarsV4Nodes(root, collectUsedTailwindcssV4Variables(root))
   if (nodes.length === 0) {
     return
   }
-  let preflightRule: Rule | undefined
+  const themeScopeSelector = normalizeMiniProgramThemeScopeSelector(options.cssSelectorReplacement?.root)
+  let defaultScopeRule: Rule | undefined
   root.walkRules((rule) => {
-    if (isMiniProgramPreflightRule(rule)) {
-      preflightRule = rule
+    if (rule.selector === MINI_PROGRAM_THEME_SCOPE_SELECTOR || rule.selector === themeScopeSelector) {
+      defaultScopeRule = rule
       return false
     }
   })
-  if (preflightRule) {
+  if (defaultScopeRule) {
     const existingProps = new Set<string>()
-    preflightRule.walkDecls((decl) => {
+    defaultScopeRule.walkDecls((decl) => {
       existingProps.add(decl.prop)
     })
     for (const node of nodes) {
@@ -98,13 +98,13 @@ function injectMissingTailwindcssV4Defaults(root: Root) {
         continue
       }
       existingProps.add(node.prop)
-      preflightRule.append(node)
+      defaultScopeRule.append(node)
     }
-    preflightRule.raws.semicolon = true
+    defaultScopeRule.raws.semicolon = true
     return
   }
   root.append({
-    selector: MINI_PROGRAM_ELEMENT_SCOPE_SELECTOR,
+    selector: themeScopeSelector,
     nodes,
   })
 }
@@ -201,7 +201,7 @@ const postcssWeappTailwindcssPostPlugin: PostcssWeappTailwindcssRenamePlugin = (
         removeUnsupportedMiniProgramPrefixedAtRule(atRule)
       })
       if (shouldInjectTailwindcssV4Defaults) {
-        injectMissingTailwindcssV4Defaults(root)
+        injectMissingTailwindcssV4Defaults(root, opts)
       }
     }
 

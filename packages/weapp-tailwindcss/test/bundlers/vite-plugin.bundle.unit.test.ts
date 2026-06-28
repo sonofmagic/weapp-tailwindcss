@@ -1597,7 +1597,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     runtimeSet.delete('bg-[#f40909]')
     runtimeSet.add('bg-[#111111]')
     await (sourcePlugin.watchChange as any)?.call(sourcePlugin, pageFile, { event: 'update' })
-    await (sourcePlugin.transform as any)?.call(
+    await getTransformHandler(sourcePlugin)?.call(
       sourcePlugin,
       `<view class="min-h-screen {{ mode === 'light'?'bg-[#f40909] text-slate-800':'bg-gray-900 text-slate-200' }} transition-colors duration-500"></view>`,
       'pages/index/index.wxml',

@@ -84,3 +84,17 @@ export function removeUnsupportedCascadeLayers(root: postcss.Root) {
     atRule.replaceWith(...atRule.nodes)
   })
 }
+
+export function unwrapUnsupportedCascadeLayers(css: string) {
+  if (!css.includes('@layer')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    removeUnsupportedCascadeLayers(root)
+    return root.toString()
+  }
+  catch {
+    return css
+  }
+}
