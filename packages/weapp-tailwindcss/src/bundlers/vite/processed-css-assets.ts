@@ -362,6 +362,12 @@ function shouldInjectViteProcessedCssResult(
     return false
   }
   const targetFileKey = normalizeOutputPathKey(targetFile)
+  if (
+    typeof options.outputFile === 'string'
+    && normalizeOutputPathKey(options.outputFile) === targetFileKey
+  ) {
+    return true
+  }
   const sourceFileKey = normalizeOutputPathKey(sourceFile)
   return sourceFileKey !== targetFileKey
     && (
@@ -459,7 +465,7 @@ function shouldUseCssAssetAsMainInjectionTarget(
       && normalizeOutputPathKey(record.outputFile) === fileKey,
     )
   ) {
-    return false
+    return true
   }
   if (!isRootStyleOutputFile(file)) {
     return records.some(record =>
@@ -571,6 +577,14 @@ function collectBundleAssetFiles(bundle: OutputBundle) {
   return files
 }
 
+function findBundleAssetByOutputFile(bundle: OutputBundle, file: string) {
+  const fileKey = normalizeOutputPathKey(file)
+  return Object.entries(bundle).find(([bundleFile, output]) => {
+    return output.type === 'asset'
+      && normalizeOutputPathKey(getAssetFile(bundleFile, output)) === fileKey
+  })?.[1] as OutputAsset | undefined
+}
+
 export function isCssImportOnlyBundleAsset(
   bundle: OutputBundle,
   file: string,
@@ -609,6 +623,26 @@ function isCoveredViteGeneratedSourceAsset(
   const resolvedOutputFile = normalizeOutputPathKey(resolveViteProcessedCssOutputFile?.(file) ?? file)
   const fileKey = normalizeOutputPathKey(file)
   return resolvedOutputFile !== fileKey && existingAssetFiles.has(resolvedOutputFile)
+}
+
+function resolveViteGeneratedCssMarkerOutputFile(
+  file: string,
+  markerFile: string | undefined,
+  existingAssetFiles: Set<string>,
+  resolveViteProcessedCssOutputFile: ((file: string) => string | undefined) | undefined,
+) {
+  const resolvedFromFile = normalizeOutputPathKey(resolveViteProcessedCssOutputFile?.(file) ?? file)
+  if (!markerFile) {
+    return resolvedFromFile
+  }
+  const resolvedFromMarker = normalizeOutputPathKey(resolveViteProcessedCssOutputFile?.(markerFile) ?? markerFile)
+  if (
+    resolvedFromMarker !== resolvedFromFile
+    && existingAssetFiles.has(resolvedFromMarker)
+  ) {
+    return resolvedFromMarker
+  }
+  return resolvedFromFile
 }
 
 function isSourceRootPrefixedOutputFile(file: string, outputFile: string) {
@@ -654,7 +688,41 @@ export function collectViteProcessedCssAssetResults(
     }
     options.markCssAssetProcessed?.(output, file)
     options.recordCssAssetResult?.(file, nextCss)
-    const resolvedOutputFile = options.resolveViteProcessedCssOutputFile?.(file) ?? file
+    const resolvedOutputFile = resolveViteGeneratedCssMarkerOutputFile(
+      file,
+      singleMarkerFile,
+      existingAssetFiles,
+      options.resolveViteProcessedCssOutputFile,
+    )
+    if (
+      singleMarkerFile
+      && normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+      && !isRootStyleOutputFile(resolvedOutputFile)
+      && existingAssetFiles.has(normalizeOutputPathKey(resolvedOutputFile))
+    ) {
+      const targetAsset = findBundleAssetByOutputFile(bundle, resolvedOutputFile)
+      if (targetAsset) {
+        const targetRawSource = readAssetSource(targetAsset)
+        const missingCss = filterExistingCssRules(targetRawSource, nextCss).trim()
+        const targetNextCss = appendCss(targetRawSource, missingCss)
+        if (targetNextCss !== targetRawSource) {
+          targetAsset.source = targetNextCss
+          options.markCssAssetProcessed?.(targetAsset, resolvedOutputFile)
+          options.recordCssAssetResult?.(resolvedOutputFile, targetNextCss)
+        }
+        clearAssetSource(output)
+        options.recordCssAssetResult?.(file, '')
+        options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, targetNextCss, {
+          outputFile: resolvedOutputFile,
+        })
+        if (isCoveredViteGeneratedSourceAsset(file, existingAssetFiles, options.resolveViteProcessedCssOutputFile)) {
+          delete bundle[bundleFile]
+        }
+        options.debug?.('move vite-generated css asset by marker source: %s -> %s bytes=%d', file, resolvedOutputFile, nextCss.length)
+        collected++
+        continue
+      }
+    }
     const shouldReplayIntoMainCss = options.opts != null
       && shouldReplayViteProcessedCssIntoMainCss(
         options.opts,

@@ -107,15 +107,27 @@ export function createMatchedCssSourceOutputResolver(options: {
     if (!sourceFile) {
       return undefined
     }
+    const cleanAssetSourceFile = assetSourceFile.replace(/[?#].*$/, '')
+    const cleanSourceFile = sourceFile.replace(/[?#].*$/, '')
+    const sourceHasQuery = cleanSourceFile !== sourceFile
+    const resolvedSourceOutputFile = resolveOutputFileFromMatchedCssSource(sourceFile)
     if (
-      normalizeOutputPathKey(assetSourceFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, ''))
+      normalizeOutputPathKey(cleanAssetSourceFile) === normalizeOutputPathKey(cleanSourceFile)
       || originalFileNames?.some(originalFile =>
-        normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, '')),
+        normalizeOutputPathKey(originalFile.replace(/[?#].*$/, '')) === normalizeOutputPathKey(cleanSourceFile),
       )
     ) {
+      if (
+        !sourceHasQuery
+        && normalizeOutputPathKey(cleanAssetSourceFile) === normalizeOutputPathKey(cleanSourceFile)
+        && typeof resolvedSourceOutputFile === 'string'
+        && normalizeOutputPathKey(resolvedSourceOutputFile) !== normalizeOutputPathKey(file)
+      ) {
+        return resolvedSourceOutputFile
+      }
       return file
     }
-    return resolveOutputFileFromMatchedCssSource(sourceFile)
+    return resolvedSourceOutputFile
   }
 }
 
@@ -175,7 +187,7 @@ export function applyCssResultToBundle(options: {
         bundle[outputFile] = replayAsset
       }
     }
-    originalSource.source = importShellSource ?? source
+    originalSource.source = importShellSource ?? ''
     return
   }
   const existingOutput = bundle[outputFile]

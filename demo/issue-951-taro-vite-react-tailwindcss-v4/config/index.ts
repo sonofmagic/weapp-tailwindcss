@@ -93,6 +93,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           tailwindcssBasedir: process.cwd(),
           cssEntries: [
             path.resolve(process.cwd(), 'src/app.css'),
+            path.resolve(process.cwd(), 'src/pages/index/index.css'),
             path.resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
             path.resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
           ],

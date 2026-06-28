@@ -5270,6 +5270,101 @@ module.exports = {
     expect(viteProcessedCssAssetResults.get('pages/index/index.css')?.injectIntoMain).toBeUndefined()
   })
 
+  it('uses Vite generated css marker source when Taro emits same-basename ttss assets out of order', () => {
+    const root = '/project'
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.ttss'),
+      mainCssChunkMatcher: vi.fn((file: string) => file === 'app.ttss'),
+    })
+    const pageSource = `${root}/src/pages/index/index.css`
+    const subSource = `${root}/src/sub-normal/pages/index.css`
+    const pageCss = '.issue-951-page-local{color:#111827}'
+    const subCss = '.bg-issue-951-normal{background-color:#7c3aed}'
+    const bundle = {
+      'pages/index/index.ttss': {
+        ...createRollupAsset(''),
+        fileName: 'pages/index/index.ttss',
+      },
+      'sub-normal/pages/index.ttss': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', pageSource)}\n${pageCss}`),
+        fileName: 'sub-normal/pages/index.ttss',
+      },
+      'src/sub-normal/pages/index.css': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', subSource)}\n${subCss}`),
+        fileName: 'src/sub-normal/pages/index.css',
+      },
+    }
+    const records = new Map<string, { css: string, outputFile?: string | undefined }>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: context as any,
+      isViteProcessedCssAsset: vi.fn(() => true),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult(file, css, options) {
+        records.set(file, { css, outputFile: options?.outputFile })
+      },
+      resolveViteProcessedCssOutputFile: file => resolveViteCssPipelineOutputFile(
+        file,
+        context as any,
+        root,
+        false,
+        false,
+        'src',
+        '.ttss',
+        Object.keys(bundle),
+      ),
+    })
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    expect(records.get('pages/index/index.ttss')?.outputFile).toBe('pages/index/index.ttss')
+    expect((bundle['pages/index/index.ttss'] as OutputAsset).source.toString()).toContain(pageCss)
+    expect((bundle['pages/index/index.ttss'] as OutputAsset).source.toString()).not.toContain(subCss)
+    expect((bundle['sub-normal/pages/index.ttss'] as OutputAsset).source.toString()).toContain(subCss)
+    expect((bundle['sub-normal/pages/index.ttss'] as OutputAsset).source.toString()).not.toContain(pageCss)
+  })
+
+  it('replays vite-processed css into an explicit non-root output file', () => {
+    const context = createContext({
+      cssMatcher: (file: string) => file.endsWith('.ttss'),
+      mainCssChunkMatcher: vi.fn(() => true),
+    })
+    const pageCss = '.issue-951-page-local{color:#111827}'
+    const subCss = '.bg-issue-951-independent{background-color:#059669}'
+    const bundle = {
+      'pages/index/index.ttss': {
+        ...createRollupAsset(''),
+        fileName: 'pages/index/index.ttss',
+      },
+      'sub-independent/pages/index.ttss': {
+        ...createRollupAsset(subCss),
+        fileName: 'sub-independent/pages/index.ttss',
+      },
+    }
+    const records = new Map<string, { css: string, outputFile?: string | undefined }>([
+      ['pages/index/index.ttss', {
+        css: pageCss,
+        outputFile: 'pages/index/index.ttss',
+      }],
+    ])
+
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    expect((bundle['pages/index/index.ttss'] as OutputAsset).source.toString()).toContain(pageCss)
+    expect((bundle['sub-independent/pages/index.ttss'] as OutputAsset).source.toString()).toContain(subCss)
+    expect((bundle['sub-independent/pages/index.ttss'] as OutputAsset).source.toString()).not.toContain(pageCss)
+  })
+
   it('does not treat same-basename vite css results as imported css', () => {
     const context = createContext({
       cssMatcher: (file: string) => file.endsWith('.wxss'),

@@ -1,6 +1,7 @@
 import type { RememberedCssSource } from './types'
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { hasTailwindGenerationSource } from './sfc-style-source'
+import { scoreConfiguredTailwindV4SourceForRawSource } from './tailwind-v4-css-source'
 
 export interface TemporaryCssSourceEntry {
   file: string
@@ -25,8 +26,7 @@ export function createTemporaryCssAssetSourceResolver(
     const entryFile = normalizeCssSourceKey(entry.file)
     const outputFile = normalizeCssSourceKey(entry.outputFile)
     if (
-      !hasTailwindGenerationSource(entry.source)
-      || outputFile === entryFile
+      outputFile === entryFile
       || !outputFile.includes('/')
       || seenEntryFiles.has(entryFile)
     ) {
@@ -45,11 +45,27 @@ export function createTemporaryCssAssetSourceResolver(
       }
       usedEntryFiles.add(normalizeCssSourceKey(sourceFile))
     },
-    resolve(outputFile: string): RememberedCssSource | undefined {
+    resolve(outputFile: string, rawSource?: string): RememberedCssSource | undefined {
       if (!isTemporaryCssAssetFile(outputFile)) {
         return
       }
-      const entry = queuedEntries.find(item => !usedEntryFiles.has(normalizeCssSourceKey(item.file)))
+      const availableEntries = queuedEntries.filter(item => !usedEntryFiles.has(normalizeCssSourceKey(item.file)))
+      const scoredEntries = rawSource
+        ? availableEntries
+            .map(entry => ({
+              entry,
+              score: scoreConfiguredTailwindV4SourceForRawSource(rawSource, entry.source),
+            }))
+            .filter(item => item.score > 0)
+            .sort((a, b) => b.score - a.score)
+        : []
+      const bestScore = scoredEntries[0]?.score
+      const bestEntries = bestScore
+        ? scoredEntries.filter(item => item.score === bestScore)
+        : []
+      const entry = bestEntries.length === 1
+        ? bestEntries[0]?.entry
+        : availableEntries.find(item => hasTailwindGenerationSource(item.source))
       if (!entry) {
         return
       }
