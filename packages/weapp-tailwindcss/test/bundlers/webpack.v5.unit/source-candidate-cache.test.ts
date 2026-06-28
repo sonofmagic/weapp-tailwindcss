@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, realpath, rm, stat, utimes, writeFile } from 'node:fs/promises'
+import { mkdtemp, mkdir, realpath, rm, stat, unlink, utimes, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -229,6 +229,84 @@ describe('bundlers/webpack source candidate scan cache', () => {
     expect(first.signatureHash).not.toBe(second.signatureHash)
     expect(cache.getMemoryStats()).toMatchObject({
       snapshots: 2,
+    })
+  })
+
+  it('removes deleted scan files and trims old watch cache snapshots', async () => {
+    const { pageA, root } = await createFixture()
+    const cache = createWebpackSourceCandidateScanCache()
+    const createSourceScan = (pattern: string) => ({
+      entries: [{
+        base: path.join(root, 'src'),
+        negated: false,
+        pattern,
+      }],
+      explicit: true,
+    })
+    const scan = createSourceScan('**/*.tsx')
+
+    await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan: scan,
+      watchMode: true,
+    })
+    await unlink(pageA)
+
+    const changedCollector = createSourceCandidateCollector()
+    const remove = vi.spyOn(changedCollector, 'remove')
+    const second = await cache.resolve({
+      changedFiles: [pageA],
+      collector: changedCollector,
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan: scan,
+      watchMode: true,
+    })
+
+    expect(remove).toHaveBeenCalledWith(pageA)
+    expect(second.getSourceCandidatesForEntries(scan.entries)).toEqual(new Set(['w-2']))
+
+    await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan: createSourceScan('a.tsx'),
+      watchMode: true,
+    })
+    await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan: createSourceScan('b.tsx'),
+      watchMode: true,
+    })
+
+    expect(cache.getMemoryStats().snapshots).toBe(2)
+  })
+
+  it('does not keep watch snapshots for explicit empty source entries', async () => {
+    const { root } = await createFixture()
+    const cache = createWebpackSourceCandidateScanCache()
+    const sourceScan = {
+      entries: [],
+      explicit: true,
+    }
+
+    const result = await cache.resolve({
+      collector: createSourceCandidateCollector(),
+      outDir: path.join(root, 'dist'),
+      root,
+      sourceScan,
+      watchMode: false,
+    })
+
+    expect(result.getSourceCandidatesForEntries(sourceScan.entries)).toEqual(new Set())
+    expect(cache.getMemoryStats()).toMatchObject({
+      files: 0,
+      lastHit: false,
+      snapshots: 0,
     })
   })
 })

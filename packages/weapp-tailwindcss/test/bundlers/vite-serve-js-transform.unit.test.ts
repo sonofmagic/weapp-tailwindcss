@@ -59,4 +59,37 @@ describe('bundlers/vite serve JS transform', () => {
 
     expect(result).toBeUndefined()
   })
+
+  it('skips non-JS serve requests and no-op JS transforms', async () => {
+    const jsHandler = vi.fn((code: string) => ({ code }))
+    const transformRuntime = vi.fn(async () => new Set(['text-[32px]']))
+    const plugin = createViteServeJsTransformPlugin({
+      createHandlerOptions: filename => ({ filename }),
+      getCommand: () => 'serve',
+      jsHandler,
+      shouldTransform: () => true,
+      transformRuntime,
+    })
+
+    const transform = getTransformHandler(plugin)
+
+    await expect(transform?.call(
+      plugin,
+      '.text-_b32px_B { font-size: 32px }',
+      '/repo/src/app.css',
+    )).resolves.toBeUndefined()
+    expect(jsHandler).not.toHaveBeenCalled()
+
+    await expect(transform?.call(
+      plugin,
+      'export const cls = "text-[32px]"',
+      '/repo/src/main.ts',
+    )).resolves.toBeUndefined()
+    expect(transformRuntime).toHaveBeenCalledTimes(1)
+    expect(jsHandler).toHaveBeenCalledWith(
+      'export const cls = "text-[32px]"',
+      expect.any(Set),
+      expect.objectContaining({ filename: '/repo/src/main.ts' }),
+    )
+  })
 })

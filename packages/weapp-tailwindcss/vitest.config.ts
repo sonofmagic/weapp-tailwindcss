@@ -34,6 +34,10 @@ export default defineConfig({
         replacement: path.resolve(__dirname, '../shared/src/index.ts'),
       },
       {
+        find: /^@weapp-tailwindcss\/shared\/extractors$/,
+        replacement: path.resolve(__dirname, '../shared/src/extractors/index.ts'),
+      },
+      {
         find: /^@weapp-tailwindcss\/shared\/node$/,
         replacement: path.resolve(__dirname, '../shared/src/node.ts'),
       },

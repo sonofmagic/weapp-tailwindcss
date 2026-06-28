@@ -80,7 +80,7 @@ describe.skipIf(isCI)('vite', () => {
         },
       })
 
-      const css = await fs.readFile(path.resolve(root, 'dist/index.css'), 'utf-8')
+      const css = await fs.readFile(path.resolve(root, 'dist/index.wxss'), 'utf-8')
       expect(css).toContain('.w-_b100px_B')
       expect(css).toContain('width: 100px')
       expect(css).toContain('.text-_b_h123456_B')
@@ -123,7 +123,7 @@ describe.skipIf(isCI)('vite', () => {
     })
     expect(
       normalizeTailwindcssBanner(
-        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.css'), 'utf-8'),
+        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.wxss'), 'utf-8'),
       ),
     ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-plugin/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
@@ -163,7 +163,7 @@ describe.skipIf(isCI)('vite', () => {
     })
     expect(
       normalizeTailwindcssBanner(
-        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.css'), 'utf-8'),
+        await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.wxss'), 'utf-8'),
       ),
     ).toMatchSnapshot('css')
     expect(await fs.readFile(path.resolve(fixturesRootPath, 'v4-vite-postcss/dist/index.js'), 'utf-8')).toMatchSnapshot('js')
@@ -215,7 +215,7 @@ describe.skipIf(isCI)('vite', () => {
         },
       })
 
-      const css = await fs.readFile(path.resolve(root, 'dist/index.css'), 'utf-8')
+      const css = await fs.readFile(path.resolve(root, 'dist/index.wxss'), 'utf-8')
       expect(css).toContain('.bg-clip-text')
       expect(css).toContain('-webkit-background-clip: text')
       expect(css).toContain('background-clip: text')

@@ -443,6 +443,13 @@ describe('bundlers/shared generator css', () => {
       },
       runtime: new Set(['flex']),
       rawSource,
+      cssSources: [
+        {
+          base: process.cwd(),
+          css: rawSource,
+          file: 'app.wxss',
+        },
+      ],
       file: 'app.wxss',
       cssHandlerOptions: {
         isMainChunk: true,
@@ -3838,6 +3845,80 @@ describe('bundlers/shared generator css', () => {
     expect(css.indexOf('.raw-cache-btn')).toBeLessThan(css.indexOf('.flex'))
     expect(css).not.toContain('@layer')
     expect(css).not.toContain('@apply')
+  })
+
+  it('appends Tailwind v4 incremental css to previous mini-program css without user layers', async () => {
+    const runtimeSet = new Set(['flex', 'text-red-500'])
+    const generateMock = vi.fn(async () => ({
+      css: '.flex{display:flex}.text-red-500{color:red}',
+      incrementalCss: '.text-red-500{color:red}',
+      rawCss: '.flex{display:flex}.text-red-500{color:red}',
+      target: 'weapp',
+      classSet: new Set(['text-red-500']),
+      dependencies: ['tailwind.config.ts'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => createDefaultGeneratorMock({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: '@tailwind utilities;',
+      file: 'app.wxss',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'app.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler: vi.fn(async (code: string) => ({ css: code })),
+      debug: vi.fn(),
+      previousCss: '.flex{display:flex}',
+      forceGenerator: true,
+    })
+
+    expect(result).toMatchObject({
+      css: '.flex{display:flex}\n.text-red-500{color:red}',
+      dependencies: ['tailwind.config.ts'],
+      incremental: true,
+      source: 'generator',
+      target: 'weapp',
+    })
+    expect(result?.classSet).toEqual(new Set(['text-red-500', 'flex']))
+    expect(generateMock).toHaveBeenCalledWith(expect.objectContaining({
+      incrementalCache: true,
+      target: 'weapp',
+    }))
   })
 
   it('keeps user-defined Tailwind layer blocks when removing source directives', async () => {
