@@ -7,15 +7,15 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
-  --tw-font-weight: ;
-  --tw-leading: ;
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-space-y-reverse: 0;
+  --tw-border-style: solid;
+  --tw-font-weight: ;
+  --tw-leading: ;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

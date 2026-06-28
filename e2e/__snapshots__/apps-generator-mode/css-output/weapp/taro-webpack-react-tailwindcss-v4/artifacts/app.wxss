@@ -6,11 +6,11 @@ text,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  --tw-rotate-x:;
-  --tw-rotate-y:;
-  --tw-rotate-z:;
-  --tw-skew-x:;
-  --tw-skew-y:;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --tw-gradient-position: initial;
   --tw-gradient-from: #0000;
   --tw-gradient-via: #0000;
@@ -19,11 +19,11 @@ text,
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
+  --tw-rotate-x:;
+  --tw-rotate-y:;
+  --tw-rotate-z:;
+  --tw-skew-x:;
+  --tw-skew-y:;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';

@@ -6,23 +6,15 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-translate-x: 0;
-  --tw-translate-y: 0;
-  --tw-space-y-reverse: 0;
-  --tw-content: '';
-  --tw-shadow: 0 0 #0000;
-  --tw-inset-shadow: 0 0 #0000;
-  --tw-ring-color:;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-inset:;
-  --tw-ring-offset-width: 0px;
-  --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-space-y-reverse: 0;
+  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
