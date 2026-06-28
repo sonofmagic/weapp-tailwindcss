@@ -11,7 +11,14 @@ text,
   --tw-border-style: solid;
   --tw-divide-x-reverse: 0;
   --tw-divide-y-reverse: 0;
+  --tw-gradient-position: initial;
+  --tw-gradient-from: #0000;
+  --tw-gradient-to: #0000;
+  --tw-gradient-stops: initial;
+  --tw-gradient-from-position: 0%;
+  --tw-gradient-to-position: 100%;
   --tw-font-weight: ;
+  --tw-content: '';
   --tw-leading: ;
   --tw-shadow: 0 0 #0000;
   --tw-shadow-color: initial;
@@ -28,9 +35,15 @@ wx-root-portal-content {
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --color-red-500: #fb2c36;
+  --color-green-200: #b9f8cf;
   --color-emerald-500: #00bc7d;
   --color-emerald-600: #009966;
+  --color-blue-500: #2b7fff;
   --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-700: #314158;
+  --color-slate-800: #1d293d;
   --color-slate-900: #0f172b;
   --color-zinc-50: #fafafa;
   --color-zinc-900: #18181b;
@@ -39,6 +52,7 @@ wx-root-portal-content {
   --spacing: 8rpx;
   --text-sm: 28rpx;
   --text-sm--line-height: 1.42857;
+  --font-weight-semibold: 600;
   --font-weight-bold: 700;
   --default-font-family: var(--font-sans);
   --default-mono-font-family: var(--font-mono);
@@ -91,6 +105,9 @@ wx-root-portal-content {
 .flex {
   display: flex;
 }
+.inline-flex {
+  display: inline-flex;
+}
 /* tokens: aspect-(--my-aspect-ratio) <= src/pages/index/index.vue */
 .aspect-_p--my-aspect-ratio_P {
   aspect-ratio: var(--my-aspect-ratio);
@@ -103,9 +120,17 @@ wx-root-portal-content {
 .h-12 {
   height: calc(var(--spacing) * 12);
 }
+/* tokens: h-16 <= src/pages/index/index.vue */
+.h-16 {
+  height: calc(var(--spacing) * 16);
+}
 /* tokens: h-20 <= src/pages/index/index.vue */
 .h-20 {
   height: calc(var(--spacing) * 20);
+}
+/* tokens: h-[45px] <= src/pages/index/index.vue */
+.h-_b45px_B {
+  height: 45px;
 }
 /* tokens: w-12 <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .w-12 {
@@ -114,6 +139,14 @@ wx-root-portal-content {
 /* tokens: w-20 <= src/pages/index/index.vue */
 .w-20 {
   width: calc(var(--spacing) * 20);
+}
+/* tokens: w-32 <= src/pages/index/index.vue */
+.w-32 {
+  width: calc(var(--spacing) * 32);
+}
+/* tokens: w-[323px] <= src/pages/index/index.vue */
+.w-_b323px_B {
+  width: 323px;
 }
 /* tokens: flex-col <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .flex-col {
@@ -131,9 +164,23 @@ wx-root-portal-content {
 .items-center {
   align-items: center;
 }
+.gap-2 {
+  gap: calc(var(--spacing) * 2);
+}
 /* tokens: gap-3 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .gap-3 {
   gap: calc(var(--spacing) * 3);
+}
+/* tokens: space-y-2 <= src/pages/index/index.vue */
+.space-y-2 > view + view,
+.space-y-2 > view + text,
+.space-y-2 > text + view,
+.space-y-2 > text + text {
+  --tw-space-y-reverse: 0;
+  margin-bottom: calc((var(--spacing) * 2) * var(--tw-space-y-reverse));
+  margin-bottom: calc(var(--spacing) * 2 * var(--tw-space-y-reverse));
+  margin-top: calc((var(--spacing) * 2) * (1 - var(--tw-space-y-reverse)));
+  margin-top: calc(var(--spacing) * 2 * (1 - var(--tw-space-y-reverse)));
 }
 /* tokens: space-y-4 <= src/pages/index/index.vue */
 .space-y-4 > view + view,
@@ -236,6 +283,14 @@ wx-root-portal-content {
 .rounded {
   border-radius: 8rpx;
 }
+/* tokens: rounded-[20rpx] <= src/pages/index/index.vue */
+.rounded-_b20rpx_B {
+  border-radius: 20rpx;
+}
+/* tokens: rounded-[28rpx] <= src/pages/index/index.vue */
+.rounded-_b28rpx_B {
+  border-radius: 28rpx;
+}
 /* tokens: rounded-full <= src/pages/index/index.vue */
 .rounded-full {
   border-radius: 9999px;
@@ -249,9 +304,21 @@ wx-root-portal-content {
   border-style: var(--tw-border-style);
   border-width: 1px;
 }
+/* tokens: border-slate-200/80 <= src/pages/index/index.vue */
+.border-slate-200_f80 {
+  border-color: rgba(226, 232, 240, 0.8);
+}
+/* tokens: !bg-[gray] <= src/pages/index/index.vue */
+._ebg-_bgray_B {
+  background-color: gray !important;
+}
 /* tokens: bg-[#0000ff] <= src/pages/index/index.vue */
 .bg-_b_h0000ff_B {
   background-color: #0000ff;
+}
+/* tokens: bg-[#68c828] <= src/pages/index/index.vue */
+.bg-_b_h68c828_B {
+  background-color: #68c828;
 }
 /* tokens: bg-[#123498] <= src/pages/index/index.vue */
 .bg-_b_h123498_B {
@@ -260,6 +327,10 @@ wx-root-portal-content {
 /* tokens: bg-emerald-500 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .bg-emerald-500 {
   background-color: var(--color-emerald-500);
+}
+/* tokens: bg-green-200/70 <= src/pages/index/index.vue */
+.bg-green-200_f70 {
+  background-color: rgba(185, 248, 207, 0.7);
 }
 /* tokens: bg-midnight <= src/pages/index/index.vue */
 .bg-midnight {
@@ -273,6 +344,51 @@ wx-root-portal-content {
 .bg-white {
   background-color: var(--color-white);
 }
+/* tokens: bg-white/70 <= src/pages/index/index.vue */
+.bg-white_f70 {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+/* tokens: bg-gradient-to-br <= src/pages/index/index.vue */
+.bg-gradient-to-br {
+  --tw-gradient-position: to bottom right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+.bg-gradient-to-r {
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+}
+/* tokens: bg-[radial-gradient(circle_at_18%_20%,#e0f2fe,#fdf4ff_70%)] <= src/pages/index/index.vue */
+.bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B {
+  background-image: radial-gradient(circle at 18% 20%, #e0f2fe, #fdf4ff 70%);
+}
+.from-_b_h9e58e9_B {
+  --tw-gradient-from: #9e58e9;
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
+/* tokens: from-slate-900/95 <= src/pages/index/index.vue */
+.from-slate-900_f95 {
+  --tw-gradient-from: rgba(15, 23, 43, 0.95);
+}
+/* tokens: from-slate-900/95 <= src/pages/index/index.vue */
+.from-slate-900_f95 {
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
+.to-blue-500 {
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
+/* tokens: to-slate-700/95 <= src/pages/index/index.vue */
+.to-slate-700_f95 {
+  --tw-gradient-to: rgba(49, 65, 88, 0.95);
+}
+/* tokens: to-slate-700/95 <= src/pages/index/index.vue */
+.to-slate-700_f95 {
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+}
 /* tokens: fill-bermuda <= src/pages/index/index.vue */
 .fill-bermuda {
   fill: var(--color-bermuda);
@@ -280,6 +396,10 @@ wx-root-portal-content {
 /* tokens: p-2 <= src/pages/index/index.vue */
 .p-2 {
   padding: calc(var(--spacing) * 2);
+}
+/* tokens: p-4 <= src/pages/index/index.vue */
+.p-4 {
+  padding: calc(var(--spacing) * 4);
 }
 /* tokens: px-3 <= src/pages/index/index.vue */
 .px-3 {
@@ -291,6 +411,20 @@ wx-root-portal-content {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+.px-_b18rpx_B {
+  padding-left: 18rpx;
+  padding-right: 18rpx;
+}
+/* tokens: px-[48px] <= src/pages/index/index.vue */
+.px-_b48px_B {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+/* tokens: py-1 <= src/pages/index/index.vue */
+.py-1 {
+  padding-top: var(--spacing);
+  padding-bottom: var(--spacing);
+}
 /* tokens: py-2 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .py-2 {
   padding-top: calc(var(--spacing) * 2);
@@ -301,6 +435,15 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
+.py-_b10rpx_B {
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+}
+/* tokens: py-[24rpx] <= src/pages/index/index.vue */
+.py-_b24rpx_B {
+  padding-top: 24rpx;
+  padding-bottom: 24rpx;
+}
 /* tokens: text-center <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .text-center {
   text-align: center;
@@ -310,9 +453,17 @@ wx-root-portal-content {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
 }
+/* tokens: text-[26rpx] <= src/pages/index/index.vue */
+.text-_b26rpx_B {
+  font-size: 26rpx;
+}
 /* tokens: text-[45rpx] <= src/pages/index/index.vue */
 .text-_b45rpx_B {
   font-size: 45rpx;
+}
+/* tokens: text-[100rpx] <= src/pages/index/index.vue */
+.text-_b100rpx_B {
+  font-size: 100rpx;
 }
 /* tokens: text-[102.43rpx] <= src/pages/index/index.vue */
 .text-_b102_d43rpx_B {
@@ -323,13 +474,26 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: var(--font-weight-bold);
 }
+/* tokens: font-semibold <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
+.font-semibold {
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+}
 /* tokens: text-[#00f285] <= src/pages/index/index.vue */
 .text-_b_h00f285_B {
   color: #00f285;
 }
+/* tokens: text-[#123456] <= src/pages/index/index.vue */
+.text-_b_h123456_B {
+  color: #123456;
+}
 /* tokens: text-neutral-66 <= src/pages/index/index.vue */
 .text-neutral-66 {
   color: var(--color-neutral-66);
+}
+/* tokens: text-slate-700 <= src/pages/index/index.vue */
+.text-slate-700 {
+  color: var(--color-slate-700);
 }
 /* tokens: text-slate-900 <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .text-slate-900 {
@@ -352,12 +516,26 @@ wx-root-portal-content {
   --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
   box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
 }
+/* tokens: shadow-xl <= src/pages/index/index.vue */
+.shadow-xl {
+  --tw-shadow: 0 20px 25px -5px var(--tw-shadow-color, rgba(0, 0, 0, 0.1)), 0 8px 10px -6px var(--tw-shadow-color, rgba(0, 0, 0, 0.1));
+  box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+}
 /* tokens: divide-x-reverse <= src/pages/index/index.vue */
 .divide-x-reverse > view + view,
 .divide-x-reverse > view + text,
 .divide-x-reverse > text + view,
 .divide-x-reverse > text + text {
   --tw-divide-x-reverse: 1;
+}
+/* tokens: after:!content-['good_work!'] <= src/pages/index/index.vue */
+.after_c_econtent-_b_agood_work_e_a_B::after {
+  --tw-content: 'good work!' !important;
+  content: var(--tw-content) !important;
+}
+/* tokens: after:!content-['good_work!'] <= src/pages/index/index.vue */
+.after_c_econtent-_b_agood_work_e_a_B::after {
+  content: var(--tw-content);
 }
 /* tokens: active:bg-emerald-600 <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .active_cbg-emerald-600:active {
@@ -399,11 +577,36 @@ wx-root-portal-content {
     color: var(--color-slate-100);
   }
 }
+/* tokens: wx:bg-blue-500 <= src/pages/index/index.vue */
+.wx_cbg-blue-500 {
+  background-color: var(--color-blue-500);
+}
 .layer-card-v4 {
   display: flex;
   align-items: center;
   gap: 8px;
   color: var(--color-midnight);
+}
+/* tokens: template-corpus-apply <= src/pages/index/index.vue */
+.template-corpus-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  border-radius: 20rpx;
+  --tw-gradient-position: to right;
+  background-image: linear-gradient(var(--tw-gradient-stops));
+  --tw-gradient-from: #9e58e9;
+  --tw-gradient-to: var(--color-blue-500);
+  --tw-gradient-stops:
+    var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
+  padding-left: 18rpx;
+  padding-right: 18rpx;
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+  --tw-font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-semibold);
+  font-size: 26rpx;
+  color: var(--color-white);
 }
 .layer-card-v4 {
   display: flex;
