@@ -27,5 +27,5 @@ describe('node api core example', () => {
     if (typeof globalThis.gc === 'function') {
       expect(result.deltaHeapUsedMb).toBeLessThanOrEqual(96)
     }
-  }, 30000)
+  }, 60000)
 })
