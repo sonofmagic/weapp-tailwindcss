@@ -6,27 +6,14 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
-  --tw-space-y-reverse: 0;
-  --tw-border-style: solid;
-  --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-to: #0000;
-  --tw-gradient-stops: initial;
-  --tw-gradient-from-position: 0%;
-  --tw-gradient-to-position: 100%;
-  --tw-font-weight:;
-  --tw-content: '';
-  --tw-shadow: 0 0 #0000;
-  --tw-shadow-color: initial;
-  --tw-inset-shadow: 0 0 #0000;
-  --tw-ring-shadow: 0 0 #0000;
-  --tw-inset-ring-shadow: 0 0 #0000;
-  --tw-ring-offset-shadow: 0 0 #0000;
 }
 :host,
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-space-y-reverse: 0;
+  --tw-font-weight:;
+  --tw-content: '';
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -283,6 +270,7 @@ wx-root-portal-content {
 .flex {
   display: flex;
 }
+/* tokens: inline-flex <= src/app.css */
 .inline-flex {
   display: inline-flex;
 }
@@ -314,9 +302,11 @@ wx-root-portal-content {
 .flex-col {
   flex-direction: column;
 }
+/* tokens: items-center <= src/app.css */
 .items-center {
   align-items: center;
 }
+/* tokens: gap-2 <= src/app.css */
 .gap-2 {
   gap: calc(var(--spacing) * 2);
 }
@@ -339,7 +329,7 @@ wx-root-portal-content {
 .rounded {
   border-radius: 8rpx;
 }
-/* tokens: rounded-[20rpx] <= src/pages/index/index.tsx */
+/* tokens: rounded-[20rpx] <= src/app.css, src/pages/index/index.tsx */
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
@@ -398,7 +388,7 @@ wx-root-portal-content {
   --tw-gradient-position: to bottom right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
-/* tokens: bg-gradient-to-r <= src/pages/index/index.tsx */
+/* tokens: bg-gradient-to-r <= src/app.css, src/pages/index/index.tsx */
 .bg-gradient-to-r {
   --tw-gradient-position: to right in oklab;
   background-image: linear-gradient(var(--tw-gradient-stops));
@@ -407,6 +397,7 @@ wx-root-portal-content {
 .bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B {
   background-image: radial-gradient(circle at 18% 20%, #e0f2fe, #fdf4ff 70%);
 }
+/* tokens: from-[#9e58e9] <= src/app.css */
 .from-_b_h9e58e9_B {
   --tw-gradient-from: #9e58e9;
   --tw-gradient-stops:
@@ -427,7 +418,7 @@ wx-root-portal-content {
   --tw-gradient-stops:
     var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
 }
-/* tokens: to-blue-500 <= src/pages/index/index.tsx */
+/* tokens: to-blue-500 <= src/app.css, src/pages/index/index.tsx */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops:
@@ -456,6 +447,7 @@ wx-root-portal-content {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+/* tokens: px-[18rpx] <= src/app.css */
 .px-_b18rpx_B {
   padding-left: 18rpx;
   padding-right: 18rpx;
@@ -480,6 +472,7 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
+/* tokens: py-[10rpx] <= src/app.css */
 .py-_b10rpx_B {
   padding-top: 10rpx;
   padding-bottom: 10rpx;
@@ -489,7 +482,7 @@ wx-root-portal-content {
   padding-top: 24rpx;
   padding-bottom: 24rpx;
 }
-/* tokens: text-[26rpx] <= src/pages/index/index.tsx */
+/* tokens: text-[26rpx] <= src/app.css, src/pages/index/index.tsx */
 .text-_b26rpx_B {
   font-size: 26rpx;
 }
@@ -501,6 +494,7 @@ wx-root-portal-content {
 .text-_b100rpx_B {
   font-size: 100rpx;
 }
+/* tokens: font-semibold <= src/app.css */
 .font-semibold {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
@@ -525,7 +519,7 @@ wx-root-portal-content {
 .text-slate-900 {
   color: var(--color-slate-900);
 }
-/* tokens: text-white <= src/pages/index/index.tsx */
+/* tokens: text-white <= src/app.css, src/pages/index/index.tsx */
 .text-white {
   color: var(--color-white);
 }

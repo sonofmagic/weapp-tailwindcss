@@ -2,6 +2,11 @@
 page,
 .tw-root,
 wx-root-portal-content {
+  --tw-rotate-x:;
+  --tw-rotate-y:;
+  --tw-rotate-z:;
+  --tw-skew-x:;
+  --tw-skew-y:;
   --spacing: 0.25rem;
 }
 .h-8 {

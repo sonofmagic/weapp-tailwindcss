@@ -1,4 +1,24 @@
 <view class="index" style="">
+  <view
+    class="template-corpus-card flex flex-col gap-3 rounded-_b28rpx_B border border-slate-200_f80 bg-gradient-to-br from-slate-900_f95 to-slate-700_f95 p-4 text-white shadow-xl wx_cbg-blue-500 not-wx_cbg-red-500 any-hover_cbg-slate-800"
+    style="">
+    <view class="template-corpus-radial bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B px-_b48px_B py-_b24rpx_B text-_b_h123456_B" style="">
+      template corpus radial
+    </view>
+    <view class="template-corpus-space space-y-2" style="">
+      <view class="rounded-_b20rpx_B bg-white_f70 px-3 py-1 text-_b26rpx_B text-slate-700" style="">space item 1</view>
+      <view class="template-corpus-dynamic bg-_b_h68c828_B text-_b100rpx_B w-_b323px_B h-_b45px_B" style="">space item 2</view>
+    </view>
+    <view class="template-corpus-apply" style="">apply corpus</view>
+    <view
+      class="template-corpus-hover h-16 w-32 rounded-_b20rpx_B bg-green-200_f70"
+      hover-class="_ebg-_bgray_B after_c_econtent-_b_agood_work_e_a_B"
+      hover-start-time="50"
+      hover-stay-time="400"
+      style="">
+      hover corpus
+    </view>
+  </view>
   <view class="h5-div h-_b300px_B text-_b_hc31d6b_B bg-_b_h123456_B" style="">短斤少两快点撒</view>
   <text class="text-_b55rpx_B text-_b_hfff_B bg-purple-300" space="" style=""></text>
   <view class="bg-_bred_B" style="">Hello world!</view>

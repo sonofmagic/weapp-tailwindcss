@@ -6,6 +6,11 @@ text,
   margin: 0;
   padding: 0;
   border: 0 solid;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
   --tw-space-x-reverse: 0;
   --tw-space-y-reverse: 0;
   --tw-border-style: solid;
@@ -26,11 +31,6 @@ text,
   --tw-ring-shadow: 0 0 #0000;
   --tw-inset-ring-shadow: 0 0 #0000;
   --tw-ring-offset-shadow: 0 0 #0000;
-}
-:host,
-page,
-.tw-root,
-wx-root-portal-content {
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -105,6 +105,7 @@ wx-root-portal-content {
 .flex {
   display: flex;
 }
+/* tokens: inline-flex <= src/main.css */
 .inline-flex {
   display: inline-flex;
 }
@@ -160,10 +161,11 @@ wx-root-portal-content {
 .flex-row-reverse {
   flex-direction: row-reverse;
 }
-/* tokens: items-center <= src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
+/* tokens: items-center <= src/main.css, src/pages-order/pages/user/user.vue, src/pages/index/index.vue */
 .items-center {
   align-items: center;
 }
+/* tokens: gap-2 <= src/main.css */
 .gap-2 {
   gap: calc(var(--spacing) * 2);
 }
@@ -283,7 +285,7 @@ wx-root-portal-content {
 .rounded {
   border-radius: 8rpx;
 }
-/* tokens: rounded-[20rpx] <= src/pages/index/index.vue */
+/* tokens: rounded-[20rpx] <= src/main.css, src/pages/index/index.vue */
 .rounded-_b20rpx_B {
   border-radius: 20rpx;
 }
@@ -353,6 +355,7 @@ wx-root-portal-content {
   --tw-gradient-position: to bottom right;
   background-image: linear-gradient(var(--tw-gradient-stops));
 }
+/* tokens: bg-gradient-to-r <= src/main.css */
 .bg-gradient-to-r {
   --tw-gradient-position: to right;
   background-image: linear-gradient(var(--tw-gradient-stops));
@@ -361,6 +364,7 @@ wx-root-portal-content {
 .bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B {
   background-image: radial-gradient(circle at 18% 20%, #e0f2fe, #fdf4ff 70%);
 }
+/* tokens: from-[#9e58e9] <= src/main.css */
 .from-_b_h9e58e9_B {
   --tw-gradient-from: #9e58e9;
   --tw-gradient-stops:
@@ -375,6 +379,7 @@ wx-root-portal-content {
   --tw-gradient-stops:
     var(--tw-gradient-via-stops, var(--tw-gradient-position)), var(--tw-gradient-from) var(--tw-gradient-from-position,), var(--tw-gradient-to) var(--tw-gradient-to-position,);
 }
+/* tokens: to-blue-500 <= src/main.css */
 .to-blue-500 {
   --tw-gradient-to: var(--color-blue-500);
   --tw-gradient-stops:
@@ -411,6 +416,7 @@ wx-root-portal-content {
   padding-left: calc(var(--spacing) * 4);
   padding-right: calc(var(--spacing) * 4);
 }
+/* tokens: px-[18rpx] <= src/main.css */
 .px-_b18rpx_B {
   padding-left: 18rpx;
   padding-right: 18rpx;
@@ -435,6 +441,7 @@ wx-root-portal-content {
   padding-top: calc(var(--spacing) * 3);
   padding-bottom: calc(var(--spacing) * 3);
 }
+/* tokens: py-[10rpx] <= src/main.css */
 .py-_b10rpx_B {
   padding-top: 10rpx;
   padding-bottom: 10rpx;
@@ -453,7 +460,7 @@ wx-root-portal-content {
   font-size: var(--text-sm);
   line-height: var(--tw-leading, var(--text-sm--line-height));
 }
-/* tokens: text-[26rpx] <= src/pages/index/index.vue */
+/* tokens: text-[26rpx] <= src/main.css, src/pages/index/index.vue */
 .text-_b26rpx_B {
   font-size: 26rpx;
 }
@@ -474,7 +481,7 @@ wx-root-portal-content {
   --tw-font-weight: var(--font-weight-bold);
   font-weight: var(--font-weight-bold);
 }
-/* tokens: font-semibold <= src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
+/* tokens: font-semibold <= src/main.css, src/pages-order/pages/home/home.vue, src/pages-order/pages/user/user.vue */
 .font-semibold {
   --tw-font-weight: var(--font-weight-semibold);
   font-weight: var(--font-weight-semibold);
@@ -503,7 +510,7 @@ wx-root-portal-content {
 .text-tahiti {
   color: var(--color-tahiti);
 }
-/* tokens: text-white <= src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
+/* tokens: text-white <= src/main.css, src/pages-order/pages/home/home.vue, src/pages/index/index.vue */
 .text-white {
   color: var(--color-white);
 }
