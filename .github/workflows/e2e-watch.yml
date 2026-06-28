@@ -172,6 +172,7 @@ jobs:
             timeout_minutes: 35
             watch_timeout_ms: '240000'
             watch_poll_ms: '40'
+            watch_max_plugin_process_ms: '30000'
             watch_command_timeout_ms: '600000'
     runs-on: ${{ matrix.os }}
     timeout-minutes: ${{ matrix.timeout_minutes }}
