@@ -1,0 +1,41 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "style injector main"
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "sub-normal",
+      "pages": [
+        {
+          "path": "pages/index",
+          "style": {
+            "navigationBarTitleText": "style injector normal"
+          }
+        }
+      ]
+    },
+    {
+      "root": "sub-independent",
+      "pages": [
+        {
+          "path": "pages/index",
+          "style": {
+            "navigationBarTitleText": "style injector independent"
+          }
+        }
+      ],
+      "independent": true
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "style injector uni",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff"
+  }
+}

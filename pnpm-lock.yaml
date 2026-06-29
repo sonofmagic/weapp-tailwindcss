@@ -1434,6 +1434,319 @@ importers:
         specifier: 5.105.4
         version: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
 
+  demo/style-injector-mpx:
+    dependencies:
+      '@mpxjs/api-proxy':
+        specifier: ^2.10.21
+        version: 2.10.21(@mpxjs/core@2.10.24)(@react-native-async-storage/async-storage@1.21.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(@react-native-community/netinfo@11.1.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(debug@4.4.3)(react-native-device-info@14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0))(react@18.2.0))
+      '@mpxjs/core':
+        specifier: ^2.10.24
+        version: 2.10.24(1c28718c96822fb4f4aaf85760dedccb)
+      '@mpxjs/fetch':
+        specifier: ^2.10.21
+        version: 2.10.21(@mpxjs/core@2.10.24)(@react-native-async-storage/async-storage@1.21.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(@react-native-community/netinfo@11.1.0(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(debug@4.4.3)(react-native-device-info@14.1.1(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0)))(react-native-safe-area-context@4.8.2(react-native@0.73.11(@babel/core@7.29.7)(@babel/preset-env@7.29.7(@babel/core@7.29.7))(encoding@0.1.13)(react@18.2.0))(react@18.2.0))
+      '@mpxjs/pinia':
+        specifier: ^2.10.22
+        version: 2.10.22(@mpxjs/core@2.10.24)(pinia@2.3.1(typescript@6.0.3)(vue@2.7.16))(vue-demi@0.14.10(vue@2.7.16))(vue@2.7.16)
+      '@mpxjs/store':
+        specifier: ^2.10.22
+        version: 2.10.22(@mpxjs/core@2.10.24)
+      '@mpxjs/utils':
+        specifier: ^2.10.21
+        version: 2.10.21(@mpxjs/core@2.10.24)
+      pinia:
+        specifier: ^2.0.14
+        version: 2.3.1(typescript@6.0.3)(vue@2.7.16)
+      vue:
+        specifier: catalog:vue2
+        version: 2.7.16
+      vue-demi:
+        specifier: ^0.14.6
+        version: 0.14.10(vue@2.7.16)
+      vue-i18n:
+        specifier: ^8.27.2
+        version: 8.28.2(vue@2.7.16)
+      vue-i18n-bridge:
+        specifier: ^9.2.2
+        version: 9.14.1(vue@2.7.16)
+      vue-router:
+        specifier: ^3.1.3
+        version: 3.6.5(vue@2.7.16)
+    devDependencies:
+      '@babel/core':
+        specifier: catalog:babelCore7285
+        version: 7.29.7
+      '@babel/plugin-transform-runtime':
+        specifier: ^7.29.7
+        version: 7.29.7(@babel/core@7.29.7)
+      '@babel/preset-env':
+        specifier: ^7.29.7
+        version: 7.29.7(@babel/core@7.29.7)
+      '@babel/runtime-corejs3':
+        specifier: ^7.29.7
+        version: 7.29.7
+      '@mpxjs/babel-plugin-inject-page-events':
+        specifier: ^2.10.21
+        version: 2.10.21
+      '@mpxjs/eslint-config-ts':
+        specifier: ^1.0.5
+        version: 1.0.10(eslint@10.6.0(jiti@2.7.0))(typescript@6.0.3)
+      '@mpxjs/mpx-cli-service':
+        specifier: ^2.2.30
+        version: 2.2.30(@rspack/core@2.1.1(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(prettier@3.8.5)(react@18.2.0)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.5.0)
+      '@mpxjs/vue-cli-plugin-mpx':
+        specifier: ^2.2.30
+        version: 2.2.30(@babel/core@7.29.7)(@mpxjs/webpack-plugin@2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@rspack/core@2.1.1(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(css-loader@7.1.4(@rspack/core@2.1.1(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(debug@4.4.3)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(postcss@8.5.15)(prettier@3.8.5)(react@18.2.0)(vue-template-compiler@2.7.16)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@mpxjs/vue-cli-plugin-mpx-typescript':
+        specifier: ^2.2.30
+        version: 2.2.30(typescript@6.0.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@mpxjs/webpack-plugin':
+        specifier: ^2.10.24
+        version: 2.10.24(@mpxjs/core@2.10.24)(vue@2.7.16)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@vue/cli-service':
+        specifier: ~5.0.0
+        version: 5.0.9(@rspack/core@2.1.1(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(prettier@3.8.5)(react@18.2.0)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.5.0)
+      autoprefixer:
+        specifier: catalog:autoprefixer10
+        version: 10.5.2(postcss@8.5.15)
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      process:
+        specifier: ^0.11.10
+        version: 0.11.10
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
+      webpack:
+        specifier: 5.105.4
+        version: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
+
+  demo/style-injector-taro-vite-react:
+    dependencies:
+      '@babel/runtime':
+        specifier: catalog:babelRuntime7284
+        version: 7.29.7
+      '@tarojs/components':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.1.1(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/helper':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/plugin-framework-react':
+        specifier: catalog:taro4
+        version: 4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-h5':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@tarojs/taro@4.2.0(4f295f940c077df58bf3ef9055c4c0ba))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.1.1(@swc/helpers@0.5.23))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(react@18.3.1)(rollup@3.30.0)(solid-js@1.9.10)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-weapp':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/service@4.2.0(@swc/helpers@0.5.23))(@tarojs/shared@4.2.0)
+      '@tarojs/react':
+        specifier: catalog:taro4
+        version: 4.2.0(react@18.3.1)
+      '@tarojs/router':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@tarojs/taro@4.2.0(4f295f940c077df58bf3ef9055c4c0ba))
+      '@tarojs/runtime':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/shared':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/taro':
+        specifier: catalog:taro4
+        version: 4.2.0(4f295f940c077df58bf3ef9055c4c0ba)
+      react:
+        specifier: catalog:react18
+        version: 18.3.1
+      react-dom:
+        specifier: catalog:react18
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@babel/core':
+        specifier: catalog:babelCore7285
+        version: 7.29.7
+      '@babel/preset-react':
+        specifier: catalog:babelPresetReact7285
+        version: 7.29.7(@babel/core@7.29.7)
+      '@tarojs/cli':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.0.1)(debug@4.4.3)
+      '@tarojs/vite-runner':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@tarojs/runtime@4.2.0)(@types/babel__core@7.20.5)(jiti@2.7.0)(postcss@8.5.15)(rollup@3.30.0)(terser@5.48.0)(tsx@4.22.4)(typescript@6.0.3)(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.0.1
+      '@types/react':
+        specifier: catalog:react18
+        version: 19.2.17
+      '@vitejs/plugin-react':
+        specifier: catalog:vitePluginReact4
+        version: 4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      babel-preset-taro:
+        specifier: catalog:taro4
+        version: 4.2.0(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/preset-react@7.29.7(@babel/core@7.29.7))(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.0(768f5bf43b7529fe88a15d108ed3ec3f))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))(react-refresh@0.14.2)
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: catalog:vite4
+        version: 4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
+
+  demo/style-injector-taro-webpack-react:
+    dependencies:
+      '@babel/runtime':
+        specifier: catalog:babelRuntime7284
+        version: 7.29.7
+      '@tarojs/components':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.1.1(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(rollup@3.30.0)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/helper':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/plugin-framework-react':
+        specifier: catalog:taro4
+        version: 4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.18.0)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-h5':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@tarojs/taro@4.2.0(7a152351d63a9581dfe814e9f0983dd6))(@types/react@19.2.17)(html-webpack-plugin@5.6.7(@rspack/core@2.1.1(@swc/helpers@0.5.23))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(postcss@8.5.15)(react@18.3.1)(rollup@3.30.0)(solid-js@1.9.10)(vue@3.5.39(typescript@6.0.3))(webpack-chain@6.5.1)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/plugin-platform-weapp':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/service@4.2.0(@swc/helpers@0.5.23))(@tarojs/shared@4.2.0)
+      '@tarojs/react':
+        specifier: catalog:taro4
+        version: 4.2.0(react@18.3.1)
+      '@tarojs/router':
+        specifier: catalog:taro4
+        version: 4.2.0(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@tarojs/taro@4.2.0(7a152351d63a9581dfe814e9f0983dd6))
+      '@tarojs/runtime':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/shared':
+        specifier: catalog:taro4
+        version: 4.2.0
+      '@tarojs/taro':
+        specifier: catalog:taro4
+        version: 4.2.0(7a152351d63a9581dfe814e9f0983dd6)
+      react:
+        specifier: catalog:react18
+        version: 18.3.1
+      react-dom:
+        specifier: catalog:react18
+        version: 18.3.1(react@18.3.1)
+    devDependencies:
+      '@babel/core':
+        specifier: catalog:babelCore7285
+        version: 7.29.7
+      '@babel/preset-react':
+        specifier: catalog:babelPresetReact7285
+        version: 7.29.7(@babel/core@7.29.7)
+      '@pmmmwh/react-refresh-webpack-plugin':
+        specifier: ^0.6.2
+        version: 0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.18.0)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/cli':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(@types/node@26.0.1)(debug@4.4.3)
+      '@tarojs/taro-loader':
+        specifier: catalog:taro4
+        version: 4.2.0(@swc/helpers@0.5.23)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@tarojs/webpack5-runner':
+        specifier: catalog:taro4
+        version: 4.2.0(@babel/core@7.29.7)(@rspack/core@2.1.1(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@swc/helpers@0.5.23)(@tarojs/runtime@4.2.0)(debug@4.4.3)(less@4.6.6)(postcss@8.5.15)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(typescript@6.0.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@types/node':
+        specifier: catalog:typesNode2410
+        version: 26.0.1
+      '@types/react':
+        specifier: catalog:react18
+        version: 19.2.17
+      babel-preset-taro:
+        specifier: catalog:taro4
+        version: 4.2.0(@babel/core@7.29.7)(@babel/plugin-transform-typescript@7.29.7(@babel/core@7.29.7))(@babel/preset-react@7.29.7(@babel/core@7.29.7))(@react-native/babel-preset@0.73.21(@babel/core@7.29.7)(@babel/preset-env@8.0.2(@babel/core@7.29.7)))(@swc/helpers@0.5.23)(@tarojs/taro-rn@4.2.0(15ee8a2f406ec8679bcdee9be97d741b))(@vue/babel-plugin-jsx@1.5.0(@babel/core@7.29.7))(metro-react-native-babel-preset@0.77.0(@babel/core@7.29.7))(react-refresh@0.18.0)
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
+      postcss:
+        specifier: catalog:postcss85
+        version: 8.5.15
+      react-refresh:
+        specifier: catalog:reactRefresh018
+        version: 0.18.0
+      tsconfig-paths-webpack-plugin:
+        specifier: ^4.1.0
+        version: 4.2.0
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
+      webpack:
+        specifier: 5.105.4
+        version: 5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.15))(esbuild@0.28.1)(html-minifier-terser@7.2.0)(lightningcss@1.32.0)(postcss@8.5.15)
+
+  demo/style-injector-uni-app:
+    dependencies:
+      '@dcloudio/uni-app':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@dcloudio/types@3.4.28)(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-components':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-h5':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/uni-mp-vue':
+        specifier: 3.0.0-5000320260312001
+        version: 3.0.0-5000320260312001
+      '@dcloudio/uni-mp-weixin':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(debug@4.4.3)(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      vue:
+        specifier: ^3.5.39
+        version: 3.5.39(typescript@6.0.3)
+    devDependencies:
+      '@dcloudio/types':
+        specifier: ^3.4.8
+        version: 3.4.28
+      '@dcloudio/uni-cli-shared':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vue@3.5.39(typescript@6.0.3))
+      '@dcloudio/vite-plugin-uni':
+        specifier: 3.0.0-5000720260410001
+        version: 3.0.0-5000720260410001(@vueuse/core@14.2.1(vue@3.5.39(typescript@6.0.3)))(postcss@8.5.15)(rollup@4.62.2)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(vue@3.5.39(typescript@6.0.3))
+      '@vue/runtime-core':
+        specifier: ^3.5.39
+        version: 3.5.39
+      '@vue/tsconfig':
+        specifier: ^0.9.1
+        version: 0.9.1(typescript@6.0.3)(vue@3.5.39(typescript@6.0.3))
+      typescript:
+        specifier: catalog:typescript59
+        version: 6.0.3
+      vite:
+        specifier: ^5.4.21
+        version: 5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      vue-tsc:
+        specifier: catalog:vueTsc318
+        version: 3.3.5(typescript@6.0.3)
+      weapp-style-injector:
+        specifier: workspace:*
+        version: link:../../packages/weapp-style-injector
+
   demo/subpackage-taro-webpack-react-tailwindcss-v4:
     dependencies:
       '@babel/runtime':
@@ -17831,16 +18144,8 @@ packages:
     resolution: {integrity: sha512-otxSQPw4lkOZWkHpB3zaEQs6gWYEsmX4xQF68ElXC/TWvGxGMSGOvoNbaLXm6/cS/fSfHtsEdw90y20PCd+sCA==}
     engines: {node: '>=10.13.0'}
 
-  enhanced-resolve@5.21.3:
-    resolution: {integrity: sha512-QyL119InA+XXEkNLNTPCXPugSvOfhwv0JOlGNzvxs0hZaiHLNvXSpudUWsOlsXGWJh8G6ckCScEkVHfX3kw/2Q==}
-    engines: {node: '>=10.13.0'}
-
   enhanced-resolve@5.21.6:
     resolution: {integrity: sha512-aNnGCvbJ/RIyWo1IuhNdVjnNF+EjH9wpzpNHt+ci/m9He9LJvUN8wrCcXjp9cWsGNAuvSpVFTx/vraAFQ8qGjQ==}
-    engines: {node: '>=10.13.0'}
-
-  enhanced-resolve@5.22.0:
-    resolution: {integrity: sha512-xYcDWrpELkFzz9SpZ3PlI6Eu6eD93Yf0WLDRxikGhWJ3MAir2SNZTIVCVZqZ/NUyx8AdMc2gT9C0gPiw18kG+A==}
     engines: {node: '>=10.13.0'}
 
   enhanced-resolve@5.24.1:
@@ -42336,6 +42641,22 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@tarojs/plugin-framework-react@4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
+    dependencies:
+      '@tarojs/helper': 4.2.0(@swc/helpers@0.5.23)
+      '@tarojs/runtime': 4.2.0
+      '@tarojs/shared': 4.2.0
+      acorn: 8.17.0
+      acorn-walk: 8.3.4
+      lodash: 4.18.1
+      tslib: 2.8.1
+    optionalDependencies:
+      '@pmmmwh/react-refresh-webpack-plugin': 0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
+      '@vitejs/plugin-react': 4.7.0(vite@4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))
+      react: 18.3.1
+      vite: 4.5.14(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)
+      webpack: 5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)
+
   '@tarojs/plugin-framework-react@4.2.0(@pmmmwh/react-refresh-webpack-plugin@0.6.2(@types/webpack@5.28.5(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))(react-refresh@0.14.2)(type-fest@5.7.0)(webpack-dev-server@4.15.2(debug@4.4.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)))(@tarojs/helper@4.2.0(@swc/helpers@0.5.23))(@tarojs/runtime@4.2.0)(@tarojs/shared@4.2.0)(@vitejs/plugin-react@4.7.0(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0)))(react@18.3.1)(vite@5.4.21(@types/node@26.0.1)(less@4.6.6)(lightningcss@1.32.0)(sass-embedded@1.100.0)(sass@1.101.0)(stylus@0.63.0)(terser@5.48.0))(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))':
     dependencies:
       '@tarojs/helper': 4.2.0(@swc/helpers@0.5.23)
@@ -43898,7 +44219,7 @@ snapshots:
       '@tarojs/taro-loader': 4.2.0(@swc/helpers@0.5.23)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
       '@tarojs/webpack5-prebundle': 4.2.0(@swc/helpers@0.5.23)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
       acorn: 8.17.0
-      acorn-walk: 8.3.4
+      acorn-walk: 8.3.5
       autoprefixer: 10.5.2(postcss@8.5.15)
       babel-loader: 8.2.1(@babel/core@7.29.7)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
       copy-webpack-plugin: 12.0.2(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15))
@@ -44580,7 +44901,7 @@ snapshots:
 
   '@types/serve-index@1.9.4':
     dependencies:
-      '@types/express': 4.17.25
+      '@types/express': 5.0.6
 
   '@types/serve-static@1.15.10':
     dependencies:
@@ -49770,17 +50091,7 @@ snapshots:
       graceful-fs: 4.2.11
       tapable: 2.3.3
 
-  enhanced-resolve@5.21.3:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.3
-
   enhanced-resolve@5.21.6:
-    dependencies:
-      graceful-fs: 4.2.11
-      tapable: 2.3.3
-
-  enhanced-resolve@5.22.0:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.3.3
@@ -58511,7 +58822,7 @@ snapshots:
       caniuse-api: 3.0.0
       cssnano-utils: 3.1.0(postcss@8.5.15)
       postcss: 8.5.15
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 6.1.4
 
   postcss-merge-rules@6.1.1(postcss@8.5.15):
     dependencies:
@@ -58562,7 +58873,7 @@ snapshots:
   postcss-minify-selectors@5.2.1(postcss@8.5.15):
     dependencies:
       postcss: 8.5.15
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 6.1.4
 
   postcss-minify-selectors@6.0.4(postcss@8.5.15):
     dependencies:
@@ -59081,7 +59392,7 @@ snapshots:
   postcss-unique-selectors@5.1.1(postcss@8.5.15):
     dependencies:
       postcss: 8.5.15
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 6.1.4
 
   postcss-unique-selectors@6.0.4(postcss@8.5.15):
     dependencies:
@@ -59363,11 +59674,11 @@ snapshots:
 
   qs@6.11.0:
     dependencies:
-      side-channel: 1.1.0
+      side-channel: 1.1.1
 
   qs@6.13.0:
     dependencies:
-      side-channel: 1.1.0
+      side-channel: 1.1.1
 
   qs@6.14.0:
     dependencies:
@@ -62134,7 +62445,7 @@ snapshots:
     dependencies:
       browserslist: 4.28.4
       postcss: 8.5.15
-      postcss-selector-parser: 6.1.2
+      postcss-selector-parser: 6.1.4
 
   stylehacks@6.1.1(postcss@8.5.15):
     dependencies:
@@ -63092,7 +63403,7 @@ snapshots:
   ts-loader@9.5.7(typescript@6.0.3)(webpack@5.105.4(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.22.0
+      enhanced-resolve: 5.24.1
       micromatch: 4.0.8
       semver: 7.8.5
       source-map: 0.7.6
@@ -63102,7 +63413,7 @@ snapshots:
   ts-loader@9.5.7(typescript@6.0.3)(webpack@5.107.2(@swc/core@1.15.43(@swc/helpers@0.5.23))(esbuild@0.28.1)(lightningcss@1.32.0)(postcss@8.5.15)):
     dependencies:
       chalk: 4.1.2
-      enhanced-resolve: 5.22.0
+      enhanced-resolve: 5.24.1
       micromatch: 4.0.8
       semver: 7.8.5
       source-map: 0.7.6
@@ -64226,7 +64537,7 @@ snapshots:
   vm2@3.10.0:
     dependencies:
       acorn: 8.17.0
-      acorn-walk: 8.3.4
+      acorn-walk: 8.3.5
 
   vscode-jsonrpc@8.2.0: {}
 
@@ -65237,7 +65548,7 @@ snapshots:
       acorn-import-phases: 1.0.4(acorn@8.17.0)
       browserslist: 4.28.4
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.24.1
       es-module-lexer: 2.0.0
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -65277,7 +65588,7 @@ snapshots:
       acorn-import-phases: 1.0.4(acorn@8.17.0)
       browserslist: 4.28.4
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.21.3
+      enhanced-resolve: 5.24.1
       es-module-lexer: 2.0.0
       eslint-scope: 5.1.1
       events: 3.3.0

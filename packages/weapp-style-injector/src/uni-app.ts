@@ -17,6 +17,9 @@ export interface UniAppSubPackageConfig {
   pagesJsonPath: string
   sourceFileName?: string | string[]
   outputName?: string
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
   generate?: SubpackageStyleGenerator
   /**
    * @deprecated Use sourceFileName instead.
@@ -28,6 +31,9 @@ export interface UniAppSubPackageConfig {
 export interface UniAppManualStyleConfig {
   style: string
   scope: string | string[]
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
   outputName?: string
   generate?: SubpackageStyleGenerator
   output?: string
@@ -130,6 +136,30 @@ function resolveOutputName(fileName: string, outputName?: string): string {
   return path.basename(fileName, path.extname(fileName))
 }
 
+function normalizePagePath(value: unknown): string | undefined {
+  const raw = typeof value === 'string'
+    ? value
+    : value && typeof value === 'object' && 'path' in value && typeof (value as { path?: unknown }).path === 'string'
+      ? (value as { path: string }).path
+      : undefined
+  if (!raw) {
+    return undefined
+  }
+  const normalized = ensurePosix(raw).replace(LEADING_DOTS_SLASHES_RE, '')
+  return normalized.length > 0 ? normalized : undefined
+}
+
+function resolvePageStyleFiles(entry: { root?: string, pages?: unknown }, styleExt = '.wxss'): string[] {
+  const root = entry.root ? normalizeRoot(entry.root) : ''
+  if (!root || !Array.isArray(entry.pages)) {
+    return []
+  }
+  return entry.pages
+    .map(normalizePagePath)
+    .filter((page): page is string => Boolean(page))
+    .map(page => ensurePosix(path.posix.join(root, `${page}${styleExt}`)))
+}
+
 function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[] {
   const pagesJsonPath = path.resolve(config.pagesJsonPath)
 
@@ -143,7 +173,7 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
   }
 
   const subPackages = Array.isArray((data as { subPackages?: unknown }).subPackages)
-    ? (data as { subPackages: Array<{ root?: string }> }).subPackages
+    ? (data as { subPackages: Array<{ root?: string, pages?: unknown }> }).subPackages
     : []
 
   const baseDir = path.dirname(pagesJsonPath)
@@ -186,6 +216,16 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
       outputName: resolveOutputName(matchedFileName, config.outputName),
       preprocess: config.preprocess !== false,
       framework: 'uni-app',
+    }
+    resolvedEntry.targetFiles = resolvePageStyleFiles(entry)
+    if (toArray(config.files).length > 0) {
+      resolvedEntry.files = toArray(config.files)
+    }
+    if (config.include !== undefined) {
+      resolvedEntry.include = config.include
+    }
+    if (config.exclude !== undefined) {
+      resolvedEntry.exclude = config.exclude
     }
     if (config.generate) {
       resolvedEntry.generate = config.generate
@@ -288,6 +328,15 @@ function resolveManualStyleScopes(
         preprocess,
         framework: 'uni-app',
       }
+      if (entry.files !== undefined) {
+        resolvedEntry.files = toArray(entry.files)
+      }
+      if (entry.include !== undefined) {
+        resolvedEntry.include = entry.include
+      }
+      if (entry.exclude !== undefined) {
+        resolvedEntry.exclude = entry.exclude
+      }
       if (entry.generate) {
         resolvedEntry.generate = entry.generate
       }
@@ -347,6 +396,15 @@ export function splitUniAppStyleScopes(
       if (entry.output !== undefined) {
         config.output = entry.output
       }
+      if (entry.files !== undefined) {
+        config.files = entry.files
+      }
+      if (entry.include !== undefined) {
+        config.include = entry.include
+      }
+      if (entry.exclude !== undefined) {
+        config.exclude = entry.exclude
+      }
       if (entry.preprocess !== undefined) {
         config.preprocess = entry.preprocess
       }
@@ -366,6 +424,15 @@ export function splitUniAppStyleScopes(
       }
       if (entry.outputName !== undefined) {
         config.outputName = entry.outputName
+      }
+      if (entry.files !== undefined) {
+        config.files = entry.files
+      }
+      if (entry.include !== undefined) {
+        config.include = entry.include
+      }
+      if (entry.exclude !== undefined) {
+        config.exclude = entry.exclude
       }
       if (entry.generate !== undefined) {
         config.generate = entry.generate

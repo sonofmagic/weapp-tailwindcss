@@ -1,0 +1,6 @@
+{
+  "appid": "touristappid",
+  "projectname": "style-injector-mpx",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "./"
+}

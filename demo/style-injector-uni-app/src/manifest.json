@@ -1,0 +1,16 @@
+{
+  "name": "style-injector-uni-app",
+  "appid": "__UNI__STYLEINJECTOR",
+  "description": "weapp-style-injector uni-app demo",
+  "versionName": "1.0.0",
+  "versionCode": "100",
+  "transformPx": false,
+  "mp-weixin": {
+    "appid": "touristappid"
+  },
+  "h5": {
+    "router": {
+      "mode": "hash"
+    }
+  }
+}

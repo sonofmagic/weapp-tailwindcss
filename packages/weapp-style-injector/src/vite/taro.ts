@@ -1,11 +1,14 @@
+import type { Plugin } from 'vite'
 import type { TaroSubPackageConfig } from '../taro'
 import type { ViteWeappStyleInjectorOptions } from '../vite'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { createStyleInjector } from '../core'
+import { isFileMatchedBySubpackageScope, resolveSubpackageStyleImport, shouldInjectSubpackageStyleImport } from '../subpackage'
 import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../taro'
-import { mergePerFileResolvers, toArray } from '../utils'
+import { ensurePosix, mergePerFileResolvers, toArray } from '../utils'
 import weappStyleInjector from '../vite'
 
 export interface ViteTaroStyleInjectorOptions extends Omit<ViteWeappStyleInjectorOptions, 'perFileImports'> {
@@ -13,6 +16,9 @@ export interface ViteTaroStyleInjectorOptions extends Omit<ViteWeappStyleInjecto
   subPackages?: TaroSubPackageConfig | TaroSubPackageConfig[]
   sourceFileName?: string | string[]
   outputName?: string
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
   perFileImports?: ViteWeappStyleInjectorOptions['perFileImports']
 }
 
@@ -28,12 +34,87 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
+const STYLE_ID_RE = /\.(?:css|scss|sass|less|styl|stylus)(?:[?#].*)?$/
+
+function stripQuery(id: string): string {
+  return id.split('?', 1)[0].split('#', 1)[0]
+}
+
+function resolveSourceRoot(scope: ReturnType<typeof resolveTaroSubPackages>[number]) {
+  const relativeDir = path.dirname(scope.sourceRelativePath)
+  const depth = relativeDir === '.' ? 0 : relativeDir.split('/').length
+  return path.resolve(path.dirname(scope.sourceAbsolutePath), ...Array.from({ length: depth }).fill('..'))
+}
+
+function createTaroSourceStyleInjectorPlugin(
+  resolvedSubPackages: ReturnType<typeof resolveTaroSubPackages>,
+): Plugin | undefined {
+  if (resolvedSubPackages.length === 0) {
+    return undefined
+  }
+
+  const scopes = resolvedSubPackages.map(scope => ({
+    scope,
+    sourceRoot: resolveSourceRoot(scope),
+  }))
+
+  return {
+    name: 'weapp-style-injector:taro-source-style',
+    enforce: 'pre',
+    transform(code, id) {
+      const cleanId = stripQuery(id)
+      if (!STYLE_ID_RE.test(cleanId)) {
+        return undefined
+      }
+
+      const imports: string[] = []
+
+      for (const entry of scopes) {
+        const relativeFileName = ensurePosix(path.relative(entry.sourceRoot, cleanId))
+        if (relativeFileName.startsWith('../')) {
+          continue
+        }
+        if (!isFileMatchedBySubpackageScope(relativeFileName, entry.scope)) {
+          continue
+        }
+        if (!shouldInjectSubpackageStyleImport(relativeFileName, code, entry.scope)) {
+          continue
+        }
+        const resolved = resolveSubpackageStyleImport(relativeFileName, entry.scope)
+        if (resolved) {
+          imports.push(resolved)
+        }
+      }
+
+      if (imports.length === 0) {
+        return undefined
+      }
+
+      const result = createStyleInjector({
+        imports,
+      }).inject(cleanId, code)
+
+      if (!result.changed) {
+        return undefined
+      }
+
+      return {
+        code: result.content,
+        map: null,
+      }
+    },
+  }
+}
+
 export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
   const {
     appConfigPath,
     subPackages,
     sourceFileName,
     outputName,
+    files,
+    include,
+    exclude,
     perFileImports,
     ...rest
   } = options
@@ -56,6 +137,15 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
       }
       if (outputName !== undefined) {
         config.outputName = outputName
+      }
+      if (files !== undefined) {
+        config.files = files
+      }
+      if (include !== undefined) {
+        config.include = include
+      }
+      if (exclude !== undefined) {
+        config.exclude = exclude
       }
       configs.set(candidate, config)
     }
@@ -92,5 +182,10 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
     }
   }
 
-  return weappStyleInjector(injectorOptions)
+  const sourceStyleInjector = createTaroSourceStyleInjectorPlugin(resolvedSubPackages)
+  const bundleStyleInjector = weappStyleInjector(injectorOptions)
+
+  return sourceStyleInjector
+    ? [sourceStyleInjector, bundleStyleInjector]
+    : bundleStyleInjector
 }

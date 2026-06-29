@@ -1,0 +1,9 @@
+<template>
+  <view class="injector-mpx-independent">style injector mpx independent</view>
+</template>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "style injector independent"
+  }
+</script>

@@ -1,0 +1,15 @@
+<template>
+  <view class="injector-mpx-main">style injector mpx main</view>
+</template>
+
+<script lang="ts">
+  import { createPage } from '@mpxjs/core'
+
+  createPage({})
+</script>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "style injector main"
+  }
+</script>

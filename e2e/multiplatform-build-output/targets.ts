@@ -199,5 +199,47 @@ export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
   ...createTaroTargets('subpackage-taro-webpack-react-tailwindcss-v4', subpackageTaroWebpackV4Platforms),
   ...createTaroTargets('taro-webpack-vue3-tailwindcss-v4', taroWebpackV4Platforms),
   ...createMpxTargets('mpx-tailwindcss-v4'),
+  target({
+    framework: 'uni-app',
+    projectDir: 'demo/style-injector-uni-app',
+    platform: 'mp-weixin',
+    coverage: 'default-ci',
+  }),
+  target({
+    framework: 'uni-app',
+    projectDir: 'demo/style-injector-uni-app',
+    platform: 'h5',
+    coverage: 'default-ci',
+  }),
+  target({
+    framework: 'mpx',
+    projectDir: 'demo/style-injector-mpx',
+    platform: 'wx',
+    coverage: 'default-ci',
+  }),
+  target({
+    framework: 'taro',
+    projectDir: 'demo/style-injector-taro-webpack-react',
+    platform: 'weapp',
+    coverage: 'default-ci',
+  }),
+  target({
+    framework: 'taro',
+    projectDir: 'demo/style-injector-taro-webpack-react',
+    platform: 'h5',
+    coverage: 'default-ci',
+  }),
+  target({
+    framework: 'taro',
+    projectDir: 'demo/style-injector-taro-vite-react',
+    platform: 'weapp',
+    coverage: 'default-ci',
+  }),
+  target({
+    framework: 'taro',
+    projectDir: 'demo/style-injector-taro-vite-react',
+    platform: 'h5',
+    coverage: 'default-ci',
+  }),
   ...createUniAppXTargets('uni-app-x-hbuilderx-tailwindcss-v4'),
 ]

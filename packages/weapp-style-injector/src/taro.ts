@@ -16,6 +16,9 @@ export interface TaroSubPackageConfig {
   appConfigPath: string
   sourceFileName?: string | string[]
   outputName?: string
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
   generate?: SubpackageStyleGenerator
   /**
    * @deprecated Use sourceFileName instead.
@@ -109,6 +112,30 @@ function ensureArray<T>(value: T | T[] | undefined): T[] {
   return Array.isArray(value) ? value : (typeof value === 'undefined' ? [] : [value])
 }
 
+function normalizePagePath(value: unknown): string | undefined {
+  const raw = typeof value === 'string'
+    ? value
+    : value && typeof value === 'object' && 'path' in value && typeof (value as { path?: unknown }).path === 'string'
+      ? (value as { path: string }).path
+      : undefined
+  if (!raw) {
+    return undefined
+  }
+  const normalized = ensurePosix(raw).replace(/^[./\\]+/, '')
+  return normalized.length > 0 ? normalized : undefined
+}
+
+function resolvePageStyleFiles(entry: { root?: string, pages?: unknown }, styleExt = '.wxss'): string[] {
+  const root = entry.root ? normalizeRoot(entry.root) : ''
+  if (!root || !Array.isArray(entry.pages)) {
+    return []
+  }
+  return entry.pages
+    .map(normalizePagePath)
+    .filter((page): page is string => Boolean(page))
+    .map(page => ensurePosix(path.posix.join(root, `${page}${styleExt}`)))
+}
+
 export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTaroSubPackage[] {
   const appConfigPath = path.resolve(config.appConfigPath)
   const appConfig = loadAppConfigModule(appConfigPath)
@@ -117,9 +144,9 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
     return []
   }
 
-  const primary = ensureArray((appConfig as Record<string, unknown>)['subPackages'] as Array<{ root?: string }> | undefined)
+  const primary = ensureArray((appConfig as Record<string, unknown>)['subPackages'] as Array<{ root?: string, pages?: unknown }> | undefined)
 
-  const secondary = ensureArray((appConfig as Record<string, unknown>)['subpackages'] as Array<{ root?: string }> | undefined)
+  const secondary = ensureArray((appConfig as Record<string, unknown>)['subpackages'] as Array<{ root?: string, pages?: unknown }> | undefined)
   const subPackagesInput = [...primary, ...secondary]
 
   if (subPackagesInput.length === 0) {
@@ -158,6 +185,16 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
       outputName: config.outputName ?? path.basename(stylePath, path.extname(stylePath)),
       preprocess: config.preprocess !== false,
       framework: 'taro',
+    }
+    resolvedEntry.targetFiles = resolvePageStyleFiles(entry)
+    if (toArray(config.files).length > 0) {
+      resolvedEntry.files = toArray(config.files)
+    }
+    if (config.include !== undefined) {
+      resolvedEntry.include = config.include
+    }
+    if (config.exclude !== undefined) {
+      resolvedEntry.exclude = config.exclude
     }
     if (config.generate) {
       resolvedEntry.generate = config.generate

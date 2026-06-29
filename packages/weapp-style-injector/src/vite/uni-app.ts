@@ -16,6 +16,9 @@ export interface ViteUniAppStyleInjectorOptions extends Omit<ViteWeappStyleInjec
   subPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
   sourceFileName?: string | string[]
   outputName?: string
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
   indexFileName?: string | string[]
   styleScopes?: UniAppStyleScopeInput | UniAppStyleScopeInput[]
 }
@@ -207,6 +210,9 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
     subPackages,
     sourceFileName,
     outputName,
+    files,
+    include,
+    exclude,
     indexFileName,
     styleScopes,
     ...rest
@@ -236,6 +242,15 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
       }
       if (outputName !== undefined) {
         config.outputName = outputName
+      }
+      if (files !== undefined) {
+        config.files = files
+      }
+      if (include !== undefined) {
+        config.include = include
+      }
+      if (exclude !== undefined) {
+        config.exclude = exclude
       }
       configs.set(candidate, config)
     }

@@ -3,6 +3,11 @@ import process from 'node:process'
 import {
   gulpMiniCase,
   mpxCase,
+  styleInjectorMpxMiniCase,
+  styleInjectorTaroH5Case,
+  styleInjectorTaroMiniCase,
+  styleInjectorUniAppH5Case,
+  styleInjectorUniAppMiniCase,
   taroMiniCase,
   taroSubpackageH5Case,
   taroSubpackageMiniCase,
@@ -102,6 +107,39 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
       },
     }),
   ),
+  styleInjectorUniAppMiniCase({
+    project: 'style-injector-uni-app',
+  }),
+  styleInjectorUniAppH5Case({
+    project: 'style-injector-uni-app',
+  }),
+  styleInjectorMpxMiniCase({
+    project: 'style-injector-mpx',
+  }),
+  styleInjectorTaroMiniCase({
+    project: 'style-injector-taro-webpack-react',
+    packageName: '@weapp-tailwindcss-demo/style-injector-taro-webpack-react',
+    markerPrefix: 'taro-webpack',
+    bundler: 'webpack',
+  }),
+  styleInjectorTaroH5Case({
+    project: 'style-injector-taro-webpack-react',
+    packageName: '@weapp-tailwindcss-demo/style-injector-taro-webpack-react',
+    markerPrefix: 'taro-webpack',
+    bundler: 'webpack',
+  }),
+  styleInjectorTaroMiniCase({
+    project: 'style-injector-taro-vite-react',
+    packageName: '@weapp-tailwindcss-demo/style-injector-taro-vite-react',
+    markerPrefix: 'taro-vite',
+    bundler: 'vite',
+  }),
+  styleInjectorTaroH5Case({
+    project: 'style-injector-taro-vite-react',
+    packageName: '@weapp-tailwindcss-demo/style-injector-taro-vite-react',
+    markerPrefix: 'taro-vite',
+    bundler: 'vite',
+  }),
   taroMiniCase({
     project: 'taro-webpack-react-tailwindcss-v4',
     packageName: '@weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4',

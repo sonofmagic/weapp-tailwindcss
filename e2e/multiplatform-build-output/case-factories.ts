@@ -520,3 +520,278 @@ export function gulpMiniCase(options: {
     status: 'ci',
   }
 }
+
+function importPathTo(scopeFile: string) {
+  return new RegExp(`@import\\s+["'][^"']*${scopeFile.replace('.', '\\.')}["']`)
+}
+
+function hashedMpxAppStyleImport() {
+  return /@import\s+["']\.\/styles\/app[^"']*\.wxss["']/
+}
+
+function cssSelector(value: string) {
+  const escaped = value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`${escaped}(?=[\\s,{.:#>+~\\[]|$)`)
+}
+
+export function styleInjectorUniAppMiniCase(options: {
+  project: string
+}): BuildOutputCase {
+  const outputDir = 'dist/build/mp-weixin'
+  return {
+    name: `${options.project} mp-weixin`,
+    framework: 'uni-app',
+    projectDir: `demo/${options.project}`,
+    platform: 'mp-weixin',
+    command: ['pnpm', 'run', 'build:mp-weixin'],
+    outputDir,
+    requiredFiles: [
+      `${outputDir}/app.js`,
+      `${outputDir}/app.json`,
+      `${outputDir}/app.wxss`,
+      `${outputDir}/sub-normal/index.wxss`,
+      `${outputDir}/sub-normal/pages/index.wxss`,
+      `${outputDir}/sub-independent/index.wxss`,
+      `${outputDir}/sub-independent/pages/index.wxss`,
+    ],
+    styleFiles: [outputDir],
+    styleFileExtensions: ['.wxss'],
+    textFiles: [outputDir],
+    styleContains: [
+      '.injector-uni-main',
+      '.injector-uni-normal',
+      '.injector-uni-independent',
+    ],
+    textContains: [
+      'injector-uni-main',
+      'injector-uni-normal',
+      'injector-uni-independent',
+    ],
+    fileAssertions: [
+      {
+        file: `${outputDir}/app.wxss`,
+        contains: ['.injector-uni-main'],
+        notContains: [cssSelector('.injector-uni-normal'), cssSelector('.injector-uni-independent')],
+      },
+      {
+        file: `${outputDir}/sub-normal/pages/index.wxss`,
+        contains: [importPathTo('index.wxss')],
+        notContains: [cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
+      },
+      {
+        file: `${outputDir}/sub-normal/index.wxss`,
+        contains: ['.injector-uni-normal'],
+        notContains: ['@import', cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
+      },
+      {
+        file: `${outputDir}/sub-independent/pages/index.wxss`,
+        contains: [importPathTo('index.wxss')],
+        notContains: [cssSelector('.injector-uni-main'), cssSelector('.injector-uni-normal')],
+      },
+      {
+        file: `${outputDir}/sub-independent/index.wxss`,
+        contains: ['.injector-uni-independent'],
+        notContains: ['@import', cssSelector('.injector-uni-main'), cssSelector('.injector-uni-normal')],
+      },
+    ],
+    status: 'ci',
+  }
+}
+
+export function styleInjectorUniAppH5Case(options: {
+  project: string
+}): BuildOutputCase {
+  return {
+    name: `${options.project} h5`,
+    framework: 'uni-app',
+    projectDir: `demo/${options.project}`,
+    platform: 'h5',
+    command: ['pnpm', 'run', 'build:h5'],
+    outputDir: 'dist/build/h5',
+    requiredFiles: ['dist/build/h5/index.html'],
+    styleFiles: ['dist/build/h5'],
+    styleFileExtensions: ['.css'],
+    textFiles: ['dist/build/h5/index.html'],
+    styleContains: [
+      '.injector-uni-main',
+      '.injector-uni-normal',
+      '.injector-uni-independent',
+    ],
+    textContains: ['<html'],
+    status: 'ci',
+  }
+}
+
+export function styleInjectorMpxMiniCase(options: {
+  project: string
+}): BuildOutputCase {
+  return {
+    name: `${options.project} wx`,
+    framework: 'mpx',
+    projectDir: `demo/${options.project}`,
+    platform: 'wx',
+    command: ['pnpm', 'run', 'build'],
+    env: {
+      MPX_CURRENT_TARGET_MODE: 'wx',
+    },
+    outputDir: 'dist/wx',
+    requiredFiles: [
+      'dist/wx/app.js',
+      'dist/wx/app.json',
+      'dist/wx/app.wxss',
+      'dist/wx/sub-normal/index.wxss',
+      'dist/wx/sub-normal/pages/index.wxss',
+      'dist/wx/sub-independent/index.wxss',
+      'dist/wx/sub-independent/pages/index.wxss',
+    ],
+    styleFiles: ['dist/wx'],
+    styleFileExtensions: ['.wxss'],
+    textFiles: ['dist/wx'],
+    styleContains: [
+      '.injector-mpx-main',
+      '.injector-mpx-normal',
+      '.injector-mpx-independent',
+    ],
+    textContains: [
+      'injector-mpx-main',
+      'injector-mpx-normal',
+      'injector-mpx-independent',
+    ],
+    fileAssertions: [
+      {
+        file: 'dist/wx/app.wxss',
+        contains: [hashedMpxAppStyleImport()],
+        notContains: [cssSelector('.injector-mpx-normal'), cssSelector('.injector-mpx-independent')],
+      },
+      {
+        file: 'dist/wx/sub-normal/pages/index.wxss',
+        contains: [importPathTo('index.wxss')],
+        notContains: [cssSelector('.injector-mpx-main'), cssSelector('.injector-mpx-independent')],
+      },
+      {
+        file: 'dist/wx/sub-normal/index.wxss',
+        contains: ['.injector-mpx-normal'],
+        notContains: ['@import', cssSelector('.injector-mpx-main'), cssSelector('.injector-mpx-independent')],
+      },
+      {
+        file: 'dist/wx/sub-independent/pages/index.wxss',
+        contains: [importPathTo('index.wxss')],
+        notContains: [cssSelector('.injector-mpx-main'), cssSelector('.injector-mpx-normal')],
+      },
+      {
+        file: 'dist/wx/sub-independent/index.wxss',
+        contains: ['.injector-mpx-independent'],
+        notContains: ['@import', cssSelector('.injector-mpx-main'), cssSelector('.injector-mpx-normal')],
+      },
+    ],
+    status: 'ci',
+  }
+}
+
+export function styleInjectorTaroMiniCase(options: {
+  project: string
+  packageName: string
+  markerPrefix: string
+  bundler: 'webpack' | 'vite'
+}): BuildOutputCase {
+  const mainMarker = `.injector-${options.markerPrefix}-main`
+  const normalMarker = `.injector-${options.markerPrefix}-normal`
+  const independentMarker = `.injector-${options.markerPrefix}-independent`
+  const isVite = options.bundler === 'vite'
+  return {
+    name: `${options.project} weapp`,
+    framework: 'taro',
+    projectDir: `demo/${options.project}`,
+    platform: 'weapp',
+    command: ['pnpm', '--filter', options.packageName, 'run', 'build:weapp'],
+    commandCwd: 'repo',
+    outputDir: 'dist',
+    requiredFiles: [
+      'dist/app.js',
+      'dist/app.json',
+      'dist/app.wxss',
+      ...(isVite ? ['dist/app-origin.wxss'] : []),
+      'dist/sub-normal/index.wxss',
+      'dist/sub-normal/pages/index.wxss',
+      ...(isVite
+        ? ['dist/sub-independent/index.wxss', 'dist/sub-independent/pages/index.wxss']
+        : [
+            'dist/sub-independent/index.wxss',
+            'dist/sub-independent/pages/index.wxss',
+          ]),
+    ],
+    styleFiles: ['dist'],
+    styleFileExtensions: ['.wxss'],
+    textFiles: ['dist'],
+    styleContains: [
+      mainMarker,
+      normalMarker,
+      independentMarker,
+    ],
+    textContains: [
+      `injector-${options.markerPrefix}-main`,
+      `injector-${options.markerPrefix}-normal`,
+      `injector-${options.markerPrefix}-independent`,
+    ],
+    fileAssertions: [
+      {
+        file: isVite ? 'dist/app-origin.wxss' : 'dist/app.wxss',
+        contains: [mainMarker],
+        notContains: [cssSelector(normalMarker), cssSelector(independentMarker)],
+      },
+      {
+        file: 'dist/sub-normal/pages/index.wxss',
+        contains: [importPathTo('index.wxss')],
+        notContains: [cssSelector(mainMarker), cssSelector(independentMarker)],
+      },
+      {
+        file: 'dist/sub-normal/index.wxss',
+        contains: [normalMarker],
+        notContains: ['@import', cssSelector(mainMarker), cssSelector(independentMarker)],
+      },
+      {
+        file: 'dist/sub-independent/pages/index.wxss',
+        contains: [importPathTo('index.wxss')],
+        notContains: [cssSelector(mainMarker), cssSelector(normalMarker)],
+      },
+      {
+        file: 'dist/sub-independent/index.wxss',
+        contains: [independentMarker],
+        notContains: ['@import', cssSelector(mainMarker), cssSelector(normalMarker)],
+      },
+      {
+        file: 'dist/app.wxss',
+        contains: isVite ? ['@import'] : [mainMarker],
+      },
+    ],
+    status: 'ci',
+  }
+}
+
+export function styleInjectorTaroH5Case(options: {
+  project: string
+  packageName: string
+  markerPrefix: string
+  bundler: 'webpack' | 'vite'
+}): BuildOutputCase {
+  return {
+    name: `${options.project} h5`,
+    framework: 'taro',
+    projectDir: `demo/${options.project}`,
+    platform: 'h5',
+    command: ['pnpm', '--filter', options.packageName, 'run', 'build:h5'],
+    commandCwd: 'repo',
+    outputDir: 'dist',
+    requiredFiles: options.bundler === 'webpack'
+      ? ['dist/js/app.js']
+      : ['dist/index.html'],
+    styleFiles: ['dist'],
+    styleFileExtensions: ['.css'],
+    styleContains: [
+      `.injector-${options.markerPrefix}-main`,
+      `.injector-${options.markerPrefix}-normal`,
+      `.injector-${options.markerPrefix}-independent`,
+    ],
+    status: 'ci',
+  }
+}

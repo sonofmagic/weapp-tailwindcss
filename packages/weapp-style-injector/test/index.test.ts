@@ -227,6 +227,66 @@ describe('weapp-style-injector plugin', () => {
     expect(bundle['sub-packages/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
     expect(bundle['sub-packages/index.css']!.source).toBe('.root {}')
   })
+
+  it('generates scoped page style assets when sub-package pages have no style file', async () => {
+    const bundle = {
+      'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
+      'sub-packages/pages/home.json': createAsset('{}', 'sub-packages/pages/home.json'),
+    }
+
+    const plugin = weappStyleInjector({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/index.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/index.css'),
+          outputName: 'index',
+          preprocess: false,
+          framework: 'test',
+          files: ['sub-packages/pages/home.wxss'],
+        },
+      ],
+      generateSubpackageStyle() {
+        return '.root {}'
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../index.wxss";')
+    expect(bundle['sub-packages/index.wxss']?.source).toBe('.root {}')
+    expect(bundle['sub-packages/pages/home.js'].source).toBe('console.log("home")')
+  })
+
+  it('respects scoped exclude rules when generating page style assets', async () => {
+    const bundle = {
+      'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
+      'sub-packages/pages/detail.js': createAsset('console.log("detail")', 'sub-packages/pages/detail.js'),
+    }
+
+    const plugin = weappStyleInjector({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/index.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/index.css'),
+          outputName: 'index',
+          preprocess: false,
+          framework: 'test',
+          files: ['sub-packages/pages/home.wxss', 'sub-packages/pages/detail.wxss'],
+          exclude: ['pages/detail.wxss'],
+        },
+      ],
+      generateSubpackageStyle() {
+        return '.root {}'
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../index.wxss";')
+    expect(bundle['sub-packages/pages/detail.wxss']).toBeUndefined()
+  })
 })
 
 describe('vite presets', () => {
@@ -366,6 +426,35 @@ describe('vite presets', () => {
       fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
     )
   })
+
+  it('does not generate sub-package style entries from non-style assets', async () => {
+    const bundle: TestBundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+      'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
+    }
+
+    const plugin = weappStyleInjector({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/index.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/index.css'),
+          outputName: 'index',
+          preprocess: false,
+          framework: 'test',
+        },
+      ],
+      generateSubpackageStyle() {
+        return '.root {}'
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/index.wxss']?.source).toBe('.root {}')
+    expect(bundle['sub-packages/index.js']).toBeUndefined()
+    expect(bundle['sub-packages/pages/home.js'].source).toBe('console.log("home")')
+  })
 })
 
 describe('weapp-style-injector webpack plugin', () => {
@@ -397,8 +486,18 @@ describe('weapp-style-injector webpack plugin', () => {
       getAssets() {
         return Object.entries(assets).map(([name, source]) => ({ name, source }))
       },
+      getAsset(name: string) {
+        const source = assets[name]
+        return source ? { name, source } : undefined
+      },
+      emitAsset(name: string, source: RawSource) {
+        assets[name] = source
+      },
       updateAsset(name: string, factory: ((source: RawSource) => RawSource) | RawSource) {
-        const current = assets[name] ?? new RawSource('')
+        const current = assets[name]
+        if (!current) {
+          throw new Error(`Called Compilation.updateAsset for not existing filename ${name}`)
+        }
         assets[name] = typeof factory === 'function' ? factory(current) : factory
       },
     }
@@ -516,6 +615,36 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('sub-packages/index.css')).toBe('.root {}')
   })
 
+  it('generates webpack scoped page style assets when sub-package pages have no style file', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-packages/pages/home.js': 'console.log("home")',
+      'sub-packages/pages/home.json': '{}',
+    })
+
+    const plugin = weappStyleInjectorWebpack({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/index.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/index.css'),
+          outputName: 'index',
+          preprocess: false,
+          framework: 'test',
+          files: ['sub-packages/pages/home.wxss'],
+        },
+      ],
+      generateSubpackageStyle() {
+        return '.root {}'
+      },
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe('@import "../index.wxss";')
+    expect(getAsset('sub-packages/index.wxss')).toBe('.root {}')
+    expect(getAsset('sub-packages/pages/home.js')).toBe('console.log("home")')
+  })
+
   it('injects sub-package imports via uni-app webpack preset', () => {
     const { compiler, getAsset } = createCompiler({
       'sub-packages/pages/home.wxss': '.home {}',
@@ -575,5 +704,34 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('legacy-sub/index.css')).toBe(
       fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
     )
+  })
+
+  it('does not generate webpack sub-package style entries from non-style assets', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-packages/pages/home.wxss': '.home {}',
+      'sub-packages/pages/home.js': 'console.log("home")',
+    })
+
+    const plugin = weappStyleInjectorWebpack({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/index.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/index.css'),
+          outputName: 'index',
+          preprocess: false,
+          framework: 'test',
+        },
+      ],
+      generateSubpackageStyle() {
+        return '.root {}'
+      },
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-packages/index.wxss')).toBe('.root {}')
+    expect(getAsset('sub-packages/index.js')).toBeUndefined()
+    expect(getAsset('sub-packages/pages/home.js')).toBe('console.log("home")')
   })
 })

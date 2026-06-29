@@ -13,6 +13,9 @@ export interface WebpackTaroStyleInjectorOptions extends Omit<WebpackWeappStyleI
   subPackages?: TaroSubPackageConfig | TaroSubPackageConfig[]
   sourceFileName?: string | string[]
   outputName?: string
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
   perFileImports?: WebpackWeappStyleInjectorOptions['perFileImports']
 }
 
@@ -34,6 +37,9 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
     subPackages,
     sourceFileName,
     outputName,
+    files,
+    include,
+    exclude,
     perFileImports,
     ...rest
   } = options
@@ -56,6 +62,15 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
       }
       if (outputName !== undefined) {
         config.outputName = outputName
+      }
+      if (files !== undefined) {
+        config.files = files
+      }
+      if (include !== undefined) {
+        config.include = include
+      }
+      if (exclude !== undefined) {
+        config.exclude = exclude
       }
       configs.set(candidate, config)
     }

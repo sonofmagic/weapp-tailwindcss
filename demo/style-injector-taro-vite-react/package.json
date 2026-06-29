@@ -1,0 +1,43 @@
+{
+  "name": "@weapp-tailwindcss-demo/style-injector-taro-vite-react",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm run build:weapp",
+    "build:weapp": "taro build --type weapp",
+    "build:h5": "cross-env BROWSERSLIST_ENV=production taro build --type h5",
+    "dev": "pnpm run dev:weapp",
+    "dev:weapp": "taro build --type weapp --watch",
+    "dev:h5": "cross-env BROWSERSLIST_ENV=development taro build --type h5 --watch"
+  },
+  "dependencies": {
+    "@babel/runtime": "catalog:babelRuntime7284",
+    "@tarojs/components": "catalog:taro4",
+    "@tarojs/helper": "catalog:taro4",
+    "@tarojs/plugin-framework-react": "catalog:taro4",
+    "@tarojs/plugin-platform-h5": "catalog:taro4",
+    "@tarojs/plugin-platform-weapp": "catalog:taro4",
+    "@tarojs/react": "catalog:taro4",
+    "@tarojs/router": "catalog:taro4",
+    "@tarojs/runtime": "catalog:taro4",
+    "@tarojs/shared": "catalog:taro4",
+    "@tarojs/taro": "catalog:taro4",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
+  },
+  "devDependencies": {
+    "@babel/core": "catalog:babelCore7285",
+    "@babel/preset-react": "catalog:babelPresetReact7285",
+    "@tarojs/cli": "catalog:taro4",
+    "@tarojs/vite-runner": "catalog:taro4",
+    "@types/node": "catalog:typesNode2410",
+    "@types/react": "catalog:react18",
+    "@vitejs/plugin-react": "catalog:vitePluginReact4",
+    "babel-preset-taro": "catalog:taro4",
+    "cross-env": "catalog:crossEnv",
+    "postcss": "catalog:postcss85",
+    "typescript": "catalog:typescript59",
+    "vite": "catalog:vite4",
+    "weapp-style-injector": "workspace:*"
+  }
+}

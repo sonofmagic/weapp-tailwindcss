@@ -6,6 +6,7 @@ import { Buffer } from 'node:buffer'
 import { createStyleInjector, PLUGIN_NAME } from './core'
 import {
   collectSubpackageStyleAssets,
+  collectSubpackageTargetStyleAssets,
   resolveSubpackageStyleImport,
   shouldInjectSubpackageStyleImport,
 } from './subpackage'
@@ -95,23 +96,45 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
 
       const setAsset = (name: string, content: string | Uint8Array) => {
         const normalizedContent = typeof content === 'string' ? content : Buffer.from(content).toString('utf8')
+        const rawSource = createRawSource(compiler, normalizedContent)
 
         if (typeof compilation.updateAsset === 'function') {
-          compilation.updateAsset(
-            name,
-            () => createRawSource(compiler, normalizedContent),
-          )
+          if (typeof compilation.getAsset === 'function' && compilation.getAsset(name)) {
+            compilation.updateAsset(
+              name,
+              () => rawSource,
+            )
+          }
+          else if (typeof compilation.emitAsset === 'function') {
+            compilation.emitAsset(name, rawSource)
+          }
+          else {
+            compilation.updateAsset(name, () => rawSource)
+          }
         }
         else {
-          compilation.assets[name] = createRawSource(compiler, normalizedContent)
+          compilation.assets[name] = rawSource
         }
       }
 
       const emitSubpackageAssets = () => {
-        const assets = getAssetList().map(asset => ({
-          fileName: asset.name,
-          source: extractSourcePayload(asset.source),
-        }))
+        const allAssets = getAssetList()
+          .map(asset => ({
+            fileName: asset.name,
+            source: extractSourcePayload(asset.source),
+          }))
+        const targetAssets = collectSubpackageTargetStyleAssets(subpackageStyleScopes ?? [], allAssets)
+
+        for (const asset of targetAssets) {
+          setAsset(asset.fileName, '')
+        }
+
+        const assets = getAssetList()
+          .filter(asset => injector.shouldProcess(asset.name))
+          .map(asset => ({
+            fileName: asset.name,
+            source: extractSourcePayload(asset.source),
+          }))
         const subpackageAssets = collectSubpackageStyleAssets(subpackageStyleScopes ?? [], assets)
 
         for (const asset of subpackageAssets) {

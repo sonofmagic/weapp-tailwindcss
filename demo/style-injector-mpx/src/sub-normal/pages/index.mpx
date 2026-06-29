@@ -1,0 +1,9 @@
+<template>
+  <view class="injector-mpx-normal">style injector mpx normal</view>
+</template>
+
+<script type="application/json">
+  {
+    "navigationBarTitleText": "style injector normal"
+  }
+</script>

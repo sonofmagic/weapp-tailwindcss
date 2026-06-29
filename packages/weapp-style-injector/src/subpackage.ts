@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer'
 import path from 'node:path'
+import micromatch from 'micromatch'
 import { ensurePosix, normalizeRelativeImport } from './utils'
 
 export type SubpackageStyleFramework = 'uni-app' | 'taro' | string
@@ -28,6 +29,10 @@ export interface ResolvedSubpackageStyleScope {
   preprocess: boolean
   framework: SubpackageStyleFramework
   sourceFiles?: string[]
+  targetFiles?: string[]
+  files?: string[]
+  include?: string | string[]
+  exclude?: string | string[]
   generate?: SubpackageStyleGenerator
 }
 
@@ -36,6 +41,12 @@ export interface ResolvedSubpackageStyleAsset {
   outputFileName: string
   styleExt: string
   pageStyleFiles: string[]
+}
+
+export interface ResolvedSubpackageTargetStyleAsset {
+  scope: ResolvedSubpackageStyleScope
+  fileName: string
+  styleExt: string
 }
 
 export function normalizeOutputName(value: string): string {
@@ -67,10 +78,68 @@ export function getSubpackageStyleAssetExt(fileName: string, source: string | Ui
   return ext
 }
 
+export function isSupportedStyleExt(ext: string): boolean {
+  return ['.css', '.wxss', '.acss', '.jxss', '.qss', '.ttss'].includes(ext)
+}
+
 export function isFileInSubpackageScope(fileName: string, scope: ResolvedSubpackageStyleScope): boolean {
   const normalized = ensurePosix(fileName)
 
   return normalized.startsWith(`${scope.root}/`)
+}
+
+function normalizeScopeFile(scope: ResolvedSubpackageStyleScope, fileName: string): string {
+  const normalized = ensurePosix(fileName)
+  return normalized.startsWith(`${scope.root}/`)
+    ? normalized
+    : ensurePosix(path.posix.join(scope.root, normalized))
+}
+
+function withoutExt(fileName: string): string {
+  const ext = path.posix.extname(fileName)
+  return ext ? fileName.slice(0, -ext.length) : fileName
+}
+
+function normalizePattern(scope: ResolvedSubpackageStyleScope, pattern: string): string {
+  const normalized = ensurePosix(pattern)
+  if (normalized.startsWith(`${scope.root}/`) || normalized.startsWith('!') || normalized.startsWith('**/')) {
+    return normalized
+  }
+  return ensurePosix(path.posix.join(scope.root, normalized))
+}
+
+export function isFileMatchedBySubpackageScope(
+  fileName: string,
+  scope: ResolvedSubpackageStyleScope,
+): boolean {
+  const normalized = ensurePosix(fileName)
+  if (!isFileInSubpackageScope(normalized, scope)) {
+    return false
+  }
+
+  const includePatterns = scope.include
+    ? (Array.isArray(scope.include) ? scope.include : [scope.include]).map(pattern => normalizePattern(scope, pattern))
+    : []
+  if (includePatterns.length > 0 && !includePatterns.some(pattern => micromatch.isMatch(normalized, pattern))) {
+    return false
+  }
+
+  const excludePatterns = scope.exclude
+    ? (Array.isArray(scope.exclude) ? scope.exclude : [scope.exclude]).map(pattern => normalizePattern(scope, pattern))
+    : []
+  if (excludePatterns.length > 0 && excludePatterns.some(pattern => micromatch.isMatch(normalized, pattern))) {
+    return false
+  }
+
+  if (scope.files && scope.files.length > 0) {
+    const targetFiles = new Set(scope.files.map(file => normalizeScopeFile(scope, file)))
+    const targetStems = new Set([...targetFiles].map(withoutExt))
+    if (!targetFiles.has(normalized) && !targetStems.has(withoutExt(normalized))) {
+      return false
+    }
+  }
+
+  return true
 }
 
 export function resolveSubpackageOutputFileName(scope: ResolvedSubpackageStyleScope, styleExt: string): string {
@@ -85,6 +154,9 @@ export function shouldInjectSubpackageStyleImport(
   if (!isFileInSubpackageScope(fileName, scope)) {
     return false
   }
+  if (!isFileMatchedBySubpackageScope(fileName, scope)) {
+    return false
+  }
 
   const styleExt = getSubpackageStyleAssetExt(fileName, source)
   if (!styleExt) {
@@ -93,6 +165,42 @@ export function shouldInjectSubpackageStyleImport(
 
   const normalized = ensurePosix(fileName)
   return normalized !== resolveSubpackageOutputFileName(scope, styleExt)
+}
+
+function inferStyleExtFromAssets(assets: Array<{ fileName: string, source?: string | Uint8Array }>): string | undefined {
+  for (const asset of assets) {
+    const ext = getSubpackageStyleAssetExt(asset.fileName, asset.source)
+    if (ext && isSupportedStyleExt(ext)) {
+      return ext
+    }
+  }
+  return undefined
+}
+
+function inferStyleExtFromTarget(fileName: string): string | undefined {
+  const ext = path.posix.extname(ensurePosix(fileName))
+  return isSupportedStyleExt(ext) ? ext : undefined
+}
+
+function isTargetSourceAsset(fileName: string): boolean {
+  const ext = path.posix.extname(ensurePosix(fileName))
+  return [
+    '.json',
+    '.wxml',
+    '.axml',
+    '.swan',
+    '.ttml',
+    '.qml',
+    '.jxml',
+    '.ksml',
+    '.xml',
+  ].includes(ext)
+}
+
+function toTargetStyleFileName(fileName: string, styleExt: string): string {
+  const normalized = ensurePosix(fileName)
+  const ext = path.posix.extname(normalized)
+  return ext ? `${normalized.slice(0, -ext.length)}${styleExt}` : `${normalized}${styleExt}`
 }
 
 export function resolveSubpackageStyleImport(fileName: string, scope: ResolvedSubpackageStyleScope): string | undefined {
@@ -149,4 +257,59 @@ export function collectSubpackageStyleAssets(
   }
 
   return [...collected.values()]
+}
+
+export function collectSubpackageTargetStyleAssets(
+  scopes: ResolvedSubpackageStyleScope[],
+  assets: Array<{ fileName: string, source?: string | Uint8Array }>,
+): ResolvedSubpackageTargetStyleAsset[] {
+  const existingAssets = new Set(assets.map(asset => ensurePosix(asset.fileName)))
+  const emitted = new Map<string, ResolvedSubpackageTargetStyleAsset>()
+
+  for (const scope of scopes) {
+    const scopedAssets = assets.filter(asset => isFileInSubpackageScope(asset.fileName, scope))
+    const styleExt = inferStyleExtFromAssets(scopedAssets) ?? '.wxss'
+    const targetFiles = new Set<string>()
+
+    for (const file of scope.targetFiles ?? scope.files ?? []) {
+      targetFiles.add(normalizeScopeFile(scope, file))
+    }
+
+    for (const asset of scopedAssets) {
+      const normalized = ensurePosix(asset.fileName)
+      if (!isTargetSourceAsset(normalized)) {
+        continue
+      }
+      if (!isFileMatchedBySubpackageScope(normalized, scope)) {
+        continue
+      }
+      const targetStyleExt = inferStyleExtFromTarget(normalized) ?? styleExt
+      const styleFileName = toTargetStyleFileName(normalized, targetStyleExt)
+      if (isFileMatchedBySubpackageScope(styleFileName, scope)) {
+        targetFiles.add(styleFileName)
+      }
+    }
+
+    for (const fileName of targetFiles) {
+      const normalized = normalizeScopeFile(scope, fileName)
+      const targetStyleExt = inferStyleExtFromTarget(normalized) ?? styleExt
+      const styleFileName = toTargetStyleFileName(normalized, targetStyleExt)
+      if (existingAssets.has(styleFileName)) {
+        continue
+      }
+      if (styleFileName === resolveSubpackageOutputFileName(scope, targetStyleExt)) {
+        continue
+      }
+      if (!isFileMatchedBySubpackageScope(styleFileName, scope)) {
+        continue
+      }
+      emitted.set(styleFileName, {
+        scope,
+        fileName: styleFileName,
+        styleExt: targetStyleExt,
+      })
+    }
+  }
+
+  return [...emitted.values()]
 }
