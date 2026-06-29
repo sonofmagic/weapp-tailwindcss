@@ -5,6 +5,7 @@ export type {
   WeappTailwindcssGeneratorTarget,
   WeappTailwindcssPostcssPluginOptions,
 } from './index'
+export type { WeappTailwindcssStyleInjectorOptions } from './types'
 export type {
   ApplyOptions,
   CacheOptions,

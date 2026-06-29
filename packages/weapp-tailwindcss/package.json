@@ -200,6 +200,17 @@
     "watch-hmr:speed-report": "pnpm --filter @weapp-tailwindcss/scripts watch-hmr:speed-report",
     "test:watch-hmr": "pnpm --filter @weapp-tailwindcss/scripts test:watch-hmr"
   },
+  "tsd": {
+    "compilerOptions": {
+      "module": "NodeNext",
+      "moduleResolution": "NodeNext",
+      "paths": {
+        "@/*": [
+          "./src/*"
+        ]
+      }
+    }
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"

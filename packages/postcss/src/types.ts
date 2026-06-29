@@ -2,7 +2,7 @@
 import type { PostCssCalcOptions } from '@weapp-tailwindcss/postcss-calc'
 import type { Result as PostcssResult } from 'postcss'
 import type { Result } from 'postcss-load-config'
-import type { PxTransformOptions as Px2rpxOptions } from 'postcss-pxtrans'
+import type pxtrans from 'postcss-pxtrans'
 import type { UserDefinedOptions as Rem2rpxOptions } from 'postcss-rem-to-responsive-pixel'
 import type { GlobalUnitTransform, UserDefinedOptions as UnitConverterOptions, UnitMap } from 'postcss-rule-unit-converter'
 import type { WeappAutoprefixerOptions } from './autoprefixer'
@@ -17,6 +17,8 @@ export interface IPropValue {
   prop: string
   value: string
 }
+
+export type Px2rpxOptions = NonNullable<Parameters<typeof pxtrans>[0]>
 
 export type UniAppXCssTarget = 'uvue'
 
@@ -293,7 +295,6 @@ export interface UserDefinedPostcssOptions {
 export type {
   CssCalcOptions,
   PresetEnvOptions,
-  Px2rpxOptions,
   Rem2rpxOptions,
   WeappAutoprefixerOptions,
 }

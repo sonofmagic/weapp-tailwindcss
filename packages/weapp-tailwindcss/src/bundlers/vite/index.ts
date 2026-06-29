@@ -18,6 +18,7 @@ import { createDebug } from '@/debug'
 import { normalizeFrameworkStylePlatform } from '@/framework/platform'
 import { normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch } from '@/runtime-branch'
+import { createBuiltinViteStyleInjectorPlugins } from '@/style-injector/internal'
 import { isTailwindV4CssEntry, normalizeCssEntries } from '@/tailwindcss/v4/css-entries'
 import { hasConfiguredTailwindV4CssRoots, upsertTailwindV4CssSource } from '@/tailwindcss/v4/css-sources'
 import { isUniAppXHarmonyOutDir } from '@/uni-app-x/harmony'
@@ -161,6 +162,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     refreshTailwindcssRuntime,
     uniAppX,
     disabledDefaultTemplateHandler,
+    styleInjector,
   } = opts
   const initialTailwindRuntime = tailwindRuntime
   const refreshTailwindRuntime = refreshTailwindcssRuntime
@@ -1170,5 +1172,6 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     plugins.push(...uniAppXPlugins)
   }
   plugins.push(cssFinalizerOutputPlugin)
+  plugins.push(...createBuiltinViteStyleInjectorPlugins(styleInjector, () => opts.appType))
   return plugins
 }

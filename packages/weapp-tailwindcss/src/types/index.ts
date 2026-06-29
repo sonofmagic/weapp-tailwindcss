@@ -26,10 +26,11 @@ export type {
   UniAppXUserDefinedOptions,
   UserDefinedOptions,
 }
+export type { AppType, IArbitraryValues, ICustomAttributes, ICustomAttributesEntities, IUnocssCompatibilityOptions } from './shared'
 
 // UserDefinedPostcssOptions：用户可配置的 PostCSS 选项
 export type { CssPreflightOptions, IStyleHandlerOptions, ItemOrItemArray }
-export type { AppType, IArbitraryValues, ICustomAttributes, ICustomAttributesEntities, IUnocssCompatibilityOptions } from './shared'
+export type { WeappTailwindcssStyleInjectorOptions } from '@/style-injector/internal'
 
 export type RequiredDefined<T> = {
   [K in keyof T]-?: Exclude<T[K], undefined>

@@ -1,0 +1,235 @@
+import type { Plugin } from 'vite'
+import type { WeappTailwindcssStyleInjectorUserOptions } from './options'
+import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from './webpack'
+import type { AppType } from '@/types/shared'
+import { normalizeStyleInjectorOptions } from './options'
+import { weappStyleInjector } from './vite'
+import { StyleInjector as TaroViteStyleInjector } from './vite/taro'
+import { StyleInjector as UniAppViteStyleInjector } from './vite/uni-app'
+import { weappStyleInjectorWebpack } from './webpack'
+import { StyleInjector as MpxWebpackStyleInjector } from './webpack/mpx'
+import { StyleInjector as TaroWebpackStyleInjector } from './webpack/taro'
+import { StyleInjector as UniAppWebpackStyleInjector } from './webpack/uni-app'
+
+type VitePluginResult = Plugin | Plugin[]
+type ViteHookContext = ThisParameterType<NonNullable<Plugin['buildStart']>>
+
+function toPluginArray(pluginOrPlugins: VitePluginResult): Plugin[] {
+  return Array.isArray(pluginOrPlugins) ? pluginOrPlugins : [pluginOrPlugins]
+}
+
+function isUniAppViteStyleInjectorApp(appType: AppType | undefined) {
+  return appType === 'uni-app-vite' || appType === 'uni-app-x'
+}
+
+function isUniAppWebpackStyleInjectorApp(appType: AppType | undefined) {
+  return appType === 'uni-app' || appType === 'uni-app-vite' || appType === 'uni-app-x'
+}
+
+function normalizeWebpackStyleInjectorOptions(
+  options: WeappTailwindcssStyleInjectorUserOptions | undefined,
+): WebpackWeappStyleInjectorOptions | undefined {
+  const normalized = normalizeStyleInjectorOptions(options)
+  if (!normalized) {
+    return undefined
+  }
+  const {
+    generateSubpackageStyle,
+    loadSubpackageTargetStyle,
+    ...rest
+  } = normalized
+  const webpackOptions: WebpackWeappStyleInjectorOptions = {
+    ...rest,
+  }
+  if (generateSubpackageStyle) {
+    webpackOptions.generateSubpackageStyle = (context) => {
+      const generated = generateSubpackageStyle(context)
+      if (generated && typeof (generated as Promise<unknown>).then === 'function') {
+        throw new TypeError('[weapp-style-injector] Webpack subpackage style generators must return synchronously.')
+      }
+      return generated as string | Uint8Array | null | undefined
+    }
+  }
+  if (loadSubpackageTargetStyle) {
+    webpackOptions.loadSubpackageTargetStyle = (fileName, sourceAbsolutePath) => {
+      const loaded = loadSubpackageTargetStyle(fileName, sourceAbsolutePath)
+      if (loaded && typeof (loaded as Promise<unknown>).then === 'function') {
+        throw new TypeError('[weapp-style-injector] Webpack subpackage target style loaders must return synchronously.')
+      }
+      return loaded as string | Uint8Array | null | undefined
+    }
+  }
+  return webpackOptions
+}
+
+function getTransformHandler(hook: Plugin['transform'] | undefined) {
+  if (typeof hook === 'function') {
+    return hook
+  }
+  if (hook && typeof hook === 'object' && typeof hook.handler === 'function') {
+    return hook.handler
+  }
+  return undefined
+}
+
+function getGenerateBundleHandler(hook: Plugin['generateBundle'] | undefined) {
+  if (typeof hook === 'function') {
+    return hook
+  }
+  if (hook && typeof hook === 'object' && typeof hook.handler === 'function') {
+    return hook.handler
+  }
+  return undefined
+}
+
+export function createBuiltinViteStyleInjectorPlugins(
+  options: WeappTailwindcssStyleInjectorUserOptions | undefined,
+  getAppType: () => AppType | undefined,
+): Plugin[] {
+  const normalized = normalizeStyleInjectorOptions(options)
+  if (!normalized) {
+    return []
+  }
+
+  let config: Parameters<NonNullable<Plugin['configResolved']>>[0] | undefined
+  let delegates: Plugin[] | undefined
+  let delegatesConfigured = false
+  let delegatesBuildStarted = false
+
+  const resolveDelegates = () => {
+    if (delegates) {
+      return delegates
+    }
+    const appType = getAppType()
+    if (isUniAppViteStyleInjectorApp(appType)) {
+      delegates = toPluginArray(UniAppViteStyleInjector(normalized))
+    }
+    else if (appType === 'taro') {
+      delegates = toPluginArray(TaroViteStyleInjector(normalized))
+    }
+    else {
+      delegates = [weappStyleInjector(normalized)]
+    }
+    return delegates
+  }
+
+  const configureDelegates = async () => {
+    if (delegatesConfigured || !config) {
+      return
+    }
+    delegatesConfigured = true
+    for (const plugin of resolveDelegates()) {
+      if (typeof plugin.configResolved === 'function') {
+        await plugin.configResolved(config)
+      }
+    }
+  }
+
+  const startDelegates = async (context: ViteHookContext) => {
+    if (delegatesBuildStarted) {
+      return
+    }
+    await configureDelegates()
+    delegatesBuildStarted = true
+    for (const plugin of resolveDelegates()) {
+      if (typeof plugin.buildStart === 'function') {
+        await plugin.buildStart.call(context, {})
+      }
+    }
+  }
+
+  return [
+    {
+      name: 'weapp-tailwindcss:style-injector-pre',
+      apply: 'build',
+      enforce: 'pre',
+      configResolved(resolvedConfig) {
+        config = resolvedConfig
+      },
+      async buildStart() {
+        await startDelegates(this)
+      },
+      async load(id, options) {
+        await configureDelegates()
+        for (const plugin of resolveDelegates()) {
+          if (typeof plugin.load !== 'function') {
+            continue
+          }
+          const result = await plugin.load.call(this, id, options)
+          if (result != null) {
+            return result
+          }
+        }
+      },
+      async transform(code, id, options) {
+        await configureDelegates()
+        let currentCode = code
+        let changed = false
+        for (const plugin of resolveDelegates()) {
+          const handler = getTransformHandler(plugin.transform)
+          if (!handler) {
+            continue
+          }
+          const result = await handler.call(this, currentCode, id, options)
+          if (!result) {
+            continue
+          }
+          if (typeof result === 'string') {
+            currentCode = result
+            changed = true
+          }
+          else if (typeof result === 'object' && typeof result.code === 'string') {
+            currentCode = result.code
+            changed = true
+          }
+        }
+        if (changed) {
+          return {
+            code: currentCode,
+            map: null,
+          }
+        }
+      },
+    },
+    {
+      name: 'weapp-tailwindcss:style-injector',
+      apply: 'build',
+      enforce: 'post',
+      configResolved(resolvedConfig) {
+        config = resolvedConfig
+      },
+      async generateBundle(outputOptions, bundle, isWrite) {
+        await configureDelegates()
+        for (const plugin of resolveDelegates()) {
+          const handler = getGenerateBundleHandler(plugin.generateBundle)
+          if (!handler) {
+            continue
+          }
+          await handler.call(this, outputOptions, bundle, isWrite)
+        }
+      },
+    },
+  ]
+}
+
+export function createBuiltinWebpackStyleInjectorPlugin(
+  options: WeappTailwindcssStyleInjectorUserOptions | undefined,
+  appType: AppType | undefined,
+): WebpackObjectPluginInstance | undefined {
+  const normalized = normalizeWebpackStyleInjectorOptions(options)
+  if (!normalized) {
+    return undefined
+  }
+  if (isUniAppWebpackStyleInjectorApp(appType)) {
+    return UniAppWebpackStyleInjector(normalized)
+  }
+  if (appType === 'taro') {
+    return TaroWebpackStyleInjector(normalized)
+  }
+  if (appType === 'mpx') {
+    return MpxWebpackStyleInjector(normalized)
+  }
+  return weappStyleInjectorWebpack(normalized)
+}
+
+export type { WeappTailwindcssStyleInjectorOptions, WeappTailwindcssStyleInjectorUserOptions } from './options'

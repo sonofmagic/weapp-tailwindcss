@@ -9,8 +9,8 @@ import type {
   ITemplateHandlerOptions,
   JsModuleGraphOptions,
   TailwindCssOptions,
-  TailwindCssPatchOptions,
   UserDefinedOptions,
+  WeappTailwindcssStyleInjectorOptions,
 } from 'weapp-tailwindcss/types'
 import { expectAssignable, expectError, expectNotAssignable, expectType } from 'tsd'
 
@@ -22,6 +22,53 @@ const disabledOptions: UserDefinedOptions['disabled'] = {
   plugin: true,
 }
 expectAssignable<UserDefinedOptions['disabled']>(disabledOptions)
+
+const styleInjectorOptions: WeappTailwindcssStyleInjectorOptions = {
+  imports: ['shared.wxss'],
+  perFileImports: file => file.endsWith('.wxss') ? ['page.wxss'] : undefined,
+  include: ['**/*.wxss'],
+  exclude: ['**/ignored.wxss'],
+  dedupe: true,
+  pagesJsonPath: ['src/pages.json'],
+  appConfigPath: 'src/app.config.ts',
+  appPath: 'src/app.mpx',
+  sourceRoot: 'src',
+  subPackages: [{
+    pagesJsonPath: 'src/pages.json',
+    sourceFileName: 'index.scss',
+    styleEntries: [{
+      sourceFileName: 'index.css',
+      sourceInclude: ['**/*.vue'],
+    }],
+  }],
+  uniAppSubPackages: {
+    pagesJsonPath: 'src/pages.json',
+  },
+  uniAppStyleScopes: {
+    style: 'src/sub/index.css',
+    scope: 'sub',
+  },
+  sourceFileName: ['index.css'],
+  outputName: 'index',
+  files: ['pages/index'],
+  indexFileName: 'index.css',
+  indexFileNames: 'index.scss',
+  styleScopes: {
+    style: 'src/sub/index.css',
+    scope: ['sub'],
+    type: 'manual',
+  },
+  styleEntries: [{
+    sourceFileName: 'index.css',
+    outputName: 'index',
+    include: ['**/*.wxss'],
+  }],
+  generateSubpackageStyle: context => `/* ${context.framework}:${context.bundler} */`,
+  loadSubpackageTargetStyle: fileName => fileName,
+}
+expectAssignable<WeappTailwindcssStyleInjectorOptions>(styleInjectorOptions)
+expectAssignable<UserDefinedOptions['styleInjector']>(true)
+expectAssignable<UserDefinedOptions['styleInjector']>(styleInjectorOptions)
 
 const customAttributesRecord: ICustomAttributes = {
   '*': ['class', /[Cc]lass/],
@@ -98,6 +145,7 @@ const advancedOptions: UserDefinedOptions = {
   ignoreTaggedTemplateExpressionIdentifiers: ['weappTwIgnore', /ignore/],
   ignoreCallExpressionIdentifiers: ['twMerge'],
   replaceRuntimePackages: { 'tailwind-merge': '@weapp-tailwindcss/merge' },
+  styleInjector: styleInjectorOptions,
   jsPreserveClass: keyword => keyword.startsWith('*'),
   cache: true,
   babelParserOptions: { sourceType: 'module' },
@@ -120,32 +168,24 @@ const advancedOptions: UserDefinedOptions = {
 }
 expectAssignable<UserDefinedOptions>(advancedOptions)
 
-const patcherOptions: TailwindCssPatchOptions = {
-  projectRoot: process.cwd(),
-  tailwindcss: {
-    packageName: 'tailwindcss',
-    v4: {
-      cssEntries: ['/abs/app.css'],
-    },
-  },
-  extract: {
-    write: true,
-    file: 'class-list.json',
-  },
-}
-expectAssignable<TailwindCssPatchOptions>(patcherOptions)
-
 const tailwindOptions: TailwindCssOptions = {
   packageName: 'tailwindcss',
-  v3: {
-    config: '/abs/tailwind.config.js',
+  v4: {
+    cssEntries: ['/abs/app.css'],
   },
 }
 expectAssignable<TailwindCssOptions>(tailwindOptions)
 
 expectAssignable<UserDefinedOptions>({
   tailwindcss: tailwindOptions,
-  tailwindcssPatcherOptions: patcherOptions,
+  tailwindcssRuntimeOptions: {
+    projectRoot: process.cwd(),
+    tailwindcss: tailwindOptions,
+    extract: {
+      write: true,
+      file: 'class-list.json',
+    },
+  },
 })
 
 expectError<UserDefinedOptions>({ logLevel: 'verbose' })

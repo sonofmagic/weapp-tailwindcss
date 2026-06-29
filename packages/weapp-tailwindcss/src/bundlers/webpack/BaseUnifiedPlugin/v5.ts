@@ -9,6 +9,7 @@ import { pluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { createDebug } from '@/debug'
 import { isMpx, setupMpxTailwindcssRedirect } from '@/shared/mpx'
+import { createBuiltinWebpackStyleInjectorPlugin } from '@/style-injector/internal'
 import { createTailwindRuntimeReadyPromise, ensureRuntimeClassSet, refreshTailwindRuntimeState } from '@/tailwindcss/runtime'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { getRuntimeClassSetSignature } from '@/tailwindcss/runtime/cache'
@@ -167,6 +168,7 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       runtimeLoaderPath,
       tailwindRuntime,
       refreshTailwindcssRuntime,
+      styleInjector,
     } = this.options
     const initialTailwindRuntime = tailwindRuntime
     const refreshTailwindRuntime = refreshTailwindcssRuntime
@@ -511,5 +513,6 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
       prepareWebpackCssSources,
       debug,
     })
+    createBuiltinWebpackStyleInjectorPlugin(styleInjector, this.appType)?.apply(compiler)
   }
 }

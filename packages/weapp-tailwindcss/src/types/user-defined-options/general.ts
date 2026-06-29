@@ -2,6 +2,7 @@ import type { ParserOptions } from '@babel/parser'
 import type { CssOptions, LoadedPostcssOptions } from '@weapp-tailwindcss/postcss/types'
 import type { ICreateCacheReturnType } from '../../cache'
 import type { WeappTailwindcssGeneratorUserOptions } from '../../generator'
+import type { WeappTailwindcssStyleInjectorUserOptions } from '../../style-injector/internal'
 import type { AppType, IArbitraryValues, IUnocssCompatibilityOptions } from '../shared'
 import type { LengthUnitsRuntimeOptions, TailwindCssRuntimeOptions } from '@/tailwindcss/runtime-types'
 
@@ -112,6 +113,24 @@ export interface UserDefinedOptionsGeneralPart {
    * uni-app x 原生 App 目标继续通过 `uniAppX` 配置处理 uvue/App 约束，不需要配置 `target: 'app'`。
    */
   generator?: WeappTailwindcssGeneratorUserOptions | undefined
+
+  /**
+   * 开启构建产物样式入口注入。
+   *
+   * @group 0.重要配置
+   * @remarks
+   * 默认关闭。传入 `true` 等价于启用空配置；传入对象时会透传给内置
+   * `weapp-style-injector` 实现，可配置 `imports`、`perFileImports`、分包样式入口等能力。
+   *
+   * Vite 会按当前 `appType` 自动选择 uni-app、Taro 或通用预设；Webpack 会按当前
+   * `appType` 自动选择 uni-app、Taro、Mpx 或通用预设。未显式配置 `appType` 时，会复用
+   * `weapp-tailwindcss` 在当前构建器中的推断结果。
+   *
+   * 当 `disabled: true` 或 `disabled: { plugin: true }` 时，该能力会跟随主插件一起关闭。
+   *
+   * @default false
+   */
+  styleInjector?: WeappTailwindcssStyleInjectorUserOptions | undefined
 
   /**
    * 在输出 CSS 中为工具类规则标注 token 来源文件。

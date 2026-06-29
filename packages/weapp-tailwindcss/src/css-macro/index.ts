@@ -1,8 +1,10 @@
-import type { PluginCreator, PluginWithConfig } from 'tailwindcss/plugin'
+import type { PluginCreator } from 'tailwindcss/plugin'
 import plugin from 'tailwindcss/plugin'
 import { defu } from '../utils'
 import { markCssMacroPlugin } from './auto'
 import { createConditionalAtRule, createNegativeConditionalAtRule } from './constants'
+
+type PluginWithConfig = ReturnType<typeof plugin>
 
 export interface Options {
   variantsMap?: Record<string, string | { value: string, negative?: boolean }>
