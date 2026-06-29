@@ -4,6 +4,20 @@
 
 This package injects style entries into mini program build artifacts across common Vite, Webpack, uni-app, and Taro scenarios.
 
+## Recommended Entries
+
+| Scenario | Entry |
+| --- | --- |
+| Generic Vite plugin | `weapp-style-injector/vite` |
+| Generic Webpack plugin | `weapp-style-injector/webpack` |
+| uni-app Vite preset | `weapp-style-injector/vite/uni-app` |
+| uni-app Webpack preset | `weapp-style-injector/webpack/uni-app` |
+| Taro Vite preset | `weapp-style-injector/vite/taro` |
+| Taro Webpack preset | `weapp-style-injector/webpack/taro` |
+| Simple Vite default entry | `weapp-style-injector` |
+
+The `uni-app`, `taro`, and `subpackage` parser modules are internal implementation details, not public entry points for application projects.
+
 ## Website
 
 For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).

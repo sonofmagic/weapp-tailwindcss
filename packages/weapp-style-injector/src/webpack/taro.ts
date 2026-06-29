@@ -8,6 +8,8 @@ import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../t
 import { mergePerFileResolvers, toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
+export type { TaroSubPackageConfig } from '../taro'
+
 export interface WebpackTaroStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'perFileImports'> {
   appConfigPath?: string | string[]
   subPackages?: TaroSubPackageConfig | TaroSubPackageConfig[]

@@ -11,6 +11,8 @@ import { resolveUniAppStyleScopes, splitUniAppStyleScopes } from '../uni-app'
 import { toArray } from '../utils'
 import weappStyleInjector from '../vite'
 
+export type { UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
+
 export interface ViteUniAppStyleInjectorOptions extends Omit<ViteWeappStyleInjectorOptions, 'uniAppSubPackages'> {
   pagesJsonPath?: string | string[]
   subPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]

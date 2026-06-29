@@ -11,6 +11,8 @@ import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../t
 import { ensurePosix, mergePerFileResolvers, toArray } from '../utils'
 import weappStyleInjector from '../vite'
 
+export type { TaroSubPackageConfig } from '../taro'
+
 export interface ViteTaroStyleInjectorOptions extends Omit<ViteWeappStyleInjectorOptions, 'perFileImports'> {
   appConfigPath?: string | string[]
   subPackages?: TaroSubPackageConfig | TaroSubPackageConfig[]

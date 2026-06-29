@@ -8,6 +8,8 @@ import { resolveUniAppStyleScopes, splitUniAppStyleScopes } from '../uni-app'
 import { toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
+export type { UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
+
 export interface WebpackUniAppStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'uniAppSubPackages'> {
   pagesJsonPath?: string | string[]
   subPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]

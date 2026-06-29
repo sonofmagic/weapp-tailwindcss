@@ -12,6 +12,7 @@ import { weappStyleInjectorWebpack } from '@/webpack'
 import { StyleInjector as TaroStyleInjectorWebpack } from '@/webpack/taro'
 import { StyleInjector as UniAppStyleInjectorWebpack } from '@/webpack/uni-app'
 
+const packageRoot = fileURLToPath(new URL('../', import.meta.url))
 const uniAppFixturesRoot = fileURLToPath(new URL('./fixtures/uni-app', import.meta.url))
 const taroFixturesRoot = fileURLToPath(new URL('./fixtures/taro', import.meta.url))
 
@@ -43,7 +44,7 @@ async function getResolvedViteConfig(): Promise<ResolvedConfig> {
   }
 
   cachedResolvedConfig = await resolveConfig({
-    root: fileURLToPath(new URL('../', import.meta.url)),
+    root: packageRoot,
     logLevel: 'silent',
   }, 'build')
 
@@ -115,6 +116,24 @@ async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[] | undefin
     } as unknown, {} as unknown, bundle, false)
   }
 }
+
+describe('package exports', () => {
+  it('only exposes application-facing entry points', () => {
+    const packageJson = JSON.parse(
+      fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'),
+    ) as { exports: Record<string, unknown> }
+
+    expect(Object.keys(packageJson.exports).sort()).toEqual([
+      '.',
+      './vite',
+      './vite/taro',
+      './vite/uni-app',
+      './webpack',
+      './webpack/taro',
+      './webpack/uni-app',
+    ])
+  })
+})
 
 describe('weapp-style-injector plugin', () => {
   async function runPlugin(bundle: TestBundle, options = {}) {
