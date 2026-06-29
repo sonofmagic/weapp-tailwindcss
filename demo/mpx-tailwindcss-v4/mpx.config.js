@@ -1,4 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
+const { StyleInjector } = require('weapp-style-injector/webpack/mpx')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const { resolveMpxPlatform } = require('weapp-tailwindcss/framework')
 const path = require('path')
@@ -55,10 +56,19 @@ module.exports = defineConfig({
         appType: 'mpx',
         cssEntries: [
           path.resolve(__dirname, './src/app.css'),
-          path.resolve(__dirname, './src/sub-normal/pages/index.css'),
-          path.resolve(__dirname, './src/sub-independent/pages/index.css'),
+          path.resolve(__dirname, './src/sub-normal/index.css'),
+          path.resolve(__dirname, './src/sub-independent/index.css'),
         ],
-      })
+      }),
+      StyleInjector({
+        appPath: path.resolve(__dirname, './src/app.mpx'),
+        include: ['sub-normal/**/*.{css,wxss}', 'sub-independent/**/*.{css,wxss}'],
+        styleEntries: [
+          {
+            sourceFileName: 'index.css',
+          },
+        ],
+      }),
     )
   },
   chainWebpack(config) {

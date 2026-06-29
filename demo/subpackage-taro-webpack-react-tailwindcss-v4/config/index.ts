@@ -2,6 +2,7 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import path from 'node:path'
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin'
 import webpack from 'webpack'
+import { StyleInjector } from 'weapp-style-injector/webpack/taro'
 import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 import { WeappTailwindcss, type UserDefinedOptions } from 'weapp-tailwindcss/webpack'
 import devConfig from './dev'
@@ -14,8 +15,8 @@ const cssEntries = cssMode === 'single'
   ? [path.resolve(process.cwd(), 'src/app.single.css')]
   : [
       path.resolve(process.cwd(), 'src/app.css'),
-      path.resolve(process.cwd(), 'src/sub-normal/pages/index/index.css'),
-      path.resolve(process.cwd(), 'src/sub-independent/pages/index/index.css'),
+      path.resolve(process.cwd(), 'src/sub-normal/index.css'),
+      path.resolve(process.cwd(), 'src/sub-independent/index.css'),
     ]
 
 const generator = {
@@ -53,6 +54,32 @@ function installWeappTailwindcss(chain: any) {
       },
     },
   })
+  if (cssMode === 'isolated' && !taroPlatform.isWeb) {
+    chain.merge({
+      plugin: {
+        styleInjector: {
+          plugin: StyleInjector,
+          args: [
+            {
+              include: [
+                'sub-normal/**/*.{css,acss,ttss}',
+                'sub-independent/**/*.{css,acss,ttss}',
+              ],
+              subPackages: {
+                appConfigPath: 'src/app.config.ts',
+                preprocess: false,
+                styleEntries: [
+                  {
+                    sourceFileName: 'index.css',
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    })
+  }
 }
 
 export default defineConfig<'webpack5'>(async (merge) => {

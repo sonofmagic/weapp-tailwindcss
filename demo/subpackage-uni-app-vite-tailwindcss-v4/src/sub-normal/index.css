@@ -1,0 +1,5 @@
+@import "tailwindcss" source(none);
+@config "../../tailwind.config.sub-normal.js";
+
+@source "./pages/**/*.{vue,js,ts}";
+@source "./index.css";

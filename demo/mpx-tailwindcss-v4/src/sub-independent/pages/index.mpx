@@ -4,10 +4,6 @@
   <view class="">tw-watch-mpx-tailwindcss-v4-template-rollback-1782343414286-independent-subpackage</view>
 </template>
 
-<script>
-import './index.css'
-</script>
-
 <script type="application/json">
   {
     "navigationBarTitleText": "独立分包"

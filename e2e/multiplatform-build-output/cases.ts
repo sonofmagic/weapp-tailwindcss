@@ -173,27 +173,59 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     fileAssertions: [
       {
         file: 'dist/app-origin.acss',
+        contains: [/@import\s+["']\.\/app\.wxss["']/],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent', '.issue-951-page-local'],
+      },
+      {
+        file: 'dist/app.wxss',
         contains: ['.bg-issue-951-main'],
         notContains: ['.bg-issue-951-normal', '.bg-issue-951-independent', '.issue-951-page-local'],
       },
       {
-        file: 'dist/pages/index/index.acss',
+        file: 'dist/pages/index/index.wxss',
         contains: ['.issue-951-page-local'],
         notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
       },
       {
-        file: 'dist/sub-normal/pages/index.acss',
+        file: 'dist/sub-normal/pages/index.wxss',
+        contains: [/@import\s+["']\.\.\/index\.wxss["']/],
+        notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-normal/index.wxss',
         contains: ['.bg-issue-951-normal'],
         notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-independent'],
       },
       {
-        file: 'dist/sub-independent/pages/index.acss',
+        file: 'dist/sub-independent/pages/index.wxss',
+        contains: [/@import\s+["']\.\.\/index\.wxss["']/],
+        notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-independent/index.wxss',
         contains: ['.bg-issue-951-independent'],
         notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal'],
       },
     ],
     status: 'ci',
   }),
+  {
+    name: 'issue-951-taro-vite-react-tailwindcss-v4 h5',
+    framework: 'taro',
+    projectDir: 'demo/issue-951-taro-vite-react-tailwindcss-v4',
+    platform: 'h5',
+    command: ['pnpm', '--filter', '@weapp-tailwindcss-demo/issue-951-taro-vite-react-tailwindcss-v4', 'run', 'build:h5'],
+    commandCwd: 'repo',
+    outputDir: 'dist',
+    requiredFiles: ['dist/index.html'],
+    styleFiles: ['dist'],
+    styleFileExtensions: ['.css'],
+    textFiles: ['dist/index.html', 'dist/js'],
+    styleContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+    textContains: ['<div id="app"></div>', 'bg-issue-951-main', 'bg-issue-951-normal', 'bg-issue-951-independent'],
+    notContains: [/@import\s+["']tailwindcss["']/],
+    status: 'ci',
+  },
   ...(['alipay', 'tt'] as const).flatMap(platform =>
     (['isolated', 'single'] as const).map(mode =>
       taroSubpackageMiniCase({
@@ -222,21 +254,36 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     fileAssertions: [
       {
         file: 'dist/app-origin.ttss',
+        contains: [/@import\s+["']\.\/app\.wxss["']/],
+        notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent', '.issue-951-page-local'],
+      },
+      {
+        file: 'dist/app.wxss',
         contains: ['.bg-issue-951-main'],
         notContains: ['.bg-issue-951-normal', '.bg-issue-951-independent', '.issue-951-page-local'],
       },
       {
-        file: 'dist/pages/index/index.ttss',
+        file: 'dist/pages/index/index.wxss',
         contains: ['.issue-951-page-local'],
         notContains: ['.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
       },
       {
-        file: 'dist/sub-normal/pages/index.ttss',
+        file: 'dist/sub-normal/pages/index.wxss',
+        contains: [/@import\s+["']\.\.\/index\.wxss["']/],
+        notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-normal/index.wxss',
         contains: ['.bg-issue-951-normal'],
         notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-independent'],
       },
       {
-        file: 'dist/sub-independent/pages/index.ttss',
+        file: 'dist/sub-independent/pages/index.wxss',
+        contains: [/@import\s+["']\.\.\/index\.wxss["']/],
+        notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal', '.bg-issue-951-independent'],
+      },
+      {
+        file: 'dist/sub-independent/index.wxss',
         contains: ['.bg-issue-951-independent'],
         notContains: ['.issue-951-page-local', '.bg-issue-951-main', '.bg-issue-951-normal'],
       },

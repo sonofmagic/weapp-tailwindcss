@@ -149,7 +149,7 @@ function createTaroTargets(project: string, platforms: string[]): MultiplatformT
     const isTaroViteMiniCi = (
       project.startsWith('taro-vite-')
       || project === 'issue-951-taro-vite-react-tailwindcss-v4'
-    ) && (platform === 'alipay' || platform === 'tt')
+    ) && (platform === 'alipay' || platform === 'tt' || (project === 'issue-951-taro-vite-react-tailwindcss-v4' && platform === 'h5'))
     const isSubpackageWebpackCi = project === 'subpackage-taro-webpack-react-tailwindcss-v4' && (platform === 'alipay' || platform === 'tt' || platform === 'h5')
     const isCiScript = project === 'taro-webpack-react-tailwindcss-v4' && platform === 'alipay'
     return target({
@@ -158,7 +158,7 @@ function createTaroTargets(project: string, platforms: string[]): MultiplatformT
       platform,
       coverage: isTaroViteMiniCi || isSubpackageWebpackCi ? 'default-ci' : isCiScript ? 'ci-script' : 'local',
       reason: isTaroViteMiniCi
-        ? 'Taro Vite alipay/tt 作为非微信小程序核心产物回归，覆盖 .acss/.ttss 与 Vite bundle asset 关系。'
+        ? 'Taro Vite alipay/tt/H5 作为核心产物回归，覆盖 .acss/.ttss、H5 CSS chunk 与 Vite bundle asset 关系。'
         : isSubpackageWebpackCi
           ? 'Taro Webpack subpackage Tailwind v4 回归默认覆盖 alipay/tt 小程序产物和 H5 产物。'
           : isCiScript
@@ -193,7 +193,7 @@ export const MULTIPLATFORM_TARGETS: MultiplatformTarget[] = [
   ...createUniAppTargets('subpackage-uni-app-vite-tailwindcss-v4', subpackageUniAppV4Platforms),
   ...createUniAppHBuilderXTargets('uni-app-vite-vue3-hbuilderx-tailwindcss-v4'),
   ...createTaroTargets('taro-vite-react-tailwindcss-v4', taroVitePlatforms),
-  ...createTaroTargets('issue-951-taro-vite-react-tailwindcss-v4', ['alipay', 'tt']),
+  ...createTaroTargets('issue-951-taro-vite-react-tailwindcss-v4', ['alipay', 'tt', 'h5']),
   ...createTaroTargets('taro-vite-vue3-tailwindcss-v4', taroVitePlatforms),
   ...createTaroTargets('taro-webpack-react-tailwindcss-v4', taroWebpackV4Platforms),
   ...createTaroTargets('subpackage-taro-webpack-react-tailwindcss-v4', subpackageTaroWebpackV4Platforms),

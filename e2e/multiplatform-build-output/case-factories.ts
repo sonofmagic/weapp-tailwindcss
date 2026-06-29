@@ -33,6 +33,8 @@ function createSubpackageCssAssertions(options: {
   appStyleFile: string
   normalStyleFile: string
   independentStyleFile: string
+  normalEntryStyleFile?: string
+  independentEntryStyleFile?: string
   mainMarker: string
   normalMarker: string
   independentMarker: string
@@ -62,14 +64,38 @@ function createSubpackageCssAssertions(options: {
     },
     {
       file: options.normalStyleFile,
-      contains: [cssMarker(options.normalMarker)],
-      notContains: [cssMarker(options.mainMarker), cssMarker(options.independentMarker), rawTailwindDirectiveRE],
+      contains: options.normalEntryStyleFile ? [importPathTo(`index${options.normalEntryStyleFile.slice(options.normalEntryStyleFile.lastIndexOf('.'))}`)] : [cssMarker(options.normalMarker)],
+      notContains: [
+        cssMarker(options.mainMarker),
+        ...(options.normalEntryStyleFile ? [cssMarker(options.normalMarker)] : []),
+        cssMarker(options.independentMarker),
+        rawTailwindDirectiveRE,
+      ],
     },
     {
       file: options.independentStyleFile,
-      contains: [cssMarker(options.independentMarker)],
-      notContains: [cssMarker(options.mainMarker), cssMarker(options.normalMarker), rawTailwindDirectiveRE],
+      contains: options.independentEntryStyleFile ? [importPathTo(`index${options.independentEntryStyleFile.slice(options.independentEntryStyleFile.lastIndexOf('.'))}`)] : [cssMarker(options.independentMarker)],
+      notContains: [
+        cssMarker(options.mainMarker),
+        cssMarker(options.normalMarker),
+        ...(options.independentEntryStyleFile ? [cssMarker(options.independentMarker)] : []),
+        rawTailwindDirectiveRE,
+      ],
     },
+    ...(options.normalEntryStyleFile
+      ? [{
+          file: options.normalEntryStyleFile,
+          contains: [cssMarker(options.normalMarker)],
+          notContains: [cssMarker(options.mainMarker), cssMarker(options.independentMarker), rawTailwindDirectiveRE],
+        }]
+      : []),
+    ...(options.independentEntryStyleFile
+      ? [{
+          file: options.independentEntryStyleFile,
+          contains: [cssMarker(options.independentMarker)],
+          notContains: [cssMarker(options.mainMarker), cssMarker(options.normalMarker), rawTailwindDirectiveRE],
+        }]
+      : []),
   ] satisfies BuildOutputCase['fileAssertions']
 }
 
@@ -184,6 +210,12 @@ export function uniAppSubpackageMiniCase(options: {
       `${outputDir}/${miniTemplateFileByPlatform[options.platform]}`,
       `${outputDir}/sub-normal/pages/index${extension}`,
       `${outputDir}/sub-independent/pages/index${extension}`,
+      ...(!singleEntry
+        ? [
+            `${outputDir}/sub-normal/index${extension}`,
+            `${outputDir}/sub-independent/index${extension}`,
+          ]
+        : []),
     ],
     styleFiles: [outputDir],
     styleFileExtensions: [extension],
@@ -196,6 +228,8 @@ export function uniAppSubpackageMiniCase(options: {
       appStyleFile: `${outputDir}/${mainStyleFile}`,
       normalStyleFile: `${outputDir}/sub-normal/pages/index${extension}`,
       independentStyleFile: `${outputDir}/sub-independent/pages/index${extension}`,
+      normalEntryStyleFile: singleEntry ? undefined : `${outputDir}/sub-normal/index${extension}`,
+      independentEntryStyleFile: singleEntry ? undefined : `${outputDir}/sub-independent/index${extension}`,
       mainMarker: options.markers.main,
       normalMarker: options.markers.normal,
       independentMarker: options.markers.independent,
@@ -317,6 +351,9 @@ export function mpxCase(options: {
   command: string[]
   env?: Record<string, string>
 }): BuildOutputCase {
+  const isV4 = options.version === 'v4'
+  const normalMarker = '.bg-normal-subpackage-marker'
+  const independentMarker = '.bg-independent-subpackage-marker'
   return {
     name: `${options.project} ${options.platform}`,
     framework: 'mpx',
@@ -329,30 +366,66 @@ export function mpxCase(options: {
       'dist/wx/app.js',
       'dist/wx/app.json',
       'dist/wx/pages/index.wxml',
+      ...(isV4
+        ? [
+            'dist/wx/sub-normal/pages/index.wxss',
+            'dist/wx/sub-normal/index.wxss',
+            'dist/wx/sub-independent/pages/index.wxss',
+            'dist/wx/sub-independent/index.wxss',
+          ]
+        : []),
     ],
-    styleFiles: ['dist/wx/styles'],
+    styleFiles: isV4 ? ['dist/wx'] : ['dist/wx/styles'],
     styleFileExtensions: ['.wxss'],
-    textFiles: ['dist/wx/pages/index.wxml'],
-    styleContains: options.version === 'v4'
+    textFiles: isV4 ? ['dist/wx'] : ['dist/wx/pages/index.wxml'],
+    styleContains: isV4
       ? [
           '.bg-_b_h123456_B',
           '.w-_b300rpx_B',
           '.text-_b_hbada55_B',
           '.before_ccontent',
+          normalMarker,
+          independentMarker,
         ]
       : [
           '.bg-_b_h123456_B',
           '.before_ccontent',
         ],
-    textContains: options.version === 'v4'
+    textContains: isV4
       ? [
           'bg-_b_h123456_B',
           'text-_b_hbada55_B',
+          'bg-normal-subpackage-marker',
+          'bg-independent-subpackage-marker',
         ]
       : [
           'bg-_b_h123456_B',
           'before_ccontent',
         ],
+    fileAssertions: isV4
+      ? [
+          {
+            file: 'dist/wx/sub-normal/pages/index.wxss',
+            contains: [importPathTo('index.wxss')],
+            notContains: [normalMarker, independentMarker, rawTailwindDirectiveRE],
+          },
+          {
+            file: 'dist/wx/sub-normal/index.wxss',
+            contains: [normalMarker],
+            notContains: [independentMarker, rawTailwindDirectiveRE],
+          },
+          {
+            file: 'dist/wx/sub-independent/pages/index.wxss',
+            contains: [importPathTo('index.wxss')],
+            notContains: [normalMarker, independentMarker, rawTailwindDirectiveRE],
+          },
+          {
+            file: 'dist/wx/sub-independent/index.wxss',
+            contains: [independentMarker],
+            notContains: [normalMarker, rawTailwindDirectiveRE],
+          },
+        ]
+      : undefined,
     notContains: [rawTailwindDirectiveRE],
     status: 'ci',
   }
@@ -422,7 +495,7 @@ export function taroSubpackageMiniCase(options: {
   }
 }): BuildOutputCase {
   const output = taroMiniOutputByPlatform[options.platform]
-  const extension = options.platform === 'alipay' ? '.acss' : '.ttss'
+  const extension = '.wxss'
   const singleEntry = options.mode === 'single'
   return {
     name: `${options.project} ${options.platform} ${options.mode}`,
@@ -438,11 +511,17 @@ export function taroSubpackageMiniCase(options: {
       output.appJson,
       output.appStyle,
       output.pageTemplate,
-      `dist/sub-normal/pages/index${extension}`,
-      `dist/sub-independent/pages/index${extension}`,
+      ...(!singleEntry
+        ? [
+            `dist/sub-normal/pages/index${extension}`,
+            `dist/sub-independent/pages/index${extension}`,
+            `dist/sub-normal/index${extension}`,
+            `dist/sub-independent/index${extension}`,
+          ]
+        : []),
     ],
     styleFiles: ['dist'],
-    styleFileExtensions: [extension],
+    styleFileExtensions: [options.platform === 'alipay' ? '.acss' : '.ttss', extension],
     textFiles: ['dist'],
     styleContains: [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)],
     textContains: [options.markers.main, options.markers.normal, options.markers.independent],
@@ -450,6 +529,8 @@ export function taroSubpackageMiniCase(options: {
       appStyleFile: output.appStyle,
       normalStyleFile: `dist/sub-normal/pages/index${extension}`,
       independentStyleFile: `dist/sub-independent/pages/index${extension}`,
+      normalEntryStyleFile: singleEntry ? undefined : `dist/sub-normal/index${extension}`,
+      independentEntryStyleFile: singleEntry ? undefined : `dist/sub-independent/index${extension}`,
       mainMarker: options.markers.main,
       normalMarker: options.markers.normal,
       independentMarker: options.markers.independent,

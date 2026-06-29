@@ -4,10 +4,6 @@
   <view class="">tw-watch-mpx-tailwindcss-v4-template-rollback-1782343366855-normal-subpackage</view>
 </template>
 
-<script>
-import './index.css'
-</script>
-
 <script type="application/json">
   {
     "navigationBarTitleText": "普通分包"

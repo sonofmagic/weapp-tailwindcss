@@ -1,4 +1,0 @@
-@import "tailwindcss" source(none);
-@config "../../../tailwind.config.sub-independent.js";
-@source "./**/*.{vue,js,ts}";
-@source "./index.css";

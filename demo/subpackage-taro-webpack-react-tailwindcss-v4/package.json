@@ -82,6 +82,7 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "tsconfig-paths-webpack-plugin": "^4.1.0",
     "typescript": "catalog:typescript59",
+    "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
     "webpack": "5.105.4"
   }

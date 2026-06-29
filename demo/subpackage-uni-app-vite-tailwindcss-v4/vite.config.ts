@@ -3,12 +3,21 @@ import { dirname } from 'node:path'
 import path from 'node:path'
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig, type Plugin } from 'vite'
+import { StyleInjector } from 'weapp-style-injector/vite/uni-app'
 import { resolveUniPlatform } from 'weapp-tailwindcss/framework'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
 const require = createRequire(import.meta.url)
 const uniMpVueRuntimePath = require.resolve('@dcloudio/uni-mp-vue/dist/vue.runtime.esm.js')
 const uniMpVueDir = dirname(uniMpVueRuntimePath)
+const cssMode = process.env.E2E_TW_CSS_ENTRY_MODE === 'single' ? 'single' : 'isolated'
+const cssEntries = cssMode === 'single'
+  ? [path.resolve(process.cwd(), 'src/main.single.css')]
+  : [
+      path.resolve(process.cwd(), 'src/main.css'),
+      path.resolve(process.cwd(), 'src/sub-normal/index.css'),
+      path.resolve(process.cwd(), 'src/sub-independent/index.css'),
+    ]
 
 function singleCssEntryPlugin(): Plugin {
   return {
@@ -27,16 +36,38 @@ function singleCssEntryPlugin(): Plugin {
 }
 
 export default defineConfig(() => {
+  const uniPlatform = resolveUniPlatform()
+
   return {
     plugins: [
       singleCssEntryPlugin(),
       uni(),
+      ...(cssMode === 'isolated' && !uniPlatform.isWeb
+        ? [
+            StyleInjector({
+              include: [
+                'sub-normal/**/*.{css,wxss,acss,ttss}',
+                'sub-independent/**/*.{css,wxss,acss,ttss}',
+              ],
+              subPackages: {
+                pagesJsonPath: 'src/pages.json',
+                preprocess: false,
+                styleEntries: [
+                  {
+                    sourceFileName: 'index.css',
+                  },
+                ],
+              },
+            }),
+          ]
+        : []),
       WeappTailwindcss({
         tailwindcssBasedir: process.cwd(),
+        cssEntries,
         cssSourceTrace: true,
         rem2rpx: true,
         generator: {
-          webCompat: resolveUniPlatform().isWeb ? true : undefined,
+          webCompat: uniPlatform.isWeb ? true : undefined,
         },
       }),
     ],
