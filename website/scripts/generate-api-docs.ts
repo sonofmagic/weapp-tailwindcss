@@ -908,6 +908,24 @@ function renderOptionsProperty(prop: PropertyDoc, level: number, context: TypeRe
     lines.push('')
   }
 
+  if (prop.name === 'generator') {
+    lines.push(`${'#'.repeat(level + 1)} Web 兼容模式`)
+    lines.push('')
+    lines.push('`generator.webCompat` 用于 Web/H5 目标下的 Tailwind CSS v4 兼容降级。自动推断 `generator.target: "web"` 时默认开启；如果显式配置了 `generator.target`，则以用户传入的 `webCompat` 为准。')
+    lines.push('')
+    lines.push('传入 `true` 等价于 `{ preset: "legacy-web" }`，会移除或降级 `@theme`、`@layer`、`@property`、嵌套规则、`oklch()`、现代颜色函数与相关 `@supports` 包裹，以适配更多 Android/iOS WebView。需要保持 Tailwind CSS 官方 Web 输出时，可传入 `false` 或 `{ preset: "off" }`。')
+    lines.push('')
+    lines.push('```ts')
+    lines.push('WeappTailwindcss({')
+    lines.push('  generator: {')
+    lines.push('    target: "web",')
+    lines.push('    webCompat: true,')
+    lines.push('  },')
+    lines.push('})')
+    lines.push('```')
+    lines.push('')
+  }
+
   if (prop.nested?.length) {
     prop.nested.forEach((nested) => {
       lines.push(renderOptionsProperty(nested, level + 1, context))

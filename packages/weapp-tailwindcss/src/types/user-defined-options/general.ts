@@ -15,7 +15,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制 Tailwind 自定义长度单位支持。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @see https://github.com/sonofmagic/weapp-tailwindcss/issues/110
    * @remarks
    * TailwindCSS 3.2.0 起对任意值执行长度单位校验，会将未声明的 `rpx` 识别为颜色。本选项默认开启，并由构建运行时自动接管。
@@ -25,7 +25,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 声明所使用的框架类型。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 用于区分框架运行环境。Vite 产物样式关系会优先从构建图和真实 bundle 文件中推导，不应依赖固定的主样式文件名。
    */
@@ -34,14 +34,14 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * TailwindCSS 任意值的相关配置。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    */
   arbitraryValues?: IArbitraryValues | undefined
 
   /**
    * 启用部分 UnoCSS class 写法兼容。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 默认关闭。传入 `true` 后会启用 Tailwind CSS v4 裸任意值生成。class 字符转义继续由
    * `customReplaceDictionary` 控制，JS 转译仍遵循 `classNameSet` 精确命中原则。
@@ -53,7 +53,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制 JS 字面量是否需要保留。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @since ^2.6.1
    * @remarks
    * 当 Tailwind 与 JS 字面量冲突时，可通过回调返回 `true` 保留当前值，返回 `false` 或 `undefined` 则继续转义。默认保留所有带 `*` 的字符串字面量。
@@ -63,7 +63,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制 JS 任意值类名在 classNameSet 异常时的受控兜底策略。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 为避免误伤业务字符串，兜底仅在 class 语义上下文生效。
    * - `false`：关闭兜底；
@@ -75,7 +75,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 是否替换运行时依赖包名。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 适用于运行时包名需要重定向的场景，例如：
    * - 小程序侧无法直接安装 `tailwind-merge`/`class-variance-authority`/`tailwind-variants`，需要替换为内置的 weapp 版本。
@@ -94,7 +94,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 是否把 CSS 中的 Tailwind 包入口改写到 `weapp-tailwindcss` 内部样式入口。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 默认关闭。Tailwind CSS v4 项目应保留 `@import "tailwindcss"` 原始入口，由
    * `weapp-tailwindcss` 基于 CSS AST/source 结果生成目标端 CSS。仅在需要兼容旧项目
@@ -106,7 +106,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制 Tailwind CSS 直接生成目标端 CSS 的策略。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 默认值会按构建环境推断：小程序构建使用 `weapp`，H5/Web 与普通 uni-app App WebView 使用 `web`。
    * uni-app x 原生 App 目标继续通过 `uniAppX` 配置处理 uvue/App 约束，不需要配置 `target: 'app'`。
@@ -128,7 +128,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 禁用默认的 `wxml` 模板替换器。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @since ^2.6.2
    * @remarks
    * 启用后模板匹配完全交由 [`customAttributes`](/docs/api/options/important#customattributes) 管理，需要自行覆盖默认的 `class` / `hover-class` 等匹配规则。
@@ -147,7 +147,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 指定用于获取 Tailwind 上下文的路径。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @since ^2.9.3
    * @remarks
    * 在 linked 或 monorepo 场景下可手动指向目标项目的 `package.json` 所在目录。
@@ -157,7 +157,7 @@ export interface UserDefinedOptionsGeneralPart {
   /**
    * 控制缓存策略。
    *
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @since ^3.0.11
    */
   cache?: boolean | ICreateCacheReturnType | undefined
@@ -216,7 +216,7 @@ export interface UserDefinedOptionsGeneralPart {
    * CSS 生成与兼容后处理的微调配置。
    *
    * @since ^4.3.4
-   * @group 3.一般配置
+   * @group 0.重要配置
    * @remarks
    * 后续用于控制生成 CSS 的兼容兜底、变量保留、规则修剪等细粒度行为。
    * `cssPreflight`、`cssPreflightRange`、`cssChildCombinatorReplaceValue`、`cssPresetEnv`、`autoprefixer`、

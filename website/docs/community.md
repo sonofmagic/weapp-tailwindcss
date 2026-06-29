@@ -25,7 +25,7 @@ keywords:
 
 ### [开箱即用的小程序icon解决方案](./icons)
 
-### [uni-app 条件编译语法糖插件](./quick-start/uni-app-css-macro)
+### [uni-app 条件编译样式](./quick-start/uni-app-css-macro)
 
 ## 模板
 

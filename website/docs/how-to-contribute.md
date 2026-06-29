@@ -113,7 +113,7 @@ Why？
 - `babel`: `babel` 工具类
 - `bundlers`: 存放使用方式，目前提供 `webpack`,`vite`,`gulp` 插件的使用方式
 - `cache`: 缓存策略，用于解决在项目比较大时，热更新的速度问题，本质上是通过计算文件内容的 `hash` 值，如果没有发生改变就跳过 `ast` 的解析，直接返回结果的策略
-- `css-macro`: `uni-app` 样式条件编译插件
+- `css-macro`: 旧版 `uni-app` 样式条件编译入口，新文档优先使用 Tailwind CSS v4 `@custom-variant`
 - `debug`: `debug` 调试用
 - `extractors`: 提取器，用于分割字符串
 - `js`: 用于处理转译 `js` 结果的地方

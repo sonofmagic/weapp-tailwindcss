@@ -104,18 +104,48 @@ export interface CssAtRules {
 
 export type WebCssCompatPreset = 'off' | 'legacy-web'
 
+/**
+ * Web 兼容降级的功能开关。
+ */
 export interface WebCssCompatFeatures {
+  /**
+   * 降级 Tailwind CSS v4 `@theme` 变量规则。
+   */
   theme?: boolean | undefined
+  /**
+   * 移除或展平 `@layer`，避免旧 WebView 对层叠层支持不足。
+   */
   layer?: boolean | undefined
+  /**
+   * 移除 `@property`，避免旧 WebView 解析失败。
+   */
   property?: boolean | undefined
+  /**
+   * 展开 CSS nesting 语法。
+   */
   nesting?: boolean | undefined
+  /**
+   * 为 `oklch()` 颜色补充兼容声明。
+   */
   oklch?: boolean | undefined
+  /**
+   * 为现代颜色函数补充兼容声明。
+   */
   colorFunctions?: boolean | undefined
+  /**
+   * 处理 Tailwind CSS v4 生成的 `@supports` 包裹。
+   */
   supports?: boolean | undefined
 }
 
 export interface WebCssCompatOptions {
+  /**
+   * 兼容预设。`legacy-web` 面向旧 Android/iOS WebView，`off` 表示关闭降级。
+   */
   preset?: WebCssCompatPreset | undefined
+  /**
+   * 按功能覆盖预设中的降级开关。
+   */
   features?: WebCssCompatFeatures | undefined
 }
 

@@ -26,4 +26,4 @@ keywords:
 
 这个配置可以通过 `cssOptions.cssSelectorReplacement.universal` 进行更改，从而适配更多标签。
 
-详见 [`cssOptions`](/docs/api/options/general#cssoptions)
+详见 [`cssOptions`](/docs/api/options/important#cssoptions)

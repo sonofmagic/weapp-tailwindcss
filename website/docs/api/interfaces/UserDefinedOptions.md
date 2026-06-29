@@ -19,7 +19,7 @@ keywords:
 
 ## 分组入口
 
-- [✅ 重要配置](../options/important.md) (7)
+- [✅ 重要配置](../options/important.md) (20)
 - [🧩 文件匹配](../options/matchers.md) (7)
 - [🧭 生命周期](../options/lifecycle.md) (4)
-- [⚙️ 一般配置](../options/general.md) (19)
+- [⚙️ 一般配置](../options/general.md) (6)
