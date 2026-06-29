@@ -3,10 +3,11 @@ import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig 
 
 import type { ViteWeappStyleInjectorOptions } from '../vite'
 import fs from 'node:fs'
+import { createRequire } from 'node:module'
 
 import path from 'node:path'
 import process from 'node:process'
-import { preprocessCSS } from 'vite'
+import { pathToFileURL } from 'node:url'
 import { resolveUniAppStyleScopes, splitUniAppStyleScopes } from '../uni-app'
 import { toArray } from '../utils'
 import weappStyleInjector from '../vite'
@@ -35,6 +36,7 @@ function resolveDefaultPagesJsonPaths(): string[] {
 
 // 使用 Tailwind 插件的 transform 钩子时需要兼容多种写法，这里先抽象出统一的处理函数。
 type TransformHandler = (this: unknown, code: string, id: string, options?: { ssr?: boolean } | undefined) => unknown
+type PreprocessCSS = typeof import('vite')['preprocessCSS']
 
 function getTransformHandler(hook: Plugin['transform'] | undefined): TransformHandler | undefined {
   if (!hook) {
@@ -61,6 +63,8 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
   const existing = [...subPackages]
 
   let resolvedConfig: ResolvedConfig | undefined
+  let preprocessConfig: ResolvedConfig | undefined
+  let preprocessCSSFn: PreprocessCSS | undefined
   let pluginContainer: PluginContainer | undefined
   let tailwindTransformHandler: TransformHandler | undefined
   const processedSourceCache = new Map<string, string>()
@@ -109,8 +113,10 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
     if (entry.preprocess !== false && resolvedConfig) {
       try {
         let transformedSource = rawSource
+        const cssConfig = getPreprocessConfig()
+        const preprocess = await getPreprocessCSS()
 
-        const initialResult = await preprocessCSS(transformedSource, sourcePath, resolvedConfig)
+        const initialResult = await preprocess(transformedSource, sourcePath, cssConfig)
         transformedSource = initialResult.code
 
         const transformIds = new Set<string>([sourcePath, `${sourcePath}?direct`])
@@ -149,7 +155,7 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
           }
         }
 
-        const finalResult = await preprocessCSS(transformedSource, sourcePath, resolvedConfig)
+        const finalResult = await preprocess(transformedSource, sourcePath, cssConfig)
         processedSource = finalResult.code
       }
       catch (error) {
@@ -165,6 +171,59 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
 
     processedSourceCache.set(cacheKey, processedSource)
     return processedSource
+  }
+
+  function getPreprocessConfig(): ResolvedConfig {
+    if (preprocessConfig) {
+      return preprocessConfig
+    }
+    if (!resolvedConfig) {
+      throw new Error('Vite config has not been resolved.')
+    }
+    const config = resolvedConfig
+    const css: Partial<ResolvedConfig['css']> = {
+      transformer: config.css.transformer,
+      devSourcemap: false,
+    }
+    if (config.css.preprocessorMaxWorkers !== undefined) {
+      css.preprocessorMaxWorkers = config.css.preprocessorMaxWorkers
+    }
+    preprocessConfig = {
+      ...config,
+      css: css as ResolvedConfig['css'],
+      plugins: [],
+    }
+    return preprocessConfig
+  }
+
+  async function getPreprocessCSS(): Promise<PreprocessCSS> {
+    if (preprocessCSSFn) {
+      return preprocessCSSFn
+    }
+    if (!resolvedConfig) {
+      throw new Error('Vite config has not been resolved.')
+    }
+
+    const requireFromRoot = createRequire(pathToFileURL(path.join(resolvedConfig.root, 'package.json')))
+    const vitePackageJsonPath = requireFromRoot.resolve('vite/package.json')
+    const vitePackageJson = JSON.parse(fs.readFileSync(vitePackageJsonPath, 'utf8')) as {
+      exports?: {
+        '.'?: {
+          import?: string | { default?: string }
+        }
+      }
+      module?: string
+    }
+    const viteImportEntry = typeof vitePackageJson.exports?.['.']?.import === 'string'
+      ? vitePackageJson.exports['.'].import
+      : vitePackageJson.exports?.['.']?.import?.default
+    const viteEntry = path.resolve(path.dirname(vitePackageJsonPath), viteImportEntry ?? vitePackageJson.module ?? 'dist/node/index.js')
+    const vite = await import(pathToFileURL(viteEntry).href) as { preprocessCSS?: PreprocessCSS }
+    if (typeof vite.preprocessCSS !== 'function') {
+      throw new TypeError('Resolved Vite entry does not export preprocessCSS.')
+    }
+    preprocessCSSFn = vite.preprocessCSS
+    return preprocessCSSFn
   }
 
   const plugin: Plugin = {

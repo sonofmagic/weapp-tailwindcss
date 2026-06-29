@@ -21,10 +21,23 @@ export default defineConfig<'vite'>(async (merge) => {
       type: 'vite',
       vitePlugins: [
         StyleInjector({
+          include: ['sub-normal/**/*.{css,wxss}', 'sub-independent/**/*.{css,wxss}'],
           subPackages: {
             appConfigPath: 'src/app.config.ts',
-            sourceFileName: 'index.css',
             preprocess: false,
+            styleEntries: [
+              {
+                sourceFileName: 'index.css',
+              },
+              {
+                sourceFileName: 'scss.scss',
+                include: ['pages/**/*.css', 'pages/**/*.wxss'],
+              },
+              {
+                sourceFileName: 'less.less',
+                include: ['pages/**/*.css', 'pages/**/*.wxss'],
+              },
+            ],
           },
         }),
       ],

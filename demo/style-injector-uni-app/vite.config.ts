@@ -12,6 +12,7 @@ export default defineConfig({
   plugins: [
     uni(),
     StyleInjector({
+      include: ['sub-normal/**/*.{css,wxss}', 'sub-independent/**/*.{css,wxss}'],
       subPackages: {
         pagesJsonPath: 'src/pages.json',
         indexFileName: 'index.css',
@@ -23,6 +24,16 @@ export default defineConfig({
           {
             sourceFileName: 'page.css',
             include: ['pages/**/*.css', 'pages/**/*.wxss'],
+          },
+          {
+            sourceFileName: 'scss.scss',
+            include: ['pages/**/*.css', 'pages/**/*.wxss'],
+            preprocess: true,
+          },
+          {
+            sourceFileName: 'less.less',
+            include: ['pages/**/*.css', 'pages/**/*.wxss'],
+            preprocess: true,
           },
           {
             sourceFileName: 'component.css',

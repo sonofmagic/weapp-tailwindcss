@@ -1,5 +1,5 @@
 import type { Plugin } from 'vite'
-import type { TaroSubPackageConfig } from '../taro'
+import type { TaroSubPackageConfig, TaroSubPackageStyleEntry } from '../taro'
 import type { ViteWeappStyleInjectorOptions } from '../vite'
 
 import fs from 'node:fs'
@@ -21,6 +21,7 @@ export interface ViteTaroStyleInjectorOptions extends Omit<ViteWeappStyleInjecto
   files?: string | string[]
   include?: string | string[]
   exclude?: string | string[]
+  styleEntries?: TaroSubPackageStyleEntry | TaroSubPackageStyleEntry[]
   perFileImports?: ViteWeappStyleInjectorOptions['perFileImports']
 }
 
@@ -147,6 +148,7 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
     files,
     include,
     exclude,
+    styleEntries,
     perFileImports,
     ...rest
   } = options
@@ -178,6 +180,9 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
       }
       if (exclude !== undefined) {
         config.exclude = exclude
+      }
+      if (styleEntries !== undefined) {
+        config.styleEntries = styleEntries
       }
       configs.set(candidate, config)
     }

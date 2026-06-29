@@ -1,42 +1,30 @@
-import type { TaroSubPackageConfig, TaroSubPackageStyleEntry } from '../taro'
+import type { MpxSubPackageConfig, MpxSubPackageStyleEntry } from '../mpx'
 import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '../webpack'
 
 import fs from 'node:fs'
 import path from 'node:path'
-import process from 'node:process'
-import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../taro'
-import { mergePerFileResolvers, toArray } from '../utils'
+import { resolveDefaultMpxAppPaths, resolveMpxSubPackages } from '../mpx'
+import { toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
-export type { TaroSubPackageConfig } from '../taro'
+export type { MpxSubPackageConfig, MpxSubPackageStyleEntry } from '../mpx'
 
-export interface WebpackTaroStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'perFileImports'> {
-  appConfigPath?: string | string[]
-  subPackages?: TaroSubPackageConfig | TaroSubPackageConfig[]
+export interface WebpackMpxStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'subpackageStyleScopes'> {
+  appPath?: string | string[]
+  sourceRoot?: string
+  subPackages?: MpxSubPackageConfig | MpxSubPackageConfig[]
   sourceFileName?: string | string[]
   outputName?: string
   files?: string | string[]
   include?: string | string[]
   exclude?: string | string[]
-  styleEntries?: TaroSubPackageStyleEntry | TaroSubPackageStyleEntry[]
-  perFileImports?: WebpackWeappStyleInjectorOptions['perFileImports']
+  styleEntries?: MpxSubPackageStyleEntry | MpxSubPackageStyleEntry[]
 }
 
-function resolveDefaultAppConfigPaths(): string[] {
-  const cwd = process.cwd()
-  return [
-    path.resolve(cwd, 'src/app.config.ts'),
-    path.resolve(cwd, 'src/app.config.js'),
-    path.resolve(cwd, 'src/app.config.json'),
-    path.resolve(cwd, 'app.config.ts'),
-    path.resolve(cwd, 'app.config.js'),
-    path.resolve(cwd, 'app.config.json'),
-  ]
-}
-
-export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): WebpackObjectPluginInstance {
+export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   const {
-    appConfigPath,
+    appPath,
+    sourceRoot,
     subPackages,
     sourceFileName,
     outputName,
@@ -44,23 +32,25 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
     include,
     exclude,
     styleEntries,
-    perFileImports,
     ...rest
   } = options
 
-  const configs = new Map<string, TaroSubPackageConfig>()
+  const configs = new Map<string, MpxSubPackageConfig>()
 
   for (const entry of toArray(subPackages)) {
-    configs.set(path.resolve(entry.appConfigPath), entry)
+    configs.set(path.resolve(entry.appPath), entry)
   }
 
-  const candidatePaths = appConfigPath
-    ? toArray(appConfigPath).map(entry => path.resolve(entry))
-    : resolveDefaultAppConfigPaths()
+  const candidatePaths = appPath
+    ? toArray(appPath).map(entry => path.resolve(entry))
+    : resolveDefaultMpxAppPaths()
 
   for (const candidate of candidatePaths) {
     if (!configs.has(candidate) && fs.existsSync(candidate)) {
-      const config: TaroSubPackageConfig = { appConfigPath: candidate }
+      const config: MpxSubPackageConfig = { appPath: candidate }
+      if (sourceRoot !== undefined) {
+        config.sourceRoot = sourceRoot
+      }
       if (sourceFileName !== undefined) {
         config.sourceFileName = sourceFileName
       }
@@ -83,20 +73,11 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
     }
   }
 
-  const entries = [...configs.values()]
-  const taroResolver = createTaroSubPackageImportResolver(entries)
-  const resolvedSubPackages = entries.flatMap(resolveTaroSubPackages)
-
+  const resolvedSubPackages = [...configs.values()].flatMap(resolveMpxSubPackages)
   const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,
   }
-  const mergedResolver = mergePerFileResolvers([
-    perFileImports,
-    resolvedSubPackages.length > 0 ? undefined : taroResolver,
-  ])
-  if (mergedResolver !== undefined) {
-    injectorOptions.perFileImports = mergedResolver
-  }
+
   if (resolvedSubPackages.length > 0) {
     injectorOptions.subpackageStyleScopes = resolvedSubPackages
     injectorOptions.generateSubpackageStyle = (context) => {

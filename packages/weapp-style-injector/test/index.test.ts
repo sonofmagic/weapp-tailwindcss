@@ -9,12 +9,14 @@ import weappStyleInjector from '@/vite'
 import { StyleInjector as TaroStyleInjector } from '@/vite/taro'
 import { StyleInjector as UniAppStyleInjector } from '@/vite/uni-app'
 import { weappStyleInjectorWebpack } from '@/webpack'
+import { StyleInjector as MpxStyleInjectorWebpack } from '@/webpack/mpx'
 import { StyleInjector as TaroStyleInjectorWebpack } from '@/webpack/taro'
 import { StyleInjector as UniAppStyleInjectorWebpack } from '@/webpack/uni-app'
 
 const packageRoot = fileURLToPath(new URL('../', import.meta.url))
 const uniAppFixturesRoot = fileURLToPath(new URL('./fixtures/uni-app', import.meta.url))
 const taroFixturesRoot = fileURLToPath(new URL('./fixtures/taro', import.meta.url))
+const mpxFixturesRoot = fileURLToPath(new URL('./fixtures/mpx', import.meta.url))
 
 type AssetSource = string | Uint8Array
 
@@ -129,6 +131,7 @@ describe('package exports', () => {
       './vite/taro',
       './vite/uni-app',
       './webpack',
+      './webpack/mpx',
       './webpack/taro',
       './webpack/uni-app',
     ])
@@ -559,7 +562,27 @@ describe('vite presets', () => {
 
     expect(bundle['sub-packages-scss/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
     expect(generatedIndex).toBeDefined()
-    expect(generatedIndex?.source).toBe('.root {\n  color: #1c64f2;\n}')
+    expect(generatedIndex?.source).toContain('@layer theme, base, components, utilities')
+    expect(generatedIndex?.source).toContain('color: #1c64f2')
+  })
+
+  it('compiles less sub-package indexes with tailwind imports via uni-app preset', async () => {
+    const bundle: TestBundle = {
+      'sub-packages-less/pages/home.wxss': createAsset('.home {}', 'sub-packages-less/pages/home.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages-less.json'),
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    const generatedIndex = bundle['sub-packages-less/index.wxss']
+
+    expect(bundle['sub-packages-less/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(generatedIndex).toBeDefined()
+    expect(generatedIndex?.source).toContain('@layer theme, base, components, utilities')
+    expect(generatedIndex?.source).toContain('color: #7c3aed')
   })
 
   it('supports generated sub-package style entries with custom output names', async () => {
@@ -611,6 +634,36 @@ describe('vite presets', () => {
     expect(bundle['taro-sub/index.scss'].source).toBe('.root {}')
     expect(bundle['legacy-sub/index.css'].source).toBe(
       fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
+    )
+  })
+
+  it('resolves multiple style entries via taro preset', async () => {
+    const bundle: TestBundle = {
+      'taro-sub/pages/home.css': createAsset('.home {}', 'taro-sub/pages/home.css'),
+    }
+
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      styleEntries: [
+        {
+          sourceFileName: 'scss.scss',
+          include: ['pages/**/*.css'],
+        },
+        {
+          sourceFileName: 'less.less',
+          include: ['pages/**/*.css'],
+        },
+      ],
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['taro-sub/pages/home.css']?.source).toBe('@import "../scss.css";\n@import "../less.css";\n.home {}')
+    expect(bundle['taro-sub/scss.css']?.source).toBe(
+      fs.readFileSync(path.join(taroFixturesRoot, 'taro-sub/scss.scss'), 'utf8'),
+    )
+    expect(bundle['taro-sub/less.css']?.source).toBe(
+      fs.readFileSync(path.join(taroFixturesRoot, 'taro-sub/less.less'), 'utf8'),
     )
   })
 
@@ -891,6 +944,69 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('legacy-sub/index.css')).toBe(
       fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
     )
+  })
+
+  it('resolves multiple style entries via taro webpack preset', () => {
+    const { compiler, getAsset } = createCompiler({
+      'taro-sub/pages/home.css': '.home {}',
+    })
+
+    const plugin = TaroStyleInjectorWebpack({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      styleEntries: [
+        {
+          sourceFileName: 'scss.scss',
+          include: ['pages/**/*.css'],
+        },
+        {
+          sourceFileName: 'less.less',
+          include: ['pages/**/*.css'],
+        },
+      ],
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('taro-sub/pages/home.css')).toBe('@import "../scss.css";\n@import "../less.css";\n.home {}')
+    expect(getAsset('taro-sub/scss.css')).toBe(
+      fs.readFileSync(path.join(taroFixturesRoot, 'taro-sub/scss.scss'), 'utf8'),
+    )
+    expect(getAsset('taro-sub/less.css')).toBe(
+      fs.readFileSync(path.join(taroFixturesRoot, 'taro-sub/less.less'), 'utf8'),
+    )
+  })
+
+  it('injects sub-package imports via mpx webpack preset', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-normal/pages/index.wxss': '.page {}',
+      'sub-independent/pages/index.wxss': '.independent {}',
+    })
+
+    const plugin = MpxStyleInjectorWebpack({
+      appPath: path.join(mpxFixturesRoot, 'app.mpx'),
+      styleEntries: [
+        {
+          sourceFileName: 'index.css',
+        },
+        {
+          sourceFileName: 'scss.scss',
+          include: ['pages/**/*.wxss'],
+        },
+        {
+          sourceFileName: 'less.less',
+          include: ['pages/**/*.wxss'],
+        },
+      ],
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-normal/pages/index.wxss')).toBe('@import "../index.wxss";\n@import "../scss.wxss";\n@import "../less.wxss";\n.page {}')
+    expect(getAsset('sub-normal/index.wxss')).toContain('.fixture-mpx-normal')
+    expect(getAsset('sub-normal/scss.wxss')).toContain('.fixture-mpx-scss')
+    expect(getAsset('sub-normal/less.wxss')).toContain('.fixture-mpx-less')
+    expect(getAsset('sub-independent/pages/index.wxss')).toBe('@import "../index.wxss";\n.independent {}')
+    expect(getAsset('sub-independent/index.wxss')).toContain('.fixture-mpx-independent')
   })
 
   it('does not generate webpack sub-package style entries from non-style assets', () => {

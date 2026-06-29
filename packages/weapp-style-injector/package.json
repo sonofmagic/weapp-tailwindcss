@@ -49,6 +49,11 @@
       "types": "./dist/webpack/taro.d.ts",
       "import": "./dist/webpack/taro.mjs",
       "require": "./dist/webpack/taro.cjs"
+    },
+    "./webpack/mpx": {
+      "types": "./dist/webpack/mpx.d.ts",
+      "import": "./dist/webpack/mpx.mjs",
+      "require": "./dist/webpack/mpx.cjs"
     }
   },
   "main": "./dist/index.cjs",

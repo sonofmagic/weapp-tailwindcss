@@ -9,6 +9,7 @@ export default defineConfig({
     'src/webpack.ts',
     'src/webpack/uni-app.ts',
     'src/webpack/taro.ts',
+    'src/webpack/mpx.ts',
   ],
   shims: true,
   format: ['cjs', 'esm'],

@@ -1,5 +1,5 @@
 const { defineConfig } = require('@vue/cli-service')
-const { weappStyleInjectorWebpack } = require('weapp-style-injector/webpack')
+const { StyleInjector } = require('weapp-style-injector/webpack/mpx')
 const path = require('path')
 
 const ObjectMiddleware = require('webpack/lib/serialization/ObjectMiddleware')
@@ -13,20 +13,6 @@ ObjectMiddleware.register = function safeRegister(Constructor, request, name, se
       return
     }
     throw error
-  }
-}
-
-function subpackageStyle(root, marker) {
-  return {
-    root,
-    sourceRelativePath: `${root}/index.css`,
-    sourceAbsolutePath: path.resolve(__dirname, `src/${root}/index.css`),
-    outputName: 'index',
-    preprocess: false,
-    framework: 'mpx',
-    generate() {
-      return marker
-    },
   }
 }
 
@@ -54,11 +40,20 @@ module.exports = defineConfig({
   configureWebpack(config) {
     config.cache = false
     config.plugins.push(
-      weappStyleInjectorWebpack({
-        include: ['**/*.wxss'],
-        subpackageStyleScopes: [
-          subpackageStyle('sub-normal', '.injector-mpx-normal { color: #166534; }'),
-          subpackageStyle('sub-independent', '.injector-mpx-independent { color: #7c2d12; }'),
+      StyleInjector({
+        include: ['sub-normal/**/*.wxss', 'sub-independent/**/*.wxss'],
+        styleEntries: [
+          {
+            sourceFileName: 'index.css',
+          },
+          {
+            sourceFileName: 'scss.scss',
+            include: ['pages/**/*.wxss'],
+          },
+          {
+            sourceFileName: 'less.less',
+            include: ['pages/**/*.wxss'],
+          },
         ],
       }),
     )

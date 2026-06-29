@@ -24,6 +24,8 @@ export {
   WeappStyleInjectorWebpackPlugin,
 } from './webpack'
 export type { WebpackWeappStyleInjectorOptions } from './webpack'
+export { StyleInjector as MpxStyleInjectorWebpack } from './webpack/mpx'
+export type { WebpackMpxStyleInjectorOptions } from './webpack/mpx'
 export { StyleInjector as TaroStyleInjectorWebpack } from './webpack/taro'
 export type { WebpackTaroStyleInjectorOptions } from './webpack/taro'
 export { StyleInjector as UniAppStyleInjectorWebpack } from './webpack/uni-app'
