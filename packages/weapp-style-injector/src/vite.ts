@@ -80,6 +80,10 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
             type: 'asset',
             fileName: asset.fileName,
             name: asset.fileName,
+            names: [asset.fileName],
+            originalFileName: null,
+            originalFileNames: [],
+            needsCodeReference: false,
             source: source ?? '',
           }
         }

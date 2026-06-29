@@ -460,12 +460,16 @@ export function collectSubpackageTargetStyleAssets(
       if (!isSourceModuleTarget && !isFileMatchedBySubpackageScope(styleFileName, scope)) {
         continue
       }
-      emitted.set(styleFileName, {
+      const emittedAsset: ResolvedSubpackageTargetStyleAsset = {
         scope,
         fileName: styleFileName,
         styleExt: targetStyleExt,
-        sourceAbsolutePath: resolveTargetSourceFile(scope, styleFileName)?.sourceAbsolutePath,
-      })
+      }
+      const sourceAbsolutePath = resolveTargetSourceFile(scope, styleFileName)?.sourceAbsolutePath
+      if (sourceAbsolutePath !== undefined) {
+        emittedAsset.sourceAbsolutePath = sourceAbsolutePath
+      }
+      emitted.set(styleFileName, emittedAsset)
     }
   }
 

@@ -257,7 +257,7 @@ describe('weapp-style-injector plugin', () => {
   })
 
   it('generates scoped page style assets when sub-package pages have no style file', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
       'sub-packages/pages/home.json': createAsset('{}', 'sub-packages/pages/home.json'),
     }
@@ -283,12 +283,12 @@ describe('weapp-style-injector plugin', () => {
 
     expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../index.wxss";')
     expect(bundle['sub-packages/index.wxss']?.source).toBe('.root {}')
-    expect(bundle['sub-packages/pages/home.js'].source).toBe('console.log("home")')
+    expect(bundle['sub-packages/pages/home.js']?.source).toBe('console.log("home")')
   })
 
   it('generates css page style assets for h5-like bundles and preserves source css', async () => {
     const sourceAbsolutePath = path.join(uniAppFixturesRoot, 'sub-packages/pages/home.css')
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
     }
 
@@ -328,7 +328,7 @@ describe('weapp-style-injector plugin', () => {
   })
 
   it('respects scoped exclude rules when generating page style assets', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
       'sub-packages/pages/detail.js': createAsset('console.log("detail")', 'sub-packages/pages/detail.js'),
     }
@@ -358,7 +358,7 @@ describe('weapp-style-injector plugin', () => {
   })
 
   it('supports multiple style entries in the same sub-package scope', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
       'sub-packages/components/card.wxss': createAsset('.card {}', 'sub-packages/components/card.wxss'),
     }
@@ -640,7 +640,7 @@ describe('vite presets', () => {
 
     expect(bundle['sub-packages/index.wxss']?.source).toBe('.root {}')
     expect(bundle['sub-packages/index.js']).toBeUndefined()
-    expect(bundle['sub-packages/pages/home.js'].source).toBe('console.log("home")')
+    expect(bundle['sub-packages/pages/home.js']?.source).toBe('console.log("home")')
   })
 })
 

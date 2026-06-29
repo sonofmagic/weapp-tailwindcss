@@ -39,13 +39,13 @@ function resolveDefaultAppConfigPaths(): string[] {
 const STYLE_ID_RE = /\.(?:css|scss|sass|less|styl|stylus)(?:[?#].*)?$/
 
 function stripQuery(id: string): string {
-  return id.split('?', 1)[0].split('#', 1)[0]
+  return id.split('?', 1)[0]?.split('#', 1)[0] ?? ''
 }
 
 function resolveSourceRoot(scope: ReturnType<typeof resolveTaroSubPackages>[number]) {
   const relativeDir = path.dirname(scope.sourceRelativePath)
   const depth = relativeDir === '.' ? 0 : relativeDir.split('/').length
-  return path.resolve(path.dirname(scope.sourceAbsolutePath), ...Array.from({ length: depth }).fill('..'))
+  return path.resolve(path.dirname(scope.sourceAbsolutePath), ...Array.from<string>({ length: depth }).fill('..'))
 }
 
 function createTaroSourceStyleInjectorPlugin(

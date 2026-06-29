@@ -182,7 +182,7 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
       }
     },
     async load(id) {
-      const cleanId = id.split('?', 1)[0].split('#', 1)[0]
+      const cleanId = id.split('?', 1)[0]?.split('#', 1)[0] ?? ''
       const targetSourceFile = existing
         .flatMap(entry => entry.targetSourceFiles ?? [])
         .find(entry => entry.sourceAbsolutePath === cleanId)
@@ -195,7 +195,7 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
       return undefined
     },
     async transform(code, id) {
-      const cleanId = id.split('?', 1)[0].split('#', 1)[0]
+      const cleanId = id.split('?', 1)[0]?.split('#', 1)[0] ?? ''
       const targetSourceFile = existing
         .flatMap(entry => entry.targetSourceFiles ?? [])
         .find(entry => entry.sourceAbsolutePath === cleanId)
@@ -315,7 +315,9 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
 
   if (resolvedSubPackages.length > 0) {
     injectorOptions.subpackageStyleScopes = resolvedSubPackages
-    injectorOptions.generateSubpackageStyle = generator.generate
+    if (generator.generate !== undefined) {
+      injectorOptions.generateSubpackageStyle = generator.generate
+    }
     injectorOptions.loadSubpackageTargetStyle = generator.loadTargetStyle
   }
 
