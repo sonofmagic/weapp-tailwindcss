@@ -94,7 +94,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.9.1
+    prettier: ^3.9.3
   react18:
     '@types/react': ^19.2.17
     '@types/react-dom': 18.2.7
