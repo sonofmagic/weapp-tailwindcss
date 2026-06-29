@@ -11,7 +11,7 @@ import type {
   UniAppSubPackageConfig,
   UniAppSubPackageStyleEntry,
   WeappStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core'
+} from 'weapp-style-injector'
 
 export type WeappTailwindcssStyleInjectorUserOptions = boolean | WeappTailwindcssStyleInjectorOptions
 

@@ -1,48 +1,97 @@
-export { default } from '@weapp-tailwindcss/style-injector-core'
 export {
   createStyleInjector,
   DEFAULT_INCLUDE,
   PLUGIN_NAME,
-  weappStyleInjector,
-  weappStyleInjectorWebpack,
-  WeappStyleInjectorWebpackPlugin,
-} from '@weapp-tailwindcss/style-injector-core'
+} from './core'
 export type {
   GlobPattern,
   InjectionResult,
   PerFileImportResolver,
   StyleInjector,
-  ViteWeappStyleInjectorOptions,
   WeappStyleInjectorOptions,
-  WebpackWeappStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core'
+} from './core'
 export {
-  StyleInjector as TaroStyleInjector,
-} from '@weapp-tailwindcss/style-injector-core/vite/taro'
+  resolveDefaultMpxAppPaths,
+  resolveMpxSubPackages,
+} from './mpx'
 export type {
-  ViteTaroStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core/vite/taro'
+  MpxSubPackageConfig,
+  MpxSubPackageStyleEntry,
+  ResolvedMpxSubPackage,
+} from './mpx'
 export {
-  StyleInjector as UniAppStyleInjector,
-} from '@weapp-tailwindcss/style-injector-core/vite/uni-app'
+  collectSubpackageStyleAssets,
+  collectSubpackageTargetStyleAssets,
+  getSubpackageStyleAssetExt,
+  isFileInSubpackageScope,
+  isFileMatchedBySubpackageScope,
+  isLikelyStyleAssetSource,
+  isMatchedSourceModuleTargetFile,
+  isSourceFileMatchedBySubpackageScope,
+  isSourceModuleTargetFile,
+  isSubpackageStyleOutputFile,
+  isSupportedStyleExt,
+  normalizeOutputName,
+  resolveSubpackageOutputFileName,
+  resolveSubpackageStyleImport,
+  shouldInjectSubpackageStyleImport,
+} from './subpackage'
 export type {
-  ViteUniAppStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core/vite/uni-app'
+  ResolvedSubpackageStyleAsset,
+  ResolvedSubpackageStyleScope,
+  ResolvedSubpackageTargetSourceFile,
+  ResolvedSubpackageTargetSourceModule,
+  ResolvedSubpackageTargetStyleAsset,
+  SubpackageStyleBundler,
+  SubpackageStyleFramework,
+  SubpackageStyleGenerateContext,
+  SubpackageStyleGenerator,
+} from './subpackage'
 export {
-  StyleInjector as MpxStyleInjectorWebpack,
-} from '@weapp-tailwindcss/style-injector-core/webpack/mpx'
+  createTaroSubPackageImportResolver,
+  resolveTaroSubPackages,
+} from './taro'
 export type {
-  WebpackMpxStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core/webpack/mpx'
+  ResolvedTaroSubPackage,
+  TaroSubPackageConfig,
+  TaroSubPackageStyleEntry,
+} from './taro'
 export {
-  StyleInjector as TaroStyleInjectorWebpack,
-} from '@weapp-tailwindcss/style-injector-core/webpack/taro'
+  createUniAppSubPackageImportResolver,
+  resolveUniAppStyleScopes,
+  splitUniAppStyleScopes,
+} from './uni-app'
 export type {
-  WebpackTaroStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core/webpack/taro'
+  ResolvedSubPackage,
+  UniAppManualStyleConfig,
+  UniAppStyleScopeInput,
+  UniAppSubPackageConfig,
+  UniAppSubPackageStyleEntry,
+} from './uni-app'
 export {
-  StyleInjector as UniAppStyleInjectorWebpack,
-} from '@weapp-tailwindcss/style-injector-core/webpack/uni-app'
-export type {
-  WebpackUniAppStyleInjectorOptions,
-} from '@weapp-tailwindcss/style-injector-core/webpack/uni-app'
+  ensurePosix,
+  mergePerFileResolvers,
+  normalizeRelativeImport,
+  normalizeRoot,
+  toArray,
+} from './utils'
+
+export { weappStyleInjector } from './vite'
+export { weappStyleInjector as default } from './vite'
+export type { ViteWeappStyleInjectorOptions } from './vite'
+export { StyleInjector as TaroStyleInjector } from './vite/taro'
+export type { ViteTaroStyleInjectorOptions } from './vite/taro'
+export { StyleInjector as UniAppStyleInjector } from './vite/uni-app'
+export type { ViteUniAppStyleInjectorOptions } from './vite/uni-app'
+
+export {
+  weappStyleInjectorWebpack,
+  WeappStyleInjectorWebpackPlugin,
+} from './webpack'
+export type { WebpackWeappStyleInjectorOptions } from './webpack'
+export { StyleInjector as MpxStyleInjectorWebpack } from './webpack/mpx'
+export type { WebpackMpxStyleInjectorOptions } from './webpack/mpx'
+export { StyleInjector as TaroStyleInjectorWebpack } from './webpack/taro'
+export type { WebpackTaroStyleInjectorOptions } from './webpack/taro'
+export { StyleInjector as UniAppStyleInjectorWebpack } from './webpack/uni-app'
+export type { WebpackUniAppStyleInjectorOptions } from './webpack/uni-app'

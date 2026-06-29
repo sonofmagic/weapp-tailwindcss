@@ -37,11 +37,11 @@
       "@weapp-tailwindcss/shared/*": [
         "../shared/src/*"
       ],
-      "@weapp-tailwindcss/style-injector-core": [
-        "../style-injector-core/src/index.ts"
+      "weapp-style-injector": [
+        "../weapp-style-injector/src/index.ts"
       ],
-      "@weapp-tailwindcss/style-injector-core/*": [
-        "../style-injector-core/src/*"
+      "weapp-style-injector/*": [
+        "../weapp-style-injector/src/*"
       ],
       "#test/*": [
         "./test/*"

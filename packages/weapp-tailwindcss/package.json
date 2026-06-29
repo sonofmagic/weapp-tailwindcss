@@ -226,7 +226,7 @@
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/reset": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "@weapp-tailwindcss/style-injector-core": "workspace:*",
+    "weapp-style-injector": "workspace:*",
     "comment-json": "^5.0.0",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
