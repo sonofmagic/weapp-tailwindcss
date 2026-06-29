@@ -3,7 +3,7 @@ import type { CallExpression, Node, StringLiteral, TemplateElement } from '@babe
 import type { IJsHandlerOptions, JsHandlerResult } from '../types'
 import type { JsTokenUpdater } from './JsTokenUpdater'
 import type { JsToken } from './types'
-import { jsStringEscape } from '@ast-core/escape'
+import { jsStringEscape } from './js-string-escape'
 
 export type EvalHandler = (source: string, opts: IJsHandlerOptions) => JsHandlerResult
 

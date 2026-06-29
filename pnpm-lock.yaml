@@ -3810,9 +3810,6 @@ importers:
 
   packages/weapp-tailwindcss:
     dependencies:
-      '@ast-core/escape':
-        specifier: ~1.0.1
-        version: 1.0.1
       '@babel/parser':
         specifier: ~7.29.7
         version: 7.29.7
@@ -4687,9 +4684,6 @@ packages:
 
   '@asamuzakjp/nwsapi@2.3.9':
     resolution: {integrity: sha512-n8GuYSrI9bF7FFZ/SjhwevlHc8xaVlb/7HmHelnc/PZXBD2ZR49NnN9sMMuDdEGPeeRQ5d0hqlSlEpgCX3Wl0Q==}
-
-  '@ast-core/escape@1.0.1':
-    resolution: {integrity: sha512-/kVjBkDzYrSW1S+gTBCuOfhnNkge9qZFJgLT+MOZdmPN4Vts36S60uU5br3ozoxpJ1eRGe6pGy7/EfcOpFFHlA==}
 
   '@babel/code-frame@7.10.4':
     resolution: {integrity: sha512-vG6SvB6oYEhvgisZNFRmRCUkLz11c7rp+tbNTynGqc6mS1d5ATd/sGyV6W0KZZnXRKMTzZDRgQT3Ou9jhpAfUg==}
@@ -30450,8 +30444,6 @@ snapshots:
   '@asamuzakjp/generational-cache@1.0.1': {}
 
   '@asamuzakjp/nwsapi@2.3.9': {}
-
-  '@ast-core/escape@1.0.1': {}
 
   '@babel/code-frame@7.10.4':
     dependencies:

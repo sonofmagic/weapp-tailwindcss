@@ -2,9 +2,9 @@ import type { Node, Program, StringLiteral, TemplateElement } from '@oxc-project
 import type { IJsHandlerOptions, JsHandlerResult } from '../../types'
 import { createRequire } from 'node:module'
 import process from 'node:process'
-import { jsStringEscape } from '@ast-core/escape'
 import MagicString from 'magic-string'
 import { shouldEnableArbitraryValueFallback } from '../../shared/classname-transform'
+import { jsStringEscape } from '../js-string-escape'
 import { transformLiteralText } from '../literal-transform'
 
 interface OxcParseResult {

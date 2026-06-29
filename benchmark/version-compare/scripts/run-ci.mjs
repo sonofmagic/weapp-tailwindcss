@@ -13,7 +13,6 @@ const packageJsonPath = path.join(repoRoot, 'packages/weapp-tailwindcss/package.
 
 const dependencyFields = ['dependencies', 'devDependencies', 'peerDependencies', 'optionalDependencies']
 const publishedResolverDependencyNames = [
-  '@ast-core/escape',
   '@weapp-core/escape',
 ]
 

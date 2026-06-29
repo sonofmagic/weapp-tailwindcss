@@ -349,7 +349,6 @@ describe('ci workflows', () => {
     expect(source).toContain('publishedResolverDependencyNames')
     expect(source).toContain('pnpm\', [\'view\', normalizePackageSpec(baseline), \'dependencies\', \'--json\']')
     expect(source).toContain('patchPublishedResolverDependencies(json, resolverDependencies)')
-    expect(source).toContain('\'@ast-core/escape\'')
     expect(source).toContain('\'@weapp-core/escape\'')
   })
 

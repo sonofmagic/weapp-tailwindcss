@@ -3,12 +3,12 @@ import type { StringLiteral, TemplateElement } from '@babel/types'
 import type { ClassNameTransformResult } from '../shared/classname-transform'
 import type { IJsHandlerOptions } from '../types'
 import type { JsToken } from './types'
-import { jsStringEscape } from '@ast-core/escape'
 import { splitCandidateTokens } from '@tailwindcss-mangle/engine'
 import { createDebug } from '@/debug'
 import { resolveClassNameTransformWithResult, shouldEnableArbitraryValueFallback } from '../shared/classname-transform'
 import { decodeUnicode2 } from '../utils/decode'
 import { isClassContextLiteralPath } from './class-context'
+import { jsStringEscape } from './js-string-escape'
 import { getReplacement, getReplacementCacheStore } from './replacement-cache'
 
 const debug = createDebug('[js:handlers] ')
