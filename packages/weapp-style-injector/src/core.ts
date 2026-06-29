@@ -26,7 +26,7 @@ export interface StyleInjector {
 }
 
 export const PLUGIN_NAME = 'weapp-style-injector'
-export const DEFAULT_INCLUDE = ['**/*.wxss', '**/*.css']
+export const DEFAULT_INCLUDE = ['**/*.wxss', '**/*.acss', '**/*.css', '**/*.qss', '**/*.ttss', '**/*.jxss']
 
 const ESCAPE_REGEXP_RE = /[.*+?^${}()|[\]\\]/g
 const IMPORT_PREFIX_RE = /^@import\s+/i

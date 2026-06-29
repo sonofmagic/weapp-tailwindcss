@@ -1,4 +1,3 @@
-import type { EmittedAsset, OutputBundle } from 'rollup'
 import type { Plugin, PluginContainer, ResolvedConfig } from 'vite'
 import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 
@@ -15,6 +14,8 @@ import weappStyleInjector from '../vite'
 export interface ViteUniAppStyleInjectorOptions extends Omit<ViteWeappStyleInjectorOptions, 'uniAppSubPackages'> {
   pagesJsonPath?: string | string[]
   subPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
+  sourceFileName?: string | string[]
+  outputName?: string
   indexFileName?: string | string[]
   styleScopes?: UniAppStyleScopeInput | UniAppStyleScopeInput[]
 }
@@ -47,14 +48,11 @@ function getTransformHandler(hook: Plugin['transform'] | undefined): TransformHa
 }
 
 // 构建阶段生成分包入口样式时，提前触发 Tailwind 的 transform 逻辑并缓存结果
-function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): Plugin {
+function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPackage[]): {
+  plugin: Plugin
+  generate: ViteWeappStyleInjectorOptions['generateSubpackageStyle']
+} {
   const existing = [...subPackages]
-  if (existing.length === 0) {
-    return {
-      name: 'weapp-style-injector:uni-app-sub-packages',
-      apply: 'build' as const,
-    }
-  }
 
   let resolvedConfig: ResolvedConfig | undefined
   let pluginContainer: PluginContainer | undefined
@@ -80,7 +78,89 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): 
     return flat
   }
 
-  return {
+  const processEntry = async (entry: ResolvedSubPackage) => {
+    const sourcePath = entry.sourceAbsolutePath
+    if (!fs.existsSync(sourcePath)) {
+      return undefined
+    }
+
+    const cacheKey = `${sourcePath}::${entry.preprocess !== false ? '1' : '0'}`
+    let processedSource = processedSourceCache.get(cacheKey)
+
+    if (typeof processedSource !== 'undefined') {
+      return processedSource
+    }
+
+    let rawSource: string
+    try {
+      rawSource = await fs.promises.readFile(sourcePath, 'utf8')
+    }
+    catch {
+      return undefined
+    }
+
+    if (entry.preprocess !== false && resolvedConfig) {
+      try {
+        let transformedSource = rawSource
+
+        const initialResult = await preprocessCSS(transformedSource, sourcePath, resolvedConfig)
+        transformedSource = initialResult.code
+
+        const transformIds = new Set<string>([sourcePath, `${sourcePath}?direct`])
+
+        if (pluginContainer) {
+          try {
+            const resolvedId = await pluginContainer.resolveId(sourcePath)
+            if (resolvedId?.id) {
+              transformIds.add(resolvedId.id)
+              transformIds.add(`${resolvedId.id}?direct`)
+            }
+          }
+          catch {
+            // ignore resolution errors and fall back to raw path
+          }
+        }
+
+        for (const id of transformIds) {
+          let transformResult: unknown
+
+          if (pluginContainer) {
+            transformResult = await pluginContainer.transform(transformedSource, id)
+          }
+          else if (tailwindTransformHandler) {
+            transformResult = await tailwindTransformHandler.call(transformContext, transformedSource, id)
+          }
+
+          if (
+            transformResult
+            && typeof transformResult === 'object'
+            && 'code' in transformResult
+            && typeof (transformResult as { code?: unknown }).code === 'string'
+          ) {
+            transformedSource = (transformResult as { code: string }).code
+            break
+          }
+        }
+
+        const finalResult = await preprocessCSS(transformedSource, sourcePath, resolvedConfig)
+        processedSource = finalResult.code
+      }
+      catch (error) {
+        throw Object.assign(
+          new Error(`[weapp-style-injector] Failed to preprocess "${sourcePath}": ${(error as Error).message}`),
+          { cause: error },
+        )
+      }
+    }
+    else {
+      processedSource = rawSource
+    }
+
+    processedSourceCache.set(cacheKey, processedSource)
+    return processedSource
+  }
+
+  const plugin: Plugin = {
     name: 'weapp-style-injector:uni-app-sub-packages',
     apply: 'build' as const,
     configResolved(config: ResolvedConfig) {
@@ -96,105 +176,27 @@ function createUniAppSubPackageIndexEmitter(subPackages: ResolvedSubPackage[]): 
         }
       }
     },
-    async generateBundle(_: unknown, bundle: OutputBundle, _isWrite: boolean) {
-      for (const entry of existing) {
-        const sourcePath = entry.sourceAbsolutePath
-        if (!fs.existsSync(sourcePath)) {
-          continue
-        }
+  }
 
-        const fileName = entry.indexRelativePath
-        let processedSource = outputCache.get(fileName)
-
-        if (typeof processedSource === 'undefined') {
-          const cacheKey = `${sourcePath}::${entry.preprocess !== false ? '1' : '0'}`
-          processedSource = processedSourceCache.get(cacheKey)
-
-          if (typeof processedSource === 'undefined') {
-            let rawSource: string
-            try {
-              rawSource = await fs.promises.readFile(sourcePath, 'utf8')
-            }
-            catch {
-              continue
-            }
-
-            if (entry.preprocess !== false && resolvedConfig) {
-              try {
-                let transformedSource = rawSource
-
-                const initialResult = await preprocessCSS(transformedSource, sourcePath, resolvedConfig)
-                transformedSource = initialResult.code
-
-                const transformIds = new Set<string>([sourcePath, `${sourcePath}?direct`])
-
-                if (pluginContainer) {
-                  try {
-                    const resolvedId = await pluginContainer.resolveId(sourcePath)
-                    if (resolvedId?.id) {
-                      transformIds.add(resolvedId.id)
-                      transformIds.add(`${resolvedId.id}?direct`)
-                    }
-                  }
-                  catch {
-                    // ignore resolution errors and fall back to raw path
-                  }
-                }
-
-                for (const id of transformIds) {
-                  let transformResult: unknown
-
-                  if (pluginContainer) {
-                    transformResult = await pluginContainer.transform(transformedSource, id)
-                  }
-                  else if (tailwindTransformHandler) {
-                    // 当无法获取 pluginContainer 时，直接调用 Tailwind 插件的 transform 以确保 @tailwind 指令被展开
-                    transformResult = await tailwindTransformHandler.call(transformContext, transformedSource, id)
-                  }
-
-                  if (
-                    transformResult
-                    && typeof transformResult === 'object'
-                    && 'code' in transformResult
-                    && typeof (transformResult as { code?: unknown }).code === 'string'
-                  ) {
-                    transformedSource = (transformResult as { code: string }).code
-                    break
-                  }
-                }
-
-                const finalResult = await preprocessCSS(transformedSource, sourcePath, resolvedConfig)
-                processedSource = finalResult.code
-              }
-              catch (error) {
-                throw Object.assign(
-                  new Error(`[weapp-style-injector] Failed to preprocess "${sourcePath}": ${(error as Error).message}`),
-                  { cause: error },
-                )
-              }
-            }
-            else {
-              processedSource = rawSource
-            }
-
-            processedSourceCache.set(cacheKey, processedSource)
-          }
-
-          outputCache.set(fileName, processedSource)
-        }
-
-        const existingAsset = bundle[fileName]
-        if (existingAsset && existingAsset.type === 'asset') {
-          existingAsset.source = processedSource
-          continue
-        }
-
-        this.emitFile({
-          type: 'asset',
-          fileName,
-          source: processedSource,
-        } satisfies EmittedAsset)
+  return {
+    plugin,
+    async generate(context) {
+      const entry = existing.find(item => item.root === context.root && item.sourceAbsolutePath === context.sourcePath)
+      if (!entry) {
+        return undefined
       }
+      if (entry.generate) {
+        return entry.generate(context)
+      }
+      const cached = outputCache.get(context.outputFileName)
+      if (typeof cached !== 'undefined') {
+        return cached
+      }
+      const processed = await processEntry(entry)
+      if (typeof processed !== 'undefined') {
+        outputCache.set(context.outputFileName, processed)
+      }
+      return processed
     },
   }
 }
@@ -203,6 +205,8 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
   const {
     pagesJsonPath,
     subPackages,
+    sourceFileName,
+    outputName,
     indexFileName,
     styleScopes,
     ...rest
@@ -227,6 +231,12 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
       if (indexFileName !== undefined) {
         config.indexFileName = indexFileName
       }
+      if (sourceFileName !== undefined) {
+        config.sourceFileName = sourceFileName
+      }
+      if (outputName !== undefined) {
+        config.outputName = outputName
+      }
       configs.set(candidate, config)
     }
   }
@@ -245,12 +255,21 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
     injectorOptions.uniAppStyleScopes = manualEntries
   }
 
+  const { plugin: generatorPlugin, generate } = createUniAppSubPackageStyleGeneratorPlugin(resolvedSubPackages)
+
+  if (resolvedSubPackages.length > 0) {
+    injectorOptions.subpackageStyleScopes = resolvedSubPackages
+    if (generate) {
+      injectorOptions.generateSubpackageStyle = generate
+    }
+  }
+
   const plugins = [
     weappStyleInjector(injectorOptions),
   ]
 
   if (resolvedSubPackages.length > 0) {
-    plugins.unshift(createUniAppSubPackageIndexEmitter(resolvedSubPackages))
+    plugins.unshift(generatorPlugin)
   }
 
   return plugins.length === 1 ? plugins[0] : plugins

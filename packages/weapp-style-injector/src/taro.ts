@@ -1,4 +1,5 @@
 import type { PerFileImportResolver } from './core'
+import type { ResolvedSubpackageStyleScope, SubpackageStyleGenerator } from './subpackage'
 
 import fs from 'node:fs'
 import path from 'node:path'
@@ -13,13 +14,17 @@ import {
 
 export interface TaroSubPackageConfig {
   appConfigPath: string
+  sourceFileName?: string | string[]
+  outputName?: string
+  generate?: SubpackageStyleGenerator
+  /**
+   * @deprecated Use sourceFileName instead.
+   */
   indexFileNames?: string | string[]
+  preprocess?: boolean
 }
 
-interface ResolvedSubPackage {
-  root: string
-  indexRelativePath: string
-}
+export type ResolvedTaroSubPackage = ResolvedSubpackageStyleScope
 
 const DEFAULT_STYLE_FILENAMES = ['index.scss', 'index.css', 'index.less', 'index.sass', 'index.styl']
 
@@ -104,7 +109,7 @@ function ensureArray<T>(value: T | T[] | undefined): T[] {
   return Array.isArray(value) ? value : (typeof value === 'undefined' ? [] : [value])
 }
 
-function resolveSubPackages(config: TaroSubPackageConfig): ResolvedSubPackage[] {
+export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTaroSubPackage[] {
   const appConfigPath = path.resolve(config.appConfigPath)
   const appConfig = loadAppConfigModule(appConfigPath)
 
@@ -122,10 +127,11 @@ function resolveSubPackages(config: TaroSubPackageConfig): ResolvedSubPackage[] 
   }
 
   const baseDir = path.dirname(appConfigPath)
-  const styleFileNames = ensureArray(config.indexFileNames).flatMap(name => (typeof name === 'string' && name.length > 0 ? [name] : []))
+  const configuredStyleFileNames = config.sourceFileName ?? config.indexFileNames
+  const styleFileNames = ensureArray(configuredStyleFileNames).flatMap(name => (typeof name === 'string' && name.length > 0 ? [name] : []))
   const styleCandidates = styleFileNames.length > 0 ? styleFileNames : DEFAULT_STYLE_FILENAMES
 
-  const resolved: ResolvedSubPackage[] = []
+  const resolved: ResolvedTaroSubPackage[] = []
 
   for (const entry of subPackagesInput) {
     if (!entry?.root) {
@@ -145,10 +151,18 @@ function resolveSubPackages(config: TaroSubPackageConfig): ResolvedSubPackage[] 
       continue
     }
 
-    resolved.push({
+    const resolvedEntry: ResolvedTaroSubPackage = {
       root: ensurePosix(normalizedRoot),
-      indexRelativePath: ensurePosix(path.relative(baseDir, stylePath)),
-    })
+      sourceRelativePath: ensurePosix(path.relative(baseDir, stylePath)),
+      sourceAbsolutePath: stylePath,
+      outputName: config.outputName ?? path.basename(stylePath, path.extname(stylePath)),
+      preprocess: config.preprocess !== false,
+      framework: 'taro',
+    }
+    if (config.generate) {
+      resolvedEntry.generate = config.generate
+    }
+    resolved.push(resolvedEntry)
   }
 
   return resolved
@@ -162,7 +176,7 @@ export function createTaroSubPackageImportResolver(
     return undefined
   }
 
-  const subPackages = list.flatMap(resolveSubPackages)
+  const subPackages = list.flatMap(resolveTaroSubPackages)
   if (subPackages.length === 0) {
     return undefined
   }
@@ -174,15 +188,21 @@ export function createTaroSubPackageImportResolver(
     const imports: string[] = []
 
     for (const subPackage of subPackages) {
-      if (normalizedFileName === subPackage.indexRelativePath) {
-        continue
-      }
-
       if (!normalizedFileName.startsWith(`${subPackage.root}/`)) {
         continue
       }
 
-      const relativePath = path.posix.relative(directory, subPackage.indexRelativePath)
+      const ext = path.posix.extname(normalizedFileName)
+      if (!ext) {
+        continue
+      }
+
+      const indexRelativePath = ensurePosix(path.posix.join(subPackage.root, `${subPackage.outputName}${ext}`))
+      if (normalizedFileName === indexRelativePath) {
+        continue
+      }
+
+      const relativePath = path.posix.relative(directory, indexRelativePath)
       if (!relativePath || relativePath === '.') {
         continue
       }

@@ -1,13 +1,21 @@
 import type { Plugin } from 'vite'
 import type { WeappStyleInjectorOptions } from './core'
+import type { ResolvedSubpackageStyleScope, SubpackageStyleGenerateContext } from './subpackage'
 import type { UniAppManualStyleConfig, UniAppSubPackageConfig } from './uni-app'
 import { createStyleInjector, PLUGIN_NAME } from './core'
+import {
+  collectSubpackageStyleAssets,
+  resolveSubpackageStyleImport,
+  shouldInjectSubpackageStyleImport,
+} from './subpackage'
 import { createUniAppSubPackageImportResolver } from './uni-app'
 import { mergePerFileResolvers } from './utils'
 
 export interface ViteWeappStyleInjectorOptions extends WeappStyleInjectorOptions {
   uniAppSubPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
   uniAppStyleScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[]
+  subpackageStyleScopes?: ResolvedSubpackageStyleScope[]
+  generateSubpackageStyle?: (context: SubpackageStyleGenerateContext) => string | Uint8Array | null | undefined | Promise<string | Uint8Array | null | undefined>
 }
 
 export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}): Plugin {
@@ -15,12 +23,24 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
     uniAppSubPackages,
     uniAppStyleScopes,
     perFileImports,
+    subpackageStyleScopes,
+    generateSubpackageStyle,
     ...restOptions
   } = options
 
   const perFileResolver = mergePerFileResolvers([
     typeof perFileImports === 'function' ? perFileImports : undefined,
-    createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
+    subpackageStyleScopes && subpackageStyleScopes.length > 0
+      ? (fileName) => {
+          for (const scope of subpackageStyleScopes) {
+            if (shouldInjectSubpackageStyleImport(fileName, undefined, scope)) {
+              const resolved = resolveSubpackageStyleImport(fileName, scope)
+              return resolved ? [resolved] : []
+            }
+          }
+          return []
+        }
+      : createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
   ])
 
   const injectorOptions: WeappStyleInjectorOptions = {
@@ -37,7 +57,53 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
     apply: 'build',
     enforce: 'post',
     async generateBundle(_, bundle) {
-      if (!injector.hasImports) {
+      const styleAssets = Object.entries(bundle)
+        .filter(([, output]) => output.type === 'asset')
+        .map(([fileName, output]) => {
+          const asset: { fileName: string, source?: string | Uint8Array } = { fileName }
+          if (output.type === 'asset' && typeof output.source !== 'undefined') {
+            asset.source = output.source
+          }
+          return asset
+        })
+
+      const subpackageAssets = collectSubpackageStyleAssets(subpackageStyleScopes ?? [], styleAssets)
+
+      for (const asset of subpackageAssets) {
+        const generator = asset.scope.generate ?? generateSubpackageStyle
+        if (!generator) {
+          continue
+        }
+
+        const generated = await generator({
+          root: asset.scope.root,
+          sourcePath: asset.scope.sourceAbsolutePath,
+          sourceFiles: asset.scope.sourceFiles ?? [asset.scope.sourceAbsolutePath],
+          pageStyleFiles: asset.pageStyleFiles,
+          outputFileName: asset.outputFileName,
+          styleExt: asset.styleExt,
+          framework: asset.scope.framework,
+          bundler: 'vite',
+        })
+
+        if (generated == null) {
+          continue
+        }
+
+        const existing = bundle[asset.outputFileName]
+        if (existing?.type === 'asset') {
+          existing.source = generated
+        }
+        else {
+          this.emitFile({
+            type: 'asset',
+            fileName: asset.outputFileName,
+            source: generated,
+          })
+        }
+      }
+
+      if (!injector.hasImports && (!subpackageStyleScopes || subpackageStyleScopes.length === 0)) {
         return
       }
 
@@ -50,7 +116,22 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
         }
 
         const source = typeof output.source === 'undefined' ? '' : output.source
-        const result = injector.inject(fileName, source)
+        const subpackageImports = subpackageStyleScopes
+          ? subpackageStyleScopes.flatMap((scope) => {
+              if (!shouldInjectSubpackageStyleImport(fileName, source, scope)) {
+                return []
+              }
+              const resolved = resolveSubpackageStyleImport(fileName, scope)
+              return resolved ? [resolved] : []
+            })
+          : []
+
+        const result = subpackageImports.length > 0
+          ? createStyleInjector({
+              ...injectorOptions,
+              imports: subpackageImports,
+            }).inject(fileName, source)
+          : injector.inject(fileName, source)
 
         if (!result.changed) {
           continue

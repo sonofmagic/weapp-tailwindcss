@@ -4,13 +4,15 @@ import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } fr
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { createTaroSubPackageImportResolver } from '../taro'
+import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../taro'
 import { mergePerFileResolvers, toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
 export interface WebpackTaroStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'perFileImports'> {
   appConfigPath?: string | string[]
   subPackages?: TaroSubPackageConfig | TaroSubPackageConfig[]
+  sourceFileName?: string | string[]
+  outputName?: string
   perFileImports?: WebpackWeappStyleInjectorOptions['perFileImports']
 }
 
@@ -30,6 +32,8 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
   const {
     appConfigPath,
     subPackages,
+    sourceFileName,
+    outputName,
     perFileImports,
     ...rest
   } = options
@@ -46,18 +50,46 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
 
   for (const candidate of candidatePaths) {
     if (!configs.has(candidate) && fs.existsSync(candidate)) {
-      configs.set(candidate, { appConfigPath: candidate })
+      const config: TaroSubPackageConfig = { appConfigPath: candidate }
+      if (sourceFileName !== undefined) {
+        config.sourceFileName = sourceFileName
+      }
+      if (outputName !== undefined) {
+        config.outputName = outputName
+      }
+      configs.set(candidate, config)
     }
   }
 
-  const taroResolver = createTaroSubPackageImportResolver([...configs.values()])
+  const entries = [...configs.values()]
+  const taroResolver = createTaroSubPackageImportResolver(entries)
+  const resolvedSubPackages = entries.flatMap(resolveTaroSubPackages)
 
   const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,
   }
-  const mergedResolver = mergePerFileResolvers([perFileImports, taroResolver])
+  const mergedResolver = mergePerFileResolvers([
+    perFileImports,
+    resolvedSubPackages.length > 0 ? undefined : taroResolver,
+  ])
   if (mergedResolver !== undefined) {
     injectorOptions.perFileImports = mergedResolver
+  }
+  if (resolvedSubPackages.length > 0) {
+    injectorOptions.subpackageStyleScopes = resolvedSubPackages
+    injectorOptions.generateSubpackageStyle = (context) => {
+      const scope = resolvedSubPackages.find(entry => entry.root === context.root && entry.sourceAbsolutePath === context.sourcePath)
+      if (!scope) {
+        return undefined
+      }
+      if (scope.generate) {
+        return scope.generate(context)
+      }
+      if (!fs.existsSync(scope.sourceAbsolutePath)) {
+        return undefined
+      }
+      return fs.readFileSync(scope.sourceAbsolutePath, 'utf8')
+    }
   }
 
   return weappStyleInjectorWebpack(injectorOptions)

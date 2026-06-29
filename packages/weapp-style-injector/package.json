@@ -30,6 +30,11 @@
       "import": "./dist/taro.mjs",
       "require": "./dist/taro.cjs"
     },
+    "./subpackage": {
+      "types": "./dist/subpackage.d.ts",
+      "import": "./dist/subpackage.mjs",
+      "require": "./dist/subpackage.cjs"
+    },
     "./vite": {
       "types": "./dist/vite.d.ts",
       "import": "./dist/vite.mjs",

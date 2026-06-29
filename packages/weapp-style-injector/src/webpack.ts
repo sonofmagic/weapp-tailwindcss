@@ -1,8 +1,14 @@
 import type { Compiler, sources } from 'webpack'
 import type { WeappStyleInjectorOptions } from './core'
+import type { ResolvedSubpackageStyleScope, SubpackageStyleGenerator } from './subpackage'
 import type { UniAppManualStyleConfig, UniAppSubPackageConfig } from './uni-app'
 import { Buffer } from 'node:buffer'
 import { createStyleInjector, PLUGIN_NAME } from './core'
+import {
+  collectSubpackageStyleAssets,
+  resolveSubpackageStyleImport,
+  shouldInjectSubpackageStyleImport,
+} from './subpackage'
 import { createUniAppSubPackageImportResolver } from './uni-app'
 import { mergePerFileResolvers } from './utils'
 
@@ -16,6 +22,12 @@ export interface WebpackObjectPluginInstance {
 export interface WebpackWeappStyleInjectorOptions extends WeappStyleInjectorOptions {
   uniAppSubPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
   uniAppStyleScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[]
+  subpackageStyleScopes?: ResolvedSubpackageStyleScope[]
+  generateSubpackageStyle?: SubpackageStyleGenerator
+}
+
+function isPromiseLike(value: unknown): value is Promise<unknown> {
+  return Boolean(value && typeof (value as Promise<unknown>).then === 'function')
 }
 
 function createRawSource(compiler: Compiler, content: string): WebpackSource {
@@ -44,12 +56,16 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
       uniAppSubPackages,
       uniAppStyleScopes,
       perFileImports,
+      subpackageStyleScopes,
+      generateSubpackageStyle,
       ...restOptions
     } = this.options
 
     const perFileResolver = mergePerFileResolvers([
       typeof perFileImports === 'function' ? perFileImports : undefined,
-      createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
+      subpackageStyleScopes && subpackageStyleScopes.length > 0
+        ? undefined
+        : createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
     ])
 
     const injectorOptions: WeappStyleInjectorOptions = {
@@ -61,17 +77,94 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
 
     const injector = createStyleInjector(injectorOptions)
 
-    if (!injector.hasImports) {
+    if (!injector.hasImports && (!subpackageStyleScopes || subpackageStyleScopes.length === 0)) {
       return
     }
 
     const processCompilationAssets = (compilation: any) => {
+      const getAssetList = (): Array<{ name: string, source: WebpackSource }> => {
+        if (typeof compilation.getAssets === 'function') {
+          return compilation.getAssets()
+        }
+
+        return Object.entries(compilation.assets ?? {}).map(([name, source]) => ({
+          name,
+          source: source as WebpackSource,
+        }))
+      }
+
+      const setAsset = (name: string, content: string | Uint8Array) => {
+        const normalizedContent = typeof content === 'string' ? content : Buffer.from(content).toString('utf8')
+
+        if (typeof compilation.updateAsset === 'function') {
+          compilation.updateAsset(
+            name,
+            () => createRawSource(compiler, normalizedContent),
+          )
+        }
+        else {
+          compilation.assets[name] = createRawSource(compiler, normalizedContent)
+        }
+      }
+
+      const emitSubpackageAssets = () => {
+        const assets = getAssetList().map(asset => ({
+          fileName: asset.name,
+          source: extractSourcePayload(asset.source),
+        }))
+        const subpackageAssets = collectSubpackageStyleAssets(subpackageStyleScopes ?? [], assets)
+
+        for (const asset of subpackageAssets) {
+          const generator = asset.scope.generate ?? generateSubpackageStyle
+          if (!generator) {
+            continue
+          }
+
+          const generated = generator({
+            root: asset.scope.root,
+            sourcePath: asset.scope.sourceAbsolutePath,
+            sourceFiles: asset.scope.sourceFiles ?? [asset.scope.sourceAbsolutePath],
+            pageStyleFiles: asset.pageStyleFiles,
+            outputFileName: asset.outputFileName,
+            styleExt: asset.styleExt,
+            framework: asset.scope.framework,
+            bundler: 'webpack',
+          })
+
+          if (isPromiseLike(generated)) {
+            throw new TypeError('[weapp-style-injector] Webpack subpackage style generators must return synchronously.')
+          }
+
+          if (generated == null) {
+            continue
+          }
+
+          setAsset(asset.outputFileName, generated)
+        }
+      }
+
       const handleAsset = (name: string, getSource: () => string | Uint8Array, setSource: (content: string) => void) => {
         if (!injector.shouldProcess(name)) {
           return
         }
 
-        const result = injector.inject(name, getSource())
+        const source = getSource()
+        const subpackageImports = subpackageStyleScopes
+          ? subpackageStyleScopes.flatMap((scope) => {
+              if (!shouldInjectSubpackageStyleImport(name, source, scope)) {
+                return []
+              }
+              const resolved = resolveSubpackageStyleImport(name, scope)
+              return resolved ? [resolved] : []
+            })
+          : []
+
+        const result = subpackageImports.length > 0
+          ? createStyleInjector({
+              ...injectorOptions,
+              imports: subpackageImports,
+            }).inject(name, source)
+          : injector.inject(name, source)
 
         if (!result.changed) {
           return
@@ -91,6 +184,7 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
             stage,
           },
           () => {
+            emitSubpackageAssets()
             for (const asset of compilation.getAssets()) {
               handleAsset(
                 asset.name,
@@ -109,6 +203,7 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
 
       // webpack < 5 的兜底方案
       compilation.hooks.optimizeAssets.tap(WEBPACK_PLUGIN_NAME, (assets: Record<string, unknown>) => {
+        emitSubpackageAssets()
         for (const [name, assetSource] of Object.entries(assets)) {
           handleAsset(
             name,

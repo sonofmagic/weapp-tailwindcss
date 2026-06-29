@@ -50,7 +50,11 @@ async function getResolvedViteConfig(): Promise<ResolvedConfig> {
   return cachedResolvedConfig
 }
 
-async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[], bundle: TestBundle) {
+async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[] | undefined, bundle: TestBundle) {
+  if (!pluginOrPlugins) {
+    return
+  }
+
   const plugins = (Array.isArray(pluginOrPlugins) ? pluginOrPlugins : [pluginOrPlugins]).filter(Boolean)
 
   let resolvedConfig: ResolvedConfig | null = null
@@ -58,7 +62,7 @@ async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[], bundle: 
   for (const plugin of plugins) {
     if (plugin && typeof plugin.configResolved === 'function') {
       resolvedConfig ??= await getResolvedViteConfig()
-      await plugin.configResolved.call(plugin as unknown, resolvedConfig)
+      await (plugin.configResolved as unknown as (this: unknown, config: ResolvedConfig) => unknown).call(plugin, resolvedConfig)
     }
   }
 
@@ -199,8 +203,8 @@ describe('weapp-style-injector plugin', () => {
 
     await invokeGenerateBundle(plugin, bundle)
 
-    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
-    expect(bundle['sub-packages/pages/detail/item.wxss'].source).toBe(`@import "../../index.wxss";\n.item {}`)
+    expect(bundle['sub-packages/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/pages/detail/item.wxss']!.source).toBe(`@import "../../index.wxss";\n.item {}`)
     // the index file should not import itself
     expect(bundle['sub-packages/index.wxss'].source).toBe('.root {}')
   })
@@ -220,14 +224,14 @@ describe('weapp-style-injector plugin', () => {
 
     await invokeGenerateBundle(plugin, bundle)
 
-    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
-    expect(bundle['sub-packages/index.css'].source).toBe(`@import "./index.wxss";\n.root {}`)
+    expect(bundle['sub-packages/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/index.css']!.source).toBe('.root {}')
   })
 })
 
 describe('vite presets', () => {
   it('injects sub-package imports via uni-app preset', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
       'sub-packages/pages/detail/item.wxss': createAsset('.item {}', 'sub-packages/pages/detail/item.wxss'),
     }
@@ -240,8 +244,8 @@ describe('vite presets', () => {
 
     const generatedIndex = bundle['sub-packages/index.wxss']
 
-    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
-    expect(bundle['sub-packages/pages/detail/item.wxss'].source).toBe(`@import "../../index.wxss";\n.item {}`)
+    expect(bundle['sub-packages/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/pages/detail/item.wxss']!.source).toBe(`@import "../../index.wxss";\n.item {}`)
     expect(generatedIndex).toBeDefined()
     expect(generatedIndex?.source).toBe(
       fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.wxss'), 'utf8'),
@@ -249,7 +253,7 @@ describe('vite presets', () => {
   })
 
   it('supports custom index file names via uni-app preset', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
     }
 
@@ -262,7 +266,7 @@ describe('vite presets', () => {
 
     const generatedIndex = bundle['sub-packages/index.wxss']
 
-    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
     expect(generatedIndex).toBeDefined()
     expect(generatedIndex?.source).toBe(
       fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.css'), 'utf8'),
@@ -270,7 +274,7 @@ describe('vite presets', () => {
   })
 
   it('injects manual style scopes via uni-app preset', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'custom/pages/home.wxss': createAsset('.home {}', 'custom/pages/home.wxss'),
       'custom/pages/detail.wxss': createAsset('.detail {}', 'custom/pages/detail.wxss'),
     }
@@ -287,14 +291,14 @@ describe('vite presets', () => {
 
     const generatedIndex = bundle['custom/global.wxss']
 
-    expect(bundle['custom/pages/home.wxss'].source).toBe(`@import "../global.wxss";\n.home {}`)
-    expect(bundle['custom/pages/detail.wxss'].source).toBe(`@import "../global.wxss";\n.detail {}`)
+    expect(bundle['custom/pages/home.wxss']!.source).toBe(`@import "../global.wxss";\n.home {}`)
+    expect(bundle['custom/pages/detail.wxss']!.source).toBe(`@import "../global.wxss";\n.detail {}`)
     expect(generatedIndex).toBeDefined()
     expect(generatedIndex?.source).toBe('.global {\n  color: #10b981;\n}')
   })
 
   it('compiles sass sub-package indexes via uni-app preset', async () => {
-    const bundle = {
+    const bundle: TestBundle = {
       'sub-packages-scss/pages/home.wxss': createAsset('.home {}', 'sub-packages-scss/pages/home.wxss'),
     }
 
@@ -306,9 +310,31 @@ describe('vite presets', () => {
 
     const generatedIndex = bundle['sub-packages-scss/index.wxss']
 
-    expect(bundle['sub-packages-scss/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages-scss/pages/home.wxss']!.source).toBe(`@import "../index.wxss";\n.home {}`)
     expect(generatedIndex).toBeDefined()
     expect(generatedIndex?.source).toBe('.root {\n  color: #1c64f2;\n}')
+  })
+
+  it('supports generated sub-package style entries with custom output names', async () => {
+    const bundle: TestBundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      subPackages: {
+        pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+        outputName: 'tailwind',
+        generate(context) {
+          return `.generated { content: "${context.outputFileName}"; }`
+        },
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']!.source).toBe(`@import "../tailwind.wxss";\n.home {}`)
+    expect(bundle['sub-packages/tailwind.wxss']?.source).toBe('.generated { content: "sub-packages/tailwind.wxss"; }')
   })
 
   it('injects sub-package imports via taro preset', async () => {
@@ -324,7 +350,7 @@ describe('vite presets', () => {
       appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
     })
 
-    expect(resolver?.('taro-sub/pages/home.css')).toEqual(['../index.scss'])
+    expect(resolver?.('taro-sub/pages/home.css')).toEqual(['../index.css'])
 
     const plugin = TaroStyleInjector({
       appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
@@ -332,11 +358,13 @@ describe('vite presets', () => {
 
     await invokeGenerateBundle(plugin, bundle)
 
-    expect(bundle['taro-sub/pages/home.css'].source).toBe(`@import "../index.scss";\n.home {}`)
+    expect(bundle['taro-sub/pages/home.css'].source).toBe(`@import "../index.css";\n.home {}`)
     expect(bundle['legacy-sub/pages/main.css'].source).toBe(`@import "../index.css";\n.legacy {}`)
     expect(bundle['taro-missing/pages/detail.css'].source).toBe('.detail {}')
     expect(bundle['taro-sub/index.scss'].source).toBe('.root {}')
-    expect(bundle['legacy-sub/index.css'].source).toBe('.legacy-root {}')
+    expect(bundle['legacy-sub/index.css'].source).toBe(
+      fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
+    )
   })
 })
 
@@ -370,7 +398,8 @@ describe('weapp-style-injector webpack plugin', () => {
         return Object.entries(assets).map(([name, source]) => ({ name, source }))
       },
       updateAsset(name: string, factory: ((source: RawSource) => RawSource) | RawSource) {
-        assets[name] = typeof factory === 'function' ? factory(assets[name]) : factory
+        const current = assets[name] ?? new RawSource('')
+        assets[name] = typeof factory === 'function' ? factory(current) : factory
       },
     }
 
@@ -484,7 +513,7 @@ describe('weapp-style-injector webpack plugin', () => {
     plugin.apply(compiler)
 
     expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
-    expect(getAsset('sub-packages/index.css')).toBe(`@import "./index.wxss";\n.root {}`)
+    expect(getAsset('sub-packages/index.css')).toBe('.root {}')
   })
 
   it('injects sub-package imports via uni-app webpack preset', () => {
@@ -502,7 +531,9 @@ describe('weapp-style-injector webpack plugin', () => {
 
     expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
     expect(getAsset('sub-packages/pages/detail/item.wxss')).toBe(`@import "../../index.wxss";\n.item {}`)
-    expect(getAsset('sub-packages/index.wxss')).toBe('.root {}')
+    expect(getAsset('sub-packages/index.wxss')).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.wxss'), 'utf8'),
+    )
   })
 
   it('supports custom index file names via uni-app webpack preset', () => {
@@ -519,7 +550,7 @@ describe('weapp-style-injector webpack plugin', () => {
     plugin.apply(compiler)
 
     expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
-    expect(getAsset('sub-packages/index.css')).toBe(`@import "./index.wxss";\n.root {}`)
+    expect(getAsset('sub-packages/index.css')).toBe('.root {}')
   })
 
   it('injects sub-package imports via taro webpack preset', () => {
@@ -537,10 +568,12 @@ describe('weapp-style-injector webpack plugin', () => {
 
     plugin.apply(compiler)
 
-    expect(getAsset('taro-sub/pages/home.css')).toBe(`@import "../index.scss";\n.home {}`)
+    expect(getAsset('taro-sub/pages/home.css')).toBe(`@import "../index.css";\n.home {}`)
     expect(getAsset('legacy-sub/pages/main.css')).toBe(`@import "../index.css";\n.legacy {}`)
     expect(getAsset('taro-missing/pages/detail.css')).toBe('.detail {}')
     expect(getAsset('taro-sub/index.scss')).toBe('.root {}')
-    expect(getAsset('legacy-sub/index.css')).toBe('.legacy-root {}')
+    expect(getAsset('legacy-sub/index.css')).toBe(
+      fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
+    )
   })
 })

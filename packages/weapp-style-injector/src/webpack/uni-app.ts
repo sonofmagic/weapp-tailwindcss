@@ -4,13 +4,15 @@ import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } fr
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { splitUniAppStyleScopes } from '../uni-app'
+import { resolveUniAppStyleScopes, splitUniAppStyleScopes } from '../uni-app'
 import { toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
 export interface WebpackUniAppStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'uniAppSubPackages'> {
   pagesJsonPath?: string | string[]
   subPackages?: UniAppSubPackageConfig | UniAppSubPackageConfig[]
+  sourceFileName?: string | string[]
+  outputName?: string
   indexFileName?: string | string[]
   styleScopes?: UniAppStyleScopeInput | UniAppStyleScopeInput[]
 }
@@ -27,6 +29,8 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}): 
   const {
     pagesJsonPath,
     subPackages,
+    sourceFileName,
+    outputName,
     indexFileName,
     styleScopes,
     ...rest
@@ -51,12 +55,19 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}): 
       if (indexFileName !== undefined) {
         config.indexFileName = indexFileName
       }
+      if (sourceFileName !== undefined) {
+        config.sourceFileName = sourceFileName
+      }
+      if (outputName !== undefined) {
+        config.outputName = outputName
+      }
       configs.set(candidate, config)
     }
   }
 
   const entries = configs.size > 0 ? [...configs.values()] : undefined
   const manualEntries = manualStyleScopes.length > 0 ? manualStyleScopes : undefined
+  const resolvedSubPackages = resolveUniAppStyleScopes(entries, manualEntries)
 
   const injectorOptions: WebpackWeappStyleInjectorOptions = {
     ...rest,
@@ -66,6 +77,22 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}): 
   }
   if (manualEntries !== undefined) {
     injectorOptions.uniAppStyleScopes = manualEntries
+  }
+  if (resolvedSubPackages.length > 0) {
+    injectorOptions.subpackageStyleScopes = resolvedSubPackages
+    injectorOptions.generateSubpackageStyle = (context) => {
+      const scope = resolvedSubPackages.find(entry => entry.root === context.root && entry.sourceAbsolutePath === context.sourcePath)
+      if (!scope) {
+        return undefined
+      }
+      if (scope.generate) {
+        return scope.generate(context)
+      }
+      if (!fs.existsSync(scope.sourceAbsolutePath)) {
+        return undefined
+      }
+      return fs.readFileSync(scope.sourceAbsolutePath, 'utf8')
+    }
   }
 
   return weappStyleInjectorWebpack(injectorOptions)

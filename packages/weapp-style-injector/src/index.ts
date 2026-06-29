@@ -11,6 +11,24 @@ export type {
   WeappStyleInjectorOptions,
 } from './core'
 
+export {
+  collectSubpackageStyleAssets,
+  getSubpackageStyleAssetExt,
+  isLikelyStyleAssetSource,
+  normalizeOutputName,
+  resolveSubpackageOutputFileName,
+  resolveSubpackageStyleImport,
+  shouldInjectSubpackageStyleImport,
+} from './subpackage'
+export type {
+  ResolvedSubpackageStyleAsset,
+  ResolvedSubpackageStyleScope,
+  SubpackageStyleBundler,
+  SubpackageStyleFramework,
+  SubpackageStyleGenerateContext,
+  SubpackageStyleGenerator,
+} from './subpackage'
+
 export { createTaroSubPackageImportResolver } from './taro'
 export type { TaroSubPackageConfig } from './taro'
 

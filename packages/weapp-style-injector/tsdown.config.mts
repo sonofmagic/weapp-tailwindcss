@@ -3,6 +3,7 @@ import { defineConfig } from 'tsdown'
 export default defineConfig({
   entry: [
     'src/index.ts',
+    'src/subpackage.ts',
     'src/taro.ts',
     'src/uni-app.ts',
     'src/vite.ts',
