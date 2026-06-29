@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-29T01:26:21.464Z",
+  "generatedAt": "2026-06-29T12:36:26.100Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 161,
-    "docs": 157,
+    "all": 162,
+    "docs": 158,
     "blog": 4
   },
   "documents": [
@@ -4464,6 +4464,40 @@
       ],
       "updatedAt": null,
       "source": "docs/quick-start/v4/weapp-vite.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:quick-start/web",
+      "title": "Web 直接使用",
+      "description": "在纯 Web / Vite 项目中直接使用 weapp-tailwindcss 生成浏览器原生 Tailwind CSS。",
+      "summary": "weapp-tailwindcss 可以直接用于纯 Web 项目。它适合小程序、H5/Web 共用同一套 Tailwind CSS 生成链路，或者在普通 Vite Web 项目里验证浏览器原生输出。",
+      "url": "/docs/quick-start/web",
+      "canonical": "https://tw.icebreaker.top/docs/quick-start/web",
+      "keywords": [
+        "Web",
+        "H5",
+        "Vite",
+        "Tailwind CSS",
+        "weapp-tailwindcss",
+        "generator target web",
+        "cssEntries",
+        "浏览器原生 CSS",
+        "Web 直接使用",
+        "vite plugin",
+        "快速开始",
+        "安装",
+        "配置",
+        "直接使用",
+        "quick start",
+        "tailwindcss"
+      ],
+      "headings": [
+        "安装依赖",
+        "准备 CSS 入口",
+        "注册 Vite 插件"
+      ],
+      "updatedAt": null,
+      "source": "docs/quick-start/web.md"
     },
     {
       "kind": "doc",

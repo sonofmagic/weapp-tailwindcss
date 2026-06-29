@@ -16,6 +16,11 @@ const tutorialSidebar: SidebarConfig = [
     collapsed: false,
     items: [
       {
+        type: 'doc',
+        id: 'quick-start/web',
+        label: 'Web 直接使用',
+      },
+      {
         type: 'category',
         label: 'uni-app',
         collapsed: true,
