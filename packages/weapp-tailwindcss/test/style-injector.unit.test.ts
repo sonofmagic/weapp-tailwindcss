@@ -1,7 +1,7 @@
 import type { OutputAsset } from 'rollup'
 import { describe, expect, it } from 'vitest'
-import { createStyleInjector } from '@/style-injector/core'
-import { weappStyleInjector } from '@/style-injector/vite'
+import { createStyleInjector } from '@weapp-tailwindcss/style-injector-core'
+import { weappStyleInjector } from '@weapp-tailwindcss/style-injector-core/vite'
 
 function asset(fileName: string, source: string): OutputAsset {
   return {

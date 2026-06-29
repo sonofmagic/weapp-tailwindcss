@@ -1,8 +1,17 @@
-import type { WeappStyleInjectorOptions } from './core'
-import type { MpxSubPackageConfig, MpxSubPackageStyleEntry } from './mpx'
-import type { ResolvedSubpackageStyleScope, SubpackageStyleGenerateContext, SubpackageStyleGenerator } from './subpackage'
-import type { TaroSubPackageConfig, TaroSubPackageStyleEntry } from './taro'
-import type { UniAppManualStyleConfig, UniAppStyleScopeInput, UniAppSubPackageConfig, UniAppSubPackageStyleEntry } from './uni-app'
+import type {
+  MpxSubPackageConfig,
+  MpxSubPackageStyleEntry,
+  ResolvedSubpackageStyleScope,
+  SubpackageStyleGenerateContext,
+  SubpackageStyleGenerator,
+  TaroSubPackageConfig,
+  TaroSubPackageStyleEntry,
+  UniAppManualStyleConfig,
+  UniAppStyleScopeInput,
+  UniAppSubPackageConfig,
+  UniAppSubPackageStyleEntry,
+  WeappStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core'
 
 export type WeappTailwindcssStyleInjectorUserOptions = boolean | WeappTailwindcssStyleInjectorOptions
 

@@ -1,13 +1,13 @@
 {
-  "name": "weapp-style-injector",
-  "version": "0.0.3",
-  "description": "weapp-style-injector",
+  "name": "@weapp-tailwindcss/style-injector-core",
+  "version": "0.0.0",
+  "description": "Shared style injector core for weapp-tailwindcss packages",
   "author": "ice breaker <1324318532@qq.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
-    "directory": "packages/weapp-style-injector"
+    "directory": "packages/style-injector-core"
   },
   "bugs": {
     "url": "https://github.com/sonofmagic/weapp-tailwindcss/issues"
@@ -76,7 +76,8 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@weapp-tailwindcss/style-injector-core": "workspace:*"
+    "@weapp-tailwindcss/shared": "workspace:*",
+    "micromatch": "^4.0.8"
   },
   "publishConfig": {}
 }

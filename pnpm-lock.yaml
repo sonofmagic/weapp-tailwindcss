@@ -3530,6 +3530,9 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      '@weapp-tailwindcss/style-injector-core':
+        specifier: workspace:*
+        version: link:../style-injector-core
       '@weapp-tailwindcss/test-helper':
         specifier: workspace:*
         version: link:../test-helper
@@ -3754,6 +3757,15 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
 
+  packages/style-injector-core:
+    dependencies:
+      '@weapp-tailwindcss/shared':
+        specifier: workspace:*
+        version: link:../shared
+      micromatch:
+        specifier: ^4.0.8
+        version: 4.0.8
+
   packages/tailwindcss-config:
     dependencies:
       '@weapp-tailwindcss/shared':
@@ -3801,12 +3813,9 @@ importers:
 
   packages/weapp-style-injector:
     dependencies:
-      '@weapp-tailwindcss/shared':
+      '@weapp-tailwindcss/style-injector-core':
         specifier: workspace:*
-        version: link:../shared
-      micromatch:
-        specifier: ^4.0.8
-        version: 4.0.8
+        version: link:../style-injector-core
 
   packages/weapp-tailwindcss:
     dependencies:
@@ -3840,6 +3849,9 @@ importers:
       '@weapp-tailwindcss/shared':
         specifier: workspace:*
         version: link:../shared
+      '@weapp-tailwindcss/style-injector-core':
+        specifier: workspace:*
+        version: link:../style-injector-core
       comment-json:
         specifier: ^5.0.0
         version: 5.0.0

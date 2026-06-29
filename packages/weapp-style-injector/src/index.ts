@@ -1,32 +1,48 @@
+export { default } from '@weapp-tailwindcss/style-injector-core'
 export {
   createStyleInjector,
   DEFAULT_INCLUDE,
   PLUGIN_NAME,
-} from './core'
+  weappStyleInjector,
+  weappStyleInjectorWebpack,
+  WeappStyleInjectorWebpackPlugin,
+} from '@weapp-tailwindcss/style-injector-core'
 export type {
   GlobPattern,
   InjectionResult,
   PerFileImportResolver,
   StyleInjector,
+  ViteWeappStyleInjectorOptions,
   WeappStyleInjectorOptions,
-} from './core'
-
-export { weappStyleInjector } from './vite'
-export { weappStyleInjector as default } from './vite'
-export type { ViteWeappStyleInjectorOptions } from './vite'
-export { StyleInjector as TaroStyleInjector } from './vite/taro'
-export type { ViteTaroStyleInjectorOptions } from './vite/taro'
-export { StyleInjector as UniAppStyleInjector } from './vite/uni-app'
-export type { ViteUniAppStyleInjectorOptions } from './vite/uni-app'
-
+  WebpackWeappStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core'
 export {
-  weappStyleInjectorWebpack,
-  WeappStyleInjectorWebpackPlugin,
-} from './webpack'
-export type { WebpackWeappStyleInjectorOptions } from './webpack'
-export { StyleInjector as MpxStyleInjectorWebpack } from './webpack/mpx'
-export type { WebpackMpxStyleInjectorOptions } from './webpack/mpx'
-export { StyleInjector as TaroStyleInjectorWebpack } from './webpack/taro'
-export type { WebpackTaroStyleInjectorOptions } from './webpack/taro'
-export { StyleInjector as UniAppStyleInjectorWebpack } from './webpack/uni-app'
-export type { WebpackUniAppStyleInjectorOptions } from './webpack/uni-app'
+  StyleInjector as TaroStyleInjector,
+} from '@weapp-tailwindcss/style-injector-core/vite/taro'
+export type {
+  ViteTaroStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core/vite/taro'
+export {
+  StyleInjector as UniAppStyleInjector,
+} from '@weapp-tailwindcss/style-injector-core/vite/uni-app'
+export type {
+  ViteUniAppStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core/vite/uni-app'
+export {
+  StyleInjector as MpxStyleInjectorWebpack,
+} from '@weapp-tailwindcss/style-injector-core/webpack/mpx'
+export type {
+  WebpackMpxStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core/webpack/mpx'
+export {
+  StyleInjector as TaroStyleInjectorWebpack,
+} from '@weapp-tailwindcss/style-injector-core/webpack/taro'
+export type {
+  WebpackTaroStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core/webpack/taro'
+export {
+  StyleInjector as UniAppStyleInjectorWebpack,
+} from '@weapp-tailwindcss/style-injector-core/webpack/uni-app'
+export type {
+  WebpackUniAppStyleInjectorOptions,
+} from '@weapp-tailwindcss/style-injector-core/webpack/uni-app'

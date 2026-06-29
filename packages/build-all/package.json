@@ -18,6 +18,7 @@
     "@weapp-tailwindcss/minify-preserve": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
+    "@weapp-tailwindcss/style-injector-core": "workspace:*",
     "@weapp-tailwindcss/test-helper": "workspace:*",
     "tailwindcss-config": "workspace:*",
     "tailwindcss-core-plugins-extractor": "workspace:*",

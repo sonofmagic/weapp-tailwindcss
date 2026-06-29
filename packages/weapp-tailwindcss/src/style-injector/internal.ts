@@ -1,15 +1,15 @@
+import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '@weapp-tailwindcss/style-injector-core/webpack'
 import type { Plugin } from 'vite'
 import type { WeappTailwindcssStyleInjectorUserOptions } from './options'
-import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from './webpack'
 import type { AppType } from '@/types/shared'
+import { weappStyleInjector } from '@weapp-tailwindcss/style-injector-core/vite'
+import { StyleInjector as TaroViteStyleInjector } from '@weapp-tailwindcss/style-injector-core/vite/taro'
+import { StyleInjector as UniAppViteStyleInjector } from '@weapp-tailwindcss/style-injector-core/vite/uni-app'
+import { weappStyleInjectorWebpack } from '@weapp-tailwindcss/style-injector-core/webpack'
+import { StyleInjector as MpxWebpackStyleInjector } from '@weapp-tailwindcss/style-injector-core/webpack/mpx'
+import { StyleInjector as TaroWebpackStyleInjector } from '@weapp-tailwindcss/style-injector-core/webpack/taro'
+import { StyleInjector as UniAppWebpackStyleInjector } from '@weapp-tailwindcss/style-injector-core/webpack/uni-app'
 import { normalizeStyleInjectorOptions } from './options'
-import { weappStyleInjector } from './vite'
-import { StyleInjector as TaroViteStyleInjector } from './vite/taro'
-import { StyleInjector as UniAppViteStyleInjector } from './vite/uni-app'
-import { weappStyleInjectorWebpack } from './webpack'
-import { StyleInjector as MpxWebpackStyleInjector } from './webpack/mpx'
-import { StyleInjector as TaroWebpackStyleInjector } from './webpack/taro'
-import { StyleInjector as UniAppWebpackStyleInjector } from './webpack/uni-app'
 
 type VitePluginResult = Plugin | Plugin[]
 type ViteHookContext = ThisParameterType<NonNullable<Plugin['buildStart']>>
