@@ -21,6 +21,7 @@ const isGithub = String.prototype.toLowerCase.call(hostingProvider || '') === 'g
 const isProd = process.env.NODE_ENV === 'production'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const tailwindCssEntry = path.resolve(__dirname, 'src/css/tailwind.css')
+const workspacePackagePnpmStorePattern = /[\\/]packages(?:-runtime)?[\\/][^\\/]+[\\/]node_modules[\\/]\.pnpm[\\/]/
 console.log(`[hostingProvider]: ${hostingProvider}, [isGithub]: ${isGithub}`)
 
 const config: Config = {
@@ -191,6 +192,10 @@ const config: Config = {
           const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
           return {
+            snapshot: {
+              // 包目录下的独立 pnpm 虚拟存储会和根 node_modules/.pnpm 产生解析歧义，交给 webpack 按普通文件快照处理。
+              unmanagedPaths: [workspacePackagePnpmStorePattern],
+            },
             plugins: [
               new WeappTailwindcss({
                 generator: {
