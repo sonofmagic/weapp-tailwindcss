@@ -67,6 +67,15 @@ async function invokeGenerateBundle(pluginOrPlugins: Plugin | Plugin[] | undefin
   }
 
   for (const plugin of plugins) {
+    if (!plugin || typeof plugin.buildStart !== 'function') {
+      continue
+    }
+    await (plugin.buildStart as unknown as (this: unknown) => unknown).call({
+      addWatchFile() {},
+    })
+  }
+
+  for (const plugin of plugins) {
     if (!plugin) {
       continue
     }
@@ -258,6 +267,47 @@ describe('weapp-style-injector plugin', () => {
     expect(bundle['sub-packages/pages/home.js'].source).toBe('console.log("home")')
   })
 
+  it('generates css page style assets for h5-like bundles and preserves source css', async () => {
+    const sourceAbsolutePath = path.join(uniAppFixturesRoot, 'sub-packages/pages/home.css')
+    const bundle = {
+      'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
+    }
+
+    const plugin = weappStyleInjector({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/index.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/index.css'),
+          outputName: 'index',
+          preprocess: false,
+          framework: 'test',
+          targetFiles: ['sub-packages/pages/home'],
+          targetSourceFiles: [
+            {
+              fileName: 'sub-packages/pages/home.css',
+              sourceAbsolutePath,
+            },
+          ],
+        },
+      ],
+      loadSubpackageTargetStyle(_fileName, targetSourceAbsolutePath) {
+        return fs.readFileSync(targetSourceAbsolutePath, 'utf8')
+      },
+      generateSubpackageStyle() {
+        return '.root {}'
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']).toBeUndefined()
+    expect(bundle['sub-packages/pages/home.css']?.source).toBe(
+      `@import "../index.css";\n${fs.readFileSync(sourceAbsolutePath, 'utf8')}`,
+    )
+    expect(bundle['sub-packages/index.css']?.source).toBe('.root {}')
+  })
+
   it('respects scoped exclude rules when generating page style assets', async () => {
     const bundle = {
       'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
@@ -287,6 +337,50 @@ describe('weapp-style-injector plugin', () => {
     expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../index.wxss";')
     expect(bundle['sub-packages/pages/detail.wxss']).toBeUndefined()
   })
+
+  it('supports multiple style entries in the same sub-package scope', async () => {
+    const bundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+      'sub-packages/components/card.wxss': createAsset('.card {}', 'sub-packages/components/card.wxss'),
+    }
+
+    const plugin = weappStyleInjector({
+      subpackageStyleScopes: [
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/page.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/page.css'),
+          outputName: 'page',
+          preprocess: false,
+          framework: 'test',
+          include: ['pages/**/*.wxss'],
+        },
+        {
+          root: 'sub-packages',
+          sourceRelativePath: 'sub-packages/component.css',
+          sourceAbsolutePath: path.join(uniAppFixturesRoot, 'sub-packages/component.css'),
+          outputName: 'component',
+          preprocess: false,
+          framework: 'test',
+          include: ['components/**/*.wxss'],
+        },
+      ],
+      generateSubpackageStyle(context) {
+        return path.basename(context.sourcePath) === 'page.css'
+          ? '.fixture-page-entry {}'
+          : '.fixture-component-entry {}'
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../page.wxss";\n.home {}')
+    expect(bundle['sub-packages/components/card.wxss']?.source).toBe('@import "../component.wxss";\n.card {}')
+    expect(bundle['sub-packages/page.wxss']?.source).toBe('.fixture-page-entry {}')
+    expect(bundle['sub-packages/component.wxss']?.source).toBe('.fixture-component-entry {}')
+    expect(bundle['sub-packages/page.wxss']?.source).not.toContain('@import')
+    expect(bundle['sub-packages/component.wxss']?.source).not.toContain('@import')
+  })
 })
 
 describe('vite presets', () => {
@@ -309,6 +403,80 @@ describe('vite presets', () => {
     expect(generatedIndex).toBeDefined()
     expect(generatedIndex?.source).toBe(
       fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.wxss'), 'utf8'),
+    )
+  })
+
+  it('generates h5 css page style assets via uni-app preset', async () => {
+    const bundle: TestBundle = {
+      'sub-packages/pages/home.js': createAsset('console.log("home")', 'sub-packages/pages/home.js'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      indexFileName: 'index.css',
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']).toBeUndefined()
+    expect(bundle['sub-packages/pages/home.css']?.source).toBe(
+      `@import "../index.css";\n${fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/pages/home.css'), 'utf8')}`,
+    )
+    expect(bundle['sub-packages/index.css']?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.css'), 'utf8'),
+    )
+  })
+
+  it('resolves multiple style entries via uni-app preset', async () => {
+    const bundle: TestBundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      subPackages: {
+        pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+        styleEntries: [
+          {
+            sourceFileName: 'page.css',
+            include: ['pages/**/*.wxss'],
+          },
+          {
+            sourceFileName: 'component.css',
+            include: ['components/**/*.wxss'],
+          },
+          {
+            sourceFileName: 'weapp.css',
+            sourceInclude: ['pages/**/*.weapp.vue'],
+          },
+          {
+            sourceFileName: 'ali.css',
+            sourceInclude: ['pages/**/*.ali.vue'],
+          },
+        ],
+        preprocess: false,
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../page.wxss";\n.home {}')
+    expect(bundle['sub-packages/components/card.wxss']?.source).toBe(
+      `@import "../component.wxss";\n${fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/components/card.css'), 'utf8')}`,
+    )
+    expect(bundle['sub-packages/page.wxss']?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/page.css'), 'utf8'),
+    )
+    expect(bundle['sub-packages/component.wxss']?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/component.css'), 'utf8'),
+    )
+    expect(bundle['sub-packages/pages/home.weapp.wxss']?.source).toBe('@import "../weapp.wxss";')
+    expect(bundle['sub-packages/pages/home.ali.wxss']?.source).toBe('@import "../ali.wxss";')
+    expect(bundle['sub-packages/weapp.wxss']?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/weapp.css'), 'utf8'),
+    )
+    expect(bundle['sub-packages/ali.wxss']?.source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/ali.css'), 'utf8'),
     )
   })
 

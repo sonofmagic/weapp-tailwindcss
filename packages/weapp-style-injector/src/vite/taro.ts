@@ -48,23 +48,46 @@ function resolveSourceRoot(scope: ReturnType<typeof resolveTaroSubPackages>[numb
 
 function createTaroSourceStyleInjectorPlugin(
   resolvedSubPackages: ReturnType<typeof resolveTaroSubPackages>,
-): Plugin | undefined {
+): {
+  plugin: Plugin
+  loadTargetStyle: NonNullable<ViteWeappStyleInjectorOptions['loadSubpackageTargetStyle']>
+} | undefined {
   if (resolvedSubPackages.length === 0) {
     return undefined
   }
 
+  const targetStyleSourceCache = new Map<string, string>()
   const scopes = resolvedSubPackages.map(scope => ({
     scope,
     sourceRoot: resolveSourceRoot(scope),
   }))
 
-  return {
+  const plugin: Plugin = {
     name: 'weapp-style-injector:taro-source-style',
     enforce: 'pre',
+    async buildStart() {
+      for (const scope of resolvedSubPackages) {
+        for (const targetSourceFile of scope.targetSourceFiles ?? []) {
+          this.addWatchFile(targetSourceFile.sourceAbsolutePath)
+          if (!targetStyleSourceCache.has(targetSourceFile.sourceAbsolutePath) && fs.existsSync(targetSourceFile.sourceAbsolutePath)) {
+            const source = await fs.promises.readFile(targetSourceFile.sourceAbsolutePath, 'utf8')
+            targetStyleSourceCache.set(targetSourceFile.sourceAbsolutePath, source)
+          }
+        }
+      }
+    },
     transform(code, id) {
       const cleanId = stripQuery(id)
       if (!STYLE_ID_RE.test(cleanId)) {
         return undefined
+      }
+
+      for (const scope of resolvedSubPackages) {
+        const targetSourceFile = (scope.targetSourceFiles ?? [])
+          .find(entry => entry.sourceAbsolutePath === cleanId)
+        if (targetSourceFile) {
+          targetStyleSourceCache.set(targetSourceFile.sourceAbsolutePath, code)
+        }
       }
 
       const imports: string[] = []
@@ -102,6 +125,13 @@ function createTaroSourceStyleInjectorPlugin(
         code: result.content,
         map: null,
       }
+    },
+  }
+
+  return {
+    plugin,
+    async loadTargetStyle(_fileName, sourceAbsolutePath) {
+      return targetStyleSourceCache.get(sourceAbsolutePath)
     },
   }
 }
@@ -183,9 +213,12 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
   }
 
   const sourceStyleInjector = createTaroSourceStyleInjectorPlugin(resolvedSubPackages)
+  if (sourceStyleInjector) {
+    injectorOptions.loadSubpackageTargetStyle = sourceStyleInjector.loadTargetStyle
+  }
   const bundleStyleInjector = weappStyleInjector(injectorOptions)
 
   return sourceStyleInjector
-    ? [sourceStyleInjector, bundleStyleInjector]
+    ? [sourceStyleInjector.plugin, bundleStyleInjector]
     : bundleStyleInjector
 }

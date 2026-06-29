@@ -108,6 +108,12 @@ export function StyleInjector(options: WebpackUniAppStyleInjectorOptions = {}): 
       }
       return fs.readFileSync(scope.sourceAbsolutePath, 'utf8')
     }
+    injectorOptions.loadSubpackageTargetStyle = (_fileName, sourceAbsolutePath) => {
+      if (!fs.existsSync(sourceAbsolutePath)) {
+        return undefined
+      }
+      return fs.readFileSync(sourceAbsolutePath, 'utf8')
+    }
   }
 
   return weappStyleInjectorWebpack(injectorOptions)

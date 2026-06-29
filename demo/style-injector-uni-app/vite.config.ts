@@ -16,6 +16,27 @@ export default defineConfig({
         pagesJsonPath: 'src/pages.json',
         indexFileName: 'index.css',
         preprocess: false,
+        styleEntries: [
+          {
+            sourceFileName: 'index.css',
+          },
+          {
+            sourceFileName: 'page.css',
+            include: ['pages/**/*.css', 'pages/**/*.wxss'],
+          },
+          {
+            sourceFileName: 'component.css',
+            include: ['components/**/*.css', 'components/**/*.wxss'],
+          },
+          {
+            sourceFileName: 'weapp.css',
+            sourceInclude: ['pages/**/*.weapp.vue'],
+          },
+          {
+            sourceFileName: 'ali.css',
+            sourceInclude: ['pages/**/*.ali.vue'],
+          },
+        ],
       },
     }),
   ],

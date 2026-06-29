@@ -3,7 +3,9 @@
   "subPackages": [
     {
       "root": "sub-packages",
-      "pages": []
+      "pages": [
+        "pages/home"
+      ]
     },
     {
       "root": "sub-packages-missing",

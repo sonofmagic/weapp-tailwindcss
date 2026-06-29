@@ -7,6 +7,9 @@ import { createStyleInjector, PLUGIN_NAME } from './core'
 import {
   collectSubpackageStyleAssets,
   collectSubpackageTargetStyleAssets,
+  isMatchedSourceModuleTargetFile,
+  isSourceModuleTargetFile,
+  isSubpackageStyleOutputFile,
   resolveSubpackageStyleImport,
   shouldInjectSubpackageStyleImport,
 } from './subpackage'
@@ -25,6 +28,7 @@ export interface WebpackWeappStyleInjectorOptions extends WeappStyleInjectorOpti
   uniAppStyleScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[]
   subpackageStyleScopes?: ResolvedSubpackageStyleScope[]
   generateSubpackageStyle?: SubpackageStyleGenerator
+  loadSubpackageTargetStyle?: (fileName: string, sourceAbsolutePath: string) => string | Uint8Array | null | undefined
 }
 
 function isPromiseLike(value: unknown): value is Promise<unknown> {
@@ -59,6 +63,7 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
       perFileImports,
       subpackageStyleScopes,
       generateSubpackageStyle,
+      loadSubpackageTargetStyle,
       ...restOptions
     } = this.options
 
@@ -126,7 +131,10 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
         const targetAssets = collectSubpackageTargetStyleAssets(subpackageStyleScopes ?? [], allAssets)
 
         for (const asset of targetAssets) {
-          setAsset(asset.fileName, '')
+          const source = asset.sourceAbsolutePath && loadSubpackageTargetStyle
+            ? loadSubpackageTargetStyle(asset.fileName, asset.sourceAbsolutePath)
+            : undefined
+          setAsset(asset.fileName, source ?? '')
         }
 
         const assets = getAssetList()
@@ -174,6 +182,15 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
         const source = getSource()
         const subpackageImports = subpackageStyleScopes
           ? subpackageStyleScopes.flatMap((scope) => {
+              if (isSubpackageStyleOutputFile(name, scope, subpackageStyleScopes)) {
+                return []
+              }
+              if (!scope.sourceInclude && !scope.sourceExclude && isSourceModuleTargetFile(scope, name)) {
+                return []
+              }
+              if ((scope.sourceInclude || scope.sourceExclude) && !isMatchedSourceModuleTargetFile(scope, name)) {
+                return []
+              }
               if (!shouldInjectSubpackageStyleImport(name, source, scope)) {
                 return []
               }

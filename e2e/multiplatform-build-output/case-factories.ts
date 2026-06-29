@@ -550,7 +550,14 @@ export function styleInjectorUniAppMiniCase(options: {
       `${outputDir}/app.json`,
       `${outputDir}/app.wxss`,
       `${outputDir}/sub-normal/index.wxss`,
+      `${outputDir}/sub-normal/page.wxss`,
+      `${outputDir}/sub-normal/component.wxss`,
+      `${outputDir}/sub-normal/weapp.wxss`,
+      `${outputDir}/sub-normal/ali.wxss`,
       `${outputDir}/sub-normal/pages/index.wxss`,
+      `${outputDir}/sub-normal/pages/index.weapp.wxss`,
+      `${outputDir}/sub-normal/pages/index.ali.wxss`,
+      `${outputDir}/sub-normal/components/NormalBadge.wxss`,
       `${outputDir}/sub-independent/index.wxss`,
       `${outputDir}/sub-independent/pages/index.wxss`,
     ],
@@ -560,6 +567,10 @@ export function styleInjectorUniAppMiniCase(options: {
     styleContains: [
       '.injector-uni-main',
       '.injector-uni-normal',
+      '.injector-uni-normal-page-entry',
+      '.injector-uni-normal-component-entry',
+      '.injector-uni-weapp-entry',
+      '.injector-uni-ali-entry',
       '.injector-uni-independent',
     ],
     textContains: [
@@ -575,13 +586,48 @@ export function styleInjectorUniAppMiniCase(options: {
       },
       {
         file: `${outputDir}/sub-normal/pages/index.wxss`,
-        contains: [importPathTo('index.wxss')],
-        notContains: [cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
+        contains: [importPathTo('index.wxss'), importPathTo('page.wxss')],
+        notContains: [importPathTo('component.wxss'), cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
+      },
+      {
+        file: `${outputDir}/sub-normal/components/NormalBadge.wxss`,
+        contains: [importPathTo('index.wxss'), importPathTo('component.wxss')],
+        notContains: [importPathTo('page.wxss'), cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
       },
       {
         file: `${outputDir}/sub-normal/index.wxss`,
         contains: ['.injector-uni-normal'],
-        notContains: ['@import', cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
+        notContains: ['@import', cssSelector('.injector-uni-normal-page-entry'), cssSelector('.injector-uni-normal-component-entry'), cssSelector('.injector-uni-main'), cssSelector('.injector-uni-independent')],
+      },
+      {
+        file: `${outputDir}/sub-normal/page.wxss`,
+        contains: ['.injector-uni-normal-page-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-normal'), cssSelector('.injector-uni-normal-component-entry')],
+      },
+      {
+        file: `${outputDir}/sub-normal/component.wxss`,
+        contains: ['.injector-uni-normal-component-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-normal'), cssSelector('.injector-uni-normal-page-entry')],
+      },
+      {
+        file: `${outputDir}/sub-normal/pages/index.weapp.wxss`,
+        contains: [importPathTo('weapp.wxss')],
+        notContains: [importPathTo('ali.wxss'), importPathTo('page.wxss'), importPathTo('component.wxss')],
+      },
+      {
+        file: `${outputDir}/sub-normal/pages/index.ali.wxss`,
+        contains: [importPathTo('ali.wxss')],
+        notContains: [importPathTo('weapp.wxss'), importPathTo('page.wxss'), importPathTo('component.wxss')],
+      },
+      {
+        file: `${outputDir}/sub-normal/weapp.wxss`,
+        contains: ['.injector-uni-weapp-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-ali-entry')],
+      },
+      {
+        file: `${outputDir}/sub-normal/ali.wxss`,
+        contains: ['.injector-uni-ali-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-weapp-entry')],
       },
       {
         file: `${outputDir}/sub-independent/pages/index.wxss`,
@@ -615,9 +661,55 @@ export function styleInjectorUniAppH5Case(options: {
     styleContains: [
       '.injector-uni-main',
       '.injector-uni-normal',
+      '.injector-uni-normal-page-entry',
+      '.injector-uni-normal-component-entry',
+      '.injector-uni-weapp-entry',
+      '.injector-uni-ali-entry',
       '.injector-uni-independent',
     ],
     textContains: ['<html'],
+    fileAssertions: [
+      {
+        file: 'dist/build/h5/sub-normal/pages/index.css',
+        contains: [importPathTo('index.css'), importPathTo('page.css'), '.injector-uni-normal-page'],
+        notContains: [importPathTo('component.css')],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/components/NormalBadge.css',
+        contains: [importPathTo('index.css'), importPathTo('component.css'), '.injector-uni-normal-component-local'],
+        notContains: [importPathTo('page.css')],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/page.css',
+        contains: ['.injector-uni-normal-page-entry'],
+        notContains: ['@import'],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/component.css',
+        contains: ['.injector-uni-normal-component-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-normal-page-entry')],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/pages/index.weapp.css',
+        contains: [importPathTo('weapp.css')],
+        notContains: [importPathTo('ali.css'), importPathTo('page.css'), importPathTo('component.css')],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/pages/index.ali.css',
+        contains: [importPathTo('ali.css')],
+        notContains: [importPathTo('weapp.css'), importPathTo('page.css'), importPathTo('component.css')],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/weapp.css',
+        contains: ['.injector-uni-weapp-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-ali-entry')],
+      },
+      {
+        file: 'dist/build/h5/sub-normal/ali.css',
+        contains: ['.injector-uni-ali-entry'],
+        notContains: ['@import', cssSelector('.injector-uni-weapp-entry')],
+      },
+    ],
     status: 'ci',
   }
 }

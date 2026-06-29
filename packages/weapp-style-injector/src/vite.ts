@@ -6,6 +6,9 @@ import { createStyleInjector, PLUGIN_NAME } from './core'
 import {
   collectSubpackageStyleAssets,
   collectSubpackageTargetStyleAssets,
+  isMatchedSourceModuleTargetFile,
+  isSourceModuleTargetFile,
+  isSubpackageStyleOutputFile,
   resolveSubpackageStyleImport,
   shouldInjectSubpackageStyleImport,
 } from './subpackage'
@@ -17,6 +20,7 @@ export interface ViteWeappStyleInjectorOptions extends WeappStyleInjectorOptions
   uniAppStyleScopes?: UniAppManualStyleConfig | UniAppManualStyleConfig[]
   subpackageStyleScopes?: ResolvedSubpackageStyleScope[]
   generateSubpackageStyle?: (context: SubpackageStyleGenerateContext) => string | Uint8Array | null | undefined | Promise<string | Uint8Array | null | undefined>
+  loadSubpackageTargetStyle?: (fileName: string, sourceAbsolutePath: string) => string | Uint8Array | null | undefined | Promise<string | Uint8Array | null | undefined>
 }
 
 export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}): Plugin {
@@ -26,21 +30,14 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
     perFileImports,
     subpackageStyleScopes,
     generateSubpackageStyle,
+    loadSubpackageTargetStyle,
     ...restOptions
   } = options
 
   const perFileResolver = mergePerFileResolvers([
     typeof perFileImports === 'function' ? perFileImports : undefined,
     subpackageStyleScopes && subpackageStyleScopes.length > 0
-      ? (fileName) => {
-          for (const scope of subpackageStyleScopes) {
-            if (shouldInjectSubpackageStyleImport(fileName, undefined, scope)) {
-              const resolved = resolveSubpackageStyleImport(fileName, scope)
-              return resolved ? [resolved] : []
-            }
-          }
-          return []
-        }
+      ? undefined
       : createUniAppSubPackageImportResolver(uniAppSubPackages, uniAppStyleScopes),
   ])
 
@@ -76,11 +73,14 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
           if (bundle[asset.fileName]) {
             continue
           }
+          const source = asset.sourceAbsolutePath && loadSubpackageTargetStyle
+            ? await loadSubpackageTargetStyle(asset.fileName, asset.sourceAbsolutePath)
+            : undefined
           bundle[asset.fileName] = {
             type: 'asset',
             fileName: asset.fileName,
             name: asset.fileName,
-            source: '',
+            source: source ?? '',
           }
         }
 
@@ -134,10 +134,22 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
           if (!injector.shouldProcess(fileName)) {
             continue
           }
+          if (subpackageStyleScopes?.some(scope => isSubpackageStyleOutputFile(fileName, scope, subpackageStyleScopes))) {
+            continue
+          }
 
           const source = typeof output.source === 'undefined' ? '' : output.source
           const subpackageImports = subpackageStyleScopes
             ? subpackageStyleScopes.flatMap((scope) => {
+                if (isSubpackageStyleOutputFile(fileName, scope, subpackageStyleScopes)) {
+                  return []
+                }
+                if (!scope.sourceInclude && !scope.sourceExclude && isSourceModuleTargetFile(scope, fileName)) {
+                  return []
+                }
+                if ((scope.sourceInclude || scope.sourceExclude) && !isMatchedSourceModuleTargetFile(scope, fileName)) {
+                  return []
+                }
                 if (!shouldInjectSubpackageStyleImport(fileName, source, scope)) {
                   return []
                 }

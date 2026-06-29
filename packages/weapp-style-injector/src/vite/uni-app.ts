@@ -54,6 +54,7 @@ function getTransformHandler(hook: Plugin['transform'] | undefined): TransformHa
 function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPackage[]): {
   plugin: Plugin
   generate: ViteWeappStyleInjectorOptions['generateSubpackageStyle']
+  loadTargetStyle: NonNullable<ViteWeappStyleInjectorOptions['loadSubpackageTargetStyle']>
 } {
   const existing = [...subPackages]
 
@@ -61,6 +62,7 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
   let pluginContainer: PluginContainer | undefined
   let tailwindTransformHandler: TransformHandler | undefined
   const processedSourceCache = new Map<string, string>()
+  const targetStyleSourceCache = new Map<string, string>()
   const outputCache = new Map<string, string>()
 
   const transformContext = {
@@ -166,6 +168,40 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
   const plugin: Plugin = {
     name: 'weapp-style-injector:uni-app-sub-packages',
     apply: 'build' as const,
+    async buildStart() {
+      for (const entry of existing) {
+        for (const targetSourceFile of entry.targetSourceFiles ?? []) {
+          this.addWatchFile(targetSourceFile.sourceAbsolutePath)
+          if (!targetStyleSourceCache.has(targetSourceFile.sourceAbsolutePath) && fs.existsSync(targetSourceFile.sourceAbsolutePath)) {
+            const source = await fs.promises.readFile(targetSourceFile.sourceAbsolutePath, 'utf8')
+            targetStyleSourceCache.set(targetSourceFile.sourceAbsolutePath, source)
+          }
+        }
+      }
+    },
+    async load(id) {
+      const cleanId = id.split('?', 1)[0].split('#', 1)[0]
+      const targetSourceFile = existing
+        .flatMap(entry => entry.targetSourceFiles ?? [])
+        .find(entry => entry.sourceAbsolutePath === cleanId)
+      if (!targetSourceFile) {
+        return undefined
+      }
+
+      const source = await fs.promises.readFile(targetSourceFile.sourceAbsolutePath, 'utf8')
+      targetStyleSourceCache.set(targetSourceFile.sourceAbsolutePath, source)
+      return undefined
+    },
+    async transform(code, id) {
+      const cleanId = id.split('?', 1)[0].split('#', 1)[0]
+      const targetSourceFile = existing
+        .flatMap(entry => entry.targetSourceFiles ?? [])
+        .find(entry => entry.sourceAbsolutePath === cleanId)
+      if (targetSourceFile) {
+        targetStyleSourceCache.set(targetSourceFile.sourceAbsolutePath, code)
+      }
+      return undefined
+    },
     configResolved(config: ResolvedConfig) {
       resolvedConfig = config
       // Vite 在 build 阶段不会暴露 pluginContainer，这里通过类型断言尝试读取，失败时会退回到手动调用 Tailwind transform
@@ -200,6 +236,9 @@ function createUniAppSubPackageStyleGeneratorPlugin(subPackages: ResolvedSubPack
         outputCache.set(context.outputFileName, processed)
       }
       return processed
+    },
+    async loadTargetStyle(_fileName, sourceAbsolutePath) {
+      return targetStyleSourceCache.get(sourceAbsolutePath)
     },
   }
 }
@@ -270,13 +309,12 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
     injectorOptions.uniAppStyleScopes = manualEntries
   }
 
-  const { plugin: generatorPlugin, generate } = createUniAppSubPackageStyleGeneratorPlugin(resolvedSubPackages)
+  const generator = createUniAppSubPackageStyleGeneratorPlugin(resolvedSubPackages)
 
   if (resolvedSubPackages.length > 0) {
     injectorOptions.subpackageStyleScopes = resolvedSubPackages
-    if (generate) {
-      injectorOptions.generateSubpackageStyle = generate
-    }
+    injectorOptions.generateSubpackageStyle = generator.generate
+    injectorOptions.loadSubpackageTargetStyle = generator.loadTargetStyle
   }
 
   const plugins = [
@@ -284,7 +322,7 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
   ]
 
   if (resolvedSubPackages.length > 0) {
-    plugins.unshift(generatorPlugin)
+    plugins.unshift(generator.plugin)
   }
 
   return plugins.length === 1 ? plugins[0] : plugins
