@@ -99,6 +99,6 @@
     "fast-check": "^4.8.0",
     "postcss-calc": "link:packages/postcss-calc",
     "postcss-custom-properties": "^15.0.1",
-    "postcss-preset-env": "^11.3.1"
+    "postcss-preset-env": "^11.3.2"
   }
 }
