@@ -192,6 +192,11 @@ const config: Config = {
           const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 
           return {
+            devServer: {
+              client: {
+                overlay: false,
+              },
+            },
             snapshot: {
               // 包目录下的独立 pnpm 虚拟存储会和根 node_modules/.pnpm 产生解析歧义，交给 webpack 按普通文件快照处理。
               unmanagedPaths: [workspacePackagePnpmStorePattern],
