@@ -316,6 +316,7 @@ jobs:
             runner_label: macos
             node-version: 22
             watch_case: uni-app-vite-tailwindcss-v4:mp-weixin
+            artifact_case: uni-app-vite-tailwindcss-v4-mp-weixin
             round_profile: default
             watch_save_snapshots: '1'
             timeout_minutes: 60
@@ -425,7 +426,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-watch-hmr-ci-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
+          name: e2e-watch-hmr-ci-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |
             e2e/benchmark/e2e-watch-hmr/*.json
             e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md
@@ -437,7 +438,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: e2e-watch-hmr-ci-failure-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
+          name: e2e-watch-hmr-ci-failure-${{ matrix.runner_label }}-node${{ matrix.node-version }}-${{ matrix.artifact_case || matrix.watch_case }}-${{ matrix.round_profile }}-${{ github.run_id }}
           path: |
             e2e/benchmark/e2e-watch-hmr/snapshots/**
             e2e/benchmark/e2e-watch-hmr/failures/**

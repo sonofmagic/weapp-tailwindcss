@@ -244,6 +244,7 @@ describe('ci workflows', () => {
     expect(rows).toContainEqual(expect.objectContaining({
       runner_label: 'macos',
       watch_case: 'uni-app-vite-tailwindcss-v4:mp-weixin',
+      artifact_case: 'uni-app-vite-tailwindcss-v4-mp-weixin',
       watch_max_plugin_process_ms: '9000',
     }))
     expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
@@ -253,6 +254,15 @@ describe('ci workflows', () => {
     )
     expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
     expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
+    const uploadSteps = job.steps.filter((step: Record<string, unknown>) => {
+      return step.uses === 'actions/upload-artifact@v4'
+    })
+    expect(uploadSteps).toHaveLength(2)
+    for (const step of uploadSteps) {
+      const artifactName = String((step.with as Record<string, unknown>).name)
+      expect(artifactName).toContain('${{ matrix.artifact_case || matrix.watch_case }}')
+      expect(artifactName).not.toContain('${{ matrix.watch_case }}')
+    }
     expect(job.steps.some((step: Record<string, unknown>) => {
       const withConfig = step.with as Record<string, unknown> | undefined
       return step.uses === 'actions/upload-artifact@v4'
