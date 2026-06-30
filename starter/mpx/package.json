@@ -33,7 +33,7 @@
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
     "weapp-tailwindcss": "workspace:*",
-    "webpack": "^5.108.1"
+    "webpack": "^5.108.3"
   },
   "browserslist": [
     "ios >= 8",

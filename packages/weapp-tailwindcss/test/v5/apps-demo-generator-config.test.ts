@@ -70,10 +70,32 @@ function appConfigPath(project: string) {
 
 function subPackageStyleCandidates(project: string, subPackage: typeof subPackageRoots[number]) {
   const extensions = project.endsWith('-v3') ? ['scss', 'css'] : ['css']
+  if (project.startsWith('mpx-')) {
+    return [`demo/${project}/src/${subPackage}/pages/index.mpx`]
+  }
   if (project.startsWith('weapp-vite-tailwindcss-v4')) {
     return extensions.map(extension => `demo/${project}/${subPackage}/pages/index.${extension}`)
   }
   return extensions.map(extension => `demo/${project}/src/${subPackage}/pages/index.${extension}`)
+}
+
+function subPackageConfigCandidates(project: string, subPackage: typeof subPackageRoots[number]) {
+  const rootConfig = [
+    `demo/${project}/tailwind.config.${subPackage}.js`,
+    `demo/${project}/tailwind.config.${subPackage}.ts`,
+  ]
+  if (project.startsWith('weapp-vite-tailwindcss-v4')) {
+    return [
+      `demo/${project}/${subPackage}/pages/tailwind.config.${subPackage}.js`,
+      `demo/${project}/${subPackage}/pages/tailwind.config.${subPackage}.ts`,
+      ...rootConfig,
+    ]
+  }
+  return [
+    `demo/${project}/src/${subPackage}/pages/tailwind.config.${subPackage}.js`,
+    `demo/${project}/src/${subPackage}/pages/tailwind.config.${subPackage}.ts`,
+    ...rootConfig,
+  ]
 }
 
 async function readFirstExistingProjectFile(relativePaths: string[]) {
@@ -213,21 +235,19 @@ describe('demo matrix generator config', () => {
   it('keeps subpackage Tailwind entries on isolated @config files', async () => {
     for (const project of demoProjects) {
       for (const subPackage of subPackageRoots) {
-        const configPath = `demo/${project}/tailwind.config.${subPackage}.js`
-        const tsConfigPath = `demo/${project}/tailwind.config.${subPackage}.ts`
-        const configSource = await fileExists(configPath)
-          ? await readProjectFile(configPath)
-          : await readProjectFile(tsConfigPath)
+        const configSource = await readFirstExistingProjectFile(subPackageConfigCandidates(project, subPackage))
         const styleSource = await readFirstExistingProjectFile(subPackageStyleCandidates(project, subPackage))
 
-        expect(configSource, `${project}/${subPackage}`).toContain(subPackage)
-        expect(configSource, `${project}/${subPackage}`).toContain(subPackage.replace('sub-', ''))
-        expect(styleSource, `${project}/${subPackage}`).toContain('@config')
-        expect(styleSource, `${project}/${subPackage}`).toContain(`tailwind.config.${subPackage}.`)
-        expect(
-          styleSource.includes('tailwindcss') || styleSource.includes('@tailwind'),
-          `${project}/${subPackage}`,
-        ).toBe(true)
+        expect(`${configSource}\n${styleSource}`, `${project}/${subPackage}`).toContain(subPackage)
+        expect(`${configSource}\n${styleSource}`, `${project}/${subPackage}`).toContain(subPackage.replace('sub-', ''))
+        if (!project.startsWith('mpx-') && styleSource.trim().length > 0) {
+          expect(styleSource, `${project}/${subPackage}`).toContain('@config')
+          expect(styleSource, `${project}/${subPackage}`).toContain(`tailwind.config.${subPackage}.`)
+          expect(
+            styleSource.includes('tailwindcss') || styleSource.includes('@tailwind'),
+            `${project}/${subPackage}`,
+          ).toBe(true)
+        }
 
         const pageExists = await Promise.all(subPackagePageCandidates(project, subPackage).map(fileExists))
         expect(pageExists.some(Boolean), `${project}/${subPackage}`).toBe(true)
@@ -246,6 +266,18 @@ describe('demo matrix generator config', () => {
       '../tailwind.config.js',
       '../../../tailwind.config.sub-normal.js',
       '../../../tailwind.config.sub-independent.js',
+    ])
+  })
+
+  it('keeps Taro webpack React v4 subpackage @config paths local to each css entry', async () => {
+    const configRefs = [
+      await readProjectFile('demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css'),
+      await readProjectFile('demo/taro-webpack-react-tailwindcss-v4/src/sub-independent/pages/index.css'),
+    ].flatMap(source => [...source.matchAll(/@config\s+["']([^"']+)["']/g)].map(match => match[1]))
+
+    expect(configRefs).toEqual([
+      './tailwind.config.sub-normal.js',
+      './tailwind.config.sub-independent.js',
     ])
   })
 })

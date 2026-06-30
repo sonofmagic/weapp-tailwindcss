@@ -16,6 +16,7 @@ import {
 } from '@/tailwindcss/source-scan'
 import { isTailwindV4CssEntry } from '@/tailwindcss/v4/css-entries'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
+import { isTailwindV4CssImportParam, isTailwindV4PreflightImportParam } from '@/tailwindcss/v4/preflight'
 import { readStaticConfigContent } from '../static-config-content'
 
 const VITE_SOURCE_CANDIDATE_PATTERN = FULL_SOURCE_SCAN_PATTERN
@@ -32,6 +33,7 @@ interface ConfigDependencySignature {
 export interface ResolvedTailwindV4CssEntries {
   entries: TailwindSourceEntry[]
   explicit: boolean
+  includesPreflight: boolean
   inlineCandidates: TailwindInlineSourceCandidates
   dependencies: string[]
 }
@@ -45,23 +47,6 @@ function parseImportSourceParam(params: string) {
     none: match[1] === 'none',
     sourcePath: match[3],
   }
-}
-
-function parseCssImportSpecifier(params: string) {
-  const value = params.trim()
-  const quoted = /^(['"])(.*?)\1/.exec(value)
-  if (quoted) {
-    return quoted[2]
-  }
-  const url = /^url\(\s*(?:(['"])(.*?)\1|([^'")\s]+))\s*\)/.exec(value)
-  return url?.[2] ?? url?.[3]
-}
-
-function isTailwindCssImport(params: string) {
-  const specifier = parseCssImportSpecifier(params)
-  return specifier === 'tailwindcss'
-    || specifier?.startsWith('tailwindcss/')
-    || specifier?.replaceAll('\\', '/').endsWith('/tailwindcss/index.css')
 }
 
 function resolveSourceBase(base: string, sourcePath: string) {
@@ -196,6 +181,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
   let importSourceBase: string | undefined
   let hasSourceNone = false
   let hasTailwindCssImport = false
+  let includesPreflight = false
   const [sourceEntries, configEntries] = await Promise.all([
     resolveCssSourceEntries(root, base, VITE_SOURCE_CANDIDATE_PATTERN),
     resolveConfigContentEntries(root, base),
@@ -208,10 +194,11 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
   const inlineCandidates = collectCssInlineSourceCandidates(root)
 
   root.walkAtRules('import', (rule) => {
-    if (!isTailwindCssImport(rule.params)) {
+    if (!isTailwindV4CssImportParam(rule.params)) {
       return
     }
     hasTailwindCssImport = true
+    includesPreflight ||= isTailwindV4PreflightImportParam(rule.params)
     const sourceParam = parseImportSourceParam(rule.params)
     if (sourceParam?.none) {
       hasSourceNone = true
@@ -219,6 +206,9 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     if (sourceParam?.sourcePath) {
       importSourceBase = resolveSourceBase(base, sourceParam.sourcePath)
     }
+  })
+  root.walkAtRules('tailwind', (rule) => {
+    includesPreflight ||= rule.params.trim() === 'base'
   })
 
   if (importSourceBase) {
@@ -232,6 +222,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
         ...entries,
       ],
       explicit: true,
+      includesPreflight,
       inlineCandidates,
       dependencies: configEntries.dependencies,
     }
@@ -241,6 +232,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     return {
       entries,
       explicit: true,
+      includesPreflight,
       inlineCandidates,
       dependencies: configEntries.dependencies,
     }
@@ -250,6 +242,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     return {
       entries,
       explicit: true,
+      includesPreflight,
       inlineCandidates,
       dependencies: configEntries.dependencies,
     }
@@ -259,6 +252,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     return {
       entries: [],
       explicit: true,
+      includesPreflight,
       inlineCandidates,
       dependencies: configEntries.dependencies,
     }
@@ -268,6 +262,7 @@ export async function resolveTailwindV4EntriesFromCss(css: string, base: string)
     ? {
         entries,
         explicit: false,
+        includesPreflight,
         inlineCandidates,
         dependencies: configEntries.dependencies,
       }
@@ -349,6 +344,7 @@ export async function resolveTailwindConfigEntriesFromCssCached(css: string, bas
         ...createDependencyExcludeEntries(resolved.dependencies),
       ],
       explicit: true,
+      includesPreflight: false,
       inlineCandidates: {
         excluded: new Set<string>(),
         included: new Set<string>(),

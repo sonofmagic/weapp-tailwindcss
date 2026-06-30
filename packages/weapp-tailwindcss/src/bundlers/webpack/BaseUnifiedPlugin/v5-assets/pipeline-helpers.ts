@@ -719,10 +719,40 @@ export function resolveWebpackMemoryDebugStats(context: {
 }
 
 export function shouldInjectWebpackCssTracePreflight(
-  appType: SetupWebpackV5ProcessAssetsHookOptions['appType'],
-  cssHandlerOptions: Pick<WebpackCssHandlerOptions, 'isMainChunk'>,
+  _appType: SetupWebpackV5ProcessAssetsHookOptions['appType'],
+  cssHandlerOptions: Pick<WebpackCssHandlerOptions, 'isMainChunk' | 'sourceOptions'>,
 ) {
-  return appType !== 'mpx' || cssHandlerOptions.isMainChunk !== false
+  if (includesTailwindPreflightImport(cssHandlerOptions.sourceOptions?.sourceCss)) {
+    return true
+  }
+  return cssHandlerOptions.isMainChunk !== false
+}
+
+function includesTailwindPreflightImport(source: string | undefined) {
+  if (!source) {
+    return false
+  }
+  try {
+    let includesPreflight = false
+    postcss.parse(source).walkAtRules((rule) => {
+      if (rule.name === 'tailwind') {
+        includesPreflight ||= rule.params.trim() === 'base'
+        return
+      }
+      if (rule.name !== 'import') {
+        return
+      }
+      const request = parseImportRequest(rule.params)?.replaceAll('\\', '/')
+      includesPreflight ||= request === 'tailwindcss'
+        || request === 'tailwindcss/preflight.css'
+        || request?.endsWith('/tailwindcss/index.css') === true
+        || request?.endsWith('/tailwindcss/preflight.css') === true
+    })
+    return includesPreflight
+  }
+  catch {
+    return false
+  }
 }
 
 export function finalizeMiniProgramUserCssAssetSource(
@@ -736,9 +766,11 @@ export function finalizeMiniProgramUserCssAssetSource(
     return source
   }
   const finalized = finalizeMiniProgramCss(removeMiniProgramHoverSelectors(source, styleOptions.cssRemoveHoverPseudoClass), {
-    cssPreflight: options.cssPreflight !== false && !hasMiniProgramTailwindV4PreflightReset(source)
-      ? compilerOptions.cssPreflight
-      : undefined,
+    cssPreflight: options.cssPreflight === false
+      ? false
+      : !hasMiniProgramTailwindV4PreflightReset(source)
+          ? compilerOptions.cssPreflight
+          : undefined,
     isTailwindcssV4: true,
     tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
   })
@@ -915,7 +947,7 @@ export function finalizeWebpackCssAssetSource(
   source: string,
   compilerOptions: SetupWebpackV5ProcessAssetsHookOptions['options'],
   isWebGeneratorTarget: boolean,
-  options: { generatedCss?: boolean } = {},
+  options: { cssPreflight?: boolean | undefined, generatedCss?: boolean } = {},
 ) {
   const styleOptions = resolveStyleOptionsFromContext(compilerOptions)
   if (isWebGeneratorTarget) {
@@ -949,14 +981,16 @@ export function finalizeWebpackCssAssetSource(
   }
   try {
     finalized = pruneMiniProgramGeneratedCss(finalized, {
-      preservePreflight: true,
+      preservePreflight: options.cssPreflight !== false,
     })
   }
   catch {
     finalized = finalizeMiniProgramCss(finalized, {
-      cssPreflight: !hasMiniProgramTailwindV4PreflightReset(finalized)
-        ? compilerOptions.cssPreflight
-        : undefined,
+      cssPreflight: options.cssPreflight === false
+        ? false
+        : !hasMiniProgramTailwindV4PreflightReset(finalized)
+            ? compilerOptions.cssPreflight
+            : undefined,
       isTailwindcssV4: true,
       tailwindcssV4GradientFallback: styleOptions.tailwindcssV4GradientFallback,
     })

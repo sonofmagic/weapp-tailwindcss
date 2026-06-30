@@ -12,18 +12,18 @@ page,
 .tw-root,
 wx-root-portal-content {
   --tw-gradient-position: initial;
-  --tw-gradient-from: #0000;
-  --tw-gradient-via: #0000;
-  --tw-gradient-to: #0000;
+  --tw-gradient-from: rgba(0, 0, 0, 0);
+  --tw-gradient-via: rgba(0, 0, 0, 0);
+  --tw-gradient-to: rgba(0, 0, 0, 0);
   --tw-gradient-stops: initial;
   --tw-gradient-from-position: 0%;
   --tw-gradient-via-position: 50%;
   --tw-gradient-to-position: 100%;
-  --tw-rotate-x:;
-  --tw-rotate-y:;
-  --tw-rotate-z:;
-  --tw-skew-x:;
-  --tw-skew-y:;
+  --tw-rotate-x: initial;
+  --tw-rotate-y: initial;
+  --tw-rotate-z: initial;
+  --tw-skew-x: initial;
+  --tw-skew-y: initial;
   --font-sans:
     ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     'Noto Color Emoji';
@@ -1551,14 +1551,12 @@ wx-root-portal-content {
 }
 .nut-uploader-input {
   height: 100% !important;
-  position: absolute !important;
-  width: 100% !important;
-}
-.nut-uploader-input {
   left: 0;
   opacity: 0;
   overflow: hidden;
+  position: absolute !important;
   top: 0;
+  width: 100% !important;
 }
 .nut-uploader-upload-disabled {
   background: var(--nutui-uploader-background-disabled, var(--nutui-color-background, #f2f3f5));
@@ -2402,11 +2400,9 @@ wx-root-portal-content {
   transform: rotate(320deg);
 }
 .nut-tabs-vertical .nut-tabs-horizontal .nut-tabs-titles {
-  padding: 0 !important;
-}
-.nut-tabs-vertical .nut-tabs-horizontal .nut-tabs-titles {
   flex-direction: row;
   height: var(--nutui-tabs-titles-height, 44rpx);
+  padding: 0 !important;
   width: 100%;
 }
 .nut-tabs-vertical .nut-tabs-horizontal .nut-tabs-titles .nut-tabs-list {
@@ -4371,14 +4367,12 @@ wx-root-portal-content {
   position: relative;
 }
 .nut-rate-item-half {
-  width: 50% !important;
-}
-.nut-rate-item-half {
   height: 100%;
   left: 0;
   overflow: hidden;
   position: absolute;
   top: 0;
+  width: 50% !important;
 }
 .nut-rate-item-half .nut-icon {
   flex-shrink: 0;
@@ -6623,13 +6617,11 @@ wx-root-portal-content {
   text-align: center;
 }
 .nut-imagepreview-pop {
-  background: transparent !important;
-  max-width: 100% !important;
-}
-.nut-imagepreview-pop {
   align-items: center;
+  background: transparent !important;
   display: flex;
   height: 100%;
+  max-width: 100% !important;
   width: 100%;
 }
 .nut-imagepreview-swiper .nut-imagepreview-swiper-item,
@@ -7381,15 +7373,13 @@ wx-root-portal-content {
   right: auto;
 }
 .nut-drag {
-  z-index: 9997 !important;
-}
-.nut-drag {
   font-size: 0;
   height: 0;
   position: fixed;
   touch-action: none;
   user-select: none;
   width: 0;
+  z-index: 9997 !important;
 }
 .nut-drag-inner {
   display: flex;
@@ -7532,14 +7522,12 @@ wx-root-portal-content {
   transform: translate(-50%, -50%);
 }
 .nut-dialog-close {
-  position: absolute !important;
-}
-.nut-dialog-close {
   align-items: center;
   color: var(--nutui-dialog-close-color, #fff);
   display: flex;
   height: var(--nutui-dialog-close-height, 16rpx);
   justify-content: center;
+  position: absolute !important;
   width: var(--nutui-dialog-close-width, 16rpx);
   z-index: 1;
 }
@@ -8971,11 +8959,9 @@ wx-root-portal-content {
   width: 100%;
 }
 .nut-calendar-day-active {
-  color: #fff !important;
-}
-.nut-calendar-day-active {
   background-color: var(--nutui-calendar-active-background-color, var(--nutui-color-primary, #ff0f23));
   border-radius: var(--nutui-calendar-day-active-border-radius, 4rpx);
+  color: #fff !important;
 }
 .nut-calendar-day-active.active-start {
   border-radius: 0;
@@ -9001,10 +8987,8 @@ wx-root-portal-content {
   color: var(--nutui-calendar-choose-color, var(--nutui-color-primary, #ff0f23));
 }
 .nut-calendar-day-choose-disabled {
-  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc)) !important;
-}
-.nut-calendar-day-choose-disabled {
   background-color: var(--nutui-calendar-choose-disable-background-color, hsla(0, 0%, 75%, 0.09));
+  color: var(--nutui-calendar-disable-color, var(--nutui-color-text-disabled, #c2c4cc)) !important;
 }
 .nut-calendar-day-choose-disabled .nut-calendar-day-info-curr {
   display: none;

@@ -355,6 +355,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const pruneWebpackCssSources = (activeSourceFiles: ReadonlySet<string>, _options: { watchMode?: boolean | undefined } = {}) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       const configuredSourceFiles = new Set<string>()
+      for (const entry of this.options.cssEntries ?? []) {
+        configuredSourceFiles.add(path.resolve(entry))
+      }
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         configuredSourceFiles.add(path.resolve(entry))
       }
@@ -377,6 +380,9 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
     const prepareWebpackCssSources = (activeAssetResources: ReadonlySet<string> = new Set()) => {
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
       const configuredSourceFiles = new Set<string>()
+      for (const entry of this.options.cssEntries ?? []) {
+        configuredSourceFiles.add(path.resolve(entry))
+      }
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         configuredSourceFiles.add(path.resolve(entry))
       }
@@ -404,6 +410,11 @@ export class WeappTailwindcss implements IBaseWebpackPlugin {
         return false
       }
       const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
+      for (const entry of this.options.cssEntries ?? []) {
+        if (webpackProcessedCssSourceFiles.has(path.resolve(entry))) {
+          return true
+        }
+      }
       for (const entry of tailwindOptions?.v4?.cssEntries ?? []) {
         if (webpackProcessedCssSourceFiles.has(path.resolve(entry))) {
           return true

@@ -21,28 +21,32 @@ function applyConfiguredPreflightDeclarations(
     return
   }
 
-  const configuredProps = new Set(Object.keys(cssPreflight))
-  rule.walkDecls((decl) => {
-    if (!configuredProps.has(decl.prop)) {
-      return
-    }
-    const value = cssPreflight[decl.prop]
-    if (value === false) {
-      decl.remove()
-      return
-    }
-    decl.value = value.toString()
-  })
-
-  for (const [prop, value] of Object.entries(cssPreflight)) {
-    if (value === false || rule.nodes?.some(node => node.type === 'decl' && node.prop === prop)) {
+  const configuredNodes: postcss.Declaration[] = []
+  const remainingNodes: postcss.ChildNode[] = []
+  const remainingDeclarations = new Map<string, postcss.Declaration>()
+  for (const node of rule.nodes ?? []) {
+    if (node.type !== 'decl') {
+      remainingNodes.push(node)
       continue
     }
-    rule.append({
-      prop,
-      value: value.toString(),
-    })
+    if (Object.hasOwn(cssPreflight, node.prop)) {
+      remainingDeclarations.set(node.prop, node)
+      continue
+    }
+    remainingNodes.push(node)
   }
+
+  for (const [prop, value] of Object.entries(cssPreflight)) {
+    if (value === false) {
+      continue
+    }
+    const declaration = remainingDeclarations.get(prop)?.clone() ?? postcss.decl({ prop, value: value.toString() })
+    declaration.value = value.toString()
+    configuredNodes.push(declaration)
+  }
+
+  rule.removeAll()
+  rule.append([...configuredNodes, ...remainingNodes])
 }
 
 function collectTailwindRuntimeDeclarations(rule: postcss.Rule) {

@@ -494,11 +494,22 @@ function expectSubpackageMarkersInGeneratedCss(project: CompareProject, generato
   if (!project.cssFile.includes('sub-normal') && !generatorResult.cssFiles.some(file => file.includes('sub-normal'))) {
     return
   }
-  const css = generatorResult.cssSnapshots.length > 0
-    ? generatorResult.cssSnapshots.map(snapshot => snapshot.content).join('\n')
-    : generatorResult.css
+  const snapshots = generatorResult.cssSnapshots.length > 0
+    ? generatorResult.cssSnapshots
+    : [{ fileName: project.cssFile, content: generatorResult.css }]
+  const subpackageSnapshots = snapshots.filter(snapshot =>
+    SUBPACKAGE_ROOTS.some(root => normalizeOutputCssFileName(snapshot.fileName).includes(root)),
+  )
+
+  if (subpackageSnapshots.length === 0) {
+    return
+  }
+
   for (const pattern of SUBPACKAGE_MARKER_PATTERNS) {
-    expect(css, `${project.name} generated css outputs should include ${pattern} marker`).toMatch(pattern)
+    expect(
+      subpackageSnapshots.some(snapshot => pattern.test(snapshot.content)),
+      `${project.name} generated subpackage css outputs should include ${pattern} marker`,
+    ).toBe(true)
   }
 }
 

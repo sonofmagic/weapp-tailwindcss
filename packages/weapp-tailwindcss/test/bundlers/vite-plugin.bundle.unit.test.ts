@@ -23,6 +23,7 @@ import { classifyBundleEntry } from '@/bundlers/vite/bundle-state'
 import { createGenerateBundleHook, normalizeBundleFileNameKeysForTest, resolveMiniProgramStyleOutputExtension, resolveRememberedCssSourceForTest, resolveReplayCssOutputFile, resolveReplayCssOutputFileFromSourceRoot, resolveViteCssPipelineOutputFile, resolveViteCssPipelineOutputFileFromSourceFile, shouldKeepRootMiniProgramStyleAsImportShell, shouldMoveRootMiniProgramStyleToImportShellOrigin } from '@/bundlers/vite/generate-bundle'
 import { collectRememberedCssReplayGroups } from '@/bundlers/vite/generate-bundle/remembered-css'
 import { createSubpackageSourceCandidateScope } from '@/bundlers/vite/generate-bundle/source-candidate-scope'
+import { createScopedGeneratorRuntime } from '@/bundlers/vite/generate-bundle/scoped-generator'
 import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets } from '@/bundlers/vite/processed-css-assets'
 import { collectConfiguredTailwindV4CssSourceEntries } from '@/bundlers/vite/generate-bundle/configured-css-sources'
 import { resolveSfcStyleSourceFromOutputFile, resolveSourceStyleSourceFromOutputFile } from '@/bundlers/vite/generate-bundle/sfc-style-source'
@@ -2402,6 +2403,49 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(featureBOutput).not.toContain('.bg-global{}')
   }, TEST_TIMEOUT_MS)
 
+  it('keeps explicit Tailwind v4 @source candidates when inferred local source candidates are empty', async () => {
+    const sourceRoot = path.join(os.tmpdir(), 'weapp-tw-vite-explicit-source-runtime')
+    const cssSourceFile = path.join(sourceRoot, 'features/entry.css')
+    const explicitBase = path.dirname(cssSourceFile)
+    const outputBase = path.join(os.tmpdir(), 'weapp-tw-vite-dist/features')
+    const getSourceCandidatesForEntries = vi.fn((entries: TailwindSourceEntry[] | undefined) => {
+      if (entries === undefined) {
+        return new Set([
+          'bg-explicit-entry',
+          "before:content-['explicit_entry']",
+        ])
+      }
+      const base = entries?.[0]?.base
+      if (base === explicitBase) {
+        return new Set<string>()
+      }
+      if (base === outputBase) {
+        return new Set<string>()
+      }
+      return new Set(['global-entry'])
+    })
+
+    const runtime = await createScopedGeneratorRuntime({
+      cssHandlerOptions: {
+        isMainChunk: false,
+      },
+      fallbackRuntime: new Set(['global-entry']),
+      getSourceCandidatesForEntries,
+      majorVersion: 4,
+      outputFile: 'features/entry.wxss',
+      rawSource: '@import "tailwindcss" source(none);\n@source "./**/*.{wxml,js,ts}";',
+      scopedSourceCandidateGetter: getSourceCandidatesForEntries,
+      shouldExcludeSubpackageSourceCandidates: () => false,
+      sourceFile: path.join(outputBase, 'entry.wxss'),
+    })
+
+    expect(runtime).toEqual(new Set([
+      'bg-explicit-entry',
+      "before:content-['explicit_entry']",
+    ]))
+    expect(runtime).not.toContain('global-entry')
+  })
+
   it('keeps explicit Tailwind v4 @config with empty content from falling back to global candidates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-v4-empty-config-'))
     createdDirs.push(root)
@@ -2696,6 +2740,29 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     expect(normal?.rawSource).toBe('normal')
     expect(independent?.rawSource).toBe('independent')
+  }, TEST_TIMEOUT_MS)
+
+  it('does not match remembered css sources from another output scope by basename only', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-remembered-css-basename-'))
+    createdDirs.push(root)
+    const sources = new Map([
+      ['feature-b/pages/index.wxss', {
+        outputFile: 'feature-b/pages/index.wxss',
+        rawSource: 'feature-b',
+        sourceFile: path.join(root, 'src/feature-b/pages/index.css'),
+      }],
+    ])
+
+    const matched = resolveRememberedCssSourceForTest(
+      sources,
+      'feature-a/pages/index.wxss',
+      'feature-a/pages/index.wxss',
+      createRollupAsset('@import "tailwindcss" source(none);') as OutputAsset,
+      path.join(root, 'dist'),
+      path.join(root, 'src'),
+    )
+
+    expect(matched).toBeUndefined()
   }, TEST_TIMEOUT_MS)
 
   it('normalizes remembered css replay groups to existing mini-program style outputs', async () => {

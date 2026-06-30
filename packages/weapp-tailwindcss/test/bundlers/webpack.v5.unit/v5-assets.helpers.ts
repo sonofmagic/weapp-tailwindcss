@@ -436,10 +436,29 @@ describe('bundlers/webpack v5-assets helpers', () => {
     })
   })
 
-  it('resolves css trace preflight injection for mpx sub chunks', () => {
-    expect(shouldInjectWebpackCssTracePreflight(undefined, { isMainChunk: false })).toBe(true)
+  it('resolves css trace preflight injection from chunk and source css content', () => {
+    expect(shouldInjectWebpackCssTracePreflight(undefined, { isMainChunk: true })).toBe(true)
+    expect(shouldInjectWebpackCssTracePreflight(undefined, { isMainChunk: false })).toBe(false)
     expect(shouldInjectWebpackCssTracePreflight('mpx', { isMainChunk: true })).toBe(true)
     expect(shouldInjectWebpackCssTracePreflight('mpx', { isMainChunk: false })).toBe(false)
+    expect(shouldInjectWebpackCssTracePreflight(undefined, {
+      isMainChunk: false,
+      sourceOptions: {
+        sourceCss: '@import "tailwindcss" source(none);',
+      },
+    })).toBe(true)
+    expect(shouldInjectWebpackCssTracePreflight(undefined, {
+      isMainChunk: false,
+      sourceOptions: {
+        sourceCss: '@tailwind base;',
+      },
+    })).toBe(true)
+    expect(shouldInjectWebpackCssTracePreflight(undefined, {
+      isMainChunk: false,
+      sourceOptions: {
+        sourceCss: '@import "tailwindcss/theme.css" layer(theme);\n@import "tailwindcss/utilities.css" layer(utilities) source(none);',
+      },
+    })).toBe(false)
   })
 
   it('resolves webpack css asset module resources from webpack module metadata', () => {

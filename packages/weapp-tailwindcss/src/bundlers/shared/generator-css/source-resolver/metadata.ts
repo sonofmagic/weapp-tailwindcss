@@ -3,8 +3,12 @@ import type { TailwindResolvedSource } from '@/generator'
 import type { TailwindSourceEntry } from '@/tailwindcss/source-scan'
 
 export interface GeneratorSourceMetadata {
+  cssEntryIndex?: number | undefined
+  cssSourceIndex?: number | undefined
+  includesPreflight?: boolean | undefined
   isolateCssSource?: boolean | undefined
   matchedCssSourceFile?: string | undefined
+  primaryCssSource?: boolean | undefined
   sourceEntries?: TailwindSourceEntry[] | undefined
   sourceBase?: string | undefined
   sourceCss?: string | undefined
@@ -27,9 +31,11 @@ export function withGeneratorSourceMetadata(
 export function withMatchedSourceSideMetadata(
   source: TailwindResolvedSource,
   resolvedEntrySource: SourceSideCssEntrySource,
+  metadata: GeneratorSourceMetadata = {},
 ) {
   return resolvedEntrySource.file
     ? withGeneratorSourceMetadata(source, {
+        ...metadata,
         isolateCssSource: true,
         matchedCssSourceFile: resolvedEntrySource.file,
         sourceBase: resolvedEntrySource.base,

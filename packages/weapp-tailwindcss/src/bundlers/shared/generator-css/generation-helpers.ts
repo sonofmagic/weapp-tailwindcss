@@ -26,19 +26,23 @@ export function finalizeMiniProgramGeneratorCss(
   target: string,
   _majorVersion: number | undefined,
   cssPreflight: InternalUserDefinedOptions['cssPreflight'],
-  options: { injectPreflight?: boolean, styleOptions?: Partial<IStyleHandlerOptions> | undefined } = {},
+  options: { injectPreflight?: boolean, preservePreflight?: boolean, styleOptions?: Partial<IStyleHandlerOptions> | undefined } = {},
 ) {
   if (target !== 'weapp') {
     return css
   }
+  const hasPreflightReset = hasMiniProgramTailwindV4PreflightReset(css)
   const injectPreflight = options.injectPreflight !== false
-    && !hasMiniProgramTailwindV4PreflightReset(css)
+    && !hasPreflightReset
+  const preservePreflight = options.preservePreflight !== false
   return finalizeMiniProgramCss(css, {
-    cssPreflight: cssPreflight === false
+    cssPreflight: cssPreflight === false || (options.injectPreflight === false && (!hasPreflightReset || !preservePreflight))
       ? false
       : injectPreflight
         ? cssPreflight
-        : undefined,
+        : hasPreflightReset && preservePreflight
+          ? cssPreflight
+          : undefined,
     cssSelectorReplacement: options.styleOptions?.cssOptions?.cssSelectorReplacement
       ?? options.styleOptions?.cssSelectorReplacement,
     isTailwindcssV4: true,
@@ -47,21 +51,63 @@ export function finalizeMiniProgramGeneratorCss(
   })
 }
 
-export function shouldInjectMiniProgramPreflightForGeneratorCss(
+export function resolveMiniProgramPreflightModeForGeneratorCss(
   opts: InternalUserDefinedOptions,
   options: {
     cssHandlerOptions: IStyleHandlerOptions
     isolateCurrentCssCandidates: boolean
     localImports?: string | undefined
+    primaryCssSource?: boolean | undefined
+    explicitCssSource?: boolean | undefined
   },
 ) {
   if (options.cssHandlerOptions.uniAppX === true && options.cssHandlerOptions.uniAppXCssTarget === 'uvue') {
-    return false
+    return {
+      inject: false,
+      preserve: false,
+    }
+  }
+  const shouldInjectUniAppXLocalImportPreflight = isUniAppXEnabled(opts.uniAppX) && Boolean(options.localImports?.trim())
+  if (opts.cssPreflight === false) {
+    return {
+      inject: false,
+      preserve: false,
+    }
+  }
+  if (options.primaryCssSource) {
+    return {
+      inject: true,
+      preserve: true,
+    }
+  }
+  if (options.explicitCssSource) {
+    return {
+      inject: false,
+      preserve: true,
+    }
+  }
+  if (options.cssHandlerOptions.isMainChunk) {
+    return {
+      inject: true,
+      preserve: true,
+    }
+  }
+  if (!options.cssHandlerOptions.isMainChunk && !options.primaryCssSource && !options.explicitCssSource) {
+    return {
+      inject: shouldInjectUniAppXLocalImportPreflight,
+      preserve: shouldInjectUniAppXLocalImportPreflight,
+    }
   }
   if (!options.isolateCurrentCssCandidates) {
-    return true
+    return {
+      inject: true,
+      preserve: true,
+    }
   }
-  return isUniAppXEnabled(opts.uniAppX) && Boolean(options.localImports?.trim())
+  return {
+    inject: shouldInjectUniAppXLocalImportPreflight,
+    preserve: shouldInjectUniAppXLocalImportPreflight,
+  }
 }
 
 export function mergeScopedRuntimeWithCurrentRuntime(

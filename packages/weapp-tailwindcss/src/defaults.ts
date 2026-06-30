@@ -10,10 +10,10 @@ const JS_FILE_PATTERN = /.+\.[cm]?js?$/
 const alwaysFalse = () => false
 
 export const TAILWIND_V4_CSS_PREFLIGHT = {
+  'border': '0 solid',
   'box-sizing': 'border-box',
   'margin': '0',
   'padding': '0',
-  'border': '0 solid',
 } satisfies Exclude<CssPreflightOptions, false>
 
 export function getDefaultCssPreflight(): Exclude<CssPreflightOptions, false> {

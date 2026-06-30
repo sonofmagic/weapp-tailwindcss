@@ -202,7 +202,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
           outputDir,
           runtimeState,
         })
-        const finalizeCssAssetSource = (source: string, options: { generatedCss?: boolean } = {}) =>
+        const finalizeCssAssetSource = (source: string, options: { cssPreflight?: boolean | undefined, generatedCss?: boolean } = {}) =>
           finalizeWebpackCssAssetSource(source, compilerOptions, isWebGeneratorTarget, options)
         const shouldRefreshWebpackSourceCandidates = (!isWebGeneratorTarget && groupedEntries.css.length > 0)
           || cssSources.size > 0
@@ -659,6 +659,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                         )).css
                     : source
                   const nextCss = stripTrailingLineWhitespace(finalizeCssAssetSource(handledCss, {
+                    cssPreflight: cssHandlerOptionsForProcessedAsset.isMainChunk,
                     generatedCss: hasGeneratedCssMarker || hasTailwindGeneratedAssetCss,
                   }))
                   debug('css skip webpack-loader-pipeline asset: %s', file)
@@ -802,7 +803,10 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                           processed: true,
                         },
                       )!.css)
-                  const css = finalizeTracedCss(finalizeCssAssetSource(mergedLoaderCss, { generatedCss: true }), cssHandlerOptions)
+                  const css = finalizeTracedCss(finalizeCssAssetSource(mergedLoaderCss, {
+                    cssPreflight: cssHandlerOptions.isMainChunk,
+                    generatedCss: true,
+                  }), cssHandlerOptions)
                   debug('css consume webpack loader generation: %s <- %s', file, sourceFile)
                   return {
                     result: new ConcatSource(css),
@@ -879,10 +883,9 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                 const currentAssetHasTailwindDirectives = hasTailwindRootDirectives(generatorRawSource, { importFallback: true })
                   || hasTailwindSourceDirectives(generatorRawSource, { importFallback: true })
                   || hasTailwindApplyDirective(generatorRawSource)
-                const shouldForceTailwindV4Generation = cssHandlerOptions.isMainChunk
-                  && hasConfiguredTailwindV4SourceRoots()
+                const shouldForceTailwindV4Generation = hasConfiguredTailwindV4SourceRoots()
                   && (
-                    configuredMainCssEntryFiles.length > 0
+                    (configuredMainCssEntryFiles.length > 0 && sourceFile !== undefined)
                     || currentAssetHasTailwindDirectives
                     || hasExplicitTailwindV4SourceCss
                   )
@@ -977,7 +980,7 @@ export function setupWebpackV5ProcessAssetsHook(options: SetupWebpackV5ProcessAs
                           },
                         )?.css ?? generated.css
                         : generated.css,
-                      { generatedCss: true },
+                      { cssPreflight: cssHandlerOptions.isMainChunk, generatedCss: true },
                     )
                   : isWebGeneratorTarget
                     ? finalizeCssAssetSource(generatorRawSource, { generatedCss: false })

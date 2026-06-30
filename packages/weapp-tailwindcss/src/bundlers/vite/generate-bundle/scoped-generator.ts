@@ -32,6 +32,24 @@ function mergeCandidates(first: Set<string>, second: Set<string>) {
   return new Set([...first, ...second])
 }
 
+function intersectExplicitSourceCandidates(scopedCandidates: Set<string>, localCandidates: Set<string>) {
+  if (localCandidates.size === 0 && scopedCandidates.size > 0) {
+    return scopedCandidates
+  }
+  return intersectCandidates(scopedCandidates, localCandidates)
+}
+
+function resolveExplicitSourceCandidates(
+  scopedCandidates: Set<string>,
+  localCandidates: Set<string>,
+  fallbackCandidates?: Set<string> | undefined,
+) {
+  if (scopedCandidates.size === 0 && localCandidates.size === 0 && fallbackCandidates?.size) {
+    return fallbackCandidates
+  }
+  return intersectExplicitSourceCandidates(scopedCandidates, localCandidates)
+}
+
 function resolveScopedSourceEntries(rawSource: string, sourceFile: string, resolvedEntries: TailwindSourceEntry[] | undefined) {
   if (!hasOwnSourceDirectives(rawSource)) {
     return {
@@ -70,7 +88,7 @@ export async function createScopedGeneratorCandidateSignature(
   }
   const scopedCandidates = getSourceCandidatesForEntries(entries)
   const intersectedCandidates = localEntries
-    ? intersectCandidates(scopedCandidates, getSourceCandidatesForEntries(localEntries))
+    ? resolveExplicitSourceCandidates(scopedCandidates, getSourceCandidatesForEntries(localEntries), getSourceCandidatesForEntries(undefined))
     : scopedCandidates
   const scopedSignature = createCandidateSignature(intersectedCandidates)
   return options.includeFallbackSignature === true
@@ -112,7 +130,8 @@ export async function createScopedGeneratorRuntime(options: {
       }
       const localCandidates = scopedSourceCandidateGetter?.(localEntries)
         ?? getSourceCandidatesForEntries(localEntries)
-      const scopedLocalCandidates = intersectCandidates(scopedCandidates, localCandidates)
+      const fallbackCandidates = scopedSourceCandidateGetter?.(undefined)
+      const scopedLocalCandidates = resolveExplicitSourceCandidates(scopedCandidates, localCandidates, fallbackCandidates)
       return shouldMergeFallbackRuntime ? mergeCandidates(scopedLocalCandidates, fallbackRuntime) : scopedLocalCandidates
     }
   }

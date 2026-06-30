@@ -1,10 +1,10 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./src/sub-independent/**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}'],
+  content: ['./**/*.{wxml,html,js,ts,jsx,tsx,vue,mpx}'],
   theme: {
     extend: {
       colors: {
-        'independent-subpackage-marker': '#dc2626',
+        'normal-subpackage-marker': '#2563eb',
       },
     },
   },

@@ -17,7 +17,7 @@ function compactCss(css: string) {
 }
 
 describe('e2e', () => {
-  it('keeps Tailwind CSS v4 mini-program preflight reset in app wxss', async () => {
+  it('keeps Tailwind CSS v4 css entries isolated and emits mini-program preflight reset per full Tailwind entry', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)
     const projectPath = path.resolve(projectBase, project.projectPath)
@@ -26,17 +26,32 @@ describe('e2e', () => {
       await ensureProjectBuilt(root)
     }
 
-    const css = await fs.readFile(
-      path.resolve(projectPath, 'dist/app.wxss'),
-      'utf8',
-    )
+    const appCss = await fs.readFile(path.resolve(projectPath, 'dist/app.wxss'), 'utf8')
+    const subNormalCss = await fs.readFile(path.resolve(projectPath, 'dist/sub-normal/pages/index.wxss'), 'utf8')
+    const subIndependentCss = await fs.readFile(path.resolve(projectPath, 'dist/sub-independent/pages/index.wxss'), 'utf8')
 
-    const normalizedCss = compactCss(css)
-    expect(normalizedCss).toContain('view,text,::after,::before')
-    expect(normalizedCss).toContain('box-sizing:border-box')
-    expect(normalizedCss).toContain('margin:0')
-    expect(normalizedCss).toContain('padding:0')
-    expect(normalizedCss).toContain('border:0solid')
+    const normalizedAppCss = compactCss(appCss)
+    const normalizedSubNormalCss = compactCss(subNormalCss)
+    const normalizedSubIndependentCss = compactCss(subIndependentCss)
+    expect(normalizedAppCss).toContain('view,text,::after,::before')
+    expect(normalizedAppCss).toContain('box-sizing:border-box')
+    expect(normalizedAppCss).toContain('margin:0')
+    expect(normalizedAppCss).toContain('padding:0')
+    expect(normalizedAppCss).toContain('border:0solid')
+    expect(normalizedSubNormalCss).toContain('view,text,::after,::before')
+    expect(normalizedSubNormalCss).toContain('box-sizing:border-box')
+    expect(normalizedSubNormalCss).toContain('margin:0')
+    expect(normalizedSubNormalCss).toContain('padding:0')
+    expect(normalizedSubNormalCss).toContain('border:0solid')
+    expect(normalizedSubIndependentCss).toContain('view,text,::after,::before')
+    expect(normalizedSubIndependentCss).toContain('box-sizing:border-box')
+    expect(normalizedSubIndependentCss).toContain('margin:0')
+    expect(normalizedSubIndependentCss).toContain('padding:0')
+    expect(normalizedSubIndependentCss).toContain('border:0solid')
+    expect(subNormalCss).toContain('.bg-normal-subpackage-marker')
+    expect(subNormalCss).not.toContain('.bg-independent-subpackage-marker')
+    expect(subIndependentCss).toContain('.bg-independent-subpackage-marker')
+    expect(subIndependentCss).not.toContain('.bg-normal-subpackage-marker')
   })
 
   it('does not emit Tailwind CSS v4 empty content init for v4 output', async () => {

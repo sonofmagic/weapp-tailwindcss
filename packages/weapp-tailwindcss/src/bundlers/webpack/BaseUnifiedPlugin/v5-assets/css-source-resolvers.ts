@@ -44,14 +44,17 @@ export function createWebpackCssSourceResolvers(options: {
     return (tailwindOptions?.v4?.cssEntries?.length ?? 0) > 0
       || (tailwindOptions?.v4?.cssSources?.length ?? 0) > 0
   }
-  const configuredMainCssEntryFiles = (() => {
+  const configuredCssEntryFiles = (() => {
     const tailwindOptions = resolveTailwindcssOptions(runtimeState.tailwindRuntime.options)
-    return [
+    const entries = [
+      ...(compilerOptions.cssEntries ?? []),
       ...(tailwindOptions?.v4?.cssEntries ?? []),
     ]
       .filter((file): file is string => typeof file === 'string' && file.length > 0)
       .map(file => path.resolve(file))
+    return [...new Set(entries)]
   })()
+  const configuredMainCssEntryFiles = configuredCssEntryFiles.slice(0, 1)
   const inferredMainCssFiles = inferWebpackMainCssFiles(
     compilation.chunks as Iterable<{ files?: Iterable<string> | string[] | undefined, hasRuntime?: () => boolean, name?: string | undefined }>,
     compilerOptions.cssMatcher,
@@ -65,16 +68,32 @@ export function createWebpackCssSourceResolvers(options: {
     && groupedCssEntriesLength === 1
     ? singleCssAssetFile
     : undefined
-  const isMainCssChunk = (file: string) =>
-    compilerOptions.mainCssChunkMatcher(file, appType)
-    || inferredMainCssFiles.has(file)
-    || file === singleConfiguredCssAsset
+  const isMainCssChunk = (file: string) => {
+    const resources = cssAssetResources.get(file)
+    if (resources && configuredCssEntryFiles.length > 0) {
+      for (const resource of resources) {
+        const index = configuredCssEntryFiles.findIndex(entry => path.resolve(entry) === path.resolve(resource))
+        if (index >= 0) {
+          return index === 0
+        }
+      }
+    }
+    if (configuredCssEntryFiles.length > 1) {
+      return false
+    }
+    return compilerOptions.mainCssChunkMatcher(file, appType)
+      || inferredMainCssFiles.has(file)
+      || file === singleConfiguredCssAsset
+  }
   const activeWebpackCssSourceFiles = new Set<string>()
   const resolveConfiguredMainCssSourceFile = (file: string) => {
     if (!isMainCssChunk(file)) {
       return undefined
     }
     if (configuredMainCssEntryFiles.length !== 1) {
+      return undefined
+    }
+    if (groupedCssEntriesLength !== 1 && file !== singleCssAssetFile) {
       return undefined
     }
     for (const sourceFile of configuredMainCssEntryFiles) {

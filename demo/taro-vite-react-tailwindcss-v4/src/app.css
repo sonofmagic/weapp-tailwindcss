@@ -2,7 +2,10 @@
 @import "@nutui/nutui-react-taro/dist/styles/themes/default.css";
 @import "@nutui/nutui-react-taro/dist/style.css";
 @config "../tailwind.config.js";
-@source "../src/**/*.{ts,tsx,jsx,js,html}";
+@source "./app.ts";
+@source "./pages/index/**/*.{ts,tsx,jsx,js}";
+@source not "./sub-normal/**/*";
+@source not "./sub-independent/**/*";
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;

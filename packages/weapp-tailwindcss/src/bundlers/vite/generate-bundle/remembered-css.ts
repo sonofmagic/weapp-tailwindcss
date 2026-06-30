@@ -43,10 +43,9 @@ function selectBestRememberedCssSourceMatches(
   outputFile: string,
   outputRoot: string,
   sourceRoot: string | undefined,
+  options: { minimumScore?: number | undefined, requirePositiveScore?: boolean | undefined } = {},
 ) {
-  if (sources.length <= 1) {
-    return sources
-  }
+  const minimumScore = options.minimumScore ?? (options.requirePositiveScore ? 1 : 0)
   const scoredMatches = sources
     .map(remembered => ({
       remembered,
@@ -55,9 +54,15 @@ function selectBestRememberedCssSourceMatches(
         scoreMatchingStyleFileBase(outputFile, remembered.outputFile, outputRoot, sourceRoot),
       ),
     }))
-    .filter(match => match.score > 0)
+    .filter(match => match.score >= minimumScore && match.score > 0)
     .sort((a, b) => b.score - a.score)
   const bestScore = scoredMatches[0]?.score
+  if (!bestScore && minimumScore > 0) {
+    return []
+  }
+  if (sources.length <= 1) {
+    return sources
+  }
   return bestScore
     ? scoredMatches.filter(match => match.score === bestScore).map(match => match.remembered)
     : sources
@@ -99,7 +104,12 @@ export function findRememberedCssSources(
     originalFiles.some(originalFile => normalizeRememberedSourceIdentity(remembered.sourceFile) === normalizeRememberedSourceIdentity(originalFile)),
   )
   if (sourceMatched.length > 0) {
-    return sourceMatched
+    const scoredSourceMatched = selectBestRememberedCssSourceMatches(sourceMatched, outputFile, outputRoot, sourceRoot, {
+      requirePositiveScore: true,
+    })
+    if (scoredSourceMatched.length > 0) {
+      return scoredSourceMatched
+    }
   }
 
   const outputMatched = rememberedSources.filter(remembered =>
@@ -116,6 +126,12 @@ export function findRememberedCssSources(
   }
 
   const scoredMatches = selectBestRememberedCssSourceMatches(rememberedSources, outputFile, outputRoot, sourceRoot)
+  const strongScoredMatches = selectBestRememberedCssSourceMatches(rememberedSources, outputFile, outputRoot, sourceRoot, {
+    minimumScore: 100000,
+  })
+  if (strongScoredMatches.length > 0 && strongScoredMatches.length < rememberedSources.length) {
+    return strongScoredMatches
+  }
   return scoredMatches.length === rememberedSources.length ? [] : scoredMatches
 }
 

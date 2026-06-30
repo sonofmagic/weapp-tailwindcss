@@ -1,1 +1,30 @@
-@import '../../app.wxss';
+view,
+text,
+::after,
+::before {
+  border: 0 solid;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-content: '';
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+  --default-font-family: var(--font-sans);
+  --default-mono-font-family: var(--font-mono);
+}
+/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.tsx */
+.before_ccontent-_b_aindependent_subpackage_taro-vite-react-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-vite-react-tailwindcss-v4';
+  content: var(--tw-content);
+}
+/* tokens: before:content-['independent_subpackage_taro-vite-react-tailwindcss-v4'] <= src/sub-independent/pages/index.tsx */
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
+}
