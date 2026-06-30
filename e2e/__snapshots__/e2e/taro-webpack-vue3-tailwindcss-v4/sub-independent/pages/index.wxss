@@ -1,9 +1,15 @@
-view,
-text,
-::after,
-::before {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  border: 0 solid;
+:host,
+page,
+.tw-root,
+wx-root-portal-content {
+  --tw-content: '';
+}
+/* tokens: bg-independent-subpackage-marker <= src/sub-independent/pages/index.vue */
+.before_ccontent-_b_aindependent_subpackage_taro-webpack-vue3-tailwindcss-v4_a_B::before {
+  --tw-content: 'independent subpackage taro-webpack-vue3-tailwindcss-v4';
+  content: var(--tw-content);
+}
+/* tokens: before:content-['independent_subpackage_taro-webpack-vue3-tailwindcss-v4'] <= src/sub-independent/pages/index.vue */
+.bg-independent-subpackage-marker {
+  background-color: #dc2626;
 }

@@ -34,7 +34,7 @@ export function finalizeMiniProgramGeneratorCss(
   const injectPreflight = options.injectPreflight !== false
     && !hasMiniProgramTailwindV4PreflightReset(css)
   return finalizeMiniProgramCss(css, {
-    cssPreflight: cssPreflight === false
+    cssPreflight: cssPreflight === false || injectPreflight === false
       ? false
       : injectPreflight
         ? cssPreflight
@@ -56,6 +56,9 @@ export function shouldInjectMiniProgramPreflightForGeneratorCss(
   },
 ) {
   if (options.cssHandlerOptions.uniAppX === true && options.cssHandlerOptions.uniAppXCssTarget === 'uvue') {
+    return false
+  }
+  if (!options.cssHandlerOptions.isMainChunk) {
     return false
   }
   if (!options.isolateCurrentCssCandidates) {

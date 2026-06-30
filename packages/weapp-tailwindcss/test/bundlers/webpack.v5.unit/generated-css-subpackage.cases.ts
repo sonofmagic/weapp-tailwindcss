@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { getDefaultCssPreflight } from '@/defaults'
 import type { LoaderModule } from './shared'
 import { setupWebpackV5UnitTest, FakeConcatSource, createAssetsFromStore, createContext, fs, getWebpackLoaderRuntime, mkdir, mkdtemp, os, path, rm, testState, WeappTailwindcss, writeFile } from './shared'
 
@@ -50,15 +51,23 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
     await writeFile(moduleCWxml, '<view class="module-c-only"></view>')
     await writeFile(subNormalWxml, '<view class="normal-only"></view>')
 
-    const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      target: 'weapp',
-      classSet: new Set(candidates),
-      dependencies: [],
-      sources: [],
-      root: null,
-    }))
+    const generateMock = vi.fn(async ({ candidates, source }: { candidates: Set<string>, source?: { css?: string } }) => {
+      const shouldEmitPreflight = source?.css?.includes('tailwindcss/base') === true
+        || /@import\s+["']tailwindcss["']/.test(source?.css ?? '')
+      const css = [
+        ...(shouldEmitPreflight ? ['view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}'] : []),
+        ...[...candidates].sort().map(candidate => `.${candidate}{}`),
+      ].join('\n')
+      return {
+        css,
+        rawCss: css,
+        target: 'weapp',
+        classSet: new Set(candidates),
+        dependencies: [],
+        sources: [],
+        root: null,
+      }
+    })
     vi.resetModules()
     vi.doMock('@/generator', () => ({
       createWeappTailwindcssGenerator: vi.fn((source: any) => ({
@@ -95,7 +104,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
       testState.currentContext = createContext({
-        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        cssMatcher: (file: string) => file.endsWith('.wxss') || file.includes('.css'),
         mainCssChunkMatcher: vi.fn(() => true),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
         tailwindcssBasedir: dir,
@@ -277,23 +286,27 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       '}',
     ].join('\n'))
     await writeFile(subNormalCss, [
-      '@import "tailwindcss/base";',
-      '@import "tailwindcss/components";',
-      '@import "tailwindcss/utilities";',
+      '@layer theme, utilities;',
+      '@import "tailwindcss/theme.css" layer(theme);',
+      '@import "tailwindcss/utilities.css" layer(utilities) source(none);',
       '@config "../../../tailwind.config.sub-normal.js";',
     ].join('\n'))
     await writeFile(appCss, [
-      '@import "tailwindcss/base";',
-      '@import "tailwindcss/components";',
-      '@import "tailwindcss/utilities";',
+      '@import "tailwindcss" source(none);',
       '@config "../tailwind.config.js";',
     ].join('\n'))
     await writeFile(appWxml, '<view class="main-only"></view>')
     await writeFile(subNormalWxml, '<view class="bg-normal-subpackage-marker sub-only"></view>')
 
     const generateMock = vi.fn(async ({ candidates }: { candidates: Set<string> }) => ({
-      css: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
-      rawCss: [...candidates].sort().map(candidate => `.${candidate}{}`).join('\n'),
+      css: [
+        'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+        ...[...candidates].sort().map(candidate => `.${candidate}{}`),
+      ].join('\n'),
+      rawCss: [
+        'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}',
+        ...[...candidates].sort().map(candidate => `.${candidate}{}`),
+      ].join('\n'),
       target: 'weapp',
       classSet: new Set(candidates),
       dependencies: [],
@@ -336,8 +349,9 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
     try {
       const { WeappTailwindcss: MockedWeappTailwindcss } = await import('@/bundlers/webpack/BaseUnifiedPlugin/v5')
       testState.currentContext = createContext({
-        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        cssMatcher: (file: string) => file.endsWith('.wxss') || file.includes('.css'),
         mainCssChunkMatcher: vi.fn((file: string) => file === 'app.wxss'),
+        cssPreflight: getDefaultCssPreflight(),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
         tailwindcssBasedir: dir,
         tailwindRuntime: {
@@ -345,6 +359,13 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
           getClassSetSync: vi.fn(() => new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only'])),
           extract: vi.fn(async () => ({ classSet: new Set(['main-only', 'bg-normal-subpackage-marker', 'sub-only']) })),
           majorVersion: 4,
+          options: {
+            tailwindcss: {
+              v4: {
+                cssEntries: [appCss, subNormalCss],
+              },
+            },
+          },
         },
       } as any)
 
@@ -354,13 +375,13 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       }
       const compilation = {
         compiler: { outputPath: path.join(dir, 'dist') },
-        chunks: [{ id: 'sub-normal', hash: 'hash-1', files: Object.keys(assetStore) }],
+        chunks: [{ id: 'app', hash: 'hash-1', files: Object.keys(assetStore) }],
         chunkGraph: {
-          getChunkModulesIterable: (chunk: { files?: string[] }) => {
-            if (chunk.files?.includes('app.wxss')) {
+          getChunkModulesIterable: (chunk: { id?: string }) => {
+            if (chunk.id === 'app') {
               return [{ resource: appCss }]
             }
-            if (chunk.files?.includes('sub-normal/pages/index.wxss')) {
+            if (chunk.id === 'sub-normal') {
               return [{ resource: subNormalCss }]
             }
             return []
@@ -429,11 +450,11 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       new MockedWeappTailwindcss().apply(compiler as any)
       const loaderHook = compiler.webpack.NormalModule.getCompilationHooks.mock.results[0]?.value?.loader?.tap.mock.calls[0]?.[1]
       const appModule: LoaderModule = {
-        resource: appCss,
+        resource: `${appCss}?type=style`,
         loaders: [{ loader: '/path/postcss-loader.js' }],
       }
       const subNormalModule: LoaderModule = {
-        resource: subNormalCss,
+        resource: `${subNormalCss}?type=style`,
         loaders: [{ loader: '/path/postcss-loader.js' }],
       }
       loaderHook?.({}, appModule)
@@ -450,6 +471,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
         })
       }
       await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+      const appWxss = assetStore['app.wxss']
       assetStore = {
         'sub-normal/pages/index.wxss': '@tailwind utilities;',
       }
@@ -459,9 +481,12 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       expect(generateMock.mock.calls).toHaveLength(2)
       expect(generateMock.mock.calls[0]?.[0]?.candidates).toEqual(new Set(['main-only']))
       expect(generateMock.mock.calls[1]?.[0]?.candidates).toEqual(new Set(['bg-normal-subpackage-marker', 'sub-only']))
+      expect(appWxss).toContain('.main-only')
       expect(assetStore['sub-normal/pages/index.wxss']).toContain('.bg-normal-subpackage-marker')
       expect(assetStore['sub-normal/pages/index.wxss']).toContain('.sub-only')
       expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('.main-only')
+      expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('view,text,::after,::before')
+      expect(assetStore['sub-normal/pages/index.wxss']).not.toContain('box-sizing:border-box')
     }
     finally {
       vi.doUnmock('@/generator')
@@ -488,11 +513,11 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
     ].join('\n'))
     await writeFile(subACss, [
       '@import "tailwindcss" source(none);',
-      '@source "../../../src/**/*.{wxml,ts}";',
+      '@source "./**/*.{wxml,ts}";',
     ].join('\n'))
     await writeFile(subBCss, [
       '@import "tailwindcss" source(none);',
-      '@source "../../../src/**/*.{wxml,ts}";',
+      '@source "./**/*.{wxml,ts}";',
     ].join('\n'))
     await writeFile(appWxml, '<view class="main-only"></view>')
     await writeFile(subAWxml, '<view class="sub-a-only"></view>')
@@ -545,7 +570,7 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       const allClasses = new Set(['main-only', 'sub-a-only', 'sub-b-only'])
       testState.currentContext = createContext({
         rewriteCssImports: true,
-        cssMatcher: (file: string) => file.endsWith('.wxss'),
+        cssMatcher: (file: string) => file.endsWith('.wxss') || file.includes('.css'),
         mainCssChunkMatcher: vi.fn(() => true),
         styleHandler: vi.fn(async (code: string) => ({ css: code })),
         tailwindcssBasedir: dir,
@@ -555,13 +580,14 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
           extract: vi.fn(async () => ({ classSet: allClasses })),
           collectContentTokens: vi.fn(async (entries?: Array<{ base?: string, pattern?: string }>) => {
             const base = entries?.map(entry => `${entry.base ?? ''}/${entry.pattern ?? ''}`).join('\n') ?? ''
-            if (base.includes('/sub-a/')) {
+            const sourceText = base || entries?.map(entry => String(entry)).join('\n') || ''
+            if (sourceText.includes('/sub-a/')) {
               return { candidates: new Set(['sub-a-only']), sourcesByToken: new Map([['sub-a-only', new Set([subAWxml])]]) }
             }
-            if (base.includes('/sub-b/')) {
+            if (sourceText.includes('/sub-b/')) {
               return { candidates: new Set(['sub-b-only']), sourcesByToken: new Map([['sub-b-only', new Set([subBWxml])]]) }
             }
-            if (base.includes('/pages/')) {
+            if (sourceText.includes('/pages/')) {
               return { candidates: new Set(['main-only']), sourcesByToken: new Map([['main-only', new Set([appWxml])]]) }
             }
             return {
@@ -585,19 +611,15 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       } as any)
 
       const processAssetsCallbacks: Array<(assets: Record<string, any>) => Promise<void>> = []
-      const assetStore: Record<string, string> = {
+      let assetStore: Record<string, string> = {
         'app.wxss': '@tailwind utilities;',
         'pages/index/index.wxss': '.page-local{}',
-        'sub-a/pages/index.wxss': '@tailwind utilities;',
-        'sub-b/pages/index.wxss': '@tailwind utilities;',
       }
       const compilation = {
         compiler: { outputPath: path.join(dir, 'dist') },
         chunks: [
           { id: 'app', hash: 'hash-app', files: ['app.wxss'] },
           { id: 'page', hash: 'hash-page', files: ['pages/index/index.wxss'] },
-          { id: 'sub-a', hash: 'hash-sub-a', files: ['sub-a/pages/index.wxss'] },
-          { id: 'sub-b', hash: 'hash-sub-b', files: ['sub-b/pages/index.wxss'] },
         ],
         chunkGraph: {
           getChunkModulesIterable: (chunk: { id?: string }) => {
@@ -679,15 +701,15 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
       new MockedWeappTailwindcss().apply(compiler as any)
       const loaderHook = compiler.webpack.NormalModule.getCompilationHooks.mock.results[0]?.value?.loader?.tap.mock.calls[0]?.[1]
       const appModule: LoaderModule = {
-        resource: appCss,
+        resource: `${appCss}?type=style`,
         loaders: [{ loader: '/path/postcss-loader.js' }],
       }
       const subAModule: LoaderModule = {
-        resource: subACss,
+        resource: `${subACss}?type=style`,
         loaders: [{ loader: '/path/postcss-loader.js' }],
       }
       const subBModule: LoaderModule = {
-        resource: subBCss,
+        resource: `${subBCss}?type=style`,
         loaders: [{ loader: '/path/postcss-loader.js' }],
       }
       loaderHook?.({}, appModule)
@@ -704,22 +726,59 @@ describe('bundlers/webpack WeappTailwindcss / generated css subpackages', () => 
           file: cssFile,
           css: await fs.promises.readFile(cssFile, 'utf8'),
         })
+        const rewriteLoaderEntry = module.loaders.find(entry => entry.loader?.includes('weapp-tw-css-import-rewrite-loader'))
+        const rewriteRuntime = getWebpackLoaderRuntime(rewriteLoaderEntry?.options?.tailwindcssImportRewriteRuntimeKey)
+        const css = cssFile === appCss
+          ? '.main-only{}'
+          : cssFile === subACss
+            ? '.sub-a-only{}'
+            : '.sub-b-only{}'
+        rewriteRuntime?.cssImportRewrite?.registerGeneratedCss?.({
+          classSet: new Set(cssFile === appCss
+            ? ['main-only']
+            : cssFile === subACss
+              ? ['sub-a-only']
+              : ['sub-b-only']),
+          css,
+          dependencies: [],
+          file: cssFile,
+        })
       }
       await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+      const appWxss = assetStore['app.wxss']
+      const pageWxss = assetStore['pages/index/index.wxss']
 
-      expect(assetStore['app.wxss']).toContain('.main-only')
-      expect(assetStore['app.wxss']).not.toContain('.sub-a-only')
-      expect(assetStore['app.wxss']).not.toContain('.sub-b-only')
-      expect(assetStore['pages/index/index.wxss']).toContain('.page-local')
-      expect(assetStore['pages/index/index.wxss']).not.toContain('.main-only')
-      expect(assetStore['pages/index/index.wxss']).not.toContain('.sub-a-only')
-      expect(assetStore['pages/index/index.wxss']).not.toContain('.sub-b-only')
-      expect(assetStore['sub-a/pages/index.wxss']).toContain('.sub-a-only')
-      expect(assetStore['sub-a/pages/index.wxss']).not.toContain('.main-only')
-      expect(assetStore['sub-a/pages/index.wxss']).not.toContain('.sub-b-only')
-      expect(assetStore['sub-b/pages/index.wxss']).toContain('.sub-b-only')
-      expect(assetStore['sub-b/pages/index.wxss']).not.toContain('.main-only')
-      expect(assetStore['sub-b/pages/index.wxss']).not.toContain('.sub-a-only')
+      assetStore = {
+        'sub-a/pages/index.wxss': '@tailwind utilities;',
+      }
+      compilation.chunks = [
+        { id: 'sub-a', hash: 'hash-sub-a', files: ['sub-a/pages/index.wxss'] },
+      ]
+      await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+      const subAWxss = assetStore['sub-a/pages/index.wxss']
+
+      assetStore = {
+        'sub-b/pages/index.wxss': '@tailwind utilities;',
+      }
+      compilation.chunks = [
+        { id: 'sub-b', hash: 'hash-sub-b', files: ['sub-b/pages/index.wxss'] },
+      ]
+      await processAssetsCallbacks[0](createAssetsFromStore(assetStore))
+      const subBWxss = assetStore['sub-b/pages/index.wxss']
+
+      expect(appWxss).toContain('.main-only')
+      expect(appWxss).not.toContain('.sub-a-only')
+      expect(appWxss).not.toContain('.sub-b-only')
+      expect(pageWxss).toContain('.page-local')
+      expect(pageWxss).not.toContain('.main-only')
+      expect(pageWxss).not.toContain('.sub-a-only')
+      expect(pageWxss).not.toContain('.sub-b-only')
+      expect(subAWxss).toContain('.sub-a-only')
+      expect(subAWxss).not.toContain('.main-only')
+      expect(subAWxss).not.toContain('.sub-b-only')
+      expect(subBWxss).toContain('.sub-b-only')
+      expect(subBWxss).not.toContain('.main-only')
+      expect(subBWxss).not.toContain('.sub-a-only')
       expect(generateMock).toHaveBeenCalledTimes(3)
       const subACall = generateMock.mock.calls.find(call => call[0]?.candidates?.has('sub-a-only'))
       const subBCall = generateMock.mock.calls.find(call => call[0]?.candidates?.has('sub-b-only'))

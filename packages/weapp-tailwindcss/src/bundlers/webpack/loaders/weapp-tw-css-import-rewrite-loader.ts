@@ -15,6 +15,7 @@ import { resolveSourceCandidateScanFiles } from '@/bundlers/vite/source-candidat
 import { resolveTailwindV4EntriesFromCssCached } from '@/bundlers/vite/source-scan'
 import { normalizeStyleHandlerMajorVersion } from '@/context/style-options'
 import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
+import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { resolveSourceScanPath } from '@/tailwindcss/source-scan'
 import { getWebpackLoaderRuntime } from './runtime-registry'
 import { registerWebpackWatchFile } from './watch-dependencies'
@@ -79,8 +80,19 @@ function createCssHandlerOptions(
   file: string,
   appType?: AppType,
 ) {
+  const tailwindOptions = resolveTailwindcssOptions(options.tailwindRuntimeOptions)
+  const cssEntries = [
+    ...(options.cssEntries ?? []),
+    ...(tailwindOptions?.v4?.cssEntries ?? []),
+  ]
+    .filter((entry): entry is string => typeof entry === 'string' && entry.length > 0)
+    .map(entry => path.resolve(entry))
+  const resolvedFile = path.resolve(file)
+  const matchedCssEntryIndex = cssEntries.findIndex(entry => entry === resolvedFile)
   return {
-    isMainChunk: options.mainCssChunkMatcher(file, appType),
+    isMainChunk: matchedCssEntryIndex >= 0
+      ? matchedCssEntryIndex === 0
+      : options.mainCssChunkMatcher(file, appType),
     postcssOptions: {
       options: {
         from: file,

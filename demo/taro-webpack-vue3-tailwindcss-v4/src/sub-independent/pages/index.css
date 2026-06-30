@@ -1,0 +1,6 @@
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@config "../../../tailwind.config.sub-independent.js";
+
+@source "./**/*.{css,wxml,html,js,ts,jsx,tsx,vue}";
