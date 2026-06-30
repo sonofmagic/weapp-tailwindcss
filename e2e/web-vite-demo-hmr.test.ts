@@ -25,6 +25,7 @@ interface ViteHmrMessage {
 
 const repoRoot = path.resolve(__dirname, '..')
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
+const reloadMarker = 'web-vite-hmr-marker'
 const serverTimeoutMs = Number(process.env['E2E_WEB_VITE_HMR_TIMEOUT_MS'] ?? 120_000)
 const pollIntervalMs = 100
 
@@ -182,14 +183,15 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
 async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: string) {
   let lastError = ''
   const startedAt = Date.now()
+  const targetSelector = item.targetSelector ?? 'h1'
 
   while (Date.now() - startedAt < serverTimeoutMs) {
     try {
-      const title = await page.locator('h1').textContent({ timeout: 2_000 })
-      if (title?.trim() === item.titleFrom) {
+      const title = await page.locator(targetSelector).textContent({ timeout: 2_000 })
+      if (title?.includes(item.titleFrom)) {
         return
       }
-      lastError = `h1=${title}`
+      lastError = `${targetSelector}=${title}`
     }
     catch (error) {
       lastError = error instanceof Error ? error.message : String(error)
@@ -210,10 +212,11 @@ async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: s
 async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
   let lastError = ''
   const startedAt = Date.now()
+  const targetSelector = item.targetSelector ?? 'h1'
 
   while (Date.now() - startedAt < serverTimeoutMs) {
     try {
-      const actual = await page.locator('h1').evaluate((element) => {
+      const actual = await page.locator(targetSelector).evaluate((element) => {
         const style = window.getComputedStyle(element)
         return {
           color: style.color.replace(/\s+/g, ' '),
@@ -222,7 +225,7 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
         }
       })
       const styleMatched = item.styleRequired === false || actual.color === 'rgb(255, 0, 0)'
-      if (actual.text === item.titleTo && styleMatched) {
+      if (actual.text.includes(item.titleTo) && styleMatched) {
         return
       }
       lastError = JSON.stringify(actual)
@@ -240,14 +243,15 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
 async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
   let lastError = ''
   const startedAt = Date.now()
+  const targetSelector = item.targetSelector ?? 'h1'
 
   while (Date.now() - startedAt < serverTimeoutMs) {
     try {
-      const actual = await page.locator('h1').textContent({ timeout: 2_000 })
-      if (actual?.trim() === item.titleTo) {
+      const actual = await page.locator(targetSelector).textContent({ timeout: 2_000 })
+      if (actual?.includes(item.titleTo)) {
         return
       }
-      lastError = `h1=${actual}`
+      lastError = `${targetSelector}=${actual}`
     }
     catch (error) {
       lastError = error instanceof Error ? error.message : String(error)
@@ -262,10 +266,11 @@ async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
 async function waitForClassHmr(page: Page, item: WebViteHmrCase) {
   let lastError = ''
   const startedAt = Date.now()
+  const targetSelector = item.targetSelector ?? 'h1'
 
   while (Date.now() - startedAt < serverTimeoutMs) {
     try {
-      const actual = await page.locator('h1').evaluate((element) => {
+      const actual = await page.locator(targetSelector).evaluate((element) => {
         const style = window.getComputedStyle(element)
         return {
           color: style.color.replace(/\s+/g, ' '),
@@ -306,7 +311,7 @@ function collectViteHmrMessages(page: Page) {
 }
 
 function expectViteSourceHmrUpdate(item: WebViteHmrCase, messages: ViteHmrMessage[], fromIndex = 0) {
-  if (!item.expectedViteHmrPath) {
+  if (!item.expectedViteHmrPath && !item.expectedViteHmrPathIncludes) {
     return
   }
   const updates = messages.slice(fromIndex)
@@ -317,12 +322,42 @@ function expectViteSourceHmrUpdate(item: WebViteHmrCase, messages: ViteHmrMessag
       && (
         update.path === item.expectedViteHmrPath
         || update.acceptedPath === item.expectedViteHmrPath
+        || (
+          item.expectedViteHmrPathIncludes !== undefined
+          && (
+            update.path?.includes(item.expectedViteHmrPathIncludes) === true
+            || update.acceptedPath?.includes(item.expectedViteHmrPathIncludes) === true
+          )
+        )
       )
   })
   if (sourceUpdates.length > 0) {
     return
   }
   throw new Error(`${item.name} Web HMR 未收到源文件 js-update：${JSON.stringify(updates)}`)
+}
+
+function expectNoViteFullReload(item: WebViteHmrCase, messages: ViteHmrMessage[], fromIndex = 0) {
+  const fullReloads = messages.slice(fromIndex)
+    .filter(message => message.type === 'full-reload')
+  if (fullReloads.length === 0) {
+    return
+  }
+  throw new Error(`${item.name} Web HMR 触发了 full-reload：${JSON.stringify(fullReloads)}`)
+}
+
+async function markPageSession(page: Page) {
+  await page.evaluate((marker) => {
+    Reflect.set(window, '__WEB_VITE_HMR_RELOAD_MARKER__', marker)
+  }, reloadMarker)
+}
+
+async function expectPageSessionPreserved(page: Page, item: WebViteHmrCase) {
+  const actual = await page.evaluate(() => Reflect.get(window, '__WEB_VITE_HMR_RELOAD_MARKER__'))
+  if (actual === reloadMarker) {
+    return
+  }
+  throw new Error(`${item.name} Web HMR 页面发生了刷新`)
 }
 
 async function cleanupWithTimeout(name: string, task: () => Promise<void> | void, timeoutMs = 5_000) {
@@ -388,16 +423,21 @@ describe('demo/web source HMR', () => {
       timeout: Math.min(serverTimeoutMs, 60_000),
     })
     await waitForInitialRender(page, item, baseUrl)
+    await markPageSession(page)
 
-    if (item.expectedViteHmrPath) {
+    if (item.expectedViteHmrPath || item.expectedViteHmrPathIncludes) {
       const titleMessageStart = hmrMessages.length
       await mutateSource(item, sourceFile, 'title')
       await waitForTitleHmr(page, item)
+      await expectPageSessionPreserved(page, item)
+      expectNoViteFullReload(item, hmrMessages, titleMessageStart)
       expectViteSourceHmrUpdate(item, hmrMessages, titleMessageStart)
 
       const classMessageStart = hmrMessages.length
       await mutateSource(item, sourceFile, 'class')
       await waitForClassHmr(page, item)
+      await expectPageSessionPreserved(page, item)
+      expectNoViteFullReload(item, hmrMessages, classMessageStart)
       expectViteSourceHmrUpdate(item, hmrMessages, classMessageStart)
       return
     }

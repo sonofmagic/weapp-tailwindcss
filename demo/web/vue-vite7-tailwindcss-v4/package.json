@@ -1,0 +1,31 @@
+{
+  "name": "@weapp-tailwindcss-demo/web-vue-vite7-tailwindcss-v4",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "predev": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "vue": "catalog:vue3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "catalog:vitePluginVue6",
+    "@vue/compiler-sfc": "catalog:vue3",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "catalog:typescript59",
+    "vite": "catalog:vite724",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/web/vue-vite7-tailwindcss-v4"
+  }
+}

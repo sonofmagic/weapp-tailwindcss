@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@plugin "@iconify/tailwind4";
+@source "../../**/*.{vue,ts,js}";
+@source not "../../.nuxt/**";
+@source not "../../.output/**";

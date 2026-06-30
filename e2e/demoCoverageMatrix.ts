@@ -14,6 +14,7 @@ export type DemoFramework
     | 'web-rsbuild-vue'
     | 'web-vite-react'
     | 'web-vite-vue'
+    | 'web-vite-nuxt'
     | 'web-webpack-react'
     | 'web-webpack-vue'
 
@@ -391,6 +392,8 @@ export const DEMO_COVERAGE_MATRIX = [
   entry({ name: 'weapp-vite-tailwindcss-v4', packageJson: pkg('weapp-vite-tailwindcss-v4'), framework: 'weapp-vite', builder: 'vite', tailwindcss: 'v4', sourceShape: 'native', sfcBlocks: [], hbuilderxLocal: false, platforms: weappVitePlatforms('weapp-vite-tailwindcss-v4') }),
   entry({ name: 'web/react-vite-tailwindcss-v4', packageJson: pkg('web/react-vite-tailwindcss-v4'), framework: 'web-vite-react', builder: 'vite', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-vite-tailwindcss-v4') }),
   entry({ name: 'web/vue-vite-tailwindcss-v4', packageJson: pkg('web/vue-vite-tailwindcss-v4'), framework: 'web-vite-vue', builder: 'vite', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-vite-tailwindcss-v4') }),
+  entry({ name: 'web/vue-vite7-tailwindcss-v4', packageJson: pkg('web/vue-vite7-tailwindcss-v4'), framework: 'web-vite-vue', builder: 'vite7', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-vite7-tailwindcss-v4') }),
+  entry({ name: 'web/nuxt-vite-tailwindcss-v4', packageJson: pkg('web/nuxt-vite-tailwindcss-v4'), framework: 'web-vite-nuxt', builder: 'nuxt-vite', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template'], hbuilderxLocal: false, platforms: webPlatforms('web/nuxt-vite-tailwindcss-v4') }),
   entry({ name: 'web/react-rsbuild-tailwindcss-v4', packageJson: pkg('web/react-rsbuild-tailwindcss-v4'), framework: 'web-rsbuild-react', builder: 'rsbuild', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-rsbuild-tailwindcss-v4') }),
   entry({ name: 'web/vue-rsbuild-tailwindcss-v4', packageJson: pkg('web/vue-rsbuild-tailwindcss-v4'), framework: 'web-rsbuild-vue', builder: 'rsbuild', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-rsbuild-tailwindcss-v4') }),
   entry({ name: 'web/react-webpack-tailwindcss-v4', packageJson: pkg('web/react-webpack-tailwindcss-v4'), framework: 'web-webpack-react', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-webpack-tailwindcss-v4') }),

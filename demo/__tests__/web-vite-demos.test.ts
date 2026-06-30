@@ -7,6 +7,8 @@ const demoRoot = fileURLToPath(new URL('..', import.meta.url))
 const webDemoProjects = [
   'react-vite-tailwindcss-v4',
   'vue-vite-tailwindcss-v4',
+  'vue-vite7-tailwindcss-v4',
+  'nuxt-vite-tailwindcss-v4',
 ] as const
 
 async function readDemoFile(relativePath: string) {
@@ -27,17 +29,22 @@ describe('demo/web vite matrix', () => {
     expect(packages.map(pkg => pkg.name)).toEqual([
       '@weapp-tailwindcss-demo/web-react-vite-tailwindcss-v4',
       '@weapp-tailwindcss-demo/web-vue-vite-tailwindcss-v4',
+      '@weapp-tailwindcss-demo/web-vue-vite7-tailwindcss-v4',
+      '@weapp-tailwindcss-demo/web-nuxt-vite-tailwindcss-v4',
     ])
 
-    expect(packages.every(pkg => pkg.scripts?.build && pkg.scripts?.['build:weapp'])).toBe(true)
+    expect(packages.every(pkg => pkg.scripts?.build)).toBe(true)
     expect(packages[0]?.devDependencies?.vite).toBe('catalog:vite8')
     expect(packages[1]?.devDependencies?.vite).toBe('catalog:vite8')
+    expect(packages[2]?.devDependencies?.vite).toBe('catalog:vite724')
     expect(packages[0]?.devDependencies?.['@vitejs/plugin-react']).toBe('catalog:vitePluginReact6')
     expect(packages[1]?.devDependencies?.['@vitejs/plugin-vue']).toBe('catalog:vitePluginVue6')
+    expect(packages[2]?.devDependencies?.['@vitejs/plugin-vue']).toBe('catalog:vitePluginVue6')
     expect(packages[0]?.dependencies?.react).toBe('catalog:react19')
     expect(packages[1]?.dependencies?.vue).toBe('catalog:vue3')
-    expect(packages[0]?.devDependencies?.tailwindcss).toBe('catalog:tailwindcss4')
-    expect(packages[1]?.devDependencies?.tailwindcss).toBe('catalog:tailwindcss4')
+    expect(packages[2]?.dependencies?.vue).toBe('catalog:vue3')
+    expect(packages[3]?.dependencies?.nuxt).toBe('4.4.8')
+    expect(packages.every(pkg => pkg.devDependencies?.tailwindcss === 'catalog:tailwindcss4')).toBe(true)
     for (const pkg of packages) {
       const deps = {
         ...(pkg.dependencies ?? {}),
@@ -61,17 +68,25 @@ describe('demo/web vite matrix', () => {
     const sources = await Promise.all([
       readDemoFile('web/react-vite-tailwindcss-v4/src/style.css'),
       readDemoFile('web/vue-vite-tailwindcss-v4/src/style.css'),
+      readDemoFile('web/vue-vite7-tailwindcss-v4/src/tailwind.css'),
+      readDemoFile('web/nuxt-vite-tailwindcss-v4/app/assets/css/tailwind.css'),
     ])
 
     expect(sources[0]).toContain('@import "tailwindcss/theme.css" layer(theme);')
     expect(sources[1]).toContain('@import "tailwindcss";')
     expect(sources[1]).toContain('@source "./**/*.{vue,ts}";')
+    expect(sources[2]).toContain('@import "tailwindcss";')
+    expect(sources[2]).toContain('@source "./**/*.{vue,ts,js}";')
+    expect(sources[3]).toContain('@import "tailwindcss";')
+    expect(sources[3]).toContain('@source "../../**/*.{vue,ts,js}";')
   })
 
   it('keeps preflight disabled for the web demo CSS entries', async () => {
     const sources = await Promise.all([
       readDemoFile('web/react-vite-tailwindcss-v4/src/style.css'),
       readDemoFile('web/vue-vite-tailwindcss-v4/src/style.css'),
+      readDemoFile('web/vue-vite7-tailwindcss-v4/src/tailwind.css'),
+      readDemoFile('web/nuxt-vite-tailwindcss-v4/app/assets/css/tailwind.css'),
     ])
 
     for (const source of sources) {

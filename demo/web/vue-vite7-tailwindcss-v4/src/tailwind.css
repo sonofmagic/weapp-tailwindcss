@@ -1,0 +1,4 @@
+@import "tailwindcss";
+
+@source "./**/*.{vue,ts,js}";
+@source not "../dist/**";

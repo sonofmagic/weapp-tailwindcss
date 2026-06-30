@@ -1,0 +1,30 @@
+{
+  "name": "@weapp-tailwindcss-demo/web-nuxt-vite-tailwindcss-v4",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "predev": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs",
+    "prebuild": "node ../../../scripts/ensure-weapp-tailwindcss-built.mjs"
+  },
+  "dependencies": {
+    "nuxt": "4.4.8",
+    "vue": "catalog:vue3"
+  },
+  "devDependencies": {
+    "@iconify/tailwind4": "^1.2.3",
+    "tailwindcss": "catalog:tailwindcss4",
+    "typescript": "catalog:typescript59",
+    "weapp-tailwindcss": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sonofmagic/weapp-tailwindcss.git",
+    "directory": "demo/web/nuxt-vite-tailwindcss-v4"
+  }
+}
