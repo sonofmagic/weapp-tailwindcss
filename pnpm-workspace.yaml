@@ -34,6 +34,8 @@ allowBuilds:
 
 pmOnFail: warn
 minimumReleaseAge: 0
+minimumReleaseAgeExclude:
+  - prettier@3.9.3
 
 overrides:
   '@tailwindcss-mangle/engine': 0.1.1
@@ -94,7 +96,7 @@ catalogs:
   postcssRpx:
     postcss-rpx-transform: ^1.0.1
   prettier371:
-    prettier: ^3.9.3
+    prettier: ^3.9.4
   react18:
     '@types/react': ^19.2.17
     '@types/react-dom': 18.2.7
@@ -116,9 +118,9 @@ catalogs:
   tailwindMerge2:
     tailwind-merge: ^2.6.1
   tailwindcss4:
-    '@tailwindcss/postcss': ^4.3.1
-    '@tailwindcss/vite': ^4.3.1
-    tailwindcss: ^4.3.1
+    '@tailwindcss/postcss': ^4.3.2
+    '@tailwindcss/vite': ^4.3.2
+    tailwindcss: ^4.3.2
     tailwindcss-4: npm:tailwindcss@^4.3.1
     tailwindcss4: npm:tailwindcss@^4.3.1
   tailwindcssPatch:
@@ -207,7 +209,7 @@ catalogs:
   vite724:
     vite: ^7.3.6
   vite8:
-    vite: ^8.1.0
+    vite: ^8.1.1
   vitePluginInspect:
     vite-plugin-inspect: ^11.4.1
   vitePluginReact4:

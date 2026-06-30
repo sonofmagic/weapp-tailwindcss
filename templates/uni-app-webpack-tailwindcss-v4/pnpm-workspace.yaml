@@ -8,7 +8,7 @@ allowBuilds:
   fsevents: false
   puppeteer: false
   sharp: true
-minimumReleaseAge: 0
+minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
   - '@weapp-tailwindcss/postcss@3.0.4'
   - weapp-tailwindcss@5.0.7

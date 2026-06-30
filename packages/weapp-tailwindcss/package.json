@@ -219,14 +219,13 @@
     "@babel/parser": "~7.29.7",
     "@babel/traverse": "~7.29.7",
     "@babel/types": "~7.29.7",
-    "@tailwindcss-mangle/engine": "0.1.1",
+    "@tailwindcss-mangle/engine": "0.1.2",
     "@vue/compiler-dom": "catalog:vue3",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/logger": "workspace:*",
     "@weapp-tailwindcss/postcss": "workspace:*",
     "@weapp-tailwindcss/reset": "workspace:*",
     "@weapp-tailwindcss/shared": "workspace:*",
-    "weapp-style-injector": "workspace:*",
     "comment-json": "^5.0.0",
     "debug": "~4.4.3",
     "fast-glob": "^3.3.3",
@@ -236,6 +235,7 @@
     "micromatch": "^4.0.8",
     "semver": "~7.8.5",
     "tailwindcss-config": "workspace:*",
+    "weapp-style-injector": "workspace:*",
     "yaml": "^2.9.0"
   },
   "devDependencies": {
