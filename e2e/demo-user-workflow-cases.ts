@@ -50,13 +50,15 @@ const taroV4Style = [
   '.text-_b_hc31d6b_B',
   '.bg-_b_h123456_B',
   '.tw-page-style-watch-anchor',
-  '.bg-independent-subpackage-marker',
-  '.before_ccontent',
 ]
 const taroV4Template = [
   'h-_b300px_B',
   'text-_b_hc31d6b_B',
   'bg-_b_h123456_B',
+]
+const taroV4SubpackageTemplate = [
+  'bg-independent-subpackage-marker',
+  'before_ccontent',
 ]
 const mpxV4Style = [
   '.bg-_b_h123456_B',
@@ -153,6 +155,11 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
           files: ['dist/pages/index/index.js'],
           contains: taroV4Template,
         },
+        {
+          label: 'Taro React 支付宝小程序分包脚本里保留转义 className',
+          files: ['dist/sub-independent/pages/index.js'],
+          contains: taroV4SubpackageTemplate,
+        },
       ],
     },
   ),
@@ -179,6 +186,11 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
           label: 'Taro React 头条小程序脚本里保留转义 className',
           files: ['dist/pages/index/index.js'],
           contains: taroV4Template,
+        },
+        {
+          label: 'Taro React 头条小程序分包脚本里保留转义 className',
+          files: ['dist/sub-independent/pages/index.js'],
+          contains: taroV4SubpackageTemplate,
         },
       ],
     },

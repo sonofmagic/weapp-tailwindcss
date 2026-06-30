@@ -55,6 +55,8 @@ module.exports = defineConfig({
         rem2rpx: true,
         cssEntries: [
           path.resolve(__dirname, './src/app.css'),
+          path.resolve(__dirname, './src/sub-normal/index.css'),
+          path.resolve(__dirname, './src/sub-independent/index.css'),
         ],
         styleInjector: false,
       }),
