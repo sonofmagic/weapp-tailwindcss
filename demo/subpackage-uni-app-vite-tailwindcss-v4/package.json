@@ -58,7 +58,6 @@
     "typescript": "catalog:typescript59",
     "vite": "^5.4.21",
     "vue-tsc": "catalog:vueTsc318",
-    "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*"
   }
 }

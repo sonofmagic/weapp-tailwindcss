@@ -55,7 +55,6 @@
     "tailwindcss-patch": "catalog:tailwindcssPatch",
     "typescript": "catalog:typescript59",
     "weapp-ide-cli": "catalog:weappIdeCli",
-    "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*",
     "webpack": "5.105.4"
   },

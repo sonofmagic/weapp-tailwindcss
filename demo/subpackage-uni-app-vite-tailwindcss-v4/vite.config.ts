@@ -3,7 +3,6 @@ import { dirname } from 'node:path'
 import path from 'node:path'
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig, type Plugin } from 'vite'
-import { StyleInjector } from 'weapp-style-injector/vite/uni-app'
 import { resolveUniPlatform } from 'weapp-tailwindcss/framework'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
@@ -42,17 +41,6 @@ export default defineConfig(() => {
     plugins: [
       singleCssEntryPlugin(),
       uni(),
-      ...(cssMode === 'isolated' && !uniPlatform.isWeb
-        ? [
-            StyleInjector({
-              styleEntries: [
-                {
-                  sourceFileName: 'index.css',
-                },
-              ],
-            }),
-          ]
-        : []),
       WeappTailwindcss({
         tailwindcssBasedir: process.cwd(),
         cssEntries,
@@ -61,6 +49,15 @@ export default defineConfig(() => {
         generator: {
           webCompat: uniPlatform.isWeb ? true : undefined,
         },
+        styleInjector: cssMode === 'isolated' && !uniPlatform.isWeb
+          ? {
+              styleEntries: [
+                {
+                  sourceFileName: 'index.css',
+                },
+              ],
+            }
+          : false,
       }),
     ],
     resolve: {

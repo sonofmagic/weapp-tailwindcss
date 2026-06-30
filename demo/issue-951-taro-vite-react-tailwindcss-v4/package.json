@@ -155,7 +155,6 @@
     "typescript": "catalog:typescript59",
     "vite": "catalog:vite4",
     "weapp-ide-cli": "catalog:weappIdeCli",
-    "weapp-style-injector": "workspace:*",
     "weapp-tailwindcss": "workspace:*"
   }
 }

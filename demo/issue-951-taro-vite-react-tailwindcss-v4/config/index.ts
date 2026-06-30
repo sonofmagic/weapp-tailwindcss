@@ -3,7 +3,6 @@ import { defineConfig, type UserConfigExport } from '@tarojs/cli'
 import devConfig from './dev'
 import prodConfig from './prod'
 import type { Plugin } from 'vite'
-import { StyleInjector } from 'weapp-style-injector/vite/taro'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 import path from 'node:path'
@@ -90,25 +89,6 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
             }
           },
         },
-        ...(taroPlatform.isWeb || isNativeTarget
-          ? []
-          : [
-              StyleInjector({
-                include: [
-                  'sub-normal/**/*.{css,wxss,acss,ttss}',
-                  'sub-independent/**/*.{css,wxss,acss,ttss}',
-                ],
-                subPackages: {
-                  appConfigPath: 'src/app.config.ts',
-                  preprocess: false,
-                  styleEntries: [
-                    {
-                      sourceFileName: 'index.css',
-                    },
-                  ],
-                },
-              }),
-            ]),
         WeappTailwindcss({
           tailwindcssBasedir: process.cwd(),
           cssEntries: [
@@ -122,6 +102,23 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           rem2rpx: true,
           generator,
           disabled: isNativeTarget,
+          styleInjector: taroPlatform.isWeb || isNativeTarget
+            ? false
+            : {
+                include: [
+                  'sub-normal/**/*.{css,wxss,acss,ttss}',
+                  'sub-independent/**/*.{css,wxss,acss,ttss}',
+                ],
+                subPackages: {
+                  appConfigPath: 'src/app.config.ts',
+                  preprocess: false,
+                  styleEntries: [
+                    {
+                      sourceFileName: 'index.css',
+                    },
+                  ],
+                },
+              },
           // injectAdditionalCssVarScope: true,
         })
       ]
