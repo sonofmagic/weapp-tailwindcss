@@ -49,11 +49,7 @@ export default defineConfig(() => {
         generator: {
           webCompat: uniPlatform.isWeb ? true : undefined,
         },
-        styleInjector: cssMode === 'isolated' && !uniPlatform.isWeb
-          ? {
-              sourceFileName: 'index.css',
-            }
-          : false,
+        styleInjector: false,
       }),
     ],
     resolve: {

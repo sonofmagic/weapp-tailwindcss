@@ -42,6 +42,23 @@ function readDemoPackageJsons() {
     }))
 }
 
+function listFiles(root: string): string[] {
+  const files: string[] = []
+  for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+    if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'unpackage') {
+      continue
+    }
+    const file = path.join(root, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...listFiles(file))
+    }
+    else {
+      files.push(file)
+    }
+  }
+  return files
+}
+
 function stepRuns(workflow: Record<string, any>, jobName: string) {
   const steps: Array<Record<string, unknown>> = workflow.jobs[jobName].steps
   return steps
@@ -277,6 +294,25 @@ describe('ci workflows', () => {
     }>('demo/style-injector-mpx/package.json')
 
     expect(packageJson.devDependencies?.['@weapp-tailwindcss/postcss-calc']).toBe('workspace:^')
+  })
+
+  it('keeps style injector enabled only in dedicated demo projects', () => {
+    const demoRoot = path.join(repoRoot, 'demo')
+    const offenders = listFiles(demoRoot)
+      .filter(file => /\.(?:c?[jt]sx?|mjs|mts)$/.test(file))
+      .filter((file) => {
+        const project = path.relative(demoRoot, file).split(path.sep)[0]
+        return !project.startsWith('style-injector')
+      })
+      .flatMap((file) => {
+        const source = fs.readFileSync(file, 'utf8')
+        return source
+          .split(/\r?\n/)
+          .filter(line => /\bstyleInjector\s*:/.test(line) && !/\bstyleInjector\s*:\s*false\b/.test(line))
+          .map(() => path.relative(repoRoot, file))
+      })
+
+    expect(offenders).toEqual([])
   })
 
   it('keeps test helper private so release jobs do not publish it', () => {

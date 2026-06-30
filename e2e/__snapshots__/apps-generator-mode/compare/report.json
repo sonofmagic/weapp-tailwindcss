@@ -8602,12 +8602,8 @@
     ],
     "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/mp-weixin/app.wxss",
     "cssFiles": [
-      "app.1.wxss",
-      "main.1.wxss",
-      "app.2.wxss",
-      "app.3.wxss",
-      "main.2.wxss",
-      "main.3.wxss",
+      "app.wxss",
+      "main.wxss",
       "pages-order/pages/home/home.wxss",
       "pages-order/pages/user/user.wxss",
       "sub-independent/pages/index.wxss",
@@ -8615,7 +8611,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 77777,
+      "bytes": 34499,
       "selectors": [
         "._ebg-_bgray_B",
         ".active_cbg-emerald-600:active",
