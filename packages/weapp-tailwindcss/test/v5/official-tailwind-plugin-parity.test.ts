@@ -186,6 +186,33 @@ async function withViteCssImportFixture(
   }
 }
 
+async function withPostcssCssImportFixture(
+  css: string,
+  run: (result: { code: string }) => Promise<void> | void,
+) {
+  const root = await realpath(await mkdtemp(path.join(tmpdir(), 'weapp-tw-postcss-import-order-')))
+  try {
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await mkdir(path.join(root, 'node_modules'), { recursive: true })
+    await symlink(tailwindcssPackageRoot, path.join(root, 'node_modules/tailwindcss'), 'dir')
+    await writeFile(path.join(root, 'src/theme.css'), '@layer base { :root { --brand: red; } }\n', 'utf8')
+    await writeFile(path.join(root, 'src/main.css'), css, 'utf8')
+    const result = await postcss([
+      tailwindcssPostcss({
+        optimize: false,
+      }),
+    ]).process(css, {
+      from: path.join(root, 'src/main.css'),
+    })
+    await run({
+      code: result.css,
+    })
+  }
+  finally {
+    await rm(root, { recursive: true, force: true })
+  }
+}
+
 describe('v5 official tailwind plugin parity', () => {
   it('keeps target web output aligned with @tailwindcss/postcss for the same CSS-first input', async () => {
     const [officialResult, generatorResult] = await Promise.all([
@@ -233,6 +260,21 @@ describe('v5 official tailwind plugin parity', () => {
     }))
   })
 
+  it('lets @tailwindcss/postcss inline local imports in a mixed Tailwind v4 CSS entry', async () => {
+    await withPostcssCssImportFixture(
+      [
+        '@import "tailwindcss";',
+        '@import "./theme.css";',
+        '@source inline("flex");',
+      ].join('\n'),
+      ({ code }) => {
+        expect(code).not.toContain('@import "./theme.css"')
+        expect(code).toContain('--brand')
+        expect(code).toContain('display: flex')
+      },
+    )
+  })
+
   it('lets official Vite handle local imports around Tailwind imports without PostCSS order warnings', async () => {
     await withViteCssImportFixture(
       [
@@ -269,6 +311,7 @@ describe('v5 official tailwind plugin parity', () => {
         expect(warnings.join('\n')).not.toContain('@import must precede')
         expect(code).toContain('weapp-tailwindcss vite-generated-css')
         expect(code).not.toContain('@import "./theme.css"')
+        expect(code).toContain('--brand')
         expect(code).toContain('display: flex')
       },
     )
