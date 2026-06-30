@@ -24,7 +24,7 @@ export default defineConfig(async () => {
         cssEntries: [resolve(process.cwd(), 'src/main.css')],
         cssSourceTrace: true,
         rem2rpx: true,
-        styleInjector: !uniPlatform.isWeb,
+        styleInjector: false,
         generator: {
           webCompat: uniPlatform.isWeb ? true : undefined,
         },

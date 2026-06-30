@@ -102,23 +102,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           rem2rpx: true,
           generator,
           disabled: isNativeTarget,
-          styleInjector: taroPlatform.isWeb || isNativeTarget
-            ? false
-            : {
-                include: [
-                  'sub-normal/**/*.{css,wxss,acss,ttss}',
-                  'sub-independent/**/*.{css,wxss,acss,ttss}',
-                ],
-                subPackages: {
-                  appConfigPath: 'src/app.config.ts',
-                  preprocess: false,
-                  styleEntries: [
-                    {
-                      sourceFileName: 'index.css',
-                    },
-                  ],
-                },
-              },
+          styleInjector: false,
           // injectAdditionalCssVarScope: true,
         })
       ]

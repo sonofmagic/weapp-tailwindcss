@@ -41,19 +41,11 @@ module.exports = defineConfig({
     config.cache = false
     config.plugins.push(
       StyleInjector({
-        styleEntries: [
-          {
-            sourceFileName: 'index.css',
-          },
-          {
-            sourceFileName: 'scss.scss',
-            include: ['pages/**/*.wxss'],
-          },
-          {
-            sourceFileName: 'less.less',
-            include: ['pages/**/*.wxss'],
-          },
-        ],
+        rules: {
+          'index.css': ['pages/**/*.wxss', 'components/**/*.wxss'],
+          'scss.scss': 'pages/**/*.wxss',
+          'less.less': 'pages/**/*.wxss',
+        },
       }),
     )
   },

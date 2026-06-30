@@ -49,15 +49,7 @@ function installWeappTailwindcss(chain: any) {
             cssEntries,
             cssSourceTrace: true,
             generator,
-            styleInjector: cssMode === 'isolated' && !taroPlatform.isWeb
-              ? {
-                  styleEntries: [
-                    {
-                      sourceFileName: 'index.css',
-                    },
-                  ],
-                }
-              : false,
+            styleInjector: false,
           } satisfies UserDefinedOptions,
         ],
       },

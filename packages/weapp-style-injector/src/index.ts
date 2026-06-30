@@ -16,7 +16,6 @@ export {
 } from './mpx'
 export type {
   MpxSubPackageConfig,
-  MpxSubPackageStyleEntry,
   ResolvedMpxSubPackage,
 } from './mpx'
 export {
@@ -32,11 +31,13 @@ export {
   isSubpackageStyleOutputFile,
   isSupportedStyleExt,
   normalizeOutputName,
+  normalizeSubpackageStyleRules,
   resolveSubpackageOutputFileName,
   resolveSubpackageStyleImport,
   shouldInjectSubpackageStyleImport,
 } from './subpackage'
 export type {
+  NormalizedSubpackageStyleRule,
   ResolvedSubpackageStyleAsset,
   ResolvedSubpackageStyleScope,
   ResolvedSubpackageTargetSourceFile,
@@ -46,6 +47,12 @@ export type {
   SubpackageStyleFramework,
   SubpackageStyleGenerateContext,
   SubpackageStyleGenerator,
+  SubpackageStyleRule,
+  SubpackageStyleRuleFrom,
+  SubpackageStyleRules,
+  SubpackageStyleRuleSource,
+  SubpackageStyleRuleTargets,
+  SubpackageStyleRuleTo,
 } from './subpackage'
 export {
   createTaroSubPackageImportResolver,
@@ -54,7 +61,6 @@ export {
 export type {
   ResolvedTaroSubPackage,
   TaroSubPackageConfig,
-  TaroSubPackageStyleEntry,
 } from './taro'
 export {
   createUniAppSubPackageImportResolver,
@@ -66,7 +72,6 @@ export type {
   UniAppManualStyleConfig,
   UniAppStyleScopeInput,
   UniAppSubPackageConfig,
-  UniAppSubPackageStyleEntry,
 } from './uni-app'
 export {
   ensurePosix,

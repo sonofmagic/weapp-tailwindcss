@@ -12,19 +12,11 @@ function installStyleInjector(chain: any) {
         plugin: StyleInjector,
         args: [
           {
-            styleEntries: [
-              {
-                sourceFileName: 'index.css',
-              },
-              {
-                sourceFileName: 'scss.scss',
-                include: ['pages/**/*.css', 'pages/**/*.wxss'],
-              },
-              {
-                sourceFileName: 'less.less',
-                include: ['pages/**/*.css', 'pages/**/*.wxss'],
-              },
-            ],
+            rules: {
+              'index.css': ['pages/**/*.css', 'pages/**/*.wxss', 'components/**/*.css', 'components/**/*.wxss'],
+              'scss.scss': ['pages/**/*.css', 'pages/**/*.wxss'],
+              'less.less': ['pages/**/*.css', 'pages/**/*.wxss'],
+            },
           },
         ],
       },

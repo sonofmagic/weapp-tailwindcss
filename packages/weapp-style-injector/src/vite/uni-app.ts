@@ -1,5 +1,6 @@
 import type { Plugin, PluginContainer, ResolvedConfig } from 'vite'
-import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig, UniAppSubPackageStyleEntry } from '../uni-app'
+import type { SubpackageStyleRules } from '../subpackage'
+import type { ResolvedSubPackage, UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 
 import type { ViteWeappStyleInjectorOptions } from '../vite'
 import fs from 'node:fs'
@@ -12,6 +13,7 @@ import { resolveUniAppStyleScopes, splitUniAppStyleScopes } from '../uni-app'
 import { toArray } from '../utils'
 import weappStyleInjector from '../vite'
 
+export type { SubpackageStyleRule, SubpackageStyleRules } from '../subpackage'
 export type { UniAppStyleScopeInput, UniAppSubPackageConfig } from '../uni-app'
 
 export interface ViteUniAppStyleInjectorOptions extends Omit<ViteWeappStyleInjectorOptions, 'uniAppSubPackages'> {
@@ -24,7 +26,7 @@ export interface ViteUniAppStyleInjectorOptions extends Omit<ViteWeappStyleInjec
   exclude?: string | string[]
   indexFileName?: string | string[]
   styleScopes?: UniAppStyleScopeInput | UniAppStyleScopeInput[]
-  styleEntries?: UniAppSubPackageStyleEntry | UniAppSubPackageStyleEntry[]
+  rules?: SubpackageStyleRules
 }
 
 function resolveDefaultPagesJsonPaths(): string[] {
@@ -33,24 +35,6 @@ function resolveDefaultPagesJsonPaths(): string[] {
     path.resolve(cwd, 'src/pages.json'),
     path.resolve(cwd, 'pages.json'),
   ]
-}
-
-function createDefaultAppStyleEntry(options: {
-  files?: string | string[]
-  include?: string | string[]
-  exclude?: string | string[]
-}): UniAppSubPackageStyleEntry {
-  const entry: UniAppSubPackageStyleEntry = {}
-  if (options.files !== undefined) {
-    entry.files = options.files
-  }
-  if (options.include !== undefined) {
-    entry.include = options.include
-  }
-  if (options.exclude !== undefined) {
-    entry.exclude = options.exclude
-  }
-  return entry
 }
 
 // 使用 Tailwind 插件的 transform 钩子时需要兼容多种写法，这里先抽象出统一的处理函数。
@@ -334,7 +318,7 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
     exclude,
     indexFileName,
     styleScopes,
-    styleEntries,
+    rules,
     ...rest
   } = options
 
@@ -372,11 +356,11 @@ export function StyleInjector(options: ViteUniAppStyleInjectorOptions = {}) {
       if (exclude !== undefined) {
         config.exclude = exclude
       }
-      if (styleEntries !== undefined) {
-        config.styleEntries = styleEntries
+      if (rules !== undefined) {
+        config.rules = rules
       }
       else if (sourceFileName === undefined && indexFileName === undefined) {
-        config.styleEntries = createDefaultAppStyleEntry({ files, include, exclude })
+        config.rules = [{ from: { ref: 'app.css' }, to: { files, include, exclude } }]
       }
       configs.set(candidate, config)
     }

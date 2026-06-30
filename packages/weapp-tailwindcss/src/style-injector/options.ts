@@ -1,15 +1,13 @@
 import type {
   MpxSubPackageConfig,
-  MpxSubPackageStyleEntry,
   ResolvedSubpackageStyleScope,
   SubpackageStyleGenerateContext,
   SubpackageStyleGenerator,
+  SubpackageStyleRules,
   TaroSubPackageConfig,
-  TaroSubPackageStyleEntry,
   UniAppManualStyleConfig,
   UniAppStyleScopeInput,
   UniAppSubPackageConfig,
-  UniAppSubPackageStyleEntry,
   WeappStyleInjectorOptions,
 } from 'weapp-style-injector'
 
@@ -70,14 +68,10 @@ export interface WeappTailwindcssStyleInjectorOptions extends WeappStyleInjector
   files?: string | string[] | undefined
   /**
    * 分包目标文件 include 规则。
-   *
-   * @remarks 推荐写在 `styleEntries` 内，仅对对应样式入口生效。本字段保留用于兼容旧配置。
    */
   include?: WeappStyleInjectorOptions['include']
   /**
    * 分包目标文件 exclude 规则。
-   *
-   * @remarks 推荐写在 `styleEntries` 内，仅对对应样式入口生效。本字段保留用于兼容旧配置。
    */
   exclude?: WeappStyleInjectorOptions['exclude']
   /**
@@ -97,11 +91,17 @@ export interface WeappTailwindcssStyleInjectorOptions extends WeappStyleInjector
    */
   styleScopes?: UniAppStyleScopeInput | UniAppStyleScopeInput[] | undefined
   /**
-   * 框架分包样式入口配置。
+   * 框架预设的分包样式注入规则，用样式入口到目标产物的映射描述注入关系。
    *
-   * @remarks 只写 `include` / `exclude` / `files` 时，会默认向匹配分包样式注入主包样式引用。
+   * @example
+   * ```ts
+   * rules: {
+   *   'tailwind.css': ['pages/index.wxss'],
+   *   'components.css': ['components/card.wxss'],
+   * }
+   * ```
    */
-  styleEntries?: UniAppSubPackageStyleEntry | UniAppSubPackageStyleEntry[] | TaroSubPackageStyleEntry | TaroSubPackageStyleEntry[] | MpxSubPackageStyleEntry | MpxSubPackageStyleEntry[] | undefined
+  rules?: SubpackageStyleRules | undefined
   /**
    * 生成分包入口前是否走框架预处理。
    */

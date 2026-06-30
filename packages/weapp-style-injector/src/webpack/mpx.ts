@@ -1,4 +1,5 @@
-import type { MpxSubPackageConfig, MpxSubPackageStyleEntry } from '../mpx'
+import type { MpxSubPackageConfig } from '../mpx'
+import type { SubpackageStyleRules } from '../subpackage'
 import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '../webpack'
 
 import fs from 'node:fs'
@@ -7,7 +8,8 @@ import { resolveDefaultMpxAppPaths, resolveMpxSubPackages } from '../mpx'
 import { toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
-export type { MpxSubPackageConfig, MpxSubPackageStyleEntry } from '../mpx'
+export type { MpxSubPackageConfig } from '../mpx'
+export type { SubpackageStyleRule, SubpackageStyleRules } from '../subpackage'
 
 export interface WebpackMpxStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'subpackageStyleScopes'> {
   appPath?: string | string[]
@@ -18,25 +20,7 @@ export interface WebpackMpxStyleInjectorOptions extends Omit<WebpackWeappStyleIn
   files?: string | string[]
   include?: string | string[]
   exclude?: string | string[]
-  styleEntries?: MpxSubPackageStyleEntry | MpxSubPackageStyleEntry[]
-}
-
-function createDefaultAppStyleEntry(options: {
-  files?: string | string[]
-  include?: string | string[]
-  exclude?: string | string[]
-}): MpxSubPackageStyleEntry {
-  const entry: MpxSubPackageStyleEntry = {}
-  if (options.files !== undefined) {
-    entry.files = options.files
-  }
-  if (options.include !== undefined) {
-    entry.include = options.include
-  }
-  if (options.exclude !== undefined) {
-    entry.exclude = options.exclude
-  }
-  return entry
+  rules?: SubpackageStyleRules
 }
 
 export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): WebpackObjectPluginInstance {
@@ -49,7 +33,7 @@ export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): Web
     files,
     include,
     exclude,
-    styleEntries,
+    rules,
     ...rest
   } = options
 
@@ -84,11 +68,11 @@ export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): Web
       if (exclude !== undefined) {
         config.exclude = exclude
       }
-      if (styleEntries !== undefined) {
-        config.styleEntries = styleEntries
+      if (rules !== undefined) {
+        config.rules = rules
       }
       else if (sourceFileName === undefined) {
-        config.styleEntries = createDefaultAppStyleEntry({ files, include, exclude })
+        config.rules = [{ from: { ref: 'app.css' }, to: { files, include, exclude } }]
       }
       configs.set(candidate, config)
     }

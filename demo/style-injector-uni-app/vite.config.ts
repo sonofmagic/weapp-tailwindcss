@@ -12,34 +12,14 @@ export default defineConfig({
   plugins: [
     uni(),
     StyleInjector({
-      styleEntries: [
-        {
-          sourceFileName: 'index.css',
-        },
-        {
-          sourceFileName: 'page.css',
-          include: ['pages/**/*.css', 'pages/**/*.wxss'],
-        },
-        {
-          sourceFileName: 'scss.scss',
-          include: ['pages/**/*.css', 'pages/**/*.wxss'],
-        },
-        {
-          sourceFileName: 'less.less',
-          include: ['pages/**/*.css', 'pages/**/*.wxss'],
-        },
-        {
-          sourceFileName: 'component.css',
-          include: ['components/**/*.css', 'components/**/*.wxss'],
-        },
-        {
-          sourceFileName: 'weapp.css',
-          sourceInclude: ['pages/**/*.weapp.vue'],
-        },
-        {
-          sourceFileName: 'ali.css',
-          sourceInclude: ['pages/**/*.ali.vue'],
-        },
+      rules: [
+        ['index.css', ['pages/**/*.css', 'pages/**/*.wxss', 'components/**/*.css', 'components/**/*.wxss']],
+        ['page.css', ['pages/**/*.css', 'pages/**/*.wxss']],
+        ['scss.scss', ['pages/**/*.css', 'pages/**/*.wxss']],
+        ['less.less', ['pages/**/*.css', 'pages/**/*.wxss']],
+        ['component.css', ['components/**/*.css', 'components/**/*.wxss']],
+        ['weapp.css', { sourceInclude: ['pages/**/*.weapp.vue'] }],
+        ['ali.css', { sourceInclude: ['pages/**/*.ali.vue'] }],
       ],
     }),
   ],

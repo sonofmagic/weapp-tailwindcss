@@ -1,9 +1,10 @@
 import type { PerFileImportResolver } from './core'
-import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, ResolvedSubpackageTargetSourceModule, SubpackageStyleGenerator } from './subpackage'
+import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, ResolvedSubpackageTargetSourceModule, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { normalizeSubpackageStyleRules } from './subpackage'
 import {
   ensurePosix,
   normalizeRelativeImport,
@@ -21,7 +22,7 @@ export interface UniAppSubPackageConfig {
   include?: string | string[]
   exclude?: string | string[]
   generate?: SubpackageStyleGenerator
-  styleEntries?: UniAppSubPackageStyleEntry | UniAppSubPackageStyleEntry[]
+  rules?: SubpackageStyleRules
   /**
    * @deprecated Use sourceFileName instead.
    */
@@ -349,8 +350,8 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
     : []
 
   const baseDir = path.dirname(pagesJsonPath)
-  const entries = toArray(config.styleEntries)
-  const styleEntries: UniAppSubPackageStyleEntry[] = entries.length > 0
+  const entries = normalizeSubpackageStyleRules(config.rules)
+  const styleRules: UniAppSubPackageStyleEntry[] = entries.length > 0
     ? entries
     : [createDefaultStyleEntry(config)]
 
@@ -366,7 +367,7 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
       continue
     }
 
-    for (const styleEntry of styleEntries) {
+    for (const styleEntry of styleRules) {
       const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
 
       if (shouldUseAppStyleReference(styleEntry)) {
@@ -642,8 +643,8 @@ export function splitUniAppStyleScopes(
       if (entry.preprocess !== undefined) {
         config.preprocess = entry.preprocess
       }
-      if (entry.styleEntries !== undefined) {
-        config.styleEntries = entry.styleEntries
+      if (entry.rules !== undefined) {
+        config.rules = entry.rules
       }
       subPackages.push(config)
     }

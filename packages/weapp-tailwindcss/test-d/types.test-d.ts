@@ -36,10 +36,9 @@ const styleInjectorOptions: WeappTailwindcssStyleInjectorOptions = {
   subPackages: [{
     pagesJsonPath: 'src/pages.json',
     sourceFileName: 'index.scss',
-    styleEntries: [{
-      sourceFileName: 'index.css',
-      sourceInclude: ['**/*.vue'],
-    }],
+    rules: [
+      ['index.css', { sourceInclude: ['**/*.vue'] }],
+    ],
   }],
   uniAppSubPackages: {
     pagesJsonPath: 'src/pages.json',
@@ -58,11 +57,13 @@ const styleInjectorOptions: WeappTailwindcssStyleInjectorOptions = {
     scope: ['sub'],
     type: 'manual',
   },
-  styleEntries: [{
-    sourceFileName: 'index.css',
-    outputName: 'index',
-    include: ['**/*.wxss'],
-  }],
+  rules: [
+    [{ file: 'index.css', as: 'tailwind' }, {
+      include: ['pages/**/*.wxss'],
+      sourceInclude: ['pages/**/*.vue'],
+    }],
+    [{ file: 'component.css', as: 'component' }, ['components/**/*.wxss']],
+  ],
   generateSubpackageStyle: context => `/* ${context.framework}:${context.bundler} */`,
   loadSubpackageTargetStyle: fileName => fileName,
 }

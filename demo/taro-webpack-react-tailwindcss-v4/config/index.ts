@@ -121,7 +121,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   cssEntries,
                   cssOptions,
                   generator,
-                  styleInjector: true,
+                  styleInjector: false,
                   // before 2248
                   // after 309
                   // cssCalc: ['--nutui']
@@ -173,7 +173,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
                   cssEntries,
                   cssOptions,
                   generator,
-                  styleInjector: !taroPlatform.isWeb,
+                  styleInjector: false,
                 } satisfies UserDefinedOptions
               ]
             }

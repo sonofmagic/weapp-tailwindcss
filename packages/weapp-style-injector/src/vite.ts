@@ -143,7 +143,7 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
           }
 
           const source = typeof output.source === 'undefined' ? '' : output.source
-          const subpackageImports = subpackageStyleScopes
+          const subpackageImportPaths = subpackageStyleScopes
             ? subpackageStyleScopes.flatMap((scope) => {
                 if (isSubpackageStyleOutputFile(fileName, scope, subpackageStyleScopes)) {
                   return []
@@ -162,10 +162,10 @@ export function weappStyleInjector(options: ViteWeappStyleInjectorOptions = {}):
               })
             : []
 
-          const result = subpackageImports.length > 0
+          const result = subpackageImportPaths.length > 0
             ? createStyleInjector({
                 ...injectorOptions,
-                imports: subpackageImports,
+                imports: subpackageImportPaths,
               }).inject(fileName, source)
             : injector.inject(fileName, source)
 

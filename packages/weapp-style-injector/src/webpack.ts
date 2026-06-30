@@ -180,7 +180,7 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
         }
 
         const source = getSource()
-        const subpackageImports = subpackageStyleScopes
+        const subpackageImportPaths = subpackageStyleScopes
           ? subpackageStyleScopes.flatMap((scope) => {
               if (isSubpackageStyleOutputFile(name, scope, subpackageStyleScopes)) {
                 return []
@@ -199,10 +199,10 @@ export class WeappStyleInjectorWebpackPlugin implements WebpackObjectPluginInsta
             })
           : []
 
-        const result = subpackageImports.length > 0
+        const result = subpackageImportPaths.length > 0
           ? createStyleInjector({
               ...injectorOptions,
-              imports: subpackageImports,
+              imports: subpackageImportPaths,
             }).inject(name, source)
           : injector.inject(name, source)
 
