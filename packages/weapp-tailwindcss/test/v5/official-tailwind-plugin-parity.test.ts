@@ -1,6 +1,16 @@
 import postcss, { type Root } from 'postcss'
+import { mkdir, mkdtemp, realpath, rm, symlink, writeFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
 import tailwindcssPostcss from '@tailwindcss/postcss'
+import tailwindcssVite from '@tailwindcss/vite'
+import { createServer } from 'vite'
 import weappTailwindcss from '@/postcss'
+import { WeappTailwindcss as weappTailwindcssVite } from '@/vite'
+
+const require = createRequire(import.meta.url)
+const tailwindcssPackageRoot = path.dirname(require.resolve('tailwindcss/package.json'))
 
 const PARITY_CANDIDATES = [
   'flex',
@@ -123,6 +133,59 @@ function expectRuleDeclarationsIncluded(actualCss: string, expectedCss: string, 
   }
 }
 
+async function withViteCssImportFixture(
+  css: string,
+  plugins: any[],
+  run: (result: { code: string, warnings: string[] }) => Promise<void> | void,
+) {
+  const root = await realpath(await mkdtemp(path.join(tmpdir(), 'weapp-tw-vite-import-order-')))
+  const warnings: string[] = []
+  try {
+    await mkdir(path.join(root, 'src'), { recursive: true })
+    await mkdir(path.join(root, 'node_modules'), { recursive: true })
+    await symlink(tailwindcssPackageRoot, path.join(root, 'node_modules/tailwindcss'), 'dir')
+    await writeFile(path.join(root, 'src/theme.css'), '@layer base { :root { --brand: red; } }\n', 'utf8')
+    await writeFile(path.join(root, 'src/main.css'), css, 'utf8')
+    await writeFile(path.join(root, 'src/main.ts'), 'import "./main.css"\n', 'utf8')
+    await writeFile(path.join(root, 'index.html'), '<div class="flex"></div><script type="module" src="/src/main.ts"></script>', 'utf8')
+    const server = await createServer({
+      root,
+      logLevel: 'silent',
+      plugins,
+      customLogger: {
+        hasWarned: false,
+        info() {},
+        warn(message) {
+          warnings.push(String(message))
+          this.hasWarned = true
+        },
+        warnOnce(message) {
+          warnings.push(String(message))
+          this.hasWarned = true
+        },
+        error(message) {
+          throw new Error(String(message))
+        },
+        clearScreen() {},
+      },
+    })
+    try {
+      await server.pluginContainer.buildStart({})
+      const result = await server.transformRequest('/src/main.css')
+      await run({
+        code: result?.code ?? '',
+        warnings,
+      })
+    }
+    finally {
+      await server.close()
+    }
+  }
+  finally {
+    await rm(root, { recursive: true, force: true })
+  }
+}
+
 describe('v5 official tailwind plugin parity', () => {
   it('keeps target web output aligned with @tailwindcss/postcss for the same CSS-first input', async () => {
     const [officialResult, generatorResult] = await Promise.all([
@@ -168,6 +231,47 @@ describe('v5 official tailwind plugin parity', () => {
       type: 'weapp-tailwindcss:generated',
       target: 'web',
     }))
+  })
+
+  it('lets official Vite handle local imports around Tailwind imports without PostCSS order warnings', async () => {
+    await withViteCssImportFixture(
+      [
+        '@import "tailwindcss";',
+        '@import "./theme.css";',
+        '@source inline("flex");',
+      ].join('\n'),
+      [tailwindcssVite()],
+      ({ code, warnings }) => {
+        expect(warnings.join('\n')).not.toContain('@import must precede')
+        expect(code).not.toContain('@import "./theme.css"')
+        expect(code).toContain('--brand')
+        expect(code).toContain('display: flex')
+      },
+    )
+  })
+
+  it('keeps weapp-tailwindcss Vite web generation from re-emitting local imports after generated CSS', async () => {
+    await withViteCssImportFixture(
+      [
+        '@import "tailwindcss";',
+        '@import "./theme.css";',
+        '@source inline("flex");',
+      ].join('\n'),
+      [weappTailwindcssVite({
+        generator: {
+          target: 'web',
+          webCompat: {
+            preset: 'legacy-web',
+          },
+        },
+      })],
+      ({ code, warnings }) => {
+        expect(warnings.join('\n')).not.toContain('@import must precede')
+        expect(code).toContain('weapp-tailwindcss vite-generated-css')
+        expect(code).not.toContain('@import "./theme.css"')
+        expect(code).toContain('display: flex')
+      },
+    )
   })
 
   it('maps every @tailwindcss/postcss and @tailwindcss/vite capability to a v5 generator counterpart', () => {

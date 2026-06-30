@@ -782,6 +782,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
       debug,
       previousCss: viteGeneratedCssByFile.get(file),
       deferEmptyScopedCssSource: shouldDeferEmptyScopedCssSource,
+      restoreLocalCssImports: !generatorBranch.isWeb,
     })
     if (!generated) {
       return undefined

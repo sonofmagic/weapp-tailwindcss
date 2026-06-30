@@ -2744,6 +2744,90 @@ describe('bundlers/shared generator css', () => {
     }))
   })
 
+  it('does not restore raw local css imports into Tailwind v4 web generator output', async () => {
+    const runtimeSet = new Set(['flex'])
+    const rawTailwindCss = '/*! tailwindcss v4.3.1 | MIT License | https://tailwindcss.com */\n.flex{display:flex}'
+    const generateMock = vi.fn(async () => ({
+      css: '.flex{display:flex}',
+      rawCss: rawTailwindCss,
+      target: 'web',
+      classSet: runtimeSet,
+      dependencies: [],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: process.cwd(),
+        base: process.cwd(),
+        baseFallbacks: [],
+        css: '@import "tailwindcss";',
+        dependencies: [],
+      })),
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: process.cwd(),
+        base: options.base ?? process.cwd(),
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: `user:${code}` }))
+    const result = await generateCssByGenerator({
+      opts: {
+        generator: {
+          target: 'web',
+        },
+        styleHandler,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: runtimeSet,
+      rawSource: [
+        '@import "./theme.css";',
+        '@import "tailwindcss";',
+        '@source inline("flex");',
+      ].join('\n'),
+      file: '/project/src/app.css',
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/project/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: '/project/src/app.css',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      styleHandler,
+      debug: vi.fn(),
+      restoreLocalCssImports: false,
+    })
+
+    expect(result?.css).toContain('.flex{display:flex}')
+    expect(result?.css).not.toContain('@import "./theme.css"')
+    expect(result?.css).not.toContain('@import "tailwindcss"')
+  })
+
   it('keeps user css before Tailwind v4 base and theme rules when final css is hoisted', async () => {
     const runtimeSet = new Set(['flex'])
     const userCss = [
