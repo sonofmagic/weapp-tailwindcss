@@ -14,8 +14,8 @@ const cssEntries = cssMode === 'single'
   ? [path.resolve(process.cwd(), 'src/main.single.css')]
   : [
       path.resolve(process.cwd(), 'src/main.css'),
-      path.resolve(process.cwd(), 'src/sub-normal/index.css'),
-      path.resolve(process.cwd(), 'src/sub-independent/index.css'),
+      path.resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
+      path.resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
     ]
 
 function singleCssEntryPlugin(): Plugin {

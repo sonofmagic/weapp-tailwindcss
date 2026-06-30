@@ -192,7 +192,7 @@ export function uniAppSubpackageMiniCase(options: {
   const outputDir = `dist/build/${options.platform}`
   const appStyleFile = miniStyleFileByPlatform[options.platform]
   const extension = appStyleFile.slice(appStyleFile.lastIndexOf('.'))
-  const entryExtension = '.wxss'
+  const entryExtension = extension
   const singleEntry = options.mode === 'single'
   const mainStyleFile = singleEntry ? appStyleFile : `main${entryExtension}`
   return {
@@ -213,8 +213,6 @@ export function uniAppSubpackageMiniCase(options: {
         ? [
             `${outputDir}/sub-normal/pages/index${entryExtension}`,
             `${outputDir}/sub-independent/pages/index${entryExtension}`,
-            `${outputDir}/sub-normal/index${entryExtension}`,
-            `${outputDir}/sub-independent/index${entryExtension}`,
           ]
         : []),
     ],
@@ -229,8 +227,6 @@ export function uniAppSubpackageMiniCase(options: {
       appStyleFile: `${outputDir}/${mainStyleFile}`,
       normalStyleFile: `${outputDir}/sub-normal/pages/index${entryExtension}`,
       independentStyleFile: `${outputDir}/sub-independent/pages/index${entryExtension}`,
-      normalEntryStyleFile: singleEntry ? undefined : `${outputDir}/sub-normal/index${entryExtension}`,
-      independentEntryStyleFile: singleEntry ? undefined : `${outputDir}/sub-independent/index${entryExtension}`,
       mainMarker: options.markers.main,
       normalMarker: options.markers.normal,
       independentMarker: options.markers.independent,

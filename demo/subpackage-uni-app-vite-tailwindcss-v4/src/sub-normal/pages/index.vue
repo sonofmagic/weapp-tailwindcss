@@ -3,3 +3,5 @@
     uni normal subpackage
   </view>
 </template>
+
+<style src="./index.css"></style>
