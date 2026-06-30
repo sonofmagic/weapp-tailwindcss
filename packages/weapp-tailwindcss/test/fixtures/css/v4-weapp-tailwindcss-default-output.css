@@ -81,3 +81,33 @@ view,text,::after,::before {
     background-color: var(--color-zinc-800);
 }
   }
+:host,page,.tw-root,wx-root-portal-content {
+      --tw-blur: ;
+      --tw-brightness: ;
+      --tw-contrast: ;
+      --tw-grayscale: ;
+      --tw-hue-rotate: ;
+      --tw-invert: ;
+      --tw-opacity: ;
+      --tw-saturate: ;
+      --tw-sepia: ;
+      --tw-drop-shadow: ;
+      --tw-drop-shadow-color: ;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: ;
+      --tw-content: "";
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: ;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: ;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+}

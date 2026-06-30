@@ -400,3 +400,25 @@ view,text,::after,::before {
     color: var(--color-yellow-400);
 }
   }
+:host,page,.tw-root,wx-root-portal-content {
+      --tw-space-y-reverse: 0;
+      --tw-border-style: solid;
+      --tw-divide-x-reverse: 0;
+      --tw-font-weight: ;
+      --tw-content: "";
+      --tw-leading: ;
+      --tw-shadow: 0 0 #0000;
+      --tw-shadow-color: initial;
+      --tw-shadow-alpha: 100%;
+      --tw-inset-shadow: 0 0 #0000;
+      --tw-inset-shadow-color: initial;
+      --tw-inset-shadow-alpha: 100%;
+      --tw-ring-color: ;
+      --tw-ring-shadow: 0 0 #0000;
+      --tw-inset-ring-color: ;
+      --tw-inset-ring-shadow: 0 0 #0000;
+      --tw-ring-inset: ;
+      --tw-ring-offset-width: 0px;
+      --tw-ring-offset-color: #fff;
+      --tw-ring-offset-shadow: 0 0 #0000;
+}

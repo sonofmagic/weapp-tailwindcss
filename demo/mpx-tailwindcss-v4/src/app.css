@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 @source "../src";
-@source not "../src/sub-normal";
-@source not "../src/sub-independent";
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;

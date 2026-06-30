@@ -41,7 +41,6 @@ module.exports = defineConfig({
     config.cache = false
     config.plugins.push(
       StyleInjector({
-        include: ['sub-normal/**/*.wxss', 'sub-independent/**/*.wxss'],
         styleEntries: [
           {
             sourceFileName: 'index.css',

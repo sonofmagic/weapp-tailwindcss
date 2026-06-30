@@ -30,7 +30,9 @@ export interface UniAppSubPackageConfig {
 }
 
 export interface UniAppSubPackageStyleEntry {
-  sourceFileName: string
+  sourceFileName?: string | string[]
+  appStyle?: boolean
+  referenceFileName?: string
   outputName?: string
   files?: string | string[]
   include?: string | string[]
@@ -147,6 +149,81 @@ function resolveOutputName(fileName: string, outputName?: string): string {
   }
 
   return path.basename(fileName, path.extname(fileName))
+}
+
+function resolveReferenceOutputName(fileName: string): string {
+  const normalized = ensurePosix(fileName)
+  return path.posix.basename(normalized, path.posix.extname(normalized)) || 'app'
+}
+
+function shouldUseAppStyleReference(styleEntry: UniAppSubPackageStyleEntry): boolean {
+  return (
+    styleEntry.appStyle === true
+    || Boolean(styleEntry.referenceFileName)
+    || (
+      styleEntry.sourceFileName === undefined
+      && styleEntry.outputName === undefined
+      && styleEntry.generate === undefined
+      && (
+        Object.keys(styleEntry).length === 0
+        || styleEntry.preprocess !== undefined
+        || styleEntry.files !== undefined
+        || styleEntry.include !== undefined
+        || styleEntry.exclude !== undefined
+        || styleEntry.sourceInclude !== undefined
+        || styleEntry.sourceExclude !== undefined
+      )
+    )
+  )
+}
+
+function applyStyleEntryOptions(
+  resolvedEntry: ResolvedSubPackage,
+  styleEntry: UniAppSubPackageStyleEntry,
+) {
+  if (toArray(styleEntry.files).length > 0) {
+    resolvedEntry.files = toArray(styleEntry.files)
+  }
+  if (styleEntry.include !== undefined) {
+    resolvedEntry.include = styleEntry.include
+  }
+  if (styleEntry.exclude !== undefined) {
+    resolvedEntry.exclude = styleEntry.exclude
+  }
+  if (styleEntry.sourceInclude !== undefined) {
+    resolvedEntry.sourceInclude = styleEntry.sourceInclude
+  }
+  if (styleEntry.sourceExclude !== undefined) {
+    resolvedEntry.sourceExclude = styleEntry.sourceExclude
+  }
+  if (styleEntry.generate) {
+    resolvedEntry.generate = styleEntry.generate
+  }
+}
+
+function createDefaultStyleEntry(config: UniAppSubPackageConfig): UniAppSubPackageStyleEntry {
+  const entry: UniAppSubPackageStyleEntry = {
+    sourceFileName: normalizeCandidateList(config.sourceFileName ?? config.indexFileName),
+  }
+  if (config.outputName !== undefined) {
+    entry.outputName = config.outputName
+  }
+  if (config.files !== undefined) {
+    entry.files = config.files
+  }
+  if (config.include !== undefined) {
+    entry.include = config.include
+  }
+  if (config.exclude !== undefined) {
+    entry.exclude = config.exclude
+  }
+  if (config.generate !== undefined) {
+    entry.generate = config.generate
+  }
+  if (config.preprocess !== undefined) {
+    entry.preprocess = config.preprocess
+  }
+  return entry
 }
 
 function normalizePagePath(value: unknown): string | undefined {
@@ -273,19 +350,9 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
 
   const baseDir = path.dirname(pagesJsonPath)
   const entries = toArray(config.styleEntries)
-  const styleEntries = entries.length > 0
+  const styleEntries: UniAppSubPackageStyleEntry[] = entries.length > 0
     ? entries
-    : [{
-        sourceFileName: normalizeCandidateList(config.sourceFileName ?? config.indexFileName),
-        outputName: config.outputName,
-        files: config.files,
-        include: config.include,
-        exclude: config.exclude,
-        sourceInclude: undefined,
-        sourceExclude: undefined,
-        generate: config.generate,
-        preprocess: config.preprocess,
-      }]
+    : [createDefaultStyleEntry(config)]
 
   const resolved: ResolvedSubPackage[] = []
 
@@ -300,6 +367,33 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
     }
 
     for (const styleEntry of styleEntries) {
+      const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
+
+      if (shouldUseAppStyleReference(styleEntry)) {
+        const referenceFileName = ensurePosix(styleEntry.referenceFileName ?? 'app.css')
+        const resolvedEntry: ResolvedSubPackage = {
+          root: ensurePosix(normalizedRoot),
+          sourceRelativePath: referenceFileName,
+          sourceAbsolutePath: path.resolve(baseDir, referenceFileName),
+          referenceFileName,
+          outputName: styleEntry.outputName ?? resolveReferenceOutputName(referenceFileName),
+          preprocess: false,
+          framework: 'uni-app',
+        }
+        resolvedEntry.targetFiles = [
+          ...resolvePageStyleFiles(entry),
+          ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
+        ]
+        resolvedEntry.targetSourceFiles = [
+          ...resolvePageStyleSourceFiles(entry, baseDir),
+          ...componentStyleSourceFiles,
+        ]
+        resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
+        applyStyleEntryOptions(resolvedEntry, styleEntry)
+        resolved.push(resolvedEntry)
+        continue
+      }
+
       const candidates = normalizeCandidateList(styleEntry.sourceFileName)
       let matchedFileName: string | undefined
       let matchedAbsolutePath: string | undefined
@@ -327,7 +421,6 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
         preprocess: (styleEntry.preprocess ?? config.preprocess) !== false,
         framework: 'uni-app',
       }
-      const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
       resolvedEntry.targetFiles = [
         ...resolvePageStyleFiles(entry),
         ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
@@ -337,24 +430,7 @@ function resolveSubPackages(config: UniAppSubPackageConfig): ResolvedSubPackage[
         ...componentStyleSourceFiles,
       ]
       resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
-      if (toArray(styleEntry.files).length > 0) {
-        resolvedEntry.files = toArray(styleEntry.files)
-      }
-      if (styleEntry.include !== undefined) {
-        resolvedEntry.include = styleEntry.include
-      }
-      if (styleEntry.exclude !== undefined) {
-        resolvedEntry.exclude = styleEntry.exclude
-      }
-      if (styleEntry.sourceInclude !== undefined) {
-        resolvedEntry.sourceInclude = styleEntry.sourceInclude
-      }
-      if (styleEntry.sourceExclude !== undefined) {
-        resolvedEntry.sourceExclude = styleEntry.sourceExclude
-      }
-      if (styleEntry.generate) {
-        resolvedEntry.generate = styleEntry.generate
-      }
+      applyStyleEntryOptions(resolvedEntry, styleEntry)
       resolved.push(resolvedEntry)
     }
   }

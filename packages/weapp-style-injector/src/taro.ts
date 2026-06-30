@@ -29,7 +29,9 @@ export interface TaroSubPackageConfig {
 }
 
 export interface TaroSubPackageStyleEntry {
-  sourceFileName: string
+  sourceFileName?: string | string[]
+  appStyle?: boolean
+  referenceFileName?: string
   outputName?: string
   files?: string | string[]
   include?: string | string[]
@@ -231,6 +233,81 @@ function resolveSourceModules(
   )
 }
 
+function resolveReferenceOutputName(fileName: string): string {
+  const normalized = ensurePosix(fileName)
+  return path.posix.basename(normalized, path.posix.extname(normalized)) || 'app'
+}
+
+function shouldUseAppStyleReference(styleEntry: TaroSubPackageStyleEntry): boolean {
+  return (
+    styleEntry.appStyle === true
+    || Boolean(styleEntry.referenceFileName)
+    || (
+      styleEntry.sourceFileName === undefined
+      && styleEntry.outputName === undefined
+      && styleEntry.generate === undefined
+      && (
+        Object.keys(styleEntry).length === 0
+        || styleEntry.preprocess !== undefined
+        || styleEntry.files !== undefined
+        || styleEntry.include !== undefined
+        || styleEntry.exclude !== undefined
+        || styleEntry.sourceInclude !== undefined
+        || styleEntry.sourceExclude !== undefined
+      )
+    )
+  )
+}
+
+function applyStyleEntryOptions(
+  resolvedEntry: ResolvedTaroSubPackage,
+  styleEntry: TaroSubPackageStyleEntry,
+) {
+  if (toArray(styleEntry.files).length > 0) {
+    resolvedEntry.files = toArray(styleEntry.files)
+  }
+  if (styleEntry.include !== undefined) {
+    resolvedEntry.include = styleEntry.include
+  }
+  if (styleEntry.exclude !== undefined) {
+    resolvedEntry.exclude = styleEntry.exclude
+  }
+  if (styleEntry.sourceInclude !== undefined) {
+    resolvedEntry.sourceInclude = styleEntry.sourceInclude
+  }
+  if (styleEntry.sourceExclude !== undefined) {
+    resolvedEntry.sourceExclude = styleEntry.sourceExclude
+  }
+  if (styleEntry.generate) {
+    resolvedEntry.generate = styleEntry.generate
+  }
+}
+
+function createDefaultStyleEntry(config: TaroSubPackageConfig): TaroSubPackageStyleEntry {
+  const entry: TaroSubPackageStyleEntry = {
+    sourceFileName: ensureArray(config.sourceFileName ?? config.indexFileNames),
+  }
+  if (config.outputName !== undefined) {
+    entry.outputName = config.outputName
+  }
+  if (config.files !== undefined) {
+    entry.files = config.files
+  }
+  if (config.include !== undefined) {
+    entry.include = config.include
+  }
+  if (config.exclude !== undefined) {
+    entry.exclude = config.exclude
+  }
+  if (config.generate !== undefined) {
+    entry.generate = config.generate
+  }
+  if (config.preprocess !== undefined) {
+    entry.preprocess = config.preprocess
+  }
+  return entry
+}
+
 export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTaroSubPackage[] {
   const appConfigPath = path.resolve(config.appConfigPath)
   const appConfig = loadAppConfigModule(appConfigPath)
@@ -250,19 +327,9 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
 
   const baseDir = path.dirname(appConfigPath)
   const entries = toArray(config.styleEntries)
-  const styleEntries = entries.length > 0
+  const styleEntries: TaroSubPackageStyleEntry[] = entries.length > 0
     ? entries
-    : [{
-        sourceFileName: ensureArray(config.sourceFileName ?? config.indexFileNames),
-        outputName: config.outputName,
-        files: config.files,
-        include: config.include,
-        exclude: config.exclude,
-        sourceInclude: undefined,
-        sourceExclude: undefined,
-        generate: config.generate,
-        preprocess: config.preprocess,
-      }]
+    : [createDefaultStyleEntry(config)]
 
   const resolved: ResolvedTaroSubPackage[] = []
 
@@ -277,6 +344,33 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
     }
 
     for (const styleEntry of styleEntries) {
+      const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
+
+      if (shouldUseAppStyleReference(styleEntry)) {
+        const referenceFileName = ensurePosix(styleEntry.referenceFileName ?? 'app.css')
+        const resolvedEntry: ResolvedTaroSubPackage = {
+          root: ensurePosix(normalizedRoot),
+          sourceRelativePath: referenceFileName,
+          sourceAbsolutePath: path.resolve(baseDir, referenceFileName),
+          referenceFileName,
+          outputName: styleEntry.outputName ?? resolveReferenceOutputName(referenceFileName),
+          preprocess: false,
+          framework: 'taro',
+        }
+        resolvedEntry.targetFiles = [
+          ...resolvePageStyleFiles(entry),
+          ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
+        ]
+        resolvedEntry.targetSourceFiles = [
+          ...resolvePageStyleSourceFiles(entry, baseDir),
+          ...componentStyleSourceFiles,
+        ]
+        resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
+        applyStyleEntryOptions(resolvedEntry, styleEntry)
+        resolved.push(resolvedEntry)
+        continue
+      }
+
       const styleFileNames = ensureArray(styleEntry.sourceFileName).flatMap(name => (typeof name === 'string' && name.length > 0 ? [name] : []))
       const styleCandidates = styleFileNames.length > 0 ? styleFileNames : DEFAULT_STYLE_FILENAMES
       const stylePath = styleCandidates
@@ -295,7 +389,6 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
         preprocess: (styleEntry.preprocess ?? config.preprocess) !== false,
         framework: 'taro',
       }
-      const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
       resolvedEntry.targetFiles = [
         ...resolvePageStyleFiles(entry),
         ...componentStyleSourceFiles.map(file => removeStyleExt(file.fileName)),
@@ -305,24 +398,7 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
         ...componentStyleSourceFiles,
       ]
       resolvedEntry.sourceModules = resolveSourceModules(normalizedRoot, baseDir)
-      if (toArray(styleEntry.files).length > 0) {
-        resolvedEntry.files = toArray(styleEntry.files)
-      }
-      if (styleEntry.include !== undefined) {
-        resolvedEntry.include = styleEntry.include
-      }
-      if (styleEntry.exclude !== undefined) {
-        resolvedEntry.exclude = styleEntry.exclude
-      }
-      if (styleEntry.sourceInclude !== undefined) {
-        resolvedEntry.sourceInclude = styleEntry.sourceInclude
-      }
-      if (styleEntry.sourceExclude !== undefined) {
-        resolvedEntry.sourceExclude = styleEntry.sourceExclude
-      }
-      if (styleEntry.generate) {
-        resolvedEntry.generate = styleEntry.generate
-      }
+      applyStyleEntryOptions(resolvedEntry, styleEntry)
       resolved.push(resolvedEntry)
     }
   }

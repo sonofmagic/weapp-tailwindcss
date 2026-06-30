@@ -26,6 +26,7 @@ export interface ResolvedSubpackageStyleScope {
   sourceRelativePath: string
   sourceAbsolutePath: string
   outputName: string
+  referenceFileName?: string
   preprocess: boolean
   framework: SubpackageStyleFramework
   sourceFiles?: string[]
@@ -215,6 +216,10 @@ export function shouldInjectSubpackageStyleImport(
 
 function inferStyleExtFromAssets(assets: Array<{ fileName: string, source?: string | Uint8Array }>): string | undefined {
   for (const asset of assets) {
+    const normalized = ensurePosix(asset.fileName)
+    if (/\.(?:config|rn)\.[^.]+$/i.test(normalized)) {
+      continue
+    }
     const ext = getSubpackageStyleAssetExt(asset.fileName, asset.source)
     if (ext && isSupportedStyleExt(ext)) {
       return ext
@@ -316,7 +321,7 @@ function collectScopeOutputStems(
 ): Set<string> {
   return new Set(
     scopes
-      .filter(item => item.root === scope.root)
+      .filter(item => item.root === scope.root && !item.referenceFileName)
       .map(item => withoutExt(resolveSubpackageOutputFileName(item, styleExt))),
   )
 }
@@ -342,7 +347,9 @@ export function resolveSubpackageStyleImport(fileName: string, scope: ResolvedSu
     return undefined
   }
 
-  const outputFileName = resolveSubpackageOutputFileName(scope, styleExt)
+  const outputFileName = scope.referenceFileName
+    ? `${withoutExt(ensurePosix(scope.referenceFileName))}${styleExt}`
+    : resolveSubpackageOutputFileName(scope, styleExt)
   const relativePath = path.posix.relative(path.posix.dirname(normalized), outputFileName)
 
   if (!relativePath || relativePath === '.') {
@@ -366,6 +373,9 @@ export function collectSubpackageStyleAssets(
     }
 
     for (const scope of scopes) {
+      if (scope.referenceFileName) {
+        continue
+      }
       const outputStems = collectScopeOutputStems(scope, scopes, styleExt)
       if (outputStems.has(withoutExt(normalizedFileName))) {
         continue

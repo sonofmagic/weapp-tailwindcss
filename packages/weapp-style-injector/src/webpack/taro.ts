@@ -34,6 +34,24 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
+function createDefaultAppStyleEntry(options: {
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
+}): TaroSubPackageStyleEntry {
+  const entry: TaroSubPackageStyleEntry = {}
+  if (options.files !== undefined) {
+    entry.files = options.files
+  }
+  if (options.include !== undefined) {
+    entry.include = options.include
+  }
+  if (options.exclude !== undefined) {
+    entry.exclude = options.exclude
+  }
+  return entry
+}
+
 export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   const {
     appConfigPath,
@@ -78,6 +96,9 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
       }
       if (styleEntries !== undefined) {
         config.styleEntries = styleEntries
+      }
+      else if (sourceFileName === undefined) {
+        config.styleEntries = createDefaultAppStyleEntry({ files, include, exclude })
       }
       configs.set(candidate, config)
     }

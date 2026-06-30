@@ -37,6 +37,24 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
+function createDefaultAppStyleEntry(options: {
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
+}): TaroSubPackageStyleEntry {
+  const entry: TaroSubPackageStyleEntry = {}
+  if (options.files !== undefined) {
+    entry.files = options.files
+  }
+  if (options.include !== undefined) {
+    entry.include = options.include
+  }
+  if (options.exclude !== undefined) {
+    entry.exclude = options.exclude
+  }
+  return entry
+}
+
 const STYLE_ID_RE = /\.(?:css|scss|sass|less|styl|stylus)(?:[?#].*)?$/
 
 function stripQuery(id: string): string {
@@ -96,6 +114,9 @@ function createTaroSourceStyleInjectorPlugin(
       const imports: string[] = []
 
       for (const entry of scopes) {
+        if (entry.scope.referenceFileName) {
+          continue
+        }
         const relativeFileName = ensurePosix(path.relative(entry.sourceRoot, cleanId))
         if (relativeFileName.startsWith('../')) {
           continue
@@ -183,6 +204,9 @@ export function StyleInjector(options: ViteTaroStyleInjectorOptions = {}) {
       }
       if (styleEntries !== undefined) {
         config.styleEntries = styleEntries
+      }
+      else if (sourceFileName === undefined) {
+        config.styleEntries = createDefaultAppStyleEntry({ files, include, exclude })
       }
       configs.set(candidate, config)
     }

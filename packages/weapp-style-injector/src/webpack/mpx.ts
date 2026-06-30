@@ -21,6 +21,24 @@ export interface WebpackMpxStyleInjectorOptions extends Omit<WebpackWeappStyleIn
   styleEntries?: MpxSubPackageStyleEntry | MpxSubPackageStyleEntry[]
 }
 
+function createDefaultAppStyleEntry(options: {
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
+}): MpxSubPackageStyleEntry {
+  const entry: MpxSubPackageStyleEntry = {}
+  if (options.files !== undefined) {
+    entry.files = options.files
+  }
+  if (options.include !== undefined) {
+    entry.include = options.include
+  }
+  if (options.exclude !== undefined) {
+    entry.exclude = options.exclude
+  }
+  return entry
+}
+
 export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   const {
     appPath,
@@ -68,6 +86,9 @@ export function StyleInjector(options: WebpackMpxStyleInjectorOptions = {}): Web
       }
       if (styleEntries !== undefined) {
         config.styleEntries = styleEntries
+      }
+      else if (sourceFileName === undefined) {
+        config.styleEntries = createDefaultAppStyleEntry({ files, include, exclude })
       }
       configs.set(candidate, config)
     }

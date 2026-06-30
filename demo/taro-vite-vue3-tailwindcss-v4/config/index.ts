@@ -19,8 +19,6 @@ const generator = {
 }
 const cssEntries = [
   resolve(process.cwd(), 'src/app.css'),
-  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
-  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
 ]
 
 const isNativeTarget = process.env.TARO_ENV === 'rn' || process.env.TARO_ENV === 'jdrn'
@@ -95,10 +93,12 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           },
         },
         WeappTailwindcss({
+          appType: 'taro',
           tailwindcssBasedir: process.cwd(),
           cssSourceTrace: true,
           cssEntries,
           rem2rpx: true,
+          styleInjector: !(taroPlatform.isWeb || isNativeTarget),
           generator,
           disabled: isNativeTarget,
           // injectAdditionalCssVarScope: true,

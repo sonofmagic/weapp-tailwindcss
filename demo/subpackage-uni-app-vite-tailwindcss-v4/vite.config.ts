@@ -45,19 +45,11 @@ export default defineConfig(() => {
       ...(cssMode === 'isolated' && !uniPlatform.isWeb
         ? [
             StyleInjector({
-              include: [
-                'sub-normal/**/*.{css,wxss,acss,ttss}',
-                'sub-independent/**/*.{css,wxss,acss,ttss}',
+              styleEntries: [
+                {
+                  sourceFileName: 'index.css',
+                },
               ],
-              subPackages: {
-                pagesJsonPath: 'src/pages.json',
-                preprocess: false,
-                styleEntries: [
-                  {
-                    sourceFileName: 'index.css',
-                  },
-                ],
-              },
             }),
           ]
         : []),

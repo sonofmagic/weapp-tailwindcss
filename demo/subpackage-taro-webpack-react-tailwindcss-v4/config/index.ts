@@ -61,19 +61,11 @@ function installWeappTailwindcss(chain: any) {
           plugin: StyleInjector,
           args: [
             {
-              include: [
-                'sub-normal/**/*.{css,acss,ttss}',
-                'sub-independent/**/*.{css,acss,ttss}',
+              styleEntries: [
+                {
+                  sourceFileName: 'index.css',
+                },
               ],
-              subPackages: {
-                appConfigPath: 'src/app.config.ts',
-                preprocess: false,
-                styleEntries: [
-                  {
-                    sourceFileName: 'index.css',
-                  },
-                ],
-              },
             },
           ],
         },

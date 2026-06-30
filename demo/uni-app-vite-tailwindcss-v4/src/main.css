@@ -2,8 +2,6 @@
 @import "tailwindcss" source(none);
 @config "../tailwind.config.js";
 @source "../src/**/*.{vue,js,ts,jsx,tsx,html}";
-@source not "../src/sub-normal/**/*";
-@source not "../src/sub-independent/**/*";
 @source not "../src/uni_modules/**/*";
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {

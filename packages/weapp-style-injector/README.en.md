@@ -18,6 +18,25 @@ This package injects style entries into mini program build artifacts across comm
 
 The `uni-app`, `taro`, and `subpackage` parser modules are internal implementation details, not public entry points for application projects.
 
+## Zero Config
+
+The uni-app, Taro, and Mpx presets auto-detect common app entries. By default, subpackage styles reference the main app style entry:
+
+```ts
+StyleInjector()
+```
+
+To narrow the injected files, put filters in `styleEntries`:
+
+```ts
+StyleInjector({
+  styleEntries: {
+    include: ['pages/**/*.wxss'],
+    exclude: ['pages/legacy/**/*.wxss'],
+  },
+})
+```
+
 ## Website
 
 For setup guides, configuration references, and framework examples, see the [official weapp-tailwindcss documentation](https://tw.icebreaker.top).

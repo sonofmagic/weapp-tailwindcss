@@ -19,7 +19,9 @@ export interface MpxSubPackageConfig {
 }
 
 export interface MpxSubPackageStyleEntry {
-  sourceFileName: string
+  sourceFileName?: string | string[]
+  appStyle?: boolean
+  referenceFileName?: string
   outputName?: string
   files?: string | string[]
   include?: string | string[]
@@ -117,6 +119,73 @@ function resolvePageStyleSourceFiles(
     })
 }
 
+function resolveReferenceOutputName(fileName: string): string {
+  const normalized = ensurePosix(fileName)
+  return path.posix.basename(normalized, path.posix.extname(normalized)) || 'app'
+}
+
+function shouldUseAppStyleReference(styleEntry: MpxSubPackageStyleEntry): boolean {
+  return (
+    styleEntry.appStyle === true
+    || Boolean(styleEntry.referenceFileName)
+    || (
+      styleEntry.sourceFileName === undefined
+      && styleEntry.outputName === undefined
+      && styleEntry.generate === undefined
+      && (
+        Object.keys(styleEntry).length === 0
+        || styleEntry.preprocess !== undefined
+        || styleEntry.files !== undefined
+        || styleEntry.include !== undefined
+        || styleEntry.exclude !== undefined
+      )
+    )
+  )
+}
+
+function applyStyleEntryOptions(
+  resolvedEntry: ResolvedMpxSubPackage,
+  styleEntry: MpxSubPackageStyleEntry,
+) {
+  if (toArray(styleEntry.files).length > 0) {
+    resolvedEntry.files = toArray(styleEntry.files)
+  }
+  if (styleEntry.include !== undefined) {
+    resolvedEntry.include = styleEntry.include
+  }
+  if (styleEntry.exclude !== undefined) {
+    resolvedEntry.exclude = styleEntry.exclude
+  }
+  if (styleEntry.generate) {
+    resolvedEntry.generate = styleEntry.generate
+  }
+}
+
+function createDefaultStyleEntry(config: MpxSubPackageConfig): MpxSubPackageStyleEntry {
+  const entry: MpxSubPackageStyleEntry = {
+    sourceFileName: ensureArray(config.sourceFileName),
+  }
+  if (config.outputName !== undefined) {
+    entry.outputName = config.outputName
+  }
+  if (config.files !== undefined) {
+    entry.files = config.files
+  }
+  if (config.include !== undefined) {
+    entry.include = config.include
+  }
+  if (config.exclude !== undefined) {
+    entry.exclude = config.exclude
+  }
+  if (config.generate !== undefined) {
+    entry.generate = config.generate
+  }
+  if (config.preprocess !== undefined) {
+    entry.preprocess = config.preprocess
+  }
+  return entry
+}
+
 export function resolveMpxSubPackages(config: MpxSubPackageConfig): ResolvedMpxSubPackage[] {
   const appPath = path.resolve(config.appPath)
   const appConfig = loadAppConfig(appPath)
@@ -135,17 +204,9 @@ export function resolveMpxSubPackages(config: MpxSubPackageConfig): ResolvedMpxS
 
   const sourceRoot = path.resolve(config.sourceRoot ?? path.dirname(appPath))
   const entries = toArray(config.styleEntries)
-  const styleEntries = entries.length > 0
+  const styleEntries: MpxSubPackageStyleEntry[] = entries.length > 0
     ? entries
-    : [{
-        sourceFileName: ensureArray(config.sourceFileName),
-        outputName: config.outputName,
-        files: config.files,
-        include: config.include,
-        exclude: config.exclude,
-        generate: config.generate,
-        preprocess: config.preprocess,
-      }]
+    : [createDefaultStyleEntry(config)]
 
   const resolved: ResolvedMpxSubPackage[] = []
 
@@ -160,6 +221,24 @@ export function resolveMpxSubPackages(config: MpxSubPackageConfig): ResolvedMpxS
     }
 
     for (const styleEntry of styleEntries) {
+      if (shouldUseAppStyleReference(styleEntry)) {
+        const referenceFileName = ensurePosix(styleEntry.referenceFileName ?? 'app.css')
+        const resolvedEntry: ResolvedMpxSubPackage = {
+          root: ensurePosix(normalizedRoot),
+          sourceRelativePath: referenceFileName,
+          sourceAbsolutePath: path.resolve(sourceRoot, referenceFileName),
+          referenceFileName,
+          outputName: styleEntry.outputName ?? resolveReferenceOutputName(referenceFileName),
+          preprocess: false,
+          framework: 'mpx',
+          targetFiles: resolvePageStyleFiles(entry),
+          targetSourceFiles: resolvePageStyleSourceFiles(entry, sourceRoot),
+        }
+        applyStyleEntryOptions(resolvedEntry, styleEntry)
+        resolved.push(resolvedEntry)
+        continue
+      }
+
       const styleFileNames = ensureArray(styleEntry.sourceFileName).flatMap(name => (typeof name === 'string' && name.length > 0 ? [name] : []))
       const styleCandidates = styleFileNames.length > 0 ? styleFileNames : DEFAULT_STYLE_FILENAMES
       const stylePath = styleCandidates
@@ -180,18 +259,7 @@ export function resolveMpxSubPackages(config: MpxSubPackageConfig): ResolvedMpxS
         targetFiles: resolvePageStyleFiles(entry),
         targetSourceFiles: resolvePageStyleSourceFiles(entry, sourceRoot),
       }
-      if (toArray(styleEntry.files).length > 0) {
-        resolvedEntry.files = toArray(styleEntry.files)
-      }
-      if (styleEntry.include !== undefined) {
-        resolvedEntry.include = styleEntry.include
-      }
-      if (styleEntry.exclude !== undefined) {
-        resolvedEntry.exclude = styleEntry.exclude
-      }
-      if (styleEntry.generate) {
-        resolvedEntry.generate = styleEntry.generate
-      }
+      applyStyleEntryOptions(resolvedEntry, styleEntry)
       resolved.push(resolvedEntry)
     }
   }

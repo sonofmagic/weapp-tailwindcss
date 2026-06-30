@@ -24,8 +24,6 @@ const generator = {
 } satisfies UserDefinedOptions['generator']
 const cssEntries = [
   resolve(process.cwd(), 'src/app.css'),
-  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
-  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
 ]
 
 function disableWebpackDevServerClientOverlay(chain: any) {
@@ -108,11 +106,13 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               plugin: WeappTailwindcss,
               args: [
                 {
+                  appType: 'taro',
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
                   cssEntries,
                   rem2rpx: true,
                   generator,
+                  styleInjector: true,
                   // before 2248
                   // after 309
                   // cssCalc: ['--nutui']
@@ -158,11 +158,13 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               plugin: WeappTailwindcss,
               args: [
                 {
+                  appType: 'taro',
                   tailwindcssBasedir: process.cwd(),
                   cssSourceTrace: true,
                   cssEntries,
                   rem2rpx: true,
                   generator,
+                  styleInjector: !taroPlatform.isWeb,
                 } satisfies UserDefinedOptions
               ]
             }

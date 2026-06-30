@@ -13,21 +13,20 @@ const uniMpVueDir = dirname(uniMpVueRuntimePath);
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => {
+  const uniPlatform = resolveUniPlatform()
   return {
     plugins: [
       // 改成 mts，则爆 uni is not a function
       uni(),
       WeappTailwindcss({
+        appType: 'uni-app-vite',
         tailwindcssBasedir: process.cwd(),
-        cssEntries: [
-          resolve(process.cwd(), 'src/main.css'),
-          resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
-          resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
-        ],
+        cssEntries: [resolve(process.cwd(), 'src/main.css')],
         cssSourceTrace: true,
         rem2rpx: true,
+        styleInjector: !uniPlatform.isWeb,
         generator: {
-          webCompat: resolveUniPlatform().isWeb ? true : undefined,
+          webCompat: uniPlatform.isWeb ? true : undefined,
         },
       }),
     ],

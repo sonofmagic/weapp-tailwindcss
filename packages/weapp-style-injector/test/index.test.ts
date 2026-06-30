@@ -414,6 +414,7 @@ describe('vite presets', () => {
 
     const plugin = UniAppStyleInjector({
       pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      indexFileName: 'index.wxss',
     })
 
     await invokeGenerateBundle(plugin, bundle)
@@ -502,6 +503,76 @@ describe('vite presets', () => {
     )
   })
 
+  it('uses app style references by default via uni-app preset', async () => {
+    const bundle: TestBundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../../app.wxss";\n.home {}')
+    expect(bundle['sub-packages/app.wxss']).toBeUndefined()
+  })
+
+  it('supports app style references with entry-level include via uni-app preset', async () => {
+    const bundle: TestBundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+      'sub-packages/components/card.wxss': createAsset('.card {}', 'sub-packages/components/card.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      styleEntries: {
+        include: ['pages/**/*.wxss'],
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss']?.source).toBe('@import "../../app.wxss";\n.home {}')
+    expect(bundle['sub-packages/components/card.wxss']?.source).toBe('.card {}')
+  })
+
+  it('supports app style references with entry-level include via taro preset', async () => {
+    const bundle: TestBundle = {
+      'taro-sub/pages/home.css': createAsset('.home {}', 'taro-sub/pages/home.css'),
+      'taro-sub/components/card.css': createAsset('.card {}', 'taro-sub/components/card.css'),
+    }
+
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      styleEntries: {
+        include: ['pages/**/*.css'],
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['taro-sub/pages/home.css']?.source).toBe('@import "../../app.css";\n.home {}')
+    expect(bundle['taro-sub/components/card.css']?.source).toBe('.card {}')
+  })
+
+  it('keeps top-level include working for default app style references', async () => {
+    const bundle: TestBundle = {
+      'taro-sub/pages/home.css': createAsset('.home {}', 'taro-sub/pages/home.css'),
+      'taro-sub/components/card.css': createAsset('.card {}', 'taro-sub/components/card.css'),
+    }
+
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      include: ['pages/**/*.css'],
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['taro-sub/pages/home.css']?.source).toBe('@import "../../app.css";\n.home {}')
+    expect(bundle['taro-sub/components/card.css']?.source).toBe('.card {}')
+  })
+
   it('supports custom index file names via uni-app preset', async () => {
     const bundle: TestBundle = {
       'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
@@ -554,6 +625,7 @@ describe('vite presets', () => {
 
     const plugin = UniAppStyleInjector({
       pagesJsonPath: path.join(uniAppFixturesRoot, 'pages-scss.json'),
+      indexFileName: 'index.scss',
     })
 
     await invokeGenerateBundle(plugin, bundle)
@@ -573,6 +645,7 @@ describe('vite presets', () => {
 
     const plugin = UniAppStyleInjector({
       pagesJsonPath: path.join(uniAppFixturesRoot, 'pages-less.json'),
+      indexFileName: 'index.less',
     })
 
     await invokeGenerateBundle(plugin, bundle)
@@ -624,6 +697,7 @@ describe('vite presets', () => {
 
     const plugin = TaroStyleInjector({
       appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      sourceFileName: ['index.scss', 'index.css'],
     })
 
     await invokeGenerateBundle(plugin, bundle)
@@ -635,6 +709,47 @@ describe('vite presets', () => {
     expect(bundle['legacy-sub/index.css'].source).toBe(
       fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
     )
+  })
+
+  it('uses app style references by default via taro preset', async () => {
+    const bundle: TestBundle = {
+      'taro-sub/pages/home.css': createAsset('.home {}', 'taro-sub/pages/home.css'),
+      'legacy-sub/pages/main.css': createAsset('.legacy {}', 'legacy-sub/pages/main.css'),
+    }
+
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['taro-sub/pages/home.css']?.source).toBe('@import "../../app.css";\n.home {}')
+    expect(bundle['legacy-sub/pages/main.css']?.source).toBe('@import "../../app.css";\n.legacy {}')
+    expect(bundle['taro-sub/app.css']).toBeUndefined()
+  })
+
+  it('does not inject app style references during taro source transform', async () => {
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+    })
+
+    const plugins = Array.isArray(plugin) ? plugin : [plugin]
+    const sourcePlugin = plugins.find(entry => entry.name === 'weapp-style-injector:taro-source-style')
+    const transform = sourcePlugin?.transform
+    const handler = typeof transform === 'function'
+      ? transform
+      : transform && typeof transform === 'object' && 'handler' in transform
+        ? transform.handler
+        : undefined
+
+    type TestTransformHandler = (this: unknown, code: string, id: string) => unknown
+    const result = await (handler as TestTransformHandler | undefined)?.call(
+      { addWatchFile() {} },
+      '.home {}',
+      path.join(taroFixturesRoot, 'taro-sub/pages/home.css'),
+    )
+
+    expect(result).toBeUndefined()
   })
 
   it('resolves multiple style entries via taro preset', async () => {
@@ -894,6 +1009,7 @@ describe('weapp-style-injector webpack plugin', () => {
 
     const plugin = UniAppStyleInjectorWebpack({
       pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      indexFileName: 'index.wxss',
     })
 
     plugin.apply(compiler)
@@ -903,6 +1019,21 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('sub-packages/index.wxss')).toBe(
       fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.wxss'), 'utf8'),
     )
+  })
+
+  it('uses app style references by default via uni-app webpack preset', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-packages/pages/home.wxss': '.home {}',
+    })
+
+    const plugin = UniAppStyleInjectorWebpack({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe('@import "../../app.wxss";\n.home {}')
+    expect(getAsset('sub-packages/app.wxss')).toBeUndefined()
   })
 
   it('supports custom index file names via uni-app webpack preset', () => {
@@ -933,6 +1064,7 @@ describe('weapp-style-injector webpack plugin', () => {
 
     const plugin = TaroStyleInjectorWebpack({
       appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      sourceFileName: ['index.scss', 'index.css'],
     })
 
     plugin.apply(compiler)
@@ -944,6 +1076,23 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('legacy-sub/index.css')).toBe(
       fs.readFileSync(path.join(taroFixturesRoot, 'legacy-sub/index.css'), 'utf8'),
     )
+  })
+
+  it('uses app style references by default via taro webpack preset', () => {
+    const { compiler, getAsset } = createCompiler({
+      'taro-sub/pages/home.css': '.home {}',
+      'legacy-sub/pages/main.css': '.legacy {}',
+    })
+
+    const plugin = TaroStyleInjectorWebpack({
+      appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('taro-sub/pages/home.css')).toBe('@import "../../app.css";\n.home {}')
+    expect(getAsset('legacy-sub/pages/main.css')).toBe('@import "../../app.css";\n.legacy {}')
+    expect(getAsset('taro-sub/app.css')).toBeUndefined()
   })
 
   it('resolves multiple style entries via taro webpack preset', () => {
@@ -1007,6 +1156,25 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('sub-normal/less.wxss')).toContain('.fixture-mpx-less')
     expect(getAsset('sub-independent/pages/index.wxss')).toBe('@import "../index.wxss";\n.independent {}')
     expect(getAsset('sub-independent/index.wxss')).toContain('.fixture-mpx-independent')
+  })
+
+  it('supports app style references with entry-level include via mpx webpack preset', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-normal/pages/index.wxss': '.page {}',
+      'sub-normal/components/card.wxss': '.card {}',
+    })
+
+    const plugin = MpxStyleInjectorWebpack({
+      appPath: path.join(mpxFixturesRoot, 'app.mpx'),
+      styleEntries: {
+        include: ['pages/**/*.wxss'],
+      },
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-normal/pages/index.wxss')).toBe('@import "../../app.wxss";\n.page {}')
+    expect(getAsset('sub-normal/components/card.wxss')).toBe('.card {}')
   })
 
   it('does not generate webpack sub-package style entries from non-style assets', () => {
