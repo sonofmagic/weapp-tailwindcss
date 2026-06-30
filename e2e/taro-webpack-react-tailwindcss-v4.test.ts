@@ -58,7 +58,7 @@ describe('e2e', () => {
     expectMiniProgramPreflight(css)
   })
 
-  it('keeps Tailwind CSS v4 mini-program preflight reset in a CSS entry that imports full Tailwind', async () => {
+  it('keeps Tailwind CSS v4 mini-program preflight reset in CSS entries that import full Tailwind', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)
     const projectPath = path.resolve(projectBase, project.projectPath)
@@ -67,10 +67,13 @@ describe('e2e', () => {
       await ensureProjectBuilt(root)
     }
 
-    const css = await findCssByMarker(projectPath, 'independent_subpackage_taro-webpack-react-tailwindcss-v4')
-    expect(css, 'full Tailwind CSS entry output should contain its own marker').toBeTruthy()
+    const normalCss = await findCssByMarker(projectPath, 'normal_subpackage_taro-webpack-react-tailwindcss-v4')
+    expect(normalCss, 'normal full Tailwind CSS entry output should contain its own marker').toBeTruthy()
+    expectMiniProgramPreflight(normalCss!)
 
-    expectMiniProgramPreflight(css!)
+    const independentCss = await findCssByMarker(projectPath, 'independent_subpackage_taro-webpack-react-tailwindcss-v4')
+    expect(independentCss, 'independent full Tailwind CSS entry output should contain its own marker').toBeTruthy()
+    expectMiniProgramPreflight(independentCss!)
   })
 
   it('does not emit Tailwind CSS v4 empty content init for v4 output', async () => {

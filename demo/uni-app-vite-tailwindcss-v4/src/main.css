@@ -3,6 +3,8 @@
 @config "../tailwind.config.js";
 @source "../src/**/*.{vue,js,ts,jsx,tsx,html}";
 @source not "../src/uni_modules/**/*";
+@source not "../src/sub-normal/**/*";
+@source not "../src/sub-independent/**/*";
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;

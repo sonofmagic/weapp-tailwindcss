@@ -1,7 +1,11 @@
 @import "tailwindcss" source(none);
 @import "@nutui/nutui-taro/dist/style.css";
 @config "../tailwind.config.js";
-@source "../src/**/*.{ts,js,vue,html}";
+@source "./app.ts";
+@source "./App.vue";
+@source "./pages/index/**/*.{ts,js,vue}";
+@source not "./sub-normal/**/*";
+@source not "./sub-independent/**/*";
 @custom-variant system-dark {
   @media (prefers-color-scheme: dark) {
     @slot;

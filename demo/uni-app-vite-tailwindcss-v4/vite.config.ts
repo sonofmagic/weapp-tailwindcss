@@ -21,7 +21,11 @@ export default defineConfig(async () => {
       WeappTailwindcss({
         appType: 'uni-app-vite',
         tailwindcssBasedir: process.cwd(),
-        cssEntries: [resolve(process.cwd(), 'src/main.css')],
+        cssEntries: [
+          resolve(process.cwd(), 'src/main.css'),
+          resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
+          resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
+        ],
         cssSourceTrace: true,
         rem2rpx: true,
         styleInjector: false,
