@@ -119,13 +119,24 @@ function createSingleTailwindV4SourceOptions(
 async function resolveTailwindV4CssEntrySource(
   cssEntry: string,
   sourceOptions: TailwindV4SourceOptions,
+  options: {
+    includesPreflight?: boolean | undefined
+    index?: number | undefined
+  } = {},
 ) {
   const { cssEntries: _cssEntries, cssSources: _cssSources, ...singleEntrySourceOptions } = sourceOptions
   if (!existsSync(cssEntry)) {
-    return resolveTailwindV4Source({
-      ...omitUndefined(singleEntrySourceOptions),
-      cssEntries: [cssEntry],
-    })
+    return withGeneratorSourceMetadata(
+      await resolveTailwindV4Source({
+        ...omitUndefined(singleEntrySourceOptions),
+        cssEntries: [cssEntry],
+      }),
+      {
+        cssEntryIndex: options.index,
+        includesPreflight: options.includesPreflight,
+        primaryCssSource: options.index === 0,
+      },
+    )
   }
   const css = readFileSync(cssEntry, 'utf8')
   const base = path.dirname(path.resolve(cssEntry))
@@ -149,7 +160,10 @@ async function resolveTailwindV4CssEntrySource(
       cssEntries: [cssEntry],
     }),
     {
+      cssEntryIndex: options.index,
+      includesPreflight: options.includesPreflight,
       matchedCssSourceFile: cssEntry,
+      primaryCssSource: options.index === 0,
       sourceBase: base,
       sourceCss: css,
     },
@@ -178,7 +192,7 @@ function shouldResolveSourceSideCssEntry(rawSource: string) {
     || hasTailwindGeneratedCssMarkers(rawSource)
 }
 
-function resolveMatchingTailwindV4CssEntry(
+async function resolveMatchingTailwindV4CssEntry(
   rawSource: string,
   file: string,
   sourceOptions: ReturnType<typeof resolveTailwindV4SourceOptionsFromRuntime>,
@@ -193,7 +207,10 @@ function resolveMatchingTailwindV4CssEntry(
     path.resolve(cssEntry.replace(/[?#].*$/, '')) === normalizedFile,
   )
   if (pathMatchedEntries.length === 1) {
-    return resolveTailwindV4CssEntrySource(pathMatchedEntries[0]!, sourceOptions)
+    return resolveTailwindV4CssEntrySource(pathMatchedEntries[0]!, sourceOptions, {
+      includesPreflight: await resolveTailwindV4CssEntryIncludesPreflight(pathMatchedEntries[0]!),
+      index: cssEntries.indexOf(pathMatchedEntries[0]!),
+    })
   }
 
   const normalizedRawSource = normalizeCssSourceForCompare(rawSource)
@@ -226,7 +243,10 @@ function resolveMatchingTailwindV4CssEntry(
   if (!matchingEntry) {
     return undefined
   }
-  return resolveTailwindV4CssEntrySource(matchingEntry, sourceOptions)
+  return resolveTailwindV4CssEntrySource(matchingEntry, sourceOptions, {
+    includesPreflight: await resolveTailwindV4CssEntryIncludesPreflight(matchingEntry),
+    index: cssEntries.indexOf(matchingEntry),
+  })
 }
 
 function normalizeTailwindV4CssSourceConfig(
@@ -331,6 +351,7 @@ async function resolveMatchingTailwindV4CssSource(
   file: string,
   cssHandlerOptions: IStyleHandlerOptions,
   sourceOptions: TailwindV4SourceOptions,
+  selectionOptions?: GeneratorSourceSelectionOptions | undefined,
 ) {
   const cssSources = sourceOptions.cssSources
   if (!cssSources?.length) {
@@ -372,7 +393,12 @@ async function resolveMatchingTailwindV4CssSource(
   if (!matchingSource) {
     return undefined
   }
-  return resolveSingleTailwindV4CssSource(matchingSource, sourceOptions, { matched: true })
+  return resolveSingleTailwindV4CssSource(matchingSource, sourceOptions, {
+    includesPreflight: await resolveTailwindV4CssSourceEntries(matchingSource, sourceOptions).then(resolved => resolved?.includesPreflight),
+    index: matches[0]?.index,
+    matched: true,
+    primary: isSameTailwindV4CssSource(matchingSource, selectionOptions?.cssSources?.[0]),
+  })
 }
 
 function tryResolveTailwindV4SourceOptions(
@@ -393,11 +419,29 @@ function hasConfiguredTailwindV4CssSource(
     || Boolean(sourceOptions?.cssSources?.length)
 }
 
+function isSameTailwindV4CssSource(
+  a: TailwindV4CssSource | undefined,
+  b: TailwindV4CssSource | undefined,
+) {
+  if (!a || !b) {
+    return false
+  }
+  if (typeof a.file === 'string' && typeof b.file === 'string') {
+    return path.resolve(a.file) === path.resolve(b.file)
+  }
+  return typeof a.css === 'string'
+    && typeof b.css === 'string'
+    && normalizeCssSourceForCompare(a.css) === normalizeCssSourceForCompare(b.css)
+}
+
 async function resolveSingleTailwindV4CssSource(
   cssSource: TailwindV4CssSource,
   sourceOptions: TailwindV4SourceOptions,
   options: {
+    includesPreflight?: boolean | undefined
+    index?: number | undefined
     matched?: boolean
+    primary?: boolean | undefined
   } = {},
 ) {
   const sourceBaseFallback = sourceOptions.base ?? sourceOptions.projectRoot ?? process.cwd()
@@ -407,10 +451,16 @@ async function resolveSingleTailwindV4CssSource(
     base: sourceBase,
     css: normalizedCssSource.css,
   }))
+  const resolvedEntries = options.includesPreflight === undefined
+    ? await resolveTailwindV4CssSourceEntries(normalizedCssSource, sourceOptions)
+    : undefined
   return withGeneratorSourceMetadata(source, {
+    cssSourceIndex: options.index,
+    includesPreflight: options.includesPreflight ?? resolvedEntries?.includesPreflight,
     matchedCssSourceFile: options.matched && typeof normalizedCssSource.file === 'string'
       ? normalizedCssSource.file
       : undefined,
+    primaryCssSource: options.primary === true || (!sourceOptions.cssEntries?.length && options.index === 0) || undefined,
     sourceBase,
     sourceCss: normalizedCssSource.css,
   })
@@ -458,6 +508,7 @@ async function resolveCandidateMatchedTailwindV4CssSource(
 
   const matches: Array<{
     cssSource: TailwindV4CssSource
+    includesPreflight: boolean
     index: number
     runtimeHits: number
     totalCandidates: number
@@ -474,6 +525,7 @@ async function resolveCandidateMatchedTailwindV4CssSource(
     }
     matches.push({
       cssSource,
+      includesPreflight: resolved.includesPreflight,
       index,
       runtimeHits,
       totalCandidates: scopedCandidates.size,
@@ -498,15 +550,97 @@ async function resolveCandidateMatchedTailwindV4CssSource(
   ) {
     return undefined
   }
-  return resolveSingleTailwindV4CssSource(best.cssSource, sourceOptions, { matched: true })
+  return resolveSingleTailwindV4CssSource(best.cssSource, sourceOptions, {
+    includesPreflight: best.includesPreflight,
+    index: best.index,
+    matched: true,
+    primary: isSameTailwindV4CssSource(best.cssSource, selectionOptions?.cssSources?.[0]),
+  })
+}
+
+async function resolveTailwindV4CssEntryEntries(
+  cssEntry: string,
+) {
+  if (!existsSync(cssEntry)) {
+    return undefined
+  }
+  const file = path.resolve(cssEntry)
+  return resolveTailwindV4EntriesFromCss(readFileSync(file, 'utf8'), path.dirname(file))
+}
+
+async function resolveTailwindV4CssEntryIncludesPreflight(cssEntry: string) {
+  return resolveTailwindV4CssEntryEntries(cssEntry).then(resolved => resolved?.includesPreflight)
+}
+
+async function resolveCandidateMatchedTailwindV4CssEntry(
+  sourceOptions: TailwindV4SourceOptions,
+  selectionOptions: GeneratorSourceSelectionOptions | undefined,
+) {
+  const cssEntries = sourceOptions.cssEntries
+  const getSourceCandidatesForEntries = selectionOptions?.getSourceCandidatesForEntries
+  if (
+    !cssEntries?.length
+    || !getSourceCandidatesForEntries
+  ) {
+    return undefined
+  }
+
+  const matches: Array<{
+    cssEntry: string
+    includesPreflight: boolean
+    index: number
+    runtimeHits: number
+    totalCandidates: number
+  }> = []
+  await Promise.all(cssEntries.map(async (cssEntry, index) => {
+    const resolved = await resolveTailwindV4CssEntryEntries(cssEntry)
+    if (resolved?.entries === undefined) {
+      return
+    }
+    const scopedCandidates = getSourceCandidatesForEntries(resolved.entries)
+    const runtimeHits = countRuntimeCandidateHits(scopedCandidates, selectionOptions?.runtime)
+    if (runtimeHits === 0) {
+      return
+    }
+    matches.push({
+      cssEntry,
+      includesPreflight: resolved.includesPreflight,
+      index,
+      runtimeHits,
+      totalCandidates: scopedCandidates.size,
+    })
+  }))
+  if (matches.length === 0) {
+    return undefined
+  }
+  matches.sort((a, b) =>
+    b.runtimeHits - a.runtimeHits
+    || b.totalCandidates - a.totalCandidates
+    || a.index - b.index)
+  const best = matches[0]
+  const second = matches[1]
+  if (!best) {
+    return undefined
+  }
+  if (
+    second
+    && second.runtimeHits === best.runtimeHits
+    && second.totalCandidates === best.totalCandidates
+  ) {
+    return undefined
+  }
+  return resolveTailwindV4CssEntrySource(best.cssEntry, sourceOptions, {
+    includesPreflight: best.includesPreflight,
+    index: best.index,
+  })
 }
 
 function createTailwindV4CssSourceResolver(
   sourceOptions: TailwindV4SourceOptions,
   generatorOptions: NormalizedWeappTailwindcssGeneratorOptions | undefined,
 ) {
-  return (cssSource: NonNullable<typeof sourceOptions.cssSources>[number]) =>
-    resolveSingleTailwindV4CssSource(cssSource, sourceOptions)
+  return (cssSource: NonNullable<typeof sourceOptions.cssSources>[number], index: number) =>
+    resolveSingleTailwindV4CssSource(cssSource, sourceOptions, { index })
       .then(source => generatorOptions?.config
         ? {
             ...source,
@@ -546,7 +680,23 @@ async function resolveTailwindV4SourceSideEntrySource(
     css,
     cssEntries: [resolvedEntrySource.file],
   }))
-  return withMatchedSourceSideMetadata(source, resolvedEntrySource)
+  const cssEntryIndex = sourceOptions.cssEntries?.findIndex(cssEntry =>
+    typeof resolvedEntrySource.file === 'string'
+    && path.resolve(cssEntry.replace(/[?#].*$/, '')) === path.resolve(resolvedEntrySource.file),
+  )
+  const cssSourceIndex = sourceOptions.cssSources?.findIndex(cssSource =>
+    typeof cssSource.file === 'string'
+    && typeof resolvedEntrySource.file === 'string'
+    && path.resolve(cssSource.file.replace(/[?#].*$/, '')) === path.resolve(resolvedEntrySource.file),
+  )
+  const resolvedEntries = await resolveTailwindV4EntriesFromCss(resolvedEntrySource.css, resolvedEntrySource.base)
+  return withMatchedSourceSideMetadata(source, resolvedEntrySource, {
+    cssEntryIndex,
+    cssSourceIndex,
+    includesPreflight: resolvedEntries?.includesPreflight,
+    primaryCssSource: cssEntryIndex === 0
+      || (!sourceOptions.cssEntries?.length && cssSourceIndex === 0),
+  })
 }
 
 export async function resolveGeneratorSource(
@@ -577,8 +727,8 @@ export async function resolveGeneratorSource(
         ...resolveCssHandlerSourceOptions(cssHandlerOptions),
         cssEntries: selectionOptions?.cssEntries ?? sourceOptions.cssEntries,
         cssSources: mergeCssSources(
-          sourceOptions.cssSources,
-          sourceOptions.cssSources?.length
+          mergeCssSources(sourceOptions.cssSources, selectionOptions?.cssSources),
+          sourceOptions.cssSources?.length || selectionOptions?.cssSources?.length
             ? undefined
             : createCssEntrySources(selectionOptions?.cssEntries ?? sourceOptions.cssEntries) as TailwindV4CssSource[] | undefined,
         ),
@@ -629,13 +779,16 @@ export async function resolveGeneratorSource(
     ? await resolveMatchingTailwindV4CssEntry(rawSource, file, normalizedSourceOptions)
     : undefined
   const matchedCssSource = normalizedSourceOptions && !matchedCssEntrySource
-    ? await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, normalizedSourceOptions)
+    ? await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, normalizedSourceOptions, selectionOptions)
+    : undefined
+  const candidateMatchedCssEntrySource = normalizedSourceOptions && !matchedCssEntrySource
+    ? await resolveCandidateMatchedTailwindV4CssEntry(normalizedSourceOptions, selectionOptions)
     : undefined
   const candidateMatchedCssSource = normalizedSourceOptions && !matchedCssEntrySource
     ? await resolveCandidateMatchedTailwindV4CssSource(rawSource, cssHandlerOptions, normalizedSourceOptions, selectionOptions)
     : undefined
   const singleConfiguredCssSource = normalizedSourceOptions?.cssSources?.length === 1
-    ? await resolveSingleTailwindV4CssSource(normalizedSourceOptions.cssSources[0]!, normalizedSourceOptions, { matched: true })
+    ? await resolveSingleTailwindV4CssSource(normalizedSourceOptions.cssSources[0]!, normalizedSourceOptions, { index: 0, matched: true })
     : undefined
   const configuredCssSource = normalizedSourceOptions
     && hasConfiguredTailwindV4CssSource(normalizedSourceOptions)
@@ -655,7 +808,7 @@ export async function resolveGeneratorSource(
     && normalizedSourceOptions.cssEntries?.length === 1
     ? await resolveTailwindV4CssEntrySource(normalizedSourceOptions.cssEntries[0]!, normalizedSourceOptions)
     : undefined
-  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource ?? mainCssEntrySource ?? singleConfiguredCssSource
+  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssEntrySource ?? candidateMatchedCssSource ?? mainCssEntrySource ?? singleConfiguredCssSource
   if (preferredCssEntrySource) {
     return generatorOptions?.config
       ? {
@@ -779,14 +932,18 @@ export async function resolveGeneratorSources(
   if (sourceSideCssSource) {
     return [sourceSideCssSource]
   }
-  const matchedCssSource = await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, sourceOptions)
+  const matchedCssSource = await resolveMatchingTailwindV4CssSource(rawSource, file, cssHandlerOptions, sourceOptions, selectionOptions)
+  const candidateMatchedCssEntrySource = await resolveCandidateMatchedTailwindV4CssEntry(
+    sourceOptions,
+    selectionOptions,
+  )
   const candidateMatchedCssSource = await resolveCandidateMatchedTailwindV4CssSource(
     rawSource,
     cssHandlerOptions,
     sourceOptions,
     selectionOptions,
   )
-  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssSource
+  const preferredCssEntrySource = matchedCssEntrySource ?? matchedCssSource ?? candidateMatchedCssEntrySource ?? candidateMatchedCssSource
   if (preferredCssEntrySource) {
     const source = generatorOptions?.config
       ? {
@@ -809,6 +966,7 @@ export async function resolveGeneratorSources(
         await resolveTailwindV4CssEntrySource(
           sourceOptions.cssEntries[0]!,
           normalizeTailwindV4CssSourceConfigs(sourceOptions),
+          { index: 0 },
         ).then(source => generatorOptions?.config
           ? {
               ...source,
@@ -820,7 +978,7 @@ export async function resolveGeneratorSources(
     if (sourceOptions.cssSources?.length === 1) {
       return [
         normalizeResolvedTailwindV4SourceConfig(
-          await createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)(sourceOptions.cssSources[0]!),
+          await createTailwindV4CssSourceResolver(sourceOptions, generatorOptions)(sourceOptions.cssSources[0]!, 0),
           sourceOptions.cssSources[0]?.file,
           sourceOptions,
         ),
@@ -846,8 +1004,8 @@ export async function resolveGeneratorSources(
   }
 
   const normalizedCssSourceOptions = normalizeTailwindV4CssSourceConfigs(sourceOptions)
-  const cssEntrySources = await Promise.all(sourceOptions.cssEntries.map(cssEntry =>
-    resolveTailwindV4CssEntrySource(cssEntry, normalizedCssSourceOptions).then(source => generatorOptions?.config
+  const cssEntrySources = await Promise.all(sourceOptions.cssEntries.map((cssEntry, index) =>
+    resolveTailwindV4CssEntrySource(cssEntry, normalizedCssSourceOptions, { index }).then(source => generatorOptions?.config
       ? {
           ...source,
           css: prependConfigDirective(source.css, generatorOptions.config),

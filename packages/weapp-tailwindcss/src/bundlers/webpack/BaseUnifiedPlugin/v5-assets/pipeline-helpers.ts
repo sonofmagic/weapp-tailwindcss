@@ -720,9 +720,39 @@ export function resolveWebpackMemoryDebugStats(context: {
 
 export function shouldInjectWebpackCssTracePreflight(
   _appType: SetupWebpackV5ProcessAssetsHookOptions['appType'],
-  cssHandlerOptions: Pick<WebpackCssHandlerOptions, 'isMainChunk'>,
+  cssHandlerOptions: Pick<WebpackCssHandlerOptions, 'isMainChunk' | 'sourceOptions'>,
 ) {
+  if (includesTailwindPreflightImport(cssHandlerOptions.sourceOptions?.sourceCss)) {
+    return true
+  }
   return cssHandlerOptions.isMainChunk !== false
+}
+
+function includesTailwindPreflightImport(source: string | undefined) {
+  if (!source) {
+    return false
+  }
+  try {
+    let includesPreflight = false
+    postcss.parse(source).walkAtRules((rule) => {
+      if (rule.name === 'tailwind') {
+        includesPreflight ||= rule.params.trim() === 'base'
+        return
+      }
+      if (rule.name !== 'import') {
+        return
+      }
+      const request = parseImportRequest(rule.params)?.replaceAll('\\', '/')
+      includesPreflight ||= request === 'tailwindcss'
+        || request === 'tailwindcss/preflight.css'
+        || request?.endsWith('/tailwindcss/index.css') === true
+        || request?.endsWith('/tailwindcss/preflight.css') === true
+    })
+    return includesPreflight
+  }
+  catch {
+    return false
+  }
 }
 
 export function finalizeMiniProgramUserCssAssetSource(

@@ -48,7 +48,7 @@ import { createCandidateSignature, hasRuntimeAffectingSourceChanges, summarizeSt
 import { createSubpackageSourceCandidateScope } from './generate-bundle/source-candidate-scope'
 import { resolveCurrentSourceCandidateSource } from './generate-bundle/source-candidate-source'
 import { collectMiniProgramSubpackageRoots, isSubpackageOutputFile } from './generate-bundle/subpackages'
-import { isSameSubpackageScope, selectTailwindV4GenerationCssSourceForOutput } from './generate-bundle/tailwind-v4-css-source'
+import { selectTailwindV4GenerationCssSourceForOutput } from './generate-bundle/tailwind-v4-css-source'
 import { createTemporaryCssAssetSourceResolver, isTemporaryCssAssetFile } from './generate-bundle/temporary-css-assets'
 import { createBundleTaskTimer } from './generate-bundle/timing'
 import { createTransformFilter, createTransformFilterSignature, shouldSkipViteAssetTransform, shouldSkipViteJsChunkTransform } from './generate-bundle/transform-filter'
@@ -618,6 +618,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             return refreshed ?? remembered
           }))
         }
+        rememberedCssSources = rememberedCssSources.filter((remembered) => {
+          if (!configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')))) {
+            return true
+          }
+          const matchedOutputFile = resolveMatchedOutputFileForCurrentAsset(remembered.sourceFile)
+          return !matchedOutputFile || normalizeOutputPathKey(matchedOutputFile) === normalizeOutputPathKey(outputFile)
+        })
         let hasUsableRememberedTailwindSource = rememberedCssSources.some(remembered =>
           hasTailwindGenerationSource(remembered.rawSource)
           && normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')) !== normalizeOutputPathKey(file),
@@ -651,17 +658,6 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           hasUsableRememberedTailwindSource = false
         }
         let outputCssHandlerOptions = getCssHandlerOptions(outputFile)
-        if (
-          currentSubpackageRoots
-          && rememberedCssSources.length > 0
-          && rememberedCssSources.some(remembered =>
-            configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(remembered.sourceFile.replace(/[?#].*$/, '')))
-            && !isSameSubpackageScope(outputFile, remembered.sourceFile, currentSubpackageRoots),
-          )
-        ) {
-          rememberedCssSources = []
-          hasUsableRememberedTailwindSource = false
-        }
         if (isTemporaryCssAssetFile(outputFile) && hasTailwindGenerationSource(rawSource)) {
           const resolvedTemporarySource = temporaryCssAssetSourceResolver.resolve(outputFile, rawSource)
           if (resolvedTemporarySource) {
@@ -751,7 +747,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
             const availableConfiguredTailwindV4CssSourceEntries = configuredTailwindV4CssSourceEntries.filter(entry =>
               !usedConfiguredTailwindV4CssSourceFiles.has(normalizeOutputPathKey(entry.file)),
             )
-            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource, currentSubpackageRoots)
+            const configuredGenerationSource = selectTailwindV4GenerationCssSourceForOutput(outputFile, availableConfiguredTailwindV4CssSourceEntries, rawSource, {
+              cwd: opts.tailwindcssBasedir,
+              outputRoot: outDir,
+              projectRoot: sourceRoot ?? rootDir,
+            })
             if (configuredGenerationSource && !hasViteProcessedCssResultForSource(configuredGenerationSource.file, getViteProcessedCssAssetResults)) {
               outputFile = resolveMatchedOutputFileForCurrentAsset(configuredGenerationSource.file) ?? outputFile
               activeViteCssCacheFiles.add(normalizeViteCssCacheKey(outputFile))
@@ -845,12 +845,15 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
               isMainChunk: resolvedFromTemporaryCssAsset ? false : outputCssHandlerOptions.isMainChunk,
             }
           : getCssHandlerOptions(file)
+        const generatorCssEntries = configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(generatorSourceFile.replace(/[?#].*$/, '')))
+          ? [generatorSourceFile]
+          : opts.cssEntries
         const generatorCssHandlerOptions = {
           ...cssHandlerOptions,
           sourceOptions: {
             ...(cssHandlerOptions.sourceOptions ?? {}),
             sourceFile: generatorSourceFile,
-            cssEntries: opts.cssEntries,
+            cssEntries: generatorCssEntries,
           },
         }
         const scopedSourceCandidateGetter = createScopedSourceCandidateGetter(outputFile, generatorCssHandlerOptions)

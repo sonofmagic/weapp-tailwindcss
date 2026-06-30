@@ -7,12 +7,21 @@ import { slash } from '../utils'
 import { collectChunkModuleIds } from './sfc-style-source'
 
 function readBundleAssetSource(output: OutputAsset | OutputChunk) {
-  if (output.type !== 'asset') {
+  if ('type' in output && output.type !== 'asset') {
     return undefined
   }
-  return typeof output.source === 'string'
-    ? output.source
-    : output.source.toString()
+  const source = (output as OutputAsset | { source?: unknown }).source
+  if (typeof source === 'string') {
+    return source
+  }
+  if (typeof source === 'function') {
+    const value = (source as () => unknown).call(output)
+    return typeof value === 'string' ? value : value?.toString()
+  }
+  if (source != null && typeof (source as { toString?: unknown }).toString === 'function') {
+    return source.toString()
+  }
+  return undefined
 }
 
 export function normalizePackageRoot(root: string) {

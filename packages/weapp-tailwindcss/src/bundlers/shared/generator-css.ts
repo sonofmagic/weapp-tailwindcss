@@ -6,10 +6,11 @@ import { filterExistingCssRules, postcss, transformWebCssCompat } from '@weapp-t
 import { createWeappTailwindcssGenerator, normalizeWeappTailwindcssGeneratorOptions } from '@/generator'
 import { resolveGeneratorRuntimeBranch, shouldUseMiniProgramCssBranch } from '@/runtime-branch'
 import { filterUnsupportedMiniProgramTailwindV4Candidates } from '@/tailwindcss/v4-engine/candidates'
+import { includesTailwindV4PreflightDirective } from '@/tailwindcss/v4/preflight'
 import { removeUnsupportedMiniProgramAtRules } from './css-cleanup'
 import { collectGeneratedRawSourceCandidates } from './generator-css/class-selectors'
 import { hasTailwindApplyDirective, hasTailwindSourceDirectives, normalizeTailwindSourceDirectives } from './generator-css/directives'
-import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldInjectMiniProgramPreflightForGeneratorCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
+import { createCssSourceOrderAppend, createRuntimeWithCurrentCssCandidates, finalizeMiniProgramGeneratorCss, isEmptyCssSourceOrderParts, mergeGeneratorResults, mergeScopedRuntimeWithCurrentRuntime, resolveGeneratorStyleOptions, resolveMiniProgramPreflightModeForGeneratorCss, shouldAppendWebBundleCssFallback, shouldFinalizeMarkedUserLayerComponentsCss, shouldIsolateCurrentTailwindV4CssCandidates, shouldIsolateScopedCssSource, shouldScanTailwindV4Sources, shouldUseGeneratorForCurrentCss, splitRawSourceByGeneratedCssOrder } from './generator-css/generation-helpers'
 import { appendLegacyCompatCss, appendLegacyContainerCompatCss, hasConfiguredContainerCompatSources } from './generator-css/legacy-compat'
 import { inheritLegacyUnitConvertedDeclarations } from './generator-css/legacy-units'
 import { cleanLocalCssImportWrapperTailwindDirectives, cleanLocalCssImportWrapperTailwindDirectivesRoot, isPureLocalCssImportWrapper, isPureLocalCssImportWrapperRoot, restoreLocalCssImports, splitLocalCssImports, splitLocalCssImportsRoot } from './generator-css/local-imports'
@@ -326,7 +327,7 @@ export async function generateCssByGenerator(
       cssHandlerOptions,
       generatorOptions,
       {
-        cssEntries: opts.cssEntries,
+        cssEntries: cssHandlerOptions.sourceOptions?.cssEntries ?? opts.cssEntries,
         cssSources: options.cssSources,
         getSourceCandidatesForEntries,
         runtime: runtimeWithCurrentCss,
@@ -442,6 +443,23 @@ export async function generateCssByGenerator(
       ? filterApplyOnlyGeneratedCss(generatedCssSource, generatorRawSource)
       : generatedCssSource
     const hasMatchedCssSourceFile = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
+    const hasExplicitCssSource = sources.some((source) => {
+      const metadata = (source as GeneratorResolvedSource).__weappTailwindcssMeta
+      return metadata?.cssEntryIndex !== undefined || metadata?.cssSourceIndex !== undefined
+    })
+    const hasPreflightCssSource = sources.some(source =>
+      (source as GeneratorResolvedSource).__weappTailwindcssMeta?.includesPreflight === true,
+    )
+    const hasPreflightRawSource = includesTailwindV4PreflightDirective(generatorRawSource)
+    const hasOnlyPrimaryCssSource = sources.length > 0
+      && sources.every(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.primaryCssSource === true)
+    const preflightMode = resolveMiniProgramPreflightModeForGeneratorCss(opts, {
+      cssHandlerOptions,
+      isolateCurrentCssCandidates,
+      localImports,
+      explicitCssSource: hasExplicitCssSource,
+      primaryCssSource: hasOnlyPrimaryCssSource || hasPreflightCssSource || hasPreflightRawSource,
+    })
     const placeholderOrderedExtraCss = splitGeneratorPlaceholderCssBySourceOrder(userCssOrderSource, generated.rawCss)
     const orderedExtraCss = placeholderOrderedExtraCss ?? (hasMatchedCssSourceFile
       ? splitTailwindV4GeneratedCssBySourceOrder(userCssOrderSource, generated.rawCss)
@@ -547,11 +565,8 @@ export async function generateCssByGenerator(
         css = reorderMarkedUserLayerComponentsCss(css)
       }
       const finalCss = finalizeGeneratorCss(css, generated.target, {
-        injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-          cssHandlerOptions,
-          isolateCurrentCssCandidates,
-          localImports,
-        }),
+        injectPreflight: preflightMode.inject,
+        preservePreflight: preflightMode.preserve,
         styleOptions: generatorStyleOptions,
       })
       return {
@@ -703,11 +718,8 @@ export async function generateCssByGenerator(
         css = createCssSourceOrderAppend(css, missingUserCss)
       }
       const finalCss = finalizeGeneratorCss(css, generated.target, {
-        injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-          cssHandlerOptions,
-          isolateCurrentCssCandidates,
-          localImports,
-        }),
+        injectPreflight: preflightMode.inject,
+        preservePreflight: preflightMode.preserve,
         styleOptions: generatorStyleOptions,
       })
       return {
@@ -770,11 +782,8 @@ export async function generateCssByGenerator(
       css = createCssSourceOrderAppend(css, missingUserCss)
     }
     const finalCss = finalizeGeneratorCss(css, generated.target, {
-      injectPreflight: shouldInjectMiniProgramPreflightForGeneratorCss(opts, {
-        cssHandlerOptions,
-        isolateCurrentCssCandidates,
-        localImports,
-      }),
+      injectPreflight: preflightMode.inject,
+      preservePreflight: preflightMode.preserve,
       styleOptions: generatorStyleOptions,
     })
     return {

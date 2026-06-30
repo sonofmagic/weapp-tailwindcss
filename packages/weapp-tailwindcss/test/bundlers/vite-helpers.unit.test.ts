@@ -21,8 +21,6 @@ import {
 import { resolveCurrentSourceCandidateSource } from '@/bundlers/vite/generate-bundle/source-candidate-source'
 import {
   collectTailwindV4SourceFingerprint,
-  isSameSubpackageScope,
-  resolveSubpackageRootForFile,
   scoreConfiguredTailwindV4SourceForRawSource,
   selectTailwindV4GenerationCssSourceForOutput,
 } from '@/bundlers/vite/generate-bundle/tailwind-v4-css-source'
@@ -218,21 +216,29 @@ describe('bundlers/vite helper modules', () => {
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, empty], undefined)).toBe(main)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], main.source)).toBe(main)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], `${main.source}\n${sub.source}`)).toBe(main)
-    expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], undefined, new Set(['sub']))).toBe(main)
-    expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [main, sub], undefined, new Set(['sub']))).toBe(sub)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [mainImplicit, mainExplicit], undefined)).toBe(mainExplicit)
-    expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [sub, subOther], undefined, new Set(['sub']))).toBe(sub)
-    expect(selectTailwindV4GenerationCssSourceForOutput('other/pages/index.wxss', [sub, subOther], undefined, new Set(['sub', 'other']))).toBe(subOther)
-    expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [sub, subOther], subOther.source, new Set(['sub', 'other']))).toBe(subOther)
+    expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [sub, subOther], undefined)).toBeUndefined()
+    expect(selectTailwindV4GenerationCssSourceForOutput('sub/pages/index.wxss', [sub, subOther], subOther.source)).toBe(subOther)
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [main, sub], '@import "tailwindcss";')).toBeUndefined()
     expect(selectTailwindV4GenerationCssSourceForOutput('app.wxss', [mainImplicit, subOther], undefined)).toBe(subOther)
-    expect(resolveSubpackageRootForFile('sub/pages/index.wxss', new Set(['sub']))).toBe('sub')
-    expect(resolveSubpackageRootForFile('pages/index.wxss', new Set(['sub']))).toBeUndefined()
-    expect(resolveSubpackageRootForFile(undefined, new Set(['sub']))).toBeUndefined()
-    expect(resolveSubpackageRootForFile('sub/pages/index.wxss', undefined)).toBeUndefined()
-    expect(isSameSubpackageScope('sub/pages/index.wxss', 'sub/pages/index.css', new Set(['sub']))).toBe(true)
-    expect(isSameSubpackageScope('app.wxss', 'sub/pages/index.css', new Set(['sub']))).toBe(false)
-    expect(isSameSubpackageScope('app.wxss', undefined, new Set(['sub']))).toBe(true)
+    const root = path.join(os.tmpdir(), 'weapp-tw-vite-css-source-select')
+    const normalEntry = {
+      file: path.join(root, 'src/feature-a/pages/index.css'),
+      source: '@import "tailwindcss" source(none); @source "./**/*.{wxml,js,ts}";',
+    }
+    const otherEntry = {
+      file: path.join(root, 'src/feature-b/pages/index.css'),
+      source: normalEntry.source,
+    }
+    expect(selectTailwindV4GenerationCssSourceForOutput(
+      'feature-a/pages/index.wxss',
+      [otherEntry, normalEntry],
+      undefined,
+      {
+        outputRoot: path.join(root, 'dist'),
+        projectRoot: path.join(root, 'src'),
+      },
+    )).toBe(normalEntry)
   })
 
   it('resolves temporary root css assets to remaining scoped Tailwind v4 css entries', () => {

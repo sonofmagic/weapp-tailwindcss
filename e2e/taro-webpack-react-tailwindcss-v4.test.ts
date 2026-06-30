@@ -21,6 +21,25 @@ function countCssSelector(css: string, selector: string) {
   return css.match(new RegExp(escaped, 'g'))?.length ?? 0
 }
 
+function expectMiniProgramPreflight(css: string) {
+  const normalizedCss = compactCss(css)
+  expect(normalizedCss).toContain('view,text,::after,::before')
+  expect(normalizedCss).toContain('box-sizing:border-box')
+  expect(normalizedCss).toContain('margin:0')
+  expect(normalizedCss).toContain('padding:0')
+  expect(normalizedCss).toContain('border:0solid')
+}
+
+async function findCssByMarker(projectPath: string, marker: string) {
+  for (const cssFile of project.cssFiles ?? [project.cssFile]) {
+    const css = await fs.readFile(path.resolve(projectPath, cssFile), 'utf8')
+    if (css.includes(marker)) {
+      return css
+    }
+  }
+  return undefined
+}
+
 describe('e2e', () => {
   it('keeps Tailwind CSS v4 mini-program preflight reset in app wxss', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
@@ -36,12 +55,22 @@ describe('e2e', () => {
       'utf8',
     )
 
-    const normalizedCss = compactCss(css)
-    expect(normalizedCss).toContain('view,text,::after,::before')
-    expect(normalizedCss).toContain('box-sizing:border-box')
-    expect(normalizedCss).toContain('margin:0')
-    expect(normalizedCss).toContain('padding:0')
-    expect(normalizedCss).toContain('border:0solid')
+    expectMiniProgramPreflight(css)
+  })
+
+  it('keeps Tailwind CSS v4 mini-program preflight reset in a CSS entry that imports full Tailwind', async () => {
+    const projectBase = path.resolve(__dirname, '../demo')
+    const root = path.resolve(projectBase, project.name)
+    const projectPath = path.resolve(projectBase, project.projectPath)
+
+    if (process.env.E2E_SKIP_BUILD !== '1') {
+      await ensureProjectBuilt(root)
+    }
+
+    const css = await findCssByMarker(projectPath, 'independent_subpackage_taro-webpack-react-tailwindcss-v4')
+    expect(css, 'full Tailwind CSS entry output should contain its own marker').toBeTruthy()
+
+    expectMiniProgramPreflight(css!)
   })
 
   it('does not emit Tailwind CSS v4 empty content init for v4 output', async () => {
@@ -100,7 +129,7 @@ describe('e2e', () => {
     expect(css).not.toContain('./issue-941-asset.svg')
   })
 
-  it('keeps NutUI css imported from app entry in page wxss', async () => {
+  it('keeps page wxss isolated from app entry preflight when styleInjector is disabled', async () => {
     const projectBase = path.resolve(__dirname, '../demo')
     const root = path.resolve(projectBase, project.name)
     const projectPath = path.resolve(projectBase, project.projectPath)
@@ -116,11 +145,7 @@ describe('e2e', () => {
 
     expect(css).toContain('.nut-icon')
     const normalizedCss = compactCss(css)
-    expect(normalizedCss).toContain('view,text,::after,::before')
-    expect(normalizedCss).toContain('box-sizing:border-box')
-    expect(normalizedCss).toContain('margin:0')
-    expect(normalizedCss).toContain('padding:0')
-    expect(normalizedCss).toContain('border:0solid')
+    expect(normalizedCss).not.toContain('view,text,::after,::before')
     expect(css).toContain('--nut-icon-height')
     expect(css).toContain('--nut-icon-width')
     expect(css).toContain('--nut-icon-line-height')

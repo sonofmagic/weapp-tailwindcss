@@ -1,11 +1,17 @@
 import path from 'node:path'
 import { postcss } from '@weapp-tailwindcss/postcss'
+import { scoreTailwindV4CssSourceFileMatch } from '@/bundlers/shared/generator-css/source-resolver/matching'
 import { hasTailwindGenerationSource } from './sfc-style-source'
-import { isSubpackageOutputFile } from './subpackages'
 
 export interface TailwindV4GenerationCssSourceEntry {
   file: string
   source: string
+}
+
+export interface TailwindV4GenerationCssSourceSelectionOptions {
+  cwd?: string | undefined
+  outputRoot?: string | undefined
+  projectRoot?: string | undefined
 }
 
 function createStableTextSignature(input: string) {
@@ -85,34 +91,35 @@ export function scoreConfiguredTailwindV4SourceForRawSource(rawSource: string | 
   return score
 }
 
-export function resolveSubpackageRootForFile(file: string | undefined, subpackageRoots: Set<string> | undefined) {
-  if (!file || !subpackageRoots) {
-    return undefined
-  }
-  return [...subpackageRoots].find(root =>
-    isSubpackageOutputFile(file, new Set([root])),
-  )
-}
-
-export function isSameSubpackageScope(
-  outputFile: string,
-  sourceFile: string | undefined,
-  subpackageRoots: Set<string> | undefined,
-) {
-  const outputRoot = resolveSubpackageRootForFile(outputFile, subpackageRoots)
-  const sourceRoot = resolveSubpackageRootForFile(sourceFile, subpackageRoots)
-  return outputRoot === sourceRoot
-}
-
 export function selectTailwindV4GenerationCssSourceForOutput<T extends TailwindV4GenerationCssSourceEntry>(
   outputFile: string,
   entries: T[],
   rawSource?: string,
-  subpackageRoots?: Set<string> | undefined,
+  options: TailwindV4GenerationCssSourceSelectionOptions = {},
 ) {
   const generationSources = entries.filter(entry => hasTailwindGenerationSource(entry.source))
   if (generationSources.length <= 1) {
     return generationSources[0]
+  }
+  const canMatchByOutputPath = Boolean(options.cwd || options.outputRoot || options.projectRoot)
+  const selectByOutputPath = (candidates: typeof generationSources) => {
+    if (!canMatchByOutputPath) {
+      return undefined
+    }
+    const scoredSources = candidates
+      .map(entry => ({
+        entry,
+        score: scoreTailwindV4CssSourceFileMatch(outputFile, entry.file, {
+          cwd: options.cwd,
+          outputRoot: options.outputRoot,
+          projectRoot: options.projectRoot,
+        }),
+      }))
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+    const bestScore = scoredSources[0]?.score
+    const bestSources = bestScore ? scoredSources.filter(item => item.score === bestScore) : []
+    return bestSources.length === 1 ? bestSources[0]?.entry : undefined
   }
   const selectByRawSourceFingerprint = (candidates: typeof generationSources) => {
     const scoredSources = candidates
@@ -130,24 +137,14 @@ export function selectTailwindV4GenerationCssSourceForOutput<T extends TailwindV
   if (rawSourceMatched) {
     return rawSourceMatched
   }
-  const scopedSources = subpackageRoots
-    ? generationSources.filter((entry) => {
-        const outputMatchesSubpackage = isSubpackageOutputFile(outputFile, subpackageRoots)
-        const sourceMatchesSubpackage = isSubpackageOutputFile(entry.file, subpackageRoots)
-        if (!outputMatchesSubpackage) {
-          return !sourceMatchesSubpackage
-        }
-        return sourceMatchesSubpackage
-          && [...subpackageRoots].some(root =>
-            isSubpackageOutputFile(outputFile, new Set([root]))
-            && isSubpackageOutputFile(entry.file, new Set([root])),
-          )
-      })
-    : generationSources
-  const explicitSources = scopedSources.filter(entry =>
+  const explicitSources = generationSources.filter(entry =>
     /@(?:config|source|plugin|custom-variant|theme|utility|variant|apply)\b/.test(entry.source),
   )
-  const candidates = explicitSources.length === 1 ? explicitSources : scopedSources
+  const candidates = explicitSources.length === 1 ? explicitSources : generationSources
+  const outputPathMatched = selectByOutputPath(candidates)
+  if (outputPathMatched) {
+    return outputPathMatched
+  }
   if (candidates.length === 1) {
     return candidates[0]
   }
