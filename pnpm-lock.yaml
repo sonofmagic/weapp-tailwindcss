@@ -1506,9 +1506,15 @@ importers:
       '@vue/cli-service':
         specifier: ~5.0.0
         version: 5.0.9(@rspack/core@2.1.1(@swc/helpers@0.5.23))(@swc/core@1.15.43(@swc/helpers@0.5.23))(@vue/compiler-sfc@3.5.39)(ejs@3.1.10)(encoding@0.1.13)(esbuild@0.28.1)(handlebars@4.7.9)(lightningcss@1.32.0)(lodash@4.18.1)(prettier@3.9.4)(react@18.2.0)(vue-template-compiler@2.7.16)(vue@2.7.16)(webpack-sources@3.5.0)
+      '@weapp-tailwindcss/postcss-calc':
+        specifier: workspace:^
+        version: link:../../packages/postcss-calc
       autoprefixer:
         specifier: catalog:autoprefixer10
         version: 10.5.2(postcss@8.5.16)
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
       postcss:
         specifier: catalog:postcss85
         version: 8.5.16
@@ -1734,6 +1740,9 @@ importers:
       '@vue/tsconfig':
         specifier: ^0.9.1
         version: 0.9.1(typescript@6.0.3)(vue@3.5.39(typescript@6.0.3))
+      cross-env:
+        specifier: catalog:crossEnv
+        version: 10.1.0
       typescript:
         specifier: catalog:typescript59
         version: 6.0.3

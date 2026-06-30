@@ -514,9 +514,6 @@ export function discoverDemoPackageNames() {
       if (dirent.name.startsWith('issue-')) {
         continue
       }
-      if (dirent.name.startsWith('style-injector')) {
-        continue
-      }
       names.push(dirent.name)
     }
   }

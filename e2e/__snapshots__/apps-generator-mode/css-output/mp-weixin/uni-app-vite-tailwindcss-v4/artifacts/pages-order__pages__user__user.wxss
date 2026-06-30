@@ -1,3 +1,4 @@
+@import '../../../app.wxss';
 view,
 text,
 ::after,

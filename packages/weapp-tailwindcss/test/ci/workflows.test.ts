@@ -136,6 +136,7 @@ describe('ci workflows', () => {
       'framework-support',
       'taro-h5-build',
       'web-css-preservation',
+      'web-hmr',
       'demo-user-workflow',
       'demo-platform-output-matrix',
     ])
@@ -145,6 +146,7 @@ describe('ci workflows', () => {
       'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
       'pnpm e2e:taro:h5-build',
       'pnpm e2e:web-css-preservation',
+      'pnpm e2e:web:hmr',
       'pnpm e2e:demo-user-workflow',
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
     ])
@@ -231,9 +233,19 @@ describe('ci workflows', () => {
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
       'linux:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:uni-app-vite-tailwindcss-v4:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:mp-weixin:default',
       'windows:22:uni-app-vite-tailwindcss-v4:default',
     ]))
-    expect(rows.every(row => row.watch_web_only === '1')).toBe(true)
+    expect(
+      rows
+        .filter(row => row.watch_case === 'uni-app-vite-tailwindcss-v4')
+        .every(row => row.watch_web_only === '1'),
+    ).toBe(true)
+    expect(rows).toContainEqual(expect.objectContaining({
+      runner_label: 'macos',
+      watch_case: 'uni-app-vite-tailwindcss-v4:mp-weixin',
+      watch_max_plugin_process_ms: '9000',
+    }))
     expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'e2e-watch').find(run => run.includes('playwright install chromium'))!,
@@ -247,6 +259,14 @@ describe('ci workflows', () => {
         && typeof withConfig?.path === 'string'
         && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
     })).toBe(true)
+  })
+
+  it('keeps cssnano demos waiting for the local postcss-calc build', () => {
+    const packageJson = readPackageJson<{
+      devDependencies?: Record<string, string>
+    }>('demo/style-injector-mpx/package.json')
+
+    expect(packageJson.devDependencies?.['@weapp-tailwindcss/postcss-calc']).toBe('workspace:^')
   })
 
   it('keeps test helper private so release jobs do not publish it', () => {

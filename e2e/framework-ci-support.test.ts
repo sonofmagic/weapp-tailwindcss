@@ -64,6 +64,20 @@ describeFrameworkCi('framework support matrix ci', () => {
     }
   })
 
+  it('keeps platform-specific demo hot-update filters selecting real platform cases', () => {
+    const cases = buildCases(path.resolve(__dirname, '..'))
+
+    expect(pickCases(cases, 'taro-vite-react-tailwindcss-v4:alipay').map(item => item.name)).toEqual([
+      'taro-vite-react-tailwindcss-v4:alipay',
+    ])
+    expect(pickCases(cases, 'taro-vite-vue3-tailwindcss-v4:tt').map(item => item.name)).toEqual([
+      'taro-vite-vue3-tailwindcss-v4:tt',
+    ])
+    expect(pickCases(cases, 'uni-app-vite-tailwindcss-v4:mp-weixin').map(item => item.name)).toEqual([
+      'uni-app-vite-tailwindcss-v4:mp-weixin',
+    ])
+  })
+
   it('keeps every demo hot-update case available in the CI hot-update filter', () => {
     for (const caseName of HOT_UPDATE_CASES_BY_TARGET.demo) {
       expect(

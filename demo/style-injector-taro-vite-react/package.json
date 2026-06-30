@@ -6,9 +6,9 @@
     "build": "pnpm run build:weapp",
     "build:weapp": "taro build --type weapp",
     "build:h5": "cross-env BROWSERSLIST_ENV=production taro build --type h5",
-    "dev": "pnpm run dev:weapp",
-    "dev:weapp": "taro build --type weapp --watch",
-    "dev:h5": "cross-env BROWSERSLIST_ENV=development taro build --type h5 --watch"
+    "dev": "cross-env WEAPP_TW_HMR_TIMING=1 pnpm run dev:weapp",
+    "dev:weapp": "cross-env WEAPP_TW_HMR_TIMING=1 taro build --type weapp --watch",
+    "dev:h5": "cross-env WEAPP_TW_HMR_TIMING=1 BROWSERSLIST_ENV=development taro build --type h5 --watch"
   },
   "dependencies": {
     "@babel/runtime": "catalog:babelRuntime7284",

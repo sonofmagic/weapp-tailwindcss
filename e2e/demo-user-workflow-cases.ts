@@ -112,9 +112,18 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
             : ['.qss'],
         assertions: [
           {
-            label: 'uni-app 小程序分包样式文件引用主样式',
-            files: [`dist/build/${platform}/sub-independent/pages/index.wxss`, `dist/build/${platform}/sub-normal/pages/index.wxss`],
-            contains: ['@import'],
+            label: 'uni-app 小程序分包样式文件生成提取样式',
+            files: platform === 'mp-alipay'
+              ? [`dist/build/${platform}/sub-independent/pages/index.acss`, `dist/build/${platform}/sub-normal/pages/index.acss`]
+              : platform === 'mp-toutiao'
+                ? [`dist/build/${platform}/sub-independent/pages/index.ttss`, `dist/build/${platform}/sub-normal/pages/index.ttss`]
+                : [`dist/build/${platform}/sub-independent/pages/index.qss`, `dist/build/${platform}/sub-normal/pages/index.qss`],
+            contains: [
+              'view,text,::after,::before',
+              'bg-independent-subpackage-marker',
+              'bg-normal-subpackage-marker',
+            ],
+            notContains: ['@import', rawTailwindDirectiveRE],
           },
           {
             label: 'uni-app 小程序主包和分包样式都被生成',
