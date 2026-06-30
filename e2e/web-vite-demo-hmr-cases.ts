@@ -10,6 +10,7 @@ export interface WebViteHmrCase {
   classFrom: string
   classTo: string
   markerAttr: string
+  expectedViteHmrPath?: string
 }
 
 export const webViteHmrCases: WebViteHmrCase[] = [
@@ -34,6 +35,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
     classFrom: '<h1 class="m-0 text-[32px] leading-[38px] font-semibold">',
     classTo: '<h1 data-web-vite-hmr="vue-v4" class="m-0 text-[red] leading-[38px] font-semibold">',
     markerAttr: 'vue-v4',
+    expectedViteHmrPath: '/src/App.vue',
   },
   {
     name: 'web react rsbuild Tailwind v4',

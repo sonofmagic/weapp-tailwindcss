@@ -12,6 +12,17 @@ import { afterEach, describe, it } from 'vitest'
 import { resolveChromeExecutable } from './hbuilderx-local/process'
 import { webViteHmrCases } from './web-vite-demo-hmr-cases'
 
+interface ViteHmrUpdate {
+  acceptedPath?: string
+  path?: string
+  type?: string
+}
+
+interface ViteHmrMessage {
+  type?: string
+  updates?: ViteHmrUpdate[]
+}
+
 const repoRoot = path.resolve(__dirname, '..')
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const serverTimeoutMs = Number(process.env['E2E_WEB_VITE_HMR_TIMEOUT_MS'] ?? 120_000)
@@ -151,18 +162,21 @@ async function waitForReadyUrl(item: WebViteHmrCase, child: ChildProcess, logs: 
   throw new Error(`等待 Web Vite dev server 超时：${lastError instanceof Error ? lastError.message : String(lastError)}\n${logs.join('')}`)
 }
 
-async function mutateSource(item: WebViteHmrCase, sourceFile: string) {
-  const original = await fs.readFile(sourceFile, 'utf8')
-  const next = original
-    .replace(item.classFrom, item.classTo)
-    .replace(item.titleFrom, item.titleTo)
-  if (next === original) {
+type SourceMutationKind = 'all' | 'class' | 'title'
+
+async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: SourceMutationKind = 'all') {
+  const current = await fs.readFile(sourceFile, 'utf8')
+  let next = current
+  if (kind === 'all' || kind === 'class') {
+    next = next.replace(item.classFrom, item.classTo)
+  }
+  if (kind === 'all' || kind === 'title') {
+    next = next.replace(item.titleFrom, item.titleTo)
+  }
+  if (next === current) {
     throw new Error(`${item.name} Web HMR 源码替换没有产生变化`)
   }
   await fs.writeFile(sourceFile, next, 'utf8')
-  restoreSource = async () => {
-    await fs.writeFile(sourceFile, original, 'utf8')
-  }
 }
 
 async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: string) {
@@ -223,6 +237,94 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
   throw new Error(`${item.name} Web HMR DOM 未更新：${lastError}\nbody=${body}`)
 }
 
+async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
+  let lastError = ''
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    try {
+      const actual = await page.locator('h1').textContent({ timeout: 2_000 })
+      if (actual?.trim() === item.titleTo) {
+        return
+      }
+      lastError = `h1=${actual}`
+    }
+    catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+    await wait(pollIntervalMs)
+  }
+
+  const body = await page.locator('body').textContent().catch(error => String(error))
+  throw new Error(`${item.name} Web HMR 文本未更新：${lastError}\nbody=${body}`)
+}
+
+async function waitForClassHmr(page: Page, item: WebViteHmrCase) {
+  let lastError = ''
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    try {
+      const actual = await page.locator('h1').evaluate((element) => {
+        const style = window.getComputedStyle(element)
+        return {
+          color: style.color.replace(/\s+/g, ' '),
+          marker: element.getAttribute('data-web-vite-hmr'),
+        }
+      })
+      const styleMatched = item.styleRequired === false || actual.color === 'rgb(255, 0, 0)'
+      if (actual.marker === item.markerAttr && styleMatched) {
+        return
+      }
+      lastError = JSON.stringify(actual)
+    }
+    catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+    await wait(pollIntervalMs)
+  }
+
+  const body = await page.locator('body').textContent().catch(error => String(error))
+  throw new Error(`${item.name} Web HMR class 未更新：${lastError}\nbody=${body}`)
+}
+
+function collectViteHmrMessages(page: Page) {
+  const messages: ViteHmrMessage[] = []
+  page.on('websocket', (socket) => {
+    socket.on('framereceived', (event) => {
+      const payload = event.payload.toString()
+      if (!payload.startsWith('{')) {
+        return
+      }
+      try {
+        messages.push(JSON.parse(payload) as ViteHmrMessage)
+      }
+      catch {}
+    })
+  })
+  return messages
+}
+
+function expectViteSourceHmrUpdate(item: WebViteHmrCase, messages: ViteHmrMessage[], fromIndex = 0) {
+  if (!item.expectedViteHmrPath) {
+    return
+  }
+  const updates = messages.slice(fromIndex)
+    .filter(message => message.type === 'update')
+    .flatMap(message => message.updates ?? [])
+  const sourceUpdates = updates.filter((update) => {
+    return update.type === 'js-update'
+      && (
+        update.path === item.expectedViteHmrPath
+        || update.acceptedPath === item.expectedViteHmrPath
+      )
+  })
+  if (sourceUpdates.length > 0) {
+    return
+  }
+  throw new Error(`${item.name} Web HMR 未收到源文件 js-update：${JSON.stringify(updates)}`)
+}
+
 async function cleanupWithTimeout(name: string, task: () => Promise<void> | void, timeoutMs = 5_000) {
   let timeout: NodeJS.Timeout | undefined
   try {
@@ -276,11 +378,29 @@ describe('demo/web source HMR', () => {
       headless: true,
     })
     const page = await browser.newPage()
+    const hmrMessages = collectViteHmrMessages(page)
+    const original = await fs.readFile(sourceFile, 'utf8')
+    restoreSource = async () => {
+      await fs.writeFile(sourceFile, original, 'utf8')
+    }
     await page.goto(baseUrl, {
       waitUntil: 'domcontentloaded',
       timeout: Math.min(serverTimeoutMs, 60_000),
     })
     await waitForInitialRender(page, item, baseUrl)
+
+    if (item.expectedViteHmrPath) {
+      const titleMessageStart = hmrMessages.length
+      await mutateSource(item, sourceFile, 'title')
+      await waitForTitleHmr(page, item)
+      expectViteSourceHmrUpdate(item, hmrMessages, titleMessageStart)
+
+      const classMessageStart = hmrMessages.length
+      await mutateSource(item, sourceFile, 'class')
+      await waitForClassHmr(page, item)
+      expectViteSourceHmrUpdate(item, hmrMessages, classMessageStart)
+      return
+    }
 
     await mutateSource(item, sourceFile)
     await waitForDomHmr(page, item)

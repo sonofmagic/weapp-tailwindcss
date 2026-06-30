@@ -64,7 +64,8 @@ describe('demo/web vite matrix', () => {
     ])
 
     expect(sources[0]).toContain('@import "tailwindcss/theme.css" layer(theme);')
-    expect(sources[1]).toContain('@import "tailwindcss/theme.css" layer(theme);')
+    expect(sources[1]).toContain('@import "tailwindcss";')
+    expect(sources[1]).toContain('@source "./**/*.{vue,ts}";')
   })
 
   it('keeps preflight disabled for the web demo CSS entries', async () => {

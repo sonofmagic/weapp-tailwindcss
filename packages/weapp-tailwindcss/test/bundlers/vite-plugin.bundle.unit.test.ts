@@ -1151,7 +1151,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(createdSources[0]?.css).not.toContain('../../../tailwind.config.js')
   }, TEST_TIMEOUT_MS)
 
-  it('returns recorded Tailwind root css modules during vue-only hot updates', async () => {
+  it('preserves Vite vue hmr result while supplementing Tailwind root css updates for web target', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-root-css-'))
     createdDirs.push(root)
     const pageFile = path.join(root, 'src/pages/index/index.vue')
@@ -1197,6 +1197,9 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const plugins = WeappTailwindcss({
       generator: {
         target: 'web',
+        webCompat: {
+          preset: 'legacy-web',
+        },
       },
     })
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
@@ -1237,6 +1240,114 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const wsSend = vi.fn()
     const handleHotUpdate = sourcePlugin.handleHotUpdate as any
     const result = await handleHotUpdate.call(sourcePlugin, {
+      file: pageFile,
+      modules: [vueModule],
+      timestamp: 123456,
+      server: {
+        ws: {
+          send: wsSend,
+        },
+        moduleGraph: {
+          getModuleById: vi.fn(id => id === styleId ? cssModule : undefined),
+          getModulesByFile: vi.fn(() => undefined),
+          invalidateModule,
+        },
+      },
+    } as HmrContext)
+
+    expect(result).toBeUndefined()
+    expect(invalidateModule).toHaveBeenCalledWith(cssModule)
+    await Promise.resolve()
+    expect(wsSend).toHaveBeenCalledWith({
+      type: 'update',
+      updates: [
+        {
+          acceptedPath: styleId,
+          explicitImportRequired: false,
+          isWithinCircularImport: false,
+          path: styleId,
+          timestamp: 123456,
+          type: 'js-update',
+        },
+      ],
+    })
+  }, TEST_TIMEOUT_MS)
+
+  it('keeps returning recorded Tailwind root css modules during non-web vue source hot updates', async () => {
+    const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-root-css-non-web-'))
+    createdDirs.push(root)
+    const pageFile = path.join(root, 'src/pages/index/index.vue')
+    const styleId = '/src/App.vue?vue&type=style&index=0&lang.scss&direct'
+    const generatedCss = '.bg-\\[\\#134543\\]{background-color:#134543}'
+    vi.doMock('@/generator', async (importOriginal) => {
+      const actual = await importOriginal<typeof import('@/generator')>()
+      return {
+        ...actual,
+        createWeappTailwindcssGenerator: vi.fn(() => ({
+          generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+            css: generatedCss,
+            rawCss: generatedCss,
+            target: 'weapp',
+            classSet: new Set(options.candidates),
+            dependencies: [],
+            sources: [],
+            root: null,
+            version: 4,
+          })),
+          validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+        })),
+        normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      }
+    })
+
+    setCurrentContext(createContext({
+      styleHandler: vi.fn(css => css),
+      tailwindRuntime: {
+        getClassSet: vi.fn(async () => new Set(['bg-[#134543]'])),
+        getClassSetSync: vi.fn(() => new Set(['bg-[#134543]'])),
+        majorVersion: 4,
+        extract: vi.fn(async () => ({ classSet: new Set(['bg-[#134543]']) })),
+      },
+    }))
+
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()
+    const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+    const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+    const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+    expect(sourcePlugin).toBeTruthy()
+    expect(cssHmrPlugin).toBeTruthy()
+
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root,
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as ResolvedConfig)
+
+    await getTransformHandler(cssHmrPlugin)?.call(
+      cssHmrPlugin,
+      [
+        'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+        `const __vite__id = ${JSON.stringify(styleId)}`,
+        'const __vite__css = "@tailwind utilities;"',
+        '__vite__updateStyle(__vite__id, __vite__css)',
+      ].join('\n'),
+      styleId,
+    )
+
+    const vueModule = {
+      id: pageFile,
+      isSelfAccepting: true,
+      url: '/src/pages/index/index.vue',
+    } as ModuleNode
+    const cssModule = {
+      id: styleId,
+      url: styleId,
+    } as ModuleNode
+    const invalidateModule = vi.fn()
+    const wsSend = vi.fn()
+    const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
       file: pageFile,
       modules: [vueModule],
       timestamp: 123456,
@@ -1616,7 +1727,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     expect(rollbackWxml).not.toContain(replaceWxml('bg-[#f40909]'))
   }, TEST_TIMEOUT_MS)
 
-  it('reloads uni vue source hot updates that only produce css hmr updates', async () => {
+  it('reloads uni mini-program vue source hot updates that only produce css hmr updates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-empty-modules-'))
     createdDirs.push(root)
     const pageFile = path.join(root, 'src/pages/index/index.vue')
@@ -1629,7 +1740,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
           generate: vi.fn(async () => ({
             css: '.text-\\[\\#00ff00\\]{color:#00ff00}',
             rawCss: '.text-\\[\\#00ff00\\]{color:#00ff00}',
-            target: 'web',
+            target: 'weapp',
             classSet: new Set(['text-[#00ff00]']),
             dependencies: [],
             sources: [],
@@ -1644,7 +1755,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
 
     setCurrentContext(createContext({
       generator: {
-        target: 'web',
+        target: 'weapp',
       },
       tailwindRuntime: {
         getClassSet: vi.fn(async () => new Set(['text-[#00ff00]'])),
@@ -1657,7 +1768,7 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     const WeappTailwindcss = await loadWeappTailwindcssPlugin()
     const plugins = WeappTailwindcss({
       generator: {
-        target: 'web',
+        target: 'weapp',
       },
     })
     const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
