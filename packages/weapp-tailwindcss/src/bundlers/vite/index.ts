@@ -1026,6 +1026,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           if (
             isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
+            && !generatorBranch.isWeb
             && (
               (!hasSelfAcceptingNonStyleHotModule(ctx.modules) && cssModules.length === 0)
               || (cssModules.length > 0 && isUniViteProject())
@@ -1035,6 +1036,9 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             return []
           }
           sendSupplementalCssHotUpdates(ctx, cssModules)
+          if (generatorBranch.isWeb && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
+            return undefined
+          }
           return cssModules.length > 0
             ? [...ctx.modules, ...cssModules]
             : undefined

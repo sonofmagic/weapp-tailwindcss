@@ -192,8 +192,9 @@ export function uniAppSubpackageMiniCase(options: {
   const outputDir = `dist/build/${options.platform}`
   const appStyleFile = miniStyleFileByPlatform[options.platform]
   const extension = appStyleFile.slice(appStyleFile.lastIndexOf('.'))
+  const entryExtension = extension
   const singleEntry = options.mode === 'single'
-  const mainStyleFile = singleEntry ? `main.single${extension}` : `main${extension}`
+  const mainStyleFile = singleEntry ? appStyleFile : `main${entryExtension}`
   return {
     name: `${options.project} ${options.platform} ${options.mode}`,
     framework: 'uni-app',
@@ -208,17 +209,15 @@ export function uniAppSubpackageMiniCase(options: {
       `${outputDir}/${appStyleFile}`,
       `${outputDir}/${mainStyleFile}`,
       `${outputDir}/${miniTemplateFileByPlatform[options.platform]}`,
-      `${outputDir}/sub-normal/pages/index${extension}`,
-      `${outputDir}/sub-independent/pages/index${extension}`,
       ...(!singleEntry
         ? [
-            `${outputDir}/sub-normal/index${extension}`,
-            `${outputDir}/sub-independent/index${extension}`,
+            `${outputDir}/sub-normal/pages/index${entryExtension}`,
+            `${outputDir}/sub-independent/pages/index${entryExtension}`,
           ]
         : []),
     ],
     styleFiles: [outputDir],
-    styleFileExtensions: [extension],
+    styleFileExtensions: [extension, entryExtension],
     textFiles: [outputDir],
     styleContains: singleEntry
       ? [cssMarker(options.markers.main), cssMarker(options.markers.normal), cssMarker(options.markers.independent)]
@@ -226,10 +225,8 @@ export function uniAppSubpackageMiniCase(options: {
     textContains: [options.markers.main, options.markers.normal, options.markers.independent],
     fileAssertions: createSubpackageCssAssertions({
       appStyleFile: `${outputDir}/${mainStyleFile}`,
-      normalStyleFile: `${outputDir}/sub-normal/pages/index${extension}`,
-      independentStyleFile: `${outputDir}/sub-independent/pages/index${extension}`,
-      normalEntryStyleFile: singleEntry ? undefined : `${outputDir}/sub-normal/index${extension}`,
-      independentEntryStyleFile: singleEntry ? undefined : `${outputDir}/sub-independent/index${extension}`,
+      normalStyleFile: `${outputDir}/sub-normal/pages/index${entryExtension}`,
+      independentStyleFile: `${outputDir}/sub-independent/pages/index${entryExtension}`,
       mainMarker: options.markers.main,
       normalMarker: options.markers.normal,
       independentMarker: options.markers.independent,
@@ -369,9 +366,7 @@ export function mpxCase(options: {
       ...(isV4
         ? [
             'dist/wx/sub-normal/pages/index.wxss',
-            'dist/wx/sub-normal/index.wxss',
             'dist/wx/sub-independent/pages/index.wxss',
-            'dist/wx/sub-independent/index.wxss',
           ]
         : []),
     ],
@@ -406,21 +401,21 @@ export function mpxCase(options: {
       ? [
           {
             file: 'dist/wx/sub-normal/pages/index.wxss',
-            contains: [importPathTo('index.wxss')],
+            contains: [importPathTo('.wxss')],
             notContains: [normalMarker, independentMarker, rawTailwindDirectiveRE],
           },
           {
-            file: 'dist/wx/sub-normal/index.wxss',
+            file: 'dist/wx/sub-normal/styles',
             contains: [normalMarker],
             notContains: [independentMarker, rawTailwindDirectiveRE],
           },
           {
             file: 'dist/wx/sub-independent/pages/index.wxss',
-            contains: [importPathTo('index.wxss')],
+            contains: [importPathTo('.wxss')],
             notContains: [normalMarker, independentMarker, rawTailwindDirectiveRE],
           },
           {
-            file: 'dist/wx/sub-independent/index.wxss',
+            file: 'dist/wx/sub-independent/styles',
             contains: [independentMarker],
             notContains: [normalMarker, rawTailwindDirectiveRE],
           },
@@ -495,7 +490,7 @@ export function taroSubpackageMiniCase(options: {
   }
 }): BuildOutputCase {
   const output = taroMiniOutputByPlatform[options.platform]
-  const extension = '.wxss'
+  const extension = options.platform === 'alipay' ? '.acss' : '.ttss'
   const singleEntry = options.mode === 'single'
   return {
     name: `${options.project} ${options.platform} ${options.mode}`,
@@ -515,8 +510,6 @@ export function taroSubpackageMiniCase(options: {
         ? [
             `dist/sub-normal/pages/index${extension}`,
             `dist/sub-independent/pages/index${extension}`,
-            `dist/sub-normal/index${extension}`,
-            `dist/sub-independent/index${extension}`,
           ]
         : []),
     ],
@@ -529,8 +522,8 @@ export function taroSubpackageMiniCase(options: {
       appStyleFile: output.appStyle,
       normalStyleFile: `dist/sub-normal/pages/index${extension}`,
       independentStyleFile: `dist/sub-independent/pages/index${extension}`,
-      normalEntryStyleFile: singleEntry ? undefined : `dist/sub-normal/index${extension}`,
-      independentEntryStyleFile: singleEntry ? undefined : `dist/sub-independent/index${extension}`,
+      normalEntryStyleFile: undefined,
+      independentEntryStyleFile: undefined,
       mainMarker: options.markers.main,
       normalMarker: options.markers.normal,
       independentMarker: options.markers.independent,

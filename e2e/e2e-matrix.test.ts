@@ -210,13 +210,13 @@ describe('e2e matrix', () => {
     for (const entry of DEMO_COVERAGE_MATRIX) {
       const source = readDemoSource(entry)
       for (const token of DEMO_THEME_MODE_REQUIRED_TOKENS) {
-        if (entry.name.startsWith('issue-')) {
+        if (entry.name.startsWith('issue-') || entry.name.startsWith('style-injector-')) {
           continue
         }
         expect(source, `${entry.name} should include ${token}`).toContain(token)
       }
       const manualDarkTokens = DEMO_MANUAL_DARK_TOKENS[entry.tailwindcss]
-      if (entry.name.startsWith('issue-')) {
+      if (entry.name.startsWith('issue-') || entry.name.startsWith('style-injector-')) {
         continue
       }
       expect(
@@ -276,6 +276,7 @@ describe('e2e matrix', () => {
     const demoNames = DEMO_COVERAGE_MATRIX
       .filter(item => !item.name.startsWith('web/'))
       .filter(item => !item.name.startsWith('subpackage-'))
+      .filter(item => item.framework !== 'style-injector')
       .map(item => item.name)
       .sort()
     const ideCaseNames = getFrameworkIdeCases().map(item => item.name).sort()
@@ -348,6 +349,7 @@ describe('e2e matrix', () => {
     const expectedWeappNames = DEMO_COVERAGE_MATRIX
       .filter(item => !item.name.startsWith('web/'))
       .filter(item => !item.name.startsWith('subpackage-'))
+      .filter(item => item.framework !== 'style-injector')
       .map(item => item.name)
       .sort()
     const expectedH5Names = DEMO_COVERAGE_MATRIX

@@ -5,6 +5,7 @@ import { HOT_UPDATE_CI_CASES } from './e2eMatrix'
 export type DemoFramework
   = | 'gulp'
     | 'mpx'
+    | 'style-injector'
     | 'taro-react'
     | 'taro-vue3'
     | 'uni-app'
@@ -14,6 +15,7 @@ export type DemoFramework
     | 'web-rsbuild-vue'
     | 'web-vite-react'
     | 'web-vite-vue'
+    | 'web-vite-nuxt'
     | 'web-webpack-react'
     | 'web-webpack-vue'
 
@@ -376,6 +378,81 @@ function webPlatforms(name: string): DemoPlatformCoverage[] {
   ]
 }
 
+function webOnlyPlatforms(name: string): DemoPlatformCoverage[] {
+  const hmrName = name
+    .replace('web/', 'web ')
+    .replaceAll('-', ' ')
+    .replace('tailwindcss v', 'Tailwind v')
+  return [
+    automated('web', {
+      buildScript: 'build',
+      devScript: 'dev',
+      evidence: 'demo/web browser source HMR',
+      command: `pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/web-vite-demo-hmr.test.ts -t "${hmrName}"`,
+    }),
+  ]
+}
+
+function styleInjectorMpxPlatforms(name: string): DemoPlatformCoverage[] {
+  return [
+    local('wx', {
+      buildScript: 'build',
+      devScript: 'dev',
+      evidence: 'style-injector multiplatform build output',
+      command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} wx" pnpm e2e:multiplatform-build`,
+      reason: 'style-injector demo 验证样式注入器产物，不属于 Tailwind source HMR 长链路。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
+    }),
+  ]
+}
+
+function styleInjectorTaroPlatforms(name: string): DemoPlatformCoverage[] {
+  return [
+    local('weapp', {
+      buildScript: 'build:weapp',
+      devScript: 'dev:weapp',
+      evidence: 'style-injector multiplatform build output',
+      command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} weapp" pnpm e2e:multiplatform-build`,
+      reason: 'style-injector demo 验证样式注入器产物，不属于 Tailwind source HMR 长链路。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
+    }),
+    local('h5', {
+      buildScript: 'build:h5',
+      devScript: 'dev:h5',
+      evidence: 'style-injector H5 build output',
+      command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} h5" pnpm e2e:multiplatform-build`,
+      reason: 'style-injector H5 demo 验证样式注入器产物，不属于 Tailwind source HMR 长链路。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
+    }),
+  ]
+}
+
+function styleInjectorUniAppPlatforms(name: string): DemoPlatformCoverage[] {
+  return [
+    local('mp-weixin', {
+      buildScript: 'build:mp-weixin',
+      devScript: 'dev:mp-weixin',
+      evidence: 'style-injector multiplatform build output',
+      command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} mp-weixin" pnpm e2e:multiplatform-build`,
+      reason: 'style-injector uni-app demo 验证样式注入器产物，不属于 Tailwind source HMR 长链路。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
+    }),
+    local('h5', {
+      buildScript: 'build:h5',
+      devScript: 'dev:h5',
+      evidence: 'style-injector H5 build output',
+      command: `E2E_MULTIPLATFORM_BUILD_CASE="${name} h5" pnpm e2e:multiplatform-build`,
+      reason: 'style-injector uni-app H5 demo 验证样式注入器产物，不属于 Tailwind source HMR 长链路。',
+      staticCoverage: 'automated',
+      hmrCoverage: 'exempt',
+    }),
+  ]
+}
+
 export const DEMO_COVERAGE_MATRIX = [
   entry({ name: 'gulp-tailwindcss-v4', packageJson: pkg('gulp-tailwindcss-v4'), framework: 'gulp', builder: 'gulp', tailwindcss: 'v4', sourceShape: 'native', sfcBlocks: [], hbuilderxLocal: false, platforms: gulpPlatforms('gulp-tailwindcss-v4') }),
   entry({ name: 'mpx-tailwindcss-v4', packageJson: pkg('mpx-tailwindcss-v4'), framework: 'mpx', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'mpx-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: mpxPlatforms('mpx-tailwindcss-v4') }),
@@ -391,10 +468,16 @@ export const DEMO_COVERAGE_MATRIX = [
   entry({ name: 'weapp-vite-tailwindcss-v4', packageJson: pkg('weapp-vite-tailwindcss-v4'), framework: 'weapp-vite', builder: 'vite', tailwindcss: 'v4', sourceShape: 'native', sfcBlocks: [], hbuilderxLocal: false, platforms: weappVitePlatforms('weapp-vite-tailwindcss-v4') }),
   entry({ name: 'web/react-vite-tailwindcss-v4', packageJson: pkg('web/react-vite-tailwindcss-v4'), framework: 'web-vite-react', builder: 'vite', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-vite-tailwindcss-v4') }),
   entry({ name: 'web/vue-vite-tailwindcss-v4', packageJson: pkg('web/vue-vite-tailwindcss-v4'), framework: 'web-vite-vue', builder: 'vite', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-vite-tailwindcss-v4') }),
+  entry({ name: 'web/vue-vite7-tailwindcss-v4', packageJson: pkg('web/vue-vite7-tailwindcss-v4'), framework: 'web-vite-vue', builder: 'vite7', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webOnlyPlatforms('web/vue-vite7-tailwindcss-v4') }),
+  entry({ name: 'web/nuxt-vite-tailwindcss-v4', packageJson: pkg('web/nuxt-vite-tailwindcss-v4'), framework: 'web-vite-nuxt', builder: 'nuxt-vite', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webOnlyPlatforms('web/nuxt-vite-tailwindcss-v4') }),
   entry({ name: 'web/react-rsbuild-tailwindcss-v4', packageJson: pkg('web/react-rsbuild-tailwindcss-v4'), framework: 'web-rsbuild-react', builder: 'rsbuild', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-rsbuild-tailwindcss-v4') }),
   entry({ name: 'web/vue-rsbuild-tailwindcss-v4', packageJson: pkg('web/vue-rsbuild-tailwindcss-v4'), framework: 'web-rsbuild-vue', builder: 'rsbuild', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-rsbuild-tailwindcss-v4') }),
   entry({ name: 'web/react-webpack-tailwindcss-v4', packageJson: pkg('web/react-webpack-tailwindcss-v4'), framework: 'web-webpack-react', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'web-tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: webPlatforms('web/react-webpack-tailwindcss-v4') }),
   entry({ name: 'web/vue-webpack-tailwindcss-v4', packageJson: pkg('web/vue-webpack-tailwindcss-v4'), framework: 'web-webpack-vue', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'web-vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: webPlatforms('web/vue-webpack-tailwindcss-v4') }),
+  entry({ name: 'style-injector-mpx', packageJson: pkg('style-injector-mpx'), framework: 'style-injector', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'mpx-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: styleInjectorMpxPlatforms('style-injector-mpx') }),
+  entry({ name: 'style-injector-taro-vite-react', packageJson: pkg('style-injector-taro-vite-react'), framework: 'style-injector', builder: 'vite', tailwindcss: 'v4', sourceShape: 'tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: styleInjectorTaroPlatforms('style-injector-taro-vite-react') }),
+  entry({ name: 'style-injector-taro-webpack-react', packageJson: pkg('style-injector-taro-webpack-react'), framework: 'style-injector', builder: 'webpack5', tailwindcss: 'v4', sourceShape: 'tsx', sfcBlocks: [], hbuilderxLocal: false, platforms: styleInjectorTaroPlatforms('style-injector-taro-webpack-react') }),
+  entry({ name: 'style-injector-uni-app', packageJson: pkg('style-injector-uni-app'), framework: 'style-injector', builder: 'vite', tailwindcss: 'v4', sourceShape: 'vue-sfc', sfcBlocks: ['template', 'script', 'style'], hbuilderxLocal: false, platforms: styleInjectorUniAppPlatforms('style-injector-uni-app') }),
 ] satisfies DemoCoverageEntry[]
 
 export function getAutomatedHotUpdateDemoNames() {
@@ -429,9 +512,6 @@ export function discoverDemoPackageNames() {
     const rootPkg = path.join(demoRoot, dirent.name, 'package.json')
     if (fs.existsSync(rootPkg)) {
       if (dirent.name.startsWith('issue-')) {
-        continue
-      }
-      if (dirent.name.startsWith('style-injector')) {
         continue
       }
       names.push(dirent.name)

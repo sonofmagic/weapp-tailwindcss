@@ -1,5 +1,5 @@
-import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from 'weapp-style-injector/webpack'
 import type { Plugin } from 'vite'
+import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from 'weapp-style-injector/webpack'
 import type { WeappTailwindcssStyleInjectorUserOptions } from './options'
 import type { AppType } from '@/types/shared'
 import { weappStyleInjector } from 'weapp-style-injector/vite'

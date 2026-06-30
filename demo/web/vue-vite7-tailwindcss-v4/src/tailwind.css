@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@source "./**/*.{vue,ts,js}";
+@source not "../dist/**";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}

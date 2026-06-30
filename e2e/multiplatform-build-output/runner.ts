@@ -132,7 +132,7 @@ export async function verifyBuildOutputCase(item: BuildOutputCase) {
   for (const assertion of item.fileAssertions ?? []) {
     const file = path.resolve(projectRoot, assertion.file)
     expect(await pathExists(file), `${item.name} should emit ${assertion.file}`).toBe(true)
-    const content = await fs.readFile(file, 'utf8')
+    const content = (await readMaybeDirectory(projectRoot, assertion.file)).text
     for (const needle of assertion.contains ?? []) {
       expectNeedle(content, needle, `${item.name} ${assertion.file} should contain ${String(needle)}`)
     }

@@ -37,7 +37,6 @@ const uniV4MiniStyle = [
   '.bg-_b_h0000ff_B',
   '.i-mdi-home',
   '.layer-card-v4',
-  '.bg-independent-subpackage-marker',
   '.before_ccontent',
 ]
 const uniV4Template = [
@@ -51,13 +50,15 @@ const taroV4Style = [
   '.text-_b_hc31d6b_B',
   '.bg-_b_h123456_B',
   '.tw-page-style-watch-anchor',
-  '.bg-independent-subpackage-marker',
-  '.before_ccontent',
 ]
 const taroV4Template = [
   'h-_b300px_B',
   'text-_b_hc31d6b_B',
   'bg-_b_h123456_B',
+]
+const taroV4SubpackageTemplate = [
+  'bg-independent-subpackage-marker',
+  'before_ccontent',
 ]
 const mpxV4Style = [
   '.bg-_b_h123456_B',
@@ -111,6 +112,20 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
             : ['.qss'],
         assertions: [
           {
+            label: 'uni-app 小程序分包样式文件生成提取样式',
+            files: platform === 'mp-alipay'
+              ? [`dist/build/${platform}/sub-independent/pages/index.acss`, `dist/build/${platform}/sub-normal/pages/index.acss`]
+              : platform === 'mp-toutiao'
+                ? [`dist/build/${platform}/sub-independent/pages/index.ttss`, `dist/build/${platform}/sub-normal/pages/index.ttss`]
+                : [`dist/build/${platform}/sub-independent/pages/index.qss`, `dist/build/${platform}/sub-normal/pages/index.qss`],
+            contains: [
+              'view,text,::after,::before',
+              'bg-independent-subpackage-marker',
+              'bg-normal-subpackage-marker',
+            ],
+            notContains: ['@import', rawTailwindDirectiveRE],
+          },
+          {
             label: 'uni-app 小程序主包和分包样式都被生成',
             files: [`dist/build/${platform}`],
             contains: uniV4MiniStyle,
@@ -149,6 +164,11 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
           files: ['dist/pages/index/index.js'],
           contains: taroV4Template,
         },
+        {
+          label: 'Taro React 支付宝小程序分包脚本里保留转义 className',
+          files: ['dist/sub-independent/pages/index.js'],
+          contains: taroV4SubpackageTemplate,
+        },
       ],
     },
   ),
@@ -175,6 +195,11 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
           label: 'Taro React 头条小程序脚本里保留转义 className',
           files: ['dist/pages/index/index.js'],
           contains: taroV4Template,
+        },
+        {
+          label: 'Taro React 头条小程序分包脚本里保留转义 className',
+          files: ['dist/sub-independent/pages/index.js'],
+          contains: taroV4SubpackageTemplate,
         },
       ],
     },

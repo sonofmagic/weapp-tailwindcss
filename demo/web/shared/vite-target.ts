@@ -17,6 +17,11 @@ export function createWebDemoWeappTailwindcssPlugins(): PluginOption[] {
     rem2rpx: false,
     generator: {
       target,
+      webCompat: target === 'web'
+        ? {
+            preset: 'legacy-web',
+          }
+        : undefined,
     },
   }) ?? []
 }

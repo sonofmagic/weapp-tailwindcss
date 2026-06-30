@@ -42,6 +42,23 @@ function readDemoPackageJsons() {
     }))
 }
 
+function listFiles(root: string): string[] {
+  const files: string[] = []
+  for (const entry of fs.readdirSync(root, { withFileTypes: true })) {
+    if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === 'unpackage') {
+      continue
+    }
+    const file = path.join(root, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...listFiles(file))
+    }
+    else {
+      files.push(file)
+    }
+  }
+  return files
+}
+
 function stepRuns(workflow: Record<string, any>, jobName: string) {
   const steps: Array<Record<string, unknown>> = workflow.jobs[jobName].steps
   return steps
@@ -136,6 +153,7 @@ describe('ci workflows', () => {
       'framework-support',
       'taro-h5-build',
       'web-css-preservation',
+      'web-hmr',
       'demo-user-workflow',
       'demo-platform-output-matrix',
     ])
@@ -145,6 +163,7 @@ describe('ci workflows', () => {
       'pnpm exec cross-env E2E_FRAMEWORK_SUPPORT=1 vitest run -c ./e2e/vitest.e2e.config.ts e2e/framework-ci-support.test.ts',
       'pnpm e2e:taro:h5-build',
       'pnpm e2e:web-css-preservation',
+      'pnpm e2e:web:hmr',
       'pnpm e2e:demo-user-workflow',
       'pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts',
     ])
@@ -231,9 +250,20 @@ describe('ci workflows', () => {
     expect(matrixCases(rows)).toEqual(expect.arrayContaining([
       'linux:22:uni-app-vite-tailwindcss-v4:default',
       'macos:22:uni-app-vite-tailwindcss-v4:default',
+      'macos:22:uni-app-vite-tailwindcss-v4:mp-weixin:default',
       'windows:22:uni-app-vite-tailwindcss-v4:default',
     ]))
-    expect(rows.every(row => row.watch_web_only === '1')).toBe(true)
+    expect(
+      rows
+        .filter(row => row.watch_case === 'uni-app-vite-tailwindcss-v4')
+        .every(row => row.watch_web_only === '1'),
+    ).toBe(true)
+    expect(rows).toContainEqual(expect.objectContaining({
+      runner_label: 'macos',
+      watch_case: 'uni-app-vite-tailwindcss-v4:mp-weixin',
+      artifact_case: 'uni-app-vite-tailwindcss-v4-mp-weixin',
+      watch_max_plugin_process_ms: '9000',
+    }))
     expect(stepRuns(workflow, 'e2e-watch')).toContain('pnpm e2e:watch')
     expectPlaywrightInstallRetry(
       stepRuns(workflow, 'e2e-watch').find(run => run.includes('playwright install chromium'))!,
@@ -241,12 +271,48 @@ describe('ci workflows', () => {
     )
     expect(runStep.env.E2E_WATCH_WEB_ONLY).toBe("${{ matrix.watch_web_only || '0' }}")
     expect(runStep.env.E2E_WATCH_MAX_PLUGIN_PROCESS_MS).toBe("${{ matrix.watch_max_plugin_process_ms || '6000' }}")
+    const uploadSteps = job.steps.filter((step: Record<string, unknown>) => {
+      return step.uses === 'actions/upload-artifact@v4'
+    })
+    expect(uploadSteps).toHaveLength(2)
+    for (const step of uploadSteps) {
+      const artifactName = String((step.with as Record<string, unknown>).name)
+      expect(artifactName).toContain('${{ matrix.artifact_case || matrix.watch_case }}')
+      expect(artifactName).not.toContain('${{ matrix.watch_case }}')
+    }
     expect(job.steps.some((step: Record<string, unknown>) => {
       const withConfig = step.with as Record<string, unknown> | undefined
       return step.uses === 'actions/upload-artifact@v4'
         && typeof withConfig?.path === 'string'
         && withConfig.path.includes('e2e/benchmark/e2e-watch-hmr/hmr-speed-report.md')
     })).toBe(true)
+  })
+
+  it('keeps cssnano demos waiting for the local postcss-calc build', () => {
+    const packageJson = readPackageJson<{
+      devDependencies?: Record<string, string>
+    }>('demo/style-injector-mpx/package.json')
+
+    expect(packageJson.devDependencies?.['@weapp-tailwindcss/postcss-calc']).toBe('workspace:^')
+  })
+
+  it('keeps style injector enabled only in dedicated demo projects', () => {
+    const demoRoot = path.join(repoRoot, 'demo')
+    const offenders = listFiles(demoRoot)
+      .filter(file => /\.(?:c?[jt]sx?|mjs|mts)$/.test(file))
+      .filter((file) => {
+        const project = path.relative(demoRoot, file).split(path.sep)[0]
+        return !project.startsWith('style-injector')
+      })
+      .flatMap((file) => {
+        const source = fs.readFileSync(file, 'utf8')
+        return source
+          .split(/\r?\n/)
+          .filter(line => /\bstyleInjector\s*:/.test(line) && !/\bstyleInjector\s*:\s*false\b/.test(line))
+          .map(() => path.relative(repoRoot, file))
+      })
+
+    expect(offenders).toEqual([])
   })
 
   it('keeps test helper private so release jobs do not publish it', () => {

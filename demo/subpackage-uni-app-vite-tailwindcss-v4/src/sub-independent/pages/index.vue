@@ -3,3 +3,5 @@
     uni independent subpackage
   </view>
 </template>
+
+<style src="./index.css"></style>

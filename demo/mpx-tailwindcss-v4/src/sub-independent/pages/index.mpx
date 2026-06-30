@@ -9,3 +9,5 @@
     "navigationBarTitleText": "独立分包"
   }
 </script>
+
+<style src="../index.css" />
