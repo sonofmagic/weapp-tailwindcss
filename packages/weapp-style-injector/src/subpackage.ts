@@ -21,6 +21,58 @@ export type SubpackageStyleGenerator = (
   context: SubpackageStyleGenerateContext,
 ) => string | Uint8Array | null | undefined | Promise<string | Uint8Array | null | undefined>
 
+export type SubpackageStyleRules
+  = | Record<string, SubpackageStyleRuleTo>
+    | SubpackageStyleRule
+    | SubpackageStyleRule[]
+
+export type SubpackageStyleRuleFrom = string | string[] | SubpackageStyleRuleSource
+export type SubpackageStyleRuleTo = string | string[] | SubpackageStyleRuleTargets
+
+export interface SubpackageStyleRuleSource {
+  file?: string | string[]
+  ref?: string
+  as?: string
+  preprocess?: boolean
+  generate?: SubpackageStyleGenerator
+}
+
+export interface SubpackageStyleRuleTargets {
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
+  sourceInclude?: string | string[]
+  sourceExclude?: string | string[]
+}
+
+export type SubpackageStyleRule
+  = | readonly [from: SubpackageStyleRuleFrom, to?: SubpackageStyleRuleTo]
+    | {
+      from: SubpackageStyleRuleFrom
+      to?: SubpackageStyleRuleTo
+      as?: string
+      files?: string | string[]
+      include?: string | string[]
+      exclude?: string | string[]
+      sourceInclude?: string | string[]
+      sourceExclude?: string | string[]
+      preprocess?: boolean
+      generate?: SubpackageStyleGenerator
+    }
+
+export interface NormalizedSubpackageStyleRule {
+  sourceFileName?: string | string[]
+  referenceFileName?: string
+  outputName?: string
+  files?: string | string[]
+  include?: string | string[]
+  exclude?: string | string[]
+  sourceInclude?: string | string[]
+  sourceExclude?: string | string[]
+  generate?: SubpackageStyleGenerator
+  preprocess?: boolean
+}
+
 export interface ResolvedSubpackageStyleScope {
   root: string
   sourceRelativePath: string
@@ -72,6 +124,176 @@ export function normalizeOutputName(value: string): string {
   const name = ext ? basename.slice(0, -ext.length) : basename
 
   return name || 'index'
+}
+
+function isRecordRules(value: unknown): value is Record<string, SubpackageStyleRuleTo> {
+  return Boolean(
+    value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && !('from' in value)
+    && !('file' in value)
+    && !('ref' in value),
+  )
+}
+
+function isRuleSource(value: unknown): value is SubpackageStyleRuleSource {
+  return Boolean(
+    value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && (
+      'file' in value
+      || 'ref' in value
+      || 'as' in value
+      || 'preprocess' in value
+      || 'generate' in value
+    ),
+  )
+}
+
+function isRuleFrom(value: unknown): value is SubpackageStyleRuleFrom {
+  return typeof value === 'string'
+    || (Array.isArray(value) && value.every(entry => typeof entry === 'string'))
+    || isRuleSource(value)
+}
+
+function isRuleTargets(value: unknown): value is SubpackageStyleRuleTargets {
+  return Boolean(
+    value
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && (
+      'files' in value
+      || 'include' in value
+      || 'exclude' in value
+      || 'sourceInclude' in value
+      || 'sourceExclude' in value
+    ),
+  )
+}
+
+function isRuleTo(value: unknown): value is SubpackageStyleRuleTo {
+  return typeof value === 'string'
+    || (Array.isArray(value) && value.every(entry => typeof entry === 'string'))
+    || isRuleTargets(value)
+}
+
+function isTupleRule(value: unknown[]): value is [from: SubpackageStyleRuleFrom, to?: SubpackageStyleRuleTo] {
+  if (value.length === 0 || value.length > 2) {
+    return false
+  }
+  if (Array.isArray(value[0])) {
+    return false
+  }
+  return isRuleFrom(value[0]) && (value.length === 1 || isRuleTo(value[1]))
+}
+
+function toRuleList(rules: SubpackageStyleRules | null | undefined): SubpackageStyleRule[] {
+  if (typeof rules === 'undefined' || rules === null) {
+    return []
+  }
+  if (isRecordRules(rules)) {
+    return Object.entries(rules).map(([from, to]) => [from, to])
+  }
+  if (Array.isArray(rules)) {
+    return isTupleRule(rules) ? [rules] : rules as SubpackageStyleRule[]
+  }
+  return [rules]
+}
+
+function applyRuleTargets(entry: NormalizedSubpackageStyleRule, targets: SubpackageStyleRuleTo | undefined) {
+  if (targets === undefined) {
+    return true
+  }
+  if (typeof targets === 'string' || Array.isArray(targets)) {
+    entry.include = targets
+    return true
+  }
+  if (targets && typeof targets === 'object') {
+    if (targets.files !== undefined) {
+      entry.files = targets.files
+    }
+    if (targets.include !== undefined) {
+      entry.include = targets.include
+    }
+    if (targets.exclude !== undefined) {
+      entry.exclude = targets.exclude
+    }
+    if (targets.sourceInclude !== undefined) {
+      entry.sourceInclude = targets.sourceInclude
+    }
+    if (targets.sourceExclude !== undefined) {
+      entry.sourceExclude = targets.sourceExclude
+    }
+    return true
+  }
+  return false
+}
+
+export function normalizeSubpackageStyleRules(
+  rules: SubpackageStyleRules | null | undefined,
+): NormalizedSubpackageStyleRule[] {
+  const list = toRuleList(rules)
+
+  return list.flatMap((rule) => {
+    if (!rule) {
+      return []
+    }
+
+    const source = Array.isArray(rule) ? rule[0] : rule.from
+    const targets = Array.isArray(rule) ? rule[1] : rule.to
+    const entry: NormalizedSubpackageStyleRule = {}
+
+    if (typeof source === 'string' || Array.isArray(source)) {
+      entry.sourceFileName = source
+    }
+    else if (source && typeof source === 'object') {
+      if (source.file !== undefined) {
+        entry.sourceFileName = source.file
+      }
+      if (source.ref !== undefined) {
+        entry.referenceFileName = source.ref
+      }
+      if (source.as !== undefined) {
+        entry.outputName = source.as
+      }
+      if (source.preprocess !== undefined) {
+        entry.preprocess = source.preprocess
+      }
+      if (source.generate !== undefined) {
+        entry.generate = source.generate
+      }
+    }
+    else {
+      return []
+    }
+
+    if (Array.isArray(rule) === false && typeof rule === 'object') {
+      if (rule.as !== undefined) {
+        entry.outputName = rule.as
+      }
+      applyRuleTargets(entry, {
+        files: rule.files,
+        include: rule.include,
+        exclude: rule.exclude,
+        sourceInclude: rule.sourceInclude,
+        sourceExclude: rule.sourceExclude,
+      })
+      if (rule.preprocess !== undefined) {
+        entry.preprocess = rule.preprocess
+      }
+      if (rule.generate !== undefined) {
+        entry.generate = rule.generate
+      }
+    }
+
+    if (!applyRuleTargets(entry, targets)) {
+      return []
+    }
+
+    return [entry]
+  })
 }
 
 export function isLikelyStyleAssetSource(source: string | Uint8Array | undefined): boolean {

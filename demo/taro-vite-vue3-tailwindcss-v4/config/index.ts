@@ -98,7 +98,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           cssSourceTrace: true,
           cssEntries,
           rem2rpx: true,
-          styleInjector: !(taroPlatform.isWeb || isNativeTarget),
+          styleInjector: false,
           generator,
           disabled: isNativeTarget,
           // injectAdditionalCssVarScope: true,

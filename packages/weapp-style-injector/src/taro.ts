@@ -1,10 +1,13 @@
 import type { PerFileImportResolver } from './core'
-import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, ResolvedSubpackageTargetSourceModule, SubpackageStyleGenerator } from './subpackage'
+import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, ResolvedSubpackageTargetSourceModule, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import vm from 'node:vm'
+import {
+  normalizeSubpackageStyleRules,
+} from './subpackage'
 import {
   ensurePosix,
   normalizeRelativeImport,
@@ -20,7 +23,7 @@ export interface TaroSubPackageConfig {
   include?: string | string[]
   exclude?: string | string[]
   generate?: SubpackageStyleGenerator
-  styleEntries?: TaroSubPackageStyleEntry | TaroSubPackageStyleEntry[]
+  rules?: SubpackageStyleRules
   /**
    * @deprecated Use sourceFileName instead.
    */
@@ -326,8 +329,8 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
   }
 
   const baseDir = path.dirname(appConfigPath)
-  const entries = toArray(config.styleEntries)
-  const styleEntries: TaroSubPackageStyleEntry[] = entries.length > 0
+  const entries = normalizeSubpackageStyleRules(config.rules)
+  const styleRules: TaroSubPackageStyleEntry[] = entries.length > 0
     ? entries
     : [createDefaultStyleEntry(config)]
 
@@ -343,7 +346,7 @@ export function resolveTaroSubPackages(config: TaroSubPackageConfig): ResolvedTa
       continue
     }
 
-    for (const styleEntry of styleEntries) {
+    for (const styleEntry of styleRules) {
       const componentStyleSourceFiles = resolveComponentStyleSourceFiles(normalizedRoot, baseDir)
 
       if (shouldUseAppStyleReference(styleEntry)) {

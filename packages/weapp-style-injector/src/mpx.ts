@@ -1,8 +1,9 @@
-import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, SubpackageStyleGenerator } from './subpackage'
+import type { ResolvedSubpackageStyleScope, ResolvedSubpackageTargetSourceFile, SubpackageStyleGenerator, SubpackageStyleRules } from './subpackage'
 
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
+import { normalizeSubpackageStyleRules } from './subpackage'
 import { ensurePosix, normalizeRoot, toArray } from './utils'
 
 export interface MpxSubPackageConfig {
@@ -14,7 +15,7 @@ export interface MpxSubPackageConfig {
   include?: string | string[]
   exclude?: string | string[]
   generate?: SubpackageStyleGenerator
-  styleEntries?: MpxSubPackageStyleEntry | MpxSubPackageStyleEntry[]
+  rules?: SubpackageStyleRules
   preprocess?: boolean
 }
 
@@ -26,6 +27,8 @@ export interface MpxSubPackageStyleEntry {
   files?: string | string[]
   include?: string | string[]
   exclude?: string | string[]
+  sourceInclude?: string | string[]
+  sourceExclude?: string | string[]
   generate?: SubpackageStyleGenerator
   preprocess?: boolean
 }
@@ -138,6 +141,8 @@ function shouldUseAppStyleReference(styleEntry: MpxSubPackageStyleEntry): boolea
         || styleEntry.files !== undefined
         || styleEntry.include !== undefined
         || styleEntry.exclude !== undefined
+        || styleEntry.sourceInclude !== undefined
+        || styleEntry.sourceExclude !== undefined
       )
     )
   )
@@ -155,6 +160,12 @@ function applyStyleEntryOptions(
   }
   if (styleEntry.exclude !== undefined) {
     resolvedEntry.exclude = styleEntry.exclude
+  }
+  if (styleEntry.sourceInclude !== undefined) {
+    resolvedEntry.sourceInclude = styleEntry.sourceInclude
+  }
+  if (styleEntry.sourceExclude !== undefined) {
+    resolvedEntry.sourceExclude = styleEntry.sourceExclude
   }
   if (styleEntry.generate) {
     resolvedEntry.generate = styleEntry.generate
@@ -203,8 +214,8 @@ export function resolveMpxSubPackages(config: MpxSubPackageConfig): ResolvedMpxS
   }
 
   const sourceRoot = path.resolve(config.sourceRoot ?? path.dirname(appPath))
-  const entries = toArray(config.styleEntries)
-  const styleEntries: MpxSubPackageStyleEntry[] = entries.length > 0
+  const entries = normalizeSubpackageStyleRules(config.rules)
+  const styleRules: MpxSubPackageStyleEntry[] = entries.length > 0
     ? entries
     : [createDefaultStyleEntry(config)]
 
@@ -220,7 +231,7 @@ export function resolveMpxSubPackages(config: MpxSubPackageConfig): ResolvedMpxS
       continue
     }
 
-    for (const styleEntry of styleEntries) {
+    for (const styleEntry of styleRules) {
       if (shouldUseAppStyleReference(styleEntry)) {
         const referenceFileName = ensurePosix(styleEntry.referenceFileName ?? 'app.css')
         const resolvedEntry: ResolvedMpxSubPackage = {

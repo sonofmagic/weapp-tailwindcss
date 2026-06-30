@@ -26,14 +26,27 @@ The uni-app, Taro, and Mpx presets auto-detect common app entries. By default, s
 StyleInjector()
 ```
 
-To narrow the injected files, put filters in `styleEntries`:
+To narrow injected files, use `rules` to describe "style entry -> target artifacts":
 
 ```ts
 StyleInjector({
-  styleEntries: {
-    include: ['pages/**/*.wxss'],
-    exclude: ['pages/legacy/**/*.wxss'],
+  rules: {
+    'tailwind.css': ['pages/**/*.wxss'],
+    'components.css': ['components/**/*.wxss'],
   },
+})
+```
+
+To keep referencing the main app style, write the reference explicitly:
+
+```ts
+StyleInjector({
+  rules: [
+    [{ ref: 'app.css' }, {
+      include: ['pages/**/*.wxss'],
+      exclude: ['pages/legacy/**/*.wxss'],
+    }],
+  ],
 })
 ```
 

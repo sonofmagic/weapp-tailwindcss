@@ -1,4 +1,5 @@
-import type { TaroSubPackageConfig, TaroSubPackageStyleEntry } from '../taro'
+import type { SubpackageStyleRules } from '../subpackage'
+import type { TaroSubPackageConfig } from '../taro'
 import type { WebpackObjectPluginInstance, WebpackWeappStyleInjectorOptions } from '../webpack'
 
 import fs from 'node:fs'
@@ -8,6 +9,7 @@ import { createTaroSubPackageImportResolver, resolveTaroSubPackages } from '../t
 import { mergePerFileResolvers, toArray } from '../utils'
 import { weappStyleInjectorWebpack } from '../webpack'
 
+export type { SubpackageStyleRule, SubpackageStyleRules } from '../subpackage'
 export type { TaroSubPackageConfig } from '../taro'
 
 export interface WebpackTaroStyleInjectorOptions extends Omit<WebpackWeappStyleInjectorOptions, 'perFileImports'> {
@@ -18,7 +20,7 @@ export interface WebpackTaroStyleInjectorOptions extends Omit<WebpackWeappStyleI
   files?: string | string[]
   include?: string | string[]
   exclude?: string | string[]
-  styleEntries?: TaroSubPackageStyleEntry | TaroSubPackageStyleEntry[]
+  rules?: SubpackageStyleRules
   perFileImports?: WebpackWeappStyleInjectorOptions['perFileImports']
 }
 
@@ -34,24 +36,6 @@ function resolveDefaultAppConfigPaths(): string[] {
   ]
 }
 
-function createDefaultAppStyleEntry(options: {
-  files?: string | string[]
-  include?: string | string[]
-  exclude?: string | string[]
-}): TaroSubPackageStyleEntry {
-  const entry: TaroSubPackageStyleEntry = {}
-  if (options.files !== undefined) {
-    entry.files = options.files
-  }
-  if (options.include !== undefined) {
-    entry.include = options.include
-  }
-  if (options.exclude !== undefined) {
-    entry.exclude = options.exclude
-  }
-  return entry
-}
-
 export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): WebpackObjectPluginInstance {
   const {
     appConfigPath,
@@ -61,7 +45,7 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
     files,
     include,
     exclude,
-    styleEntries,
+    rules,
     perFileImports,
     ...rest
   } = options
@@ -94,11 +78,11 @@ export function StyleInjector(options: WebpackTaroStyleInjectorOptions = {}): We
       if (exclude !== undefined) {
         config.exclude = exclude
       }
-      if (styleEntries !== undefined) {
-        config.styleEntries = styleEntries
+      if (rules !== undefined) {
+        config.rules = rules
       }
       else if (sourceFileName === undefined) {
-        config.styleEntries = createDefaultAppStyleEntry({ files, include, exclude })
+        config.rules = [{ from: { ref: 'app.css' }, to: { files, include, exclude } }]
       }
       configs.set(candidate, config)
     }

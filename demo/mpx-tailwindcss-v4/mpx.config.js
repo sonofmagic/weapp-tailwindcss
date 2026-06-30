@@ -56,7 +56,7 @@ module.exports = defineConfig({
         cssEntries: [
           path.resolve(__dirname, './src/app.css'),
         ],
-        styleInjector: true,
+        styleInjector: false,
       }),
     )
   },
