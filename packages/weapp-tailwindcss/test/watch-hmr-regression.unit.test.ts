@@ -1362,7 +1362,7 @@ describe('watch-hmr regression summary helpers', () => {
     const subNormal = mpxCase?.subPackageMutations?.find(item => item.root === 'sub-normal')
     const styleOutputs = subNormal ? collectSubPackageStyleOutputs(subNormal).map(toRepoPath) : []
 
-    expect(subNormal?.mainStyleMutation?.sourceFile ? toRepoPath(subNormal.mainStyleMutation.sourceFile) : undefined).toBe('/repo/demo/mpx-tailwindcss-v4/src/sub-normal/pages/index.css')
+    expect(subNormal?.mainStyleMutation?.sourceFile ? toRepoPath(subNormal.mainStyleMutation.sourceFile) : undefined).toBe('/repo/demo/mpx-tailwindcss-v4/src/sub-normal/index.css')
     expect(subNormal?.outputStyleCandidates.map(toRepoPath)).toContain(
       '/repo/demo/mpx-tailwindcss-v4/dist/wx/sub-normal/pages/index.js',
     )
@@ -2196,6 +2196,9 @@ describe('watch-hmr regression cases', () => {
     const mpxV4SubPackage = mpxV4Case?.subPackageMutations?.find(item => item.root === 'sub-normal')
     expect(mpxV4SubPackage?.styleMutation.validateApply).toBe(false)
     expect(mpxV4SubPackage?.styleMutation.validateFunction).toBe(false)
+    expect(mpxV4SubPackage?.styleMutation.sourceFile).toBe(
+      path.resolve('/repo', 'demo/mpx-tailwindcss-v4/src/sub-normal/index.css'),
+    )
     expect(mpxV4SubPackage?.templateMutation.roundConfigs?.map(round => round.name)).toEqual(['baseline-arbitrary'])
     expect(mpxV4SubPackage?.templateMutation.skipExtendedHmr).toBe(true)
     expect(mpxV4SubPackage?.outputStyleCandidates).toEqual([
@@ -2482,11 +2485,7 @@ describe('watch-hmr regression cases', () => {
 
     const taroWebpackStyles = [
       'demo/taro-webpack-react-tailwindcss-v4/src/app.css',
-      'demo/taro-webpack-react-tailwindcss-v4/src/sub-normal/pages/index.css',
-      'demo/taro-webpack-react-tailwindcss-v4/src/sub-independent/pages/index.css',
       'demo/taro-webpack-vue3-tailwindcss-v4/src/app.css',
-      'demo/taro-webpack-vue3-tailwindcss-v4/src/sub-normal/pages/index.css',
-      'demo/taro-webpack-vue3-tailwindcss-v4/src/sub-independent/pages/index.css',
     ]
     for (const stylePath of taroWebpackStyles) {
       const styleSource = await readFile(path.resolve(__dirname, '../../..', stylePath), 'utf8')

@@ -487,6 +487,9 @@ export function buildDemoExtendedCases(baseCwd: string): WatchCase[] {
       distRoot: 'dist/wx',
       version: 'v4',
       pageKind: 'mpx',
+      styleSourceFile(subPackage) {
+        return path.resolve(baseCwd, `demo/mpx-tailwindcss-v4/src/${subPackage}/index.css`)
+      },
       styleCandidates(subPackage) {
         return [
           path.resolve(baseCwd, `demo/mpx-tailwindcss-v4/dist/wx/${subPackage}/pages/index.js`),

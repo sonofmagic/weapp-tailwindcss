@@ -40,6 +40,10 @@ const demoPackageProjects = readdirSync(join(repoRoot, 'demo'), { withFileTypes:
 // HBuilderX 项目依赖本机 IDE 验证，不进入 CI 的通用 watch 回归矩阵。
 const localOnlyDemoProjects = new Set([
   'demo/issue-951-taro-vite-react-tailwindcss-v4',
+  'demo/style-injector-mpx',
+  'demo/style-injector-taro-vite-react',
+  'demo/style-injector-taro-webpack-react',
+  'demo/style-injector-uni-app',
   'demo/subpackage-taro-webpack-react-tailwindcss-v4',
   'demo/subpackage-uni-app-vite-tailwindcss-v4',
   'demo/uni-app-vite-vue3-hbuilderx-tailwindcss-v4',

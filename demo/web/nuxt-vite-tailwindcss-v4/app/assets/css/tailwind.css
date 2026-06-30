@@ -3,3 +3,8 @@
 @source "../../**/*.{vue,ts,js}";
 @source not "../../.nuxt/**";
 @source not "../../.output/**";
+@custom-variant system-dark {
+  @media (prefers-color-scheme: dark) {
+    @slot;
+  }
+}

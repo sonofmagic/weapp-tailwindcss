@@ -24,6 +24,8 @@ const generator = {
 } satisfies UserDefinedOptions['generator']
 const cssEntries = [
   resolve(process.cwd(), 'src/app.css'),
+  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
+  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
 ]
 
 function disableWebpackDevServerClientOverlay(chain: any) {

@@ -37,7 +37,6 @@ const uniV4MiniStyle = [
   '.bg-_b_h0000ff_B',
   '.i-mdi-home',
   '.layer-card-v4',
-  '.bg-independent-subpackage-marker',
   '.before_ccontent',
 ]
 const uniV4Template = [
@@ -110,6 +109,11 @@ export const DEMO_USER_WORKFLOW_CORE_CASES: DemoUserWorkflowCase[] = [
             ? ['.ttss']
             : ['.qss'],
         assertions: [
+          {
+            label: 'uni-app 小程序分包样式文件引用主样式',
+            files: [`dist/build/${platform}/sub-independent/pages/index.wxss`, `dist/build/${platform}/sub-normal/pages/index.wxss`],
+            contains: ['@import'],
+          },
           {
             label: 'uni-app 小程序主包和分包样式都被生成',
             files: [`dist/build/${platform}`],

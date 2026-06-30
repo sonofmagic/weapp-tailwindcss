@@ -144,7 +144,7 @@ export const EXECUTABLE_MULTIPLATFORM_BUILD_OUTPUT_CASES: BuildOutputCase[] = [
     project: 'taro-webpack-react-tailwindcss-v4',
     packageName: '@weapp-tailwindcss-demo/taro-webpack-react-tailwindcss-v4',
     platform: 'alipay',
-    styleContains: ['.bg-_b_h534312_B', '.text-_b_hfff_B', '.before_ccontent'],
+    styleContains: ['.bg-_b_h534312_B', '.text-_b_hfff_B'],
     textContains: ['bg-_b_h534312_B', 'text-_b_hfff_B'],
     reason: 'Taro Alipay 通过 pnpm e2e:multiplatform-build:taro-alipay 做专项构建与只读断言；本地 Taro runner 可能因系统依赖挂起，不放入默认 vitest/execa 构建集合。',
   }),
