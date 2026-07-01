@@ -109,6 +109,10 @@ catalogs:
     react-dom: ^19.2.7
   reactRefresh018:
     react-refresh: ^0.18.0
+  rsbuild2:
+    '@rsbuild/core': ^2.1.2
+    '@rsbuild/plugin-react': ^2.1.0
+    '@rsbuild/plugin-vue': ^2.0.0
   sass195:
     sass: ^1.101.0
   stylelint1625:
@@ -126,7 +130,7 @@ catalogs:
   tailwindcssPatch:
     tailwindcss-patch: 9.5.1
   tailwindcssMangleEngine:
-    '@tailwindcss-mangle/engine': 0.1.1
+    '@tailwindcss-mangle/engine': 0.1.2
   tailwindcssRem:
     tailwindcss-rem2px-preset: ^1.0.3
   taro4:
@@ -209,7 +213,7 @@ catalogs:
   vite724:
     vite: ^7.3.6
   vite8:
-    vite: ^8.1.1
+    vite: ^8.1.2
   vitePluginInspect:
     vite-plugin-inspect: ^11.4.1
   vitePluginReact4:
@@ -229,7 +233,7 @@ catalogs:
   vueRuntimeCore:
     '@vue/runtime-core': ^3.5.34
   vueTsc318:
-    vue-tsc: ^3.3.5
+    vue-tsc: ^3.3.6
   weappChildren:
     weapp-tailwindcss-children: ^0.1.0
   weappIdeCli:
@@ -237,4 +241,4 @@ catalogs:
   weappVite:
     weapp-vite: ^6.17.8
   wrangler:
-    wrangler: ^4.105.0
+    wrangler: ^4.106.0

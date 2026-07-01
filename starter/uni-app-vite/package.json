@@ -32,7 +32,7 @@
     "tailwindcss": "catalog:tailwindcss4",
     "typescript": "catalog:typescript59",
     "vite": "5.2.8",
-    "vue-tsc": "^2.2.10",
+    "vue-tsc": "^2.2.12",
     "weapp-tailwindcss": "workspace:*"
   }
 }

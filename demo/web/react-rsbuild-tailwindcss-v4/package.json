@@ -24,8 +24,8 @@
     "react-dom": "catalog:react19"
   },
   "devDependencies": {
-    "@rsbuild/core": "^2.1.1",
-    "@rsbuild/plugin-react": "^2.1.0",
+    "@rsbuild/core": "catalog:rsbuild2",
+    "@rsbuild/plugin-react": "catalog:rsbuild2",
     "@types/react": "catalog:react19",
     "@types/react-dom": "catalog:react19",
     "cross-env": "catalog:crossEnv",

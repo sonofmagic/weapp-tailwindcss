@@ -75,7 +75,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@tailwindcss-mangle/engine": "0.1.2",
+    "@tailwindcss-mangle/engine": "catalog:tailwindcssMangleEngine",
     "@weapp-core/escape": "~8.0.0",
     "@weapp-tailwindcss/postcss-calc": "workspace:^",
     "@weapp-tailwindcss/shared": "workspace:*",
