@@ -127,7 +127,7 @@ const config: Config = {
         includeOrder: [
           'docs/intro.md',
           'docs/quick-start/**',
-          'docs/quick-start/v4/**',
+          'docs/tailwindcss/v4-reference.md',
           'docs/tools/**',
           'docs/uni-app-x/**',
           'docs/community/templates.md',
@@ -151,7 +151,7 @@ const config: Config = {
             includePatterns: [
               'docs/intro.md',
               'docs/quick-start/**',
-              'docs/quick-start/v4/**',
+              'docs/tailwindcss/v4-reference.md',
               'docs/community/templates.md',
               'docs/tools/**',
               'docs/uni-app-x/**',

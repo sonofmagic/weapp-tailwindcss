@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-01T08:01:53.392Z",
+  "generatedAt": "2026-07-01T09:11:01.097Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 163,
-    "docs": 159,
+    "all": 164,
+    "docs": 160,
     "blog": 4
   },
   "documents": [
@@ -2357,7 +2357,7 @@
         "快速开始 :rocket:",
         "# 👉 [安装依赖](/docs/quick-start/install)",
         "# 👉 [各框架模板](/docs/community/templates)",
-        "# 👉 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)",
+        "# 👉 [Tailwind CSS 4.x 开发参考](/docs/tailwindcss/v4-reference)",
         "演示视频"
       ],
       "updatedAt": null,
@@ -4020,36 +4020,30 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/v4/readme",
-      "title": "开发参考手册",
-      "description": "Tailwind CSS 4 在 weapp-tailwindcss 中的配置说明。",
-      "summary": "当前文档仅维护 Tailwind CSS 4 接入说明。",
+      "title": "开发参考手册已迁移",
+      "description": "Tailwind CSS 4 开发参考手册已经迁移到 Tailwind 专题。",
+      "summary": "/docs/quick-start/v4 不再作为快速开始入口。Tailwind CSS 4 的 CSS-first、@source、@apply、@layer、IntelliSense 与多端补充说明，已经迁移到 Tailwind 专题下的开发参考手册。",
       "url": "/docs/quick-start/v4/readme",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/readme",
       "keywords": [
+        "开发参考手册",
+        "Tailwind CSS 4",
+        "weapp-tailwindcss",
+        "v4",
         "快速开始",
+        "迁移",
+        "CSS-first",
+        "小程序",
+        "tailwindcss",
         "安装",
         "配置",
-        "开发参考手册",
+        "开发参考手册已迁移",
         "quick start",
-        "v4",
-        "weapp-tailwindcss",
-        "tailwindcss",
-        "小程序",
         "微信小程序",
         "uni-app",
-        "taro",
-        "mpx"
+        "taro"
       ],
-      "headings": [
-        "定位的变化: 样式预处理器",
-        "集成选择",
-        "小程序样式入口",
-        "# 为什么统一写 `@import \"tailwindcss\"`?",
-        "# 多端开发",
-        "css 作为配置文件",
-        "使用 @apply",
-        "@layer 在小程序的降级方案"
-      ],
+      "headings": [],
       "updatedAt": null,
       "source": "docs/quick-start/v4/readme.md"
     },
@@ -5411,6 +5405,45 @@
       ],
       "updatedAt": null,
       "source": "docs/tailwindcss/tailwind-vs-unocss.mdx"
+    },
+    {
+      "kind": "doc",
+      "id": "doc:tailwindcss/v4-reference",
+      "title": "Tailwind CSS 4.x 开发参考",
+      "description": "Tailwind CSS 4 在 weapp-tailwindcss 中的配置说明。",
+      "summary": "当前文档仅维护 Tailwind CSS 4 接入说明。",
+      "url": "/docs/tailwindcss/v4-reference",
+      "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference",
+      "keywords": [
+        "开发参考手册",
+        "v4",
+        "weapp-tailwindcss",
+        "tailwindcss",
+        "小程序",
+        "微信小程序",
+        "uni-app",
+        "taro",
+        "mpx",
+        "教程",
+        "原子化",
+        "Tailwind",
+        "CSS",
+        "4.x",
+        "开发参考",
+        "v4 reference"
+      ],
+      "headings": [
+        "定位的变化: 样式预处理器",
+        "集成选择",
+        "小程序样式入口",
+        "# 为什么统一写 `@import \"tailwindcss\"`?",
+        "# 多端开发",
+        "css 作为配置文件",
+        "使用 @apply",
+        "@layer 在小程序的降级方案"
+      ],
+      "updatedAt": null,
+      "source": "docs/tailwindcss/v4-reference.md"
     },
     {
       "kind": "doc",

@@ -55,8 +55,8 @@ const tailwindcssSidebar: SidebarConfig = [
         items: [
           {
             type: 'doc',
-            id: 'quick-start/v4/readme',
-            label: 'Tailwind CSS 4.x 参考',
+            id: 'tailwindcss/v4-reference',
+            label: 'Tailwind CSS 4.x 开发参考',
           },
           {
             type: 'doc',

@@ -59,7 +59,7 @@ keywords:
 
 如果你想直接对照可运行项目，可以优先查看模板项目。
 
-### 👉 [Tailwind CSS 4.x 参考](/docs/quick-start/v4)
+### 👉 [Tailwind CSS 4.x 开发参考](/docs/tailwindcss/v4-reference)
 
 这里有 CSS-first、`@source`、`@apply`、`@layer` 和 IntelliSense 的补充说明。
 
