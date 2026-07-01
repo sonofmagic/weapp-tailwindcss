@@ -42,7 +42,7 @@ const facts: FactItem[] = [
 
 const routeLinks: RouteItem[] = [
   {
-    href: '/docs/quick-start/v4',
+    href: '/docs/quick-start/install',
     label: '快速开始',
     description: '从 CSS-first 入口接入当前版本。',
     icon: 'icon-[mdi--numeric-4-box-outline]',
@@ -86,7 +86,7 @@ const capabilities: CapabilityItem[] = [
 
 const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
   {
-    href: '/docs/quick-start/v4',
+    href: '/docs/quick-start/install',
     label: '快速开始',
     description: '从 Tailwind CSS 4 与 CSS-first 入口开始。',
     icon: 'icon-[mdi--rocket-launch-outline]',
@@ -211,7 +211,7 @@ function HomepageHeader() {
               )}
               <div className="home-hero__actions">
                 {homepage.primaryCta && (
-                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/v4">
+                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/install">
                     <span>开始接入</span>
                     <i aria-hidden="true" className="icon-[mdi--arrow-right] text-[1.1rem]"></i>
                   </a>

@@ -65,7 +65,7 @@ test.describe('homepage hero layout', () => {
     await expect(platformIcons).toHaveCount(5)
     await expect(primaryCta).toBeVisible()
     await expect(primaryCta).toHaveText(/开始接入/)
-    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/v4')
+    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/install')
     await expect(secondaryActions).toHaveCount(2)
     await expect(githubBadge).toBeVisible()
     await expect(pipeline).toBeVisible()
@@ -177,7 +177,7 @@ test.describe('homepage hero layout', () => {
     const primaryCta = page.locator('.home-hero__actions .home-cta')
     await expect(primaryCta).toBeVisible()
     await expect(primaryCta).toHaveText(/开始接入/)
-    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/v4')
+    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/install')
 
     const actionBoxes = await page.locator('.home-hero__actions a').evaluateAll(elements => elements.map((element) => {
       const rect = element.getBoundingClientRect()
