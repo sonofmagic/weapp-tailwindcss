@@ -1274,6 +1274,372 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     })
   }, TEST_TIMEOUT_MS)
 
+  it('lets uni-app H5 vue source hot updates continue while sending supplemental Tailwind css updates', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM = 'h5'
+    try {
+      const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-root-css-uni-h5-'))
+      createdDirs.push(root)
+      const pageFile = path.join(root, 'src/pages/index/index.vue')
+      const cssFile = path.join(root, 'src/app.css')
+      const styleId = '/src/App.vue?vue&type=style&index=0&lang.scss&direct'
+      const generatedCss = '.bg-\\[\\#ff0000\\]{background-color:#ff0000}'
+      await mkdir(path.dirname(pageFile), { recursive: true })
+      await writeFile(pageFile, '<template><view class="bg-[#ff0000]"></view></template>\n', 'utf8')
+      await writeFile(cssFile, '@import "tailwindcss" source("./pages");\n', 'utf8')
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          createWeappTailwindcssGenerator: vi.fn(() => ({
+            generate: vi.fn(async (options: { candidates: Set<string> }) => ({
+              css: generatedCss,
+              rawCss: generatedCss,
+              target: 'weapp',
+              classSet: new Set(options.candidates),
+              dependencies: [],
+              sources: [],
+              root: null,
+              version: 4,
+            })),
+            validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+          })),
+          normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        }
+      })
+
+      setCurrentContext(createContext({
+        appType: 'uni-app-vite',
+        cssEntries: [cssFile],
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(css => css),
+        tailwindRuntime: {
+          getClassSet: vi.fn(async () => new Set(['bg-[#ff0000]'])),
+          getClassSetSync: vi.fn(() => new Set(['bg-[#ff0000]'])),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: new Set(['bg-[#ff0000]']) })),
+        },
+        tailwindcssBasedir: root,
+      }))
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss({
+        appType: 'uni-app-vite',
+        cssEntries: [cssFile],
+        generator: {
+          target: 'weapp',
+        },
+        tailwindcssBasedir: root,
+      })
+      const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+      const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(sourcePlugin).toBeTruthy()
+      expect(cssHmrPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root,
+        plugins: [{ name: 'vite:uni' }],
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/h5' },
+      } as ResolvedConfig)
+
+      await getTransformHandler(cssHmrPlugin)?.call(
+        cssHmrPlugin,
+        [
+          'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+          `const __vite__id = ${JSON.stringify(styleId)}`,
+          'const __vite__css = "@tailwind utilities;"',
+          '__vite__updateStyle(__vite__id, __vite__css)',
+        ].join('\n'),
+        styleId,
+      )
+
+      const vueModule = {
+        id: pageFile,
+        isSelfAccepting: true,
+        url: '/src/pages/index/index.vue',
+      } as ModuleNode
+      const cssModule = {
+        id: styleId,
+        url: styleId,
+      } as ModuleNode
+      const invalidateModule = vi.fn()
+      const wsSend = vi.fn()
+      const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+        file: pageFile,
+        modules: [vueModule],
+        timestamp: 123456,
+        server: {
+          ws: {
+            send: wsSend,
+          },
+          moduleGraph: {
+            getModuleById: vi.fn(id => id === styleId ? cssModule : undefined),
+            getModulesByFile: vi.fn(() => undefined),
+            invalidateModule,
+          },
+        },
+      } as HmrContext)
+
+      expect(result).toBeUndefined()
+      expect(wsSend).not.toHaveBeenCalledWith({
+        type: 'full-reload',
+        path: '*',
+        triggeredBy: pageFile,
+      })
+      expect(invalidateModule).toHaveBeenCalledWith(cssModule)
+      await Promise.resolve()
+      expect(wsSend).toHaveBeenCalledWith({
+        type: 'update',
+        updates: [
+          {
+            acceptedPath: styleId,
+            explicitImportRequired: false,
+            isWithinCircularImport: false,
+            path: styleId,
+            timestamp: 123456,
+            type: 'js-update',
+          },
+        ],
+      })
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
+  it('refreshes uni-app H5 Tailwind candidates for vue, js, ts, html, and wxml source hot update CRUD', async () => {
+    const previousUniPlatform = process.env.UNI_PLATFORM
+    process.env.UNI_PLATFORM = 'h5'
+    try {
+      const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-source-crud-uni-h5-'))
+      createdDirs.push(root)
+      const cssFile = path.join(root, 'src/app.css')
+      const styleId = `${cssFile}?direct`
+      const cssSource = '@import "tailwindcss" source("./");\n'
+      await mkdir(path.dirname(cssFile), { recursive: true })
+      await writeFile(cssFile, cssSource, 'utf8')
+
+      const sourceCases = [
+        {
+          label: 'vue',
+          file: path.join(root, 'src/pages/index/index.vue'),
+          initialClass: 'bg-[#110011]',
+          addedClass: 'text-[#220022]',
+          modifiedClass: 'bg-[#330033]',
+          render: (classes: string[]) => [
+            '<template>',
+            `  <view class="${classes.join(' ')}">vue</view>`,
+            '</template>',
+            '<script setup lang="ts">',
+            'const marker = "vue-source"',
+            '</script>',
+            '',
+          ].join('\n'),
+        },
+        {
+          label: 'js',
+          file: path.join(root, 'src/shared/classes.js'),
+          initialClass: 'bg-[#440044]',
+          addedClass: 'text-[#550055]',
+          modifiedClass: 'bg-[#660066]',
+          render: (classes: string[]) => `export const jsClasses = ${JSON.stringify(classes.join(' '))}\n`,
+        },
+        {
+          label: 'ts',
+          file: path.join(root, 'src/shared/classes.ts'),
+          initialClass: 'bg-[#770077]',
+          addedClass: 'text-[#880088]',
+          modifiedClass: 'bg-[#990099]',
+          render: (classes: string[]) => `export const tsClasses: string = ${JSON.stringify(classes.join(' '))}\n`,
+        },
+        {
+          label: 'html',
+          file: path.join(root, 'src/static/probe.html'),
+          initialClass: 'bg-[#aa00aa]',
+          addedClass: 'text-[#bb00bb]',
+          modifiedClass: 'bg-[#cc00cc]',
+          render: (classes: string[]) => `<div class="${classes.join(' ')}">html</div>\n`,
+        },
+        {
+          label: 'wxml',
+          file: path.join(root, 'src/static/probe.wxml'),
+          initialClass: 'bg-[#dd00dd]',
+          addedClass: 'text-[#ee00ee]',
+          modifiedClass: 'bg-[#ff00ff]',
+          render: (classes: string[]) => `<view class="${classes.join(' ')}">wxml</view>\n`,
+        },
+      ]
+
+      const seenCandidates: string[][] = []
+      const generateMock = vi.fn(async (options: { candidates: Set<string> }) => {
+        const candidates = [...options.candidates].sort()
+        seenCandidates.push(candidates)
+        const css = candidates.map(candidate => `.${replaceWxml(candidate)}{}`).join('\n')
+        return {
+          css,
+          rawCss: css,
+          target: 'weapp',
+          classSet: new Set(options.candidates),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        }
+      })
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          createWeappTailwindcssGenerator: vi.fn(() => ({
+            generate: generateMock,
+            validateCandidates: vi.fn(async (candidates: Set<string>) => candidates),
+          })),
+          normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+        }
+      })
+
+      for (const sourceCase of sourceCases) {
+        await mkdir(path.dirname(sourceCase.file), { recursive: true })
+        await writeFile(sourceCase.file, sourceCase.render([sourceCase.initialClass]), 'utf8')
+      }
+
+      setCurrentContext(createContext({
+        appType: 'uni-app-vite',
+        cssEntries: [cssFile],
+        generator: {
+          target: 'weapp',
+        },
+        styleHandler: vi.fn(css => css),
+        tailwindRuntime: {
+          getClassSet: vi.fn(async () => new Set<string>()),
+          getClassSetSync: vi.fn(() => new Set<string>()),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: new Set<string>() })),
+        },
+        tailwindcssBasedir: root,
+      }))
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const plugins = WeappTailwindcss({
+        appType: 'uni-app-vite',
+        cssEntries: [cssFile],
+        generator: {
+          target: 'weapp',
+        },
+        tailwindcssBasedir: root,
+      })
+      const sourcePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:source-candidates') as Plugin
+      const cssHmrPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve-hmr') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(sourcePlugin).toBeTruthy()
+      expect(cssHmrPlugin).toBeTruthy()
+      expect(postPlugin).toBeTruthy()
+
+      await (postPlugin.configResolved as any)?.call(postPlugin, {
+        command: 'serve',
+        root,
+        plugins: [{ name: 'vite:uni' }],
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/h5' },
+      } as ResolvedConfig)
+      await sourcePlugin.buildStart?.call({ addWatchFile: vi.fn() } as any)
+
+      const cssModule = {
+        id: styleId,
+        url: styleId,
+      } as ModuleNode
+      const invalidateModule = vi.fn()
+      const wsSend = vi.fn()
+      const moduleGraph = {
+        getModuleById: vi.fn(id => id === styleId || id === cssFile ? cssModule : undefined),
+        getModulesByFile: vi.fn((file: string) => file === styleId || file === cssFile ? [cssModule] : undefined),
+        invalidateModule,
+      }
+      const createCssHmrModule = () => [
+        'import {updateStyle as __vite__updateStyle} from "/@vite/client"',
+        `const __vite__id = ${JSON.stringify(styleId)}`,
+        `const __vite__css = ${JSON.stringify(cssSource)}`,
+        '__vite__updateStyle(__vite__id, __vite__css)',
+      ].join('\n')
+      const regenerateCss = async () => {
+        await getTransformHandler(cssHmrPlugin)?.call(
+          { addWatchFile: vi.fn() } as any,
+          createCssHmrModule(),
+          styleId,
+        )
+        return seenCandidates.at(-1) ?? []
+      }
+      const hotUpdate = async (sourceCase: typeof sourceCases[number]) => {
+        const sourceModule = {
+          id: sourceCase.file,
+          isSelfAccepting: true,
+          url: `/src/${path.relative(path.join(root, 'src'), sourceCase.file).replaceAll(path.sep, '/')}`,
+        } as ModuleNode
+        const result = await (sourcePlugin.handleHotUpdate as any)?.call(sourcePlugin, {
+          file: sourceCase.file,
+          modules: [sourceModule],
+          timestamp: Date.now(),
+          server: {
+            ws: {
+              send: wsSend,
+            },
+            moduleGraph,
+          },
+        } as HmrContext)
+        expect(result).toBeUndefined()
+      }
+
+      const initialCandidates = await regenerateCss()
+      for (const sourceCase of sourceCases) {
+        expect(initialCandidates).toContain(sourceCase.initialClass)
+      }
+
+      for (const sourceCase of sourceCases) {
+        await writeFile(sourceCase.file, sourceCase.render([sourceCase.initialClass, sourceCase.addedClass]), 'utf8')
+        await hotUpdate(sourceCase)
+        const addedCandidates = await regenerateCss()
+        expect(addedCandidates).toContain(sourceCase.initialClass)
+        expect(addedCandidates).toContain(sourceCase.addedClass)
+
+        await writeFile(sourceCase.file, sourceCase.render([sourceCase.modifiedClass, sourceCase.addedClass]), 'utf8')
+        await hotUpdate(sourceCase)
+        const modifiedCandidates = await regenerateCss()
+        expect(modifiedCandidates).toContain(sourceCase.modifiedClass)
+        expect(modifiedCandidates).toContain(sourceCase.addedClass)
+        expect(modifiedCandidates).not.toContain(sourceCase.initialClass)
+
+        await writeFile(sourceCase.file, sourceCase.render([]), 'utf8')
+        await hotUpdate(sourceCase)
+        const deletedCandidates = await regenerateCss()
+        expect(deletedCandidates).not.toContain(sourceCase.initialClass)
+        expect(deletedCandidates).not.toContain(sourceCase.modifiedClass)
+        expect(deletedCandidates).not.toContain(sourceCase.addedClass)
+      }
+
+      expect(invalidateModule).toHaveBeenCalledWith(cssModule)
+      await Promise.resolve()
+      expect(wsSend).toHaveBeenCalledWith(expect.objectContaining({ type: 'update' }))
+    }
+    finally {
+      if (previousUniPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousUniPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
   it('keeps returning recorded Tailwind root css modules during non-web vue source hot updates', async () => {
     const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-hmr-root-css-non-web-'))
     createdDirs.push(root)

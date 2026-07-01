@@ -498,7 +498,7 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
       },
     } as any)
 
-    expect(hotResult).toEqual([module])
+    expect(hotResult).toBeUndefined()
     expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'full-reload' }))
   })
 })

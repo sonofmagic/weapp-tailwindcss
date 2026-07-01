@@ -38,7 +38,7 @@ import { createViteCssMemory, shouldCollectTransformedSourceCandidates } from '.
 import { createGenerateBundleHook, resolveViteCssPipelineOutputFile } from './generate-bundle'
 import { createCssHandlerOptionsCache, resolveViteCssHandlerExtraOptions } from './generate-bundle/css-handler-options'
 import { createJsHandlerOptionsFactory } from './generate-bundle/js-handler-options'
-import { hasSelfAcceptingNonStyleHotModule, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from './hot-css-modules'
+import { hasSelfAcceptingNonStyleHotModule, resolveHotSourceModules, resolveHotTailwindCssModules, sendFullReloadForUnresolvedHotUpdate, sendSupplementalCssHotUpdates } from './hot-css-modules'
 import { touchMapEntry } from './map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
 import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeStringCache, summarizeViteProcessedCssResults } from './plugin-cache'
@@ -423,6 +423,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     || resolvedConfig?.command === 'serve'
     || process.env['WEAPP_TW_WATCH_REGRESSION'] === '1'
     || process.env['WEAPP_TW_HMR_TIMING'] === '1'
+  const isCurrentWebLikeStylePlatform = () => {
+    const platform = resolveViteStylePlatform()
+    return platform ? isWebOrNativeAppPlatform(platform) : generatorBranch.isWeb
+  }
   const isNuxtPageMacroHotModule = (id: string | null | undefined) => {
     if (typeof id !== 'string' || !/[?&]macro=true(?:&|$)/.test(id)) {
       return false
@@ -1026,20 +1030,24 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
         return hmrTimingRecorder.measure('sourceCandidates.handleHotUpdate', async () => {
           const isSourceCandidateHotUpdate = shouldOwnTailwindGeneration && isSourceCandidateRequest(ctx.file)
           await syncChangedSourceCandidateFile(ctx.file)
+          const isWebLikeHotUpdate = isCurrentWebLikeStylePlatform()
           if (isSourceCandidateHotUpdate) {
             invalidateRecordedGeneratorCandidates()
-            if (generatorBranch.isWeb) {
+            if (isWebLikeHotUpdate) {
               await refreshRuntimeStateForAutoCssSources?.(true)
               await syncSourceCandidateScan({ force: true })
             }
           }
           const cssModules = resolveHotTailwindCssModules(ctx, tailwindRootCssModuleIds)
+          const sourceModules = isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)
+            ? resolveHotSourceModules(ctx)
+            : ctx.modules
           if (
             isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
-            && !generatorBranch.isWeb
+            && !isWebLikeHotUpdate
             && (
-              (!hasSelfAcceptingNonStyleHotModule(ctx.modules) && cssModules.length === 0)
+              (!hasSelfAcceptingNonStyleHotModule(sourceModules) && cssModules.length === 0)
               || (cssModules.length > 0 && isUniViteProject())
             )
           ) {
@@ -1047,7 +1055,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             return []
           }
           if (
-            generatorBranch.isWeb
+            isWebLikeHotUpdate
             && isSourceCandidateHotUpdate
             && !isSourceStyleRequest(ctx.file)
             && ctx.modules.some(mod => isNuxtPageMacroHotModule(mod.id ?? mod.url))
@@ -1056,10 +1064,11 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             return []
           }
           sendSupplementalCssHotUpdates(ctx, cssModules)
-          if (generatorBranch.isWeb && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
-            return cssModules.length > 0
-              ? [...ctx.modules, ...cssModules]
-              : ctx.modules
+          if (isWebLikeHotUpdate && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
+            return undefined
+          }
+          if (isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file) && cssModules.length > 0) {
+            return [...sourceModules, ...cssModules]
           }
           return cssModules.length > 0
             ? [...ctx.modules, ...cssModules]

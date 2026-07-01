@@ -31,6 +31,36 @@ export function resolveHotTailwindCssModules(ctx: HmrContext, tailwindRootCssMod
   return modules
 }
 
+export function resolveHotSourceModules(ctx: HmrContext) {
+  const modules: ModuleNode[] = []
+  const seenModules = new Set<ModuleNode>()
+  const collectModule = (mod: ModuleNode | undefined) => {
+    if (mod == null || seenModules.has(mod)) {
+      return
+    }
+    const modId = mod.id ?? mod.url
+    if (isSourceStyleRequest(modId)) {
+      return
+    }
+    seenModules.add(mod)
+    modules.push(mod)
+  }
+
+  for (const mod of ctx.modules) {
+    collectModule(mod)
+  }
+  for (const mod of ctx.server.moduleGraph.getModulesByFile(ctx.file) ?? []) {
+    collectModule(mod)
+  }
+  for (const mod of ctx.server.moduleGraph.getModulesByFile(cleanUrl(ctx.file)) ?? []) {
+    collectModule(mod)
+  }
+  collectModule(ctx.server.moduleGraph.getModuleById?.(ctx.file))
+  collectModule(ctx.server.moduleGraph.getModuleById?.(cleanUrl(ctx.file)))
+
+  return modules
+}
+
 function resolveModuleHotUrl(mod: ModuleNode) {
   if (typeof mod.url === 'string' && mod.url.length > 0) {
     return mod.url
