@@ -2,6 +2,12 @@ import { URL } from 'node:url'
 import { devices, expect, test } from '@playwright/test'
 import routes from '../routes.json'
 
+declare global {
+  interface Window {
+    __themeTransitionCalls?: number
+  }
+}
+
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? 'https://tw.icebreaker.top/'
 
 interface ViewportCase {
@@ -204,6 +210,80 @@ test.describe('homepage hero layout', () => {
     const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth)
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth + 1)
+  })
+})
+
+test.describe('color mode transition strategy', () => {
+  test('desktop uses a short view transition for theme changes', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.addInitScript(() => {
+      window.localStorage.setItem('theme', 'dark')
+      Object.defineProperty(document, 'startViewTransition', {
+        configurable: true,
+        value(callback: () => void | Promise<void>) {
+          window.__themeTransitionCalls = (window.__themeTransitionCalls ?? 0) + 1
+          const done = Promise.resolve(callback())
+          return {
+            ready: Promise.resolve(),
+            finished: done,
+            updateCallbackDone: done,
+          }
+        },
+      })
+    })
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await page.locator('button[aria-label*="浅色/暗黑模式"]:visible').click()
+
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+    const calls = await page.evaluate(() => window.__themeTransitionCalls ?? 0)
+    expect(calls).toBe(1)
+  })
+
+  test('non fine-pointer environments skip view transitions for theme changes', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.addInitScript(() => {
+      window.localStorage.setItem('theme', 'dark')
+      const nativeMatchMedia = window.matchMedia.bind(window)
+      window.matchMedia = (query: string) => {
+        if (query.includes('hover: hover') || query.includes('pointer: fine')) {
+          return {
+            addEventListener: () => {},
+            addListener: () => {},
+            dispatchEvent: () => false,
+            matches: false,
+            media: query,
+            onchange: null,
+            removeEventListener: () => {},
+            removeListener: () => {},
+          }
+        }
+        return nativeMatchMedia(query)
+      }
+      Object.defineProperty(document, 'startViewTransition', {
+        configurable: true,
+        value(callback: () => void | Promise<void>) {
+          window.__themeTransitionCalls = (window.__themeTransitionCalls ?? 0) + 1
+          const done = Promise.resolve(callback())
+          return {
+            ready: Promise.resolve(),
+            finished: done,
+            updateCallbackDone: done,
+          }
+        },
+      })
+    })
+    await page.goto(baseURL, {
+      waitUntil: 'networkidle',
+    })
+
+    await page.locator('button[aria-label*="浅色/暗黑模式"]:visible').click()
+
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+    const calls = await page.evaluate(() => window.__themeTransitionCalls ?? 0)
+    expect(calls).toBe(0)
   })
 })
 
