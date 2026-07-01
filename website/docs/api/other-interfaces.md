@@ -2,7 +2,7 @@
 title: "🗂️ 其他接口"
 sidebar_label: "🗂️ 其他接口"
 sidebar_position: 2
-description: "其他接口索引，列出 11 个 weapp-tailwindcss 运行时接口和补充类型。"
+description: "其他接口索引，列出 12 个 weapp-tailwindcss 运行时接口和补充类型。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -30,3 +30,4 @@ keywords:
 - [WeappTailwindcssGenerator](./interfaces/WeappTailwindcssGenerator.md) - weapp-tailwindcss 统一生成器实例。
 - [WeappTailwindcssGeneratorTarget](./interfaces/WeappTailwindcssGeneratorTarget.md)
 - [WeappTailwindcssPostcssPluginOptions](./interfaces/WeappTailwindcssPostcssPluginOptions.md) - `weapp-tailwindcss` PostCSS 插件配置。
+- [WeappTailwindcssStyleInjectorOptions](./interfaces/WeappTailwindcssStyleInjectorOptions.md)

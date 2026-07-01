@@ -2,7 +2,7 @@
 title: "✅ 重要配置"
 sidebar_label: "✅ 重要配置"
 sidebar_position: 1
-description: "✅ 重要配置：20 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
+description: "✅ 重要配置：21 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。"
 keywords:
   - "weapp-tailwindcss"
   - "API"
@@ -17,7 +17,7 @@ keywords:
   - "插件参数"
 ---
 
-本页收录 20 个配置项，来源于 `UserDefinedOptions`。
+本页收录 21 个配置项，来源于 `UserDefinedOptions`。
 
 ## 配置一览
 
@@ -37,6 +37,7 @@ keywords:
 | [generator](#generator) | <code>WeappTailwindcssGeneratorOptions</code> | — | 控制 Tailwind CSS 直接生成目标端 CSS 的策略。 |
 | [ignoreTaggedTemplateExpressionIdentifiers](#ignoretaggedtemplateexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | <code>['weappTwIgnore']</code> | 忽略指定标签模板表达式中的标识符。 |
 | [ignoreCallExpressionIdentifiers](#ignorecallexpressionidentifiers) | <code>(string &#124; RegExp)[]</code> | — | 忽略指定调用表达式中的标识符。 |
+| [styleInjector](#styleinjector) | <code>WeappTailwindcssStyleInjectorUserOptions</code> | <code>false</code> | 开启构建产物样式入口注入。 |
 | [disabledDefaultTemplateHandler](#disableddefaulttemplatehandler) | <code>boolean</code> | <code>false</code> | 禁用默认的 `wxml` 模板替换器。 |
 | [tailwindcssBasedir](#tailwindcssbasedir) | <code>string</code> | — | 指定用于获取 Tailwind 上下文的路径。 |
 | [cache](#cache) | <code>boolean &#124; ICreateCacheReturnType</code> | — | 控制缓存策略。 |
@@ -134,21 +135,23 @@ false
 
 #### 备注
 
-在多平台构建场景下常用：小程序构建保持默认，非小程序环境（H5、App）传入 `true` 即可跳过转换。
+`disabled` 只适合完全不希望插件参与的构建，例如 RN、Harmony、独立原生或自定义构建。
+
+uni-app / uni-app x / Taro / Mpx 的 H5/Web 与普通 App WebView 构建通常应继续保留插件；
+生成器会根据平台环境变量自动切换到 `web` 输出。自定义环境无法注入平台变量时，
+请优先显式设置 `generator.target: 'web'`，而不是禁用插件。
 
 #### 示例
 
 ```ts
-// uni-app vue3 vite
+// Taro RN 或其他完全不希望插件参与的构建
 import process from 'node:process'
 
-const isH5 = process.env.UNI_PLATFORM === 'h5'
-const isApp = process.env.UNI_PLATFORM === 'app'
-const disabled = isH5 || isApp
+const disabled = process.env.TARO_ENV === 'rn'
 
-import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 
-WeappTailwindcss({
+new WeappTailwindcss({
   disabled,
 })
 ```
@@ -284,6 +287,29 @@ WeappTailwindcss({
 #### 备注
 
 使用这些方法包裹的模板字符串或字符串字面量会跳过转义，常与 `@weapp-tailwindcss/merge` 配合（如 `['twMerge', 'twJoin', 'cva']`）。
+
+### styleInjector
+
+> 可选 | 类型: `WeappTailwindcssStyleInjectorUserOptions` | 默认值: `false`
+
+开启构建产物样式入口注入。
+
+#### 备注
+
+默认关闭。传入 `true` 等价于启用空配置；传入对象时会透传给内置
+`weapp-style-injector` 实现，可配置 `imports`、`perFileImports`、分包样式入口等能力。
+
+Vite 会按当前 `appType` 自动选择 uni-app、Taro 或通用预设；Webpack 会按当前
+`appType` 自动选择 uni-app、Taro、Mpx 或通用预设。未显式配置 `appType` 时，会复用
+`weapp-tailwindcss` 在当前构建器中的推断结果。
+
+当 `disabled: true` 或 `disabled: { plugin: true }` 时，该能力会跟随主插件一起关闭。
+
+#### 默认值
+
+```ts
+false
+```
 
 ### disabledDefaultTemplateHandler
 

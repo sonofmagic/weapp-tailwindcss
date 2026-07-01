@@ -82,13 +82,13 @@ export default defineConfig({
 </style>
 ```
 
-`UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果 App 构建不希望插件参与，可以只针对 App 目标显式禁用：
+`UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`，不再需要写 `disabled: WeappTailwindcssDisabled`。如果自定义构建环境没有注入这些变量，可以显式指定 Web 输出：
 
 ```js
-const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
-
 WeappTailwindcss({
-  disabled: isApp,
+  generator: {
+    target: "web",
+  },
   cssOptions: {
     rem2rpx: true,
   },
@@ -98,6 +98,8 @@ WeappTailwindcss({
   ],
 });
 ```
+
+`disabled` 只适合完全不希望插件参与的独立原生或自定义构建，不是 H5 / 普通 App WebView 的常规配置。
 
 生成模式下不要再注册 Tailwind 官方生成插件，不要注册 `@tailwindcss/postcss` 或 `@tailwindcss/vite`。项目已有 PostCSS 配置时，只保留框架或业务需要的非 Tailwind 插件。
 

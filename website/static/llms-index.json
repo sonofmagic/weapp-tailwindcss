@@ -1,10 +1,10 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-06-29T12:36:26.100Z",
+  "generatedAt": "2026-07-01T08:01:53.392Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
-    "all": 162,
-    "docs": 158,
+    "all": 163,
+    "docs": 159,
     "blog": 4
   },
   "documents": [
@@ -1373,6 +1373,44 @@
     },
     {
       "kind": "doc",
+      "id": "doc:api/interfaces/WeappTailwindcssStyleInjectorOptions",
+      "title": "WeappTailwindcssStyleInjectorOptions",
+      "description": "WeappTailwindcssStyleInjectorOptions 的类型说明，列出公开属性、参数和使用边界。",
+      "summary": "string | string[] | null | undefined",
+      "url": "/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+      "canonical": "https://tw.icebreaker.top/docs/api/interfaces/WeappTailwindcssStyleInjectorOptions",
+      "keywords": [
+        "weapp-tailwindcss",
+        "API",
+        "接口文档",
+        "配置项",
+        "小程序",
+        "tailwindcss",
+        "微信小程序",
+        "WeappTailwindcssStyleInjectorOptions",
+        "WeappTailwindcssStyleInjectorOptions 接口",
+        "WeappTailwindcssStyleInjectorOptions 类型定义",
+        "TypeScript",
+        "interfaces",
+        "uni-app",
+        "taro",
+        "mpx"
+      ],
+      "headings": [
+        "属性",
+        "# imports?",
+        "# perFileImports()?",
+        "## 参数",
+        "### fileName",
+        "## 返回",
+        "# dedupe?",
+        "# pagesJsonPath?"
+      ],
+      "updatedAt": null,
+      "source": "docs/api/interfaces/WeappTailwindcssStyleInjectorOptions.md"
+    },
+    {
+      "kind": "doc",
       "id": "doc:api/options/general",
       "title": "⚙️ 一般配置",
       "description": "⚙️ 一般配置：6 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
@@ -1414,8 +1452,8 @@
       "kind": "doc",
       "id": "doc:api/options/important",
       "title": "✅ 重要配置",
-      "description": "✅ 重要配置：20 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
-      "summary": "本页收录 20 个配置项，来源于 UserDefinedOptions。",
+      "description": "✅ 重要配置：21 个 UserDefinedOptions 配置项，包含类型、默认值和源码说明。",
+      "summary": "本页收录 21 个配置项，来源于 UserDefinedOptions。",
       "url": "/docs/api/options/important",
       "canonical": "https://tw.icebreaker.top/docs/api/options/important",
       "keywords": [
@@ -1531,7 +1569,7 @@
       "kind": "doc",
       "id": "doc:api/other-interfaces",
       "title": "🗂️ 其他接口",
-      "description": "其他接口索引，列出 11 个 weapp-tailwindcss 运行时接口和补充类型。",
+      "description": "其他接口索引，列出 12 个 weapp-tailwindcss 运行时接口和补充类型。",
       "summary": "以下接口用于补充配置或运行时能力，本页面仅提供索引。",
       "url": "/docs/api/other-interfaces",
       "canonical": "https://tw.icebreaker.top/docs/api/other-interfaces",

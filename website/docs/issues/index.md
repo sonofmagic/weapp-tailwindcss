@@ -120,18 +120,20 @@ export default defineConfig({
 // 如果项目已有 PostCSS 配置，只保留 autoprefixer、业务自定义插件等非 Tailwind 插件。
 ```
 
-如果是 App 构建且不希望插件参与，可以只针对 App 目标显式禁用：
+如果自定义构建环境没有注入 `UNI_PLATFORM=h5/app/app-plus`，可以显式指定 Web 输出：
 
 ```js
-const isApp = process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus";
-
 WeappTailwindcss({
-  disabled: isApp,
+  generator: {
+    target: "web",
+  },
   cssOptions: {
     rem2rpx: true,
   },
 });
 ```
+
+`disabled` 只适合完全不希望插件参与的 RN、Harmony、独立原生或自定义构建，不是 H5 / 普通 App WebView 的常规配置。
 
 ## 报错 TypeError: Cannot use 'in' operator to search for 'CallExpression' in undefined
 
@@ -180,7 +182,7 @@ const vitePlugins = [uni(), WeappTailwindcss({
 })];
 ```
 
-即 H5 与普通 uni-app App WebView 环境继续保留插件，由生成器自动切到 `web` 目标。App 环境如果不希望插件参与，可以单独设置 `disabled: process.env.UNI_PLATFORM === "app" || process.env.UNI_PLATFORM === "app-plus"`。
+即 H5 与普通 uni-app App WebView 环境继续保留插件，由生成器自动切到 `web` 目标。自定义构建环境没有注入平台变量时，可以显式设置 `generator: { target: "web" }`。
 
 ## 使用 pnpm@8 插件注册失败问题
 

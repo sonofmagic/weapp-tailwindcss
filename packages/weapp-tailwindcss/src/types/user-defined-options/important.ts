@@ -59,19 +59,21 @@ export interface UserDefinedOptionsImportantPart {
    *
    * @group 0.重要配置
    * @remarks
-   * 在多平台构建场景下常用：小程序构建保持默认，非小程序环境（H5、App）传入 `true` 即可跳过转换。
+   * `disabled` 只适合完全不希望插件参与的构建，例如 RN、Harmony、独立原生或自定义构建。
+   *
+   * uni-app / uni-app x / Taro / Mpx 的 H5/Web 与普通 App WebView 构建通常应继续保留插件；
+   * 生成器会根据平台环境变量自动切换到 `web` 输出。自定义环境无法注入平台变量时，
+   * 请优先显式设置 `generator.target: 'web'`，而不是禁用插件。
    * @example
    * ```ts
-   * // uni-app vue3 vite
+   * // Taro RN 或其他完全不希望插件参与的构建
    * import process from 'node:process'
    *
-   * const isH5 = process.env.UNI_PLATFORM === 'h5'
-   * const isApp = process.env.UNI_PLATFORM === 'app'
-   * const disabled = isH5 || isApp
+   * const disabled = process.env.TARO_ENV === 'rn'
    *
-   * import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+   * import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
    *
-   * WeappTailwindcss({
+   * new WeappTailwindcss({
    *   disabled,
    * })
    * ```

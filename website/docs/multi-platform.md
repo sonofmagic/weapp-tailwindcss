@@ -88,18 +88,20 @@ export default defineConfig({
 })
 ```
 
-当 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`。如果某个 App 构建不希望插件参与，再只针对 App 显式禁用：
+当 `UNI_PLATFORM=h5`、`app` 或 `app-plus` 时，生成器默认目标会自动切换为 `web`。如果自定义构建没有注入这些环境变量，可以显式指定 Web 输出：
 
 ```ts
-const isApp = process.env.UNI_PLATFORM === 'app' || process.env.UNI_PLATFORM === 'app-plus'
-
 WeappTailwindcss({
-  disabled: isApp,
+  generator: {
+    target: 'web',
+  },
   cssOptions: {
     rem2rpx: true,
   },
 })
 ```
+
+只有完全不希望插件参与的独立原生构建，才需要把 `disabled` 当作高级逃生口单独处理。
 
 ### uni-app x
 

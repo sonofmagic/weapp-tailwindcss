@@ -9,5 +9,6 @@
   "api/interfaces/WeappTailwindcssGenerateResult",
   "api/interfaces/WeappTailwindcssGenerator",
   "api/interfaces/WeappTailwindcssGeneratorTarget",
-  "api/interfaces/WeappTailwindcssPostcssPluginOptions"
+  "api/interfaces/WeappTailwindcssPostcssPluginOptions",
+  "api/interfaces/WeappTailwindcssStyleInjectorOptions"
 ]

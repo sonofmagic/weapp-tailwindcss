@@ -147,7 +147,7 @@ export function CardWeb() {
 ### 注意事项
 
 - `process.env.TARO_ENV` 在构建期注入，适用于 H5/小程序的条件切换。
-- 多端项目建议统一使用 Tailwind CSS 4 入口，并在 H5/小程序之间显式切换插件启用状态。
+- 多端项目建议统一使用 Tailwind CSS 4 入口，并保持构建插件启用；这里只按端切换 runtime 的 escape/unescape。
 
 ## 扩展方向
 
