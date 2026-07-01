@@ -181,6 +181,17 @@ export async function formatCss(css: string) {
   })
 }
 
+const FONT_DATA_URL_RE = /url\(\s*(["']?)data:font\/([^;,'")\s]+)(?:;charset=[^;,'")\s]+)?;base64,[^'")\s]+(["']?)\s*\)/gi
+
+export function normalizeFontDataUrlsForSnapshot(source: string) {
+  return source.replace(FONT_DATA_URL_RE, (match, openQuote, fontType, closeQuote) => {
+    if (openQuote !== closeQuote) {
+      return match
+    }
+    return `url(${openQuote}data:font/${fontType};base64,<stable>${closeQuote})`
+  })
+}
+
 export function normalizeFormattedCssSnapshot(source: string) {
   return source
     .replace(/\}\s+(\/\*\s*tokens?:)/g, '}\n$1')
@@ -212,7 +223,8 @@ export function normalizeRawCssSnapshotText(source: string, options: CssSnapshot
 }
 
 export async function formatRawCssSnapshotText(source: string, options: CssSnapshotOptions = {}) {
-  return normalizeRawCssSnapshotText(await formatCss(source.replace(/\r\n/g, '\n')), options)
+  const normalizedSource = normalizeFontDataUrlsForSnapshot(source.replace(/\r\n/g, '\n'))
+  return normalizeRawCssSnapshotText(await formatCss(normalizedSource), options)
 }
 
 const SCANNER_NOISE_SELECTORS = new Set([

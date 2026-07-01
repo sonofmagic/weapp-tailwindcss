@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os'
 import path from 'pathe'
 import { describe, expect, it } from 'vitest'
 import { replaceWxml } from '../packages/weapp-tailwindcss/src/wxml'
-import { collectCssSnapshots, normalizeCssSnapshot, normalizeFormattedCssSnapshot, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
+import { collectCssSnapshots, formatRawCssSnapshotText, normalizeCssSnapshot, normalizeFontDataUrlsForSnapshot, normalizeFormattedCssSnapshot, normalizeRawCssSnapshotText, normalizeSnapshotName } from './snapshotUtils'
 
 describe('normalizeCssSnapshot', () => {
   it('normalizes generated css file hashes in path segments', () => {
@@ -21,6 +21,23 @@ describe('normalizeCssSnapshot', () => {
       '@import \'./styles/third-party-ui.wxss\';',
       '',
     ].join('\n'))
+  })
+
+  it('normalizes font data urls before formatting raw snapshots', async () => {
+    expect(normalizeFontDataUrlsForSnapshot([
+      '@font-face{font-family:nutui-iconfont;src:url(data:font/woff2;base64,d09GMgABAAAA) format("truetype")}',
+      '@font-face{font-family:"JDZH-Bold";src:url("data:font/ttf;charset=utf-8;base64,AAEAAAALAIAAAwAw") format("truetype")}',
+      '.logo{background-image:url(data:image/png;base64,iVBORw0KGgo=)}',
+    ].join('\n'))).toBe([
+      '@font-face{font-family:nutui-iconfont;src:url(data:font/woff2;base64,<stable>) format("truetype")}',
+      '@font-face{font-family:"JDZH-Bold";src:url("data:font/ttf;base64,<stable>") format("truetype")}',
+      '.logo{background-image:url(data:image/png;base64,iVBORw0KGgo=)}',
+    ].join('\n'))
+
+    await expect(formatRawCssSnapshotText([
+      '@font-face{font-family:nutui-iconfont;src:url(data:font/woff2;base64,d09GMgABAAAA) format("truetype")}',
+      '.bg-independent-subpackage-marker{background-color:#dc2626}',
+    ].join('\n'))).resolves.toContain('url(data:font/woff2;base64,<stable>) format(\'truetype\')')
   })
 
   it('applies webpack app split noise options to raw snapshots', () => {
