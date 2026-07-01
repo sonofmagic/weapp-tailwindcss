@@ -8773,6 +8773,67 @@ describe('bundlers/shared generator css', () => {
     expect(css).toContain('.border{border-style:var(--tw-border-style);border-width:1px}')
   })
 
+  it('skips mini-program preflight for scoped Vue style sources', async () => {
+    const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const css = finalizeMiniProgramGeneratorCss([
+      '.card{padding:16px}',
+    ].join('\n'), 'weapp', 4, {
+      border: '0 solid',
+    }, {
+      styleOptions: {
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/pages/index.vue?vue&type=style&index=0&scoped=true&lang.css',
+          },
+        },
+      },
+    })
+
+    expect(css).toContain('.card{padding:16px}')
+    expect(css).not.toContain('view,text,::after,::before')
+    expect(css).not.toContain('box-sizing:border-box')
+  })
+
+  it('disables generator preflight mode for scoped Vue style sources', async () => {
+    const { resolveMiniProgramPreflightModeForGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const mode = resolveMiniProgramPreflightModeForGeneratorCss({
+      cssPreflight: 'view',
+    } as any, {
+      cssHandlerOptions: {
+        isMainChunk: true,
+        postcssOptions: {
+          options: {
+            from: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&lang=scss&scoped=1',
+          },
+        },
+      } as any,
+      isolateCurrentCssCandidates: false,
+      primaryCssSource: true,
+    })
+
+    expect(mode).toEqual({
+      inject: false,
+      preserve: false,
+    })
+  })
+
+  it('removes preflight style options for scoped Vue style sources', async () => {
+    const { resolveGeneratorStyleOptions } = await import('@/bundlers/shared/generator-css/generation-helpers')
+    const styleOptions = resolveGeneratorStyleOptions({
+      cssPreflight: 'view',
+      cssPreflightRange: 'all',
+    } as any, {
+      postcssOptions: {
+        options: {
+          from: '/workspace/src/components/HelloWorld.vue?vue&type=style&index=0&lang=scss&scoped',
+        },
+      },
+    } as any, undefined)
+
+    expect(styleOptions.cssPreflight).toBe(false)
+    expect(styleOptions.cssPreflightRange).toBeUndefined()
+  })
+
   it('uses configured mini-program theme scope when finalizing generator css', async () => {
     const { finalizeMiniProgramGeneratorCss } = await import('@/bundlers/shared/generator-css/generation-helpers')
     const css = finalizeMiniProgramGeneratorCss([

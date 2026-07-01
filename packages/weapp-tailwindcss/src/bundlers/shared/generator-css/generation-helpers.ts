@@ -16,6 +16,20 @@ import {
   splitTailwindGeneratedCssByBanner,
   splitTailwindV4GeneratedCssBySourceOrder,
 } from './markers'
+import { resolvePostcssFromOption } from './source-resolver/postcss-source'
+
+function isVueScopedStyleSource(from: string | undefined) {
+  if (typeof from !== 'string' || from.length === 0) {
+    return false
+  }
+  const queryIndex = from.indexOf('?')
+  if (queryIndex === -1) {
+    return false
+  }
+  const query = from.slice(queryIndex + 1)
+  return /(?:^|&)type=style(?:&|$)/.test(query)
+    && /(?:^|&)scoped(?:=(?:true|1))?(?:&|$)/.test(query)
+}
 
 export function hasMiniProgramTailwindV4PreflightReset(css: string) {
   return /(?:^|[},])\s*view\s*,\s*text\s*,\s*::after\s*,\s*::before\s*\{[^}]*\bborder\s*:\s*0\s+solid\b/.test(css)
@@ -30,6 +44,16 @@ export function finalizeMiniProgramGeneratorCss(
 ) {
   if (target !== 'weapp') {
     return css
+  }
+  if (isVueScopedStyleSource(options.styleOptions?.postcssOptions?.options?.from)) {
+    return finalizeMiniProgramCss(css, {
+      cssPreflight: false,
+      cssSelectorReplacement: options.styleOptions?.cssOptions?.cssSelectorReplacement
+        ?? options.styleOptions?.cssSelectorReplacement,
+      isTailwindcssV4: true,
+      tailwindcssV4GradientFallback: options.styleOptions?.cssOptions?.tailwindcssV4GradientFallback
+        ?? options.styleOptions?.tailwindcssV4GradientFallback,
+    })
   }
   const hasPreflightReset = hasMiniProgramTailwindV4PreflightReset(css)
   const injectPreflight = options.injectPreflight !== false
@@ -61,6 +85,12 @@ export function resolveMiniProgramPreflightModeForGeneratorCss(
     explicitCssSource?: boolean | undefined
   },
 ) {
+  if (isVueScopedStyleSource(resolvePostcssFromOption(options.cssHandlerOptions))) {
+    return {
+      inject: false,
+      preserve: false,
+    }
+  }
   if (options.cssHandlerOptions.uniAppX === true && options.cssHandlerOptions.uniAppXCssTarget === 'uvue') {
     return {
       inject: false,
@@ -226,9 +256,10 @@ export function resolveGeneratorStyleOptions(
   generatorStyleOptions: Partial<IStyleHandlerOptions> | undefined,
 ): Partial<IStyleHandlerOptions> {
   const resolvedStyleOptions = resolveStyleOptionsFromContext(opts)
+  const scopedVueStyleSource = isVueScopedStyleSource(resolvePostcssFromOption(cssHandlerOptions))
   const preflightStyleOptions: Partial<IStyleHandlerOptions> = {
-    cssPreflight: resolvedStyleOptions.cssPreflight,
-    cssPreflightRange: resolvedStyleOptions.cssPreflightRange,
+    cssPreflight: scopedVueStyleSource ? false : resolvedStyleOptions.cssPreflight,
+    cssPreflightRange: scopedVueStyleSource ? undefined : resolvedStyleOptions.cssPreflightRange,
   }
   return {
     ...resolvedStyleOptions,

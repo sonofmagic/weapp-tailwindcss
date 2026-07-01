@@ -68,4 +68,18 @@ describe('uni-app vite vue3 Tailwind v4 cascade layer output', () => {
     expect(output, 'H5 output should keep custom Tailwind v4 layer rules').toMatch(/\.layer-card-v4\s*\{[\s\S]*?display:\s*flex/)
     expect(output, 'H5 output should keep declarations inside custom Tailwind v4 layer rules').toMatch(/color:\s*var\(--color-midnight\)/)
   }, 600_000)
+
+  it('keeps scoped Vue component css free of injected mini-program preflight', async () => {
+    await buildPlatform('mp-weixin')
+
+    const helloWorldCss = (await collectOutput(textOutputPattern, 'dist/build/mp-weixin'))
+      .find(entry => entry.file === 'components/HelloWorld.wxss')
+
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped component css should be emitted').toContain('.hello-world-shell')
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped @apply should be expanded').toContain('display:flex')
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped @apply should keep rpx radius').toContain('border-radius:20rpx')
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped @apply should keep color output').toContain('background-color:#f8fafc')
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped component css should not inject mini-program preflight').not.toContain('view,text,::after,::before')
+    expect(helloWorldCss?.text ?? '', 'HelloWorld scoped component css should not inject reset declarations').not.toContain('box-sizing:border-box')
+  }, 600_000)
 })

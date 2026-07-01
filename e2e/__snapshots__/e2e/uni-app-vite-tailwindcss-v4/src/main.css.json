@@ -1,8 +1,9 @@
 {
   "file": "src/main.css",
-  "count": 5,
+  "count": 6,
   "tokens": [
     "font-semibold",
+    "gap-2",
     "items-center",
     "rounded-[20rpx]",
     "text-[26rpx]",

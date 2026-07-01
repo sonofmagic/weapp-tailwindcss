@@ -8604,6 +8604,7 @@
     "cssFiles": [
       "app.wxss",
       "main.wxss",
+      "components/HelloWorld.wxss",
       "pages-order/pages/home/home.wxss",
       "pages-order/pages/user/user.wxss",
       "sub-independent/pages/index.wxss",
@@ -8611,7 +8612,7 @@
     ],
     "status": "passed",
     "generator": {
-      "bytes": 34499,
+      "bytes": 35679,
       "selectors": [
         "._ebg-_bgray_B",
         ".active_cbg-emerald-600:active",
@@ -8623,6 +8624,7 @@
         ".bg-_b_h0000ff_B",
         ".bg-_b_h123498_B",
         ".bg-_b_h68c828_B",
+        ".bg-_b_hf8fafc_B",
         ".bg-_bradial-gradient_pcircle_at_18_v_20_v_m_he0f2fe_m_hfdf4ff_70_v_P_B",
         ".bg-emerald-500",
         ".bg-gradient-to-br",
@@ -8686,6 +8688,8 @@
         ".h-16",
         ".h-20",
         ".h-_b45px_B",
+        ".hello-world-shell",
+        ".hello-world-shell.data-v-d365a2d6",
         ".i-mdi-home",
         ".inline-flex",
         ".items-center",
