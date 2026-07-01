@@ -23,6 +23,13 @@ interface ViteHmrMessage {
   updates?: ViteHmrUpdate[]
 }
 
+interface TailwindClassFlowMutation {
+  addedSource: string
+  modifiedSource: string
+  removedClassSource: string
+  selector: string
+}
+
 const repoRoot = path.resolve(__dirname, '..')
 const localUrlRE = /Local:\s*(https?:\/\/\S+)/i
 const reloadMarker = 'web-vite-hmr-marker'
@@ -171,7 +178,7 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
   if (kind === 'all' || kind === 'class') {
     next = next.replace(item.classFrom, item.classTo)
   }
-  if (kind === 'all' || kind === 'title') {
+  if ((kind === 'all' || kind === 'title') && item.titleFrom && item.titleTo) {
     next = next.replace(item.titleFrom, item.titleTo)
   }
   if (next === current) {
@@ -180,15 +187,60 @@ async function mutateSource(item: WebViteHmrCase, sourceFile: string, kind: Sour
   await fs.writeFile(sourceFile, next, 'utf8')
 }
 
+function createTailwindClassFlowMutation(item: WebViteHmrCase, original: string): TailwindClassFlowMutation {
+  const isReact = item.sourceFile.endsWith('.tsx')
+  const replacements: Array<{ from: string, to: string, selector: string }> = isReact
+    ? [
+        {
+          from: `className="box-border theme-mode-demo mt-4 rounded leading-[24px] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
+          to: `className="box-border theme-mode-demo mt-4 rounded leading-[24px] border border-[#00ff00] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
+          selector: '.theme-mode-demo',
+        },
+      ]
+    : [
+        {
+          from: `class="box-border theme-mode-demo mt-4 rounded leading-[24px] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
+          to: `class="box-border theme-mode-demo mt-4 rounded leading-[24px] border border-[#00ff00] bg-white px-4 py-3 text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#18181b] dark:text-[#fafafa]"`,
+          selector: '.theme-mode-demo',
+        },
+        {
+          from: `class="theme-mode-demo mt-4 block bg-white text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#09090b] dark:text-[#fafafa]"`,
+          to: `class="theme-mode-demo mt-4 block border border-[#00ff00] bg-white text-[#0f172b] system-dark:bg-[#0f172b] system-dark:text-[#f1f5f9] dark:bg-[#09090b] dark:text-[#fafafa]"`,
+          selector: '.theme-mode-demo',
+        },
+        {
+          from: `class="min-h-screen bg-white p-6 text-[#111827]"`,
+          to: `class="min-h-screen border border-[#00ff00] bg-white p-6 text-[#111827]"`,
+          selector: 'main',
+        },
+      ]
+
+  const replacement = replacements.find(({ from }) => original.includes(from))
+  if (!replacement) {
+    throw new Error(`${item.name} Web HMR 未找到 Tailwind class flow 插入点`)
+  }
+
+  const addedSource = original.replace(replacement.from, replacement.to)
+  const modifiedSource = addedSource.replace('border-[#00ff00]', 'border-[#ff00aa]')
+  const removedClassSource = original
+  return {
+    addedSource,
+    modifiedSource,
+    removedClassSource,
+    selector: replacement.selector,
+  }
+}
+
 async function waitForInitialRender(page: Page, item: WebViteHmrCase, baseUrl: string) {
   let lastError = ''
   const startedAt = Date.now()
   const targetSelector = item.targetSelector ?? 'h1'
+  const expectedText = item.titleFrom
 
   while (Date.now() - startedAt < serverTimeoutMs) {
     try {
       const title = await page.locator(targetSelector).textContent({ timeout: 2_000 })
-      if (title?.includes(item.titleFrom)) {
+      if (!expectedText || title?.includes(expectedText)) {
         return
       }
       lastError = `${targetSelector}=${title}`
@@ -219,13 +271,17 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
       const actual = await page.locator(targetSelector).evaluate((element) => {
         const style = window.getComputedStyle(element)
         return {
+          backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
           color: style.color.replace(/\s+/g, ' '),
           text: element.textContent?.trim() ?? '',
           marker: element.getAttribute('data-web-vite-hmr'),
         }
       })
-      const styleMatched = item.styleRequired === false || actual.color === 'rgb(255, 0, 0)'
-      if (actual.text.includes(item.titleTo) && styleMatched) {
+      const property = item.styleProperty ?? 'color'
+      const expectedStyleValue = item.expectedStyleValue ?? 'rgb(255, 0, 0)'
+      const styleMatched = item.styleRequired === false || actual[property] === expectedStyleValue
+      const textMatched = !item.titleTo || actual.text.includes(item.titleTo)
+      if (textMatched && styleMatched) {
         return
       }
       lastError = JSON.stringify(actual)
@@ -241,6 +297,9 @@ async function waitForDomHmr(page: Page, item: WebViteHmrCase) {
 }
 
 async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
+  if (!item.titleTo) {
+    return
+  }
   let lastError = ''
   const startedAt = Date.now()
   const targetSelector = item.targetSelector ?? 'h1'
@@ -263,7 +322,7 @@ async function waitForTitleHmr(page: Page, item: WebViteHmrCase) {
   throw new Error(`${item.name} Web HMR 文本未更新：${lastError}\nbody=${body}`)
 }
 
-async function waitForClassHmr(page: Page, item: WebViteHmrCase) {
+async function waitForClassHmr(page: Page, item: WebViteHmrCase, messages?: ViteHmrMessage[], fromIndex = 0) {
   let lastError = ''
   const startedAt = Date.now()
   const targetSelector = item.targetSelector ?? 'h1'
@@ -273,11 +332,14 @@ async function waitForClassHmr(page: Page, item: WebViteHmrCase) {
       const actual = await page.locator(targetSelector).evaluate((element) => {
         const style = window.getComputedStyle(element)
         return {
+          backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
           color: style.color.replace(/\s+/g, ' '),
           marker: element.getAttribute('data-web-vite-hmr'),
         }
       })
-      const styleMatched = item.styleRequired === false || actual.color === 'rgb(255, 0, 0)'
+      const property = item.styleProperty ?? 'color'
+      const expectedStyleValue = item.expectedStyleValue ?? 'rgb(255, 0, 0)'
+      const styleMatched = item.styleRequired === false || actual[property] === expectedStyleValue
       if (actual.marker === item.markerAttr && styleMatched) {
         return
       }
@@ -290,7 +352,56 @@ async function waitForClassHmr(page: Page, item: WebViteHmrCase) {
   }
 
   const body = await page.locator('body').textContent().catch(error => String(error))
-  throw new Error(`${item.name} Web HMR class 未更新：${lastError}\nbody=${body}`)
+  const hmr = messages ? `\nhmr=${JSON.stringify(messages.slice(fromIndex))}` : ''
+  throw new Error(`${item.name} Web HMR class 未更新：${lastError}\nbody=${body}${hmr}`)
+}
+
+async function waitForFlowElementStyle(page: Page, item: WebViteHmrCase, selector: string, expected: {
+  backgroundColor?: string
+  borderTopColor?: string
+  borderTopWidth?: string
+  color?: string
+  paddingLeft?: string
+  text?: string
+  className?: string
+}) {
+  let lastError = ''
+  const startedAt = Date.now()
+
+  while (Date.now() - startedAt < serverTimeoutMs) {
+    try {
+      const actual = await page.locator(selector).evaluate((element) => {
+        const style = window.getComputedStyle(element)
+        return {
+          backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
+          borderTopColor: style.borderTopColor.replace(/\s+/g, ' '),
+          borderTopWidth: style.borderTopWidth,
+          color: style.color.replace(/\s+/g, ' '),
+          paddingLeft: style.paddingLeft,
+          text: element.textContent?.trim() ?? '',
+          className: element.getAttribute('class') ?? '',
+        }
+      })
+      const matched = (expected.backgroundColor === undefined || actual.backgroundColor === expected.backgroundColor)
+        && (expected.borderTopColor === undefined || actual.borderTopColor === expected.borderTopColor)
+        && (expected.borderTopWidth === undefined || actual.borderTopWidth === expected.borderTopWidth)
+        && (expected.color === undefined || actual.color === expected.color)
+        && (expected.paddingLeft === undefined || actual.paddingLeft === expected.paddingLeft)
+        && (expected.text === undefined || actual.text === expected.text)
+        && (expected.className === undefined || actual.className === expected.className)
+      if (matched) {
+        return
+      }
+      lastError = JSON.stringify(actual)
+    }
+    catch (error) {
+      lastError = error instanceof Error ? error.message : String(error)
+    }
+    await wait(pollIntervalMs)
+  }
+
+  const body = await page.locator('body').textContent().catch(error => String(error))
+  throw new Error(`${item.name} Web HMR Tailwind class flow 样式未更新：${lastError}\nbody=${body}`)
 }
 
 function collectViteHmrMessages(page: Page) {
@@ -311,6 +422,9 @@ function collectViteHmrMessages(page: Page) {
 }
 
 function expectViteSourceHmrUpdate(item: WebViteHmrCase, messages: ViteHmrMessage[], fromIndex = 0) {
+  if (item.sourceUpdateRequired === false) {
+    return
+  }
   if (!item.expectedViteHmrPath && !item.expectedViteHmrPathIncludes) {
     return
   }
@@ -353,6 +467,9 @@ async function markPageSession(page: Page) {
 }
 
 async function expectPageSessionPreserved(page: Page, item: WebViteHmrCase) {
+  if (item.reloadAllowed) {
+    return
+  }
   const actual = await page.evaluate(() => Reflect.get(window, '__WEB_VITE_HMR_RELOAD_MARKER__'))
   if (actual === reloadMarker) {
     return
@@ -427,22 +544,129 @@ describe('demo/web source HMR', () => {
 
     if (item.expectedViteHmrPath || item.expectedViteHmrPathIncludes) {
       const titleMessageStart = hmrMessages.length
-      await mutateSource(item, sourceFile, 'title')
-      await waitForTitleHmr(page, item)
-      await expectPageSessionPreserved(page, item)
-      expectNoViteFullReload(item, hmrMessages, titleMessageStart)
-      expectViteSourceHmrUpdate(item, hmrMessages, titleMessageStart)
+      if (item.titleFrom && item.titleTo) {
+        await mutateSource(item, sourceFile, 'title')
+        await waitForTitleHmr(page, item)
+        await expectPageSessionPreserved(page, item)
+        expectNoViteFullReload(item, hmrMessages, titleMessageStart)
+        expectViteSourceHmrUpdate(item, hmrMessages, titleMessageStart)
+      }
 
       const classMessageStart = hmrMessages.length
       await mutateSource(item, sourceFile, 'class')
-      await waitForClassHmr(page, item)
+      if (item.classUpdateRequired === false) {
+        await expectPageSessionPreserved(page, item)
+        return
+      }
+      await waitForClassHmr(page, item, hmrMessages, classMessageStart)
       await expectPageSessionPreserved(page, item)
-      expectNoViteFullReload(item, hmrMessages, classMessageStart)
+      if (!item.reloadAllowed) {
+        expectNoViteFullReload(item, hmrMessages, classMessageStart)
+      }
       expectViteSourceHmrUpdate(item, hmrMessages, classMessageStart)
       return
     }
 
     await mutateSource(item, sourceFile)
     await waitForDomHmr(page, item)
+  }, serverTimeoutMs + 30_000)
+
+  it.each(webViteHmrCases)('adds modifies and removes Tailwind classes for $name', async (item) => {
+    if (item.classFlowRequired === false) {
+      return
+    }
+    const projectRoot = path.resolve(repoRoot, item.projectDir)
+    const sourceFile = path.resolve(projectRoot, item.sourceFile)
+    const port = await findFreePort()
+    const child = createDevServer(item, projectRoot, port)
+    const logs = collectProcessOutput(child)
+    const baseUrl = await waitForReadyUrl(item, child, logs, `http://127.0.0.1:${port}/`)
+
+    browser = await chromium.launch({
+      executablePath: await resolveChromeExecutable(),
+      headless: true,
+    })
+    const page = await browser.newPage()
+    const hmrMessages = collectViteHmrMessages(page)
+    const original = await fs.readFile(sourceFile, 'utf8')
+    const flow = createTailwindClassFlowMutation(item, original)
+    restoreSource = async () => {
+      await fs.writeFile(sourceFile, original, 'utf8')
+    }
+    await page.goto(baseUrl, {
+      waitUntil: 'domcontentloaded',
+      timeout: Math.min(serverTimeoutMs, 60_000),
+    })
+    await waitForInitialRender(page, item, baseUrl)
+    await markPageSession(page)
+    const targetSelector = flow.selector
+    const readFlowState = async () => {
+      return await page.locator(targetSelector).evaluate((element) => {
+        const style = window.getComputedStyle(element)
+        return {
+          backgroundColor: style.backgroundColor.replace(/\s+/g, ' '),
+          borderTopColor: style.borderTopColor.replace(/\s+/g, ' '),
+          borderTopWidth: style.borderTopWidth,
+          className: element.getAttribute('class') ?? '',
+        }
+      })
+    }
+
+    const originalState = await readFlowState()
+    if (originalState.backgroundColor !== 'rgb(255, 255, 255)') {
+      throw new Error(`${item.name} Web HMR class flow 初始样式不符合预期：${JSON.stringify(originalState)}`)
+    }
+
+    await fs.writeFile(sourceFile, flow.addedSource, 'utf8')
+    const addMessageStart = hmrMessages.length
+    await waitForFlowElementStyle(page, item, flow.selector, {
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderTopColor: 'rgb(0, 255, 0)',
+      borderTopWidth: '1px',
+      className: originalState.className.replace('bg-white', 'border border-[#00ff00] bg-white'),
+    })
+    if (!item.reloadAllowed) {
+      expectNoViteFullReload(item, hmrMessages, addMessageStart)
+    }
+    await expectPageSessionPreserved(page, item)
+
+    await fs.writeFile(sourceFile, flow.modifiedSource, 'utf8')
+    const modifyMessageStart = hmrMessages.length
+    await waitForFlowElementStyle(page, item, flow.selector, {
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderTopColor: 'rgb(255, 0, 170)',
+      borderTopWidth: '1px',
+      className: originalState.className.replace('bg-white', 'border border-[#ff00aa] bg-white'),
+    })
+    if (!item.reloadAllowed) {
+      expectNoViteFullReload(item, hmrMessages, modifyMessageStart)
+    }
+    await expectPageSessionPreserved(page, item)
+
+    await fs.writeFile(sourceFile, flow.removedClassSource, 'utf8')
+    const removeClassMessageStart = hmrMessages.length
+    await waitForFlowElementStyle(page, item, flow.selector, {
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderTopColor: originalState.borderTopColor,
+      borderTopWidth: originalState.borderTopWidth,
+      className: originalState.className,
+    })
+    if (!item.reloadAllowed) {
+      expectNoViteFullReload(item, hmrMessages, removeClassMessageStart)
+    }
+    await expectPageSessionPreserved(page, item)
+
+    await fs.writeFile(sourceFile, original, 'utf8')
+    const rollbackMessageStart = hmrMessages.length
+    await waitForFlowElementStyle(page, item, flow.selector, {
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderTopColor: originalState.borderTopColor,
+      borderTopWidth: originalState.borderTopWidth,
+      className: originalState.className,
+    })
+    if (!item.reloadAllowed) {
+      expectNoViteFullReload(item, hmrMessages, rollbackMessageStart)
+    }
+    await expectPageSessionPreserved(page, item)
   }, serverTimeoutMs + 30_000)
 })

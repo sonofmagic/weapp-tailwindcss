@@ -455,4 +455,50 @@ describe('bundlers/vite WeappTailwindcss hook coverage', () => {
     expect(hotResult).toEqual([])
     expect(send).toHaveBeenCalledWith(expect.objectContaining({ type: 'full-reload' }))
   })
+
+  it('does not treat ordinary web macro subrequests as Nuxt page macro reloads', async () => {
+    const context = createContext({
+      cssEntries: ['/project/src/style.css'],
+      generator: {
+        target: 'web',
+      },
+      tailwindcssBasedir: '/project',
+    })
+    setCurrentContext(context)
+    const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+    const plugins = WeappTailwindcss()!
+    const postPlugin = getPlugin(plugins, 'post')
+    await (postPlugin.configResolved as any)?.call(postPlugin, {
+      command: 'serve',
+      root: '/project',
+      plugins: [],
+      css: { postcss: { plugins: [] } },
+      build: { outDir: 'dist' },
+    } as any)
+
+    const sourcePlugin = getPlugin(plugins, 'source-candidates')
+    const send = vi.fn()
+    const module = {
+      id: '/project/src/main.tsx?macro=true',
+      url: '/src/main.tsx?macro=true',
+      isSelfAccepting: true,
+    }
+    const hotResult = await sourcePlugin.handleHotUpdate?.({
+      file: '/project/src/main.tsx',
+      modules: [module],
+      server: {
+        moduleGraph: {
+          getModulesByFile: () => undefined,
+          getModuleById: () => undefined,
+          invalidateModule: vi.fn(),
+        },
+        ws: {
+          send,
+        },
+      },
+    } as any)
+
+    expect(hotResult).toEqual([module])
+    expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ type: 'full-reload' }))
+  })
 })

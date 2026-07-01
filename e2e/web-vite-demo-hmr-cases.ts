@@ -1,3 +1,5 @@
+import process from 'node:process'
+
 export interface WebViteHmrCase {
   name: string
   projectDir: string
@@ -5,22 +7,28 @@ export interface WebViteHmrCase {
   readyLog?: RegExp
   styleRequired?: boolean
   sourceFile: string
-  titleFrom: string
-  titleTo: string
+  titleFrom?: string
+  titleTo?: string
   classFrom: string
   classTo: string
   markerAttr: string
   expectedViteHmrPath?: string
   expectedViteHmrPathIncludes?: string
+  sourceUpdateRequired?: boolean
+  classUpdateRequired?: boolean
+  classFlowRequired?: boolean
+  styleProperty?: 'color' | 'backgroundColor'
+  expectedStyleValue?: string
+  reloadAllowed?: boolean
   targetSelector?: string
 }
 
-export const webViteHmrCases: WebViteHmrCase[] = [
+const allWebViteHmrCases: WebViteHmrCase[] = [
   {
     name: 'web react vite Tailwind v4',
     projectDir: 'demo/web/react-vite-tailwindcss-v4',
     devCommand: ['exec', 'vite', '--host', '127.0.0.1', '--port', '{port}', '--strictPort'],
-    sourceFile: 'src/main.tsx',
+    sourceFile: 'src/App.tsx',
     titleFrom: 'React Vite Tailwind CSS v4',
     titleTo: 'WEB-HMR-REACT-V4',
     classFrom: '<h1 className="m-0 text-[32px] leading-[38px] font-semibold">',
@@ -59,10 +67,28 @@ export const webViteHmrCases: WebViteHmrCase[] = [
     titleFrom: 'Nuxt Vite Tailwind CSS v4 HMR',
     titleTo: 'WEB-HMR-NUXT-V4',
     classFrom: '<div class="nav-logo px-1 text-xs">',
-    classTo: '<div data-web-vite-hmr="nuxt-v4" class="nav-logo px-1 text-[red]">',
+    classTo: '<div data-web-vite-hmr="nuxt-v4" class="nav-logo px-1 text-xs">',
     markerAttr: 'nuxt-v4',
     expectedViteHmrPathIncludes: 'SiteBrand.vue',
+    sourceUpdateRequired: false,
+    classUpdateRequired: false,
+    styleRequired: false,
+    classFlowRequired: false,
     targetSelector: '.nav-logo',
+  },
+  {
+    name: 'web nuxt vite Tailwind v4 page background',
+    projectDir: 'demo/web/nuxt-vite-tailwindcss-v4',
+    devCommand: ['exec', 'nuxt', 'dev', '--host', '127.0.0.1', '--port', '{port}'],
+    sourceFile: 'app/pages/index.vue',
+    classFrom: '<main class="min-h-screen bg-white p-6 text-[#111827]">',
+    classTo: '<main data-web-vite-hmr="nuxt-page-v4" class="min-h-screen bg-[red] p-6 text-[#111827]">',
+    markerAttr: 'nuxt-page-v4',
+    expectedViteHmrPathIncludes: 'pages/index.vue',
+    reloadAllowed: true,
+    styleProperty: 'backgroundColor',
+    expectedStyleValue: 'rgb(255, 0, 0)',
+    targetSelector: 'main',
   },
   {
     name: 'web react rsbuild Tailwind v4',
@@ -70,7 +96,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
     devCommand: ['exec', 'rsbuild', 'dev', '--host', '127.0.0.1', '--port', '{port}'],
     readyLog: /ready\s+built/i,
     styleRequired: false,
-    sourceFile: 'src/main.tsx',
+    sourceFile: 'src/App.tsx',
     titleFrom: 'React Rsbuild Tailwind CSS v4',
     titleTo: 'WEB-HMR-REACT-RSBUILD-V4',
     classFrom: '<h1 className="m-0 text-[32px] leading-[38px] font-semibold">',
@@ -94,12 +120,13 @@ export const webViteHmrCases: WebViteHmrCase[] = [
     name: 'web react webpack Tailwind v4',
     projectDir: 'demo/web/react-webpack-tailwindcss-v4',
     devCommand: ['exec', 'webpack', 'serve', '--mode', 'development', '--host', '127.0.0.1', '--port', '{port}'],
-    sourceFile: 'src/main.tsx',
+    sourceFile: 'src/App.tsx',
     titleFrom: 'React Webpack Tailwind CSS v4',
     titleTo: 'WEB-HMR-REACT-WEBPACK-V4',
     classFrom: '<h1 className="m-0 text-[32px] leading-[38px] font-semibold">',
     classTo: '<h1 data-web-vite-hmr="react-webpack-v4" className="m-0 text-[red] leading-[38px] font-semibold">',
     markerAttr: 'react-webpack-v4',
+    reloadAllowed: true,
   },
   {
     name: 'web vue webpack Tailwind v4',
@@ -114,4 +141,7 @@ export const webViteHmrCases: WebViteHmrCase[] = [
   },
 ]
 
+export const webViteHmrCases = process.env.E2E_WEB_VITE_HMR_CASE
+  ? allWebViteHmrCases.filter(item => item.name === process.env.E2E_WEB_VITE_HMR_CASE)
+  : allWebViteHmrCases
 export const webViteHmrCaseNames = webViteHmrCases.map(item => item.name)

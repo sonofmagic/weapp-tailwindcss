@@ -423,6 +423,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     || resolvedConfig?.command === 'serve'
     || process.env['WEAPP_TW_WATCH_REGRESSION'] === '1'
     || process.env['WEAPP_TW_HMR_TIMING'] === '1'
+  const isNuxtPageMacroHotModule = (id: string | null | undefined) => {
+    if (typeof id !== 'string' || !/[?&]macro=true(?:&|$)/.test(id)) {
+      return false
+    }
+    const cleanId = cleanUrl(id)
+    return cleanId.includes('/pages/') && /\.(?:vue|tsx?|jsx?)$/.test(cleanId)
+  }
   const hasSourceCandidateScanState = () => sourceCandidateScanSignature !== undefined
   const normalizeSourceScanDependency = (file: string) => path.normalize(path.resolve(cleanUrl(file)))
   const isSourceScanDependency = (file: string) => sourceScanDependencies.has(normalizeSourceScanDependency(file))
@@ -1021,6 +1028,10 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
           await syncChangedSourceCandidateFile(ctx.file)
           if (isSourceCandidateHotUpdate) {
             invalidateRecordedGeneratorCandidates()
+            if (generatorBranch.isWeb) {
+              await refreshRuntimeStateForAutoCssSources?.(true)
+              await syncSourceCandidateScan({ force: true })
+            }
           }
           const cssModules = resolveHotTailwindCssModules(ctx, tailwindRootCssModuleIds)
           if (
@@ -1035,9 +1046,20 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
             sendFullReloadForUnresolvedHotUpdate(ctx)
             return []
           }
+          if (
+            generatorBranch.isWeb
+            && isSourceCandidateHotUpdate
+            && !isSourceStyleRequest(ctx.file)
+            && ctx.modules.some(mod => isNuxtPageMacroHotModule(mod.id ?? mod.url))
+          ) {
+            sendFullReloadForUnresolvedHotUpdate(ctx)
+            return []
+          }
           sendSupplementalCssHotUpdates(ctx, cssModules)
           if (generatorBranch.isWeb && isSourceCandidateHotUpdate && !isSourceStyleRequest(ctx.file)) {
-            return undefined
+            return cssModules.length > 0
+              ? [...ctx.modules, ...cssModules]
+              : ctx.modules
           }
           return cssModules.length > 0
             ? [...ctx.modules, ...cssModules]
