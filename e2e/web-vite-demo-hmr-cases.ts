@@ -21,6 +21,7 @@ export interface WebViteHmrCase {
   expectedStyleValue?: string
   reloadAllowed?: boolean
   targetSelector?: string
+  matrixCoverage?: boolean
 }
 
 const allWebViteHmrCases: WebViteHmrCase[] = [
@@ -89,6 +90,7 @@ const allWebViteHmrCases: WebViteHmrCase[] = [
     styleProperty: 'backgroundColor',
     expectedStyleValue: 'rgb(255, 0, 0)',
     targetSelector: 'main',
+    matrixCoverage: false,
   },
   {
     name: 'web react rsbuild Tailwind v4',
@@ -145,3 +147,6 @@ export const webViteHmrCases = process.env.E2E_WEB_VITE_HMR_CASE
   ? allWebViteHmrCases.filter(item => item.name === process.env.E2E_WEB_VITE_HMR_CASE)
   : allWebViteHmrCases
 export const webViteHmrCaseNames = webViteHmrCases.map(item => item.name)
+export const webViteHmrCoverageCaseNames = allWebViteHmrCases
+  .filter(item => item.matrixCoverage !== false)
+  .map(item => item.name)

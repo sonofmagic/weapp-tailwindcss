@@ -20,7 +20,7 @@ import { MULTIPLATFORM_BUILD_OUTPUT_CASES } from './multiplatform-build-output/c
 import { MULTIPLATFORM_TARGETS } from './multiplatform-build-output/targets'
 import { E2E_PROJECTS } from './projectEntries'
 import { taroWebHmrCaseNames } from './taro-web-demo-hmr-cases'
-import { webViteHmrCaseNames } from './web-vite-demo-hmr-cases'
+import { webViteHmrCoverageCaseNames } from './web-vite-demo-hmr-cases'
 
 interface DemoPackageJson {
   scripts?: Record<string, string>
@@ -340,7 +340,7 @@ describe('e2e matrix', () => {
     const visualCaseNames = E2E_PROJECTS.map(item => item.name).sort()
     const h5VisualNames = [
       ...taroWebHmrCaseNames.map(name => name.replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
-      ...webViteHmrCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
+      ...webViteHmrCoverageCaseNames.map(name => name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v')),
       'uni-app-vite-tailwindcss-v4',
       'uni-app-vite-vue3-hbuilderx-tailwindcss-v4',
       'uni-app-x-hbuilderx-tailwindcss-v4',
@@ -446,7 +446,7 @@ describe('e2e matrix', () => {
       .map(item => item.name.replace('web/', 'web ').replaceAll('-', ' '))
       .map(item => item.replace('tailwindcss v', 'Tailwind v'))
 
-    expect(webViteHmrCaseNames).toEqual(expectedNames)
+    expect(webViteHmrCoverageCaseNames).toEqual(expectedNames)
   })
 
   it('wires every Taro demo H5 platform to browser HMR cases', () => {
@@ -530,7 +530,7 @@ describe('e2e matrix', () => {
     const hbuilderAppCases = new Set([...uniAppAppCases, ...uniAppXAppCases].map(item => demoPlatformKey(item.projectDir.replace('demo/', ''), item.platform)))
     const visualMiniProgramCases = new Set(E2E_PROJECTS.map(item => demoPlatformKey(item.name, 'weapp')))
     const taroBrowserCases = new Set(taroWebHmrCaseNames.map(name => demoPlatformKey(name.replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v'), 'h5')))
-    const webBrowserCases = new Set(webViteHmrCaseNames.map(name => demoPlatformKey(name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v'), 'web')))
+    const webBrowserCases = new Set(webViteHmrCoverageCaseNames.map(name => demoPlatformKey(name.replace(/^web /, 'web/').replaceAll(' ', '-').replace('Tailwind-v', 'tailwindcss-v'), 'web')))
 
     for (const entry of DEMO_COVERAGE_MATRIX) {
       for (const platform of entry.platforms) {
@@ -620,7 +620,7 @@ describe('e2e matrix', () => {
       .map(item => item.name.replace('web/', 'web ').replaceAll('-', ' '))
       .map(item => item.replace('tailwindcss v', 'Tailwind v'))
 
-    expect(webViteHmrCaseNames).toEqual(expectedNames)
+    expect(webViteHmrCoverageCaseNames).toEqual(expectedNames)
   })
 
   it('covers every Taro demo package with browser source HMR', () => {
