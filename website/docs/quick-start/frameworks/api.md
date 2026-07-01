@@ -132,4 +132,4 @@ const classNames = ['mb-[1.5rem]']
 | `weapp-tailwindcss/webpack` | Webpack 框架 | 插件接管 |
 | `weapp-tailwindcss/core` | 自研构建器或脚本 | 需要你自己串好生成顺序 |
 
-自定义构建器还需要显式处理 CSS 入口、`@source`、`cssEntries` 等信息；普通项目建议先阅读 [Tailwind CSS 4.x 开发参考](/docs/tailwindcss/v4-reference)，再对照对应框架注册页。
+自定义构建器还需要显式处理 CSS 入口、`@source`、`cssEntries` 等信息；普通项目建议先阅读 [Tailwind CSS 4 默认模式参考](/docs/tailwindcss/v4-reference)，再对照对应框架注册页。

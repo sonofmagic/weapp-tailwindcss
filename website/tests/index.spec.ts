@@ -162,6 +162,11 @@ test.describe('homepage hero layout', () => {
     expect(githubBadgeStyle.iconHeight).toBeGreaterThan(12)
     expect(githubBadgeStyle.iconMaskImage).toContain('data:image/svg+xml')
 
+    const openAiIconFilter = await page
+      .locator('.home-hero__actions [class~="icon-[logos--openai-icon]"]')
+      .evaluate(element => getComputedStyle(element).filter)
+    expect(openAiIconFilter).not.toBe('none')
+
     const viewportWidth = await page.evaluate(() => document.documentElement.clientWidth)
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth)
     expect(scrollWidth).toBeLessThanOrEqual(viewportWidth + 1)

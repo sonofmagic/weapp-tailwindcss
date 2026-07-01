@@ -50,13 +50,13 @@ const tailwindcssSidebar: SidebarConfig = [
     items: [
       {
         type: 'category',
-        label: 'Tailwind CSS 4.x 与 weapp-tailwindcss',
+        label: 'Tailwind CSS 4 默认模式',
         collapsed: true,
         items: [
           {
             type: 'doc',
             id: 'tailwindcss/v4-reference',
-            label: 'Tailwind CSS 4.x 开发参考',
+            label: '默认 v4 模式参考',
           },
           {
             type: 'doc',

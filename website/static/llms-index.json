@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-01T09:11:01.097Z",
+  "generatedAt": "2026-07-01T09:37:02.433Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 164,
@@ -2357,7 +2357,7 @@
         "快速开始 :rocket:",
         "# 👉 [安装依赖](/docs/quick-start/install)",
         "# 👉 [各框架模板](/docs/community/templates)",
-        "# 👉 [Tailwind CSS 4.x 开发参考](/docs/tailwindcss/v4-reference)",
+        "# 👉 [Tailwind CSS 4 默认模式参考](/docs/tailwindcss/v4-reference)",
         "演示视频"
       ],
       "updatedAt": null,
@@ -4020,13 +4020,13 @@
     {
       "kind": "doc",
       "id": "doc:quick-start/v4/readme",
-      "title": "开发参考手册已迁移",
-      "description": "Tailwind CSS 4 开发参考手册已经迁移到 Tailwind 专题。",
-      "summary": "/docs/quick-start/v4 不再作为快速开始入口。Tailwind CSS 4 的 CSS-first、@source、@apply、@layer、IntelliSense 与多端补充说明，已经迁移到 Tailwind 专题下的开发参考手册。",
+      "title": "Tailwind CSS 4 旧入口已迁移",
+      "description": "Tailwind CSS 4 旧开发参考入口已经迁移到 Tailwind 专题。",
+      "summary": "/docs/quick-start/v4 不再作为快速开始入口，也不再表示 Tailwind CSS 4 是可选或实验性的额外接入方式。当前文档默认使用 Tailwind CSS 4 生成模式；CSS-first、@source、@apply、@layer、IntelliSense 与多端补充说明，已经迁移到 Tailwind 专题下。",
       "url": "/docs/quick-start/v4/readme",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/v4/readme",
       "keywords": [
-        "开发参考手册",
+        "旧入口迁移",
         "Tailwind CSS 4",
         "weapp-tailwindcss",
         "v4",
@@ -4037,11 +4037,11 @@
         "tailwindcss",
         "安装",
         "配置",
-        "开发参考手册已迁移",
+        "Tailwind",
+        "CSS",
+        "旧入口已迁移",
         "quick start",
-        "微信小程序",
-        "uni-app",
-        "taro"
+        "微信小程序"
       ],
       "headings": [],
       "updatedAt": null,
@@ -5409,13 +5409,13 @@
     {
       "kind": "doc",
       "id": "doc:tailwindcss/v4-reference",
-      "title": "Tailwind CSS 4.x 开发参考",
-      "description": "Tailwind CSS 4 在 weapp-tailwindcss 中的配置说明。",
-      "summary": "当前文档仅维护 Tailwind CSS 4 接入说明。",
+      "title": "Tailwind CSS 4 默认模式参考",
+      "description": "weapp-tailwindcss 默认 Tailwind CSS 4 生成模式下的工程细节、兼容性与排障说明。",
+      "summary": "本页只维护 Tailwind CSS 4 默认生成模式相关说明；Tailwind CSS 3 或历史实验接入方式请优先参考迁移文档。",
       "url": "/docs/tailwindcss/v4-reference",
       "canonical": "https://tw.icebreaker.top/docs/tailwindcss/v4-reference",
       "keywords": [
-        "开发参考手册",
+        "默认 v4 模式",
         "v4",
         "weapp-tailwindcss",
         "tailwindcss",
@@ -5428,8 +5428,7 @@
         "原子化",
         "Tailwind",
         "CSS",
-        "4.x",
-        "开发参考",
+        "默认模式参考",
         "v4 reference"
       ],
       "headings": [

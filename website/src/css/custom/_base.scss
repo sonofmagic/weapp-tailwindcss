@@ -78,14 +78,16 @@ a:hover {
   text-decoration: none;
 }
 
-.icon-\[logos--openai-icon\],
-.home-v5 .icon-\[logos--openai-icon\] {
+[class~='icon-[logos--openai-icon]'],
+.home-v5 [class~='icon-[logos--openai-icon]'] {
   color: rgb(15 23 42);
+  filter: none;
 }
 
-[data-theme='dark'] .icon-\[logos--openai-icon\],
-[data-theme='dark'] .home-v5 .icon-\[logos--openai-icon\] {
+[data-theme='dark'] [class~='icon-[logos--openai-icon]'],
+[data-theme='dark'] .home-v5 [class~='icon-[logos--openai-icon]'] {
   color: rgb(248 250 252);
+  filter: invert(1) brightness(1.22) contrast(1.05);
 }
 
 .theme-doc-markdown {

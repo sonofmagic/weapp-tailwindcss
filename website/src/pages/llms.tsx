@@ -20,7 +20,7 @@ const txtFiles = [
 const markdownExamples = [
   { label: 'intro.md', path: '/intro.md', desc: '文档首页内容副本' },
   { label: 'quick-start/install.md', path: '/quick-start/install.md', desc: 'Tailwind CSS 4 生成模式安装指南' },
-  { label: 'tailwindcss/v4-reference.md', path: '/tailwindcss/v4-reference.md', desc: 'Tailwind CSS 4.x 开发参考' },
+  { label: 'tailwindcss/v4-reference.md', path: '/tailwindcss/v4-reference.md', desc: 'Tailwind CSS 4 默认模式参考' },
   { label: 'tools/weapp-tw-cli.md', path: '/tools/weapp-tw-cli.md', desc: 'CLI 用法' },
   { label: 'ai/index.md', path: '/ai/index.md', desc: 'AI 生成小程序专题' },
 ]

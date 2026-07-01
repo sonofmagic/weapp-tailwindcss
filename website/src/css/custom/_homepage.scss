@@ -379,6 +379,16 @@ html[data-theme='dark'] .homepage .home-cta:hover {
   font-size: 1.08rem;
 }
 
+.home-facts__route i[class~='icon-[logos--openai-icon]'],
+.home-hero__actions [class~='icon-[logos--openai-icon]'] {
+  filter: none;
+}
+
+[data-theme='dark'] .home-facts__route i[class~='icon-[logos--openai-icon]'],
+[data-theme='dark'] .home-hero__actions [class~='icon-[logos--openai-icon]'] {
+  filter: invert(1) brightness(1.22) contrast(1.05);
+}
+
 .home-facts__route span,
 .home-facts__route strong,
 .home-facts__route small {
