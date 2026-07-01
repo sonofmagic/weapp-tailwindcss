@@ -61,7 +61,7 @@
     "@types/gulp-rename": "^2.0.7",
     "@types/gulp-replace": "^1.1.0",
     "@types/gulp-sass": "^6.0.0",
-    "@types/gulp-util": "^3.0.41",
+    "@types/gulp-util": "^3.0.42",
     "@types/node": "catalog:typesNode2410",
     "@weapp-tailwindcss/merge": "workspace:*",
     "@weapp-tailwindcss/variants": "workspace:*",

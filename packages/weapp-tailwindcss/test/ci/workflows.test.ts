@@ -215,6 +215,37 @@ describe('ci workflows', () => {
     expect(readText('demo/weapp-vite-tailwindcss-v4/tailwind.css')).toContain('@import "tailwindcss" source(none);')
   })
 
+  it('keeps @tailwindcss-mangle/engine managed by the workspace catalog', () => {
+    const workspace = YAML.parse(readText('pnpm-workspace.yaml')) as {
+      catalogs?: Record<string, Record<string, string>>
+      overrides?: Record<string, string>
+    }
+    const lockfile = YAML.parse(readText('pnpm-lock.yaml')) as {
+      catalogs?: Record<string, Record<string, { specifier?: string, version?: string }>>
+      importers?: Record<string, {
+        dependencies?: Record<string, { specifier?: string, version?: string }>
+      }>
+    }
+    const catalogVersion = workspace.catalogs?.tailwindcssMangleEngine?.['@tailwindcss-mangle/engine']
+
+    expect(catalogVersion).toBeDefined()
+    expect(workspace.overrides?.['@tailwindcss-mangle/engine']).toBeUndefined()
+    expect(lockfile.catalogs?.tailwindcssMangleEngine?.['@tailwindcss-mangle/engine']).toEqual({
+      specifier: catalogVersion,
+      version: catalogVersion,
+    })
+
+    for (const importer of ['packages/postcss', 'packages/weapp-tailwindcss'] as const) {
+      const packageJson = readPackageJson<{ dependencies?: Record<string, string> }>(`${importer}/package.json`)
+      const dependency = lockfile.importers?.[importer]?.dependencies?.['@tailwindcss-mangle/engine']
+
+      expect(packageJson.dependencies?.['@tailwindcss-mangle/engine'], importer)
+        .toBe('catalog:tailwindcssMangleEngine')
+      expect(dependency?.specifier, importer).toBe('catalog:tailwindcssMangleEngine')
+      expect(dependency?.version, importer).toBe(`${catalogVersion}(tailwindcss@4.3.2)`)
+    }
+  })
+
   it('keeps workflow_dispatch compatibility coverage across OS and Node versions', () => {
     const { source, workflow } = readWorkflow('ci.yml')
     const [workflowDispatchRows, pullRequestRows] = extractJsonArrays(source)

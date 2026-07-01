@@ -267,7 +267,7 @@
     "@types/set-value": "^4.0.3",
     "@types/traverse": "^0.6.37",
     "@types/vinyl": "^2.0.12",
-    "@types/vinyl-fs": "^3.0.7",
+    "@types/vinyl-fs": "^3.0.8",
     "@types/webpack": "^5.28.5",
     "@types/webpack-sources": "^3.2.3",
     "@vitest/coverage-v8": "~4.1.9",

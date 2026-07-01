@@ -38,10 +38,8 @@ minimumReleaseAgeExclude:
   - prettier@3.9.3
 
 overrides:
-  '@tailwindcss-mangle/engine': 0.1.1
   jiti: 2.7.0
   postcss-calc: link:packages/postcss-calc
-  postcss-urlrewrite: 0.3.0
 
 catalogs:
   autoprefixer10:
@@ -193,7 +191,7 @@ catalogs:
   tsx:
     tsx: ^4.22.4
   typesNode2410:
-    '@types/node': ^26.0.1
+    '@types/node': ^26.1.0
   typescript59:
     typescript: ^6.0.3
   typescript59tilde:
