@@ -34,24 +34,24 @@ interface RouteItem {
 }
 
 const facts: FactItem[] = [
-  { label: 'Tailwind', value: 'CSS-first / config' },
-  { label: '框架', value: 'Taro / uni-app / 原生' },
+  { label: 'Tailwind', value: 'CSS 4 / @source' },
+  { label: '框架', value: 'uni-app / Taro / Mpx / Weapp-vite' },
   { label: '构建器', value: 'Webpack / Vite / Gulp' },
-  { label: '运行时', value: 'merge / variants / cva' },
+  { label: '运行时', value: 'merge / cva / variants' },
 ]
 
 const routeLinks: RouteItem[] = [
   {
     href: '/docs/quick-start/v4',
-    label: 'v4 CSS-first',
-    description: '用 @source 与 CSS 入口接入新项目。',
+    label: '快速开始',
+    description: '从 CSS-first 入口接入当前版本。',
     icon: 'icon-[mdi--numeric-4-box-outline]',
   },
   {
-    href: '/docs/quick-start/install',
-    label: '安装依赖',
-    description: '使用 tailwindcss@4 与 weapp-tailwindcss 初始化项目。',
-    icon: 'icon-[mdi--package-variant-closed]',
+    href: '/docs/quick-start/frameworks/uni-app-vite',
+    label: '框架接入',
+    description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生选择路线。',
+    icon: 'icon-[mdi--transit-connection-variant]',
   },
   {
     href: '/docs/api/interfaces/UserDefinedOptions',
@@ -64,17 +64,17 @@ const routeLinks: RouteItem[] = [
 const capabilities: CapabilityItem[] = [
   {
     title: '精确转译',
-    description: 'JS 与模板只转换 Tailwind 命中类名，避免业务字符串被误伤。',
+    description: 'JS 与模板只转换 Tailwind 已生成类名，避免业务字符串被误伤。',
     icon: 'icon-[mdi--target]',
   },
   {
-    title: 'Tailwind 多模式并行',
-    description: '当前文档面向 Tailwind CSS 4，旧项目可回到 v4 文档站维护。',
+    title: 'Web / 小程序分端输出',
+    description: '同一份 CSS-first 输入，按环境生成浏览器 CSS 或小程序 CSS。',
     icon: 'icon-[mdi--source-branch]',
   },
   {
     title: '跨生态落地',
-    description: '覆盖 Taro、uni-app、原生小程序以及 Webpack、Vite、Gulp 链路。',
+    description: '覆盖 uni-app、Taro、Mpx、Weapp-vite、原生小程序以及 Webpack、Vite、Gulp 链路。',
     icon: 'icon-[mdi--transit-connection-variant]',
   },
   {
@@ -88,14 +88,14 @@ const entries: Array<EntryItem & { control?: 'communityEntry' }> = [
   {
     href: '/docs/quick-start/v4',
     label: '快速开始',
-    description: '按 Tailwind CSS 4 与构建器选择接入路线。',
+    description: '从 Tailwind CSS 4 与 CSS-first 入口开始。',
     icon: 'icon-[mdi--rocket-launch-outline]',
   },
   {
-    href: '/docs/quick-start/v4',
-    label: 'CSS-first 接入',
-    description: '查看 CSS-first 入口、source 与生成模式。',
-    icon: 'icon-[mdi--numeric-4-box-outline]',
+    href: '/docs/quick-start/frameworks/uni-app-vite',
+    label: '框架接入',
+    description: '按 uni-app、Taro、Mpx、Weapp-vite 或原生小程序选择配置。',
+    icon: 'icon-[mdi--transit-connection-variant]',
   },
   {
     href: '/docs/api/interfaces/UserDefinedOptions',
@@ -159,7 +159,7 @@ function HomepageHeader() {
                 <HomeLogo />
                 {homepage.heroBadge && (
                   <span className="ui-homepage-hero-badge home-hero__badge">
-                    Tailwind CSS website mode
+                    Tailwind CSS 4 + 小程序生成链路
                   </span>
                 )}
               </div>
@@ -191,12 +191,12 @@ function HomepageHeader() {
               </div>
               {homepage.heroSubtitlePrimary && (
                 <p className="ui-homepage-hero-subtitle-primary home-hero__lead">
-                  让 Tailwind CSS 稳定跑在小程序里。
+                  一套 CSS-first 输入，交付 Web 与小程序两端样式。
                 </p>
               )}
               {homepage.heroSubtitleSecondary && (
                 <p className="ui-homepage-hero-subtitle-secondary home-hero__sublead">
-                  对齐 Tailwind CSS 的主流写法，同时接管 Web 与小程序目标的生成、转义与运行时边界。
+                  保留 `WeappTailwindcss` 接管生成、转义与运行时边界，不在小程序构建里重复注册官方 Tailwind 插件。
                 </p>
               )}
               {homepage.platformTags && (
@@ -211,8 +211,8 @@ function HomepageHeader() {
               )}
               <div className="home-hero__actions">
                 {homepage.primaryCta && (
-                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/intro">
-                    <span>立即开始体验</span>
+                  <a className={`${ctaButton()} home-cta ui-homepage-primary-cta`} href="/docs/quick-start/v4">
+                    <span>开始接入</span>
                     <i aria-hidden="true" className="icon-[mdi--arrow-right] text-[1.1rem]"></i>
                   </a>
                 )}
@@ -275,14 +275,14 @@ function HomepageHeader() {
         <section className="ui-homepage-hero-feature-grid home-capabilities" aria-labelledby="home-capabilities-title">
           <div className="home-section-heading">
             <h2 id="home-capabilities-title">守住工程边界，接管生成与转译</h2>
-            <p>复用 Tailwind 输入，把源码扫描、样式生成、类名转义和运行时工具放在一条工程链路里。</p>
+            <p>复用 Tailwind CSS 4 输入，把源码扫描、样式生成、类名转义和运行时工具放在一条工程链路里。</p>
           </div>
           <div className="home-capabilities__layout">
             {homepage.buildToolsCard && (
               <article className="ui-homepage-build-tools-card home-capability home-capability--large">
                 <i aria-hidden="true" className="icon-[mdi--webpack]"></i>
                 <h3>构建器接管 Tailwind 生成</h3>
-                <p>Webpack、Vite、Gulp 与自定义 Node 流程都由 weapp-tailwindcss 接管输出，不在小程序构建里叠加官方 Tailwind 生成插件。</p>
+                <p>Webpack、Vite、Gulp 与自定义 Node 流程都由 weapp-tailwindcss 接管输出，小程序构建不再叠加官方 Tailwind 生成插件。</p>
               </article>
             )}
             <div className="home-capabilities__grid">
@@ -315,7 +315,7 @@ function HomepageHeader() {
         </div>
         <div className="home-v5-story__body">
           <p>
-            Web 保持 Tailwind 原生语义；小程序补齐选择器、单位、转义与运行时边界。团队统一入口，再按框架接入。
+            H5/Web 保持 Tailwind 原生语义；小程序补齐选择器、单位、转义与运行时边界。团队统一入口，再按框架接入。
           </p>
           <a href="/docs/api/interfaces/UserDefinedOptions">查看配置项</a>
         </div>

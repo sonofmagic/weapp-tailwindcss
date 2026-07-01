@@ -55,7 +55,7 @@ WeappTailwindcss({
 })
 ```
 
-`disabled` 只适合“完全不希望插件参与”的构建，例如 RN、Harmony 或独立原生构建。对于 uni-app、uni-app x、Taro、Mpx 的 H5/Web 目标，通常不需要禁用。
+`disabled` 只适合“完全不希望插件参与”的构建，例如 RN、Harmony 或独立原生构建。对于 uni-app、uni-app x、Taro、Mpx、Weapp-vite 的 H5/Web 目标，通常不需要禁用。
 
 如果自定义构建环境没有注入上述变量，可以显式指定 Web 输出：
 

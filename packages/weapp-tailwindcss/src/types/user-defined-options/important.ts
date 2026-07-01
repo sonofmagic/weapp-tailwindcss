@@ -61,7 +61,7 @@ export interface UserDefinedOptionsImportantPart {
    * @remarks
    * `disabled` 只适合完全不希望插件参与的构建，例如 RN、Harmony、独立原生或自定义构建。
    *
-   * uni-app / uni-app x / Taro / Mpx 的 H5/Web 与普通 App WebView 构建通常应继续保留插件；
+   * uni-app / uni-app x / Taro / Mpx / Weapp-vite 的 H5/Web 与普通 App WebView 构建通常应继续保留插件；
    * 生成器会根据平台环境变量自动切换到 `web` 输出。自定义环境无法注入平台变量时，
    * 请优先显式设置 `generator.target: 'web'`，而不是禁用插件。
    * @example

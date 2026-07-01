@@ -66,4 +66,4 @@ export default defineConfig({
 })
 ```
 
-选择这条链路后，不要再同时注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss` 来生成同一份 Tailwind CSS。Taro H5、uni-app H5、Mpx Web 等多端框架会按环境变量自动切到 `web` 目标；自定义 Web 构建或纯 Vite 项目建议显式配置。更多目标判断规则见 [跨多端开发 CSS 兼容](/docs/multi-platform)。
+选择这条链路后，不要再同时注册 `@tailwindcss/vite` 或 `@tailwindcss/postcss` 来生成同一份 Tailwind CSS。Taro H5、uni-app H5、Mpx Web、Weapp-vite Web 等多端框架会按环境变量自动切到 `web` 目标；自定义 Web 构建或纯 Vite 项目建议显式配置。更多目标判断规则见 [跨多端开发 CSS 兼容](/docs/multi-platform)。

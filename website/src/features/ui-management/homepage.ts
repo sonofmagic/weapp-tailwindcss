@@ -87,7 +87,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   {
     key: 'heroBadge',
     label: 'Hero 顶部标签',
-    description: '控制 logo 右侧的 Tailwind CSS website mode 标签。',
+    description: '控制 logo 右侧的 Tailwind CSS 4 生成链路标签。',
     className: 'ui-homepage-hero-badge',
     htmlAttribute: 'data-ui-homepage-hero-badge',
   },
@@ -101,7 +101,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   {
     key: 'heroSubtitlePrimary',
     label: 'Hero 副标题一',
-    description: '控制“让 Tailwind CSS 稳定跑在小程序里”这一行文案。',
+    description: '控制“Web 与小程序两端样式”这一行文案。',
     className: 'ui-homepage-hero-subtitle-primary',
     htmlAttribute: 'data-ui-homepage-hero-subtitle-primary',
   },
@@ -115,7 +115,7 @@ export const homepageUiControls: HomepageUiControlMeta[] = [
   {
     key: 'primaryCta',
     label: '首页主按钮',
-    description: '控制“开始使用”主 CTA。',
+    description: '控制“开始接入”主 CTA。',
     className: 'ui-homepage-primary-cta',
     htmlAttribute: 'data-ui-homepage-primary-cta',
   },

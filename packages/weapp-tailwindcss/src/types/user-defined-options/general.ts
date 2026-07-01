@@ -123,7 +123,7 @@ export interface UserDefinedOptionsGeneralPart {
    * `weapp-style-injector` 实现，可配置 `imports`、`perFileImports`、分包样式入口等能力。
    *
    * Vite 会按当前 `appType` 自动选择 uni-app、Taro 或通用预设；Webpack 会按当前
-   * `appType` 自动选择 uni-app、Taro、Mpx 或通用预设。未显式配置 `appType` 时，会复用
+   * `appType` 自动选择 uni-app、Taro、Mpx、Weapp-vite 或通用预设。未显式配置 `appType` 时，会复用
    * `weapp-tailwindcss` 在当前构建器中的推断结果。
    *
    * 当 `disabled: true` 或 `disabled: { plugin: true }` 时，该能力会跟随主插件一起关闭。

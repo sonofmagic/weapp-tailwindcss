@@ -16,7 +16,7 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
 
     {
       type: 'doc',
-      label: '生态及解决方案',
+      label: '生态',
       docId: 'community/templates',
     },
     {
@@ -32,7 +32,7 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
 
     {
       type: 'doc',
-      label: '更新与迁移',
+      label: '迁移',
       docId: 'migrations/v5',
     },
     {
@@ -49,7 +49,7 @@ const navbar: NonNullable<ThemeConfig['navbar']> = {
 
     {
       type: 'doc',
-      label: '原子化 CSS 专题',
+      label: 'Tailwind 专题',
       docId: 'tailwindcss/index',
       position: 'left',
     },

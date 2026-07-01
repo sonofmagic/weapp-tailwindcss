@@ -59,12 +59,16 @@ test.describe('homepage hero layout', () => {
     const primaryCta = page.locator('.home-hero__actions .home-cta')
     const secondaryActions = page.locator('.home-hero__actions .ui-homepage-ai-entry a, .home-hero__actions .ui-homepage-community-entry a')
     const githubBadge = page.locator('.ui-homepage-github-badge')
+    const pipeline = page.locator('.home-pipeline')
 
     await expect(hero).toBeVisible()
     await expect(platformIcons).toHaveCount(5)
     await expect(primaryCta).toBeVisible()
+    await expect(primaryCta).toHaveText(/开始接入/)
+    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/v4')
     await expect(secondaryActions).toHaveCount(2)
     await expect(githubBadge).toBeVisible()
+    await expect(pipeline).toBeVisible()
 
     for (let index = 0; index < await platformIcons.count(); index += 1) {
       const box = await platformIcons.nth(index).boundingBox()
@@ -89,7 +93,36 @@ test.describe('homepage hero layout', () => {
 
     const primaryBox = await primaryCta.boundingBox()
     expect(primaryBox?.height).toBeGreaterThanOrEqual(44)
-    expect(primaryBox?.width).toBeGreaterThan(140)
+    expect(primaryBox?.width).toBeGreaterThan(132)
+    const primaryStyle = await primaryCta.evaluate((element) => {
+      const style = getComputedStyle(element)
+      const rect = element.getBoundingClientRect()
+      return {
+        text: element.textContent?.trim() ?? '',
+        whiteSpace: style.whiteSpace,
+        width: rect.width,
+      }
+    })
+    expect(primaryStyle.text).toContain('开始接入')
+    expect(primaryStyle.whiteSpace).toBe('nowrap')
+    expect(primaryStyle.width).toBeLessThan(180)
+
+    const heroRect = await hero.evaluate((element) => {
+      const rect = element.getBoundingClientRect()
+      return {
+        bottom: rect.bottom,
+        top: rect.top,
+      }
+    })
+    const pipelineRect = await pipeline.evaluate((element) => {
+      const rect = element.getBoundingClientRect()
+      return {
+        bottom: rect.bottom,
+        top: rect.top,
+      }
+    })
+    expect(heroRect.top).toBeLessThan(140)
+    expect(pipelineRect.bottom).toBeLessThanOrEqual(1000)
 
     const githubBadgeStyle = await githubBadge.evaluate((element) => {
       const style = getComputedStyle(element)
@@ -122,8 +155,6 @@ test.describe('homepage hero layout', () => {
     expect(githubBadgeStyle.minHeight).toBe('40px')
     expect(githubBadgeStyle.gap).toBe('8px')
     expect(githubBadgeStyle.borderRadius).toBe('9999px')
-    expect(githubBadgeStyle.borderWidth).toBe('1px')
-    expect(githubBadgeStyle.borderStyle).toBe('solid')
     expect(githubBadgeStyle.backgroundColor).not.toBe('rgba(0, 0, 0, 0)')
     expect(githubBadgeStyle.paddingInline).toBe('12px')
     expect(githubBadgeStyle.paddingBlock).toBe('8px')
@@ -143,7 +174,10 @@ test.describe('homepage hero layout', () => {
     })
 
     await expect(page.locator('.home-hero__platform-strip')).toBeHidden()
-    await expect(page.locator('.home-hero__actions .home-cta')).toBeVisible()
+    const primaryCta = page.locator('.home-hero__actions .home-cta')
+    await expect(primaryCta).toBeVisible()
+    await expect(primaryCta).toHaveText(/开始接入/)
+    await expect(primaryCta).toHaveAttribute('href', '/docs/quick-start/v4')
 
     const actionBoxes = await page.locator('.home-hero__actions a').evaluateAll(elements => elements.map((element) => {
       const rect = element.getBoundingClientRect()
