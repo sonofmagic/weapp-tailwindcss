@@ -258,6 +258,115 @@ function collectRootStyleBundleCssSources(bundle: OutputBundle, excludedFile: st
   return sources
 }
 
+function isHtmlOutputFile(file: string) {
+  return /\.html(?:$|[?#])/i.test(file)
+}
+
+function stripQueryAndHash(file: string) {
+  return file.replace(/[?#].*$/, '')
+}
+
+function resolveHtmlLinkedStyleFile(htmlFile: string, request: string) {
+  if (!isStyleImportRequest(request)) {
+    return
+  }
+  const cleanRequest = stripQueryAndHash(request)
+  if (cleanRequest.startsWith('/')) {
+    return normalizeOutputPathKey(cleanRequest.slice(1))
+  }
+  const htmlDir = path.posix.dirname(normalizeOutputPathKey(stripQueryAndHash(htmlFile)))
+  return normalizeOutputPathKey(path.posix.join(htmlDir === '.' ? '' : htmlDir, cleanRequest))
+}
+
+function collectHtmlLinkedStyleFiles(bundle: OutputBundle) {
+  const linkedFiles = new Set<string>()
+  const linkedBasenames = new Set<string>()
+  const linkHrefRE = /<link\s[^>]*href\s*=\s*(["'])([^"']+)\1[^>]*>/gi
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const htmlFile = getAssetFile(bundleFile, output)
+    if (!isHtmlOutputFile(htmlFile)) {
+      continue
+    }
+    const html = readAssetSource(output)
+    for (const match of html.matchAll(linkHrefRE)) {
+      const href = match[2]
+      if (!href) {
+        continue
+      }
+      const linkedFile = resolveHtmlLinkedStyleFile(htmlFile, href)
+      if (!linkedFile || !isRootStyleOutputFile(linkedFile)) {
+        continue
+      }
+      linkedFiles.add(linkedFile)
+      linkedBasenames.add(path.posix.basename(linkedFile))
+    }
+  }
+  return { linkedBasenames, linkedFiles }
+}
+
+function isLinkedStyleFile(file: string, linked: ReturnType<typeof collectHtmlLinkedStyleFiles>) {
+  const fileKey = normalizeOutputPathKey(stripQueryAndHash(file))
+  return linked.linkedFiles.has(fileKey)
+    || (
+      isRootStyleOutputFile(fileKey)
+      && linked.linkedBasenames.has(path.posix.basename(fileKey))
+    )
+}
+
+export function removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(
+  bundle: OutputBundle,
+  options: {
+    debug?: ((format: string, ...args: unknown[]) => void) | undefined
+  } = {},
+) {
+  const linked = collectHtmlLinkedStyleFiles(bundle)
+  if (linked.linkedFiles.size === 0 && linked.linkedBasenames.size === 0) {
+    return 0
+  }
+  const linkedSources = new Set<string>()
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = getAssetFile(bundleFile, output)
+    if (!isCssOutputFile(file) || isMiniProgramStyleOutputFile(file) || !isLinkedStyleFile(file, linked)) {
+      continue
+    }
+    const source = stripBundlerGeneratedCssMarkers(readAssetSource(output)).trim()
+    if (source.length > 0) {
+      linkedSources.add(source)
+    }
+  }
+  if (linkedSources.size === 0) {
+    return 0
+  }
+  let removed = 0
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = getAssetFile(bundleFile, output)
+    if (
+      !isRootStyleOutputFile(file)
+      || isMiniProgramStyleOutputFile(file)
+      || isLinkedStyleFile(file, linked)
+    ) {
+      continue
+    }
+    const source = stripBundlerGeneratedCssMarkers(readAssetSource(output)).trim()
+    if (!linkedSources.has(source)) {
+      continue
+    }
+    delete bundle[bundleFile]
+    options.debug?.('remove duplicate unlinked root css asset referenced by html: %s', file)
+    removed++
+  }
+  return removed
+}
+
 const VUE_SCOPED_ATTR_RE = /\[data-v-[^\]]+\]/gi
 
 function hasVueScopedAttr(value: string) {
@@ -677,6 +786,32 @@ function shouldUseCssAssetAsMainInjectionTarget(
       && normalizeOutputPathKey(record.outputFile) === fileKey,
     )
   }
+  const explicitRootTargets = records
+    .filter(record => record.injectIntoMain === true)
+    .map(record => typeof record.outputFile === 'string' ? normalizeOutputPathKey(record.outputFile) : undefined)
+    .filter((outputFile): outputFile is string =>
+      typeof outputFile === 'string'
+      && isRootStyleOutputFile(outputFile)
+      && !isMiniProgramStyleOutputFile(outputFile),
+    )
+  const explicitWebCssTargets = records
+    .filter(record => record.injectIntoMain === true)
+    .map(record => typeof record.outputFile === 'string' ? normalizeOutputPathKey(record.outputFile) : undefined)
+    .filter((outputFile): outputFile is string =>
+      typeof outputFile === 'string'
+      && isCssOutputFile(outputFile)
+      && !isMiniProgramStyleOutputFile(outputFile),
+    )
+  if (
+    opts.appType === 'uni-app-vite'
+    && !isMiniProgramStyleOutputFile(file)
+    && explicitWebCssTargets.length > 0
+  ) {
+    return explicitRootTargets.includes(fileKey)
+  }
+  if (explicitRootTargets.length > 0) {
+    return explicitRootTargets.includes(fileKey)
+  }
   const explicitTargetMatched = records.some((record) => {
     if (record.injectIntoMain !== true) {
       return false
@@ -726,6 +861,62 @@ function isViteProcessedCssResultCoveredByImportedBundleAsset(
     }
   }
   return false
+}
+
+function removeCoveredInjectedSourceAssets(
+  bundle: OutputBundle,
+  targetFile: string,
+  targetCss: string,
+  records: Array<{ file: string, css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>,
+  options: Pick<InjectViteProcessedCssAssetOptions, 'shouldRemoveInjectedSourceAsset' | 'debug'>,
+) {
+  let removed = 0
+  const targetFileKey = normalizeOutputPathKey(targetFile)
+  const targetIsRootWebStyle = isRootStyleOutputFile(targetFileKey) && !isMiniProgramStyleOutputFile(targetFileKey)
+  for (const record of records) {
+    if (!options.shouldRemoveInjectedSourceAsset?.(targetFile, record)) {
+      continue
+    }
+    const recordFileKey = normalizeOutputPathKey(record.file)
+    for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
+      if (candidateOutput.type !== 'asset') {
+        continue
+      }
+      const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
+      if (candidateKey === targetFileKey) {
+        continue
+      }
+      const isRecordFile = candidateKey === recordFileKey
+      const candidateIsRootWebStyle = isRootStyleOutputFile(candidateKey) && !isMiniProgramStyleOutputFile(candidateKey)
+      const candidateSource = readAssetSource(candidateOutput).trim()
+      const uncoveredCandidateSource = candidateSource.length > 0
+        ? filterExistingCssRules(targetCss, candidateSource).trim()
+        : candidateSource
+      const isProcessedSource = candidateSource === record.css.trim()
+        || (candidateSource.length > 0 && containsCssAfterMinify(targetCss, candidateSource))
+        || (
+          targetIsRootWebStyle
+          && candidateIsRootWebStyle
+          && candidateSource.length > 0
+          && !hasNonCommentCss(uncoveredCandidateSource)
+        )
+      if (!isRecordFile && !isProcessedSource) {
+        continue
+      }
+      if (candidateIsRootWebStyle && !targetIsRootWebStyle) {
+        continue
+      }
+      if (candidateIsRootWebStyle) {
+        delete bundle[candidateFile]
+      }
+      else {
+        clearAssetSource(candidateOutput)
+      }
+      options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, targetFile)
+      removed++
+    }
+  }
+  return removed
 }
 
 function removeCssCoveredByImportedViteResults(
@@ -1069,6 +1260,9 @@ export function injectViteProcessedCssIntoMainCssAssets(
   let injected = 0
   for (const [bundleFile, bundleOutput] of Object.entries(bundle)) {
     let output = bundleOutput
+    if (bundle[bundleFile] !== bundleOutput) {
+      continue
+    }
     if (output.type !== 'asset') {
       continue
     }
@@ -1185,34 +1379,16 @@ export function injectViteProcessedCssIntoMainCssAssets(
       }
       nextCss = appendCss(nextCss, missingCss)
     }
-    if (nextCss === originalSource) {
-      continue
+    if (nextCss !== originalSource) {
+      output.source = nextCss
+      options.markCssAssetProcessed?.(output, file)
+      options.recordCssAssetResult?.(file, nextCss)
+      options.onUpdate?.(file, originalSource, nextCss)
+      options.debug?.('inject vite-processed css into main css asset: %s bytes=%d', file, nextCss.length)
     }
-    output.source = nextCss
-    options.markCssAssetProcessed?.(output, file)
-    options.recordCssAssetResult?.(file, nextCss)
-    options.onUpdate?.(file, originalSource, nextCss)
-    options.debug?.('inject vite-processed css into main css asset: %s bytes=%d', file, nextCss.length)
-    for (const record of viteCssResults) {
-      if (!options.shouldRemoveInjectedSourceAsset?.(file, record)) {
-        continue
-      }
-      const recordFileKey = normalizeOutputPathKey(record.file)
-      for (const [candidateFile, candidateOutput] of Object.entries(bundle)) {
-        if (candidateOutput.type !== 'asset') {
-          continue
-        }
-        const candidateKey = normalizeOutputPathKey(getAssetFile(candidateFile, candidateOutput))
-        const isRecordFile = candidateKey === recordFileKey
-        const candidateSource = readAssetSource(candidateOutput).trim()
-        const isProcessedSource = candidateSource === record.css.trim()
-          || (candidateSource.length > 0 && containsCssAfterMinify(nextCss, candidateSource))
-        if ((!isRecordFile && !isProcessedSource) || candidateKey === normalizeOutputPathKey(file)) {
-          continue
-        }
-        clearAssetSource(candidateOutput)
-        options.debug?.('remove injected vite-processed source css asset: %s -> %s', candidateKey, file)
-      }
+    const removedSources = removeCoveredInjectedSourceAssets(bundle, file, nextCss, viteCssResults, options)
+    if (nextCss === originalSource && removedSources === 0) {
+      continue
     }
     injected++
   }

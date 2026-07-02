@@ -10,7 +10,7 @@ import { isPureLocalCssImportWrapper } from '../../shared/generator-css/local-im
 import { normalizeOutputPathKey } from '../../shared/module-graph'
 import { runWithConcurrency } from '../../shared/run-tasks'
 import { updateBundleBuildState } from '../bundle-state'
-import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets, removeCssCoveredByRootStyleAssets } from '../processed-css-assets'
+import { collectViteProcessedCssAssetResults, injectViteProcessedCssIntoMainCssAssets, removeCssCoveredByRootStyleAssets, removeDuplicateUnlinkedRootCssAssetsReferencedByHtml } from '../processed-css-assets'
 import { normalizeBundleFileNameKeysForTest } from './bundle-file-names'
 import { resolveViteCssPipelineOutputFile } from './css-output'
 import { finalizeMiniProgramCssAssets } from './final-css-assets'
@@ -347,6 +347,9 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
     recordCssAssetResult,
     subpackageRoots: collectMiniProgramSubpackageRoots(bundle),
   })
+  if (opts.appType === 'uni-app-vite' && isWebGeneratorTarget && isUniAppViteWebviewAppBundle(bundleFiles)) {
+    removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundle, { debug })
+  }
   await finalizeMiniProgramCssAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,

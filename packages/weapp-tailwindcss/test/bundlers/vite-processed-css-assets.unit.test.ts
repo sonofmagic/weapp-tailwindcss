@@ -8,6 +8,7 @@ import {
   injectViteProcessedCssIntoMainCssAssets,
   isCssImportOnlyBundleAsset,
   removeCssCoveredByRootStyleAssets,
+  removeDuplicateUnlinkedRootCssAssetsReferencedByHtml,
   removeScopedTailwindPreflightCss,
 } from '@/bundlers/vite/processed-css-assets'
 
@@ -145,6 +146,108 @@ describe('vite processed css assets', () => {
     expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toContain('.page{color:green}')
     expect(String((bundle['pages/index.css'] as OutputAsset).source)).toBe('')
     expect(mark).toHaveBeenCalledWith(bundle['app.wxss'], 'app.wxss')
+  })
+
+  it('removes covered root css source assets when app webview target already has generated css', () => {
+    const generatedCss = [
+      '.template-corpus-card{display:block}',
+      '.text-\\[45rpx\\]{font-size:45rpx}',
+      '.space-y-2>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+    ].join('\n')
+    const bundle: OutputBundle = {
+      'main.css': asset('main.css', generatedCss),
+      'app.css': asset('app.css', generatedCss),
+      'pages/index/index.css': asset('pages/index/index.css', '.page-shell{display:block}'),
+    }
+    const records = new Map<string, any>([
+      ['main.css', { css: generatedCss, injectIntoMain: true, outputFile: 'app.css' }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: (file: string) => file === 'app.css',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      shouldRemoveInjectedSourceAsset: (targetFile, record) =>
+        record.injectIntoMain !== false && record.file !== targetFile,
+      debug: vi.fn(),
+    })
+
+    expect(injected).toBe(1)
+    expect(String((bundle['app.css'] as OutputAsset).source)).toBe(generatedCss)
+    expect(bundle['main.css']).toBeUndefined()
+    expect(String((bundle['pages/index/index.css'] as OutputAsset).source)).toBe('.page-shell{display:block}')
+  })
+
+  it('removes root css source assets covered by the app webview target even when record aliases differ', () => {
+    const sourceCss = [
+      ':root{--spacing:.25rem;--color-white:#fff}',
+      '.template-corpus-card{display:block}',
+      '.space-y-2>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+    ].join('\n')
+    const appCss = [
+      ':root{--color-white:#fff;--spacing:.25rem}',
+      '.bg-normal-subpackage-marker{background-color:#2563eb}',
+      '.template-corpus-card{display:block}',
+      '.space-y-2>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+    ].join('\n')
+    const bundle: OutputBundle = {
+      'main.css': asset('main.css', sourceCss),
+      'app.css': asset('app.css', appCss),
+    }
+    const records = new Map<string, any>([
+      ['src/main.css', { css: appCss, injectIntoMain: true, outputFile: 'app.css' }],
+    ])
+
+    expect(injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: (file: string) => file === 'app.css',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      shouldRemoveInjectedSourceAsset: (targetFile, record) =>
+        record.injectIntoMain !== false && record.file !== targetFile,
+      debug: vi.fn(),
+    })).toBe(1)
+
+    expect(bundle['main.css']).toBeUndefined()
+    expect(String((bundle['app.css'] as OutputAsset).source)).toBe(appCss)
+  })
+
+  it('does not remove app webview root css from non-root injection targets', () => {
+    const generatedCss = '.template-corpus-card{display:block}'
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', generatedCss),
+      'pages-order/pages/user/user.css': asset('pages-order/pages/user/user.css', generatedCss),
+    }
+    const records = new Map<string, any>([
+      ['main.css', { css: generatedCss, injectIntoMain: true, outputFile: 'pages-order/pages/user/user.css' }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: (file: string) => file === 'app.css',
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      markCssAssetProcessed: vi.fn(),
+      shouldRemoveInjectedSourceAsset: (targetFile, record) =>
+        record.injectIntoMain !== false && record.file !== targetFile,
+      debug: vi.fn(),
+    })
+
+    expect(injected).toBe(0)
+    expect(String((bundle['app.css'] as OutputAsset).source)).toBe(generatedCss)
+    expect(String((bundle['pages-order/pages/user/user.css'] as OutputAsset).source)).toBe(generatedCss)
   })
 
   it('preserves taro import shell assets by injecting into the imported root asset', () => {
@@ -448,6 +551,28 @@ describe('vite processed css assets', () => {
     expect(appCss.match(/template-corpus-card/g)).toHaveLength(1)
     expect(appCss.match(/space-y-2/g)).toHaveLength(1)
     expect(String((bundle['pages/index/index.css'] as OutputAsset).source)).toBe('.page{color:black}')
+  })
+
+  it('removes duplicate unlinked root css assets when html links the real app view css', () => {
+    const generatedCss = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '.template-corpus-card{display:block}',
+      '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
+    ].join('\n')
+    const bundle: OutputBundle = {
+      '__uniappview.html': asset('__uniappview.html', '<link rel="stylesheet" href="app.css" />'),
+      'app.css': asset('app.css', generatedCss),
+      'main.css': asset('main.css', generatedCss),
+      'pages/index/index.css': asset('pages/index/index.css', '.page{color:black}'),
+    }
+    const debug = vi.fn()
+
+    expect(removeDuplicateUnlinkedRootCssAssetsReferencedByHtml(bundle, { debug })).toBe(1)
+
+    expect(bundle['app.css']).toBeDefined()
+    expect(bundle['main.css']).toBeUndefined()
+    expect(bundle['pages/index/index.css']).toBeDefined()
+    expect(debug).toHaveBeenCalledWith('remove duplicate unlinked root css asset referenced by html: %s', 'main.css')
   })
 
   it('does not append comment-only vite processed leftovers into root css', () => {
