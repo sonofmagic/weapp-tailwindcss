@@ -302,9 +302,9 @@ function stopChild(child) {
   })
 }
 
-async function runBuildOnce(cwd, buildScript, timeoutMs) {
+async function runBuildOnce(cwd, buildScript, timeoutMs, buildEnv = {}) {
   const start = now()
-  const child = spawnPnpm(cwd, ['run', buildScript], 'pipe')
+  const child = spawnPnpmWithEnv(cwd, ['run', buildScript], buildEnv, 'pipe')
   let logs = ''
   child.stdout.on('data', (chunk) => {
     logs += chunk.toString('utf8')
@@ -336,6 +336,9 @@ async function runBuildOnce(cwd, buildScript, timeoutMs) {
 
   if (code !== 0) {
     throw new Error(`build failed code=${code}\n${logs.slice(-4000)}`)
+  }
+  if (logs.includes('[uni-build-guard]') && logs.includes('已跳过 uni-app 的真实构建')) {
+    throw new Error(`build skipped by uni-build-guard; set project buildEnv.UNI_BUILD_STRICT=1 for benchmark builds\n${logs.slice(-4000)}`)
   }
 
   return now() - start
@@ -574,7 +577,7 @@ async function runCase(versionMeta, projectMeta, options) {
   }
   else {
     for (let i = 0; i < options.buildRuns; i += 1) {
-      const ms = await runBuildOnce(cwd, projectMeta.buildScript, options.timeoutMs)
+      const ms = await runBuildOnce(cwd, projectMeta.buildScript, options.timeoutMs, projectMeta.buildEnv)
       buildMs.push(ms)
       process.stdout.write(`[${versionMeta.version}/${projectMeta.key}] build ${i + 1}/${options.buildRuns}: ${ms.toFixed(2)}ms\n`)
     }

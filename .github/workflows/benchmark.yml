@@ -40,14 +40,14 @@ jobs:
   current-vs-published:
     name: Current vs published weapp-tailwindcss
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: ${{ github.event_name == 'pull_request' && 35 || 90 }}
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ vars.TURBO_TEAM }}
       WEAPP_TW_BENCH_BASELINE: ${{ github.event.inputs.baseline || 'auto' }}
       BENCH_BUILD_RUNS: ${{ github.event_name == 'pull_request' && '1' || github.event.inputs.build_runs || '3' }}
       BENCH_HMR_RUNS: ${{ github.event_name == 'pull_request' && '1' || github.event.inputs.hmr_runs || '5' }}
-      BENCH_ONLY: ${{ github.event.inputs.only || '' }}
+      BENCH_ONLY: ${{ github.event_name == 'pull_request' && 'demo-weapp-vite-tailwindcss-v4__mp-weixin,demo-uni-app-vite-tailwindcss-v4__mp-weixin,demo-web-vue-vite-tailwindcss-v4__web' || github.event.inputs.only || '' }}
 
     steps:
       - name: Check out code

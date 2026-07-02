@@ -27,6 +27,8 @@ describe('benchmark ci report', () => {
     const demoProjects = collectPackageDirs(path.join(repoRoot, 'demo')).sort()
       .filter(project => !project.startsWith('demo/issue-'))
       .filter(project => !project.startsWith('demo/subpackage-'))
+      .filter(project => !project.startsWith('demo/style-injector-'))
+      .filter(project => project !== 'demo/web/nuxt-vite-tailwindcss-v4')
       .filter(project => !project.startsWith('demo/web/') || project.includes('-vite-'))
     const benchmarkProjectDirs = Array.from(new Set(benchmarkProjects.map(project => project.project))).sort()
 
@@ -37,6 +39,10 @@ describe('benchmark ci report', () => {
       'demo-uni-app-vite-tailwindcss-v4__mp-weixin',
       'demo-uni-app-vite-tailwindcss-v4__h5',
     ]))
+    const uniMpWeixin = benchmarkProjects.find(project => project.key === 'demo-uni-app-vite-tailwindcss-v4__mp-weixin')
+    expect(uniMpWeixin?.buildEnv).toMatchObject({ UNI_BUILD_STRICT: '1' })
+    expect(uniMpWeixin?.hmrMode).toBe('fallback-build')
+    expect(uniMpWeixin?.hmrNote).toContain('strict build fallback')
     expect(benchmarkProjects.filter(project => project.key.includes('taro') && project.target === 'mp-weixin').every(project => project.hmrMode === 'watch')).toBe(true)
     const realDevServerTargets = benchmarkProjects.filter(project => (project.target === 'h5' || project.target === 'web') && !project.key.includes('hbuilderx'))
     expect(realDevServerTargets.every(project => project.hmrMode === 'watch')).toBe(true)
@@ -67,6 +73,8 @@ describe('benchmark ci report', () => {
     expect(source).toContain("className=(['\"])(.*?)\\1")
     expect(source).toContain('data-tw-bench')
     expect(source).toContain('outputProbeTemplates')
+    expect(source).toContain('buildEnv.UNI_BUILD_STRICT=1')
+    expect(source).toContain('build skipped by uni-build-guard')
   })
 
   it('keeps published baseline failures non-blocking when current rows pass', async () => {
