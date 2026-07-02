@@ -108,9 +108,9 @@ catalogs:
   reactRefresh018:
     react-refresh: ^0.18.0
   rsbuild2:
-    '@rsbuild/core': ^2.1.2
+    '@rsbuild/core': ^2.1.3
     '@rsbuild/plugin-react': ^2.1.0
-    '@rsbuild/plugin-vue': ^2.0.0
+    '@rsbuild/plugin-vue': ^2.0.1
   sass195:
     sass: ^1.101.0
   stylelint1625:
@@ -211,7 +211,7 @@ catalogs:
   vite724:
     vite: ^7.3.6
   vite8:
-    vite: ^8.1.2
+    vite: ^8.1.3
   vitePluginInspect:
     vite-plugin-inspect: ^11.4.1
   vitePluginReact4:
