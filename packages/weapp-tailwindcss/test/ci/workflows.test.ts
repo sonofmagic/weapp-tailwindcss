@@ -707,6 +707,16 @@ describe('e2e watch workflow', () => {
         watch_command_timeout_ms: '1500000',
       },
     ]
+    const mpxPrBudget = {
+      watch_case: 'mpx-tailwindcss-v4',
+      round_profile: 'default',
+      timeout_minutes: 35,
+      watch_timeout_ms: '240000',
+      watch_command_timeout_ms: '600000',
+      watch_main_style_only: '1',
+      watch_main_style_subpackage_limit: '0',
+      watch_max_plugin_process_ms: '30000',
+    }
     const slowNightlyBudgets = [
       {
         os: 'macos-latest',
@@ -784,6 +794,16 @@ describe('e2e watch workflow', () => {
         ...budget,
       }))
     }
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'macos-latest',
+      runner_label: 'macos',
+      ...mpxPrBudget,
+    }))
+    expect(prRows).toContainEqual(expect.objectContaining({
+      os: 'windows-latest',
+      runner_label: 'windows',
+      ...mpxPrBudget,
+    }))
     const slowStartupTaroWebpackPrRows = prRows.filter(row => typeof row.watch_case === 'string' && row.watch_case.startsWith('taro-webpack-'))
     expect(slowStartupTaroWebpackPrRows).not.toHaveLength(0)
     for (const row of slowStartupTaroWebpackPrRows) {
