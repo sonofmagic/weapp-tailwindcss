@@ -3,7 +3,7 @@ import type { WeappTailwindcssGeneratorTarget } from './types'
 import type { RuntimeBranch, RuntimeBranchContext } from '@/runtime-branch'
 import type { IArbitraryValues } from '@/types/shared'
 import { resolveRuntimeBranch } from '@/runtime-branch'
-import { inferGeneratorTargetFromEnv } from '@/runtime-branch/generator-target-env'
+import { inferGeneratorTargetFromEnv, shouldUseUniAppViteWebViewGeneratorTarget } from '@/runtime-branch/generator-target-env'
 
 export interface WeappTailwindcssGeneratorOptions {
   /**
@@ -63,7 +63,10 @@ export function normalizeWeappTailwindcssGeneratorOptions(
   options: WeappTailwindcssGeneratorUserOptions | undefined,
   context: Omit<RuntimeBranchContext, 'generatorTarget'> = {},
 ): NormalizedWeappTailwindcssGeneratorOptions {
-  const target = options?.target ?? inferGeneratorTargetFromEnv()
+  const target = options?.target
+    ?? (shouldUseUniAppViteWebViewGeneratorTarget(context.appType, context.platform)
+      ? 'web'
+      : inferGeneratorTargetFromEnv())
   const branch = resolveRuntimeBranch({
     ...context,
     generatorTarget: target,

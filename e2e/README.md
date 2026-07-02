@@ -11,8 +11,14 @@
 - HBuilderX 小程序：`pnpm e2e:hbuilderx:mp`
 - HBuilderX H5：`pnpm e2e:hbuilderx:h5`
 - App 全平台本地链路：`pnpm e2e:app`
-- Android 本地链路：`pnpm e2e:android`
-- iOS 本地链路：`pnpm e2e:ios`
+- App HMR 产物链路：`pnpm e2e:app:hmr`
+- App 前后截图链路：`pnpm e2e:app:visual`
+- Android 本地 HMR + 前后截图链路：`pnpm e2e:android`
+- Android HMR 产物链路：`pnpm e2e:android:hmr`
+- Android 前后截图链路：`pnpm e2e:android:visual`
+- iOS 本地 HMR + 前后截图链路：`pnpm e2e:ios`
+- iOS HMR 产物链路：`pnpm e2e:ios:hmr`
+- iOS 前后截图链路：`pnpm e2e:ios:visual`
 - Harmony 本地链路：`pnpm e2e:harmony`
 - 总矩阵一致性：`pnpm exec vitest run -c ./e2e/vitest.e2e.config.ts e2e/e2e-matrix.test.ts`
 - 静态小程序快照：`E2E_SKIP_OPEN_AUTOMATOR=1 pnpm e2e:static`
@@ -31,3 +37,4 @@
 HBuilderX / App / 模拟器相关 case 依赖本机工具链，默认不进入普通 CI。矩阵中的 `reason` 字段记录了跳过原因和对应本地命令。后续组合执行时优先使用 `e2e:mp`、`e2e:h5`、`e2e:hbuilderx:*`、`e2e:android`、`e2e:ios`、`e2e:harmony` 这一层分组命令；`e2e:hbuilderx:local:*` 保留为底层兼容入口。
 `e2e:ide:visual` 会遍历 `demo/*` 的所有小程序 demo，在微信开发者工具里截取 HMR 前后画面；任一 demo 跳过、失败或没有匹配结果都会让命令失败。
 为避免连续打开多个 demo 后 DevTools 连接残留影响后续 HMR，`e2e:ide:visual` 默认在每个小程序 case 前后关闭微信开发者工具，并在 launch 超时后重试一次。需要保留已打开 IDE 调试时，可临时设置 `DEMO_VISUAL_IDE_CLEANUP=0`。
+`e2e:android` 和 `e2e:ios` 会先运行 HBuilderX App 开发态 HMR 产物断言，再运行 App visual report，并在同一个 App launch 进程内写入 HMR marker、等待增量产物、截取 `hmr-before.png` 与 `hmr-after.png`。截图默认落在 `e2e/.artifacts/demo-visual/full/screenshots/<demo>/<platform>/`，`--fail-on-incomplete` 会让跳过、失败或没有匹配结果直接失败。

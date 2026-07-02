@@ -191,12 +191,13 @@ export function createViteCssFinalizerOutputPlugin(context: CssFinalizerContext)
           uniUtsPlatform,
         })
         const isWebGeneratorTarget = generatorBranch.isWeb
-        const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
-        const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
+        const isUniAppXStyleTarget = opts.appType === 'uni-app-x'
+        const canInferHarmonyAppStyleTarget = isUniAppXStyleTarget && (!uniUtsPlatform.normalized || uniUtsPlatform.isApp)
+        const isHarmonyAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isAppHarmony || (
           canInferHarmonyAppStyleTarget
           && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
-        )
-        const isNativeAppStyleTarget = uniUtsPlatform.isApp || isHarmonyAppStyleTarget
+        ))
+        const isNativeAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isApp || isHarmonyAppStyleTarget)
         if (resolvedConfig?.command !== 'build' && !isNativeAppStyleTarget) {
           return
         }

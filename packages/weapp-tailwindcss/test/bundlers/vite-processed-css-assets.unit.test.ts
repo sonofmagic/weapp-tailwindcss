@@ -357,6 +357,103 @@ describe('vite processed css assets', () => {
     expect(String((bundle['pages/index.wxss'] as OutputAsset).source)).toBe('.page{color:black}\n.scoped{color:green}')
   })
 
+  it('injects configured uni-app vite app webview entry css into the root css asset', () => {
+    const root = '/project'
+    const sourceFile = `${root}/src/main.css`
+    const generatedCss = [
+      '.template-corpus-card{display:block}',
+      '.text-\\[45rpx\\]{font-size:45rpx}',
+      '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
+      '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
+    ].join('\n')
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', ''),
+      'src/main.css': asset('src/main.css', `${createBundlerGeneratedCssMarker('vite', sourceFile)}\n${generatedCss}`),
+    }
+    const records = new Map<string, any>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        cssEntries: [sourceFile],
+        tailwindcss: {
+          v4: {
+            cssEntries: [sourceFile],
+          },
+        },
+        mainCssChunkMatcher: () => false,
+      },
+      isViteProcessedCssAsset: (_asset, file) => file === 'src/main.css',
+      recordViteProcessedCssAssetResult(file, css, options) {
+        records.set(file, { css, ...options })
+      },
+      resolveViteProcessedCssOutputFile: file => file.startsWith(`${root}/`) ? file.slice(root.length + 1) : file,
+      debug: vi.fn(),
+    })
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: () => false,
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      debug: vi.fn(),
+    })
+
+    const appCss = String((bundle['app.css'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(records.get('src/main.css')).toMatchObject({
+      injectIntoMain: true,
+      outputFile: 'app.css',
+    })
+    expect(appCss).toContain('.template-corpus-card')
+    expect(appCss).toContain('.text-\\[45rpx\\]')
+    expect(appCss).toContain('.space-y-2')
+    expect(appCss).toContain('radial-gradient')
+  })
+
+  it('does not treat non-root uni-app vite page css as app webview main css', () => {
+    const root = '/project'
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', ''),
+      'pages/index.css': asset('pages/index.css', `${createBundlerGeneratedCssMarker('vite', `${root}/src/pages/index.css`)}\n.page-only{color:green}`),
+    }
+    const records = new Map<string, any>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        cssEntries: [`${root}/src/main.css`],
+        mainCssChunkMatcher: () => false,
+      },
+      isViteProcessedCssAsset: (_asset, file) => file === 'pages/index.css',
+      recordViteProcessedCssAssetResult(file, css, options) {
+        records.set(file, { css, ...options })
+      },
+      resolveViteProcessedCssOutputFile: () => 'app.css',
+      debug: vi.fn(),
+    })
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: () => false,
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      debug: vi.fn(),
+    })
+
+    expect(injected).toBe(0)
+    expect(String((bundle['app.css'] as OutputAsset).source)).toBe('')
+    expect(records.get('pages/index.css')?.injectIntoMain).toBeUndefined()
+  })
+
   it('moves taro import shell injection to the imported root css asset', () => {
     const bundle: OutputBundle = {
       'app.wxss': asset('app.wxss', ''),

@@ -39,6 +39,9 @@ export interface AppCase {
   transformedOutputFiles?: string[]
   transformedContains: Array<string | RegExp>
   hmrTransformedContains: Array<string | RegExp>
+  styleOutputFiles?: string[]
+  styleContains?: Array<string | RegExp>
+  hmrStyleContains?: Array<string | RegExp>
 }
 
 export interface WebCase {
@@ -299,7 +302,6 @@ const uniAppXAndroidHmrTransformedContains = [
   'h-_b41px_B',
   'mt-_b19px_B',
 ]
-
 function createUniAppAppCases(options: {
   name: string
   projectDir: string
@@ -330,8 +332,10 @@ function createUniAppAppCases(options: {
   } = options
   const markerClass = 'bg-[#102938] text-[#f7fbff] w-[173px]'
   const hmrMarkerClass = 'bg-[#3b0764] text-[#fef08a] h-[41px] mt-[19px]'
-  const transformedClassNames = ['bg-_b_h102938_B', 'text-_b_hf7fbff_B', 'w-_b173px_B']
-  const hmrTransformedClassNames = ['bg-_b_h3b0764_B', 'text-_b_hfef08a_B', 'h-_b41px_B', 'mt-_b19px_B']
+  const transformedClassNames = ['bg-[#102938]', 'text-[#f7fbff]', 'w-[173px]']
+  const hmrTransformedClassNames = ['bg-[#3b0764]', 'text-[#fef08a]', 'h-[41px]', 'mt-[19px]']
+  const styleContains = ['.bg-\\[\\#102938\\]', '.text-\\[\\#f7fbff\\]', '.w-\\[173px\\]']
+  const hmrStyleContains = ['.bg-\\[\\#3b0764\\]', '.text-\\[\\#fef08a\\]', '.h-\\[41px\\]', '.mt-\\[19px\\]']
 
   function createOutputDirCandidates(platform: AppPlatform) {
     const defaults = [
@@ -367,6 +371,9 @@ function createUniAppAppCases(options: {
       transformedOutputFiles,
       transformedContains: [...transformedClassNames, `hbuilderx-app-dynamic-${version}-${platformName}`],
       hmrTransformedContains: [...hmrTransformedClassNames, `hbuilderx-app-hmr-${version}-${platformName}`],
+      styleOutputFiles: ['app.css'],
+      styleContains,
+      hmrStyleContains,
     }
   }
 

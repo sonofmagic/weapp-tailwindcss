@@ -3723,6 +3723,152 @@ describe('bundlers/vite WeappTailwindcss bundle', () => {
     }
   }, TEST_TIMEOUT_MS)
 
+  it('replays uni-app vite app-plus dev webview css into app.css without wxss output', async () => {
+    const previousPlatform = process.env.UNI_PLATFORM
+    const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
+    process.env.UNI_PLATFORM = 'app-plus'
+    process.env.UNI_UTS_PLATFORM = 'app-android'
+    try {
+      const generateMock = vi.fn(async (options: { candidates: Set<string>, target: string }) => {
+        const webCss = [
+          '.template-corpus-card{display:block}',
+          '.text-\\[45rpx\\]{font-size:45rpx}',
+          '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
+          '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
+        ].join('\n')
+        const miniProgramCss = [
+          '.template-corpus-card{display:block}',
+          '.text-_b45rpx_B{font-size:45rpx}',
+          '.space-y-2>view+view{margin-top:.5rem}',
+          '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
+        ].join('\n')
+
+        return {
+          css: options.target === 'web' ? webCss : miniProgramCss,
+          rawCss: webCss,
+          target: options.target,
+          classSet: new Set(options.candidates),
+          rawCandidates: new Set(options.candidates),
+          dependencies: [],
+          sources: [],
+          root: null,
+          version: 4,
+        }
+      })
+      vi.doMock('@/generator', async (importOriginal) => {
+        const actual = await importOriginal<typeof import('@/generator')>()
+        return {
+          ...actual,
+          createWeappTailwindcssGenerator: vi.fn(() => ({
+            generate: generateMock,
+          })),
+        }
+      })
+
+      const WeappTailwindcss = await loadWeappTailwindcssPlugin()
+      const root = await mkdtemp(path.join(os.tmpdir(), 'weapp-tw-vite-app-plus-css-'))
+      createdDirs.push(root)
+      await mkdir(path.join(root, 'src'), { recursive: true })
+      const cssFile = path.join(root, 'src/main.css')
+      const rawCss = '@import "tailwindcss" source(none);\n@source "./**/*.{vue,js,ts}";'
+      await writeFile(cssFile, rawCss, 'utf8')
+      const runtimeSet = new Set([
+        'template-corpus-card',
+        'text-[45rpx]',
+        'space-y-2',
+        'bg-radial',
+      ])
+      setCurrentContext(createContext({
+        appType: 'uni-app-vite',
+        cssEntries: [cssFile],
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: vi.fn((file: string) => file === 'app.css'),
+        tailwindcss: {
+          v4: {
+            cssEntries: [cssFile],
+          },
+        },
+        tailwindRuntime: {
+          getClassSet: vi.fn(async () => runtimeSet),
+          getClassSetSync: vi.fn(() => runtimeSet),
+          majorVersion: 4,
+          extract: vi.fn(async () => ({ classSet: runtimeSet })),
+          options: {
+            projectRoot: root,
+            tailwindcss: {
+              cwd: root,
+              v4: {
+                cssEntries: [cssFile],
+              },
+            },
+          },
+        },
+      }))
+
+      const plugins = WeappTailwindcss()
+      const servePlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:generate:serve') as Plugin
+      const postPlugin = plugins?.find(plugin => plugin.name === 'weapp-tailwindcss:adaptor:post') as Plugin
+      expect(servePlugin).toBeTruthy()
+      expect(postPlugin).toBeTruthy()
+
+      const resolvedConfig = {
+        command: 'serve',
+        root,
+        css: { postcss: { plugins: [] } },
+        build: { outDir: 'dist/dev/app-plus' },
+        plugins: [{ name: 'vite:uni' }],
+      } as ResolvedConfig
+      await (postPlugin.configResolved as any)?.call(postPlugin, resolvedConfig)
+      await (servePlugin.configResolved as any)?.call(servePlugin, resolvedConfig)
+
+      const transform = getTransformHandler(servePlugin)
+      const transformed = await transform?.call({
+        ...servePlugin,
+        addWatchFile: vi.fn(),
+        emitFile: vi.fn(),
+      }, rawCss, cssFile)
+      const transformedCss = typeof transformed === 'object' && transformed != null && 'code' in transformed
+        ? transformed.code
+        : String(transformed ?? rawCss)
+      const bundle = {
+        'main.css': {
+          ...createRollupAsset(transformedCss),
+          fileName: 'main.css',
+          originalFileNames: [cssFile],
+        },
+        'app.css': {
+          ...createRollupAsset(''),
+          fileName: 'app.css',
+        },
+      }
+      const generateBundle = getGenerateBundleHandler(postPlugin)
+      await generateBundle?.call({ ...postPlugin, addWatchFile: vi.fn() }, {} as any, bundle)
+
+      const appCss = (bundle['app.css'] as OutputAsset).source.toString()
+      expect(generateMock.mock.calls.at(-1)?.[0].target).toBe('web')
+      expect(bundle['main.wxss']).toBeUndefined()
+      expect(appCss).toContain('.template-corpus-card')
+      expect(appCss).toContain('.text-\\[45rpx\\]')
+      expect(appCss).toContain('.space-y-2')
+      expect(appCss).toContain('radial-gradient')
+      expect(appCss).not.toContain('.text-_b45rpx_B')
+    }
+    finally {
+      if (previousPlatform === undefined) {
+        delete process.env.UNI_PLATFORM
+      }
+      else {
+        process.env.UNI_PLATFORM = previousPlatform
+      }
+      if (previousUtsPlatform === undefined) {
+        delete process.env.UNI_UTS_PLATFORM
+      }
+      else {
+        process.env.UNI_UTS_PLATFORM = previousUtsPlatform
+      }
+    }
+  }, TEST_TIMEOUT_MS)
+
   it('injects harmony page chunk styles from HBuilderX app-harmony main.css bundle output', async () => {
     const previousUtsPlatform = process.env.UNI_UTS_PLATFORM
     delete process.env.UNI_UTS_PLATFORM
@@ -5877,6 +6023,70 @@ module.exports = {
 
     expect((bundle['app.wxss'] as OutputAsset).source.toString()).not.toContain('.tw-page-build')
     expect(viteProcessedCssAssetResults.get('pages/index/index.css')?.injectIntoMain).toBeUndefined()
+  })
+
+  it('replays configured uni-app vite app webview css entry into empty root app css', () => {
+    const root = '/project'
+    const sourceFile = `${root}/src/main.css`
+    const generatedCss = [
+      '.template-corpus-apply{display:block}',
+      '.text-\\[45rpx\\]{font-size:45rpx}',
+      '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
+      '.bg-radial{background-image:radial-gradient(circle,#fff,#000)}',
+    ].join('\n')
+    const context = createContext({
+      appType: 'uni-app-vite',
+      cssMatcher: (file: string) => file.endsWith('.css'),
+      cssEntries: [sourceFile],
+      tailwindcss: {
+        v4: {
+          cssEntries: [sourceFile],
+        },
+      },
+      mainCssChunkMatcher: vi.fn(() => false),
+    })
+    const bundle = {
+      'app.css': {
+        ...createRollupAsset(''),
+        fileName: 'app.css',
+      },
+      'src/main.css': {
+        ...createRollupAsset(`${createBundlerGeneratedCssMarker('vite', sourceFile)}\n${generatedCss}`),
+        fileName: 'src/main.css',
+      },
+    }
+    const viteProcessedCssAssetResults = new Map<string, { css: string, injectIntoMain?: boolean | undefined, outputFile?: string | undefined }>()
+
+    collectViteProcessedCssAssetResults(bundle, {
+      opts: context as any,
+      isViteProcessedCssAsset: vi.fn((_asset: OutputAsset, file: string) => file === 'src/main.css'),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+      recordViteProcessedCssAssetResult(file, css, options) {
+        viteProcessedCssAssetResults.set(file, {
+          css,
+          injectIntoMain: options?.injectIntoMain,
+          outputFile: options?.outputFile,
+        })
+      },
+      resolveViteProcessedCssOutputFile: file => file.startsWith(`${root}/`) ? file.slice(root.length + 1) : file,
+    })
+    injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: context as any,
+      getViteProcessedCssAssetResults: () => viteProcessedCssAssetResults.entries(),
+      markCssAssetProcessed: vi.fn(),
+      recordCssAssetResult: vi.fn(),
+    })
+
+    const appCss = (bundle['app.css'] as OutputAsset).source.toString()
+    expect(viteProcessedCssAssetResults.get('src/main.css')).toMatchObject({
+      injectIntoMain: true,
+      outputFile: 'app.css',
+    })
+    expect(appCss).toContain('.template-corpus-apply')
+    expect(appCss).toContain('.text-\\[45rpx\\]')
+    expect(appCss).toContain('.space-y-2')
+    expect(appCss).toContain('radial-gradient')
   })
 
   it('uses Vite generated css marker source when Taro emits same-basename ttss assets out of order', () => {

@@ -71,6 +71,10 @@ function resolveAppTransformedFiles(projectRoot: string, outputRoot: string, ite
   ]
 }
 
+function resolveAppStyleOutputFiles(outputRoot: string, item: AppCase) {
+  return (item.styleOutputFiles ?? []).map(file => path.resolve(outputRoot, file))
+}
+
 async function findMissingAppFiles(item: AppCase, outputRoot: string) {
   const missing: string[] = []
   for (const file of item.requiredFiles) {
@@ -89,6 +93,17 @@ async function readExistingAppTransformedOutput(projectRoot: string, outputRoot:
   return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
 }
 
+async function readExistingAppStyleOutput(outputRoot: string, item: AppCase) {
+  const styleFiles = resolveAppStyleOutputFiles(outputRoot, item)
+  if (styleFiles.length === 0) {
+    return ''
+  }
+  if (!(await Promise.all(styleFiles.map(fileExists))).every(Boolean)) {
+    return undefined
+  }
+  return (await Promise.all(styleFiles.map(readUtf8))).join('\n')
+}
+
 function hasContent(source: string, entries: Array<string | RegExp>) {
   return entries.every((entry) => {
     if (typeof entry === 'string') {
@@ -98,7 +113,7 @@ function hasContent(source: string, entries: Array<string | RegExp>) {
   })
 }
 
-async function findReadyAppOutputRoot(item: AppCase, projectRoot: string, expected: Array<string | RegExp>) {
+async function findReadyAppOutputRoot(item: AppCase, projectRoot: string, expected: Array<string | RegExp>, styleExpected?: Array<string | RegExp>) {
   for (const outputDir of resolveAppOutputDirCandidates(item)) {
     const outputRoot = path.resolve(projectRoot, outputDir)
     const missing = await findMissingAppFiles(item, outputRoot)
@@ -109,7 +124,12 @@ async function findReadyAppOutputRoot(item: AppCase, projectRoot: string, expect
       await finalizeHarmonyAppOutput(projectRoot, outputRoot)
     }
     const transformed = await readExistingAppTransformedOutput(projectRoot, outputRoot, item)
-    if (transformed && hasContent(transformed, expected)) {
+    const style = styleExpected?.length ? await readExistingAppStyleOutput(outputRoot, item) : ''
+    if (
+      transformed
+      && hasContent(transformed, expected)
+      && (styleExpected?.length ? style != null && hasContent(style, styleExpected) : true)
+    ) {
       return outputRoot
     }
   }
@@ -122,9 +142,11 @@ async function waitForAppOutputRoot(
   expected: Array<string | RegExp>,
   timeoutMs: number,
   ensureRunning: () => void,
+  styleExpected?: Array<string | RegExp>,
 ) {
   const startedAt = Date.now()
   let latest = ''
+  let latestStyle = ''
   while (Date.now() - startedAt < timeoutMs) {
     ensureRunning()
     for (const outputDir of resolveAppOutputDirCandidates(item)) {
@@ -141,13 +163,24 @@ async function waitForAppOutputRoot(
         continue
       }
       latest = transformed
-      if (hasContent(transformed, expected)) {
-        return outputRoot
+      if (!hasContent(transformed, expected)) {
+        continue
       }
+      if (styleExpected?.length) {
+        const style = await readExistingAppStyleOutput(outputRoot, item)
+        if (style == null) {
+          continue
+        }
+        latestStyle = style
+        if (!hasContent(style, styleExpected)) {
+          continue
+        }
+      }
+      return outputRoot
     }
     await wait(pollIntervalMs)
   }
-  throw new Error(`${item.name} App 产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nlatest=${latest.slice(0, 2000)}`)
+  throw new Error(`${item.name} App 产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nstyleExpected=${styleExpected?.map(String).join(' | ') ?? ''}\nlatest=${latest.slice(0, 2000)}\nlatestStyle=${latestStyle.slice(0, 2000)}`)
 }
 
 async function cleanAppOutput(item: AppCase, projectRoot: string) {
@@ -563,28 +596,21 @@ async function runAppCaseVariant(
     const ensureInitialRunning = () => launch?.tracker.ensureRunning(launch.logs)
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait initial output\n`)
-    const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.transformedContains, appOutputTimeoutMs, ensureInitialRunning)
+    const initialOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.transformedContains, appOutputTimeoutMs, ensureInitialRunning, item.styleContains)
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: initial output ${initialOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot before\n`)
     beforeScreenshotEvidence = await waitForAppScreenshotReady(item, hmrBeforeScreenshot, toolEnv, `${item.name} HMR 前`, ensureInitialRunning)
-    await stopAppLaunch(launch)
-    launch = undefined
-
-    await fs.writeFile(sourceFile, originalSource, 'utf8')
-    await restoreVariantManifest()
 
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: write hmr marker\n`)
     await writeAppMarker(sourceFile, resolveAppMarkerAnchors(item), {
       className: item.hmrMarkerClass,
       text: item.hmrMarkerText,
     })
-    await wait(Number(process.env['DEMO_VISUAL_APP_HMR_RELAUNCH_DELAY_MS'] ?? 1000))
-    process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: launch hmr ${item.platform}\n`)
-    launch = startAppLaunch(item, projectRoot, hbuilderxCliPath, toolEnv)
-    const ensureHmrRunning = () => launch?.tracker.ensureRunning(launch.logs)
+    await wait(Number(process.env['DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS'] ?? 1000))
+    const ensureHmrRunning = ensureInitialRunning
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: wait hmr output\n`)
-    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, appOutputTimeoutMs, ensureHmrRunning)
+    const hmrOutputRoot = await waitForAppOutputRoot(item, projectRoot, item.hmrTransformedContains, appOutputTimeoutMs, ensureHmrRunning, item.hmrStyleContains)
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: hmr output ${hmrOutputRoot}\n`)
     await wait(Number(process.env['DEMO_VISUAL_APP_SCREENSHOT_DELAY_MS'] ?? 3000))
     process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: screenshot after\n`)
@@ -638,7 +664,7 @@ async function runAppCaseVariant(
     if (shared?.originalManifest) {
       await writeManifest(projectRoot, shared.originalManifest).catch(() => undefined)
     }
-    const restoredOutput = await findReadyAppOutputRoot(item, projectRoot, item.transformedContains).catch(() => undefined)
+    const restoredOutput = await findReadyAppOutputRoot(item, projectRoot, item.transformedContains, item.styleContains).catch(() => undefined)
     if (restoredOutput) {
       process.stdout.write(`[app-${platform}] ${name}${variant.key ? ` ${variant.key}` : ''}: restored output ${restoredOutput}\n`)
     }

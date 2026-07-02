@@ -147,6 +147,33 @@ describe('get options', () => {
     })
   })
 
+  it('keeps uni-app vite App WebView on web generator target when HBuilderX exposes native uts platform', () => {
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app-plus', UNI_UTS_PLATFORM: 'app-android' }, () => {
+      const options = normalizeWeappTailwindcssGeneratorOptions({}, {
+        appType: 'uni-app-vite',
+        tailwindcssMajorVersion: 4,
+      })
+
+      expect(options.target).toBe('web')
+      expect(options.branch).toMatchObject({
+        platformFamily: 'web',
+      })
+      expect(options.webCompat).toBe(true)
+    })
+
+    withGeneratorTargetEnv({ UNI_PLATFORM: 'app', UNI_UTS_PLATFORM: 'app-ios' }, () => {
+      const options = normalizeWeappTailwindcssGeneratorOptions({}, {
+        appType: 'uni-app-vite',
+        tailwindcssMajorVersion: 4,
+      })
+
+      expect(options.target).toBe('web')
+      expect(options.branch).toMatchObject({
+        platformFamily: 'web',
+      })
+    })
+  })
+
   it('does not infer web generator target from uni-app x and Mpx non-web env', () => {
     withGeneratorTargetEnv({ UNI_UTS_PLATFORM: 'app-android' }, () => {
       expect(normalizeWeappTailwindcssGeneratorOptions({}).target).toBe('weapp')

@@ -361,8 +361,35 @@ describe('e2e matrix', () => {
     expect(h5VisualNames).toEqual(expectedH5Names)
     expect(visualScript).toContain('runH5Case(browser')
     expect(visualScript).toContain('runMiniProgramCase({')
+    expect(visualScript).toContain('runAppCase(item, context, results)')
     expect(visualHmr).toContain('expectedBackgroundColor')
     expect(visualHmr).toContain('waitForVisualHmrStep')
+  })
+
+  it('keeps Android and iOS App HMR plus screenshots wired for uni-app Vite v4', () => {
+    const rootPackageJson = readDemoPackageJson('package.json')
+    const scripts = rootPackageJson.scripts ?? {}
+    const visualApp = fs.readFileSync(path.resolve(__dirname, '../scripts/demo-visual-e2e-report/app.ts'), 'utf8')
+    const uniAppViteAppCases = uniAppAppCases.filter(item => item.projectDir === 'demo/uni-app-vite-tailwindcss-v4')
+
+    expect(uniAppViteAppCases.map(item => item.platform).sort()).toEqual(['app-android', 'app-ios'])
+    for (const item of uniAppViteAppCases) {
+      expect(item.transformedOutputFiles, `${item.name} should assert App WebView runtime output`).toContain('app-service.js')
+      expect(item.transformedContains, `${item.name} should assert initial App HMR marker`).toContain(`hbuilderx-app-dynamic-v4-${item.platform === 'app-android' ? 'android' : 'ios'}`)
+      expect(item.hmrTransformedContains, `${item.name} should assert updated App HMR marker`).toContain(`hbuilderx-app-hmr-v4-${item.platform === 'app-android' ? 'android' : 'ios'}`)
+    }
+
+    expect(scripts['e2e:android']).toBe('pnpm e2e:android:hmr && pnpm e2e:android:visual')
+    expect(scripts['e2e:android:hmr']).toBe('pnpm e2e:hbuilderx:android')
+    expect(scripts['e2e:android:visual']).toContain('--android-only --fail-on-incomplete')
+    expect(scripts['e2e:ios']).toBe('pnpm e2e:ios:hmr && pnpm e2e:ios:visual')
+    expect(scripts['e2e:ios:hmr']).toBe('pnpm e2e:hbuilderx:ios')
+    expect(scripts['e2e:ios:visual']).toContain('--ios-only --fail-on-incomplete')
+    expect(scripts['e2e:app:visual']).toContain('--app-only --fail-on-incomplete')
+    expect(visualApp).toContain('hmrBeforeScreenshot')
+    expect(visualApp).toContain('hmrAfterScreenshot')
+    expect(visualApp).toContain('DEMO_VISUAL_APP_HMR_MUTATION_DELAY_MS')
+    expect(visualApp).not.toContain('DEMO_VISUAL_APP_HMR_RELAUNCH_DELAY_MS')
   })
 
   it('keeps demo workflow routed through composable platform e2e groups', () => {
@@ -379,6 +406,8 @@ describe('e2e matrix', () => {
     expect(scripts['e2e:mp:ide']).toBe('pnpm e2e:ide:full')
     expect(scripts['e2e:h5']).toBe('pnpm e2e:taro:h5-build && pnpm e2e:taro:web-hmr && pnpm e2e:web:hmr')
     expect(scripts['e2e:app']).toBe('pnpm e2e:android && pnpm e2e:ios && pnpm e2e:harmony')
+    expect(scripts['e2e:app:hmr']).toBe('pnpm e2e:hbuilderx:app')
+    expect(scripts['e2e:app:visual']).toContain('--app-only --fail-on-incomplete')
     expect(scripts['e2e:hbuilderx:local:harmony']).toContain('E2E_HBUILDERX_APP_PLATFORM=app-harmony')
     expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_LOCAL=1')
     expect(scripts['e2e:hbuilderx:local:demo']).toContain('E2E_HBUILDERX_CASE=uni-app-vite-vue3-hbuilderx-tailwindcss-v4,uni-app-x-hbuilderx-tailwindcss-v4')

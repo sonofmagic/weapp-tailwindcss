@@ -72,6 +72,10 @@ export function shouldUseWebGeneratorTargetFromEnv(): boolean {
     || getEnvValue('TARO_ENV') === 'h5'
 }
 
+export function shouldUseUniAppViteWebViewGeneratorTarget(appType: string | undefined, platform: string | undefined = getEnvValue('UNI_PLATFORM')): boolean {
+  return appType === 'uni-app-vite' && isUniAppWebViewPlatform(platform)
+}
+
 export function inferGeneratorTargetFromEnv(): WeappTailwindcssGeneratorTarget {
   return inferGeneratorTargetFromExplicitEnv()
     ?? (shouldUseWebGeneratorTargetFromEnv() ? 'web' : 'weapp')

@@ -150,12 +150,13 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
       uniUtsPlatform,
     })
     const isWebGeneratorTarget = generatorBranch.isWeb
-    const isNativeAppStyleTarget = uniUtsPlatform.isApp
-    const canInferHarmonyAppStyleTarget = !uniUtsPlatform.normalized || uniUtsPlatform.isApp
-    const isHarmonyAppStyleTarget = uniUtsPlatform.isAppHarmony || (
+    const isUniAppXStyleTarget = opts.appType === 'uni-app-x'
+    const isNativeAppStyleTarget = isUniAppXStyleTarget && uniUtsPlatform.isApp
+    const canInferHarmonyAppStyleTarget = isUniAppXStyleTarget && (!uniUtsPlatform.normalized || uniUtsPlatform.isApp)
+    const isHarmonyAppStyleTarget = isUniAppXStyleTarget && (uniUtsPlatform.isAppHarmony || (
       canInferHarmonyAppStyleTarget
       && (isUniAppXHarmonyBundle(bundle) || isUniAppXHarmonyOutDir(resolvedConfig?.build?.outDir))
-    )
+    ))
     const shouldPreserveAppCssExtension = isNativeAppStyleTarget || isHarmonyAppStyleTarget
     const shouldGenerateWebCssByGenerator = isWebGeneratorTarget
     const { getCssHandlerOptions, getCssUserHandlerOptions } = cssHandlerOptions
@@ -251,6 +252,30 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
         normalizeOutputPathKey(entry.file.replace(/[?#].*$/, '')),
       ),
     )
+    const resolveUniAppViteWebviewRootCssInjectionTarget = (sourceFile: string | undefined, outputFile: string) => {
+      if (
+        opts.appType !== 'uni-app-vite'
+        || !outputFile.replace(/[?#].*$/, '').endsWith('.css')
+        || typeof sourceFile !== 'string'
+        || !configuredTailwindV4CssSourceFileKeysForScope.has(normalizeOutputPathKey(sourceFile.replace(/[?#].*$/, '')))
+      ) {
+        return
+      }
+      const rootCssFiles = bundleFiles.filter((file) => {
+        const normalized = normalizeOutputPathKey(file.replace(/[?#].*$/, ''))
+        return opts.cssMatcher(file)
+          && normalized.endsWith('.css')
+          && !normalized.includes('/')
+      })
+      const matchedRootCssFiles = rootCssFiles.filter(file => getCssHandlerOptions(file).isMainChunk)
+      if (matchedRootCssFiles.length === 1) {
+        return matchedRootCssFiles[0]
+      }
+      if (matchedRootCssFiles.length > 1) {
+        return
+      }
+      return rootCssFiles.length === 1 ? rootCssFiles[0] : undefined
+    }
     const {
       createScopedSourceCandidateGetter,
       createScopedSourceCandidateSourceGetter,
@@ -895,9 +920,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && useIncrementalMode
           && state.generatorCandidateSignature !== undefined
           && generatorCandidatesChanged
+        const webviewRootCssInjectionTarget = vitePipelineCssAsset
+          ? resolveUniAppViteWebviewRootCssInjectionTarget(generatorSourceFile, outputFile)
+          : undefined
+        const vitePipelineCssInjectionOutputFile = webviewRootCssInjectionTarget ?? outputFile
         const shouldInjectVitePipelineCssIntoMain = vitePipelineCssAsset
           && outputCssHandlerOptions.isMainChunk !== true
-          && shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
+          && (
+            webviewRootCssInjectionTarget != null
+            || shouldInjectCssIntoMainFromOutput(outputFile, generatorSourceFile, outputCssHandlerOptions)
+          )
         const shouldTrackGeneratorRuntime = hasStaleViteProcessedCssSource
           || shouldRegenerateMainPackageCssWithScopedCandidates
           || hasCurrentTailwindGenerationDirective
@@ -940,10 +972,16 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
           recordCssAssetResult?.(outputFile, nextCss)
-          recordViteProcessedCssAssetResult?.(outputFile, nextCss, {
+          recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, nextCss, {
             injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
-            outputFile,
+            outputFile: vitePipelineCssInjectionOutputFile,
           })
+          if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
+            recordViteProcessedCssAssetResult?.(file, nextCss, {
+              injectIntoMain: shouldInjectVitePipelineCssIntoMain,
+              outputFile: vitePipelineCssInjectionOutputFile,
+            })
+          }
           onUpdate(outputFile, rawSource, nextCss)
           debug('css skip vite-processed asset: %s', outputFile)
           continue
@@ -1066,14 +1104,14 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     transformRuntime.add(candidate)
                   }
                   recordCssAssetResult?.(outputFile, tracedCss)
-                  recordViteProcessedCssAssetResult?.(outputFile, tracedCss, {
+                  recordViteProcessedCssAssetResult?.(vitePipelineCssInjectionOutputFile, tracedCss, {
                     injectIntoMain: outputCssHandlerOptions.isMainChunk ? false : shouldInjectVitePipelineCssIntoMain,
-                    outputFile,
+                    outputFile: vitePipelineCssInjectionOutputFile,
                   })
                   if (vitePipelineCssAsset && shouldInjectVitePipelineCssIntoMain) {
                     recordViteProcessedCssAssetResult?.(file, tracedCss, {
                       injectIntoMain: shouldInjectVitePipelineCssIntoMain,
-                      outputFile,
+                      outputFile: vitePipelineCssInjectionOutputFile,
                     })
                   }
                   metrics.css.elapsed += measureElapsed(start)

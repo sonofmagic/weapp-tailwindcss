@@ -748,7 +748,8 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
-    const isNativeAppStyleTarget = resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget
+    const isNativeAppStyleTarget = opts.appType === 'uni-app-x'
+      && (resolveUniUtsPlatform().isApp || isHarmonyAppStyleTarget)
     const sourceRoot = resolveWeappViteSourceRoot(resolvedConfig, opts.appType)
     const outputFile = resolveViteCssPipelineOutputFile(requestFile, opts, rootDir, generatorBranch.isWeb, isNativeAppStyleTarget, sourceRoot)
     const runtime = getRecordedGeneratorCandidates()

@@ -577,6 +577,71 @@ function collectBundleAssetFiles(bundle: OutputBundle) {
   return files
 }
 
+function normalizeComparableStyleFile(file: string) {
+  return normalizeOutputPathKey(path.normalize(file.replace(/[?#].*$/, '')))
+}
+
+function collectConfiguredTailwindV4CssEntryFiles(opts: InternalUserDefinedOptions) {
+  const runtimeCssEntries = (opts.tailwindRuntime as any)?.options?.tailwindcss?.v4?.cssEntries
+  return [
+    ...(Array.isArray(opts.cssEntries) ? opts.cssEntries : []),
+    ...(Array.isArray(opts.tailwindcss?.v4?.cssEntries) ? opts.tailwindcss.v4.cssEntries : []),
+    ...(Array.isArray(opts.tailwindcssRuntimeOptions?.tailwindcss?.v4?.cssEntries) ? opts.tailwindcssRuntimeOptions.tailwindcss.v4.cssEntries : []),
+    ...(Array.isArray(runtimeCssEntries) ? runtimeCssEntries : []),
+  ].filter((file): file is string => typeof file === 'string' && file.length > 0)
+}
+
+function isConfiguredTailwindV4CssEntryFile(opts: InternalUserDefinedOptions, file: string | undefined) {
+  if (typeof file !== 'string' || file.length === 0) {
+    return false
+  }
+  const fileKey = normalizeComparableStyleFile(file)
+  return collectConfiguredTailwindV4CssEntryFiles(opts).some(entry =>
+    normalizeComparableStyleFile(entry) === fileKey,
+  )
+}
+
+function resolveUniAppViteWebviewRootCssInjectionTarget(
+  bundle: OutputBundle,
+  opts: InternalUserDefinedOptions,
+  sourceFile: string | undefined,
+  outputFile: string,
+) {
+  if (
+    opts.appType !== 'uni-app-vite'
+    || isMiniProgramStyleOutputFile(outputFile)
+    || !isConfiguredTailwindV4CssEntryFile(opts, sourceFile)
+  ) {
+    return
+  }
+  const rootCssFiles: string[] = []
+  const matchedRootCssFiles: string[] = []
+  for (const [bundleFile, output] of Object.entries(bundle)) {
+    if (output.type !== 'asset') {
+      continue
+    }
+    const file = getAssetFile(bundleFile, output)
+    if (
+      !opts.cssMatcher(file)
+      || !isRootStyleOutputFile(file)
+      || isMiniProgramStyleOutputFile(file)
+    ) {
+      continue
+    }
+    rootCssFiles.push(file)
+    if (opts.mainCssChunkMatcher(file, opts.appType)) {
+      matchedRootCssFiles.push(file)
+    }
+  }
+  if (matchedRootCssFiles.length === 1) {
+    return matchedRootCssFiles[0]
+  }
+  if (matchedRootCssFiles.length > 1) {
+    return
+  }
+  return rootCssFiles.length === 1 ? rootCssFiles[0] : undefined
+}
+
 function findBundleAssetByOutputFile(bundle: OutputBundle, file: string) {
   const fileKey = normalizeOutputPathKey(file)
   return Object.entries(bundle).find(([bundleFile, output]) => {
@@ -694,6 +759,15 @@ export function collectViteProcessedCssAssetResults(
       existingAssetFiles,
       options.resolveViteProcessedCssOutputFile,
     )
+    const webviewRootCssInjectionTarget = options.opts
+      ? resolveUniAppViteWebviewRootCssInjectionTarget(
+          bundle,
+          options.opts,
+          singleMarkerFile ?? file,
+          resolvedOutputFile,
+        )
+      : undefined
+    const recordOutputFile = webviewRootCssInjectionTarget ?? resolvedOutputFile
     if (
       singleMarkerFile
       && normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
@@ -724,21 +798,24 @@ export function collectViteProcessedCssAssetResults(
       }
     }
     const shouldReplayIntoMainCss = options.opts != null
-      && shouldReplayViteProcessedCssIntoMainCss(
-        options.opts,
-        file,
-        singleMarkerFile,
-        resolvedOutputFile,
-        options.subpackageRoots,
+      && (
+        webviewRootCssInjectionTarget != null
+        || shouldReplayViteProcessedCssIntoMainCss(
+          options.opts,
+          file,
+          singleMarkerFile,
+          resolvedOutputFile,
+          options.subpackageRoots,
+        )
       )
     options.recordViteProcessedCssAssetResult?.(file, nextCss, {
       injectIntoMain: shouldReplayIntoMainCss || undefined,
-      outputFile: resolvedOutputFile,
+      outputFile: recordOutputFile,
     })
-    if (normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)) {
-      options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, nextCss, {
+    if (normalizeOutputPathKey(recordOutputFile) !== normalizeOutputPathKey(file)) {
+      options.recordViteProcessedCssAssetResult?.(recordOutputFile, nextCss, {
         injectIntoMain: shouldReplayIntoMainCss || undefined,
-        outputFile: resolvedOutputFile,
+        outputFile: recordOutputFile,
       })
     }
     for (const markerFile of collectMatchingGeneratedCssMarkerFiles(
@@ -751,15 +828,15 @@ export function collectViteProcessedCssAssetResults(
       }
       options.recordViteProcessedCssAssetResult?.(markerFile, nextCss, {
         injectIntoMain: shouldReplayIntoMainCss || undefined,
-        outputFile: resolvedOutputFile,
+        outputFile: recordOutputFile,
       })
       if (
-        normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(markerFile)
-        && normalizeOutputPathKey(resolvedOutputFile) !== normalizeOutputPathKey(file)
+        normalizeOutputPathKey(recordOutputFile) !== normalizeOutputPathKey(markerFile)
+        && normalizeOutputPathKey(recordOutputFile) !== normalizeOutputPathKey(file)
       ) {
-        options.recordViteProcessedCssAssetResult?.(resolvedOutputFile, nextCss, {
+        options.recordViteProcessedCssAssetResult?.(recordOutputFile, nextCss, {
           injectIntoMain: shouldReplayIntoMainCss || undefined,
-          outputFile: resolvedOutputFile,
+          outputFile: recordOutputFile,
         })
       }
     }

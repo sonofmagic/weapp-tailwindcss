@@ -95,12 +95,28 @@ function resolveAppTransformedFiles(projectRoot: string, outputRoot: string, ite
   return [...(item.transformedFiles ?? []).map(file => path.resolve(projectRoot, file)), ...(item.transformedOutputFiles ?? []).map(file => path.resolve(outputRoot, file))]
 }
 
+function resolveAppStyleOutputFiles(outputRoot: string, item: AppCase) {
+  return (item.styleOutputFiles ?? []).map(file => path.resolve(outputRoot, file))
+}
+
 async function readAppTransformedOutput(projectRoot: string, outputRoot: string, item: AppCase) {
   return (
     await Promise.all(
       resolveAppTransformedFiles(projectRoot, outputRoot, item).map(async (target) => {
         const label = path.relative(projectRoot, target) || target
         expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少转换产物 ${label}`).toBe(true)
+        return await readUtf8(target)
+      }),
+    )
+  ).join('\n')
+}
+
+async function readAppStyleOutput(outputRoot: string, item: AppCase) {
+  return (
+    await Promise.all(
+      resolveAppStyleOutputFiles(outputRoot, item).map(async (target) => {
+        const label = path.relative(outputRoot, target) || target
+        expect(await waitForFile(target, hbuilderxAppTimeoutMs), `${item.name} 缺少样式产物 ${label}`).toBe(true)
         return await readUtf8(target)
       }),
     )
@@ -115,16 +131,29 @@ async function readExistingAppTransformedOutput(projectRoot: string, outputRoot:
   return (await Promise.all(transformedFiles.map(readUtf8))).join('\n')
 }
 
+async function readExistingAppStyleOutput(outputRoot: string, item: AppCase) {
+  const styleFiles = resolveAppStyleOutputFiles(outputRoot, item)
+  if (styleFiles.length === 0) {
+    return ''
+  }
+  if (!(await Promise.all(styleFiles.map(fileExists))).every(Boolean)) {
+    return undefined
+  }
+  return (await Promise.all(styleFiles.map(readUtf8))).join('\n')
+}
+
 async function waitForAppTransformedContent(
   item: AppCase,
   expected: Array<string | RegExp>,
   timeoutMs: number,
   ensureRunning?: () => void,
   createFailureDetails?: () => Promise<string>,
+  styleExpected?: Array<string | RegExp>,
 ) {
   const projectRoot = path.resolve(repoRoot, item.projectDir)
   const startedAt = Date.now()
   let latest = ''
+  let latestStyle = ''
 
   while (Date.now() - startedAt < timeoutMs) {
     ensureRunning?.()
@@ -135,15 +164,26 @@ async function waitForAppTransformedContent(
         continue
       }
       latest = transformed
-      if (hasContent(transformed, expected)) {
-        return outputRoot
+      if (!hasContent(transformed, expected)) {
+        continue
       }
+      if (styleExpected?.length) {
+        const style = await readExistingAppStyleOutput(outputRoot, item)
+        if (style == null) {
+          continue
+        }
+        latestStyle = style
+        if (!hasContent(style, styleExpected)) {
+          continue
+        }
+      }
+      return outputRoot
     }
     await wait(pollIntervalMs)
   }
 
   const details = await createFailureDetails?.()
-  throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nlatest=${latest.slice(0, 2000)}${details ? `\n${details}` : ''}`)
+  throw new Error(`${item.name} App 热更新产物未包含预期内容\nexpected=${expected.map(String).join(' | ')}\nstyleExpected=${styleExpected?.map(String).join(' | ') ?? ''}\nlatest=${latest.slice(0, 2000)}\nlatestStyle=${latestStyle.slice(0, 2000)}${details ? `\n${details}` : ''}`)
 }
 
 async function assertMiniProgramOutput(
@@ -220,6 +260,10 @@ async function assertAppOutput(item: AppCase) {
 
   const transformed = await readAppTransformedOutput(projectRoot, outputRoot, item)
   expectContent(transformed, item.transformedContains, `${item.name} App 转换产物`)
+  if (item.styleContains?.length) {
+    const style = await readAppStyleOutput(outputRoot, item)
+    expectContent(style, item.styleContains, `${item.name} App 样式产物`)
+  }
 }
 
 async function findMissingAppFiles(item: AppCase, outputRoot?: string) {
@@ -245,7 +289,12 @@ async function findReadyAppOutputRoot(item: AppCase) {
       continue
     }
     const transformed = await readExistingAppTransformedOutput(projectRoot, outputRoot, item)
-    if (transformed && hasContent(transformed, item.transformedContains)) {
+    const style = item.styleContains?.length ? await readExistingAppStyleOutput(outputRoot, item) : ''
+    if (
+      transformed
+      && hasContent(transformed, item.transformedContains)
+      && (item.styleContains?.length ? style != null && hasContent(style, item.styleContains) : true)
+    ) {
       return outputRoot
     }
   }
@@ -426,7 +475,7 @@ export async function verifyAppHmrWithHBuilderX(item: AppCase) {
         `sourceTail=${source.slice(-1200)}`,
         `recentHBuilderXLogs=${logs.join('').slice(-4000)}`,
       ].join('\n')
-    })
+    }, item.hmrStyleContains)
 
     killProcessTree(child)
     await Promise.race([closed, wait(5_000)])
