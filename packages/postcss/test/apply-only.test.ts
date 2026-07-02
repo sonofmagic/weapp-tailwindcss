@@ -66,4 +66,36 @@ describe('apply-only css helpers', () => {
     expect(filterApplyOnlyGeneratedCssRoot(root, new Set())).toBe(false)
     expect(root.toString()).toBe(css)
   })
+
+  it('handles malformed css and rule selector fallbacks', () => {
+    expect(collectApplyOnlyCssSelectors('.card { @apply flex')).toEqual(new Set())
+    expect(filterApplyOnlyGeneratedCss('.card { color: red', new Set(['.card']))).toBe('.card { color: red')
+    expect(filterApplyOnlyGeneratedCss('.card { display: flex; }', new Set(['.card']))).toBe('.card { display: flex; }')
+
+    const fakeRoot = {
+      walkRules(callback: (rule: any) => void) {
+        callback({
+          selector: '.fallback:not(#\\#)',
+          nodes: [{ type: 'atrule', name: 'apply' }],
+        })
+      },
+    } as any
+    expect(collectApplyOnlyCssSelectorsRoot(fakeRoot)).toEqual(new Set(['.fallback']))
+
+    let removed = false
+    const generatedRoot = {
+      walkRules(callback: (rule: any) => void) {
+        callback({
+          selector: '.unused',
+          nodes: [],
+          remove() {
+            removed = true
+          },
+        })
+      },
+      walkAtRules() {},
+    } as any
+    expect(filterApplyOnlyGeneratedCssRoot(generatedRoot, new Set(['.card']))).toBe(true)
+    expect(removed).toBe(true)
+  })
 })

@@ -1,13 +1,42 @@
 import type { Plugin, Rule } from 'postcss'
 import postcss, { AtRule, Declaration } from 'postcss'
 import { describe, expect, it } from 'vitest'
+import {
+  appendTailwindcssV4MiniProgramGradientRules,
+  collectUsedTailwindcssV4Variables,
+  createMissingCssVarsV4Nodes,
+  createUsedCssVarsV4Nodes,
+  isTailwindcssV4,
+  isTailwindcssV4DisplayP3Declaration,
+  isTailwindcssV4DisplayP3Media,
+  isTailwindcssV4DisplayP3Supports,
+  isTailwindcssV4LinearGradientSupports,
+  isTailwindcssV4ModernCheck,
+  mergeTailwindcssV4GradientDirectionRules,
+  normalizeTailwindcssV4Declaration,
+  testIfRootHostForV4,
+  usesTailwindcssV4ContentVariable,
+} from '@/compat/tailwindcss-v4'
 import postcssHtmlTransform from '@/html-transform'
 import { commonChunkPreflight, remakeCssVarSelector, testIfVariablesScope } from '@/mp'
+import { normalizeCssOptions, createOptionsResolver } from '@/options-resolver'
 import { createColorFunctionalFallback } from '@/plugins/colorFunctionalFallback'
 import { getCustomPropertyCleaner } from '@/plugins/getCustomPropertyCleaner'
 import { postcssWeappTailwindcssPostPlugin, reorderVariableDeclarations } from '@/plugins/post'
 import { createFallbackPlaceholderCleaner, createFallbackPlaceholderReplacer, createRootSpecificityCleaner } from '@/plugins/post/specificity-cleaner'
 import { postcssWeappTailwindcssPrePlugin } from '@/plugins/pre'
+import {
+  collectCssInlineSourceCandidates,
+  createTailwindSourceEntryMatcher,
+  expandInlineSourceCandidatePattern,
+  isFileExcludedByTailwindSourceEntries,
+  isFileMatchedByTailwindSourceEntries,
+  normalizeLegacyContentEntries,
+  parseConfigParam,
+  parseSourceFileParam,
+  resolveSourceScanPath,
+  toPosixPath,
+} from '@/source-scan'
 import { isNotLastChildPseudo, normalizeSpacingDeclarations } from '@/selectorParser/spacing'
 import { appendRuleSelector, assignRuleSelectors } from '@/utils/selector-guard'
 import * as entry from '../src/index'
@@ -27,6 +56,366 @@ describe('entry exports', () => {
     await import('../src/types')
   })
 })
+
+describe('options resolver edge cases', () => {
+  it('mirrors nested css options and caches simple override objects', () => {
+    const base = normalizeCssOptions({
+      cssOptions: {
+        platform: 'mp-weixin',
+        px2rpx: false,
+      },
+    } as any)
+    expect(base.platform).toBe('mp-weixin')
+    expect(base.px2rpx).toBe(false)
+
+    const mirrored = normalizeCssOptions({ platform: 'h5' } as any, true)
+    expect(mirrored.cssOptions?.platform).toBe('h5')
+
+    const resolver = createOptionsResolver({
+      isMainChunk: true,
+      cssPreflight: false,
+      cssOptions: {
+        rem2rpx: false,
+      },
+    } as any)
+    const empty = {}
+    expect(resolver.resolve(empty)).toBe(resolver.resolve(empty))
+
+    const simple = {
+      isMainChunk: false,
+      majorVersion: 4,
+      cssRemoveProperty: false,
+      cssRemoveHoverPseudoClass: true,
+      uniAppX: true,
+      cssPreflightRange: 'all',
+      injectAdditionalCssVarScope: false,
+      rem2rpx: false,
+      px2rpx: true,
+      unitsToPx: false,
+      unitConversion: false,
+      platform: 'mp-weixin',
+      cssCalc: false,
+      cssChildCombinatorReplaceValue: 'view',
+      cssPreflight: false,
+      autoprefixer: false,
+    } as const
+    expect(resolver.resolve(simple)).toBe(resolver.resolve({ ...simple }))
+
+    const complex = { cssOptions: { platform: 'h5' }, postcssOptions: { plugins: [] } } as any
+    expect(resolver.resolve(complex)).toBe(resolver.resolve(complex))
+  })
+})
+
+describe('source scan edge cases', () => {
+  it('matches positive and negative source entries', () => {
+    const base = resolveSourceScanPath(process.cwd())
+    const entries = [
+      { base, pattern: 'src/**/*.ts', negated: false },
+      { base, pattern: 'src/**/*.test.ts', negated: true },
+    ]
+    expect(toPosixPath(['a', 'b', 'c'].join(pathSeparatorForTest()))).toBe('a/b/c')
+    expect(isFileMatchedByTailwindSourceEntries(`${base}/src/index.ts`, entries)).toBe(true)
+    expect(isFileMatchedByTailwindSourceEntries(`${base}/src/index.test.ts`, entries)).toBe(false)
+    expect(isFileExcludedByTailwindSourceEntries(`${base}/src/index.test.ts`, entries)).toBe(true)
+    expect(isFileMatchedByTailwindSourceEntries(`${base}/src/index.ts`, [{ base, pattern: 'src/**/*.test.ts', negated: true }])).toBe(true)
+    expect(createTailwindSourceEntryMatcher(undefined)).toBeUndefined()
+    expect(createTailwindSourceEntryMatcher(entries)?.(`${base}/src/index.ts`)).toBe(true)
+  })
+
+  it('parses config/source params and expands inline source candidates', () => {
+    expect(parseConfigParam('"./tailwind.config.ts"')).toBe('./tailwind.config.ts')
+    expect(parseConfigParam('tailwind.config.ts')).toBeUndefined()
+    expect(parseSourceFileParam('none')).toBeUndefined()
+    expect(parseSourceFileParam('inline("bg-red-500")')).toBeUndefined()
+    expect(parseSourceFileParam('not "./src"')).toEqual({ negated: true, sourcePath: './src' })
+
+    expect(normalizeLegacyContentEntries(['./src/**/*.{vue,ts}', { files: './pages/**/*', relative: true }], '/root', {
+      relativeBase: '/project',
+    })).toEqual([
+      { base: '/root', negated: false, pattern: 'src/**/*.{vue,ts}' },
+      { base: '/project', negated: false, pattern: 'pages/**/*' },
+    ])
+
+    expect(expandInlineSourceCandidatePattern('p-{1..3}')).toEqual(['p-1', 'p-2', 'p-3'])
+    expect(expandInlineSourceCandidatePattern('p-{3..1..1}')).toEqual(['p-3', 'p-2', 'p-1'])
+    expect(expandInlineSourceCandidatePattern('p-{1..3..0}')).toEqual([])
+    expect(expandInlineSourceCandidatePattern('hover:{bg,focus:{text,border}}-red')).toEqual([
+      'hover:bg-red',
+      'hover:focus:text-red',
+      'hover:focus:border-red',
+    ])
+
+    const root = postcss.parse([
+      '@source inline("p-{1..2} hover:{bg,text}-red");',
+      '@source not inline("p-2");',
+      '@source inline(bg-red-500);',
+    ].join('\n'))
+    const candidates = collectCssInlineSourceCandidates(root)
+    expect([...candidates.included].sort()).toEqual(['hover:bg-red', 'hover:text-red', 'p-1'])
+    expect([...candidates.excluded]).toEqual(['p-2'])
+  })
+})
+
+describe('tailwindcss v4 compat helpers', () => {
+  it('detects v4 support probes and normalizes declarations', () => {
+    expect(isTailwindcssV4({ majorVersion: 4 })).toBe(true)
+    expect(isTailwindcssV4({} as any)).toBe(false)
+
+    const supports = new AtRule({
+      name: 'supports',
+      params: [
+        '(-webkit-hyphens: none)',
+        'and (margin-trim: inline)',
+        'and (-moz-orient: inline)',
+        'and (color: rgb(from red r g b))',
+      ].join(' '),
+    })
+    expect(isTailwindcssV4ModernCheck(supports)).toBe(true)
+    expect(isTailwindcssV4LinearGradientSupports(new AtRule({
+      name: 'supports',
+      params: '(background-image: linear-gradient(in lab, red, red))',
+    }))).toBe(true)
+    expect(isTailwindcssV4DisplayP3Supports(new AtRule({
+      name: 'supports',
+      params: '(color: color(display-p3 0 0 0%))',
+    }))).toBe(true)
+    expect(isTailwindcssV4DisplayP3Media(new AtRule({
+      name: 'media',
+      params: '(color-gamut: p3)',
+    }))).toBe(true)
+    expect(isTailwindcssV4DisplayP3Declaration(new Declaration({
+      prop: 'color',
+      value: 'color(display-p3 0 0 0)',
+    }))).toBe(true)
+
+    const gradientPosition = new Declaration({
+      prop: '--tw-gradient-position',
+      value: 'to right in oklab',
+    })
+    expect(normalizeTailwindcssV4Declaration(gradientPosition)).toBe(true)
+    expect(gradientPosition.value).toBe('to right')
+
+    const conicRoot = postcss.parse('.bg-conic{--tw-gradient-position:in oklab;background-image:conic-gradient(var(--tw-gradient-stops))}')
+    const conicDecl = (conicRoot.first as Rule).first as Declaration
+    expect(normalizeTailwindcssV4Declaration(conicDecl)).toBe(true)
+    expect(conicDecl.value).toBe('from 0deg')
+
+    const radius = new Declaration({ prop: 'border-radius', value: 'calc(infinity * 1px)' })
+    expect(normalizeTailwindcssV4Declaration(radius)).toBe(true)
+    expect(radius.value).toBe('9999px')
+
+    const largeRadius = new Declaration({ prop: 'border-radius', value: '1e6px 12px' })
+    expect(normalizeTailwindcssV4Declaration(largeRadius)).toBe(true)
+    expect(largeRadius.value).toBe('9999px 12px')
+
+    const unchanged = new Declaration({ prop: 'color', value: 'red' })
+    expect(normalizeTailwindcssV4Declaration(unchanged)).toBe(false)
+
+    const emptyTwVarFallback = new Declaration({
+      prop: 'transform',
+      value: 'translate(var(--tw-translate-x,))',
+    })
+    expect(normalizeTailwindcssV4Declaration(emptyTwVarFallback)).toBe(true)
+    expect(emptyTwVarFallback.value).toBe('translate(var(--tw-translate-x, ))')
+
+    const gradientPositionFallback = new Declaration({
+      prop: 'background-image',
+      value: 'linear-gradient(var(--tw-gradient-from-position))',
+    })
+    expect(normalizeTailwindcssV4Declaration(gradientPositionFallback)).toBe(true)
+    expect(gradientPositionFallback.value).toContain('var(--tw-gradient-from-position, )')
+
+    const gradientPositionEmptyFallback = new Declaration({
+      prop: 'background-image',
+      value: 'linear-gradient(var(--tw-gradient-to-position,))',
+    })
+    expect(normalizeTailwindcssV4Declaration(gradientPositionEmptyFallback)).toBe(true)
+    expect(gradientPositionEmptyFallback.value).toContain('var(--tw-gradient-to-position, )')
+
+    const gradientViaStops = new Declaration({
+      prop: 'background-image',
+      value: 'linear-gradient(var(--tw-gradient-via-stops, red, blue))',
+    })
+    expect(normalizeTailwindcssV4Declaration(gradientViaStops)).toBe(true)
+    expect(gradientViaStops.value).toContain('var(--tw-gradient-via-stops, red), blue')
+
+    const removedInitialViaStops = new Declaration({
+      prop: '--tw-gradient-via-stops',
+      value: 'initial',
+    })
+    const viaRoot = postcss.root()
+    viaRoot.append(removedInitialViaStops)
+    expect(normalizeTailwindcssV4Declaration(removedInitialViaStops)).toBe(true)
+    expect(viaRoot.nodes).toHaveLength(0)
+  })
+
+  it('collects used variables and appends literal mini-program gradient fallbacks', () => {
+    const root = postcss.parse([
+      ':root,:host{--color-sky-500:#0ea5e9}',
+      '@supports (color:red){:root,:host{--tw-space-y-reverse:1}}',
+      'view,text,::before,::after{--tw-gradient-from:rgba(0,0,0,0)}',
+      '.content::before{content:var(--tw-content)}',
+      '.bg-linear{--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops, red, blue))}',
+      '.bg-radial{--tw-gradient-position:in oklab;background-image:radial-gradient(var(--tw-gradient-stops))}',
+      '.bg-conic{--tw-gradient-position:in oklab;background-image:conic-gradient(var(--tw-gradient-stops))}',
+      '.bg-comma{--tw-gradient-position:40deg, in oklab;background-image:linear-gradient(var(--tw-gradient-stops))}',
+      '.bg-var{--tw-gradient-position:var(--angle);background-image:linear-gradient(var(--tw-gradient-stops))}',
+      '.from-sky{--tw-gradient-from:var(--color-sky-500)}',
+      '.via-white{--tw-gradient-via:white}',
+      '.to-blue{--tw-gradient-to:blue}',
+      '.from-40{--tw-gradient-from-position:40%}',
+      '.via-60{--tw-gradient-via-position:60%}',
+      '.to-90{--tw-gradient-to-position:90%}',
+      '.bg-linear{background-image:linear-gradient(red, blue)}',
+      '@property --tw-rotate { syntax: "*"; inherits: false; initial-value: 0deg; }',
+    ].join('\n'))
+
+    expect(testIfRootHostForV4(root.first as Rule)).toBe(true)
+    expect(usesTailwindcssV4ContentVariable(root)).toBe(true)
+    const used = collectUsedTailwindcssV4Variables(root)
+    expect(used.has('--tw-gradient-from')).toBe(true)
+    expect(used.has('--tw-rotate')).toBe(true)
+    expect(createUsedCssVarsV4Nodes(new Set(['--tw-gradient-from', '--tw-gradient-via-stops'])).map(node => node.prop)).toEqual(['--tw-gradient-from'])
+    expect(createMissingCssVarsV4Nodes(root, new Set(['--tw-gradient-from', '--tw-space-y-reverse'])).map(node => node.prop)).not.toContain('--tw-gradient-from')
+
+    appendTailwindcssV4MiniProgramGradientRules(root)
+    const css = root.toString()
+    expect(css).toContain('.bg-radial.from-sky.to-blue{background-image:radial-gradient(at center, #0ea5e9, blue)}')
+    expect(css).toContain('.bg-conic.from-sky.to-blue{background-image:conic-gradient(from 0deg, #0ea5e9, blue)}')
+    expect(css).toContain('.bg-radial.from-sky.via-white.to-blue{background-image:radial-gradient(at center, #0ea5e9, white, blue)}')
+    expect(css).toContain('.bg-radial.from-sky.from-40.via-white.via-60.to-blue.to-90')
+    expect(css.match(/\.bg-linear\{background-image:linear-gradient\(red, blue\)\}/g)?.length).toBe(1)
+    expect(css).not.toContain('.bg-comma.from-sky.to-blue')
+    expect(css).not.toContain('.bg-var.from-sky.to-blue')
+  })
+
+  it('treats mixed default variable scopes as missing v4 defaults', () => {
+    const root = postcss.parse([
+      ':root,:host{',
+      '  /* generated */',
+      '  --tw-gradient-from:red;',
+      '  color:red;',
+      '}',
+      '@supports (color:red){:root{--tw-gradient-to:blue}}',
+    ].join('\n'))
+
+    const missing = createMissingCssVarsV4Nodes(root, new Set(['--tw-gradient-from', '--tw-gradient-to']))
+      .map(node => node.prop)
+
+    expect(missing).toContain('--tw-gradient-from')
+    expect(missing).toContain('--tw-gradient-to')
+  })
+
+  it('merges split gradient direction declarations within the same parent', () => {
+    const root = postcss.parse([
+      '.bg-gradient-to-r{background-image:linear-gradient(var(--tw-gradient-stops))}',
+      '.bg-gradient-to-r{--tw-gradient-position:to right}',
+      '@supports (background-image:linear-gradient(in lab, red, red)){',
+      '.bg-gradient-to-r{--tw-gradient-position:to right in oklab}',
+      '}',
+      '.not-gradient{background-image:linear-gradient(red, blue)}',
+    ].join('\n'))
+
+    mergeTailwindcssV4GradientDirectionRules(root)
+    const css = root.toString()
+    expect(css.match(/\.bg-gradient-to-r/g)?.length).toBe(2)
+    expect(css).toContain('--tw-gradient-position:to right;background-image:linear-gradient(var(--tw-gradient-stops))')
+    expect(css).toContain('@supports')
+    expect(css).toContain('.not-gradient')
+  })
+})
+
+describe('style handler cache and plugin paths', () => {
+  it('skips feature probing for user plugins and reuses cached results', async () => {
+    const styleHandler = entry.createStyleHandler({
+      postcssOptions: {
+        plugins: {
+          appendDecl: {
+            postcssPlugin: 'append-decl',
+            Once(root: postcss.Root) {
+              root.append(postcss.rule({
+                selector: '.plugin-added',
+                nodes: [new Declaration({ prop: 'display', value: 'block' })],
+              }))
+            },
+          },
+        },
+      },
+    } as any)
+
+    const first = await styleHandler('.card{color:red}', { cssPreflight: false })
+    const second = await styleHandler('.card{color:red}', { cssPreflight: false })
+    expect(second).toBe(first)
+    expect(first.css).toContain('.plugin-added')
+    expect(styleHandler.getPipeline({ cssPreflight: false })).toBeTruthy()
+  })
+
+  it('restores protected color-mix alpha placeholders for v4 processing', async () => {
+    const styleHandler = entry.createStyleHandler({
+      majorVersion: 4,
+      cssPreflight: false,
+    })
+    const result = await styleHandler('.card{color:color-mix(in srgb, red 50%, transparent)}')
+    expect(result.css).toContain('rgba(255, 0, 0, 0.5)')
+    expect(result.css).not.toContain('__WEAPP_TW_COLOR_MIX_ALPHA')
+  })
+
+  it('covers combined pipeline branches across platform and selector options', async () => {
+    const css = [
+      '@layer utilities {',
+      ':root{--brand:oklch(62.3% 0.214 259.815)}',
+      '*,::before,::after{box-sizing:border-box}',
+      'button{appearance:button}',
+      '.container{width:100%}',
+      '@media (min-width:640px){.container{max-width:640px}}',
+      '.hover\\:text:hover{color:red}',
+      '.space-y-2 > :not([hidden]) ~ :not([hidden]){margin-top:8rpx}',
+      '.file::file-selector-button{color:red}',
+      '.mix{color:color-mix(in oklab,var(--brand) 50%,transparent)}',
+      '}',
+      '@supports (color: color(display-p3 0 0 0%)){.p3{color:color(display-p3 0 0 0%)}}',
+    ].join('\n')
+
+    const miniProgram = entry.createStyleHandler({
+      majorVersion: 4,
+      cssRemoveHoverPseudoClass: true,
+      cssChildCombinatorReplaceValue: ['view', 'text'],
+      cssPreflight: {
+        'box-sizing': 'border-box',
+      },
+    })
+    const miniProgramResult = await miniProgram(css, {
+      isMainChunk: true,
+    })
+    expect(miniProgramResult.css).toContain('view,text')
+    expect(miniProgramResult.css).not.toContain(':hover')
+    expect(miniProgramResult.css).not.toContain('file-selector-button')
+    expect(miniProgramResult.css).not.toContain('display-p3')
+
+    const uniAppX = entry.createStyleHandler({
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+      uniAppXUnsupported: 'silent',
+      cssPreflight: false,
+    })
+    const uniAppXResult = await uniAppX([
+      '.flex{display:flex}',
+      '.grid{display:grid}',
+      '.gap{gap:8px}',
+      '.tag view{color:red}',
+      '@media screen{.block{display:block}}',
+    ].join('\n'), {
+      isMainChunk: false,
+    })
+    expect(uniAppXResult.css).toContain('.flex')
+    expect(uniAppXResult.css).not.toContain('display:grid')
+    expect(uniAppXResult.css).not.toContain('@media')
+  })
+})
+
+function pathSeparatorForTest() {
+  return process.platform === 'win32' ? '\\' : '/'
+}
 
 describe('test helpers', () => {
   it('reads fixtures and exercises plugin utils', async () => {
@@ -147,6 +536,19 @@ describe('selector guard', () => {
         phase: 'test',
         reason: 'cycle',
       })
+    }).toThrow(/postcss-selector-guard/)
+  })
+
+  it('throws when selector mutations exceed the safety limit', () => {
+    const rule = postcss.parse('.s0 { color: red }').first as Rule
+
+    expect(() => {
+      for (let i = 1; i <= 25; i++) {
+        appendRuleSelector(rule, `.s${i}`, {
+          phase: 'stress',
+          reason: `step-${i}`,
+        })
+      }
     }).toThrow(/postcss-selector-guard/)
   })
 })

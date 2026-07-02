@@ -81,4 +81,22 @@ describe('postcss config helpers', () => {
     ].join('\n'))
     await expect(resolveFilteredPostcssConfig(dir)).resolves.toBeUndefined()
   })
+
+  it('handles non-array plugin configs and rethrows unexpected load errors', async () => {
+    const objectPluginsDir = await createTempDir()
+    await writeFile(path.join(objectPluginsDir, 'postcss.config.cjs'), [
+      'module.exports = {',
+      '  plugins: {}',
+      '}',
+    ].join('\n'))
+    await expect(resolveFilteredPostcssConfig(objectPluginsDir)).resolves.toBeUndefined()
+
+    const stringErrorDir = await createTempDir()
+    await writeFile(path.join(stringErrorDir, 'postcss.config.cjs'), 'throw "boom"')
+    await expect(resolveFilteredPostcssConfig(stringErrorDir)).rejects.toBe('boom')
+
+    const errorDir = await createTempDir()
+    await writeFile(path.join(errorDir, 'postcss.config.cjs'), 'throw new Error("custom failure")')
+    await expect(resolveFilteredPostcssConfig(errorDir)).rejects.toThrow('custom failure')
+  })
 })

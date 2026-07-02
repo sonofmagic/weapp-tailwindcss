@@ -71,6 +71,7 @@ describe('source scan helpers', () => {
     expect(parseSourceFileParam('not "../legacy/**/*.vue"')).toEqual({ negated: true, sourcePath: '../legacy/**/*.vue' })
     expect(parseSourceFileParam('none')).toBeUndefined()
     expect(parseSourceFileParam('inline("flex")')).toBeUndefined()
+    expect(parseSourceFileParam('not inline("flex")')).toBeUndefined()
   })
 
   it('resolves source entries for directories, absolute files, and glob prefixes', async () => {
@@ -92,6 +93,11 @@ describe('source scan helpers', () => {
       negated: true,
       pattern: '**/*.{vue,tsx}',
     })
+    await expect(resolveTailwindSourceEntry('./tailwind.config.ts', dir, false)).resolves.toEqual({
+      base: dir,
+      negated: false,
+      pattern: 'tailwind.config.ts',
+    })
   })
 
   it('matches and excludes files with positive and negative source entries', async () => {
@@ -106,6 +112,19 @@ describe('source scan helpers', () => {
     expect(isFileExcludedByTailwindSourceEntries(path.join(dir, 'src/components/card.tsx'), entries)).toBe(true)
     expect(createTailwindSourceEntryMatcher(entries)?.(path.join(dir, 'src/index.vue'))).toBe(true)
     expect(createTailwindSourceEntryMatcher(undefined)).toBeUndefined()
+
+    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'src/index.vue'), undefined)).toBe(true)
+    expect(isFileExcludedByTailwindSourceEntries(path.join(dir, 'src/index.vue'), undefined)).toBe(false)
+    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'src/index.vue'), [
+      { base: dir, negated: true, pattern: 'src/components/**' },
+    ])).toBe(true)
+    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'src/components/card.tsx'), [
+      { base: dir, negated: true, pattern: 'src/components/**' },
+    ])).toBe(false)
+    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'outside.vue'), entries)).toBe(false)
+
+    const absoluteEntry = { base: dir, negated: false, pattern: path.join(dir, 'src/index.vue') }
+    expect(isFileMatchedByTailwindSourceEntries(path.join(dir, 'src/index.vue'), [absoluteEntry])).toBe(false)
   })
 
   it('resolves css @source directives into source entries', async () => {
@@ -134,6 +153,13 @@ describe('source scan helpers', () => {
     expect(expanded.map(file => realpathSync.native(file))).toEqual([
       realpathSync.native(path.join(dir, 'src/index.vue')),
     ])
+
+    const expandedWithoutIgnore = await expandTailwindSourceEntries([
+      { base: dir, negated: false, pattern: 'src/index.vue' },
+    ])
+    expect(expandedWithoutIgnore.map(file => realpathSync.native(file))).toEqual([
+      realpathSync.native(path.join(dir, 'src/index.vue')),
+    ])
   })
 
   it('expands inline source candidate patterns with nesting and numeric ranges', () => {
@@ -148,6 +174,9 @@ describe('source scan helpers', () => {
       'focus:text-blue-500',
     ])
     expect(expandInlineSourceCandidatePattern('text-{red')).toEqual(['text-{red'])
+    expect(expandInlineSourceCandidatePattern('z-{1..1}')).toEqual(['z-1'])
+    expect(expandInlineSourceCandidatePattern('z-{a,,b}')).toEqual(['z-a', 'z-', 'z-b'])
+    expect(expandInlineSourceCandidatePattern(String.raw`z-{"a,b",c}`)).toEqual(['z-"a,b"', 'z-c'])
   })
 
   it('keeps inline source candidate separators inside brackets, quotes, and functions', () => {
@@ -178,5 +207,21 @@ describe('source scan helpers', () => {
       included: new Set(['flex', 'text-lg', 'hover:bg-red-500']),
       excluded: new Set(['text-sm', 'hover:bg-blue-500']),
     })
+  })
+
+  it('handles inline source parse edge cases without collecting invalid candidates', async () => {
+    const root = postcss.parse([
+      '@source inline("");',
+      '@source inline("   ");',
+      '@source inline(unquoted);',
+      '@source not inline("text-sm");',
+      '@source not "./src";',
+    ].join('\n'))
+
+    expect(collectCssInlineSourceCandidates(root)).toEqual({
+      included: new Set(),
+      excluded: new Set(['text-sm']),
+    })
+    await expect(expandTailwindSourceEntries([])).resolves.toEqual([])
   })
 })

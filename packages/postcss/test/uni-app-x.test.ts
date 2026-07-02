@@ -246,4 +246,24 @@ describe('uni-app-x', () => {
       expect.stringContaining('selector must be class-only'),
     ]))
   })
+
+  it('uses default warning mode and source fallbacks for direct uvue compatibility', async () => {
+    const result = await postcss().process('.block{display:block}', {
+      from: undefined,
+    })
+    result.root.append(postcss.atRule({ name: 'media', params: 'screen' }))
+    result.root.append(postcss.rule({ selector: '', nodes: [postcss.decl({ prop: 'display', value: 'block' })] }))
+
+    const filtered = applyUniAppXUvueCompatibility(result, {
+      uniAppX: true,
+      uniAppXCssTarget: 'uvue',
+    })
+    const warningTexts = filtered.warnings().map(item => item.text)
+
+    expect(filtered.css).toBe('')
+    expect(warningTexts).toEqual(expect.arrayContaining([
+      expect.stringContaining('unknown source'),
+      expect.stringContaining('selector must be class-only'),
+    ]))
+  })
 })

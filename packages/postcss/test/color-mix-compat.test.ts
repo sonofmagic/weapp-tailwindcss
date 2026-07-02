@@ -65,6 +65,11 @@ describe('color-mix compatibility helpers', () => {
       changed: true,
       hasUnsupported: false,
     })
+    expect(normalizeModernColorValue('linear-gradient(color-mix(in oklab, var(--missing) 50%, transparent), red)')).toEqual({
+      value: 'linear-gradient(var(--missing), red)',
+      changed: true,
+      hasUnsupported: false,
+    })
   })
 
   it('resolves static, dynamic, currentColor, and unresolved color-mix values', () => {
@@ -97,6 +102,14 @@ describe('color-mix compatibility helpers', () => {
     expect(resolve('color-mix(in oklab, var(--brand) var(--tw-bg-alpha), transparent)')).toBeUndefined()
     expect(resolve('color-mix(in oklab, var(--brand) 50%, white)')).toBeUndefined()
     expect(resolve('color-mix(in oklab, var(--brand), transparent)')).toBeUndefined()
+    expect(resolve('color-mix(in oklab, red 50%)')).toBeUndefined()
+    expect(resolve('color-mix(in oklab, red, transparent)')).toBeUndefined()
+    expect(resolve('color-mix(in oklab, red var(--alpha), blue)')).toBeUndefined()
+    expect(resolve('color-mix(in oklab, red calc(1px), transparent)')).toBeUndefined()
+    expect(resolve('color-mix(in oklab, red 50%, transparent)')).toEqual({
+      value: 'rgba(255, 0, 0, 0.5)',
+      deferred: false,
+    })
   })
 
   it('protects dynamic color-mix alpha and unwraps protected supports blocks', () => {
@@ -114,5 +127,19 @@ describe('color-mix compatibility helpers', () => {
     const unchanged = protectDynamicColorMixAlpha('.card{color:red}')
     expect(unchanged.css).toBe('.card{color:red}')
     expect(unchanged.restore('x')).toBe('x')
+  })
+
+  it('protects dynamic color-mix values without supports wrappers and leaves unresolved values intact', () => {
+    const protectedCss = protectDynamicColorMixAlpha([
+      ':root{--brand:#0ea5e9}',
+      '.dynamic{color:color-mix(in oklab, var(--brand) var(--alpha), transparent)}',
+      '.unresolved{color:color-mix(in oklab, var(--missing) 50%, transparent)}',
+      '.nested{filter:blur(color-mix(in oklab, red 50%, transparent))}',
+    ].join('\n'))
+
+    expect(protectedCss.css).toContain('__weapp_tw_color_mix_0__')
+    expect(protectedCss.css).toContain('var(--missing)')
+    expect(protectedCss.css).toContain('rgba(255, 0, 0, 0.5)')
+    expect(protectedCss.restore(protectedCss.css)).toContain('rgba(14, 165, 233, var(--alpha))')
   })
 })

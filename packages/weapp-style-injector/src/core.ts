@@ -30,6 +30,7 @@ export const DEFAULT_INCLUDE = ['**/*.wxss', '**/*.acss', '**/*.css', '**/*.qss'
 
 const ESCAPE_REGEXP_RE = /[.*+?^${}()|[\]\\]/g
 const IMPORT_PREFIX_RE = /^@import\s+/i
+const IMPORT_PATH_RE = /^@import\s+(?:url\()?['"]([^'"]+)['"]\)?;?$/i
 
 function escapeRegExp(value: string): string {
   return value.replace(ESCAPE_REGEXP_RE, '\\$&')
@@ -48,12 +49,15 @@ function createImportStatement(entry: string): string {
 
 function hasImportStatement(source: string, entry: string): boolean {
   const trimmed = entry.trim()
-  if (trimmed.length === 0) {
-    return true
-  }
   if (IMPORT_PREFIX_RE.test(trimmed)) {
-    const normalized = trimmed.endsWith(';') ? trimmed : `${trimmed};`
-    return source.includes(normalized)
+    if (source.includes(trimmed)) {
+      return true
+    }
+    const matchedPath = trimmed.match(IMPORT_PATH_RE)?.[1]
+    if (!matchedPath) {
+      return false
+    }
+    return hasImportStatement(source, matchedPath)
   }
   const escaped = escapeRegExp(trimmed)
   const importPattern = new RegExp(`@import\\s+(?:url\\()?['"]${escaped}['"]\\)?`, 'i')

@@ -9,8 +9,29 @@ export default defineProject({
         find: '@',
         replacement: path.resolve(__dirname, './src'),
       },
+      {
+        find: /^@weapp-tailwindcss\/shared$/,
+        replacement: path.resolve(__dirname, '../shared/src/index.ts'),
+      },
     ],
     globals: true,
     testTimeout: 60_000,
+    coverage: {
+      include: [
+        'src/core.ts',
+      ],
+      exclude: [
+        '**/dist/**',
+        '**/test/**',
+        '**/tests/**',
+        '**/*.bench.*',
+      ],
+      thresholds: {
+        lines: 95,
+        statements: 95,
+        functions: 95,
+        branches: 95,
+      },
+    },
   },
 })

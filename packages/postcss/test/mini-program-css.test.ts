@@ -18,10 +18,23 @@ import {
   unwrapTailwindSourceMedia,
 } from '../src/compat/mini-program-css/directives'
 import { createHoistInsertionAnchor, insertHoistedRules, mergeEquivalentHoistedRules } from '../src/compat/mini-program-css/hoist'
-import { collectPreflightRules } from '../src/compat/mini-program-css/preflight'
+import { collectPreflightRules, createPreflightResetRule } from '../src/compat/mini-program-css/preflight'
+import {
+  hasTailwindPreflightDeclaration,
+  hasTwContentDeclaration,
+  isBrowserElementPreflightRule,
+  isCustomPropertyRule,
+  isEmptyTwContentDeclaration,
+  isMiniProgramPreflightRule,
+  isMiniProgramThemeVariableRule,
+  isPseudoContentInitRule,
+  usesTwContentVariable,
+} from '../src/compat/mini-program-css/predicates'
 import {
   removeDisplayP3Declarations,
   removeEmptyAtRules,
+  removeRootSpecificityPlaceholders,
+  removeSpecificityPlaceholders,
   removeTailwindContainerMaxWidthMediaRules,
   removeTailwindContainerWidthRules,
   removeUnsupportedBrowserSelectors,
@@ -29,6 +42,42 @@ import {
 } from '../src/compat/mini-program-css/root-cleanups'
 
 describe('mini-program css cleanup', () => {
+  it('covers mini-program predicate helper branches', () => {
+    const root = postcss.parse([
+      'button{appearance:button}',
+      'textarea{resize:vertical}',
+      'button{appearance:none}',
+      'button,input{appearance:button}',
+      'view,text,::before,::after{box-sizing:border-box}',
+      '*{--tw-shadow:0 0 #0000}',
+      'view,text{color:red}',
+      '::before,::after{--tw-content:""}',
+      '::before{--tw-content:"";color:red}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-red:red}',
+      ':host,page,.tw-root,wx-root-portal-content{--color-red:red;color:red}',
+      '.content{content:var(--tw-content)}',
+    ].join('\n'))
+    const rules = root.nodes!.filter((node): node is postcss.Rule => node.type === 'rule')
+
+    expect(isBrowserElementPreflightRule(rules[0])).toBe(true)
+    expect(isBrowserElementPreflightRule(rules[1])).toBe(true)
+    expect(isBrowserElementPreflightRule(rules[2])).toBe(false)
+    expect(isBrowserElementPreflightRule(rules[3])).toBe(false)
+    expect(hasTailwindPreflightDeclaration(rules[4])).toBe(true)
+    expect(isMiniProgramPreflightRule(rules[4])).toBe(true)
+    expect(isMiniProgramPreflightRule(rules[5])).toBe(true)
+    expect(isMiniProgramPreflightRule(rules[6])).toBe(false)
+    expect(isPseudoContentInitRule(rules[7])).toBe(true)
+    expect(isPseudoContentInitRule(rules[8])).toBe(false)
+    expect(hasTwContentDeclaration(rules[7])).toBe(true)
+    expect(isEmptyTwContentDeclaration(rules[7].first as Declaration)).toBe(true)
+    expect(isCustomPropertyRule(rules[9])).toBe(true)
+    expect(isMiniProgramThemeVariableRule(rules[9])).toBe(true)
+    expect(isCustomPropertyRule(rules[10])).toBe(false)
+    expect(isMiniProgramThemeVariableRule(rules[10])).toBe(false)
+    expect(usesTwContentVariable(root)).toBe(true)
+  })
+
   it('unwraps unsupported cascade layer blocks', () => {
     const root = postcss.parse([
       '@layer utilities {',
@@ -145,6 +194,41 @@ describe('mini-program css cleanup', () => {
     expect(hasMiniProgramCssSpecificityPlaceholders('.btn{color:red}')).toBe(false)
   })
 
+  it('tolerates rules without selector arrays in root cleanup helpers', () => {
+    const fakeRoot = {
+      walkRules(callback: (rule: postcss.Rule) => void) {
+        callback({ selectors: undefined } as unknown as postcss.Rule)
+        callback({ selectors: [] } as unknown as postcss.Rule)
+      },
+    } as unknown as postcss.Root
+
+    expect(() => removeSpecificityPlaceholders(fakeRoot)).not.toThrow()
+    expect(() => removeRootSpecificityPlaceholders(fakeRoot)).not.toThrow()
+    expect(() => removeUnsupportedBrowserSelectors(fakeRoot)).not.toThrow()
+  })
+
+  it('keeps cleanup no-ops for empty selector arrays and unsupported container shapes', () => {
+    const emptySelectorsRoot = postcss.parse('.card{color:red}')
+    const rule = emptySelectorsRoot.first as postcss.Rule
+    rule.selectors = []
+    removeSpecificityPlaceholders(emptySelectorsRoot)
+    removeRootSpecificityPlaceholders(emptySelectorsRoot)
+    removeUnsupportedBrowserSelectors(emptySelectorsRoot)
+    expect(rule.selectors).toEqual([''])
+
+    const containerRoot = postcss.parse([
+      '.container{width:100%;/* generated */}',
+      '@media (orientation: landscape){.container{max-width:640px}}',
+      '@media (min-width:640px){.container{max-width:640px;color:red}}',
+    ].join('\n'))
+    removeTailwindContainerWidthRules(containerRoot)
+    removeTailwindContainerMaxWidthMediaRules(containerRoot)
+    const css = containerRoot.toString()
+    expect(css).toContain('orientation: landscape')
+    expect(css).toContain('max-width:640px;color:red')
+    expect(css).not.toContain('.container{width:100%')
+  })
+
   it('finalizes generated css for mini-program runtime constraints', () => {
     const css = finalizeMiniProgramCss([
       '@layer utilities {',
@@ -179,6 +263,34 @@ describe('mini-program css cleanup', () => {
     expect(css).not.toContain(':not(#n)')
     expect(css).toContain('.navbar__items{gap:.75rem}')
     expect(css).toContain('.icon-\\[mdi--home\\]{display:inline-block}')
+  })
+
+  it('preserves selected generated css while pruning browser-only branches', () => {
+    const css = pruneMiniProgramGeneratedCss([
+      '/* #ifdef MP-WEIXIN */',
+      '@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}',
+      '::before,::after{--tw-content:""}',
+      'view,text,::before,::after{--tw-content:""}',
+      'view,text{--tw-gradient-from:red;--tw-gradient-to:blue}',
+      ':host,page,.tw-root,wx-root-portal-content{--tw-gradient-from:red;--tw-gradient-to:blue}',
+      'view{display:block}',
+      'button{appearance:button}',
+      '.card{color:red}',
+      'html{line-height:1.5}',
+    ].join('\n'), {
+      preservePreflight: true,
+      preserveConditionalComments: true,
+    })
+
+    expect(css).toContain('#ifdef MP-WEIXIN')
+    expect(css).toContain('@keyframes spin')
+    expect(css).toContain('::before,::after{--tw-content:""}')
+    expect(css).toContain('::before,\n::after')
+    expect(css).toContain('view,text,::after,::before{--tw-gradient-from:red;--tw-gradient-to:blue}')
+    expect(css).toContain('view{display:block}')
+    expect(css).toContain('.card{color:red}')
+    expect(css).not.toContain('appearance:button')
+    expect(css).not.toContain('html{line-height')
   })
 
   it('removes specificity placeholders even when final css parsing fails', () => {
@@ -251,6 +363,32 @@ describe('mini-program css cleanup', () => {
     expect(emptyRoot.toString()).toBe('.card{display:flex}')
   })
 
+  it('handles hoist anchors without raw spacing and reset-only merge order', () => {
+    const root = postcss.parse('view,text,::before,::after{box-sizing:border-box}')
+    const anchor = createHoistInsertionAnchor(root)
+    expect(anchor).toBeDefined()
+    delete anchor!.raws.before
+
+    const first = postcss.rule({
+      selector: 'text,view,::before,::after',
+      nodes: [
+        new Declaration({ prop: 'color', value: 'red' }),
+        new Declaration({ prop: 'border-width', value: '0' }),
+      ],
+    })
+    const second = postcss.rule({
+      selector: '::after,::before,view,text',
+      nodes: [
+        new Declaration({ prop: 'margin', value: '0' }),
+      ],
+    })
+    const merged = mergeEquivalentHoistedRules([first, second])
+    insertHoistedRules(root, merged, anchor)
+
+    const css = root.toString().replace(/\s+/g, '')
+    expect(css).toContain('border-width:0;margin:0;color:red')
+  })
+
   it('hoists Tailwind preflight base and falls back on invalid css', () => {
     expect(hoistTailwindPreflightBase([
       '.card{display:flex}',
@@ -272,9 +410,51 @@ describe('mini-program css cleanup', () => {
     })
 
     expect(rules.map(rule => rule.toString())).toEqual([
-      'view,text,::after,::before{box-sizing:border-box;margin:0}',
+      'view,text,::after,::before{margin:0;box-sizing:border-box}',
     ])
     expect(root.toString()).toBe('')
+  })
+
+  it('handles empty preflight, anchor, and reset-rule edge cases', () => {
+    const root = postcss.parse('.card{display:flex}')
+    expect(createHoistInsertionAnchor(root)).toBeUndefined()
+    expect(collectPreflightRules(root)).toEqual([])
+    expect(createPreflightResetRule(undefined)).toBeUndefined()
+    expect(createPreflightResetRule(false as any)).toBeUndefined()
+    expect(createPreflightResetRule({ margin: false })).toBeUndefined()
+    expect(createPreflightResetRule({ margin: 0 })?.toString().replace(/\s+/g, '')).toBe('view,text,::after,::before{margin:0}')
+
+    const importRoot = postcss.parse('@charset "UTF-8";\n@import "./base.css";\n.card{display:flex}')
+    const rule = postcss.rule({
+      selector: 'view,text,::after,::before',
+      nodes: [new Declaration({ prop: 'box-sizing', value: 'border-box' })],
+    })
+    insertHoistedRules(importRoot, [rule])
+    expect(importRoot.toString()).toContain('@import "./base.css";\nview,text,::after,::before{box-sizing:border-box}')
+  })
+
+  it('deduplicates hoisted rule declarations without dropping comments', () => {
+    const first = postcss.rule({
+      selector: 'text,view,::before,::after',
+      nodes: [
+        postcss.comment({ text: 'preflight' }),
+        new Declaration({ prop: 'color', value: 'red' }),
+      ],
+    })
+    const second = postcss.rule({
+      selector: '::after,::before,view,text',
+      nodes: [
+        new Declaration({ prop: 'color', value: 'blue' }),
+        postcss.comment({ text: 'kept' }),
+        new Declaration({ prop: 'margin', value: '0' }),
+      ],
+    })
+
+    const merged = mergeEquivalentHoistedRules([first, second])
+    expect(merged).toHaveLength(1)
+    expect(merged[0].toString()).toContain('/* kept */')
+    expect(merged[0].toString().replace(/\s+/g, '')).toContain('margin:0')
+    expect(merged[0].toString()).not.toContain('color:blue')
   })
 
   it('cleans browser-only selectors, display-p3 media, container rules, and unsupported modern colors', () => {
@@ -314,6 +494,48 @@ describe('mini-program css cleanup', () => {
     expect(css).toContain('--brand:rgb(')
     expect(css).toContain('.ok{color:rgba(')
     expect(css).toContain('.bad{color:var(--missing)}')
+  })
+
+  it('cleans nested browser-only rules and empty modern color declarations', () => {
+    const root = postcss.parse([
+      '@media (min-width:640px){a{color:inherit}}',
+      '@media (min-width:768px){@supports (display:grid){::-webkit-calendar-picker-indicator{display:none}}}',
+      '.only-modern{color:color(display-p3 1 0 0)}',
+      '.container{width:100%}',
+      '/* tokens: container <= <tailwind generated> */',
+      '.container{width:100%}',
+      '@media (min-width:1024px){.container{max-width:1024px;/* generated */}}',
+    ].join('\n'))
+
+    removeUnsupportedBrowserSelectors(root)
+    removeUnsupportedModernColorDeclarations(root)
+    removeTailwindContainerWidthRules(root)
+    removeTailwindContainerMaxWidthMediaRules(root)
+    removeEmptyAtRules(root)
+
+    const css = root.toString()
+    expect(css).not.toContain('color:inherit')
+    expect(css).not.toContain('calendar-picker')
+    expect(css).toContain('.only-modern{color:rgb(')
+    expect(css).not.toContain('.container{width:100%}')
+    expect(css).not.toContain('min-width:1024px')
+  })
+
+  it('preserves non-generated container width rules when requested and removes empty at-rules', () => {
+    const root = postcss.parse([
+      '@media (min-width:640px){.container{max-width:640px;color:red}}',
+      '@supports (display:grid){/* empty */}',
+      '.container{width:100%}',
+    ].join('\n'))
+
+    removeTailwindContainerMaxWidthMediaRules(root)
+    removeTailwindContainerWidthRules(root, { generatedOnly: true })
+    removeEmptyAtRules(root)
+
+    const css = root.toString()
+    expect(css).toContain('max-width:640px')
+    expect(css).toContain('.container{width:100%}')
+    expect(css).not.toContain('@supports')
   })
 
   it('normalizes mini-program prefixed declarations while preserving useful webkit syntax', () => {
@@ -378,7 +600,7 @@ describe('mini-program css cleanup', () => {
       },
     })
 
-    expect(css).toContain('view,text,::after,::before{box-sizing:border-box;border-style:solid}')
+    expect(css).toContain('view,text,::after,::before{border-style:solid;box-sizing:border-box}')
     expect(css).toContain('.card{display:flex}')
     expect(css).not.toContain('appearance:button')
     expect(css).not.toContain('resize:vertical')
