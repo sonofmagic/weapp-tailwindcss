@@ -178,7 +178,12 @@ async function readH5ThemeEvidence(page: Page) {
 }
 
 export async function collectH5ThemeEvidence(page: Page) {
-  const evidence = await readH5ThemeEvidence(page)
+  const startedAt = Date.now()
+  let evidence = await readH5ThemeEvidence(page)
+  while (!evidence.found && Date.now() - startedAt < 30_000) {
+    await page.waitForTimeout(150)
+    evidence = await readH5ThemeEvidence(page)
+  }
   ensureH5ThemeEvidence(evidence)
   return evidence
 }

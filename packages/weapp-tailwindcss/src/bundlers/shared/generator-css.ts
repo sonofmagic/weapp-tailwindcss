@@ -17,7 +17,7 @@ import { cleanLocalCssImportWrapperTailwindDirectives, cleanLocalCssImportWrappe
 import { createCssAppend, GENERATOR_PLACEHOLDER_MARKER_RE, hasTailwindGeneratedCss, hasTailwindGeneratedCssMarkers, splitGeneratorPlaceholderCssBySourceOrder, splitTailwindV4GeneratedCssBySourceOrder, stripTailwindBanner } from './generator-css/markers'
 import { resolveGeneratorSourceEntries, resolveGeneratorSources } from './generator-css/source-resolver'
 import { normalizeCssSourceForCompare } from './generator-css/source-resolver/matching'
-import { extractGeneratedCssForUserLayerSelectors, filterApplyOnlyGeneratedCss, hasUserCssLayerBlocks, isCommentOnlyCss, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRules, shouldFilterApplyOnlyGeneratedCss, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
+import { extractGeneratedCssForUserLayerSelectors, filterApplyOnlyGeneratedCss, hasUserCssLayerBlocks, isCommentOnlyCss, normalizeEmptyTailwindCustomVariants, removeTailwindV4GeneratedUserCssArtifacts, removeTailwindV4GeneratorAtRules, shouldFilterApplyOnlyGeneratedCss, splitUserCssLayerBlocks, stripTailwindSourceMediaFragments, stripUnmatchedTailwindSourceMediaCloseFragments, transformGeneratorUserCss } from './generator-css/user-css'
 import { reorderMarkedUserLayerComponentsCss, wrapUserLayerComponentsCss } from './generator-css/user-layer-order'
 import { runWithConcurrency } from './run-tasks'
 
@@ -204,9 +204,11 @@ export async function generateCssByGenerator(
   }
   const effectiveRawSource = stripUnmatchedTailwindSourceMediaCloseFragments(
     stripTailwindSourceMediaFragments(
-      normalizeTailwindSourceDirectives(rawSource, {
-        importFallback: generatorOptions.importFallback,
-      }),
+      normalizeEmptyTailwindCustomVariants(
+        normalizeTailwindSourceDirectives(rawSource, {
+          importFallback: generatorOptions.importFallback,
+        }),
+      ),
     ),
   )
   const effectiveRawSourceRoot = parseCssSourceRoot(effectiveRawSource)
@@ -252,9 +254,11 @@ export async function generateCssByGenerator(
       ? userRawSource
       : stripUnmatchedTailwindSourceMediaCloseFragments(
           stripTailwindSourceMediaFragments(
-            normalizeTailwindSourceDirectives(userRawSource, {
-              importFallback: generatorOptions.importFallback,
-            }),
+            normalizeEmptyTailwindCustomVariants(
+              normalizeTailwindSourceDirectives(userRawSource, {
+                importFallback: generatorOptions.importFallback,
+              }),
+            ),
           ),
         )
   const userLocalImportParts = rawUserSource === generatorRawSource
@@ -283,6 +287,10 @@ export async function generateCssByGenerator(
     importFallback: generatorOptions.importFallback,
   })
   const hasGeneratedMarkers = hasTailwindGeneratedCssMarkers(generatorRawSource)
+  const normalizedCssSources = options.cssSources?.map(source => ({
+    ...source,
+    css: normalizeEmptyTailwindCustomVariants(source.css),
+  }))
   const shouldGenerateCurrentCss = shouldUseGeneratorForCurrentCss(majorVersion, cssHandlerOptions, {
     forceGenerator: options.forceGenerator,
     hasGeneratedCss,
@@ -328,7 +336,7 @@ export async function generateCssByGenerator(
       generatorOptions,
       {
         cssEntries: cssHandlerOptions.sourceOptions?.cssEntries ?? opts.cssEntries,
-        cssSources: options.cssSources,
+        cssSources: normalizedCssSources,
         getSourceCandidatesForEntries,
         runtime: runtimeWithCurrentCss,
       },
@@ -440,7 +448,9 @@ export async function generateCssByGenerator(
       ? generated.css
       : stripTailwindBanner(generated.css)
     const generatedCss = shouldFilterApplyOnlyCss
-      ? filterApplyOnlyGeneratedCss(generatedCssSource, generatorRawSource)
+      ? filterApplyOnlyGeneratedCss(generatedCssSource, generatorRawSource, {
+          preserveVariables: generated.target !== 'web',
+        })
       : generatedCssSource
     const hasMatchedCssSourceFile = sources.some(source => (source as GeneratorResolvedSource).__weappTailwindcssMeta?.matchedCssSourceFile)
     const hasExplicitCssSource = sources.some((source) => {

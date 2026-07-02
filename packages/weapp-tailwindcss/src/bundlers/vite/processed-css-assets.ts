@@ -89,6 +89,26 @@ function appendCss(baseCss: string, css: string) {
   return `${baseCss}\n${css}`
 }
 
+function normalizeCssRecordIdentity(css: string) {
+  return css.trim()
+}
+
+function hasNonCommentCss(css: string) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '').trim().length > 0
+}
+
+function dedupeViteCssResults<T extends { css: string, outputFile?: string | undefined }>(records: T[]) {
+  const seen = new Set<string>()
+  return records.filter((record) => {
+    const key = `${normalizeOutputPathKey(record.outputFile ?? '')}\0${normalizeCssRecordIdentity(record.css)}`
+    if (seen.has(key)) {
+      return false
+    }
+    seen.add(key)
+    return true
+  })
+}
+
 function removeTailwindSourceMediaWrappers(css: string) {
   if (!css.includes('@media source(')) {
     return css
@@ -238,6 +258,175 @@ function collectRootStyleBundleCssSources(bundle: OutputBundle, excludedFile: st
   return sources
 }
 
+const VUE_SCOPED_ATTR_RE = /\[data-v-[^\]]+\]/gi
+
+function hasVueScopedAttr(value: string) {
+  VUE_SCOPED_ATTR_RE.lastIndex = 0
+  const matched = VUE_SCOPED_ATTR_RE.test(value)
+  VUE_SCOPED_ATTR_RE.lastIndex = 0
+  return matched
+}
+
+function normalizeCssSignatureValue(value: string) {
+  return value
+    .replace(VUE_SCOPED_ATTR_RE, '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([>+~])\s*/g, '$1')
+    .replace(/\(\s+/g, '(')
+    .replace(/\s+\)/g, ')')
+    .trim()
+}
+
+function createDeclarationSignature(rule: postcss.Rule) {
+  return createDeclarationKeys(rule).sort().join(';')
+}
+
+function createRuleCoverageKey(selector: string, declarations: string) {
+  return `${normalizeCssSignatureValue(selector)}\0${declarations}`
+}
+
+function createDeclarationKeys(rule: postcss.Rule) {
+  return (rule.nodes ?? [])
+    .filter((node): node is postcss.Declaration => node.type === 'decl')
+    .map(node => `${node.prop}:${normalizeCssSignatureValue(node.value)}${node.important ? '!important' : ''}`)
+}
+
+function createAtRuleCoverageKey(atRule: postcss.AtRule) {
+  return `${atRule.name}\0${normalizeCssSignatureValue(atRule.params)}\0${normalizeCssSignatureValue(atRule.toString())}`
+}
+
+function hasClassSelector(selector: string) {
+  return /(?:^|[^\\])\.[_a-z\u00A0-\uFFFF-]/i.test(normalizeCssSignatureValue(selector))
+}
+
+function isLikelyTailwindGlobalSelector(selector: string) {
+  const normalized = normalizeCssSignatureValue(selector)
+  return normalized === '*'
+    || normalized.startsWith('::')
+    || normalized.startsWith(':root')
+    || normalized.startsWith(':host')
+    || /^(?:html|body|hr|abbr|h1|h2|h3|h4|h5|h6|a|b|strong|code|kbd|samp|small|sub|sup|table|button|input|select|optgroup|textarea|summary|blockquote|dl|dd|fieldset|legend|ol|ul|menu|dialog|progress|video|audio|canvas|embed|iframe|img|object|svg|details|template|[uo]ni-progress)(?:$|[:,[\s>+~.#])/.test(normalized)
+}
+
+function isLikelyTailwindGlobalRule(rule: postcss.Rule) {
+  return (rule.selectors ?? [rule.selector]).every(selector =>
+    !hasClassSelector(selector) && isLikelyTailwindGlobalSelector(selector),
+  )
+}
+
+function isLikelyTailwindPropertyAtRule(atRule: postcss.AtRule) {
+  return atRule.name.toLowerCase() === 'property'
+    && normalizeCssSignatureValue(atRule.params).startsWith('--tw-')
+}
+
+function collectRootScopedComparableCssCoverage(cssSources: string[]) {
+  const rules = new Set<string>()
+  const atRules = new Set<string>()
+  const declarationsBySelector = new Map<string, Set<string>>()
+  for (const source of cssSources) {
+    try {
+      const root = postcss.parse(source)
+      root.walkRules((rule) => {
+        const declarations = createDeclarationSignature(rule)
+        if (declarations.length === 0) {
+          return
+        }
+        for (const selector of rule.selectors ?? [rule.selector]) {
+          const normalizedSelector = normalizeCssSignatureValue(selector)
+          rules.add(`${normalizedSelector}\0${declarations}`)
+          const selectorDeclarations = declarationsBySelector.get(normalizedSelector) ?? new Set<string>()
+          for (const declaration of createDeclarationKeys(rule)) {
+            selectorDeclarations.add(declaration)
+          }
+          declarationsBySelector.set(normalizedSelector, selectorDeclarations)
+        }
+      })
+      root.walkAtRules((atRule) => {
+        atRules.add(createAtRuleCoverageKey(atRule))
+      })
+    }
+    catch {
+    }
+  }
+  return { rules, atRules, declarationsBySelector }
+}
+
+function isRuleCoveredByRootCss(rule: postcss.Rule, coverage: ReturnType<typeof collectRootScopedComparableCssCoverage>) {
+  const declarations = createDeclarationSignature(rule)
+  if (declarations.length === 0) {
+    return false
+  }
+  const selectors = rule.selectors ?? [rule.selector]
+  if (selectors.every(selector => coverage.rules.has(createRuleCoverageKey(selector, declarations)))) {
+    return true
+  }
+  const declarationKeys = createDeclarationKeys(rule)
+  return (declarationKeys.length > 0
+    && selectors.every((selector) => {
+      const rootDeclarations = coverage.declarationsBySelector.get(normalizeCssSignatureValue(selector))
+      return rootDeclarations != null && declarationKeys.every(declaration => rootDeclarations.has(declaration))
+    }))
+    || selectors.every(selector => coverage.declarationsBySelector.has(normalizeCssSignatureValue(selector)))
+}
+
+function removeScopedCssCoveredByRootStyleSources(css: string, rootSources: string[]) {
+  if (!hasVueScopedAttr(css)) {
+    return css
+  }
+  const hasScopedTailwindGeneratedCss = /tailwindcss v\d/i.test(css)
+  const coverage = collectRootScopedComparableCssCoverage(rootSources)
+  if (coverage.rules.size === 0 && coverage.atRules.size === 0 && !hasScopedTailwindGeneratedCss) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkComments((comment) => {
+      if (/tailwindcss v\d/i.test(comment.text)) {
+        comment.remove()
+        changed = true
+      }
+    })
+    root.walkRules((rule) => {
+      if (
+        isRuleCoveredByRootCss(rule, coverage)
+        || (
+          hasScopedTailwindGeneratedCss
+          && isLikelyTailwindGlobalRule(rule)
+        )
+      ) {
+        rule.remove()
+        changed = true
+      }
+    })
+    root.walkAtRules((atRule) => {
+      if (
+        coverage.atRules.has(createAtRuleCoverageKey(atRule))
+        || (
+          hasScopedTailwindGeneratedCss
+          && isLikelyTailwindPropertyAtRule(atRule)
+        )
+      ) {
+        atRule.remove()
+        changed = true
+        return
+      }
+      if (atRule.nodes !== undefined && atRule.nodes.length === 0) {
+        atRule.remove()
+        changed = true
+      }
+    })
+    return changed ? removeDanglingCssSourceTraceComments(root.toString()).trim() : css
+  }
+  catch {
+    return css
+  }
+}
+
+export function removeScopedTailwindPreflightCss(css: string) {
+  return removeScopedCssCoveredByRootStyleSources(css, [])
+}
+
 function collectSingleViteGeneratedCssMarkerFile(rawSource: string) {
   const blocks = parseBundlerGeneratedCssMarkerBlocks(rawSource)
     .filter(block => block.bundler === 'vite')
@@ -264,15 +453,18 @@ function shouldFilterRootGeneratedCssMarkerForScopedAsset(
   return !isMatchingGeneratedCssMarkerFile(targetFile, markerFile, resolveViteProcessedCssOutputFile)
 }
 
-function removeCssCoveredByRootStyleBundleSources(
+export function removeCssCoveredByRootStyleBundleSources(
   bundle: OutputBundle,
   file: string,
   css: string,
 ) {
-  return removeDanglingCssSourceTraceComments(removeCssCoveredByImportedViteResults(
+  const rootSources = collectRootStyleBundleCssSources(bundle, file)
+  const withoutExactRootCss = removeDanglingCssSourceTraceComments(removeCssCoveredByImportedViteResults(
     css,
-    collectRootStyleBundleCssSources(bundle, file),
+    rootSources,
   ))
+  const nextCss = removeScopedCssCoveredByRootStyleSources(withoutExactRootCss, rootSources)
+  return hasNonCommentCss(nextCss) ? nextCss : ''
 }
 
 function removeDanglingCssSourceTraceComments(css: string) {
@@ -305,6 +497,7 @@ export function removeCssCoveredByRootStyleAssets(
   options: {
     cssMatcher: (file: string) => boolean
     debug?: ((format: string, ...args: unknown[]) => void) | undefined
+    includeTailwindGeneratedCssAssets?: boolean | undefined
     isViteProcessedCssAsset?: CssAssetMarkerMatcher | undefined
     onUpdate?: ((file: string, original: string, generated: string) => void) | undefined
     recordCssAssetResult?: CssAssetResultRecorder | undefined
@@ -317,10 +510,21 @@ export function removeCssCoveredByRootStyleAssets(
       continue
     }
     const file = getAssetFile(bundleFile, output)
+    const rawSource = readAssetSource(output)
+    const hasScopedCss = hasVueScopedAttr(rawSource)
+    const hasTailwindGeneratedCss = /tailwindcss v\d/i.test(rawSource)
+    const shouldIncludeTailwindGeneratedCssAsset = options.includeTailwindGeneratedCssAssets === true
+      && hasTailwindGeneratedCss
+      && isCssOutputFile(file)
+      && !isMiniProgramStyleOutputFile(file)
     if (
-      !options.cssMatcher(file)
+      !(options.cssMatcher(file) || (hasScopedCss && isCssOutputFile(file)) || shouldIncludeTailwindGeneratedCssAsset)
       || isRootStyleOutputFile(file)
-      || options.isViteProcessedCssAsset?.(output, file) === true
+      || (
+        options.isViteProcessedCssAsset?.(output, file) === true
+        && !hasScopedCss
+        && !shouldIncludeTailwindGeneratedCssAsset
+      )
       || (
         options.subpackageRoots != null
         && isSubpackageOutputFile(file, options.subpackageRoots)
@@ -328,7 +532,6 @@ export function removeCssCoveredByRootStyleAssets(
     ) {
       continue
     }
-    const rawSource = readAssetSource(output)
     const nextCss = removeCssCoveredByRootStyleBundleSources(bundle, file, rawSource)
     if (nextCss === rawSource) {
       continue
@@ -856,13 +1059,13 @@ export function injectViteProcessedCssIntoMainCssAssets(
   bundle: OutputBundle,
   options: InjectViteProcessedCssAssetOptions,
 ) {
-  const viteCssResults = [...(options.getViteProcessedCssAssetResults?.() ?? [])]
-    .map(([file, record]) => {
+  const viteCssResults = dedupeViteCssResults(
+    [...(options.getViteProcessedCssAssetResults?.() ?? [])].map(([file, record]) => {
       return typeof record === 'string'
         ? { file, css: record, injectIntoMain: undefined }
         : { file, css: record.css, injectIntoMain: record.injectIntoMain, outputFile: record.outputFile }
-    })
-    .filter(record => record.css.length > 0)
+    }),
+  ).filter(record => record.css.length > 0)
   let injected = 0
   for (const [bundleFile, bundleOutput] of Object.entries(bundle)) {
     let output = bundleOutput
@@ -977,7 +1180,7 @@ export function injectViteProcessedCssIntoMainCssAssets(
         }
       }
       const missingCss = filterExistingCssRules(nextCss, css)
-      if (missingCss.length === 0 || containsCssAfterMinify(nextCss, missingCss)) {
+      if (missingCss.length === 0 || !hasNonCommentCss(missingCss) || containsCssAfterMinify(nextCss, missingCss)) {
         continue
       }
       nextCss = appendCss(nextCss, missingCss)

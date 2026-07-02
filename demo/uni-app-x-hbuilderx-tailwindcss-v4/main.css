@@ -28,6 +28,15 @@
     }
   }
 }
-.template-corpus-apply {
-  @apply flex items-center rounded-[20px] bg-[#9e58e9] px-[18px] py-[10px] text-[26px] text-white;
+@layer components {
+  .template-corpus-apply {
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    background-color: #9e58e9;
+    padding-inline: 18px;
+    padding-block: 10px;
+    color: #fff;
+    font-size: 26px;
+  }
 }

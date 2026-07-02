@@ -10,6 +10,7 @@ import {
 import { postcss } from '@weapp-tailwindcss/postcss'
 import { normalizeConfigDirective } from '@/bundlers/shared/generator-css/config-directive'
 import { normalizeTailwindConfigDirectives, resolveCssEntrySource } from '@/bundlers/shared/generator-css/directives'
+import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
 import { resolveTailwindcssOptions } from '@/tailwindcss/runtime-options'
 import { filterTailwindV4CssSourceRoots } from '@/tailwindcss/v4/css-sources'
 import { omitUndefined } from '@/utils/object'
@@ -228,7 +229,7 @@ function normalizeTailwindV4CssSources(
     }
     const configBase = base ?? projectRoot ?? process.cwd()
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeTailwindConfigDirectives(cssSource.css, configBase),
+      normalizeEmptyTailwindCustomVariants(normalizeTailwindConfigDirectives(cssSource.css, configBase)),
       packageName,
     )
     if (css === cssSource.css && file === cssSource.file && base === cssSource.base) {
@@ -273,7 +274,7 @@ function normalizeTailwindV4CssEntrySources(
         ? path.resolve(base, entrySource.configRequest)
         : entrySource?.config
     const css = normalizeTailwindV4CssPackageImports(
-      normalizeConfigDirective(rawCss, config),
+      normalizeEmptyTailwindCustomVariants(normalizeConfigDirective(rawCss, config)),
       packageName,
     )
     cssSources.push({
@@ -299,7 +300,7 @@ export function normalizeTailwindV4SourceOptions(options: TailwindV4SourceOption
   const css = options.css === undefined
     ? undefined
     : normalizeTailwindV4CssPackageImports(
-        normalizeTailwindConfigDirectives(options.css, cssBase),
+        normalizeEmptyTailwindCustomVariants(normalizeTailwindConfigDirectives(options.css, cssBase)),
         options.packageName,
       )
   const entrySources = normalizeTailwindV4CssEntrySources(options.cssEntries, options.packageName)

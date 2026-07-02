@@ -99,6 +99,34 @@ describe('tailwind v4 source options', () => {
     expect(rawRuntimeOptions.cssEntries).toEqual(['src/app.css'])
   })
 
+  it('removes empty custom variants from normalized sources', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-v4-empty-variant-'))
+    const cssEntry = path.join(root, 'src/app.css')
+    await mkdir(path.dirname(cssEntry), { recursive: true })
+    await writeFile(cssEntry, [
+      '@import "tailwindcss";',
+      '@custom-variant wx;',
+      '@custom-variant dark (&:where(.dark, .dark *));',
+      '.keep{color:red}',
+    ].join('\n'))
+
+    const options = normalizeTailwindV4SourceOptions({
+      projectRoot: root,
+      css: '@custom-variant wx { /* #ifdef MP-WEIXIN */ /* #endif */ }',
+      cssEntries: [cssEntry],
+      cssSources: [{
+        css: '@custom-variant wx;\n.inline{color:blue}',
+        file: path.join(root, 'src/inline.css'),
+      }],
+    })
+    const sourceCss = options?.cssSources?.map(source => source.css).join('\n') ?? ''
+
+    expect(options?.css).not.toContain('@custom-variant wx')
+    expect(sourceCss).not.toContain('@custom-variant wx')
+    expect(sourceCss).toContain('@custom-variant dark')
+    expect(sourceCss).toContain('.inline')
+  })
+
   it('returns original options when no v4 source normalization is needed', () => {
     const options = {
       projectRoot: path.resolve('/virtual/root'),

@@ -79,6 +79,10 @@ function readAssetSource(asset: OutputAsset) {
   return typeof asset.source === 'string' ? asset.source : asset.source.toString()
 }
 
+function isUniAppViteWebviewAppBundle(bundleFiles: string[]) {
+  return bundleFiles.some(file => path.basename(file.replace(/[?#].*$/, '')) === 'app-service.js')
+}
+
 function getAssetFile(bundleFile: string, asset: OutputAsset) {
   return asset.fileName || bundleFile
 }
@@ -335,6 +339,9 @@ export async function finalizeGenerateBundle(options: FinalizeGenerateBundleOpti
   removeCssCoveredByRootStyleAssets(bundle, {
     cssMatcher: opts.cssMatcher,
     debug,
+    includeTailwindGeneratedCssAssets: opts.appType === 'uni-app-vite'
+      && isWebGeneratorTarget
+      && isUniAppViteWebviewAppBundle(bundleFiles),
     isViteProcessedCssAsset,
     onUpdate,
     recordCssAssetResult,

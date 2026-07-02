@@ -4,6 +4,7 @@ import {
   filterApplyOnlyGeneratedCss,
   hasUserCssLayerBlocks,
   isCommentOnlyCss,
+  normalizeEmptyTailwindCustomVariants,
   removeMiniProgramHoverSelectors,
   removeTailwindV4GeneratedUserCssArtifacts,
   removeTailwindV4GeneratorAtRules,
@@ -15,6 +16,26 @@ import {
 } from '@/bundlers/shared/generator-css/user-css'
 
 describe('generator user css helpers', () => {
+  it('removes empty custom variants produced by platform preprocessors', () => {
+    const source = [
+      '@custom-variant wx {',
+      '  /* #ifdef MP-WEIXIN */',
+      '  /* #endif */',
+      '}',
+      '@custom-variant dark (&:where(.dark, .dark *));',
+      '@custom-variant any-hover { @media (any-hover: hover) { &:hover { @slot; } } }',
+      '.keep{color:red}',
+    ].join('\n')
+    const normalized = normalizeEmptyTailwindCustomVariants(source)
+
+    expect(normalized).not.toContain('@custom-variant wx')
+    expect(normalized).toContain('@custom-variant dark')
+    expect(normalized).toContain('@custom-variant any-hover')
+    expect(normalized).toContain('.keep')
+    expect(normalizeEmptyTailwindCustomVariants('@custom-variant wx;\n.keep{color:red}')).toBe('.keep{color:red}')
+    expect(normalizeEmptyTailwindCustomVariants('.broken{')).toBe('.broken{')
+  })
+
   it('removes generator at-rules including fallback-unparseable blocks', () => {
     expect(removeTailwindV4GeneratorAtRules('@theme{--color-a:red}.keep{color:red}')).toBe('.keep{color:red}')
     expect(removeTailwindV4GeneratorAtRules('@source "./src"\n@theme{--color-a:red}.keep{color:red')).toContain('.keep')
@@ -104,6 +125,14 @@ describe('generator user css helpers', () => {
     expect(filtered).toContain('.card')
     expect(filtered).toContain('--x')
     expect(filtered).not.toContain('.other')
+    const scopedFiltered = filterApplyOnlyGeneratedCss(
+      ':root{--spacing:0.25rem}html{line-height:1.5}.flex{display:flex}.hello-world-shell[data-v-abc]{display:flex}',
+      '.hello-world-shell { @apply flex; }',
+    )
+    expect(scopedFiltered).toContain('.hello-world-shell[data-v-abc]')
+    expect(scopedFiltered).toContain('--spacing')
+    expect(scopedFiltered).not.toContain('html{line-height')
+    expect(scopedFiltered).not.toContain('.flex{display:flex}')
     expect(filterApplyOnlyGeneratedCss('.broken{', '.card{@apply flex}')).toBe('.broken{')
     expect(filterApplyOnlyGeneratedCss('.card{display:flex}', '.card{color:red}')).toBe('.card{display:flex}')
     expect(shouldFilterApplyOnlyGeneratedCss(4, 'weapp', '.card{@apply flex}', {
@@ -113,7 +142,7 @@ describe('generator user css helpers', () => {
     expect(shouldFilterApplyOnlyGeneratedCss(4, 'web', '.card{@apply flex}', {
       hasGeneratedCss: false,
       hasGeneratedMarkers: false,
-    })).toBe(false)
+    })).toBe(true)
     expect(shouldFilterApplyOnlyGeneratedCss(4, 'weapp', '@tailwind utilities;\n.card{@apply flex}', {
       hasGeneratedCss: false,
       hasGeneratedMarkers: false,

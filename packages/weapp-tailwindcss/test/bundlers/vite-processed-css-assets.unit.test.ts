@@ -8,6 +8,7 @@ import {
   injectViteProcessedCssIntoMainCssAssets,
   isCssImportOnlyBundleAsset,
   removeCssCoveredByRootStyleAssets,
+  removeScopedTailwindPreflightCss,
 } from '@/bundlers/vite/processed-css-assets'
 
 function asset(fileName: string, source: string): OutputAsset {
@@ -415,6 +416,71 @@ describe('vite processed css assets', () => {
     expect(appCss).toContain('radial-gradient')
   })
 
+  it('dedupes aliased uni-app vite app webview css records before root injection', () => {
+    const generatedCss = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '.template-corpus-card{display:block}',
+      '.space-y-2>:not([hidden])~:not([hidden]){margin-top:.5rem}',
+    ].join('\n')
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', ''),
+      'pages/index/index.css': asset('pages/index/index.css', '.page{color:black}'),
+    }
+    const records = new Map<string, any>([
+      ['src/main.css', { css: generatedCss, injectIntoMain: true, outputFile: 'app.css' }],
+      ['app.css', { css: generatedCss, injectIntoMain: true, outputFile: 'app.css' }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: () => false,
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      debug: vi.fn(),
+    })
+
+    const appCss = String((bundle['app.css'] as OutputAsset).source)
+    expect(injected).toBe(1)
+    expect(appCss.match(/tailwindcss v4\.3\.2/g)).toHaveLength(1)
+    expect(appCss.match(/template-corpus-card/g)).toHaveLength(1)
+    expect(appCss.match(/space-y-2/g)).toHaveLength(1)
+    expect(String((bundle['pages/index/index.css'] as OutputAsset).source)).toBe('.page{color:black}')
+  })
+
+  it('does not append comment-only vite processed leftovers into root css', () => {
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', '.template-corpus-card{display:block}'),
+    }
+    const records = new Map<string, any>([
+      ['src/main.css', {
+        css: [
+          '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+          '/*tokens: template-corpus-card <= src/pages/index/index.vue */',
+          '.template-corpus-card{display:block}',
+        ].join('\n'),
+        injectIntoMain: true,
+        outputFile: 'app.css',
+      }],
+    ])
+
+    const injected = injectViteProcessedCssIntoMainCssAssets(bundle, {
+      opts: {
+        ...opts(),
+        appType: 'uni-app-vite',
+        cssMatcher: (file: string) => file.endsWith('.css'),
+        mainCssChunkMatcher: () => false,
+      },
+      getViteProcessedCssAssetResults: () => records.entries(),
+      debug: vi.fn(),
+    })
+
+    expect(injected).toBe(0)
+    expect(String((bundle['app.css'] as OutputAsset).source)).toBe('.template-corpus-card{display:block}')
+  })
+
   it('does not treat non-root uni-app vite page css as app webview main css', () => {
     const root = '/project'
     const bundle: OutputBundle = {
@@ -452,6 +518,130 @@ describe('vite processed css assets', () => {
     expect(injected).toBe(0)
     expect(String((bundle['app.css'] as OutputAsset).source)).toBe('')
     expect(records.get('pages/index.css')?.injectIntoMain).toBeUndefined()
+  })
+
+  it('removes scoped uni-app vite app webview tailwind duplicates from page css', () => {
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', [
+        '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+        ':root,:host{--spacing:.25rem;--color-slate-700:rgb(49,65,88)}',
+        '*,::after,::before{box-sizing:border-box;margin:0;padding:0}',
+        'html,:host{tab-size:4}',
+        '.space-y-2>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+        '@property --tw-space-y-reverse { syntax: "*"; inherits: false; initial-value: 0; }',
+      ].join('\n')),
+      'pages/index/index.css': asset('pages/index/index.css', [
+        '/* uni comment */',
+        '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+        '[data-v-e17ea971]:root,[data-v-e17ea971]:host{--spacing:.25rem;--color-slate-700:rgb(49,65,88)}',
+        '*[data-v-e17ea971],[data-v-e17ea971]::after,[data-v-e17ea971]::before{box-sizing:border-box;margin:0;padding:0}',
+        'html[data-v-e17ea971],[data-v-e17ea971]:host{-moz-tab-size:4;tab-size:4}',
+        'uni-progress[data-v-e17ea971]{vertical-align:baseline}',
+        '.space-y-2[data-v-e17ea971]>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+        '.hello-world-shell[data-v-e17ea971]{display:flex;color:var(--color-slate-700)}',
+        '@property --tw-space-y-reverse { syntax: "*"; inherits: false; initial-value: 0; }',
+      ].join('\n')),
+    }
+    const onUpdate = vi.fn()
+
+    expect(removeCssCoveredByRootStyleAssets(bundle, {
+      cssMatcher: (file: string) => file === 'app.css',
+      isViteProcessedCssAsset: (_asset, file) => file === 'pages/index/index.css',
+      onUpdate,
+      debug: vi.fn(),
+    })).toBe(1)
+
+    const pageCss = String((bundle['pages/index/index.css'] as OutputAsset).source)
+    expect(pageCss).toContain('.hello-world-shell[data-v-e17ea971]')
+    expect(pageCss).not.toContain('tailwindcss v4.3.2')
+    expect(pageCss).not.toContain('.space-y-2')
+    expect(pageCss).not.toContain('box-sizing:border-box')
+    expect(pageCss).not.toContain('-moz-tab-size')
+    expect(pageCss).not.toContain('uni-progress')
+    expect(pageCss).not.toContain('@property --tw-space-y-reverse')
+    expect(pageCss).toContain('/* uni comment */')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('removes unscoped uni-app vite app webview tailwind duplicates from page css when root css covers them', () => {
+    const generatedCss = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '.template-corpus-card{display:block}',
+      '.space-y-2>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+    ].join('\n')
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', generatedCss),
+      'pkg/pages/user/user.css': asset('pkg/pages/user/user.css', [
+        '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+        '/*tokens: template-corpus-card <= src/pkg/pages/user.vue */',
+        '.template-corpus-card{display:block}',
+        '/*tokens: space-y-2 <= src/pkg/pages/user.vue */',
+        '.space-y-2>:not(:last-child){margin-block-start:calc(var(--spacing) * 2)}',
+      ].join('\n')),
+    }
+    const onUpdate = vi.fn()
+
+    expect(removeCssCoveredByRootStyleAssets(bundle, {
+      cssMatcher: (file: string) => file === 'app.css',
+      includeTailwindGeneratedCssAssets: true,
+      isViteProcessedCssAsset: (_asset, file) => file === 'pkg/pages/user/user.css',
+      onUpdate,
+      debug: vi.fn(),
+    })).toBe(1)
+
+    expect(String((bundle['pkg/pages/user/user.css'] as OutputAsset).source)).toBe('')
+    expect(onUpdate).toHaveBeenCalled()
+  })
+
+  it('keeps unscoped tailwind page css when app webview duplicate cleanup is disabled', () => {
+    const bundle: OutputBundle = {
+      'app.css': asset('app.css', '.template-corpus-card{display:block}'),
+      'pkg/pages/user/user.css': asset('pkg/pages/user/user.css', [
+        '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+        '.template-corpus-card{display:block}',
+      ].join('\n')),
+    }
+
+    expect(removeCssCoveredByRootStyleAssets(bundle, {
+      cssMatcher: (file: string) => file === 'app.css',
+      isViteProcessedCssAsset: (_asset, file) => file === 'pkg/pages/user/user.css',
+      debug: vi.fn(),
+    })).toBe(0)
+
+    expect(String((bundle['pkg/pages/user/user.css'] as OutputAsset).source)).toContain('tailwindcss v4.3.2')
+  })
+
+  it('removes scoped tailwind preflight without root css coverage', () => {
+    const css = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '[data-v-e17ea971]:root,[data-v-e17ea971]:host{--spacing:.25rem}',
+      'uni-progress[data-v-e17ea971]{vertical-align:baseline}',
+      '.hello-world-shell[data-v-e17ea971]{display:flex}',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).toContain('.hello-world-shell[data-v-e17ea971]')
+    expect(nextCss).not.toContain('tailwindcss v4.3.2')
+    expect(nextCss).not.toContain(':root')
+    expect(nextCss).not.toContain('uni-progress')
+  })
+
+  it('preserves user scoped element css while removing scoped tailwind preflight', () => {
+    const css = [
+      '/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */',
+      '*[data-v-e17ea971],[data-v-e17ea971]::after,[data-v-e17ea971]::before{box-sizing:border-box;margin:0;padding:0}',
+      'view[data-v-e17ea971]{color:red}',
+      '@media (min-width: 640px){view[data-v-e17ea971]{display:block}}',
+      '@property --tw-space-y-reverse { syntax: "*"; inherits: false; initial-value: 0; }',
+    ].join('\n')
+
+    const nextCss = removeScopedTailwindPreflightCss(css)
+
+    expect(nextCss).toContain('view[data-v-e17ea971]{color:red}')
+    expect(nextCss).toContain('@media (min-width: 640px)')
+    expect(nextCss).not.toContain('box-sizing:border-box')
+    expect(nextCss).not.toContain('@property --tw-space-y-reverse')
   })
 
   it('moves taro import shell injection to the imported root css asset', () => {

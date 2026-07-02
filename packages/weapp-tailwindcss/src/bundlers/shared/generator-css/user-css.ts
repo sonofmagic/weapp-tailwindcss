@@ -653,12 +653,57 @@ function hasOnlyApplyBackedSourceRules(source: string) {
   return hasApplyRule && !hasNonApplyRule
 }
 
-export function filterApplyOnlyGeneratedCss(css: string, source: string) {
+function removeCssComments(css: string) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, '')
+}
+
+function isEmptyCustomVariantBlock(rule: postcss.AtRule) {
+  if (rule.name !== 'custom-variant') {
+    return false
+  }
+  if (!/^[\w-]+$/.test(rule.params.trim())) {
+    return false
+  }
+  if (rule.nodes === undefined) {
+    return true
+  }
+  return rule.nodes.every(node => node.type === 'comment')
+}
+
+export function normalizeEmptyTailwindCustomVariants(css: string) {
+  if (!css.includes('@custom-variant')) {
+    return css
+  }
+  try {
+    const root = postcss.parse(css)
+    let changed = false
+    root.walkAtRules('custom-variant', (rule) => {
+      if (!isEmptyCustomVariantBlock(rule)) {
+        return
+      }
+      rule.remove()
+      changed = true
+    })
+    return changed ? root.toString() : css
+  }
+  catch {
+    return css
+  }
+}
+
+export function filterApplyOnlyGeneratedCss(
+  css: string,
+  source: string,
+  options: {
+    preserveVariables?: boolean | undefined
+  } = {},
+) {
   const selectors = collectApplyOnlySourceSelectors(source)
   if (selectors.size === 0) {
     return css
   }
   const selectorList = [...selectors]
+  const preserveVariables = options.preserveVariables !== false
 
   try {
     const root = postcss.parse(css)
@@ -678,7 +723,7 @@ export function filterApplyOnlyGeneratedCss(css: string, source: string) {
         })
       })
       const isVariableRule = rule.nodes?.some(node => node.type === 'decl' && node.prop.startsWith('--'))
-      if (!isApplySelector && !isVariableRule) {
+      if (!isApplySelector && (!preserveVariables || !isVariableRule)) {
         rule.remove()
       }
     })
@@ -687,7 +732,7 @@ export function filterApplyOnlyGeneratedCss(css: string, source: string) {
         rule.remove()
       }
     })
-    return root.toString()
+    return removeCssComments(root.toString()).trim()
   }
   catch {
     return css
@@ -703,7 +748,7 @@ export function shouldFilterApplyOnlyGeneratedCss(
     hasGeneratedMarkers: boolean
   },
 ) {
-  return target === 'weapp'
+  return (target === 'weapp' || target === 'web')
     && hasTailwindApplyDirective(source)
     && !hasTailwindRootDirectives(source)
     && !options.hasGeneratedCss

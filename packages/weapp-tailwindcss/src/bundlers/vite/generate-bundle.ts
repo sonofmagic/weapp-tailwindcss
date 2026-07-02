@@ -53,7 +53,7 @@ import { createTemporaryCssAssetSourceResolver, isTemporaryCssAssetFile } from '
 import { createBundleTaskTimer } from './generate-bundle/timing'
 import { createTransformFilter, createTransformFilterSignature, shouldSkipViteAssetTransform, shouldSkipViteJsChunkTransform } from './generate-bundle/transform-filter'
 import { getLastCssResult, normalizeViteCssCacheKey, rememberLastCssResult } from './generate-bundle/vite-css-cache'
-import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset } from './processed-css-assets'
+import { collectViteProcessedCssAssetResults, isCssImportOnlyBundleAsset, removeCssCoveredByRootStyleBundleSources } from './processed-css-assets'
 import { createRuntimeAffectingSourceSignature } from './runtime-affecting-signature'
 import { resolveUniAppXNativeCssHandlerOptions } from './uni-app-x-css-options'
 import { resolveSourceRootFromBundleGraph, resolveWeappViteSourceRoot } from './weapp-vite-config'
@@ -892,6 +892,11 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           opts,
           tokenSources: sourceTraceTokenSources,
         })
+        const removeRootCoveredCssFromScopedAsset = (css: string) => {
+          return !normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')).includes('/')
+            ? css
+            : removeCssCoveredByRootStyleBundleSources(bundle, outputFile, css)
+        }
         const shouldRegenerateMainPackageCssWithScopedCandidates = vitePipelineCssAsset
           && shouldExcludeSubpackageSourceCandidates(outputFile, generatorCssHandlerOptions)
         const generatorCssUserHandlerOptions = getCssUserHandlerOptions(generatorSourceFile)
@@ -968,7 +973,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           && !shouldRegenerateMainPackageCssWithScopedCandidates
           && (!shouldTrackGeneratorRuntime || shouldPreserveCollectedViteCssAsset)
         ) {
-          const nextCss = strippedViteProcessedCss
+          const nextCss = removeRootCoveredCssFromScopedAsset(strippedViteProcessedCss)
           applyCssResult(nextCss)
           markCssAssetProcessed?.(originalSource, outputFile)
           recordCssAssetResult?.(outputFile, nextCss)
@@ -1094,7 +1099,7 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
                     })
                   : undefined
                 if (generated) {
-                  const tracedCss = annotateCss(generated.css)
+                  const tracedCss = removeRootCoveredCssFromScopedAsset(annotateCss(generated.css))
                   registerGeneratorDependencies({ addWatchFile }, generated.dependencies)
                   if (envFlags.debugCssDiff) {
                     debug('css diff %s: %s', generatorSourceFile, summarizeStringDiff(generatorRawSource, tracedCss))

@@ -99,6 +99,8 @@
 </template>
 
 <style lang="scss" scoped>
+	@reference "../../main.css";
+
 	.content {
 		@apply flex flex-col items-center py-4;
 	}

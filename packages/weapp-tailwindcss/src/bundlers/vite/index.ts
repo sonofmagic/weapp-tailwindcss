@@ -11,6 +11,7 @@ import { logger } from '@weapp-tailwindcss/logger'
 import { compileCssMacroConditionalComments, removeTailwindPostcssPlugins, resolveFilteredPostcssConfig, unwrapUnsupportedCascadeLayers } from '@weapp-tailwindcss/postcss'
 import { LRUCache } from 'lru-cache'
 import { hasTailwindApplyDirective, hasTailwindRootDirectives, hasTailwindSourceDirectives, normalizeTailwindConfigDirectives, normalizeTailwindSourceForGenerator } from '@/bundlers/shared/generator-css/directives'
+import { normalizeEmptyTailwindCustomVariants } from '@/bundlers/shared/generator-css/user-css'
 import { vitePluginName } from '@/constants'
 import { getCompilerContext } from '@/context'
 import { toCustomAttributesEntities } from '@/context/custom-attributes'
@@ -42,6 +43,7 @@ import { hasSelfAcceptingNonStyleHotModule, resolveHotSourceModules, resolveHotT
 import { touchMapEntry } from './map-cache'
 import { disableAndRemoveTailwindVitePlugins, removeTailwindVitePlugins } from './official-tailwind-plugins'
 import { isMissingInternalCssSource, normalizeVitePersistentCacheKey, summarizeStringCache, summarizeViteProcessedCssResults } from './plugin-cache'
+import { removeScopedTailwindPreflightCss } from './processed-css-assets'
 import { resolveImplicitAppTypeFromViteRoot } from './resolve-app-type'
 import { createRewriteCssImportsPlugins, hasVitePipelineTailwindGenerationDirective } from './rewrite-css-imports'
 import { createViteRuntimeClassSet } from './runtime-class-set'
@@ -746,6 +748,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!isCSSRequest(requestFile) || opts.htmlMatcher(file) || isHTMLRequest(file)) {
       return undefined
     }
+    const generatorCode = normalizeEmptyTailwindCustomVariants(code)
     const rootDir = resolvedConfig?.root ? path.resolve(resolvedConfig.root) : process.cwd()
     const isHarmonyAppStyleTarget = isHarmonyAppBuildTarget()
     const isNativeAppStyleTarget = opts.appType === 'uni-app-x'
@@ -762,12 +765,12 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     }
     const transientCssSource = transientAutoCssSources.get(file)
       ?? (
-        hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback })
-        || hasTailwindSourceDirectives(code, { importFallback: generatorOptions.importFallback })
-        || hasTailwindApplyDirective(code)
+        hasTailwindRootDirectives(generatorCode, { importFallback: generatorOptions.importFallback })
+        || hasTailwindSourceDirectives(generatorCode, { importFallback: generatorOptions.importFallback })
+        || hasTailwindApplyDirective(generatorCode)
           ? {
               base: path.dirname(path.resolve(file)),
-              css: code,
+              css: generatorCode,
               file: path.resolve(file),
             }
           : undefined
@@ -775,13 +778,13 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     const shouldDeferEmptyScopedCssSource = transientCssSource == null && !(
       opts.appType === 'uni-app-x'
       && !cssHandlerOptions.isMainChunk
-      && hasTailwindApplyDirective(code)
+      && hasTailwindApplyDirective(generatorCode)
     )
     const generated = await generateTailwindV4Css({
       opts,
       runtimeState,
       runtime,
-      rawSource: code,
+      rawSource: generatorCode,
       file,
       outputFile,
       cssHandlerOptions,
@@ -799,7 +802,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     if (!generated) {
       return undefined
     }
-    const outputCss = finalizeViteMiniProgramCss(generated.css)
+    const outputCss = removeScopedTailwindPreflightCss(finalizeViteMiniProgramCss(generated.css))
     const tracedCss = annotateCssSourceTrace(outputCss, {
       opts,
       tokenSources: createCssTokenSourceMap(getSourceCandidateSourcesForEntries(undefined), opts),
@@ -810,7 +813,7 @@ export function WeappTailwindcss(options: UserDefinedOptions = {}): WeappTailwin
     viteGeneratedCssByFile.set(file, tracedCss)
     const shouldInjectGeneratedCssIntoMain = mainCssChunkMatcher(outputFile, opts.appType)
       || (
-        hasTailwindRootDirectives(code, { importFallback: generatorOptions.importFallback })
+        hasTailwindRootDirectives(generatorCode, { importFallback: generatorOptions.importFallback })
         && !normalizeOutputPathKey(outputFile).includes('/')
       )
     // 这里保留 undefined，让主样式入口走注入判断；Tailwind 入口样式在 uni-app dev 中需要同步回主样式产物。
