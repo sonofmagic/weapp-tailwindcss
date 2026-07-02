@@ -52,6 +52,7 @@
 
 <template>
 	<view class="content">
+<view class="bg-[#10b981] text-[#052e16] text-[32rpx] px-[24rpx] py-[16rpx]">DEMO-VISUAL-HMR-BG-EMERALD</view>
 		<WeappTailwindcss />
 		<view class="template-corpus-card flex flex-col gap-3 rounded-[28px] border border-slate-200 bg-gradient-to-br from-slate-900 to-slate-700 p-4 text-white shadow-xl wx:bg-blue-500 not-wx:bg-red-500 any-hover:bg-slate-800">
 			<view class="template-corpus-radial bg-[#e0f2fe] px-[48px] py-[24px] text-[#123456]">

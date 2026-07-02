@@ -6099,6 +6099,119 @@ describe('bundlers/shared generator css', () => {
     }
   })
 
+  it('injects mini-program preflight for placeholder output matched to non-primary full Tailwind cssEntries', async () => {
+    const root = await mkdtemp(path.join(tmpdir(), 'weapp-tw-placeholder-entry-preflight-'))
+    const mainCssFile = path.join(root, 'src/main.css')
+    const scopedCssFile = path.join(root, 'src/sub-normal/pages/index.css')
+    const mainCss = '@import "tailwindcss" source(none);\n@source "./pages/**/*.{vue,ts}";'
+    const scopedCss = '@import "tailwindcss" source(none);\n@source "./**/*.{vue,ts}";'
+    await mkdir(path.dirname(mainCssFile), { recursive: true })
+    await mkdir(path.dirname(scopedCssFile), { recursive: true })
+    await writeFile(mainCssFile, mainCss)
+    await writeFile(scopedCssFile, scopedCss)
+
+    const runtimeSet = new Set(['bg-normal-subpackage-marker'])
+    const resolveTailwindV4Source = vi.fn(async (options: any) => ({
+      projectRoot: root,
+      base: firstResolvedCssSourceOption(options).base,
+      baseFallbacks: [],
+      css: firstResolvedCssSourceOption(options).css,
+      dependencies: [firstResolvedCssSourceOption(options).file],
+    }))
+    const generateMock = vi.fn(async () => ({
+      css: '/*! tailwindcss v4.0.0 */\n.bg-normal-subpackage-marker{background-color:#2563eb}',
+      rawCss: '.bg-normal-subpackage-marker{background-color:#2563eb}',
+      target: 'weapp',
+      classSet: runtimeSet,
+      dependencies: [scopedCssFile],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source,
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: root,
+        base: root,
+        baseFallbacks: [],
+        css: mainCss,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: root,
+        baseFallbacks: [],
+        cssEntries: [mainCssFile, scopedCssFile],
+      })),
+    }))
+
+    try {
+      const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+      const result = await generateCssByGenerator({
+        opts: {
+          cssEntries: [mainCssFile, scopedCssFile],
+          cssPreflight: {
+            border: '0 solid',
+            'box-sizing': 'border-box',
+            margin: '0',
+            padding: '0',
+          },
+          styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        } as any,
+        runtimeState: {
+          tailwindRuntime: {
+            majorVersion: 4,
+          } as any,
+          readyPromise: Promise.resolve(),
+        },
+        runtime: runtimeSet,
+        rawSource: '/*! weapp-tailwindcss generator-placeholder */',
+        file: 'sub-normal/pages/index.wxss',
+        cssHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: 'sub-normal/pages/index.wxss',
+            },
+          },
+          majorVersion: 4,
+        } as any,
+        cssUserHandlerOptions: {
+          isMainChunk: false,
+          postcssOptions: {
+            options: {
+              from: 'sub-normal/pages/index.wxss',
+            },
+          },
+          majorVersion: 4,
+        } as any,
+        styleHandler: vi.fn(async (code: string) => ({ css: code })),
+        debug: vi.fn(),
+        forceGenerator: true,
+        getSourceCandidatesForEntries: vi.fn(entries =>
+          entries?.some(entry => entry.base === path.dirname(scopedCssFile))
+            ? new Set(['bg-normal-subpackage-marker'])
+            : new Set(['main-only']),
+        ),
+      })
+
+      expect(resolveTailwindV4Source).toHaveBeenCalledWith(expect.objectContaining({
+        base: path.dirname(scopedCssFile),
+        css: scopedCss,
+        cssEntries: [scopedCssFile],
+      }))
+      expect(generateMock).toHaveBeenCalledTimes(1)
+      expectMiniProgramPreflight(result?.css)
+      expect(result?.css).toContain('.bg-normal-subpackage-marker')
+    }
+    finally {
+      await rm(root, { recursive: true, force: true })
+    }
+  })
+
   it('preserves preflight emitted by explicit non-main Tailwind v4 cssSource outputs', async () => {
     const runtimeSet = new Set(['full-entry-only'])
     const mainCss = ':host,page,.tw-root,wx-root-portal-content { --spacing: 0.25rem; }'
@@ -8242,6 +8355,104 @@ describe('bundlers/shared generator css', () => {
     const borderSolidBody = result!.css.match(/\.border-solid\s*\{([^}]*)\}/)?.[1]
     expect(borderSolidBody).toContain('border-style: solid')
     expect(borderSolidBody).not.toContain('border-width')
+  })
+
+  it('does not restore uni-app x local uvue import into uvue output itself', async () => {
+    const rawSource = [
+      '@import "/uvue.wxss";',
+      '.uvue-local {',
+      '  @apply bg-[#10b981] text-[#052e16];',
+      '}',
+    ].join('\n')
+    const generateMock = vi.fn(async () => ({
+      css: [
+        '.bg-_b_h10b981_B { background-color: #10b981; }',
+        '.text-_b_h052e16_B { color: #052e16; }',
+        '.uvue-local { background-color: #10b981; color: #052e16; }',
+      ].join('\n'),
+      rawCss: [
+        '.bg-\\[\\#10b981\\] { background-color: #10b981; }',
+        '.text-\\[\\#052e16\\] { color: #052e16; }',
+        '.uvue-local { background-color: #10b981; color: #052e16; }',
+      ].join('\n'),
+      target: 'weapp',
+      classSet: new Set(['bg-[#10b981]', 'text-[#052e16]']),
+      dependencies: ['uvue.wxss'],
+      sources: [],
+      root: null,
+    }))
+
+    vi.doMock('@/generator', () => ({
+      createWeappTailwindcssGenerator: vi.fn(() => ({
+        generate: generateMock,
+      })),
+      normalizeWeappTailwindcssGeneratorOptions: normalizeGeneratorOptions,
+      resolveTailwindV4Source: vi.fn(async (options: any) => ({
+        projectRoot: '/project',
+        base: options.base ?? '/project',
+        baseFallbacks: [],
+        css: options.css,
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceFromRuntime: vi.fn(async () => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        dependencies: [],
+      })),
+      resolveTailwindV4SourceOptionsFromRuntime: vi.fn(() => ({
+        projectRoot: '/project',
+        base: '/project',
+        baseFallbacks: [],
+        css: '@import "tailwindcss" source(none);',
+        packageName: 'tailwindcss',
+      })),
+    }))
+
+    const { generateCssByGenerator } = await import('@/bundlers/shared/generator-css')
+    const styleHandler = vi.fn(async (code: string) => ({ css: code }))
+    const result = await generateCssByGenerator({
+      opts: {
+        styleHandler,
+        uniAppX: true,
+      } as any,
+      runtimeState: {
+        tailwindRuntime: {
+          majorVersion: 4,
+        } as any,
+        readyPromise: Promise.resolve(),
+      },
+      runtime: new Set(),
+      rawSource,
+      file: 'uvue.wxss',
+      cssHandlerOptions: {
+        isMainChunk: false,
+        uniAppX: true,
+        uniAppXCssTarget: 'uvue',
+        postcssOptions: {
+          options: {
+            from: 'uvue.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      cssUserHandlerOptions: {
+        isMainChunk: false,
+        postcssOptions: {
+          options: {
+            from: 'uvue.wxss',
+          },
+        },
+        majorVersion: 4,
+      } as any,
+      getSourceCandidatesForEntries: vi.fn(() => new Set()),
+      styleHandler,
+      debug: vi.fn(),
+    })
+
+    expect(result?.css).not.toContain('@import "/uvue.wxss"')
+    expect(result?.css).toContain('.uvue-local')
   })
 
   it('generates Tailwind v4 css for non-main apply-only sources', async () => {

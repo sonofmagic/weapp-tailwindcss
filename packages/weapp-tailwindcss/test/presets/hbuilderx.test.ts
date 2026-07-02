@@ -39,6 +39,7 @@ describe('hbuilderx preset', () => {
     expect(result.tailwindcss?.version).toBe(4)
     expect(result.tailwindcssRuntimeOptions?.projectRoot).toBe(path.normalize('/Users/foo/uni-project'))
     expect(result.tailwindcssRuntimeOptions?.tailwindcss?.v4?.base).toBe(path.normalize('/Users/foo/uni-project'))
+    expect(result.appType).toBe('uni-app-vite')
   })
 
   it('resolves relative base against overridden working directory hints', () => {
@@ -69,5 +70,15 @@ describe('hbuilderx preset', () => {
       target: 'web',
       webCompat: true,
     })
+  })
+
+  it('keeps explicit appType override', () => {
+    env.clearBaseEnv()
+    const result = hbuilderx({
+      appType: 'uni-app-x',
+      base: '/Users/foo/uni-project',
+    })
+
+    expect(result.appType).toBe('uni-app-x')
   })
 })

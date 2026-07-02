@@ -893,7 +893,9 @@ export function createGenerateBundleHook(context: GenerateBundleContext) {
           tokenSources: sourceTraceTokenSources,
         })
         const removeRootCoveredCssFromScopedAsset = (css: string) => {
-          return !normalizeOutputPathKey(outputFile.replace(/[?#].*$/, '')).includes('/')
+          const normalizedOutputFile = normalizeOutputPathKey(outputFile.replace(/[?#].*$/, ''))
+          return !normalizedOutputFile.includes('/')
+            || (currentSubpackageRoots != null && isSubpackageOutputFile(normalizedOutputFile, currentSubpackageRoots))
             ? css
             : removeCssCoveredByRootStyleBundleSources(bundle, outputFile, css)
         }

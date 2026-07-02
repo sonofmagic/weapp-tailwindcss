@@ -242,6 +242,7 @@ export async function generateCssByGenerator(
       restoreLocalCssImports(
         finalizeMiniProgramGeneratorCss(css, target, majorVersion, opts.cssPreflight, finalizeOptions),
         localImports,
+        { outputFile: file },
       ),
       target,
       generatorOptions.webCompat,
@@ -420,7 +421,7 @@ export async function generateCssByGenerator(
             styleOptions: generatorStyleOptions,
           }))
         : options.previousCss
-      const finalCss = finalizeWebGeneratorCss(restoreLocalCssImports(css, localImports), generated.target, generatorOptions.webCompat)
+      const finalCss = finalizeWebGeneratorCss(restoreLocalCssImports(css, localImports, { outputFile: file }), generated.target, generatorOptions.webCompat)
       return {
         css: finalCss,
         classSet: mergeGeneratedCssClassSet(generated.classSet, runtimeWithCurrentCss, finalCss, opts.escapeMap),

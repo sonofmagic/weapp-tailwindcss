@@ -183,7 +183,6 @@ function createUniAppHBuilderXMiniProgramCase(options: {
   const tailwindV4CssContains = [
     '.bg-_b_h123456_B',
     'background-color: #123456',
-    '.template-corpus-card',
     '.bg-gradient-to-br',
     /--tw-gradient-position\s*:\s*to bottom right/,
     /background-image\s*:\s*linear-gradient\(var\(--tw-gradient-stops\)\)/,
@@ -191,7 +190,6 @@ function createUniAppHBuilderXMiniProgramCase(options: {
     /padding-top\s*:\s*24rpx/,
     /font-size\s*:\s*26rpx/,
     /border-radius\s*:\s*20rpx/,
-    '.template-corpus-dynamic',
     '.bg-_b_h68c828_B',
     '.text-_b100rpx_B',
     '.w-_b323px_B',

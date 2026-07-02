@@ -28,6 +28,10 @@ export interface RewriteLocalCssImportRequestOptions {
   styleOutputExtension?: string | undefined
 }
 
+export interface RestoreLocalCssImportOptions {
+  outputFile?: string | undefined
+}
+
 export function createCssSourceOrderAppend(base: string, extra: string) {
   if (!base) {
     return extra
@@ -193,11 +197,78 @@ export function splitLocalCssImports(source: string) {
   }
 }
 
-export function restoreLocalCssImports(css: string, imports: string | undefined) {
+function normalizeOutputPath(file: string) {
+  const segments: string[] = []
+  for (const segment of file.replace(/\\/g, '/').replace(/^\/+/, '').split('/')) {
+    if (!segment || segment === '.') {
+      continue
+    }
+    if (segment === '..') {
+      if (segments.length > 0 && segments[segments.length - 1] !== '..') {
+        segments.pop()
+      }
+      else {
+        segments.push(segment)
+      }
+      continue
+    }
+    segments.push(segment)
+  }
+  return segments.join('/')
+}
+
+function resolveOutputImportRequest(file: string, request: string) {
+  const normalizedRequest = request.replace(/\\/g, '/')
+  const { clean } = splitRequestSuffix(normalizedRequest)
+  if (clean.startsWith('/')) {
+    return normalizeOutputPath(clean)
+  }
+  const normalizedFile = normalizeOutputPath(file)
+  const baseDir = normalizedFile.includes('/')
+    ? normalizedFile.slice(0, normalizedFile.lastIndexOf('/'))
+    : ''
+  return normalizeOutputPath(baseDir ? `${baseDir}/${clean}` : clean)
+}
+
+function isSelfOutputImport(outputFile: string, node: Node) {
+  if (node.type !== 'atrule' || node.name !== 'import') {
+    return false
+  }
+  const request = parseImportRequest(node.params)
+  return request !== undefined
+    && isLocalCssImportRequest(request)
+    && resolveOutputImportRequest(outputFile, request) === normalizeOutputPath(outputFile)
+}
+
+function filterSelfOutputImports(imports: string, outputFile: string | undefined) {
+  if (!outputFile) {
+    return imports
+  }
+  try {
+    const root = postcss.parse(imports)
+    let changed = false
+    root.walk((node) => {
+      if (isSelfOutputImport(outputFile, node)) {
+        node.remove()
+        changed = true
+      }
+    })
+    return changed ? root.toString() : imports
+  }
+  catch {
+    return imports
+  }
+}
+
+export function restoreLocalCssImports(css: string, imports: string | undefined, options: RestoreLocalCssImportOptions = {}) {
   if (!imports?.trim()) {
     return css
   }
-  return createCssSourceOrderAppend(imports, css)
+  const filteredImports = filterSelfOutputImports(imports, options.outputFile)
+  if (!filteredImports.trim()) {
+    return css
+  }
+  return createCssSourceOrderAppend(filteredImports, css)
 }
 
 function splitRequestSuffix(request: string) {

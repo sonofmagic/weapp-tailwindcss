@@ -5,6 +5,7 @@ export interface HBuilderXOptions extends BasePresetOptions {}
 
 export function hbuilderx(options: HBuilderXOptions = {}) {
   return createBasePreset(withWebCompatGeneratorDefaults({
+    appType: 'uni-app-vite',
     ...options,
   }))
 }

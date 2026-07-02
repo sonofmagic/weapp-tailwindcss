@@ -9077,6 +9077,7 @@ const trace = "at App.vue:4"
     await writeFile(independentSourceFile, independentRawSource, 'utf8')
 
     const runtimeSet = new Set(['bg-normal-subpackage-marker', 'bg-independent-subpackage-marker'])
+    const preflightCss = 'view,text,::after,::before{box-sizing:border-box;margin:0;padding:0;border:0 solid}'
     const generatedOptions: Array<{ rawSource: string, file: string }> = []
     const generateCssByGeneratorMock = vi.fn(async (options: {
       rawSource: string
@@ -9086,7 +9087,7 @@ const trace = "at App.vue:4"
       const marker = options.rawSource.includes('sub-independent')
         ? '.bg-independent-subpackage-marker{background-color:#13c2c2}'
         : '.bg-normal-subpackage-marker{background-color:#1677ff}'
-      return createMockGeneratorCssResult(marker, 4)
+      return createMockGeneratorCssResult(`${preflightCss}\n${marker}`, 4)
     })
 
     vi.resetModules()
@@ -9189,6 +9190,13 @@ const trace = "at App.vue:4"
         })),
         fileName: 'app.json',
       },
+      'app.acss': {
+        ...createRollupAsset([
+          preflightCss,
+          '.app-only{color:#111}',
+        ].join('\n')),
+        fileName: 'app.acss',
+      },
       'sub-normal/pages/index.css': {
         ...createRollupAsset([
           '@media source(none){/*! weapp-tailwindcss generator-placeholder */}',
@@ -9236,8 +9244,10 @@ const trace = "at App.vue:4"
     ]))
     expect((bundle['sub-normal/pages/index.acss'] as OutputAsset).source.toString()).toContain('.bg-normal-subpackage-marker{background-color:#1677ff}')
     expect((bundle['sub-normal/pages/index.acss'] as OutputAsset).source.toString()).not.toContain('.bg-independent-subpackage-marker')
+    expect((bundle['sub-normal/pages/index.acss'] as OutputAsset).source.toString()).toContain(preflightCss)
     expect((bundle['sub-independent/pages/index.acss'] as OutputAsset).source.toString()).toContain('.bg-independent-subpackage-marker{background-color:#13c2c2}')
     expect((bundle['sub-independent/pages/index.acss'] as OutputAsset).source.toString()).not.toContain('.bg-normal-subpackage-marker')
+    expect((bundle['sub-independent/pages/index.acss'] as OutputAsset).source.toString()).toContain(preflightCss)
   }, TEST_TIMEOUT_MS)
 
   it('does not share css transform results for identical assets with relative urls', async () => {

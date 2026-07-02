@@ -107,6 +107,20 @@ describe('local css import helpers', () => {
       '@import "./base.css";',
       '.btn{color:red}',
     ].join('\n'))
+    expect(restoreLocalCssImports('.uvue{}', [
+      '@import "/uvue.wxss";',
+      '@import "./shared.wxss";',
+    ].join('\n'), { outputFile: 'uvue.wxss' })).toBe([
+      '@import "./shared.wxss";',
+      '.uvue{}',
+    ].join('\n'))
+    expect(restoreLocalCssImports('.page{}', [
+      '@import "./index.wxss";',
+      '@import "../shared.wxss";',
+    ].join('\n'), { outputFile: 'pages/index.wxss' })).toBe([
+      '@import "../shared.wxss";',
+      '.page{}',
+    ].join('\n'))
     expect(restoreLocalCssImports('.btn{color:red}', undefined)).toBe('.btn{color:red}')
   })
 
