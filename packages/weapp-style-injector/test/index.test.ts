@@ -1,10 +1,19 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { Compiler } from 'webpack'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import { resolveConfig } from 'vite'
-import { createTaroSubPackageImportResolver } from 'weapp-style-injector'
+import { createStyleInjector } from '@/core'
+import { createTaroSubPackageImportResolver } from '@/taro'
+import {
+  createUniAppSubPackageImportResolver,
+  resolveUniAppStyleScopes,
+  splitUniAppStyleScopes,
+} from '@/uni-app'
+import { resolveDefaultMpxAppPaths, resolveMpxSubPackages } from '@/mpx'
 import weappStyleInjector from '@/vite'
 import { StyleInjector as TaroStyleInjector } from '@/vite/taro'
 import { StyleInjector as UniAppStyleInjector } from '@/vite/uni-app'
@@ -17,6 +26,8 @@ const packageRoot = fileURLToPath(new URL('../', import.meta.url))
 const uniAppFixturesRoot = fileURLToPath(new URL('./fixtures/uni-app', import.meta.url))
 const taroFixturesRoot = fileURLToPath(new URL('./fixtures/taro', import.meta.url))
 const mpxFixturesRoot = fileURLToPath(new URL('./fixtures/mpx', import.meta.url))
+const UNI_APP_SUB_PACKAGES_PLUGIN_NAME = 'weapp-style-injector:uni-app-sub-packages'
+const WEAPP_STYLE_INJECTOR_PLUGIN_NAME = 'weapp-style-injector'
 
 type AssetSource = string | Uint8Array
 
@@ -35,6 +46,27 @@ function createAsset(source: AssetSource, fileName: string): TestOutputAsset {
     fileName,
     name: fileName,
     source,
+  }
+}
+
+function createTempDir() {
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'weapp-style-injector-'))
+}
+
+function withCwd<T>(cwd: string, callback: () => T): T {
+  const previous = process.cwd()
+  process.chdir(cwd)
+  try {
+    const result = callback()
+    if (result && typeof result === 'object' && 'finally' in result && typeof result.finally === 'function') {
+      return result.finally(() => process.chdir(previous)) as T
+    }
+    process.chdir(previous)
+    return result
+  }
+  catch (error) {
+    process.chdir(previous)
+    throw error
   }
 }
 
@@ -138,6 +170,399 @@ describe('package exports', () => {
   })
 })
 
+async function invokeGenerateBundleOnly(plugin: Plugin, bundle: TestBundle) {
+  const hook = plugin.generateBundle as unknown
+  if (!hook) {
+    return
+  }
+
+  type GenerateBundleHandler = (this: unknown, options: unknown, bundle: TestBundle, isWrite: boolean) => unknown
+
+  let handler: GenerateBundleHandler | undefined
+  if (typeof hook === 'function') {
+    handler = hook as GenerateBundleHandler
+  }
+  else if (hook && typeof hook === 'object' && 'handler' in hook && typeof (hook as { handler?: unknown }).handler === 'function') {
+    handler = (hook as { handler: GenerateBundleHandler }).handler
+  }
+
+  if (!handler) {
+    return
+  }
+
+  await handler.call({
+    emitFile(emittedFile: { type: 'asset', fileName?: string, name?: string, source?: AssetSource }) {
+      if (emittedFile.type !== 'asset') {
+        return ''
+      }
+      const fileName = emittedFile.fileName ?? emittedFile.name
+      if (!fileName) {
+        return ''
+      }
+      bundle[fileName] = createAsset(emittedFile.source ?? '', fileName)
+      return fileName
+    },
+  } as unknown, {} as unknown, bundle, false)
+}
+
+function findNamedPlugin(pluginOrPlugins: Plugin | Plugin[], name: string): Plugin {
+  const plugin = (Array.isArray(pluginOrPlugins) ? pluginOrPlugins : [pluginOrPlugins])
+    .find(entry => entry.name === name)
+  expect(plugin).toBeDefined()
+  return plugin as Plugin
+}
+
+describe('core style injector', () => {
+  it('returns unchanged content when no imports are configured', () => {
+    const injector = createStyleInjector()
+
+    expect(injector.hasImports).toBe(false)
+    expect(injector.shouldProcess('app.wxss')).toBe(true)
+    expect(injector.inject('app.wxss', undefined as unknown as string)).toEqual({
+      changed: false,
+      content: '',
+    })
+  })
+
+  it('normalizes Uint8Array sources and omits the separator for empty files', () => {
+    const injector = createStyleInjector({
+      imports: ['shared/[common].wxss'],
+    })
+
+    expect(injector.inject('app.wxss', new Uint8Array())).toEqual({
+      changed: true,
+      content: '@import "shared/[common].wxss";',
+    })
+
+    expect(injector.inject('app.wxss', Buffer.from('.page {}'))).toEqual({
+      changed: true,
+      content: '@import "shared/[common].wxss";\n.page {}',
+    })
+  })
+
+  it('dedupes path imports with escaped regexp characters and caches per-file imports', () => {
+    const resolver = vi.fn((fileName: string) => (
+      fileName === 'pages/home.wxss'
+        ? ['shared/[common].wxss', 'shared/[common].wxss', '']
+        : null
+    ))
+    const injector = createStyleInjector({
+      imports: ['shared/[common].wxss'],
+      perFileImports: resolver,
+    })
+
+    const source = '@import url("shared/[common].wxss");\n.page {}'
+
+    expect(injector.inject('pages/home.wxss', source)).toEqual({
+      changed: false,
+      content: source,
+    })
+    expect(injector.inject('pages/home.wxss', source)).toEqual({
+      changed: false,
+      content: source,
+    })
+    expect(resolver).toHaveBeenCalledTimes(1)
+  })
+
+  it('can process all files when include is empty', () => {
+    const injector = createStyleInjector({
+      include: [],
+      imports: ['shared/common.wxss'],
+    })
+
+    expect(injector.shouldProcess('app.js')).toBe(true)
+  })
+
+  it('does not dedupe raw import statements that cannot be reduced to a path', () => {
+    const injector = createStyleInjector({
+      imports: ['@import "theme.css" screen'],
+    })
+
+    expect(injector.inject('app.wxss', '@import "theme.css";')).toEqual({
+      changed: true,
+      content: '@import "theme.css" screen;\n@import "theme.css";',
+    })
+  })
+
+  it('keeps existing raw import statements that already include a semicolon', () => {
+    const injector = createStyleInjector({
+      imports: ['@import "theme.css";'],
+    })
+
+    expect(injector.inject('app.wxss', '@import "theme.css";\n.page {}')).toEqual({
+      changed: false,
+      content: '@import "theme.css";\n.page {}',
+    })
+  })
+})
+
+describe('uni-app style scope resolution', () => {
+  it('ignores invalid pages.json inputs and malformed scope entries', () => {
+    const tempDir = createTempDir()
+    const malformedPagesJson = path.join(tempDir, 'pages.json')
+    fs.writeFileSync(malformedPagesJson, '{ invalid json')
+
+    const resolver = createUniAppSubPackageImportResolver([
+      { pagesJsonPath: path.join(tempDir, 'missing.json') },
+      { pagesJsonPath: malformedPagesJson },
+    ])
+
+    expect(resolver).toBeUndefined()
+    expect(splitUniAppStyleScopes([
+      null as unknown as any,
+      { type: 'manual', style: '', scope: '' },
+      { type: 'sub-packages', pagesJsonPath: malformedPagesJson, preprocess: false },
+      { type: 'manual', style: 'manual.css', scope: 'pkg', output: './manual.css', preprocess: false },
+      { type: 'sub-packages', pagesJsonPath: malformedPagesJson, indexFileName: 'index.css' },
+    ])).toEqual({
+      subPackages: [
+        { pagesJsonPath: malformedPagesJson, preprocess: false },
+        { pagesJsonPath: malformedPagesJson, indexFileName: 'index.css' },
+      ],
+      manual: [
+        { style: '', scope: '' },
+        { style: 'manual.css', scope: 'pkg', output: './manual.css', preprocess: false },
+      ],
+    })
+  })
+
+  it('resolves comments, escaped strings, custom outputs and duplicate scopes', () => {
+    const tempDir = createTempDir()
+    const scopedRoot = path.join(tempDir, 'pkg')
+    fs.mkdirSync(scopedRoot, { recursive: true })
+    fs.writeFileSync(path.join(scopedRoot, 'index.less'), '.pkg {}')
+    fs.writeFileSync(path.join(tempDir, 'manual.scss'), '.manual {}')
+    const pagesJsonPath = path.join(tempDir, 'pages.json')
+    fs.writeFileSync(pagesJsonPath, `{
+      "note": "keep // inside string",
+      /* keep block comments out */
+      "subPackages": [
+        { "root": "./pkg" },
+        { "root": "./" },
+        { "root": "" },
+        { "pages": [] }
+      ]
+    }`)
+
+    const resolved = withCwd(tempDir, () => resolveUniAppStyleScopes(
+      [
+        { pagesJsonPath, indexFileName: [' ', 'index.less'], preprocess: false },
+        { pagesJsonPath, indexFileName: 'index.less' },
+      ],
+      [
+        {
+          style: 'manual.scss',
+          scope: ['pkg', '', 1 as unknown as string],
+          output: './shared/manual.scss',
+          preprocess: false,
+        },
+        { style: 'manual.scss', scope: ['', 1 as unknown as string] },
+        { style: 'missing.scss', scope: 'missing' },
+      ],
+    ))
+
+    expect(resolved).toHaveLength(2)
+    expect(resolved[0]).toMatchObject({
+      root: 'pkg',
+      sourceRelativePath: 'pkg/index.less',
+      sourceAbsolutePath: path.join(scopedRoot, 'index.less'),
+      outputName: 'index',
+      preprocess: false,
+      framework: 'uni-app',
+    })
+    expect(resolved[1]).toMatchObject({
+      root: 'pkg',
+      sourceRelativePath: 'manual.scss',
+      sourceAbsolutePath: fs.realpathSync(path.join(tempDir, 'manual.scss')),
+      outputName: 'manual',
+      preprocess: false,
+      framework: 'uni-app',
+    })
+
+    const resolver = createUniAppSubPackageImportResolver(undefined, {
+      style: path.join(tempDir, 'manual.scss'),
+      scope: 'pkg',
+      output: './shared/manual.scss',
+      preprocess: false,
+    })
+
+    expect(resolver?.('pkg/pages/home.wxss')).toEqual(['../manual.wxss'])
+    expect(resolver?.('pkg/manual.wxss')).toEqual([])
+    expect(resolver?.('other/home.wxss')).toEqual([])
+  })
+
+  it('returns no relative import for files outside a valid sub-package page path', () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'pkg'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'pkg/index.css'), '.pkg {}')
+    const pagesJsonPath = path.join(tempDir, 'pages.json')
+    fs.writeFileSync(pagesJsonPath, JSON.stringify({
+      subPackages: [{ root: 'pkg' }],
+    }))
+
+    const resolver = createUniAppSubPackageImportResolver({
+      pagesJsonPath,
+      indexFileName: 'index.css',
+    })
+
+    expect(resolver?.('pkg')).toEqual([])
+  })
+})
+
+describe('taro sub-package config resolution', () => {
+  it('handles missing, malformed and empty app configs', () => {
+    const tempDir = createTempDir()
+    const malformedJson = path.join(tempDir, 'app.config.json')
+    const emptyConfig = path.join(tempDir, 'empty.config.js')
+    const invalidScript = path.join(tempDir, 'invalid.config.ts')
+    fs.writeFileSync(malformedJson, '{ invalid json')
+    fs.writeFileSync(emptyConfig, 'export default { pages: [] }')
+    fs.writeFileSync(invalidScript, 'export default (')
+
+    expect(createTaroSubPackageImportResolver(null)).toBeUndefined()
+    expect(createTaroSubPackageImportResolver({ appConfigPath: path.join(tempDir, 'missing.ts') })).toBeUndefined()
+    expect(createTaroSubPackageImportResolver({ appConfigPath: malformedJson })).toBeUndefined()
+    expect(createTaroSubPackageImportResolver({ appConfigPath: emptyConfig })).toBeUndefined()
+    expect(createTaroSubPackageImportResolver({ appConfigPath: invalidScript })).toBeUndefined()
+  })
+
+  it('loads json and commonjs default app configs with custom style candidates', () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'json-sub'), { recursive: true })
+    fs.mkdirSync(path.join(tempDir, 'root-empty'), { recursive: true })
+    fs.mkdirSync(path.join(tempDir, 'cjs-sub'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'json-sub/custom.css'), '.json {}')
+    fs.writeFileSync(path.join(tempDir, 'index.css'), '.empty {}')
+    fs.writeFileSync(path.join(tempDir, 'cjs-sub/index.less'), '.cjs {}')
+
+    const jsonConfig = path.join(tempDir, 'app.config.json')
+    fs.writeFileSync(jsonConfig, JSON.stringify({
+      subPackages: [
+        { root: 'json-sub' },
+        { root: './' },
+        { root: '' },
+        { pages: [] },
+      ],
+    }))
+
+    const cjsConfig = path.join(tempDir, 'app.config.js')
+    fs.writeFileSync(cjsConfig, 'module.exports = { default: { subpackages: [{ root: "cjs-sub" }] } }')
+
+    const jsonResolver = createTaroSubPackageImportResolver({
+      appConfigPath: jsonConfig,
+      indexFileNames: ['', 'custom.css'],
+    })
+    const cjsResolver = createTaroSubPackageImportResolver({
+      appConfigPath: cjsConfig,
+    })
+
+    expect(jsonResolver?.('json-sub/pages/home.css')).toEqual(['../custom.css'])
+    expect(jsonResolver?.('json-sub/custom.css')).toEqual([])
+    expect(jsonResolver?.('other/home.css')).toEqual([])
+    expect(cjsResolver?.('cjs-sub/pages/home.css')).toEqual(['../index.css'])
+  })
+})
+
+describe('mpx sub-package config resolution', () => {
+  it('handles missing, malformed and empty app configs', () => {
+    const tempDir = createTempDir()
+    const malformedJson = path.join(tempDir, 'app.json')
+    const emptyMpx = path.join(tempDir, 'app.mpx')
+    fs.writeFileSync(malformedJson, '{ invalid json')
+    fs.writeFileSync(emptyMpx, '<template></template>')
+
+    expect(resolveMpxSubPackages({ appPath: path.join(tempDir, 'missing.json') })).toEqual([])
+    expect(resolveMpxSubPackages({ appPath: malformedJson })).toEqual([])
+    expect(resolveMpxSubPackages({ appPath: emptyMpx })).toEqual([])
+  })
+
+  it('resolves json and mpx app configs with source roots and app references', () => {
+    const tempDir = createTempDir()
+    const sourceRoot = path.join(tempDir, 'src')
+    fs.mkdirSync(path.join(sourceRoot, 'pkg/pages'), { recursive: true })
+    fs.mkdirSync(path.join(sourceRoot, 'legacy/pages'), { recursive: true })
+    fs.writeFileSync(path.join(sourceRoot, 'pkg/index.less'), '.pkg {}')
+    fs.writeFileSync(path.join(sourceRoot, 'pkg/pages/home.css'), '.home {}')
+    fs.writeFileSync(path.join(sourceRoot, 'app.css'), '.app {}')
+
+    const appJson = path.join(tempDir, 'app.json')
+    fs.writeFileSync(appJson, JSON.stringify({
+      subPackages: [
+        { root: './pkg', pages: [{ path: './pages/home' }, '', { path: '' }] },
+        { root: '', pages: ['pages/ignored'] },
+        { pages: ['pages/ignored'] },
+      ],
+      subpackages: [
+        { root: 'legacy', pages: [] },
+      ],
+    }))
+
+    const resolved = resolveMpxSubPackages({
+      appPath: appJson,
+      sourceRoot,
+      sourceFileName: ['', 'index.less'],
+      outputName: 'bundle.wxss',
+      files: 'pkg/pages/home.wxss',
+      include: 'pages/**/*.wxss',
+      exclude: 'pages/skip.wxss',
+      preprocess: false,
+    })
+
+    expect(resolved).toHaveLength(1)
+    expect(resolved[0]).toMatchObject({
+      root: 'pkg',
+      sourceRelativePath: 'pkg/index.less',
+      sourceAbsolutePath: path.join(sourceRoot, 'pkg/index.less'),
+      outputName: 'bundle.wxss',
+      files: ['pkg/pages/home.wxss'],
+      include: 'pages/**/*.wxss',
+      exclude: 'pages/skip.wxss',
+      preprocess: false,
+      framework: 'mpx',
+      targetFiles: ['pkg/pages/home'],
+    })
+    expect(resolved[0].targetSourceFiles).toEqual([
+      {
+        fileName: 'pkg/pages/home.css',
+        sourceAbsolutePath: path.join(sourceRoot, 'pkg/pages/home.css'),
+      },
+    ])
+
+    const appMpx = path.join(tempDir, 'app.mpx')
+    fs.writeFileSync(appMpx, `<script type="application/json">${JSON.stringify({
+      subPackages: [{ root: 'pkg', pages: ['pages/home'] }],
+    })}</script>`)
+
+    expect(resolveMpxSubPackages({
+      appPath: appMpx,
+      sourceRoot,
+      rules: [{ from: { ref: 'app.css' }, to: { sourceInclude: 'pages/**/*.css' } }],
+    })[0]).toMatchObject({
+      root: 'pkg',
+      sourceRelativePath: 'app.css',
+      sourceAbsolutePath: path.join(sourceRoot, 'app.css'),
+      referenceFileName: 'app.css',
+      outputName: 'app',
+      preprocess: false,
+      sourceInclude: 'pages/**/*.css',
+    })
+  })
+
+  it('returns default app paths from cwd', () => {
+    const tempDir = createTempDir()
+
+    withCwd(tempDir, () => {
+      const cwd = fs.realpathSync(tempDir)
+      expect(resolveDefaultMpxAppPaths()).toEqual([
+        path.join(cwd, 'src/app.mpx'),
+        path.join(cwd, 'app.mpx'),
+        path.join(cwd, 'src/app.json'),
+        path.join(cwd, 'app.json'),
+      ])
+    })
+  })
+})
+
 describe('weapp-style-injector plugin', () => {
   async function runPlugin(bundle: TestBundle, options = {}) {
     const plugin = weappStyleInjector({
@@ -217,6 +642,32 @@ describe('weapp-style-injector plugin', () => {
     })
 
     expect(bundle['app.wxss'].source).toBe(`@import "shared/common.wxss";\n@import "shared/common.wxss";`)
+  })
+
+  it('skips bundle work when no imports are configured', async () => {
+    const bundle = {
+      'app.wxss': createAsset('.page {}', 'app.wxss'),
+    }
+
+    await invokeGenerateBundle(weappStyleInjector(), bundle)
+
+    expect(bundle['app.wxss'].source).toBe('.page {}')
+  })
+
+  it('skips non-asset chunks and unchanged assets', async () => {
+    const bundle = {
+      'app.wxss': createAsset('@import "shared/common.wxss";\n.page {}', 'app.wxss'),
+      'app.js': {
+        type: 'chunk',
+        fileName: 'app.js',
+      },
+      'empty.wxss': createAsset(undefined as unknown as string, 'empty.wxss'),
+    } as unknown as TestBundle
+
+    await runPlugin(bundle)
+
+    expect(bundle['app.wxss'].source).toBe('@import "shared/common.wxss";\n.page {}')
+    expect(bundle['empty.wxss'].source).toBe('@import "shared/common.wxss";')
   })
 
   it('injects sub-package index imports discovered from uni-app pages.json', async () => {
@@ -693,6 +1144,253 @@ describe('vite presets', () => {
     expect(bundle['sub-packages/tailwind.wxss']?.source).toBe('.generated { content: "sub-packages/tailwind.wxss"; }')
   })
 
+  it('updates an existing emitted uni-app index asset from direct subPackages config', async () => {
+    const bundle = {
+      'sub-packages/pages/home.wxss': createAsset('.home {}', 'sub-packages/pages/home.wxss'),
+      'sub-packages/index.wxss': createAsset('.stale {}', 'sub-packages/index.wxss'),
+    }
+
+    const plugin = UniAppStyleInjector({
+      subPackages: {
+        pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['sub-packages/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['sub-packages/index.wxss'].source).toBe(
+      fs.readFileSync(path.join(uniAppFixturesRoot, 'sub-packages/index.wxss'), 'utf8'),
+    )
+  })
+
+  it('skips uni-app index emission when the resolved source disappears before bundle generation', async () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'gone'), { recursive: true })
+    const stylePath = path.join(tempDir, 'gone/index.css')
+    fs.writeFileSync(stylePath, '.gone {}')
+    fs.writeFileSync(path.join(tempDir, 'pages.json'), JSON.stringify({
+      subPackages: [{ root: 'gone' }],
+    }))
+
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(tempDir, 'pages.json'),
+      indexFileName: 'index.css',
+    })
+    fs.rmSync(stylePath)
+
+    const bundle = {
+      'gone/pages/home.wxss': createAsset('.home {}', 'gone/pages/home.wxss'),
+    }
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['gone/index.wxss']).toBeUndefined()
+  })
+
+  it('skips uni-app index emission when reading the resolved source fails', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'manual.css'), '.manual {}')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'manual.css'),
+        scope: 'manual',
+        preprocess: false,
+      },
+    }) as Plugin[]
+    const injector = findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME)
+    const readFile = vi.spyOn(fs.promises, 'readFile').mockRejectedValueOnce(new Error('read failed'))
+
+    const bundle = {
+      'manual/pages/home.wxss': createAsset('.home {}', 'manual/pages/home.wxss'),
+    }
+    await invokeGenerateBundleOnly(injector, bundle)
+
+    expect((bundle as TestBundle)['manual/manual.wxss']).toBeUndefined()
+    readFile.mockRestore()
+  })
+
+  it('emits manual uni-app indexes without preprocessing when disabled', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'manual.css'), '.manual { color: red; }')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'manual.css'),
+        scope: 'manual',
+        preprocess: false,
+      },
+    }) as Plugin[]
+
+    const bundle = {
+      'manual/pages/home.wxss': createAsset('.home {}', 'manual/pages/home.wxss'),
+    }
+    await invokeGenerateBundleOnly(findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME), bundle)
+
+    expect((bundle as TestBundle)['manual/manual.wxss'].source).toBe('.manual { color: red; }')
+  })
+
+  it('wraps preprocess failures with source context', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'broken.scss'), '@use "')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'broken.scss'),
+        scope: 'broken',
+      },
+    }) as Plugin[]
+    const emitter = findNamedPlugin(plugins, UNI_APP_SUB_PACKAGES_PLUGIN_NAME)
+    const injector = findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME)
+    const resolvedConfig = await getResolvedViteConfig()
+    const configResolved = emitter.configResolved as (this: unknown, config: ResolvedConfig) => void
+    configResolved.call(emitter, resolvedConfig)
+
+    const bundle = {
+      'broken/pages/home.wxss': createAsset('.home {}', 'broken/pages/home.wxss'),
+    }
+
+    await expect(invokeGenerateBundleOnly(injector, bundle)).rejects.toThrow(
+      '[weapp-style-injector] Failed to preprocess',
+    )
+  })
+
+  it('uses Vite pluginContainer transforms when emitting uni-app indexes', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'manual.css'), '.manual { color: red; }')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'manual.css'),
+        scope: 'manual',
+      },
+    }) as Plugin[]
+    const emitter = findNamedPlugin(plugins, UNI_APP_SUB_PACKAGES_PLUGIN_NAME)
+    const injector = findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME)
+    const resolvedConfig = await getResolvedViteConfig()
+    const pluginContainer = {
+      resolveId: vi.fn(async () => ({ id: path.join(tempDir, 'resolved.css') })),
+      transform: vi.fn(async () => ({ code: '.transformed { color: blue; }' })),
+    }
+    const configResolved = emitter.configResolved as (this: unknown, config: ResolvedConfig) => void
+    configResolved.call(emitter, {
+      ...resolvedConfig,
+      pluginContainer,
+      plugins: [],
+    } as unknown as ResolvedConfig)
+
+    const bundle = {
+      'manual/pages/home.wxss': createAsset('.home {}', 'manual/pages/home.wxss'),
+    }
+    await invokeGenerateBundleOnly(injector, bundle)
+
+    expect(pluginContainer.resolveId).toHaveBeenCalledWith(path.join(tempDir, 'manual.css'))
+    expect(pluginContainer.transform).toHaveBeenCalled()
+    expect((bundle as TestBundle)['manual/manual.wxss'].source).toContain('color: blue')
+  })
+
+  it('falls back to Tailwind transform handlers when pluginContainer is unavailable', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'manual.css'), '.manual { color: red; }')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'manual.css'),
+        scope: 'manual',
+      },
+    }) as Plugin[]
+    const emitter = findNamedPlugin(plugins, UNI_APP_SUB_PACKAGES_PLUGIN_NAME)
+    const injector = findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME)
+    const resolvedConfig = await getResolvedViteConfig()
+    const transform = vi.fn(async () => ({ code: '.tailwind { color: green; }' }))
+    const configResolved = emitter.configResolved as (this: unknown, config: ResolvedConfig) => void
+    configResolved.call(emitter, {
+      ...resolvedConfig,
+      plugins: [
+        [
+          false,
+          {
+            name: '@tailwindcss/vite:generate:build',
+            transform: {
+              handler: transform,
+            },
+          },
+        ],
+      ],
+    } as unknown as ResolvedConfig)
+
+    const bundle = {
+      'manual/pages/home.wxss': createAsset('.home {}', 'manual/pages/home.wxss'),
+    }
+    await invokeGenerateBundleOnly(injector, bundle)
+
+    expect(transform).toHaveBeenCalled()
+    expect((bundle as TestBundle)['manual/manual.wxss'].source).toContain('color: green')
+  })
+
+  it('supports Tailwind transform handlers declared directly as functions', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'manual.css'), '.manual { color: red; }')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'manual.css'),
+        scope: 'manual',
+      },
+    }) as Plugin[]
+    const emitter = findNamedPlugin(plugins, UNI_APP_SUB_PACKAGES_PLUGIN_NAME)
+    const injector = findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME)
+    const resolvedConfig = await getResolvedViteConfig()
+    const transform = vi.fn(async () => ({ code: '.tailwind-fn { color: purple; }' }))
+    const configResolved = emitter.configResolved as (this: unknown, config: ResolvedConfig) => void
+    configResolved.call(emitter, {
+      ...resolvedConfig,
+      plugins: [
+        {
+          name: '@tailwindcss/vite:generate:build',
+          transform,
+        },
+        {
+          name: '@tailwindcss/vite:generate:build',
+        },
+      ],
+    } as unknown as ResolvedConfig)
+
+    const bundle = {
+      'manual/pages/home.wxss': createAsset('.home {}', 'manual/pages/home.wxss'),
+    }
+    await invokeGenerateBundleOnly(injector, bundle)
+
+    expect(transform).toHaveBeenCalled()
+    expect((bundle as TestBundle)['manual/manual.wxss'].source).toContain('color: purple')
+  })
+
+  it('ignores Tailwind transform candidates without callable handlers', async () => {
+    const tempDir = createTempDir()
+    fs.writeFileSync(path.join(tempDir, 'manual.css'), '.manual { color: red; }')
+    const plugins = UniAppStyleInjector({
+      styleScopes: {
+        style: path.join(tempDir, 'manual.css'),
+        scope: 'manual',
+      },
+    }) as Plugin[]
+    const emitter = findNamedPlugin(plugins, UNI_APP_SUB_PACKAGES_PLUGIN_NAME)
+    const injector = findNamedPlugin(plugins, WEAPP_STYLE_INJECTOR_PLUGIN_NAME)
+    const resolvedConfig = await getResolvedViteConfig()
+    const configResolved = emitter.configResolved as (this: unknown, config: ResolvedConfig) => void
+    configResolved.call(emitter, {
+      ...resolvedConfig,
+      plugins: [
+        {
+          name: '@tailwindcss/vite:generate:build',
+          transform: {},
+        },
+      ],
+    } as unknown as ResolvedConfig)
+
+    const bundle = {
+      'manual/pages/home.wxss': createAsset('.home {}', 'manual/pages/home.wxss'),
+    }
+    await invokeGenerateBundleOnly(injector, bundle)
+
+    expect((bundle as TestBundle)['manual/manual.wxss'].source).toContain('color: red')
+  })
+
   it('injects sub-package imports via taro preset', async () => {
     const bundle = {
       'taro-sub/pages/home.css': createAsset('.home {}', 'taro-sub/pages/home.css'),
@@ -763,6 +1461,45 @@ describe('vite presets', () => {
     )
 
     expect(result).toBeUndefined()
+  })
+
+  it('injects taro source styles during transform and reuses cached target sources', async () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'pkg/pages'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'app.config.json'), JSON.stringify({
+      subPackages: [{ root: 'pkg', pages: ['pages/home'] }],
+    }))
+    fs.writeFileSync(path.join(tempDir, 'pkg/index.css'), '.root {}')
+    const pageStylePath = path.join(tempDir, 'pkg/pages/home.css')
+    fs.writeFileSync(pageStylePath, '.home {}')
+
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(tempDir, 'app.config.json'),
+      sourceFileName: 'index.css',
+    })
+    const plugins = Array.isArray(plugin) ? plugin : [plugin]
+    const sourcePlugin = findNamedPlugin(plugins, 'weapp-style-injector:taro-source-style')
+    const transform = sourcePlugin.transform as (this: unknown, code: string, id: string) => unknown
+    const buildStart = sourcePlugin.buildStart as (this: unknown) => unknown
+    const addWatchFile = vi.fn()
+
+    await buildStart.call({ addWatchFile })
+    expect(addWatchFile).toHaveBeenCalledWith(pageStylePath)
+
+    expect(transform.call({}, '.noop {}', path.join(tempDir, 'pkg/pages/home.js'))).toBeUndefined()
+    expect(transform.call({}, '.outside {}', path.join(tempDir, 'outside.css'))).toBeUndefined()
+
+    const result = await transform.call({}, '.home {}', `${pageStylePath}?type=style`)
+    expect(result).toEqual({
+      code: '@import "../index.css";\n.home {}',
+      map: null,
+    })
+
+    const bundle: TestBundle = {
+      'pkg/pages/home.css': createAsset('.stale {}', 'pkg/pages/home.css'),
+    }
+    await invokeGenerateBundle(plugins, bundle)
+    expect(bundle['pkg/index.css']?.source).toBe('.root {}')
   })
 
   it('resolves multiple style entries via taro preset', async () => {
@@ -863,6 +1600,92 @@ describe('vite presets', () => {
     expect(bundle['sub-packages/index.js']).toBeUndefined()
     expect(bundle['sub-packages/pages/home.js']?.source).toBe('console.log("home")')
   })
+
+  it('injects taro imports from direct subPackages config', async () => {
+    const bundle = {
+      'taro-sub/pages/home.css': createAsset('.home {}', 'taro-sub/pages/home.css'),
+    }
+
+    const plugin = TaroStyleInjector({
+      subPackages: {
+        appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      },
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['taro-sub/pages/home.css'].source).toBe(`@import "../index.css";\n.home {}`)
+  })
+
+  it('returns a taro plugin without per-file imports when no config is resolved', async () => {
+    const bundle = {
+      'app.wxss': createAsset('.page {}', 'app.wxss'),
+    }
+
+    const plugin = TaroStyleInjector({
+      appConfigPath: path.join(taroFixturesRoot, 'missing.config.ts'),
+    })
+
+    await invokeGenerateBundle(plugin, bundle)
+
+    expect(bundle['app.wxss'].source).toBe('.page {}')
+  })
+
+  it('discovers default taro app config paths from cwd and merges custom imports', async () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'src/default-sub'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'src/app.config.json'), JSON.stringify({
+      subPackages: [{ root: 'default-sub' }],
+    }))
+    fs.writeFileSync(path.join(tempDir, 'src/default-sub/index.css'), '.root {}')
+
+    const bundle = {
+      'default-sub/pages/home.css': createAsset('.home {}', 'default-sub/pages/home.css'),
+    }
+
+    await withCwd(tempDir, async () => {
+      const plugin = TaroStyleInjector({
+        perFileImports: fileName => fileName.endsWith('.css') ? 'custom/global.css' : null,
+      })
+      await invokeGenerateBundle(plugin, bundle)
+    })
+
+    expect(bundle['default-sub/pages/home.css'].source).toBe(
+      '@import "../../app.css";\n@import "custom/global.css";\n.home {}',
+    )
+  })
+
+  it('discovers default uni-app pages.json paths from cwd', async () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'src/default-sub'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'src/pages.json'), JSON.stringify({
+      subPackages: [{ root: 'default-sub' }],
+    }))
+    fs.writeFileSync(path.join(tempDir, 'src/default-sub/index.css'), '.root {}')
+
+    const bundle = {
+      'default-sub/pages/home.wxss': createAsset('.home {}', 'default-sub/pages/home.wxss'),
+    }
+
+    await withCwd(tempDir, async () => {
+      const plugin = UniAppStyleInjector({
+        indexFileName: 'index.css',
+      })
+      await invokeGenerateBundle(plugin, bundle)
+    })
+
+    expect(bundle['default-sub/pages/home.wxss'].source).toBe(`@import "../index.wxss";\n.home {}`)
+    expect(bundle['default-sub/index.wxss'].source).toBe('.root {}')
+  })
+
+  it('returns a single uni-app plugin when no sub-package or manual scope is resolved', () => {
+    const plugin = UniAppStyleInjector({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'missing.json'),
+      imports: ['shared/common.wxss'],
+    })
+
+    expect(Array.isArray(plugin)).toBe(false)
+  })
 })
 
 describe('weapp-style-injector webpack plugin', () => {
@@ -937,6 +1760,51 @@ describe('weapp-style-injector webpack plugin', () => {
     }
   }
 
+  function createLegacyCompiler(stubAssets: Record<string, string>) {
+    const assets: Record<string, string | RawSource> = { ...stubAssets }
+
+    const compilation: any = {
+      hooks: {
+        optimizeAssets: {
+          tap(_name: string, handler: (assets: Record<string, unknown>) => void) {
+            handler(assets)
+          },
+        },
+      },
+    }
+
+    const thisCompilationTap = vi.fn((_name: string, callback: (compilation: unknown) => void) => {
+      callback(compilation)
+    })
+
+    const compiler: any = {
+      hooks: {
+        thisCompilation: {
+          tap: thisCompilationTap,
+        },
+      },
+    }
+
+    return {
+      compiler: compiler as unknown as Compiler,
+      getAsset(name: string) {
+        const asset = assets[name]
+        return typeof asset === 'string' ? asset : asset?.source()
+      },
+      thisCompilationTap,
+    }
+  }
+
+  it('does not register compilation hooks when no imports can be resolved', () => {
+    const { compiler, thisCompilationTap } = createLegacyCompiler({
+      'app.wxss': '.page {}',
+    })
+
+    weappStyleInjectorWebpack().apply(compiler)
+
+    expect(thisCompilationTap).not.toHaveBeenCalled()
+  })
+
   it('injects @import statements into matching assets', () => {
     const { compiler, getAsset } = createCompiler({
       'app.wxss': '.btn { color: red; }',
@@ -982,6 +1850,66 @@ describe('weapp-style-injector webpack plugin', () => {
     plugin.apply(compiler)
 
     expect(getAsset('app.wxss')).toBe(`@import "shared/common.wxss";\n@import "shared/common.wxss";`)
+  })
+
+  it('uses webpack 4 optimizeAssets fallback and fallback RawSource implementation', () => {
+    const { compiler, getAsset } = createLegacyCompiler({
+      'app.wxss': '.page {}',
+      'app.js': 'console.log("noop")',
+    })
+
+    const plugin = weappStyleInjectorWebpack({
+      imports: ['shared/common.wxss'],
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('app.wxss')).toBe(`@import "shared/common.wxss";\n.page {}`)
+    expect(getAsset('app.js')).toBe('console.log("noop")')
+  })
+
+  it('falls back to the additions stage when summarize is unavailable', () => {
+    const assets: Record<string, RawSource> = {
+      'app.wxss': new RawSource('.page {}'),
+    }
+    let tappedStage: number | undefined
+    const compiler: any = {
+      webpack: {
+        Compilation: {
+          PROCESS_ASSETS_STAGE_ADDITIONS: 2000,
+        },
+        sources: {
+          RawSource,
+        },
+      },
+      hooks: {
+        thisCompilation: {
+          tap(_name: string, callback: (compilation: unknown) => void) {
+            callback({
+              hooks: {
+                processAssets: {
+                  tap(options: { stage: number }, handler: () => void) {
+                    tappedStage = options.stage
+                    handler()
+                  },
+                },
+              },
+              getAssets() {
+                return Object.entries(assets).map(([name, source]) => ({ name, source }))
+              },
+              updateAsset(name: string, factory: (source: RawSource) => RawSource) {
+                assets[name] = factory(assets[name])
+              },
+            })
+          },
+        },
+      },
+    }
+
+    weappStyleInjectorWebpack({ imports: ['shared/common.wxss'] }).apply(compiler as Compiler)
+
+    expect(tappedStage).toBe(2000)
+    expect(assets['app.wxss'].source()).toBe(`@import "shared/common.wxss";\n.page {}`)
   })
 
   it('injects sub-package index imports discovered from uni-app pages.json', () => {
@@ -1087,6 +2015,75 @@ describe('weapp-style-injector webpack plugin', () => {
 
     expect(getAsset('sub-packages/pages/home.wxss')).toBe('@import "../../app.wxss";\n.home {}')
     expect(getAsset('sub-packages/app.wxss')).toBeUndefined()
+  })
+
+  it('injects uni-app webpack imports from direct subPackages config', () => {
+    const { compiler, getAsset } = createCompiler({
+      'sub-packages/pages/home.wxss': '.home {}',
+      'sub-packages/index.wxss': '.root {}',
+    })
+
+    const plugin = UniAppStyleInjectorWebpack({
+      subPackages: {
+        pagesJsonPath: path.join(uniAppFixturesRoot, 'pages.json'),
+      },
+    })
+
+    plugin.apply(compiler)
+
+    expect(getAsset('sub-packages/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
+  })
+
+  it('discovers default uni-app webpack pages.json paths from cwd', () => {
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'default-sub'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'pages.json'), JSON.stringify({
+      subPackages: [{ root: 'default-sub' }],
+    }))
+    fs.writeFileSync(path.join(tempDir, 'default-sub/index.css'), '.root {}')
+    const { compiler, getAsset } = createCompiler({
+      'default-sub/pages/home.wxss': '.home {}',
+      'default-sub/index.wxss': '.root {}',
+    })
+
+    withCwd(tempDir, () => {
+      const plugin = UniAppStyleInjectorWebpack({
+        indexFileName: 'index.css',
+      })
+      plugin.apply(compiler)
+    })
+
+    expect(getAsset('default-sub/pages/home.wxss')).toBe(`@import "../index.wxss";\n.home {}`)
+  })
+
+  it('returns a webpack uni-app plugin without sub-package options when nothing is resolved', () => {
+    const { compiler, thisCompilationTap } = createLegacyCompiler({
+      'app.wxss': '.page {}',
+    })
+
+    UniAppStyleInjectorWebpack({
+      pagesJsonPath: path.join(uniAppFixturesRoot, 'missing.json'),
+    }).apply(compiler)
+
+    expect(thisCompilationTap).not.toHaveBeenCalled()
+  })
+
+  it('injects uni-app webpack manual style scopes', () => {
+    const { compiler, getAsset } = createCompiler({
+      'manual/pages/home.wxss': '.home {}',
+      'manual/manual.wxss': '.manual {}',
+    })
+
+    UniAppStyleInjectorWebpack({
+      styleScopes: {
+        style: path.join(uniAppFixturesRoot, 'custom/global.scss'),
+        scope: 'manual',
+        output: 'manual/manual.wxss',
+        preprocess: false,
+      },
+    }).apply(compiler)
+
+    expect(getAsset('manual/pages/home.wxss')).toBe(`@import "../manual.wxss";\n.home {}`)
   })
 
   it('supports custom index file names via uni-app webpack preset', () => {
@@ -1241,5 +2238,47 @@ describe('weapp-style-injector webpack plugin', () => {
     expect(getAsset('sub-packages/index.wxss')).toBe('.root {}')
     expect(getAsset('sub-packages/index.js')).toBeUndefined()
     expect(getAsset('sub-packages/pages/home.js')).toBe('console.log("home")')
+  })
+
+  it('injects taro webpack imports from direct subPackages config and default cwd config', () => {
+    const direct = createCompiler({
+      'taro-sub/pages/home.css': '.home {}',
+    })
+
+    TaroStyleInjectorWebpack({
+      subPackages: {
+        appConfigPath: path.join(taroFixturesRoot, 'app.config.ts'),
+      },
+    }).apply(direct.compiler)
+
+    expect(direct.getAsset('taro-sub/pages/home.css')).toBe(`@import "../index.css";\n.home {}`)
+
+    const tempDir = createTempDir()
+    fs.mkdirSync(path.join(tempDir, 'src/default-sub'), { recursive: true })
+    fs.writeFileSync(path.join(tempDir, 'src/app.config.json'), JSON.stringify({
+      subPackages: [{ root: 'default-sub' }],
+    }))
+    fs.writeFileSync(path.join(tempDir, 'src/default-sub/index.css'), '.root {}')
+    const defaults = createCompiler({
+      'default-sub/pages/home.css': '.home {}',
+    })
+
+    withCwd(tempDir, () => {
+      TaroStyleInjectorWebpack().apply(defaults.compiler)
+    })
+
+    expect(defaults.getAsset('default-sub/pages/home.css')).toBe(`@import "../../app.css";\n.home {}`)
+  })
+
+  it('returns a taro webpack plugin without per-file imports when no config is resolved', () => {
+    const { compiler, thisCompilationTap } = createLegacyCompiler({
+      'app.wxss': '.page {}',
+    })
+
+    TaroStyleInjectorWebpack({
+      appConfigPath: path.join(taroFixturesRoot, 'missing.config.ts'),
+    }).apply(compiler)
+
+    expect(thisCompilationTap).not.toHaveBeenCalled()
   })
 })

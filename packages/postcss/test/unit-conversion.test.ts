@@ -1,6 +1,15 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { createStyleHandler } from '@/handler'
 import {
+  convertTailwindcssRpxDeclarationToRem,
+  convertTailwindcssRpxDeclarationsToRem,
+  convertTailwindcssRpxValueToRem,
+  normalizeTailwindcssRpxDeclaration,
+  normalizeTailwindcssRpxDeclarations,
+  normalizeTailwindcssWebRpxDeclarations,
+  postcss,
+} from '@/index'
+import {
   resolveUnitConversionConfig,
   resolveUnitConversionPlatform,
 } from '@/plugins/getUnitConversionPlugin'
@@ -149,5 +158,101 @@ describe('unitConversion', () => {
         },
       },
     })).toBeUndefined()
+  })
+
+  it('normalizes explicit platform names and resolves aliases/default fallbacks', () => {
+    expect(resolveUnitConversionPlatform({ platform: '  MP-WEIXIN  ' })).toBe('mp-weixin')
+
+    expect(resolveUnitConversionConfig({
+      platform: 'wx',
+      unitConversion: {
+        platforms: {
+          wechat: {
+            rules: [
+              { from: 'px', to: 'rpx', factor: 2 },
+            ],
+          },
+        },
+      },
+    })?.rules?.[0]).toMatchObject({ to: 'rpx' })
+
+    expect(resolveUnitConversionConfig({
+      platform: 'unknown',
+      unitConversion: {
+        platforms: {
+          '*': {
+            rules: [
+              { from: 'px', to: 'upx', factor: 1 },
+            ],
+          },
+        },
+      },
+    })?.rules?.[0]).toMatchObject({ to: 'upx' })
+  })
+
+  it('skips disabled, false and empty platform configs', () => {
+    expect(resolveUnitConversionConfig({
+      platform: 'weapp',
+      unitConversion: {
+        platforms: {
+          weapp: false,
+        },
+      },
+    })).toBeUndefined()
+
+    expect(resolveUnitConversionConfig({
+      platform: 'weapp',
+      unitConversion: {
+        platforms: {
+          weapp: {
+            disabled: true,
+            rules: [
+              { from: 'px', to: 'rpx', factor: 2 },
+            ],
+          },
+        },
+      },
+    })).toBeUndefined()
+
+    expect(resolveUnitConversionConfig({
+      platform: 'weapp',
+      unitConversion: {
+        platforms: {},
+      },
+    })).toBeUndefined()
+  })
+
+  it('normalizes Tailwind rpx declarations and converts rpx values to rem', () => {
+    expect(convertTailwindcssRpxValueToRem('calc(64RPX - 32rpx)', {
+      rootValue: 32,
+      unitPrecision: 2,
+    })).toBe('calc(2rem - 1rem)')
+    expect(convertTailwindcssRpxValueToRem('10px')).toBe('10px')
+    expect(convertTailwindcssRpxValueToRem('-0rpx')).toBe('0rem')
+
+    const color = postcss.decl({ prop: 'color', value: '32rpx' })
+    expect(normalizeTailwindcssRpxDeclaration(color)).toBe(true)
+    expect(color.prop).toBe('font-size')
+
+    const background = postcss.decl({ prop: 'background-color', value: '32rpx' })
+    expect(normalizeTailwindcssRpxDeclaration(background)).toBe(true)
+    expect(background.prop).toBe('background-size')
+
+    const border = postcss.decl({ prop: 'border-top-color', value: '32rpx' })
+    expect(normalizeTailwindcssRpxDeclaration(border)).toBe(true)
+    expect(border.prop).toBe('border-top-width')
+
+    const oldVersion = postcss.decl({ prop: 'color', value: '32rpx' })
+    expect(normalizeTailwindcssRpxDeclaration(oldVersion, { majorVersion: 3 as 4 })).toBe(false)
+
+    const root = postcss.parse('.a{outline-color:32rpx;--tw-ring-color:16rpx;width:64rpx;color:red}')
+    expect(normalizeTailwindcssRpxDeclarations(root)).toBe(true)
+    expect(convertTailwindcssRpxDeclarationsToRem(root)).toBe(true)
+    expect(root.toString()).toContain('outline-width:1rem')
+    expect(root.toString()).toContain('--tw-ring-offset-width:0.5rem')
+
+    const unchanged = postcss.decl({ prop: 'width', value: '10px' })
+    expect(convertTailwindcssRpxDeclarationToRem(unchanged)).toBe(false)
+    expect(normalizeTailwindcssWebRpxDeclarations(postcss.parse('.a{width:10px}'))).toBe(false)
   })
 })

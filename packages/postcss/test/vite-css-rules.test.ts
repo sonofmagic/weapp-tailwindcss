@@ -27,6 +27,11 @@ describe('vite css rule helpers', () => {
     expect(containsCssAfterMinify('.card{display:flex}', '.card{display:grid')).toBe(false)
   })
 
+  it('handles empty containment candidates and rule-key parse fallbacks', () => {
+    expect(containsCssAfterMinify('.card{display:flex}', '   /* only comment */   ')).toBe(false)
+    expect(containsCssAfterMinify('@media (min-width:0){.card{display:flex}}', '.card{display:flex}')).toBe(true)
+  })
+
   it('merges mini-program preflight declarations into the existing base rule', () => {
     const result = mergeMiniProgramPreflightRuleDeclarations(
       '@media (min-width:0){text, view,::before,::after{box-sizing:border-box}}',
@@ -42,6 +47,23 @@ describe('vite css rule helpers', () => {
     const baseCss = 'view{text-align:left}'
     const css = 'view,text,::before,::after{box-sizing:border-box}'
 
+    expect(mergeMiniProgramPreflightRuleDeclarations(baseCss, css)).toEqual({
+      baseCss,
+      css,
+      changed: false,
+    })
+  })
+
+  it('keeps preflight rules without incoming declarations or matching base records', () => {
+    const baseCss = 'view,text,::before,::after{box-sizing:border-box}'
+
+    expect(mergeMiniProgramPreflightRuleDeclarations(baseCss, 'view,text,::before,::after{}')).toEqual({
+      baseCss,
+      css: '',
+      changed: true,
+    })
+
+    const css = '@media (min-width:0){view,text,::before,::after{border-width:0}}'
     expect(mergeMiniProgramPreflightRuleDeclarations(baseCss, css)).toEqual({
       baseCss,
       css,
@@ -90,6 +112,17 @@ describe('vite css rule helpers', () => {
       baseCss,
       css,
       changed: false,
+    })
+  })
+
+  it('skips duplicate theme declarations without changing base css', () => {
+    const baseCss = ':host,page,.tw-root,wx-root-portal-content{--tw-space-y-reverse:0}'
+    const css = ':host,page,.tw-root,wx-root-portal-content{--tw-space-y-reverse:0}'
+
+    expect(mergeMiniProgramThemeScopeRuleDeclarations(baseCss, css)).toEqual({
+      baseCss,
+      css: '',
+      changed: true,
     })
   })
 
@@ -163,6 +196,12 @@ describe('vite css rule helpers', () => {
       css: '@media (min-width:640px){.btn{display:flex}}',
       changed: false,
     })
+
+    expect(mergeCoveredCssRuleDeclarations(baseCss, '.btn{color:var(--empty,)}')).toEqual({
+      baseCss,
+      css: '.btn{color:var(--empty,)}',
+      changed: false,
+    })
   })
 
   it('keeps preflight and theme rules when selector sets are duplicated or incomplete', () => {
@@ -194,6 +233,24 @@ describe('vite css rule helpers', () => {
     })
   })
 
+  it('leaves merge helpers unchanged when candidate parsing fails', () => {
+    const preflightBase = 'view,text,::before,::after{box-sizing:border-box}'
+    const brokenPreflight = 'view,text,::before,::after{border-width:0'
+    expect(mergeMiniProgramPreflightRuleDeclarations(preflightBase, brokenPreflight)).toEqual({
+      baseCss: preflightBase,
+      css: brokenPreflight,
+      changed: false,
+    })
+
+    const themeBase = ':host,page,.tw-root,wx-root-portal-content{--tw-space-y-reverse:0}'
+    const brokenTheme = ':host,page,.tw-root,wx-root-portal-content{--tw-divide-y-reverse:0'
+    expect(mergeMiniProgramThemeScopeRuleDeclarations(themeBase, brokenTheme)).toEqual({
+      baseCss: themeBase,
+      css: brokenTheme,
+      changed: false,
+    })
+  })
+
   it('filters exact duplicate rules and removes empty at-rules', () => {
     const baseCss = '@media (min-width: 640px){.card{display:flex}}'
     const css = '@media (min-width: 640px){.card{display:flex}}'
@@ -213,6 +270,21 @@ describe('vite css rule helpers', () => {
     const css = '.card{color:#175e75;color:var(--card-color,#175e75);display:inline-flex}'
 
     expect(filterExistingCssRules(baseCss, css)).toBe('')
+  })
+
+  it('keeps malformed var fallback declarations when they are not equivalent', () => {
+    const baseCss = '.card{color:var(color,#175e75);display:inline-flex}'
+    const css = '.card{color:#175e75;display:inline-flex}'
+
+    expect(filterExistingCssRules(baseCss, css)).toBe(css)
+  })
+
+  it('keeps var fallback declarations with empty or invalid custom property names', () => {
+    const baseCss = '.card{color:#175e75;display:inline-flex}'
+
+    expect(filterExistingCssRules(baseCss, '.card{color:var(--card-color,);display:inline-flex}')).toBe('.card{color:var(--card-color,);display:inline-flex}')
+    expect(filterExistingCssRules(baseCss, '.card{color:var(--card color,#175e75);display:inline-flex}')).toBe('.card{color:var(--card color,#175e75);display:inline-flex}')
+    expect(filterExistingCssRules('.card{color:var(--card-color,);display:inline-flex}', '.card{color:#175e75;display:inline-flex}')).toBe('.card{color:#175e75;display:inline-flex}')
   })
 
   it('keeps var fallback declarations when the fallback value differs', () => {
@@ -240,7 +312,131 @@ describe('vite css rule helpers', () => {
     expect(filterExistingCssRules('.card{display:flex}', css)).toBe(css)
   })
 
+  it('removes exact duplicate rules inside comment-only at-rules', () => {
+    const baseCss = '@media (min-width: 640px){.card{display:flex}}'
+    const css = '@media (min-width: 640px){/* generated */.card{display:flex}}'
+
+    expect(filterExistingCssRules(baseCss, css)).toBe('')
+  })
+
+  it('covers at-rule cleanup when duplicate filtering leaves declarations behind', () => {
+    const baseCss = '@media (min-width:640px){.card{display:flex}}'
+    const css = '@media (min-width:640px){/* generated */.card{display:flex}.other{display:grid}}'
+
+    expect(filterExistingCssRules(baseCss, css)).toContain('.other{display:grid}')
+  })
+
+  it('merges into the first duplicate base rule and preserves conflicting candidates', () => {
+    const result = mergeCoveredCssRuleDeclarations(
+      '.btn{display:flex}.btn{align-items:center}',
+      '.btn{display:flex;gap:8px}',
+    )
+
+    expect(result.changed).toBe(true)
+    expect(result.baseCss).toBe('.btn{display:flex;gap:8px}.btn{align-items:center}')
+    expect(result.css).toBe('')
+
+    const conflicted = mergeCoveredCssRuleDeclarations(
+      '.btn{display:flex;color:red}.btn{align-items:center}',
+      '.btn{display:flex;color:blue;gap:8px}',
+    )
+    expect(conflicted.changed).toBe(false)
+  })
+
+  it('merges theme declarations across multiple base records and skips malformed selector sets', () => {
+    const baseCss = [
+      ':host,page,.tw-root,wx-root-portal-content{--tw-space-y-reverse:0}',
+      'page,.tw-root,wx-root-portal-content,:host{--tw-divide-y-reverse:0}',
+    ].join('')
+    const css = 'wx-root-portal-content,.tw-root,page,:host{--tw-ring-offset-width:0;--tw-space-y-reverse:0}'
+
+    const result = mergeMiniProgramThemeScopeRuleDeclarations(baseCss, css)
+    expect(result.changed).toBe(true)
+    expect(result.baseCss).toContain('--tw-ring-offset-width:0')
+    expect(result.css).toBe('')
+
+    const unsupportedPseudo = ':host(.dark),page,.tw-root,wx-root-portal-content{--tw-new:1}'
+    expect(mergeMiniProgramThemeScopeRuleDeclarations(baseCss, unsupportedPseudo)).toEqual({
+      baseCss,
+      css: unsupportedPseudo,
+      changed: false,
+    })
+  })
+
+  it('handles raw containment and malformed base rule maps', () => {
+    expect(containsCssAfterMinify('/* empty */', '.card{display:flex')).toBe(false)
+    expect(containsCssAfterMinify('.a{color:red}.b{color:blue}', '.a{color:red}.b{color:blue}')).toBe(true)
+    expect(containsCssAfterMinify('.card{display:flex}', '/* only comment */')).toBe(false)
+    expect(containsCssAfterMinify('@media (min-width: 640px){.card{display:flex}}', '@media (min-width:640px){.card{display:flex}}')).toBe(true)
+
+    const css = '.card{display:flex}'
+    expect(filterExistingCssRules('.card{display:flex', css)).toBe(css)
+  })
+
   it('returns false for malformed containment css that cannot match', () => {
     expect(containsCssAfterMinify('.card{display:flex}', '@media{')).toBe(false)
+  })
+
+  it('handles nested rules, important declarations, and empty declaration groups', () => {
+    expect(containsCssAfterMinify('.a{& .b{color:red!important}}', '& .b{color:red!important}')).toBe(true)
+
+    const baseCss = [
+      '.empty{}',
+      '.btn{color:red!important}',
+      '.btn{display:flex}',
+    ].join('')
+    expect(filterExistingCssRules(baseCss, '.btn{color:red!important}')).toBe('')
+    expect(filterExistingCssRules(baseCss, '.btn{color:red}')).toBe('.btn{color:red}')
+    expect(filterExistingCssRules(baseCss, '.empty{}')).toBe('')
+    expect(filterExistingCssRules(baseCss, '{color:red}')).toBe('{color:red}')
+
+    const merged = mergeCoveredCssRuleDeclarations(
+      '.btn{display:flex}.btn{gap:4px}',
+      '.btn{display:flex;align-items:center}',
+    )
+    expect(merged.changed).toBe(true)
+    expect(merged.baseCss).toContain('align-items:center')
+
+    const commentOnlyAtRule = mergeCoveredCssRuleDeclarations(
+      '@media (hover:hover){.btn{display:flex}}',
+      '@media (hover:hover){/* generated */.btn{display:flex}}',
+    )
+    expect(commentOnlyAtRule.css).toBe('')
+  })
+
+  it('keeps selector-set rules with complex simple selectors and unsupported nodes', () => {
+    const preflightBase = 'view,text,::before,::after{box-sizing:border-box}'
+    for (const css of [
+      'view.foo,text,::before,::after{border-width:0}',
+      'button,text,::before,::after{border-width:0}',
+      ':host(.dark),text,::before,::after{border-width:0}',
+      ':where(view),text,::before,::after{border-width:0}',
+    ]) {
+      expect(mergeMiniProgramPreflightRuleDeclarations(preflightBase, css)).toEqual({
+        baseCss: preflightBase,
+        css,
+        changed: false,
+      })
+    }
+
+    const themeBase = ':host,page,.tw-root,wx-root-portal-content{--tw-space-y-reverse:0}'
+    for (const css of [
+      ':host,page,.other,wx-root-portal-content{--tw-new:1}',
+      ':host(.dark),page,.tw-root,wx-root-portal-content{--tw-new:1}',
+      ':host,page,.tw-root,wx-root-portal-content,.extra{--tw-new:1}',
+    ]) {
+      expect(mergeMiniProgramThemeScopeRuleDeclarations(themeBase, css)).toEqual({
+        baseCss: themeBase,
+        css,
+        changed: false,
+      })
+    }
+
+    const nonCustomThemeDecl = mergeMiniProgramThemeScopeRuleDeclarations(
+      themeBase,
+      ':host,page,.tw-root,wx-root-portal-content{color:red}',
+    )
+    expect(nonCustomThemeDecl.changed).toBe(true)
+    expect(nonCustomThemeDecl.baseCss).toContain('color:red')
   })
 })
