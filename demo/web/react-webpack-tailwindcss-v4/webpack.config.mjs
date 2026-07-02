@@ -47,7 +47,7 @@ export default {
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
     }),
-    createWebDemoWeappTailwindcssWebpackPlugin(),
+    createWebDemoWeappTailwindcssWebpackPlugin(root),
   ],
   optimization: {
     minimize: false,

@@ -1,4 +1,5 @@
 import type { PluginOption } from 'vite'
+import { resolve } from 'node:path'
 import process from 'node:process'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
@@ -9,10 +10,13 @@ export function resolveWebDemoGeneratorTarget(): WebDemoGeneratorTarget {
   return target === 'weapp' ? 'weapp' : 'web'
 }
 
-export function createWebDemoWeappTailwindcssPlugins(): PluginOption[] {
+export function createWebDemoWeappTailwindcssPlugins(projectRoot: string): PluginOption[] {
   const target = resolveWebDemoGeneratorTarget()
   return WeappTailwindcss({
-    tailwindcssBasedir: process.cwd(),
+    tailwindcssBasedir: projectRoot,
+    cssEntries: [
+      resolve(projectRoot, 'src/style.css'),
+    ],
     cssSourceTrace: true,
     rem2rpx: false,
     generator: {

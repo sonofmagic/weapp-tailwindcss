@@ -36,23 +36,26 @@ npm run e2e:hbuilderx:local:ios
 
 ## 注册插件
 
-`uniAppX` 从 `weapp-tailwindcss/presets` 导出，建议显式传入 `cssEntries`。
+`uniAppX` 从 `weapp-tailwindcss/presets` 导出，应显式传入 `cssEntries`。
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss(
       uniAppX({
-        base: __dirname,
+        base: projectRoot,
         cssEntries: [
-          path.resolve(__dirname, 'main.css'),
+          resolve(projectRoot, 'main.css'),
         ],
         cssOptions: {
           rem2rpx: true,

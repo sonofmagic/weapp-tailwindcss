@@ -77,19 +77,23 @@ npm i -D tailwindcss weapp-tailwindcss
 > 这里特别注意 `uniAppX` 是从 `weapp-tailwindcss/presets` 这个预设中导出的
 
 ```js title="vite.config.ts"
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite';
 import uni from '@dcloudio/vite-plugin-uni';
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { uniAppX } from 'weapp-tailwindcss/presets'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
     plugins: [
         uni(),
         WeappTailwindcss(
             uniAppX({
-                base: __dirname,
+                base: projectRoot,
                 cssEntries: [
-                    new URL('./main.css', import.meta.url).pathname,
+                    resolve(projectRoot, 'main.css'),
                 ],
                 rem2rpx: true,
             }),

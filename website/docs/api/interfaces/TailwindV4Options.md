@@ -51,7 +51,7 @@ Tailwind CSS v4 提取配置。
 
 Tailwind CSS 4 入口文件列表，用于识别入口中的 `@import "tailwindcss"`、`@source` 与 `@config`。入口 CSS 仍然需要被项目实际 import 或纳入构建图，`cssEntries` 不会替代框架生成该 CSS 资产。
 
-类型上保持可选，是为了兼容自动发现和内存 CSS 来源；业务项目推荐显式传入绝对路径。多入口、分包、独立分包、Webpack/Gulp/自定义构建和多平台构建都应该写清楚这些入口。
+类型上保持可选，是为了兼容内存 CSS 来源；业务项目应显式传入绝对路径。多入口、分包、独立分包、Webpack/Gulp/自定义构建和多平台构建都应该写清楚这些入口。
 
 ***
 

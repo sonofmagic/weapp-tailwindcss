@@ -58,10 +58,42 @@ describe('demo/web vite matrix', () => {
   it('keeps the shared target switch defaulting to web while allowing weapp opt-in', async () => {
     const helper = await readDemoFile('web/shared/vite-target.ts')
 
+    expect(helper).toContain(`createWebDemoWeappTailwindcssPlugins(projectRoot: string)`)
+    expect(helper).toContain(`tailwindcssBasedir: projectRoot`)
+    expect(helper).toContain(`cssEntries: [`)
+    expect(helper).toContain(`resolve(projectRoot, 'src/style.css')`)
     expect(helper).toContain(`return target === 'weapp' ? 'weapp' : 'web'`)
     expect(helper).toContain(`generator: {`)
     expect(helper).toContain(`target,`)
     expect(helper).toContain(`rem2rpx: false`)
+  })
+
+  it('keeps helper-based Vite web demos passing an absolute project root into the shared plugin helper', async () => {
+    const configs = await Promise.all([
+      readDemoFile('web/react-vite-tailwindcss-v4/vite.config.ts'),
+      readDemoFile('web/vue-vite-tailwindcss-v4/vite.config.ts'),
+    ])
+
+    for (const config of configs) {
+      expect(config).toContain(`fileURLToPath(import.meta.url)`)
+      expect(config).toContain(`createWebDemoWeappTailwindcssPlugins(projectRoot)`)
+      expect(config).not.toContain(`createWebDemoWeappTailwindcssPlugins()`)
+    }
+  })
+
+  it('keeps directly configured Vite web demos on absolute CSS entry paths', async () => {
+    const configs = await Promise.all([
+      readDemoFile('web/vue-vite7-tailwindcss-v4/vite.config.ts'),
+      readDemoFile('web/nuxt-vite-tailwindcss-v4/nuxt.config.ts'),
+    ])
+
+    for (const config of configs) {
+      expect(config).toContain(`fileURLToPath(import.meta.url)`)
+      expect(config).toContain(`tailwindcssBasedir: projectRoot`)
+      expect(config).toContain(`cssEntries: [`)
+      expect(config).toContain(`resolve(projectRoot,`)
+      expect(config).not.toContain(`resolve(process.cwd()`)
+    }
   })
 
   it('keeps v4 CSS entries using Tailwind CSS import layers', async () => {
@@ -97,7 +129,7 @@ describe('demo/web vite matrix', () => {
 
   it('keeps arbitrary, decimal, negative, and important utilities in every web demo', async () => {
     const sources = await Promise.all([
-      readDemoFile('web/react-vite-tailwindcss-v4/src/main.tsx'),
+      readDemoFile('web/react-vite-tailwindcss-v4/src/App.tsx'),
       readDemoFile('web/vue-vite-tailwindcss-v4/src/App.vue'),
     ])
 

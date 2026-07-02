@@ -8,6 +8,7 @@ import { resolveTaroPlatform } from 'weapp-tailwindcss/framework'
 import path from 'node:path'
 
 const taroPlatform = resolveTaroPlatform()
+const projectRoot = path.resolve(__dirname, '..')
 const generator = {
   target: taroPlatform.isWeb || process.env.TARO_ENV === 'harmony' || process.env.TARO_ENV === 'harmony-hybrid'
     ? 'web'
@@ -90,12 +91,12 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
           },
         },
         WeappTailwindcss({
-          tailwindcssBasedir: process.cwd(),
+          tailwindcssBasedir: projectRoot,
           cssEntries: [
-            path.resolve(process.cwd(), 'src/app.css'),
-            path.resolve(process.cwd(), 'src/pages/index/index.css'),
-            path.resolve(process.cwd(), 'src/sub-normal/index.css'),
-            path.resolve(process.cwd(), 'src/sub-independent/index.css'),
+            path.resolve(projectRoot, 'src/app.css'),
+            path.resolve(projectRoot, 'src/pages/index/index.css'),
+            path.resolve(projectRoot, 'src/sub-normal/index.css'),
+            path.resolve(projectRoot, 'src/sub-independent/index.css'),
           ],
           mainCssChunkMatcher: () => true,
           cssSourceTrace: true,

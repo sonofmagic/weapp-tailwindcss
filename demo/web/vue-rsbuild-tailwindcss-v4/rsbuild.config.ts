@@ -1,7 +1,11 @@
 import { pluginVue } from '@rsbuild/plugin-vue'
 import { defineConfig } from '@rsbuild/core'
+import { dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { patchRspackConfig } from 'weapp-tailwindcss/rspack'
 import { createWebDemoWeappTailwindcssWebpackPlugin } from '../shared/webpack-plugin-target.mjs'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -24,7 +28,7 @@ export default defineConfig({
     rspack(config) {
       patchRspackConfig(config)
       config.plugins ??= []
-      config.plugins.push(createWebDemoWeappTailwindcssWebpackPlugin())
+      config.plugins.push(createWebDemoWeappTailwindcssWebpackPlugin(projectRoot))
       config.optimization ??= {}
       config.optimization.minimize = false
       return config

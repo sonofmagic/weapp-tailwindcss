@@ -43,6 +43,8 @@ npm install -D tailwindcss weapp-tailwindcss
 import path from 'node:path'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
+const projectRoot = path.resolve(__dirname, '..')
+
 {
   compiler: {
     type: 'vite',
@@ -51,9 +53,9 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
         cssOptions: {
           rem2rpx: true,
         },
-        tailwindcssBasedir: process.cwd(),
+        tailwindcssBasedir: projectRoot,
         cssEntries: [
-          path.resolve(__dirname, '../src/app.css'),
+          path.resolve(projectRoot, 'src/app.css'),
         ],
       }),
     ]
@@ -61,7 +63,7 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 }
 ```
 
-> Tailwind CSS 4 项目推荐显式配置 `cssEntries`，并使用绝对路径指向纯 `.css` 入口。
+> Tailwind CSS 4 项目应显式配置 `cssEntries`，并使用项目根目录解析出的绝对路径指向纯 `.css` 入口。
 > 这里说的是 Tailwind CSS 4：`cssEntries` 请指向纯 `.css` 文件，不要指向 `scss` / `less` / `sass`。业务 Sass/Less 可以继续用，但 Tailwind 4 的 `@import "tailwindcss"` 入口建议单独放在 CSS 文件里。
 
 `cssEntries` 只负责让 `WeappTailwindcss` 稳定读取 Tailwind CSS 入口，入口 CSS 仍然要通过 Taro 入口实际引入。多入口或分包入口请都写进数组：
@@ -69,13 +71,15 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 ```js
 import path from 'node:path'
 
+const projectRoot = path.resolve(__dirname, '..')
+
 WeappTailwindcss({
   cssOptions: {
     rem2rpx: true,
   },
-  tailwindcssBasedir: process.cwd(),
+  tailwindcssBasedir: projectRoot,
   cssEntries: [
-    path.resolve(__dirname, '../src/app.css'),
+    path.resolve(projectRoot, 'src/app.css'),
   ],
 })
 ```

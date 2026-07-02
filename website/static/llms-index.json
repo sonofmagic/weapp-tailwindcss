@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-07-01T09:37:02.433Z",
+  "generatedAt": "2026-07-02T16:10:45.441Z",
   "siteUrl": "https://tw.icebreaker.top",
   "totals": {
     "all": 164,
@@ -3505,7 +3505,7 @@
       "id": "doc:quick-start/frameworks/mpx",
       "title": "Mpx",
       "description": "Mpx 项目接入 Tailwind CSS 4 与 weapp-tailwindcss。",
-      "summary": "Mpx 使用 Webpack 链路，建议显式配置 cssEntries，让 weapp-tailwindcss 稳定定位 Tailwind CSS 入口。",
+      "summary": "Mpx 使用 Webpack 链路，应显式配置 cssEntries，让 weapp-tailwindcss 稳定定位 Tailwind CSS 入口。",
       "url": "/docs/quick-start/frameworks/mpx",
       "canonical": "https://tw.icebreaker.top/docs/quick-start/frameworks/mpx",
       "keywords": [

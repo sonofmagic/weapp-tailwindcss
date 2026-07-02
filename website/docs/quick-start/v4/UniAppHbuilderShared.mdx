@@ -36,7 +36,10 @@ npm install -D tailwindcss weapp-tailwindcss
 import { defineConfig } from "vite";
 import uni from "@dcloudio/vite-plugin-uni";
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -45,10 +48,10 @@ export default defineConfig({
       cssOptions: {
         rem2rpx: true,
       },
-      tailwindcssBasedir: __dirname,
+      tailwindcssBasedir: projectRoot,
       cssEntries: [
         // Tailwind CSS 入口文件绝对路径
-        path.resolve(__dirname, './src/app.css'),
+        resolve(projectRoot, 'src/app.css'),
       ],
     }),
   ],

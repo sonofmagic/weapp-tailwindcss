@@ -103,7 +103,7 @@ function collectDemoWeappTailwindcssConfigFiles() {
   const demoRoot = path.resolve(__dirname, '../demo')
   const files: string[] = []
   const ignoredDirs = new Set(['node_modules', 'dist', '.output', '.vite', '.turbo'])
-  const configFileRE = /(?:^|\/)(?:vite\.config|_vite\.config|webpack\.config|gulpfile|config\/index)\.[cm]?[jt]s$/
+  const configFileRE = /(?:^|\/)(?:vite\.config|_vite\.config|webpack\.config|rsbuild\.config|nuxt\.config|mpx\.config|gulpfile|config\/index)\.[cm]?[jt]s$/
 
   function walk(dir: string) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -246,21 +246,31 @@ describe('e2e matrix', () => {
   })
 
   it('keeps Tailwind CSS v4 demo WeappTailwindcss configs explicit about cssEntries', () => {
+    const demoRoot = path.resolve(__dirname, '../demo')
+    const sharedWebConfigs = [
+      'web/shared/vite-target.ts',
+      'web/shared/webpack-plugin-target.mjs',
+    ]
+    for (const relative of sharedWebConfigs) {
+      const code = fs.readFileSync(path.join(demoRoot, relative), 'utf8')
+      expect(code, `demo/${relative} should declare Tailwind v4 CSS entries explicitly`).toContain('cssEntries')
+      expect(code, `demo/${relative} should not resolve cssEntries from process.cwd()`).not.toContain('resolve(process.cwd()')
+      expect(code, `demo/${relative} should not resolve cssEntries from process.cwd()`).not.toContain('path.resolve(process.cwd()')
+    }
+
     for (const file of collectDemoWeappTailwindcssConfigFiles()) {
       const relative = path.relative(path.resolve(__dirname, '..'), file).split(path.sep).join('/')
-      if (relative.startsWith('demo/subpackage-') || relative.startsWith('demo/issue-') || relative.startsWith('demo/web/')) {
-        continue
-      }
       const code = fs.readFileSync(file, 'utf8')
-      if (
-        relative === 'demo/gulp-tailwindcss-v4/gulpfile.ts'
-        || relative.includes('-hbuilderx-')
-      ) {
-        expect(code, `${relative} uses Gulp generator wiring for Tailwind v4 CSS`).not.toContain('cssEntries')
+      if (relative.startsWith('demo/web/') && code.includes('createWebDemoWeappTailwindcss')) {
+        expect(code, `${relative} should derive a stable project root from the config file URL`).toContain('fileURLToPath(import.meta.url)')
+        expect(code, `${relative} should pass a stable project root into the shared cssEntries helper`)
+          .toMatch(/createWebDemoWeappTailwindcss(?:Plugins|WebpackPlugin)\((?:projectRoot|root)\)/)
       }
       else {
         expect(code, `${relative} should declare Tailwind v4 CSS entries explicitly`).toContain('cssEntries')
       }
+      expect(code, `${relative} should not resolve cssEntries from process.cwd()`).not.toContain('resolve(process.cwd()')
+      expect(code, `${relative} should not resolve cssEntries from process.cwd()`).not.toContain('path.resolve(process.cwd()')
     }
   })
 

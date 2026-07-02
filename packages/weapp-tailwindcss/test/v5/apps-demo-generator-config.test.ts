@@ -159,7 +159,7 @@ describe('demo matrix generator config', () => {
     }
   })
 
-  it('keeps Tailwind CSS v4 demos on explicit CSS entries except Gulp generator wiring', async () => {
+  it('keeps Tailwind CSS v4 demos on explicit absolute CSS entries', async () => {
     const configPaths = [
       'demo/gulp-tailwindcss-v4/gulpfile.ts',
       'demo/mpx-tailwindcss-v4/mpx.config.js',
@@ -176,15 +176,10 @@ describe('demo matrix generator config', () => {
     ])
 
     for (const [index, configSource] of configs.entries()) {
-      if (configPaths[index] === 'demo/gulp-tailwindcss-v4/gulpfile.ts') {
-        expect(configSource, configPaths[index]).not.toContain('cssEntries')
-      }
-      else {
-        expect(configSource, configPaths[index]).toContain('cssEntries')
-      }
-    }
-    for (const [index, configSource] of configs.entries()) {
-      expect(configSource, configPaths[index]).toContain('tailwindcssBasedir: process.cwd()')
+      expect(configSource, configPaths[index]).toContain('cssEntries')
+      expect(configSource, configPaths[index]).not.toContain('tailwindcssBasedir: process.cwd()')
+      expect(configSource, configPaths[index]).not.toContain('resolve(process.cwd()')
+      expect(configSource, configPaths[index]).not.toContain('path.resolve(process.cwd()')
     }
     for (const cssSource of cssEntries) {
       expect(cssSource).toContain('tailwindcss')

@@ -1,13 +1,15 @@
-import { resolve } from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 import { defineConfig } from 'weapp-vite/config'
 
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 const weappTailwindcssPlugins = WeappTailwindcss({
-  tailwindcssBasedir: process.cwd(),
+  tailwindcssBasedir: projectRoot,
   cssEntries: [
-    resolve(process.cwd(), 'tailwind.css'),
-    resolve(process.cwd(), 'sub-normal/pages/index.css'),
-    resolve(process.cwd(), 'sub-independent/pages/index.css'),
+    resolve(projectRoot, 'tailwind.css'),
+    resolve(projectRoot, 'sub-normal/pages/index.css'),
+    resolve(projectRoot, 'sub-independent/pages/index.css'),
   ],
   cssSourceTrace: true,
   rem2rpx: true,

@@ -2,6 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 const { WeappTailwindcss } = require('weapp-tailwindcss/webpack')
 const { resolveMpxPlatform } = require('weapp-tailwindcss/framework')
 const path = require('path')
+const projectRoot = __dirname
 
 // 修复 @mpxjs/webpack-plugin 序列化器重复注册导致的构建失败
 // 该问题在 pnpm + webpack5 环境下，模块从不同路径被加载两次时触发
@@ -50,13 +51,13 @@ module.exports = defineConfig({
     config.plugins.push(
       new WeappTailwindcss({
         appType: 'mpx',
-        tailwindcssBasedir: process.cwd(),
+        tailwindcssBasedir: projectRoot,
         cssSourceTrace: true,
         rem2rpx: true,
         cssEntries: [
-          path.resolve(__dirname, './src/app.css'),
-          path.resolve(__dirname, './src/sub-normal/index.css'),
-          path.resolve(__dirname, './src/sub-independent/index.css'),
+          path.resolve(projectRoot, 'src/app.css'),
+          path.resolve(projectRoot, 'src/sub-normal/index.css'),
+          path.resolve(projectRoot, 'src/sub-independent/index.css'),
         ],
         styleInjector: false,
       }),

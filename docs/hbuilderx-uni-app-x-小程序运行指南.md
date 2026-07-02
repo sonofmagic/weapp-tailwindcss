@@ -7,6 +7,7 @@
 当前已验证可用的目标工程为：
 
 - `demo/uni-app-x-hbuilderx-tailwindcss3`
+- `demo/uni-app-x-hbuilderx-tailwindcss-v4`
 
 本文适合以下场景：
 
@@ -88,6 +89,38 @@ export default defineConfig({
 | `vue` | 提供 `createSSRApp` 等运行时依赖 |
 | `weapp-tailwindcss` | 当前仓库示例所依赖的样式转译能力 |
 
+### 3.3 Tailwind CSS 4 入口要求
+
+Tailwind CSS 4 示例必须在 `vite.config.ts` 中显式配置 `cssEntries`，并使用项目根目录解析出的绝对路径。HBuilderX 会改变运行时的 `process.cwd()`，不要依赖当前工作目录推导入口 CSS。
+
+```ts
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vite'
+import uni from '@dcloudio/vite-plugin-uni'
+import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+import { uniAppX } from 'weapp-tailwindcss/presets'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
+
+export default defineConfig({
+  plugins: [
+    uni(),
+    WeappTailwindcss(
+      uniAppX({
+        base: projectRoot,
+        cssEntries: [
+          resolve(projectRoot, 'main.css'),
+        ],
+        cssOptions: {
+          rem2rpx: true,
+        },
+      }),
+    ),
+  ],
+})
+```
+
 ## 4. 常见问题
 
 ### 4.1 报错 `Rollup failed to resolve import "/main"`
@@ -142,14 +175,13 @@ pnpm exec uni-launch mp-weixin
 
 ### 4.5 仍有样式转译告警，但工程可以启动
 
-当前已观察到两类不会阻塞启动的警告：
+当前已观察到一类不会阻塞启动的警告：
 
 | 告警 | 影响 |
 | --- | --- |
-| 未检测到 `cssEntries` | 会影响 Tailwind 目标样式参与转译的完整性 |
 | 某些动态类未完成转译 | 会影响局部类名输出，但不一定阻塞微信端启动 |
 
-如果只是验证 `HBuilderX -> 微信开发者工具` 的链路是否打通，可先接受这类警告；如果要继续修复功能问题，再单独处理样式链路。
+`未检测到 cssEntries` 不应再被当作可接受告警。Tailwind CSS 4 项目应先补齐 `cssEntries` 的绝对路径配置，再继续验证样式链路。
 
 ## 5. 维护建议
 

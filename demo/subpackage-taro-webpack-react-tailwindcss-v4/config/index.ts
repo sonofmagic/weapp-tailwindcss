@@ -10,12 +10,13 @@ import prodConfig from './prod'
 const isWatchBuild = process.argv.includes('--watch') || process.argv.includes('-w')
 const taroPlatform = resolveTaroPlatform()
 const cssMode = process.env.E2E_TW_CSS_ENTRY_MODE === 'single' ? 'single' : 'isolated'
+const projectRoot = path.resolve(__dirname, '..')
 const cssEntries = cssMode === 'single'
-  ? [path.resolve(process.cwd(), 'src/app.single.css')]
+  ? [path.resolve(projectRoot, 'src/app.single.css')]
   : [
-      path.resolve(process.cwd(), 'src/app.css'),
-      path.resolve(process.cwd(), 'src/sub-normal/index.css'),
-      path.resolve(process.cwd(), 'src/sub-independent/index.css'),
+      path.resolve(projectRoot, 'src/app.css'),
+      path.resolve(projectRoot, 'src/sub-normal/index.css'),
+      path.resolve(projectRoot, 'src/sub-independent/index.css'),
     ]
 
 const generator = {
@@ -45,7 +46,7 @@ function installWeappTailwindcss(chain: any) {
         args: [
           {
             appType: 'taro',
-            tailwindcssBasedir: process.cwd(),
+            tailwindcssBasedir: projectRoot,
             cssEntries,
             cssSourceTrace: true,
             generator,

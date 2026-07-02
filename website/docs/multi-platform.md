@@ -108,20 +108,23 @@ WeappTailwindcss({
 `uni-app x` 建议使用 `uniAppX` 预设。Tailwind CSS 4 建议显式传入入口 CSS 的绝对路径。
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import { uniAppX } from 'weapp-tailwindcss/presets'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss(
       uniAppX({
-        base: __dirname,
+        base: projectRoot,
         cssEntries: [
-          path.resolve(__dirname, 'main.css'),
+          resolve(projectRoot, 'main.css'),
         ],
         cssOptions: {
           rem2rpx: true,

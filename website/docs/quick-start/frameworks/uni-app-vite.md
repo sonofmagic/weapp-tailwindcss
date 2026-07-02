@@ -48,17 +48,20 @@ Tailwind 4 的入口请放在纯 `.css` 文件里。业务里仍然可以使用 
 在 `vite.config.ts` 中把 `WeappTailwindcss` 放在 `uni()` 后面：
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import uni from '@dcloudio/vite-plugin-uni'
 import { defineConfig } from 'vite'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
     uni(),
     WeappTailwindcss({
       cssEntries: [
-        path.resolve(process.cwd(), 'src/app.css'),
+        resolve(projectRoot, 'src/app.css'),
       ],
       cssOptions: {
         rem2rpx: true,
@@ -69,19 +72,22 @@ export default defineConfig({
 
 ```
 
-Tailwind CSS 4 项目推荐显式配置 `cssEntries`，但对应 CSS 文件仍然要被项目实际引入。多个入口、普通分包入口、独立分包入口都要写进数组：
+Tailwind CSS 4 项目应显式配置 `cssEntries`，但对应 CSS 文件仍然要被项目实际引入。多个入口、普通分包入口、独立分包入口都要写进数组：
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 WeappTailwindcss({
   cssOptions: {
     rem2rpx: true,
   },
   cssEntries: [
-    path.resolve(process.cwd(), 'src/app.css'),
-    path.resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
-    path.resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
+    resolve(projectRoot, 'src/app.css'),
+    resolve(projectRoot, 'src/sub-normal/pages/index.css'),
+    resolve(projectRoot, 'src/sub-independent/pages/index.css'),
   ],
 })
 ```

@@ -6,10 +6,10 @@ export function resolveWebDemoGeneratorTarget() {
   return target === 'weapp' ? 'weapp' : 'web'
 }
 
-export function createWebDemoWeappTailwindcssWebpackPlugin() {
+export function createWebDemoWeappTailwindcssWebpackPlugin(projectRoot) {
   return new WeappTailwindcss({
-    tailwindcssBasedir: process.cwd(),
-    cssEntries: [path.resolve(process.cwd(), 'src/style.css')],
+    tailwindcssBasedir: projectRoot,
+    cssEntries: [path.resolve(projectRoot, 'src/style.css')],
     cssSourceTrace: true,
     rem2rpx: false,
     generator: {

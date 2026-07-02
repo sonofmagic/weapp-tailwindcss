@@ -65,15 +65,18 @@ npm install -D tailwindcss@latest weapp-tailwindcss
 以 `weapp-vite` 为例（不同框架请对照对应的 [默认模式参考](/docs/tailwindcss/v4-reference) 和框架注册页）：
 
 ```ts title="vite.config.ts"
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'weapp-vite/config'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
+
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
     WeappTailwindcss({
       cssEntries: [
-        path.resolve(process.cwd(), 'src/app.css'),
+        resolve(projectRoot, 'src/app.css'),
       ],
       // 常用内置能力：开启 px 自动转换
       cssOptions: {
@@ -84,7 +87,7 @@ export default defineConfig({
 })
 ```
 
-Tailwind CSS 4 项目推荐显式配置 `cssEntries`。它让 `WeappTailwindcss` 稳定读取入口 CSS 里的 `@import "tailwindcss"`、`@source`、`@config` 与运行时 class 来源，避免不同框架、不同平台的构建图差异导致样式缺失。
+Tailwind CSS 4 项目应显式配置 `cssEntries`。它让 `WeappTailwindcss` 稳定读取入口 CSS 里的 `@import "tailwindcss"`、`@source`、`@config` 与运行时 class 来源，避免不同框架、不同平台的构建图差异导致样式缺失。
 
 `cssEntries` 不是替代 import 的开关。入口 CSS 仍然要通过框架的全局样式入口或业务入口文件被实际引入，否则框架不会生成对应 CSS 资产。多个 Tailwind CSS 入口、分包入口、独立分包入口都要写进同一个 `cssEntries` 数组。
 

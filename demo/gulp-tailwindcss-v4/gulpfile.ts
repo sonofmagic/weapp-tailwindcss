@@ -1,6 +1,7 @@
 import path from 'node:path'
 import process from 'node:process'
 import { rm } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
 import gulp from 'gulp'
 import type { TaskFunction, TaskFunctionCallback } from 'gulp'
 import debug from 'gulp-debug'
@@ -19,6 +20,7 @@ const isDebug = Boolean(process.env.DEBUG)
 const isWatch = Boolean(process.env.WATCH)
 // const isLocal = Boolean(process.env.LOCAL)
 const useBabel = Boolean(process.env.BABEL)
+const projectRoot = path.dirname(fileURLToPath(import.meta.url))
 
 const platformMap = {
   weapp: {
@@ -50,7 +52,10 @@ const generator = {
 
 // 在 Gulp 里使用时，Tailwind CSS 生成由 transformWxss 的生成模式接管，PostCSS 只保留后处理插件
 const { transformJs, transformWxml, transformWxss } = createPlugins({
-  tailwindcssBasedir: process.cwd(),
+  tailwindcssBasedir: projectRoot,
+  cssEntries: [
+    path.resolve(projectRoot, 'src/app.css'),
+  ],
   cssSourceTrace: true,
   rem2rpx: true,
   generator,

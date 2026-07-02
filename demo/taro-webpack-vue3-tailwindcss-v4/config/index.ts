@@ -22,10 +22,11 @@ const generator = {
     px2rpx: true,
   },
 } satisfies UserDefinedOptions['generator']
+const projectRoot = resolve(__dirname, '..')
 const cssEntries = [
-  resolve(process.cwd(), 'src/app.css'),
-  resolve(process.cwd(), 'src/sub-normal/pages/index.css'),
-  resolve(process.cwd(), 'src/sub-independent/pages/index.css'),
+  resolve(projectRoot, 'src/app.css'),
+  resolve(projectRoot, 'src/sub-normal/pages/index.css'),
+  resolve(projectRoot, 'src/sub-independent/pages/index.css'),
 ]
 
 function disableWebpackDevServerClientOverlay(chain: any) {
@@ -109,7 +110,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   appType: 'taro',
-                  tailwindcssBasedir: process.cwd(),
+                  tailwindcssBasedir: projectRoot,
                   cssSourceTrace: true,
                   cssEntries,
                   rem2rpx: true,
@@ -161,7 +162,7 @@ export default defineConfig<'webpack5'>(async (merge, { command, mode }) => {
               args: [
                 {
                   appType: 'taro',
-                  tailwindcssBasedir: process.cwd(),
+                  tailwindcssBasedir: projectRoot,
                   cssSourceTrace: true,
                   cssEntries,
                   rem2rpx: true,

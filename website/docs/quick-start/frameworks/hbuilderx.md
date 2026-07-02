@@ -51,14 +51,13 @@ Tailwind 4 的入口只放在纯 `.css` 文件里，不要直接写进 `scss`、
 注册 `WeappTailwindcss` 时传入入口 CSS 的绝对路径：
 
 ```js title="vite.config.[tj]s"
-import path from 'node:path'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import uni from '@dcloudio/vite-plugin-uni'
 import { WeappTailwindcss } from 'weapp-tailwindcss/vite'
 
-const resolve = (p) => {
-  return path.resolve(__dirname, p)
-}
+const projectRoot = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
@@ -67,9 +66,9 @@ export default defineConfig({
       cssOptions: {
         rem2rpx: true,
       },
-      tailwindcssBasedir: __dirname,
+      tailwindcssBasedir: projectRoot,
       cssEntries: [
-        resolve('src/app.css'),
+        resolve(projectRoot, 'src/app.css'),
       ],
     })
   ],
@@ -92,9 +91,9 @@ WeappTailwindcss({
   cssOptions: {
     rem2rpx: true,
   },
-  tailwindcssBasedir: __dirname,
+  tailwindcssBasedir: projectRoot,
   cssEntries: [
-    resolve("src/app.css"),
+    resolve(projectRoot, "src/app.css"),
   ],
 });
 ```

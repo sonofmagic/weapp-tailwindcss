@@ -62,6 +62,7 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
     webpackChain(chain, webpack) {
       // 复制这块区域到你的配置代码中 region start
       // highlight-start
+      const projectRoot = path.resolve(__dirname, '..')
       chain.merge({
         plugin: {
           install: {
@@ -71,9 +72,9 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
               cssOptions: {
                 rem2rpx: true,
               },
-              tailwindcssBasedir: process.cwd(),
+              tailwindcssBasedir: projectRoot,
               cssEntries: [
-                path.resolve(__dirname, '../src/app.css'),
+                path.resolve(projectRoot, 'src/app.css'),
               ],
             }],
           },
@@ -86,7 +87,7 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 }
 ```
 
-> Tailwind CSS 4 项目推荐显式配置 `cssEntries`，同时仍要在 `src/app.ts` 或 `src/app.js` 里引入 `./app.css`。
+> Tailwind CSS 4 项目应显式配置 `cssEntries`，同时仍要在 `src/app.ts` 或 `src/app.js` 里引入 `./app.css`。
 > `weapp-tailwindcss@5` 默认接管 Tailwind CSS 样式生成，不需要再创建 `postcss.config.mjs` 注册 `@tailwindcss/postcss`。如果项目已有 PostCSS 配置，只保留非 Tailwind 的业务插件即可。
 
 多入口、入口不在 `src/app.css` 或有分包独立入口时，把所有纯 `.css` Tailwind 入口都写进 `cssEntries`：
@@ -94,13 +95,15 @@ import { WeappTailwindcss } from 'weapp-tailwindcss/webpack'
 ```js
 import path from 'node:path'
 
+const projectRoot = path.resolve(__dirname, '..')
+
 args: [{
   cssOptions: {
     rem2rpx: true,
   },
-  tailwindcssBasedir: process.cwd(),
+  tailwindcssBasedir: projectRoot,
   cssEntries: [
-    path.resolve(__dirname, '../src/app.css'),
+    path.resolve(projectRoot, 'src/app.css'),
   ],
 }]
 ```
