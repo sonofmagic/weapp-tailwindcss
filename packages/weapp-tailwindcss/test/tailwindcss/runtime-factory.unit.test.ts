@@ -88,9 +88,10 @@ describe('tailwindcss runtime factory internals', () => {
     resolveTailwindV4SourceFromRuntime.mockResolvedValue({
       base: '/project',
       baseFallbacks: ['/project'],
-      css: '.card{@apply flex !important}',
+      css: '@reference "tailwindcss";\n.card{@apply flex !important}',
       cssSources: [
-        { css: '.from-source{@apply grid}' },
+        { css: '@reference "tailwindcss";\n.from-source{@apply grid}' },
+        { css: '.bare-source{@apply bg-[#123456]}' },
         { css: '.broken{' },
       ],
       projectRoot: '/project',
@@ -116,6 +117,7 @@ describe('tailwindcss runtime factory internals', () => {
     expect(extracted.classSet.has('text-red-500')).toBe(true)
     expect(extracted.classSet.has('flex')).toBe(true)
     expect(extracted.classSet.has('grid')).toBe(false)
+    expect(extracted.classSet.has('bg-[#123456]')).toBe(false)
     expect(extracted.classSet.has('*')).toBe(false)
     expect(runtime.getClassSetSync?.().has('text-red-500')).toBe(true)
     await expect(runtime.collectContentTokens?.()).resolves.toMatchObject({

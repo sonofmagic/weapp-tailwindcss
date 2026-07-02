@@ -162,6 +162,29 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
     return new Set([...classSet].filter(className => options.filter?.(className) !== false))
   }
 
+  function hasTailwindV4ApplyContext(css: string) {
+    if (!css.includes('@apply')) {
+      return false
+    }
+    try {
+      const root = postcss.parse(css)
+      let hasContext = false
+      root.walkAtRules((rule) => {
+        if (
+          rule.name === 'reference'
+          || rule.name === 'import'
+          || (rule.name === 'tailwind' && rule.params.trim() === 'utilities')
+        ) {
+          hasContext = true
+        }
+      })
+      return hasContext
+    }
+    catch {
+      return false
+    }
+  }
+
   async function collectClassSet() {
     const report = await collectContentTokens()
     const rawCandidates = new Set((report.entries as Array<{ rawCandidate?: string } | string>).map((entry) => {
@@ -183,7 +206,7 @@ function createEngineTailwindcssRuntime(options: TailwindCssRuntimeOptions): Tai
       ...(source.cssSources ?? []).map(cssSource => cssSource.css).filter((css): css is string => typeof css === 'string'),
     ]
     for (const css of cssList) {
-      if (!css.includes('@apply')) {
+      if (!hasTailwindV4ApplyContext(css)) {
         continue
       }
       try {
