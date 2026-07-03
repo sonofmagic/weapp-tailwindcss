@@ -484,19 +484,20 @@ function normalizeCssSnapshotFileKey(fileName: string) {
 }
 
 function normalizeCssOutputSnapshotName(fileName: string) {
-  const normalized = normalizeOutputCssFileName(fileName).replace(/[.-]?[a-f0-9]{8,}(?=\.[^.]+$)/gi, '')
+  const normalized = normalizeOutputCssFileName(fileName).replace(/[.-][\w-]{8,}(?=\.css$)/g, '')
   return normalizeSnapshotName(normalized) ?? normalized
 }
 
 function compareCssOutputFile(a: string, b: string) {
-  return compareText(normalizeSnapshotName(a) ?? a, normalizeSnapshotName(b) ?? b) || compareText(a, b)
+  return compareText(normalizeCssOutputSnapshotName(a), normalizeCssOutputSnapshotName(b))
+    || compareText(a, b)
 }
 
 function compareCssSnapshotEntry(
   a: { fileName: string, content: string },
   b: { fileName: string, content: string },
 ) {
-  return compareText(normalizeSnapshotName(a.fileName) ?? a.fileName, normalizeSnapshotName(b.fileName) ?? b.fileName)
+  return compareText(normalizeCssOutputSnapshotName(a.fileName), normalizeCssOutputSnapshotName(b.fileName))
     || compareText(a.content, b.content)
     || compareText(a.fileName, b.fileName)
 }

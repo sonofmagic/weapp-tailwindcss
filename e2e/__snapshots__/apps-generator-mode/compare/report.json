@@ -25522,16 +25522,16 @@
     ],
     "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/h5",
     "cssFiles": [
-      "assets/index-3vG-Q8xJ.css",
-      "assets/index-BUqHYt-R.css",
-      "assets/index-CyZbgkwJ.css",
-      "assets/index-DBqgquuu.css",
-      "assets/index-Dfz4JcEl.css",
+      "assets/index.1.css",
+      "assets/index.2.css",
+      "assets/index.3.css",
+      "assets/index.4.css",
+      "assets/index.5.css",
       "assets/uni.css"
     ],
     "status": "passed",
     "generator": {
-      "bytes": 97029,
+      "bytes": 97095,
       "selectors": [
         "#app",
         "&.theme-dark",
@@ -25880,11 +25880,11 @@
     ],
     "cssFile": "uni-app-vite-tailwindcss-v4/dist/build/h5",
     "cssFiles": [
-      "assets/index-3vG-Q8xJ.css",
-      "assets/index-CyZbgkwJ.css",
-      "assets/index-DBqgquuu.css",
-      "assets/index-Dfz4JcEl.css",
-      "assets/index-DwAwnK_z.css",
+      "assets/index.1.css",
+      "assets/index.2.css",
+      "assets/index.3.css",
+      "assets/index.4.css",
+      "assets/index.5.css",
       "assets/uni.css"
     ],
     "status": "passed",

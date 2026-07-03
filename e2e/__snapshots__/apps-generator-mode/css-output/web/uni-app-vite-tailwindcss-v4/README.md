@@ -7,26 +7,26 @@ Entry: uni-app-vite-tailwindcss-v4/dist/build/h5
 
 | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| 97029 | 311 | true | true | true | true | true | true | true |
+| 97095 | 311 | true | true | true | true | true | true | true |
 
 ## Generator CSS Files
 
 | # | File | Artifact |
 | ---: | --- | --- |
-| 1 | `assets/index-3vG-Q8xJ.css` | [artifacts/assets__index-3vG-Q8xJ.css](artifacts/assets__index-3vG-Q8xJ.css) |
-| 2 | `assets/index-BUqHYt-R.css` | [artifacts/assets__index-BUqHYt-R.css](artifacts/assets__index-BUqHYt-R.css) |
-| 3 | `assets/index-CyZbgkwJ.css` | [artifacts/assets__index-CyZbgkwJ.css](artifacts/assets__index-CyZbgkwJ.css) |
-| 4 | `assets/index-DBqgquuu.css` | [artifacts/assets__index-DBqgquuu.css](artifacts/assets__index-DBqgquuu.css) |
-| 5 | `assets/index-Dfz4JcEl.css` | [artifacts/assets__index-Dfz4JcEl.css](artifacts/assets__index-Dfz4JcEl.css) |
+| 1 | `assets/index.1.css` | [artifacts/assets__index.1.css](artifacts/assets__index.1.css) |
+| 2 | `assets/index.2.css` | [artifacts/assets__index.2.css](artifacts/assets__index.2.css) |
+| 3 | `assets/index.3.css` | [artifacts/assets__index.3.css](artifacts/assets__index.3.css) |
+| 4 | `assets/index.4.css` | [artifacts/assets__index.4.css](artifacts/assets__index.4.css) |
+| 5 | `assets/index.5.css` | [artifacts/assets__index.5.css](artifacts/assets__index.5.css) |
 | 6 | `assets/uni.css` | [artifacts/assets__uni.css](artifacts/assets__uni.css) |
 
 ## Generator CSS Summary
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `assets/index-3vG-Q8xJ.css` | [artifacts/assets__index-3vG-Q8xJ.css](artifacts/assets__index-3vG-Q8xJ.css) | 33326 | 155 | true | true | false | true | true | true | false |
-| `assets/index-BUqHYt-R.css` | [artifacts/assets__index-BUqHYt-R.css](artifacts/assets__index-BUqHYt-R.css) | 1088 | 6 | false | false | false | false | false | false | true |
-| `assets/index-CyZbgkwJ.css` | [artifacts/assets__index-CyZbgkwJ.css](artifacts/assets__index-CyZbgkwJ.css) | 5119 | 10 | true | false | false | false | false | true | false |
-| `assets/index-DBqgquuu.css` | [artifacts/assets__index-DBqgquuu.css](artifacts/assets__index-DBqgquuu.css) | 43104 | 217 | true | true | false | true | true | true | false |
-| `assets/index-Dfz4JcEl.css` | [artifacts/assets__index-Dfz4JcEl.css](artifacts/assets__index-Dfz4JcEl.css) | 5094 | 10 | true | false | false | false | false | true | false |
+| `assets/index.1.css` | [artifacts/assets__index.1.css](artifacts/assets__index.1.css) | 1088 | 6 | false | false | false | false | false | false | true |
+| `assets/index.2.css` | [artifacts/assets__index.2.css](artifacts/assets__index.2.css) | 33326 | 155 | true | true | false | true | true | true | false |
+| `assets/index.3.css` | [artifacts/assets__index.3.css](artifacts/assets__index.3.css) | 43104 | 217 | true | true | false | true | true | true | false |
+| `assets/index.4.css` | [artifacts/assets__index.4.css](artifacts/assets__index.4.css) | 5119 | 10 | true | false | false | false | false | true | false |
+| `assets/index.5.css` | [artifacts/assets__index.5.css](artifacts/assets__index.5.css) | 5094 | 10 | true | false | false | false | false | true | false |
 | `assets/uni.css` | [artifacts/assets__uni.css](artifacts/assets__uni.css) | 9100 | 86 | false | false | false | false | false | false | false |
