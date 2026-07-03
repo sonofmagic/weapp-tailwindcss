@@ -82,12 +82,12 @@
 
 ### taro-webpack-react-tailwindcss-v4
 
-- CSS 文件：`css/471.css`, `css/539.css`, `css/728.css`, `css/app.css`
+- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`
 - 选择器：`&.theme-dark`, `&:before`, `*`, `.-bg-conic-180`, `.-bg-linear-65`, `.-rotate-y-45`, `.absolute`, `.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\]`, `.before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\]`, `.bg-\(image\:--issue-928-image\)`, `.bg-\[\#534312\]`, `.bg-\[image\:linear-gradient\(to_right\,\#06b6d4\,\#3b82f6\)\]`, `.bg-conic`, `.bg-conic-180`, `.bg-conic-\(--issue-928-conic\)`, `.bg-conic-\[from_45deg_at_50\%_50\%\,\#ef4444\,\#eab308\,\#22c55e\]`, `.bg-conic\/decreasing`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-65`
 
 ### taro-webpack-react-tailwindcss-v4
 
-- CSS 文件：`css/471.css`, `css/539.css`, `css/728.css`, `css/app.css`
+- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`
 - 选择器：`*`, `.-bg-conic-180`, `.-bg-linear-65`, `.-rotate-y-45`, `.absolute`, `.before\:content-\[\'independent_subpackage_taro-webpack-react-tailwindcss-v4\'\]:before`, `.before\:content-\[\'normal_subpackage_taro-webpack-react-tailwindcss-v4\'\]:before`, `.bg-\(image\:--issue-928-image\)`, `.bg-\[\#534312\]`, `.bg-\[image\:linear-gradient\(to_right\,\#06b6d4\,\#3b82f6\)\]`, `.bg-conic`, `.bg-conic-180`, `.bg-conic-\(--issue-928-conic\)`, `.bg-conic-\[from_45deg_at_50\%_50\%\,\#ef4444\,\#eab308\,\#22c55e\]`, `.bg-conic\/decreasing`, `.bg-gradient-to-r`, `.bg-independent-subpackage-marker`, `.bg-linear-65`, `.bg-linear-\(--issue-928-linear\)`, `.bg-linear-\[25deg\,\#ef4444_5\%\,\#eab308_60\%\,\#22c55e_90\%\,\#14b8a6\]`
 
 ### taro-vite-react-tailwindcss-v4
@@ -102,12 +102,12 @@
 
 ### taro-webpack-vue3-tailwindcss-v4
 
-- CSS 文件：`css/534.css`, `css/572.css`, `css/643.css`, `css/app.css`
+- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`
 - 选择器：`&.theme-dark`, `&:after`, `&:before`, `&:hover`, `*`, `.\!bg-\[gray\]`, `.after\:\!content-\[\'good_work\!\'\]`, `.any-hover\:bg-slate-800`, `.before\:content-\[\'independent_subpackage_taro-webpack-vue3-tailwindcss-v4\'\]`, `.before\:content-\[\'normal_subpackage_taro-webpack-vue3-tailwindcss-v4\'\]`, `.bg-\[\#123456\]`, `.bg-\[\#534312\]`, `.bg-\[\#68c828\]`, `.bg-\[radial-gradient\(circle_at_18\%_20\%\,\#e0f2fe\,\#fdf4ff_70\%\)\]`, `.bg-gradient-to-br`, `.bg-gradient-to-r`, `.bg-green-200\/70`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`
 
 ### taro-webpack-vue3-tailwindcss-v4
 
-- CSS 文件：`css/534.css`, `css/572.css`, `css/643.css`, `css/app.css`
+- CSS 文件：`css/app.css`, `css/chunk.1.css`, `css/chunk.2.css`, `css/chunk.3.css`
 - 选择器：`*`, `.\!bg-\[gray\]`, `.after\:\!content-\[\'good_work\!\'\]:after`, `.any-hover\:bg-slate-800:hover`, `.before\:content-\[\'independent_subpackage_taro-webpack-vue3-tailwindcss-v4\'\]:before`, `.before\:content-\[\'normal_subpackage_taro-webpack-vue3-tailwindcss-v4\'\]:before`, `.bg-\[\#123456\]`, `.bg-\[\#534312\]`, `.bg-\[\#68c828\]`, `.bg-\[radial-gradient\(circle_at_18\%_20\%\,\#e0f2fe\,\#fdf4ff_70\%\)\]`, `.bg-gradient-to-br`, `.bg-gradient-to-r`, `.bg-green-200\/70`, `.bg-independent-subpackage-marker`, `.bg-normal-subpackage-marker`, `.bg-purple-800`, `.bg-white`, `.bg-white\/70`, `.border`, `.border-slate-200\/80`
 
 ### taro-vite-vue3-tailwindcss-v4

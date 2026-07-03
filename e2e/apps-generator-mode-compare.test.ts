@@ -484,7 +484,9 @@ function normalizeCssSnapshotFileKey(fileName: string) {
 }
 
 function normalizeCssOutputSnapshotName(fileName: string) {
-  const normalized = normalizeOutputCssFileName(fileName).replace(/[.-][\w-]{8,}(?=\.css$)/g, '')
+  const normalized = normalizeOutputCssFileName(fileName)
+    .replace(/[.-][\w-]{8,}(?=\.css$)/g, '')
+    .replace(/(^|\/)\d+(?=\.css$)/g, '$1chunk')
   return normalizeSnapshotName(normalized) ?? normalized
 }
 
@@ -1080,6 +1082,20 @@ describe('demo generator mode output', () => {
       { fileName: 'base.wxss', content: '.z{}' },
       { fileName: 'index.wxss', content: '.a{}' },
       { fileName: 'index.wxss', content: '.b{}' },
+    ])
+
+    expect(createStableCssSnapshots({
+      css: '',
+      cssFiles: ['css/471.css', 'css/539.css', 'css/app.css'],
+      cssSnapshots: [
+        { fileName: 'css/471.css', content: '.b{}' },
+        { fileName: 'css/539.css', content: '.a{}' },
+        { fileName: 'css/app.css', content: '.app{}' },
+      ],
+    }, 'dist')).toEqual([
+      { fileName: 'css/chunk.2.css', content: '.b{}' },
+      { fileName: 'css/chunk.1.css', content: '.a{}' },
+      { fileName: 'css/app.css', content: '.app{}' },
     ])
   })
 

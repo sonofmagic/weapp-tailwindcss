@@ -13,16 +13,16 @@ Entry: taro-webpack-vue3-tailwindcss-v4/dist
 
 | # | File | Artifact |
 | ---: | --- | --- |
-| 1 | `css/534.css` | [artifacts/css__534.css](artifacts/css__534.css) |
-| 2 | `css/572.css` | [artifacts/css__572.css](artifacts/css__572.css) |
-| 3 | `css/643.css` | [artifacts/css__643.css](artifacts/css__643.css) |
-| 4 | `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) |
+| 1 | `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) |
+| 2 | `css/chunk.1.css` | [artifacts/css__chunk.1.css](artifacts/css__chunk.1.css) |
+| 3 | `css/chunk.2.css` | [artifacts/css__chunk.2.css](artifacts/css__chunk.2.css) |
+| 4 | `css/chunk.3.css` | [artifacts/css__chunk.3.css](artifacts/css__chunk.3.css) |
 
 ## Generator CSS Summary
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `css/534.css` | [artifacts/css__534.css](artifacts/css__534.css) | 238764 | 1592 | true | true | false | true | true | true | false |
-| `css/572.css` | [artifacts/css__572.css](artifacts/css__572.css) | 10751 | 24 | true | false | false | false | false | true | false |
-| `css/643.css` | [artifacts/css__643.css](artifacts/css__643.css) | 10776 | 24 | true | false | false | false | false | true | false |
 | `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) | 318649 | 1767 | true | true | false | true | true | true | false |
+| `css/chunk.1.css` | [artifacts/css__chunk.1.css](artifacts/css__chunk.1.css) | 238764 | 1592 | true | true | false | true | true | true | false |
+| `css/chunk.2.css` | [artifacts/css__chunk.2.css](artifacts/css__chunk.2.css) | 10776 | 24 | true | false | false | false | false | true | false |
+| `css/chunk.3.css` | [artifacts/css__chunk.3.css](artifacts/css__chunk.3.css) | 10751 | 24 | true | false | false | false | false | true | false |

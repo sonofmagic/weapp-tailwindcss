@@ -13,16 +13,16 @@ Entry: taro-webpack-react-tailwindcss-v4/dist
 
 | # | File | Artifact |
 | ---: | --- | --- |
-| 1 | `css/471.css` | [artifacts/css__471.css](artifacts/css__471.css) |
-| 2 | `css/539.css` | [artifacts/css__539.css](artifacts/css__539.css) |
-| 3 | `css/728.css` | [artifacts/css__728.css](artifacts/css__728.css) |
-| 4 | `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) |
+| 1 | `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) |
+| 2 | `css/chunk.1.css` | [artifacts/css__chunk.1.css](artifacts/css__chunk.1.css) |
+| 3 | `css/chunk.2.css` | [artifacts/css__chunk.2.css](artifacts/css__chunk.2.css) |
+| 4 | `css/chunk.3.css` | [artifacts/css__chunk.3.css](artifacts/css__chunk.3.css) |
 
 ## Generator CSS Summary
 
 | File | Artifact | Bytes | Selectors | @supports | :hover | Tailwind banner | System dark media | Manual dark selector | Raw arbitrary selector | Weapp escaped arbitrary selector |
 | --- | --- | ---: | ---: | --- | --- | --- | --- | --- | --- | --- |
-| `css/471.css` | [artifacts/css__471.css](artifacts/css__471.css) | 11114 | 25 | true | false | false | false | false | true | false |
-| `css/539.css` | [artifacts/css__539.css](artifacts/css__539.css) | 8952 | 36 | false | false | false | false | false | false | false |
-| `css/728.css` | [artifacts/css__728.css](artifacts/css__728.css) | 11089 | 25 | true | false | false | false | false | true | false |
 | `css/app.css` | [artifacts/css__app.css](artifacts/css__app.css) | 388595 | 2238 | true | false | false | true | true | true | false |
+| `css/chunk.1.css` | [artifacts/css__chunk.1.css](artifacts/css__chunk.1.css) | 8952 | 36 | false | false | false | false | false | false | false |
+| `css/chunk.2.css` | [artifacts/css__chunk.2.css](artifacts/css__chunk.2.css) | 11114 | 25 | true | false | false | false | false | true | false |
+| `css/chunk.3.css` | [artifacts/css__chunk.3.css](artifacts/css__chunk.3.css) | 11089 | 25 | true | false | false | false | false | true | false |

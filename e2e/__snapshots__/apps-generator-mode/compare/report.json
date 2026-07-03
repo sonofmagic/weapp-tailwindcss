@@ -8983,10 +8983,10 @@
     ],
     "cssFile": "taro-webpack-react-tailwindcss-v4/dist",
     "cssFiles": [
-      "css/471.css",
-      "css/539.css",
-      "css/728.css",
-      "css/app.css"
+      "css/app.css",
+      "css/chunk.1.css",
+      "css/chunk.2.css",
+      "css/chunk.3.css"
     ],
     "status": "passed",
     "generator": {
@@ -11283,10 +11283,10 @@
     ],
     "cssFile": "taro-webpack-react-tailwindcss-v4/dist",
     "cssFiles": [
-      "css/471.css",
-      "css/539.css",
-      "css/728.css",
-      "css/app.css"
+      "css/app.css",
+      "css/chunk.1.css",
+      "css/chunk.2.css",
+      "css/chunk.3.css"
     ],
     "status": "passed",
     "generator": {
@@ -18276,10 +18276,10 @@
     ],
     "cssFile": "taro-webpack-vue3-tailwindcss-v4/dist",
     "cssFiles": [
-      "css/534.css",
-      "css/572.css",
-      "css/643.css",
-      "css/app.css"
+      "css/app.css",
+      "css/chunk.1.css",
+      "css/chunk.2.css",
+      "css/chunk.3.css"
     ],
     "status": "passed",
     "generator": {
@@ -20105,10 +20105,10 @@
     ],
     "cssFile": "taro-webpack-vue3-tailwindcss-v4/dist",
     "cssFiles": [
-      "css/534.css",
-      "css/572.css",
-      "css/643.css",
-      "css/app.css"
+      "css/app.css",
+      "css/chunk.1.css",
+      "css/chunk.2.css",
+      "css/chunk.3.css"
     ],
     "status": "passed",
     "generator": {
